@@ -1,4 +1,39 @@
-OpenTouryo
-==========
+#Open“—À(OpenTouryo)
 
-â€Toryoâ€ , is an application framework for .NET which was developed using the accumulated know-how with a long track record in .NET application development.
+ h“—Àh‚ÍA’·”N‚Ì.NETƒAƒvƒŠƒP[ƒVƒ‡ƒ“ŠJ”­ÀÑ‚É‚Ä’~Ï‚µ‚½ƒmƒEƒnƒE‚ÉŠî‚Ã‚«ŠJ”­‚µ‚½.NET—pƒAƒvƒŠƒP[ƒVƒ‡ƒ“ ƒtƒŒ[ƒ€ƒ[ƒN‚Å‚·B
+(hToryoh , is an application framework for .NET which was developed using the accumulated know-how with a long track record in .NET application development.)
+
+##ŠT—v(Summary)
+ˆÈ‰º‚Ìƒtƒ@ƒCƒ‹‚ğQÆ‚µ‚Ä‚­‚¾‚³‚¢B
+(Please refer to the following files.)
+
+ - Introduction.pptx
+ - Functional_list.xlsx
+
+##“à—e•¨(Contents)
+
+###ƒfƒBƒŒƒNƒgƒŠiDirectoryj
+
+####/License/
+ƒ‰ƒCƒZƒ“ƒX(License)
+
+####/documents/
+ƒhƒLƒ…ƒƒ“ƒg—Ş(documents)
+
+####/root/
+•ê‘ÌƒvƒƒOƒ‰ƒ€()
+
+####/root_VS2010_TemplateBase/
+Visual Studio 2010A.NET4.0  ‚Ìƒeƒ“ƒvƒŒ[ƒgEƒx[ƒX
+(Template-base for Visual Studio 2010, .NET4.0)
+
+####/root_VS2012_TemplateBase/
+Visual Studio 2012A.NET4.5  ‚Ìƒeƒ“ƒvƒŒ[ƒgEƒx[ƒX
+(Template-base for Visual Studio 2012, .NET4.5)
+
+####/root_VS2013_TemplateBase/
+Visual Studio 2013A.NET4.5.1‚Ìƒeƒ“ƒvƒŒ[ƒgEƒx[ƒX
+(Template-base for Visual Studio 2013, .NET4.5.1)
+
+Ú‚µ‚­‚ÍAŠeƒtƒHƒ‹ƒ_‚ÌReadme‚ğQÆ‰º‚³‚¢B
+(For more information, please refer to the Readme for each folder.)
