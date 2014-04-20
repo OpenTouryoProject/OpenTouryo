@@ -1,39 +1,47 @@
-#Open“—À(OpenTouryo)
+ï»¿#Openæ£Ÿæ¢(OpenTouryo)
 
- h“—Àh‚ÍA’·”N‚Ì.NETƒAƒvƒŠƒP[ƒVƒ‡ƒ“ŠJ”­ÀÑ‚É‚Ä’~Ï‚µ‚½ƒmƒEƒnƒE‚ÉŠî‚Ã‚«ŠJ”­‚µ‚½.NET—pƒAƒvƒŠƒP[ƒVƒ‡ƒ“ ƒtƒŒ[ƒ€ƒ[ƒN‚Å‚·B
-(hToryoh , is an application framework for .NET which was developed using the accumulated know-how with a long track record in .NET application development.)
+ â€Openæ£Ÿæ¢â€ã¯ã€é•·å¹´ã®.NETã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³é–‹ç™ºå®Ÿç¸¾ã«ã¦è“„ç©ã—ãŸãƒã‚¦ãƒã‚¦ã«åŸºã¥ãé–‹ç™ºã—ãŸ.NETç”¨ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯ã§ã™ã€‚
+(â€OpenTouryoâ€ , is an application framework for .NET which was developed using the accumulated know-how with a long track record in .NET application development.)
 
-##ŠT—v(Summary)
-ˆÈ‰º‚Ìƒtƒ@ƒCƒ‹‚ğQÆ‚µ‚Ä‚­‚¾‚³‚¢B
+##æ¦‚è¦(Summary)
+ä»¥ä¸‹ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‚ç…§ã—ã¦ãã ã•ã„ã€‚
 (Please refer to the following files.)
 
  - Introduction.pptx
  - Functional_list.xlsx
 
-##“à—e•¨(Contents)
+##å†…å®¹ç‰©(Contents)
 
-###ƒfƒBƒŒƒNƒgƒŠiDirectoryj
+###ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªï¼ˆDirectoryï¼‰
 
 ####/License/
-ƒ‰ƒCƒZƒ“ƒX(License)
+ãƒ©ã‚¤ã‚»ãƒ³ã‚¹(license)
 
 ####/documents/
-ƒhƒLƒ…ƒƒ“ƒg—Ş(documents)
+ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆé¡(documents)
 
 ####/root/
-•ê‘ÌƒvƒƒOƒ‰ƒ€()
+æ¯ä½“ãƒ—ãƒ­ã‚°ãƒ©ãƒ (used to develop)
 
 ####/root_VS2010_TemplateBase/
-Visual Studio 2010A.NET4.0  ‚Ìƒeƒ“ƒvƒŒ[ƒgEƒx[ƒX
+Visual Studio 2010ã€.NET4.0  ã®ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ»ãƒ™ãƒ¼ã‚¹
 (Template-base for Visual Studio 2010, .NET4.0)
 
 ####/root_VS2012_TemplateBase/
-Visual Studio 2012A.NET4.5  ‚Ìƒeƒ“ƒvƒŒ[ƒgEƒx[ƒX
+Visual Studio 2012ã€.NET4.5  ã®ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ»ãƒ™ãƒ¼ã‚¹
 (Template-base for Visual Studio 2012, .NET4.5)
 
 ####/root_VS2013_TemplateBase/
-Visual Studio 2013A.NET4.5.1‚Ìƒeƒ“ƒvƒŒ[ƒgEƒx[ƒX
+Visual Studio 2013ã€.NET4.5.1ã®ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ»ãƒ™ãƒ¼ã‚¹
 (Template-base for Visual Studio 2013, .NET4.5.1)
 
-Ú‚µ‚­‚ÍAŠeƒtƒHƒ‹ƒ_‚ÌReadme‚ğQÆ‰º‚³‚¢B
+ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ»ãƒ™ãƒ¼ã‚¹ã«åŒæ¢±ã•ã‚Œã‚‹ã‚µãƒ³ãƒ—ãƒ«ã¯Openæ£Ÿæ¢ã®è©•ä¾¡ã«åˆ©ç”¨ã§ãã¾ã™ã€‚
+ã¾ãŸã€ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ»ãƒ™ãƒ¼ã‚¹ã‚’ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã®å†…å®¹ã«å¾“ã„ã‚«ã‚¹ã‚¿ãƒã‚¤ã‚ºã™ã‚‹ã“ã¨ã§
+å½“è©²Visual Studioãƒãƒ¼ã‚¸ãƒ§ãƒ³ã®æ¡ˆä»¶å‘ã‘ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãƒ»ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚’ä½œæˆã§ãã¾ã™ã€‚ 
+
+(Samples that are shipped with the template-base can be used to evaluate the OpenTouryo. 
+Further, by using template-base customized according to the contents of the tutorial, 
+You can create a project template for the project for the Visual Studio version.)
+
+è©³ã—ãã¯ã€å„ãƒ•ã‚©ãƒ«ãƒ€ã®Readmeã‚’å‚ç…§ä¸‹ã•ã„ã€‚
 (For more information, please refer to the Readme for each folder.)
