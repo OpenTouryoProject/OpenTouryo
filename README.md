@@ -3,25 +3,29 @@
  ”Open棟梁”は、長年の.NETアプリケーション開発実績にて蓄積したノウハウに基づき開発した.NET用アプリケーション フレームワークです。
 (”OpenTouryo” , is an application framework for .NET which was developed using the accumulated know-how with a long track record in .NET application development.)
 
-##概要(Summary)
+##概要(summary)
 以下のファイルを参照してください。
 (Please refer to the following files.)
 
+ - Introduction.pdf
  - Introduction.pptx
+ - Introduction_EN.pdf
+ - Introduction_EN.pptx
+ 
  - Functional_list.xlsx
 
-##内容物(Contents)
+##内容物(contents)
 
-###ディレクトリ（Directory）
+###ディレクトリ（directory）
 
-####/License/
+####/license/
 ライセンス(license)
 
 ####/documents/
 ドキュメント類(documents)
 
 ####/root/
-母体プログラム(used to develop)
+プログラム(program)
 
 ####/root_VS2010_TemplateBase/
 Visual Studio 2010、.NET4.0  のテンプレート・ベース

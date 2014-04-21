@@ -1,0 +1,680 @@
+＜テスト項目＞
+
+　●WinCustomTextBox
+
+　　◎入力制限
+
+　　　○数値の場合、
+
+　　　　// 数値であるかどうかは以下のコードで判定。
+　　　　EditDigitsAfterDP edad = this.EditDigitsAfterDP;
+　　　　EditDigitsAfterDP edad_e = this.EditDigitsAfterDP_Editing;
+
+　　　　return (this.IsNumeric || this.CheckType.IsNumeric
+　　　　|| this.EditInitialValue == EditInitialValue.Zero
+　　　　|| this.EditAddFigure != EditAddFigure.None
+　　　　|| (edad != null && (edad.HowToCut.HasValue && edad.HowToCut.Value != CutMethod.None))
+　　　　|| (edad_e != null && (edad_e.HowToCut.HasValue && edad_e.HowToCut.Value != CutMethod.None))
+　　　　|| this.DisplayUnits != null); 
+
+　　　　・数値入力可能（0-9）：○
+
+　　　　・制御付きで入力可能。
+　　　　　・「-」は先頭のみ入力可能：○
+　　　　　・小数点以下指定ありの場合のみ「.」を一つだけ入力可能。：○
+
+　　　　・その他、以下のキー押下を許可
+　　　　　・「BSP・DEL」、「Ctrl・Z」（編集操作）：○
+　　　　　・「←・→」、「HOME・END」（カーソル移動）：○
+　　　　　・「TAB」、「SHIFT＋TAB」（タブ遷移）：○
+　　　　　・「↑・↓」、「Enter」（グリッド中でのセル移動）：○
+
+　　　　　・コピペ系操作
+　　　　　　・「SHIFT＋←・→」：○
+　　　　　　・「SHIFT＋HOME・END」（選択系）：○
+　　　　　　・「Ctrl・C」、「Ctrl・X」、「Ctrl・V」、「Ctrl・A」（コピペ系）：○
+　　　　　　・（編集系）
+
+　　　　・以下は検討の結果、入力拒否。
+　　　　　・「漢字モード」、「+」、「,」入力は不可能：○
+
+　　　　・なお、コピペで全角文字などが入力された場合、
+　　　　　以下のアルゴリズムで、余計な文字を排除する。：○
+　　　　　・初めに、全角半角変換を施す。
+　　　　　・半角数字だけ、フィルタして残す。
+　　　　　・「-」は、先頭のものだけ残す。
+　　　　　・「.」は、最初のものだけ残す（ただし、小数点以下指定がある場合）。
+
+　　　○数値でない場合、
+　　　　・制限無し。：○
+
+　　　・上記を、DataGridViewでも動作確認：○
+
+　　◎初期化
+
+　　　○デザイン・タイム：○
+　　　　InitialComponent（デザイナ）での初期化。
+　　　　必要ならデザインタイムでのプロパティ表示を消去してあること。
+
+　　　○ロード：○
+　　　　Form_Loadでの初期化。
+
+　　　○EditInitialValueでの初期化：○
+
+　　　　・Blank：空文字列で初期化
+　　　　・Zreo：0で初期化
+　　　　　編集中の空文字クリア時のInitialValue（0初期化）では、
+　　　　　EditAfterDPではなく、EditAfterDP_Editingの値を使用する。
+
+　　　　・DataGridViewでも動作確認：○
+　　　　　・Blank：空文字列で初期化
+　　　　　・Zreo：0で初期化
+
+　　◎プロパティ指定（Focus無し時）と、その際の編集のされ方。
+　　　○通常
+　　　　・取得
+　　　　　値取得プロパティプロシージャを実行
+　　　　　・Text：○
+　　　　　・Text2：○（仕様変更により、仕様が不明確化）
+　　　　　・Text3：○（仕様変更により、仕様が不明確化）
+　　　　　・Value：○
+
+　　　　・設定
+　　　　　TextChangeイベントで変更値を設定
+　　　　　・Text：○
+　　　　　・Text2：○（仕様変更により、仕様が不明確化）
+　　　　　・Text3：○（仕様変更により、仕様が不明確化）
+　　　　　・Value：○
+
+　　　○データバインディング
+　　　　・取得
+　　　　　バインディング・ソースの更新状態を見る。
+　　　　　・Text：○
+　　　　　・Text2：○（仕様変更により、仕様が不明確化）
+　　　　　・Text3：○（仕様変更により、仕様が不明確化）
+　　　　　・Value：○
+
+　　　　・設定
+　　　　　バインディング・ソースの変更通知で値が変更されることを確認。
+　　　　　・Text：○
+　　　　　・Text2：○（仕様変更により、仕様が不明確化）
+　　　　　・Text3：○（仕様変更により、仕様が不明確化）
+　　　　　・Value：○
+
+　　◎編集処理
+　　　○単項目、データバインド無し
+　　　　★DisplayUnitをnullに設定
+　　　　　小数点編集前後で入力中の精度を維持できないが、他は正しく動作。
+
+　　　　　・初回設定時のRedit
+　　　　　　・無し：○
+　　　　　　・右・左パッド：○
+　　　　　　・桁区切り３、４：○
+
+　　　　　　・小数点入力後２桁：○
+　　　　　　　・MaxLengthを考慮
+　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　・小数点入力中４桁：－
+　　　　　　　・MaxLengthを考慮
+　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　・混合設定（３桁区切り、小数点以下２→６）：○
+
+　　　　　・Enter・Validating・ValidatedでのEdit・PreValidate・ReEdit
+　　　　　　※ PreValidate：半角化、入力中の小数点以下編集を再度施す。
+　　　　　　・無し：○
+　　　　　　・右・左パッド：○
+　　　　　　・桁区切り３、４：○
+
+　　　　　　・小数点入力後２桁：○
+　　　　　　　・MaxLengthを考慮
+　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　・小数点入力中４桁：○
+　　　　　　　・MaxLengthを考慮
+　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　・混合設定（３桁区切り、小数点以下２→６）：○
+
+　　　　　・値の入力・変更後の動作（PreValidate・ReEdit）
+　　　　　　・無し：○
+　　　　　　・右・左パッド：○
+　　　　　　・桁区切り３、４：○
+
+　　　　　　・小数点入力後２桁：○
+　　　　　　　・MaxLengthを考慮
+　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　・小数点入力中４桁：○
+　　　　　　　・MaxLengthを考慮
+　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　・混合設定（３桁区切り、小数点以下２→６）：○
+
+　　　　　・空文字列クリア
+　　　　　　・Edit・ReEditで空文字列を維持する。
+　　　　　　　EditInitialValueがBlankの状態でテストする。
+　　　　　　　・無し：○
+　　　　　　　・右・左パッド：○
+　　　　　　　・桁区切り３、４：○
+
+　　　　　　　・小数点入力後２桁：○
+　　　　　　　　・MaxLengthを考慮
+　　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　　・小数点入力中４桁：○
+　　　　　　　　・MaxLengthを考慮
+　　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　　・混合設定（３桁区切り、小数点以下２→６）：○
+
+　　　　　　・0クリアされる（PreValidate・ReEditで数値編集される）。
+　　　　　　　EditInitialValueがZeroの状態でテストする。
+　　　　　　　・無し：○
+　　　　　　　・右・左パッド：○
+　　　　　　　・桁区切り３、４：○
+
+　　　　　　　・小数点入力後２桁：○
+　　　　　　　　・MaxLengthを考慮
+　　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　　・小数点入力中４桁：○
+　　　　　　　　・MaxLengthを考慮
+　　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　　・混合設定（３桁区切り、小数点以下２→６）：○
+
+　　　　★DisplayUnitを0以上に設定
+　　　　　動作不正（初期値がEditでクリアされる）：○
+
+　　　　・TextChangeイベントの動作（ReEditされた値が設定される）：○
+　　　　・ValueChangeイベントの動作（とりあえず動作している）：○
+
+　　　○単項目のデータバインド有り（decimal/string）
+　　　　FormatStringは単項目では使用しない（テスト対象外とする）。
+
+　　　　★DisplayUnitをnullに設定、Textプロパティにバインド。
+　　　　　小数点編集前後で入力中の精度を維持できないが、他は正しく動作：○/○
+
+　　　　　・初回設定時のRedit
+　　　　　　・無し：○/○
+　　　　　　・右・左パッド：○/○
+　　　　　　・桁区切り３、４：○/○
+
+　　　　　　・小数点入力後２桁：○/○
+　　　　　　　・MaxLengthを考慮
+　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　・小数点入力中４桁：－/－
+　　　　　　　・MaxLengthを考慮
+　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　・混合設定（３桁区切り、小数点以下２→６）：○/○
+
+　　　　　・Enter・Validating・ValidatedでのEdit・PreValidate・ReEdit
+　　　　　　・無し：○/○
+　　　　　　・右・左パッド：○/○
+　　　　　　・桁区切り３、４：○/○
+
+　　　　　　・小数点入力後２桁：○/○
+　　　　　　　・MaxLengthを考慮
+　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　・小数点入力中４桁：○/○
+　　　　　　　・MaxLengthを考慮
+　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　・混合設定（３桁区切り、小数点以下２→６）：○/○
+
+　　　　　・値の入力・変更後の動作（PreValidate・ReEdit）
+　　　　　　・無し：○/○
+　　　　　　・右・左パッド：○/○
+　　　　　　・桁区切り３、４：○/○
+
+　　　　　　・小数点入力後２桁：○/○
+　　　　　　　・MaxLengthを考慮
+　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　・小数点入力中４桁：○/○
+　　　　　　　・MaxLengthを考慮
+　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　・混合設定（３桁区切り、小数点以下２→６）：○/○
+
+　　　　　　・空文字列クリア
+　　　　　　　・Edit・ReEditで空文字列を維持する。
+　　　　　　　　EditInitialValueがBlankの状態でテストする。
+　　　　　　　　データソースにバインドできない値の場合（キャストができない値の場合）、
+　　　　　　　　・フォーカスが外れない現象あり（DataBindings.Add 第4引数 true）。
+　　　　　　　　・バィンディング・ソースに変更が反映されない現象あり（DataBindings.Add 第4引数 false）。
+　　　　　　　　※ decimalでは空文字列含む数値以外の値。stringの場合は問題ない。
+
+　　　　　　　　・無し：○/○
+　　　　　　　　・右・左パッド：○/○
+　　　　　　　　・桁区切り３、４：○/○
+
+　　　　　　　　・小数点入力後２桁：○/○
+　　　　　　　　　・MaxLengthを考慮
+　　　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　　　・小数点入力中４桁：○/○
+　　　　　　　　　・MaxLengthを考慮
+　　　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　　　・混合設定（３桁区切り、小数点以下２→６）：○/○
+　　　　　　　　※ decimalの場合、DataBindings.Add 第4引数 falseでテスト可能。
+
+　　　　　　　・0クリアされる（PreValidate・ReEditで数値編集される）。
+　　　　　　　　EditInitialValueがZeroの状態でテストする。
+
+　　　　　　　　・無し：○/○
+　　　　　　　　・右・左パッド：○/○
+　　　　　　　　・桁区切り３、４：○/○
+
+　　　　　　　　・小数点入力後２桁：○/○
+　　　　　　　　　・MaxLengthを考慮
+　　　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　　　・小数点入力中４桁：○/○
+　　　　　　　　　・MaxLengthを考慮
+　　　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　　　・混合設定（３桁区切り、小数点以下２→６）：○/○
+
+　　　　　・値の入力・変更後の動作（データソースの変更確認）
+　　　　　　入力しないと、Edit・ReEdit値がデータソースに
+　　　　　　反映されないケースがあるが、動作上問題ないはず。
+　　　　　　※ DisplayUnit設定有効時、小数点が消えて焦ることも・・・。
+
+　　　　　　・無し：○/○
+　　　　　　・右・左パッド：○/○
+　　　　　　・桁区切り３、４：○/○
+
+　　　　　　・小数点入力後２桁：○/○
+　　　　　　　・MaxLengthを考慮
+　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　・小数点入力中４桁：○/○
+　　　　　　　・MaxLengthを考慮
+　　　　　　　・最近接偶数編集、四捨五入、
+　　　　　　　・切り捨て（絶対値）、切り上げ（絶対値）
+　　　　　　　・切り捨て（マイナス方向）切り上げ（プラス方向）
+
+　　　　　　・混合設定（３桁区切り、小数点以下２→６）：○/○
+
+　　　★DisplayUnitを0以上に設定し、Valueプロパティにバインド。
+　　　　・混合設定（３桁区切り、小数点以下２→６）
+
+　　　　　・初回設定時のRedit：○/○
+
+　　　　　・Enter・Validating・ValidatedでのEdit・PreValidate・ReEdit：○/○
+
+　　　　　・値の入力・変更後の動作（PreValidate・ReEdit）：○/○
+
+　　　　　・空文字列クリア：○/○
+　　　　　　・空文字列入力の場合、Valueプロパティは、DBNullを返す。
+　　　　　　・DataTableは、decimalでもstringでもDBNullは入るので問題ない。
+　　　　　　・このため、decimalでフォーカスが外れない
+　　　　　　　（若しくは、バィンディング・ソースに反映されない）現象は発生しない。
+　　　　　　※ ちなみにPOCOのobject型プロパティにバインドするとnullが入る模様。
+
+　　　　　・値の入力・変更後の動作（データソースの変更確認）：○/○
+
+　　　　　・DisplayUnitを0以上の設定効果
+　　　　　　・単位変換:○/○
+　　　　　　・入力中の桁数の精度を保つ:○/○
+　　　　　　　・EditDigitsAfterDP_Editingが設定されている場合は、
+　　　　　　　　実際に入力した値の精度では無いので、PreValidateバリデートで入力中の桁数に戻す。
+　　　　　　　・EditDigitsAfterDP_Editingが設定されていない場合は、入力中の桁数の精度のまま。
+
+　　　★その他、誤った利用方法
+　　　　・DisplayUnitを設定せず、Valueプロパティにバインド。
+　　　　　・動作不正（小数点入力中の精度を維持できない）：○/○
+　　　　・DisplayUnitを0以上に設定し、Textプロパティにバインド。
+　　　　　・動作不正（初期値がEditでクリアされる）：○/○
+
+　　　・TextChangeイベントの動作（ReEditされた値が設定される）：○
+　　　・ValueChangeイベントの動作（とりあえず動作している）：○
+
+　　○DataGridViewへのデータバインド有り（decimal/string）
+　　　DisplayUnitをnullに設定、Textプロパティにバインド。
+
+　　　・ポイント
+　　　　・単位変換はイベントかVM ⇔ M間で処理。
+　　　　・入力中の編集をカスタム・コントロール側で処理。
+　　　　・入力後の編集をFormatString側で処理。
+　　　　　・桁区切りや小数点以下（#,##0.##）は、数値型であること。
+　　　　　・日付フォーマット（yyyy/MM/dd）は、日付型であること。
+
+　　　　∴↓プロパティは、
+
+　　　　・設定可能なプロパティは、
+　　　　　・MaxLength
+　　　　　・IsNumeric
+　　　　　・EditInitialValue
+　　　　　・EditPadding
+　　　　　・EditDigitsAfterDP_Editing
+
+　　　　・設定不可能なプロパティ（FormatStringで処理すべきもの）
+　　　　　・DisplayUnits
+　　　　　・EditAddFigure
+　　　　　・EditDigitsAfterDP
+
+　　　∴↓のReEditは、FormatStringで処理するのでCheck項目も外す。
+
+　　　・以下のテストケースは前述してある。
+　　　　・入力制限 > 値の場合
+　　　　・初期化 > EditInitialValueでの初期化
+
+　　　★３桁区切り、小数点以下２→６（decimal、"#,##0.##"）
+
+　　　　・初回設定時のFormatString：○
+
+　　　　・初回設定時のRedit：－
+　　　　　動作不正になるケースがあるのでInitializeEditingControlValueでReditされない仕様とした。
+　　　　　実際は、EditingControlのため、必ずEnterを経由する。その際にEditされる。
+
+　　　　・Enter・Validating・Validatedでの
+　　　　　Edit・PreValidate・FormatString：○
+
+　　　　・空文字列クリア：○
+　　　　　・DataGridViewでは、空文字列入力の場合、Textプロパティでも、
+　　　　　　・表示上は、空文字列が表示される。
+　　　　　　・データソースにはDBNullが返る。
+　　　　　　　・データソースのDataTableは、decimalでもstringでもDBNullは入る。
+　　　　　　　・このため、decimalでフォーカスが外れない
+　　　　　　　　（若しくは、バィンディング・ソースに反映されない）現象は発生しない。
+　　　　　　　※ ちなみにPOCOのobject型プロパティへのバインドは出来る出来ないを含めてテストしていない。
+
+　　　　　・Edit・FormatStringで空文字列を維持する。
+　　　　　　EditInitialValueがBlankの状態でテストする。
+
+　　　　　・0クリアされる（PreValidate・FormatStringで数値編集される）。
+　　　　　　EditInitialValueがZeroの状態でテストする。
+
+　　　　・値の入力・変更後の動作（PreValidate・FormatString・データソースの変更確認）：○
+　　　　・単位変換（表示上はFormatString、VMデータソースの確認）:○　※ 単位変換はVM⇔M間で実施
+
+　　　★右・左パッド（string、""）
+
+　　　　・初回設定時のFormatString：－
+
+　　　　・初回設定時のRedit：－
+　　　　　動作不正になるケースがあるのでInitializeEditingControlValueでReditされない仕様とした。
+　　　　　実際は、EditingControlのため、必ずEnterを経由する。その際にEditされる。
+
+　　　　・Enter・Validating・Validatedでの
+　　　　　Edit・PreValidate・FormatString：○
+
+　　　　・空文字列クリア：○
+　　　　　同上だが、文字入力の場合、decimalではエラーとなる（パッドは文字入力可能であるため）。
+
+　　　　　・Edit・FormatStringで空文字列を維持する。
+　　　　　　EditInitialValueがBlankの状態でテストする。
+
+　　　　　・0クリアされる（PreValidate・FormatStringで数値編集される）。
+　　　　　　EditInitialValueがZeroの状態でテストする。
+
+　　　　・値の入力・変更後の動作（PreValidate・ReEdit・データソースの変更確認）：○
+　　　　・単位変換（表示上はFormatString、VMデータソースの確認）:－
+
+　◎チェック処理
+　　・必須
+　　　・Validating：○
+　　　・一括チェック：○
+　　・半角
+　　　・Validating：○
+　　　・一括チェック：○
+　　・全角
+　　　・Validating：○
+　　　・一括チェック：○
+　　・数値
+　　　・Validating：○
+　　　・一括チェック：○
+　　・片仮名
+　　　・Validating：○
+　　　・一括チェック：○
+　　・半角片仮名
+　　　・Validating：○
+　　　・一括チェック：○
+　　・平仮名
+　　　・Validating：○
+　　　・一括チェック：○
+　　・日付
+　　　・Validating：○
+　　　・一括チェック：○
+　　・正規表現
+　　　・Validating：○
+　　　・一括チェック：○
+　　・禁則
+　　　・Validating：○
+　　　・一括チェック：○
+
+
+　●WinCustomMaskedTextBox
+
+　　◎初期化
+
+　　　○デザイン・タイム：○
+　　　　InitialComponent（デザイナ）での初期化。
+　　　　必要ならデザインタイムでのプロパティ表示を消去してあること。
+
+　　　○ロード：○
+　　　　Form_Loadでの初期化。
+
+　　・特殊編集
+　　　・EditToHankakuプロパティ：○
+　　　　全角があったら、半角化を試みて全角のままなら削除。
+
+　　　・EditToYYYYMMDDプロパティ：○
+　　　　ちなみに初期設定では動作しないが仕様通り（ユーザ入力にのみ働くため）。
+　　　　・1111111 → 1111/11/01変換
+　　　　・1111131 → 1111/01/31変換
+
+　　　・DataGridView内でもテスト。
+
+　　◎プロパティ指定（Focus無し時）と、その際の編集のされ方。
+　　　○通常
+　　　　・取得
+　　　　　値取得プロパティプロシージャを実行
+　　　　　・Text：○
+　　　　　・Text2：○
+　　　　　・Text3：○
+
+　　　　・設定
+　　　　　TextChangeイベントで変更値を設定
+　　　　　・Text：○
+　　　　　・Text2：○
+　　　　　・Text3：－（set_Text3を実装しない）
+
+　　　○データバインディング
+　　　　・取得
+　　　　　バインディング・ソースの更新状態を見る。
+　　　　　・Text：○
+　　　　　・Text2：○
+　　　　　・Text3：○
+
+　　　　・設定
+　　　　　バインディング・ソースの変更通知で値が変更されることを確認。
+　　　　　・Text：○
+　　　　　・Text2：○
+　　　　　・Text3：－（set_Text3を実装しない）
+
+　　◎編集処理
+
+　　　○単項目、データバインド無し
+　　　　・入力後マスク
+
+　　　　　・初回設定時のRedit
+
+　　　　　・Enter・Validating・ValidatedでのEdit・PreValidate・ReEdit：○
+　　　　　　※ PreValidate：半角化、YYYYMMDD編集（7桁6桁時の8桁入力化）
+
+　　　　　・値の入力・変更後の動作（PreValidate・ReEdit）：○
+
+　　　　・入力中マスク
+　　　　　・初回設定時のRedit
+　　　　　・Enter・Validating・ValidatedでのEdit・PreValidate・ReEdit：○
+　　　　　・値の入力・変更後の動作（PreValidate・ReEdit）：○
+
+　　　　・入力中・入力後マスク
+　　　　　・初回設定時のRedit
+　　　　　・Enter・Validating・ValidatedでのEdit・PreValidate・ReEdit：○
+　　　　　・値の入力・変更後の動作（PreValidate・ReEdit）：○
+
+　　　　・TextChangeイベントの動作（ReEditされた値が設定される）：○
+
+　　　○単項目のデータバインド有り（datetime/string）
+　　　　FormatStringは単項目では使用しない（テスト対象外とする）。
+
+　　　　★Textプロパティにバインド。
+　　　　　データソースにバインドできない値の場合（キャストができない値の場合）、
+　　　　　・フォーカスが外れない現象あり（DataBindings.Add 第4引数 true）。
+　　　　　・バィンディング・ソースに変更が反映されない現象あり（DataBindings.Add 第4引数 false）。
+　　　　　※ datetimeでは日付と認識できる値であること。stringの場合は問題ない。
+　　　　　※ datetimeの場合、入力後マスクは日付と認識できる値になるようにする
+　　　　　　（0000/00/00か、00000000 - 8桁数値でもOKのもよう）。
+
+　　　　　・初回設定時のRedit：○/○
+
+　　　　　・Enter・Validating・ValidatedでのEdit・PreValidate・ReEdit：○/○
+　　　　　・値の入力・変更後の動作（PreValidate・ReEdit）：○/○
+　　　　　・値の入力・変更後の動作（データソースの変更確認）：○/○
+
+　　　　★Text2プロパティにバインド。
+　　　　　データソースにバインドできない値の場合（キャストができない値の場合）、
+　　　　　・フォーカスが外れない現象あり（DataBindings.Add 第4引数 true）。
+　　　　　・バィンディング・ソースに変更が反映されない現象あり（DataBindings.Add 第4引数 false）。
+　　　　　※ datetimeでは日付と認識できる値であること。stringの場合は問題ない。
+　　　　　※ datetimeの場合、入力後マスクは日付と認識できる値になるようにする
+　　　　　× Textで、Mask（入力後）：00000000でバインド可能であったが、
+　　　　　　Text2では何故か、datetimeにバインドできない現象を確認。
+　　　　　　本案件では、datetimeにバインドしないので問題ないと考える（仕様としても必要性は無い）。
+
+　　　　　・初回設定時のRedit：○/○
+
+　　　　　・Enter・Validating・ValidatedでのEdit・PreValidate・ReEdit：○/○
+　　　　　・値の入力・変更後の動作（PreValidate・ReEdit）：○/○
+　　　　　・値の入力・変更後の動作（データソースの変更確認）：－/○
+
+　　　　・TextChangeイベントの動作（ReEditされた値が設定される）：○
+
+　　○DataGridViewへのデータバインド有り（dateTime/string）
+
+　　　・ポイント
+　　　　・単位変換はイベントかVM ⇔ M間で処理。
+　　　　・入力中の編集をカスタム・コントロール側で処理。
+　　　　・入力後の編集をFormatString側で処理。
+　　　　　・桁区切りや小数点以下（#,##0.##）は、数値型であること。
+　　　　　・日付フォーマット（yyyy/MM/dd）は、日付型であること。
+
+　　　　∴↓プロパティは、
+
+　　　　・設定可能なプロパティは、
+　　　　　・Mask（日付などは、Maskして返すケースもあるため）
+　　　　　・Mask_Editing
+　　　　　・EditInitialValue
+　　　　　・EditToHankaku
+　　　　　・EditToYYYYMMDD
+
+　　　∴↓のReEditは、FormatStringで処理するのでCheck項目も外す。
+
+　　　・以下のテストケースは前述してある。
+　　　　・初期化 > EditInitialValueでの初期化
+
+　　　★日付マスク（decimal/string、""）
+　　　　・入力中：0000年00月00日、入力後：0000/00/00）
+　　　　・EditToHankaku、EditToYYYYMMDD = true
+
+　　　　　・初回設定時のRedit：○/○
+
+　　　　　・Enter・Validating・ValidatedでのEdit・PreValidate・FormatString：○/○
+
+　　　　　・値の入力・変更後の動作（PreValidate・ReEdit）：○/○
+
+　　　　　・値の入力・変更後の動作（データソースの変更確認）：○/○
+
+　　　　　※ DataGridView上でのEdit・PreValidateは、
+　　　　　　 Enter抜け、TAB・カーソルキー抜けなどをテストすること(異なるカバレッジのため)。
+
+　　　　　※ DataGridViewで、Text2プロパティのバインドは使用できない。
+　　　　　　　また、日付型でないと、FormatStringを指定できない。
+　　　　　　　この場合、日付と認識されるマスクを設定する必要がある。
+
+　　　　　　　なお、こちらでは、同様に、Mask（入力後）：00000000で
+　　　　　　　datetimeに対してバインド不可能となる現象を確認した。
+
+　◎チェック処理
+　　・必須
+　　　・Validating：○
+　　　・一括チェック：○
+　　・半角
+　　　・Validating：○
+　　　・一括チェック：○
+　　・全角
+　　　・Validating：○
+　　　・一括チェック：○
+　　・数値
+　　　・Validating：○
+　　　・一括チェック：○
+　　・片仮名
+　　　・Validating：○
+　　　・一括チェック：○
+　　・半角片仮名
+　　　・Validating：○
+　　　・一括チェック：○
+　　・平仮名
+　　　・Validating：○
+　　　・一括チェック：○
+　　・日付
+　　　・Validating：○
+　　　・一括チェック：○
+　　・正規表現
+　　　・Validating：○
+　　　・一括チェック：○
+　　・禁則
+　　　・Validating：○
+　　　・一括チェック：○
