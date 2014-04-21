@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="Call">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="context" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="serviceName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="cmnParameterValue" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="parameterValue" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="CallResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CallResult" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="context" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="returnValue" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="CallSoapIn">
+    <wsdl:part name="parameters" element="tns:Call" />
+  </wsdl:message>
+  <wsdl:message name="CallSoapOut">
+    <wsdl:part name="parameters" element="tns:CallResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ServiceForMuSoap">
+    <wsdl:operation name="Call">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">In general service interface base which uses an ASP.NET Web Service. </wsdl:documentation>
+      <wsdl:input message="tns:CallSoapIn" />
+      <wsdl:output message="tns:CallSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ServiceForMuSoap" type="tns:ServiceForMuSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Call">
+      <soap:operation soapAction="http://tempuri.org/Call" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiceForMuSoap12" type="tns:ServiceForMuSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Call">
+      <soap12:operation soapAction="http://tempuri.org/Call" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ServiceForMu">
+    <wsdl:port name="ServiceForMuSoap" binding="tns:ServiceForMuSoap">
+      <soap:address location="/WebService/ServiceForMu.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ServiceForMuSoap12" binding="tns:ServiceForMuSoap12">
+      <soap12:address location="/WebService/ServiceForMu.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

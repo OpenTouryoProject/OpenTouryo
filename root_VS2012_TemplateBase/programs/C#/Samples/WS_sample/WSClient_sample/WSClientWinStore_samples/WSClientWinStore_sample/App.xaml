@@ -1,0 +1,20 @@
+﻿<Application
+    x:Class="WSClientWinStore_sample.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WSClientWinStore_sample">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+
+                <!-- 
+                    プラットフォームの外観の共通の要素を定義するスタイル
+                    Visual Studio プロジェクトおよびアイテム テンプレートで必要です
+                 -->
+                <ResourceDictionary Source="Common/StandardStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

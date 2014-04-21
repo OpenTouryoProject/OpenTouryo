@@ -1,0 +1,27 @@
+﻿<?xml version="1.0"?>
+<xs:schema id="SuppliersDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="SuppliersDataSet" msdata:CaseSensitive="True" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Suppliers">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="PK_SupplierID" type="xs:int" minOccurs="0"/>
+              <xs:element name="CompanyName" type="xs:string" minOccurs="0"/>
+              <xs:element name="ContactName" type="xs:string" minOccurs="0"/>
+              <xs:element name="ContactTitle" type="xs:string" minOccurs="0"/>
+              <xs:element name="Address" type="xs:string" minOccurs="0"/>
+              <xs:element name="City" type="xs:string" minOccurs="0"/>
+              <xs:element name="Region" type="xs:string" minOccurs="0"/>
+              <xs:element name="PostalCode" type="xs:string" minOccurs="0"/>
+              <xs:element name="Country" type="xs:string" minOccurs="0"/>
+              <xs:element name="Phone" type="xs:string" minOccurs="0"/>
+              <xs:element name="Fax" type="xs:string" minOccurs="0"/>
+              <xs:element name="HomePage" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

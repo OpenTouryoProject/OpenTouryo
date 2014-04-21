@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  UPDATE
+    "DEPT"
+  SET
+    <DELCMA>
+      <IF>"DNAME" = :DNAME,</IF>
+      <IF>"LOC" = :LOC,</IF>
+    </DELCMA>
+  <WHERE>
+    WHERE
+      "DEPTNO" = :DEPTNO
+  </WHERE>
+  <PARAM>
+    DEPTNO, int32[], 1, 2, 3, 4, 5, 6, 7, 8, 9<DIV/>
+    DNAME, string[], aaa, bbb, ccc, ddd, eee, fff, ggg, hhh, iii<DIV/>
+    LOC, string[], aaa, bbb, ccc, ddd, eee, fff, ggg, hhh, iii<DIV/>
+  </PARAM>
+</ROOT>

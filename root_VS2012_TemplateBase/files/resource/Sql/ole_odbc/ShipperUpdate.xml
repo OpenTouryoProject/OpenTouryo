@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  UPDATE
+    Shippers
+  SET
+    CompanyName = @P2, Phone = @P3
+  <WHERE>
+    WHERE
+      <IF>ShipperID = @P1</IF>
+  </WHERE>
+</ROOT>

@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.RichClient", "Framework\RichClient\Framework.RichClient.csproj", "{3468B633-2CFE-4A1E-870F-396961E49A9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business.RichClient", "Business\RichClient\Business.RichClient.csproj", "{46E0BD62-9451-431C-A75F-EE7B8CC5D6D9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3468B633-2CFE-4A1E-870F-396961E49A9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3468B633-2CFE-4A1E-870F-396961E49A9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3468B633-2CFE-4A1E-870F-396961E49A9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3468B633-2CFE-4A1E-870F-396961E49A9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46E0BD62-9451-431C-A75F-EE7B8CC5D6D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46E0BD62-9451-431C-A75F-EE7B8CC5D6D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46E0BD62-9451-431C-A75F-EE7B8CC5D6D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46E0BD62-9451-431C-A75F-EE7B8CC5D6D9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

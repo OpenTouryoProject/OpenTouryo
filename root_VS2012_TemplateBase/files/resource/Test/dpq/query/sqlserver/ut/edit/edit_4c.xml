@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	SELECT * FROM REGION<WHERE>WHERE<LIST>RegionID IN(@PLIST)</LIST></WHERE>
+	<PARAM>
+		PLIST, xxx, null<DIV/>
+	</PARAM>
+	-- LISTタグ指定（null指定で無効化）。
+</ROOT>

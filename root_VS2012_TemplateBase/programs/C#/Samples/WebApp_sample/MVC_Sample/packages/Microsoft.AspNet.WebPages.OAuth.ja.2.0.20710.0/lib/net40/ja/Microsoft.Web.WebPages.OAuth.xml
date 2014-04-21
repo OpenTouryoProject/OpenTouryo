@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>Microsoft.Web.WebPages.OAuth</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Web.WebPages.OAuth.AuthenticationClientData"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.AuthenticationClientData.#ctor(DotNetOpenAuth.AspNet.IAuthenticationClient,System.String,System.Collections.Generic.IDictionary{System.String,System.Object})"></member>
+    <member name="P:Microsoft.Web.WebPages.OAuth.AuthenticationClientData.AuthenticationClient"></member>
+    <member name="P:Microsoft.Web.WebPages.OAuth.AuthenticationClientData.DisplayName"></member>
+    <member name="P:Microsoft.Web.WebPages.OAuth.AuthenticationClientData.ExtraData"></member>
+    <member name="T:Microsoft.Web.WebPages.OAuth.OAuthAccount">
+      <summary>OAuth または OpenID アカウントを表します。</summary>
+    </member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthAccount.#ctor(System.String,System.String)">
+      <summary>
+        <see cref="T:Microsoft.Web.WebPages.OAuth.OAuthAccount" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="provider">プロバイダーの名前。</param>
+      <param name="providerUserId">プロバイダー ユーザー ID。</param>
+    </member>
+    <member name="P:Microsoft.Web.WebPages.OAuth.OAuthAccount.Provider">
+      <summary>プロバイダー名を取得します。</summary>
+      <returns>プロバイダー名。</returns>
+    </member>
+    <member name="P:Microsoft.Web.WebPages.OAuth.OAuthAccount.ProviderUserId">
+      <summary>プロバイダーのユーザー ID を取得します。</summary>
+      <returns>プロバイダー ユーザー ID。</returns>
+    </member>
+    <member name="T:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity">
+      <summary>Facebook、Twitter、LinkedIn、Windows Live などの OAuth 認証プロバイダー、および Google、Yahoo などの OpenID 認証プロバイダーを使用するセキュリティを管理します。</summary>
+    </member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.CreateOrUpdateAccount(System.String,System.String,System.String)">
+      <summary>指定されたプロバイダーおよびプロバイダー ID のユーザー ID を使用してアカウントを作成および更新し、指定されたユーザー名を新しいアカウントに関連付けます。</summary>
+      <param name="providerName">プロバイダー名。</param>
+      <param name="providerUserId">指定されたプロバイダーのユーザー ID。</param>
+      <param name="userName">ユーザーの名前。</param>
+    </member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.DeleteAccount(System.String,System.String)">
+      <summary>指定されたメンバーシップ アカウントを削除します。</summary>
+      <returns>アカウントが削除された場合は true、削除されなかった場合は false。</returns>
+      <param name="providerName">プロバイダー名。</param>
+      <param name="providerUserId">指定されたプロバイダーのユーザー ID。</param>
+    </member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.GetAccountsFromUserName(System.String)">
+      <summary>指定されたユーザー名を使用して 1 つ以上のアカウントを取得します。</summary>
+      <returns>アカウントのコレクション。</returns>
+      <param name="userName">ユーザー名。</param>
+    </member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.GetOAuthClientData(System.String)"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.GetUserName(System.String,System.String)">
+      <summary>指定された OAuth または OpenID プロバイダーのユーザー ID およびプロバイダー ユーザー ID を返します。</summary>
+      <returns>ユーザー ID。OAuth または Open ID プロバイダーのユーザー ID にユーザー ID が関連付けられていない場合は null。</returns>
+      <param name="providerName">プロバイダー名。</param>
+      <param name="providerUserId">指定されたプロバイダーのユーザー ID。</param>
+    </member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.HasLocalAccount(System.Int32)"></member>
+    <member name="P:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.IsAuthenticatedWithOAuth">
+      <summary>OAuth を使用してユーザーが認証されたかどうかを示す値を取得します。</summary>
+      <returns>OAuth を使用してユーザーが認証された場合は true、それ以外の場合は false。</returns>
+    </member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.Login(System.String,System.String,System.Boolean)">
+      <summary>ユーザーをログインさせます。</summary>
+      <returns>ログインに成功した場合は true、それ以外の場合は false。</returns>
+      <param name="providerName">プロバイダー名。</param>
+      <param name="providerUserId">指定されたプロバイダーのユーザー ID。</param>
+      <param name="createPersistentCookie">永続 Cookie を作成してログイン情報がブラウザー セッション間で保存されるようにする場合は true、それ以外の場合は false。</param>
+    </member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterClient(DotNetOpenAuth.AspNet.IAuthenticationClient)">
+      <summary>OAuth 認証クライアントを登録します。</summary>
+      <param name="client">サポートされる OAuth クライアントのいずれか。</param>
+    </member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterClient(DotNetOpenAuth.AspNet.IAuthenticationClient,System.String,System.Collections.Generic.IDictionary{System.String,System.Object})"></member>
+    <member name="P:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisteredClientData"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterFacebookClient(System.String,System.String)"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterFacebookClient(System.String,System.String,System.String)"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterFacebookClient(System.String,System.String,System.String,System.Collections.Generic.IDictionary{System.String,System.Object})"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterGoogleClient"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterGoogleClient(System.String)"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterGoogleClient(System.String,System.Collections.Generic.IDictionary{System.String,System.Object})"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterLinkedInClient(System.String,System.String)"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterLinkedInClient(System.String,System.String,System.String)"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterLinkedInClient(System.String,System.String,System.String,System.Collections.Generic.IDictionary{System.String,System.Object})"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterMicrosoftClient(System.String,System.String)"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterMicrosoftClient(System.String,System.String,System.String)"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterMicrosoftClient(System.String,System.String,System.String,System.Collections.Generic.IDictionary{System.String,System.Object})"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterTwitterClient(System.String,System.String)"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterTwitterClient(System.String,System.String,System.String)"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterTwitterClient(System.String,System.String,System.String,System.Collections.Generic.IDictionary{System.String,System.Object})"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterYahooClient"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterYahooClient(System.String)"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RegisterYahooClient(System.String,System.Collections.Generic.IDictionary{System.String,System.Object})"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RequestAuthentication(System.String)">
+      <summary>ユーザーを外部 Web サイトにリダイレクトして認証を開始するように、指定されたプロバイダーに要求します。</summary>
+      <param name="provider">OAuth プロバイダー。</param>
+    </member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.RequestAuthentication(System.String,System.String)">
+      <summary>ユーザーを外部 Web サイトにリダイレクトして認証を開始するように、指定されたプロバイダーに要求し、認証に成功したら、指定された URL にユーザーをリダイレクトするようにプロバイダーに指示します。</summary>
+      <param name="provider">OAuth プロバイダー。</param>
+      <param name="returnUrl">認証に成功した場合に返す URL。</param>
+    </member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.SerializeProviderUserId(System.String,System.String)"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.TryDeserializeProviderUserId(System.String,System.String@,System.String@)"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.TryGetOAuthClientData(System.String,Microsoft.Web.WebPages.OAuth.AuthenticationClientData@)"></member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.VerifyAuthentication">
+      <summary>ユーザー アカウントがプロバイダーによって確認されたかどうかを示す値を返します。</summary>
+      <returns>検証が成功したかどうかを判断するために問い合わせることができる <see cref="T:DotNetOpenAuth.AspNet.AuthenticationResult" /> インスタンス。</returns>
+    </member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.OAuthWebSecurity.VerifyAuthentication(System.String)"></member>
+    <member name="T:Microsoft.Web.WebPages.OAuth.PreApplicationStartCode">
+      <summary>OAuth ベース セキュリティのアプリケーション開始前のスタート コードの登録ポイントを提供します。</summary>
+    </member>
+    <member name="M:Microsoft.Web.WebPages.OAuth.PreApplicationStartCode.Start">
+      <summary>OAuth のアプリケーション開始前のスタート コードを登録します。</summary>
+    </member>
+  </members>
+</doc>

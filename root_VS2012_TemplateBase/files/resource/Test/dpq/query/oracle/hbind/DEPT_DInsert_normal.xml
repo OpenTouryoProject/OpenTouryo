@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  INSERT INTO 
+    "DEPT"
+      (
+        <DELCMA>
+          <INSCOL name="DEPTNO">"DEPTNO",</INSCOL>
+          <INSCOL name="DNAME">"DNAME",</INSCOL>
+          <INSCOL name="LOC">"LOC",</INSCOL>
+        </DELCMA>
+      )
+  VALUES
+      (
+        <DELCMA>
+          <IF>:DEPTNO,</IF>
+          <IF>:DNAME,</IF>
+          <IF>:LOC,</IF>
+        </DELCMA>
+      )
+  <PARAM>
+    DEPTNO, int32, 11<DIV/>
+    DNAME, string, XXX<DIV/>
+    LOC, string, XXX<DIV/>
+  </PARAM>
+</ROOT>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  SELECT
+    ShipperID, CompanyName, Phone
+  FROM
+    Shippers
+  <WHERE>
+    WHERE
+      <IF>AND ShipperID = @p1</IF>
+      <IF>AND CompanyName = @p2</IF>
+  </WHERE>
+  <PARAM>
+    p2, String, Speedy Express<DIV/>
+    p1, String, 1<DIV/>
+  </PARAM> 
+</ROOT>

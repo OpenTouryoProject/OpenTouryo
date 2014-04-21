@@ -1,0 +1,87 @@
+﻿<Page
+    x:Class="WSClientWinStore_sample.Views.DTOPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WSClientWinStore_sample.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    FontSize="20"
+    FontFamily="メイリオ"
+    Loaded="Page_Loaded_1">
+    <Page.Resources>
+        <Style TargetType="Button">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+        </Style>
+    </Page.Resources>
+
+    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" FontSize="32" Text="汎用 DTO のサンプル"></TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="3" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Center" Text="アプリバーで画面を切り替えられます"></TextBlock>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal">
+            <TextBlock Text="現在の行数："/>
+            <TextBlock Text="{Binding ElementName=ListView1, Path=ItemsSource.Count}"/>
+        </StackPanel>
+        
+        <ListView Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Name="ListView1" DataContext="{Binding}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Grid.Column="0" Text="{Binding Path=[boolVal], Mode=TwoWay}" />
+                        <TextBox Grid.Column="1" Text="{Binding Path=[charVal], Mode=TwoWay}" />
+                        <TextBox Grid.Column="2" Text="{Binding Path=[dateVal], Mode=TwoWay}" />
+                        <TextBox Grid.Column="3" Text="{Binding Path=[decimalVal], Mode=TwoWay}" />
+                        <TextBox Grid.Column="4" Text="{Binding Path=[doubleVal], Mode=TwoWay}" />
+                        <TextBox Grid.Column="5" Text="{Binding Path=[shortVal], Mode=TwoWay}" />
+                        <TextBox Grid.Column="6" Text="{Binding Path=[intVal], Mode=TwoWay}" />
+                        <TextBox Grid.Column="7" Text="{Binding Path=[longVal], Mode=TwoWay}" />
+                        <TextBox Grid.Column="8" Text="{Binding Path=[singleVal], Mode=TwoWay}" />
+                        <TextBox Grid.Column="9" Text="{Binding Path=[stringVal], Mode=TwoWay}" />
+                        <TextBox Grid.Column="10" Text="{Binding Path=RowState, Mode=OneWay}" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Button Grid.Row="3" Grid.Column="0" Grid.RowSpan="3" Content="再データバインド" Name="btnReBind" Click="btnReBind_Click" />
+
+        <Button Grid.Row="3" Grid.Column="1" Content="選択行の削除" Name="btnDeleteRow" Click="btnDeleteRow_Click" />
+        <Button Grid.Row="4" Grid.Column="1" Content="１行追加" Name="btnAddRow" Click="btnAddRow_Click"/>
+        <Button Grid.Row="5" Grid.Column="1" Content="１行追加（Webサービス呼び出し）" Name="btnAddRow_CallWebService" Click="btnAddRow_CallWebService_Click"/>
+
+        <Button Grid.Row="3" Grid.Column="2" Content="GetChanges（変更情報を取得）" Name="btnGetChanges" Click="btnGetChanges_Click" />
+        <Button Grid.Row="4" Grid.Column="2" Content="AcceptChanges（変更を確定）" Name="btnAcceptChanges" Click="btnAcceptChanges_Click" />
+        <Button Grid.Row="5" Grid.Column="2" Content="Save（Saveメソッドをテスト）" Name="btnSave" Click="btnSave_Click"/>
+    </Grid>
+</Page>

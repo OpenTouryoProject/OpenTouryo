@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- Daots_test_table2_D1_Insert
+  -- 2014/2/9 日立 太郎
+  INSERT INTO 
+    [ts_test_table2]
+      (
+        <DELCMA>
+          <INSCOL name="id">[id],</INSCOL>
+          [ts],
+          <INSCOL name="val">[val],</INSCOL>
+        </DELCMA>
+      )
+  VALUES
+      (
+        <DELCMA>
+          <IF>@id,</IF>
+          RAND(),
+          <IF>@val,</IF>
+        </DELCMA>
+      )
+</ROOT>
+
+
+

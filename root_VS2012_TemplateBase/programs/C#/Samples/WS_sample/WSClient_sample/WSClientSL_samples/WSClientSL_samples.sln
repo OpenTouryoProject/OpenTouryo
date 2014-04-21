@@ -1,0 +1,68 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WSClientSL_sample.Web", "WSClientSL_sample.Web\", "{A591BB20-B2A3-4176-9FA9-8D03E446D845}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
+		ProjectReferences = "{2A740A82-ECC1-4BEB-A523-BFAD83838789}|WcfDataContract.dll;"
+		Debug.AspNetCompiler.VirtualPath = "/WSClientSL_sample.Web"
+		Debug.AspNetCompiler.PhysicalPath = "WSClientSL_sample.Web\"
+		Debug.AspNetCompiler.TargetPath = "..\PrecompiledWeb\WSClientSL_sample.Web\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/WSClientSL_sample.Web"
+		Release.AspNetCompiler.PhysicalPath = "WSClientSL_sample.Web\"
+		Release.AspNetCompiler.TargetPath = "..\PrecompiledWeb\WSClientSL_sample.Web\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "9996"
+		VWDDynamicPort = "false"
+		VWDVirtualPath = "/WSClientSL_sample"
+		DefaultWebSiteLanguage = "Visual C#"
+		StartServerOnDebug = "true"
+		ProjOutputReferences = "{0702247B-05F9-4D31-8F5B-750AF5B3B9C9}|ClientBin|false;"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WSClientSL_sample", "WSClientSL_sample\WSClientSL_sample.csproj", "{0702247B-05F9-4D31-8F5B-750AF5B3B9C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SLBusiness", "..\..\..\..\Frameworks\Silverlight\SLBusiness\SLBusiness.csproj", "{B63CE2BF-DB08-46BE-B567-29C9ACB39253}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SLPublic", "..\..\..\..\Frameworks\Silverlight\SLPublic\SLPublic.csproj", "{C86E51C3-0D44-4D6E-A851-D1E07F88DFE2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WcfDataContract", "..\..\..\..\Frameworks\Infrastructure\Business\WcfDataContract\WcfDataContract.csproj", "{2A740A82-ECC1-4BEB-A523-BFAD83838789}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A591BB20-B2A3-4176-9FA9-8D03E446D845}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A591BB20-B2A3-4176-9FA9-8D03E446D845}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A591BB20-B2A3-4176-9FA9-8D03E446D845}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{A591BB20-B2A3-4176-9FA9-8D03E446D845}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{0702247B-05F9-4D31-8F5B-750AF5B3B9C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0702247B-05F9-4D31-8F5B-750AF5B3B9C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0702247B-05F9-4D31-8F5B-750AF5B3B9C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0702247B-05F9-4D31-8F5B-750AF5B3B9C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B63CE2BF-DB08-46BE-B567-29C9ACB39253}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B63CE2BF-DB08-46BE-B567-29C9ACB39253}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B63CE2BF-DB08-46BE-B567-29C9ACB39253}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B63CE2BF-DB08-46BE-B567-29C9ACB39253}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C86E51C3-0D44-4D6E-A851-D1E07F88DFE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C86E51C3-0D44-4D6E-A851-D1E07F88DFE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C86E51C3-0D44-4D6E-A851-D1E07F88DFE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C86E51C3-0D44-4D6E-A851-D1E07F88DFE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A740A82-ECC1-4BEB-A523-BFAD83838789}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A740A82-ECC1-4BEB-A523-BFAD83838789}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A740A82-ECC1-4BEB-A523-BFAD83838789}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A740A82-ECC1-4BEB-A523-BFAD83838789}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

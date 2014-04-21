@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoCategories_S2_Select
+  -- 2013/1/10 日立 太郎
+  SELECT 
+    [CategoryID],
+    [CategoryName],
+    [Description],
+    [Picture]
+  FROM
+    [Categories]
+  <WHERE>
+    WHERE
+      [CategoryID] = @CategoryID
+  </WHERE>
+</ROOT>

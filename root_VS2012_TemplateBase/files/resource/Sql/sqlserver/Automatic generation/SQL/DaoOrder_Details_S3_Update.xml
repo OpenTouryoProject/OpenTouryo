@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoOrder_Details_S3_Update
+  -- 2014/2/9 日立 太郎
+  UPDATE
+    [Order Details]
+  SET
+    <DELCMA>
+      <IF>[OrderID] = @Set_OrderID_forUPD,</IF>
+      <IF>[ProductID] = @Set_ProductID_forUPD,</IF>
+      <IF>[UnitPrice] = @Set_UnitPrice_forUPD,</IF>
+      <IF>[Quantity] = @Set_Quantity_forUPD,</IF>
+      <IF>[Discount] = @Set_Discount_forUPD,</IF>
+    </DELCMA>
+  WHERE
+    [OrderID] = @OrderID
+    AND [ProductID] = @ProductID
+</ROOT>

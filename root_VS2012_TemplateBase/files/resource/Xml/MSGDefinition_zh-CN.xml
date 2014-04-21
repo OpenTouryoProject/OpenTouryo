@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE MSGD[
+	<!ELEMENT MSGD (Message*)>
+	<!ELEMENT Message EMPTY>
+	<!ATTLIST Message
+		id ID #REQUIRED
+		description CDATA #REQUIRED>
+]>
+<!-- idの先頭には、数字を使用できない。 -->
+<!-- 先頭Eは異常系、先頭Iは正常系など -->
+<MSGD>
+	<message id="I0001" description="-说明对应message-ID:I0001(正常系统)-"/>
+	<Message id="I0002" description="-说明对应message-ID:I0002(正常系统)-"/>
+	<Message id="I0003" description="-说明对应message-ID:I0003(正常系统)-"/>
+	<Message id="I0004" description="-说明对应message-ID:I0004(正常系统)-"/>
+	<Message id="I0005" description="-说明对应message-ID:I0005(正常系统)-"/>
+	
+	<Message id="E0001" description="-说明对应message-ID:E0001(异常系统)-"/>
+	<Message id="E0002" description="-说明对应message-ID:E0002(异常系统)-"/>
+	<Message id="E0003" description="-说明对应message-ID:E0003(异常系统)-"/>
+	<Message id="E0004" description="-说明对应message-ID:E0004(异常系统)-"/>
+	<Message id="E0005" description="-说明对应message-ID:E0005(异常系统)-"/>
+</MSGD>

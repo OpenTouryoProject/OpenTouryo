@@ -1,0 +1,12 @@
+﻿ins c:\FormAppRoot\
+exe top.exe, top1.exe, top2.exe, top3.exe
+zip aaa.zip
+md5 7VTMhx4QGwZh9mMSczbV6w==
+zip bbb.zip
+md5 O9hRvHhNewTtq/uhfVBoXA==
+zip ccc.zip
+md5 u8v6sA3FWxMtpnQufwBawA==
+zip root.zip
+md5 8ubimYmKT8xDcW4spPrz0w==
+zip xxx.zip
+md5 waOi04cwrDuo97c9Wd9NdQ==

@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Net.Http.WebRequest</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.Http.RtcRequestFactory">
+      <summary>RTC (Real-Time-Communications) バックグラウンド通知インフラ ストラクチャで使用する特別な <see cref="T:System.Net.Http.HttpRequestMessage" /> の作成に使用されるクラスを表します。</summary>
+    </member>
+    <member name="M:System.Net.Http.RtcRequestFactory.Create(System.Net.Http.HttpMethod,System.Uri)">
+      <summary>RTC (Real-Time-Communications) バックグラウンド通知インフラ ストラクチャで使用する特別な <see cref="T:System.Net.Http.HttpRequestMessage" /> を作成します。</summary>
+      <returns>
+        <see cref="T:System.Net.Http.HttpRequestMessage" /> を返します。 RTC バックグラウンド通知インフラストラクチャで使用される HTTP 要求メッセージ。</returns>
+      <param name="method">HTTP メソッド。</param>
+      <param name="uri">要求の送信先 URI。</param>
+    </member>
+    <member name="T:System.Net.Http.WebRequestHandler">
+      <summary>Windows ストア アプリや他の環境では利用できないデスクトップ固有の機能を提供します。</summary>
+    </member>
+    <member name="M:System.Net.Http.WebRequestHandler.#ctor">
+      <summary>
+        <see cref="T:System.Net.Http.WebRequestHandler" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="P:System.Net.Http.WebRequestHandler.AllowPipelining">
+      <summary>インターネット リソースへの要求をパイプライン処理するかどうかを示す値を取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Boolean" /> を返します。 要求をパイプライン処理する場合は true。それ以外の場合は false。 既定値は、true です。</returns>
+    </member>
+    <member name="P:System.Net.Http.WebRequestHandler.AuthenticationLevel">
+      <summary>この要求で使用される認証レベルおよび偽装レベルを示す値を取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Net.Security.AuthenticationLevel" /> を返します。 <see cref="T:System.Net.Security.AuthenticationLevel" /> 値のビットごとの組み合わせ。 既定値 <see cref="F:System.Net.Security.AuthenticationLevel.MutualAuthRequested" /> です。</returns>
+    </member>
+    <member name="P:System.Net.Http.WebRequestHandler.CachePolicy">
+      <summary>この要求のキャッシュ ポリシーを取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Net.Cache.RequestCachePolicy" /> を返します。 キャッシュ ポリシーを定義する <see cref="T:System.Net.Cache.RequestCachePolicy" /> オブジェクト。 既定値は、<see cref="P:System.Net.WebRequest.DefaultCachePolicy" /> です。</returns>
+    </member>
+    <member name="P:System.Net.Http.WebRequestHandler.ClientCertificates">
+      <summary>この要求に関連付けられているセキュリティ証明書のコレクションを取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> を返します。 この要求に関連付けられているセキュリティ証明書のコレクション。</returns>
+    </member>
+    <member name="P:System.Net.Http.WebRequestHandler.ContinueTimeout">
+      <summary>アプリケーションがデータをアップロードするまで、サーバーから 100-continue を待機する、ミリ秒単位の時間を取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.TimeSpan" /> を返します。 アプリケーションがデータをアップロードするまで、サーバーから 100-continue を待機する、ミリ秒単位の時間。 既定値は 350 ミリ秒です。</returns>
+    </member>
+    <member name="P:System.Net.Http.WebRequestHandler.ImpersonationLevel">
+      <summary>現在の要求に対する偽装レベルを取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Security.Principal.TokenImpersonationLevel" /> を返します。 要求の偽装レベル。 既定値は、<see cref="F:System.Security.Principal.TokenImpersonationLevel.Delegation" /> です。</returns>
+    </member>
+    <member name="P:System.Net.Http.WebRequestHandler.MaxResponseHeadersLength">
+      <summary>応答ヘッダーの許容最大長を取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Int32" /> を返します。 応答ヘッダーの長さ (KB 単位、1 KB = 1024 バイト)。</returns>
+    </member>
+    <member name="P:System.Net.Http.WebRequestHandler.ReadWriteTimeout">
+      <summary>サーバーへの要求の書き込み時またはサーバーからの応答の読み取り時のタイムアウト (ミリ秒単位) を取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Int32" /> を返します。 書き込みまたは読み取りがタイムアウトするまでのミリ秒単位の時間。 既定値は、300,000 ミリ秒 (5 分) です。</returns>
+    </member>
+    <member name="P:System.Net.Http.WebRequestHandler.ServerCertificateValidationCallback">
+      <summary>サーバー証明書を検証するコールバック メソッドを取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Net.Security.RemoteCertificateValidationCallback" /> を返します。サーバー証明書を検証するコールバック メソッド。</returns>
+    </member>
+    <member name="P:System.Net.Http.WebRequestHandler.UnsafeAuthenticatedConnectionSharing">
+      <summary>高速 NTLM 認証された接続共有を許可するかどうかを示す値を取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Boolean" /> を返します。 認証された接続を確立し続ける場合は true。それ以外の場合は false。</returns>
+    </member>
+  </members>
+</doc>

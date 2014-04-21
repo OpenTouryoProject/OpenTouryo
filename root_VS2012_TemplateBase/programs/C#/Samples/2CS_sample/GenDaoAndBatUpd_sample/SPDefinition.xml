@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE SPD[
+	<!ELEMENT SPD (SharedProp*)>
+	<!ELEMENT SharedProp EMPTY>
+	<!ATTLIST SharedProp
+		key ID #REQUIRED
+		value CDATA #REQUIRED>
+]>
+<!-- key(id)の先頭には、数字を使用できない。 -->
+<SPD>
+	<SharedProp key="ConnectionString1" value="てすと１"/>
+	<SharedProp key="ConnectionString2" value="てすと２"/>
+	<SharedProp key="HostName1" value="てすと３"/>
+	<SharedProp key="HostName2" value="てすと４"/>
+</SPD>

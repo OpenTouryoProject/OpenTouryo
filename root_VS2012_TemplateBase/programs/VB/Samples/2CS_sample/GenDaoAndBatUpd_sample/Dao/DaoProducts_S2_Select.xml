@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoProducts_S2_Select
+  -- 2014/2/9 日立 太郎
+  SELECT 
+    [ProductID],
+    [ProductName],
+    [SupplierID],
+    [CategoryID],
+    [QuantityPerUnit],
+    [UnitPrice],
+    [UnitsInStock],
+    [UnitsOnOrder],
+    [ReorderLevel],
+    [Discontinued]
+  FROM
+    [Products]
+  <WHERE>
+    WHERE
+      [ProductID] = @ProductID
+  </WHERE>
+</ROOT>

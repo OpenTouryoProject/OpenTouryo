@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  INSERT INTO 
+    [Shippers]
+      (
+        <DELCMA>
+          <INSCOL name="ShipperID">[ShipperID],</INSCOL>
+          <INSCOL name="CompanyName">[CompanyName],</INSCOL>
+          <INSCOL name="Phone">[Phone],</INSCOL>
+        </DELCMA>
+      )
+  VALUES
+      (
+        <DELCMA>
+          <IF>@ShipperID,</IF>
+          <IF>@CompanyName,</IF>
+          <IF>@Phone,</IF>
+        </DELCMA>
+      )
+</ROOT>
+
+
+

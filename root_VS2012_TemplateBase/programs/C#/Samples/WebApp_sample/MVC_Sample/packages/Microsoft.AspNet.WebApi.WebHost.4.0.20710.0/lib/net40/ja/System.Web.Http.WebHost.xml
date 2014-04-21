@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Web.Http.WebHost</name>
+  </assembly>
+  <members>
+    <member name="T:System.Web.Http.GlobalConfiguration">
+      <summary> ASP.NET アプリケーション用のグローバル <see cref="T:System.Web.Http.HttpConfiguration" /> を提供します。</summary>
+    </member>
+    <member name="P:System.Web.Http.GlobalConfiguration.Configuration"></member>
+    <member name="P:System.Web.Http.GlobalConfiguration.DefaultHandler">
+      <summary> すべての要求に関して呼び出される既定のメッセージ ハンドラーを取得します。 </summary>
+    </member>
+    <member name="T:System.Web.Http.RouteCollectionExtensions">
+      <summary>
+        <see cref="T:System.Web.Routing.RouteCollection" /> の拡張メソッド。</summary>
+    </member>
+    <member name="M:System.Web.Http.RouteCollectionExtensions.MapHttpRoute(System.Web.Routing.RouteCollection,System.String,System.String)">
+      <summary>指定されたルート テンプレートをマップします。</summary>
+      <returns>マップされたルートへの参照。</returns>
+      <param name="routes">アプリケーションのルートのコレクション。</param>
+      <param name="name">マップするルートの名前。</param>
+      <param name="routeTemplate">ルートのルート テンプレート。</param>
+    </member>
+    <member name="M:System.Web.Http.RouteCollectionExtensions.MapHttpRoute(System.Web.Routing.RouteCollection,System.String,System.String,System.Object)">
+      <summary>指定されたルート テンプレートをマップし、既定のルートを設定します。</summary>
+      <returns>マップされたルートへの参照。</returns>
+      <param name="routes">アプリケーションのルートのコレクション。</param>
+      <param name="name">マップするルートの名前。</param>
+      <param name="routeTemplate">ルートのルート テンプレート。</param>
+      <param name="defaults">既定のルートの値を格納しているオブジェクト。</param>
+    </member>
+    <member name="M:System.Web.Http.RouteCollectionExtensions.MapHttpRoute(System.Web.Routing.RouteCollection,System.String,System.String,System.Object,System.Object)">
+      <summary>指定されたルート テンプレートをマップし、既定のルートの値および制約を設定します。</summary>
+      <returns>マップされたルートへの参照。</returns>
+      <param name="routes">アプリケーションのルートのコレクション。</param>
+      <param name="name">マップするルートの名前。</param>
+      <param name="routeTemplate">ルートのルート テンプレート。</param>
+      <param name="defaults">既定のルートの値を格納しているオブジェクト。</param>
+      <param name="constraints">routeTemplate の値を指定する式のセット。</param>
+    </member>
+    <member name="M:System.Web.Http.RouteCollectionExtensions.MapHttpRoute(System.Web.Routing.RouteCollection,System.String,System.String,System.Object,System.Object,System.Net.Http.HttpMessageHandler)">
+      <summary>指定されたルート テンプレートをマップし、既定のルートの値、制約、およびエンドポイント メッセージ ハンドラーを設定します。</summary>
+      <returns>マップされたルートへの参照。</returns>
+      <param name="routes">アプリケーションのルートのコレクション。</param>
+      <param name="name">マップするルートの名前。</param>
+      <param name="routeTemplate">ルートのルート テンプレート。</param>
+      <param name="defaults">既定のルートの値を格納しているオブジェクト。</param>
+      <param name="constraints">routeTemplate の値を指定する式のセット。</param>
+      <param name="handler">要求のディスパッチ先ハンドラー。</param>
+    </member>
+    <member name="T:System.Web.Http.WebHost.HttpControllerHandler">
+      <summary> ASP.NET 要求を <see cref="T:System.Web.Http.HttpServer" /> パイプラインに渡し、結果を書き戻す <see cref="T:System.Web.IHttpAsyncHandler" />。</summary>
+    </member>
+    <member name="M:System.Web.Http.WebHost.HttpControllerHandler.#ctor(System.Web.Routing.RouteData)">
+      <summary>
+        <see cref="T:System.Web.Http.WebHost.HttpControllerHandler" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="routeData">ルート データ。</param>
+    </member>
+    <member name="M:System.Web.Http.WebHost.HttpControllerHandler.BeginProcessRequest(System.Web.HttpContextBase,System.AsyncCallback,System.Object)">
+      <summary> 処理要求を開始します。</summary>
+      <returns>プロセスの状態に関する情報を格納する <see cref="T:System.IAsyncResult" />。</returns>
+      <param name="httpContextBase">HTTP コンテキスト ベース。</param>
+      <param name="callback">コールバック。</param>
+      <param name="state">状態。</param>
+    </member>
+    <member name="M:System.Web.Http.WebHost.HttpControllerHandler.EndProcessRequest(System.IAsyncResult)">
+      <summary> プロセスが終了するときに、非同期プロセスの End メソッドを提供します。</summary>
+      <param name="result">プロセスの状態に関する情報を格納する <see cref="T:System.IAsyncResult" />。</param>
+    </member>
+    <member name="P:System.Web.Http.WebHost.HttpControllerHandler.IsReusable">
+      <summary> 別の要求で <see cref="T:System.Web.IHttpHandler" /> インスタンスを使用できるかどうかを示す値を取得します。</summary>
+    </member>
+    <member name="M:System.Web.Http.WebHost.HttpControllerHandler.ProcessRequest(System.Web.HttpContextBase)">
+      <summary> 要求を処理します。</summary>
+      <param name="httpContextBase">HTTP コンテキスト ベース。</param>
+    </member>
+    <member name="M:System.Web.Http.WebHost.HttpControllerHandler.System#Web#IHttpAsyncHandler#BeginProcessRequest(System.Web.HttpContext,System.AsyncCallback,System.Object)">
+      <summary> 要求の処理を開始します。</summary>
+      <returns>プロセスの状態に関する情報を格納する <see cref="T:System.IAsyncResult" />。</returns>
+      <param name="httpContext">HTTP コンテキスト。</param>
+      <param name="callback">コールバック。</param>
+      <param name="state">状態。</param>
+    </member>
+    <member name="M:System.Web.Http.WebHost.HttpControllerHandler.System#Web#IHttpAsyncHandler#EndProcessRequest(System.IAsyncResult)">
+      <summary> プロセスが終了するときに、非同期プロセスの End メソッドを提供します。</summary>
+      <param name="result">プロセスの状態に関する情報を格納する <see cref="T:System.IAsyncResult" />。</param>
+    </member>
+    <member name="P:System.Web.Http.WebHost.HttpControllerHandler.System#Web#IHttpHandler#IsReusable">
+      <summary> 別の要求で <see cref="T:System.Web.IHttpHandler" /> インスタンスを使用できるかどうかを示す値を取得します。</summary>
+    </member>
+    <member name="M:System.Web.Http.WebHost.HttpControllerHandler.System#Web#IHttpHandler#ProcessRequest(System.Web.HttpContext)">
+      <summary> 要求を処理します。</summary>
+      <param name="httpContext">HTTP コンテキスト ベース。</param>
+    </member>
+    <member name="T:System.Web.Http.WebHost.HttpControllerRouteHandler">
+      <summary> 要求を指定された <see cref="T:System.Web.Http.HttpServer" /> インスタンスに渡すことができる <see cref="T:System.Web.Routing.IRouteHandler" /> のインスタンスを返す <see cref="T:System.Web.Http.WebHost.HttpControllerHandler" />。</summary>
+    </member>
+    <member name="M:System.Web.Http.WebHost.HttpControllerRouteHandler.#ctor">
+      <summary>
+        <see cref="T:System.Web.Http.WebHost.HttpControllerRouteHandler" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Web.Http.WebHost.HttpControllerRouteHandler.GetHttpHandler(System.Web.Routing.RequestContext)">
+      <summary> 要求を処理するオブジェクトを提供します。</summary>
+      <returns> 要求を処理するオブジェクト。</returns>
+      <param name="requestContext">要求に関する情報をカプセル化しているオブジェクト。</param>
+    </member>
+    <member name="P:System.Web.Http.WebHost.HttpControllerRouteHandler.Instance">
+      <summary> シングルトン <see cref="T:System.Web.Http.WebHost.HttpControllerRouteHandler" /> インスタンスを取得します。</summary>
+    </member>
+    <member name="M:System.Web.Http.WebHost.HttpControllerRouteHandler.System#Web#Routing#IRouteHandler#GetHttpHandler(System.Web.Routing.RequestContext)">
+      <summary> 要求を処理するオブジェクトを提供します。</summary>
+      <returns> 要求を処理するオブジェクト。 </returns>
+      <param name="requestContext">要求に関する情報をカプセル化しているオブジェクト。</param>
+    </member>
+    <member name="T:System.Web.Http.WebHost.PreApplicationStartCode">
+      <summary>簡易なメンバーシップ アプリケーション開始前のスタート コードの登録ポイントを提供します。</summary>
+    </member>
+    <member name="M:System.Web.Http.WebHost.PreApplicationStartCode.Start">
+      <summary>簡易なメンバーシップ アプリケーション開始前のスタート コードを登録します。</summary>
+    </member>
+    <member name="T:System.Web.Http.WebHost.WebHostBufferPolicySelector">
+      <summary>Web ホスト バッファー ポリシー セレクターを表します。</summary>
+    </member>
+    <member name="M:System.Web.Http.WebHost.WebHostBufferPolicySelector.#ctor">
+      <summary>
+        <see cref="T:System.Web.Http.WebHost.WebHostBufferPolicySelector" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Web.Http.WebHost.WebHostBufferPolicySelector.UseBufferedInputStream(System.Object)">
+      <summary>ホストで HTTP 要求のエンティティ ボディをバッファーする必要があるかどうかを示す値を取得します。</summary>
+      <returns>バッファリングを使用する場合は true。それ以外の場合は、ストリーミングされた要求が使用されます。</returns>
+      <param name="hostContext">ホストのコンテキスト。</param>
+    </member>
+    <member name="M:System.Web.Http.WebHost.WebHostBufferPolicySelector.UseBufferedOutputStream(System.Net.Http.HttpResponseMessage)">
+      <summary>Web ホストにバッファーされた出力ストリームを使用します。</summary>
+      <returns>バッファーされた出力ストリーム。</returns>
+      <param name="response">応答。</param>
+    </member>
+  </members>
+</doc>

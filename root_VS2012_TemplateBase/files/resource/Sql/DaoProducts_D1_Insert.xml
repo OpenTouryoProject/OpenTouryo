@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoProducts_D1_Insert
+  -- 2013/1/10 日立 太郎
+  INSERT INTO 
+    [Products]
+      (
+        <DELCMA>
+          <INSCOL name="ProductID">[ProductID],</INSCOL>
+          <INSCOL name="ProductName">[ProductName],</INSCOL>
+          <INSCOL name="SupplierID">[SupplierID],</INSCOL>
+          <INSCOL name="CategoryID">[CategoryID],</INSCOL>
+          <INSCOL name="QuantityPerUnit">[QuantityPerUnit],</INSCOL>
+          <INSCOL name="UnitPrice">[UnitPrice],</INSCOL>
+          <INSCOL name="UnitsInStock">[UnitsInStock],</INSCOL>
+          <INSCOL name="UnitsOnOrder">[UnitsOnOrder],</INSCOL>
+          <INSCOL name="ReorderLevel">[ReorderLevel],</INSCOL>
+          <INSCOL name="Discontinued">[Discontinued],</INSCOL>
+        </DELCMA>
+      )
+  VALUES
+      (
+        <DELCMA>
+          <IF>@ProductID,</IF>
+          <IF>@ProductName,</IF>
+          <IF>@SupplierID,</IF>
+          <IF>@CategoryID,</IF>
+          <IF>@QuantityPerUnit,</IF>
+          <IF>@UnitPrice,</IF>
+          <IF>@UnitsInStock,</IF>
+          <IF>@UnitsOnOrder,</IF>
+          <IF>@ReorderLevel,</IF>
+          <IF>@Discontinued,</IF>
+        </DELCMA>
+      )
+</ROOT>
+
+
+

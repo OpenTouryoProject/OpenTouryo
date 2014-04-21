@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Microsoft.AspNet.Razor.ja</id>
+    <version>2.0.20715.0</version>
+    <title>Microsoft ASP.NET Razor 2 日本語 リソース</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <licenseUrl>http://www.microsoft.com/web/webpi/eula/WebPages_2_eula_JPN.htm</licenseUrl>
+    <projectUrl>http://www.asp.net/web-pages</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>このパッケージには、ASP.NET Razor の 日本語 サテライト アセンブリが含まれています。</description>
+    <summary>Microsoft.AspNet.Razor パッケージの 日本語 リソース</summary>
+    <language>ja</language>
+    <tags>Microsoft AspNet WebPages AspNetWebPages Razor</tags>
+    <dependencies>
+      <dependency id="Microsoft.AspNet.Razor" version="[2.0.20715.0]" />
+    </dependencies>
+    <references />
+  </metadata>
+</package>

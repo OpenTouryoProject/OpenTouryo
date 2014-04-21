@@ -1,0 +1,18 @@
+﻿<?xml version="1.0"?>
+<xs:schema id="SHIPPERSDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="SHIPPERSDataSet" msdata:CaseSensitive="True" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="SHIPPERS">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="PK_SHIPPERID" type="xs:decimal" minOccurs="0"/>
+              <xs:element name="COMPANYNAME" type="xs:string" minOccurs="0"/>
+              <xs:element name="PHONE" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
