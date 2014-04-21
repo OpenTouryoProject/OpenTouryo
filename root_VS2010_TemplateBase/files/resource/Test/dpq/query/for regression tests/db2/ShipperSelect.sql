@@ -1,0 +1,8 @@
+SELECT 
+  ShipperID, CompanyName, Phone
+FROM
+  Shippers
+WHERE
+  ShipperID = @P1
+
+/*PARAM* P1, string, 4 *PARAM*/

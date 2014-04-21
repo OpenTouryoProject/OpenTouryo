@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- Daots_test_table3_S3_Update
+  -- 2014/2/9 日立 太郎
+  UPDATE
+    [ts_test_table3]
+  SET
+    <DELCMA>
+      <IF>[id] = @Set_id_forUPD,</IF>
+      [ts] = RAND(),
+      <IF>[val] = @Set_val_forUPD,</IF>
+    </DELCMA>
+  WHERE
+    [id] = @id
+    AND [ts] = @ts
+</ROOT>

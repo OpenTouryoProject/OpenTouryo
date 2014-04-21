@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="VB" Debug="true" Service="Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService.WCFHTTPSvcForFx" CodeBehind="~/App_Code/WCFHTTPSvcForFx.vb" %>

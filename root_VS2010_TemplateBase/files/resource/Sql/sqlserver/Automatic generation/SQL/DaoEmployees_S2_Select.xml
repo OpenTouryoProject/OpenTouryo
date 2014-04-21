@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoEmployees_S2_Select
+  -- 2014/2/9 日立 太郎
+  SELECT 
+    [EmployeeID],
+    [LastName],
+    [FirstName],
+    [Title],
+    [TitleOfCourtesy],
+    [BirthDate],
+    [HireDate],
+    [Address],
+    [City],
+    [Region],
+    [PostalCode],
+    [Country],
+    [HomePhone],
+    [Extension],
+    [Photo],
+    [Notes],
+    [ReportsTo],
+    [PhotoPath]
+  FROM
+    [Employees]
+  <WHERE>
+    WHERE
+      [EmployeeID] = @EmployeeID
+  </WHERE>
+</ROOT>

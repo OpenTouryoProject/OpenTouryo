@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoEmployees_S3_Update
+  -- 2014/2/9 日立 太郎
+  UPDATE
+    [Employees]
+  SET
+    <DELCMA>
+      <IF>[EmployeeID] = @Set_EmployeeID_forUPD,</IF>
+      <IF>[LastName] = @Set_LastName_forUPD,</IF>
+      <IF>[FirstName] = @Set_FirstName_forUPD,</IF>
+      <IF>[Title] = @Set_Title_forUPD,</IF>
+      <IF>[TitleOfCourtesy] = @Set_TitleOfCourtesy_forUPD,</IF>
+      <IF>[BirthDate] = @Set_BirthDate_forUPD,</IF>
+      <IF>[HireDate] = @Set_HireDate_forUPD,</IF>
+      <IF>[Address] = @Set_Address_forUPD,</IF>
+      <IF>[City] = @Set_City_forUPD,</IF>
+      <IF>[Region] = @Set_Region_forUPD,</IF>
+      <IF>[PostalCode] = @Set_PostalCode_forUPD,</IF>
+      <IF>[Country] = @Set_Country_forUPD,</IF>
+      <IF>[HomePhone] = @Set_HomePhone_forUPD,</IF>
+      <IF>[Extension] = @Set_Extension_forUPD,</IF>
+      <IF>[Photo] = @Set_Photo_forUPD,</IF>
+      <IF>[Notes] = @Set_Notes_forUPD,</IF>
+      <IF>[ReportsTo] = @Set_ReportsTo_forUPD,</IF>
+      <IF>[PhotoPath] = @Set_PhotoPath_forUPD,</IF>
+    </DELCMA>
+  WHERE
+    [EmployeeID] = @EmployeeID
+</ROOT>

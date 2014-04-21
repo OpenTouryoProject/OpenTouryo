@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	SELECT * FROM Employees
+	WHERE
+	FirstName=@FN
+	AND LastName=@LN1
+	AND EmployeeID IN (SELECT EmployeeID FROM Employees WHERE LastName=@LN2)
+	AND ReportsTo IN ( @P1 , @P2 )
+	ORDER BY [<VAL name="COLUMN"/>] <VAL name="SEQUENCE"/>
+	<PARAM>
+		FN, String, Nancy <DIV/>
+		LN1, String, Davolio <DIV/>
+		LN2, String, Davolio <DIV/>
+		P1, String, 2 <DIV/>
+		P2, String, 5 <DIV/>
+		COLUMN, EmployeeID <DIV/>
+		SEQUENCE, DESC <DIV/>
+	</PARAM>
+	-- パラメタ設定済み（sql版をそのまま、dpq版に移行したものなので静的）
+</ROOT>

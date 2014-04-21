@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	INSERT INTO 
+		TestTable(
+			_real
+			)
+		 values(
+			@real
+		 	)
+	<PARAM>
+		real, Double, 123456789.123456789<DIV/>
+	</PARAM>
+</ROOT>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	SELECT * FROM REGION WHERE <IF>RegionID = <VAL name="og"/><ELSE>RegionID IS NULL</ELSE></IF>
+	<PARAM>
+		og, @P<DIV/>
+		P, int32, 1
+	</PARAM>
+	-- IF-ELSEタグのテスト（IFタグの中にVALタグ）
+</ROOT>

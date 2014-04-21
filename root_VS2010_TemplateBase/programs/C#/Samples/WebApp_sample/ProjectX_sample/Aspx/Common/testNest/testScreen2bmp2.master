@@ -1,0 +1,17 @@
+<%@ Master Language="C#" MasterPageFile="~/Aspx/Common/testNest/testScreen2bmp1.master" AutoEventWireup="true" CodeFile="testScreen2bmp2.master.cs" Inherits="Aspx_Common_testNest_testScreen2bmp2" %>
+<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A1" Runat="Server">
+    <!-- All Rights Reserved, Copyright (C) 2007,2012 Hitachi Solutions,Ltd. -->
+    ContentPlaceHolder_A1<br/>
+    <cc1:WebCustomDropDownList ID="ddlCPF_A1" runat="server" AutoPostBack="True" Width="150px">
+        <asp:ListItem>あああ</asp:ListItem>
+        <asp:ListItem>いいい</asp:ListItem>
+        <asp:ListItem>ううう</asp:ListItem>
+        <asp:ListItem>えええ</asp:ListItem>
+        <asp:ListItem>おおお</asp:ListItem>
+    </cc1:WebCustomDropDownList><br/>
+    <hr/>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_A2" runat="server">
+    </asp:ContentPlaceHolder>
+</asp:Content>

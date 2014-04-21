@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	SELECT * FROM EMP
+	<WHERE>
+		WHERE
+		<IF>SAL=:P_SAL</IF>
+		<IF>AND COMM=:P_COMM1<ELSE>AND COMM IS NULL</ELSE></IF>
+		<IF name="P_COMM_ISNULL">AND COMM IS NULL<ELSE>AND NOT(COMM IS NULL)</ELSE></IF>
+		<IF name="P_COMM_ISNOTNULL">AND NOT(COMM IS NULL)<ELSE>AND COMM IS NULL</ELSE></IF>
+		<SUB name="SUB1">AND EMPNO IN (SELECT EMPNO FROM EMP
+			<WHERE>WHERE<IF>COMM=:P_COMM2<ELSE>COMM IS NULL</ELSE></IF></WHERE>)
+		</SUB>
+		<LIST>AND DEPTNO IN (:PLIST)</LIST>
+	</WHERE>
+	ORDER BY "<VAL name="COLUMN"/>" <VAL name="SEQUENCE"/>
+	<PARAM>
+		P_SAL, Int32, 1600<DIV/>
+		P_COMM1, xxx, null<DIV/>
+		P_COMM_ISNULL, Boolean, true<DIV/>
+		P_COMM_ISNOTNULL, Boolean, false<DIV/>
+		SUB1, xxx, null<DIV/>
+		P_COMM2, xxx, null<DIV/>
+		PLIST, Int32, 10, 20, 30<DIV/>
+		COLUMN, EMPNO<DIV/>
+		SEQUENCE, DESC<DIV/>
+	</PARAM>
+	-- テストケース4a（IF・ELSE混在（null・false混在）））
+	-- ※ VALタグを２つ並べた間の空白は、削除されてしまうので、列名を"で囲っている。
+	-- ※ "で囲うと、大文字・小文字を区別する。
+</ROOT>

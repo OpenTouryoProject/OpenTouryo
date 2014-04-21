@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoCategories_D3_Update
+  -- 2013/1/10 日立 太郎
+  UPDATE
+    [Categories]
+  SET
+    <DELCMA>
+      <IF>[CategoryID] = @Set_CategoryID_forUPD,</IF>
+      <IF>[CategoryName] = @Set_CategoryName_forUPD,</IF>
+      <IF>[Description] = @Set_Description_forUPD,</IF>
+      <IF>[Picture] = @Set_Picture_forUPD,</IF>
+    </DELCMA>
+  <WHERE>
+    WHERE
+      <IF>AND [CategoryID] = @CategoryID<ELSE>AND [CategoryID] IS NULL</ELSE></IF>
+      <IF>AND [CategoryName] = @CategoryName<ELSE>AND [CategoryName] IS NULL</ELSE></IF>
+      <IF>AND [Description] = @Description<ELSE>AND [Description] IS NULL</ELSE></IF>
+      <IF>AND [Picture] = @Picture<ELSE>AND [Picture] IS NULL</ELSE></IF>
+  </WHERE>
+</ROOT>
