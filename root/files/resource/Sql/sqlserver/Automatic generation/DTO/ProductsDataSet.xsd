@@ -1,0 +1,25 @@
+﻿<?xml version="1.0"?>
+<xs:schema id="ProductsDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="ProductsDataSet" msdata:CaseSensitive="True" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Products">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="PK_ProductID" type="xs:int" minOccurs="0"/>
+              <xs:element name="ProductName" type="xs:string" minOccurs="0"/>
+              <xs:element name="SupplierID" type="xs:int" minOccurs="0"/>
+              <xs:element name="CategoryID" type="xs:int" minOccurs="0"/>
+              <xs:element name="QuantityPerUnit" type="xs:string" minOccurs="0"/>
+              <xs:element name="UnitPrice" type="xs:decimal" minOccurs="0"/>
+              <xs:element name="UnitsInStock" type="xs:short" minOccurs="0"/>
+              <xs:element name="UnitsOnOrder" type="xs:short" minOccurs="0"/>
+              <xs:element name="ReorderLevel" type="xs:short" minOccurs="0"/>
+              <xs:element name="Discontinued" type="xs:boolean" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

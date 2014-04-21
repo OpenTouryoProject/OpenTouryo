@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoShippers_S3_Update
+  -- 2013/1/10 日立 太郎
+  UPDATE
+    [Shippers]
+  SET
+    <DELCMA>
+      <IF>[ShipperID] = @Set_ShipperID_forUPD,</IF>
+      <IF>[CompanyName] = @Set_CompanyName_forUPD,</IF>
+      <IF>[Phone] = @Set_Phone_forUPD,</IF>
+    </DELCMA>
+  WHERE
+    [ShipperID] = @ShipperID
+</ROOT>

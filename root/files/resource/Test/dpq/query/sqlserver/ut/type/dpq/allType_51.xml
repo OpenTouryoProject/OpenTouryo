@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	INSERT INTO 
+		TestTable(
+			_bit
+			)
+		 values(
+			@bit
+		 	)
+	<PARAM>
+		bit, BOOLEAN, TRUE<DIV/>
+	</PARAM>
+</ROOT>

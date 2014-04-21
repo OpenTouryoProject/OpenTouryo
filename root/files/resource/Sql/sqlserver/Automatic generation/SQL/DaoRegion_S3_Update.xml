@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoRegion_S3_Update
+  -- 2014/2/9 日立 太郎
+  UPDATE
+    [Region]
+  SET
+    <DELCMA>
+      <IF>[RegionID] = @Set_RegionID_forUPD,</IF>
+      <IF>[RegionDescription] = @Set_RegionDescription_forUPD,</IF>
+    </DELCMA>
+  WHERE
+    [RegionID] = @RegionID
+</ROOT>

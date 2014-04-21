@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoProducts_S3_Update
+  -- 2013/1/10 日立 太郎
+  UPDATE
+    [Products]
+  SET
+    <DELCMA>
+      <IF>[ProductID] = @Set_ProductID_forUPD,</IF>
+      <IF>[ProductName] = @Set_ProductName_forUPD,</IF>
+      <IF>[SupplierID] = @Set_SupplierID_forUPD,</IF>
+      <IF>[CategoryID] = @Set_CategoryID_forUPD,</IF>
+      <IF>[QuantityPerUnit] = @Set_QuantityPerUnit_forUPD,</IF>
+      <IF>[UnitPrice] = @Set_UnitPrice_forUPD,</IF>
+      <IF>[UnitsInStock] = @Set_UnitsInStock_forUPD,</IF>
+      <IF>[UnitsOnOrder] = @Set_UnitsOnOrder_forUPD,</IF>
+      <IF>[ReorderLevel] = @Set_ReorderLevel_forUPD,</IF>
+      <IF>[Discontinued] = @Set_Discontinued_forUPD,</IF>
+    </DELCMA>
+  WHERE
+    [ProductID] = @ProductID
+</ROOT>

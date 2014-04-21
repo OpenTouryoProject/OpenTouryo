@@ -1,0 +1,21 @@
+CREATE TABLE SCOTT.TABLE1
+(
+    C_BYTEH                        RAW(50),
+    C_VARCHAR2_C                   VARCHAR2(50),
+    C_VARCHAR2_CH                  VARCHAR2(50),
+    C_VARCHAR2_STR                 VARCHAR2(50),
+    C_TIMESTAMP                    TIMESTAMP(6),
+    C_INTEGER_I16                  NUMBER,
+    C_INTEGER_I32                  NUMBER,
+    C_INTEGER_I64                  NUMBER,
+    C_NUMBER_S                     NUMBER,
+    C_NUMBER_DO                    NUMBER,
+    C_NUMBER_DE                    NUMBER
+)
+PCTFREE 10
+MAXTRANS 255
+TABLESPACE USERS
+STORAGE(INITIAL 64K MINEXTENTS 1 MAXEXTENTS 2147483645 BUFFER_POOL DEFAULT)
+NOCACHE
+LOGGING
+/

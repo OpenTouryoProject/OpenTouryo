@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	SELECT * FROM <VAL></VAL>
+	<PARAM>
+		og, region<DIV/>
+	</PARAM>
+	-- VALタグのテスト（name属性が無い）
+</ROOT>

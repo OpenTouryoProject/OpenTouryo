@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	SELECT * FROM Employees;
+	<PARAM>
+	</PARAM>
+	-- PARAMが１つも無い場合（sql版をそのまま、dpq版に移行したものなので静的）
+</ROOT>

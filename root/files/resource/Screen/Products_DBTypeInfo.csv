@@ -1,0 +1,3 @@
+﻿テーブル名,カラムDB型情報～
+Products,int,
+,nvarchar,int,int,nvarchar,money,smallint,smallint,smallint,bit,

@@ -1,0 +1,28 @@
+<%@ Master Language="VB" MasterPageFile="~/Aspx/Common/testNest/testScreen1bmp1.master" AutoEventWireup="true" CodeFile="testScreen1bmp2.master.vb" Inherits="Aspx_Common_testNest_testScreen1bmp2" %>
+<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A1" Runat="Server">
+    <!-- All Rights Reserved, Copyright (C) 2007,2012 Hitachi Solutions,Ltd. -->
+    ContentPlaceHolder_A1<br/>
+    <cc1:WebCustomLabel id="lblCPF_A1" runat="server">bmp2のC_A1のlblCPF_A1</cc1:WebCustomLabel><br/>
+    <cc1:WebCustomButton ID="btnCPF_A1" runat="server" Text="bmp2のC_A1のbtnCPF_A1" Width="300px"/>
+    <hr/>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_A2" runat="server">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder_B1" Runat="Server">
+    ContentPlaceHolder_B1<br/>
+    <cc1:WebCustomLabel id="lblCPF_B1" runat="server">bmp2のC_B1のlblCPF_B1</cc1:WebCustomLabel><br/>
+    <cc1:WebCustomButton ID="btnCPF_B1" runat="server" Text="bmp2のC_B1のbtnCPF_B1" Width="300px"/>
+    <hr/>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_B2" runat="server">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder_C1" Runat="Server">
+    ContentPlaceHolder_C1<br/>
+    <cc1:WebCustomLabel id="lblCPF_C1" runat="server">bmp2のC_C1のlblCPF_C1</cc1:WebCustomLabel><br/>
+    <cc1:WebCustomButton ID="btnCPF_C1" runat="server" Text="bmp2のC_C1のbtnCPF_C1" Width="300px"/>
+    <hr/>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_C2" runat="server">
+    </asp:ContentPlaceHolder>
+</asp:Content>

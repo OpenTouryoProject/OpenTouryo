@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	SELECT * FROM REGION WHERE <LIST>RegionID IN(@PLIST)<DIV/></LIST>
+	<PARAM>
+		PLIST, int32, 1, 2, 3, 4<DIV/>
+	</PARAM>
+	-- LISTタグのテスト（不正なタグがある）
+</ROOT>

@@ -1,0 +1,28 @@
+<InsertSQLParts>
+([column1], [column2], [column3], [column4], [column5], [column6])
+(Convert(nvarchar(5), 'test1'), 1111, 0x010203040506, '2014/03/10 17:12:59.816', NULL, Convert(nvarchar, ''))
+(Convert(nvarchar(5), 'test2'), 22222, NULL, NULL, NULL, NULL)
+(Convert(nvarchar(5), 'test3'), 3, NULL, NULL, Convert(nvarchar, 'D'), Convert(nvarchar(6), 'Test''s'))
+
+
+<INSERT>
+INSERT INTO [table1]([column1], [column2], [column3], [column4], [column5], [column6])VALUES 
+(Convert(nvarchar(5), 'test1'), 1111, 0x010203040506, '2014/03/10 17:12:59.816', NULL, Convert(nvarchar, '')),
+(Convert(nvarchar(5), 'test2'), 22222, NULL, NULL, NULL, NULL),
+(Convert(nvarchar(5), 'test3'), 3, NULL, NULL, Convert(nvarchar, 'D'), Convert(nvarchar(6), 'Test''s'))
+
+
+<UpdateSQLParts>
+SET [column3] = 0x010203040506, [column4] = '2014/03/10 17:12:59.816', [column5] = NULL, [column6] = Convert(nvarchar, '') WHERE [column1] = Convert(nvarchar(5), 'test1') AND [column2] = 1111 
+SET [column3] = NULL, [column4] = NULL, [column5] = NULL, [column6] = NULL WHERE [column1] = Convert(nvarchar(5), 'test2') AND [column2] = 22222 
+SET [column3] = NULL, [column4] = NULL, [column5] = Convert(nvarchar, 'D'), [column6] = Convert(nvarchar(6), 'Test''s') WHERE [column1] = Convert(nvarchar(5), 'test3') AND [column2] = 3 
+
+
+<UPDATE>
+UPDATE [table1] SET [column3] = 0x010203040506, [column4] = '2014/03/10 17:12:59.816', [column5] = NULL, [column6] = Convert(nvarchar, '') WHERE [column1] = Convert(nvarchar(5), 'test1') AND [column2] = 1111 
+UPDATE [table1] SET [column3] = NULL, [column4] = NULL, [column5] = NULL, [column6] = NULL WHERE [column1] = Convert(nvarchar(5), 'test2') AND [column2] = 22222 
+UPDATE [table1] SET [column3] = NULL, [column4] = NULL, [column5] = Convert(nvarchar, 'D'), [column6] = Convert(nvarchar(6), 'Test''s') WHERE [column1] = Convert(nvarchar(5), 'test3') AND [column2] = 3 
+
+
+
+Query executed successfully

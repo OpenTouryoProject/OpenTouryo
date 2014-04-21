@@ -1,0 +1,172 @@
+<PublicExceptionMessage>
+NO_CONFIG:Config does not have specification. Config key:{0}
+SWITCH_ERROR:Please specify a switch by "on" or "off". Config key:{0}
+COMMANDTIMEOUT_ERROR:Please specify one or more numerical values (second) as a CommandTimeout value.Config key:FxSqlCommandTimeout
+RESOURCE_FILE_NOT_FOUND:resource file [{0}] was not found.
+XML_DECLARATION_ERROR:XML declaration [{0}] is inaccurate.
+XML_ELEMENT_ERROR:XML element is inaccurate. {0}
+XML_ELEMENT_ERROR_LOG4NET:There is not log4net of a route element.
+ZIP_PASSWORD:A setup of a password is required when enciphering.
+LATEBIND_ERROR0:assembly name: [{0}] does not exist.
+LATEBIND_ERROR1:Class name: [{1}] does not exist in assembly name: [{0}].
+LATEBIND_ERROR2:Method name: [{2}] does not exist in assembly name: [{0}] and class name: [{1}].
+LATEBIND_ERROR3:Method name: [{2}] whose number of arguments corresponds does not exist in assembly name: [{0}] and class name: [{1}].
+DB_ISO_LEVEL_PARAM_ERROR_UC:The invalid isolation level [ReadUncommitted] was specified as DbEnum.IsolationLevelEnum iso in {0} databases.
+DB_ISO_LEVEL_PARAM_ERROR_RR:The invalid isolation level [RepeatableRead] was specified as DbEnum.IsolationLevelEnum iso in {0} databases.
+DB_ISO_LEVEL_PARAM_ERROR_SS:The invalid isolation level [Snapshot] was specified as DbEnum.IsolationLevelEnum iso in {0} databases.
+DB_ISO_LEVEL_PARAM_ERROR_USR:The invalid parameter [User] was specified as DbEnum.IsolationLevelEnum iso. A user needs to change [User] parameter to other isolation levels.
+DB_ISO_LEVEL_PARAM_ERROR_NC:The invalid parameter [NotConnect] was specified as DbEnum.IsolationLevelEnum iso. [NotConnect] parameter cannot be used.
+THIS_DPQ_TAG_IS_UNKNOWN:The inaccurate tag is contained.
+DPQ_TAG_FORMAT_ERROR:The format of {0} tag is inaccurate.
+DPQ_TAG_NAME_ATTR_NOT_EXIST:The name attribute is not set to {0} tag (null).
+DPQ_TAG_NAME_ATTR_VALUE_IS_EMPTY:The name attribute is not set to {0} tag (null character sequence).
+DPQ_TAG_VALUE_ATTR_NOT_EXIST:The value attribute is not set to {0} tag (null).
+DPQ_TAG_INNER_PARAM_NOT_EXIST:The parameter in a tag is not set to {0} tag.
+PARAM_TAG_ERROR:Conversion of parameter information ({0}) went wrong. :{1}
+PARAM_TAG_TYPE_ERROR:Type specification is inaccurate ({0}).
+PARAM_TAG_VALUE_ERROR:Value specification is inaccurate ({0}).
+DPQ_SET_ONLY_NULL_OR_BOOL_TO_INNER_PARAM_VALUE:The value which can be set as the parameter in a tag of {0} tag is only a null value or Boolean value.
+DPQ_ELSE_TAG_DOESNT_EXIST_WHEN_TEXT_PARAM_OF_IF_TAG_IS_NULL:The ELSE tag is not set up although null was set to the parameter in a text of IF tag.
+DPQ_ELSE_TAG_DOESNT_EXIST_WHEN_INNER_PARAM_OF_IF_TAG_IS_NULL:The ELSE tag is not set up although null was set to the parameter in a tag of IF tag.
+DPQ_ELSE_TAG_DOESNT_EXIST_WHEN_INNER_PARAM_OF_IF_TAG_IS_FALSE:The ELSE tag is not set up although false was set to the parameter in a tag of IF tag.
+ORDER_BIND_ERROR_PARAMETER_NOT_FOUND:Must declare the scalar variable "{0}".
+PROP_STRING_FORMAT_ERROR:Property character string format is inaccurate. :{0}
+PROP_STRING_FORMAT_ERROR_START_CHARACTER:Start character is inaccurate(=, ;, }).
+PROP_STRING_FORMAT_ERROR_ESCAPE_CHARACTER:Escape character is inaccurate ({0}).
+PROP_STRING_FORMAT_ERROR_CURLY_BRACE:Curly brace is not closed correctly.
+PROP_STRING_FORMAT_ERROR_PROPERTY_NAME_IS_EMPTY:Property name is empty.
+PROP_STRING_FORMAT_ERROR_PROPERTY_VALUE_IS_EMPTY:Property value is empty.
+PROP_STRING_FORMAT_ERROR_DELIMITER_OF_PROPERTY_NAME:The delimiter of property name is inaccurate.
+PROP_STRING_FORMAT_ERROR_DELIMITER_OF_PROPERTY_VALUE:The delimiter of property value is inaccurate.
+ARGUMENT_INJUSTICE:Argument injustice.
+PARAM_IS_NULL:{0} parameter is null.
+NOT_IMPLEMENTED:This processing is not Implemented.
+
+
+<FrameworkExceptionMessage>
+ASYNC_EVENT_ENTRY_CALLBACK_CHECK_ERROR:
+MESSAGE_XML_FORMAT_ERROR: MessageXMLFormatError
+MESSAGE_XML_FORMAT_ERROR: The format of message definition file is inaccurate. :{0}
+MESSAGE_XML_FORMAT_ERROR_ATTR: There is no {0} attribute. Message tag ({1}).
+SHAREDPROPERTY_XML_FORMAT_ERROR: SharedPropertyXMLFormatError
+SHAREDPROPERTY_XML_FORMAT_ERROR: The format of share information definition file is inaccurate. :{0}
+SHAREDPROPERTY_XML_FORMAT_ERROR_ATTR: There is no {0} attribute. SharedProp tag ({1}).
+SCREEN_CONTROL_XML_FORMAT_ERROR: ScreenControlXMLFormatError
+SCREEN_CONTROL_XML_FORMAT_ERROR: The format of a screen changes definition file is inaccurate. :{0}
+SCREEN_CONTROL_XML_FORMAT_ERROR_value: There is no  value  attribute. {0} tags ({1}).
+SCREEN_CONTROL_XML_FORMAT_ERROR_label: There is no  label  attribute. {0} tags ({1}).
+SCREEN_CONTROL_XML_FORMAT_ERROR_dl1: There is no  directLink attribute.  Screen tags ({0}).
+SCREEN_CONTROL_XML_FORMAT_ERROR_dl2: A  directLink attribute is inaccurate({0}). Screen  tags ({1}).
+SCREEN_CONTROL_XML_FORMAT_ERROR_mode: A   mode  attribute is inaccurate ({0}). {1} tag ({2}).
+TRANSACTION_CONTROL_XML_FORMAT_ERROR: TransactionControlXMLFormatError
+TRANSACTION_CONTROL_XML_FORMAT_ERROR: The format of a transaction control definition file is inaccurate. :{0}
+TRANSACTION_CONTROL_XML_FORMAT_ERROR_tp: There is no id attribute value ({0}) corresponding to a TransactionPattern tag.
+TRANSACTION_CONTROL_XML_FORMAT_ERROR_iso1: There is no  isolevel attribute. TransactionPattern tag ({0}).
+TRANSACTION_CONTROL_XML_FORMAT_ERROR_iso2: A isolevel attribute is inaccurate ({0}). TransactionPattern tag ({1}).
+TRANSACTION_CONTROL_XML_FORMAT_ERROR_tg: There is no id attribute value ({0}) corresponding to a TransactionGroup tag.
+TRANSACTION_CONTROL_XML_FORMAT_ERROR_tgval: There is no value attribute. TransactionGroup tag ({0}).
+IPR_NAMESERVICE_XML_FORMAT_ERROR: InProcessNameServiceXMLFormatError
+IPR_NAMESERVICE_XML_FORMAT_ERROR: The format of the name resolution definition file of in process call is inaccurate. :{0}
+IPR_NAMESERVICE_XML_FORMAT_ERROR_asmName1: There is no  assemblyName attribute. Transmission tag ({0}).
+IPR_NAMESERVICE_XML_FORMAT_ERROR_asmName2: A assemblyName attribute value is empty. Transmission tag ({0}).
+IPR_NAMESERVICE_XML_FORMAT_ERROR_clsName1: A  className tag ({0}) with a Transmission attribute.
+IPR_NAMESERVICE_XML_FORMAT_ERROR_clsName2: A className attribute value is empty. Transmission tag ({0}).
+PRT_NAMESERVICE_XML_FORMAT_ERROR: ProtocolNameServiceXMLFormatError
+PRT_NAMESERVICE_XML_FORMAT_ERROR: The format of the name resolution definition file of a call protocol is inaccurate. :{0}
+PRT_NAMESERVICE_XML_FORMAT_ERROR_prt1: There is no protocol attribute. Transmission tag ({0}).
+PRT_NAMESERVICE_XML_FORMAT_ERROR_prt2: A setup of a protocol attribute is inaccurate ({0}). Transmission tag ({1}).
+PRT_NAMESERVICE_XML_FORMAT_ERROR_url1: There are not url and a url_ref attribute. Transmission tag ({0}).
+PRT_NAMESERVICE_XML_FORMAT_ERROR_url2: There is no  Url  tag. IDREF ({0}).
+PRT_NAMESERVICE_XML_FORMAT_ERROR_url3: There is no  value attribute. Url  tag ({0}).
+PRT_NAMESERVICE_XML_FORMAT_ERROR_url4: url is empty. {0} tags ({1}).
+PRT_NAMESERVICE_XML_FORMAT_ERROR_to: The  timeout attribute value should specify a numerical value. Transmission  tag ({0}).
+PRT_NAMESERVICE_XML_FORMAT_ERROR_prop1: There is no Prop  tag. IDREF ({0}).
+PRT_NAMESERVICE_XML_FORMAT_ERROR_prop2: There is no  value  attribute. Prop  tag ({0}).
+NAMESERVICE_XML_FORMAT_ERROR_tm: There is no id attribute value ({0}) corresponding to a Transmission tag.
+NO_FX_HIDDEN: NoFxHidden
+NO_FX_HIDDEN: The HIDDEN tag required of framework is not mounted. HIDDEN tag: {0}
+ERROR_IN_WRITING_OF_FX_NUMVAL: ErrorInWritingOfFxNumVal
+ERROR_IN_WRITING_OF_FX_NUMVAL: Please specify definition numerically. Config key: {0}
+ERROR_IN_WRITING_OF_FX_PATH1: ErrorInWritingOfFxPath1
+ERROR_IN_WRITING_OF_FX_PATH1: The path information on definition file is not defined. Config key: {0}
+ERROR_IN_WRITING_OF_FX_PATH2: ErrorInWritingOfFxPath2
+ERROR_IN_WRITING_OF_FX_PATH2: The path information on definition file is wrong. Config key: {0}
+ERROR_IN_WRITING_OF_FX_SWITCH1: ErrorInWritingOfFxSwitch1
+ERROR_IN_WRITING_OF_FX_SWITCH1: Please specify switch by "on" or "off". Config key: {0}
+ERROR_IN_WRITING_OF_FX_SWITCH2: ErrorInWritingOfFxSwitch2
+ERROR_IN_WRITING_OF_FX_SWITCH2: Please specify switch by "true" or "false". Config key: {0}
+PARAMETER_CHECK_ERROR: ParameterCheckError
+PARAMETER_CHECK_ERROR: It is the check error of a parameter. : {0}
+PARAMETER_CHECK_ERROR_null: parameter is null ({0}).
+PARAMETER_CHECK_ERROR_empty: parameter is empty ({0}).
+PARAMETER_CHECK_ERROR_length: parameter length is inaccurate ({0}).
+ASYNC_FUNC_CHECK_ERROR: AsyncFunc
+ASYNC_FUNC_CHECK_ERROR: The type of argument needs to be in any of System.Windows.DependencyObject and System.Windows.Forms.Control.
+ASYNC_MSGBOX_ERROR: AsyncMsgBox
+ASYNC_MSGBOX_ERROR: MessageBox display API to be used has an error (for WPF <=> for Windows).
+ASYNC_EVENT_ENTRY_CHECK_ERROR: AsyncEventEntry
+ASYNC_EVENT_ENTRY_CHECK_ERROR: event classification is inaccurate.
+ASYNC_EVENT_ENTRY_CONTROL_CHECK_ERROR: AsyncEventEntry_Control
+ASYNC_EVENT_ENTRY_CONTROL_CHECK_ERROR: the event classification WinForm, only [System.Windows.Forms.Control] can specify.and the event classification WPF, only [System.Windows.DependencyObject] can specify.
+ASYNC_EVENT_ENTRY_CALLBACK_CHECK_ERROR: AsyncEventEntry_Callback
+ASYNC_EVENT_ENTRY_CALLBACK_CHECK_ERROR: The call-back corresponding to event classification is inaccurate (null or inaccurate type).
+48. CONTROL_TYPE_ERROR: ControlTypeError
+48. CONTROL_TYPE_ERROR: The prefix and type of control are not in agreement (prefix: {0}, type : {1}).
+CONTROL_REPETITION_ERROR1: ControlRepetitionError
+CONTROL_REPETITION_ERROR1: Control overlaps in a screen (a master page, a contents page, user control). (Control name : {0}).
+CONTROL_REPETITION_ERROR2: ControlRepetitionError
+CONTROL_REPETITION_ERROR2: Control overlaps in a screen (form, user control). (Control name : {0}).
+NO_MASTER_PAGE: NoMasterPage
+NO_MASTER_PAGE: Master page is not used (contents page name : {0}).
+MASTER_PAGE_TYPE_ERROR: MasterPageTypeError
+MASTER_PAGE_TYPE_ERROR: master page has not inherited BaseMasterController (master page name : {0}).
+SESSION_TIMEOUT: SessionTimeOut
+SESSION_TIMEOUT: It is session timeout.
+ILLEGAL_OPERATION_CHECK_ERROR: IllegalOperationCheckError
+ILLEGAL_OPERATION_CHECK_ERROR: The error occurred in manipulation check processing.
+SCREEN_CONTROL_CHECK_ERROR: ScreenControlCheckError
+SCREEN_CONTROL_CHECK_ERROR: The error occurred in screen changes check processing. :{0}
+SCREEN_CONTROL_CHECK_ERROR_get: Screen changes by a Get method are not permitted ({0}).
+SCREEN_CONTROL_CHECK_ERROR_naked: The screen changes which do not use parts (Transfer and crossing site posting) are not permitted ({0}).
+SCREEN_CONTROL_CHECK_ERROR_nolbl: the screen changes concerned are not permitted (path of a front screen : {0}, path of the present screen : {1}).
+FX_PROCESSING_STATUS_ERROR: ProcessingStatusError
+FX_PROCESSING_STATUS_ERROR: The unjust state was detected by framework processing. Supplementary information : {0}
+FX_PROCESSING_STATUS_ERROR_NO_BH_QUEUE: Button history information cannot be referred to by the causes which carried out session timeout, having referred to old cache, such as dequeued from queue.
+DIALOG_AFTER_PROCESSING_STATUS_ERROR: DialogAfterProcessingStatusError
+DIALOG_AFTER_PROCESSING_STATUS_ERROR: The unjust state was detected by post-processing after a dialog display. Supplementary information : {0}
+DIALOG_CLOSING_STATUS_ERROR: DialogClosingStatusError
+DIALOG_CLOSING_STATUS_ERROR: The unjust state was detected by the processing which closes a dialog. Supplementary information : {0}
+DIALOG_CLOSING_STATUS_ERROR1: A CloseModalScreen_NoPostback() method cannot be performed from this screen.
+DIALOG_CLOSING_STATUS_ERROR2: A CloseModalScreen_WithAllParent() method cannot be performed from this screen.
+LB_ILLEGAL_CALL_CHECK_ERROR: LayerBIllegalCallCheckError
+LB_ILLEGAL_CALL_CHECK_ERROR: The error occurred in B layer call check processing.
+
+
+<MyBusinessSystemExceptionMessage>
+SAMPLE_ERROR:
+ - MessageID_SampleError
+ - Message_SampleError
+CMN_DAO_ERROR:
+ - CommonDaoError
+ - The error occurred in common Dao. :{0}
+CMN_DAO_ERROR_SQL:The SQL file name or SQL text is not specified.
+
+
+<MyBusinessApplicationExceptionMessage>
+SAMPLE_ERROR:
+ - MessageID_SampleError
+ - Message_SampleError 
+
+
+<GetMessage>
+
+-?ñæ??message-ID:I0002(ê≥èÌån?)-
+-?ñæ??message-ID:I0003(ê≥èÌån?)-
+-?ñæ??message-ID:I0004(ê≥èÌån?)-
+-?ñæ??message-ID:I0005(ê≥èÌån?)-
+-?ñæ??message-ID:E0001(?èÌån?)-
+-?ñæ??message-ID:E0002(?èÌån?)-
+-?ñæ??message-ID:E0003(?èÌån?)-
+-?ñæ??message-ID:E0004(?èÌån?)-
+-?ñæ??message-ID:E0005(?èÌån?)-
+ 

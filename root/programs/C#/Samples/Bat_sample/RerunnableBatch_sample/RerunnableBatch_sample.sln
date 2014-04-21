@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RerunnableBatch_sample", "RerunnableBatch_sample.csproj", "{D4941E87-FCE4-4102-B569-C17208AE13CF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D4941E87-FCE4-4102-B569-C17208AE13CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4941E87-FCE4-4102-B569-C17208AE13CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4941E87-FCE4-4102-B569-C17208AE13CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4941E87-FCE4-4102-B569-C17208AE13CF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE TMD[
+	<!ELEMENT TMD (Transmission*)>
+	<!ELEMENT Transmission EMPTY>
+	<!ATTLIST Transmission id ID #REQUIRED assemblyName CDATA #REQUIRED className CDATA #REQUIRED>
+]>
+<!-- idの先頭には、数字を使用できない。 -->
+<TMD>
+	<Transmission id="testInProcess" assemblyName="WSServer_sample" className="WSServer_sample.Business.LayerB" />
+	<Transmission id="testWebService" assemblyName="WSServer_sample" className="WSServer_sample.Business.LayerB" />
+ 	<Transmission id="testWebService2" assemblyName="WSServer_sample" className="WSServer_sample.Business.LayerB" />
+ 	<Transmission id="testWebService3" assemblyName="WSServer_sample" className="WSServer_sample.Business.LayerB" />
+
+ 	<Transmission id="muWebService" assemblyName="dummy" className="WSClientSL_sample.Web.Business.LayerB_mu" />
+ 	<Transmission id="sbWebService" assemblyName="dummy" className="WSClientSL_sample.Web.Business.LayerB_sb" />
+ 	<Transmission id="rtWebService" assemblyName="dummy" className="WSClientSL_sample.Web.Business.LayerB_rt" />
+
+ 	<Transmission id="Authentication" assemblyName="dummy" className="WSClientSL_sample.Web.Business.Authentication" />
+</TMD>

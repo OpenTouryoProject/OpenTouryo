@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	SELECT * FROM ADMINISTRATOR.EMPLOYEE
+	WHERE
+	JOB = @JOB
+	AND COMM = @COMM1
+	AND EMPNO IN (SELECT EMPNO FROM ADMINISTRATOR.EMPLOYEE WHERE COMM = @COMM2)
+	AND SEX IN (@P1,@P2)
+	ORDER BY<VAL name="COLUMN"/><VAL name="SEQUENCE"/>
+	<PARAM>
+		JOB,String,CLERK<DIV/>
+		COMM1,Decimal,2301.00<DIV/>
+		COMM2,Single,2301.00<DIV/>
+		P1, Char, M <DIV/>
+		P2, Char, F <DIV/>
+		COLUMN,EMPNO<DIV/>
+		SEQUENCE,DESC<DIV/>
+	</PARAM>
+	-- パラメタ設定済み（sql版をそのまま、dpq版に移行したものなので静的）
+</ROOT>

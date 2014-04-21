@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE SCD[
+	<!ELEMENT SCD (Screen*, CmnTransition*)>
+	<!ELEMENT Screen (Transition*)>
+	<!ELEMENT Transition EMPTY>
+	<!ELEMENT CmnTransition EMPTY>
+	<!ATTLIST Screen
+		value CDATA #REQUIRED
+		directLink (allow|deny) "allow">
+	<!ATTLIST Transition
+		value CDATA #REQUIRED
+		label CDATA #REQUIRED
+		mode  (T|R) #IMPLIED>
+	<!ATTLIST CmnTransition
+		value CDATA #REQUIRED
+		label ID #REQUIRED
+		mode  (T|R) #IMPLIED>
+]>
+<!-- Screenタグの現画面の仮想パスはIDにできるが、
+「/」を含むため、XMLのIDとしては利用できない。 -->
+<SCD>
+	<Screen value="/ProjectX_sample/Aspx/start/login.aspx" directLink="allow">
+	</Screen>
+	<Screen value="/ProjectX_sample/Aspx/start/menu.aspx" directLink="allow">
+	</Screen>
+	<Screen value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm0.aspx" directLink="allow">
+		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm1.aspx?testPN1=testPV1" label="0→1" mode ="T"/>
+		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm2.aspx?testPN1=testPV1" label="0→2" mode ="R"/>
+		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm3.aspx?testPN1=testPV1" label="0→3" mode ="T"/>
+		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm4.aspx?testPN1=testPV1" label="0→4" mode ="R"/>
+		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm5.aspx?testPN1=testPV1" label="0→5" mode ="T"/>
+	</Screen>
+	<Screen value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm1.aspx" directLink="deny">
+		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm2.aspx?testPN1=testPV1" label="1→2" mode ="R"/>
+	</Screen>
+	<Screen value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm2.aspx" directLink="deny">
+		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm3.aspx?testPN1=testPV1" label="2→3" mode ="T"/>
+	</Screen>
+	<Screen value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm3.aspx" directLink="allow">
+		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm4.aspx?testPN1=testPV1" label="3→4" mode ="R"/>
+	</Screen>
+	<Screen value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm4.aspx" directLink="deny">
+		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm1.aspx?testPN1=testPV1" label="4→1" mode ="T"/>
+		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm5.aspx?testPN1=testPV1" label="4→5" mode ="R"/>
+	</Screen>
+	<Screen value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm5.aspx" directLink="deny">
+		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm1.aspx?testPN1=testPV1" label="5→1" mode ="T"/>
+		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm2.aspx?testPN1=testPV1" label="5→2" mode ="R"/>
+		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm3.aspx?testPN1=testPV1" label="5→3" mode ="T"/>
+		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm4.aspx?testPN1=testPV1" label="5→4" mode ="R"/>
+	</Screen>
+	<CmnTransition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm0.aspx?testPN1=testPV1" label="WebForm0" mode ="T"/>
+	<CmnTransition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm1.aspx?testPN1=testPV1" label="WebForm1" mode ="R"/>
+	<CmnTransition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm3.aspx?testPN1=testPV1" label="WebForm3" mode ="T"/>
+	<CmnTransition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm5.aspx?testPN1=testPV1" label="WebForm5" mode ="R"/>
+	<CmnTransition value="http://www.google.co.jp/search?sourceid=navclient-ff&amp;ie=UTF-8&amp;rlz=1B3GGGL_jaJP268JP268&amp;aq=t" label="google" mode ="R"/>
+</SCD>

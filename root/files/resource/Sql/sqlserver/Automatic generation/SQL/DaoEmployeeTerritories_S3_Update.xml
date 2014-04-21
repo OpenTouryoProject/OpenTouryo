@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoEmployeeTerritories_S3_Update
+  -- 2014/2/9 日立 太郎
+  UPDATE
+    [EmployeeTerritories]
+  SET
+    <DELCMA>
+      <IF>[EmployeeID] = @Set_EmployeeID_forUPD,</IF>
+      <IF>[TerritoryID] = @Set_TerritoryID_forUPD,</IF>
+    </DELCMA>
+  WHERE
+    [EmployeeID] = @EmployeeID
+    AND [TerritoryID] = @TerritoryID
+</ROOT>
