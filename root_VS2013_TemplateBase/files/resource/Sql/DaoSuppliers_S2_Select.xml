@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoSuppliers_S2_Select
+  -- 2013/1/10 日立 太郎
+  SELECT 
+    [SupplierID],
+    [CompanyName],
+    [ContactName],
+    [ContactTitle],
+    [Address],
+    [City],
+    [Region],
+    [PostalCode],
+    [Country],
+    [Phone],
+    [Fax],
+    [HomePage]
+  FROM
+    [Suppliers]
+  <WHERE>
+    WHERE
+      [SupplierID] = @SupplierID
+  </WHERE>
+</ROOT>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Microsoft.AspNet.Web.Optimization.ja</id>
+    <version>1.0.0</version>
+    <title>Microsoft ASP.NET Web Optimization 日本語 リソース</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <licenseUrl>http://www.microsoft.com/web/webpi/eula/weboptimization_1_eula_JPN.htm</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>このパッケージには、ASP.NET Web Optimization の 日本語 サテライト アセンブリが含まれています。</description>
+    <summary>Microsoft.AspNet.Web.Optimization パッケージの 日本語 リソース</summary>
+    <language>ja</language>
+    <tags>Microsoft AspNet optimization bundling minification</tags>
+    <dependencies>
+      <dependency id="Microsoft.AspNet.Web.Optimization" version="[1.0.0]" />
+    </dependencies>
+    <references />
+  </metadata>
+</package>

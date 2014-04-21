@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "WSClientWPF_sample", "WSClientWPF_sample.vbproj", "{5B5899DA-98C9-47B7-8832-A21768D788B0}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ASPNETWebService", "..\..\..\..\Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\", "{4418C1E8-B9A4-45BF-BF83-DFA2F8458288}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.1"
+		Debug.AspNetCompiler.VirtualPath = "/ASPNETWebService"
+		Debug.AspNetCompiler.PhysicalPath = "..\..\..\..\Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\ASPNETWebService\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/ASPNETWebService"
+		Release.AspNetCompiler.PhysicalPath = "..\..\..\..\Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\ASPNETWebService\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "8888"
+		VWDDynamicPort = "false"
+		SlnRelativePath = "..\..\..\..\Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5B5899DA-98C9-47B7-8832-A21768D788B0}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{5B5899DA-98C9-47B7-8832-A21768D788B0}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{5B5899DA-98C9-47B7-8832-A21768D788B0}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{5B5899DA-98C9-47B7-8832-A21768D788B0}.Debug|x86.ActiveCfg = Debug|x86
+		{5B5899DA-98C9-47B7-8832-A21768D788B0}.Debug|x86.Build.0 = Debug|x86
+		{5B5899DA-98C9-47B7-8832-A21768D788B0}.Release|Any CPU.ActiveCfg = Release|x86
+		{5B5899DA-98C9-47B7-8832-A21768D788B0}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{5B5899DA-98C9-47B7-8832-A21768D788B0}.Release|Mixed Platforms.Build.0 = Release|x86
+		{5B5899DA-98C9-47B7-8832-A21768D788B0}.Release|x86.ActiveCfg = Release|x86
+		{5B5899DA-98C9-47B7-8832-A21768D788B0}.Release|x86.Build.0 = Release|x86
+		{4418C1E8-B9A4-45BF-BF83-DFA2F8458288}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4418C1E8-B9A4-45BF-BF83-DFA2F8458288}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4418C1E8-B9A4-45BF-BF83-DFA2F8458288}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4418C1E8-B9A4-45BF-BF83-DFA2F8458288}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4418C1E8-B9A4-45BF-BF83-DFA2F8458288}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4418C1E8-B9A4-45BF-BF83-DFA2F8458288}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{4418C1E8-B9A4-45BF-BF83-DFA2F8458288}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{4418C1E8-B9A4-45BF-BF83-DFA2F8458288}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4418C1E8-B9A4-45BF-BF83-DFA2F8458288}.Release|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4418C1E8-B9A4-45BF-BF83-DFA2F8458288}.Release|x86.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

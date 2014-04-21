@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- @P1はテスト用
+  SELECT 
+    ShipperID, CompanyName, Phone
+  FROM
+    Shippers
+  <WHERE>
+    WHERE
+      <IF>CompanyName &lt; &gt; @P1</IF>
+      -- 大なり、小なりは、&lt; &gt;で記述する必要がある。
+  </WHERE>
+  ORDER BY [<VAL name="COLUMN"/>] <VAL name="SEQUENCE"/>
+  <PARAM>
+    P1, string, Speedy Express<DIV/>
+    COLUMN, CompanyName<DIV/>
+    SEQUENCE, DESC<DIV/>
+  </PARAM>
+</ROOT>
+  

@@ -1,0 +1,3 @@
+http://technet.microsoft.com/ja-jp/library/ms143221.aspx
+のSQL2000SampleDb.msiにあるNORTHWND.MDF、NORTHWND.LDFを
+SQL Server 2005 データベースにアタッチする。

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoCategories_D1_Insert
+  -- 2013/1/10 日立 太郎
+  INSERT INTO 
+    [Categories]
+      (
+        <DELCMA>
+          <INSCOL name="CategoryID">[CategoryID],</INSCOL>
+          <INSCOL name="CategoryName">[CategoryName],</INSCOL>
+          <INSCOL name="Description">[Description],</INSCOL>
+          <INSCOL name="Picture">[Picture],</INSCOL>
+        </DELCMA>
+      )
+  VALUES
+      (
+        <DELCMA>
+          <IF>@CategoryID,</IF>
+          <IF>@CategoryName,</IF>
+          <IF>@Description,</IF>
+          <IF>@Picture,</IF>
+        </DELCMA>
+      )
+</ROOT>
+
+
+

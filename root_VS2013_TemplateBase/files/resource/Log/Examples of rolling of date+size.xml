@@ -1,0 +1,38 @@
+﻿	
+	<!-- ローリング・ログファイル出力用アペンダ -->
+	<appender name="ACCESS" type="log4net.Appender.RollingFileAppender">
+		<param name="File" value="C:\root\files\resource\Log\ACCESS" />
+		<!-- ローリングの設定 -->
+		<param name="StaticLogFileName" value="false" />
+		<param name="RollingStyle" value="composite" />
+		<param name="DatePattern" value='"."yyyy"-"MM"-"dd".log"' />
+		<param name="MaximumFileSize" value="10MB" />
+		<param name="MaxSizeRollBackups" value="10" />
+		<!-- 書き込み時の設定（追加 or 上書き、出力エンコーディング） -->
+		<param name="AppendToFile" value="true" />
+		<encoding value="utf-8" />
+		<!-- メッセージのフォーマット -->
+		<layout type="log4net.Layout.PatternLayout">
+			<param name="ConversionPattern" value="[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline" />
+		</layout>
+		<!-- フィルタ（範囲）の設定 -->
+		<filter type="log4net.Filter.LevelRangeFilter">
+			<levelMin value="DEBUG" />
+			<levelMax value="FATAL" />
+		</filter>
+	</appender>
+
+－－－
+
+Log4Netのちょっと良い設定
+http://www.ailight.jp/blog/koido/archive/2005/03/09/4871.aspx
+
+いつも参考にさせてもらっています。
+
+色々試してみたら、
+<param name="RollingStyle" value="composite" />
+<param name="DatePattern" value='"."yyyy"-"MM"-"dd".log"' />
+という設定で、日付と容量のローテートが実現出来ました。
+
+yyyy、MM、ddに""を囲むのか、-や.に""を囲むのか分かりませんが、
+どうもDatePatternの指定の仕方がミソのようです。 

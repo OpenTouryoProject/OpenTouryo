@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	SELECT * FROM Employees
+	WHERE
+	EmployeeID IN (SELECT EmployeeID FROM Employees)
+	AND Country IN (@P1,@P2)
+	ORDER BY [<VAL name="COLUMN"/>] <VAL name="SEQUENCE"/>
+	<PARAM>
+		 P1, String, USA <DIV/>
+		 P2, String, UK <DIV/>
+		COLUMN, EmployeeID <DIV/>
+		SEQUENCE, DESC <DIV/>
+	</PARAM>
+	-- パラメタ設定済み（sql版をそのまま、dpq版に移行したものなので静的）
+</ROOT>

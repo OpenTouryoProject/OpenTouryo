@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	SELECT * FROM REGION<WHERE>WHERE Or regionid = 1</WHERE>
+	<PARAM>
+		P, int32, 1
+	</PARAM>
+	-- Orの消去ロジックの確認。
+</ROOT>

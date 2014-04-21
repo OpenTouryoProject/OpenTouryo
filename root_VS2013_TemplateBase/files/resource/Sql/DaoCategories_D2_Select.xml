@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoCategories_D2_Select
+  -- 2013/1/10 日立 太郎
+  SELECT 
+    [CategoryID],
+    [CategoryName],
+    [Description],
+    [Picture]
+  FROM
+    [Categories]
+  <WHERE>
+    WHERE
+      <IF>AND [CategoryID] = @CategoryID<ELSE>AND [CategoryID] IS NULL</ELSE></IF>
+      <IF>AND [CategoryID] LIKE @CategoryID_Like</IF>
+      <IF>AND [CategoryName] = @CategoryName<ELSE>AND [CategoryName] IS NULL</ELSE></IF>
+      <IF>AND [CategoryName] LIKE @CategoryName_Like</IF>
+      <IF>AND [Description] = @Description<ELSE>AND [Description] IS NULL</ELSE></IF>
+      <IF>AND [Description] LIKE @Description_Like</IF>
+      <IF>AND [Picture] = @Picture<ELSE>AND [Picture] IS NULL</ELSE></IF>
+      <IF>AND [Picture] LIKE @Picture_Like</IF>
+  </WHERE>
+</ROOT>

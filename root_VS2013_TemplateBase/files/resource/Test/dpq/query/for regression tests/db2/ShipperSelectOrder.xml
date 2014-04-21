@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- ＠P1はテスト用
+  SELECT 
+    ShipperID, CompanyName, Phone
+  FROM
+    Shippers
+  <WHERE>
+    WHERE
+      <IF>CompanyName != @P1</IF>
+  </WHERE>
+  ORDER BY <VAL name="COLUMN"/>
+  <PARAM>
+    P1, string, Speedy Express<DIV/>
+    COLUMN, CompanyName<DIV/>
+  </PARAM>
+</ROOT>
+  

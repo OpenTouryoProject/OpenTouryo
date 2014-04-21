@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>WebMatrix.Data</name>
+  </assembly>
+  <members>
+    <member name="T:WebMatrix.Data.ConnectionEventArgs">
+      <summary>
+        <see cref="T:WebMatrix.Data.Database" /> クラスの <see cref="E:WebMatrix.Data.Database.ConnectionOpened" /> イベントのデータを提供します。</summary>
+    </member>
+    <member name="M:WebMatrix.Data.ConnectionEventArgs.#ctor(System.Data.Common.DbConnection)">
+      <summary>
+        <see cref="T:WebMatrix.Data.ConnectionEventArgs" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="connection">イベントに関連付けられている接続。</param>
+    </member>
+    <member name="P:WebMatrix.Data.ConnectionEventArgs.Connection">
+      <summary>イベントに関連付けられている接続を取得します。</summary>
+      <returns>開かれた接続。</returns>
+    </member>
+    <member name="T:WebMatrix.Data.Database">
+      <summary>データベースに格納されているデータへのアクセスやデータを管理するために使用するメソッドおよびプロパティを提供します。</summary>
+    </member>
+    <member name="M:WebMatrix.Data.Database.Close">
+      <summary>開いているデータベースを閉じます。</summary>
+    </member>
+    <member name="P:WebMatrix.Data.Database.Connection">
+      <summary>データベースへの現在の接続を取得します。</summary>
+      <returns>接続。</returns>
+    </member>
+    <member name="E:WebMatrix.Data.Database.ConnectionOpened">
+      <summary>新しいデータベース接続が <see cref="T:WebMatrix.Data.Database" /> インスタンスによって開かれたときに発生します。</summary>
+    </member>
+    <member name="M:WebMatrix.Data.Database.Dispose">
+      <summary>
+        <see cref="T:WebMatrix.Data.Database" /> インスタンスによって使用されているすべてのリソースを解放します。</summary>
+    </member>
+    <member name="M:WebMatrix.Data.Database.Dispose(System.Boolean)">
+      <summary>
+        <see cref="T:WebMatrix.Data.Database" /> インスタンスによって使用されているアンマネージ リソースを解放し、オプションでマネージ リソースも解放します。</summary>
+      <param name="disposing">マネージ リソースとアンマネージ リソースの両方を解放する場合は true。アンマネージ リソースだけを解放する場合は false。</param>
+    </member>
+    <member name="M:WebMatrix.Data.Database.Execute(System.String,System.Object[])">
+      <summary>クエリ以外の SQL ステートメントを実行します。</summary>
+      <returns>SQL ステートメントの影響を受けるレコードの数。</returns>
+      <param name="commandText">実行する SQL ステートメント。</param>
+      <param name="args">(省略可能) SQL ステートメントに渡すパラメーター。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="commandText" /> が null または空です。</exception>
+    </member>
+    <member name="M:WebMatrix.Data.Database.GetLastInsertId">
+      <summary>最近挿入された行の ID 列を返します。</summary>
+      <returns>最近挿入された行の ID。</returns>
+    </member>
+    <member name="M:WebMatrix.Data.Database.Open(System.String)">
+      <summary>指定されたファイル名または名前付き接続文字列を使用して、データベースへの接続を開きます。</summary>
+      <returns>データベース インスタンス。</returns>
+      <param name="name">開くデータベースに関連付けられている名前。<paramref name="name" /> には、App_Data フォルダーの .sdf または .mdf データベース ファイルを指定できます (ファイル名拡張子は含めません)。また、<paramref name="name" /> に、Web.config ファイルの接続文字列の名前を指定することもできます。</param>
+    </member>
+    <member name="M:WebMatrix.Data.Database.OpenConnectionString(System.String)">
+      <summary>指定された接続文字列を使用してデータベースへの接続を開きます。</summary>
+      <returns>データベース インスタンス。</returns>
+      <param name="connectionString">データベースへの接続に使用される情報を格納する接続文字列。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="connectionString" /> が null または空です。</exception>
+    </member>
+    <member name="M:WebMatrix.Data.Database.OpenConnectionString(System.String,System.String)">
+      <summary>接続文字列および指定されたプロバイダーを使用して、データベースへの接続を開きます。</summary>
+      <returns>データベース インスタンス。</returns>
+      <param name="connectionString">データベースへの接続に使用される情報を格納する接続文字列。</param>
+      <param name="providerName">(省略可能) データ ソースに接続するために使用する .NET Framework データ プロバイダーの名前。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="connectionString" /> が null または空です。</exception>
+    </member>
+    <member name="M:WebMatrix.Data.Database.Query(System.String,System.Object[])">
+      <summary>結果として行のリストを返す SQL クエリを実行します。</summary>
+      <returns>SQL クエリによって返される行。</returns>
+      <param name="commandText">実行する SQL クエリ。</param>
+      <param name="parameters">(省略可能) SQL クエリに渡すパラメーター。</param>
+    </member>
+    <member name="M:WebMatrix.Data.Database.QuerySingle(System.String,System.Object[])">
+      <summary>結果として 1 つの行を返す SQL クエリを実行します。</summary>
+      <returns>SQL クエリによって返される 1 つの行。</returns>
+      <param name="commandText">実行する SQL クエリ。</param>
+      <param name="args">(省略可能) SQL クエリに渡すパラメーター。</param>
+    </member>
+    <member name="M:WebMatrix.Data.Database.QueryValue(System.String,System.Object[])">
+      <summary>結果として 1 つのスカラー値を返す SQL クエリを実行します。</summary>
+      <returns>SQL クエリによって返されるスカラー値。</returns>
+      <param name="commandText">実行する SQL クエリ。</param>
+      <param name="args">(省略可能) SQL クエリに渡すパラメーター。</param>
+    </member>
+    <member name="T:WebMatrix.Data.DynamicRecord">
+      <summary>カスタムの型記述子および動的言語ランタイム (DLR) の機能を使用してデータ レコードを表します。</summary>
+    </member>
+    <member name="P:WebMatrix.Data.DynamicRecord.Columns">
+      <summary>
+        <see cref="T:WebMatrix.Data.DynamicRecord" /> インスタンスの各列の名前を含むリストを返します。</summary>
+      <returns>各列の名前を含むリスト。</returns>
+    </member>
+    <member name="M:WebMatrix.Data.DynamicRecord.GetDynamicMemberNames">
+      <summary>
+        <see cref="T:WebMatrix.Data.DynamicRecord" /> インスタンスのすべての動的メンバーの名前を含むリストを返します。</summary>
+      <returns>すべての動的メンバーの名前を含むリスト。</returns>
+    </member>
+    <member name="P:WebMatrix.Data.DynamicRecord.Item(System.Int32)">
+      <summary>指定されたインデックスを使用して、<see cref="T:WebMatrix.Data.DynamicRecord" /> インスタンスの列の値を返します。</summary>
+      <returns>指定された列の値。</returns>
+      <param name="index">返される値を含む列の 0 から始まるインデックス。</param>
+    </member>
+    <member name="P:WebMatrix.Data.DynamicRecord.Item(System.String)">
+      <summary>指定された名前を使用して、<see cref="T:WebMatrix.Data.DynamicRecord" /> インスタンスの列の値を返します。</summary>
+      <returns>指定された列の値。</returns>
+      <param name="name">返す値が含まれる列の名前。名前が一致するかどうかを判断する際、大文字と小文字は区別されません。</param>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:WebMatrix.Data.DynamicRecord" /> インスタンスには、指定されている名前と同じ名前の列は含まれません (一致するかどうかを判断する際、大文字と小文字は区別されません)。</exception>
+    </member>
+    <member name="M:WebMatrix.Data.DynamicRecord.System#ComponentModel#ICustomTypeDescriptor#GetAttributes">
+      <summary>このコンポーネント インスタンスのカスタム属性のリストを返します。</summary>
+      <returns>すべてのケースで <see cref="P:System.ComponentModel.AttributeCollection.Empty" />。</returns>
+    </member>
+    <member name="M:WebMatrix.Data.DynamicRecord.System#ComponentModel#ICustomTypeDescriptor#GetClassName">
+      <summary>このコンポーネント インスタンスのクラス名を返します。</summary>
+      <returns>すべてのケースで null。</returns>
+    </member>
+    <member name="M:WebMatrix.Data.DynamicRecord.System#ComponentModel#ICustomTypeDescriptor#GetComponentName">
+      <summary>このコンポーネント インスタンスの名前を返します。</summary>
+      <returns>すべてのケースで null。</returns>
+    </member>
+    <member name="M:WebMatrix.Data.DynamicRecord.System#ComponentModel#ICustomTypeDescriptor#GetConverter">
+      <summary>このコンポーネント インスタンスの型コンバーターを返します。</summary>
+      <returns>すべてのケースで null。</returns>
+    </member>
+    <member name="M:WebMatrix.Data.DynamicRecord.System#ComponentModel#ICustomTypeDescriptor#GetDefaultEvent">
+      <summary>このコンポーネント インスタンスの既定のイベントを返します。</summary>
+      <returns>すべてのケースで null。</returns>
+    </member>
+    <member name="M:WebMatrix.Data.DynamicRecord.System#ComponentModel#ICustomTypeDescriptor#GetDefaultProperty">
+      <summary>このコンポーネント インスタンスの既定のプロパティを返します。</summary>
+      <returns>すべてのケースで null。</returns>
+    </member>
+    <member name="M:WebMatrix.Data.DynamicRecord.System#ComponentModel#ICustomTypeDescriptor#GetEditor(System.Type)">
+      <summary>このコンポーネント インスタンスの指定された型のエディターを返します。</summary>
+      <returns>すべてのケースで null。</returns>
+      <param name="editorBaseType">このオブジェクトのエディター。このパラメーターの値はこの実装によって無視され、このメソッドの結果には影響しません。</param>
+    </member>
+    <member name="M:WebMatrix.Data.DynamicRecord.System#ComponentModel#ICustomTypeDescriptor#GetEvents">
+      <summary>コンポーネントのこのインスタンスのイベントを返します。</summary>
+      <returns>すべてのケースで <see cref="P:System.ComponentModel.EventDescriptorCollection.Empty" />。</returns>
+    </member>
+    <member name="M:WebMatrix.Data.DynamicRecord.System#ComponentModel#ICustomTypeDescriptor#GetEvents(System.Attribute[])">
+      <summary>指定されたフィルターを使用して、このコンポーネント インスタンスのイベントを返します。</summary>
+      <returns>すべてのケースで <see cref="P:System.ComponentModel.EventDescriptorCollection.Empty" />。</returns>
+      <param name="attributes">フィルターとして使用される配列。このパラメーターの値はこの実装によって無視され、このメソッドの結果には影響しません。</param>
+    </member>
+    <member name="M:WebMatrix.Data.DynamicRecord.System#ComponentModel#ICustomTypeDescriptor#GetProperties">
+      <summary>コンポーネントのこのインスタンスのプロパティを返します。</summary>
+      <returns>このコンポーネント インスタンスのプロパティを表すコレクション。</returns>
+    </member>
+    <member name="M:WebMatrix.Data.DynamicRecord.System#ComponentModel#ICustomTypeDescriptor#GetProperties(System.Attribute[])">
+      <summary>指定されたフィルターを使用して、このコンポーネント インスタンスのプロパティを返します。</summary>
+      <returns>このコンポーネント インスタンスのプロパティを表すコレクション。</returns>
+      <param name="attributes">フィルターとして使用される配列。このパラメーターの値はこの実装によって無視され、このメソッドの結果には影響しません。</param>
+    </member>
+    <member name="M:WebMatrix.Data.DynamicRecord.System#ComponentModel#ICustomTypeDescriptor#GetPropertyOwner(System.ComponentModel.PropertyDescriptor)">
+      <summary>指定されたプロパティを含むオブジェクトを返します。</summary>
+      <returns>この <see cref="T:WebMatrix.Data.DynamicRecord" /> のインスタンス。</returns>
+      <param name="pd">所有者を取得するプロパティ。</param>
+    </member>
+    <member name="M:WebMatrix.Data.DynamicRecord.TryGetMember(System.Dynamic.GetMemberBinder,System.Object@)">
+      <summary>指定された名前を使用して <see cref="T:WebMatrix.Data.DynamicRecord" /> メンバーの値を取得します。</summary>
+      <returns>すべてのケースで true。</returns>
+      <param name="binder">get 操作に関する情報を提供します。</param>
+      <param name="result">このメソッドが戻るときに、メンバーの値が格納されます。これは null にできます。このパラメーターは初期化せずに渡されます。</param>
+      <exception cref="T:System.InvalidOperationException">
+        <see cref="T:WebMatrix.Data.DynamicRecord" /> インスタンスには、<paramref name="binder" /> パラメーターで指定されている名前と同じ名前のメンバーは含まれません (一致するかどうかを判断する際、大文字と小文字は区別されません)。</exception>
+    </member>
+  </members>
+</doc>

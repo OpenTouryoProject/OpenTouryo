@@ -1,0 +1,118 @@
+<%@ Master Language="C#" AutoEventWireup="true" Inherits="Aspx_Common_testScreen2" Codebehind="testScreen2.master.cs" %>
+<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
+
+<!-- All Rights Reserved, Copyright (C) 2007,2012 Hitachi Solutions,Ltd. -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+
+<head id="Head1" runat="server">
+    <title>無題のページ</title>
+    <!--FxCode：add-start-->
+    <script type="text/javascript" src="/Framework/js/common.js"></script>
+    <script type="text/javascript" src="/Framework/js/ie_key_event.js"></script>
+    
+    <!-- onhelpイベントを無効にする。-->
+    <script language="javascript" for="document" event="onhelp">
+            event.returnValue = false;
+    </script>
+    
+    <!-- IE8をIE7互換モードで動作させる -->
+    <!--meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /-->
+    
+    <link rel="stylesheet" href="/Css/style.css" type="text/css"/>
+    <!--FxCode：add-end-->
+</head>
+
+<!--FxCode：add-js-event-->
+<body onload="Fx_Document_OnLoad();" onunload="Fx_Document_OnClose();">
+
+    <!-- オートコンプリートを指定 -->
+    <form id="form1" runat="server" autocomplete="on">
+    
+        <!--SampleCode：add-start-->
+        
+        <a href="/Aspx/start/menu.aspx">メニュー画面</a><br />
+        
+        <!--SampleCode：Header（共通）-->
+        ＜ヘッダー（共通）＞<br />
+        <br />
+        それぞれのマスタ ページ上にある同一名称のマスタボタンの<br />
+        イベント処理を１つの「画面コード親クラス２」に実装するテスト。<br />
+        <cc1:WebCustomButton ID="btnMButton1" runat="server" Text="マスタ共通ボタン（重複）" Width="220px" /><br />
+        <br />
+        <hr />
+        <br />
+        ＜ヘッダー（個別）＞<br />
+        <br />
+        <table border="1">
+            <tr>
+                <th colspan="2">
+                    追加イベント
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    ・DropDownList<br />
+                    <cc1:WebCustomDropDownList ID="ddlMDropDownList1" runat="server" AutoPostBack="True">
+                        <asp:ListItem>あああ</asp:ListItem>
+                        <asp:ListItem>いいい</asp:ListItem>
+                        <asp:ListItem>ううう</asp:ListItem>
+                        <asp:ListItem>えええ</asp:ListItem>
+                        <asp:ListItem>おおお</asp:ListItem>
+                    </cc1:WebCustomDropDownList>
+                    <br />
+                    ※ ＡｕｔｏＰｏｓｔＢａｃｋ ＝ Ｔｒｕｅ<br />
+                    <br />
+                    ・RadioButton<br />
+                    <cc1:WebCustomRadioButton ID="rbnMRadioButton1" runat="server" AutoPostBack="True" GroupName="Group1" Text="ＭＢＲ１" />
+                    <cc1:WebCustomRadioButton ID="rbnMRadioButton2" runat="server" AutoPostBack="True" GroupName="Group1" Text="ＭＢＲ２" />
+                    <br />
+                    ※ ＡｕｔｏＰｏｓｔＢａｃｋ ＝ Ｔｒｕｅ<br />
+                    <br />
+                    ・CheckBox<br />
+                    <cc1:WebCustomCheckBox ID="cbxMCheckBox1" runat="server" AutoPostBack="True" Text="ＭＣＢ１" />
+                    <cc1:WebCustomCheckBox ID="cbxMCheckBox2" runat="server" AutoPostBack="True" Text="ＭＣＢ２" />
+                    <br />
+                    ※ ＡｕｔｏＰｏｓｔＢａｃｋ ＝ Ｔｒｕｅ<br />
+                </td>
+                <td>
+                    ・ListBox<br />
+                    <cc1:WebCustomListBox ID="lbxMListBox1" runat="server" AutoPostBack="True" Width="150px">
+                        <asp:ListItem>あああ</asp:ListItem>
+                        <asp:ListItem>いいい</asp:ListItem>
+                        <asp:ListItem>ううう</asp:ListItem>
+                        <asp:ListItem>えええ</asp:ListItem>
+                        <asp:ListItem>おおお</asp:ListItem>
+                    </cc1:WebCustomListBox>
+                    <br />
+                    ※ ＡｕｔｏＰｏｓｔＢａｃｋ ＝ Ｔｒｕｅ<br />
+                </td>
+            </tr>
+        </table>
+        <hr />
+        <br />
+        <!--SampleCode：Contents（個別１）-->
+        <asp:contentplaceholder id="ContentPlaceHolder_A" runat="server">
+        </asp:contentplaceholder>
+        
+        <!--SampleCode：add-end-->
+        
+        <!--FxCode：add-start-->
+        <asp:HiddenField ID="ChildScreenType" runat="server" Value="0" />
+        <asp:HiddenField ID="ChildScreenUrl" runat="server" Value="0" />
+        <asp:HiddenField ID="CloseFlag" runat="server" Value="0" />
+        <asp:HiddenField ID="SubmitFlag" runat="server" Value="0" />
+        <asp:HiddenField ID="ScreenGuid" runat="server" Value="0" />
+        <asp:HiddenField ID="FxDialogStyle" runat="server" Value="0" />
+        <asp:HiddenField ID="BusinessDialogStyle" runat="server" Value="0" />
+        <asp:HiddenField ID="NormalScreenStyle" runat="server" Value="0" />
+        <asp:HiddenField ID="NormalScreenTarget" runat="server" Value="0" />
+        <asp:HiddenField ID="DialogFrameUrl" runat="server" Value="0" />
+        <asp:HiddenField ID="WindowGuid" runat="server" Value="0" />
+        <asp:HiddenField ID="RequestTicketGuid" runat="server" Value="0" />
+        <!--FxCode：add-end-->
+        
+    </form>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="_XMLEncoding_" ?>
+<ROOT>
+  -- _FileName_
+  -- _TimeStamp_ _UserName_
+  SELECT 
+    _AllColumnListSQL_
+  FROM
+    _TableName_
+  <WHERE>
+    WHERE
+      _ColumnsCondition_
+  </WHERE>
+</ROOT>

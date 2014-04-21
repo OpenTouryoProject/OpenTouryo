@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoRegion_S2_Select
+  -- 2014/2/9 日立 太郎
+  SELECT 
+    [RegionID],
+    [RegionDescription]
+  FROM
+    [Region]
+  <WHERE>
+    WHERE
+      [RegionID] = @RegionID
+  </WHERE>
+</ROOT>

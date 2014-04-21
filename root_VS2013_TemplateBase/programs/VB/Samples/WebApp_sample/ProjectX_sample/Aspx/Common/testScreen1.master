@@ -1,0 +1,199 @@
+<%@ Master Language="VB" AutoEventWireup="true" CodeFile="testScreen1.master.vb" Inherits="Aspx_Common_testScreen1" %>
+<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
+
+<!-- All Rights Reserved, Copyright (C) 2007,2012 Hitachi Solutions,Ltd. -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+
+<head id="Head1" runat="server">
+    <title>無題のページ</title>
+    <!--FxCode：add-start-->
+    <script type="text/javascript" src="/ProjectX_sample/Framework/js/common.js"></script>
+    <script type="text/javascript" src="/ProjectX_sample/Framework/js/ie_key_event.js"></script>
+    
+    <!-- onhelpイベントを無効にする。-->
+    <script language="javascript" for="document" event="onhelp">
+            event.returnValue = false;
+    </script>
+    
+    <!-- IE8をIE7互換モードで動作させる -->
+    <!--meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /-->
+    
+    <link rel="stylesheet" href="/ProjectX_sample/Css/style.css" type="text/css"/>
+    <!--FxCode：add-end-->
+</head>
+
+<!--FxCode：add-js-event-->
+<body onload="Fx_Document_OnLoad();" onunload="Fx_Document_OnClose();">
+        
+    <!-- オートコンプリートを指定 -->
+    <form id="form1" runat="server" autocomplete="on">
+    
+        <!--SampleCode：add-start-->
+        
+        <a href="/ProjectX_sample/Aspx/start/menu.aspx">メニュー画面</a><br />
+        
+        <!--SampleCode：Header（共通）-->
+        ヘッダー（共通）<br />
+        <table border="1">
+            <tr>
+                <th>
+                    基本処理
+                </th>
+                <th>
+                    画面遷移処理<br />
+                    （画面遷移制御機能 = OFF）
+                </th>
+                <th>
+                    コントロール取得
+                </th>
+                <th style="width: 221px">
+                    子画面表示
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <cc1:WebCustomButton ID="btnMButton1" runat="server" Text="マスタ共通ボタン" Width="220px" /><br />
+                    <cc1:WebCustomLinkButton ID="lbnMLinkButton1" runat="server" Width="220px">マスタ共通リンクボタン</cc1:WebCustomLinkButton><br />
+                    <cc1:WebCustomImageButton ID="ibnMImageButton1" runat="server" ToolTip="マスタ共通イメージボタン" /><br />
+                    <cc1:WebCustomImageMap ID="impMImageMap1" runat="server" ToolTip="マスタ共通イメージマップ" >
+                        <asp:CircleHotSpot HotSpotMode="PostBack" PostBackValue="spot1" X="100" Y="50" Radius="30" />
+                        <asp:RectangleHotSpot Bottom="180" HotSpotMode="PostBack" Left="120" PostBackValue="spot2" Right="180" Top="120" />
+                        <asp:PolygonHotSpot Coordinates="25,110,10,190,90,190" HotSpotMode="PostBack" PostBackValue="spot3" />
+                    </cc1:WebCustomImageMap></td>
+                <td>
+                    <cc1:WebCustomButton ID="btnMButton2" runat="server" Text="画面遷移" Width="220px" /><br />
+                    <cc1:WebCustomLinkButton ID="lbnMLinkButton2" runat="server" Width="220px">画面遷移</cc1:WebCustomLinkButton><br />
+                    <cc1:WebCustomImageButton ID="ibnMImageButton2" runat="server" ToolTip="画面遷移" /><br />
+                    <cc1:WebCustomImageMap ID="impMImageMap2" runat="server" ToolTip="画面遷移" >
+                        <asp:CircleHotSpot HotSpotMode="PostBack" PostBackValue="spot1" X="100" Y="50" Radius="30" />
+                        <asp:RectangleHotSpot Bottom="180" HotSpotMode="PostBack" Left="120" PostBackValue="spot2" Right="180" Top="120" />
+                        <asp:PolygonHotSpot Coordinates="25,110,10,190,90,190" HotSpotMode="PostBack" PostBackValue="spot3" />
+                    </cc1:WebCustomImageMap></td>
+                <td>
+                    コントロール名を入力<br />
+                    <cc1:WebCustomTextBox ID="TextBox1" runat="server"></cc1:WebCustomTextBox><br />
+                    <br />
+                    <cc1:WebCustomButton ID="btnMButton3" runat="server" Text="コントロール取得（Fx）" Width="220px" /><br />
+                    <cc1:WebCustomLinkButton ID="lbnMLinkButton3" runat="server" Width="220px">コントロール取得（Master）</cc1:WebCustomLinkButton><br />
+                    <cc1:WebCustomImageButton ID="ibnMImageButton3" runat="server" ToolTip="コントロール取得（Content）" /></td> 
+                <td style="width: 221px">
+                    <cc1:WebCustomCheckBox ID="CheckBox1" runat="server" Text="スタイルを設定する" /><br />
+                    <cc1:WebCustomTextBox ID="TextBox2" runat="server"></cc1:WebCustomTextBox><br />
+                    ※ 書式はapp.configを参照<br />
+                    <br />
+                    引き渡す情報を入力<br />
+                    <cc1:WebCustomTextBox ID="TextBox3" runat="server"></cc1:WebCustomTextBox><br />
+                    <cc1:WebCustomButton ID="btnMButton4" runat="server" Text="ＯＫ" Width="220px" ToolTip="ＯＫ" /><br />
+                    <cc1:WebCustomLinkButton ID="lbnMLinkButton4" runat="server" Width="220px" ToolTip="モードレス画面">モードレス画面（非ネストに行くので注意）</cc1:WebCustomLinkButton><br />
+                    <br />
+                    共通処理で、ダイアログの<br />
+                    後処理はサポートしないので<br />
+                    ・YES・NOメッセージ ダイアログ<br />
+                    ・業務モーダル ダイアログ<br />
+                    は、テストケースからも除く。<br />
+                    
+                </td>
+            </tr>
+        </table>
+        <hr />
+        <!--SampleCode：Header（個別）-->
+        ヘッダー（個別）<br />
+        <table border="1">
+            <tr>
+                <th>
+                    基本処理
+                </th>
+                <th>
+                    画面遷移処理<br />
+                    （画面遷移制御機能 = OFF）
+                </th>
+                <th>
+                    コントロール取得
+                </th>
+                <th>
+                    子画面表示
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <cc1:WebCustomButton ID="btnMButton21" runat="server" Text="マスタ個別ボタン" Width="220px" /><br />
+                    <cc1:WebCustomLinkButton ID="lbnMLinkButton21" runat="server" Width="220px">マスタ個別リンクボタン</cc1:WebCustomLinkButton><br />
+                    <cc1:WebCustomImageButton ID="ibnMImageButton21" runat="server" ToolTip="マスタ個別イメージボタン" /><br />
+                    <cc1:WebCustomImageMap ID="impMImageMap21" runat="server" ToolTip="マスタ個別イメージマップ" >
+                        <asp:CircleHotSpot HotSpotMode="PostBack" PostBackValue="spot1" X="100" Y="50" Radius="30" />
+                        <asp:RectangleHotSpot Bottom="180" HotSpotMode="PostBack" Left="120" PostBackValue="spot2" Right="180" Top="120" />
+                        <asp:PolygonHotSpot Coordinates="25,110,10,190,90,190" HotSpotMode="PostBack" PostBackValue="spot3" />
+                    </cc1:WebCustomImageMap></td>
+                <td>
+                    <cc1:WebCustomButton ID="btnMButton22" runat="server" Text="画面遷移" Width="220px" /><br />
+                    <cc1:WebCustomLinkButton ID="lbnMLinkButton22" runat="server" Width="220px">画面遷移</cc1:WebCustomLinkButton><br />
+                    <cc1:WebCustomImageButton ID="ibnMImageButton22" runat="server" ToolTip="画面遷移" /><br />
+                    <cc1:WebCustomImageMap ID="impMImageMap22" runat="server" ToolTip="画面遷移" >
+                        <asp:CircleHotSpot HotSpotMode="PostBack" PostBackValue="spot1" X="100" Y="50" Radius="30" />
+                        <asp:RectangleHotSpot Bottom="180" HotSpotMode="PostBack" Left="120" PostBackValue="spot2" Right="180" Top="120" />
+                        <asp:PolygonHotSpot Coordinates="25,110,10,190,90,190" HotSpotMode="PostBack" PostBackValue="spot3" />
+                    </cc1:WebCustomImageMap></td>
+                <td>
+                    コントロール名を入力<br />
+                    <cc1:WebCustomTextBox ID="TextBox4" runat="server"></cc1:WebCustomTextBox><br />
+                    <br />
+                    <cc1:WebCustomButton ID="btnMButton23" runat="server" Text="コントロール取得（Fx）" Width="220px" /><br />
+                    <cc1:WebCustomLinkButton ID="lbnMLinkButton23" runat="server" Width="220px">コントロール取得（Master）</cc1:WebCustomLinkButton><br />
+                    <cc1:WebCustomImageButton ID="ibnMImageButton23" runat="server" ToolTip="コントロール取得（Content）" /></td>
+                <td>
+                    <cc1:WebCustomCheckBox ID="CheckBox2" runat="server" Text="スタイルを設定する" /><br />
+                    <cc1:WebCustomTextBox ID="TextBox5" runat="server"></cc1:WebCustomTextBox><br />
+                    ※ 書式はapp.configを参照<br />
+                    <br />
+                    引き渡す情報を入力<br />
+                    <cc1:WebCustomTextBox ID="TextBox6" runat="server"></cc1:WebCustomTextBox><br />
+                    <cc1:WebCustomButton ID="btnMButton24" runat="server" Text="ＯＫ" Width="220px" ToolTip="ＯＫ" /><br />
+                    <cc1:WebCustomLinkButton ID="lbnMLinkButton24" runat="server" Width="220px" ToolTip="ＹＥＳ・ＮＯ">ＹＥＳ・ＮＯ</cc1:WebCustomLinkButton><br />
+                    <cc1:WebCustomImageButton ID="ibnMImageButton24" runat="server" ToolTip="モーダル画面（非ネストに行くので注意）" /><br />
+                    <cc1:WebCustomImageMap ID="impMImageMap24" runat="server" ToolTip="モードレス画面（非ネストに行くので注意）" >
+                        <asp:CircleHotSpot HotSpotMode="PostBack" PostBackValue="spot1" X="100" Y="50" Radius="30" />
+                        <asp:RectangleHotSpot Bottom="180" HotSpotMode="PostBack" Left="120" PostBackValue="spot2" Right="180" Top="120" />
+                        <asp:PolygonHotSpot Coordinates="25,110,10,190,90,190" HotSpotMode="PostBack" PostBackValue="spot3" />
+                    </cc1:WebCustomImageMap><br />
+                    ※ QueryString無し
+                </td>
+            </tr>
+        </table>
+        <hr />
+        <!--SampleCode：Contents（個別１）-->
+        <asp:contentplaceholder id="ContentPlaceHolder_A" runat="Server">
+            This is Default Content -- Override on Page
+        </asp:contentplaceholder>
+        
+        <!--SampleCode：Contents（個別２）-->
+        <asp:contentplaceholder id="ContentPlaceHolder_B" runat="Server">
+            This is Default Content -- Override on Page
+        </asp:contentplaceholder>
+        
+        <!--SampleCode：Contents（個別３）-->
+        <asp:contentplaceholder id="ContentPlaceHolder_C" runat="Server">
+            This is Default Content -- Override on Page
+        </asp:contentplaceholder>
+        
+        <!--SampleCode：add-end-->
+
+        <!--FxCode：add-start-->
+        <asp:HiddenField ID="ChildScreenType" runat="server" Value="0" />
+        <asp:HiddenField ID="ChildScreenUrl" runat="server" Value="0" />
+        <asp:HiddenField ID="CloseFlag" runat="server" Value="0" />
+        <asp:HiddenField ID="SubmitFlag" runat="server" Value="0" />
+        <asp:HiddenField ID="ScreenGuid" runat="server" Value="0" />
+        <asp:HiddenField ID="FxDialogStyle" runat="server" Value="0" />
+        <asp:HiddenField ID="BusinessDialogStyle" runat="server" Value="0" />
+        <asp:HiddenField ID="NormalScreenStyle" runat="server" Value="0" />
+        <asp:HiddenField ID="NormalScreenTarget" runat="server" Value="0" />
+        <asp:HiddenField ID="DialogFrameUrl" runat="server" Value="0" />
+        <asp:HiddenField ID="WindowGuid" runat="server" Value="0" />
+        <asp:HiddenField ID="RequestTicketGuid" runat="server" Value="0" />
+        <!--FxCode：add-end-->
+    </form>
+</body>
+</html>
+

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoSuppliers_D5_SelCnt
+  -- 2013/1/10 日立 太郎
+  SELECT 
+    COUNT(*)
+  FROM
+    [Suppliers]
+  <WHERE>
+    WHERE
+      <IF>AND [SupplierID] = @SupplierID<ELSE>AND [SupplierID] IS NULL</ELSE></IF>
+      <IF>AND [SupplierID] LIKE @SupplierID_Like</IF>
+      <IF>AND [CompanyName] = @CompanyName<ELSE>AND [CompanyName] IS NULL</ELSE></IF>
+      <IF>AND [CompanyName] LIKE @CompanyName_Like</IF>
+      <IF>AND [ContactName] = @ContactName<ELSE>AND [ContactName] IS NULL</ELSE></IF>
+      <IF>AND [ContactName] LIKE @ContactName_Like</IF>
+      <IF>AND [ContactTitle] = @ContactTitle<ELSE>AND [ContactTitle] IS NULL</ELSE></IF>
+      <IF>AND [ContactTitle] LIKE @ContactTitle_Like</IF>
+      <IF>AND [Address] = @Address<ELSE>AND [Address] IS NULL</ELSE></IF>
+      <IF>AND [Address] LIKE @Address_Like</IF>
+      <IF>AND [City] = @City<ELSE>AND [City] IS NULL</ELSE></IF>
+      <IF>AND [City] LIKE @City_Like</IF>
+      <IF>AND [Region] = @Region<ELSE>AND [Region] IS NULL</ELSE></IF>
+      <IF>AND [Region] LIKE @Region_Like</IF>
+      <IF>AND [PostalCode] = @PostalCode<ELSE>AND [PostalCode] IS NULL</ELSE></IF>
+      <IF>AND [PostalCode] LIKE @PostalCode_Like</IF>
+      <IF>AND [Country] = @Country<ELSE>AND [Country] IS NULL</ELSE></IF>
+      <IF>AND [Country] LIKE @Country_Like</IF>
+      <IF>AND [Phone] = @Phone<ELSE>AND [Phone] IS NULL</ELSE></IF>
+      <IF>AND [Phone] LIKE @Phone_Like</IF>
+      <IF>AND [Fax] = @Fax<ELSE>AND [Fax] IS NULL</ELSE></IF>
+      <IF>AND [Fax] LIKE @Fax_Like</IF>
+      <IF>AND [HomePage] = @HomePage<ELSE>AND [HomePage] IS NULL</ELSE></IF>
+      <IF>AND [HomePage] LIKE @HomePage_Like</IF>
+  </WHERE>
+</ROOT>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  INSERT INTO 
+    "TABLE1"
+      (
+        <DELCMA>
+          <INSCOL name="C_BYTEH">"C_BYTEH",</INSCOL>
+          <INSCOL name="C_VARCHAR2_C">"C_VARCHAR2_C",</INSCOL>
+          <INSCOL name="C_VARCHAR2_CH">"C_VARCHAR2_CH",</INSCOL>
+          <INSCOL name="C_VARCHAR2_STR">"C_VARCHAR2_STR",</INSCOL>
+          <INSCOL name="C_TIMESTAMP">"C_TIMESTAMP",</INSCOL>
+          <INSCOL name="C_INTEGER_I16">"C_INTEGER_I16",</INSCOL>
+          <INSCOL name="C_INTEGER_I32">"C_INTEGER_I32",</INSCOL>
+          <INSCOL name="C_INTEGER_I64">"C_INTEGER_I64",</INSCOL>
+          <INSCOL name="C_NUMBER_S">"C_NUMBER_S",</INSCOL>
+          <INSCOL name="C_NUMBER_DO">"C_NUMBER_DO",</INSCOL>
+          <INSCOL name="C_NUMBER_DE">"C_NUMBER_S",</INSCOL>
+        </DELCMA>
+      )
+  VALUES
+      (
+        <DELCMA>
+          <IF>:C_BYTEH,</IF>
+          <IF>:C_VARCHAR2_C,</IF>
+          <IF>:C_VARCHAR2_CH,</IF>
+          <IF>:C_VARCHAR2_STR,</IF>
+          <IF>:C_TIMESTAMP,</IF>
+          <IF>:C_INTEGER_I16,</IF>
+          <IF>:C_INTEGER_I32,</IF>
+          <IF>:C_INTEGER_I64,</IF>
+          <IF>:C_NUMBER_S,</IF>
+          <IF>:C_NUMBER_DO,</IF>
+          <IF>:C_NUMBER_DE,</IF>
+        </DELCMA>
+      )
+  <PARAM>
+    C_VARCHAR2_STR, string[], aaa, bbb, ccc, ddd, eee <DIV/>
+    C_INTEGER_I16, Int16[], 1, 2, 3, 4, 5 <DIV/>
+    C_INTEGER_I32, Int32[], 11, 22, 33, 44, 55 <DIV/>
+    C_INTEGER_I64, Int64[], 111, 222, 333, 444, 555 <DIV/>
+  </PARAM>
+</ROOT>
+
+
+
+

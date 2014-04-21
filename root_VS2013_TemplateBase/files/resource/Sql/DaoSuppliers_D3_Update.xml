@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoSuppliers_D3_Update
+  -- 2013/1/10 日立 太郎
+  UPDATE
+    [Suppliers]
+  SET
+    <DELCMA>
+      <IF>[SupplierID] = @Set_SupplierID_forUPD,</IF>
+      <IF>[CompanyName] = @Set_CompanyName_forUPD,</IF>
+      <IF>[ContactName] = @Set_ContactName_forUPD,</IF>
+      <IF>[ContactTitle] = @Set_ContactTitle_forUPD,</IF>
+      <IF>[Address] = @Set_Address_forUPD,</IF>
+      <IF>[City] = @Set_City_forUPD,</IF>
+      <IF>[Region] = @Set_Region_forUPD,</IF>
+      <IF>[PostalCode] = @Set_PostalCode_forUPD,</IF>
+      <IF>[Country] = @Set_Country_forUPD,</IF>
+      <IF>[Phone] = @Set_Phone_forUPD,</IF>
+      <IF>[Fax] = @Set_Fax_forUPD,</IF>
+      <IF>[HomePage] = @Set_HomePage_forUPD,</IF>
+    </DELCMA>
+  <WHERE>
+    WHERE
+      <IF>AND [SupplierID] = @SupplierID<ELSE>AND [SupplierID] IS NULL</ELSE></IF>
+      <IF>AND [CompanyName] = @CompanyName<ELSE>AND [CompanyName] IS NULL</ELSE></IF>
+      <IF>AND [ContactName] = @ContactName<ELSE>AND [ContactName] IS NULL</ELSE></IF>
+      <IF>AND [ContactTitle] = @ContactTitle<ELSE>AND [ContactTitle] IS NULL</ELSE></IF>
+      <IF>AND [Address] = @Address<ELSE>AND [Address] IS NULL</ELSE></IF>
+      <IF>AND [City] = @City<ELSE>AND [City] IS NULL</ELSE></IF>
+      <IF>AND [Region] = @Region<ELSE>AND [Region] IS NULL</ELSE></IF>
+      <IF>AND [PostalCode] = @PostalCode<ELSE>AND [PostalCode] IS NULL</ELSE></IF>
+      <IF>AND [Country] = @Country<ELSE>AND [Country] IS NULL</ELSE></IF>
+      <IF>AND [Phone] = @Phone<ELSE>AND [Phone] IS NULL</ELSE></IF>
+      <IF>AND [Fax] = @Fax<ELSE>AND [Fax] IS NULL</ELSE></IF>
+      <IF>AND [HomePage] = @HomePage<ELSE>AND [HomePage] IS NULL</ELSE></IF>
+  </WHERE>
+</ROOT>

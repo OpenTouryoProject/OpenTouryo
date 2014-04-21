@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	INSERT INTO 
+		TestTable(
+			_char
+			)
+		 values(
+			@char
+		 	)
+	<PARAM>
+		char, CHAR, g<DIV/>
+	</PARAM>
+</ROOT>

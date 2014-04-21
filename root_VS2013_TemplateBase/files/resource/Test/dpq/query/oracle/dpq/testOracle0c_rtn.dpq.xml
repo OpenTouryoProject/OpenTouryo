@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	SELECT
+	*
+	
+	FROM
+	
+	
+	EMP
+	<PARAM>
+	</PARAM>
+	-- テストケース0c（パラメタが１つも無い場合）
+</ROOT>

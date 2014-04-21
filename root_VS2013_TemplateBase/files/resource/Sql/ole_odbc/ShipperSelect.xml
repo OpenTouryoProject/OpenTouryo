@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  SELECT
+    ShipperID, CompanyName, Phone
+  FROM
+    Shippers
+  <WHERE>
+    WHERE
+      <IF>ShipperID = @P1</IF>
+  </WHERE>
+</ROOT>

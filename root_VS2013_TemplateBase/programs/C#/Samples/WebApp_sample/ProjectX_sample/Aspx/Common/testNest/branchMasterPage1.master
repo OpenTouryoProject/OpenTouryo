@@ -1,0 +1,45 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/Aspx/Common/testNest/rootMasterPage.master" AutoEventWireup="true" CodeFile="branchMasterPage1.master.cs" Inherits="Aspx_Common_testNest_branchMasterPage1" %>
+<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+    <!-- All Rights Reserved, Copyright (C) 2007,2012 Hitachi Solutions,Ltd. -->
+    
+    branchMasterPage1のhead<br/>
+
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+    <cc1:WebCustomLabel id="lblTestA" runat="server">bmp1のC_AのlblTestA</cc1:WebCustomLabel><br/>
+    <cc1:WebCustomButton ID="btnButtonA" runat="server" Text="bmp1のC_AのbtnButtonA" Width="200px" /><br/>
+    <hr/>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_AA" runat="server">
+    </asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_AB" runat="server">
+    </asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_AC" runat="server">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder_B" Runat="Server">
+    <cc1:WebCustomLabel id="lblTestB" runat="server">bmp1のC_BのlblTestB</cc1:WebCustomLabel><br/>
+    <cc1:WebCustomButton ID="btnButtonB" runat="server" Text="bmp1のC_BのbtnButtonB" Width="200px" /><br/>
+    <hr/>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_BA" runat="server">
+    </asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_BB" runat="server">
+    </asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_BC" runat="server">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content ID="Content4" ContentPlaceHolderID="ContentPlaceHolder_C" Runat="Server">
+    <cc1:WebCustomLabel id="lblTestC" runat="server">bmp1のC_CのlblTestC</cc1:WebCustomLabel><br/>
+    <cc1:WebCustomButton ID="btnButtonC" runat="server" Text="bmp1のC_CのbtnButtonC" Width="200px" /><br/>
+    <hr/>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_CA" runat="server">
+    </asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_CB" runat="server">
+    </asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_CC" runat="server">
+    </asp:ContentPlaceHolder>
+</asp:Content>

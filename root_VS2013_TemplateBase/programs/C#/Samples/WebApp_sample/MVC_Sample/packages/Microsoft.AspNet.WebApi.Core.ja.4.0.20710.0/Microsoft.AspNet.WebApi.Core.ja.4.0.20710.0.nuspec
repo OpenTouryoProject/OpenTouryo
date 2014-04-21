@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Microsoft.AspNet.WebApi.Core.ja</id>
+    <version>4.0.20710.0</version>
+    <title>Microsoft ASP.NET Web API Core Libraries 日本語 リソース</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <licenseUrl>http://www.microsoft.com/web/webpi/eula/MVC_4_eula_JPN.htm</licenseUrl>
+    <projectUrl>http://www.asp.net/web-api</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>このパッケージには、ASP.NET Web API Core Libraries の 日本語 サテライト アセンブリが含まれています。</description>
+    <summary>Microsoft.AspNet.WebApi.Core パッケージの 日本語 リソース</summary>
+    <language>ja</language>
+    <tags>Microsoft AspNet WebApi AspNetWebApi</tags>
+    <dependencies>
+      <dependency id="Microsoft.AspNet.WebApi.Core" version="[4.0.20710.0]" />
+    </dependencies>
+    <references />
+  </metadata>
+</package>

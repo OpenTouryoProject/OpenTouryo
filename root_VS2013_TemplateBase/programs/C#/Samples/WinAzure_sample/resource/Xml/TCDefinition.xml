@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE TCD[
+	<!ELEMENT TCD (TransactionGroup*, TransactionPattern*)>
+	<!ELEMENT TransactionGroup EMPTY>
+	<!ELEMENT TransactionPattern EMPTY>
+	<!ATTLIST TransactionGroup
+		id ID #REQUIRED value CDATA #REQUIRED>
+	<!ATTLIST TransactionPattern
+		id ID #REQUIRED connkey CDATA #IMPLIED
+		isolevel (nc|nt|uc|rc|rr|sz|ss|df) "rc">
+]>
+<!-- idの先頭には、数字を使用できない。 -->
+
+<!--
+	nc : コネクションしない
+	nt : ノー トランザクション
+	uc : リード アン コミット
+	rc : リード コミット
+	rr : リピータブル リード
+	sz : シリアライザブル
+	ss : スナップ ショット
+	df : デフォルト（規定の分離レベル） -->
+
+<TCD>
+
+	<!-- トランザクション グループを定義 -->
+
+	<TransactionGroup id="SQL" value="SQL_NT,SQL_UC,SQL_RC,SQL_RR,SQL_SZ,SQL_SS,SQL_DF"/>
+	<TransactionGroup id="ODP1" value="ODP1_NT,ODP1_RC,ODP1_SZ,ODP1_DF"/>
+  <TransactionGroup id="ODP2" value="ODP2_NT,ODP2_RC,ODP2_SZ,ODP2_DF"/>
+	<TransactionGroup id="DB2" value="DB2_NT,DB2_UC,DB2_RC,DB2_RR,DB2_SZ,DB2_DF"/>
+	<TransactionGroup id="MCN" value="MCN_NT,MCN_UC,MCN_RC,MCN_RR,MCN_SZ,MCN_DF"/>
+
+	<!-- トランザクション パターンを定義 -->
+
+	<!-- SQL Clientで、SQL Serverに接続する -->
+	<TransactionPattern id="SQL_NT" connkey="ConnectionString_SQL" isolevel="nt"/>
+	<TransactionPattern id="SQL_UC" connkey="ConnectionString_SQL" isolevel="uc"/>
+	<TransactionPattern id="SQL_RC" connkey="ConnectionString_SQL" isolevel="rc"/>
+	<TransactionPattern id="SQL_RR" connkey="ConnectionString_SQL" isolevel="rr"/>
+	<TransactionPattern id="SQL_SZ" connkey="ConnectionString_SQL" isolevel="sz"/>
+	<TransactionPattern id="SQL_SS" connkey="ConnectionString_SQL" isolevel="ss"/>
+	<TransactionPattern id="SQL_DF" connkey="ConnectionString_SQL" isolevel="df"/>
+
+	<!-- ODP.NETで、Oracleに接続する -->
+	<TransactionPattern id="ODP1_NT" connkey="ConnectionString_ODP1" isolevel="nt"/>
+	<TransactionPattern id="ODP1_RC" connkey="ConnectionString_ODP1" isolevel="rc"/>
+	<TransactionPattern id="ODP1_SZ" connkey="ConnectionString_ODP1" isolevel="sz"/>
+	<TransactionPattern id="ODP1_DF" connkey="ConnectionString_ODP1" isolevel="df"/>
+
+	<!-- ODP.NET（Instant）で、Oracleに接続する -->
+	<TransactionPattern id="ODP2_NT" connkey="ConnectionString_ODP2" isolevel="nt"/>
+	<TransactionPattern id="ODP2_RC" connkey="ConnectionString_ODP2" isolevel="rc"/>
+	<TransactionPattern id="ODP2_SZ" connkey="ConnectionString_ODP2" isolevel="sz"/>
+	<TransactionPattern id="ODP2_DF" connkey="ConnectionString_ODP2" isolevel="df"/>
+
+	<!-- DB2.NETで、DB2に接続する -->
+	<TransactionPattern id="DB2_NT" connkey="ConnectionString_DB2" isolevel="nt"/>
+	<TransactionPattern id="DB2_UC" connkey="ConnectionString_DB2" isolevel="uc"/>
+	<TransactionPattern id="DB2_RC" connkey="ConnectionString_DB2" isolevel="rc"/>
+	<TransactionPattern id="DB2_RR" connkey="ConnectionString_DB2" isolevel="rr"/>
+	<TransactionPattern id="DB2_SZ" connkey="ConnectionString_DB2" isolevel="sz"/>
+	<TransactionPattern id="DB2_DF" connkey="ConnectionString_DB2" isolevel="df"/>
+
+	<!-- MySQL Cnn/NETで、MySQLに接続する -->
+	<TransactionPattern id="MCN_NT" connkey="ConnectionString_MCN" isolevel="nt"/>
+	<TransactionPattern id="MCN_UC" connkey="ConnectionString_MCN" isolevel="uc"/>
+	<TransactionPattern id="MCN_RC" connkey="ConnectionString_MCN" isolevel="rc"/>
+	<TransactionPattern id="MCN_RR" connkey="ConnectionString_MCN" isolevel="rr"/>
+	<TransactionPattern id="MCN_SZ" connkey="ConnectionString_MCN" isolevel="sz"/>
+	<TransactionPattern id="MCN_DF" connkey="ConnectionString_MCN" isolevel="df"/>
+
+	<!-- 接続しない -->
+	<TransactionPattern id="XXXX" isolevel="nc"/>
+</TCD>

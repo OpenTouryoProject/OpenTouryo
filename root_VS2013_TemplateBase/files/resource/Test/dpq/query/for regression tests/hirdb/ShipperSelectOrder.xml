@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  SELECT 
+    ShipperID, CompanyName, Phone
+  FROM
+    Shippers
+  <WHERE>
+    WHERE
+      <IF>CompanyName &lt;&gt; @P1</IF>
+  </WHERE>
+  ORDER BY <VAL name="COLUMN"/>
+  <PARAM>
+    P1, string, Speedy Express<DIV/>
+    COLUMN, CompanyName<DIV/>
+  </PARAM>
+</ROOT>
+  

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoSuppliers_D1_Insert
+  -- 2013/1/10 日立 太郎
+  INSERT INTO 
+    [Suppliers]
+      (
+        <DELCMA>
+          <INSCOL name="SupplierID">[SupplierID],</INSCOL>
+          <INSCOL name="CompanyName">[CompanyName],</INSCOL>
+          <INSCOL name="ContactName">[ContactName],</INSCOL>
+          <INSCOL name="ContactTitle">[ContactTitle],</INSCOL>
+          <INSCOL name="Address">[Address],</INSCOL>
+          <INSCOL name="City">[City],</INSCOL>
+          <INSCOL name="Region">[Region],</INSCOL>
+          <INSCOL name="PostalCode">[PostalCode],</INSCOL>
+          <INSCOL name="Country">[Country],</INSCOL>
+          <INSCOL name="Phone">[Phone],</INSCOL>
+          <INSCOL name="Fax">[Fax],</INSCOL>
+          <INSCOL name="HomePage">[HomePage],</INSCOL>
+        </DELCMA>
+      )
+  VALUES
+      (
+        <DELCMA>
+          <IF>@SupplierID,</IF>
+          <IF>@CompanyName,</IF>
+          <IF>@ContactName,</IF>
+          <IF>@ContactTitle,</IF>
+          <IF>@Address,</IF>
+          <IF>@City,</IF>
+          <IF>@Region,</IF>
+          <IF>@PostalCode,</IF>
+          <IF>@Country,</IF>
+          <IF>@Phone,</IF>
+          <IF>@Fax,</IF>
+          <IF>@HomePage,</IF>
+        </DELCMA>
+      )
+</ROOT>
+
+
+

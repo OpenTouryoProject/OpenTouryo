@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="_XMLEncoding_" ?>
+<ROOT>
+  -- _FileName_
+  -- _TimeStamp_ _UserName_
+  INSERT INTO 
+    _TableName_
+      (
+        <DELCMA>
+          _DynInsColumns_
+        </DELCMA>
+      )
+  VALUES
+      (
+        <DELCMA>
+          _DynInsParameters_
+        </DELCMA>
+      )
+</ROOT>
+
+
+
