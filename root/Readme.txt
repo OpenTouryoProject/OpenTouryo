@@ -47,8 +47,8 @@ Open棟梁(root) に同梱されるサンプルの実行手順は下記のとおりです。
       net start aspnet_state
 
 ○ プログラムのビルド(Building the program)
-   C:\root_VS2010_TemplateBase\programs\C#
-   C:\root_VS2010_TemplateBase\programs\VB
+   C:\root\programs\C#
+   C:\root\programs\VB
 
    フォルダ以下のビルドバッチを番号順に実行してプログラムをビルドします。
    必要であれば、環境に合わせて、z_Common.bat内のBUILDFILEPATHを書き換えます。
