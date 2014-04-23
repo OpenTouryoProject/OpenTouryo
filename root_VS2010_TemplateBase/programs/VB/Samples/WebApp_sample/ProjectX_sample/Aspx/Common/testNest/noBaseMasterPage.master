@@ -1,5 +1,0 @@
-<%@ Master Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" CodeFile="noBaseMasterPage.master.vb" Inherits="Aspx_Common_testNest_noBaseMasterPage" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
-    <asp:contentplaceholder id="ContentPlaceHolder_B" runat="Server">
-    </asp:contentplaceholder>
-</asp:Content>

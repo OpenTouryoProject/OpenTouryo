@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<ROOT>
-	SELECT * FROM REGION WHERE <SUB name="og"><VAL name="ttyu"/></SUB>
-	<PARAM>
-		og, boolean, true<DIV/>
-		ttyu, RegionID IN(SELECT Territories.RegionID FROM Territories)
-	</PARAM>
-	-- SUBタグのテスト（SUBタグの中にVALタグ１）
-</ROOT>

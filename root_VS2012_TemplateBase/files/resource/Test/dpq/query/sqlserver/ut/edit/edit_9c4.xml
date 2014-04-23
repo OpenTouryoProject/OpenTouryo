@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<ROOT>
-	SELECT * FROM REGION<WHERE>WHERE And</WHERE>
-	<PARAM>
-		P, int32, 1
-	</PARAM>
-	-- Andの消去ロジックの確認（上記はwhereが消えない）。
-</ROOT>
