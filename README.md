@@ -7,34 +7,34 @@
 以下のファイルを参照してください。
 (Please refer to the following files.)
 
- - Introduction.pdf
- - Introduction.pptx
- - Introduction_EN.pdf
- - Introduction_EN.pptx
- - Functional_list.xlsx
+ - [Introduction.pdf](https://github.com/OpenTouryoProject/OpenTouryo/blob/master/Introduction.pdf)
+ - [Introduction.pptx](https://github.com/OpenTouryoProject/OpenTouryo/blob/master/Introduction.pptx)
+ - [Introduction_EN.pdf](https://github.com/OpenTouryoProject/OpenTouryo/blob/master/Introduction_EN.pdf)
+ - [Introduction_EN.pptx](https://github.com/OpenTouryoProject/OpenTouryo/blob/master/Introduction_EN.pptx)
+ - [Functional_list.xlsx](https://github.com/OpenTouryoProject/OpenTouryo/blob/master/Functional_list.xlsx)
 
 ##内容物(contents)
 
 ###ディレクトリ（directory）
 
-####/license/
+#### [/license/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/license)
 ライセンス(license)
 
-####/documents/
+#### [/documents/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/documents)
 ドキュメント類(documents)
 
-####/root/
+#### [/root/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root)
 プログラム(program)
 
-####/root_VS2010_TemplateBase/
+#### [/root_VS2010_TemplateBase/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root_VS2010_TemplateBase)
 Visual Studio 2010、.NET4.0  のテンプレート・ベース
 (Template-base for Visual Studio 2010, .NET4.0)
 
-####/root_VS2012_TemplateBase/
+#### [/root_VS2012_TemplateBase/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root_VS2012_TemplateBase)
 Visual Studio 2012、.NET4.5  のテンプレート・ベース
 (Template-base for Visual Studio 2012, .NET4.5)
 
-####/root_VS2013_TemplateBase/
+#### [/root_VS2013_TemplateBase/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root_VS2013_TemplateBase)
 Visual Studio 2013、.NET4.5.1のテンプレート・ベース
 (Template-base for Visual Studio 2013, .NET4.5.1)
 
