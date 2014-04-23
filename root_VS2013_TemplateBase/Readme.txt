@@ -34,8 +34,8 @@ OpenTouryo Visual Studio 2013 template base is as follows.)
       net start aspnet_state
 
 ○ プログラムのビルド(Building the program)
-   C:\root_VS2010_TemplateBase\programs\C#
-   C:\root_VS2010_TemplateBase\programs\VB
+   C:\root_VS2013_TemplateBase\programs\C#
+   C:\root_VS2013_TemplateBase\programs\VB
 
    フォルダ以下のビルドバッチを番号順に実行してプログラムをビルドします。
    必要であれば、環境に合わせて、z_Common.bat内のBUILDFILEPATHを書き換えます。
