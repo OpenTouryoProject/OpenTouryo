@@ -1,7 +1,0 @@
-テーブル名,カラム.NET型情報～
-ts_test_table3,System.Int32,
-,System.Double,System.String,
-ts_test_table1,System.Int32,
-,System.String,System.Double,
-ts_test_table2,System.Int32,
-,System.Double,System.String,

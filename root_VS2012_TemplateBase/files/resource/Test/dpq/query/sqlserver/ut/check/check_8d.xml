@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<ROOT>
-	SELECT * FROM REGION WHERE <IF>RegionID = @P<DIV/></IF>
-	<PARAM>
-		P, int32, 1
-	</PARAM>
-	-- IFタグのテスト（不正なタグがある）
-</ROOT>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<ROOT>
-	SELECT * FROM REGION WHERE <IF>RegionID = @P<ELSE><VAL name="og"/></ELSE></IF>
-	<PARAM>
-		P, xxx, null<DIV/>
-		og, RegionID IS NULL<DIV/>
-	</PARAM>
-	-- IF-ELSEタグのテスト（ELSEタグに不正なタグがある）
-</ROOT>
