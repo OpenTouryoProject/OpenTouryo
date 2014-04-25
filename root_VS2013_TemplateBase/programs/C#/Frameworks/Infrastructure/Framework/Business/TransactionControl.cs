@@ -72,9 +72,6 @@ using Touryo.Infrastructure.Public.Util;
 namespace Touryo.Infrastructure.Framework.Business
 {
     /// <summary>トランザクション制御クラス</summary>
-    /// <remarks>
-    /// シングルトンとして利用されるデザイン パターンを採用
-    /// </remarks>
     public class TransactionControl
     {
         #region インスタンス変数
@@ -87,7 +84,6 @@ namespace Touryo.Infrastructure.Framework.Business
         #region コンストラクタ
 
         /// <summary>コンストラクタ</summary>
-        /// <remarks>シングルトンなので、初期化は起動時の１回のみ。</remarks>
         public TransactionControl()
         {
             // トランザクション定義をロードする。
