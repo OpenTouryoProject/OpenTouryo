@@ -79,15 +79,21 @@ OpenTouryo Visual Studio 2012 template base is as follows.)
 * 各チュートリアルの内容に従いOpen棟梁の評価が可能です。
    (Evaluation of OpenTouryo is possible in accordance with the contents of each tutorial.)
    
-   C:\documents\5_Tutorial\
+   \OpenTouryoProject\OpenTouryoDocuments\2_Tutorial\
+   
+   ドキュメント類は[OpenTouryoProject/OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments)リポジトリに格納されています。
+   (documents are located in the [OpenTouryoProject/OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments) repository.)
    
 * また、テンプレート・ベースをチュートリアルの内容に従いカスタマイズすることで、
-   当該Visual Studioバージョンの案件向けプロジェクト・テンプレートを作成できます。 
+   当該Visual Studioバージョンの案件向けプロジェクト・テンプレートを作成できます。
    
    (Further, You  will customize template base according to the contents of the tutorial, 
    You can create project template for the Visual Studio version for the project.)
     
-   C:\documents\5_Tutorial\Tutorial_Template_development.doc
+   \OpenTouryoProject\OpenTouryoDocuments\2_Tutorial\Tutorial_Template_development.doc
+   
+   ドキュメント類は[OpenTouryoProject/OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments)リポジトリに格納されています。
+   (documents are located in the [OpenTouryoProject/OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments) repository.)
    
 # 著作権、ライセンス(Copyright, license)
 

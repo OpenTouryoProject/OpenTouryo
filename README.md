@@ -7,11 +7,23 @@
 以下のファイルを参照してください。
 (Please refer to the following files.)
 
- - [Introduction.pdf](https://github.com/OpenTouryoProject/OpenTouryo/blob/master/Introduction.pdf)
- - [Introduction.pptx](https://github.com/OpenTouryoProject/OpenTouryo/blob/master/Introduction.pptx)
- - [Introduction_EN.pdf](https://github.com/OpenTouryoProject/OpenTouryo/blob/master/Introduction_EN.pdf)
- - [Introduction_EN.pptx](https://github.com/OpenTouryoProject/OpenTouryo/blob/master/Introduction_EN.pptx)
- - [Functional_list.xlsx](https://github.com/OpenTouryoProject/OpenTouryo/blob/master/Functional_list.xlsx)
+ - [Introduction.pdf](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/Introduction.pdf)
+ - [Introduction.pptx](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/Introduction.pptx)
+ - [Introduction_EN.pdf](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/Introduction_EN.pdf)
+ - [Introduction_EN.pptx](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/Introduction_EN.pptx)
+ - [Functional_list.xlsx](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/Functional_list.xlsx)
+
+ドキュメント類は[OpenTouryoProject/OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments)リポジトリに格納されています。
+(documents are located in the [OpenTouryoProject/OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments) repository.)
+
+##詳細
+以下のディレクトリを参照してください。
+(Please refer to the following Directories.)
+
+ - [documents](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents)
+
+ドキュメント類は[OpenTouryoProject/OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments)リポジトリに格納されています。
+(documents are located in the [OpenTouryoProject/OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments) repository.)
 
 ##内容物(contents)
 
@@ -19,9 +31,6 @@
 
 #### [/license/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/license)
 ライセンス(license)
-
-#### [/documents/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/documents)
-ドキュメント類(documents)
 
 #### [/root/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root)
 プログラム(program)
