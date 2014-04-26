@@ -16,7 +16,7 @@
 ドキュメント類は[OpenTouryoProject/OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments)リポジトリに格納されています。
 (documents are located in the [OpenTouryoProject/OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments) repository.)
 
-##詳細
+##詳細(detail)
 以下のディレクトリを参照してください。
 (Please refer to the following Directories.)
 
