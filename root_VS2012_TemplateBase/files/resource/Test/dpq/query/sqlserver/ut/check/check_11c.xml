@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<ROOT>
-	SELECT * FROM REGION WHERE <IF name="">RegionID IS NOT NULL<ELSE>RegionID IS NULL</ELSE></IF>
-	<PARAM>
-		P, boolean, true
-	</PARAM>
-	-- IF-ELSEタグ（name属性なし）のテスト（name属性が空）
-</ROOT>

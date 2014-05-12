@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<ROOT>
-	SELECT * FROM REGION WHERE <LIST><VAL name="og"/></LIST>
-	<PARAM>
-		og, RegionID IN(@PLIST)<DIV/>
-		PLIST, int32, 1, 2, 3, 4<DIV/>
-	</PARAM>
-	-- LISTタグのテスト（LISTタグの中にVALタグ１）
-</ROOT>

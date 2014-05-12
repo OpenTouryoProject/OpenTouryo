@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-SELECT * FROM ADMINISTRATOR.EMPLOYEE -- テストケース0a（これはXMLとして無効）。
