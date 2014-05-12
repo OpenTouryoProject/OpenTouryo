@@ -112,22 +112,6 @@
       <Project>{33133F7E-FCF4-4438-8241-FE5CDF6E52FD}</Project>
       <Name>Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Public\Db\DamDB2\DamDB2.csproj">
-      <Project>{F7B93ED0-8046-408E-A2BB-BAE8AF040E4A}</Project>
-      <Name>DamDB2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Public\Db\DamMySQL\DamMySQL.csproj">
-      <Project>{18345E81-5ECB-4B2F-8304-0E94F8763216}</Project>
-      <Name>DamMySQL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Public\Db\DamOraOdp\DamOraOdp.csproj">
-      <Project>{FE4533B3-53F0-4BE2-8390-9486FFF380A3}</Project>
-      <Name>DamOraOdp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Public\Db\DamPstGrS\DamPstGrS.csproj">
-      <Project>{1A3B3376-716C-4AB2-9FB5-427227D8037F}</Project>
-      <Name>DamPstGrS</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Public\Public.csproj">
       <Project>{81CC573A-0DF9-49E5-AF10-A50F9B194DA5}</Project>
       <Name>Public</Name>

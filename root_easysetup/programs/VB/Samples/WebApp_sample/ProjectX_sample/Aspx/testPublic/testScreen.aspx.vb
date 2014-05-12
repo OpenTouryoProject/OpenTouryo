@@ -324,65 +324,6 @@ Public Partial Class Aspx_testPublic_testScreen
 
 	#End Region
 
-	#Region "トランザクション制御機能"
-
-	''' <summary>トランザクション制御機能のテスト（InitDam）</summary>
-	Protected Sub btnTxPID_Click(sender As Object, e As EventArgs)
-		' 引数クラスを生成
-		' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-		Dim myParameterValue As New MyParameterValue("画面ID", "ボタンID", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue) & "%" & Convert.ToString(Me.ddlExStatus.SelectedValue), New MyUserInfo("ユーザ名", Request.UserHostAddress))
-
-		' ※ ActionTypeのフォーマット：Dap%Err%Stat%
-
-		Dim testMTC As MyBaseLogic
-
-		' B層を生成
-		If Me.cbxCnnMode.Checked Then
-			' マルチ コネクション モード
-			testMTC = New TestMTC_mcn()
-		Else
-			' シングル コネクション モード
-			testMTC = New TestMTC()
-		End If
-
-		' 業務処理を実行
-		Dim myReturnValue As MyReturnValue = DirectCast(testMTC.DoBusinessLogic(DirectCast(myParameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.User), MyReturnValue)
-	End Sub
-
-	''' <summary>トランザクション制御機能のテスト（GetTransactionPatterns）</summary>
-	Protected Sub btnTxGID_Click(sender As Object, e As EventArgs)
-		' 引数クラスを生成
-		' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-		Dim testParameterValue As New MyType.TestParameterValue("", "画面ID", "ボタンID", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue) & "%" & Convert.ToString(Me.ddlExStatus.SelectedValue), New MyUserInfo("ユーザ名", Request.UserHostAddress))
-
-		' ※ ActionTypeのフォーマット：Dap
-
-		' TransactionGroupIDを設定
-		testParameterValue.Obj = Me.ddlTxGpID.SelectedValue
-
-		' 業務処理を実行
-		Dim testMTC As New TestMTC_txg()
-
-		Dim myReturnValue As MyReturnValue = DirectCast(testMTC.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.User), MyReturnValue)
-
-		Me.lblTxID.Text = ""
-
-		' 例外判定
-		If myReturnValue.ErrorFlag Then
-			' エラーメッセージ
-			Me.lblTxID.Text = myReturnValue.ErrorMessage
-		Else
-			Dim temp1 As String() = DirectCast(DirectCast(myReturnValue, MyType.TestReturnValue).Obj, String())
-
-			' TransactionPatternIDをリストする。
-			For Each temp2 As String In temp1
-				Me.lblTxID.Text += temp2 & "<br/>"
-			Next
-		End If
-	End Sub
-
-	#End Region
-
 	#Region "JIS系"
 
 	#Region "JIS2004"

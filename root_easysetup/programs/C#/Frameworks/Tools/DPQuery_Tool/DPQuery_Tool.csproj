@@ -60,34 +60,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DamDB2">
-      <HintPath>..\..\Infrastructure\Build\DamDB2.dll</HintPath>
-    </Reference>
-    <Reference Include="DamMySQL">
-      <HintPath>..\..\Infrastructure\Build\DamMySQL.dll</HintPath>
-    </Reference>
-    <Reference Include="DamOraOdp">
-      <HintPath>..\..\Infrastructure\Build\DamOraOdp.dll</HintPath>
-    </Reference>
-    <Reference Include="DamPstGrS">
-      <HintPath>..\..\Infrastructure\Build\DamPstGrS.dll</HintPath>
-    </Reference>
-    <Reference Include="IBM.Data.DB2">
-      <HintPath>..\..\Infrastructure\Build\IBM.Data.DB2.dll</HintPath>
-    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Infrastructure\Build\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data">
-      <HintPath>..\..\Infrastructure\Build\MySql.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Npgsql">
-      <HintPath>..\..\Infrastructure\Build\Npgsql.dll</HintPath>
-    </Reference>
-    <Reference Include="Oracle.DataAccess, Version=2.112.2.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Infrastructure\Build\Oracle.DataAccess.dll</HintPath>
     </Reference>
     <Reference Include="Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

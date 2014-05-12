@@ -63,7 +63,7 @@ using System.Diagnostics;
 using System.Data.SqlClient;
 using System.Data.OleDb;
 using System.Data.Odbc;
-using System.Data.OracleClient;
+//using System.Data.OracleClient;
 using Oracle.DataAccess.Client;
 using IBM.Data.DB2;
 //using Hitachi.HiRDB;

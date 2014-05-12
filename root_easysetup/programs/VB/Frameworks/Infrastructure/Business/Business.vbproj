@@ -55,18 +55,6 @@
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DamDB2">
-      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\DamDB2.dll</HintPath>
-    </Reference>
-    <Reference Include="DamMySQL">
-      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\DamMySQL.dll</HintPath>
-    </Reference>
-    <Reference Include="DamOraOdp">
-      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\DamOraOdp.dll</HintPath>
-    </Reference>
-    <Reference Include="DamPstGrS">
-      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\DamPstGrS.dll</HintPath>
-    </Reference>
     <Reference Include="Framework">
       <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\Framework.dll</HintPath>
     </Reference>
