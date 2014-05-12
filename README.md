@@ -38,7 +38,7 @@
 #### [/root/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root_easysetup )
 簡易セットアップ版プログラム(Easy Setup program version) 
 
-###テンプレート・ベース(Template-base)(https://github.com/OpenTouryoProject/OpenTouryoTemplates)
+##テンプレート・ベース(Template-base)(https://github.com/OpenTouryoProject/OpenTouryoTemplates)
 テンプレート・ベースに同梱されるサンプルはOpen棟梁の評価に利用できます。
 また、テンプレート・ベースをチュートリアルの内容に従いカスタマイズすることで
 当該Visual Studioバージョンの案件向けプロジェクト・テンプレートを作成できます。 
