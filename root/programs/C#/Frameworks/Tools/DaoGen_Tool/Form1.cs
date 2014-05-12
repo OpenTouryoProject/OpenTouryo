@@ -4,9 +4,6 @@
 
 #region Apache License
 //
-//  
-// 
-//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -47,6 +44,8 @@
 //*  2012/11/21  西野  大介        デフォルト・エンコーディングをSJISに指定
 //*  2012/12/21  西野  大介        HiRDB戻し検討・・・
 //*  2014/01/20  西野  大介        I/O時のエンコーディング制御方式を見直し。
+//*  2014/04/30  Santosh san       Internationalization: Added Method to get the strings from the resource files based on the keys values passed.
+//*                                and and replaced this method wherever hard coded values.
 //**********************************************************************************
 
 // データプロバイダ
@@ -82,6 +81,7 @@ using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
+using System.Resources;
 
 namespace DaoGen_Tool
 {
@@ -406,11 +406,16 @@ namespace DaoGen_Tool
             this.cmbSchemaInfo.Items.Clear();
 
             // アイテムを追加する。
-            this.cmbSchemaInfo.Items.Add("概要情報");
-            this.cmbSchemaInfo.Items.Add("型情報");
-            this.cmbSchemaInfo.Items.Add("予約語情報");
-            this.cmbSchemaInfo.Items.Add("制限情報");
-            this.cmbSchemaInfo.Items.Add("メタデータ情報");
+            // this.cmbSchemaInfo.Items.Add("概要情報");
+            this.cmbSchemaInfo.Items.Add(this.RM_GetString("SummaryInfo"));
+            //this.cmbSchemaInfo.Items.Add("型情報");
+            this.cmbSchemaInfo.Items.Add(this.RM_GetString("TypeInfo"));
+            // this.cmbSchemaInfo.Items.Add("予約語情報");
+            this.cmbSchemaInfo.Items.Add(this.RM_GetString("ReservedWordInfo"));
+            //this.cmbSchemaInfo.Items.Add("制限情報");
+            this.cmbSchemaInfo.Items.Add(this.RM_GetString("RestrictionInfo"));
+            //this.cmbSchemaInfo.Items.Add("メタデータ情報");
+            this.cmbSchemaInfo.Items.Add(this.RM_GetString("MetadataInfo"));
 
             this.cmbSchemaInfo.SelectedIndex = 0;
         }
@@ -494,9 +499,13 @@ namespace DaoGen_Tool
         /// </summary>
         private void button1_Click(object sender, EventArgs e)
         {
-            this.tabPage1.Text = "タブ１";
-            this.tabPage2.Text = "タブ２";
-            this.tabPage3.Text = "タブ３";
+            //this.tabPage1.Text = "タブ１";
+            this.tabPage1.Text = this.RM_GetString("TabPage1");
+            //this.tabPage2.Text = "タブ２";
+            this.tabPage2.Text = this.RM_GetString("TabPage2");
+            //this.tabPage3.Text = "タブ３";
+            this.tabPage3.Text = this.RM_GetString("TabPage3");
+            
             this.dataGridView1.DataSource = null;
             this.dataGridView2.DataSource = null;
             this.dataGridView3.DataSource = null;
@@ -537,29 +546,29 @@ namespace DaoGen_Tool
                 {
                     #region SQL Server
 
-                    if (this.cmbSchemaInfo.SelectedItem.ToString() == "概要情報")
+                    if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
                     {
                         // DataSourceInformation
                         this.DtSchma = this.SqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataSourceInformation);
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "型情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("TypeInfo"))
                     {
                         // DataTypes
                         this.DtSchma = this.SqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
                         writeLineFlag = true;
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "予約語情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("ReservedWordInfo"))
                     {
                         // ReservedWords
                         this.DtSchma = this.SqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.ReservedWords);
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "制限情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("RestrictionInfo"))
                     {
                         // Restrictions
                         this.DtSchma = this.SqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.Restrictions);
                         writeLineFlag = true;
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "メタデータ情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("MetadataInfo"))
                     {
                         // MetaDataCollections
                         this.DtSchma = this.SqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.MetaDataCollections);
@@ -585,29 +594,29 @@ namespace DaoGen_Tool
                 {
                     #region OLEDB.NET
 
-                    if (this.cmbSchemaInfo.SelectedItem.ToString() == "概要情報")
+                    if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
                     {
                         // DataSourceInformation
                         this.DtSchma = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataSourceInformation);
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "型情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("TypeInfo"))
                     {
                         // DataTypes
                         this.DtSchma = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
                         writeLineFlag = true;
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "予約語情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("ReservedWordInfo"))
                     {
                         // ReservedWords
                         this.DtSchma = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.ReservedWords);
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "制限情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("RestrictionInfo"))
                     {
                         // Restrictions
                         this.DtSchma = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.Restrictions);
                         writeLineFlag = true;
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "メタデータ情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("MetadataInfo"))
                     {
                         // MetaDataCollections
                         this.DtSchma = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.MetaDataCollections);
@@ -633,29 +642,29 @@ namespace DaoGen_Tool
                 {
                     #region ODBC.NET
 
-                    if (this.cmbSchemaInfo.SelectedItem.ToString() == "概要情報")
+                    if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
                     {
                         // DataSourceInformation
                         this.DtSchma = this.OdbCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataSourceInformation);
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "型情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("TypeInfo"))
                     {
                         // DataTypes
                         this.DtSchma = this.OdbCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
                         writeLineFlag = true;
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "予約語情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("ReservedWordInfo"))
                     {
                         // ReservedWords
                         this.DtSchma = this.OdbCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.ReservedWords);
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "制限情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("RestrictionInfo"))
                     {
                         // Restrictions
                         this.DtSchma = this.OdbCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.Restrictions);
                         writeLineFlag = true;
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "メタデータ情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("MetadataInfo"))
                     {
                         // MetaDataCollections
                         this.DtSchma = this.OdbCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.MetaDataCollections);
@@ -681,29 +690,29 @@ namespace DaoGen_Tool
                 {
                     #region Oracle
                     
-                    if (this.cmbSchemaInfo.SelectedItem.ToString() == "概要情報")
+                    if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
                     {
                         // DataSourceInformation
                         this.DtSchma = this.OdpCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataSourceInformation);
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "型情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("TypeInfo"))
                     {
                         // DataTypes
                         this.DtSchma = this.OdpCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
                         writeLineFlag = true;
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "予約語情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("ReservedWordInfo"))
                     {
                         // ReservedWords
                         this.DtSchma = this.OdpCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.ReservedWords);
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "制限情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("RestrictionInfo"))
                     {
                         // Restrictions
                         this.DtSchma = this.OdpCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.Restrictions);
                         writeLineFlag = true;
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "メタデータ情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("MetadataInfo"))
                     {
                         // MetaDataCollections
                         this.DtSchma = this.OdpCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.MetaDataCollections);
@@ -729,29 +738,29 @@ namespace DaoGen_Tool
                 {
                     #region DB2
                     
-                    if (this.cmbSchemaInfo.SelectedItem.ToString() == "概要情報")
+                    if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
                     {
                         // DataSourceInformation
                         this.DtSchma = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataSourceInformation);
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "型情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("TypeInfo"))
                     {
                         // DataTypes
                         this.DtSchma = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
                         writeLineFlag = true;
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "予約語情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("ReservedWordInfo"))
                     {
                         // ReservedWords
                         this.DtSchma = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.ReservedWords);
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "制限情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("RestrictionInfo"))
                     {
                         // Restrictions
                         this.DtSchma = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.Restrictions);
                         writeLineFlag = true;
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "メタデータ情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("MetadataInfo"))
                     {
                         // MetaDataCollections
                         this.DtSchma = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.MetaDataCollections);
@@ -777,29 +786,29 @@ namespace DaoGen_Tool
                 {
                     #region HiRDB
 
-                    if (this.cmbSchemaInfo.SelectedItem.ToString() == "概要情報")
+                    if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
                     {
                         // DataSourceInformation
                         this.DtSchma = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataSourceInformation);
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "型情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("TypeInfo"))
                     {
                         // DataTypes
                         this.DtSchma = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
                         writeLineFlag = true;
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "予約語情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("ReservedWordInfo"))
                     {
                         // ReservedWords
                         this.DtSchma = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.ReservedWords);
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "制限情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("RestrictionInfo"))
                     {
                         // Restrictions
                         this.DtSchma = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.Restrictions);
                         writeLineFlag = true;
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "メタデータ情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("MetadataInfo"))
                     {
                         // MetaDataCollections
                         this.DtSchma = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.MetaDataCollections);
@@ -825,29 +834,29 @@ namespace DaoGen_Tool
                 {
                     #region MySQL
 
-                    if (this.cmbSchemaInfo.SelectedItem.ToString() == "概要情報")
+                    if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
                     {
                         // DataSourceInformation
                         this.DtSchma = this.MySqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataSourceInformation);
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "型情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("TypeInfo"))
                     {
                         // DataTypes
                         this.DtSchma = this.MySqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
                         writeLineFlag = true;
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "予約語情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("ReservedWordInfo"))
                     {
                         // ReservedWords
                         this.DtSchma = this.MySqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.ReservedWords);
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "制限情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("RestrictionInfo"))
                     {
                         // Restrictions
                         this.DtSchma = this.MySqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.Restrictions);
                         writeLineFlag = true;
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "メタデータ情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("MetadataInfo"))
                     {
                         // MetaDataCollections
                         this.DtSchma = this.MySqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.MetaDataCollections);
@@ -873,29 +882,29 @@ namespace DaoGen_Tool
                 {
                     #region PostgreSQL
 
-                    if (this.cmbSchemaInfo.SelectedItem.ToString() == "概要情報")
+                    if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
                     {
                         // DataSourceInformation
                         this.DtSchma = this.NpgsqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataSourceInformation);
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "型情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("TypeInfo"))
                     {
                         // DataTypes
                         this.DtSchma = this.NpgsqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
                         writeLineFlag = true;
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "予約語情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("ReservedWordInfo"))
                     {
                         // ReservedWords
                         this.DtSchma = this.NpgsqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.ReservedWords);
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "制限情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("RestrictionInfo"))
                     {
                         // Restrictions
                         this.DtSchma = this.NpgsqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.Restrictions);
                         writeLineFlag = true;
                     }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == "メタデータ情報")
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("MetadataInfo"))
                     {
                         // MetaDataCollections
                         this.DtSchma = this.NpgsqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.MetaDataCollections);
@@ -927,7 +936,8 @@ namespace DaoGen_Tool
                 if (this.cbxDebug.Checked)
                 {
                     // 各種スキーマ情報
-                    this.tabPage1.Text = "スキーマ情報";
+                    //this.tabPage1.Text = "スキーマ情報";
+                    this.tabPage1.Text = RM_GetString("TabPage1SchemaInfo");
                     this.dataGridView1.DataSource = DtSchma;
                 }
                 #endregion
@@ -946,14 +956,16 @@ namespace DaoGen_Tool
                 
                 // スキーマ情報を子画面に表示
                 SimpleTextBoxWindow win = new SimpleTextBoxWindow();
-                win._title = "DBMSのスキーマ情報の表示（" + temp + "）ダイアログ";
+                //win._title = "DBMSのスキーマ情報の表示（" + temp + "）ダイアログ";
+                win._title = string.Format(this.RM_GetString("DisplaySchemaInfoDialogBox"),temp);
                 win._param = CmnMethods.DisplayDataString(this.DtSchma, writeLineFlag);
                 win.ShowDialog(this);
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show("ランタイムエラーです：" + ex.Message);
+                //MessageBox.Show("ランタイムエラーです：" + ex.Message);
+                MessageBox.Show(this.RM_GetString("RuntimeError") + ex.Message);
             }
             finally
             {
@@ -992,8 +1004,9 @@ namespace DaoGen_Tool
                     #region SQL Server
 
                     // 注釈
-                    MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（SQL Server用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
-
+                    //MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（SQL Server用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "SQL Server"),this.RM_GetString("CautionPrerequisiteCaption"));
+                    
                     #region テーブル・ビューの情報を取得
 
                     dtSchmaTables = this.SqlCn.GetSchema("Tables");
@@ -1031,7 +1044,8 @@ namespace DaoGen_Tool
                     #region OLEDB
 
                     // 注釈
-                    MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（OLEDB用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    //MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（OLEDB用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "OLEDB"), this.RM_GetString("CautionPrerequisiteCaption"));
 
                     #region テーブル・ビューの情報を取得
 
@@ -1070,7 +1084,8 @@ namespace DaoGen_Tool
                     #region ODBC
 
                     // 注釈
-                    MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（ODBC用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    //MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（ODBC用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "ODBC"), this.RM_GetString("CautionPrerequisiteCaption"));
 
                     #region テーブル・ビューの情報を取得
 
@@ -1122,7 +1137,8 @@ namespace DaoGen_Tool
                     #endregion
 
                     // 注釈
-                    MessageBox.Show("[" + userId + "]スキーマ（ユーザ）の所有するテーブルのみを対象とします（Oracle用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    //MessageBox.Show("[" + userId + "]スキーマ（ユーザ）の所有するテーブルのみを対象とします（Oracle用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisiteOracle"),userId), this.RM_GetString("CautionPrerequisiteCaption"));
 
                     #region テーブル・ビューの情報を取得
 
@@ -1171,7 +1187,8 @@ namespace DaoGen_Tool
                     #region DB2
 
                     // 注釈
-                    MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（DB2用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    //MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（DB2用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "DB2"), this.RM_GetString("CautionPrerequisiteCaption"));
 
                     #region テーブル・ビューの情報を取得
 
@@ -1227,8 +1244,9 @@ namespace DaoGen_Tool
                     #region HiRDB
 
                     // 注釈
-                    MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（HiRDB用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
-
+                    //MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（HiRDB用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "ODBC"), this.RM_GetString("CautionPrerequisiteCaption"));
+                    
                     #region テーブル・ビューの情報を取得
 
                     dtSchmaTables = this.HiRDBCn.GetSchema("Tables");
@@ -1283,7 +1301,8 @@ namespace DaoGen_Tool
                     #region MySQL
 
                     // 注釈
-                    MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（MySQL用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    // MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（MySQL用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "MySQL"), this.RM_GetString("CautionPrerequisiteCaption"));
 
                     #region テーブル・ビューの情報を取得
 
@@ -1316,7 +1335,8 @@ namespace DaoGen_Tool
                     #region PostgreSQL
 
                     // 注釈
-                    MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（PostgreSQL用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    //MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（PostgreSQL用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "PostgreSQL"), this.RM_GetString("CautionPrerequisiteCaption"));
 
                     #region テーブル・ビューの情報を取得
 
@@ -1358,13 +1378,15 @@ namespace DaoGen_Tool
                     // テーブル情報
                     if (dtSchmaTables != null)
                     {
-                        this.tabPage1.Text = "テーブル情報";
+                        //this.tabPage1.Text = "テーブル情報";
+                        this.tabPage1.Text = this.RM_GetString("TabPage1TableInfo");
                         this.dataGridView1.DataSource = dtSchmaTables;
                     }
                     // ヴュー情報
                     if (dtSchmaViews != null)
                     {
-                        this.tabPage2.Text = "ヴュー情報";
+                        //this.tabPage2.Text = "ヴュー情報";
+                        this.tabPage2.Text = this.RM_GetString("TabPage2VieuxInfo");                        
                         this.dataGridView2.DataSource = dtSchmaViews;
                     }
                 }
@@ -1388,7 +1410,7 @@ namespace DaoGen_Tool
             }
             catch (Exception ex)
             {
-                MessageBox.Show("ランタイムエラーです：" + ex.Message);
+                MessageBox.Show(this.RM_GetString("RuntimeError") + ex.Message);
             }
             finally
             {
@@ -1955,19 +1977,22 @@ namespace DaoGen_Tool
                     // カラム情報
                     if (dtSchmaColumns != null)
                     {
-                        this.tabPage1.Text = "カラム情報";
+                        // this.tabPage1.Text = "カラム情報";
+                        this.tabPage1.Text = this.RM_GetString("TabPage1ColumnInfo");
                         this.dataGridView1.DataSource = dtSchmaColumns;
                     }
                     // 主キー情報
                     if (dtSchmaPrimaryKeys != null)
                     {
-                        this.tabPage2.Text = "主キー情報";
+                        //this.tabPage2.Text = "主キー情報";
+                        this.tabPage2.Text = this.RM_GetString("TabPage2PrimarykeyInfo");
                         this.dataGridView2.DataSource = dtSchmaPrimaryKeys;
                     }
                     // インデックス カラム情報
                     if (dtSchmaIndexColumns != null)
                     {
-                        this.tabPage3.Text = "インデックス カラム情報";
+                        //this.tabPage3.Text = "インデックス カラム情報";
+                        this.tabPage3.Text = this.RM_GetString("TabPage3IndexColInfo");
                         this.dataGridView3.DataSource = dtSchmaIndexColumns;
                     }
                 }
@@ -1983,7 +2008,7 @@ namespace DaoGen_Tool
             }
             catch (Exception ex)
             {
-                MessageBox.Show("ランタイムエラーです：" + ex.Message);
+                MessageBox.Show(this.RM_GetString("RuntimeError") + ex.Message);
             }
             finally
             {
@@ -2013,7 +2038,8 @@ namespace DaoGen_Tool
                 }
                 else
                 {
-                    DialogResult dRet = MessageBox.Show("次のテーブルに進みます。", "確認", MessageBoxButtons.OKCancel);
+                    //DialogResult dRet = MessageBox.Show("次のテーブルに進みます。", "確認", MessageBoxButtons.OKCancel);
+                    DialogResult dRet = MessageBox.Show(this.RM_GetString("GotoNextTable"), this.RM_GetString("Confirm"), MessageBoxButtons.OKCancel);
 
                     if (dRet == DialogResult.Cancel)
                     {
@@ -2028,7 +2054,8 @@ namespace DaoGen_Tool
 
                 // スキーマ情報を子画面に表示
                 SetPrimaryKeyWindow win = new SetPrimaryKeyWindow();
-                win._title = "主キー情報の設定（" + tableName + "）ダイアログ";
+                //win._title = "主キー情報の設定（" + tableName + "）ダイアログ";
+                win._title = string.Format(this.RM_GetString("SetPrimaryKeyInfo"), tableName);
                 win._htColumns_Position = ((CTable)this.HtSchemaCustom[tableName]).HtColumns_Position;
                 win.ShowDialog(this);
             }
@@ -2043,8 +2070,10 @@ namespace DaoGen_Tool
         {
             // セーブ先の設定
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "CSVファイル(*.csv)|*.csv";
-            sfd.Title = "D層定義情報ファイル";
+            //sfd.Filter = "CSVファイル(*.csv)|*.csv";
+            sfd.Filter = this.RM_GetString("SaveFileDialogFilter");
+            //sfd.Title = "D層定義情報ファイル";
+            sfd.Title = this.RM_GetString("SaveFileDialogTitle");
             DialogResult dRet = sfd.ShowDialog();
 
             // ストリームライター
@@ -2080,9 +2109,12 @@ namespace DaoGen_Tool
                         sw_DotNetTypeInfo = new StreamWriter(sfd.FileName.Substring(0, temp) + "_DotNetTypeInfo" + sfd.FileName.Substring(temp), false, enc);
                         
                         // ファイル ヘッダーを出力
-                        sw.WriteLine("テーブル名,カラム情報～");
-                        sw_DBTypeInfo.WriteLine("テーブル名,カラムDB型情報～");
-                        sw_DotNetTypeInfo.WriteLine("テーブル名,カラム.NET型情報～");
+                        //sw.WriteLine("テーブル名,カラム情報～");
+                        sw.WriteLine(this.RM_GetString("TableNameColInfo"));
+                        //sw_DBTypeInfo.WriteLine("テーブル名,カラムDB型情報～");
+                        sw_DBTypeInfo.WriteLine(this.RM_GetString("TableNameColDbTypeInfo"));
+                        //sw_DotNetTypeInfo.WriteLine("テーブル名,カラム.NET型情報～");
+                        sw_DotNetTypeInfo.WriteLine(this.RM_GetString("TableNameColdotNetTypeInfo"));
 
                         // テーブルを処理
                         foreach (CTable table in this.HtSchemaCustom.Values)
@@ -2138,11 +2170,12 @@ namespace DaoGen_Tool
                 }
 
                 // メッセージ
-                MessageBox.Show("Ｄ層定義情報の生成完了！");
+                //MessageBox.Show("Ｄ層定義情報の生成完了！");
+                MessageBox.Show(this.RM_GetString("DlayerGeneratedMessage"));
             }
             catch (Exception ex)
             {
-                MessageBox.Show("ランタイムエラーです：" + ex.Message);
+                MessageBox.Show(this.RM_GetString("RuntimeError") + ex.Message);
             }
             finally
             {
@@ -2193,6 +2226,13 @@ namespace DaoGen_Tool
             win.Init(this.Dap);
             // ダイアログとして表示
             win.ShowDialog(this);
+        }
+
+        /// <summary>This Method gets the string values from resource file based on the key passed</summary>      
+        private string RM_GetString(string key)
+        {
+            ResourceManager rm = Resources.Resource.ResourceManager;
+            return rm.GetString(key);
         }
     }
 }
