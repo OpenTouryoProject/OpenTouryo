@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ARGUMENT_INJUSTICE" xml:space="preserve">
+    <value>引数不正</value>
+  </data>
+  <data name="COMMANDTIMEOUT_ERROR" xml:space="preserve">
+    <value>CommandTimeout値には、１以上の数値（秒）を指定してください。Configキー： </value>
+  </data>
+  <data name="DB_ISO_LEVEL_PARAM_ERROR_NC" xml:space="preserve">
+    <value>DbEnum.IsolationLevelEnum isoに無効なパラメタ[NotConnect]が指定されました。[DbEnum.IsolationLevelEnum.NotConnect]パラメタは使用できません。</value>
+  </data>
+  <data name="DB_ISO_LEVEL_PARAM_ERROR_RR" xml:space="preserve">
+    <value>DbEnum.IsolationLevelEnum isoに{0}データベースで無効な分離レベル[RepeatableRead]が指定されました。</value>
+  </data>
+  <data name="DB_ISO_LEVEL_PARAM_ERROR_SS" xml:space="preserve">
+    <value>DbEnum.IsolationLevelEnum isoに{0}データベースで無効な分離レベル[Snapshot]が指定されました。</value>
+  </data>
+  <data name="DB_ISO_LEVEL_PARAM_ERROR_UC" xml:space="preserve">
+    <value>DbEnum.IsolationLevelEnum isoに{0}データベースで無効な分離レベル[ReadUncommitted]が指定されました。</value>
+  </data>
+  <data name="DB_ISO_LEVEL_PARAM_ERROR_USR" xml:space="preserve">
+    <value>DbEnum.IsolationLevelEnum isoに無効なパラメタ[User]が指定されました。ユーザが他の分離レベルに振り替える必要があります。</value>
+  </data>
+  <data name="DPQ_ELSE_TAG_DOESNT_EXIST_WHEN_INNER_PARAM_OF_IF_TAG_IS_FALSE" xml:space="preserve">
+    <value>IFタグのタグ内パラメタにfalseが設定されましたが、ELSEタグが設定されていません。</value>
+  </data>
+  <data name="DPQ_ELSE_TAG_DOESNT_EXIST_WHEN_INNER_PARAM_OF_IF_TAG_IS_NULL" xml:space="preserve">
+    <value>IFタグのタグ内パラメタにnullが設定されましたが、ELSEタグが設定されていません。</value>
+  </data>
+  <data name="DPQ_ELSE_TAG_DOESNT_EXIST_WHEN_TEXT_PARAM_OF_IF_TAG_IS_NULL" xml:space="preserve">
+    <value>IFタグのテキスト内パラメタにnullが設定されましたが、ELSEタグが設定されていません。</value>
+  </data>
+  <data name="DPQ_SET_ONLY_NULL_OR_BOOL_TO_INNER_PARAM_VALUE" xml:space="preserve">
+    <value>{0}タグのタグ内パラメタに設定可能な値は、null値 or Boolean値のみです。</value>
+  </data>
+  <data name="DPQ_TAG_FORMAT_ERROR" xml:space="preserve">
+    <value>{0}タグのフォーマットが不正です。</value>
+  </data>
+  <data name="DPQ_TAG_INNER_PARAM_NOT_EXIST" xml:space="preserve">
+    <value>{0}タグにタグ内パラメタが設定されていません。</value>
+  </data>
+  <data name="DPQ_TAG_NAME_ATTR_NOT_EXIST" xml:space="preserve">
+    <value>{0}タグにname属性が設定されていません（null）。</value>
+  </data>
+  <data name="DPQ_TAG_NAME_ATTR_VALUE_IS_EMPTY" xml:space="preserve">
+    <value>{0}タグにname属性が設定されていません（空文字列）。</value>
+  </data>
+  <data name="DPQ_TAG_VALUE_ATTR_NOT_EXIST" xml:space="preserve">
+    <value>{0}タグにvalue属性が設定されていません（null）。</value>
+  </data>
+  <data name="LATEBIND_ERROR0" xml:space="preserve">
+    <value>アセンブリ名：[{0}]が存在しません。</value>
+  </data>
+  <data name="LATEBIND_ERROR1" xml:space="preserve">
+    <value>アセンブリ名：[{0}]に、クラス名：[{1}]が存在しません。</value>
+  </data>
+  <data name="LATEBIND_ERROR2" xml:space="preserve">
+    <value>アセンブリ名：[{0}]、クラス名：[{1}]に、メソッド名：[{2}]が存在しません。</value>
+  </data>
+  <data name="LATEBIND_ERROR3" xml:space="preserve">
+    <value>アセンブリ名：[{0}]、クラス名：[{1}]に、引数の数が一致するメソッド名：[{2}]が存在しません。</value>
+  </data>
+  <data name="NOT_IMPLEMENTED" xml:space="preserve">
+    <value>この処理は実装されていません。</value>
+  </data>
+  <data name="NO_CONFIG" xml:space="preserve">
+    <value>コンフィグに指定がありません。Configキー：{0}</value>
+  </data>
+  <data name="ORDER_BIND_ERROR_PARAMETER_NOT_FOUND" xml:space="preserve">
+    <value>スカラー変数 "{0}" を宣言してください。</value>
+  </data>
+  <data name="PARAM_IS_NULL" xml:space="preserve">
+    <value>{0}パラメタがnullです。</value>
+  </data>
+  <data name="PARAM_TAG_ERROR" xml:space="preserve">
+    <value>PARAM情報（{0}）の変換に失敗しました。：{1}</value>
+  </data>
+  <data name="PARAM_TAG_TYPE_ERROR" xml:space="preserve">
+    <value>型指定が不正です（{0}）。</value>
+  </data>
+  <data name="PARAM_TAG_VALUE_ERROR" xml:space="preserve">
+    <value>値指定が不正です（{0}）。</value>
+  </data>
+  <data name="PROP_STRING_FORMAT_ERROR" xml:space="preserve">
+    <value>プロパティ文字列フォーマットが不正です。：{0}</value>
+  </data>
+  <data name="PROP_STRING_FORMAT_ERROR_CURLY_BRACE" xml:space="preserve">
+    <value>中括弧が正しく閉じられていません。</value>
+  </data>
+  <data name="PROP_STRING_FORMAT_ERROR_DELIMITER_OF_PROPERTY_NAME" xml:space="preserve">
+    <value>プロパティ名の区切り文字が不正です。</value>
+  </data>
+  <data name="PROP_STRING_FORMAT_ERROR_DELIMITER_OF_PROPERTY_VALUE" xml:space="preserve">
+    <value>プロパティ値の区切り文字が不正です。</value>
+  </data>
+  <data name="PROP_STRING_FORMAT_ERROR_ESCAPE_CHARACTER" xml:space="preserve">
+    <value>エスケープ文字が不正です（{0}）。</value>
+  </data>
+  <data name="PROP_STRING_FORMAT_ERROR_PROPERTY_NAME_IS_EMPTY" xml:space="preserve">
+    <value>プロパティ名が空です。</value>
+  </data>
+  <data name="PROP_STRING_FORMAT_ERROR_PROPERTY_VALUE_IS_EMPTY" xml:space="preserve">
+    <value>プロパティ値が空です。</value>
+  </data>
+  <data name="PROP_STRING_FORMAT_ERROR_START_CHARACTER" xml:space="preserve">
+    <value>開始文字が不正です（=、;、}、）。</value>
+  </data>
+  <data name="RESOURCE_FILE_NOT_FOUND" xml:space="preserve">
+    <value>リソースファイル[{0}]は見つかりませんでした。</value>
+  </data>
+  <data name="SWITCH_ERROR" xml:space="preserve">
+    <value>スイッチは、"on" or "off"で指定してください。Configキー：{0}</value>
+  </data>
+  <data name="THIS_DPQ_TAG_IS_UNKNOWN" xml:space="preserve">
+    <value>不正なタグが含まれています。</value>
+  </data>
+  <data name="XML_DECLARATION_ERROR" xml:space="preserve">
+    <value>XML宣言[{0}]は不正です。</value>
+  </data>
+  <data name="XML_ELEMENT_ERROR" xml:space="preserve">
+    <value>XMLエレメントが不正です。{0}</value>
+  </data>
+  <data name="XML_ELEMENT_ERROR_LOG4NET" xml:space="preserve">
+    <value>ルート エレメントであるlog4netがありません。</value>
+  </data>
+  <data name="ZIP_PASSWORD" xml:space="preserve">
+    <value>暗号化する際は、パスワードの設定が必要です。</value>
+  </data>
+</root>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	SELECT * FROM Employees WHERE BirthDate = @BDay AND HireDate = @HDay
+	ORDER BY [<VAL name="COLUMN"/>] <VAL name="SEQUENCE"/>
+	<PARAM>
+		<DIV/>
+		BDay, String, 1948/12/08<DIV/>
+		HDay, String, 1992/05/01<DIV/>
+		COLUMN, EmployeeID<DIV/>
+		SEQUENCE, DESC<DIV/>
+	</PARAM>
+	-- テストケース3（色々なデータ型をテストするパターン（日付））
+</ROOT>

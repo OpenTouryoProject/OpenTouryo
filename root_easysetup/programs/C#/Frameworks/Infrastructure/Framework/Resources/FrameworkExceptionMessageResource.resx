@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ASYNC_EVENT_ENTRY_CALLBACK_CHECK_ERROR" xml:space="preserve">
+    <value>The call-back corresponding to event classification is inaccurate (null or inaccurate type).</value>
+  </data>
+  <data name="ASYNC_EVENT_ENTRY_CHECK_ERROR" xml:space="preserve">
+    <value>event classification is inaccurate.</value>
+  </data>
+  <data name="ASYNC_EVENT_ENTRY_CONTROL_CHECK_ERROR" xml:space="preserve">
+    <value>the event classification WinForm, only [System.Windows.Forms.Control] can specify.and the event classification WPF, only [System.Windows.DependencyObject] can specify.</value>
+  </data>
+  <data name="ASYNC_FUNC_CHECK_ERROR" xml:space="preserve">
+    <value>The type of argument needs to be in any of System.Windows.DependencyObject and System.Windows.Forms.Control.</value>
+  </data>
+  <data name="ASYNC_MSGBOX_ERROR" xml:space="preserve">
+    <value>MessageBox display API to be used has an error (for WPF &lt;=&gt; for Windows).</value>
+  </data>
+  <data name="CONTROL_REPETITION_ERROR1" xml:space="preserve">
+    <value>Control overlaps in a screen (a master page, a contents page, user control). (Control name : {0}).</value>
+  </data>
+  <data name="CONTROL_REPETITION_ERROR2" xml:space="preserve">
+    <value>Control overlaps in a screen (form, user control). (Control name : {0}).</value>
+  </data>
+  <data name="CONTROL_TYPE_ERROR" xml:space="preserve">
+    <value>The prefix and type of control are not in agreement (prefix: {0}, type : {1}).</value>
+  </data>
+  <data name="DIALOG_AFTER_PROCESSING_STATUS_ERROR" xml:space="preserve">
+    <value>The unjust state was detected by post-processing after a dialog display. Supplementary information : {0}</value>
+  </data>
+  <data name="DIALOG_CLOSING_STATUS_ERROR" xml:space="preserve">
+    <value>The unjust state was detected by the processing which closes a dialog. Supplementary information : {0}</value>
+  </data>
+  <data name="DIALOG_CLOSING_STATUS_ERROR1" xml:space="preserve">
+    <value>A CloseModalScreen_NoPostback() method cannot be performed from this screen.</value>
+  </data>
+  <data name="DIALOG_CLOSING_STATUS_ERROR2" xml:space="preserve">
+    <value>A CloseModalScreen_WithAllParent() method cannot be performed from this screen.</value>
+  </data>
+  <data name="ERROR_IN_WRITING_OF_FX_NUMVAL" xml:space="preserve">
+    <value>Please specify definition numerically. Config key: {0}</value>
+  </data>
+  <data name="ERROR_IN_WRITING_OF_FX_PATH1" xml:space="preserve">
+    <value>The path information on definition file is not defined. Config key: {0}</value>
+  </data>
+  <data name="ERROR_IN_WRITING_OF_FX_PATH2" xml:space="preserve">
+    <value>The path information on definition file is wrong. Config key: {0}</value>
+  </data>
+  <data name="ERROR_IN_WRITING_OF_FX_SWITCH1" xml:space="preserve">
+    <value>Please specify switch by "on" or "off". Config key: {0}</value>
+  </data>
+  <data name="ERROR_IN_WRITING_OF_FX_SWITCH2" xml:space="preserve">
+    <value>Please specify switch by "true" or "false". Config key: {0}</value>
+  </data>
+  <data name="FX_PROCESSING_STATUS_ERROR" xml:space="preserve">
+    <value>The unjust state was detected by framework processing. Supplementary information : {0}</value>
+  </data>
+  <data name="FX_PROCESSING_STATUS_ERROR_NO_BH_QUEUE" xml:space="preserve">
+    <value>Button history information cannot be referred to by the causes which carried out session timeout, having referred to old cache, such as dequeued from queue.</value>
+  </data>
+  <data name="ILLEGAL_OPERATION_CHECK_ERROR" xml:space="preserve">
+    <value>The error occurred in manipulation check processing.</value>
+  </data>
+  <data name="IPR_NAMESERVICE_XML_FORMAT_ERROR" xml:space="preserve">
+    <value>The format of the name resolution definition file of in process call is inaccurate. :{0}</value>
+  </data>
+  <data name="IPR_NAMESERVICE_XML_FORMAT_ERROR_asmName1" xml:space="preserve">
+    <value>There is no  FxLiteral.XML_TM_INPROCESS_ATTR_ASSEMBLYNAME attribute. FxLiteral.XML_TM_TAG_TRANSMISSION tag ({0}).</value>
+  </data>
+  <data name="IPR_NAMESERVICE_XML_FORMAT_ERROR_asmName2" xml:space="preserve">
+    <value>A FxLiteral.XML_TM_INPROCESS_ATTR_ASSEMBLYNAME attribute value is empty. FxLiteral.XML_TM_TAG_TRANSMISSION tag ({0}).</value>
+  </data>
+  <data name="IPR_NAMESERVICE_XML_FORMAT_ERROR_clsName1" xml:space="preserve">
+    <value>A  FxLiteral.XML_TM_INPROCESS_ATTR_CLASSNAME tag ({0}) with a FxLiteral.XML_TM_TAG_TRANSMISSION attribute.</value>
+  </data>
+  <data name="IPR_NAMESERVICE_XML_FORMAT_ERROR_clsName2" xml:space="preserve">
+    <value>A FxLiteral.XML_TM_INPROCESS_ATTR_CLASSNAME attribute value is empty. FxLiteral.XML_TM_TAG_TRANSMISSION tag ({0}).</value>
+  </data>
+  <data name="LB_ILLEGAL_CALL_CHECK_ERROR" xml:space="preserve">
+    <value>The error occurred in B layer call check processing.</value>
+  </data>
+  <data name="MASTER_PAGE_TYPE_ERROR" xml:space="preserve">
+    <value>master page has not inherited BaseMasterController (master page name : {0}).</value>
+  </data>
+  <data name="MESSAGE_XML_FORMAT_ERROR" xml:space="preserve">
+    <value>The format of message definition file is inaccurate. :{0}</value>
+  </data>
+  <data name="MESSAGE_XML_FORMAT_ERROR_ATTR" xml:space="preserve">
+    <value>There is no {0} attribute. Message tag ({1}).</value>
+  </data>
+  <data name="NAMESERVICE_XML_FORMAT_ERROR_tm" xml:space="preserve">
+    <value>There is no id attribute value ({0}) corresponding to a FxLiteral.XML_TM_TAG_TRANSMISSION tag.</value>
+  </data>
+  <data name="NO_FX_HIDDEN" xml:space="preserve">
+    <value>The HIDDEN tag required of framework is not mounted. HIDDEN tag: {0}</value>
+  </data>
+  <data name="NO_MASTER_PAGE" xml:space="preserve">
+    <value>Master page is not used (contents page name : {0}).</value>
+  </data>
+  <data name="PARAMETER_CHECK_ERROR" xml:space="preserve">
+    <value>It is the check error of a parameter. : {0}</value>
+  </data>
+  <data name="PARAMETER_CHECK_ERROR_empty" xml:space="preserve">
+    <value>parameter is empty ({0}).</value>
+  </data>
+  <data name="PARAMETER_CHECK_ERROR_length" xml:space="preserve">
+    <value>parameter length is inaccurate ({0}).</value>
+  </data>
+  <data name="PARAMETER_CHECK_ERROR_null" xml:space="preserve">
+    <value>parameter is null ({0}).</value>
+  </data>
+  <data name="PRT_NAMESERVICE_XML_FORMAT_ERROR" xml:space="preserve">
+    <value>The format of the name resolution definition file of a call protocol is inaccurate. :{0}</value>
+  </data>
+  <data name="PRT_NAMESERVICE_XML_FORMAT_ERROR_prop1" xml:space="preserve">
+    <value>There is no FxLiteral.XML_TM_PROTOCOL_TAG_PROP  tag. IDREF ({0}).</value>
+  </data>
+  <data name="PRT_NAMESERVICE_XML_FORMAT_ERROR_prop2" xml:space="preserve">
+    <value>There is no  FxLiteral.XML_CMN_ATTR_VALUE  attribute. FxLiteral.XML_TM_PROTOCOL_TAG_PROP  tag ({0}).</value>
+  </data>
+  <data name="PRT_NAMESERVICE_XML_FORMAT_ERROR_prt1" xml:space="preserve">
+    <value>There is no FxLiteral.XML_TM_PROTOCOL_ATTR_PROTOCOL attribute. FxLiteral.XML_TM_TAG_TRANSMISSION tag ({0}).</value>
+  </data>
+  <data name="PRT_NAMESERVICE_XML_FORMAT_ERROR_prt2" xml:space="preserve">
+    <value>A setup of a FxLiteral.XML_TM_PROTOCOL_ATTR_PROTOCOL attribute is inaccurate ({0}). FxLiteral.XML_TM_TAG_TRANSMISSION tag ({1}).</value>
+  </data>
+  <data name="PRT_NAMESERVICE_XML_FORMAT_ERROR_to" xml:space="preserve">
+    <value>The  FxLiteral.XML_TM_PROTOCOL_ATTR_TIMEOUT attribute value should specify a numerical value. FxLiteral.XML_TM_TAG_TRANSMISSION  tag ({0}).</value>
+  </data>
+  <data name="PRT_NAMESERVICE_XML_FORMAT_ERROR_url1" xml:space="preserve">
+    <value>There are not FxLiteral.XML_TM_PROTOCOL_ATTR_URL and a FxLiteral.XML_TM_PROTOCOL_ATTR_URL_REF attribute. FxLiteral.XML_TM_TAG_TRANSMISSION tag ({0}).</value>
+  </data>
+  <data name="PRT_NAMESERVICE_XML_FORMAT_ERROR_url2" xml:space="preserve">
+    <value>There is no  FxLiteral.XML_TM_PROTOCOL_TAG_URL  tag. IDREF ({0}).</value>
+  </data>
+  <data name="PRT_NAMESERVICE_XML_FORMAT_ERROR_url3" xml:space="preserve">
+    <value>There is no  FxLiteral.XML_CMN_ATTR_VALUE attribute. FxLiteral.XML_TM_PROTOCOL_TAG_URL  tag ({0}).</value>
+  </data>
+  <data name="PRT_NAMESERVICE_XML_FORMAT_ERROR_url4" xml:space="preserve">
+    <value>url is empty. {0} tags ({1}).</value>
+  </data>
+  <data name="SCREEN_CONTROL_CHECK_ERROR" xml:space="preserve">
+    <value>The error occurred in screen changes check processing. :{0}</value>
+  </data>
+  <data name="SCREEN_CONTROL_CHECK_ERROR_get" xml:space="preserve">
+    <value>Screen changes by a Get method are not permitted ({0}).</value>
+  </data>
+  <data name="SCREEN_CONTROL_CHECK_ERROR_naked" xml:space="preserve">
+    <value>The screen changes which do not use parts (Transfer and crossing site posting) are not permitted ({0}).</value>
+  </data>
+  <data name="SCREEN_CONTROL_CHECK_ERROR_nolbl" xml:space="preserve">
+    <value>the screen changes concerned are not permitted (path of a front screen : {0}, path of the present screen : {1}).</value>
+  </data>
+  <data name="SCREEN_CONTROL_XML_FORMAT_ERROR" xml:space="preserve">
+    <value>The format of a screen changes definition file is inaccurate. :{0}</value>
+  </data>
+  <data name="SCREEN_CONTROL_XML_FORMAT_ERROR_dl1" xml:space="preserve">
+    <value>There is no  FxLiteral.XML_SC_ATTR_DIRECTLINK attribute.  FxLiteral.XML_SC_TAG_SCREEN tags ({0}).</value>
+  </data>
+  <data name="SCREEN_CONTROL_XML_FORMAT_ERROR_dl2" xml:space="preserve">
+    <value>A  FxLiteral.XML_SC_ATTR_DIRECTLINK attribute is inaccurate({0}). FxLiteral.XML_SC_TAG_SCREEN  tags ({1}).</value>
+  </data>
+  <data name="SCREEN_CONTROL_XML_FORMAT_ERROR_label" xml:space="preserve">
+    <value>There is no  FxLiteral.XML_SC_ATTR_LABEL  attribute. {0} tags ({1}).</value>
+  </data>
+  <data name="SCREEN_CONTROL_XML_FORMAT_ERROR_mode" xml:space="preserve">
+    <value>A   FxLiteral.XML_SC_ATTR_MODE  attribute is inaccurate ({0}). {1} tag ({2}).</value>
+  </data>
+  <data name="SCREEN_CONTROL_XML_FORMAT_ERROR_value" xml:space="preserve">
+    <value>There is no  FxLiteral.XML_CMN_ATTR_VALUE  attribute. {0} tags ({1}).</value>
+  </data>
+  <data name="SESSION_TIMEOUT" xml:space="preserve">
+    <value>It is session timeout.</value>
+  </data>
+  <data name="SHAREDPROPERTY_XML_FORMAT_ERROR" xml:space="preserve">
+    <value>The format of share information definition file is inaccurate. :{0}</value>
+  </data>
+  <data name="SHAREDPROPERTY_XML_FORMAT_ERROR_ATTR" xml:space="preserve">
+    <value>There is no {0} attribute. SharedProp tag ({1}).</value>
+  </data>
+  <data name="TRANSACTION_CONTROL_XML_FORMAT_ERROR" xml:space="preserve">
+    <value>The format of a transaction control definition file is inaccurate. :{0}</value>
+  </data>
+  <data name="TRANSACTION_CONTROL_XML_FORMAT_ERROR_iso1" xml:space="preserve">
+    <value>There is no  FxLiteral.XML_TX_ATTR_ISOLEVEL attribute. FxLiteral.XML_TX_TAG_TRANSACTION_PATTERN tag ({0}).</value>
+  </data>
+  <data name="TRANSACTION_CONTROL_XML_FORMAT_ERROR_iso2" xml:space="preserve">
+    <value>A FxLiteral.XML_TX_ATTR_ISOLEVEL attribute is inaccurate ({0}). FxLiteral.XML_TX_TAG_TRANSACTION_PATTERN tag ({1}).</value>
+  </data>
+  <data name="TRANSACTION_CONTROL_XML_FORMAT_ERROR_tg" xml:space="preserve">
+    <value>There is no id attribute value ({0}) corresponding to a FxLiteral.XML_TX_TAG_TRANSACTION_GROUP tag.</value>
+  </data>
+  <data name="TRANSACTION_CONTROL_XML_FORMAT_ERROR_tgval" xml:space="preserve">
+    <value>There is no FxLiteral.XML_CMN_ATTR_VALUE attribute. FxLiteral.XML_TX_TAG_TRANSACTION_GROUP tag ({0}).</value>
+  </data>
+  <data name="TRANSACTION_CONTROL_XML_FORMAT_ERROR_tp" xml:space="preserve">
+    <value>There is no id attribute value ({0}) corresponding to a FxLiteral.XML_TX_TAG_TRANSACTION_PATTERN tag.</value>
+  </data>
+</root>

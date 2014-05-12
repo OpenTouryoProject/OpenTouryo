@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	INSERT INTO 
+		TestTable(
+			_nvarchar
+			)
+		 values(
+			@nvarchar
+		 	)
+	<PARAM>
+		nvarchar, STRING, くぁwせdrftgyふじこ<DIV/>
+	</PARAM>
+</ROOT>

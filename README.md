@@ -35,10 +35,10 @@
 #### [/root/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root)
 プログラム(program)
 
-#### [/root/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root_easysetup )
+#### [/root_easysetup/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root_easysetup )
 簡易セットアップ版プログラム(Easy Setup program version) 
 
-##テンプレート・ベース(Template-base)(https://github.com/OpenTouryoProject/OpenTouryoTemplates)
+##テンプレート・ベース(Template-base)
 テンプレート・ベースに同梱されるサンプルはOpen棟梁の評価に利用できます。
 また、テンプレート・ベースをチュートリアルの内容に従いカスタマイズすることで
 当該Visual Studioバージョンの案件向けプロジェクト・テンプレートを作成できます。 
@@ -47,8 +47,7 @@
 Further, by using template-base customized according to the contents of the tutorial, 
 You can create a project template for the project for the Visual Studio version.)
 
-詳しくは、各フォルダのReadmeを参照下さい。
-(For more information, please refer to the Readme for each folder.)
+以下のリポジトリを参照してください。詳しくは、各フォルダのReadmeを参照下さい。
+(Please refer to the following repository. For more information, please refer to the Readme for each folder.)
 
-テンプレート類は[OpenTouryoProject/OpenTouryoTemplates](https://github.com/OpenTouryoProject/OpenTouryoTemplates)リポジトリに格納されています。
-(documents are located in the [OpenTouryoProject/OpenTouryoTemplates](https://github.com/OpenTouryoProject/OpenTouryoTemplates) repository.)
+ - [OpenTouryoTemplates](https://github.com/OpenTouryoProject/OpenTouryoTemplates)

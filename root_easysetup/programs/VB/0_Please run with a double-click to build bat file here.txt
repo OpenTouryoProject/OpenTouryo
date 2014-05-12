@@ -1,0 +1,9 @@
+Why not? 
+
+The following files is to delete the folders and files in the current directory. 
+
+ - 1_DeleteDir.bat
+ - 2_DeleteFile.bat
+
+If you run with a double-click, it is safe this directory becomes the current directory.
+Otherwise, it is dangerous there is a possibility to delete folders and files unintended.

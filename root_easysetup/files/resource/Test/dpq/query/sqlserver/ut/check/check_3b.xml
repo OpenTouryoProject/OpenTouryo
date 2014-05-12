@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	SELECT * FROM REGION<JOIN name="og"><VAL name="ttyu"/></JOIN>
+	<PARAM>
+		og, boolean, true<DIV/>
+		ttyu, INNER JOIN Territories ON REGION.RegionID = Territories.RegionID
+	</PARAM>
+	-- JOINタグのテスト（JOINタグの中にVALタグ１）
+</ROOT>

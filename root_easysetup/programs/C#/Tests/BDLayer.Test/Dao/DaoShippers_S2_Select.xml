@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoShippers_S2_Select
+  -- 2013/1/10 日立 太郎
+  SELECT 
+    [ShipperID],
+    [CompanyName],
+    [Phone]
+  FROM
+    [Shippers]
+  <WHERE>
+    WHERE
+      [ShipperID] = @ShipperID
+  </WHERE>
+</ROOT>

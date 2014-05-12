@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoShippers_D5_SelCnt
+  -- 2013/1/10 日立 太郎
+  SELECT 
+    COUNT(*)
+  FROM
+    [Shippers]
+  <WHERE>
+    WHERE
+      <IF>AND [ShipperID] = @ShipperID<ELSE>AND [ShipperID] IS NULL</ELSE></IF>
+      <IF>AND [ShipperID] LIKE @ShipperID_Like</IF>
+      <IF>AND [CompanyName] = @CompanyName<ELSE>AND [CompanyName] IS NULL</ELSE></IF>
+      <IF>AND [CompanyName] LIKE @CompanyName_Like</IF>
+      <IF>AND [Phone] = @Phone<ELSE>AND [Phone] IS NULL</ELSE></IF>
+      <IF>AND [Phone] LIKE @Phone_Like</IF>
+  </WHERE>
+</ROOT>

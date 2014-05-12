@@ -1,0 +1,80 @@
+<InsertSQLParts>
+("column1", "column2", "column3", "column4", "column5", "column6")
+(Cast('test1' as text), 1111, decode('010203040506', 'hex'), Cast('2014/03/10 17:13:01.678' as date), NULL, '')
+(Cast('test2' as text), 22222, NULL, NULL, NULL, NULL)
+(Cast('test3' as text), 3, NULL, NULL, Cast('D' as text), Cast('Test''s' as text))
+
+
+<INSERT>
+INSERT INTO "table1"("column1", "column2", "column3", "column4", "column5", "column6")VALUES 
+(Cast('test1' as text), 1111, decode('010203040506', 'hex'), Cast('2014/03/10 17:13:01.678' as date), NULL, ''),
+(Cast('test2' as text), 22222, NULL, NULL, NULL, NULL),
+(Cast('test3' as text), 3, NULL, NULL, Cast('D' as text), Cast('Test''s' as text))
+
+
+<UpdateSQLParts>
+SET column3 = CASE WHEN column1 =Cast('test1' as text) THEN decode('010203040506', 'hex')
+ WHEN column1 =Cast('test2' as text) THEN NULL
+ WHEN column1 =Cast('test3' as text) THEN NULL
+ WHEN column2 =1111 THEN decode('010203040506', 'hex')
+ WHEN column2 =22222 THEN NULL
+ WHEN column2 =3 THEN NULL
+ END,
+column4 = CASE WHEN column1 =Cast('test1' as text) THEN Cast('2014/03/10 17:13:01.678' as date)
+ WHEN column1 =Cast('test2' as text) THEN NULL
+ WHEN column1 =Cast('test3' as text) THEN NULL
+ WHEN column2 =1111 THEN Cast('2014/03/10 17:13:01.678' as date)
+ WHEN column2 =22222 THEN NULL
+ WHEN column2 =3 THEN NULL
+ END,
+column5 = CASE WHEN column1 =Cast('test1' as text) THEN NULL
+ WHEN column1 =Cast('test2' as text) THEN NULL
+ WHEN column1 =Cast('test3' as text) THEN Cast('D' as text)
+ WHEN column2 =1111 THEN NULL
+ WHEN column2 =22222 THEN NULL
+ WHEN column2 =3 THEN Cast('D' as text)
+ END,
+column6 = CASE WHEN column1 =Cast('test1' as text) THEN ''
+ WHEN column1 =Cast('test2' as text) THEN NULL
+ WHEN column1 =Cast('test3' as text) THEN Cast('Test''s' as text)
+ WHEN column2 =1111 THEN ''
+ WHEN column2 =22222 THEN NULL
+ WHEN column2 =3 THEN Cast('Test''s' as text)
+ END 
+WHERE column1 IN (Cast('test1' as text), Cast('test2' as text), Cast('test3' as text)) AND column2 IN (1111, 22222, 3) 
+
+
+<UPDATE>
+UPDATE "table1" SET column3 = CASE WHEN column1 =Cast('test1' as text) THEN decode('010203040506', 'hex')
+ WHEN column1 =Cast('test2' as text) THEN NULL
+ WHEN column1 =Cast('test3' as text) THEN NULL
+ WHEN column2 =1111 THEN decode('010203040506', 'hex')
+ WHEN column2 =22222 THEN NULL
+ WHEN column2 =3 THEN NULL
+ END,
+column4 = CASE WHEN column1 =Cast('test1' as text) THEN Cast('2014/03/10 17:13:01.678' as date)
+ WHEN column1 =Cast('test2' as text) THEN NULL
+ WHEN column1 =Cast('test3' as text) THEN NULL
+ WHEN column2 =1111 THEN Cast('2014/03/10 17:13:01.678' as date)
+ WHEN column2 =22222 THEN NULL
+ WHEN column2 =3 THEN NULL
+ END,
+column5 = CASE WHEN column1 =Cast('test1' as text) THEN NULL
+ WHEN column1 =Cast('test2' as text) THEN NULL
+ WHEN column1 =Cast('test3' as text) THEN Cast('D' as text)
+ WHEN column2 =1111 THEN NULL
+ WHEN column2 =22222 THEN NULL
+ WHEN column2 =3 THEN Cast('D' as text)
+ END,
+column6 = CASE WHEN column1 =Cast('test1' as text) THEN ''
+ WHEN column1 =Cast('test2' as text) THEN NULL
+ WHEN column1 =Cast('test3' as text) THEN Cast('Test''s' as text)
+ WHEN column2 =1111 THEN ''
+ WHEN column2 =22222 THEN NULL
+ WHEN column2 =3 THEN Cast('Test''s' as text)
+ END 
+WHERE column1 IN (Cast('test1' as text), Cast('test2' as text), Cast('test3' as text)) AND column2 IN (1111, 22222, 3) 
+
+
+
+Query executed successfully

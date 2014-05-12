@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  SELECT 
+    (ShipperID), (CompanyName), (Phone)
+  FROM
+    Shippers
+  <WHERE>
+    WHERE
+      <IF>CompanyName &lt;&gt; :P1</IF>
+  </WHERE>
+  ORDER BY (<VAL name="COLUMN"/>) <VAL name="SEQUENCE"/>
+  <PARAM>
+    P1, string, Speedy Express<DIV/>
+    COLUMN, CompanyName<DIV/>
+    SEQUENCE, DESC<DIV/>
+  </PARAM>
+  /* PostgreSQLは囲い文字は、( )だが、列名にしか使えない、表名を囲うとエラーになる。*/
+</ROOT>
+  

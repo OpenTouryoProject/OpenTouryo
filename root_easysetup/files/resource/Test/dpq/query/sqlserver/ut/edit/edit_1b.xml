@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	SELECT * FROM region<VAL name="og"/>
+	<PARAM>
+	</PARAM>
+	-- VALタグ指定（指定無しで無効化）。
+</ROOT>

@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- log4net構成設定のセクション -->
+
+<log4net debug="true">
+
+	<!-- アペンダを選択することによって、ログの出力先を変更できる。 -->
+
+	<!--
+		アペンダの例
+
+		FileAppender		：ファイルに出力。
+		RollingFileAppender	：ファイルに出力。ローリング機能付き。		
+		EventLogAppender	：イベントビューアに出力（ローカルのPCのみ）
+		ConsoleAppender		：コンソールに出力
+	-->
+	
+	<!--
+		PatternLayoutで指定できるパターン
+		パターン		説明
+		%logger			ログ出力が行われたlogger名
+		%appdomain		アプリケーションドメイン名
+		●%date			日時を出力。「%date{yyyy/MM/dd HH:mm:ss,fff}」といった詳細指定も可能。
+		●%level		ログのレベル（Fatal/Errorなど）
+		●%t			ログを生成したスレッド
+		●%message		メッセージ
+		●%newline		改行文字
+		%literal{-}		リテラル（%をそのまま出力する場合など）
+		%file			ファイル名
+		%class			クラス名
+		%method			メソッド名
+		%line			行番号
+		%location		ログ出力した際の関数名とファイルのフルパス
+		※ %file ～ %locationは処理負荷が高くなるため必要な時以外は使用しない。
+		http://d.hatena.ne.jp/shima111/20060703
+	-->
+	
+	<!-- ローリング・ログファイル出力用アペンダ -->
+	<appender name="ACCESS" type="log4net.Appender.FileAppender">
+		<param name="File" value="../Logs/ACCESS_2CS.log" />
+		<!-- ローリングの設定 -->
+		<param name="StaticLogFileName" value="false" />
+		<param name="RollingStyle" value="date " />
+		<param name="DatePattern" value='"."yyyy-MM-dd".log"' />
+		<!-- 書き込み時の設定 -->
+		<param name="AppendToFile" value="true" />
+		<!-- メッセージのフォーマット -->
+		<layout type="log4net.Layout.PatternLayout">
+			<param name="ConversionPattern" value="[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline" />
+		</layout>
+		<!-- フィルタの設定 -->
+		<filter type="log4net.Filter.LevelRangeFilter">
+        		<levelMin value="DEBUG" />
+        		<levelMax value="FATAL" />
+	     	</filter>
+	</appender>
+
+	<!--
+		ロガーを作成する。
+
+		Rootロガーには高い出力レベルを設定する。
+		個別のロガーには低い出力レベルを設定する。
+
+		その他、特定のレベルのログだけを出力したい
+		場合にはFilterと呼ばれる機能を使用する。
+	-->
+	<!--
+		↑出力レベル・高
+		Fatal		システム停止するような致命的な障害
+		Error		システム停止はしないが、問題となる障害
+		Warn		障害ではない注意警告
+		Info		操作ログなどの情報
+		Debug		開発用のデバッグメッセージ
+		↓出力レベル・低
+	-->
+
+	<!-- Rootロガーを作成する（出力レベルとアペンダを設定する）。  -->
+	
+	<!-- 個別のロガーを作成する（出力レベルとアペンダを設定する）。 -->
+	<logger name="ACCESS">
+		<level value="DEBUG" /> 
+		<appender-ref ref="ACCESS" /> 
+	</logger>
+</log4net>
+

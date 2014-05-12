@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- Daots_test_tableB_D4_Delete
+  -- 2014/2/9 日立 太郎
+  DELETE FROM
+    [ts_test_tableB]
+  <WHERE>
+    WHERE
+      <IF>AND [id] = @id<ELSE>AND [id] IS NULL</ELSE></IF>
+      <IF>AND [ts] = @ts<ELSE>AND [ts] IS NULL</ELSE></IF>
+      <IF>AND [val] = @val<ELSE>AND [val] IS NULL</ELSE></IF>
+  </WHERE>
+</ROOT>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	SELECT * FROM REGION<JOIN name="og">INNER JOIN Territories ON REGION.RegionID = Territories.RegionID</JOIN>
+	<PARAM>
+		og, int32, 1<DIV/>
+	</PARAM>
+	-- JOINタグ指定（無効な値の指定でエラー）。
+</ROOT>

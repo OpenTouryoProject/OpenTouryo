@@ -1,0 +1,28 @@
+<InsertSQLParts>
+("column1", "column2", "column3", "column4", "column5", "column6")
+(CAST('test1' AS varchar(5)), 1111, x'010203040506', '2014-03-10-17.13.00.854', NULL, CAST('' AS CHAR))
+(CAST('test2' AS varchar(5)), 22222, NULL, NULL, NULL, NULL)
+(CAST('test3' AS varchar(5)), 3, NULL, NULL, CHAR('D'), CAST('Test''s' AS varchar(6)))
+
+
+<INSERT>
+INSERT INTO "table1"(column1, column2, column3, column4, column5, column6)VALUES 
+(CAST('test1' AS varchar(5)), 1111, x'010203040506', '2014-03-10-17.13.00.854', NULL, CAST('' AS CHAR)),
+(CAST('test2' AS varchar(5)), 22222, NULL, NULL, NULL, NULL),
+(CAST('test3' AS varchar(5)), 3, NULL, NULL, CHAR('D'), CAST('Test''s' AS varchar(6)))
+
+
+<UpdateSQLParts>
+SET "column3" = x'010203040506', "column4" = '2014-03-10-17.13.00.854', "column5" = NULL, "column6" = CAST('' AS CHAR) WHERE "column1" = CAST('test1' AS varchar(5)) AND "column2" = 1111 
+SET "column3" = NULL, "column4" = NULL, "column5" = NULL, "column6" = NULL WHERE "column1" = CAST('test2' AS varchar(5)) AND "column2" = 22222 
+SET "column3" = NULL, "column4" = NULL, "column5" = CHAR('D'), "column6" = CAST('Test''s' AS varchar(6)) WHERE "column1" = CAST('test3' AS varchar(5)) AND "column2" = 3 
+
+
+<UPDATE>
+BEGIN UPDATE table1 SET column3 = x'010203040506', column4 = '2014-03-10-17.13.00.854', column5 = NULL, column6 = CAST('' AS CHAR) WHERE column1 = CAST('test1' AS varchar(5)) AND column2 = 1111 ;
+UPDATE table1 SET column3 = NULL, column4 = NULL, column5 = NULL, column6 = NULL WHERE column1 = CAST('test2' AS varchar(5)) AND column2 = 22222 ;
+UPDATE table1 SET column3 = NULL, column4 = NULL, column5 = CHAR('D'), column6 = CAST('Test''s' AS varchar(6)) WHERE column1 = CAST('test3' AS varchar(5)) AND column2 = 3 ;
+END;
+
+
+Query executed successfully
