@@ -2249,7 +2249,7 @@ namespace DeployZipPackWithHTTP
             sb.AppendLine("");
 
             // コマンド・値
-            sb.AppendLine("コマンド・値");
+            //sb.AppendLine("コマンド・値");
             //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
             sb.AppendLine(ResourceMgr.GetString("M0015"));
             foreach (string key in argsDic.Keys)
