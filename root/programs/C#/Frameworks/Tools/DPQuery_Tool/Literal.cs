@@ -3,9 +3,6 @@
 //**********************************************************************************
 
 #region Apache License
-//
-//  
-// 
 //  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
@@ -41,6 +38,8 @@
 
 // System
 using System;
+using System.Resources;
+using DPQuery_Tool.Properties;
 
 namespace DPQuery_Tool
 {
@@ -181,125 +180,125 @@ namespace DPQuery_Tool
 
         #region 状態
 
-        /// <summary>状態：初期状態</summary>
-        public const string STATUS_INIT = "初期状態";
+        ///// <summary>状態：初期状態</summary>
+        //public const string STATUS_INIT = "初期状態";
 
-        /// <summary>状態：処理をキャンセル</summary>
-        public const string STATUS_PROC_CANCELED = "処理をキャンセルしました。";
+        ///// <summary>状態：処理をキャンセル</summary>
+        //public const string STATUS_PROC_CANCELED = "処理をキャンセルしました。";
 
         #region DAP生成
 
-        /// <summary>状態：sqlClientを生成</summary>
-        public const string STATUS_SQL_CREATED = "sqlClientを生成しました。";
+        ///// <summary>状態：sqlClientを生成</summary>
+        //public const string STATUS_SQL_CREATED = "sqlClientを生成しました。";
 
-        /// <summary>状態：OLEDB.NETを生成</summary>
-        public const string STATUS_OLE_CREATED = "OLEDB.NETを生成しました。";
+        ///// <summary>状態：OLEDB.NETを生成</summary>
+        //public const string STATUS_OLE_CREATED = "OLEDB.NETを生成しました。";
 
-        /// <summary>状態：ODBC.NETを生成</summary>
-        public const string STATUS_ODB_CREATED = "ODBC.NETを生成しました。";
+        ///// <summary>状態：ODBC.NETを生成</summary>
+        //public const string STATUS_ODB_CREATED = "ODBC.NETを生成しました。";
         
-        /// <summary>状態：ODP.NETを生成</summary>
-        public const string STATUS_ODP_CREATED = "ODP.NETを生成しました。";
+        ///// <summary>状態：ODP.NETを生成</summary>
+        //public const string STATUS_ODP_CREATED = "ODP.NETを生成しました。";
         
-        /// <summary>状態：DB2.NETを生成</summary>
-        public const string STATUS_DB2_CREATED = "DB2.NETを生成しました。";
+        ///// <summary>状態：DB2.NETを生成</summary>
+        //public const string STATUS_DB2_CREATED = "DB2.NETを生成しました。";
 
         ///// <summary>状態：HiRDBデータ プロバイダを生成</summary>
         //public const string STATUS_HRD_CREATED = "HiRDBデータ プロバイダを生成しました。";
 
-        /// <summary>状態：MySQL Connector/NETを生成</summary>
-        public const string STATUS_MSL_CREATED = "MySQL Connector/NETを生成しました。";
+        ///// <summary>状態：MySQL Connector/NETを生成</summary>
+        //public const string STATUS_MSL_CREATED = "MySQL Connector/NETを生成しました。";
 
-        /// <summary>状態：PostgreSQL Npgsqlを生成</summary>
-        public const string STATUS_PGS_CREATED = "PostgreSQL Npgsqlを生成しました。";
+        ///// <summary>状態：PostgreSQL Npgsqlを生成</summary>
+        // public const string STATUS_PGS_CREATED = "PostgreSQL Npgsqlを生成しました。";
 
         #endregion
 
         #region 設定
 
-        /// <summary>状態：新規設定を作成</summary>
-        public const string STATUS_CREATE_CONFIGURATION = "新規設定を作成しました。";
+        ///// <summary>状態：新規設定を作成</summary>
+        //public const string STATUS_CREATE_CONFIGURATION = "新規設定を作成しました。";
 
-        /// <summary>状態：設定をセーブ</summary>
-        public const string STATUS_CONFIGURATION_SAVED = "設定をセーブしました。";
+        ///// <summary>状態：設定をセーブ</summary>
+        //public const string STATUS_CONFIGURATION_SAVED = "設定をセーブしました。";
 
-        /// <summary>状態：設定をロード</summary>
-        public const string STATUS_CONFIGURATION_LOADED = "設定をロードしました。";
+        ///// <summary>状態：設定をロード</summary>
+        //public const string STATUS_CONFIGURATION_LOADED = "設定をロードしました。";
 
         #endregion
 
         #region クエリ ファイル
 
-        /// <summary>状態：クエリファイルを開いた</summary>
-        public const string STATUS_QUERY_FILE_OPENED = "クエリファイルを開きました。";
+        ///// <summary>状態：クエリファイルを開いた</summary>
+        //public const string STATUS_QUERY_FILE_OPENED = "クエリファイルを開きました。";
 
-        /// <summary>状態：クエリファイルに上書き保存</summary>
-        public const string STATUS_QUERY_FILE_OVERWRITED = "テキストをクエリファイルに上書き保存しました。";
+        ///// <summary>状態：クエリファイルに上書き保存</summary>
+        //public const string STATUS_QUERY_FILE_OVERWRITED = "テキストをクエリファイルに上書き保存しました。";
 
-        /// <summary>状態：クエリファイルを閉じた</summary>
-        public const string STATUS_QUERY_FILE_CLOSED = "クエリファイルを閉じました。";
+        ///// <summary>状態：クエリファイルを閉じた</summary>
+        //public const string STATUS_QUERY_FILE_CLOSED = "クエリファイルを閉じました。";
 
-        /// <summary>状態：クエリファイルに保存</summary>
-        public const string STATUS_QUERY_FILE_SAVED = "テキストをクエリファイルに保存しました。";
+        ///// <summary>状態：クエリファイルに保存</summary>
+        //public const string STATUS_QUERY_FILE_SAVED = "テキストをクエリファイルに保存しました。";
 
         #endregion
 
         #region 接続
         
-        /// <summary>状態：接続をオープン</summary>
-        public const string STATUS_CONNECTION_OPENED = "接続をオープンしました。";
+        ///// <summary>状態：接続をオープン</summary>
+        //public const string STATUS_CONNECTION_OPENED = "接続をオープンしました。";
 
-        /// <summary>状態：接続をクローズ</summary>
-        public const string STATUS_CONNECTION_CLOSED = "接続をクローズしました。";
+        ///// <summary>状態：接続をクローズ</summary>
+        //public const string STATUS_CONNECTION_CLOSED = "接続をクローズしました。";
 
         #endregion
         
         #region トランザクション
 
-        /// <summary>状態："トランザクション自動制御</summary>
-        public const string STATUS_AUTO_MODE_WAS_SELECTED = "自動制御（自動コミット トランザクション モードで実行します）";
+        ///// <summary>状態："トランザクション自動制御</summary>
+        //public const string STATUS_AUTO_MODE_WAS_SELECTED = "自動制御（自動コミット トランザクション モードで実行します）";
 
-        /// <summary>状態："トランザクション手動制御</summary>
-        public const string STATUS_MANUAL_MODE_WAS_SELECTED = "手動制御（ボタンを使用してトランザクションを手動で制御します）";
+        ///// <summary>状態："トランザクション手動制御</summary>
+        // public const string STATUS_MANUAL_MODE_WAS_SELECTED = "手動制御（ボタンを使用してトランザクションを手動で制御します）";
 
-        /// <summary>状態："トランザクションを開始</summary>
-        public const string STATUS_TRANSACTION_STARTED = "トランザクションを開始しました。";
+        ///// <summary>状態："トランザクションを開始</summary>
+        //public const string STATUS_TRANSACTION_STARTED = "トランザクションを開始しました。";
 
-        /// <summary>状態：トランザクションをコミット</summary>
-        public const string STATUS_TRANSACTION_COMMITED = "トランザクションをコミットしました。";
+        ///// <summary>状態：トランザクションをコミット</summary>
+        //public const string STATUS_TRANSACTION_COMMITED = "トランザクションをコミットしました。";
 
-        /// <summary>状態：トランザクションをロールバック</summary>
-        public const string STATUS_TRANSACTION_ROLLBACKED = "トランザクションをロールバックしました。";
+        ///// <summary>状態：トランザクションをロールバック</summary>
+        //public const string STATUS_TRANSACTION_ROLLBACKED = "トランザクションをロールバックしました。";
 
         #endregion
 
-        /// <summary>状態：クエリを実行</summary>
-        public const string STATUS_QUERY_EXECED = "クエリを実行しました。";
+        ///// <summary>状態：クエリを実行</summary>
+        //public const string STATUS_QUERY_EXECED = "クエリを実行しました。";
 
         #endregion
 
         #region メッセージ
 
-        /// <summary>メッセージ：DBサーバのipアドレス入力</summary>
-        public const string MSG_INPUT_IP = "DBサーバのipアドレスを入力";
+        ///// <summary>メッセージ：DBサーバのipアドレス入力</summary>
+        // public const string MSG_INPUT_IP = "DBサーバのipアドレスを入力";
 
-        /// <summary>メッセージ：DBへのログオンアカウント：ユーザID入力</summary>
-        public const string MSG_INPUT_UID = "DBへのログオンアカウントを入力：ユーザID";
+        ///// <summary>メッセージ：DBへのログオンアカウント：ユーザID入力</summary>
+        //public const string MSG_INPUT_UID = "DBへのログオンアカウントを入力：ユーザID";
 
-        /// <summary>メッセージ：DBへのログオンアカウント：パスワード入力</summary>
-        public const string MSG_INPUT_PWD = "DBへのログオンアカウントを入力：パスワード";
+        ///// <summary>メッセージ：DBへのログオンアカウント：パスワード入力</summary>
+        //public const string MSG_INPUT_PWD = "DBへのログオンアカウントを入力：パスワード";
 
-        /// <summary>メッセージ：設定のセーブ ファイルが存在しない。</summary>
-        public const string MSG_CONFIG_FILE_NOT_EXIST = "設定のセーブ ファイルが存在しません。";
+        ///// <summary>メッセージ：設定のセーブ ファイルが存在しない。</summary>
+        //public const string MSG_CONFIG_FILE_NOT_EXIST = "設定のセーブ ファイルが存在しません。";
 
-        /// <summary>メッセージ：閉じる際、クエリ ファイルの保存を確認。</summary>
-        public const string MSG_IS_QUERY_FILE_SAVED = "クエリ ファイルをセーブしますか？";
+        ///// <summary>メッセージ：閉じる際、クエリ ファイルの保存を確認。</summary>
+        //public const string MSG_IS_QUERY_FILE_SAVED = "クエリ ファイルをセーブしますか？";
 
-        /// <summary>メッセージ：通常のパラメタライズド・クエリを実行</summary>
-        public const string MSG_EXEC_SPQ = "通常のパラメタライズド・クエリを実行します。";
+        ///// <summary>メッセージ：通常のパラメタライズド・クエリを実行</summary>
+        //public const string MSG_EXEC_SPQ = "通常のパラメタライズド・クエリを実行します。";
 
-        /// <summary>メッセージ：メッセージ：動的パラメタライズド・クエリを実行</summary>
-        public const string MSG_EXEC_DQP = "動的パラメタライズド・クエリを実行します。";
+        ///// <summary>メッセージ：メッセージ：動的パラメタライズド・クエリを実行</summary>
+        //public const string MSG_EXEC_DQP = "動的パラメタライズド・クエリを実行します。";
 
         /// <summary>メッセージ：～DataReaderの場合～</summary>
         public const string MSG_FOR_DATA_READER = "DataReaderの場合は、処理毎にトランザクションをコミットする必要があります。コミットしますか？";

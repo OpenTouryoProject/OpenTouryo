@@ -4,9 +4,6 @@
 
 #region Apache License
 //
-//  
-// 
-//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -31,6 +28,14 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2008/xx/xx  西野  大介        新規作成
+//*  2014/04/24  Rituparna         Created Resource files for UI language changes and moved the English 
+//*                                and Japanese languages to proper Resouce files.Changed the control size
+//*                                to adjust the text properly in different languages.
+//*
+//*  2014/04/25  Rituparna         Created Resource folder and Resource.ja-JP.resx,Resource.resx files inside
+//*                                the Resource folder.Added proper key and values in those files for English and
+//*                                Japanese languages.
+//*  2014/05/12  Rituparna        Removed <start> and <End> tags
 //**********************************************************************************
 
 // Windowアプリケーション
@@ -45,6 +50,9 @@ using System.Xml;
 using System.Text;
 using System.Data;
 using System.Collections;
+using System.Threading;
+using System.Configuration;
+using System.Globalization;
 
 // 業務フレームワーク（参照しない）
 // フレームワーク（参照しない）
@@ -55,6 +63,8 @@ using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
+
+using System.Resources;
 
 namespace DPQuery_Tool
 {
@@ -99,8 +109,9 @@ namespace DPQuery_Tool
         /// ロード処理のみ。
         /// </summary>
         private void Form2_Load(object sender, EventArgs e)
-        {
-            this.Text = "結果：" + this._dt.TableName;
+        {   
+            this.Text = this.RM_GetString("Result") + this._dt.TableName;
+            
             this.dataGridView1.DataSource = this._dt;
             this.richTextBox1.Text = this._sql;
             this.richTextBox2.Text = this._log;
@@ -114,6 +125,13 @@ namespace DPQuery_Tool
             this.Close();
         }
 
+        private string RM_GetString(string key)
+        {
+            // get the string value from resource file  by proper passing key.
+            ResourceManager rm = Resources.Resource.ResourceManager;
+            return rm.GetString(key);
+        }
+        
         #endregion
     }
 }

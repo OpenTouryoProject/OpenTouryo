@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetPrimaryKeyWindow));
             this.clbColumns = new System.Windows.Forms.CheckedListBox();
             this.btnClose = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -36,31 +37,24 @@
             // 
             this.clbColumns.CheckOnClick = true;
             this.clbColumns.FormattingEnabled = true;
-            this.clbColumns.Location = new System.Drawing.Point(0, 1);
+            resources.ApplyResources(this.clbColumns, "clbColumns");
             this.clbColumns.Name = "clbColumns";
-            this.clbColumns.Size = new System.Drawing.Size(312, 214);
-            this.clbColumns.TabIndex = 0;
             this.clbColumns.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbColumns_ItemCheck);
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(0, 217);
+            resources.ApplyResources(this.btnClose, "btnClose");
             this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(312, 23);
-            this.btnClose.TabIndex = 2;
-            this.btnClose.Text = "閉じる";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // SetPrimaryKeyWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(312, 253);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.clbColumns);
             this.Name = "SetPrimaryKeyWindow";
-            this.Text = "SetPrimaryKey";
             this.Load += new System.EventHandler(this.SetPrimaryKeyWindow_Load);
             this.ResumeLayout(false);
 

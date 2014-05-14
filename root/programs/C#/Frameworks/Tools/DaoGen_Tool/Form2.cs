@@ -4,9 +4,6 @@
 
 #region Apache License
 //
-//  
-// 
-//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -46,6 +43,8 @@
 //*  2014/02/04  西野  大介        テーブル・メンテ自動生成の実装例を追加
 //*  2014/02/28  Sai-san          Timestamp related code
 //*  2014/02/28  Santosh-san      Gridview Header column number issue fix in the template
+//*  2014/04/30  Santosh san      Internationalization: Added Method to get the strings from the resource files based on the keys values passed.
+//*                               and and replaced this method wherever hard coded values.
 //**********************************************************************************
 
 // データプロバイダ
@@ -76,6 +75,8 @@ using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
+
+using System.Resources;
 
 // [何某]
 // ・プロパティ プロシージャ
@@ -797,7 +798,9 @@ namespace DaoGen_Tool
             }
             else
             {
-                throw new CheckException("テンプレート ファイルが存在しません。：" + tempPath) ;
+                // throw new CheckException("テンプレート ファイルが存在しません。：" + tempPath) ;
+                throw new CheckException(this.RM_GetString("TempFilenotExists") + tempPath);
+                
             }
         }
 
@@ -1009,7 +1012,8 @@ namespace DaoGen_Tool
             this.DaoTemplateFileName = GetConfigParameter.GetConfigValue("DaoTemplateFileName");
             if (string.IsNullOrEmpty(this.DaoTemplateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：DaoTemplateFileName");
+                //throw new CheckException("app.Configパラメタが設定されていません。：DaoTemplateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "DaoTemplateFileName");
             }
 
             // ↓↓↓【追加】↓↓↓
@@ -1018,13 +1022,13 @@ namespace DaoGen_Tool
             this.EntityTemplateFileName = GetConfigParameter.GetConfigValue("EntityTemplateFileName");
             if (string.IsNullOrEmpty(this.EntityTemplateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：EntityTemplateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "EntityTemplateFileName");
             }
 
             this.DataSetTemplateFileName = GetConfigParameter.GetConfigValue("DataSetTemplateFileName");
             if (string.IsNullOrEmpty(this.DataSetTemplateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：DataSetTemplateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "DataSetTemplateFileName");
             }
 
             #endregion
@@ -1034,25 +1038,25 @@ namespace DaoGen_Tool
             this.TableAdapterTemplateFileName = GetConfigParameter.GetConfigValue("TableAdapterTemplateFileName");
             if (string.IsNullOrEmpty(TableAdapterTemplateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：TableAdapterTemplateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "TableAdapterTemplateFileName");
             }
 
             this.ConditionalSearchTemplateFileName = GetConfigParameter.GetConfigValue("ConditionalSearchTemplateFileName");
             if (string.IsNullOrEmpty(ConditionalSearchTemplateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：ConditionalSearchTemplateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "ConditionalSearchTemplateFileName");
             }
 
             this.SearchAndUpdateTemplateFileName = GetConfigParameter.GetConfigValue("SearchAndUpdateTemplateFileName");
             if (string.IsNullOrEmpty(SearchAndUpdateTemplateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：SearchAndUpdateTemplateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "SearchAndUpdateTemplateFileName");
             }
 
             this.DetailTemplateFileName = GetConfigParameter.GetConfigValue("DetailTemplateFileName");
             if (string.IsNullOrEmpty(DetailTemplateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：DetailTemplateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "DetailTemplateFileName");
             }
 
             #endregion
@@ -1068,25 +1072,25 @@ namespace DaoGen_Tool
             this.InsertTemplateFileName = GetConfigParameter.GetConfigValue("InsertTemplateFileName");
             if (string.IsNullOrEmpty(this.InsertTemplateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：InsertTemplateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "InsertTemplateFileName");
             }
 
             this.SelectTemplateFileName = GetConfigParameter.GetConfigValue("SelectTemplateFileName");
             if (string.IsNullOrEmpty(this.SelectTemplateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：SelectTemplateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "SelectTemplateFileName");
             }
 
             this.UpdateTemplateFileName = GetConfigParameter.GetConfigValue("UpdateTemplateFileName");
             if (string.IsNullOrEmpty(this.UpdateTemplateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：UpdateTemplateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "UpdateTemplateFileName");
             }
 
             this.DeleteTemplateFileName = GetConfigParameter.GetConfigValue("DeleteTemplateFileName");
             if (string.IsNullOrEmpty(this.DeleteTemplateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：DeleteTemplateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "DeleteTemplateFileName");
             }
 
             #endregion
@@ -1096,32 +1100,32 @@ namespace DaoGen_Tool
             this.DynInsTemplateFileName = GetConfigParameter.GetConfigValue("DynInsTemplateFileName");
             if (string.IsNullOrEmpty(this.DynInsTemplateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：DynInsTemplateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "DynInsTemplateFileName");
             }
 
             this.DynSelTemplateFileName = GetConfigParameter.GetConfigValue("DynSelTemplateFileName");
             if (string.IsNullOrEmpty(this.DynSelTemplateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：DynSelTemplateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "DynSelTemplateFileName");
             }
 
             this.DynUpdTemplateFileName = GetConfigParameter.GetConfigValue("DynUpdTemplateFileName");
             if (string.IsNullOrEmpty(this.DynUpdTemplateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：DynUpdTemplateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "DynUpdTemplateFileName");
             }
 
             this.DynDelTemplateFileName = GetConfigParameter.GetConfigValue("DynDelTemplateFileName");
             if (string.IsNullOrEmpty(this.DynDelTemplateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：DynDelTemplateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "DynDelTemplateFileName");
             }
 
             // ↓↓↓【追加】↓↓↓
             this.DynSelCntTemplateFileName = GetConfigParameter.GetConfigValue("DynSelCntTemplateFileName");
             if (string.IsNullOrEmpty(this.DynSelCntTemplateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：DynSelCntTemplateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "DynSelCntTemplateFileName");
             }
             // ↑↑↑【追加】↑↑↑
 
@@ -1140,13 +1144,13 @@ namespace DaoGen_Tool
             this.DaoClassNameHeader = GetConfigParameter.GetConfigValue("DaoClassNameHeader");
             if (this.DaoClassNameHeader == null)
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：DaoClassNameHeader");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "DaoClassNameHeader");
             }
 
             this.DaoClassNameFooter = GetConfigParameter.GetConfigValue("DaoClassNameFooter");
             if (this.DaoClassNameFooter == null)
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：DaoClassNameFooter");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "DaoClassNameFooter");
             }
 
             #endregion
@@ -1157,13 +1161,13 @@ namespace DaoGen_Tool
             this.EntityClassNameHeader = GetConfigParameter.GetConfigValue("EntityClassNameHeader");
             if (this.EntityClassNameHeader == null)
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：EntityClassNameHeader");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "EntityClassNameHeader");
             }
 
             this.EntityClassNameFooter = GetConfigParameter.GetConfigValue("EntityClassNameFooter");
             if (this.EntityClassNameFooter == null)
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：EntityClassNameFooter");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "EntityClassNameFooter");
             }
 
             #endregion
@@ -1173,25 +1177,25 @@ namespace DaoGen_Tool
             this.DataSetClassNameHeader = GetConfigParameter.GetConfigValue("DataSetClassNameHeader");
             if (this.DataSetClassNameHeader == null)
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：DataSetClassNameHeader");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "DataSetClassNameHeader");
             }
 
             this.DataSetClassNameFooter = GetConfigParameter.GetConfigValue("DataSetClassNameFooter");
             if (this.DataSetClassNameFooter == null)
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：DataSetClassNameFooter");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "DataSetClassNameFooter");
             }
 
             this.DataTableClassNameHeader = GetConfigParameter.GetConfigValue("DataTableClassNameHeader");
             if (this.DataTableClassNameHeader == null)
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：DataTableClassNameHeader");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "DataTableClassNameHeader");
             }
 
             this.DataTableClassNameFooter = GetConfigParameter.GetConfigValue("DataTableClassNameFooter");
             if (this.DataTableClassNameFooter == null)
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：DataTableClassNameFooter");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "DataTableClassNameFooter");
             }
 
             #endregion
@@ -1204,32 +1208,32 @@ namespace DaoGen_Tool
             this.MethodLabel_Ins = GetConfigParameter.GetConfigValue("MethodLabel_Ins");
             if (string.IsNullOrEmpty(this.MethodLabel_Ins))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：MethodLabel_Ins");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "MethodLabel_Ins");
             }
 
             this.MethodLabel_Sel = GetConfigParameter.GetConfigValue("MethodLabel_Sel");
             if (string.IsNullOrEmpty(this.MethodLabel_Sel))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：MethodLabel_Sel");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "MethodLabel_Sel");
             }
 
             this.MethodLabel_Upd = GetConfigParameter.GetConfigValue("MethodLabel_Upd");
             if (string.IsNullOrEmpty(this.MethodLabel_Upd))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：MethodLabel_Upd");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "MethodLabel_Upd");
             }
 
             this.MethodLabel_Del = GetConfigParameter.GetConfigValue("MethodLabel_Del");
             if (string.IsNullOrEmpty(this.MethodLabel_Del))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：MethodLabel_Del");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "MethodLabel_Del");
             }
 
             // ↓↓↓【追加】↓↓↓
             this.MethodLabel_SelCnt = GetConfigParameter.GetConfigValue("MethodLabel_SelCnt");
             if (string.IsNullOrEmpty(this.MethodLabel_SelCnt))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：MethodLabel_SelCnt");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "MethodLabel_SelCnt");
             }
             // ↑↑↑【追加】↑↑↑
 
@@ -1240,50 +1244,50 @@ namespace DaoGen_Tool
             this.MethodNameHeaderS = GetConfigParameter.GetConfigValue("MethodNameHeaderS");
             if (this.MethodNameHeaderS == null)
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：MethodNameHeaderS");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "MethodNameHeaderS");
             }
 
             this.MethodNameFooterS = GetConfigParameter.GetConfigValue("MethodNameFooterS");
             if (this.MethodNameFooterS == null)
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：MethodNameFooterS");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "MethodNameFooterS");
             }
 
             this.MethodNameHeaderD = GetConfigParameter.GetConfigValue("MethodNameHeaderD");
             if (this.MethodNameHeaderD == null)
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：MethodNameHeaderD");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "MethodNameHeaderD");
             }
 
             this.MethodNameFooterD = GetConfigParameter.GetConfigValue("MethodNameFooterD");
             if (this.MethodNameFooterD == null)
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：MethodNameFooterD");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "MethodNameFooterD");
             }
 
             this.UpdateParamHeader = GetConfigParameter.GetConfigValue("UpdateParamHeader");
             if (this.UpdateParamHeader == null)
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：UpdateParamHeader");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "UpdateParamHeader");
             }
 
             this.UpdateParamFooter = GetConfigParameter.GetConfigValue("UpdateParamFooter");
             if (this.UpdateParamFooter == null)
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：UpdateParamFooter");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "UpdateParamFooter");
             }
 
             // ↓↓↓【追加】↓↓↓
             this.LikeParamHeader = GetConfigParameter.GetConfigValue("LikeParamHeader");
             if (this.LikeParamHeader == null)
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：LikeParamHeader");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "LikeParamHeader");
             }
 
             this.LikeParamFooter = GetConfigParameter.GetConfigValue("LikeParamFooter");
             if (this.LikeParamFooter == null)
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：LikeParamFooter");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "LikeParamFooter");
             }
             // ↑↑↑【追加】↑↑↑
 
@@ -1300,25 +1304,25 @@ namespace DaoGen_Tool
             this.RpFileName = GetConfigParameter.GetConfigValue("RpFileName");
             if (string.IsNullOrEmpty(this.RpFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpFileName");
             }
 
             this.RpTimeStamp = GetConfigParameter.GetConfigValue("RpTimeStamp");
             if (string.IsNullOrEmpty(this.RpTimeStamp))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpTimeStamp");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpTimeStamp");
             }
 
             this.RpTimeStampColName = GetConfigParameter.GetConfigValue("RpTimeStampColName");
             if (string.IsNullOrEmpty(this.RpTimeStampColName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpColumnName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpColumnName");
             }
 
             this.RpUserName = GetConfigParameter.GetConfigValue("RpUserName");
             if (string.IsNullOrEmpty(this.RpUserName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpUserName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpUserName");
             }
 
             #endregion
@@ -1328,25 +1332,25 @@ namespace DaoGen_Tool
             this.RpXMLEncoding = GetConfigParameter.GetConfigValue("RpXMLEncoding");
             if (string.IsNullOrEmpty(this.RpXMLEncoding))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpXMLEncoding");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpXMLEncoding");
             }
 
             this.RpTableName = GetConfigParameter.GetConfigValue("RpTableName");
             if (string.IsNullOrEmpty(this.RpTableName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpTableName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpTableName");
             }
 
             this.RpAllColumnListSQL = GetConfigParameter.GetConfigValue("RpAllColumnListSQL");
             if (string.IsNullOrEmpty(this.RpAllColumnListSQL))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpAllColumnListSQL");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpAllColumnListSQL");
             }
 
             this.RpPKColumnListSQL = GetConfigParameter.GetConfigValue("RpPKColumnListSQL");
             if (string.IsNullOrEmpty(this.RpPKColumnListSQL))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpPKColumnListSQL");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpPKColumnListSQL");
             }
 
             // 検索条件
@@ -1354,18 +1358,18 @@ namespace DaoGen_Tool
             this.RpColumnsCondition = GetConfigParameter.GetConfigValue("RpColumnsCondition");
             if (string.IsNullOrEmpty(this.RpColumnsCondition))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpColumnsCondition");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpColumnsCondition");
             }
             this.RpDynColsCondition = GetConfigParameter.GetConfigValue("RpDynColsCondition");
             if (string.IsNullOrEmpty(this.RpDynColsCondition))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDynColsCondition");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDynColsCondition");
             }
 
             this.RpDynColsCondition_Like = GetConfigParameter.GetConfigValue("RpDynColsCondition_Like");
             if (string.IsNullOrEmpty(this.RpDynColsCondition_Like))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDynColsCondition_Like");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDynColsCondition_Like");
             }
 
             // 挿入列
@@ -1378,7 +1382,7 @@ namespace DaoGen_Tool
             this.RpDynInsColumns = GetConfigParameter.GetConfigValue("RpDynInsColumns");
             if (string.IsNullOrEmpty(this.RpDynInsColumns))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDynInsColumns");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDynInsColumns");
             }
 
             // 挿入パラメタ
@@ -1386,12 +1390,12 @@ namespace DaoGen_Tool
             this.RpInsertParameters = GetConfigParameter.GetConfigValue("RpInsertParameters");
             if (string.IsNullOrEmpty(this.RpInsertParameters))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpInsertParameters");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpInsertParameters");
             }
             this.RpDynInsParameters = GetConfigParameter.GetConfigValue("RpDynInsParameters");
             if (string.IsNullOrEmpty(this.RpDynInsParameters))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDynInsParameters");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDynInsParameters");
             }
 
             // 更新パラメタ
@@ -1399,7 +1403,7 @@ namespace DaoGen_Tool
             this.RpDynUpdParameters = GetConfigParameter.GetConfigValue("RpDynUpdParameters");
             if (string.IsNullOrEmpty(this.RpDynUpdParameters))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDynUpdParameters");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDynUpdParameters");
             }
 
             #endregion
@@ -1410,14 +1414,14 @@ namespace DaoGen_Tool
             this.RpDaoClassName = GetConfigParameter.GetConfigValue("RpDaoClassName");
             if (string.IsNullOrEmpty(this.RpDaoClassName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDaoClassName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDaoClassName");
             }
 
             // カラム情報
             this.RpColumnName = GetConfigParameter.GetConfigValue("RpColumnName");
             if (string.IsNullOrEmpty(this.RpColumnName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpColumnName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpColumnName");
             }
 
             #region 制御文字列
@@ -1425,50 +1429,50 @@ namespace DaoGen_Tool
             this.CcLoopStart_PKColumn = GetConfigParameter.GetConfigValue("CcLoopStart_PKColumn");
             if (string.IsNullOrEmpty(this.CcLoopStart_PKColumn))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：CcLoopStart_PKColumn");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "CcLoopStart_PKColumn");
             }
 
             this.CcLoopEnd_PKColumn = GetConfigParameter.GetConfigValue("CcLoopEnd_PKColumn");
             if (string.IsNullOrEmpty(this.CcLoopEnd_PKColumn))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：CcLoopEnd_PKColumn");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "CcLoopEnd_PKColumn");
             }
 
             this.CcLoopStart_ElseColumn = GetConfigParameter.GetConfigValue("CcLoopStart_ElseColumn");
             if (string.IsNullOrEmpty(this.CcLoopStart_ElseColumn))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：CcLoopStart_ElseColumn");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "CcLoopStart_ElseColumn");
             }
 
             this.CcLoopEnd_ElseColumn = GetConfigParameter.GetConfigValue("CcLoopEnd_ElseColumn");
             if (string.IsNullOrEmpty(this.CcLoopEnd_ElseColumn))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：CcLoopEnd_ElseColumn");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "CcLoopEnd_ElseColumn");
             }
 
             this.CcLoopStart_PPUpdSet = GetConfigParameter.GetConfigValue("CcLoopStart_PPUpdSet");
             if (string.IsNullOrEmpty(this.CcLoopStart_PPUpdSet))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：CcLoopStart_PPUpdSet");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "CcLoopStart_PPUpdSet");
             }
 
             this.CcLoopEnd_PPUpdSet = GetConfigParameter.GetConfigValue("CcLoopEnd_PPUpdSet");
             if (string.IsNullOrEmpty(this.CcLoopEnd_PPUpdSet))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：CcLoopEnd_PPUpdSet");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "CcLoopEnd_PPUpdSet");
             }
 
             // ↓↓↓【追加】↓↓↓
             this.CcLoopStart_PPLike = GetConfigParameter.GetConfigValue("CcLoopStart_PPLike");
             if (string.IsNullOrEmpty(this.CcLoopStart_PPLike))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：CcLoopStart_PPLike");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "CcLoopStart_PPLike");
             }
 
             this.CcLoopEnd_PPLike = GetConfigParameter.GetConfigValue("CcLoopEnd_PPLike");
             if (string.IsNullOrEmpty(this.CcLoopEnd_PPLike))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：CcLoopEnd_PPLike");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "CcLoopEnd_PPLike");
             }
             // ↑↑↑【追加】↑↑↑
 
@@ -1479,51 +1483,51 @@ namespace DaoGen_Tool
             this.RpInsertMethodName = GetConfigParameter.GetConfigValue("RpInsertMethodName");
             if (string.IsNullOrEmpty(this.RpInsertMethodName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpInsertMethodName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpInsertMethodName");
             }
             this.RpDynInsMethodName = GetConfigParameter.GetConfigValue("RpDynInsMethodName");
             if (string.IsNullOrEmpty(this.RpDynInsMethodName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDynInsMethodName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDynInsMethodName");
             }
 
             this.RpSelectMethodName = GetConfigParameter.GetConfigValue("RpSelectMethodName");
             if (string.IsNullOrEmpty(this.RpSelectMethodName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpSelectMethodName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpSelectMethodName");
             }
             this.RpDynSelMethodName = GetConfigParameter.GetConfigValue("RpDynSelMethodName");
             if (string.IsNullOrEmpty(this.RpDynSelMethodName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDynSelMethodName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDynSelMethodName");
             }
 
             this.RpUpdateMethodName = GetConfigParameter.GetConfigValue("RpUpdateMethodName");
             if (string.IsNullOrEmpty(this.RpUpdateMethodName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpUpdateMethodName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpUpdateMethodName");
             }
             this.RpDynUpdMethodName = GetConfigParameter.GetConfigValue("RpDynUpdMethodName");
             if (string.IsNullOrEmpty(this.RpDynUpdMethodName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDynUpdMethodName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDynUpdMethodName");
             }
 
             this.RpDeleteMethodName = GetConfigParameter.GetConfigValue("RpDeleteMethodName");
             if (string.IsNullOrEmpty(this.RpDeleteMethodName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDeleteMethodName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDeleteMethodName");
             }
             this.RpDynDelMethodName = GetConfigParameter.GetConfigValue("RpDynDelMethodName");
             if (string.IsNullOrEmpty(this.RpDynDelMethodName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDynDelMethodName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDynDelMethodName");
             }
             // ↓↓↓【追加】↓↓↓
             this.RpDynSelCntMethodName = GetConfigParameter.GetConfigValue("RpDynSelCntMethodName");
             if (string.IsNullOrEmpty(this.RpDynSelCntMethodName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDynSelCntMethodName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDynSelCntMethodName");
             }
             // ↑↑↑【追加】↑↑↑
             #endregion
@@ -1533,51 +1537,51 @@ namespace DaoGen_Tool
             this.RpInsertFileName = GetConfigParameter.GetConfigValue("RpInsertFileName");
             if (string.IsNullOrEmpty(this.RpInsertFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpInsertFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpInsertFileName");
             }
             this.RpDynInsFileName = GetConfigParameter.GetConfigValue("RpDynInsFileName");
             if (string.IsNullOrEmpty(this.RpDynInsFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDynInsFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDynInsFileName");
             }
 
             this.RpSelectFileName = GetConfigParameter.GetConfigValue("RpSelectFileName");
             if (string.IsNullOrEmpty(this.RpSelectFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpSelectFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpSelectFileName");
             }
             this.RpDynSelFileName = GetConfigParameter.GetConfigValue("RpDynSelFileName");
             if (string.IsNullOrEmpty(this.RpDynSelFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDynSelFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDynSelFileName");
             }
 
             this.RpUpdateFileName = GetConfigParameter.GetConfigValue("RpUpdateFileName");
             if (string.IsNullOrEmpty(this.RpUpdateFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpUpdateFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpUpdateFileName");
             }
             this.RpDynUpdFileName = GetConfigParameter.GetConfigValue("RpDynUpdFileName");
             if (string.IsNullOrEmpty(this.RpDynUpdFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDynUpdFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDynUpdFileName");
             }
 
             this.RpDeleteFileName = GetConfigParameter.GetConfigValue("RpDeleteFileName");
             if (string.IsNullOrEmpty(this.RpDeleteFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDeleteFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDeleteFileName");
             }
             this.RpDynDelFileName = GetConfigParameter.GetConfigValue("RpDynDelFileName");
             if (string.IsNullOrEmpty(this.RpDynDelFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDynDelFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDynDelFileName");
             }
             // ↓↓↓【追加】↓↓↓
             this.RpDynSelCntFileName = GetConfigParameter.GetConfigValue("RpDynSelCntFileName");
             if (string.IsNullOrEmpty(this.RpDynSelCntFileName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDynSelCntFileName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDynSelCntFileName");
             }
             // ↑↑↑【追加】↑↑↑
 
@@ -1594,14 +1598,14 @@ namespace DaoGen_Tool
             this.RpEntityClassName = GetConfigParameter.GetConfigValue("RpEntityClassName");
             if (string.IsNullOrEmpty(RpEntityClassName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpEntityClassName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpEntityClassName");
             }
 
             // Entityのフィールドの型情報
             this.RpEntityTypeInfo = GetConfigParameter.GetConfigValue("RpEntityTypeInfo");
             if (string.IsNullOrEmpty(RpEntityTypeInfo))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpEntityTypeInfo");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpEntityTypeInfo");
             }
 
             #endregion
@@ -1612,21 +1616,21 @@ namespace DaoGen_Tool
             this.RpDataSetClassName = GetConfigParameter.GetConfigValue("RpDataSetClassName");
             if (string.IsNullOrEmpty(RpDataSetClassName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDataSetClassName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDataSetClassName");
             }
 
             // DataTableクラス名
             this.RpDataTableClassName = GetConfigParameter.GetConfigValue("RpDataTableClassName");
             if (string.IsNullOrEmpty(RpDataTableClassName))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpDataTableClassName");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDataTableClassName");
             }
 
             // XSDのエレメントの型情報
             this.RpXSDTypeInfo = GetConfigParameter.GetConfigValue("RpXSDTypeInfo");
             if (string.IsNullOrEmpty(RpXSDTypeInfo))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpXSDTypeInfo");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpXSDTypeInfo");
             }
 
             #endregion
@@ -1638,49 +1642,49 @@ namespace DaoGen_Tool
             this.RpAllColumnList = GetConfigParameter.GetConfigValue("RpAllColumnList");
             if (string.IsNullOrEmpty(this.RpAllColumnList))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpAllColumnList");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpAllColumnList");
             }
 
             this.RpPKColumnList = GetConfigParameter.GetConfigValue("RpPKColumnList");
             if (string.IsNullOrEmpty(this.RpPKColumnList))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpPKColumnList");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpPKColumnList");
             }
 
             this.RpAllColumnListTableAdapterSQL = GetConfigParameter.GetConfigValue("RpAllColumnListTableAdapterSQL");
             if (string.IsNullOrEmpty(this.RpAllColumnListTableAdapterSQL))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpAllColumnListTableAdapterSQL");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpAllColumnListTableAdapterSQL");
             }
 
             this.RpCodebehindLanguage = GetConfigParameter.GetConfigValue("RpCodebehindLanguage");
             if (string.IsNullOrEmpty(RpCodebehindLanguage))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpCodebehindLanguage");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpCodebehindLanguage");
             }
 
             this.RpClassTemplateFileExtension = GetConfigParameter.GetConfigValue("RpClassTemplateFileExtension");
             if (string.IsNullOrEmpty(RpClassTemplateFileExtension))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpClassTemplateFileExtension");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpClassTemplateFileExtension");
             }
 
             this.RpCommentOut = GetConfigParameter.GetConfigValue("RpCommentOut");
             if (string.IsNullOrEmpty(RpCommentOut))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpCommentOut");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpCommentOut");
             }
 
             this.RpPKFirstColumn = GetConfigParameter.GetConfigValue("RpPKFirstColumn");
             if (string.IsNullOrEmpty(RpPKFirstColumn))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpPKFirstColumn");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpPKFirstColumn");
             }
 
             this.RpColumnNmbr = GetConfigParameter.GetConfigValue("RpColumnNmbr");
             if (string.IsNullOrEmpty(RpColumnNmbr))
             {
-                throw new CheckException("app.Configパラメタが設定されていません。：RpColumnNmbr");
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpColumnNmbr");
             }
 
             #endregion
@@ -1789,8 +1793,11 @@ namespace DaoGen_Tool
         {
             // ロード先の設定
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "CSVファイル(*.csv)|*.csv";
-            ofd.Title = "D層定義情報ファイル";
+            //ofd.Filter = "CSVファイル(*.csv)|*.csv";
+            ofd.Filter = this.RM_GetString("OpenFileDialogFilter");
+            //ofd.Title = "D層定義情報ファイル";
+            ofd.Title = this.RM_GetString("OpenFileDialogTitle");
+            
             DialogResult dRet = ofd.ShowDialog();
 
             if (dRet == DialogResult.OK)
@@ -1813,7 +1820,8 @@ namespace DaoGen_Tool
         {
             // ロード先の設定
             FolderBrowserDialog fbd = new FolderBrowserDialog();
-            fbd.Description = "入力ファイル（テンプレート ファイル）のルート フォルダ パスを指定";
+            //fbd.Description = "入力ファイル（テンプレート ファイル）のルート フォルダ パスを指定";
+            fbd.Description = this.RM_GetString("TemplateFolderPath");
             fbd.SelectedPath = this.txtSetSourceTemplate.Text;
             DialogResult dRet = fbd.ShowDialog();
 
@@ -1837,7 +1845,8 @@ namespace DaoGen_Tool
         {
             // セーブ先の設定
             FolderBrowserDialog fbd = new FolderBrowserDialog();
-            fbd.Description = "出力ファイル（Daoファイル、SQLファイル）のルート フォルダ パスを指定";
+            //fbd.Description = "出力ファイル（Daoファイル、SQLファイル）のルート フォルダ パスを指定";
+            fbd.Description = this.RM_GetString("OutputFolderPath");
             fbd.SelectedPath = this.txtSetOutput.Text;
             DialogResult dRet = fbd.ShowDialog();
 
@@ -1925,7 +1934,8 @@ namespace DaoGen_Tool
                 if (fileInfo.Exists) { }
                 else
                 {
-                    MessageBox.Show(string.Format("チェックエラーです：D層定義情報ファイル[{0}]が存在しません。", fileInfo.Name));
+                    //MessageBox.Show(string.Format("チェックエラーです：D層定義情報ファイル[{0}]が存在しません。", fileInfo.Name));
+                    MessageBox.Show(string.Format(this.RM_GetString("FilenotExistDlayerInfo"), fileInfo.Name));
                     return;
                 }
 
@@ -1944,7 +1954,8 @@ namespace DaoGen_Tool
                     if (fileInfo.Exists) { }
                     else
                     {
-                        MessageBox.Show(string.Format("チェックエラーです：.NET型情報ファイル[{0}]が存在しません。", fileInfo.Name));
+                        //MessageBox.Show(string.Format("チェックエラーです：.NET型情報ファイル[{0}]が存在しません。", fileInfo.Name));
+                        MessageBox.Show(string.Format(this.RM_GetString("FilenotExistNETtypeInfo"), fileInfo.Name));
                         return;
                     }
                 }
@@ -1964,7 +1975,8 @@ namespace DaoGen_Tool
                     if (fileInfo.Exists) { }
                     else
                     {
-                        MessageBox.Show(string.Format("チェックエラーです：DB型情報ファイル[{0}]が存在しません。", fileInfo.Name));
+                       //MessageBox.Show(string.Format("チェックエラーです：DB型情報ファイル[{0}]が存在しません。", fileInfo.Name));
+                       MessageBox.Show(string.Format(this.RM_GetString("FilenotExistDBtypeInfo"), fileInfo.Name)); 
                         return;
                     }
                 }
@@ -1980,7 +1992,8 @@ namespace DaoGen_Tool
                 }
                 else
                 {
-                    MessageBox.Show("入力ファイル（テンプレート ファイル）のルート フォルダが存在しません。");
+                    //MessageBox.Show("入力ファイル（テンプレート ファイル）のルート フォルダが存在しません。");
+                    MessageBox.Show(this.RM_GetString("InputFileRootFolderNotExist"));
                     return;
                 }
 
@@ -2112,7 +2125,8 @@ namespace DaoGen_Tool
                 if (dirInfo.Exists) { }
                 else
                 {
-                    MessageBox.Show("出力ファイル（Daoクラス ファイル、SQLファイル.etc）のルート フォルダが存在しません。");
+                    //MessageBox.Show("出力ファイル（Daoクラス ファイル、SQLファイル.etc）のルート フォルダが存在しません。");
+                    MessageBox.Show(this.RM_GetString("OutputFileRootFolderNotExist"));
                     return;
                 }
 
@@ -2126,7 +2140,8 @@ namespace DaoGen_Tool
                 if (rbnODP.Checked == true && txtEscapeChar.Text.Length != 1)
                 {
                     //Oracle ODP.NET かつ エスケープ文字が入力されていない(1文字でない)場合
-                    MessageBox.Show("エスケープ文字が設定されていません。");
+                    //MessageBox.Show("エスケープ文字が設定されていません。");
+                    MessageBox.Show(this.RM_GetString("EscCharacterNotSet"));
                     return;
                 }
 
@@ -2161,7 +2176,9 @@ namespace DaoGen_Tool
                 else
                 {
                     // 更新方法だけある。
-                    MessageBox.Show("タイムスタンプ列名がありません。");
+                    //MessageBox.Show("タイムスタンプ列名がありません。");
+                    MessageBox.Show(this.RM_GetString("NoTimestampColName"));
+                    
                     return;
                 }
 
@@ -2373,7 +2390,8 @@ namespace DaoGen_Tool
                         if (PK_Columns.Count == 0)
                         {
                             throw new CheckException(
-                                this.TableName + "テーブルに主キーが定義されていません。");
+                                //this.TableName + "テーブルに主キーが定義されていません。");
+                                this.TableName + this.RM_GetString("PrimaryKeyNotDefined"));
                         }
 
                         #endregion
@@ -2409,7 +2427,8 @@ namespace DaoGen_Tool
                         if (rlDaoDef2[0].Trim() != "")
                         {
                             throw new CheckException(
-                                "不正なフォーマットです。"
+                                //"不正なフォーマットです。"
+                                this.RM_GetString("InvalidFormat")
                                 + this.TableName + "：" + rlDaoDef);
                         }
 
@@ -2993,7 +3012,8 @@ namespace DaoGen_Tool
                     {
                         //　不正な状態
                         throw new CheckException(
-                            "D層定義情報ファイル・フォーマットエラー。テーブル名がありません。：" + rlDaoDef);
+                            //"D層定義情報ファイル・フォーマットエラー。テーブル名がありません。：" + rlDaoDef);
+                            this.RM_GetString("FileFormatError") + rlDaoDef);
                     }
                 }
 
@@ -3005,15 +3025,19 @@ namespace DaoGen_Tool
                 System.Windows.Forms.Cursor.Current = Cursors.Default;
 
                 // メッセージ
-                MessageBox.Show("自動生成完了！");
+                //MessageBox.Show("自動生成完了！");
+                MessageBox.Show(this.RM_GetString("FileGenComplete"));
             }
             catch (CheckException cex)
             {
-                MessageBox.Show("チェックエラーです：" + cex.Message);
+                //MessageBox.Show("チェックエラーです：" + cex.Message);
+                MessageBox.Show(this.RM_GetString("CheckExceptionError") + cex.Message);
+
             }
             catch (Exception ex)
             {
-                MessageBox.Show("ランタイムエラーです：" + ex.Message);
+                //MessageBox.Show("ランタイムエラーです：" + ex.Message);
+                MessageBox.Show(this.RM_GetString("RuntimeError") + ex.Message);
             }
             finally
             {
@@ -4180,7 +4204,8 @@ namespace DaoGen_Tool
                 else
                 {
                     // インデント以外の文字列が混じる場合
-                    throw new CheckException(replaceString + "の前には、インデントのみ指定できます。：" + input);
+                    //throw new CheckException(replaceString + "の前には、インデントのみ指定できます。：" + input);
+                    throw new CheckException(replaceString + this.RM_GetString("StringIndentation") + input);
                 }
 
                 return true;
@@ -4291,5 +4316,12 @@ namespace DaoGen_Tool
         #endregion
 
         #endregion
+        
+        /// <summary>This Method gets the string values from resource file based on the key passed</summary>
+        private string RM_GetString(string key)
+        {
+            ResourceManager rm = Resources.Resource1.ResourceManager;
+            return rm.GetString(key);
+        }
     }
 }
