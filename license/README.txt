@@ -4,13 +4,13 @@ Open Touryo Project Status
 Open Touryo is an in-house tool of Hitachi Solutions, Ltd. 
 Open Touryo was released as open source in April 2014.
 And it was forked by the Open Touryo project.
-Web site: http://
+Web site: http://csps.hitachi-solutions.co.jp/opentouryo/
 
 Documentation
 =============
 
 For the latest documentation see the Open Touryo web site at:
-http://
+http://csps.hitachi-solutions.co.jp/opentouryo/
 
 ==================================================
 
@@ -21,10 +21,10 @@ Open“—À‚ÍAŠ”®‰ïĞ“ú—§ƒ\ƒŠƒ…[ƒVƒ‡ƒ“ƒYiHitachi Solutions, Ltd.j‚ÌĞ“àƒc[ƒ‹‚
 Open“—À‚ÍA2014”N4Œ‚ÉƒI[ƒvƒ“ƒ\[ƒX‚Æ‚µ‚ÄŒöŠJ‚³‚ê‚½B
 ‚»‚µ‚ÄAOpen“—ÀProject‚É‚æ‚Á‚ÄƒtƒH[ƒN‚³‚ê‚½B
 
-WebƒTƒCƒgFhttp://
+WebƒTƒCƒgFhttp://csps.hitachi-solutions.co.jp/opentouryo/
 
 ƒhƒLƒ…ƒƒ“ƒe[ƒVƒ‡ƒ“ 
 ============= 
 
 ÅV‚Ìƒ}ƒjƒ…ƒAƒ‹‚ÍAOpen“—À‚ÌWebƒTƒCƒg‚ğQÆ‚µ‚Ä‚­‚¾‚³‚¢B 
-http://
+http://csps.hitachi-solutions.co.jp/opentouryo/
