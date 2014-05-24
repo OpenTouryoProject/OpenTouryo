@@ -25,6 +25,14 @@
   (Please keep in mind that it is limited to the statement  
   that can be used in run-time which was specified in the project file.)  
 
+  例えば、  
+  以前は.NET Fx 2.0のサポートが含まれていました（現在は.NET Fx 3.5からのサポート）。  
+  このため.NET Fx 2.0で使用できないLinq構文などは本プロジェクトで使用されていません。  
+
+  (For example,  
+  Contained the support of .NET Fx 2.0 previously(The support from. NET Fx 3.5 now).  
+  Such as Linq syntax that can not be used in .NET Fx 2.0 has not been used in this project.)  
+
   - 本体(Body)  
     .NET Fx 3.5  
 
@@ -36,14 +44,6 @@
 
   - Windows Store App  
     Windows 8  
-
-  例えば、  
-  以前は.NET Fx 2.0のサポートが含まれていました（現在は.NET Fx 3.5からのサポート）。  
-  このため.NET Fx 2.0で使用できないLinq構文などは本プロジェクトで使用されていません。  
-
-  (For example,  
-  Contained the support of .NET Fx 2.0 previously(The support from. NET Fx 3.5 now).  
-  Such as Linq syntax that can not be used in .NET Fx 2.0 has not been used in this project.)  
 
 ##手順(Flow)
 
@@ -66,13 +66,14 @@
 ###git-flow
 
   このリポジトリは、次のURLのgit-flowブランチ・モデルに基づいています。  
+  (This repository is based on the branch model of the the following URL.)  
   - masterとdevelopブランチを常設しています。  
+    (develop branch and master branch has been permanent.)  
   - その他のブランチは必要に応じて作成します。  
+    (Create as needed to other branches.)  
 
-  (This repository is based on the branch model of the the following URL. 
-  - develop branch and master branch has been permanent.  
-  - Create as needed to other branches.)  
 
+参考(Reference)  
   - A successful Git branching model » nvie.com  
     http://nvie.com/posts/a-successful-git-branching-model/  
   - 見えないチカラ A successful Git branching model を翻訳しました  
