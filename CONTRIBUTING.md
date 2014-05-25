@@ -52,7 +52,7 @@
 
 ###GitHub Flow
 
-  製品を毎日プッシュしコンスタントにテストしデプロイする  
+  製品を毎日pushしコンスタントにテストしデプロイする  
   という出荷の文化はこのプロジェクトにないためGitHubFlowは採用しません。  
 
   (GitHubFlow is not adopted because there is no culture of the shipping  
@@ -80,17 +80,25 @@
     http://keijinsonyaban.blogspot.jp/2010/10/successful-git-branching-model.html  
 
 ###コミットのサイズ(Size of the commit)
-  プルリクエストのレビューのためにコミットのサイズを小さくします。  
-  (Reduce the size of the commit for review of the pull request.)  
+  Pull Requestのレビューのためにコミットのサイズを小さくします。  
+  (Reduce the size of the commit for review of the Pull Request.)  
 
 ###プルリクエスト(Pull Request)
-  各ユーザのリポジトリにdevelopブランチからForkします。  
-  Forkした後にfeatureブランチを作成し作業します。  
-  (Fork from the develop branch in the repository for each user.  
-  After having done Fork, Create feature branch, and do work.)  
+  Opentouryoリポジトリから各ユーザのリポジトリにForkします。  
+  その後にdevelopブランチからfeatureブランチを作成し作業します。  
+  (Fork to the repository for each user from OpenTouryo repository.  
+  After having done Fork, You will work to create a feature branch from the develop branch.)  
 
-  プルリクエストはfeatureブランチからdevelopブランチ対して送信します。  
-  (Send for the develop branch from the feature branch pull request.)  
+  Pull RequestはfeatureブランチからFork元のdevelopブランチに対して送信します。  
+  (Send Pull Request to the develop branch of fork source from the feature branch.)  
+  
+  もしFork元のdevelopブランチが変更されているようなら、pull 若しくはfetch & mergeをします。  
+  (If "develop branch of fork source" was changed,  
+  then you should do pull operation or fetch & merge operation.)  
+  
+  参考(Reference)  
+  - git fetchの理解からgit mergeとpullの役割 - Qiita  
+    http://qiita.com/osamu1203/items/cb94ef9da02e1ec3e921
 
 ###テストコード(Test code)
   テストコードを実装可能な場合、以下のパスに実装して下さい。  
@@ -99,5 +107,5 @@
   \root\programs\C#\Tests  
 
 ###プッシュ(push)
-  developブランチでのビルドとテストが完了してからmasterブランチにプッシュします。  
+  developブランチでのビルドとテストが完了してからmasterブランチにpushします。  
   (After build and test in the develop brunch are completed, it pushes to a master brunch.)
