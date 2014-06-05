@@ -47,7 +47,7 @@ using Touryo.Infrastructure.Public.IO;
 // testing framework
 using NUnit.Framework;
 
-namespace Public.Test
+namespace Public.Test.IO
 {
     // - To create a test case --------------------------------------------------
     // (1) You will develop test code. 

@@ -45,7 +45,7 @@ using Touryo.Infrastructure.Public.Util;
 // testing framework
 using NUnit.Framework;
 
-namespace Public.Test
+namespace Public.Test.Util
 {
     [TestFixture]
     public class GetKeyedHashTest
