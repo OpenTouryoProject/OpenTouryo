@@ -1,4 +1,4 @@
-//**********************************************************************************
+ï»¿//**********************************************************************************
 //* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
@@ -19,11 +19,11 @@
 #endregion
 
 //**********************************************************************************
-//* ƒNƒ‰ƒX–¼        FPerformanceRecorderTest
-//* ƒNƒ‰ƒX“ú–{Œê–¼  FTest of the class to Record the Performance
+//* ã‚¯ãƒ©ã‚¹å        ï¼šPerformanceRecorderTest
+//* ã‚¯ãƒ©ã‚¹æ—¥æœ¬èªå  ï¼šTest of the class to Record the Performance
 //*
-//* ì¬Ò          FSai
-//* XV—š—ğ        F
+//* ä½œæˆè€…          ï¼šSai
+//* æ›´æ–°å±¥æ­´        ï¼š
 //* 
 //*  Date:        Author:          Comments:
 //*  ----------  ----------------  -------------------------------------------------
@@ -60,7 +60,7 @@ namespace Public.Test.Util
     /// Tests for the Performance Recorder Class
     /// </summary>
     [TestFixture, Description("Tests for Performance Recorder")]
-    public class PerformanceRecorderTest
+    public class PerformanceRecorderTest1
     {
         #region Class Variables
 

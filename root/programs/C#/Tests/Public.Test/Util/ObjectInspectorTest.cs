@@ -1,4 +1,4 @@
-//**********************************************************************************
+ï»¿//**********************************************************************************
 //* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
@@ -19,11 +19,11 @@
 #endregion
 
 //**********************************************************************************
-//* ƒNƒ‰ƒX–¼        FObjectInspectorTest
-//* ƒNƒ‰ƒX“ú–{Œê–¼  FTest of the class to Inspect the Object
+//* ã‚¯ãƒ©ã‚¹å        ï¼šObjectInspectorTest
+//* ã‚¯ãƒ©ã‚¹æ—¥æœ¬èªå  ï¼šTest of the class to Inspect the Object
 //*
-//* ì¬Ò          FSai
-//* XV—š—ğ        F
+//* ä½œæˆè€…          ï¼šSai
+//* æ›´æ–°å±¥æ­´        ï¼š
 //* 
 //*  Date:        Author:          Comments:
 //*  ----------  ----------------  -------------------------------------------------
@@ -53,7 +53,7 @@ namespace Public.Test.Util
     /// Tests for the Object Inspector Class
     /// </summary>
     [TestFixture, Description("Tests for Object Inspector")]
-    public class ObjectInspectorTest
+    public class ObjectInspectorTest1
     {
         #region Class Variables
 
