@@ -1,4 +1,38 @@
+//**********************************************************************************
+//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//**********************************************************************************
+
+#region Apache License
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+#endregion
+
+//**********************************************************************************
+//* クラス名        ：PubCmnFunctionTest
+//* クラス日本語名  ：Test of the class for PubCmnFunction
+//*
+//* 作成者          ：Sai
+//* 更新履歴        ：
+//* 
+//*  Date:        Author:       Comments:
+//*  ----------  ----------------  -------------------------------------------------
+//*  05/08/2014   Sai           Testcode development for PubCmnFunction.
+//*
+//**********************************************************************************
+
 #region Includes
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,30 +49,21 @@ using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Win32;
+
 #endregion
 
-///////////////////////////////////////////////////////////////////////////////
-// Copyright 2014 (c) by Symphony Services All Rights Reserved.
-//  
-// Project:      Infrastructure
-// Module:       PubCmnFunctionTest.cs
-// Description:  Tests for the Pub Cmn Function class in the Public assembly.
-//  
-// Date:       Author:           Comments:
-// 5/8/2014    sai               Testcode development for PubCmnFunction.
-///////////////////////////////////////////////////////////////////////////////
 namespace Public.Test.Util
 {
-
     /// <summary>
     /// Tests for the Pub Cmn Function Class
-    /// Documentation: Publicﾃ･ﾂｱﾂ､ﾃ｣ﾂ�ﾂｮﾃ･窶ｦﾂｱﾃｩ竄ｬﾅ｡ﾃ｣窶堋ｯﾃ｣ﾆ陳ｩﾃ｣窶堋ｹ
     /// </summary>
     [TestFixture, Description("Tests for Pub Cmn Function")]
     public class PubCmnFunctionTest
     {
         #region Class Variables
+
         private PubCmnFunction _pubCmnFunction;
+
         #endregion
 
         #region Setup/Teardown
@@ -102,12 +127,11 @@ namespace Public.Test.Util
         {
             get
             {
-                // If you need to prepare for the test data below so, you use the TestCaseData.
-
                 this.TestFixtureSetup();
                 //Normal test case
                 yield return new TestCaseData("TestID-001N", "CategoryID=0001;CategoryName=Test");
                 yield return new TestCaseData("TestID-002N", "CategoryID{=}0001;CategoryName=Test").Throws(typeof(ArgumentNullException));
+                
                 //Abnormal test case
                 yield return new TestCaseData("TestID-003A", "=CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentNullException));
                 yield return new TestCaseData("TestID-004A", ";CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentNullException));
@@ -139,7 +163,6 @@ namespace Public.Test.Util
                 yield return new TestCaseData("TestID-001N", '/');
                 yield return new TestCaseData("TestID-002N", 'Z');
                 yield return new TestCaseData("TestID-003N", '\\');
-              
                 //Abnormal test case
                 yield return new TestCaseData("TestID-004A", 'o');
                 yield return new TestCaseData("TestID-005A", '"');
@@ -147,7 +170,6 @@ namespace Public.Test.Util
                 yield return new TestCaseData("TestID-007A", ' ');
                 yield return new TestCaseData("TestID-008A", '2');
                 yield return new TestCaseData("TestID-009A", "Vtry").Throws(typeof(ArgumentException));
-                
             }
         }
         /// <summary>
@@ -276,7 +298,6 @@ namespace Public.Test.Util
                 yield return new TestCaseData("TestID-008A", "DaoOrders.cs,DaoOrders.vb", '-');
                 yield return new TestCaseData("TestID-009A", "DaoOrders.cs,DaoOrders.vb", ',');
                 yield return new TestCaseData("TestID-010A", "DaoOrders.cs,DaoOrdersTest", ',');
-
             }
         }
         /// <summary>
@@ -320,9 +341,11 @@ namespace Public.Test.Util
 
         #region Test Code
 
-        /// <summary>
-        /// GetPropsFromPropString Method Test        
+        /// <summary>        
+        /// GetPropsFromPropString Method Test      
         /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
+        /// <param name="propString">propString</param>
         [TestCaseSource("TestCasesOfGetPropsFromPropStringTest")]
         public void GetPropsFromPropStringTest(string testCaseID, string propString)
         {
@@ -342,15 +365,17 @@ namespace Public.Test.Util
                 throw;
             }
         }
+
         /// <summary>
         /// GetCommandArgs Method Test        
         /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
+        /// <param name="preFix">preFix</param>
         [TestCaseSource("TestCasesOfGetCommandArgsTest")]
         public void GetCommandArgsTest(string testCaseID, char preFix)
         {
             try
             {
-                
                 Dictionary<string, string> resultArgs = new Dictionary<string, string>();
                 List<string> resultList = new List<string>();
                 Dictionary<string, string> expectedArgs = new Dictionary<string, string>();
@@ -368,10 +393,11 @@ namespace Public.Test.Util
             }
         }
 
-
         /// <summary>
         /// GetCommandArgs Method Test        
         /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
+        /// <param name="builtString">builtString</param>
         [TestCaseSource("TestCasesOfBuiltStringIntoEnvironmentVariableTest")]
         public void BuiltStringIntoEnvironmentVariableTest(string testCaseID, string builtString)
         {
@@ -405,9 +431,11 @@ namespace Public.Test.Util
                 throw;
             }
         }
+
         /// <summary>
         /// CalculateSessionSizeMB Method Test        
         /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
         [TestCaseSource("TestCasesOfCalculateSessionSizeTest")]
         public void CalculateSessionSizeTest(string testCaseID)
         {
@@ -424,9 +452,11 @@ namespace Public.Test.Util
                 throw;
             }
         }
+
         /// <summary>
         /// CalculateSessionSizeKB Method Test        
         /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
         [TestCaseSource("TestCasesOfCalculateSessionSizeKBTest")]
         public void CalculateSessionSizeKBTest(string testCaseID)
         {
@@ -443,9 +473,11 @@ namespace Public.Test.Util
                 throw;
             }
         }
+
         /// <summary>
         /// GetCurrentMethodName Method Test        
         /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
         [TestCaseSource("TestCasesOfGetCurrentMethodNameTest")]
         public void GetCurrentMethodNameTest(string testCaseID)
         {
@@ -462,9 +494,11 @@ namespace Public.Test.Util
                 throw;
             }
         }
+
         /// <summary>
         /// GetCurrentMethodName Method Test        
         /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
         [TestCaseSource("TestCasesOfGetCurrentPropertyNameTest")]
         public void GetCurrentPropertyNameTest(string testCaseID)
         {
@@ -481,9 +515,11 @@ namespace Public.Test.Util
                 throw;
             }
         }
+
         /// <summary>
         /// GetCurrentMethodName Method Test        
         /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
         [TestCaseSource("TestCasesOfGetCurrentCodeInfoTest")]
         public void GetCurrentCodeInfo(string testCaseID)
         {
@@ -512,9 +548,13 @@ namespace Public.Test.Util
                 throw;
             }
         }
+
         /// <summary>
         /// GetCurrentMethodName Method Test        
         /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
+        /// <param name="str">str</param>
+        /// <param name="divChar">divChar</param>
         [TestCaseSource("TestCasesOfGetFileNameNoExTest")]
         public void GetFileNameNoExTest(string testCaseID, string str, char divChar)
         {
@@ -536,9 +576,13 @@ namespace Public.Test.Util
                 throw;
             }
         }
+
         /// <summary>
         /// ShortenByteArrayTest Method Test        
         /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
+        /// <param name="bytes">bytes</param>
+        /// <param name="newSize">newSize</param>
         [TestCaseSource("TestCasesOfShortenByteArrayTest")]
         public void ShortenByteArrayTest(string testCaseID, byte[] bytes, int newSize)
         {
@@ -559,9 +603,12 @@ namespace Public.Test.Util
                 throw;
             }
         }
+
         /// <summary>
         /// GetLongFromByteTest Method Test        
         /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
+        /// <param name="bytData">bytData</param>
         [TestCaseSource("TestCasesOfGetLongFromByteTest")]
         public void GetLongFromByteTest(string testCaseID, byte[] bytData)
         {

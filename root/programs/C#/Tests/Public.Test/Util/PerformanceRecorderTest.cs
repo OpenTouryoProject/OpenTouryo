@@ -1,4 +1,38 @@
+//**********************************************************************************
+//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//**********************************************************************************
+
+#region Apache License
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+#endregion
+
+//**********************************************************************************
+//* クラス名        ：PerformanceRecorderTest
+//* クラス日本語名  ：Test of the class to Record the Performance
+//*
+//* 作成者          ：Sai
+//* 更新履歴        ：
+//* 
+//*  Date:        Author:       Comments:
+//*  ----------  ----------------  -------------------------------------------------
+//*  05/22/2014   Sai           Testcode development for PerformanceRecorder.
+//*
+//**********************************************************************************
+
 #region Includes
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,16 +50,9 @@ using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Win32;
+
 #endregion
 
-///////////////////////////////////////////////////////////////////////////////
-// Project:      Infrastructure
-// Module:       PerformanceRecorderTest.cs
-// Description:  Tests for the Performance Recorder class in the Public assembly.
-//  
-// Date:       Author:           Comments:
-// 5/22/2014 11:38 AM  sandukur     Module created.
-///////////////////////////////////////////////////////////////////////////////
 namespace Public.Test.Util
 {
 
@@ -36,7 +63,9 @@ namespace Public.Test.Util
     public class PerformanceRecorderTest
     {
         #region Class Variables
+
         private PerformanceRecorder _performanceRecorder;
+
         #endregion
 
         #region Setup/Teardown
@@ -75,7 +104,7 @@ namespace Public.Test.Util
         [TearDown]
         public void Cleanup()
         {
-            
+
         }
         #endregion
 
@@ -113,13 +142,13 @@ namespace Public.Test.Util
         /// <summary>
         /// Test method for StartsPerformanceRecord        
         /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
         [TestCaseSource("TestCasesOfStartsPerformanceRecordTest")]
         public void StartsPerformanceRecordTest(string testCaseID)
         {
             try
             {
                 bool expected = true;
-
                 bool results = _performanceRecorder.StartsPerformanceRecord();
                 Assert.AreEqual(expected, results);
                 Assert.AreNotEqual(false, results);
@@ -135,6 +164,7 @@ namespace Public.Test.Util
         /// <summary>
         /// Test method for EndsPerformanceRecord     
         /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
         [TestCaseSource("TestCasesOfEndsPerformanceRecordTest")]
         public void EndsPerformanceRecordTest(string testCaseID)
         {
