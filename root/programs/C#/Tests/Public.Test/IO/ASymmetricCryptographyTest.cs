@@ -3,10 +3,7 @@
 //**********************************************************************************
 
 #region Apache License
-//
-//  
-// 
-//  
+ 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -47,7 +44,7 @@ using Touryo.Infrastructure.Public.IO;
 // testing framework
 using NUnit.Framework;
 
-namespace Public.Test
+namespace Public.Test.IO
 {
     // - To create a test case --------------------------------------------------
     // (1) You will develop test code. 

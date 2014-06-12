@@ -3,10 +3,7 @@
 //**********************************************************************************
 
 #region Apache License
-//
-//  
-// 
-//  
+ 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -22,7 +19,7 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：ASymmetricCryptographyTest
+//* クラス名        ：SymmetricCryptographyTest
 //* クラス日本語名  ：対称アルゴリズムによる暗号化・復号化クラスのテスト
 //*
 //* 作成者          ：生技 西野
@@ -45,7 +42,7 @@ using Touryo.Infrastructure.Public.IO;
 // testing framework
 using NUnit.Framework;
 
-namespace Public.Test
+namespace Public.Test.IO
 {
     // - To create a test case --------------------------------------------------
     // (1) You will develop test code. 
