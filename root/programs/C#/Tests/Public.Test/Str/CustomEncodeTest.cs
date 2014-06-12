@@ -1,4 +1,38 @@
-﻿#region Includes
+﻿//**********************************************************************************
+//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//**********************************************************************************
+
+#region Apache License
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+#endregion
+
+//**********************************************************************************
+//* クラス名        ：CustomEncodeTest
+//* クラス日本語名  ：Test of the class to CustomEncode
+//*
+//* 作成者          ：Rituparna
+//* 更新履歴        ：
+//* 
+//*  Date:        Author:          Comments:
+//*  ----------  ----------------  -------------------------------------------------
+//*  05/08/2014   Rituparna        Testcode development for CustomEncode.
+//*
+//**********************************************************************************
+
+#region Includes
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,17 +45,9 @@ using Touryo.Infrastructure.Public.IO;
 using NUnit.Framework;
 using Touryo.Infrastructure.Public.Str;
 using System.Data;
+
 #endregion
-///////////////////////////////////////////////////////////////////////////////
-// Copyright 2014 (c) by Symphony Services All Rights Reserved.
-//  
-// Project:      Infrastructure
-// Module:       CustomEncodeTest.cs
-// Description:  Tests for the Custom Encode class in the Public assembly.
-//  
-// Date:               Author:           Comments:
-// 5/8/2014 11:39 AM  Rituparna          Testcode development for CustomEncode.
-///////////////////////////////////////////////////////////////////////////////
+
 namespace Public.Test.Str
 {
     [TestFixture]
@@ -42,10 +68,8 @@ namespace Public.Test.Str
             // It runs for each test case.
         }
 
-
-
-
         #region Test data
+
         /// <summary>
         /// This method to generate test cases. 
         /// This method to generate test data to be passed to the method GetEncodings.
@@ -54,16 +78,10 @@ namespace Public.Test.Str
         {
             get
             {
-               this.SetUp();
-
-
+                this.SetUp();
                 yield return new TestCaseData("TestID-000N");
-
             }
         }
-
-
-
 
         /// <summary>
         /// This method to generate test cases. 
@@ -73,14 +91,13 @@ namespace Public.Test.Str
         {
             get
             {
-               
                 this.SetUp();
+
                 //passing  codePageNum as proper Unicode value or null value
                 yield return new TestCaseData("TestID-000N", "abcde", CustomEncode.UTF_16LE);
                 yield return new TestCaseData("TestID-001N", "abcde", CustomEncode.UTF_16BE);
                 yield return new TestCaseData("TestID-002N", "abcde", CustomEncode.UTF_7);
                 yield return new TestCaseData("TestID-003N", "abcde", CustomEncode.UTF_8);
-
                 yield return new TestCaseData("TestID-004N", "abcde", 1200);
                 yield return new TestCaseData("TestID-005N", "abcde", 1201);
                 yield return new TestCaseData("TestID-006N", "abcde", 65000);
@@ -110,7 +127,6 @@ namespace Public.Test.Str
                 yield return new TestCaseData("TestID-020L", string.Empty, CustomEncode.UTF_7);
                 yield return new TestCaseData("TestID-021L", string.Empty, CustomEncode.UTF_8);
 
-
                 //passing empty value in codePageNum
                 yield return new TestCaseData("TestID-022A", "abcde", string.Empty).Throws(typeof(ArgumentException));
                 yield return new TestCaseData("TestID-023A", "11", string.Empty).Throws(typeof(ArgumentException));
@@ -134,8 +150,8 @@ namespace Public.Test.Str
         {
             get
             {
-               
                 this.SetUp();
+
                 //passing  codePageNum as proper Unicode value or proper JIS value or proper その他 value 
                 yield return new TestCaseData("TestID-000N", Encoding.UTF8.GetBytes("abcde"), CustomEncode.UTF_8);
                 yield return new TestCaseData("TestID-001N", Encoding.UTF7.GetBytes("abcde"), CustomEncode.UTF_7);
@@ -171,7 +187,6 @@ namespace Public.Test.Str
                 yield return new TestCaseData("TestID-030N", Encoding.ASCII.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO);
                 yield return new TestCaseData("TestID-031N", Encoding.ASCII.GetBytes("abcde"), CustomEncode.UTF_8);
                 yield return new TestCaseData("TestID-032N", Encoding.ASCII.GetBytes("abcde"), CustomEncode.UTF_7);
-
                 yield return new TestCaseData("TestID-033N", Encoding.Unicode.GetBytes("abcde"), CustomEncode.x_mac_japanese);
                 yield return new TestCaseData("TestID-034N", Encoding.Unicode.GetBytes("abcde"), CustomEncode.us_ascii);
                 yield return new TestCaseData("TestID-035N", Encoding.Unicode.GetBytes("abcde"), CustomEncode.EUC_JP);
@@ -181,7 +196,6 @@ namespace Public.Test.Str
                 yield return new TestCaseData("TestID-039N", Encoding.Unicode.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO);
                 yield return new TestCaseData("TestID-040N", Encoding.Unicode.GetBytes("abcde"), CustomEncode.UTF_8);
                 yield return new TestCaseData("TestID-041N", Encoding.Unicode.GetBytes("あいうえお"), CustomEncode.UTF_7);
-
                 yield return new TestCaseData("TestID-042N", Encoding.Unicode.GetBytes("abcde"), CustomEncode.UTF_16LE);
                 yield return new TestCaseData("TestID-043N", Encoding.Unicode.GetBytes("abcde"), CustomEncode.UTF_16BE);
                 yield return new TestCaseData("TestID-044N", Encoding.Default.GetBytes("abcde"), CustomEncode.x_mac_japanese);
@@ -193,7 +207,6 @@ namespace Public.Test.Str
                 yield return new TestCaseData("TestID-050N", Encoding.Default.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO);
                 yield return new TestCaseData("TestID-051N", Encoding.Default.GetBytes("abcde"), CustomEncode.UTF_8);
                 yield return new TestCaseData("TestID-052N", Encoding.Default.GetBytes("abcde"), CustomEncode.UTF_7);
-
                 yield return new TestCaseData("TestID-058N", Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode.x_mac_japanese);
                 yield return new TestCaseData("TestID-059N", Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode.us_ascii);
                 yield return new TestCaseData("TestID-060N", Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode.EUC_JP);
@@ -202,7 +215,6 @@ namespace Public.Test.Str
                 yield return new TestCaseData("TestID-063N", Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_ESC);
                 yield return new TestCaseData("TestID-064N", Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO);
                 yield return new TestCaseData("TestID-065N", Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode.UTF_8);
-
 
                 //passing  codePageNum as null value 
                 yield return new TestCaseData("TestID-066N", Encoding.UTF8.GetBytes("abcde"), null);
@@ -249,7 +261,6 @@ namespace Public.Test.Str
             }
         }
 
-
         /// <summary>
         /// This method to generate test cases. 
         /// This method to generate test data to be passed to the method HtmlEncode.
@@ -258,9 +269,7 @@ namespace Public.Test.Str
         {
             get
             {
-               
                 this.SetUp();
-
                 yield return new TestCaseData("TestID-000N", "abcde");
                 yield return new TestCaseData("TestID-001N", "あいうえお");
                 yield return new TestCaseData("TestID-002N", "1");
@@ -269,8 +278,7 @@ namespace Public.Test.Str
                 yield return new TestCaseData("TestID-005N", null);
                 yield return new TestCaseData("TestID-006L", string.Empty);
                 yield return new TestCaseData("TestID-007N", "This string contains the unicode character Pi (\u03a0)");
-                yield return new TestCaseData("TestID-007N", "&lt;root&gt;abcde&lt;/root&gt;");
-
+                yield return new TestCaseData("TestID-008N", "&lt;root&gt;abcde&lt;/root&gt;");
             }
         }
 
@@ -282,9 +290,8 @@ namespace Public.Test.Str
         {
             get
             {
-                
                 this.SetUp();
-               
+
                 yield return new TestCaseData("TestID-000N", "abcde");
                 yield return new TestCaseData("TestID-001N", "あいうえお");
                 yield return new TestCaseData("TestID-002N", "1");
@@ -293,9 +300,9 @@ namespace Public.Test.Str
                 yield return new TestCaseData("TestID-005N", null);
                 yield return new TestCaseData("TestID-006L", string.Empty);
                 yield return new TestCaseData("TestID-007N", "<root>abcde</root>");
-
             }
         }
+
         /// <summary>
         /// This method to generate test cases. 
         /// This method to generate test data to be passed to the method UrlEncode.
@@ -304,12 +311,10 @@ namespace Public.Test.Str
         {
             get
             {
-              
                 this.SetUp();
 
                 yield return new TestCaseData("TestID-000N", "hello");
                 yield return new TestCaseData("TestID-001N", "google.com");
-
             }
         }
 
@@ -321,12 +326,10 @@ namespace Public.Test.Str
         {
             get
             {
-               
                 this.SetUp();
 
                 yield return new TestCaseData("TestID-000N", "hello");
                 yield return new TestCaseData("TestID-001N", "google.com");
-
             }
         }
 
@@ -338,7 +341,6 @@ namespace Public.Test.Str
         {
             get
             {
-                
                 this.SetUp();
                 string str = "00 01 00 00 00 FF FF FF FF 01 00 00 00 00 00 00 00 06 01 00 00 00 0E 59 61 68 6F 6F 6F 6F 6F 6F 6F 6F 6F 6F 6F 0B";
                 yield return new TestCaseData("TestID-000N", str);
@@ -360,8 +362,8 @@ namespace Public.Test.Str
         {
             get
             {
-               
                 this.SetUp();
+
                 var sevenItems = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 };
                 string str = "00 01 00 00 00 FF FF FF FF 01 00 00 00 00 00 00 00 06 01 00 00 00 0E 59 61 68 6F 6F 6F 6F 6F 6F 6F 6F 6F 6F 6F 0B";
                 byte[] data = { };
@@ -372,7 +374,6 @@ namespace Public.Test.Str
                 yield return new TestCaseData("TestID-004A", string.Empty).Throws(typeof(ArgumentException));
                 yield return new TestCaseData("TestID-005N", sevenItems);
                 yield return new TestCaseData("TestID-006N", data).Throws(typeof(ArgumentOutOfRangeException));
-
             }
         }
 
@@ -402,7 +403,6 @@ namespace Public.Test.Str
         {
             get
             {
-                
                 this.SetUp();
 
                 yield return new TestCaseData("TestID-000N", Encoding.ASCII.GetBytes("abcde"));
@@ -416,6 +416,11 @@ namespace Public.Test.Str
         #endregion
 
         #region Test Code
+
+        /// <summary>
+        /// TestCasesOfGetEncodingsTest Method
+        /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
         [TestCaseSource("TestCasesOfGetEncodingsTest")]
         public static void GetEncodingsTest(string testCaseID)
         {
@@ -428,10 +433,14 @@ namespace Public.Test.Str
             Assert.AreEqual(dt.Columns.GetType(), dt1.Columns.GetType());
             Assert.AreEqual(dt.Columns.Count, dt1.Columns.Count);
             Assert.AreNotEqual(dt.Rows.Count, dt1.Rows.Count);
-
-
         }
 
+        /// <summary>
+        /// StringToByteTest Method
+        /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
+        /// <param name="str">str</param>
+        /// <param name="codePageNum">codePageNum</param>
         [TestCaseSource("TestCasesOfStringToByteTest")]
         public static void StringToByteTest(string testCaseID, string str, int codePageNum)
         {
@@ -443,8 +452,8 @@ namespace Public.Test.Str
                 // Convert to string using the components touryo.
                 string strValue = CustomEncode.ByteToString(abyt, codePageNum);
 
-
                 Assert.AreNotSame(str, abyt);
+
                 //Check whether it is converted into the original string.
                 Assert.AreEqual(str, strValue);
             }
@@ -456,6 +465,12 @@ namespace Public.Test.Str
             }
         }
 
+        /// <summary>
+        /// TestCasesOfByteToStringTest Method
+        /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
+        /// <param name="abyt">abyt</param>
+        /// <param name="codePageNum">codePageNum</param>
         [TestCaseSource("TestCasesOfByteToStringTest")]
         public static void ByteToStringTest(string testCaseID, byte[] abyt, int codePageNum)
         {
@@ -466,7 +481,6 @@ namespace Public.Test.Str
 
                 // Convert to byte using the components touryo.
                 byte[] byteValue = CustomEncode.StringToByte(str, codePageNum);
-
 
                 Assert.AreNotSame(abyt, str);
                 //Check whether it is converted into the original byte.
@@ -480,6 +494,11 @@ namespace Public.Test.Str
             }
         }
 
+        /// <summary>
+        /// HtmlEncodeTest Method
+        /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
+        /// <param name="str">str</param>
         [TestCaseSource("TestHtmlEncodeTest")]
         public static void HtmlEncodeTest(string testCaseID, string str)
         {
@@ -491,10 +510,8 @@ namespace Public.Test.Str
                 // Performs encryption using the components touryo.
                 string str1 = CustomEncode.HtmlEncode(strValue);
 
-
                 // Check whether it is encrypted into the original string.
                 Assert.AreEqual(str, str1);
-
             }
             catch (Exception ex)
             {
@@ -504,8 +521,11 @@ namespace Public.Test.Str
             }
         }
 
-
-
+        /// <summary>
+        /// HtmlDecodeTest Method
+        /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
+        /// <param name="str">str</param>
         [TestCaseSource("TestHtmlDecodeTest")]
         public static void HtmlDecodeTest(string testCaseID, string str)
         {
@@ -517,10 +537,8 @@ namespace Public.Test.Str
                 // Performs decrypted using the components touryo.
                 string str1 = CustomEncode.HtmlDecode(strValue);
 
-
                 // Check whether it is decrypted into the original string.
                 Assert.AreEqual(str, str1);
-
             }
             catch (Exception ex)
             {
@@ -530,8 +548,11 @@ namespace Public.Test.Str
             }
         }
 
-
-
+        /// <summary>
+        /// TestUrlEncodeTest Method
+        /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
+        /// <param name="str">str</param>
         [TestCaseSource("TestUrlEncodeTest")]
         public static void UrlEncodeTest(string testCaseID, string str)
         {
@@ -543,10 +564,8 @@ namespace Public.Test.Str
                 // Performs encryption using the components touryo.
                 string str1 = CustomEncode.UrlEncode(strValue);
 
-
                 // Check whether it is decrypted into the original string.
                 Assert.AreEqual(str, str1);
-
             }
             catch (Exception ex)
             {
@@ -556,6 +575,11 @@ namespace Public.Test.Str
             }
         }
 
+        /// <summary>
+        /// TestUrlDecodeTestMethod
+        /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
+        /// <param name="str">str</param>
         [TestCaseSource("TestUrlDecodeTest")]
         public static void UrlDecodeTest(string testCaseID, string str)
         {
@@ -567,10 +591,8 @@ namespace Public.Test.Str
                 // Performs decrypted using the components touryo.
                 string str1 = CustomEncode.UrlDecode(strValue);
 
-
                 // Check whether it is decrypted into the original string.
                 Assert.AreEqual(str, str1);
-
             }
             catch (Exception ex)
             {
@@ -579,12 +601,17 @@ namespace Public.Test.Str
                 throw;
             }
         }
+
+        /// <summary>
+        /// TestFormHexStringTest Method
+        /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
+        /// <param name="str">str</param>
         [TestCaseSource("TestFormHexStringTest")]
         public void FormHexStringTest(string testCaseID, string str)
         {
             try
             {
-
                 //convert to byte using components of Touryo
                 byte[] results = CustomEncode.FormHexString(str);
 
@@ -593,8 +620,6 @@ namespace Public.Test.Str
 
                 // Check whether the two strings are equal.
                 Assert.AreEqual(str, strValue);
-
-
             }
             catch (Exception ex)
             {
@@ -602,10 +627,13 @@ namespace Public.Test.Str
                 Console.WriteLine(testCaseID + ":" + ex.StackTrace);
                 throw;
             }
-
         }
 
-
+        /// <summary>
+        /// TestToHexStringTest Method
+        /// </summary>
+        /// <param name="testCaseID"></param>
+        /// <param name="bytes"></param>
         [TestCaseSource("TestToHexStringTest")]
         public void ToHexStringTest(string testCaseID, byte[] bytes)
         {
@@ -613,13 +641,12 @@ namespace Public.Test.Str
             {
                 //convert to string using components of Touryo
                 string strValue = CustomEncode.ToHexString(bytes);
+
                 //convert to byte unsing components of Touryo
                 byte[] bytesValue = CustomEncode.FormHexString(strValue);
 
                 // Check whether it is converted to original byte.
                 Assert.AreEqual(bytes, bytesValue);
-
-
             }
             catch (Exception ex)
             {
@@ -627,32 +654,35 @@ namespace Public.Test.Str
                 Console.WriteLine(testCaseID + ":" + ex.StackTrace);
                 throw;
             }
-
         }
 
-
+        /// <summary>
+        /// TestFromBase64StringTest Method
+        /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
+        /// <param name="base64Str">base64Str</param>
         [TestCaseSource("TestFromBase64StringTest")]
         public static void FromBase64StringTest(string testCaseID, string base64Str)
         {
-
-
             string base64Decoded;
             //convert to byte using components of Touryo
             byte[] data = CustomEncode.FromBase64String(base64Str);
 
             //convert to string unsing components of Touryo
             base64Decoded = CustomEncode.ToBase64String(data);
+
             //check whether the two strings are equal.
             Assert.AreEqual(base64Str, base64Decoded);
-
         }
 
-
+        /// <summary>
+        /// TestToBase64StringTest Method
+        /// </summary>
+        /// <param name="testCaseID">testCaseID</param>
+        /// <param name="aryByt">aryByt</param>
         [TestCaseSource("TestToBase64StringTest")]
         public static void ToBase64StringTest(string testCaseID, byte[] aryByt)
         {
-
-
             string base64Decoded;
             //convert to byte using components of Touryo
             base64Decoded = CustomEncode.ToBase64String(aryByt);
@@ -662,8 +692,8 @@ namespace Public.Test.Str
 
             //check whether it is converted to original byte
             Assert.AreEqual(aryByt, data);
-
         }
+
         #endregion
         /// <summary>Test case post-processing.</summary>
         [TearDown]
@@ -681,7 +711,4 @@ namespace Public.Test.Str
             // This is done only once at the ending.
         }
     }
-
-
-
 }

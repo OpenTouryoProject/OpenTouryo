@@ -3,10 +3,7 @@
 //**********************************************************************************
 
 #region Apache License
-//
-//  
-// 
-//  
+
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -78,7 +75,7 @@ namespace Public.Test.Util
         }
 
         #region Test Code
-        
+
         /// <summary>Test execution.(CheckListID should be the first argument)</summary>
         /// <param name="testCaseID">test case ID</param> 
         /// <param name="sourceString">The original string to get the hash value.</param>
