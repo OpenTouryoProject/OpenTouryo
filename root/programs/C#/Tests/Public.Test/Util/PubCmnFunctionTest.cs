@@ -20,14 +20,14 @@
 
 //**********************************************************************************
 //* クラス名        ：PubCmnFunctionTest
-//* クラス日本語名  ：Test of the class for PubCmnFunction
+//* クラス日本語名  ：Test of the class to PubCmnFunction
 //*
-//* 作成者          ：Sai
+//* 作成者          ：生技 西野
 //* 更新履歴        ：
 //* 
-//*  Date:        Author:          Comments:
+//*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  05/08/2014   Sai              Testcode development for PubCmnFunction.
+//*  2014/05/08  Sai               Testcode development for PubCmnFunction.
 //*
 //**********************************************************************************
 
@@ -131,7 +131,7 @@ namespace Public.Test.Util
                 //Normal test case
                 yield return new TestCaseData("TestID-001N", "CategoryID=0001;CategoryName=Test");
                 yield return new TestCaseData("TestID-002N", "CategoryID{=}0001;CategoryName=Test").Throws(typeof(ArgumentNullException));
-                
+
                 //Abnormal test case
                 yield return new TestCaseData("TestID-003A", "=CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentNullException));
                 yield return new TestCaseData("TestID-004A", ";CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentNullException));
