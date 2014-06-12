@@ -25,9 +25,9 @@
 //* 作成者          ：Santosh Avaji
 //* 更新履歴        ：
 //* 
-//*  Date:        Author:        Comments:
+//*  Date:        Author:          Comments:
 //*  ----------  ----------------  -------------------------------------------------
-//*  05/08/2014   Santosh Avaji      Testcode development for ResourceLoader.
+//*  05/08/2014   Santosh Avaji    Testcode development for ResourceLoader.
 //*
 //**********************************************************************************
 using System;
