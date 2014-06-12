@@ -63,7 +63,9 @@
     <Compile Include="Util\GetKeyedHashTest.cs" />
     <Compile Include="Util\LatebindTest.cs" />
     <Compile Include="Util\ObjectInspectorTest.cs" />
+    <Compile Include="Util\ObjectInspectorTest1.cs" />
     <Compile Include="Util\PerformanceRecorderTest.cs" />
+    <Compile Include="Util\PerformanceRecorderTest1.cs" />
     <Compile Include="Util\PubCmnFunctionTest.cs" />
   </ItemGroup>
   <ItemGroup>
