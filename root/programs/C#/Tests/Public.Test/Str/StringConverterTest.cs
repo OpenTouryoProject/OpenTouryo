@@ -25,9 +25,9 @@
 //* 作成者          ：Rituparna
 //* 更新履歴        ：
 //* 
-//*  Date:        Author:        Comments:
+//*  Date:        Author:          Comments:
 //*  ----------  ----------------  -------------------------------------------------
-//*  05/19/2014    Rituparna     Testcode development for StringConverter.
+//*  05/19/2014    Rituparna       Testcode development for StringConverter.
 //*
 //**********************************************************************************
 

@@ -26,9 +26,9 @@
 //* 作成者          ：Rituparna
 //* 更新履歴        ：
 //* 
-//*  Date:        Author:       Comments:
+//*  Date:        Author:          Comments:
 //*  ----------  ----------------  -------------------------------------------------
-//*  05/14/2014   Rituparna     Testcode development for FormatChecker.
+//*  05/14/2014   Rituparna        Testcode development for FormatChecker.
 //*
 //**********************************************************************************
 
