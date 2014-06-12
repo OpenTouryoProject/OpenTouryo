@@ -25,9 +25,9 @@
 //* 作成者          ：Sai
 //* 更新履歴        ：
 //* 
-//*  Date:        Author:       Comments:
+//*  Date:        Author:          Comments:
 //*  ----------  ----------------  -------------------------------------------------
-//*  05/08/2014   Sai           Testcode development for ObjectInspector.
+//*  05/08/2014   Sai              Testcode development for ObjectInspector.
 //*
 //**********************************************************************************
 

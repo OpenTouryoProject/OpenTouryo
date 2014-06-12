@@ -25,9 +25,9 @@
 //* 作成者          ：Santosh
 //* 更新履歴        ：
 //* 
-//*  Date:        Author:        Comments:
+//*  Date:        Author:          Comments:
 //*  ----------  ----------------  -------------------------------------------------
-//*  05/21/2014   Santosh Avaji       Testcode development for Latebind.
+//*  05/21/2014   Santosh Avaji    Testcode development for Latebind.
 //*
 //**********************************************************************************
 
