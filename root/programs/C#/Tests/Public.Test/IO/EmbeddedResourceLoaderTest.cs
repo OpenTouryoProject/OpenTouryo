@@ -36,7 +36,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using Touryo.Infrastructure.Public.IO;
 using System.Reflection;
 using System.IO;
 using System.Xml;

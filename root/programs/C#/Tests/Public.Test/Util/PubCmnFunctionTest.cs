@@ -138,10 +138,10 @@ namespace Public.Test.Util
                 yield return new TestCaseData("TestID-005A", "}CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentException));
                 yield return new TestCaseData("TestID-006A", "CategoryID0001;CategoryName=Test").Throws(typeof(ArgumentException));
                 yield return new TestCaseData("TestID-007A", "Category=ID0001CategoryName=Test").Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-008A", "{CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-008A", "{CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentException));
                 yield return new TestCaseData("TestID-009A", "=0001;CategoryName=Test").Throws(typeof(ArgumentException));
                 yield return new TestCaseData("TestID-010A", "CategoryID=;CategoryName=Test").Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-011A", "{CategoryID=0;CategoryName=Test").Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-011A", "{CategoryID=0;CategoryName=Test").Throws(typeof(ArgumentException));
                 yield return new TestCaseData("TestID-012A", "CategoryID=0;CategoryName=");
                 yield return new TestCaseData("TestID-013A", "CategoryID=0;CategoryName=cat\r\ndog\r\nanimal\r\nperson");
                 yield return new TestCaseData("TestID-014A", "3CategoryID=0,CategoryName=cat").Throws(typeof(ArgumentException));
