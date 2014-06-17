@@ -60,7 +60,7 @@ namespace Public.Test.Util
     /// Tests for the Performance Recorder Class
     /// </summary>
     [TestFixture, Description("Tests for Performance Recorder")]
-    public class PerformanceRecorderTest1
+    public class PerformanceRecorderTest
     {
         #region Class Variables
 
@@ -160,7 +160,7 @@ namespace Public.Test.Util
                 throw;
             }
         }
-
+         
         /// <summary>
         /// Test method for EndsPerformanceRecord     
         /// </summary>
