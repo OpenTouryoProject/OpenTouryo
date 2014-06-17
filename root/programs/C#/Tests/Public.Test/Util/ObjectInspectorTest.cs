@@ -53,7 +53,7 @@ namespace Public.Test.Util
     /// Tests for the Object Inspector Class
     /// </summary>
     [TestFixture, Description("Tests for Object Inspector")]
-    public class ObjectInspectorTest1
+    public class ObjectInspectorTest
     {
         #region Class Variables
 

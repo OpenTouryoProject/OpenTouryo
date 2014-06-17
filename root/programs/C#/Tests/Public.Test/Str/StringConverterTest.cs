@@ -146,22 +146,22 @@ namespace Public.Test.Str
             {
                 this.SetUp();
 
-                string mystring = "01010101";
-                yield return new TestCaseData("TestID-000N", "1234567", true);
-                yield return new TestCaseData("TestID-001N", "123456", true);
-                yield return new TestCaseData("TestID-002N", "2345128", true);
-                yield return new TestCaseData("TestID-003N", "abcdef", false);
-                yield return new TestCaseData("TestID-004N", "12345678", false);
-                yield return new TestCaseData("TestID-005N", string.Empty, false);
-                yield return new TestCaseData("TestID-006A", null, false).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-007N", "12345", false);
-                yield return new TestCaseData("TestID-008N", "1234137", true);
-                yield return new TestCaseData("TestID-009N", "1234127", true);
-                yield return new TestCaseData("TestID-010N", "0", false);
-                yield return new TestCaseData("TestID-011N", "１２３４５", false);
-                yield return new TestCaseData("TestID-012N", mystring, false);
-                yield return new TestCaseData("TestID-013N", "000000", true);
-                yield return new TestCaseData("TestID-014N", "-1234567", false);
+               string mystring = "01010101";               
+               yield return new TestCaseData("TestID-000N", "1234567");
+               yield return new TestCaseData("TestID-001N", "123456");
+               yield return new TestCaseData("TestID-002N", "2345128");
+               yield return new TestCaseData("TestID-003N", "abcdef");
+               yield return new TestCaseData("TestID-004N", "12345678");
+               yield return new TestCaseData("TestID-005N", string.Empty);
+               yield return new TestCaseData("TestID-006A", null).Throws(typeof(ArgumentNullException));
+               yield return new TestCaseData("TestID-007N", "12345");
+               yield return new TestCaseData("TestID-008N", "1234137");
+               yield return new TestCaseData("TestID-009N", "1234127");
+               yield return new TestCaseData("TestID-010N", "0");
+               yield return new TestCaseData("TestID-011N", "１２３４５");
+               yield return new TestCaseData("TestID-012N", mystring);
+               yield return new TestCaseData("TestID-013N", "000000");
+               yield return new TestCaseData("TestID-014N", "-1234567");
             }
         }
 
@@ -224,11 +224,17 @@ namespace Public.Test.Str
         /// <param name="text">text</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestEditYYYYMMDDStringTest")]
-        public static void EditYYYYMMDDStringTest(string testCaseID, ref string text, bool result)
+        public static void EditYYYYMMDDStringTest(string testCaseID, ref string text)
         {
-            bool output = StringConverter.EditYYYYMMDDString(ref text);
-            Assert.AreEqual(output, result);
-
+            bool output = StringConverter.EditYYYYMMDDString(ref text);           
+            if (output)
+            {
+                Assert.True(output);
+            }
+            else
+            {
+                Assert.False(output);
+            }
         }
 
         [TearDown]

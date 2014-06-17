@@ -27,7 +27,7 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2014/05/08  Sai               Testcode development for PubCmnFunction class.
+//*  2014/05/08  Sai               Testcode development for PubCmnFunction class .
 //*
 //**********************************************************************************
 
@@ -130,24 +130,24 @@ namespace Public.Test.Util
                 this.TestFixtureSetup();
                 //Normal test case
                 yield return new TestCaseData("TestID-001N", "CategoryID=0001;CategoryName=Test");
-                yield return new TestCaseData("TestID-002N", "CategoryID{=}0001;CategoryName=Test").Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-002N", "CategoryID{=}0001;CategoryName=Test").Throws(typeof(ArgumentException));
 
                 //Abnormal test case
-                yield return new TestCaseData("TestID-003A", "=CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-004A", ";CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-005A", "}CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-006A", "CategoryID0001;CategoryName=Test").Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-007A", "Category=ID0001CategoryName=Test").Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-003A", "=CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-004A", ";CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-005A", "}CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-006A", "CategoryID0001;CategoryName=Test").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-007A", "Category=ID0001CategoryName=Test").Throws(typeof(ArgumentException));
                 yield return new TestCaseData("TestID-008A", "{CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-009A", "=0001;CategoryName=Test").Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-010A", "CategoryID=;CategoryName=Test").Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-009A", "=0001;CategoryName=Test").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-010A", "CategoryID=;CategoryName=Test").Throws(typeof(ArgumentException));
                 yield return new TestCaseData("TestID-011A", "{CategoryID=0;CategoryName=Test").Throws(typeof(ArgumentNullException));
                 yield return new TestCaseData("TestID-012A", "CategoryID=0;CategoryName=");
                 yield return new TestCaseData("TestID-013A", "CategoryID=0;CategoryName=cat\r\ndog\r\nanimal\r\nperson");
-                yield return new TestCaseData("TestID-014A", "3CategoryID=0,CategoryName=cat").Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-015A", "CategoryID{=0001;CategoryName=Test").Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-016A", "CategoryID}=0001;CategoryName=Test").Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-017A", "CategoryID=0001;=Test").Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-014A", "3CategoryID=0,CategoryName=cat").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-015A", "CategoryID{=0001;CategoryName=Test").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-016A", "CategoryID}=0001;CategoryName=Test").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-017A", "CategoryID=0001;=Test").Throws(typeof(ArgumentException));
             }
         }
         /// <summary>
