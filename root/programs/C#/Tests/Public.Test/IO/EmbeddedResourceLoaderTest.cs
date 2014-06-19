@@ -36,7 +36,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using Touryo.Infrastructure.Public.IO;
 using System.Reflection;
 using System.IO;
 using System.Xml;
@@ -100,12 +99,12 @@ namespace Public.Test.IO
         ///<param name="throwException">True to throw exception and false for not to throw exception </param> 
         // Add the key to app.config file in Public.Test Solution:   <add key="Azure" value="Public"/>
         [TestCase("TestID-001N", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", false)]
-        [TestCase("TestID-002N", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", true, ExpectedException = typeof(ArgumentNullException))]
+        [TestCase("TestID-002N", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", true, ExpectedException = typeof(ArgumentException))]
         //Wrong File name
         [TestCase("TestID-003N", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource1.resources", false)]
-        [TestCase("TestID-004A", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource1.resources", true, ExpectedException = typeof(ArgumentNullException))]
-        [TestCase("TestID-005A", "", true, ExpectedException = typeof(ArgumentNullException))]
-        [TestCase("TestID-006A", null, true, ExpectedException = typeof(ArgumentNullException))]
+        [TestCase("TestID-004A", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource1.resources", true, ExpectedException = typeof(ArgumentException))]
+        [TestCase("TestID-005A", "", true, ExpectedException = typeof(ArgumentException))]
+        [TestCase("TestID-006A", null, true, ExpectedException = typeof(ArgumentException))]
         public void ExistsTest(string testCaseID, string loadfileName, bool throwException)
         {
             try
@@ -148,13 +147,13 @@ namespace Public.Test.IO
                 // Empty assembly name and throw exception parameter false whcih return false.
                 yield return new TestCaseData("TestID-003N", "", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", false).Throws(typeof(NUnit.Framework.AssertionException));
                 // Empty assembly name and throw exception parameter true which throws exception.
-                yield return new TestCaseData("TestID-004A", "", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", true).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-004A", "", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", true).Throws(typeof(ArgumentException));
                 //Throw exception parameter false and which inturn returns false
                 yield return new TestCaseData("TestID-005A", null, "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", false).Throws(typeof(NUnit.Framework.AssertionException));
                 yield return new TestCaseData("TestID-006A", null, null, false).Throws(typeof(NUnit.Framework.AssertionException));
                 //Throw exception parameter true to throw exception
-                yield return new TestCaseData("TestID-007A", null, "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-008A", null, null, true).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-007A", null, "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", true).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-008A", null, null, true).Throws(typeof(ArgumentException));
             }
         }
         ///<summary>LoadAsString Method Test</summary> 
@@ -180,10 +179,10 @@ namespace Public.Test.IO
         {
             get
             {
-                yield return new TestCaseData("TestID-001N", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", Encoding.ASCII).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-002A", "", Encoding.UTF32).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-003A", "", Encoding.UTF8).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-004A", null, null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-001N", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", Encoding.ASCII).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-002A", "", Encoding.UTF32).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-003A", "", Encoding.UTF8).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-004A", null, null).Throws(typeof(ArgumentException));
             }
         }
         ///<summary>LoadAsString Method Test</summary> 
@@ -213,17 +212,17 @@ namespace Public.Test.IO
                 //Normal test cases 
                 yield return new TestCaseData("TestID-001N", "Public", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", Encoding.ASCII);
                 yield return new TestCaseData("TestID-002N", "Public", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", Encoding.Default);
-                yield return new TestCaseData("TestID-003N", "Framework", "Touryo.Infrastructure.Framework.Resources.FrameworkExceptionMessageResource.resources", Encoding.UTF8).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-004N", "Framework", "Touryo.Infrastructure.Framework.Resources.FrameworkExceptionMessageResource.resources", Encoding.UTF7).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-003N", "Framework", "Touryo.Infrastructure.Framework.Resources.FrameworkExceptionMessageResource.resources", Encoding.UTF8).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-004N", "Framework", "Touryo.Infrastructure.Framework.Resources.FrameworkExceptionMessageResource.resources", Encoding.UTF7).Throws(typeof(ArgumentException));
                 //Abnormal cases   Public.Test.Resource1.resources
-                yield return new TestCaseData("TestID-005A", "Publics", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", Encoding.ASCII).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-006A", "Publics", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", Encoding.Default).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-007A", "Frameworks", "Touryo.Infrastructure.Public.Resources.FrameworkExceptionMessageResource.resources", Encoding.UTF8).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-008A", "Frameworks", "Touryo.Infrastructure.Public.Resources.FrameworkExceptionMessageResource.resources", Encoding.UTF8).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-005A", "Publics", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", Encoding.ASCII).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-006A", "Publics", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", Encoding.Default).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-007A", "Frameworks", "Touryo.Infrastructure.Public.Resources.FrameworkExceptionMessageResource.resources", Encoding.UTF8).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-008A", "Frameworks", "Touryo.Infrastructure.Public.Resources.FrameworkExceptionMessageResource.resources", Encoding.UTF8).Throws(typeof(ArgumentException));
                 // Wrong resource files name
-                yield return new TestCaseData("TestID-009A", "Public", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource1.resources", Encoding.Default).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-009A", "Public", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource1.resources", Encoding.Default).Throws(typeof(ArgumentException));
                 // resource file name as emtpy string
-                yield return new TestCaseData("TestID-0010A", "Public", "", Encoding.Default).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-0010A", "Public", "", Encoding.Default).Throws(typeof(ArgumentException));
                 //encoding as null
                 yield return new TestCaseData("TestID-0011A", "Public", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", null).Throws(typeof(ArgumentNullException));
             }
@@ -251,11 +250,11 @@ namespace Public.Test.IO
         {
             get
             {
-                yield return new TestCaseData("TestID-001N", "Public.Test.XMLLoadAsString.xml").Throws(typeof(ArgumentNullException)); ;
-                yield return new TestCaseData("TestID-002N", "Public.Test.Load.xml").Throws(typeof(ArgumentNullException)); ;
-                yield return new TestCaseData("TestID-003N", "Wrongfile.xml").Throws(typeof(ArgumentNullException)); ;
-                yield return new TestCaseData("TestID-004A", "").Throws(typeof(ArgumentNullException)); ;
-                yield return new TestCaseData("TestID-005A", null).Throws(typeof(ArgumentNullException)); ;
+                yield return new TestCaseData("TestID-001N", "Public.Test.XMLLoadAsString.xml").Throws(typeof(ArgumentException)); ;
+                yield return new TestCaseData("TestID-002N", "Public.Test.Load.xml").Throws(typeof(ArgumentException)); ;
+                yield return new TestCaseData("TestID-003N", "Wrongfile.xml").Throws(typeof(ArgumentException)); ;
+                yield return new TestCaseData("TestID-004A", "").Throws(typeof(ArgumentException)); ;
+                yield return new TestCaseData("TestID-005A", null).Throws(typeof(ArgumentException)); ;
             }
         }
         ///<summary>LoadXMLAsString Method Test</summary> 
@@ -284,16 +283,16 @@ namespace Public.Test.IO
                 yield return new TestCaseData("TestID-001N", "Public.Test", "Public.Test.XMLLoadAsString.xml");
                 yield return new TestCaseData("TestID-002N", "Public.Test", "Public.Test.Load.xml");
                 //pass empty string as assembly name 
-                yield return new TestCaseData("TestID-003A", "", "Public.Test.XMLLoadAsString.xml").Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-003A", "", "Public.Test.XMLLoadAsString.xml").Throws(typeof(ArgumentException));
                 //pass empty string as file name 
-                yield return new TestCaseData("TestID-004A", "Public.Test", "").Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-004A", "Public.Test", "").Throws(typeof(ArgumentException));
                 //pass null value
-                yield return new TestCaseData("TestID-005A", null, "Public.Test.XMLLoadAsString.xml").Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-006A", "Public.Test", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-005A", null, "Public.Test.XMLLoadAsString.xml").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-006A", "Public.Test", null).Throws(typeof(ArgumentException));
                 //Pass wrong file name
-                yield return new TestCaseData("TestID-007A", "Public.Test", "Wrongfile.xml").Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-007A", "Public.Test", "Wrongfile.xml").Throws(typeof(ArgumentException));
                 // pass file name which is not having any data inside
-                yield return new TestCaseData("TestID-008A", "Public.Test", "Public.Test.Empty.xml").Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-008A", "Public.Test", "Public.Test.Empty.xml").Throws(typeof(ArgumentException));
             }
         }
         #endregion // End of GeneratedMethods

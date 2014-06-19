@@ -49,7 +49,7 @@ namespace Public.Test.IO
     {
         #region Test code for ResourceLoader
         #region Setup/Teardown
-       
+
         /// <summary>
         /// Code that is run once for a suite of tests
         /// </summary>
@@ -110,13 +110,13 @@ namespace Public.Test.IO
         {
             get
             {
-                yield return new TestCaseData("TestID-001A", @"", true).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-001A", @"", true).Throws(typeof(ArgumentException));
                 yield return new TestCaseData("TestID-002A", @"", false).Throws(typeof(NUnit.Framework.AssertionException));
                 yield return new TestCaseData("TestID-003A", null, null).Throws(typeof(NUnit.Framework.AssertionException));
                 yield return new TestCaseData("TestID-004N", MakeRelativePathFile() + "ConditionalSearch.aspx", true);
                 yield return new TestCaseData("TestID-005N", MakeRelativePathFile() + "ConditionalSearch.aspx", false);
                 yield return new TestCaseData("TestID-006A", MakeRelativePathFile() + "1234.txt", false).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-007A", MakeRelativePathFile() + "1234.txt", true).Throws(typeof(ArgumentNullException)); ;
+                yield return new TestCaseData("TestID-007A", MakeRelativePathFile() + "1234.txt", true).Throws(typeof(ArgumentException)); ;
             }
         }
 
@@ -147,15 +147,15 @@ namespace Public.Test.IO
         {
             get
             {
-                yield return new TestCaseData("TestID-001A", @"", "", true).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-001A", @"", "", true).Throws(typeof(ArgumentException));
                 yield return new TestCaseData("TestID-002N", @"", "", false);
                 yield return new TestCaseData("TestID-003A", null, null, true).Throws(typeof(ArgumentNullException));
                 yield return new TestCaseData("TestID-004A", null, null, false).Throws(typeof(ArgumentNullException));
                 yield return new TestCaseData("TestID-005N", MakeRelativePathFile(), "ConditionalSearch.aspx", true);
                 yield return new TestCaseData("TestID-006N", MakeRelativePathFile(), "ConditionalSearch.aspx", false);
                 yield return new TestCaseData("TestID-007N", MakeRelativePathFile(), @"\123.txt", false);
-                yield return new TestCaseData("TestID-008A", MakeRelativePathFile() + @"/", "123.txt", true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-009A", @"F", "123.txt", true).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-008A", MakeRelativePathFile() + @"/", "123.txt", true).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-009A", @"F", "123.txt", true).Throws(typeof(ArgumentException));
             }
         }
 
@@ -209,9 +209,9 @@ namespace Public.Test.IO
                 yield return new TestCaseData("TestID-003N", MakeRelativePathFile() + "ConditionalSearch.aspx", Encoding.UTF7);
 
                 /// Abnormal Test cases
-                yield return new TestCaseData("TestID-004A", null, Encoding.UTF8).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-004A", null, Encoding.UTF8).Throws(typeof(ArgumentException));
                 yield return new TestCaseData("TestID-005A", MakeRelativePathFile() + "ConditionalSearch.aspx", null).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-006A", MakeRelativePathFile() + "123a.txt", Encoding.UTF7).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-006A", MakeRelativePathFile() + "123a.txt", Encoding.UTF7).Throws(typeof(ArgumentException));
             }
         }
 
@@ -223,11 +223,11 @@ namespace Public.Test.IO
                 yield return new TestCaseData("TestID-001N", MakeRelativePathFile(), "ConditionalSearch.aspx", Encoding.UTF8);
                 yield return new TestCaseData("TestID-002N", MakeRelativePathFile(), "ConditionalSearch.aspx", Encoding.ASCII);
                 yield return new TestCaseData("TestID-003N", MakeRelativePathFile(), "ConditionalSearch.aspx", Encoding.UTF7);
-                
+
                 /// Abnormal Test cases
-                yield return new TestCaseData("TestID-004A", MakeRelativePathFile() + "F", "ConditionalSearch.aspx", Encoding.UTF8).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-005A", MakeRelativePathFile(), "123a.txt", Encoding.UTF8).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-006A", "", "123.txt", Encoding.UTF8).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("TestID-004A", MakeRelativePathFile() + "F", "ConditionalSearch.aspx", Encoding.UTF8).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-005A", MakeRelativePathFile(), "123a.txt", Encoding.UTF8).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-006A", "", "123.txt", Encoding.UTF8).Throws(typeof(ArgumentException));
                 yield return new TestCaseData("TestID-007A", null, "123.txt", Encoding.UTF8).Throws(typeof(ArgumentNullException));
                 yield return new TestCaseData("TestID-008A", @"F\", null, Encoding.UTF8).Throws(typeof(ArgumentNullException));
             }
@@ -235,6 +235,10 @@ namespace Public.Test.IO
         #endregion // End of GeneratedMethods
         #endregion
 
+        /// <summary>
+        /// Converts absolute path to Relative path
+        /// </summary>
+        /// <returns></returns>
         public static string MakeRelativePathFile()
         {
             string file = (new System.Uri(Assembly.GetExecutingAssembly().CodeBase)).AbsolutePath;
