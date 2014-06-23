@@ -3,7 +3,7 @@
 //**********************************************************************************
 
 #region Apache License
-
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -61,7 +61,10 @@ namespace Public.Test.IO
             // This is a test case pre-processing.
             // It runs for each test case.
         }
+
         #region Test Data
+
+        /// <summary>TestcasesOfObjectToBytesTest</summary>
         public IEnumerable<TestCaseData> TestcasesOfObjectToBytesTest
         {
             get
@@ -78,6 +81,8 @@ namespace Public.Test.IO
                 yield return new TestCaseData("TestID-005A", null).Throws(typeof(ArgumentNullException));
             }
         }
+
+        /// <summary>TestcasesOfBytesToObjectTest</summary>
         public IEnumerable<TestCaseData> TestcasesOfBytesToObjectTest
         {
             get
@@ -94,6 +99,8 @@ namespace Public.Test.IO
                 yield return new TestCaseData("TestID-007A", null).Throws(typeof(ArgumentNullException));
             }
         }
+
+        /// <summary>TestcasesOfDeepCloneTest</summary>
         public IEnumerable<TestCaseData> TestcasesOfDeepCloneTest
         {
             get
@@ -105,23 +112,25 @@ namespace Public.Test.IO
                 yield return new TestCaseData("TestID-003A", null).Throws(typeof(ArgumentNullException));
             }
         }
+
         #endregion
+
         #region Test Code
+
         /// <summary>
         /// TestCasesOf ObjectToBytesTest Method
         /// </summary>
         /// <param name="testCaseID">testCaseID</param>
-        ///<param name="testCaseID">objActual</param>
+        ///<param name="objExpected">objActual</param>
         [TestCaseSource("TestcasesOfObjectToBytesTest")]
-        public void ObjectToBytesTest(string testCaseID, object objActual)
+        public void ObjectToBytesTest(string testCaseID, object objExpected)
         {
             try
             {
-                byte[] bytFromObject = BinarySerialize.ObjectToBytes(objActual);
+                byte[] bytFromObject = BinarySerialize.ObjectToBytes(objExpected);
                 // parameter
-                object objetcFromBytes = BinarySerialize.BytesToObject(bytFromObject);
-                Assert.AreEqual(objetcFromBytes, objActual);
-                Assert.AreNotEqual(bytFromObject, objActual);
+                object objActual = BinarySerialize.BytesToObject(bytFromObject);
+                Assert.AreEqual(objExpected, objActual);
             }
             catch (Exception ex)
             {
@@ -129,6 +138,7 @@ namespace Public.Test.IO
                 throw;
             }
         }
+
         /// <summary>
         /// TestCasesOf BytesToObjectTest Method
         /// </summary>
@@ -150,6 +160,7 @@ namespace Public.Test.IO
                 throw;
             }
         }
+
         /// <summary>
         /// TestCasesOf DeepCloneTest Method
         /// </summary>
@@ -170,6 +181,7 @@ namespace Public.Test.IO
             }
         }
         #endregion
+
         /// <summary>Test case post-processing.</summary>
         [TearDown]
         public void TearDown()
@@ -177,6 +189,7 @@ namespace Public.Test.IO
             // This is a test case post-processing.
             // It runs for each test case.
         }
+
         /// <summary>Test post-processing.</summary>
         [TestFixtureTearDown]
         public void CleanUp()
