@@ -61,7 +61,7 @@ namespace Touryo.Infrastructure.Business.Workflow
         }
 
         /// <summary>対象ワークフローの遷移先ユーザのリストの取得</summary>
-        /// <param name="subsystemId">サブシステムID</param>
+        /// <param name="subSystemId">サブシステムID</param>
         /// <param name="workflowName">ワークフロー名</param>
         /// <param name="actionName">処理名称</param>
         /// <param name="fromCompanyId">遷移元会社ID</param>
