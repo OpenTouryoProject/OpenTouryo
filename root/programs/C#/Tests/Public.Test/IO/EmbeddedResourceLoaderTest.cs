@@ -212,8 +212,8 @@ namespace Public.Test.IO
                 //Normal test cases 
                 yield return new TestCaseData("TestID-001N", "Public", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", Encoding.ASCII);
                 yield return new TestCaseData("TestID-002N", "Public", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", Encoding.Default);
-                yield return new TestCaseData("TestID-003N", "Framework", "Touryo.Infrastructure.Framework.Resources.FrameworkExceptionMessageResource.resources", Encoding.UTF8).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-004N", "Framework", "Touryo.Infrastructure.Framework.Resources.FrameworkExceptionMessageResource.resources", Encoding.UTF7).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-003N", "Framework", "Touryo.Infrastructure.Framework.Resources.FrameworkExceptionMessageResource.resources", Encoding.UTF8);
+                yield return new TestCaseData("TestID-004N", "Framework", "Touryo.Infrastructure.Framework.Resources.FrameworkExceptionMessageResource.resources", Encoding.UTF7);
                 //Abnormal cases   Public.Test.Resource1.resources
                 yield return new TestCaseData("TestID-005A", "Publics", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", Encoding.ASCII).Throws(typeof(ArgumentException));
                 yield return new TestCaseData("TestID-006A", "Publics", "Touryo.Infrastructure.Public.Resources.PublicExceptionMessageResource.resources", Encoding.Default).Throws(typeof(ArgumentException));

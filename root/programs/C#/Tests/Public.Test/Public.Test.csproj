@@ -32,6 +32,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Frameworks\Infrastructure\Build\Business.dll</HintPath>
+    </Reference>
+    <Reference Include="Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Frameworks\Infrastructure\Build\Framework.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -40,6 +48,7 @@
       <HintPath>..\..\Frameworks\Infrastructure\Build\Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,25 +56,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IO\ASymmetricCryptographyTest.cs" />
-    <Compile Include="IO\BinarySerializeTest.cs" />
-    <Compile Include="IO\EmbeddedResourceLoaderTest.cs" />
-    <Compile Include="IO\ResourceLoaderTest.cs" />
-    <Compile Include="IO\SymmetricCryptographyTest.cs" />
+    <Compile Include="Business\LayerB.cs" />
+    <Compile Include="Common\TestParameterValue.cs" />
+    <Compile Include="Common\TestReturnValue.cs" />
+    <Compile Include="CRUDTest.cs" />
+    <Compile Include="Dao\DaoShippers.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dao\LayerD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource1.Designer.cs" />
-    <Compile Include="Str\CheckCharCodeTest.cs" />
-    <Compile Include="Str\CustomEncodeTest.cs" />
-    <Compile Include="Str\FormatCheckerTest.cs" />
-    <Compile Include="Str\FormatConverterTest.cs" />
-    <Compile Include="Str\StringCheckerTest.cs" />
-    <Compile Include="Str\StringConverterTest.cs" />
-    <Compile Include="Util\GetHashTest.cs" />
-    <Compile Include="Util\GetKeyedHashTest.cs" />
-    <Compile Include="Util\LatebindTest.cs" />
-    <Compile Include="Util\ObjectInspectorTest.cs" />
-    <Compile Include="Util\PerformanceRecorderTest.cs" />
-    <Compile Include="Util\PubCmnFunctionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Load.xml" />
@@ -76,6 +76,17 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Empty.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MSGDefinition.xml" />
+    <EmbeddedResource Include="MSGDefinition_ja-JP.xml" />
+    <EmbeddedResource Include="SPDefinition.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Public.Test.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
