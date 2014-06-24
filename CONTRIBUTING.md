@@ -45,6 +45,13 @@
   - Windows Store App  
     Windows 8  
 
+##C#, VB
+  VB版の提供は必須ではありません。  
+  必要であればこちらでSharpdeveloperを使用してVBに変換します。  
+  
+  (Provision of VB version is not required.  
+  It is converted to VB by using the Sharpdeveloper here, if necessary.)
+
 ##手順(Flow)
 
   - Gitブランチを使いこなすgit-flow／GitHub Flow入門  

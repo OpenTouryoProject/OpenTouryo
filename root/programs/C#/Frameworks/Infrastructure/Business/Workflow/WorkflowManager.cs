@@ -3,6 +3,7 @@
 //**********************************************************************************
 
 #region Apache License
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -60,7 +61,7 @@ namespace Touryo.Infrastructure.Business.Workflow
         }
 
         /// <summary>対象ワークフローの遷移先ユーザのリストの取得</summary>
-        /// <param name="subsystemId">サブシステムID</param>
+        /// <param name="subSystemId">サブシステムID</param>
         /// <param name="workflowName">ワークフロー名</param>
         /// <param name="actionName">処理名称</param>
         /// <param name="fromCompanyId">遷移元会社ID</param>
