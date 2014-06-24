@@ -804,6 +804,7 @@ public class LayerB : MyFcBaseLogic
     #endregion
 
     #region New Test Cases
+
     #region UOC_SelectJoin1
     /// <summary>
     /// UOC_SelectJoin1 Method
@@ -1684,5 +1685,5 @@ public class LayerB : MyFcBaseLogic
         testReturn.Obj = dt;
     }
     #endregion
-}
     #endregion
+}

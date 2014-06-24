@@ -819,7 +819,7 @@ namespace Public.Test
             }
         }
 
-        #region Code Not Covered
+        #region GetParam
         /// <summary>
         /// GetParam Method
         /// </summary>
@@ -839,6 +839,8 @@ namespace Public.Test
 
         }
         #endregion
+
+        #region MakeRelativePathFile
         /// <summary>
         /// MakeRelativePathFile Method
         /// </summary>
@@ -855,6 +857,7 @@ namespace Public.Test
                 throw;
             }
         }
+        #endregion
         #endregion
     }
 }
