@@ -64,8 +64,25 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Dao\LayerD.cs" />
+    <Compile Include="IO\ASymmetricCryptographyTest.cs" />
+    <Compile Include="IO\BinarySerializeTest.cs" />
+    <Compile Include="IO\EmbeddedResourceLoaderTest.cs" />
+    <Compile Include="IO\ResourceLoaderTest.cs" />
+    <Compile Include="IO\SymmetricCryptographyTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource1.Designer.cs" />
+    <Compile Include="Str\CheckCharCodeTest.cs" />
+    <Compile Include="Str\CustomEncodeTest.cs" />
+    <Compile Include="Str\FormatCheckerTest.cs" />
+    <Compile Include="Str\FormatConverterTest.cs" />
+    <Compile Include="Str\StringCheckerTest.cs" />
+    <Compile Include="Str\StringConverterTest.cs" />
+    <Compile Include="Util\GetHashTest.cs" />
+    <Compile Include="Util\GetKeyedHashTest.cs" />
+    <Compile Include="Util\LatebindTest.cs" />
+    <Compile Include="Util\ObjectInspectorTest.cs" />
+    <Compile Include="Util\PerformanceRecorderTest.cs" />
+    <Compile Include="Util\PubCmnFunctionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Load.xml" />
