@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoShippers_D1_Insert
+  -- 2013/1/10 日立 太郎
+  INSERT INTO 
+    [Shippers]
+      (
+        <DELCMA>
+          <INSCOL name="ShipperID">[ShipperID],</INSCOL>
+          <INSCOL name="CompanyName">[CompanyName],</INSCOL>
+          <INSCOL name="Phone">[Phone],</INSCOL>
+        </DELCMA>
+      )
+  VALUES
+      (
+        <DELCMA>
+          <IF>@ShipperID,</IF>
+          <IF>@CompanyName,</IF>
+          <IF>@Phone,</IF>
+        </DELCMA>
+      )
+</ROOT>
+
+
+
