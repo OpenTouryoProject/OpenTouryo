@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  06/13/2014   Rituparna & Santosh      Testcode development for CRUDTest(Framework classes).
 //*  06/24/2014   Rituparna & Santosh   Testcode development for CRUDTest(Public classes).
+//*  07/02/2014   Santosh               Added code and modified test cases to prevent database changes after running the test cases
 //**********************************************************************************
 // 型情報
 // System
@@ -81,6 +82,9 @@ namespace Public.Test
         [TestFixtureSetUp]
         public void Init()
         {
+            testList.Clear();
+            testList = GetListData();
+            Identity = GetIdentityValue();
             Console.WriteLine("これはテスト前処理です。最初に一度だけ実行されます。");
         }
 
@@ -90,7 +94,7 @@ namespace Public.Test
         [SetUp]
         public void SetUp()
         {
-           
+
             Console.WriteLine("これはテストケース前処理です。テストケースごとに実行されます。");
 
         }
@@ -100,8 +104,17 @@ namespace Public.Test
         [TearDown]
         public void TearDown()
         {
-           
+
         }
+        [TestFixtureTearDown]
+        public void TestFixtureTearDown()
+        {
+            //Executes Last after all tests have run.
+            DeleteData();
+        }
+
+        List<int> testList = new List<int>();
+        int Identity = 0;
 
         /// <summary>
         /// This method to generate test cases. 
@@ -252,70 +265,70 @@ namespace Public.Test
                 yield return new TestCaseData("TestID-124N", "", "control4", "", "", "User5", "Hostname5", "RC", "10", null, null);
 
                 /* Update*/
-                yield return new TestCaseData("TestID-125N", "screen1", "control1", "Update", "SQL%individual%static%-", "User1", "Hostname1", "RC", "1", "Company1_update", "125987");
-                yield return new TestCaseData("TestID-126N", "screen2", "control2", "Update", "SQL%individual%static%-", "User2", "Hostname2", "RC", "2", "Company2_update", "987456");
-                yield return new TestCaseData("TestID-127N", "screen3", "control3", "Update", "SQL%individual%static%-", "User3", "Hostname3", "RC", "3", "", "125987");
-                yield return new TestCaseData("TestID-128N", "screen4", "control4", "Update", "SQL%individual%static%-", "User4", "Hostname4", "RC", "3", "Company3_update", "");
-                yield return new TestCaseData("TestID-129A", "screen5", "control5", "Update", "SQL%individual%static%-", "User5", "Hostname5", "RC", "1", "Company1_update", null).Throws(typeof(System.Data.SqlClient.SqlException));
-                yield return new TestCaseData("TestID-130A", "screen6", "control6", "Update", "SQL%individual%static%-", "User6", "Hostname6", "RC", "1", null, "20042360").Throws(typeof(System.Data.SqlClient.SqlException));
+                yield return new TestCaseData("TestID-125N", "screen1", "control1", "Update", "SQL%individual%static%-", "User1", "Hostname1", "RC", (Identity + 1).ToString(), "Company_NameUpdate", "125987");
+                yield return new TestCaseData("TestID-126N", "screen2", "control2", "Update", "SQL%individual%static%-", "User2", "Hostname2", "RC", (Identity + 2).ToString(), "Company_NameUpdate", "987456");
+                yield return new TestCaseData("TestID-127N", "screen3", "control3", "Update", "SQL%individual%static%-", "User3", "Hostname3", "RC", (Identity + 3).ToString(), "Company_NameUpdate", "125987");
+                yield return new TestCaseData("TestID-128N", "screen4", "control4", "Update", "SQL%individual%static%-", "User4", "Hostname4", "RC", (Identity + 4).ToString(), "Company_NameUpdate", "");
+                yield return new TestCaseData("TestID-129A", "screen5", "control5", "Update", "SQL%individual%static%-", "User5", "Hostname5", "RC", (Identity + 1).ToString(), "Company_NameUpdate", null).Throws(typeof(System.Data.SqlClient.SqlException));
+                yield return new TestCaseData("TestID-130A", "screen6", "control6", "Update", "SQL%individual%static%-", "User6", "Hostname6", "RC", (Identity + 1).ToString(), null, "20042360").Throws(typeof(System.Data.SqlClient.SqlException));
                 yield return new TestCaseData("TestID-131A", "screen7", "control7", "Update", "SQL%individual%static%-", "User7", "Hostname7", "RC", null, "Company1_update", "20042360").Throws(typeof(ArgumentNullException));
                 yield return new TestCaseData("TestID-132A", "screen8", "control8", "Update", "SQL%individual%static%-", "User8", "Hostname8", "RC", null, null, null).Throws(typeof(ArgumentNullException));
                 yield return new TestCaseData("TestID-133A", "screen9", "control9", "Update", "SQL%individual%static%-", "User9", "Hostname9", "RC", "", "Company1_update", "20042360").Throws(typeof(System.FormatException));
                 yield return new TestCaseData("TestID-134A", "screen10", "control10", "Update", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "Company1_update", "20042360").Throws(typeof(System.FormatException));
-                yield return new TestCaseData("TestID-135A", "screen1", "control1", "Update", "SQL%individual%static%-", "User1", "Hostname1", "NC", "1", "Company1_update", "125987").Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-136A", "screen2", "control2", "Update", "SQL%individual%static%-", "User2", "Hostname2", "NC", "2", "Company2_update", "987456").Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-137A", "screen3", "control3", "Update", "SQL%individual%static%-", "User3", "Hostname3", "NC", "3", "", "125987").Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-138A", "screen4", "control4", "Update", "SQL%individual%static%-", "User4", "Hostname4", "NC", "3", "Company3_update", "").Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-139A", "screen5", "control5", "Update", "SQL%individual%static%-", "User5", "Hostname5", "NC", "1", "Company1_update", null).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-140A", "screen6", "control6", "Update", "SQL%individual%static%-", "User6", "Hostname6", "NC", "1", null, "20042360").Throws(typeof(NullReferenceException));
+                yield return new TestCaseData("TestID-135A", "screen1", "control1", "Update", "SQL%individual%static%-", "User1", "Hostname1", "NC", (Identity + 1).ToString(), "Company_NameUpdate", "125987").Throws(typeof(NullReferenceException));
+                yield return new TestCaseData("TestID-136A", "screen2", "control2", "Update", "SQL%individual%static%-", "User2", "Hostname2", "NC", (Identity + 2).ToString(), "Company2_update", "987456").Throws(typeof(NullReferenceException));
+                yield return new TestCaseData("TestID-137A", "screen3", "control3", "Update", "SQL%individual%static%-", "User3", "Hostname3", "NC", (Identity + 3).ToString(), "", "125987").Throws(typeof(NullReferenceException));
+                yield return new TestCaseData("TestID-138A", "screen4", "control4", "Update", "SQL%individual%static%-", "User4", "Hostname4", "NC", (Identity + 4).ToString(), "Company3_update", "").Throws(typeof(NullReferenceException));
+                yield return new TestCaseData("TestID-139A", "screen5", "control5", "Update", "SQL%individual%static%-", "User5", "Hostname5", "NC", (Identity + 5).ToString(), "Company1_update", null).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData("TestID-140A", "screen6", "control6", "Update", "SQL%individual%static%-", "User6", "Hostname6", "NC", (Identity + 6).ToString(), null, "20042360").Throws(typeof(NullReferenceException));
                 yield return new TestCaseData("TestID-141A", "screen7", "control7", "Update", "SQL%individual%static%-", "User7", "Hostname7", "NC", null, "Company1_update", "20042360").Throws(typeof(ArgumentNullException));
                 yield return new TestCaseData("TestID-142A", "screen8", "control8", "Update", "SQL%individual%static%-", "User8", "Hostname8", "NC", null, null, null).Throws(typeof(ArgumentNullException)); ;
                 yield return new TestCaseData("TestID-143A", "screen9", "control9", "Update", "SQL%individual%static%-", "User9", "Hostname9", "NC", "", "Company1_update", "20042360").Throws(typeof(System.FormatException));
                 yield return new TestCaseData("TestID-144A", "screen10", "control10", "Update", "SQL%individual%static%-", "User10", "Hostname10", "NC", "12N", "Company1_update", "20042360").Throws(typeof(System.FormatException));
-                yield return new TestCaseData("TestID-145N", "screen1", "control1", "Update", "SQL%individual%static%-", "User1", "Hostname1", "NT", "1", "Company1_update", "125987");
-                yield return new TestCaseData("TestID-146N", "screen2", "control2", "Update", "SQL%individual%static%-", "User2", "Hostname2", "NT", "2", "Company2_update", "987456");
-                yield return new TestCaseData("TestID-147N", "screen3", "control3", "Update", "SQL%individual%static%-", "User3", "Hostname3", "NT", "3", "", "125987");
-                yield return new TestCaseData("TestID-148N", "screen4", "control4", "Update", "SQL%individual%static%-", "User4", "Hostname4", "NT", "3", "Company3_update", "");
+                yield return new TestCaseData("TestID-145N", "screen1", "control1", "Update", "SQL%individual%static%-", "User1", "Hostname1", "NT", (Identity + 1).ToString(), "Company_NameUpdated", "125987");
+                yield return new TestCaseData("TestID-146N", "screen2", "control2", "Update", "SQL%individual%static%-", "User2", "Hostname2", "NT", (Identity + 4).ToString(), "Company_NameUpdated", "987456");
+                yield return new TestCaseData("TestID-147N", "screen3", "control3", "Update", "SQL%individual%static%-", "User3", "Hostname3", "NT", (Identity + 5).ToString(), "", "125987");
+                yield return new TestCaseData("TestID-148N", "screen4", "control4", "Update", "SQL%individual%static%-", "User4", "Hostname4", "NT", (Identity + 6).ToString(), "Company_NameUpdated", "");
                 yield return new TestCaseData("TestID-149A", "screen5", "control5", "Update", "SQL%individual%static%-", "User5", "Hostname5", "NT", "1", "Company1_update", null).Throws(typeof(System.Data.SqlClient.SqlException));
                 yield return new TestCaseData("TestID-150A", "screen6", "control6", "Update", "SQL%individual%static%-", "User6", "Hostname6", "NT", "1", null, "20042360").Throws(typeof(System.Data.SqlClient.SqlException));
                 yield return new TestCaseData("TestID-151A", "screen7", "control7", "Update", "SQL%individual%static%-", "User7", "Hostname7", "NT", null, "Company1_update", "20042360").Throws(typeof(ArgumentNullException));
                 yield return new TestCaseData("TestID-152A", "screen8", "control8", "Update", "SQL%individual%static%-", "User8", "Hostname8", "NT", null, null, null).Throws(typeof(ArgumentNullException)); ;
                 yield return new TestCaseData("TestID-153A", "screen9", "control9", "Update", "SQL%individual%static%-", "User9", "Hostname9", "NT", "", "Company1_update", "20042360").Throws(typeof(System.FormatException));
                 yield return new TestCaseData("TestID-154A", "screen10", "control10", "Update", "SQL%individual%static%-", "User10", "Hostname10", "NT", "12N", "Company1_update", "20042360").Throws(typeof(System.FormatException));
-                yield return new TestCaseData("TestID-155N", "screen1", "control1", "Update", "SQL%individual%static%-", "User1", "Hostname1", "RU", "1", "Company1_update", "125987");
-                yield return new TestCaseData("TestID-156N", "screen2", "control2", "Update", "SQL%individual%static%-", "User2", "Hostname2", "RU", "2", "Company2_update", "987456");
-                yield return new TestCaseData("TestID-157N", "screen3", "control3", "Update", "SQL%individual%static%-", "User3", "Hostname3", "RU", "3", "", "125987");
-                yield return new TestCaseData("TestID-158N", "screen4", "control4", "Update", "SQL%individual%static%-", "User4", "Hostname4", "RU", "3", "Company3_update", "");
+                yield return new TestCaseData("TestID-155N", "screen1", "control1", "Update", "SQL%individual%static%-", "User1", "Hostname1", "RU", (Identity + 1).ToString(), "Company_NameUpdated", "125987");
+                yield return new TestCaseData("TestID-156N", "screen2", "control2", "Update", "SQL%individual%static%-", "User2", "Hostname2", "RU", (Identity + 1).ToString(), "Company_NameUpdated", "987456");
+                yield return new TestCaseData("TestID-157N", "screen3", "control3", "Update", "SQL%individual%static%-", "User3", "Hostname3", "RU", (Identity + 1).ToString(), "", "125987");
+                yield return new TestCaseData("TestID-158N", "screen4", "control4", "Update", "SQL%individual%static%-", "User4", "Hostname4", "RU", (Identity + 1).ToString(), "Company_NameUpdated", "");
                 yield return new TestCaseData("TestID-159A", "screen5", "control5", "Update", "SQL%individual%static%-", "User5", "Hostname5", "RU", "1", "Company1_update", null).Throws(typeof(System.Data.SqlClient.SqlException));
                 yield return new TestCaseData("TestID-160A", "screen6", "control6", "Update", "SQL%individual%static%-", "User6", "Hostname6", "RU", "1", null, "20042360").Throws(typeof(System.Data.SqlClient.SqlException));
                 yield return new TestCaseData("TestID-161A", "screen7", "control7", "Update", "SQL%individual%static%-", "User7", "Hostname7", "RU", null, "Company1_update", "20042360").Throws(typeof(ArgumentNullException));
                 yield return new TestCaseData("TestID-162A", "screen8", "control8", "Update", "SQL%individual%static%-", "User8", "Hostname8", "RU", null, null, null).Throws(typeof(ArgumentNullException)); ;
                 yield return new TestCaseData("TestID-163A", "screen9", "control9", "Update", "SQL%individual%static%-", "User9", "Hostname9", "RU", "", "Company1_update", "20042360").Throws(typeof(System.FormatException));
                 yield return new TestCaseData("TestID-164A", "screen10", "control10", "Update", "SQL%individual%static%-", "User10", "Hostname10", "RU", "12N", "Company1_update", "20042360").Throws(typeof(System.FormatException));
-                yield return new TestCaseData("TestID-165N", "screen1", "control1", "Update", "SQL%individual%static%-", "User1", "Hostname1", "RU", "1", "Company1_update", "125987");
-                yield return new TestCaseData("TestID-166N", "screen2", "control2", "Update", "SQL%individual%static%-", "User2", "Hostname2", "RU", "2", "Company2_update", "987456");
-                yield return new TestCaseData("TestID-167N", "screen3", "control3", "Update", "SQL%individual%static%-", "User3", "Hostname3", "RU", "3", "", "125987");
-                yield return new TestCaseData("TestID-168N", "screen4", "control4", "Update", "SQL%individual%static%-", "User4", "Hostname4", "RU", "3", "Company3_update", "");
+                yield return new TestCaseData("TestID-165N", "screen1", "control1", "Update", "SQL%individual%static%-", "User1", "Hostname1", "RU", (Identity + 1).ToString(), "Company_NameUpdated", "125987");
+                yield return new TestCaseData("TestID-166N", "screen2", "control2", "Update", "SQL%individual%static%-", "User2", "Hostname2", "RU", (Identity + 7).ToString(), "Company_NameUpdated", "987456");
+                yield return new TestCaseData("TestID-167N", "screen3", "control3", "Update", "SQL%individual%static%-", "User3", "Hostname3", "RU", (Identity + 9).ToString(), "", "125987");
+                yield return new TestCaseData("TestID-168N", "screen4", "control4", "Update", "SQL%individual%static%-", "User4", "Hostname4", "RU", (Identity + 10).ToString(), "Company_NameUpdated", "");
                 yield return new TestCaseData("TestID-169A", "screen5", "control5", "Update", "SQL%individual%static%-", "User5", "Hostname5", "RU", "1", "Company1_update", null).Throws(typeof(System.Data.SqlClient.SqlException));
                 yield return new TestCaseData("TestID-170A", "screen6", "control6", "Update", "SQL%individual%static%-", "User6", "Hostname6", "RU", "1", null, "20042360").Throws(typeof(System.Data.SqlClient.SqlException));
                 yield return new TestCaseData("TestID-171A", "screen7", "control7", "Update", "SQL%individual%static%-", "User7", "Hostname7", "RU", null, "Company1_update", "20042360").Throws(typeof(ArgumentNullException));
                 yield return new TestCaseData("TestID-172A", "screen8", "control8", "Update", "SQL%individual%static%-", "User8", "Hostname8", "RU", null, null, null).Throws(typeof(ArgumentNullException)); ;
                 yield return new TestCaseData("TestID-173A", "screen9", "control9", "Update", "SQL%individual%static%-", "User9", "Hostname9", "RU", "", "Company1_update", "20042360").Throws(typeof(System.FormatException));
                 yield return new TestCaseData("TestID-174A", "screen10", "control10", "Update", "SQL%individual%static%-", "User10", "Hostname10", "RU", "12N", "Company1_update", "20042360").Throws(typeof(System.FormatException));
-                yield return new TestCaseData("TestID-175N", "screen1", "control1", "Update", "SQL%individual%static%-", "User1", "Hostname1", "RR", "1", "Company1_update", "125987");
-                yield return new TestCaseData("TestID-176N", "screen2", "control2", "Update", "SQL%individual%static%-", "User2", "Hostname2", "RR", "2", "Company2_update", "987456");
-                yield return new TestCaseData("TestID-177N", "screen3", "control3", "Update", "SQL%individual%static%-", "User3", "Hostname3", "RR", "3", "", "125987");
-                yield return new TestCaseData("TestID-178N", "screen4", "control4", "Update", "SQL%individual%static%-", "User4", "Hostname4", "RR", "3", "Company3_update", "");
+                yield return new TestCaseData("TestID-175N", "screen1", "control1", "Update", "SQL%individual%static%-", "User1", "Hostname1", "RR", (Identity + 1).ToString(), "Company_NameUpdated", "125987");
+                yield return new TestCaseData("TestID-176N", "screen2", "control2", "Update", "SQL%individual%static%-", "User2", "Hostname2", "RR", (Identity + 2).ToString(), "Company_NameUpdated", "987456");
+                yield return new TestCaseData("TestID-177N", "screen3", "control3", "Update", "SQL%individual%static%-", "User3", "Hostname3", "RR", (Identity + 8).ToString(), "", "125987");
+                yield return new TestCaseData("TestID-178N", "screen4", "control4", "Update", "SQL%individual%static%-", "User4", "Hostname4", "RR", (Identity + 1).ToString(), "Company_NameUpdated", "");
                 yield return new TestCaseData("TestID-179A", "screen5", "control5", "Update", "SQL%individual%static%-", "User5", "Hostname5", "RR", "1", "Company1_update", null).Throws(typeof(System.Data.SqlClient.SqlException));
                 yield return new TestCaseData("TestID-180A", "screen6", "control6", "Update", "SQL%individual%static%-", "User6", "Hostname6", "RR", "1", null, "20042360").Throws(typeof(System.Data.SqlClient.SqlException));
                 yield return new TestCaseData("TestID-181A", "screen7", "control7", "Update", "SQL%individual%static%-", "User7", "Hostname7", "RR", null, "Company1_update", "20042360").Throws(typeof(ArgumentNullException));
                 yield return new TestCaseData("TestID-182A", "screen8", "control8", "Update", "SQL%individual%static%-", "User8", "Hostname8", "RR", null, null, null).Throws(typeof(ArgumentNullException)); ;
                 yield return new TestCaseData("TestID-183A", "screen9", "control9", "Update", "SQL%individual%static%-", "User9", "Hostname9", "RR", "", "Company1_update", "20042360").Throws(typeof(System.FormatException));
                 yield return new TestCaseData("TestID-184A", "screen10", "control10", "Update", "SQL%individual%static%-", "User10", "Hostname10", "RR", "12N", "Company1_update", "20042360").Throws(typeof(System.FormatException));
-                yield return new TestCaseData("TestID-185N", "screen1", "control1", "Update", "SQL%individual%static%-", "User1", "Hostname1", "SZ", "1", "Company1_update", "125987");
-                yield return new TestCaseData("TestID-186N", "screen2", "control2", "Update", "SQL%individual%static%-", "User2", "Hostname2", "SZ", "2", "Company2_update", "987456");
-                yield return new TestCaseData("TestID-187N", "screen3", "control3", "Update", "SQL%individual%static%-", "User3", "Hostname3", "SZ", "3", "", "125987");
-                yield return new TestCaseData("TestID-188N", "screen4", "control4", "Update", "SQL%individual%static%-", "User4", "Hostname4", "SZ", "3", "Company3_update", "");
+                yield return new TestCaseData("TestID-185N", "screen1", "control1", "Update", "SQL%individual%static%-", "User1", "Hostname1", "SZ", (Identity + 1).ToString(), "Company_NameUpdated", "125987");
+                yield return new TestCaseData("TestID-186N", "screen2", "control2", "Update", "SQL%individual%static%-", "User2", "Hostname2", "SZ", (Identity + 7).ToString(), "Company_NameUpdated", "987456");
+                yield return new TestCaseData("TestID-187N", "screen3", "control3", "Update", "SQL%individual%static%-", "User3", "Hostname3", "SZ", (Identity + 6).ToString(), "", "125987");
+                yield return new TestCaseData("TestID-188N", "screen4", "control4", "Update", "SQL%individual%static%-", "User4", "Hostname4", "SZ", (Identity + 15).ToString(), "Company_NameUpdated", "");
                 yield return new TestCaseData("TestID-189A", "screen5", "control5", "Update", "SQL%individual%static%-", "User5", "Hostname5", "SZ", "1", "Company1_update", null).Throws(typeof(System.Data.SqlClient.SqlException));
                 yield return new TestCaseData("TestID-190A", "screen6", "control6", "Update", "SQL%individual%static%-", "User6", "Hostname6", "SZ", "1", null, "20042360").Throws(typeof(System.Data.SqlClient.SqlException));
                 yield return new TestCaseData("TestID-200A", "screen7", "control7", "Update", "SQL%individual%static%-", "User7", "Hostname7", "SZ", null, "Company1_update", "20042360").Throws(typeof(ArgumentNullException));
@@ -332,10 +345,10 @@ namespace Public.Test
                 yield return new TestCaseData("TestID-211A", "screen8", "control8", "Update", "SQL%individual%static%-", "User8", "Hostname8", "SS", null, null, null).Throws(typeof(ArgumentNullException)); ;
                 yield return new TestCaseData("TestID-212A", "screen9", "control9", "Update", "SQL%individual%static%-", "User9", "Hostname9", "SS", "", "Company1_update", "20042360").Throws(typeof(System.FormatException));
                 yield return new TestCaseData("TestID-213A", "screen10", "control10", "Update", "SQL%individual%static%-", "User10", "Hostname10", "SS", "12N", "Company1_update", "20042360").Throws(typeof(System.FormatException));
-                yield return new TestCaseData("TestID-214N", "screen1", "control1", "Update", "SQL%individual%static%-", "User1", "Hostname1", "DF", "1", "Company1_update", "125987");
-                yield return new TestCaseData("TestID-215N", "screen2", "control2", "Update", "SQL%individual%static%-", "User2", "Hostname2", "DF", "2", "Company2_update", "987456");
-                yield return new TestCaseData("TestID-216N", "screen3", "control3", "Update", "SQL%individual%static%-", "User3", "Hostname3", "DF", "3", "", "125987");
-                yield return new TestCaseData("TestID-217N", "screen4", "control4", "Update", "SQL%individual%static%-", "User4", "Hostname4", "DF", "3", "Company3_update", "");
+                yield return new TestCaseData("TestID-214N", "screen1", "control1", "Update", "SQL%individual%static%-", "User1", "Hostname1", "DF", (Identity + 1).ToString(), "Company_NameUpdated", "125987");
+                yield return new TestCaseData("TestID-215N", "screen2", "control2", "Update", "SQL%individual%static%-", "User2", "Hostname2", "DF", (Identity + 2).ToString(), "Company_NameUpdated", "987456");
+                yield return new TestCaseData("TestID-216N", "screen3", "control3", "Update", "SQL%individual%static%-", "User3", "Hostname3", "DF", (Identity + 3).ToString(), "", "125987");
+                yield return new TestCaseData("TestID-217N", "screen4", "control4", "Update", "SQL%individual%static%-", "User4", "Hostname4", "DF", (Identity + 4).ToString(), "Company_NameUpdated", "");
                 yield return new TestCaseData("TestID-218A", "screen5", "control5", "Update", "SQL%individual%static%-", "User5", "Hostname5", "DF", "1", "Company1_update", null).Throws(typeof(System.Data.SqlClient.SqlException));
                 yield return new TestCaseData("TestID-219A", "screen6", "control6", "Update", "SQL%individual%static%-", "User6", "Hostname6", "DF", "1", null, "20042360").Throws(typeof(System.Data.SqlClient.SqlException));
                 yield return new TestCaseData("TestID-220A", "screen7", "control7", "Update", "SQL%individual%static%-", "User7", "Hostname7", "DF", null, "Company1_update", "20042360").Throws(typeof(ArgumentNullException));
@@ -345,12 +358,12 @@ namespace Public.Test
                 /* Update*/
 
                 /*Delete*/
-                yield return new TestCaseData("TestID-224N", "screen1", "control1", "Delete", "SQL%individual%static%-", "User1", "Hostname1", "NT", "4", "Hitachi", "125987");
-                yield return new TestCaseData("TestID-225N", "screen2", "control2", "Delete", "SQL%individual%static%-", "User2", "Hostname2", "NT", "5", "Hitachi", "987456");
-                yield return new TestCaseData("TestID-226N", "screen3", "control3", "Delete", "SQL%individual%static%-", "User3", "Hostname3", "NT", "6", "", "125987");
-                yield return new TestCaseData("TestID-227N", "screen4", "control4", "Delete", "SQL%individual%static%-", "User4", "Hostname4", "NT", "7", "HiSOL", "");
-                yield return new TestCaseData("TestID-228A", "screen5", "control5", "Delete", "SQL%individual%static%-", "User5", "Hostname5", "NC", "8", "Company1_update", null).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-229A", "screen6", "control6", "Delete", "SQL%individual%static%-", "User6", "Hostname6", "NC", "9", null, "20042360").Throws(typeof(NullReferenceException));
+                yield return new TestCaseData("TestID-224N", "screen1", "control1", "Delete", "SQL%individual%static%-", "User1", "Hostname1", "NT", (Identity + 5).ToString(), "Hitachi", "125987");
+                yield return new TestCaseData("TestID-225N", "screen2", "control2", "Delete", "SQL%individual%static%-", "User2", "Hostname2", "NT", (Identity + 6).ToString(), "Hitachi", "987456");
+                yield return new TestCaseData("TestID-226N", "screen3", "control3", "Delete", "SQL%individual%static%-", "User3", "Hostname3", "NT", (Identity + 7).ToString(), "", "125987");
+                yield return new TestCaseData("TestID-227N", "screen4", "control4", "Delete", "SQL%individual%static%-", "User4", "Hostname4", "NT", (Identity + 8).ToString(), "HiSOL", "");
+                yield return new TestCaseData("TestID-228A", "screen5", "control5", "Delete", "SQL%individual%static%-", "User5", "Hostname5", "NC", (Identity + 4).ToString(), "Company1_update", null).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData("TestID-229A", "screen6", "control6", "Delete", "SQL%individual%static%-", "User6", "Hostname6", "NC", (Identity + 9).ToString(), null, "20042360").Throws(typeof(NullReferenceException));
                 yield return new TestCaseData("TestID-230A", "screen7", "control7", "Delete", "SQL%individual%static%-", "User7", "Hostname7", "RC", null, "Company1_update", "20042360").Throws(typeof(ArgumentNullException));
                 yield return new TestCaseData("TestID-231A", "screen8", "control8", "Delete", "SQL%individual%static%-", "User8", "Hostname8", "RC", null, null, null).Throws(typeof(ArgumentNullException));
                 yield return new TestCaseData("TestID-232A", "screen9", "control9", "Delete", "SQL%individual%static%-", "User9", "Hostname9", "RC", "", "Company1_update", "20042360").Throws(typeof(System.FormatException));
@@ -513,50 +526,50 @@ namespace Public.Test
                         Assert.AreEqual(resultTestReturnValue.ErrorFlag, true);
                     break;
                 case "Insert":
-                        testParameterValue.CompanyName = companyName;
-                        testParameterValue.Phone = phone;
-                        CallBusinessLogic(screen, buttonID, action, dbGeneration, user, ipAddress, isolationLevel, testParameterValue, out resultTestReturnValue,
-                                         out expectedTestReturnValue);
+                    testParameterValue.CompanyName = companyName;
+                    testParameterValue.Phone = phone;
+                    CallBusinessLogic(screen, buttonID, action, dbGeneration, user, ipAddress, isolationLevel, testParameterValue, out resultTestReturnValue,
+                                     out expectedTestReturnValue);
 
-                        if (!resultTestReturnValue.ErrorFlag)
-                        {
-                            Assert.AreEqual(resultTestReturnValue.Obj.ToString(), expectedTestReturnValue.Obj.ToString());
-                        }
-                        else
-                            Assert.AreEqual(resultTestReturnValue.ErrorFlag, true);
+                    if (!resultTestReturnValue.ErrorFlag)
+                    {
+                        Assert.AreEqual(resultTestReturnValue.Obj.ToString(), expectedTestReturnValue.Obj.ToString());
+                    }
+                    else
+                        Assert.AreEqual(resultTestReturnValue.ErrorFlag, true);
                     break;
 
                 case "Update":
-                        testParameterValue.ShipperID = int.Parse(shipperID);
-                        testParameterValue.CompanyName = companyName;
-                        testParameterValue.Phone = phone;
-                        CallBusinessLogic(screen, buttonID, action, dbGeneration, user, ipAddress, isolationLevel, testParameterValue, out resultTestReturnValue,
-                                         out expectedTestReturnValue);
-                        if (!resultTestReturnValue.ErrorFlag)
-                        {
-                            Assert.AreEqual(resultTestReturnValue.Obj.ToString(), expectedTestReturnValue.Obj.ToString());
-                        }
-                        else
-                            Assert.AreEqual(resultTestReturnValue.ErrorFlag, true);
+                    testParameterValue.ShipperID = int.Parse(shipperID);
+                    testParameterValue.CompanyName = companyName;
+                    testParameterValue.Phone = phone;
+                    CallBusinessLogic(screen, buttonID, action, dbGeneration, user, ipAddress, isolationLevel, testParameterValue, out resultTestReturnValue,
+                                     out expectedTestReturnValue);
+                    if (!resultTestReturnValue.ErrorFlag)
+                    {
+                        Assert.AreEqual(resultTestReturnValue.Obj.ToString(), expectedTestReturnValue.Obj.ToString());
+                    }
+                    else
+                        Assert.AreEqual(resultTestReturnValue.ErrorFlag, true);
                     break;
                 case "Delete":
                     // 情報の設定
-                        testParameterValue.ShipperID = int.Parse(shipperID);
-                        CallBusinessLogic(screen, buttonID, action, dbGeneration, user, ipAddress, isolationLevel, testParameterValue, out resultTestReturnValue,
-                                         out expectedTestReturnValue);
-                        if (!resultTestReturnValue.ErrorFlag)
+                    testParameterValue.ShipperID = int.Parse(shipperID);
+                    CallBusinessLogic(screen, buttonID, action, dbGeneration, user, ipAddress, isolationLevel, testParameterValue, out resultTestReturnValue,
+                                     out expectedTestReturnValue);
+                    if (!resultTestReturnValue.ErrorFlag)
+                    {
+                        if (resultTestReturnValue.Obj.ToString() == "1")
                         {
-                            if (resultTestReturnValue.Obj.ToString() == "1")
-                            {
-                                Assert.AreEqual(resultTestReturnValue.Obj.ToString(), "1");
-                            }
-                            else
-                            {
-                                Assert.AreEqual(resultTestReturnValue.Obj.ToString(), "0");
-                            }
+                            Assert.AreEqual(resultTestReturnValue.Obj.ToString(), "1");
                         }
                         else
-                            Assert.AreEqual(resultTestReturnValue.ErrorFlag, true);
+                        {
+                            Assert.AreEqual(resultTestReturnValue.Obj.ToString(), "0");
+                        }
+                    }
+                    else
+                        Assert.AreEqual(resultTestReturnValue.ErrorFlag, true);
                     break;
                 case "SelectJoin1":
                 case "SelectJoin2":
@@ -777,6 +790,70 @@ namespace Public.Test
             }
         }
         #endregion
+        #endregion
+
+        #region Methods to revert datbase Changes
+        /// <summary>
+        /// ToCommaString Method to get the comma(,) Separted string of list of integer 
+        /// </summary>
+        /// <param name="list">list</param>
+        private string ToCommaString(List<int> list)
+        {
+            if (list.Count <= 0)
+                return ("0");
+            if (list.Count == 1)
+                return (list[0].ToString());
+            System.Text.StringBuilder sb = new System.Text.StringBuilder(list[0].ToString());
+            for (int x = 1; x < list.Count; x++)
+                sb.Append("," + list[x].ToString());
+            return (sb.ToString());
+        }
+        /// <summary>
+        /// GetListData() Method to get list of integer of ShipperID in shippers table before running the test cases 
+        /// </summary>
+        /// <param name="list">list</param>
+        /// <returns value="getList">List of Integer data type<int></returns>
+        private List<int> GetListData()
+        {
+            List<int> getList = new List<int>();
+            MyUserInfo userInfo = new MyUserInfo("user1", "Hostname");
+            LayerB lb = new LayerB();
+            TestParameterValue test = new TestParameterValue("Select ShipperID from Shippers", "button1", "GetList", "SQL%individual%static%-", userInfo);
+            TestReturnValue testreturn = (TestReturnValue)lb.DoBusinessLogic((BaseParameterValue)test);
+            DataTable dt = (DataTable)testreturn.Obj;
+            foreach (DataRow dr in dt.Rows)
+            {
+                getList.Add((int)dr[0]);
+            }
+            return getList;
+        }
+
+        /// <summary>
+        /// DeleteData() Method to delete the ShipperID's from shippers table which are inserted while running test cases. 
+        /// </summary>
+        private void DeleteData()
+        {
+            MyUserInfo userInfo = new MyUserInfo("user1", "Hostname");
+            LayerB lb = new LayerB();
+            string strIDdelete = ToCommaString(testList);
+            TestParameterValue test = new TestParameterValue("Delete from Shippers where ShipperID not in(" + strIDdelete + ")", "button1", "GetDelete", "SQL%individual%static%-", userInfo);
+            TestReturnValue testreturn = (TestReturnValue)lb.DoBusinessLogic((BaseParameterValue)test);
+            testList.Clear();
+        }
+        /// <summary>
+        /// GetIdentityValue() Method to get the Current Identity value of Shipper ID column in Shippers table 
+        /// </summary>
+        /// <returns value="intIdentity">intIdentity as integer data type</returns>
+        private int GetIdentityValue()
+        {
+            int intIdentity = 0;
+            MyUserInfo userInfo = new MyUserInfo("user1", "Hostname");
+            LayerB lb = new LayerB();
+            TestParameterValue test = new TestParameterValue("SELECT IDENT_CURRENT('shippers')", "button1", "GetID", "SQL%individual%static%-", userInfo);
+            TestReturnValue testreturn = (TestReturnValue)lb.DoBusinessLogic((BaseParameterValue)test);
+            intIdentity = Convert.ToInt16(testreturn.Obj);
+            return intIdentity;
+        }
         #endregion
     }
 }

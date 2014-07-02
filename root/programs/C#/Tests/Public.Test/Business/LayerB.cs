@@ -12,6 +12,7 @@
 //*  Date:        Author:        Comments:
 //*  ----------  ----------------  -------------------------------------------------
 //*  06/24/2014   Rituparna & Santosh   Testcode development for CRUDTest(Public classes).
+//*  07/02/2014   Santosh               Added code and modified test cases to prevent database changes after running the test cases
 //**********************************************************************************
 
 // 型情報
@@ -1442,6 +1443,51 @@ public class LayerB : MyFcBaseLogic
         bd.SetSqlByFile(testParameter.Filepath);
         DataTable dt = bd.GetParametersFromPARAMTag();
         testReturn.Obj = dt;
+    }
+    #endregion
+
+    #region Revert Database after Test case Run
+    /// <summary>
+    /// UOC_GetList Method to get the list of Shipper ID which are available before running test cases.
+    /// </summary>
+    /// <param name="testParameter">testParameter</param>
+    private void UOC_GetList(TestParameterValue testParameter)
+    {
+        TestReturnValue testReturn = new TestReturnValue();
+        this.ReturnValue = testReturn;
+        BaseDam bd = (BaseDam)this.GetDam();
+        bd.SetSqlByCommand(testParameter.ScreenId, CommandType.Text);
+        DataTable dt = new DataTable();
+        bd.ExecSelectFill_DT(dt);
+        testReturn.Obj = dt;
+    }
+    /// <summary>
+    /// UOC_GetDelete Method to Delete data added to shipper table after running test cases.
+    /// </summary>
+    /// <param name="testParameter">testParameter</param>
+    private void UOC_GetDelete(TestParameterValue testParameter)
+    {
+        TestReturnValue testReturn = new TestReturnValue();
+        this.ReturnValue = testReturn;
+        BaseDam bd = (BaseDam)this.GetDam();
+        bd.SetSqlByCommand(testParameter.ScreenId, CommandType.Text);
+        int dlt = bd.ExecInsUpDel_NonQuery();
+        testReturn.Obj = dlt;
+    }
+
+    /// <summary>
+    /// UOC_GetID Method to get the current Identity value from Shippers table before running the test cases.
+    /// </summary>
+    /// <param name="testParameter">testParameter</param>
+    private void UOC_GetID(TestParameterValue testParameter)
+    {
+        TestReturnValue testReturn = new TestReturnValue();
+        this.ReturnValue = testReturn;
+        BaseDam bd = (BaseDam)this.GetDam();
+        bd.SetSqlByCommand(testParameter.ScreenId, CommandType.Text);
+        DataTable dt = new DataTable();
+        bd.ExecSelectFill_DT(dt);
+        testReturn.Obj = dt.Rows[0].ItemArray.GetValue(0);
     }
     #endregion
 
