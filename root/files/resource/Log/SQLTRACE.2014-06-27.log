@@ -1,0 +1,622 @@
+﻿[2014/06/27 14:49:43,574],[INFO ],[TestRunnerThread],287,47,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:43,576],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:43,613],[INFO ],[TestRunnerThread],6,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:43,614],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:43,617],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:43,617],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:43,620],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:43,621],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:43,857],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:43,857],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:43,860],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:43,861],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:43,863],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:43,863],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:43,865],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:43,865],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:43,867],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:43,867],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:43,869],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:43,869],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:43,871],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:43,871],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:43,873],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:43,873],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:43,876],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:43,876],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:43,878],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:43,879],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:43,880],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:43,881],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:43,883],[INFO ],[TestRunnerThread],0,16,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:43,883],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:44,046],[ERROR],[TestRunnerThread],161,0,User1,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,118],[ERROR],[TestRunnerThread],0,0,User2,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:44,121],[ERROR],[TestRunnerThread],0,0,User3,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,125],[ERROR],[TestRunnerThread],0,0,User4,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:44,129],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,129],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,132],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:44,134],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:44,136],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,136],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,138],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:44,138],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:44,212],[INFO ],[TestRunnerThread],46,31,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,213],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,217],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,218],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,220],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,221],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,223],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,223],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,238],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,238],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,240],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,240],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,244],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,244],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,247],[ERROR],[TestRunnerThread],0,0,User4,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,260],[INFO ],[TestRunnerThread],3,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,262],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,264],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,265],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,267],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,267],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,270],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,270],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,289],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,290],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,294],[INFO ],[TestRunnerThread],1,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,295],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,297],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,297],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,300],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,442],[INFO ],[TestRunnerThread],125,31,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE CompanyName <> @P1 ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 14:49:44,444],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE CompanyName <> @P1 ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 14:49:44,477],[INFO ],[TestRunnerThread],26,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 14:49:44,478],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 14:49:44,481],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE CompanyName <> @P1 ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 14:49:44,482],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE CompanyName <> @P1 ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 14:49:44,485],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 14:49:44,485],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 14:49:44,503],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE CompanyName <> @P1 ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 14:49:44,503],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE CompanyName <> @P1 ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 14:49:44,506],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 14:49:44,506],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 14:49:44,511],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE CompanyName <> @P1 ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 14:49:44,511],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE CompanyName <> @P1 ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 14:49:44,533],[ERROR],[TestRunnerThread],19,0,User4,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 14:49:44,557],[INFO ],[TestRunnerThread],13,16,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,558],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,561],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,564],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,567],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,567],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,570],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,571],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,585],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,586],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,587],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,588],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,590],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,590],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,593],[ERROR],[TestRunnerThread],0,0,User4,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 14:49:44,604],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=1,
+[2014/06/27 14:49:44,607],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=1,
+[2014/06/27 14:49:44,633],[INFO ],[TestRunnerThread],20,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1  [commandParameter]:P1=1,
+[2014/06/27 14:49:44,633],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1  [commandParameter]:P1=1,
+[2014/06/27 14:49:44,636],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=1,
+[2014/06/27 14:49:44,636],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=1,
+[2014/06/27 14:49:44,638],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1  [commandParameter]:P1=1,
+[2014/06/27 14:49:44,639],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1  [commandParameter]:P1=1,
+[2014/06/27 14:49:44,654],[INFO ],[TestRunnerThread],1,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=1,
+[2014/06/27 14:49:44,655],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=1,
+[2014/06/27 14:49:44,658],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1  [commandParameter]:P1=1,
+[2014/06/27 14:49:44,659],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1  [commandParameter]:P1=1,
+[2014/06/27 14:49:44,661],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=1,
+[2014/06/27 14:49:44,662],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=1,
+[2014/06/27 14:49:44,665],[ERROR],[TestRunnerThread],0,0,User4,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1  [commandParameter]:P1=1,
+[2014/06/27 14:49:44,838],[INFO ],[TestRunnerThread],163,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi,P3=00180099666,
+[2014/06/27 14:49:44,889],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi,P3=00180099666,
+[2014/06/27 14:49:44,902],[INFO ],[TestRunnerThread],10,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi1,P3=001800996662,
+[2014/06/27 14:49:44,903],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi1,P3=001800996662,
+[2014/06/27 14:49:44,905],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi2,P3=001800996626,
+[2014/06/27 14:49:44,906],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi2,P3=001800996626,
+[2014/06/27 14:49:44,909],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi4,P3=001800996626,
+[2014/06/27 14:49:44,909],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi4,P3=001800996626,
+[2014/06/27 14:49:44,958],[INFO ],[TestRunnerThread],33,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi5,P3=001800996626,
+[2014/06/27 14:49:44,964],[INFO ],[TestRunnerThread],5,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi5,P3=001800996626,
+[2014/06/27 14:49:44,966],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi6,P3=001800996626,
+[2014/06/27 14:49:44,984],[INFO ],[TestRunnerThread],17,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi6,P3=001800996626,
+[2014/06/27 14:49:44,987],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi7,P3=001800996626,
+[2014/06/27 14:49:44,988],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi7,P3=001800996626,
+[2014/06/27 14:49:45,111],[ERROR],[TestRunnerThread],121,0,User4,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=null,P3=null,
+[2014/06/27 14:49:45,166],[INFO ],[TestRunnerThread],41,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 14:49:45,167],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 14:49:45,170],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 14:49:45,170],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 14:49:45,173],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 14:49:45,175],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 14:49:45,221],[INFO ],[TestRunnerThread],43,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 14:49:45,232],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 14:49:45,235],[ERROR],[TestRunnerThread],0,0,User5,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=null,
+[2014/06/27 14:49:45,239],[ERROR],[TestRunnerThread],1,0,User6,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=null,P3=20042360,
+[2014/06/27 14:49:45,286],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 14:49:45,286],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 14:49:45,288],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 14:49:45,288],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 14:49:45,298],[INFO ],[TestRunnerThread],8,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 14:49:45,299],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 14:49:45,306],[INFO ],[TestRunnerThread],6,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 14:49:45,306],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 14:49:45,313],[ERROR],[TestRunnerThread],2,0,User5,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=null,
+[2014/06/27 14:49:45,317],[ERROR],[TestRunnerThread],1,0,User6,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=null,P3=20042360,
+[2014/06/27 14:49:45,328],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 14:49:45,329],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 14:49:45,331],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 14:49:45,331],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 14:49:45,334],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 14:49:45,337],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 14:49:45,340],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 14:49:45,350],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 14:49:45,352],[ERROR],[TestRunnerThread],0,0,User5,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=null,
+[2014/06/27 14:49:45,356],[ERROR],[TestRunnerThread],0,0,User6,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=null,P3=20042360,
+[2014/06/27 14:49:45,372],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 14:49:45,373],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 14:49:45,377],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 14:49:45,377],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 14:49:45,379],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 14:49:45,380],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 14:49:45,382],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 14:49:45,385],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 14:49:45,387],[ERROR],[TestRunnerThread],0,0,User5,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=null,
+[2014/06/27 14:49:45,390],[ERROR],[TestRunnerThread],0,0,User6,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=null,P3=20042360,
+[2014/06/27 14:49:45,402],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 14:49:45,403],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 14:49:45,405],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 14:49:45,405],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 14:49:45,407],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 14:49:45,419],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 14:49:45,421],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 14:49:45,427],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 14:49:45,430],[ERROR],[TestRunnerThread],0,0,User5,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=null,
+[2014/06/27 14:49:45,433],[ERROR],[TestRunnerThread],0,0,User6,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=null,P3=20042360,
+[2014/06/27 14:49:45,476],[INFO ],[TestRunnerThread],31,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 14:49:45,477],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 14:49:45,479],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 14:49:45,480],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 14:49:45,483],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 14:49:45,487],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 14:49:45,489],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 14:49:45,491],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 14:49:45,496],[ERROR],[TestRunnerThread],0,0,User5,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=null,
+[2014/06/27 14:49:45,499],[ERROR],[TestRunnerThread],0,0,User6,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=null,P3=20042360,
+[2014/06/27 14:49:45,560],[ERROR],[TestRunnerThread],48,0,User1,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 14:49:45,565],[ERROR],[TestRunnerThread],1,0,User2,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 14:49:45,569],[ERROR],[TestRunnerThread],0,0,User3,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 14:49:45,573],[ERROR],[TestRunnerThread],0,0,User4,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 14:49:45,576],[ERROR],[TestRunnerThread],0,0,User5,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=null,
+[2014/06/27 14:49:45,579],[ERROR],[TestRunnerThread],0,0,User6,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=null,P3=20042360,
+[2014/06/27 14:49:45,593],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 14:49:45,593],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 14:49:45,596],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 14:49:45,597],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 14:49:45,599],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 14:49:45,600],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 14:49:45,602],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 14:49:45,604],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 14:49:45,606],[ERROR],[TestRunnerThread],0,0,User5,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=null,
+[2014/06/27 14:49:45,610],[ERROR],[TestRunnerThread],0,0,User6,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=null,P3=20042360,
+[2014/06/27 14:49:45,627],[INFO ],[TestRunnerThread],0,0,[commandText]:DELETE FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=4,
+[2014/06/27 14:49:45,628],[INFO ],[TestRunnerThread],0,0,[commandText]:DELETE FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=4,
+[2014/06/27 14:49:45,630],[INFO ],[TestRunnerThread],0,0,[commandText]:DELETE FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=5,
+[2014/06/27 14:49:45,630],[INFO ],[TestRunnerThread],0,0,[commandText]:DELETE FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=5,
+[2014/06/27 14:49:45,634],[INFO ],[TestRunnerThread],0,0,[commandText]:DELETE FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=6,
+[2014/06/27 14:49:45,634],[INFO ],[TestRunnerThread],0,0,[commandText]:DELETE FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=6,
+[2014/06/27 14:49:45,636],[INFO ],[TestRunnerThread],0,0,[commandText]:DELETE FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=7,
+[2014/06/27 14:49:45,637],[INFO ],[TestRunnerThread],0,0,[commandText]:DELETE FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=7,
+[2014/06/27 14:49:46,897],[INFO ],[TestRunnerThread],1223,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM shippers WHERE CompanyName IS NOT NULL AND ShipperID IN (SELECT Distinct(ShipperID) FROM shippers) ) AS s ON o.shipvia = s.shipperid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL AND OrderID IN (SELECT Distinct(OrderID) FROM [order details]) ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL AND ProductID IN (SELECT Distinct(ProductID) FROM products) ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 14:49:46,960],[INFO ],[TestRunnerThread],63,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM shippers WHERE CompanyName IS NOT NULL AND ShipperID IN (SELECT Distinct(ShipperID) FROM shippers) ) AS s ON o.shipvia = s.shipperid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL AND OrderID IN (SELECT Distinct(OrderID) FROM [order details]) ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL AND ProductID IN (SELECT Distinct(ProductID) FROM products) ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 14:49:46,983],[INFO ],[TestRunnerThread],19,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM shippers WHERE CompanyName IS NOT NULL AND ShipperID IN (SELECT Distinct(ShipperID) FROM shippers) ) AS s ON o.shipvia = s.shipperid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL AND OrderID IN (SELECT Distinct(OrderID) FROM [order details]) ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL AND ProductID IN (SELECT Distinct(ProductID) FROM products) ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 14:49:47,053],[INFO ],[TestRunnerThread],70,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM shippers WHERE CompanyName IS NOT NULL AND ShipperID IN (SELECT Distinct(ShipperID) FROM shippers) ) AS s ON o.shipvia = s.shipperid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL AND OrderID IN (SELECT Distinct(OrderID) FROM [order details]) ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL AND ProductID IN (SELECT Distinct(ProductID) FROM products) ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 14:49:47,089],[INFO ],[TestRunnerThread],32,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM shippers WHERE CompanyName IS NOT NULL AND ShipperID IN (SELECT Distinct(ShipperID) FROM shippers) ) AS s ON o.shipvia = s.shipperid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL AND OrderID IN (SELECT Distinct(OrderID) FROM [order details]) ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL AND ProductID IN (SELECT Distinct(ProductID) FROM products) ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 14:49:47,115],[INFO ],[TestRunnerThread],26,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM shippers WHERE CompanyName IS NOT NULL AND ShipperID IN (SELECT Distinct(ShipperID) FROM shippers) ) AS s ON o.shipvia = s.shipperid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL AND OrderID IN (SELECT Distinct(OrderID) FROM [order details]) ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL AND ProductID IN (SELECT Distinct(ProductID) FROM products) ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 14:49:47,258],[INFO ],[TestRunnerThread],116,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 14:49:47,273],[INFO ],[TestRunnerThread],14,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 14:49:47,288],[INFO ],[TestRunnerThread],11,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 14:49:47,298],[INFO ],[TestRunnerThread],9,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 14:49:47,310],[INFO ],[TestRunnerThread],10,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 14:49:47,320],[INFO ],[TestRunnerThread],9,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 14:49:47,690],[INFO ],[TestRunnerThread],345,16,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P2=test,
+[2014/06/27 14:49:47,701],[INFO ],[TestRunnerThread],11,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P2=test,
+[2014/06/27 14:49:47,718],[INFO ],[TestRunnerThread],13,16,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P2=test,
+[2014/06/27 14:49:47,729],[INFO ],[TestRunnerThread],10,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P2=test,
+[2014/06/27 14:49:47,740],[INFO ],[TestRunnerThread],8,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P2=test,
+[2014/06/27 14:49:47,749],[INFO ],[TestRunnerThread],8,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P2=test,
+[2014/06/27 14:49:47,817],[INFO ],[TestRunnerThread],53,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P1=test,
+[2014/06/27 14:49:47,822],[INFO ],[TestRunnerThread],5,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P1=test,
+[2014/06/27 14:49:47,829],[INFO ],[TestRunnerThread],4,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P1=test,
+[2014/06/27 14:49:47,833],[INFO ],[TestRunnerThread],4,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P1=test,
+[2014/06/27 14:49:47,839],[INFO ],[TestRunnerThread],4,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P1=test,
+[2014/06/27 14:49:47,843],[INFO ],[TestRunnerThread],4,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P1=test,
+[2014/06/27 14:49:47,994],[INFO ],[TestRunnerThread],135,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト）  [commandParameter]:P1=test,P2=test1,
+[2014/06/27 14:49:48,008],[INFO ],[TestRunnerThread],14,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト）  [commandParameter]:P1=test,P2=test1,
+[2014/06/27 14:49:48,023],[INFO ],[TestRunnerThread],12,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト）  [commandParameter]:P1=test,P2=test1,
+[2014/06/27 14:49:48,037],[INFO ],[TestRunnerThread],14,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト）  [commandParameter]:P1=test,P2=test1,
+[2014/06/27 14:49:48,055],[INFO ],[TestRunnerThread],13,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト）  [commandParameter]:P1=test,P2=test1,
+[2014/06/27 14:49:48,068],[INFO ],[TestRunnerThread],13,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト）  [commandParameter]:P1=test,P2=test1,
+[2014/06/27 14:49:48,306],[INFO ],[TestRunnerThread],232,0,[commandText]: SELECT * FROM REGION WHERE RegionID IN(@PLIST_1, @PLIST_2, @PLIST_3, @PLIST_4) -- LISTタグのテスト  [commandParameter]:PLIST_1=1,PLIST_2=2,PLIST_3=3,PLIST_4=4,
+[2014/06/27 14:49:48,307],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IN(@PLIST_1, @PLIST_2, @PLIST_3, @PLIST_4) -- LISTタグのテスト  [commandParameter]:PLIST_1=1,PLIST_2=2,PLIST_3=3,PLIST_4=4,
+[2014/06/27 14:49:48,310],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IN(@PLIST_1, @PLIST_2, @PLIST_3, @PLIST_4) -- LISTタグのテスト  [commandParameter]:PLIST_1=1,PLIST_2=2,PLIST_3=3,PLIST_4=4,
+[2014/06/27 14:49:48,311],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IN(@PLIST_1, @PLIST_2, @PLIST_3, @PLIST_4) -- LISTタグのテスト  [commandParameter]:PLIST_1=1,PLIST_2=2,PLIST_3=3,PLIST_4=4,
+[2014/06/27 14:49:48,314],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IN(@PLIST_1, @PLIST_2, @PLIST_3, @PLIST_4) -- LISTタグのテスト  [commandParameter]:PLIST_1=1,PLIST_2=2,PLIST_3=3,PLIST_4=4,
+[2014/06/27 14:49:48,315],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IN(@PLIST_1, @PLIST_2, @PLIST_3, @PLIST_4) -- LISTタグのテスト  [commandParameter]:PLIST_1=1,PLIST_2=2,PLIST_3=3,PLIST_4=4,
+[2014/06/27 14:49:48,323],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IS NULL -- IF-ELSEタグ（name属性）のテスト  [commandParameter]:
+[2014/06/27 14:49:48,326],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IS NULL -- IF-ELSEタグ（name属性）のテスト  [commandParameter]:
+[2014/06/27 14:49:48,330],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IS NULL -- IF-ELSEタグ（name属性）のテスト  [commandParameter]:
+[2014/06/27 14:49:48,330],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IS NULL -- IF-ELSEタグ（name属性）のテスト  [commandParameter]:
+[2014/06/27 14:49:48,333],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IS NULL -- IF-ELSEタグ（name属性）のテスト  [commandParameter]:
+[2014/06/27 14:49:48,333],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IS NULL -- IF-ELSEタグ（name属性）のテスト  [commandParameter]:
+[2014/06/27 14:49:48,351],[ERROR],[TestRunnerThread],9,16,User10,[commandText]:<?xml version="1.0" encoding="UTF-8" ?> <ROOT> SELECT * FROM REGION WHERE <IF name="">RegionID IS NOT NULL<ELSE>RegionID IS NULL</ELSE></IF> <PARAM> P, boolean, true </PARAM> -- IF-ELSEタグ（name属性なし）のテスト（name属性が空） </ROOT>  [commandParameter]:
+[2014/06/27 14:49:48,355],[ERROR],[TestRunnerThread],1,0,User10,[commandText]:<?xml version="1.0" encoding="UTF-8" ?> <ROOT> SELECT * FROM REGION WHERE <IF name="">RegionID IS NOT NULL<ELSE>RegionID IS NULL</ELSE></IF> <PARAM> P, boolean, true </PARAM> -- IF-ELSEタグ（name属性なし）のテスト（name属性が空） </ROOT>  [commandParameter]:
+[2014/06/27 14:49:48,359],[ERROR],[TestRunnerThread],1,0,User10,[commandText]:<?xml version="1.0" encoding="UTF-8" ?> <ROOT> SELECT * FROM REGION WHERE <IF name="">RegionID IS NOT NULL<ELSE>RegionID IS NULL</ELSE></IF> <PARAM> P, boolean, true </PARAM> -- IF-ELSEタグ（name属性なし）のテスト（name属性が空） </ROOT>  [commandParameter]:
+[2014/06/27 14:49:48,370],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:48,371],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:48,374],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:48,375],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:48,399],[INFO ],[TestRunnerThread],22,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 14:49:48,400],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 14:49:48,403],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 14:49:48,404],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 14:49:48,416],[INFO ],[TestRunnerThread],9,0,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 14:49:48,422],[INFO ],[TestRunnerThread],6,0,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 14:49:48,435],[INFO ],[TestRunnerThread],8,0,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 14:49:48,441],[INFO ],[TestRunnerThread],6,16,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 14:49:48,448],[INFO ],[TestRunnerThread],0,0,[commandText]:  [commandParameter]:
+[2014/06/27 14:49:48,449],[INFO ],[TestRunnerThread],0,0,[commandText]:  [commandParameter]:
+[2014/06/27 14:49:48,452],[INFO ],[TestRunnerThread],0,0,[commandText]:  [commandParameter]:
+[2014/06/27 14:49:48,452],[INFO ],[TestRunnerThread],0,0,[commandText]:  [commandParameter]:
+[2014/06/27 14:49:48,456],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:48,457],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:48,462],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:48,463],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:48,467],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 14:49:48,468],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 14:49:48,473],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 14:49:48,474],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 14:49:48,486],[INFO ],[TestRunnerThread],6,16,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 14:49:48,492],[INFO ],[TestRunnerThread],6,0,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 14:49:48,504],[INFO ],[TestRunnerThread],7,16,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 14:49:48,510],[INFO ],[TestRunnerThread],6,0,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 14:49:48,545],[INFO ],[TestRunnerThread],30,16,[commandText]: SELECT * FROM [Order Details]  [commandParameter]:
+[2014/06/27 14:49:48,552],[INFO ],[TestRunnerThread],6,16,[commandText]: SELECT * FROM [Order Details]  [commandParameter]:
+[2014/06/27 14:49:48,565],[INFO ],[TestRunnerThread],8,16,[commandText]: SELECT * FROM [Order Details]  [commandParameter]:
+[2014/06/27 14:49:48,572],[INFO ],[TestRunnerThread],6,0,[commandText]: SELECT * FROM [Order Details]  [commandParameter]:
+[2014/06/27 14:49:48,575],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:48,575],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:48,578],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:48,578],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 14:49:48,582],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 14:49:48,583],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 14:49:48,585],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 14:49:48,586],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 14:49:48,595],[INFO ],[TestRunnerThread],6,16,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 14:49:48,601],[INFO ],[TestRunnerThread],6,0,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 14:49:48,610],[INFO ],[TestRunnerThread],7,16,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 14:49:48,616],[INFO ],[TestRunnerThread],6,0,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 14:49:48,626],[INFO ],[TestRunnerThread],7,16,[commandText]: SELECT * FROM [Order Details]  [commandParameter]:
+[2014/06/27 14:49:48,633],[INFO ],[TestRunnerThread],7,0,[commandText]: SELECT * FROM [Order Details]  [commandParameter]:
+[2014/06/27 14:49:48,643],[INFO ],[TestRunnerThread],8,16,[commandText]: SELECT * FROM [Order Details]  [commandParameter]:
+[2014/06/27 14:49:48,650],[INFO ],[TestRunnerThread],7,0,[commandText]: SELECT * FROM [Order Details]  [commandParameter]:
+[2014/06/27 15:47:41,880],[INFO ],[TestRunnerThread],36,47,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:41,887],[INFO ],[TestRunnerThread],3,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:41,923],[INFO ],[TestRunnerThread],6,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:41,923],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:41,925],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:41,926],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:41,927],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:41,928],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:41,959],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:41,960],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:41,962],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:41,962],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:41,964],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:41,964],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:41,966],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:41,966],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:41,968],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:41,969],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:41,970],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:41,971],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:41,973],[INFO ],[TestRunnerThread],0,16,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:41,973],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:41,975],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:41,975],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:41,977],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:41,978],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:41,980],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:41,980],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:41,982],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:41,983],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:41,984],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:41,985],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:41,997],[ERROR],[TestRunnerThread],11,0,User1,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,008],[ERROR],[TestRunnerThread],0,0,User2,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:42,011],[ERROR],[TestRunnerThread],0,0,User3,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,015],[ERROR],[TestRunnerThread],0,0,User4,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:42,017],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,018],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,020],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:42,020],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:42,022],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,022],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,024],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:42,025],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT COUNT(*) FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:42,059],[INFO ],[TestRunnerThread],27,31,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,060],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,062],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,062],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,065],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,065],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,067],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,068],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,079],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,079],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,081],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,081],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,083],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,084],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,086],[ERROR],[TestRunnerThread],0,0,User4,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,097],[INFO ],[TestRunnerThread],1,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,100],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,102],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,103],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,105],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,105],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,107],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,108],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,119],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,119],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,123],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,124],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,126],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,126],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,128],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,172],[INFO ],[TestRunnerThread],28,16,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE CompanyName <> @P1 ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,173],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE CompanyName <> @P1 ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,183],[INFO ],[TestRunnerThread],4,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,184],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,187],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE CompanyName <> @P1 ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,187],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE CompanyName <> @P1 ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,189],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,190],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,202],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE CompanyName <> @P1 ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,202],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE CompanyName <> @P1 ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,204],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,205],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,207],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE CompanyName <> @P1 ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,207],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE CompanyName <> @P1 ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,209],[ERROR],[TestRunnerThread],0,0,User4,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers ORDER BY ShipperID ASC  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,228],[INFO ],[TestRunnerThread],9,16,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,228],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,231],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,231],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,233],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,234],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,236],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,236],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,250],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,250],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,252],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,253],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,256],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,257],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,259],[ERROR],[TestRunnerThread],0,0,User4,[commandText]:SELECT * FROM Shippers [commandParameter]:
+[2014/06/27 15:47:42,270],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=1,
+[2014/06/27 15:47:42,273],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=1,
+[2014/06/27 15:47:42,279],[INFO ],[TestRunnerThread],2,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1  [commandParameter]:P1=1,
+[2014/06/27 15:47:42,280],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1  [commandParameter]:P1=1,
+[2014/06/27 15:47:42,282],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=1,
+[2014/06/27 15:47:42,283],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=1,
+[2014/06/27 15:47:42,285],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1  [commandParameter]:P1=1,
+[2014/06/27 15:47:42,285],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1  [commandParameter]:P1=1,
+[2014/06/27 15:47:42,298],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=1,
+[2014/06/27 15:47:42,298],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=1,
+[2014/06/27 15:47:42,301],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1  [commandParameter]:P1=1,
+[2014/06/27 15:47:42,301],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1  [commandParameter]:P1=1,
+[2014/06/27 15:47:42,303],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=1,
+[2014/06/27 15:47:42,303],[INFO ],[TestRunnerThread],0,0,[commandText]:SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=1,
+[2014/06/27 15:47:42,306],[ERROR],[TestRunnerThread],0,0,User4,[commandText]: SELECT ShipperID, CompanyName, Phone FROM Shippers WHERE ShipperID = @P1  [commandParameter]:P1=1,
+[2014/06/27 15:47:42,317],[INFO ],[TestRunnerThread],1,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi,P3=00180099666,
+[2014/06/27 15:47:42,320],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi,P3=00180099666,
+[2014/06/27 15:47:42,323],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi1,P3=001800996662,
+[2014/06/27 15:47:42,324],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi1,P3=001800996662,
+[2014/06/27 15:47:42,327],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi2,P3=001800996626,
+[2014/06/27 15:47:42,327],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi2,P3=001800996626,
+[2014/06/27 15:47:42,331],[INFO ],[TestRunnerThread],0,16,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi4,P3=001800996626,
+[2014/06/27 15:47:42,331],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi4,P3=001800996626,
+[2014/06/27 15:47:42,344],[INFO ],[TestRunnerThread],1,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi5,P3=001800996626,
+[2014/06/27 15:47:42,346],[INFO ],[TestRunnerThread],1,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi5,P3=001800996626,
+[2014/06/27 15:47:42,348],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi6,P3=001800996626,
+[2014/06/27 15:47:42,349],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi6,P3=001800996626,
+[2014/06/27 15:47:42,351],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi7,P3=001800996626,
+[2014/06/27 15:47:42,352],[INFO ],[TestRunnerThread],0,0,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=Hitachi7,P3=001800996626,
+[2014/06/27 15:47:42,355],[ERROR],[TestRunnerThread],1,0,User4,[commandText]:INSERT INTO Shippers (CompanyName, Phone) VALUES (@P2, @P3) [commandParameter]:P2=null,P3=null,
+[2014/06/27 15:47:42,368],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 15:47:42,369],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 15:47:42,371],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 15:47:42,372],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 15:47:42,374],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 15:47:42,393],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 15:47:42,395],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 15:47:42,396],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 15:47:42,398],[ERROR],[TestRunnerThread],0,0,User5,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=null,
+[2014/06/27 15:47:42,402],[ERROR],[TestRunnerThread],0,0,User6,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=null,P3=20042360,
+[2014/06/27 15:47:42,439],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 15:47:42,439],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 15:47:42,441],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 15:47:42,441],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 15:47:42,444],[INFO ],[TestRunnerThread],1,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 15:47:42,444],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 15:47:42,448],[INFO ],[TestRunnerThread],2,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 15:47:42,448],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 15:47:42,450],[ERROR],[TestRunnerThread],0,0,User5,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=null,
+[2014/06/27 15:47:42,453],[ERROR],[TestRunnerThread],0,0,User6,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=null,P3=20042360,
+[2014/06/27 15:47:42,465],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 15:47:42,465],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 15:47:42,468],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 15:47:42,468],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 15:47:42,470],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 15:47:42,471],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 15:47:42,473],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 15:47:42,474],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 15:47:42,476],[ERROR],[TestRunnerThread],0,0,User5,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=null,
+[2014/06/27 15:47:42,482],[ERROR],[TestRunnerThread],0,0,User6,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=null,P3=20042360,
+[2014/06/27 15:47:42,495],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 15:47:42,496],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 15:47:42,498],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 15:47:42,498],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 15:47:42,500],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 15:47:42,501],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 15:47:42,504],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 15:47:42,505],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 15:47:42,507],[ERROR],[TestRunnerThread],0,0,User5,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=null,
+[2014/06/27 15:47:42,511],[ERROR],[TestRunnerThread],0,0,User6,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=null,P3=20042360,
+[2014/06/27 15:47:42,523],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 15:47:42,523],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 15:47:42,526],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 15:47:42,526],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 15:47:42,528],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 15:47:42,529],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 15:47:42,532],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 15:47:42,532],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 15:47:42,535],[ERROR],[TestRunnerThread],0,0,User5,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=null,
+[2014/06/27 15:47:42,538],[ERROR],[TestRunnerThread],0,0,User6,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=null,P3=20042360,
+[2014/06/27 15:47:42,550],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 15:47:42,551],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 15:47:42,553],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 15:47:42,553],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 15:47:42,555],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 15:47:42,556],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 15:47:42,558],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 15:47:42,559],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 15:47:42,561],[ERROR],[TestRunnerThread],0,0,User5,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=null,
+[2014/06/27 15:47:42,565],[ERROR],[TestRunnerThread],0,16,User6,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=null,P3=20042360,
+[2014/06/27 15:47:42,579],[ERROR],[TestRunnerThread],0,0,User1,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 15:47:42,582],[ERROR],[TestRunnerThread],0,0,User2,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 15:47:42,585],[ERROR],[TestRunnerThread],0,0,User3,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 15:47:42,589],[ERROR],[TestRunnerThread],0,0,User4,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 15:47:42,592],[ERROR],[TestRunnerThread],0,0,User5,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=null,
+[2014/06/27 15:47:42,595],[ERROR],[TestRunnerThread],0,0,User6,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=null,P3=20042360,
+[2014/06/27 15:47:42,608],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 15:47:42,608],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=125987,
+[2014/06/27 15:47:42,611],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 15:47:42,611],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=2,P2=Company2_update,P3=987456,
+[2014/06/27 15:47:42,617],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 15:47:42,618],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=,P3=125987,
+[2014/06/27 15:47:42,622],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 15:47:42,622],[INFO ],[TestRunnerThread],0,0,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=3,P2=Company3_update,P3=,
+[2014/06/27 15:47:42,625],[ERROR],[TestRunnerThread],0,0,User5,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=Company1_update,P3=null,
+[2014/06/27 15:47:42,628],[ERROR],[TestRunnerThread],0,0,User6,[commandText]:UPDATE Shippers SET CompanyName = @P2, Phone = @P3 WHERE ShipperID = @P1 [commandParameter]:P1=1,P2=null,P3=20042360,
+[2014/06/27 15:47:42,644],[INFO ],[TestRunnerThread],1,0,[commandText]:DELETE FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=4,
+[2014/06/27 15:47:42,644],[INFO ],[TestRunnerThread],0,0,[commandText]:DELETE FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=4,
+[2014/06/27 15:47:42,648],[INFO ],[TestRunnerThread],1,0,[commandText]:DELETE FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=5,
+[2014/06/27 15:47:42,648],[INFO ],[TestRunnerThread],0,0,[commandText]:DELETE FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=5,
+[2014/06/27 15:47:42,653],[INFO ],[TestRunnerThread],1,0,[commandText]:DELETE FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=6,
+[2014/06/27 15:47:42,653],[INFO ],[TestRunnerThread],0,0,[commandText]:DELETE FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=6,
+[2014/06/27 15:47:42,656],[INFO ],[TestRunnerThread],1,0,[commandText]:DELETE FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=7,
+[2014/06/27 15:47:42,657],[INFO ],[TestRunnerThread],0,0,[commandText]:DELETE FROM Shippers WHERE ShipperID = @P1 [commandParameter]:P1=7,
+[2014/06/27 15:47:42,703],[INFO ],[TestRunnerThread],16,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM shippers WHERE CompanyName IS NOT NULL AND ShipperID IN (SELECT Distinct(ShipperID) FROM shippers) ) AS s ON o.shipvia = s.shipperid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL AND OrderID IN (SELECT Distinct(OrderID) FROM [order details]) ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL AND ProductID IN (SELECT Distinct(ProductID) FROM products) ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 15:47:42,715],[INFO ],[TestRunnerThread],11,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM shippers WHERE CompanyName IS NOT NULL AND ShipperID IN (SELECT Distinct(ShipperID) FROM shippers) ) AS s ON o.shipvia = s.shipperid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL AND OrderID IN (SELECT Distinct(OrderID) FROM [order details]) ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL AND ProductID IN (SELECT Distinct(ProductID) FROM products) ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 15:47:42,740],[INFO ],[TestRunnerThread],22,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM shippers WHERE CompanyName IS NOT NULL AND ShipperID IN (SELECT Distinct(ShipperID) FROM shippers) ) AS s ON o.shipvia = s.shipperid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL AND OrderID IN (SELECT Distinct(OrderID) FROM [order details]) ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL AND ProductID IN (SELECT Distinct(ProductID) FROM products) ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 15:47:42,752],[INFO ],[TestRunnerThread],11,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM shippers WHERE CompanyName IS NOT NULL AND ShipperID IN (SELECT Distinct(ShipperID) FROM shippers) ) AS s ON o.shipvia = s.shipperid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL AND OrderID IN (SELECT Distinct(OrderID) FROM [order details]) ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL AND ProductID IN (SELECT Distinct(ProductID) FROM products) ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 15:47:42,766],[INFO ],[TestRunnerThread],12,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM shippers WHERE CompanyName IS NOT NULL AND ShipperID IN (SELECT Distinct(ShipperID) FROM shippers) ) AS s ON o.shipvia = s.shipperid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL AND OrderID IN (SELECT Distinct(OrderID) FROM [order details]) ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL AND ProductID IN (SELECT Distinct(ProductID) FROM products) ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 15:47:42,778],[INFO ],[TestRunnerThread],11,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM shippers WHERE CompanyName IS NOT NULL AND ShipperID IN (SELECT Distinct(ShipperID) FROM shippers) ) AS s ON o.shipvia = s.shipperid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL AND OrderID IN (SELECT Distinct(OrderID) FROM [order details]) ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL AND ProductID IN (SELECT Distinct(ProductID) FROM products) ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 15:47:42,795],[INFO ],[TestRunnerThread],10,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 15:47:42,808],[INFO ],[TestRunnerThread],12,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 15:47:42,820],[INFO ],[TestRunnerThread],10,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 15:47:42,830],[INFO ],[TestRunnerThread],9,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 15:47:42,842],[INFO ],[TestRunnerThread],10,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 15:47:42,851],[INFO ],[TestRunnerThread],9,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN (SELECT * FROM [order details] WHERE ProductID IS NOT NULL ) AS od ON o.orderid = od.orderid INNER JOIN (SELECT * FROM products WHERE ProductName IS NOT NULL ) AS p ON od.productid = p.productid INNER JOIN (SELECT * FROM categories WHERE CategoryName IS NOT NULL AND CategoryID IN (SELECT Distinct(CategoryID) FROM categories) ) AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC  [commandParameter]:P1=test,P2=test,
+[2014/06/27 15:47:42,879],[INFO ],[TestRunnerThread],8,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P2=test,
+[2014/06/27 15:47:42,890],[INFO ],[TestRunnerThread],10,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P2=test,
+[2014/06/27 15:47:42,901],[INFO ],[TestRunnerThread],8,16,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P2=test,
+[2014/06/27 15:47:42,909],[INFO ],[TestRunnerThread],8,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P2=test,
+[2014/06/27 15:47:42,923],[INFO ],[TestRunnerThread],8,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P2=test,
+[2014/06/27 15:47:42,932],[INFO ],[TestRunnerThread],8,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P2=test,
+[2014/06/27 15:47:42,956],[INFO ],[TestRunnerThread],4,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,960],[INFO ],[TestRunnerThread],4,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,967],[INFO ],[TestRunnerThread],4,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,971],[INFO ],[TestRunnerThread],4,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,977],[INFO ],[TestRunnerThread],4,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P1=test,
+[2014/06/27 15:47:42,981],[INFO ],[TestRunnerThread],4,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト（片方落とす））  [commandParameter]:P1=test,
+[2014/06/27 15:47:43,028],[INFO ],[TestRunnerThread],28,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト）  [commandParameter]:P1=test,P2=test1,
+[2014/06/27 15:47:43,038],[INFO ],[TestRunnerThread],9,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト）  [commandParameter]:P1=test,P2=test1,
+[2014/06/27 15:47:43,049],[INFO ],[TestRunnerThread],9,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト）  [commandParameter]:P1=test,P2=test1,
+[2014/06/27 15:47:43,059],[INFO ],[TestRunnerThread],9,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト）  [commandParameter]:P1=test,P2=test1,
+[2014/06/27 15:47:43,071],[INFO ],[TestRunnerThread],9,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト）  [commandParameter]:P1=test,P2=test1,
+[2014/06/27 15:47:43,080],[INFO ],[TestRunnerThread],9,0,[commandText]: SELECT DISTINCT ctm.companyname, ctm.contactname, ctm.contacttitle FROM orders AS o INNER JOIN customers AS ctm ON o.customerid = ctm.customerid INNER JOIN shippers AS s ON o.shipvia = s.shipperid INNER JOIN [order details] AS od ON o.orderid = od.orderid INNER JOIN products AS p ON od.productid = p.productid INNER JOIN categories AS cgy ON p.categoryid = cgy.categoryid ORDER BY ctm.[CompanyName] ASC -- テストケース4（JOINタグのテスト）  [commandParameter]:P1=test,P2=test1,
+[2014/06/27 15:47:43,087],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IN(@PLIST_1, @PLIST_2, @PLIST_3, @PLIST_4) -- LISTタグのテスト  [commandParameter]:PLIST_1=1,PLIST_2=2,PLIST_3=3,PLIST_4=4,
+[2014/06/27 15:47:43,088],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IN(@PLIST_1, @PLIST_2, @PLIST_3, @PLIST_4) -- LISTタグのテスト  [commandParameter]:PLIST_1=1,PLIST_2=2,PLIST_3=3,PLIST_4=4,
+[2014/06/27 15:47:43,090],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IN(@PLIST_1, @PLIST_2, @PLIST_3, @PLIST_4) -- LISTタグのテスト  [commandParameter]:PLIST_1=1,PLIST_2=2,PLIST_3=3,PLIST_4=4,
+[2014/06/27 15:47:43,091],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IN(@PLIST_1, @PLIST_2, @PLIST_3, @PLIST_4) -- LISTタグのテスト  [commandParameter]:PLIST_1=1,PLIST_2=2,PLIST_3=3,PLIST_4=4,
+[2014/06/27 15:47:43,093],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IN(@PLIST_1, @PLIST_2, @PLIST_3, @PLIST_4) -- LISTタグのテスト  [commandParameter]:PLIST_1=1,PLIST_2=2,PLIST_3=3,PLIST_4=4,
+[2014/06/27 15:47:43,093],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IN(@PLIST_1, @PLIST_2, @PLIST_3, @PLIST_4) -- LISTタグのテスト  [commandParameter]:PLIST_1=1,PLIST_2=2,PLIST_3=3,PLIST_4=4,
+[2014/06/27 15:47:43,099],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IS NULL -- IF-ELSEタグ（name属性）のテスト  [commandParameter]:
+[2014/06/27 15:47:43,100],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IS NULL -- IF-ELSEタグ（name属性）のテスト  [commandParameter]:
+[2014/06/27 15:47:43,102],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IS NULL -- IF-ELSEタグ（name属性）のテスト  [commandParameter]:
+[2014/06/27 15:47:43,103],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IS NULL -- IF-ELSEタグ（name属性）のテスト  [commandParameter]:
+[2014/06/27 15:47:43,105],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IS NULL -- IF-ELSEタグ（name属性）のテスト  [commandParameter]:
+[2014/06/27 15:47:43,105],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM REGION WHERE RegionID IS NULL -- IF-ELSEタグ（name属性）のテスト  [commandParameter]:
+[2014/06/27 15:47:43,122],[ERROR],[TestRunnerThread],9,0,User10,[commandText]:<?xml version="1.0" encoding="UTF-8" ?> <ROOT> SELECT * FROM REGION WHERE <IF name="">RegionID IS NOT NULL<ELSE>RegionID IS NULL</ELSE></IF> <PARAM> P, boolean, true </PARAM> -- IF-ELSEタグ（name属性なし）のテスト（name属性が空） </ROOT>  [commandParameter]:
+[2014/06/27 15:47:43,126],[ERROR],[TestRunnerThread],1,0,User10,[commandText]:<?xml version="1.0" encoding="UTF-8" ?> <ROOT> SELECT * FROM REGION WHERE <IF name="">RegionID IS NOT NULL<ELSE>RegionID IS NULL</ELSE></IF> <PARAM> P, boolean, true </PARAM> -- IF-ELSEタグ（name属性なし）のテスト（name属性が空） </ROOT>  [commandParameter]:
+[2014/06/27 15:47:43,132],[ERROR],[TestRunnerThread],1,0,User10,[commandText]:<?xml version="1.0" encoding="UTF-8" ?> <ROOT> SELECT * FROM REGION WHERE <IF name="">RegionID IS NOT NULL<ELSE>RegionID IS NULL</ELSE></IF> <PARAM> P, boolean, true </PARAM> -- IF-ELSEタグ（name属性なし）のテスト（name属性が空） </ROOT>  [commandParameter]:
+[2014/06/27 15:47:43,145],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:43,145],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:43,149],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:43,149],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:43,155],[INFO ],[TestRunnerThread],3,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 15:47:43,155],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 15:47:43,158],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 15:47:43,159],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 15:47:43,171],[INFO ],[TestRunnerThread],9,0,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 15:47:43,177],[INFO ],[TestRunnerThread],6,16,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 15:47:43,188],[INFO ],[TestRunnerThread],6,0,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 15:47:43,197],[INFO ],[TestRunnerThread],8,16,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 15:47:43,202],[INFO ],[TestRunnerThread],0,0,[commandText]:  [commandParameter]:
+[2014/06/27 15:47:43,203],[INFO ],[TestRunnerThread],0,0,[commandText]:  [commandParameter]:
+[2014/06/27 15:47:43,205],[INFO ],[TestRunnerThread],0,0,[commandText]:  [commandParameter]:
+[2014/06/27 15:47:43,206],[INFO ],[TestRunnerThread],0,0,[commandText]:  [commandParameter]:
+[2014/06/27 15:47:43,210],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:43,211],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:43,217],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:43,217],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:43,222],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 15:47:43,223],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 15:47:43,229],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 15:47:43,229],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 15:47:43,240],[INFO ],[TestRunnerThread],6,16,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 15:47:43,248],[INFO ],[TestRunnerThread],7,0,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 15:47:43,261],[INFO ],[TestRunnerThread],8,0,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 15:47:43,267],[INFO ],[TestRunnerThread],6,16,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 15:47:43,281],[INFO ],[TestRunnerThread],8,0,[commandText]: SELECT * FROM [Order Details]  [commandParameter]:
+[2014/06/27 15:47:43,288],[INFO ],[TestRunnerThread],7,16,[commandText]: SELECT * FROM [Order Details]  [commandParameter]:
+[2014/06/27 15:47:43,300],[INFO ],[TestRunnerThread],7,16,[commandText]: SELECT * FROM [Order Details]  [commandParameter]:
+[2014/06/27 15:47:43,309],[INFO ],[TestRunnerThread],8,0,[commandText]: SELECT * FROM [Order Details]  [commandParameter]:
+[2014/06/27 15:47:43,312],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:43,313],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:43,316],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:43,317],[INFO ],[TestRunnerThread],0,0,[commandText]: SELECT * FROM Shippers  [commandParameter]:
+[2014/06/27 15:47:43,319],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 15:47:43,320],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 15:47:43,323],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 15:47:43,324],[INFO ],[TestRunnerThread],1,0,[commandText]: SELECT * FROM Products  [commandParameter]:
+[2014/06/27 15:47:43,332],[INFO ],[TestRunnerThread],6,16,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 15:47:43,338],[INFO ],[TestRunnerThread],6,0,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 15:47:43,349],[INFO ],[TestRunnerThread],8,16,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 15:47:43,356],[INFO ],[TestRunnerThread],6,0,[commandText]: SELECT * FROM Orders  [commandParameter]:
+[2014/06/27 15:47:43,365],[INFO ],[TestRunnerThread],7,16,[commandText]: SELECT * FROM [Order Details]  [commandParameter]:
+[2014/06/27 15:47:43,372],[INFO ],[TestRunnerThread],6,0,[commandText]: SELECT * FROM [Order Details]  [commandParameter]:
+[2014/06/27 15:47:43,381],[INFO ],[TestRunnerThread],7,16,[commandText]: SELECT * FROM [Order Details]  [commandParameter]:
+[2014/06/27 15:47:43,390],[INFO ],[TestRunnerThread],8,0,[commandText]: SELECT * FROM [Order Details]  [commandParameter]:

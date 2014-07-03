@@ -12,6 +12,7 @@
 //*  Date:        Author:        Comments:
 //*  ----------  ----------------  -------------------------------------------------
 //*  06/24/2014   Rituparna & Santosh   Testcode development for CRUDTest(Public classes).
+//*  07/02/2014   Santosh               Added code and modified test cases to prevent database changes after running the test cases
 //**********************************************************************************
 
 // 型情報
@@ -49,42 +50,13 @@ using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
-using MyType;
 /// <summary>
 /// LayerB の概要の説明です
 /// </summary>
 public class LayerB : MyFcBaseLogic
 {
-    #region テンプレ
-
-    /// <summary>業務処理を実装</summary>
-    /// <param name="testParameter">引数クラス</param>
-    private void UOC_メソッド名(TestParameterValue testParameter)
-    { //メソッド引数にBaseParameterValueの派生の型を定義可能。
-
-        // 戻り値クラスを生成して、事前に戻り地に設定しておく。
-        TestReturnValue testReturn = new TestReturnValue();
-        this.ReturnValue = testReturn;
-
-        // ↓業務処理-----------------------------------------------------
-
-        // 個別Dao
-        LayerD myDao = new LayerD(this.GetDam());
-        //myDao.xxxx(testParameter, ref testReturn);
-
-        // 共通Dao
-        CmnDao cmnDao = new CmnDao(this.GetDam());
-        cmnDao.ExecSelectScalar();
-
-        // ↑業務処理-----------------------------------------------------
-    }
-
-    #endregion
-
-    #region UOCメソッド
 
     #region SelectCount
-
     /// <summary>業務処理を実装</summary>
     /// <param name="testParameter">引数クラス</param>
     private void UOC_SelectCount(TestParameterValue testParameter)
@@ -97,8 +69,10 @@ public class LayerB : MyFcBaseLogic
 
         switch ((testParameter.ActionType.Split('%'))[1])
         {
+            case "generate": // 自動生成Daoを使用する。             
+                break;
             case "common": // 共通Daoを使用する。
-
+            default:
                 // 共通Daoを生成
                 CmnDao cmnDao = new CmnDao(this.GetDam());
 
@@ -120,22 +94,6 @@ public class LayerB : MyFcBaseLogic
                 testReturn.Obj = cmnDao.ExecSelectScalar();
 
                 break;
-
-            case "generate": // 自動生成Daoを使用する。
-
-                // 自動生成Daoを生成
-                DaoShippers genDao = new DaoShippers(this.GetDam());
-
-                // 共通Daoを実行
-                // 戻り値を設定
-                testReturn.Obj = genDao.D5_SelCnt();
-
-                break;
-
-            default: // 個別Daoを使用する。
-                LayerD myDao = new LayerD(this.GetDam());
-                myDao.SelectCount(testParameter, testReturn);
-                break;
         }
 
         // ↑業務処理-----------------------------------------------------
@@ -147,7 +105,6 @@ public class LayerB : MyFcBaseLogic
     #endregion
 
     #region SelectAll_DT
-
     /// <summary>業務処理を実装</summary>
     /// <param name="testParameter">引数クラス</param>
     private void UOC_SelectAll_DT(TestParameterValue testParameter)
@@ -161,8 +118,11 @@ public class LayerB : MyFcBaseLogic
 
         switch ((testParameter.ActionType.Split('%'))[1])
         {
-            case "common": // 共通Daoを使用する。
+            case "generate": // 自動生成Daoを使用する。              
+                break;
 
+            case "common": // 共通Daoを使用する。
+            default:
                 // 共通Daoを生成
                 CmnDao cmnDao = new CmnDao(this.GetDam());
 
@@ -189,26 +149,6 @@ public class LayerB : MyFcBaseLogic
                 testReturn.Obj = dt;
 
                 break;
-
-            case "generate": // 自動生成Daoを使用する。
-
-                // 自動生成Daoを生成
-                DaoShippers genDao = new DaoShippers(this.GetDam());
-
-                // 戻り値 dt
-                dt = new DataTable();
-
-                // 自動生成Daoを実行
-                genDao.D2_Select(dt);
-
-                // 戻り値を設定
-                testReturn.Obj = (DataTable)dt;
-                break;
-
-            default: // 個別Daoを使用する。
-                LayerD myDao = new LayerD(this.GetDam());
-                myDao.SelectAll_DT(testParameter, testReturn);
-                break;
         }
 
         // ↑業務処理-----------------------------------------------------
@@ -220,7 +160,6 @@ public class LayerB : MyFcBaseLogic
     #endregion
 
     #region SelectAll_DS
-
     /// <summary>業務処理を実装</summary>
     /// <param name="testParameter">引数クラス</param>
     private void UOC_SelectAll_DS(TestParameterValue testParameter)
@@ -234,8 +173,10 @@ public class LayerB : MyFcBaseLogic
 
         switch ((testParameter.ActionType.Split('%'))[1])
         {
+            case "generate": // 自動生成Daoを使用する。          
+                break;
             case "common": // 共通Daoを使用する。
-
+            default:
                 // 共通Daoを生成
                 CmnDao cmnDao = new CmnDao(this.GetDam());
 
@@ -262,27 +203,6 @@ public class LayerB : MyFcBaseLogic
                 testReturn.Obj = ds;
 
                 break;
-
-            case "generate": // 自動生成Daoを使用する。
-
-                // 自動生成Daoを生成
-                DaoShippers genDao = new DaoShippers(this.GetDam());
-
-                // 戻り値 ds
-                ds = new DataSet();
-                ds.Tables.Add(new DataTable());
-
-                // 自動生成Daoを実行
-                genDao.D2_Select(ds.Tables[0]);
-
-                // 戻り値を設定
-                testReturn.Obj = ds;
-                break;
-
-            default: // 個別Daoを使用する。
-                LayerD myDao = new LayerD(this.GetDam());
-                myDao.SelectAll_DS(testParameter, testReturn);
-                break;
         }
 
         // ↑業務処理-----------------------------------------------------
@@ -294,7 +214,6 @@ public class LayerB : MyFcBaseLogic
     #endregion
 
     #region SelectAll_DR
-
     /// <summary>業務処理を実装</summary>
     /// <param name="testParameter">引数クラス</param>
     private void UOC_SelectAll_DR(TestParameterValue testParameter)
@@ -308,8 +227,10 @@ public class LayerB : MyFcBaseLogic
 
         switch ((testParameter.ActionType.Split('%'))[1])
         {
+            case "generate": // 自動生成Daoを使用する。
+                break;
             case "common": // 共通Daoを使用する。
-
+            default:
                 // 共通Daoを生成
                 CmnDao cmnDao = new CmnDao(this.GetDam());
 
@@ -356,29 +277,6 @@ public class LayerB : MyFcBaseLogic
                 testReturn.Obj = dt;
 
                 break;
-
-            case "generate": // 自動生成Daoを使用する。
-
-                // DRのI/Fなし
-
-                // 自動生成Daoを生成
-                DaoShippers genDao = new DaoShippers(this.GetDam());
-
-                // 戻り値 dt
-                dt = new DataTable();
-
-                // 自動生成Daoを実行
-                genDao.D2_Select(dt);
-
-                // 戻り値を設定
-                testReturn.Obj = (DataTable)dt;
-
-                break;
-
-            default: // 個別Daoを使用する。
-                LayerD myDao = new LayerD(this.GetDam());
-                myDao.SelectAll_DR(testParameter, testReturn);
-                break;
         }
 
         // ↑業務処理-----------------------------------------------------
@@ -390,7 +288,6 @@ public class LayerB : MyFcBaseLogic
     #endregion
 
     #region SelectAll_DSQL
-
     /// <summary>業務処理を実装</summary>
     /// <param name="testParameter">引数クラス</param>
     private void UOC_SelectAll_DSQL(TestParameterValue testParameter)
@@ -404,7 +301,7 @@ public class LayerB : MyFcBaseLogic
         switch ((testParameter.ActionType.Split('%'))[1])
         {
             case "common": // 共通Daoを使用する。
-
+            default:
                 // 共通Daoを生成
                 CmnDao cmnDao = new CmnDao(this.GetDam());
 
@@ -468,17 +365,7 @@ public class LayerB : MyFcBaseLogic
                 testReturn.Obj = dt;
 
                 break;
-
-            //case "generate": // 自動生成Daoを使用する。
-            //    // 当該SQLなし
-            //    break;
-
-            default: // 個別Daoを使用する。
-                LayerD myDao = new LayerD(this.GetDam());
-                myDao.SelectAll_DSQL(testParameter, testReturn);
-                break;
         }
-
         // ↑業務処理-----------------------------------------------------
 
         // ロールバックのテスト
@@ -488,7 +375,6 @@ public class LayerB : MyFcBaseLogic
     #endregion
 
     #region Select
-
     /// <summary>業務処理を実装</summary>
     /// <param name="testParameter">引数クラス</param>
     private void UOC_Select(TestParameterValue testParameter)
@@ -502,8 +388,10 @@ public class LayerB : MyFcBaseLogic
 
         switch ((testParameter.ActionType.Split('%'))[1])
         {
+            case "generate":
+                break;
             case "common": // 共通Daoを使用する。
-
+            default:
                 // 共通Daoを生成
                 CmnDao cmnDao = new CmnDao(this.GetDam());
 
@@ -549,46 +437,6 @@ public class LayerB : MyFcBaseLogic
                 testReturn.Phone = (string)dt.Rows[0].ItemArray.GetValue(2);
 
                 break;
-
-            case "generate": // 自動生成Daoを使用する。
-
-                // 自動生成Daoを生成
-                DaoShippers genDao = new DaoShippers(this.GetDam());
-
-                // パラメタに対して、動的に値を設定する。
-                genDao.PK_ShipperID = testParameter.ShipperID;
-
-                // 戻り値 dt
-                dt = new DataTable();
-
-                // 自動生成Daoを実行
-                genDao.S2_Select(dt);
-
-                // キャストの対策コードを挿入
-
-                // ・SQLの場合、ShipperIDのintがInt32型にマップされる。
-                // ・ODPの場合、ShipperIDのNUMBERがInt64型にマップされる。
-                // ・DB2の場合、ShipperIDのDECIMALがｘｘｘ型にマップされる。
-                if (dt.Rows[0].ItemArray.GetValue(0).GetType().ToString() == "System.Int32")
-                {
-                    // Int32なのでキャスト
-                    testReturn.ShipperID = (int)dt.Rows[0].ItemArray.GetValue(0);
-                }
-                else
-                {
-                    // それ以外の場合、一度、文字列に変換してInt32.Parseする。
-                    testReturn.ShipperID = int.Parse(dt.Rows[0].ItemArray.GetValue(0).ToString());
-                }
-
-                testReturn.CompanyName = (string)dt.Rows[0].ItemArray.GetValue(1);
-                testReturn.Phone = (string)dt.Rows[0].ItemArray.GetValue(2);
-
-                break;
-
-            default: // 個別Daoを使用する。
-                LayerD myDao = new LayerD(this.GetDam());
-                myDao.Select(testParameter, testReturn);
-                break;
         }
 
         // ↑業務処理-----------------------------------------------------
@@ -600,7 +448,6 @@ public class LayerB : MyFcBaseLogic
     #endregion
 
     #region Insert
-
     /// <summary>業務処理を実装</summary>
     /// <param name="testParameter">引数クラス</param>
     private void UOC_Insert(TestParameterValue testParameter)
@@ -614,7 +461,7 @@ public class LayerB : MyFcBaseLogic
         switch ((testParameter.ActionType.Split('%'))[1])
         {
             case "common": // 共通Daoを使用する。
-
+            default:
                 // 共通Daoを生成
                 CmnDao cmnDao = new CmnDao(this.GetDam());
 
@@ -629,26 +476,6 @@ public class LayerB : MyFcBaseLogic
                 testReturn.Obj = cmnDao.ExecInsUpDel_NonQuery();
 
                 break;
-
-            case "generate": // 自動生成Daoを使用する。
-
-                // 自動生成Daoを生成
-                DaoShippers genDao = new DaoShippers(this.GetDam());
-
-                // パラメタに対して、動的に値を設定する。
-                genDao.CompanyName = testParameter.CompanyName;
-                genDao.Phone = testParameter.Phone;
-
-                // 自動生成Daoを実行
-                // 戻り値を設定
-                testReturn.Obj = genDao.D1_Insert();
-
-                break;
-
-            default: // 個別Daoを使用する。
-                LayerD myDao = new LayerD(this.GetDam());
-                myDao.Insert(testParameter, testReturn);
-                break;
         }
 
         // ↑業務処理-----------------------------------------------------
@@ -660,7 +487,6 @@ public class LayerB : MyFcBaseLogic
     #endregion
 
     #region Update
-
     /// <summary>業務処理を実装</summary>
     /// <param name="testParameter">引数クラス</param>
     private void UOC_Update(TestParameterValue testParameter)
@@ -673,8 +499,10 @@ public class LayerB : MyFcBaseLogic
 
         switch ((testParameter.ActionType.Split('%'))[1])
         {
+            case "generate": // 自動生成Daoを使用する。           
+                break;
             case "common": // 共通Daoを使用する。
-
+            default:
                 // 共通Daoを生成
                 CmnDao cmnDao = new CmnDao(this.GetDam());
 
@@ -701,29 +529,7 @@ public class LayerB : MyFcBaseLogic
                 testReturn.Obj = cmnDao.ExecInsUpDel_NonQuery();
 
                 break;
-
-            case "generate": // 自動生成Daoを使用する。
-
-                // 自動生成Daoを生成
-                DaoShippers genDao = new DaoShippers(this.GetDam());
-
-                // パラメタに対して、動的に値を設定する。
-                genDao.PK_ShipperID = testParameter.ShipperID;
-                genDao.Set_CompanyName_forUPD = testParameter.CompanyName;
-                genDao.Set_Phone_forUPD = testParameter.Phone;
-
-                // 自動生成Daoを実行
-                // 戻り値を設定
-                testReturn.Obj = genDao.S3_Update();
-
-                break;
-
-            default: // 個別Daoを使用する。
-                LayerD myDao = new LayerD(this.GetDam());
-                myDao.Update(testParameter, testReturn);
-                break;
         }
-
         // ↑業務処理-----------------------------------------------------
 
         // ロールバックのテスト
@@ -733,7 +539,6 @@ public class LayerB : MyFcBaseLogic
     #endregion
 
     #region Delete
-
     /// <summary>業務処理を実装</summary>
     /// <param name="testParameter">引数クラス</param>
     private void UOC_Delete(TestParameterValue testParameter)
@@ -746,8 +551,11 @@ public class LayerB : MyFcBaseLogic
 
         switch ((testParameter.ActionType.Split('%'))[1])
         {
-            case "common": // 共通Daoを使用する。
+            case "generate": // 自動生成Daoを使用する。
+                break;
 
+            case "common": // 共通Daoを使用する。
+            default:
                 // 共通Daoを生成
                 CmnDao cmnDao = new CmnDao(this.GetDam());
 
@@ -772,25 +580,6 @@ public class LayerB : MyFcBaseLogic
                 testReturn.Obj = cmnDao.ExecInsUpDel_NonQuery();
 
                 break;
-
-            case "generate": // 自動生成Daoを使用する。
-
-                // 自動生成Daoを生成
-                DaoShippers genDao = new DaoShippers(this.GetDam());
-
-                // パラメタに対して、動的に値を設定する。
-                genDao.PK_ShipperID = testParameter.ShipperID;
-
-                // 自動生成Daoを実行
-                // 戻り値を設定
-                testReturn.Obj = genDao.S4_Delete();
-
-                break;
-
-            default: // 個別Daoを使用する。
-                LayerD myDao = new LayerD(this.GetDam());
-                myDao.Delete(testParameter, testReturn);
-                break;
         }
 
         // ↑業務処理-----------------------------------------------------
@@ -800,10 +589,6 @@ public class LayerB : MyFcBaseLogic
     }
 
     #endregion
-
-    #endregion
-
-    #region New Test Cases
 
     #region UOC_SelectJoin1
     /// <summary>
@@ -818,13 +603,17 @@ public class LayerB : MyFcBaseLogic
 
         // ↓業務処理-----------------------------------------------------
 
+        // 共通Daoを生成
+        CmnDao cmnDao = new CmnDao(this.GetDam());
+
+        string orderColumn = "";
+        string orderSequence = "";
         switch ((testParameter.ActionType.Split('%'))[1])
         {
-            case "common": // 共通Daoを使用する。
-
-                // 共通Daoを生成
-                CmnDao cmnDao = new CmnDao(this.GetDam());
-
+            case "generate":
+                break;
+            case "common": // 共通Daoを使用する。              
+            default:
                 switch ((testParameter.ActionType.Split('%'))[2])
                 {
                     case "static":
@@ -839,8 +628,7 @@ public class LayerB : MyFcBaseLogic
                 }
 
                 // ユーザ定義パラメタに対して、動的に値を設定する。
-                string orderColumn = "";
-                string orderSequence = "";
+
 
                 if (testParameter.OrderColumn == "c1")
                 {
@@ -899,21 +687,9 @@ public class LayerB : MyFcBaseLogic
                 // 戻り値を設定
                 testReturn.Obj = ds;
                 break;
-
-            //case "generate": // 自動生成Daoを使用する。
-            //    // 当該SQLなし
-            //    break;
-
-            default: // 個別Daoを使用する。
-                LayerD myDao = new LayerD(this.GetDam());
-                myDao.SelectJoin1(testParameter, testReturn);
-                break;
         }
-
-        // ↑業務処理-----------------------------------------------------
-
-        // ロールバックのテスト
         this.TestRollback(testParameter);
+
     }
     #endregion
 
@@ -932,8 +708,10 @@ public class LayerB : MyFcBaseLogic
 
         switch ((testParameter.ActionType.Split('%'))[1])
         {
+            case "generate":
+                break;
             case "common": // 共通Daoを使用する。
-
+            default:
                 // 共通Daoを生成
                 CmnDao cmnDao = new CmnDao(this.GetDam());
 
@@ -1014,10 +792,6 @@ public class LayerB : MyFcBaseLogic
                 testReturn.Obj = ds;
                 break;
 
-            default: // 個別Daoを使用する。
-                LayerD myDao = new LayerD(this.GetDam());
-                myDao.SelectJoin2(testParameter, testReturn);
-                break;
         }
         // ↑業務処理-----------------------------------------------------
 
@@ -1041,8 +815,10 @@ public class LayerB : MyFcBaseLogic
 
         switch ((testParameter.ActionType.Split('%'))[1])
         {
+            case "generate":
+                break;
             case "common": // 共通Daoを使用する。
-
+            default:
                 // 共通Daoを生成
                 CmnDao cmnDao = new CmnDao(this.GetDam());
 
@@ -1107,10 +883,6 @@ public class LayerB : MyFcBaseLogic
                 // 戻り値を設定
                 testReturn.Obj = ds;
                 break;
-            default: // 個別Daoを使用する。
-                LayerD myDao = new LayerD(this.GetDam());
-                myDao.TestSqlsvr4c(testParameter, testReturn);
-                break;
         }
 
         // ↑業務処理-----------------------------------------------------
@@ -1135,8 +907,10 @@ public class LayerB : MyFcBaseLogic
 
         switch ((testParameter.ActionType.Split('%'))[1])
         {
+            case "generate":
+                break;
             case "common": // 共通Daoを使用する。
-
+            default:
                 // 共通Daoを生成
                 CmnDao cmnDao = new CmnDao(this.GetDam());
 
@@ -1201,11 +975,6 @@ public class LayerB : MyFcBaseLogic
                 // 戻り値を設定
                 testReturn.Obj = ds;
                 break;
-
-            default: // 個別Daoを使用する。
-                LayerD myDao = new LayerD(this.GetDam());
-                myDao.TestSqlsvr4b(testParameter, testReturn);
-                break;
         }
 
         // ↑業務処理-----------------------------------------------------
@@ -1230,8 +999,10 @@ public class LayerB : MyFcBaseLogic
 
         switch ((testParameter.ActionType.Split('%'))[1])
         {
+            case "generate":
+                break;
             case "common": // 共通Daoを使用する。
-
+            default:
                 // 共通Daoを生成
                 CmnDao cmnDao = new CmnDao(this.GetDam());
 
@@ -1297,11 +1068,6 @@ public class LayerB : MyFcBaseLogic
                 // 戻り値を設定
                 testReturn.Obj = ds;
                 break;
-
-            default: // 個別Daoを使用する。
-                LayerD myDao = new LayerD(this.GetDam());
-                myDao.TestSqlsvr4a(testParameter, testReturn);
-                break;
         }
 
         // ↑業務処理-----------------------------------------------------
@@ -1327,8 +1093,10 @@ public class LayerB : MyFcBaseLogic
 
         switch ((testParameter.ActionType.Split('%'))[1])
         {
+            case "generate":
+                break;
             case "common": // 共通Daoを使用する。
-
+            default:
                 // 共通Daoを生成
                 CmnDao cmnDao = new CmnDao(this.GetDam());
 
@@ -1505,11 +1273,6 @@ public class LayerB : MyFcBaseLogic
                 // 自動生成Daoを実行
                 testReturn.Obj = dt;
                 break;
-
-            default: // 個別Daoを使用する。
-                LayerD myDao = new LayerD(this.GetDam());
-                myDao.SelectCase(testParameter, testReturn);
-                break;
         }
 
         // ↑業務処理-----------------------------------------------------
@@ -1518,6 +1281,7 @@ public class LayerB : MyFcBaseLogic
         this.TestRollback(testParameter);
     }
     #endregion
+
     #region UOC_check
     /// <summary>
     /// UOC_check Method
@@ -1533,8 +1297,10 @@ public class LayerB : MyFcBaseLogic
 
         switch ((testParameter.ActionType.Split('%'))[1])
         {
+            case "generate":
+                break;
             case "common": // 共通Daoを使用する。
-
+            default:
                 // 共通Daoを生成
                 CmnDao cmnDao = new CmnDao(this.GetDam());
 
@@ -1599,11 +1365,6 @@ public class LayerB : MyFcBaseLogic
                 // 戻り値を設定
                 testReturn.Obj = ds;
                 break;
-
-            default: // 個別Daoを使用する。
-                LayerD myDao = new LayerD(this.GetDam());
-                myDao.check(testParameter, testReturn);
-                break;
         }
 
         // ↑業務処理-----------------------------------------------------
@@ -1614,7 +1375,6 @@ public class LayerB : MyFcBaseLogic
     #endregion
 
     #region ロールバックのテスト
-
     /// <summary>ロールバックのテスト</summary>
     /// <param name="testParameter">引数クラス</param>
     private void TestRollback(TestParameterValue testParameter)
@@ -1685,5 +1445,50 @@ public class LayerB : MyFcBaseLogic
         testReturn.Obj = dt;
     }
     #endregion
+
+    #region Revert Database after Test case Run
+    /// <summary>
+    /// UOC_GetList Method to get the list of Shipper ID which are available before running test cases.
+    /// </summary>
+    /// <param name="testParameter">testParameter</param>
+    private void UOC_GetList(TestParameterValue testParameter)
+    {
+        TestReturnValue testReturn = new TestReturnValue();
+        this.ReturnValue = testReturn;
+        BaseDam bd = (BaseDam)this.GetDam();
+        bd.SetSqlByCommand(testParameter.ScreenId, CommandType.Text);
+        DataTable dt = new DataTable();
+        bd.ExecSelectFill_DT(dt);
+        testReturn.Obj = dt;
+    }
+    /// <summary>
+    /// UOC_GetDelete Method to Delete data added to shipper table after running test cases.
+    /// </summary>
+    /// <param name="testParameter">testParameter</param>
+    private void UOC_GetDelete(TestParameterValue testParameter)
+    {
+        TestReturnValue testReturn = new TestReturnValue();
+        this.ReturnValue = testReturn;
+        BaseDam bd = (BaseDam)this.GetDam();
+        bd.SetSqlByCommand(testParameter.ScreenId, CommandType.Text);
+        int dlt = bd.ExecInsUpDel_NonQuery();
+        testReturn.Obj = dlt;
+    }
+
+    /// <summary>
+    /// UOC_GetID Method to get the current Identity value from Shippers table before running the test cases.
+    /// </summary>
+    /// <param name="testParameter">testParameter</param>
+    private void UOC_GetID(TestParameterValue testParameter)
+    {
+        TestReturnValue testReturn = new TestReturnValue();
+        this.ReturnValue = testReturn;
+        BaseDam bd = (BaseDam)this.GetDam();
+        bd.SetSqlByCommand(testParameter.ScreenId, CommandType.Text);
+        DataTable dt = new DataTable();
+        bd.ExecSelectFill_DT(dt);
+        testReturn.Obj = dt.Rows[0].ItemArray.GetValue(0);
+    }
     #endregion
+
 }
