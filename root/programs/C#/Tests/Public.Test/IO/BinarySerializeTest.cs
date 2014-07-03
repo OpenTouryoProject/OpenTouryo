@@ -121,7 +121,7 @@ namespace Public.Test.IO
         /// TestCasesOf ObjectToBytesTest Method
         /// </summary>
         /// <param name="testCaseID">testCaseID</param>
-        ///<param name="objExpected">objActual</param>
+        ///<param name="objExpected">objExpected</param>
         [TestCaseSource("TestcasesOfObjectToBytesTest")]
         public void ObjectToBytesTest(string testCaseID, object objExpected)
         {
@@ -143,7 +143,7 @@ namespace Public.Test.IO
         /// TestCasesOf BytesToObjectTest Method
         /// </summary>
         /// <param name="testCaseID">testCaseID</param>
-        ///<param name="testCaseID">bytActual</param>
+        ///<param name="bytActual">bytActual</param>
         [TestCaseSource("TestcasesOfBytesToObjectTest")]
         public void BytesToObjectTest(string testCaseID, byte[] bytActual)
         {
@@ -165,7 +165,7 @@ namespace Public.Test.IO
         /// TestCasesOf DeepCloneTest Method
         /// </summary>
         /// <param name="testCaseID">testCaseID</param>
-        ///<param name="testCaseID">sourceObject</param>
+        ///<param name="sourceObject">sourceObject</param>
         [TestCaseSource("TestcasesOfDeepCloneTest")]
         public void DeepCloneTest(string testCaseID, object sourceObject)
         {
