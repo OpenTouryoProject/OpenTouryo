@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	SELECT * FROM PRODUCTS
+	WHERE
+	    CATEGORYID IN(SELECT CATEGORYID FROM CATEGORIES
+		WHERE
+			CATEGORYID IN(SELECT CATEGORYID FROM CATEGORIES
+				WHERE <IF name="ISNOTNULL1">CATEGORYID IS NOT NULL<ELSE>CATEGORYID IS NULL</ELSE></IF>)
+		    <IF name="ISNOTNULL2">AND CATEGORYID IS NOT NULL<ELSE>AND CATEGORYID IS NULL</ELSE></IF>)
+		<IF name="ISNOTNULL3">AND CATEGORYID IS NOT NULL<ELSE>AND CATEGORYID IS NULL</ELSE></IF>
+	    <LIST>AND CATEGORYID IN(@PLIST)</LIST>
+		AND UnitPrice = @up
+		AND UnitsInStock = @uis
+		AND UnitsOnOrder = @uoo
+		AND ReOrderLevel = @rol
+		AND DISCONTINUED = @bit
+	ORDER BY [<VAL name="COLUMN"/>] <VAL name="SEQUENCE"/>
+	<PARAM>
+		ISNOTNULL1, Boolean, true<DIV/>
+		ISNOTNULL2, Boolean, true<DIV/>
+		ISNOTNULL3, Boolean, true<DIV/>
+		PLIST, String, 1, 2, 3, 4, 5, 6, 7, 8<DIV/>
+		up, Decimal, 28.5<DIV/>
+		uis, String, 113<DIV/>
+		uoo, String, 0<DIV/>
+		rol, String, 25<DIV/>
+		bit, Boolean, false<DIV/>
+		COLUMN, SUPPLIERID<DIV/>
+		SEQUENCE, DESC<DIV/>
+	</PARAM>
+	-- テストケース2（色々なデータ型をテストするパターン）
+</ROOT>
