@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoT_CurrentWorkflow_S2_Select
+  -- 2014/7/4 日立 太郎
+  SELECT 
+    [WorkflowControlNo],
+    [HistoryNo],
+    [WfPositionId],
+    [FromUserId],
+    [FromUserInfo],
+    [ActionType],
+    [ToUserId],
+    [ToUserInfo],
+    [NextWfPositionId],
+    [ReserveArea],
+    [ExclusiveKey],
+    [ReplyDeadline],
+    [CreatedDate],
+    [AcceptanceDate]
+  FROM
+    [T_CurrentWorkflow]
+  <WHERE>
+    WHERE
+      [WorkflowControlNo] = @WorkflowControlNo
+  </WHERE>
+</ROOT>

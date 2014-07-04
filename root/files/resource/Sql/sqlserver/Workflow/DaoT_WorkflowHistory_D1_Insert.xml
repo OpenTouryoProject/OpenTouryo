@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoT_WorkflowHistory_D1_Insert
+  -- 2014/7/4 日立 太郎
+  INSERT INTO 
+    [T_WorkflowHistory]
+      (
+        <DELCMA>
+          <INSCOL name="WorkflowControlNo">[WorkflowControlNo],</INSCOL>
+          <INSCOL name="HistoryNo">[HistoryNo],</INSCOL>
+          <INSCOL name="WfPositionId">[WfPositionId],</INSCOL>
+          <INSCOL name="FromUserId">[FromUserId],</INSCOL>
+          <INSCOL name="FromUserInfo">[FromUserInfo],</INSCOL>
+          <INSCOL name="ActionType">[ActionType],</INSCOL>
+          <INSCOL name="ToUserId">[ToUserId],</INSCOL>
+          <INSCOL name="ToUserInfo">[ToUserInfo],</INSCOL>
+          <INSCOL name="NextWfPositionId">[NextWfPositionId],</INSCOL>
+          <INSCOL name="ReserveArea">[ReserveArea],</INSCOL>
+          <INSCOL name="ReplyDeadline">[ReplyDeadline],</INSCOL>
+          <INSCOL name="StartDate">[StartDate],</INSCOL>
+          <INSCOL name="AcceptanceDate">[AcceptanceDate],</INSCOL>
+          <INSCOL name="EndDate">[EndDate],</INSCOL>
+        </DELCMA>
+      )
+  VALUES
+      (
+        <DELCMA>
+          <IF>@WorkflowControlNo,</IF>
+          <IF>@HistoryNo,</IF>
+          <IF>@WfPositionId,</IF>
+          <IF>@FromUserId,</IF>
+          <IF>@FromUserInfo,</IF>
+          <IF>@ActionType,</IF>
+          <IF>@ToUserId,</IF>
+          <IF>@ToUserInfo,</IF>
+          <IF>@NextWfPositionId,</IF>
+          <IF>@ReserveArea,</IF>
+          <IF>@ReplyDeadline,</IF>
+          <IF>@StartDate,</IF>
+          <IF>@AcceptanceDate,</IF>
+          <IF>@EndDate,</IF>
+        </DELCMA>
+      )
+</ROOT>
+
+
+
