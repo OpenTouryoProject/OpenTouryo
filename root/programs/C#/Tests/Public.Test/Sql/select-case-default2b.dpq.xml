@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+	<SELECT name="sel">
+		<CASE value="111">
+			SELECT * FROM Shippers
+		</CASE>
+		<CASE value="222">
+			SELECT * FROM Products
+		</CASE>
+		<CASE value="333">
+			SELECT * FROM Orders
+		</CASE>
+		<DEFAULT>
+			SELECT * FROM [Order Details]
+		</DEFAULT>
+	</SELECT>
+	<PARAM>
+		sel, Int32, 222<DIV/>
+	</PARAM>
+</ROOT>
