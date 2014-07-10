@@ -27,10 +27,11 @@
 //* 
 //*  Date:        Author:        Comments:
 //*  ----------  ----------------  -------------------------------------------------
-//*  06/13/2014   Rituparna & Santosh      Testcode development for CRUDTest(Framework classes).
+//*  06/13/2014   Rituparna & Santosh   Testcode development for CRUDTest(Framework classes).
 //*  06/24/2014   Rituparna & Santosh   Testcode development for CRUDTest(Public classes).
 //*  07/02/2014   Santosh               Added code and modified test cases to prevent database changes after running the test cases
-//*  07/04/2014   Rituparna & Santosh           Added code and modified test cases to Increase the code coverage of BaseDam.cs Class
+//*  07/04/2014   Rituparna & Santosh   Added code and modified test cases to Increase the code coverage of BaseDam.cs Class
+//*  07/10/2014   Rituparna             Added code and modified test cases to Increase the code coverage of BaseDam.cs Class
 //**********************************************************************************
 // 型情報
 // System
@@ -125,7 +126,7 @@ namespace Public.Test
         {
             get
             {
-               /*SelectCount*/
+                /*SelectCount*/
                 yield return new TestCaseData("TestID-000N", "screen1", "control1", "SelectCount", "SQL%individual%static%-", "User1", "Hostname1", "RC", null, null, null);
                 yield return new TestCaseData("TestID-001N", "screen2", "control2", "SelectCount", "SQL%individual%dynamic%-", "User2", "Hostname2", "RC", null, null, null);
                 yield return new TestCaseData("TestID-002N", "screen3", "control3", "SelectCount", "SQL%common%static%-", "User3", "Hostname3", "RC", null, null, null);
@@ -497,9 +498,51 @@ namespace Public.Test
                 yield return new TestCaseData("TestID-317A", "screen1", "control1", "ArgumentException6", "SQL%individual%static%-", "User1", "Hostname1", "RC", null, null, null).Throws(typeof(ArgumentException));
                 yield return new TestCaseData("TestID-318A", "screen1", "control1", "ArgumentException7", "SQL%individual%static%-", "User1", "Hostname1", "RC", null, null, null).Throws(typeof(ArgumentException));
                 yield return new TestCaseData("TestID-319A", "screen1", "control1", "ArgumentException8", "SQL%individual%static%-", "User1", "Hostname1", "RC", null, null, null).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-320A", "screen1", "control1", "ArgumentException9", "SQL%individual%static%-", "User1", "Hostname1", "RC", null, null, null).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-321A", "screen1", "control1", "ArgumentException10", "SQL%individual%static%-", "User1", "Hostname1", "RC", null, null, null).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-322A", "screen1", "control1", "ArgumentException11", "SQL%individual%static%-", "User1", "Hostname1", "RC", null, null, null).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-323A", "screen1", "control1", "ArgumentException12", "SQL%individual%static%-", "User1", "Hostname1", "RC", null, null, null).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-324A", "screen1", "control1", "ArgumentException13", "SQL%individual%static%-", "User1", "Hostname1", "RC", null, null, null).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-324A", "screen1", "control1", "ArgumentException14", "SQL%individual%static%-", "User1", "Hostname1", "RC", null, null, null).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-324A", "screen1", "control1", "ArgumentException15", "SQL%individual%static%-", "User1", "Hostname1", "RC", null, null, null).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-325A", "screen10", "control10", "ArgumentException16", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-326A", "screen10", "control10", "ArgumentException17", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-327A", "screen10", "control10", "ArgumentException18", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-327A", "screen10", "control10", "ArgumentException19", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-327A", "screen10", "control10", "ArgumentException20", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-327A", "screen10", "control10", "ArgumentException21", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-327A", "screen10", "control10", "ArgumentException22", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-327A", "screen10", "control10", "ArgumentException23", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "").Throws(typeof(ArgumentException));
                 /*SelectAll_DSQL1*/
+
+                /*NEW TEST CASES ADDED*/
+                yield return new TestCaseData("TestID-328N", "screen10", "control10", "check_1", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-329N", "screen10", "control10", "check_2", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-330N", "screen10", "control10", "check_3", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-331N", "screen10", "control10", "check_4", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "");
+                yield return new TestCaseData("TestID-332N", "screen10", "control10", "check_5", "SQL%common%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "20042360");
+
+                yield return new TestCaseData("TestID-333N", "screen10", "control10", "TestSqlsvr2e", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "");
+                yield return new TestCaseData("TestID-334N", "screen10", "control10", "TestSqlsvr2e", "SQL%common%static%-", "User10", "Hostname10", "RC", "12N", "Company1_update", "20042360");
+                yield return new TestCaseData("TestID-335N", "screen10", "control10", "TestSqlsvr2e", "SQL%common%dynamic%-", "User10", "Hostname10", "RC", "12N", "Company1_update", "20042360");
+
+                yield return new TestCaseData("TestID-337A", "screen10", "control10", "TestSqlsvr2f", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-336A", "screen10", "control10", "TestSqlsvr2f", "SQL%common%static%-", "User10", "Hostname10", "RC", "12N", "Company1_update", "20042360").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-337A", "screen10", "control10", "TestSqlsvr2f", "SQL%common%dynamic%-", "User10", "Hostname10", "RC", "12N", "Company1_update", "20042360").Throws(typeof(ArgumentException));
+               
+                yield return new TestCaseData("TestID-338N", "screen10", "control10", "edit_9e", "SQL%common%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "20042360");
+                yield return new TestCaseData("TestID-339A", "screen10", "control10", "edit_10e", "SQL%common%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "20042360").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("TestID-340A", "screen10", "control10", "edit_11e", "SQL%common%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "20042360").Throws(typeof(ArgumentException));
+                /*SelectJoin0*/
+                yield return new TestCaseData("TestID-341N", "screen10", "control10", "SelectJoin0", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "");
+                yield return new TestCaseData("TestID-342N", "screen10", "control10", "SelectJoin0", "SQL%common%static%-", "User10", "Hostname10", "RC", "12N", "Company1_update", "20042360");
+                yield return new TestCaseData("TestID-343N", "screen10", "control10", "SelectJoin0", "SQL%common%dynamic%-", "User10", "Hostname10", "RC", "12N", "Company1_update", "20042360");
+                /*SelectJoin0*/
+                yield return new TestCaseData("TestID-344N", "screen10", "control10", "SelectCase5a", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "");
+                yield return new TestCaseData("TestID-345N", "screen10", "control10", "SelectCase5b", "SQL%individual%static%-", "User10", "Hostname10", "RC", "12N", "symphony", "");
+                /*NEW TEST CASES ADDED*/ 
             }
-    }
+        }
 
         #region TestCode
         /// <summary>CallBusinessLogic Method</summary>
@@ -637,6 +680,9 @@ namespace Public.Test
                 case "TestSqlsvr_n":
                 case "TestSqlsvr_1e":
                 case "TestSqlsvr1a":
+                case "TestSqlsvr1b":
+                case "TestSqlsvr2e":
+                case "TestSqlsvr2f":
                     testParameterValue.CompanyName = companyName;
                     testParameterValue.OrderColumn = "c1";
                     testParameterValue.OrderSequence = "A";
@@ -657,6 +703,8 @@ namespace Public.Test
                 case "SelectCase3b":
                 case "SelectCase4a":
                 case "SelectCase4b":
+                case "SelectCase5a":
+                case "SelectCase5b":
                 case "SelectCaseDefault1a":
                 case "SelectCaseDefault1b":
                 case "SelectCaseDefault2a":
@@ -680,18 +728,25 @@ namespace Public.Test
                     else
                         Assert.AreEqual(resultTestReturnValue.ErrorFlag, true);
                     break;
+                case "check_1":
+                case "check_2":
+                case "check_3":
+                case "check_4":
                 case "check_7a":
                 case "check_11a":
                 case "check_11c":
                 case "check_6b":
                 case "check_3f":
                 case "check_9c":
+                case "check_5":
                     TestParameterValue testParameterValue2
                 = new TestParameterValue(
                     screen, buttonID, "check",
                     dbGeneration,
                    userInfo);
                     testParameterValue2.check = action;
+                     testParameterValue.OrderColumn = "c1";
+                    testParameterValue.OrderSequence = "A";
                     CallBusinessLogic(screen, buttonID, action, dbGeneration, user, ipAddress, isolationLevel, testParameterValue2, out resultTestReturnValue,
                                   out expectedTestReturnValue);
                     expectedDataSet = (DataSet)expectedTestReturnValue.Obj;
@@ -710,12 +765,16 @@ namespace Public.Test
                 case "edit_9c1":
                 case "edit_2a":
                 case "edit_5e":
+                case "edit_9e":
+                case "edit_10e":
+                case "edit_11e":                
                     TestParameterValue testParameterValue3
                  = new TestParameterValue(
                      screen, buttonID, "edit",
                      dbGeneration,
                     userInfo);
                     testParameterValue3.SelectCase = action;
+                  
                     CallBusinessLogic(screen, buttonID, action, dbGeneration, user, ipAddress, isolationLevel, testParameterValue3, out resultTestReturnValue,
                                    out expectedTestReturnValue);
                     expectedDataSet = (DataSet)expectedTestReturnValue.Obj;
@@ -734,6 +793,21 @@ namespace Public.Test
                 case "ArgumentException6":
                 case "ArgumentException7":
                 case "ArgumentException8":
+                case "ArgumentException9":
+                case "ArgumentException10":
+                case "ArgumentException11":
+                case "ArgumentException12":
+                case "ArgumentException13":
+                case "ArgumentException14":
+                case "ArgumentException15":
+                case "ArgumentException16":
+                case "ArgumentException17":
+                case "ArgumentException18":
+                case "ArgumentException19":
+                case "ArgumentException20":
+                case "ArgumentException21":
+                case "ArgumentException22":
+                case "ArgumentException23":
                     TestParameterValue testParameterValue4
                 = new TestParameterValue(
                     screen, buttonID, "ArgumentException",
