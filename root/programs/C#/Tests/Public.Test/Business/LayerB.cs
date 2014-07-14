@@ -14,6 +14,7 @@
 //*  06/24/2014   Rituparna & Santosh   Testcode development for CRUDTest(Public classes).
 //*  07/02/2014   Santosh               Added code and modified test cases to prevent database changes after running the test cases
 //*  07/04/2014   Rituparna             Added code and modified test cases to Increase the code coverage of BaseDam.cs Class
+//*  07/10/2014   Rituparna             Added code and modified test cases to Increase the code coverage of BaseDam.cs Class
 //**********************************************************************************
 
 // 型情報
@@ -342,6 +343,51 @@ public class LayerB : MyFcBaseLogic
                             case "ArgumentException8":
                                 cmnDao.SQLFileName = "ArgumentException8.xml";
                                 break;
+                            case "ArgumentException9":
+                                cmnDao.SQLFileName = "ArgumentException9.xml";
+                                break;
+                            case "ArgumentException10":
+                                cmnDao.SQLFileName = "ArgumentException10.xml";
+                                break;
+                            case "ArgumentException11":
+                                cmnDao.SQLFileName = "ArgumentException11.xml";
+                                break;
+                            case "ArgumentException12":
+                                cmnDao.SQLFileName = "ArgumentException12.xml";
+                                break;
+                            case "ArgumentException13":
+                                cmnDao.SQLFileName = "ArgumentException13.xml";
+                                break;
+                            case "ArgumentException14":
+                                cmnDao.SQLFileName = "ArgumentException14.xml";
+                                break;
+                            case "ArgumentException15":
+                                cmnDao.SQLFileName = "ArgumentException15.xml";
+                                break;
+                            case "ArgumentException16":
+                                cmnDao.SQLFileName = "ArgumentException16.xml";
+                                break;
+                            case "ArgumentException17":
+                                cmnDao.SQLFileName = "ArgumentException17.xml";
+                                break;
+                            case "ArgumentException18":
+                                cmnDao.SQLFileName = "ArgumentException18.xml";
+                                break;
+                            case "ArgumentException19":
+                                cmnDao.SQLFileName = "ArgumentException19.xml";
+                                break;
+                            case "ArgumentException20":
+                                cmnDao.SQLFileName = "ArgumentException20.xml";
+                                break;
+                            case "ArgumentException21":
+                                cmnDao.SQLFileName = "ArgumentException21.xml";
+                                break;
+                            case "ArgumentException22":
+                                cmnDao.SQLFileName = "ArgumentException22.xml";
+                                break;
+                            case "ArgumentException23":
+                                cmnDao.SQLFileName = "ArgumentException23.xml";
+                                break;
                         }
                         break;
 
@@ -373,13 +419,57 @@ public class LayerB : MyFcBaseLogic
                             case "ArgumentException8":
                                 cmnDao.SQLFileName = "ArgumentException8.xml";
                                 break;
+                            case "ArgumentException9":
+                                cmnDao.SQLFileName = "ArgumentException9.xml";
+                                break;
+                            case "ArgumentException10":
+                                cmnDao.SQLFileName = "ArgumentException10.xml";
+                                break;
+                            case "ArgumentException11":
+                                cmnDao.SQLFileName = "ArgumentException11.xml";
+                                break;
+                            case "ArgumentException12":
+                                cmnDao.SQLFileName = "ArgumentException12.xml";
+                                break;
+                            case "ArgumentException13":
+                                cmnDao.SQLFileName = "ArgumentException13.xml";
+                                break;
+                            case "ArgumentException14":
+                                cmnDao.SQLFileName = "ArgumentException14.xml";
+                                break;
+                            case "ArgumentException15":
+                                cmnDao.SQLFileName = "ArgumentException15.xml";
+                                break;
+                            case "ArgumentException16":
+                                cmnDao.SQLFileName = "ArgumentException16.xml";
+                                break;
+                            case "ArgumentException17":
+                                cmnDao.SQLFileName = "ArgumentException17.xml";
+                                break;
+                            case "ArgumentException18":
+                                cmnDao.SQLFileName = "ArgumentException18.xml";
+                                break;
+                            case "ArgumentException19":
+                                cmnDao.SQLFileName = "ArgumentException19.xml";
+                                break;
+                            case "ArgumentException20":
+                                cmnDao.SQLFileName = "ArgumentException20.xml";
+                                break;
+                            case "ArgumentException21":
+                                cmnDao.SQLFileName = "ArgumentException21.xml";
+                                break;
+                            case "ArgumentException22":
+                                cmnDao.SQLFileName = "ArgumentException22.xml";
+                                break;
+                            case "ArgumentException23":
+                                cmnDao.SQLFileName = "ArgumentException23.xml";
+                                break;
                         }
                         break;
                 }
                 switch (testParameter.SelectCase)
                 {
                     case "ArgumentException0":
-
                         if (testParameter.OrderColumn == "c1")
                         {
                             orderColumn = "CompanyName";
@@ -440,8 +530,6 @@ public class LayerB : MyFcBaseLogic
 
                     case "ArgumentException1":
                         // ユーザ定義パラメタに対して、動的に値を設定する。
-
-
                         if (testParameter.OrderColumn == "c1")
                         {
                             orderColumn = "ShipperID";
@@ -574,6 +662,222 @@ public class LayerB : MyFcBaseLogic
 
                         // 自動生成Daoを実行
                         testReturn.Obj = dt2;
+                        break;
+                    case "ArgumentException9":
+                        cmnDao.SetParameter("sel", "a1");
+                        DataTable dt3 = new DataTable();
+                        // 共通Daoを実行
+                        cmnDao.ExecSelectFill_DT(dt3);
+
+                        // 自動生成Daoを実行
+                        testReturn.Obj = dt3;
+                        break;
+                    case "ArgumentException10":
+                    case "ArgumentException21":
+                        cmnDao.SetParameter("sel", "a1");
+                        DataTable dt4 = new DataTable();
+                        // 共通Daoを実行
+                        cmnDao.ExecSelectFill_DT(dt4);
+
+                        // 自動生成Daoを実行
+                        testReturn.Obj = dt4;
+                        break;
+                    case "ArgumentException11":
+                        cmnDao.SetParameter("up", 28.5);
+                        cmnDao.SetParameter("uis", 113);
+                        cmnDao.SetParameter("uoo", 0);
+                        cmnDao.SetParameter("rol", 25);
+                        cmnDao.SetParameter("bit", 25);
+                        ArrayList arr = new ArrayList();
+                        arr.Add(1);
+                        arr.Add(2);
+                        arr.Add(3);
+                        arr.Add(4);
+                        arr.Add(5);
+                        arr.Add(6);
+                        arr.Add(7);
+                        arr.Add(8);
+                        cmnDao.SetParameter("PLIST", arr);
+                        // ユーザ入力は指定しない。
+                        // ※ 動的SQLのVALタグは、前後の空白をつめることが有るので、
+                        //    必要であれば、前後の空白を明示的に指定する必要がある。
+                        cmnDao.SetUserParameter("COLUMN", "" + orderColumn + "");
+                        cmnDao.SetUserParameter("SEQUENCE", "" + orderSequence + "");
+
+                        cmnDao.SetParameter("ISNOTNULL1", false);
+                        cmnDao.SetParameter("ISNOTNULL2", false);
+                        cmnDao.SetParameter("ISNOTNULL3", false);
+                        // 戻り値 ds
+                        // 戻り値 ds
+                        DataSet ds1 = new DataSet();
+
+                        //   -- 一覧を返すSELECTクエリを実行する
+                        cmnDao.ExecSelectFill_DS(ds1);
+
+                        // ↑DBアクセス-----------------------------------------------------
+
+                        // 戻り値を設定
+                        testReturn.Obj = ds1;
+                        break;
+                    case "ArgumentException12":
+                        cmnDao.SetParameter("P", false);
+                        DataSet ds2 = new DataSet();
+
+                        //   -- 一覧を返すSELECTクエリを実行する
+                        cmnDao.ExecSelectFill_DS(ds2);
+
+                        // ↑DBアクセス-----------------------------------------------------
+
+                        // 戻り値を設定
+                        testReturn.Obj = ds2;
+                        break;
+                    case "ArgumentException13":
+                        cmnDao.SetParameter("og", true);
+                        DataSet ds3 = new DataSet();
+
+                        //   -- 一覧を返すSELECTクエリを実行する
+                        cmnDao.ExecSelectFill_DS(ds3);
+
+                        // ↑DBアクセス-----------------------------------------------------
+
+                        // 戻り値を設定
+                        testReturn.Obj = ds3;
+                        break;
+                    case "ArgumentException14":
+                    case "ArgumentException15":
+                    case "ArgumentException16":
+
+                        if (testParameter.OrderColumn == "c1")
+                        {
+                            orderColumn = "SUPPLIERID";
+                        }
+                        else if (testParameter.OrderColumn == "c2")
+                        {
+                            orderColumn = "SUPPLIERID";
+                        }
+                        else if (testParameter.OrderColumn == "c3")
+                        {
+                            orderColumn = "SUPPLIERID";
+                        }
+
+                        if (testParameter.OrderSequence == "A")
+                        {
+                            orderSequence = "ASC";
+                        }
+                        else if (testParameter.OrderSequence == "D")
+                        {
+                            orderSequence = "DESC";
+                        }
+
+                        // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。                
+                        // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。                
+                        cmnDao.SetParameter("up", 28.5);
+                        cmnDao.SetParameter("uis", 113);
+                        cmnDao.SetParameter("uoo", 0);
+                        cmnDao.SetParameter("rol", 25);
+                        cmnDao.SetParameter("bit", 25);
+                        ArrayList arr1 = new ArrayList();
+                        arr1.Add(1);
+                        arr1.Add(2);
+                        arr1.Add(3);
+                        arr1.Add(4);
+                        arr1.Add(5);
+                        arr1.Add(6);
+                        arr1.Add(7);
+                        arr1.Add(8);
+                        cmnDao.SetParameter("PLIST", arr1);
+                        // ユーザ入力は指定しない。
+                        // ※ 動的SQLのVALタグは、前後の空白をつめることが有るので、
+                        //    必要であれば、前後の空白を明示的に指定する必要がある。
+                        cmnDao.SetUserParameter("COLUMN", "" + orderColumn + "");
+                        cmnDao.SetUserParameter("SEQUENCE", "" + orderSequence + "");
+
+                        cmnDao.SetParameter("ISNOTNULL1", false);
+                        cmnDao.SetParameter("ISNOTNULL2", false);
+                        cmnDao.SetParameter("ISNOTNULL3", false);
+                        // 戻り値 ds
+                        // 戻り値 ds
+                        DataSet ds5 = new DataSet();
+
+                        //   -- 一覧を返すSELECTクエリを実行する
+                        cmnDao.ExecSelectFill_DS(ds5);
+
+                        // ↑DBアクセス-----------------------------------------------------
+
+                        // 戻り値を設定
+                        testReturn.Obj = ds5;
+                        break;
+                    case "ArgumentException17":
+                    case "ArgumentException18":
+                        cmnDao.SetParameter("sel", "a1");
+                        // 戻り値 dt                
+                        DataTable dt5 = new DataTable();
+                        // 共通Daoを実行
+                        cmnDao.ExecSelectFill_DT(dt5);
+
+                        // 自動生成Daoを実行
+                        testReturn.Obj = dt5;
+                        break;
+                    case "ArgumentException19":
+                    case "ArgumentException20":
+                        if (testParameter.OrderColumn == "c1")
+                        {
+                            orderColumn = "CompanyName";
+                        }
+                        else if (testParameter.OrderColumn == "c2")
+                        {
+                            orderColumn = "CompanyName";
+                        }
+                        else if (testParameter.OrderColumn == "c3")
+                        {
+                            orderColumn = "CompanyName";
+                        }
+
+                        if (testParameter.OrderSequence == "A")
+                        {
+                            orderSequence = "ASC";
+                        }
+                        else if (testParameter.OrderSequence == "D")
+                        {
+                            orderSequence = "DESC";
+                        }
+
+                        // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。                
+                        cmnDao.SetParameter("P1", "test");
+                        cmnDao.SetParameter("P2", "test1");
+
+                        // ユーザ入力は指定しない。
+                        // ※ 動的SQLのVALタグは、前後の空白をつめることが有るので、
+                        //    必要であれば、前後の空白を明示的に指定する必要がある。
+                        cmnDao.SetUserParameter("COLUMN", "" + orderColumn + "");
+                        cmnDao.SetUserParameter("SEQUENCE", "" + orderSequence + "");
+
+                        cmnDao.SetParameter("j1", true);
+                        cmnDao.SetParameter("j2", true);
+                        // 戻り値 ds
+                        DataSet ds4 = new DataSet();
+
+                        //   -- 一覧を返すSELECTクエリを実行する
+                        cmnDao.ExecSelectFill_DS(ds4);
+
+                        // ↑DBアクセス-----------------------------------------------------
+
+                        // 戻り値を設定
+                        testReturn.Obj = ds4;
+                        break;
+                    case "ArgumentException22":
+                    case "ArgumentException23":
+                        cmnDao.SetParameter("og", 1);
+                        // 戻り値 ds
+                        DataSet ds6 = new DataSet();
+
+                        //   -- 一覧を返すSELECTクエリを実行する
+                        cmnDao.ExecSelectFill_DS(ds6);
+
+                        // ↑DBアクセス-----------------------------------------------------
+
+                        // 戻り値を設定
+                        testReturn.Obj = ds6;
                         break;
                 }
                 break;
@@ -907,7 +1211,7 @@ public class LayerB : MyFcBaseLogic
     #endregion
     #region UOC_SelectJoin0
     /// <summary>
-    /// UOC_SelectJoin1 Method
+    /// UOC_SelectJoin0 Method
     /// </summary>
     /// <param name="testParameter">testParameter</param>
     private void UOC_SelectJoin0(TestParameterValue testParameter)
@@ -922,7 +1226,6 @@ public class LayerB : MyFcBaseLogic
         CmnDao cmnDao = new CmnDao(this.GetDam());
 
         string orderColumn = "";
-        string orderSequence = "";
         switch ((testParameter.ActionType.Split('%'))[1])
         {
             case "generate":
@@ -933,12 +1236,12 @@ public class LayerB : MyFcBaseLogic
                 {
                     case "static":
                         // 静的SQLを指定
-                        cmnDao.SQLFileName = "ArgumentException0.xml";
+                        cmnDao.SQLFileName = "join_sub_where0.dpq.xml";
                         break;
 
                     case "dynamic":
                         // 動的SQLを指定
-                        cmnDao.SQLFileName = "ArgumentException0.xml";
+                        cmnDao.SQLFileName = "join_sub_where0.dpq.xml";
                         break;
                 }
 
@@ -958,15 +1261,6 @@ public class LayerB : MyFcBaseLogic
                     orderColumn = "CompanyName";
                 }
 
-                if (testParameter.OrderSequence == "A")
-                {
-                    orderSequence = "ASC";
-                }
-                else if (testParameter.OrderSequence == "D")
-                {
-                    orderSequence = "DESC";
-                }
-
                 // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
                 cmnDao.SetParameter("P1", "test");
                 cmnDao.SetParameter("P2", "test");
@@ -975,21 +1269,20 @@ public class LayerB : MyFcBaseLogic
                 // ※ 動的SQLのVALタグは、前後の空白をつめることが有るので、
                 //    必要であれば、前後の空白を明示的に指定する必要がある。
                 cmnDao.SetUserParameter("COLUMN", orderColumn);
-                cmnDao.SetUserParameter("SEQUENCE", orderSequence);
 
-                cmnDao.SetParameter("j1", true);
+                cmnDao.SetParameter("j1", false);
                 cmnDao.SetParameter("if1", true);
                 cmnDao.SetParameter("s1", true);
 
-                cmnDao.SetParameter("j2", true);
+                cmnDao.SetParameter("j2", false);
                 cmnDao.SetParameter("if2", true);
                 cmnDao.SetParameter("s2", true);
 
-                cmnDao.SetParameter("j3", true);
+                cmnDao.SetParameter("j3", false);
                 cmnDao.SetParameter("if3", true);
                 cmnDao.SetParameter("s3", true);
 
-                cmnDao.SetParameter("j4", true);
+                cmnDao.SetParameter("j4", false);
                 cmnDao.SetParameter("if4", true);
                 cmnDao.SetParameter("s4", true);
 
@@ -1498,7 +1791,7 @@ public class LayerB : MyFcBaseLogic
 
     #region UOC_testSqlsvr2c
     /// <summary>
-    /// UOC_TestSqlsvr4a Method
+    /// UOC_TestSqlsvr2c Method
     /// </summary>
     /// <param name="testParameter">testParameter</param>
     private void UOC_TestSqlsvr2c(TestParameterValue testParameter)
@@ -1703,6 +1996,216 @@ public class LayerB : MyFcBaseLogic
 
     #endregion
 
+    #region "UOC_testSqlsvr2e"
+    /// <summary>
+    /// UOC_TestSqlsvr2e Method
+    /// </summary>
+    /// <param name="testParameter">testParameter</param>
+    private void UOC_TestSqlsvr2e(TestParameterValue testParameter)
+    {
+        // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+        TestReturnValue testReturn = new TestReturnValue();
+        this.ReturnValue = testReturn;
+
+        // ↓業務処理-----------------------------------------------------
+
+        switch ((testParameter.ActionType.Split('%'))[1])
+        {
+            case "generate":
+                break;
+            case "common": // 共通Daoを使用する。
+            default:
+                // 共通Daoを生成
+                CmnDao cmnDao = new CmnDao(this.GetDam());
+
+                switch ((testParameter.ActionType.Split('%'))[2])
+                {
+                    case "static":
+                        // 静的SQLを指定
+                        cmnDao.SQLFileName = "testSqlsvr2d.dpq.xml";
+                        break;
+
+                    case "dynamic":
+                        // 動的SQLを指定
+                        cmnDao.SQLFileName = "testSqlsvr2d.dpq.xml";
+                        break;
+                }
+
+                // ユーザ定義パラメタに対して、動的に値を設定する。
+                string orderColumn = "";
+                string orderSequence = "";
+
+                if (testParameter.OrderColumn == "c1")
+                {
+                    orderColumn = "SUPPLIERID";
+                }
+                else if (testParameter.OrderColumn == "c2")
+                {
+                    orderColumn = "SUPPLIERID";
+                }
+                else if (testParameter.OrderColumn == "c3")
+                {
+                    orderColumn = "SUPPLIERID";
+                }
+
+                if (testParameter.OrderSequence == "A")
+                {
+                    orderSequence = "ASC";
+                }
+                else if (testParameter.OrderSequence == "D")
+                {
+                    orderSequence = "DESC";
+                }
+
+                // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。                
+                // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。                
+                cmnDao.SetParameter("up", 28.5);
+                cmnDao.SetParameter("uis", 113);
+                cmnDao.SetParameter("uoo", 0);
+                cmnDao.SetParameter("rol", 25);
+                cmnDao.SetParameter("bit", 25);
+                ArrayList arr = new ArrayList();
+
+                cmnDao.SetParameter("PLIST", arr);
+                // ユーザ入力は指定しない。
+                // ※ 動的SQLのVALタグは、前後の空白をつめることが有るので、
+                //    必要であれば、前後の空白を明示的に指定する必要がある。
+                cmnDao.SetUserParameter("COLUMN", "" + orderColumn + "");
+                cmnDao.SetUserParameter("SEQUENCE", "" + orderSequence + "");
+
+                cmnDao.SetParameter("ISNOTNULL1", false);
+                cmnDao.SetParameter("ISNOTNULL2", false);
+                cmnDao.SetParameter("ISNOTNULL3", false);
+                // 戻り値 ds
+                // 戻り値 ds
+                DataSet ds = new DataSet();
+
+                //   -- 一覧を返すSELECTクエリを実行する
+                cmnDao.ExecSelectFill_DS(ds);
+
+                // ↑DBアクセス-----------------------------------------------------
+
+                // 戻り値を設定
+                testReturn.Obj = ds;
+                break;
+        }
+
+        // ↑業務処理-----------------------------------------------------
+
+        // ロールバックのテスト
+        this.TestRollback(testParameter);
+    }
+
+    #endregion
+
+    #region "UOC_testSqlsvr2f"
+    /// <summary>
+    /// UOC_TestSqlsvr2f Method
+    /// </summary>
+    /// <param name="testParameter">testParameter</param>
+    private void UOC_TestSqlsvr2f(TestParameterValue testParameter)
+    {
+        // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+        TestReturnValue testReturn = new TestReturnValue();
+        this.ReturnValue = testReturn;
+
+        // ↓業務処理-----------------------------------------------------
+
+        switch ((testParameter.ActionType.Split('%'))[1])
+        {
+            case "generate":
+                break;
+            case "common": // 共通Daoを使用する。
+            default:
+                // 共通Daoを生成
+                CmnDao cmnDao = new CmnDao(this.GetDam());
+
+                switch ((testParameter.ActionType.Split('%'))[2])
+                {
+                    case "static":
+                        // 静的SQLを指定
+                        cmnDao.SQLFileName = "testSqlsvr2d.dpq.xml";
+                        break;
+
+                    case "dynamic":
+                        // 動的SQLを指定
+                        cmnDao.SQLFileName = "testSqlsvr2d.dpq.xml";
+                        break;
+                }
+
+                // ユーザ定義パラメタに対して、動的に値を設定する。
+                string orderColumn = "";
+                string orderSequence = "";
+
+                if (testParameter.OrderColumn == "c1")
+                {
+                    orderColumn = "SUPPLIERID";
+                }
+                else if (testParameter.OrderColumn == "c2")
+                {
+                    orderColumn = "SUPPLIERID";
+                }
+                else if (testParameter.OrderColumn == "c3")
+                {
+                    orderColumn = "SUPPLIERID";
+                }
+
+                if (testParameter.OrderSequence == "A")
+                {
+                    orderSequence = "ASC";
+                }
+                else if (testParameter.OrderSequence == "D")
+                {
+                    orderSequence = "DESC";
+                }
+
+                // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。                
+                // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。                
+                cmnDao.SetParameter("up", 28.5);
+                cmnDao.SetParameter("uis", 113);
+                cmnDao.SetParameter("uoo", 0);
+                cmnDao.SetParameter("rol", 25);
+                cmnDao.SetParameter("bit", 25);
+                List<int> arr = new List<int>();
+                arr.Add(1);
+                arr.Add(2);
+                arr.Add(3);
+                arr.Add(4);
+                arr.Add(5);
+                arr.Add(6);
+                arr.Add(7);
+                arr.Add(8);
+                cmnDao.SetParameter("PLIST", arr);
+                // ユーザ入力は指定しない。
+                // ※ 動的SQLのVALタグは、前後の空白をつめることが有るので、
+                //    必要であれば、前後の空白を明示的に指定する必要がある。
+                cmnDao.SetUserParameter("COLUMN", "" + orderColumn + "");
+                cmnDao.SetUserParameter("SEQUENCE", "" + orderSequence + "");
+
+                cmnDao.SetParameter("ISNOTNULL1", false);
+                cmnDao.SetParameter("ISNOTNULL2", false);
+                cmnDao.SetParameter("ISNOTNULL3", false);
+                // 戻り値 ds
+                // 戻り値 ds
+                DataSet ds = new DataSet();
+
+                //   -- 一覧を返すSELECTクエリを実行する
+                cmnDao.ExecSelectFill_DS(ds);
+
+                // ↑DBアクセス-----------------------------------------------------
+
+                // 戻り値を設定
+                testReturn.Obj = ds;
+                break;
+        }
+
+        // ↑業務処理-----------------------------------------------------
+
+        // ロールバックのテスト
+        this.TestRollback(testParameter);
+    }
+
+    #endregion
     #region "UOC_TestSqlsvr_n"
     /// <summary>
     /// UOC_TestSqlsvr_n Method
@@ -1917,6 +2420,112 @@ public class LayerB : MyFcBaseLogic
     }
     #endregion
 
+    #region "UOC_TestSqlsvr1b"
+    /// <summary>
+    /// UOC_TestSqlsvr1b Method
+    /// </summary>
+    /// <param name="testParameter">testParameter</param>
+    private void UOC_TestSqlsvr1b(TestParameterValue testParameter)
+    {
+        // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+        TestReturnValue testReturn = new TestReturnValue();
+        this.ReturnValue = testReturn;
+
+        // ↓業務処理-----------------------------------------------------
+
+        switch ((testParameter.ActionType.Split('%'))[1])
+        {
+            case "generate":
+                break;
+            case "common": // 共通Daoを使用する。
+            default:
+                // 共通Daoを生成
+                CmnDao cmnDao = new CmnDao(this.GetDam());
+
+                switch ((testParameter.ActionType.Split('%'))[2])
+                {
+                    case "static":
+                        // 静的SQLを指定
+                        cmnDao.SQLFileName = "testSqlsvr1b.dpq.xml";
+                        break;
+
+                    case "dynamic":
+                        // 動的SQLを指定
+                        cmnDao.SQLFileName = "testSqlsvr1b.dpq.xml";
+                        break;
+                }
+
+                // ユーザ定義パラメタに対して、動的に値を設定する。
+                // ユーザ定義パラメタに対して、動的に値を設定する。
+                string orderColumn = "";
+                string orderSequence = "";
+
+                if (testParameter.OrderColumn == "c1")
+                {
+                    orderColumn = "SUPPLIERID";
+                }
+                else if (testParameter.OrderColumn == "c2")
+                {
+                    orderColumn = "SUPPLIERID";
+                }
+                else if (testParameter.OrderColumn == "c3")
+                {
+                    orderColumn = "SUPPLIERID";
+                }
+
+                if (testParameter.OrderSequence == "A")
+                {
+                    orderSequence = "ASC";
+                }
+                else if (testParameter.OrderSequence == "D")
+                {
+                    orderSequence = "DESC";
+                }
+
+                // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。                
+                ArrayList arr = new ArrayList();
+                arr.Add(1);
+                arr.Add(2);
+                arr.Add(3);
+                arr.Add(4);
+                arr.Add(5);
+                arr.Add(6);
+                arr.Add(7);
+                arr.Add(8);
+                cmnDao.SetParameter("PLIST", arr);
+                // ユーザ入力は指定しない。
+                // ※ 動的SQLのVALタグは、前後の空白をつめることが有るので、
+                //    必要であれば、前後の空白を明示的に指定する必要がある。
+                cmnDao.SetUserParameter("COLUMN", "" + orderColumn + "");
+                cmnDao.SetUserParameter("SEQUENCE", "" + orderSequence + "");
+
+                cmnDao.SetParameter("BIT", false);
+                cmnDao.SetParameter("SUB1", false);
+                cmnDao.SetParameter("SUB2", false);
+                cmnDao.SetParameter("ISNOTNULL1", false);
+                cmnDao.SetParameter("ISNOTNULL2", false);
+                cmnDao.SetParameter("ISNOTNULL3", false);
+                // 戻り値 ds
+                // 戻り値 ds
+                DataSet ds = new DataSet();
+
+                //   -- 一覧を返すSELECTクエリを実行する
+                cmnDao.ExecSelectFill_DS(ds);
+
+                // ↑DBアクセス-----------------------------------------------------
+
+                // 戻り値を設定
+                testReturn.Obj = ds;
+                break;
+        }
+
+        // ↑業務処理-----------------------------------------------------
+
+        // ロールバックのテスト
+        this.TestRollback(testParameter);
+    }
+    #endregion
+
     #region "UOC_TestSqlsvr_1e"
     /// <summary>
     /// UOC_TestSqlsvr_1e Method
@@ -2062,6 +2671,12 @@ public class LayerB : MyFcBaseLogic
                             case "SelectCase4b":
                                 cmnDao.SQLFileName = "select-case4b.dpq.xml";
                                 break;
+                            case "SelectCase5a":
+                                cmnDao.SQLFileName = "select-case5a.dpq.xml";
+                                break;
+                            case "SelectCase5b":
+                                cmnDao.SQLFileName = "select-case5b.dpq.xml";
+                                break;
                             case "SelectCaseDefault1a":
                                 cmnDao.SQLFileName = "select-case-default1a.dpq.xml";
                                 break;
@@ -2086,6 +2701,7 @@ public class LayerB : MyFcBaseLogic
                             case "SelectCaseDefault4b":
                                 cmnDao.SQLFileName = "select-case-default4b.dpq.xml";
                                 break;
+                           
                         }
                         break;
 
@@ -2112,6 +2728,12 @@ public class LayerB : MyFcBaseLogic
                                 break;
                             case "SelectCase4a":
                                 cmnDao.SQLFileName = "select-case4a.dpq.xml";
+                                break;
+                            case "SelectCase5a":
+                                cmnDao.SQLFileName = "select-case5a.dpq.xml";
+                                break;
+                            case "SelectCase5b":
+                                cmnDao.SQLFileName = "select-case5b.dpq.xml";
                                 break;
                             case "SelectCase4b":
                                 cmnDao.SQLFileName = "select-case4b.dpq.xml";
@@ -2140,6 +2762,7 @@ public class LayerB : MyFcBaseLogic
                             case "SelectCaseDefault4b":
                                 cmnDao.SQLFileName = "select-case-default4b.dpq.xml";
                                 break;
+                           
                         }
                         break;
                 }
@@ -2170,6 +2793,11 @@ public class LayerB : MyFcBaseLogic
                         break;
                     case "SelectCase4b":
                         cmnDao.SetParameter("sel", 999);
+                        break;
+                    case "SelectCase5a":
+                        break;
+                    case "SelectCase5b":
+                         cmnDao.SetParameter("sel", "");
                         break;
 
                     //Select Case Default
@@ -2257,6 +2885,21 @@ public class LayerB : MyFcBaseLogic
                             case "check_9c":
                                 cmnDao.SQLFileName = "check_9c.xml";
                                 break;
+                            case "check_1":
+                                cmnDao.SQLFileName = "check_1.xml";
+                                break;
+                            case "check_2":
+                                cmnDao.SQLFileName = "check_2.xml";
+                                break;
+                            case "check_3":
+                                cmnDao.SQLFileName = "check_3.xml";
+                                break;
+                            case "check_4":
+                                cmnDao.SQLFileName = "check_4.xml";
+                                break;
+                            case "check_5":
+                                cmnDao.SQLFileName = "check_5.xml";
+                                break;
                         }
                         break;
 
@@ -2277,6 +2920,21 @@ public class LayerB : MyFcBaseLogic
                                 break;
                             case "check_9c":
                                 cmnDao.SQLFileName = "check_9c.xml";
+                                break;
+                            case "check_1":
+                                cmnDao.SQLFileName = "check_1.xml";
+                                break;
+                            case "check_2":
+                                cmnDao.SQLFileName = "check_2.xml";
+                                break;
+                            case "check_3":
+                                cmnDao.SQLFileName = "check_3.xml";
+                                break;
+                            case "check_4":
+                                cmnDao.SQLFileName = "check_4.xml";
+                                break;
+                            case "check_5":
+                                cmnDao.SQLFileName = "check_5.xml";
                                 break;
                         }
                         break;
@@ -2303,6 +2961,58 @@ public class LayerB : MyFcBaseLogic
                         break;
                     case "check_9c":
                         cmnDao.SetParameter("P", null);
+                        break;
+                    case "check_1":
+                        cmnDao.SetParameter("P", false);
+                        break;
+                    case "check_2":
+                        // ユーザ定義パラメタに対して、動的に値を設定する。
+                        string orderColumn = "";
+                        string orderSequence = "";
+
+                        if (testParameter.OrderColumn == "c1")
+                        {
+                            orderColumn = "CompanyName";
+                        }
+                        else if (testParameter.OrderColumn == "c2")
+                        {
+                            orderColumn = "CompanyName";
+                        }
+                        else if (testParameter.OrderColumn == "c3")
+                        {
+                            orderColumn = "CompanyName";
+                        }
+
+                        if (testParameter.OrderSequence == "A")
+                        {
+                            orderSequence = "ASC";
+                        }
+                        else if (testParameter.OrderSequence == "D")
+                        {
+                            orderSequence = "DESC";
+                        }
+
+                        // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。                
+                        cmnDao.SetParameter("P1", "test");
+                        cmnDao.SetParameter("P2", "test1");
+
+                        // ユーザ入力は指定しない。
+                        // ※ 動的SQLのVALタグは、前後の空白をつめることが有るので、
+                        //    必要であれば、前後の空白を明示的に指定する必要がある。
+                        cmnDao.SetUserParameter("COLUMN", "" + orderColumn + "");
+                        cmnDao.SetUserParameter("SEQUENCE", "" + orderSequence + "");
+
+                        cmnDao.SetParameter("j1", "TEST");
+                        cmnDao.SetParameter("j2", true);
+                        break;
+                    case "check_3":
+                         cmnDao.SetParameter("P", 1);
+                        break;
+                    case "check_4":
+                        cmnDao.SetParameter("Q", true);
+                        break;
+                    case "check_5":
+                        cmnDao.SetParameter("P", true);
                         break;
                 }
                 // 戻り値 ds
@@ -2376,6 +3086,15 @@ public class LayerB : MyFcBaseLogic
                             case "edit_5e":
                                 cmnDao.SQLFileName = "edit_5e.xml";
                                 break;
+                            case "edit_9e":
+                                cmnDao.SQLFileName = "edit_9e.xml";
+                                break;
+                            case "edit_10e":
+                                cmnDao.SQLFileName = "edit_10e.xml";
+                                break;
+                            case "edit_11e":
+                                cmnDao.SQLFileName = "edit_11e.xml";
+                                break;                            
                         }
                         break;
 
@@ -2406,6 +3125,15 @@ public class LayerB : MyFcBaseLogic
                             case "edit_5e":
                                 cmnDao.SQLFileName = "edit_5e.xml";
                                 break;
+                            case "edit_9e":
+                                cmnDao.SQLFileName = "edit_9e.xml";
+                                break;
+                            case "edit_10e":
+                                cmnDao.SQLFileName = "edit_10e.xml";
+                                break;
+                            case "edit_11e":
+                                cmnDao.SQLFileName = "edit_11e.xml";
+                                break;                          
                         }
                         break;
                 }
@@ -2438,6 +3166,15 @@ public class LayerB : MyFcBaseLogic
                         break;
                     case "edit_5e":
                         break;
+                    case "edit_9e":
+                        cmnDao.SetParameter("P", null);
+                        break;
+                    case "edit_10e":
+                        cmnDao.SetParameter("P", null);
+                        break;
+                    case "edit_11e":
+                        cmnDao.SetParameter("P", null);
+                        break;                  
                 }
                 // 戻り値 ds
                 DataSet ds = new DataSet();
