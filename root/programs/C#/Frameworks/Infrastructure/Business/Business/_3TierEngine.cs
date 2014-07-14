@@ -28,7 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2013/01/10  西野　大介        新規作成
-//*
+//*  2014/07/14  西野　大介        関連チェック処理を実装可能に
 //**********************************************************************************
 
 // レイトバインド用
@@ -712,6 +712,9 @@ namespace Touryo.Infrastructure.Business.Business
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
+            // 関連チェック処理
+            this.UOC_RelatedCheck(parameterValue);
+
             // ↓業務処理-----------------------------------------------------
 
             // 共通Dao
@@ -769,6 +772,9 @@ namespace Touryo.Infrastructure.Business.Business
             // 戻り値クラスを生成して、事前に戻り地に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
+
+            // 関連チェック処理
+            this.UOC_RelatedCheck(parameterValue);
 
             // ↓業務処理-----------------------------------------------------
 
@@ -843,6 +849,9 @@ namespace Touryo.Infrastructure.Business.Business
             // 戻り値クラスを生成して、事前に戻り地に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
+
+            // 関連チェック処理
+            this.UOC_RelatedCheck(parameterValue);
 
             // ↓業務処理-----------------------------------------------------
 
@@ -935,6 +944,9 @@ namespace Touryo.Infrastructure.Business.Business
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
+            // 関連チェック処理
+            this.UOC_RelatedCheck(parameterValue);
+
             // ↓業務処理-----------------------------------------------------
 
             // 共通Dao
@@ -991,6 +1003,9 @@ namespace Touryo.Infrastructure.Business.Business
             // 戻り値クラスを生成して、事前に戻り地に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
+
+            // 関連チェック処理
+            this.UOC_RelatedCheck(parameterValue);
 
             // ↓業務処理-----------------------------------------------------
 
@@ -1090,5 +1105,9 @@ namespace Touryo.Infrastructure.Business.Business
         }
 
         #endregion
+
+        /// <summary>関連チェック処理を実装可能に</summary>
+        /// <param name="parameterValue">引数</param>
+        protected virtual void UOC_RelatedCheck(_3TierParameterValue parameterValue) { }
     }
 }

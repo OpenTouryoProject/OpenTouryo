@@ -28,7 +28,7 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  2013/01/10  西野　大介        新規作成
-'*
+'*  2014/07/14  西野　大介        関連チェック処理を実装可能に
 '**********************************************************************************
 
 ' レイトバインド用
@@ -600,6 +600,9 @@ Namespace Touryo.Infrastructure.Business.Business
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
 
+			' 関連チェック処理
+			Me.UOC_RelatedCheck(parameterValue)
+
 			' ↓業務処理-----------------------------------------------------
 
 			' 共通Dao
@@ -646,6 +649,9 @@ Namespace Touryo.Infrastructure.Business.Business
 			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
+
+			' 関連チェック処理
+			Me.UOC_RelatedCheck(parameterValue)
 
 			' ↓業務処理-----------------------------------------------------
 
@@ -704,6 +710,9 @@ Namespace Touryo.Infrastructure.Business.Business
 			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
+
+			' 関連チェック処理
+			Me.UOC_RelatedCheck(parameterValue)
 
 			' ↓業務処理-----------------------------------------------------
 
@@ -773,6 +782,9 @@ Namespace Touryo.Infrastructure.Business.Business
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
 
+			' 関連チェック処理
+			Me.UOC_RelatedCheck(parameterValue)
+
 			' ↓業務処理-----------------------------------------------------
 
 			' 共通Dao
@@ -818,6 +830,9 @@ Namespace Touryo.Infrastructure.Business.Business
 			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
+
+			' 関連チェック処理
+			Me.UOC_RelatedCheck(parameterValue)
 
 			' ↓業務処理-----------------------------------------------------
 
@@ -903,5 +918,10 @@ Namespace Touryo.Infrastructure.Business.Business
 		End Sub
 
 		#End Region
+
+		''' <summary>関連チェック処理を実装可能に</summary>
+		''' <param name="parameterValue">引数</param>
+		Protected Overridable Sub UOC_RelatedCheck(parameterValue As _3TierParameterValue)
+		End Sub
 	End Class
 End Namespace
