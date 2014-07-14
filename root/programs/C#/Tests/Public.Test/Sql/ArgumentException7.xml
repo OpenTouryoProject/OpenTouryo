@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ROOT>
-  -- ShipperUpdate
+  -- ShipperUpdate1
   -- 2014/07/03 日立 太郎
   UPDATE
   [Shippers]
@@ -19,7 +19,8 @@
       AND [CompanyName] = @CompanyName<ELSE>AND [CompanyName] IS NULL</ELSE>
     </IF>
     <IF>
-      AND [Phone] = @Phone<ELSE>AND [Phone] IS NULL</ELSE>
+      AND [Phone] = @Phone<ELSE>
+        <ELSE></ELSE>AND [Phone] IS NULL</ELSE>
     </IF>
   </WHERE>
 </ROOT>
