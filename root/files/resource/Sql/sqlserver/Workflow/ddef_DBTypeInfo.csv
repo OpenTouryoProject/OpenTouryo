@@ -1,9 +1,0 @@
-﻿テーブル名,カラムDB型情報～
-M_Workflow,decimal,
-,char,varchar,int,decimal,varchar,decimal,decimal,int,int,decimal,varchar,
-T_WorkflowHistory,varchar,
-,int,int,decimal,nvarchar,varchar,decimal,nvarchar,int,varchar,datetime,datetime,datetime,datetime,
-T_CurrentWorkflow,varchar,
-,int,int,decimal,nvarchar,varchar,decimal,nvarchar,int,varchar,int,datetime,datetime,datetime,
-T_Workflow,varchar,
-,char,varchar,decimal,nvarchar,varchar,datetime,datetime,
