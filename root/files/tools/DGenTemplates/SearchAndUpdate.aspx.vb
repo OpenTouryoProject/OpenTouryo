@@ -99,8 +99,10 @@ Public Partial Class _TableName_SearchAndUpdate
 
 		If Me.ddlDap.SelectedValue = "SQL" Then
 			Session("DBMS") = DbEnum.DBMSType.SQLServer
-		Else
+		Else If Me.ddlDap.SelectedValue = "ODP" Then
 			Session("DBMS") = DbEnum.DBMSType.Oracle
+		Else If Me.ddlDap.SelectedValue = "NPS" Then
+			Session("DBMS") = DbEnum.DBMSType.PstGrS
 		End If
 	End Sub
 

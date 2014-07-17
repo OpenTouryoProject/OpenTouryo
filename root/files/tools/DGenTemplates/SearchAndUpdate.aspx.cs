@@ -96,9 +96,13 @@ public partial class _TableName_SearchAndUpdate : MyBaseController
         {
             Session["DBMS"] = DbEnum.DBMSType.SQLServer;
         }
-        else
+       	else if (this.ddlDap.SelectedValue == "ODP")
         {
             Session["DBMS"] = DbEnum.DBMSType.Oracle;
+        }
+        else if (this.ddlDap.SelectedValue == "NPS")
+        {
+            Session["DBMS"] = DbEnum.DBMSType.PstGrS;
         }
     }
 

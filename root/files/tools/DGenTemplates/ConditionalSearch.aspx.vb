@@ -96,9 +96,11 @@ Partial Public Class _TableName_ConditionalSearch
 
         If Me.ddlDap.SelectedValue = "SQL" Then
             Session("DBMS") = DbEnum.DBMSType.SQLServer
-        Else
-            Session("DBMS") = DbEnum.DBMSType.Oracle
-        End If
+        Else If Me.ddlDap.SelectedValue = "ODP" Then
+	    Session("DBMS") = DbEnum.DBMSType.Oracle
+	Else If Me.ddlDap.SelectedValue = "NPS" Then
+	    Session("DBMS") = DbEnum.DBMSType.PstGrS
+	End If
     End Sub
 
 #End Region
@@ -223,11 +225,11 @@ Partial Public Class _TableName_ConditionalSearch
         ' ControlComment:LoopEnd-PKColumn
 
         ' タイムスタンプ列	
-        '<"03-03-2014","Ritu","checking the dbvalue for Null" <START>
         If dt.Rows(e.NewSelectedIndex)("_TimeStampColName_").[GetType]() = GetType(System.DBNull) Then
-            '<"03-03-2014","Ritu" <END>
+        
         Else
-            TS_CommentOut_(PrimaryKeyAndTimeStamp.Add("_TimeStampColName_", dt.Rows(e.NewSelectedIndex)("_TimeStampColName_"))) '"03-03-2014","Ritu","remove the typecast as it is giving conversion error"
+	'remove the typecast as it is giving conversion error
+            TS_CommentOut_(PrimaryKeyAndTimeStamp.Add("_TimeStampColName_", dt.Rows(e.NewSelectedIndex)("_TimeStampColName_"))) 
         End If
 
         Session("PrimaryKeyAndTimeStamp") = PrimaryKeyAndTimeStamp

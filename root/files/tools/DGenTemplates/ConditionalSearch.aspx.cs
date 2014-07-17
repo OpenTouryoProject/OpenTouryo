@@ -104,6 +104,10 @@ public partial class _TableName_ConditionalSearch : MyBaseController
         {
             Session["DBMS"] = DbEnum.DBMSType.Oracle;
         }
+	else if (this.ddlDap.SelectedValue == "NPS")
+        {
+            Session["DBMS"] = DbEnum.DBMSType.PstGrS;
+        }
     }
 
     #endregion
@@ -234,13 +238,11 @@ public partial class _TableName_ConditionalSearch : MyBaseController
         PrimaryKeyAndTimeStamp.Add("_ColumnName_", dt.Rows[e.NewSelectedIndex]["_ColumnName_"].ToString());
         // ControlComment:LoopEnd-PKColumn
         
-        // タイムスタンプ列
-        //<"03-03-2014","Ritu"," Adding timestamp column to dic when its not null. And removed the typecast as it is giving conversion error" <START>
+        // タイムスタンプ列        
         if(dt.Rows[e.NewSelectedIndex]["_TimeStampColName_"].GetType()!=typeof(System.DBNull))
         {
         TS_CommentOut_ PrimaryKeyAndTimeStamp.Add("_TimeStampColName_", dt.Rows[e.NewSelectedIndex]["_TimeStampColName_"]);
-        }
-	    //<"03-03-2014","Ritu", <END>
+        }	    
         Session["PrimaryKeyAndTimeStamp"] = PrimaryKeyAndTimeStamp;
        
     }

@@ -28,6 +28,9 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2013/01/10  西野　大介        新規作成
+//*  2014/07/17  Sai-San           Added Select count query and select paging query constants and checks for PostgreSQL db support 
+//*                                Added UOC_RelatedCheck override method and method calls in methods 'UOC_InsertRecord', 'UOC_UpdateRecord',
+//*                                'UOC_DeleteRecord' and 'UOC_BatchUpdate' 
 //*
 //**********************************************************************************
 
@@ -79,10 +82,18 @@ namespace Touryo.Infrastructure.Business.Business
         private const string SELECT_COUNT_SQL_TEMPLATE =
             "SELECT COUNT(*) FROM {0} {1}";
 
+        /// <summary>データ件数取得SQLテンプレート</summary>
+        private const string SELECT_COUNT_POSTGRESQL_TEMPLATE =
+            "SELECT COUNT(*) FROM \"{0}\" {1}";
+
         /// <summary>データ取得SQLテンプレート（DBMSによって可変となる）</summary>
         /// <remarks>SQL Server用</remarks>
         private const string SELECT_PAGING_SQL_TEMPLATE_SQL_SERVER =
             "WITH [OrderedTable] AS (SELECT {0}, ROW_NUMBER() OVER (ORDER BY [{1}] {2}) [rnum] FROM {3} {4}) SELECT {0} FROM [OrderedTable] WHERE [rnum] BETWEEN {5} AND {6}";
+
+        /// <summary>Select query for PostGreSQL</summary>
+        private const string SELECT_PAGING_SQL_TEMPLATE_POSTGRESQL =
+            "SELECT {0} FROM ( SELECT {0}, ROW_NUMBER() OVER (ORDER BY \"{1}\" {2}) \"RNUM\" FROM \"{3}\" {4} ) AS Temp WHERE \"RNUM\" BETWEEN {5} AND {6}";
 
         /// <summary>データ取得SQLテンプレート（DBMSによって可変となる）</summary>
         /// <remarks>Oracle用</remarks>
@@ -93,7 +104,7 @@ namespace Touryo.Infrastructure.Business.Business
         private const string WHERE_SQL_TEMPLATE_EQUAL = "_s__ColName__e_ = _p__ParamName_";
 
         /// <summary>Where句生成SQLテンプレート（Like）</summary>
-        private const string WHERE_SQL_TEMPLATE_LIKE = "_s__ColName__e_ Like _p__ParamName_";
+        private const string WHERE_SQL_TEMPLATE_LIKE = "_s__ColName__f__e_ Like _p__ParamName_";
 
         #endregion
 
@@ -106,7 +117,7 @@ namespace Touryo.Infrastructure.Business.Business
         // メソッド名のヘッダ・フッタ（静的）
         private string MethodNameHeaderS;
         private string MethodNameFooterS;
-        
+
         // メソッド名のCRUD名
         private string MethodLabel_Ins;
         private string MethodLabel_Sel;
@@ -117,11 +128,11 @@ namespace Touryo.Infrastructure.Business.Business
         // メソッド名のヘッダ・フッタ（動的）
         private string MethodNameHeaderD;
         private string MethodNameFooterD;
-        
+
         // Updateのパラメタ名のヘッダ・フッタ
         private string UpdateParamHeader;
         private string UpdateParamFooter;
-        
+
         // Likeのパラメタ名のヘッダ・フッタ
         private string LikeParamHeader;
         private string LikeParamFooter;
@@ -237,7 +248,7 @@ namespace Touryo.Infrastructure.Business.Business
             string p = ""; // パラメタ記号
             string s = ""; // 囲い記号開始
             string e = ""; // 囲い記号終了
-
+            string f = ""; // 囲い記号終了
             // 囲い文字の選択
             if (parameterValue.DBMSType == DbEnum.DBMSType.SQLServer)
             {
@@ -251,6 +262,11 @@ namespace Touryo.Infrastructure.Business.Business
                 s = "\"";
                 e = "\"";
             }
+            else if (parameterValue.DBMSType == DbEnum.DBMSType.PstGrS)
+            {
+                p = "@";                
+                f = "::text";
+            }
             else
             {
                 p = "@";
@@ -258,11 +274,22 @@ namespace Touryo.Infrastructure.Business.Business
                 e = "]";
             }
 
-            // SQLを設定して
-            cmnDao.SQLText = string.Format(
-                SELECT_COUNT_SQL_TEMPLATE,
-                s + parameterValue.TableName + e, whereSQL)
-                .Replace("_p_", p).Replace("_s_", s).Replace("_e_", e);
+            if (parameterValue.DBMSType == DbEnum.DBMSType.PstGrS)
+            {
+                // SQLを設定して
+                cmnDao.SQLText = string.Format(
+                    SELECT_COUNT_POSTGRESQL_TEMPLATE,
+                    s + parameterValue.TableName + e, whereSQL)
+                    .Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f);
+            }
+            else
+            {
+                // SQLを設定して
+                cmnDao.SQLText = string.Format(
+                    SELECT_COUNT_SQL_TEMPLATE,
+                    s + parameterValue.TableName + e, whereSQL)
+                    .Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f);
+            }
 
             // パラメタは指定済み
 
@@ -293,6 +320,7 @@ namespace Touryo.Infrastructure.Business.Business
             string p = ""; // パラメタ記号
             string s = ""; // 囲い記号開始
             string e = ""; // 囲い記号終了
+            string f = ""; // 囲い記号終了
 
             // テンプレート、囲い文字の選択
             if (parameterValue.DBMSType == DbEnum.DBMSType.SQLServer)
@@ -311,11 +339,18 @@ namespace Touryo.Infrastructure.Business.Business
                 s = "\"";
                 e = "\"";
             }
+            else if (parameterValue.DBMSType == DbEnum.DBMSType.PstGrS)
+            {
+                selectPagingSqlTemplate = SELECT_PAGING_SQL_TEMPLATE_POSTGRESQL;
+
+                p = "@";
+                f = "::text";
+            }
             else
             {
                 selectPagingSqlTemplate = SELECT_PAGING_SQL_TEMPLATE_SQL_SERVER;
 
-                p = "@"; 
+                p = "@";
                 s = "[";
                 e = "]";
             }
@@ -332,7 +367,7 @@ namespace Touryo.Infrastructure.Business.Business
                     parameterValue.SortDirection,
                     s + parameterValue.TableName + e , whereSQL,
                     startRowNum.ToString(), (startRowNum + parameterValue.MaximumRows).ToString()}
-                ).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e);
+                ).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f);
 
             // DataTableをインスタンス化
             if (parameterValue.DataTableType == null)
@@ -680,7 +715,7 @@ namespace Touryo.Infrastructure.Business.Business
 
             string temp = "";
             temp = whereSqlTemplate.Replace("_ColName_", parameterName);
-            
+
             // パラメタ指定
             if (isLike)
             {
@@ -711,6 +746,8 @@ namespace Touryo.Infrastructure.Business.Business
             // 戻り値クラスを生成して、事前に戻り地に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
+
+            this.UOC_RelatedCheck(parameterValue);
 
             // ↓業務処理-----------------------------------------------------
 
@@ -752,7 +789,7 @@ namespace Touryo.Infrastructure.Business.Business
             // SQLを設定して
             cmnDao.SQLFileName =
                 this.DaoClassNameHeader + parameterValue.TableName + this.DaoClassNameFooter
-                + "_" + this.MethodNameHeaderD + this.MethodLabel_Ins + this.MethodNameFooterD+ ".xml";
+                + "_" + this.MethodNameHeaderD + this.MethodLabel_Ins + this.MethodNameFooterD + ".xml";
 
             // パラメタは指定済み
 
@@ -769,6 +806,9 @@ namespace Touryo.Infrastructure.Business.Business
             // 戻り値クラスを生成して、事前に戻り地に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
+
+            // 関連チェック処理
+            this.UOC_RelatedCheck(parameterValue);
 
             // ↓業務処理-----------------------------------------------------
 
@@ -844,6 +884,9 @@ namespace Touryo.Infrastructure.Business.Business
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
+            // 関連チェック処理
+            this.UOC_RelatedCheck(parameterValue);
+
             // ↓業務処理-----------------------------------------------------
 
             // 共通Dao
@@ -912,7 +955,7 @@ namespace Touryo.Infrastructure.Business.Business
                             parameterValue.InsertUpdateValues[k]);
                     }
                 }
-            } 
+            }
 
             // SQLを設定して
             cmnDao.SQLFileName =
@@ -934,6 +977,9 @@ namespace Touryo.Infrastructure.Business.Business
             // 戻り値クラスを生成して、事前に戻り地に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
+
+            // 関連チェック処理
+            this.UOC_RelatedCheck(parameterValue);
 
             // ↓業務処理-----------------------------------------------------
 
@@ -991,6 +1037,9 @@ namespace Touryo.Infrastructure.Business.Business
             // 戻り値クラスを生成して、事前に戻り地に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
+
+            // 関連チェック処理
+            this.UOC_RelatedCheck(parameterValue);
 
             // ↓業務処理-----------------------------------------------------
 
@@ -1090,5 +1139,14 @@ namespace Touryo.Infrastructure.Business.Business
         }
 
         #endregion
+
+        /// <summary>関連チェック処理を実装可能に</summary> 
+        /// <param name="parameterValue">引数</param> 
+        protected virtual void UOC_RelatedCheck(_3TierParameterValue parameterValue)
+        {
+
+        }
+
+
     }
 }
