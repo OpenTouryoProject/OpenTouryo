@@ -2,7 +2,7 @@
 '* クラス名        ：DaoT_WorkflowHistory
 '* クラス日本語名  ：自動生成Ｄａｏクラス
 '*
-'* 作成日時        ：2014/7/4
+'* 作成日時        ：2014/7/18
 '* 作成者          ：棟梁 D層自動生成ツール（墨壺）, 日立 太郎
 '* 更新履歴        ：
 '*
@@ -138,6 +138,17 @@ Public Class DaoT_WorkflowHistory
 		End Set
 	End Property
 
+	''' <summary>WorkflowNo列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
+	Public Property WorkflowNo() As Object
+		Get
+			Return Me.HtParameter("WorkflowNo")
+		End Get
+		Set
+			Me.HtParameter("WorkflowNo") = value
+		End Set
+	End Property
+
 	''' <summary>FromUserId列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
 	Public Property FromUserId() As Object
@@ -193,6 +204,17 @@ Public Class DaoT_WorkflowHistory
 		End Set
 	End Property
 
+	''' <summary>ToUserPositionTitlesId列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
+	Public Property ToUserPositionTitlesId() As Object
+		Get
+			Return Me.HtParameter("ToUserPositionTitlesId")
+		End Get
+		Set
+			Me.HtParameter("ToUserPositionTitlesId") = value
+		End Set
+	End Property
+
 	''' <summary>NextWfPositionId列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
 	Public Property NextWfPositionId() As Object
@@ -201,6 +223,17 @@ Public Class DaoT_WorkflowHistory
 		End Get
 		Set
 			Me.HtParameter("NextWfPositionId") = value
+		End Set
+	End Property
+
+	''' <summary>NextWorkflowNo列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
+	Public Property NextWorkflowNo() As Object
+		Get
+			Return Me.HtParameter("NextWorkflowNo")
+		End Get
+		Set
+			Me.HtParameter("NextWorkflowNo") = value
 		End Set
 	End Property
 
@@ -248,6 +281,28 @@ Public Class DaoT_WorkflowHistory
 		End Set
 	End Property
 
+	''' <summary>AcceptanceUserId列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
+	Public Property AcceptanceUserId() As Object
+		Get
+			Return Me.HtParameter("AcceptanceUserId")
+		End Get
+		Set
+			Me.HtParameter("AcceptanceUserId") = value
+		End Set
+	End Property
+
+	''' <summary>AcceptanceUserInfo列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
+	Public Property AcceptanceUserInfo() As Object
+		Get
+			Return Me.HtParameter("AcceptanceUserInfo")
+		End Get
+		Set
+			Me.HtParameter("AcceptanceUserInfo") = value
+		End Set
+	End Property
+
 	''' <summary>EndDate列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
 	Public Property EndDate() As Object
@@ -292,6 +347,18 @@ Public Class DaoT_WorkflowHistory
 		End Get
 		Set
 			Me.HtParameter("Set_WfPositionId_forUPD") = value
+		End Set
+	End Property
+
+
+	''' <summary>Set_WorkflowNo_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
+	Public Property Set_WorkflowNo_forUPD() As Object
+		Get
+			Return Me.HtParameter("Set_WorkflowNo_forUPD")
+		End Get
+		Set
+			Me.HtParameter("Set_WorkflowNo_forUPD") = value
 		End Set
 	End Property
 
@@ -356,6 +423,18 @@ Public Class DaoT_WorkflowHistory
 	End Property
 
 
+	''' <summary>Set_ToUserPositionTitlesId_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
+	Public Property Set_ToUserPositionTitlesId_forUPD() As Object
+		Get
+			Return Me.HtParameter("Set_ToUserPositionTitlesId_forUPD")
+		End Get
+		Set
+			Me.HtParameter("Set_ToUserPositionTitlesId_forUPD") = value
+		End Set
+	End Property
+
+
 	''' <summary>Set_NextWfPositionId_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
 	Public Property Set_NextWfPositionId_forUPD() As Object
@@ -364,6 +443,18 @@ Public Class DaoT_WorkflowHistory
 		End Get
 		Set
 			Me.HtParameter("Set_NextWfPositionId_forUPD") = value
+		End Set
+	End Property
+
+
+	''' <summary>Set_NextWorkflowNo_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
+	Public Property Set_NextWorkflowNo_forUPD() As Object
+		Get
+			Return Me.HtParameter("Set_NextWorkflowNo_forUPD")
+		End Get
+		Set
+			Me.HtParameter("Set_NextWorkflowNo_forUPD") = value
 		End Set
 	End Property
 
@@ -416,6 +507,30 @@ Public Class DaoT_WorkflowHistory
 	End Property
 
 
+	''' <summary>Set_AcceptanceUserId_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
+	Public Property Set_AcceptanceUserId_forUPD() As Object
+		Get
+			Return Me.HtParameter("Set_AcceptanceUserId_forUPD")
+		End Get
+		Set
+			Me.HtParameter("Set_AcceptanceUserId_forUPD") = value
+		End Set
+	End Property
+
+
+	''' <summary>Set_AcceptanceUserInfo_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
+	Public Property Set_AcceptanceUserInfo_forUPD() As Object
+		Get
+			Return Me.HtParameter("Set_AcceptanceUserInfo_forUPD")
+		End Get
+		Set
+			Me.HtParameter("Set_AcceptanceUserInfo_forUPD") = value
+		End Set
+	End Property
+
+
 	''' <summary>Set_EndDate_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
 	Public Property Set_EndDate_forUPD() As Object
@@ -461,6 +576,18 @@ Public Class DaoT_WorkflowHistory
 		End Get
 		Set
 			Me.HtParameter("WfPositionId_Like") = value
+		End Set
+	End Property
+
+
+	''' <summary>WorkflowNo_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+	Public Property WorkflowNo_Like() As Object
+		Get
+			Return Me.HtParameter("WorkflowNo_Like")
+		End Get
+		Set
+			Me.HtParameter("WorkflowNo_Like") = value
 		End Set
 	End Property
 
@@ -525,6 +652,18 @@ Public Class DaoT_WorkflowHistory
 	End Property
 
 
+	''' <summary>ToUserPositionTitlesId_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+	Public Property ToUserPositionTitlesId_Like() As Object
+		Get
+			Return Me.HtParameter("ToUserPositionTitlesId_Like")
+		End Get
+		Set
+			Me.HtParameter("ToUserPositionTitlesId_Like") = value
+		End Set
+	End Property
+
+
 	''' <summary>NextWfPositionId_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
 	Public Property NextWfPositionId_Like() As Object
@@ -533,6 +672,18 @@ Public Class DaoT_WorkflowHistory
 		End Get
 		Set
 			Me.HtParameter("NextWfPositionId_Like") = value
+		End Set
+	End Property
+
+
+	''' <summary>NextWorkflowNo_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+	Public Property NextWorkflowNo_Like() As Object
+		Get
+			Return Me.HtParameter("NextWorkflowNo_Like")
+		End Get
+		Set
+			Me.HtParameter("NextWorkflowNo_Like") = value
 		End Set
 	End Property
 
@@ -581,6 +732,30 @@ Public Class DaoT_WorkflowHistory
 		End Get
 		Set
 			Me.HtParameter("AcceptanceDate_Like") = value
+		End Set
+	End Property
+
+
+	''' <summary>AcceptanceUserId_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+	Public Property AcceptanceUserId_Like() As Object
+		Get
+			Return Me.HtParameter("AcceptanceUserId_Like")
+		End Get
+		Set
+			Me.HtParameter("AcceptanceUserId_Like") = value
+		End Set
+	End Property
+
+
+	''' <summary>AcceptanceUserInfo_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+	Public Property AcceptanceUserInfo_Like() As Object
+		Get
+			Return Me.HtParameter("AcceptanceUserInfo_Like")
+		End Get
+		Set
+			Me.HtParameter("AcceptanceUserInfo_Like") = value
 		End Set
 	End Property
 

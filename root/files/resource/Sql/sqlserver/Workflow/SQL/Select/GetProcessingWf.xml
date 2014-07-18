@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ROOT>
+  SELECT
+    *
+  FROM
+    [T_Workflow], [T_CurrentWorkflow]
+  <WHERE>
+    WHERE
+      [T_Workflow].[WorkflowControlNo] = [T_CurrentWorkflow].[WorkflowControlNo]
+      <IF>AND [SubSystemId] = @SubSystemId<ELSE>IS NULL</ELSE></IF>
+      <IF>AND [WorkflowName] = @WorkflowName<ELSE>IS NULL</ELSE></IF>
+      AND AcceptanceUserId IS @UserId
+  </WHERE>
+</ROOT>
+

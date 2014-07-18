@@ -2,7 +2,7 @@
 '* クラス名        ：DaoM_Workflow
 '* クラス日本語名  ：自動生成Ｄａｏクラス
 '*
-'* 作成日時        ：2014/7/4
+'* 作成日時        ：2014/7/18
 '* 作成者          ：棟梁 D層自動生成ツール（墨壺）, 日立 太郎
 '* 更新履歴        ：
 '*
@@ -149,6 +149,17 @@ Public Class DaoM_Workflow
 		End Set
 	End Property
 
+	''' <summary>WorkflowNo列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
+	Public Property WorkflowNo() As Object
+		Get
+			Return Me.HtParameter("WorkflowNo")
+		End Get
+		Set
+			Me.HtParameter("WorkflowNo") = value
+		End Set
+	End Property
+
 	''' <summary>FromUserId列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
 	Public Property FromUserId() As Object
@@ -212,6 +223,17 @@ Public Class DaoM_Workflow
 		End Get
 		Set
 			Me.HtParameter("NextWfPositionId") = value
+		End Set
+	End Property
+
+	''' <summary>NextWorkflowNo列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
+	Public Property NextWorkflowNo() As Object
+		Get
+			Return Me.HtParameter("NextWorkflowNo")
+		End Get
+		Set
+			Me.HtParameter("NextWorkflowNo") = value
 		End Set
 	End Property
 
@@ -286,6 +308,18 @@ Public Class DaoM_Workflow
 	End Property
 
 
+	''' <summary>Set_WorkflowNo_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
+	Public Property Set_WorkflowNo_forUPD() As Object
+		Get
+			Return Me.HtParameter("Set_WorkflowNo_forUPD")
+		End Get
+		Set
+			Me.HtParameter("Set_WorkflowNo_forUPD") = value
+		End Set
+	End Property
+
+
 	''' <summary>Set_FromUserId_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
 	Public Property Set_FromUserId_forUPD() As Object
@@ -354,6 +388,18 @@ Public Class DaoM_Workflow
 		End Get
 		Set
 			Me.HtParameter("Set_NextWfPositionId_forUPD") = value
+		End Set
+	End Property
+
+
+	''' <summary>Set_NextWorkflowNo_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
+	Public Property Set_NextWorkflowNo_forUPD() As Object
+		Get
+			Return Me.HtParameter("Set_NextWorkflowNo_forUPD")
+		End Get
+		Set
+			Me.HtParameter("Set_NextWorkflowNo_forUPD") = value
 		End Set
 	End Property
 
@@ -431,6 +477,18 @@ Public Class DaoM_Workflow
 	End Property
 
 
+	''' <summary>WorkflowNo_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+	Public Property WorkflowNo_Like() As Object
+		Get
+			Return Me.HtParameter("WorkflowNo_Like")
+		End Get
+		Set
+			Me.HtParameter("WorkflowNo_Like") = value
+		End Set
+	End Property
+
+
 	''' <summary>FromUserId_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
 	Public Property FromUserId_Like() As Object
@@ -499,6 +557,18 @@ Public Class DaoM_Workflow
 		End Get
 		Set
 			Me.HtParameter("NextWfPositionId_Like") = value
+		End Set
+	End Property
+
+
+	''' <summary>NextWorkflowNo_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+	Public Property NextWorkflowNo_Like() As Object
+		Get
+			Return Me.HtParameter("NextWorkflowNo_Like")
+		End Get
+		Set
+			Me.HtParameter("NextWorkflowNo_Like") = value
 		End Set
 	End Property
 

@@ -2,7 +2,7 @@
 //* クラス名        ：DaoT_CurrentWorkflow
 //* クラス日本語名  ：自動生成Ｄａｏクラス
 //*
-//* 作成日時        ：2014/7/4
+//* 作成日時        ：2014/7/18
 //* 作成者          ：棟梁 D層自動生成ツール（墨壺）, 日立 太郎
 //* 更新履歴        ：
 //*
@@ -151,6 +151,20 @@ public class DaoT_CurrentWorkflow : MyBaseDao
         }
     }
     
+    /// <summary>WorkflowNo列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
+    public object WorkflowNo
+    {
+        set
+        {
+            this.HtParameter["WorkflowNo"] = value;
+        }
+        get
+        {
+            return this.HtParameter["WorkflowNo"];
+        }
+    }
+    
     /// <summary>FromUserId列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     /// <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
     public object FromUserId
@@ -221,6 +235,20 @@ public class DaoT_CurrentWorkflow : MyBaseDao
         }
     }
     
+    /// <summary>ToUserPositionTitlesId列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
+    public object ToUserPositionTitlesId
+    {
+        set
+        {
+            this.HtParameter["ToUserPositionTitlesId"] = value;
+        }
+        get
+        {
+            return this.HtParameter["ToUserPositionTitlesId"];
+        }
+    }
+    
     /// <summary>NextWfPositionId列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     /// <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
     public object NextWfPositionId
@@ -232,6 +260,20 @@ public class DaoT_CurrentWorkflow : MyBaseDao
         get
         {
             return this.HtParameter["NextWfPositionId"];
+        }
+    }
+    
+    /// <summary>NextWorkflowNo列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
+    public object NextWorkflowNo
+    {
+        set
+        {
+            this.HtParameter["NextWorkflowNo"] = value;
+        }
+        get
+        {
+            return this.HtParameter["NextWorkflowNo"];
         }
     }
     
@@ -304,6 +346,34 @@ public class DaoT_CurrentWorkflow : MyBaseDao
             return this.HtParameter["AcceptanceDate"];
         }
     }
+    
+    /// <summary>AcceptanceUserId列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
+    public object AcceptanceUserId
+    {
+        set
+        {
+            this.HtParameter["AcceptanceUserId"] = value;
+        }
+        get
+        {
+            return this.HtParameter["AcceptanceUserId"];
+        }
+    }
+    
+    /// <summary>AcceptanceUserInfo列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
+    public object AcceptanceUserInfo
+    {
+        set
+        {
+            this.HtParameter["AcceptanceUserInfo"] = value;
+        }
+        get
+        {
+            return this.HtParameter["AcceptanceUserInfo"];
+        }
+    }
 
 
     /// <summary>Set_WorkflowControlNo_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
@@ -347,6 +417,21 @@ public class DaoT_CurrentWorkflow : MyBaseDao
         get
         {
             return this.HtParameter["Set_WfPositionId_forUPD"];
+        }
+    }
+
+
+    /// <summary>Set_WorkflowNo_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
+    public object Set_WorkflowNo_forUPD
+    {
+        set
+        {
+            this.HtParameter["Set_WorkflowNo_forUPD"] = value;
+        }
+        get
+        {
+            return this.HtParameter["Set_WorkflowNo_forUPD"];
         }
     }
 
@@ -426,6 +511,21 @@ public class DaoT_CurrentWorkflow : MyBaseDao
     }
 
 
+    /// <summary>Set_ToUserPositionTitlesId_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
+    public object Set_ToUserPositionTitlesId_forUPD
+    {
+        set
+        {
+            this.HtParameter["Set_ToUserPositionTitlesId_forUPD"] = value;
+        }
+        get
+        {
+            return this.HtParameter["Set_ToUserPositionTitlesId_forUPD"];
+        }
+    }
+
+
     /// <summary>Set_NextWfPositionId_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     /// <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
     public object Set_NextWfPositionId_forUPD
@@ -437,6 +537,21 @@ public class DaoT_CurrentWorkflow : MyBaseDao
         get
         {
             return this.HtParameter["Set_NextWfPositionId_forUPD"];
+        }
+    }
+
+
+    /// <summary>Set_NextWorkflowNo_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
+    public object Set_NextWorkflowNo_forUPD
+    {
+        set
+        {
+            this.HtParameter["Set_NextWorkflowNo_forUPD"] = value;
+        }
+        get
+        {
+            return this.HtParameter["Set_NextWorkflowNo_forUPD"];
         }
     }
 
@@ -516,6 +631,36 @@ public class DaoT_CurrentWorkflow : MyBaseDao
     }
 
 
+    /// <summary>Set_AcceptanceUserId_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
+    public object Set_AcceptanceUserId_forUPD
+    {
+        set
+        {
+            this.HtParameter["Set_AcceptanceUserId_forUPD"] = value;
+        }
+        get
+        {
+            return this.HtParameter["Set_AcceptanceUserId_forUPD"];
+        }
+    }
+
+
+    /// <summary>Set_AcceptanceUserInfo_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
+    public object Set_AcceptanceUserInfo_forUPD
+    {
+        set
+        {
+            this.HtParameter["Set_AcceptanceUserInfo_forUPD"] = value;
+        }
+        get
+        {
+            return this.HtParameter["Set_AcceptanceUserInfo_forUPD"];
+        }
+    }
+
+
 
     /// <summary>WorkflowControlNo_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
@@ -558,6 +703,21 @@ public class DaoT_CurrentWorkflow : MyBaseDao
         get
         {
             return this.HtParameter["WfPositionId_Like"];
+        }
+    }
+
+
+    /// <summary>WorkflowNo_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+    public object WorkflowNo_Like
+    {
+        set
+        {
+            this.HtParameter["WorkflowNo_Like"] = value;
+        }
+        get
+        {
+            return this.HtParameter["WorkflowNo_Like"];
         }
     }
 
@@ -637,6 +797,21 @@ public class DaoT_CurrentWorkflow : MyBaseDao
     }
 
 
+    /// <summary>ToUserPositionTitlesId_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+    public object ToUserPositionTitlesId_Like
+    {
+        set
+        {
+            this.HtParameter["ToUserPositionTitlesId_Like"] = value;
+        }
+        get
+        {
+            return this.HtParameter["ToUserPositionTitlesId_Like"];
+        }
+    }
+
+
     /// <summary>NextWfPositionId_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
     public object NextWfPositionId_Like
@@ -648,6 +823,21 @@ public class DaoT_CurrentWorkflow : MyBaseDao
         get
         {
             return this.HtParameter["NextWfPositionId_Like"];
+        }
+    }
+
+
+    /// <summary>NextWorkflowNo_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+    public object NextWorkflowNo_Like
+    {
+        set
+        {
+            this.HtParameter["NextWorkflowNo_Like"] = value;
+        }
+        get
+        {
+            return this.HtParameter["NextWorkflowNo_Like"];
         }
     }
 
@@ -723,6 +913,36 @@ public class DaoT_CurrentWorkflow : MyBaseDao
         get
         {
             return this.HtParameter["AcceptanceDate_Like"];
+        }
+    }
+
+
+    /// <summary>AcceptanceUserId_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+    public object AcceptanceUserId_Like
+    {
+        set
+        {
+            this.HtParameter["AcceptanceUserId_Like"] = value;
+        }
+        get
+        {
+            return this.HtParameter["AcceptanceUserId_Like"];
+        }
+    }
+
+
+    /// <summary>AcceptanceUserInfo_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+    public object AcceptanceUserInfo_Like
+    {
+        set
+        {
+            this.HtParameter["AcceptanceUserInfo_Like"] = value;
+        }
+        get
+        {
+            return this.HtParameter["AcceptanceUserInfo_Like"];
         }
     }
 

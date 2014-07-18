@@ -2,7 +2,7 @@
 //* クラス名        ：DaoM_Workflow
 //* クラス日本語名  ：自動生成Ｄａｏクラス
 //*
-//* 作成日時        ：2014/7/4
+//* 作成日時        ：2014/7/18
 //* 作成者          ：棟梁 D層自動生成ツール（墨壺）, 日立 太郎
 //* 更新履歴        ：
 //*
@@ -165,6 +165,20 @@ public class DaoM_Workflow : MyBaseDao
         }
     }
     
+    /// <summary>WorkflowNo列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
+    public object WorkflowNo
+    {
+        set
+        {
+            this.HtParameter["WorkflowNo"] = value;
+        }
+        get
+        {
+            return this.HtParameter["WorkflowNo"];
+        }
+    }
+    
     /// <summary>FromUserId列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     /// <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
     public object FromUserId
@@ -246,6 +260,20 @@ public class DaoM_Workflow : MyBaseDao
         get
         {
             return this.HtParameter["NextWfPositionId"];
+        }
+    }
+    
+    /// <summary>NextWorkflowNo列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
+    public object NextWorkflowNo
+    {
+        set
+        {
+            this.HtParameter["NextWorkflowNo"] = value;
+        }
+        get
+        {
+            return this.HtParameter["NextWorkflowNo"];
         }
     }
     
@@ -338,6 +366,21 @@ public class DaoM_Workflow : MyBaseDao
     }
 
 
+    /// <summary>Set_WorkflowNo_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
+    public object Set_WorkflowNo_forUPD
+    {
+        set
+        {
+            this.HtParameter["Set_WorkflowNo_forUPD"] = value;
+        }
+        get
+        {
+            return this.HtParameter["Set_WorkflowNo_forUPD"];
+        }
+    }
+
+
     /// <summary>Set_FromUserId_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     /// <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
     public object Set_FromUserId_forUPD
@@ -424,6 +467,21 @@ public class DaoM_Workflow : MyBaseDao
         get
         {
             return this.HtParameter["Set_NextWfPositionId_forUPD"];
+        }
+    }
+
+
+    /// <summary>Set_NextWorkflowNo_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
+    public object Set_NextWorkflowNo_forUPD
+    {
+        set
+        {
+            this.HtParameter["Set_NextWorkflowNo_forUPD"] = value;
+        }
+        get
+        {
+            return this.HtParameter["Set_NextWorkflowNo_forUPD"];
         }
     }
 
@@ -519,6 +577,21 @@ public class DaoM_Workflow : MyBaseDao
     }
 
 
+    /// <summary>WorkflowNo_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+    public object WorkflowNo_Like
+    {
+        set
+        {
+            this.HtParameter["WorkflowNo_Like"] = value;
+        }
+        get
+        {
+            return this.HtParameter["WorkflowNo_Like"];
+        }
+    }
+
+
     /// <summary>FromUserId_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
     public object FromUserId_Like
@@ -605,6 +678,21 @@ public class DaoM_Workflow : MyBaseDao
         get
         {
             return this.HtParameter["NextWfPositionId_Like"];
+        }
+    }
+
+
+    /// <summary>NextWorkflowNo_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+    public object NextWorkflowNo_Like
+    {
+        set
+        {
+            this.HtParameter["NextWorkflowNo_Like"] = value;
+        }
+        get
+        {
+            return this.HtParameter["NextWorkflowNo_Like"];
         }
     }
 
