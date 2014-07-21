@@ -96,11 +96,13 @@ Partial Public Class _TableName_ConditionalSearch
 
         If Me.ddlDap.SelectedValue = "SQL" Then
             Session("DBMS") = DbEnum.DBMSType.SQLServer
-        Else If Me.ddlDap.SelectedValue = "ODP" Then
-	    Session("DBMS") = DbEnum.DBMSType.Oracle
-	Else If Me.ddlDap.SelectedValue = "NPS" Then
-	    Session("DBMS") = DbEnum.DBMSType.PstGrS
-	End If
+        ElseIf Me.ddlDap.SelectedValue = "ODP" Then
+            Session("DBMS") = DbEnum.DBMSType.Oracle
+        ElseIf Me.ddlDap.SelectedValue = "NPS" Then
+            Session("DBMS") = DbEnum.DBMSType.PstGrS
+        ElseIf Me.ddlDap.SelectedValue = "MCN" Then
+            Session("DBMS") = DbEnum.DBMSType.MySQL
+        End If
     End Sub
 
 #End Region
@@ -221,16 +223,15 @@ Partial Public Class _TableName_ConditionalSearch
         ' 主キーとタイムスタンプ列
         ' 主キー列
         ' ControlComment:LoopStart-PKColumn
-        PrimaryKeyAndTimeStamp.Add("_ColumnName_", dt.Rows(e.NewSelectedIndex)("_ColumnName_").ToString())
+        TS_CommentOut_PrimaryKeyAndTimeStamp.Add("_ColumnName_", dt.Rows(e.NewSelectedIndex)("_ColumnName_").ToString())
         ' ControlComment:LoopEnd-PKColumn
 
-        ' タイムスタンプ列	
-        If dt.Rows(e.NewSelectedIndex)("_TimeStampColName_").[GetType]() = GetType(System.DBNull) Then
-        
-        Else
-	'remove the typecast as it is giving conversion error
-            TS_CommentOut_(PrimaryKeyAndTimeStamp.Add("_TimeStampColName_", dt.Rows(e.NewSelectedIndex)("_TimeStampColName_"))) 
-        End If
+        ' タイムスタンプ列	        
+        TS_CommentOut_ If dt.Rows(e.NewSelectedIndex)("_TimeStampColName_").[GetType]() = GetType(System.DBNull) Then
+
+        TS_CommentOut_ Else
+            TS_CommentOut_(PrimaryKeyAndTimeStamp.Add("_TimeStampColName_", dt.Rows(e.NewSelectedIndex)("_TimeStampColName_")))the typecast as it is giving conversion error"
+        TS_CommentOut_ End If
 
         Session("PrimaryKeyAndTimeStamp") = PrimaryKeyAndTimeStamp
     End Sub

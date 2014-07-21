@@ -104,6 +104,10 @@ public partial class _TableName_SearchAndUpdate : MyBaseController
         {
             Session["DBMS"] = DbEnum.DBMSType.PstGrS;
         }
+        else if (this.ddlDap.SelectedValue == "MCN")
+        {
+            Session["DBMS"] = DbEnum.DBMSType.MySQL;
+        }
     }
 
     #endregion

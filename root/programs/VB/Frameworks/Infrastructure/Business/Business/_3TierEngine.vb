@@ -31,7 +31,7 @@
 '*  2014/07/17  Sai-San           Added Select count query and select paging query constants and checks for PostgreSQL db support 
 '*                                Added UOC_RelatedCheck override method and method calls in methods 'UOC_InsertRecord', 'UOC_UpdateRecord',
 '*                                'UOC_DeleteRecord' and 'UOC_BatchUpdate' 
-'*
+'**2014/07/21   Rituparna           Added SelectCount and SelectPaging query constatnts and check for MySql db support
 '**********************************************************************************
 
 ' レイトバインド用
@@ -94,6 +94,12 @@ Namespace Touryo.Infrastructure.Business.Business
         ''' <summary>データ取得SQLテンプレート（DBMSによって可変となる）</summary>
         ''' <remarks>Oracle用</remarks>
         Private Const SELECT_PAGING_SQL_TEMPLATE_ORACLE As String = "SELECT {0} FROM ( SELECT {0}, ROW_NUMBER() OVER (ORDER BY ""{1}"" {2}) ""RNUM"" FROM ""{3}"" {4} ) WHERE ""RNUM"" BETWEEN {5} AND {6}"
+
+        ''' <summary>
+        '''Selectpaging query from Mysql Database
+        ''' </summary>
+        Private Const SELECT_PAGING_MYSQL_TEMPLATE As String =
+            "SELECT * FROM(SELECT * FROM ( SELECT *,  @i := @i + 1 AS RESULT FROM {3},(SELECT @i := 0) TEMP ORDER BY ""{1}""  {2}) TEMP1 {4})TEMP3 WHERE RESULT BETWEEN {5} AND {6}"
 
         ''' <summary>Where句生成SQLテンプレート（＝）</summary>
         Private Const WHERE_SQL_TEMPLATE_EQUAL As String = "_s__ColName__e_ = _p__ParamName_"
@@ -253,6 +259,10 @@ Namespace Touryo.Infrastructure.Business.Business
             ElseIf parameterValue.DBMSType = DbEnum.DBMSType.PstGrS Then
                 p = "@"
                 f = "::text"
+            ElseIf parameterValue.DBMSType = DbEnum.DBMSType.MySQL Then
+                p = "@"
+                s = """"
+                e = """"
             Else
                 p = "@"
                 s = "["
@@ -263,10 +273,14 @@ Namespace Touryo.Infrastructure.Business.Business
                 ' SQLを設定して
                 cmnDao.SQLText = String.Format(SELECT_COUNT_POSTGRESQL_TEMPLATE, s & Convert.ToString(parameterValue.TableName) & e, _
                                                whereSQL).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f)
+            ElseIf parameterValue.DBMSType = DbEnum.DBMSType.MySQL Then
+                cmnDao.SQLText = String.Format(SELECT_COUNT_SQL_TEMPLATE, _
+                 parameterValue.TableName, whereSQL).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f).Replace("""", String.Empty)
+
             Else
                 ' SQLを設定して
                 cmnDao.SQLText = String.Format(SELECT_COUNT_SQL_TEMPLATE, s & Convert.ToString(parameterValue.TableName) & e, _
-                                               whereSQL).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e)
+                                               whereSQL).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f)
             End If
 
             ' パラメタは指定済み
@@ -320,6 +334,12 @@ Namespace Touryo.Infrastructure.Business.Business
 
                 p = "@"
                 f = "::text"
+
+            ElseIf parameterValue.DBMSType = DbEnum.DBMSType.MySQL Then
+                selectPagingSqlTemplate = SELECT_PAGING_MYSQL_TEMPLATE
+                p = "@"
+                s = """"
+                e = """"
             Else
                 selectPagingSqlTemplate = SELECT_PAGING_SQL_TEMPLATE_SQL_SERVER
 
@@ -330,11 +350,18 @@ Namespace Touryo.Infrastructure.Business.Business
 
             Dim startRowNum As Integer = parameterValue.StartRowIndex + 1
 
-            ' SQL本体の生成（いろいろ組み込み
-            '（DBMSによって可変となる可能性有り）
-            Dim selectPagingSQL As String = String.Format(selectPagingSqlTemplate, New String() {parameterValue.ColumnList, parameterValue.SortExpression, parameterValue.SortDirection, s & Convert.ToString(parameterValue.TableName) & e, whereSQL, startRowNum.ToString(), _
-             (startRowNum + parameterValue.MaximumRows).ToString()}).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f)
+            Dim selectPagingSQL As String = String.Empty
 
+            If parameterValue.DBMSType = DbEnum.DBMSType.MySQL Then
+                selectPagingSQL = String.Format(selectPagingSqlTemplate, New String() {parameterValue.ColumnList, parameterValue.SortExpression, parameterValue.SortDirection, _
+                    parameterValue.TableName, whereSQL, startRowNum.ToString(), (startRowNum + parameterValue.MaximumRows).ToString()}).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f).Replace("""", String.Empty)
+            Else
+
+                ' SQL本体の生成（いろいろ組み込み
+                '（DBMSによって可変となる可能性有り）
+                selectPagingSQL = String.Format(selectPagingSqlTemplate, New String() {parameterValue.ColumnList, parameterValue.SortExpression, parameterValue.SortDirection, s & Convert.ToString(parameterValue.TableName) & e, whereSQL, startRowNum.ToString(), _
+                 (startRowNum + parameterValue.MaximumRows).ToString()}).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f)
+            End If
             ' DataTableをインスタンス化
             If parameterValue.DataTableType Is Nothing Then
                 ' == null

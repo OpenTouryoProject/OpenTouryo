@@ -31,7 +31,7 @@
 //*  2014/07/17  Sai-San           Added Select count query and select paging query constants and checks for PostgreSQL db support 
 //*                                Added UOC_RelatedCheck override method and method calls in methods 'UOC_InsertRecord', 'UOC_UpdateRecord',
 //*                                'UOC_DeleteRecord' and 'UOC_BatchUpdate' 
-//*
+//*2014/07/21   Rituparna           Added SelectCount and SelectPaging query constatnts and check for MySql db support
 //**********************************************************************************
 
 // レイトバインド用
@@ -99,6 +99,12 @@ namespace Touryo.Infrastructure.Business.Business
         /// <remarks>Oracle用</remarks>
         private const string SELECT_PAGING_SQL_TEMPLATE_ORACLE =
             "SELECT {0} FROM ( SELECT {0}, ROW_NUMBER() OVER (ORDER BY \"{1}\" {2}) \"RNUM\" FROM \"{3}\" {4} ) WHERE \"RNUM\" BETWEEN {5} AND {6}";
+
+        /// <summary>
+        ///Selectpaging query from Mysql Database
+        /// </summary>
+        private const string SELECT_PAGING_MYSQL_TEMPLATE =
+            "SELECT * FROM(SELECT * FROM ( SELECT *,  @i := @i + 1 AS RESULT FROM {3},(SELECT @i := 0) TEMP ORDER BY \"{1}\"  {2}) TEMP1 {4})TEMP3 WHERE RESULT BETWEEN {5} AND {6}";
 
         /// <summary>Where句生成SQLテンプレート（＝）</summary>
         private const string WHERE_SQL_TEMPLATE_EQUAL = "_s__ColName__e_ = _p__ParamName_";
@@ -256,6 +262,13 @@ namespace Touryo.Infrastructure.Business.Business
                 s = "[";
                 e = "]";
             }
+            //MYSQL
+            else if (parameterValue.DBMSType == DbEnum.DBMSType.MySQL)
+            {
+                p = "@";
+                s = "\"";
+                e = "\"";
+            }
             else if (parameterValue.DBMSType == DbEnum.DBMSType.Oracle)
             {
                 p = ":";
@@ -264,7 +277,7 @@ namespace Touryo.Infrastructure.Business.Business
             }
             else if (parameterValue.DBMSType == DbEnum.DBMSType.PstGrS)
             {
-                p = "@";                
+                p = "@";
                 f = "::text";
             }
             else
@@ -282,6 +295,17 @@ namespace Touryo.Infrastructure.Business.Business
                     s + parameterValue.TableName + e, whereSQL)
                     .Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f);
             }
+            //MYSQL
+            else if (parameterValue.DBMSType == DbEnum.DBMSType.MySQL)
+            {
+
+                string SQLtext = string.Format(
+                    SELECT_COUNT_SQL_TEMPLATE,
+                     parameterValue.TableName, whereSQL)
+                    .Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f).Replace("\"", string.Empty);
+                cmnDao.SQLText = SQLtext;
+            }
+
             else
             {
                 // SQLを設定して
@@ -331,6 +355,13 @@ namespace Touryo.Infrastructure.Business.Business
                 s = "[";
                 e = "]";
             }
+            else if (parameterValue.DBMSType == DbEnum.DBMSType.MySQL)
+            {
+                selectPagingSqlTemplate = SELECT_PAGING_MYSQL_TEMPLATE;
+                p = "@";
+                s = "\"";
+                e = "\"";
+            }
             else if (parameterValue.DBMSType == DbEnum.DBMSType.Oracle)
             {
                 selectPagingSqlTemplate = SELECT_PAGING_SQL_TEMPLATE_ORACLE;
@@ -357,18 +388,36 @@ namespace Touryo.Infrastructure.Business.Business
 
             int startRowNum = parameterValue.StartRowIndex + 1;
 
-            // SQL本体の生成（いろいろ組み込み
-            //（DBMSによって可変となる可能性有り）
-            string selectPagingSQL = string.Format(
+            string selectPagingSQL = "";
+            if (parameterValue.DBMSType == DbEnum.DBMSType.MySQL)
+            {
+
+                selectPagingSQL = string.Format(
                 selectPagingSqlTemplate,
                 new string[] {
                     parameterValue.ColumnList,
                     parameterValue.SortExpression,
                     parameterValue.SortDirection,
+                    parameterValue.TableName ,whereSQL,
+                    startRowNum.ToString(), (startRowNum + parameterValue.MaximumRows).ToString()}
+                ).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f).Replace("\"", string.Empty);
+
+            }
+            else
+            {
+                // SQL本体の生成（いろいろ組み込み
+                //（DBMSによって可変となる可能性有り）
+                selectPagingSQL = string.Format(
+                   selectPagingSqlTemplate,
+                   new string[] {
+                    parameterValue.ColumnList,
+                    parameterValue.SortExpression,
+                    parameterValue.SortDirection,
                     s + parameterValue.TableName + e , whereSQL,
                     startRowNum.ToString(), (startRowNum + parameterValue.MaximumRows).ToString()}
-                ).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f);
+                   ).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f);
 
+            }
             // DataTableをインスタンス化
             if (parameterValue.DataTableType == null)
             {

@@ -7,6 +7,7 @@
         <asp:ListItem Value="SQL">SQL Server / SQL Client</asp:ListItem>
         <asp:ListItem Value="ODP">Oracle / ODP.NET</asp:ListItem>
 	<asp:ListItem Value="NPS">PostGres /NPGSQL</asp:ListItem>
+    <asp:ListItem Value="MCN">MySQL / MySQL Connector/NET</asp:ListItem>
     </cc1:WebCustomDropDownList><br />
     
 	詳細表示<br/>
@@ -32,4 +33,3 @@
     結果：<asp:Label ID="lblResult" runat="server" ></asp:Label>
     
 </asp:Content>
-
