@@ -100,10 +100,19 @@ public partial class _TableName_ConditionalSearch : MyBaseController
         {
             Session["DBMS"] = DbEnum.DBMSType.SQLServer;
         }
-        else
+        else if (this.ddlDap.SelectedValue == "ODP")
         {
             Session["DBMS"] = DbEnum.DBMSType.Oracle;
         }
+        else if (this.ddlDap.SelectedValue == "MCN")
+        {
+            Session["DBMS"] = DbEnum.DBMSType.MySQL;
+        }
+        else if (this.ddlDap.SelectedValue == "NPS")
+        {
+            Session["DBMS"] = DbEnum.DBMSType.PstGrS;
+        }
+
     }
 
     #endregion
@@ -234,15 +243,12 @@ public partial class _TableName_ConditionalSearch : MyBaseController
         PrimaryKeyAndTimeStamp.Add("_ColumnName_", dt.Rows[e.NewSelectedIndex]["_ColumnName_"].ToString());
         // ControlComment:LoopEnd-PKColumn
         
-        // タイムスタンプ列
-        //<"03-03-2014","Ritu"," Adding timestamp column to dic when its not null. And removed the typecast as it is giving conversion error" <START>
-        if(dt.Rows[e.NewSelectedIndex]["_TimeStampColName_"].GetType()!=typeof(System.DBNull))
-        {
+        // タイムスタンプ列                
+        TS_CommentOut_ if(dt.Rows[e.NewSelectedIndex]["_TimeStampColName_"].GetType()!=typeof(System.DBNull))
+        TS_CommentOut_ {
         TS_CommentOut_ PrimaryKeyAndTimeStamp.Add("_TimeStampColName_", dt.Rows[e.NewSelectedIndex]["_TimeStampColName_"]);
-        }
-	    //<"03-03-2014","Ritu", <END>
-        Session["PrimaryKeyAndTimeStamp"] = PrimaryKeyAndTimeStamp;
-       
+        TS_CommentOut_ }
+        Session["PrimaryKeyAndTimeStamp"] = PrimaryKeyAndTimeStamp;       
     }
 
     /// <summary>gvwGridView1の行選択後イベント</summary>
