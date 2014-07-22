@@ -104,7 +104,7 @@ Partial Public Class _TableName_SearchAndUpdate
         ElseIf Me.ddlDap.SelectedValue = "NPS" Then
             Session("DBMS") = DbEnum.DBMSType.PstGrS
         ElseIf Me.ddlDap.SelectedValue = "MCN" Then
-            Session("DBMS") = DbEnum.DBMSType.PstGrS
+            Session("DBMS") = DbEnum.DBMSType.MySQL
         End If
     End Sub
 
