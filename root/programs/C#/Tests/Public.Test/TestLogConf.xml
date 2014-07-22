@@ -36,7 +36,7 @@
 	
 	<!-- ローリング・ログファイル出力用アペンダ -->
 	<appender name="ACCESS" type="log4net.Appender.FileAppender">
-		<param name="File" value="..\..\TestResult\ACCESS.log" />
+		<param name="File" value="..\..\Result\ACCESS.log" />
 		<!-- ローリングの設定 -->
 		<param name="StaticLogFileName" value="true" />
 		<!-- 書き込み時の設定 -->
@@ -54,7 +54,7 @@
 	
 	<!-- ローリング・ログファイル出力用アペンダ -->
 	<appender name="SQLTRACE" type="log4net.Appender.FileAppender">
-		<param name="File" value="..\..\TestResult\SQLTRACE.log" />
+		<param name="File" value="..\..\Result\SQLTRACE.log" />
     <!-- ローリングの設定 -->
     <param name="StaticLogFileName" value="true" />
     <!-- 書き込み時の設定 -->
@@ -72,7 +72,7 @@
 	
 	<!-- ローリング・ログファイル出力用アペンダ -->
 	<appender name="OPERATION" type="log4net.Appender.FileAppender">
-		<param name="File" value="..\..\TestResult\OPERATION.log" />
+		<param name="File" value="..\..\Result\OPERATION.log" />
     <!-- ローリングの設定 -->
     <param name="StaticLogFileName" value="true" />
 		<!-- 書き込み時の設定 -->
