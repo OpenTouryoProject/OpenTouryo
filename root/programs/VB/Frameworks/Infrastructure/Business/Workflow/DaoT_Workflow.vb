@@ -171,14 +171,14 @@ Public Class DaoT_Workflow
 		End Set
 	End Property
 
-	''' <summary>CreatedDate列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <summary>StartDate列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
-	Public Property CreatedDate() As Object
+	Public Property StartDate() As Object
 		Get
-			Return Me.HtParameter("CreatedDate")
+			Return Me.HtParameter("StartDate")
 		End Get
 		Set
-			Me.HtParameter("CreatedDate") = value
+			Me.HtParameter("StartDate") = value
 		End Set
 	End Property
 
@@ -266,14 +266,14 @@ Public Class DaoT_Workflow
 	End Property
 
 
-	''' <summary>Set_CreatedDate_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <summary>Set_StartDate_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
-	Public Property Set_CreatedDate_forUPD() As Object
+	Public Property Set_StartDate_forUPD() As Object
 		Get
-			Return Me.HtParameter("Set_CreatedDate_forUPD")
+			Return Me.HtParameter("Set_StartDate_forUPD")
 		End Get
 		Set
-			Me.HtParameter("Set_CreatedDate_forUPD") = value
+			Me.HtParameter("Set_StartDate_forUPD") = value
 		End Set
 	End Property
 
@@ -363,14 +363,14 @@ Public Class DaoT_Workflow
 	End Property
 
 
-	''' <summary>CreatedDate_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <summary>StartDate_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
-	Public Property CreatedDate_Like() As Object
+	Public Property StartDate_Like() As Object
 		Get
-			Return Me.HtParameter("CreatedDate_Like")
+			Return Me.HtParameter("StartDate_Like")
 		End Get
 		Set
-			Me.HtParameter("CreatedDate_Like") = value
+			Me.HtParameter("StartDate_Like") = value
 		End Set
 	End Property
 

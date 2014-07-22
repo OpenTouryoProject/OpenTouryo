@@ -24,7 +24,7 @@ CREATE TABLE [dbo].[T_WorkflowHistory](
 	[ActionType] [varchar] (30) NOT NULL ,
 	[ToUserId] [decimal] (10,0) NULL ,
 	[ToUserInfo] [nvarchar] (30) NULL ,
-	[ToUserPositionTitlesId] [decimal](10, 0) NULL ,
+	[ToUserPositionTitlesId] [int] NULL ,
 	[NextWfPositionId] [int] NULL ,
 	[NextWorkflowNo] [int] NULL ,
 	[ReserveArea] [varchar](50) NULL,

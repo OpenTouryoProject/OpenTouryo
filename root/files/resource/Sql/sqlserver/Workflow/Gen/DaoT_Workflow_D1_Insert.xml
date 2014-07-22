@@ -12,7 +12,7 @@
           <INSCOL name="UserId">[UserId],</INSCOL>
           <INSCOL name="UserInfo">[UserInfo],</INSCOL>
           <INSCOL name="ReserveArea">[ReserveArea],</INSCOL>
-          <INSCOL name="CreatedDate">[CreatedDate],</INSCOL>
+          <INSCOL name="StartDate">[StartDate],</INSCOL>
           <INSCOL name="EndDate">[EndDate],</INSCOL>
         </DELCMA>
       )
@@ -25,7 +25,7 @@
           <IF>@UserId,</IF>
           <IF>@UserInfo,</IF>
           <IF>@ReserveArea,</IF>
-          <IF>@CreatedDate,</IF>
+          <IF>@StartDate,</IF>
           <IF>@EndDate,</IF>
         </DELCMA>
       )

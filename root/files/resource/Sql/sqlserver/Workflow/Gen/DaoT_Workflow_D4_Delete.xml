@@ -12,7 +12,7 @@
       <IF>AND [UserId] = @UserId<ELSE>AND [UserId] IS NULL</ELSE></IF>
       <IF>AND [UserInfo] = @UserInfo<ELSE>AND [UserInfo] IS NULL</ELSE></IF>
       <IF>AND [ReserveArea] = @ReserveArea<ELSE>AND [ReserveArea] IS NULL</ELSE></IF>
-      <IF>AND [CreatedDate] = @CreatedDate<ELSE>AND [CreatedDate] IS NULL</ELSE></IF>
+      <IF>AND [StartDate] = @StartDate<ELSE>AND [StartDate] IS NULL</ELSE></IF>
       <IF>AND [EndDate] = @EndDate<ELSE>AND [EndDate] IS NULL</ELSE></IF>
   </WHERE>
 </ROOT>

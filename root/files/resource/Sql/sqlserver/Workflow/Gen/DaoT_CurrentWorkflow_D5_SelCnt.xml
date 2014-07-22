@@ -38,8 +38,8 @@
       <IF>AND [ExclusiveKey] LIKE @ExclusiveKey_Like</IF>
       <IF>AND [ReplyDeadline] = @ReplyDeadline<ELSE>AND [ReplyDeadline] IS NULL</ELSE></IF>
       <IF>AND [ReplyDeadline] LIKE @ReplyDeadline_Like</IF>
-      <IF>AND [CreatedDate] = @CreatedDate<ELSE>AND [CreatedDate] IS NULL</ELSE></IF>
-      <IF>AND [CreatedDate] LIKE @CreatedDate_Like</IF>
+      <IF>AND [StartDate] = @StartDate<ELSE>AND [StartDate] IS NULL</ELSE></IF>
+      <IF>AND [StartDate] LIKE @StartDate_Like</IF>
       <IF>AND [AcceptanceDate] = @AcceptanceDate<ELSE>AND [AcceptanceDate] IS NULL</ELSE></IF>
       <IF>AND [AcceptanceDate] LIKE @AcceptanceDate_Like</IF>
       <IF>AND [AcceptanceUserId] = @AcceptanceUserId<ELSE>AND [AcceptanceUserId] IS NULL</ELSE></IF>

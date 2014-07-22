@@ -9,7 +9,7 @@
     [UserId],
     [UserInfo],
     [ReserveArea],
-    [CreatedDate],
+    [StartDate],
     [EndDate]
   FROM
     [T_Workflow]
@@ -27,8 +27,8 @@
       <IF>AND [UserInfo] LIKE @UserInfo_Like</IF>
       <IF>AND [ReserveArea] = @ReserveArea<ELSE>AND [ReserveArea] IS NULL</ELSE></IF>
       <IF>AND [ReserveArea] LIKE @ReserveArea_Like</IF>
-      <IF>AND [CreatedDate] = @CreatedDate<ELSE>AND [CreatedDate] IS NULL</ELSE></IF>
-      <IF>AND [CreatedDate] LIKE @CreatedDate_Like</IF>
+      <IF>AND [StartDate] = @StartDate<ELSE>AND [StartDate] IS NULL</ELSE></IF>
+      <IF>AND [StartDate] LIKE @StartDate_Like</IF>
       <IF>AND [EndDate] = @EndDate<ELSE>AND [EndDate] IS NULL</ELSE></IF>
       <IF>AND [EndDate] LIKE @EndDate_Like</IF>
   </WHERE>

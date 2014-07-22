@@ -12,7 +12,7 @@
       <IF>[UserId] = @Set_UserId_forUPD,</IF>
       <IF>[UserInfo] = @Set_UserInfo_forUPD,</IF>
       <IF>[ReserveArea] = @Set_ReserveArea_forUPD,</IF>
-      <IF>[CreatedDate] = @Set_CreatedDate_forUPD,</IF>
+      <IF>[StartDate] = @Set_StartDate_forUPD,</IF>
       <IF>[EndDate] = @Set_EndDate_forUPD,</IF>
     </DELCMA>
   WHERE

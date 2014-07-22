@@ -18,7 +18,7 @@ CREATE TABLE [dbo].[M_User](
 	[Id] [decimal](10, 0) NOT NULL,
 	[Section] [varchar](10) NULL,
 	[Name] [varchar](10) NULL,
-	[PositionTitlesId] [decimal](10, 0) NULL,
+	[PositionTitlesId] [int] NULL,
  CONSTRAINT [PK_M_User] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

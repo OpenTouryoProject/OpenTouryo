@@ -21,7 +21,7 @@
       <IF>[ReserveArea] = @Set_ReserveArea_forUPD,</IF>
       <IF>[ExclusiveKey] = @Set_ExclusiveKey_forUPD,</IF>
       <IF>[ReplyDeadline] = @Set_ReplyDeadline_forUPD,</IF>
-      <IF>[CreatedDate] = @Set_CreatedDate_forUPD,</IF>
+      <IF>[StartDate] = @Set_StartDate_forUPD,</IF>
       <IF>[AcceptanceDate] = @Set_AcceptanceDate_forUPD,</IF>
       <IF>[AcceptanceUserId] = @Set_AcceptanceUserId_forUPD,</IF>
       <IF>[AcceptanceUserInfo] = @Set_AcceptanceUserInfo_forUPD,</IF>
@@ -43,7 +43,7 @@
       <IF>AND [ReserveArea] = @ReserveArea<ELSE>AND [ReserveArea] IS NULL</ELSE></IF>
       <IF>AND [ExclusiveKey] = @ExclusiveKey<ELSE>AND [ExclusiveKey] IS NULL</ELSE></IF>
       <IF>AND [ReplyDeadline] = @ReplyDeadline<ELSE>AND [ReplyDeadline] IS NULL</ELSE></IF>
-      <IF>AND [CreatedDate] = @CreatedDate<ELSE>AND [CreatedDate] IS NULL</ELSE></IF>
+      <IF>AND [StartDate] = @StartDate<ELSE>AND [StartDate] IS NULL</ELSE></IF>
       <IF>AND [AcceptanceDate] = @AcceptanceDate<ELSE>AND [AcceptanceDate] IS NULL</ELSE></IF>
       <IF>AND [AcceptanceUserId] = @AcceptanceUserId<ELSE>AND [AcceptanceUserId] IS NULL</ELSE></IF>
       <IF>AND [AcceptanceUserInfo] = @AcceptanceUserInfo<ELSE>AND [AcceptanceUserInfo] IS NULL</ELSE></IF>

@@ -9,7 +9,7 @@
     [UserId],
     [UserInfo],
     [ReserveArea],
-    [CreatedDate],
+    [StartDate],
     [EndDate]
   FROM
     [T_Workflow]

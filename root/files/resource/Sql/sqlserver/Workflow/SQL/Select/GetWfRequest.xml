@@ -9,16 +9,15 @@
       [T_Workflow].[WorkflowControlNo] = [T_CurrentWorkflow].[WorkflowControlNo]
       <IF>AND [SubSystemId] = @SubSystemId<ELSE>IS NULL</ELSE></IF>
       <IF>AND [WorkflowName] = @WorkflowName<ELSE>IS NULL</ELSE></IF>
-      <LIST>AND ToUserId IN (@ToUserId)</LIST>
-      <IF>AND ToUserPositionTitlesId_Equal = @ToUserPositionTitlesId_Equal</IF>
-      <IF>AND ToUserPositionTitlesId_GTOE &gt;= @ToUserPositionTitlesId_GTOE</IF>
+      <IF>AND ToUserId = @ToUserId</IF>
+      <IF>AND ToUserPositionTitlesId = @ToUserPositionTitlesId</IF>
       AND AcceptanceDate IS NULL
   </WHERE>
   <PARAM>
     SubSystemId, String, OEQT<DIV/>
     WorkflowName, String, Quote<DIV/>
     ToUserId, decimal, 1, 2<DIV/>
-    ToUserPositionTitlesId_GTOE, Int32, 0
+    ToUserPositionTitlesId, Int32, 0
   </PARAM>
 </ROOT>
 

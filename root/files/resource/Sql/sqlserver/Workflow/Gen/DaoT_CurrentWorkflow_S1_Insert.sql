@@ -18,7 +18,7 @@ INSERT INTO
       [ReserveArea],
       [ExclusiveKey],
       [ReplyDeadline],
-      [CreatedDate],
+      [StartDate],
       [AcceptanceDate],
       [AcceptanceUserId],
       [AcceptanceUserInfo]
@@ -40,7 +40,7 @@ VALUES
       @ReserveArea,
       @ExclusiveKey,
       @ReplyDeadline,
-      @CreatedDate,
+      @StartDate,
       @AcceptanceDate,
       @AcceptanceUserId,
       @AcceptanceUserInfo

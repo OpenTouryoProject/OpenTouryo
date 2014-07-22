@@ -21,7 +21,7 @@ CREATE TABLE [dbo].[T_Workflow](
 	[UserId] [decimal](10, 0) NULL,
 	[UserInfo] [nvarchar](50) NOT NULL,
 	[ReserveArea] [varchar](50) NULL,
-	[CreatedDate] [datetime] NOT NULL ,
+	[StartDate] [datetime] NOT NULL ,
 	[EndDate] [datetime] NULL
 
  CONSTRAINT [PK_I_Workflow] PRIMARY KEY CLUSTERED 

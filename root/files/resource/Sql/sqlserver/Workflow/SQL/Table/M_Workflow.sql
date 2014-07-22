@@ -23,11 +23,11 @@ CREATE TABLE [dbo].[M_Workflow](
 	[FromUserId] [decimal](10, 0) NULL,
 	[ActionType] [varchar](30) NOT NULL,
 	[ToUserId] [decimal](10, 0) NULL,
-	[ToUserPositionTitlesId] [decimal](10, 0) NULL,
+	[ToUserPositionTitlesId] [int] NULL,
 	[SortIndex] [int] NULL,
 	[NextWfPositionId] [int] NULL,
 	[NextWorkflowNo] [int] NULL ,
-	[MailTemplateId] [decimal](10, 0) NULL,
+	[MailTemplateId] [int] NULL,
 	[ReserveArea] [varchar](50) NULL,
  CONSTRAINT [PK_M_Workflow] PRIMARY KEY CLUSTERED 
 (

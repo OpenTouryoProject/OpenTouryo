@@ -21,7 +21,7 @@
           <INSCOL name="ReserveArea">[ReserveArea],</INSCOL>
           <INSCOL name="ExclusiveKey">[ExclusiveKey],</INSCOL>
           <INSCOL name="ReplyDeadline">[ReplyDeadline],</INSCOL>
-          <INSCOL name="CreatedDate">[CreatedDate],</INSCOL>
+          <INSCOL name="StartDate">[StartDate],</INSCOL>
           <INSCOL name="AcceptanceDate">[AcceptanceDate],</INSCOL>
           <INSCOL name="AcceptanceUserId">[AcceptanceUserId],</INSCOL>
           <INSCOL name="AcceptanceUserInfo">[AcceptanceUserInfo],</INSCOL>
@@ -45,7 +45,7 @@
           <IF>@ReserveArea,</IF>
           <IF>@ExclusiveKey,</IF>
           <IF>@ReplyDeadline,</IF>
-          <IF>@CreatedDate,</IF>
+          <IF>@StartDate,</IF>
           <IF>@AcceptanceDate,</IF>
           <IF>@AcceptanceUserId,</IF>
           <IF>@AcceptanceUserInfo,</IF>

@@ -9,7 +9,7 @@ INSERT INTO
       [UserId],
       [UserInfo],
       [ReserveArea],
-      [CreatedDate],
+      [StartDate],
       [EndDate]
     )
 VALUES
@@ -20,6 +20,6 @@ VALUES
       @UserId,
       @UserInfo,
       @ReserveArea,
-      @CreatedDate,
+      @StartDate,
       @EndDate
     )

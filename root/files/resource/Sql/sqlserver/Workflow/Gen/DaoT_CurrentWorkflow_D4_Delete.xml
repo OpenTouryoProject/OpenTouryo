@@ -21,7 +21,7 @@
       <IF>AND [ReserveArea] = @ReserveArea<ELSE>AND [ReserveArea] IS NULL</ELSE></IF>
       <IF>AND [ExclusiveKey] = @ExclusiveKey<ELSE>AND [ExclusiveKey] IS NULL</ELSE></IF>
       <IF>AND [ReplyDeadline] = @ReplyDeadline<ELSE>AND [ReplyDeadline] IS NULL</ELSE></IF>
-      <IF>AND [CreatedDate] = @CreatedDate<ELSE>AND [CreatedDate] IS NULL</ELSE></IF>
+      <IF>AND [StartDate] = @StartDate<ELSE>AND [StartDate] IS NULL</ELSE></IF>
       <IF>AND [AcceptanceDate] = @AcceptanceDate<ELSE>AND [AcceptanceDate] IS NULL</ELSE></IF>
       <IF>AND [AcceptanceUserId] = @AcceptanceUserId<ELSE>AND [AcceptanceUserId] IS NULL</ELSE></IF>
       <IF>AND [AcceptanceUserInfo] = @AcceptanceUserInfo<ELSE>AND [AcceptanceUserInfo] IS NULL</ELSE></IF>

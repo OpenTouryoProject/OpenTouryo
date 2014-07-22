@@ -319,17 +319,17 @@ public class DaoT_CurrentWorkflow : MyBaseDao
         }
     }
     
-    /// <summary>CreatedDate列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <summary>StartDate列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     /// <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
-    public object CreatedDate
+    public object StartDate
     {
         set
         {
-            this.HtParameter["CreatedDate"] = value;
+            this.HtParameter["StartDate"] = value;
         }
         get
         {
-            return this.HtParameter["CreatedDate"];
+            return this.HtParameter["StartDate"];
         }
     }
     
@@ -601,17 +601,17 @@ public class DaoT_CurrentWorkflow : MyBaseDao
     }
 
 
-    /// <summary>Set_CreatedDate_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <summary>Set_StartDate_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     /// <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
-    public object Set_CreatedDate_forUPD
+    public object Set_StartDate_forUPD
     {
         set
         {
-            this.HtParameter["Set_CreatedDate_forUPD"] = value;
+            this.HtParameter["Set_StartDate_forUPD"] = value;
         }
         get
         {
-            return this.HtParameter["Set_CreatedDate_forUPD"];
+            return this.HtParameter["Set_StartDate_forUPD"];
         }
     }
 
@@ -887,17 +887,17 @@ public class DaoT_CurrentWorkflow : MyBaseDao
     }
 
 
-    /// <summary>CreatedDate_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <summary>StartDate_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
-    public object CreatedDate_Like
+    public object StartDate_Like
     {
         set
         {
-            this.HtParameter["CreatedDate_Like"] = value;
+            this.HtParameter["StartDate_Like"] = value;
         }
         get
         {
-            return this.HtParameter["CreatedDate_Like"];
+            return this.HtParameter["StartDate_Like"];
         }
     }
 

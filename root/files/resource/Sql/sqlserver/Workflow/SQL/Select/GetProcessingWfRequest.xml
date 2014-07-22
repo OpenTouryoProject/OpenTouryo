@@ -9,7 +9,7 @@
       [T_Workflow].[WorkflowControlNo] = [T_CurrentWorkflow].[WorkflowControlNo]
       <IF>AND [SubSystemId] = @SubSystemId<ELSE>IS NULL</ELSE></IF>
       <IF>AND [WorkflowName] = @WorkflowName<ELSE>IS NULL</ELSE></IF>
-      AND AcceptanceUserId IS @UserId
+      AND AcceptanceUserId IS @AcceptanceUserId
   </WHERE>
 </ROOT>
 
