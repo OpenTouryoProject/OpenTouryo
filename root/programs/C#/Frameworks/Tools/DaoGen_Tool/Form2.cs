@@ -45,6 +45,7 @@
 //*  2014/02/28  Santosh-san      Gridview Header column number issue fix in the template
 //*  2014/04/30  Santosh san      Internationalization: Added Method to get the strings from the resource files based on the keys values passed.
 //*                               and and replaced this method wherever hard coded values.
+//*  2014/07/16  Sai-san          Changed ParamSign value to @ in case of PostGreSQL db  
 //**********************************************************************************
 
 // データプロバイダ
@@ -2232,7 +2233,7 @@ namespace DaoGen_Tool
                 {
                     // Npgsqlでは、「@」・「:」の双方をサポートするが、
                     // 本Fxでは、「:」を選択（動作がOracleに近いため）。
-                    this.ParamSign = ':';
+                    this.ParamSign = '@';
 
                     // PostgreSQLでは、表名を囲えないので注意。
                     this.EnclosureCharS = '"';
