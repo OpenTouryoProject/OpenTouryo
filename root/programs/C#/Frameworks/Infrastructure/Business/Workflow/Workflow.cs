@@ -72,25 +72,17 @@ namespace Touryo.Infrastructure.Business.Workflow
             // Baseのコンストラクタに引数を渡すために必要。
         }
 
-        /// <summary>ワークフロー（M_Workflowの行）</summary>
-        private DataRow M_WorkflowRow = null;
-
         /// <summary>新しいワークフローを準備します。</summary>
         /// <param name="subSystemId">サブシステムID（必須）</param>
         /// <param name="workflowName">ワークフロー名（必須）</param>
         /// <param name="fromUserId">FromユーザID（必須）</param>
-        /// <param name="toUserId">ToユーザID（出力）</param>
-        /// <returns>
-        /// 真：正常終了：ワークフローが一意のためWFを開始できます。
-        /// 偽：異常終了：ワークフローが一意で無いためWFを開始できません。
-        /// </returns>
+        /// <returns>新規ワークフロー</returns>
         /// <remarks>
         /// fromUsersId
         /// 　御中IDでの呼び出しと、ユーザIDでの呼び出しは２回に分ける。
         /// </remarks>
-        public bool PreStartWorkflow(
-            string subSystemId, string workflowName,
-            decimal fromUserId, out decimal toUserId)
+        public DataTable PreStartWorkflow(
+            string subSystemId, string workflowName, decimal fromUserId)
         {
             DataTable dt = new DataTable();
             DaoM_Workflow daoM_Workflow = new DaoM_Workflow(this.Dam);
@@ -103,31 +95,11 @@ namespace Touryo.Infrastructure.Business.Workflow
             
             // ワークフローの取得
             daoM_Workflow.D2_Select(dt);
-
-            // 件数チェック
-            if (dt.Rows.Count == 1)
-            {
-                // メンバに保持
-                this.M_WorkflowRow = dt.Rows[0];
-                // 戻り値を返す。
-                toUserId = (decimal)dt.Rows[0]["ToUserId"];
-
-                // リターン
-                return true; // 正常終了
-            }
-            else
-            {
-                // メンバに保持
-                this.M_WorkflowRow = null;
-                // 戻り値を返す。
-                toUserId = 0;
-
-                // リターン
-                return false; // 異常終了
-            }
+            return dt;
         }
 
         /// <summary>新しいワークフローを開始します。</summary>
+        /// <param name="startWorkflow">新規ワークフロー</param>
         /// <param name="workflowControlNo">ワークフロー管理番号（必須）</param>
         /// <param name="fromUserInfo">Fromユーザ情報（必須）</param>
         /// <param name="toUserInfo">Toユーザ情報（必須）</param>
@@ -135,7 +107,7 @@ namespace Touryo.Infrastructure.Business.Workflow
         /// <param name="currentWorkflowReserveArea">T_CurrentWorkflowの予備領域（任意）</param>
         /// <param name="replyDeadline">回答希望日（任意）</param>
         /// <returns>メール・テンプレートID</returns>
-        public int StartWorkflow(
+        public int StartWorkflow(DataRow startWorkflow, 
             string workflowControlNo, string fromUserInfo, string toUserInfo,
             string workflowReserveArea, string currentWorkflowReserveArea, DateTime? replyDeadline)
         {
@@ -145,9 +117,9 @@ namespace Touryo.Infrastructure.Business.Workflow
             DaoT_Workflow daoT_Workflow = new DaoT_Workflow(this.Dam);
 
             daoT_Workflow.PK_WorkflowControlNo = workflowControlNo;
-            daoT_Workflow.SubSystemId = this.M_WorkflowRow["SubSystemId"];
-            daoT_Workflow.WorkflowName = this.M_WorkflowRow["WorkflowName"];
-            daoT_Workflow.UserId = this.M_WorkflowRow["FromUserId"];
+            daoT_Workflow.SubSystemId = startWorkflow["SubSystemId"];
+            daoT_Workflow.WorkflowName = startWorkflow["WorkflowName"];
+            daoT_Workflow.UserId = startWorkflow["FromUserId"];
             daoT_Workflow.UserInfo = fromUserInfo;
             daoT_Workflow.ReserveArea = workflowReserveArea;
             daoT_Workflow.StartDate = DateTime.Now;
@@ -162,16 +134,16 @@ namespace Touryo.Infrastructure.Business.Workflow
 
             daoT_CurrentWorkflow.PK_WorkflowControlNo = workflowControlNo;
             daoT_CurrentWorkflow.HistoryNo = 1; // スタートなので「1」固定
-            daoT_CurrentWorkflow.WfPositionId = this.M_WorkflowRow["WfPositionId"];
-            daoT_CurrentWorkflow.WorkflowNo = this.M_WorkflowRow["WorkflowNo"];
-            daoT_CurrentWorkflow.FromUserId = this.M_WorkflowRow["FromUserId"];
+            daoT_CurrentWorkflow.WfPositionId = startWorkflow["WfPositionId"];
+            daoT_CurrentWorkflow.WorkflowNo = startWorkflow["WorkflowNo"];
+            daoT_CurrentWorkflow.FromUserId = startWorkflow["FromUserId"];
             daoT_CurrentWorkflow.FromUserInfo = fromUserInfo;
-            daoT_CurrentWorkflow.ActionType = this.M_WorkflowRow["ActionType"];
-            daoT_CurrentWorkflow.ToUserId = this.M_WorkflowRow["ToUserId"];
+            daoT_CurrentWorkflow.ActionType = startWorkflow["ActionType"];
+            daoT_CurrentWorkflow.ToUserId = startWorkflow["ToUserId"];
             daoT_CurrentWorkflow.ToUserInfo = toUserInfo;
-            daoT_CurrentWorkflow.ToUserPositionTitlesId = this.M_WorkflowRow["ToUserPositionTitlesId"];
-            daoT_CurrentWorkflow.NextWfPositionId = this.M_WorkflowRow["NextWfPositionId"];
-            daoT_CurrentWorkflow.NextWorkflowNo = this.M_WorkflowRow["NextWorkflowNo"];
+            daoT_CurrentWorkflow.ToUserPositionTitlesId = startWorkflow["ToUserPositionTitlesId"];
+            daoT_CurrentWorkflow.NextWfPositionId = startWorkflow["NextWfPositionId"];
+            daoT_CurrentWorkflow.NextWorkflowNo = startWorkflow["NextWorkflowNo"];
             daoT_CurrentWorkflow.ReserveArea = currentWorkflowReserveArea;
             //daoT_CurrentWorkflow.ExclusiveKey = "";
             daoT_CurrentWorkflow.ReplyDeadline = replyDeadline;
@@ -182,17 +154,14 @@ namespace Touryo.Infrastructure.Business.Workflow
 
             daoT_CurrentWorkflow.D1_Insert();
 
-            // 状態を破棄
-            this.M_WorkflowRow = null;
-
             // リターン（MailTemplateId）
-            if (this.M_WorkflowRow["MailTemplateId"] == DBNull.Value)
+            if (startWorkflow["MailTemplateId"] == DBNull.Value)
             {
                 return 0;
             }
             else
             {
-                return (int)this.M_WorkflowRow["MailTemplateId"];
+                return (int)startWorkflow["MailTemplateId"];
             }
         }
 
@@ -332,14 +301,14 @@ namespace Touryo.Infrastructure.Business.Workflow
         }
 
         /// <summary>ワークフロー承認を依頼する。</summary>
-        /// <param name="dr">選択した処理中ワークフロー依頼</param>
+        /// <param name="nextWorkflow">選択したワークフロー承認依頼</param>
         /// <param name="fromUserInfo">Fromユーザ情報（必須）</param>
         /// <param name="toUserInfo">Toユーザ情報（必須）</param>
         /// <param name="currentWorkflowReserveArea">T_CurrentWorkflowの予備領域（任意）</param>
         /// <param name="replyDeadline">回答希望日（任意）</param>
         /// <returns>メール・テンプレートID</returns>
         public int RequestWfApproval(
-            DataRow dr,
+            DataRow nextWorkflow,
             string fromUserInfo, string toUserInfo,
             string currentWorkflowReserveArea, DateTime? replyDeadline)
         {
@@ -356,22 +325,22 @@ namespace Touryo.Infrastructure.Business.Workflow
             // --------------------------------------------------
             DaoT_CurrentWorkflow daoT_CurrentWorkflow = new DaoT_CurrentWorkflow(this.Dam);
 
-            daoT_CurrentWorkflow.PK_WorkflowControlNo = dr["WorkflowControlNo"];
+            daoT_CurrentWorkflow.PK_WorkflowControlNo = nextWorkflow["WorkflowControlNo"];
 
             // 履歴番号
             dao.SQLFileName = "RequestApproval_Count.sql";
             daoT_CurrentWorkflow.HistoryNo = dao.ExecSelectScalar();
 
-            daoT_CurrentWorkflow.WfPositionId = dr["WfPositionId"];
-            daoT_CurrentWorkflow.WorkflowNo = dr["WorkflowNo"];
-            daoT_CurrentWorkflow.FromUserId = dr["FromUserId"];
+            daoT_CurrentWorkflow.WfPositionId = nextWorkflow["WfPositionId"];
+            daoT_CurrentWorkflow.WorkflowNo = nextWorkflow["WorkflowNo"];
+            daoT_CurrentWorkflow.FromUserId = nextWorkflow["FromUserId"];
             daoT_CurrentWorkflow.FromUserInfo = fromUserInfo;
-            daoT_CurrentWorkflow.ActionType = dr["ActionType"];
-            daoT_CurrentWorkflow.ToUserId = dr["ToUserId"];
+            daoT_CurrentWorkflow.ActionType = nextWorkflow["ActionType"];
+            daoT_CurrentWorkflow.ToUserId = nextWorkflow["ToUserId"];
             daoT_CurrentWorkflow.ToUserInfo = toUserInfo;
-            daoT_CurrentWorkflow.ToUserPositionTitlesId = dr["ToUserPositionTitlesId"];
-            daoT_CurrentWorkflow.NextWfPositionId = dr["NextWfPositionId"];
-            daoT_CurrentWorkflow.NextWorkflowNo = dr["NextWorkflowNo"];
+            daoT_CurrentWorkflow.ToUserPositionTitlesId = nextWorkflow["ToUserPositionTitlesId"];
+            daoT_CurrentWorkflow.NextWfPositionId = nextWorkflow["NextWfPositionId"];
+            daoT_CurrentWorkflow.NextWorkflowNo = nextWorkflow["NextWorkflowNo"];
             daoT_CurrentWorkflow.ReserveArea = currentWorkflowReserveArea;
             //daoT_CurrentWorkflow.ExclusiveKey = "";
             daoT_CurrentWorkflow.ReplyDeadline = replyDeadline;
@@ -385,13 +354,13 @@ namespace Touryo.Infrastructure.Business.Workflow
             // ---
             
             // リターン（MailTemplateId）
-            if (this.M_WorkflowRow["MailTemplateId"] == DBNull.Value)
+            if (nextWorkflow["MailTemplateId"] == DBNull.Value)
             {
                 return 0;
             }
             else
             {
-                return (int)this.M_WorkflowRow["MailTemplateId"];
+                return (int)nextWorkflow["MailTemplateId"];
             }
         }
     }
