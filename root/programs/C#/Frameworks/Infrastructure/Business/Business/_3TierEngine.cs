@@ -28,10 +28,12 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2013/01/10  西野　大介        新規作成
-//*  2014/07/17  Sai-San           Added Select count query and select paging query constants and checks for PostgreSQL db support 
-//*                                Added UOC_RelatedCheck override method and method calls in methods 'UOC_InsertRecord', 'UOC_UpdateRecord',
-//*                                'UOC_DeleteRecord' and 'UOC_BatchUpdate' 
-//*2014/07/21   Rituparna           Added SelectCount and SelectPaging query constatnts and check for MySql db support
+//*  2014/07/14  西野　大介        関連チェック処理を実装可能に
+//*  2014/07/17  Sai-San         Added Select count query and select paging query constants and checks for PostgreSQL db support 
+//*                              Added UOC_RelatedCheck override method and method calls in methods
+//*                              'UOC_InsertRecord', 'UOC_UpdateRecord', 'UOC_DeleteRecord' and 'UOC_BatchUpdate' 
+//*  2014/07/21   Rituparna      Added SelectCount and SelectPaging query constatnts and check for MySql db support
+//*
 //**********************************************************************************
 
 // レイトバインド用
@@ -289,8 +291,8 @@ namespace Touryo.Infrastructure.Business.Business
 
             if (parameterValue.DBMSType == DbEnum.DBMSType.PstGrS)
             {
-                // SQLを設定して
-                cmnDao.SQLText = string.Format(
+            // SQLを設定して
+            cmnDao.SQLText = string.Format(
                     SELECT_COUNT_POSTGRESQL_TEMPLATE,
                     s + parameterValue.TableName + e, whereSQL)
                     .Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f);
@@ -300,7 +302,7 @@ namespace Touryo.Infrastructure.Business.Business
             {
 
                 string SQLtext = string.Format(
-                    SELECT_COUNT_SQL_TEMPLATE,
+                SELECT_COUNT_SQL_TEMPLATE,
                      parameterValue.TableName, whereSQL)
                     .Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f).Replace("\"", string.Empty);
                 cmnDao.SQLText = SQLtext;
@@ -311,7 +313,7 @@ namespace Touryo.Infrastructure.Business.Business
                 // SQLを設定して
                 cmnDao.SQLText = string.Format(
                     SELECT_COUNT_SQL_TEMPLATE,
-                    s + parameterValue.TableName + e, whereSQL)
+                s + parameterValue.TableName + e, whereSQL)
                     .Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f);
             }
 
@@ -405,11 +407,11 @@ namespace Touryo.Infrastructure.Business.Business
             }
             else
             {
-                // SQL本体の生成（いろいろ組み込み
-                //（DBMSによって可変となる可能性有り）
+            // SQL本体の生成（いろいろ組み込み
+            //（DBMSによって可変となる可能性有り）
                 selectPagingSQL = string.Format(
-                   selectPagingSqlTemplate,
-                   new string[] {
+                selectPagingSqlTemplate,
+                new string[] {
                     parameterValue.ColumnList,
                     parameterValue.SortExpression,
                     parameterValue.SortDirection,
@@ -796,6 +798,7 @@ namespace Touryo.Infrastructure.Business.Business
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
+            // 関連チェック処理
             this.UOC_RelatedCheck(parameterValue);
 
             // ↓業務処理-----------------------------------------------------
@@ -1189,13 +1192,8 @@ namespace Touryo.Infrastructure.Business.Business
 
         #endregion
 
-        /// <summary>関連チェック処理を実装可能に</summary> 
-        /// <param name="parameterValue">引数</param> 
-        protected virtual void UOC_RelatedCheck(_3TierParameterValue parameterValue)
-        {
-
-        }
-
-
+        /// <summary>関連チェック処理を実装可能に</summary>
+        /// <param name="parameterValue">引数</param>
+        protected virtual void UOC_RelatedCheck(_3TierParameterValue parameterValue) { }
     }
 }

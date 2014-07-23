@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ROOT>
+  SELECT
+    *
+  FROM
+    [T_Workflow], [T_CurrentWorkflow]
+  <WHERE>
+    WHERE
+      [T_Workflow].[WorkflowControlNo] = [T_CurrentWorkflow].[WorkflowControlNo]
+      <IF>AND [SubSystemId] = @SubSystemId<ELSE>IS NULL</ELSE></IF>
+      <IF>AND [WorkflowName] = @WorkflowName<ELSE>IS NULL</ELSE></IF>
+      <LIST>AND ToUserId IN (@ToUserId)</LIST>
+      <IF>AND ToUserPositionTitlesId_Equal = @ToUserPositionTitlesId_Equal</IF>
+      <IF>AND ToUserPositionTitlesId_GTOE &gt;= @ToUserPositionTitlesId_GTOE</IF>
+      AND AcceptanceDate IS NULL
+  </WHERE>
+  <PARAM>
+    SubSystemId, String, OEQT<DIV/>
+    WorkflowName, String, Quote<DIV/>
+    ToUserId, decimal, 1, 2<DIV/>
+    ToUserPositionTitlesId_GTOE, Int32, 0
+  </PARAM>
+</ROOT>
+

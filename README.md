@@ -16,9 +16,9 @@
 ドキュメント類は[OpenTouryoProject/OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments)リポジトリに格納されています。
 (documents are located in the [OpenTouryoProject/OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments) repository.)
 
-##詳細(detail)
+##詳細(details)
 以下のディレクトリを参照してください。
-(Please refer to the following Directories.)
+(Please refer to the following directories.)
 
  - [documents](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents)
 
@@ -27,7 +27,7 @@
 
 ##内容物(contents)
 
-###ディレクトリ（directory）
+###ディレクトリ(directory)
 
 #### [/license/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/license)
 ライセンス(license)
@@ -38,14 +38,14 @@
 #### [/root_easysetup/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root_easysetup )
 簡易セットアップ版プログラム(Easy Setup program version) 
 
-##テンプレート・ベース(Template-base)
+##テンプレート・ベース(Templates base)
 テンプレート・ベースに同梱されるサンプルはOpen棟梁の評価に利用できます。
 また、テンプレート・ベースをチュートリアルの内容に従いカスタマイズすることで
 当該Visual Studioバージョンの案件向けプロジェクト・テンプレートを作成できます。 
 
-(Samples that are shipped with the template-base can be used to evaluate the OpenTouryo. 
+(Samples that are shipped with the templates base can be used to evaluate the OpenTouryo. 
 Further, by using template-base customized according to the contents of the tutorial, 
-You can create a project template for the project for the Visual Studio version.)
+you can create a project template for the project for the appropriate Visual Studio version.)
 
 以下のリポジトリを参照してください。詳しくは、各フォルダのReadmeを参照下さい。
 (Please refer to the following repository. For more information, please refer to the Readme for each folder.)
