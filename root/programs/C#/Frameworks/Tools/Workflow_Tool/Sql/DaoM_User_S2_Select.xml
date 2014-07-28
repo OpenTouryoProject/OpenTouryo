@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoM_User_S2_Select
+  -- 2014/7/18 日立 太郎
+  SELECT 
+    [Id],
+    [Section],
+    [Name],
+    [PositionTitlesId]
+  FROM
+    [M_User]
+  <WHERE>
+    WHERE
+      [Id] = @Id
+  </WHERE>
+</ROOT>

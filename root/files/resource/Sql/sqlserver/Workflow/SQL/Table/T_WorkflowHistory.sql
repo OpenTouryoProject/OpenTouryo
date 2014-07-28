@@ -33,11 +33,12 @@ CREATE TABLE [dbo].[T_WorkflowHistory](
 	[AcceptanceDate] [datetime] NULL ,
 	[AcceptanceUserId] [decimal] (10,0) NULL ,
 	[AcceptanceUserInfo] [nvarchar] (30) NULL ,
-	[EndDate] [datetime] NOT NULL
+	[EndDate] [datetime] NULL
 
  CONSTRAINT [PK_I_WorkflowHistory] PRIMARY KEY CLUSTERED 
 (
-	[WorkflowControlNo] ASC
+	[WorkflowControlNo] ASC,
+	[HistoryNo] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 

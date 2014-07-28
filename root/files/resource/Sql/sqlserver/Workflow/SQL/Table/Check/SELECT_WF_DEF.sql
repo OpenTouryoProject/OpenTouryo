@@ -1,15 +1,25 @@
-select 
+SELECT 
   
-  W.[Id], W.[SubSystemId], W.[WorkflowName],
-  W.[WfPositionId], W.[WorkflowNo], FU.[Section] as FromSection, FU.[Name] as FromUser,
-  W.[ActionType], TU.[Section] as ToSection, TU.[Name] as ToUser, W.[ToUserPositionTitlesId], W.[SortIndex], 
-  W.[NextWfPositionId], W.[NextWorkflowNo], W.[MailTemplateId], W.[ReserveArea]
+  W.[Id],
+  W.[SubSystemId],
+  W.[WorkflowName],
+  W.[WfPositionId],
+  W.[WorkflowNo],
+  FU.[Section] as FromSection,
+  FU.[Name] as FromUser,
+  W.[ActionType],
+  TU.[Section] as ToSection,
+  TU.[Name] as ToUser,
+  W.[ToUserPositionTitlesId],
+  W.[SortIndex], 
+  W.[NextWfPositionId],
+  W.[NextWorkflowNo],
+  W.[MailTemplateId],
+  W.[ReserveArea]
 
-from
-  [dbo].[M_Workflow] as W, [dbo].[M_User] as FU, [dbo].[M_User] as TU
+FROM
+  [dbo].[M_Workflow] as W
+  LEFT OUTER JOIN [dbo].[M_User] as FU ON W.[FromUserId] = FU.[Id]
+  LEFT OUTER JOIN [dbo].[M_User] as TU ON W.[ToUserId] = TU.[Id]
 
-where
-  W.[FromUserId] = FU.[Id] and W.[ToUserId] = TU.[Id]
-  or W.[FromUserId] = null or W.[ToUserId] = null
-
-order by W.[Id]
+ORDER BY W.[Id]

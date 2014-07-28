@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoM_User_D3_Update
+  -- 2014/7/18 日立 太郎
+  UPDATE
+    [M_User]
+  SET
+    <DELCMA>
+      <IF>[Id] = @Set_Id_forUPD,</IF>
+      <IF>[Section] = @Set_Section_forUPD,</IF>
+      <IF>[Name] = @Set_Name_forUPD,</IF>
+      <IF>[PositionTitlesId] = @Set_PositionTitlesId_forUPD,</IF>
+    </DELCMA>
+  <WHERE>
+    WHERE
+      <IF>AND [Id] = @Id<ELSE>AND [Id] IS NULL</ELSE></IF>
+      <IF>AND [Section] = @Section<ELSE>AND [Section] IS NULL</ELSE></IF>
+      <IF>AND [Name] = @Name<ELSE>AND [Name] IS NULL</ELSE></IF>
+      <IF>AND [PositionTitlesId] = @PositionTitlesId<ELSE>AND [PositionTitlesId] IS NULL</ELSE></IF>
+  </WHERE>
+</ROOT>

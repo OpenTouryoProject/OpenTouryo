@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ROOT>
-  -- DaoT_WorkflowHistory_S2_Select
+  -- DaoT_CurrentWorkflow_S2_Select
   -- 2014/7/18 日立 太郎
   SELECT 
     [WorkflowControlNo],
@@ -16,17 +16,16 @@
     [NextWfPositionId],
     [NextWorkflowNo],
     [ReserveArea],
+    [ExclusiveKey],
     [ReplyDeadline],
     [StartDate],
     [AcceptanceDate],
     [AcceptanceUserId],
-    [AcceptanceUserInfo],
-    [EndDate]
+    [AcceptanceUserInfo]
   FROM
-    [T_WorkflowHistory]
+    [T_CurrentWorkflow]
   <WHERE>
     WHERE
       [WorkflowControlNo] = @WorkflowControlNo
-      AND [HistoryNo] = @HistoryNo
   </WHERE>
 </ROOT>

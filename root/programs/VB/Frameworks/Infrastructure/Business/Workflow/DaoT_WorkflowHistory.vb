@@ -115,10 +115,9 @@ Public Class DaoT_WorkflowHistory
 	End Property
 
 
-
-	''' <summary>HistoryNo列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <summary>HistoryNo列（主キー列）に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
-	Public Property HistoryNo() As Object
+	Public Property PK_HistoryNo() As Object
 		Get
 			Return Me.HtParameter("HistoryNo")
 		End Get
@@ -126,6 +125,8 @@ Public Class DaoT_WorkflowHistory
 			Me.HtParameter("HistoryNo") = value
 		End Set
 	End Property
+
+
 
 	''' <summary>WfPositionId列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>

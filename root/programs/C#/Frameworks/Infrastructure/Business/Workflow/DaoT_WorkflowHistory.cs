@@ -121,11 +121,10 @@ public class DaoT_WorkflowHistory : MyBaseDao
         }
     }
 
-    
-    
-    /// <summary>HistoryNo列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+
+    /// <summary>HistoryNo列（主キー列）に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     /// <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
-    public object HistoryNo
+    public object PK_HistoryNo
     {
         set
         {
@@ -136,6 +135,8 @@ public class DaoT_WorkflowHistory : MyBaseDao
             return this.HtParameter["HistoryNo"];
         }
     }
+
+    
     
     /// <summary>WfPositionId列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     /// <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>

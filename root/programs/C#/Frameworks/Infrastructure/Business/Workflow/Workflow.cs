@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2014/07/15  西野  大介        新規作成
+//*
 //**********************************************************************************
 
 // System
@@ -84,6 +85,11 @@ namespace Touryo.Infrastructure.Business.Workflow
         public DataTable PreStartWorkflow(
             string subSystemId, string workflowName, decimal fromUserId)
         {
+            // --------------------------------------------------
+            // 新しいワークフローを準備
+            // --------------------------------------------------
+            // M_WorkflowのSELECT
+            // --------------------------------------------------
             DataTable dt = new DataTable();
             DaoM_Workflow daoM_Workflow = new DaoM_Workflow(this.Dam);
 
@@ -101,16 +107,19 @@ namespace Touryo.Infrastructure.Business.Workflow
         /// <summary>新しいワークフローを開始します。</summary>
         /// <param name="startWorkflow">新規ワークフロー</param>
         /// <param name="workflowControlNo">ワークフロー管理番号（必須）</param>
-        /// <param name="fromUserInfo">Fromユーザ情報（必須）</param>
+        /// <param name="fromUserId">FromユーザID（個人ID 必須）</param>
+        /// <param name="fromUserInfo">Fromユーザ情報（個人ID 必須）</param>
         /// <param name="toUserInfo">Toユーザ情報（必須）</param>
         /// <param name="workflowReserveArea">T_Workflowの予備領域（任意）</param>
         /// <param name="currentWorkflowReserveArea">T_CurrentWorkflowの予備領域（任意）</param>
         /// <param name="replyDeadline">回答希望日（任意）</param>
         /// <returns>メール・テンプレートID</returns>
-        public int StartWorkflow(DataRow startWorkflow, 
-            string workflowControlNo, string fromUserInfo, string toUserInfo,
+        public int StartWorkflow(DataRow startWorkflow,
+            string workflowControlNo, decimal fromUserId, string fromUserInfo, string toUserInfo,
             string workflowReserveArea, string currentWorkflowReserveArea, DateTime? replyDeadline)
         {
+            // --------------------------------------------------
+            // 新しいワークフローを開始
             // --------------------------------------------------
             // T_WorkflowへのINSERT
             // --------------------------------------------------
@@ -119,8 +128,8 @@ namespace Touryo.Infrastructure.Business.Workflow
             daoT_Workflow.PK_WorkflowControlNo = workflowControlNo;
             daoT_Workflow.SubSystemId = startWorkflow["SubSystemId"];
             daoT_Workflow.WorkflowName = startWorkflow["WorkflowName"];
-            daoT_Workflow.UserId = startWorkflow["FromUserId"];
-            daoT_Workflow.UserInfo = fromUserInfo;
+            daoT_Workflow.UserId = fromUserId; // 個人IDが必要。
+            daoT_Workflow.UserInfo = fromUserInfo; // ユーザ入力が必要。
             daoT_Workflow.ReserveArea = workflowReserveArea;
             daoT_Workflow.StartDate = DateTime.Now;
             //daoT_Workflow.EndDate = DBNull.Value;
@@ -136,11 +145,11 @@ namespace Touryo.Infrastructure.Business.Workflow
             daoT_CurrentWorkflow.HistoryNo = 1; // スタートなので「1」固定
             daoT_CurrentWorkflow.WfPositionId = startWorkflow["WfPositionId"];
             daoT_CurrentWorkflow.WorkflowNo = startWorkflow["WorkflowNo"];
-            daoT_CurrentWorkflow.FromUserId = startWorkflow["FromUserId"];
-            daoT_CurrentWorkflow.FromUserInfo = fromUserInfo;
+            daoT_CurrentWorkflow.FromUserId = fromUserId; // 実際のユーザIDを入力する。
+            daoT_CurrentWorkflow.FromUserInfo = fromUserInfo; // ユーザ入力が必要。
             daoT_CurrentWorkflow.ActionType = startWorkflow["ActionType"];
             daoT_CurrentWorkflow.ToUserId = startWorkflow["ToUserId"];
-            daoT_CurrentWorkflow.ToUserInfo = toUserInfo;
+            daoT_CurrentWorkflow.ToUserInfo = toUserInfo; // ユーザ入力が必要。
             daoT_CurrentWorkflow.ToUserPositionTitlesId = startWorkflow["ToUserPositionTitlesId"];
             daoT_CurrentWorkflow.NextWfPositionId = startWorkflow["NextWfPositionId"];
             daoT_CurrentWorkflow.NextWorkflowNo = startWorkflow["NextWorkflowNo"];
@@ -165,22 +174,26 @@ namespace Touryo.Infrastructure.Business.Workflow
             }
         }
 
-        /// <summary>ワークフロー依頼を取得します</summary>
+        /// <summary>ワークフロー依頼を取得します。</summary>
         /// <param name="subSystemId">サブシステムID(null、空文字指定可能)</param>
         /// <param name="workflowName">ワークフロー名(null、空文字指定可能)</param>
         /// <param name="userId">ワークフローの受信ユーザ（必須）</param>
-        /// <param name="userPositionTitlesId">ユーザの職位ID</param>
+        /// <param name="userPositionTitlesId">
+        /// ユーザの職位ID（userIdが御中IDの場合は必須）
+        /// </param>
         /// <returns>ワークフロー依頼の一覧</returns>
         /// <remarks>
         /// fromUsersId
         /// 　御中IDでの呼び出しと、ユーザIDでの呼び出しは２回に分ける。
         /// </remarks>
-        public DataTable GetWfRequest(string subSystemId, string workflowName, decimal? userId, int? userPositionTitlesId)
+        public DataTable GetWfRequest(
+            string subSystemId, string workflowName, decimal? userId, int? userPositionTitlesId)
         {
             // --------------------------------------------------
             // ワークフローの依頼を取得
             // --------------------------------------------------
-            // CurrentWorkflowのSELECT
+            // T_CurrentWorkflowのSELECT
+            // --------------------------------------------------
             CmnDao dao = new CmnDao(this.Dam);
 
             dao.SQLFileName = "GetWfRequest.xml";
@@ -218,19 +231,20 @@ namespace Touryo.Infrastructure.Business.Workflow
         }
 
         /// <summary>ワークフロー依頼を受付ます。</summary>
-        /// <param name="dr">選択したワークフロー依頼</param>
+        /// <param name="workflowRequest">選択したワークフロー依頼</param>
         /// <param name="acceptanceUserId">受付ユーザID</param>
         /// <param name="acceptanceUserInfo">受付ユーザ情報</param>
-        public void AcceptWfRequest(DataRow dr, decimal acceptanceUserId, string acceptanceUserInfo)
+        public void AcceptWfRequest(DataRow workflowRequest, decimal acceptanceUserId, string acceptanceUserInfo)
         {
             // --------------------------------------------------
-            // 受付（acceptance項目を更新）
+            // 受付（T_CurrentWorkflowのacceptance項目を更新）
             // --------------------------------------------------
             // T_CurrentWorkflowのUPDATE
+            // --------------------------------------------------
             DaoT_CurrentWorkflow daoT_CurrentWorkflow = new DaoT_CurrentWorkflow(this.Dam);
 
             // PK
-            daoT_CurrentWorkflow.PK_WorkflowControlNo = dr["WorkflowControlNo"];
+            daoT_CurrentWorkflow.PK_WorkflowControlNo = workflowRequest["WorkflowControlNo"];
 
             // Acceptance
             daoT_CurrentWorkflow.Set_AcceptanceDate_forUPD = DateTime.Now;
@@ -239,6 +253,16 @@ namespace Touryo.Infrastructure.Business.Workflow
 
             // 受付（更新）
             daoT_CurrentWorkflow.D3_Update();
+
+            // --------------------------------------------------
+            // 履歴に移動（差戻しに対応するため）
+            // --------------------------------------------------
+            // T_CurrentWorkflow→T_WorkflowHistory
+            // --------------------------------------------------
+            CmnDao dao = new CmnDao(this.Dam);
+            dao.SQLFileName = "RequestApproval_Move.sql";
+            dao.SetParameter("WorkflowControlNo", workflowRequest["WorkflowControlNo"]);
+            dao.ExecInsUpDel_NonQuery();
         }
 
         /// <summary>処理中ワークフロー依頼を取得します。</summary>
@@ -251,7 +275,8 @@ namespace Touryo.Infrastructure.Business.Workflow
             // --------------------------------------------------
             // 処理中のワークフローを取得
             // --------------------------------------------------
-            // CurrentWorkflowのSELECT
+            // T_CurrentWorkflowのSELECT
+            // --------------------------------------------------
             CmnDao dao = new CmnDao(this.Dam);
             dao.SQLFileName = "GetProcessingWfRequest.xml";
 
@@ -264,7 +289,7 @@ namespace Touryo.Infrastructure.Business.Workflow
             // WkflowName
             if (!string.IsNullOrEmpty(workflowName))
             {
-                dao.SetParameter("WkflowName", workflowName);
+                dao.SetParameter("WorkflowName", workflowName);
             }
 
             // AcceptanceUserId
@@ -279,18 +304,27 @@ namespace Touryo.Infrastructure.Business.Workflow
         }
 
         /// <summary>次のワークフロー依頼を取得します。</summary>
-        /// <param name="dr">選択した処理中ワークフロー依頼</param>
+        /// <param name="ProcessingWfReq">選択した処理中ワークフロー依頼</param>
         /// <param name="fromUserId">FromユーザID（必須）</param>
         /// <returns>次のワークフロー</returns>
-        public DataTable GetNexeWfRequest(DataRow dr, decimal fromUserId)
+        /// <remarks>
+        /// fromUsersId
+        /// 　御中IDでの呼び出しと、ユーザIDでの呼び出しは２回に分ける。
+        /// </remarks>
+        public DataTable GetNextWfRequest(DataRow ProcessingWfReq, decimal fromUserId)
         {
+            // --------------------------------------------------
+            // 次のワークフロー依頼を取得
+            // --------------------------------------------------
+            // M_WorkflowのSELECT
+            // --------------------------------------------------
             DataTable dt = new DataTable();
             DaoM_Workflow daoM_Workflow = new DaoM_Workflow(this.Dam);
 
             // 検索条件
-            daoM_Workflow.SubSystemId = dr["SubSystemId"];
-            daoM_Workflow.WorkflowName = dr["WorkflowName"];
-            daoM_Workflow.WorkflowNo = dr["NextWorkflowNo"];
+            daoM_Workflow.SubSystemId = ProcessingWfReq["SubSystemId"];
+            daoM_Workflow.WorkflowName = ProcessingWfReq["WorkflowName"];
+            daoM_Workflow.WorkflowNo = ProcessingWfReq["NextWorkflowNo"];
             daoM_Workflow.FromUserId = fromUserId;
 
             // ワークフローの取得
@@ -300,59 +334,144 @@ namespace Touryo.Infrastructure.Business.Workflow
             return dt;
         }
 
-        /// <summary>ワークフロー承認を依頼する。</summary>
+        /// <summary>差戻しのToユーザIDを履歴から取得します。</summary>
+        /// <param name="turnBackWorkflow">差戻しのワークフロー</param>
+        /// <param name="workflowControlNo">ワークフロー管理番号（必須）</param>
+        /// <returns>ToユーザID</returns>
+        public decimal GetTurnBackToUser(DataRow turnBackWorkflow, string workflowControlNo)
+        {
+            // --------------------------------------------------
+            // 差戻しのToユーザIDを履歴から取得
+            // --------------------------------------------------
+            // T_WorkflowHistoryのSELECT
+            // --------------------------------------------------
+            CmnDao dao = new CmnDao(this.Dam);
+            dao.SQLFileName = "GetTurnBackToUser.sql";
+            dao.SetParameter("WorkflowControlNo", workflowControlNo);
+            dao.SetParameter("ActionType", "TurnBack");
+            dao.SetParameter("NextWorkflowNo", turnBackWorkflow["WorkflowNo"]);
+
+            return (decimal)dao.ExecSelectScalar();
+        }
+
+        /// <summary>ワークフロー承認を依頼します。</summary>
         /// <param name="nextWorkflow">選択したワークフロー承認依頼</param>
+        /// <param name="workflowControlNo">ワークフロー管理番号（必須）</param>
+        /// <param name="fromUserID">FromユーザID（必須）</param>
         /// <param name="fromUserInfo">Fromユーザ情報（必須）</param>
+        /// <param name="toUserID">ToユーザID（TurnBackの際に必要）</param>
         /// <param name="toUserInfo">Toユーザ情報（必須）</param>
         /// <param name="currentWorkflowReserveArea">T_CurrentWorkflowの予備領域（任意）</param>
         /// <param name="replyDeadline">回答希望日（任意）</param>
         /// <returns>メール・テンプレートID</returns>
         public int RequestWfApproval(
-            DataRow nextWorkflow,
-            string fromUserInfo, string toUserInfo,
+            DataRow nextWorkflow,　string workflowControlNo,
+            decimal fromUserID, string fromUserInfo,
+            decimal toUserID, string toUserInfo,
             string currentWorkflowReserveArea, DateTime? replyDeadline)
         {
             CmnDao dao = new CmnDao(this.Dam);
-            
-            // --------------------------------------------------
-            // T_CurrentWorkflow→T_WorkflowHistory
-            // --------------------------------------------------
-            dao.SQLFileName = "RequestApproval_Move.sql";
-            dao.ExecInsUpDel_NonQuery();
+
+            dao.SQLFileName = "RequestApproval_Count.sql";
+            dao.SetParameter("WorkflowControlNo", workflowControlNo);
+            int recordCount = ((int)dao.ExecSelectScalar());
 
             // --------------------------------------------------
-            // T_CurrentWorkflowへのINSERT
+            // ワークフロー承認を依頼
+            // --------------------------------------------------
+            // T_CurrentWorkflowのUPDATE
             // --------------------------------------------------
             DaoT_CurrentWorkflow daoT_CurrentWorkflow = new DaoT_CurrentWorkflow(this.Dam);
 
-            daoT_CurrentWorkflow.PK_WorkflowControlNo = nextWorkflow["WorkflowControlNo"];
+            // 主キー情報
+            daoT_CurrentWorkflow.PK_WorkflowControlNo = workflowControlNo;
 
-            // 履歴番号
-            dao.SQLFileName = "RequestApproval_Count.sql";
-            daoT_CurrentWorkflow.HistoryNo = dao.ExecSelectScalar();
+            // 履歴番号 // 0件 → move → 1件 → 1件 + 1 = 2（履歴番号）
+            daoT_CurrentWorkflow.Set_HistoryNo_forUPD = recordCount + 1;
 
-            daoT_CurrentWorkflow.WfPositionId = nextWorkflow["WfPositionId"];
-            daoT_CurrentWorkflow.WorkflowNo = nextWorkflow["WorkflowNo"];
-            daoT_CurrentWorkflow.FromUserId = nextWorkflow["FromUserId"];
-            daoT_CurrentWorkflow.FromUserInfo = fromUserInfo;
-            daoT_CurrentWorkflow.ActionType = nextWorkflow["ActionType"];
-            daoT_CurrentWorkflow.ToUserId = nextWorkflow["ToUserId"];
-            daoT_CurrentWorkflow.ToUserInfo = toUserInfo;
-            daoT_CurrentWorkflow.ToUserPositionTitlesId = nextWorkflow["ToUserPositionTitlesId"];
-            daoT_CurrentWorkflow.NextWfPositionId = nextWorkflow["NextWfPositionId"];
-            daoT_CurrentWorkflow.NextWorkflowNo = nextWorkflow["NextWorkflowNo"];
-            daoT_CurrentWorkflow.ReserveArea = currentWorkflowReserveArea;
-            //daoT_CurrentWorkflow.ExclusiveKey = "";
-            daoT_CurrentWorkflow.ReplyDeadline = replyDeadline;
-            daoT_CurrentWorkflow.StartDate = DateTime.Now;
-            //daoT_CurrentWorkflow.AcceptanceDate = DBNull.Value;
-            //daoT_CurrentWorkflow.AcceptanceUserId = DBNull.Value;
-            //daoT_CurrentWorkflow.AcceptanceUserInfo = DBNull.Value;
+            daoT_CurrentWorkflow.Set_WfPositionId_forUPD = nextWorkflow["WfPositionId"];
+            daoT_CurrentWorkflow.Set_WorkflowNo_forUPD = nextWorkflow["WorkflowNo"];
+            daoT_CurrentWorkflow.Set_FromUserId_forUPD = fromUserID; // 実際のユーザIDを入力する。
+            daoT_CurrentWorkflow.Set_FromUserInfo_forUPD = fromUserInfo;
+            daoT_CurrentWorkflow.Set_ActionType_forUPD = nextWorkflow["ActionType"];
 
-            daoT_CurrentWorkflow.D1_Insert();
-
-            // ---
+            if ((string)nextWorkflow["ActionType"] == "TurnBack")
+            {
+                daoT_CurrentWorkflow.Set_ToUserId_forUPD = toUserID;
+            }
+            else
+            {
+                daoT_CurrentWorkflow.Set_ToUserId_forUPD = nextWorkflow["ToUserId"];
+            }
             
+            daoT_CurrentWorkflow.Set_ToUserInfo_forUPD = toUserInfo;
+            daoT_CurrentWorkflow.Set_ToUserPositionTitlesId_forUPD = nextWorkflow["ToUserPositionTitlesId"];
+            daoT_CurrentWorkflow.Set_NextWfPositionId_forUPD = nextWorkflow["NextWfPositionId"];
+            daoT_CurrentWorkflow.Set_NextWorkflowNo_forUPD = nextWorkflow["NextWorkflowNo"];
+            daoT_CurrentWorkflow.Set_ReserveArea_forUPD = currentWorkflowReserveArea;
+            //daoT_CurrentWorkflow.Set_ExclusiveKey_forUPD = "";
+
+            if ((string)nextWorkflow["ActionType"] == "TurnBack")
+            {
+                daoT_CurrentWorkflow.Set_ReplyDeadline_forUPD = DBNull.Value;
+            }
+            else
+            {
+                daoT_CurrentWorkflow.Set_ReplyDeadline_forUPD = replyDeadline;
+            }
+
+            daoT_CurrentWorkflow.Set_StartDate_forUPD = DateTime.Now;
+            daoT_CurrentWorkflow.Set_AcceptanceDate_forUPD = DBNull.Value;
+            daoT_CurrentWorkflow.Set_AcceptanceUserId_forUPD = DBNull.Value;
+            daoT_CurrentWorkflow.Set_AcceptanceUserInfo_forUPD = DBNull.Value;
+
+            daoT_CurrentWorkflow.D3_Update();
+
+            // --------------------------------------------------
+            // 完了（T_WorkflowHistoryのEndDate項目を更新）
+            // --------------------------------------------------
+            // T_WorkflowHistoryのUPDATE
+            // --------------------------------------------------
+            DaoT_WorkflowHistory daoT_WorkflowHistory = new DaoT_WorkflowHistory(this.Dam);
+
+            // PK
+            daoT_WorkflowHistory.PK_WorkflowControlNo = workflowControlNo;
+            daoT_WorkflowHistory.PK_HistoryNo = recordCount;
+
+            // EndDate
+            daoT_WorkflowHistory.Set_EndDate_forUPD = DateTime.Now;
+
+            daoT_WorkflowHistory.S3_Update();
+
+            //---
+
+            if (nextWorkflow["NextWorkflowNo"] == DBNull.Value)
+            {
+                // --------------------------------------------------
+                // 完了の場合（T_WorkflowのEndDate項目を更新）
+                // --------------------------------------------------
+                // T_WorkflowのUPDATE
+                // --------------------------------------------------
+                DaoT_Workflow daoT_Workflow = new DaoT_Workflow(this.Dam);
+
+                // PK
+                daoT_Workflow.PK_WorkflowControlNo = workflowControlNo;
+
+                // EndDate
+                daoT_Workflow.Set_EndDate_forUPD = DateTime.Now;
+
+                daoT_Workflow.S3_Update();
+
+                // --------------------------------------------------
+                // 履歴に移動
+                // --------------------------------------------------
+                // T_CurrentWorkflow→T_WorkflowHistory
+                // --------------------------------------------------
+                dao.SQLFileName = "RequestApproval_Move.sql";
+                dao.SetParameter("WorkflowControlNo", workflowControlNo);
+                dao.ExecInsUpDel_NonQuery();
+            }
+
             // リターン（MailTemplateId）
             if (nextWorkflow["MailTemplateId"] == DBNull.Value)
             {

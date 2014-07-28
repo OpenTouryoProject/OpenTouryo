@@ -131,6 +131,20 @@
     <EmbeddedResource Include="SampleLogConf2CS.xml" />
     <EmbeddedResource Include="SPDefinition.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Sql\DaoM_User_D1_Insert.xml" />
+    <EmbeddedResource Include="Sql\DaoM_User_D2_Select.xml" />
+    <EmbeddedResource Include="Sql\DaoM_User_D3_Update.xml" />
+    <EmbeddedResource Include="Sql\DaoM_User_D4_Delete.xml" />
+    <EmbeddedResource Include="Sql\DaoM_User_D5_SelCnt.xml" />
+    <EmbeddedResource Include="Sql\DaoM_User_S1_Insert.sql" />
+    <EmbeddedResource Include="Sql\DaoM_User_S2_Select.xml" />
+    <EmbeddedResource Include="Sql\DaoM_User_S3_Update.xml" />
+    <EmbeddedResource Include="Sql\DaoM_User_S4_Delete.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Sql\GetTurnBackToUser.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
