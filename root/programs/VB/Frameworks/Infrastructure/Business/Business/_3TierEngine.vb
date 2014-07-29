@@ -982,9 +982,5 @@ Namespace Touryo.Infrastructure.Business.Business
 
         End Sub
 
-		''' <summary>関連チェック処理を実装可能に</summary>
-		''' <param name="parameterValue">引数</param>
-		Protected Overridable Sub UOC_RelatedCheck(parameterValue As _3TierParameterValue)
-		End Sub
 	End Class
 End Namespace
