@@ -1,5 +1,5 @@
 SELECT
-  [T_WorkflowHistory].[FromUserId]
+  [T_WorkflowHistory].[WorkflowNo]
 FROM
   [T_WorkflowHistory]
 WHERE
@@ -11,6 +11,4 @@ WHERE
       [T_WorkflowHistory]
     WHERE
       [T_WorkflowHistory].[WorkflowControlNo] = @WorkflowControlNo
-      AND [T_WorkflowHistory].[ActionType] != @ActionType
-      AND [T_WorkflowHistory].[WorkflowNo] = @NextWorkflowNo
   )

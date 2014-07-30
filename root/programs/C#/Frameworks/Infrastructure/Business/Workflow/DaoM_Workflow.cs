@@ -235,20 +235,6 @@ public class DaoM_Workflow : MyBaseDao
         }
     }
     
-    /// <summary>SortIndex列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
-    /// <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
-    public object SortIndex
-    {
-        set
-        {
-            this.HtParameter["SortIndex"] = value;
-        }
-        get
-        {
-            return this.HtParameter["SortIndex"];
-        }
-    }
-    
     /// <summary>NextWfPositionId列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     /// <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
     public object NextWfPositionId
@@ -274,6 +260,20 @@ public class DaoM_Workflow : MyBaseDao
         get
         {
             return this.HtParameter["NextWorkflowNo"];
+        }
+    }
+    
+    /// <summary>CorrespondOfReplyWorkflow列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
+    public object CorrespondOfReplyWorkflow
+    {
+        set
+        {
+            this.HtParameter["CorrespondOfReplyWorkflow"] = value;
+        }
+        get
+        {
+            return this.HtParameter["CorrespondOfReplyWorkflow"];
         }
     }
     
@@ -441,21 +441,6 @@ public class DaoM_Workflow : MyBaseDao
     }
 
 
-    /// <summary>Set_SortIndex_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
-    /// <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
-    public object Set_SortIndex_forUPD
-    {
-        set
-        {
-            this.HtParameter["Set_SortIndex_forUPD"] = value;
-        }
-        get
-        {
-            return this.HtParameter["Set_SortIndex_forUPD"];
-        }
-    }
-
-
     /// <summary>Set_NextWfPositionId_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     /// <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
     public object Set_NextWfPositionId_forUPD
@@ -482,6 +467,21 @@ public class DaoM_Workflow : MyBaseDao
         get
         {
             return this.HtParameter["Set_NextWorkflowNo_forUPD"];
+        }
+    }
+
+
+    /// <summary>Set_CorrespondOfReplyWorkflow_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
+    public object Set_CorrespondOfReplyWorkflow_forUPD
+    {
+        set
+        {
+            this.HtParameter["Set_CorrespondOfReplyWorkflow_forUPD"] = value;
+        }
+        get
+        {
+            return this.HtParameter["Set_CorrespondOfReplyWorkflow_forUPD"];
         }
     }
 
@@ -652,21 +652,6 @@ public class DaoM_Workflow : MyBaseDao
     }
 
 
-    /// <summary>SortIndex_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
-    /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
-    public object SortIndex_Like
-    {
-        set
-        {
-            this.HtParameter["SortIndex_Like"] = value;
-        }
-        get
-        {
-            return this.HtParameter["SortIndex_Like"];
-        }
-    }
-
-
     /// <summary>NextWfPositionId_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
     public object NextWfPositionId_Like
@@ -693,6 +678,21 @@ public class DaoM_Workflow : MyBaseDao
         get
         {
             return this.HtParameter["NextWorkflowNo_Like"];
+        }
+    }
+
+
+    /// <summary>CorrespondOfReplyWorkflow_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+    public object CorrespondOfReplyWorkflow_Like
+    {
+        set
+        {
+            this.HtParameter["CorrespondOfReplyWorkflow_Like"] = value;
+        }
+        get
+        {
+            return this.HtParameter["CorrespondOfReplyWorkflow_Like"];
         }
     }
 

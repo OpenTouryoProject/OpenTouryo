@@ -12,9 +12,9 @@
     [ActionType],
     [ToUserId],
     [ToUserPositionTitlesId],
-    [SortIndex],
     [NextWfPositionId],
     [NextWorkflowNo],
+    [CorrespondOfReplyWorkflow],
     [MailTemplateId],
     [ReserveArea]
   FROM

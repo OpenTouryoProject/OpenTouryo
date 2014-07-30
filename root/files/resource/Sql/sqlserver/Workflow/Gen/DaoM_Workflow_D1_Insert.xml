@@ -15,9 +15,9 @@
           <INSCOL name="ActionType">[ActionType],</INSCOL>
           <INSCOL name="ToUserId">[ToUserId],</INSCOL>
           <INSCOL name="ToUserPositionTitlesId">[ToUserPositionTitlesId],</INSCOL>
-          <INSCOL name="SortIndex">[SortIndex],</INSCOL>
           <INSCOL name="NextWfPositionId">[NextWfPositionId],</INSCOL>
           <INSCOL name="NextWorkflowNo">[NextWorkflowNo],</INSCOL>
+          <INSCOL name="CorrespondOfReplyWorkflow">[CorrespondOfReplyWorkflow],</INSCOL>
           <INSCOL name="MailTemplateId">[MailTemplateId],</INSCOL>
           <INSCOL name="ReserveArea">[ReserveArea],</INSCOL>
         </DELCMA>
@@ -34,9 +34,9 @@
           <IF>@ActionType,</IF>
           <IF>@ToUserId,</IF>
           <IF>@ToUserPositionTitlesId,</IF>
-          <IF>@SortIndex,</IF>
           <IF>@NextWfPositionId,</IF>
           <IF>@NextWorkflowNo,</IF>
+          <IF>@CorrespondOfReplyWorkflow,</IF>
           <IF>@MailTemplateId,</IF>
           <IF>@ReserveArea,</IF>
         </DELCMA>

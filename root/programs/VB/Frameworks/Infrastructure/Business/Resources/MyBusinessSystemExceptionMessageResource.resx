@@ -126,4 +126,13 @@
   <data name="SAMPLE_ERROR" xml:space="preserve">
     <value>Message_SampleError</value>
   </data>
+  <data name="WORKFLOW_ERROR" xml:space="preserve">
+    <value>The error occurred in workflow. :{0}</value>
+  </data>
+  <data name="WORKFLOW_ERROR_CHECK_EMPTY" xml:space="preserve">
+    <value>{0} argument is empty.</value>
+  </data>
+  <data name="WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED" xml:space="preserve">
+    <value>{0} field is not contained in the {1} argument.</value>
+  </data>
 </root>

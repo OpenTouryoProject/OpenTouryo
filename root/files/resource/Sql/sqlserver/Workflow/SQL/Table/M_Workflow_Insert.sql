@@ -2,36 +2,65 @@ USE [Workflow]
 GO
 
 INSERT INTO [dbo].[M_Workflow](
-     [Id], [SubSystemId], [WorkflowName],
-     [WfPositionId], [WorkflowNo], [FromUserId],
-     [ActionType], [ToUserId], [ToUserPositionTitlesId], [SortIndex], 
-     [NextWfPositionId], [NextWorkflowNo], [MailTemplateId], [ReserveArea])
+     [SubSystemId], [WorkflowName],
+     [WfPositionId], [WorkflowNo], [FromUserId], [ActionType], [ToUserId], [ToUserPositionTitlesId],
+     [NextWfPositionId], [NextWorkflowNo], [CorrespondOfReplyWorkflow], [MailTemplateId], [ReserveArea])
      VALUES
-         ( 1,  'OEQT', 'Quote', 100, 1  , 1   , 'Request' , 2   , 1   , 1, 200,  2   , 1, ''),
-         ( 2,  'OEQT', 'Quote', 100, 1  , 2   , 'Request' , 2   , 1   , 1, 200,  2   , 1, ''),
-         ( 3,  'OEQT', 'Quote', 200, 2  , 2   , 'TurnBack', 1   , 1   , 1, 100,  1   , 1, ''),
-         ( 4,  'OEQT', 'Quote', 200, 2  , 2   , 'RFQ'     , 3   , 1   , 1, 300,  3   , 1, ''),
-         ( 5,  'OEQT', 'Quote', 300, 3  , 3   , 'TurnBack', 2   , 1   , 1, 200,  2   , 1, ''),
-         ( 6,  'OEQT', 'Quote', 300, 3  , 3   , 'RFQ'     , 4999, null, 1, 400,  4   , 1, ''),
-         ( 7,  'OEQT', 'Quote', 400, 4  , 4999, 'TurnBack', 3   , 1   , 1, 300,  3   , 1, ''),
-         ( 8,  'OEQT', 'Quote', 400, 4  , 4999, 'Reply'   , 5999, null, 1, 500,  5   , 1, ''),
-         ( 9,  'OEQT', 'Quote', 500, 5  , 5999, 'TurnBack', 4999, null, 1, 400,  4   , 1, ''),
-         ( 10, 'OEQT', 'Quote', 500, 5  , 5999, 'Reply'   , 3   , 1   , 1, 300,  6   , 1, ''),
-         ( 11, 'OEQT', 'Quote', 300, 6  , 3   , 'Reply'   , 2   , 1   , 1, 200,  7   , 1, ''),
-         ( 12, 'OEQT', 'Quote', 200, 7  , 2   , 'RFQ'     , 6999, null, 1, 600,  801 , 1, ''),
-         ( 13, 'OEQT', 'Quote', 600, 801, 6999, 'TurnBack', 2   , 1   , 1, 200,  7   , 1, ''),
-         ( 14, 'OEQT', 'Quote', 600, 801, 6999, 'Reply'   , 6998, null, 1, 600,  802 , 1, ''),
-         ( 15, 'OEQT', 'Quote', 600, 802, 6998, 'TurnBack', 6999, null, 1, 600,  801 , 1, ''),
-         ( 16, 'OEQT', 'Quote', 600, 802, 6998, 'Reply'   , 6997, null, 1, 600,  803 , 1, ''),
-         ( 17, 'OEQT', 'Quote', 600, 803, 6997, 'TurnBack', 6999, null, 1, 600,  802 , 1, ''),
-         ( 18, 'OEQT', 'Quote', 600, 803, 6997, 'Reply'   , 2999, null, 1, 200,  901 , 1, ''),
-         ( 19, 'OEQT', 'Quote', 200, 901, 2999, 'Reply'   , 2998, null, 1, 200,  902 , 1, ''),
-         ( 20, 'OEQT', 'Quote', 200, 902, 2998, 'Reply'   , 2997, null, 1, 200,  903 , 1, ''),
-         ( 21, 'OEQT', 'Quote', 200, 903, 2997, 'Reply'   , 1   , 1   , 1, 100,  10  , 1, ''),
-         ( 22, 'OEQT', 'Quote', 100, 10 , 1   , 'End'     , null, null, 1, null, null, 1, '')
-
-            -- 200, 300 への遷移時は[NextWorkflowNo]が必要になる。 [ToUserId]で一意になれば、不要。
-
+     
+         ( 'OEQT', 'Quote'  , 100, 1   , 1    , 'RFQ'      , 2    , 1    , 300  , 3    , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 200, 2   , 2    , 'RFQ'      , 2    , 1    , 300  , 3    , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 300, 3   , 2    , 'TurnBack' , 1    , 1    , 100  , 1    , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 300, 3   , 2    , 'TurnBack' , 2    , 1    , 200  , 2    , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 300, 3   , 2    , 'RFQ'      , 3    , 1    , 400  , 4    , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 400, 4   , 3    , 'TurnBack' , 2    , 1    , 300  , 3    , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 400, 4   , 3    , 'RFQ'      , 4999 , null , 500  , 5    , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 500, 5   , 4999 , 'TurnBack' , 3    , 1    , 400  , 4    , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 500, 5   , 4999 , 'RFQ'      , 5999 , null , 600  , 6    , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 600, 6   , 5999 , 'TurnBack' , 4999 , null , 500  , 5    , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 600, 6   , 5999 , 'RFQ'      , 3    , 1    , 400  , 7    , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 400, 7   , 3    , 'Reply'    , 2    , 1    , 300  , 8    , 3    , 1, ''),
+         ( 'OEQT', 'Quote'  , 300, 8   , 2    , 'RFQ'      , 6999 , null , 700  , 91   , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 700, 91  , 6999 , 'TurnBack' , 2    , 1    , 300  , 8    , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 700, 91  , 6999  , 'RFQ'     , 6998 , null , 700  , 92   , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 700, 92  , 6998 , 'TurnBack' , 6999 , null , 700  , 91   , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 700, 92  , 6998 , 'RFQ'      , 6997 , null , 700  , 10   , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 700, 10  , 6997 , 'TurnBack' , 6999 , null , 700  , 92   , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 700, 10  , 6997 , 'Reply'    , 2    , 1    , 300  , 111  , 8    , 1, ''),
+         ( 'OEQT', 'Quote'  , 300, 111 , 2    , 'RFQ'      , 2999 , null , 300  , 112  , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 300, 112 , 2999 , 'RFQ'      , 2998 , null , 300  , 12   , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 300, 12  , 2998 , 'Reply'    , 1    , 1    , 100  , 131  , 1    , 1, ''),
+         ( 'OEQT', 'Quote'  , 300, 12  , 2998 , 'Reply'    , 2    , 1    , 200  , 132  , 2    , 1, ''),
+         ( 'OEQT', 'Quote'  , 100, 131 , 1    , 'End'      , null , null , null , null , null , 1, ''),
+         ( 'OEQT', 'Quote'  , 100, 132 , 2    , 'End'      , null , null , null , null , null , 1, ''),
+         
+         ( 'TEST', 'Branch1', 100, 1   , 1    , 'Request'  , 2    , 1    , 200  , 2    , null , 1, ''),
+         ( 'TEST', 'Branch1', 200, 2   , 2    , 'Request'  , 3    , 1    , 300  , 3    , null , 1, ''),
+         ( 'TEST', 'Branch1', 200, 2   , 2    , 'Request'  , 4    , 1    , 400  , 4    , null , 1, ''),
+         ( 'TEST', 'Branch1', 300, 3   , 3    , 'Request'  , 5    , 1    , 500  , 5    , null , 1, ''),
+         ( 'TEST', 'Branch1', 400, 4   , 4    , 'Request'  , 5    , 1    , 500  , 6    , null , 1, ''),
+         ( 'TEST', 'Branch1', 500, 5   , 5    , 'Reply'    , 3    , 1    , 300  , 7    , 3    , 1, ''),
+         ( 'TEST', 'Branch1', 500, 6   , 5    , 'Reply'    , 4    , 1    , 400  , 8    , 4    , 1, ''),
+         ( 'TEST', 'Branch1', 300, 7   , 3    , 'Reply'    , 2    , 1    , 200  , 9    , 2    , 1, ''),
+         ( 'TEST', 'Branch1', 400, 8   , 4    , 'Reply'    , 2    , 1    , 200  , 9    , 2    , 1, ''),
+         ( 'TEST', 'Branch1', 200, 9   , 2    , 'Reply'    , 1    , 1    , 100  , 10   , 1    , 1, ''),
+         ( 'TEST', 'Branch1', 100, 10  , 1    , 'End'      , null , null , null , null , null , 1, ''),
+         
+         ( 'TEST', 'Branch2', 100, 1   , 1    , 'Request'  , 2    , 1    , 200  , 2    , null , 1, ''),
+         ( 'TEST', 'Branch2', 200, 2   , 2    , 'Request'  , 3    , 1    , 300  , 3    , null , 1, ''),
+         ( 'TEST', 'Branch2', 200, 2   , 2    , 'Request'  , 4    , 1    , 400  , 4    , null , 1, ''),
+         ( 'TEST', 'Branch2', 300, 3   , 3    , 'Request'  , 5    , 1    , 500  , 5    , null , 1, ''),
+         ( 'TEST', 'Branch2', 400, 4   , 4    , 'Request'  , 5    , 1    , 500  , 5    , null , 1, ''),
+         ( 'TEST', 'Branch2', 500, 5   , 5    , 'TurnBack' , 3    , 1    , 300  , 3    , null , 1, ''),
+         ( 'TEST', 'Branch2', 500, 5   , 5    , 'TurnBack' , 4    , 1    , 400  , 4    , null , 1, ''),
+         ( 'TEST', 'Branch2', 500, 5   , 5    , 'Request'  , 6    , 1    , 600  , 6    , null , 1, ''),
+         ( 'TEST', 'Branch2', 600, 6   , 6    , 'Reply'    , 5    , 1    , 500  , 7    , 5    , 1, ''),
+         ( 'TEST', 'Branch2', 500, 7   , 5    , 'Reply'    , 3    , 1    , 300  , 8    , 3    , 1, ''),
+         ( 'TEST', 'Branch2', 500, 7   , 5    , 'Reply'    , 4    , 1    , 400  , 9    , 4    , 1, ''),
+         ( 'TEST', 'Branch2', 300, 8   , 3    , 'Reply'    , 2    , 1    , 200  , 10   , 2    , 1, ''),
+         ( 'TEST', 'Branch2', 400, 9   , 4    , 'Reply'    , 2    , 1    , 200  , 10   , 2    , 1, ''),
+         ( 'TEST', 'Branch2', 200, 10  , 2    , 'Reply'    , 1    , 1    , 100  , 11   , 1    , 1, ''),
+         ( 'TEST', 'Branch2', 100, 11  , 1    , 'End'      , null , null , null , null , null , 1, '')
+         
 GO
 
 

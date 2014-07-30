@@ -15,7 +15,7 @@ DROP TABLE [dbo].[M_Workflow]
 GO
 
 CREATE TABLE [dbo].[M_Workflow](
-	[Id] [decimal](10, 0) NOT NULL,
+	[Id] [decimal](10, 0) IDENTITY (1, 1) NOT NULL,
 	[SubSystemId] [char](4) NOT NULL,
 	[WorkflowName] [varchar](50) NOT NULL,
 	[WfPositionId] [int] NOT NULL,
@@ -24,9 +24,9 @@ CREATE TABLE [dbo].[M_Workflow](
 	[ActionType] [varchar](30) NOT NULL,
 	[ToUserId] [decimal](10, 0) NULL,
 	[ToUserPositionTitlesId] [int] NULL,
-	[SortIndex] [int] NULL,
 	[NextWfPositionId] [int] NULL,
 	[NextWorkflowNo] [int] NULL ,
+	[CorrespondOfReplyWorkflow] [int] NULL ,
 	[MailTemplateId] [int] NULL,
 	[ReserveArea] [varchar](50) NULL,
  CONSTRAINT [PK_M_Workflow] PRIMARY KEY CLUSTERED 
@@ -51,8 +51,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_M_Workflow] ON [dbo].[M_Workflow]
 	[WfPositionId] ASC,
 	[FromUserId] ASC,
 	[ActionType] ASC,
-	[ToUserId] ASC,
-	[SortIndex] ASC
+	[ToUserId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 GO
 

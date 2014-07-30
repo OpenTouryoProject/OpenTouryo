@@ -69,6 +69,7 @@ namespace Touryo.Infrastructure.Business.Exceptions
             }
         }
 
+        #region CmnFunc method
         /// <summary>Returns the specified string resource for the specified culture or current UI culture. </summary>
         /// <param name="key">resource key</param>
         /// <returns>resource string</returns>
@@ -102,6 +103,7 @@ namespace Touryo.Infrastructure.Business.Exceptions
                 }
             }
         }
+        #endregion
     }
 }
     

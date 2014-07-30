@@ -204,17 +204,6 @@ Public Class DaoM_Workflow
 		End Set
 	End Property
 
-	''' <summary>SortIndex列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
-	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
-	Public Property SortIndex() As Object
-		Get
-			Return Me.HtParameter("SortIndex")
-		End Get
-		Set
-			Me.HtParameter("SortIndex") = value
-		End Set
-	End Property
-
 	''' <summary>NextWfPositionId列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
 	Public Property NextWfPositionId() As Object
@@ -234,6 +223,17 @@ Public Class DaoM_Workflow
 		End Get
 		Set
 			Me.HtParameter("NextWorkflowNo") = value
+		End Set
+	End Property
+
+	''' <summary>CorrespondOfReplyWorkflow列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
+	Public Property CorrespondOfReplyWorkflow() As Object
+		Get
+			Return Me.HtParameter("CorrespondOfReplyWorkflow")
+		End Get
+		Set
+			Me.HtParameter("CorrespondOfReplyWorkflow") = value
 		End Set
 	End Property
 
@@ -368,18 +368,6 @@ Public Class DaoM_Workflow
 	End Property
 
 
-	''' <summary>Set_SortIndex_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
-	''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
-	Public Property Set_SortIndex_forUPD() As Object
-		Get
-			Return Me.HtParameter("Set_SortIndex_forUPD")
-		End Get
-		Set
-			Me.HtParameter("Set_SortIndex_forUPD") = value
-		End Set
-	End Property
-
-
 	''' <summary>Set_NextWfPositionId_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
 	Public Property Set_NextWfPositionId_forUPD() As Object
@@ -400,6 +388,18 @@ Public Class DaoM_Workflow
 		End Get
 		Set
 			Me.HtParameter("Set_NextWorkflowNo_forUPD") = value
+		End Set
+	End Property
+
+
+	''' <summary>Set_CorrespondOfReplyWorkflow_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
+	Public Property Set_CorrespondOfReplyWorkflow_forUPD() As Object
+		Get
+			Return Me.HtParameter("Set_CorrespondOfReplyWorkflow_forUPD")
+		End Get
+		Set
+			Me.HtParameter("Set_CorrespondOfReplyWorkflow_forUPD") = value
 		End Set
 	End Property
 
@@ -537,18 +537,6 @@ Public Class DaoM_Workflow
 	End Property
 
 
-	''' <summary>SortIndex_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
-	''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
-	Public Property SortIndex_Like() As Object
-		Get
-			Return Me.HtParameter("SortIndex_Like")
-		End Get
-		Set
-			Me.HtParameter("SortIndex_Like") = value
-		End Set
-	End Property
-
-
 	''' <summary>NextWfPositionId_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
 	''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
 	Public Property NextWfPositionId_Like() As Object
@@ -569,6 +557,18 @@ Public Class DaoM_Workflow
 		End Get
 		Set
 			Me.HtParameter("NextWorkflowNo_Like") = value
+		End Set
+	End Property
+
+
+	''' <summary>CorrespondOfReplyWorkflow_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+	''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+	Public Property CorrespondOfReplyWorkflow_Like() As Object
+		Get
+			Return Me.HtParameter("CorrespondOfReplyWorkflow_Like")
+		End Get
+		Set
+			Me.HtParameter("CorrespondOfReplyWorkflow_Like") = value
 		End Set
 	End Property
 

@@ -11,6 +11,5 @@ WHERE
       [T_WorkflowHistory]
     WHERE
       [T_WorkflowHistory].[WorkflowControlNo] = @WorkflowControlNo
-      AND [T_WorkflowHistory].[ActionType] != @ActionType
-      AND [T_WorkflowHistory].[WorkflowNo] = @NextWorkflowNo
+      AND [T_WorkflowHistory].[WorkflowNo] = @CorrespondOfReplyWorkflow
   )

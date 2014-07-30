@@ -1,16 +1,16 @@
 SELECT
-  [FromUserId]
+  [T_WorkflowHistory].[FromUserId]
 FROM
-  [dbo].[T_WorkflowHistory]
+  [T_WorkflowHistory]
 WHERE
-  [WorkflowControlNo] = @WorkflowControlNo
-  AND [HistoryNo] = (
+  [T_WorkflowHistory].[WorkflowControlNo] = @WorkflowControlNo
+  AND [T_WorkflowHistory].[HistoryNo] = (
     SELECT
-      MAX(HistoryNo)
+      MAX([T_WorkflowHistory].[HistoryNo])
     FROM
-      [dbo].[T_WorkflowHistory]
+      [T_WorkflowHistory]
     WHERE
-      [WorkflowControlNo] = @WorkflowControlNo
-      AND [ActionType] != @ActionType
-      AND [NextWorkflowNo] = @NextWorkflowNo
+      [T_WorkflowHistory].[WorkflowControlNo] = @WorkflowControlNo
+      AND [T_WorkflowHistory].[ActionType] != @ActionType
+      AND [T_WorkflowHistory].[WorkflowNo] = @NextWorkflowNo
   )

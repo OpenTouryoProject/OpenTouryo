@@ -85,6 +85,25 @@ namespace Touryo.Infrastructure.Business.Workflow
         public DataTable PreStartWorkflow(
             string subSystemId, string workflowName, decimal fromUserId)
         {
+            #region チェック処理を実装
+
+            if (string.IsNullOrEmpty(subSystemId))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "subSystemId")));
+            }
+            else if (string.IsNullOrEmpty(workflowName))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowName")));
+            }
+
+            #endregion
+
             // --------------------------------------------------
             // 新しいワークフローを準備
             // --------------------------------------------------
@@ -118,6 +137,32 @@ namespace Touryo.Infrastructure.Business.Workflow
             string workflowControlNo, decimal fromUserId, string fromUserInfo, string toUserInfo,
             string workflowReserveArea, string currentWorkflowReserveArea, DateTime? replyDeadline)
         {
+            #region チェック処理を実装
+
+            if (string.IsNullOrEmpty(workflowControlNo))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")));
+            }
+            else if (string.IsNullOrEmpty(fromUserInfo))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "fromUserInfo")));
+            }
+            else if (string.IsNullOrEmpty(toUserInfo))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "toUserInfo")));
+            }
+
+            #endregion
+
             // --------------------------------------------------
             // 新しいワークフローを開始
             // --------------------------------------------------
@@ -189,6 +234,9 @@ namespace Touryo.Infrastructure.Business.Workflow
         public DataTable GetWfRequest(
             string subSystemId, string workflowName, decimal? userId, int? userPositionTitlesId)
         {
+            // チェック処理を実装
+            // なし。
+
             // --------------------------------------------------
             // ワークフローの依頼を取得
             // --------------------------------------------------
@@ -236,6 +284,33 @@ namespace Touryo.Infrastructure.Business.Workflow
         /// <param name="acceptanceUserInfo">受付ユーザ情報</param>
         public void AcceptWfRequest(DataRow workflowRequest, decimal acceptanceUserId, string acceptanceUserInfo)
         {
+            #region チェック処理を実装
+
+            if (workflowRequest == null)
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowRequest")));
+            }
+            else if (string.IsNullOrEmpty(acceptanceUserInfo))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "acceptanceUserInfo")));
+            }
+            else if (!workflowRequest.Table.Columns.Contains("WorkflowControlNo"))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED,
+                        "WorkflowControlNo", "workflowRequest")));
+            }
+
+            #endregion
+
             // --------------------------------------------------
             // 受付（T_CurrentWorkflowのacceptance項目を更新）
             // --------------------------------------------------
@@ -272,6 +347,9 @@ namespace Touryo.Infrastructure.Business.Workflow
         /// <returns>処理中のワークフロー一覧</returns>
         public DataTable GetProcessingWfRequest(string subSystemId, string workflowName, decimal userId)
         {
+            // チェック処理を実装
+            // なし。
+
             // --------------------------------------------------
             // 処理中のワークフローを取得
             // --------------------------------------------------
@@ -304,15 +382,35 @@ namespace Touryo.Infrastructure.Business.Workflow
         }
 
         /// <summary>次のワークフロー依頼を取得します。</summary>
-        /// <param name="ProcessingWfReq">選択した処理中ワークフロー依頼</param>
+        /// <param name="processingWfReq">選択した処理中ワークフロー依頼</param>
         /// <param name="fromUserId">FromユーザID（必須）</param>
         /// <returns>次のワークフロー</returns>
         /// <remarks>
         /// fromUsersId
         /// 　御中IDでの呼び出しと、ユーザIDでの呼び出しは２回に分ける。
         /// </remarks>
-        public DataTable GetNextWfRequest(DataRow ProcessingWfReq, decimal fromUserId)
+        public DataTable GetNextWfRequest(DataRow processingWfReq, decimal fromUserId)
         {
+            #region チェック処理を実装
+
+            if (processingWfReq == null)
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "processingWfReq")));
+            }
+            else if (!processingWfReq.Table.Columns.Contains("SubSystemId"))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED,
+                        "SubSystemId", "processingWfReq")));
+            }
+            
+            #endregion
+
             // --------------------------------------------------
             // 次のワークフロー依頼を取得
             // --------------------------------------------------
@@ -322,13 +420,77 @@ namespace Touryo.Infrastructure.Business.Workflow
             DaoM_Workflow daoM_Workflow = new DaoM_Workflow(this.Dam);
 
             // 検索条件
-            daoM_Workflow.SubSystemId = ProcessingWfReq["SubSystemId"];
-            daoM_Workflow.WorkflowName = ProcessingWfReq["WorkflowName"];
-            daoM_Workflow.WorkflowNo = ProcessingWfReq["NextWorkflowNo"];
+            daoM_Workflow.SubSystemId = processingWfReq["SubSystemId"];
+            daoM_Workflow.WorkflowName = processingWfReq["WorkflowName"];
+            daoM_Workflow.WorkflowNo = processingWfReq["NextWorkflowNo"];
             daoM_Workflow.FromUserId = fromUserId;
 
             // ワークフローの取得
             daoM_Workflow.D2_Select(dt);
+
+            // --------------------------------------------------
+            // TurnBack, Replyワークフローのフィルタ
+            // --------------------------------------------------
+            // T_WorkflowHistoryのSELECT
+            // --------------------------------------------------
+            CmnDao dao = new CmnDao(this.Dam);
+            DataRow[] drs = dt.Select("ActionType = 'TurnBack'");
+
+            if (drs.Length > 1)
+            {
+                dao.SQLFileName = "GetTurnBackWorkflow.sql";
+                dao.SetParameter("WorkflowControlNo", processingWfReq["WorkflowControlNo"]);
+                int workflowNo = (int)dao.ExecSelectScalar();
+
+                foreach (DataRow dr in drs)
+                {
+                    if ((int)dr["NextWorkflowNo"] == workflowNo)
+                    {
+                        // 対象
+                    }
+                    else
+                    {
+                        // 対象外（削除）
+                        dr.Delete();
+                    }
+                }
+
+                // 削除処理の受け入れ
+                dt.AcceptChanges();   
+            }
+
+            drs = dt.Select("ActionType = 'Reply'");
+
+            if (drs.Length > 1)
+            {
+                dao.SQLFileName = "GetReplyWorkflow.xml";
+                dao.SetParameter("WorkflowControlNo", processingWfReq["WorkflowControlNo"]);
+
+                ArrayList alCorrespondOfReplyWorkflow = new ArrayList(); 
+                foreach (DataRow dr in drs)
+                {
+                    alCorrespondOfReplyWorkflow.Add(dr["CorrespondOfReplyWorkflow"]);
+                }
+
+                dao.SetParameter("CorrespondOfReplyWorkflow", alCorrespondOfReplyWorkflow);
+                int workflowNo = (int)dao.ExecSelectScalar();
+
+                foreach (DataRow dr in drs)
+                {
+                    if ((int)dr["CorrespondOfReplyWorkflow"] == workflowNo)
+                    {
+                        // これ
+                    }
+                    else
+                    {
+                        // 削除
+                        dr.Delete();
+                    }
+                }
+
+                // 削除処理の受け入れ
+                dt.AcceptChanges();
+            }
 
             // リターン
             return dt;
@@ -340,6 +502,33 @@ namespace Touryo.Infrastructure.Business.Workflow
         /// <returns>ToユーザID</returns>
         public decimal GetTurnBackToUser(DataRow turnBackWorkflow, string workflowControlNo)
         {
+            #region チェック処理を実装
+
+            if (turnBackWorkflow == null)
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "turnBackWorkflow")));
+            }
+            else if (!turnBackWorkflow.Table.Columns.Contains("SubSystemId"))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED,
+                        "SubSystemId", "turnBackWorkflow")));
+            }
+            else if (string.IsNullOrEmpty(workflowControlNo))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")));
+            }
+
+            #endregion
+
             // --------------------------------------------------
             // 差戻しのToユーザIDを履歴から取得
             // --------------------------------------------------
@@ -349,7 +538,53 @@ namespace Touryo.Infrastructure.Business.Workflow
             dao.SQLFileName = "GetTurnBackToUser.sql";
             dao.SetParameter("WorkflowControlNo", workflowControlNo);
             dao.SetParameter("ActionType", "TurnBack");
-            dao.SetParameter("NextWorkflowNo", turnBackWorkflow["WorkflowNo"]);
+            dao.SetParameter("NextWorkflowNo", turnBackWorkflow["NextWorkflowNo"]);
+
+            return (decimal)dao.ExecSelectScalar();
+        }
+
+        /// <summary>返信のToユーザIDを履歴から取得します。</summary>
+        /// <param name="replyBackWorkflow">返信ののワークフロー</param>
+        /// <param name="workflowControlNo">ワークフロー管理番号（必須）</param>
+        /// <returns>ToユーザID</returns>
+        public decimal GetReplyToUser(DataRow replyBackWorkflow, string workflowControlNo)
+        {
+            #region チェック処理を実装
+
+            if (replyBackWorkflow == null)
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "replyBackWorkflow")));
+            }
+            else if (!replyBackWorkflow.Table.Columns.Contains("SubSystemId"))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED,
+                        "SubSystemId", "replyBackWorkflow")));
+            }
+            else if (string.IsNullOrEmpty(workflowControlNo))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")));
+            }
+            
+            #endregion
+
+            // --------------------------------------------------
+            // 差戻しのToユーザIDを履歴から取得
+            // --------------------------------------------------
+            // T_WorkflowHistoryのSELECT
+            // --------------------------------------------------
+            CmnDao dao = new CmnDao(this.Dam);
+            dao.SQLFileName = "GetReplyToUser.sql";
+            dao.SetParameter("WorkflowControlNo", workflowControlNo);
+            dao.SetParameter("CorrespondOfReplyWorkflow", replyBackWorkflow["CorrespondOfReplyWorkflow"]);
 
             return (decimal)dao.ExecSelectScalar();
         }
@@ -359,17 +594,64 @@ namespace Touryo.Infrastructure.Business.Workflow
         /// <param name="workflowControlNo">ワークフロー管理番号（必須）</param>
         /// <param name="fromUserID">FromユーザID（必須）</param>
         /// <param name="fromUserInfo">Fromユーザ情報（必須）</param>
-        /// <param name="toUserID">ToユーザID（TurnBackの際に必要）</param>
-        /// <param name="toUserInfo">Toユーザ情報（必須）</param>
+        /// <param name="toUserID">ToユーザID（TurnBack、Replyの際に必要）</param>
+        /// <param name="toUserInfo">Toユーザ情報（必須、ただしEndの時は不要 ）</param>
         /// <param name="currentWorkflowReserveArea">T_CurrentWorkflowの予備領域（任意）</param>
         /// <param name="replyDeadline">回答希望日（任意）</param>
         /// <returns>メール・テンプレートID</returns>
         public int RequestWfApproval(
             DataRow nextWorkflow,　string workflowControlNo,
             decimal fromUserID, string fromUserInfo,
-            decimal toUserID, string toUserInfo,
+            decimal? toUserID, string toUserInfo,
             string currentWorkflowReserveArea, DateTime? replyDeadline)
         {
+            #region チェック処理を実装
+
+            if (nextWorkflow == null)
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "nextWorkflow")));
+            }
+            else if (!nextWorkflow.Table.Columns.Contains("SubSystemId"))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED,
+                        "SubSystemId", "nextWorkflow")));
+            }
+            else if (string.IsNullOrEmpty(workflowControlNo))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")));
+            }
+            else if (string.IsNullOrEmpty(fromUserInfo))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "fromUserInfo")));
+            }
+            else if (string.IsNullOrEmpty(toUserInfo)
+                && (string)nextWorkflow["ActionType"] != "End") // Endの時は不要 
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "toUserInfo")));
+            }
+            
+            #endregion
+
+            // --------------------------------------------------
+            // 現在の履歴件数を取得。
+            // --------------------------------------------------
+            // T_WorkflowHistoryのCount
+            // --------------------------------------------------
             CmnDao dao = new CmnDao(this.Dam);
 
             dao.SQLFileName = "RequestApproval_Count.sql";
@@ -386,7 +668,7 @@ namespace Touryo.Infrastructure.Business.Workflow
             // 主キー情報
             daoT_CurrentWorkflow.PK_WorkflowControlNo = workflowControlNo;
 
-            // 履歴番号 // 0件 → move → 1件 → 1件 + 1 = 2（履歴番号）
+            // 履歴番号は履歴件数＋１
             daoT_CurrentWorkflow.Set_HistoryNo_forUPD = recordCount + 1;
 
             daoT_CurrentWorkflow.Set_WfPositionId_forUPD = nextWorkflow["WfPositionId"];
@@ -395,12 +677,16 @@ namespace Touryo.Infrastructure.Business.Workflow
             daoT_CurrentWorkflow.Set_FromUserInfo_forUPD = fromUserInfo;
             daoT_CurrentWorkflow.Set_ActionType_forUPD = nextWorkflow["ActionType"];
 
-            if ((string)nextWorkflow["ActionType"] == "TurnBack")
+            if (toUserID != null &&
+                ((string)nextWorkflow["ActionType"] == "TurnBack" || (string)nextWorkflow["ActionType"] == "Reply"))
             {
+                // ActionTypeがTurnBack or Replyで、toUserIDがnullで無い場合、
+                // 指定のtoUserIDにTurnBack or Replyする。
                 daoT_CurrentWorkflow.Set_ToUserId_forUPD = toUserID;
             }
             else
             {
+                // 上記以外は、nextWorkflow["ToUserId"]を指定する。
                 daoT_CurrentWorkflow.Set_ToUserId_forUPD = nextWorkflow["ToUserId"];
             }
             
@@ -411,8 +697,10 @@ namespace Touryo.Infrastructure.Business.Workflow
             daoT_CurrentWorkflow.Set_ReserveArea_forUPD = currentWorkflowReserveArea;
             //daoT_CurrentWorkflow.Set_ExclusiveKey_forUPD = "";
 
-            if ((string)nextWorkflow["ActionType"] == "TurnBack")
+            if ((string)nextWorkflow["ActionType"] == "TurnBack"
+                || (string)nextWorkflow["ActionType"] == "Reply")
             {
+                // ActionTypeがTurnBack or Replyの場合
                 daoT_CurrentWorkflow.Set_ReplyDeadline_forUPD = DBNull.Value;
             }
             else
@@ -445,7 +733,8 @@ namespace Touryo.Infrastructure.Business.Workflow
 
             //---
 
-            if (nextWorkflow["NextWorkflowNo"] == DBNull.Value)
+            // 完了
+            if ((string)nextWorkflow["ActionType"] == "End")
             {
                 // --------------------------------------------------
                 // 完了の場合（T_WorkflowのEndDate項目を更新）

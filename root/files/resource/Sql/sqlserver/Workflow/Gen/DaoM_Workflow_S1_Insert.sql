@@ -12,9 +12,9 @@ INSERT INTO
       [ActionType],
       [ToUserId],
       [ToUserPositionTitlesId],
-      [SortIndex],
       [NextWfPositionId],
       [NextWorkflowNo],
+      [CorrespondOfReplyWorkflow],
       [MailTemplateId],
       [ReserveArea]
     )
@@ -29,9 +29,9 @@ VALUES
       @ActionType,
       @ToUserId,
       @ToUserPositionTitlesId,
-      @SortIndex,
       @NextWfPositionId,
       @NextWorkflowNo,
+      @CorrespondOfReplyWorkflow,
       @MailTemplateId,
       @ReserveArea
     )

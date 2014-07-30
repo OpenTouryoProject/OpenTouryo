@@ -1,6 +1,6 @@
 ﻿テーブル名,カラム情報～
 M_Workflow,Id,
-,SubSystemId,WorkflowName,WfPositionId,WorkflowNo,FromUserId,ActionType,ToUserId,ToUserPositionTitlesId,SortIndex,NextWfPositionId,NextWorkflowNo,MailTemplateId,ReserveArea,
+,SubSystemId,WorkflowName,WfPositionId,WorkflowNo,FromUserId,ActionType,ToUserId,ToUserPositionTitlesId,NextWfPositionId,NextWorkflowNo,CorrespondOfReplyWorkflow,MailTemplateId,ReserveArea,
 M_User,Id,
 ,Section,Name,PositionTitlesId,
 T_WorkflowHistory,WorkflowControlNo,HistoryNo,

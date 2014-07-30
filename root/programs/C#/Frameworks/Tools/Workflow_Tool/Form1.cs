@@ -387,8 +387,15 @@ namespace Workflow_Tool
 
                 // GetNextWfRequest
                 Workflow wf = new Workflow(this._dam);
-                dt1 = wf.GetNextWfRequest(processingWfReq, decimal.Parse(this.txtDearSirUID.Text));
-                dt2 = wf.GetNextWfRequest(processingWfReq, decimal.Parse(this.txtUserID.Text));
+
+                if (!string.IsNullOrEmpty(this.txtDearSirUID.Text))
+                {
+                    dt1 = wf.GetNextWfRequest(processingWfReq, decimal.Parse(this.txtDearSirUID.Text));
+                }
+                if (!string.IsNullOrEmpty(this.txtUserID.Text))
+                {
+                    dt2 = wf.GetNextWfRequest(processingWfReq, decimal.Parse(this.txtUserID.Text));
+                }
 
                 //  次のワークフロー依頼を表示
                 dt = new DataTable();
@@ -450,21 +457,31 @@ namespace Workflow_Tool
 
                 decimal toUserID = 0;
                 string toUserInfo = "";
-                if ((string)nextWorkflow["ActionType"] == "End")
+                
+                if (this.checkBox1.Checked
+                    && (string)nextWorkflow["ActionType"] == "TurnBack")
+                {
+                    // TurnBack(送信元に差戻)
+                    toUserID = wf.GetTurnBackToUser(nextWorkflow, this.txtWorkflowControlNo.Text);
+                    toUserInfo = this.GetUserInfo(toUserID);
+                }
+                else if (this.checkBox1.Checked
+                    && (string)nextWorkflow["ActionType"] == "Reply")
+                {
+                    // Reply(送信元に返信)
+                    toUserID = wf.GetReplyToUser(nextWorkflow, this.txtWorkflowControlNo.Text);
+                    toUserInfo = this.GetUserInfo(toUserID);
+                }
+                else if ((string)nextWorkflow["ActionType"] == "End")
                 {
                     // End
                     toUserID = 0;
                     toUserInfo = "";
                 }
-                else if ((string)nextWorkflow["ActionType"] == "TurnBack")
-                {
-                    // TurnBack
-                    toUserID = wf.GetTurnBackToUser(nextWorkflow, this.txtWorkflowControlNo.Text);
-                    toUserInfo = this.GetUserInfo(toUserID);
-                }
                 else
                 {
-                    // End, TurnBack以外
+                    // TurnBack, Reply, End以外
+                    // nextWorkflow["ToUserId"]を使用する。
                     toUserInfo = this.GetUserInfo((decimal)nextWorkflow["ToUserId"]);
                 }
 
