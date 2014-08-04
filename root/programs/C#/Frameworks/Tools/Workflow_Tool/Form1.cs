@@ -106,6 +106,12 @@ namespace Workflow_Tool
             // タブ
             this.tabControl1.SelectedTab = this.tabControl1.TabPages[1];
             this.tabControl1.SelectedTab = this.tabControl1.TabPages[0];
+
+            // GetUserInfoDelegateの設定
+            if (Workflow.GetUserInfo == null)
+            {
+                Workflow.GetUserInfo = new GetUserInfoDelegate(this.MyGetUserInfo);
+            }
         }
 
         #endregion
@@ -195,17 +201,15 @@ namespace Workflow_Tool
                     txtWorkflowControlNo.Text = Guid.NewGuid().ToString();
                 }
 
-                // UserInfoを取得
-                decimal fromUserID = decimal.Parse(txtUserID.Text);
-                string fromUserInfo = this.GetUserInfo(fromUserID);
-                string toUserInfo = this.GetUserInfo((decimal)startWorkflow["ToUserId"]);
+                // UserIDを取得
+                decimal fromUserId = decimal.Parse(txtUserID.Text);
 
                 // StartWorkflow
                 Workflow wf = new Workflow(this._dam);
 
                 int mailTemplateId = 0;
                 mailTemplateId = wf.StartWorkflow(
-                    startWorkflow, txtWorkflowControlNo.Text, fromUserID, fromUserInfo, toUserInfo,
+                    startWorkflow, txtWorkflowControlNo.Text, fromUserId,
                     this.txtWorkflowReserveArea.Text, this.txtCurrentWorkflowReserveArea1.Text, this.dtpReplyDeadline1.Value);
                 
                 // ★ ココでメールを送信。
@@ -307,13 +311,12 @@ namespace Workflow_Tool
                     }
                 }
 
-                // UserInfoを取得
+                // userIdを取得
                 decimal userId =  decimal.Parse(txtUserID.Text);
-                string userInfo = this.GetUserInfo(userId);
 
                 // AcceptWfRequest
                 Workflow wf = new Workflow(this._dam);
-                wf.AcceptWfRequest(workflowRequest, userId, userInfo);
+                wf.AcceptWfRequest(workflowRequest, userId);
 
                 this._dam.CommitTransaction();
             }
@@ -451,44 +454,37 @@ namespace Workflow_Tool
                 // GetTurnBackToUser, StartWorkflow
                 Workflow wf = new Workflow(this._dam);
 
-                // UserInfoを取得
-                decimal fromUserID = decimal.Parse(this.txtUserID.Text);
-                string fromUserInfo = this.GetUserInfo(decimal.Parse(txtUserID.Text));
+                // fromUserIDを取得
+                decimal fromUserId = decimal.Parse(this.txtUserID.Text);
 
-                decimal toUserID = 0;
-                string toUserInfo = "";
+                decimal? toUserId = null;
                 
                 if (this.checkBox1.Checked
                     && (string)nextWorkflow["ActionType"] == "TurnBack")
                 {
                     // TurnBack(送信元に差戻)
-                    toUserID = wf.GetTurnBackToUser(nextWorkflow, this.txtWorkflowControlNo.Text);
-                    toUserInfo = this.GetUserInfo(toUserID);
+                    toUserId = wf.GetTurnBackToUser(nextWorkflow, this.txtWorkflowControlNo.Text);
                 }
                 else if (this.checkBox1.Checked
                     && (string)nextWorkflow["ActionType"] == "Reply")
                 {
                     // Reply(送信元に返信)
-                    toUserID = wf.GetReplyToUser(nextWorkflow, this.txtWorkflowControlNo.Text);
-                    toUserInfo = this.GetUserInfo(toUserID);
+                    toUserId = wf.GetReplyToUser(nextWorkflow, this.txtWorkflowControlNo.Text);
                 }
                 else if ((string)nextWorkflow["ActionType"] == "End")
                 {
                     // End
-                    toUserID = 0;
-                    toUserInfo = "";
+                    toUserId = null;
                 }
                 else
                 {
                     // TurnBack, Reply, End以外
                     // nextWorkflow["ToUserId"]を使用する。
-                    toUserInfo = this.GetUserInfo((decimal)nextWorkflow["ToUserId"]);
                 }
 
                 int mailTemplateId = 0;
                 mailTemplateId = wf.RequestWfApproval(
-                    nextWorkflow, this.txtWorkflowControlNo.Text,
-                    fromUserID, fromUserInfo, toUserID, toUserInfo, 
+                    nextWorkflow, this.txtWorkflowControlNo.Text, fromUserId, toUserId, 
                     this.txtCurrentWorkflowReserveArea2.Text, this.dtpReplyDeadline2.Value);
 
                 // ★ ココでメールを送信。
@@ -527,7 +523,7 @@ namespace Workflow_Tool
         /// <summary>ユーザ情報を取得する</summary>
         /// <param name="uid">ユーザID</param>
         /// <returns>ユーザ情報</returns>
-        private string GetUserInfo(decimal uid)
+        private string MyGetUserInfo(decimal uid)
         {
             string temp = "";
 
@@ -554,6 +550,7 @@ namespace Workflow_Tool
 
         #endregion
 
+        /// <summary>活性・非活性制御</summary>
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             int selectedTabIndex = ((System.Windows.Forms.TabControl)(sender)).SelectedTab.TabIndex;
@@ -561,6 +558,7 @@ namespace Workflow_Tool
             switch (selectedTabIndex)
             {
                 case 0:
+                    // (1) 新しいワークフローを準備します。
                     this.txtCnnstr.Enabled = true;
                     this.txtCnnstr.BackColor = Color.Empty;
                     //---
@@ -582,6 +580,7 @@ namespace Workflow_Tool
                     break;
 
                 case 1:
+                    // (2) 新しいワークフローを開始します。
                     this.txtCnnstr.Enabled = false;
                     this.txtCnnstr.BackColor = Color.Empty;
                     //---
@@ -603,6 +602,7 @@ namespace Workflow_Tool
                     break;
 
                 case 2:
+                    // (3) ワークフロー依頼を取得します。
                     this.txtCnnstr.Enabled = false;
                     this.txtCnnstr.BackColor = Color.Empty;
                     //---
@@ -624,6 +624,7 @@ namespace Workflow_Tool
                     break;
 
                 case 3:
+                    // (4) ワークフロー依頼を受付ます。
                     this.txtCnnstr.Enabled = false;
                     this.txtCnnstr.BackColor = Color.Empty;
                     //---
@@ -645,6 +646,7 @@ namespace Workflow_Tool
                     break;
 
                 case 4:
+                    // (5) 処理中ワークフロー依頼を取得します。
                     this.txtCnnstr.Enabled = false;
                     this.txtCnnstr.BackColor = Color.Empty;
                     //---
@@ -666,6 +668,7 @@ namespace Workflow_Tool
                     break;
 
                 case 5:
+                    // (6) 次のワークフロー依頼を取得します。
                     this.txtCnnstr.Enabled = false;
                     this.txtCnnstr.BackColor = Color.Empty;
                     //---
@@ -687,6 +690,7 @@ namespace Workflow_Tool
                     break;
 
                 case 6:
+                    // (7) ワークフローの承認依頼をします（若しくは差戻、返信、終了）。
                     this.txtCnnstr.Enabled = false;
                     this.txtCnnstr.BackColor = Color.Empty;
                     //---
@@ -711,13 +715,5 @@ namespace Workflow_Tool
                     break;
             }
         }
-
-        
-
-        
-
-        
-
-        
     }
 }
