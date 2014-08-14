@@ -84,7 +84,7 @@ namespace Touryo.Infrastructure.Business.Business
         private const string SELECT_COUNT_SQL_TEMPLATE =
             "SELECT COUNT(*) FROM {0} {1}";
 
-        /// <summary>データ件数取得SQLテンプレート</summary>
+        /// <summary>Select count query for PostgreSQL</summary>
         private const string SELECT_COUNT_POSTGRESQL_TEMPLATE =
             "SELECT COUNT(*) FROM \"{0}\" {1}";
 
@@ -256,7 +256,7 @@ namespace Touryo.Infrastructure.Business.Business
             string p = ""; // パラメタ記号
             string s = ""; // 囲い記号開始
             string e = ""; // 囲い記号終了
-            string f = ""; // 囲い記号終了
+            string f = ""; // For supporting type casting in PostgreSQL
             // 囲い文字の選択
             if (parameterValue.DBMSType == DbEnum.DBMSType.SQLServer)
             {
@@ -291,7 +291,7 @@ namespace Touryo.Infrastructure.Business.Business
 
             if (parameterValue.DBMSType == DbEnum.DBMSType.PstGrS)
             {
-            // SQLを設定して
+            //Set the Query for PostgreSQL database
             cmnDao.SQLText = string.Format(
                     SELECT_COUNT_POSTGRESQL_TEMPLATE,
                     s + parameterValue.TableName + e, whereSQL)
@@ -346,7 +346,7 @@ namespace Touryo.Infrastructure.Business.Business
             string p = ""; // パラメタ記号
             string s = ""; // 囲い記号開始
             string e = ""; // 囲い記号終了
-            string f = ""; // 囲い記号終了
+            string f = ""; // For supporting type casting in PostgreSQL
 
             // テンプレート、囲い文字の選択
             if (parameterValue.DBMSType == DbEnum.DBMSType.SQLServer)
