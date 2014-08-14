@@ -3,7 +3,7 @@
 //**********************************************************************************
 
 #region Apache License
- 
+
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2014/03/31  西野  大介        新規作成
+//*  08/12/2014  Sai               Added TestcaseID using SetName method as per Nishino-San comments
 //*
 //**********************************************************************************
 
@@ -77,7 +78,7 @@ namespace Public.Test.IO
         }
 
         #region Test data
-        
+
         /// <summary>
         /// This method to generate test cases. 
         /// This method to generate test data to be passed to the method EncryptStringTest.
@@ -87,55 +88,53 @@ namespace Public.Test.IO
             get
             {
                 // If you need to prepare for the test data below so, you use the TestCaseData.
-                
+
                 // Get public key and private key.
                 string publicKey;
                 string privateKey;
                 ASymmetricCryptography.GetKeys(out publicKey, out privateKey);
 
-                this.SetUp();
-
                 // Public key that is obtained, using the private key.
-                yield return new TestCaseData("TestID-001N", "abcde", publicKey, privateKey);
-                yield return new TestCaseData("TestID-002N", "あいうえお", publicKey, privateKey);
-                yield return new TestCaseData("TestID-003L", string.Empty, publicKey, privateKey);
-                yield return new TestCaseData("TestID-004A", null, publicKey, privateKey).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", publicKey, privateKey).SetName("TestID-001N");
+                yield return new TestCaseData("あいうえお", publicKey, privateKey).SetName("TestID-002N");
+                yield return new TestCaseData(string.Empty, publicKey, privateKey).SetName("TestID-003L");
+                yield return new TestCaseData(null, publicKey, privateKey).Throws(typeof(ArgumentNullException)).SetName("TestID-004A");
 
                 // This test case using a dummy string to the private key.
-                yield return new TestCaseData("TestID-005A", "abcde", publicKey, "dummy").Throws(typeof(System.Security.XmlSyntaxException));
-                yield return new TestCaseData("TestID-006A", "あいうえお", publicKey, "dummy").Throws(typeof(System.Security.XmlSyntaxException));
-                yield return new TestCaseData("TestID-007A", string.Empty, publicKey, "dummy").Throws(typeof(System.Security.XmlSyntaxException));
-                yield return new TestCaseData("TestID-008A", null, publicKey, "dummy").Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", publicKey, "dummy").Throws(typeof(System.Security.XmlSyntaxException)).SetName("TestID-005A");
+                yield return new TestCaseData("あいうえお", publicKey, "dummy").Throws(typeof(System.Security.XmlSyntaxException)).SetName("TestID-006A");
+                yield return new TestCaseData(string.Empty, publicKey, "dummy").Throws(typeof(System.Security.XmlSyntaxException)).SetName("TestID-007A");
+                yield return new TestCaseData(null, publicKey, "dummy").Throws(typeof(ArgumentNullException)).SetName("TestID-008A");
 
                 // This test case using a dummy string in the public key.
-                yield return new TestCaseData("TestID-009A", "abcde", "dummy", privateKey).Throws(typeof(System.Security.XmlSyntaxException));
-                yield return new TestCaseData("TestID-010A", "あいうえお", "dummy", privateKey).Throws(typeof(System.Security.XmlSyntaxException));
-                yield return new TestCaseData("TestID-011A", string.Empty, "dummy", privateKey).Throws(typeof(System.Security.XmlSyntaxException));
-                yield return new TestCaseData("TestID-012A", null, "dummy", privateKey).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "dummy", privateKey).Throws(typeof(System.Security.XmlSyntaxException)).SetName("TestID-009A");
+                yield return new TestCaseData("あいうえお", "dummy", privateKey).Throws(typeof(System.Security.XmlSyntaxException)).SetName("TestID-010A");
+                yield return new TestCaseData(string.Empty, "dummy", privateKey).Throws(typeof(System.Security.XmlSyntaxException)).SetName("TestID-011A");
+                yield return new TestCaseData(null, "dummy", privateKey).Throws(typeof(ArgumentNullException)).SetName("TestID-012A");
 
                 // This test case using an empty private key.
-                yield return new TestCaseData("TestID-013A", "abcde", publicKey, string.Empty).Throws(typeof(System.Security.XmlSyntaxException));
-                yield return new TestCaseData("TestID-014A", "あいうえお", publicKey, string.Empty).Throws(typeof(System.Security.XmlSyntaxException));
-                yield return new TestCaseData("TestID-015A", string.Empty, publicKey, string.Empty).Throws(typeof(System.Security.XmlSyntaxException));
-                yield return new TestCaseData("TestID-016A", null, publicKey, string.Empty).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", publicKey, string.Empty).Throws(typeof(System.Security.XmlSyntaxException)).SetName("TestID-013A");
+                yield return new TestCaseData("あいうえお", publicKey, string.Empty).Throws(typeof(System.Security.XmlSyntaxException)).SetName("TestID-014A");
+                yield return new TestCaseData(string.Empty, publicKey, string.Empty).Throws(typeof(System.Security.XmlSyntaxException)).SetName("TestID-015A");
+                yield return new TestCaseData(null, publicKey, string.Empty).Throws(typeof(ArgumentNullException)).SetName("TestID-016A");
 
                 // This test case using an empty public key
-                yield return new TestCaseData("TestID-017A", "abcde", string.Empty, privateKey).Throws(typeof(System.Security.XmlSyntaxException));
-                yield return new TestCaseData("TestID-018A", "あいうえお", string.Empty, privateKey).Throws(typeof(System.Security.XmlSyntaxException));
-                yield return new TestCaseData("TestID-019A", string.Empty, string.Empty, privateKey).Throws(typeof(System.Security.XmlSyntaxException));
-                yield return new TestCaseData("TestID-020A", null, string.Empty, privateKey).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", string.Empty, privateKey).Throws(typeof(System.Security.XmlSyntaxException)).SetName("TestID-017A");
+                yield return new TestCaseData("あいうえお", string.Empty, privateKey).Throws(typeof(System.Security.XmlSyntaxException)).SetName("TestID-018A");
+                yield return new TestCaseData(string.Empty, string.Empty, privateKey).Throws(typeof(System.Security.XmlSyntaxException)).SetName("TestID-019A");
+                yield return new TestCaseData(null, string.Empty, privateKey).Throws(typeof(ArgumentNullException)).SetName("TestID-020A");
 
                 // This test case using the private key to Null
-                yield return new TestCaseData("TestID-021A", "abcde", publicKey, null).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-022A", "あいうえお", publicKey, null).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-023A", string.Empty, publicKey, null).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-024A", null, publicKey, null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", publicKey, null).Throws(typeof(ArgumentNullException)).SetName("TestID-021A");
+                yield return new TestCaseData("あいうえお", publicKey, null).Throws(typeof(ArgumentNullException)).SetName("TestID-022A");
+                yield return new TestCaseData(string.Empty, publicKey, null).Throws(typeof(ArgumentNullException)).SetName("TestID-023A");
+                yield return new TestCaseData(null, publicKey, null).Throws(typeof(ArgumentNullException)).SetName("TestID-024A");
 
                 // This test case using the public key to Null
-                yield return new TestCaseData("TestID-025A", "abcde", null, privateKey).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-026A", "あいうえお", null, privateKey).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-027A", string.Empty, null, privateKey).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-028A", null, null, privateKey).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", null, privateKey).Throws(typeof(ArgumentNullException)).SetName("TestID-025A");
+                yield return new TestCaseData("あいうえお", null, privateKey).Throws(typeof(ArgumentNullException)).SetName("TestID-026A");
+                yield return new TestCaseData(string.Empty, null, privateKey).Throws(typeof(ArgumentNullException)).SetName("TestID-027A");
+                yield return new TestCaseData(null, null, privateKey).Throws(typeof(ArgumentNullException)).SetName("TestID-028A");
             }
         }
 
@@ -143,13 +142,12 @@ namespace Public.Test.IO
 
         #region Test Code
 
-        ///<summary>Test execution.(CheckListID should be the first argument).</summary> 
-        ///<param name="testCaseID">test case ID</param> 
+        ///<summary>Test execution.(CheckListID should be the first argument).</summary>         
         ///<param name="sourceString">String to be encrypted.</param> 
         ///<param name="publicKey">public key</param> 
         ///<param name="privateKey">private key</param>
         [TestCaseSource("TestCasesOfEncryptStringTest")]
-        public void EncryptStringTest(string testCaseID, string sourceString, string publicKey, string privateKey)
+        public void EncryptStringTest(string sourceString, string publicKey, string privateKey)
         {
             try
             {
@@ -163,10 +161,10 @@ namespace Public.Test.IO
                 Assert.AreNotEqual(sourceString, encryptedString);
                 Assert.AreEqual(sourceString, decryptedString);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }

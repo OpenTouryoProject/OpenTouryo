@@ -3,7 +3,7 @@
 //**********************************************************************************
 
 #region Apache License
- 
+
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2014/03/31  西野  大介        新規作成
+//*  08/12/2014   Sai              Added TestcaseID using SetName method as per Nishino-San comments
 //*
 //**********************************************************************************
 
@@ -93,158 +94,156 @@ namespace Public.Test.IO
                 byte[] EmptySalt = new byte[0];
                 byte[] NullSalt = null;
 
-                this.SetUp();
-
                 // Salt which has been converted into a byte array using the UTF-8 encoding.
-                yield return new TestCaseData("TestID-001N", "abcde", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-002N", "あいうえお", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-003L", string.Empty, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-004A", null, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-005L", "abcde", "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-006A", "abcde", null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt).SetName("TestID-001N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt).SetName("TestID-002N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt).SetName("TestID-003L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-004A");
+                yield return new TestCaseData("abcde", "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt).SetName("TestID-005L");
+                yield return new TestCaseData("abcde", null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-006A");
 
-                yield return new TestCaseData("TestID-007N", "abcde", "test@123", EnumSymmetricAlgorithm.AesManaged, UTF8Salt);
-                yield return new TestCaseData("TestID-008N", "あいうえお", "test@123", EnumSymmetricAlgorithm.AesManaged, UTF8Salt);
-                yield return new TestCaseData("TestID-009L", string.Empty, "test@123", EnumSymmetricAlgorithm.AesManaged, UTF8Salt);
-                yield return new TestCaseData("TestID-010A", null, "test@123", EnumSymmetricAlgorithm.AesManaged, UTF8Salt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.AesManaged, UTF8Salt).SetName("TestID-007N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.AesManaged, UTF8Salt).SetName("TestID-008N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.AesManaged, UTF8Salt).SetName("TestID-009L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.AesManaged, UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-010A");
 
-                yield return new TestCaseData("TestID-011N", "abcde", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-012N", "あいうえお", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-013L", string.Empty, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-014A", null, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, UTF8Salt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, UTF8Salt).SetName("TestID-011N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, UTF8Salt).SetName("TestID-012N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, UTF8Salt).SetName("TestID-013L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-014A");
 
-                yield return new TestCaseData("TestID-015N", "abcde", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-016N", "あいうえお", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-017L", string.Empty, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-018A", null, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, UTF8Salt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, UTF8Salt).SetName("TestID-015N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, UTF8Salt).SetName("TestID-016N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, UTF8Salt).SetName("TestID-017L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-018A");
 
-                yield return new TestCaseData("TestID-019N", "abcde", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-020N", "あいうえお", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-021L", string.Empty, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-022A", null, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, UTF8Salt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, UTF8Salt).SetName("TestID-019N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, UTF8Salt).SetName("TestID-020N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, UTF8Salt).SetName("TestID-021L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-022A");
 
-                yield return new TestCaseData("TestID-023N", "abcde", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, UTF8Salt);
-                yield return new TestCaseData("TestID-024N", "あいうえお", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, UTF8Salt);
-                yield return new TestCaseData("TestID-025L", string.Empty, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, UTF8Salt);
-                yield return new TestCaseData("TestID-026A", null, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, UTF8Salt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, UTF8Salt).SetName("TestID-023N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, UTF8Salt).SetName("TestID-024N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, UTF8Salt).SetName("TestID-025L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-026A");
 
-                yield return new TestCaseData("TestID-027N", "abcde", "test@123", 999, UTF8Salt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-028N", "あいうえお", "test@123", 999, UTF8Salt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-029L", string.Empty, "test@123", 999, UTF8Salt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-030A", null, "test@123", 999, UTF8Salt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", 999, UTF8Salt).Throws(typeof(ArgumentException)).SetName("TestID-027N");
+                yield return new TestCaseData("あいうえお", "test@123", 999, UTF8Salt).Throws(typeof(ArgumentException)).SetName("TestID-028N");
+                yield return new TestCaseData(string.Empty, "test@123", 999, UTF8Salt).Throws(typeof(ArgumentException)).SetName("TestID-029L");
+                yield return new TestCaseData(null, "test@123", 999, UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-030A");
 
                 // Salt which has been converted into a byte array using the Shift-JIS encoding.
-                yield return new TestCaseData("TestID-031N", "abcde", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-032N", "あいうえお", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-033L", string.Empty, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-034A", null, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-035L", "abcde", "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-036A", "abcde", null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt).SetName("TestID-031N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt).SetName("TestID-032N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt).SetName("TestID-033L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-034A");
+                yield return new TestCaseData("abcde", "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt).SetName("TestID-035L");
+                yield return new TestCaseData("abcde", null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-036A");
 
-                yield return new TestCaseData("TestID-037N", "abcde", "test@123", EnumSymmetricAlgorithm.AesManaged, SJISSalt);
-                yield return new TestCaseData("TestID-038N", "あいうえお", "test@123", EnumSymmetricAlgorithm.AesManaged, SJISSalt);
-                yield return new TestCaseData("TestID-039L", string.Empty, "test@123", EnumSymmetricAlgorithm.AesManaged, SJISSalt);
-                yield return new TestCaseData("TestID-040A", null, "test@123", EnumSymmetricAlgorithm.AesManaged, SJISSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.AesManaged, SJISSalt).SetName("TestID-037N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.AesManaged, SJISSalt).SetName("TestID-038N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.AesManaged, SJISSalt).SetName("TestID-039L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.AesManaged, SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-040A");
 
-                yield return new TestCaseData("TestID-041N", "abcde", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-042N", "あいうえお", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-043L", string.Empty, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-044A", null, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, SJISSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, SJISSalt).SetName("TestID-041N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, SJISSalt).SetName("TestID-042N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, SJISSalt).SetName("TestID-043L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-044A");
 
-                yield return new TestCaseData("TestID-045N", "abcde", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-046N", "あいうえお", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-047L", string.Empty, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-048A", null, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, SJISSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, SJISSalt).SetName("TestID-045N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, SJISSalt).SetName("TestID-046N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, SJISSalt).SetName("TestID-047L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-048A");
 
-                yield return new TestCaseData("TestID-049N", "abcde", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-050N", "あいうえお", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-051L", string.Empty, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-052A", null, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, SJISSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, SJISSalt).SetName("TestID-049N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, SJISSalt).SetName("TestID-050N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, SJISSalt).SetName("TestID-051L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-052A");
 
-                yield return new TestCaseData("TestID-053N", "abcde", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, SJISSalt);
-                yield return new TestCaseData("TestID-054N", "あいうえお", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, SJISSalt);
-                yield return new TestCaseData("TestID-055L", string.Empty, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, SJISSalt);
-                yield return new TestCaseData("TestID-056A", null, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, SJISSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, SJISSalt).SetName("TestID-053N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, SJISSalt).SetName("TestID-054N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, SJISSalt).SetName("TestID-055L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-056A");
 
-                yield return new TestCaseData("TestID-057N", "abcde", "test@123", 999, SJISSalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-058N", "あいうえお", "test@123", 999, SJISSalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-059L", string.Empty, "test@123", 999, SJISSalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-060A", null, "test@123", 999, SJISSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", 999, SJISSalt).Throws(typeof(ArgumentException)).SetName("TestID-057N");
+                yield return new TestCaseData("あいうえお", "test@123", 999, SJISSalt).Throws(typeof(ArgumentException)).SetName("TestID-058N");
+                yield return new TestCaseData(string.Empty, "test@123", 999, SJISSalt).Throws(typeof(ArgumentException)).SetName("TestID-059L");
+                yield return new TestCaseData(null, "test@123", 999, SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-060A");
 
                 // empty byte array salt
-                yield return new TestCaseData("TestID-061N", "abcde", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-062N", "あいうえお", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-063L", string.Empty, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-064A", null, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-065L", "abcde", "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-066A", "abcde", null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-061N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-062N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-063L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentNullException)).SetName("TestID-064A");
+                yield return new TestCaseData("abcde", "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-065L");
+                yield return new TestCaseData("abcde", null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentNullException)).SetName("TestID-066A");
 
-                yield return new TestCaseData("TestID-067N", "abcde", "test@123", EnumSymmetricAlgorithm.AesManaged, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-068N", "あいうえお", "test@123", EnumSymmetricAlgorithm.AesManaged, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-069L", string.Empty, "test@123", EnumSymmetricAlgorithm.AesManaged, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-070A", null, "test@123", EnumSymmetricAlgorithm.AesManaged, EmptySalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.AesManaged, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-067N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.AesManaged, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-068N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.AesManaged, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-069L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.AesManaged, EmptySalt).Throws(typeof(ArgumentNullException)).SetName("TestID-070A");
 
-                yield return new TestCaseData("TestID-071N", "abcde", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-072N", "あいうえお", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-073L", string.Empty, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-074A", null, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-071N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-072N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-073L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentNullException)).SetName("TestID-074A");
 
-                yield return new TestCaseData("TestID-075N", "abcde", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-076N", "あいうえお", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-077L", string.Empty, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-078A", null, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-075N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-076N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-077L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentNullException)).SetName("TestID-078A");
 
-                yield return new TestCaseData("TestID-079N", "abcde", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-080N", "あいうえお", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-081L", string.Empty, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-082A", null, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-079N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-080N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-081L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentNullException)).SetName("TestID-082A");
 
-                yield return new TestCaseData("TestID-083N", "abcde", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-084N", "あいうえお", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-085L", string.Empty, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-086A", null, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, EmptySalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-083N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-084N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-085L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, EmptySalt).Throws(typeof(ArgumentNullException)).SetName("TestID-086A");
 
-                yield return new TestCaseData("TestID-087N", "abcde", "test@123", 999, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-088N", "あいうえお", "test@123", 999, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-089L", string.Empty, "test@123", 999, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-090A", null, "test@123", 999, EmptySalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", 999, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-087N");
+                yield return new TestCaseData("あいうえお", "test@123", 999, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-088N");
+                yield return new TestCaseData(string.Empty, "test@123", 999, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-089L");
+                yield return new TestCaseData(null, "test@123", 999, EmptySalt).Throws(typeof(ArgumentNullException)).SetName("TestID-090A");
 
                 // null salt.
-                yield return new TestCaseData("TestID-091N", "あいうえお", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-092L", string.Empty, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-093A", null, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-094L", "abcde", "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-095A", "abcde", null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-091N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-092L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-093A");
+                yield return new TestCaseData("abcde", "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-094L");
+                yield return new TestCaseData("abcde", null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-095A");
 
-                yield return new TestCaseData("TestID-096N", "abcde", "test@123", EnumSymmetricAlgorithm.AesManaged, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-097N", "あいうえお", "test@123", EnumSymmetricAlgorithm.AesManaged, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-098L", string.Empty, "test@123", EnumSymmetricAlgorithm.AesManaged, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-099A", null, "test@123", EnumSymmetricAlgorithm.AesManaged, NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.AesManaged, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-096N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.AesManaged, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-097N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.AesManaged, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-098L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.AesManaged, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-099A");
 
-                yield return new TestCaseData("TestID-100N", "abcde", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-101N", "あいうえお", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-102L", string.Empty, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-103A", null, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-100N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-101N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-102L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-103A");
 
-                yield return new TestCaseData("TestID-104N", "abcde", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-105N", "あいうえお", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-106L", string.Empty, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-107A", null, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-104N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-105N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-106L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-107A");
 
-                yield return new TestCaseData("TestID-108N", "abcde", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-109N", "あいうえお", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-110L", string.Empty, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-111A", null, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-108N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-109N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-110L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-111A");
 
-                yield return new TestCaseData("TestID-112N", "abcde", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-113N", "あいうえお", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-114L", string.Empty, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-115A", null, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-112N");
+                yield return new TestCaseData("あいうえお", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-113N");
+                yield return new TestCaseData(string.Empty, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-114L");
+                yield return new TestCaseData(null, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-115A");
 
-                yield return new TestCaseData("TestID-116N", "abcde", "test@123", 999, NullSalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-117N", "あいうえお", "test@123", 999, NullSalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-118L", string.Empty, "test@123", 999, NullSalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-119A", null, "test@123", 999, NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", "test@123", 999, NullSalt).Throws(typeof(ArgumentException)).SetName("TestID-116N");
+                yield return new TestCaseData("あいうえお", "test@123", 999, NullSalt).Throws(typeof(ArgumentException)).SetName("TestID-117N");
+                yield return new TestCaseData(string.Empty, "test@123", 999, NullSalt).Throws(typeof(ArgumentException)).SetName("TestID-118L");
+                yield return new TestCaseData(null, "test@123", 999, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-119A");
             }
         }
 
@@ -264,51 +263,49 @@ namespace Public.Test.IO
                 byte[] emptyBytes = new Byte[0];
                 byte[] nullBytes = null;
 
-                this.SetUp();
-
                 // AesCryptoServiceProvider
-                yield return new TestCaseData("TestID-001N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider);
-                yield return new TestCaseData("TestID-002N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider);
-                yield return new TestCaseData("TestID-003L", emptyBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider);
-                yield return new TestCaseData("TestID-004A", nullBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-005L", abcdeBytes, "", EnumSymmetricAlgorithm.AesCryptoServiceProvider);
-                yield return new TestCaseData("TestID-006A", abcdeBytes, null, EnumSymmetricAlgorithm.AesCryptoServiceProvider).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider).SetName("TestID-001N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider).SetName("TestID-002N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider).SetName("TestID-003L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider).Throws(typeof(NullReferenceException)).SetName("TestID-004A");
+                yield return new TestCaseData(abcdeBytes, "", EnumSymmetricAlgorithm.AesCryptoServiceProvider).SetName("TestID-005L");
+                yield return new TestCaseData(abcdeBytes, null, EnumSymmetricAlgorithm.AesCryptoServiceProvider).Throws(typeof(ArgumentNullException)).SetName("TestID-006A");
 
                 // AesManaged
-                yield return new TestCaseData("TestID-007N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesManaged);
-                yield return new TestCaseData("TestID-008N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesManaged);
-                yield return new TestCaseData("TestID-009L", emptyBytes, "test@123", EnumSymmetricAlgorithm.AesManaged);
-                yield return new TestCaseData("TestID-010A", nullBytes, "test@123", EnumSymmetricAlgorithm.AesManaged).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesManaged).SetName("TestID-007N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesManaged).SetName("TestID-008N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.AesManaged).SetName("TestID-009L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.AesManaged).Throws(typeof(NullReferenceException)).SetName("TestID-010A");
 
                 // TripleDESCryptoServiceProvider
-                yield return new TestCaseData("TestID-011N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider);
-                yield return new TestCaseData("TestID-012N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider);
-                yield return new TestCaseData("TestID-013L", emptyBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider);
-                yield return new TestCaseData("TestID-014A", nullBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider).SetName("TestID-011N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider).SetName("TestID-012N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider).SetName("TestID-013L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider).Throws(typeof(NullReferenceException)).SetName("TestID-014A");
 
                 // DESCryptoServiceProvider
-                yield return new TestCaseData("TestID-015N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider);
-                yield return new TestCaseData("TestID-016N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider);
-                yield return new TestCaseData("TestID-017L", emptyBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider);
-                yield return new TestCaseData("TestID-018A", nullBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider).SetName("TestID-015N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider).SetName("TestID-016N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider).SetName("TestID-017L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider).Throws(typeof(NullReferenceException)).SetName("TestID-018A");
 
                 // RC2CryptoServiceProvider
-                yield return new TestCaseData("TestID-019N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider);
-                yield return new TestCaseData("TestID-020N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider);
-                yield return new TestCaseData("TestID-021L", emptyBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider);
-                yield return new TestCaseData("TestID-022A", nullBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider).SetName("TestID-019N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider).SetName("TestID-020N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider).SetName("TestID-021L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider).Throws(typeof(NullReferenceException)).SetName("TestID-022A");
 
                 // RijndaelManaged
-                yield return new TestCaseData("TestID-023N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged);
-                yield return new TestCaseData("TestID-024N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged);
-                yield return new TestCaseData("TestID-025L", emptyBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged);
-                yield return new TestCaseData("TestID-026A", nullBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged).SetName("TestID-023N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged).SetName("TestID-024N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged).SetName("TestID-025L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged).Throws(typeof(NullReferenceException)).SetName("TestID-026A");
 
                 // The encryption method that is not defined
-                yield return new TestCaseData("TestID-027N", abcdeBytes, "test@123", 999).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-028N", aiueoBytes, "test@123", 999).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-029L", emptyBytes, "test@123", 999).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-030A", nullBytes, "test@123", 999).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(abcdeBytes, "test@123", 999).Throws(typeof(ArgumentException)).SetName("TestID-027N");
+                yield return new TestCaseData(aiueoBytes, "test@123", 999).Throws(typeof(ArgumentException)).SetName("TestID-028N");
+                yield return new TestCaseData(emptyBytes, "test@123", 999).Throws(typeof(ArgumentException)).SetName("TestID-029L");
+                yield return new TestCaseData(nullBytes, "test@123", 999).Throws(typeof(ArgumentException)).SetName("TestID-030A");
             }
         }
 
@@ -334,183 +331,181 @@ namespace Public.Test.IO
                 byte[] EmptySalt = new byte[0];
                 byte[] NullSalt = null;
 
-                this.SetUp();
-
                 // AesCryptoServiceProvider(UTF8Salt)
-                yield return new TestCaseData("TestID-000N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-002N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-003L", emptyBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-004A", nullBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-005L", abcdeBytes, "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-006A", abcdeBytes, null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt).SetName("TestID-000N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt).SetName("TestID-002N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt).SetName("TestID-003L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt).Throws(typeof(NullReferenceException)).SetName("TestID-004A");
+                yield return new TestCaseData(abcdeBytes, "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt).SetName("TestID-005L");
+                yield return new TestCaseData(abcdeBytes, null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-006A");
 
                 // AesManaged(UTF8Salt)
-                yield return new TestCaseData("TestID-007N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, UTF8Salt);
-                yield return new TestCaseData("TestID-008N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, UTF8Salt);
-                yield return new TestCaseData("TestID-009L", emptyBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, UTF8Salt);
-                yield return new TestCaseData("TestID-010A", nullBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, UTF8Salt).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, UTF8Salt).SetName("TestID-007N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, UTF8Salt).SetName("TestID-008N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, UTF8Salt).SetName("TestID-009L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, UTF8Salt).Throws(typeof(NullReferenceException)).SetName("TestID-010A");
 
                 // TripleDESCryptoServiceProvider(UTF8Salt)
-                yield return new TestCaseData("TestID-011N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-012N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-013L", emptyBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-014A", nullBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, UTF8Salt).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, UTF8Salt).SetName("TestID-011N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, UTF8Salt).SetName("TestID-012N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, UTF8Salt).SetName("TestID-013L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, UTF8Salt).Throws(typeof(NullReferenceException)).SetName("TestID-014A");
 
                 // DESCryptoServiceProvider(UTF8Salt)
-                yield return new TestCaseData("TestID-015N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-016N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-017L", emptyBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-018A", nullBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, UTF8Salt).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, UTF8Salt).SetName("TestID-015N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, UTF8Salt).SetName("TestID-016N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, UTF8Salt).SetName("TestID-017L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, UTF8Salt).Throws(typeof(NullReferenceException)).SetName("TestID-018A");
 
                 // RC2CryptoServiceProvider(UTF8Salt)
-                yield return new TestCaseData("TestID-019N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-020N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-021L", emptyBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, UTF8Salt);
-                yield return new TestCaseData("TestID-022A", nullBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, UTF8Salt).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, UTF8Salt).SetName("TestID-019N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, UTF8Salt).SetName("TestID-020N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, UTF8Salt).SetName("TestID-021L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, UTF8Salt).Throws(typeof(NullReferenceException)).SetName("TestID-022A");
 
                 // RijndaelManaged(UTF8Salt)
-                yield return new TestCaseData("TestID-023N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, UTF8Salt);
-                yield return new TestCaseData("TestID-024N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, UTF8Salt);
-                yield return new TestCaseData("TestID-025L", emptyBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, UTF8Salt);
-                yield return new TestCaseData("TestID-026A", nullBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, UTF8Salt).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, UTF8Salt).SetName("TestID-023N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, UTF8Salt).SetName("TestID-024N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, UTF8Salt).SetName("TestID-025L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, UTF8Salt).Throws(typeof(NullReferenceException)).SetName("TestID-026A");
 
                 // The encryption method that is not defined(UTF8Salt)
-                yield return new TestCaseData("TestID-027N", abcdeBytes, "test@123", 999, UTF8Salt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-028N", aiueoBytes, "test@123", 999, UTF8Salt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-029L", emptyBytes, "test@123", 999, UTF8Salt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-030A", nullBytes, "test@123", 999, UTF8Salt).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(abcdeBytes, "test@123", 999, UTF8Salt).Throws(typeof(ArgumentException)).SetName("TestID-027N");
+                yield return new TestCaseData(aiueoBytes, "test@123", 999, UTF8Salt).Throws(typeof(ArgumentException)).SetName("TestID-028N");
+                yield return new TestCaseData(emptyBytes, "test@123", 999, UTF8Salt).Throws(typeof(ArgumentException)).SetName("TestID-029L");
+                yield return new TestCaseData(nullBytes, "test@123", 999, UTF8Salt).Throws(typeof(ArgumentException)).SetName("TestID-030A");
 
                 // AesCryptoServiceProvider(SJISSalt)
-                yield return new TestCaseData("TestID-031N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-032N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-033L", emptyBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-034A", nullBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-035L", abcdeBytes, "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-036A", abcdeBytes, null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt).SetName("TestID-031N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt).SetName("TestID-032N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt).SetName("TestID-033L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt).Throws(typeof(NullReferenceException)).SetName("TestID-034A");
+                yield return new TestCaseData(abcdeBytes, "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt).SetName("TestID-035L");
+                yield return new TestCaseData(abcdeBytes, null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-036A");
 
                 // AesManaged(SJISSalt)
-                yield return new TestCaseData("TestID-037N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, SJISSalt);
-                yield return new TestCaseData("TestID-038N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, SJISSalt);
-                yield return new TestCaseData("TestID-039L", emptyBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, SJISSalt);
-                yield return new TestCaseData("TestID-040A", nullBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, SJISSalt).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, SJISSalt).SetName("TestID-037N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, SJISSalt).SetName("TestID-038N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, SJISSalt).SetName("TestID-039L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, SJISSalt).Throws(typeof(NullReferenceException)).SetName("TestID-040A");
 
                 // TripleDESCryptoServiceProvider(SJISSalt)
-                yield return new TestCaseData("TestID-041N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-042N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-043L", emptyBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-044A", nullBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, SJISSalt).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, SJISSalt).SetName("TestID-041N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, SJISSalt).SetName("TestID-042N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, SJISSalt).SetName("TestID-043L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, SJISSalt).Throws(typeof(NullReferenceException)).SetName("TestID-044A");
 
                 // DESCryptoServiceProvider(SJISSalt)
-                yield return new TestCaseData("TestID-045N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-046N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-047L", emptyBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-048A", nullBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, SJISSalt).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, SJISSalt).SetName("TestID-045N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, SJISSalt).SetName("TestID-046N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, SJISSalt).SetName("TestID-047L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, SJISSalt).Throws(typeof(NullReferenceException)).SetName("TestID-048A");
 
                 // RC2CryptoServiceProvider(SJISSalt)
-                yield return new TestCaseData("TestID-049N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-050N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-051L", emptyBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, SJISSalt);
-                yield return new TestCaseData("TestID-052A", nullBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, SJISSalt).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, SJISSalt).SetName("TestID-049N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, SJISSalt).SetName("TestID-050N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, SJISSalt).SetName("TestID-051L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, SJISSalt).Throws(typeof(NullReferenceException)).SetName("TestID-052A");
 
                 // RijndaelManaged(SJISSalt)
-                yield return new TestCaseData("TestID-053N", abcdeBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, SJISSalt);
-                yield return new TestCaseData("TestID-054N", aiueoBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, SJISSalt);
-                yield return new TestCaseData("TestID-055L", emptyBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, SJISSalt);
-                yield return new TestCaseData("TestID-056A", nullBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, SJISSalt).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, SJISSalt).SetName("TestID-053N");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, SJISSalt).SetName("TestID-054N");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, SJISSalt).SetName("TestID-055L");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, SJISSalt).Throws(typeof(NullReferenceException)).SetName("TestID-056A");
 
                 // The encryption method that is not defined(SJISSalt)
-                yield return new TestCaseData("TestID-057A", abcdeBytes, "test@123", 999, SJISSalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-058A", aiueoBytes, "test@123", 999, SJISSalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-059A", emptyBytes, "test@123", 999, SJISSalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-060A", nullBytes, "test@123", 999, SJISSalt).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(abcdeBytes, "test@123", 999, SJISSalt).Throws(typeof(ArgumentException)).SetName("TestID-057A");
+                yield return new TestCaseData(aiueoBytes, "test@123", 999, SJISSalt).Throws(typeof(ArgumentException)).SetName("TestID-058A");
+                yield return new TestCaseData(emptyBytes, "test@123", 999, SJISSalt).Throws(typeof(ArgumentException)).SetName("TestID-059A");
+                yield return new TestCaseData(nullBytes, "test@123", 999, SJISSalt).Throws(typeof(ArgumentException)).SetName("TestID-060A");
 
                 // AesCryptoServiceProvider(EmptySalt)
-                yield return new TestCaseData("TestID-061A", abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-062A", aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-063A", emptyBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-064A", nullBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-065A", abcdeBytes, "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-066A", abcdeBytes, null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-061A");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-062A");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-063A");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-064A");
+                yield return new TestCaseData(abcdeBytes, "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-065A");
+                yield return new TestCaseData(abcdeBytes, null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentNullException)).SetName("TestID-066A");
 
                 // AesManaged(EmptySalt)
-                yield return new TestCaseData("TestID-067A", abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-068A", aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-069A", emptyBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-070A", nullBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, EmptySalt).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-067A");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-068A");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-069A");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-070A");
 
                 // TripleDESCryptoServiceProvider(EmptySalt)
-                yield return new TestCaseData("TestID-071A", abcdeBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-072A", aiueoBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-073A", emptyBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-074A", nullBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-071A");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-072A");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-073A");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-074A");
 
                 // DESCryptoServiceProvider(EmptySalt)
-                yield return new TestCaseData("TestID-075A", abcdeBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-076A", aiueoBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-077A", emptyBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-078A", nullBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-075A");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-076A");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-077A");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-078A");
 
                 // RC2CryptoServiceProvider(EmptySalt)
-                yield return new TestCaseData("TestID-079A", abcdeBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-080A", aiueoBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-081A", emptyBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-082A", nullBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-079A");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-080A");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-081A");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-082A");
 
                 // RijndaelManaged(EmptySalt)
-                yield return new TestCaseData("TestID-083A", abcdeBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-084A", aiueoBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-085A", emptyBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-086A", nullBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, EmptySalt).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-083A");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-084A");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-085A");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-086A");
 
                 // The encryption method that is not defined(EmptySalt) 
-                yield return new TestCaseData("TestID-087A", abcdeBytes, "test@123", 999, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-088A", aiueoBytes, "test@123", 999, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-089A", emptyBytes, "test@123", 999, EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-090A", nullBytes, "test@123", 999, EmptySalt).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(abcdeBytes, "test@123", 999, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-087A");
+                yield return new TestCaseData(aiueoBytes, "test@123", 999, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-088A");
+                yield return new TestCaseData(emptyBytes, "test@123", 999, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-089A");
+                yield return new TestCaseData(nullBytes, "test@123", 999, EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-090A");
 
                 // AesCryptoServiceProvider(NullSalt)
-                yield return new TestCaseData("TestID-091A", abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-092A", aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-093A", emptyBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-094A", nullBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-095A", abcdeBytes, "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-096A", abcdeBytes, null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-091A");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-092A");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-093A");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-094A");
+                yield return new TestCaseData(abcdeBytes, "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-095A");
+                yield return new TestCaseData(abcdeBytes, null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-096A");
 
                 // AesManaged(NullSalt)
-                yield return new TestCaseData("TestID-097A", abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-098A", aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-099A", emptyBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-100A", nullBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-097A");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-098A");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-099A");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.AesManaged, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-100A");
 
                 // TripleDESCryptoServiceProvider(NullSalt)
-                yield return new TestCaseData("TestID-101A", abcdeBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-102A", aiueoBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-103A", emptyBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-104A", nullBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-101A");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-102A");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-103A");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-104A");
 
                 // DESCryptoServiceProvider(NullSalt)
-                yield return new TestCaseData("TestID-105A", abcdeBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-106A", aiueoBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-107A", emptyBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-108A", nullBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-105A");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-106A");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-107A");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-108A");
 
                 // RC2CryptoServiceProvider(NullSalt)
-                yield return new TestCaseData("TestID-109A", abcdeBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-110A", aiueoBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-111A", emptyBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-112A", nullBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-109A");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-110A");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-111A");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-112A");
 
                 // RijndaelManaged(NullSalt)
-                yield return new TestCaseData("TestID-113A", abcdeBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-114A", aiueoBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-115A", emptyBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-116A", nullBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-113A");
+                yield return new TestCaseData(aiueoBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-114A");
+                yield return new TestCaseData(emptyBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-115A");
+                yield return new TestCaseData(nullBytes, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-116A");
 
                 // The encryption method that is not defined(NullSalt)
-                yield return new TestCaseData("TestID-117A", abcdeBytes, "test@123", 999, NullSalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-118A", aiueoBytes, "test@123", 999, NullSalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-119A", emptyBytes, "test@123", 999, NullSalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-120A", nullBytes, "test@123", 999, NullSalt).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(abcdeBytes, "test@123", 999, NullSalt).Throws(typeof(ArgumentException)).SetName("TestID-117A");
+                yield return new TestCaseData(aiueoBytes, "test@123", 999, NullSalt).Throws(typeof(ArgumentException)).SetName("TestID-118A");
+                yield return new TestCaseData(emptyBytes, "test@123", 999, NullSalt).Throws(typeof(ArgumentException)).SetName("TestID-119A");
+                yield return new TestCaseData(nullBytes, "test@123", 999, NullSalt).Throws(typeof(ArgumentException)).SetName("TestID-120A");
             }
         }
 
@@ -524,43 +519,43 @@ namespace Public.Test.IO
         /// <param name="password">Password to be used for encryption.</param>
         /// <param name="esa">Type of cryptographic service provider of symmetric algorithm.</param>
         // AesCryptoServiceProvider
-        [TestCase("TestID-001N", "abcde", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider)]
-        [TestCase("TestID-002N", "あいうえお", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider)]
-        [TestCase("TestID-003L", "", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider)]
-        [TestCase("TestID-004A", null, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, ExpectedException = typeof(ArgumentNullException))]
-        [TestCase("TestID-005L", "abcde", "", EnumSymmetricAlgorithm.AesCryptoServiceProvider)]
-        [TestCase("TestID-006A", "abcde", null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, ExpectedException = typeof(ArgumentNullException))]
+        [TestCase("abcde", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, TestName = "TestID-001N")]
+        [TestCase("あいうえお", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, TestName = "TestID-002N")]
+        [TestCase("", "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, TestName = "TestID-003L")]
+        [TestCase(null, "test@123", EnumSymmetricAlgorithm.AesCryptoServiceProvider, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-004A")]
+        [TestCase("abcde", "", EnumSymmetricAlgorithm.AesCryptoServiceProvider, TestName = "TestID-005L")]
+        [TestCase("abcde", null, EnumSymmetricAlgorithm.AesCryptoServiceProvider, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-006A")]
         // AesManaged
-        [TestCase("TestID-007N", "abcde", "test@123", EnumSymmetricAlgorithm.AesManaged)]
-        [TestCase("TestID-008N", "あいうえお", "test@123", EnumSymmetricAlgorithm.AesManaged)]
-        [TestCase("TestID-009L", "", "test@123", EnumSymmetricAlgorithm.AesManaged)]
-        [TestCase("TestID-010A", null, "test@123", EnumSymmetricAlgorithm.AesManaged, ExpectedException = typeof(ArgumentNullException))]
+        [TestCase("abcde", "test@123", EnumSymmetricAlgorithm.AesManaged, TestName = "TestID-007N")]
+        [TestCase("あいうえお", "test@123", EnumSymmetricAlgorithm.AesManaged, TestName = "TestID-008N")]
+        [TestCase("", "test@123", EnumSymmetricAlgorithm.AesManaged, TestName = "TestID-009L")]
+        [TestCase(null, "test@123", EnumSymmetricAlgorithm.AesManaged, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-010A")]
         // TripleDESCryptoServiceProvider
-        [TestCase("TestID-011N", "abcde", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider)]
-        [TestCase("TestID-012N", "あいうえお", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider)]
-        [TestCase("TestID-013L", "", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider)]
-        [TestCase("TestID-014A", null, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, ExpectedException = typeof(ArgumentNullException))]
+        [TestCase("abcde", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, TestName = "TestID-011N")]
+        [TestCase("あいうえお", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, TestName = "TestID-012N")]
+        [TestCase("", "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, TestName = "TestID-013L")]
+        [TestCase(null, "test@123", EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-014A")]
         // DESCryptoServiceProvider
-        [TestCase("TestID-015N", "abcde", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider)]
-        [TestCase("TestID-016N", "あいうえお", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider)]
-        [TestCase("TestID-017L", "", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider)]
-        [TestCase("TestID-018A", null, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, ExpectedException = typeof(ArgumentNullException))]
+        [TestCase("abcde", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, TestName = "TestID-015N")]
+        [TestCase("あいうえお", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, TestName = "TestID-016N")]
+        [TestCase("", "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, TestName = "TestID-017L")]
+        [TestCase(null, "test@123", EnumSymmetricAlgorithm.DESCryptoServiceProvider, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-018A")]
         // RC2CryptoServiceProvider
-        [TestCase("TestID-019N", "abcde", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider)]
-        [TestCase("TestID-020N", "あいうえお", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider)]
-        [TestCase("TestID-021L", "", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider)]
-        [TestCase("TestID-022A", null, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, ExpectedException = typeof(ArgumentNullException))]
+        [TestCase("abcde", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, TestName = "TestID-019N")]
+        [TestCase("あいうえお", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, TestName = "TestID-020N")]
+        [TestCase("", "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, TestName = "TestID-021L")]
+        [TestCase(null, "test@123", EnumSymmetricAlgorithm.RC2CryptoServiceProvider, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-022A")]
         // RijndaelManaged
-        [TestCase("TestID-023N", "abcde", "test@123", EnumSymmetricAlgorithm.RijndaelManaged)]
-        [TestCase("TestID-024N", "あいうえお", "test@123", EnumSymmetricAlgorithm.RijndaelManaged)]
-        [TestCase("TestID-025L", "", "test@123", EnumSymmetricAlgorithm.RijndaelManaged)]
-        [TestCase("TestID-026A", null, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, ExpectedException = typeof(ArgumentNullException))]
+        [TestCase("abcde", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, TestName = "TestID-023N")]
+        [TestCase("あいうえお", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, TestName = "TestID-024N")]
+        [TestCase("", "test@123", EnumSymmetricAlgorithm.RijndaelManaged, TestName = "TestID-025L")]
+        [TestCase(null, "test@123", EnumSymmetricAlgorithm.RijndaelManaged, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-026A")]
         // The encryption method that is not defined
-        [TestCase("TestID-027A", "abcde", "test@123", 999, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-028A", "あいうえお", "test@123", 999, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-029A", "", "test@123", 999, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-030A", null, "test@123", 999, ExpectedException = typeof(ArgumentNullException))]
-        public void EncryptStringTest(string testCaseID, string sourceString, string password, EnumSymmetricAlgorithm esa)
+        [TestCase("abcde", "test@123", 999, ExpectedException = typeof(ArgumentException), TestName = "TestID-027A")]
+        [TestCase("あいうえお", "test@123", 999, ExpectedException = typeof(ArgumentException), TestName = "TestID-028A")]
+        [TestCase("", "test@123", 999, ExpectedException = typeof(ArgumentException), TestName = "TestID-029A")]
+        [TestCase(null, "test@123", 999, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-030A")]
+        public void EncryptStringTest(string sourceString, string password, EnumSymmetricAlgorithm esa)
         {
             try
             {
@@ -577,19 +572,18 @@ namespace Public.Test.IO
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
-        /// <summary>Test execution.(CheckListID should be the first argument)</summary>
-        /// <param name="testCaseID">test case ID</param> 
+        /// <summary>Test execution.(CheckListID should be the first argument)</summary>        
         /// <param name="sourceString">String to be encrypted.</param>
         /// <param name="password">Password to be used for encryption.</param>
         /// <param name="esa">Type of cryptographic service provider of symmetric algorithm.</param>
         /// <param name="salt">salt</param>
         [TestCaseSource("TestCasesOfEncryptStringTest2")]
-        public void EncryptStringTest2(string testCaseID, string sourceString, string password, EnumSymmetricAlgorithm esa, byte[] salt)
+        public void EncryptStringTest2(string sourceString, string password, EnumSymmetricAlgorithm esa, byte[] salt)
         {
             try
             {
@@ -606,18 +600,17 @@ namespace Public.Test.IO
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
-        /// <summary>Test execution.(CheckListID should be the first argument)</summary>
-        /// <param name="testCaseID">test case ID</param> 
+        /// <summary>Test execution.(CheckListID should be the first argument)</summary>        
         /// <param name="sourceBytes">String to be encrypted.</param>
         /// <param name="password">Password to be used for encryption.</param>
         /// <param name="esa">Type of cryptographic service provider of symmetric algorithm.</param>
         [TestCaseSource("TestCasesOfEncryptBytesTest")]
-        public void EncryptBytesTest(string testCaseID, byte[] sourceBytes, string password, EnumSymmetricAlgorithm esa)
+        public void EncryptBytesTest(byte[] sourceBytes, string password, EnumSymmetricAlgorithm esa)
         {
             try
             {
@@ -634,19 +627,18 @@ namespace Public.Test.IO
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
-        /// <summary>Test execution.(CheckListID should be the first argument)</summary>
-        /// <param name="testCaseID">test case ID</param> 
+        /// <summary>Test execution.(CheckListID should be the first argument)</summary>        
         /// <param name="sourceBytes">String to be encrypted.</param>
         /// <param name="password">Password to be used for encryption.</param>
         /// <param name="esa">Type of cryptographic service provider of symmetric algorithm.</param>
         /// <param name="salt">salt</param>
         [TestCaseSource("TestCasesOfEncryptBytesTest2")]
-        public void EncryptBytesTest2(string testCaseID, byte[] sourceBytes, string password, EnumSymmetricAlgorithm esa, byte[] salt)
+        public void EncryptBytesTest2(byte[] sourceBytes, string password, EnumSymmetricAlgorithm esa, byte[] salt)
         {
             try
             {
@@ -663,7 +655,7 @@ namespace Public.Test.IO
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
