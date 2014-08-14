@@ -28,6 +28,7 @@
 //*  Date:        Author:          Comments:
 //*  ----------  ----------------  -------------------------------------------------
 //*  05/22/2014   Sai              Testcode development for PerformanceRecorder.
+//*  08/11/2014   Sai              Added TestcaseID using SetName method as per Nishino-San comments
 //*
 //**********************************************************************************
 
@@ -118,7 +119,7 @@ namespace Public.Test.Util
             get
             {
                 //Normal test case
-                yield return new TestCaseData("TestID-001N");
+                yield return new TestCaseData().SetName("TestID-001N");
             }
         }
         /// <summary>
@@ -130,7 +131,7 @@ namespace Public.Test.Util
             get
             {
                 //Normal test case
-                yield return new TestCaseData("TestID-001N");
+                yield return new TestCaseData().SetName("TestID-001N");
             }
         }
         #endregion
@@ -141,10 +142,9 @@ namespace Public.Test.Util
 
         /// <summary>
         /// Test method for StartsPerformanceRecord        
-        /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// </summary>        
         [TestCaseSource("TestCasesOfStartsPerformanceRecordTest")]
-        public void StartsPerformanceRecordTest(string testCaseID)
+        public void StartsPerformanceRecordTest()
         {
             try
             {
@@ -156,7 +156,7 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -164,9 +164,8 @@ namespace Public.Test.Util
         /// <summary>
         /// Test method for EndsPerformanceRecord     
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         [TestCaseSource("TestCasesOfEndsPerformanceRecordTest")]
-        public void EndsPerformanceRecordTest(string testCaseID)
+        public void EndsPerformanceRecordTest()
         {
             try
             {
@@ -179,7 +178,7 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
