@@ -28,7 +28,7 @@
 //*  Date:        Author:          Comments:
 //*  ----------  ----------------  -------------------------------------------------
 //*  05/12/2014    Rituparna       Testcode development for FormatChecker.
-//*
+//*  08/12/2014    Rituparna             Added TestcaseID using SetName method as per Nishino-San comments
 //**********************************************************************************
 
 #region Includes
@@ -70,37 +70,35 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "000-0000");
-                yield return new TestCaseData("TestID-001N", "aaa-aaaa");
-                yield return new TestCaseData("TestID-002L", string.Empty);
-                yield return new TestCaseData("TestID-003N", "0000-0000");
-                yield return new TestCaseData("TestID-004N", "000-00000");
-                yield return new TestCaseData("TestID-005N", "00-000");
-                yield return new TestCaseData("TestID-006N", "00-0000");
-                yield return new TestCaseData("TestID-007N", "000-000");
-                yield return new TestCaseData("TestID-008N", "000-00");
-                yield return new TestCaseData("TestID-009N", "aaa-aa");
-                yield return new TestCaseData("TestID-010N", "0000-000");
-                yield return new TestCaseData("TestID-011N", "0000-00");
-                yield return new TestCaseData("TestID-012N", "000-000");
-                yield return new TestCaseData("TestID-013N", "00-0");
-                yield return new TestCaseData("TestID-014N", "00-00");
-                yield return new TestCaseData("TestID-015N", "000-0");
-                yield return new TestCaseData("TestID-016N", "0000000");
-                yield return new TestCaseData("TestID-017N", "aaaaaaa");
-                yield return new TestCaseData("TestID-018N", "00000000");
-                yield return new TestCaseData("TestID-019N", "000000");
-                yield return new TestCaseData("TestID-020N", "00000");
-                yield return new TestCaseData("TestID-021N", "aaaaa");
-                yield return new TestCaseData("TestID-022N", "000000");
-                yield return new TestCaseData("TestID-023N", "0000");
-                yield return new TestCaseData("TestID-024N", "000");
-                yield return new TestCaseData("TestID-025N", "aaa");
-                yield return new TestCaseData("TestID-026N", "0000");
-                yield return new TestCaseData("TestID-027N", "00");
-                yield return new TestCaseData("TestID-028A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("000-0000").SetName("TestID-000N");
+                yield return new TestCaseData("aaa-aaaa").SetName("TestID-001N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-002L");
+                yield return new TestCaseData("0000-0000").SetName("TestID-003N");
+                yield return new TestCaseData("000-00000").SetName("TestID-004N");
+                yield return new TestCaseData("00-000").SetName("TestID-005N");
+                yield return new TestCaseData("00-0000").SetName("TestID-006N");
+                yield return new TestCaseData("000-000").SetName("TestID-007N");
+                yield return new TestCaseData("000-00").SetName("TestID-008N");
+                yield return new TestCaseData("aaa-aa").SetName("TestID-009N");
+                yield return new TestCaseData("0000-000").SetName("TestID-010N");
+                yield return new TestCaseData("0000-00").SetName("TestID-011N");
+                yield return new TestCaseData("000-000").SetName("TestID-012N");
+                yield return new TestCaseData("00-0").SetName("TestID-013N");
+                yield return new TestCaseData("00-00").SetName("TestID-014N");
+                yield return new TestCaseData("000-0").SetName("TestID-015N");
+                yield return new TestCaseData("0000000").SetName("TestID-016N");
+                yield return new TestCaseData("aaaaaaa").SetName("TestID-017N");
+                yield return new TestCaseData("00000000").SetName("TestID-018N");
+                yield return new TestCaseData("000000").SetName("TestID-019N");
+                yield return new TestCaseData("00000").SetName("TestID-020N");
+                yield return new TestCaseData("aaaaa").SetName("TestID-021N");
+                yield return new TestCaseData("000000").SetName("TestID-022N");
+                yield return new TestCaseData("0000").SetName("TestID-023N");
+                yield return new TestCaseData("000").SetName("TestID-024N");
+                yield return new TestCaseData("aaa").SetName("TestID-025N");
+                yield return new TestCaseData("0000").SetName("TestID-026N");
+                yield return new TestCaseData("00").SetName("TestID-027N");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-028A");
             }
         }
 
@@ -112,37 +110,35 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "000-0000");
-                yield return new TestCaseData("TestID-001N", "aaa-aaaa");
-                yield return new TestCaseData("TestID-002L", string.Empty);
-                yield return new TestCaseData("TestID-003N", "0000-0000");
-                yield return new TestCaseData("TestID-004N", "000-00000");
-                yield return new TestCaseData("TestID-005N", "00-000");
-                yield return new TestCaseData("TestID-006N", "00-0000");
-                yield return new TestCaseData("TestID-007N", "000-000");
-                yield return new TestCaseData("TestID-008N", "000-00");
-                yield return new TestCaseData("TestID-009N", "aaa-aa");
-                yield return new TestCaseData("TestID-010N", "0000-000");
-                yield return new TestCaseData("TestID-011N", "0000-00");
-                yield return new TestCaseData("TestID-012N", "000-000");
-                yield return new TestCaseData("TestID-013N", "00-0");
-                yield return new TestCaseData("TestID-014N", "00-00");
-                yield return new TestCaseData("TestID-015N", "000-0");
-                yield return new TestCaseData("TestID-016N", "0000000");
-                yield return new TestCaseData("TestID-017N", "aaaaaaa");
-                yield return new TestCaseData("TestID-018N", "00000000");
-                yield return new TestCaseData("TestID-019N", "000000");
-                yield return new TestCaseData("TestID-020N", "00000");
-                yield return new TestCaseData("TestID-021N", "aaaaa");
-                yield return new TestCaseData("TestID-022N", "000000");
-                yield return new TestCaseData("TestID-023N", "0000");
-                yield return new TestCaseData("TestID-024N", "000");
-                yield return new TestCaseData("TestID-025N", "aaa");
-                yield return new TestCaseData("TestID-026N", "0000");
-                yield return new TestCaseData("TestID-027N", "00");
-                yield return new TestCaseData("TestID-028A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("000-0000").SetName("TestID-000N");
+                yield return new TestCaseData("aaa-aaaa").SetName("TestID-001N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-002L");
+                yield return new TestCaseData("0000-0000").SetName("TestID-003N");
+                yield return new TestCaseData("000-00000").SetName("TestID-004N");
+                yield return new TestCaseData("00-000").SetName("TestID-005N");
+                yield return new TestCaseData("00-0000").SetName("TestID-006N");
+                yield return new TestCaseData("000-000").SetName("TestID-007N");
+                yield return new TestCaseData("000-00").SetName("TestID-008N");
+                yield return new TestCaseData("aaa-aa").SetName("TestID-009N");
+                yield return new TestCaseData("0000-000").SetName("TestID-010N");
+                yield return new TestCaseData("0000-00").SetName("TestID-011N");
+                yield return new TestCaseData("000-000").SetName("TestID-012N");
+                yield return new TestCaseData("00-0").SetName("TestID-013N");
+                yield return new TestCaseData("00-00").SetName("TestID-014N");
+                yield return new TestCaseData("000-0").SetName("TestID-015N");
+                yield return new TestCaseData("0000000").SetName("TestID-016N");
+                yield return new TestCaseData("aaaaaaa").SetName("TestID-017N");
+                yield return new TestCaseData("00000000").SetName("TestID-018N");
+                yield return new TestCaseData("000000").SetName("TestID-019N");
+                yield return new TestCaseData("00000").SetName("TestID-020N");
+                yield return new TestCaseData("aaaaa").SetName("TestID-021N");
+                yield return new TestCaseData("000000").SetName("TestID-022N");
+                yield return new TestCaseData("0000").SetName("TestID-023N");
+                yield return new TestCaseData("000").SetName("TestID-024N");
+                yield return new TestCaseData("aaa").SetName("TestID-025N");
+                yield return new TestCaseData("0000").SetName("TestID-026N");
+                yield return new TestCaseData("00").SetName("TestID-027N");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-028A");
             }
         }
 
@@ -154,37 +150,35 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "000-0000");
-                yield return new TestCaseData("TestID-001N", "aaa-aaaa");
-                yield return new TestCaseData("TestID-002L", string.Empty);
-                yield return new TestCaseData("TestID-003N", "0000-0000");
-                yield return new TestCaseData("TestID-004N", "000-00000");
-                yield return new TestCaseData("TestID-005N", "00-000");
-                yield return new TestCaseData("TestID-006N", "00-0000");
-                yield return new TestCaseData("TestID-007N", "000-000");
-                yield return new TestCaseData("TestID-008N", "000-00");
-                yield return new TestCaseData("TestID-009N", "aaa-aa");
-                yield return new TestCaseData("TestID-010N", "0000-000");
-                yield return new TestCaseData("TestID-011N", "0000-00");
-                yield return new TestCaseData("TestID-012N", "000-000");
-                yield return new TestCaseData("TestID-013N", "00-0");
-                yield return new TestCaseData("TestID-014N", "00-00");
-                yield return new TestCaseData("TestID-015N", "000-0");
-                yield return new TestCaseData("TestID-016N", "0000000");
-                yield return new TestCaseData("TestID-017N", "aaaaaaa");
-                yield return new TestCaseData("TestID-018N", "00000000");
-                yield return new TestCaseData("TestID-019N", "000000");
-                yield return new TestCaseData("TestID-020N", "00000");
-                yield return new TestCaseData("TestID-021N", "aaaaa");
-                yield return new TestCaseData("TestID-022N", "000000");
-                yield return new TestCaseData("TestID-023N", "0000");
-                yield return new TestCaseData("TestID-024N", "000");
-                yield return new TestCaseData("TestID-025N", "aaa");
-                yield return new TestCaseData("TestID-026N", "0000");
-                yield return new TestCaseData("TestID-027N", "00");
-                yield return new TestCaseData("TestID-028A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("000-0000").SetName("TestID-000N");
+                yield return new TestCaseData("aaa-aaaa").SetName("TestID-001N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-002L");
+                yield return new TestCaseData("0000-0000").SetName("TestID-003N");
+                yield return new TestCaseData("000-00000").SetName("TestID-004N");
+                yield return new TestCaseData("00-000").SetName("TestID-005N");
+                yield return new TestCaseData("00-0000").SetName("TestID-006N");
+                yield return new TestCaseData("000-000").SetName("TestID-007N");
+                yield return new TestCaseData("000-00").SetName("TestID-008N");
+                yield return new TestCaseData("aaa-aa").SetName("TestID-009N");
+                yield return new TestCaseData("0000-000").SetName("TestID-010N");
+                yield return new TestCaseData("0000-00").SetName("TestID-011N");
+                yield return new TestCaseData("000-000").SetName("TestID-012N");
+                yield return new TestCaseData("00-0").SetName("TestID-013N");
+                yield return new TestCaseData("00-00").SetName("TestID-014N");
+                yield return new TestCaseData("000-0").SetName("TestID-015N");
+                yield return new TestCaseData("0000000").SetName("TestID-016N");
+                yield return new TestCaseData("aaaaaaa").SetName("TestID-017N");
+                yield return new TestCaseData("00000000").SetName("TestID-018N");
+                yield return new TestCaseData("000000").SetName("TestID-019N");
+                yield return new TestCaseData("00000").SetName("TestID-020N");
+                yield return new TestCaseData("aaaaa").SetName("TestID-021N");
+                yield return new TestCaseData("000000").SetName("TestID-022N");
+                yield return new TestCaseData("0000").SetName("TestID-023N");
+                yield return new TestCaseData("000").SetName("TestID-024N");
+                yield return new TestCaseData("aaa").SetName("TestID-025N");
+                yield return new TestCaseData("0000").SetName("TestID-026N");
+                yield return new TestCaseData("00").SetName("TestID-027N");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-028A");
             }
         }
 
@@ -196,37 +190,35 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "000-0000");
-                yield return new TestCaseData("TestID-001N", "aaa-aaaa");
-                yield return new TestCaseData("TestID-002L", string.Empty);
-                yield return new TestCaseData("TestID-003N", "0000-0000");
-                yield return new TestCaseData("TestID-004N", "000-00000");
-                yield return new TestCaseData("TestID-005N", "00-000");
-                yield return new TestCaseData("TestID-006N", "00-0000");
-                yield return new TestCaseData("TestID-007N", "000-000");
-                yield return new TestCaseData("TestID-008N", "000-00");
-                yield return new TestCaseData("TestID-009N", "aaa-aa");
-                yield return new TestCaseData("TestID-010N", "0000-000");
-                yield return new TestCaseData("TestID-011N", "0000-00");
-                yield return new TestCaseData("TestID-012N", "000-000");
-                yield return new TestCaseData("TestID-013N", "00-0");
-                yield return new TestCaseData("TestID-014N", "00-00");
-                yield return new TestCaseData("TestID-015N", "000-0");
-                yield return new TestCaseData("TestID-016N", "0000000");
-                yield return new TestCaseData("TestID-017N", "aaaaaaa");
-                yield return new TestCaseData("TestID-018N", "00000000");
-                yield return new TestCaseData("TestID-019N", "000000");
-                yield return new TestCaseData("TestID-020N", "00000");
-                yield return new TestCaseData("TestID-021N", "aaaaa");
-                yield return new TestCaseData("TestID-022N", "000000");
-                yield return new TestCaseData("TestID-023N", "0000");
-                yield return new TestCaseData("TestID-024N", "000");
-                yield return new TestCaseData("TestID-025N", "aaa");
-                yield return new TestCaseData("TestID-026N", "0000");
-                yield return new TestCaseData("TestID-027N", "00");
-                yield return new TestCaseData("TestID-028A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("000-0000").SetName("TestID-000N");
+                yield return new TestCaseData("aaa-aaaa").SetName("TestID-001N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-002N");
+                yield return new TestCaseData("0000-0000").SetName("TestID-003N");
+                yield return new TestCaseData("000-00000").SetName("TestID-004N");
+                yield return new TestCaseData("00-000").SetName("TestID-005N");
+                yield return new TestCaseData("00-0000").SetName("TestID-006N");
+                yield return new TestCaseData("000-000").SetName("TestID-007N");
+                yield return new TestCaseData("000-00").SetName("TestID-008N");
+                yield return new TestCaseData("aaa-aa").SetName("TestID-009N");
+                yield return new TestCaseData("0000-000").SetName("TestID-010N");
+                yield return new TestCaseData("0000-00").SetName("TestID-011N");
+                yield return new TestCaseData("000-000").SetName("TestID-012N");
+                yield return new TestCaseData("00-0").SetName("TestID-013N");
+                yield return new TestCaseData("00-00").SetName("TestID-014N");
+                yield return new TestCaseData("000-0").SetName("TestID-015N");
+                yield return new TestCaseData("0000000").SetName("TestID-016N");
+                yield return new TestCaseData("aaaaaaa").SetName("TestID-017N");
+                yield return new TestCaseData("00000000").SetName("TestID-018N");
+                yield return new TestCaseData("000000").SetName("TestID-019N");
+                yield return new TestCaseData("00000").SetName("TestID-020N");
+                yield return new TestCaseData("aaaaa").SetName("TestID-021N");
+                yield return new TestCaseData("000000").SetName("TestID-022N");
+                yield return new TestCaseData("0000").SetName("TestID-023N");
+                yield return new TestCaseData("000").SetName("TestID-024N");
+                yield return new TestCaseData("aaa").SetName("TestID-025N");
+                yield return new TestCaseData("0000").SetName("TestID-026N");
+                yield return new TestCaseData("00").SetName("TestID-027N");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-028A");
             }
         }
 
@@ -238,37 +230,35 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "000-0000");
-                yield return new TestCaseData("TestID-001N", "aaa-aaaa");
-                yield return new TestCaseData("TestID-002L", string.Empty);
-                yield return new TestCaseData("TestID-003N", "0000-0000");
-                yield return new TestCaseData("TestID-004N", "000-00000");
-                yield return new TestCaseData("TestID-005N", "00-000");
-                yield return new TestCaseData("TestID-006N", "00-0000");
-                yield return new TestCaseData("TestID-007N", "000-000");
-                yield return new TestCaseData("TestID-008N", "000-00");
-                yield return new TestCaseData("TestID-009N", "aaa-aa");
-                yield return new TestCaseData("TestID-010N", "0000-000");
-                yield return new TestCaseData("TestID-011N", "0000-00");
-                yield return new TestCaseData("TestID-012N", "000-000");
-                yield return new TestCaseData("TestID-013N", "00-0");
-                yield return new TestCaseData("TestID-014N", "00-00");
-                yield return new TestCaseData("TestID-015N", "000-0");
-                yield return new TestCaseData("TestID-016N", "0000000");
-                yield return new TestCaseData("TestID-017N", "aaaaaaa");
-                yield return new TestCaseData("TestID-018N", "00000000");
-                yield return new TestCaseData("TestID-019N", "000000");
-                yield return new TestCaseData("TestID-020N", "00000");
-                yield return new TestCaseData("TestID-021N", "aaaaa");
-                yield return new TestCaseData("TestID-022N", "000000");
-                yield return new TestCaseData("TestID-023N", "0000");
-                yield return new TestCaseData("TestID-024N", "000");
-                yield return new TestCaseData("TestID-025N", "aaa");
-                yield return new TestCaseData("TestID-026N", "0000");
-                yield return new TestCaseData("TestID-027N", "00");
-                yield return new TestCaseData("TestID-028A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("000-0000").SetName("TestID-000N");
+                yield return new TestCaseData("aaa-aaaa").SetName("TestID-001N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-002L");
+                yield return new TestCaseData("0000-0000").SetName("TestID-003N");
+                yield return new TestCaseData("000-00000").SetName("TestID-004N");
+                yield return new TestCaseData("00-000").SetName("TestID-005N");
+                yield return new TestCaseData("00-0000").SetName("TestID-006N");
+                yield return new TestCaseData("000-000").SetName("TestID-007N");
+                yield return new TestCaseData("000-00").SetName("TestID-008N");
+                yield return new TestCaseData("aaa-aa").SetName("TestID-009N");
+                yield return new TestCaseData("0000-000").SetName("TestID-010N");
+                yield return new TestCaseData("0000-00").SetName("TestID-011N");
+                yield return new TestCaseData("000-000").SetName("TestID-012N");
+                yield return new TestCaseData("00-0").SetName("TestID-013N");
+                yield return new TestCaseData("00-00").SetName("TestID-014N");
+                yield return new TestCaseData("000-0").SetName("TestID-015N");
+                yield return new TestCaseData("0000000").SetName("TestID-016N");
+                yield return new TestCaseData("aaaaaaa").SetName("TestID-017N");
+                yield return new TestCaseData("00000000").SetName("TestID-018N");
+                yield return new TestCaseData("000000").SetName("TestID-019N");
+                yield return new TestCaseData("00000").SetName("TestID-020N");
+                yield return new TestCaseData("aaaaa").SetName("TestID-021N");
+                yield return new TestCaseData("000000").SetName("TestID-022N");
+                yield return new TestCaseData("0000").SetName("TestID-023N");
+                yield return new TestCaseData("000").SetName("TestID-024N");
+                yield return new TestCaseData("aaa").SetName("TestID-025N");
+                yield return new TestCaseData("0000").SetName("TestID-026N");
+                yield return new TestCaseData("00").SetName("TestID-027N");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-028A");
             }
         }
 
@@ -280,37 +270,35 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "000-0000");
-                yield return new TestCaseData("TestID-001N", "aaa-aaaa");
-                yield return new TestCaseData("TestID-002L", string.Empty);
-                yield return new TestCaseData("TestID-003N", "0000-0000");
-                yield return new TestCaseData("TestID-004N", "000-00000");
-                yield return new TestCaseData("TestID-005N", "00-000");
-                yield return new TestCaseData("TestID-006N", "00-0000");
-                yield return new TestCaseData("TestID-007N", "000-000");
-                yield return new TestCaseData("TestID-008N", "000-00");
-                yield return new TestCaseData("TestID-009N", "aaa-aa");
-                yield return new TestCaseData("TestID-010N", "0000-000");
-                yield return new TestCaseData("TestID-011N", "0000-00");
-                yield return new TestCaseData("TestID-012N", "000-000");
-                yield return new TestCaseData("TestID-013N", "00-0");
-                yield return new TestCaseData("TestID-014N", "00-00");
-                yield return new TestCaseData("TestID-015N", "000-0");
-                yield return new TestCaseData("TestID-016N", "0000000");
-                yield return new TestCaseData("TestID-017N", "aaaaaaa");
-                yield return new TestCaseData("TestID-018N", "00000000");
-                yield return new TestCaseData("TestID-019N", "000000");
-                yield return new TestCaseData("TestID-020N", "00000");
-                yield return new TestCaseData("TestID-021N", "aaaaa");
-                yield return new TestCaseData("TestID-022N", "000000");
-                yield return new TestCaseData("TestID-023N", "0000");
-                yield return new TestCaseData("TestID-024N", "000");
-                yield return new TestCaseData("TestID-025N", "aaa");
-                yield return new TestCaseData("TestID-026N", "0000");
-                yield return new TestCaseData("TestID-027N", "00");
-                yield return new TestCaseData("TestID-028A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("000-0000").SetName("TestID-000N");
+                yield return new TestCaseData("aaa-aaaa").SetName("TestID-001N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-002L");
+                yield return new TestCaseData("0000-0000").SetName("TestID-003N");
+                yield return new TestCaseData("000-00000").SetName("TestID-004N");
+                yield return new TestCaseData("00-000").SetName("TestID-005N");
+                yield return new TestCaseData("00-0000").SetName("TestID-006N");
+                yield return new TestCaseData("000-000").SetName("TestID-007N");
+                yield return new TestCaseData("000-00").SetName("TestID-008N");
+                yield return new TestCaseData("aaa-aa").SetName("TestID-009N");
+                yield return new TestCaseData("0000-000").SetName("TestID-010N");
+                yield return new TestCaseData("0000-00").SetName("TestID-011N");
+                yield return new TestCaseData("000-000").SetName("TestID-012N");
+                yield return new TestCaseData("00-0").SetName("TestID-013N");
+                yield return new TestCaseData("00-00").SetName("TestID-014N");
+                yield return new TestCaseData("000-0").SetName("TestID-015N");
+                yield return new TestCaseData("0000000").SetName("TestID-016N");
+                yield return new TestCaseData("aaaaaaa").SetName("TestID-017N");
+                yield return new TestCaseData("00000000").SetName("TestID-018N");
+                yield return new TestCaseData("000000").SetName("TestID-019N");
+                yield return new TestCaseData("00000").SetName("TestID-020N");
+                yield return new TestCaseData("aaaaa").SetName("TestID-021N");
+                yield return new TestCaseData("000000").SetName("TestID-022N");
+                yield return new TestCaseData("0000").SetName("TestID-023N");
+                yield return new TestCaseData("000").SetName("TestID-024N");
+                yield return new TestCaseData("aaa").SetName("TestID-025N");
+                yield return new TestCaseData("0000").SetName("TestID-026N");
+                yield return new TestCaseData("00").SetName("TestID-027N");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-028A");
             }
         }
 
@@ -322,37 +310,36 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "000-0000");
-                yield return new TestCaseData("TestID-001N", "aaa-aaaa");
-                yield return new TestCaseData("TestID-002L", string.Empty);
-                yield return new TestCaseData("TestID-003N", "0000-0000");
-                yield return new TestCaseData("TestID-004N", "000-00000");
-                yield return new TestCaseData("TestID-005N", "00-000");
-                yield return new TestCaseData("TestID-006N", "00-0000");
-                yield return new TestCaseData("TestID-007N", "000-000");
-                yield return new TestCaseData("TestID-008N", "000-00");
-                yield return new TestCaseData("TestID-009N", "aaa-aa");
-                yield return new TestCaseData("TestID-010N", "0000-000");
-                yield return new TestCaseData("TestID-011N", "0000-00");
-                yield return new TestCaseData("TestID-012N", "000-000");
-                yield return new TestCaseData("TestID-013N", "00-0");
-                yield return new TestCaseData("TestID-014N", "00-00");
-                yield return new TestCaseData("TestID-015N", "000-0");
-                yield return new TestCaseData("TestID-016N", "0000000");
-                yield return new TestCaseData("TestID-017N", "aaaaaaa");
-                yield return new TestCaseData("TestID-018N", "00000000");
-                yield return new TestCaseData("TestID-019N", "000000");
-                yield return new TestCaseData("TestID-020N", "00000");
-                yield return new TestCaseData("TestID-021N", "aaaaa");
-                yield return new TestCaseData("TestID-022N", "000000");
-                yield return new TestCaseData("TestID-023N", "0000");
-                yield return new TestCaseData("TestID-024N", "000");
-                yield return new TestCaseData("TestID-025N", "aaa");
-                yield return new TestCaseData("TestID-026N", "0000");
-                yield return new TestCaseData("TestID-027N", "00");
-                yield return new TestCaseData("TestID-028A", null).Throws(typeof(ArgumentNullException));
+              
+                yield return new TestCaseData("000-0000").SetName("TestID-000N");
+                yield return new TestCaseData("aaa-aaaa").SetName("TestID-001N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-002L");
+                yield return new TestCaseData("0000-0000").SetName("TestID-003N");
+                yield return new TestCaseData("000-00000").SetName("TestID-004N");
+                yield return new TestCaseData("00-000").SetName("TestID-005N");
+                yield return new TestCaseData("00-0000").SetName("TestID-006N");
+                yield return new TestCaseData("000-000").SetName("TestID-007N");
+                yield return new TestCaseData("000-00").SetName("TestID-008N");
+                yield return new TestCaseData("aaa-aa").SetName("TestID-009N");
+                yield return new TestCaseData("0000-000").SetName("TestID-010N");
+                yield return new TestCaseData("0000-00").SetName("TestID-011N");
+                yield return new TestCaseData("000-000").SetName("TestID-012N");
+                yield return new TestCaseData("00-0").SetName("TestID-013N");
+                yield return new TestCaseData("00-00").SetName("TestID-014N");
+                yield return new TestCaseData("000-0").SetName("TestID-015N");
+                yield return new TestCaseData("0000000").SetName("TestID-016N");
+                yield return new TestCaseData("aaaaaaa").SetName("TestID-017N");
+                yield return new TestCaseData("00000000").SetName("TestID-018N");
+                yield return new TestCaseData("000000").SetName("TestID-019N");
+                yield return new TestCaseData("00000").SetName("TestID-020N");
+                yield return new TestCaseData("aaaaa").SetName("TestID-021N");
+                yield return new TestCaseData("000000").SetName("TestID-022N");
+                yield return new TestCaseData("0000").SetName("TestID-023N");
+                yield return new TestCaseData("000").SetName("TestID-024N");
+                yield return new TestCaseData("aaa").SetName("TestID-025N");
+                yield return new TestCaseData("0000").SetName("TestID-026N");
+                yield return new TestCaseData("00").SetName("TestID-027N");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-028A");
             }
         }
 
@@ -364,37 +351,35 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "000-0000");
-                yield return new TestCaseData("TestID-001N", "aaa-aaaa");
-                yield return new TestCaseData("TestID-002L", string.Empty);
-                yield return new TestCaseData("TestID-003N", "0000-0000");
-                yield return new TestCaseData("TestID-004N", "000-00000");
-                yield return new TestCaseData("TestID-005N", "00-000");
-                yield return new TestCaseData("TestID-006N", "00-0000");
-                yield return new TestCaseData("TestID-007N", "000-000");
-                yield return new TestCaseData("TestID-008N", "000-00");
-                yield return new TestCaseData("TestID-009N", "aaa-aa");
-                yield return new TestCaseData("TestID-010N", "0000-000");
-                yield return new TestCaseData("TestID-011N", "0000-00");
-                yield return new TestCaseData("TestID-012N", "000-000");
-                yield return new TestCaseData("TestID-013N", "00-0");
-                yield return new TestCaseData("TestID-014N", "00-00");
-                yield return new TestCaseData("TestID-015N", "000-0");
-                yield return new TestCaseData("TestID-016N", "0000000");
-                yield return new TestCaseData("TestID-017N", "aaaaaaa");
-                yield return new TestCaseData("TestID-018N", "00000000");
-                yield return new TestCaseData("TestID-019N", "000000");
-                yield return new TestCaseData("TestID-020N", "00000");
-                yield return new TestCaseData("TestID-021N", "aaaaa");
-                yield return new TestCaseData("TestID-022N", "000000");
-                yield return new TestCaseData("TestID-023N", "0000");
-                yield return new TestCaseData("TestID-024N", "000");
-                yield return new TestCaseData("TestID-025N", "aaa");
-                yield return new TestCaseData("TestID-026N", "0000");
-                yield return new TestCaseData("TestID-027N", "00");
-                yield return new TestCaseData("TestID-028A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("000-0000").SetName("TestID-000N");
+                yield return new TestCaseData("aaa-aaaa").SetName("TestID-001N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-002L");
+                yield return new TestCaseData("0000-0000").SetName("TestID-003N");
+                yield return new TestCaseData("000-00000").SetName("TestID-004N");
+                yield return new TestCaseData("00-000").SetName("TestID-005N");
+                yield return new TestCaseData("00-0000").SetName("TestID-006N");
+                yield return new TestCaseData("000-000").SetName("TestID-007N");
+                yield return new TestCaseData("000-00").SetName("TestID-008N");
+                yield return new TestCaseData("aaa-aa").SetName("TestID-009N");
+                yield return new TestCaseData("0000-000").SetName("TestID-010N");
+                yield return new TestCaseData("0000-00").SetName("TestID-011N");
+                yield return new TestCaseData("000-000").SetName("TestID-012N");
+                yield return new TestCaseData("00-0").SetName("TestID-013N");
+                yield return new TestCaseData("00-00").SetName("TestID-014N");
+                yield return new TestCaseData("000-0").SetName("TestID-015N");
+                yield return new TestCaseData("0000000").SetName("TestID-016N");
+                yield return new TestCaseData("aaaaaaa").SetName("TestID-017N");
+                yield return new TestCaseData("00000000").SetName("TestID-018N");
+                yield return new TestCaseData("000000").SetName("TestID-019N");
+                yield return new TestCaseData("00000").SetName("TestID-020N");
+                yield return new TestCaseData("aaaaa").SetName("TestID-021N");
+                yield return new TestCaseData("000000").SetName("TestID-022N");
+                yield return new TestCaseData("0000").SetName("TestID-023N");
+                yield return new TestCaseData("000").SetName("TestID-024N");
+                yield return new TestCaseData("aaa").SetName("TestID-025N");
+                yield return new TestCaseData("0000").SetName("TestID-026N");
+                yield return new TestCaseData("00").SetName("TestID-027N");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-028A");
             }
         }
 
@@ -407,37 +392,35 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "000-0000");
-                yield return new TestCaseData("TestID-001N", "aaa-aaaa");
-                yield return new TestCaseData("TestID-002L", string.Empty);
-                yield return new TestCaseData("TestID-003N", "0000-0000");
-                yield return new TestCaseData("TestID-004N", "000-00000");
-                yield return new TestCaseData("TestID-005N", "00-000");
-                yield return new TestCaseData("TestID-006N", "00-0000");
-                yield return new TestCaseData("TestID-007N", "000-000");
-                yield return new TestCaseData("TestID-008N", "000-00");
-                yield return new TestCaseData("TestID-009N", "aaa-aa");
-                yield return new TestCaseData("TestID-010N", "0000-000");
-                yield return new TestCaseData("TestID-011N", "0000-00");
-                yield return new TestCaseData("TestID-012N", "000-000");
-                yield return new TestCaseData("TestID-013N", "00-0");
-                yield return new TestCaseData("TestID-014N", "00-00");
-                yield return new TestCaseData("TestID-015N", "000-0");
-                yield return new TestCaseData("TestID-016N", "0000000");
-                yield return new TestCaseData("TestID-017N", "aaaaaaa");
-                yield return new TestCaseData("TestID-018N", "00000000");
-                yield return new TestCaseData("TestID-019N", "000000");
-                yield return new TestCaseData("TestID-020N", "00000");
-                yield return new TestCaseData("TestID-021N", "aaaaa");
-                yield return new TestCaseData("TestID-022N", "000000");
-                yield return new TestCaseData("TestID-023N", "0000");
-                yield return new TestCaseData("TestID-024N", "000");
-                yield return new TestCaseData("TestID-025N", "aaa");
-                yield return new TestCaseData("TestID-026N", "0000");
-                yield return new TestCaseData("TestID-027N", "00");
-                yield return new TestCaseData("TestID-028A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("000-0000").SetName("TestID-000N");
+                yield return new TestCaseData("aaa-aaaa").SetName("TestID-001N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-002L");
+                yield return new TestCaseData("0000-0000").SetName("TestID-003N");
+                yield return new TestCaseData("000-00000").SetName("TestID-004N");
+                yield return new TestCaseData("00-000").SetName("TestID-005N");
+                yield return new TestCaseData("00-0000").SetName("TestID-006N");
+                yield return new TestCaseData("000-000").SetName("TestID-007N");
+                yield return new TestCaseData("000-00").SetName("TestID-008N");
+                yield return new TestCaseData("aaa-aa").SetName("TestID-009N");
+                yield return new TestCaseData("0000-000").SetName("TestID-010N");
+                yield return new TestCaseData("0000-00").SetName("TestID-011N");
+                yield return new TestCaseData("000-000").SetName("TestID-012N");
+                yield return new TestCaseData("00-0").SetName("TestID-013N");
+                yield return new TestCaseData("00-00").SetName("TestID-014N");
+                yield return new TestCaseData("000-0").SetName("TestID-015N");
+                yield return new TestCaseData("0000000").SetName("TestID-016N");
+                yield return new TestCaseData("aaaaaaa").SetName("TestID-017N");
+                yield return new TestCaseData("00000000").SetName("TestID-018N");
+                yield return new TestCaseData("000000").SetName("TestID-019N");
+                yield return new TestCaseData("00000").SetName("TestID-020N");
+                yield return new TestCaseData("aaaaa").SetName("TestID-021N");
+                yield return new TestCaseData("000000").SetName("TestID-022N");
+                yield return new TestCaseData("0000").SetName("TestID-023N");
+                yield return new TestCaseData("000").SetName("TestID-024N");
+                yield return new TestCaseData("aaa").SetName("TestID-025N");
+                yield return new TestCaseData("0000").SetName("TestID-026N");
+                yield return new TestCaseData("00").SetName("TestID-027N");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-028A");
             }
         }
 
@@ -449,63 +432,61 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "09999-9-9999");
-                yield return new TestCaseData("TestID-001N", "99999-9-9999");
-                yield return new TestCaseData("TestID-002N", "0aaaa-a-aaaa");
-                yield return new TestCaseData("TestID-003N", "099999-9-9999");
-                yield return new TestCaseData("TestID-004N", "09999-99-9999");
-                yield return new TestCaseData("TestID-005N", "09999-9-99999");
-                yield return new TestCaseData("TestID-006N", "0999--999");
-                yield return new TestCaseData("TestID-007N", "0999-9-9999");
-                yield return new TestCaseData("TestID-008N", "09999--9999");
-                yield return new TestCaseData("TestID-009N", "09999-9-999");
-                yield return new TestCaseData("TestID-010N", "0999-99-9999");
-                yield return new TestCaseData("TestID-011N", "9999-99-9999");
-                yield return new TestCaseData("TestID-012N", "0aaa-aa-aaaa");
-                yield return new TestCaseData("TestID-013N", "09999-999-99999");
-                yield return new TestCaseData("TestID-014N", "09999-99-9999");
-                yield return new TestCaseData("TestID-015N", "0999-999-9999");
-                yield return new TestCaseData("TestID-016N", "0999-99-99999");
-                yield return new TestCaseData("TestID-017N", "099-9-999");
-                yield return new TestCaseData("TestID-018N", "099-99-9999");
-                yield return new TestCaseData("TestID-019N", "0999-9-9999");
-                yield return new TestCaseData("TestID-020N", "0999-99-999");
-                yield return new TestCaseData("TestID-021N", "099-999-9999");
-                yield return new TestCaseData("TestID-022N", "999-999-9999");
-                yield return new TestCaseData("TestID-023N", "0aa-aaa-aaaa");
-                yield return new TestCaseData("TestID-024N", "0999-9999-99999");
-                yield return new TestCaseData("TestID-025N", "0999-999-9999");
-                yield return new TestCaseData("TestID-026N", "099-9999-9999");
-                yield return new TestCaseData("TestID-027N", "099-999-99999");
-                yield return new TestCaseData("TestID-028N", "09-99-999");
-                yield return new TestCaseData("TestID-029N", "09-999-9999");
-                yield return new TestCaseData("TestID-030N", "099-99-9999");
-                yield return new TestCaseData("TestID-031N", "099-999-999");
-                yield return new TestCaseData("TestID-032N", "09-9999-9999");
-                yield return new TestCaseData("TestID-033N", "99-9999-9999");
-                yield return new TestCaseData("TestID-034N", "0a-aaaa-aaaa");
-                yield return new TestCaseData("TestID-035N", "099-99999-99999");
-                yield return new TestCaseData("TestID-036N", "099-9999-9999");
-                yield return new TestCaseData("TestID-037N", "09-99999-9999");
-                yield return new TestCaseData("TestID-038N", "09-9999-99999");
-                yield return new TestCaseData("TestID-039N", "0-999-999");
-                yield return new TestCaseData("TestID-040N", "0-9999-9999");
-                yield return new TestCaseData("TestID-041N", "09-999-9999");
-                yield return new TestCaseData("TestID-042N", "09-9999-999");
-                yield return new TestCaseData("TestID-043N", "999999999999");
-                yield return new TestCaseData("TestID-044N", "0999999999");
-                yield return new TestCaseData("TestID-045N", "9999999999");
-                yield return new TestCaseData("TestID-046N", "0aaaaaaaaa");
-                yield return new TestCaseData("TestID-047N", "09999999999");
-                yield return new TestCaseData("TestID-048N", "099999999");
-                yield return new TestCaseData("TestID-049N", "020-9999-9999");
-                yield return new TestCaseData("TestID-050N", "929-9999-9999");
-                yield return new TestCaseData("TestID-051N", "020-aaaa-aaaa");
-                yield return new TestCaseData("TestID-052N", "0209-99999-99999");
-                yield return new TestCaseData("TestID-053L", string.Empty);
-                yield return new TestCaseData("TestID-054A", null).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData("09999-9-9999").SetName("TestID-000N");
+                yield return new TestCaseData("99999-9-9999").SetName("TestID-001N");
+                yield return new TestCaseData("0aaaa-a-aaaa").SetName("TestID-002N");
+                yield return new TestCaseData("099999-9-9999").SetName("TestID-003N");
+                yield return new TestCaseData("09999-99-9999").SetName("TestID-004N");
+                yield return new TestCaseData("09999-9-99999").SetName("TestID-005N");
+                yield return new TestCaseData("0999--999").SetName("TestID-006N");
+                yield return new TestCaseData("0999-9-9999").SetName("TestID-007N");
+                yield return new TestCaseData("09999--9999").SetName("TestID-008N");
+                yield return new TestCaseData("09999-9-999").SetName("TestID-009N");
+                yield return new TestCaseData("0999-99-9999").SetName("TestID-010N");
+                yield return new TestCaseData("9999-99-9999").SetName("TestID-011N");
+                yield return new TestCaseData("0aaa-aa-aaaa").SetName("TestID-012N");
+                yield return new TestCaseData("09999-999-99999").SetName("TestID-013N");
+                yield return new TestCaseData("09999-99-9999").SetName("TestID-014N");
+                yield return new TestCaseData("0999-999-9999").SetName("TestID-015N");
+                yield return new TestCaseData("0999-99-99999").SetName("TestID-016N");
+                yield return new TestCaseData("099-9-999").SetName("TestID-017N");
+                yield return new TestCaseData("099-99-9999").SetName("TestID-018N");
+                yield return new TestCaseData("0999-9-9999").SetName("TestID-019N");
+                yield return new TestCaseData("0999-99-999").SetName("TestID-020N");
+                yield return new TestCaseData("099-999-9999").SetName("TestID-021N");
+                yield return new TestCaseData("999-999-9999").SetName("TestID-022N");
+                yield return new TestCaseData("0aa-aaa-aaaa").SetName("TestID-023N");
+                yield return new TestCaseData("0999-9999-99999").SetName("TestID-024N");
+                yield return new TestCaseData("0999-999-9999").SetName("TestID-025N");
+                yield return new TestCaseData("099-9999-9999").SetName("TestID-026N");
+                yield return new TestCaseData("099-999-99999").SetName("TestID-027N");
+                yield return new TestCaseData("09-99-999").SetName("TestID-028N");
+                yield return new TestCaseData("09-999-9999").SetName("TestID-029N");
+                yield return new TestCaseData("099-99-9999").SetName("TestID-030N");
+                yield return new TestCaseData("099-999-999").SetName("TestID-031N");
+                yield return new TestCaseData("09-9999-9999").SetName("TestID-031N");
+                yield return new TestCaseData("99-9999-9999").SetName("TestID-033N");
+                yield return new TestCaseData("0a-aaaa-aaaa").SetName("TestID-034N");
+                yield return new TestCaseData("099-99999-99999").SetName("TestID-035N");
+                yield return new TestCaseData("099-9999-9999").SetName("TestID-036N");
+                yield return new TestCaseData("09-99999-9999").SetName("TestID-037N");
+                yield return new TestCaseData("09-9999-99999").SetName("TestID-038N");
+                yield return new TestCaseData("0-999-999").SetName("TestID-039N");
+                yield return new TestCaseData("0-9999-9999").SetName("TestID-040N");
+                yield return new TestCaseData("09-999-9999").SetName("TestID-041N");
+                yield return new TestCaseData("09-9999-999").SetName("TestID-042N");
+                yield return new TestCaseData("999999999999").SetName("TestID-043N");
+                yield return new TestCaseData("0999999999").SetName("TestID-044N");
+                yield return new TestCaseData("9999999999").SetName("TestID-045N");
+                yield return new TestCaseData("0aaaaaaaaa").SetName("TestID-046N");
+                yield return new TestCaseData("09999999999").SetName("TestID-047N");
+                yield return new TestCaseData("099999999").SetName("TestID-048N");
+                yield return new TestCaseData("020-9999-9999").SetName("TestID-049N");
+                yield return new TestCaseData("929-9999-9999").SetName("TestID-050N");
+                yield return new TestCaseData("020-aaaa-aaaa").SetName("TestID-051N");
+                yield return new TestCaseData("0209-99999-99999").SetName("TestID-052N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-053L");
+                yield return new TestCaseData(null).Throws(typeof(NullReferenceException)).SetName("TestID-054A");
             }
         }
 
@@ -517,63 +498,61 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "09999-9-9999");
-                yield return new TestCaseData("TestID-001N", "99999-9-9999");
-                yield return new TestCaseData("TestID-002N", "0aaaa-a-aaaa");
-                yield return new TestCaseData("TestID-003N", "099999-9-9999");
-                yield return new TestCaseData("TestID-004N", "09999-99-9999");
-                yield return new TestCaseData("TestID-005N", "09999-9-99999");
-                yield return new TestCaseData("TestID-006N", "0999--999");
-                yield return new TestCaseData("TestID-007N", "0999-9-9999");
-                yield return new TestCaseData("TestID-008N", "09999--9999");
-                yield return new TestCaseData("TestID-009N", "09999-9-999");
-                yield return new TestCaseData("TestID-010N", "0999-99-9999");
-                yield return new TestCaseData("TestID-011N", "9999-99-9999");
-                yield return new TestCaseData("TestID-012N", "0aaa-aa-aaaa");
-                yield return new TestCaseData("TestID-013N", "09999-999-99999");
-                yield return new TestCaseData("TestID-014N", "09999-99-9999");
-                yield return new TestCaseData("TestID-015N", "0999-999-9999");
-                yield return new TestCaseData("TestID-016N", "0999-99-99999");
-                yield return new TestCaseData("TestID-017N", "099-9-999");
-                yield return new TestCaseData("TestID-018N", "099-99-9999");
-                yield return new TestCaseData("TestID-019N", "0999-9-9999");
-                yield return new TestCaseData("TestID-020N", "0999-99-999");
-                yield return new TestCaseData("TestID-021N", "099-999-9999");
-                yield return new TestCaseData("TestID-022N", "999-999-9999");
-                yield return new TestCaseData("TestID-023N", "0aa-aaa-aaaa");
-                yield return new TestCaseData("TestID-024N", "0999-9999-99999");
-                yield return new TestCaseData("TestID-025N", "0999-999-9999");
-                yield return new TestCaseData("TestID-026N", "099-9999-9999");
-                yield return new TestCaseData("TestID-027N", "099-999-99999");
-                yield return new TestCaseData("TestID-028N", "09-99-999");
-                yield return new TestCaseData("TestID-029N", "09-999-9999");
-                yield return new TestCaseData("TestID-030N", "099-99-9999");
-                yield return new TestCaseData("TestID-031N", "099-999-999");
-                yield return new TestCaseData("TestID-032N", "09-9999-9999");
-                yield return new TestCaseData("TestID-033N", "99-9999-9999");
-                yield return new TestCaseData("TestID-034N", "0a-aaaa-aaaa");
-                yield return new TestCaseData("TestID-035N", "099-99999-99999");
-                yield return new TestCaseData("TestID-036N", "099-9999-9999");
-                yield return new TestCaseData("TestID-037N", "09-99999-9999");
-                yield return new TestCaseData("TestID-038N", "09-9999-99999");
-                yield return new TestCaseData("TestID-039N", "0-999-999");
-                yield return new TestCaseData("TestID-040N", "0-9999-9999");
-                yield return new TestCaseData("TestID-041N", "09-999-9999");
-                yield return new TestCaseData("TestID-042N", "09-9999-999");
-                yield return new TestCaseData("TestID-043N", "999999999999");
-                yield return new TestCaseData("TestID-044N", "0999999999");
-                yield return new TestCaseData("TestID-045N", "9999999999");
-                yield return new TestCaseData("TestID-046N", "0aaaaaaaaa");
-                yield return new TestCaseData("TestID-047N", "09999999999");
-                yield return new TestCaseData("TestID-048N", "099999999");
-                yield return new TestCaseData("TestID-049N", "020-9999-9999");
-                yield return new TestCaseData("TestID-050N", "929-9999-9999");
-                yield return new TestCaseData("TestID-051N", "020-aaaa-aaaa");
-                yield return new TestCaseData("TestID-052N", "0209-99999-99999");
-                yield return new TestCaseData("TestID-053L", string.Empty);
-                yield return new TestCaseData("TestID-054A", null).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData("09999-9-9999").SetName("TestID-000N");
+                yield return new TestCaseData("99999-9-9999").SetName("TestID-001N");
+                yield return new TestCaseData("0aaaa-a-aaaa").SetName("TestID-002N");
+                yield return new TestCaseData("099999-9-9999").SetName("TestID-003N");
+                yield return new TestCaseData("09999-99-9999").SetName("TestID-004N");
+                yield return new TestCaseData("09999-9-99999").SetName("TestID-005N");
+                yield return new TestCaseData("0999--999").SetName("TestID-006N");
+                yield return new TestCaseData("0999-9-9999").SetName("TestID-007N");
+                yield return new TestCaseData("09999--9999").SetName("TestID-008N");
+                yield return new TestCaseData("09999-9-999").SetName("TestID-009N");
+                yield return new TestCaseData("0999-99-9999").SetName("TestID-010N");
+                yield return new TestCaseData("9999-99-9999").SetName("TestID-011N");
+                yield return new TestCaseData("0aaa-aa-aaaa").SetName("TestID-012N");
+                yield return new TestCaseData("09999-999-99999").SetName("TestID-013N");
+                yield return new TestCaseData("09999-99-9999").SetName("TestID-014N");
+                yield return new TestCaseData("0999-999-9999").SetName("TestID-015N");
+                yield return new TestCaseData("0999-99-99999").SetName("TestID-016N");
+                yield return new TestCaseData("099-9-999").SetName("TestID-017N");
+                yield return new TestCaseData("099-99-9999").SetName("TestID-018N");
+                yield return new TestCaseData("0999-9-9999").SetName("TestID-019N");
+                yield return new TestCaseData("0999-99-999").SetName("TestID-020N");
+                yield return new TestCaseData("099-999-9999").SetName("TestID-021N");
+                yield return new TestCaseData("999-999-9999").SetName("TestID-022N");
+                yield return new TestCaseData("0aa-aaa-aaaa").SetName("TestID-023N");
+                yield return new TestCaseData("0999-9999-99999").SetName("TestID-024N");
+                yield return new TestCaseData("0999-999-9999").SetName("TestID-025N");
+                yield return new TestCaseData("099-9999-9999").SetName("TestID-026N");
+                yield return new TestCaseData("099-999-99999").SetName("TestID-027N");
+                yield return new TestCaseData("09-99-999").SetName("TestID-028N");
+                yield return new TestCaseData("09-999-9999").SetName("TestID-029N");
+                yield return new TestCaseData("099-99-9999").SetName("TestID-030N");
+                yield return new TestCaseData("099-999-999").SetName("TestID-031N");
+                yield return new TestCaseData("09-9999-9999").SetName("TestID-031N");
+                yield return new TestCaseData("99-9999-9999").SetName("TestID-033N");
+                yield return new TestCaseData("0a-aaaa-aaaa").SetName("TestID-034N");
+                yield return new TestCaseData("099-99999-99999").SetName("TestID-035N");
+                yield return new TestCaseData("099-9999-9999").SetName("TestID-036N");
+                yield return new TestCaseData("09-99999-9999").SetName("TestID-037N");
+                yield return new TestCaseData("09-9999-99999").SetName("TestID-038N");
+                yield return new TestCaseData("0-999-999").SetName("TestID-039N");
+                yield return new TestCaseData("0-9999-9999").SetName("TestID-040N");
+                yield return new TestCaseData("09-999-9999").SetName("TestID-041N");
+                yield return new TestCaseData("09-9999-999").SetName("TestID-042N");
+                yield return new TestCaseData("999999999999").SetName("TestID-043N");
+                yield return new TestCaseData("0999999999").SetName("TestID-044N");
+                yield return new TestCaseData("9999999999").SetName("TestID-045N");
+                yield return new TestCaseData("0aaaaaaaaa").SetName("TestID-046N");
+                yield return new TestCaseData("09999999999").SetName("TestID-047N");
+                yield return new TestCaseData("099999999").SetName("TestID-048N");
+                yield return new TestCaseData("020-9999-9999").SetName("TestID-049N");
+                yield return new TestCaseData("929-9999-9999").SetName("TestID-050N");
+                yield return new TestCaseData("020-aaaa-aaaa").SetName("TestID-051N");
+                yield return new TestCaseData("0209-99999-99999").SetName("TestID-052N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-053L");
+                yield return new TestCaseData(null).Throws(typeof(NullReferenceException)).SetName("TestID-054A");
             }
         }
 
@@ -585,63 +564,61 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "09999-9-9999");
-                yield return new TestCaseData("TestID-001N", "99999-9-9999");
-                yield return new TestCaseData("TestID-002N", "0aaaa-a-aaaa");
-                yield return new TestCaseData("TestID-003N", "099999-9-9999");
-                yield return new TestCaseData("TestID-004N", "09999-99-9999");
-                yield return new TestCaseData("TestID-005N", "09999-9-99999");
-                yield return new TestCaseData("TestID-006N", "0999--999");
-                yield return new TestCaseData("TestID-007N", "0999-9-9999");
-                yield return new TestCaseData("TestID-008N", "09999--9999");
-                yield return new TestCaseData("TestID-009N", "09999-9-999");
-                yield return new TestCaseData("TestID-010N", "0999-99-9999");
-                yield return new TestCaseData("TestID-011N", "9999-99-9999");
-                yield return new TestCaseData("TestID-012N", "0aaa-aa-aaaa");
-                yield return new TestCaseData("TestID-013N", "09999-999-99999");
-                yield return new TestCaseData("TestID-014N", "09999-99-9999");
-                yield return new TestCaseData("TestID-015N", "0999-999-9999");
-                yield return new TestCaseData("TestID-016N", "0999-99-99999");
-                yield return new TestCaseData("TestID-017N", "099-9-999");
-                yield return new TestCaseData("TestID-018N", "099-99-9999");
-                yield return new TestCaseData("TestID-019N", "0999-9-9999");
-                yield return new TestCaseData("TestID-020N", "0999-99-999");
-                yield return new TestCaseData("TestID-021N", "099-999-9999");
-                yield return new TestCaseData("TestID-022N", "999-999-9999");
-                yield return new TestCaseData("TestID-023N", "0aa-aaa-aaaa");
-                yield return new TestCaseData("TestID-024N", "0999-9999-99999");
-                yield return new TestCaseData("TestID-025N", "0999-999-9999");
-                yield return new TestCaseData("TestID-026N", "099-9999-9999");
-                yield return new TestCaseData("TestID-027N", "099-999-99999");
-                yield return new TestCaseData("TestID-028N", "09-99-999");
-                yield return new TestCaseData("TestID-029N", "09-999-9999");
-                yield return new TestCaseData("TestID-030N", "099-99-9999");
-                yield return new TestCaseData("TestID-031N", "099-999-999");
-                yield return new TestCaseData("TestID-032N", "09-9999-9999");
-                yield return new TestCaseData("TestID-033N", "99-9999-9999");
-                yield return new TestCaseData("TestID-034N", "0a-aaaa-aaaa");
-                yield return new TestCaseData("TestID-035N", "099-99999-99999");
-                yield return new TestCaseData("TestID-036N", "099-9999-9999");
-                yield return new TestCaseData("TestID-037N", "09-99999-9999");
-                yield return new TestCaseData("TestID-038N", "09-9999-99999");
-                yield return new TestCaseData("TestID-039N", "0-999-999");
-                yield return new TestCaseData("TestID-040N", "0-9999-9999");
-                yield return new TestCaseData("TestID-041N", "09-999-9999");
-                yield return new TestCaseData("TestID-042N", "09-9999-999");
-                yield return new TestCaseData("TestID-043N", "999999999999");
-                yield return new TestCaseData("TestID-044N", "0999999999");
-                yield return new TestCaseData("TestID-045N", "9999999999");
-                yield return new TestCaseData("TestID-046N", "0aaaaaaaaa");
-                yield return new TestCaseData("TestID-047N", "09999999999");
-                yield return new TestCaseData("TestID-048N", "099999999");
-                yield return new TestCaseData("TestID-049N", "020-9999-9999");
-                yield return new TestCaseData("TestID-050N", "929-9999-9999");
-                yield return new TestCaseData("TestID-051N", "020-aaaa-aaaa");
-                yield return new TestCaseData("TestID-052N", "0209-99999-99999");
-                yield return new TestCaseData("TestID-053L", string.Empty);
-                yield return new TestCaseData("TestID-054A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("09999-9-9999").SetName("TestID-000N");
+                yield return new TestCaseData("99999-9-9999").SetName("TestID-001N");
+                yield return new TestCaseData("0aaaa-a-aaaa").SetName("TestID-002N");
+                yield return new TestCaseData("099999-9-9999").SetName("TestID-003N");
+                yield return new TestCaseData("09999-99-9999").SetName("TestID-004N");
+                yield return new TestCaseData("09999-9-99999").SetName("TestID-005N");
+                yield return new TestCaseData("0999--999").SetName("TestID-006N");
+                yield return new TestCaseData("0999-9-9999").SetName("TestID-007N");
+                yield return new TestCaseData("09999--9999").SetName("TestID-008N");
+                yield return new TestCaseData("09999-9-999").SetName("TestID-009N");
+                yield return new TestCaseData("0999-99-9999").SetName("TestID-010N");
+                yield return new TestCaseData("9999-99-9999").SetName("TestID-011N");
+                yield return new TestCaseData("0aaa-aa-aaaa").SetName("TestID-012N");
+                yield return new TestCaseData("09999-999-99999").SetName("TestID-013N");
+                yield return new TestCaseData("09999-99-9999").SetName("TestID-014N");
+                yield return new TestCaseData("0999-999-9999").SetName("TestID-015N");
+                yield return new TestCaseData("0999-99-99999").SetName("TestID-016N");
+                yield return new TestCaseData("099-9-999").SetName("TestID-017N");
+                yield return new TestCaseData("099-99-9999").SetName("TestID-018N");
+                yield return new TestCaseData("0999-9-9999").SetName("TestID-019N");
+                yield return new TestCaseData("0999-99-999").SetName("TestID-020N");
+                yield return new TestCaseData("099-999-9999").SetName("TestID-021N");
+                yield return new TestCaseData("999-999-9999").SetName("TestID-022N");
+                yield return new TestCaseData("0aa-aaa-aaaa").SetName("TestID-023N");
+                yield return new TestCaseData("0999-9999-99999").SetName("TestID-024N");
+                yield return new TestCaseData("0999-999-9999").SetName("TestID-025N");
+                yield return new TestCaseData("099-9999-9999").SetName("TestID-026N");
+                yield return new TestCaseData("099-999-99999").SetName("TestID-027N");
+                yield return new TestCaseData("09-99-999").SetName("TestID-028N");
+                yield return new TestCaseData("09-999-9999").SetName("TestID-029N");
+                yield return new TestCaseData("099-99-9999").SetName("TestID-030N");
+                yield return new TestCaseData("099-999-999").SetName("TestID-031N");
+                yield return new TestCaseData("09-9999-9999").SetName("TestID-031N");
+                yield return new TestCaseData("99-9999-9999").SetName("TestID-033N");
+                yield return new TestCaseData("0a-aaaa-aaaa").SetName("TestID-034N");
+                yield return new TestCaseData("099-99999-99999").SetName("TestID-035N");
+                yield return new TestCaseData("099-9999-9999").SetName("TestID-036N");
+                yield return new TestCaseData("09-99999-9999").SetName("TestID-037N");
+                yield return new TestCaseData("09-9999-99999").SetName("TestID-038N");
+                yield return new TestCaseData("0-999-999").SetName("TestID-039N");
+                yield return new TestCaseData("0-9999-9999").SetName("TestID-040N");
+                yield return new TestCaseData("09-999-9999").SetName("TestID-041N");
+                yield return new TestCaseData("09-9999-999").SetName("TestID-042N");
+                yield return new TestCaseData("999999999999").SetName("TestID-043N");
+                yield return new TestCaseData("0999999999").SetName("TestID-044N");
+                yield return new TestCaseData("9999999999").SetName("TestID-045N");
+                yield return new TestCaseData("0aaaaaaaaa").SetName("TestID-046N");
+                yield return new TestCaseData("09999999999").SetName("TestID-047N");
+                yield return new TestCaseData("099999999").SetName("TestID-048N");
+                yield return new TestCaseData("020-9999-9999").SetName("TestID-049N");
+                yield return new TestCaseData("929-9999-9999").SetName("TestID-050N");
+                yield return new TestCaseData("020-aaaa-aaaa").SetName("TestID-051N");
+                yield return new TestCaseData("0209-99999-99999").SetName("TestID-052N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-053L");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-054A");
             }
         }
 
@@ -653,59 +630,57 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "09999-9-9999");
-                yield return new TestCaseData("TestID-001N", "99999-9-9999");
-                yield return new TestCaseData("TestID-002N", "0aaaa-a-aaaa");
-                yield return new TestCaseData("TestID-003N", "099999-9-9999");
-                yield return new TestCaseData("TestID-004N", "09999-99-9999");
-                yield return new TestCaseData("TestID-005N", "09999-9-99999");
-                yield return new TestCaseData("TestID-006N", "0999--999");
-                yield return new TestCaseData("TestID-007N", "0999-9-9999");
-                yield return new TestCaseData("TestID-008N", "09999--9999");
-                yield return new TestCaseData("TestID-009N", "09999-9-999");
-                yield return new TestCaseData("TestID-010N", "0999-99-9999");
-                yield return new TestCaseData("TestID-011N", "9999-99-9999");
-                yield return new TestCaseData("TestID-012N", "0aaa-aa-aaaa");
-                yield return new TestCaseData("TestID-013N", "09999-999-99999");
-                yield return new TestCaseData("TestID-014N", "09999-99-9999");
-                yield return new TestCaseData("TestID-015N", "0999-999-9999");
-                yield return new TestCaseData("TestID-016N", "0999-99-99999");
-                yield return new TestCaseData("TestID-017N", "099-9-999");
-                yield return new TestCaseData("TestID-018N", "099-99-9999");
-                yield return new TestCaseData("TestID-019N", "0999-9-9999");
-                yield return new TestCaseData("TestID-020N", "0999-99-999");
-                yield return new TestCaseData("TestID-021N", "099-999-9999");
-                yield return new TestCaseData("TestID-022N", "999-999-9999");
-                yield return new TestCaseData("TestID-023N", "0aa-aaa-aaaa");
-                yield return new TestCaseData("TestID-024N", "0999-9999-99999");
-                yield return new TestCaseData("TestID-025N", "0999-999-9999");
-                yield return new TestCaseData("TestID-026N", "099-9999-9999");
-                yield return new TestCaseData("TestID-027N", "099-999-99999");
-                yield return new TestCaseData("TestID-028N", "09-99-999");
-                yield return new TestCaseData("TestID-029N", "09-999-9999");
-                yield return new TestCaseData("TestID-030N", "099-99-9999");
-                yield return new TestCaseData("TestID-031N", "099-999-999");
-                yield return new TestCaseData("TestID-032N", "09-9999-9999");
-                yield return new TestCaseData("TestID-033N", "99-9999-9999");
-                yield return new TestCaseData("TestID-034N", "0a-aaaa-aaaa");
-                yield return new TestCaseData("TestID-035N", "099-99999-99999");
-                yield return new TestCaseData("TestID-036N", "099-9999-9999");
-                yield return new TestCaseData("TestID-037N", "09-99999-9999");
-                yield return new TestCaseData("TestID-038N", "09-9999-99999");
-                yield return new TestCaseData("TestID-039N", "0-999-999");
-                yield return new TestCaseData("TestID-040N", "0-9999-9999");
-                yield return new TestCaseData("TestID-041N", "09-999-9999");
-                yield return new TestCaseData("TestID-042N", "09-9999-999");
-                yield return new TestCaseData("TestID-043N", "999999999999");
-                yield return new TestCaseData("TestID-044N", "0999999999");
-                yield return new TestCaseData("TestID-045N", "9999999999");
-                yield return new TestCaseData("TestID-046N", "0aaaaaaaaa");
-                yield return new TestCaseData("TestID-047N", "09999999999");
-                yield return new TestCaseData("TestID-048N", "099999999");
-                yield return new TestCaseData("TestID-049L", string.Empty);
-                yield return new TestCaseData("TestID-050A", null).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData("09999-9-9999").SetName("TestID-000N");
+                yield return new TestCaseData("99999-9-9999").SetName("TestID-001N");
+                yield return new TestCaseData("0aaaa-a-aaaa").SetName("TestID-002N");
+                yield return new TestCaseData("099999-9-9999").SetName("TestID-003N");
+                yield return new TestCaseData("09999-99-9999").SetName("TestID-004N");
+                yield return new TestCaseData("09999-9-99999").SetName("TestID-005N");
+                yield return new TestCaseData("0999--999").SetName("TestID-006N");
+                yield return new TestCaseData("0999-9-9999").SetName("TestID-007N");
+                yield return new TestCaseData("09999--9999").SetName("TestID-008N");
+                yield return new TestCaseData("09999-9-999").SetName("TestID-009N");
+                yield return new TestCaseData("0999-99-9999").SetName("TestID-010N");
+                yield return new TestCaseData("9999-99-9999").SetName("TestID-011N");
+                yield return new TestCaseData("0aaa-aa-aaaa").SetName("TestID-012N");
+                yield return new TestCaseData("09999-999-99999").SetName("TestID-013N");
+                yield return new TestCaseData("09999-99-9999").SetName("TestID-014N");
+                yield return new TestCaseData("0999-999-9999").SetName("TestID-015N");
+                yield return new TestCaseData("0999-99-99999").SetName("TestID-016N");
+                yield return new TestCaseData("099-9-999").SetName("TestID-017N");
+                yield return new TestCaseData("099-99-9999").SetName("TestID-018N");
+                yield return new TestCaseData("0999-9-9999").SetName("TestID-019N");
+                yield return new TestCaseData("0999-99-999").SetName("TestID-020N");
+                yield return new TestCaseData("099-999-9999").SetName("TestID-021N");
+                yield return new TestCaseData("999-999-9999").SetName("TestID-022N");
+                yield return new TestCaseData("0aa-aaa-aaaa").SetName("TestID-023N");
+                yield return new TestCaseData("0999-9999-99999").SetName("TestID-024N");
+                yield return new TestCaseData("0999-999-9999").SetName("TestID-025N");
+                yield return new TestCaseData("099-9999-9999").SetName("TestID-026N");
+                yield return new TestCaseData("099-999-99999").SetName("TestID-027N");
+                yield return new TestCaseData("09-99-999").SetName("TestID-028N");
+                yield return new TestCaseData("09-999-9999").SetName("TestID-029N");
+                yield return new TestCaseData("099-99-9999").SetName("TestID-030N");
+                yield return new TestCaseData("099-999-999").SetName("TestID-031N");
+                yield return new TestCaseData("09-9999-9999").SetName("TestID-032N");
+                yield return new TestCaseData("99-9999-9999").SetName("TestID-033N");
+                yield return new TestCaseData("0a-aaaa-aaaa").SetName("TestID-034N");
+                yield return new TestCaseData("099-99999-99999").SetName("TestID-035N");
+                yield return new TestCaseData("099-9999-9999").SetName("TestID-036N");
+                yield return new TestCaseData("09-99999-9999").SetName("TestID-037N");
+                yield return new TestCaseData("09-9999-99999").SetName("TestID-038N");
+                yield return new TestCaseData("0-999-999").SetName("TestID-039N");
+                yield return new TestCaseData("0-9999-9999").SetName("TestID-040N");
+                yield return new TestCaseData("09-999-9999").SetName("TestID-041N");
+                yield return new TestCaseData("09-9999-999").SetName("TestID-042N");
+                yield return new TestCaseData("999999999999").SetName("TestID-043N");
+                yield return new TestCaseData("0999999999").SetName("TestID-044N");
+                yield return new TestCaseData("9999999999").SetName("TestID-045N");
+                yield return new TestCaseData("0aaaaaaaaa").SetName("TestID-046N");
+                yield return new TestCaseData("09999999999").SetName("TestID-047N");
+                yield return new TestCaseData("099999999").SetName("TestID-048N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-049L");
+                yield return new TestCaseData(null).Throws(typeof(NullReferenceException)).SetName("TestID-050A");
             }
         }
 
@@ -717,60 +692,58 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "09999-9-9999");
-                yield return new TestCaseData("TestID-001N", "99999-9-9999");
-                yield return new TestCaseData("TestID-002N", "0aaaa-a-aaaa");
-                yield return new TestCaseData("TestID-003N", "099999-9-9999");
-                yield return new TestCaseData("TestID-004N", "09999-99-9999");
-                yield return new TestCaseData("TestID-005N", "09999-9-99999");
-                yield return new TestCaseData("TestID-006N", "0999--999");
-                yield return new TestCaseData("TestID-007N", "0999-9-9999");
-                yield return new TestCaseData("TestID-008N", "09999--9999");
-                yield return new TestCaseData("TestID-009N", "09999-9-999");
-                yield return new TestCaseData("TestID-010N", "0999-99-9999");
-                yield return new TestCaseData("TestID-011N", "9999-99-9999");
-                yield return new TestCaseData("TestID-012N", "0aaa-aa-aaaa");
-                yield return new TestCaseData("TestID-013N", "09999-999-99999");
-                yield return new TestCaseData("TestID-014N", "09999-99-9999");
-                yield return new TestCaseData("TestID-015N", "0999-999-9999");
-                yield return new TestCaseData("TestID-016N", "0999-99-99999");
-                yield return new TestCaseData("TestID-017N", "099-9-999");
-                yield return new TestCaseData("TestID-018N", "099-99-9999");
-                yield return new TestCaseData("TestID-019N", "0999-9-9999");
-                yield return new TestCaseData("TestID-020N", "0999-99-999");
-                yield return new TestCaseData("TestID-021N", "099-999-9999");
-                yield return new TestCaseData("TestID-022N", "999-999-9999");
-                yield return new TestCaseData("TestID-023N", "0aa-aaa-aaaa");
-                yield return new TestCaseData("TestID-024N", "0999-9999-99999");
-                yield return new TestCaseData("TestID-025N", "0999-999-9999");
-                yield return new TestCaseData("TestID-026N", "099-9999-9999");
-                yield return new TestCaseData("TestID-027N", "099-999-99999");
-                yield return new TestCaseData("TestID-028N", "09-99-999");
-                yield return new TestCaseData("TestID-029N", "09-999-9999");
-                yield return new TestCaseData("TestID-030N", "099-99-9999");
-                yield return new TestCaseData("TestID-031N", "099-999-999");
-                yield return new TestCaseData("TestID-032N", "09-9999-9999");
-                yield return new TestCaseData("TestID-033N", "99-9999-9999");
-                yield return new TestCaseData("TestID-034N", "0a-aaaa-aaaa");
-                yield return new TestCaseData("TestID-035N", "099-99999-99999");
-                yield return new TestCaseData("TestID-036N", "099-9999-9999");
-                yield return new TestCaseData("TestID-037N", "09-99999-9999");
-                yield return new TestCaseData("TestID-038N", "09-9999-99999");
-                yield return new TestCaseData("TestID-039N", "0-999-999");
-                yield return new TestCaseData("TestID-040N", "0-9999-9999");
-                yield return new TestCaseData("TestID-041N", "09-999-9999");
-                yield return new TestCaseData("TestID-042N", "09-9999-999");
-                yield return new TestCaseData("TestID-043N", "999999999999");
-                yield return new TestCaseData("TestID-044N", "0999999999");
-                yield return new TestCaseData("TestID-045N", "9999999999");
-                yield return new TestCaseData("TestID-046N", "0aaaaaaaaa");
-                yield return new TestCaseData("TestID-047N", "09999999999");
-                yield return new TestCaseData("TestID-048N", "099999999");
-                yield return new TestCaseData("TestID-049N", "999999999999");
-                yield return new TestCaseData("TestID-050L", string.Empty);
-                yield return new TestCaseData("TestID-051A", null).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData("09999-9-9999").SetName("TestID-000N");
+                yield return new TestCaseData("99999-9-9999").SetName("TestID-001N");
+                yield return new TestCaseData("0aaaa-a-aaaa").SetName("TestID-002N");
+                yield return new TestCaseData("099999-9-9999").SetName("TestID-003N");
+                yield return new TestCaseData("09999-99-9999").SetName("TestID-004N");
+                yield return new TestCaseData("09999-9-99999").SetName("TestID-005N");
+                yield return new TestCaseData("0999--999").SetName("TestID-006N");
+                yield return new TestCaseData("0999-9-9999").SetName("TestID-007N");
+                yield return new TestCaseData("09999--9999").SetName("TestID-008N");
+                yield return new TestCaseData("09999-9-999").SetName("TestID-009N");
+                yield return new TestCaseData("0999-99-9999").SetName("TestID-010N");
+                yield return new TestCaseData("9999-99-9999").SetName("TestID-011N");
+                yield return new TestCaseData("0aaa-aa-aaaa").SetName("TestID-012N");
+                yield return new TestCaseData("09999-999-99999").SetName("TestID-013N");
+                yield return new TestCaseData("09999-99-9999").SetName("TestID-014N");
+                yield return new TestCaseData("0999-999-9999").SetName("TestID-015N");
+                yield return new TestCaseData("0999-99-99999").SetName("TestID-016N");
+                yield return new TestCaseData("099-9-999").SetName("TestID-017N");
+                yield return new TestCaseData("099-99-9999").SetName("TestID-018N");
+                yield return new TestCaseData("0999-9-9999").SetName("TestID-019N");
+                yield return new TestCaseData("0999-99-999").SetName("TestID-020N");
+                yield return new TestCaseData("099-999-9999").SetName("TestID-021N");
+                yield return new TestCaseData("999-999-9999").SetName("TestID-022N");
+                yield return new TestCaseData("0aa-aaa-aaaa").SetName("TestID-023N");
+                yield return new TestCaseData("0999-9999-99999").SetName("TestID-024N");
+                yield return new TestCaseData("0999-999-9999").SetName("TestID-025N");
+                yield return new TestCaseData("099-9999-9999").SetName("TestID-026N");
+                yield return new TestCaseData("099-999-99999").SetName("TestID-027N");
+                yield return new TestCaseData("09-99-999").SetName("TestID-028N");
+                yield return new TestCaseData("09-999-9999").SetName("TestID-029N");
+                yield return new TestCaseData("099-99-9999").SetName("TestID-030N");
+                yield return new TestCaseData("099-999-999").SetName("TestID-031N");
+                yield return new TestCaseData("09-9999-9999").SetName("TestID-032N");
+                yield return new TestCaseData("99-9999-9999").SetName("TestID-033N");
+                yield return new TestCaseData("0a-aaaa-aaaa").SetName("TestID-034N");
+                yield return new TestCaseData("099-99999-99999").SetName("TestID-035N");
+                yield return new TestCaseData("099-9999-9999").SetName("TestID-036N");
+                yield return new TestCaseData("09-99999-9999").SetName("TestID-037N");
+                yield return new TestCaseData("09-9999-99999").SetName("TestID-038N");
+                yield return new TestCaseData("0-999-999").SetName("TestID-039N");
+                yield return new TestCaseData("0-9999-9999").SetName("TestID-040N");
+                yield return new TestCaseData("09-999-9999").SetName("TestID-041N");
+                yield return new TestCaseData("09-9999-999").SetName("TestID-042N");
+                yield return new TestCaseData("999999999999").SetName("TestID-043N");
+                yield return new TestCaseData("0999999999").SetName("TestID-044N");
+                yield return new TestCaseData("9999999999").SetName("TestID-045N");
+                yield return new TestCaseData("0aaaaaaaaa").SetName("TestID-046N");
+                yield return new TestCaseData("09999999999").SetName("TestID-047N");
+                yield return new TestCaseData("099999999").SetName("TestID-048N");
+                yield return new TestCaseData("999999999999").SetName("TestID-049N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-050L");
+                yield return new TestCaseData(null).Throws(typeof(NullReferenceException)).SetName("TestID-051A");
             }
         }
 
@@ -782,60 +755,58 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "09999-9-9999");
-                yield return new TestCaseData("TestID-001N", "99999-9-9999");
-                yield return new TestCaseData("TestID-002N", "0aaaa-a-aaaa");
-                yield return new TestCaseData("TestID-003N", "099999-9-9999");
-                yield return new TestCaseData("TestID-004N", "09999-99-9999");
-                yield return new TestCaseData("TestID-005N", "09999-9-99999");
-                yield return new TestCaseData("TestID-006N", "0999--999");
-                yield return new TestCaseData("TestID-007N", "0999-9-9999");
-                yield return new TestCaseData("TestID-008N", "09999--9999");
-                yield return new TestCaseData("TestID-009N", "09999-9-999");
-                yield return new TestCaseData("TestID-010N", "0999-99-9999");
-                yield return new TestCaseData("TestID-011N", "9999-99-9999");
-                yield return new TestCaseData("TestID-012N", "0aaa-aa-aaaa");
-                yield return new TestCaseData("TestID-013N", "09999-999-99999");
-                yield return new TestCaseData("TestID-014N", "09999-99-9999");
-                yield return new TestCaseData("TestID-015N", "0999-999-9999");
-                yield return new TestCaseData("TestID-016N", "0999-99-99999");
-                yield return new TestCaseData("TestID-017N", "099-9-999");
-                yield return new TestCaseData("TestID-018N", "099-99-9999");
-                yield return new TestCaseData("TestID-019N", "0999-9-9999");
-                yield return new TestCaseData("TestID-020N", "0999-99-999");
-                yield return new TestCaseData("TestID-021N", "099-999-9999");
-                yield return new TestCaseData("TestID-022N", "999-999-9999");
-                yield return new TestCaseData("TestID-023N", "0aa-aaa-aaaa");
-                yield return new TestCaseData("TestID-024N", "0999-9999-99999");
-                yield return new TestCaseData("TestID-025N", "0999-999-9999");
-                yield return new TestCaseData("TestID-026N", "099-9999-9999");
-                yield return new TestCaseData("TestID-027N", "099-999-99999");
-                yield return new TestCaseData("TestID-028N", "09-99-999");
-                yield return new TestCaseData("TestID-029N", "09-999-9999");
-                yield return new TestCaseData("TestID-030N", "099-99-9999");
-                yield return new TestCaseData("TestID-031N", "099-999-999");
-                yield return new TestCaseData("TestID-032N", "09-9999-9999");
-                yield return new TestCaseData("TestID-033N", "99-9999-9999");
-                yield return new TestCaseData("TestID-034N", "0a-aaaa-aaaa");
-                yield return new TestCaseData("TestID-035N", "099-99999-99999");
-                yield return new TestCaseData("TestID-036N", "099-9999-9999");
-                yield return new TestCaseData("TestID-037N", "09-99999-9999");
-                yield return new TestCaseData("TestID-038N", "09-9999-99999");
-                yield return new TestCaseData("TestID-039N", "0-999-999");
-                yield return new TestCaseData("TestID-040N", "0-9999-9999");
-                yield return new TestCaseData("TestID-041N", "09-999-9999");
-                yield return new TestCaseData("TestID-042N", "09-9999-999");
-                yield return new TestCaseData("TestID-043N", "999999999999");
-                yield return new TestCaseData("TestID-044N", "0999999999");
-                yield return new TestCaseData("TestID-045N", "9999999999");
-                yield return new TestCaseData("TestID-046N", "0aaaaaaaaa");
-                yield return new TestCaseData("TestID-047N", "09999999999");
-                yield return new TestCaseData("TestID-048N", "099999999");
-                yield return new TestCaseData("TestID-049N", "999999999999");
-                yield return new TestCaseData("TestID-050L", string.Empty);
-                yield return new TestCaseData("TestID-051A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("09999-9-9999").SetName("TestID-000N");
+                yield return new TestCaseData("99999-9-9999").SetName("TestID-001N");
+                yield return new TestCaseData("0aaaa-a-aaaa").SetName("TestID-002N");
+                yield return new TestCaseData("099999-9-9999").SetName("TestID-003N");
+                yield return new TestCaseData("09999-99-9999").SetName("TestID-004N");
+                yield return new TestCaseData("09999-9-99999").SetName("TestID-005N");
+                yield return new TestCaseData("0999--999").SetName("TestID-006N");
+                yield return new TestCaseData("0999-9-9999").SetName("TestID-007N");
+                yield return new TestCaseData("09999--9999").SetName("TestID-008N");
+                yield return new TestCaseData("09999-9-999").SetName("TestID-009N");
+                yield return new TestCaseData("0999-99-9999").SetName("TestID-010N");
+                yield return new TestCaseData("9999-99-9999").SetName("TestID-011N");
+                yield return new TestCaseData("0aaa-aa-aaaa").SetName("TestID-012N");
+                yield return new TestCaseData("09999-999-99999").SetName("TestID-013N");
+                yield return new TestCaseData("09999-99-9999").SetName("TestID-014N");
+                yield return new TestCaseData("0999-999-9999").SetName("TestID-015N");
+                yield return new TestCaseData("0999-99-99999").SetName("TestID-016N");
+                yield return new TestCaseData("099-9-999").SetName("TestID-017N");
+                yield return new TestCaseData("099-99-9999").SetName("TestID-018N");
+                yield return new TestCaseData("0999-9-9999").SetName("TestID-019N");
+                yield return new TestCaseData("0999-99-999").SetName("TestID-020N");
+                yield return new TestCaseData("099-999-9999").SetName("TestID-021N");
+                yield return new TestCaseData("999-999-9999").SetName("TestID-022N");
+                yield return new TestCaseData("0aa-aaa-aaaa").SetName("TestID-023N");
+                yield return new TestCaseData("0999-9999-99999").SetName("TestID-024N");
+                yield return new TestCaseData("0999-999-9999").SetName("TestID-025N");
+                yield return new TestCaseData("099-9999-9999").SetName("TestID-026N");
+                yield return new TestCaseData("099-999-99999").SetName("TestID-027N");
+                yield return new TestCaseData("09-99-999").SetName("TestID-028N");
+                yield return new TestCaseData("09-999-9999").SetName("TestID-029N");
+                yield return new TestCaseData("099-99-9999").SetName("TestID-030N");
+                yield return new TestCaseData("099-999-999").SetName("TestID-031N");
+                yield return new TestCaseData("09-9999-9999").SetName("TestID-032N");
+                yield return new TestCaseData("99-9999-9999").SetName("TestID-033N");
+                yield return new TestCaseData("0a-aaaa-aaaa").SetName("TestID-034N");
+                yield return new TestCaseData("099-99999-99999").SetName("TestID-035N");
+                yield return new TestCaseData("099-9999-9999").SetName("TestID-036N");
+                yield return new TestCaseData("09-99999-9999").SetName("TestID-037N");
+                yield return new TestCaseData("09-9999-99999").SetName("TestID-038N");
+                yield return new TestCaseData("0-999-999").SetName("TestID-039N");
+                yield return new TestCaseData("0-9999-9999").SetName("TestID-040N");
+                yield return new TestCaseData("09-999-9999").SetName("TestID-041N");
+                yield return new TestCaseData("09-9999-999").SetName("TestID-042N");
+                yield return new TestCaseData("999999999999").SetName("TestID-043N");
+                yield return new TestCaseData("0999999999").SetName("TestID-044N");
+                yield return new TestCaseData("9999999999").SetName("TestID-045N");
+                yield return new TestCaseData("0aaaaaaaaa").SetName("TestID-046N");
+                yield return new TestCaseData("09999999999").SetName("TestID-047N");
+                yield return new TestCaseData("099999999").SetName("TestID-048N");
+                yield return new TestCaseData("999999999999").SetName("TestID-049N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-050L");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-051A");
             }
         }
 
@@ -847,69 +818,67 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "020-9999-9999");
-                yield return new TestCaseData("TestID-001N", "929-9999-9999");
-                yield return new TestCaseData("TestID-002N", "020-aaaa-aaaa");
-                yield return new TestCaseData("TestID-003N", "0209-99999-99999");
-                yield return new TestCaseData("TestID-004N", "0209-99999-99999");
-                yield return new TestCaseData("TestID-005N", "020-99999-9999");
-                yield return new TestCaseData("TestID-006N", "020-99999-9999");
-                yield return new TestCaseData("TestID-007N", "02-999-999");
-                yield return new TestCaseData("TestID-008N", "02-9999-9999");
-                yield return new TestCaseData("TestID-009N", "020-999-9999");
-                yield return new TestCaseData("TestID-010N", "020-9999-999");
-                yield return new TestCaseData("TestID-010N", "060-9999-9999");
-                yield return new TestCaseData("TestID-011N", "969-9999-9999");
-                yield return new TestCaseData("TestID-012N", "060-aaaa-aaaa");
-                yield return new TestCaseData("TestID-013N", "0609-99999-99999");
-                yield return new TestCaseData("TestID-014N", "0609-9999-9999");
-                yield return new TestCaseData("TestID-015N", "060-99999-9999");
-                yield return new TestCaseData("TestID-016N", "060-9999-99999");
-                yield return new TestCaseData("TestID-017N", "06-999-999");
-                yield return new TestCaseData("TestID-018N", "06-9999-9999");
-                yield return new TestCaseData("TestID-019N", "060-999-9999");
-                yield return new TestCaseData("TestID-020N", "060-9999-999");
-                yield return new TestCaseData("TestID-021N", "070-9999-9999");
-                yield return new TestCaseData("TestID-022N", "979-9999-9999");
-                yield return new TestCaseData("TestID-023N", "070-aaaa-aaaa");
-                yield return new TestCaseData("TestID-024N", "0709-99999-99999");
-                yield return new TestCaseData("TestID-025N", "0709-9999-9999");
-                yield return new TestCaseData("TestID-026N", "070-99999-9999");
-                yield return new TestCaseData("TestID-027N", "070-9999-99999");
-                yield return new TestCaseData("TestID-028N", "07-999-999");
-                yield return new TestCaseData("TestID-029N", "07-9999-9999");
-                yield return new TestCaseData("TestID-030N", "070-999-9999");
-                yield return new TestCaseData("TestID-031N", "070-9999-999");
-                yield return new TestCaseData("TestID-032N", "080-9999-9999");
-                yield return new TestCaseData("TestID-033N", "989-9999-9999");
-                yield return new TestCaseData("TestID-034N", "080-aaaa-aaaa");
-                yield return new TestCaseData("TestID-035N", "0809-99999-99999");
-                yield return new TestCaseData("TestID-036N", "0809-9999-9999");
-                yield return new TestCaseData("TestID-037N", "080-99999-9999");
-                yield return new TestCaseData("TestID-038N", "080-9999-99999");
-                yield return new TestCaseData("TestID-039N", "08-999-999");
-                yield return new TestCaseData("TestID-040N", "08-9999-9999");
-                yield return new TestCaseData("TestID-041N", "080-999-9999");
-                yield return new TestCaseData("TestID-042N", "080-9999-999");
-                yield return new TestCaseData("TestID-043N", "090-9999-9999");
-                yield return new TestCaseData("TestID-044N", "999-9999-9999");
-                yield return new TestCaseData("TestID-045N", "090-aaaa-aaaa");
-                yield return new TestCaseData("TestID-046N", "0909-99999-99999");
-                yield return new TestCaseData("TestID-047N", "0909-9999-9999");
-                yield return new TestCaseData("TestID-048N", "090-99999-9999");
-                yield return new TestCaseData("TestID-049N", "02099999999");
-                yield return new TestCaseData("TestID-050N", "92999999999");
-                yield return new TestCaseData("TestID-051N", "020aaaaaaaa");
-                yield return new TestCaseData("TestID-052N", "020999999999");
-                yield return new TestCaseData("TestID-053N", "0209999999");
-                yield return new TestCaseData("TestID-054N", "06099999999");
-                yield return new TestCaseData("TestID-055N", "07099999999");
-                yield return new TestCaseData("TestID-056N", "08099999999");
-                yield return new TestCaseData("TestID-057N", "09099999999");
-                yield return new TestCaseData("TestID-058L", string.Empty);
-                yield return new TestCaseData("TestID-059A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("020-9999-9999").SetName("TestID-000N");
+                yield return new TestCaseData("929-9999-9999").SetName("TestID-001N");
+                yield return new TestCaseData("020-aaaa-aaaa").SetName("TestID-002N");
+                yield return new TestCaseData("0209-99999-99999").SetName("TestID-003N");
+                yield return new TestCaseData("0209-99999-99999").SetName("TestID-004N");
+                yield return new TestCaseData("020-99999-9999").SetName("TestID-005N");
+                yield return new TestCaseData("020-99999-9999").SetName("TestID-006N");
+                yield return new TestCaseData("02-999-999").SetName("TestID-007N");
+                yield return new TestCaseData("02-9999-9999").SetName("TestID-008N");
+                yield return new TestCaseData("020-999-9999").SetName("TestID-009N");
+                yield return new TestCaseData("020-9999-999").SetName("TestID-010N");
+                yield return new TestCaseData("060-9999-9999").SetName("TestID-011N");
+                yield return new TestCaseData("969-9999-9999").SetName("TestID-012N");
+                yield return new TestCaseData("060-aaaa-aaaa").SetName("TestID-013N");
+                yield return new TestCaseData("0609-99999-99999").SetName("TestID-014N");
+                yield return new TestCaseData("0609-9999-9999").SetName("TestID-015N");
+                yield return new TestCaseData("060-99999-9999").SetName("TestID-016N");
+                yield return new TestCaseData("060-9999-99999").SetName("TestID-017N");
+                yield return new TestCaseData("06-999-999").SetName("TestID-018N");
+                yield return new TestCaseData("06-9999-9999").SetName("TestID-019N");
+                yield return new TestCaseData("060-999-9999").SetName("TestID-020N");
+                yield return new TestCaseData("060-9999-999").SetName("TestID-021N");
+                yield return new TestCaseData("070-9999-9999").SetName("TestID-022N");
+                yield return new TestCaseData("979-9999-9999").SetName("TestID-023N");
+                yield return new TestCaseData("070-aaaa-aaaa").SetName("TestID-024N");
+                yield return new TestCaseData("0709-99999-99999").SetName("TestID-025N");
+                yield return new TestCaseData("0709-9999-9999").SetName("TestID-026N");
+                yield return new TestCaseData("070-99999-9999").SetName("TestID-027N");
+                yield return new TestCaseData("070-9999-99999").SetName("TestID-028N");
+                yield return new TestCaseData("07-999-999").SetName("TestID-029N");
+                yield return new TestCaseData("07-9999-9999").SetName("TestID-030N");
+                yield return new TestCaseData("070-999-9999").SetName("TestID-031N");
+                yield return new TestCaseData("070-9999-999").SetName("TestID-032N");
+                yield return new TestCaseData("080-9999-9999").SetName("TestID-033N");
+                yield return new TestCaseData("989-9999-9999").SetName("TestID-034N");
+                yield return new TestCaseData("080-aaaa-aaaa").SetName("TestID-035N");
+                yield return new TestCaseData("0809-99999-99999").SetName("TestID-036N");
+                yield return new TestCaseData("0809-9999-9999").SetName("TestID-037N");
+                yield return new TestCaseData("080-99999-9999").SetName("TestID-038N");
+                yield return new TestCaseData("080-9999-99999").SetName("TestID-039N");
+                yield return new TestCaseData("08-999-999").SetName("TestID-040N");
+                yield return new TestCaseData("08-9999-9999").SetName("TestID-041N");
+                yield return new TestCaseData("080-999-9999").SetName("TestID-042N");
+                yield return new TestCaseData("080-9999-999").SetName("TestID-043N");
+                yield return new TestCaseData("090-9999-9999").SetName("TestID-044N");
+                yield return new TestCaseData("999-9999-9999").SetName("TestID-045N");
+                yield return new TestCaseData("090-aaaa-aaaa").SetName("TestID-046N");
+                yield return new TestCaseData("0909-99999-99999").SetName("TestID-047N");
+                yield return new TestCaseData("0909-9999-9999").SetName("TestID-048N");
+                yield return new TestCaseData("090-99999-9999").SetName("TestID-049N");
+                yield return new TestCaseData("02099999999").SetName("TestID-050N");
+                yield return new TestCaseData("92999999999").SetName("TestID-051N");
+                yield return new TestCaseData("020aaaaaaaa").SetName("TestID-052N");
+                yield return new TestCaseData("020999999999").SetName("TestID-053N");
+                yield return new TestCaseData("0209999999").SetName("TestID-054N");
+                yield return new TestCaseData("06099999999").SetName("TestID-055N");
+                yield return new TestCaseData("07099999999").SetName("TestID-056N");
+                yield return new TestCaseData("08099999999").SetName("TestID-057N");
+                yield return new TestCaseData("09099999999").SetName("TestID-058N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-059L");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-060A");
             }
 
         }
@@ -922,69 +891,68 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
+                yield return new TestCaseData("020aaaaaaaa").SetName("TestID-000N");
+                yield return new TestCaseData("92999999999").SetName("TestID-001N");
+                yield return new TestCaseData("020-aaaa-aaaa").SetName("TestID-002N");
+                yield return new TestCaseData("020aaaaaaaa").SetName("TestID-003N");
+                yield return new TestCaseData("0209-99999-99999").SetName("TestID-004N");
+                yield return new TestCaseData("020-99999-9999").SetName("TestID-005N");
+                yield return new TestCaseData("020-99999-9999").SetName("TestID-006N");
+                yield return new TestCaseData("02-999-999").SetName("TestID-007N");
+                yield return new TestCaseData("02-9999-9999").SetName("TestID-008N");
+                yield return new TestCaseData("020-999-9999").SetName("TestID-009N");
+                yield return new TestCaseData("020-9999-999").SetName("TestID-010N");
+                yield return new TestCaseData("060-9999-9999").SetName("TestID-011N");
+                yield return new TestCaseData("969-9999-9999").SetName("TestID-012N");
+                yield return new TestCaseData("060-aaaa-aaaa").SetName("TestID-013N");
+                yield return new TestCaseData("0609-99999-99999").SetName("TestID-014N");
+                yield return new TestCaseData("0609-9999-9999").SetName("TestID-015N");
+                yield return new TestCaseData("060-99999-9999").SetName("TestID-016N");
+                yield return new TestCaseData("060-9999-99999").SetName("TestID-017N");
+                yield return new TestCaseData("06-999-999").SetName("TestID-018N");
+                yield return new TestCaseData("06-9999-9999").SetName("TestID-019N");
+                yield return new TestCaseData("060-999-9999").SetName("TestID-020N");
+                yield return new TestCaseData("060-9999-999").SetName("TestID-021N");
+                yield return new TestCaseData("070-9999-9999").SetName("TestID-022N");
+                yield return new TestCaseData("979-9999-9999").SetName("TestID-023N");
+                yield return new TestCaseData("070-aaaa-aaaa").SetName("TestID-024N");
+                yield return new TestCaseData("0709-99999-99999").SetName("TestID-025N");
+                yield return new TestCaseData("0709-9999-9999").SetName("TestID-026N");
+                yield return new TestCaseData("070-99999-9999").SetName("TestID-027N");
+                yield return new TestCaseData("070-9999-99999").SetName("TestID-028N");
+                yield return new TestCaseData("07-999-999").SetName("TestID-029N");
+                yield return new TestCaseData("07-9999-9999").SetName("TestID-030N");
+                yield return new TestCaseData("070-999-9999").SetName("TestID-031N");
+                yield return new TestCaseData("070-9999-999").SetName("TestID-032N");
+                yield return new TestCaseData("080-9999-9999").SetName("TestID-033N");
+                yield return new TestCaseData("989-9999-9999").SetName("TestID-034N");
+                yield return new TestCaseData("080-aaaa-aaaa").SetName("TestID-035N");
+                yield return new TestCaseData("0809-99999-99999").SetName("TestID-036N");
+                yield return new TestCaseData("0809-9999-9999").SetName("TestID-037N");
+                yield return new TestCaseData("080-99999-9999").SetName("TestID-038N");
+                yield return new TestCaseData("080-9999-99999").SetName("TestID-039N");
+                yield return new TestCaseData("020999999999").SetName("TestID-040N");
+                yield return new TestCaseData("0209999999").SetName("TestID-041N");
+                yield return new TestCaseData("06099999999").SetName("TestID-042N");
+                yield return new TestCaseData("07099999999").SetName("TestID-043N");
+                yield return new TestCaseData("08099999999").SetName("TestID-044N");
+                yield return new TestCaseData("09099999999").SetName("TestID-045N");
+                yield return new TestCaseData("0109999999").SetName("TestID-046N");
+                yield return new TestCaseData("03099999999").SetName("TestID-047N");
+                yield return new TestCaseData("04099999999").SetName("TestID-048N");
+                yield return new TestCaseData("05099999999").SetName("TestID-049N");
+                yield return new TestCaseData("02099999999").SetName("TestID-050N");
+                yield return new TestCaseData("92999999999").SetName("TestID-051N");
+                yield return new TestCaseData("020aaaaaaaa").SetName("TestID-052N");
+                yield return new TestCaseData("020999999999").SetName("TestID-053N");
+                yield return new TestCaseData("0209999999").SetName("TestID-054N");
+                yield return new TestCaseData("06099999999").SetName("TestID-055N");
+                yield return new TestCaseData("07099999999").SetName("TestID-056N");
+                yield return new TestCaseData("08099999999").SetName("TestID-057N");
+                yield return new TestCaseData("09099999999").SetName("TestID-058N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-059L");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-060A");
 
-                yield return new TestCaseData("TestID-000N", "020-9999-9999");
-                yield return new TestCaseData("TestID-001N", "929-9999-9999");
-                yield return new TestCaseData("TestID-002N", "020-aaaa-aaaa");
-                yield return new TestCaseData("TestID-003N", "0209-99999-99999");
-                yield return new TestCaseData("TestID-004N", "0209-99999-99999");
-                yield return new TestCaseData("TestID-005N", "020-99999-9999");
-                yield return new TestCaseData("TestID-006N", "020-99999-9999");
-                yield return new TestCaseData("TestID-007N", "02-999-999");
-                yield return new TestCaseData("TestID-008N", "02-9999-9999");
-                yield return new TestCaseData("TestID-009N", "020-999-9999");
-                yield return new TestCaseData("TestID-010N", "020-9999-999");
-                yield return new TestCaseData("TestID-010N", "060-9999-9999");
-                yield return new TestCaseData("TestID-011N", "969-9999-9999");
-                yield return new TestCaseData("TestID-012N", "060-aaaa-aaaa");
-                yield return new TestCaseData("TestID-013N", "0609-99999-99999");
-                yield return new TestCaseData("TestID-014N", "0609-9999-9999");
-                yield return new TestCaseData("TestID-015N", "060-99999-9999");
-                yield return new TestCaseData("TestID-016N", "060-9999-99999");
-                yield return new TestCaseData("TestID-017N", "06-999-999");
-                yield return new TestCaseData("TestID-018N", "06-9999-9999");
-                yield return new TestCaseData("TestID-019N", "060-999-9999");
-                yield return new TestCaseData("TestID-020N", "060-9999-999");
-                yield return new TestCaseData("TestID-021N", "070-9999-9999");
-                yield return new TestCaseData("TestID-022N", "979-9999-9999");
-                yield return new TestCaseData("TestID-023N", "070-aaaa-aaaa");
-                yield return new TestCaseData("TestID-024N", "0709-99999-99999");
-                yield return new TestCaseData("TestID-025N", "0709-9999-9999");
-                yield return new TestCaseData("TestID-026N", "070-99999-9999");
-                yield return new TestCaseData("TestID-027N", "070-9999-99999");
-                yield return new TestCaseData("TestID-028N", "07-999-999");
-                yield return new TestCaseData("TestID-029N", "07-9999-9999");
-                yield return new TestCaseData("TestID-030N", "070-999-9999");
-                yield return new TestCaseData("TestID-031N", "070-9999-999");
-                yield return new TestCaseData("TestID-032N", "080-9999-9999");
-                yield return new TestCaseData("TestID-033N", "989-9999-9999");
-                yield return new TestCaseData("TestID-034N", "080-aaaa-aaaa");
-                yield return new TestCaseData("TestID-035N", "0809-99999-99999");
-                yield return new TestCaseData("TestID-036N", "0809-9999-9999");
-                yield return new TestCaseData("TestID-037N", "080-99999-9999");
-                yield return new TestCaseData("TestID-038N", "080-9999-99999");
-                yield return new TestCaseData("TestID-039N", "08-999-999");
-                yield return new TestCaseData("TestID-040N", "08-9999-9999");
-                yield return new TestCaseData("TestID-041N", "080-999-9999");
-                yield return new TestCaseData("TestID-042N", "080-9999-999");
-                yield return new TestCaseData("TestID-043N", "090-9999-9999");
-                yield return new TestCaseData("TestID-044N", "999-9999-9999");
-                yield return new TestCaseData("TestID-045N", "090-aaaa-aaaa");
-                yield return new TestCaseData("TestID-046N", "0909-99999-99999");
-                yield return new TestCaseData("TestID-047N", "0909-9999-9999");
-                yield return new TestCaseData("TestID-048N", "090-99999-9999");
-                yield return new TestCaseData("TestID-049N", "02099999999");
-                yield return new TestCaseData("TestID-050N", "92999999999");
-                yield return new TestCaseData("TestID-051N", "020aaaaaaaa");
-                yield return new TestCaseData("TestID-052N", "020999999999");
-                yield return new TestCaseData("TestID-053N", "0209999999");
-                yield return new TestCaseData("TestID-054N", "06099999999");
-                yield return new TestCaseData("TestID-055N", "07099999999");
-                yield return new TestCaseData("TestID-056N", "08099999999");
-                yield return new TestCaseData("TestID-057N", "09099999999");
-                yield return new TestCaseData("TestID-058L", string.Empty);
-                yield return new TestCaseData("TestID-059A", null).Throws(typeof(ArgumentNullException));
             }
         }
 
@@ -996,69 +964,67 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "020aaaaaaaa");
-                yield return new TestCaseData("TestID-001N", "92999999999");
-                yield return new TestCaseData("TestID-002N", "020-aaaa-aaaa");
-                yield return new TestCaseData("TestID-003N", "020aaaaaaaa");
-                yield return new TestCaseData("TestID-004N", "0209-99999-99999");
-                yield return new TestCaseData("TestID-005N", "020-99999-9999");
-                yield return new TestCaseData("TestID-006N", "020-99999-9999");
-                yield return new TestCaseData("TestID-007N", "02-999-999");
-                yield return new TestCaseData("TestID-008N", "02-9999-9999");
-                yield return new TestCaseData("TestID-009N", "020-999-9999");
-                yield return new TestCaseData("TestID-010N", "020-9999-999");
-                yield return new TestCaseData("TestID-010N", "060-9999-9999");
-                yield return new TestCaseData("TestID-011N", "969-9999-9999");
-                yield return new TestCaseData("TestID-012N", "060-aaaa-aaaa");
-                yield return new TestCaseData("TestID-013N", "0609-99999-99999");
-                yield return new TestCaseData("TestID-014N", "0609-9999-9999");
-                yield return new TestCaseData("TestID-015N", "060-99999-9999");
-                yield return new TestCaseData("TestID-016N", "060-9999-99999");
-                yield return new TestCaseData("TestID-017N", "06-999-999");
-                yield return new TestCaseData("TestID-018N", "06-9999-9999");
-                yield return new TestCaseData("TestID-019N", "060-999-9999");
-                yield return new TestCaseData("TestID-020N", "060-9999-999");
-                yield return new TestCaseData("TestID-021N", "070-9999-9999");
-                yield return new TestCaseData("TestID-022N", "979-9999-9999");
-                yield return new TestCaseData("TestID-023N", "070-aaaa-aaaa");
-                yield return new TestCaseData("TestID-024N", "0709-99999-99999");
-                yield return new TestCaseData("TestID-025N", "0709-9999-9999");
-                yield return new TestCaseData("TestID-026N", "070-99999-9999");
-                yield return new TestCaseData("TestID-027N", "070-9999-99999");
-                yield return new TestCaseData("TestID-028N", "07-999-999");
-                yield return new TestCaseData("TestID-029N", "07-9999-9999");
-                yield return new TestCaseData("TestID-030N", "070-999-9999");
-                yield return new TestCaseData("TestID-031N", "070-9999-999");
-                yield return new TestCaseData("TestID-032N", "080-9999-9999");
-                yield return new TestCaseData("TestID-033N", "989-9999-9999");
-                yield return new TestCaseData("TestID-034N", "080-aaaa-aaaa");
-                yield return new TestCaseData("TestID-035N", "0809-99999-99999");
-                yield return new TestCaseData("TestID-036N", "0809-9999-9999");
-                yield return new TestCaseData("TestID-037N", "080-99999-9999");
-                yield return new TestCaseData("TestID-038N", "080-9999-99999");
-                yield return new TestCaseData("TestID-039N", "020999999999");
-                yield return new TestCaseData("TestID-040N", "0209999999");
-                yield return new TestCaseData("TestID-041N", "06099999999");
-                yield return new TestCaseData("TestID-042N", "07099999999");
-                yield return new TestCaseData("TestID-043N", "08099999999");
-                yield return new TestCaseData("TestID-044N", "09099999999");
-                yield return new TestCaseData("TestID-045N", "0109999999");
-                yield return new TestCaseData("TestID-046N", "03099999999");
-                yield return new TestCaseData("TestID-047N", "04099999999");
-                yield return new TestCaseData("TestID-048N", "05099999999");
-                yield return new TestCaseData("TestID-049N", "02099999999");
-                yield return new TestCaseData("TestID-050N", "92999999999");
-                yield return new TestCaseData("TestID-051N", "020aaaaaaaa");
-                yield return new TestCaseData("TestID-052N", "020999999999");
-                yield return new TestCaseData("TestID-053N", "0209999999");
-                yield return new TestCaseData("TestID-054N", "06099999999");
-                yield return new TestCaseData("TestID-055N", "07099999999");
-                yield return new TestCaseData("TestID-056N", "08099999999");
-                yield return new TestCaseData("TestID-057N", "09099999999");
-                yield return new TestCaseData("TestID-058L", string.Empty);
-                yield return new TestCaseData("TestID-059A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("020aaaaaaaa").SetName("TestID-000N");
+                yield return new TestCaseData("92999999999").SetName("TestID-001N");
+                yield return new TestCaseData("020-aaaa-aaaa").SetName("TestID-002N");
+                yield return new TestCaseData("020aaaaaaaa").SetName("TestID-003N");
+                yield return new TestCaseData("0209-99999-99999").SetName("TestID-004N");
+                yield return new TestCaseData("020-99999-9999").SetName("TestID-005N");
+                yield return new TestCaseData("020-99999-9999").SetName("TestID-006N");
+                yield return new TestCaseData("02-999-999").SetName("TestID-007N");
+                yield return new TestCaseData("02-9999-9999").SetName("TestID-008N");
+                yield return new TestCaseData("020-999-9999").SetName("TestID-009N");
+                yield return new TestCaseData("020-9999-999").SetName("TestID-010N");
+                yield return new TestCaseData("060-9999-9999").SetName("TestID-011N");
+                yield return new TestCaseData("969-9999-9999").SetName("TestID-012N");
+                yield return new TestCaseData("060-aaaa-aaaa").SetName("TestID-013N");
+                yield return new TestCaseData("0609-99999-99999").SetName("TestID-014N");
+                yield return new TestCaseData("0609-9999-9999").SetName("TestID-015N");
+                yield return new TestCaseData("060-99999-9999").SetName("TestID-016N");
+                yield return new TestCaseData("060-9999-99999").SetName("TestID-017N");
+                yield return new TestCaseData("06-999-999").SetName("TestID-018N");
+                yield return new TestCaseData("06-9999-9999").SetName("TestID-019N");
+                yield return new TestCaseData("060-999-9999").SetName("TestID-020N");
+                yield return new TestCaseData("060-9999-999").SetName("TestID-021N");
+                yield return new TestCaseData("070-9999-9999").SetName("TestID-022N");
+                yield return new TestCaseData("979-9999-9999").SetName("TestID-023N");
+                yield return new TestCaseData("070-aaaa-aaaa").SetName("TestID-024N");
+                yield return new TestCaseData("0709-99999-99999").SetName("TestID-025N");
+                yield return new TestCaseData("0709-9999-9999").SetName("TestID-026N");
+                yield return new TestCaseData("070-99999-9999").SetName("TestID-027N");
+                yield return new TestCaseData("070-9999-99999").SetName("TestID-028N");
+                yield return new TestCaseData("07-999-999").SetName("TestID-029N");
+                yield return new TestCaseData("07-9999-9999").SetName("TestID-030N");
+                yield return new TestCaseData("070-999-9999").SetName("TestID-031N");
+                yield return new TestCaseData("070-9999-999").SetName("TestID-032N");
+                yield return new TestCaseData("080-9999-9999").SetName("TestID-033N");
+                yield return new TestCaseData("989-9999-9999").SetName("TestID-034N");
+                yield return new TestCaseData("080-aaaa-aaaa").SetName("TestID-035N");
+                yield return new TestCaseData("0809-99999-99999").SetName("TestID-036N");
+                yield return new TestCaseData("0809-9999-9999").SetName("TestID-037N");
+                yield return new TestCaseData("080-99999-9999").SetName("TestID-038N");
+                yield return new TestCaseData("080-9999-99999").SetName("TestID-039N");
+                yield return new TestCaseData("020999999999").SetName("TestID-040N");
+                yield return new TestCaseData("0209999999").SetName("TestID-041N");
+                yield return new TestCaseData("06099999999").SetName("TestID-042N");
+                yield return new TestCaseData("07099999999").SetName("TestID-043N");
+                yield return new TestCaseData("08099999999").SetName("TestID-044N");
+                yield return new TestCaseData("09099999999").SetName("TestID-045N");
+                yield return new TestCaseData("0109999999").SetName("TestID-046N");
+                yield return new TestCaseData("03099999999").SetName("TestID-047N");
+                yield return new TestCaseData("04099999999").SetName("TestID-048N");
+                yield return new TestCaseData("05099999999").SetName("TestID-049N");
+                yield return new TestCaseData("02099999999").SetName("TestID-050N");
+                yield return new TestCaseData("92999999999").SetName("TestID-051N");
+                yield return new TestCaseData("020aaaaaaaa").SetName("TestID-052N");
+                yield return new TestCaseData("020999999999").SetName("TestID-053N");
+                yield return new TestCaseData("0209999999").SetName("TestID-054N");
+                yield return new TestCaseData("06099999999").SetName("TestID-055N");
+                yield return new TestCaseData("07099999999").SetName("TestID-056N");
+                yield return new TestCaseData("08099999999").SetName("TestID-057N");
+                yield return new TestCaseData("09099999999").SetName("TestID-058N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-059L");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-060A");
             }
         }
 
@@ -1070,43 +1036,41 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "050-9999-9999");
-                yield return new TestCaseData("TestID-001N", "959-9999-9999");
-                yield return new TestCaseData("TestID-002N", "050-aaaa-aaaa");
-                yield return new TestCaseData("TestID-003N", "0509-99999-99999");
-                yield return new TestCaseData("TestID-004N", "0509-9999-9999");
-                yield return new TestCaseData("TestID-005N", "050-99999-9999");
-                yield return new TestCaseData("TestID-006N", "050-9999-99999");
-                yield return new TestCaseData("TestID-007N", "05-999-999");
-                yield return new TestCaseData("TestID-008N", "05-9999-9999");
-                yield return new TestCaseData("TestID-009N", "050-999-9999");
-                yield return new TestCaseData("TestID-010N", "050-9999-999");
-                yield return new TestCaseData("TestID-011N", "9999999999999");
-                yield return new TestCaseData("TestID-012N", "010-9999-9999");
-                yield return new TestCaseData("TestID-013N", "020-9999-9999");
-                yield return new TestCaseData("TestID-014N", "030-9999-9999");
-                yield return new TestCaseData("TestID-015N", "040-9999-9999");
-                yield return new TestCaseData("TestID-016N", "060-9999-9999");
-                yield return new TestCaseData("TestID-017N", "070-9999-9999");
-                yield return new TestCaseData("TestID-018N", "080-9999-9999");
-                yield return new TestCaseData("TestID-019N", "090-9999-9999");
-                yield return new TestCaseData("TestID-020N", "05099999999");
-                yield return new TestCaseData("TestID-021N", "95999999999");
-                yield return new TestCaseData("TestID-022N", "050aaaaaaaa");
-                yield return new TestCaseData("TestID-023N", "050999999999");
-                yield return new TestCaseData("TestID-024N", "0509999999");
-                yield return new TestCaseData("TestID-025N", "01099999999");
-                yield return new TestCaseData("TestID-026N", "02099999999");
-                yield return new TestCaseData("TestID-027N", "03099999999");
-                yield return new TestCaseData("TestID-028N", "04099999999");
-                yield return new TestCaseData("TestID-029N", "06099999999");
-                yield return new TestCaseData("TestID-030N", "07099999999");
-                yield return new TestCaseData("TestID-031N", "08099999999");
-                yield return new TestCaseData("TestID-032N", "09099999999");
-                yield return new TestCaseData("TestID-033L", string.Empty);
-                yield return new TestCaseData("TestID-034A", null).Throws(typeof(ArgumentNullException));
+                 yield return new TestCaseData("050-9999-9999").SetName("TestID-000N");
+                yield return new TestCaseData("959-9999-9999").SetName("TestID-001N");
+                yield return new TestCaseData("050-aaaa-aaaa").SetName("TestID-002N");
+                yield return new TestCaseData("0509-99999-99999").SetName("TestID-003N");
+                yield return new TestCaseData("0509-9999-9999").SetName("TestID-004N");
+                yield return new TestCaseData("050-99999-9999").SetName("TestID-005N");
+                yield return new TestCaseData("050-9999-99999").SetName("TestID-006N");
+                yield return new TestCaseData("05-999-999").SetName("TestID-007N");
+                yield return new TestCaseData("05-9999-9999").SetName("TestID-008N");
+                yield return new TestCaseData("050-999-9999").SetName("TestID-009N");
+                yield return new TestCaseData("050-9999-999").SetName("TestID-010N");
+                yield return new TestCaseData("9999999999999").SetName("TestID-011N");
+                yield return new TestCaseData("010-9999-9999").SetName("TestID-012N");
+                yield return new TestCaseData("020-9999-9999").SetName("TestID-013N");
+                yield return new TestCaseData("030-9999-9999").SetName("TestID-014N");
+                yield return new TestCaseData("040-9999-9999").SetName("TestID-015N");
+                yield return new TestCaseData("060-9999-9999").SetName("TestID-016N");
+                yield return new TestCaseData("070-9999-9999").SetName("TestID-017N");
+                yield return new TestCaseData("080-9999-9999").SetName("TestID-018N");
+                yield return new TestCaseData("090-9999-9999").SetName("TestID-019N");
+                yield return new TestCaseData("05099999999").SetName("TestID-020N");
+                yield return new TestCaseData("95999999999").SetName("TestID-021N");
+                yield return new TestCaseData("050aaaaaaaa").SetName("TestID-022N");
+                yield return new TestCaseData("050999999999").SetName("TestID-023N");
+                yield return new TestCaseData("0509999999").SetName("TestID-024N");
+                yield return new TestCaseData("01099999999").SetName("TestID-025N");
+                yield return new TestCaseData("02099999999").SetName("TestID-026N");
+                yield return new TestCaseData("03099999999").SetName("TestID-027N");
+                yield return new TestCaseData("04099999999").SetName("TestID-028N");
+                yield return new TestCaseData("06099999999").SetName("TestID-029N");
+                yield return new TestCaseData("07099999999").SetName("TestID-030N");
+                yield return new TestCaseData("08099999999").SetName("TestID-031N");
+                yield return new TestCaseData("09099999999").SetName("TestID-032N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-033L");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-034A");
             }
         }
 
@@ -1119,43 +1083,41 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "050-9999-9999");
-                yield return new TestCaseData("TestID-001N", "959-9999-9999");
-                yield return new TestCaseData("TestID-002N", "050-aaaa-aaaa");
-                yield return new TestCaseData("TestID-003N", "0509-99999-99999");
-                yield return new TestCaseData("TestID-004N", "0509-9999-9999");
-                yield return new TestCaseData("TestID-005N", "050-99999-9999");
-                yield return new TestCaseData("TestID-006N", "050-9999-99999");
-                yield return new TestCaseData("TestID-007N", "05-999-999");
-                yield return new TestCaseData("TestID-008N", "05-9999-9999");
-                yield return new TestCaseData("TestID-009N", "050-999-9999");
-                yield return new TestCaseData("TestID-010N", "050-9999-999");
-                yield return new TestCaseData("TestID-011N", "9999999999999");
-                yield return new TestCaseData("TestID-012N", "010-9999-9999");
-                yield return new TestCaseData("TestID-013N", "020-9999-9999");
-                yield return new TestCaseData("TestID-014N", "030-9999-9999");
-                yield return new TestCaseData("TestID-015N", "040-9999-9999");
-                yield return new TestCaseData("TestID-016N", "060-9999-9999");
-                yield return new TestCaseData("TestID-017N", "070-9999-9999");
-                yield return new TestCaseData("TestID-018N", "080-9999-9999");
-                yield return new TestCaseData("TestID-019N", "090-9999-9999");
-                yield return new TestCaseData("TestID-020N", "95-999999999");
-                yield return new TestCaseData("TestID-021N", "95999999999");
-                yield return new TestCaseData("TestID-022N", "050aaaaaaaa");
-                yield return new TestCaseData("TestID-023N", "050999999999");
-                yield return new TestCaseData("TestID-024N", "0509999999");
-                yield return new TestCaseData("TestID-025N", "01099999999");
-                yield return new TestCaseData("TestID-026N", "02099999999");
-                yield return new TestCaseData("TestID-027N", "03099999999");
-                yield return new TestCaseData("TestID-028N", "04099999999");
-                yield return new TestCaseData("TestID-029N", "06099999999");
-                yield return new TestCaseData("TestID-030N", "07099999999");
-                yield return new TestCaseData("TestID-031N", "08099999999");
-                yield return new TestCaseData("TestID-032N", "09099999999");
-                yield return new TestCaseData("TestID-033L", string.Empty);
-                yield return new TestCaseData("TestID-034A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("050-9999-9999").SetName("TestID-000N");
+                yield return new TestCaseData("959-9999-9999").SetName("TestID-001N");
+                yield return new TestCaseData("050-aaaa-aaaa").SetName("TestID-002N");
+                yield return new TestCaseData("0509-99999-99999").SetName("TestID-003N");
+                yield return new TestCaseData("0509-9999-9999").SetName("TestID-004N");
+                yield return new TestCaseData("050-99999-9999").SetName("TestID-005N");
+                yield return new TestCaseData("050-9999-99999").SetName("TestID-006N");
+                yield return new TestCaseData("05-999-999").SetName("TestID-007N");
+                yield return new TestCaseData("05-9999-9999").SetName("TestID-008N");
+                yield return new TestCaseData("050-999-9999").SetName("TestID-009N");
+                yield return new TestCaseData("050-9999-999").SetName("TestID-010N");
+                yield return new TestCaseData("9999999999999").SetName("TestID-011N");
+                yield return new TestCaseData("010-9999-9999").SetName("TestID-012N");
+                yield return new TestCaseData("020-9999-9999").SetName("TestID-013N");
+                yield return new TestCaseData("030-9999-9999").SetName("TestID-014N");
+                yield return new TestCaseData("040-9999-9999").SetName("TestID-015N");
+                yield return new TestCaseData("060-9999-9999").SetName("TestID-016N");
+                yield return new TestCaseData("070-9999-9999").SetName("TestID-017N");
+                yield return new TestCaseData("080-9999-9999").SetName("TestID-018N");
+                yield return new TestCaseData("090-9999-9999").SetName("TestID-019N");
+                yield return new TestCaseData("95-999999999").SetName("TestID-020N");
+                yield return new TestCaseData("95999999999").SetName("TestID-021N");
+                yield return new TestCaseData("050aaaaaaaa").SetName("TestID-022N");
+                yield return new TestCaseData("050999999999").SetName("TestID-023N");
+                yield return new TestCaseData("0509999999").SetName("TestID-024N");
+                yield return new TestCaseData("01099999999").SetName("TestID-025N");
+                yield return new TestCaseData("02099999999").SetName("TestID-026N");
+                yield return new TestCaseData("03099999999").SetName("TestID-027N");
+                yield return new TestCaseData("04099999999").SetName("TestID-028N");
+                yield return new TestCaseData("06099999999").SetName("TestID-029N");
+                yield return new TestCaseData("07099999999").SetName("TestID-030N");
+                yield return new TestCaseData("08099999999").SetName("TestID-031N");
+                yield return new TestCaseData("09099999999").SetName("TestID-032N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-033L");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-034A");
             }
         }
 
@@ -1167,43 +1129,41 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "06-999-999");
-                yield return new TestCaseData("TestID-001N", "959-9999-9999");
-                yield return new TestCaseData("TestID-002N", "050-aaaa-aaaa");
-                yield return new TestCaseData("TestID-003N", "0509-99999-99999");
-                yield return new TestCaseData("TestID-004N", "0509-9999-9999");
-                yield return new TestCaseData("TestID-005N", "050-99999-9999");
-                yield return new TestCaseData("TestID-006N", "050-9999-99999");
-                yield return new TestCaseData("TestID-007N", "05-999-999");
-                yield return new TestCaseData("TestID-008N", "05-9999-9999");
-                yield return new TestCaseData("TestID-009N", "050-999-9999");
-                yield return new TestCaseData("TestID-010N", "050-9999-999");
-                yield return new TestCaseData("TestID-011N", "9999999999999");
-                yield return new TestCaseData("TestID-012N", "010-9999-9999");
-                yield return new TestCaseData("TestID-013N", "020-9999-9999");
-                yield return new TestCaseData("TestID-014N", "030-9999-9999");
-                yield return new TestCaseData("TestID-015N", "040-9999-9999");
-                yield return new TestCaseData("TestID-016N", "060-9999-9999");
-                yield return new TestCaseData("TestID-017N", "070-9999-9999");
-                yield return new TestCaseData("TestID-018N", "080-9999-9999");
-                yield return new TestCaseData("TestID-019N", "090-9999-9999");
-                yield return new TestCaseData("TestID-020N", "05099999999");
-                yield return new TestCaseData("TestID-021N", "95999999999");
-                yield return new TestCaseData("TestID-022N", "050aaaaaaaa");
-                yield return new TestCaseData("TestID-023N", "050999999999");
-                yield return new TestCaseData("TestID-024N", "0509999999");
-                yield return new TestCaseData("TestID-025N", "01099999999");
-                yield return new TestCaseData("TestID-026N", "02099999999");
-                yield return new TestCaseData("TestID-027N", "03099999999");
-                yield return new TestCaseData("TestID-028N", "04099999999");
-                yield return new TestCaseData("TestID-029N", "06099999999");
-                yield return new TestCaseData("TestID-030N", "07099999999");
-                yield return new TestCaseData("TestID-031N", "08099999999");
-                yield return new TestCaseData("TestID-032N", "09099999999");
-                yield return new TestCaseData("TestID-033L", string.Empty);
-                yield return new TestCaseData("TestID-034A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("06-999-999").SetName("TestID-000N");
+                yield return new TestCaseData("959-9999-9999").SetName("TestID-001N");
+                yield return new TestCaseData("050-aaaa-aaaa").SetName("TestID-002N");
+                yield return new TestCaseData("0509-99999-99999").SetName("TestID-003N");
+                yield return new TestCaseData("0509-9999-9999").SetName("TestID-004N");
+                yield return new TestCaseData("050-99999-9999").SetName("TestID-005N");
+                yield return new TestCaseData("050-9999-99999").SetName("TestID-006N");
+                yield return new TestCaseData("05-999-999").SetName("TestID-007N");
+                yield return new TestCaseData("05-9999-9999").SetName("TestID-008N");
+                yield return new TestCaseData("050-999-9999").SetName("TestID-009N");
+                yield return new TestCaseData("050-9999-999").SetName("TestID-010N");
+                yield return new TestCaseData("9999999999999").SetName("TestID-011N");
+                yield return new TestCaseData("010-9999-9999").SetName("TestID-012N");
+                yield return new TestCaseData("020-9999-9999").SetName("TestID-013N");
+                yield return new TestCaseData("030-9999-9999").SetName("TestID-014N");
+                yield return new TestCaseData("040-9999-9999").SetName("TestID-015N");
+                yield return new TestCaseData("060-9999-9999").SetName("TestID-016N");
+                yield return new TestCaseData("070-9999-9999").SetName("TestID-017N");
+                yield return new TestCaseData("080-9999-9999").SetName("TestID-018N");
+                yield return new TestCaseData("090-9999-9999").SetName("TestID-019N");
+                yield return new TestCaseData("05099999999").SetName("TestID-020N");
+                yield return new TestCaseData("95999999999").SetName("TestID-021N");
+                yield return new TestCaseData("050aaaaaaaa").SetName("TestID-022N");
+                yield return new TestCaseData("050999999999").SetName("TestID-023N");
+                yield return new TestCaseData("0509999999").SetName("TestID-024N");
+                yield return new TestCaseData("01099999999").SetName("TestID-025N");
+                yield return new TestCaseData("02099999999").SetName("TestID-026N");
+                yield return new TestCaseData("03099999999").SetName("TestID-027N");
+                yield return new TestCaseData("04099999999").SetName("TestID-028N");
+                yield return new TestCaseData("06099999999").SetName("TestID-029N");
+                yield return new TestCaseData("07099999999").SetName("TestID-030N");
+                yield return new TestCaseData("08099999999").SetName("TestID-031N");
+                yield return new TestCaseData("09099999999").SetName("TestID-032N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-033L");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-034A");
             }
         }
 
@@ -1214,10 +1174,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpZipCodeTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpZipCodeTest")]
-        public static void IsJpZipCodeTest(string testCaseID, string str)
+        public static void IsJpZipCodeTest(string str)
         {
             try
             {
@@ -1229,7 +1188,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1237,10 +1196,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpZipCode_HyphenTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpZipCodeHyphenTest")]
-        public static void IsJpZipCode_HyphenTest(string testCaseID, string str)
+        public static void IsJpZipCode_HyphenTest(string str)
         {
             try
             {
@@ -1252,7 +1210,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1260,10 +1218,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpZipCode_NoHyphenTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpZipCodeNoHyphenTest")]
-        public static void IsJpZipCode_NoHyphenTest(string testCaseID, string str)
+        public static void IsJpZipCode_NoHyphenTest(string str)
         {
             try
             {
@@ -1275,7 +1232,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1283,10 +1240,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpZipCode7Test Method
         /// </summary>
-        /// <param name="testCaseID"></param>
         /// <param name="str"></param>
         [TestCaseSource("TestIsJpZipCode7Test")]
-        public static void IsJpZipCode7Test(string testCaseID, string str)
+        public static void IsJpZipCode7Test(string str)
         {
             try
             {
@@ -1298,7 +1254,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1306,10 +1262,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpZipCode7_HyphenTest Methos
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpZipCode7HyphenTest")]
-        public static void IsJpZipCode7_HyphenTest(string testCaseID, string str)
+        public static void IsJpZipCode7_HyphenTest(string str)
         {
             try
             {
@@ -1321,7 +1276,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1329,10 +1284,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpZipCode7_NoHyphenTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpZipCode7NoHyphenTest")]
-        public static void IsJpZipCode7_NoHyphenTest(string testCaseID, string str)
+        public static void IsJpZipCode7_NoHyphenTest(string str)
         {
             try
             {
@@ -1344,7 +1298,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1352,10 +1306,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpZipCode5Test Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpZipCode5Test")]
-        public static void IsJpZipCode5Test(string testCaseID, string str)
+        public static void IsJpZipCode5Test(string str)
         {
             try
             {
@@ -1367,7 +1320,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1375,10 +1328,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpZipCode5_HyphenTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpZipCode5HyphenTest")]
-        public static void IsJpZipCode5_HyphenTest(string testCaseID, string str)
+        public static void IsJpZipCode5_HyphenTest(string str)
         {
             try
             {
@@ -1390,18 +1342,17 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
         /// <summary>
         /// IsJpZipCode5_NoHyphenTest Method
-        /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// </summary>       
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpZipCode5NoHyphenTest")]
-        public static void IsJpZipCode5_NoHyphenTest(string testCaseID, string str)
+        public static void IsJpZipCode5_NoHyphenTest(string str)
         {
             try
             {
@@ -1413,7 +1364,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1421,10 +1372,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpTelephoneNumberTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpTelephoneNumberTest")]
-        public static void IsJpTelephoneNumberTest(string testCaseID, string str)
+        public static void IsJpTelephoneNumberTest(string str)
         {
             try
             {
@@ -1436,7 +1386,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1444,10 +1394,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpTelephoneNumber_HyphenTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpTelephoneNumberHyphenTest")]
-        public static void IsJpTelephoneNumber_HyphenTest(string testCaseID, string str)
+        public static void IsJpTelephoneNumber_HyphenTest(string str)
         {
             try
             {
@@ -1459,7 +1408,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1467,10 +1416,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpTelephoneNumber_NoHyphenTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpTelephoneNumberNoHyphenTest")]
-        public static void IsJpTelephoneNumber_NoHyphenTest(string testCaseID, string str)
+        public static void IsJpTelephoneNumber_NoHyphenTest(string str)
         {
             try
             {
@@ -1483,7 +1431,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1491,10 +1439,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpFixedLinePhoneNumberTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpFixedLinePhoneNumberTest")]
-        public static void IsJpFixedLinePhoneNumberTest(string testCaseID, string str)
+        public static void IsJpFixedLinePhoneNumberTest(string str)
         {
             try
             {
@@ -1506,7 +1453,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1514,10 +1461,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpFixedLinePhoneNumber_HyphenTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpFixedLinePhoneNumberHyphenTest")]
-        public static void IsJpFixedLinePhoneNumber_HyphenTest(string testCaseID, string str)
+        public static void IsJpFixedLinePhoneNumber_HyphenTest(string str)
         {
             try
             {
@@ -1529,7 +1475,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1537,10 +1483,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpFixedLinePhoneNumber_NoHyphenTest Mehod
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpFixedLinePhoneNumberNoHyphenTest")]
-        public static void IsJpFixedLinePhoneNumber_NoHyphenTest(string testCaseID, string str)
+        public static void IsJpFixedLinePhoneNumber_NoHyphenTest(string str)
         {
             try
             {
@@ -1552,7 +1497,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1560,10 +1505,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpCellularPhoneNumberTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpCellularPhoneNumberTest")]
-        public static void IsJpCellularPhoneNumberTest(string testCaseID, string str)
+        public static void IsJpCellularPhoneNumberTest(string str)
         {
             try
             {
@@ -1575,7 +1519,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1583,10 +1527,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpCellularPhoneNumber_HyphenTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpCellularPhoneNumberHyphenTest")]
-        public static void IsJpCellularPhoneNumber_HyphenTest(string testCaseID, string str)
+        public static void IsJpCellularPhoneNumber_HyphenTest(string str)
         {
             try
             {
@@ -1598,7 +1541,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1606,10 +1549,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpCellularPhoneNumber_NoHyphenTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpCellularPhoneNumberNoHyphenTest")]
-        public static void IsJpCellularPhoneNumber_NoHyphenTest(string testCaseID, string str)
+        public static void IsJpCellularPhoneNumber_NoHyphenTest(string str)
         {
             try
             {
@@ -1621,7 +1563,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1629,10 +1571,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpIpPhoneNumberTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpIpPhoneNumberTest")]
-        public static void IsJpIpPhoneNumberTest(string testCaseID, string str)
+        public static void IsJpIpPhoneNumberTest(string str)
         {
             try
             {
@@ -1644,7 +1585,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1652,10 +1593,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpIpPhoneNumber_HyphenTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpIpPhoneNumberHyphenTest")]
-        public static void IsJpIpPhoneNumber_HyphenTest(string testCaseID, string str)
+        public static void IsJpIpPhoneNumber_HyphenTest(string str)
         {
             try
             {
@@ -1667,7 +1607,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -1675,10 +1615,9 @@ namespace Public.Test.Str
         /// <summary>
         /// IsJpIpPhoneNumber_NoHyphenTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestIsJpIpPhoneNumberNoHyphenTest")]
-        public static void IsJpIpPhoneNumber_NoHyphenTest(string testCaseID, string str)
+        public static void IsJpIpPhoneNumber_NoHyphenTest(string str)
         {
             try
             {
@@ -1690,7 +1629,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
