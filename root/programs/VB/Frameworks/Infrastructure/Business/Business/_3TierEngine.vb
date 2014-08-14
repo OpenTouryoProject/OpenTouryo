@@ -81,7 +81,7 @@ Namespace Touryo.Infrastructure.Business.Business
 		''' <summary>データ件数取得SQLテンプレート</summary>
 		Private Const SELECT_COUNT_SQL_TEMPLATE As String = "SELECT COUNT(*) FROM {0} {1}"
 
-        ''' <summary>データ件数取得SQLテンプレート</summary>
+        ''' <summary>Select count query for PostgreSQL</summary>
         Private Const SELECT_COUNT_POSTGRESQL_TEMPLATE As String = "SELECT COUNT(*) FROM ""{0}"" {1}"
 
 		''' <summary>データ取得SQLテンプレート（DBMSによって可変となる）</summary>
@@ -271,7 +271,7 @@ Namespace Touryo.Infrastructure.Business.Business
 			End If
 
             If parameterValue.DBMSType = DbEnum.DBMSType.PstGrS Then
-			' SQLを設定して
+			' Set the Query for PostgreSQL database
                 cmnDao.SQLText = String.Format(SELECT_COUNT_POSTGRESQL_TEMPLATE, s & Convert.ToString(parameterValue.TableName) & e, _
                                                whereSQL).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f)
             ElseIf parameterValue.DBMSType = DbEnum.DBMSType.MySQL Then
@@ -316,7 +316,7 @@ Namespace Touryo.Infrastructure.Business.Business
 			Dim e As String = ""
             ' 囲い記号開始
             Dim f As String = ""
-			' 囲い記号終了
+			' For supporting type casting in PostgreSQL
 			' テンプレート、囲い文字の選択
 			If parameterValue.DBMSType = DbEnum.DBMSType.SQLServer Then
 				selectPagingSqlTemplate = SELECT_PAGING_SQL_TEMPLATE_SQL_SERVER
