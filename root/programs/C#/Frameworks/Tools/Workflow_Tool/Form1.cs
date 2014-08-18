@@ -250,15 +250,14 @@ namespace Workflow_Tool
                     && !string.IsNullOrEmpty(this.txtDearSirPTitleId.Text))
                 {
                     dt1 = wf.GetWfRequest(
-                        this.txtSubSystemId.Text, this.txtWorkflowName.Text,
-                        decimal.Parse(this.txtDearSirUID.Text),
-                        int.Parse(this.txtDearSirPTitleId.Text));
+                        this.txtSubSystemId.Text, this.txtWorkflowName.Text, this.txtWorkflowControlNo.Text,
+                        decimal.Parse(this.txtDearSirUID.Text), int.Parse(this.txtDearSirPTitleId.Text));
                 }
                 // 個人ID
                 if (!string.IsNullOrEmpty(this.txtUserID.Text))
                 {
                     dt2 = wf.GetWfRequest(
-                        this.txtSubSystemId.Text, this.txtWorkflowName.Text,
+                        this.txtSubSystemId.Text, this.txtWorkflowName.Text, this.txtWorkflowControlNo.Text,
                         decimal.Parse(this.txtUserID.Text), null);
                 }
 
@@ -345,7 +344,7 @@ namespace Workflow_Tool
                 // GetProcessingWfRequest
                 Workflow wf = new Workflow(this._dam);
                 this.dataGridView1.DataSource = wf.GetProcessingWfRequest(
-                    this.txtSubSystemId.Text, this.txtWorkflowName.Text, decimal.Parse(this.txtUserID.Text));
+                    this.txtSubSystemId.Text, this.txtWorkflowName.Text, this.txtWorkflowControlNo.Text, decimal.Parse(this.txtUserID.Text));
 
                 this._dam.CommitTransaction();
             }
@@ -550,6 +549,8 @@ namespace Workflow_Tool
 
         #endregion
 
+        #region 活性・非活性制御
+
         /// <summary>活性・非活性制御</summary>
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -715,5 +716,7 @@ namespace Workflow_Tool
                     break;
             }
         }
+
+        #endregion
     }
 }

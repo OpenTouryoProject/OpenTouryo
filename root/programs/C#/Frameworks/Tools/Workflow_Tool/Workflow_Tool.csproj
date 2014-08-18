@@ -33,8 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Business">
-      <HintPath>..\..\Infrastructure\Build\Business.dll</HintPath>
+    <Reference Include="Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\Business.dll</HintPath>
     </Reference>
     <Reference Include="Framework">
       <HintPath>..\..\Infrastructure\Build\Framework.dll</HintPath>
@@ -153,6 +154,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Sql\GetReplyWorkflow.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Sql\GetTurnBackWorkflow2.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

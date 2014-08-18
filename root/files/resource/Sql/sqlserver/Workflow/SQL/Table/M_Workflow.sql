@@ -17,18 +17,18 @@ GO
 CREATE TABLE [dbo].[M_Workflow](
 	[Id] [decimal](10, 0) IDENTITY (1, 1) NOT NULL,
 	[SubSystemId] [char](4) NOT NULL,
-	[WorkflowName] [varchar](50) NOT NULL,
-	[WfPositionId] [int] NOT NULL,
+	[WorkflowName] [nvarchar](10) NOT NULL,
+	[WfPositionId] [nvarchar](10) NOT NULL,
 	[WorkflowNo] [int] NULL ,
 	[FromUserId] [decimal](10, 0) NULL,
-	[ActionType] [varchar](30) NOT NULL,
+	[ActionType] [nvarchar](30) NOT NULL,
 	[ToUserId] [decimal](10, 0) NULL,
 	[ToUserPositionTitlesId] [int] NULL,
-	[NextWfPositionId] [int] NULL,
+	[NextWfPositionId] [nvarchar](10) NULL,
 	[NextWorkflowNo] [int] NULL ,
 	[CorrespondOfReplyWorkflow] [int] NULL ,
 	[MailTemplateId] [int] NULL,
-	[ReserveArea] [varchar](50) NULL,
+	[ReserveArea] [nvarchar](50) NULL,
  CONSTRAINT [PK_M_Workflow] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

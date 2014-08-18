@@ -15,12 +15,12 @@ DROP TABLE [dbo].[T_Workflow]
 GO
 
 CREATE TABLE [dbo].[T_Workflow](
-	[WorkflowControlNo] [varchar](50) NOT NULL,
+	[WorkflowControlNo] [nvarchar](50) NOT NULL,
 	[SubSystemId] [char](4) NOT NULL,
-	[WorkflowName] [varchar](50) NOT NULL,
+	[WorkflowName] [nvarchar](10) NOT NULL,
 	[UserId] [decimal](10, 0) NULL,
 	[UserInfo] [nvarchar](50) NOT NULL,
-	[ReserveArea] [varchar](50) NULL,
+	[ReserveArea] [nvarchar](50) NULL,
 	[StartDate] [datetime] NOT NULL ,
 	[EndDate] [datetime] NULL
 

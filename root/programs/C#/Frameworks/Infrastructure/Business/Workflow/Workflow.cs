@@ -121,7 +121,8 @@ namespace Touryo.Infrastructure.Business.Workflow
             // 検索条件
             daoM_Workflow.SubSystemId = subSystemId;
             daoM_Workflow.WorkflowName = workflowName;
-            daoM_Workflow.WorkflowNo = 1; // スタートなので「1」固定
+            //daoM_Workflow.WorkflowNo = 1; // スタートなので「1」固定
+            daoM_Workflow.ActionType = "Start"; // スタートなので"Start"
             daoM_Workflow.FromUserId = fromUserId;
             
             // ワークフローの取得
@@ -214,8 +215,9 @@ namespace Touryo.Infrastructure.Business.Workflow
         }
 
         /// <summary>ワークフロー依頼を取得します。</summary>
-        /// <param name="subSystemId">サブシステムID(null、空文字指定可能)</param>
-        /// <param name="workflowName">ワークフロー名(null、空文字指定可能)</param>
+        /// <param name="subSystemId">サブシステムID(任意)</param>
+        /// <param name="workflowName">ワークフロー名(任意)</param>
+        /// <param name="workflowControlNo">ワークフロー管理番号（任意）</param>
         /// <param name="userId">ワークフローの受信ユーザ（必須）</param>
         /// <param name="userPositionTitlesId">
         /// ユーザの職位ID（userIdが御中IDの場合は必須）
@@ -226,7 +228,8 @@ namespace Touryo.Infrastructure.Business.Workflow
         /// 　御中IDでの呼び出しと、ユーザIDでの呼び出しは２回に分ける。
         /// </remarks>
         public DataTable GetWfRequest(
-            string subSystemId, string workflowName, decimal? userId, int? userPositionTitlesId)
+            string subSystemId, string workflowName, string workflowControlNo, 
+            decimal? userId, int? userPositionTitlesId)
         {
             // チェック処理を実装
             // なし。
@@ -250,6 +253,12 @@ namespace Touryo.Infrastructure.Business.Workflow
             if (!string.IsNullOrEmpty(workflowName))
             {
                 dao.SetParameter("WkflowName", workflowName);
+            }
+
+            // WorkflowControlNo
+            if (!string.IsNullOrEmpty(workflowControlNo))
+            {
+                dao.SetParameter("WorkflowControlNo", workflowControlNo);
             }
 
             // ユーザID（必須）
@@ -330,11 +339,13 @@ namespace Touryo.Infrastructure.Business.Workflow
         }
 
         /// <summary>処理中ワークフロー依頼を取得します。</summary>
-        /// <param name="subSystemId">サブシステムID(null、空文字指定可能)</param>
-        /// <param name="workflowName">ワークフロー名(null、空文字指定可能)</param>
+        /// <param name="subSystemId">サブシステムID（任意）</param>
+        /// <param name="workflowName">ワークフロー名（任意）</param>
+        /// <param name="workflowControlNo">ワークフロー管理番号（任意）</param>
         /// <param name="userId">ワークフローの受信ユーザ（御中指定不可能）</param>
         /// <returns>処理中のワークフロー一覧</returns>
-        public DataTable GetProcessingWfRequest(string subSystemId, string workflowName, decimal userId)
+        public DataTable GetProcessingWfRequest(
+            string subSystemId, string workflowName, string workflowControlNo, decimal userId)
         {
             // チェック処理を実装
             // なし。
@@ -357,6 +368,12 @@ namespace Touryo.Infrastructure.Business.Workflow
             if (!string.IsNullOrEmpty(workflowName))
             {
                 dao.SetParameter("WorkflowName", workflowName);
+            }
+
+            // WorkflowControlNo
+            if (!string.IsNullOrEmpty(workflowControlNo))
+            {
+                dao.SetParameter("WorkflowControlNo", workflowControlNo);
             }
 
             // AcceptanceUserId
@@ -423,17 +440,34 @@ namespace Touryo.Infrastructure.Business.Workflow
             // T_WorkflowHistoryのSELECT
             // --------------------------------------------------
             CmnDao dao = new CmnDao(this.Dam);
+
+            // 次のワークフロー依頼 = TurnBackの場合のフィルタ処理
             DataRow[] drs = dt.Select("ActionType = 'TurnBack'");
 
             if (drs.Length > 1)
             {
+                // GetTurnBackWorkflow
+                // 連続TurnBack場合の対応
                 dao.SQLFileName = "GetTurnBackWorkflow.sql";
                 dao.SetParameter("WorkflowControlNo", processingWfReq["WorkflowControlNo"]);
-                int workflowNo = (int)dao.ExecSelectScalar();
+                dao.SetParameter("NextWorkflowNo", processingWfReq["NextWorkflowNo"]);
+                object temp = dao.ExecSelectScalar();
+
+                // GetTurnBackWorkflow2
+                // Start直後にTurnBack場合の対応
+                if (temp == null)
+                {
+                    dao.SQLFileName = "GetTurnBackWorkflow2.sql";
+                    dao.SetParameter("WorkflowControlNo", processingWfReq["WorkflowControlNo"]);
+                    dao.SetParameter("NextWorkflowNo", processingWfReq["NextWorkflowNo"]);
+                    temp = dao.ExecSelectScalar();
+                }
+
+                string wfPositionId = (string)temp;
 
                 foreach (DataRow dr in drs)
                 {
-                    if ((int)dr["NextWorkflowNo"] == workflowNo)
+                    if ((string)dr["NextWfPositionId"] == wfPositionId)
                     {
                         // 対象
                     }
@@ -445,9 +479,10 @@ namespace Touryo.Infrastructure.Business.Workflow
                 }
 
                 // 削除処理の受け入れ
-                dt.AcceptChanges();   
+                dt.AcceptChanges();
             }
 
+            // 次のワークフロー依頼 = Replyの場合のフィルタ処理
             drs = dt.Select("ActionType = 'Reply'");
 
             if (drs.Length > 1)
@@ -455,13 +490,19 @@ namespace Touryo.Infrastructure.Business.Workflow
                 dao.SQLFileName = "GetReplyWorkflow.xml";
                 dao.SetParameter("WorkflowControlNo", processingWfReq["WorkflowControlNo"]);
 
+                #region CorrespondOfReplyWorkflow
+                
                 ArrayList alCorrespondOfReplyWorkflow = new ArrayList(); 
+                
                 foreach (DataRow dr in drs)
                 {
                     alCorrespondOfReplyWorkflow.Add(dr["CorrespondOfReplyWorkflow"]);
                 }
 
                 dao.SetParameter("CorrespondOfReplyWorkflow", alCorrespondOfReplyWorkflow);
+
+                #endregion
+
                 int workflowNo = (int)dao.ExecSelectScalar();
 
                 foreach (DataRow dr in drs)

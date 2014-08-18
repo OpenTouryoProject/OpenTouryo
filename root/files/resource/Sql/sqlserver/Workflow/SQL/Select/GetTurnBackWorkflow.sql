@@ -1,5 +1,5 @@
 SELECT
-  [T_WorkflowHistory].[WorkflowNo]
+  [T_WorkflowHistory].[WfPositionId]
 FROM
   [T_WorkflowHistory]
 WHERE
@@ -11,4 +11,5 @@ WHERE
       [T_WorkflowHistory]
     WHERE
       [T_WorkflowHistory].[WorkflowControlNo] = @WorkflowControlNo
-  )
+      AND [T_WorkflowHistory].[WorkflowNo] = @NextWorkflowNo
+      AND [T_WorkflowHistory].[ActionType] != 'TurnBack') - 1
