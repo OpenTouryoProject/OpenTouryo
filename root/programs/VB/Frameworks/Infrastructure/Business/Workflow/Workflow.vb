@@ -108,8 +108,9 @@ Namespace Touryo.Infrastructure.Business.Workflow
 			' 検索条件
 			daoM_Workflow.SubSystemId = subSystemId
 			daoM_Workflow.WorkflowName = workflowName
-			daoM_Workflow.WorkflowNo = 1
-			' スタートなので「1」固定
+			'daoM_Workflow.WorkflowNo = 1; // スタートなので「1」固定
+			daoM_Workflow.ActionType = "Start"
+			' スタートなので"Start"
 			daoM_Workflow.FromUserId = fromUserId
 
 			' ワークフローの取得
@@ -118,87 +119,88 @@ Namespace Touryo.Infrastructure.Business.Workflow
 		End Function
 
 		''' <summary>新しいワークフローを開始します。</summary>
-		''' <param name="startWorkflow">新規ワークフロー</param>
+        ''' <param name="_startWorkflow">新規ワークフロー</param>
 		''' <param name="workflowControlNo">ワークフロー管理番号（必須）</param>
 		''' <param name="fromUserId">FromユーザID（個人ID 必須）</param>
 		''' <param name="workflowReserveArea">T_Workflowの予備領域（任意）</param>
 		''' <param name="currentWorkflowReserveArea">T_CurrentWorkflowの予備領域（任意）</param>
 		''' <param name="replyDeadline">回答希望日（任意）</param>
 		''' <returns>メール・テンプレートID</returns>
-		Public Function StartWorkflow(startWorkflow__1 As DataRow, workflowControlNo As String, fromUserId As Decimal, workflowReserveArea As String, currentWorkflowReserveArea As String, replyDeadline As System.Nullable(Of DateTime)) As Integer
-			'#Region "チェック処理を実装"
+        Public Function StartWorkflow(_startWorkflow As DataRow, workflowControlNo As String, fromUserId As Decimal, workflowReserveArea As String, currentWorkflowReserveArea As String, replyDeadline As System.Nullable(Of DateTime)) As Integer
+            '#Region "チェック処理を実装"
 
-			If String.IsNullOrEmpty(workflowControlNo) Then
-				Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")))
-			End If
+            If String.IsNullOrEmpty(workflowControlNo) Then
+                Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")))
+            End If
 
-			'#End Region
+            '#End Region
 
-			' ユーザIDからユーザ情報を取得
-			Dim fromUserInfo As String = Workflow.GetUserInfo(fromUserId)
-			Dim toUserInfo As String = Workflow.GetUserInfo(CDec(startWorkflow__1("ToUserId")))
+            ' ユーザIDからユーザ情報を取得
+            Dim fromUserInfo As String = Workflow.GetUserInfo(fromUserId)
+            Dim toUserInfo As String = Workflow.GetUserInfo(CDec(_startWorkflow("ToUserId")))
 
-			' --------------------------------------------------
-			' 新しいワークフローを開始
-			' --------------------------------------------------
-			' T_WorkflowへのINSERT
-			' --------------------------------------------------
-			Dim daoT_Workflow As New DaoT_Workflow(Me.Dam)
+            ' --------------------------------------------------
+            ' 新しいワークフローを開始
+            ' --------------------------------------------------
+            ' T_WorkflowへのINSERT
+            ' --------------------------------------------------
+            Dim daoT_Workflow As New DaoT_Workflow(Me.Dam)
 
-			daoT_Workflow.PK_WorkflowControlNo = workflowControlNo
-			daoT_Workflow.SubSystemId = startWorkflow__1("SubSystemId")
-			daoT_Workflow.WorkflowName = startWorkflow__1("WorkflowName")
-			daoT_Workflow.UserId = fromUserId
-			' 個人IDが必要。
-			daoT_Workflow.UserInfo = fromUserInfo
-			daoT_Workflow.ReserveArea = workflowReserveArea
-			daoT_Workflow.StartDate = DateTime.Now
-			'daoT_Workflow.EndDate = DBNull.Value;
+            daoT_Workflow.PK_WorkflowControlNo = workflowControlNo
+            daoT_Workflow.SubSystemId = _startWorkflow("SubSystemId")
+            daoT_Workflow.WorkflowName = _startWorkflow("WorkflowName")
+            daoT_Workflow.UserId = fromUserId
+            ' 個人IDが必要。
+            daoT_Workflow.UserInfo = fromUserInfo
+            daoT_Workflow.ReserveArea = workflowReserveArea
+            daoT_Workflow.StartDate = DateTime.Now
+            'daoT_Workflow.EndDate = DBNull.Value;
 
-			daoT_Workflow.D1_Insert()
+            daoT_Workflow.D1_Insert()
 
-			' --------------------------------------------------
-			' T_CurrentWorkflowへのINSERT
-			' --------------------------------------------------
-			Dim daoT_CurrentWorkflow As New DaoT_CurrentWorkflow(Me.Dam)
+            ' --------------------------------------------------
+            ' T_CurrentWorkflowへのINSERT
+            ' --------------------------------------------------
+            Dim daoT_CurrentWorkflow As New DaoT_CurrentWorkflow(Me.Dam)
 
-			daoT_CurrentWorkflow.PK_WorkflowControlNo = workflowControlNo
-			daoT_CurrentWorkflow.HistoryNo = 1
-			' スタートなので「1」固定
-			daoT_CurrentWorkflow.WfPositionId = startWorkflow__1("WfPositionId")
-			daoT_CurrentWorkflow.WorkflowNo = startWorkflow__1("WorkflowNo")
-			daoT_CurrentWorkflow.FromUserId = fromUserId
-			' 実際のユーザIDを入力する。
-			daoT_CurrentWorkflow.FromUserInfo = fromUserInfo
-			' ユーザ入力が必要。
-			daoT_CurrentWorkflow.ActionType = startWorkflow__1("ActionType")
-			daoT_CurrentWorkflow.ToUserId = startWorkflow__1("ToUserId")
-			daoT_CurrentWorkflow.ToUserInfo = toUserInfo
-			' ユーザ入力が必要。
-			daoT_CurrentWorkflow.ToUserPositionTitlesId = startWorkflow__1("ToUserPositionTitlesId")
-			daoT_CurrentWorkflow.NextWfPositionId = startWorkflow__1("NextWfPositionId")
-			daoT_CurrentWorkflow.NextWorkflowNo = startWorkflow__1("NextWorkflowNo")
-			daoT_CurrentWorkflow.ReserveArea = currentWorkflowReserveArea
-			'daoT_CurrentWorkflow.ExclusiveKey = "";
-			daoT_CurrentWorkflow.ReplyDeadline = replyDeadline
-			daoT_CurrentWorkflow.StartDate = DateTime.Now
-			'daoT_CurrentWorkflow.AcceptanceDate = DBNull.Value;
-			'daoT_CurrentWorkflow.AcceptanceUserId = DBNull.Value;
-			'daoT_CurrentWorkflow.AcceptanceUserInfo = DBNull.Value;
+            daoT_CurrentWorkflow.PK_WorkflowControlNo = workflowControlNo
+            daoT_CurrentWorkflow.HistoryNo = 1
+            ' スタートなので「1」固定
+            daoT_CurrentWorkflow.WfPositionId = _startWorkflow("WfPositionId")
+            daoT_CurrentWorkflow.WorkflowNo = _startWorkflow("WorkflowNo")
+            daoT_CurrentWorkflow.FromUserId = fromUserId
+            ' 実際のユーザIDを入力する。
+            daoT_CurrentWorkflow.FromUserInfo = fromUserInfo
+            ' ユーザ入力が必要。
+            daoT_CurrentWorkflow.ActionType = _startWorkflow("ActionType")
+            daoT_CurrentWorkflow.ToUserId = _startWorkflow("ToUserId")
+            daoT_CurrentWorkflow.ToUserInfo = toUserInfo
+            ' ユーザ入力が必要。
+            daoT_CurrentWorkflow.ToUserPositionTitlesId = _startWorkflow("ToUserPositionTitlesId")
+            daoT_CurrentWorkflow.NextWfPositionId = _startWorkflow("NextWfPositionId")
+            daoT_CurrentWorkflow.NextWorkflowNo = _startWorkflow("NextWorkflowNo")
+            daoT_CurrentWorkflow.ReserveArea = currentWorkflowReserveArea
+            'daoT_CurrentWorkflow.ExclusiveKey = "";
+            daoT_CurrentWorkflow.ReplyDeadline = replyDeadline
+            daoT_CurrentWorkflow.StartDate = DateTime.Now
+            'daoT_CurrentWorkflow.AcceptanceDate = DBNull.Value;
+            'daoT_CurrentWorkflow.AcceptanceUserId = DBNull.Value;
+            'daoT_CurrentWorkflow.AcceptanceUserInfo = DBNull.Value;
 
-			daoT_CurrentWorkflow.D1_Insert()
+            daoT_CurrentWorkflow.D1_Insert()
 
-			' リターン（MailTemplateId）
-            If IsDBNull(startWorkflow__1("MailTemplateId")) Then
+            ' リターン（MailTemplateId）
+            If IsDBNull(_startWorkflow("MailTemplateId")) Then
                 Return 0
             Else
-                Return CInt(startWorkflow__1("MailTemplateId"))
+                Return CInt(_startWorkflow("MailTemplateId"))
             End If
-		End Function
+        End Function
 
 		''' <summary>ワークフロー依頼を取得します。</summary>
-		''' <param name="subSystemId">サブシステムID(null、空文字指定可能)</param>
-		''' <param name="workflowName">ワークフロー名(null、空文字指定可能)</param>
+		''' <param name="subSystemId">サブシステムID(任意)</param>
+		''' <param name="workflowName">ワークフロー名(任意)</param>
+		''' <param name="workflowControlNo">ワークフロー管理番号（任意）</param>
 		''' <param name="userId">ワークフローの受信ユーザ（必須）</param>
 		''' <param name="userPositionTitlesId">
 		''' ユーザの職位ID（userIdが御中IDの場合は必須）
@@ -208,7 +210,7 @@ Namespace Touryo.Infrastructure.Business.Workflow
 		''' fromUsersId
 		''' 　御中IDでの呼び出しと、ユーザIDでの呼び出しは２回に分ける。
 		''' </remarks>
-		Public Function GetWfRequest(subSystemId As String, workflowName As String, userId As System.Nullable(Of Decimal), userPositionTitlesId As System.Nullable(Of Integer)) As DataTable
+		Public Function GetWfRequest(subSystemId As String, workflowName As String, workflowControlNo As String, userId As System.Nullable(Of Decimal), userPositionTitlesId As System.Nullable(Of Integer)) As DataTable
 			' チェック処理を実装
 			' なし。
 
@@ -229,6 +231,11 @@ Namespace Touryo.Infrastructure.Business.Workflow
 			' WkflowName
 			If Not String.IsNullOrEmpty(workflowName) Then
 				dao.SetParameter("WkflowName", workflowName)
+			End If
+
+			' WorkflowControlNo
+			If Not String.IsNullOrEmpty(workflowControlNo) Then
+				dao.SetParameter("WorkflowControlNo", workflowControlNo)
 			End If
 
 			' ユーザID（必須）
@@ -296,11 +303,12 @@ Namespace Touryo.Infrastructure.Business.Workflow
 		End Sub
 
 		''' <summary>処理中ワークフロー依頼を取得します。</summary>
-		''' <param name="subSystemId">サブシステムID(null、空文字指定可能)</param>
-		''' <param name="workflowName">ワークフロー名(null、空文字指定可能)</param>
+		''' <param name="subSystemId">サブシステムID（任意）</param>
+		''' <param name="workflowName">ワークフロー名（任意）</param>
+		''' <param name="workflowControlNo">ワークフロー管理番号（任意）</param>
 		''' <param name="userId">ワークフローの受信ユーザ（御中指定不可能）</param>
 		''' <returns>処理中のワークフロー一覧</returns>
-		Public Function GetProcessingWfRequest(subSystemId As String, workflowName As String, userId As Decimal) As DataTable
+		Public Function GetProcessingWfRequest(subSystemId As String, workflowName As String, workflowControlNo As String, userId As Decimal) As DataTable
 			' チェック処理を実装
 			' なし。
 
@@ -320,6 +328,11 @@ Namespace Touryo.Infrastructure.Business.Workflow
 			' WkflowName
 			If Not String.IsNullOrEmpty(workflowName) Then
 				dao.SetParameter("WorkflowName", workflowName)
+			End If
+
+			' WorkflowControlNo
+			If Not String.IsNullOrEmpty(workflowControlNo) Then
+				dao.SetParameter("WorkflowControlNo", workflowControlNo)
 			End If
 
 			' AcceptanceUserId
@@ -375,16 +388,32 @@ Namespace Touryo.Infrastructure.Business.Workflow
 			' T_WorkflowHistoryのSELECT
 			' --------------------------------------------------
 			Dim dao As New CmnDao(Me.Dam)
+
+			' 次のワークフロー依頼 = TurnBackの場合のフィルタ処理
 			Dim drs As DataRow() = dt.[Select]("ActionType = 'TurnBack'")
 
 			If drs.Length > 1 Then
+				' GetTurnBackWorkflow
+				' 連続TurnBack場合の対応
 				dao.SQLFileName = "GetTurnBackWorkflow.sql"
 				dao.SetParameter("WorkflowControlNo", processingWfReq("WorkflowControlNo"))
-				Dim workflowNo As Integer = CInt(dao.ExecSelectScalar())
+				dao.SetParameter("NextWorkflowNo", processingWfReq("NextWorkflowNo"))
+				Dim temp As Object = dao.ExecSelectScalar()
+
+				' GetTurnBackWorkflow2
+				' Start直後にTurnBack場合の対応
+				If temp Is Nothing Then
+					dao.SQLFileName = "GetTurnBackWorkflow2.sql"
+					dao.SetParameter("WorkflowControlNo", processingWfReq("WorkflowControlNo"))
+					dao.SetParameter("NextWorkflowNo", processingWfReq("NextWorkflowNo"))
+					temp = dao.ExecSelectScalar()
+				End If
+
+				Dim wfPositionId As String = DirectCast(temp, String)
 
 				For Each dr As DataRow In drs
 							' 対象
-					If CInt(dr("NextWorkflowNo")) = workflowNo Then
+					If DirectCast(dr("NextWfPositionId"), String) = wfPositionId Then
 					Else
 						' 対象外（削除）
 						dr.Delete()
@@ -395,18 +424,25 @@ Namespace Touryo.Infrastructure.Business.Workflow
 				dt.AcceptChanges()
 			End If
 
+			' 次のワークフロー依頼 = Replyの場合のフィルタ処理
 			drs = dt.[Select]("ActionType = 'Reply'")
 
 			If drs.Length > 1 Then
 				dao.SQLFileName = "GetReplyWorkflow.xml"
 				dao.SetParameter("WorkflowControlNo", processingWfReq("WorkflowControlNo"))
 
+				'#Region "CorrespondOfReplyWorkflow"
+
 				Dim alCorrespondOfReplyWorkflow As New ArrayList()
+
 				For Each dr As DataRow In drs
 					alCorrespondOfReplyWorkflow.Add(dr("CorrespondOfReplyWorkflow"))
 				Next
 
 				dao.SetParameter("CorrespondOfReplyWorkflow", alCorrespondOfReplyWorkflow)
+
+				'#End Region
+
 				Dim workflowNo As Integer = CInt(dao.ExecSelectScalar())
 
 				For Each dr As DataRow In drs
