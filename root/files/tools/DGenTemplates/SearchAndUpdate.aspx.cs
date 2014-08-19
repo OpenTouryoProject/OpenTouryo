@@ -108,6 +108,10 @@ public partial class _TableName_SearchAndUpdate : MyBaseController
         {
             Session["DBMS"] = DbEnum.DBMSType.MySQL;
         }
+        else if (this.ddlDap.SelectedValue == "DB2")
+        {
+            Session["DBMS"] = DbEnum.DBMSType.DB2;
+        }
     }
 
     #endregion
