@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<ROOT>
+  SELECT
+    [T_WorkflowHistory].[WorkflowNo]
+  FROM
+    [T_WorkflowHistory]
+  WHERE
+    [T_WorkflowHistory].[WorkflowControlNo] = @WorkflowControlNo
+    AND [T_WorkflowHistory].[HistoryNo] = (
+      SELECT
+        MAX([T_WorkflowHistory].[HistoryNo])
+      FROM
+        [dbo].[T_WorkflowHistory]
+      WHERE
+        [T_WorkflowHistory].[WorkflowControlNo] = @WorkflowControlNo
+        <LIST>AND [T_WorkflowHistory].[WorkflowNo] IN (@CorrespondOfReplyWorkflow)</LIST>
+    )
+</ROOT>

@@ -44,8 +44,10 @@
 //*  2012/11/21  西野  大介        デフォルト・エンコーディングをSJISに指定
 //*  2012/12/21  西野  大介        HiRDB戻し検討・・・
 //*  2014/01/20  西野  大介        I/O時のエンコーディング制御方式を見直し。
-//*  2014/04/30  Santosh san       Internationalization: Added Method to get the strings from the resource files based on the keys values passed.
+//*  2014/04/30  Santosh san       Internationalization:
+//*                                Added Method to get the strings from the resource files based on the keys values passed.
 //*                                and and replaced this method wherever hard coded values.
+//*  2014/08/19  西野  大介        カラム取得時のスキーマ考慮が無かったため追加（奥井さんからの提供）
 //**********************************************************************************
 
 // データプロバイダ
@@ -1437,6 +1439,14 @@ namespace DaoGen_Tool
         {
             try
             {
+                #region ユーザー名取得用変数
+
+                int start = 0;
+                int end = 0;
+                string userId = "";
+
+                #endregion
+
                 // コネクション オープン
                 this.ConnectionOpen();
 
@@ -1728,6 +1738,11 @@ namespace DaoGen_Tool
                 {
                     #region Oracle
 
+                    // 接続文字列から"User Id"値を取得。
+                    start = this.txtConnString.Text.IndexOf("User Id=") + "User Id=".Length;
+                    end = this.txtConnString.Text.IndexOf(";", start);
+                    userId = this.txtConnString.Text.Substring(start, end - start).Trim();
+
                     #region カラムの情報を取得
 
                     // カラムの情報を取得
@@ -1749,14 +1764,23 @@ namespace DaoGen_Tool
                             // 有効なテーブル
                             if (table.Effective)
                             {
-                                CColumn column = new CColumn(
-                                    (string)row["COLUMN_NAME"], (string)row["DATATYPE"],
-                                    CmnMethods.ConvertToDotNetTypeInfo((string)row["DATATYPE"]));
+                                // 自分のもの以外は取らない。
+                                if (row["OWNER"].ToString().ToUpper() == userId.ToUpper())
+                                {
+                                    // 自分のもの
+                                    CColumn column = new CColumn(
+                                        (string)row["COLUMN_NAME"], (string)row["DATATYPE"],
+                                        CmnMethods.ConvertToDotNetTypeInfo((string)row["DATATYPE"]));
 
-                                // ポジションをキーにしてカラムを追加
-                                table.HtColumns_Position[row["ID"].ToString()] = column;
-                                // カラム名をキーにしてカラムを追加
-                                table.HtColumns_Name[(string)row["COLUMN_NAME"]] = column;
+                                    // ポジションをキーにしてカラムを追加
+                                    table.HtColumns_Position[row["ID"].ToString()] = column;
+                                    // カラム名をキーにしてカラムを追加
+                                    table.HtColumns_Name[(string)row["COLUMN_NAME"]] = column;
+                                }
+                                else
+                                {
+                                    // 自分のもの以外
+                                }
                             }
                         }                        
                     }
@@ -1783,21 +1807,39 @@ namespace DaoGen_Tool
                                 // 有効なテーブルのプライマリキー
                                 if (table.Name == row1["TABLE_NAME"].ToString())
                                 {
-                                    foreach (System.Data.DataRow row2 in dtSchmaIndexColumns.Rows)
+                                    // 自分のもの以外は取らない。
+                                    if (row1["INDEX_OWNER"].ToString().ToUpper() == userId.ToUpper())
                                     {
-                                        // 有効なテーブルのプライマリキーのカラム
-                                        if (row1["INDEX_NAME"].ToString() == row2["INDEX_NAME"].ToString())
+                                        // 自分のもの以外
+                                        foreach (System.Data.DataRow row2 in dtSchmaIndexColumns.Rows)
                                         {
-                                            // 列のIsKeyフラグを立てる。
-                                            CColumn column = (CColumn)table.HtColumns_Name[row2["COLUMN_NAME"].ToString()];
-
-                                            // nullの時があるようなので、この場合は処理しない。
-                                            if (column == null){ }
-                                            else
+                                            // 有効なテーブルのプライマリキーのカラム
+                                            if (row1["INDEX_NAME"].ToString() == row2["INDEX_NAME"].ToString())
                                             {
-                                                column.IsKey = true;
+                                                // 自分のもの以外は取らない。
+                                                if (row2["INDEX_OWNER"].ToString().ToUpper() == userId.ToUpper())
+                                                {
+                                                    // 自分のもの
+                                                    // 列のIsKeyフラグを立てる。
+                                                    CColumn column = (CColumn)table.HtColumns_Name[row2["COLUMN_NAME"].ToString()];
+
+                                                    // nullの時があるようなので、この場合は処理しない。
+                                                    if (column == null) { }
+                                                    else
+                                                    {
+                                                        column.IsKey = true;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    // 自分のもの以外
+                                                }
                                             }
                                         }
+                                    }
+                                    else
+                                    {
+                                        // 自分のもの以外
                                     }
                                 }
                             }

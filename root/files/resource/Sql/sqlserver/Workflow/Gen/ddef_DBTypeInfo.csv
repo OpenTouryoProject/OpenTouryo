@@ -1,0 +1,11 @@
+﻿テーブル名,カラムDB型情報～
+M_Workflow,decimal,
+,char,nvarchar,nvarchar,int,decimal,nvarchar,decimal,int,nvarchar,int,int,int,nvarchar,
+M_User,decimal,
+,nvarchar,nvarchar,int,
+T_WorkflowHistory,nvarchar,int,
+,nvarchar,int,decimal,nvarchar,nvarchar,decimal,nvarchar,int,nvarchar,int,nvarchar,datetime,datetime,datetime,decimal,nvarchar,datetime,
+T_CurrentWorkflow,nvarchar,
+,int,nvarchar,int,decimal,nvarchar,nvarchar,decimal,nvarchar,int,nvarchar,int,nvarchar,int,datetime,datetime,datetime,decimal,nvarchar,
+T_Workflow,nvarchar,
+,char,nvarchar,decimal,nvarchar,nvarchar,datetime,datetime,

@@ -992,5 +992,6 @@ Namespace Touryo.Infrastructure.Business.Business
         ''' <param name="parameterValue">引数</param>
         Protected Overridable Sub UOC_RelatedCheck(ByVal parameterValue As _3TierParameterValue)
         End Sub
+
 	End Class
 End Namespace

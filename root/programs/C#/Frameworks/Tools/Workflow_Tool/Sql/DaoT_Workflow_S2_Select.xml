@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoT_Workflow_S2_Select
+  -- 2014/7/18 日立 太郎
+  SELECT 
+    [WorkflowControlNo],
+    [SubSystemId],
+    [WorkflowName],
+    [UserId],
+    [UserInfo],
+    [ReserveArea],
+    [StartDate],
+    [EndDate]
+  FROM
+    [T_Workflow]
+  <WHERE>
+    WHERE
+      [WorkflowControlNo] = @WorkflowControlNo
+  </WHERE>
+</ROOT>

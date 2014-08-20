@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoT_WorkflowHistory_S2_Select
+  -- 2014/7/18 日立 太郎
+  SELECT 
+    [WorkflowControlNo],
+    [HistoryNo],
+    [WfPositionId],
+    [WorkflowNo],
+    [FromUserId],
+    [FromUserInfo],
+    [ActionType],
+    [ToUserId],
+    [ToUserInfo],
+    [ToUserPositionTitlesId],
+    [NextWfPositionId],
+    [NextWorkflowNo],
+    [ReserveArea],
+    [ReplyDeadline],
+    [StartDate],
+    [AcceptanceDate],
+    [AcceptanceUserId],
+    [AcceptanceUserInfo],
+    [EndDate]
+  FROM
+    [T_WorkflowHistory]
+  <WHERE>
+    WHERE
+      [WorkflowControlNo] = @WorkflowControlNo
+      AND [HistoryNo] = @HistoryNo
+  </WHERE>
+</ROOT>

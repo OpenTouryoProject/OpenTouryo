@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoM_User_D5_SelCnt
+  -- 2014/7/18 日立 太郎
+  SELECT 
+    COUNT(*)
+  FROM
+    [M_User]
+  <WHERE>
+    WHERE
+      <IF>AND [Id] = @Id<ELSE>AND [Id] IS NULL</ELSE></IF>
+      <IF>AND [Id] LIKE @Id_Like</IF>
+      <IF>AND [Section] = @Section<ELSE>AND [Section] IS NULL</ELSE></IF>
+      <IF>AND [Section] LIKE @Section_Like</IF>
+      <IF>AND [Name] = @Name<ELSE>AND [Name] IS NULL</ELSE></IF>
+      <IF>AND [Name] LIKE @Name_Like</IF>
+      <IF>AND [PositionTitlesId] = @PositionTitlesId<ELSE>AND [PositionTitlesId] IS NULL</ELSE></IF>
+      <IF>AND [PositionTitlesId] LIKE @PositionTitlesId_Like</IF>
+  </WHERE>
+</ROOT>
