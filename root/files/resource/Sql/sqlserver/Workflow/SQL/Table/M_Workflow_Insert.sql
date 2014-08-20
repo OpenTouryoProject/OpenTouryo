@@ -8,6 +8,7 @@ INSERT INTO [dbo].[M_Workflow](
      VALUES
      
          ( 'TEST', 'Normal',  100, 1   , 1   , 'Start'     , 2    , 1    , 200  , 2    , null , 1, ''),
+         ( 'TEST', 'Normal',  200, 2   , 2   , 'TurnBack'  , 1    , 1    , 100  , 1    , null , 1, ''),
          ( 'TEST', 'Normal',  200, 2   , 2   , 'Request'   , 3    , 1    , 300  , 3    , null , 1, ''),
          ( 'TEST', 'Normal',  300, 3   , 3   , 'Response'  , 2    , 1    , 200  , 4    , null , 1, ''),
          ( 'TEST', 'Normal',  200, 4   , 2   , 'Reply'     , 1    , 1    , 100  , 5    , 1    , 1, ''),
