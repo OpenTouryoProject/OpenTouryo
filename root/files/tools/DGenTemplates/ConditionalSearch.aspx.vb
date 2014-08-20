@@ -102,6 +102,8 @@ Partial Public Class _TableName_ConditionalSearch
             Session("DBMS") = DbEnum.DBMSType.PstGrS
         ElseIf Me.ddlDap.SelectedValue = "MCN" Then
             Session("DBMS") = DbEnum.DBMSType.MySQL
+        ElseIf Me.ddlDap.SelectedValue = "DB2" Then
+            Session("DBMS") = DbEnum.DBMSType.DB2
         End If
     End Sub
 

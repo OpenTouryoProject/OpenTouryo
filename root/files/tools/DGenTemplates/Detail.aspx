@@ -8,6 +8,7 @@
         <asp:ListItem Value="ODP">Oracle / ODP.NET</asp:ListItem>
 	<asp:ListItem Value="NPS">PostGres /NPGSQL</asp:ListItem>
     <asp:ListItem Value="MCN">MySQL / MySQL Connector/NET</asp:ListItem>
+    <asp:ListItem Value="DB2">DB2 /Connection</asp:ListItem>
     </cc1:WebCustomDropDownList><br />
     
 	詳細表示<br/>

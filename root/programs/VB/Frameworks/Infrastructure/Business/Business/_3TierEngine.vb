@@ -33,6 +33,7 @@
 '*                                Added UOC_RelatedCheck override method and method calls in methods
 '*                                'UOC_InsertRecord', 'UOC_UpdateRecord', 'UOC_DeleteRecord' and 'UOC_BatchUpdate' 
 '*  2014/07/21   Rituparna        Added SelectCount and SelectPaging query constatnts and check for MySql db support
+'*  2014/08/14   Santosh Avaji    Added code to get count of records using SelectCount query constant and get set of records with paging using SelectPaging query constant and aslo added if condition for DB2 support 
 '*'**********************************************************************************
 
 ' レイトバインド用
@@ -81,7 +82,7 @@ Namespace Touryo.Infrastructure.Business.Business
 		''' <summary>データ件数取得SQLテンプレート</summary>
 		Private Const SELECT_COUNT_SQL_TEMPLATE As String = "SELECT COUNT(*) FROM {0} {1}"
 
-        ''' <summary>データ件数取得SQLテンプレート</summary>
+        ''' <summary>Select count query for PostgreSQL</summary>
         Private Const SELECT_COUNT_POSTGRESQL_TEMPLATE As String = "SELECT COUNT(*) FROM ""{0}"" {1}"
 
 		''' <summary>データ取得SQLテンプレート（DBMSによって可変となる）</summary>
@@ -101,6 +102,12 @@ Namespace Touryo.Infrastructure.Business.Business
         ''' </summary>
         Private Const SELECT_PAGING_MYSQL_TEMPLATE As String =
             "SELECT * FROM(SELECT * FROM ( SELECT *,  @i := @i + 1 AS RESULT FROM {3},(SELECT @i := 0) TEMP ORDER BY ""{1}""  {2}) TEMP1 {4})TEMP3 WHERE RESULT BETWEEN {5} AND {6}"
+
+        '''<summary>
+        ''' Select Paging Query For DB2 database
+        ''' </summary>
+        Private Const SELECT_PAGING_DB2_TEMPLATE As String =
+            "SELECT * FROM (SELECT {0}, ROW_NUMBER() OVER (ORDER BY {1} {2}) AS ROWNUM FROM {3} {4}) WHERE ROWNUM BETWEEN {5} AND {6}";
 
 		''' <summary>Where句生成SQLテンプレート（＝）</summary>
 		Private Const WHERE_SQL_TEMPLATE_EQUAL As String = "_s__ColName__e_ = _p__ParamName_"
@@ -260,7 +267,7 @@ Namespace Touryo.Infrastructure.Business.Business
             ElseIf parameterValue.DBMSType = DbEnum.DBMSType.PstGrS Then
                 p = "@"
                 f = "::text"
-            ElseIf parameterValue.DBMSType = DbEnum.DBMSType.MySQL Then
+            ElseIf parameterValue.DBMSType = DbEnum.DBMSType.MySQL Or parameterValue.DBMSType = DbEnum.DBMSType.DB2 Then
                 p = "@"
                 s = """"
                 e = """"
@@ -271,7 +278,7 @@ Namespace Touryo.Infrastructure.Business.Business
 			End If
 
             If parameterValue.DBMSType = DbEnum.DBMSType.PstGrS Then
-			' SQLを設定して
+			' Set the Query for PostgreSQL database
                 cmnDao.SQLText = String.Format(SELECT_COUNT_POSTGRESQL_TEMPLATE, s & Convert.ToString(parameterValue.TableName) & e, _
                                                whereSQL).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f)
             ElseIf parameterValue.DBMSType = DbEnum.DBMSType.MySQL Then
@@ -316,7 +323,7 @@ Namespace Touryo.Infrastructure.Business.Business
 			Dim e As String = ""
             ' 囲い記号開始
             Dim f As String = ""
-			' 囲い記号終了
+			' For supporting type casting in PostgreSQL
 			' テンプレート、囲い文字の選択
 			If parameterValue.DBMSType = DbEnum.DBMSType.SQLServer Then
 				selectPagingSqlTemplate = SELECT_PAGING_SQL_TEMPLATE_SQL_SERVER
@@ -341,12 +348,17 @@ Namespace Touryo.Infrastructure.Business.Business
                 p = "@"
                 s = """"
                 e = """"
-			Else
-				selectPagingSqlTemplate = SELECT_PAGING_SQL_TEMPLATE_SQL_SERVER
+            ElseIf parameterValue.DBMSType = DbEnum.DBMSType.DB2 Then
+                selectPagingSqlTemplate = SELECT_PAGING_DB2_TEMPLATE
+                p = "@"
+                s = """"
+                e = """"
+            Else
+                selectPagingSqlTemplate = SELECT_PAGING_SQL_TEMPLATE_SQL_SERVER
 
-				p = "@"
-				s = "["
-				e = "]"
+                p = "@"
+                s = "["
+                e = "]"
 			End If
 
 			Dim startRowNum As Integer = parameterValue.StartRowIndex + 1
@@ -979,12 +991,6 @@ Namespace Touryo.Infrastructure.Business.Business
         ''' <summary>関連チェック処理を実装可能に</summary>
         ''' <param name="parameterValue">引数</param>
         Protected Overridable Sub UOC_RelatedCheck(ByVal parameterValue As _3TierParameterValue)
-
         End Sub
-
-		''' <summary>関連チェック処理を実装可能に</summary>
-		''' <param name="parameterValue">引数</param>
-		Protected Overridable Sub UOC_RelatedCheck(parameterValue As _3TierParameterValue)
-		End Sub
 	End Class
 End Namespace

@@ -34,6 +34,7 @@
 //*                              'UOC_InsertRecord', 'UOC_UpdateRecord', 'UOC_DeleteRecord' and 'UOC_BatchUpdate' 
 //*  2014/07/21   Rituparna      Added SelectCount and SelectPaging query constatnts and check for MySql db support
 //*
+//*2014/08/14   Santosh Avaji    Added and modidfied code for DB2 support 
 //**********************************************************************************
 
 // レイトバインド用
@@ -84,7 +85,7 @@ namespace Touryo.Infrastructure.Business.Business
         private const string SELECT_COUNT_SQL_TEMPLATE =
             "SELECT COUNT(*) FROM {0} {1}";
 
-        /// <summary>データ件数取得SQLテンプレート</summary>
+        /// <summary>Select count query for PostgreSQL</summary>
         private const string SELECT_COUNT_POSTGRESQL_TEMPLATE =
             "SELECT COUNT(*) FROM \"{0}\" {1}";
 
@@ -107,6 +108,12 @@ namespace Touryo.Infrastructure.Business.Business
         /// </summary>
         private const string SELECT_PAGING_MYSQL_TEMPLATE =
             "SELECT * FROM(SELECT * FROM ( SELECT *,  @i := @i + 1 AS RESULT FROM {3},(SELECT @i := 0) TEMP ORDER BY \"{1}\"  {2}) TEMP1 {4})TEMP3 WHERE RESULT BETWEEN {5} AND {6}";
+
+        /// <summary>
+        /// Select Paging Query For DB2 database
+        /// </summary>
+        private const string SELECT_PAGING_DB2_TEMPLATE =
+            "SELECT * FROM (SELECT {0}, ROW_NUMBER() OVER (ORDER BY {1} {2}) AS ROWNUM FROM {3} {4}) WHERE ROWNUM BETWEEN {5} AND {6}";
 
         /// <summary>Where句生成SQLテンプレート（＝）</summary>
         private const string WHERE_SQL_TEMPLATE_EQUAL = "_s__ColName__e_ = _p__ParamName_";
@@ -256,7 +263,7 @@ namespace Touryo.Infrastructure.Business.Business
             string p = ""; // パラメタ記号
             string s = ""; // 囲い記号開始
             string e = ""; // 囲い記号終了
-            string f = ""; // 囲い記号終了
+            string f = ""; // For supporting type casting in PostgreSQL
             // 囲い文字の選択
             if (parameterValue.DBMSType == DbEnum.DBMSType.SQLServer)
             {
@@ -264,8 +271,8 @@ namespace Touryo.Infrastructure.Business.Business
                 s = "[";
                 e = "]";
             }
-            //MYSQL
-            else if (parameterValue.DBMSType == DbEnum.DBMSType.MySQL)
+            //MYSQL and DB2
+            else if (parameterValue.DBMSType == DbEnum.DBMSType.MySQL || parameterValue.DBMSType == DbEnum.DBMSType.DB2)
             {
                 p = "@";
                 s = "\"";
@@ -291,7 +298,7 @@ namespace Touryo.Infrastructure.Business.Business
 
             if (parameterValue.DBMSType == DbEnum.DBMSType.PstGrS)
             {
-            // SQLを設定して
+            //Set the Query for PostgreSQL database
             cmnDao.SQLText = string.Format(
                     SELECT_COUNT_POSTGRESQL_TEMPLATE,
                     s + parameterValue.TableName + e, whereSQL)
@@ -310,7 +317,7 @@ namespace Touryo.Infrastructure.Business.Business
 
             else
             {
-                // SQLを設定して
+                // SQLを設定して And DB2
                 cmnDao.SQLText = string.Format(
                     SELECT_COUNT_SQL_TEMPLATE,
                 s + parameterValue.TableName + e, whereSQL)
@@ -346,7 +353,7 @@ namespace Touryo.Infrastructure.Business.Business
             string p = ""; // パラメタ記号
             string s = ""; // 囲い記号開始
             string e = ""; // 囲い記号終了
-            string f = ""; // 囲い記号終了
+            string f = ""; // For supporting type casting in PostgreSQL
 
             // テンプレート、囲い文字の選択
             if (parameterValue.DBMSType == DbEnum.DBMSType.SQLServer)
@@ -360,6 +367,13 @@ namespace Touryo.Infrastructure.Business.Business
             else if (parameterValue.DBMSType == DbEnum.DBMSType.MySQL)
             {
                 selectPagingSqlTemplate = SELECT_PAGING_MYSQL_TEMPLATE;
+                p = "@";
+                s = "\"";
+                e = "\"";
+            }
+            else if (parameterValue.DBMSType == DbEnum.DBMSType.DB2)
+            {
+                selectPagingSqlTemplate = SELECT_PAGING_DB2_TEMPLATE;
                 p = "@";
                 s = "\"";
                 e = "\"";
@@ -407,7 +421,7 @@ namespace Touryo.Infrastructure.Business.Business
             }
             else
             {
-            // SQL本体の生成（いろいろ組み込み
+            // SQL本体の生成（いろいろ組み込み DB2
             //（DBMSによって可変となる可能性有り）
                 selectPagingSQL = string.Format(
                 selectPagingSqlTemplate,

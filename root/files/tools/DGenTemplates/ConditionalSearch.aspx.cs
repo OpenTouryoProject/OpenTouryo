@@ -112,6 +112,10 @@ public partial class _TableName_ConditionalSearch : MyBaseController
         {
             Session["DBMS"] = DbEnum.DBMSType.PstGrS;
         }
+        else if (this.ddlDap.SelectedValue == "DB2")
+        {
+            Session["DBMS"] = DbEnum.DBMSType.DB2;
+        }
 
     }
 
