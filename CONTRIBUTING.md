@@ -91,11 +91,11 @@
   (Reduce the size of the commit for review of the Pull Request.)  
   
   １つの"プルリクエスト"の中に複数のコミットが存在する場合、 
-  １つの”プルリクエスト”に対してレビューを行うためレビューがボトルネックになる。  
+  １つの”プルリクエスト”に対してレビューを行うためレビューがボトルネックになります。  
   If multiple commits are present in the one "pull request",  
   The review becomes a bottleneck because carrying out a review to one "pull request".  
   
-  このため、タスク毎にFeature Branchを作成して欲しい。  
+  このため、タスク毎にFeature Branchを作成して欲しいです。  
   その後、Feature Branchから都度”プルリクエスト”を送って私にレビューを依頼して下さい。  
   (For this reason, I want you to create a Feature Branch for each task.  
   Then, ask the review to me by sending each time "pull request" from the Feature Branch.)  
@@ -113,7 +113,7 @@
   (If "develop branch of fork source" was changed,  
   then you should do pull operation or fetch & merge operation.)  
   
-  私がプルリクエストをマージした後、コードがロールバックされていた。  
+  私がプルリクエストをマージした後、コードがロールバックされていました。  
   プルリクエストを送る前に、OpenTouryoのDevelop BranchをPull若しくはFetch＆Margeしてください。  
   (After I merged the pull request, code has been rolled back.  
   Before sending a pull request, please Fetch & Marge or Pull the Develop Branch of OpenTouryo. )  
