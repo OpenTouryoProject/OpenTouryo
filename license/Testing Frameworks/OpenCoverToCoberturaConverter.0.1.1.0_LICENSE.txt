@@ -1,4 +1,5 @@
-﻿                                 Apache License
+
+                                 Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
 
@@ -199,49 +200,3 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
-====================================================================
-
-Open Touryo SubComponent: 
-
-- For the log4net component:
-
-  - License:http://www.apache.org/licenses/
-  - See the following path.
-   ./log4net/LICENSE
-
-- For the Dotnetzip component:
-
-  - License:http://opensource.org/licenses/MS-PL
-  - See the following path.
-    - ./DotNetZip/License.txt
-    - ./DotNetZip/License.Combined.rtf
-
-    - Dotnetzip SubComponent:
-
-      - BZip2
-        - License:http://www.apache.org/licenses/LICENSE-2.0
-        - See the following path.
-          ./DotNetZip/License.BZip2.txt
-
-      - zlib
-        - License:http://www.zlib.net/zlib_license.html
-        - See the following path.
-          ./DotNetZip/License.zlib.txt
-
-- For the testing framework components:
- ├NUnit.2.6.3
- ├NUnit.Runners.2.6.3
- ├NUnitTestAdapter
- ├OpenCover.4.5.2506
- ├OpenCoverToCoberturaConverter.0.1.1.0
- └ReportGenerator.1.9.1.0
-
-  - See the following path. 
-    ./Testing Frameworks/ 
-
-  - NUnit 2.6.3
-      NUnit 2.6.3 assemblies distributed with this sample are subject to the the NUnit license.
-      Copyright © 2002-2014 Charlie Poole
-      Copyright © 2002-2004 James W. Newkirk, Michael C. Two, Alexei A. Vorontsov
-      Copyright © 2000-2002 Philip A. Craig
