@@ -104,8 +104,12 @@
     <None Include="app.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="bat\runopencover.bat" />
-    <None Include="bat\runtests.bat" />
+    <None Include="bat\runopencover.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="bat\runtests.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Public.Test.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
