@@ -106,8 +106,12 @@
     <Compile Include="Util\MyTimeZone.cs" />
     <Compile Include="Util\MyTimeZoneEnum.cs" />
     <Compile Include="Util\MyUserInfo.cs" />
-    <Compile Include="Workflow\WorkflowHistory.cs" />
-    <Compile Include="Workflow\WorkflowManager.cs" />
+    <Compile Include="Workflow\DaoM_User.cs" />
+    <Compile Include="Workflow\DaoM_Workflow.cs" />
+    <Compile Include="Workflow\DaoT_CurrentWorkflow.cs" />
+    <Compile Include="Workflow\DaoT_Workflow.cs" />
+    <Compile Include="Workflow\DaoT_WorkflowHistory.cs" />
+    <Compile Include="Workflow\Workflow.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Framework\Framework.csproj">
@@ -166,6 +170,7 @@
       <LastGenOutput>MyBusinessSystemExceptionMessageResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

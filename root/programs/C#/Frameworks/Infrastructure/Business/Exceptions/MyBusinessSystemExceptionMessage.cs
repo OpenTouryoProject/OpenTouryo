@@ -60,7 +60,7 @@ namespace Touryo.Infrastructure.Business.Exceptions
         #region SAMPLE_ERROR method
 
         /// <summary>システム例外のメッセージＩＤ、メッセージに使用する文字列定数（例）</summary>
-         public static string[] SAMPLE_ERROR
+        public static string[] SAMPLE_ERROR
         {
             get
             {
@@ -77,9 +77,9 @@ namespace Touryo.Infrastructure.Business.Exceptions
         #endregion
 
         #region CMN_DAO_ERROR method
-        
+
         /// <summary>共通Daoのエラー</summary>
-         public static string[] CMN_DAO_ERROR
+        public static string[] CMN_DAO_ERROR
         {
             get
             {
@@ -92,8 +92,6 @@ namespace Touryo.Infrastructure.Business.Exceptions
                 return new string[] { "CommonDaoError", temp };
             }
         }
-
-        #endregion
 
         #region CMN_DAO_ERROR_SQL method
 
@@ -112,6 +110,57 @@ namespace Touryo.Infrastructure.Business.Exceptions
 
         #endregion
 
+        #endregion
+
+        #region WORKFLOW_ERROR method
+
+        /// <summary>Workflowのエラー</summary>
+        public static string[] WORKFLOW_ERROR
+        {
+            get
+            {
+                string temp = "";
+                // Get current property name.
+                string key = PubCmnFunction.GetCurrentPropertyName();
+
+                // Returns the specified string resource for the specified culture or current UI culture.
+                temp = MyBusinessSystemExceptionMessage.CmnFunc(key);
+                return new string[] { "WorkflowError", temp };
+            }
+        }
+
+        #region WORKFLOW_ERROR_CHECK_ method
+
+        /// <summary>メッセージ定義ファイルの不正（メッセージ補足）</summary>
+        public static string WORKFLOW_ERROR_CHECK_EMPTY
+        {
+            get
+            {
+                // Get current property name.
+                string key = PubCmnFunction.GetCurrentPropertyName();
+
+                // Returns the specified string resource for the specified culture or current UI culture.
+                return MyBusinessSystemExceptionMessage.CmnFunc(key);
+            }
+        }
+
+        /// <summary>メッセージ定義ファイルの不正（メッセージ補足）</summary>
+        public static string WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED
+        {
+            get
+            {
+                // Get current property name.
+                string key = PubCmnFunction.GetCurrentPropertyName();
+
+                // Returns the specified string resource for the specified culture or current UI culture.
+                return MyBusinessSystemExceptionMessage.CmnFunc(key);
+            }
+        }
+        
+        #endregion
+
+        #endregion
+
         #region CmnFunc method
         /// <summary>Returns the specified string resource for the specified culture or current UI culture. </summary>
         /// <param name="key">resource key</param>
@@ -122,7 +171,7 @@ namespace Touryo.Infrastructure.Business.Exceptions
             ResourceManager rm = MyBusinessSystemExceptionMessageResource.ResourceManager;
 
             // We acquire a value from App.Config.
-            string FxUICulture = GetConfigParameter.GetConfigValue(PubLiteral.EXCEPTIONMESSAGECULTUER); 
+            string FxUICulture = GetConfigParameter.GetConfigValue(PubLiteral.EXCEPTIONMESSAGECULTUER);
 
             if (string.IsNullOrEmpty(FxUICulture))
             {

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoT_CurrentWorkflow_S3_Update
+  -- 2014/7/18 日立 太郎
+  UPDATE
+    [T_CurrentWorkflow]
+  SET
+    <DELCMA>
+      <IF>[WorkflowControlNo] = @Set_WorkflowControlNo_forUPD,</IF>
+      <IF>[HistoryNo] = @Set_HistoryNo_forUPD,</IF>
+      <IF>[WfPositionId] = @Set_WfPositionId_forUPD,</IF>
+      <IF>[WorkflowNo] = @Set_WorkflowNo_forUPD,</IF>
+      <IF>[FromUserId] = @Set_FromUserId_forUPD,</IF>
+      <IF>[FromUserInfo] = @Set_FromUserInfo_forUPD,</IF>
+      <IF>[ActionType] = @Set_ActionType_forUPD,</IF>
+      <IF>[ToUserId] = @Set_ToUserId_forUPD,</IF>
+      <IF>[ToUserInfo] = @Set_ToUserInfo_forUPD,</IF>
+      <IF>[ToUserPositionTitlesId] = @Set_ToUserPositionTitlesId_forUPD,</IF>
+      <IF>[NextWfPositionId] = @Set_NextWfPositionId_forUPD,</IF>
+      <IF>[NextWorkflowNo] = @Set_NextWorkflowNo_forUPD,</IF>
+      <IF>[ReserveArea] = @Set_ReserveArea_forUPD,</IF>
+      <IF>[ExclusiveKey] = @Set_ExclusiveKey_forUPD,</IF>
+      <IF>[ReplyDeadline] = @Set_ReplyDeadline_forUPD,</IF>
+      <IF>[StartDate] = @Set_StartDate_forUPD,</IF>
+      <IF>[AcceptanceDate] = @Set_AcceptanceDate_forUPD,</IF>
+      <IF>[AcceptanceUserId] = @Set_AcceptanceUserId_forUPD,</IF>
+      <IF>[AcceptanceUserInfo] = @Set_AcceptanceUserInfo_forUPD,</IF>
+    </DELCMA>
+  WHERE
+    [WorkflowControlNo] = @WorkflowControlNo
+</ROOT>

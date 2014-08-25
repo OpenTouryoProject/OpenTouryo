@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoM_Workflow_S2_Select
+  -- 2014/7/18 日立 太郎
+  SELECT 
+    [Id],
+    [SubSystemId],
+    [WorkflowName],
+    [WfPositionId],
+    [WorkflowNo],
+    [FromUserId],
+    [ActionType],
+    [ToUserId],
+    [ToUserPositionTitlesId],
+    [NextWfPositionId],
+    [NextWorkflowNo],
+    [CorrespondOfReplyWorkflow],
+    [MailTemplateId],
+    [ReserveArea]
+  FROM
+    [M_Workflow]
+  <WHERE>
+    WHERE
+      [Id] = @Id
+  </WHERE>
+</ROOT>

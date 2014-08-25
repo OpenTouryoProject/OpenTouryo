@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoM_Workflow_D5_SelCnt
+  -- 2014/7/18 日立 太郎
+  SELECT 
+    COUNT(*)
+  FROM
+    [M_Workflow]
+  <WHERE>
+    WHERE
+      <IF>AND [Id] = @Id<ELSE>AND [Id] IS NULL</ELSE></IF>
+      <IF>AND [Id] LIKE @Id_Like</IF>
+      <IF>AND [SubSystemId] = @SubSystemId<ELSE>AND [SubSystemId] IS NULL</ELSE></IF>
+      <IF>AND [SubSystemId] LIKE @SubSystemId_Like</IF>
+      <IF>AND [WorkflowName] = @WorkflowName<ELSE>AND [WorkflowName] IS NULL</ELSE></IF>
+      <IF>AND [WorkflowName] LIKE @WorkflowName_Like</IF>
+      <IF>AND [WfPositionId] = @WfPositionId<ELSE>AND [WfPositionId] IS NULL</ELSE></IF>
+      <IF>AND [WfPositionId] LIKE @WfPositionId_Like</IF>
+      <IF>AND [WorkflowNo] = @WorkflowNo<ELSE>AND [WorkflowNo] IS NULL</ELSE></IF>
+      <IF>AND [WorkflowNo] LIKE @WorkflowNo_Like</IF>
+      <IF>AND [FromUserId] = @FromUserId<ELSE>AND [FromUserId] IS NULL</ELSE></IF>
+      <IF>AND [FromUserId] LIKE @FromUserId_Like</IF>
+      <IF>AND [ActionType] = @ActionType<ELSE>AND [ActionType] IS NULL</ELSE></IF>
+      <IF>AND [ActionType] LIKE @ActionType_Like</IF>
+      <IF>AND [ToUserId] = @ToUserId<ELSE>AND [ToUserId] IS NULL</ELSE></IF>
+      <IF>AND [ToUserId] LIKE @ToUserId_Like</IF>
+      <IF>AND [ToUserPositionTitlesId] = @ToUserPositionTitlesId<ELSE>AND [ToUserPositionTitlesId] IS NULL</ELSE></IF>
+      <IF>AND [ToUserPositionTitlesId] LIKE @ToUserPositionTitlesId_Like</IF>
+      <IF>AND [NextWfPositionId] = @NextWfPositionId<ELSE>AND [NextWfPositionId] IS NULL</ELSE></IF>
+      <IF>AND [NextWfPositionId] LIKE @NextWfPositionId_Like</IF>
+      <IF>AND [NextWorkflowNo] = @NextWorkflowNo<ELSE>AND [NextWorkflowNo] IS NULL</ELSE></IF>
+      <IF>AND [NextWorkflowNo] LIKE @NextWorkflowNo_Like</IF>
+      <IF>AND [CorrespondOfReplyWorkflow] = @CorrespondOfReplyWorkflow<ELSE>AND [CorrespondOfReplyWorkflow] IS NULL</ELSE></IF>
+      <IF>AND [CorrespondOfReplyWorkflow] LIKE @CorrespondOfReplyWorkflow_Like</IF>
+      <IF>AND [MailTemplateId] = @MailTemplateId<ELSE>AND [MailTemplateId] IS NULL</ELSE></IF>
+      <IF>AND [MailTemplateId] LIKE @MailTemplateId_Like</IF>
+      <IF>AND [ReserveArea] = @ReserveArea<ELSE>AND [ReserveArea] IS NULL</ELSE></IF>
+      <IF>AND [ReserveArea] LIKE @ReserveArea_Like</IF>
+  </WHERE>
+</ROOT>

@@ -126,4 +126,13 @@
   <data name="SAMPLE_ERROR" xml:space="preserve">
     <value>Message_SampleError Japanese</value>
   </data>
+  <data name="WORKFLOW_ERROR" xml:space="preserve">
+    <value>Workflowでエラーが発生しました。：{0}</value>
+  </data>
+  <data name="WORKFLOW_ERROR_CHECK_EMPTY" xml:space="preserve">
+    <value>{0} 引数が空です。</value>
+  </data>
+  <data name="WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED" xml:space="preserve">
+    <value>{0} フィールドは、{1} に含まれていません.</value>
+  </data>
 </root>

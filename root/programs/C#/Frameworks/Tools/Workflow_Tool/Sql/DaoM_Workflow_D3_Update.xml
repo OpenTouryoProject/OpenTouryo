@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoM_Workflow_D3_Update
+  -- 2014/7/18 日立 太郎
+  UPDATE
+    [M_Workflow]
+  SET
+    <DELCMA>
+      <IF>[Id] = @Set_Id_forUPD,</IF>
+      <IF>[SubSystemId] = @Set_SubSystemId_forUPD,</IF>
+      <IF>[WorkflowName] = @Set_WorkflowName_forUPD,</IF>
+      <IF>[WfPositionId] = @Set_WfPositionId_forUPD,</IF>
+      <IF>[WorkflowNo] = @Set_WorkflowNo_forUPD,</IF>
+      <IF>[FromUserId] = @Set_FromUserId_forUPD,</IF>
+      <IF>[ActionType] = @Set_ActionType_forUPD,</IF>
+      <IF>[ToUserId] = @Set_ToUserId_forUPD,</IF>
+      <IF>[ToUserPositionTitlesId] = @Set_ToUserPositionTitlesId_forUPD,</IF>
+      <IF>[NextWfPositionId] = @Set_NextWfPositionId_forUPD,</IF>
+      <IF>[NextWorkflowNo] = @Set_NextWorkflowNo_forUPD,</IF>
+      <IF>[CorrespondOfReplyWorkflow] = @Set_CorrespondOfReplyWorkflow_forUPD,</IF>
+      <IF>[MailTemplateId] = @Set_MailTemplateId_forUPD,</IF>
+      <IF>[ReserveArea] = @Set_ReserveArea_forUPD,</IF>
+    </DELCMA>
+  <WHERE>
+    WHERE
+      <IF>AND [Id] = @Id<ELSE>AND [Id] IS NULL</ELSE></IF>
+      <IF>AND [SubSystemId] = @SubSystemId<ELSE>AND [SubSystemId] IS NULL</ELSE></IF>
+      <IF>AND [WorkflowName] = @WorkflowName<ELSE>AND [WorkflowName] IS NULL</ELSE></IF>
+      <IF>AND [WfPositionId] = @WfPositionId<ELSE>AND [WfPositionId] IS NULL</ELSE></IF>
+      <IF>AND [WorkflowNo] = @WorkflowNo<ELSE>AND [WorkflowNo] IS NULL</ELSE></IF>
+      <IF>AND [FromUserId] = @FromUserId<ELSE>AND [FromUserId] IS NULL</ELSE></IF>
+      <IF>AND [ActionType] = @ActionType<ELSE>AND [ActionType] IS NULL</ELSE></IF>
+      <IF>AND [ToUserId] = @ToUserId<ELSE>AND [ToUserId] IS NULL</ELSE></IF>
+      <IF>AND [ToUserPositionTitlesId] = @ToUserPositionTitlesId<ELSE>AND [ToUserPositionTitlesId] IS NULL</ELSE></IF>
+      <IF>AND [NextWfPositionId] = @NextWfPositionId<ELSE>AND [NextWfPositionId] IS NULL</ELSE></IF>
+      <IF>AND [NextWorkflowNo] = @NextWorkflowNo<ELSE>AND [NextWorkflowNo] IS NULL</ELSE></IF>
+      <IF>AND [CorrespondOfReplyWorkflow] = @CorrespondOfReplyWorkflow<ELSE>AND [CorrespondOfReplyWorkflow] IS NULL</ELSE></IF>
+      <IF>AND [MailTemplateId] = @MailTemplateId<ELSE>AND [MailTemplateId] IS NULL</ELSE></IF>
+      <IF>AND [ReserveArea] = @ReserveArea<ELSE>AND [ReserveArea] IS NULL</ELSE></IF>
+  </WHERE>
+</ROOT>

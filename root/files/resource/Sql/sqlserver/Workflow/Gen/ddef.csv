@@ -1,0 +1,11 @@
+﻿テーブル名,カラム情報～
+M_Workflow,Id,
+,SubSystemId,WorkflowName,WfPositionId,WorkflowNo,FromUserId,ActionType,ToUserId,ToUserPositionTitlesId,NextWfPositionId,NextWorkflowNo,CorrespondOfReplyWorkflow,MailTemplateId,ReserveArea,
+M_User,Id,
+,Section,Name,PositionTitlesId,
+T_WorkflowHistory,WorkflowControlNo,HistoryNo,
+,WfPositionId,WorkflowNo,FromUserId,FromUserInfo,ActionType,ToUserId,ToUserInfo,ToUserPositionTitlesId,NextWfPositionId,NextWorkflowNo,ReserveArea,ReplyDeadline,StartDate,AcceptanceDate,AcceptanceUserId,AcceptanceUserInfo,EndDate,
+T_CurrentWorkflow,WorkflowControlNo,
+,HistoryNo,WfPositionId,WorkflowNo,FromUserId,FromUserInfo,ActionType,ToUserId,ToUserInfo,ToUserPositionTitlesId,NextWfPositionId,NextWorkflowNo,ReserveArea,ExclusiveKey,ReplyDeadline,StartDate,AcceptanceDate,AcceptanceUserId,AcceptanceUserInfo,
+T_Workflow,WorkflowControlNo,
+,SubSystemId,WorkflowName,UserId,UserInfo,ReserveArea,StartDate,EndDate,

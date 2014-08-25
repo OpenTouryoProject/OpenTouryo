@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoT_Workflow_S3_Update
+  -- 2014/7/18 日立 太郎
+  UPDATE
+    [T_Workflow]
+  SET
+    <DELCMA>
+      <IF>[WorkflowControlNo] = @Set_WorkflowControlNo_forUPD,</IF>
+      <IF>[SubSystemId] = @Set_SubSystemId_forUPD,</IF>
+      <IF>[WorkflowName] = @Set_WorkflowName_forUPD,</IF>
+      <IF>[UserId] = @Set_UserId_forUPD,</IF>
+      <IF>[UserInfo] = @Set_UserInfo_forUPD,</IF>
+      <IF>[ReserveArea] = @Set_ReserveArea_forUPD,</IF>
+      <IF>[StartDate] = @Set_StartDate_forUPD,</IF>
+      <IF>[EndDate] = @Set_EndDate_forUPD,</IF>
+    </DELCMA>
+  WHERE
+    [WorkflowControlNo] = @WorkflowControlNo
+</ROOT>
