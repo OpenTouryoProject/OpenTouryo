@@ -28,7 +28,7 @@
 //*  Date:        Author:          Comments:
 //*  ----------  ----------------  -------------------------------------------------
 //*  05/08/2014   Santosh Avaji    Testcode development for CheckCharCode.
-//*
+//*  08/11/2014   Rituparna        Added TestcaseID using SetName and TestName method as per Nishino-San comments
 //**********************************************************************************
 
 #region Includes
@@ -85,17 +85,16 @@ namespace Public.Test.Str
         #endregion
         #region Method Tests
         #region GeneratedMethods
-        /// <summary> Is In Range Method Test</summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// <summary> Is In Range Method Test</summary>        
         /// <param name="test">test</param>
-        [TestCase("TestID-001N", "bbba", Description = "Returns true")]
-        [TestCase("TestID-002N", "bbac", Description = "Returns true")]
-        [TestCase("TestID-003N", "abcd", Description = "Returns true")]
-        [TestCase("TestID-004N", "desc", ExpectedException = typeof(NUnit.Framework.AssertionException), Description = "Returns false hence throwing Assestion exception")]
-        [TestCase("TestID-005A", "", ExpectedException = typeof(ArgumentOutOfRangeException), Description = "Pass Zero length string")]
-        [TestCase("TestID-006A", "Abcdefghi", ExpectedException = typeof(ArgumentOutOfRangeException), Description = "More than eight Characters")]
-        [TestCase("TestID-007A", null, Description = "Pass null value", ExpectedException = typeof(ArgumentNullException))]
-        public void IsInRangeTest(string testCaseID, string test)
+        [TestCase("bbba", Description = "Returns true",TestName="TestID-001N")]
+        [TestCase("bbac", Description = "Returns true", TestName = "TestID-002N")]
+        [TestCase("abcd", Description = "Returns true", TestName = "TestID-003N")]
+        [TestCase("desc", ExpectedException = typeof(NUnit.Framework.AssertionException), Description = "Returns false hence throwing Assestion exception", TestName = "TestID-004N")]
+        [TestCase("", ExpectedException = typeof(ArgumentOutOfRangeException), Description = "Pass Zero length string",TestName="TestID-005A")]
+        [TestCase("Abcdefghi", ExpectedException = typeof(ArgumentOutOfRangeException), Description = "More than eight Characters",TestName="TestID-006A")]
+        [TestCase(null, Description = "Pass null value", ExpectedException = typeof(ArgumentNullException), TestName = "TestID-007A")]
+        public void IsInRangeTest(string test)
         {
             try
             {
@@ -104,18 +103,17 @@ namespace Public.Test.Str
             }
             catch (Exception ex)
             {
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
-        /// <summary>ConstructorTest Method</summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// <summary>ConstructorTest Method</summary>        
         /// <param name="startChar">startChar</param>
         /// <param name="endChar">endChar</param>
         /// <param name="stringEncoding">stringEncoding</param>
         [TestCaseSource("Test")]
-        public void ConstructorTest(string testCaseID, string startChar, string endChar, Encoding stringEncoding)
+        public void ConstructorTest(string startChar, string endChar, Encoding stringEncoding)
         {
             try
             {
@@ -123,7 +121,7 @@ namespace Public.Test.Str
             }
             catch (Exception ex)
             {
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -135,14 +133,14 @@ namespace Public.Test.Str
         {
             get
             {
-                yield return new TestCaseData("TestID-001N", "start", "end", Encoding.ASCII);
-                yield return new TestCaseData("TestID-002N", "Compare", "Compared", Encoding.UTF7);
-                yield return new TestCaseData("TestID-003A", "", "end", Encoding.ASCII).Throws(typeof(ArgumentOutOfRangeException));
-                yield return new TestCaseData("TestID-004A", "MoreThanEightCharacter", "end", Encoding.ASCII).Throws(typeof(ArgumentOutOfRangeException));
-                yield return new TestCaseData("TestID-005A", "MoreThanEightCharacter", "", Encoding.ASCII).Throws(typeof(ArgumentOutOfRangeException));
-                yield return new TestCaseData("TestID-006A", "Correct", "MoreThanEightCharacter", Encoding.ASCII).Throws(typeof(ArgumentOutOfRangeException));
-                yield return new TestCaseData("TestID-007A", null, "MoreThanEightCharacter", Encoding.ASCII).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-008A", "Correct", null, Encoding.ASCII).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("start", "end", Encoding.ASCII).SetName("TestID-001N");
+                yield return new TestCaseData("Compare", "Compared", Encoding.UTF7).SetName("TestID-002N");
+                yield return new TestCaseData("", "end", Encoding.ASCII).Throws(typeof(ArgumentOutOfRangeException)).SetName("TestID-003A");
+                yield return new TestCaseData("MoreThanEightCharacter", "end", Encoding.ASCII).Throws(typeof(ArgumentOutOfRangeException)).SetName("TestID-004A");
+                yield return new TestCaseData("MoreThanEightCharacter", "", Encoding.ASCII).Throws(typeof(ArgumentOutOfRangeException)).SetName("TestID-005A");
+                yield return new TestCaseData("Correct", "MoreThanEightCharacter", Encoding.ASCII).Throws(typeof(ArgumentOutOfRangeException)).SetName("TestID-006A");
+                yield return new TestCaseData(null, "MoreThanEightCharacter", Encoding.ASCII).Throws(typeof(ArgumentNullException)).SetName("TestID-007A");
+                yield return new TestCaseData("Correct", null, Encoding.ASCII).Throws(typeof(ArgumentNullException)).SetName("TestID-008A");
             }
         }
         #endregion // End of GeneratedMethods

@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2014/05/08  Sai               Testcode development for PubCmnFunction class .
+//*  08/11/2014  Sai               Added TestcaseID using SetName method as per Nishino-San comments
 //*
 //**********************************************************************************
 
@@ -127,27 +128,26 @@ namespace Public.Test.Util
         {
             get
             {
-                this.TestFixtureSetup();
                 //Normal test case
-                yield return new TestCaseData("TestID-001N", "CategoryID=0001;CategoryName=Test");
-                yield return new TestCaseData("TestID-002N", "CategoryID{=}0001;CategoryName=Test").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("CategoryID=0001;CategoryName=Test").SetName("TestID-001N");
+                yield return new TestCaseData("CategoryID{=}0001;CategoryName=Test").Throws(typeof(ArgumentException)).SetName("TestID-002N");
 
                 //Abnormal test case
-                yield return new TestCaseData("TestID-003A", "=CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-004A", ";CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-005A", "}CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-006A", "CategoryID0001;CategoryName=Test").Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-007A", "Category=ID0001CategoryName=Test").Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-008A", "{CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-009A", "=0001;CategoryName=Test").Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-010A", "CategoryID=;CategoryName=Test").Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-011A", "{CategoryID=0;CategoryName=Test").Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-012A", "CategoryID=0;CategoryName=");
-                yield return new TestCaseData("TestID-013A", "CategoryID=0;CategoryName=cat\r\ndog\r\nanimal\r\nperson");
-                yield return new TestCaseData("TestID-014A", "3CategoryID=0,CategoryName=cat").Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-015A", "CategoryID{=0001;CategoryName=Test").Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-016A", "CategoryID}=0001;CategoryName=Test").Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-017A", "CategoryID=0001;=Test").Throws(typeof(ArgumentException));
+                yield return new TestCaseData("=CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentException)).SetName("TestID-003A");
+                yield return new TestCaseData(";CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentException)).SetName("TestID-004A");
+                yield return new TestCaseData("}CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentException)).SetName("TestID-005A");
+                yield return new TestCaseData("CategoryID0001;CategoryName=Test").Throws(typeof(ArgumentException)).SetName("TestID-006A");
+                yield return new TestCaseData("Category=ID0001CategoryName=Test").Throws(typeof(ArgumentException)).SetName("TestID-007A");
+                yield return new TestCaseData("{CategoryID=0001;CategoryName=Test").Throws(typeof(ArgumentException)).SetName("TestID-008A");
+                yield return new TestCaseData("=0001;CategoryName=Test").Throws(typeof(ArgumentException)).SetName("TestID-009A");
+                yield return new TestCaseData("CategoryID=;CategoryName=Test").Throws(typeof(ArgumentException)).SetName("TestID-010A");
+                yield return new TestCaseData("{CategoryID=0;CategoryName=Test").Throws(typeof(ArgumentException)).SetName("TestID-011A");
+                yield return new TestCaseData("CategoryID=0;CategoryName=").SetName("TestID-012A");
+                yield return new TestCaseData("CategoryID=0;CategoryName=cat\r\ndog\r\nanimal\r\nperson").SetName("TestID-013A");
+                yield return new TestCaseData("3CategoryID=0,CategoryName=cat").Throws(typeof(ArgumentException)).SetName("TestID-014A");
+                yield return new TestCaseData("CategoryID{=0001;CategoryName=Test").Throws(typeof(ArgumentException)).SetName("TestID-015A");
+                yield return new TestCaseData("CategoryID}=0001;CategoryName=Test").Throws(typeof(ArgumentException)).SetName("TestID-016A");
+                yield return new TestCaseData("CategoryID=0001;=Test").Throws(typeof(ArgumentException)).SetName("TestID-017A");
             }
         }
         /// <summary>
@@ -158,18 +158,17 @@ namespace Public.Test.Util
         {
             get
             {
-                this.TestFixtureSetup();
                 //Normal test case
-                yield return new TestCaseData("TestID-001N", '/');
-                yield return new TestCaseData("TestID-002N", 'Z');
-                yield return new TestCaseData("TestID-003N", '\\');
+                yield return new TestCaseData('/').SetName("TestID-001N");
+                yield return new TestCaseData('Z').SetName("TestID-002N");
+                yield return new TestCaseData('\\').SetName("TestID-003N");
                 //Abnormal test case
-                yield return new TestCaseData("TestID-004A", 'o');
-                yield return new TestCaseData("TestID-005A", '"');
-                yield return new TestCaseData("TestID-006A", '\"');
-                yield return new TestCaseData("TestID-007A", ' ');
-                yield return new TestCaseData("TestID-008A", '2');
-                yield return new TestCaseData("TestID-009A", "Vtry").Throws(typeof(ArgumentException));
+                yield return new TestCaseData('o').SetName("TestID-004A");
+                yield return new TestCaseData('"').SetName("TestID-005A");
+                yield return new TestCaseData('\"').SetName("TestID-006A");
+                yield return new TestCaseData(' ').SetName("TestID-007A");
+                yield return new TestCaseData('2').SetName("TestID-008A");
+                yield return new TestCaseData("Vtry").Throws(typeof(ArgumentException)).SetName("TestID-009A");
             }
         }
         /// <summary>
@@ -180,24 +179,23 @@ namespace Public.Test.Util
         {
             get
             {
-                this.TestFixtureSetup();
                 //Normal test case
-                yield return new TestCaseData("TestID-001N", "%test");
-                yield return new TestCaseData("TestID-002N", "%test test");
-                yield return new TestCaseData("TestID-003N", @"C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\
+                yield return new TestCaseData("%test").SetName("TestID-001N");
+                yield return new TestCaseData("%test test").SetName("TestID-002N");
+                yield return new TestCaseData(@"C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\
                                                                v1.0\;C:\Program Files\Windows Imaging\;C:\Program Files\Microsoft SQL Server\100\Tools\Binn\;
                                                                C:\Program Files\Microsoft SQL Server\100\DTS\Binn\;C:\Program Files\Microsoft SQL Server\100\
                                                                Tools\Binn\VSShell\Common7\IDE\;C:\Program Files\Microsoft\Web Platform Installer\;C:\Program Files
-                                                               \Microsoft ASP.NET\ASP.NET Web Pages\v1.0\;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\");
-                yield return new TestCaseData("TestID-003N", @"%USERPROFILE%\AppData\Local\Temp");
-                yield return new TestCaseData("TestID-004N", @".;C:\PROGRA~1\IBM\SQLLIB\java\db2java.zip;C:\PROGRA~1\IBM\SQLLIB\java\db2jcc.jar;C:\PROGRA~1\IBM\
+                                                               \Microsoft ASP.NET\ASP.NET Web Pages\v1.0\;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\").SetName("TestID-003N");
+                yield return new TestCaseData(@"%USERPROFILE%\AppData\Local\Temp").SetName("TestID-003N");
+                yield return new TestCaseData(@".;C:\PROGRA~1\IBM\SQLLIB\java\db2java.zip;C:\PROGRA~1\IBM\SQLLIB\java\db2jcc.jar;C:\PROGRA~1\IBM\
                                                SQLLIB\java\sqlj.zip;C:\PROGRA~1\IBM\SQLLIB\java\db2jcc_license_cu.jar;C:\PROGRA~1\IBM\SQLLIB\bin;C:\PROGRA~1\IBM\
-                                               SQLLIB\java\common.jar");
+                                               SQLLIB\java\common.jar").SetName("TestID-004N");
                 //Abnormal test case
-                yield return new TestCaseData("TestID-005L", string.Empty);
-                yield return new TestCaseData("TestID-006L", null);
-                yield return new TestCaseData("TestID-007A", @"--***-**-8j@\|//^&$#!~`?<>:;");
-                yield return new TestCaseData("TestID-008A", @"%USEuRPROFILE%\AppData\Local\Tempu");
+                yield return new TestCaseData(string.Empty).SetName("TestID-005L");
+                yield return new TestCaseData(null).SetName("TestID-006L");
+                yield return new TestCaseData(@"--***-**-8j@\|//^&$#!~`?<>:;").SetName("TestID-007A");
+                yield return new TestCaseData(@"%USEuRPROFILE%\AppData\Local\Tempu").SetName("TestID-008A");
             }
         }
         /// <summary>
@@ -208,9 +206,8 @@ namespace Public.Test.Util
         {
             get
             {
-                this.TestFixtureSetup();
                 //Normal test case
-                yield return new TestCaseData("TestID-001N").Throws(typeof(NullReferenceException));
+                yield return new TestCaseData().Throws(typeof(NullReferenceException)).SetName("TestID-001N");
             }
         }
         /// <summary>
@@ -221,9 +218,8 @@ namespace Public.Test.Util
         {
             get
             {
-                this.TestFixtureSetup();
                 //Normal test case
-                yield return new TestCaseData("TestID-001N").Throws(typeof(NullReferenceException));
+                yield return new TestCaseData().Throws(typeof(NullReferenceException)).SetName("TestID-001N");
             }
         }
         /// <summary>
@@ -234,9 +230,8 @@ namespace Public.Test.Util
         {
             get
             {
-                this.TestFixtureSetup();
                 //Normal test case
-                yield return new TestCaseData("TestID-001N").Throws(typeof(NullReferenceException));
+                yield return new TestCaseData().Throws(typeof(NullReferenceException)).SetName("TestID-001N");
             }
         }
         /// <summary>
@@ -247,9 +242,8 @@ namespace Public.Test.Util
         {
             get
             {
-                this.TestFixtureSetup();
                 //Normal test case
-                yield return new TestCaseData("TestID-001N");
+                yield return new TestCaseData().SetName("TestID-001N");
             }
         }
         /// <summary>
@@ -260,9 +254,8 @@ namespace Public.Test.Util
         {
             get
             {
-                this.TestFixtureSetup();
                 //Normal test case
-                yield return new TestCaseData("TestID-001N");
+                yield return new TestCaseData().SetName("TestID-001N");
             }
         }
         /// <summary>
@@ -273,9 +266,8 @@ namespace Public.Test.Util
         {
             get
             {
-                this.TestFixtureSetup();
                 //Normal test case
-                yield return new TestCaseData("TestID-001N");
+                yield return new TestCaseData().SetName("TestID-001N");
             }
         }
         /// <summary>
@@ -286,18 +278,17 @@ namespace Public.Test.Util
         {
             get
             {
-                this.TestFixtureSetup();
                 //Normal test case
-                yield return new TestCaseData("TestID-001N", "DaoOrders.cs,DaoOrdersTest.vb", ',');
-                yield return new TestCaseData("TestID-002L", "DaoOrders.cs,DaoOrdersd.vb", '\0');
-                yield return new TestCaseData("TestID-003L", "DaoOrders.cs", '\0');
-                yield return new TestCaseData("TestID-004L", "DaoOrders.csDaoOrdersTest", '\0');
-                yield return new TestCaseData("TestID-005A", "DaoOrders.cs", ',');
-                yield return new TestCaseData("TestID-006A", "DaoOrders.cs,", '\0');
-                yield return new TestCaseData("TestID-007A", "DaoOrders.cs,", ',');
-                yield return new TestCaseData("TestID-008A", "DaoOrders.cs,DaoOrders.vb", '-');
-                yield return new TestCaseData("TestID-009A", "DaoOrders.cs,DaoOrders.vb", ',');
-                yield return new TestCaseData("TestID-010A", "DaoOrders.cs,DaoOrdersTest", ',');
+                yield return new TestCaseData("DaoOrders.cs,DaoOrdersTest.vb", ',').SetName("TestID-001N");
+                yield return new TestCaseData("DaoOrders.cs,DaoOrdersd.vb", '\0').SetName("TestID-002L");
+                yield return new TestCaseData("DaoOrders.cs", '\0').SetName("TestID-003L");
+                yield return new TestCaseData("DaoOrders.csDaoOrdersTest", '\0').SetName("TestID-004L");
+                yield return new TestCaseData("DaoOrders.cs", ',').SetName("TestID-005A");
+                yield return new TestCaseData("DaoOrders.cs,", '\0').SetName("TestID-006A");
+                yield return new TestCaseData("DaoOrders.cs,", ',').SetName("TestID-007A");
+                yield return new TestCaseData("DaoOrders.cs,DaoOrders.vb", '-').SetName("TestID-008A");
+                yield return new TestCaseData("DaoOrders.cs,DaoOrders.vb", ',').SetName("TestID-009A");
+                yield return new TestCaseData("DaoOrders.cs,DaoOrdersTest", ',').SetName("TestID-010A");
             }
         }
         /// <summary>
@@ -308,16 +299,16 @@ namespace Public.Test.Util
         {
             get
             {
-                this.TestFixtureSetup();
+
                 //Normal test case
-                yield return new TestCaseData("TestID-001N", new byte[] { 0, 1, 2 }, 1);
-                yield return new TestCaseData("TestID-002N", new byte[] { 0, 1, 2, 3 }, 2);
-                yield return new TestCaseData("TestID-003L", new byte[] { 0, 1, 2 }, 0).Throws(typeof(IndexOutOfRangeException));
-                yield return new TestCaseData("TestID-004L", new byte[] { }, 0);
-                yield return new TestCaseData("TestID-005L", new byte[] { }, 2);
-                yield return new TestCaseData("TestID-006L", new byte[] { }, 2);
-                yield return new TestCaseData("TestID-007N", new byte[] { 0, 1, 2 }, 4);
-                yield return new TestCaseData("TestID-008A", new byte[] { 0, 1, 2, 3, 4 }, 5);
+                yield return new TestCaseData(new byte[] { 0, 1, 2 }, 1).SetName("TestID-001N");
+                yield return new TestCaseData(new byte[] { 0, 1, 2, 3 }, 2).SetName("TestID-002N");
+                yield return new TestCaseData(new byte[] { 0, 1, 2 }, 0).Throws(typeof(IndexOutOfRangeException)).SetName("TestID-003L");
+                yield return new TestCaseData(new byte[] { }, 0).SetName("TestID-004L");
+                yield return new TestCaseData(new byte[] { }, 2).SetName("TestID-005L");
+                yield return new TestCaseData(new byte[] { }, 2).SetName("TestID-006L");
+                yield return new TestCaseData(new byte[] { 0, 1, 2 }, 4).SetName("TestID-007N");
+                yield return new TestCaseData(new byte[] { 0, 1, 2, 3, 4 }, 5).SetName("TestID-008A");
             }
         }
         /// <summary>
@@ -328,13 +319,12 @@ namespace Public.Test.Util
         {
             get
             {
-                this.TestFixtureSetup();
                 //Normal test case
-                yield return new TestCaseData("TestID-001N", new byte[] { 0, 1, 2 });
-                yield return new TestCaseData("TestID-002L", new byte[] { 1 });
-                yield return new TestCaseData("TestID-003L", new byte[] { }).Throws(typeof(ArgumentOutOfRangeException));
-                yield return new TestCaseData("TestID-004L", new byte[] { }).Throws(typeof(ArgumentOutOfRangeException));
-                yield return new TestCaseData("TestID-005L", new byte[] { 1, 2, 3, 1, 2, 1, 1, 23, 236 }).Throws(typeof(ArgumentOutOfRangeException));
+                yield return new TestCaseData(new byte[] { 0, 1, 2 }).SetName("TestID-001N");
+                yield return new TestCaseData(new byte[] { 1 }).SetName("TestID-002L");
+                yield return new TestCaseData(new byte[] { }).Throws(typeof(ArgumentOutOfRangeException)).SetName("TestID-003L");
+                yield return new TestCaseData(new byte[] { }).Throws(typeof(ArgumentOutOfRangeException)).SetName("TestID-004L");
+                yield return new TestCaseData(new byte[] { 1, 2, 3, 1, 2, 1, 1, 23, 236 }).Throws(typeof(ArgumentOutOfRangeException)).SetName("TestID-005L");
             }
         }
         #endregion
@@ -344,10 +334,9 @@ namespace Public.Test.Util
         /// <summary>        
         /// GetPropsFromPropString Method Test      
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="propString">propString</param>
         [TestCaseSource("TestCasesOfGetPropsFromPropStringTest")]
-        public void GetPropsFromPropStringTest(string testCaseID, string propString)
+        public void GetPropsFromPropStringTest(string propString)
         {
             try
             {
@@ -361,7 +350,7 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -369,10 +358,9 @@ namespace Public.Test.Util
         /// <summary>
         /// GetCommandArgs Method Test        
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="preFix">preFix</param>
         [TestCaseSource("TestCasesOfGetCommandArgsTest")]
-        public void GetCommandArgsTest(string testCaseID, char preFix)
+        public void GetCommandArgsTest(char preFix)
         {
             try
             {
@@ -388,18 +376,17 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 //Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
         /// <summary>
         /// GetCommandArgs Method Test        
-        /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// </summary>        
         /// <param name="builtString">builtString</param>
         [TestCaseSource("TestCasesOfBuiltStringIntoEnvironmentVariableTest")]
-        public void BuiltStringIntoEnvironmentVariableTest(string testCaseID, string builtString)
+        public void BuiltStringIntoEnvironmentVariableTest(string builtString)
         {
             try
             {
@@ -411,12 +398,16 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
+
+        /// <summary>
+        /// CalculateSessionSizeMB Method test
+        /// </summary>
         [TestCaseSource("TestCasesOfCalculateSessionSizeMBTest")]
-        public void CalculateSessionSizeMBTest(string testCaseID)
+        public void CalculateSessionSizeMBTest()
         {
             try
             {
@@ -427,7 +418,7 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -437,7 +428,7 @@ namespace Public.Test.Util
         /// </summary>
         /// <param name="testCaseID">testCaseID</param>
         [TestCaseSource("TestCasesOfCalculateSessionSizeTest")]
-        public void CalculateSessionSizeTest(string testCaseID)
+        public void CalculateSessionSizeTest()
         {
             try
             {
@@ -448,7 +439,7 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -458,7 +449,7 @@ namespace Public.Test.Util
         /// </summary>
         /// <param name="testCaseID">testCaseID</param>
         [TestCaseSource("TestCasesOfCalculateSessionSizeKBTest")]
-        public void CalculateSessionSizeKBTest(string testCaseID)
+        public void CalculateSessionSizeKBTest()
         {
             try
             {
@@ -469,17 +460,16 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
         /// <summary>
         /// GetCurrentMethodName Method Test        
-        /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// </summary>        
         [TestCaseSource("TestCasesOfGetCurrentMethodNameTest")]
-        public void GetCurrentMethodNameTest(string testCaseID)
+        public void GetCurrentMethodNameTest()
         {
             try
             {
@@ -490,17 +480,16 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
         /// <summary>
         /// GetCurrentMethodName Method Test        
-        /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// </summary>        
         [TestCaseSource("TestCasesOfGetCurrentPropertyNameTest")]
-        public void GetCurrentPropertyNameTest(string testCaseID)
+        public void GetCurrentPropertyNameTest()
         {
             try
             {
@@ -511,17 +500,16 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
         /// <summary>
         /// GetCurrentMethodName Method Test        
-        /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// </summary>        
         [TestCaseSource("TestCasesOfGetCurrentCodeInfoTest")]
-        public void GetCurrentCodeInfo(string testCaseID)
+        public void GetCurrentCodeInfo()
         {
             try
             {
@@ -544,19 +532,18 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
         /// <summary>
         /// GetCurrentMethodName Method Test        
-        /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// </summary>        
         /// <param name="str">str</param>
         /// <param name="divChar">divChar</param>
         [TestCaseSource("TestCasesOfGetFileNameNoExTest")]
-        public void GetFileNameNoExTest(string testCaseID, string str, char divChar)
+        public void GetFileNameNoExTest(string str, char divChar)
         {
             try
             {
@@ -572,19 +559,18 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
         /// <summary>
         /// ShortenByteArrayTest Method Test        
-        /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// </summary>        
         /// <param name="bytes">bytes</param>
         /// <param name="newSize">newSize</param>
         [TestCaseSource("TestCasesOfShortenByteArrayTest")]
-        public void ShortenByteArrayTest(string testCaseID, byte[] bytes, int newSize)
+        public void ShortenByteArrayTest(byte[] bytes, int newSize)
         {
             try
             {
@@ -599,18 +585,17 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
         /// <summary>
         /// GetLongFromByteTest Method Test        
-        /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// </summary>        
         /// <param name="bytData">bytData</param>
         [TestCaseSource("TestCasesOfGetLongFromByteTest")]
-        public void GetLongFromByteTest(string testCaseID, byte[] bytData)
+        public void GetLongFromByteTest(byte[] bytData)
         {
             try
             {
@@ -622,7 +607,7 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
