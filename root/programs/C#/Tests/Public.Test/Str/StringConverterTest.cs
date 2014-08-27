@@ -28,6 +28,7 @@
 //*  Date:        Author:          Comments:
 //*  ----------  ----------------  -------------------------------------------------
 //*  05/19/2014    Rituparna       Testcode development for StringConverter.
+//*  08/12/2014   Sai              Added TestcaseID using SetName method as per Nishino-San comments
 //*
 //**********************************************************************************
 
@@ -68,13 +69,11 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "達磨さん", "達磨さん");
-                yield return new TestCaseData("TestID-001N", "eigodesu", "eigodesu");
-                yield return new TestCaseData("TestID-002L", string.Empty, string.Empty);
-                yield return new TestCaseData("TestID-003N", null, string.Empty);
-                yield return new TestCaseData("TestID-004N", "ナルト", "ﾅﾙﾄ");
+                yield return new TestCaseData("達磨さん", "達磨さん").SetName("TestID-000N");
+                yield return new TestCaseData("eigodesu", "eigodesu").SetName("TestID-001N");
+                yield return new TestCaseData(string.Empty, string.Empty).SetName("TestID-002L");
+                yield return new TestCaseData(null, string.Empty).SetName("TestID-003N");
+                yield return new TestCaseData("ナルト", "ﾅﾙﾄ").SetName("TestID-004N");
             }
         }
 
@@ -86,14 +85,12 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "達磨さん", "達磨さん");
-                yield return new TestCaseData("TestID-001N", "eigodesu", "ｅｉｇｏｄｅｓｕ");
-                yield return new TestCaseData("TestID-002L", string.Empty, string.Empty);
-                yield return new TestCaseData("TestID-003N", null, string.Empty);
-                yield return new TestCaseData("TestID-004N", "ナルト", "ナルト");
-                yield return new TestCaseData("TestID-005N", "ﾀﾊﾞｺ", "タバコ");
+                yield return new TestCaseData("達磨さん", "達磨さん").SetName("TestID-000N");
+                yield return new TestCaseData("eigodesu", "ｅｉｇｏｄｅｓｕ").SetName("TestID-001N");
+                yield return new TestCaseData(string.Empty, string.Empty).SetName("TestID-002L");
+                yield return new TestCaseData(null, string.Empty).SetName("TestID-003N");
+                yield return new TestCaseData("ナルト", "ナルト").SetName("TestID-004N");
+                yield return new TestCaseData("ﾀﾊﾞｺ", "タバコ").SetName("TestID-005N");
             }
         }
 
@@ -105,14 +102,12 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "達磨さん", "達磨さん");
-                yield return new TestCaseData("TestID-001N", "eigodesu", "eigodesu");
-                yield return new TestCaseData("TestID-002L", string.Empty, string.Empty);
-                yield return new TestCaseData("TestID-003N", null, string.Empty);
-                yield return new TestCaseData("TestID-004N", "ナルト", "なると");
-                yield return new TestCaseData("TestID-005N", "ﾀﾊﾞｺ", "ﾀﾊﾞｺ");
+                yield return new TestCaseData("達磨さん", "達磨さん").SetName("TestID-000N");
+                yield return new TestCaseData("eigodesu", "eigodesu").SetName("TestID-001N");
+                yield return new TestCaseData(string.Empty, string.Empty).SetName("TestID-002L");
+                yield return new TestCaseData(null, string.Empty).SetName("TestID-003N");
+                yield return new TestCaseData("ナルト", "なると").SetName("TestID-004N");
+                yield return new TestCaseData("ﾀﾊﾞｺ", "ﾀﾊﾞｺ").SetName("TestID-005N");
             }
         }
 
@@ -125,14 +120,12 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "達磨さん", "達磨サン");
-                yield return new TestCaseData("TestID-001N", "eigodesu", "eigodesu");
-                yield return new TestCaseData("TestID-002L", string.Empty, string.Empty);
-                yield return new TestCaseData("TestID-003N", null, string.Empty);
-                yield return new TestCaseData("TestID-004N", "ナルト", "ナルト");
-                yield return new TestCaseData("TestID-005N", "ﾀﾊﾞｺ", "ﾀﾊﾞｺ");
+                yield return new TestCaseData("達磨さん", "達磨サン").SetName("TestID-000N");
+                yield return new TestCaseData("eigodesu", "eigodesu").SetName("TestID-001N");
+                yield return new TestCaseData(string.Empty, string.Empty).SetName("TestID-002L");
+                yield return new TestCaseData(null, string.Empty).SetName("TestID-003N");
+                yield return new TestCaseData("ナルト", "ナルト").SetName("TestID-004N");
+                yield return new TestCaseData("ﾀﾊﾞｺ", "ﾀﾊﾞｺ").SetName("TestID-005N");
             }
         }
 
@@ -144,35 +137,32 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-               string mystring = "01010101";               
-               yield return new TestCaseData("TestID-000N", "1234567");
-               yield return new TestCaseData("TestID-001N", "123456");
-               yield return new TestCaseData("TestID-002N", "2345128");
-               yield return new TestCaseData("TestID-003N", "abcdef");
-               yield return new TestCaseData("TestID-004N", "12345678");
-               yield return new TestCaseData("TestID-005N", string.Empty);
-               yield return new TestCaseData("TestID-006A", null).Throws(typeof(ArgumentNullException));
-               yield return new TestCaseData("TestID-007N", "12345");
-               yield return new TestCaseData("TestID-008N", "1234137");
-               yield return new TestCaseData("TestID-009N", "1234127");
-               yield return new TestCaseData("TestID-010N", "0");
-               yield return new TestCaseData("TestID-011N", "１２３４５");
-               yield return new TestCaseData("TestID-012N", mystring);
-               yield return new TestCaseData("TestID-013N", "000000");
-               yield return new TestCaseData("TestID-014N", "-1234567");
+                string mystring = "01010101";
+                yield return new TestCaseData("1234567").SetName("TestID-000N");
+                yield return new TestCaseData("123456").SetName("TestID-001N");
+                yield return new TestCaseData("2345128").SetName("TestID-002N");
+                yield return new TestCaseData("abcdef").SetName("TestID-003N");
+                yield return new TestCaseData("12345678").SetName("TestID-004N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-005N");
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-006A");
+                yield return new TestCaseData("12345").SetName("TestID-007N");
+                yield return new TestCaseData("1234137").SetName("TestID-008N");
+                yield return new TestCaseData("1234127").SetName("TestID-009N");
+                yield return new TestCaseData("0").SetName("TestID-010N");
+                yield return new TestCaseData("１２３４５").SetName("TestID-011N");
+                yield return new TestCaseData(mystring).SetName("TestID-012N");
+                yield return new TestCaseData("000000").SetName("TestID-013N");
+                yield return new TestCaseData("-1234567").SetName("TestID-014N");
             }
         }
 
         /// <summary>
         /// ToHankakuTest Method
-        /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// </summary>        
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestToHankakuTest")]
-        public static void ToHankakuTest(string testCaseID, string input, string result)
+        public static void ToHankakuTest(string input, string result)
         {
             string output = StringConverter.ToHankaku(input);
             Assert.AreEqual(output, result);
@@ -181,11 +171,10 @@ namespace Public.Test.Str
         /// <summary>
         /// ToZenkakuTest
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestToZenkakuTest")]
-        public static void ToZenkakuTest(string testCaseID, string input, string result)
+        public static void ToZenkakuTest(string input, string result)
         {
             string output = StringConverter.ToZenkaku(input);
             Assert.AreEqual(output, result);
@@ -193,12 +182,11 @@ namespace Public.Test.Str
 
         /// <summary>
         /// ToHiraganaTest Method
-        /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// </summary>        
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestToHiraganaTest")]
-        public static void ToHiraganaTest(string testCaseID, string input, string result)
+        public static void ToHiraganaTest(string input, string result)
         {
             string output = StringConverter.ToHiragana(input);
             Assert.AreEqual(output, result);
@@ -207,11 +195,10 @@ namespace Public.Test.Str
         /// <summary>
         /// ToKatakanaTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestToKatakanaTest")]
-        public static void ToKatakanaTest(string testCaseID, string input, string result)
+        public static void ToKatakanaTest(string input, string result)
         {
             string output = StringConverter.ToKatakana(input);
             Assert.AreEqual(output, result);
@@ -220,13 +207,12 @@ namespace Public.Test.Str
         /// <summary>
         /// EditYYYYMMDDStringTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="text">text</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestEditYYYYMMDDStringTest")]
-        public static void EditYYYYMMDDStringTest(string testCaseID, ref string text)
+        public static void EditYYYYMMDDStringTest(ref string text)
         {
-            bool output = StringConverter.EditYYYYMMDDString(ref text);           
+            bool output = StringConverter.EditYYYYMMDDString(ref text);
             if (output)
             {
                 Assert.True(output);

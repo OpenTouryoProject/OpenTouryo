@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2014/03/31  西野  大介        新規作成
+//*  08/11/2014   Sai              Added TestcaseID using TestName property as per Nishino-San comments
 //*
 //**********************************************************************************
 
@@ -77,42 +78,41 @@ namespace Public.Test.Util
         #region Test Code
 
         /// <summary>Test execution.(CheckListID should be the first argument)</summary>
-        /// <param name="testCaseID">test case ID</param> 
         /// <param name="sourceString">The original string to get the hash value.</param>
         /// <param name="eha">Hash algorithm</param>
-        [TestCase("TestID-001N", "abcde", EnumHashAlgorithm.Default)]
-        [TestCase("TestID-002N", "あいうえお", EnumHashAlgorithm.Default)]
-        [TestCase("TestID-003L", "", EnumHashAlgorithm.Default)]
-        [TestCase("TestID-004A", null, EnumHashAlgorithm.Default, ExpectedException = typeof(ArgumentNullException))]
-        [TestCase("TestID-005N", "abcde", EnumHashAlgorithm.MD5CryptoServiceProvider)]
-        [TestCase("TestID-006N", "あいうえお", EnumHashAlgorithm.MD5CryptoServiceProvider)]
-        [TestCase("TestID-007L", "", EnumHashAlgorithm.MD5CryptoServiceProvider)]
-        [TestCase("TestID-008A", null, EnumHashAlgorithm.MD5CryptoServiceProvider, ExpectedException = typeof(ArgumentNullException))]
-        [TestCase("TestID-009N", "abcde", EnumHashAlgorithm.SHA1CryptoServiceProvider)]
-        [TestCase("TestID-010N", "あいうえお", EnumHashAlgorithm.SHA1CryptoServiceProvider)]
-        [TestCase("TestID-011L", "", EnumHashAlgorithm.SHA1CryptoServiceProvider)]
-        [TestCase("TestID-012A", null, EnumHashAlgorithm.SHA1CryptoServiceProvider, ExpectedException = typeof(ArgumentNullException))]
-        [TestCase("TestID-013N", "abcde", EnumHashAlgorithm.SHA1Managed)]
-        [TestCase("TestID-014N", "あいうえお", EnumHashAlgorithm.SHA1Managed)]
-        [TestCase("TestID-015L", "", EnumHashAlgorithm.SHA1Managed)]
-        [TestCase("TestID-016A", null, EnumHashAlgorithm.SHA1Managed, ExpectedException = typeof(ArgumentNullException))]
-        [TestCase("TestID-017N", "abcde", EnumHashAlgorithm.SHA256Managed)]
-        [TestCase("TestID-018N", "あいうえお", EnumHashAlgorithm.SHA256Managed)]
-        [TestCase("TestID-019L", "", EnumHashAlgorithm.SHA256Managed)]
-        [TestCase("TestID-020A", null, EnumHashAlgorithm.SHA256Managed, ExpectedException = typeof(ArgumentNullException))]
-        [TestCase("TestID-021N", "abcde", EnumHashAlgorithm.SHA384Managed)]
-        [TestCase("TestID-022N", "あいうえお", EnumHashAlgorithm.SHA384Managed)]
-        [TestCase("TestID-023L", "", EnumHashAlgorithm.SHA384Managed)]
-        [TestCase("TestID-024A", null, EnumHashAlgorithm.SHA384Managed, ExpectedException = typeof(ArgumentNullException))]
-        [TestCase("TestID-025N", "abcde", EnumHashAlgorithm.SHA512Managed)]
-        [TestCase("TestID-026N", "あいうえお", EnumHashAlgorithm.SHA512Managed)]
-        [TestCase("TestID-027L", "", EnumHashAlgorithm.SHA512Managed)]
-        [TestCase("TestID-028A", null, EnumHashAlgorithm.SHA512Managed, ExpectedException = typeof(ArgumentNullException))]
-        [TestCase("TestID-029A", "abcde", 999, ExpectedException = typeof(NullReferenceException))]        // The encryption method that is not defined
-        [TestCase("TestID-030A", "あいうえお", 999, ExpectedException = typeof(NullReferenceException))]   // The encryption method that is not defined
-        [TestCase("TestID-031A", "", 999, ExpectedException = typeof(NullReferenceException))]             // The encryption method that is not defined
-        [TestCase("TestID-032A", null, 999, ExpectedException = typeof(ArgumentNullException))]            // The encryption method that is not defined
-        public void EncryptStringTest(string testCaseID, string sourceString, EnumHashAlgorithm eha)
+        [TestCase("abcde", EnumHashAlgorithm.Default, TestName = "TestID-001N")]
+        [TestCase("あいうえお", EnumHashAlgorithm.Default, TestName = "TestID-002N")]
+        [TestCase("", EnumHashAlgorithm.Default, TestName = "TestID-003L")]
+        [TestCase(null, EnumHashAlgorithm.Default, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-004A")]
+        [TestCase("abcde", EnumHashAlgorithm.MD5CryptoServiceProvider, TestName = "TestID-005N")]
+        [TestCase("あいうえお", EnumHashAlgorithm.MD5CryptoServiceProvider, TestName = "TestID-006N")]
+        [TestCase("", EnumHashAlgorithm.MD5CryptoServiceProvider, TestName = "TestID-007L")]
+        [TestCase(null, EnumHashAlgorithm.MD5CryptoServiceProvider, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-007L")]
+        [TestCase("abcde", EnumHashAlgorithm.SHA1CryptoServiceProvider, TestName = "TestID-009N")]
+        [TestCase("あいうえお", EnumHashAlgorithm.SHA1CryptoServiceProvider, TestName = "TestID-010N")]
+        [TestCase("", EnumHashAlgorithm.SHA1CryptoServiceProvider, TestName = "TestID-011L")]
+        [TestCase(null, EnumHashAlgorithm.SHA1CryptoServiceProvider, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-012A")]
+        [TestCase("abcde", EnumHashAlgorithm.SHA1Managed, TestName = "TestID-013N")]
+        [TestCase("あいうえお", EnumHashAlgorithm.SHA1Managed, TestName = "TestID-014N")]
+        [TestCase("", EnumHashAlgorithm.SHA1Managed, TestName = "TestID-015L")]
+        [TestCase(null, EnumHashAlgorithm.SHA1Managed, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-016A")]
+        [TestCase("abcde", EnumHashAlgorithm.SHA256Managed, TestName = "TestID-017N")]
+        [TestCase("あいうえお", EnumHashAlgorithm.SHA256Managed, TestName = "TestID-018N")]
+        [TestCase("", EnumHashAlgorithm.SHA256Managed, TestName = "TestID-019L")]
+        [TestCase(null, EnumHashAlgorithm.SHA256Managed, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-020A")]
+        [TestCase("abcde", EnumHashAlgorithm.SHA384Managed, TestName = "TestID-021N")]
+        [TestCase("あいうえお", EnumHashAlgorithm.SHA384Managed, TestName = "TestID-022N")]
+        [TestCase("", EnumHashAlgorithm.SHA384Managed, TestName = "TestID-023L")]
+        [TestCase(null, EnumHashAlgorithm.SHA384Managed, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-024A")]
+        [TestCase("abcde", EnumHashAlgorithm.SHA512Managed, TestName = "TestID-025N")]
+        [TestCase("あいうえお", EnumHashAlgorithm.SHA512Managed, TestName = "TestID-026N")]
+        [TestCase("", EnumHashAlgorithm.SHA512Managed, TestName = "TestID-027L")]
+        [TestCase(null, EnumHashAlgorithm.SHA512Managed, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-028A")]
+        [TestCase("abcde", 999, ExpectedException = typeof(NullReferenceException), TestName = "TestID-029A")]        // The encryption method that is not defined
+        [TestCase("あいうえお", 999, ExpectedException = typeof(NullReferenceException), TestName = "TestID-030A")]   // The encryption method that is not defined
+        [TestCase("", 999, ExpectedException = typeof(NullReferenceException), TestName = "TestID-031A")]             // The encryption method that is not defined
+        [TestCase(null, 999, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-032A")]            // The encryption method that is not defined
+        public void EncryptStringTest(string sourceString, EnumHashAlgorithm eha)
         {
             try
             {
@@ -130,83 +130,82 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
         /// <summary>>Test execution.(CheckListID should be the first argument)</summary>
-        /// <param name="testCaseID">test case ID</param> 
         /// <param name="rawPwd">Raw password</param>
         /// <param name="eha">Hash algorithm</param>
         /// <param name="saltLength">Salt length</param>
-        [TestCase("TestID-001N", "test@123", EnumHashAlgorithm.Default, 10)]
-        [TestCase("TestID-002A", "test@123", EnumHashAlgorithm.Default, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-003A", "test@123", EnumHashAlgorithm.Default, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-004N", "test@123", EnumHashAlgorithm.MD5CryptoServiceProvider, 10)]
-        [TestCase("TestID-005A", "test@123", EnumHashAlgorithm.MD5CryptoServiceProvider, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-006A", "test@123", EnumHashAlgorithm.MD5CryptoServiceProvider, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-007N", "test@123", EnumHashAlgorithm.SHA1CryptoServiceProvider, 10)]
-        [TestCase("TestID-008A", "test@123", EnumHashAlgorithm.SHA1CryptoServiceProvider, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-009A", "test@123", EnumHashAlgorithm.SHA1CryptoServiceProvider, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-010N", "test@123", EnumHashAlgorithm.SHA1Managed, 10)]
-        [TestCase("TestID-011A", "test@123", EnumHashAlgorithm.SHA1Managed, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-012A", "test@123", EnumHashAlgorithm.SHA1Managed, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-013N", "test@123", EnumHashAlgorithm.SHA256Managed, 10)]
-        [TestCase("TestID-014A", "test@123", EnumHashAlgorithm.SHA256Managed, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-015A", "test@123", EnumHashAlgorithm.SHA256Managed, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-016N", "test@123", EnumHashAlgorithm.SHA384Managed, 10)]
-        [TestCase("TestID-017A", "test@123", EnumHashAlgorithm.SHA384Managed, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-018A", "test@123", EnumHashAlgorithm.SHA384Managed, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-019N", "test@123", EnumHashAlgorithm.SHA512Managed, 10)]
-        [TestCase("TestID-020A", "test@123", EnumHashAlgorithm.SHA512Managed, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-021A", "test@123", EnumHashAlgorithm.SHA512Managed, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-022A", "test@123", 999, 10, ExpectedException = typeof(NullReferenceException))]
-        [TestCase("TestID-023A", "test@123", 999, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-024A", "test@123", 999, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-025N", "", EnumHashAlgorithm.Default, 10)]
-        [TestCase("TestID-026A", "", EnumHashAlgorithm.Default, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-027A", "", EnumHashAlgorithm.Default, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-028N", "", EnumHashAlgorithm.MD5CryptoServiceProvider, 10)]
-        [TestCase("TestID-029A", "", EnumHashAlgorithm.MD5CryptoServiceProvider, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-030A", "", EnumHashAlgorithm.MD5CryptoServiceProvider, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-031N", "", EnumHashAlgorithm.SHA1CryptoServiceProvider, 10)]
-        [TestCase("TestID-032A", "", EnumHashAlgorithm.SHA1CryptoServiceProvider, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-033A", "", EnumHashAlgorithm.SHA1CryptoServiceProvider, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-034N", "", EnumHashAlgorithm.SHA1Managed, 10)]
-        [TestCase("TestID-035A", "", EnumHashAlgorithm.SHA1Managed, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-036A", "", EnumHashAlgorithm.SHA1Managed, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-037N", "", EnumHashAlgorithm.SHA256Managed, 10)]
-        [TestCase("TestID-038A", "", EnumHashAlgorithm.SHA256Managed, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-039A", "", EnumHashAlgorithm.SHA256Managed, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-040N", "", EnumHashAlgorithm.SHA384Managed, 10)]
-        [TestCase("TestID-041A", "", EnumHashAlgorithm.SHA384Managed, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-042A", "", EnumHashAlgorithm.SHA384Managed, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-043N", "", EnumHashAlgorithm.SHA512Managed, 10)]
-        [TestCase("TestID-044A", "", EnumHashAlgorithm.SHA512Managed, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-045A", "", EnumHashAlgorithm.SHA512Managed, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-046N", null, EnumHashAlgorithm.Default, 10)]
-        [TestCase("TestID-047A", null, EnumHashAlgorithm.Default, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-048A", null, EnumHashAlgorithm.Default, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-049N", null, EnumHashAlgorithm.MD5CryptoServiceProvider, 10)]
-        [TestCase("TestID-050A", null, EnumHashAlgorithm.MD5CryptoServiceProvider, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-051A", null, EnumHashAlgorithm.MD5CryptoServiceProvider, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-052N", null, EnumHashAlgorithm.SHA1CryptoServiceProvider, 10)]
-        [TestCase("TestID-053A", null, EnumHashAlgorithm.SHA1CryptoServiceProvider, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-054A", null, EnumHashAlgorithm.SHA1CryptoServiceProvider, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-055N", null, EnumHashAlgorithm.SHA1Managed, 10)]
-        [TestCase("TestID-056A", null, EnumHashAlgorithm.SHA1Managed, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-057A", null, EnumHashAlgorithm.SHA1Managed, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-058N", null, EnumHashAlgorithm.SHA256Managed, 10)]
-        [TestCase("TestID-059A", null, EnumHashAlgorithm.SHA256Managed, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-060A", null, EnumHashAlgorithm.SHA256Managed, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-061N", null, EnumHashAlgorithm.SHA384Managed, 10)]
-        [TestCase("TestID-062A", null, EnumHashAlgorithm.SHA384Managed, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-063A", null, EnumHashAlgorithm.SHA384Managed, -1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-064N", null, EnumHashAlgorithm.SHA512Managed, 10)]
-        [TestCase("TestID-065A", null, EnumHashAlgorithm.SHA512Managed, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("TestID-066A", null, EnumHashAlgorithm.SHA512Managed, -1, ExpectedException = typeof(ArgumentException))]
-        public void GetSaltedPasswdTest(string testCaseID, string rawPwd, EnumHashAlgorithm eha, int saltLength)
+        [TestCase("test@123", EnumHashAlgorithm.Default, 10, TestName = "TestID-001N")]
+        [TestCase("test@123", EnumHashAlgorithm.Default, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-002A")]
+        [TestCase("test@123", EnumHashAlgorithm.Default, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-003A")]
+        [TestCase("test@123", EnumHashAlgorithm.MD5CryptoServiceProvider, 10, TestName = "TestID-004N")]
+        [TestCase("test@123", EnumHashAlgorithm.MD5CryptoServiceProvider, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-005A")]
+        [TestCase("test@123", EnumHashAlgorithm.MD5CryptoServiceProvider, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-006A")]
+        [TestCase("test@123", EnumHashAlgorithm.SHA1CryptoServiceProvider, 10, TestName = "TestID-007N")]
+        [TestCase("test@123", EnumHashAlgorithm.SHA1CryptoServiceProvider, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-008A")]
+        [TestCase("test@123", EnumHashAlgorithm.SHA1CryptoServiceProvider, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-009A")]
+        [TestCase("test@123", EnumHashAlgorithm.SHA1Managed, 10, TestName = "TestID-010N")]
+        [TestCase("test@123", EnumHashAlgorithm.SHA1Managed, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-011A")]
+        [TestCase("test@123", EnumHashAlgorithm.SHA1Managed, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-012A")]
+        [TestCase("test@123", EnumHashAlgorithm.SHA256Managed, 10, TestName = "TestID-013N")]
+        [TestCase("test@123", EnumHashAlgorithm.SHA256Managed, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-014A")]
+        [TestCase("test@123", EnumHashAlgorithm.SHA256Managed, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-015A")]
+        [TestCase("test@123", EnumHashAlgorithm.SHA384Managed, 10, TestName = "TestID-016N")]
+        [TestCase("test@123", EnumHashAlgorithm.SHA384Managed, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-017A")]
+        [TestCase("test@123", EnumHashAlgorithm.SHA384Managed, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-018A")]
+        [TestCase("test@123", EnumHashAlgorithm.SHA512Managed, 10, TestName = "TestID-019N")]
+        [TestCase("test@123", EnumHashAlgorithm.SHA512Managed, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-020A")]
+        [TestCase("test@123", EnumHashAlgorithm.SHA512Managed, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-021A")]
+        [TestCase("test@123", 999, 10, ExpectedException = typeof(NullReferenceException), TestName = "TestID-022A")]
+        [TestCase("test@123", 999, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-023A")]
+        [TestCase("test@123", 999, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-024A")]
+        [TestCase("", EnumHashAlgorithm.Default, 10, TestName = "TestID-025N")]
+        [TestCase("", EnumHashAlgorithm.Default, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-026A")]
+        [TestCase("", EnumHashAlgorithm.Default, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-027A")]
+        [TestCase("", EnumHashAlgorithm.MD5CryptoServiceProvider, 10, TestName = "TestID-028N")]
+        [TestCase("", EnumHashAlgorithm.MD5CryptoServiceProvider, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-029A")]
+        [TestCase("", EnumHashAlgorithm.MD5CryptoServiceProvider, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-030A")]
+        [TestCase("", EnumHashAlgorithm.SHA1CryptoServiceProvider, 10, TestName = "TestID-031N")]
+        [TestCase("", EnumHashAlgorithm.SHA1CryptoServiceProvider, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-032A")]
+        [TestCase("", EnumHashAlgorithm.SHA1CryptoServiceProvider, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-033A")]
+        [TestCase("", EnumHashAlgorithm.SHA1Managed, 10, TestName = "TestID-034N")]
+        [TestCase("", EnumHashAlgorithm.SHA1Managed, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-035A")]
+        [TestCase("", EnumHashAlgorithm.SHA1Managed, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-036A")]
+        [TestCase("", EnumHashAlgorithm.SHA256Managed, 10, TestName = "TestID-037N")]
+        [TestCase("", EnumHashAlgorithm.SHA256Managed, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-038A")]
+        [TestCase("", EnumHashAlgorithm.SHA256Managed, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-039A")]
+        [TestCase("", EnumHashAlgorithm.SHA384Managed, 10, TestName = "TestID-040N")]
+        [TestCase("", EnumHashAlgorithm.SHA384Managed, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-041A")]
+        [TestCase("", EnumHashAlgorithm.SHA384Managed, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-042A")]
+        [TestCase("", EnumHashAlgorithm.SHA512Managed, 10, TestName = "TestID-043N")]
+        [TestCase("", EnumHashAlgorithm.SHA512Managed, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-044A")]
+        [TestCase("", EnumHashAlgorithm.SHA512Managed, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-045A")]
+        [TestCase(null, EnumHashAlgorithm.Default, 10, TestName = "TestID-046N")]
+        [TestCase(null, EnumHashAlgorithm.Default, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-047A")]
+        [TestCase(null, EnumHashAlgorithm.Default, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-048A")]
+        [TestCase(null, EnumHashAlgorithm.MD5CryptoServiceProvider, 10, TestName = "TestID-049N")]
+        [TestCase(null, EnumHashAlgorithm.MD5CryptoServiceProvider, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-050A")]
+        [TestCase(null, EnumHashAlgorithm.MD5CryptoServiceProvider, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-051A")]
+        [TestCase(null, EnumHashAlgorithm.SHA1CryptoServiceProvider, 10, TestName = "TestID-052N")]
+        [TestCase(null, EnumHashAlgorithm.SHA1CryptoServiceProvider, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-053A")]
+        [TestCase(null, EnumHashAlgorithm.SHA1CryptoServiceProvider, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-054A")]
+        [TestCase(null, EnumHashAlgorithm.SHA1Managed, 10, TestName = "TestID-055N")]
+        [TestCase(null, EnumHashAlgorithm.SHA1Managed, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-056A")]
+        [TestCase(null, EnumHashAlgorithm.SHA1Managed, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-057A")]
+        [TestCase(null, EnumHashAlgorithm.SHA256Managed, 10, TestName = "TestID-058N")]
+        [TestCase(null, EnumHashAlgorithm.SHA256Managed, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-059A")]
+        [TestCase(null, EnumHashAlgorithm.SHA256Managed, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-060A")]
+        [TestCase(null, EnumHashAlgorithm.SHA384Managed, 10, TestName = "TestID-061N")]
+        [TestCase(null, EnumHashAlgorithm.SHA384Managed, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-062A")]
+        [TestCase(null, EnumHashAlgorithm.SHA384Managed, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-063A")]
+        [TestCase(null, EnumHashAlgorithm.SHA512Managed, 10, TestName = "TestID-064N")]
+        [TestCase(null, EnumHashAlgorithm.SHA512Managed, 0, ExpectedException = typeof(ArgumentException), TestName = "TestID-065A")]
+        [TestCase(null, EnumHashAlgorithm.SHA512Managed, -1, ExpectedException = typeof(ArgumentException), TestName = "TestID-066A")]
+        public void GetSaltedPasswdTest(string rawPwd, EnumHashAlgorithm eha, int saltLength)
         {
             try
             {
@@ -222,7 +221,7 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }

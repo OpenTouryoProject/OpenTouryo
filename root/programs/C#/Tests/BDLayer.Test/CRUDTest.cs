@@ -1,4 +1,17 @@
-﻿// 型情報
+﻿//**********************************************************************************
+//* クラス名        ：CRUDTest.cs
+//* クラス日本語名  ：
+//*
+//* 作成者          ：Rituparna & Santosh
+//* 更新履歴        ：
+//* 
+//*  Date:        Author:        Comments:
+//*  ----------  ----------------  -------------------------------------------------
+//*  06/13/2014   Rituparna & Santosh   Testcode development for CRUDTest(Framework classes).
+//*  08/11/2014   Sai                   Added Test case ID using TestName property as per Nishino-San comments
+//**********************************************************************************
+
+// 型情報
 using BDLayer.Test.Common;
 using BDLayer.Test.Business;
 
@@ -95,12 +108,12 @@ namespace BDLayer.Test
         /// ・SS：Snapshot
         /// ・DF：DefaultTransaction;
         /// </param>
-        [TestCase("screen1", "control1", "SQL%individual%static%-", "User1", "Hostname1", "RC")]
-        [TestCase("screen2", "control2", "SQL%individual%dynamic%-", "User2", "Hostname2", "RC")]
-        [TestCase("screen3", "control3", "SQL%common%static%-", "User3", "Hostname3", "RC")]
-        [TestCase("screen4", "control4", "SQL%common%dynamic%-", "User4", "Hostname4", "RC")]
-        [TestCase("screen5", "control5", "SQL%generate%static%-", "User5", "Hostname5", "RC")]
-        [TestCase("screen6", "control6", "SQL%generate%dynamic%-", "User6", "Hostname6", "RC")]
+        [TestCase("screen1", "control1", "SQL%individual%static%-", "User1", "Hostname1", "RC",TestName="TestID-001N")]
+        [TestCase("screen2", "control2", "SQL%individual%dynamic%-", "User2", "Hostname2", "RC", TestName = "TestID-002N")]
+        [TestCase("screen3", "control3", "SQL%common%static%-", "User3", "Hostname3", "RC", TestName = "TestID-003N")]
+        [TestCase("screen4", "control4", "SQL%common%dynamic%-", "User4", "Hostname4", "RC", TestName = "TestID-004N")]
+        [TestCase("screen5", "control5", "SQL%generate%static%-", "User5", "Hostname5", "RC", TestName = "TestID-005N")]
+        [TestCase("screen6", "control6", "SQL%generate%dynamic%-", "User6", "Hostname6", "RC", TestName = "TestID-006N")]
         public void _1_SelectCount(
             string screenId, string controlId, string actionType,
             string userName, string ipAddress, string isolationLevel)
@@ -114,7 +127,7 @@ namespace BDLayer.Test
                     screenId, controlId, methodName, actionType, new MyUserInfo(userName, ipAddress));
 
             // 戻り値
-            TestReturnValue testReturnValue = null; ;
+            TestReturnValue testReturnValue = null;
 
             // Ｂ層呼出し
             LayerB layerB = new LayerB();
@@ -173,24 +186,18 @@ namespace BDLayer.Test
         /// ・SS：Snapshot
         /// ・DF：DefaultTransaction;
         /// </param>
-        [TestCase("screen1", "control1", "SelectAll_DT", "SQL%individual%static%-", "User1", "Hostname1", "RC")]
-        [TestCase("screen2", "control2", "SelectAll_DT", "SQL%individual%dynamic%-", "User2", "Hostname2", "RC")]
-        [TestCase("screen3", "control3", "SelectAll_DT", "SQL%common%static%-", "User3", "Hostname3", "RC")]
-        [TestCase("screen4", "control4", "SelectAll_DT", "SQL%common%dynamic%-", "User4", "Hostname4", "RC")]
-        [TestCase("screen5", "control5", "SelectAll_DT", "SQL%generate%static%-", "User5", "Hostname5", "RC")]
-        [TestCase("screen6", "control6", "SelectAll_DT", "SQL%generate%dynamic%-", "User6", "Hostname6", "RC")]
-        [TestCase("screen1", "control1", "SelectAll_DS", "SQL%individual%static%-", "User1", "Hostname1", "RC")]
-        [TestCase("screen2", "control2", "SelectAll_DS", "SQL%individual%dynamic%-", "User2", "Hostname2", "RC")]
-        [TestCase("screen3", "control3", "SelectAll_DS", "SQL%common%static%-", "User3", "Hostname3", "RC")]
-        [TestCase("screen4", "control4", "SelectAll_DS", "SQL%common%dynamic%-", "User4", "Hostname4", "RC")]
-        [TestCase("screen5", "control5", "SelectAll_DS", "SQL%generate%static%-", "User5", "Hostname5", "RC")]
-        [TestCase("screen6", "control6", "SelectAll_DS", "SQL%generate%dynamic%-", "User6", "Hostname6", "RC")]
-        //[TestCase("screen1", "control1", "SelectAll_DR", "SQL%individual%static%-", "User1", "Hostname1", "RC")]
-        //[TestCase("screen2", "control2", "SelectAll_DR", "SQL%individual%dynamic%-", "User2", "Hostname2", "RC")]
-        //[TestCase("screen3", "control3", "SelectAll_DR", "SQL%common%static%-", "User3", "Hostname3", "RC")]
-        //[TestCase("screen4", "control4", "SelectAll_DR", "SQL%common%dynamic%-", "User4", "Hostname4", "RC")]
-        //[TestCase("screen5", "control5", "SelectAll_DR", "SQL%generate%static%-", "User5", "Hostname5", "RC")]
-        //[TestCase("screen6", "control6", "SelectAll_DR", "SQL%generate%dynamic%-", "User6", "Hostname6", "RC")]
+        [TestCase("screen1", "control1", "SelectAll_DT", "SQL%individual%static%-", "User1", "Hostname1", "RC",TestName="TestID-001N")]
+        [TestCase("screen2", "control2", "SelectAll_DT", "SQL%individual%dynamic%-", "User2", "Hostname2", "RC", TestName = "TestID-002N")]
+        [TestCase("screen3", "control3", "SelectAll_DT", "SQL%common%static%-", "User3", "Hostname3", "RC", TestName = "TestID-003N")]
+        [TestCase("screen4", "control4", "SelectAll_DT", "SQL%common%dynamic%-", "User4", "Hostname4", "RC", TestName = "TestID-004N")]
+        [TestCase("screen5", "control5", "SelectAll_DT", "SQL%generate%static%-", "User5", "Hostname5", "RC", TestName = "TestID-005N")]
+        [TestCase("screen6", "control6", "SelectAll_DT", "SQL%generate%dynamic%-", "User6", "Hostname6", "RC", TestName = "TestID-006N")]
+        [TestCase("screen1", "control1", "SelectAll_DS", "SQL%individual%static%-", "User1", "Hostname1", "RC", TestName = "TestID-007N")]
+        [TestCase("screen2", "control2", "SelectAll_DS", "SQL%individual%dynamic%-", "User2", "Hostname2", "RC", TestName = "TestID-008N")]
+        [TestCase("screen3", "control3", "SelectAll_DS", "SQL%common%static%-", "User3", "Hostname3", "RC", TestName = "TestID-009N")]
+        [TestCase("screen4", "control4", "SelectAll_DS", "SQL%common%dynamic%-", "User4", "Hostname4", "RC", TestName = "TestID-010N")]
+        [TestCase("screen5", "control5", "SelectAll_DS", "SQL%generate%static%-", "User5", "Hostname5", "RC", TestName = "TestID-011N")]
+        [TestCase("screen6", "control6", "SelectAll_DS", "SQL%generate%dynamic%-", "User6", "Hostname6", "RC", TestName = "TestID-012N")]       
         public void _2_SelectAll_XX(
             string screenId, string controlId,
             string methodName, string actionType,
@@ -241,20 +248,7 @@ namespace BDLayer.Test
         }
 
         #endregion
-
-            //    case "SelectAll_DSQL":
-            //        break;
-            //    case "Select":
-            //        break;
-            //    case "Insert":
-            //        break;
-            //    case "Update":
-            //        break;
-            //    case "Delete":
-            //        break;
-            //    default:
-            //        break;
-        //}
+          
 
         #region SelectIsolationLevel
         

@@ -28,7 +28,7 @@
 //*  Date:        Author:          Comments:
 //*  ----------  ----------------  -------------------------------------------------
 //*  05/08/2014   Rituparna        Testcode development for CustomEncode.
-//*
+//*  08/11/2014   Rituparna        Added TestcaseID using SetName method as per Nishino-San comments
 //**********************************************************************************
 
 #region Includes
@@ -78,8 +78,7 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-                yield return new TestCaseData("TestID-000N");
+               yield return new TestCaseData().SetName("TestID-000N");
             }
         }
 
@@ -91,54 +90,52 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
                 //passing  codePageNum as proper Unicode value or null value
-                yield return new TestCaseData("TestID-000N", "abcde", CustomEncode.UTF_16LE);
-                yield return new TestCaseData("TestID-001N", "abcde", CustomEncode.UTF_16BE);
-                yield return new TestCaseData("TestID-002N", "abcde", CustomEncode.UTF_7);
-                yield return new TestCaseData("TestID-003N", "abcde", CustomEncode.UTF_8);
-                yield return new TestCaseData("TestID-004N", "abcde", 1200);
-                yield return new TestCaseData("TestID-005N", "abcde", 1201);
-                yield return new TestCaseData("TestID-006N", "abcde", 65000);
-                yield return new TestCaseData("TestID-007N", "abcde", 65001);
-                yield return new TestCaseData("TestID-008N", "abcde", null);
-                yield return new TestCaseData("TestID-009L", string.Empty, null);
-                yield return new TestCaseData("TestID-010N", "11", CustomEncode.UTF_16LE);
+                yield return new TestCaseData("abcde", CustomEncode.UTF_16LE).SetName("TestID-000N");
+                yield return new TestCaseData("abcde", CustomEncode.UTF_16BE).SetName("TestID-001N");
+                yield return new TestCaseData("abcde", CustomEncode.UTF_7).SetName("TestID-002N");
+                yield return new TestCaseData("abcde", CustomEncode.UTF_8).SetName("TestID-003N");
+                yield return new TestCaseData("abcde", 1200).SetName("TestID-004N");
+                yield return new TestCaseData("abcde", 1201).SetName("TestID-005N");
+                yield return new TestCaseData("abcde", 65000).SetName("TestID-006N");
+                yield return new TestCaseData("abcde", 65001).SetName("TestID-007N");
+                yield return new TestCaseData("abcde", null).SetName("TestID-008N");
+                yield return new TestCaseData(string.Empty, null).SetName("TestID-009N");
+                yield return new TestCaseData("11", CustomEncode.UTF_16LE).SetName("TestID-010N");
 
                 //passing wrong value as codePageNum 
-                yield return new TestCaseData("TestID-011A", "abcde", 1).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("abcde", 1).Throws(typeof(ArgumentException)).SetName("TestID-011N");
 
                 //passing interger value instead of string value
-                yield return new TestCaseData("TestID-012A", 11, CustomEncode.UTF_16LE).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(11, CustomEncode.UTF_16LE).Throws(typeof(ArgumentException)).SetName("TestID-012N");
 
                 //passing integer value instead of string value and passing wrong value as codePageNum
-                yield return new TestCaseData("TestID-013A", 11, 1).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(11, 1).Throws(typeof(ArgumentException)).SetName("TestID-013N");
 
                 //passing null value instead of string value
-                yield return new TestCaseData("TestID-014A", null, CustomEncode.UTF_16LE).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-015A", null, CustomEncode.UTF_16BE).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-016A", null, CustomEncode.UTF_7).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-017A", null, CustomEncode.UTF_8).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(null, CustomEncode.UTF_16LE).Throws(typeof(ArgumentNullException)).SetName("TestID-014A");
+                yield return new TestCaseData(null, CustomEncode.UTF_16BE).Throws(typeof(ArgumentNullException)).SetName("TestID-015A");
+                yield return new TestCaseData(null, CustomEncode.UTF_7).Throws(typeof(ArgumentNullException)).SetName("TestID-016A");
+                yield return new TestCaseData(null, CustomEncode.UTF_8).Throws(typeof(ArgumentNullException)).SetName("TestID-017A");
 
                 //passing empty string 
-                yield return new TestCaseData("TestID-018L", string.Empty, CustomEncode.UTF_16LE);
-                yield return new TestCaseData("TestID-019L", string.Empty, CustomEncode.UTF_16BE);
-                yield return new TestCaseData("TestID-020L", string.Empty, CustomEncode.UTF_7);
-                yield return new TestCaseData("TestID-021L", string.Empty, CustomEncode.UTF_8);
+                yield return new TestCaseData(string.Empty, CustomEncode.UTF_16LE).SetName("TestID-018N");
+                yield return new TestCaseData(string.Empty, CustomEncode.UTF_16BE).SetName("TestID-019N");
+                yield return new TestCaseData(string.Empty, CustomEncode.UTF_7).SetName("TestID-020N");
+                yield return new TestCaseData(string.Empty, CustomEncode.UTF_8).SetName("TestID-021N");
 
                 //passing empty value in codePageNum
-                yield return new TestCaseData("TestID-022A", "abcde", string.Empty).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-023A", "11", string.Empty).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("abcde", string.Empty).Throws(typeof(ArgumentException)).SetName("TestID-022A");
+                yield return new TestCaseData("11", string.Empty).Throws(typeof(ArgumentException)).SetName("TestID-023A");
 
                 //passing  codePageNum as proper JIS value or その他 value
-                yield return new TestCaseData("TestID-024N", "abcde", CustomEncode.x_mac_japanese);
-                yield return new TestCaseData("TestID-025N", "abcde", CustomEncode.us_ascii);
-                yield return new TestCaseData("TestID-026N", "abcde", CustomEncode.EUC_JP);
-                yield return new TestCaseData("TestID-027N", "abcde", CustomEncode.shift_jis);
-                yield return new TestCaseData("TestID-028N", "abcde", CustomEncode.ISO_2022_JP);
-                yield return new TestCaseData("TestID-029N", "abcde", CustomEncode._iso_2022_jp_Dollar_ESC);
-                yield return new TestCaseData("TestID-030N", "abcde", CustomEncode._iso_2022_jp_Dollar_SIO);
+                yield return new TestCaseData("abcde", CustomEncode.x_mac_japanese).SetName("TestID-024N");
+                yield return new TestCaseData("abcde", CustomEncode.us_ascii).SetName("TestID-025N");
+                yield return new TestCaseData("abcde", CustomEncode.EUC_JP).SetName("TestID-026N");
+                yield return new TestCaseData("abcde", CustomEncode.shift_jis).SetName("TestID-027N");
+                yield return new TestCaseData("abcde", CustomEncode.ISO_2022_JP).SetName("TestID-028N");
+                yield return new TestCaseData("abcde", CustomEncode._iso_2022_jp_Dollar_ESC).SetName("TestID-029N");
+                yield return new TestCaseData("abcde", CustomEncode._iso_2022_jp_Dollar_SIO).SetName("TestID-030N");
             }
         }
 
@@ -150,114 +147,112 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
                 //passing  codePageNum as proper Unicode value or proper JIS value or proper その他 value 
-                yield return new TestCaseData("TestID-000N", Encoding.UTF8.GetBytes("abcde"), CustomEncode.UTF_8);
-                yield return new TestCaseData("TestID-001N", Encoding.UTF7.GetBytes("abcde"), CustomEncode.UTF_7);
-                yield return new TestCaseData("TestID-002N", Encoding.UTF32.GetBytes("abcde"), CustomEncode.UTF_16LE);
-                yield return new TestCaseData("TestID-002N", Encoding.UTF32.GetBytes("abcde"), CustomEncode.UTF_16BE);
-                yield return new TestCaseData("TestID-003N", Encoding.UTF8.GetBytes("abcde"), CustomEncode.x_mac_japanese);
-                yield return new TestCaseData("TestID-004N", Encoding.UTF7.GetBytes("abcde"), CustomEncode.x_mac_japanese);
-                yield return new TestCaseData("TestID-005N", Encoding.UTF32.GetBytes("abcde"), CustomEncode.x_mac_japanese);
-                yield return new TestCaseData("TestID-006N", Encoding.UTF8.GetBytes("abcde"), CustomEncode.us_ascii);
-                yield return new TestCaseData("TestID-007N", Encoding.UTF7.GetBytes("abcde"), CustomEncode.us_ascii);
-                yield return new TestCaseData("TestID-008N", Encoding.UTF32.GetBytes("abcde"), CustomEncode.us_ascii);
-                yield return new TestCaseData("TestID-009N", Encoding.UTF8.GetBytes("abcde"), CustomEncode.EUC_JP);
-                yield return new TestCaseData("TestID-010N", Encoding.UTF7.GetBytes("abcde"), CustomEncode.EUC_JP);
-                yield return new TestCaseData("TestID-011N", Encoding.UTF32.GetBytes("abcde"), CustomEncode.EUC_JP);
-                yield return new TestCaseData("TestID-012N", Encoding.UTF8.GetBytes("abcde"), CustomEncode.shift_jis);
-                yield return new TestCaseData("TestID-013N", Encoding.UTF7.GetBytes("abcde"), CustomEncode.shift_jis);
-                yield return new TestCaseData("TestID-014N", Encoding.UTF32.GetBytes("abcde"), CustomEncode.shift_jis);
-                yield return new TestCaseData("TestID-015N", Encoding.UTF8.GetBytes("abcde"), CustomEncode.ISO_2022_JP);
-                yield return new TestCaseData("TestID-016N", Encoding.UTF7.GetBytes("abcde"), CustomEncode.ISO_2022_JP);
-                yield return new TestCaseData("TestID-017N", Encoding.UTF32.GetBytes("abcde"), CustomEncode.ISO_2022_JP);
-                yield return new TestCaseData("TestID-018N", Encoding.UTF8.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_ESC);
-                yield return new TestCaseData("TestID-019N", Encoding.UTF7.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_ESC);
-                yield return new TestCaseData("TestID-020N", Encoding.UTF32.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_ESC);
-                yield return new TestCaseData("TestID-021N", Encoding.UTF8.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO);
-                yield return new TestCaseData("TestID-022N", Encoding.UTF7.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO);
-                yield return new TestCaseData("TestID-023N", Encoding.UTF32.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO);
-                yield return new TestCaseData("TestID-024N", Encoding.ASCII.GetBytes("abcde"), CustomEncode.x_mac_japanese);
-                yield return new TestCaseData("TestID-025N", Encoding.ASCII.GetBytes("abcde"), CustomEncode.us_ascii);
-                yield return new TestCaseData("TestID-026N", Encoding.ASCII.GetBytes("abcde"), CustomEncode.EUC_JP);
-                yield return new TestCaseData("TestID-027N", Encoding.ASCII.GetBytes("abcde"), CustomEncode.shift_jis);
-                yield return new TestCaseData("TestID-028N", Encoding.ASCII.GetBytes("abcde"), CustomEncode.ISO_2022_JP);
-                yield return new TestCaseData("TestID-029N", Encoding.ASCII.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_ESC);
-                yield return new TestCaseData("TestID-030N", Encoding.ASCII.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO);
-                yield return new TestCaseData("TestID-031N", Encoding.ASCII.GetBytes("abcde"), CustomEncode.UTF_8);
-                yield return new TestCaseData("TestID-032N", Encoding.ASCII.GetBytes("abcde"), CustomEncode.UTF_7);
-                yield return new TestCaseData("TestID-033N", Encoding.Unicode.GetBytes("abcde"), CustomEncode.x_mac_japanese);
-                yield return new TestCaseData("TestID-034N", Encoding.Unicode.GetBytes("abcde"), CustomEncode.us_ascii);
-                yield return new TestCaseData("TestID-035N", Encoding.Unicode.GetBytes("abcde"), CustomEncode.EUC_JP);
-                yield return new TestCaseData("TestID-036N", Encoding.Unicode.GetBytes("abcde"), CustomEncode.shift_jis);
-                yield return new TestCaseData("TestID-037N", Encoding.Unicode.GetBytes("abcde"), CustomEncode.ISO_2022_JP);
-                yield return new TestCaseData("TestID-038N", Encoding.Unicode.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_ESC);
-                yield return new TestCaseData("TestID-039N", Encoding.Unicode.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO);
-                yield return new TestCaseData("TestID-040N", Encoding.Unicode.GetBytes("abcde"), CustomEncode.UTF_8);
-                yield return new TestCaseData("TestID-041N", Encoding.Unicode.GetBytes("あいうえお"), CustomEncode.UTF_7);
-                yield return new TestCaseData("TestID-042N", Encoding.Unicode.GetBytes("abcde"), CustomEncode.UTF_16LE);
-                yield return new TestCaseData("TestID-043N", Encoding.Unicode.GetBytes("abcde"), CustomEncode.UTF_16BE);
-                yield return new TestCaseData("TestID-044N", Encoding.Default.GetBytes("abcde"), CustomEncode.x_mac_japanese);
-                yield return new TestCaseData("TestID-045N", Encoding.Default.GetBytes("abcde"), CustomEncode.us_ascii);
-                yield return new TestCaseData("TestID-046N", Encoding.Default.GetBytes("abcde"), CustomEncode.EUC_JP);
-                yield return new TestCaseData("TestID-047N", Encoding.Default.GetBytes("abcde"), CustomEncode.shift_jis);
-                yield return new TestCaseData("TestID-048N", Encoding.Default.GetBytes("abcde"), CustomEncode.ISO_2022_JP);
-                yield return new TestCaseData("TestID-049N", Encoding.Default.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_ESC);
-                yield return new TestCaseData("TestID-050N", Encoding.Default.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO);
-                yield return new TestCaseData("TestID-051N", Encoding.Default.GetBytes("abcde"), CustomEncode.UTF_8);
-                yield return new TestCaseData("TestID-052N", Encoding.Default.GetBytes("abcde"), CustomEncode.UTF_7);
-                yield return new TestCaseData("TestID-058N", Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode.x_mac_japanese);
-                yield return new TestCaseData("TestID-059N", Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode.us_ascii);
-                yield return new TestCaseData("TestID-060N", Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode.EUC_JP);
-                yield return new TestCaseData("TestID-061N", Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode.shift_jis);
-                yield return new TestCaseData("TestID-062N", Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode.ISO_2022_JP);
-                yield return new TestCaseData("TestID-063N", Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_ESC);
-                yield return new TestCaseData("TestID-064N", Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO);
-                yield return new TestCaseData("TestID-065N", Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode.UTF_8);
+                yield return new TestCaseData(Encoding.UTF8.GetBytes("abcde"), CustomEncode.UTF_8).SetName("TestID-000N");
+                yield return new TestCaseData(Encoding.UTF7.GetBytes("abcde"), CustomEncode.UTF_7).SetName("TestID-001N");
+                yield return new TestCaseData(Encoding.UTF32.GetBytes("abcde"), CustomEncode.UTF_16LE).SetName("TestID-002N");
+                yield return new TestCaseData(Encoding.UTF32.GetBytes("abcde"), CustomEncode.UTF_16BE).SetName("TestID-003N");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes("abcde"), CustomEncode.x_mac_japanese).SetName("TestID-004N");
+                yield return new TestCaseData(Encoding.UTF7.GetBytes("abcde"), CustomEncode.x_mac_japanese).SetName("TestID-005N");
+                yield return new TestCaseData(Encoding.UTF32.GetBytes("abcde"), CustomEncode.x_mac_japanese).SetName("TestID-006N");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes("abcde"), CustomEncode.us_ascii).SetName("TestID-007N");
+                yield return new TestCaseData(Encoding.UTF7.GetBytes("abcde"), CustomEncode.us_ascii).SetName("TestID-008N");
+                yield return new TestCaseData(Encoding.UTF32.GetBytes("abcde"), CustomEncode.us_ascii).SetName("TestID-009N");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes("abcde"), CustomEncode.EUC_JP).SetName("TestID-010N");
+                yield return new TestCaseData(Encoding.UTF7.GetBytes("abcde"), CustomEncode.EUC_JP).SetName("TestID-011N");
+                yield return new TestCaseData(Encoding.UTF32.GetBytes("abcde"), CustomEncode.EUC_JP).SetName("TestID-012N");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes("abcde"), CustomEncode.shift_jis).SetName("TestID-013N");
+                yield return new TestCaseData(Encoding.UTF7.GetBytes("abcde"), CustomEncode.shift_jis).SetName("TestID-014N");
+                yield return new TestCaseData(Encoding.UTF32.GetBytes("abcde"), CustomEncode.shift_jis).SetName("TestID-015N");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes("abcde"), CustomEncode.ISO_2022_JP).SetName("TestID-016N");
+                yield return new TestCaseData(Encoding.UTF7.GetBytes("abcde"), CustomEncode.ISO_2022_JP).SetName("TestID-017N");
+                yield return new TestCaseData(Encoding.UTF32.GetBytes("abcde"), CustomEncode.ISO_2022_JP).SetName("TestID-018N");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_ESC).SetName("TestID-019N");
+                yield return new TestCaseData(Encoding.UTF7.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_ESC).SetName("TestID-020N");
+                yield return new TestCaseData(Encoding.UTF32.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_ESC).SetName("TestID-021N");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO).SetName("TestID-022N");
+                yield return new TestCaseData(Encoding.UTF7.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO).SetName("TestID-023N");
+                yield return new TestCaseData(Encoding.UTF32.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO).SetName("TestID-024N");
+                yield return new TestCaseData(Encoding.ASCII.GetBytes("abcde"), CustomEncode.x_mac_japanese).SetName("TestID-025N");
+                yield return new TestCaseData(Encoding.ASCII.GetBytes("abcde"), CustomEncode.us_ascii).SetName("TestID-026N");
+                yield return new TestCaseData(Encoding.ASCII.GetBytes("abcde"), CustomEncode.EUC_JP).SetName("TestID-027N");
+                yield return new TestCaseData(Encoding.ASCII.GetBytes("abcde"), CustomEncode.shift_jis).SetName("TestID-028N");
+                yield return new TestCaseData(Encoding.ASCII.GetBytes("abcde"), CustomEncode.ISO_2022_JP).SetName("TestID-029N");
+                yield return new TestCaseData(Encoding.ASCII.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_ESC).SetName("TestID-030N");
+                yield return new TestCaseData(Encoding.ASCII.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO).SetName("TestID-031N");
+                yield return new TestCaseData(Encoding.ASCII.GetBytes("abcde"), CustomEncode.UTF_8).SetName("TestID-032N");
+                yield return new TestCaseData(Encoding.ASCII.GetBytes("abcde"), CustomEncode.UTF_7).SetName("TestID-033N");
+                yield return new TestCaseData(Encoding.Unicode.GetBytes("abcde"), CustomEncode.x_mac_japanese).SetName("TestID-034N");
+                yield return new TestCaseData(Encoding.Unicode.GetBytes("abcde"), CustomEncode.us_ascii).SetName("TestID-035N");
+                yield return new TestCaseData(Encoding.Unicode.GetBytes("abcde"), CustomEncode.EUC_JP).SetName("TestID-036N");
+                yield return new TestCaseData(Encoding.Unicode.GetBytes("abcde"), CustomEncode.shift_jis).SetName("TestID-037N");
+                yield return new TestCaseData(Encoding.Unicode.GetBytes("abcde"), CustomEncode.ISO_2022_JP).SetName("TestID-038N");
+                yield return new TestCaseData(Encoding.Unicode.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_ESC).SetName("TestID-039N");
+                yield return new TestCaseData(Encoding.Unicode.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO).SetName("TestID-040N");
+                yield return new TestCaseData(Encoding.Unicode.GetBytes("abcde"), CustomEncode.UTF_8).SetName("TestID-041N");
+                yield return new TestCaseData(Encoding.Unicode.GetBytes("あいうえお"), CustomEncode.UTF_7).SetName("TestID-042N");
+                yield return new TestCaseData(Encoding.Unicode.GetBytes("abcde"), CustomEncode.UTF_16LE).SetName("TestID-043N");
+                yield return new TestCaseData(Encoding.Unicode.GetBytes("abcde"), CustomEncode.UTF_16BE).SetName("TestID-044N");
+                yield return new TestCaseData(Encoding.Default.GetBytes("abcde"), CustomEncode.x_mac_japanese).SetName("TestID-045N");
+                yield return new TestCaseData(Encoding.Default.GetBytes("abcde"), CustomEncode.us_ascii).SetName("TestID-046N");
+                yield return new TestCaseData(Encoding.Default.GetBytes("abcde"), CustomEncode.EUC_JP).SetName("TestID-047N");
+                yield return new TestCaseData(Encoding.Default.GetBytes("abcde"), CustomEncode.shift_jis).SetName("TestID-048N"); ;
+                yield return new TestCaseData(Encoding.Default.GetBytes("abcde"), CustomEncode.ISO_2022_JP).SetName("TestID-049N"); ;
+                yield return new TestCaseData(Encoding.Default.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_ESC).SetName("TestID-050N");
+                yield return new TestCaseData(Encoding.Default.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO).SetName("TestID-051N");
+                yield return new TestCaseData(Encoding.Default.GetBytes("abcde"), CustomEncode.UTF_8).SetName("TestID-052N");
+                yield return new TestCaseData(Encoding.Default.GetBytes("abcde"), CustomEncode.UTF_7).SetName("TestID-053N");
+                yield return new TestCaseData(Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode.x_mac_japanese).SetName("TestID-054N");
+                yield return new TestCaseData(Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode.us_ascii).SetName("TestID-055N");
+                yield return new TestCaseData(Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode.EUC_JP).SetName("TestID-056N");
+                yield return new TestCaseData(Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode.shift_jis).SetName("TestID-057N");
+                yield return new TestCaseData(Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode.ISO_2022_JP).SetName("TestID-058N");
+                yield return new TestCaseData(Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_ESC).SetName("TestID-059N");
+                yield return new TestCaseData(Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode._iso_2022_jp_Dollar_SIO).SetName("TestID-060N");
+                yield return new TestCaseData(Encoding.BigEndianUnicode.GetBytes("abcde"), CustomEncode.UTF_8).SetName("TestID-061N");
 
                 //passing  codePageNum as null value 
-                yield return new TestCaseData("TestID-066N", Encoding.UTF8.GetBytes("abcde"), null);
-                yield return new TestCaseData("TestID-067N", Encoding.UTF7.GetBytes("abcde"), null);
-                yield return new TestCaseData("TestID-068N", Encoding.UTF32.GetBytes("abcde"), null);
-                yield return new TestCaseData("TestID-069N", Encoding.ASCII.GetBytes("abcde"), null);
-                yield return new TestCaseData("TestID-070N", Encoding.Default.GetBytes("abcde"), null);
-                yield return new TestCaseData("TestID-071N", Encoding.BigEndianUnicode.GetBytes("abcde"), null);
-                yield return new TestCaseData("TestID-072N", Encoding.Unicode.GetBytes("abcde"), null);
+                yield return new TestCaseData(Encoding.UTF8.GetBytes("abcde"), null).SetName("TestID-062N");
+                yield return new TestCaseData(Encoding.UTF7.GetBytes("abcde"), null).SetName("TestID-063N");
+                yield return new TestCaseData(Encoding.UTF32.GetBytes("abcde"), null).SetName("TestID-064N");
+                yield return new TestCaseData(Encoding.ASCII.GetBytes("abcde"), null).SetName("TestID-065N");
+                yield return new TestCaseData(Encoding.Default.GetBytes("abcde"), null).SetName("TestID-066N");
+                yield return new TestCaseData(Encoding.BigEndianUnicode.GetBytes("abcde"), null).SetName("TestID-067N");
+                yield return new TestCaseData(Encoding.Unicode.GetBytes("abcde"), null).SetName("TestID-068N");
 
                 //passing  codePageNum as string.empty value 
-                yield return new TestCaseData("TestID-073A", Encoding.UTF8.GetBytes("abcde"), string.Empty).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-074A", Encoding.UTF7.GetBytes("abcde"), string.Empty).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-075A", Encoding.UTF32.GetBytes("abcde"), string.Empty).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-076A", Encoding.ASCII.GetBytes("abcde"), string.Empty).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-077A", Encoding.Default.GetBytes("abcde"), string.Empty).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-078A", Encoding.BigEndianUnicode.GetBytes("abcde"), string.Empty).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-079A", Encoding.Unicode.GetBytes("abcde"), string.Empty).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(Encoding.UTF8.GetBytes("abcde"), string.Empty).Throws(typeof(ArgumentException)).SetName("TestID-069A");
+                yield return new TestCaseData(Encoding.UTF7.GetBytes("abcde"), string.Empty).Throws(typeof(ArgumentException)).SetName("TestID-070A");
+                yield return new TestCaseData(Encoding.UTF32.GetBytes("abcde"), string.Empty).Throws(typeof(ArgumentException)).SetName("TestID-071A");
+                yield return new TestCaseData(Encoding.ASCII.GetBytes("abcde"), string.Empty).Throws(typeof(ArgumentException)).SetName("TestID-072A");
+                yield return new TestCaseData(Encoding.Default.GetBytes("abcde"), string.Empty).Throws(typeof(ArgumentException)).SetName("TestID-073A");
+                yield return new TestCaseData(Encoding.BigEndianUnicode.GetBytes("abcde"), string.Empty).Throws(typeof(ArgumentException)).SetName("TestID-074A");
+                yield return new TestCaseData(Encoding.Unicode.GetBytes("abcde"), string.Empty).Throws(typeof(ArgumentException)).SetName("TestID-075A");
 
                 //passing  byte value as string.empty value 
-                yield return new TestCaseData("TestID-080A", string.Empty, CustomEncode.us_ascii).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-081L", Encoding.UTF8.GetBytes(string.Empty), CustomEncode.us_ascii);
-                yield return new TestCaseData("TestID-082A", string.Empty, CustomEncode.UTF_16BE).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-083L", Encoding.UTF8.GetBytes(string.Empty), CustomEncode.UTF_16BE);
-                yield return new TestCaseData("TestID-084A", string.Empty, CustomEncode.UTF_16LE).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-085L", Encoding.UTF8.GetBytes(string.Empty), CustomEncode.UTF_16LE);
-                yield return new TestCaseData("TestID-086A", string.Empty, CustomEncode.UTF_7).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-087L", Encoding.UTF8.GetBytes(string.Empty), CustomEncode.UTF_7);
-                yield return new TestCaseData("TestID-088A", string.Empty, CustomEncode.UTF_8).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-089L", Encoding.UTF8.GetBytes(string.Empty), CustomEncode.UTF_8);
-                yield return new TestCaseData("TestID-090A", string.Empty, CustomEncode._iso_2022_jp_Dollar_ESC).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-091L", Encoding.UTF8.GetBytes(string.Empty), CustomEncode._iso_2022_jp_Dollar_ESC);
-                yield return new TestCaseData("TestID-092A", string.Empty, CustomEncode._iso_2022_jp_Dollar_SIO).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-093L", Encoding.UTF8.GetBytes(string.Empty), CustomEncode._iso_2022_jp_Dollar_SIO);
-                yield return new TestCaseData("TestID-094A", string.Empty, CustomEncode.shift_jis).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-095L", Encoding.UTF8.GetBytes(string.Empty), CustomEncode.shift_jis);
-                yield return new TestCaseData("TestID-096A", string.Empty, CustomEncode.ISO_2022_JP).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-097L", Encoding.UTF8.GetBytes(string.Empty), CustomEncode.ISO_2022_JP);
-                yield return new TestCaseData("TestID-098A", string.Empty, CustomEncode.x_mac_japanese).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-099L", Encoding.UTF8.GetBytes(string.Empty), CustomEncode.x_mac_japanese);
-                yield return new TestCaseData("TestID-100A", string.Empty, CustomEncode.EUC_JP).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-101L", Encoding.UTF8.GetBytes(string.Empty), CustomEncode.EUC_JP);
-                yield return new TestCaseData("TestID-102A", string.Empty, null).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(string.Empty, CustomEncode.us_ascii).Throws(typeof(ArgumentException)).SetName("TestID-076A");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes(string.Empty), CustomEncode.us_ascii).SetName("TestID-077L");
+                yield return new TestCaseData(string.Empty, CustomEncode.UTF_16BE).Throws(typeof(ArgumentException)).SetName("TestID-078A");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes(string.Empty), CustomEncode.UTF_16BE).SetName("TestID-079L");
+                yield return new TestCaseData(string.Empty, CustomEncode.UTF_16LE).Throws(typeof(ArgumentException)).SetName("TestID-080A");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes(string.Empty), CustomEncode.UTF_16LE).SetName("TestID-081L");
+                yield return new TestCaseData(string.Empty, CustomEncode.UTF_7).Throws(typeof(ArgumentException)).SetName("TestID-082A");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes(string.Empty), CustomEncode.UTF_7).SetName("TestID-083L");
+                yield return new TestCaseData(string.Empty, CustomEncode.UTF_8).Throws(typeof(ArgumentException)).SetName("TestID-084A");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes(string.Empty), CustomEncode.UTF_8).SetName("TestID-085L");
+                yield return new TestCaseData(string.Empty, CustomEncode._iso_2022_jp_Dollar_ESC).Throws(typeof(ArgumentException)).SetName("TestID-086A");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes(string.Empty), CustomEncode._iso_2022_jp_Dollar_ESC).SetName("TestID-087L");
+                yield return new TestCaseData(string.Empty, CustomEncode._iso_2022_jp_Dollar_SIO).Throws(typeof(ArgumentException)).SetName("TestID-088A");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes(string.Empty), CustomEncode._iso_2022_jp_Dollar_SIO).SetName("TestID-089L");
+                yield return new TestCaseData(string.Empty, CustomEncode.shift_jis).Throws(typeof(ArgumentException)).SetName("TestID-090A");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes(string.Empty), CustomEncode.shift_jis).SetName("TestID-091L");
+                yield return new TestCaseData(string.Empty, CustomEncode.ISO_2022_JP).Throws(typeof(ArgumentException)).SetName("TestID-092A");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes(string.Empty), CustomEncode.ISO_2022_JP).SetName("TestID-093L");
+                yield return new TestCaseData(string.Empty, CustomEncode.x_mac_japanese).Throws(typeof(ArgumentException)).SetName("TestID-094A");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes(string.Empty), CustomEncode.x_mac_japanese).SetName("TestID-095L");
+                yield return new TestCaseData(string.Empty, CustomEncode.EUC_JP).Throws(typeof(ArgumentException)).SetName("TestID-096A");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes(string.Empty), CustomEncode.EUC_JP).SetName("TestID-097L");
+                yield return new TestCaseData(string.Empty, null).Throws(typeof(ArgumentException)).SetName("TestID-099A");
             }
         }
 
@@ -269,16 +264,15 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-                yield return new TestCaseData("TestID-000N", "abcde");
-                yield return new TestCaseData("TestID-001N", "あいうえお");
-                yield return new TestCaseData("TestID-002N", "1");
-                yield return new TestCaseData("TestID-003A", 1).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-004N", "abcde" + "あいうえお");
-                yield return new TestCaseData("TestID-005N", null);
-                yield return new TestCaseData("TestID-006L", string.Empty);
-                yield return new TestCaseData("TestID-007N", "This string contains the unicode character Pi (\u03a0)");
-                yield return new TestCaseData("TestID-008N", "&lt;root&gt;abcde&lt;/root&gt;");
+                yield return new TestCaseData("abcde").SetName("TestID-000N");
+                yield return new TestCaseData("あいうえお").SetName("TestID-001N");
+                yield return new TestCaseData("1").SetName("TestID-002N");
+                yield return new TestCaseData(1).Throws(typeof(ArgumentException)).SetName("TestID-003A");
+                yield return new TestCaseData("abcde" + "あいうえお").SetName("TestID-004N");
+                yield return new TestCaseData(null).SetName("TestID-005N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-006L");
+                yield return new TestCaseData("This string contains the unicode character Pi (\u03a0)").SetName("TestID-007N");
+                yield return new TestCaseData("&lt;root&gt;abcde&lt;/root&gt;").SetName("TestID-008N");
             }
         }
 
@@ -290,16 +284,14 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "abcde");
-                yield return new TestCaseData("TestID-001N", "あいうえお");
-                yield return new TestCaseData("TestID-002N", "1");
-                yield return new TestCaseData("TestID-003A", 1).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-004N", "abcde" + "あいうえお");
-                yield return new TestCaseData("TestID-005N", null);
-                yield return new TestCaseData("TestID-006L", string.Empty);
-                yield return new TestCaseData("TestID-007N", "<root>abcde</root>");
+                yield return new TestCaseData("abcde").SetName("TestID-000N");
+                yield return new TestCaseData("あいうえお").SetName("TestID-001N");
+                yield return new TestCaseData("1").SetName("TestID-002N");
+                yield return new TestCaseData(1).Throws(typeof(ArgumentException)).SetName("TestID-003A");
+                yield return new TestCaseData("abcde" + "あいうえお").SetName("TestID-004N");
+                yield return new TestCaseData(null).SetName("TestID-005N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-006L");
+                yield return new TestCaseData("<root>abcde</root>").SetName("TestID-007N");
             }
         }
 
@@ -311,10 +303,8 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "hello");
-                yield return new TestCaseData("TestID-001N", "google.com");
+                yield return new TestCaseData("hello").SetName("TestID-000N");
+                yield return new TestCaseData("google.com").SetName("TestID-001N");
             }
         }
 
@@ -326,10 +316,8 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "hello");
-                yield return new TestCaseData("TestID-001N", "google.com");
+                yield return new TestCaseData("hello").SetName("TestID-000N");
+                yield return new TestCaseData("google.com").SetName("TestID-001N");
             }
         }
 
@@ -341,16 +329,15 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
                 string str = "00 01 00 00 00 FF FF FF FF 01 00 00 00 00 00 00 00 06 01 00 00 00 0E 59 61 68 6F 6F 6F 6F 6F 6F 6F 6F 6F 6F 6F 0B";
-                yield return new TestCaseData("TestID-000N", str);
-                yield return new TestCaseData("TestID-001N", "01");
-                yield return new TestCaseData("TestID-002N", "0A 0B 0C");
-                yield return new TestCaseData("TestID-003A", 1).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-004A", "abcde" + "あいうえお").Throws(typeof(FormatException)); ;
-                yield return new TestCaseData("TestID-005A", null).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-006A", string.Empty).Throws(typeof(ArgumentOutOfRangeException));
-                yield return new TestCaseData("TestID-007N", "AB 0C DE");
+                yield return new TestCaseData(str).SetName("TestID-000N");
+                yield return new TestCaseData("01").SetName("TestID-001N");
+                yield return new TestCaseData("0A 0B 0C").SetName("TestID-002N");
+                yield return new TestCaseData(1).Throws(typeof(ArgumentException)).SetName("TestID-003A");
+                yield return new TestCaseData("abcde" + "あいうえお").Throws(typeof(FormatException)).SetName("TestID-004A");
+                yield return new TestCaseData(null).Throws(typeof(NullReferenceException)).SetName("TestID-005A");
+                yield return new TestCaseData(string.Empty).Throws(typeof(ArgumentOutOfRangeException)).SetName("TestID-006A");
+                yield return new TestCaseData("AB 0C DE").SetName("TestID-007N");
             }
         }
 
@@ -362,18 +349,16 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
                 var sevenItems = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 };
                 string str = "00 01 00 00 00 FF FF FF FF 01 00 00 00 00 00 00 00 06 01 00 00 00 0E 59 61 68 6F 6F 6F 6F 6F 6F 6F 6F 6F 6F 6F 0B";
                 byte[] data = { };
-                yield return new TestCaseData("TestID-000N", Encoding.UTF8.GetBytes("abcde"));
-                yield return new TestCaseData("TestID-001N", Encoding.ASCII.GetBytes(str));
-                yield return new TestCaseData("TestID-002N", Encoding.Unicode.GetBytes("abcde" + "あいうえお"));
-                yield return new TestCaseData("TestID-003A", null).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-004A", string.Empty).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-005N", sevenItems);
-                yield return new TestCaseData("TestID-006N", data).Throws(typeof(ArgumentOutOfRangeException));
+                yield return new TestCaseData(Encoding.UTF8.GetBytes("abcde")).SetName("TestID-000N");
+                yield return new TestCaseData(Encoding.ASCII.GetBytes(str)).SetName("TestID-001N");
+                yield return new TestCaseData(Encoding.Unicode.GetBytes("abcde" + "あいうえお")).SetName("TestID-002N");
+                yield return new TestCaseData(null).Throws(typeof(NullReferenceException)).SetName("TestID-003A");
+                yield return new TestCaseData(string.Empty).Throws(typeof(ArgumentException)).SetName("TestID-004A");
+                yield return new TestCaseData(sevenItems).SetName("TestID-005N");
+                yield return new TestCaseData(data).Throws(typeof(ArgumentOutOfRangeException)).SetName("TestID-006N");
             }
         }
 
@@ -385,13 +370,11 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "AAECBAqQIEA=");
-                yield return new TestCaseData("TestID-001A", "abcde=").Throws(typeof(FormatException));
-                yield return new TestCaseData("TestID-002N", "YYYYYWJjZGUT");
-                yield return new TestCaseData("TestID-003N", string.Empty);
-                yield return new TestCaseData("TestID-004A", null).Throws(typeof(System.ArgumentNullException));
+                yield return new TestCaseData("AAECBAqQIEA=").SetName("TestID-000N");
+                yield return new TestCaseData("abcde=").Throws(typeof(FormatException)).SetName("TestID-001A");
+                yield return new TestCaseData("YYYYYWJjZGUT").SetName("TestID-002N");
+                yield return new TestCaseData(string.Empty).SetName("TestID-003N");
+                yield return new TestCaseData(null).Throws(typeof(System.ArgumentNullException)).SetName("TestID-004A");
             }
         }
 
@@ -403,13 +386,11 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", Encoding.ASCII.GetBytes("abcde"));
-                yield return new TestCaseData("TestID-001N", Encoding.UTF8.GetBytes("abcde"));
-                yield return new TestCaseData("TestID-002A", string.Empty).Throws(typeof(System.ArgumentException));
-                yield return new TestCaseData("TestID-003A", null).Throws(typeof(System.ArgumentNullException));
-                yield return new TestCaseData("TestID-004A", Encoding.UTF8.GetBytes(""));
+                yield return new TestCaseData(Encoding.ASCII.GetBytes("abcde")).SetName("TestID-000N");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes("abcde")).SetName("TestID-001N");
+                yield return new TestCaseData(string.Empty).Throws(typeof(System.ArgumentException)).SetName("TestID-002A");
+                yield return new TestCaseData(null).Throws(typeof(System.ArgumentNullException)).SetName("TestID-003A");
+                yield return new TestCaseData(Encoding.UTF8.GetBytes("")).SetName("TestID-004A");
             }
         }
 
@@ -420,9 +401,8 @@ namespace Public.Test.Str
         /// <summary>
         /// TestCasesOfGetEncodingsTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         [TestCaseSource("TestCasesOfGetEncodingsTest")]
-        public static void GetEncodingsTest(string testCaseID)
+        public static void GetEncodingsTest()
         {
             System.Data.DataTable dt = CustomEncode.GetEncodings();
             DataTable dt1 = new DataTable();
@@ -438,11 +418,10 @@ namespace Public.Test.Str
         /// <summary>
         /// StringToByteTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         /// <param name="codePageNum">codePageNum</param>
         [TestCaseSource("TestCasesOfStringToByteTest")]
-        public static void StringToByteTest(string testCaseID, string str, int codePageNum)
+        public static void StringToByteTest(string str, int codePageNum)
         {
             try
             {
@@ -460,7 +439,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -468,11 +447,10 @@ namespace Public.Test.Str
         /// <summary>
         /// TestCasesOfByteToStringTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="abyt">abyt</param>
         /// <param name="codePageNum">codePageNum</param>
         [TestCaseSource("TestCasesOfByteToStringTest")]
-        public static void ByteToStringTest(string testCaseID, byte[] abyt, int codePageNum)
+        public static void ByteToStringTest(byte[] abyt, int codePageNum)
         {
             try
             {
@@ -489,7 +467,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -497,10 +475,9 @@ namespace Public.Test.Str
         /// <summary>
         /// HtmlEncodeTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestHtmlEncodeTest")]
-        public static void HtmlEncodeTest(string testCaseID, string str)
+        public static void HtmlEncodeTest(string str)
         {
             try
             {
@@ -516,7 +493,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -524,10 +501,9 @@ namespace Public.Test.Str
         /// <summary>
         /// HtmlDecodeTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestHtmlDecodeTest")]
-        public static void HtmlDecodeTest(string testCaseID, string str)
+        public static void HtmlDecodeTest(string str)
         {
             try
             {
@@ -543,7 +519,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -551,10 +527,9 @@ namespace Public.Test.Str
         /// <summary>
         /// TestUrlEncodeTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestUrlEncodeTest")]
-        public static void UrlEncodeTest(string testCaseID, string str)
+        public static void UrlEncodeTest(string str)
         {
             try
             {
@@ -570,7 +545,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -578,10 +553,9 @@ namespace Public.Test.Str
         /// <summary>
         /// TestUrlDecodeTestMethod
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestUrlDecodeTest")]
-        public static void UrlDecodeTest(string testCaseID, string str)
+        public static void UrlDecodeTest(string str)
         {
             try
             {
@@ -597,7 +571,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -605,10 +579,9 @@ namespace Public.Test.Str
         /// <summary>
         /// TestFormHexStringTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="str">str</param>
         [TestCaseSource("TestFormHexStringTest")]
-        public void FormHexStringTest(string testCaseID, string str)
+        public void FormHexStringTest(string str)
         {
             try
             {
@@ -624,7 +597,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -632,10 +605,9 @@ namespace Public.Test.Str
         /// <summary>
         /// TestToHexStringTest Method
         /// </summary>
-        /// <param name="testCaseID"></param>
         /// <param name="bytes"></param>
         [TestCaseSource("TestToHexStringTest")]
-        public void ToHexStringTest(string testCaseID, byte[] bytes)
+        public void ToHexStringTest(byte[] bytes)
         {
             try
             {
@@ -651,7 +623,7 @@ namespace Public.Test.Str
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -659,10 +631,9 @@ namespace Public.Test.Str
         /// <summary>
         /// TestFromBase64StringTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="base64Str">base64Str</param>
         [TestCaseSource("TestFromBase64StringTest")]
-        public static void FromBase64StringTest(string testCaseID, string base64Str)
+        public static void FromBase64StringTest(string base64Str)
         {
             string base64Decoded;
             //convert to byte using components of Touryo
@@ -678,10 +649,9 @@ namespace Public.Test.Str
         /// <summary>
         /// TestToBase64StringTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="aryByt">aryByt</param>
         [TestCaseSource("TestToBase64StringTest")]
-        public static void ToBase64StringTest(string testCaseID, byte[] aryByt)
+        public static void ToBase64StringTest(byte[] aryByt)
         {
             string base64Decoded;
             //convert to byte using components of Touryo

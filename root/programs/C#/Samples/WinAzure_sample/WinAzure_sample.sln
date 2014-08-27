@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2013 for Web
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectX_sample", "ProjectX_sample\ProjectX_sample.csproj", "{979EFED0-8018-45E2-BA01-65FABB5D3B36}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASPNETWebService", "ASPNETWebService\ASPNETWebService.csproj", "{93A0D449-D473-41D2-B16A-E12F9C05B370}"
@@ -14,6 +16,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WcfDataContract", "..\..\Frameworks\Infrastructure\Business\WcfDataContract\WcfDataContract.csproj", "{2A740A82-ECC1-4BEB-A523-BFAD83838789}"
 EndProject
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "WindowsAzureProject", "WindowsAzureProject\WindowsAzureProject.ccproj", "{0E04F8A9-6096-4517-A733-34BAEC27FF3D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4DE16161-AEDA-4725-BEF7-E86093773036}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

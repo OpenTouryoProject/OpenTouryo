@@ -134,7 +134,7 @@ public partial class _TableName_Detail : MyBaseController
         // フォーム初期化（ポストバック）時に実行する処理を実装する
 
         // TODO:
-        Session["DAP"] = this.ddlDap.SelectedValue;
+        Session["DAP"] = "_DAP_";
     }
 
     #endregion

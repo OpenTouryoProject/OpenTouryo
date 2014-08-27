@@ -90,28 +90,9 @@ public partial class _TableName_SearchAndUpdate : MyBaseController
         // フォーム初期化（ポストバック）時に実行する処理を実装する
 
         // TODO:
-        Session["DAP"] = this.ddlDap.SelectedValue;
-
-        if (this.ddlDap.SelectedValue == "SQL")
-        {
-            Session["DBMS"] = DbEnum.DBMSType.SQLServer;
-        }
-       	else if (this.ddlDap.SelectedValue == "ODP")
-        {
-            Session["DBMS"] = DbEnum.DBMSType.Oracle;
-        }
-        else if (this.ddlDap.SelectedValue == "NPS")
-        {
-            Session["DBMS"] = DbEnum.DBMSType.PstGrS;
-        }
-        else if (this.ddlDap.SelectedValue == "MCN")
-        {
-            Session["DBMS"] = DbEnum.DBMSType.MySQL;
-        }
-        else if (this.ddlDap.SelectedValue == "DB2")
-        {
-            Session["DBMS"] = DbEnum.DBMSType.DB2;
-        }
+        Session["DAP"] = "_DAP_";
+        Session["DBMS"] = DbEnum.DBMSType._DBMS_;
+     
     }
 
     #endregion

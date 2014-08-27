@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2014/03/31  西野  大介        新規作成
+//*  08/11/2014   Sai              Added TestcaseID using SetName method as per Nishino-San comments
 //*
 //**********************************************************************************
 
@@ -92,109 +93,107 @@ namespace Public.Test.Util
                 byte[] EmptySalt = new byte[0];
                 byte[] NullSalt = null;
 
-                this.SetUp();
-
                 // Default(UTF8Salt)
-                yield return new TestCaseData("TestID-001N", "abcde", EnumKeyedHashAlgorithm.Default, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-002N", "あいうえお", EnumKeyedHashAlgorithm.Default, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-003L", string.Empty, EnumKeyedHashAlgorithm.Default, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-004A", null, EnumKeyedHashAlgorithm.Default, "test@123", UTF8Salt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-005L", "abcde", EnumKeyedHashAlgorithm.Default, "", UTF8Salt);
-                yield return new TestCaseData("TestID-006A", "abcde", EnumKeyedHashAlgorithm.Default, null, UTF8Salt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.Default, "test@123", UTF8Salt).SetName("TestID-001N");
+                yield return new TestCaseData("あいうえお", EnumKeyedHashAlgorithm.Default, "test@123", UTF8Salt).SetName("TestID-002N");
+                yield return new TestCaseData(string.Empty, EnumKeyedHashAlgorithm.Default, "test@123", UTF8Salt).SetName("TestID-003L");
+                yield return new TestCaseData(null, EnumKeyedHashAlgorithm.Default, "test@123", UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-004A");
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.Default, "", UTF8Salt).SetName("TestID-005L");
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.Default, null, UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-006A");
 
                 // HMACSHA1(UTF8Salt)
-                yield return new TestCaseData("TestID-007N", "abcde", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-008N", "あいうえお", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-009L", string.Empty, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-010A", null, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", UTF8Salt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", UTF8Salt).SetName("TestID-007N");
+                yield return new TestCaseData("あいうえお", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", UTF8Salt).SetName("TestID-008N");
+                yield return new TestCaseData(string.Empty, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", UTF8Salt).SetName("TestID-009L");
+                yield return new TestCaseData(null, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-010A");
 
                 // MACTripleDES(UTF8Salt)
-                yield return new TestCaseData("TestID-011N", "abcde", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-012N", "あいうえお", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-013L", string.Empty, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-014A", null, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", UTF8Salt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", UTF8Salt).SetName("TestID-011N");
+                yield return new TestCaseData("あいうえお", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", UTF8Salt).SetName("TestID-012N");
+                yield return new TestCaseData(string.Empty, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", UTF8Salt).SetName("TestID-013L");
+                yield return new TestCaseData(null, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-014A");
 
                 // -(UTF8Salt)
-                yield return new TestCaseData("TestID-015N", "abcde", 999, "test@123", UTF8Salt).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-016N", "あいうえお", 999, "test@123", UTF8Salt).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-017L", string.Empty, 999, "test@123", UTF8Salt).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-018A", null, 999, "test@123", UTF8Salt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", 999, "test@123", UTF8Salt).Throws(typeof(NullReferenceException)).SetName("TestID-015N");
+                yield return new TestCaseData("あいうえお", 999, "test@123", UTF8Salt).Throws(typeof(NullReferenceException)).SetName("TestID-016N");
+                yield return new TestCaseData(string.Empty, 999, "test@123", UTF8Salt).Throws(typeof(NullReferenceException)).SetName("TestID-017L");
+                yield return new TestCaseData(null, 999, "test@123", UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-018A");
 
                 // Default(SJISSalt)
-                yield return new TestCaseData("TestID-019N", "abcde", EnumKeyedHashAlgorithm.Default, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-020N", "あいうえお", EnumKeyedHashAlgorithm.Default, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-021L", string.Empty, EnumKeyedHashAlgorithm.Default, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-022A", null, EnumKeyedHashAlgorithm.Default, "test@123", SJISSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-023L", "abcde", EnumKeyedHashAlgorithm.Default, "", SJISSalt);
-                yield return new TestCaseData("TestID-024A", "abcde", EnumKeyedHashAlgorithm.Default, null, SJISSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.Default, "test@123", SJISSalt).SetName("TestID-019N");
+                yield return new TestCaseData("あいうえお", EnumKeyedHashAlgorithm.Default, "test@123", SJISSalt).SetName("TestID-020N");
+                yield return new TestCaseData(string.Empty, EnumKeyedHashAlgorithm.Default, "test@123", SJISSalt).SetName("TestID-021L");
+                yield return new TestCaseData(null, EnumKeyedHashAlgorithm.Default, "test@123", SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-022A");
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.Default, "", SJISSalt).SetName("TestID-023L");
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.Default, null, SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-024A");
 
-                yield return new TestCaseData("TestID-025N", "abcde", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-026N", "あいうえお", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-027L", string.Empty, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-028A", null, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", SJISSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", SJISSalt).SetName("TestID-025N");
+                yield return new TestCaseData("あいうえお", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", SJISSalt).SetName("TestID-026N");
+                yield return new TestCaseData(string.Empty, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", SJISSalt).SetName("TestID-027L");
+                yield return new TestCaseData(null, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-028A");
 
-                yield return new TestCaseData("TestID-029N", "abcde", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-030N", "あいうえお", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-031L", string.Empty, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-032A", null, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", SJISSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", SJISSalt).SetName("TestID-029N");
+                yield return new TestCaseData("あいうえお", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", SJISSalt).SetName("TestID-030N");
+                yield return new TestCaseData(string.Empty, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", SJISSalt).SetName("TestID-031L");
+                yield return new TestCaseData(null, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-032A");
 
                 // The encryption method that is not defined(SJISSalt)
-                yield return new TestCaseData("TestID-033A", "abcde", 999, "test@123", SJISSalt).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-034A", "あいうえお", 999, "test@123", SJISSalt).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-035A", string.Empty, 999, "test@123", SJISSalt).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-036A", null, 999, "test@123", SJISSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", 999, "test@123", SJISSalt).Throws(typeof(NullReferenceException)).SetName("TestID-033A");
+                yield return new TestCaseData("あいうえお", 999, "test@123", SJISSalt).Throws(typeof(NullReferenceException)).SetName("TestID-034A");
+                yield return new TestCaseData(string.Empty, 999, "test@123", SJISSalt).Throws(typeof(NullReferenceException)).SetName("TestID-035A");
+                yield return new TestCaseData(null, 999, "test@123", SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-036A");
 
                 // Default(EmptySalt)
-                yield return new TestCaseData("TestID-037A", "abcde", EnumKeyedHashAlgorithm.Default, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-038A", "あいうえお", EnumKeyedHashAlgorithm.Default, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-039A", string.Empty, EnumKeyedHashAlgorithm.Default, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-040A", null, EnumKeyedHashAlgorithm.Default, "test@123", EmptySalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-041A", "abcde", EnumKeyedHashAlgorithm.Default, "", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-042A", "abcde", EnumKeyedHashAlgorithm.Default, null, EmptySalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.Default, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-037A");
+                yield return new TestCaseData("あいうえお", EnumKeyedHashAlgorithm.Default, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-038A");
+                yield return new TestCaseData(string.Empty, EnumKeyedHashAlgorithm.Default, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-039A");
+                yield return new TestCaseData(null, EnumKeyedHashAlgorithm.Default, "test@123", EmptySalt).Throws(typeof(ArgumentNullException)).SetName("TestID-040A");
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.Default, "", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-041A");
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.Default, null, EmptySalt).Throws(typeof(ArgumentNullException)).SetName("TestID-042A");
 
                 // HMACSHA1(EmptySalt)
-                yield return new TestCaseData("TestID-043A", "abcde", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-044A", "あいうえお", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-045A", string.Empty, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-046A", null, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", EmptySalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-043A");
+                yield return new TestCaseData("あいうえお", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-044A");
+                yield return new TestCaseData(string.Empty, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-045A");
+                yield return new TestCaseData(null, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", EmptySalt).Throws(typeof(ArgumentNullException)).SetName("TestID-046A");
 
                 // MACTripleDES(EmptySalt)
-                yield return new TestCaseData("TestID-047A", "abcde", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-048A", "あいうえお", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-049A", string.Empty, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-050A", null, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", EmptySalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-047A");
+                yield return new TestCaseData("あいうえお", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-048A");
+                yield return new TestCaseData(string.Empty, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-049A");
+                yield return new TestCaseData(null, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", EmptySalt).Throws(typeof(ArgumentNullException)).SetName("TestID-050A");
 
                 // The encryption method that is not defined(EmptySalt)
-                yield return new TestCaseData("TestID-051A", "abcde", 999, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-052A", "あいうえお", 999, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-053A", string.Empty, 999, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-054A", null, 999, "test@123", EmptySalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", 999, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-051A");
+                yield return new TestCaseData("あいうえお", 999, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-052A");
+                yield return new TestCaseData(string.Empty, 999, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-053A");
+                yield return new TestCaseData(null, 999, "test@123", EmptySalt).Throws(typeof(ArgumentNullException)).SetName("TestID-054A");
 
                 // Default(NullSalt)
-                yield return new TestCaseData("TestID-055A", "abcde", EnumKeyedHashAlgorithm.Default, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-056A", "あいうえお", EnumKeyedHashAlgorithm.Default, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-057A", string.Empty, EnumKeyedHashAlgorithm.Default, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-058A", null, EnumKeyedHashAlgorithm.Default, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-059A", "abcde", EnumKeyedHashAlgorithm.Default, "", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-060A", "abcde", EnumKeyedHashAlgorithm.Default, null, NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.Default, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-055A");
+                yield return new TestCaseData("あいうえお", EnumKeyedHashAlgorithm.Default, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-056A");
+                yield return new TestCaseData(string.Empty, EnumKeyedHashAlgorithm.Default, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-057A");
+                yield return new TestCaseData(null, EnumKeyedHashAlgorithm.Default, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-058A");
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.Default, "", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-059A");
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.Default, null, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-060A");
 
                 // HMACSHA1(NullSalt)
-                yield return new TestCaseData("TestID-061A", "abcde", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-062A", "あいうえお", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-063A", string.Empty, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-064A", null, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-061A");
+                yield return new TestCaseData("あいうえお", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-062A");
+                yield return new TestCaseData(string.Empty, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-063A");
+                yield return new TestCaseData(null, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-064A");
 
                 // MACTripleDES(NullSalt)
-                yield return new TestCaseData("TestID-065A", "abcde", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-066A", "あいうえお", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-067A", string.Empty, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-068A", null, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-065A");
+                yield return new TestCaseData("あいうえお", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-066A");
+                yield return new TestCaseData(string.Empty, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-067A");
+                yield return new TestCaseData(null, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-068A");
 
                 // The encryption method that is not defined(NullSalt)
-                yield return new TestCaseData("TestID-069A", "abcde", 999, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-070A", "あいうえお", 999, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-071A", string.Empty, 999, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-072A", null, 999, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData("abcde", 999, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-069A");
+                yield return new TestCaseData("あいうえお", 999, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-070A");
+                yield return new TestCaseData(string.Empty, 999, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-071A");
+                yield return new TestCaseData(null, 999, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-072A");
             }
         }
 
@@ -214,33 +213,31 @@ namespace Public.Test.Util
                 byte[] emptyBytes = new Byte[0];
                 byte[] nullBytes = null;
 
-                this.SetUp();
-
                 // Default
-                yield return new TestCaseData("TestID-001N", abcdeBytes, EnumKeyedHashAlgorithm.Default, "test@123");
-                yield return new TestCaseData("TestID-002N", aiueoBytes, EnumKeyedHashAlgorithm.Default, "test@123");
-                yield return new TestCaseData("TestID-003L", emptyBytes, EnumKeyedHashAlgorithm.Default, "test@123");
-                yield return new TestCaseData("TestID-004A", nullBytes, EnumKeyedHashAlgorithm.Default, "test@123").Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-005L", abcdeBytes, EnumKeyedHashAlgorithm.Default, "");
-                yield return new TestCaseData("TestID-006A", abcdeBytes, EnumKeyedHashAlgorithm.Default, null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.Default, "test@123").SetName("TestID-001N");
+                yield return new TestCaseData(aiueoBytes, EnumKeyedHashAlgorithm.Default, "test@123").SetName("TestID-002N");
+                yield return new TestCaseData(emptyBytes, EnumKeyedHashAlgorithm.Default, "test@123").SetName("TestID-003L");
+                yield return new TestCaseData(nullBytes, EnumKeyedHashAlgorithm.Default, "test@123").Throws(typeof(ArgumentNullException)).SetName("TestID-004A");
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.Default, "").SetName("TestID-005L");
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.Default, null).Throws(typeof(ArgumentNullException)).SetName("TestID-006A");
 
                 // HMACSHA1
-                yield return new TestCaseData("TestID-007N", abcdeBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123");
-                yield return new TestCaseData("TestID-008N", aiueoBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123");
-                yield return new TestCaseData("TestID-009L", emptyBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123");
-                yield return new TestCaseData("TestID-010A", nullBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123").Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123").SetName("TestID-007N");
+                yield return new TestCaseData(aiueoBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123").SetName("TestID-008N");
+                yield return new TestCaseData(emptyBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123").SetName("TestID-009L");
+                yield return new TestCaseData(nullBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123").Throws(typeof(ArgumentNullException)).SetName("TestID-010A");
 
                 // MACTripleDES
-                yield return new TestCaseData("TestID-011N", abcdeBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123");
-                yield return new TestCaseData("TestID-012N", aiueoBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123");
-                yield return new TestCaseData("TestID-013L", emptyBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123");
-                yield return new TestCaseData("TestID-014A", nullBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123").Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123").SetName("TestID-011N");
+                yield return new TestCaseData(aiueoBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123").SetName("TestID-012N");
+                yield return new TestCaseData(emptyBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123").SetName("TestID-013L");
+                yield return new TestCaseData(nullBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123").Throws(typeof(ArgumentNullException)).SetName("TestID-014A");
 
                 // The encryption method that is not defined 
-                yield return new TestCaseData("TestID-015A", abcdeBytes, 999, "test@123").Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-016A", aiueoBytes, 999, "test@123").Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-017A", emptyBytes, 999, "test@123").Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-018A", nullBytes, 999, "test@123").Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, 999, "test@123").Throws(typeof(NullReferenceException)).SetName("TestID-015A");
+                yield return new TestCaseData(aiueoBytes, 999, "test@123").Throws(typeof(NullReferenceException)).SetName("TestID-016A");
+                yield return new TestCaseData(emptyBytes, 999, "test@123").Throws(typeof(NullReferenceException)).SetName("TestID-017A");
+                yield return new TestCaseData(nullBytes, 999, "test@123").Throws(typeof(NullReferenceException)).SetName("TestID-018A");
             }
         }
 
@@ -266,111 +263,109 @@ namespace Public.Test.Util
                 byte[] EmptySalt = new byte[0];
                 byte[] NullSalt = null;
 
-                this.SetUp();
-
                 // Default(UTF8Salt)
-                yield return new TestCaseData("TestID-001N", abcdeBytes, EnumKeyedHashAlgorithm.Default, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-002N", aiueoBytes, EnumKeyedHashAlgorithm.Default, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-003L", emptyBytes, EnumKeyedHashAlgorithm.Default, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-004A", nullBytes, EnumKeyedHashAlgorithm.Default, "test@123", UTF8Salt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-005L", abcdeBytes, EnumKeyedHashAlgorithm.Default, "", UTF8Salt);
-                yield return new TestCaseData("TestID-006A", abcdeBytes, EnumKeyedHashAlgorithm.Default, null, UTF8Salt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.Default, "test@123", UTF8Salt).SetName("TestID-001N");
+                yield return new TestCaseData(aiueoBytes, EnumKeyedHashAlgorithm.Default, "test@123", UTF8Salt).SetName("TestID-002N");
+                yield return new TestCaseData(emptyBytes, EnumKeyedHashAlgorithm.Default, "test@123", UTF8Salt).SetName("TestID-003L");
+                yield return new TestCaseData(nullBytes, EnumKeyedHashAlgorithm.Default, "test@123", UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-004A");
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.Default, "", UTF8Salt).SetName("TestID-005L");
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.Default, null, UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-006A");
 
                 // HMACSHA1(UTF8Salt)
-                yield return new TestCaseData("TestID-007N", abcdeBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-008N", aiueoBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-009L", emptyBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-010A", nullBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", UTF8Salt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", UTF8Salt).SetName("TestID-007N");
+                yield return new TestCaseData(aiueoBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", UTF8Salt).SetName("TestID-008N");
+                yield return new TestCaseData(emptyBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", UTF8Salt).SetName("TestID-009L");
+                yield return new TestCaseData(nullBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-010A");
 
                 // MACTripleDES(UTF8Salt)
-                yield return new TestCaseData("TestID-011N", abcdeBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-012N", aiueoBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-013L", emptyBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", UTF8Salt);
-                yield return new TestCaseData("TestID-014A", nullBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", UTF8Salt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", UTF8Salt).SetName("TestID-011N");
+                yield return new TestCaseData(aiueoBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", UTF8Salt).SetName("TestID-012N");
+                yield return new TestCaseData(emptyBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", UTF8Salt).SetName("TestID-013L");
+                yield return new TestCaseData(nullBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", UTF8Salt).Throws(typeof(ArgumentNullException)).SetName("TestID-014A");
 
                 // The encryption method that is not defined(UTF8Salt)
-                yield return new TestCaseData("TestID-015N", abcdeBytes, 999, "test@123", UTF8Salt).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-016N", aiueoBytes, 999, "test@123", UTF8Salt).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-017L", emptyBytes, 999, "test@123", UTF8Salt).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-018A", nullBytes, 999, "test@123", UTF8Salt).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, 999, "test@123", UTF8Salt).Throws(typeof(NullReferenceException)).SetName("TestID-015N");
+                yield return new TestCaseData(aiueoBytes, 999, "test@123", UTF8Salt).Throws(typeof(NullReferenceException)).SetName("TestID-016N");
+                yield return new TestCaseData(emptyBytes, 999, "test@123", UTF8Salt).Throws(typeof(NullReferenceException)).SetName("TestID-017L");
+                yield return new TestCaseData(nullBytes, 999, "test@123", UTF8Salt).Throws(typeof(NullReferenceException)).SetName("TestID-018A");
 
                 // Default(SJISSalt)
-                yield return new TestCaseData("TestID-019N", abcdeBytes, EnumKeyedHashAlgorithm.Default, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-020N", aiueoBytes, EnumKeyedHashAlgorithm.Default, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-021L", emptyBytes, EnumKeyedHashAlgorithm.Default, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-022A", nullBytes, EnumKeyedHashAlgorithm.Default, "test@123", SJISSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-023L", abcdeBytes, EnumKeyedHashAlgorithm.Default, "", SJISSalt);
-                yield return new TestCaseData("TestID-024A", abcdeBytes, EnumKeyedHashAlgorithm.Default, null, SJISSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.Default, "test@123", SJISSalt).SetName("TestID-019N");
+                yield return new TestCaseData(aiueoBytes, EnumKeyedHashAlgorithm.Default, "test@123", SJISSalt).SetName("TestID-020N");
+                yield return new TestCaseData(emptyBytes, EnumKeyedHashAlgorithm.Default, "test@123", SJISSalt).SetName("TestID-021L");
+                yield return new TestCaseData(nullBytes, EnumKeyedHashAlgorithm.Default, "test@123", SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-022A");
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.Default, "", SJISSalt).SetName("TestID-023L");
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.Default, null, SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-024A");
 
                 // HMACSHA1(SJISSalt)
-                yield return new TestCaseData("TestID-025N", abcdeBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-026N", aiueoBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-027L", emptyBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-028A", nullBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", SJISSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", SJISSalt).SetName("TestID-025N");
+                yield return new TestCaseData(aiueoBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", SJISSalt).SetName("TestID-026N");
+                yield return new TestCaseData(emptyBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", SJISSalt).SetName("TestID-027L");
+                yield return new TestCaseData(nullBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-028A");
 
                 // MACTripleDES(SJISSalt)
-                yield return new TestCaseData("TestID-029N", abcdeBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-030N", aiueoBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-031L", emptyBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", SJISSalt);
-                yield return new TestCaseData("TestID-032A", nullBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", SJISSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", SJISSalt).SetName("TestID-029N");
+                yield return new TestCaseData(aiueoBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", SJISSalt).SetName("TestID-030N");
+                yield return new TestCaseData(emptyBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", SJISSalt).SetName("TestID-031L");
+                yield return new TestCaseData(nullBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", SJISSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-032A");
 
                 // The encryption method that is not defined(SJISSalt)
-                yield return new TestCaseData("TestID-033A", abcdeBytes, 999, "test@123", SJISSalt).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-034A", aiueoBytes, 999, "test@123", SJISSalt).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-035A", emptyBytes, 999, "test@123", SJISSalt).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-036A", nullBytes, 999, "test@123", SJISSalt).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(abcdeBytes, 999, "test@123", SJISSalt).Throws(typeof(NullReferenceException)).SetName("TestID-033A");
+                yield return new TestCaseData(aiueoBytes, 999, "test@123", SJISSalt).Throws(typeof(NullReferenceException)).SetName("TestID-034A");
+                yield return new TestCaseData(emptyBytes, 999, "test@123", SJISSalt).Throws(typeof(NullReferenceException)).SetName("TestID-035A");
+                yield return new TestCaseData(nullBytes, 999, "test@123", SJISSalt).Throws(typeof(NullReferenceException)).SetName("TestID-036A");
 
                 // Default(EmptySalt)
-                yield return new TestCaseData("TestID-037A", abcdeBytes, EnumKeyedHashAlgorithm.Default, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-038A", aiueoBytes, EnumKeyedHashAlgorithm.Default, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-039A", emptyBytes, EnumKeyedHashAlgorithm.Default, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-040A", nullBytes, EnumKeyedHashAlgorithm.Default, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-041A", abcdeBytes, EnumKeyedHashAlgorithm.Default, "", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-042A", abcdeBytes, EnumKeyedHashAlgorithm.Default, null, EmptySalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.Default, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-037A");
+                yield return new TestCaseData(aiueoBytes, EnumKeyedHashAlgorithm.Default, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-038A");
+                yield return new TestCaseData(emptyBytes, EnumKeyedHashAlgorithm.Default, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-039A");
+                yield return new TestCaseData(nullBytes, EnumKeyedHashAlgorithm.Default, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-040A");
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.Default, "", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-041A");
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.Default, null, EmptySalt).Throws(typeof(ArgumentNullException)).SetName("TestID-042A");
 
                 // HMACSHA1(EmptySalt)
-                yield return new TestCaseData("TestID-043A", abcdeBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-044A", aiueoBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-045A", emptyBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-046A", nullBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", EmptySalt).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-043A");
+                yield return new TestCaseData(aiueoBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-044A");
+                yield return new TestCaseData(emptyBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-045A");
+                yield return new TestCaseData(nullBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-046A");
 
                 // MACTripleDES(EmptySalt)
-                yield return new TestCaseData("TestID-047A", abcdeBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-048A", aiueoBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-049A", emptyBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-050A", nullBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", EmptySalt).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-047A");
+                yield return new TestCaseData(aiueoBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-048A");
+                yield return new TestCaseData(emptyBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-049A");
+                yield return new TestCaseData(nullBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-050A");
 
                 // The encryption method that is not defined(EmptySalt)
-                yield return new TestCaseData("TestID-051A", abcdeBytes, 999, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-052A", aiueoBytes, 999, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-053A", emptyBytes, 999, "test@123", EmptySalt).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-054A", nullBytes, 999, "test@123", EmptySalt).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(abcdeBytes, 999, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-051A");
+                yield return new TestCaseData(aiueoBytes, 999, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-052A");
+                yield return new TestCaseData(emptyBytes, 999, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-053A");
+                yield return new TestCaseData(nullBytes, 999, "test@123", EmptySalt).Throws(typeof(ArgumentException)).SetName("TestID-054A");
 
                 // Default(NullSalt)
-                yield return new TestCaseData("TestID-055A", abcdeBytes, EnumKeyedHashAlgorithm.Default, "test@123", NullSalt).Throws(typeof(ArgumentNullException)); ;
-                yield return new TestCaseData("TestID-056A", aiueoBytes, EnumKeyedHashAlgorithm.Default, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-057A", emptyBytes, EnumKeyedHashAlgorithm.Default, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-058A", nullBytes, EnumKeyedHashAlgorithm.Default, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-059A", abcdeBytes, EnumKeyedHashAlgorithm.Default, "", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-060A", abcdeBytes, EnumKeyedHashAlgorithm.Default, null, NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.Default, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-055A");
+                yield return new TestCaseData(aiueoBytes, EnumKeyedHashAlgorithm.Default, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-056A");
+                yield return new TestCaseData(emptyBytes, EnumKeyedHashAlgorithm.Default, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-057A");
+                yield return new TestCaseData(nullBytes, EnumKeyedHashAlgorithm.Default, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-058A");
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.Default, "", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-059A");
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.Default, null, NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-060A");
 
                 // HMACSHA1(NullSalt)
-                yield return new TestCaseData("TestID-061A", abcdeBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-062A", aiueoBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-063A", emptyBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-064A", nullBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-061A");
+                yield return new TestCaseData(aiueoBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-062A");
+                yield return new TestCaseData(emptyBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-063A");
+                yield return new TestCaseData(nullBytes, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-064A");
 
                 // MACTripleDES(NullSalt)
-                yield return new TestCaseData("TestID-065A", abcdeBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-066A", aiueoBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-067A", emptyBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-068A", nullBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-065A");
+                yield return new TestCaseData(aiueoBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-066A");
+                yield return new TestCaseData(emptyBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-067A");
+                yield return new TestCaseData(nullBytes, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-068A");
 
                 // The encryption method that is not defined(NullSalt)
-                yield return new TestCaseData("TestID-069A", abcdeBytes, 999, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-070A", aiueoBytes, 999, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-071A", emptyBytes, 999, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-072A", nullBytes, 999, "test@123", NullSalt).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(abcdeBytes, 999, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-069A");
+                yield return new TestCaseData(aiueoBytes, 999, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-070A");
+                yield return new TestCaseData(emptyBytes, 999, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-071A");
+                yield return new TestCaseData(nullBytes, 999, "test@123", NullSalt).Throws(typeof(ArgumentNullException)).SetName("TestID-072A");
             }
         }
 
@@ -379,29 +374,28 @@ namespace Public.Test.Util
         #region Test Code
 
         /// <summary>>Test execution.(CheckListID should be the first argument)</summary>
-        /// <param name="testCaseID">test case ID</param> 
         /// <param name="sourceString">The original string to get the hash value.</param>
         /// <param name="eha">>Hash algorithm</param>
         /// <param name="password">password</param>
-        [TestCase("TestID-001N", "abcde", EnumKeyedHashAlgorithm.Default, "test@123")]
-        [TestCase("TestID-002N", "あいうえお", EnumKeyedHashAlgorithm.Default, "test@123")]
-        [TestCase("TestID-003L", "", EnumKeyedHashAlgorithm.Default, "test@123")]
-        [TestCase("TestID-004A", null, EnumKeyedHashAlgorithm.Default, "test@123", ExpectedException = typeof(ArgumentNullException))]
-        [TestCase("TestID-005L", "abcde", EnumKeyedHashAlgorithm.Default, "")]
-        [TestCase("TestID-006A", "abcde", EnumKeyedHashAlgorithm.Default, null, ExpectedException = typeof(ArgumentNullException))]
-        [TestCase("TestID-007N", "abcde", EnumKeyedHashAlgorithm.HMACSHA1, "test@123")]
-        [TestCase("TestID-008N", "あいうえお", EnumKeyedHashAlgorithm.HMACSHA1, "test@123")]
-        [TestCase("TestID-009L", "", EnumKeyedHashAlgorithm.HMACSHA1, "test@123")]
-        [TestCase("TestID-010A", null, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", ExpectedException = typeof(ArgumentNullException))]
-        [TestCase("TestID-011N", "abcde", EnumKeyedHashAlgorithm.MACTripleDES, "test@123")]
-        [TestCase("TestID-012N", "あいうえお", EnumKeyedHashAlgorithm.MACTripleDES, "test@123")]
-        [TestCase("TestID-013L", "", EnumKeyedHashAlgorithm.MACTripleDES, "test@123")]
-        [TestCase("TestID-014A", null, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", ExpectedException = typeof(ArgumentNullException))]
-        [TestCase("TestID-015A", "abcde", 999, "test@123", ExpectedException = typeof(NullReferenceException))]        // The encryption method that is not defined
-        [TestCase("TestID-016A", "あいうえお", 999, "test@123", ExpectedException = typeof(NullReferenceException))]   // The encryption method that is not defined
-        [TestCase("TestID-017A", "", 999, "test@123", ExpectedException = typeof(NullReferenceException))]             // The encryption method that is not defined
-        [TestCase("TestID-018A", null, 999, "test@123", ExpectedException = typeof(ArgumentNullException))]            // The encryption method that is not defined
-        public void GetKeyedHashStringTest(string testCaseID, string sourceString, EnumKeyedHashAlgorithm eha, string password)
+        [TestCase("abcde", EnumKeyedHashAlgorithm.Default, "test@123", TestName = "TestID-001N")]
+        [TestCase("あいうえお", EnumKeyedHashAlgorithm.Default, "test@123", TestName = "TestID-002N")]
+        [TestCase("", EnumKeyedHashAlgorithm.Default, "test@123", TestName = "TestID-003L")]
+        [TestCase(null, EnumKeyedHashAlgorithm.Default, "test@123", ExpectedException = typeof(ArgumentNullException), TestName = "TestID-004A")]
+        [TestCase("abcde", EnumKeyedHashAlgorithm.Default, "", TestName = "TestID-005L")]
+        [TestCase("abcde", EnumKeyedHashAlgorithm.Default, null, ExpectedException = typeof(ArgumentNullException), TestName = "TestID-006A")]
+        [TestCase("abcde", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", TestName = "TestID-007N")]
+        [TestCase("あいうえお", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", TestName = "TestID-008N")]
+        [TestCase("", EnumKeyedHashAlgorithm.HMACSHA1, "test@123", TestName = "TestID-009L")]
+        [TestCase(null, EnumKeyedHashAlgorithm.HMACSHA1, "test@123", ExpectedException = typeof(ArgumentNullException), TestName = "TestID-010A")]
+        [TestCase("abcde", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", TestName = "TestID-011N")]
+        [TestCase("あいうえお", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", TestName = "TestID-012N")]
+        [TestCase("", EnumKeyedHashAlgorithm.MACTripleDES, "test@123", TestName = "TestID-013L")]
+        [TestCase(null, EnumKeyedHashAlgorithm.MACTripleDES, "test@123", ExpectedException = typeof(ArgumentNullException), TestName = "TestID-014A")]
+        [TestCase("abcde", 999, "test@123", ExpectedException = typeof(NullReferenceException), TestName = "TestID-015A")]        // The encryption method that is not defined
+        [TestCase("あいうえお", 999, "test@123", ExpectedException = typeof(NullReferenceException), TestName = "TestID-016A")]   // The encryption method that is not defined
+        [TestCase("", 999, "test@123", ExpectedException = typeof(NullReferenceException), TestName = "TestID-017A")]             // The encryption method that is not defined
+        [TestCase(null, 999, "test@123", ExpectedException = typeof(ArgumentNullException), TestName = "TestID-018A")]            // The encryption method that is not defined
+        public void GetKeyedHashStringTest(string sourceString, EnumKeyedHashAlgorithm eha, string password)
         {
             try
             {
@@ -419,19 +413,18 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
         /// <summary>>Test execution.(CheckListID should be the first argument)</summary>
-        /// <param name="testCaseID">test case ID</param> 
         /// <param name="sourceString">The original string to get the hash value.</param>
         /// <param name="eha">Hash algorithm</param>
         /// <param name="password">password</param>
         /// <param name="salt">salt</param>
         [TestCaseSource("TestCasesOfGetKeyedHashStringTest2")]
-        public void GetKeyedHashStringTest2(string testCaseID, string sourceString, EnumKeyedHashAlgorithm eha, string password, byte[] salt)
+        public void GetKeyedHashStringTest2(string sourceString, EnumKeyedHashAlgorithm eha, string password, byte[] salt)
         {
             try
             {
@@ -449,18 +442,17 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
         /// <summary>>Test execution.(CheckListID should be the first argument)</summary>
-        /// <param name="testCaseID">test case ID</param> 
         /// <param name="asb">The original string to get the hash value.</param>
         /// <param name="eha">Hash algorithm</param>
         /// <param name="password">password</param>
         [TestCaseSource("TestCasesOfGetKeyedHashBytesTest")]
-        public void GetKeyedHashBytesTest(string testCaseID, byte[] asb, EnumKeyedHashAlgorithm eha, string password)
+        public void GetKeyedHashBytesTest(byte[] asb, EnumKeyedHashAlgorithm eha, string password)
         {
             try
             {
@@ -478,19 +470,18 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
         /// <summary>>Test execution.(CheckListID should be the first argument)</summary>
-        /// <param name="testCaseID">test case ID</param> 
         /// <param name="asb">The original string to get the hash value.</param>
         /// <param name="eha">Hash algorithm</param>
         /// <param name="password">password</param>
         /// <param name="salt">salt</param>
         [TestCaseSource("TestCasesOfGetKeyedHashBytesTest2")]
-        public void GetKeyedHashBytesTest2(string testCaseID, byte[] asb, EnumKeyedHashAlgorithm eha, string password, byte[] salt)
+        public void GetKeyedHashBytesTest2(byte[] asb, EnumKeyedHashAlgorithm eha, string password, byte[] salt)
         {
             try
             {
@@ -508,7 +499,7 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
                 // Print a stack trace when an exception occurs.
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
