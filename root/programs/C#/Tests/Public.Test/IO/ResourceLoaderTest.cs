@@ -28,6 +28,7 @@
 //*  Date:        Author:          Comments:
 //*  ----------  ----------------  -------------------------------------------------
 //*  05/08/2014   Santosh Avaji    Testcode development for ResourceLoader.
+//*  08/12/2014   Sai              Added TestcaseID using SetName method as per Nishino-San comments
 //*
 //**********************************************************************************
 using System;
@@ -89,11 +90,10 @@ namespace Public.Test.IO
 
         #region Methods
         ///<summary>Exists Method Test</summary> 
-        ///<param name="testCaseID">test case ID</param> 
         ///<param name="loadfilepath">Path of the file to load</param> 
         ///<param name="throwException">Throw Exception or not</param> 
         [TestCaseSource("TestcasesOfExistTest")]
-        public void ExistsTest(string testCaseID, string loadfilepath, bool throwException)
+        public void ExistsTest(string loadfilepath, bool throwException)
         {
             try
             {
@@ -102,7 +102,7 @@ namespace Public.Test.IO
             }
             catch (Exception ex)
             {
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -110,23 +110,22 @@ namespace Public.Test.IO
         {
             get
             {
-                yield return new TestCaseData("TestID-001A", @"", true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-002A", @"", false).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-003A", null, null).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-004N", MakeRelativePathFile() + "ConditionalSearch.aspx", true);
-                yield return new TestCaseData("TestID-005N", MakeRelativePathFile() + "ConditionalSearch.aspx", false);
-                yield return new TestCaseData("TestID-006A", MakeRelativePathFile() + "1234.txt", false).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-007A", MakeRelativePathFile() + "1234.txt", true).Throws(typeof(ArgumentException)); ;
+                yield return new TestCaseData(@"", true).Throws(typeof(ArgumentException)).SetName("TestID-001A");
+                yield return new TestCaseData(@"", false).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-002A");
+                yield return new TestCaseData(null, null).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-003A");
+                yield return new TestCaseData(MakeRelativePathFile() + "ConditionalSearch.aspx", true).SetName("TestID-004N");
+                yield return new TestCaseData(MakeRelativePathFile() + "ConditionalSearch.aspx", false).SetName("TestID-005N");
+                yield return new TestCaseData(MakeRelativePathFile() + "1234.txt", false).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-006A");
+                yield return new TestCaseData(MakeRelativePathFile() + "1234.txt", true).Throws(typeof(ArgumentException)).SetName("TestID-007A");
             }
         }
 
         ///<summary>Exists Method Test</summary> 
-        ///<param name="testCaseID">test case ID</param> 
         ///<param name="loadfilepath">Path of the file to load</param> 
         ///<param name="fileName">File name </param> 
         ///<param name="throwException">Throw Exception or not</param> 
         [TestCaseSource("TestcasesOfExist1Test")]
-        public void ExistsTest1(string testCaseID, string filePath, string fileName, bool throwException)
+        public void ExistsTest1(string filePath, string fileName, bool throwException)
         {
             try
             {
@@ -138,7 +137,7 @@ namespace Public.Test.IO
             }
             catch (Exception ex)
             {
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -147,24 +146,23 @@ namespace Public.Test.IO
         {
             get
             {
-                yield return new TestCaseData("TestID-001A", @"", "", true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-002N", @"", "", false);
-                yield return new TestCaseData("TestID-003A", null, null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-004A", null, null, false).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-005N", MakeRelativePathFile(), "ConditionalSearch.aspx", true);
-                yield return new TestCaseData("TestID-006N", MakeRelativePathFile(), "ConditionalSearch.aspx", false);
-                yield return new TestCaseData("TestID-007N", MakeRelativePathFile(), @"\123.txt", false);
-                yield return new TestCaseData("TestID-008A", MakeRelativePathFile() + @"/", "123.txt", true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-009A", @"F", "123.txt", true).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(@"", "", true).Throws(typeof(ArgumentException)).SetName("TestID-001A");
+                yield return new TestCaseData(@"", "", false).SetName("TestID-002N");
+                yield return new TestCaseData(null, null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-003A");
+                yield return new TestCaseData(null, null, false).Throws(typeof(ArgumentNullException)).SetName("TestID-004A");
+                yield return new TestCaseData(MakeRelativePathFile(), "ConditionalSearch.aspx", true).SetName("TestID-005N");
+                yield return new TestCaseData(MakeRelativePathFile(), "ConditionalSearch.aspx", false).SetName("TestID-006N");
+                yield return new TestCaseData(MakeRelativePathFile(), @"\123.txt", false).SetName("TestID-007N");
+                yield return new TestCaseData(MakeRelativePathFile() + @"/", "123.txt", true).Throws(typeof(ArgumentException)).SetName("TestID-008A");
+                yield return new TestCaseData(@"F", "123.txt", true).Throws(typeof(ArgumentException)).SetName("TestID-009A");
             }
         }
 
         ///<summary>LoadAsString Method Test</summary> 
-        ///<param name="testCaseID">test case ID</param> 
         ///<param name="loadfilepath">Path of the file to load</param> 
         ///<param name="enc">Type of Encoding</param> 
         [TestCaseSource("TestcasesOfLoadStringTest")]
-        public void LoadAsStringTest(string testCaseID, string loadfilepath, Encoding enc)
+        public void LoadAsStringTest(string loadfilepath, Encoding enc)
         {
             try
             {
@@ -174,17 +172,16 @@ namespace Public.Test.IO
             }
             catch (Exception ex)
             {
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
         ///<summary>LoadAsString Method Test</summary> 
-        ///<param name="testCaseID">test case ID</param> 
         ///<param name="filePath">Path of the file to load</param> 
         /// ///<param name="fileName">name of the file</param> 
         ///<param name="enc">Type of Encoding</param> 
         [TestCaseSource("TestcasesOfLoadString1Test")]
-        public void LoadAsString1Test(string testCaseID, string filePath, string fileName, Encoding enc)
+        public void LoadAsString1Test(string filePath, string fileName, Encoding enc)
         {
             try
             {
@@ -194,7 +191,7 @@ namespace Public.Test.IO
             }
             catch (Exception ex)
             {
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -204,14 +201,14 @@ namespace Public.Test.IO
             get
             {
                 ///// Normal Test cases 
-                yield return new TestCaseData("TestID-001N", MakeRelativePathFile() + "ConditionalSearch.aspx", Encoding.UTF8);
-                yield return new TestCaseData("TestID-002N", MakeRelativePathFile() + "ConditionalSearch.aspx", Encoding.ASCII);
-                yield return new TestCaseData("TestID-003N", MakeRelativePathFile() + "ConditionalSearch.aspx", Encoding.UTF7);
+                yield return new TestCaseData(MakeRelativePathFile() + "ConditionalSearch.aspx", Encoding.UTF8).SetName("TestID-001N");
+                yield return new TestCaseData(MakeRelativePathFile() + "ConditionalSearch.aspx", Encoding.ASCII).SetName("TestID-002N");
+                yield return new TestCaseData(MakeRelativePathFile() + "ConditionalSearch.aspx", Encoding.UTF7).SetName("TestID-003N");
 
                 /// Abnormal Test cases
-                yield return new TestCaseData("TestID-004A", null, Encoding.UTF8).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-005A", MakeRelativePathFile() + "ConditionalSearch.aspx", null).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-006A", MakeRelativePathFile() + "123a.txt", Encoding.UTF7).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(null, Encoding.UTF8).Throws(typeof(ArgumentException)).SetName("TestID-004A");
+                yield return new TestCaseData(MakeRelativePathFile() + "ConditionalSearch.aspx", null).Throws(typeof(ArgumentNullException)).SetName("TestID-005A");
+                yield return new TestCaseData(MakeRelativePathFile() + "123a.txt", Encoding.UTF7).Throws(typeof(ArgumentException)).SetName("TestID-006A");
             }
         }
 
@@ -220,16 +217,16 @@ namespace Public.Test.IO
             get
             {
                 ///// Normal Test cases C:\root\files\tools\DGenTemplates\ConditionalSearch.aspx
-                yield return new TestCaseData("TestID-001N", MakeRelativePathFile(), "ConditionalSearch.aspx", Encoding.UTF8);
-                yield return new TestCaseData("TestID-002N", MakeRelativePathFile(), "ConditionalSearch.aspx", Encoding.ASCII);
-                yield return new TestCaseData("TestID-003N", MakeRelativePathFile(), "ConditionalSearch.aspx", Encoding.UTF7);
+                yield return new TestCaseData(MakeRelativePathFile(), "ConditionalSearch.aspx", Encoding.UTF8).SetName("TestID-001N");
+                yield return new TestCaseData(MakeRelativePathFile(), "ConditionalSearch.aspx", Encoding.ASCII).SetName("TestID-002N");
+                yield return new TestCaseData(MakeRelativePathFile(), "ConditionalSearch.aspx", Encoding.UTF7).SetName("TestID-003N");
 
                 /// Abnormal Test cases
-                yield return new TestCaseData("TestID-004A", MakeRelativePathFile() + "F", "ConditionalSearch.aspx", Encoding.UTF8).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-005A", MakeRelativePathFile(), "123a.txt", Encoding.UTF8).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-006A", "", "123.txt", Encoding.UTF8).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-007A", null, "123.txt", Encoding.UTF8).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-008A", @"F\", null, Encoding.UTF8).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(MakeRelativePathFile() + "F", "ConditionalSearch.aspx", Encoding.UTF8).Throws(typeof(ArgumentException)).SetName("TestID-004A");
+                yield return new TestCaseData(MakeRelativePathFile(), "123a.txt", Encoding.UTF8).Throws(typeof(ArgumentException)).SetName("TestID-005A");
+                yield return new TestCaseData("", "123.txt", Encoding.UTF8).Throws(typeof(ArgumentException)).SetName("TestID-006A");
+                yield return new TestCaseData(null, "123.txt", Encoding.UTF8).Throws(typeof(ArgumentNullException)).SetName("TestID-007A");
+                yield return new TestCaseData(@"F\", null, Encoding.UTF8).Throws(typeof(ArgumentNullException)).SetName("TestID-008A");
             }
         }
         #endregion // End of GeneratedMethods
