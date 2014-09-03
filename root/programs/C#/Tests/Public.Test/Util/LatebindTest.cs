@@ -28,6 +28,7 @@
 //*  Date:        Author:          Comments:
 //*  ----------  ----------------  -------------------------------------------------
 //*  05/21/2014   Santosh Avaji    Testcode development for Latebind.
+//*  08/11/2014   Sai              Added TestcaseID using SetName method as per Nishino-San comments
 //*
 //**********************************************************************************
 
@@ -113,14 +114,13 @@ namespace Public.Test.Util
         /// <summary>
         /// Invoke Method Method Test
         /// Method Signature:  object InvokeMethod(string assemblyName, string className, string methodName, object[] paramSet)
-        /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// </summary>        
         /// <param name="assemblyName">assemblyName</param>
         /// <param name="className">className</param>
         /// <param name="methodName">methodName</param>
         /// <param name="paramSet">paramSet</param>
         [TestCaseSource("TestCasesOfInvokeMethodTest")]
-        public void InvokeMethodTest(string testCaseID, string assemblyName, string className, string methodName, object[] paramSet)
+        public void InvokeMethodTest(string assemblyName, string className, string methodName, object[] paramSet)
         {
             try
             {
@@ -129,7 +129,7 @@ namespace Public.Test.Util
             }
             catch (Exception ex)
             {
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
 
@@ -139,13 +139,12 @@ namespace Public.Test.Util
         /// Invoke Method No Err Method Test
         /// Method Signature:  object InvokeMethod_NoErr(string assemblyName, string className, string methodName, object[] paramSet)
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="assemblyName">assemblyName</param>
         /// <param name="className">className</param>
         /// <param name="methodName">methodName</param>
         /// <param name="paramSet"></param>
         [TestCaseSource("TestCasesOfInvokeMethod_NoErrTest")]
-        public void InvokeMethod_NoErrTest(string testCaseID, string assemblyName, string className, string methodName, object[] paramSet)
+        public void InvokeMethod_NoErrTest(string assemblyName, string className, string methodName, object[] paramSet)
         {
             try
             {
@@ -154,7 +153,7 @@ namespace Public.Test.Util
             }
             catch (Exception ex)
             {
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -162,13 +161,12 @@ namespace Public.Test.Util
         /// <summary>
         /// Invoke Method Method Test
         /// Method Signature:  object InvokeMethod(object objectClass, string methodName, object[] paramSet)
-        /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// </summary>        
         /// <param name="objectClass">objectClass</param>
         /// <param name="methodName">methodName</param>
         /// <param name="paramSet">paramSet</param>
         [TestCaseSource("TestCasesOfInvokeMethod1Test")]
-        public void InvokeMethod1Test(string testCaseID, object objectClass, string methodName, object[] paramSet)
+        public void InvokeMethod1Test(object objectClass, string methodName, object[] paramSet)
         {
             try
             {
@@ -179,7 +177,7 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
 
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -188,12 +186,11 @@ namespace Public.Test.Util
         /// Invoke Method No Err Method Test
         /// Method Signature:  object InvokeMethod_NoErr(object objectClass, string methodName, object[] paramSet)
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="objectClass">objectClass</param>
         /// <param name="methodName">methodName</param>
         /// <param name="paramSet">paramSet</param>
         [TestCaseSource("TestCasesOfInvokeMethod_NoErr1Test")]
-        public void InvokeMethod_NoErr1Test(string testCaseID, object objectClass, string methodName, object[] paramSet)
+        public void InvokeMethod_NoErr1Test(object objectClass, string methodName, object[] paramSet)
         {
 
             try
@@ -205,7 +202,7 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
 
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -214,11 +211,10 @@ namespace Public.Test.Util
         /// Check Type Of Base Class Method Test
         /// Method Signature:  bool CheckTypeOfBaseClass(Type classType, Type baseType)
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="classType">classType</param>
         /// <param name="baseType">baseType</param>
         [TestCaseSource("TestCasesOfCheckTypeOfBaseClass")]
-        public void CheckTypeOfBaseClassTest(string testCaseID, Type classType, Type baseType)
+        public void CheckTypeOfBaseClassTest(Type classType, Type baseType)
         {
             try
             {
@@ -227,7 +223,7 @@ namespace Public.Test.Util
             catch (Exception ex)
             {
 
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -236,11 +232,10 @@ namespace Public.Test.Util
         /// Check Type Of Method By Name Method Test
         /// Method Signature:  bool CheckTypeOfMethodByName(object obj, string methodName)
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="obj">obj</param>
         /// <param name="methodName">methodName</param>
         [TestCaseSource("TestCasesOfCheckTypeOfMethodByName")]
-        public void CheckTypeOfMethodByNameTest(string testCaseID, object obj, string methodName)
+        public void CheckTypeOfMethodByNameTest(object obj, string methodName)
         {
             try
             {
@@ -249,7 +244,7 @@ namespace Public.Test.Util
             }
             catch (Exception ex)
             {
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -269,15 +264,15 @@ namespace Public.Test.Util
             get
             {
                 //Normal test cases
-                yield return new TestCaseData("TestID-001N", new Latebind(), "CheckTypeOfMethodByName");
-                yield return new TestCaseData("TestID-002N", new Latebind(), "InvokeMethod");
-                yield return new TestCaseData("TestID-003N", new Latebind(), "InvokeMethod_NoErr");
+                yield return new TestCaseData(new Latebind(), "CheckTypeOfMethodByName").SetName("TestID-001N");
+                yield return new TestCaseData(new Latebind(), "InvokeMethod").SetName("TestID-002N");
+                yield return new TestCaseData(new Latebind(), "InvokeMethod_NoErr").SetName("TestID-003N");
 
                 //AbNormal test cases
-                yield return new TestCaseData("TestID-004A", new Latebind(), "WrongMethodName").Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-005A", new Latebind(), null).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-006A", null, "WrongMethodName").Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-007A", new Latebind(), string.Empty).Throws(typeof(NUnit.Framework.AssertionException));
+                yield return new TestCaseData(new Latebind(), "WrongMethodName").Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-004A");
+                yield return new TestCaseData(new Latebind(), null).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-005A");
+                yield return new TestCaseData(null, "WrongMethodName").Throws(typeof(NullReferenceException)).SetName("TestID-006A");
+                yield return new TestCaseData(new Latebind(), string.Empty).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-007A");
             }
         }
 
@@ -289,13 +284,13 @@ namespace Public.Test.Util
         {
             get
             {
-                yield return new TestCaseData("TestID-001N", typeof(Latebind), typeof(Object));
-                yield return new TestCaseData("TestID-002N", typeof(string), typeof(Object));
-                yield return new TestCaseData("TestID-003N", typeof(double), typeof(object));
-                yield return new TestCaseData("TestID-004N", typeof(LatebindTest), typeof(object));
-                yield return new TestCaseData("TestID-005A", typeof(Latebind), null).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-006A", null, typeof(Latebind)).Throws(typeof(NullReferenceException));
-                yield return new TestCaseData("TestID-007A", null, null).Throws(typeof(NullReferenceException));
+                yield return new TestCaseData(typeof(Latebind), typeof(Object)).SetName("TestID-001N");
+                yield return new TestCaseData(typeof(string), typeof(Object)).SetName("TestID-002N");
+                yield return new TestCaseData(typeof(double), typeof(object)).SetName("TestID-003N");
+                yield return new TestCaseData(typeof(LatebindTest), typeof(object)).SetName("TestID-004N");
+                yield return new TestCaseData(typeof(Latebind), null).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-005A");
+                yield return new TestCaseData(null, typeof(Latebind)).Throws(typeof(NullReferenceException)).SetName("TestID-006A");
+                yield return new TestCaseData(null, null).Throws(typeof(NullReferenceException)).SetName("TestID-007A");
             }
         }
 
@@ -307,19 +302,19 @@ namespace Public.Test.Util
         {
             get
             {
-                yield return new TestCaseData("TestID-001N", new Latebind(), "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" });
-                yield return new TestCaseData("TestID-002N", new Latebind(), "CheckTypeOfBaseClass", new object[2] { typeof(Latebind), typeof(Object) });
-                yield return new TestCaseData("TestID-003N", new BinarySerialize(), "DeepClone", new object[1] { new byte[] { 0, 1, 2 } });
-                yield return new TestCaseData("TestID-004N", new TestLateBind(), "Add", new object[2] { 5, 5 });
-                yield return new TestCaseData("TestID-005N", new TestLateBind(), "Add", new object[3] { 5, 10, 15 });
-                yield return new TestCaseData("TestID-006N", new TestLateBind(), "DisplayData", new object[0]).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-007A", new Latebind(), "WrongCheckTypeOfBaseClass", new object[2] { typeof(Latebind), typeof(Object) }).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-008A", new Latebind(), "CheckTypeOfBaseClass", new object[1] { typeof(Latebind) }).Throws(typeof(System.MissingMethodException));
-                yield return new TestCaseData("TestID-009A", new TestLateBind(), "Add", new object[4] { 5, 10, 15, 10 }).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-0010A", new TestLateBind(), "Add", new object[1] { 5 }).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-0011A", new TestLateBind(), "Add", new object[2] { 5, "" }).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-0012A", new TestLateBind(), null, new object[2] { 5, "" }).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-0013A", null, "Add", new object[2] { 5, "" }).Throws(typeof(System.NullReferenceException));
+                yield return new TestCaseData(new Latebind(), "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).SetName("TestID-001N");
+                yield return new TestCaseData(new Latebind(), "CheckTypeOfBaseClass", new object[2] { typeof(Latebind), typeof(Object) }).SetName("TestID-002N");
+                yield return new TestCaseData(new BinarySerialize(), "DeepClone", new object[1] { new byte[] { 0, 1, 2 } }).SetName("TestID-003N");
+                yield return new TestCaseData(new TestLateBind(), "Add", new object[2] { 5, 5 }).SetName("TestID-004N");
+                yield return new TestCaseData(new TestLateBind(), "Add", new object[3] { 5, 10, 15 }).SetName("TestID-005N");
+                yield return new TestCaseData(new TestLateBind(), "DisplayData", new object[0]).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-006N");
+                yield return new TestCaseData(new Latebind(), "WrongCheckTypeOfBaseClass", new object[2] { typeof(Latebind), typeof(Object) }).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-007A");
+                yield return new TestCaseData(new Latebind(), "CheckTypeOfBaseClass", new object[1] { typeof(Latebind) }).Throws(typeof(System.MissingMethodException)).SetName("TestID-008A");
+                yield return new TestCaseData(new TestLateBind(), "Add", new object[4] { 5, 10, 15, 10 }).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-009A");
+                yield return new TestCaseData(new TestLateBind(), "Add", new object[1] { 5 }).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-0010A");
+                yield return new TestCaseData(new TestLateBind(), "Add", new object[2] { 5, "" }).Throws(typeof(ArgumentException)).SetName("TestID-0011A");
+                yield return new TestCaseData(new TestLateBind(), null, new object[2] { 5, "" }).Throws(typeof(ArgumentNullException)).SetName("TestID-0012A");
+                yield return new TestCaseData(null, "Add", new object[2] { 5, "" }).Throws(typeof(System.NullReferenceException)).SetName("TestID-0013A");
             }
         }
 
@@ -331,19 +326,19 @@ namespace Public.Test.Util
         {
             get
             {
-                yield return new TestCaseData("TestID-001N", new Latebind(), "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" });
-                yield return new TestCaseData("TestID-002N", new Latebind(), "CheckTypeOfBaseClass", new object[2] { typeof(Latebind), typeof(Object) });
-                yield return new TestCaseData("TestID-003N", new BinarySerialize(), "DeepClone", new object[1] { new byte[] { 0, 1, 2 } });
-                yield return new TestCaseData("TestID-004N", new TestLateBind(), "Add", new object[2] { 5, 5 });
-                yield return new TestCaseData("TestID-005N", new TestLateBind(), "Add", new object[3] { 5, 10, 15 });
-                yield return new TestCaseData("TestID-006N", new TestLateBind(), "DisplayData", new object[0]).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-006A", new Latebind(), "WrongCheckTypeOfBaseClass", new object[2] { typeof(Latebind), typeof(Object) }).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-007A", new Latebind(), "CheckTypeOfBaseClass", new object[1] { typeof(Latebind) }).Throws(typeof(System.MissingMethodException));
-                yield return new TestCaseData("TestID-008A", new TestLateBind(), "Add", new object[4] { 5, 10, 15, 10 }).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-009A", new TestLateBind(), "Add", new object[1] { 5 }).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-0010A", new TestLateBind(), "Add", new object[2] { 5, "" }).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-0011A", new TestLateBind(), null, new object[2] { 5, "" }).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-0012A", null, "Add", new object[2] { 5, "" }).Throws(typeof(System.NullReferenceException));
+                yield return new TestCaseData(new Latebind(), "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).SetName("TestID-001N");
+                yield return new TestCaseData(new Latebind(), "CheckTypeOfBaseClass", new object[2] { typeof(Latebind), typeof(Object) }).SetName("TestID-002N");
+                yield return new TestCaseData(new BinarySerialize(), "DeepClone", new object[1] { new byte[] { 0, 1, 2 } }).SetName("TestID-003N");
+                yield return new TestCaseData(new TestLateBind(), "Add", new object[2] { 5, 5 }).SetName("TestID-004N");
+                yield return new TestCaseData(new TestLateBind(), "Add", new object[3] { 5, 10, 15 }).SetName("TestID-005N");
+                yield return new TestCaseData(new TestLateBind(), "DisplayData", new object[0]).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-006N");
+                yield return new TestCaseData(new Latebind(), "WrongCheckTypeOfBaseClass", new object[2] { typeof(Latebind), typeof(Object) }).Throws(typeof(ArgumentException)).SetName("TestID-006A");
+                yield return new TestCaseData(new Latebind(), "CheckTypeOfBaseClass", new object[1] { typeof(Latebind) }).Throws(typeof(System.MissingMethodException)).SetName("TestID-007A");
+                yield return new TestCaseData(new TestLateBind(), "Add", new object[4] { 5, 10, 15, 10 }).Throws(typeof(ArgumentException)).SetName("TestID-008A");
+                yield return new TestCaseData(new TestLateBind(), "Add", new object[1] { 5 }).Throws(typeof(ArgumentException)).SetName("TestID-009A");
+                yield return new TestCaseData(new TestLateBind(), "Add", new object[2] { 5, "" }).Throws(typeof(ArgumentException)).SetName("TestID-0010A");
+                yield return new TestCaseData(new TestLateBind(), null, new object[2] { 5, "" }).Throws(typeof(ArgumentNullException)).SetName("TestID-0011A");
+                yield return new TestCaseData(null, "Add", new object[2] { 5, "" }).Throws(typeof(System.NullReferenceException)).SetName("TestID-0012A");
             }
         }
 
@@ -358,42 +353,42 @@ namespace Public.Test.Util
                 #region Normal TestCases
 
                 //Pass All valid parameters and  assembly with full path.
-                yield return new TestCaseData("TestID-001N", MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" });
-                yield return new TestCaseData("TestID-002N", MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "WrongMethodName" });
+                yield return new TestCaseData(MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).SetName("TestID-001N");
+                yield return new TestCaseData(MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "WrongMethodName" }).SetName("TestID-002N");
                 //Test case to cover AmbiguousMatchException..(Oveloading Methods)
-                yield return new TestCaseData("TestID-003N", MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind", "InvokeMethod", new object[3] { new Latebind(), "InvokeMethod", new object[3] { new Latebind(), "CheckTypeOfMethodByName", new object[2] { new Latebind(), "InvokeMethod" } } });
+                yield return new TestCaseData(MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind", "InvokeMethod", new object[3] { new Latebind(), "InvokeMethod", new object[3] { new Latebind(), "CheckTypeOfMethodByName", new object[2] { new Latebind(), "InvokeMethod" } } }).SetName("TestID-003N");
                 //Pass All valid parameters(Only name of the Assembly)
-                yield return new TestCaseData("TestID-004N", "Public", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" });
-                yield return new TestCaseData("TestID-005N", "Public", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "WrongMethodName" });
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).SetName("TestID-004N");
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "WrongMethodName" }).SetName("TestID-005N");
                 //Test case to cover AmbiguousMatchException..(Oveloading Methods)
-                yield return new TestCaseData("TestID-006N", "Public", "Touryo.Infrastructure.Public.Util.Latebind", "InvokeMethod", new object[3] { new Latebind(), "InvokeMethod", new object[3] { new Latebind(), "CheckTypeOfMethodByName", new object[2] { new Latebind(), "InvokeMethod" } } });
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", "InvokeMethod", new object[3] { new Latebind(), "InvokeMethod", new object[3] { new Latebind(), "CheckTypeOfMethodByName", new object[2] { new Latebind(), "InvokeMethod" } } }).SetName("TestID-006N");
 
                 #endregion
 
                 #region AbNormal TestCases
 
                 // provide  wrong Assembly path name   to the method 
-                yield return new TestCaseData("TestID-007A", MakeRelativePathFile() + "WrongPublic.dll", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-008A", MakeRelativePathFile() + "Public.", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-009A", "AbcdAssembly", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(MakeRelativePathFile() + "WrongPublic.dll", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException)).SetName("TestID-007A");
+                yield return new TestCaseData(MakeRelativePathFile() + "Public.", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException)).SetName("TestID-008A");
+                yield return new TestCaseData("AbcdAssembly", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException)).SetName("TestID-009A");
                 //Provide Wrong class Name
-                yield return new TestCaseData("TestID-0010A", MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind.cs", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-0011A", "Public", "WrongClassLatebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException));
+                yield return new TestCaseData(MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind.cs", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException)).SetName("TestID-0010A");
+                yield return new TestCaseData("Public", "WrongClassLatebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException)).SetName("TestID-0011A");
                 // Provide Wrong Method Name 
-                yield return new TestCaseData("TestID-0012A", "Public", "Touryo.Infrastructure.Public.Util.Latebind", "WrongMethodName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-0013A", MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByNameNotExist", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", "WrongMethodName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException)).SetName("TestID-0012A");
+                yield return new TestCaseData(MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByNameNotExist", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException)).SetName("TestID-0013A");
                 // Provide Wrong number of parametrs to the Method
-                yield return new TestCaseData("TestID-0014A", "Public", "Touryo.Infrastructure.Public.Util.Latebind", "InvokeMethod", new object[2] { new Latebind(), "InvokeMethod" }).Throws(typeof(ArgumentException));//Method takes two parameters but only two are passed
-                yield return new TestCaseData("TestID-0015A", "Public", "Touryo.Infrastructure.Public.Util.Latebind", "InvokeMethod", new object[5] { new Latebind(), "InvokeMethod", new object[3] { new Latebind(), "CheckTypeOfMethodByName", new object[2] { new Latebind(), "InvokeMethod" } }, "Extra Parametr", 123456 }).Throws(typeof(ArgumentException));////Method takes four parameters but five are passed
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", "InvokeMethod", new object[2] { new Latebind(), "InvokeMethod" }).Throws(typeof(ArgumentException)).SetName("TestID-0014A");//Method takes two parameters but only two are passed
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", "InvokeMethod", new object[5] { new Latebind(), "InvokeMethod", new object[3] { new Latebind(), "CheckTypeOfMethodByName", new object[2] { new Latebind(), "InvokeMethod" } }, "Extra Parametr", 123456 }).Throws(typeof(ArgumentException)).SetName("TestID-0015A");////Method takes four parameters but five are passed
                 // Provide string.empty values to Assembly, Class and Methods Name
-                yield return new TestCaseData("TestID-0016A", string.Empty, "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException));// pass Empty string to Assemblyname
-                yield return new TestCaseData("TestID-0017A", "Public", string.Empty, "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException));// pass Empty string to Classname
-                yield return new TestCaseData("TestID-0018A", "Public", "Touryo.Infrastructure.Public.Util.Latebind", string.Empty, new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException));// pass Empty string to MethodName
+                yield return new TestCaseData(string.Empty, "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException)).SetName("TestID-0016A");// pass Empty string to Assemblyname
+                yield return new TestCaseData("Public", string.Empty, "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException)).SetName("TestID-0017A");// pass Empty string to Classname
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", string.Empty, new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException)).SetName("TestID-0018A");// pass Empty string to MethodName
                 //Provide Null values to Assembly, Class and Methods Name
-                yield return new TestCaseData("TestID-0019A", null, "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException));// pass null to Assemblyname
-                yield return new TestCaseData("TestID-0020A", "Public", null, "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentNullException));// pass null to Classname
-                yield return new TestCaseData("TestID-0021A", "Public", "Touryo.Infrastructure.Public.Util.Latebind", null, new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentNullException));// pass null to MethodName
-                yield return new TestCaseData("TestID-0022A", "Public", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", null).Throws(typeof(MissingMethodException));// pass null to Parameset
+                yield return new TestCaseData(null, "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException)).SetName("TestID-0019A");// pass null to Assemblyname
+                yield return new TestCaseData("Public", null, "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentNullException)).SetName("TestID-0020A");// pass null to Classname
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", null, new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentNullException)).SetName("TestID-0021A");// pass null to MethodName
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", null).Throws(typeof(MissingMethodException)).SetName("TestID-0022A");// pass null to Parameset
 
                 #endregion
             }
@@ -410,43 +405,43 @@ namespace Public.Test.Util
                 #region Normal TestCases
 
                 //Pass All valid parameters and  assembly with full path.
-                yield return new TestCaseData("TestID-001N", MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" });
-                yield return new TestCaseData("TestID-002N", MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "WrongMethodName" });
+                yield return new TestCaseData(MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).SetName("TestID-001N");
+                yield return new TestCaseData(MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "WrongMethodName" }).SetName("TestID-002N");
                 //Test case to cover AmbiguousMatchException..(Oveloading Methods)
-                yield return new TestCaseData("TestID-003N", MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind", "InvokeMethod", new object[3] { new Latebind(), "InvokeMethod", new object[3] { new Latebind(), "CheckTypeOfMethodByName", new object[2] { new Latebind(), "InvokeMethod" } } });
+                yield return new TestCaseData(MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind", "InvokeMethod", new object[3] { new Latebind(), "InvokeMethod", new object[3] { new Latebind(), "CheckTypeOfMethodByName", new object[2] { new Latebind(), "InvokeMethod" } } }).SetName("TestID-003N");
                 //Pass All valid parameters(Only name of the Assembly)
-                yield return new TestCaseData("TestID-004N", "Public", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" });
-                yield return new TestCaseData("TestID-005N", "Public", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "WrongMethodName" });
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).SetName("TestID-004N");
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "WrongMethodName" }).SetName("TestID-005N");
                 //Test case to cover AmbiguousMatchException..(Oveloading Methods)
-                yield return new TestCaseData("TestID-006N", "Public", "Touryo.Infrastructure.Public.Util.Latebind", "InvokeMethod", new object[3] { new Latebind(), "InvokeMethod", new object[3] { new Latebind(), "CheckTypeOfMethodByName", new object[2] { new Latebind(), "InvokeMethod" } } });
-                yield return new TestCaseData("TestID-007N", "Public.Test", "Public.Test.Util.TestLateBind", "Display", new object[0] { }).Throws(typeof(NUnit.Framework.AssertionException));
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", "InvokeMethod", new object[3] { new Latebind(), "InvokeMethod", new object[3] { new Latebind(), "CheckTypeOfMethodByName", new object[2] { new Latebind(), "InvokeMethod" } } }).SetName("TestID-006N");
+                yield return new TestCaseData("Public.Test", "Public.Test.Util.TestLateBind", "Display", new object[0] { }).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-007N");
 
                 #endregion
 
                 #region AbNormal TestCases
 
                 // provide  wrong Assembly path name   to the method 
-                yield return new TestCaseData("TestID-007A", MakeRelativePathFile() + "WrongPublic.dll", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-008A", MakeRelativePathFile() + "Public.", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-009A", "AbcdAssembly", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException));
+                yield return new TestCaseData(MakeRelativePathFile() + "WrongPublic.dll", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-007A");
+                yield return new TestCaseData(MakeRelativePathFile() + "Public.", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-008A");
+                yield return new TestCaseData("AbcdAssembly", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-009A");
                 //Provide Wrong class Name
-                yield return new TestCaseData("TestID-0010A", MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind.cs", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-0011A", "Public", "WrongClassLatebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException));
+                yield return new TestCaseData(MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind.cs", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-0010A");
+                yield return new TestCaseData("Public", "WrongClassLatebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-0011A");
                 // Provide Wrong Method Name 
-                yield return new TestCaseData("TestID-0012A", "Public", "Touryo.Infrastructure.Public.Util.Latebind", "WrongMethodName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-0013A", MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByNameNotExist", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException));
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", "WrongMethodName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-0012A");
+                yield return new TestCaseData(MakeRelativePathFile() + "Public.dll", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByNameNotExist", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-0013A");
                 // Provide Wrong number of parametrs to the Method
-                yield return new TestCaseData("TestID-0014A", "Public", "Touryo.Infrastructure.Public.Util.Latebind", "InvokeMethod", new object[2] { new Latebind(), "InvokeMethod" }).Throws(typeof(NUnit.Framework.AssertionException));//Method takes two parameters but only two are passed
-                yield return new TestCaseData("TestID-0015A", "Public", "Touryo.Infrastructure.Public.Util.Latebind", "InvokeMethod", new object[5] { new Latebind(), "InvokeMethod", new object[3] { new Latebind(), "CheckTypeOfMethodByName", new object[2] { new Latebind(), "InvokeMethod" } }, "Extra Parametr", 123456 }).Throws(typeof(NUnit.Framework.AssertionException));////Method takes four parameters but five are passed
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", "InvokeMethod", new object[2] { new Latebind(), "InvokeMethod" }).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-0014A");//Method takes two parameters but only two are passed
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", "InvokeMethod", new object[5] { new Latebind(), "InvokeMethod", new object[3] { new Latebind(), "CheckTypeOfMethodByName", new object[2] { new Latebind(), "InvokeMethod" } }, "Extra Parametr", 123456 }).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-0015A");////Method takes four parameters but five are passed
                 // Provide string.empty values to Assembly, Class and Methods Name
-                yield return new TestCaseData("TestID-0016A", string.Empty, "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException));// pass Empty string to Assemblyname
-                yield return new TestCaseData("TestID-0017A", "Public", string.Empty, "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException));// pass Empty string to Classname
-                yield return new TestCaseData("TestID-0018A", "Public", "Touryo.Infrastructure.Public.Util.Latebind", string.Empty, new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException));// pass Empty string to MethodName
+                yield return new TestCaseData(string.Empty, "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-0016A");// pass Empty string to Assemblyname
+                yield return new TestCaseData("Public", string.Empty, "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentException)).SetName("TestID-0017A");// pass Empty string to Classname
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", string.Empty, new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-0018A");// pass Empty string to MethodName
                 //Provide Null values to Assembly, Class and Methods Name
-                yield return new TestCaseData("TestID-0019A", null, "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentNullException));// pass null to Assemblyname
-                yield return new TestCaseData("TestID-0020A", "Public", null, "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentNullException));// pass null to Classname
-                yield return new TestCaseData("TestID-0021A", "Public", "Touryo.Infrastructure.Public.Util.Latebind", null, new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentNullException));// pass null to MethodName
-                yield return new TestCaseData("TestID-0022A", "Public", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", null).Throws(typeof(MissingMethodException));// pass null to Parameset
+                yield return new TestCaseData(null, "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentNullException)).SetName("TestID-0019A");// pass null to Assemblyname
+                yield return new TestCaseData("Public", null, "CheckTypeOfMethodByName", new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentNullException)).SetName("TestID-0020A");// pass null to Classname
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", null, new object[2] { new Latebind(), "CheckTypeOfMethodByName" }).Throws(typeof(ArgumentNullException)).SetName("TestID-0021A");// pass null to MethodName
+                yield return new TestCaseData("Public", "Touryo.Infrastructure.Public.Util.Latebind", "CheckTypeOfMethodByName", null).Throws(typeof(MissingMethodException)).SetName("TestID-0022A");// pass null to Parameset
 
                 #endregion
             }

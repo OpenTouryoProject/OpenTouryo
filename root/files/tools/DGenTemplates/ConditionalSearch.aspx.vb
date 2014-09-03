@@ -92,19 +92,9 @@ Partial Public Class _TableName_ConditionalSearch
         ' フォーム初期化（ポストバック）時に実行する処理を実装する
 
         ' TODO:
-        Session("DAP") = Me.ddlDap.SelectedValue
-
-        If Me.ddlDap.SelectedValue = "SQL" Then
-            Session("DBMS") = DbEnum.DBMSType.SQLServer
-        ElseIf Me.ddlDap.SelectedValue = "ODP" Then
-            Session("DBMS") = DbEnum.DBMSType.Oracle
-        ElseIf Me.ddlDap.SelectedValue = "NPS" Then
-            Session("DBMS") = DbEnum.DBMSType.PstGrS
-        ElseIf Me.ddlDap.SelectedValue = "MCN" Then
-            Session("DBMS") = DbEnum.DBMSType.MySQL
-        ElseIf Me.ddlDap.SelectedValue = "DB2" Then
-            Session("DBMS") = DbEnum.DBMSType.DB2
-        End If
+        Session("DAP") = "_DAP_"
+        Session("DBMS") = DbEnum.DBMSType._DBMS_
+      
     End Sub
 
 #End Region
@@ -225,14 +215,14 @@ Partial Public Class _TableName_ConditionalSearch
         ' 主キーとタイムスタンプ列
         ' 主キー列
         ' ControlComment:LoopStart-PKColumn
-        TS_CommentOut_PrimaryKeyAndTimeStamp.Add("_ColumnName_", dt.Rows(e.NewSelectedIndex)("_ColumnName_").ToString())
+        PrimaryKeyAndTimeStamp.Add("_ColumnName_", dt.Rows(e.NewSelectedIndex)("_ColumnName_").ToString())
         ' ControlComment:LoopEnd-PKColumn
 
         ' タイムスタンプ列	        
         TS_CommentOut_ If dt.Rows(e.NewSelectedIndex)("_TimeStampColName_").[GetType]() = GetType(System.DBNull) Then
 
         TS_CommentOut_ Else
-            TS_CommentOut_(PrimaryKeyAndTimeStamp.Add("_TimeStampColName_", dt.Rows(e.NewSelectedIndex)("_TimeStampColName_")))the typecast as it is giving conversion error"
+        TS_CommentOut_(PrimaryKeyAndTimeStamp.Add("_TimeStampColName_", dt.Rows(e.NewSelectedIndex)("_TimeStampColName_")))
         TS_CommentOut_ End If
 
         Session("PrimaryKeyAndTimeStamp") = PrimaryKeyAndTimeStamp

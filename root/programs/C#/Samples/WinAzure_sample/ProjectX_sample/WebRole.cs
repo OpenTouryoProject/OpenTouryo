@@ -44,24 +44,32 @@ namespace ProjectX_sample
             // Windows Azure診断（Windows Azure Diagnostics）情報出力用のストレージ アカウント取得
             string wadConnectionString = "Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString";
 
-            // ストレージ アカウントの初期化
-            CloudStorageAccount cloudStorageAccount =
-              CloudStorageAccount.Parse(
-                RoleEnvironment.GetConfigurationSettingValue(wadConnectionString));
+            //// ストレージ アカウントの初期化
+            //CloudStorageAccount cloudStorageAccount =
+            //  CloudStorageAccount.Parse(
+            //    RoleEnvironment.GetConfigurationSettingValue(wadConnectionString));
 
-            // RoleInstance診断管理の初期化（ロールに対する診断の有効化）
-            RoleInstanceDiagnosticManager roleInstanceDiagnosticManager =
-              cloudStorageAccount.CreateRoleInstanceDiagnosticManager(
-                RoleEnvironment.DeploymentId,
-                RoleEnvironment.CurrentRoleInstance.Role.Name,
-                RoleEnvironment.CurrentRoleInstance.Id);
+            //// RoleInstance診断管理の初期化（ロールに対する診断の有効化）
+            //RoleInstanceDiagnosticManager roleInstanceDiagnosticManager =
+            //  cloudStorageAccount.CreateRoleInstanceDiagnosticManager(
+            //    RoleEnvironment.DeploymentId,
+            //    RoleEnvironment.CurrentRoleInstance.Role.Name,
+            //    RoleEnvironment.CurrentRoleInstance.Id);
+            var storageConnectionString = RoleEnvironment.GetConfigurationSettingValue(
+                   wadConnectionString);
+            var deploymentDiagnosticManager = new DeploymentDiagnosticManager(
+                                                  storageConnectionString,
+                                                  RoleEnvironment.DeploymentId);
+            RoleInstanceDiagnosticManager roleInstanceDiagnosticManager = deploymentDiagnosticManager.GetRoleInstanceDiagnosticManager(
+                                    RoleEnvironment.CurrentRoleInstance.Role.Name,
+                                    RoleEnvironment.CurrentRoleInstance.Id);
 
             // RoleInstance診断管理からコンフィグを取得する。
             // ・基本的にはデフォルト設定を利用する。
             // ・RoleEnvironment.Changedイベント ハンドラを仕掛ける場合はカレント設定を利用する。
             DiagnosticMonitorConfiguration config =
                 DiagnosticMonitor.GetDefaultInitialConfiguration();
-                // roleInstanceDiagnosticManager.GetCurrentConfiguration();
+            // roleInstanceDiagnosticManager.GetCurrentConfiguration();
 
             #region Windows Azure診断（Windows Azure Diagnostics）APIを使用した設定開始
 

@@ -28,6 +28,7 @@
 //*  Date:        Author:          Comments:
 //*  ----------  ----------------  -------------------------------------------------
 //*  05/08/2014   Santosh Avaji    Testcode development for BinarySerialize.
+//*  08/12/2014   Sai              Added TestcaseID using SetName method as per Nishino-San comments
 //*
 //**********************************************************************************
 
@@ -70,15 +71,15 @@ namespace Public.Test.IO
             get
             {
                 ///// Normal Test cases 
-                yield return new TestCaseData("TestID-001N", "StringtoBytes");
+                yield return new TestCaseData("StringtoBytes").SetName("TestID-001N");
                 //// pass int as object  to  convert into bytes
-                yield return new TestCaseData("TestID-002N", 598);
+                yield return new TestCaseData(598).SetName("TestID-002N");
                 ////datetime to bytes
-                yield return new TestCaseData("TestID-003N", System.DateTime.Now);
+                yield return new TestCaseData(System.DateTime.Now).SetName("TestID-003N");
                 // Empty string
-                yield return new TestCaseData("TestID-004A", String.Empty);
+                yield return new TestCaseData(String.Empty).SetName("TestID-004A");
                 /// Abnormal Test cases
-                yield return new TestCaseData("TestID-005A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-005A");
             }
         }
 
@@ -88,15 +89,15 @@ namespace Public.Test.IO
             get
             {
                 ////<Normal Test cases>
-                yield return new TestCaseData("TestID-001N", BinarySerialize.ObjectToBytes(new byte[] { 0, 1, 2 }));
-                yield return new TestCaseData("TestID-002N", BinarySerialize.ObjectToBytes(ASCIIEncoding.UTF32.GetBytes("this is ASCIIEncoding test")));
-                yield return new TestCaseData("TestID-003N", BinarySerialize.ObjectToBytes(Encoding.UTF8.GetBytes(new char[] { })));
-                yield return new TestCaseData("TestID-004N", BinarySerialize.ObjectToBytes(Encoding.UTF8.GetBytes(new char[] { 'a', 'b' })));
-                yield return new TestCaseData("TestID-005N", BinarySerialize.ObjectToBytes(ASCIIEncoding.UTF32.GetBytes("this is ASCIIEncoding test")));
-                yield return new TestCaseData("TestID-006N", BinarySerialize.ObjectToBytes(Encoding.UTF8.GetBytes(new char[] { 'a', 'd', 'c', 'd', 'e', 'f', 'g', 'h', 'i' }, 3, 5)));
-                
+                yield return new TestCaseData(BinarySerialize.ObjectToBytes(new byte[] { 0, 1, 2 })).SetName("TestID-001N");
+                yield return new TestCaseData(BinarySerialize.ObjectToBytes(ASCIIEncoding.UTF32.GetBytes("this is ASCIIEncoding test"))).SetName("TestID-002N");
+                yield return new TestCaseData(BinarySerialize.ObjectToBytes(Encoding.UTF8.GetBytes(new char[] { }))).SetName("TestID-003N");
+                yield return new TestCaseData(BinarySerialize.ObjectToBytes(Encoding.UTF8.GetBytes(new char[] { 'a', 'b' }))).SetName("TestID-004N");
+                yield return new TestCaseData(BinarySerialize.ObjectToBytes(ASCIIEncoding.UTF32.GetBytes("this is ASCIIEncoding test"))).SetName("TestID-005N");
+                yield return new TestCaseData(BinarySerialize.ObjectToBytes(Encoding.UTF8.GetBytes(new char[] { 'a', 'd', 'c', 'd', 'e', 'f', 'g', 'h', 'i' }, 3, 5))).SetName("TestID-006N");
+
                 ///// <Abnormal Test cases>
-                yield return new TestCaseData("TestID-007A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-007A");
             }
         }
 
@@ -106,10 +107,10 @@ namespace Public.Test.IO
             get
             {
                 ////<Normal Test cases>
-                yield return new TestCaseData("TestID-001N", BinarySerialize.ObjectToBytes(new byte[] { 0, 1, 2 }));
-                yield return new TestCaseData("TestID-002N", new byte[] { 0, 1, 2 });
+                yield return new TestCaseData(BinarySerialize.ObjectToBytes(new byte[] { 0, 1, 2 })).SetName("TestID-001N");
+                yield return new TestCaseData(new byte[] { 0, 1, 2 }).SetName("TestID-002N");
                 ///// <Abnormal Test cases>
-                yield return new TestCaseData("TestID-003A", null).Throws(typeof(ArgumentNullException));
+                yield return new TestCaseData(null).Throws(typeof(ArgumentNullException)).SetName("TestID-003A");
             }
         }
 
@@ -119,11 +120,10 @@ namespace Public.Test.IO
 
         /// <summary>
         /// TestCasesOf ObjectToBytesTest Method
-        /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// </summary>        
         ///<param name="objExpected">objExpected</param>
         [TestCaseSource("TestcasesOfObjectToBytesTest")]
-        public void ObjectToBytesTest(string testCaseID, object objExpected)
+        public void ObjectToBytesTest(object objExpected)
         {
             try
             {
@@ -134,18 +134,17 @@ namespace Public.Test.IO
             }
             catch (Exception ex)
             {
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
 
         /// <summary>
         /// TestCasesOf BytesToObjectTest Method
-        /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
+        /// </summary>        
         ///<param name="bytActual">bytActual</param>
         [TestCaseSource("TestcasesOfBytesToObjectTest")]
-        public void BytesToObjectTest(string testCaseID, byte[] bytActual)
+        public void BytesToObjectTest(byte[] bytActual)
         {
             try
             {
@@ -156,7 +155,7 @@ namespace Public.Test.IO
             }
             catch (Exception ex)
             {
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -164,10 +163,9 @@ namespace Public.Test.IO
         /// <summary>
         /// TestCasesOf DeepCloneTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         ///<param name="sourceObject">sourceObject</param>
         [TestCaseSource("TestcasesOfDeepCloneTest")]
-        public void DeepCloneTest(string testCaseID, object sourceObject)
+        public void DeepCloneTest(object sourceObject)
         {
             try
             {
@@ -176,7 +174,7 @@ namespace Public.Test.IO
             }
             catch (Exception ex)
             {
-                Console.WriteLine(testCaseID + ":" + ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }

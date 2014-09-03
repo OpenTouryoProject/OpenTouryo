@@ -46,6 +46,7 @@
 //*  2014/04/30  Santosh san      Internationalization: Added Method to get the strings from the resource files based on the keys values passed.
 //*                               and and replaced this method wherever hard coded values.
 //*  2014/07/16  Sai-san          Changed ParamSign value to @ in case of PostGreSQL db  
+//*  2014/08/25  Santosh Avaji    Added key values to app.config and constants after removing dropdownlist from Template files, and did code modification for selecting data provider type 
 //**********************************************************************************
 
 // データプロバイダ
@@ -718,6 +719,16 @@ namespace DaoGen_Tool
 
         // ↑↑↑【追加】↑↑↑
 
+        // DBMS constant to replace
+        private string RpDBMS = "";
+        //DBMS value  to  be replaced
+        private string strDBMS = "";
+
+        //DAP constant to replace
+        private string RpDAP = "";
+        //DAP value to be replaced
+        private string strDAP = "";
+
         #endregion
 
         #endregion
@@ -910,31 +921,39 @@ namespace DaoGen_Tool
         /// <param name="s">プロバイダを表す文字列</param>
         public void Init(string s)
         {
+            this.strDAP = s;
             switch (s)
             {   
                 case "OLE":
                     this.rbnOLE.Select();
+                    this.strDBMS = "OLE";
                     break;
                 case "ODB":
                     this.rbnODB.Select();
+                    this.strDBMS = "ODB";
                     break;
                 case "ODP":
                     this.rbnODP.Select();
+                    this.strDBMS = "Oracle";
                     break;
                 case "DB2":
                     this.rbnDB2.Select();
+                    this.strDBMS = "DB2";
                     break;
                 //case "HIR":
                 //    this.rbnHiRDB.Select();
                 //    break;
                 case "MCN":
                     this.rbnMySQL.Select();
+                    this.strDBMS = "MCN";
                     break;
                 case "NPS":
                     this.rbnPstgrs.Select();
+                    this.strDBMS = "PstGrS";
                     break;
                 default:
                     this.rbnSQL.Select();
+                    this.strDBMS = "SQLServer";
                     break;
             }
         }
@@ -1686,6 +1705,18 @@ namespace DaoGen_Tool
             if (string.IsNullOrEmpty(RpColumnNmbr))
             {
                 throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpColumnNmbr");
+            }
+
+            this.RpDBMS = GetConfigParameter.GetConfigValue("RpDBMS");
+            if (string.IsNullOrEmpty(RpDBMS))
+            {
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDBMS");
+            }
+
+            this.RpDAP = GetConfigParameter.GetConfigValue("RpDAP");
+            if (string.IsNullOrEmpty(RpDBMS))
+            {
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "RpDAP");
             }
 
             #endregion
@@ -4310,6 +4341,10 @@ namespace DaoGen_Tool
             input = input.Replace(this.RpAllColumnListTableAdapterSQL, this.AllColumnListTableAdapterSQL);
             
             #endregion
+
+            // DBMS and DAP in the pages for Data Provide rselection
+            input = input.Replace(this.RpDBMS, this.strDBMS);
+            input = input.Replace(this.RpDAP, this.strDAP);
 
             return input;
         }

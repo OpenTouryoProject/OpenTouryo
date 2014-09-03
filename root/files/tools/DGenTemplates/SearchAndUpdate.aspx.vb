@@ -76,13 +76,6 @@ Partial Public Class _TableName_SearchAndUpdate
 
         ' 更新ボタンの非活性化
         Me.btnBatUpd.Enabled = False
-
-        '#Region "マスタ・データのロードと設定"
-
-        ' 引数クラスを生成
-        ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim parameterValue As New _3TierParameterValue(Me.ContentPageFileNoEx, "FormInit_PostBack", "Invoke", Me.ddlDap.SelectedValue, Me.UserInfo)
-        '#End Region
     End Sub
 
     ''' <summary>
@@ -95,19 +88,8 @@ Partial Public Class _TableName_SearchAndUpdate
         ' フォーム初期化（ポストバック）時に実行する処理を実装する
 
         ' TODO:
-        Session("DAP") = Me.ddlDap.SelectedValue
-
-        If Me.ddlDap.SelectedValue = "SQL" Then
-            Session("DBMS") = DbEnum.DBMSType.SQLServer
-        ElseIf Me.ddlDap.SelectedValue = "ODP" Then
-            Session("DBMS") = DbEnum.DBMSType.Oracle
-        ElseIf Me.ddlDap.SelectedValue = "NPS" Then
-            Session("DBMS") = DbEnum.DBMSType.PstGrS
-        ElseIf Me.ddlDap.SelectedValue = "MCN" Then
-            Session("DBMS") = DbEnum.DBMSType.MySQL
-        ElseIf Me.ddlDap.SelectedValue = "DB2" Then
-            Session("DBMS") = DbEnum.DBMSType.DB2
-        End If
+        Session("DAP") = "_DAP_"
+        Session("DBMS") = DbEnum.DBMSType._DBMS_
     End Sub
 
 #End Region
@@ -335,7 +317,7 @@ Partial Public Class _TableName_SearchAndUpdate
                                 Dim txtBox As TextBox = DirectCast(gvRow.FindControl("txt" + dc.ColumnName), TextBox)
 
                                 If txtBox IsNot Nothing Then
-                                    If dr(dc).[GetType]() = GetType([Byte]()) Then
+                                    If TypeOf (dr(dc)) Is Byte Then
                                     Else
                                         dr(dc) = txtBox.Text
                                     End If

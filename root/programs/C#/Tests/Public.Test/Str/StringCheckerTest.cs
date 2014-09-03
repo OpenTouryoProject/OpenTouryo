@@ -28,7 +28,7 @@
 //*  Date:        Author:          Comments:
 //*  ----------  ----------------  -------------------------------------------------
 //*  05/16/2014    Rituparna       Testcode development for StringChecker.
-//*
+//*  08/12/2014   Rituparna        Added TestcaseID using SetName method as per Nishino-San comments
 //**********************************************************************************
 
 #region Includes
@@ -70,17 +70,15 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "貴社ますますご盛栄のこととお慶び申し上げます。平素は格別のご高配を賜り、厚く御礼申し上げます。", true);
-                yield return new TestCaseData("TestID-001N", "貴社ますますご盛栄のこととお慶び申し上げます。平素は格別のお引き立てをいただき、厚く御礼申し上げます。", true);
-                yield return new TestCaseData("TestID-002N", "１２３４５", true);
-                yield return new TestCaseData("TestID-003L", string.Empty, true);
-                yield return new TestCaseData("TestID-004A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-005A", "abcde", true).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-006N", "一二三四五六七八九十", true);
-                yield return new TestCaseData("TestID-007A", 1, true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-008A", "0.1 0.2", true).Throws(typeof(NUnit.Framework.AssertionException));
+                yield return new TestCaseData("貴社ますますご盛栄のこととお慶び申し上げます。平素は格別のご高配を賜り、厚く御礼申し上げます。", true).SetName("TestID-000N");
+                yield return new TestCaseData("貴社ますますご盛栄のこととお慶び申し上げます。平素は格別のお引き立てをいただき、厚く御礼申し上げます。", true).SetName("TestID-001N");
+                yield return new TestCaseData("１２３４５", true).SetName("TestID-002N");
+                yield return new TestCaseData(string.Empty, true).SetName("TestID-003N");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-004A");
+                yield return new TestCaseData("abcde", true).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-005A");
+                yield return new TestCaseData("一二三四五六七八九十", true).SetName("TestID-006N");
+                yield return new TestCaseData(1, true).Throws(typeof(ArgumentException)).SetName("TestID-007A");
+                yield return new TestCaseData("0.1 0.2", true).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-008A");
             }
         }
 
@@ -92,16 +90,14 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "abcde", true);
-                yield return new TestCaseData("TestID-001N", "12345", true);
-                yield return new TestCaseData("TestID-002N", "ｦﾀ", true);
-                yield return new TestCaseData("TestID-003L", string.Empty, true);
-                yield return new TestCaseData("TestID-005A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-006N", "一二三四五六七八九十", true).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-007A", 1, true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-008A", "0.1 0.2", true);
+                yield return new TestCaseData("abcde", true).SetName("TestID-000N");
+                yield return new TestCaseData("12345", true).SetName("TestID-001N");
+                yield return new TestCaseData("ｦﾀ", true).SetName("TestID-002N");
+                yield return new TestCaseData(string.Empty, true).SetName("TestID-003N");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-004A");
+                yield return new TestCaseData("一二三四五六七八九十", true).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-005A");
+                yield return new TestCaseData(1, true).Throws(typeof(ArgumentException)).SetName("TestID-006A");
+                yield return new TestCaseData("0.1 0.2", true).SetName("TestID-000N");
             }
         }
 
@@ -113,16 +109,15 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-                yield return new TestCaseData("TestID-000N", "12345", true);
-                yield return new TestCaseData("TestID-001A", "abcde", true).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-002A", "ｦﾀ", true).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-003A", string.Empty, true).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-004A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-005A", "ｪｫｬｭｮ", true).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-006N", "12.78", true);
-                yield return new TestCaseData("TestID-007A", 12.78, true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-008N", "１２３４５", true);
+                yield return new TestCaseData("12345", true).SetName("TestID-000N");
+                yield return new TestCaseData("abcde", true).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-001A");
+                yield return new TestCaseData("ｦﾀ", true).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-002A");
+                yield return new TestCaseData(string.Empty, true).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-003A");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-004A");
+                yield return new TestCaseData("ｪｫｬｭｮ", true).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-005A");
+                yield return new TestCaseData("12.78", true).SetName("TestID-006N");
+                yield return new TestCaseData(12.78, true).Throws(typeof(ArgumentException)).SetName("TestID-007A");
+                yield return new TestCaseData("１２３４５", true).SetName("TestID-008N");
             }
         }
 
@@ -134,16 +129,14 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "12345", true);
-                yield return new TestCaseData("TestID-001A", "abcde", true).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-002N", "ｦﾀ", true).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-003L", string.Empty, true);
-                yield return new TestCaseData("TestID-005A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-006A", "ｪｫｬｭｮ", true).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-007A", "一二三四五六七八九十", true).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-008N", 1, true).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("12345", true).SetName("TestID-000N");
+                yield return new TestCaseData("abcde", true).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-001A");
+                yield return new TestCaseData("ｦﾀ", true).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-002A");
+                yield return new TestCaseData(string.Empty, true).SetName("TestID-003L");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-004A");
+                yield return new TestCaseData("ｪｫｬｭｮ", true).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-005A");
+                yield return new TestCaseData("一二三四五六七八九十", true).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-006A");
+                yield return new TestCaseData(1, true).Throws(typeof(ArgumentException)).SetName("TestID-007A");
             }
         }
 
@@ -155,16 +148,14 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "１２３４５", true);
-                yield return new TestCaseData("TestID-001L", string.Empty, true);
-                yield return new TestCaseData("TestID-002A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-003A", "abcde", true).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-004N", "一二三四五六七八九十", true).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-005A", "貴社ますますご盛栄のこととお慶び申し上げます。平素は格別のご高配を賜り、厚く御礼申し上げます。", true).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-006A", "貴社ますますご盛栄のこととお慶び申し上げます。平素は格別のお引き立てをいただき、厚く御礼申し上げます。", true).Throws(typeof(NUnit.Framework.AssertionException));
-                yield return new TestCaseData("TestID-007A", 1, true).Throws(typeof(ArgumentException));
+                yield return new TestCaseData("１２３４５", true).SetName("TestID-000N");
+                yield return new TestCaseData(string.Empty, true).SetName("TestID-001L");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-002A");
+                yield return new TestCaseData("abcde", true).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-003A");
+                yield return new TestCaseData("一二三四五六七八九十", true).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-004A");
+                yield return new TestCaseData("貴社ますますご盛栄のこととお慶び申し上げます。平素は格別のご高配を賜り、厚く御礼申し上げます。", true).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-005A");
+                yield return new TestCaseData("貴社ますますご盛栄のこととお慶び申し上げます。平素は格別のお引き立てをいただき、厚く御礼申し上げます。", true).Throws(typeof(NUnit.Framework.AssertionException)).SetName("TestID-006A");
+                yield return new TestCaseData(1, true).Throws(typeof(ArgumentException)).SetName("TestID-007A");
             }
         }
 
@@ -176,13 +167,12 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-                yield return new TestCaseData("TestID-000L", string.Empty, true);
-                yield return new TestCaseData("TestID-001A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-002A", "abcde", true);
-                yield return new TestCaseData("TestID-003A", 1, true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-004N", "一二三四五六七八九十", false);
-                yield return new TestCaseData("TestID-005N", "12345", false);
+                yield return new TestCaseData(string.Empty, true).SetName("TestID-000L");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-001A");
+                yield return new TestCaseData("abcde", true).SetName("TestID-002N");
+                yield return new TestCaseData(1, true).Throws(typeof(ArgumentException)).SetName("TestID-003A");
+                yield return new TestCaseData("一二三四五六七八九十", false).SetName("TestID-004N");
+                yield return new TestCaseData("12345", false).SetName("TestID-005N");
             }
         }
 
@@ -194,16 +184,14 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "abcde", false);
-                yield return new TestCaseData("TestID-001N", "12345", true);
-                yield return new TestCaseData("TestID-002N", "ｦﾀ", false);
-                yield return new TestCaseData("TestID-003L", string.Empty, true);
-                yield return new TestCaseData("TestID-005A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-006N", "一二三四五六七八九十", false);
-                yield return new TestCaseData("TestID-007A", 1, true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-008A", "0.1 0.2", false);
+                yield return new TestCaseData("abcde", false).SetName("TestID-000N");
+                yield return new TestCaseData("12345", true).SetName("TestID-001N");
+                yield return new TestCaseData("ｦﾀ", false).SetName("TestID-002N");
+                yield return new TestCaseData(string.Empty, true).SetName("TestID-003L");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-004A");
+                yield return new TestCaseData("一二三四五六七八九十", false).SetName("TestID-005N");
+                yield return new TestCaseData(1, true).Throws(typeof(ArgumentException)).SetName("TestID-006A");
+                yield return new TestCaseData("0.1 0.2", false).SetName("TestID-007N");
             }
         }
 
@@ -215,16 +203,14 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "abcde", true);
-                yield return new TestCaseData("TestID-001N", "12345", false);
-                yield return new TestCaseData("TestID-002N", "ｦﾀ", false);
-                yield return new TestCaseData("TestID-003L", string.Empty, true);
-                yield return new TestCaseData("TestID-005A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-006N", "一二三四五六七八九十", false);
-                yield return new TestCaseData("TestID-007A", 1, true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-008N", "0.1 0.2", false);
+                yield return new TestCaseData("abcde", true).SetName("TestID-000N");
+                yield return new TestCaseData("12345", false).SetName("TestID-001N");
+                yield return new TestCaseData("ｦﾀ", false).SetName("TestID-002N");
+                yield return new TestCaseData(string.Empty, true).SetName("TestID-003N");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-004A");
+                yield return new TestCaseData("一二三四五六七八九十", false).SetName("TestID-005N");
+                yield return new TestCaseData(1, true).Throws(typeof(ArgumentException)).SetName("TestID-006A");
+                yield return new TestCaseData("0.1 0.2", false).SetName("TestID-007N");
             }
         }
 
@@ -236,16 +222,15 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-                yield return new TestCaseData("TestID-000N", "abcde", false);
-                yield return new TestCaseData("TestID-001N", "12345", false);
-                yield return new TestCaseData("TestID-002N", "ｦﾀ", false);
-                yield return new TestCaseData("TestID-003L", string.Empty, true);
-                yield return new TestCaseData("TestID-005A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-006N", "一二三四五六七八九十", false);
-                yield return new TestCaseData("TestID-007A", 1, true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-008N", "0.1 0.2", false);
-                yield return new TestCaseData("TestID-009N", "Ａ", true);
+                yield return new TestCaseData("abcde", false).SetName("TestID-000N");
+                yield return new TestCaseData("12345", false).SetName("TestID-001N");
+                yield return new TestCaseData("ｦﾀ", false).SetName("TestID-002N");
+                yield return new TestCaseData(string.Empty, true).SetName("TestID-003N");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-004A");
+                yield return new TestCaseData("一二三四五六七八九十", false).SetName("TestID-005N");
+                yield return new TestCaseData(1, true).Throws(typeof(ArgumentException)).SetName("TestID-006A");
+                yield return new TestCaseData("0.1 0.2", false).SetName("TestID-007N");
+                yield return new TestCaseData("Ａ", true).SetName("TestID-008N");
             }
         }
 
@@ -257,17 +242,15 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "abcde", false);
-                yield return new TestCaseData("TestID-001N", "12345", false);
-                yield return new TestCaseData("TestID-002N", "ｦﾀ", false);
-                yield return new TestCaseData("TestID-003L", string.Empty, true);
-                yield return new TestCaseData("TestID-005A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-006N", "一二三四五六七八九十", false);
-                yield return new TestCaseData("TestID-007A", 1, true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-008N", "0.1 0.2", false);
-                yield return new TestCaseData("TestID-009N", "さん", true);
+                yield return new TestCaseData("abcde", false).SetName("TestID-000N");
+                yield return new TestCaseData("12345", false).SetName("TestID-001N");
+                yield return new TestCaseData("ｦﾀ", false).SetName("TestID-002N");
+                yield return new TestCaseData(string.Empty, true).SetName("TestID-003L");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-005A");
+                yield return new TestCaseData("一二三四五六七八九十", false).SetName("TestID-006N");
+                yield return new TestCaseData(1, true).Throws(typeof(ArgumentException)).SetName("TestID-007A");
+                yield return new TestCaseData("0.1 0.2", false).SetName("TestID-008N");
+                yield return new TestCaseData("さん", true).SetName("TestID-009N");
             }
         }
 
@@ -279,17 +262,15 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "abcde", false);
-                yield return new TestCaseData("TestID-001N", "12345", false);
-                yield return new TestCaseData("TestID-002N", "ｦﾀ", true);
-                yield return new TestCaseData("TestID-003L", string.Empty, true);
-                yield return new TestCaseData("TestID-005A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-006N", "一二三四五六七八九十", false);
-                yield return new TestCaseData("TestID-007A", 1, true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-008N", "0.1 0.2", false);
-                yield return new TestCaseData("TestID-009N", "ナルト", true);
+                yield return new TestCaseData("abcde", false).SetName("TestID-000N");
+                yield return new TestCaseData("12345", false).SetName("TestID-000N");
+                yield return new TestCaseData("ｦﾀ", true).SetName("TestID-000N");
+                yield return new TestCaseData(string.Empty, true).SetName("TestID-000N");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-000N");
+                yield return new TestCaseData("一二三四五六七八九十", false).SetName("TestID-000N");
+                yield return new TestCaseData(1, true).Throws(typeof(ArgumentException)).SetName("TestID-000N");
+                yield return new TestCaseData("0.1 0.2", false).SetName("TestID-000N");
+                yield return new TestCaseData("ナルト", true).SetName("TestID-000N");
             }
         }
 
@@ -297,17 +278,15 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "abcde", false);
-                yield return new TestCaseData("TestID-001N", "12345", false);
-                yield return new TestCaseData("TestID-002N", "ｦﾀ", false);
-                yield return new TestCaseData("TestID-003L", string.Empty, true);
-                yield return new TestCaseData("TestID-005A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-006N", "一二三四五六七八九十", false);
-                yield return new TestCaseData("TestID-007A", 1, true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-008N", "0.1 0.2", false);
-                yield return new TestCaseData("TestID-009N", "ナルト", true);
+                yield return new TestCaseData("abcde", false).SetName("TestID-000N");
+                yield return new TestCaseData("12345", false).SetName("TestID-001N");
+                yield return new TestCaseData("ｦﾀ", false).SetName("TestID-002N");
+                yield return new TestCaseData(string.Empty, true).SetName("TestID-003N");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-004A");
+                yield return new TestCaseData("一二三四五六七八九十", false).SetName("TestID-005N");
+                yield return new TestCaseData(1, true).Throws(typeof(ArgumentException)).SetName("TestID-006A");
+                yield return new TestCaseData("0.1 0.2", false).SetName("TestID-007N");
+                yield return new TestCaseData("ナルト", true).SetName("TestID-008N");
             }
         }
 
@@ -319,17 +298,15 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "abcde", false);
-                yield return new TestCaseData("TestID-001N", "12345", false);
-                yield return new TestCaseData("TestID-002N", "ｦﾀ", true);
-                yield return new TestCaseData("TestID-003L", string.Empty, true);
-                yield return new TestCaseData("TestID-005A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-006N", "一二三四五六七八九十", false);
-                yield return new TestCaseData("TestID-007A", 1, true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-008N", "0.1 0.2", false);
-                yield return new TestCaseData("TestID-009N", "ナルト", false);
+                yield return new TestCaseData("abcde", false).SetName("TestID-000N");
+                yield return new TestCaseData("12345", false).SetName("TestID-001N");
+                yield return new TestCaseData("ｦﾀ", true).SetName("TestID-002N");
+                yield return new TestCaseData(string.Empty, true).SetName("TestID-003N");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-004A");
+                yield return new TestCaseData("一二三四五六七八九十", false).SetName("TestID-005N");
+                yield return new TestCaseData(1, true).Throws(typeof(ArgumentException)).SetName("TestID-006A");
+                yield return new TestCaseData("0.1 0.2", false).SetName("TestID-007N");
+                yield return new TestCaseData("ナルト", false).SetName("TestID-008N");
             }
         }
 
@@ -341,17 +318,15 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "達磨", true);
-                yield return new TestCaseData("TestID-001N", "12345", false);
-                yield return new TestCaseData("TestID-002N", "ｦﾀ", false);
-                yield return new TestCaseData("TestID-003L", string.Empty, true);
-                yield return new TestCaseData("TestID-005A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-006N", "一二三四五六七八九十", true);
-                yield return new TestCaseData("TestID-007A", 1, true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-008N", "0.1 0.2", false);
-                yield return new TestCaseData("TestID-009N", "ナルト", false);
+                yield return new TestCaseData("達磨", true).SetName("TestID-000N");
+                yield return new TestCaseData("12345", false).SetName("TestID-001N");
+                yield return new TestCaseData("ｦﾀ", false).SetName("TestID-002N");
+                yield return new TestCaseData(string.Empty, true).SetName("TestID-003N");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-004A");
+                yield return new TestCaseData("一二三四五六七八九十", true).SetName("TestID-005N");
+                yield return new TestCaseData(1, true).Throws(typeof(ArgumentException)).SetName("TestID-006A");
+                yield return new TestCaseData("0.1 0.2", false).SetName("TestID-007N");
+                yield return new TestCaseData("ナルト", false).SetName("TestID-008N");
             }
         }
 
@@ -363,17 +338,15 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", string.Empty, 1200, true);
-                yield return new TestCaseData("TestID-001N", "abcde", CustomEncode.UTF_16LE, true);
-                yield return new TestCaseData("TestID-002N", "abcde", CustomEncode.UTF_8, true);
-                yield return new TestCaseData("TestID-003A", null, CustomEncode.UTF_8, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-004A", "abcd", string.Empty, true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-005A", "abcd", CustomEncode._iso_2022_jp_Dollar_ESC, true);
-                yield return new TestCaseData("TestID-006N", "abcd", null, true);
-                yield return new TestCaseData("TestID-007N", "\\\\@!", 20108, false);
-                yield return new TestCaseData("TestID-008N", "\\\\*&", 20108, false);
+                yield return new TestCaseData(string.Empty, 1200, true).SetName("TestID-000N");
+                yield return new TestCaseData("abcde", CustomEncode.UTF_16LE, true).SetName("TestID-001N");
+                yield return new TestCaseData("abcde", CustomEncode.UTF_8, true).SetName("TestID-002N");
+                yield return new TestCaseData(null, CustomEncode.UTF_8, true).Throws(typeof(ArgumentNullException)).SetName("TestID-003A");
+                yield return new TestCaseData("abcd", string.Empty, true).Throws(typeof(ArgumentException)).SetName("TestID-004A");
+                yield return new TestCaseData("abcd", CustomEncode._iso_2022_jp_Dollar_ESC, true).SetName("TestID-005N");
+                yield return new TestCaseData("abcd", null, true).SetName("TestID-006N");
+                yield return new TestCaseData("\\\\@!", 20108, false).SetName("TestID-007N");
+                yield return new TestCaseData("\\\\*&", 20108, false).SetName("TestID-008N");
             }
         }
 
@@ -385,14 +358,11 @@ namespace Public.Test.Str
         {
             get
             {
-
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", string.Empty, true);
-                yield return new TestCaseData("TestID-001N", "abcde", true);
-                yield return new TestCaseData("TestID-002A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-003A", "ƒ`ƒƒƒlƒ‹ƒp[ƒgƒi[‚Ì‘I‘ð", false);
-                yield return new TestCaseData("TestID-004A", "#", true);
+                yield return new TestCaseData(string.Empty, true).SetName("TestID-000N");
+                yield return new TestCaseData("abcde", true).SetName("TestID-001N");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-002A");
+                yield return new TestCaseData("ƒ`ƒƒƒlƒ‹ƒp[ƒgƒi[‚Ì‘I‘ð", false).SetName("TestID-003A");
+                yield return new TestCaseData("#", true).SetName("TestID-004A");
             }
         }
 
@@ -404,14 +374,11 @@ namespace Public.Test.Str
         {
             get
             {
-
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", string.Empty, true);
-                yield return new TestCaseData("TestID-001A", "ナルト", true);
-                yield return new TestCaseData("TestID-002N", "abcde", false);
-                yield return new TestCaseData("TestID-003A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-004A", "ƒ`ƒƒƒlƒ‹ƒp[ƒgƒi[‚Ì‘I‘ð", false);
+                yield return new TestCaseData(string.Empty, true).SetName("TestID-000N");
+                yield return new TestCaseData("ナルト", true).SetName("TestID-001N");
+                yield return new TestCaseData("abcde", false).SetName("TestID-002N");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-003A");
+                yield return new TestCaseData("ƒ`ƒƒƒlƒ‹ƒp[ƒgƒi[‚Ì‘I‘ð", false).SetName("TestID-004N");
             }
         }
 
@@ -423,12 +390,11 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-                yield return new TestCaseData("TestID-000N", string.Empty, true);
-                yield return new TestCaseData("TestID-001A", "ナルト", false);
-                yield return new TestCaseData("TestID-002N", "abcde", true);
-                yield return new TestCaseData("TestID-003A", null, true).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-004A", "ƒ`ƒƒƒlƒ‹ƒp[ƒgƒi[‚Ì‘I‘ð", false);
+                yield return new TestCaseData(string.Empty, true).SetName("TestID-000N");
+                yield return new TestCaseData("ナルト", false).SetName("TestID-001N");
+                yield return new TestCaseData("abcde", true).SetName("TestID-002N");
+                yield return new TestCaseData(null, true).Throws(typeof(ArgumentNullException)).SetName("TestID-003A");
+                yield return new TestCaseData("ƒ`ƒƒƒlƒ‹ƒp[ƒgƒi[‚Ì‘I‘ð", false).SetName("TestID-004N");
             }
         }
 
@@ -440,17 +406,16 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-                yield return new TestCaseData("TestID-000N", "Hello World", @"d \w+ \s", false);
-                yield return new TestCaseData("TestID-001N", "Hello World", @"d \w+ \s", false);
-                yield return new TestCaseData("TestID-002N", "The the quick brown fox  fox jumped over the lazy dog dog.", @"\b(?<word>\w+)\s+(\k<word>)\b", true);
-                yield return new TestCaseData("TestID-003N", "Hello World", string.Empty, true);
-                yield return new TestCaseData("TestID-004N", "Hello World", @"d \w+ \s", false);
-                yield return new TestCaseData("TestID-005N", "Hello World", @"d \w+ \s", false);
-                yield return new TestCaseData("TestID-006N", "Hello World", string.Empty, true);
-                yield return new TestCaseData("TestID-007N", string.Empty, @"d \w+ \s", false);
-                yield return new TestCaseData("TestID-008A", string.Empty, null, false).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-009A", null, @"d \w+ \s", false).Throws(typeof(ArgumentNullException)); ;
+                yield return new TestCaseData("Hello World", @"d \w+ \s", false).SetName("TestID-000N");
+                yield return new TestCaseData("Hello World", @"d \w+ \s", false).SetName("TestID-001N");
+                yield return new TestCaseData("The the quick brown fox  fox jumped over the lazy dog dog.", @"\b(?<word>\w+)\s+(\k<word>)\b", true).SetName("TestID-002N");
+                yield return new TestCaseData("Hello World", string.Empty, true).SetName("TestID-003N");
+                yield return new TestCaseData("Hello World", @"d \w+ \s", false).SetName("TestID-004N");
+                yield return new TestCaseData("Hello World", @"d \w+ \s", false).SetName("TestID-005N");
+                yield return new TestCaseData("Hello World", string.Empty, true).SetName("TestID-006N");
+                yield return new TestCaseData(string.Empty, @"d \w+ \s", false).SetName("TestID-007N");
+                yield return new TestCaseData(string.Empty, null, false).Throws(typeof(ArgumentNullException)).SetName("TestID-008A");
+                yield return new TestCaseData(null, @"d \w+ \s", false).Throws(typeof(ArgumentNullException)).SetName("TestID-009A");
             }
         }
 
@@ -462,16 +427,14 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "Hello World", @"d \w+ \s", RegexOptions.Singleline, false);
-                yield return new TestCaseData("TestID-001N", "Hello World", @"d \w+ \s", RegexOptions.RightToLeft, false);
-                yield return new TestCaseData("TestID-002N", "The the quick brown fox  fox jumped over the lazy dog dog.", @"\b(?<word>\w+)\s+(\k<word>)\b", RegexOptions.Compiled, true);
-                yield return new TestCaseData("TestID-003N", "Hello World", string.Empty, RegexOptions.Singleline, true);
-                yield return new TestCaseData("TestID-004A", "Hello World", @"d \w+ \s", string.Empty, true).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-005N", "Hello World", @"d \w+ \s", null, false);
-                yield return new TestCaseData("TestID-006N", "Hello World", string.Empty, null, true);
-                yield return new TestCaseData("TestID-007N", string.Empty, @"d \w+ \s", RegexOptions.Singleline, false);
+                yield return new TestCaseData("Hello World", @"d \w+ \s", RegexOptions.Singleline, false).SetName("TestID-000N");
+                yield return new TestCaseData("Hello World", @"d \w+ \s", RegexOptions.RightToLeft, false).SetName("TestID-001N");
+                yield return new TestCaseData("The the quick brown fox  fox jumped over the lazy dog dog.", @"\b(?<word>\w+)\s+(\k<word>)\b", RegexOptions.Compiled, true).SetName("TestID-002N");
+                yield return new TestCaseData("Hello World", string.Empty, RegexOptions.Singleline, true).SetName("TestID-003N");
+                yield return new TestCaseData("Hello World", @"d \w+ \s", string.Empty, true).Throws(typeof(ArgumentException)).SetName("TestID-004A");
+                yield return new TestCaseData("Hello World", @"d \w+ \s", null, false).SetName("TestID-005N");
+                yield return new TestCaseData("Hello World", string.Empty, null, true).SetName("TestID-006N");
+                yield return new TestCaseData(string.Empty, @"d \w+ \s", RegexOptions.Singleline, false).SetName("TestID-007N");
             }
         }
 
@@ -483,13 +446,11 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "Hello World", @"d \w+ \s", 0);
-                yield return new TestCaseData("TestID-001N", "The the quick brown fox  fox jumped over the lazy dog dog.", @"\b(?<word>\w+)\s+(\k<word>)\b", 2);
-                yield return new TestCaseData("TestID-002N", string.Empty, @"d \w+ \s", 0);
-                yield return new TestCaseData("TestID-003N", null, @"d \w+ \s", 0).Throws(typeof(ArgumentNullException));
-                yield return new TestCaseData("TestID-004N", "hi", string.Empty, 3);
+                yield return new TestCaseData("Hello World", @"d \w+ \s", 0).SetName("TestID-000N");
+                yield return new TestCaseData("The the quick brown fox  fox jumped over the lazy dog dog.", @"\b(?<word>\w+)\s+(\k<word>)\b", 2).SetName("TestID-001N");
+                yield return new TestCaseData(string.Empty, @"d \w+ \s", 0).SetName("TestID-002N");
+                yield return new TestCaseData(null, @"d \w+ \s", 0).Throws(typeof(ArgumentNullException)).SetName("TestID-003A");
+                yield return new TestCaseData("hi", string.Empty, 3).SetName("TestID-004N");
             }
         }
 
@@ -501,16 +462,14 @@ namespace Public.Test.Str
         {
             get
             {
-                this.SetUp();
-
-                yield return new TestCaseData("TestID-000N", "Hello World", @"d \w+ \s", RegexOptions.Singleline, 0);
-                yield return new TestCaseData("TestID-001N", "Hello World", @"d \w+ \s", RegexOptions.RightToLeft, 0);
-                yield return new TestCaseData("TestID-002N", "The the quick brown fox  fox jumped over the lazy dog dog.", @"\b(?<word>\w+)\s+(\k<word>)\b", RegexOptions.Compiled, 2);
-                yield return new TestCaseData("TestID-003N", "Hello World", string.Empty, RegexOptions.Singleline, 12);
-                yield return new TestCaseData("TestID-004A", "Hello World", @"d \w+ \s", string.Empty, 2).Throws(typeof(ArgumentException));
-                yield return new TestCaseData("TestID-005N", "Hello World", @"d \w+ \s", null, 0);
-                yield return new TestCaseData("TestID-006N", "Hello World", string.Empty, null, 12);
-                yield return new TestCaseData("TestID-007N", string.Empty, @"d \w+ \s", RegexOptions.Singleline, 0);
+                yield return new TestCaseData("Hello World", @"d \w+ \s", RegexOptions.Singleline, 0).SetName("TestID-000N");
+                yield return new TestCaseData("Hello World", @"d \w+ \s", RegexOptions.RightToLeft, 0).SetName("TestID-001N");
+                yield return new TestCaseData("The the quick brown fox  fox jumped over the lazy dog dog.", @"\b(?<word>\w+)\s+(\k<word>)\b", RegexOptions.Compiled, 2).SetName("TestID-002N");
+                yield return new TestCaseData("Hello World", string.Empty, RegexOptions.Singleline, 12).SetName("TestID-003N");
+                yield return new TestCaseData("Hello World", @"d \w+ \s", string.Empty, 2).Throws(typeof(ArgumentException)).SetName("TestID-004A");
+                yield return new TestCaseData("Hello World", @"d \w+ \s", null, 0).SetName("TestID-005N");
+                yield return new TestCaseData("Hello World", string.Empty, null, 12).SetName("TestID-006N");
+                yield return new TestCaseData(string.Empty, @"d \w+ \s", RegexOptions.Singleline, 0).SetName("TestID-007N");
             }
         }
 
@@ -519,11 +478,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsZenkakuTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>        
         [TestCaseSource("TestIsZenkakuTest")]
-        public static void IsZenkakuTest(string testCaseID, string input, bool result)
+        public static void IsZenkakuTest(string input, bool result)
         {
             bool output = StringChecker.IsZenkaku(input);
             Assert.AreEqual(output, result);
@@ -532,11 +490,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsHankakuTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsHankakuTest")]
-        public static void IsHankakuTest(string testCaseID, string input, bool result)
+        public static void IsHankakuTest(string input, bool result)
         {
             bool output = StringChecker.IsHankaku(input);
             Assert.AreEqual(output, result);
@@ -545,11 +502,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsNumericTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsNumericTest")]
-        public static void IsNumericTest(string testCaseID, string input, bool result)
+        public static void IsNumericTest(string input, bool result)
         {
             bool output = StringChecker.IsNumeric(input);
             Assert.AreEqual(output, result);
@@ -558,11 +514,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsNumbersTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsNumbersTest")]
-        public static void IsNumbersTest(string testCaseID, string input, bool result)
+        public static void IsNumbersTest(string input, bool result)
         {
             bool output = StringChecker.IsNumbers(input);
             Assert.AreEqual(output, result);
@@ -571,11 +526,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsNumbers_ZenkakuTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsNumbersZenkakuTest")]
-        public static void IsNumbers_ZenkakuTest(string testCaseID, string input, bool result)
+        public static void IsNumbers_ZenkakuTest(string input, bool result)
         {
             bool output = StringChecker.IsNumbers_Zenkaku(input);
             Assert.AreEqual(output, result);
@@ -584,11 +538,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsAlphabetTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsAlphabetTest")]
-        public static void IsAlphabetTest(string testCaseID, string input, bool result)
+        public static void IsAlphabetTest(string input, bool result)
         {
             bool output = StringChecker.IsAlphabet(input);
             Assert.AreEqual(output, result);
@@ -597,11 +550,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsNumbers_HankakuTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsNumbersHankakuTest")]
-        public static void IsNumbers_HankakuTest(string testCaseID, string input, bool result)
+        public static void IsNumbers_HankakuTest(string input, bool result)
         {
             bool output = StringChecker.IsNumbers_Hankaku(input);
             Assert.AreEqual(output, result);
@@ -610,11 +562,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsAlphabet_HankakuTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsAlphabetHankakuTest")]
-        public static void IsAlphabet_HankakuTest(string testCaseID, string input, bool result)
+        public static void IsAlphabet_HankakuTest(string input, bool result)
         {
             bool output = StringChecker.IsAlphabet_Hankaku(input);
             Assert.AreEqual(output, result);
@@ -623,11 +574,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsAlphabet_ZenkakuTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsAlphabetZenkakuTest")]
-        public static void IsAlphabet_ZenkakuTest(string testCaseID, string input, bool result)
+        public static void IsAlphabet_ZenkakuTest(string input, bool result)
         {
             bool output = StringChecker.IsAlphabet_Zenkaku(input);
             Assert.AreEqual(output, result);
@@ -636,11 +586,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsHiraganaTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsHiraganaTest")]
-        public static void IsHiraganaTest(string testCaseID, string input, bool result)
+        public static void IsHiraganaTest(string input, bool result)
         {
             bool output = StringChecker.IsHiragana(input);
             Assert.AreEqual(output, result);
@@ -649,11 +598,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsKatakanaTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsKatakanaTest")]
-        public static void IsKatakanaTest(string testCaseID, string input, bool result)
+        public static void IsKatakanaTest(string input, bool result)
         {
             bool output = StringChecker.IsKatakana(input);
             Assert.AreEqual(output, result);
@@ -662,11 +610,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsKatakana_ZenkakuTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsKatakanaZenkakuTest")]
-        public static void IsKatakana_ZenkakuTest(string testCaseID, string input, bool result)
+        public static void IsKatakana_ZenkakuTest(string input, bool result)
         {
             bool output = StringChecker.IsKatakana_Zenkaku(input);
             Assert.AreEqual(output, result);
@@ -675,11 +622,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsKatakana_HankakuTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsKatakanaHankakuTest")]
-        public static void IsKatakana_HankakuTest(string testCaseID, string input, bool result)
+        public static void IsKatakana_HankakuTest(string input, bool result)
         {
             bool output = StringChecker.IsKatakana_Hankaku(input);
             Assert.AreEqual(output, result);
@@ -688,11 +634,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsKanjiTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsKanjiTest")]
-        public static void IsKanjiTest(string testCaseID, string input, bool result)
+        public static void IsKanjiTest(string input, bool result)
         {
             bool output = StringChecker.IsKanji(input);
             Assert.AreEqual(output, result);
@@ -701,12 +646,11 @@ namespace Public.Test.Str
         /// <summary>
         /// IsInCodePageTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="codePageNum">codePageNum</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsInCodePageTest")]
-        public static void IsInCodePageTest(string testCaseID, string input, int codePageNum, bool result)
+        public static void IsInCodePageTest(string input, int codePageNum, bool result)
         {
             bool output = StringChecker.IsInCodePage(input, codePageNum);
             Assert.AreEqual(output, result);
@@ -715,11 +659,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsShiftJisTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsShiftJisTest")]
-        public static void IsShiftJisTest(string testCaseID, string input, bool result)
+        public static void IsShiftJisTest(string input, bool result)
         {
             bool output = StringChecker.IsShift_Jis(input);
             Assert.AreEqual(output, result);
@@ -728,11 +671,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsIsShift_Jis_ZenkakuTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsShiftJisZenkakuTest")]
-        public static void IsIsShift_Jis_ZenkakuTest(string testCaseID, string input, bool result)
+        public static void IsIsShift_Jis_ZenkakuTest(string input, bool result)
         {
             bool output = StringChecker.IsShift_Jis_Zenkaku(input);
             Assert.AreEqual(output, result);
@@ -741,11 +683,10 @@ namespace Public.Test.Str
         /// <summary>
         /// IsShift_Jis_HankakuTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestIsShiftJisHankakuTest")]
-        public static void IsShift_Jis_HankakuTest(string testCaseID, string input, bool result)
+        public static void IsShift_Jis_HankakuTest(string input, bool result)
         {
             bool output = StringChecker.IsShift_Jis_Hankaku(input);
             Assert.AreEqual(output, result);
@@ -754,12 +695,11 @@ namespace Public.Test.Str
         /// <summary>
         /// MatchTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="pattern">pattern</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestMatch1Test")]
-        public static void MatchTest(string testCaseID, string input, string pattern, bool result)
+        public static void MatchTest(string input, string pattern, bool result)
         {
             bool output = StringChecker.Match(input, pattern);
             Assert.AreEqual(output, result);
@@ -768,13 +708,12 @@ namespace Public.Test.Str
         /// <summary>
         /// MatchTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="pattern">pattern</param>
         /// <param name="options">options</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestMatchTest")]
-        public static void MatchTest(string testCaseID, string input, string pattern, RegexOptions options, bool result)
+        public static void MatchTest(string input, string pattern, RegexOptions options, bool result)
         {
             bool output = StringChecker.Match(input, pattern, options);
             Assert.AreEqual(output, result);
@@ -783,12 +722,11 @@ namespace Public.Test.Str
         /// <summary>
         /// MatchesTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="pattern">pattern</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestMatches1Test")]
-        public static void MatchesTest(string testCaseID, string input, string pattern, int result)
+        public static void MatchesTest(string input, string pattern, int result)
         {
             MatchCollection output = StringChecker.Matches(input, pattern);
             Assert.NotNull(output);
@@ -798,13 +736,12 @@ namespace Public.Test.Str
         /// <summary>
         /// MatchesTest Method
         /// </summary>
-        /// <param name="testCaseID">testCaseID</param>
         /// <param name="input">input</param>
         /// <param name="pattern">pattern</param>
         /// <param name="options">options</param>
         /// <param name="result">result</param>
         [TestCaseSource("TestMatchesTest")]
-        public static void MatchesTest(string testCaseID, string input, string pattern, RegexOptions options, int result)
+        public static void MatchesTest(string input, string pattern, RegexOptions options, int result)
         {
             MatchCollection output = StringChecker.Matches(input, pattern, options);
             Assert.NotNull(output);

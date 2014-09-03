@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.WindowsAzure.Common.WindowsPhone81</name>
+    </assembly>
+    <members>
+        <member name="M:Microsoft.WindowsAzure.Common.Platform.CloudConfigurationProvider.RegisterDefaultCloudCredentialsProviders">
+            <summary>
+            Registers cloud configuration providers with the common runtime
+            that require the .NET framework.
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAzure.Common.Platform.TokenCloudCredentialsProvider">
+            <summary>
+            Cloud credentials provider for .NET Framework clients.
+            </summary>
+        </member>
+        <member name="M:Microsoft.WindowsAzure.Common.Platform.TokenCloudCredentialsProvider.CreateCredentials(System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Creates a new credentials instance if the appropriate settings for
+            this provider are present and valid.
+            </summary>
+            <param name="settings">Dictionary of configuration settings.</param>
+            <returns>Returns a new instance if the provider supports the
+            provided settings.</returns>
+        </member>
+        <member name="T:Microsoft.WindowsAzure.CertificateCloudCredentials">
+            <summary>
+            Credentials using a management certificate from the app store to authorize requests.
+            </summary>
+        </member>
+        <member name="M:Microsoft.WindowsAzure.CertificateCloudCredentials.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the CertificateCloudCredentials
+            class.
+            </summary>
+            <param name="subscriptionId">The Subscription ID.</param>
+        </member>
+        <member name="M:Microsoft.WindowsAzure.CertificateCloudCredentials.Create(System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Attempt to create certificate credentials from a collection of
+            settings.
+            </summary>
+            <param name="settings">The settings to use.</param>
+            <returns>
+            CertificateCloudCredentials is created, null otherwise.
+            </returns>
+        </member>
+        <member name="P:Microsoft.WindowsAzure.CertificateCloudCredentials.SubscriptionId">
+            <summary>
+            Gets subscription ID which uniquely identifies Microsoft Azure 
+            subscription. The subscription ID forms part of the URI for 
+            every call that you make to the Service Management API.
+            </summary>
+        </member>
+    </members>
+</doc>

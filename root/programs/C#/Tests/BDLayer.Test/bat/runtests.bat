@@ -1,0 +1,1 @@
+..\..\..\..\packages\NUnit.Runners.2.6.3\tools\nunit-console.exe ..\BDLayer.Test.dll /noshadow

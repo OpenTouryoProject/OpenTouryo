@@ -46,6 +46,7 @@
 //*  2012/06/14  西野  大介        コントロール検索の再帰処理性能の集約＆効率化。
 //*  2013/03/05  西野  大介        cookieのパス属性のApplicationPathが「/」になるケースの考慮
 //*  2014/05/16  西野  大介        キャスト可否チェックのロジックを見直した。
+//*  2014/08/18  Sai-San           Added code for adding events dynamically for ListView events. 
 //**********************************************************************************
 
 using System.Text;
@@ -138,7 +139,7 @@ namespace Touryo.Infrastructure.Framework.Util
             #region チェック処理
 
             // コントロール指定が無い場合
-            if (ctrl == null )
+            if (ctrl == null)
             {
                 // 何もしないで戻る。
                 return;
@@ -183,7 +184,7 @@ namespace Touryo.Infrastructure.Framework.Util
                             // ControlHt.Add(ctrl.ID, ctrl);
                             // ControlHt[ctrl.ID] = ctrl;
                             FxCmnFunction.AddControlToDic(ctrl, controlHt); // 2011/02/12
-                            
+
                         }
                         else if (prefix == GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_LINK_BUTTON))
                         {
@@ -314,6 +315,24 @@ namespace Touryo.Infrastructure.Framework.Util
                             // ControlHt.Add(ctrl.ID, ctrl);
                             // ControlHt[ctrl.ID] = ctrl;
                             FxCmnFunction.AddControlToDic(ctrl, controlHt); // 2011/02/12
+                        }
+                        else if (prefix == GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_LISTVIEW))
+                        {
+                            // LISTVIEW
+                            ListView listView = FxCmnFunction.CastByAsOperator<ListView>(ctrl, prefix);
+
+                            // ハンドラをキャストして設定
+                            object[] eventHandlers = ((object[])eventHandler);
+
+                            //Delete event handler
+                            listView.ItemDeleting += (EventHandler<ListViewDeleteEventArgs>)eventHandlers[0];
+                            //Update event handler
+                            listView.ItemUpdating += (EventHandler<ListViewUpdateEventArgs>)eventHandlers[1];
+                            // Paging event handler
+                            listView.PagePropertiesChanged += (EventHandler)eventHandlers[2];
+                            //Sorting event handler
+                            listView.Sorting += (EventHandler<ListViewSortEventArgs>)eventHandlers[3];
+                            FxCmnFunction.AddControlToDic(ctrl, controlHt);
                         }
                     }
                 }
@@ -518,6 +537,27 @@ namespace Touryo.Infrastructure.Framework.Util
                                 controlHt[ctrl.ID] = ctrl;
                                 break;
                             }
+                            else if (prefix == GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_LISTVIEW))
+                            {
+                                // LISTVIEW
+                                ListView listView = FxCmnFunction.CastByAsOperator<ListView>(ctrl, prefix);
+
+                                // ハンドラをキャストして設定
+                                object[] eventHandlers = ((object[])eventHandler);
+
+                                // Delete
+                                listView.ItemDeleting += (EventHandler<ListViewDeleteEventArgs>)eventHandlers[0];
+                                //Update
+                                listView.ItemUpdating += (EventHandler<ListViewUpdateEventArgs>)eventHandlers[1];
+                                // Paging
+                                listView.PagePropertiesChanged += (EventHandler)eventHandlers[2];
+                                //Sorting event handler
+                                listView.Sorting += (EventHandler<ListViewSortEventArgs>)eventHandlers[3];
+
+                                // ディクショナリに格納
+                                controlHt[ctrl.ID] = ctrl;
+                                FxCmnFunction.AddControlToDic(ctrl, controlHt);
+                            }
                         }
                     }
                 }
@@ -676,7 +716,7 @@ namespace Touryo.Infrastructure.Framework.Util
                 {
                     // oldGuid（更新時：newGuid）は、
                     // 先頭に移動させるため、後にエンキューする。
-                    flg = true; 
+                    flg = true;
                 }
                 else
                 {
@@ -775,7 +815,7 @@ namespace Touryo.Infrastructure.Framework.Util
             else
             {
                 // 例えば「/ProjectX_sample」+「/」＝「/ProjectX_sample/」となる。
-            newCookie.Path = HttpContext.Current.Request.ApplicationPath + "/";
+                newCookie.Path = HttpContext.Current.Request.ApplicationPath + "/";
             }
 
             // ※ Request.ApplicationPathは、URLのホスト名以上のパス情報を含まず、
@@ -809,7 +849,7 @@ namespace Touryo.Infrastructure.Framework.Util
             else
             {
                 // 例えば「/ProjectX_sample」+「/」＝「/ProjectX_sample/」となる。
-            newCookie.Path = HttpContext.Current.Request.ApplicationPath + "/";
+                newCookie.Path = HttpContext.Current.Request.ApplicationPath + "/";
             }
 
             // ※ Request.ApplicationPathは、URLのホスト名以上のパス情報を含まず、
