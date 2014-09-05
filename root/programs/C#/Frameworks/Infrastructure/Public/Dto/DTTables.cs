@@ -32,7 +32,7 @@
 //*  2010/11/11  前川  祐介        Silverlight対応（ジェネリック）
 //*  2011/10/09  西野  大介        国際化対応
 //*  2011/11/21  西野  大介        マーシャリングのサポート メソッドを追加
-//*  2014/10/04  Rituparna         Added TableRecords class ,SaveJson and LoadJson Method
+//*  2014/09/05  Rituparna         Added TableRecords class ,SaveJson and LoadJson Method
 //**********************************************************************************
 
 using System;
