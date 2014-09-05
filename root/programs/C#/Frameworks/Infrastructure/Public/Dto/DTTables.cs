@@ -32,6 +32,7 @@
 //*  2010/11/11  前川  祐介        Silverlight対応（ジェネリック）
 //*  2011/10/09  西野  大介        国際化対応
 //*  2011/11/21  西野  大介        マーシャリングのサポート メソッドを追加
+//*  2014/10/04  Rituparna         Added TableRecords class ,SaveJson and LoadJson Method
 //**********************************************************************************
 
 using System;
@@ -39,6 +40,7 @@ using System.IO;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Touryo.Infrastructure.Public.Dto
 {
@@ -46,6 +48,17 @@ namespace Touryo.Infrastructure.Public.Dto
     [System.Diagnostics.DebuggerStepThrough]
     public class DTTables : IEnumerable
     {
+        /// <summary>
+        /// Added the class to save the records in Json Format
+        /// </summary>
+        public class TableRecords
+        {
+            public string tbl { get; set; }
+            public string col { get; set; }
+            public string cel { get; set; }
+            public string row { get; set; }
+        }
+
         #region インスタンス変数
 
         /// <summary>表を保持するList</summary>
@@ -133,6 +146,166 @@ namespace Touryo.Infrastructure.Public.Dto
         }
 
         #endregion
+
+       /// <summary>
+        /// SaveJson Method(To save records in Json Format)
+       /// </summary>
+        /// <returns>string</returns>
+        public string SaveJson()
+        {
+            TableRecords tableRecords = null;
+            List<TableRecords> lstTableRecords = new List<TableRecords>();
+
+            int tblNo = -1;
+            foreach (DTTable dt in this._tbls)
+            {
+                tblNo++;
+                tableRecords = new TableRecords();
+
+
+                tableRecords.tbl = dt.TableName;
+
+                foreach (DTColumn col in dt.Cols)
+                {
+                    if (tableRecords.col == null)
+                    {
+                        tableRecords.col = col.ColName + "," + DTColumn.EnumToString(col.ColType);
+                    }
+                    else
+                    {
+                        tableRecords.col = tableRecords.col + ";" + col.ColName + "," + DTColumn.EnumToString(col.ColType);
+                    }
+
+                }
+                // 行番号の初期化（負荷テスト用のID用）
+                int rowNo = -1;
+
+                foreach (DTRow dr in dt.Rows)
+                {
+                    // 行番号のインクリメント
+                    rowNo++;
+
+                    // 列番号の初期化（負荷テスト用のID用）
+                    int colNo = -1;
+
+
+                    foreach (object o in dr)
+                    {
+                        colNo++;
+
+                        if (o == null)
+                        {
+                            if (tableRecords.cel == null)
+                            {
+                                tableRecords.cel = tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
+                                    ":" + "null";
+                            }
+                            else
+                            {
+                                tableRecords.cel = tableRecords.cel + ";" + tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
+                                   ":" + "null";
+                            }
+                        }
+
+                        else if (DTColumn.CheckType(o, DTType.String))
+                        {
+                            // 文字列は改行を処理する
+                            string strTemp = ((string)o);
+
+
+                            if (tableRecords.cel == null)
+                            {
+                                tableRecords.cel = tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
+                                ":" + strTemp;
+                            }
+                            else
+                            {
+                                tableRecords.cel = tableRecords.cel + ";" + tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
+                                ":" + strTemp;
+                            }
+                        }
+
+                        else if (DTColumn.CheckType(o, DTType.ByteArray))
+                        {
+                            // バイト配列は、Base64エンコードして電文に乗せる
+                            string strBase64 = Convert.ToBase64String((byte[])o);
+
+                            if (tableRecords.cel == null)
+                            {
+                                tableRecords.cel = tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
+                                ":" + strBase64;
+                            }
+                            else
+                            {
+                                tableRecords.cel = tableRecords.cel + "," + tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
+                                ":" + strBase64;
+                            }
+                        }
+                        else if (DTColumn.CheckType(o, DTType.DateTime))
+                        {
+                            // DateTimeは、yyyy/M/d-H:m:s.fffとする。
+                            DateTime dttm = (DateTime)o;
+                            string strDttm = "";
+
+                            strDttm += dttm.Year + "/";
+                            strDttm += dttm.Month + "/";
+                            strDttm += dttm.Day + "-";
+
+                            strDttm += dttm.Hour + ":";
+                            strDttm += dttm.Minute + ":";
+                            strDttm += dttm.Second + ".";
+                            strDttm += dttm.Millisecond;
+
+
+
+                            if (tableRecords.cel == null)
+                            {
+                                tableRecords.cel = tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
+                                ":" + strDttm;
+                            }
+                            else
+                            {
+                                tableRecords.cel = tableRecords.cel + ";" + tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
+                                ":" + strDttm;
+                            }
+                        }
+
+                        else
+                        {
+                            // 通常通り、ToStringして出力
+
+                            if (tableRecords.cel == null)
+                            {
+                                tableRecords.cel = tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
+                                ":" + o.ToString();
+                            }
+                            else
+                            {
+                                tableRecords.cel = tableRecords.cel + ";" + tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
+                                ":" + o.ToString();
+                            }
+                        }
+
+                    }
+                    //saving RowState status for each cell
+                    if (tableRecords.row == null)
+                    {
+                        tableRecords.row = tableRecords.row + (int)dr.RowState;
+                    }
+                    else
+                    {
+                        tableRecords.row = tableRecords.row + ";" + (int)dr.RowState;
+                    }
+
+                }
+                //add all the tableRecords value in the list
+                lstTableRecords.Add(tableRecords);
+            }
+
+            //converting the list into json format and return that string value
+            string json = JsonConvert.SerializeObject(lstTableRecords);
+            return json;
+        }
 
         #region セーブ＆ロード（テキスト化）
 
@@ -244,6 +417,126 @@ namespace Touryo.Infrastructure.Public.Dto
                     tw.WriteLine("---");
                 }
             }
+        }
+
+        /// <summary>
+        /// LoadJson Method(To Load records from Json format)
+        /// </summary>
+        /// <param name="r">StreamReader</param>
+        public void LoadJson(StreamReader sr)
+        {
+            List<TableRecords> lstTableRecords = new List<TableRecords>();
+            string json = sr.ReadToEnd();
+            lstTableRecords = JsonConvert.DeserializeObject<List<TableRecords>>(json);
+
+            DTTable tbl = null;
+            DTColumn col = null;
+            DTRow row = null;
+            int bkColIndex = 0;
+            for (int i = 0; i < lstTableRecords.Count; i++)
+            {
+                //to keep track of the rowNo
+                int prevRowIndex = 0;
+                string tblName = lstTableRecords[i].tbl;
+
+                // 表を生成
+                tbl = new DTTable(tblName);
+
+                // 表を追加
+                this.Add(tbl);
+
+                string temp = lstTableRecords[i].col;
+                string[] allCol = temp.Split(';');
+                for (int j = 0; j < allCol.Length; j++)
+                {
+                    string colName = allCol[j].Split(',')[0];
+                    string colType = allCol[j].Split(',')[1];
+                    // 列を生成
+                    col = new DTColumn(colName, DTColumn.StringToEnum(colType));
+
+                    // 列を追加
+                    tbl.Cols.Add(col);
+                }
+
+
+                temp = lstTableRecords[i].cel;
+                string[] allCell = temp.Split(';');
+                for (int k = 0; k < allCell.Length; k++)
+                {
+                    int clnIndex = allCell[k].IndexOf(":");
+                    int colIndex = int.Parse(allCell[k].Substring(0, clnIndex).Split(',')[2]);
+                    string celString = allCell[k].Substring(clnIndex + 1);
+                    // 列インデックスをチェック
+                    if (colIndex == 0)
+                    {
+                        // 新しい行
+                        row = tbl.Rows.AddNew();
+                    }
+                    else
+                    {
+                        // 継続行
+                    }
+
+                    // セルに値を設定
+                    if (celString == "null")
+                    {
+                        // do nothing
+                    }
+                    else
+                    {
+                        // 列情報
+                        col = (DTColumn)tbl.Cols.ColsInfo[colIndex];
+
+                        if (col.ColType == DTType.String)
+                        {
+                            // そのまま
+                            row[colIndex] = celString;
+                            // インデックスを退避
+                            bkColIndex = colIndex;
+                        }
+                        else if (col.ColType == DTType.ByteArray)
+                        {
+                            // バイト配列は、Base64デコードする。
+                            byte[] celByte = Convert.FromBase64String(celString);
+                            row[colIndex] = celByte;
+                        }
+                        else if (col.ColType == DTType.DateTime)
+                        {
+                            // DateTimeは、yyyy/M/d-H:m:s.fff
+                            string ymd = celString.Split('-')[0];
+                            string hmsf = celString.Split('-')[1];
+
+                            DateTime cellDttm = new DateTime(
+                                int.Parse(ymd.Split('/')[0]),
+                                int.Parse(ymd.Split('/')[1]),
+                                int.Parse(ymd.Split('/')[2]),
+                                int.Parse(hmsf.Split(':')[0]),
+                                int.Parse(hmsf.Split(':')[1]),
+                                int.Parse(hmsf.Split(':')[2].Split('.')[0]),
+                                int.Parse(hmsf.Split(':')[2].Split('.')[1]));
+
+                            row[colIndex] = cellDttm;
+                        }
+                        else
+                        {
+                            // 型変換を試みる。
+                            row[colIndex] = DTColumn.AutoCast(col.ColType, celString);
+                        }
+                    }
+                    temp = lstTableRecords[i].row;
+                    string[] allRow = temp.Split(';');
+                    //getting the rowNo for the current cell
+                    int rowIndex = int.Parse(allCell[k].Substring(0, clnIndex).Split(',')[1]);
+                    //checking whether the rowNo is same as previous rowNo
+                    if (prevRowIndex == rowIndex)
+                    {
+                        row.RowState = (DataRowState)(int.Parse)(allRow[rowIndex].ToString());
+                        //increasing the previous rowNo if the RowState for the current cell is already counted
+                        prevRowIndex = prevRowIndex + 1;
+                    }
+                }
+            }
+
         }
 
         /// <summary>テキストからロードする</summary>
@@ -407,6 +700,8 @@ namespace Touryo.Infrastructure.Public.Dto
         }
 
         #endregion
+
+
 
         #region マーシャリングのサポート メソッド
 
