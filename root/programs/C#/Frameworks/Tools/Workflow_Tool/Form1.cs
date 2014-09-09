@@ -28,28 +28,19 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2014/07/23  西野  大介        新規作成
+//*  2014/09/05  Sai               Created property ResourceMgr and Replaced all the Japanese language in code with ResorceManager.GetString() method call
 //*
 //**********************************************************************************
 
 // Windowアプリケーション
 using System.Drawing;
 using System.Windows.Forms;
-using System.ComponentModel;
 
 // System
 using System;
-using System.IO;
-using System.Xml;
-using System.Text;
 using System.Data;
-using System.Collections;
 
 // 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Business.Workflow;
 
@@ -57,21 +48,11 @@ using Touryo.Infrastructure.Business.Workflow;
 //using Touryo.Infrastructure.Business.RichClient.Presentation;
 
 // フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
 
 //using Touryo.Infrastructure.Framework.RichClient.Presentation;
 
 // 部品
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 using System.Resources;
 
@@ -82,6 +63,17 @@ namespace Workflow_Tool
     {
         /// <summary>Dam</summary>
         BaseDam _dam = null;
+
+        /// <summary>
+        /// Getting ResourceManager instance from Resources to apply internationalization
+        /// </summary>
+        private ResourceManager ResourceMgr
+        {
+            get
+            {
+                return Resources.Resource.ResourceManager;
+            }
+        }
 
         #region 初期化処理
 
@@ -117,7 +109,7 @@ namespace Workflow_Tool
         #endregion
 
         #region ボタン
-        
+
         /// <summary>新しいワークフローを準備します。</summary>
         private void button1_Click(object sender, EventArgs e)
         {
@@ -160,13 +152,13 @@ namespace Workflow_Tool
 
                 this._dam.CommitTransaction();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 this._dam.RollbackTransaction();
 
                 MessageBox.Show(
                     "Message:" + ex.Message + "\n" + "StackTrace:" + ex.StackTrace,
-                    "エラーです", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ResourceMgr.GetString("E0001"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -183,10 +175,10 @@ namespace Workflow_Tool
             try
             {
                 // 新規ワークフローを取得
-                DataRow startWorkflow = null; 
+                DataRow startWorkflow = null;
                 DataTable dt = (DataTable)this.dataGridView1.DataSource;
 
-                DataGridViewRow dgvr = (this.dataGridView1.SelectedRows[0]); 
+                DataGridViewRow dgvr = (this.dataGridView1.SelectedRows[0]);
                 foreach (DataRow dr in dt.Rows)
                 {
                     if ((decimal)dr[0] == (decimal)dgvr.Cells[0].Value)
@@ -211,7 +203,7 @@ namespace Workflow_Tool
                 mailTemplateId = wf.StartWorkflow(
                     startWorkflow, txtWorkflowControlNo.Text, fromUserId,
                     this.txtWorkflowReserveArea.Text, this.txtCurrentWorkflowReserveArea1.Text, this.dtpReplyDeadline1.Value);
-                
+
                 // ★ ココでメールを送信。
 
                 this._dam.CommitTransaction();
@@ -222,7 +214,7 @@ namespace Workflow_Tool
 
                 MessageBox.Show(
                     "Message:" + ex.Message + "\n" + "StackTrace:" + ex.StackTrace,
-                    "エラーです", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                   ResourceMgr.GetString("E0001"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -281,7 +273,7 @@ namespace Workflow_Tool
 
                 MessageBox.Show(
                     "Message:" + ex.Message + "\n" + "StackTrace:" + ex.StackTrace,
-                    "エラーです", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ResourceMgr.GetString("E0001"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -311,7 +303,7 @@ namespace Workflow_Tool
                 }
 
                 // userIdを取得
-                decimal userId =  decimal.Parse(txtUserID.Text);
+                decimal userId = decimal.Parse(txtUserID.Text);
 
                 // AcceptWfRequest
                 Workflow wf = new Workflow(this._dam);
@@ -325,7 +317,7 @@ namespace Workflow_Tool
 
                 MessageBox.Show(
                     "Message:" + ex.Message + "\n" + "StackTrace:" + ex.StackTrace,
-                    "エラーです", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ResourceMgr.GetString("E0001"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -354,7 +346,7 @@ namespace Workflow_Tool
 
                 MessageBox.Show(
                     "Message:" + ex.Message + "\n" + "StackTrace:" + ex.StackTrace,
-                    "エラーです", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ResourceMgr.GetString("E0001"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -401,7 +393,7 @@ namespace Workflow_Tool
 
                 //  次のワークフロー依頼を表示
                 dt = new DataTable();
-                
+
                 if (dt1 != null)
                 {
                     dt.Merge(dt1);
@@ -421,7 +413,7 @@ namespace Workflow_Tool
 
                 MessageBox.Show(
                     "Message:" + ex.Message + "\n" + "StackTrace:" + ex.StackTrace,
-                    "エラーです", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ResourceMgr.GetString("E0001"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -457,7 +449,7 @@ namespace Workflow_Tool
                 decimal fromUserId = decimal.Parse(this.txtUserID.Text);
 
                 decimal? toUserId = null;
-                
+
                 if (this.checkBox1.Checked
                     && (string)nextWorkflow["ActionType"] == "TurnBack")
                 {
@@ -483,7 +475,7 @@ namespace Workflow_Tool
 
                 int mailTemplateId = 0;
                 mailTemplateId = wf.RequestWfApproval(
-                    nextWorkflow, this.txtWorkflowControlNo.Text, fromUserId, toUserId, 
+                    nextWorkflow, this.txtWorkflowControlNo.Text, fromUserId, toUserId,
                     this.txtCurrentWorkflowReserveArea2.Text, this.dtpReplyDeadline2.Value);
 
                 // ★ ココでメールを送信。
@@ -496,7 +488,7 @@ namespace Workflow_Tool
 
                 MessageBox.Show(
                     "Message:" + ex.Message + "\n" + "StackTrace:" + ex.StackTrace,
-                    "エラーです", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ResourceMgr.GetString("E0001"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -532,7 +524,7 @@ namespace Workflow_Tool
             dao.D2_Select(dt);
 
             // ユーザ情報の生成
-            foreach(object o in dt.Rows[0].ItemArray)
+            foreach (object o in dt.Rows[0].ItemArray)
             {
                 if (temp == "")
                 {
@@ -567,16 +559,16 @@ namespace Workflow_Tool
                     this.txtWorkflowControlNo.BackColor = Color.Empty;
                     //---
                     this.txtSubSystemId.Enabled = true;
-                    this.txtSubSystemId.BackColor = Color.Yellow; 
+                    this.txtSubSystemId.BackColor = Color.Yellow;
                     this.txtWorkflowName.Enabled = true;
-                    this.txtWorkflowName.BackColor = Color.Yellow; 
+                    this.txtWorkflowName.BackColor = Color.Yellow;
                     //---
                     this.txtDearSirUID.Enabled = true;
-                    this.txtDearSirUID.BackColor = Color.Yellow; 
+                    this.txtDearSirUID.BackColor = Color.Yellow;
                     this.txtDearSirPTitleId.Enabled = true;
                     this.txtDearSirPTitleId.BackColor = Color.Empty;
                     this.txtUserID.Enabled = true;
-                    this.txtUserID.BackColor = Color.Yellow; 
+                    this.txtUserID.BackColor = Color.Yellow;
                     //---
                     break;
 

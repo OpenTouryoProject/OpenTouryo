@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.button1 = new System.Windows.Forms.Button();
@@ -89,32 +90,23 @@
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Controls.Add(this.tabPage6);
             this.tabControl1.Controls.Add(this.tabPage7);
-            this.tabControl1.Location = new System.Drawing.Point(16, 289);
+            resources.ApplyResources(this.tabControl1, "tabControl1");
             this.tabControl1.Multiline = true;
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(835, 188);
-            this.tabControl1.TabIndex = 0;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.button1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 67);
+            resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(827, 117);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "(1) 新しいワークフローを準備します。";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(3, 6);
+            resources.ApplyResources(this.button1, "button1");
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(821, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "新しいワークフローを準備します。";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -127,149 +119,100 @@
             this.tabPage2.Controls.Add(this.txtWorkflowReserveArea);
             this.tabPage2.Controls.Add(this.lblWorkflowReserveArea);
             this.tabPage2.Controls.Add(this.button2);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            resources.ApplyResources(this.tabPage2, "tabPage2");
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(827, 159);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "(2) 新しいワークフローを開始します。";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // dtpReplyDeadline1
             // 
-            this.dtpReplyDeadline1.Location = new System.Drawing.Point(150, 65);
+            resources.ApplyResources(this.dtpReplyDeadline1, "dtpReplyDeadline1");
             this.dtpReplyDeadline1.Name = "dtpReplyDeadline1";
-            this.dtpReplyDeadline1.Size = new System.Drawing.Size(671, 22);
-            this.dtpReplyDeadline1.TabIndex = 10;
             // 
             // lblReplyDeadline1
             // 
-            this.lblReplyDeadline1.AutoSize = true;
-            this.lblReplyDeadline1.Location = new System.Drawing.Point(6, 65);
+            resources.ApplyResources(this.lblReplyDeadline1, "lblReplyDeadline1");
             this.lblReplyDeadline1.Name = "lblReplyDeadline1";
-            this.lblReplyDeadline1.Size = new System.Drawing.Size(90, 15);
-            this.lblReplyDeadline1.TabIndex = 9;
-            this.lblReplyDeadline1.Text = "回答希望日：";
             // 
             // txtCurrentWorkflowReserveArea1
             // 
-            this.txtCurrentWorkflowReserveArea1.Location = new System.Drawing.Point(150, 34);
+            resources.ApplyResources(this.txtCurrentWorkflowReserveArea1, "txtCurrentWorkflowReserveArea1");
             this.txtCurrentWorkflowReserveArea1.Name = "txtCurrentWorkflowReserveArea1";
-            this.txtCurrentWorkflowReserveArea1.Size = new System.Drawing.Size(671, 22);
-            this.txtCurrentWorkflowReserveArea1.TabIndex = 8;
             // 
             // lblCurrentWorkflowReserveArea1
             // 
-            this.lblCurrentWorkflowReserveArea1.AutoSize = true;
-            this.lblCurrentWorkflowReserveArea1.Location = new System.Drawing.Point(6, 37);
+            resources.ApplyResources(this.lblCurrentWorkflowReserveArea1, "lblCurrentWorkflowReserveArea1");
             this.lblCurrentWorkflowReserveArea1.Name = "lblCurrentWorkflowReserveArea1";
-            this.lblCurrentWorkflowReserveArea1.Size = new System.Drawing.Size(138, 15);
-            this.lblCurrentWorkflowReserveArea1.TabIndex = 7;
-            this.lblCurrentWorkflowReserveArea1.Text = "カレントWF予約領域：";
             // 
             // txtWorkflowReserveArea
             // 
-            this.txtWorkflowReserveArea.Location = new System.Drawing.Point(150, 6);
+            resources.ApplyResources(this.txtWorkflowReserveArea, "txtWorkflowReserveArea");
             this.txtWorkflowReserveArea.Name = "txtWorkflowReserveArea";
-            this.txtWorkflowReserveArea.Size = new System.Drawing.Size(671, 22);
-            this.txtWorkflowReserveArea.TabIndex = 6;
             // 
             // lblWorkflowReserveArea
             // 
-            this.lblWorkflowReserveArea.AutoSize = true;
-            this.lblWorkflowReserveArea.Location = new System.Drawing.Point(6, 9);
+            resources.ApplyResources(this.lblWorkflowReserveArea, "lblWorkflowReserveArea");
             this.lblWorkflowReserveArea.Name = "lblWorkflowReserveArea";
-            this.lblWorkflowReserveArea.Size = new System.Drawing.Size(94, 15);
-            this.lblWorkflowReserveArea.TabIndex = 5;
-            this.lblWorkflowReserveArea.Text = "WF予約領域：";
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(3, 91);
+            resources.ApplyResources(this.button2, "button2");
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(821, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "新しいワークフローを開始します。";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.button3);
-            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            resources.ApplyResources(this.tabPage3, "tabPage3");
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(827, 159);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "(3) ワークフロー依頼を取得します。";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(3, 6);
+            resources.ApplyResources(this.button3, "button3");
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(821, 23);
-            this.button3.TabIndex = 2;
-            this.button3.Text = "ワークフロー依頼を取得します。";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // tabPage4
             // 
             this.tabPage4.Controls.Add(this.button4);
-            this.tabPage4.Location = new System.Drawing.Point(4, 46);
+            resources.ApplyResources(this.tabPage4, "tabPage4");
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(827, 138);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "(4) ワークフロー依頼を受付ます。";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(3, 3);
+            resources.ApplyResources(this.button4, "button4");
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(821, 23);
-            this.button4.TabIndex = 1;
-            this.button4.Text = "ワークフロー依頼を受付ます。";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // tabPage5
             // 
             this.tabPage5.Controls.Add(this.button5);
-            this.tabPage5.Location = new System.Drawing.Point(4, 46);
+            resources.ApplyResources(this.tabPage5, "tabPage5");
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(827, 138);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "(5) 処理中ワークフロー依頼を取得します。";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(3, 3);
+            resources.ApplyResources(this.button5, "button5");
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(821, 23);
-            this.button5.TabIndex = 1;
-            this.button5.Text = "処理中ワークフロー依頼を取得します。";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // tabPage6
             // 
             this.tabPage6.Controls.Add(this.button6);
-            this.tabPage6.Location = new System.Drawing.Point(4, 46);
+            resources.ApplyResources(this.tabPage6, "tabPage6");
             this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Size = new System.Drawing.Size(827, 138);
-            this.tabPage6.TabIndex = 5;
-            this.tabPage6.Text = "(6) 次のワークフロー依頼を取得します。";
             this.tabPage6.UseVisualStyleBackColor = true;
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(3, 3);
+            resources.ApplyResources(this.button6, "button6");
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(821, 23);
-            this.button6.TabIndex = 2;
-            this.button6.Text = "次のワークフロー依頼を取得します。";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
@@ -281,195 +224,128 @@
             this.tabPage7.Controls.Add(this.txtCurrentWorkflowReserveArea2);
             this.tabPage7.Controls.Add(this.lblCurrentWorkflowReserveArea2);
             this.tabPage7.Controls.Add(this.button7);
-            this.tabPage7.Location = new System.Drawing.Point(4, 67);
+            resources.ApplyResources(this.tabPage7, "tabPage7");
             this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Size = new System.Drawing.Size(827, 117);
-            this.tabPage7.TabIndex = 6;
-            this.tabPage7.Text = "(7) ワークフローの承認依頼をします（若しくは差戻、返信、終了）。";
             this.tabPage7.UseVisualStyleBackColor = true;
             // 
             // checkBox1
             // 
-            this.checkBox1.AutoSize = true;
+            resources.ApplyResources(this.checkBox1, "checkBox1");
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(9, 66);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(225, 19);
-            this.checkBox1.TabIndex = 15;
-            this.checkBox1.Text = "差戻・返信時、元のユーザに戻す";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // dtpReplyDeadline2
             // 
-            this.dtpReplyDeadline2.Location = new System.Drawing.Point(150, 37);
+            resources.ApplyResources(this.dtpReplyDeadline2, "dtpReplyDeadline2");
             this.dtpReplyDeadline2.Name = "dtpReplyDeadline2";
-            this.dtpReplyDeadline2.Size = new System.Drawing.Size(671, 22);
-            this.dtpReplyDeadline2.TabIndex = 14;
             // 
             // lblReplyDeadline2
             // 
-            this.lblReplyDeadline2.AutoSize = true;
-            this.lblReplyDeadline2.Location = new System.Drawing.Point(6, 37);
+            resources.ApplyResources(this.lblReplyDeadline2, "lblReplyDeadline2");
             this.lblReplyDeadline2.Name = "lblReplyDeadline2";
-            this.lblReplyDeadline2.Size = new System.Drawing.Size(90, 15);
-            this.lblReplyDeadline2.TabIndex = 13;
-            this.lblReplyDeadline2.Text = "回答希望日：";
             // 
             // txtCurrentWorkflowReserveArea2
             // 
-            this.txtCurrentWorkflowReserveArea2.Location = new System.Drawing.Point(150, 6);
+            resources.ApplyResources(this.txtCurrentWorkflowReserveArea2, "txtCurrentWorkflowReserveArea2");
             this.txtCurrentWorkflowReserveArea2.Name = "txtCurrentWorkflowReserveArea2";
-            this.txtCurrentWorkflowReserveArea2.Size = new System.Drawing.Size(671, 22);
-            this.txtCurrentWorkflowReserveArea2.TabIndex = 12;
             // 
             // lblCurrentWorkflowReserveArea2
             // 
-            this.lblCurrentWorkflowReserveArea2.AutoSize = true;
-            this.lblCurrentWorkflowReserveArea2.Location = new System.Drawing.Point(6, 9);
+            resources.ApplyResources(this.lblCurrentWorkflowReserveArea2, "lblCurrentWorkflowReserveArea2");
             this.lblCurrentWorkflowReserveArea2.Name = "lblCurrentWorkflowReserveArea2";
-            this.lblCurrentWorkflowReserveArea2.Size = new System.Drawing.Size(138, 15);
-            this.lblCurrentWorkflowReserveArea2.TabIndex = 11;
-            this.lblCurrentWorkflowReserveArea2.Text = "カレントWF予約領域：";
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(3, 91);
+            resources.ApplyResources(this.button7, "button7");
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(821, 23);
-            this.button7.TabIndex = 3;
-            this.button7.Text = "ワークフローの承認依頼をします（若しくは差戻、返信、終了）。";
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // lblCnnstr
             // 
-            this.lblCnnstr.AutoSize = true;
-            this.lblCnnstr.Location = new System.Drawing.Point(13, 17);
+            resources.ApplyResources(this.lblCnnstr, "lblCnnstr");
             this.lblCnnstr.Name = "lblCnnstr";
-            this.lblCnnstr.Size = new System.Drawing.Size(90, 15);
-            this.lblCnnstr.TabIndex = 1;
-            this.lblCnnstr.Text = "接続文字列：";
             // 
             // txtCnnstr
             // 
-            this.txtCnnstr.Location = new System.Drawing.Point(157, 10);
+            resources.ApplyResources(this.txtCnnstr, "txtCnnstr");
             this.txtCnnstr.Name = "txtCnnstr";
-            this.txtCnnstr.Size = new System.Drawing.Size(694, 22);
-            this.txtCnnstr.TabIndex = 2;
             // 
             // txtSubSystemId
             // 
-            this.txtSubSystemId.Location = new System.Drawing.Point(157, 66);
+            resources.ApplyResources(this.txtSubSystemId, "txtSubSystemId");
             this.txtSubSystemId.Name = "txtSubSystemId";
-            this.txtSubSystemId.Size = new System.Drawing.Size(149, 22);
-            this.txtSubSystemId.TabIndex = 4;
             // 
             // lblSubSystemId
             // 
-            this.lblSubSystemId.AutoSize = true;
-            this.lblSubSystemId.Location = new System.Drawing.Point(13, 69);
+            resources.ApplyResources(this.lblSubSystemId, "lblSubSystemId");
             this.lblSubSystemId.Name = "lblSubSystemId";
-            this.lblSubSystemId.Size = new System.Drawing.Size(98, 15);
-            this.lblSubSystemId.TabIndex = 3;
-            this.lblSubSystemId.Text = "サブシステムID：";
             // 
             // txtWorkflowName
             // 
-            this.txtWorkflowName.Location = new System.Drawing.Point(414, 66);
+            resources.ApplyResources(this.txtWorkflowName, "txtWorkflowName");
             this.txtWorkflowName.Name = "txtWorkflowName";
-            this.txtWorkflowName.Size = new System.Drawing.Size(149, 22);
-            this.txtWorkflowName.TabIndex = 6;
             // 
             // lblWorkflowName
             // 
-            this.lblWorkflowName.AutoSize = true;
-            this.lblWorkflowName.Location = new System.Drawing.Point(312, 69);
+            resources.ApplyResources(this.lblWorkflowName, "lblWorkflowName");
             this.lblWorkflowName.Name = "lblWorkflowName";
-            this.lblWorkflowName.Size = new System.Drawing.Size(96, 15);
-            this.lblWorkflowName.TabIndex = 5;
-            this.lblWorkflowName.Text = "ワークフロー名：";
             // 
             // txtDearSirUID
             // 
-            this.txtDearSirUID.Location = new System.Drawing.Point(157, 94);
+            resources.ApplyResources(this.txtDearSirUID, "txtDearSirUID");
             this.txtDearSirUID.Name = "txtDearSirUID";
-            this.txtDearSirUID.Size = new System.Drawing.Size(149, 22);
-            this.txtDearSirUID.TabIndex = 8;
             // 
             // lblDearSirUID
             // 
-            this.lblDearSirUID.AutoSize = true;
-            this.lblDearSirUID.Location = new System.Drawing.Point(13, 97);
+            resources.ApplyResources(this.lblDearSirUID, "lblDearSirUID");
             this.lblDearSirUID.Name = "lblDearSirUID";
-            this.lblDearSirUID.Size = new System.Drawing.Size(95, 15);
-            this.lblDearSirUID.TabIndex = 7;
-            this.lblDearSirUID.Text = "御中ユーザID：";
             // 
             // txtUserID
             // 
-            this.txtUserID.Location = new System.Drawing.Point(640, 94);
+            resources.ApplyResources(this.txtUserID, "txtUserID");
             this.txtUserID.Name = "txtUserID";
-            this.txtUserID.Size = new System.Drawing.Size(149, 22);
-            this.txtUserID.TabIndex = 10;
             // 
             // lblUserID
             // 
-            this.lblUserID.AutoSize = true;
-            this.lblUserID.Location = new System.Drawing.Point(569, 97);
+            resources.ApplyResources(this.lblUserID, "lblUserID");
             this.lblUserID.Name = "lblUserID";
-            this.lblUserID.Size = new System.Drawing.Size(65, 15);
-            this.lblUserID.TabIndex = 9;
-            this.lblUserID.Text = "ユーザID：";
             // 
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(16, 133);
+            resources.ApplyResources(this.dataGridView1, "dataGridView1");
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(835, 150);
-            this.dataGridView1.TabIndex = 11;
             // 
             // txtWorkflowControlNo
             // 
-            this.txtWorkflowControlNo.Location = new System.Drawing.Point(157, 38);
+            resources.ApplyResources(this.txtWorkflowControlNo, "txtWorkflowControlNo");
             this.txtWorkflowControlNo.Name = "txtWorkflowControlNo";
-            this.txtWorkflowControlNo.Size = new System.Drawing.Size(694, 22);
-            this.txtWorkflowControlNo.TabIndex = 13;
             // 
             // lblWorkflowControlNo
             // 
-            this.lblWorkflowControlNo.AutoSize = true;
-            this.lblWorkflowControlNo.Location = new System.Drawing.Point(13, 41);
+            resources.ApplyResources(this.lblWorkflowControlNo, "lblWorkflowControlNo");
             this.lblWorkflowControlNo.Name = "lblWorkflowControlNo";
-            this.lblWorkflowControlNo.Size = new System.Drawing.Size(141, 15);
-            this.lblWorkflowControlNo.TabIndex = 12;
-            this.lblWorkflowControlNo.Text = "ワークフロー管理番号：";
             // 
             // txtDearSirPTitleId
             // 
-            this.txtDearSirPTitleId.Location = new System.Drawing.Point(414, 94);
+            resources.ApplyResources(this.txtDearSirPTitleId, "txtDearSirPTitleId");
             this.txtDearSirPTitleId.Name = "txtDearSirPTitleId";
-            this.txtDearSirPTitleId.Size = new System.Drawing.Size(149, 22);
-            this.txtDearSirPTitleId.TabIndex = 15;
             // 
             // lblDearSirPTitleId
             // 
-            this.lblDearSirPTitleId.AutoSize = true;
-            this.lblDearSirPTitleId.Location = new System.Drawing.Point(312, 97);
+            resources.ApplyResources(this.lblDearSirPTitleId, "lblDearSirPTitleId");
             this.lblDearSirPTitleId.Name = "lblDearSirPTitleId";
-            this.lblDearSirPTitleId.Size = new System.Drawing.Size(95, 15);
-            this.lblDearSirPTitleId.TabIndex = 14;
-            this.lblDearSirPTitleId.Text = "ユーザ職位ID：";
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(870, 490);
             this.Controls.Add(this.txtDearSirPTitleId);
             this.Controls.Add(this.lblDearSirPTitleId);
             this.Controls.Add(this.txtWorkflowControlNo);
@@ -487,7 +363,6 @@
             this.Controls.Add(this.lblCnnstr);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
-            this.Text = "ワークフロー☆シミュレータ";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
