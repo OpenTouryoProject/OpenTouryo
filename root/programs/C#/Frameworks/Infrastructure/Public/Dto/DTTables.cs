@@ -171,14 +171,14 @@ namespace Touryo.Infrastructure.Public.Dto
                     tableRecords.col.Add(col.ColName, DTColumn.EnumToString(col.ColType));
                 }
 
-                tableRecords.row = new ArrayList();               
-                Dictionary<string, object> rowDeatils = null;
+                tableRecords.row = new ArrayList();
+                Dictionary<string, object> rowDetails = null;
                 int colNo = 0;
                 int rowStateFlag = 0;
 
                 foreach (DTRow dr in dt.Rows)
                 {
-                    rowDeatils = new Dictionary<string, object>();
+                    rowDetails = new Dictionary<string, object>();
                     rowStateFlag = 1;
                     foreach (DTColumn col in dt.Cols)
                     {
@@ -188,18 +188,18 @@ namespace Touryo.Infrastructure.Public.Dto
                         if (colValue == null)
                         {
                             //add null to rowDetails
-                            rowDeatils.Add(col.ColName, null);
+                            rowDetails.Add(col.ColName, null);
                         }
                         else if (DTColumn.CheckType(colValue, DTType.String))
                         {
-                            string strTemp = ((string)colValue);                           
-                            rowDeatils.Add(col.ColName, strTemp);
+                            string strTemp = ((string)colValue);
+                            rowDetails.Add(col.ColName, strTemp);
                         }
                         else if (DTColumn.CheckType(colValue, DTType.ByteArray))
                         {
                             // バイト配列は、Base64エンコードして電文に乗せる
                             string strBase64 = Convert.ToBase64String((byte[])colValue);
-                            rowDeatils.Add(col.ColName, strBase64);
+                            rowDetails.Add(col.ColName, strBase64);
                         }
                         else if (DTColumn.CheckType(colValue, DTType.DateTime))
                         {
@@ -215,21 +215,21 @@ namespace Touryo.Infrastructure.Public.Dto
                             strDttm += dttm.Minute + ":";
                             strDttm += dttm.Second + ".";
                             strDttm += dttm.Millisecond;
-                            rowDeatils.Add(col.ColName, strDttm);
+                            rowDetails.Add(col.ColName, strDttm);
                         }
                         else
                         {
-                            rowDeatils.Add(col.ColName, colValue.ToString());
+                            rowDetails.Add(col.ColName, colValue.ToString());
                         }
                         //adding rowState in rowDeatils
                         if (rowStateFlag == 1 && colNo == dt.Cols.Count)
                         {
-                            rowDeatils.Add("rowstate", (int)dr.RowState);
+                            rowDetails.Add("rowstate", (int)dr.RowState);
                             rowStateFlag = 0;
                             colNo = 0;
                         }
                     }
-                    tableRecords.row.Add(rowDeatils);
+                    tableRecords.row.Add(rowDetails);
                 }
                 lstTableRecords.Add(tableRecords);
             }
@@ -393,10 +393,10 @@ namespace Touryo.Infrastructure.Public.Dto
                 for (int j = 0; j < lstTableRecords[i].row.Count; j++)
                 {
                     //deserialize the first value inside row of lstTableRecords
-                    object rowJson = Newtonsoft.Json.JsonConvert.DeserializeObject(lstTableRecords[i].row[j].ToString());
+                    object rowJson = JsonConvert.DeserializeObject(lstTableRecords[i].row[j].ToString());
                     
                     //Convert the deserialized value into dictionary
-                    Dictionary<string, object> rowDeatils = JsonConvert.DeserializeObject<Dictionary<string, object>>(rowJson.ToString());
+                    Dictionary<string, object> rowDetails = JsonConvert.DeserializeObject<Dictionary<string, object>>(rowJson.ToString());
                   
                     int colIndex = 0;
                     if (colIndex == 0)
@@ -408,10 +408,10 @@ namespace Touryo.Infrastructure.Public.Dto
                     {
                         // do nothing
                     }
-                    foreach (var key in rowDeatils)
+                    foreach (var key in rowDetails)
                     {
                         string colName = key.Key;
-                        object colValue = rowDeatils[colName];
+                        object colValue = rowDetails[colName];
                         // getting the values and adding it to rows
                         if (colName != "rowstate")
                         {
