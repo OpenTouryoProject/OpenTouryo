@@ -55,5 +55,12 @@ rem --------------------------------------------------
 
 pause
 
+rem --------------------------------------------------
+rem Batch build of EncAndDecUtil.
+rem --------------------------------------------------
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\Workflow_Tool\Workflow_Tool.sln"
+
+pause
+
 rem -------------------------------------------------------
 endlocal
