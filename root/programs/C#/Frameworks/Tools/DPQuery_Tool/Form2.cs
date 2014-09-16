@@ -35,7 +35,8 @@
 //*  2014/04/25  Rituparna         Created Resource folder and Resource.ja-JP.resx,Resource.resx files inside
 //*                                the Resource folder.Added proper key and values in those files for English and
 //*                                Japanese languages.
-//*  2014/05/12  Rituparna        Removed <start> and <End> tags
+//*  2014/05/12  Rituparna         Removed <start> and <End> tags
+//*  2014/09/16  西野  大介        Overcoming .NET problem of displaying binary columns in a DataGridView.
 //**********************************************************************************
 
 // Windowアプリケーション
@@ -115,6 +116,16 @@ namespace DPQuery_Tool
             this.dataGridView1.DataSource = this._dt;
             this.richTextBox1.Text = this._sql;
             this.richTextBox2.Text = this._log;
+
+            // イベントハンドラ
+            this.dataGridView1.DataError += new DataGridViewDataErrorEventHandler(DataGridView_DataError);
+        }
+
+        //DataErrorイベントハンドラ
+        private void DataGridView_DataError(object sender,
+            DataGridViewDataErrorEventArgs e)
+        {
+            e.Cancel = false;
         }
 
         /// <summary>
