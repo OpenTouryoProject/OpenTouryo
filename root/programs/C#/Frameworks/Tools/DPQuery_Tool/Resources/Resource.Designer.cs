@@ -151,11 +151,38 @@ namespace DPQuery_Tool.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No columns are available to generate screens.
+        /// </summary>
+        internal static string Nocolumns {
+            get {
+                return ResourceManager.GetString("Nocolumns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [Performance information - execution process].
         /// </summary>
         internal static string PerformanceExecution {
             get {
                 return ResourceManager.GetString("PerformanceExecution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Primary Keys are not set to the table :.
+        /// </summary>
+        internal static string PKnotAvailable {
+            get {
+                return ResourceManager.GetString("PKnotAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please check Primary Keys are set to the Table or not.
+        /// </summary>
+        internal static string PkSetMessgae {
+            get {
+                return ResourceManager.GetString("PkSetMessgae", resourceCulture);
             }
         }
         
@@ -183,6 +210,15 @@ namespace DPQuery_Tool.Resources {
         internal static string RunTextBox {
             get {
                 return ResourceManager.GetString("RunTextBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hurre!!!!!!!!! Screens are Generated.
+        /// </summary>
+        internal static string ScreenGenerationSuccess {
+            get {
+                return ResourceManager.GetString("ScreenGenerationSuccess", resourceCulture);
             }
         }
         

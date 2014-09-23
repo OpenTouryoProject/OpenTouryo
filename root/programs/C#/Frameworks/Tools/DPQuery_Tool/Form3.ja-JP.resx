@@ -117,130 +117,123 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ClosingProcess" xml:space="preserve">
-    <value>Closing process</value>
+  <data name="btnSetOutput.Text" xml:space="preserve">
+    <value>ルート フォルダ パスを指定 </value>
   </data>
-  <data name="EntryPoint" xml:space="preserve">
-    <value>Entry point:</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="lblSetOutput.Size" type="System.Drawing.Size, System.Drawing">
+    <value>68, 13</value>
   </data>
-  <data name="LogOutputText" xml:space="preserve">
-    <value>"[Log output text]"</value>
+  <data name="lblSetOutput.Text" xml:space="preserve">
+    <value>出力ファイル </value>
   </data>
-  <data name="MSG_CONFIG_FILE_NOT_EXIST" xml:space="preserve">
-    <value>Save file of configuration does not exist.</value>
+  <data name="tabPage1.Text" xml:space="preserve">
+    <value>ステップ１ </value>
   </data>
-  <data name="MSG_EXEC_DQP" xml:space="preserve">
-    <value>I run the dynamic parameterized query.</value>
+  <data name="gbxInput.Text" xml:space="preserve">
+    <value>入力設定  </value>
   </data>
-  <data name="MSG_EXEC_SPQ" xml:space="preserve">
-    <value>I run a parameterized query normal.</value>
+  <data name="gbxSqlTemplateEncoding.Text" xml:space="preserve">
+    <value>SQLファイル入力のエンコーディングを選択する </value>
   </data>
-  <data name="MSG_INPUT_IP" xml:space="preserve">
-    <value>Enter the ip address of the DB server</value>
+  <data name="gbxDaoTemplateLanguage.Text" xml:space="preserve">
+    <value>言語を選択する </value>
   </data>
-  <data name="MSG_INPUT_PWD" xml:space="preserve">
-    <value>Enter the logon account to the DB: password</value>
+  <data name="gbxDaoTemplateEncoding.Text" xml:space="preserve">
+    <value>Daoファイル入力のエンコーディングを選択する </value>
   </data>
-  <data name="MSG_INPUT_UID" xml:space="preserve">
-    <value>Enter the logon account to the DB: user ID</value>
+  <data name="cbxDaoDefinitionHeader.Size" type="System.Drawing.Size, System.Drawing">
+    <value>203, 17</value>
   </data>
-  <data name="MSG_IS_QUERY_FILE_SAVED" xml:space="preserve">
-    <value>Are you sure you want to save the query file?</value>
+  <data name="cbxDaoDefinitionHeader.Text" xml:space="preserve">
+    <value>ヘッダありの場合（１行目を無視する） </value>
   </data>
-  <data name="Nocolumns" xml:space="preserve">
-    <value>No columns are available to generate screens</value>
+  <data name="gbxDaoDefinitionEncoding.Text" xml:space="preserve">
+    <value>入力エンコーディングを選択する </value>
   </data>
-  <data name="PerformanceExecution" xml:space="preserve">
-    <value>[Performance information - execution process]</value>
+  <data name="btnSetDaoDefinition.Text" xml:space="preserve">
+    <value>パスを指定 </value>
   </data>
-  <data name="PKnotAvailable" xml:space="preserve">
-    <value>Primary Keys are not set to the table :</value>
+  <data name="lblSetSourceTemplate.Size" type="System.Drawing.Size, System.Drawing">
+    <value>132, 13</value>
   </data>
-  <data name="PkSetMessgae" xml:space="preserve">
-    <value>Please check Primary Keys are set to the Table or not</value>
+  <data name="lblSetSourceTemplate.Text" xml:space="preserve">
+    <value>ソース テンプレート ファイル </value>
   </data>
-  <data name="Result" xml:space="preserve">
-    <value>Result</value>
+  <data name="btnSetSourceTemplate.Text" xml:space="preserve">
+    <value>ルート フォルダ パスを指定 </value>
   </data>
-  <data name="RunFile" xml:space="preserve">
-    <value>Run from a file</value>
+  <data name="lblSetDaoDefinition.Size" type="System.Drawing.Size, System.Drawing">
+    <value>112, 13</value>
   </data>
-  <data name="RunTextBox" xml:space="preserve">
-    <value>Run from TextBox</value>
+  <data name="lblSetDaoDefinition.Text" xml:space="preserve">
+    <value>D層定義情報ファイル </value>
   </data>
-  <data name="ScreenGenerationSuccess" xml:space="preserve">
-    <value>Hurre!!!!!!!!! Screens are Generated</value>
+  <data name="gbxOutput.Text" xml:space="preserve">
+    <value>出力設定 </value>
   </data>
-  <data name="STATUS_AUTO_MODE_WAS_SELECTED" xml:space="preserve">
-    <value>(I run with auto-commit transaction mode) automatic control</value>
+  <data name="gbxSQLFileEncoding.Text" xml:space="preserve">
+    <value>SQLファイル出力のエンコーディングを選択する </value>
   </data>
-  <data name="STATUS_CONFIGURATION_LOADED" xml:space="preserve">
-    <value>I was loading the configuration.</value>
+  <data name="gbxDaoFileEncoding.Text" xml:space="preserve">
+    <value>Daoファイル出力のエンコーディングを選択する </value>
   </data>
-  <data name="STATUS_CONFIGURATION_SAVED" xml:space="preserve">
-    <value>I save the settings.</value>
+  <data name="tabPage2.Text" xml:space="preserve">
+    <value>ステップ２ </value>
   </data>
-  <data name="STATUS_CONNECTION_CLOSED" xml:space="preserve">
-    <value>I closed the connection.</value>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>その他の設定 </value>
   </data>
-  <data name="STATUS_CONNECTION_OPENED" xml:space="preserve">
-    <value>I opened a connection.</value>
+  <data name="cbxTSIndisp.Size" type="System.Drawing.Size, System.Drawing">
+    <value>115, 17</value>
   </data>
-  <data name="STATUS_CREATE_CONFIGURATION" xml:space="preserve">
-    <value>I created a new setting.</value>
+  <data name="cbxTSIndisp.Text" xml:space="preserve">
+    <value>タイムスタンプ必須 </value>
   </data>
-  <data name="STATUS_DB2_CREATED" xml:space="preserve">
-    <value>I generated a DB2.NET.</value>
+  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>102, 13</value>
   </data>
-  <data name="STATUS_INIT" xml:space="preserve">
-    <value>Initial state</value>
+  <data name="label4.Text" xml:space="preserve">
+    <value>タイムスタンプ列名： </value>
   </data>
-  <data name="STATUS_MANUAL_MODE_WAS_SELECTED" xml:space="preserve">
-    <value>(You manually control the transaction using the button) manual control</value>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Update、Deleteクエリの検索条件に指定するタイムスタンプ
+を必須にする場合は、右のチェック ボックスをオンに設定する </value>
   </data>
-  <data name="STATUS_MSL_CREATED" xml:space="preserve">
-    <value>I generated a MySQL Connector / NET.</value>
+  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>64, 13</value>
   </data>
-  <data name="STATUS_ODB_CREATED" xml:space="preserve">
-    <value>I generated a ODBC.NET.</value>
+  <data name="label6.Text" xml:space="preserve">
+    <value>更新方法： </value>
   </data>
-  <data name="STATUS_ODP_CREATED" xml:space="preserve">
-    <value>I generated a ODP.NET.</value>
+  <data name="gbxDataProviders.Text" xml:space="preserve">
+    <value>データプロバイダを選択する </value>
   </data>
-  <data name="STATUS_OLE_CREATED" xml:space="preserve">
-    <value>I generated a OLEDB.NET.</value>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>その他の設定 </value>
   </data>
-  <data name="STATUS_PGS_CREATED" xml:space="preserve">
-    <value>I generated a PostgreSQL Npgsql.</value>
+  <data name="lblFamilyName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>28, 13</value>
   </data>
-  <data name="STATUS_PROC_CANCELED" xml:space="preserve">
-    <value>I canceled the operation.</value>
+  <data name="lblFamilyName.Text" xml:space="preserve">
+    <value>姓： </value>
   </data>
-  <data name="STATUS_QUERY_EXECED" xml:space="preserve">
-    <value>I ran the query.</value>
+  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>28, 13</value>
   </data>
-  <data name="STATUS_QUERY_FILE_CLOSED" xml:space="preserve">
-    <value>I close the query file.</value>
+  <data name="label1.Text" xml:space="preserve">
+    <value>名： </value>
   </data>
-  <data name="STATUS_QUERY_FILE_OPENED" xml:space="preserve">
-    <value>I opened the query file.</value>
+  <data name="Close_ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>55, 20</value>
   </data>
-  <data name="STATUS_QUERY_FILE_OVERWRITED" xml:space="preserve">
-    <value>I have Save the query text file.</value>
+  <data name="Close_ToolStripMenuItem.Text" xml:space="preserve">
+    <value>閉じる</value>
   </data>
-  <data name="STATUS_QUERY_FILE_SAVED" xml:space="preserve">
-    <value>I have been saved to a text file query.</value>
+  <data name="btnDaoAndSqlGen.Text" xml:space="preserve">
+    <value>－ Dao・SQL、DTOファイルを生成する －1 </value>
   </data>
-  <data name="STATUS_SQL_CREATED" xml:space="preserve">
-    <value>I generated a sqlClient.</value>
-  </data>
-  <data name="STATUS_TRANSACTION_COMMITED" xml:space="preserve">
-    <value>I commit the transaction.</value>
-  </data>
-  <data name="STATUS_TRANSACTION_ROLLBACKED" xml:space="preserve">
-    <value>I roll back the transaction</value>
-  </data>
-  <data name="STATUS_TRANSACTION_STARTED" xml:space="preserve">
-    <value>I started the transaction.</value>
+  <data name="$this.Text" xml:space="preserve">
+    <value>結合SELECT文をするための画面を生成する</value>
   </data>
 </root>
