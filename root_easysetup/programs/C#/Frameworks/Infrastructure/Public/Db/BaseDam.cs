@@ -4,9 +4,6 @@
 
 #region Apache License
 //
-//  
-// 
-//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -64,6 +61,7 @@
 //*  2013/02/15  加藤  幸紀        GetParamByText(string,char,out int)作成（順番バインドのパラメタ置換処理方式の見直し）
 //*  2013/03/18  西野  大介        DeleteFirstLogicalOperatoronWhereClause部分を関数化して外出し
 //*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
+//*  2014/07/04  Rituparna        Commented Code for blank else statement to improve code coverage in Basedam.cs class
 //**********************************************************************************
 
 // デバッグ用
@@ -266,9 +264,7 @@ namespace Touryo.Infrastructure.Public.Db
                         cmd.CommandTimeout = ret;
                         return;
                     }
-                    else{}
                 }
-                else{}
             }
 
             // CommandTimeout値の指定に誤りがある。

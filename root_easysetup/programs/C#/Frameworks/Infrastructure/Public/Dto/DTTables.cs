@@ -4,9 +4,6 @@
 
 #region Apache License
 //
-//  
-// 
-//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -35,6 +32,8 @@
 //*  2010/11/11  前川  祐介        Silverlight対応（ジェネリック）
 //*  2011/10/09  西野  大介        国際化対応
 //*  2011/11/21  西野  大介        マーシャリングのサポート メソッドを追加
+//*  2014/09/05  Rituparna         Added TableRecords class ,SaveJson and LoadJson Method
+//*  2014/09/09  Rituparna         Modified TableRecords class ,SaveJson and LoadJson Method
 //**********************************************************************************
 
 using System;
@@ -42,6 +41,7 @@ using System.IO;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Touryo.Infrastructure.Public.Dto
 {
@@ -49,6 +49,16 @@ namespace Touryo.Infrastructure.Public.Dto
     [System.Diagnostics.DebuggerStepThrough]
     public class DTTables : IEnumerable
     {
+        /// <summary>
+        /// Added the class to save the records in Json Format
+        /// </summary>
+        public class TableRecords
+        {
+            public string tbl { get; set; }
+            public Dictionary<string, string> col { get; set; }
+            public ArrayList row { get; set; }
+        }
+
         #region インスタンス変数
 
         /// <summary>表を保持するList</summary>
@@ -136,6 +146,98 @@ namespace Touryo.Infrastructure.Public.Dto
         }
 
         #endregion
+
+        /// <summary>
+        /// SaveJson Method(To save records in Json Format)
+        /// </summary>
+        /// <returns>string</returns>
+        public string SaveJson()
+        {
+            TableRecords tableRecords = null;
+            List<TableRecords> lstTableRecords = new List<TableRecords>();
+
+            int tblNo = -1;
+            foreach (DTTable dt in this._tbls)
+            {
+                tblNo++;
+
+                tableRecords = new TableRecords();
+
+                tableRecords.tbl = dt.TableName;
+
+                tableRecords.col = new Dictionary<string, string>();
+                foreach (DTColumn col in dt.Cols)
+                {
+                    tableRecords.col.Add(col.ColName, DTColumn.EnumToString(col.ColType));
+                }
+
+                tableRecords.row = new ArrayList();
+                Dictionary<string, object> rowDetails = null;
+                int colNo = 0;
+                int rowStateFlag = 0;
+
+                foreach (DTRow dr in dt.Rows)
+                {
+                    rowDetails = new Dictionary<string, object>();
+                    rowStateFlag = 1;
+                    foreach (DTColumn col in dt.Cols)
+                    {
+                        colNo = colNo + 1;
+                        object colValue;
+                        colValue = dr[col.ColName];
+                        if (colValue == null)
+                        {
+                            //add null to rowDetails
+                            rowDetails.Add(col.ColName, null);
+                        }
+                        else if (DTColumn.CheckType(colValue, DTType.String))
+                        {
+                            string strTemp = ((string)colValue);
+                            rowDetails.Add(col.ColName, strTemp);
+                        }
+                        else if (DTColumn.CheckType(colValue, DTType.ByteArray))
+                        {
+                            // バイト配列は、Base64エンコードして電文に乗せる
+                            string strBase64 = Convert.ToBase64String((byte[])colValue);
+                            rowDetails.Add(col.ColName, strBase64);
+                        }
+                        else if (DTColumn.CheckType(colValue, DTType.DateTime))
+                        {
+                            // DateTimeは、yyyy/M/d-H:m:s.fffとする。
+                            DateTime dttm = (DateTime)colValue;
+                            string strDttm = "";
+
+                            strDttm += dttm.Year + "/";
+                            strDttm += dttm.Month + "/";
+                            strDttm += dttm.Day + "-";
+
+                            strDttm += dttm.Hour + ":";
+                            strDttm += dttm.Minute + ":";
+                            strDttm += dttm.Second + ".";
+                            strDttm += dttm.Millisecond;
+                            rowDetails.Add(col.ColName, strDttm);
+                        }
+                        else
+                        {
+                            rowDetails.Add(col.ColName, colValue.ToString());
+                        }
+                        //adding rowState in rowDeatils
+                        if (rowStateFlag == 1 && colNo == dt.Cols.Count)
+                        {
+                            rowDetails.Add("rowstate", (int)dr.RowState);
+                            rowStateFlag = 0;
+                            colNo = 0;
+                        }
+                    }
+                    tableRecords.row.Add(rowDetails);
+                }
+                lstTableRecords.Add(tableRecords);
+            }
+
+            //converting the list into json format and return that string value
+            string json = JsonConvert.SerializeObject(lstTableRecords);
+            return json;
+        }
 
         #region セーブ＆ロード（テキスト化）
 
@@ -245,6 +347,122 @@ namespace Touryo.Infrastructure.Public.Dto
                     tw.WriteLine("row:" + (int)dr.RowState);
 
                     tw.WriteLine("---");
+                }
+            }
+        }
+
+        /// <summary>
+        /// LoadJson Method(To Load records from Json format)
+        /// </summary>
+        /// <param name="r">StreamReader</param>
+        public void LoadJson(StreamReader sr)
+        {
+            List<TableRecords> lstTableRecords = new List<TableRecords>();
+            string json = sr.ReadToEnd();
+            lstTableRecords = JsonConvert.DeserializeObject<List<TableRecords>>(json);
+
+            DTTable tbl = null;
+            DTColumn col = null;
+            DTRow row = null;
+            int bkColIndex = 0;
+            for (int i = 0; i < lstTableRecords.Count; i++)
+            {
+                string tblName = lstTableRecords[i].tbl;
+
+                //add the DTTable present in lstTableRecords into tbl
+                tbl = new DTTable(tblName);
+
+                // add the tbl into DTTables
+                this.Add(tbl);
+
+                Dictionary<string, string> tempCol = lstTableRecords[i].col;
+               
+                foreach (string key in tempCol.Keys)
+                {
+                    string colName = key;
+                    string colType = tempCol[key];
+                    
+                    //add the colName and colValue into DTColumn
+                    col = new DTColumn(colName, DTColumn.StringToEnum(colType));
+
+                    // add the col into tbl
+                    tbl.Cols.Add(col);
+                }
+
+                ArrayList tempRow = lstTableRecords[i].row;              
+                for (int j = 0; j < lstTableRecords[i].row.Count; j++)
+                {
+                    //deserialize the first value inside row of lstTableRecords
+                    object rowJson = JsonConvert.DeserializeObject(lstTableRecords[i].row[j].ToString());
+                    
+                    //Convert the deserialized value into dictionary
+                    Dictionary<string, object> rowDetails = JsonConvert.DeserializeObject<Dictionary<string, object>>(rowJson.ToString());
+                  
+                    int colIndex = 0;
+                    if (colIndex == 0)
+                    {
+                        // add new row
+                        row = tbl.Rows.AddNew();
+                    }
+                    else
+                    {
+                        // do nothing
+                    }
+                    foreach (var key in rowDetails)
+                    {
+                        string colName = key.Key;
+                        object colValue = rowDetails[colName];
+                        // getting the values and adding it to rows
+                        if (colName != "rowstate")
+                        {
+                            col = (DTColumn)tbl.Cols.ColsInfo[colIndex];
+                            if (colValue == null)
+                            {
+                                row[colIndex] = null;
+                            }
+                            else if (col.ColType == DTType.String)
+                            {
+                                // そのまま
+                                row[colIndex] = colValue;
+                                // インデックスを退避
+                                bkColIndex = colIndex;
+                            }
+                            else if (col.ColType == DTType.ByteArray)
+                            {
+                                // バイト配列は、Base64デコードする。
+                                byte[] celByte = Convert.FromBase64String(colValue.ToString());
+                                row[colIndex] = celByte;
+                            }
+                            else if (col.ColType == DTType.DateTime)
+                            {
+                                // DateTimeは、yyyy/M/d-H:m:s.fff
+                                string ymd = colValue.ToString().Split('-')[0];
+                                string hmsf = colValue.ToString().Split('-')[1];
+
+                                DateTime cellDttm = new DateTime(
+                                    int.Parse(ymd.Split('/')[0]),
+                                    int.Parse(ymd.Split('/')[1]),
+                                    int.Parse(ymd.Split('/')[2]),
+                                    int.Parse(hmsf.Split(':')[0]),
+                                    int.Parse(hmsf.Split(':')[1]),
+                                    int.Parse(hmsf.Split(':')[2].Split('.')[0]),
+                                    int.Parse(hmsf.Split(':')[2].Split('.')[1]));
+
+                                row[colIndex] = cellDttm;
+                            }
+                            else
+                            {
+                                // 型変換を試みる。
+                                row[colIndex] = DTColumn.AutoCast(col.ColType, colValue.ToString());
+                            }
+
+                            colIndex = colIndex + 1;
+                        }
+                        else
+                        {
+                            row.RowState = (DataRowState)(int.Parse)(colValue.ToString());
+                        }
+                    }
                 }
             }
         }
@@ -410,6 +628,8 @@ namespace Touryo.Infrastructure.Public.Dto
         }
 
         #endregion
+
+
 
         #region マーシャリングのサポート メソッド
 
