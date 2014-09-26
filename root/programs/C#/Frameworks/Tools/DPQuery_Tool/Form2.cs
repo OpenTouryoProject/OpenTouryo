@@ -37,6 +37,7 @@
 //*                                Japanese languages.
 //*  2014/05/12  Rituparna         Removed <start> and <End> tags
 //*  2014/09/16  西野  大介        Overcoming .NET problem of displaying binary columns in a DataGridView.
+//*  2014/09/16  Santosh Avaji     Added Code which is required for Automatic Screen generation for Select join statements
 //**********************************************************************************
 
 // Windowアプリケーション
@@ -64,7 +65,6 @@ using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
-
 using System.Resources;
 
 namespace DPQuery_Tool
@@ -86,7 +86,7 @@ namespace DPQuery_Tool
         }
 
         #region プロパティ
-        
+
         /// <summary>
         /// 表示する結果セット（dt）
         /// </summary>
@@ -104,26 +104,30 @@ namespace DPQuery_Tool
 
         #endregion
 
+        // Select join screen variables
+        ArrayList allcol = new ArrayList();
+        ArrayList allTables = new ArrayList();
+        ArrayList FullDataset = new ArrayList();
+        string[] arraclos = null;
+
         #region 処理
-        
+
         /// <summary>
         /// ロード処理のみ。
         /// </summary>
         private void Form2_Load(object sender, EventArgs e)
-        {   
+        {
             this.Text = this.RM_GetString("Result") + this._dt.TableName;
-            
+
             this.dataGridView1.DataSource = this._dt;
             this.richTextBox1.Text = this._sql;
             this.richTextBox2.Text = this._log;
-
-            // イベントハンドラ
+            
             this.dataGridView1.DataError += new DataGridViewDataErrorEventHandler(DataGridView_DataError);
         }
 
         //DataErrorイベントハンドラ
-        private void DataGridView_DataError(object sender,
-            DataGridViewDataErrorEventArgs e)
+        private void DataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
             e.Cancel = false;
         }
@@ -142,7 +146,48 @@ namespace DPQuery_Tool
             ResourceManager rm = Resources.Resource.ResourceManager;
             return rm.GetString(key);
         }
-        
+
         #endregion
+
+        /// <summary>
+        /// Generate Automatic Screen
+        /// </summary>
+        private void btnGenerateScreens_Click(object sender, EventArgs e)
+        {
+            if (_dt.Columns.Count > 0)
+            {
+                // Get all Table names in Select join Statements data table
+                foreach (DataColumn column in _dt.Columns)
+                {
+                    arraclos = column.ColumnName.Split('.');
+                    if (arraclos.Length > 1)
+                    {
+                        if (!allTables.Contains(arraclos[0].ToString()))
+                        {
+                            allTables.Add(arraclos[0]);
+                        }
+                    }
+                }
+                //Get all Column names from Select join Statements data table
+                foreach (DataColumn column in _dt.Columns)
+                {
+
+                    if (!FullDataset.Contains(column.ColumnName))
+                    {
+                        FullDataset.Add(column.ColumnName);
+                    }
+
+                }
+                //Call the form2 to generate screens and pass the required information
+                Form3 frm2 = new Form3();
+                frm2.DPQTableNames = allTables;
+                frm2.DPQAllCoumns = FullDataset;
+                frm2.Show();
+            }
+            else
+            {
+                MessageBox.Show(this.RM_GetString("Nocolumns"));
+            }
+        }
     }
 }

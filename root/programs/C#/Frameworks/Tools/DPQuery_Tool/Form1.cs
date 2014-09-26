@@ -53,12 +53,14 @@
 //*  2014/02/05  西野  大介        System.Data.OracleClientデータプロバイダ対応
 //*
 //*  2014/04/24  Rituparna         Created Resource files for UI language changes and moved the English 
-//*                                and Japanese languages to proper Resouce files.Changed the control size
-//*                                to adjust the text properly in different languages.
+//                                 and Japanese languages to proper Resouce files.Changed the control size
+//                                 to adjust the text properly in different languages.
+//*
 //*  2014/04/25  Rituparna         Created Resource folder and Resource.ja-JP.resx,Resource.resx files inside
-//*                                the Resource folder.Added proper key and values in those files for English and
-//*                                Japanese languages.
-//*  2014/05/12  Rituparna         Removed <start> and <End> tags
+//                                 the Resource folder.Added proper key and values in those files for English and
+//                                 Japanese languages.
+//*
+//*  2014/05/12  Rituparna        Removed <start> and <End> tags
 //**********************************************************************************
 
 // デバッグ

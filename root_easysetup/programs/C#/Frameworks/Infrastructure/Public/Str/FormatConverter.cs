@@ -4,13 +4,9 @@
 
 #region Apache License
 //
-//  
-// 
-//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
-// You may obtain a copy of the License at
-//
+// You may obtain a copy of the License at//
 // http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
@@ -39,6 +35,8 @@
 //*  2011/02/06  西野  大介        AddFigureｘ：リファクタリング
 //*  2013/04/04  西野  大介        Math.Roundに合わせ処理後に「0」を付与（Floor、Ceiling）
 //*  2013/07/17  西野  大介        AddFigure内のlongをdecimalに変更（オーバーフロー対策対策）。
+//* 2014/05/19   Rituparna Biswas  Change in "AddZerosAfterDecimal" method for 100% Test Code coverage.
+//* 2014/06/12   Rituparna Biswas  Deleted the commented code in "AddZerosAfterDecimal" method
 //**********************************************************************************
 
 // VB.NET関数活用
@@ -184,7 +182,7 @@ namespace Touryo.Infrastructure.Public.Str
                 decimal shift = 1;
 
                 // 小数点数以下２桁切り捨てで、100
-                for (int i = 0; i < digitsAfterDecimalPoint;  i++)
+                for (int i = 0; i < digitsAfterDecimalPoint; i++)
                 {
                     // 10倍
                     shift *= 10;
@@ -343,7 +341,7 @@ namespace Touryo.Infrastructure.Public.Str
                     return temps[0] + "." + ret.ToString();
                 }
             }
-            else if (temps.Length == 2)
+             else
             {
                 // 少数部を含む
 
@@ -357,11 +355,6 @@ namespace Touryo.Infrastructure.Public.Str
 
                 // 処理結果を（整数部を戻して）返却する。
                 return temps[0] + "." + ret.ToString();
-            }
-            else
-            {
-                // 処理不可能
-                return dcm.ToString();
             }
         }
 

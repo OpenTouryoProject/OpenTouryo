@@ -147,8 +147,17 @@
   <data name="MSG_IS_QUERY_FILE_SAVED" xml:space="preserve">
     <value>クエリ ファイルをセーブしますか？</value>
   </data>
+  <data name="Nocolumns" xml:space="preserve">
+    <value>いいえの列が画面を生成するために使用できない</value>
+  </data>
   <data name="PerformanceExecution" xml:space="preserve">
     <value>【性能情報－実行処理】</value>
+  </data>
+  <data name="PKnotAvailable" xml:space="preserve">
+    <value>主キーは、テーブルに設定されていない</value>
+  </data>
+  <data name="PkSetMessgae" xml:space="preserve">
+    <value>ご確認ください主キーは、表に設定されているか</value>
   </data>
   <data name="Result" xml:space="preserve">
     <value>結果</value>
@@ -158,6 +167,9 @@
   </data>
   <data name="RunTextBox" xml:space="preserve">
     <value>TextBoxから実行</value>
+  </data>
+  <data name="ScreenGenerationSuccess" xml:space="preserve">
+    <value>Hurre!!!!!!!!!画面が生成される</value>
   </data>
   <data name="STATUS_AUTO_MODE_WAS_SELECTED" xml:space="preserve">
     <value>自動制御（自動コミット トランザクション モードで実行します）</value>
