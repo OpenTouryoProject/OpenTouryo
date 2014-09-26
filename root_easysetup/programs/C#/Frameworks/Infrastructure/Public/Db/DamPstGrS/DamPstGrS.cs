@@ -4,9 +4,6 @@
 
 #region Apache License
 //
-//  
-// 
-//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -39,6 +36,7 @@
 //*  2012/03/21  西野  大介        SQLの型指定（.net型）対応
 //*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
 //*  2013/07/09  西野  大介        静的SQLでもユーザパラメタを保存（操作ログで使用する用途）
+//*  2014/07/17  Sai-San        Changed __paramSign value to '@' instead of ':'
 //**********************************************************************************
 
 // データアクセスプロバイダ（Npgsql）
@@ -77,7 +75,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// PostgreSQLの仕様がOracleに近いため（MVCC、Identity列の取番方法.etc）、
         /// 本FxではOracleと同様に、パラメタの先頭記号に「:」を採用する。
         /// </remarks>
-        private readonly static char _paramSign = ':';
+        private readonly static char _paramSign = '@';
 
         #endregion        
 
