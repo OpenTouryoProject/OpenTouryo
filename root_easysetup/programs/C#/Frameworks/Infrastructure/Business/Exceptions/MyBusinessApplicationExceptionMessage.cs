@@ -4,9 +4,6 @@
 
 #region Apache License
 //
-//  
-// 
-//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -72,6 +69,7 @@ namespace Touryo.Infrastructure.Business.Exceptions
             }
         }
 
+        #region CmnFunc method
         /// <summary>Returns the specified string resource for the specified culture or current UI culture. </summary>
         /// <param name="key">resource key</param>
         /// <returns>resource string</returns>
@@ -105,6 +103,7 @@ namespace Touryo.Infrastructure.Business.Exceptions
                 }
             }
         }
+        #endregion
     }
 }
     
