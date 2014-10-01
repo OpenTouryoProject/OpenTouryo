@@ -106,6 +106,12 @@
     <Compile Include="Util\MyTimeZone.cs" />
     <Compile Include="Util\MyTimeZoneEnum.cs" />
     <Compile Include="Util\MyUserInfo.cs" />
+    <Compile Include="Workflow\DaoM_User.cs" />
+    <Compile Include="Workflow\DaoM_Workflow.cs" />
+    <Compile Include="Workflow\DaoT_CurrentWorkflow.cs" />
+    <Compile Include="Workflow\DaoT_Workflow.cs" />
+    <Compile Include="Workflow\DaoT_WorkflowHistory.cs" />
+    <Compile Include="Workflow\Workflow.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Framework\Framework.csproj">
