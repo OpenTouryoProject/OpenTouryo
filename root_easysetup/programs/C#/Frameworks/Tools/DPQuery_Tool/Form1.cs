@@ -3,10 +3,7 @@
 //**********************************************************************************
 
 #region Apache License
-//
-//  
 // 
-//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -54,6 +51,14 @@
 //*  2014/01/20  西野  大介        「保存」時のエンコーディング制御方式を見直し。
 //*  2014/01/20  西野  大介        「保存」時のエンコーディング制御方式を見直し。
 //*  2014/02/05  西野  大介        System.Data.OracleClientデータプロバイダ対応
+//*
+//*  2014/04/24  Rituparna         Created Resource files for UI language changes and moved the English 
+//*                                and Japanese languages to proper Resouce files.Changed the control size
+//*                                to adjust the text properly in different languages.
+//*  2014/04/25  Rituparna         Created Resource folder and Resource.ja-JP.resx,Resource.resx files inside
+//*                                the Resource folder.Added proper key and values in those files for English and
+//*                                Japanese languages.
+//*  2014/05/12  Rituparna         Removed <start> and <End> tags
 //**********************************************************************************
 
 // デバッグ
@@ -84,6 +89,10 @@ using System.Text;
 using System.Data;
 using System.Collections;
 
+using System.Threading;
+using System.Configuration;
+using System.Globalization;
+
 // 業務フレームワーク（参照しない）
 // フレームワーク（参照しない）
 
@@ -93,6 +102,9 @@ using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
+
+using System.Resources;
+using DPQuery_Tool.Properties;
 
 namespace DPQuery_Tool
 {
@@ -249,7 +261,7 @@ namespace DPQuery_Tool
             #endregion
 
             // 初期状態
-            ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_INIT;
+            ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_INIT");
 
             // 最初のフォーカス
             this.cmbDataProvider.Focus();
@@ -301,15 +313,16 @@ namespace DPQuery_Tool
             try
             {
                 // ダイアログを表示して設定する。
-                this._ip = this.ShowInputDialog(Literal.MSG_INPUT_IP, false);
-                this._uid = this.ShowInputDialog(Literal.MSG_INPUT_UID, false);
-                this._pwd = this.ShowInputDialog(Literal.MSG_INPUT_PWD, true);
+                this._ip = this.ShowInputDialog(this.RM_GetString("MSG_INPUT_IP"), false);
+                this._uid = this.ShowInputDialog(this.RM_GetString("MSG_INPUT_UID"), false);
+                this._pwd = this.ShowInputDialog(this.RM_GetString("MSG_INPUT_PWD"), true);
 
                 // 設定を反映するために・・・
                 this.cmbDataProvider_SelectedIndexChanged(sender, e);
 
                 // 状態
-                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_CREATE_CONFIGURATION;
+                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_CREATE_CONFIGURATION");
+
             }
             catch (Exception ex)
             {
@@ -341,7 +354,8 @@ namespace DPQuery_Tool
                 sw.Close();
 
                 // 状態
-                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_CONFIGURATION_SAVED;
+                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_CONFIGURATION_SAVED");
+
             }
             catch (Exception ex)
             {
@@ -471,12 +485,12 @@ namespace DPQuery_Tool
                     sr.Close();
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_CONFIGURATION_LOADED;
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_CONFIGURATION_LOADED");
                 }
                 else
                 {
                     // ファイルが存在しない。
-                    MessageBox.Show(Literal.MSG_CONFIG_FILE_NOT_EXIST);
+                    MessageBox.Show(this.RM_GetString("MSG_CONFIG_FILE_NOT_EXIST"));
                 }
             }
             catch (Exception ex)
@@ -549,7 +563,8 @@ namespace DPQuery_Tool
                     this.txtCnnStr.Text = csb.ConnectionString;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_SQL_CREATED;
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_SQL_CREATED");
+
                 }
                 else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_OLE)
                 {
@@ -569,7 +584,8 @@ namespace DPQuery_Tool
                     this.nudNumOfBind.Enabled = true;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_OLE_CREATED;
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_OLE_CREATED");
+
                 }
                 if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ODB)
                 {
@@ -588,7 +604,8 @@ namespace DPQuery_Tool
                     this.nudNumOfBind.Enabled = true;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_ODB_CREATED;
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_ODB_CREATED");
+
                 }
                 if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ORA)
                 {
@@ -608,7 +625,8 @@ namespace DPQuery_Tool
                     this.nudNumOfBind.Enabled = true;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_ODP_CREATED;
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_ODP_CREATED");
+
                 } 
                 if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ODP)
                 {
@@ -628,7 +646,8 @@ namespace DPQuery_Tool
                     this.nudNumOfBind.Enabled = true;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_ODP_CREATED;
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_ODP_CREATED");
+
                 }
                 else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_DB2)
                 {
@@ -646,7 +665,8 @@ namespace DPQuery_Tool
                     this.txtCnnStr.Text = csb.ConnectionString;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_DB2_CREATED;
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_DB2_CREATED");
+
                 }
                 //else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_HiRDB)
                 //{
@@ -684,7 +704,8 @@ namespace DPQuery_Tool
                     this.txtCnnStr.Text = csb.ConnectionString;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_MSL_CREATED;
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_MSL_CREATED");
+
                 }
                 else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_PstgrS)
                 {
@@ -709,7 +730,7 @@ namespace DPQuery_Tool
                     this.txtCnnStr.Text = csb;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_PGS_CREATED;
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_PGS_CREATED");
                 }
                 else
                 {
@@ -765,7 +786,8 @@ namespace DPQuery_Tool
                 }
 
                 // 状態
-                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_CONNECTION_OPENED;
+                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_CONNECTION_OPENED");
+
             }
             catch (Exception Ex)
             {
@@ -793,7 +815,8 @@ namespace DPQuery_Tool
                 if (this.openFileDialog.FileName == "")
                 {
                     // 何もしないで戻る（キャンセル扱い）。
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_PROC_CANCELED;
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_PROC_CANCELED");
+
                 }
                 else
                 {
@@ -863,7 +886,8 @@ namespace DPQuery_Tool
             this.lblFilePath.Text = temp[temp.Length - 1];
 
             // 状態
-            ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_QUERY_FILE_OPENED;
+            ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_QUERY_FILE_OPENED");
+
 
             // 有効にするボタン
             this.btnCloseQueryFile.Enabled = true;
@@ -884,7 +908,8 @@ namespace DPQuery_Tool
                     Encoding.GetEncoding(this._sqlEncoding));
 
                 // 状態
-                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_QUERY_FILE_OVERWRITED;
+                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_QUERY_FILE_OVERWRITED");
+
             }
             catch (Exception ex)
             {
@@ -902,7 +927,8 @@ namespace DPQuery_Tool
 
                 // ファイルをセーブするか、セーブしないかを選択可能とする。
                 DialogResult dr = MessageBox.Show(
-                    Literal.MSG_IS_QUERY_FILE_SAVED, "クローズ処理", MessageBoxButtons.YesNoCancel);
+                    this.RM_GetString("MSG_IS_QUERY_FILE_SAVED"), this.RM_GetString("ClosingProcess"), MessageBoxButtons.YesNoCancel);
+
 
                 if (dr == DialogResult.Yes)
                 {
@@ -944,7 +970,7 @@ namespace DPQuery_Tool
                 this.txtSQL.Text = "";
 
                 // 状態
-                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_QUERY_FILE_CLOSED;
+                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_QUERY_FILE_CLOSED");
 
                 // 無効にするボタン
                 this.btnCloseQueryFile.Enabled = false;
@@ -970,7 +996,8 @@ namespace DPQuery_Tool
                 if (this.saveFileDialog.FileName == "")
                 {
                     // 何もしないで戻る（キャンセル扱い）。
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_PROC_CANCELED;
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_PROC_CANCELED");
+
                 }
                 else
                 {
@@ -990,7 +1017,7 @@ namespace DPQuery_Tool
                     this.lblFilePath.Text = temp[temp.Length - 1];
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_QUERY_FILE_SAVED;
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_QUERY_FILE_SAVED");
 
                     // 有効にするボタン
                     this.btnCloseQueryFile.Enabled = true;
@@ -1028,7 +1055,8 @@ namespace DPQuery_Tool
                 this.btnRollbackTx.Enabled = true;
 
                 // 初期状態
-                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_TRANSACTION_STARTED;
+                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_TRANSACTION_STARTED");
+
             }
             catch (Exception ex)
             {
@@ -1056,7 +1084,8 @@ namespace DPQuery_Tool
                 this.btnRollbackTx.Enabled = false;
 
                 // 初期状態
-                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_TRANSACTION_COMMITED;
+                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_TRANSACTION_COMMITED");
+
             }
             catch (Exception ex)
             {
@@ -1084,7 +1113,8 @@ namespace DPQuery_Tool
                 this.btnRollbackTx.Enabled = false;
 
                 // 初期状態
-                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_TRANSACTION_ROLLBACKED;
+                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_TRANSACTION_ROLLBACKED");
+
             }
             catch (Exception ex)
             {
@@ -1105,8 +1135,8 @@ namespace DPQuery_Tool
                     this.btnRollbackTx.Enabled = false;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text =
-                        Literal.STATUS_AUTO_MODE_WAS_SELECTED;
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_AUTO_MODE_WAS_SELECTED");
+
                 }
                 else if (this.cmbSelTxCtrl.SelectedItem.ToString() == Literal.COMMIT_MODE_MANUAL)
                 {
@@ -1117,7 +1147,8 @@ namespace DPQuery_Tool
 
                     // 状態
                     ((ToolStripStatusLabel)this.statBar.Items[0]).Text =
-                        Literal.STATUS_MANUAL_MODE_WAS_SELECTED;
+                       this.RM_GetString("STATUS_MANUAL_MODE_WAS_SELECTED");
+
                 }
                 else
                 {
@@ -1172,13 +1203,15 @@ namespace DPQuery_Tool
                 {
                     // ファイルパスが指定されている。
                     ((BaseDam)this._dam).SetSqlByCommand(this.txtSQL.Text);
-                    caption = "TextBoxから実行";
+                    caption = this.RM_GetString("RunTextBox");
+                   
                 }
                 else
                 {
                     // ファイルパスが指定されていない。
-                    ((BaseDam)this._dam).SetSqlByFile(this._loadFilePath);
-                    caption = PubCmnFunction.GetFileNameNoEx(this._loadFilePath, '\\') + "ファイルから実行"; 
+                    ((BaseDam)this._dam).SetSqlByFile(this._loadFilePath); 
+                    caption = PubCmnFunction.GetFileNameNoEx(this._loadFilePath, '\\') + this.RM_GetString("RunFile");
+                   
                 }
             }
             catch (Exception Ex)
@@ -1201,11 +1234,13 @@ namespace DPQuery_Tool
 
                 if (((BaseDam)this._dam).IsDPQ)
                 {
-                    MessageBox.Show(Literal.MSG_EXEC_DQP, caption);
+                    MessageBox.Show(this.RM_GetString("MSG_EXEC_DQP"), caption);
+
                 }
                 else
                 {
-                    MessageBox.Show(Literal.MSG_EXEC_SPQ, caption);
+                    MessageBox.Show(this.RM_GetString("MSG_EXEC_SPQ"), caption);
+
                 }
 
                 #endregion
@@ -1466,7 +1501,8 @@ namespace DPQuery_Tool
                 // 2009/09/25-start
 
                 // 性能情報を出力
-                log += "【性能情報－実行処理】" + "\r\n";
+                log += this.RM_GetString("PerformanceExecution") + "\r\n";
+
                 log += prfRec.EndsPerformanceRecord() + "\r\n\r\n";
 
                 // 2009/09/25-end
@@ -1570,7 +1606,8 @@ namespace DPQuery_Tool
                 // 【LOG】タブ
 
                 // ログ出力されるSQLを出力
-                log += "【ログ出力テキスト】" + "\r\n";
+                log += this.RM_GetString("LogOutputText") + "\r\n";
+
                 log += ((BaseDam)this._dam).GetCurrentQueryForLog();
 
                 // 2009/09/16-end
@@ -1619,7 +1656,8 @@ namespace DPQuery_Tool
                 // 【LOG】タブ
 
                 // ログ出力されるSQLを出力
-                log += "【ログ出力テキスト】" + "\r\n";
+                log += this.RM_GetString("LogOutputText") + "\r\n";
+
                 log += ((BaseDam)this._dam).GetCurrentQueryForLog();
 
                 // 2009/09/16-end
@@ -1646,7 +1684,8 @@ namespace DPQuery_Tool
                 this.groupBoxTx.Enabled = true;
 
                 // クエリ実行完了
-                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_QUERY_EXECED;
+                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_QUERY_EXECED");
+
             }
         }
 
@@ -2360,7 +2399,8 @@ namespace DPQuery_Tool
                 this.btnRollbackTx.Enabled = false;
 
                 // 状態
-                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_CONNECTION_CLOSED;
+                ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_CONNECTION_CLOSED");
+
             }
             catch (Exception Ex)
             {
@@ -2518,5 +2558,13 @@ namespace DPQuery_Tool
         }
 
         #endregion
+
+
+        private string RM_GetString(string key)
+        {
+            //get the string value from resource file  by proper passing key.
+            ResourceManager rm = Resources.Resource.ResourceManager;
+            return rm.GetString(key);
+        }
     }
 }

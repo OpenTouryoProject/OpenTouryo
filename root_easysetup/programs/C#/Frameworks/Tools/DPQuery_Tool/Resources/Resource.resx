@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ClosingProcess" xml:space="preserve">
+    <value>Closing process</value>
+  </data>
+  <data name="EntryPoint" xml:space="preserve">
+    <value>Entry point:</value>
+  </data>
+  <data name="LogOutputText" xml:space="preserve">
+    <value>"[Log output text]"</value>
+  </data>
+  <data name="MSG_CONFIG_FILE_NOT_EXIST" xml:space="preserve">
+    <value>Save file of configuration does not exist.</value>
+  </data>
+  <data name="MSG_EXEC_DQP" xml:space="preserve">
+    <value>I run the dynamic parameterized query.</value>
+  </data>
+  <data name="MSG_EXEC_SPQ" xml:space="preserve">
+    <value>I run a parameterized query normal.</value>
+  </data>
+  <data name="MSG_INPUT_IP" xml:space="preserve">
+    <value>Enter the ip address of the DB server</value>
+  </data>
+  <data name="MSG_INPUT_PWD" xml:space="preserve">
+    <value>Enter the logon account to the DB: password</value>
+  </data>
+  <data name="MSG_INPUT_UID" xml:space="preserve">
+    <value>Enter the logon account to the DB: user ID</value>
+  </data>
+  <data name="MSG_IS_QUERY_FILE_SAVED" xml:space="preserve">
+    <value>Are you sure you want to save the query file?</value>
+  </data>
+  <data name="PerformanceExecution" xml:space="preserve">
+    <value>[Performance information - execution process]</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Result</value>
+  </data>
+  <data name="RunFile" xml:space="preserve">
+    <value>Run from a file</value>
+  </data>
+  <data name="RunTextBox" xml:space="preserve">
+    <value>Run from TextBox</value>
+  </data>
+  <data name="STATUS_AUTO_MODE_WAS_SELECTED" xml:space="preserve">
+    <value>(I run with auto-commit transaction mode) automatic control</value>
+  </data>
+  <data name="STATUS_CONFIGURATION_LOADED" xml:space="preserve">
+    <value>I was loading the configuration.</value>
+  </data>
+  <data name="STATUS_CONFIGURATION_SAVED" xml:space="preserve">
+    <value>I save the settings.</value>
+  </data>
+  <data name="STATUS_CONNECTION_CLOSED" xml:space="preserve">
+    <value>I closed the connection.</value>
+  </data>
+  <data name="STATUS_CONNECTION_OPENED" xml:space="preserve">
+    <value>I opened a connection.</value>
+  </data>
+  <data name="STATUS_CREATE_CONFIGURATION" xml:space="preserve">
+    <value>I created a new setting.</value>
+  </data>
+  <data name="STATUS_DB2_CREATED" xml:space="preserve">
+    <value>I generated a DB2.NET.</value>
+  </data>
+  <data name="STATUS_INIT" xml:space="preserve">
+    <value>Initial state</value>
+  </data>
+  <data name="STATUS_MANUAL_MODE_WAS_SELECTED" xml:space="preserve">
+    <value>(You manually control the transaction using the button) manual control</value>
+  </data>
+  <data name="STATUS_MSL_CREATED" xml:space="preserve">
+    <value>I generated a MySQL Connector / NET.</value>
+  </data>
+  <data name="STATUS_ODB_CREATED" xml:space="preserve">
+    <value>I generated a ODBC.NET.</value>
+  </data>
+  <data name="STATUS_ODP_CREATED" xml:space="preserve">
+    <value>I generated a ODP.NET.</value>
+  </data>
+  <data name="STATUS_OLE_CREATED" xml:space="preserve">
+    <value>I generated a OLEDB.NET.</value>
+  </data>
+  <data name="STATUS_PGS_CREATED" xml:space="preserve">
+    <value>I generated a PostgreSQL Npgsql.</value>
+  </data>
+  <data name="STATUS_PROC_CANCELED" xml:space="preserve">
+    <value>I canceled the operation.</value>
+  </data>
+  <data name="STATUS_QUERY_EXECED" xml:space="preserve">
+    <value>I ran the query.</value>
+  </data>
+  <data name="STATUS_QUERY_FILE_CLOSED" xml:space="preserve">
+    <value>I close the query file.</value>
+  </data>
+  <data name="STATUS_QUERY_FILE_OPENED" xml:space="preserve">
+    <value>I opened the query file.</value>
+  </data>
+  <data name="STATUS_QUERY_FILE_OVERWRITED" xml:space="preserve">
+    <value>I have Save the query text file.</value>
+  </data>
+  <data name="STATUS_QUERY_FILE_SAVED" xml:space="preserve">
+    <value>I have been saved to a text file query.</value>
+  </data>
+  <data name="STATUS_SQL_CREATED" xml:space="preserve">
+    <value>I generated a sqlClient.</value>
+  </data>
+  <data name="STATUS_TRANSACTION_COMMITED" xml:space="preserve">
+    <value>I commit the transaction.</value>
+  </data>
+  <data name="STATUS_TRANSACTION_ROLLBACKED" xml:space="preserve">
+    <value>I roll back the transaction</value>
+  </data>
+  <data name="STATUS_TRANSACTION_STARTED" xml:space="preserve">
+    <value>I started the transaction.</value>
+  </data>
+</root>

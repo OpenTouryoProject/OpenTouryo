@@ -4,9 +4,6 @@
 
 #region Apache License
 //
-//  
-// 
-//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -42,6 +39,13 @@
 //*  2011/09/08  西野  大介        リカバリ処理のログ出力位置の変更
 //*                                （リカバリしない時ログを出力しないよう変更）。
 //*  2011/09/12  西野  大介        画面表示せず、ログ出力のみする例外処理方式を追加
+//*
+//*  2014/04/24  Sai              For internationalization, Replaced all the Japanese language exception messages with GetMessage.GetMessageDescription() method call 
+//*                               Moved all the Japanese language exception messages to MSGDefinition_ja-JP.xml file
+//*                               Placed all the converted Japanese language exception messages to MSGDefinition.xml file for internationalization 
+//*                               supporting English Language 
+//*
+//*  2014/04/25  Sai              Replaced all the Japanese language in both UI and code with ResorceManager.GetString() method call
 //**********************************************************************************
 
 using System;
@@ -56,6 +60,11 @@ using System.IO;
 using System.Net;
 using System.Diagnostics;
 
+using System.Threading;
+using System.Configuration;
+using System.Globalization;
+using System.Reflection;
+
 using Ionic.Zip;
 using Ionic.Zlib;
 
@@ -67,6 +76,9 @@ using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
+
+using System.Resources;
+using DeployZipPackWithHTTP.Properties;
 
 namespace DeployZipPackWithHTTP
 {
@@ -86,6 +98,17 @@ namespace DeployZipPackWithHTTP
             }
         }
 
+        /// <summary>
+        /// Getting ResourceManager instance from Resources to apply internationalization
+        /// </summary>
+        private ResourceManager ResourceMgr
+        {
+            get
+            {
+                return Resources.Resource.ResourceManager;
+            }
+        }
+        
         #region 初期処理
 
         /// <summary>コンストラクタ</summary>
@@ -285,13 +308,14 @@ namespace DeployZipPackWithHTTP
                 //MessageBox.Show(z.StatusMSG,"サマリ",
                 //    MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                CustMsgBox custMsgBox = new CustMsgBox("サマリ（圧縮）", z.StatusMSG, SystemIcons.Information);
+                CustMsgBox custMsgBox = new CustMsgBox(ResourceMgr.GetString("Error0002"), z.StatusMSG, SystemIcons.Information);
                 custMsgBox.ShowDialog();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "エラーが発生しました。",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show(ex.Message, "エラーが発生しました。", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                MessageBox.Show(ex.Message, ResourceMgr.GetString("E0001"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -354,13 +378,16 @@ namespace DeployZipPackWithHTTP
                 //MessageBox.Show(uz.StatusMSG, "サマリ",
                 //    MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                CustMsgBox custMsgBox = new CustMsgBox("サマリ（解凍）", uz.StatusMSG, SystemIcons.Information);
+                //CustMsgBox custMsgBox = new CustMsgBox("サマリ（解凍）", uz.StatusMSG, SystemIcons.Information);
+                //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                CustMsgBox custMsgBox = new CustMsgBox(ResourceMgr.GetString("Error0003"), uz.StatusMSG, SystemIcons.Information);
                 custMsgBox.ShowDialog();
             }
             catch(Exception ex)
             {
-                MessageBox.Show(ex.Message, "エラーが発生しました。",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show(ex.Message, "エラーが発生しました。", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                MessageBox.Show(ex.Message, ResourceMgr.GetString("E0001"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -369,14 +396,16 @@ namespace DeployZipPackWithHTTP
         {
             if (string.IsNullOrEmpty(this.txtFolder.Text))
             {
-                throw new Exception(string.Format(
-                    GetMessage.GetMessageDescription("E0007"), "フォルダ パス"));
+                //throw new Exception(string.Format(GetMessage.GetMessageDescription("E0007"), "フォルダ パス"));
+                //For internationalization, Replaced all the Japanese language exception messages with GetMessage.GetMessageDescription() method call
+                throw new Exception(string.Format(GetMessage.GetMessageDescription("E0007"), GetMessage.GetMessageDescription("M0001")));
             }
 
             if(string.IsNullOrEmpty(this.txtFile.Text))
             {
-                throw new Exception(string.Format(
-                    GetMessage.GetMessageDescription("E0007"), "ファイル パス"));
+                //throw new Exception(string.Format(GetMessage.GetMessageDescription("E0007"), "ファイル パス"));
+                //For internationalization, Replaced all the Japanese language exception messages with GetMessage.GetMessageDescription() method call
+                throw new Exception(string.Format(GetMessage.GetMessageDescription("E0007"), GetMessage.GetMessageDescription("M0002")));
             }
         }
 
@@ -392,7 +421,9 @@ namespace DeployZipPackWithHTTP
         /// <summary>ファイル選択</summary>
         private void btnSelectSaveFile_Click(object sender, EventArgs e)
         {
-            if (this.tabZipUnZip.SelectedTab.Text == "圧縮")
+            //if (this.tabZipUnZip.SelectedTab.Text == "圧縮")
+            //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+            if (this.tabZipUnZip.SelectedTab.Text == ResourceMgr.GetString("T0001"))
             {
                 // 保存
                 this.saveFileDialog1.DefaultExt = "";
@@ -402,7 +433,10 @@ namespace DeployZipPackWithHTTP
             else
             {
                 // 開く
-                this.openFileDialog1.Filter = "ZIPファイル|*.zip";
+                //this.openFileDialog1.Filter = "ZIPファイル|*.zip";
+                //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                this.openFileDialog1.Filter = ResourceMgr.GetString("EXT0001");
+                
                 this.openFileDialog1.ShowDialog();
                 this.txtFile.Text = openFileDialog1.FileName;
             }
@@ -486,20 +520,23 @@ namespace DeployZipPackWithHTTP
             {
                 if (this.lbxZIPFiles.Items.Count ==0)
                 {
-                    throw new Exception(string.Format(
-                        GetMessage.GetMessageDescription("E0007"), "ZIPファイル"));
+                    //throw new Exception(string.Format(GetMessage.GetMessageDescription("E0007"), "ZIPファイル"));
+                    //For internationalization, Replaced all the Japanese language exception messages with GetMessage.GetMessageDescription() method call
+                    throw new Exception(string.Format(GetMessage.GetMessageDescription("E0007"), GetMessage.GetMessageDescription("M0003")));
                 }
 
                 if (string.IsNullOrEmpty(this.txtInsDir.Text))
                 {
-                    throw new Exception(string.Format(
-                        GetMessage.GetMessageDescription("E0007"), "インストール ディレクトリ"));
+                    //throw new Exception(string.Format(GetMessage.GetMessageDescription("E0007"), "インストール ディレクトリ"));
+                    //For internationalization, Replaced all the Japanese language exception messages with GetMessage.GetMessageDescription() method call
+                    throw new Exception(string.Format(GetMessage.GetMessageDescription("E0007"), GetMessage.GetMessageDescription("M0004")));
                 }
 
                 if (string.IsNullOrEmpty(this.txtExeName.Text))
                 {
-                    throw new Exception(string.Format(
-                        GetMessage.GetMessageDescription("E0007"), "EXE名（パス）"));
+                    //throw new Exception(string.Format(GetMessage.GetMessageDescription("E0007"), "EXE名（パス）"));
+                    //For internationalization, Replaced all the Japanese language exception messages with GetMessage.GetMessageDescription() method call
+                    throw new Exception(string.Format(GetMessage.GetMessageDescription("E0007"), GetMessage.GetMessageDescription("M0005")));
                 }
 
                 // 保存
@@ -524,8 +561,9 @@ namespace DeployZipPackWithHTTP
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "エラーが発生しました。",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show(ex.Message, "エラーが発生しました。", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                MessageBox.Show(ex.Message, ResourceMgr.GetString("E0001"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -592,7 +630,9 @@ namespace DeployZipPackWithHTTP
                         Program.OutPutMessage(message + "\r\n" + my_ex.ToLog, LogLevel.InfoLog);
                     }
 
-                    MessageBox.Show(message, "メッセージ", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //MessageBox.Show(message, "メッセージ", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                    MessageBox.Show(message, ResourceMgr.GetString("M0001"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else if (retVal is Exception)
                 {
@@ -603,26 +643,34 @@ namespace DeployZipPackWithHTTP
                     string message = "";
                     Exception ex = (Exception)retVal;
 
-                    message += "＜メッセージ＞\r\n";
+                    //message += "＜メッセージ＞\r\n";
+                    //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                    message += ResourceMgr.GetString("M0002") + "\r\n";
                     message += ex.Message;
                     message += "\r\n";
 
                     message += "\r\n";
-                    message += "＜スタック トレース＞\r\n";
+                    //message += "＜スタック トレース＞\r\n";
+                    //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                    message += ResourceMgr.GetString("M0003") + "\r\n";
                     message += ex.StackTrace;
                     message += "\r\n";
 
                     if (ex.InnerException != null)
                     {
                         message += "\r\n";
-                        message += "＜内部例外＞\r\n";
+                        //message += "＜内部例外＞\r\n";
+                        //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                        message += ResourceMgr.GetString("M0004") + "\r\n";
                         message += ex.InnerException.ToString();
                         message += "\r\n";
                     }
 
                     Program.OutPutMessage(message, LogLevel.ErrorLog);
 
-                    CustMsgBox custMsgBox = new CustMsgBox("エラー", message, SystemIcons.Error);
+                    //CustMsgBox custMsgBox = new CustMsgBox("エラー", message, SystemIcons.Error);
+                    //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                    CustMsgBox custMsgBox = new CustMsgBox(ResourceMgr.GetString("Error0001"), string.Format(message), SystemIcons.Error);
                     custMsgBox.ShowDialog();
                 }
                 else
@@ -649,8 +697,9 @@ namespace DeployZipPackWithHTTP
                 catch (Exception ex)
                 {
                     // 例外を潰してログに出力
-                    Program.OutPutMessage(
-                        Program.TempZipFileName + "削除例外：" + ex.ToString(), LogLevel.ErrorLog);
+                    //Program.OutPutMessage(Program.TempZipFileName + "削除例外：" + ex.ToString(), LogLevel.ErrorLog);
+                    //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                    Program.OutPutMessage(Program.TempZipFileName + ResourceMgr.GetString("E0002") + ex.ToString(), LogLevel.ErrorLog);
                 }
             };
 

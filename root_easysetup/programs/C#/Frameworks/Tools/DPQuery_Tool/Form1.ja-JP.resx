@@ -1,0 +1,352 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="label2.Text" xml:space="preserve">
+    <value>データプロバイダを選択します</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>接続文字列を設定します</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="btnCnOpen.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 34</value>
+  </data>
+  <data name="btnCnOpen.Size" type="System.Drawing.Size, System.Drawing">
+    <value>52, 25</value>
+  </data>
+  <data name="btnCnOpen.Text" xml:space="preserve">
+    <value>接続</value>
+  </data>
+  <data name="btnCnClose.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 76</value>
+  </data>
+  <data name="btnCnClose.Size" type="System.Drawing.Size, System.Drawing">
+    <value>52, 25</value>
+  </data>
+  <data name="btnCnClose.Text" xml:space="preserve">
+    <value>切断</value>
+  </data>
+  <data name="btnSaveConfig.Location" type="System.Drawing.Point, System.Drawing">
+    <value>136, 62</value>
+  </data>
+  <data name="btnSaveConfig.Size" type="System.Drawing.Size, System.Drawing">
+    <value>90, 25</value>
+  </data>
+  <data name="btnSaveConfig.Text" xml:space="preserve">
+    <value>設定のセーブ</value>
+  </data>
+  <data name="btnExecQuery.Text" xml:space="preserve">
+    <value>クエリ実行</value>
+  </data>
+  <data name="btnLoadConfig.Location" type="System.Drawing.Point, System.Drawing">
+    <value>136, 103</value>
+  </data>
+  <data name="btnLoadConfig.Size" type="System.Drawing.Size, System.Drawing">
+    <value>90, 25</value>
+  </data>
+  <data name="btnLoadConfig.Text" xml:space="preserve">
+    <value>設定のロード</value>
+  </data>
+  <data name="btnOpenQueryFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 25</value>
+  </data>
+  <data name="btnOpenQueryFile.Text" xml:space="preserve">
+    <value>を開く</value>
+  </data>
+  <data name="cmbSelMethod.Location" type="System.Drawing.Point, System.Drawing">
+    <value>629, 19</value>
+  </data>
+  <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 45</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value>制御方式</value>
+  </data>
+  <data name="btnRollbackTx.Location" type="System.Drawing.Point, System.Drawing">
+    <value>79, 94</value>
+  </data>
+  <data name="btnRollbackTx.Text" xml:space="preserve">
+    <value>ロールバック</value>
+  </data>
+  <data name="cmbSelIso.Location" type="System.Drawing.Point, System.Drawing">
+    <value>65, 17</value>
+  </data>
+  <data name="cmbSelIso.Size" type="System.Drawing.Size, System.Drawing">
+    <value>83, 21</value>
+  </data>
+  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 21</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>分離レベル</value>
+  </data>
+  <data name="btnCommitTx.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 94</value>
+  </data>
+  <data name="btnCommitTx.Text" xml:space="preserve">
+    <value>コミット</value>
+  </data>
+  <data name="btnBeginTx.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 68</value>
+  </data>
+  <data name="btnBeginTx.Size" type="System.Drawing.Size, System.Drawing">
+    <value>143, 25</value>
+  </data>
+  <data name="btnBeginTx.Text" xml:space="preserve">
+    <value>開始</value>
+  </data>
+  <data name="cmbSelTxCtrl.Location" type="System.Drawing.Point, System.Drawing">
+    <value>65, 42</value>
+  </data>
+  <data name="cmbSelTxCtrl.Size" type="System.Drawing.Size, System.Drawing">
+    <value>83, 21</value>
+  </data>
+  <data name="groupBoxTx.Location" type="System.Drawing.Point, System.Drawing">
+    <value>324, 12</value>
+  </data>
+  <data name="groupBoxTx.Size" type="System.Drawing.Size, System.Drawing">
+    <value>154, 123</value>
+  </data>
+  <data name="groupBoxTx.Text" xml:space="preserve">
+    <value>トランザクション</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>インターフェイスを選択します</value>
+  </data>
+  <data name="groupBoxCN.Size" type="System.Drawing.Size, System.Drawing">
+    <value>69, 116</value>
+  </data>
+  <data name="groupBoxCN.Text" xml:space="preserve">
+    <value>DB接続</value>
+  </data>
+  <data name="btnSaveQueryFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 26</value>
+  </data>
+  <data name="btnSaveQueryFile.Text" xml:space="preserve">
+    <value>に保存</value>
+  </data>
+  <data name="btnCloseQueryFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 25</value>
+  </data>
+  <data name="btnCloseQueryFile.Text" xml:space="preserve">
+    <value>を閉じる</value>
+  </data>
+  <data name="btnOverwriteQueryFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 25</value>
+  </data>
+  <data name="btnOverwriteQueryFile.Text" xml:space="preserve">
+    <value>を上書き保存</value>
+  </data>
+  <data name="groupBoxQF.Size" type="System.Drawing.Size, System.Drawing">
+    <value>223, 116</value>
+  </data>
+  <data name="groupBoxQF.Text" xml:space="preserve">
+    <value>クエリ ファイル</value>
+  </data>
+  <data name="groupBoxEXE.Text" xml:space="preserve">
+    <value>実行制御</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>スロットを選択します。</value>
+  </data>
+  <data name="btnCreateConfig.Text" xml:space="preserve">
+    <value>設定の作成</value>
+  </data>
+  <data name="groupBoxR.Text" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>ファイル名：</value>
+  </data>
+  <data name="label0.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 9pt, style=Bold</value>
+  </data>
+  <data name="label0.Location" type="System.Drawing.Point, System.Drawing">
+    <value>198, 433</value>
+  </data>
+  <data name="label0.Text" xml:space="preserve">
+    <value>テキスト ボックス内のショートカット ： Alt+O（ファイルを開く），Alt+S（ファイルに保存），Alt+C（ファイルを閉じる），Alt+E（クエリを実行），Alt+F4（終了）</value>
+  </data>
+  <data name="cbxType.Text" xml:space="preserve">
+    <value>型推測モード（型指定）</value>
+  </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value>配列バインド数指定</value>
+  </data>
+  <data name="SAMPLE_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="TEMPLATE_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="XML_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="ROOT_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="WHERE_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="IF_ELSE_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="LIST_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="JOIN_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="SUB_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="SELECT_CASE_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="DECMA_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="VAL_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="PARAM_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="DIV_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="COMMENT_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="CDATA_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="CPARAM_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>147, 378</value>
+  </data>
+  <data name="txtSQL.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS Gothic, 9pt</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>棟梁：動的パラメタライズド・クエリ 分析ツール</value>
+  </data>
+</root>
