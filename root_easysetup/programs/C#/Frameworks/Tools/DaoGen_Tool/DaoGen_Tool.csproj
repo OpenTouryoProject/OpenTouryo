@@ -92,19 +92,51 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Form1.ja-JP.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form2.ja-JP.resx">
+      <DependentUpon>Form2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form2.resx">
       <DependentUpon>Form2.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Resource.ja-JP.resx" />
+    <EmbeddedResource Include="Resources\Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Resource1.ja-JP.resx" />
+    <EmbeddedResource Include="Resources\Resource1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SetPrimaryKeyWindow.ja-JP.resx">
+      <DependentUpon>SetPrimaryKeyWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SetPrimaryKeyWindow.resx">
       <DependentUpon>SetPrimaryKeyWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SimpleTextBoxWindow.ja-JP.resx">
+      <DependentUpon>SimpleTextBoxWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SimpleTextBoxWindow.resx">
       <DependentUpon>SimpleTextBoxWindow.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
+    <Compile Include="Resources\Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Resource1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
     <Compile Include="SetPrimaryKeyWindow.cs">
       <SubType>Form</SubType>
     </Compile>

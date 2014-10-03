@@ -4,9 +4,6 @@
 
 #region Apache License
 //
-//  
-// 
-//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -31,11 +28,24 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2008/xx/xx  西野  大介        新規作成
+//*  2014/04/28  Rituparna        Add DefaultCulture key in app.Config file and take the culture value from app.Config file.
+//*                                Created Resource folder and Resource.ja-JP.resx,Resource.resx files inside
+//*                                the Resource folder.Added proper key and values in those files for English and
+//*                                Japanese languages.
+//*
+//*  2014/05/12  Rituparna        Removed <start> and <End> tags, added check while reading DefaultCulture from app.config file   
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+
+using System.Threading;
+using System.Configuration;
+using System.Globalization;
+using System.Resources;
+
+using Touryo.Infrastructure.Public.Util;
 
 namespace DPQuery_Tool
 {
@@ -50,14 +60,31 @@ namespace DPQuery_Tool
         {
             try
             {
+                // Add DefaultCulture key in app.Config file and take the culture value from app.Config file.
+                string culture = GetConfigParameter.GetConfigValue("DefaultCulture");        
+                if (!string.IsNullOrEmpty(culture))
+                {
+                    Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(culture);
+                    Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(culture);
+                }
+
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new Form1());
             }
             catch(Exception ex)
             {
-                MessageBox.Show("エントリポイント：" + ex.Message);
+                MessageBox.Show(RM_GetString("EntryPoint") + ex.Message);
             }
         }
+
+
+        private static string RM_GetString(string key)
+        {
+            //get the string value from resource file  by proper passing key.
+            ResourceManager rm = Resources.Resource.ResourceManager;
+            return rm.GetString(key);
+        }
+
     }
 }

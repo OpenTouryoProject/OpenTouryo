@@ -4,9 +4,6 @@
 
 #region Apache License
 //
-//  
-// 
-//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -31,11 +28,18 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2008/xx/xx  西野  大介        新規作成
+//*  2014/04/30  Santosh san       Internationalization: Added Method to get the strings from the resource files based on the keys values passed.
+//*                                and and replaced this method wherever hard coded values.
+//*                                Also Added code to get the Culture information from app.config file.                                   
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Globalization;
+using System.Threading;
+using Touryo.Infrastructure.Public.Util;
+using System.Resources;
 
 namespace DaoGen_Tool
 {
@@ -52,12 +56,29 @@ namespace DaoGen_Tool
             {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
+                 string strDefaultCulture = "";
+
+                 /// To Get the Culture info from app.config file 
+                 strDefaultCulture = GetConfigParameter.GetConfigValue("DefaultCulture");
+                 if (!string.IsNullOrEmpty(strDefaultCulture))
+                 {
+                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(strDefaultCulture);
+                     Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(strDefaultCulture);
+                 }
+
                 Application.Run(new Form1());
             }
             catch (Exception ex)
             {
-                MessageBox.Show("エントリポイント：" + ex.Message);
+                MessageBox.Show(RM_GetString("EntryPoint") + ex.Message);
             }
+        }
+        
+        /// <summary>This Method gets the string values from resource file based on the key passed</summary>
+        private static string RM_GetString(string key)
+        {
+            ResourceManager rm = Resources.Resource.ResourceManager;
+            return rm.GetString(key);
         }
     }
 }

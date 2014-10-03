@@ -3,10 +3,7 @@
 //**********************************************************************************
 
 #region Apache License
-//
-//  
 // 
-//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -31,6 +28,9 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2008/xx/xx  西野  大介        新規作成
+//*
+//*  2014/04/24  Rituparna         Created Resource files for UI language changes and moved the English 
+//*                                and Japanese languages to proper Resouce files.
 //**********************************************************************************
 
 // Windowアプリケーション
@@ -45,6 +45,9 @@ using System.Xml;
 using System.Text;
 using System.Data;
 using System.Collections;
+using System.Threading;
+using System.Configuration;
+using System.Globalization;
 
 // 業務フレームワーク（参照しない）
 // フレームワーク（参照しない）
