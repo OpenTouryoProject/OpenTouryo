@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoM_User_D1_Insert
+  -- 2014/7/18 日立 太郎
+  INSERT INTO 
+    [M_User]
+      (
+        <DELCMA>
+          <INSCOL name="Id">[Id],</INSCOL>
+          <INSCOL name="Section">[Section],</INSCOL>
+          <INSCOL name="Name">[Name],</INSCOL>
+          <INSCOL name="PositionTitlesId">[PositionTitlesId],</INSCOL>
+        </DELCMA>
+      )
+  VALUES
+      (
+        <DELCMA>
+          <IF>@Id,</IF>
+          <IF>@Section,</IF>
+          <IF>@Name,</IF>
+          <IF>@PositionTitlesId,</IF>
+        </DELCMA>
+      )
+</ROOT>
+
+
+

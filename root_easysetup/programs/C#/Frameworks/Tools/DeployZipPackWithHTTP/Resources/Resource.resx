@@ -1,0 +1,264 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="A0001" xml:space="preserve">
+    <value>/HELP Show me the HELP.</value>
+  </data>
+  <data name="A0002" xml:space="preserve">
+    <value>/CUI I will start in CUI CUI.</value>
+  </data>
+  <data name="A0003" xml:space="preserve">
+    <value>Below, valid options argument only when CUI</value>
+  </data>
+  <data name="A0004" xml:space="preserve">
+    <value>/ Force update to erase the FORCE history file.</value>
+  </data>
+  <data name="A0005" xml:space="preserve">
+    <value>/QUIET (Hide the message) that you can run in quiet mode .</value>
+  </data>
+  <data name="A0006" xml:space="preserve">
+    <value>/SILENT (Hide message, the progress) that will run in silent mode.</value>
+  </data>
+  <data name="A0007" xml:space="preserve">
+    <value>/NB Ignore start instruction assembly even if they are specified in the manifest file.</value>
+  </data>
+  <data name="A0008" xml:space="preserve">
+    <value>/WWWURL I Specifies the URL to the manifest file of  \ "http://xxxx \" WWW server.</value>
+  </data>
+  <data name="A0009" xml:space="preserve">
+    <value>/WWWUID xxxx WWW Specifies the user ID when accessing the server.</value>
+  </data>
+  <data name="A0010" xml:space="preserve">
+    <value>/WWWPWD xxxx WWW Specifies the password used to access the server.</value>
+  </data>
+  <data name="A0011" xml:space="preserve">
+    <value>/WWWDomain xxxx WWW You specify the domain when accessing to the server.</value>
+  </data>
+  <data name="A0012" xml:space="preserve">
+    <value>/ProxyURL \"http://yyyy\" Proxy I specify the URL to the server.</value>
+  </data>
+  <data name="A0013" xml:space="preserve">
+    <value>If it is not specified, and then apply the IE setting.</value>
+  </data>
+  <data name="A0014" xml:space="preserve">
+    <value>It does not use a proxy [none] is specified.</value>
+  </data>
+  <data name="A0015" xml:space="preserve">
+    <value>/ProxyUID yyyy Proxy Specifies the user ID when accessing the server.</value>
+  </data>
+  <data name="A0016" xml:space="preserve">
+    <value>/ProxyPWD yyyy Proxy Specifies the password used to access the server.</value>
+  </data>
+  <data name="A0017" xml:space="preserve">
+    <value>/ProxyDomain yyyy Proxy You specify the domain when accessing to the server.</value>
+  </data>
+  <data name="A0018" xml:space="preserve">
+    <value>/UnIns \"http://xxxx\" WWW Specify the URL to the manifest file on the server (uninstall).</value>
+  </data>
+  <data name="E0001" xml:space="preserve">
+    <value>An error has occurred.</value>
+  </data>
+  <data name="E0002" xml:space="preserve">
+    <value>Delete Exception:</value>
+  </data>
+  <data name="Error0001" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Error0002" xml:space="preserve">
+    <value>Summary (compression)</value>
+  </data>
+  <data name="Error0003" xml:space="preserve">
+    <value>Summary (De)</value>
+  </data>
+  <data name="EXT0001" xml:space="preserve">
+    <value>ZIP file |*.Zip</value>
+  </data>
+  <data name="I0001" xml:space="preserve">
+    <value>Production start of {0}</value>
+  </data>
+  <data name="I0002" xml:space="preserve">
+    <value>Write start of {0}</value>
+  </data>
+  <data name="I0003" xml:space="preserve">
+    <value>I wrote {0} / {1} bytes</value>
+  </data>
+  <data name="I0004" xml:space="preserve">
+    <value>Write end of {0}</value>
+  </data>
+  <data name="I0005" xml:space="preserve">
+    <value>Writing of entry for {1} (s) has (have) completed {0} or in</value>
+  </data>
+  <data name="I0006" xml:space="preserve">
+    <value>Creation end of {0}</value>
+  </data>
+  <data name="M0001" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="M0002" xml:space="preserve">
+    <value>&lt;Message&gt;</value>
+  </data>
+  <data name="M0003" xml:space="preserve">
+    <value>&lt;Stack trace&gt;</value>
+  </data>
+  <data name="M0004" xml:space="preserve">
+    <value>&lt;Internal exception&gt;</value>
+  </data>
+  <data name="M0005" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="M0006" xml:space="preserve">
+    <value>CUI start</value>
+  </data>
+  <data name="M0007" xml:space="preserve">
+    <value>GUI boot</value>
+  </data>
+  <data name="M0008" xml:space="preserve">
+    <value>Delete Exception:</value>
+  </data>
+  <data name="M0009" xml:space="preserve">
+    <value>'Already exists.</value>
+  </data>
+  <data name="M0010" xml:space="preserve">
+    <value>You do not do anything with 'no' overwrite with 'yes' stop 'Cancel'</value>
+  </data>
+  <data name="M0011" xml:space="preserve">
+    <value>Overwrite Confirmation</value>
+  </data>
+  <data name="M0012" xml:space="preserve">
+    <value>Current directory</value>
+  </data>
+  <data name="M0013" xml:space="preserve">
+    <value>Start-up conditions</value>
+  </data>
+  <data name="M0014" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="M0015" xml:space="preserve">
+    <value>Command value</value>
+  </data>
+  <data name="S0001" xml:space="preserve">
+    <value>Successful completion</value>
+  </data>
+  <data name="S0002" xml:space="preserve">
+    <value>Abnormal termination</value>
+  </data>
+  <data name="T0001" xml:space="preserve">
+    <value>Compression</value>
+  </data>
+</root>
