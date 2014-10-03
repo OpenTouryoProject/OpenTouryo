@@ -3,8 +3,8 @@
 //**********************************************************************************
 
 //**********************************************************************************
-//* クラス名        ：_TableName_Detail
-//* クラス日本語名  ：三層データバインド・詳細表示画面（_TableName_）
+//* クラス名        ：_JoinTableName__Screen_Detail
+//* クラス日本語名  ：三層データバインド・詳細表示画面（_JoinTableName_）
 //*
 //* 作成日時        ：_TimeStamp_
 //* 作成者          ：自動生成ツール（墨壺２）, _UserName_
@@ -14,9 +14,6 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
-
-using MyType;
-
 // System
 using System;
 using System.IO;
@@ -59,9 +56,9 @@ using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 /// <summary>三層データバインド・サンプル アプリ画面（詳細表示）</summary>
-public partial class _TableName_Detail : MyBaseController
+public partial class _JoinTableName__Screen_Detail : MyBaseController
 {
-    #region ページロードのUOCメソッド
+    #region ページロードのUOCメソッド UOC Method of Page Load
 
     /// <summary>
     /// ページロードのUOCメソッド（個別：初回ロード）
@@ -97,7 +94,7 @@ public partial class _TableName_Detail : MyBaseController
                 (string)Session["DAP"], (MyUserInfo)this.UserInfo);
 
             // テーブル
-            parameterValue.TableName = "_TableName_";
+            parameterValue.TableName = "_JoinTableName_";
 
             // 主キーとタイムスタンプ列
             parameterValue.AndEqualSearchConditions = (Dictionary<string, object>)Session["PrimaryKeyAndTimeStamp"];
@@ -113,14 +110,14 @@ public partial class _TableName_Detail : MyBaseController
 
             // 値
             // ControlComment:LoopStart-PKColumn
-            this.txt_ColumnName_.Text = returnValue.Dt.Rows[0]["_ColumnName_"].ToString();
+            this.txt_JoinTextboxColumnName_.Text = returnValue.Dt.Rows[0]["_JoinColumnName_"].ToString();
             // ControlComment:LoopEnd-PKColumn
             // ControlComment:LoopStart-ElseColumn
-            this.txt_ColumnName_.Text = returnValue.Dt.Rows[0]["_ColumnName_"].ToString();
+            this.txt_JoinTextboxColumnName_.Text = returnValue.Dt.Rows[0]["_JoinColumnName_"].ToString();
             // ControlComment:LoopEnd-ElseColumn
             // 編集
             this.SetControlReadOnly(true);
-        }        
+        }
     }
 
     /// <summary>
@@ -139,9 +136,9 @@ public partial class _TableName_Detail : MyBaseController
 
     #endregion
 
-    #region イベントハンドラ
+    #region イベントハンドラ EVENT HANDLER
 
-    #region 編集状態の変更
+    #region 編集状態の変更 EDIT CHANGE STATE
 
     /// <summary>編集ボタン</summary>
     /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
@@ -159,112 +156,168 @@ public partial class _TableName_Detail : MyBaseController
 
     #endregion
 
-    #region 更新系
+    #region 更新系 CRUD SYSTEM
 
+    #region Insert Record
     /// <summary>追加ボタン</summary>
     /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
     /// <returns>URL</returns>
     protected string UOC_btnInsert_Click(FxEventArgs fxEventArgs)
     {
+        #region  Create the instance of classes here
         // 引数クラスを生成
         _3TierParameterValue parameterValue = new _3TierParameterValue(
                 this.ContentPageFileNoEx, fxEventArgs.ButtonID, "InsertRecord",
                 (string)Session["DAP"], (MyUserInfo)this.UserInfo);
 
-        // テーブル
+        //Initialize the data access procedure
+        _3TierReturnValue returnValue = null;
+        // B layer Initialize
+        _3TierEngine b = new _3TierEngine();
+        #endregion
+
+        // ControlComment:LoopStart-JoinTables
+        #region  Set the values to be inserted into to the _TableName_ . Then insert into database
+        //Declare InsertUpdateValue dictionary and add the values to it
+        parameterValue.InsertUpdateValues = new Dictionary<string, object>();
+        // ControlComment:LoopStart-PKColumn
+        parameterValue.InsertUpdateValues.Add("_ColumnName_", this.txt_JoinTextboxColumnName_.Text);
+        // ControlComment:LoopEnd-PKColumn
+        // ControlComment:LoopStart-ElseColumn
+        parameterValue.InsertUpdateValues.Add("_ColumnName_", this.txt_JoinTextboxColumnName_.Text);
+        // ControlComment:LoopEnd-ElseColumn  
+
+        //Reset returnvalue with null;
+        returnValue = null;
+        //Name of the table  _TableName_
         parameterValue.TableName = "_TableName_";
 
-        // 追加値（TimeStamp列は外す。主キーは採番方法次第。
-        parameterValue.InsertUpdateValues = new Dictionary<string, object>();
-        // ControlComment:LoopStart-ElseColumn
-        parameterValue.InsertUpdateValues.Add("_ColumnName_", this.txt_ColumnName_.Text);
-        // ControlComment:LoopEnd-ElseColumn
+        // Run the Database access process
+        returnValue =
+           (_3TierReturnValue)b.DoBusinessLogic(
+               (BaseParameterValue)parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
 
-        // B層を生成
-        _3TierEngine b = new _3TierEngine();
+        this.lblResult_TableName_.Text = returnValue.Obj.ToString() + " Data is Inserted into table: _TableName_";
+        #endregion
 
-        // データ取得処理を実行
-        _3TierReturnValue returnValue =
-            (_3TierReturnValue)b.DoBusinessLogic(
-                (BaseParameterValue)parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
-
-        // 結果表示
-        this.lblResult.Text = returnValue.Obj.ToString() + "件追加しました。";
-
-        // 画面遷移しない。
+        // ControlComment:LoopEnd-JoinTables
+        //Return empty string since there is no need to redirect to any other page.
         return string.Empty;
     }
+    #endregion
 
+    #region Update Record
     /// <summary>更新ボタン</summary>
     /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
     /// <returns>URL</returns>
     protected string UOC_btnUpdate_Click(FxEventArgs fxEventArgs)
     {
+
+        #region  Create the instance of classes here
+
         // 引数クラスを生成
         _3TierParameterValue parameterValue = new _3TierParameterValue(
                 this.ContentPageFileNoEx, fxEventArgs.ButtonID, "UpdateRecord",
                 (string)Session["DAP"], (MyUserInfo)this.UserInfo);
 
-        // テーブル
+        //Initialize the data access procedure
+        _3TierReturnValue returnValue = null;
+        // B layer Initialize
+        _3TierEngine b = new _3TierEngine();
+        Dictionary<string, object> UpdateWhereConditions = (Dictionary<string, object>)Session["PrimaryKeyAndTimeStamp"];
+        #endregion
+
+        // ControlComment:LoopStart-JoinTables
+        #region  Set the values to be updated to the _TableName_. Then Update to database
+        // Remove '_TableName__' from the PrimaryKeyandTimeStamp dictionary Key values so developer need not to change the values manually in Dao_TableName__S3_UPDATE.xml
+        parameterValue.AndEqualSearchConditions = new Dictionary<string, object>();
+        foreach (string k in UpdateWhereConditions.Keys)
+        {
+            if (k.Split('_')[0] == "_TableName_")
+            {
+                parameterValue.AndEqualSearchConditions.Add(k.Split('_')[1], UpdateWhereConditions[k]);
+            }
+        }
+        //Declare InsertUpdateValue dictionary and add the values to it
+        parameterValue.InsertUpdateValues = new Dictionary<string, object>();
+        // ControlComment:LoopStart-PKColumn
+        parameterValue.InsertUpdateValues.Add("_ColumnName_", this.txt_JoinTextboxColumnName_.Text);
+        // ControlComment:LoopEnd-PKColumn
+        // ControlComment:LoopStart-ElseColumn
+        parameterValue.InsertUpdateValues.Add("_ColumnName_", this.txt_JoinTextboxColumnName_.Text);
+        // ControlComment:LoopEnd-ElseColumn  
+
+        //Reset returnvalue with null;
+        returnValue = null;
+        //Name of the table  _TableName_
         parameterValue.TableName = "_TableName_";
 
-        // 主キーとタイムスタンプ列
-        parameterValue.AndEqualSearchConditions = (Dictionary<string, object>)Session["PrimaryKeyAndTimeStamp"];
+        // Run the Database access process
+        returnValue =
+           (_3TierReturnValue)b.DoBusinessLogic(
+               (BaseParameterValue)parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
 
-        // 更新値（TimeStamp列は外す。主キーは採番方法次第。
-        parameterValue.InsertUpdateValues = new Dictionary<string, object>();
-        // ControlComment:LoopStart-ElseColumn
-        parameterValue.InsertUpdateValues.Add("_ColumnName_", this.txt_ColumnName_.Text);
-        // ControlComment:LoopEnd-ElseColumn      
+        this.lblResult_TableName_.Text = returnValue.Obj.ToString() + " Data is Updated to the table: _TableName_";
+        #endregion
 
-        // B層を生成
-        _3TierEngine b = new _3TierEngine();
-
-        // データ取得処理を実行
-        _3TierReturnValue returnValue =
-            (_3TierReturnValue)b.DoBusinessLogic(
-                (BaseParameterValue)parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
-
-        // 結果表示
-        this.lblResult.Text = returnValue.Obj.ToString() + "件更新しました。";
-
-        // 画面遷移しない。
+        // ControlComment:LoopEnd-JoinTables
+        //Return empty string since there is no need to redirect to any other page.
         return string.Empty;
-    }
+    } 
+    #endregion
 
+    #region Delete Record
     /// <summary>削除ボタン</summary>
     /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
     /// <returns>URL</returns>
     protected string UOC_btnDelete_Click(FxEventArgs fxEventArgs)
     {
+        #region  Create the instance of classes here
         // 引数クラスを生成
         _3TierParameterValue parameterValue = new _3TierParameterValue(
                 this.ContentPageFileNoEx, fxEventArgs.ButtonID, "DeleteRecord",
                 (string)Session["DAP"], (MyUserInfo)this.UserInfo);
 
-        // テーブル
+        //Initialize the data access procedure
+        _3TierReturnValue returnValue = null;
+        // B layer Initialize
+        _3TierEngine b = new _3TierEngine();
+        Dictionary<string, object> DeleteWhereConditions = (Dictionary<string, object>)Session["PrimaryKeyAndTimeStamp"];
+        #endregion
+
+        // ControlComment:LoopStart-JoinTables
+        #region  Delete the data from the _TableName_  table
+        // Remove '_TableName__' from the PrimaryKeyandTimeStamp dictionary Key values so developer need not to change the values manually in Dao_TableName__S4_Delete.xml 
+        parameterValue.AndEqualSearchConditions = new Dictionary<string, object>();
+        foreach (string k in DeleteWhereConditions.Keys)
+        {
+            if (k.Split('_')[0] == "_TableName_")
+            {
+                parameterValue.AndEqualSearchConditions.Add(k.Split('_')[1], DeleteWhereConditions[k]);
+            }
+        }
+        //Reset returnvalue with null;
+        returnValue = null;
+        //Name of the table  _TableName_
         parameterValue.TableName = "_TableName_";
 
-        // 主キーとタイムスタンプ列
-        parameterValue.AndEqualSearchConditions = (Dictionary<string, object>)Session["PrimaryKeyAndTimeStamp"];
+        // Run the Database access process
+        returnValue =
+           (_3TierReturnValue)b.DoBusinessLogic(
+               (BaseParameterValue)parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
 
-        // B層を生成
-        _3TierEngine b = new _3TierEngine();
+        this.lblResult_TableName_.Text = returnValue.Obj.ToString() + " Data is Deleted from the table: _TableName_";
+        #endregion
 
-        // データ取得処理を実行
-        _3TierReturnValue returnValue =
-            (_3TierReturnValue)b.DoBusinessLogic(
-                (BaseParameterValue)parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
-
-        // 結果表示
-        this.lblResult.Text = returnValue.Obj.ToString() + "件削除しました。";
-
-        // 画面遷移しない。
+        // ControlComment:LoopEnd-JoinTables
+        //Return empty string since there is no need to redirect to any other page.
         return string.Empty;
     }
+    #endregion
 
     #endregion
 
+    #region Toggle Control Read only Property
     /// <summary>編集可否の制御</summary>
     /// <param name="readOnly">読取専用プロパティ</param>
     private void SetControlReadOnly(bool readOnly)
@@ -274,12 +327,12 @@ public partial class _TableName_Detail : MyBaseController
 
         // 主キー
         // ControlComment:LoopStart-PKColumn
-        this.txt_ColumnName_.ReadOnly = false;
+        this.txt_JoinTextboxColumnName_.ReadOnly = false;
         // ControlComment:LoopEnd-PKColumn
 
         // 主キー以外
         // ControlComment:LoopStart-ElseColumn
-        this.txt_ColumnName_.ReadOnly = readOnly;
+        this.txt_JoinTextboxColumnName_.ReadOnly = readOnly;
         // ControlComment:LoopEnd-ElseColumn
 
 
@@ -298,16 +351,15 @@ public partial class _TableName_Detail : MyBaseController
 
         // 主キー
         // ControlComment:LoopStart-PKColumn
-        this.txt_ColumnName_.BackColor = System.Drawing.Color.LightGray;
+        this.txt_JoinTextboxColumnName_.BackColor = System.Drawing.Color.LightGray;
         // ControlComment:LoopEnd-PKColumn
 
         // 主キー以外
         // ControlComment:LoopStart-ElseColumn
-        this.txt_ColumnName_.BackColor = backColor;
+        this.txt_JoinTextboxColumnName_.BackColor = backColor;
         // ControlComment:LoopEnd-ElseColumn
-
-
     }
+    #endregion
 
     #endregion
 }

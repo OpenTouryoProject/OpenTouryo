@@ -3,8 +3,8 @@
 //**********************************************************************************
 
 //**********************************************************************************
-//* クラス名        ：_TableName_ConditionalSearch
-//* クラス日本語名  ：三層データバインド・検索一覧表示画面（_TableName_）
+//* クラス名        ：_JoinTableName__Screen_ConditionalSearch
+//* クラス日本語名  ：三層データバインド・検索一覧表示画面（_JoinTableName_）
 //*
 //* 作成日時        ：_TimeStamp_
 //* 作成者          ：自動生成ツール（墨壺２）, _UserName_
@@ -14,9 +14,6 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
-
-using MyType;
-
 // System
 using System;
 using System.IO;
@@ -59,16 +56,18 @@ using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 /// <summary>三層データバインド・サンプル アプリ画面（検索一覧表示）</summary>
-public partial class _TableName_ConditionalSearch : MyBaseController
+public partial class _JoinTableName__Screen_ConditionalSearch : MyBaseController
 {
+    #region ASP.NET EVENT HANDLER
     /// <summary>Page_InitイベントでASP.NET標準イベントハンドラを設定</summary>
     protected void Page_Init(object sender, EventArgs e)
     {
         // 行選択についてのイベント
         this.gvwGridView1.SelectedIndexChanging += new GridViewSelectEventHandler(gvwGridView1_SelectedIndexChanging);
     }
+    #endregion
 
-    #region ページロードのUOCメソッド
+    #region ページロードのUOCメソッド UOC Method of Page Load
 
     /// <summary>
     /// ページロードのUOCメソッド（個別：初回ロード）
@@ -95,14 +94,12 @@ public partial class _TableName_ConditionalSearch : MyBaseController
 
         // TODO:
         Session["DAP"] = "_DAP_";
-           
         Session["DBMS"] = DbEnum.DBMSType._DBMS_;
-      
     }
 
     #endregion
 
-    #region イベントハンドラ
+    #region イベントハンドラ EVENT HANDLER
 
     /// <summary>追加ボタン</summary>
     /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
@@ -110,7 +107,7 @@ public partial class _TableName_ConditionalSearch : MyBaseController
     protected string UOC_btnInsert_Click(FxEventArgs fxEventArgs)
     {
         // 画面遷移（詳細表示）
-        return "_TableName_Detail.aspx";
+        return "_JoinTableName__Screen_Detail.aspx";
     }
 
     /// <summary>検索ボタン</summary>
@@ -126,67 +123,50 @@ public partial class _TableName_ConditionalSearch : MyBaseController
         // AndEqualSearchConditions
         Dictionary<string, object> andEqualSearchConditions = new Dictionary<string, object>();
         // ControlComment:LoopStart-PKColumn
-        andEqualSearchConditions.Add("_ColumnName_", this.txt_ColumnName__And.Text);
+        andEqualSearchConditions.Add("_JoinTextboxColumnName_", this.txt_JoinTextboxColumnName__And.Text);
         // ControlComment:LoopEnd-PKColumn
         // ControlComment:LoopStart-ElseColumn
-        andEqualSearchConditions.Add("_ColumnName_", this.txt_ColumnName__And.Text);
+        andEqualSearchConditions.Add("_JoinTextboxColumnName_", this.txt_JoinTextboxColumnName__And.Text);
         // ControlComment:LoopEnd-ElseColumn
         Session["AndEqualSearchConditions"] = andEqualSearchConditions;
 
-        // AndLikeSearchConditions
-        Dictionary<string, string> andLikeSearchConditions = new Dictionary<string, string>();
-        // ControlComment:LoopStart-PKColumn
-        andLikeSearchConditions.Add("_ColumnName_", this.txt_ColumnName__And_Like.Text);
-        // ControlComment:LoopEnd-PKColumn
-        // ControlComment:LoopStart-ElseColumn
-        andLikeSearchConditions.Add("_ColumnName_", this.txt_ColumnName__And_Like.Text);
-        // ControlComment:LoopEnd-ElseColumn
-        Session["AndLikeSearchConditions"] = andLikeSearchConditions;
+        // 引数クラスを生成
+        _3TierParameterValue parameterValue = new _3TierParameterValue(
+                this.ContentPageFileNoEx, fxEventArgs.ButtonID, "SelectRecord",
+                (string)Session["DAP"], (MyUserInfo)this.UserInfo);
 
-        // OrEqualSearchConditions
-        Dictionary<string, object[]> orEqualSearchConditions = new Dictionary<string, object[]>();
-        // ControlComment:LoopStart-PKColumn
-        orEqualSearchConditions.Add("_ColumnName_", this.txt_ColumnName__OR.Text.Split(' '));
-        // ControlComment:LoopEnd-PKColumn
-        // ControlComment:LoopStart-ElseColumn
-        orEqualSearchConditions.Add("_ColumnName_", this.txt_ColumnName__OR.Text.Split(' '));
-        // ControlComment:LoopEnd-ElseColumn
-        Session["OrEqualSearchConditions"] = orEqualSearchConditions;
+        // テーブル
+        parameterValue.TableName = "_JoinTableName_";
 
-        // OrLikeSearchConditions
-        Dictionary<string, string[]> orLikeSearchConditions = new Dictionary<string, string[]>();
-        // ControlComment:LoopStart-PKColumn
-        orLikeSearchConditions.Add("_ColumnName_", this.txt_ColumnName__OR_Like.Text.Split(' '));
-        // ControlComment:LoopEnd-PKColumn
-        // ControlComment:LoopStart-ElseColumn
-        orLikeSearchConditions.Add("_ColumnName_", this.txt_ColumnName__OR_Like.Text.Split(' '));
-        // ControlComment:LoopEnd-ElseColumn
-        Session["OrLikeSearchConditions"] = orLikeSearchConditions;
+        // 主キーとタイムスタンプ列
+        parameterValue.AndEqualSearchConditions = (Dictionary<string, object>)Session["AndEqualSearchConditions"];
 
-        //// ElseSearchConditions
-        //Dictionary<string, object> ElseSearchConditions = new Dictionary<string, object>();
-        //ElseSearchConditions.Add("myp1", 1);
-        //ElseSearchConditions.Add("myp2", 40);
-        //Session["ElseSearchConditions"] = ElseSearchConditions;
-        //Session["ElseWhereSQL"] = "AND [ProductID] BETWEEN @myp1 AND @myp2";
+        // B層を生成
+        _3TierEngine b = new _3TierEngine();
 
-        // ソート条件の初期化
-        Session["SortExpression"] = "_PKFirstColumn_"; // 主キーを指定
-        Session["SortDirection"] = "ASC";        // ASCを指定
-
-        // gvwGridView1をObjectDataSourceに連結。
-        this.gvwGridView1.DataSourceID = "ObjectDataSource1";
+        // データ取得処理を実行
+        _3TierReturnValue returnValue =
+            (_3TierReturnValue)b.DoBusinessLogic(
+                (BaseParameterValue)parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
+        //Declare Table to bind data to gridview
+        DataTable dt = new DataTable();
+        dt = returnValue.Dt;
+        HttpContext.Current.Session["SearchResult"] = dt;
 
         // ヘッダーを設定する。
-        this.gvwGridView1.Columns[_ColumnNmbr_].HeaderText = "選択";
+        this.gvwGridView1.Columns[_ColumnNmbr_].HeaderText = "Select";
         // ControlComment:LoopStart-PKColumn
-        this.gvwGridView1.Columns[_ColumnNmbr_].HeaderText = "_ColumnName_";
+        this.gvwGridView1.Columns[_ColumnNmbr_].HeaderText = "_JoinTextboxColumnName_";
         // ControlComment:LoopEnd-PKColumn
         // ControlComment:LoopStart-ElseColumn
-        this.gvwGridView1.Columns[_ColumnNmbr_].HeaderText = "_ColumnName_";
+        this.gvwGridView1.Columns[_ColumnNmbr_].HeaderText = "_JoinTextboxColumnName_";
         // ControlComment:LoopEnd-ElseColumn
 
-        // 画面遷移しない。
+        //Bind gridview
+        this.gvwGridView1.DataSource = dt;
+        this.gvwGridView1.DataBind();
+
+        //Return empty string since there is no need to redirect to any other page.
         return string.Empty;
     }
 
@@ -214,26 +194,29 @@ public partial class _TableName_ConditionalSearch : MyBaseController
         return string.Empty;
     }
 
-    /// <summary>GridViewの行の選択ボタンがクリックされ、行が選択される前に発生するイベント</summary>
+    /// <summary>GridView Even That occurs before selection of row buttons</summary>
     protected void gvwGridView1_SelectedIndexChanging(object sender, GridViewSelectEventArgs e)
     {
        
-        // 選択されたレコードの主キーとタイムスタンプ列を取得
+        // Get Primary key and timestamp Column for the selected record
         DataTable dt = (DataTable)Session["SearchResult"];
         Dictionary<string, object> PrimaryKeyAndTimeStamp = new Dictionary<string, object>();
 
-        // 主キーとタイムスタンプ列
-        // 主キー列
+        //  Primary key columns
         // ControlComment:LoopStart-PKColumn
-        PrimaryKeyAndTimeStamp.Add("_ColumnName_", dt.Rows[e.NewSelectedIndex]["_ColumnName_"].ToString());
+        PrimaryKeyAndTimeStamp.Add("_JoinTextboxColumnName_", dt.Rows[e.NewSelectedIndex]["_JoinColumnName_"].ToString());
         // ControlComment:LoopEnd-PKColumn
-        
-        // タイムスタンプ列                
-        TS_CommentOut_ if(dt.Rows[e.NewSelectedIndex]["_TimeStampColName_"].GetType()!=typeof(System.DBNull))
+
+        // Timestamp Column
+          // タイムスタンプ列  
+          // ControlComment:LoopStart-JoinTables      
+        TS_CommentOut_ if(dt.Rows[e.NewSelectedIndex]["_TableName_._TimeStampColName_"].GetType()!=typeof(System.DBNull))
         TS_CommentOut_ {
-        TS_CommentOut_ PrimaryKeyAndTimeStamp.Add("_TimeStampColName_", dt.Rows[e.NewSelectedIndex]["_TimeStampColName_"]);
+        TS_CommentOut_ PrimaryKeyAndTimeStamp.Add("_TableName___TimeStampColName_", dt.Rows[e.NewSelectedIndex]["_TableName_._TimeStampColName_"]);
         TS_CommentOut_ }
-        Session["PrimaryKeyAndTimeStamp"] = PrimaryKeyAndTimeStamp;       
+          // ControlComment:LoopEnd-JoinTables
+        Session["PrimaryKeyAndTimeStamp"] = PrimaryKeyAndTimeStamp;
+       
     }
 
     /// <summary>gvwGridView1の行選択後イベント</summary>
@@ -241,8 +224,8 @@ public partial class _TableName_ConditionalSearch : MyBaseController
     /// <returns>URL</returns>
     protected string UOC_gvwGridView1_SelectedIndexChanged(FxEventArgs fxEventArgs)
     {
-        // 画面遷移（詳細表示）
-        return "_TableName_Detail.aspx";
+        //Screen Transition is required to show more
+        return "_JoinTableName__Screen_Detail.aspx";
     }
 
     #endregion

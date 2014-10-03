@@ -3,8 +3,8 @@
 '**********************************************************************************
 
 '**********************************************************************************
-'* クラス名        ：_TableName_SearchAndUpdate
-'* クラス日本語名  ：三層データバインド・検索一覧更新画面（_TableName_）
+'* クラス名        ：_JoinTableName__Screen_SearchAndUpdate
+'* クラス日本語名  ：三層データバインド・検索一覧更新画面（_JoinTableName_）
 '*
 '* 作成日時        ：_TimeStamp_
 '* 作成者          ：自動生成ツール（墨壺２）, _UserName_
@@ -14,11 +14,7 @@
 '*  ----------  ----------------  -------------------------------------------------
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
-
-Imports MyType
-
 ' System
-Imports System
 Imports System.IO
 Imports System.Data
 Imports System.Text
@@ -58,10 +54,11 @@ Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
 
-''' <summary>三層データバインド・サンプル アプリ画面（検索一覧更新）</summary>
-Partial Public Class _TableName_SearchAndUpdate
+
+Partial Public Class _JoinTableName__Screen_SearchAndUpdate
     Inherits MyBaseController
-#Region "ページロードのUOCメソッド"
+
+#Region "ページロードのUOCメソッド UOC Method of Page Load"
 
     ''' <summary>
     ''' ページロードのUOCメソッド（個別：初回ロード）
@@ -94,9 +91,9 @@ Partial Public Class _TableName_SearchAndUpdate
 
 #End Region
 
-#Region "イベントハンドラ"
+#Region "イベントハンドラ EVENT HANDLER"
 
-#Region "一覧検索"
+#Region "一覧検索 SEARCH LIST"
 
     ''' <summary>検索ボタン</summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
@@ -113,72 +110,45 @@ Partial Public Class _TableName_SearchAndUpdate
         ' AndEqualSearchConditions
         Dim andEqualSearchConditions As New Dictionary(Of String, Object)()
         ' ControlComment:LoopStart-PKColumn
-        andEqualSearchConditions.Add("_ColumnName_", Me.txt_ColumnName__And.Text)
+        andEqualSearchConditions.Add("_JoinTextboxColumnName_", Me.txt_JoinTextboxColumnName__And.Text)
         ' ControlComment:LoopEnd-PKColumn
         ' ControlComment:LoopStart-ElseColumn
-        andEqualSearchConditions.Add("_ColumnName_", Me.txt_ColumnName__And.Text)
+        andEqualSearchConditions.Add("_JoinTextboxColumnName_", Me.txt_JoinTextboxColumnName__And.Text)
         ' ControlComment:LoopEnd-ElseColumn
         Session("AndEqualSearchConditions") = andEqualSearchConditions
 
+        ' 引数クラスを生成
+        Dim parameterValue As New _3TierParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "SelectRecord", DirectCast(Session("DAP"), String), DirectCast(Me.UserInfo, MyUserInfo))
 
-        ' AndLikeSearchConditions
-        Dim andLikeSearchConditions As New Dictionary(Of String, String)()
+        ' テーブル
+        parameterValue.TableName = "_JoinTableName_"
+
+        ' 主キーとタイムスタンプ列
+        parameterValue.AndEqualSearchConditions = DirectCast(Session("AndEqualSearchConditions"), Dictionary(Of String, Object))
+
+        ' B層を生成
+        Dim b As New _3TierEngine()
+
+        ' データ取得処理を実行
+        Dim returnValue As _3TierReturnValue = DirectCast(b.DoBusinessLogic(DirectCast(parameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.ReadCommitted), _3TierReturnValue)
+        'Declare Table to bind data to gridview
+        Dim dt As New DataTable()
+        dt = returnValue.Dt
+        HttpContext.Current.Session("SearchResult") = dt
+
+        ' Set Header
+        Me.gvwGridView1.Columns(_ColumnNmbr_).HeaderText = "Delete"
+        Me.gvwGridView1.Columns(_ColumnNmbr_).HeaderText = "Update"
         ' ControlComment:LoopStart-PKColumn
-        andLikeSearchConditions.Add("_ColumnName_", Me.txt_ColumnName__And_Like.Text)
+        Me.gvwGridView1.Columns(_ColumnNmbr_).HeaderText = "_JoinTextboxColumnName_"
         ' ControlComment:LoopEnd-PKColumn
         ' ControlComment:LoopStart-ElseColumn
-        andLikeSearchConditions.Add("_ColumnName_", Me.txt_ColumnName__And_Like.Text)
+        Me.gvwGridView1.Columns(_ColumnNmbr_).HeaderText = "_JoinTextboxColumnName_"
         ' ControlComment:LoopEnd-ElseColumn
-        Session("AndLikeSearchConditions") = andLikeSearchConditions
 
-        ' OrEqualSearchConditions
-        Dim orEqualSearchConditions As New Dictionary(Of String, Object())()
-        ' ControlComment:LoopStart-PKColumn
-        orEqualSearchConditions.Add("_ColumnName_", Me.txt_ColumnName__OR.Text.Split(" "c))
-        ' ControlComment:LoopEnd-PKColumn
-        ' ControlComment:LoopStart-ElseColumn
-        orEqualSearchConditions.Add("_ColumnName_", Me.txt_ColumnName__OR.Text.Split(" "c))
-        ' ControlComment:LoopEnd-ElseColumn
-        Session("OrEqualSearchConditions") = orEqualSearchConditions
-
-        ' OrLikeSearchConditions
-        Dim orLikeSearchConditions As New Dictionary(Of String, String())()
-        ' ControlComment:LoopStart-PKColumn
-        orLikeSearchConditions.Add("_ColumnName_", Me.txt_ColumnName__OR_Like.Text.Split(" "c))
-        ' ControlComment:LoopEnd-PKColumn
-        ' ControlComment:LoopStart-ElseColumn
-        orLikeSearchConditions.Add("_ColumnName_", Me.txt_ColumnName__OR_Like.Text.Split(" "c))
-        ' ControlComment:LoopEnd-ElseColumn
-        Session("OrLikeSearchConditions") = orLikeSearchConditions
-
-        '''/ ElseSearchConditions
-        'Dictionary<string, object> ElseSearchConditions = new Dictionary<string, object>();
-        'ElseSearchConditions.Add("myp1", 1);
-        'ElseSearchConditions.Add("myp2", 40);
-        'Session["ElseSearchConditions"] = ElseSearchConditions;
-        'Session["ElseWhereSQL"] = "AND [ProductID] BETWEEN @myp1 AND @myp2";
-
-        ' ソート条件の初期化
-        Session("SortExpression") = "_PKFirstColumn_"
-        ' 主キーを指定
-        Session("SortDirection") = "ASC"
-        ' ASCを指定
-        ' ページング
-        Me.gvwGridView1.AllowPaging = True
-
-        ' gvwGridView1をObjectDataSourceに連結。
-        Me.gvwGridView1.DataSource = Nothing
-        Me.gvwGridView1.DataSourceID = "ObjectDataSource1"
-
-        ' ヘッダーを設定する。
-        Me.gvwGridView1.Columns(_ColumnNmbr_).HeaderText = "削除"
-        Me.gvwGridView1.Columns(_ColumnNmbr_).HeaderText = "更新"
-        ' ControlComment:LoopStart-PKColumn
-        Me.gvwGridView1.Columns(_ColumnNmbr_).HeaderText = "_ColumnName_"
-        ' ControlComment:LoopEnd-PKColumn
-        ' ControlComment:LoopStart-ElseColumn
-        Me.gvwGridView1.Columns(_ColumnNmbr_).HeaderText = "_ColumnName_"
-        ' ControlComment:LoopEnd-ElseColumn
+        'Bind gridview
+        Me.gvwGridView1.DataSource = dt
+        Me.gvwGridView1.DataBind()
 
         ' 画面遷移しない。
         Return String.Empty
@@ -206,53 +176,82 @@ Partial Public Class _TableName_SearchAndUpdate
 
 #End Region
 
-#Region "CRUD"
+#Region "CRUD USING BATCH UPDATE"
 
     ''' <summary>追加ボタン</summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
     ''' <returns>URL</returns>
     Protected Function UOC_btnInsert_Click(ByVal fxEventArgs As FxEventArgs) As String
         ' 画面遷移（詳細表示）
-        Return "_TableName_Detail.aspx"
+        Return "_JoinTableName__Screen_Detail.aspx"
     End Function
 
     ''' <summary>バッチ更新ボタン</summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
     ''' <returns>URL</returns>
     Protected Function UOC_btnBatUpd_Click(ByVal fxEventArgs As FxEventArgs) As String
+        '#Region "Create the instance of classes here"
+
         ' 引数クラスを生成
         Dim parameterValue As New _3TierParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "BatchUpdate", DirectCast(Session("DAP"), String), DirectCast(Me.UserInfo, MyUserInfo))
 
-        ' テーブル
-        parameterValue.TableName = "_TableName_"
+        'Initialize the data access procedure
+        Dim returnValue As _3TierReturnValue = Nothing
+        ' B layer Initialize
+        Dim b As New _3TierEngine()
 
-        ' 主キーとタイムスタンプ列
+        'Keep the copy of the table in session because change in the column name causes the problem in the temperory update after batch update. So keep the copy of the table.
+        Dim dtSession As DataTable = DirectCast(Session("SearchResult"), DataTable).Copy()
+        '#End Region
+        ' ControlComment:LoopStart-JoinTables
+
+        '#Region "Batch Update for _TableName_  table"
+        '#Region "This is much needed to handle the duplicate column issue while udpating  _TableName_ using batch update"
+        ' to change the column names of table as per Table we should have copy of dtSession table.
+        Dim dt_TableName_ As DataTable = dtSession.Copy()
+
+        For Each dc As DataColumn In dt_TableName_.Columns
+            'Remove the '_TableName_.' from column names of _TableName_ only so that update will not have any problem.
+            'Otherwise When two tables are having same column names then we get an  error "A column named 'Columname' already belongs to this DataTable."
+            If dc.ColumnName.Split("."c)(0).Trim() = "_TableName_" Then
+                dc.ColumnName = dc.ColumnName.Split("."c)(1).Trim()
+            Else
+                'Replace "." in column names of other tables with "_". This is needed becuase if columns are having "." then we get sql error, so we need to replace "." with "_"
+
+                dc.ColumnName = dc.ColumnName.Replace("."c, "_"c)
+            End If
+        Next
+
+        '#End Region
+
+        ' DataTableを設定
+        parameterValue.Obj = dt_TableName_
+
+        'Reset returnvalue with null;
+        returnValue = Nothing
+
         parameterValue.AndEqualSearchConditions = New Dictionary(Of String, Object)()
-
-        ' 主キー列
+        'Primary Key Columns
         ' ControlComment:LoopStart-PKColumn
         parameterValue.AndEqualSearchConditions.Add("_ColumnName_", "")
         ' ControlComment:LoopEnd-PKColumn
+        'Timestamp Column.
+        TS_CommentOut_ parameterValue.AndEqualSearchConditions.Add("_TimeStampColName_", "")
 
-        ' タイムスタンプ列
-        ' ・・・
+        ' Table Name
+        parameterValue.TableName = "_TableName_"
 
-        ' DataTableを設定
-        parameterValue.Obj = DirectCast(Session("SearchResult"), DataTable)
+        ' Run the Database access process
+        returnValue = DirectCast(b.DoBusinessLogic(DirectCast(parameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.ReadCommitted), _3TierReturnValue)
 
-        ' B層を生成
-        Dim b As New _3TierEngine()
+        '#End Region
+        ' ControlComment:LoopEnd-JoinTables
 
-        ' データ取得処理を実行
-        Dim returnValue As _3TierReturnValue = DirectCast(b.DoBusinessLogic(DirectCast(parameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.ReadCommitted), _3TierReturnValue)
-
-        ' 結果表示
-        'this.lblResult.Text = returnValue.Obj.ToString() + "件更新しました。";
-
-        ' 更新ボタンの非活性化
+        ' Disable the button
         Me.btnBatUpd.Enabled = False
-
-        ' 画面遷移しない。
+        ' Keep the original session table with actual column names.
+        Session("SearchResult") = dtSession
+        'No Screen transition
         Return String.Empty
     End Function
 
@@ -314,9 +313,10 @@ Partial Public Class _TableName_SearchAndUpdate
                             ' 更新
                             Dim gvRow As GridViewRow = Me.gvwGridView1.Rows(index)
                             For Each dc As DataColumn In dt.Columns
-                                Dim txtBox As TextBox = DirectCast(gvRow.FindControl("txt" + dc.ColumnName), TextBox)
+                                Dim txtBox As TextBox = DirectCast(gvRow.FindControl("txt" + dc.ColumnName.Replace("."c, "_"c)), TextBox)
 
                                 If txtBox IsNot Nothing Then
+
                                     If TypeOf (dr(dc)) Is Byte Then
                                     Else
                                         dr(dc) = txtBox.Text
@@ -325,7 +325,7 @@ Partial Public Class _TableName_SearchAndUpdate
 
                                 '#Region "追加コード（ComboBox化）"
 
-                                Dim ddl As DropDownList = DirectCast(gvRow.FindControl("ddl" + dc.ColumnName), DropDownList)
+                                Dim ddl As DropDownList = DirectCast(gvRow.FindControl("ddl" + dc.ColumnName.Replace("."c, "_"c)), DropDownList)
 
                                 If ddl IsNot Nothing Then
                                     dr(dc) = ddl.SelectedValue
@@ -374,4 +374,6 @@ Partial Public Class _TableName_SearchAndUpdate
 #End Region
 
 #End Region
+
 End Class
+
