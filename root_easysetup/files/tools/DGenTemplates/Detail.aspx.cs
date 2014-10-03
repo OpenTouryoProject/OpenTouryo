@@ -12,7 +12,7 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2014/02/14 Sai         created template
+//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
 using MyType;
@@ -134,7 +134,7 @@ public partial class _TableName_Detail : MyBaseController
         // フォーム初期化（ポストバック）時に実行する処理を実装する
 
         // TODO:
-        Session["DAP"] = this.ddlDap.SelectedValue;
+        Session["DAP"] = "_DAP_";
     }
 
     #endregion

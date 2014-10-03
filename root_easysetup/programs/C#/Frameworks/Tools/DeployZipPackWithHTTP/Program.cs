@@ -3,10 +3,7 @@
 //**********************************************************************************
 
 #region Apache License
-//
-//  
 // 
-//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -61,6 +58,8 @@
 //*  2011/09/09  西野  大介        先頭部分でインストール ディレクトリの
 //*                                読み取り専用属性を消去する処理を追加。
 //*  2011/09/12  西野  大介        画面表示せず、ログ出力のみする例外処理方式を追加
+//*  2014/04/26  Sai              Replaced all the Japanese language in both UI and code with ResorceManager.GetString() method call
+//*  2014/05/12  Sai              Removed <start> and <End> tags, added check while reading FxBusinessMessageCulture from app.config file   
 //**********************************************************************************
 
 using System;
@@ -79,6 +78,9 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Runtime.InteropServices;
 
+using System.Configuration;
+using System.Globalization;
+
 using Ionic.Zip;
 using Ionic.Zlib;
 
@@ -92,6 +94,7 @@ using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 using Microsoft.VisualBasic.FileIO;
+using System.Resources;
 
 namespace DeployZipPackWithHTTP
 {
@@ -153,6 +156,17 @@ namespace DeployZipPackWithHTTP
         public static string InstallDirectory = "";
         /// <summary>バックアップ ディレクトリを保存</summary>
         public static string BackupDirectory = "";
+
+        /// <summary>
+        /// Getting ResourceManager instance from Resources to apply internationalization
+        /// </summary>
+        private static ResourceManager ResourceMgr
+        {
+            get
+            {
+                return Resources.Resource.ResourceManager;
+            }
+        }
 
         #endregion
 
@@ -262,6 +276,14 @@ namespace DeployZipPackWithHTTP
         [STAThread]
         static void Main()
         {
+            // Add DefaultCulture key in app.Config file and take the culture value from app.Config file.
+            string culture = GetConfigParameter.GetConfigValue("DefaultCulture");
+            if (!string.IsNullOrEmpty(culture))
+            {
+                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(culture);
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(culture);
+            }
+
             // exe名
             string exeName = Process.GetCurrentProcess().MainModule.ModuleName;
 
@@ -312,31 +334,59 @@ namespace DeployZipPackWithHTTP
                     Program.AttachConsole(-1);
 
                     Console.WriteLine("");
-                    Console.WriteLine("/HELP HELPを表示します。");
-                    Console.WriteLine("/CUI CUIで起動します。");
+                    
+                    //Console.WriteLine("/HELP HELPを表示します。");
+                    //Console.WriteLine("/CUI CUIで起動します。");
+                    //Console.WriteLine("");
+                    //Console.WriteLine("以下、CUI時のみ有効なオプション引数");
+                    //Console.WriteLine("");
+                    //Console.WriteLine("/FORCE 履歴ファイルを消去して強制更新します。");
+                    //Console.WriteLine("/QUIET クワイエット モードで実行します（メッセージを非表示）。");
+                    //Console.WriteLine("/SILENT サイレント モードで実行します（メッセージ、進捗を非表示）。");
+                    //Console.WriteLine("/NB マニフェストファイルで起動指示アセンブリが指定されていても無視します。");
+                    //Console.WriteLine("");
+                    //Console.WriteLine("/WWWURL \"http://xxxx\" WWWサーバ上のマニュフェスト ファイルへのURLを指定します。");
+                    //Console.WriteLine("");
+                    //Console.WriteLine("/WWWUID xxxx WWWサーバへアクセスする際のユーザIDを指定します。");
+                    //Console.WriteLine("/WWWPWD xxxx WWWサーバへアクセスする際のパスワードを指定します。");
+                    //Console.WriteLine("/WWWDomain xxxx WWWサーバへアクセスする際のドメインを指定します。");
+                    //Console.WriteLine("");
+                    //Console.WriteLine("/ProxyURL \"http://yyyy\" ProxyサーバへのURLを指定します。");
+                    //Console.WriteLine("                          指定の無い場合は、IE設定を適用します。");
+                    //Console.WriteLine("                          [none]指定時はプロキシを使用しません。");
+                    //Console.WriteLine("");
+                    //Console.WriteLine("/ProxyUID yyyy Proxyサーバへアクセスする際のユーザIDを指定します。");
+                    //Console.WriteLine("/ProxyPWD yyyy Proxyサーバへアクセスする際のパスワードを指定します。");
+                    //Console.WriteLine("/ProxyDomain yyyy Proxyサーバへアクセスする際のドメインを指定します。");
+                    //Console.WriteLine("");
+                    //Console.WriteLine("/UnIns \"http://xxxx\" WWWサーバ上のマニュフェスト ファイルへのURLを指定します（アンインストール）。");
+                    
+                    //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                    Console.WriteLine(ResourceMgr.GetString("A0001"));
+                    Console.WriteLine(ResourceMgr.GetString("A0002"));
                     Console.WriteLine("");
-                    Console.WriteLine("以下、CUI時のみ有効なオプション引数");
+                    Console.WriteLine(ResourceMgr.GetString("A0003"));
                     Console.WriteLine("");
-                    Console.WriteLine("/FORCE 履歴ファイルを消去して強制更新します。");
-                    Console.WriteLine("/QUIET クワイエット モードで実行します（メッセージを非表示）。");
-                    Console.WriteLine("/SILENT サイレント モードで実行します（メッセージ、進捗を非表示）。");
-                    Console.WriteLine("/NB マニフェストファイルで起動指示アセンブリが指定されていても無視します。");
+                    Console.WriteLine(ResourceMgr.GetString("A0004"));
+                    Console.WriteLine(ResourceMgr.GetString("A0005"));
+                    Console.WriteLine(ResourceMgr.GetString("A0006"));
+                    Console.WriteLine(ResourceMgr.GetString("A0007"));
                     Console.WriteLine("");
-                    Console.WriteLine("/WWWURL \"http://xxxx\" WWWサーバ上のマニュフェスト ファイルへのURLを指定します。");
+                    Console.WriteLine(ResourceMgr.GetString("A0008"));
                     Console.WriteLine("");
-                    Console.WriteLine("/WWWUID xxxx WWWサーバへアクセスする際のユーザIDを指定します。");
-                    Console.WriteLine("/WWWPWD xxxx WWWサーバへアクセスする際のパスワードを指定します。");
-                    Console.WriteLine("/WWWDomain xxxx WWWサーバへアクセスする際のドメインを指定します。");
+                    Console.WriteLine(ResourceMgr.GetString("A0009"));
+                    Console.WriteLine(ResourceMgr.GetString("A0010"));
+                    Console.WriteLine(ResourceMgr.GetString("A0011"));
                     Console.WriteLine("");
-                    Console.WriteLine("/ProxyURL \"http://yyyy\" ProxyサーバへのURLを指定します。");
-                    Console.WriteLine("                          指定の無い場合は、IE設定を適用します。");
-                    Console.WriteLine("                          [none]指定時はプロキシを使用しません。");
+                    Console.WriteLine(ResourceMgr.GetString("A0012"));
+                    Console.WriteLine(ResourceMgr.GetString("A0013"));
+                    Console.WriteLine(ResourceMgr.GetString("A0014"));
                     Console.WriteLine("");
-                    Console.WriteLine("/ProxyUID yyyy Proxyサーバへアクセスする際のユーザIDを指定します。");
-                    Console.WriteLine("/ProxyPWD yyyy Proxyサーバへアクセスする際のパスワードを指定します。");
-                    Console.WriteLine("/ProxyDomain yyyy Proxyサーバへアクセスする際のドメインを指定します。");
+                    Console.WriteLine(ResourceMgr.GetString("A0015"));
+                    Console.WriteLine(ResourceMgr.GetString("A0016"));
+                    Console.WriteLine(ResourceMgr.GetString("A0017"));
                     Console.WriteLine("");
-                    Console.WriteLine("/UnIns \"http://xxxx\" WWWサーバ上のマニュフェスト ファイルへのURLを指定します（アンインストール）。");
+                    Console.WriteLine(ResourceMgr.GetString("A0018"));
 
                     // コンソール デタッチ
                     Program.FreeConsole();
@@ -403,7 +453,9 @@ namespace DeployZipPackWithHTTP
                     // コンソール アタッチ
                     Program.AttachConsole(-1);
 
-                    Program.OutPutMessage("CUI起動", LogLevel.InfoLog);
+                    //Program.OutPutMessage("CUI起動", LogLevel.InfoLog);
+                    //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                    Program.OutPutMessage(ResourceMgr.GetString("M0006"), LogLevel.InfoLog);
 
                     if (argsDic.ContainsKey("/SILENT"))
                     {
@@ -424,7 +476,9 @@ namespace DeployZipPackWithHTTP
                 else
                 {
                     // GUI起動
-                    Program.OutPutMessage("GUI起動", LogLevel.InfoLog);
+                    //Program.OutPutMessage("GUI起動", LogLevel.InfoLog);
+                    //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                    Program.OutPutMessage(ResourceMgr.GetString("M00007"), LogLevel.InfoLog);
 
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
@@ -492,19 +546,25 @@ namespace DeployZipPackWithHTTP
                 // 例外発生時
                 string message = "";
 
-                message += "＜メッセージ＞\r\n";
+                //message += "＜メッセージ＞\r\n";
+                //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                message += ResourceMgr.GetString("M0002")+"\r\n";
                 message += ex.Message;
                 message += "\r\n";
 
                 message += "\r\n";
-                message += "＜スタック トレース＞\r\n";
+                //message += "＜スタック トレース＞\r\n";
+                //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                message += ResourceMgr.GetString("M0003")+"\r\n";
                 message += ex.StackTrace;
                 message += "\r\n";
 
                 if (ex.InnerException != null)
                 {
                     message += "\r\n";
-                    message += "＜内部例外＞\r\n";
+                    //message += "＜内部例外＞\r\n";
+                    //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                    message += ResourceMgr.GetString("M0004")+"\r\n";
                     message += ex.InnerException.ToString();
                     message += "\r\n";
                 }
@@ -526,8 +586,9 @@ namespace DeployZipPackWithHTTP
                 catch (Exception ex)
                 {
                     // 例外を潰してログに出力
-                    Program.OutPutMessage(
-                        Program.TempZipFileName + "削除例外：" + ex.ToString(), LogLevel.ErrorLog);
+                    //Program.OutPutMessage(Program.TempZipFileName + "削除例外：" + ex.ToString(), LogLevel.ErrorLog);
+                    //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                    Program.OutPutMessage(Program.TempZipFileName + ResourceMgr.GetString("M0008") + ex.ToString(), LogLevel.ErrorLog);
                 }
             }
         }
@@ -792,9 +853,14 @@ namespace DeployZipPackWithHTTP
                     {
                         if (history.InstallDir != entry.InstallDir)
                         {
+                            //throw new Exception(string.Format(
+                            //    GetMessage.GetMessageDescription("E0003"), string.Format(
+                            //        "インストール ディレクトリが変更されています{0}。", line)));
+                                            
+                            //For internationalization, Replaced all the Japanese language to  GetMessage.GetMessageDescription() method call
                             throw new Exception(string.Format(
                                 GetMessage.GetMessageDescription("E0003"), string.Format(
-                                    "インストール ディレクトリが変更されています{0}。", line)));
+                                    GetMessage.GetMessageDescription("M0006"), line)));
                         }
                     }
 
@@ -2029,30 +2095,41 @@ namespace DeployZipPackWithHTTP
             if (e.EventType == ZipProgressEventType.Saving_Started)
             {
                 // 書庫の作成を開始
-                Debug.WriteLine(string.Format("{0} の作成開始", e.ArchiveName));
+                //Debug.WriteLine(string.Format("{0} の作成開始", e.ArchiveName));
+                //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                Debug.WriteLine(string.Format(ResourceMgr.GetString("I0001"), e.ArchiveName));
             }
             else if (e.EventType == ZipProgressEventType.Saving_BeforeWriteEntry)
             {
                 // エントリの書き込み開始
-                Debug.WriteLine(string.Format("{0} の書き込み開始", e.CurrentEntry.FileName));
+                //Debug.WriteLine(string.Format("{0} の書き込み開始", e.CurrentEntry.FileName));
+                //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                Debug.WriteLine(string.Format(ResourceMgr.GetString("I0002"), e.CurrentEntry.FileName));
             }
             else if (e.EventType == ZipProgressEventType.Saving_EntryBytesRead)
             {
                 // エントリを書き込み中
-                Debug.WriteLine(string.Format("{0}/{1} バイト 書き込みました",
-                    e.BytesTransferred, e.TotalBytesToTransfer));
+                //Debug.WriteLine(string.Format("{0}/{1} バイト 書き込みました", e.BytesTransferred, e.TotalBytesToTransfer));
+                //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                Debug.WriteLine(string.Format(ResourceMgr.GetString("I0003"), e.BytesTransferred, e.TotalBytesToTransfer));
             }
             else if (e.EventType == ZipProgressEventType.Saving_AfterWriteEntry)
             {
                 // エントリの書き込み終了
-                Debug.WriteLine(string.Format("{0} の書き込み終了", e.CurrentEntry.FileName));
-                Debug.WriteLine(string.Format("{0} 個中 {1} 個のエントリの書き込みが完了しました",
-                    e.EntriesTotal, e.EntriesSaved));
+                //Debug.WriteLine(string.Format("{0} の書き込み終了", e.CurrentEntry.FileName));
+                //Debug.WriteLine(string.Format("{0} 個中 {1} 個のエントリの書き込みが完了しました", e.EntriesTotal, e.EntriesSaved));
+                //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                Debug.WriteLine(string.Format(ResourceMgr.GetString("I0004"), e.CurrentEntry.FileName));
+                Debug.WriteLine(string.Format(ResourceMgr.GetString("I0005"), e.EntriesTotal, e.EntriesSaved));
+                    
             }
             else if (e.EventType == ZipProgressEventType.Saving_Completed)
             {
                 // 書庫の作成が完了
-                Debug.WriteLine(string.Format("{0} の作成終了", e.ArchiveName));
+                //Debug.WriteLine(string.Format("{0} の作成終了", e.ArchiveName));
+                
+                //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+                Debug.WriteLine(string.Format(ResourceMgr.GetString("I0006"), e.ArchiveName));
             }
         }
 
@@ -2066,13 +2143,21 @@ namespace DeployZipPackWithHTTP
                     e.ExtractLocation, e.CurrentEntry.FileName.Replace('/', '\\'));
 
                 // ダイアログを表示する
+                //DialogResult res = MessageBox.Show(
+                //    "'" + filePath + "'はすでに存在します。\r\n" +
+                //    "'はい'で上書き 'いいえ'で何もしない 'キャンセル'で中止",
+                //    "上書きの確認",
+                //    MessageBoxButtons.YesNoCancel,
+                //    MessageBoxIcon.Question);
+                
+                //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
                 DialogResult res = MessageBox.Show(
-                    "'" + filePath + "'はすでに存在します。\r\n" +
-                    "'はい'で上書き 'いいえ'で何もしない 'キャンセル'で中止",
-                    "上書きの確認",
+                    "'" + filePath + ResourceMgr.GetString("M0009")+ "\r\n" +
+                    ResourceMgr.GetString("M0010"),
+                    ResourceMgr.GetString("M0011"),
                     MessageBoxButtons.YesNoCancel,
                     MessageBoxIcon.Question);
-
+                    
                 if (res == DialogResult.Yes)
                 {
                     // 上書きする
@@ -2138,18 +2223,24 @@ namespace DeployZipPackWithHTTP
             sb.AppendLine("");
 
             // カレント ディレクトリ
-            sb.AppendLine("カレント ディレクトリ");
+            //sb.AppendLine("カレント ディレクトリ");
+            //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+            sb.AppendLine(ResourceMgr.GetString("M0012"));
             sb.AppendLine(Program.OrgCurrentDirectory);
 
             sb.AppendLine("");
 
             // 起動条件
-            sb.AppendLine("起動条件");
+            //sb.AppendLine("起動条件");
+            //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+            sb.AppendLine(ResourceMgr.GetString("M0013"));
 
             sb.AppendLine("");
 
             // 値
-            sb.AppendLine("値");
+            //sb.AppendLine("値");
+            //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+            sb.AppendLine(ResourceMgr.GetString("M0014"));
             foreach (string vals in valsLst)
             {
                 sb.AppendLine(vals);
@@ -2158,7 +2249,9 @@ namespace DeployZipPackWithHTTP
             sb.AppendLine("");
 
             // コマンド・値
-            sb.AppendLine("コマンド・値");
+            //sb.AppendLine("コマンド・値");
+            //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
+            sb.AppendLine(ResourceMgr.GetString("M0015"));
             foreach (string key in argsDic.Keys)
             {
                 sb.AppendLine(string.Format("{0} : {1}", key, argsDic[key]));

@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE MSGD[
+	<!ELEMENT MSGD (Message*)>
+	<!ELEMENT Message EMPTY>
+	<!ATTLIST Message
+		id ID #REQUIRED
+		description CDATA #REQUIRED>
+]>
+<!-- idの先頭には、数字を使用できない。 -->
+<!-- 先頭Eは異常系、先頭Iは正常系など -->
+<MSGD>
+  <Message id="I0000" description="★更新確認進捗ダイアログ★"/>
+  
+  <Message id="I0001" description="[{0}]を処理しています。"/>
+  <Message id="I0002" description="更新が完了しました。"/>
+  
+  <Message id="I0003" description="[{0}]を履歴に新規追加しました。"/>
+  <Message id="I0004" description="[{0}]を履歴から削除しました。"/>
+  <Message id="I0005" description="[{0}]の履歴を更新しました。"/>
+
+  <Message id="I0006" description="[{0}]を更新します（更新日付ヘッダなし）。"/>
+  <Message id="I0007" description="[{0}]は最新の状態です。"/>
+  <Message id="I0008" description="[{0}]を更新します（更新）。"/>
+  <Message id="I0009" description="[{0}]を更新します（新規）。"/>
+  <Message id="I0010" description="[{0}]をダウンロードしました。"/>
+  <Message id="I0011" description="[{0}]を解凍・インストールします（更新）。"/>
+  <Message id="I0012" description="/NB スイッチが指定されているため、アセンブリを起動しません。"/>
+  
+  <!--####-->
+
+  <Message id="E0001" description="起動するEXEファイル[{0}]が存在しません。"/>
+  <Message id="E0002" description="EXEファイル[{0}]が既に起動されています。"/>
+  <Message id="E0003" description="マニュフェスト ファイルが不正です。{0}"/>
+  <Message id="E0004" description="ZIPファイルのみが対象になります。"/>
+  <Message id="E0005" description="[{0}]のMD5 Hashが不一致。{1}, {2}"/>
+  <Message id="E0006" description="[{0}]ファイルが開かれているため更新できません。"/>
+  <Message id="E0007" description="[{0}]が入力されていません。"/>
+  <Message id="E0008" description="全ての配置対象ファイルを直前の状態に戻します。"/>
+  <Message id="E0009" description="[{0}]へのHEADリクエストに失敗しました。"/>
+
+
+  <Message id="M0001" description="フォルダ パス"/>
+  <Message id="M0002" description="ファイル パス"/>
+  <Message id="M0003" description="ZIPファイル"/>
+  <Message id="M0004" description="インストール ディレクトリ"/>
+  <Message id="M0005" description="EXE名（パス）"/>
+  <Message id="M0006" description="インストール ディレクトリが変更されています{0}。"/>
+</MSGD>

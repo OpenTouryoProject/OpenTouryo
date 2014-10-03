@@ -4,9 +4,6 @@
 
 #region Apache License
 //
-//  
-// 
-//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -54,6 +51,7 @@
 //*  2011/10/09  西野  大介        国際化対応
 //*  2013/12/23  西野  大介        アクセス修飾子をすべてpublicに変更した。
 //*  2014/02/03  西野  大介        国際化対応のスイッチ（app.config）を追加した。
+//*  2014/08/18  Sai-San           Added constants for ListView events and prefix. 
 //**********************************************************************************
 
 // System
@@ -230,6 +228,9 @@ namespace Touryo.Infrastructure.Framework.Util
         /// <summary>グリッド ビューのプレフィックスを設定するキー。</summary>
         public const string PREFIX_OF_GRIDVIEW = "FxPrefixOfGridView";
 
+        /// <summary>Key to set the prefix of the List view.</summary>
+        public const string PREFIX_OF_LISTVIEW = "FxPrefixOfListView";
+
         #region Windows Forms
 
         /// <summary>ピクチャー ボックスのプレフィックスを設定するキー。</summary>
@@ -293,6 +294,22 @@ namespace Touryo.Infrastructure.Framework.Util
 
         /// <summary>UOCメソッドフッタ（RowDeleting）</summary>
         public const string UOC_METHOD_FOOTER_ROW_DELETING = "RowDeleting";
+
+        #endregion
+
+        #region ListView
+
+        /// <summary>UOCメソッドフッタ（RowUpdating）</summary>
+        public const string UOC_METHOD_FOOTER_LISTVIEW_ROW_UPDATING = "ItemUpdating";
+
+        /// <summary>UOCメソッドフッタ（RowDeleting）</summary>
+        public const string UOC_METHOD_FOOTER_LISTVIEW_ROW_DELETING = "ItemDeleting";
+
+        /// <summary>UOCメソッドフッタ（PagePropertiesChanged）</summary>
+        public const string UOC_METHOD_FOOTER_LISTVIEW_PAGE_PROPERTIES_CHANGED = "PagePropertiesChanged";
+
+        /// <summary>UOCメソッドフッタ（Sorting）</summary>
+        public const string UOC_METHOD_FOOTER_LISTVIEW_ROW_SORTING = "Sorting";
 
         #endregion
 

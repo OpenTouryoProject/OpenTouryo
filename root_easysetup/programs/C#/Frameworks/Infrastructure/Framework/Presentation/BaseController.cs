@@ -4,9 +4,6 @@
 
 #region Apache License
 //
-//  
-// 
-//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -88,6 +85,7 @@
 //*  2012/06/18  西野  大介        OriginalStackTrace（ログ出力）の品質向上
 //*  2012/06/18  西野  大介        Screenタグの中にコメントを記述可能にした。
 //*  2014/03/03  西野  大介        ユーザ コントロールのインスタンスの区別。
+//*  2014/08/18  Sai-San           Added Postback Value, events and event handlers for ListView events.   
 //**********************************************************************************
 
 // 処理に必要
@@ -1430,6 +1428,21 @@ namespace Touryo.Infrastructure.Framework.Presentation
                         prefixAndEvtHndHt.Add(prefix, gridViewEventHandlers);
                     }
 
+                    // LISTVIEW
+                    prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_LISTVIEW);
+                    if (!string.IsNullOrEmpty(prefix))
+                    {
+                        object[] listViewEventHandlers = new object[]{
+                        new EventHandler<ListViewDeleteEventArgs>(this.ListView_ItemDeleting),
+                        new EventHandler<ListViewUpdateEventArgs>(this.ListView_ItemUpdating),
+                        new EventHandler(this.ListView_PagePropertiesChanged),
+                        new EventHandler<ListViewSortEventArgs>(this.ListView_Sorting),
+                        new EventHandler(this.List_SelectedIndexChanged)                        
+                        };
+
+                        prefixAndEvtHndHt.Add(prefix, listViewEventHandlers);
+                    }
+
                     // コントロール検索＆イベントハンドラ設定
                     FxCmnFunction.GetCtrlAndSetClickEventHandler2(this, prefixAndEvtHndHt, this.ControlHt);
 
@@ -1687,7 +1700,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
             Response.Cookies.Set(FxCmnFunction.DeleteCookieForSessionTimeoutDetection());
             // セッションを消去
             Session.Abandon();
-        }        
+        }
 
         #region GUIDキューを取得 ～ 再構築
 
@@ -1911,6 +1924,11 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     GridViewRow gvr = (GridViewRow)namingContainer;
                     postBackValue = gvr.RowIndex.ToString();
                 }
+                else if (namingContainer is ListViewDataItem)
+                {
+                    ListViewDataItem lvDataItem = (ListViewDataItem)namingContainer;
+                    postBackValue = lvDataItem.DataItemIndex.ToString();
+                }
             }
 
             #endregion
@@ -2086,6 +2104,80 @@ namespace Touryo.Infrastructure.Framework.Presentation
 
         #endregion
 
+        #region ListView
+        /// <summary>
+        /// ListViewのItemEditing event handler method
+        /// </summary>
+        protected void ListView_ItemDeleting(object sender, ListViewDeleteEventArgs e)
+        {
+            // イベント ハンドラの共通引数の作成
+            FxEventArgs fxEventArgs = new FxEventArgs(
+                ((System.Web.UI.Control)(sender)).ID, "ItemDeleting",
+                0, 0, e.ItemIndex.ToString(), // ★ RowIndexがPostBackValue
+                this.GetMethodName(((System.Web.UI.Control)(sender)).ID,
+                    FxLiteral.UOC_METHOD_FOOTER_LISTVIEW_ROW_DELETING));
+
+            // クリック イベント処理の共通メソッド
+            this.CMN_Event_Handler(fxEventArgs, e);
+        }
+
+        /// <summary>
+        /// Listview Paging  event handler method
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void ListView_PagePropertiesChanged(object sender, EventArgs e)
+        {
+            // イベント ハンドラの共通引数の作成
+            FxEventArgs fxEventArgs = new FxEventArgs(
+                ((System.Web.UI.Control)(sender)).ID, "PagePropertiesChanged",
+                0, 0, e.ToString(), // ★ RowIndexがPostBackValue
+                this.GetMethodName(((System.Web.UI.Control)(sender)).ID,
+                    FxLiteral.UOC_METHOD_FOOTER_LISTVIEW_PAGE_PROPERTIES_CHANGED));
+
+            // クリック イベント処理の共通メソッド
+            this.CMN_Event_Handler(fxEventArgs, e);
+        }
+
+        /// <summary>
+        /// Listview Item Updating  event handler method
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void ListView_ItemUpdating(object sender, ListViewUpdateEventArgs e)
+        {
+            // イベント ハンドラの共通引数の作成
+            FxEventArgs fxEventArgs = new FxEventArgs(
+                ((System.Web.UI.Control)(sender)).ID, "ItemUpdating",
+                0, 0, e.ToString(), // ★ RowIndexがPostBackValue
+                this.GetMethodName(((System.Web.UI.Control)(sender)).ID,
+                    FxLiteral.UOC_METHOD_FOOTER_LISTVIEW_ROW_UPDATING));
+
+            // クリック イベント処理の共通メソッド
+            this.CMN_Event_Handler(fxEventArgs, e);
+        }
+
+        /// <summary>
+        /// ListView Sorting event handler method
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void ListView_Sorting(object sender, ListViewSortEventArgs e)
+        {
+            // イベント ハンドラの共通引数の作成
+            FxEventArgs fxEventArgs = new FxEventArgs(
+                ((System.Web.UI.Control)(sender)).ID, "Sorting",
+                0, 0, e.ToString(), // ★ RowIndexがPostBackValue
+                this.GetMethodName(((System.Web.UI.Control)(sender)).ID,
+                    FxLiteral.UOC_METHOD_FOOTER_LISTVIEW_ROW_SORTING));
+
+            // クリック イベント処理の共通メソッド
+            this.CMN_Event_Handler(fxEventArgs, e);
+
+        }
+
+        #endregion
+
         #endregion
 
         #endregion
@@ -2131,7 +2223,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                         + "_" + ControlID + "_" + EventName;
                 }
             }
-            else 
+            else
             {
                 // マスタ ページ上の場合
 
@@ -2628,7 +2720,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
             // 2010/10/13 以下のif-else
 
             // URL（QueryStringで画面GUID、ウィンドウGUIDを渡す）
-            
+
             string queryString =
                 FxHttpQueryStringIndex.PARENT_SCREEN_GUID + "=" + this.ScreenGuid.Value + "&"
                 + FxHttpQueryStringIndex.BROWSER_WINDOW_GUID + "=" + this.WindowGuid.Value;
@@ -2641,7 +2733,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
             else
             {
                 // QueryString指定あり
-                this.ChildScreenUrl.Value = screenURL + "&" +queryString;
+                this.ChildScreenUrl.Value = screenURL + "&" + queryString;
             }
         }
 
@@ -2703,7 +2795,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
             string queryString =
                             FxHttpQueryStringIndex.PARENT_SCREEN_GUID + "=" + this.ScreenGuid.Value + "&"
                             + FxHttpQueryStringIndex.BROWSER_WINDOW_GUID + "=" + this.WindowGuid.Value;
-            
+
             // 2009/08/04 以下のif-else
             // 諸事情により、JavaScript関数の引数の順序を変更した（url→styleの順）。
 
@@ -2946,10 +3038,10 @@ namespace Touryo.Infrastructure.Framework.Presentation
         /// <param name="screenTarget">ターゲット</param>
         /// <returns>業務モードレス画面を起動するスクリプト</returns>
         protected string GetScriptToShowNormalScreen(string screenURL, string screenStyle, string screenTarget)
-        {   
+        {
             // スクリプト（注意：リテラル化不可能）
             return "window.open("
-                + "'"+ screenURL + "', "
+                + "'" + screenURL + "', "
                 + "'" + screenTarget + "', "
                 + "'" + screenStyle + "')";
             // ※ この部分は、シングル クォート
@@ -3064,7 +3156,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         protected Control GetFxWebControl(string controlName)
         {
             // Fxでハンドルしているコントロールの参照を取得する。
-            
+
             // 2010/10/13 - ContainsKeyによるチェック処理を追加した。
             if (this.ControlHt.ContainsKey(controlName))
             {
@@ -3260,7 +3352,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         private Control GetUCWebControl(string controlName, out string userControlName)
         {
             // 検索
-            foreach(UserControl uc in this.LstUserControl)
+            foreach (UserControl uc in this.LstUserControl)
             {
                 Control ctrl = uc.FindControl(controlName);
 
