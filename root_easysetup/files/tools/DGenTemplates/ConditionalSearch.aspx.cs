@@ -94,16 +94,10 @@ public partial class _TableName_ConditionalSearch : MyBaseController
         // フォーム初期化（ポストバック）時に実行する処理を実装する
 
         // TODO:
-        Session["DAP"] = this.ddlDap.SelectedValue;
-
-        if (this.ddlDap.SelectedValue == "SQL")
-        {
-            Session["DBMS"] = DbEnum.DBMSType.SQLServer;
-        }
-        else
-        {
-            Session["DBMS"] = DbEnum.DBMSType.Oracle;
-        }
+        Session["DAP"] = "_DAP_";
+           
+        Session["DBMS"] = DbEnum.DBMSType._DBMS_;
+      
     }
 
     #endregion
@@ -234,15 +228,12 @@ public partial class _TableName_ConditionalSearch : MyBaseController
         PrimaryKeyAndTimeStamp.Add("_ColumnName_", dt.Rows[e.NewSelectedIndex]["_ColumnName_"].ToString());
         // ControlComment:LoopEnd-PKColumn
         
-        // タイムスタンプ列
-        //<"03-03-2014","Ritu"," Adding timestamp column to dic when its not null. And removed the typecast as it is giving conversion error" <START>
-        if(dt.Rows[e.NewSelectedIndex]["_TimeStampColName_"].GetType()!=typeof(System.DBNull))
-        {
+        // タイムスタンプ列                
+        TS_CommentOut_ if(dt.Rows[e.NewSelectedIndex]["_TimeStampColName_"].GetType()!=typeof(System.DBNull))
+        TS_CommentOut_ {
         TS_CommentOut_ PrimaryKeyAndTimeStamp.Add("_TimeStampColName_", dt.Rows[e.NewSelectedIndex]["_TimeStampColName_"]);
-        }
-	    //<"03-03-2014","Ritu", <END>
-        Session["PrimaryKeyAndTimeStamp"] = PrimaryKeyAndTimeStamp;
-       
+        TS_CommentOut_ }
+        Session["PrimaryKeyAndTimeStamp"] = PrimaryKeyAndTimeStamp;       
     }
 
     /// <summary>gvwGridView1の行選択後イベント</summary>

@@ -1,13 +1,6 @@
 ﻿<%@ Page Language="_CodebehindLanguage_" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" CodeFile="_TableName_Detail.aspx._ClassTemplateFileExtension_" Inherits="_TableName_Detail" Title="_TableName_Detail" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
-
-	データアクセス制御クラス（データプロバイダ）を選択<br />
-    <cc1:WebCustomDropDownList ID="ddlDap" runat="server">
-        <asp:ListItem Value="SQL">SQL Server / SQL Client</asp:ListItem>
-        <asp:ListItem Value="ODP">Oracle / ODP.NET</asp:ListItem>
-    </cc1:WebCustomDropDownList><br />
-    
 	詳細表示<br/>
     <table>
 	<!-- ControlComment:LoopStart-PKColumn -->
@@ -31,4 +24,3 @@
     結果：<asp:Label ID="lblResult" runat="server" ></asp:Label>
     
 </asp:Content>
-
