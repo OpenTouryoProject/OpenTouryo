@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoT_Workflow_D1_Insert
+  -- 2014/7/18 日立 太郎
+  INSERT INTO 
+    [T_Workflow]
+      (
+        <DELCMA>
+          <INSCOL name="WorkflowControlNo">[WorkflowControlNo],</INSCOL>
+          <INSCOL name="SubSystemId">[SubSystemId],</INSCOL>
+          <INSCOL name="WorkflowName">[WorkflowName],</INSCOL>
+          <INSCOL name="UserId">[UserId],</INSCOL>
+          <INSCOL name="UserInfo">[UserInfo],</INSCOL>
+          <INSCOL name="ReserveArea">[ReserveArea],</INSCOL>
+          <INSCOL name="StartDate">[StartDate],</INSCOL>
+          <INSCOL name="EndDate">[EndDate],</INSCOL>
+        </DELCMA>
+      )
+  VALUES
+      (
+        <DELCMA>
+          <IF>@WorkflowControlNo,</IF>
+          <IF>@SubSystemId,</IF>
+          <IF>@WorkflowName,</IF>
+          <IF>@UserId,</IF>
+          <IF>@UserInfo,</IF>
+          <IF>@ReserveArea,</IF>
+          <IF>@StartDate,</IF>
+          <IF>@EndDate,</IF>
+        </DELCMA>
+      )
+</ROOT>
+
+
+

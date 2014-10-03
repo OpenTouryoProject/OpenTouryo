@@ -113,99 +113,86 @@
             this.tabPageManifesto.SuspendLayout();
             this.SuspendLayout();
             // 
+            // folderBrowserDialog1
+            // 
+            resources.ApplyResources(this.folderBrowserDialog1, "folderBrowserDialog1");
+            // 
+            // saveFileDialog1
+            // 
+            resources.ApplyResources(this.saveFileDialog1, "saveFileDialog1");
+            // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
+            resources.ApplyResources(this.openFileDialog1, "openFileDialog1");
             // 
             // lblStatus
             // 
-            this.lblStatus.Location = new System.Drawing.Point(5, 373);
+            resources.ApplyResources(this.lblStatus, "lblStatus");
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(450, 15);
-            this.lblStatus.TabIndex = 0;
-            this.lblStatus.Text = "ステータス";
             // 
             // openFilesDialog1
             // 
             this.openFilesDialog1.FileName = "openFilesDialog1";
-            this.openFilesDialog1.Filter = "ZIPファイル|*.zip";
+            resources.ApplyResources(this.openFilesDialog1, "openFilesDialog1");
             this.openFilesDialog1.Multiselect = true;
             // 
             // panel1
             // 
+            resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Controls.Add(this.tabDeployZipPac);
-            this.panel1.Location = new System.Drawing.Point(1, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(462, 362);
-            this.panel1.TabIndex = 23;
             // 
             // tabDeployZipPac
             // 
+            resources.ApplyResources(this.tabDeployZipPac, "tabDeployZipPac");
             this.tabDeployZipPac.Controls.Add(this.tabPageDeployWithHTTP);
             this.tabDeployZipPac.Controls.Add(this.tabPageZipPackage);
             this.tabDeployZipPac.Controls.Add(this.tabPageManifesto);
-            this.tabDeployZipPac.Location = new System.Drawing.Point(6, 6);
             this.tabDeployZipPac.Name = "tabDeployZipPac";
             this.tabDeployZipPac.SelectedIndex = 0;
-            this.tabDeployZipPac.Size = new System.Drawing.Size(450, 350);
-            this.tabDeployZipPac.TabIndex = 23;
             // 
             // tabPageDeployWithHTTP
             // 
+            resources.ApplyResources(this.tabPageDeployWithHTTP, "tabPageDeployWithHTTP");
             this.tabPageDeployWithHTTP.Controls.Add(this.btnDelHistory);
             this.tabPageDeployWithHTTP.Controls.Add(this.lblHistorys);
             this.tabPageDeployWithHTTP.Controls.Add(this.cmbHistorys);
             this.tabPageDeployWithHTTP.Controls.Add(this.btnCheckUpdateAndInstall);
             this.tabPageDeployWithHTTP.Controls.Add(this.gbxWWW);
             this.tabPageDeployWithHTTP.Controls.Add(this.gbxProxy);
-            this.tabPageDeployWithHTTP.Location = new System.Drawing.Point(4, 21);
             this.tabPageDeployWithHTTP.Name = "tabPageDeployWithHTTP";
-            this.tabPageDeployWithHTTP.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageDeployWithHTTP.Size = new System.Drawing.Size(442, 325);
-            this.tabPageDeployWithHTTP.TabIndex = 0;
-            this.tabPageDeployWithHTTP.Text = "HTTPでデプロイ";
             this.tabPageDeployWithHTTP.UseVisualStyleBackColor = true;
             // 
             // btnDelHistory
             // 
-            this.btnDelHistory.Location = new System.Drawing.Point(344, 7);
+            resources.ApplyResources(this.btnDelHistory, "btnDelHistory");
             this.btnDelHistory.Name = "btnDelHistory";
-            this.btnDelHistory.Size = new System.Drawing.Size(86, 23);
-            this.btnDelHistory.TabIndex = 19;
-            this.btnDelHistory.Text = "削除";
             this.btnDelHistory.UseVisualStyleBackColor = true;
             this.btnDelHistory.Click += new System.EventHandler(this.btnDelHistory_Click);
             // 
             // lblHistorys
             // 
-            this.lblHistorys.AutoSize = true;
-            this.lblHistorys.Location = new System.Drawing.Point(24, 12);
+            resources.ApplyResources(this.lblHistorys, "lblHistorys");
             this.lblHistorys.Name = "lblHistorys";
-            this.lblHistorys.Size = new System.Drawing.Size(57, 12);
-            this.lblHistorys.TabIndex = 9;
-            this.lblHistorys.Text = "設定ロード";
             // 
             // cmbHistorys
             // 
+            resources.ApplyResources(this.cmbHistorys, "cmbHistorys");
             this.cmbHistorys.FormattingEnabled = true;
-            this.cmbHistorys.Location = new System.Drawing.Point(93, 9);
             this.cmbHistorys.Name = "cmbHistorys";
-            this.cmbHistorys.Size = new System.Drawing.Size(245, 20);
-            this.cmbHistorys.TabIndex = 18;
             this.cmbHistorys.SelectedIndexChanged += new System.EventHandler(this.cmbHistorys_SelectedIndexChanged);
             // 
             // btnCheckUpdateAndInstall
             // 
-            this.btnCheckUpdateAndInstall.Location = new System.Drawing.Point(6, 296);
+            resources.ApplyResources(this.btnCheckUpdateAndInstall, "btnCheckUpdateAndInstall");
             this.btnCheckUpdateAndInstall.Name = "btnCheckUpdateAndInstall";
-            this.btnCheckUpdateAndInstall.Size = new System.Drawing.Size(424, 23);
-            this.btnCheckUpdateAndInstall.TabIndex = 14;
-            this.btnCheckUpdateAndInstall.Text = "更新をチェックしてインストール";
             this.btnCheckUpdateAndInstall.UseVisualStyleBackColor = true;
             this.btnCheckUpdateAndInstall.Click += new System.EventHandler(this.btnCheckUpdateAndInstall_Click);
             // 
             // gbxWWW
             // 
+            resources.ApplyResources(this.gbxWWW, "gbxWWW");
             this.gbxWWW.Controls.Add(this.txtURL);
             this.gbxWWW.Controls.Add(this.txtDomain);
             this.gbxWWW.Controls.Add(this.lblDomain);
@@ -214,81 +201,52 @@
             this.gbxWWW.Controls.Add(this.lblPWD);
             this.gbxWWW.Controls.Add(this.lblUID);
             this.gbxWWW.Controls.Add(this.txtUID);
-            this.gbxWWW.Location = new System.Drawing.Point(6, 32);
             this.gbxWWW.Name = "gbxWWW";
-            this.gbxWWW.Size = new System.Drawing.Size(424, 123);
-            this.gbxWWW.TabIndex = 7;
             this.gbxWWW.TabStop = false;
-            this.gbxWWW.Text = "WWWサーバ";
             // 
             // txtURL
             // 
-            this.txtURL.Location = new System.Drawing.Point(87, 16);
+            resources.ApplyResources(this.txtURL, "txtURL");
             this.txtURL.Name = "txtURL";
-            this.txtURL.Size = new System.Drawing.Size(331, 19);
-            this.txtURL.TabIndex = 8;
             // 
             // txtDomain
             // 
-            this.txtDomain.Location = new System.Drawing.Point(87, 91);
+            resources.ApplyResources(this.txtDomain, "txtDomain");
             this.txtDomain.Name = "txtDomain";
-            this.txtDomain.PasswordChar = '*';
-            this.txtDomain.Size = new System.Drawing.Size(331, 19);
-            this.txtDomain.TabIndex = 6;
             // 
             // lblDomain
             // 
-            this.lblDomain.AutoSize = true;
-            this.lblDomain.Location = new System.Drawing.Point(19, 94);
+            resources.ApplyResources(this.lblDomain, "lblDomain");
             this.lblDomain.Name = "lblDomain";
-            this.lblDomain.Size = new System.Drawing.Size(40, 12);
-            this.lblDomain.TabIndex = 7;
-            this.lblDomain.Text = "ドメイン";
             // 
             // lblURL
             // 
-            this.lblURL.AutoSize = true;
-            this.lblURL.Location = new System.Drawing.Point(19, 19);
+            resources.ApplyResources(this.lblURL, "lblURL");
             this.lblURL.Name = "lblURL";
-            this.lblURL.Size = new System.Drawing.Size(27, 12);
-            this.lblURL.TabIndex = 0;
-            this.lblURL.Text = "URL";
             // 
             // txtPWD
             // 
-            this.txtPWD.Location = new System.Drawing.Point(87, 66);
+            resources.ApplyResources(this.txtPWD, "txtPWD");
             this.txtPWD.Name = "txtPWD";
-            this.txtPWD.PasswordChar = '*';
-            this.txtPWD.Size = new System.Drawing.Size(331, 19);
-            this.txtPWD.TabIndex = 4;
             // 
             // lblPWD
             // 
-            this.lblPWD.AutoSize = true;
-            this.lblPWD.Location = new System.Drawing.Point(19, 69);
+            resources.ApplyResources(this.lblPWD, "lblPWD");
             this.lblPWD.Name = "lblPWD";
-            this.lblPWD.Size = new System.Drawing.Size(52, 12);
-            this.lblPWD.TabIndex = 5;
-            this.lblPWD.Text = "パスワード";
             // 
             // lblUID
             // 
-            this.lblUID.AutoSize = true;
-            this.lblUID.Location = new System.Drawing.Point(19, 44);
+            resources.ApplyResources(this.lblUID, "lblUID");
             this.lblUID.Name = "lblUID";
-            this.lblUID.Size = new System.Drawing.Size(46, 12);
-            this.lblUID.TabIndex = 2;
-            this.lblUID.Text = "ユーザID";
             // 
             // txtUID
             // 
-            this.txtUID.Location = new System.Drawing.Point(87, 41);
+            resources.ApplyResources(this.txtUID, "txtUID");
             this.txtUID.Name = "txtUID";
-            this.txtUID.Size = new System.Drawing.Size(331, 19);
-            this.txtUID.TabIndex = 3;
             // 
             // gbxProxy
             // 
+            resources.ApplyResources(this.gbxProxy, "gbxProxy");
             this.gbxProxy.Controls.Add(this.txtProxyDomain);
             this.gbxProxy.Controls.Add(this.lblProxyDomain);
             this.gbxProxy.Controls.Add(this.lblProxyPWD);
@@ -297,81 +255,52 @@
             this.gbxProxy.Controls.Add(this.lblProxyURL);
             this.gbxProxy.Controls.Add(this.txtProxyUID);
             this.gbxProxy.Controls.Add(this.lblProxyUID);
-            this.gbxProxy.Location = new System.Drawing.Point(6, 161);
             this.gbxProxy.Name = "gbxProxy";
-            this.gbxProxy.Size = new System.Drawing.Size(424, 123);
-            this.gbxProxy.TabIndex = 6;
             this.gbxProxy.TabStop = false;
-            this.gbxProxy.Text = "Proxyサーバ";
             // 
             // txtProxyDomain
             // 
-            this.txtProxyDomain.Location = new System.Drawing.Point(87, 93);
+            resources.ApplyResources(this.txtProxyDomain, "txtProxyDomain");
             this.txtProxyDomain.Name = "txtProxyDomain";
-            this.txtProxyDomain.PasswordChar = '*';
-            this.txtProxyDomain.Size = new System.Drawing.Size(331, 19);
-            this.txtProxyDomain.TabIndex = 8;
             // 
             // lblProxyDomain
             // 
-            this.lblProxyDomain.AutoSize = true;
-            this.lblProxyDomain.Location = new System.Drawing.Point(19, 96);
+            resources.ApplyResources(this.lblProxyDomain, "lblProxyDomain");
             this.lblProxyDomain.Name = "lblProxyDomain";
-            this.lblProxyDomain.Size = new System.Drawing.Size(40, 12);
-            this.lblProxyDomain.TabIndex = 9;
-            this.lblProxyDomain.Text = "ドメイン";
             // 
             // lblProxyPWD
             // 
-            this.lblProxyPWD.AutoSize = true;
-            this.lblProxyPWD.Location = new System.Drawing.Point(18, 71);
+            resources.ApplyResources(this.lblProxyPWD, "lblProxyPWD");
             this.lblProxyPWD.Name = "lblProxyPWD";
-            this.lblProxyPWD.Size = new System.Drawing.Size(52, 12);
-            this.lblProxyPWD.TabIndex = 12;
-            this.lblProxyPWD.Text = "パスワード";
             // 
             // txtProxyURL
             // 
-            this.txtProxyURL.Location = new System.Drawing.Point(87, 18);
+            resources.ApplyResources(this.txtProxyURL, "txtProxyURL");
             this.txtProxyURL.Name = "txtProxyURL";
-            this.txtProxyURL.Size = new System.Drawing.Size(331, 19);
-            this.txtProxyURL.TabIndex = 8;
             // 
             // txtProxyPWD
             // 
-            this.txtProxyPWD.Location = new System.Drawing.Point(87, 68);
+            resources.ApplyResources(this.txtProxyPWD, "txtProxyPWD");
             this.txtProxyPWD.Name = "txtProxyPWD";
-            this.txtProxyPWD.PasswordChar = '*';
-            this.txtProxyPWD.Size = new System.Drawing.Size(331, 19);
-            this.txtProxyPWD.TabIndex = 11;
             // 
             // lblProxyURL
             // 
-            this.lblProxyURL.AutoSize = true;
-            this.lblProxyURL.Location = new System.Drawing.Point(19, 21);
+            resources.ApplyResources(this.lblProxyURL, "lblProxyURL");
             this.lblProxyURL.Name = "lblProxyURL";
-            this.lblProxyURL.Size = new System.Drawing.Size(27, 12);
-            this.lblProxyURL.TabIndex = 7;
-            this.lblProxyURL.Text = "URL";
             // 
             // txtProxyUID
             // 
-            this.txtProxyUID.Location = new System.Drawing.Point(87, 43);
+            resources.ApplyResources(this.txtProxyUID, "txtProxyUID");
             this.txtProxyUID.Name = "txtProxyUID";
-            this.txtProxyUID.Size = new System.Drawing.Size(331, 19);
-            this.txtProxyUID.TabIndex = 10;
             // 
             // lblProxyUID
             // 
-            this.lblProxyUID.AutoSize = true;
-            this.lblProxyUID.Location = new System.Drawing.Point(18, 46);
+            resources.ApplyResources(this.lblProxyUID, "lblProxyUID");
             this.lblProxyUID.Name = "lblProxyUID";
-            this.lblProxyUID.Size = new System.Drawing.Size(46, 12);
-            this.lblProxyUID.TabIndex = 9;
-            this.lblProxyUID.Text = "ユーザID";
             // 
             // tabPageZipPackage
             // 
+            resources.ApplyResources(this.tabPageZipPackage, "tabPageZipPackage");
             this.tabPageZipPackage.Controls.Add(this.lblFolder);
             this.tabPageZipPackage.Controls.Add(this.txtFile);
             this.tabPageZipPackage.Controls.Add(this.lblFile);
@@ -386,115 +315,76 @@
             this.tabPageZipPackage.Controls.Add(this.cmbEnc);
             this.tabPageZipPackage.Controls.Add(this.lblPass);
             this.tabPageZipPackage.Controls.Add(this.txtFolder);
-            this.tabPageZipPackage.Location = new System.Drawing.Point(4, 21);
             this.tabPageZipPackage.Name = "tabPageZipPackage";
-            this.tabPageZipPackage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageZipPackage.Size = new System.Drawing.Size(442, 325);
-            this.tabPageZipPackage.TabIndex = 1;
-            this.tabPageZipPackage.Text = "Zipパッケージを作成";
             this.tabPageZipPackage.UseVisualStyleBackColor = true;
             // 
             // lblFolder
             // 
-            this.lblFolder.AutoSize = true;
-            this.lblFolder.Location = new System.Drawing.Point(19, 12);
+            resources.ApplyResources(this.lblFolder, "lblFolder");
             this.lblFolder.Name = "lblFolder";
-            this.lblFolder.Size = new System.Drawing.Size(40, 12);
-            this.lblFolder.TabIndex = 3;
-            this.lblFolder.Text = "フォルダ";
             // 
             // txtFile
             // 
-            this.txtFile.Location = new System.Drawing.Point(94, 34);
+            resources.ApplyResources(this.txtFile, "txtFile");
             this.txtFile.Name = "txtFile";
-            this.txtFile.Size = new System.Drawing.Size(232, 19);
-            this.txtFile.TabIndex = 2;
             // 
             // lblFile
             // 
-            this.lblFile.AutoSize = true;
-            this.lblFile.Location = new System.Drawing.Point(19, 37);
+            resources.ApplyResources(this.lblFile, "lblFile");
             this.lblFile.Name = "lblFile";
-            this.lblFile.Size = new System.Drawing.Size(51, 12);
-            this.lblFile.TabIndex = 4;
-            this.lblFile.Text = "ファイル名";
             // 
             // txtPass
             // 
-            this.txtPass.Enabled = false;
-            this.txtPass.Location = new System.Drawing.Point(94, 110);
+            resources.ApplyResources(this.txtPass, "txtPass");
             this.txtPass.Name = "txtPass";
-            this.txtPass.PasswordChar = '*';
-            this.txtPass.Size = new System.Drawing.Size(327, 19);
-            this.txtPass.TabIndex = 15;
             // 
             // lblEnc
             // 
-            this.lblEnc.AutoSize = true;
-            this.lblEnc.Location = new System.Drawing.Point(19, 87);
+            resources.ApplyResources(this.lblEnc, "lblEnc");
             this.lblEnc.Name = "lblEnc";
-            this.lblEnc.Size = new System.Drawing.Size(42, 12);
-            this.lblEnc.TabIndex = 6;
-            this.lblEnc.Text = "Encode";
             // 
             // btnSelectFolder
             // 
-            this.btnSelectFolder.Location = new System.Drawing.Point(332, 7);
+            resources.ApplyResources(this.btnSelectFolder, "btnSelectFolder");
             this.btnSelectFolder.Name = "btnSelectFolder";
-            this.btnSelectFolder.Size = new System.Drawing.Size(89, 23);
-            this.btnSelectFolder.TabIndex = 1;
-            this.btnSelectFolder.Text = "選択";
             this.btnSelectFolder.UseVisualStyleBackColor = true;
             this.btnSelectFolder.Click += new System.EventHandler(this.btnSelectFolder_Click);
             // 
             // lblExt
             // 
-            this.lblExt.AutoSize = true;
-            this.lblExt.Location = new System.Drawing.Point(19, 62);
+            resources.ApplyResources(this.lblExt, "lblExt");
             this.lblExt.Name = "lblExt";
-            this.lblExt.Size = new System.Drawing.Size(65, 12);
-            this.lblExt.TabIndex = 18;
-            this.lblExt.Text = "除外拡張子";
             // 
             // btnSelectSaveFile
             // 
-            this.btnSelectSaveFile.Location = new System.Drawing.Point(332, 32);
+            resources.ApplyResources(this.btnSelectSaveFile, "btnSelectSaveFile");
             this.btnSelectSaveFile.Name = "btnSelectSaveFile";
-            this.btnSelectSaveFile.Size = new System.Drawing.Size(89, 23);
-            this.btnSelectSaveFile.TabIndex = 7;
-            this.btnSelectSaveFile.Text = "選択";
             this.btnSelectSaveFile.UseVisualStyleBackColor = true;
             this.btnSelectSaveFile.Click += new System.EventHandler(this.btnSelectSaveFile_Click);
             // 
             // cbxExt
             // 
-            this.cbxExt.AutoSize = true;
-            this.cbxExt.Location = new System.Drawing.Point(406, 62);
+            resources.ApplyResources(this.cbxExt, "cbxExt");
             this.cbxExt.Name = "cbxExt";
-            this.cbxExt.Size = new System.Drawing.Size(15, 14);
-            this.cbxExt.TabIndex = 20;
             this.cbxExt.UseVisualStyleBackColor = true;
             this.cbxExt.CheckedChanged += new System.EventHandler(this.cbxExt_CheckedChanged);
             // 
             // txtExt
             // 
-            this.txtExt.Location = new System.Drawing.Point(94, 59);
+            resources.ApplyResources(this.txtExt, "txtExt");
             this.txtExt.Name = "txtExt";
-            this.txtExt.Size = new System.Drawing.Size(306, 19);
-            this.txtExt.TabIndex = 19;
             // 
             // tabZipUnZip
             // 
+            resources.ApplyResources(this.tabZipUnZip, "tabZipUnZip");
             this.tabZipUnZip.Controls.Add(this.tabPageZip);
             this.tabZipUnZip.Controls.Add(this.tabPageUnZip);
-            this.tabZipUnZip.Location = new System.Drawing.Point(6, 137);
             this.tabZipUnZip.Name = "tabZipUnZip";
             this.tabZipUnZip.SelectedIndex = 0;
-            this.tabZipUnZip.Size = new System.Drawing.Size(430, 178);
-            this.tabZipUnZip.TabIndex = 21;
             // 
             // tabPageZip
             // 
+            resources.ApplyResources(this.tabPageZip, "tabPageZip");
             this.tabPageZip.Controls.Add(this.lblRootDirCheck);
             this.tabPageZip.Controls.Add(this.cbxRootDir);
             this.tabPageZip.Controls.Add(this.cbxFormat);
@@ -505,182 +395,120 @@
             this.tabPageZip.Controls.Add(this.lblCyp);
             this.tabPageZip.Controls.Add(this.lblCmpLv);
             this.tabPageZip.Controls.Add(this.cmbCyp);
-            this.tabPageZip.Location = new System.Drawing.Point(4, 21);
             this.tabPageZip.Name = "tabPageZip";
-            this.tabPageZip.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageZip.Size = new System.Drawing.Size(422, 153);
-            this.tabPageZip.TabIndex = 0;
-            this.tabPageZip.Text = "圧縮";
             this.tabPageZip.UseVisualStyleBackColor = true;
             // 
             // lblRootDirCheck
             // 
-            this.lblRootDirCheck.AutoSize = true;
-            this.lblRootDirCheck.Font = new System.Drawing.Font("MS UI Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.lblRootDirCheck.Location = new System.Drawing.Point(25, 105);
+            resources.ApplyResources(this.lblRootDirCheck, "lblRootDirCheck");
             this.lblRootDirCheck.Name = "lblRootDirCheck";
-            this.lblRootDirCheck.Size = new System.Drawing.Size(404, 11);
-            this.lblRootDirCheck.TabIndex = 19;
-            this.lblRootDirCheck.Text = "チェック有り：指定ZIPファイル名をルートZIP内フォルダに含めない（ルート フォルダからの圧縮）。";
             // 
             // cbxRootDir
             // 
-            this.cbxRootDir.AutoSize = true;
-            this.cbxRootDir.Font = new System.Drawing.Font("MS UI Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.cbxRootDir.Location = new System.Drawing.Point(8, 84);
+            resources.ApplyResources(this.cbxRootDir, "cbxRootDir");
             this.cbxRootDir.Name = "cbxRootDir";
-            this.cbxRootDir.Size = new System.Drawing.Size(390, 15);
-            this.cbxRootDir.TabIndex = 18;
-            this.cbxRootDir.Text = "チェック無し：指定ZIPファイル名をルートZIP内フォルダに含める（個別のフォルダ圧縮）。";
             this.cbxRootDir.UseVisualStyleBackColor = true;
             // 
             // cbxFormat
             // 
-            this.cbxFormat.AutoSize = true;
-            this.cbxFormat.Enabled = false;
-            this.cbxFormat.Location = new System.Drawing.Point(396, 61);
+            resources.ApplyResources(this.cbxFormat, "cbxFormat");
             this.cbxFormat.Name = "cbxFormat";
-            this.cbxFormat.Size = new System.Drawing.Size(15, 14);
-            this.cbxFormat.TabIndex = 17;
             this.cbxFormat.UseVisualStyleBackColor = true;
             this.cbxFormat.CheckedChanged += new System.EventHandler(this.cmbFormat_CheckedChanged);
             // 
             // btnCompress
             // 
-            this.btnCompress.Location = new System.Drawing.Point(9, 123);
+            resources.ApplyResources(this.btnCompress, "btnCompress");
             this.btnCompress.Name = "btnCompress";
-            this.btnCompress.Size = new System.Drawing.Size(402, 23);
-            this.btnCompress.TabIndex = 5;
-            this.btnCompress.Text = "圧縮";
             this.btnCompress.UseVisualStyleBackColor = true;
             this.btnCompress.Click += new System.EventHandler(this.btnCompress_Click);
             // 
             // cmbFormat
             // 
+            resources.ApplyResources(this.cmbFormat, "cmbFormat");
             this.cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFormat.FormattingEnabled = true;
-            this.cmbFormat.Location = new System.Drawing.Point(53, 58);
             this.cmbFormat.Name = "cmbFormat";
-            this.cmbFormat.Size = new System.Drawing.Size(337, 20);
-            this.cmbFormat.TabIndex = 14;
             // 
             // lblFormat
             // 
-            this.lblFormat.AutoSize = true;
-            this.lblFormat.Location = new System.Drawing.Point(7, 61);
+            resources.ApplyResources(this.lblFormat, "lblFormat");
             this.lblFormat.Name = "lblFormat";
-            this.lblFormat.Size = new System.Drawing.Size(29, 12);
-            this.lblFormat.TabIndex = 13;
-            this.lblFormat.Text = "形式";
             // 
             // cmbCmpLv
             // 
+            resources.ApplyResources(this.cmbCmpLv, "cmbCmpLv");
             this.cmbCmpLv.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbCmpLv.FormattingEnabled = true;
-            this.cmbCmpLv.Location = new System.Drawing.Point(53, 32);
             this.cmbCmpLv.Name = "cmbCmpLv";
-            this.cmbCmpLv.Size = new System.Drawing.Size(358, 20);
-            this.cmbCmpLv.TabIndex = 12;
             // 
             // lblCyp
             // 
-            this.lblCyp.AutoSize = true;
-            this.lblCyp.Location = new System.Drawing.Point(6, 9);
+            resources.ApplyResources(this.lblCyp, "lblCyp");
             this.lblCyp.Name = "lblCyp";
-            this.lblCyp.Size = new System.Drawing.Size(41, 12);
-            this.lblCyp.TabIndex = 9;
-            this.lblCyp.Text = "暗号化";
             // 
             // lblCmpLv
             // 
-            this.lblCmpLv.AutoSize = true;
-            this.lblCmpLv.Location = new System.Drawing.Point(6, 35);
+            resources.ApplyResources(this.lblCmpLv, "lblCmpLv");
             this.lblCmpLv.Name = "lblCmpLv";
-            this.lblCmpLv.Size = new System.Drawing.Size(41, 12);
-            this.lblCmpLv.TabIndex = 11;
-            this.lblCmpLv.Text = "圧縮Lv";
             // 
             // cmbCyp
             // 
+            resources.ApplyResources(this.cmbCyp, "cmbCyp");
             this.cmbCyp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbCyp.Enabled = false;
             this.cmbCyp.FormattingEnabled = true;
-            this.cmbCyp.Location = new System.Drawing.Point(53, 6);
             this.cmbCyp.Name = "cmbCyp";
-            this.cmbCyp.Size = new System.Drawing.Size(358, 20);
-            this.cmbCyp.TabIndex = 10;
             // 
             // tabPageUnZip
             // 
+            resources.ApplyResources(this.tabPageUnZip, "tabPageUnZip");
             this.tabPageUnZip.Controls.Add(this.btnDecomp);
             this.tabPageUnZip.Controls.Add(this.lblEEFA);
             this.tabPageUnZip.Controls.Add(this.cmbEEFA);
-            this.tabPageUnZip.Location = new System.Drawing.Point(4, 21);
             this.tabPageUnZip.Name = "tabPageUnZip";
-            this.tabPageUnZip.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageUnZip.Size = new System.Drawing.Size(422, 153);
-            this.tabPageUnZip.TabIndex = 1;
-            this.tabPageUnZip.Text = "解凍（テスト）";
             this.tabPageUnZip.UseVisualStyleBackColor = true;
             // 
             // btnDecomp
             // 
-            this.btnDecomp.Location = new System.Drawing.Point(9, 123);
+            resources.ApplyResources(this.btnDecomp, "btnDecomp");
             this.btnDecomp.Name = "btnDecomp";
-            this.btnDecomp.Size = new System.Drawing.Size(380, 23);
-            this.btnDecomp.TabIndex = 6;
-            this.btnDecomp.Text = "解凍";
             this.btnDecomp.UseVisualStyleBackColor = true;
             this.btnDecomp.Click += new System.EventHandler(this.btnDecomp_Click);
             // 
             // lblEEFA
             // 
-            this.lblEEFA.AutoSize = true;
-            this.lblEEFA.Location = new System.Drawing.Point(6, 15);
+            resources.ApplyResources(this.lblEEFA, "lblEEFA");
             this.lblEEFA.Name = "lblEEFA";
-            this.lblEEFA.Size = new System.Drawing.Size(62, 12);
-            this.lblEEFA.TabIndex = 5;
-            this.lblEEFA.Text = "上書き動作";
             // 
             // cmbEEFA
             // 
+            resources.ApplyResources(this.cmbEEFA, "cmbEEFA");
             this.cmbEEFA.FormattingEnabled = true;
-            this.cmbEEFA.Location = new System.Drawing.Point(74, 12);
             this.cmbEEFA.Name = "cmbEEFA";
-            this.cmbEEFA.Size = new System.Drawing.Size(312, 20);
-            this.cmbEEFA.TabIndex = 0;
             // 
             // cmbEnc
             // 
-            this.cmbEnc.Enabled = false;
+            resources.ApplyResources(this.cmbEnc, "cmbEnc");
             this.cmbEnc.FormattingEnabled = true;
             this.cmbEnc.Items.AddRange(new object[] {
-            "utf-8",
-            "shift_jis",
-            "euc-jp"});
-            this.cmbEnc.Location = new System.Drawing.Point(94, 84);
+            resources.GetString("cmbEnc.Items"),
+            resources.GetString("cmbEnc.Items1"),
+            resources.GetString("cmbEnc.Items2")});
             this.cmbEnc.Name = "cmbEnc";
-            this.cmbEnc.Size = new System.Drawing.Size(327, 20);
-            this.cmbEnc.TabIndex = 8;
             // 
             // lblPass
             // 
-            this.lblPass.AutoSize = true;
-            this.lblPass.Location = new System.Drawing.Point(19, 113);
+            resources.ApplyResources(this.lblPass, "lblPass");
             this.lblPass.Name = "lblPass";
-            this.lblPass.Size = new System.Drawing.Size(36, 12);
-            this.lblPass.TabIndex = 16;
-            this.lblPass.Text = "解パス";
             // 
             // txtFolder
             // 
-            this.txtFolder.Location = new System.Drawing.Point(94, 9);
+            resources.ApplyResources(this.txtFolder, "txtFolder");
             this.txtFolder.Name = "txtFolder";
-            this.txtFolder.Size = new System.Drawing.Size(232, 19);
-            this.txtFolder.TabIndex = 0;
             // 
             // tabPageManifesto
             // 
+            resources.ApplyResources(this.tabPageManifesto, "tabPageManifesto");
             this.tabPageManifesto.Controls.Add(this.label3);
             this.tabPageManifesto.Controls.Add(this.label2);
             this.tabPageManifesto.Controls.Add(this.label1);
@@ -692,124 +520,80 @@
             this.tabPageManifesto.Controls.Add(this.btnRemoveZIPFile);
             this.tabPageManifesto.Controls.Add(this.btnAddZIPFile);
             this.tabPageManifesto.Controls.Add(this.lbxZIPFiles);
-            this.tabPageManifesto.Location = new System.Drawing.Point(4, 21);
             this.tabPageManifesto.Name = "tabPageManifesto";
-            this.tabPageManifesto.Size = new System.Drawing.Size(442, 325);
-            this.tabPageManifesto.TabIndex = 2;
-            this.tabPageManifesto.Text = "配置マニュフェストを作成";
             this.tabPageManifesto.UseVisualStyleBackColor = true;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(19, 276);
+            resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(372, 12);
-            this.label3.TabIndex = 11;
-            this.label3.Text = "EXE名（パス）はカンマ区切りで指定可能で、先頭のEXEが起動の対象となる。";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(19, 256);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(388, 12);
-            this.label2.TabIndex = 10;
-            this.label2.Text = "起動するEXEのパスは、[インストール ディレクトリ] + [EXE名（パス）]で構成される。";
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 236);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(412, 12);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "インストール ディレクトリには環境変数を指定可能：%USERPROFILE%\\XXX\\YYY\\ZZZ";
             // 
             // lblInsDir
             // 
-            this.lblInsDir.AutoSize = true;
-            this.lblInsDir.Location = new System.Drawing.Point(19, 191);
+            resources.ApplyResources(this.lblInsDir, "lblInsDir");
             this.lblInsDir.Name = "lblInsDir";
-            this.lblInsDir.Size = new System.Drawing.Size(113, 12);
-            this.lblInsDir.TabIndex = 8;
-            this.lblInsDir.Text = "インストール ディレクトリ";
             // 
             // txtInsDir
             // 
-            this.txtInsDir.Location = new System.Drawing.Point(138, 188);
+            resources.ApplyResources(this.txtInsDir, "txtInsDir");
             this.txtInsDir.Name = "txtInsDir";
-            this.txtInsDir.Size = new System.Drawing.Size(292, 19);
-            this.txtInsDir.TabIndex = 7;
             // 
             // lblExeName
             // 
-            this.lblExeName.AutoSize = true;
-            this.lblExeName.Location = new System.Drawing.Point(63, 212);
+            resources.ApplyResources(this.lblExeName, "lblExeName");
             this.lblExeName.Name = "lblExeName";
-            this.lblExeName.Size = new System.Drawing.Size(69, 12);
-            this.lblExeName.TabIndex = 6;
-            this.lblExeName.Text = "EXE名（パス）";
             // 
             // txtExeName
             // 
-            this.txtExeName.Location = new System.Drawing.Point(138, 209);
+            resources.ApplyResources(this.txtExeName, "txtExeName");
             this.txtExeName.Name = "txtExeName";
-            this.txtExeName.Size = new System.Drawing.Size(292, 19);
-            this.txtExeName.TabIndex = 5;
             // 
             // btnCreateManifesto
             // 
-            this.btnCreateManifesto.Location = new System.Drawing.Point(15, 294);
+            resources.ApplyResources(this.btnCreateManifesto, "btnCreateManifesto");
             this.btnCreateManifesto.Name = "btnCreateManifesto";
-            this.btnCreateManifesto.Size = new System.Drawing.Size(415, 23);
-            this.btnCreateManifesto.TabIndex = 4;
-            this.btnCreateManifesto.Text = "マニュフェストファイルを作成する";
             this.btnCreateManifesto.UseVisualStyleBackColor = true;
             this.btnCreateManifesto.Click += new System.EventHandler(this.btnCreateManifesto_Click);
             // 
             // btnRemoveZIPFile
             // 
-            this.btnRemoveZIPFile.Location = new System.Drawing.Point(15, 158);
+            resources.ApplyResources(this.btnRemoveZIPFile, "btnRemoveZIPFile");
             this.btnRemoveZIPFile.Name = "btnRemoveZIPFile";
-            this.btnRemoveZIPFile.Size = new System.Drawing.Size(415, 23);
-            this.btnRemoveZIPFile.TabIndex = 3;
-            this.btnRemoveZIPFile.Text = "削除する";
             this.btnRemoveZIPFile.UseVisualStyleBackColor = true;
             this.btnRemoveZIPFile.Click += new System.EventHandler(this.btnRemoveZIPFile_Click);
             // 
             // btnAddZIPFile
             // 
-            this.btnAddZIPFile.Location = new System.Drawing.Point(15, 131);
+            resources.ApplyResources(this.btnAddZIPFile, "btnAddZIPFile");
             this.btnAddZIPFile.Name = "btnAddZIPFile";
-            this.btnAddZIPFile.Size = new System.Drawing.Size(415, 23);
-            this.btnAddZIPFile.TabIndex = 2;
-            this.btnAddZIPFile.Text = "追加する";
             this.btnAddZIPFile.UseVisualStyleBackColor = true;
             this.btnAddZIPFile.Click += new System.EventHandler(this.btnAddZIPFile_Click);
             // 
             // lbxZIPFiles
             // 
+            resources.ApplyResources(this.lbxZIPFiles, "lbxZIPFiles");
             this.lbxZIPFiles.FormattingEnabled = true;
-            this.lbxZIPFiles.ItemHeight = 12;
-            this.lbxZIPFiles.Location = new System.Drawing.Point(15, 15);
             this.lbxZIPFiles.Name = "lbxZIPFiles";
-            this.lbxZIPFiles.ScrollAlwaysVisible = true;
-            this.lbxZIPFiles.Size = new System.Drawing.Size(415, 112);
-            this.lbxZIPFiles.TabIndex = 0;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(464, 394);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.lblStatus);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "DeployZipPackWithHTTP";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel1.ResumeLayout(false);
             this.tabDeployZipPac.ResumeLayout(false);
