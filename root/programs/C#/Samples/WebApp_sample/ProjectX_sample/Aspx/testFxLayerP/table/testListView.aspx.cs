@@ -14,6 +14,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  
 //*  2014/08/18  Sai-San           Created test page for ListView control
+//*  2014/10/03  Rituparna         Added ItemCommandEvent to ListView control
 //**********************************************************************************
 
 // System
@@ -256,6 +257,23 @@ public partial class Aspx_testFxLayerP_table_testListView : MyBaseController
         this.BindListViewData();
 
         return "";
+    }
+
+    /// <summary>
+    /// ListView ItemCommand event
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    /// <returns></returns>
+    protected string UOC_lvwListView1_OnItemCommand(object sender, ListViewCommandEventArgs e)
+    {
+        if (String.Equals(e.CommandName, "GetFiedID"))
+        {
+            lblResultOfItemCommand.Text ="You have clicked the FieldID : " + e.CommandArgument.ToString();
+            return "";  
+        }
+        else
+          return null;
     }
 
     /// <summary>
