@@ -6,7 +6,7 @@
     TagPrefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" runat="Server">
     <asp:ListView ID="lvwListView1" runat="server" OnItemEditing="lvwListView1_ItemEditing"
-        OnItemCanceling="lvwListView1_ItemCanceling" DataKeyNames="fileid">        
+        OnItemCanceling="lvwListView1_ItemCanceling" DataKeyNames="fileid">
         <LayoutTemplate>
             <table id="Table1" runat="server">
                 <tr id="Tr1" runat="server">
@@ -45,6 +45,9 @@
                                 </th>
                                 <th id="Th10" runat="server">
                                     Delete
+                                </th>
+                                <th id="Th12" runat="server">
+                                    ItemCommand
                                 </th>
                                 <th id="Th11" runat="server">
                                     Dropdown
@@ -95,6 +98,10 @@
                     <asp:LinkButton ID="lbnDelete" runat="server" CommandName="Delete" Text="Delete" />
                 </td>
                 <td>
+                    <asp:LinkButton runat="server" ID="lbnItemCommand" Text="Add To List" CommandName="GetFiedID"
+                        CommandArgument='<%#Eval("fileid") %>' />
+                </td>
+                <td>
                     <asp:DropDownList ID="ddlDropDownList1" runat="server" AutoPostBack="True" Width="150px">
                         <asp:ListItem>あああ</asp:ListItem>
                         <asp:ListItem>いいい</asp:ListItem>
@@ -103,50 +110,50 @@
                         <asp:ListItem>おおお</asp:ListItem>
                     </asp:DropDownList>
                 </td>
-                </tr>
+            </tr>
         </ItemTemplate>
         <EditItemTemplate>
-        <tr>
-            <td>
-            </td>
-            <td style="float:inherit">
-                <cc1:WebCustomRadioButton ID="rbnRadioButton" runat="server" GroupName="radio-grp1" />
-            </td>
-            <td style="float:inherit">
-                <asp:LinkButton ID="LinkButton2" CommandName="CustomCommand" Text="カスタム" runat="server" />
-            </td>
-            <td style="float:inherit">
-                <asp:TextBox ID="txtFileID" runat="server" Text='<%# Bind("fileid") %>'></asp:TextBox>
-            </td>
-            <td style="float:inherit">
-                <asp:TextBox ID="txtFileName" runat="server" Text='<%# Bind("filename") %>'></asp:TextBox>
-            </td>
-            <td style="float:inherit">
-                <asp:CheckBox ID="cbxReadonly" runat="server" AutoPostBack="true" Checked='<%# Bind("readonly") %>'>
-                </asp:CheckBox>
-            </td>
-            <td style="float:inherit">
-                <asp:TextBox ID="txtFileSize" runat="server" Text='<%# Bind("filesize") %>'></asp:TextBox>
-            </td>
-            <td style="float:inherit">
-                <asp:TextBox ID="txtDate" runat="server" Text='<%# Bind("date") %>'></asp:TextBox>
-            </td>
-            <td style="float:inherit">
-                <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update" />
-                <asp:LinkButton ID="lbnCancel" runat="server" Text="Cancel" CommandName="Cancel" />
-            </td>
-            <td style="float:inherit">
-                <asp:LinkButton ID="lbnDelete" runat="server" CommandName="Delete" Text="Delete" />
-            </td>
-            <td style="float:inherit">
-                <asp:DropDownList ID="ddlDropDownList1" runat="server" AutoPostBack="True" Width="150px">
-                    <asp:ListItem>あああ</asp:ListItem>
-                    <asp:ListItem>いいい</asp:ListItem>
-                    <asp:ListItem>ううう</asp:ListItem>
-                    <asp:ListItem>えええ</asp:ListItem>
-                    <asp:ListItem>おおお</asp:ListItem>
-                </asp:DropDownList>
-            </td>
+            <tr>
+                <td>
+                </td>
+                <td style="float: inherit">
+                    <cc1:WebCustomRadioButton ID="rbnRadioButton" runat="server" GroupName="radio-grp1" />
+                </td>
+                <td style="float: inherit">
+                    <asp:LinkButton ID="LinkButton2" CommandName="CustomCommand" Text="カスタム" runat="server" />
+                </td>
+                <td style="float: inherit">
+                    <asp:TextBox ID="txtFileID" runat="server" Text='<%# Bind("fileid") %>'></asp:TextBox>
+                </td>
+                <td style="float: inherit">
+                    <asp:TextBox ID="txtFileName" runat="server" Text='<%# Bind("filename") %>'></asp:TextBox>
+                </td>
+                <td style="float: inherit">
+                    <asp:CheckBox ID="cbxReadonly" runat="server" AutoPostBack="true" Checked='<%# Bind("readonly") %>'>
+                    </asp:CheckBox>
+                </td>
+                <td style="float: inherit">
+                    <asp:TextBox ID="txtFileSize" runat="server" Text='<%# Bind("filesize") %>'></asp:TextBox>
+                </td>
+                <td style="float: inherit">
+                    <asp:TextBox ID="txtDate" runat="server" Text='<%# Bind("date") %>'></asp:TextBox>
+                </td>
+                <td style="float: inherit">
+                    <asp:LinkButton ID="lbnUpdate" runat="server" Text="Update" CommandName="Update" />
+                    <asp:LinkButton ID="lbnCancel" runat="server" Text="Cancel" CommandName="Cancel" />
+                </td>
+                <td style="float: inherit">
+                    <asp:LinkButton ID="lbnDelete" runat="server" CommandName="Delete" Text="Delete" />
+                </td>
+                <td style="float: inherit">
+                    <asp:DropDownList ID="ddlDropDownList1" runat="server" AutoPostBack="True" Width="150px">
+                        <asp:ListItem>あああ</asp:ListItem>
+                        <asp:ListItem>いいい</asp:ListItem>
+                        <asp:ListItem>ううう</asp:ListItem>
+                        <asp:ListItem>えええ</asp:ListItem>
+                        <asp:ListItem>おおお</asp:ListItem>
+                    </asp:DropDownList>
+                </td>
             </tr>
         </EditItemTemplate>
         <SelectedItemTemplate>
@@ -160,4 +167,5 @@
     <p>
         <asp:Button ID="btnButton1" runat="server" Text="ポストバック" />
     </p>
+   <asp:Label ID="lblResultOfItemCommand" runat="server"></asp:Label>
 </asp:Content>
