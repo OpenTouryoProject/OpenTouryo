@@ -86,13 +86,13 @@ public partial class Aspx_testFxLayerP_normal_testScreen2 : MyBaseController
 
         // クライアントからの業務モードレス画面起動
         this.btnButton9.OnClientClick =
-            this.GetScriptToShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx") 
+            this.GetScriptToShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx")
             + "; return false;";
-        
+
         this.btnButton10.OnClientClick =
             this.GetScriptToShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", "")
             + "; return false;";
-        
+
         this.btnButton11.OnClientClick =
             this.GetScriptToShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", "", "t")
             + "; return false;";
@@ -111,7 +111,7 @@ public partial class Aspx_testFxLayerP_normal_testScreen2 : MyBaseController
     #region 外部パラメータ（アイコン）
 
     #region コンテンツ ページ上のフレームワーク対象コントロール
-    
+
     /// <summary>
     /// btnButton1のクリックイベント
     /// </summary>
@@ -202,7 +202,7 @@ public partial class Aspx_testFxLayerP_normal_testScreen2 : MyBaseController
              "ddlMDropDownList1のSelectedIndexChangedイベント",
              ((DropDownList)this.GetFxWebControl("ddlMDropDownList1")).SelectedValue,
             FxEnum.IconType.Information, "ＧＪ！");
-        
+
         // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
         return "";
     }
@@ -358,6 +358,25 @@ public partial class Aspx_testFxLayerP_normal_testScreen2 : MyBaseController
 
     #endregion
 
+    #region RadioButtonList
+    /// <summary>
+    /// rblRadioButtonList1_SelectedIndexChanged
+    /// </summary>
+    /// <param name="fxEventArgs"></param>
+    /// <returns>URL</returns>
+    protected string UOC_rblRadioButtonList1_SelectedIndexChanged(FxEventArgs fxEventArgs)
+    {
+        // ShowOKMessageDialog for radiobuttonlist
+        this.ShowOKMessageDialog(
+             "rblRadioButtonList1のSelectedIndexChangedイベント",
+             ((RadioButtonList)this.GetFxWebControl("rblRadioButtonList1")).SelectedValue,
+            FxEnum.IconType.Information, "ＧＪ！");
+
+        // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+        return "";
+    }
+    #endregion
+
     #region CheckBox
 
     #region マスタ ページ上のフレームワーク対象コントロール
@@ -436,6 +455,25 @@ public partial class Aspx_testFxLayerP_normal_testScreen2 : MyBaseController
 
     #endregion
 
+    #endregion
+
+    #region CheckboxList
+    /// <summary>
+    /// UOC_cblCheckBoxList1_SelectedIndexChanged
+    /// </summary>
+    /// <param name="fxEventArgs"></param>
+    /// <returns>URL</returns>
+    protected string UOC_cblCheckBoxList1_SelectedIndexChanged(FxEventArgs fxEventArgs)
+    {
+        //  ShowOKMessageDialog for checkboxlist
+        this.ShowOKMessageDialog(
+             "cblCheckBoxList1のSelectedIndexChangedイベント",
+             ((CheckBoxList)this.GetFxWebControl("cblCheckBoxList1")).SelectedValue,
+            FxEnum.IconType.Information, "ＧＪ！");
+
+        // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+        return "";
+    }
     #endregion
 
     #region モーダル ダイアログのＩ / Ｆ
@@ -554,5 +592,4 @@ public partial class Aspx_testFxLayerP_normal_testScreen2 : MyBaseController
     }
 
     #endregion
-
 }
