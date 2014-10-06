@@ -1,7 +1,10 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/TestScreen2.master" AutoEventWireup="true" CodeFile="testScreen2.aspx.cs" Inherits="Aspx_testFxLayerP_normal_testScreen2" Title="Untitled Page" %>
-<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/TestScreen2.master" AutoEventWireup="true"
+    CodeFile="testScreen2.aspx.cs" Inherits="Aspx_testFxLayerP_normal_testScreen2"
+    Title="Untitled Page" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl"
+    TagPrefix="cc1" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" runat="Server">
     <!-- Copyright (C) 2007,2014 Hitachi Solutions,Ltd. -->
     コンテンツ ページ１（個別）<br />
     <table border="1">
@@ -22,7 +25,8 @@
         <tr>
             <td>
                 ・DropDownList<br />
-                <cc1:WebCustomDropDownList ID="ddlDropDownList1" runat="server" AutoPostBack="True" Width="150px">
+                <cc1:WebCustomDropDownList ID="ddlDropDownList1" runat="server" AutoPostBack="True"
+                    Width="150px">
                     <asp:ListItem>あああ</asp:ListItem>
                     <asp:ListItem>いいい</asp:ListItem>
                     <asp:ListItem>ううう</asp:ListItem>
@@ -33,8 +37,10 @@
                 ※ AutoPostBack = True<br />
                 <br />
                 ・RadioButton<br />
-                <cc1:WebCustomRadioButton ID="rbnRadioButton1" runat="server" AutoPostBack="True" GroupName="Group1" Text="ＣＲＢ１" />
-                <cc1:WebCustomRadioButton ID="rbnRadioButton2" runat="server" AutoPostBack="True" GroupName="Group1" Text="ＣＲＢ２" />
+                <cc1:WebCustomRadioButton ID="rbnRadioButton1" runat="server" AutoPostBack="True"
+                    GroupName="Group1" Text="ＣＲＢ１" />
+                <cc1:WebCustomRadioButton ID="rbnRadioButton2" runat="server" AutoPostBack="True"
+                    GroupName="Group1" Text="ＣＲＢ２" />
                 <br />
                 ※ AutoPostBack = True<br />
                 <br />
@@ -43,6 +49,32 @@
                 <cc1:WebCustomCheckBox ID="cbxCheckBox2" runat="server" AutoPostBack="True" Text="ＣＣＢ２" />
                 <br />
                 ※ AutoPostBack = True<br />
+                <br />
+                ・RadioButtonList<br />
+                <cc1:WebCustomRadioButtonList ID="rblRadioButtonList1" runat="server" AutoPostBack="True"
+                    Width="150px">
+                    <asp:ListItem>あああ</asp:ListItem>
+                    <asp:ListItem>いいい</asp:ListItem>
+                    <asp:ListItem>ううう</asp:ListItem>
+                    <asp:ListItem>えええ</asp:ListItem>
+                    <asp:ListItem>おおお</asp:ListItem>
+                </cc1:WebCustomRadioButtonList>
+                <br />
+                ※ AutoPostBack = True<br />
+                <br />
+                 <br />
+                ・CheckboxList<br />
+                <cc1:WebCustomCheckBoxList ID="cblCheckBoxList1" runat="server" AutoPostBack="True"
+                    Width="150px">
+                    <asp:ListItem>あああ</asp:ListItem>
+                    <asp:ListItem>いいい</asp:ListItem>
+                    <asp:ListItem>ううう</asp:ListItem>
+                    <asp:ListItem>えええ</asp:ListItem>
+                    <asp:ListItem>おおお</asp:ListItem>
+                </cc1:WebCustomCheckBoxList>
+                <br />
+                ※ AutoPostBack = True<br />
+                <br />
             </td>
             <td>
                 ・ListBox<br />
@@ -60,9 +92,10 @@
                 <cc1:WebCustomButton ID="btnButton1" runat="server" Text="Ｙｅｓ・Ｎｏ" Width="220px" /><br />
                 <cc1:WebCustomLinkButton ID="lbnLinkButton1" runat="server" Width="220px">ＯＫ（ｉ）</cc1:WebCustomLinkButton><br />
                 <cc1:WebCustomImageButton ID="ibnImageButton1" runat="server" ToolTip="ＯＫ（！）" /><br />
-                <cc1:WebCustomImageMap ID="impImageMap1" runat="server" ToolTip="ＯＫ（×）" >
+                <cc1:WebCustomImageMap ID="impImageMap1" runat="server" ToolTip="ＯＫ（×）">
                     <asp:CircleHotSpot HotSpotMode="PostBack" PostBackValue="spot1" X="100" Y="50" Radius="30" />
-                    <asp:RectangleHotSpot Bottom="180" HotSpotMode="PostBack" Left="120" PostBackValue="spot2" Right="180" Top="120" />
+                    <asp:RectangleHotSpot Bottom="180" HotSpotMode="PostBack" Left="120" PostBackValue="spot2"
+                        Right="180" Top="120" />
                     <asp:PolygonHotSpot Coordinates="25,110,10,190,90,190" HotSpotMode="PostBack" PostBackValue="spot3" />
                 </cc1:WebCustomImageMap>
             </td>
@@ -95,4 +128,3 @@
         </tr>
     </table>
 </asp:Content>
-

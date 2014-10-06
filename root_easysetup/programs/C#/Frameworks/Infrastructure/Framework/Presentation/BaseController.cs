@@ -86,6 +86,8 @@
 //*  2012/06/18  西野  大介        Screenタグの中にコメントを記述可能にした。
 //*  2014/03/03  西野  大介        ユーザ コントロールのインスタンスの区別。
 //*  2014/08/18  Sai-San           Added Postback Value, events and event handlers for ListView events.   
+//*  2014/10/03  Rituparna         Added code for Supporting ItemCommand event to ListViewControl. 
+//*  2014/10/03  Rituparna         Added code SelectedIndexChanged for RadiobuttonList and CheckBoxList. 
 //**********************************************************************************
 
 // 処理に必要
@@ -1434,13 +1436,28 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     {
                         object[] listViewEventHandlers = new object[]{
                         new EventHandler<ListViewDeleteEventArgs>(this.ListView_ItemDeleting),
-                        new EventHandler<ListViewUpdateEventArgs>(this.ListView_ItemUpdating),
+                        new EventHandler<ListViewUpdateEventArgs>(this.ListView_ItemUpdating),                       
                         new EventHandler(this.ListView_PagePropertiesChanged),
-                        new EventHandler<ListViewSortEventArgs>(this.ListView_Sorting),
-                        new EventHandler(this.List_SelectedIndexChanged)                        
+                        new EventHandler<ListViewSortEventArgs>(this.ListView_Sorting),                         
+                        new EventHandler(this.List_SelectedIndexChanged),
+                         new EventHandler<ListViewCommandEventArgs>(this.ListView_OnItemCommand)
                         };
 
                         prefixAndEvtHndHt.Add(prefix, listViewEventHandlers);
+                    }
+
+                    // RADIO BUTTON LIST
+                    prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_RADIOBUTTONLIST);
+                    if (!string.IsNullOrEmpty(prefix))
+                    {
+                        prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.List_SelectedIndexChanged));
+                    }
+
+                    //CHECKBOX LIST
+                    prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_CHECKBOXLIST);
+                    if (!string.IsNullOrEmpty(prefix))
+                    {
+                        prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.List_SelectedIndexChanged));
                     }
 
                     // コントロール検索＆イベントハンドラ設定
@@ -1884,7 +1901,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         #region その他イベントに対応した集約イベント ハンドラ
 
         /// <summary>
-        /// DropDownList、ListBox、GridView（など）の
+        /// DropDownList、ListBox、GridView,RadioButtonList,CheckBoxList（など）の
         /// SelectedIndexChangedイベントに対応した集約イベント ハンドラ
         /// ※ イベント・ハンドラ自体は、コントロールを区別しない。
         /// </summary>
@@ -1897,6 +1914,8 @@ namespace Touryo.Infrastructure.Framework.Presentation
             // ワーク
             DropDownList ddl = null;
             ListBox lbx = null;
+            RadioButtonList rbl = null;
+            CheckBoxList cbl = null;
             object namingContainer = null;
 
             // 型を識別し、NamingContainerを取得
@@ -1909,6 +1928,16 @@ namespace Touryo.Infrastructure.Framework.Presentation
             {
                 lbx = (ListBox)sender;
                 namingContainer = lbx.NamingContainer;
+            }
+            else if (sender is RadioButtonList)
+            {
+                rbl = (RadioButtonList)sender;
+                namingContainer = rbl.NamingContainer;
+            }
+            else if (sender is CheckBoxList)
+            {
+                cbl = (CheckBoxList)sender;
+                namingContainer = cbl.NamingContainer;
             }
 
             // NamingContainerを識別し、PostBackValueを取得
@@ -2121,6 +2150,22 @@ namespace Touryo.Infrastructure.Framework.Presentation
             this.CMN_Event_Handler(fxEventArgs, e);
         }
 
+        #region ListView
+        /// <summary>
+        /// ListViewのItemCommand event handler method
+        /// </summary>
+        protected void ListView_OnItemCommand(object sender, ListViewCommandEventArgs e)
+        {
+            // ItemCommand method
+            FxEventArgs fxEventArgs = new FxEventArgs(
+                ((System.Web.UI.Control)(sender)).ID, "OnItemCommand",
+                0, 0, e.CommandArgument.ToString(), // ★ RowIndexがPostBackValue
+                this.GetMethodName(((System.Web.UI.Control)(sender)).ID,
+                    FxLiteral.UOC_METHOD_FOOTER_LISTVIEW_ROW_ITEMCOMMAND));
+
+            // クリック イベント処理の共通メソッド
+            this.CMN_Event_Handler(fxEventArgs, e);
+        }
         /// <summary>
         /// Listview Paging  event handler method
         /// </summary>
@@ -4723,3 +4768,4 @@ namespace Touryo.Infrastructure.Framework.Presentation
         #endregion
     }
 }
+        #endregion
