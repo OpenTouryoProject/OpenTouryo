@@ -100,6 +100,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Workflow\DaoM_User.vb" />
+    <Compile Include="Workflow\DaoM_Workflow.vb" />
+    <Compile Include="Workflow\DaoT_CurrentWorkflow.vb" />
+    <Compile Include="Workflow\DaoT_Workflow.vb" />
+    <Compile Include="Workflow\DaoT_WorkflowHistory.vb" />
+    <Compile Include="Workflow\Workflow.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
