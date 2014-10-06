@@ -51,7 +51,9 @@
 //*  2011/10/09  西野  大介        国際化対応
 //*  2013/12/23  西野  大介        アクセス修飾子をすべてpublicに変更した。
 //*  2014/02/03  西野  大介        国際化対応のスイッチ（app.config）を追加した。
-//*  2014/08/18  Sai-San           Added constants for ListView events and prefix. 
+//*  2014/08/18  Sai-San           Added constants for ListView events and prefix.
+//*  2014/10/03  Rituparna         Added constants for ListView events and prefix for supporting ItemCommand event.
+//*  2014/10/03  Rituparna         Added constants for RadioButtonList,CheckBoxList events and prefix. 
 //**********************************************************************************
 
 // System
@@ -231,6 +233,12 @@ namespace Touryo.Infrastructure.Framework.Util
         /// <summary>Key to set the prefix of the List view.</summary>
         public const string PREFIX_OF_LISTVIEW = "FxPrefixOfListView";
 
+        /// <summary>Key to set the prefix of the RadioButtonList.</summary>
+        public const string PREFIX_OF_RADIOBUTTONLIST = "FxPrefixOfRadioButtonList";
+
+        /// <summary>Key to set the prefix of the RadioButtonList.</summary>
+        public const string PREFIX_OF_CHECKBOXLIST = "FxPrefixOfCheckBoxList";
+
         #region Windows Forms
 
         /// <summary>ピクチャー ボックスのプレフィックスを設定するキー。</summary>
@@ -304,6 +312,9 @@ namespace Touryo.Infrastructure.Framework.Util
 
         /// <summary>UOCメソッドフッタ（RowDeleting）</summary>
         public const string UOC_METHOD_FOOTER_LISTVIEW_ROW_DELETING = "ItemDeleting";
+
+        /// <summary>UOCメソッドフッタ（RowCommand）</summary>
+        public const string UOC_METHOD_FOOTER_LISTVIEW_ROW_ITEMCOMMAND = "OnItemCommand";
 
         /// <summary>UOCメソッドフッタ（PagePropertiesChanged）</summary>
         public const string UOC_METHOD_FOOTER_LISTVIEW_PAGE_PROPERTIES_CHANGED = "PagePropertiesChanged";
