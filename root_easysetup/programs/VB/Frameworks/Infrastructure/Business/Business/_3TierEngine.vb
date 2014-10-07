@@ -4,9 +4,6 @@
 
 #Region "Apache License"
 '
-'  
-' 
-'  
 ' Licensed under the Apache License, Version 2.0 (the "License");
 ' you may not use this file except in compliance with the License. 
 ' You may obtain a copy of the License at
@@ -31,8 +28,13 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  2013/01/10  西野　大介        新規作成
-'*
-'**********************************************************************************
+'*  2014/07/14  西野　大介        関連チェック処理を実装可能に
+'*  2014/07/17  Sai-San           Added Select count query and select paging query constants and checks for PostgreSQL db support 
+'*                                Added UOC_RelatedCheck override method and method calls in methods
+'*                                'UOC_InsertRecord', 'UOC_UpdateRecord', 'UOC_DeleteRecord' and 'UOC_BatchUpdate' 
+'*  2014/07/21   Rituparna        Added SelectCount and SelectPaging query constatnts and check for MySql db support
+'*  2014/08/14   Santosh Avaji    Added code to get count of records using SelectCount query constant and get set of records with paging using SelectPaging query constant and aslo added if condition for DB2 support 
+'*'**********************************************************************************
 
 ' レイトバインド用
 Imports System.Reflection
@@ -73,30 +75,49 @@ Namespace Touryo.Infrastructure.Business.Business
 	''' <summary>三層データバインド用の業務コードクラス・エンジン</summary>
 	Public Class _3TierEngine
 		Inherits MyFcBaseLogic
-		#Region "定数・変数"
+#Region "定数・変数"
 
-		#Region "テンプレート類"
+#Region "テンプレート類"
 
 		''' <summary>データ件数取得SQLテンプレート</summary>
 		Private Const SELECT_COUNT_SQL_TEMPLATE As String = "SELECT COUNT(*) FROM {0} {1}"
+
+        ''' <summary>Select count query for PostgreSQL</summary>
+        Private Const SELECT_COUNT_POSTGRESQL_TEMPLATE As String = "SELECT COUNT(*) FROM ""{0}"" {1}"
 
 		''' <summary>データ取得SQLテンプレート（DBMSによって可変となる）</summary>
 		''' <remarks>SQL Server用</remarks>
 		Private Const SELECT_PAGING_SQL_TEMPLATE_SQL_SERVER As String = "WITH [OrderedTable] AS (SELECT {0}, ROW_NUMBER() OVER (ORDER BY [{1}] {2}) [rnum] FROM {3} {4}) SELECT {0} FROM [OrderedTable] WHERE [rnum] BETWEEN {5} AND {6}"
 
+        '''<summary>Select query for PostGreSQL</summary>
+        Private Const SELECT_PAGING_SQL_TEMPLATE_POSTGRESQL As String =
+            "SELECT {0} FROM ( SELECT {0}, ROW_NUMBER() OVER (ORDER BY ""{1}"" {2}) ""RNUM"" FROM ""{3}"" {4} ) AS Temp WHERE ""RNUM"" BETWEEN {5} AND {6}"
+
 		''' <summary>データ取得SQLテンプレート（DBMSによって可変となる）</summary>
 		''' <remarks>Oracle用</remarks>
 		Private Const SELECT_PAGING_SQL_TEMPLATE_ORACLE As String = "SELECT {0} FROM ( SELECT {0}, ROW_NUMBER() OVER (ORDER BY ""{1}"" {2}) ""RNUM"" FROM ""{3}"" {4} ) WHERE ""RNUM"" BETWEEN {5} AND {6}"
+
+        ''' <summary>
+        '''Selectpaging query from Mysql Database
+        ''' </summary>
+        Private Const SELECT_PAGING_MYSQL_TEMPLATE As String =
+            "SELECT * FROM(SELECT * FROM ( SELECT *,  @i := @i + 1 AS RESULT FROM {3},(SELECT @i := 0) TEMP ORDER BY ""{1}""  {2}) TEMP1 {4})TEMP3 WHERE RESULT BETWEEN {5} AND {6}"
+
+        '''<summary>
+        ''' Select Paging Query For DB2 database
+        ''' </summary>
+        Private Const SELECT_PAGING_DB2_TEMPLATE As String =
+            "SELECT * FROM (SELECT {0}, ROW_NUMBER() OVER (ORDER BY {1} {2}) AS ROWNUM FROM {3} {4}) WHERE ROWNUM BETWEEN {5} AND {6}"
 
 		''' <summary>Where句生成SQLテンプレート（＝）</summary>
 		Private Const WHERE_SQL_TEMPLATE_EQUAL As String = "_s__ColName__e_ = _p__ParamName_"
 
 		''' <summary>Where句生成SQLテンプレート（Like）</summary>
-		Private Const WHERE_SQL_TEMPLATE_LIKE As String = "_s__ColName__e_ Like _p__ParamName_"
+        Private Const WHERE_SQL_TEMPLATE_LIKE As String = "_s__ColName__f__e_ Like _p__ParamName_"
 
-		#End Region
+#End Region
 
-		#Region "墨壷2のパラメタ"
+#Region "墨壷2のパラメタ"
 
 		' Daoクラス名のヘッダ・フッタ
 		Private DaoClassNameHeader As String
@@ -125,11 +146,11 @@ Namespace Touryo.Infrastructure.Business.Business
 		Private LikeParamHeader As String
 		Private LikeParamFooter As String
 
-		#End Region
+#End Region
 
-		#End Region
+#End Region
 
-		#Region "初期化"
+#Region "初期化"
 
 		''' <summary>コンストラクタ</summary>
 		Public Sub New()
@@ -168,7 +189,7 @@ Namespace Touryo.Infrastructure.Business.Business
 		''' <param name="rdt">DropDownListItemのDatatable</param>
 		''' <param name="rvalueIndex">値のIndex</param>
 		''' <param name="rtextIndex">表示名のIndex</param>
-		Public Shared Sub CreateDropDownListDataSourceDataTable(pdt As DataTable, pvalueIndex As String, ptextIndex As String, ByRef rdt As DataTable, rvalueIndex As String, rtextIndex As String)
+        Public Shared Sub CreateDropDownListDataSourceDataTable(ByVal pdt As DataTable, ByVal pvalueIndex As String, ByVal ptextIndex As String, ByRef rdt As DataTable, ByVal rvalueIndex As String, ByVal rtextIndex As String)
 			' 列生成
 			rdt = New DataTable()
 			' 自動生成テンプレートのベースがテキスト・ボックスなのでStringで良い。
@@ -187,13 +208,13 @@ Namespace Touryo.Infrastructure.Business.Business
 			rdt.AcceptChanges()
 		End Sub
 
-		#End Region
+#End Region
 
-		#Region "テンプレ"
+#Region "テンプレ"
 
 		''' <summary>業務処理を実装</summary>
 		''' <param name="parameterValue">引数クラス</param>
-		Private Sub UOC_メソッド名(parameterValue As BaseParameterValue)
+        Private Sub UOC_メソッド名(ByVal parameterValue As BaseParameterValue)
 			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
 			Dim testReturn As New _3TierReturnValue()
 			Me.ReturnValue = testReturn
@@ -207,13 +228,13 @@ Namespace Touryo.Infrastructure.Business.Business
 			' ↑業務処理-----------------------------------------------------
 		End Sub
 
-		#End Region
+#End Region
 
-		#Region "一覧系"
+#Region "一覧系"
 
 		''' <summary>データ件数取得処理を実装</summary>
 		''' <param name="parameterValue">引数クラス</param>
-		Private Sub UOC_SelectCountMethod(parameterValue As _3TierParameterValue)
+        Private Sub UOC_SelectCountMethod(ByVal parameterValue As _3TierParameterValue)
 			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
@@ -231,6 +252,8 @@ Namespace Touryo.Infrastructure.Business.Business
 			Dim s As String = ""
 			' 囲い記号開始
 			Dim e As String = ""
+            ' 囲い記号開始
+            Dim f As String = ""
 			' 囲い記号終了
 			' 囲い文字の選択
 			If parameterValue.DBMSType = DbEnum.DBMSType.SQLServer Then
@@ -241,14 +264,32 @@ Namespace Touryo.Infrastructure.Business.Business
 				p = ":"
 				s = """"
 				e = """"
+            ElseIf parameterValue.DBMSType = DbEnum.DBMSType.PstGrS Then
+                p = "@"
+                f = "::text"
+            ElseIf parameterValue.DBMSType = DbEnum.DBMSType.MySQL Or parameterValue.DBMSType = DbEnum.DBMSType.DB2 Then
+                p = "@"
+                s = """"
+                e = """"
 			Else
 				p = "@"
 				s = "["
 				e = "]"
 			End If
 
-			' SQLを設定して
-			cmnDao.SQLText = String.Format(SELECT_COUNT_SQL_TEMPLATE, s & Convert.ToString(parameterValue.TableName) & e, whereSQL).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e)
+            If parameterValue.DBMSType = DbEnum.DBMSType.PstGrS Then
+			' Set the Query for PostgreSQL database
+                cmnDao.SQLText = String.Format(SELECT_COUNT_POSTGRESQL_TEMPLATE, s & Convert.ToString(parameterValue.TableName) & e, _
+                                               whereSQL).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f)
+            ElseIf parameterValue.DBMSType = DbEnum.DBMSType.MySQL Then
+                cmnDao.SQLText = String.Format(SELECT_COUNT_SQL_TEMPLATE, _
+                 parameterValue.TableName, whereSQL).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f).Replace("""", String.Empty)
+
+            Else
+                ' SQLを設定して
+                cmnDao.SQLText = String.Format(SELECT_COUNT_SQL_TEMPLATE, s & Convert.ToString(parameterValue.TableName) & e, _
+                                               whereSQL).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f)
+            End If
 
 			' パラメタは指定済み
 
@@ -260,7 +301,7 @@ Namespace Touryo.Infrastructure.Business.Business
 
 		''' <summary>データ取得処理を実装</summary>
 		''' <param name="parameterValue">引数クラス</param>
-		Private Sub UOC_SelectMethod(parameterValue As _3TierParameterValue)
+        Private Sub UOC_SelectMethod(ByVal parameterValue As _3TierParameterValue)
 			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
@@ -280,7 +321,9 @@ Namespace Touryo.Infrastructure.Business.Business
 			Dim s As String = ""
 			' 囲い記号開始
 			Dim e As String = ""
-			' 囲い記号終了
+            ' 囲い記号開始
+            Dim f As String = ""
+			' For supporting type casting in PostgreSQL
 			' テンプレート、囲い文字の選択
 			If parameterValue.DBMSType = DbEnum.DBMSType.SQLServer Then
 				selectPagingSqlTemplate = SELECT_PAGING_SQL_TEMPLATE_SQL_SERVER
@@ -294,21 +337,44 @@ Namespace Touryo.Infrastructure.Business.Business
 				p = ":"
 				s = """"
 				e = """"
-			Else
-				selectPagingSqlTemplate = SELECT_PAGING_SQL_TEMPLATE_SQL_SERVER
+            ElseIf parameterValue.DBMSType = DbEnum.DBMSType.PstGrS Then
+                selectPagingSqlTemplate = SELECT_PAGING_SQL_TEMPLATE_POSTGRESQL
 
-				p = "@"
-				s = "["
-				e = "]"
+                p = "@"
+                f = "::text"
+
+            ElseIf parameterValue.DBMSType = DbEnum.DBMSType.MySQL Then
+                selectPagingSqlTemplate = SELECT_PAGING_MYSQL_TEMPLATE
+                p = "@"
+                s = """"
+                e = """"
+            ElseIf parameterValue.DBMSType = DbEnum.DBMSType.DB2 Then
+                selectPagingSqlTemplate = SELECT_PAGING_DB2_TEMPLATE
+                p = "@"
+                s = """"
+                e = """"
+            Else
+                selectPagingSqlTemplate = SELECT_PAGING_SQL_TEMPLATE_SQL_SERVER
+
+                p = "@"
+                s = "["
+                e = "]"
 			End If
 
 			Dim startRowNum As Integer = parameterValue.StartRowIndex + 1
 
+            Dim selectPagingSQL As String = String.Empty
+
+            If parameterValue.DBMSType = DbEnum.DBMSType.MySQL Then
+                selectPagingSQL = String.Format(selectPagingSqlTemplate, New String() {parameterValue.ColumnList, parameterValue.SortExpression, parameterValue.SortDirection, _
+                    parameterValue.TableName, whereSQL, startRowNum.ToString(), (startRowNum + parameterValue.MaximumRows).ToString()}).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f).Replace("""", String.Empty)
+            Else
+
 			' SQL本体の生成（いろいろ組み込み
 			'（DBMSによって可変となる可能性有り）
-			Dim selectPagingSQL As String = String.Format(selectPagingSqlTemplate, New String() {parameterValue.ColumnList, parameterValue.SortExpression, parameterValue.SortDirection, s & Convert.ToString(parameterValue.TableName) & e, whereSQL, startRowNum.ToString(), _
-				(startRowNum + parameterValue.MaximumRows).ToString()}).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e)
-
+                selectPagingSQL = String.Format(selectPagingSqlTemplate, New String() {parameterValue.ColumnList, parameterValue.SortExpression, parameterValue.SortDirection, s & Convert.ToString(parameterValue.TableName) & e, whereSQL, startRowNum.ToString(), _
+                 (startRowNum + parameterValue.MaximumRows).ToString()}).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f)
+            End If
 			' DataTableをインスタンス化
 			If parameterValue.DataTableType Is Nothing Then
 				' == null
@@ -332,13 +398,13 @@ Namespace Touryo.Infrastructure.Business.Business
 			' ↑業務処理-----------------------------------------------------
 		End Sub
 
-		#Region "共通処理"
+#Region "共通処理"
 
 		''' <summary>検索条件の設定</summary>
 		''' <param name="parameterValue">引数クラス</param>
 		''' <param name="cmnDao">共通Dao</param>
 		''' <returns>Where句</returns>
-		Private Function SetSearchConditions(parameterValue As _3TierParameterValue, cmnDao As CmnDao) As String
+        Private Function SetSearchConditions(ByVal parameterValue As _3TierParameterValue, ByVal cmnDao As CmnDao) As String
 			'  検索条件
 			Dim whereSQL As String = ""
 
@@ -528,7 +594,7 @@ Namespace Touryo.Infrastructure.Business.Business
 		''' <param name="parameterValue">パラメタ値</param>
 		''' <param name="isLike">Likeか？</param>
 		''' <returns>生成したWhere句SQL</returns>
-		Private Function GenWhereAndSetParameter(whereSqlTemplate As String, whereSQL As String, cmnDao As CmnDao, parameterName As String, parameterValue As Object, isLike As Boolean) As String
+        Private Function GenWhereAndSetParameter(ByVal whereSqlTemplate As String, ByVal whereSQL As String, ByVal cmnDao As CmnDao, ByVal parameterName As String, ByVal parameterValue As Object, ByVal isLike As Boolean) As String
 			' Where句生成
 					' 先頭は何もしない。
 			If String.IsNullOrEmpty(whereSQL) Then
@@ -563,8 +629,8 @@ Namespace Touryo.Infrastructure.Business.Business
 		''' <param name="parameterNumber">パラメタ番号</param>
 		''' <param name="isLike">Likeか？</param>
 		''' <returns>生成したWhere句SQL</returns>
-		Private Function GenWhereOrSetParameter(whereSqlTemplate As String, whereSQL As String, cmnDao As CmnDao, parameterName As String, parameterValue As Object, parameterNumber As Integer, _
-			isLike As Boolean) As String
+        Private Function GenWhereOrSetParameter(ByVal whereSqlTemplate As String, ByVal whereSQL As String, ByVal cmnDao As CmnDao, ByVal parameterName As String, ByVal parameterValue As Object, ByVal parameterNumber As Integer, _
+         ByVal isLike As Boolean) As String
 			' Where句生成
 					' 先頭は何もしない。
 			If String.IsNullOrEmpty(whereSQL) Then
@@ -590,18 +656,21 @@ Namespace Touryo.Infrastructure.Business.Business
 			Return whereSQL
 		End Function
 
-		#End Region
+#End Region
 
-		#End Region
+#End Region
 
-		#Region "CRUD系"
+#Region "CRUD系"
 
 		''' <summary>１件追加処理を実装</summary>
 		''' <param name="parameterValue">引数クラス</param>
-		Private Sub UOC_InsertRecord(parameterValue As _3TierParameterValue)
+        Private Sub UOC_InsertRecord(ByVal parameterValue As _3TierParameterValue)
 			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
+
+			' 関連チェック処理
+			Me.UOC_RelatedCheck(parameterValue)
 
 			' ↓業務処理-----------------------------------------------------
 
@@ -645,10 +714,13 @@ Namespace Touryo.Infrastructure.Business.Business
 
 		''' <summary>１件取得処理を実装</summary>
 		''' <param name="parameterValue">引数クラス</param>
-		Private Sub UOC_SelectRecord(parameterValue As _3TierParameterValue)
+        Private Sub UOC_SelectRecord(ByVal parameterValue As _3TierParameterValue)
 			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
+
+			' 関連チェック処理
+			Me.UOC_RelatedCheck(parameterValue)
 
 			' ↓業務処理-----------------------------------------------------
 
@@ -703,10 +775,13 @@ Namespace Touryo.Infrastructure.Business.Business
 
 		''' <summary>１件更新処理を実装</summary>
 		''' <param name="parameterValue">引数クラス</param>
-		Private Sub UOC_UpdateRecord(parameterValue As _3TierParameterValue)
+        Private Sub UOC_UpdateRecord(ByVal parameterValue As _3TierParameterValue)
 			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
+
+			' 関連チェック処理
+			Me.UOC_RelatedCheck(parameterValue)
 
 			' ↓業務処理-----------------------------------------------------
 
@@ -771,10 +846,13 @@ Namespace Touryo.Infrastructure.Business.Business
 
 		''' <summary>１件削除処理を実装</summary>
 		''' <param name="parameterValue">引数クラス</param>
-		Private Sub UOC_DeleteRecord(parameterValue As _3TierParameterValue)
+        Private Sub UOC_DeleteRecord(ByVal parameterValue As _3TierParameterValue)
 			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
+
+			' 関連チェック処理
+			Me.UOC_RelatedCheck(parameterValue)
 
 			' ↓業務処理-----------------------------------------------------
 
@@ -817,10 +895,13 @@ Namespace Touryo.Infrastructure.Business.Business
 
 		''' <summary>バッチ更新処理を実装</summary>
 		''' <param name="parameterValue">引数クラス</param>
-		Private Sub UOC_BatchUpdate(parameterValue As _3TierParameterValue)
+        Private Sub UOC_BatchUpdate(ByVal parameterValue As _3TierParameterValue)
 			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
+
+			' 関連チェック処理
+			Me.UOC_RelatedCheck(parameterValue)
 
 			' ↓業務処理-----------------------------------------------------
 
@@ -905,6 +986,12 @@ Namespace Touryo.Infrastructure.Business.Business
 			' ↑業務処理-----------------------------------------------------
 		End Sub
 
-		#End Region
+#End Region
+
+        ''' <summary>関連チェック処理を実装可能に</summary>
+        ''' <param name="parameterValue">引数</param>
+        Protected Overridable Sub UOC_RelatedCheck(ByVal parameterValue As _3TierParameterValue)
+        End Sub
+
 	End Class
 End Namespace

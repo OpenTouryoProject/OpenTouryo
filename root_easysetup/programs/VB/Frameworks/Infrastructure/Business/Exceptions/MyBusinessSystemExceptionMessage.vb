@@ -4,9 +4,6 @@
 
 #Region "Apache License"
 '
-'  
-' 
-'  
 ' Licensed under the Apache License, Version 2.0 (the "License");
 ' you may not use this file except in compliance with the License. 
 ' You may obtain a copy of the License at
@@ -31,11 +28,12 @@
 '*
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
-'*  20xx/xx/xx  ＸＸ ＸＸ            新規作成（テンプレート）
-'*  2011/10/09  西野  大介           国際化対応
-'*  2013/12/23  西野  大介           アクセス修飾子をすべてpublicに変更した。
-'*  2014/01/22  Pradeepa.Shanmugham  Code For Internalization
-'*  2014/02/03  西野  大介           取り込み：リソースファイル名とスイッチ名の変更、#pragma warning disableの追加。
+'*  20xx/xx/xx  ＸＸ ＸＸ             新規作成（テンプレート）
+'*  2011/10/09  西野  大介            国際化対応
+'*  2013/12/23  西野  大介            アクセス修飾子をすべてpublicに変更した。
+'*  2014/01/17  Pradeepa.Shanmugham   Code for Internalization
+'*  2014/01/22  Pradeepa.Shanmugham   Changes from ConfigurationManager.AppSettings to GetConfigParameter.GetConfigValue in CmnFunc
+'*  2014/02/03  西野  大介            取り込み：リソースファイル名とスイッチ名の変更、#pragma warning disableの追加。
 '**********************************************************************************
 
 ' System
@@ -50,98 +48,131 @@ Imports System.Configuration
 
 
 Namespace Touryo.Infrastructure.Business.Exceptions
-    ''' <summary>
-    ''' Business層の
-    ''' システム例外のメッセージＩＤ、メッセージに
-    ''' 使用する文字列定数を定義する定数クラス
-    ''' </summary>
-    Public Class MyBusinessSystemExceptionMessage
+	''' <summary>
+	''' Business層の
+	''' システム例外のメッセージＩＤ、メッセージに
+	''' 使用する文字列定数を定義する定数クラス
+	''' </summary>
+	Public Class MyBusinessSystemExceptionMessage
+		#Region "SAMPLE_ERROR method"
 
-#Region "Sample_Error"
+		''' <summary>システム例外のメッセージＩＤ、メッセージに使用する文字列定数（例）</summary>
+		Public Shared ReadOnly Property SAMPLE_ERROR() As String()
+			Get
+				Dim temp As String = ""
+				' Get current property name.
+				Dim key As String = PubCmnFunction.GetCurrentPropertyName()
 
-        ''' <summary>システム例外のメッセージＩＤ、メッセージに使用する文字列定数（例）</summary>
-        Public Shared ReadOnly Property SAMPLE_ERROR() As String()
+				' Returns the specified string resource for the specified culture or current UI culture.
+				temp = MyBusinessSystemExceptionMessage.CmnFunc(key)
+				Return New String() {"MessageID_SampleError", temp}
+			End Get
+		End Property
 
-            Get
-                Dim temp As String = ""
+		#End Region
 
-                ' Get current property name.
-                Dim key As String = PubCmnFunction.GetCurrentPropertyName()
+		#Region "CMN_DAO_ERROR method"
 
-                ' Returns the specified string resource for the specified culture or current UI culture.
-                temp = MyBusinessSystemExceptionMessage.CmnFunc(key)
-                Return New String() {"MessageID_SampleError", temp}
-            End Get
+		''' <summary>共通Daoのエラー</summary>
+		Public Shared ReadOnly Property CMN_DAO_ERROR() As String()
+			Get
+				Dim temp As String = ""
+				' Get current property name.
+				Dim key As String = PubCmnFunction.GetCurrentPropertyName()
 
-        End Property
+				' Returns the specified string resource for the specified culture or current UI culture.
+				temp = MyBusinessSystemExceptionMessage.CmnFunc(key)
+				Return New String() {"CommonDaoError", temp}
+			End Get
+		End Property
 
-#End Region
+		#Region "CMN_DAO_ERROR_SQL method"
 
-#Region "Cmn_Dao_Error"
+		''' <summary>メッセージ定義ファイルの不正（メッセージ補足）</summary>
+		Public Shared ReadOnly Property CMN_DAO_ERROR_SQL() As String
+			Get
+				' Get current property name.
+				Dim key As String = PubCmnFunction.GetCurrentPropertyName()
 
-        ''' <summary>共通Daoのエラー</summary>
-        Public Shared ReadOnly Property CMN_DAO_ERROR() As String()
+				' Returns the specified string resource for the specified culture or current UI culture.
+				Return MyBusinessSystemExceptionMessage.CmnFunc(key)
+			End Get
+		End Property
 
-            Get
-                Dim temp As String = ""
+		#End Region
 
-                ' Get current property name.
-                Dim key As String = PubCmnFunction.GetCurrentPropertyName()
+		#End Region
 
-                ' Returns the specified string resource for the specified culture or current UI culture.
-                temp = MyBusinessSystemExceptionMessage.CmnFunc(key)
-                Return New String() {"CommonDaoError", temp}
-            End Get
+		#Region "WORKFLOW_ERROR method"
 
-        End Property
+		''' <summary>Workflowのエラー</summary>
+		Public Shared ReadOnly Property WORKFLOW_ERROR() As String()
+			Get
+				Dim temp As String = ""
+				' Get current property name.
+				Dim key As String = PubCmnFunction.GetCurrentPropertyName()
 
-#End Region
+				' Returns the specified string resource for the specified culture or current UI culture.
+				temp = MyBusinessSystemExceptionMessage.CmnFunc(key)
+				Return New String() {"WorkflowError", temp}
+			End Get
+		End Property
 
-#Region "Cmn_Dao_Error_Sql"
+		#Region "WORKFLOW_ERROR_CHECK_ method"
 
-        ''' <summary>メッセージ定義ファイルの不正（メッセージ補足）</summary>
-        Public Shared ReadOnly Property CMN_DAO_ERROR_SQL() As String
+		''' <summary>メッセージ定義ファイルの不正（メッセージ補足）</summary>
+		Public Shared ReadOnly Property WORKFLOW_ERROR_CHECK_EMPTY() As String
+			Get
+				' Get current property name.
+				Dim key As String = PubCmnFunction.GetCurrentPropertyName()
 
-            Get
-                Dim temp As String = ""
-                ' Get current property name.
-                Dim key As String = PubCmnFunction.GetCurrentPropertyName()
+				' Returns the specified string resource for the specified culture or current UI culture.
+				Return MyBusinessSystemExceptionMessage.CmnFunc(key)
+			End Get
+		End Property
 
-                ' Returns the specified string resource for the specified culture or current UI culture.
-                Return MyBusinessSystemExceptionMessage.CmnFunc(key)
-            End Get
+		''' <summary>メッセージ定義ファイルの不正（メッセージ補足）</summary>
+		Public Shared ReadOnly Property WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED() As String
+			Get
+				' Get current property name.
+				Dim key As String = PubCmnFunction.GetCurrentPropertyName()
 
-        End Property
-#End Region
+				' Returns the specified string resource for the specified culture or current UI culture.
+				Return MyBusinessSystemExceptionMessage.CmnFunc(key)
+			End Get
+		End Property
 
-#Region "CmnFunc"
+		#End Region
 
-        Private Shared Function CmnFunc(ByVal key As String) As String
-            ' We acquire ResourceManager.
-            Dim rm As ResourceManager = MyBusinessSystemExceptionMessageResource.ResourceManager
+		#End Region
 
-            ' We acquire a value from App.Config.
-            Dim FxUICulture As String = GetConfigParameter.GetConfigValue(PubLiteral.EXCEPTIONMESSAGECULTUER)
+		#Region "CmnFunc method"
+		''' <summary>Returns the specified string resource for the specified culture or current UI culture. </summary>
+		''' <param name="key">resource key</param>
+		''' <returns>resource string</returns>
+		Private Shared Function CmnFunc(key As String) As String
+			' We acquire ResourceManager.
+			Dim rm As ResourceManager = MyBusinessSystemExceptionMessageResource.ResourceManager
 
-            If (String.IsNullOrEmpty(FxUICulture)) Then
-                ' When the key is not set to App.Config, we use a default culture. 
-                Return rm.GetString(key)
-            Else
-                ' When the key is set to App.Config, we use the specified culture.
-                Try
-                    Dim culture As CultureInfo = New CultureInfo(FxUICulture)
-                    Return rm.GetString(key, culture)
+			' We acquire a value from App.Config.
+			Dim FxUICulture As String = GetConfigParameter.GetConfigValue(PubLiteral.EXCEPTIONMESSAGECULTUER)
 
-                Catch ex As Exception 'There is not CultureNotFoundException in .NET3.5.
-                    ' When the specified culture is not an effective name, we use a default culture.
-                    Return rm.GetString(key)
-                End Try
-            End If
-        End Function
-
-#End Region
-
-
-    End Class
-
+			If String.IsNullOrEmpty(FxUICulture) Then
+				' When the key is not set to App.Config, we use a default culture. 
+				Return rm.GetString(key)
+			Else
+				' When the key is set to App.Config, we use the specified culture.
+				Try
+					Dim culture As New CultureInfo(FxUICulture)
+					Return rm.GetString(key, culture)
+				Catch ex As Exception
+					' There is not CultureNotFoundException in .NET3.5.
+				
+					' When the specified culture is not an effective name, we use a default culture.
+					Return rm.GetString(key)
+				End Try
+			End If
+		End Function
+		#End Region
+	End Class
 End Namespace

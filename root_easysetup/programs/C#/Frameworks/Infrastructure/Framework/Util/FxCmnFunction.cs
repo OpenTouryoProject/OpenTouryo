@@ -47,6 +47,8 @@
 //*  2013/03/05  西野  大介        cookieのパス属性のApplicationPathが「/」になるケースの考慮
 //*  2014/05/16  西野  大介        キャスト可否チェックのロジックを見直した。
 //*  2014/08/18  Sai-San           Added code for adding events dynamically for ListView events. 
+//*  2014/10/03  Rituparna         Added code for Supporting ItemCommand event to ListViewControl. 
+//*  2014/10/03  Rituparna         Added code SelectedIndexChanged for RadiobuttonList and CheckBoxList. 
 //**********************************************************************************
 
 using System.Text;
@@ -277,6 +279,30 @@ namespace Touryo.Infrastructure.Framework.Util
                             // ControlHt[ctrl.ID] = ctrl;
                             FxCmnFunction.AddControlToDic(ctrl, controlHt); // 2011/02/12
                         }
+                        else if (prefix == GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_RADIOBUTTONLIST))
+                        {
+                            // RADIO BUTTON
+                            RadioButtonList radioButtonlist = FxCmnFunction.CastByAsOperator<RadioButtonList>(ctrl, prefix);
+
+                            // ハンドラをキャストして設定
+                            radioButtonlist.SelectedIndexChanged += (EventHandler)eventHandler;
+
+                            // ディクショナリに格納
+                            // ControlHt.Add(ctrl.ID, ctrl);
+                            // ControlHt[ctrl.ID] = ctrl;
+                            FxCmnFunction.AddControlToDic(ctrl, controlHt);
+                        }
+                        else if (prefix == GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_CHECKBOXLIST))
+                        {
+                            // CHECKBOXLIST
+                            CheckBoxList checkboxlist = FxCmnFunction.CastByAsOperator<CheckBoxList>(ctrl, prefix);
+
+                            // ハンドラをキャストして設定
+                            checkboxlist.SelectedIndexChanged += (EventHandler)eventHandler;
+
+                            // ディクショナリに格納
+                            controlHt[ctrl.ID] = ctrl;                            
+                        }
                         else if (prefix == GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_REPEATER))
                         {
                             // REPEATER
@@ -332,6 +358,9 @@ namespace Touryo.Infrastructure.Framework.Util
                             listView.PagePropertiesChanged += (EventHandler)eventHandlers[2];
                             //Sorting event handler
                             listView.Sorting += (EventHandler<ListViewSortEventArgs>)eventHandlers[3];
+                            //itemcommand event handler
+                            FxCmnFunction.AddControlToDic(ctrl, controlHt);
+                            listView.ItemCommand += (EventHandler<ListViewCommandEventArgs>)eventHandlers[5];
                             FxCmnFunction.AddControlToDic(ctrl, controlHt);
                         }
                     }
@@ -500,6 +529,32 @@ namespace Touryo.Infrastructure.Framework.Util
                                 controlHt[ctrl.ID] = ctrl;
                                 break;
                             }
+
+                            else if (prefix == GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_RADIOBUTTONLIST))
+                            {
+                                // RADIOBUTTONLIST
+                                RadioButtonList radioButtonlist = FxCmnFunction.CastByAsOperator<RadioButtonList>(ctrl, prefix);
+
+                                // ハンドラをキャストして設定
+                                radioButtonlist.SelectedIndexChanged += (EventHandler)eventHandler;
+
+                                // ディクショナリに格納
+                                controlHt[ctrl.ID] = ctrl;
+                                break;
+                            }
+
+                            else if (prefix == GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_CHECKBOXLIST))
+                            {
+                                // CHECKBOXLIST
+                                CheckBoxList checkboxlist = FxCmnFunction.CastByAsOperator<CheckBoxList>(ctrl, prefix);
+
+                                // ハンドラをキャストして設定
+                                checkboxlist.SelectedIndexChanged += (EventHandler)eventHandler;
+
+                                // ディクショナリに格納
+                                controlHt[ctrl.ID] = ctrl;
+                                break;
+                            }
                             else if (prefix == GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_REPEATER))
                             {
                                 // REPEATER
@@ -553,7 +608,9 @@ namespace Touryo.Infrastructure.Framework.Util
                                 listView.PagePropertiesChanged += (EventHandler)eventHandlers[2];
                                 //Sorting event handler
                                 listView.Sorting += (EventHandler<ListViewSortEventArgs>)eventHandlers[3];
-
+                                //ItemCommand event handler
+                                listView.ItemCommand += (EventHandler<ListViewCommandEventArgs>)eventHandlers[5];
+                                FxCmnFunction.AddControlToDic(ctrl, controlHt);
                                 // ディクショナリに格納
                                 controlHt[ctrl.ID] = ctrl;
                                 FxCmnFunction.AddControlToDic(ctrl, controlHt);
