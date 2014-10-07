@@ -4356,7 +4356,7 @@ namespace DaoGen_Tool
         /// <summary>This Method gets the string values from resource file based on the key passed</summary>
         private string RM_GetString(string key)
         {
-            ResourceManager rm = Resources.Resource1.ResourceManager;
+            ResourceManager rm = Resources.Resource.ResourceManager;
             return rm.GetString(key);
         }
     }

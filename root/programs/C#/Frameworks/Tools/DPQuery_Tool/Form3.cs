@@ -435,6 +435,12 @@ namespace DPQuery_Tool
         // 初期処理
         #region 初期処理
 
+        /// <summary>コンストラクタ</summary>
+        public Form3()
+        {
+            InitializeComponent();
+        }
+
         /// <summary>プロバイダの設定</summary>
         /// <param name="s">プロバイダを表す文字列</param>
         public void Init(string s)
@@ -1823,15 +1829,12 @@ namespace DPQuery_Tool
         #endregion
 
         /// <summary>This Method gets the string values from resource file based on the key passed</summary>
-        public Form3()
-        {
-            InitializeComponent();
-        }
         private string RM_GetString(string key)
         {
             ResourceManager rm = Resources.Resource.ResourceManager;
             return rm.GetString(key);
         }
+
         /// <summary>
         /// GetProviderInfo method sets the Data provider details for string to be replaced
         /// </summary>

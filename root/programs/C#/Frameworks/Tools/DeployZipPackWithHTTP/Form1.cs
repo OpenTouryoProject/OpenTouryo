@@ -78,7 +78,6 @@ using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 using System.Resources;
-using DeployZipPackWithHTTP.Properties;
 
 namespace DeployZipPackWithHTTP
 {

@@ -198,4 +198,64 @@
   <data name="EntryPoint" xml:space="preserve">
     <value>エントリポイント：</value>
   </data>
+  <data name="AppConfigParameterNotSet" xml:space="preserve">
+    <value>app.Configパラメタが設定されていません。：</value>
+  </data>
+  <data name="CheckExceptionError" xml:space="preserve">
+    <value>チェックエラーです：</value>
+  </data>
+  <data name="EscCharacterNotSet" xml:space="preserve">
+    <value>エスケープ文字が設定されていません。</value>
+  </data>
+  <data name="FileFormatError" xml:space="preserve">
+    <value>D層定義情報ファイル・フォーマットエラー。テーブル名がありません。：</value>
+  </data>
+  <data name="FileGenComplete" xml:space="preserve">
+    <value>自動生成完了！</value>
+  </data>
+  <data name="FilenotExistDBtypeInfo" xml:space="preserve">
+    <value>チェックエラーです：DB型情報ファイル[{0}]が存在しません。</value>
+  </data>
+  <data name="FilenotExistDlayerInfo" xml:space="preserve">
+    <value>チェックエラーです：D層定義情報ファイル[{0}]が存在しません。</value>
+  </data>
+  <data name="FilenotExistNETtypeInfo" xml:space="preserve">
+    <value>チェックエラーです：.NET型情報ファイル[{0}]が存在しません。</value>
+  </data>
+  <data name="InputFileRootFolderNotExist" xml:space="preserve">
+    <value>入力ファイル（テンプレート ファイル）のルート フォルダが存在しません。</value>
+  </data>
+  <data name="InvalidFormat" xml:space="preserve">
+    <value>不正なフォーマットです。</value>
+  </data>
+  <data name="NoTimestampColName" xml:space="preserve">
+    <value>タイムスタンプ列名がありません。</value>
+  </data>
+  <data name="OpenFileDialogFilter" xml:space="preserve">
+    <value>CSVファイル(*.csv)|*.csv</value>
+  </data>
+  <data name="OpenFileDialogTitle" xml:space="preserve">
+    <value>D層定義情報ファイル</value>
+  </data>
+  <data name="OutputFileRootFolderNotExist" xml:space="preserve">
+    <value>出力ファイル（Daoクラス ファイル、SQLファイル.etc）のルート フォルダが存在しません。</value>
+  </data>
+  <data name="OutputFolderPath" xml:space="preserve">
+    <value>出力ファイル（Daoファイル、SQLファイル）のルート フォルダ パスを指定</value>
+  </data>
+  <data name="PrimaryKeyNotDefined" xml:space="preserve">
+    <value>テーブルに主キーが定義されていません。</value>
+  </data>
+  <data name="RuntimeError" xml:space="preserve">
+    <value>ランタイムエラーです：</value>
+  </data>
+  <data name="StringIndentation" xml:space="preserve">
+    <value>の前には、インデントのみ指定できます。：</value>
+  </data>
+  <data name="TempFilenotExists" xml:space="preserve">
+    <value>テンプレート ファイルが存在しません。：</value>
+  </data>
+  <data name="TemplateFolderPath" xml:space="preserve">
+    <value>入力ファイル（テンプレート ファイル）のルート フォルダ パスを指定</value>
+  </data>
 </root>

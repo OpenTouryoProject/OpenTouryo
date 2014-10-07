@@ -3,7 +3,7 @@
 //**********************************************************************************
 
 #region Apache License
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -1046,6 +1046,8 @@ namespace Touryo.Infrastructure.Public.Str
             return HttpUtility.HtmlDecode(input);
         }
 
+#pragma warning disable
+
         /// <summary>Urlエンコードする。</summary>
         /// <param name="input">Url</param>
         /// <returns>UrlエンコードされたUrl</returns>
@@ -1072,6 +1074,8 @@ namespace Touryo.Infrastructure.Public.Str
             return HttpUtility.UrlEncodeUnicode(input);
         }
 
+#pragma warning restore
+        
         #endregion
 
         #region その他
