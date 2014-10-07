@@ -107,7 +107,7 @@ Namespace Touryo.Infrastructure.Business.Business
         ''' Select Paging Query For DB2 database
         ''' </summary>
         Private Const SELECT_PAGING_DB2_TEMPLATE As String =
-            "SELECT * FROM (SELECT {0}, ROW_NUMBER() OVER (ORDER BY {1} {2}) AS ROWNUM FROM {3} {4}) WHERE ROWNUM BETWEEN {5} AND {6}";
+            "SELECT * FROM (SELECT {0}, ROW_NUMBER() OVER (ORDER BY {1} {2}) AS ROWNUM FROM {3} {4}) WHERE ROWNUM BETWEEN {5} AND {6}"
 
 		''' <summary>Where句生成SQLテンプレート（＝）</summary>
 		Private Const WHERE_SQL_TEMPLATE_EQUAL As String = "_s__ColName__e_ = _p__ParamName_"

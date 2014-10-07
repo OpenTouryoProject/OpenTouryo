@@ -73,24 +73,25 @@
       <HintPath>..\..\Infrastructure\Build\DamPstGrS.dll</HintPath>
     </Reference>
     <Reference Include="IBM.Data.DB2">
-      <HintPath>..\..\Infrastructure\Build\IBM.Data.DB2.dll</HintPath>
+      <HintPath>..\..\Infrastructure\Public\Dll\IBM.Data.DB2.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Infrastructure\Build\log4net.dll</HintPath>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\..\Infrastructure\Public\Dll\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\..\Infrastructure\Public\Dll\log4net.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data">
-      <HintPath>..\..\Infrastructure\Build\MySql.Data.dll</HintPath>
+      <HintPath>..\..\Infrastructure\Public\Dll\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Npgsql">
-      <HintPath>..\..\Infrastructure\Build\Npgsql.dll</HintPath>
+      <HintPath>..\..\Infrastructure\Public\Dll\Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="Oracle.DataAccess, Version=2.112.2.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Infrastructure\Build\Oracle.DataAccess.dll</HintPath>
+      <HintPath>..\..\Infrastructure\Public\Dll\Oracle.DataAccess.dll</HintPath>
     </Reference>
-    <Reference Include="Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Public">
       <HintPath>..\..\Infrastructure\Build\Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -145,7 +146,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
-    <Compile Include="Resources\Resource1.Designer.cs" />
     <Compile Include="RichTextBoxDisableDF.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -222,8 +222,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Resource1.ja-JP.resx" />
-    <EmbeddedResource Include="Resources\Resource1.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

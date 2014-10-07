@@ -932,17 +932,10 @@ namespace Public.Test
         [TestCaseSource("TestParamtag")]
         public void GetParametersFromPARAMTagTest(string filePath, string dbGeneration)
         {
-            try
-            {
-                DataTable dt = new DataTable();
-                DataTable dt1 = new DataTable();
-                GetParam(filePath, out dt, out dt1, dbGeneration);
-                Assert.AreEqual(dt.Rows.Count, dt1.Rows.Count);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            DataTable dt = new DataTable();
+            DataTable dt1 = new DataTable();
+            GetParam(filePath, out dt, out dt1, dbGeneration);
+            Assert.AreEqual(dt.Rows.Count, dt1.Rows.Count);
         }
 
         #region GetParam
