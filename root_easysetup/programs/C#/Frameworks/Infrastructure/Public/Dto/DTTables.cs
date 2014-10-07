@@ -54,8 +54,11 @@ namespace Touryo.Infrastructure.Public.Dto
         /// </summary>
         public class TableRecords
         {
+            /// <summary>tbl</summary>
             public string tbl { get; set; }
+            /// <summary>col</summary>
             public Dictionary<string, string> col { get; set; }
+            /// <summary>row</summary>
             public ArrayList row { get; set; }
         }
 
@@ -354,7 +357,7 @@ namespace Touryo.Infrastructure.Public.Dto
         /// <summary>
         /// LoadJson Method(To Load records from Json format)
         /// </summary>
-        /// <param name="r">StreamReader</param>
+        /// <param name="sr">StreamReader</param>
         public void LoadJson(StreamReader sr)
         {
             List<TableRecords> lstTableRecords = new List<TableRecords>();

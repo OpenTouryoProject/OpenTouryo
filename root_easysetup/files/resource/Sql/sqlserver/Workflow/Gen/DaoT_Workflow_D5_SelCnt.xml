@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoT_Workflow_D5_SelCnt
+  -- 2014/7/18 日立 太郎
+  SELECT 
+    COUNT(*)
+  FROM
+    [T_Workflow]
+  <WHERE>
+    WHERE
+      <IF>AND [WorkflowControlNo] = @WorkflowControlNo<ELSE>AND [WorkflowControlNo] IS NULL</ELSE></IF>
+      <IF>AND [WorkflowControlNo] LIKE @WorkflowControlNo_Like</IF>
+      <IF>AND [SubSystemId] = @SubSystemId<ELSE>AND [SubSystemId] IS NULL</ELSE></IF>
+      <IF>AND [SubSystemId] LIKE @SubSystemId_Like</IF>
+      <IF>AND [WorkflowName] = @WorkflowName<ELSE>AND [WorkflowName] IS NULL</ELSE></IF>
+      <IF>AND [WorkflowName] LIKE @WorkflowName_Like</IF>
+      <IF>AND [UserId] = @UserId<ELSE>AND [UserId] IS NULL</ELSE></IF>
+      <IF>AND [UserId] LIKE @UserId_Like</IF>
+      <IF>AND [UserInfo] = @UserInfo<ELSE>AND [UserInfo] IS NULL</ELSE></IF>
+      <IF>AND [UserInfo] LIKE @UserInfo_Like</IF>
+      <IF>AND [ReserveArea] = @ReserveArea<ELSE>AND [ReserveArea] IS NULL</ELSE></IF>
+      <IF>AND [ReserveArea] LIKE @ReserveArea_Like</IF>
+      <IF>AND [StartDate] = @StartDate<ELSE>AND [StartDate] IS NULL</ELSE></IF>
+      <IF>AND [StartDate] LIKE @StartDate_Like</IF>
+      <IF>AND [EndDate] = @EndDate<ELSE>AND [EndDate] IS NULL</ELSE></IF>
+      <IF>AND [EndDate] LIKE @EndDate_Like</IF>
+  </WHERE>
+</ROOT>

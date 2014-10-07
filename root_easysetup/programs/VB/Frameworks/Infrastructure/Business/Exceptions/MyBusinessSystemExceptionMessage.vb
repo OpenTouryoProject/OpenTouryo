@@ -36,15 +36,17 @@
 '*  2014/02/03  西野  大介            取り込み：リソースファイル名とスイッチ名の変更、#pragma warning disableの追加。
 '**********************************************************************************
 
-' System
+' System;
 Imports System
 Imports System.Threading
+
 Imports Touryo.Infrastructure.Public.Util
+
 Imports System.Resources
 Imports My.Resources
-Imports System.Globalization
+'Imports Touryo.Infrastructure.Business.Resources
 Imports System.Configuration
-
+Imports System.Globalization
 
 
 Namespace Touryo.Infrastructure.Business.Exceptions

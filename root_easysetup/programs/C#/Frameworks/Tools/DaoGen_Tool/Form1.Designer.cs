@@ -76,7 +76,6 @@
             // 
             // gbxDataProviders
             // 
-            resources.ApplyResources(this.gbxDataProviders, "gbxDataProviders");
             this.gbxDataProviders.Controls.Add(this.rbnHiRDB);
             this.gbxDataProviders.Controls.Add(this.rbnODB);
             this.gbxDataProviders.Controls.Add(this.rbnOLE);
@@ -85,6 +84,7 @@
             this.gbxDataProviders.Controls.Add(this.rbnDB2);
             this.gbxDataProviders.Controls.Add(this.rbnODP);
             this.gbxDataProviders.Controls.Add(this.rbnSQL);
+            resources.ApplyResources(this.gbxDataProviders, "gbxDataProviders");
             this.gbxDataProviders.Name = "gbxDataProviders";
             this.gbxDataProviders.TabStop = false;
             // 
@@ -170,8 +170,8 @@
             // 
             // lbxTables
             // 
-            resources.ApplyResources(this.lbxTables, "lbxTables");
             this.lbxTables.FormattingEnabled = true;
+            resources.ApplyResources(this.lbxTables, "lbxTables");
             this.lbxTables.Name = "lbxTables";
             this.lbxTables.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             // 
@@ -198,9 +198,9 @@
             // 
             // cmbSchemaInfo
             // 
-            resources.ApplyResources(this.cmbSchemaInfo, "cmbSchemaInfo");
             this.cmbSchemaInfo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSchemaInfo.FormattingEnabled = true;
+            resources.ApplyResources(this.cmbSchemaInfo, "cmbSchemaInfo");
             this.cmbSchemaInfo.Name = "cmbSchemaInfo";
             // 
             // btnDelTable
@@ -226,29 +226,29 @@
             // 
             // menuStrip1
             // 
-            resources.ApplyResources(this.menuStrip1, "menuStrip1");
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.Restart_ToolStripMenuItem,
             this.Close_ToolStripMenuItem});
+            resources.ApplyResources(this.menuStrip1, "menuStrip1");
             this.menuStrip1.Name = "menuStrip1";
             // 
             // Restart_ToolStripMenuItem
             // 
-            resources.ApplyResources(this.Restart_ToolStripMenuItem, "Restart_ToolStripMenuItem");
             this.Restart_ToolStripMenuItem.Name = "Restart_ToolStripMenuItem";
+            resources.ApplyResources(this.Restart_ToolStripMenuItem, "Restart_ToolStripMenuItem");
             this.Restart_ToolStripMenuItem.Click += new System.EventHandler(this.Restart_ToolStripMenuItem_Click);
             // 
             // Close_ToolStripMenuItem
             // 
-            resources.ApplyResources(this.Close_ToolStripMenuItem, "Close_ToolStripMenuItem");
             this.Close_ToolStripMenuItem.Name = "Close_ToolStripMenuItem";
+            resources.ApplyResources(this.Close_ToolStripMenuItem, "Close_ToolStripMenuItem");
             this.Close_ToolStripMenuItem.Click += new System.EventHandler(this.Close_ToolStripMenuItem_Click);
             // 
             // dataGridView1
             // 
-            resources.ApplyResources(this.dataGridView1, "dataGridView1");
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            resources.ApplyResources(this.dataGridView1, "dataGridView1");
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 21;
             this.dataGridView1.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView_DataError);
@@ -261,48 +261,48 @@
             // 
             // tabControl1
             // 
-            resources.ApplyResources(this.tabControl1, "tabControl1");
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
+            resources.ApplyResources(this.tabControl1, "tabControl1");
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             // 
             // tabPage1
             // 
-            resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Controls.Add(this.dataGridView1);
+            resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // tabPage2
             // 
-            resources.ApplyResources(this.tabPage2, "tabPage2");
             this.tabPage2.Controls.Add(this.dataGridView2);
+            resources.ApplyResources(this.tabPage2, "tabPage2");
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // dataGridView2
             // 
-            resources.ApplyResources(this.dataGridView2, "dataGridView2");
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView2.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            resources.ApplyResources(this.dataGridView2, "dataGridView2");
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowTemplate.Height = 21;
             this.dataGridView2.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView_DataError);
             // 
             // tabPage3
             // 
-            resources.ApplyResources(this.tabPage3, "tabPage3");
             this.tabPage3.Controls.Add(this.dataGridView3);
+            resources.ApplyResources(this.tabPage3, "tabPage3");
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // dataGridView3
             // 
-            resources.ApplyResources(this.dataGridView3, "dataGridView3");
             this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView3.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            resources.ApplyResources(this.dataGridView3, "dataGridView3");
             this.dataGridView3.Name = "dataGridView3";
             this.dataGridView3.RowTemplate.Height = 21;
             this.dataGridView3.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView_DataError);
@@ -321,9 +321,9 @@
             // 
             // cmbEncoding
             // 
-            resources.ApplyResources(this.cmbEncoding, "cmbEncoding");
             this.cmbEncoding.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbEncoding.FormattingEnabled = true;
+            resources.ApplyResources(this.cmbEncoding, "cmbEncoding");
             this.cmbEncoding.Name = "cmbEncoding";
             // 
             // Form1

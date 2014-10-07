@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoSuppliers_D4_Delete
+  -- 2013/1/10 日立 太郎
+  DELETE FROM
+    [Suppliers]
+  <WHERE>
+    WHERE
+      <IF>AND [SupplierID] = @SupplierID<ELSE>AND [SupplierID] IS NULL</ELSE></IF>
+      <IF>AND [CompanyName] = @CompanyName<ELSE>AND [CompanyName] IS NULL</ELSE></IF>
+      <IF>AND [ContactName] = @ContactName<ELSE>AND [ContactName] IS NULL</ELSE></IF>
+      <IF>AND [ContactTitle] = @ContactTitle<ELSE>AND [ContactTitle] IS NULL</ELSE></IF>
+      <IF>AND [Address] = @Address<ELSE>AND [Address] IS NULL</ELSE></IF>
+      <IF>AND [City] = @City<ELSE>AND [City] IS NULL</ELSE></IF>
+      <IF>AND [Region] = @Region<ELSE>AND [Region] IS NULL</ELSE></IF>
+      <IF>AND [PostalCode] = @PostalCode<ELSE>AND [PostalCode] IS NULL</ELSE></IF>
+      <IF>AND [Country] = @Country<ELSE>AND [Country] IS NULL</ELSE></IF>
+      <IF>AND [Phone] = @Phone<ELSE>AND [Phone] IS NULL</ELSE></IF>
+      <IF>AND [Fax] = @Fax<ELSE>AND [Fax] IS NULL</ELSE></IF>
+      <IF>AND [HomePage] = @HomePage<ELSE>AND [HomePage] IS NULL</ELSE></IF>
+  </WHERE>
+</ROOT>

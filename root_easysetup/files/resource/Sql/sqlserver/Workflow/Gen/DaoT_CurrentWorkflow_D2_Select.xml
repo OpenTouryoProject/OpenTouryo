@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoT_CurrentWorkflow_D2_Select
+  -- 2014/7/18 日立 太郎
+  SELECT 
+    [WorkflowControlNo],
+    [HistoryNo],
+    [WfPositionId],
+    [WorkflowNo],
+    [FromUserId],
+    [FromUserInfo],
+    [ActionType],
+    [ToUserId],
+    [ToUserInfo],
+    [ToUserPositionTitlesId],
+    [NextWfPositionId],
+    [NextWorkflowNo],
+    [ReserveArea],
+    [ExclusiveKey],
+    [ReplyDeadline],
+    [StartDate],
+    [AcceptanceDate],
+    [AcceptanceUserId],
+    [AcceptanceUserInfo]
+  FROM
+    [T_CurrentWorkflow]
+  <WHERE>
+    WHERE
+      <IF>AND [WorkflowControlNo] = @WorkflowControlNo<ELSE>AND [WorkflowControlNo] IS NULL</ELSE></IF>
+      <IF>AND [WorkflowControlNo] LIKE @WorkflowControlNo_Like</IF>
+      <IF>AND [HistoryNo] = @HistoryNo<ELSE>AND [HistoryNo] IS NULL</ELSE></IF>
+      <IF>AND [HistoryNo] LIKE @HistoryNo_Like</IF>
+      <IF>AND [WfPositionId] = @WfPositionId<ELSE>AND [WfPositionId] IS NULL</ELSE></IF>
+      <IF>AND [WfPositionId] LIKE @WfPositionId_Like</IF>
+      <IF>AND [WorkflowNo] = @WorkflowNo<ELSE>AND [WorkflowNo] IS NULL</ELSE></IF>
+      <IF>AND [WorkflowNo] LIKE @WorkflowNo_Like</IF>
+      <IF>AND [FromUserId] = @FromUserId<ELSE>AND [FromUserId] IS NULL</ELSE></IF>
+      <IF>AND [FromUserId] LIKE @FromUserId_Like</IF>
+      <IF>AND [FromUserInfo] = @FromUserInfo<ELSE>AND [FromUserInfo] IS NULL</ELSE></IF>
+      <IF>AND [FromUserInfo] LIKE @FromUserInfo_Like</IF>
+      <IF>AND [ActionType] = @ActionType<ELSE>AND [ActionType] IS NULL</ELSE></IF>
+      <IF>AND [ActionType] LIKE @ActionType_Like</IF>
+      <IF>AND [ToUserId] = @ToUserId<ELSE>AND [ToUserId] IS NULL</ELSE></IF>
+      <IF>AND [ToUserId] LIKE @ToUserId_Like</IF>
+      <IF>AND [ToUserInfo] = @ToUserInfo<ELSE>AND [ToUserInfo] IS NULL</ELSE></IF>
+      <IF>AND [ToUserInfo] LIKE @ToUserInfo_Like</IF>
+      <IF>AND [ToUserPositionTitlesId] = @ToUserPositionTitlesId<ELSE>AND [ToUserPositionTitlesId] IS NULL</ELSE></IF>
+      <IF>AND [ToUserPositionTitlesId] LIKE @ToUserPositionTitlesId_Like</IF>
+      <IF>AND [NextWfPositionId] = @NextWfPositionId<ELSE>AND [NextWfPositionId] IS NULL</ELSE></IF>
+      <IF>AND [NextWfPositionId] LIKE @NextWfPositionId_Like</IF>
+      <IF>AND [NextWorkflowNo] = @NextWorkflowNo<ELSE>AND [NextWorkflowNo] IS NULL</ELSE></IF>
+      <IF>AND [NextWorkflowNo] LIKE @NextWorkflowNo_Like</IF>
+      <IF>AND [ReserveArea] = @ReserveArea<ELSE>AND [ReserveArea] IS NULL</ELSE></IF>
+      <IF>AND [ReserveArea] LIKE @ReserveArea_Like</IF>
+      <IF>AND [ExclusiveKey] = @ExclusiveKey<ELSE>AND [ExclusiveKey] IS NULL</ELSE></IF>
+      <IF>AND [ExclusiveKey] LIKE @ExclusiveKey_Like</IF>
+      <IF>AND [ReplyDeadline] = @ReplyDeadline<ELSE>AND [ReplyDeadline] IS NULL</ELSE></IF>
+      <IF>AND [ReplyDeadline] LIKE @ReplyDeadline_Like</IF>
+      <IF>AND [StartDate] = @StartDate<ELSE>AND [StartDate] IS NULL</ELSE></IF>
+      <IF>AND [StartDate] LIKE @StartDate_Like</IF>
+      <IF>AND [AcceptanceDate] = @AcceptanceDate<ELSE>AND [AcceptanceDate] IS NULL</ELSE></IF>
+      <IF>AND [AcceptanceDate] LIKE @AcceptanceDate_Like</IF>
+      <IF>AND [AcceptanceUserId] = @AcceptanceUserId<ELSE>AND [AcceptanceUserId] IS NULL</ELSE></IF>
+      <IF>AND [AcceptanceUserId] LIKE @AcceptanceUserId_Like</IF>
+      <IF>AND [AcceptanceUserInfo] = @AcceptanceUserInfo<ELSE>AND [AcceptanceUserInfo] IS NULL</ELSE></IF>
+      <IF>AND [AcceptanceUserInfo] LIKE @AcceptanceUserInfo_Like</IF>
+  </WHERE>
+</ROOT>

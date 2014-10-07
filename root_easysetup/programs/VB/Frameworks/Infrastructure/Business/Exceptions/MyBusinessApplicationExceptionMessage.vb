@@ -39,14 +39,13 @@
 ' System
 Imports System
 Imports System.Threading
-Imports System.Resources
-Imports System.Globalization
 Imports Touryo.Infrastructure.Public.Util
+
+Imports System.Resources
 Imports My.Resources
+'Imports Touryo.Infrastructure.Business.Resources
 Imports System.Configuration
-
-
-
+Imports System.Globalization
 Namespace Touryo.Infrastructure.Business.Exceptions
 	''' <summary>
 	''' Business層の
@@ -96,3 +95,4 @@ Namespace Touryo.Infrastructure.Business.Exceptions
 		#End Region
 	End Class
 End Namespace
+

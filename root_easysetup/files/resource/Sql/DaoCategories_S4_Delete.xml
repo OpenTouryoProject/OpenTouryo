@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoCategories_S4_Delete
+  -- 2013/1/10 日立 太郎
+  DELETE FROM
+    [Categories]
+  <WHERE>
+    WHERE
+       [CategoryID] = @CategoryID
+  </WHERE>
+</ROOT>

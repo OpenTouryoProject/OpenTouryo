@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+  -- DaoCategories_D4_Delete
+  -- 2013/1/10 日立 太郎
+  DELETE FROM
+    [Categories]
+  <WHERE>
+    WHERE
+      <IF>AND [CategoryID] = @CategoryID<ELSE>AND [CategoryID] IS NULL</ELSE></IF>
+      <IF>AND [CategoryName] = @CategoryName<ELSE>AND [CategoryName] IS NULL</ELSE></IF>
+      <IF>AND [Description] = @Description<ELSE>AND [Description] IS NULL</ELSE></IF>
+      <IF>AND [Picture] = @Picture<ELSE>AND [Picture] IS NULL</ELSE></IF>
+  </WHERE>
+</ROOT>
