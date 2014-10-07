@@ -210,6 +210,12 @@ Open Touryo SubComponent:
   - See the following path.
    ./log4net/LICENSE
 
+- For the Json.NET component:
+
+  - License:https://json.codeplex.com/license
+  - See the following path.
+   ./Json.NET/LICENSE
+   
 - For the Dotnetzip component:
 
   - License:http://opensource.org/licenses/MS-PL
@@ -245,8 +251,3 @@ Open Touryo SubComponent:
       Copyright © 2002-2014 Charlie Poole
       Copyright © 2002-2004 James W. Newkirk, Michael C. Two, Alexei A. Vorontsov
       Copyright © 2000-2002 Philip A. Craig
-
-- For the Json.NET component:
-  - License:https://json.codeplex.com/license
-  - See the following path.
-   ./Json.NET/LICENSE
