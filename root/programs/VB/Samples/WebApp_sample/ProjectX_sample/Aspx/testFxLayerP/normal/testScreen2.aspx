@@ -43,6 +43,33 @@
                 <cc1:WebCustomCheckBox ID="cbxCheckBox2" runat="server" AutoPostBack="True" Text="ＣＣＢ２" />
                 <br />
                 ※ AutoPostBack = True<br />
+
+                 <br />
+                ・RadioButtonList<br />
+                <cc1:WebCustomRadioButtonList ID="rblRadioButtonList1" runat="server" AutoPostBack="True"
+                    Width="150px">
+                    <asp:ListItem>あああ</asp:ListItem>
+                    <asp:ListItem>いいい</asp:ListItem>
+                    <asp:ListItem>ううう</asp:ListItem>
+                    <asp:ListItem>えええ</asp:ListItem>
+                    <asp:ListItem>おおお</asp:ListItem>
+                </cc1:WebCustomRadioButtonList>
+                <br />
+                ※ AutoPostBack = True<br />
+                <br />
+                 <br />
+                ・CheckboxList<br />
+                <cc1:WebCustomCheckBoxList ID="cblCheckBoxList1" runat="server" AutoPostBack="True"
+                    Width="150px">
+                    <asp:ListItem>あああ</asp:ListItem>
+                    <asp:ListItem>いいい</asp:ListItem>
+                    <asp:ListItem>ううう</asp:ListItem>
+                    <asp:ListItem>えええ</asp:ListItem>
+                    <asp:ListItem>おおお</asp:ListItem>
+                </cc1:WebCustomCheckBoxList>
+                <br />
+                ※ AutoPostBack = True<br />
+                <br />
             </td>
             <td>
                 ・ListBox<br />
