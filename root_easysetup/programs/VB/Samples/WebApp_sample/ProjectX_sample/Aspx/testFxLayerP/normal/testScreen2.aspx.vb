@@ -13,6 +13,7 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+'*  2014/10/14  Rituparna         Changes made to support RsiodButtonList and CheckBoxList event
 '**********************************************************************************
 
 ' System
@@ -455,6 +456,37 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen2
 		Me.ShowOKMessageDialog(Convert.ToString(parentFxEventArgs.ButtonID) & "で開いた業務モーダル・ダイアログの", Convert.ToString(childFxEventArgs.ButtonID) & "ボタンを押して閉じた時の後処理", FxEnum.IconType.Information, "テスト結果")
 	End Sub
 
-	#End Region
+#Region "RadioButtonList"
+    ''' <summary>
+    ''' rblRadioButtonList1のSelectedIndexChangedイベント
+    ''' </summary>
+    ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+    ''' <returns>URL</returns>
+    Protected Function UOC_rblRadioButtonList1_SelectedIndexChanged(ByVal fxEventArgs As FxEventArgs) As String
+        ' メッセージ表示
+        Me.ShowOKMessageDialog("rblRadioButtonList1のSelectedIndexChangedイベント", DirectCast(Me.GetFxWebControl("rblRadioButtonList1"), RadioButtonList).SelectedValue, FxEnum.IconType.Information, "ＧＪ！")
+
+        ' 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+        Return ""
+    End Function
+
+#End Region
+
+#Region "CheckBoxList"
+    ''' <summary>
+    ''' cblCheckBoxList1のSelectedIndexChangedイベント
+    ''' </summary>
+    ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+    ''' <returns>URL</returns>
+    Protected Function UOC_cblCheckBoxList1_SelectedIndexChanged(ByVal fxEventArgs As FxEventArgs) As String
+        ' メッセージ表示
+        Me.ShowOKMessageDialog("cblCheckBoxList1のSelectedIndexChangedイベント", DirectCast(Me.GetFxWebControl("cblCheckBoxList1"), CheckBoxList).SelectedValue, FxEnum.IconType.Information, "ＧＪ！")
+
+        ' 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+        Return ""
+    End Function
+
+#End Region
+#End Region
 
 End Class
