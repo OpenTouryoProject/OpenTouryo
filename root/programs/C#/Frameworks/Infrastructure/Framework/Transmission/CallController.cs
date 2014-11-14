@@ -154,8 +154,8 @@ namespace Touryo.Infrastructure.Framework.Transmission
             // コンテキスト情報
             this._context = context;
             // EndPointConfigName（の既定値
-            this.WCF_HTTP_EndPointConfigName = FxLiteral.WCF_HTTP_ENDPOINT_CONFIGNAME;            
-            this.WCF_TCPIP_EndPointConfigName = FxLiteral.WCF_TCPIP_ENDPOINT_CONFIGNAME;;
+            this.WCF_HTTP_EndPointConfigName = FxLiteral.WCF_HTTP_ENDPOINT_CONFIGNAME;
+            this.WCF_TCPIP_EndPointConfigName = FxLiteral.WCF_TCPIP_ENDPOINT_CONFIGNAME;
         }
 
         /// <summary>コンテキスト情報</summary>
@@ -171,7 +171,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
         #region Web参照と関連プロパティ
 
         #region ASP.NET WebサービスのWeb参照
-        
+
         /// <summary>ASP.NET WebサービスのWeb参照</summary>
         private Reference WR;
 
@@ -257,7 +257,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
         }
 
         #endregion
-                
+
         #region クライアント認証のセキュリティ資格情報
 
         /// <summary>クライアント認証情報（WAS）</summary>
@@ -279,7 +279,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
         {
             set { this._nwcProxy = value; }
         }
-              
+
 
         /// <summary>
         /// Client credentails to communicate
@@ -1032,78 +1032,89 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 {
                     #region WCF : netTCPBinding
 
-                        // 都度newしても接続はプールされているので、オーバーヘッドは少ない（と思われる）。
-                        ChannelFactory<IWCFTCPSvcForFx> factory = new ChannelFactory<IWCFTCPSvcForFx>(
-                            this.WCF_TCPIP_EndPointConfigName, new EndpointAddress(url));
+                    // 都度newしても接続はプールされているので、オーバーヘッドは少ない（と思われる）。
+                    ChannelFactory<IWCFTCPSvcForFx> factory = new ChannelFactory<IWCFTCPSvcForFx>(
+                        this.WCF_TCPIP_EndPointConfigName, new EndpointAddress(url));
 
-                        try
+                    try
+                    {
+                        #region Specifying WCF options: netTCPBinding
+
+                        #region WASのクライアント認証のセキュリティ資格情報 for WCF
+
+                        // WASのセキュリティ資格情報
+                        if (this._clienCredentialsWcf == null)
                         {
-                            #region Specifying WCF options: netTCPBinding
+                            // ユーザ指定：なし
 
-                            #region WASのクライアント認証のセキュリティ資格情報 for WCF
-
-                            // WASのセキュリティ資格情報
-                            if (this._clienCredentialsWcf == null)
-                            {
-                                // ユーザ指定：なし
-
-                                if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME))// Dic化でnullチェック変更
-                                {
-                                    // XML定義：キーが無い
-                                }
-                                else
-                                {
-                                    if (props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME] == null
-                                        || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME] == "")
-                                    {
-                                        // XML定義：null or 空文字列
-                                    }
-                                    else
-                                    {
-                                        // XML定義：あり
-
-                                        // WASのセキュリティ資格情報を生成する。
-                                        factory.Credentials.Windows.ClientCredential.UserName = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME];
-                                        factory.Credentials.Windows.ClientCredential.Password = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PASSWORD];
-
-                                        // 省略可能に変更した。
-                                        if (props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_DOMAIN))
-                                        {
-                                            factory.Credentials.Windows.ClientCredential.Domain = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_DOMAIN];
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                // ユーザ指定：あり
-
-                                // WASのセキュリティ資格情報を設定する（ユーザ指定）。
-                                factory.Credentials.Windows.ClientCredential = this._clienCredentialsWcf;
-                            }
-                            #endregion
-
-                            #region クライアント証明書 CERTIFICATE
-
-                            // http://support.microsoft.com/kb/895971/ja
-                            // http://msdn.microsoft.com/ja-jp/library/system.security.cryptography.x509certificates.x509certificate.x509certificate.aspx
-
-                            if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE))// Dic化でnullチェック変更
+                            if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME))// Dic化でnullチェック変更
                             {
                                 // XML定義：キーが無い
                             }
                             else
                             {
-                                if (props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE] == null
-                                    || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE] == "")
+                                if (props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME] == null
+                                    || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME] == "")
                                 {
                                     // XML定義：null or 空文字列
                                 }
                                 else
                                 {
-                                    if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD))// Dic化でnullチェック変更
+                                    // XML定義：あり
+
+                                    // WASのセキュリティ資格情報を生成する。
+                                    factory.Credentials.Windows.ClientCredential.UserName = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME];
+                                    factory.Credentials.Windows.ClientCredential.Password = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PASSWORD];
+
+                                    // 省略可能に変更した。
+                                    if (props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_DOMAIN))
                                     {
-                                        // XML定義：キーが無い
+                                        factory.Credentials.Windows.ClientCredential.Domain = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_DOMAIN];
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // ユーザ指定：あり
+
+                            // WASのセキュリティ資格情報を設定する（ユーザ指定）。
+                            factory.Credentials.Windows.ClientCredential = this._clienCredentialsWcf;
+                        }
+                        #endregion
+
+                        #region クライアント証明書 CERTIFICATE
+
+                        // http://support.microsoft.com/kb/895971/ja
+                        // http://msdn.microsoft.com/ja-jp/library/system.security.cryptography.x509certificates.x509certificate.x509certificate.aspx
+
+                        if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE))// Dic化でnullチェック変更
+                        {
+                            // XML定義：キーが無い
+                        }
+                        else
+                        {
+                            if (props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE] == null
+                                || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE] == "")
+                            {
+                                // XML定義：null or 空文字列
+                            }
+                            else
+                            {
+                                if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD))// Dic化でnullチェック変更
+                                {
+                                    // XML定義：キーが無い
+
+                                    // クライアント証明書のファイルパス
+                                    factory.Credentials.ClientCertificate.Certificate =
+                                        new X509Certificate2((string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]);
+                                }
+                                else
+                                {
+                                    if (props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD] == null
+                                        || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD] == "")
+                                    {
+                                        // XML定義：null or 空文字列
 
                                         // クライアント証明書のファイルパス
                                         factory.Credentials.ClientCertificate.Certificate =
@@ -1111,55 +1122,41 @@ namespace Touryo.Infrastructure.Framework.Transmission
                                     }
                                     else
                                     {
-                                        if (props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD] == null
-                                            || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD] == "")
-                                        {
-                                            // XML定義：null or 空文字列
+                                        // XML定義：あり
 
-                                            // クライアント証明書のファイルパス
-                                            factory.Credentials.ClientCertificate.Certificate =
-                                                new X509Certificate2((string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]);
-                                        }
-                                        else
-                                        {
-                                            // XML定義：あり
-
-                                            // クライアント証明書のファイルパス ＋ クライアント証明書ＤＢのパスワード
-                                            factory.Credentials.ClientCertificate.Certificate =
-                                                new X509Certificate2(
-                                                    (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE],
-                                                    (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD]);
-                                        }
+                                        // クライアント証明書のファイルパス ＋ クライアント証明書ＤＢのパスワード
+                                        factory.Credentials.ClientCertificate.Certificate =
+                                            new X509Certificate2(
+                                                (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE],
+                                                (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD]);
                                     }
                                 }
                             }
-
-                            #endregion
-
-                            this.WCF_TCPIP = factory.CreateChannel();
-
-                            #endregion
-
-
-
-
-                            // 同期呼び出しで実行
-                            ret = this.WCF_TCPIP.DotNETOnlineTCP(
-                                serviceName, ref contextObject,
-                                parameterValueObject, out returnValueObject);
                         }
-                        finally
+
+                        #endregion
+
+                        this.WCF_TCPIP = factory.CreateChannel();
+
+                        #endregion
+
+                        // 同期呼び出しで実行
+                        ret = this.WCF_TCPIP.DotNETOnlineTCP(
+                            serviceName, ref contextObject,
+                            parameterValueObject, out returnValueObject);
+                    }
+                    finally
+                    {
+                        // Close、Disposeを実行する。
+                        // http://geekswithblogs.net/SoftwareDoneRight/archive/2008/05/23/clean-up-wcf-clients--the-right-way.aspx
+
+                        if (this.WCF_TCPIP != null)
                         {
-                            // Close、Disposeを実行する。
-                            // http://geekswithblogs.net/SoftwareDoneRight/archive/2008/05/23/clean-up-wcf-clients--the-right-way.aspx
-
-                            if (this.WCF_TCPIP != null)
-                            {
-                                ((IClientChannel)this.WCF_TCPIP).Close();
-                                ((IDisposable)this.WCF_TCPIP).Dispose();
-                                this.WCF_TCPIP = null;
-                            }
+                            ((IClientChannel)this.WCF_TCPIP).Close();
+                            ((IDisposable)this.WCF_TCPIP).Dispose();
+                            this.WCF_TCPIP = null;
                         }
+                    }
 
                     #endregion
                 }
@@ -1581,7 +1578,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
         }
 
         #endregion
-       
 
     }
 }
