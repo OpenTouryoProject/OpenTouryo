@@ -29,7 +29,8 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2014/07/23  西野  大介        新規作成
 //*  2014/09/05  Sai               Created property ResourceMgr and Replaced all the Japanese language in code with ResorceManager.GetString() method call
-//*
+//*  2014/11/11  Sai               Added buttons Switch Per In Charge, Forced Terminaion and Turnback Into First and implemented code for calling the 
+//*                                corresponding methods of workflow.cs class 
 //**********************************************************************************
 
 // Windowアプリケーション
@@ -104,6 +105,9 @@ namespace Workflow_Tool
             {
                 Workflow.GetUserInfo = new GetUserInfoDelegate(this.MyGetUserInfo);
             }
+
+            this.lblToUserID.Visible = false;
+            this.txtToUserID.Visible = false;
         }
 
         #endregion
@@ -195,13 +199,19 @@ namespace Workflow_Tool
 
                 // UserIDを取得
                 decimal fromUserId = decimal.Parse(txtUserID.Text);
+                decimal toUserId=0;
+
+                if (!string.IsNullOrEmpty(txtToUserID.Text))
+                {
+                    toUserId = decimal.Parse(txtToUserID.Text);
+                }
 
                 // StartWorkflow
                 Workflow wf = new Workflow(this._dam);
 
                 int mailTemplateId = 0;
                 mailTemplateId = wf.StartWorkflow(
-                    startWorkflow, txtWorkflowControlNo.Text, fromUserId,
+                    startWorkflow, txtWorkflowControlNo.Text, fromUserId, toUserId,
                     this.txtWorkflowReserveArea.Text, this.txtCurrentWorkflowReserveArea1.Text, this.dtpReplyDeadline1.Value);
 
                 // ★ ココでメールを送信。
@@ -449,6 +459,10 @@ namespace Workflow_Tool
                 decimal fromUserId = decimal.Parse(this.txtUserID.Text);
 
                 decimal? toUserId = null;
+                if (!string.IsNullOrEmpty(txtToUserID.Text))
+                {
+                    toUserId = decimal.Parse(txtToUserID.Text);
+                }
 
                 if (this.checkBox1.Checked
                     && (string)nextWorkflow["ActionType"] == "TurnBack")
@@ -470,7 +484,7 @@ namespace Workflow_Tool
                 else
                 {
                     // TurnBack, Reply, End以外
-                    // nextWorkflow["ToUserId"]を使用する。
+                    // nextWorkflow["ToUserId"]を使用する。                   
                 }
 
                 int mailTemplateId = 0;
@@ -569,6 +583,8 @@ namespace Workflow_Tool
                     this.txtDearSirPTitleId.BackColor = Color.Empty;
                     this.txtUserID.Enabled = true;
                     this.txtUserID.BackColor = Color.Yellow;
+                    this.txtToUserID.Visible = false;
+                    this.lblToUserID.Visible = false;
                     //---
                     break;
 
@@ -591,6 +607,8 @@ namespace Workflow_Tool
                     this.txtDearSirPTitleId.BackColor = Color.Empty;
                     this.txtUserID.Enabled = true;
                     this.txtUserID.BackColor = Color.Yellow;
+                    this.txtToUserID.Visible = true;
+                    this.lblToUserID.Visible = true;
                     //---
                     break;
 
@@ -613,6 +631,8 @@ namespace Workflow_Tool
                     this.txtDearSirPTitleId.BackColor = Color.Yellow;
                     this.txtUserID.Enabled = true;
                     this.txtUserID.BackColor = Color.Yellow;
+                    this.txtToUserID.Visible = false;
+                    this.lblToUserID.Visible = false;
                     //---
                     break;
 
@@ -635,6 +655,8 @@ namespace Workflow_Tool
                     this.txtDearSirPTitleId.BackColor = Color.Empty;
                     this.txtUserID.Enabled = true;
                     this.txtUserID.BackColor = Color.Yellow;
+                    this.txtToUserID.Visible = false;
+                    this.lblToUserID.Visible = false;
                     //---
                     break;
 
@@ -657,6 +679,8 @@ namespace Workflow_Tool
                     this.txtDearSirPTitleId.BackColor = Color.Empty;
                     this.txtUserID.Enabled = true;
                     this.txtUserID.BackColor = Color.Yellow;
+                    this.txtToUserID.Visible = false;
+                    this.lblToUserID.Visible = false;
                     //---
                     break;
 
@@ -679,6 +703,8 @@ namespace Workflow_Tool
                     this.txtDearSirPTitleId.BackColor = Color.Empty;
                     this.txtUserID.Enabled = true;
                     this.txtUserID.BackColor = Color.Yellow;
+                    this.txtToUserID.Visible = false;
+                    this.lblToUserID.Visible = false;
                     //---
                     break;
 
@@ -701,6 +727,8 @@ namespace Workflow_Tool
                     this.txtDearSirPTitleId.BackColor = Color.Empty;
                     this.txtUserID.Enabled = true;
                     this.txtUserID.BackColor = Color.Yellow;
+                    this.txtToUserID.Visible = true;
+                    this.lblToUserID.Visible = true;
                     //---
                     break;
 
@@ -710,5 +738,140 @@ namespace Workflow_Tool
         }
 
         #endregion
+
+        /// <summary>
+        /// TurnBack to Original user
+        /// </summary>        
+        private void btnTurnbackIntoFirst_Click(object sender, EventArgs e)
+        {
+            // Damの初期化
+            this.InitDam();
+
+            try
+            {
+                Workflow wf = new Workflow(this._dam);
+
+                // fromUserIDを取得
+                decimal fromUserId = decimal.Parse(this.txtUserID.Text);
+
+                decimal? toUserId = toUserId = decimal.Parse(txtToUserID.Text);
+
+                //Calling the method to TurnBack to original slip issuance user
+                wf.TurnbackSlipIssuanceUserID(
+                    txtSubSystemId.Text, this.txtWorkflowControlNo.Text, fromUserId, toUserId,
+                    this.txtCurrentWorkflowReserveArea2.Text);
+
+                // ★ ココでメールを送信。
+
+                this._dam.CommitTransaction();
+            }
+            catch (Exception ex)
+            {
+                this._dam.RollbackTransaction();
+
+                MessageBox.Show(
+                    "Message:" + ex.Message + "\n" + "StackTrace:" + ex.StackTrace,
+                    ResourceMgr.GetString("E0001"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                this._dam.ConnectionClose();
+            }
+        }
+
+        /// <summary>
+        /// Forces the workflow to terminate
+        /// </summary>        
+        private void btnForcedTermination_Click(object sender, EventArgs e)
+        {
+            // Damの初期化
+            this.InitDam();
+
+            try
+            {
+                // ワークフロー承認依頼を取得
+                DataRow nextWorkflow = null;
+                DataTable dt = (DataTable)this.dataGridView1.DataSource;
+
+                DataGridViewRow dgvr = (this.dataGridView1.SelectedRows[0]);
+                foreach (DataRow dr in dt.Rows)
+                {
+                    if ((decimal)dr[0] == (decimal)dgvr.Cells[0].Value)
+                    {
+                        nextWorkflow = dr;
+                    }
+                }
+
+                Workflow wf = new Workflow(this._dam);
+
+                // fromUserIDを取得
+                decimal fromUserId = decimal.Parse(this.txtUserID.Text);
+
+                int mailTemplateId = 0;
+                //Calling method to terminate the workflow forcefully
+                mailTemplateId = wf.ForcedTermination(nextWorkflow, this.txtWorkflowControlNo.Text, fromUserId, this.txtCurrentWorkflowReserveArea2.Text);
+
+                // ★ ココでメールを送信。
+
+                this._dam.CommitTransaction();
+            }
+            catch (Exception ex)
+            {
+                this._dam.RollbackTransaction();
+
+                MessageBox.Show(
+                    "Message:" + ex.Message + "\n" + "StackTrace:" + ex.StackTrace,
+                    ResourceMgr.GetString("E0001"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                this._dam.ConnectionClose();
+            }
+        }
+
+        /// <summary>
+        /// Switches to the person in charge
+        /// </summary>        
+        private void btnSwitchPersonInCharge_Click(object sender, EventArgs e)
+        {
+            // Damの初期化
+            this.InitDam();
+
+            try
+            {
+                // ワークフロー承認依頼を取得
+                DataRow nextWorkflow = null;
+                DataTable dt = (DataTable)this.dataGridView1.DataSource;
+
+                DataGridViewRow dgvr = (this.dataGridView1.SelectedRows[0]);
+                foreach (DataRow dr in dt.Rows)
+                {
+                    if ((decimal)dr[0] == (decimal)dgvr.Cells[0].Value)
+                    {
+                        nextWorkflow = dr;
+                    }
+                }
+
+                Workflow wf = new Workflow(this._dam);
+                //Calling the method to Switch the person in charge
+                wf.SwitchPersonInCharge(nextWorkflow, this.txtWorkflowControlNo.Text);
+
+                // ★ ココでメールを送信。
+
+                this._dam.CommitTransaction();
+            }
+            catch (Exception ex)
+            {
+                this._dam.RollbackTransaction();
+
+                MessageBox.Show(
+                    "Message:" + ex.Message + "\n" + "StackTrace:" + ex.StackTrace,
+                    ResourceMgr.GetString("E0001"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                this._dam.ConnectionClose();
+            }
+        }
     }
 }
