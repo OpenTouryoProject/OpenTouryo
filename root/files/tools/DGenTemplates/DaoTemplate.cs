@@ -11,6 +11,7 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //*  2012/06/14  西野  大介        ResourceLoaderに加え、EmbeddedResourceLoaderに対応
 //*  2013/09/09  西野  大介        ExecGenerateSQLメソッドを追加した（バッチ更新用）。
+//*  2014/11/20  Sandeep          Implemented CommandTimeout property and SetCommandTimeout method.
 //**********************************************************************************
 
 #region using
@@ -39,6 +40,27 @@ public class _DaoClassName_ : MyBaseDao
 {
     #region インスタンス変数
 
+    #region CommandTimeout
+
+    /// <summary>CommandTimeout</summary>
+    private int _commandTimeout = -1;
+
+    #region プロパティ プロシージャ
+
+    /// <summary>CommandTimeout</summary>
+    /// <remarks>自由に（拡張して）利用できる。</remarks>
+    public int CommandTimeout
+    {
+        set
+        {
+            this._commandTimeout = value;
+        }
+    }
+
+    #endregion
+
+    #endregion
+
     /// <summary>ユーザ パラメタ（文字列置換）用ハッシュ テーブル</summary>
     protected Hashtable HtUserParameter = new Hashtable();
     /// <summary>パラメタ ライズド クエリのパラメタ用ハッシュ テーブル</summary>
@@ -54,6 +76,17 @@ public class _DaoClassName_ : MyBaseDao
     #endregion
 
     #region 共通関数（パラメタの制御）
+
+    /// <summary>To Set CommandTimeout</summary>
+    private void SetCommandTimeout()
+    {
+        // If CommandTimeout is >= 0 then set CommandTimeout.
+        // Else skip, automatically it will set default CommandTimeout.
+        if (this._commandTimeout >= 0)
+        {
+            (((DamSqlSvr)this.GetDam()).DamSqlCommand).CommandTimeout = this._commandTimeout;
+        }
+    }
 
     /// <summary>ユーザ パラメタ（文字列置換）をハッシュ テーブルに設定する。</summary>
     /// <param name="userParamName">ユーザ パラメタ名</param>
@@ -190,6 +223,9 @@ public class _DaoClassName_ : MyBaseDao
         // ファイルからSQL（Insert）を設定する。
         this.SetSqlByFile2("_InsertFileName_");
 
+        // Set CommandTimeout
+        this.SetCommandTimeout();
+
         // パラメタの設定
         this.SetParametersFromHt();
 
@@ -204,6 +240,9 @@ public class _DaoClassName_ : MyBaseDao
     {
         // ファイルからSQL（DynIns）を設定する。
         this.SetSqlByFile2("_DynInsFileName_");
+
+        // Set CommandTimeout
+        this.SetCommandTimeout();
 
         // パラメタの設定
         this.SetParametersFromHt();
@@ -223,6 +262,9 @@ public class _DaoClassName_ : MyBaseDao
         // ファイルからSQL（Select）を設定する。
         this.SetSqlByFile2("_SelectFileName_");
 
+        // Set CommandTimeout
+        this.SetCommandTimeout();
+
         // パラメタの設定
         this.SetParametersFromHt();
 
@@ -236,6 +278,9 @@ public class _DaoClassName_ : MyBaseDao
     {
         // ファイルからSQL（DynSel）を設定する。
         this.SetSqlByFile2("_DynSelFileName_");
+
+        // Set CommandTimeout
+        this.SetCommandTimeout();
 
         // パラメタの設定
         this.SetParametersFromHt();
@@ -256,6 +301,9 @@ public class _DaoClassName_ : MyBaseDao
         // ファイルからSQL（Update）を設定する。
         this.SetSqlByFile2("_UpdateFileName_");
 
+        // Set CommandTimeout
+        this.SetCommandTimeout();
+
         // パラメタの設定
         this.SetParametersFromHt();
 
@@ -270,6 +318,9 @@ public class _DaoClassName_ : MyBaseDao
     {
         // ファイルからSQL（DynUpd）を設定する。
         this.SetSqlByFile2("_DynUpdFileName_");
+
+        // Set CommandTimeout
+        this.SetCommandTimeout();
 
         // パラメタの設定
         this.SetParametersFromHt();
@@ -289,6 +340,9 @@ public class _DaoClassName_ : MyBaseDao
         // ファイルからSQL（Delete）を設定する。
         this.SetSqlByFile2("_DeleteFileName_");
 
+        // Set CommandTimeout
+        this.SetCommandTimeout();
+
         // パラメタの設定
         this.SetParametersFromHt();
 
@@ -302,6 +356,9 @@ public class _DaoClassName_ : MyBaseDao
     {
         // ファイルからSQL（DynDel）を設定する。
         this.SetSqlByFile2("_DynDelFileName_");
+
+        // Set CommandTimeout
+        this.SetCommandTimeout();
 
         // パラメタの設定
         this.SetParametersFromHt();
@@ -321,6 +378,9 @@ public class _DaoClassName_ : MyBaseDao
         // ファイルからSQL（DynSelCnt）を設定する。
         this.SetSqlByFile2("_DynSelCntFileName_");
 
+        // Set CommandTimeout
+        this.SetCommandTimeout();
+
         // パラメタの設定
         this.SetParametersFromHt();
 
@@ -336,6 +396,9 @@ public class _DaoClassName_ : MyBaseDao
     {
         // ファイルからSQLを設定する。
         this.SetSqlByFile2(fileName);
+
+        // Set CommandTimeout
+        this.SetCommandTimeout();
 
         // パラメタの設定
         this.SetParametersFromHt();

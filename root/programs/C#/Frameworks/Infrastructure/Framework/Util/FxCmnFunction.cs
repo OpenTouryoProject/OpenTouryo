@@ -48,7 +48,8 @@
 //*  2014/05/16  西野  大介        キャスト可否チェックのロジックを見直した。
 //*  2014/08/18  Sai-San           Added code for adding events dynamically for ListView events. 
 //*  2014/10/03  Rituparna         Added code for Supporting ItemCommand event to ListViewControl. 
-//*  2014/10/03  Rituparna         Added code SelectedIndexChanged for RadiobuttonList and CheckBoxList. 
+//*  2014/10/03  Rituparna         Added code SelectedIndexChanged for RadiobuttonList and CheckBoxList.
+//*  2014/11/19  Sandeep           Removed Redundant Code "FxCmnFunction.AddControlToDic" in method GetCtrlAndSetClickEventHandler
 //**********************************************************************************
 
 using System.Text;
@@ -358,9 +359,10 @@ namespace Touryo.Infrastructure.Framework.Util
                             listView.PagePropertiesChanged += (EventHandler)eventHandlers[2];
                             //Sorting event handler
                             listView.Sorting += (EventHandler<ListViewSortEventArgs>)eventHandlers[3];
-                            //itemcommand event handler
-                            FxCmnFunction.AddControlToDic(ctrl, controlHt);
+                            //itemcommand event handler                           
                             listView.ItemCommand += (EventHandler<ListViewCommandEventArgs>)eventHandlers[5];
+
+                            // ディクショナリに格納
                             FxCmnFunction.AddControlToDic(ctrl, controlHt);
                         }
                     }
