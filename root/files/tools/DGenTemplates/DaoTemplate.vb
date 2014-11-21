@@ -11,6 +11,7 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '*  2012/06/14  西野  大介        ResourceLoaderに加え、EmbeddedResourceLoaderに対応
 '*  2013/09/09  西野  大介        ExecGenerateSQLメソッドを追加した（バッチ更新用）。
+'*	2014/11/20  Sandeep          Implemented CommandTimeout property and SetCommandTimeout method.
 '**********************************************************************************
 
 #Region "using"
@@ -39,6 +40,25 @@ Public Class _DaoClassName_
 	Inherits MyBaseDao
 	#Region "インスタンス変数"
 
+	#Region "CommandTimeout"
+
+    ''' <summary>CommandTimeout</summary>
+    Private _commandTimeout As Integer = -1
+
+	#Region "プロパティ プロシージャ"
+
+    ''' <summary>CommandTimeout</summary>
+    ''' <remarks>自由に（拡張して）利用できる。</remarks>
+    Public WriteOnly Property CommandTimeout() As Integer
+        Set(value As Integer)
+            Me._commandTimeout = value
+        End Set
+    End Property
+
+	#End Region
+
+	#End Region
+
 	''' <summary>ユーザ パラメタ（文字列置換）用ハッシュ テーブル</summary>
 	Protected HtUserParameter As New Hashtable()
 	''' <summary>パラメタ ライズド クエリのパラメタ用ハッシュ テーブル</summary>
@@ -56,6 +76,15 @@ Public Class _DaoClassName_
 	#End Region
 
 	#Region "共通関数（パラメタの制御）"
+	
+	''' <summary>To Set CommandTimeout</summary>
+    Private Sub SetCommandTimeout()
+        ' If CommandTimeout is >= 0 then set CommandTimeout.
+        ' Else skip, automatically it will set default CommandTimeout.
+        If Me._commandTimeout >= 0 Then
+			DirectCast(GetDam(), DamSqlSvr).DamSqlCommand.CommandTimeout = Me._commandTimeout
+        End If
+    End Sub
 
 	''' <summary>ユーザ パラメタ（文字列置換）をハッシュ テーブルに設定する。</summary>
 	''' <param name="userParamName">ユーザ パラメタ名</param>
@@ -171,7 +200,10 @@ Public Class _DaoClassName_
 	''' <returns>挿入された行の数</returns>
 	Public Function _InsertMethodName_() As Integer
 		' ファイルからSQL（Insert）を設定する。
-		Me.SetSqlByFile2("_InsertFileName_")
+        Me.SetSqlByFile2("_InsertFileName_")
+
+        ' Set CommandTimeout
+        Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
@@ -185,7 +217,10 @@ Public Class _DaoClassName_
 	''' <remarks>パラメタで指定した列のみ挿入値が有効になる。</remarks>
 	Public Function _DynInsMethodName_() As Integer
 		' ファイルからSQL（DynIns）を設定する。
-		Me.SetSqlByFile2("_DynInsFileName_")
+        Me.SetSqlByFile2("_DynInsFileName_")
+
+        ' Set CommandTimeout
+        Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
@@ -202,7 +237,10 @@ Public Class _DaoClassName_
 	''' <param name="dt">結果を格納するDataTable</param>
 	Public Sub _SelectMethodName_(dt As DataTable)
 		' ファイルからSQL（Select）を設定する。
-		Me.SetSqlByFile2("_SelectFileName_")
+        Me.SetSqlByFile2("_SelectFileName_")
+
+        ' Set CommandTimeout
+        Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
@@ -215,7 +253,10 @@ Public Class _DaoClassName_
 	''' <param name="dt">結果を格納するDataTable</param>
 	Public Sub _DynSelMethodName_(dt As DataTable)
 		' ファイルからSQL（DynSel）を設定する。
-		Me.SetSqlByFile2("_DynSelFileName_")
+        Me.SetSqlByFile2("_DynSelFileName_")
+
+        ' Set CommandTimeout
+        Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
@@ -233,7 +274,10 @@ Public Class _DaoClassName_
 	''' <remarks>パラメタで指定した列のみ更新値が有効になる。</remarks>
 	Public Function _UpdateMethodName_() As Integer
 		' ファイルからSQL（Update）を設定する。
-		Me.SetSqlByFile2("_UpdateFileName_")
+        Me.SetSqlByFile2("_UpdateFileName_")
+
+        ' Set CommandTimeout
+        Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
@@ -247,7 +291,10 @@ Public Class _DaoClassName_
 	''' <remarks>パラメタで指定した列のみ更新値が有効になる。</remarks>
 	Public Function _DynUpdMethodName_() As Integer
 		' ファイルからSQL（DynUpd）を設定する。
-		Me.SetSqlByFile2("_DynUpdFileName_")
+        Me.SetSqlByFile2("_DynUpdFileName_")
+
+        ' Set CommandTimeout
+        Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
@@ -264,7 +311,10 @@ Public Class _DaoClassName_
 	''' <returns>削除された行の数</returns>
 	Public Function _DeleteMethodName_() As Integer
 		' ファイルからSQL（Delete）を設定する。
-		Me.SetSqlByFile2("_DeleteFileName_")
+        Me.SetSqlByFile2("_DeleteFileName_")
+
+        ' Set CommandTimeout
+        Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
@@ -277,7 +327,10 @@ Public Class _DaoClassName_
 	''' <returns>削除された行の数</returns>
 	Public Function _DynDelMethodName_() As Integer
 		' ファイルからSQL（DynDel）を設定する。
-		Me.SetSqlByFile2("_DynDelFileName_")
+        Me.SetSqlByFile2("_DynDelFileName_")
+
+        ' Set CommandTimeout
+        Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
@@ -294,7 +347,10 @@ Public Class _DaoClassName_
 	''' <returns>テーブルのレコード件数</returns>
 	Public Function _DynSelCntMethodName_() As Object
 		' ファイルからSQL（DynSelCnt）を設定する。
-		Me.SetSqlByFile2("_DynSelCntFileName_")
+        Me.SetSqlByFile2("_DynSelCntFileName_")
+
+        ' Set CommandTimeout
+        Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
@@ -309,7 +365,10 @@ Public Class _DaoClassName_
 	''' <returns>生成した静的SQL</returns>
 	Public Overloads Function ExecGenerateSQL(fileName As String, sqlUtil As SQLUtility) As String
 		' ファイルからSQLを設定する。
-		Me.SetSqlByFile2(fileName)
+        Me.SetSqlByFile2(fileName)
+
+        ' Set CommandTimeout
+        Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
