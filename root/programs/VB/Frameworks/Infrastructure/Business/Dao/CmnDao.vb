@@ -37,6 +37,7 @@
 '*  2011/10/09  西野  大介        国際化対応
 '*  2012/06/14  西野  大介        ResourceLoaderに加え、EmbeddedResourceLoaderに対応
 '*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
+'*  2014/11/20  Sandeep          Implemented CommandTimeout property and SetCommandTimeout method.
 '**********************************************************************************
 
 ' System
@@ -232,6 +233,25 @@ Namespace Touryo.Infrastructure.Business.Dao
 
 		#End Region
 
+		#Region "CommandTimeout"
+
+		''' <summary>CommandTimeout</summary>
+		Private _commandTimeout As Integer = -1
+
+		#Region "プロパティ プロシージャ"
+
+		''' <summary>CommandTimeout</summary>
+		''' <remarks>自由に（拡張して）利用できる。</remarks>
+		Public WriteOnly Property CommandTimeout() As Integer
+			Set(value As Integer)
+				Me._commandTimeout = value
+			End Set
+		End Property
+
+		#End Region
+
+		#End Region
+
 		#End Region
 
 		#Region "コンストラクタ"
@@ -253,7 +273,10 @@ Namespace Touryo.Infrastructure.Business.Dao
 		''' <remarks>自由に（拡張して）利用できる。</remarks>
 		Public Shadows Function ExecSelectScalar() As Object
 			' SQLの設定
-			Me.SetSQL()
+            Me.SetSQL()
+
+            ' To Set CommandTimeout
+            Me.SetCommandTimeout()
 
 			' パラメタの一括設定
 			Me.SetParameters()
@@ -268,7 +291,10 @@ Namespace Touryo.Infrastructure.Business.Dao
 		''' <remarks>自由に（拡張して）利用できる。</remarks>
 		Public Shadows Sub ExecSelectFill_DT(dt As DataTable)
 			' SQLの設定
-			Me.SetSQL()
+            Me.SetSQL()
+
+            ' To Set CommandTimeout
+            Me.SetCommandTimeout()
 
 			' パラメタの一括設定
 			Me.SetParameters()
@@ -283,7 +309,10 @@ Namespace Touryo.Infrastructure.Business.Dao
 		''' <remarks>自由に（拡張して）利用できる。</remarks>
 		Public Shadows Sub ExecSelectFill_DS(ds As DataSet)
 			' SQLの設定
-			Me.SetSQL()
+            Me.SetSQL()
+
+            ' To Set CommandTimeout
+            Me.SetCommandTimeout()
 
 			' パラメタの一括設定
 			Me.SetParameters()
@@ -298,7 +327,10 @@ Namespace Touryo.Infrastructure.Business.Dao
 		''' <remarks>自由に（拡張して）利用できる。</remarks>        
 		Public Shadows Function ExecSelect_DR() As IDataReader
 			' SQLの設定
-			Me.SetSQL()
+            Me.SetSQL()
+
+            ' To Set CommandTimeout
+            Me.SetCommandTimeout()
 
 			' パラメタの一括設定
 			Me.SetParameters()
@@ -313,7 +345,10 @@ Namespace Touryo.Infrastructure.Business.Dao
 		''' <remarks>自由に（拡張して）利用できる。</remarks>        
 		Public Shadows Function ExecInsUpDel_NonQuery() As Integer
 			' SQLの設定
-			Me.SetSQL()
+            Me.SetSQL()
+
+            ' To Set CommandTimeout
+            Me.SetCommandTimeout()
 
 			' パラメタの一括設定
 			Me.SetParameters()
@@ -329,7 +364,10 @@ Namespace Touryo.Infrastructure.Business.Dao
 		''' <remarks>自由に（拡張して）利用できる。</remarks>
 		Public Shadows Function ExecGenerateSQL(sqlUtil As SQLUtility) As String
 			' SQLの設定
-			Me.SetSQL()
+            Me.SetSQL()
+
+            ' To Set CommandTimeout
+            Me.SetCommandTimeout()
 
 			' パラメタの一括設定
 			Me.SetParameters()
@@ -356,7 +394,16 @@ Namespace Touryo.Infrastructure.Business.Dao
 				' SQLエラー
 				Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.CMN_DAO_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.CMN_DAO_ERROR(1), MyBusinessSystemExceptionMessage.CMN_DAO_ERROR_SQL))
 			End If
-		End Sub
+        End Sub
+
+        ''' <summary>To Set CommandTimeout</summary>
+        Private Sub SetCommandTimeout()
+            ' If CommandTimeout is >= 0 then set CommandTimeout.
+            ' Else skip, automatically it will set default CommandTimeout.
+            If Me._commandTimeout >= 0 Then
+                DirectCast(GetDam(), DamSqlSvr).DamSqlCommand.CommandTimeout = Me._commandTimeout
+            End If
+        End Sub
 
 		''' <summary>パラメタの一括設定（内部用）</summary>
 		Private Sub SetParameters()
