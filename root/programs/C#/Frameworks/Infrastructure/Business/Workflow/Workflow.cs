@@ -29,7 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2014/07/15  西野  大介        新規作成
 //*  2014/11/11  Sai-san          Created methods for Forced termination, Getting SlipIssuanceUserID, 
-//*                               TurnBack to Original user ussing the voucher and Switching person in charge
+//*                               TurnBack to Original user using the voucher and Switching person in charge
 //**********************************************************************************
 
 // System
