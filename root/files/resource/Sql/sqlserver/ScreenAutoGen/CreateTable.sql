@@ -22,3 +22,9 @@ CONSTRAINT [PK_my_table] PRIMARY KEY CLUSTERED
 ) ON [PRIMARY]
 
 GO
+
+/*********************************************************************************/
+INSERT INTO [dbo].[my_table] ([ID], [ID2], [Val]) values(1, 1, 'AAAA');
+INSERT INTO [dbo].[my_table] ([ID], [ID2], [Val]) values(1, 2, 'BBBB');
+INSERT INTO [dbo].[my_table] ([ID], [ID2], [Val]) values(2, 1, 'CCCC');
+INSERT INTO [dbo].[my_table] ([ID], [ID2], [Val]) values(2, 2, 'DDDD');
