@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Summary - Coverage Report</title>
+<link rel="stylesheet" type="text/css" href="report.css" />
+</head><body><div class="container">
+<h1>Summary</h1>
+<table class="overview">
+<colgroup>
+<col width="135" />
+<col />
+</colgroup>
+<tbody>
+<tr><th>Generated on:</th><td>12/12/2014 - 12:51:05 PM</td></tr>
+<tr><th>Parser:</th><td>OpenCoverParser</td></tr>
+<tr><th>Assemblies:</th><td>1</td></tr>
+<tr><th>Classes:</th><td>34</td></tr>
+<tr><th>Files:</th><td>29</td></tr>
+<tr><th>Coverage:</th><td>21.5%</td></tr>
+<tr><th>Covered lines:</th><td>486</td></tr>
+<tr><th>Uncovered lines:</th><td>1770</td></tr>
+<tr><th>Coverable lines:</th><td>2256</td></tr>
+<tr><th>Total lines:</th><td>12321</td></tr>
+</tbody>
+</table>
+<h1>Assemblies</h1>
+<script type="text/javascript">
+/* <![CDATA[ */
+document.write('<div id="showcustomizebox" class="customizebox"><input href="#" id="showcustomizeboxbutton" value="Enable filtering" title="This may take some time since the report contains many classes." type="submit" /></div><div id="customizebox" class="customizebox hidden"><div><a href="#" data-bind="click: collapseAll">Collapse all</a> | <a href="#" data-bind="click: expandAll">Expand all</a></div><div class="center"><span data-bind="text: groupingDescription"></span><br />Grouping: <div id="namespaceslider"></div></div> <div class="right">Filter: <input type="text" data-bind="value: filter, valueUpdate: \'afterkeydown\'" /></div></div>');
+/* ]]> */
+</script>
+<script type="text/html" id="assembly-template">
+<tr data-bind="visible: visible, css: { namespace: parent != null }"><th><a href="#" data-bind="text: name, click: toggleCollapse, attr: { class: collapsed() ? 'collapsed' : 'expanded' }" title="Collapse/Expand"> </a></th><th class="right" data-bind="text: coveredLines"></th><th class="right" data-bind="text: uncoveredLines"></th><th class="right" data-bind="text: coverableLines"></th><th class="right" data-bind="text: isNaN(coverage()) ? '' : coverage() + '%', attr: { title: isNaN(coverage()) ? '' : coverageType }"></th><th><table class="coverage"><tr><td class="green" data-bind="style: { width: Math.round(coverage()) + 'px' }, visible: !isNaN(coverage()) && Math.round(coverage()) > 0">&nbsp;</td><td class="red"data-bind="style: { width: (100 - Math.round(coverage())) + 'px' }, visible: !isNaN(coverage()) && 100 - Math.round(coverage()) > 0">&nbsp;</td><td class="gray" style="width: 100px;" data-bind="visible: isNaN(coverage())">&nbsp;</td></tr></table></th></tr>
+<!-- ko template: { name: function(element) { return element.isNamespace ? 'assembly-template' : 'class-template'; } , foreach: subelements } -->
+<!-- /ko -->
+</script>
+<script type="text/html" id="class-template">
+<tr data-bind="visible: visible, css: { namespace: parent().parent != null }"><td><a data-bind="text: name, attr: { href: reportPath }, visible: reportPath !== ''"></a><span data-bind="text: name, visible: reportPath === ''"></span></td><td class="right" data-bind="text: coveredLines"></td><td class="right" data-bind="text: uncoveredLines"></td><td class="right" data-bind="text: coverableLines"></td><td class="right" data-bind="text: isNaN(coverage()) ? '' : coverage() + '%', attr: { title: isNaN(coverage()) ? '' : coverageType }"></td><td><table class="coverage"><tr><td class="green" data-bind="style: { width: Math.round(coverage()) + 'px' }, visible: !isNaN(coverage()) && Math.round(coverage()) > 0">&nbsp;</td><td class="red"data-bind="style: { width: (100 - Math.round(coverage())) + 'px' }, visible: !isNaN(coverage()) && 100 - Math.round(coverage()) > 0">&nbsp;</td><td class="gray" style="width: 100px;" data-bind="visible: isNaN(coverage())">&nbsp;</td></tr></table></td></tr>
+</script>
+<table id="summaryTable" class="overview">
+<colgroup>
+<col />
+<col width="90" />
+<col width="105" />
+<col width="100" />
+<col width="60" />
+<col width="112" />
+</colgroup>
+<thead><tr><th><a href="#" data-bind="attr: { class: sortby() === 'name' ? 'sortactive' + '_' + sortorder() : 'sortinactive_asc' }, click: function(data, event) { changeSorting(data, event, 'name') }">Name</a></th><th class="right"><a href="#" data-bind="attr: { class: sortby() === 'covered' ? 'sortactive' + '_' + sortorder() : 'sortinactive_asc' }, click: function(data, event) { changeSorting(data, event, 'covered') }">Covered</a></th><th class="right"><a href="#" data-bind="attr: { class: sortby() === 'uncovered' ? 'sortactive' + '_' + sortorder() : 'sortinactive_asc' }, click: function(data, event) { changeSorting(data, event, 'uncovered') }">Uncovered</a></th><th class="right"><a href="#" data-bind="attr: { class: sortby() === 'coverable' ? 'sortactive' + '_' + sortorder() : 'sortinactive_asc' }, click: function(data, event) { changeSorting(data, event, 'coverable') }">Coverable</a></th><th class="center" colspan="2"><a href="#" data-bind="attr: { class: sortby() === 'coverage' ? 'sortactive' + '_' + sortorder() : 'sortinactive_asc' }, click: function(data, event) { changeSorting(data, event, 'coverage') }">Coverage</a></th></tr></thead>
+<tbody data-bind="template: { name: 'assembly-template', foreach: assemblies }">
+<tr><th>Business</th><th class="right">486</th><th class="right">1770</th><th class="right">2256</th><th title="LineCoverage" class="right">21.5%</th><th><table class="coverage"><tr><td class="green" style="width: 22px;">&nbsp;</td><td class="red" style="width: 78px;">&nbsp;</td></tr></table></th></tr>
+<tr><td><a href="Business_DaoM_User.htm">DaoM_User</a></td><td class="right">13</td><td class="right">70</td><td class="right">83</td><td title="LineCoverage" class="right">15.6%</td><td><table class="coverage"><tr><td class="green" style="width: 16px;">&nbsp;</td><td class="red" style="width: 84px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_DaoM_Workflow.htm">DaoM_Workflow</a></td><td class="right">21</td><td class="right">152</td><td class="right">173</td><td title="LineCoverage" class="right">12.1%</td><td><table class="coverage"><tr><td class="green" style="width: 12px;">&nbsp;</td><td class="red" style="width: 88px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_DaoT_CurrentWorkflow.htm">DaoT_CurrentWorkflow</a></td><td class="right">77</td><td class="right">141</td><td class="right">218</td><td title="LineCoverage" class="right">35.3%</td><td><table class="coverage"><tr><td class="green" style="width: 35px;">&nbsp;</td><td class="red" style="width: 65px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_DaoT_Workflow.htm">DaoT_Workflow</a></td><td class="right">29</td><td class="right">90</td><td class="right">119</td><td title="LineCoverage" class="right">24.3%</td><td><table class="coverage"><tr><td class="green" style="width: 24px;">&nbsp;</td><td class="red" style="width: 76px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_DaoT_WorkflowHistory.htm">DaoT_WorkflowHistory</a></td><td class="right">16</td><td class="right">202</td><td class="right">218</td><td title="LineCoverage" class="right">7.3%</td><td><table class="coverage"><tr><td class="green" style="width: 7px;">&nbsp;</td><td class="red" style="width: 93px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business__3TierEngine.htm">Touryo.Infrastructure.Business.Business._3TierEngine</a></td><td class="right">0</td><td class="right">269</td><td class="right">269</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MyBaseLogic.htm">Touryo.Infrastructure.Business.Business.MyBaseLogic</a></td><td class="right">0</td><td class="right">85</td><td class="right">85</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MyFcBaseLogic.htm">Touryo.Infrastructure.Business.Business.MyFcBaseLogic</a></td><td class="right">0</td><td class="right">102</td><td class="right">102</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business__3TierParameterValue.htm">Touryo.Infrastructure.Business.Common._3TierParameterValue</a></td><td class="right">0</td><td class="right">2</td><td class="right">2</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business__3TierReturnValue.htm">Touryo.Infrastructure.Business.Common._3TierReturnValue</a></td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td title="MethodCoverage" class="right"></td><td><table class="coverage"><tr><td class="gray" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MuParameterValue.htm">Touryo.Infrastructure.Business.Common.MuParameterValue</a></td><td class="right">0</td><td class="right">4</td><td class="right">4</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MuReturnValue.htm">Touryo.Infrastructure.Business.Common.MuReturnValue</a></td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td title="MethodCoverage" class="right"></td><td><table class="coverage"><tr><td class="gray" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MyParameterValue.htm">Touryo.Infrastructure.Business.Common.MyParameterValue</a></td><td class="right">0</td><td class="right">7</td><td class="right">7</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MyReturnValue.htm">Touryo.Infrastructure.Business.Common.MyReturnValue</a></td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td title="MethodCoverage" class="right"></td><td><table class="coverage"><tr><td class="gray" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_BaseConsolidateDao.htm">Touryo.Infrastructure.Business.Dao.BaseConsolidateDao</a></td><td class="right">4</td><td class="right">0</td><td class="right">4</td><td title="LineCoverage" class="right">100%</td><td><table class="coverage"><tr><td class="green" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_CmnDao.htm">Touryo.Infrastructure.Business.Dao.CmnDao</a></td><td class="right">35</td><td class="right">41</td><td class="right">76</td><td title="LineCoverage" class="right">46%</td><td><table class="coverage"><tr><td class="green" style="width: 46px;">&nbsp;</td><td class="red" style="width: 54px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MyBaseDao.htm">Touryo.Infrastructure.Business.Dao.MyBaseDao</a></td><td class="right">15</td><td class="right">15</td><td class="right">30</td><td title="LineCoverage" class="right">50%</td><td><table class="coverage"><tr><td class="green" style="width: 50px;">&nbsp;</td><td class="red" style="width: 50px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MyBusinessApplicationExceptionMessage.htm">Touryo.Infrastructure.Business.Exceptions.MyBusinessApplicationExceptionMessage</a></td><td class="right">0</td><td class="right">13</td><td class="right">13</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MyBusinessSystemExceptionMessage.htm">Touryo.Infrastructure.Business.Exceptions.MyBusinessSystemExceptionMessage</a></td><td class="right">0</td><td class="right">27</td><td class="right">27</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_CmnTableAdapter.htm">Touryo.Infrastructure.Business.Presentation.CmnTableAdapter</a></td><td class="right">0</td><td class="right">10</td><td class="right">10</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MyBaseController.htm">Touryo.Infrastructure.Business.Presentation.MyBaseController</a></td><td class="right">0</td><td class="right">183</td><td class="right">183</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MyBusinessApplicationExceptionMessageResource.htm">Touryo.Infrastructure.Business.Resources.MyBusinessApplicationExceptionMessageResource</a></td><td class="right">0</td><td class="right">9</td><td class="right">9</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MyBusinessSystemExceptionMessageResource.htm">Touryo.Infrastructure.Business.Resources.MyBusinessSystemExceptionMessageResource</a></td><td class="right">0</td><td class="right">15</td><td class="right">15</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_JISX0208_1983Checker.htm">Touryo.Infrastructure.Business.Str.JISX0208_1983Checker</a></td><td class="right">0</td><td class="right">43</td><td class="right">43</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_WCFTCPSvcForFx.htm">Touryo.Infrastructure.Business.Transmission.WCFTCPSvcForFx</a></td><td class="right">0</td><td class="right">55</td><td class="right">55</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_GMTMaster.htm">Touryo.Infrastructure.Business.Util.GMTMaster</a></td><td class="right">0</td><td class="right">21</td><td class="right">21</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MyAttribute.htm">Touryo.Infrastructure.Business.Util.MyAttribute</a></td><td class="right">0</td><td class="right">15</td><td class="right">15</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MyCmnFunction.htm">Touryo.Infrastructure.Business.Util.MyCmnFunction</a></td><td class="right">0</td><td class="right">33</td><td class="right">33</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MyLiteral.htm">Touryo.Infrastructure.Business.Util.MyLiteral</a></td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td title="MethodCoverage" class="right"></td><td><table class="coverage"><tr><td class="gray" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MySubsysInfo.htm">Touryo.Infrastructure.Business.Util.MySubsysInfo</a></td><td class="right">0</td><td class="right">5</td><td class="right">5</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MyTimeZone.htm">Touryo.Infrastructure.Business.Util.MyTimeZone</a></td><td class="right">0</td><td class="right">108</td><td class="right">108</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_MyUserInfo.htm">Touryo.Infrastructure.Business.Util.MyUserInfo</a></td><td class="right">5</td><td class="right">6</td><td class="right">11</td><td title="LineCoverage" class="right">45.4%</td><td><table class="coverage"><tr><td class="green" style="width: 45px;">&nbsp;</td><td class="red" style="width: 55px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_GetUserInfoDelegate.htm">Touryo.Infrastructure.Business.Workflow.GetUserInfoDelegate</a></td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td title="MethodCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red" style="width: 100px;">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="Business_Workflow.htm">Touryo.Infrastructure.Business.Workflow.Workflow</a></td><td class="right">271</td><td class="right">47</td><td class="right">318</td><td title="LineCoverage" class="right">85.2%</td><td><table class="coverage"><tr><td class="green" style="width: 85px;">&nbsp;</td><td class="red" style="width: 15px;">&nbsp;</td></tr></table></td></tr>
+</tbody>
+</table>
+<script type="text/javascript">
+/* <![CDATA[ */
+var assemblies = [
+  {
+    "name" : 'Business',
+    "classes" : [
+    { "name" : 'DaoM_User', "reportPath" : 'Business_DaoM_User.htm', "coveredLines" : 13, "uncoveredLines" : 70, "coverableLines" : 83, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'DaoM_Workflow', "reportPath" : 'Business_DaoM_Workflow.htm', "coveredLines" : 21, "uncoveredLines" : 152, "coverableLines" : 173, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'DaoT_CurrentWorkflow', "reportPath" : 'Business_DaoT_CurrentWorkflow.htm', "coveredLines" : 77, "uncoveredLines" : 141, "coverableLines" : 218, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'DaoT_Workflow', "reportPath" : 'Business_DaoT_Workflow.htm', "coveredLines" : 29, "uncoveredLines" : 90, "coverableLines" : 119, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'DaoT_WorkflowHistory', "reportPath" : 'Business_DaoT_WorkflowHistory.htm', "coveredLines" : 16, "uncoveredLines" : 202, "coverableLines" : 218, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Business._3TierEngine', "reportPath" : 'Business__3TierEngine.htm', "coveredLines" : 0, "uncoveredLines" : 269, "coverableLines" : 269, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Business.MyBaseLogic', "reportPath" : 'Business_MyBaseLogic.htm', "coveredLines" : 0, "uncoveredLines" : 85, "coverableLines" : 85, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Business.MyFcBaseLogic', "reportPath" : 'Business_MyFcBaseLogic.htm', "coveredLines" : 0, "uncoveredLines" : 102, "coverableLines" : 102, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Common._3TierParameterValue', "reportPath" : 'Business__3TierParameterValue.htm', "coveredLines" : 0, "uncoveredLines" : 2, "coverableLines" : 2, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Common._3TierReturnValue', "reportPath" : 'Business__3TierReturnValue.htm', "coveredLines" : 0, "uncoveredLines" : 0, "coverableLines" : 0, "coverageType" : 'MethodCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Common.MuParameterValue', "reportPath" : 'Business_MuParameterValue.htm', "coveredLines" : 0, "uncoveredLines" : 4, "coverableLines" : 4, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Common.MuReturnValue', "reportPath" : 'Business_MuReturnValue.htm', "coveredLines" : 0, "uncoveredLines" : 0, "coverableLines" : 0, "coverageType" : 'MethodCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Common.MyParameterValue', "reportPath" : 'Business_MyParameterValue.htm', "coveredLines" : 0, "uncoveredLines" : 7, "coverableLines" : 7, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Common.MyReturnValue', "reportPath" : 'Business_MyReturnValue.htm', "coveredLines" : 0, "uncoveredLines" : 0, "coverableLines" : 0, "coverageType" : 'MethodCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Dao.BaseConsolidateDao', "reportPath" : 'Business_BaseConsolidateDao.htm', "coveredLines" : 4, "uncoveredLines" : 0, "coverableLines" : 4, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Dao.CmnDao', "reportPath" : 'Business_CmnDao.htm', "coveredLines" : 35, "uncoveredLines" : 41, "coverableLines" : 76, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Dao.MyBaseDao', "reportPath" : 'Business_MyBaseDao.htm', "coveredLines" : 15, "uncoveredLines" : 15, "coverableLines" : 30, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Exceptions.MyBusinessApplicationExceptionMessage', "reportPath" : 'Business_MyBusinessApplicationExceptionMessage.htm', "coveredLines" : 0, "uncoveredLines" : 13, "coverableLines" : 13, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Exceptions.MyBusinessSystemExceptionMessage', "reportPath" : 'Business_MyBusinessSystemExceptionMessage.htm', "coveredLines" : 0, "uncoveredLines" : 27, "coverableLines" : 27, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Presentation.CmnTableAdapter', "reportPath" : 'Business_CmnTableAdapter.htm', "coveredLines" : 0, "uncoveredLines" : 10, "coverableLines" : 10, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Presentation.MyBaseController', "reportPath" : 'Business_MyBaseController.htm', "coveredLines" : 0, "uncoveredLines" : 183, "coverableLines" : 183, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Resources.MyBusinessApplicationExceptionMessageResource', "reportPath" : 'Business_MyBusinessApplicationExceptionMessageResource.htm', "coveredLines" : 0, "uncoveredLines" : 9, "coverableLines" : 9, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Resources.MyBusinessSystemExceptionMessageResource', "reportPath" : 'Business_MyBusinessSystemExceptionMessageResource.htm', "coveredLines" : 0, "uncoveredLines" : 15, "coverableLines" : 15, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Str.JISX0208_1983Checker', "reportPath" : 'Business_JISX0208_1983Checker.htm', "coveredLines" : 0, "uncoveredLines" : 43, "coverableLines" : 43, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Transmission.WCFTCPSvcForFx', "reportPath" : 'Business_WCFTCPSvcForFx.htm', "coveredLines" : 0, "uncoveredLines" : 55, "coverableLines" : 55, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Util.GMTMaster', "reportPath" : 'Business_GMTMaster.htm', "coveredLines" : 0, "uncoveredLines" : 21, "coverableLines" : 21, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Util.MyAttribute', "reportPath" : 'Business_MyAttribute.htm', "coveredLines" : 0, "uncoveredLines" : 15, "coverableLines" : 15, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Util.MyCmnFunction', "reportPath" : 'Business_MyCmnFunction.htm', "coveredLines" : 0, "uncoveredLines" : 33, "coverableLines" : 33, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Util.MyLiteral', "reportPath" : 'Business_MyLiteral.htm', "coveredLines" : 0, "uncoveredLines" : 0, "coverableLines" : 0, "coverageType" : 'MethodCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Util.MySubsysInfo', "reportPath" : 'Business_MySubsysInfo.htm', "coveredLines" : 0, "uncoveredLines" : 5, "coverableLines" : 5, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Util.MyTimeZone', "reportPath" : 'Business_MyTimeZone.htm', "coveredLines" : 0, "uncoveredLines" : 108, "coverableLines" : 108, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Util.MyUserInfo', "reportPath" : 'Business_MyUserInfo.htm', "coveredLines" : 5, "uncoveredLines" : 6, "coverableLines" : 11, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+    { "name" : 'Touryo.Infrastructure.Business.Workflow.GetUserInfoDelegate', "reportPath" : 'Business_GetUserInfoDelegate.htm', "coveredLines" : 0, "uncoveredLines" : 0, "coverableLines" : 0, "coverageType" : 'MethodCoverage', "methodCoverage" : 0 },
+    { "name" : 'Touryo.Infrastructure.Business.Workflow.Workflow', "reportPath" : 'Business_Workflow.htm', "coveredLines" : 271, "uncoveredLines" : 47, "coverableLines" : 318, "coverageType" : 'LineCoverage', "methodCoverage" : '-' },
+  ]},
+];
+/* ]]> */
+</script>
+<div class="footer">Generated by: ReportGenerator 1.9.1.0<br />12/12/2014 - 12:51:05 PM<br /><a href="http://www.palmmedia.de">www.palmmedia.de</a></div></div>
+<script type="text/javascript" src="combined.js"></script>
+</body></html>
