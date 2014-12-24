@@ -1,30 +1,85 @@
-﻿using System;
+﻿//**********************************************************************************
+//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//**********************************************************************************
+
+#region Apache License
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+#endregion
+
+//**********************************************************************************
+//* クラス名            :AsyncProcessingService.cs
+//* クラス名クラス名     :
+//*
+//* 作成者              :Supragyan
+//* クラス日本語名       :
+//* 更新履歴
+//*  Date:        Author:        Comments:
+//*  ----------  ----------------  -------------------------------------------------
+//*  11/28/2014   Supragyan      Asynchronous Processing Service class for windows service
+//**********************************************************************************
+// System
+using System;
 using System.Text;
 using System.IO;
 using System.Threading;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Configuration;
 
-using AsyncProcessingService.Codes.Business;
-using AsyncProcessingService.Codes.Common;
-
+//業務フレームワーク
 using Touryo.Infrastructure.Business.Util;
-using Touryo.Infrastructure.Public.Db;
 
-namespace AsyncProcessingService
+//部品
+using Touryo.Infrastructure.Public.Db;
+using Touryo.Infrastructure.Public.Str;
+
+//Framework
+using Touryo.Infrastructure.Framework.Transmission;
+
+//AsyncSvc_sample
+using AsyncSvc_sample;
+
+namespace Touryo.Infrastructure.Framework.AsyncProcessingService
 {
+
+    /// <summary>
+    /// Asynchronous Processing Service class for windows service
+    /// </summary>
     public class AsyncProcessingService : System.ServiceProcess.ServiceBase
     {
         int _threadCount = 0;
+        AsyncProcessingServiceParameterValue _asyncParameterValue;
 
+        /// <summary>
+        /// Async Processing Service constructor to set property.
+        /// </summary>
         public AsyncProcessingService()
         {
+            //Sets CanPauseAndContinue property to true for enable Pause and Continue properties in service.
             this.CanPauseAndContinue = true;
+
+            //Sets Stop property to true for enable stop property in service.
             this.CanStop = true;
+
+            //Sets AutoLog property to true for enable all log files in service
             this.AutoLog = true;
         }
 
-        static void Main()
+        /// <summary>
+        /// Main method to run service.
+        /// </summary>
+        public static void Main()
         {
             System.ServiceProcess.ServiceBase[] ServicesToRun;
             ServicesToRun =
@@ -42,79 +97,48 @@ namespace AsyncProcessingService
         }
 
         /// <summary>
-        /// Inserts service information in database
+        /// Sets parameters of AsyncProcessingServiceParameterValue Update based on status.
         /// </summary>
-        public void InsertServiceData(object state)
+        /// <param name="status"></param>
+        /// <returns></returns>        
+        public AsyncProcessingServiceParameterValue UpdateServiceData(AsyncProcessingServiceParameterValue.AsyncStatus checkStatus, string userId, DateTime executionStartDateTime,
+                                                                      DateTime registrationDateTime, int numberOfRetries, int progressRate, DateTime completionDateTime,
+                                                                      int statusId, int commandId)
         {
-            TestParameterValue testparameterValue = new TestParameterValue("AsyncProcessingService", "button", "Start", "SQL" + "%" + "individual" +
-                                                                           "%" + "Static" + "%" + "-", new MyUserInfo("aaa", "192.168.1.1"));
-            testparameterValue.UserId = "A";
-            testparameterValue.ProcessName = "AAA";
-            string data = "1234";
-            testparameterValue.Data = ToBase64String(data);
-            testparameterValue.ExecutionStartDateTime = DateTime.Now;
-            testparameterValue.RegistrationDateTime = DateTime.Now;
-            testparameterValue.NumberOfRetries = 0;
-            testparameterValue.ProgressRate = 0;
-            testparameterValue.CompletionDateTime = DateTime.Now;
-            testparameterValue.Status = "Register";
-            testparameterValue.Command = null;
-            testparameterValue.ReservedArea = "xxxxxxxxxx";
+            _asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "Update", "Update", "SQL",
+                                                                             new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
+            _asyncParameterValue.UserId = userId;
+            _asyncParameterValue.ExecutionStartDateTime = executionStartDateTime;
+            _asyncParameterValue.RegistrationDateTime = registrationDateTime;
 
-            DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
-            TestReturnValue testReturnValue;
-
-            if (testparameterValue != null)
+            // Based on the service status setting database command value
+            switch (checkStatus)
             {
-                LayerB layerB = new LayerB();
-                testReturnValue = (TestReturnValue)layerB.DoBusinessLogic(testparameterValue, iso);
-            }
-        }
-
-        /// <summary>
-        /// Updates service information in database
-        /// </summary>
-        public void UpdateServiceDataByStatus(object status)
-        {
-            //Setting update parameters
-            TestParameterValue testparameterValue = new TestParameterValue("AsyncProcessingService", "button", "Update", "SQL" + "%" + "individual" +
-                                                                            "%" + "Static" + "%" + "-", new MyUserInfo("aaa", "192.168.1.1"));
-            testparameterValue.UserId = "A";
-            testparameterValue.ExecutionStartDateTime = DateTime.Now;
-            testparameterValue.RegistrationDateTime = DateTime.Now;
-            testparameterValue.Status = status.ToString();
-
-            //Based on the service status setting database command value
-            switch (status.ToString())
-            {
-                case "processing":
-                    testparameterValue.ProgressRate = 50;
-                    testparameterValue.Command = "Stop";
+                case AsyncProcessingServiceParameterValue.AsyncStatus.Processing:
+                    _asyncParameterValue.ProgressRate = 50;
+                    _asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.Processing;
+                    _asyncParameterValue.CommandId = (int)AsyncProcessingServiceParameterValue.AsyncCommand.Stop;
                     break;
-                case "stop":
-                    testparameterValue.ProgressRate = 100;
-                    testparameterValue.Command = null;
+                case AsyncProcessingServiceParameterValue.AsyncStatus.Stop:
+                    _asyncParameterValue.ProgressRate = 100;
+                    _asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.Stop;
+                    _asyncParameterValue.CommandId = 0;
                     break;
-                case "Abnormal End":
-                    testparameterValue.ProgressRate = 0;
-                    testparameterValue.Command = null;
+                case AsyncProcessingServiceParameterValue.AsyncStatus.AbnormalEnd:
+                    _asyncParameterValue.ProgressRate = 0;
+                    _asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.AbnormalEnd;
+                    _asyncParameterValue.CommandId = 0;
                     break;
-                case "Abort":
-                    testparameterValue.ProgressRate = 0;
-                    testparameterValue.Command = null;
+                case AsyncProcessingServiceParameterValue.AsyncStatus.Abort:
+                    _asyncParameterValue.ProgressRate = 0;
+                    _asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.Abort;
+                    _asyncParameterValue.CommandId = 0;
                     break;
             }
-            testparameterValue.NumberOfRetries = _threadCount;
-            testparameterValue.CompletionDateTime = DateTime.Now;
+            _asyncParameterValue.NumberOfRetries = numberOfRetries;
+            _asyncParameterValue.CompletionDateTime = completionDateTime;
 
-            //Calling LayerB DoBusinessLogic method for updating
-            DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
-            TestReturnValue testReturnValue;
-            if (testparameterValue != null)
-            {
-                LayerB layerB = new LayerB();
-                testReturnValue = (TestReturnValue)layerB.DoBusinessLogic(testparameterValue, iso);
-            }
+            return _asyncParameterValue;
         }
 
         /// <summary>
@@ -122,10 +146,15 @@ namespace AsyncProcessingService
         /// </summary>
         protected override void OnStart(string[] args)
         {
-            StartByThreadPool("start");
+            StartByThreadPool(AsyncProcessingServiceParameterValue.AsyncStatus.Processing);
         }
 
-        public bool StartByThreadPool(object check)
+        /// <summary>
+        /// Calls callback method using Threadpool worker item.
+        /// </summary>
+        /// <param name="check"></param>
+        /// <returns></returns>
+        public bool StartByThreadPool(AsyncProcessingServiceParameterValue.AsyncStatus check)
         {
             int maxThreadCount;
 
@@ -134,43 +163,34 @@ namespace AsyncProcessingService
                 maxThreadCount
                     = int.Parse(ConfigurationManager.AppSettings.Get("FxMaxThreadCount").ToString());
 
+                //Checks if threadcount greater than maxthreadcount sets in config file 
+                //then service status will be inserted or updated as Abort
                 if (_threadCount >= maxThreadCount)
                 {
-                    UpdateServiceDataByStatus("Abort");
+                    UpdateServiceData(AsyncProcessingServiceParameterValue.AsyncStatus.Abort, "A", DateTime.Now, DateTime.Now, _threadCount, 0, DateTime.Now, 0, 0);
                     return false;
                 }
 
                 _threadCount++;
 
-                //Based on the service status Calling callback method
-                if (check == "start")
-                {
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(InsertServiceData));
-                }
-                else
-                {
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(UpdateServiceDataByStatus), check.ToString());
-                }
+                _asyncParameterValue = UpdateServiceData(check, "A", DateTime.Now, DateTime.Now, _threadCount, 0, DateTime.Now, 0, 0);
+
+                ThreadPool.QueueUserWorkItem(new WaitCallback(InvokeController), (object)_asyncParameterValue);
             }
             return true;
         }
 
-        private string ToBase64String(string p)
+        /// <summary>
+        /// Updates using LayerB through callcontroller class
+        /// </summary>
+        /// <param name="_asyncParameterValue"></param>
+        private void InvokeController(object _asyncParameterValue)
         {
-            return Convert.ToBase64String(Encoding.Unicode.GetBytes(p));
-        }
+            AsyncProcessingServiceReturnValue asyncReturnValue;
 
-        public object DeserializeBase64(string data)
-        {
-            // We need to know the exact length of the string - Base64 can sometimes pad us by a byte or two
-            int p = data.IndexOf(':');
-            int length = Convert.ToInt32(data.Substring(0, p));
-            // Extract data from the base 64 string!
-            byte[] memoryData = Convert.FromBase64String(data.Substring(p + 1));
-            MemoryStream rs = new MemoryStream(memoryData, 0, length);
-            BinaryFormatter sf = new BinaryFormatter();
-            object obj = sf.Deserialize(rs);
-            return obj;
+            // InProcess Call using CallController for updating service in database
+            CallController callController = new CallController(this._asyncParameterValue.User);
+            asyncReturnValue = (AsyncProcessingServiceReturnValue)callController.Invoke("UpdateInProcessCall", _asyncParameterValue);
         }
 
         /// <summary>
@@ -178,19 +198,25 @@ namespace AsyncProcessingService
         /// </summary>
         protected override void OnStop()
         {
-            StartByThreadPool("stop");
+            StartByThreadPool(AsyncProcessingServiceParameterValue.AsyncStatus.Stop);
         }
 
+        /// <summary>
+        /// Pause this service.
+        /// </summary>
         protected override void OnPause()
         {
-            StartByThreadPool("Abort");
+            StartByThreadPool(AsyncProcessingServiceParameterValue.AsyncStatus.Abort);
         }
 
+        /// <summary>
+        /// Shutdown this service.
+        /// </summary>
         protected override void OnShutdown()
         {
-            StartByThreadPool("Abnormal End");
-
+            StartByThreadPool(AsyncProcessingServiceParameterValue.AsyncStatus.AbnormalEnd);
         }
     }
+
 }
 

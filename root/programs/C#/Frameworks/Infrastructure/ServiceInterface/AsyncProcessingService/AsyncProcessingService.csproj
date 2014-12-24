@@ -8,8 +8,8 @@
     <ProjectGuid>{B2192500-D4B8-40B4-9AA5-4AB37875923E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AsyncProcessingService</RootNamespace>
-    <AssemblyName>WinServiceProject</AssemblyName>
+    <RootNamespace>Touryo.Infrastructure.Framework.AsyncProcessingService</RootNamespace>
+    <AssemblyName>AsyncProcessingService</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -50,25 +50,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Codes\Business\LayerB.cs" />
-    <Compile Include="Codes\Common\TestParameterValue.cs" />
-    <Compile Include="Codes\Common\TestReturnValue.cs" />
-    <Compile Include="Codes\DAO\DaoSampleWinServices.cs" />
-    <Compile Include="Codes\DAO\LayerD.cs" />
-    <Compile Include="ServiceInstaller.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="AsyncProcessingService.cs">
       <SubType>Component</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="ServiceInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Business">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Business\bin\Debug\Business.dll</HintPath>
+    <Reference Include="AsyncSvc_sample">
+      <HintPath>..\..\..\..\Samples\AsyncSvc_sample\AsyncSvc_sample\bin\Debug\AsyncSvc_sample.dll</HintPath>
     </Reference>
-    <Reference Include="Business.RichClient">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Business\RichClient\bin\Debug\Business.RichClient.dll</HintPath>
+    <Reference Include="Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Samples\AsyncSvc_sample\AsyncSvc_sample\bin\Debug\Business.dll</HintPath>
+    </Reference>
+    <Reference Include="Business.RichClient, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Samples\AsyncSvc_sample\AsyncSvc_sample\bin\Debug\Business.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="Framework">
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Business\bin\Debug\Framework.dll</HintPath>
@@ -107,6 +107,16 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TMInProcessDefinition.xml" />
+    <EmbeddedResource Include="TMProtocolDefinition.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MSGDefinition.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AsyncSvcProcLogConf.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
