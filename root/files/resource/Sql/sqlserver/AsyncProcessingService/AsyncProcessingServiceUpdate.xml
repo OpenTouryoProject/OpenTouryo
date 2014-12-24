@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="shift_jis" ?>
+<ROOT>
+  -- AsyncProcessingServiceUpdate
+  -- 2014/11/22 日立 太郎
+  UPDATE
+    [AsyncProcessingServiceStatusManagementTable]
+  SET
+    <DELCMA>
+      
+      <IF>[RegistrationDateTime] = @Set_RegistrationDateTime_forUPD,</IF>
+      <IF>[ExecutionStartDateTime] = @Set_ExecutionStartDateTime_forUPD,</IF>
+      <IF>[NumberOfRetries] = @Set_NumberOfRetries_forUPD,</IF>
+      <IF>[CompletionDateTime] = @Set_CompletionDateTime_forUPD,</IF>
+      <IF>[ProgressRate] = @Set_ProgressRate_forUPD,</IF>
+      <IF>[Status] = @Set_Status_forUPD,</IF>
+      <IF>[Command] = @Set_Status_forUPD,</IF>
+
+    </DELCMA>
+  <WHERE>
+    WHERE
+      <IF>AND [RegistrationDateTime] = @P5<ELSE>AND [RegistrationDateTime] IS NULL</ELSE></IF>
+      <IF>AND [ExecutionStartDateTime] = @P6<ELSE>AND [ExecutionStartDateTime] IS NULL</ELSE></IF>
+      <IF>AND [NumberOfRetries] = @P7<ELSE>AND [NumberOfRetries] IS NULL</ELSE></IF>
+      <IF>AND [CompletionDateTime] = @P8<ELSE>AND [CompletionDateTime] IS NULL</ELSE></IF>
+      <IF>AND [ProgressRate] = @P9<ELSE>AND [ProgressRate] IS NULL</ELSE></IF>
+      <IF>AND [Status] = @P10<ELSE>AND [Status] IS NULL</ELSE></IF>
+      <IF>AND [Command] = @P11<ELSE>AND [Command] IS NULL</ELSE></IF>
+  </WHERE>
+</ROOT>
