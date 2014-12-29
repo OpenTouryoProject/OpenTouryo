@@ -50,6 +50,9 @@ using Touryo.Infrastructure.Framework.Transmission;
 //AsyncSvc_sample
 using AsyncSvc_sample;
 
+//AsyncProcessingService
+using AsyncProcessingService;
+
 namespace Touryo.Infrastructure.Framework.AsyncProcessingService
 {
 

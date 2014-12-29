@@ -45,6 +45,9 @@ using Touryo.Infrastructure.Business.Util;
 //AsyncSvc_Sample
 using AsyncSvc_sample;
 
+//AsyncProcessingService
+using AsyncProcessingService;
+
 namespace TestAsyncSvc_Sample
 {
 
@@ -85,7 +88,7 @@ namespace TestAsyncSvc_Sample
             DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
             AsyncProcessingServiceReturnValue asyncReturnValue;
 
-            LayerB layerB = new LayerB();
+            AsyncSvc_sample.LayerB layerB = new AsyncSvc_sample.LayerB();
             asyncReturnValue = (AsyncProcessingServiceReturnValue)layerB.DoBusinessLogic((AsyncProcessingServiceParameterValue)asyncParameterValue, iso);
 
             return asyncParameterValue;

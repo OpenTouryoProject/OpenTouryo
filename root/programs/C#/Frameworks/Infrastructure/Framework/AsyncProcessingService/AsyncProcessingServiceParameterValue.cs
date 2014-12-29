@@ -39,7 +39,7 @@ using System.Text;
 using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Business.Util;
 
-namespace AsyncSvc_sample
+namespace AsyncProcessingService
 {
 
     /// <summary>
