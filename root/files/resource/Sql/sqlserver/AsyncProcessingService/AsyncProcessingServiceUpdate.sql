@@ -8,8 +8,8 @@ SET
       [NumberOfRetries]=@P5,
       [CompletionDateTime]=@P6,
       [ProgressRate]=@P7,
-      [Status]=@P8,
-      [Command]=@P9
+      [StatusId]=@P8,
+      [CommandId]=@P9
 
 WHERE
 
