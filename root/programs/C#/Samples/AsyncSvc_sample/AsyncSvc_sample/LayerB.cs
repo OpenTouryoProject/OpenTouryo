@@ -39,6 +39,9 @@ using System.Text;
 //業務フレームワーク
 using Touryo.Infrastructure.Business.Business;
 
+//AsyncProcessingService
+using AsyncProcessingService;
+
 namespace AsyncSvc_sample
 {
 

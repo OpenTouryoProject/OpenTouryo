@@ -11,9 +11,9 @@ INSERT INTO
       [ExecutionStartDateTime],
       [NumberOfRetries],
       [CompletionDateTime],      
-      [Status], 
+      [StatusId], 
       [ProgressRate],     
-      [Command],
+      [CommandId],
       [ReservedArea]
       
     )

@@ -38,13 +38,13 @@ using System.Text;
 // 業務フレームワーク
 using Touryo.Infrastructure.Business.Common;
 
-namespace Touryo.Infrastructure.Framework.AsyncProcessingService
+namespace AsyncProcessingService
 {
 
     /// <summary>
     /// Paramter Return Value class for Asynchronous Processing Service
     /// </summary>
-    class AsyncProcessingServiceReturnValue : MyReturnValue
+    public class AsyncProcessingServiceReturnValue : MyReturnValue
     {
         /// <summary>汎用エリア</summary>
         public object Obj;
@@ -70,14 +70,14 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// <summary>ProgressRate</summary>
         public int ProgressRate;
 
-        /// <summary> Status;</summary>
-        public string Status;
+        /// <summary> StatusId;</summary>
+        public int StatusId;
 
         /// <summary>CompletionDateTime</summary>
         public DateTime CompletionDateTime;
 
-        /// <summary> Command;</summary>
-        public string Command;
+        /// <summary> CommandId;</summary>
+        public int CommandId;
 
         /// <summary>ReservedArea</summary>
         public string ReservedArea;
