@@ -42,6 +42,9 @@ using Touryo.Infrastructure.Business.Dao;
 //部品
 using Touryo.Infrastructure.Public.Db;
 
+//AsyncProcessingService
+using AsyncProcessingService;
+
 namespace AsyncSvc_sample
 {
 

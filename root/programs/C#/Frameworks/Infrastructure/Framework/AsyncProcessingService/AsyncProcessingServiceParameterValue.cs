@@ -39,7 +39,7 @@ using System.Text;
 using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Business.Util;
 
-namespace Touryo.Infrastructure.Framework.AsyncProcessingService
+namespace AsyncProcessingService
 {
 
     /// <summary>
@@ -75,13 +75,13 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         public int ProgressRate;
 
         /// <summary>Status</summary>
-        public string Status;
+        public int StatusId;
 
         /// <summary>CompletionDateTime</summary>
         public DateTime CompletionDateTime;
 
-        /// <summary>Command</summary>
-        public string Command;
+        /// <summary>CommandId</summary>
+        public int CommandId;
 
         /// <summary>ReservedArea</summary>
         public string ReservedArea;
@@ -96,6 +96,26 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         }
 
         #endregion
+
+        /// <summary>
+        /// AsyncStatus Enum for storing all status
+        /// </summary>
+        public enum AsyncStatus
+        {
+            Register = 1,
+            Processing,
+            Stop,
+            AbnormalEnd,
+            Abort
+        }
+
+        /// <summary>
+        /// AsyncCommand Enum for storing command values
+        /// </summary>
+        public enum AsyncCommand
+        {
+            Stop = 1,
+        }
     }
 
 }

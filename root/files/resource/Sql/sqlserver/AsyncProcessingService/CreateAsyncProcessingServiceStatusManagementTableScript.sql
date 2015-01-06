@@ -1,7 +1,7 @@
 USE [AsyncProcessingServiceDB]
 GO
 
-/****** Object:  Table [dbo].[AsyncProcessingServiceStatusManagementTable]    Script Date: 12/01/2014 18:55:13 ******/
+/****** Object:  Table [dbo].[AsyncProcessingServiceStatusManagementTable]    Script Date: 01/05/2015 12:10:45 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -17,11 +17,11 @@ CREATE TABLE [dbo].[AsyncProcessingServiceStatusManagementTable](
 	[ExecutionStartDateTime] [datetime] NULL,
 	[NumberOfRetries] [int] NULL,
 	[CompletionDateTime] [datetime] NULL,
-	[Status] [nvarchar](50) NULL,
 	[ProgressRate] [int] NULL,
-	[Command] [nvarchar](50) NULL,
 	[ReservedArea] [nvarchar](100) NULL,
- CONSTRAINT [PK_SampleWinServices] PRIMARY KEY CLUSTERED 
+	[StatusId] [int] NULL,
+	[CommandId] [int] NULL,
+ CONSTRAINT [PK_AsyncProcessingServiceStatusManagementTable] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]

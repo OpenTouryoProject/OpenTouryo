@@ -1,4 +1,10 @@
-﻿// Licensed under the Apache License, Version 2.0 (the "License");
+﻿//**********************************************************************************
+//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//**********************************************************************************
+
+#region Apache License
+
+// Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
 //
@@ -10,6 +16,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+#endregion
 
 //**********************************************************************************
 //* クラス名            :LayerB.cs
@@ -32,13 +39,13 @@ using System.Text;
 //業務フレームワーク
 using Touryo.Infrastructure.Business.Business;
 
-namespace Touryo.Infrastructure.Framework.AsyncProcessingService
+namespace AsyncProcessingService
 {
 
     /// <summary>
     /// LayerB class for AsyncProcessing Service
     /// </summary>
-    class LayerB : MyFcBaseLogic
+    public class LayerB : MyFcBaseLogic
     {
         /// <summary>
         /// Inserts Async Parameter values to Database through LayerD 

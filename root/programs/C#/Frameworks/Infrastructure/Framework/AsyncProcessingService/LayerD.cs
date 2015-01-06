@@ -1,4 +1,10 @@
-﻿// Licensed under the Apache License, Version 2.0 (the "License");
+﻿//**********************************************************************************
+//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//**********************************************************************************
+
+#region Apache License
+
+// Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
 //
@@ -10,6 +16,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+#endregion
 
 //**********************************************************************************
 //* クラス名            :LayerD.cs
@@ -35,13 +42,13 @@ using Touryo.Infrastructure.Business.Dao;
 //部品
 using Touryo.Infrastructure.Public.Db;
 
-namespace Touryo.Infrastructure.Framework.AsyncProcessingService
+namespace AsyncProcessingService
 {
 
     /// <summary>
     /// LayerD class for AsyncProcessing Service
     /// </summary>
-    class LayerD : MyBaseDao
+    public class LayerD : MyBaseDao
     {
         public LayerD(BaseDam dam) : base(dam) { }
 
@@ -53,17 +60,8 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         public void Insert(AsyncProcessingServiceParameterValue asyncParameterValue, AsyncProcessingServiceReturnValue asyncReturnValue)
         {
             string filename = string.Empty;
-
-            if ((asyncParameterValue.ActionType.Split('%'))[2] == "Static")
-            {
-                // 静的SQL
-                filename = "AsyncProcessingServiceInsert.sql";
-            }
-            else if ((asyncParameterValue.ActionType.Split('%'))[2] == "dynamic")
-            {
-                // 動的SQL
-                filename = "AsyncProcessingServiceInsert.xml";
-            }
+            // 静的SQL
+            filename = "AsyncProcessingServiceInsert.sql";
 
             //   -- ファイルから読み込む場合。
             this.SetSqlByFile2(filename);
@@ -76,9 +74,9 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
             this.SetParameter("P6", asyncParameterValue.ExecutionStartDateTime);
             this.SetParameter("P7", asyncParameterValue.NumberOfRetries);
             this.SetParameter("P8", asyncParameterValue.CompletionDateTime);
-            this.SetParameter("P9", asyncParameterValue.Status);
+            this.SetParameter("P9", asyncParameterValue.StatusId);
             this.SetParameter("P10", asyncParameterValue.ProgressRate);
-            this.SetParameter("P11", asyncParameterValue.Command);
+            this.SetParameter("P11", asyncParameterValue.CommandId);
             this.SetParameter("P12", asyncParameterValue.ReservedArea);
 
             object obj;
@@ -103,16 +101,8 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         {
             string filename = string.Empty;
 
-            if ((asyncParameterValue.ActionType.Split('%'))[2] == "Static")
-            {
-                // 静的SQL
-                filename = "AsyncProcessingServiceUpdate.sql";
-            }
-            else if ((asyncParameterValue.ActionType.Split('%'))[2] == "dynamic")
-            {
-                // 動的SQL
-                filename = "AsyncProcessingServiceUpdate.xml";
-            }
+            // 静的SQL
+            filename = "AsyncProcessingServiceUpdate.sql";
 
             //   -- ファイルから読み込む場合。
             this.SetSqlByFile2(filename);
@@ -124,8 +114,8 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
             this.SetParameter("P5", asyncParameterValue.NumberOfRetries);
             this.SetParameter("P6", asyncParameterValue.CompletionDateTime);
             this.SetParameter("P7", asyncParameterValue.ProgressRate);
-            this.SetParameter("P8", asyncParameterValue.Status);
-            this.SetParameter("P9", asyncParameterValue.Command);
+            this.SetParameter("P8", asyncParameterValue.StatusId);
+            this.SetParameter("P9", asyncParameterValue.CommandId);
 
             object obj;
 
