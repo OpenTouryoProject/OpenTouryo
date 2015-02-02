@@ -31,6 +31,8 @@
 //*  2014/09/05  Sai               Created property ResourceMgr and Replaced all the Japanese language in code with ResorceManager.GetString() method call
 //*  2014/11/11  Sai               Added buttons Switch Per In Charge, Forced Terminaion and Turnback Into First and implemented code for calling the 
 //*                                corresponding methods of workflow.cs class 
+//*  2014/12/12  Sai               Added if condition for settting TouserId based on action type TurnBack and Reply otherwise DBNull in events button2_Click and
+//*                                button7_Click                     
 //**********************************************************************************
 
 // Windowアプリケーション
@@ -199,9 +201,10 @@ namespace Workflow_Tool
 
                 // UserIDを取得
                 decimal fromUserId = decimal.Parse(txtUserID.Text);
-                decimal toUserId=0;
+                decimal toUserId = 0;
 
-                if (!string.IsNullOrEmpty(txtToUserID.Text))
+                // Settng ToUserId based on DBNull check
+                if (!string.IsNullOrEmpty(txtToUserID.Text) && startWorkflow["ToUserId"] == DBNull.Value)
                 {
                     toUserId = decimal.Parse(txtToUserID.Text);
                 }
@@ -459,9 +462,19 @@ namespace Workflow_Tool
                 decimal fromUserId = decimal.Parse(this.txtUserID.Text);
 
                 decimal? toUserId = null;
+
+                // if ToUserId textbox value is not empty
                 if (!string.IsNullOrEmpty(txtToUserID.Text))
                 {
-                    toUserId = decimal.Parse(txtToUserID.Text);
+                    // if Action type is either TurnBack or Reply then set ToUserId otherwise check for DBNull
+                    if (string.Equals(nextWorkflow["ActionType"].ToString(), "TurnBack") || string.Equals(nextWorkflow["ActionType"].ToString(), "Reply"))
+                    {
+                        toUserId = decimal.Parse(txtToUserID.Text);
+                    }
+                    else if (nextWorkflow["ToUserId"] == DBNull.Value)
+                    {
+                        toUserId = decimal.Parse(txtToUserID.Text);
+                    }
                 }
 
                 if (this.checkBox1.Checked
