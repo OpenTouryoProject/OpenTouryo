@@ -135,7 +135,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\FrameworkExceptionMessageResource.ja.resx" />
+    <EmbeddedResource Include="Resources\FrameworkExceptionMessageResource.ja-JP.resx" />
     <EmbeddedResource Include="Resources\FrameworkExceptionMessageResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FrameworkExceptionMessageResource.Designer.cs</LastGenOutput>
