@@ -157,14 +157,14 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\MyBusinessApplicationExceptionMessageResource.ja.resx">
+    <EmbeddedResource Include="Resources\MyBusinessApplicationExceptionMessageResource.ja-JP.resx">
       <LastGenOutput>MyBusinessApplicationExceptionMessageResource.ja.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\MyBusinessApplicationExceptionMessageResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MyBusinessApplicationExceptionMessageResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\MyBusinessSystemExceptionMessageResource.ja.resx" />
+    <EmbeddedResource Include="Resources\MyBusinessSystemExceptionMessageResource.ja-JP.resx" />
     <EmbeddedResource Include="Resources\MyBusinessSystemExceptionMessageResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MyBusinessSystemExceptionMessageResource.Designer.cs</LastGenOutput>
