@@ -947,6 +947,20 @@ function Fx_AjaxExtensionRegPreAndAfter(pageRequestManager) {
 // ---------------------------------------------------------------
 function Fx_AjaxExtensionInitializeRequest(sender, args) {
 
+    // これが呼ばれるのは、Fx_OnSubmitの後
+
+    // ∴ 下記の処理は、Fx_OnSubmitの二重送信防止機能に統合
+
+    // // 現在、実行中の非同期通信が存在するかを判定
+    // if (pageRequestManager.get_isInAsyncPostBack())
+    // { 
+    //     // 非同期通信中である場合にはエラー メッセージを表示
+    //     alert("二重送信です(ajax)");
+    // 
+    //     // 後続の処理をキャンセル
+    //     args.set_cancel(true);
+    // }
+
     // ★★ Fx_OnSubmitが呼ばれるのは、Ajax Extensionのみ。
     // 　　 ClientCallbackや、WebServiceBridgeでは、呼ばれない。
 
