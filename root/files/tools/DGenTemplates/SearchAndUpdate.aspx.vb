@@ -235,7 +235,7 @@ Partial Public Class _TableName_SearchAndUpdate
         ' ControlComment:LoopEnd-PKColumn
 
         ' タイムスタンプ列
-        ' ・・・
+        parameterValue.AndEqualSearchConditions.Add("_TimeStampColName_", "")
 
         ' DataTableを設定
         parameterValue.Obj = DirectCast(Session("SearchResult"), DataTable)
