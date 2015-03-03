@@ -27,5 +27,5 @@
   <!-- 接続先 データ -->
 
   <!-- インプロセス -->
-  <Transmission id="UpdateInProcessCall" protocol="1"/>
+  <Transmission id="AzureStrageCopy" protocol="1"/>
 </TMD>

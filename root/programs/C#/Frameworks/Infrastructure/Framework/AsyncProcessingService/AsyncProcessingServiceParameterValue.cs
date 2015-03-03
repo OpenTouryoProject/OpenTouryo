@@ -97,6 +97,8 @@ namespace AsyncProcessingService
 
         #endregion
 
+        #region AsyncStatus
+
         /// <summary>
         /// AsyncStatus Enum for storing all status
         /// </summary>
@@ -104,10 +106,14 @@ namespace AsyncProcessingService
         {
             Register = 1,
             Processing,
-            Stop,
+            End,
             AbnormalEnd,
             Abort
         }
+
+        #endregion
+
+        #region AsyncCommand
 
         /// <summary>
         /// AsyncCommand Enum for storing command values
@@ -116,6 +122,8 @@ namespace AsyncProcessingService
         {
             Stop = 1,
         }
+
+        #endregion
     }
 
 }
