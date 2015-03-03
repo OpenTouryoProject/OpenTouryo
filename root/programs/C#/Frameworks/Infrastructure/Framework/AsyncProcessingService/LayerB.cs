@@ -27,7 +27,8 @@
 //* 更新履歴
 //*  Date:        Author:        Comments:
 //*  ----------  ----------------  -------------------------------------------------
-//*  11/28/2014   Supragyan      LayerB class for AsyncProcessing Service
+//*  11/28/2014   Supragyan      Created LayerB class for AsyncProcessing Service
+//*  11/28/2014   Supragyan      Created Insert,Update,Select method for AsyncProcessing Service
 //**********************************************************************************
 
 // System
@@ -41,12 +42,15 @@ using Touryo.Infrastructure.Business.Business;
 
 namespace AsyncProcessingService
 {
+    #region LayerB
 
     /// <summary>
     /// LayerB class for AsyncProcessing Service
     /// </summary>
     public class LayerB : MyFcBaseLogic
     {
+        #region Start
+
         /// <summary>
         /// Inserts Async Parameter values to Database through LayerD 
         /// </summary>
@@ -61,6 +65,10 @@ namespace AsyncProcessingService
             myDao.Insert(asyncParameterValue, asyncReturnValue);
         }
 
+        #endregion
+
+        #region Update
+
         /// <summary>
         /// Updates Async Parameter values to Database through LayerD 
         /// </summary>
@@ -73,7 +81,44 @@ namespace AsyncProcessingService
             LayerD myDao = new LayerD(this.GetDam());
             myDao.Update(asyncParameterValue, asyncReturnValue);
         }
+
+        #endregion
+
+        #region UpdateStatus
+
+        /// <summary>
+        /// Updates Async Parameter values to Database through LayerD 
+        /// </summary>
+        /// <param name="asyncParameterValue"></param>
+        private void UOC_UpdateStatus(AsyncProcessingServiceParameterValue asyncParameterValue)
+        {
+            AsyncProcessingServiceReturnValue asyncReturnValue = new AsyncProcessingServiceReturnValue();
+            this.ReturnValue = asyncReturnValue;
+
+            LayerD myDao = new LayerD(this.GetDam());
+            myDao.UpdateByStatusId(asyncParameterValue, asyncReturnValue);
+        }
+
+        #endregion
+
+        #region Select
+
+        /// <summary>
+        /// Selects Async Parameter values from Database through LayerD 
+        /// </summary>
+        /// <param name="asyncParameterValue"></param>
+        private void UOC_Select(AsyncProcessingServiceParameterValue asyncParameterValue)
+        {
+            AsyncProcessingServiceReturnValue asyncReturnValue = new AsyncProcessingServiceReturnValue();
+            this.ReturnValue = asyncReturnValue;
+
+            LayerD myDao = new LayerD(this.GetDam());
+            myDao.Select(asyncParameterValue, asyncReturnValue);
+        }
+
+        #endregion
     }
 
+    #endregion
 }
 
