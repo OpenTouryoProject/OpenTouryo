@@ -1,6 +1,7 @@
 Select TOP(1) UserId,
               ProcessName,
               StatusId,
+	      Data,
        	      RegistrationDateTime,
 	      ExecutionStartDateTime,
 	      NumberOfRetries,
