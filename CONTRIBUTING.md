@@ -86,38 +86,38 @@
     http://keijinsonyaban.blogspot.jp/2010/10/successful-git-branching-model.html  
 
 ###コミットのサイズ(Size of the commit)
-  Pull Requestのレビューのためにコミットのサイズを小さくします。  
-  (Reduce the size of the commit for review of the Pull Request.)  
+  - Pull Requestのレビューのためにコミットのサイズを小さくします。  
+    (Reduce the size of the commit for review of the Pull Request.)  
   
-  １つの"プルリクエスト"の中に複数のコミットが存在する場合、 
-  １つの”プルリクエスト”に対してレビューを行うためレビューがボトルネックになります。  
-  If multiple commits are present in the one "pull request",  
-  The review becomes a bottleneck because carrying out a review to one "pull request".  
+  - １つの"プルリクエスト"の中に複数のコミットが存在する場合、 
+    １つの”プルリクエスト”に対してレビューを行うためレビューがボトルネックになります。  
+    If multiple commits are present in the one "pull request",  
+    The review becomes a bottleneck because carrying out a review to one "pull request".  
   
-  このため、タスク毎にFeature Branchを作成して欲しいです。  
-  その後、Feature Branchから都度”プルリクエスト”を送って私にレビューを依頼して下さい。  
-  (For this reason, I want you to create a Feature Branch for each task.  
-  Then, ask the review to me by sending each time "pull request" from the Feature Branch.)  
+  - このため、タスク毎にFeature Branchを作成して欲しいです。  
+    その後、Feature Branchから都度”プルリクエスト”を送って私にレビューを依頼して下さい。  
+    (For this reason, I want you to create a Feature Branch for each task.  
+    Then, ask the review to me by sending each time "pull request" from the Feature Branch.)  
   
 ###プルリクエスト(Pull Request)
-  Opentouryoリポジトリから各ユーザのリポジトリにForkします。  
-  その後にdevelopブランチからfeatureブランチを作成し作業します。  
-  (Fork to the repository for each user from OpenTouryo repository.  
-  After having done Fork, You will work to create a feature branch from the develop branch.)  
+  - Opentouryoリポジトリから各ユーザのリポジトリにForkします。  
+    その後にdevelopブランチからfeatureブランチを作成し作業します。  
+    (Fork to the repository for each user from OpenTouryo repository.  
+    After having done Fork, You will work to create a feature branch from the develop branch.)  
 
-  Pull RequestはfeatureブランチからFork元のdevelopブランチに対して送信します。  
-  (Send Pull Request to the develop branch of fork source from the feature branch.)  
+  - Pull RequestはfeatureブランチからFork元のdevelopブランチに対して送信します。  
+    (Send Pull Request to the develop branch of fork source from the feature branch.)  
   
-  もしFork元のdevelopブランチが変更されているようなら、pull 若しくはfetch & mergeをします。  
-  (If "develop branch of fork source" was changed,  
-  then you should do pull operation or fetch & merge operation.)  
+  - もしFork元のdevelopブランチが変更されているようなら、pull 若しくはfetch & mergeをします。  
+    (If "develop branch of fork source" was changed,  
+    then you should do pull operation or fetch & merge operation.)  
   
-  古いコードを含むプルリクエストをマージした後、コードがロールバックされていることがありました。  
-  従って、プルリクエストを送る前に、OpenTouryoのDevelop BranchをPull若しくはFetch＆Margeしてください。  
-  (There is a case that the develop branch's code of OpenTouryo has been rollbacked by merging the pullrequest Including old code. Therefor, Before sending a pull request, please fetch & marge or Pull the develop branch of OpenTouryo.)  
-　
-　Fetch＆Margeの代わりに再度Forkする方法もありますが、コメントや元のリポジトリにマージされていない変更は失われます。  
-　(There is also a way to re-fork instead of Fetch & Marge, but comment and changes that have not been merge to original repository will be lost.)
+  - 古いコードを含むプルリクエストをマージした後、コードがロールバックされていることがありました。  
+    従って、プルリクエストを送る前に、OpenTouryoのDevelop BranchをPull若しくはFetch＆Margeしてください。  
+    (There is a case that the develop branch's code of OpenTouryo has been rollbacked by merging the pullrequest Including old code. Therefor, Before sending a pull request, please fetch & marge or Pull the develop branch of OpenTouryo.)  
+  
+  - Fetch＆Margeの代わりに再度Forkする方法もありますが、コメントや元のリポジトリにマージされていない変更は失われます。  
+    (There is also a way to re-fork instead of Fetch & Marge, but comment and changes that have not been merge to original repository will be lost.)
 　
 ####参考(Reference)  
   - git fetchの理解からgit mergeとpullの役割 - Qiita  
