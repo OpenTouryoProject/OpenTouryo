@@ -79,8 +79,7 @@
   - その他のブランチは必要に応じて作成します。  
     (Create as needed to other branches.)  
 
-
-参考(Reference)  
+####参考(Reference)  
   - A successful Git branching model » nvie.com  
     http://nvie.com/posts/a-successful-git-branching-model/  
   - 見えないチカラ A successful Git branching model を翻訳しました  
@@ -113,12 +112,14 @@
   (If "develop branch of fork source" was changed,  
   then you should do pull operation or fetch & merge operation.)  
   
-  私がプルリクエストをマージした後、コードがロールバックされていました。  
-  プルリクエストを送る前に、OpenTouryoのDevelop BranchをPull若しくはFetch＆Margeしてください。  
-  (After I merged the pull request, code has been rolled back.  
-  Before sending a pull request, please Fetch & Marge or Pull the Develop Branch of OpenTouryo. )  
-
-  参考(Reference)  
+  古いコードを含むプルリクエストをマージした後、コードがロールバックされていることがありました。  
+  従って、プルリクエストを送る前に、OpenTouryoのDevelop BranchをPull若しくはFetch＆Margeしてください。  
+  (There is a case that the develop branch's code of OpenTouryo has been rollbacked by merging the pullrequest Including old code. Therefor, Before sending a pull request, please fetch & marge or Pull the develop branch of OpenTouryo.)  
+　
+　Fetch＆Margeの代わりに再度Forkする方法もありますが、コメントや元のリポジトリにマージされていない変更は失われます。  
+　(There is also a way to re-fork instead of Fetch & Marge, but comment and changes that have not been merge to original repository will be lost.)
+　
+####参考(Reference)  
   - git fetchの理解からgit mergeとpullの役割 - Qiita  
     http://qiita.com/osamu1203/items/cb94ef9da02e1ec3e921
 
