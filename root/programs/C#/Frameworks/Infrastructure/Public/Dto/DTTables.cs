@@ -37,6 +37,7 @@
 //*  2015/01/15	 Supragyan         Added StringFromPrimitivetypes and PrimitivetypeFromString method
 //*  2015/01/15	 Supragyan         Modified SaveJson,LoadJson,Save,Load method by implementing 
 //*                                StringFromPrimitivetypes and PrimitivetypeFromString method
+//*  2015/03/20  Sai               Modifed varaiable '_tbls' access specifier to Private instead of Public 
 //**********************************************************************************
 //System
 using System;
@@ -73,7 +74,7 @@ namespace Touryo.Infrastructure.Public.Dto
         #region インスタンス変数
 
         /// <summary>表を保持するList</summary>
-        public List<DTTable> _tbls = new List<DTTable>();
+        private List<DTTable> _tbls = new List<DTTable>();
 
         /// <summary>表名 ⇒ 表インデックスのマップを保持するDictionary</summary>
         private Dictionary<string, int> _tblsNameIndexMap = new Dictionary<string, int>();

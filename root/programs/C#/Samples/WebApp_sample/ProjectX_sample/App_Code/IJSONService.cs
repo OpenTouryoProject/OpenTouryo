@@ -13,6 +13,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2015/03/05  Supragyan         Created IJSONService interface for invoking Product table data.
+//*  2015/03/20  Sai               Modified method 'GetProductData()' return type to Json string 
 //**********************************************************************************
 using System;
 using System.Web;
@@ -29,5 +30,5 @@ public interface IJSONService
 {
     [OperationContract]
     [WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "GetProductData")]
-    void GetProductData();
+    string GetProductData(int startIndex, int lastindex);
 }

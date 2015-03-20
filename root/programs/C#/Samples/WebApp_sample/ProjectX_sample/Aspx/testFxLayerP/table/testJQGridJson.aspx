@@ -1,43 +1,57 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="testJQGridJson.aspx.cs" Inherits="Aspx_testFxLayerP_table_testJQGridJson" %>
 
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head id="Head1" runat="server">
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title></title>
     <link href="../../../Content/themes/base/all.css" rel="stylesheet" type="text/css" />
     <link href="../../../Content/jquery.jqGrid/ui.jqgrid.css" rel="stylesheet" type="text/css" />
     <script src="../../../Scripts/jquery-2.1.3.min.js" type="text/javascript"></script>
     <script src="../../../Scripts/jquery-ui-1.11.2.min.js" type="text/javascript"></script>
-    <script src="../../../Scripts/i18n/grid.locale-ja.js" type="text/javascript"></script>
+    <script src="../../../Scripts/i18n/grid.locale-da.js" type="text/javascript"></script>
     <script src="../../../Scripts/jquery.jqGrid.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(function () {
             $('#list').jqGrid({
+                url: 'JSONService.svc/GetProductData?startIndex=0&lastIndex=30',
                 datatype: 'json',
-                url: 'JQGridHandler.ashx',
-                colNames: ['id', 'name', 'email', 'phone'],
+                colNames: ['ProductID', 'ProductName', 'SupplierID', 'CategoryID', 'QuantityPerUnit', 'UnitPrice', 'UnitsInStock', 'UnitsOnOrder', 'ReorderLevel', 'Discontinued'],
                 colModel: [
-                    { name: 'id' },
-                    { name: 'name', sortable: false },
-                    { name: 'email', sortable: false },
-                    { name: 'phone', sortable: false },
+                    { name: 'ProductID' },
+                    { name: 'ProductName', sortable: false },
+                    { name: 'SupplierID', sortable: false },
+                    { name: 'CategoryID', sortable: false },
+                    { name: 'QuantityPerUnit', sortable: false },
+                    { name: 'UnitPrice', sortable: false },
+                    { name: 'UnitsInStock', sortable: false },
+                    { name: 'UnitsOnOrder', sortable: false },
+                    { name: 'ReorderLevel', sortable: false },
+                    { name: 'Discontinued', sortable: false },
 
                 ],
                 rowNum: 1000,
-                loadonce: false,
+                mtype: 'GET',
+                loadonce: true,
                 caption: 'JSON Sample (ページングなし)'
             });
 
             $('#list2').jqGrid({
                 datatype: 'json',
-                url: 'JQGridHandler.ashx',
-                colNames: ['id', 'name', 'email', 'phone'],
+                url: 'JSONService.svc/GetProductData?startIndex=0&lastIndex=30',
+                colNames: ['ProductID', 'ProductName', 'SupplierID', 'CategoryID', 'QuantityPerUnit', 'UnitPrice', 'UnitsInStock', 'UnitsOnOrder', 'ReorderLevel', 'Discontinued'],
                 colModel: [
-                    { name: 'id' },
-                    { name: 'name', sortable: false },
-                    { name: 'email', sortable: false },
-                    { name: 'phone', sortable: false }
+                    { name: 'ProductID' },
+                    { name: 'ProductName', sortable: false },
+                    { name: 'SupplierID', sortable: false },
+                    { name: 'CategoryID', sortable: false },
+                    { name: 'QuantityPerUnit', sortable: false },
+                    { name: 'UnitPrice', sortable: false },
+                    { name: 'UnitsInStock', sortable: false },
+                    { name: 'UnitsOnOrder', sortable: false },
+                    { name: 'ReorderLevel', sortable: false },
+                    { name: 'Discontinued', sortable: false },
+
                 ],
                 pager: $('#pager'),
                 rowNum: 10,
