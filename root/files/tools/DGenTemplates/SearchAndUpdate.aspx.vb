@@ -235,6 +235,8 @@ Partial Public Class _TableName_SearchAndUpdate
         ' ControlComment:LoopEnd-PKColumn
 
         ' タイムスタンプ列
+		' ControlComment:ControlComment:IsRequired-TimeStamp
+		' ...
         parameterValue.AndEqualSearchConditions.Add("_TimeStampColName_", "")
 
         ' DataTableを設定
