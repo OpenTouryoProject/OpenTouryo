@@ -35,6 +35,7 @@
 //*  02/26/2015   Supragyan      Modified code in Invoke controller. 
 //*  03/04/2015   Sai            Modifed the code as per the review comments given by Niahino-san on 03/3/2015.  
 //*  03/16/2015   Sai            Modifed the code as per the change request given by Niahino-san on 03/9/2015.   
+//*  03/20/2015   Sai            Added lock mechanism while selecting task from database.
 //**********************************************************************************
 
 // System
@@ -123,7 +124,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
             // Thread pool initialization with maxium threads. 
             ThreadPool.SetMaxThreads(10, 10);
             _mainthread.Start();
-
+            _mainthread.Join();
 
         }
 
@@ -136,42 +137,51 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// </summary>
         public void MainThreadInvoke()
         {
-            // Thread safe using lock.
-            lock (_lockObject)
-            {
-                Thread.Sleep(100);
-            }
-
             // Infinte loop processing for selecting register task.
             while (_isInfinite)
             {
-                _asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "Select", "Select", "SQL",
-                                                                                new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
+                Monitor.Enter(_asyncParameterValue);
+                try
+                {
 
-                AsyncProcessingService.LayerB myBusiness = new AsyncProcessingService.LayerB();
-                AsyncProcessingServiceReturnValue asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic(
-                                                                     (BaseParameterValue)_asyncParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
+                    _asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "Select", "Select", "SQL",
+                                                                                    new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
 
-                _asyncReturnValue = asyncReturnValue;
+                    AsyncProcessingService.LayerB myBusiness = new AsyncProcessingService.LayerB();
+                    AsyncProcessingServiceReturnValue asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic(
+                                                                         (BaseParameterValue)_asyncParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
 
-                _asyncParameterValue = (AsyncProcessingServiceParameterValue)asyncReturnValue.Obj;
+                    _asyncReturnValue = asyncReturnValue;
 
-                ThreadPool.QueueUserWorkItem(new WaitCallback(InvokeController), (object)_asyncParameterValue.ProcessName);
+                    _asyncParameterValue = (AsyncProcessingServiceParameterValue)asyncReturnValue.Obj;
+                }
+                finally
+                {
+                    Monitor.Exit(_asyncParameterValue);
+                }
+                
+                if (string.IsNullOrEmpty(_asyncParameterValue.UserId))
+                {
+                    Thread.Sleep(30000);
+                }
+                else
+                {
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(InvokeController), (object)_asyncParameterValue.ProcessName);
 
-                //Update in mainthread
-                AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "Update", "Update", "SQL",
-                                                                                new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
+                    //Update in mainthread
+                    AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "Update", "Update", "SQL",
+                                                                                    new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
 
-                DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
+                    DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
 
-                asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)_asyncParameterValue, iso);
+                    asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)_asyncParameterValue, iso);
+                }
 
                 // If no. of worker threads exceeds maximum threads then putting the 
                 // current thread in waiting state.
                 if (_threadCount > 10)
                 {
                     Thread.Sleep(30000);
-                    _isInfinite = false;
                 }
             }
         }
@@ -225,6 +235,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                 DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
 
                 asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)_asyncParameterValue, iso);
+                _threadCount--;
             }
             else
             {
@@ -240,6 +251,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                     DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
 
                     asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)_asyncParameterValue, iso);
+                    _threadCount--;
                 }
                 // Else other exception then updating status to Abort
                 else
@@ -253,6 +265,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                     DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
 
                     asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)_asyncParameterValue, iso);
+                    _threadCount--;
                 }
 
             }
@@ -269,6 +282,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                 DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
 
                 asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)_asyncParameterValue, iso);
+                _threadCount--;
                 _isInfinite = false;
             }
         }
@@ -319,7 +333,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         {
             Thread.CurrentThread.Join();
             _mainthread.Join();
-            _threadCount--;
+            _isInfinite = false;
         }
 
         #endregion
@@ -334,6 +348,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
             Thread.CurrentThread.Join();
             _mainthread.Join();
             _threadCount--;
+            _isInfinite = false;
         }
 
         #endregion
@@ -345,9 +360,10 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// </summary>
         protected override void OnShutdown()
         {
-            Thread.CurrentThread.Join();
+            Thread.CurrentThread.Abort();
             _mainthread.Join();
             _threadCount--;
+            _isInfinite = false;
         }
 
         #endregion
