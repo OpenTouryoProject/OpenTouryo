@@ -29,6 +29,8 @@ using System.ServiceModel.Web;
 public interface IJSONService
 {
     [OperationContract]
-    [WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "GetProductData")]
-    string GetProductData(int startIndex, int lastindex);
+    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest,
+            ResponseFormat = WebMessageFormat.Json, UriTemplate = "GetProductData")]
+    //string GetProductData(int startIndex, int lastindex);
+    string GetProductData();
 }

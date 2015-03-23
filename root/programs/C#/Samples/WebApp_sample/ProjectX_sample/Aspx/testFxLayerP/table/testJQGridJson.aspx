@@ -55,7 +55,9 @@
                 ],
                 pager: $('#pager'),
                 rowNum: 10,
+                sortname: 'ProductID',
                 viewrecords: true,
+                sortorder: 'desc',
                 gridview: true,
                 loadonce: false,
                 beforeProcessing: function (data, status, xhr) {  // レスポンスの受信時に呼び出されるイベント

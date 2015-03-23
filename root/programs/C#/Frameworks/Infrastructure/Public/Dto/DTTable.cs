@@ -35,10 +35,9 @@
 //*                                    ・ToDataTable、FromDataTable
 //*                                    ・ConvertDTTypeToType、ConvertTypeToDTType
 //*  2011/10/09  西野  大介        国際化対応
-//*  2015/28/01  Supragyan         Crated CreateSampleData,GetJson method for creating and selecting data.
-//*  2015/28/01  Supragyan         Crated JQGridDataClass,JQGridDataRowClass initializing properties.
+//*  2015/03/05  Supragyan        Created  SavejqGridJson method for saving datatable data to json.
 //**********************************************************************************
-//system
+
 using System;
 using System.Collections;
 using System.Collections.ObjectModel;
@@ -47,9 +46,6 @@ using System.Data;
 using System.Text.RegularExpressions;
 using System.Collections.Specialized;
 using System.Web;
-
-//Newtonsoft
-using Newtonsoft.Json;
 
 namespace Touryo.Infrastructure.Public.Dto
 {
@@ -408,47 +404,36 @@ namespace Touryo.Infrastructure.Public.Dto
             }
         }
 
-        #region GetJson
-
         /// <summary>
-        /// GetJson method for selecting data
+        /// SavejqGridJson method for converting datatable data to json.
         /// </summary>
+        /// <param name="productData"></param>
         /// <returns></returns>
-        public JQGridDataClass GetJson()
-        {
-            // サンプルデータ取得
-            System.Data.DataTable dt = this.CreateSampleData();
-
-            // クエリ文字列から、グリッドの表示に関する情報を取得
-            System.Collections.Specialized.NameValueCollection queryStrings = HttpContext.Current.Request.QueryString;
-            string page = queryStrings["page"]; // クエリの現在のページ
-            string rows = queryStrings["rows"]; // 1 ページあたりの行数
-            string sidx = queryStrings["sidx"]; // ソート列
-            string sord = queryStrings["sord"]; // ソートの方向
-            int intPage = int.Parse(page);
-            int intRows = Math.Min(int.Parse(rows), dt.Rows.Count);
+        public JQGridDataClass SavejqGridJson(DataTable productData, int totalCount, string page, string rows,string sidx, string sord, int intPage)
+        {            
+            int intRows = Math.Min(int.Parse(rows), totalCount);
 
             // jqGrid に渡すデータを格納
             JQGridDataClass data = new JQGridDataClass();
             data.page = page;
-            data.total = (int)Math.Ceiling((double)dt.Rows.Count / (double)intRows);
-            data.records = dt.Rows.Count;
+            data.total = (int)Math.Ceiling((double)productData.Rows.Count / (double)intRows);
+            data.records = totalCount;
 
             // ソート
-            System.Data.DataRow[] dataRows;
+            DataRow[] dataRows;
             if (!string.IsNullOrEmpty(sidx))
             {
                 // ソートあり
-                dataRows = dt.Select(null, sidx + " " + sord);
+                dataRows = productData.Select(null, sidx + " " + sord);
             }
             else
             {
                 // ソートなし
-                dataRows = dt.Select(null);
+                dataRows = productData.Select(null);
             }
 
             // jqGrid の各セルに表示するデータを格納
-            data.rows = new System.Collections.Generic.List<JQGridDataRowClass>();
+            data.rows = new List<JQGridDataRowClass>();
             for (int rIndex = 0; rIndex < intRows; rIndex++)
             {
                 // ページなどを考慮し、DataTable から取得する行インデックスを取得
@@ -456,58 +441,27 @@ namespace Touryo.Infrastructure.Public.Dto
 
                 if ((actualRowIndex + 1) > dataRows.Length)
                 {
+                    // 行インデックスが、実際の行数を超えた場合は、ループを抜ける
+                    // (最終ページの行数が端数の場合)
                     break;
                 }
 
                 // jqGrid に表示する、1 行分のデータを格納
                 JQGridDataRowClass subData = new JQGridDataRowClass();
                 subData.id = dataRows[actualRowIndex][0].ToString();
-                subData.cell = new System.Collections.Generic.List<string>();
+                subData.cell = new List<string>();
 
-                for (int cIndex = 0; cIndex < dt.Columns.Count; cIndex++)
+                for (int cIndex = 0; cIndex < productData.Columns.Count; cIndex++)
                 {
                     // 列のデータを、DataTable から取得
                     subData.cell.Add(dataRows[actualRowIndex][cIndex].ToString());
                 }
                 data.rows.Add(subData);
             }
-            // jqGrid 
+
+            // jqGrid にデータを返す
             return data;
         }
-
-        #endregion
-
-        #region CreateSampleData
-
-        /// <summary>
-        /// Creates Sample Data in datatable.
-        /// </summary>
-        /// <returns></returns>
-        private System.Data.DataTable CreateSampleData()
-        {
-            System.Data.DataTable dt = new System.Data.DataTable("dummy");
-            dt.Columns.Add("id", typeof(int));
-            dt.Columns.Add("name", typeof(string));
-            dt.Columns.Add("email", typeof(string));
-            dt.Columns.Add("phone", typeof(string));
-
-            System.Data.DataRow row;
-            for (int index = 0; index < 105; index++)
-            {
-                row = dt.NewRow();
-                row["id"] = index + 1;
-                row["name"] = "xxx";
-                row["email"] = "xxx.xxx.xx@hitachi-solutions.com";
-                row["phone"] = "xxxx-xxxx";
-                dt.Rows.Add(row);
-            }
-
-            return dt;
-        }
-
-        #endregion
-
-        #region JQGridDataClass
 
         /// <summary>
         /// jqGrid に渡すデータを格納するクラス
@@ -532,12 +486,8 @@ namespace Touryo.Infrastructure.Public.Dto
             /// <summary>
             /// 実際のデータを含むリスト
             /// </summary>
-            public System.Collections.Generic.List<JQGridDataRowClass> rows;
+            public List<JQGridDataRowClass> rows;
         }
-
-        #endregion
-
-        #region JQGridDataRowClass
 
         /// <summary>
         /// jqGrid に表示する、1 行分のデータを格納するクラス
@@ -552,9 +502,8 @@ namespace Touryo.Infrastructure.Public.Dto
             /// <summary>
             /// 列のデータを含むリスト
             /// </summary>
-            public System.Collections.Generic.List<string> cell;
+            public List<string> cell;
         }
 
-        #endregion
     }
 }
