@@ -298,11 +298,11 @@ namespace Touryo.Infrastructure.Business.Business
 
             if (parameterValue.DBMSType == DbEnum.DBMSType.PstGrS)
             {
-            //Set the Query for PostgreSQL database
-            cmnDao.SQLText = string.Format(
-                    SELECT_COUNT_POSTGRESQL_TEMPLATE,
-                    s + parameterValue.TableName + e, whereSQL)
-                    .Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f);
+                //Set the Query for PostgreSQL database
+                cmnDao.SQLText = string.Format(
+                        SELECT_COUNT_POSTGRESQL_TEMPLATE,
+                        s + parameterValue.TableName + e, whereSQL)
+                        .Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f);
             }
             //MYSQL
             else if (parameterValue.DBMSType == DbEnum.DBMSType.MySQL)
@@ -421,8 +421,8 @@ namespace Touryo.Infrastructure.Business.Business
             }
             else
             {
-            // SQL本体の生成（いろいろ組み込み DB2
-            //（DBMSによって可変となる可能性有り）
+                // SQL本体の生成（いろいろ組み込み DB2
+                //（DBMSによって可変となる可能性有り）
                 selectPagingSQL = string.Format(
                 selectPagingSqlTemplate,
                 new string[] {
@@ -1098,7 +1098,7 @@ namespace Touryo.Infrastructure.Business.Business
 
         /// <summary>バッチ更新処理を実装</summary>
         /// <param name="parameterValue">引数クラス</param>
-        protected virtual void UOC_BatchUpdate(_3TierParameterValue parameterValue) 
+        protected virtual void UOC_BatchUpdate(_3TierParameterValue parameterValue)
         {
             // 戻り値クラスを生成して、事前に戻り地に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();

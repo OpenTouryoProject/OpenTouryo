@@ -126,15 +126,15 @@
             <!-- ControlComment:LoopStart-PKColumn -->
             <asp:TemplateField SortExpression="_ColumnName_">
                 <ItemTemplate>
-                    <asp:TextBox ReadOnly="true" BackColor="lightgray" ID="txt_ColumnName_" runat="server"
-                        Text='<%# Bind("_ColumnName_") %>'></asp:TextBox>
+                    <cc1:WebCustomTextBox ReadOnly="true" BackColor="lightgray" ID="txt_ColumnName_" runat="server"
+                        Text='<%# Bind("_ColumnName_") %>'></cc1:WebCustomTextBox>
                 </ItemTemplate>
             </asp:TemplateField>
             <!-- ControlComment:LoopEnd-PKColumn -->
             <!-- ControlComment:LoopStart-ElseColumn -->
             <asp:TemplateField SortExpression="_ColumnName_">
                 <ItemTemplate>
-                    <asp:TextBox ReadOnly="true" ID="txt_ColumnName_" runat="server" Text='<%# Bind("_ColumnName_") %>'></asp:TextBox>
+                    <cc1:WebCustomTextBox ReadOnly="true" ID="txt_ColumnName_" runat="server" Text='<%# Bind("_ColumnName_") %>'></cc1:WebCustomTextBox>
                 </ItemTemplate>
             </asp:TemplateField>
             <!-- ControlComment:LoopEnd-ElseColumn -->
