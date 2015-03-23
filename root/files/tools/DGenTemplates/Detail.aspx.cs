@@ -120,6 +120,7 @@ public partial class _TableName_Detail : MyBaseController
             // ControlComment:LoopEnd-ElseColumn
             // 編集
             this.SetControlReadOnly(true);
+            Session["PrimaryKeyAndTimeStamp"] = null;
         }        
     }
 
@@ -298,7 +299,7 @@ public partial class _TableName_Detail : MyBaseController
 
         // 主キー
         // ControlComment:LoopStart-PKColumn
-        this.txt_ColumnName_.BackColor = System.Drawing.Color.LightGray;
+        this.txt_ColumnName_.BackColor = backColor; // System.Drawing.Color.LightGray;
         // ControlComment:LoopEnd-PKColumn
 
         // 主キー以外
