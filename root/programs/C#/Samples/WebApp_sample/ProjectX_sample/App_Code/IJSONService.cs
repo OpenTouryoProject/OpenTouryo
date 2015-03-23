@@ -31,6 +31,5 @@ public interface IJSONService
     [OperationContract]
     [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest,
             ResponseFormat = WebMessageFormat.Json, UriTemplate = "GetProductData")]
-    //string GetProductData(int startIndex, int lastindex);
-    string GetProductData();
+    string GetProductData(int startIndex, int lastindex);
 }
