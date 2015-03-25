@@ -14,7 +14,7 @@
     <script type="text/javascript">
         $(function () {
             $('#list').jqGrid({
-                url: '/ProjectX_sample/WebService/JSONService.svc/GetProductData?startIndex=0&lastIndex=30',
+                url: '/ProjectX_sample/WebService/JSONService.svc/GetProductData?startIndex=0&lastIndex=29',
                 datatype: 'json',
                 colNames: ['ProductID', 'ProductName', 'SupplierID', 'CategoryID', 'QuantityPerUnit', 'UnitPrice', 'UnitsInStock', 'UnitsOnOrder', 'ReorderLevel', 'Discontinued'],
                 colModel: [
@@ -40,7 +40,7 @@
 
             $('#list2').jqGrid({
                 datatype: 'json',
-                url: '/ProjectX_sample/WebService/JSONService.svc/GetProductData?startIndex=0&lastIndex=30',
+                url: '/ProjectX_sample/WebService/JSONService.svc/GetProductData?startIndex=0&lastIndex=29',
                 colNames: ['ProductID', 'ProductName', 'SupplierID', 'CategoryID', 'QuantityPerUnit', 'UnitPrice', 'UnitsInStock', 'UnitsOnOrder', 'ReorderLevel', 'Discontinued'],
                 colModel: [
                     { name: 'ProductID', width: 100 },
