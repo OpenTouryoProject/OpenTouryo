@@ -35,7 +35,7 @@
 //*                                    ・ToDataTable、FromDataTable
 //*                                    ・ConvertDTTypeToType、ConvertTypeToDTType
 //*  2011/10/09  西野  大介        国際化対応
-//*  2015/03/05  Supragyan        Created  SavejqGridJson method for saving datatable data to json.
+//*  2015/03/05  Supragyan        Created  SavejqGridJson method for saving datatable data to JQGrid.
 //**********************************************************************************
 
 using System;
@@ -405,13 +405,14 @@ namespace Touryo.Infrastructure.Public.Dto
         }
 
         /// <summary>
-        /// SavejqGridJson method for converting datatable data to json.
+        /// SavejqGridJson method for converting datatable data to JQGrid.
         /// </summary>
         /// <param name="productData"></param>
         /// <returns></returns>
-        public JQGridDataClass SavejqGridJson(DataTable productData, int totalCount, string page, string rows,string sidx, string sord, int intPage)
-        {            
+        public JQGridDataClass SavejqGridJson(DataTable productData, int totalCount, string page, string rows)
+        {
             int intRows = Math.Min(int.Parse(rows), totalCount);
+            int intPage = int.Parse(page);
 
             // jqGrid に渡すデータを格納
             JQGridDataClass data = new JQGridDataClass();
@@ -421,16 +422,7 @@ namespace Touryo.Infrastructure.Public.Dto
 
             // ソート
             DataRow[] dataRows;
-            if (!string.IsNullOrEmpty(sidx))
-            {
-                // ソートあり
-                dataRows = productData.Select(null, sidx + " " + sord);
-            }
-            else
-            {
-                // ソートなし
-                dataRows = productData.Select(null);
-            }
+            dataRows = productData.Select();
 
             // jqGrid の各セルに表示するデータを格納
             data.rows = new List<JQGridDataRowClass>();
@@ -504,6 +496,5 @@ namespace Touryo.Infrastructure.Public.Dto
             /// </summary>
             public List<string> cell;
         }
-
     }
 }

@@ -13,8 +13,9 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2015/03/05  Supragyan         Created IJSONService interface for invoking Product table data.
-//*  2015/03/20  Sai               Modified method 'GetProductData()' return type to Json string 
+//*  2015/03/20  Supragyan         Modified method 'GetProductData()' return type to Message 
 //**********************************************************************************
+//system
 using System;
 using System.Web;
 using System.Collections.Generic;
@@ -23,13 +24,13 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
 using System.ServiceModel.Web;
+using System.ServiceModel.Channels;
 
 // NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "IJSONService" in both code and config file together.
 [ServiceContract(SessionMode = SessionMode.Allowed)]
 public interface IJSONService
 {
     [OperationContract]
-    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest,
-            ResponseFormat = WebMessageFormat.Json, UriTemplate = "GetProductData")]
-    string GetProductData(int startIndex, int lastindex);
+    [WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "GetProductData")]
+    Message GetProductData();
 }

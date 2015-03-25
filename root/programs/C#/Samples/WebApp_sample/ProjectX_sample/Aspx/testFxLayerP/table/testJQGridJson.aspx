@@ -14,43 +14,45 @@
     <script type="text/javascript">
         $(function () {
             $('#list').jqGrid({
-                url: 'JSONService.svc/GetProductData?startIndex=0&lastIndex=30',
+                url: '/ProjectX_sample/WebService/JSONService.svc/GetProductData?startIndex=0&lastIndex=30',
                 datatype: 'json',
                 colNames: ['ProductID', 'ProductName', 'SupplierID', 'CategoryID', 'QuantityPerUnit', 'UnitPrice', 'UnitsInStock', 'UnitsOnOrder', 'ReorderLevel', 'Discontinued'],
                 colModel: [
-                    { name: 'ProductID' },
-                    { name: 'ProductName', sortable: false },
-                    { name: 'SupplierID', sortable: false },
-                    { name: 'CategoryID', sortable: false },
-                    { name: 'QuantityPerUnit', sortable: false },
-                    { name: 'UnitPrice', sortable: false },
-                    { name: 'UnitsInStock', sortable: false },
-                    { name: 'UnitsOnOrder', sortable: false },
-                    { name: 'ReorderLevel', sortable: false },
-                    { name: 'Discontinued', sortable: false },
+                    { name: 'ProductID', width: 100 },
+                    { name: 'ProductName', sortable: false, width: 150 },
+                    { name: 'SupplierID', sortable: false, width: 150 },
+                    { name: 'CategoryID', sortable: false, width: 150 },
+                    { name: 'QuantityPerUnit', sortable: false, width: 150 },
+                    { name: 'UnitPrice', sortable: false, width: 50 },
+                    { name: 'UnitsInStock', sortable: false, width: 150 },
+                    { name: 'UnitsOnOrder', sortable: false, width: 150 },
+                    { name: 'ReorderLevel', sortable: false, width: 100 },
+                    { name: 'Discontinued', sortable: false, width: 150 }
 
                 ],
                 rowNum: 1000,
+                sortname: 'ProductID',
+                sortorder: 'desc',
                 mtype: 'GET',
-                loadonce: true,
+                loadonce: false,
                 caption: 'JSON Sample (ページングなし)'
             });
 
             $('#list2').jqGrid({
                 datatype: 'json',
-                url: 'JSONService.svc/GetProductData?startIndex=0&lastIndex=30',
+                url: '/ProjectX_sample/WebService/JSONService.svc/GetProductData?startIndex=0&lastIndex=30',
                 colNames: ['ProductID', 'ProductName', 'SupplierID', 'CategoryID', 'QuantityPerUnit', 'UnitPrice', 'UnitsInStock', 'UnitsOnOrder', 'ReorderLevel', 'Discontinued'],
                 colModel: [
-                    { name: 'ProductID' },
-                    { name: 'ProductName', sortable: false },
-                    { name: 'SupplierID', sortable: false },
-                    { name: 'CategoryID', sortable: false },
-                    { name: 'QuantityPerUnit', sortable: false },
-                    { name: 'UnitPrice', sortable: false },
-                    { name: 'UnitsInStock', sortable: false },
-                    { name: 'UnitsOnOrder', sortable: false },
-                    { name: 'ReorderLevel', sortable: false },
-                    { name: 'Discontinued', sortable: false },
+                    { name: 'ProductID', width: 100 },
+                    { name: 'ProductName', sortable: false, width: 150 },
+                    { name: 'SupplierID', sortable: false, width: 150 },
+                    { name: 'CategoryID', sortable: false, width: 150 },
+                    { name: 'QuantityPerUnit', sortable: false, width: 150 },
+                    { name: 'UnitPrice', sortable: false, width: 50 },
+                    { name: 'UnitsInStock', sortable: false, width: 150 },
+                    { name: 'UnitsOnOrder', sortable: false, width: 150 },
+                    { name: 'ReorderLevel', sortable: false, width: 100 },
+                    { name: 'Discontinued', sortable: false, width: 150 }
 
                 ],
                 pager: $('#pager'),

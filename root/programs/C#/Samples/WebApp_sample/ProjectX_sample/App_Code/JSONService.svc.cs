@@ -20,48 +20,56 @@
 //System
 using System;
 using System.Data;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using System.Collections.Specialized;
+using System.ServiceModel.Activation;
+using System.ServiceModel.Web;
+using System.Text;
+using System.ServiceModel.Channels;
 
 //Touryo
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Business.Util;
-using Touryo.Infrastructure.Business.Business;
 using Touryo.Infrastructure.Public.Dto;
-using Newtonsoft.Json;
-using System.Collections.Specialized;
 
+//Newtonsoft
+using Newtonsoft.Json;
+
+[AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
 public class JSONService : IJSONService
 {
     /// <summary>
     /// GetProductData method for fetching product table data.
     /// </summary>
-    public string GetProductData(int startIndex, int lastindex)
+    public Message GetProductData()
     {
         HttpContext.Current.Session["DAP"] = "SQL";
         HttpContext.Current.Session["DBMS"] = DbEnum.DBMSType.SQLServer;
+
         NameValueCollection queryStrings = HttpContext.Current.Request.QueryString;
-        string page = queryStrings["page"];
-        string rows = queryStrings["rows"]; 
-        string sidx = queryStrings["sidx"]; 
-        string sord = queryStrings["sord"]; 
-        int intPage = int.Parse(page);       
+
+        HttpContext.Current.Session["SortExpression"] = queryStrings["sidx"];
+        HttpContext.Current.Session["SortDirection"] = queryStrings["sord"];
+        string currentPage = queryStrings["page"];
+        string rows = queryStrings["rows"];
+        int startIndex = Convert.ToInt32(queryStrings["startIndex"]);
+        int lastindex = Convert.ToInt32(queryStrings["lastIndex"]);
 
         ProductsTableAdapter productTableAdapter = new ProductsTableAdapter();
         DataTable productTableData = productTableAdapter.SelectMethod(startIndex, lastindex);
         int totalCount = productTableAdapter.SelectCountMethod();
-        int intRows = Math.Min(int.Parse(rows), totalCount);
 
-        //Calling SavejqGridJson
+        // Calling SavejqGridJson
         DTTable dtTable = new DTTable("Product");
-        dtTable.SavejqGridJson(productTableData, intRows, page, rows, sidx, sord, intPage);
+        object jqGridObject = dtTable.SavejqGridJson(productTableData, totalCount, currentPage, rows);
 
-        //Converts Product table into JSon strig
-        return JsonConvert.SerializeObject(dtTable);
+        // Converts Product table into JSon strig
+        string jsonData = JsonConvert.SerializeObject(jqGridObject);
+
+        // Converts JSON data to Message format.
+        WebOperationContext.Current.OutgoingResponse.Headers.Add("X-Content-Type-Options", "nosniff");
+
+        // returns JSON string in Message format
+        return WebOperationContext.Current.CreateTextResponse(jsonData, "application/json; charset=utf-8", Encoding.UTF8);
     }
 }
+
