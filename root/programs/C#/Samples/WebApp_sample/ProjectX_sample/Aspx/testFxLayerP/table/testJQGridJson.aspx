@@ -60,7 +60,6 @@
                 sortname: 'ProductID',
                 viewrecords: true,
                 sortorder: 'desc',
-                gridview: true,
                 loadonce: false,
                 beforeProcessing: function (data, status, xhr) {  // レスポンスの受信時に呼び出されるイベント
                     // サーバからエラーが返ってきた場合にダイアログを表示し、以降の処理を中止する
