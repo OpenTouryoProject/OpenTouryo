@@ -12,7 +12,7 @@ $.extend($.jgrid,{
 	defaults : {
 		recordtext: "Vis {0} - {1} of {2}",
 	    emptyrecords: "Ingen linjer fundet",
-		loadtext: "Henter...",
+		loadtext: "Center...",
 		pgtext : "Side {0} af {1}"
 	},
 	search : {
