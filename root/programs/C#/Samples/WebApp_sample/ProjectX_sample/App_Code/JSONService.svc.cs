@@ -34,6 +34,9 @@ using Touryo.Infrastructure.Public.Dto;
 //Newtonsoft
 using Newtonsoft.Json;
 
+/// <summary>
+/// JSONService class for selecting product table data and displaying in JQGrid.
+/// </summary>
 [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
 public class JSONService : IJSONService
 {
@@ -51,11 +54,11 @@ public class JSONService : IJSONService
         HttpContext.Current.Session["SortDirection"] = queryStrings["sord"];
         string currentPage = queryStrings["page"];
         string rows = queryStrings["rows"];
-        int startIndex = Convert.ToInt32(queryStrings["startIndex"]);
-        int lastindex = Convert.ToInt32(queryStrings["lastIndex"]);
+        int startIndex = int.Parse(currentPage);
+        int lastindex = int.Parse(rows);
 
         ProductsTableAdapter productTableAdapter = new ProductsTableAdapter();
-        DataTable productTableData = productTableAdapter.SelectMethod(startIndex, lastindex);
+        DataTable productTableData = productTableAdapter.SelectMethod(startIndex-1, lastindex);
         int totalCount = productTableAdapter.SelectCountMethod();
 
         // Calling SavejqGridJson
