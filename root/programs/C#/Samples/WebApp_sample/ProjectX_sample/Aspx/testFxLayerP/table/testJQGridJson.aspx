@@ -14,7 +14,7 @@
     <script type="text/javascript">
         $(function () {
             $('#list').jqGrid({
-                url: '/ProjectX_sample/WebService/JSONService.svc/GetProductData?startIndex=0&lastIndex=29',
+                url: '/ProjectX_sample/WebService/JSONService.svc/GetProductData',
                 datatype: 'json',
                 colNames: ['ProductID', 'ProductName', 'SupplierID', 'CategoryID', 'QuantityPerUnit', 'UnitPrice', 'UnitsInStock', 'UnitsOnOrder', 'ReorderLevel', 'Discontinued'],
                 colModel: [
@@ -30,7 +30,7 @@
                     { name: 'Discontinued', sortable: false, width: 150 }
 
                 ],
-                rowNum: 1000,
+                rowNum: 29,
                 sortname: 'ProductID',
                 sortorder: 'desc',
                 mtype: 'GET',
@@ -40,7 +40,7 @@
 
             $('#list2').jqGrid({
                 datatype: 'json',
-                url: '/ProjectX_sample/WebService/JSONService.svc/GetProductData?startIndex=0&lastIndex=29',
+                url: '/ProjectX_sample/WebService/JSONService.svc/GetProductData',
                 colNames: ['ProductID', 'ProductName', 'SupplierID', 'CategoryID', 'QuantityPerUnit', 'UnitPrice', 'UnitsInStock', 'UnitsOnOrder', 'ReorderLevel', 'Discontinued'],
                 colModel: [
                     { name: 'ProductID', width: 100 },
@@ -56,7 +56,7 @@
 
                 ],
                 pager: $('#pager'),
-                rowNum: 10,
+                rowNum: 29,
                 sortname: 'ProductID',
                 viewrecords: true,
                 sortorder: 'desc',
