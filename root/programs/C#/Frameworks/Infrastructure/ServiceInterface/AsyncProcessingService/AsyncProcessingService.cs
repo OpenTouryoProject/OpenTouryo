@@ -36,6 +36,7 @@
 //*  03/04/2015   Sai            Modifed the code as per the review comments given by Niahino-san on 03/3/2015.  
 //*  03/16/2015   Sai            Modifed the code as per the change request given by Niahino-san on 03/9/2015.   
 //*  03/20/2015   Sai            Added lock mechanism while selecting task from database and change resquests.
+//*  03/26/2015   Sai            Did Nihsini-san review comment changes as on 25-Mar-2015.
 //**********************************************************************************
 
 // System
@@ -70,11 +71,8 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
     public class AsyncProcessingService : System.ServiceProcess.ServiceBase
     {
         private Thread _mainthread = null;
-        int _threadCount = 0;
-        AsyncProcessingServiceParameterValue _asyncParameterValue;
-        AsyncProcessingServiceReturnValue _asyncReturnValue;
-        Boolean _isInfinite = true;
-        int _maxThreadCount;
+        volatile Boolean _isInfinite = true;
+        volatile int _maxThreadCount;
 
         /// <summary>
         /// Async Processing Service constructor to set property.
@@ -125,7 +123,6 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
             // Thread pool initialization with maxium threads. 
             ThreadPool.SetMaxThreads(_maxThreadCount, _maxThreadCount);
             _mainthread.Start();
-            _mainthread.Join();
         }
 
         #endregion
@@ -138,52 +135,53 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         public void MainThreadInvoke()
         {
             AsyncProcessingServiceReturnValue asyncReturnValue;
-            AsyncProcess.LayerB myBusiness;
+            LayerB myBusiness;
 
             // Infinte loop processing for selecting register task.
             while (_isInfinite)
             {
-                _asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "Select", "Select", "SQL",
-                                                                                   new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
-                Monitor.Enter(_asyncParameterValue);
-                try
-                {
-                    myBusiness = new AsyncProcess.LayerB();
-                    asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic(
-                                                                          (BaseParameterValue)_asyncParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
+                AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "Select", "Select", "SQL",
+                                                                                    new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
 
-                    _asyncReturnValue = asyncReturnValue;
+                myBusiness = new LayerB();
+                asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic(
+                                                                      (BaseParameterValue)asyncParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
 
-                    _asyncParameterValue = (AsyncProcessingServiceParameterValue)asyncReturnValue.Obj;
-                }
-                finally
-                {
-                    Monitor.Exit(_asyncParameterValue);
-                }
-
-                if (string.IsNullOrEmpty(_asyncParameterValue.UserId))
+                asyncParameterValue = (AsyncProcessingServiceParameterValue)asyncReturnValue.Obj;
+                if (string.IsNullOrEmpty(asyncParameterValue.UserId))
                 {
                     Thread.Sleep(30000);
                 }
                 else
                 {
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(InvokeController), (object)_asyncParameterValue.ProcessName);
-
-                    //Update in mainthread
-                    AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "Update", "Update", "SQL",
+                    // Update in mainthread
+                    asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "Update", "Update", "SQL",
                                                                                     new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
-
+                    asyncParameterValue = (AsyncProcessingServiceParameterValue)asyncReturnValue.Obj;
                     DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
+                    asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)asyncParameterValue, iso);
 
-                    asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)_asyncParameterValue, iso);
+                    // Queuing task to worker thread
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(InvokeController), (object)asyncParameterValue);
                 }
+            }
 
-                // If no. of worker threads exceeds maximum threads then putting the 
-                // current thread in waiting state.
-                if (_threadCount > _maxThreadCount)
-                {
-                    Thread.Sleep(30000);
-                }
+            // Counting no. of worker threads.
+            int completedIOThreads;
+            int availableThreads;
+            ThreadPool.GetAvailableThreads(out availableThreads, out completedIOThreads);
+            // Counting running threads.
+            int threadCount = _maxThreadCount - availableThreads;
+
+            // If no. of worker threads exceeds maximum threads then putting the 
+            // current thread in waiting state.
+            if (threadCount > _maxThreadCount)
+            {
+                Thread.Sleep(30000);
+            }
+            else
+            {
+                _isInfinite = false;
             }
         }
 
@@ -195,89 +193,100 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// Updates using LayerB through callcontroller class
         /// </summary>
         /// <param name="_asyncParameterValue"></param>
-        private void InvokeController(object processName)
+        private void InvokeController(object asyncParameterValue)
         {
-            // Counting no. of worker threads.
-            _threadCount++;
-            // Reads max thrad count from config.            
-            int retries = 0;
-            AsyncProcessingServiceReturnValue asyncReturnValue = _asyncReturnValue;
-            object deserializeDatas = DeserializeFromBase64(_asyncReturnValue.Data);
-            string[] strDatas = deserializeDatas.ToString().Split('/');
-
-            asyncReturnValue.UserId = strDatas.GetValue(0).ToString();
-            asyncReturnValue.ExecutionStartDateTime = Convert.ToDateTime(strDatas.GetValue(3));
-            asyncReturnValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.Processing;
-
-            // InProcess Call using CallController for updating service in database
-            CallController callController = new CallController(this._asyncParameterValue.User);
-            asyncReturnValue = (AsyncProcessingServiceReturnValue)callController.Invoke(processName.ToString(), asyncReturnValue);
-
-
-
-            AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "UpdateStatus", "UpdateStatus", "SQL",
-                                                                            new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
-            if (Convert.ToInt32(asyncReturnValue.Obj) == 1)
+            try
             {
-                //Update in worker thread
-                asyncParameterValue.UserId = _asyncParameterValue.UserId;
-                asyncParameterValue.ProgressRate = 100;
-                asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.End;
-                asyncParameterValue.NumberOfRetries = 0;
+                AsyncProcessingServiceParameterValue asyncParamValue = (AsyncProcessingServiceParameterValue)asyncParameterValue;
 
-                AsyncProcess.LayerB myBusiness = new AsyncProcess.LayerB();
+                object deserializeDatas = DeserializeFromBase64(asyncParamValue.Data);
+                string[] strDatas = deserializeDatas.ToString().Split('/');
 
-                DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
+                asyncParamValue.UserId = strDatas.GetValue(0).ToString();
+                asyncParamValue.ExecutionStartDateTime = Convert.ToDateTime(strDatas.GetValue(3));
+                asyncParamValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.Processing;
 
-                asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)asyncParameterValue, iso);
-                _threadCount--;
-            }
-            else
-            {
-                // If business exception then updating status to AbnormalEnd.
-                if (asyncReturnValue.ErrorFlag == true)
+                // InProcess Call using CallController for updating service in database
+                CallController callController = new CallController(asyncParamValue.User);
+                AsyncProcessingServiceReturnValue asyncReturnValue = (AsyncProcessingServiceReturnValue)callController.Invoke(asyncParamValue.ProcessName.ToString(), asyncParamValue);
+
+
+                AsyncProcessingServiceParameterValue asyncParam = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "UpdateStatus", "UpdateStatus", "SQL",
+                                                                                new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
+                if (Convert.ToInt32(asyncReturnValue.Obj) == 1)
                 {
-                    asyncParameterValue.UserId = _asyncParameterValue.UserId;
-                    asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.AbnormalEnd;
-                    asyncParameterValue.NumberOfRetries += 1;
-                    retries++;
-                    AsyncProcess.LayerB myBusiness = new AsyncProcess.LayerB();
+                    //Update in worker thread
+                    asyncParam.UserId = asyncParamValue.UserId;
+                    asyncParam.ProgressRate = 100;
+                    asyncParam.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.End;
+                    asyncParam.NumberOfRetries = 0;
+
+                    LayerB myBusiness = new LayerB();
 
                     DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
 
-                    asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)asyncParameterValue, iso);
-                    _threadCount--;
+                    asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)asyncParam, iso);
                 }
-                // Else other exception then updating status to Abort
                 else
                 {
-                    asyncParameterValue.UserId = _asyncParameterValue.UserId;
-                    asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.Abort;
-                    asyncParameterValue.NumberOfRetries += 1;
-                    retries++;
-                    AsyncProcess.LayerB myBusiness = new AsyncProcess.LayerB();
+                    // If business exception then updating status to AbnormalEnd.
+                    if (asyncReturnValue.ErrorFlag == true)
+                    {
+                        asyncParam.UserId = asyncParamValue.UserId;
+                        asyncParam.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.AbnormalEnd;
+                        asyncParam.NumberOfRetries += 1;
+                        LayerB myBusiness = new LayerB();
+
+                        DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
+
+                        asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)asyncParameterValue, iso);
+                    }
+                    // Else other exception then updating status to Abort and End
+                    else
+                    {
+                        try
+                        {
+                            asyncParam.UserId = asyncParamValue.UserId;
+                            asyncParam.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.End;
+                            asyncParam.NumberOfRetries += 1;
+                            LayerB myBusiness = new LayerB();
+
+                            DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
+
+                            asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)asyncParameterValue, iso);
+                        }
+                        catch (Exception ex)
+                        {
+
+                            asyncParam.UserId = asyncParamValue.UserId;
+                            asyncParam.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.Abort;
+                            asyncParam.NumberOfRetries += 1;
+                            LayerB myBusiness = new LayerB();
+
+                            DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
+
+                            asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)asyncParameterValue, iso);
+                        }
+                    }
+                }
+                //Checks if threadcount greater than maxthreadcount sets in config file 
+                //then service status will be inserted or updated as Abort
+                if (asyncParam.NumberOfRetries >= _maxThreadCount)
+                {
+                    asyncParam.UserId = asyncParamValue.UserId;
+                    asyncParam.ProgressRate = 0;
+                    asyncParam.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.Abort;
+
+                    LayerB myBusiness = new LayerB();
 
                     DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
 
-                    asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)asyncParameterValue, iso);
-                    _threadCount--;
+                    asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)asyncParam, iso);
                 }
             }
-            //Checks if threadcount greater than maxthreadcount sets in config file 
-            //then service status will be inserted or updated as Abort
-            if (retries >= _maxThreadCount)
+            catch (Exception ex)
             {
-                asyncParameterValue.UserId = _asyncParameterValue.UserId;
-                this._asyncParameterValue.ProgressRate = 0;
-                this._asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.Abort;
 
-                AsyncProcess.LayerB myBusiness = new AsyncProcess.LayerB();
-
-                DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
-
-                asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)asyncParameterValue, iso);
-                _threadCount--;
-                _isInfinite = false;
             }
         }
 
@@ -325,9 +334,8 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// </summary>
         protected override void OnStop()
         {
-            Thread.CurrentThread.Join();
-            _mainthread.Join();
             _isInfinite = false;
+            _mainthread.Join();
         }
 
         #endregion
@@ -339,10 +347,8 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// </summary>
         protected override void OnPause()
         {
-            Thread.CurrentThread.Join();
-            _mainthread.Join();
-            _threadCount--;
             _isInfinite = false;
+            _mainthread.Join();
         }
 
         #endregion
@@ -354,10 +360,8 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// </summary>
         protected override void OnShutdown()
         {
-            Thread.CurrentThread.Abort();
-            _mainthread.Join();
-            _threadCount--;
             _isInfinite = false;
+            _mainthread.Join();
         }
 
         #endregion
