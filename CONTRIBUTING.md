@@ -19,30 +19,36 @@
     Descriptions such as start and end of the correction is not required.)  
     
 ###コーディング（Coding）
-  プロジェクトファイルで指定されたのランタイムで  
-  使用可能なステートメントに限られますので注意下さい。  
-  
-  (Please keep in mind that it is limited to the statement  
-  that can be used in run-time which was specified in the project file.)  
+  - このプロジェクトでは重複したコードや情報の書き込みが禁止されています。  
+    これは "Once and Only Once" や "Don't repeat yourself" です。  
+    
+    Writing of duplicate code and information has been prohibited in this project.
+    This is "Once and Only Once" or "Don't repeat yourself".
+    
+  - プロジェクトファイルで指定されたのランタイムで  
+    使用可能なステートメントに限られますので注意下さい。  
+      
+    (Please keep in mind that it is limited to the statement  
+    that can be used in run-time which was specified in the project file.)  
+    
+    例えば、  
+    以前は.NET Fx 2.0のサポートが含まれていました（現在は.NET Fx 3.5からのサポート）。  
+    このため.NET Fx 2.0で使用できないLinq構文などは本プロジェクトで使用されていません。  
+    
+    (For example,  
+    Contained the support of .NET Fx 2.0 previously(The support from. NET Fx 3.5 now).  
+    Such as Linq syntax that can not be used in .NET Fx 2.0 has not been used in this project.)  
 
-  例えば、  
-  以前は.NET Fx 2.0のサポートが含まれていました（現在は.NET Fx 3.5からのサポート）。  
-  このため.NET Fx 2.0で使用できないLinq構文などは本プロジェクトで使用されていません。  
-
-  (For example,  
-  Contained the support of .NET Fx 2.0 previously(The support from. NET Fx 3.5 now).  
-  Such as Linq syntax that can not be used in .NET Fx 2.0 has not been used in this project.)  
-
-  - 本体(Body)  
+    - 本体(Body)  
     .NET Fx 3.5  
 
-  - ASP.NET MVC  
+    - ASP.NET MVC  
     .NET Fx v4.5  
 
-  - Silverlight  
+    - Silverlight  
     v5.0  
 
-  - Windows Store App  
+    - Windows Store App  
     Windows 8  
 
 ##C#, VB
