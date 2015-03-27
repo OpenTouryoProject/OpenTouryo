@@ -55,10 +55,10 @@ public class JSONService : IJSONService
         string currentPage = queryStrings["page"];
         string rows = queryStrings["rows"];
         int startIndex = int.Parse(currentPage);
-        int lastindex = int.Parse(rows);
+        int maximumRows = int.Parse(rows);
 
         ProductsTableAdapter productTableAdapter = new ProductsTableAdapter();
-        DataTable productTableData = productTableAdapter.SelectMethod(startIndex-1, lastindex);
+        DataTable productTableData = productTableAdapter.SelectMethod(startIndex - 1, maximumRows);
         int totalCount = productTableAdapter.SelectCountMethod();
 
         // Calling SavejqGridJson
