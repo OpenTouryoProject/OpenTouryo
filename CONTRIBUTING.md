@@ -22,8 +22,8 @@
   - このプロジェクトでは重複したコードや情報の書き込みが禁止されています。  
     これは "Once and Only Once" や "Don't repeat yourself" です。  
     
-    Writing of duplicate code and information has been prohibited in this project.
-    This is "Once and Only Once" or "Don't repeat yourself".
+    (Writing of duplicate code and information has been prohibited in this project.  
+    This is "Once and Only Once" or "Don't repeat yourself".)
     
   - プロジェクトファイルで指定されたのランタイムで  
     使用可能なステートメントに限られますので注意下さい。  
