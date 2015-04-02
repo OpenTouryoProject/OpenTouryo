@@ -105,7 +105,7 @@
     (For this reason, I want you to create a Feature Branch for each task.  
     Then, ask the review to me by sending each time "pull request" from the Feature Branch.)  
   
-###プルリクエスト("pull request")
+###プルリクエストを送る(Send a "pull request")
   - Opentouryoリポジトリから各ユーザのリポジトリにForkします。  
     その後にdevelopブランチからfeatureブランチを作成し作業します。  
     (Fork to the repository for each user from OpenTouryo repository.  
@@ -129,6 +129,7 @@
   - git fetchの理解からgit mergeとpullの役割 - Qiita  
     http://qiita.com/osamu1203/items/cb94ef9da02e1ec3e921
 
+## テストについて(About the test)
 ###テストコード(Test code)
   テストコードを実装可能な場合、以下のパスに実装して下さい。  
   (If you can implement the test code, should be implemented in the following path.)  
