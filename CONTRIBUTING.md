@@ -137,9 +137,9 @@
   [\root\programs\C#\Tests](https://github.com/OpenTouryoProject/OpenTouryo/tree/develop/root/programs/C%23/Tests)
 
 ###テスト結果(Test results)
-  テスト結果のエビデンスを取得した場合は、これを[OpenTouryoProject / Imagefiles][OpenTouryoProject/Imagefiles](https://github.com/OpenTouryoProject/Imagefiles)リポジトリに格納します。
+  テスト結果のエビデンスを取得した場合は、これを[OpenTouryoProject/Imagefiles](https://github.com/OpenTouryoProject/Imagefiles)リポジトリに格納します。
 
-  If you got the evidence of test results, then stores this in the [OpenTouryoProject / Imagefiles][OpenTouryoProject/Imagefiles](https://github.com/OpenTouryoProject/Imagefiles) repository.
+  If you got the evidence of test results, then stores this in the [OpenTouryoProject/Imagefiles](https://github.com/OpenTouryoProject/Imagefiles) repository.
 
 ###プッシュ(push)
   developブランチでのビルドとテストが完了してからmasterブランチにpushします。  
