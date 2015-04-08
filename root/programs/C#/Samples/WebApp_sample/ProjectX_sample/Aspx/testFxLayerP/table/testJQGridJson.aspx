@@ -30,7 +30,7 @@
                     { name: 'Discontinued', sortable: false, width: 150 }
 
                 ],
-                rowNum: 1000,
+                rowNum: 9999,
                 sortname: 'ProductID',
                 sortorder: 'desc',
                 mtype: 'GET',
