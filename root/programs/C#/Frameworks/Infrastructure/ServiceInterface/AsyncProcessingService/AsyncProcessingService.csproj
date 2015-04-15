@@ -31,33 +31,33 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncSvc_sample, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Samples\AsyncSvc_sample\AsyncSvc_sample\bin\Debug\AsyncSvc_sample.dll</HintPath>
-    </Reference>
-    <Reference Include="Business">
-      <HintPath>..\..\..\Business\bin\Debug\Business.dll</HintPath>
+      <HintPath>..\..\Business\bin\Debug\Business.dll</HintPath>
     </Reference>
     <Reference Include="Business.RichClient">
-      <HintPath>..\..\..\Business\RichClient\bin\Debug\Business.RichClient.dll</HintPath>
+      <HintPath>..\..\Build\Business.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="Framework">
-      <HintPath>..\..\bin\Debug\Framework.dll</HintPath>
+      <HintPath>..\..\Build\Framework.dll</HintPath>
     </Reference>
     <Reference Include="Framework.RichClient">
-      <HintPath>..\..\..\Business\RichClient\bin\Debug\Framework.RichClient.dll</HintPath>
+      <HintPath>..\..\Build\Framework.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="Public">
-      <HintPath>..\..\bin\Debug\Public.dll</HintPath>
+      <HintPath>..\..\Build\Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -66,17 +66,28 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceInstaller.cs" />
+    <Compile Include="ServiceInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AsyncSvcProcLogConf.xml" />
-    <Content Include="MSGDefinition.xml" />
-    <Content Include="TMInProcessDefinition.xml" />
-    <Content Include="TMProtocolDefinition.xml" />
+    <EmbeddedResource Include="MSGDefinition.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SampleLogConfAsyncProcessingService.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMInProcessDefinition.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMProtocolDefinition.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

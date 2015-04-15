@@ -9,15 +9,18 @@
 <!-- idの先頭には、数字を使用できない。 -->
 <!-- 先頭Eは異常系、先頭Iは正常系など -->
 <MSGD>
-	<Message id="I0001" description="- Description corresponding to the message-ID:I0001(normal system) -"/>
-	<Message id="I0002" description="- Description corresponding to the message-ID:I0002(normal system) -"/>
-	<Message id="I0003" description="- Description corresponding to the message-ID:I0003(normal system) -"/>
-	<Message id="I0004" description="- Description corresponding to the message-ID:I0004(normal system) -"/>
-	<Message id="I0005" description="- Description corresponding to the message-ID:I0005(normal system) -"/>
-	
-	<Message id="E0001" description="- Description corresponding to the message-ID:E0001(abnormality system) -"/>
-	<Message id="E0002" description="- Description corresponding to the message-ID:E0002(abnormality system) -"/>
-	<Message id="E0003" description="- Description corresponding to the message-ID:E0003(abnormality system) -"/>
-	<Message id="E0004" description="- Description corresponding to the message-ID:E0004(abnormality system) -"/>
-	<Message id="E0005" description="- Description corresponding to the message-ID:E0005(abnormality system) -"/>
+	<Message id="I0001" description="Asynchronous service is started."/>
+	<Message id="I0002" description="TaskID-{0}: START- Assigned to worker thread."/>
+	<Message id="I0003" description="TaskID-{0}: END- Completed successfully."/>
+
+  <Message id="E0000" description="Asynchronous service failed due to unexpected exception. Message: {0}"/>
+	<Message id="E0001" description="TaskID-{0}: FAIL- Stopped due to user stop command."/>
+  <Message id="E0002" description="TaskID-{0}: FAIL- Aborted due to user abort command."/>
+  <Message id="E0003" description="TaskID-{0}: RETRY- Abnormally ended due to BusinessApplicationException."/>	
+	<Message id="E0004" description="TaskID-{0}: RETRY- Abnormally ended due to other than the BusinessApplicationException."/>  
+	<Message id="E0005" description="TaskID-{0}: FAIL- Aborted because it exceeds the maximum number of retries."/>
+	<Message id="E0006" description="TaskID-{0}: FAIL- Aborted due to unexpected exception. Message: {1}"/>
+  <Message id="E0007" description="Asynchronous service is stopped."/>
+  <Message id="E0008" description="Asynchronous service is paused."/>
+  <Message id="E0009" description="Asynchronous service is shutdown."/>
 </MSGD>
