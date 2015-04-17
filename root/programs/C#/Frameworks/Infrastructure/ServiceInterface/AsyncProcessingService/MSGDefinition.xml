@@ -23,4 +23,5 @@
   <Message id="E0007" description="Asynchronous service is stopped."/>
   <Message id="E0008" description="Asynchronous service is paused."/>
   <Message id="E0009" description="Asynchronous service is shutdown."/>
+  <Message id="E0010" description="Error while setting configuration key-value."/>
 </MSGD>

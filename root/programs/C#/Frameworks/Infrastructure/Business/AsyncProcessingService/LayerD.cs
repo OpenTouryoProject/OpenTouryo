@@ -73,8 +73,9 @@ namespace AsyncProcessingService
                 sqlEncoding = "utf-8";
             }
 
-            string assemblyString = GetConfigParameter.GetConfigValue("SqlEmbeddedAssembly");
-            string loadFileName = GetConfigParameter.GetConfigValue("SqlTextFilePath") + "." + filename;
+            string assemblyString = "Business";
+            string assemblyNameSpace = "Touryo.Infrastructure.Business.AsyncProcessingService";
+            string loadFileName = assemblyNameSpace + "." + filename;
 
             // Get SQL query from embedded resource file. 
             string commandText = EmbeddedResourceLoader.LoadAsString(assemblyString, loadFileName, Encoding.GetEncoding(sqlEncoding));
@@ -105,9 +106,9 @@ namespace AsyncProcessingService
             this.SetParameter("P3", asyncParameterValue.ProcessName);
             this.SetParameter("P4", asyncParameterValue.Data);
             this.SetParameter("P5", asyncParameterValue.RegistrationDateTime);
-            this.SetParameter("P6", asyncParameterValue.ExecutionStartDateTime);
+            this.SetParameter("P6", DBNull.Value);
             this.SetParameter("P7", asyncParameterValue.NumberOfRetries);
-            this.SetParameter("P8", asyncParameterValue.CompletionDateTime);
+            this.SetParameter("P8", DBNull.Value);
             this.SetParameter("P9", asyncParameterValue.StatusId);
             this.SetParameter("P10", asyncParameterValue.ProgressRate);
             this.SetParameter("P11", asyncParameterValue.CommandId);
@@ -315,7 +316,6 @@ namespace AsyncProcessingService
         public void SelectTask(AsyncProcessingServiceParameterValue asyncParameterValue, AsyncProcessingServiceReturnValue asyncReturnValue)
         {
             string filename = string.Empty;
-            // need to change  query WHERE clause
             filename = "SelectTask.sql";
 
             // Get SQL query from file.
@@ -337,7 +337,7 @@ namespace AsyncProcessingService
             asyncReturnValue.Obj = dt;
         }
 
-        #endregion       
+        #endregion
 
         #endregion        
     }

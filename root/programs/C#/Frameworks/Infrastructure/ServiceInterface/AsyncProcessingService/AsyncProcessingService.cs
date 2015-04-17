@@ -242,9 +242,9 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                     // Get asynchronous task from the database.
                     AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "SelectTask", "SelectTask", "SQL",
                                                                                             new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
-                    asyncParameterValue.RegistrationDateTime = DateTime.Now.AddHours(-_maxNumberOfHours);
+                    asyncParameterValue.RegistrationDateTime = DateTime.Now - new TimeSpan(_maxNumberOfHours, 0, 0);
                     asyncParameterValue.NumberOfRetries = this._maxNumberOfRetries;
-                    asyncParameterValue.CompletionDateTime = DateTime.Now.AddHours(-_maxNumberOfHours);
+                    asyncParameterValue.CompletionDateTime = DateTime.Now - new TimeSpan(_maxNumberOfHours, 0, 0);
                     LayerB layerB = new LayerB();
                     AsyncProcessingServiceReturnValue selectedAsyncTask = (AsyncProcessingServiceReturnValue)layerB.DoBusinessLogic(
                                                                               (BaseParameterValue)asyncParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
@@ -285,7 +285,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                     // Assign the task to the worker thread
                     ThreadPool.QueueUserWorkItem(new WaitCallback(this.WorkerThreadCallBack), (object)selectedAsyncTask);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     // Service Failed due to unexpected exception.
                     this.StopAsyncProcess();
@@ -308,22 +308,10 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
 
             try
             {
-                // To get Deserialized arrary of string object.
-                object deserializeData = DeserializeFromBase64(selectedAsyncTask.Data);
-                string[] deserializeString = deserializeData.ToString().Split('/');
-
-                // Creating ActionType to send deserialzed object to user program
-                StringBuilder actionType = new StringBuilder();
-                actionType.Append("SQL");
-                foreach (string str in deserializeString)
-                {
-                    actionType.Append("%");
-                    actionType.Append(str);
-                }
-
                 // Call User Program to execute by using communication control function
-                AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "StartCopyFromBlob", "StartCopyFromBlob", actionType.ToString(),
+                AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "StartCopyFromBlob", "StartCopyFromBlob", "SQL",
                                                                                         new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
+                asyncParameterValue.Data = selectedAsyncTask.Data;
                 CallController callController = new CallController(asyncParameterValue.User);
                 AsyncProcessingServiceReturnValue asyncReturnValue = (AsyncProcessingServiceReturnValue)callController.Invoke(selectedAsyncTask.ProcessName, asyncParameterValue);
 
@@ -331,46 +319,16 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                 {
                     selectedAsyncTask.NumberOfRetries += 1;
 
-                    if (asyncReturnValue.ErrorMessageID == "BusinessApplicationException")
-                    {                        
-                        switch (asyncReturnValue.CommandId)
-                        {
-                            // If BusinessApplicationException occurred due to the user commands
-
-                            case (int)AsyncProcessingServiceParameterValue.AsyncCommand.Stop:
-                                // Asynchronous task is stopped due to user 'stop' command.
-                                this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.FAIL);
-                                LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0001"), selectedAsyncTask.TaskId));
-                                break;
-                            case (int)AsyncProcessingServiceParameterValue.AsyncCommand.Abort:
-                                // Asynchronous task is aborted due to user 'abort' command.
-                                this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.FAIL);
-                                LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0002"), selectedAsyncTask.TaskId));
-                                break;
-                            default:
-                                // If BusinessApplicationException is occurred by other than the user commands
-                                
-                                if (selectedAsyncTask.NumberOfRetries < this._maxNumberOfRetries)
-                                {
-                                    // Asynchronous task does not exceeds the maximum number of retries
-                                    // Updated as retry later
-                                    this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.RETRY);
-                                    LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0003"), selectedAsyncTask.TaskId));
-                                }
-                                else
-                                {
-                                    // Asynchronous task exceeds maximum number of retries
-                                    // Update task as abort
-                                    this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.FAIL);
-                                    LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0005"), selectedAsyncTask.TaskId));
-                                }
-                                break;
-                        }
+                    if (asyncReturnValue.ErrorMessageID == "APSStopCommand")
+                    {
+                        // Asynchronous task is stopped due to user 'stop' command.
+                        this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.FAIL);
+                        LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0001") + asyncReturnValue.ErrorMessage, selectedAsyncTask.TaskId));
                     }
                     else
                     {
                         // Exception occurred by other than BusinessApplicationException
-                        
+
                         if (selectedAsyncTask.NumberOfRetries < this._maxNumberOfRetries)
                         {
                             // Asynchronous task does not exceeds the maximum number of retries
@@ -415,24 +373,63 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// </summary>
         public void SetFromConfig()
         {
-            // Get maximum thread count from .config file
-            _maxThreadCount = int.Parse(GetConfigParameter.GetConfigValue("FxMaxThreadCount"));
-            
             try
             {
+                // Get maximum thread count from .config file
+                string maxThreadCount = GetConfigParameter.GetConfigValue("FxMaxThreadCount");
+                if (string.IsNullOrEmpty(maxThreadCount))
+                {
+                    // Set default
+                    _maxThreadCount = 10;
+                }
+                else
+                {
+                    _maxThreadCount = int.Parse(maxThreadCount);
+                }
+
                 // Get number of seconds from .config file
-                _numberOfSeconds = int.Parse(GetConfigParameter.GetConfigValue("FxNumberOfSeconds"));
+                string numberOfSeconds = GetConfigParameter.GetConfigValue("FxMaxThreadCount");
+                if (string.IsNullOrEmpty(numberOfSeconds))
+                {
+                    // Set default
+                    _numberOfSeconds = 1;
+                }
+                else
+                {
+                    _numberOfSeconds = int.Parse(numberOfSeconds);
+                }
+
+                // Get maximum number of retries from .config file
+                string maxNumberOfRetries = GetConfigParameter.GetConfigValue("FxMaxNumberOfRetries");
+                if (string.IsNullOrEmpty(maxNumberOfRetries))
+                {
+                    // Set default
+                    _maxNumberOfRetries = 10;
+                }
+                else
+                {
+                    _maxNumberOfRetries = int.Parse(maxNumberOfRetries);
+                }
+
+                // Get maximum number of hours from .config file
+                string maxNumberOfHours = GetConfigParameter.GetConfigValue("FxMaxNumberOfHours");
+                if (string.IsNullOrEmpty(maxNumberOfHours))
+                {
+                    // Set default
+                    _maxNumberOfHours = 24;
+                }
+                else
+                {
+                    // Get maximum number of hours from .config file
+                    _maxNumberOfHours = int.Parse(maxNumberOfHours);
+                }
             }
-            catch
+            catch 
             {
-                _numberOfSeconds = 1;
+                // Error while setting from config
+                LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0010"));
+                throw new Exception();
             }
-
-            // Get maximum number of retries from .config file
-            _maxNumberOfRetries = int.Parse(GetConfigParameter.GetConfigValue("FxMaxNumberOfRetries"));
-
-            // Get maximum number of hours from .config file
-            _maxNumberOfHours = int.Parse(GetConfigParameter.GetConfigValue("FxMaxNumberOfHours"));
         }
 
         #endregion
