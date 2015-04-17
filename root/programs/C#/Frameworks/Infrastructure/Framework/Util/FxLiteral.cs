@@ -54,6 +54,7 @@
 //*  2014/08/18  Sai-San           Added constants for ListView events and prefix.
 //*  2014/10/03  Rituparna         Added constants for ListView events and prefix for supporting ItemCommand event.
 //*  2014/10/03  Rituparna         Added constants for RadioButtonList,CheckBoxList events and prefix. 
+//*  2015/04/16  Supragyan         Added constants for Textbox events and prefix. 
 //**********************************************************************************
 
 // System
@@ -247,6 +248,9 @@ namespace Touryo.Infrastructure.Framework.Util
         /// <summary>コンボ ボックスのプレフィックスを設定するキー。</summary>
         public const string PREFIX_OF_COMBO_BOX = "FxPrefixOfComboBox";
 
+        /// <summary>Key to set the prefix of the Text box.</summary>
+        public const string PREFIX_OF_TEXTBOX = "FxPrefixOfTextBox";
+
         #endregion
 
         #region WPF / XBAP
@@ -323,6 +327,13 @@ namespace Touryo.Infrastructure.Framework.Util
         public const string UOC_METHOD_FOOTER_LISTVIEW_ROW_SORTING = "Sorting";
 
         #endregion
+
+        #endregion
+
+        #region Textbox
+
+        // <summary>UOCメソッドフッタ（Text Changed）</summary>
+        public const string UOC_METHOD_FOOTER_TEXT_CHANGED = "TextChanged";
 
         #endregion
 
