@@ -1402,6 +1402,13 @@ namespace Touryo.Infrastructure.Framework.Presentation
                         prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.List_SelectedIndexChanged));
                     }
 
+                    // TextBox
+                    prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_TEXTBOX);
+                    if (!string.IsNullOrEmpty(prefix))
+                    {
+                        prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.TextBox_TextChanged));
+                    }
+
                     // RADIO BUTTON
                     prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_RADIO_BUTTON);
                     if (!string.IsNullOrEmpty(prefix))
@@ -1414,13 +1421,6 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     if (!string.IsNullOrEmpty(prefix))
                     {
                         prefixAndEvtHndHt.Add(prefix, new RepeaterCommandEventHandler(this.Repeater_ItemCommand));
-                    }
-
-                    // TextBox
-                    prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_TEXTBOX);
-                    if (!string.IsNullOrEmpty(prefix))
-                    {
-                        prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.TextBox_TextChanged));
                     }
 
                     // GRIDVIEW

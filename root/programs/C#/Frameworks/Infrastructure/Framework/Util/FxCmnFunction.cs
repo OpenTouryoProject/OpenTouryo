@@ -187,7 +187,6 @@ namespace Touryo.Infrastructure.Framework.Util
                             // ControlHt.Add(ctrl.ID, ctrl);
                             // ControlHt[ctrl.ID] = ctrl;
                             FxCmnFunction.AddControlToDic(ctrl, controlHt); // 2011/02/12
-
                         }
                         else if (prefix == GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_LINK_BUTTON))
                         {
