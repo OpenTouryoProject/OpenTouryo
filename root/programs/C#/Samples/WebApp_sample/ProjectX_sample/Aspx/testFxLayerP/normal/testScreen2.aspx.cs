@@ -529,7 +529,7 @@ public partial class Aspx_testFxLayerP_normal_testScreen2 : MyBaseController
     {
         this.ShowOKMessageDialog(
             "親画面別セッション（キー：msg）は、",
-            "You changed text to"+" "+txtTextBox2.Text,
+            "You changed text to" + " " + txtTextBox2.Text,
             FxEnum.IconType.Information, "テスト結果");
     }
 

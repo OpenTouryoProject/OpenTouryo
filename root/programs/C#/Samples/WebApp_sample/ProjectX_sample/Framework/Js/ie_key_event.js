@@ -234,29 +234,11 @@ function Fx_OnKeyDown() {
     // -----------------------------------------------------------
 
     // Enter(13)によるサブミットを抑止
-
     if ((event.keyCode == 13) &&
         !(event.srcElement.type == "submit"
          || event.srcElement.type == "textarea")
         ) {
-        // enterの場合 (submitボタンやtextarea領域以外)
-        if (event.srcElement.attributes.cansubmitbyenter.value == null || event.srcElement.attributes.cansubmitbyenter.value == undefined || event.srcElement.attributes.cansubmitbyenter == undefined) {
-            // cansubmitbyenter属性が定義されていない場合、enter不許可
-            return false;
-        }
-        else {
-            // cansubmitbyenter属性が定義されている場合
-            if (event.srcElement.attributes.cansubmitbyenter.value == "true") {
-                // cansubmitbyenter属性がtrueの場合は、enter許可(TextBoxの場合submit)。
-            }
-            else {
-                // cansubmitbyenter属性がfalseの場合は、enter不許可。
-                return false;
-            }
-        }
-    }
-    else {
-        // enterの場合もsubmitボタンやtextarea領域はenter許可
+        return false;
     }
 
     // BackSpace(8)による、戻る操作を無効化（テキスト編集中は押下可能にする）
