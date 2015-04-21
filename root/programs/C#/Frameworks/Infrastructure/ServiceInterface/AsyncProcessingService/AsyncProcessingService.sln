@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncProcessingService", "AsyncProcessingService.csproj", "{B2192500-D4B8-40B4-9AA5-4AB37875923E}"
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncProcessingService", "AsyncProcessingService.csproj", "{25FA6E4B-0061-4F7E-A698-49DC22904B22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,9 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B2192500-D4B8-40B4-9AA5-4AB37875923E}.Debug|x86.ActiveCfg = Debug|x86
-		{B2192500-D4B8-40B4-9AA5-4AB37875923E}.Debug|x86.Build.0 = Debug|x86
-		{B2192500-D4B8-40B4-9AA5-4AB37875923E}.Release|x86.ActiveCfg = Release|x86
-		{B2192500-D4B8-40B4-9AA5-4AB37875923E}.Release|x86.Build.0 = Release|x86
+		{25FA6E4B-0061-4F7E-A698-49DC22904B22}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{25FA6E4B-0061-4F7E-A698-49DC22904B22}.Debug|x86.Build.0 = Debug|Any CPU
+		{25FA6E4B-0061-4F7E-A698-49DC22904B22}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

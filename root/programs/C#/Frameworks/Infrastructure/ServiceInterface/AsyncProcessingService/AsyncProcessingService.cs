@@ -33,7 +33,13 @@
 //*  02/24/2015   Supragyan      Created main thread inside OnStart method.
 //*  02/24/2015   Supragyan      Created MainThreadInvoke method for implementing main thread and worker thread functionality.
 //*  02/26/2015   Supragyan      Modified code in Invoke controller. 
+//*  03/04/2015   Sai            Modifed the code as per the review comments given by Niahino-san on 03/3/2015.  
+//*  03/16/2015   Sai            Modifed the code as per the change request given by Niahino-san on 03/9/2015.   
+//*  03/20/2015   Sai            Added lock mechanism while selecting task from database and change resquests.
+//*  03/26/2015   Sai            Did Nihsini-san review comment changes as on 25-Mar-2015.
+//*  04/13/2015   Sandeep        Did Nihsini-san review comment changes as on 04-Apr-2015.
 //**********************************************************************************
+
 // System
 using System;
 using System.Data;
@@ -47,32 +53,63 @@ using System.Configuration;
 using Touryo.Infrastructure.Business.Util;
 
 //部品
-
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Log;
+using Touryo.Infrastructure.Public.Util;
 
 //Framework
 using Touryo.Infrastructure.Framework.Transmission;
 using Touryo.Infrastructure.Framework.Common;
-
-//AsyncSvc_sample
-using AsyncSvc_sample;
+using Touryo.Infrastructure.Framework.Util;
 
 //AsyncProcessingService
 using AsyncProcessingService;
 
 namespace Touryo.Infrastructure.Framework.AsyncProcessingService
 {
-    /// <summary>
-    /// Asynchronous Processing Service class for windows service
-    /// </summary>
+    /// <summary>Method names to update asynchronous task</summary>
+    public class AsyncTaskUpdate
+    {
+        /// <summary>Update start</summary>
+        public const string START = "UpdateTaskStart";
+
+        /// <summary>Update retry</summary>
+        public const string RETRY = "UpdateTaskRetry";
+
+        /// <summary>Update fail</summary>
+        public const string FAIL = "UpdateTaskFail";
+
+        /// <summary>Update success</summary>
+        public const string SUCCESS = "UpdateTaskSuccess";
+    }
+
+    /// <summary>Asynchronous Processing Service class for windows service</summary>
     public class AsyncProcessingService : System.ServiceProcess.ServiceBase
     {
-        private Thread _mainthread = null;
-        private Thread _workerThread = null;
-        int _threadCount = 0;
-        AsyncProcessingServiceParameterValue _asyncParameterValue;
-        AsyncProcessingServiceParameterValue _asyncData;
+        #region Member variables
+
+        /// <summary>Main thread</summary>
+        private Thread _mainThread;
+
+        /// <summary>Infinite loop flag (thread-safe)</summary>
+        private volatile bool _infiniteLoop = true;
+
+        // <summary>Maximum thread count (thread-safe)</summary>
+        private volatile int _maxThreadCount = 0;
+
+        // <summary>Number of seconds the thread must wait (thread-safe)</summary>
+        private volatile int _numberOfSeconds = 0;
+
+        // <summary>Maximum number of retries (thread-safe)</summary>
+        private volatile int _maxNumberOfRetries = 0;
+
+        // <summary>Maximum number of hours (thread-safe)</summary>
+        private volatile int _maxNumberOfHours = 0;
+
+        #endregion
+
+        #region Constructor
 
         /// <summary>
         /// Async Processing Service constructor to set property.
@@ -88,6 +125,10 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
             //Sets AutoLog property to true for enable all log files in service
             this.AutoLog = true;
         }
+
+        #endregion
+
+        #region Service Methods
 
         /// <summary>
         /// Main method to run service.
@@ -109,6 +150,10 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
             this.ServiceName = "AsyncProcessingService";
         }
 
+        #endregion
+
+        #region Service Events
+
         #region OnStart
 
         /// <summary>
@@ -116,174 +161,19 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// </summary>
         protected override void OnStart(string[] args)
         {
-            _asyncData = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "OnStart", "OnStart", "SQL",
-                                                                  new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
-            //Selects serialized data from user program
-            _asyncData.Data = args[0];
+            // Set initial values
+            this._infiniteLoop = true;
 
-            //Starts main thread invocation.
-            _mainthread = new Thread(MainThreadInvoke);
-            _mainthread.Start();
-        }
+            // Set initial values from .config file
+            this.SetFromConfig();
 
-        #endregion
+            // Thread pool initialization with maxium and minimum threads. 
+            ThreadPool.SetMinThreads(1, 0);
+            ThreadPool.SetMaxThreads(_maxThreadCount, 0);
 
-        #region MainThreadInvoke
-
-        /// <summary>
-        /// calling main thread
-        /// </summary>
-        public void MainThreadInvoke()
-        {
-            _asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "Select", "Select", "SQL",
-                                                                            new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
-
-            AsyncProcessingService.LayerB myBusiness = new AsyncProcessingService.LayerB();
-            AsyncProcessingServiceReturnValue asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic(
-                                                                 (BaseParameterValue)_asyncParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
-
-            _asyncParameterValue = (AsyncProcessingServiceParameterValue)asyncReturnValue.Obj;
-
-            //Sets MaxThreads in ThreadPool.
-            bool SetMaxThreadsResult = ThreadPool.SetMaxThreads(10, 10);
-
-            //Main thread assigned task to worker thread in threadpool
-            ThreadStart threadStart = new ThreadStart(() => StartByThreadPool(_asyncParameterValue));
-            _workerThread = new Thread(threadStart);
-            _workerThread.Start();
-
-            //Update in mainthread
-            _asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "Update", "Update", "SQL",
-                                                                            new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
-
-            DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
-
-            asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)_asyncParameterValue, iso);
-        }
-
-        #endregion
-
-        #region StartByThreadPool
-
-        /// <summary>
-        /// Calls callback method using Threadpool worker item.
-        /// </summary>
-        /// <param name="_asyncParameterValue"></param>
-        /// <returns></returns>
-        public bool StartByThreadPool(AsyncProcessingServiceParameterValue _asyncParameterValue)
-        {
-            ThreadPool.QueueUserWorkItem(new WaitCallback(InvokeController), (object)_asyncParameterValue.ProcessName);
-            return true;
-        }
-
-        #endregion
-
-        #region InvokeController
-
-        /// <summary>
-        /// Updates using LayerB through callcontroller class
-        /// </summary>
-        /// <param name="_asyncParameterValue"></param>
-        private void InvokeController(object _asyncParameterValue)
-        {
-            AsyncProcessingServiceReturnValue asyncReturnValue;
-            object deserializeDatas = DeserializeFromBase64(_asyncData.Data);
-            string[] strDatas = deserializeDatas.ToString().Split('/');
-
-            _asyncData.UserId = strDatas.GetValue(0).ToString();
-            _asyncData.RegistrationDateTime = Convert.ToDateTime(strDatas.GetValue(2));
-            _asyncData.ExecutionStartDateTime = Convert.ToDateTime(strDatas.GetValue(3));
-            _asyncData.NumberOfRetries = Convert.ToInt32(strDatas.GetValue(4));
-            _asyncData.CompletionDateTime = Convert.ToDateTime(strDatas.GetValue(5));
-            string[] strReservedArea = strDatas.GetValue(6).ToString().Split('-');
-            _asyncData.ReservedArea = strReservedArea.GetValue(0) + " " + strReservedArea.GetValue(1);
-
-            // InProcess Call using CallController for updating service in database
-            CallController callController = new CallController(this._asyncParameterValue.User);
-            asyncReturnValue = (AsyncProcessingServiceReturnValue)callController.Invoke(_asyncParameterValue.ToString(), _asyncData);
-
-            int maxThreadCount
-                = int.Parse(ConfigurationManager.AppSettings.Get("FxMaxThreadCount").ToString());
-
-            _asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "UpdateStatus", "UpdateStatus", "SQL",
-                                                                            new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
-            if (Convert.ToInt32(asyncReturnValue.Obj) == 1)
-            {
-                //Update in worker thread
-                this._asyncParameterValue.UserId = _asyncData.UserId;
-                this._asyncParameterValue.ProgressRate = 100;
-                this._asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.End;
-                this._asyncParameterValue.NumberOfRetries = 0;
-
-                AsyncProcessingService.LayerB myBusiness = new AsyncProcessingService.LayerB();
-
-                DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
-
-                asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)_asyncParameterValue, iso);
-            }
-            else
-            {
-                this._asyncParameterValue.UserId = _asyncData.UserId;
-                this._asyncParameterValue.ProgressRate = 0;
-                this._asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.AbnormalEnd;
-                this._asyncParameterValue.NumberOfRetries += 1;
-                _threadCount++;
-                AsyncSvc_sample.LayerB myBusiness = new AsyncSvc_sample.LayerB();
-
-                DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
-
-                asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)_asyncParameterValue, iso);
-
-            }
-            //Checks if threadcount greater than maxthreadcount sets in config file 
-            //then service status will be inserted or updated as Abort
-            if (_threadCount >= maxThreadCount)
-            {
-                this._asyncParameterValue.UserId = _asyncData.UserId;
-                this._asyncParameterValue.ProgressRate = 0;
-                this._asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.Abort;
-
-                AsyncProcessingService.LayerB myBusiness = new AsyncProcessingService.LayerB();
-
-                DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
-
-                asyncReturnValue = (AsyncProcessingServiceReturnValue)myBusiness.DoBusinessLogic((AsyncProcessingServiceParameterValue)_asyncParameterValue, iso);
-            }
-        }
-
-        #endregion
-
-        #region DeserializeFromBase64
-
-        /// <summary>
-        /// Converts string data to byte array and byte array data to object.
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public object DeserializeFromBase64(string str)
-        {
-            byte[] deserializeDatas = CustomEncode.FromBase64String(str);
-            object obj = ByteArrayToObject(deserializeDatas);
-            return obj;
-        }
-
-        #endregion
-
-        #region ByteArrayToObject
-
-        /// <summary>
-        /// Converts byte array to object data
-        /// </summary>
-        /// <param name="deserializeDatas"></param>
-        /// <returns></returns>
-        private Object ByteArrayToObject(byte[] deserializeDatas)
-        {
-            MemoryStream memStream = new MemoryStream();
-            BinaryFormatter binForm = new BinaryFormatter();
-            memStream.Write(deserializeDatas, 0, deserializeDatas.Length);
-            memStream.Seek(0, SeekOrigin.Begin);
-            Object obj = (Object)binForm.Deserialize(memStream);
-            return obj;
+            // Starts main thread invocation.
+            _mainThread = new Thread(MainThreadInvoke);
+            _mainThread.Start();
         }
 
         #endregion
@@ -295,8 +185,9 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// </summary>
         protected override void OnStop()
         {
-            _workerThread.Abort();
-            _mainthread.Abort();
+            // Stop the process of asynchronous service and Waits to complete all worker thread to complete.
+            this.StopAsyncProcess();
+            LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0007"));
         }
 
         #endregion
@@ -304,12 +195,13 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         #region OnPause
 
         /// <summary>
-        /// Pause this service with main thread and worker thread..
+        /// Pause this service with main thread and worker thread.
         /// </summary>
         protected override void OnPause()
         {
-            _workerThread.Abort();
-            _mainthread.Abort();
+            // Stop the process of asynchronous service and Waits to complete all worker thread to complete.
+            this.StopAsyncProcess();
+            LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0008"));
         }
 
         #endregion
@@ -321,12 +213,326 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// </summary>
         protected override void OnShutdown()
         {
-            _workerThread.Abort();
-            _mainthread.Abort();
+            // Stop the process of asynchronous service and Waits to complete all worker thread to complete.
+            this.StopAsyncProcess();
+            LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0009"));
         }
 
         #endregion
+
+        #endregion
+
+        #region Thread method
+
+        #region MainThreadInvoke
+
+        /// <summary>
+        ///  Maintains the Main thread of the Asynchronous Service
+        /// </summary>
+        public void MainThreadInvoke()
+        {
+            // Asynchronous service is started
+            LogIF.InfoLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("I0001"));
+
+            // Infinte loop processing for selecting register task.
+            while (this._infiniteLoop)
+            {
+                try
+                {
+                    // Get asynchronous task from the database.
+                    AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "SelectTask", "SelectTask", "SQL",
+                                                                                            new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
+                    asyncParameterValue.RegistrationDateTime = DateTime.Now - new TimeSpan(_maxNumberOfHours, 0, 0);
+                    asyncParameterValue.NumberOfRetries = this._maxNumberOfRetries;
+                    asyncParameterValue.CompletionDateTime = DateTime.Now - new TimeSpan(_maxNumberOfHours, 0, 0);
+                    LayerB layerB = new LayerB();
+                    AsyncProcessingServiceReturnValue selectedAsyncTask = (AsyncProcessingServiceReturnValue)layerB.DoBusinessLogic(
+                                                                              (BaseParameterValue)asyncParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
+
+                    // Existence check of asynchronous task
+                    if (string.IsNullOrEmpty(selectedAsyncTask.UserId))
+                    {
+                        // Asynchronous task does not exist.  
+
+                        // Wait for the asynchronous task to be registered in the database.
+                        Thread.Sleep(this._numberOfSeconds * 1000);
+
+                        // Continue to this infinite loop.
+                        continue;
+                    }
+                    // Asynchronous task exists.
+
+                    // Check the number of free worker threads.
+                    int freeWorkerThreads = 0;
+                    int completionPortThreads = 0;
+
+                    // Gets the available threads.
+                    ThreadPool.GetAvailableThreads(out freeWorkerThreads, out completionPortThreads);
+
+                    while (freeWorkerThreads == 0)
+                    {
+                        // Wait for the completion of the worker thread.
+                        Thread.Sleep(this._numberOfSeconds * 1000);
+
+                        // Get available threads.
+                        ThreadPool.GetAvailableThreads(out freeWorkerThreads, out completionPortThreads);
+                    }
+
+                    // Selected asynchronous task is assigned to a worker thread
+                    this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.START);
+                    LogIF.InfoLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("I0002"), selectedAsyncTask.TaskId));
+
+                    // Assign the task to the worker thread
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(this.WorkerThreadCallBack), (object)selectedAsyncTask);
+                }
+                catch (Exception ex)
+                {
+                    // Service Failed due to unexpected exception.
+                    this.StopAsyncProcess();
+                    LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0000"), ex.Message.ToString()));
+                }
+            }
+        }
+
+        #endregion
+
+        #region WorkerThreadCallBack
+
+        /// <summary>
+        ///  Maintains the single worker thread functionalities. 
+        /// </summary>
+        /// <param name="asyncTask">Selected Asynchronous Task</param>
+        private void WorkerThreadCallBack(object asyncTask)
+        {
+            AsyncProcessingServiceReturnValue selectedAsyncTask = (AsyncProcessingServiceReturnValue)asyncTask;
+
+            try
+            {
+                // Call User Program to execute by using communication control function
+                AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "StartCopyFromBlob", "StartCopyFromBlob", "SQL",
+                                                                                        new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
+                asyncParameterValue.Data = selectedAsyncTask.Data;
+                CallController callController = new CallController(asyncParameterValue.User);
+                AsyncProcessingServiceReturnValue asyncReturnValue = (AsyncProcessingServiceReturnValue)callController.Invoke(selectedAsyncTask.ProcessName, asyncParameterValue);
+
+                if (asyncReturnValue.ErrorFlag == true)
+                {
+                    selectedAsyncTask.NumberOfRetries += 1;
+
+                    if (asyncReturnValue.ErrorMessageID == "APSStopCommand")
+                    {
+                        // Asynchronous task is stopped due to user 'stop' command.
+                        this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.FAIL);
+                        LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0001") + asyncReturnValue.ErrorMessage, selectedAsyncTask.TaskId));
+                    }
+                    else
+                    {
+                        // Exception occurred by other than BusinessApplicationException
+
+                        if (selectedAsyncTask.NumberOfRetries < this._maxNumberOfRetries)
+                        {
+                            // Asynchronous task does not exceeds the maximum number of retries
+                            // Updated as retry later
+                            this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.RETRY);
+                            LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0004"), selectedAsyncTask.TaskId));
+                        }
+                        else
+                        {
+                            // Asynchronous task exceeds maximum number of retries
+                            // Update task as abort
+                            this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.FAIL);
+                            LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0005"), selectedAsyncTask.TaskId));
+                        }
+                    }
+                }
+                else
+                {
+                    // Selected Asynchronous task is completed successfully.
+                    this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.SUCCESS);
+                    LogIF.InfoLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("I0002"), selectedAsyncTask.TaskId));
+                }
+            }
+            catch (Exception ex)
+            {
+                // Asynchronous task is aborted due to unexpected exception.
+                AsyncProcessingServiceReturnValue asyncReturnValue = this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.FAIL);
+                LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0006"), selectedAsyncTask.TaskId, ex.Message.ToString()));
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Other method
+
+        #region SetFromConfig
+
+        /// <summary>
+        /// Sets all intial values to member variables from the .config file
+        /// </summary>
+        public void SetFromConfig()
+        {
+            try
+            {
+                // Get maximum thread count from .config file
+                string maxThreadCount = GetConfigParameter.GetConfigValue("FxMaxThreadCount");
+                if (string.IsNullOrEmpty(maxThreadCount))
+                {
+                    // Set default
+                    _maxThreadCount = 10;
+                }
+                else
+                {
+                    _maxThreadCount = int.Parse(maxThreadCount);
+                }
+
+                // Get number of seconds from .config file
+                string numberOfSeconds = GetConfigParameter.GetConfigValue("FxMaxThreadCount");
+                if (string.IsNullOrEmpty(numberOfSeconds))
+                {
+                    // Set default
+                    _numberOfSeconds = 1;
+                }
+                else
+                {
+                    _numberOfSeconds = int.Parse(numberOfSeconds);
+                }
+
+                // Get maximum number of retries from .config file
+                string maxNumberOfRetries = GetConfigParameter.GetConfigValue("FxMaxNumberOfRetries");
+                if (string.IsNullOrEmpty(maxNumberOfRetries))
+                {
+                    // Set default
+                    _maxNumberOfRetries = 10;
+                }
+                else
+                {
+                    _maxNumberOfRetries = int.Parse(maxNumberOfRetries);
+                }
+
+                // Get maximum number of hours from .config file
+                string maxNumberOfHours = GetConfigParameter.GetConfigValue("FxMaxNumberOfHours");
+                if (string.IsNullOrEmpty(maxNumberOfHours))
+                {
+                    // Set default
+                    _maxNumberOfHours = 24;
+                }
+                else
+                {
+                    // Get maximum number of hours from .config file
+                    _maxNumberOfHours = int.Parse(maxNumberOfHours);
+                }
+            }
+            catch 
+            {
+                // Error while setting from config
+                LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0010"));
+                throw new Exception();
+            }
+        }
+
+        #endregion
+
+        #region UpdateAsyncTask
+
+        /// <summary>
+        ///  Updates the selected asynchronous task based type of SQL_Update_Method_name
+        /// </summary>
+        /// <param name="selectedAsyncTask">Selected Asynchronous Task</param>
+        /// <param name="updateTask">SQL_Update_Method_name</param>
+        /// <returns></returns>
+        public AsyncProcessingServiceReturnValue UpdateAsyncTask(AsyncProcessingServiceReturnValue selectedAsyncTask, string updateTask)
+        {
+            AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", updateTask, updateTask, "SQL",
+                                                                                        new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
+            asyncParameterValue.TaskId = selectedAsyncTask.TaskId;
+
+            // Update databse based on task
+            switch (updateTask)
+            {
+                case AsyncTaskUpdate.START:
+                    asyncParameterValue.ExecutionStartDateTime = DateTime.Now;
+                    asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.Processing;
+                    break;
+                case AsyncTaskUpdate.RETRY:
+                    asyncParameterValue.NumberOfRetries = selectedAsyncTask.NumberOfRetries + 1;
+                    asyncParameterValue.CompletionDateTime = DateTime.Now;
+                    asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.AbnormalEnd;
+                    break;
+                case AsyncTaskUpdate.FAIL:
+                    asyncParameterValue.CompletionDateTime = DateTime.Now;
+                    asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.Abort;
+                    break;
+                case AsyncTaskUpdate.SUCCESS:
+                    asyncParameterValue.CompletionDateTime = DateTime.Now;
+                    asyncParameterValue.ProgressRate = 100;
+                    asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.End;
+                    break;
+            }
+            LayerB layerB = new LayerB();
+            AsyncProcessingServiceReturnValue asyncReturnValue = (AsyncProcessingServiceReturnValue)layerB.DoBusinessLogic(
+                                                                      (BaseParameterValue)asyncParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
+            return asyncReturnValue;
+        }
+
+        #endregion
+
+        #region DeserializeFromBase64
+
+        /// <summary>
+        /// Converts string data to byte array and byte array data to object.
+        /// </summary>
+        /// <param name="strBase64">Base64 String</param>
+        /// <returns>Deserialized Object</returns>
+        public object DeserializeFromBase64(string strBase64)
+        {
+            byte[] deserializeData = null;
+            MemoryStream memStream = new MemoryStream();
+            BinaryFormatter binForm = new BinaryFormatter();
+
+            deserializeData = CustomEncode.FromBase64String(strBase64);
+            memStream.Write(deserializeData, 0, deserializeData.Length);
+            memStream.Seek(0, SeekOrigin.Begin);
+            object obj = (object)binForm.Deserialize(memStream);
+
+            return obj;
+        }
+
+        #endregion
+
+        #region StopAsyncProcess
+
+        /// <summary>
+        ///  Stop the asynchronous service and Waits to complete all worker thread to complete.
+        /// </summary>
+        public void StopAsyncProcess()
+        {
+            // Breaks the infinite loop of Main thread.
+            this._infiniteLoop = false;
+
+            // Wait the end of the main thread.
+            this._mainThread.Join();
+
+            // Check the number of free worker threads.
+            int freeWorkerThreads = 0;
+            int completionPortThreads = 0;
+
+            // Get available threads.
+            ThreadPool.GetAvailableThreads(out freeWorkerThreads, out completionPortThreads);
+
+            while (freeWorkerThreads != this._maxThreadCount)
+            {
+                // Wait for the completion of the worker thread.
+                Thread.Sleep(this._numberOfSeconds * 1000);
+
+                // Get available threads.
+                ThreadPool.GetAvailableThreads(out freeWorkerThreads, out completionPortThreads);
+            }
+        }
+
+        #endregion
+
+        #endregion
     }
-
 }
-
