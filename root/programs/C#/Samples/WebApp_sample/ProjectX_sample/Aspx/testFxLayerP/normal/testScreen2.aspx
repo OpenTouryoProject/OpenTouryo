@@ -121,6 +121,7 @@
                 クライアントからの業務モードレス画面起動<br />
                 デフォルトのスタイル、空のターゲット<br />
                 <cc1:WebCustomButton ID="btnButton9" runat="server" Text="QueryString無し" Width="220px" /><br />
+
                 空のスタイル、空のターゲット<br />
                 <cc1:WebCustomButton ID="btnButton10" runat="server" Text="QueryString有り" Width="220px" /><br />
                 空のスタイル、ターゲット（t）<br />
