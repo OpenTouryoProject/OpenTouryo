@@ -14,11 +14,11 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2015/03/05  Supragyan         Created JSONService for invoking Product table data.
 //*  2015/03/20  Sai               Modified method 'GetProductData()' return type to Json string 
-//*                                and added paging parameters      
+//*                                and added paging parameters   
+//*  2015/04/23  Supragyan         Modified startIndex and maximumRows in method 'GetProductData()'    
 //**********************************************************************************
 
 //System
-using System;
 using System.Data;
 using System.Web;
 using System.Collections.Specialized;
@@ -54,11 +54,11 @@ public class JSONService : IJSONService
         HttpContext.Current.Session["SortDirection"] = queryStrings["sord"];
         string currentPage = queryStrings["page"];
         string rows = queryStrings["rows"];
-        int startIndex = int.Parse(currentPage);
-        int maximumRows = int.Parse(rows);
+        int startIndex = (int.Parse(currentPage) - 1) * int.Parse(rows);
+        int maximumRows = int.Parse(rows) - 1;
 
         ProductsTableAdapter productTableAdapter = new ProductsTableAdapter();
-        DataTable productTableData = productTableAdapter.SelectMethod(startIndex - 1, maximumRows);
+        DataTable productTableData = productTableAdapter.SelectMethod(startIndex, maximumRows);
         int totalCount = productTableAdapter.SelectCountMethod();
 
         // Calling SavejqGridJson
@@ -75,4 +75,6 @@ public class JSONService : IJSONService
         return WebOperationContext.Current.CreateTextResponse(jsonData, "application/json; charset=utf-8", Encoding.UTF8);
     }
 }
+
+
 

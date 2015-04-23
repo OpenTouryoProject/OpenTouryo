@@ -36,16 +36,13 @@
 //*                                    ・ConvertDTTypeToType、ConvertTypeToDTType
 //*  2011/10/09  西野  大介        国際化対応
 //*  2015/03/05  Supragyan        Created  SavejqGridJson method for saving datatable data to JQGrid.
+//*  2015/04/23  Supragyan        Modified SavejqGridJson method for saving datatable data to JQGrid.
 //**********************************************************************************
-
+//system
 using System;
-using System.Collections;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
-using System.Collections.Specialized;
-using System.Web;
 
 namespace Touryo.Infrastructure.Public.Dto
 {
@@ -409,29 +406,22 @@ namespace Touryo.Infrastructure.Public.Dto
         /// </summary>
         /// <param name="productData"></param>
         /// <returns></returns>
-        public JQGridDataClass SavejqGridJson(DataTable productData, int totalCount, string page, string rows)
+        public JQGridDataClass SavejqGridJson(DataTable data, int totalCount, string page, string rows)
         {
             int intRows = Math.Min(int.Parse(rows), totalCount);
             int intPage = int.Parse(page);
 
             // jqGrid に渡すデータを格納
-            JQGridDataClass data = new JQGridDataClass();
-            data.page = page;
-            data.total = (int)Math.Ceiling((double)productData.Rows.Count / (double)intRows);
-            data.records = totalCount;
-
-            // ソート
-            DataRow[] dataRows;
-            dataRows = productData.Select();
+            JQGridDataClass jqGridData = new JQGridDataClass();
+            jqGridData.page = page;
+            jqGridData.total = (int)Math.Ceiling((double)totalCount / (double)intRows);
 
             // jqGrid の各セルに表示するデータを格納
-            data.rows = new List<JQGridDataRowClass>();
+            jqGridData.rows = new List<JQGridDataRowClass>();
             for (int rIndex = 0; rIndex < intRows; rIndex++)
             {
-                // ページなどを考慮し、DataTable から取得する行インデックスを取得
-                int actualRowIndex = ((intPage - 1) * intRows) + rIndex;
-
-                if ((actualRowIndex + 1) > dataRows.Length)
+                // ページなどを考慮し、DataTable から取得する行インデックスを取得           
+                if ((rIndex + 1) > data.Rows.Count)
                 {
                     // 行インデックスが、実際の行数を超えた場合は、ループを抜ける
                     // (最終ページの行数が端数の場合)
@@ -440,19 +430,18 @@ namespace Touryo.Infrastructure.Public.Dto
 
                 // jqGrid に表示する、1 行分のデータを格納
                 JQGridDataRowClass subData = new JQGridDataRowClass();
-                subData.id = dataRows[actualRowIndex][0].ToString();
+                subData.id = data.Rows[rIndex][0].ToString();
                 subData.cell = new List<string>();
 
-                for (int cIndex = 0; cIndex < productData.Columns.Count; cIndex++)
+                for (int cIndex = 0; cIndex < data.Columns.Count; cIndex++)
                 {
                     // 列のデータを、DataTable から取得
-                    subData.cell.Add(dataRows[actualRowIndex][cIndex].ToString());
+                    subData.cell.Add(data.Rows[rIndex][cIndex].ToString());
                 }
-                data.rows.Add(subData);
+                jqGridData.rows.Add(subData);
             }
-
             // jqGrid にデータを返す
-            return data;
+            return jqGridData;
         }
 
         /// <summary>
@@ -469,11 +458,6 @@ namespace Touryo.Infrastructure.Public.Dto
             /// クエリの総ページ数
             /// </summary>
             public int total;
-
-            /// <summary>
-            /// クエリに対するレコードの総数
-            /// </summary>
-            public int records;
 
             /// <summary>
             /// 実際のデータを含むリスト
