@@ -38,6 +38,7 @@
 //*  03/20/2015   Sai            Added lock mechanism while selecting task from database and change resquests.
 //*  03/26/2015   Sai            Did Nihsini-san review comment changes as on 25-Mar-2015.
 //*  04/13/2015   Sandeep        Did Nihsini-san review comment changes as on 04-Apr-2015.
+//*  04/21/2015   Sandeep        Did code changes to break the main thread when service failed(i.e. unexpected exceptions)
 //**********************************************************************************
 
 // System
@@ -169,10 +170,10 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
 
             // Thread pool initialization with maxium and minimum threads. 
             ThreadPool.SetMinThreads(1, 0);
-            ThreadPool.SetMaxThreads(_maxThreadCount, 0);
+            ThreadPool.SetMaxThreads(this._maxThreadCount, 0);
 
             // Starts main thread invocation.
-            _mainThread = new Thread(MainThreadInvoke);
+            _mainThread = new Thread(new ThreadStart(MainThreadInvoke));
             _mainThread.Start();
         }
 
@@ -186,8 +187,8 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         protected override void OnStop()
         {
             // Stop the process of asynchronous service and Waits to complete all worker thread to complete.
-            this.StopAsyncProcess();
             LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0007"));
+            this.StopAsyncProcess();            
         }
 
         #endregion
@@ -200,8 +201,8 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         protected override void OnPause()
         {
             // Stop the process of asynchronous service and Waits to complete all worker thread to complete.
-            this.StopAsyncProcess();
             LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0008"));
+            this.StopAsyncProcess();            
         }
 
         #endregion
@@ -214,8 +215,8 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         protected override void OnShutdown()
         {
             // Stop the process of asynchronous service and Waits to complete all worker thread to complete.
-            this.StopAsyncProcess();
             LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0009"));
+            this.StopAsyncProcess();            
         }
 
         #endregion
@@ -288,7 +289,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                 catch (Exception ex)
                 {
                     // Service Failed due to unexpected exception.
-                    this.StopAsyncProcess();
+                    this._infiniteLoop = false;
                     LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0000"), ex.Message.ToString()));
                 }
             }
@@ -349,7 +350,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                 {
                     // Selected Asynchronous task is completed successfully.
                     this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.SUCCESS);
-                    LogIF.InfoLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("I0002"), selectedAsyncTask.TaskId));
+                    LogIF.InfoLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("I0003"), selectedAsyncTask.TaskId));
                 }
             }
             catch (Exception ex)
