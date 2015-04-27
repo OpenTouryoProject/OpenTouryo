@@ -33,7 +33,7 @@
 //*  02/24/2015   Supragyan      Created main thread inside OnStart method.
 //*  02/24/2015   Supragyan      Created MainThreadInvoke method for implementing main thread and worker thread functionality.
 //*  02/26/2015   Supragyan      Modified code in Invoke controller. 
-//*  03/04/2015   Sai            Modifed the code as per the review comments given by Niahino-san on 03/3/2015.  
+//*  03/04/2015   Sai            Modifed the code as per the review comments given by Niahino-san on 03/3/2015.
 //*  03/16/2015   Sai            Modifed the code as per the change request given by Niahino-san on 03/9/2015.   
 //*  03/20/2015   Sai            Added lock mechanism while selecting task from database and change resquests.
 //*  03/26/2015   Sai            Did Nihsini-san review comment changes as on 25-Mar-2015.
@@ -188,7 +188,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         {
             // Stop the process of asynchronous service and Waits to complete all worker thread to complete.
             LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0007"));
-            this.StopAsyncProcess();            
+            this.StopAsyncProcess();
         }
 
         #endregion
@@ -202,7 +202,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         {
             // Stop the process of asynchronous service and Waits to complete all worker thread to complete.
             LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0008"));
-            this.StopAsyncProcess();            
+            this.StopAsyncProcess();
         }
 
         #endregion
@@ -216,7 +216,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         {
             // Stop the process of asynchronous service and Waits to complete all worker thread to complete.
             LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0009"));
-            this.StopAsyncProcess();            
+            this.StopAsyncProcess();
         }
 
         #endregion
@@ -312,6 +312,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                 // Call User Program to execute by using communication control function
                 AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "StartCopyFromBlob", "StartCopyFromBlob", "SQL",
                                                                                         new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
+                asyncParameterValue.TaskId = selectedAsyncTask.TaskId;
                 asyncParameterValue.Data = selectedAsyncTask.Data;
                 CallController callController = new CallController(asyncParameterValue.User);
                 AsyncProcessingServiceReturnValue asyncReturnValue = (AsyncProcessingServiceReturnValue)callController.Invoke(selectedAsyncTask.ProcessName, asyncParameterValue);
@@ -323,7 +324,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                     if (asyncReturnValue.ErrorMessageID == "APSStopCommand")
                     {
                         // Asynchronous task is stopped due to user 'stop' command.
-                        this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.FAIL);
+                        this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.RETRY);
                         LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0001") + asyncReturnValue.ErrorMessage, selectedAsyncTask.TaskId));
                     }
                     else
@@ -425,7 +426,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                     _maxNumberOfHours = int.Parse(maxNumberOfHours);
                 }
             }
-            catch 
+            catch
             {
                 // Error while setting from config
                 LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0010"));
