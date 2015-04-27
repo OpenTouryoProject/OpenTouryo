@@ -39,10 +39,10 @@ using System.Text;
 //業務フレームワーク
 using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Business.Util;
+using System.Reflection;
 
 namespace AsyncProcessingService
 {
-
     /// <summary>
     /// Paramter Value class for Asynchronous Processing Service
     /// </summary>
@@ -105,10 +105,19 @@ namespace AsyncProcessingService
         /// </summary>
         public enum AsyncStatus
         {
+            [StringValue("Register")]
             Register = 1,
+
+            [StringValue("Processing")]
             Processing,
+
+            [StringValue("End")]
             End,
+
+            [StringValue("AbnormalEnd")]
             AbnormalEnd,
+
+            [StringValue("Abort")]
             Abort,
         }
 
@@ -121,10 +130,59 @@ namespace AsyncProcessingService
         /// </summary>
         public enum AsyncCommand
         {
+            [StringValue("Stop")]
             Stop = 1,
+
+            [StringValue("Abort")]
             Abort,
         }
 
         #endregion
+    }
+
+    /// <summary>
+    ///  To get the string value
+    /// </summary>
+    public class StringValueAttribute : System.Attribute
+    {
+        private string _value;
+
+        public StringValueAttribute(string value)
+        {
+            _value = value;
+        }
+
+        public string Value
+        {
+            get { return _value; }
+        }
+    }
+
+    /// <summary>
+    ///  Class that holds the Enum values string
+    /// </summary>
+    public class StringEnum
+    {
+        /// <summary>
+        ///  To get the string value from Enum value
+        /// </summary>
+        /// <param name="value">Enum value</param>
+        /// <returns>String value of Enum</returns>
+        public static string GetStringValue(Enum value)
+        {
+            string output = null;
+            Type type = value.GetType();
+
+            // Gets the 'StringValueAttribute'
+            FieldInfo fi = type.GetField(value.ToString());
+            StringValueAttribute[] attrs =
+               fi.GetCustomAttributes(typeof(StringValueAttribute),
+                                       false) as StringValueAttribute[];
+            if (attrs.Length > 0)
+            {
+                output = attrs[0].Value;
+            }
+            return output;
+        }
     }
 }
