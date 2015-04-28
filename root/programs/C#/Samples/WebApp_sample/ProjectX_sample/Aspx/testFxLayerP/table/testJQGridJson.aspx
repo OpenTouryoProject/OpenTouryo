@@ -56,16 +56,16 @@
 
                 ],
                 pager: $('#pager'),
-                rowNum: 29,
+                rowNum: 30,
                 sortname: 'ProductID',
                 viewrecords: true,
                 sortorder: 'desc',
                 loadonce: false,
                 beforeProcessing: function (data, status, xhr) {  // レスポンスの受信時に呼び出されるイベント
                     // サーバからエラーが返ってきた場合にダイアログを表示し、以降の処理を中止する
-                    // エラー時には、サーバからuserdataに情報を格納する
-                    if (data.userdata == "error") {
-                        alert("最大ページ以上を指定しています");
+                    //Check current page number will not be greater than maximum page
+                    if ((data.page) > (data.total)) {
+                        alert("You will not specify a greater than value to the maximum page");
                         return false;
                     }
                 },
