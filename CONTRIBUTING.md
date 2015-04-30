@@ -91,7 +91,9 @@
   - 見えないチカラ A successful Git branching model を翻訳しました  
     http://keijinsonyaban.blogspot.jp/2010/10/successful-git-branching-model.html  
 
-###プルリクエストのサイズ(Size of the "pull request")
+###プルリクエストについて(About the "pull request")
+
+####プルリクエストのサイズ(Size of the "pull request")
   - プルリクエストのレビューのためにコミットとプルリクエストのサイズを小さくします。  
     (Reduce the size of the commit and "pull request" for review of the "pull request".)  
   
@@ -105,7 +107,7 @@
     (For this reason, I want you to create a Feature Branch for each task.  
     Then, ask the review to me by sending each time "pull request" from the Feature Branch.)  
   
-###プルリクエストを送る(Send a "pull request")
+####プルリクエストを送る(Send a "pull request")
   - Opentouryoリポジトリから各ユーザのリポジトリにForkします。  
     その後にdevelopブランチからfeatureブランチを作成し作業します。  
     (Fork to the repository for each user from OpenTouryo repository.  
@@ -113,18 +115,26 @@
 
   - プルリクエストはfeatureブランチからFork元のdevelopブランチに対して送信します。  
     (Send "pull request" to the develop branch of fork source from the feature branch.)  
-  
-  - もしFork元のdevelopブランチが変更されているようなら、pull 若しくはfetch & mergeをします。  
+
+  - もしFork元のdevelopブランチが変更されているようなら、featureブランチにpull 若しくはfetch & mergeをします。  
     (If "develop branch of fork source" was changed,  
-    then you should do pull operation or fetch & merge operation.)  
+    then you should do the "pull or fetch & merge" operation to the feature branch.)  
+
+####プルリクエストについての注意事項(Notes for "pull request")
+  - 古いコードを含む”プルリクエスト”をマージした後、コードがロールバックされていることがありました。このような問題が発生しないように、あなたは、次のようにfeatureブランチを最新の状態に維持します。  
+    (There is a case that the develop branch's code of OpenTouryo has been rollbacked by merging the "pull request" Including old code. As such problems will not occur, you will keep the feature branch to the latest status in the following way.)  
   
-  - 古いコードを含む”プルリクエスト”をマージした後、コードがロールバックされていることがありました。  
-    従って、”プルリクエスト”を送る前に、OpenTouryoのDevelop BranchをPull若しくはFetch＆Margeしてください。  
-    (There is a case that the develop branch's code of OpenTouryo has been rollbacked by merging the "pull request" Including old code. Therefor, Before sending a "pull request", please fetch & marge or Pull the develop branch of OpenTouryo.)  
-  
-  - Fetch＆Margeの代わりに再度Forkする方法もありますが、コメントや元のリポジトリにマージされていない変更は失われます。  
+    - ”プルリクエスト”を送る前に、OpenTouryoのdevelopブランチによって、あなたの開発ブランチをPull若しくはFetch＆Margeしてください。そして、あなたはあなたのdevelopブランチからfeatureブランチを再作成します。そして、あなたはfeatureブランチへの変更を反映します。その後、テストおよびプッシュし、”プルリクエスト”を送ります。  
+    (Before sending a "pull request",  Please fetch & marge or Pull the your develop branch by develop branch of OpenTouryo. Then, you re-create a feature branch from your develop branch. And you will reflect the changes to the feature branch. Thereafter, do the test and push and send "pull request".)
+
+    - Fetch＆Margeの代わりに再度Forkする方法もありますが、コメントや元のリポジトリにマージされていない変更は失われます。  
     (There is also a way to re-fork instead of Fetch & Marge, but comment and changes that have not been merge to original repository will be lost.)
-　
+
+- 間違った変更にプル要求を送信した後にプログラムをロールバックする場合、コミットログがロールバックによって汚染されることを防止するために、次の手順に従ってください。  
+    (In case of rollback the program after sending a pull request in the wrong modifications, Please follow the following steps in order to prevent that the commit log will be contaminated by rollback.)  
+    - あなたはあなたのdevelopブランチからfeatureブランチを再作成します。そして、あなたはfeatureブランチへの変更を反映します。その後、テストおよびプッシュし、”プルリクエスト”を送ります。  
+      You re-create a feature branch from your develop branch. And you will reflect the changes to the feature branch. Thereafter, do the test and push and send "pull request".
+
 ####参考(Reference)  
   - git fetchの理解からgit mergeとpullの役割 - Qiita  
     http://qiita.com/osamu1203/items/cb94ef9da02e1ec3e921
