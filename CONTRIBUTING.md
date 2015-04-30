@@ -97,7 +97,7 @@
   - プルリクエストのレビューのためにコミットとプルリクエストのサイズを小さくします。  
     (Reduce the size of the commit and "pull request" for review of the "pull request".)  
   
-  - １つの"プルリクエスト"の中に複数の問題やエンハンスのタスクが存在する場合、 
+  - １つの"プルリクエスト"の中に複数の問題やエンハンスのタスクが存在する場合、  
     １つの”プルリクエスト”に対してレビューを行うためレビューがボトルネックになります。  
     If multiple tasks of issue or enhance are present in the one "pull request",  
     The review becomes a bottleneck because carrying out a review to one "pull request".  
@@ -105,10 +105,10 @@
   - このため、あなたは問題やエンハンスのタスク毎にfeatureブランチを作成する必要があります。  
     その後、featureブランチから都度”プルリクエスト”を送って私にレビューを依頼して下さい。  
     (For this reason, You must create a feature branch for each task of issue or enhance.  
-    Then, ask the review to me by sending each time "pull request" from the feature branch.)  
+    Then, ask the review to me by sending each time "pull request" from the feature branch.)
 
   - なお、featureブランチに異なるタスクの修正を混ぜてはいけません。  
-    IDEやEditorによりインデントが変更されるような不要な修正もコミットしないで下さい。
+    IDEやEditorによりインデントが変更されるような不要な修正もコミットしないで下さい。  
     (It should be noted, do not mix the modification of different tasks to the feature branch.  
     Also, please do not commit unnecessary changes that indentation is changed by the IDE or editor.)
   
