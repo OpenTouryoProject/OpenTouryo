@@ -38,6 +38,7 @@
 '*  2014/12/10  西野　大介        Modified because there was a problem with the SELECT_PAGING_SQL_TEMPLATE_ORACLE.
 '*  2014/12/10  西野　大介        Implementations of the related check process has been changed for problem.
 '*                                Change the signature of the CRUD methods. "private" ---> "protected virtual"
+'*  2015/04/29  Sandeep          Modified the code of 'UOC_SelectMethod' to retrive 30 records instead of 31 records
 '**********************************************************************************
 
 ' レイトバインド用
@@ -366,13 +367,13 @@ Namespace Touryo.Infrastructure.Business.Business
 
 
 				selectPagingSQL = String.Format(selectPagingSqlTemplate, New String() {parameterValue.ColumnList, parameterValue.SortExpression, parameterValue.SortDirection, parameterValue.TableName, whereSQL, startRowNum.ToString(), _
-					(startRowNum + parameterValue.MaximumRows).ToString()}).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f).Replace("""", String.Empty)
+					(startRowNum + parameterValue.MaximumRows - 1).ToString()}).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f).Replace("""", String.Empty)
 			Else
 				' SQL本体の生成（いろいろ組み込み DB2
 				'（DBMSによって可変となる可能性有り）
 
 				selectPagingSQL = String.Format(selectPagingSqlTemplate, New String() {parameterValue.ColumnList, parameterValue.SortExpression, parameterValue.SortDirection, s & Convert.ToString(parameterValue.TableName) & e, whereSQL, startRowNum.ToString(), _
-					(startRowNum + parameterValue.MaximumRows).ToString()}).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f)
+					(startRowNum + parameterValue.MaximumRows - 1).ToString()}).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f)
 			End If
 			' DataTableをインスタンス化
 			If parameterValue.DataTableType Is Nothing Then
