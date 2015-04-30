@@ -102,10 +102,12 @@
     If multiple commits are present in the one "pull request",  
     The review becomes a bottleneck because carrying out a review to one "pull request".  
   
-  - このため、タスク毎にFeature Branchを作成して欲しいです。  
-    その後、Feature Branchから都度”プルリクエスト”を送って私にレビューを依頼して下さい。  
-    (For this reason, I want you to create a Feature Branch for each task.  
-    Then, ask the review to me by sending each time "pull request" from the Feature Branch.)  
+  - このため、あなたは問題やエンハンスのタスク毎にfeatureブランチを作成する必要があります。  
+    なお、featureブランチに異なるタスクの修正を混ぜてはいけません。  
+    その後、featureブランチから都度”プルリクエスト”を送って私にレビューを依頼して下さい。  
+    (For this reason, You must create a feature branch for each task of issue or enhance.  
+    It should be noted, do not mix the modification of different tasks to the feature branch.  
+    Then, ask the review to me by sending each time "pull request" from the feature branch.)  
   
 ####プルリクエストを送る(Send a "pull request")
   - Opentouryoリポジトリから各ユーザのリポジトリにForkします。  
@@ -133,7 +135,7 @@
 - 間違った変更にプル要求を送信した後にプログラムをロールバックする場合、コミットログがロールバックによって汚染されることを防止するために、次の手順に従ってください。  
     (In case of rollback the program after sending a pull request in the wrong modifications, Please follow the following steps in order to prevent that the commit log will be contaminated by rollback.)  
     - あなたはあなたのdevelopブランチからfeatureブランチを再作成します。そして、あなたはfeatureブランチへの変更を反映します。その後、テストおよびプッシュし、”プルリクエスト”を送ります。  
-      You re-create a feature branch from your develop branch. And you will reflect the changes to the feature branch. Thereafter, do the test and push and send "pull request".
+      (You re-create a feature branch from your develop branch. And you will reflect the changes to the feature branch. Thereafter, do the test and push and send "pull request".)
 
 ####参考(Reference)  
   - git fetchの理解からgit mergeとpullの役割 - Qiita  
