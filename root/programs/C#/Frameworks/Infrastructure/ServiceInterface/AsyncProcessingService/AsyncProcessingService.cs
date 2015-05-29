@@ -39,6 +39,8 @@
 //*  03/26/2015   Sai            Did Nihsini-san review comment changes as on 25-Mar-2015.
 //*  04/13/2015   Sandeep        Did Nihsini-san review comment changes as on 04-Apr-2015.
 //*  04/21/2015   Sandeep        Did code changes to break the main thread when service failed(i.e. unexpected exceptions)
+//*  05/28/2015   Sandeep        Did code changes to update exception information to database
+//*                              Did code changes to resolve OnStop event error 
 //**********************************************************************************
 
 // System
@@ -63,6 +65,7 @@ using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Framework.Transmission;
 using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Util;
+using Touryo.Infrastructure.Framework.Exceptions;
 
 //AsyncProcessingService
 using AsyncProcessingService;
@@ -170,7 +173,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
 
             // Thread pool initialization with maxium and minimum threads. 
             ThreadPool.SetMinThreads(1, 0);
-            ThreadPool.SetMaxThreads(this._maxThreadCount, 0);
+            ThreadPool.SetMaxThreads(this._maxThreadCount + 1, 0);
 
             // Starts main thread invocation.
             _mainThread = new Thread(new ThreadStart(MainThreadInvoke));
@@ -270,7 +273,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                     // Gets the available threads.
                     ThreadPool.GetAvailableThreads(out freeWorkerThreads, out completionPortThreads);
 
-                    while (freeWorkerThreads == 0)
+                    while ((freeWorkerThreads - 1) == 0)
                     {
                         // Wait for the completion of the worker thread.
                         Thread.Sleep(this._numberOfSeconds * 1000);
@@ -319,12 +322,11 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
 
                 if (asyncReturnValue.ErrorFlag == true)
                 {
-                    selectedAsyncTask.NumberOfRetries += 1;
-
                     if (asyncReturnValue.ErrorMessageID == "APSStopCommand")
                     {
+                        string exceptionInfo = "ErrorMessageID: " + asyncReturnValue.ErrorMessageID + Environment.NewLine + "ErrorMessage: " + asyncReturnValue.ErrorMessage;
                         // Asynchronous task is stopped due to user 'stop' command.
-                        this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.RETRY);
+                        this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.RETRY, exceptionInfo);
                         LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0001") + asyncReturnValue.ErrorMessage, selectedAsyncTask.TaskId));
                     }
                     else
@@ -335,14 +337,17 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                         {
                             // Asynchronous task does not exceeds the maximum number of retries
                             // Updated as retry later
-                            this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.RETRY);
+                            string exceptionInfo = "ErrorMessageID: " + asyncReturnValue.ErrorMessageID + Environment.NewLine + "ErrorMessage: " + asyncReturnValue.ErrorMessage;
+                            selectedAsyncTask.NumberOfRetries += 1;
+                            this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.RETRY, exceptionInfo);
                             LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0004"), selectedAsyncTask.TaskId));
                         }
                         else
                         {
                             // Asynchronous task exceeds maximum number of retries
                             // Update task as abort
-                            this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.FAIL);
+                            string exceptionInfo = "ErrorMessageID: " + asyncReturnValue.ErrorMessageID + Environment.NewLine + "ErrorMessage: " + asyncReturnValue.ErrorMessage;
+                            this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.FAIL, exceptionInfo);
                             LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0005"), selectedAsyncTask.TaskId));
                         }
                     }
@@ -354,11 +359,19 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                     LogIF.InfoLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("I0003"), selectedAsyncTask.TaskId));
                 }
             }
+            catch (BusinessSystemException ex)
+            {
+                // Asynchronous task is aborted due to BusinessSystemException sent by user program.
+                string exceptionInfo = "ErrorMessageID: " + ex.messageID + Environment.NewLine + "ErrorMessage: " + ex.Message;
+                this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.FAIL, exceptionInfo);
+                LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0006"), selectedAsyncTask.TaskId, ex.Message));
+            }
             catch (Exception ex)
             {
                 // Asynchronous task is aborted due to unexpected exception.
-                AsyncProcessingServiceReturnValue asyncReturnValue = this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.FAIL);
-                LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0006"), selectedAsyncTask.TaskId, ex.Message.ToString()));
+                string exceptionInfo = "ErrorMessageID: " + ex.GetType().Name + Environment.NewLine + "ErrorMessage: " + ex.Message;
+                this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.FAIL, exceptionInfo);
+                LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0006"), selectedAsyncTask.TaskId, ex.Message));
             }
         }
 
@@ -444,7 +457,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// <param name="selectedAsyncTask">Selected Asynchronous Task</param>
         /// <param name="updateTask">SQL_Update_Method_name</param>
         /// <returns></returns>
-        public AsyncProcessingServiceReturnValue UpdateAsyncTask(AsyncProcessingServiceReturnValue selectedAsyncTask, string updateTask)
+        public AsyncProcessingServiceReturnValue UpdateAsyncTask(AsyncProcessingServiceReturnValue selectedAsyncTask, string updateTask, string exceptionInfo = null)
         {
             AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", updateTask, updateTask, "SQL",
                                                                                         new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
@@ -458,13 +471,23 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                     asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.Processing;
                     break;
                 case AsyncTaskUpdate.RETRY:
-                    asyncParameterValue.NumberOfRetries = selectedAsyncTask.NumberOfRetries + 1;
+                    if (exceptionInfo.Length > 512)
+                    {
+                        exceptionInfo = exceptionInfo.Substring(0, 512);
+                    }
+                    asyncParameterValue.NumberOfRetries = selectedAsyncTask.NumberOfRetries;
                     asyncParameterValue.CompletionDateTime = DateTime.Now;
                     asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.AbnormalEnd;
+                    asyncParameterValue.ExceptionInfo = exceptionInfo;
                     break;
                 case AsyncTaskUpdate.FAIL:
+                    if (exceptionInfo.Length > 512)
+                    {
+                        exceptionInfo = exceptionInfo.Substring(0, 512);
+                    }
                     asyncParameterValue.CompletionDateTime = DateTime.Now;
                     asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.Abort;
+                    asyncParameterValue.ExceptionInfo = exceptionInfo;
                     break;
                 case AsyncTaskUpdate.SUCCESS:
                     asyncParameterValue.CompletionDateTime = DateTime.Now;
