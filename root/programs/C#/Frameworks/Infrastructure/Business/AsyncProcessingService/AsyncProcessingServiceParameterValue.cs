@@ -87,6 +87,9 @@ namespace AsyncProcessingService
         /// <summary>ReservedArea</summary>
         public string ReservedArea;
 
+        /// <summary>ExceptionInfo</summary>
+        public string ExceptionInfo;
+
         #region コンストラクタ
 
         /// <summary>コンストラクタ</summary>

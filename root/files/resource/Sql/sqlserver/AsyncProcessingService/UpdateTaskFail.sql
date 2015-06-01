@@ -5,5 +5,6 @@ UPDATE
 SET
     [CompletionDateTime] = @P2
     ,[StatusId] = @P3
+	,[ExceptionInfo] = @P4
 WHERE
     [Id] = @P1

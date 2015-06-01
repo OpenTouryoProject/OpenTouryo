@@ -6,5 +6,6 @@ SET
     [NumberOfRetries] = @P2
     ,[CompletionDateTime] = @P3
     ,[StatusId] = @P4
+	,[ExceptionInfo] = @P5
 WHERE
     [Id] = @P1
