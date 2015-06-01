@@ -46,6 +46,7 @@
 //*  2012/03/21  西野  大介        SQLの型指定（.net型）対応
 //*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
 //*  2013/07/09  西野  大介        静的SQLでもユーザパラメタを保存（操作ログで使用する用途）
+//*  2015/07/05  Sai              Implemented virtual property of IDbCommand in DamMySQL class
 //**********************************************************************************
 
 // データアクセスプロバイダ（Connector/NET）
@@ -143,6 +144,17 @@ namespace Touryo.Infrastructure.Public.Db
             {
                 // コマンドを戻す
                 return _cmd;
+            }
+        }
+
+        /// <summary>IDbCommand（読み取り専用）</summary>
+        /// <remarks>必要に応じて利用する。</remarks>
+        public override IDbCommand DamIDbCommand
+        {
+            get
+            {
+                // コマンドを戻す
+                return (IDbCommand)this._cmd;
             }
         }
 

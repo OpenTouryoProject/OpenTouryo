@@ -37,6 +37,7 @@
 //*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
 //*  2013/07/09  西野  大介        静的SQLでもユーザパラメタを保存（操作ログで使用する用途）
 //*  2014/07/17  Sai-San           Changed __paramSign value to '@' instead of ':'
+//*  2015/07/05  Sai              Implemented virtual property of IDbCommand in DamPstGrS class
 //**********************************************************************************
 
 // データアクセスプロバイダ（Npgsql）
@@ -140,6 +141,17 @@ namespace Touryo.Infrastructure.Public.Db
             {
                 // コマンドを戻す
                 return _cmd;
+            }
+        }
+
+        /// <summary>IDbCommand（読み取り専用）</summary>
+        /// <remarks>必要に応じて利用する。</remarks>
+        public override IDbCommand DamIDbCommand
+        {
+            get
+            {
+                // コマンドを戻す
+                return (IDbCommand)this._cmd;
             }
         }
 

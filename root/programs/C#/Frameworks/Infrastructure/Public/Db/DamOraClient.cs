@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2014/02/04  西野  大介        新規作成（.NET4.0以降、非推奨）
+//*  2015/07/05  Sai              Implemented virtual property of IDbCommand in DamOraClient class
 //**********************************************************************************
 
 // データアクセスプロバイダ（OracleClient）
@@ -127,6 +128,21 @@ namespace Touryo.Infrastructure.Public.Db
                 return _cmd;
             }
         }
+
+        #region IDbCommand
+
+        /// <summary>
+        /// Property for IDbCommand to support multiple db
+        /// </summary>
+        public override IDbCommand DamIDbCommand
+        {
+            get
+            {
+                return (IDbCommand)this._cmd;
+            }
+        }
+
+        #endregion
 
         /// <summary>OracleTransaction（読み取り専用）</summary>
         /// <remarks>必要に応じて利用する。</remarks>

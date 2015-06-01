@@ -47,6 +47,7 @@
 //*  2012/03/21  西野  大介        SQLの型指定（.net型）対応
 //*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
 //*  2013/07/09  西野  大介        静的SQLでもユーザパラメタを保存（操作ログで使用する用途）
+//*  2015/07/05  Sai              Implemented virtual property of IDbCommand in DamSqlSvr class
 //**********************************************************************************
 
 // データアクセスプロバイダ（SqlClient）
@@ -81,7 +82,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <summary>パラメタの先頭記号（DBMSによって可変）</summary>
         private readonly static char _paramSign = '@';
 
-        #endregion        
+        #endregion
 
         #region インスタンス変数
 
@@ -96,7 +97,7 @@ namespace Touryo.Infrastructure.Public.Db
 
         /// <summary>アダプタ</summary>
         private SqlDataAdapter _adpt;
-        
+
         /// <summary>分離レベル</summary>
         private DbEnum.IsolationLevelEnum _iso;
 
@@ -146,6 +147,21 @@ namespace Touryo.Infrastructure.Public.Db
                 return _cmd;
             }
         }
+
+        #region IDbCommand
+
+        /// <summary>
+        /// Property for IDbCommand to support multiple db
+        /// </summary>
+        public override IDbCommand DamIDbCommand
+        {
+            get
+            {
+                return (IDbCommand)this._cmd;
+            }
+        }
+
+        #endregion
 
         /// <summary>SqlTransaction（読み取り専用）</summary>
         /// <remarks>必要に応じて利用する。</remarks>
@@ -394,7 +410,7 @@ namespace Touryo.Infrastructure.Public.Db
         public override object GetParameter(string parameterName)
         {
             // nullチェック
-            if(this._cmd != null)
+            if (this._cmd != null)
             {
                 // 存在しない場合はnullが返る。
                 return this._cmd.Parameters[parameterName].Value;
@@ -522,7 +538,7 @@ namespace Touryo.Infrastructure.Public.Db
                 // 最後に名前と値を設定（Oracleの件に準拠）
                 param.ParameterName = parameterName;
                 param.Value = obj;
-                
+
                 this._cmd.Parameters.Add(param);
             }
         }
@@ -595,7 +611,7 @@ namespace Touryo.Infrastructure.Public.Db
                 {
                     // 2008/10/24---null・DBNull対応（下記nullチェックを追加）
                     // ここはforeachで取るので「キーなし」にならない
-                    if (this._parameter[paramName] == null) 
+                    if (this._parameter[paramName] == null)
                     {
                         // パラメタがnullの場合
                         // ※ 下記のtypeof(ArrayList).ToString()対策
@@ -799,7 +815,7 @@ namespace Touryo.Infrastructure.Public.Db
 
             // CommandTextを退避
             string tmpCommandText = this._cmd.CommandText;
-            
+
             // 名前バインド パラメタをSQL化する。
             while (true)
             {
@@ -869,7 +885,7 @@ namespace Touryo.Infrastructure.Public.Db
 
                 // コマンドテキスト
                 string commandText = PubLiteral.SQLTRACELOG_COMMAND_TEXT_HEADER;
-                
+
                 // コマンドテキストを取得
                 commandText += this._cmd.CommandText;
 

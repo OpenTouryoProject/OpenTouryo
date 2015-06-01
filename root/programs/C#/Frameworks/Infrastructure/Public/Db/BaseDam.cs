@@ -62,6 +62,7 @@
 //*  2013/03/18  西野  大介        DeleteFirstLogicalOperatoronWhereClause部分を関数化して外出し
 //*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
 //*  2014/07/04  Rituparna        Commented Code for blank else statement to improve code coverage in Basedam.cs class
+//*  2015/07/05  Sai              Added virtual property of IDbCommand 
 //**********************************************************************************
 
 // デバッグ用
@@ -106,7 +107,7 @@ namespace Touryo.Infrastructure.Public.Db
         private static readonly object _lock = new object();
 
         #endregion
-        
+
         #region インスタンス変数
 
         #region SQLトレース詳細化用フィールド追加（ここから）
@@ -164,6 +165,18 @@ namespace Touryo.Infrastructure.Public.Db
                     return false;
                 }
             }
+        }
+
+        #endregion
+
+        #region IDbCommand
+
+        /// <summary>
+        /// Property for IDbCommand to support multiple db
+        /// </summary>
+        public abstract IDbCommand DamIDbCommand
+        {
+            get;
         }
 
         #endregion
@@ -254,9 +267,9 @@ namespace Touryo.Infrastructure.Public.Db
             }
             else
             {
-                int ret =0;
+                int ret = 0;
 
-                if(int.TryParse(sqlCommandTimeout, out ret))
+                if (int.TryParse(sqlCommandTimeout, out ret))
                 {
                     if (0 < ret) // 2009/08/12-この行
                     {
@@ -306,7 +319,7 @@ namespace Touryo.Infrastructure.Public.Db
                     // null対策
                     if (BaseDam._sqlHt == null)
                     {
-                        BaseDam._sqlHt = new Dictionary<string,string>();
+                        BaseDam._sqlHt = new Dictionary<string, string>();
                     }
 
                     // キャッシュから取得する。
@@ -321,11 +334,11 @@ namespace Touryo.Infrastructure.Public.Db
                     {
                         // SQL文をロードする。
                         sql = this.Load2(sqlFilePath);
-                        
+
                         // SQL文をキャッシュ
                         BaseDam._sqlHt.Add(sqlFilePath, sql);
                     }
-                }                
+                }
             }
             else if (sqlCacheSwitch.ToUpper() == PubLiteral.OFF)// キャッシュ：OFF
             {
@@ -430,7 +443,7 @@ namespace Touryo.Infrastructure.Public.Db
                         this._QueryStatus = DbEnum.QueryStatusEnum.DPQ;
                     }
                 }
-            }            
+            }
 
             // 2008/10/16---チェック処理の変更（ここまで）
 
@@ -540,7 +553,7 @@ namespace Touryo.Infrastructure.Public.Db
                         foreach (XmlNode xmlNode3 in xmlNode2.ChildNodes)
                         {
                             if (xmlNode3.Name == PubLiteral.DPQ_TAG_TEXT
-                                || xmlNode3.Name == PubLiteral.DPQ_TAG_COMMENT 
+                                || xmlNode3.Name == PubLiteral.DPQ_TAG_COMMENT
                                 || xmlNode3.Name == PubLiteral.DPQ_TAG_CDATA
                                 || xmlNode3.Name == PubLiteral.DPQ_TAG_VAL)
                             {
@@ -723,7 +736,7 @@ namespace Touryo.Infrastructure.Public.Db
                     #endregion
 
                     #region  ネストの自由度が高いので、チェックしない。
-                    
+
                     // JIONタグ
 
                     // SUBタグ
@@ -852,18 +865,18 @@ namespace Touryo.Infrastructure.Public.Db
             Debug.WriteLine("ReplaceVALTag（終了）：" + perfRec.EndsPerformanceRecord());
 #endif
 
-//#if PERFORMANCE_LOG_SWITCH // 2009/09/25-このプリプロセッサ
-//            perfRec = new PerformanceRecorder();
-//            perfRec.StartsPerformanceRecord();
-//            Debug.WriteLine("ProcessJOINTag（開始）");
-//#endif
+            //#if PERFORMANCE_LOG_SWITCH // 2009/09/25-このプリプロセッサ
+            //            perfRec = new PerformanceRecorder();
+            //            perfRec.StartsPerformanceRecord();
+            //            Debug.WriteLine("ProcessJOINTag（開始）");
+            //#endif
 
-//            // JOINタグを処理する。
-//            this.ProcessJOINTag();
+            //            // JOINタグを処理する。
+            //            this.ProcessJOINTag();
 
-//#if PERFORMANCE_LOG_SWITCH // 2009/09/25-このプリプロセッサ
-//            Debug.WriteLine("ProcessJOINTag（終了）：" + perfRec.EndsPerformanceRecord());
-//#endif
+            //#if PERFORMANCE_LOG_SWITCH // 2009/09/25-このプリプロセッサ
+            //            Debug.WriteLine("ProcessJOINTag（終了）：" + perfRec.EndsPerformanceRecord());
+            //#endif
 
 #if PERFORMANCE_LOG_SWITCH // 2009/09/25-このプリプロセッサ
             perfRec = new PerformanceRecorder();
@@ -965,7 +978,7 @@ namespace Touryo.Infrastructure.Public.Db
 
             // 戻す
             return this._xml.InnerText;
-        } 
+        }
 
         #endregion
 
@@ -1042,7 +1055,7 @@ namespace Touryo.Infrastructure.Public.Db
 
                     xmlNodeVal.ParentNode.ReplaceChild(xmlText, xmlNodeVal);
                 }
-                
+
                 // 次のVALタグを探すため再帰する。
                 this.ReplaceVALTag();
             }
@@ -1203,7 +1216,7 @@ namespace Touryo.Infrastructure.Public.Db
                 {
                     // ※ パラメタが設定されていない場合、
                     //    パラメタがNULLに設定されている場合の双方に対応。
-                    
+
                     // INSCOLタグを削除（半角スペースに変換）する。
                     XmlText xmlText = this._xml.CreateTextNode(" ");
                     xmlNodeInsCol.ParentNode.ReplaceChild(xmlText, xmlNodeInsCol);
@@ -1235,13 +1248,13 @@ namespace Touryo.Infrastructure.Public.Db
         private void ProcessIFTag(char paramSign)
         {
             #region 変数
-            
+
             // IFタグのリスト
             XmlNodeList xmlNodeList = null;
 
             // IFタグ
             XmlNode xmlNodeIf = null;
-            
+
             // ELSEタグ
             XmlNode xmlNodeElse = null;
 
@@ -1255,7 +1268,7 @@ namespace Touryo.Infrastructure.Public.Db
             // 置換処理用
             XmlText xmlText;
 
-            #endregion 
+            #endregion
 
             // すべてのIFタグを取得、大文字・小文字は区別する。
             xmlNodeList = this._xml.GetElementsByTagName(PubLiteral.DPQ_TAG_IF);
@@ -1269,9 +1282,9 @@ namespace Touryo.Infrastructure.Public.Db
 
                 // IFタグ内のテキスト要素からパラメタ名を取得する。
                 string ifText = "";
-                foreach(XmlNode xmlNodeIfChild in xmlNodeIf.ChildNodes)
+                foreach (XmlNode xmlNodeIfChild in xmlNodeIf.ChildNodes)
                 {
-                    if(xmlNodeIfChild.Name == PubLiteral.DPQ_TAG_TEXT
+                    if (xmlNodeIfChild.Name == PubLiteral.DPQ_TAG_TEXT
                         || xmlNodeIfChild.Name == PubLiteral.DPQ_TAG_CDATA)
                     {
                         ifText += " " + xmlNodeIfChild.Value;
@@ -1360,7 +1373,7 @@ namespace Touryo.Infrastructure.Public.Db
                             // ELSEタグがある
 
                             // 2008/10/16---タグ編集処理の変更（ここから）
-                            
+
                             // ELSEにはパラメタが無い仕様なので、パラメタ消去する。
                             isNoPRQP = true;
 
@@ -1391,7 +1404,7 @@ namespace Touryo.Infrastructure.Public.Db
                             }
 
                             // 2008/10/16---タグ編集処理の変更（ここまで）
-                        }                        
+                        }
                     }
                     else
                     {
@@ -1458,7 +1471,7 @@ namespace Touryo.Infrastructure.Public.Db
                                 throw new ArgumentException(String.Format
                                     (PublicExceptionMessage.DPQ_SET_ONLY_NULL_OR_BOOL_TO_INNER_PARAM_VALUE,
                                         PubLiteral.DPQ_TAG_IF));
-                            }                            
+                            }
                         }
                         else
                         {
@@ -1493,12 +1506,12 @@ namespace Touryo.Infrastructure.Public.Db
                 {
                     // パラメタを削除する。
                     this._parameter.Remove(paramName);
-                }                
+                }
 
                 #endregion
 
                 // 次のIFタグを探すため再帰する。
-                this.ProcessIFTag(paramSign);                
+                this.ProcessIFTag(paramSign);
             }
             else
             {
@@ -1728,7 +1741,7 @@ namespace Touryo.Infrastructure.Public.Db
                     // 設定されていない。 or nullに設定されている。
 
                     // 2008/10/16---パラメタの削除処理の追加（ここから）
-                    
+
                     // 事前にパラメタの削除をしておく。
                     this._parameter.Remove(paramName);
 
@@ -1791,7 +1804,7 @@ namespace Touryo.Infrastructure.Public.Db
                             // 2008/10/16---タグ編集処理（半角スペースを追加）
                             XmlText xmlText = this._xml.CreateTextNode(" " + xmlNodeListTag.InnerText.Replace(oldString, newString) + " ");
                             xmlNodeListTag.ParentNode.ReplaceChild(xmlText, xmlNodeListTag);
-                        }                        
+                        }
                     }
                     else
                     {
@@ -1951,7 +1964,7 @@ namespace Touryo.Infrastructure.Public.Db
             {
                 obj = this._parameter[paramName];
             }
-            
+
             // エラー処理
             if (obj == null)
             {
@@ -2333,7 +2346,7 @@ namespace Touryo.Infrastructure.Public.Db
                 string indent = GetIndent(temp);
 
                 // 処理するためにTrimする。
-                temp = temp.Trim(); 
+                temp = temp.Trim();
 
                 // 文字列長が、0以外の場合、
                 while (temp.Length != 0)
@@ -2371,7 +2384,7 @@ namespace Touryo.Infrastructure.Public.Db
                 // DELCMAタグを削除（カンマ削除後のInnerTextで置換する）する。
                 XmlText xmlText = this._xml.CreateTextNode(" " + indent + temp + " ");
                 xmlNodeDelCma.ParentNode.ReplaceChild(xmlText, xmlNodeDelCma);
-                
+
                 // 次のDELCMAタグを探すため再帰する。
                 this.ProcessDELCMATag();
             }
@@ -2427,7 +2440,7 @@ namespace Touryo.Infrastructure.Public.Db
         protected string GetParamByText(string text, char paramSign)
         {
             int paramSignIndex;
-            return GetParamByText(text,paramSign,out paramSignIndex);
+            return GetParamByText(text, paramSign, out paramSignIndex);
         }
 
 
@@ -2440,7 +2453,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <param name="paramSign">パラメタの先頭記号（DBMSによって可変）</param>
         /// <param name="outParamSignIndex">パラメタの先頭記号のインデックス。検出されない場合、-1を返却。</param>
         /// <returns>パラメタ名。検出されない場合、先頭記号のみのパラメタ("@"のみ)の場合は""を返却する。</returns>
-        protected string GetParamByText(string text, char paramSign,out int outParamSignIndex)
+        protected string GetParamByText(string text, char paramSign, out int outParamSignIndex)
         {
             // シングルクォート
 
@@ -2455,7 +2468,7 @@ namespace Touryo.Infrastructure.Public.Db
 
             // ２連続のシングルクォートは解析の邪魔になるので他の文字に置換する。
             // （実行されるＳＱＬを変更するのではないので問題ない）
-            while (text.IndexOf("''",StringComparison.Ordinal) != -1)
+            while (text.IndexOf("''", StringComparison.Ordinal) != -1)
             {
                 text = text.Replace("''", "xx");    //2013/02/15---文字数が変わらないように置換文字を"x"→"xx"に仕様変更
             }
@@ -2507,7 +2520,7 @@ namespace Touryo.Infrastructure.Public.Db
                 else if (currentChar == '\'')
                 {
                     // シングルクォート
-                    if(isInside == false)
+                    if (isInside == false)
                     {
                         // 先頭
                         isInside = true;
@@ -2648,7 +2661,7 @@ namespace Touryo.Infrastructure.Public.Db
                             param += xmlChildNode.Value;
                         }
                     }
-                    else if(xmlChildNode.Name == PubLiteral.DPQ_TAG_COMMENT)
+                    else if (xmlChildNode.Name == PubLiteral.DPQ_TAG_COMMENT)
                     {
                         // これはCOMMENTタグ
 
@@ -2691,7 +2704,7 @@ namespace Touryo.Infrastructure.Public.Db
                 int startIndex = 0;
                 int endIndex = 0;
 
-                while(true)
+                while (true)
                 {
                     // 「/*PARAM*」を検索
                     startIndex = sql.IndexOf(PubLiteral.SPQ_PARAM_TAG_START, endIndex);
@@ -2766,13 +2779,13 @@ namespace Touryo.Infrastructure.Public.Db
 
                     // パラメタ区分：ユーザパラメタ
                     dr[0] = true;
-                    
+
                     // ユーザパラメタ名
                     dr[1] = aryString[0].Trim();
-                    
+
                     // ユーザパラメタ値（文字列型）
                     dr[2] = aryString[1].Trim();
-                    
+
                     // 2008/10/16---null・DBNull対応（ここから）
                     // null・DBNull判定
                     dr[3] = "";
@@ -2788,21 +2801,21 @@ namespace Touryo.Infrastructure.Public.Db
                     dr[1] = aryString[0].Trim();
 
                     // 2008/10/16---null・DBNull対応（ここから）
-                    object tempObj =this.StringToObject(aryString[1].Trim(), aryString[2].Trim());
+                    object tempObj = this.StringToObject(aryString[1].Trim(), aryString[2].Trim());
                     if (tempObj == null)
                     {
                         // パラメタ値
                         dr[2] = tempObj;
                         // null・DBNull判定
-                        dr[3] = PubLiteral.VALUE_STR_NULL; 
+                        dr[3] = PubLiteral.VALUE_STR_NULL;
                     }
                     else
                     {
                         // パラメタ値
                         dr[2] = tempObj;
                         // null・DBNull判定
-                        dr[3] = ""; 
-                    }                    
+                        dr[3] = "";
+                    }
                     // 2008/10/16---null・DBNull対応（ここまで）
                 }
                 else if (3 < aryString.Length)
@@ -2912,7 +2925,7 @@ namespace Touryo.Infrastructure.Public.Db
             #region データ型毎の処理
 
             // 2008/10/16---比較処理をToUpperに変更（ここから）
-            
+
             // データ型
             if (typeString.ToUpper() == typeof(Boolean).Name.ToUpper())
             {
@@ -3245,7 +3258,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <summary>トランザクションのロールバック</summary>
         /// <remarks>派生のDamXXXでオーバーライドする。</remarks>
         public abstract void RollbackTransaction();
-        
+
         #endregion
 
         #region SQLの作成
