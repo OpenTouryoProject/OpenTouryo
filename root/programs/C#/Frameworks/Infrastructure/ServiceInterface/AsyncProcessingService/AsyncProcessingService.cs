@@ -40,7 +40,10 @@
 //*  04/13/2015   Sandeep        Did Nihsini-san review comment changes as on 04-Apr-2015.
 //*  04/21/2015   Sandeep        Did code changes to break the main thread when service failed(i.e. unexpected exceptions)
 //*  05/28/2015   Sandeep        Did code changes to update exception information to database
-//*                              Did code changes to resolve OnStop event error 
+//*                              Did code changes to resolve OnStop event error
+//*  06/01/2015   Sandeep        Added new variable "_workerThreadCount" to handle the worker thread and to resolve OnStop event error,
+//*                              because thread pool may be shared by other tasks, such as .NET runtime
+//*                              Did code modification related to log information, for debugging purpose 
 //**********************************************************************************
 
 // System
@@ -111,6 +114,9 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         // <summary>Maximum number of hours (thread-safe)</summary>
         private volatile int _maxNumberOfHours = 0;
 
+        // <summary>Worker thread count (thread-safe)</summary>
+        private volatile uint _workerThreadCount = 0;
+
         #endregion
 
         #region Constructor
@@ -173,7 +179,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
 
             // Thread pool initialization with maxium and minimum threads. 
             ThreadPool.SetMinThreads(1, 0);
-            ThreadPool.SetMaxThreads(this._maxThreadCount + 1, 0);
+            ThreadPool.SetMaxThreads(this._maxThreadCount, 0);
 
             // Starts main thread invocation.
             _mainThread = new Thread(new ThreadStart(MainThreadInvoke));
@@ -189,9 +195,9 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// </summary>
         protected override void OnStop()
         {
-            // Stop the process of asynchronous service and Waits to complete all worker thread to complete.
-            LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0007"));
+            // Stop the process of asynchronous service and Waits to complete all worker thread to complete.            
             this.StopAsyncProcess();
+            LogIF.InfoLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("I0005"));
         }
 
         #endregion
@@ -203,9 +209,9 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// </summary>
         protected override void OnPause()
         {
-            // Stop the process of asynchronous service and Waits to complete all worker thread to complete.
-            LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0008"));
+            // Stop the process of asynchronous service and Waits to complete all worker thread to complete.            
             this.StopAsyncProcess();
+            LogIF.InfoLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("I0006"));
         }
 
         #endregion
@@ -218,8 +224,8 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         protected override void OnShutdown()
         {
             // Stop the process of asynchronous service and Waits to complete all worker thread to complete.
-            LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0009"));
             this.StopAsyncProcess();
+            LogIF.InfoLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("I0007"));
         }
 
         #endregion
@@ -273,7 +279,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                     // Gets the available threads.
                     ThreadPool.GetAvailableThreads(out freeWorkerThreads, out completionPortThreads);
 
-                    while ((freeWorkerThreads - 1) == 0)
+                    while (freeWorkerThreads == 0)
                     {
                         // Wait for the completion of the worker thread.
                         Thread.Sleep(this._numberOfSeconds * 1000);
@@ -309,6 +315,9 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         private void WorkerThreadCallBack(object asyncTask)
         {
             AsyncProcessingServiceReturnValue selectedAsyncTask = (AsyncProcessingServiceReturnValue)asyncTask;
+
+            // A new worker thread started an Async task
+            this._workerThreadCount++;
 
             try
             {
@@ -372,6 +381,11 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                 string exceptionInfo = "ErrorMessageID: " + ex.GetType().Name + Environment.NewLine + "ErrorMessage: " + ex.Message;
                 this.UpdateAsyncTask(selectedAsyncTask, AsyncTaskUpdate.FAIL, exceptionInfo);
                 LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0006"), selectedAsyncTask.TaskId, ex.Message));
+            }
+            finally
+            {
+                // Async task is over
+                this._workerThreadCount--;
             }
         }
 
@@ -442,7 +456,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
             catch
             {
                 // Error while setting from config
-                LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0010"));
+                LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0007"));
                 throw new Exception();
             }
         }
@@ -539,21 +553,17 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
             // Wait the end of the main thread.
             this._mainThread.Join();
 
-            // Check the number of free worker threads.
-            int freeWorkerThreads = 0;
-            int completionPortThreads = 0;
+            // Wait for all worker thread to be complete
+            LogIF.InfoLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("I0004"));
 
-            // Get available threads.
-            ThreadPool.GetAvailableThreads(out freeWorkerThreads, out completionPortThreads);
-
-            while (freeWorkerThreads != this._maxThreadCount)
+            while (this._workerThreadCount != 0)
             {
                 // Wait for the completion of the worker thread.
                 Thread.Sleep(this._numberOfSeconds * 1000);
-
-                // Get available threads.
-                ThreadPool.GetAvailableThreads(out freeWorkerThreads, out completionPortThreads);
             }
+
+            // Log after completing all worker threads
+            LogIF.InfoLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("I0008"));
         }
 
         #endregion
