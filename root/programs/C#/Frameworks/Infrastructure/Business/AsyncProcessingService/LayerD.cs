@@ -31,6 +31,7 @@
 //*  11/28/2014   Supragyan      Created Insert,Update,Select method for AsyncProcessing Service
 //*  04/14/2015   Sandeep        Did code modification of update and select asynchronous task 
 //*  04/14/2015   Sandeep        Did code implementation of SetSqlByFile3 to access the SQL from embedded resource
+//*  05/28/2015   Sandeep        Did code implementation to update Exception information to the database
 //**********************************************************************************
 
 // System
@@ -168,6 +169,7 @@ namespace AsyncProcessingService
             this.SetParameter("P2", asyncParameterValue.NumberOfRetries);
             this.SetParameter("P3", asyncParameterValue.CompletionDateTime);
             this.SetParameter("P4", asyncParameterValue.StatusId);
+            this.SetParameter("P5", asyncParameterValue.ExceptionInfo);
 
             // Execute SQL query
             asyncReturnValue.Obj = this.ExecInsUpDel_NonQuery();
@@ -194,6 +196,7 @@ namespace AsyncProcessingService
             this.SetParameter("P1", asyncParameterValue.TaskId);
             this.SetParameter("P2", asyncParameterValue.CompletionDateTime);
             this.SetParameter("P3", asyncParameterValue.StatusId);
+            this.SetParameter("P4", asyncParameterValue.ExceptionInfo);
 
             // Execute SQL query
             asyncReturnValue.Obj = this.ExecInsUpDel_NonQuery();
