@@ -33,6 +33,7 @@
 //*  2013/02/15  加藤  幸紀        ChangesToOrderBind()修正。（順番バインドのパラメタ置換処理方式の見直し）
 //*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
 //*  2013/07/09  西野  大介        静的SQLでもユーザパラメタを保存（操作ログで使用する用途）
+//*  2015/07/05  Sai              Implemented virtual property of IDbCommand in DamODBC class 
 //**********************************************************************************
 
 // データアクセスプロバイダ（ODBC）
@@ -134,6 +135,20 @@ namespace Touryo.Infrastructure.Public.Db
             }
         }
 
+        #region IDbCommand
+
+        /// <summary>
+        /// Property for IDbCommand to support multiple db
+        /// </summary>
+        public override IDbCommand DamIDbCommand
+        {
+            get
+            {
+                return (IDbCommand)this._cmd;
+            }
+        }
+
+        #endregion
         /// <summary>OdbcTransaction（読み取り専用）</summary>
         /// <remarks>必要に応じて利用する。</remarks>
         public OdbcTransaction DamOdbcTransaction

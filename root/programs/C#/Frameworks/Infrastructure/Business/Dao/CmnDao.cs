@@ -38,6 +38,7 @@
 //*  2012/06/14  西野  大介        ResourceLoaderに加え、EmbeddedResourceLoaderに対応
 //*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
 //*  2014/11/20  Sandeep          Implemented CommandTimeout property and SetCommandTimeout method.
+//*  2014/11/20  Sai              removed IDbCommand property in SetCommandTimeout method.
 //**********************************************************************************
 
 // System
@@ -95,7 +96,7 @@ namespace Touryo.Infrastructure.Business.Dao
         /// <summary>パラメタ ライズド クエリの指定されたパラメータ（の方向）を保持するディクショナリ</summary>
         private Dictionary<string, ParameterDirection> DicParameterDirection = new Dictionary<string, ParameterDirection>();
 
-        #endregion
+        #endregion       
 
         #region パラメタの制御
 
@@ -109,7 +110,7 @@ namespace Touryo.Infrastructure.Business.Dao
         {
             // ★ ベースのメソッドを呼ぶ
             return base.GetParameter(parameterName);
-            
+
         }
 
         /// <summary>パラメタ ライズド クエリのパラメタをディクショナリに設定する。</summary>
@@ -242,7 +243,7 @@ namespace Touryo.Infrastructure.Business.Dao
             }
         }
 
-        #endregion        
+        #endregion
 
         #endregion
 
@@ -259,7 +260,7 @@ namespace Touryo.Infrastructure.Business.Dao
         {
             set
             {
-                this._commandTimeout = value;                
+                this._commandTimeout = value;
             }
         }
 
@@ -431,8 +432,8 @@ namespace Touryo.Infrastructure.Business.Dao
             // Else skip, automatically it will set default CommandTimeout.
             if (this._commandTimeout >= 0)
             {
-                (((DamSqlSvr)this.GetDam()).DamSqlCommand).CommandTimeout = this._commandTimeout;
-            }            
+                (((DamSqlSvr)this.GetDam()).DamIDbCommand).CommandTimeout = this._commandTimeout;
+            }
         }
 
         /// <summary>パラメタの一括設定（内部用）</summary>
