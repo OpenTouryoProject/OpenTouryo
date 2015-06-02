@@ -357,7 +357,7 @@ namespace Touryo.Infrastructure.Public.Db
             this._cmd.CommandType = commandType;
 
             // システム共通のCommandTimeout値を設定する。
-            this.SetCommandTimeout(DamIDbCommand); // #x-この行
+            this.SetCommandTimeout(this._cmd); // #x-この行
         }
 
         # endregion
