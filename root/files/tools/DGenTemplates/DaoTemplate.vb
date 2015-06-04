@@ -12,6 +12,7 @@
 '*  2012/06/14  西野  大介        ResourceLoaderに加え、EmbeddedResourceLoaderに対応
 '*  2013/09/09  西野  大介        ExecGenerateSQLメソッドを追加した（バッチ更新用）。
 '*	2014/11/20  Sandeep          Implemented CommandTimeout property and SetCommandTimeout method.
+'*	2015/06/04	Sai				 Replaced SqlCommand property with IDbCommand property in SetCommandTimeout method. 
 '**********************************************************************************
 
 #Region "using"
@@ -82,7 +83,7 @@ Public Class _DaoClassName_
         ' If CommandTimeout is >= 0 then set CommandTimeout.
         ' Else skip, automatically it will set default CommandTimeout.
         If Me._commandTimeout >= 0 Then
-			DirectCast(GetDam(), DamSqlSvr).DamSqlCommand.CommandTimeout = Me._commandTimeout
+			DirectCast(GetDam(), DamSqlSvr).IDbCommand.CommandTimeout = Me._commandTimeout
         End If
     End Sub
 
