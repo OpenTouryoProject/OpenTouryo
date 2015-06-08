@@ -113,6 +113,7 @@ Partial Public Class _TableName_Detail
             ' ControlComment:LoopEnd-ElseColumn
             ' 編集
             Me.SetControlReadOnly(True)
+            Session("PrimaryKeyAndTimeStamp") = Nothing
         End If
     End Sub
 
@@ -270,7 +271,7 @@ Partial Public Class _TableName_Detail
 
         ' 主キー
         ' ControlComment:LoopStart-PKColumn
-        Me.txt_ColumnName_.BackColor = System.Drawing.Color.LightGray
+        Me.txt_ColumnName_.BackColor = backColor ' System.Drawing.Color.LightGray
         ' ControlComment:LoopEnd-PKColumn
 
         ' 主キー以外

@@ -27,7 +27,8 @@
 //* 更新履歴
 //*  Date:        Author:        Comments:
 //*  ----------  ----------------  -------------------------------------------------
-//*  11/28/2014   Supragyan      LayerD class for AsyncProcessing Service
+//*  11/28/2014   Supragyan      Created LayerD class for AsyncProcessing Service
+//*  11/28/2014   Supragyan      Created Insert,Update,Select method for AsyncProcessing Service
 //**********************************************************************************
 
 // System
@@ -44,13 +45,15 @@ using Touryo.Infrastructure.Public.Db;
 
 namespace AsyncProcessingService
 {
-
+    #region LayerD
     /// <summary>
     /// LayerD class for AsyncProcessing Service
     /// </summary>
     public class LayerD : MyBaseDao
     {
         public LayerD(BaseDam dam) : base(dam) { }
+
+        #region Insert
 
         /// <summary>
         /// Inserts async parameter values to database
@@ -90,6 +93,8 @@ namespace AsyncProcessingService
             asyncReturnValue.Obj = obj;
         }
 
+        #endregion
+
         #region Update
 
         /// <summary>
@@ -127,7 +132,72 @@ namespace AsyncProcessingService
             // 戻り値を設定
             asyncReturnValue.Obj = obj;
         }
+
+        #endregion
+
+        #region UpdateByStatusId
+
+        /// <summary>
+        /// Updates async parameter values to database
+        /// </summary>
+        /// <param name="asyncParameterValue"></param>
+        /// <param name="asyncReturnValue"></param>
+        public void UpdateByStatusId(AsyncProcessingServiceParameterValue asyncParameterValue, AsyncProcessingServiceReturnValue asyncReturnValue)
+        {
+            string filename = string.Empty;
+
+            // 静的SQL
+            filename = "AsyncProcessingServiceStatusUpdate.sql";
+
+            //   -- ファイルから読み込む場合。
+            this.SetSqlByFile2(filename);
+
+            // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
+            this.SetParameter("P1", asyncParameterValue.UserId);
+
+            object obj;
+
+            //   -- 更新（件数を確認できる）
+            obj = this.ExecInsUpDel_NonQuery();
+
+            // ↑DBアクセス-----------------------------------------------------
+
+            // 戻り値を設定
+            asyncReturnValue.Obj = obj;
+        }
+
+        #endregion
+
+        #region Select
+
+        /// <summary>
+        /// Selects async parameter values from database
+        /// </summary>
+        /// <param name="asyncParameterValue"></param>
+        /// <param name="asyncReturnValue"></param>
+        public void Select(AsyncProcessingServiceParameterValue asyncParameterValue, AsyncProcessingServiceReturnValue asyncReturnValue)
+        {
+            string filename = string.Empty;
+
+            // 静的SQL
+            filename = "AsyncProcessingServiceSelect.sql";
+
+            //   -- ファイルから読み込む場合。
+            this.SetSqlByFile2(filename);
+
+            object obj;
+
+            //   -- 更新（件数を確認できる）
+            obj = this.ExecSelectScalar();
+
+            // ↑DBアクセス-----------------------------------------------------
+
+            // 戻り値を設定
+            asyncReturnValue.Obj = obj;
+        }
+
         #endregion
     }
 
+    #endregion
 }

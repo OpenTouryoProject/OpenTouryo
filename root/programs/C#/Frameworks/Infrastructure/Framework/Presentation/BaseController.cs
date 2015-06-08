@@ -88,6 +88,7 @@
 //*  2014/08/18  Sai-San           Added Postback Value, events and event handlers for ListView events.   
 //*  2014/10/03  Rituparna         Added code for Supporting ItemCommand event to ListViewControl. 
 //*  2014/10/03  Rituparna         Added code SelectedIndexChanged for RadiobuttonList and CheckBoxList. 
+//*  2015/04/16  Supragyan         Added TextChanged event for TextBox.
 //**********************************************************************************
 
 // 処理に必要
@@ -1401,6 +1402,13 @@ namespace Touryo.Infrastructure.Framework.Presentation
                         prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.List_SelectedIndexChanged));
                     }
 
+                    // TextBox
+                    prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_TEXTBOX);
+                    if (!string.IsNullOrEmpty(prefix))
+                    {
+                        prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.TextBox_TextChanged));
+                    }
+
                     // RADIO BUTTON
                     prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_RADIO_BUTTON);
                     if (!string.IsNullOrEmpty(prefix))
@@ -2026,6 +2034,26 @@ namespace Touryo.Infrastructure.Framework.Presentation
             // クリック イベント処理の共通メソッド
             this.CMN_Event_Handler(fxEventArgs);
         }
+
+        #region Text_TextChanged
+
+        /// <summary>
+        /// TextBox（など）のTextChangedイベントに対応した集約イベント ハンドラ
+        /// </summary>
+        protected void TextBox_TextChanged(object sender, EventArgs e)
+        {           
+            // イベント ハンドラの共通引数の作成
+            FxEventArgs fxEventArgs = new FxEventArgs(
+                ((System.Web.UI.Control)(sender)).ID,
+                0, 0, "",
+                this.GetMethodName(((System.Web.UI.Control)(sender)).ID,
+                    FxLiteral.UOC_METHOD_FOOTER_TEXT_CHANGED));
+
+            // クリック イベント処理の共通メソッド
+            this.CMN_Event_Handler(fxEventArgs);            
+        }
+
+        #endregion
 
         #region 一覧系
 

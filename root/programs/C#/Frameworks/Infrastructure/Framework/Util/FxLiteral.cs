@@ -54,6 +54,7 @@
 //*  2014/08/18  Sai-San           Added constants for ListView events and prefix.
 //*  2014/10/03  Rituparna         Added constants for ListView events and prefix for supporting ItemCommand event.
 //*  2014/10/03  Rituparna         Added constants for RadioButtonList,CheckBoxList events and prefix. 
+//*  2015/04/16  Supragyan         Added constants for Textbox events and prefix. 
 //**********************************************************************************
 
 // System
@@ -222,7 +223,7 @@ namespace Touryo.Infrastructure.Framework.Util
         public const string PREFIX_OF_LIST_BOX = "FxPrefixOfListBox";
 
         /// <summary>ラジオ ボタンのプレフィックスを設定するキー。</summary>
-        public const string PREFIX_OF_RADIO_BUTTON = "FxPrefixOfRadioButton";
+        public const string PREFIX_OF_RADIO_BUTTON = "FxPrefixOfRadioButton";        
 
         /// <summary>リピータのプレフィックスを設定するキー。</summary>
         public const string PREFIX_OF_REPEATER = "FxPrefixOfRepeater";
@@ -239,13 +240,16 @@ namespace Touryo.Infrastructure.Framework.Util
         /// <summary>Key to set the prefix of the RadioButtonList.</summary>
         public const string PREFIX_OF_CHECKBOXLIST = "FxPrefixOfCheckBoxList";
 
+        /// <summary>Key to set the prefix of the Text box.</summary>
+        public const string PREFIX_OF_TEXTBOX = "FxPrefixOfTextBox";
+
         #region Windows Forms
 
         /// <summary>ピクチャー ボックスのプレフィックスを設定するキー。</summary>
         public const string PREFIX_OF_PICTURE_BOX = "FxPrefixOfPictureBox";
 
         /// <summary>コンボ ボックスのプレフィックスを設定するキー。</summary>
-        public const string PREFIX_OF_COMBO_BOX = "FxPrefixOfComboBox";
+        public const string PREFIX_OF_COMBO_BOX = "FxPrefixOfComboBox";       
 
         #endregion
 
@@ -324,7 +328,14 @@ namespace Touryo.Infrastructure.Framework.Util
 
         #endregion
 
+        #region Textbox
+
+        // <summary>UOCメソッドフッタ（Text Changed）</summary>
+        public const string UOC_METHOD_FOOTER_TEXT_CHANGED = "TextChanged";
+
         #endregion
+
+        #endregion       
 
         #region Windows Forms
 
