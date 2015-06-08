@@ -12,6 +12,7 @@
     <script src="../../../Scripts/i18n/grid.locale-da.js" type="text/javascript"></script>
     <script src="../../../Scripts/jquery.jqGrid.min.js" type="text/javascript"></script>
     <script type="text/javascript">
+
         $(function () {
             $('#list').jqGrid({
                 url: '/ProjectX_sample/WebService/JSONService.svc/GetProductData',

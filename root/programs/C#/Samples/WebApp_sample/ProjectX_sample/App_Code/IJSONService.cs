@@ -16,13 +16,7 @@
 //*  2015/03/20  Supragyan         Modified method 'GetProductData()' return type to Message 
 //**********************************************************************************
 //system
-using System;
-using System.Web;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.Text;
 using System.ServiceModel.Web;
 using System.ServiceModel.Channels;
 

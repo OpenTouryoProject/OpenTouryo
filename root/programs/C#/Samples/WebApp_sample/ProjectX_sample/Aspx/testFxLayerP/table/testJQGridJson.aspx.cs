@@ -25,6 +25,9 @@ using System.Collections.Specialized;
 using Newtonsoft.Json;
 using System.Web.Script.Serialization;
 
+/// <summary>
+/// testJQGridJson class
+/// </summary>
 public partial class Aspx_testFxLayerP_table_testJQGridJson : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)

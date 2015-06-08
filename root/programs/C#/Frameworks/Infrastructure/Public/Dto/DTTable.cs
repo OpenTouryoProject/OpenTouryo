@@ -36,7 +36,7 @@
 //*                                    ・ConvertDTTypeToType、ConvertTypeToDTType
 //*  2011/10/09  西野  大介        国際化対応
 //*  2015/03/05  Supragyan        Created  SavejqGridJson method for saving datatable data to JQGrid.
-//*  2015/04/23  Supragyan        Modified SavejqGridJson method for saving datatable data to JQGrid.
+//*  2015/06/08  Supragyan        Modified SavejqGridJson method for saving datatable data to JQGrid.
 //**********************************************************************************
 //system
 using System;
