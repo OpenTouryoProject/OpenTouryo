@@ -30,6 +30,8 @@
 //*  11/28/2014   Supragyan      Created LayerB class for AsyncProcessing Service
 //*  11/28/2014   Supragyan      Created Insert,Update,Select method for AsyncProcessing Service
 //*  04/15/2015   Sandeep        Did code modification of insert, update and select for AsyncProcessing Service
+//*  06/09/2015   Sandeep        Implemented code to update stop command to all the running asynchronous task
+//*                              Modified code to reset Exception information, before starting asynchronous task 
 //**********************************************************************************
 
 // System
@@ -156,19 +158,36 @@ namespace AsyncProcessingService
 
         #endregion
 
-        #region UpdateTaskAbort
+        #region UpdateTaskCommand
 
         /// <summary>
-        ///  Updates information in the database that the asynchronous task is forcefully stopped by the user
+        ///  Updates command value information of a selected asynchronous task
         /// </summary>
         /// <param name="asyncParameterValue">Asynchronous Parameter Values</param>
-        private void UOC_UpdateTaskAbort(AsyncProcessingServiceParameterValue asyncParameterValue)
+        private void UOC_UpdateTaskCommand(AsyncProcessingServiceParameterValue asyncParameterValue)
         {
             AsyncProcessingServiceReturnValue asyncReturnValue = new AsyncProcessingServiceReturnValue();
             this.ReturnValue = asyncReturnValue;
 
             LayerD myDao = new LayerD(this.GetDam());
-            myDao.UpdateTaskAbort(asyncParameterValue, asyncReturnValue);
+            myDao.UpdateTaskCommand(asyncParameterValue, asyncReturnValue);
+        }
+
+        #endregion
+
+        #region StopAllTask
+
+        /// <summary>
+        ///  Set stop command for all running asynchronous task
+        /// </summary>
+        /// <param name="asyncParameterValue">Asynchronous Parameter Values</param>
+        private void UOC_StopAllTask(AsyncProcessingServiceParameterValue asyncParameterValue)
+        {
+            AsyncProcessingServiceReturnValue asyncReturnValue = new AsyncProcessingServiceReturnValue();
+            this.ReturnValue = asyncReturnValue;
+
+            LayerD myDao = new LayerD(this.GetDam());
+            myDao.StopAllTask(asyncParameterValue, asyncReturnValue);
         }
 
         #endregion

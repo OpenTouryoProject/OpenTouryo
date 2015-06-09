@@ -1,8 +1,8 @@
--- UpdateTaskAbort
--- 2015/04/13 Sandeep
+-- StopAllTask
+-- 2015/06/09 Sandeep
 UPDATE
     [AsyncProcessingServiceStatusManagementTable]
 SET
     [CommandId] = @P2
 WHERE
-    [Id] = @P1
+    [StatusId] = @P1

@@ -32,6 +32,8 @@
 //*  04/14/2015   Sandeep        Did code modification of update and select asynchronous task 
 //*  04/14/2015   Sandeep        Did code implementation of SetSqlByFile3 to access the SQL from embedded resource
 //*  05/28/2015   Sandeep        Did code implementation to update Exception information to the database
+//*  06/09/2015   Sandeep        Implemented code to update stop command to all the running asynchronous task
+//*                              Modified code to reset Exception information, before starting asynchronous task 
 //**********************************************************************************
 
 // System
@@ -142,6 +144,7 @@ namespace AsyncProcessingService
             this.SetParameter("P1", asyncParameterValue.TaskId);
             this.SetParameter("P2", asyncParameterValue.ExecutionStartDateTime);
             this.SetParameter("P3", asyncParameterValue.StatusId);
+            this.SetParameter("P4", DBNull.Value);
 
             // Execute SQL query
             asyncReturnValue.Obj = this.ExecInsUpDel_NonQuery();
@@ -256,23 +259,48 @@ namespace AsyncProcessingService
 
         #endregion
 
-        #region UpdateTaskAbort
+        #region UpdateTaskCommand
 
         /// <summary>
-        ///  Updates information in the database that the user invocked command to stop or abort asynchronous task. 
+        ///  Updates command value information of a selected asynchronous task
         /// </summary>
         /// <param name="asyncParameterValue">Asynchronous Parameter Values</param>
         /// <param name="asyncReturnValue">Asynchronous Return Values</param>
-        public void UpdateTaskAbort(AsyncProcessingServiceParameterValue asyncParameterValue, AsyncProcessingServiceReturnValue asyncReturnValue)
+        public void UpdateTaskCommand(AsyncProcessingServiceParameterValue asyncParameterValue, AsyncProcessingServiceReturnValue asyncReturnValue)
         {
             string filename = string.Empty;
-            filename = "UpdateTaskAbort.sql";
+            filename = "UpdateTaskCommand.sql";
 
             // Get SQL query from file.
             this.SetSqlByFile3(filename);
 
             // Set SQL parameter values
             this.SetParameter("P1", asyncParameterValue.TaskId);
+            this.SetParameter("P2", asyncParameterValue.CommandId);
+
+            // Execute SQL query
+            asyncReturnValue.Obj = this.ExecInsUpDel_NonQuery();
+        }
+
+        #endregion
+
+        #region StopAllTask
+
+        /// <summary>
+        ///  Set stop command for all running asynchronous task.
+        /// </summary>
+        /// <param name="asyncParameterValue">Asynchronous Parameter Values</param>
+        /// <param name="asyncReturnValue">Asynchronous Return Values</param>
+        public void StopAllTask(AsyncProcessingServiceParameterValue asyncParameterValue, AsyncProcessingServiceReturnValue asyncReturnValue)
+        {
+            string filename = string.Empty;
+            filename = "StopAllTask.sql";
+
+            // Get SQL query from file.
+            this.SetSqlByFile3(filename);
+
+            // Set SQL parameter values
+            this.SetParameter("P1", asyncParameterValue.StatusId);
             this.SetParameter("P2", asyncParameterValue.CommandId);
 
             // Execute SQL query
@@ -329,7 +357,6 @@ namespace AsyncProcessingService
             this.SetParameter("P2", asyncParameterValue.NumberOfRetries);
             this.SetParameter("P3", (int)AsyncProcessingServiceParameterValue.AsyncStatus.Register);
             this.SetParameter("P4", (int)AsyncProcessingServiceParameterValue.AsyncStatus.AbnormalEnd);
-            this.SetParameter("P5", (int)AsyncProcessingServiceParameterValue.AsyncCommand.Stop);
             this.SetParameter("P6", (int)AsyncProcessingServiceParameterValue.AsyncCommand.Abort);
             this.SetParameter("P7", asyncParameterValue.CompletionDateTime);
 
