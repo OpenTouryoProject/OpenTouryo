@@ -43,7 +43,8 @@
 //*                              Did code changes to resolve OnStop event error
 //*  06/01/2015   Sandeep        Added new variable "_workerThreadCount" to handle the worker thread and to resolve OnStop event error,
 //*                              because thread pool may be shared by other tasks, such as .NET runtime
-//*                              Did code modification related to log information, for debugging purpose 
+//*                              Did code modification related to log information, for debugging purpose
+//*  06/09/2015   Sandeep        Imlemented code to update stop command to all the running asynchronous task, while stopping the service 
 //**********************************************************************************
 
 // System
@@ -552,6 +553,20 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
 
             // Wait the end of the main thread.
             this._mainThread.Join();
+
+            // Update stop command to all the running asynchronous task
+            AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "StopAllTask", "StopAllTask", "SQL",
+                                                                                    new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
+            asyncParameterValue.StatusId = (int)AsyncProcessingServiceParameterValue.AsyncStatus.Processing;
+            asyncParameterValue.CommandId = (int)AsyncProcessingServiceParameterValue.AsyncCommand.Stop;
+            LayerB layerB = new LayerB();
+            AsyncProcessingServiceReturnValue asyncReturnValue = (AsyncProcessingServiceReturnValue)layerB.DoBusinessLogic(
+                                                                  (BaseParameterValue)asyncParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
+
+            if (asyncReturnValue.ErrorFlag)
+            {
+                LogIF.ErrorLog("ASYNC-SERVICE", "ErrorMessageID: " + asyncReturnValue.ErrorMessageID + "ErrorMessage: " + asyncReturnValue.ErrorMessage);
+            }
 
             // Wait for all worker thread to be complete
             LogIF.InfoLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("I0004"));

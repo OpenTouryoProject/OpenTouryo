@@ -187,8 +187,8 @@
       <Link>AsyncProcessingService\SelectTask.sql</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskAbort.sql">
-      <Link>AsyncProcessingService\UpdateTaskAbort.sql</Link>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskCommand.sql">
+      <Link>AsyncProcessingService\UpdateTaskCommand.sql</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskFail.sql">
@@ -209,6 +209,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskSuccess.sql">
       <Link>AsyncProcessingService\UpdateTaskSuccess.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\StopAllTask.sql">
+      <Link>AsyncProcessingService\StopAllTask.sql</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
