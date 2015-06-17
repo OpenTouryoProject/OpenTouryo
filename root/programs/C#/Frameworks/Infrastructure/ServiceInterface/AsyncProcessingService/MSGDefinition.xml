@@ -26,4 +26,13 @@
   <Message id="E0005" description="TaskID-{0}: FAIL- Aborted because it exceeds the maximum number of retries."/>
   <Message id="E0006" description="TaskID-{0}: FAIL- Aborted due to unexpected exception. Message: {1}"/>
   <Message id="E0007" description="Error while setting configuration key-value."/>
+
+  <Message id="CTE0000" description="Copy-source does not exists."/>
+  <Message id="CTE0001" description="Destination already exists."/>
+  <Message id="CTE0002" description="While using the copy-source."/>
+  <Message id="CTE0003" description="Stop command was sent to the asynchronous processing service task."/>
+  <Message id="CTE0004" description="Abort command was sent to the asynchronous processing service task."/>
+  <Message id="CTE0005" description="Azure has sent copy process was invalid."/>
+  <Message id="CTE0006" description="Azure has sent copy process was failed."/>
+  <Message id="CTE0007" description="Azure has sent copy process was aborted."/>
 </MSGD>
