@@ -44,7 +44,8 @@
 //*  06/01/2015   Sandeep        Added new variable "_workerThreadCount" to handle the worker thread and to resolve OnStop event error,
 //*                              because thread pool may be shared by other tasks, such as .NET runtime
 //*                              Did code modification related to log information, for debugging purpose
-//*  06/09/2015   Sandeep        Imlemented code to update stop command to all the running asynchronous task, while stopping the service 
+//*  06/09/2015   Sandeep        Added user name(email-id) and asynchronous processing task ID to the arguments of user information,
+//*                              for the log and the failure analysis
 //**********************************************************************************
 
 // System
@@ -324,7 +325,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
             {
                 // Call User Program to execute by using communication control function
                 AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "StartCopyFromBlob", "StartCopyFromBlob", "SQL",
-                                                                                        new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
+                                                                                        new MyUserInfo(selectedAsyncTask.UserId, selectedAsyncTask.TaskId.ToString()));
                 asyncParameterValue.TaskId = selectedAsyncTask.TaskId;
                 asyncParameterValue.Data = selectedAsyncTask.Data;
                 CallController callController = new CallController(asyncParameterValue.User);
