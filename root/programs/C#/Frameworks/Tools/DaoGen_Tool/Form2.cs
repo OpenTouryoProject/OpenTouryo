@@ -51,6 +51,7 @@
 //*  2015/03/20  Sandeep Nayak    Added TimeStamp placeholder's Key values in app.config file and 
 //*                               added constant to get the TimeStamp placeholder from the app.config file and 
 //*                               did code modification to replace the required TimeStamp code in the template, if TimeStamp selected in the tool.
+//*  2015/06/18  Sai-san          Added <Else></Else> tag in create string method and ReplaceSQL method to fix the bug 'DynInsParameter of dynamic insert'       
 //**********************************************************************************
 
 // データプロバイダ
@@ -3846,7 +3847,7 @@ namespace DaoGen_Tool
 
             //（７）DynIns用パラメタ リスト ★
             this.DynInsParameters +=
-                "<IF>" + this.ParamSign + col.Replace(' ', '_') + ",</IF>" + ",";
+                "<IF>" + this.ParamSign + col.Replace(' ', '_') + ",<ELSE></ELSE></IF>" + ",";
 
             #endregion
 
@@ -4234,7 +4235,7 @@ namespace DaoGen_Tool
                 if (this.TimeStampStatus == TSS.NandM)
                 {
                     //「<IF>@eee,</IF>」 → 「SYSTIMESTAMP(),」と置換する。
-                    oldStirng = "<IF>" + this.ParamSign + this.TimeStampColName.Replace(' ', '_') + ",</IF>";
+                    oldStirng = "<IF>" + this.ParamSign + this.TimeStampColName.Replace(' ', '_') + ",<ELSE></ELSE></IF>";
 
                     newStirng = this.TimeStampUpdMethod + ",";
 
