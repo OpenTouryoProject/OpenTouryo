@@ -34,6 +34,8 @@
 //*  05/28/2015   Sandeep        Did code implementation to update Exception information to the database
 //*  06/09/2015   Sandeep        Implemented code to update stop command to all the running asynchronous task
 //*                              Modified code to reset Exception information, before starting asynchronous task 
+//*  06/26/2015   Sandeep        Removed the where condition command <> 'Abort' from the SelectTask asynchronous task,
+//*                              to resolve unstable "Register" state, when you invoke [Abort] to AsyncTask, at this "Register" state
 //**********************************************************************************
 
 // System
@@ -357,7 +359,6 @@ namespace AsyncProcessingService
             this.SetParameter("P2", asyncParameterValue.NumberOfRetries);
             this.SetParameter("P3", (int)AsyncProcessingServiceParameterValue.AsyncStatus.Register);
             this.SetParameter("P4", (int)AsyncProcessingServiceParameterValue.AsyncStatus.AbnormalEnd);
-            this.SetParameter("P6", (int)AsyncProcessingServiceParameterValue.AsyncCommand.Abort);
             this.SetParameter("P7", asyncParameterValue.CompletionDateTime);
 
             DataTable dt = new DataTable();

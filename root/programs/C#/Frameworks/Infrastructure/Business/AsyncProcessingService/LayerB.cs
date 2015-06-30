@@ -32,6 +32,8 @@
 //*  04/15/2015   Sandeep        Did code modification of insert, update and select for AsyncProcessing Service
 //*  06/09/2015   Sandeep        Implemented code to update stop command to all the running asynchronous task
 //*                              Modified code to reset Exception information, before starting asynchronous task 
+//*  06/26/2015   Sandeep        Implemented code to get commandID in the SelectTask method,
+//*                              to resolve unstable "Register" state, when you invoke [Abort] to AsyncTask, at this "Register" state
 //**********************************************************************************
 
 // System
@@ -240,6 +242,7 @@ namespace AsyncProcessingService
                     asyncReturnValue.Data = dt.Rows[0]["Data"].ToString();
                     asyncReturnValue.NumberOfRetries = Convert.ToInt32(dt.Rows[0]["NumberOfRetries"]);
                     asyncReturnValue.ReservedArea = dt.Rows[0]["ReservedArea"].ToString();
+                    asyncReturnValue.CommandId = Convert.ToInt32(dt.Rows[0]["CommandId"]);
                 }
             }
         }

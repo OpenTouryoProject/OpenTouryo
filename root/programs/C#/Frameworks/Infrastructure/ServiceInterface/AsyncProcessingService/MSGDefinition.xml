@@ -15,8 +15,9 @@
   <Message id="I0004" description="Asynchronous service is waiting for all worker thread to be complete."/>
   <Message id="I0005" description="Asynchronous service is stopped."/>
   <Message id="I0006" description="Asynchronous service is paused."/>
-  <Message id="I0007" description="Asynchronous service is shutdown."/>
+  <Message id="I0007" description="Asynchronous service is shutdown, but no guarantee that Asynchronous service is terminated appropriately."/>
   <Message id="I0008" description="There are no more running worker threads."/>
+  <Message id="I0009" description="Asynchronous service may terminated properly by custom command."/>
 
   <Message id="E0000" description="Asynchronous service failed due to unexpected exception, please restart the service. Message: {0}"/>
   <Message id="E0001" description="TaskID-{0}: FAIL- Stopped due to user stop command."/>
@@ -26,6 +27,9 @@
   <Message id="E0005" description="TaskID-{0}: FAIL- Aborted because it exceeds the maximum number of retries."/>
   <Message id="E0006" description="TaskID-{0}: FAIL- Aborted due to unexpected exception. Message: {1}"/>
   <Message id="E0007" description="Error while setting configuration key-value."/>
+  <Message id="E0008" description="Asynchronous service is shutdown with pre-shutdown command."/>
+  <Message id="E0009" description="AcceptedCommands field does not found."/>
+  <Message id="E0010" description="Asynchronous service may shutdown with other than pre-shutdown command."/>
 
   <Message id="CTE0000" description="Copy-source does not exists."/>
   <Message id="CTE0001" description="Destination already exists."/>

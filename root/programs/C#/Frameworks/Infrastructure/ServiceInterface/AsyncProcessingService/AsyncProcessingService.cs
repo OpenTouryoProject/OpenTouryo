@@ -44,7 +44,11 @@
 //*  06/01/2015   Sandeep        Added new variable "_workerThreadCount" to handle the worker thread and to resolve OnStop event error,
 //*                              because thread pool may be shared by other tasks, such as .NET runtime
 //*                              Did code modification related to log information, for debugging purpose
-//*  06/09/2015   Sandeep        Imlemented code to update stop command to all the running asynchronous task, while stopping the service 
+//*  06/09/2015   Sandeep        Added user name(email-id) and asynchronous processing task ID to the arguments of user information,
+//*                              for the log and the failure analysis
+//*  06/26/2015   Sandeep        Implemented code to handle unstable "Register" state, when you invoke [Abort] to AsyncTask, at this "Register" state,
+//*                              Implemented code to 'Enable and Handle pre-shutdown notification' technique, to resolve the issue of 
+//*                              OnShutdown method, when you restart or shutdown the OS 
 //**********************************************************************************
 
 // System
@@ -55,6 +59,8 @@ using System.IO;
 using System.Threading;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Configuration;
+using System.Reflection;
+using System.ServiceProcess;
 
 //業務フレームワーク
 using Touryo.Infrastructure.Business.Util;
@@ -118,6 +124,10 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         // <summary>Worker thread count (thread-safe)</summary>
         private volatile uint _workerThreadCount = 0;
 
+        // To enable and handle pre-shutdown notification technique
+        const int SERVICE_ACCEPT_PRESHUTDOWN = 0x100;
+        const int SERVICE_CONTROL_PRESHUTDOWN = 0xf;
+
         #endregion
 
         #region Constructor
@@ -135,6 +145,18 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
 
             //Sets AutoLog property to true for enable all log files in service
             this.AutoLog = true;
+
+            //Sets Shutdown property to true for enable all log files in service
+            this.CanShutdown = true;
+
+            // To enable pre-shutdown notification technique
+            FieldInfo acceptedCommandsFieldInfo = typeof(ServiceBase).GetField("acceptedCommands", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (acceptedCommandsFieldInfo == null)
+            {
+                throw new ApplicationException(GetMessage.GetMessageDescription("E0009"));
+            }
+            int value = (int)acceptedCommandsFieldInfo.GetValue(this);
+            acceptedCommandsFieldInfo.SetValue(this, value | SERVICE_ACCEPT_PRESHUTDOWN);
         }
 
         #endregion
@@ -217,6 +239,32 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
 
         #endregion
 
+        #region OnCustomCommand
+
+        /// <summary>
+        ///  To handle pre-shutdown notification technique
+        /// </summary>
+        /// <param name="command">pre-shutdown command</param>
+        protected override void OnCustomCommand(int command)
+        {
+            if (command == SERVICE_CONTROL_PRESHUTDOWN)
+            {
+                // To execute pre-shutdown notification technique
+                LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0008"));
+                this.StopAsyncProcess();                
+            }
+            else
+            {
+                // OS may shutdown with other than pre-shutdown command, Async Service may not terminated properly
+                LogIF.ErrorLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("E0010"));
+                this.StopAsyncProcess();
+                base.OnCustomCommand(command);
+            }
+            LogIF.InfoLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("I0009"));
+        }
+
+        #endregion
+
         #region OnShutdown
 
         /// <summary>
@@ -225,8 +273,8 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         protected override void OnShutdown()
         {
             // Stop the process of asynchronous service and Waits to complete all worker thread to complete.
-            this.StopAsyncProcess();
             LogIF.InfoLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("I0007"));
+            this.StopAsyncProcess();
         }
 
         #endregion
@@ -322,9 +370,15 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
 
             try
             {
+                // To handle unstable "Register" state, when you invoke [Abort] at this state
+                if (selectedAsyncTask.CommandId == (int)AsyncProcessingServiceParameterValue.AsyncCommand.Abort)
+                {
+                    throw new BusinessSystemException("APSAbortCommand", GetMessage.GetMessageDescription("CTE0004"));
+                }
+
                 // Call User Program to execute by using communication control function
                 AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "StartCopyFromBlob", "StartCopyFromBlob", "SQL",
-                                                                                        new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
+                                                                                        new MyUserInfo(selectedAsyncTask.UserId, selectedAsyncTask.TaskId.ToString()));
                 asyncParameterValue.TaskId = selectedAsyncTask.TaskId;
                 asyncParameterValue.Data = selectedAsyncTask.Data;
                 CallController callController = new CallController(asyncParameterValue.User);
