@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCLPublic", "PCLPublic\PCLPublic.csproj", "{02743467-EC8D-4D6E-9068-9E4B8FCDBB30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCLFramework", "PCLFramework\PCLFramework.csproj", "{645FD28B-175A-4335-B5E3-B4957AE4BA29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCLBusiness", "PCLBusiness\PCLBusiness.csproj", "{E4538374-029A-4DFF-8432-0F93EE7A0CF4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{02743467-EC8D-4D6E-9068-9E4B8FCDBB30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02743467-EC8D-4D6E-9068-9E4B8FCDBB30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02743467-EC8D-4D6E-9068-9E4B8FCDBB30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02743467-EC8D-4D6E-9068-9E4B8FCDBB30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{645FD28B-175A-4335-B5E3-B4957AE4BA29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{645FD28B-175A-4335-B5E3-B4957AE4BA29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{645FD28B-175A-4335-B5E3-B4957AE4BA29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{645FD28B-175A-4335-B5E3-B4957AE4BA29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4538374-029A-4DFF-8432-0F93EE7A0CF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4538374-029A-4DFF-8432-0F93EE7A0CF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4538374-029A-4DFF-8432-0F93EE7A0CF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4538374-029A-4DFF-8432-0F93EE7A0CF4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
