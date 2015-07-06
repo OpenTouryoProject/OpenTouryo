@@ -33,6 +33,7 @@
 //*  2013/02/15  加藤  幸紀        ChangesToOrderBind()修正。（順番バインドのパラメタ置換処理方式の見直し）
 //*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
 //*  2013/07/09  西野  大介        静的SQLでもユーザパラメタを保存（操作ログで使用する用途）
+//*  2015/07/05  Sai              Implemented virtual property of IDbCommand in DamOLEDB class 
 //**********************************************************************************
 
 // データアクセスプロバイダ（OLEDB）
@@ -68,7 +69,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <summary>パラメタの先頭記号（OLEDBは順番バインド（？）のみなので本部品で対応（@P1））</summary>
         private readonly static char _paramSign = '@';
 
-        #endregion        
+        #endregion
 
         #region インスタンス変数
 
@@ -83,7 +84,7 @@ namespace Touryo.Infrastructure.Public.Db
 
         /// <summary>アダプタ</summary>
         private OleDbDataAdapter _adpt;
-        
+
         /// <summary>分離レベル</summary>
         private DbEnum.IsolationLevelEnum _iso;
 
@@ -133,6 +134,21 @@ namespace Touryo.Infrastructure.Public.Db
                 return _cmd;
             }
         }
+
+        #region IDbCommand
+
+        /// <summary>
+        /// Property for IDbCommand to support multiple db
+        /// </summary>
+        public override IDbCommand DamIDbCommand
+        {
+            get
+            {
+                return (IDbCommand)this._cmd;
+            }
+        }
+
+        #endregion
 
         /// <summary>OleDbTransaction（読み取り専用）</summary>
         /// <remarks>必要に応じて利用する。</remarks>
@@ -487,7 +503,7 @@ namespace Touryo.Infrastructure.Public.Db
                 // 最後に名前と値を設定（Oracleの件に準拠）
                 param.ParameterName = parameterName;
                 param.Value = obj;
-                
+
                 this._cmd.Parameters.Add(param);
             }
         }
@@ -622,7 +638,7 @@ namespace Touryo.Infrastructure.Public.Db
             }
 
             // で、
-            
+
             // 最後に通常のパラメタライズド クエリの
             // 「名前バインド」を「順番バインド」に置換する。
             this.ChangesToOrderBind();
@@ -651,7 +667,7 @@ namespace Touryo.Infrastructure.Public.Db
             string tmpCommandText = this._cmd.CommandText;
 
             // 名前バインド パラメタ → 順番バインド パラメタ
-            while(true)
+            while (true)
             {
                 // パラメタ記号の位置（インデックス）
                 int paramSignIndex;
@@ -861,7 +877,7 @@ namespace Touryo.Infrastructure.Public.Db
 
                 // コマンドテキスト
                 string commandText = PubLiteral.SQLTRACELOG_COMMAND_TEXT_HEADER;
-                
+
                 // コマンドテキストを取得
                 commandText += this._cmd.CommandText;
 

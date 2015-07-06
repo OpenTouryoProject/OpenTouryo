@@ -246,8 +246,10 @@ public partial class _TableName_SearchAndUpdate : MyBaseController
         // ControlComment:LoopEnd-PKColumn
 
         // タイムスタンプ列
-        // ・・・
-
+		// ControlComment:ControlComment:IsRequired-TimeStamp
+		// ...
+        parameterValue.AndEqualSearchConditions.Add("_TimeStampColName_", "");
+		
         // DataTableを設定
         parameterValue.Obj = (DataTable)Session["SearchResult"];
 

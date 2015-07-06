@@ -28,7 +28,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2014/07/15  西野  大介        新規作成
-//*
+//*  2014/11/11  Sai-san          Created methods for Forced termination, Getting SlipIssuanceUserID, 
+//*                               TurnBack to Original user using the voucher and Switching person in charge
 //**********************************************************************************
 
 // System
@@ -124,7 +125,7 @@ namespace Touryo.Infrastructure.Business.Workflow
             //daoM_Workflow.WorkflowNo = 1; // スタートなので「1」固定
             daoM_Workflow.ActionType = "Start"; // スタートなので"Start"
             daoM_Workflow.FromUserId = fromUserId;
-            
+
             // ワークフローの取得
             daoM_Workflow.D2_Select(dt);
             return dt;
@@ -134,12 +135,13 @@ namespace Touryo.Infrastructure.Business.Workflow
         /// <param name="startWorkflow">新規ワークフロー</param>
         /// <param name="workflowControlNo">ワークフロー管理番号（必須）</param>
         /// <param name="fromUserId">FromユーザID（個人ID 必須）</param>
+        /// <param name="toUserId">ToユーザID（個人ID 任意）</param>
         /// <param name="workflowReserveArea">T_Workflowの予備領域（任意）</param>
         /// <param name="currentWorkflowReserveArea">T_CurrentWorkflowの予備領域（任意）</param>
         /// <param name="replyDeadline">回答希望日（任意）</param>
         /// <returns>メール・テンプレートID</returns>
         public int StartWorkflow(DataRow startWorkflow,
-            string workflowControlNo, decimal fromUserId,
+            string workflowControlNo, decimal fromUserId, decimal toUserId,
             string workflowReserveArea, string currentWorkflowReserveArea, DateTime? replyDeadline)
         {
             #region チェック処理を実装
@@ -156,8 +158,17 @@ namespace Touryo.Infrastructure.Business.Workflow
 
             // ユーザIDからユーザ情報を取得
             string fromUserInfo = Workflow.GetUserInfo(fromUserId);
-            string toUserInfo = Workflow.GetUserInfo((decimal)startWorkflow["ToUserId"]);
-            
+            string toUserInfo = string.Empty;
+            if (toUserId == 0)
+            {
+                toUserInfo = Workflow.GetUserInfo((decimal)startWorkflow["ToUserId"]);
+                toUserId = (decimal)startWorkflow["ToUserId"];
+            }
+            else
+            {
+                toUserInfo = Workflow.GetUserInfo(toUserId);
+            }
+
             // --------------------------------------------------
             // 新しいワークフローを開始
             // --------------------------------------------------
@@ -188,7 +199,7 @@ namespace Touryo.Infrastructure.Business.Workflow
             daoT_CurrentWorkflow.FromUserId = fromUserId; // 実際のユーザIDを入力する。
             daoT_CurrentWorkflow.FromUserInfo = fromUserInfo; // ユーザ入力が必要。
             daoT_CurrentWorkflow.ActionType = startWorkflow["ActionType"];
-            daoT_CurrentWorkflow.ToUserId = startWorkflow["ToUserId"];
+            daoT_CurrentWorkflow.ToUserId = toUserId;
             daoT_CurrentWorkflow.ToUserInfo = toUserInfo; // ユーザ入力が必要。
             daoT_CurrentWorkflow.ToUserPositionTitlesId = startWorkflow["ToUserPositionTitlesId"];
             daoT_CurrentWorkflow.NextWfPositionId = startWorkflow["NextWfPositionId"];
@@ -228,7 +239,7 @@ namespace Touryo.Infrastructure.Business.Workflow
         /// 　御中IDでの呼び出しと、ユーザIDでの呼び出しは２回に分ける。
         /// </remarks>
         public DataTable GetWfRequest(
-            string subSystemId, string workflowName, string workflowControlNo, 
+            string subSystemId, string workflowName, string workflowControlNo,
             decimal? userId, int? userPositionTitlesId)
         {
             // チェック処理を実装
@@ -414,7 +425,7 @@ namespace Touryo.Infrastructure.Business.Workflow
                         String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED,
                         "SubSystemId", "processingWfReq")));
             }
-            
+
             #endregion
 
             // --------------------------------------------------
@@ -491,9 +502,9 @@ namespace Touryo.Infrastructure.Business.Workflow
                 dao.SetParameter("WorkflowControlNo", processingWfReq["WorkflowControlNo"]);
 
                 #region CorrespondOfReplyWorkflow
-                
-                ArrayList alCorrespondOfReplyWorkflow = new ArrayList(); 
-                
+
+                ArrayList alCorrespondOfReplyWorkflow = new ArrayList();
+
                 foreach (DataRow dr in drs)
                 {
                     alCorrespondOfReplyWorkflow.Add(dr["CorrespondOfReplyWorkflow"]);
@@ -603,7 +614,7 @@ namespace Touryo.Infrastructure.Business.Workflow
                     String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
                         String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")));
             }
-            
+
             #endregion
 
             // --------------------------------------------------
@@ -628,8 +639,8 @@ namespace Touryo.Infrastructure.Business.Workflow
         /// <param name="replyDeadline">回答希望日（任意）</param>
         /// <returns>メール・テンプレートID</returns>
         public int RequestWfApproval(
-            DataRow nextWorkflow,　string workflowControlNo,
-            decimal fromUserId,　decimal? toUserId,
+            DataRow nextWorkflow, string workflowControlNo,
+            decimal fromUserId, decimal? toUserId,
             string currentWorkflowReserveArea, DateTime? replyDeadline)
         {
             #region チェック処理を実装
@@ -667,7 +678,7 @@ namespace Touryo.Infrastructure.Business.Workflow
             {
                 toUserInfo = Workflow.GetUserInfo(toUserId.Value);
             }
-            
+
             #endregion
 
             // --------------------------------------------------
@@ -712,7 +723,7 @@ namespace Touryo.Infrastructure.Business.Workflow
                 // 上記以外は、nextWorkflow["ToUserId"]を指定する。
                 daoT_CurrentWorkflow.Set_ToUserId_forUPD = nextWorkflow["ToUserId"];
             }
-            
+
             daoT_CurrentWorkflow.Set_ToUserInfo_forUPD = toUserInfo;
             daoT_CurrentWorkflow.Set_ToUserPositionTitlesId_forUPD = nextWorkflow["ToUserPositionTitlesId"];
             daoT_CurrentWorkflow.Set_NextWfPositionId_forUPD = nextWorkflow["NextWfPositionId"];
@@ -793,6 +804,329 @@ namespace Touryo.Infrastructure.Business.Workflow
             {
                 return (int)nextWorkflow["MailTemplateId"];
             }
+        }
+
+        /// <summary>
+        /// This method TurnBack to slip iisuance UserID
+        /// </summary>
+        /// <param name="subsystemId"></param>
+        /// <param name="workflowControlNo"></param>
+        /// <param name="fromUserId"></param>
+        /// <param name="toUserId"></param>
+        /// <param name="currentWorkflowReserveArea"></param>
+        /// <returns></returns>
+        public void TurnbackSlipIssuanceUserID(string subsystemId, string workflowControlNo, decimal fromUserId, decimal? toUserId,
+                                              string currentWorkflowReserveArea)
+        {
+            #region チェック処理を実装
+
+            string toUserInfo = "";
+
+            //If ToUserId is not null ans ActionType is End then getting user information
+            if (toUserId.HasValue) // Endの時は不要 
+            {
+                toUserInfo = Workflow.GetUserInfo(toUserId.Value);
+            }
+
+            #endregion
+
+            // --------------------------------------------------
+            // 現在の履歴件数を取得。
+            // --------------------------------------------------
+            //Gets the record count from T_WorkflowHistory table
+            // --------------------------------------------------
+            CmnDao dao = new CmnDao(this.Dam);
+
+            dao.SQLFileName = "RequestApproval_Count.sql";
+            dao.SetParameter("WorkflowControlNo", workflowControlNo);
+            int recordCount = ((int)dao.ExecSelectScalar());
+
+            // --------------------------------------------------
+            // ワークフロー承認を依頼
+            // --------------------------------------------------
+            // T_CurrentWorkflowのUPDATE
+            // --------------------------------------------------
+            DaoT_CurrentWorkflow daoT_CurrentWorkflow = new DaoT_CurrentWorkflow(this.Dam);
+
+            // 主キー情報
+            daoT_CurrentWorkflow.PK_WorkflowControlNo = workflowControlNo;
+
+            // 履歴番号は履歴件数＋１
+            daoT_CurrentWorkflow.Set_HistoryNo_forUPD = recordCount + 1;
+
+            DaoT_WorkflowHistory daoT_WorkflowHistory = new DaoT_WorkflowHistory(this.Dam);
+            //Gets the Slip issuance orignal user id
+            DataTable dt = GetSlipIssuanceUserID(subsystemId, workflowControlNo);
+
+            //Updates the T_CurrentWorkflow and T_WorkflowHistory tables data with original slip issuance user information
+            daoT_CurrentWorkflow.Set_WfPositionId_forUPD = dt.Rows[0]["WfPositionId"];
+            daoT_CurrentWorkflow.Set_WorkflowNo_forUPD = dt.Rows[0]["WorkflowNo"];
+            daoT_CurrentWorkflow.Set_FromUserId_forUPD = toUserId; // 実際のユーザIDを入力する。
+            daoT_CurrentWorkflow.Set_FromUserInfo_forUPD = toUserInfo;
+            //Updating action type to TurnBack
+            daoT_CurrentWorkflow.Set_ActionType_forUPD = "TurnBack";
+
+            daoT_CurrentWorkflow.Set_ToUserId_forUPD = dt.Rows[0]["FromUserId"];
+            // ユーザIDからユーザ情報を取得
+            string fromUserInfo = Workflow.GetUserInfo(fromUserId);
+            daoT_CurrentWorkflow.Set_ToUserInfo_forUPD = fromUserInfo;
+            daoT_CurrentWorkflow.Set_ToUserPositionTitlesId_forUPD = dt.Rows[0]["ToUserPositionTitlesId"];
+            daoT_CurrentWorkflow.Set_NextWfPositionId_forUPD = dt.Rows[0]["NextWfPositionId"];
+            daoT_CurrentWorkflow.Set_NextWorkflowNo_forUPD = dt.Rows[0]["NextWorkflowNo"];
+            daoT_CurrentWorkflow.Set_ReserveArea_forUPD = currentWorkflowReserveArea;
+
+            //Updating acceptance information with null
+            daoT_CurrentWorkflow.Set_ReplyDeadline_forUPD = DBNull.Value;
+            daoT_CurrentWorkflow.Set_StartDate_forUPD = DateTime.Now;
+            daoT_CurrentWorkflow.Set_AcceptanceDate_forUPD = DBNull.Value;
+            daoT_CurrentWorkflow.Set_AcceptanceUserId_forUPD = DBNull.Value;
+            daoT_CurrentWorkflow.Set_AcceptanceUserInfo_forUPD = DBNull.Value;
+            daoT_CurrentWorkflow.D3_Update();
+
+            // PK
+            daoT_WorkflowHistory.PK_WorkflowControlNo = workflowControlNo;
+            daoT_WorkflowHistory.PK_HistoryNo = recordCount;
+
+            // EndDate
+            daoT_WorkflowHistory.Set_EndDate_forUPD = DateTime.Now;
+
+            daoT_WorkflowHistory.S3_Update();
+        }
+
+        /// <summary>
+        /// Gets the Slip Issuance UserID of History=1 to TurnBack
+        /// </summary>
+        /// <param name="subSystemId"></param>
+        /// <param name="workflowControlNo"></param>
+        /// <returns></returns>
+        private DataTable GetSlipIssuanceUserID(string subSystemId, string workflowControlNo)
+        {
+            #region チェック処理を実装
+
+            if (string.IsNullOrEmpty(subSystemId))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED,
+                        "SubSystemId", "turnBackWorkflow")));
+            }
+            else if (string.IsNullOrEmpty(workflowControlNo))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")));
+            }
+
+            #endregion
+
+            // --------------------------------------------------
+            // 差戻しのToユーザIDを履歴から取得
+            // --------------------------------------------------
+            //Executes the select query of T_WorkflowHistory for getting the original slip issuance user information
+            // --------------------------------------------------
+            CmnDao dao = new CmnDao(this.Dam);
+            dao.SQLFileName = "GetTurnBackFromUserHistory.sql";
+            dao.SetParameter("WorkflowControlNo", workflowControlNo);
+            dao.SetParameter("ActionType", "TurnBack");
+            DataTable dt = new DataTable();
+            dao.ExecSelectFill_DT(dt);
+            return dt;
+        }
+
+        /// <summary>
+        /// This method is used to terminate the workflow forecefully 
+        /// by updating EndDate column of T_Workflow table with enddate.
+        /// </summary>
+        /// <param name="nextWorkflow"></param>
+        /// <param name="workflowControlNo"></param>
+        /// <param name="fromUserId"></param>        
+        /// <param name="currentWorkflowReserveArea"></param>
+        /// <returns></returns>
+        public int ForcedTermination(DataRow nextWorkflow, string workflowControlNo, decimal fromUserId, string currentWorkflowReserveArea)
+        {
+            #region チェック処理を実装
+
+            if (nextWorkflow == null)
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "nextWorkflow")));
+            }
+            else if (!nextWorkflow.Table.Columns.Contains("SubSystemId"))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED,
+                        "SubSystemId", "nextWorkflow")));
+            }
+            else if (string.IsNullOrEmpty(workflowControlNo))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")));
+            }
+
+            // ユーザIDからユーザ情報を取得
+            string fromUserInfo = Workflow.GetUserInfo(fromUserId);
+
+            string toUserInfo = "";
+
+            #endregion
+
+            // --------------------------------------------------
+            // 現在の履歴件数を取得。
+            // --------------------------------------------------
+            //Gets the record count from T_WorkflowHistory table
+            // --------------------------------------------------
+            CmnDao dao = new CmnDao(this.Dam);
+
+            dao.SQLFileName = "RequestApproval_Count.sql";
+            dao.SetParameter("WorkflowControlNo", workflowControlNo);
+            int recordCount = ((int)dao.ExecSelectScalar());
+
+            // --------------------------------------------------
+            // ワークフロー承認を依頼
+            // --------------------------------------------------
+            // T_CurrentWorkflowのUPDATE
+            // --------------------------------------------------
+            DaoT_CurrentWorkflow daoT_CurrentWorkflow = new DaoT_CurrentWorkflow(this.Dam);
+
+            // 主キー情報
+            daoT_CurrentWorkflow.PK_WorkflowControlNo = workflowControlNo;
+
+            // 履歴番号は履歴件数＋１
+            daoT_CurrentWorkflow.Set_HistoryNo_forUPD = recordCount + 1;
+
+            daoT_CurrentWorkflow.Set_WfPositionId_forUPD = nextWorkflow["WfPositionId"];
+            daoT_CurrentWorkflow.Set_WorkflowNo_forUPD = nextWorkflow["WorkflowNo"];
+            daoT_CurrentWorkflow.Set_FromUserId_forUPD = fromUserId; // 実際のユーザIDを入力する。
+            daoT_CurrentWorkflow.Set_FromUserInfo_forUPD = fromUserInfo;
+            //Updates the ActionType with Abnormal termination
+            daoT_CurrentWorkflow.Set_ActionType_forUPD = "ABEnd";
+
+            // 上記以外は、nextWorkflow["ToUserId"]を指定する。
+            daoT_CurrentWorkflow.Set_ToUserId_forUPD = nextWorkflow["ToUserId"];
+
+            daoT_CurrentWorkflow.Set_ToUserInfo_forUPD = toUserInfo;
+            daoT_CurrentWorkflow.Set_ToUserPositionTitlesId_forUPD = nextWorkflow["ToUserPositionTitlesId"];
+            daoT_CurrentWorkflow.Set_NextWfPositionId_forUPD = nextWorkflow["NextWfPositionId"];
+            daoT_CurrentWorkflow.Set_NextWorkflowNo_forUPD = nextWorkflow["NextWorkflowNo"];
+            daoT_CurrentWorkflow.Set_ReserveArea_forUPD = currentWorkflowReserveArea;
+
+            daoT_CurrentWorkflow.Set_StartDate_forUPD = DateTime.Now;
+            daoT_CurrentWorkflow.Set_AcceptanceDate_forUPD = DBNull.Value;
+            daoT_CurrentWorkflow.Set_AcceptanceUserId_forUPD = DBNull.Value;
+            daoT_CurrentWorkflow.Set_AcceptanceUserInfo_forUPD = DBNull.Value;
+
+            daoT_CurrentWorkflow.D3_Update();
+
+            // --------------------------------------------------
+            // 完了（T_WorkflowHistoryのEndDate項目を更新）
+            // --------------------------------------------------
+            // T_WorkflowHistoryのUPDATE
+            // --------------------------------------------------
+            DaoT_WorkflowHistory daoT_WorkflowHistory = new DaoT_WorkflowHistory(this.Dam);
+
+            // PK
+            daoT_WorkflowHistory.PK_WorkflowControlNo = workflowControlNo;
+            daoT_WorkflowHistory.PK_HistoryNo = recordCount;
+
+            //Updates the EndDate to current date for forceful termination
+            daoT_WorkflowHistory.Set_EndDate_forUPD = DateTime.Now;
+
+            daoT_WorkflowHistory.S3_Update();
+
+            //---
+
+            // 完了
+            // --------------------------------------------------
+            // 完了の場合（T_WorkflowのEndDate項目を更新）
+            // --------------------------------------------------
+            // T_WorkflowのUPDATE
+            // --------------------------------------------------
+            DaoT_Workflow daoT_Workflow = new DaoT_Workflow(this.Dam);
+
+            // PK
+            daoT_Workflow.PK_WorkflowControlNo = workflowControlNo;
+
+            //Updates the EndDate to current date for forceful termination
+            daoT_Workflow.Set_EndDate_forUPD = DateTime.Now;
+
+            daoT_Workflow.S3_Update();
+
+            // --------------------------------------------------
+            // 履歴に移動
+            // --------------------------------------------------
+            // T_CurrentWorkflow→T_WorkflowHistory
+            // --------------------------------------------------
+            dao.SQLFileName = "RequestApproval_Move.sql";
+            dao.SetParameter("WorkflowControlNo", workflowControlNo);
+            dao.ExecInsUpDel_NonQuery();
+
+            // リターン（MailTemplateId）
+            if (nextWorkflow["MailTemplateId"] == DBNull.Value)
+            {
+                return 0;
+            }
+            else
+            {
+                return (int)nextWorkflow["MailTemplateId"];
+            }
+        }
+
+        /// <summary>
+        /// This method is used to accept the workflow by different users once the workflow is accepted 
+        /// by updating acceptance columns of T_CurrentWorkflow and T_WorkflowHistory table with null.
+        /// </summary>
+        /// <param name="nextWorkflow"></param>
+        /// <param name="workflowControlNo"></param>        
+        /// <returns></returns>
+        public void SwitchPersonInCharge(DataRow nextWorkflow, string workflowControlNo)
+        {
+
+            #region チェック処理を実装
+
+            if (nextWorkflow == null)
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "nextWorkflow")));
+            }
+            else if (!nextWorkflow.Table.Columns.Contains("SubSystemId"))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED,
+                        "SubSystemId", "nextWorkflow")));
+            }
+            else if (string.IsNullOrEmpty(workflowControlNo))
+            {
+                throw new BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[0],
+                    String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR[1],
+                        String.Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")));
+            }
+
+            #endregion
+
+            //Updates the acceptance information with null in T_CurrentWorkflow table for many users acceptance            
+            DaoT_CurrentWorkflow daoT_CurrentWorkflow = new DaoT_CurrentWorkflow(this.Dam);
+
+            // 主キー情報
+            daoT_CurrentWorkflow.PK_WorkflowControlNo = workflowControlNo;
+
+            daoT_CurrentWorkflow.Set_AcceptanceDate_forUPD = DBNull.Value;
+            daoT_CurrentWorkflow.Set_AcceptanceUserId_forUPD = DBNull.Value;
+            daoT_CurrentWorkflow.Set_AcceptanceUserInfo_forUPD = DBNull.Value;
+
+            daoT_CurrentWorkflow.D3_Update();
         }
     }
 }

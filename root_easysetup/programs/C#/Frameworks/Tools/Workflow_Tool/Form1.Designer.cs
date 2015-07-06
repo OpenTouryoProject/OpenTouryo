@@ -49,6 +49,7 @@
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.button6 = new System.Windows.Forms.Button();
             this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.btnTurnbackIntoFirst = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.dtpReplyDeadline2 = new System.Windows.Forms.DateTimePicker();
             this.lblReplyDeadline2 = new System.Windows.Forms.Label();
@@ -70,6 +71,10 @@
             this.lblWorkflowControlNo = new System.Windows.Forms.Label();
             this.txtDearSirPTitleId = new System.Windows.Forms.TextBox();
             this.lblDearSirPTitleId = new System.Windows.Forms.Label();
+            this.txtToUserID = new System.Windows.Forms.TextBox();
+            this.lblToUserID = new System.Windows.Forms.Label();
+            this.btnForcedTermination = new System.Windows.Forms.Button();
+            this.btnSwitchPersonInCharge = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -218,6 +223,9 @@
             // 
             // tabPage7
             // 
+            this.tabPage7.Controls.Add(this.btnSwitchPersonInCharge);
+            this.tabPage7.Controls.Add(this.btnForcedTermination);
+            this.tabPage7.Controls.Add(this.btnTurnbackIntoFirst);
             this.tabPage7.Controls.Add(this.checkBox1);
             this.tabPage7.Controls.Add(this.dtpReplyDeadline2);
             this.tabPage7.Controls.Add(this.lblReplyDeadline2);
@@ -228,11 +236,18 @@
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.UseVisualStyleBackColor = true;
             // 
+            // btnTurnbackIntoFirst
+            // 
+            resources.ApplyResources(this.btnTurnbackIntoFirst, "btnTurnbackIntoFirst");
+            this.btnTurnbackIntoFirst.Name = "btnTurnbackIntoFirst";
+            this.btnTurnbackIntoFirst.UseVisualStyleBackColor = true;
+            this.btnTurnbackIntoFirst.Click += new System.EventHandler(this.btnTurnbackIntoFirst_Click);
+            // 
             // checkBox1
             // 
-            resources.ApplyResources(this.checkBox1, "checkBox1");
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            resources.ApplyResources(this.checkBox1, "checkBox1");
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
@@ -342,10 +357,36 @@
             resources.ApplyResources(this.lblDearSirPTitleId, "lblDearSirPTitleId");
             this.lblDearSirPTitleId.Name = "lblDearSirPTitleId";
             // 
+            // txtToUserID
+            // 
+            resources.ApplyResources(this.txtToUserID, "txtToUserID");
+            this.txtToUserID.Name = "txtToUserID";
+            // 
+            // lblToUserID
+            // 
+            resources.ApplyResources(this.lblToUserID, "lblToUserID");
+            this.lblToUserID.Name = "lblToUserID";
+            // 
+            // btnForcedTermination
+            // 
+            resources.ApplyResources(this.btnForcedTermination, "btnForcedTermination");
+            this.btnForcedTermination.Name = "btnForcedTermination";
+            this.btnForcedTermination.UseVisualStyleBackColor = true;
+            this.btnForcedTermination.Click += new System.EventHandler(this.btnForcedTermination_Click);
+            // 
+            // btnSwitchPersonInCharge
+            // 
+            resources.ApplyResources(this.btnSwitchPersonInCharge, "btnSwitchPersonInCharge");
+            this.btnSwitchPersonInCharge.Name = "btnSwitchPersonInCharge";
+            this.btnSwitchPersonInCharge.UseVisualStyleBackColor = true;
+            this.btnSwitchPersonInCharge.Click += new System.EventHandler(this.btnSwitchPersonInCharge_Click);
+            // 
             // Form1
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.txtToUserID);
+            this.Controls.Add(this.lblToUserID);
             this.Controls.Add(this.txtDearSirPTitleId);
             this.Controls.Add(this.lblDearSirPTitleId);
             this.Controls.Add(this.txtWorkflowControlNo);
@@ -423,6 +464,11 @@
         private System.Windows.Forms.TextBox txtCurrentWorkflowReserveArea2;
         private System.Windows.Forms.Label lblCurrentWorkflowReserveArea2;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.TextBox txtToUserID;
+        private System.Windows.Forms.Label lblToUserID;
+        private System.Windows.Forms.Button btnTurnbackIntoFirst;
+        private System.Windows.Forms.Button btnForcedTermination;
+        private System.Windows.Forms.Button btnSwitchPersonInCharge;
     }
 }
 

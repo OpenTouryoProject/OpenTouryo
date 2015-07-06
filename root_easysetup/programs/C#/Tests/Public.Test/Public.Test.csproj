@@ -67,7 +67,6 @@
     <Compile Include="IO\SymmetricCryptographyTest.cs" />
     <Compile Include="Log\LogTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resource1.Designer.cs" />
     <Compile Include="Str\CheckCharCodeTest.cs" />
     <Compile Include="Str\CustomEncodeTest.cs" />
     <Compile Include="Str\FormatCheckerTest.cs" />
@@ -84,9 +83,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Load.xml" />
     <EmbeddedResource Include="XMLLoadAsString.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resource1.resx" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Empty.xml" />

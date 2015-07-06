@@ -98,13 +98,13 @@
     <Compile Include="Workflow\Workflow.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\MyBusinessApplicationExceptionMessageResource.ja.resx" />
+    <EmbeddedResource Include="Resources\MyBusinessApplicationExceptionMessageResource.ja-JP.resx" />
     <EmbeddedResource Include="Resources\MyBusinessApplicationExceptionMessageResource.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MyBusinessApplicationExceptionMessageResource.Designer.vb</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\MyBusinessSystemExceptionMessageResource.ja.resx" />
+    <EmbeddedResource Include="Resources\MyBusinessSystemExceptionMessageResource.ja-JP.resx" />
     <EmbeddedResource Include="Resources\MyBusinessSystemExceptionMessageResource.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <Generator>ResXFileCodeGenerator</Generator>

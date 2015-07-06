@@ -13,6 +13,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//*  2015/04/17  Supragyan         Created Textbox Textchanged event
 //**********************************************************************************
 
 // System
@@ -520,6 +521,18 @@ public partial class Aspx_testFxLayerP_normal_testScreen2 : MyBaseController
         return "";
     }
 
+    /// <summary>
+    /// UOC_txtTextBox2のテキスト変更イベント
+    /// </summary>
+    /// <param name="fxEventArgs"></param>
+    protected void UOC_txtTextBox2_TextChanged(FxEventArgs fxEventArgs)
+    {
+        this.ShowOKMessageDialog(
+            "親画面別セッション（キー：msg）は、",
+            "You changed text to" + " " + txtTextBox2.Text,
+            FxEnum.IconType.Information, "テスト結果");
+    }
+
     #endregion
 
     #endregion
@@ -592,4 +605,5 @@ public partial class Aspx_testFxLayerP_normal_testScreen2 : MyBaseController
     }
 
     #endregion
+
 }

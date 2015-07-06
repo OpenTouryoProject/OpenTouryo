@@ -62,7 +62,7 @@
                 <br />
                 ※ AutoPostBack = True<br />
                 <br />
-                 <br />
+                <br />
                 ・CheckboxList<br />
                 <cc1:WebCustomCheckBoxList ID="cblCheckBoxList1" runat="server" AutoPostBack="True"
                     Width="150px">
@@ -114,7 +114,8 @@
                 <cc1:WebCustomTextBox ID="TextBox1" runat="server"></cc1:WebCustomTextBox><br />
                 <cc1:WebCustomButton ID="btnButton6" runat="server" Text="設定" Width="50px" />
                 <cc1:WebCustomButton ID="btnButton7" runat="server" Text="取得" Width="50px" />
-                <cc1:WebCustomButton ID="btnButton8" runat="server" Text="削除" Width="50px" />
+                <cc1:WebCustomButton ID="btnButton8" runat="server" Text="削除" Width="50px" /><br />
+                <cc1:WebCustomTextBox ID="txtTextBox2" runat="server" AutoPostBack="true"></cc1:WebCustomTextBox>
             </td>
             <td>
                 クライアントからの業務モードレス画面起動<br />

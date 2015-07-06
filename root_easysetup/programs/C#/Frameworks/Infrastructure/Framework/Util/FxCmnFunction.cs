@@ -48,15 +48,16 @@
 //*  2014/05/16  西野  大介        キャスト可否チェックのロジックを見直した。
 //*  2014/08/18  Sai-San           Added code for adding events dynamically for ListView events. 
 //*  2014/10/03  Rituparna         Added code for Supporting ItemCommand event to ListViewControl. 
-//*  2014/10/03  Rituparna         Added code SelectedIndexChanged for RadiobuttonList and CheckBoxList. 
+//*  2014/10/03  Rituparna         Added code SelectedIndexChanged for RadiobuttonList and CheckBoxList.
+//*  2014/11/19  Sandeep           Removed Redundant Code "FxCmnFunction.AddControlToDic" in method GetCtrlAndSetClickEventHandler
+//*  2014/04/16  Supragyan         Added TextChanged event to TextBox control in method GetCtrlAndSetClickEventHandler.
 //**********************************************************************************
-
-using System.Text;
 
 // System
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 // System.Web
 using System.Web;
@@ -186,7 +187,6 @@ namespace Touryo.Infrastructure.Framework.Util
                             // ControlHt.Add(ctrl.ID, ctrl);
                             // ControlHt[ctrl.ID] = ctrl;
                             FxCmnFunction.AddControlToDic(ctrl, controlHt); // 2011/02/12
-
                         }
                         else if (prefix == GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_LINK_BUTTON))
                         {
@@ -358,10 +358,24 @@ namespace Touryo.Infrastructure.Framework.Util
                             listView.PagePropertiesChanged += (EventHandler)eventHandlers[2];
                             //Sorting event handler
                             listView.Sorting += (EventHandler<ListViewSortEventArgs>)eventHandlers[3];
-                            //itemcommand event handler
-                            FxCmnFunction.AddControlToDic(ctrl, controlHt);
+                            //itemcommand event handler                           
                             listView.ItemCommand += (EventHandler<ListViewCommandEventArgs>)eventHandlers[5];
+
+                            // ディクショナリに格納
                             FxCmnFunction.AddControlToDic(ctrl, controlHt);
+                        }
+                        else if (prefix == GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_TEXTBOX))
+                        {
+                            // Text Box
+                            System.Web.UI.WebControls.TextBox textBox = FxCmnFunction.CastByAsOperator<System.Web.UI.WebControls.TextBox>(ctrl, prefix);
+
+                            // ハンドラをキャストして設定
+                            textBox.TextChanged += (EventHandler)eventHandler;
+
+                            // ディクショナリに格納
+                            // ControlHt.Add(ctrl.ID, ctrl);
+                            // ControlHt[ctrl.ID] = ctrl;
+                            FxCmnFunction.AddControlToDic(ctrl, controlHt); 
                         }
                     }
                 }
@@ -614,6 +628,18 @@ namespace Touryo.Infrastructure.Framework.Util
                                 // ディクショナリに格納
                                 controlHt[ctrl.ID] = ctrl;
                                 FxCmnFunction.AddControlToDic(ctrl, controlHt);
+                            }
+                            else if (prefix == GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_TEXTBOX))
+                            {
+                                // Text box
+                                System.Web.UI.WebControls.TextBox textBox = FxCmnFunction.CastByAsOperator<System.Web.UI.WebControls.TextBox>(ctrl, prefix);
+
+                                // ハンドラをキャストして設定
+                                textBox.TextChanged += (EventHandler)eventHandler;
+
+                                // ディクショナリに格納
+                                controlHt[ctrl.ID] = ctrl;
+                                break;
                             }
                         }
                     }

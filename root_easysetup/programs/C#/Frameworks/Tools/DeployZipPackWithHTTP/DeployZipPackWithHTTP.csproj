@@ -189,7 +189,7 @@
     <EmbeddedResource Include="Form2.resx">
       <DependentUpon>Form2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MSGDefinition.xml">
+    <EmbeddedResource Include="MSGDefinition_ja-JP.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
@@ -197,7 +197,7 @@
     <Resource Include="app.ico" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MSGDefinition_ja-JP.xml">
+    <EmbeddedResource Include="MSGDefinition.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

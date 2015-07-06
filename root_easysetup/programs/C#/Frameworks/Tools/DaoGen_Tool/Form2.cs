@@ -46,7 +46,12 @@
 //*  2014/04/30  Santosh san      Internationalization: Added Method to get the strings from the resource files based on the keys values passed.
 //*                               and and replaced this method wherever hard coded values.
 //*  2014/07/16  Sai-san          Changed ParamSign value to @ in case of PostGreSQL db  
-//*  2014/08/25  Santosh Avaji    Added key values to app.config and constants after removing dropdownlist from Template files, and did code modification for selecting data provider type 
+//*  2014/08/25  Santosh Avaji    Added key values to app.config and constants after removing dropdownlist from Template files, and did code 
+//*                               modification for selecting data provider type
+//*  2015/03/20  Sandeep Nayak    Added TimeStamp placeholder's Key values in app.config file and 
+//*                               added constant to get the TimeStamp placeholder from the app.config file and 
+//*                               did code modification to replace the required TimeStamp code in the template, if TimeStamp selected in the tool.
+//*  2015/06/18  Sai-san          Added <Else></Else> tag in create string method and ReplaceSQL method to fix the bug 'DynInsParameter of dynamic insert'       
 //**********************************************************************************
 
 // データプロバイダ
@@ -100,7 +105,7 @@ namespace DaoGen_Tool
 
         /// <summary>SQLファイル（動的）の拡張子</summary>
         private readonly string XmlFileExtension = "xml";
-        
+
         #region 読み
 
         #region Daoテンプレート ファイル
@@ -149,7 +154,7 @@ namespace DaoGen_Tool
         /// <summary>TableAdapterテンプレート ファイル パス</summary>
         /// <remarks>初期化対象外</remarks>
         private string TableAdapterTemplateFilePath = "";
-        
+
         #endregion
 
         #region 画面テンプレート ファイル
@@ -171,7 +176,7 @@ namespace DaoGen_Tool
         /// <summary>Detailテンプレート ファイル パス</summary>
         /// <remarks>初期化対象外</remarks>
         private string DetailTemplateFilePath = "";
-        
+
         #endregion
 
         #endregion
@@ -187,13 +192,13 @@ namespace DaoGen_Tool
         /// <summary>SQLテンプレート ファイル パス（静的：Insert）</summary>
         /// <remarks>初期化対象外</remarks>
         private string InsertTemplateFilePath = "";
-        
+
         /// <summary>SQLテンプレート ファイル名（静的：Select）</summary>
         private string SelectTemplateFileName = "";
         /// <summary>SQLテンプレート ファイル パス（静的：Select）</summary>
         /// <remarks>初期化対象外</remarks>
         private string SelectTemplateFilePath = "";
-        
+
         /// <summary>SQLテンプレート ファイル名（静的：Update）</summary>
         private string UpdateTemplateFileName = "";
         /// <summary>SQLテンプレート ファイル パス（静的：Update）</summary>
@@ -221,13 +226,13 @@ namespace DaoGen_Tool
         /// <summary>SQLテンプレート ファイル パス（動的：Select）</summary>
         /// <remarks>初期化対象外</remarks>
         private string DynSelTemplateFilePath = "";
-        
+
         /// <summary>SQLテンプレート ファイル名（動的：Update）</summary>
         private string DynUpdTemplateFileName = "";
         /// <summary>SQLテンプレート ファイル パス（動的：Update）</summary>
         /// <remarks>初期化対象外</remarks>
         private string DynUpdTemplateFilePath = "";
-        
+
         /// <summary>SQLテンプレート ファイル名（動的：Delete）</summary>
         private string DynDelTemplateFileName = "";
         /// <summary>SQLテンプレート ファイル パス（動的：Delete）</summary>
@@ -241,7 +246,7 @@ namespace DaoGen_Tool
         /// <remarks>初期化対象外</remarks>
         private string DynSelCntTemplateFilePath = "";
         // ↑↑↑【追加】↑↑↑
-        
+
         #endregion
 
         #endregion
@@ -345,7 +350,7 @@ namespace DaoGen_Tool
         private string RpTimeStamp = "";
         /// <summary>タイム スタンプ（置換文字列）</summary>
         private string TimeStamp = "";
-        
+
         /// <summary>ユーザ名（置換対象）</summary>
         private string RpUserName = "";
         /// <summary>ユーザ名（置換文字列）</summary>
@@ -384,7 +389,7 @@ namespace DaoGen_Tool
         private string RpPKColumnListSQL = "";
         /// <summary>静・動共用 PKカラム リスト（置換文字列）</summary>
         private string PKColumnListSQL = "";
-        
+
         // 検索条件
 
         /// <summary>静的SQL用 検索条件（置換対象）</summary>
@@ -434,7 +439,7 @@ namespace DaoGen_Tool
         private string RpDynUpdParameters = "";
         /// <summary>動的SQL用 更新バインド変数リスト（置換文字列）</summary>
         private string DynUpdParameters = "";
-        
+
         #endregion
 
         #region Dao
@@ -580,7 +585,10 @@ namespace DaoGen_Tool
         private string CcLoopStart_PPLike = "";
         /// <summary>Select文のLike句用の[何某]生成終了制御用文字列</summary>
         private string CcLoopEnd_PPLike = "";
-        // ↑↑↑【追加】↑↑↑
+        // ↑↑↑【追加】↑↑↑        
+
+        /// <summary>CcIsRequired_TimeStamp</summary>
+        private string CcIsRequired_TimeStamp = string.Empty;
 
         #endregion
 
@@ -655,7 +663,6 @@ namespace DaoGen_Tool
         private string RpPKFirstColumn = "";
         /// <summary>主キーの先頭列（置換対象）</summary>
         private string PKFirstColumn = "";
-        
 
         #endregion
         // ↑↑↑【追加】↑↑↑
@@ -812,7 +819,7 @@ namespace DaoGen_Tool
             {
                 // throw new CheckException("テンプレート ファイルが存在しません。：" + tempPath) ;
                 throw new CheckException(this.RM_GetString("TempFilenotExists") + tempPath);
-                
+
             }
         }
 
@@ -833,11 +840,11 @@ namespace DaoGen_Tool
             dbti = null;
 
             // エンコーディング
-            Encoding enc =null;
-            
+            Encoding enc = null;
+
             // DDE：D層定義情報のEncoding
             enc = Encoding.GetEncoding((int)this.cmbDDEncoding.SelectedValue);
- 
+
             // 読込ファイル ストリームを生成する。
             ddi = new StreamReader(this.txtSetDaoDefinition.Text, enc);
 
@@ -923,7 +930,7 @@ namespace DaoGen_Tool
         {
             this.strDAP = s;
             switch (s)
-            {   
+            {
                 case "OLE":
                     this.rbnOLE.Select();
                     this.strDBMS = "OLE";
@@ -976,19 +983,19 @@ namespace DaoGen_Tool
             this.cbxDaoDefinitionHeader.Checked = true;
 
             // テンプレート ファイル
-            
+
             //this.rbnDTE_UTF_8.Select();
             this.cmbDTEncoding.ValueMember = "key";
             this.cmbDTEncoding.DisplayMember = "value";
             this.cmbDTEncoding.DataSource = CustomEncode.GetEncodings();
             this.cmbDTEncoding.SelectedValue = 65001;
-            
+
             //this.rbnSTE_Shift_JIS.Select();
             this.cmbSTEncoding.ValueMember = "key";
             this.cmbSTEncoding.DisplayMember = "value";
             this.cmbSTEncoding.DataSource = CustomEncode.GetEncodings();
             this.cmbSTEncoding.SelectedValue = 65001;
-            
+
             this.rbnDTL_CS.Select();
 
             // Daoファイル
@@ -1496,6 +1503,13 @@ namespace DaoGen_Tool
             }
             // ↑↑↑【追加】↑↑↑
 
+            // To Get TimeStamp placeholder from config file 
+            this.CcIsRequired_TimeStamp = GetConfigParameter.GetConfigValue("CcIsRequired_TimeStamp");
+            if (string.IsNullOrEmpty(this.CcIsRequired_TimeStamp))
+            {
+                throw new CheckException(this.RM_GetString("AppConfigParameterNotSet") + "CcIsRequired_TimeStamp");
+            }
+
             #endregion
 
             #region メソッド名
@@ -1742,7 +1756,7 @@ namespace DaoGen_Tool
 
         /// <summary>「エスケープ文字」活性・非活性制御</summary>
         bool GbxOracleLikeSettingEnabled;
-        
+
         /// <summary>「エスケープ文字」活性・非活性制御</summary>
         private void rbnODP_CheckedChanged(object sender, EventArgs e)
         {
@@ -1829,7 +1843,7 @@ namespace DaoGen_Tool
             ofd.Filter = this.RM_GetString("OpenFileDialogFilter");
             //ofd.Title = "D層定義情報ファイル";
             ofd.Title = this.RM_GetString("OpenFileDialogTitle");
-            
+
             DialogResult dRet = ofd.ShowDialog();
 
             if (dRet == DialogResult.OK)
@@ -1929,7 +1943,7 @@ namespace DaoGen_Tool
             // DB型定義情報ファイル読み込みフラグ設定
             this.ReadDbTypeInfo = (this.ReadDbTypeInfo || rbnODP.Checked);
             // ↑↑↑【追加】↑↑↑
-            
+
             try
             {
                 // カーソルを待機状態にする
@@ -2007,8 +2021,8 @@ namespace DaoGen_Tool
                     if (fileInfo.Exists) { }
                     else
                     {
-                       //MessageBox.Show(string.Format("チェックエラーです：DB型情報ファイル[{0}]が存在しません。", fileInfo.Name));
-                       MessageBox.Show(string.Format(this.RM_GetString("FilenotExistDBtypeInfo"), fileInfo.Name)); 
+                        //MessageBox.Show(string.Format("チェックエラーです：DB型情報ファイル[{0}]が存在しません。", fileInfo.Name));
+                        MessageBox.Show(string.Format(this.RM_GetString("FilenotExistDBtypeInfo"), fileInfo.Name));
                         return;
                     }
                 }
@@ -2210,7 +2224,7 @@ namespace DaoGen_Tool
                     // 更新方法だけある。
                     //MessageBox.Show("タイムスタンプ列名がありません。");
                     MessageBox.Show(this.RM_GetString("NoTimestampColName"));
-                    
+
                     return;
                 }
 
@@ -2318,7 +2332,7 @@ namespace DaoGen_Tool
                         }
                     }
                     // ↑↑↑【追加】↑↑↑
-                    
+
                     // ↓↓↓【追加】↓↓↓
                     if (this.ReadDbTypeInfo)
                     {
@@ -2403,7 +2417,7 @@ namespace DaoGen_Tool
                             }
                         }
                         // ↑↑↑【追加】↑↑↑
-                        
+
                         // ↓↓↓【追加】↓↓↓
                         if (this.ReadDbTypeInfo)
                         {
@@ -2431,7 +2445,7 @@ namespace DaoGen_Tool
                         // ２行目（その他の列情報）を読む。
                         rlDaoDef = srDaoDef.ReadLine();
                         rlDaoDef2 = rlDaoDef.Split(',');
-                        
+
                         // ↓↓↓【追加】↓↓↓
                         if (this.CreateDTO)
                         {
@@ -2439,7 +2453,7 @@ namespace DaoGen_Tool
                             rlTypeDef2 = rlTypeDef.Split(',');
                         }
                         // ↑↑↑【追加】↑↑↑
-                        
+
                         // ↓↓↓【追加】↓↓↓
                         if (this.ReadDbTypeInfo)
                         {
@@ -2486,7 +2500,7 @@ namespace DaoGen_Tool
                             }
                         }
                         // ↑↑↑【追加】↑↑↑
-                        
+
                         // ↓↓↓【追加】↓↓↓
                         if (this.ReadDbTypeInfo)
                         {
@@ -2711,7 +2725,7 @@ namespace DaoGen_Tool
                         // その他、ColumnList
                         this.AllColumnList = "";
                         this.PKColumnList = "";
-                        this.PKFirstColumn = ""; 
+                        this.PKFirstColumn = "";
                         this.AllColumnListTableAdapterSQL = "";
 
                         #endregion
@@ -3157,7 +3171,7 @@ namespace DaoGen_Tool
                     swSQLFile.Close();
                 }
 
-                #endregion            
+                #endregion
             }
         }
 
@@ -3213,7 +3227,7 @@ namespace DaoGen_Tool
                 srClassTpl = this.OpenSrTemplate(classTemplateFilePath, encoding);
 
                 // 出力ファイル（拡張子の調整）
-                string temp ="";
+                string temp = "";
                 if (classTemplateFilePath.Substring(classTemplateFilePath.Length - 4).ToUpper() != ".XSD"
                     && classTemplateFilePath.Substring(classTemplateFilePath.Length - 5).ToUpper() != ".ASPX")
                 {
@@ -3222,7 +3236,7 @@ namespace DaoGen_Tool
                 }
 
                 swClassFile = this.OpenSwClassFile(this.FileName, temp);
-                
+
                 // ループ
                 while (!srClassTpl.EndOfStream)
                 {
@@ -3403,6 +3417,45 @@ namespace DaoGen_Tool
 
                     #endregion
 
+                    #region TimeStamp column code
+
+                    if (isProcessed)
+                    {
+                        // 処理済み
+                    }
+                    else
+                    {
+                        // 未処理
+
+                        // To replace the TimeStamp column code in the template 
+                        if (rlClassTpl.IndexOf(this.CcIsRequired_TimeStamp) == -1)
+                        { }
+                        else
+                        {
+                            // 読んで（制御コメント内を読む）
+                            rlClassTpl = srClassTpl.ReadLine();
+
+                            if (!string.IsNullOrEmpty(this.TimeStampColName))
+                            {
+                                // To replace TimeStamp code, if TimeStamp colum is selected
+                                rlClassTpl = this.ReplaceClass(srClassTpl.ReadLine());
+                            }
+                            else
+                            {
+                                // To remove TimeStamp code, if TimeStamp colum is not selected
+                                srClassTpl.ReadLine();
+                            }
+
+                            // 書いて
+                            swClassFile.WriteLine(rlClassTpl);
+
+                            // 処理済み
+                            isProcessed = true;
+                        }
+                    }
+
+                    #endregion
+
                     #endregion
 
                     #region 通常の置換処理
@@ -3483,7 +3536,7 @@ namespace DaoGen_Tool
         {
             // 主キーでループ
             //foreach (string col in this.PK_Columns)
-            for (int i = 0; i < this.PK_Columns.Count;  i++)
+            for (int i = 0; i < this.PK_Columns.Count; i++)
             {
                 // 一応、ルールに従って・・・
                 this.ColumnName = this.PK_Columns[i].ToString().Replace(' ', '_');
@@ -3700,7 +3753,7 @@ namespace DaoGen_Tool
                         this.ColumnsCondition +=
                             this.EnclosureCharS + col + this.EnclosureCharE + " = "
                             + this.ParamSign.ToString() + col.Replace(" ", "_") + ",";
-                        
+
                         //↑↑↑【削除】
                     }
                 }
@@ -3794,7 +3847,7 @@ namespace DaoGen_Tool
 
             //（７）DynIns用パラメタ リスト ★
             this.DynInsParameters +=
-                "<IF>" + this.ParamSign + col.Replace(' ', '_') + ",</IF>" + ",";
+                "<IF>" + this.ParamSign + col.Replace(' ', '_') + ",<ELSE></ELSE></IF>" + ",";
 
             #endregion
 
@@ -3814,7 +3867,7 @@ namespace DaoGen_Tool
 
         /// <summary>置換文字列と置換するSQLの最後のカンマを削除する</summary>
         private void DeleteLastComma()
-        {   
+        {
             //（１）共通 静的カラム リスト
             this.DeleteLastComma2(ref this.AllColumnListSQL);
             this.DeleteLastComma2(ref this.PKColumnListSQL);
@@ -3827,7 +3880,7 @@ namespace DaoGen_Tool
             this.DeleteLastComma2(ref this.DynColsCondition_Like);
             //（４）共通 動的更新SET句リスト ★
             this.DeleteLastComma2(ref this.DynUpdParameters);
-            
+
             //（５）Insert用パラメタ リスト ★
             this.DeleteLastComma2(ref this.InsertParameters);
             //（６）DynIns用カラム リスト ★
@@ -3882,7 +3935,7 @@ namespace DaoGen_Tool
             #region ヘッダ・フッタ、テーブル
 
             // ・XMLのエンコーディング
-            if(input.IndexOf(this.RpXMLEncoding) != -1)
+            if (input.IndexOf(this.RpXMLEncoding) != -1)
             {
                 input = input.Replace(this.RpXMLEncoding, this.XMLEncoding);
             }
@@ -4118,7 +4171,7 @@ namespace DaoGen_Tool
 
                     // 調整２
                     work = work.Replace(oldStirng + ",", newStirng + ",");
-                    
+
                     // 先ほど追加した「,」を削除する。
                     work = work.Substring(0, work.Length - 1);
                 }
@@ -4126,7 +4179,7 @@ namespace DaoGen_Tool
                 // 置換
                 input = input.Replace(this.RpInsertParameters, work);
             }
-            
+
             #endregion
 
             #region（６）DynIns用カラム リスト ★
@@ -4182,7 +4235,7 @@ namespace DaoGen_Tool
                 if (this.TimeStampStatus == TSS.NandM)
                 {
                     //「<IF>@eee,</IF>」 → 「SYSTIMESTAMP(),」と置換する。
-                    oldStirng = "<IF>" + this.ParamSign + this.TimeStampColName.Replace(' ', '_') + ",</IF>";
+                    oldStirng = "<IF>" + this.ParamSign + this.TimeStampColName.Replace(' ', '_') + ",<ELSE></ELSE></IF>";
 
                     newStirng = this.TimeStampUpdMethod + ",";
 
@@ -4254,7 +4307,7 @@ namespace DaoGen_Tool
         /// <param name="input">クラス テンプレートから入力した文字列</param>
         /// <returns>クラス テンプレートに出力する置換後の文字列</returns>
         private string ReplaceClass(string input)
-        {   
+        {
             #region ヘッダ共通部
             // To replace Correct column header Number 
             if (input.IndexOf(this.RpColumnNmbr) != -1)
@@ -4268,7 +4321,7 @@ namespace DaoGen_Tool
 
             // Daoクラス名
             input = input.Replace(this.RpDaoClassName, this.DaoClassName);
-            
+
             // Entityクラス名
             input = input.Replace(this.RpEntityClassName, this.EntityClassName);
             // DataSetクラス名
@@ -4323,8 +4376,8 @@ namespace DaoGen_Tool
             // コメントアウト(TimeStamp)
             if (!string.IsNullOrEmpty(this.TimeStampColName))
             {
-                input = input.Replace("TS" + this.RpCommentOut,"");
-                input = input.Replace(this.RpTimeStampColName, this.TimeStampColName);    
+                input = input.Replace("TS" + this.RpCommentOut, "");
+                input = input.Replace(this.RpTimeStampColName, this.TimeStampColName);
             }
             else
             {
@@ -4336,10 +4389,10 @@ namespace DaoGen_Tool
             input = input.Replace(this.RpPKFirstColumn, this.PKFirstColumn);
             // ・リスト
             input = input.Replace(this.RpPKColumnList, this.PKColumnList);
-            
+
             // TableAdapterで使用するカラム リスト
             input = input.Replace(this.RpAllColumnListTableAdapterSQL, this.AllColumnListTableAdapterSQL);
-            
+
             #endregion
 
             // DBMS and DAP in the pages for Data Provide rselection
@@ -4352,7 +4405,7 @@ namespace DaoGen_Tool
         #endregion
 
         #endregion
-        
+
         /// <summary>This Method gets the string values from resource file based on the key passed</summary>
         private string RM_GetString(string key)
         {

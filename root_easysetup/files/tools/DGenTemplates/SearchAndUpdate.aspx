@@ -43,7 +43,7 @@
                     <!-- ControlComment:LoopStart-PKColumn -->
                     <tr>
                         <td>_ColumnName_</td>
-                        <td><asp:TextBox ID="txt_ColumnName__OR" runat="server"></asp:TextBox></td>
+                        <td><cc1:WebCustomTextBox ID="txt_ColumnName__OR" runat="server"></cc1:WebCustomTextBox></td>
                     </tr>
                     <!-- ControlComment:LoopEnd-PKColumn -->
                     <!-- ControlComment:LoopStart-ElseColumn -->
@@ -92,14 +92,14 @@
             <!-- ControlComment:LoopStart-PKColumn -->
             <asp:TemplateField SortExpression="_ColumnName_">
                 <ItemTemplate>
-                    <asp:TextBox ReadOnly="true" BackColor="lightgray" ID="txt_ColumnName_" runat="server" Text='<%# Bind("_ColumnName_") %>'></asp:TextBox>
+                    <cc1:WebCustomTextBox ReadOnly="true" BackColor="lightgray" ID="txt_ColumnName_" runat="server" Text='<%# Bind("_ColumnName_") %>'></cc1:WebCustomTextBox>
                 </ItemTemplate>
             </asp:TemplateField>
             <!-- ControlComment:LoopEnd-PKColumn -->
             <!-- ControlComment:LoopStart-ElseColumn -->
             <asp:TemplateField SortExpression="_ColumnName_">
                 <ItemTemplate>
-                    <asp:TextBox ID="txt_ColumnName_" runat="server" Text='<%# Bind("_ColumnName_") %>'></asp:TextBox>
+                    <cc1:WebCustomTextBox ID="txt_ColumnName_" runat="server" Text='<%# Bind("_ColumnName_") %>'></cc1:WebCustomTextBox>
                 </ItemTemplate>
             </asp:TemplateField>
             <!-- ControlComment:LoopEnd-ElseColumn -->

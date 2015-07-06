@@ -35,11 +35,11 @@
 //*                                    ・ToDataTable、FromDataTable
 //*                                    ・ConvertDTTypeToType、ConvertTypeToDTType
 //*  2011/10/09  西野  大介        国際化対応
+//*  2015/03/05  Supragyan        Created  SavejqGridJson method for saving datatable data to JQGrid.
+//*  2015/06/08  Supragyan        Modified SavejqGridJson method for saving datatable data to JQGrid.
 //**********************************************************************************
-
+//system
 using System;
-using System.Collections;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
@@ -76,7 +76,7 @@ namespace Touryo.Infrastructure.Public.Dto
         /// <remarks>確認専用（変更されないように）</remarks>
         public string TableName
         {
-            get 
+            get
             {
                 return this._tblName;
             }
@@ -116,7 +116,7 @@ namespace Touryo.Infrastructure.Public.Dto
             // コンバートのことを考え棟梁部品は使用しない。）
             Regex rgx = new Regex("^[a-zA-Z0-9_-]+$");
             Match mch = rgx.Match(tblName);
-            
+
             if (mch.Success)
             {
                 // 表名が正しい
@@ -399,6 +399,88 @@ namespace Touryo.Infrastructure.Public.Dto
                     i++;
                 }
             }
+        }
+
+
+        /// <summary>SavejqGridJson method for converting datatable data to JQGrid.</summary>
+        /// <param name="data"></param>
+        /// <param name="totalCount"></param>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <returns>JQGridDataClass</returns>
+        public JQGridDataClass SavejqGridJson(DataTable data, int totalCount, string page, string rows)
+        {
+            int intRows = Math.Min(int.Parse(rows), totalCount);
+            int intPage = int.Parse(page);
+
+            // jqGrid に渡すデータを格納
+            JQGridDataClass jqGridData = new JQGridDataClass();
+            jqGridData.page = page;
+            jqGridData.total = (int)Math.Ceiling((double)totalCount / (double)intRows);
+
+            // jqGrid の各セルに表示するデータを格納
+            jqGridData.rows = new List<JQGridDataRowClass>();
+            for (int rIndex = 0; rIndex < intRows; rIndex++)
+            {
+                // ページなどを考慮し、DataTable から取得する行インデックスを取得           
+                if ((rIndex + 1) > data.Rows.Count)
+                {
+                    // 行インデックスが、実際の行数を超えた場合は、ループを抜ける
+                    // (最終ページの行数が端数の場合)
+                    break;
+                }
+
+                // jqGrid に表示する、1 行分のデータを格納
+                JQGridDataRowClass subData = new JQGridDataRowClass();
+                subData.id = data.Rows[rIndex][0].ToString();
+                subData.cell = new List<string>();
+
+                for (int cIndex = 0; cIndex < data.Columns.Count; cIndex++)
+                {
+                    // 列のデータを、DataTable から取得
+                    subData.cell.Add(data.Rows[rIndex][cIndex].ToString());
+                }
+                jqGridData.rows.Add(subData);
+            }
+            // jqGrid にデータを返す
+            return jqGridData;
+        }
+
+        /// <summary>
+        /// jqGrid に渡すデータを格納するクラス
+        /// </summary>
+        public class JQGridDataClass
+        {
+            /// <summary>
+            /// クエリの現在のページ
+            /// </summary>
+            public string page;
+
+            /// <summary>
+            /// クエリの総ページ数
+            /// </summary>
+            public int total;
+
+            /// <summary>
+            /// 実際のデータを含むリスト
+            /// </summary>
+            public List<JQGridDataRowClass> rows;
+        }
+
+        /// <summary>
+        /// jqGrid に表示する、1 行分のデータを格納するクラス
+        /// </summary>
+        public class JQGridDataRowClass
+        {
+            /// <summary>
+            /// 列の固有 ID
+            /// </summary>
+            public string id;
+
+            /// <summary>
+            /// 列のデータを含むリスト
+            /// </summary>
+            public List<string> cell;
         }
     }
 }

@@ -34,14 +34,23 @@
 //*  2011/11/21  西野  大介        マーシャリングのサポート メソッドを追加
 //*  2014/09/05  Rituparna         Added TableRecords class ,SaveJson and LoadJson Method
 //*  2014/09/09  Rituparna         Modified TableRecords class ,SaveJson and LoadJson Method
+//*  2015/01/15	 Supragyan         Added StringFromPrimitivetypes and PrimitivetypeFromString method
+//*  2015/01/15	 Supragyan         Modified SaveJson,LoadJson,Save,Load method by implementing 
+//*                                StringFromPrimitivetypes and PrimitivetypeFromString method
+//*  2015/03/20  Sai               Modifed varaiable '_tbls' access specifier to Private instead of Public 
 //**********************************************************************************
-
+//System
 using System;
 using System.IO;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+
+//Newtonsoft
 using Newtonsoft.Json;
+
+//Public
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Dto
 {
@@ -150,6 +159,8 @@ namespace Touryo.Infrastructure.Public.Dto
 
         #endregion
 
+        #region SaveJson
+
         /// <summary>
         /// SaveJson Method(To save records in Json Format)
         /// </summary>
@@ -157,6 +168,7 @@ namespace Touryo.Infrastructure.Public.Dto
         public string SaveJson()
         {
             TableRecords tableRecords = null;
+
             List<TableRecords> lstTableRecords = new List<TableRecords>();
 
             int tblNo = -1;
@@ -188,43 +200,12 @@ namespace Touryo.Infrastructure.Public.Dto
                         colNo = colNo + 1;
                         object colValue;
                         colValue = dr[col.ColName];
-                        if (colValue == null)
-                        {
-                            //add null to rowDetails
-                            rowDetails.Add(col.ColName, null);
-                        }
-                        else if (DTColumn.CheckType(colValue, DTType.String))
-                        {
-                            string strTemp = ((string)colValue);
-                            rowDetails.Add(col.ColName, strTemp);
-                        }
-                        else if (DTColumn.CheckType(colValue, DTType.ByteArray))
-                        {
-                            // バイト配列は、Base64エンコードして電文に乗せる
-                            string strBase64 = Convert.ToBase64String((byte[])colValue);
-                            rowDetails.Add(col.ColName, strBase64);
-                        }
-                        else if (DTColumn.CheckType(colValue, DTType.DateTime))
-                        {
-                            // DateTimeは、yyyy/M/d-H:m:s.fffとする。
-                            DateTime dttm = (DateTime)colValue;
-                            string strDttm = "";
 
-                            strDttm += dttm.Year + "/";
-                            strDttm += dttm.Month + "/";
-                            strDttm += dttm.Day + "-";
+                        // add values to rowdetails based on colvalue.
+                        string strTemp = CustomMarshaler.StringFromPrimitivetype(colValue, false);
+                        rowDetails.Add(col.ColName, strTemp);
 
-                            strDttm += dttm.Hour + ":";
-                            strDttm += dttm.Minute + ":";
-                            strDttm += dttm.Second + ".";
-                            strDttm += dttm.Millisecond;
-                            rowDetails.Add(col.ColName, strDttm);
-                        }
-                        else
-                        {
-                            rowDetails.Add(col.ColName, colValue.ToString());
-                        }
-                        //adding rowState in rowDeatils
+                        // adding rowState in rowDeatils.
                         if (rowStateFlag == 1 && colNo == dt.Cols.Count)
                         {
                             rowDetails.Add("rowstate", (int)dr.RowState);
@@ -241,6 +222,8 @@ namespace Touryo.Infrastructure.Public.Dto
             string json = JsonConvert.SerializeObject(lstTableRecords);
             return json;
         }
+
+        #endregion
 
         #region セーブ＆ロード（テキスト化）
 
@@ -286,64 +269,13 @@ namespace Touryo.Infrastructure.Public.Dto
                         // 列番号のインクリメント
                         colNo++;
 
-                        if (o == null)
-                        {
-                            // null値はnullと出力する。
-                            tw.WriteLine(
-                                "cel:"
-                                + tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
-                                ":" + "null");
-                        }
-                        else if (DTColumn.CheckType(o, DTType.String))
-                        {
-                            // 文字列は改行を処理する
-                            string strTemp = ((string)o);
-                            strTemp = strTemp.Replace("\r", "\rrnr:");
-                            strTemp = strTemp.Replace("\n", "\rrnn:");
+                        string strTemp = CustomMarshaler.StringFromPrimitivetype(o, true);
+                        tw.WriteLine(
+                                  "cel:"
+                                  + tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
+                                  ":" + strTemp);
 
-                            strTemp = strTemp.Replace("\r", "\r\n");
-                            tw.WriteLine(
-                                "cel:"
-                                + tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
-                                ":" + strTemp);
-                        }
-                        else if (DTColumn.CheckType(o, DTType.ByteArray))
-                        {
-                            // バイト配列は、Base64エンコードして電文に乗せる
-                            string strBase64 = Convert.ToBase64String((byte[])o);
-                            tw.WriteLine(
-                                "cel:"
-                                + tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
-                                ":" + strBase64);
-                        }
-                        else if (DTColumn.CheckType(o, DTType.DateTime))
-                        {
-                            // DateTimeは、yyyy/M/d-H:m:s.fffとする。
-                            DateTime dttm = (DateTime)o;
-                            string strDttm = "";
 
-                            strDttm += dttm.Year + "/";
-                            strDttm += dttm.Month + "/";
-                            strDttm += dttm.Day + "-";
-
-                            strDttm += dttm.Hour + ":";
-                            strDttm += dttm.Minute + ":";
-                            strDttm += dttm.Second + ".";
-                            strDttm += dttm.Millisecond;
-
-                            tw.WriteLine(
-                                "cel:"
-                                + tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
-                                ":" + strDttm);
-                        }
-                        else
-                        {
-                            // 通常通り、ToStringして出力
-                            tw.WriteLine(
-                                "cel:"
-                                + tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
-                                ":" + o.ToString());
-                        }
                     }
 
                     // 行ステータス
@@ -379,12 +311,12 @@ namespace Touryo.Infrastructure.Public.Dto
                 this.Add(tbl);
 
                 Dictionary<string, string> tempCol = lstTableRecords[i].col;
-               
+
                 foreach (string key in tempCol.Keys)
                 {
                     string colName = key;
                     string colType = tempCol[key];
-                    
+
                     //add the colName and colValue into DTColumn
                     col = new DTColumn(colName, DTColumn.StringToEnum(colType));
 
@@ -392,15 +324,15 @@ namespace Touryo.Infrastructure.Public.Dto
                     tbl.Cols.Add(col);
                 }
 
-                ArrayList tempRow = lstTableRecords[i].row;              
+                ArrayList tempRow = lstTableRecords[i].row;
                 for (int j = 0; j < lstTableRecords[i].row.Count; j++)
                 {
                     //deserialize the first value inside row of lstTableRecords
                     object rowJson = JsonConvert.DeserializeObject(lstTableRecords[i].row[j].ToString());
-                    
+
                     //Convert the deserialized value into dictionary
                     Dictionary<string, object> rowDetails = JsonConvert.DeserializeObject<Dictionary<string, object>>(rowJson.ToString());
-                  
+
                     int colIndex = 0;
                     if (colIndex == 0)
                     {
@@ -415,10 +347,12 @@ namespace Touryo.Infrastructure.Public.Dto
                     {
                         string colName = key.Key;
                         object colValue = rowDetails[colName];
+
                         // getting the values and adding it to rows
                         if (colName != "rowstate")
                         {
                             col = (DTColumn)tbl.Cols.ColsInfo[colIndex];
+
                             if (colValue == null)
                             {
                                 row[colIndex] = null;
@@ -430,35 +364,11 @@ namespace Touryo.Infrastructure.Public.Dto
                                 // インデックスを退避
                                 bkColIndex = colIndex;
                             }
-                            else if (col.ColType == DTType.ByteArray)
-                            {
-                                // バイト配列は、Base64デコードする。
-                                byte[] celByte = Convert.FromBase64String(colValue.ToString());
-                                row[colIndex] = celByte;
-                            }
-                            else if (col.ColType == DTType.DateTime)
-                            {
-                                // DateTimeは、yyyy/M/d-H:m:s.fff
-                                string ymd = colValue.ToString().Split('-')[0];
-                                string hmsf = colValue.ToString().Split('-')[1];
-
-                                DateTime cellDttm = new DateTime(
-                                    int.Parse(ymd.Split('/')[0]),
-                                    int.Parse(ymd.Split('/')[1]),
-                                    int.Parse(ymd.Split('/')[2]),
-                                    int.Parse(hmsf.Split(':')[0]),
-                                    int.Parse(hmsf.Split(':')[1]),
-                                    int.Parse(hmsf.Split(':')[2].Split('.')[0]),
-                                    int.Parse(hmsf.Split(':')[2].Split('.')[1]));
-
-                                row[colIndex] = cellDttm;
-                            }
                             else
                             {
-                                // 型変換を試みる。
-                                row[colIndex] = DTColumn.AutoCast(col.ColType, colValue.ToString());
+                                object primitiveData = CustomMarshaler.PrimitivetypeFromString(col.ColType, colValue.ToString());
+                                row[colIndex] = primitiveData;
                             }
-
                             colIndex = colIndex + 1;
                         }
                         else
@@ -552,16 +462,13 @@ namespace Touryo.Infrastructure.Public.Dto
                                 // 継続行
                             }
 
-                            // セルに値を設定
                             if (celString == "null")
                             {
                                 // row[colIndex] = null;
                             }
                             else
                             {
-                                // 列情報
                                 col = (DTColumn)tbl.Cols.ColsInfo[colIndex];
-
                                 if (col.ColType == DTType.String)
                                 {
                                     // そのまま
@@ -569,33 +476,9 @@ namespace Touryo.Infrastructure.Public.Dto
                                     // インデックスを退避
                                     bkColIndex = colIndex;
                                 }
-                                else if (col.ColType == DTType.ByteArray)
-                                {
-                                    // バイト配列は、Base64デコードする。
-                                    byte[] celByte = Convert.FromBase64String(celString);
-                                    row[colIndex] = celByte;
-                                }
-                                else if (col.ColType == DTType.DateTime)
-                                {
-                                    // DateTimeは、yyyy/M/d-H:m:s.fff
-                                    string ymd = celString.Split('-')[0];
-                                    string hmsf = celString.Split('-')[1];
-
-                                    DateTime cellDttm = new DateTime(
-                                        int.Parse(ymd.Split('/')[0]),
-                                        int.Parse(ymd.Split('/')[1]),
-                                        int.Parse(ymd.Split('/')[2]),
-                                        int.Parse(hmsf.Split(':')[0]),
-                                        int.Parse(hmsf.Split(':')[1]),
-                                        int.Parse(hmsf.Split(':')[2].Split('.')[0]),
-                                        int.Parse(hmsf.Split(':')[2].Split('.')[1]));
-
-                                    row[colIndex] = cellDttm;
-                                }
                                 else
                                 {
-                                    // 型変換を試みる。
-                                    row[colIndex] = DTColumn.AutoCast(col.ColType, celString);
+                                    object primitiveData = CustomMarshaler.PrimitivetypeFromString(col.ColType, celString.ToString());
                                 }
                             }
 

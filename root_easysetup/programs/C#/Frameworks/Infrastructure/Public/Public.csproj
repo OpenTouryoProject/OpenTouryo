@@ -164,7 +164,7 @@
     <Folder Include="Dll\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\PublicExceptionMessageResource.ja.resx" />
+    <EmbeddedResource Include="Resources\PublicExceptionMessageResource.ja-JP.resx" />
     <EmbeddedResource Include="Resources\PublicExceptionMessageResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PublicExceptionMessageResource.Designer.cs</LastGenOutput>

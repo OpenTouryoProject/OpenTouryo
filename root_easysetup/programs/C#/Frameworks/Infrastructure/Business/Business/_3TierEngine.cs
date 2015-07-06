@@ -29,12 +29,16 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2013/01/10  西野　大介        新規作成
 //*  2014/07/14  西野　大介        関連チェック処理を実装可能に
-//*  2014/07/17  Sai-San         Added Select count query and select paging query constants and checks for PostgreSQL db support 
-//*                              Added UOC_RelatedCheck override method and method calls in methods
-//*                              'UOC_InsertRecord', 'UOC_UpdateRecord', 'UOC_DeleteRecord' and 'UOC_BatchUpdate' 
-//*  2014/07/21   Rituparna      Added SelectCount and SelectPaging query constatnts and check for MySql db support
+//*  2014/07/17  Sai-San           Added Select count query and select paging query constants and checks for PostgreSQL db support 
+//*                                Added UOC_RelatedCheck override method and method calls in methods
+//*                                'UOC_InsertRecord', 'UOC_UpdateRecord', 'UOC_DeleteRecord' and 'UOC_BatchUpdate' 
+//*  2014/07/21  Rituparna         Added SelectCount and SelectPaging query constatnts and check for MySql db support
 //*
-//*2014/08/14   Santosh Avaji    Added and modidfied code for DB2 support 
+//*  2014/08/14  Santosh Avaji     Added and modidfied code for DB2 support
+//*  2014/12/10  西野　大介        Modified because there was a problem with the SELECT_PAGING_SQL_TEMPLATE_ORACLE.
+//*  2014/12/10  西野　大介        Implementations of the related check process has been changed for problem.
+//*                                Change the signature of the CRUD methods. "private" ---> "protected virtual"
+//*  2015/04/29  Sandeep          Modified the code of 'UOC_SelectMethod' to retrive 30 records instead of 31 records
 //**********************************************************************************
 
 // レイトバインド用
@@ -101,17 +105,14 @@ namespace Touryo.Infrastructure.Business.Business
         /// <summary>データ取得SQLテンプレート（DBMSによって可変となる）</summary>
         /// <remarks>Oracle用</remarks>
         private const string SELECT_PAGING_SQL_TEMPLATE_ORACLE =
-            "SELECT {0} FROM ( SELECT {0}, ROW_NUMBER() OVER (ORDER BY \"{1}\" {2}) \"RNUM\" FROM \"{3}\" {4} ) WHERE \"RNUM\" BETWEEN {5} AND {6}";
-
-        /// <summary>
-        ///Selectpaging query from Mysql Database
-        /// </summary>
+            "SELECT {0} FROM ( SELECT {0}, ROW_NUMBER() OVER (ORDER BY \"{1}\" {2}) \"RNUM\" FROM {3} {4} ) WHERE \"RNUM\" BETWEEN {5} AND {6}";
+            //"SELECT {0} FROM ( SELECT {0}, ROW_NUMBER() OVER (ORDER BY \"{1}\" {2}) \"RNUM\" FROM \"{3}\" {4} ) WHERE \"RNUM\" BETWEEN {5} AND {6}";
+            
+        /// <summary>Selectpaging query from Mysql Database</summary>
         private const string SELECT_PAGING_MYSQL_TEMPLATE =
             "SELECT * FROM(SELECT * FROM ( SELECT *,  @i := @i + 1 AS RESULT FROM {3},(SELECT @i := 0) TEMP ORDER BY \"{1}\"  {2}) TEMP1 {4})TEMP3 WHERE RESULT BETWEEN {5} AND {6}";
 
-        /// <summary>
-        /// Select Paging Query For DB2 database
-        /// </summary>
+        /// <summary>Select Paging Query For DB2 database</summary>
         private const string SELECT_PAGING_DB2_TEMPLATE =
             "SELECT * FROM (SELECT {0}, ROW_NUMBER() OVER (ORDER BY {1} {2}) AS ROWNUM FROM {3} {4}) WHERE ROWNUM BETWEEN {5} AND {6}";
 
@@ -298,11 +299,11 @@ namespace Touryo.Infrastructure.Business.Business
 
             if (parameterValue.DBMSType == DbEnum.DBMSType.PstGrS)
             {
-            //Set the Query for PostgreSQL database
-            cmnDao.SQLText = string.Format(
-                    SELECT_COUNT_POSTGRESQL_TEMPLATE,
-                    s + parameterValue.TableName + e, whereSQL)
-                    .Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f);
+                //Set the Query for PostgreSQL database
+                cmnDao.SQLText = string.Format(
+                        SELECT_COUNT_POSTGRESQL_TEMPLATE,
+                        s + parameterValue.TableName + e, whereSQL)
+                        .Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f);
             }
             //MYSQL
             else if (parameterValue.DBMSType == DbEnum.DBMSType.MySQL)
@@ -415,14 +416,14 @@ namespace Touryo.Infrastructure.Business.Business
                     parameterValue.SortExpression,
                     parameterValue.SortDirection,
                     parameterValue.TableName ,whereSQL,
-                    startRowNum.ToString(), (startRowNum + parameterValue.MaximumRows).ToString()}
+                    startRowNum.ToString(), (startRowNum + parameterValue.MaximumRows - 1).ToString()}
                 ).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f).Replace("\"", string.Empty);
 
             }
             else
             {
-            // SQL本体の生成（いろいろ組み込み DB2
-            //（DBMSによって可変となる可能性有り）
+                // SQL本体の生成（いろいろ組み込み DB2
+                //（DBMSによって可変となる可能性有り）
                 selectPagingSQL = string.Format(
                 selectPagingSqlTemplate,
                 new string[] {
@@ -430,7 +431,7 @@ namespace Touryo.Infrastructure.Business.Business
                     parameterValue.SortExpression,
                     parameterValue.SortDirection,
                     s + parameterValue.TableName + e , whereSQL,
-                    startRowNum.ToString(), (startRowNum + parameterValue.MaximumRows).ToString()}
+                    startRowNum.ToString(), (startRowNum + parameterValue.MaximumRows - 1).ToString()}
                    ).Replace("_p_", p).Replace("_s_", s).Replace("_e_", e).Replace("_f_", f);
 
             }
@@ -806,7 +807,7 @@ namespace Touryo.Infrastructure.Business.Business
 
         /// <summary>１件追加処理を実装</summary>
         /// <param name="parameterValue">引数クラス</param>
-        private void UOC_InsertRecord(_3TierParameterValue parameterValue)
+        protected virtual void UOC_InsertRecord(_3TierParameterValue parameterValue)
         {
             // 戻り値クラスを生成して、事前に戻り地に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
@@ -867,7 +868,7 @@ namespace Touryo.Infrastructure.Business.Business
 
         /// <summary>１件取得処理を実装</summary>
         /// <param name="parameterValue">引数クラス</param>
-        private void UOC_SelectRecord(_3TierParameterValue parameterValue)
+        protected virtual void UOC_SelectRecord(_3TierParameterValue parameterValue)
         {
             // 戻り値クラスを生成して、事前に戻り地に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
@@ -944,7 +945,7 @@ namespace Touryo.Infrastructure.Business.Business
 
         /// <summary>１件更新処理を実装</summary>
         /// <param name="parameterValue">引数クラス</param>
-        private void UOC_UpdateRecord(_3TierParameterValue parameterValue)
+        protected virtual void UOC_UpdateRecord(_3TierParameterValue parameterValue)
         {
             // 戻り値クラスを生成して、事前に戻り地に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
@@ -1038,7 +1039,7 @@ namespace Touryo.Infrastructure.Business.Business
 
         /// <summary>１件削除処理を実装</summary>
         /// <param name="parameterValue">引数クラス</param>
-        private void UOC_DeleteRecord(_3TierParameterValue parameterValue)
+        protected virtual void UOC_DeleteRecord(_3TierParameterValue parameterValue)
         {
             // 戻り値クラスを生成して、事前に戻り地に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
@@ -1098,7 +1099,7 @@ namespace Touryo.Infrastructure.Business.Business
 
         /// <summary>バッチ更新処理を実装</summary>
         /// <param name="parameterValue">引数クラス</param>
-        private void UOC_BatchUpdate(_3TierParameterValue parameterValue)
+        protected virtual void UOC_BatchUpdate(_3TierParameterValue parameterValue)
         {
             // 戻り値クラスを生成して、事前に戻り地に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
