@@ -330,7 +330,7 @@ namespace Touryo.Infrastructure.Framework.Util
 
         #region Textbox
 
-        // <summary>UOCメソッドフッタ（Text Changed）</summary>
+        /// <summary>UOCメソッドフッタ（Text Changed）</summary>
         public const string UOC_METHOD_FOOTER_TEXT_CHANGED = "TextChanged";
 
         #endregion

@@ -59,7 +59,7 @@ namespace AsyncProcessingService
         /// <summary>ProcessName</summary>
         public string ProcessName;
 
-        /// <summary>Data<summary>
+        /// <summary>Data</summary>
         public string Data;
 
         /// <summary>RegistrationDateTime</summary>

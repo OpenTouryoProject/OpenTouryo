@@ -232,10 +232,9 @@ namespace Touryo.Infrastructure.Public.Util
 
         #region StringFromPrimitivetype
 
-        /// <summary>
-        /// To converts all premitive data to string.
-        /// </summary>
+        /// <summary>To converts all premitive data to string.</summary>
         /// <param name="primitiveType"></param>
+        /// <param name="checkType"></param>
         /// <returns></returns>
         public static string StringFromPrimitivetype(object primitiveType, bool checkType)
         {

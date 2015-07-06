@@ -108,18 +108,23 @@ namespace AsyncProcessingService
         /// </summary>
         public enum AsyncStatus
         {
+            /// <summary>Register</summary>
             [StringValue("Register")]
             Register = 1,
 
+            /// <summary>Processing</summary>
             [StringValue("Processing")]
             Processing,
 
+            /// <summary>End</summary>
             [StringValue("End")]
             End,
 
+            /// <summary>AbnormalEnd</summary>
             [StringValue("AbnormalEnd")]
             AbnormalEnd,
 
+            /// <summary>Abort</summary>
             [StringValue("Abort")]
             Abort,
         }
@@ -133,9 +138,11 @@ namespace AsyncProcessingService
         /// </summary>
         public enum AsyncCommand
         {
+            /// <summary>Stop</summary>
             [StringValue("Stop")]
             Stop = 1,
 
+            /// <summary>Abort</summary>
             [StringValue("Abort")]
             Abort,
         }
@@ -150,11 +157,14 @@ namespace AsyncProcessingService
     {
         private string _value;
 
+        /// <summary>StringValueAttribute</summary>
+        /// <param name="value">value</param>
         public StringValueAttribute(string value)
         {
             _value = value;
         }
 
+        /// <summary>Value</summary>
         public string Value
         {
             get { return _value; }

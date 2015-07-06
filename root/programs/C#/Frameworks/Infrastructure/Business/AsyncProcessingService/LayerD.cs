@@ -60,6 +60,8 @@ namespace AsyncProcessingService
     /// </summary>
     public class LayerD : MyBaseDao
     {
+        /// <summary>AsyncProcessingService用B層</summary>
+        /// <param name="dam">dam</param>
         public LayerD(BaseDam dam) : base(dam) { }
 
         #region SetSqlByFile3

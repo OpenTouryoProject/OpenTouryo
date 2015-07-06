@@ -135,6 +135,7 @@ namespace Touryo.Infrastructure.Business.Workflow
         /// <param name="startWorkflow">新規ワークフロー</param>
         /// <param name="workflowControlNo">ワークフロー管理番号（必須）</param>
         /// <param name="fromUserId">FromユーザID（個人ID 必須）</param>
+        /// <param name="toUserId">ToユーザID（個人ID 任意）</param>
         /// <param name="workflowReserveArea">T_Workflowの予備領域（任意）</param>
         /// <param name="currentWorkflowReserveArea">T_CurrentWorkflowの予備領域（任意）</param>
         /// <param name="replyDeadline">回答希望日（任意）</param>
@@ -808,7 +809,7 @@ namespace Touryo.Infrastructure.Business.Workflow
         /// <summary>
         /// This method TurnBack to slip iisuance UserID
         /// </summary>
-        /// <param name="nextWorkflow"></param>
+        /// <param name="subsystemId"></param>
         /// <param name="workflowControlNo"></param>
         /// <param name="fromUserId"></param>
         /// <param name="toUserId"></param>
@@ -895,7 +896,7 @@ namespace Touryo.Infrastructure.Business.Workflow
         /// <summary>
         /// Gets the Slip Issuance UserID of History=1 to TurnBack
         /// </summary>
-        /// <param name="turnBackWorkflow"></param>
+        /// <param name="subSystemId"></param>
         /// <param name="workflowControlNo"></param>
         /// <returns></returns>
         private DataTable GetSlipIssuanceUserID(string subSystemId, string workflowControlNo)
