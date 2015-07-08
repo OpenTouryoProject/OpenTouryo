@@ -232,10 +232,12 @@ namespace Touryo.Infrastructure.Public.Util
 
         #region StringFromPrimitivetype
 
-        /// <summary>To converts all premitive data to string.</summary>
-        /// <param name="primitiveType"></param>
-        /// <param name="checkType"></param>
-        /// <returns></returns>
+        /// <summary>
+        /// To converts all premitive data to string data.
+        /// </summary>
+        /// <param name="primitiveType">Column data type</param>
+        /// <param name="checkType">Check sting Type data</param>
+        /// <returns>returns String data</returns>
         public static string StringFromPrimitivetype(object primitiveType, bool checkType)
         {
             string convertedString = null;
@@ -286,11 +288,11 @@ namespace Touryo.Infrastructure.Public.Util
         #region PrimitivetypeFromString
 
         /// <summary>
-        /// To converts all string data to premitive Type.
+        /// To converts all string data to premitive Type by colType and cellString.
         /// </summary>
-        /// <param name="colType"></param>
-        /// <param name="cellString"></param>
-        /// <returns></returns>
+        /// <param name="colType">Column data type</param>
+        /// <param name="cellString">Cell data</param>
+        /// <returns>return Premitive type object</returns>
         public static object PrimitivetypeFromString(DTType colType, string cellString)
         {
             object convertedPrimitiveType = null;

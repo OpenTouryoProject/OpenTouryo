@@ -402,12 +402,14 @@ namespace Touryo.Infrastructure.Public.Dto
         }
 
 
-        /// <summary>SavejqGridJson method for converting datatable data to JQGrid.</summary>
-        /// <param name="data"></param>
-        /// <param name="totalCount"></param>
-        /// <param name="page"></param>
-        /// <param name="rows"></param>
-        /// <returns>JQGridDataClass</returns>
+        /// <summary>
+        /// SavejqGridJson method for converting datatable data to JQGrid data by passing total count,rows of current page.
+        /// </summary>
+        /// <param name="data">DataTable data</param>
+        /// <param name="totalCount">Total count</param>
+        /// <param name="page">current page number</param>
+        /// <param name="rows">Rows count</param>
+        /// <returns>returns JQGrid data</returns>
         public JQGridDataClass SavejqGridJson(DataTable data, int totalCount, string page, string rows)
         {
             int intRows = Math.Min(int.Parse(rows), totalCount);
