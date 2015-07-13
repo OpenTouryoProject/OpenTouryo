@@ -432,7 +432,7 @@ namespace Touryo.Infrastructure.Business.Dao
             // Else skip, automatically it will set default CommandTimeout.
             if (this._commandTimeout >= 0)
             {
-                (((DamSqlSvr)this.GetDam()).DamIDbCommand).CommandTimeout = this._commandTimeout;
+                this.GetDam().DamIDbCommand.CommandTimeout = this._commandTimeout;
             }
         }
 

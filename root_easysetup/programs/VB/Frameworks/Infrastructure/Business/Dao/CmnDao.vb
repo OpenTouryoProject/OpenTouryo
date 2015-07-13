@@ -402,7 +402,7 @@ Namespace Touryo.Infrastructure.Business.Dao
             ' If CommandTimeout is >= 0 then set CommandTimeout.
             ' Else skip, automatically it will set default CommandTimeout.
             If Me._commandTimeout >= 0 Then
-                DirectCast(GetDam(), DamSqlSvr).IDbCommand.CommandTimeout = Me._commandTimeout
+                Me.GetDam().DamIDbCommand.CommandTimeout = Me._commandTimeout
             End If
         End Sub
 
