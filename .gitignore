@@ -178,3 +178,10 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+
+/root/programs/C#/Frameworks/PortableClassLibrary/PCLBusiness/bin/Debug/PCLBusiness.dll
+/root/programs/C#/Frameworks/PortableClassLibrary/PCLFramework/bin/Debug/PCLFramework.dll
+/root/programs/C#/Frameworks/PortableClassLibrary/PCLPublic/bin/Debug/PCLPublic.dll
+/root_easysetup/programs/C#/Frameworks/PortableClassLibrary/PCLBusiness/bin/Debug/PCLBusiness.dll
+/root_easysetup/programs/C#/Frameworks/PortableClassLibrary/PCLFramework/bin/Debug/PCLFramework.dll
+/root_easysetup/programs/C#/Frameworks/PortableClassLibrary/PCLPublic/bin/Debug/PCLPublic.dll
