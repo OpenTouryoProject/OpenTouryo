@@ -12,6 +12,13 @@
 // 引数    －
 // 戻り値  －
 // ---------------------------------------------------------------
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  2015/02/06  Supragyan         Added condition for check AjaxPostBackElement in Fx_AjaxExtensionInitializeRequest
+//*  2015/02/06  Supragyan         Added condition for check AjaxPostBackElement in Fx_AjaxExtensionEndRequest
+//*  2015/02/09  Supragyan         Added condition for Trident on Internet Explorer
+//**********************************************************************************
+
 function Fx_Document_OnLoad() {
     // OnLoad処理を別スレッドで実行
     setTimeout("Fx_Document_OnLoad2()", 1);
@@ -72,33 +79,33 @@ function Fx_StandardStyleWindow() {
     var childScreenType = GetElementByName_SuffixSearch("ChildScreenType");
 
     // hiddenがnullになることがある・・・
-    if(childScreenType == null || childScreenType == undefined) {
+    if (childScreenType == null || childScreenType == undefined) {
         return;
     }
-    
+
     // childScreenTypeが「0」の場合、画面最大化を表示
     if (childScreenType.value == "0") {
-    
+
         // 幅と高さ、スタイルを指定する。
         var width = 1024;
         var height = 768;
         var wt = (screen.width - width) / 2;
         var wl = (screen.height - height) / 2;
         var style = ",statusbar=false,addressbar=false,menuBar=false,toolbar=false,resizable=false,visible=true";
-        
+
         var arg = "top=" + wl + ",left=" + wt + ",width=" + width + ",height=" + height + style;
-        
+
         if (this.name != 'StandardStyleWindow') {
             // 自分を指定のスタイルで開きなおし、
             if (window.open(this.location, 'StandardStyleWindow', arg) != null) {
-                
+
                 // 自身（開いた元の画面）を閉じる。
                 //window.opener = null;
                 //window.close();
-                
+
                 // JavaScript：いろいろ（仮）：So-netブログ
                 // http://magnus.blog.so-net.ne.jp/archive/c35376109-1
-                (window.open('','_self').opener=window).close();
+                (window.open('', '_self').opener = window).close();
             }
         }
     }
@@ -123,49 +130,46 @@ var IsDownload = false;
 // 戻り値  －
 // ---------------------------------------------------------------
 function Fx_OnSubmit() {
-    
+
     // ----------
-    
+
     // このカバレージ（onSubmit）は、
     // ・ポスト バック
     // ・ASP.NET Ajax Extension
     // のどちらも、通過する。
-    
+
     // ・IE6.0のhrefのdoPostBackだと動かない。
     // ・OperaのhrefのdoPostBack（二重送信時限定）だと動かない。
-    
+
     // alert(navigator.appName);
     // alert(navigator.appVersion);
-    
+
     // ----------
-    
+
     // ↑Operaの場合、ポスト後直ちにタイマーが無効になるので、実質機能しない。
     //   ※ ただし、Ajaxの場合は、タイマーが無効にならない。
-     
+
     // ----------
-        
-    if (navigator.appName == "Microsoft Internet Explorer") {
-    
+
+    if (navigator.appName == "Microsoft Internet Explorer" || navigator.appVersion.indexOf("Trident") != -1) {
+
         // スレイプニルもこちらに含まれる。
-        
-        if(navigator.appVersion.indexOf("MSIE 6.0") != -1 )
-        {   
+
+        if (navigator.appVersion.indexOf("MSIE 6.0") != -1) {
             // IE6.0では、hrefのdoPostBackの２重送信を抑止できない。
             // （onSubmitイベントがハンドルされないため）
         }
-        else if(navigator.appVersion.indexOf("MSIE 7.0") != -1 )
-        {
+        else if (navigator.appVersion.indexOf("MSIE 7.0") != -1) {
             // IE7.0では完全に有効
         }
-        else if(navigator.appVersion.indexOf("MSIE 8.0") != -1 )
-        {
+        else if (navigator.appVersion.indexOf("MSIE 8.0") != -1) {
             // IE8.0では完全に有効
         }
 
         if (document.readyState == "complete") {
-            
+
             // 受信完了
-            
+
             // Ajaxがないページ
             if (Ajax_IsProgressed == null || Ajax_IsProgressed == undefined) {
                 // 送信許可
@@ -175,33 +179,33 @@ function Fx_OnSubmit() {
             // Ajaxでは、completeのままになるので、
             // フラグでのチェックが必要になる。
             if (Ajax_IsProgressed) {
-                
+
                 // Ajax有効で、処理中の場合
-                
-//                // 送信不許可
-//                alert("二重送信です(IE + Ajax)");
-                
+
+                //                // 送信不許可
+                //                alert("二重送信です(IE + Ajax)");
+
                 // → ダイアログ表示中は、pageRequestManagerの
                 //    initializeRequest、endRequestのコールバック
                 //    をブロックするのでコメントアウトした。
                 return false;
             }
             else {
-                
+
                 // Ajax有効で、処理中でない場合
-                
+
                 // 送信許可
                 Fx_SetProgressDialog();
                 return true;
             }
         }
         else {
-            
+
             // 受信未完了
-            
-//            // 送信不許可
-//            alert("二重送信です(IE)");
-            
+
+            //            // 送信不許可
+            //            alert("二重送信です(IE)");
+
             // → ダイアログ表示中は、pageRequestManagerの
             //    initializeRequest、endRequestのコールバック
             //    をブロックするのでコメントアウトした。
@@ -210,18 +214,18 @@ function Fx_OnSubmit() {
     }
     else if (navigator.appName == "Netscape") {
         // 実際には、Netscape、Firefox、Safari、Chromeのカバレージ
-        
+
         // Netscapeはブラウザ側の機能で２重送信を抑止していたが、
         // サポートがなくなったため、サポートしない。
-        
+
         // ブラウザがデフォルトでonSubmit×２を抑止している。
         // ・Firefoxはブラウザ側の機能で２重送信を抑止している。
         // ・Safariはブラウザ側の機能で２重送信を抑止している。
         // ・Chromeはブラウザ側の機能で２重送信を抑止している。
-            
+
         if (document.readyState == "complete") {
             // 実際には、Safari、Chromeのカバレージ
-            
+
             // Ajaxがないページ
             if (Ajax_IsProgressed == null || Ajax_IsProgressed == undefined) {
                 // 送信許可
@@ -232,30 +236,30 @@ function Fx_OnSubmit() {
             // Ajaxでは、completeのままになるので、
             // フラグでのチェックが必要になる。
             if (Ajax_IsProgressed) {
-                
+
                 // Ajax有効で、処理中の場合
-                
-//                // 送信不許可
-//                alert("二重送信です(Netscape + Ajax)");
-                
+
+                //                // 送信不許可
+                //                alert("二重送信です(Netscape + Ajax)");
+
                 // → ダイアログ表示中は、pageRequestManagerの
                 //    initializeRequest、endRequestのコールバック
                 //    をブロックするのでコメントアウトした。
                 return false;
             }
             else {
-                
+
                 // Ajax有効で、処理中でない場合
-                
+
                 // 送信許可
                 Fx_SetProgressDialog();
                 return true;
             }
         }
-        else if(document.readyState == null || document.readyState == undefined){
-            
+        else if (document.readyState == null || document.readyState == undefined) {
+
             // 実際には、Firefoxのカバレージ
-            
+
             // FirefoxでFxの２重送信抑止機能をONにした場合、
             // hrefのdoPostBackでPOSTできなくなる現象を確認した。  
 
@@ -269,38 +273,38 @@ function Fx_OnSubmit() {
             // Ajaxでは、completeのままになるので、
             // フラグでのチェックが必要になる。
             if (Ajax_IsProgressed) {
-                
+
                 // Ajax有効で、処理中の場合
-                
-//                // 送信不許可
-//                alert("二重送信です(Firefox + Ajax)");
-                
+
+                //                // 送信不許可
+                //                alert("二重送信です(Firefox + Ajax)");
+
                 // → ダイアログ表示中は、pageRequestManagerの
                 //    initializeRequest、endRequestのコールバック
                 //    をブロックするのでコメントアウトした。
                 return false;
             }
             else {
-                
+
                 // Ajax有効で、処理中でない場合
-                
+
                 // 送信許可
                 Fx_SetProgressDialog();
                 return true;
             }
-            
+
             // Firefoxの制限事項は、通常のポストバック中にajaxの２重送信を抑止できない。
             // 逆（ajax中に通常のポストバックの２重送信）は抑止できる。
-        
+
         }
         else {
-            
+
             // 受信未完了（こちらは通過しない）
-            alert(document.readyState);　// ← 故に、表示されない。
-            
-//            // 送信不許可
-//            alert("二重送信です(Firefox)");
-            
+            alert(document.readyState); // ← 故に、表示されない。
+
+            //            // 送信不許可
+            //            alert("二重送信です(Firefox)");
+
             // → ダイアログ表示中は、pageRequestManagerの
             //    initializeRequest、endRequestのコールバック
             //    をブロックするのでコメントアウトした。
@@ -308,16 +312,16 @@ function Fx_OnSubmit() {
         }
     }
     else if (navigator.appName == "Opera") {
-    
+
         // Operaでは完全に有効
-        
+
         // ただし、二重送信時のhrefのdoPostBackはハンドルできない。
         // しかし、こちらは、ブラウザ側の機能で抑止している模様。
-                
+
         if (document.readyState == "complete") {
-        
+
             // 受信完了
-            
+
             // Ajaxがないページ
             if (Ajax_IsProgressed == null || Ajax_IsProgressed == undefined) {
                 // 送信許可
@@ -328,33 +332,33 @@ function Fx_OnSubmit() {
             // Ajaxでは、completeのままになるので、
             // フラグでのチェックが必要になる。
             if (Ajax_IsProgressed) {
-                
+
                 // Ajax有効で、処理中の場合
-                
-//                // 送信不許可
-//                alert("二重送信です(Opera + Ajax)");
-                
+
+                //                // 送信不許可
+                //                alert("二重送信です(Opera + Ajax)");
+
                 // → ダイアログ表示中は、pageRequestManagerの
                 //    initializeRequest、endRequestのコールバック
                 //    をブロックするのでコメントアウトした。
                 return false;
             }
             else {
-                
+
                 // Ajax有効で、処理中でない場合
-                
+
                 // 送信許可
                 Fx_SetProgressDialog();
                 return true;
             }
         }
         else {
-            
+
             // 受信未完了
-            
-//            // 送信不許可
-//            alert("二重送信です(Opera)");
-            
+
+            //            // 送信不許可
+            //            alert("二重送信です(Opera)");
+
             // → ダイアログ表示中は、pageRequestManagerの
             //    initializeRequest、endRequestのコールバック
             //    をブロックするのでコメントアウトした。
@@ -375,15 +379,15 @@ function Fx_OnSubmit() {
 // 戻り値  －
 // ---------------------------------------------------------------
 function Fx_SetProgressDialog() {
-    if(IsDownload) {
+    if (IsDownload) {
         // ダウンロードの場合
-        
+
         // フラグを戻す
         IsDownload = false;
     }
     else {
         // ダウンロードでない場合
-        
+
         // ダイアログ表示（２秒後）
         ProgressDialogTimer = setTimeout("Fx_DisplayProgressDialog()", 2000);
     }
@@ -417,11 +421,11 @@ function Fx_InitProgressDialog() {
     // 幅を指定
     _div.style.width = AjaxProgressDialog_Width + "px";
     _div.style.height = AjaxProgressDialog_Height + "px";
-    
+
     // スタイルを指定
     _div.style.top = "0px";
     _div.style.left = "0px";
-    
+
     _div.style.paddingTop = "10px";
     _div.style.paddingLeft = "10px";
     _div.style.paddingRight = "10px";
@@ -464,7 +468,7 @@ function Fx_DisplayProgressDialog() {
     // はじめにタイマをクリアする。
     clearTimeout(ProgressDialogTimer);
 
-    try{
+    try {
         // 表示位置の計算
         AjaxProgressDialog.style.top = (Fx_getContentsHeight() / 2) //(Fx_getBrowserHeight() / 2)
             - (AjaxProgressDialog_Height / 2) + "px";
@@ -474,8 +478,8 @@ function Fx_DisplayProgressDialog() {
         // プログレス ダイアログを表示する。
         document.body.appendChild(AjaxMask);
         document.body.appendChild(AjaxProgressDialog);
-    
-    }catch( e ){
+
+    } catch (e) {
         //alert( e );//エラー内容
     }
 }
@@ -493,11 +497,11 @@ function Fx_DisplayProgressDialog() {
 // 戻り値  －
 // ---------------------------------------------------------------
 function Fx_ShowChildScreen() {
-	
-    var fobj = document.aspnetForm;	
-    
-    if(fobj == null || fobj == undefined) {
-    	fobj = document.getElementById("form1");    	
+
+    var fobj = document.aspnetForm;
+
+    if (fobj == null || fobj == undefined) {
+        fobj = document.getElementById("form1");
     }
 
     if (fobj == null || fobj == undefined) {
@@ -507,15 +511,15 @@ function Fx_ShowChildScreen() {
     // 子画面型と子画面URLは必須
     var childScreenType = GetElementByName_SuffixSearch("ctl00$ChildScreenType");
     var childScreenUrl = GetElementByName_SuffixSearch("ctl00$ChildScreenUrl");
-    
+
     // hiddenがnullになることがある・・・
-    if(childScreenType == null || childScreenType == undefined) {
+    if (childScreenType == null || childScreenType == undefined) {
         return;
     }
-    if(childScreenUrl == null || childScreenUrl == undefined) {
+    if (childScreenUrl == null || childScreenUrl == undefined) {
         return;
     }
-    
+
     // childScreenTypeが「1」の場合、「OK」メッセージ・ダイアログを表示
     if (childScreenType.value == "1") {
         // Cookieフラグを確認（バックボタン押下時の不具合対応）
@@ -531,7 +535,7 @@ function Fx_ShowChildScreen() {
             return;
         }
     }
-    
+
     // childScreenTypeが「2」の場合、「YES」・「NO」メッセージ・ダイアログを表示
     if (childScreenType.value == "2") {
         // Cookieフラグを確認（バックボタン押下時の不具合対応）
@@ -547,11 +551,11 @@ function Fx_ShowChildScreen() {
 
             // サブミット フラグの確認
             var submitFlag = GetElementByName_SuffixSearch("ctl00$SubmitFlag");
-            
+
             if (myFlag == 0) {
                 // myFlagが「0」の場合、
                 // 「×」ボタンが押されたことを意味する。
-                
+
                 // submitFlagを「1」に設定
                 submitFlag.value = "1";
 
@@ -562,7 +566,7 @@ function Fx_ShowChildScreen() {
             else if (myFlag == 1) {
                 // myFlagが「1」の場合、
                 // 「YES」ボタンが押されたことを意味する。
-                
+
                 // submitFlagを「2」に設定
                 submitFlag.value = "2";
 
@@ -570,10 +574,10 @@ function Fx_ShowChildScreen() {
                 Fx_SetProgressDialog();
                 fobj.submit();
             }
-            else if(myFlag == 2) {
+            else if (myFlag == 2) {
                 // myFlagが「2」の場合、
                 // 「NO」ボタンが押されたことを意味する。
-                
+
                 // submitFlagを「3」に設定
                 submitFlag.value = "3";
 
@@ -599,7 +603,7 @@ function Fx_ShowChildScreen() {
 
             // 業務モーダル・ダイアログ
             Fx_ShowModalScreen(childScreenUrl.value);
-                
+
             return;
         }
         else {
@@ -680,10 +684,10 @@ function Fx_ShowMessageDialog(url) {
 // ---------------------------------------------------------------
 function Fx_ShowModalScreen(url, style) {
 
-    var fobj = document.aspnetForm;	
-    
-    if(fobj == null || fobj == undefined) {
-    	fobj = document.getElementById("form1");    	
+    var fobj = document.aspnetForm;
+
+    if (fobj == null || fobj == undefined) {
+        fobj = document.getElementById("form1");
     }
 
     if (fobj == null || fobj == undefined) {
@@ -695,17 +699,17 @@ function Fx_ShowModalScreen(url, style) {
         case 1:
             // スタイルの指定が無い場合（サーバ起動）
             style = GetElementByName_SuffixSearch("ctl00$BusinessDialogStyle").value
-        case 2: 
+        case 2:
             // スタイルの指定が有る場合（クライアント起動）
         default:
     }
-    
+
     // ダイアログ フレームへのURL
     var dialogFrameUrl = GetElementByName_SuffixSearch("ctl00$DialogFrameUrl");
-    
+
     // サブミット フラグの設定用
     var submitFlag = GetElementByName_SuffixSearch("ctl00$SubmitFlag");
-    
+
     var args = new Array();
     args[0] = url;
 
@@ -764,7 +768,7 @@ function Fx_ShowModalScreen(url, style) {
         Fx_SetProgressDialog();
         fobj.submit();
     }
-        
+
     return false;
 }
 
@@ -790,7 +794,7 @@ function Fx_CreateMask() {
     _div.style.height = Fx_getContentsHeight(); //"100%";では、初期表示画面サイズになってしまう。
     _div.style.width = Fx_getBrowserWidth(); //"100%";では、初期表示画面サイズになってしまう。
     _div.style.position = "absolute";
-    
+
     // 1000なら最前面だろうという仕様（ToMost相当が無い）
     _div.style.zIndex = "1000";
 
@@ -833,12 +837,12 @@ function Fx_MaskOff() {
 function Fx_CloseModalScreen() {
 
     var closeFlag = GetElementByName_SuffixSearch("ctl00$CloseFlag");
-    
+
     // hiddenがnullになることがある・・・
-    if(closeFlag == null || closeFlag == undefined) {
+    if (closeFlag == null || closeFlag == undefined) {
         return;
     }
-    
+
     if (closeFlag.value == "1") {
         // closeFlagが１の場合、自画面を閉じ、
         // 親画面でポストバック（後処理）を実行する。
@@ -874,7 +878,7 @@ function Fx_ShowNormalScreen(url) {
     // 第3引数 = 画面のスタイル(「項目1:値1;項目2:値2;…;項目n:値n」の形式)
 
     // ウィンドウ名を固定にすると、複数のウィンドウが開かなくなる。
-    window.open(url, 
+    window.open(url,
            GetElementByName_SuffixSearch("ctl00$NormalScreenTarget").value,
            GetElementByName_SuffixSearch("ctl00$NormalScreenStyle").value);
 }
@@ -928,7 +932,7 @@ function Fx_AjaxExtensionInit() {
 // ---------------------------------------------------------------
 function Fx_AjaxExtensionRegPreAndAfter(pageRequestManager) {
     // 非同期ポストバックの開始前、終了後に呼び出されるイベント・ハンドラを定義
-        
+
     // 開始前イベント
     pageRequestManager.add_initializeRequest(Fx_AjaxExtensionInitializeRequest);
 
@@ -942,11 +946,11 @@ function Fx_AjaxExtensionRegPreAndAfter(pageRequestManager) {
 // 引数    sender, args
 // ---------------------------------------------------------------
 function Fx_AjaxExtensionInitializeRequest(sender, args) {
-    
+
     // これが呼ばれるのは、Fx_OnSubmitの後
-    
+
     // ∴ 下記の処理は、Fx_OnSubmitの二重送信防止機能に統合
-    
+
     // // 現在、実行中の非同期通信が存在するかを判定
     // if (pageRequestManager.get_isInAsyncPostBack())
     // { 
@@ -956,16 +960,17 @@ function Fx_AjaxExtensionInitializeRequest(sender, args) {
     //     // 後続の処理をキャンセル
     //     args.set_cancel(true);
     // }
-    
+
     // ★★ Fx_OnSubmitが呼ばれるのは、Ajax Extensionのみ。
     // 　　 ClientCallbackや、WebServiceBridgeでは、呼ばれない。
-    
+
     // ポストバック エレメントを取得
     AjaxPostBackElement = args.get_postBackElement();
-    
-    // イベント発生元の要素を無効化
-    AjaxPostBackElement.disabled = true;
-    
+
+    if (AjaxPostBackElement) {
+        AjaxPostBackElement.disabled = true;
+    }
+
     // 二重送信フラグの設定
     Ajax_IsProgressed = true;
     // ★★ ここの処理が動く前に、
@@ -982,12 +987,12 @@ function Fx_AjaxExtensionEndRequest(sender, args) {
     clearTimeout(ProgressDialogTimer);
 
     // プログレス ダイアログを非表示にする。
-    try{
+    try {
 
         document.body.removeChild(AjaxMask);
         document.body.removeChild(AjaxProgressDialog);
-    
-    }catch( e ){
+
+    } catch (e) {
         //alert( e );//エラー内容
     }
 
@@ -995,7 +1000,10 @@ function Fx_AjaxExtensionEndRequest(sender, args) {
     Ajax_IsProgressed = false;
 
     // イベント発生元の要素を有効化
-    AjaxPostBackElement.disabled = false;
+
+    if (AjaxPostBackElement) {
+        AjaxPostBackElement.disabled = false;
+    }
 }
 
 // ---------------------------------------------------------------
@@ -1022,41 +1030,41 @@ function Fx_AjaxExtensionEndRequest(sender, args) {
 function GetElementByName_SuffixSearch(name) {
 
     var elementName = "";
-    
-	var nameLength = name.length;
+
+    var nameLength = name.length;
     var elementNameLength = 0;
-    
+
     var fobj = document.aspnetForm;
-    
-    if(fobj == null || fobj == undefined) {
-    	fobj = document.getElementById("form1");    	
+
+    if (fobj == null || fobj == undefined) {
+        fobj = document.getElementById("form1");
     }
 
     if (fobj == null || fobj == undefined) {
         fobj = document.getElementById("aspnetForm");
     }
-    
+
     // 必要なHiddenは後方にあるので、
     // 後方から検索するように変更。
     var i = fobj.elements.length - 1;
-    
+
     for (i; i >= 0; i--) {
         // element.nameを取得
         var e = fobj.elements[i];
         elementName = e.name;
-            
+
         // name属性の存在チェック
         if (elementName == null || elementName == undefined) {
             // name属性がない。
         }
         else {
-        
+
             // name属性がある。
             elementNameLength = elementName.length;
-            
+
             // name属性のlengthチェック
             if (nameLength <= elementNameLength) {
-            
+
                 // 検索名と同じか、長い場合
                 if (elementName.substring((elementNameLength - nameLength), elementNameLength) == name) {
                     // 対象elementである。
@@ -1144,23 +1152,23 @@ function Fx_getBrowserWidth() {
     if (window.innerWidth) {
         return window.innerWidth;
     }
-    
+
     // documentがnullになることがある・・・
-    if(document == null || document == undefined) {
+    if (document == null || document == undefined) {
         // 処理しない。
     }
     else {
         // 処理する。
-        
+
         if (document.documentElement && document.documentElement.clientWidth != 0) {
             return document.documentElement.clientWidth;
         }
-        
+
         if (document.body) {
             return document.body.clientWidth;
         }
     }
-    
+
     return 0;
 }
 
@@ -1175,18 +1183,18 @@ function Fx_getBrowserHeight() {
     if (window.innerHeight) {
         return window.innerHeight;
     }
-    
+
     // documentがnullになることがある・・・
-    if(document == null || document == undefined) {
+    if (document == null || document == undefined) {
         // 処理しない。
     }
     else {
         // 処理する。
-        
+
         if (document.documentElement && document.documentElement.clientHeight != 0) {
             return document.documentElement.clientHeight;
         }
-        
+
         if (document.body) {
             return document.body.clientHeight;
         }

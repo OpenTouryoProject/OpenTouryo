@@ -237,7 +237,7 @@ namespace Touryo.Infrastructure.Framework.Util
         /// <summary>Key to set the prefix of the RadioButtonList.</summary>
         public const string PREFIX_OF_RADIOBUTTONLIST = "FxPrefixOfRadioButtonList";
 
-        /// <summary>Key to set the prefix of the RadioButtonList.</summary>
+        /// <summary>Key to set the prefix of the CheckboxList.</summary>
         public const string PREFIX_OF_CHECKBOXLIST = "FxPrefixOfCheckBoxList";
 
         /// <summary>Key to set the prefix of the Text box.</summary>

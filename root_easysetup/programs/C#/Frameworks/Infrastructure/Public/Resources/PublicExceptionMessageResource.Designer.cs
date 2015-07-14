@@ -385,15 +385,6 @@ namespace Touryo.Infrastructure.Public.Resources {
         }
         
         /// <summary>
-        ///    に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string string1 {
-            get {
-                return ResourceManager.GetString("string1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Please specify a switch by &quot;on&quot; or &quot;off&quot;. Config key:{0} に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string SWITCH_ERROR {
