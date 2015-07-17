@@ -64,6 +64,9 @@
     <Reference Include="PCLBusiness">
       <HintPath>..\..\..\..\..\Frameworks\PortableClassLibrary\PCLBusiness\bin\Debug\PCLBusiness.dll</HintPath>
     </Reference>
+    <Reference Include="PCLFramework">
+      <HintPath>..\..\..\..\..\Frameworks\PortableClassLibrary\PCLFramework\bin\Debug\PCLFramework.dll</HintPath>
+    </Reference>
     <Reference Include="PCLPublic">
       <HintPath>..\..\..\..\..\Frameworks\PortableClassLibrary\PCLPublic\bin\Debug\PCLPublic.dll</HintPath>
     </Reference>

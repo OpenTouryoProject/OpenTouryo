@@ -17,5 +17,5 @@
    - Encryption
      暗号化部品
 
-● Silverlight
-    Silverlight用部品
+● PortableClassLibrary
+    Silverlight, WinStore用部品
