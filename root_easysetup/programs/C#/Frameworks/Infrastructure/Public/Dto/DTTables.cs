@@ -1,4 +1,4 @@
-//**********************************************************************************
+﻿//**********************************************************************************
 //* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
@@ -55,7 +55,6 @@ using Touryo.Infrastructure.Public.Util;
 namespace Touryo.Infrastructure.Public.Dto
 {
     /// <summary>表コレクション</summary>
-    [System.Diagnostics.DebuggerStepThrough]
     public class DTTables : IEnumerable
     {
         /// <summary>
@@ -479,6 +478,7 @@ namespace Touryo.Infrastructure.Public.Dto
                                 else
                                 {
                                     object primitiveData = CustomMarshaler.PrimitivetypeFromString(col.ColType, celString.ToString());
+                                    row[colIndex] = primitiveData;
                                 }
                             }
 
