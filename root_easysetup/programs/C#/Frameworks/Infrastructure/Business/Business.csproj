@@ -161,45 +161,33 @@
   <ItemGroup>
     <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\AsyncProcessingServiceInsert.sql">
       <Link>AsyncProcessingService\AsyncProcessingServiceInsert.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\SelectCommand.sql">
       <Link>AsyncProcessingService\SelectCommand.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\SelectTask.sql">
       <Link>AsyncProcessingService\SelectTask.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskCommand.sql">
       <Link>AsyncProcessingService\UpdateTaskCommand.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskFail.sql">
       <Link>AsyncProcessingService\UpdateTaskFail.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskProgress.sql">
       <Link>AsyncProcessingService\UpdateTaskProgress.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskRetry.sql">
       <Link>AsyncProcessingService\UpdateTaskRetry.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskStart.sql">
       <Link>AsyncProcessingService\UpdateTaskStart.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskSuccess.sql">
       <Link>AsyncProcessingService\UpdateTaskSuccess.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\StopAllTask.sql">
       <Link>AsyncProcessingService\StopAllTask.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
