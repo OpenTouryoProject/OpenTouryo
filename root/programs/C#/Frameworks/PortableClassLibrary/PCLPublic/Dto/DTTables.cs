@@ -43,6 +43,9 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
+// 部品
+using Touryo.Infrastructure.Public.Util;
+
 namespace Touryo.Infrastructure.Public.Dto
 {
     /// <summary>表コレクション</summary>
