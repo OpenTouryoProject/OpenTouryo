@@ -61,8 +61,10 @@
 //*  2013/02/15  加藤  幸紀        GetParamByText(string,char,out int)作成（順番バインドのパラメタ置換処理方式の見直し）
 //*  2013/03/18  西野  大介        DeleteFirstLogicalOperatoronWhereClause部分を関数化して外出し
 //*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
-//*  2014/07/04  Rituparna        Commented Code for blank else statement to improve code coverage in Basedam.cs class
-//*  2015/07/05  Sai              Added virtual property of IDbCommand 
+//*  2014/07/04  Rituparna         Commented Code for blank else statement to improve code coverage in Basedam.cs class
+//*  2015/06/25  Sai               Fixed the bug of removing 'AND' and 'OR' if the column name contains at the begininng  
+//*                                by adding space after "AND" and "OR" in the method 'DeleteFirstLogicalOperatoronWhereClause'  
+//*  2015/07/05  Sai               Added virtual property of IDbCommand
 //**********************************************************************************
 
 // デバッグ用
@@ -2189,9 +2191,9 @@ namespace Touryo.Infrastructure.Public.Db
                 start += 5;
 
                 // ANDが最初に現れる位置
-                andIndex = where.IndexOf("AND", startIndex, StringComparison.OrdinalIgnoreCase);
+                andIndex = where.IndexOf("AND ", startIndex, StringComparison.OrdinalIgnoreCase);
                 // ORが最初に現れる位置
-                orIndex = where.IndexOf("OR", startIndex, StringComparison.OrdinalIgnoreCase);
+                orIndex = where.IndexOf("OR ", startIndex, StringComparison.OrdinalIgnoreCase);
 
                 #region 処理対象を決定する
 
