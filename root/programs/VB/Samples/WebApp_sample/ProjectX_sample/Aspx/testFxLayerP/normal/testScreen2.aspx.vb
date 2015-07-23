@@ -14,6 +14,7 @@
 '*  ----------  ----------------  -------------------------------------------------
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '*  2014/10/14  Rituparna         Changes made to support RsiodButtonList and CheckBoxList event
+'*  2015/07/21  Supragyan         Created Textbox Textchanged event
 '**********************************************************************************
 
 ' System
@@ -399,62 +400,70 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen2
 		' 親画面別セッション領域 - キー：msgのみ削除
 		Me.DeleteDataFromModalInterface("msg")
 		Return ""
-	End Function
+    End Function
 
-	#End Region
+    ''' <summary>
+    ''' UOC_txtTextBox2のテキスト変更イベント
+    ''' </summary>
+    ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+    Protected Sub UOC_txtTextBox2_TextChanged(ByVal fxEventArgs As FxEventArgs)
+        Me.ShowOKMessageDialog("親画面別セッション（キー：msg）は、", "You changed text to" + " " + txtTextBox2.Text, FxEnum.IconType.Information, "テスト結果")
+    End Sub
 
-	#End Region
+#End Region
 
-	#Region "後処理のUOCメソッド"
+#End Region
 
-	''' <summary>「YES」・「NO」メッセージ・ダイアログの「×」が押され閉じられた場合の処理を実装する。</summary>
-	''' <param name="parentFxEventArgs">「YES」・「NO」メッセージ・ダイアログを開いた（親画面側の）ボタンのボタン履歴</param>
-	Protected Overrides Sub UOC_YesNoDialog_X_Click(parentFxEventArgs As FxEventArgs)
-		' 「YES」・「NO」メッセージ・ダイアログの「×」が押され閉じられた場合の処理を実装
-		' TODO:
+#Region "後処理のUOCメソッド"
 
-		' switch文
+    ''' <summary>「YES」・「NO」メッセージ・ダイアログの「×」が押され閉じられた場合の処理を実装する。</summary>
+    ''' <param name="parentFxEventArgs">「YES」・「NO」メッセージ・ダイアログを開いた（親画面側の）ボタンのボタン履歴</param>
+    Protected Overrides Sub UOC_YesNoDialog_X_Click(ByVal parentFxEventArgs As FxEventArgs)
+        ' 「YES」・「NO」メッセージ・ダイアログの「×」が押され閉じられた場合の処理を実装
+        ' TODO:
 
-		' メッセージ表示
-		Me.ShowOKMessageDialog(Convert.ToString(parentFxEventArgs.ButtonID) & "で開いた「YES」・「NO」メッセージ・ダイアログ", "[×]ボタンを押した時の後処理", FxEnum.IconType.Information, "テスト結果")
-	End Sub
+        ' switch文
 
-	''' <summary>「YES」・「NO」メッセージ・ダイアログの「YES」が押され閉じられた場合の処理を実装する。</summary>
-	''' <param name="parentFxEventArgs">「YES」・「NO」メッセージ・ダイアログを開いた（親画面側の）ボタンのボタン履歴</param>
-	Protected Overrides Sub UOC_YesNoDialog_Yes_Click(parentFxEventArgs As FxEventArgs)
-		' 「YES」・「NO」メッセージ・ダイアログの「YES」が押され閉じられた場合の処理を実装
-		' TODO:
+        ' メッセージ表示
+        Me.ShowOKMessageDialog(Convert.ToString(parentFxEventArgs.ButtonID) & "で開いた「YES」・「NO」メッセージ・ダイアログ", "[×]ボタンを押した時の後処理", FxEnum.IconType.Information, "テスト結果")
+    End Sub
 
-		' switch文
+    ''' <summary>「YES」・「NO」メッセージ・ダイアログの「YES」が押され閉じられた場合の処理を実装する。</summary>
+    ''' <param name="parentFxEventArgs">「YES」・「NO」メッセージ・ダイアログを開いた（親画面側の）ボタンのボタン履歴</param>
+    Protected Overrides Sub UOC_YesNoDialog_Yes_Click(ByVal parentFxEventArgs As FxEventArgs)
+        ' 「YES」・「NO」メッセージ・ダイアログの「YES」が押され閉じられた場合の処理を実装
+        ' TODO:
 
-		' メッセージ表示
-		Me.ShowOKMessageDialog(Convert.ToString(parentFxEventArgs.ButtonID) & "で開いた「YES」・「NO」メッセージ・ダイアログ", "[Yes]ボタンを押した時の後処理", FxEnum.IconType.Information, "テスト結果")
-	End Sub
+        ' switch文
 
-	''' <summary>「YES」・「NO」メッセージ・ダイアログの「NO」が押され閉じられた場合の処理を実装する。</summary>
-	''' <param name="parentFxEventArgs">「YES」・「NO」メッセージ・ダイアログを開いた（親画面側の）ボタンのボタン履歴</param>
-	Protected Overrides Sub UOC_YesNoDialog_No_Click(parentFxEventArgs As FxEventArgs)
-		' 「YES」・「NO」メッセージ・ダイアログの「NO」が押され閉じられた場合の処理を実装
-		' TODO:
+        ' メッセージ表示
+        Me.ShowOKMessageDialog(Convert.ToString(parentFxEventArgs.ButtonID) & "で開いた「YES」・「NO」メッセージ・ダイアログ", "[Yes]ボタンを押した時の後処理", FxEnum.IconType.Information, "テスト結果")
+    End Sub
 
-		' switch文
+    ''' <summary>「YES」・「NO」メッセージ・ダイアログの「NO」が押され閉じられた場合の処理を実装する。</summary>
+    ''' <param name="parentFxEventArgs">「YES」・「NO」メッセージ・ダイアログを開いた（親画面側の）ボタンのボタン履歴</param>
+    Protected Overrides Sub UOC_YesNoDialog_No_Click(ByVal parentFxEventArgs As FxEventArgs)
+        ' 「YES」・「NO」メッセージ・ダイアログの「NO」が押され閉じられた場合の処理を実装
+        ' TODO:
 
-		' メッセージ表示
-		Me.ShowOKMessageDialog(Convert.ToString(parentFxEventArgs.ButtonID) & "で開いた「YES」・「NO」メッセージ・ダイアログ", "[No]ボタンを押した時の後処理", FxEnum.IconType.Information, "テスト結果")
-	End Sub
+        ' switch文
 
-	''' <summary>業務モーダル画面の後処理を実装する。</summary>
-	''' <param name="parentFxEventArgs">業務モーダル画面を開いた（親画面側の）ボタンのボタン履歴</param>
-	''' <param name="childFxEventArgs">業務モーダル画面を閉じた（若しくは一番最後に押された子画面側の）ボタンのボタン履歴</param>
-	Protected Overrides Sub UOC_ModalDialog_End(parentFxEventArgs As FxEventArgs, childFxEventArgs As FxEventArgs)
-		' 業務モーダル画面の後処理を実装
-		' TODO:
+        ' メッセージ表示
+        Me.ShowOKMessageDialog(Convert.ToString(parentFxEventArgs.ButtonID) & "で開いた「YES」・「NO」メッセージ・ダイアログ", "[No]ボタンを押した時の後処理", FxEnum.IconType.Information, "テスト結果")
+    End Sub
 
-		' switch文
+    ''' <summary>業務モーダル画面の後処理を実装する。</summary>
+    ''' <param name="parentFxEventArgs">業務モーダル画面を開いた（親画面側の）ボタンのボタン履歴</param>
+    ''' <param name="childFxEventArgs">業務モーダル画面を閉じた（若しくは一番最後に押された子画面側の）ボタンのボタン履歴</param>
+    Protected Overrides Sub UOC_ModalDialog_End(ByVal parentFxEventArgs As FxEventArgs, ByVal childFxEventArgs As FxEventArgs)
+        ' 業務モーダル画面の後処理を実装
+        ' TODO:
 
-		' メッセージ表示
-		Me.ShowOKMessageDialog(Convert.ToString(parentFxEventArgs.ButtonID) & "で開いた業務モーダル・ダイアログの", Convert.ToString(childFxEventArgs.ButtonID) & "ボタンを押して閉じた時の後処理", FxEnum.IconType.Information, "テスト結果")
-	End Sub
+        ' switch文
+
+        ' メッセージ表示
+        Me.ShowOKMessageDialog(Convert.ToString(parentFxEventArgs.ButtonID) & "で開いた業務モーダル・ダイアログの", Convert.ToString(childFxEventArgs.ButtonID) & "ボタンを押して閉じた時の後処理", FxEnum.IconType.Information, "テスト結果")
+    End Sub
 
 #Region "RadioButtonList"
     ''' <summary>
