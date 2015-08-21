@@ -28,6 +28,9 @@
 //*  Date:        Author:        Comments:
 //*  ----------  ----------------  -------------------------------------------------
 //*  11/28/2014   Supragyan      For Inserts data to database 
+//*  17/08/2015   Sandeep        Modified insert method name from 'Start' to 'InsertTask'.
+//*                              Modified object of LayerB that is related to Business project,
+//*                              instead of AsyncSvc_sample project. 
 //**********************************************************************************
 //system
 using System;
@@ -50,12 +53,12 @@ using AsyncProcessingService;
 
 namespace TestAsyncSvc_Sample
 {
-
     /// <summary>
     /// Program class for test user code
     /// </summary>
     public class Program
     {
+        /// <summary>This is the main entry point for the application.</summary>
         static void Main(string[] args)
         {
             Program program = new Program();
@@ -63,19 +66,20 @@ namespace TestAsyncSvc_Sample
         }
 
         /// <summary>
-        /// Inserts data to database
+        /// Inserts asynchronous task information to the database
         /// </summary>
         /// <returns></returns>
         public AsyncProcessingServiceParameterValue InsertData()
         {
-            AsyncProcessingServiceParameterValue asyncParameterValue;
-            byte[] arr = { 1, 2, 3, 4, 5 };
+            // Create array data to serilize.
+            byte[] arrayData = { 1, 2, 3, 4, 5 };
 
-            asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "Start", "Start", "SQL",
+            // Sets parameters of AsyncProcessingServiceParameterValue to insert asynchronous task information.
+            AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "InsertTask", "InsertTask", "SQL",
                                                                             new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
             asyncParameterValue.UserId = "A";
             asyncParameterValue.ProcessName = "AAA";
-            asyncParameterValue.Data = CustomEncode.ToBase64String(arr);
+            asyncParameterValue.Data = AsyncSvc_sample.LayerB.SerializeToBase64String(arrayData);
             asyncParameterValue.ExecutionStartDateTime = DateTime.Now;
             asyncParameterValue.RegistrationDateTime = DateTime.Now;
             asyncParameterValue.NumberOfRetries = 0;
@@ -88,11 +92,10 @@ namespace TestAsyncSvc_Sample
             DbEnum.IsolationLevelEnum iso = DbEnum.IsolationLevelEnum.DefaultTransaction;
             AsyncProcessingServiceReturnValue asyncReturnValue;
 
-            AsyncSvc_sample.LayerB layerB = new AsyncSvc_sample.LayerB();
+            // Execute do business logic method.
+            AsyncProcessingService.LayerB layerB = new AsyncProcessingService.LayerB();
             asyncReturnValue = (AsyncProcessingServiceReturnValue)layerB.DoBusinessLogic((AsyncProcessingServiceParameterValue)asyncParameterValue, iso);
-
             return asyncParameterValue;
         }
     }
-
 }
