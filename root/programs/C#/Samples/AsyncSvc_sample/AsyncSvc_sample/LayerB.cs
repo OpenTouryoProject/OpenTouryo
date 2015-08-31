@@ -35,6 +35,7 @@
 //*                              Implemented code to handle abnormal termination, while updating the asynchronous process.
 //*                              Implemented code to resume asynchronous process in the middle of the processing.
 //*  21/08/2015   Sandeep        Modified code to call layerD of AsynProcessingService instead of do business logic.
+//*  28/08/2015   Sandeep        Resolved transaction timeout issue by using DamKeyForABT and DamKeyForAMT properties.
 //**********************************************************************************
 
 // System
@@ -67,7 +68,7 @@ namespace AsyncSvc_sample
     /// <summary>
     /// LayerB class for AsyncProcessing service sample
     /// </summary>
-    public class LayerB : MyFcBaseLogic
+    public class LayerB : MyApsBaseLogic
     {
         #region Member declartion
 
@@ -140,7 +141,7 @@ namespace AsyncSvc_sample
             asyncParameterValue.TaskId = taskID;
 
             // Calls data access part of asynchronous processing service.
-            LayerD myDao = new LayerD(this.GetDam());
+            LayerD myDao = new LayerD(this.GetDam(this.DamKeyforAMT));
             myDao.SelectCommand(asyncParameterValue, userReturnValue);
             userReturnValue.CommandId = (int) userReturnValue.Obj;
         }
@@ -159,7 +160,7 @@ namespace AsyncSvc_sample
             asyncParameterValue.CommandId = 0;
 
             // Calls data access part of asynchronous processing service.
-            LayerD myDao = new LayerD(this.GetDam());
+            LayerD myDao = new LayerD(this.GetDam(this.DamKeyforAMT));
             myDao.UpdateTaskCommand(asyncParameterValue, userReturnValue);
         }
 
@@ -177,7 +178,7 @@ namespace AsyncSvc_sample
             asyncParameterValue.ProgressRate = progressRate;
 
             // Calls data access part of asynchronous processing service.
-            LayerD myDao = new LayerD(this.GetDam());
+            LayerD myDao = new LayerD(this.GetDam(this.DamKeyforAMT));
             myDao.UpdateTaskProgress(asyncParameterValue, userReturnValue);
         }       
 
