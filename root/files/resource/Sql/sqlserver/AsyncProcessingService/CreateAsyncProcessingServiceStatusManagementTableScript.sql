@@ -10,17 +10,18 @@ GO
 
 CREATE TABLE [dbo].[AsyncProcessingServiceStatusManagementTable](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[UserId] [nvarchar](5) NULL,
+	[UserId] [nvarchar](50) NULL,
 	[ProcessName] [nvarchar](50) NULL,
-	[Data] [nvarchar](50) NOT NULL,
+	[Data] [nvarchar](max) NULL,
 	[RegistrationDateTime] [datetime] NULL,
 	[ExecutionStartDateTime] [datetime] NULL,
 	[NumberOfRetries] [int] NULL,
 	[CompletionDateTime] [datetime] NULL,
-	[ProgressRate] [int] NULL,
-	[ReservedArea] [nvarchar](100) NULL,
+	[ProgressRate] [decimal](6, 2) NULL,
+	[ReservedArea] [nvarchar](512) NULL,
 	[StatusId] [int] NULL,
 	[CommandId] [int] NULL,
+	[ExceptionInfo] [nvarchar](512) NULL,
  CONSTRAINT [PK_AsyncProcessingServiceStatusManagementTable] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
