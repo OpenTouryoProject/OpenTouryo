@@ -19,7 +19,7 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：MyFcBaseLogic
+//* クラス名        ：MyApsBaseLogic
 //* クラス日本語名  ：自動振り分け機能付き業務コード親クラス２（サーバ用）（テンプレート）
 //*
 //* 作成者          ：生技 西野
@@ -332,6 +332,7 @@ namespace Touryo.Infrastructure.Business.Business
 
                     // ユーザ情報を格納する（ログ出力で利用）。
                     damABT.Obj = ((MyParameterValue)parameterValue).User;
+                    damAMT.Obj = ((MyParameterValue)parameterValue).User;
 
                     // damを設定する。
                     this.SetDam(this._damKeyforABT, damABT);
