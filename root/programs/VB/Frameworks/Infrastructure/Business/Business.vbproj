@@ -184,36 +184,46 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\AsyncProcessingServiceInsert.sql">
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\AsyncProcessingServiceInsert.sql">
       <Link>AsyncProcessingService\AsyncProcessingServiceInsert.sql</Link>
-    </Content>
-    <Content Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\SelectCommand.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\SelectCommand.sql">
       <Link>AsyncProcessingService\SelectCommand.sql</Link>
-    </Content>
-    <Content Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\SelectTask.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\SelectTask.sql">
       <Link>AsyncProcessingService\SelectTask.sql</Link>
-    </Content>
-    <Content Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\StopAllTask.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\StopAllTask.sql">
       <Link>AsyncProcessingService\StopAllTask.sql</Link>
-    </Content>
-    <Content Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskCommand.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskCommand.sql">
       <Link>AsyncProcessingService\UpdateTaskCommand.sql</Link>
-    </Content>
-    <Content Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskFail.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskFail.sql">
       <Link>AsyncProcessingService\UpdateTaskFail.sql</Link>
-    </Content>
-    <Content Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskProgress.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskProgress.sql">
       <Link>AsyncProcessingService\UpdateTaskProgress.sql</Link>
-    </Content>
-    <Content Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskRetry.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskRetry.sql">
       <Link>AsyncProcessingService\UpdateTaskRetry.sql</Link>
-    </Content>
-    <Content Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskStart.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskStart.sql">
       <Link>AsyncProcessingService\UpdateTaskStart.sql</Link>
-    </Content>
-    <Content Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskSuccess.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskSuccess.sql">
       <Link>AsyncProcessingService\UpdateTaskSuccess.sql</Link>
-    </Content>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
