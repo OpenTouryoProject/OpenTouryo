@@ -36,6 +36,7 @@
 '*                              Modified code to reset Exception information, before starting asynchronous task 
 '*  06/26/2015   Sandeep        Removed the where condition command <> 'Abort' from the SelectTask asynchronous task,
 '*                              to resolve unstable "Register" state, when you invoke [Abort] to AsyncTask, at this "Register" state
+'*  06/26/2015   Sandeep        Since RootNamespace does not exists, removed code of "assemblyNameSpace" to access embedded resource  
 '**********************************************************************************
 
 ' System
@@ -80,11 +81,9 @@ Namespace AsyncProcessingService
 			End If
 
 			Dim assemblyString As String = "Business"
-			Dim assemblyNameSpace As String = "Touryo.Infrastructure.Business.AsyncProcessingService"
-			Dim loadFileName As String = assemblyNameSpace & "." & filename
 
 			' Get SQL query from embedded resource file. 
-			Dim commandText As String = EmbeddedResourceLoader.LoadAsString(assemblyString, loadFileName, Encoding.GetEncoding(sqlEncoding))
+            Dim commandText As String = EmbeddedResourceLoader.LoadAsString(assemblyString, filename, Encoding.GetEncoding(sqlEncoding))
 
 			' Set sql command as text
 			Me.SetSqlByCommand(commandText)
