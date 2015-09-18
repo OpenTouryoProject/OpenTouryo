@@ -132,7 +132,7 @@ namespace AsyncSvc_sample
         ///  Get command information from database. 
         /// </summary>
         /// <param name="taskID">asynchronous task id</param>
-        /// <returns>command value</returns>
+        /// <param name="userReturnValue">asynchronous return value</param>
         private void GetCommandValue(int taskID, AsyncProcessingServiceReturnValue userReturnValue)
         {
             // Sets parameters of AsyncProcessingServiceParameterValue to get command value.

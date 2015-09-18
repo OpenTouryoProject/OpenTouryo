@@ -377,7 +377,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                 }
 
                 // Call User Program to execute by using communication control function
-                AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "StartCopyFromBlob", "StartCopyFromBlob", "SQL",
+                AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "Start", "Start", "SQL",
                                                                                         new MyUserInfo(selectedAsyncTask.UserId, selectedAsyncTask.TaskId.ToString()));
                 asyncParameterValue.TaskId = selectedAsyncTask.TaskId;
                 asyncParameterValue.Data = selectedAsyncTask.Data;
