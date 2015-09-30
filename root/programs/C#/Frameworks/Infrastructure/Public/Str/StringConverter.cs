@@ -56,7 +56,7 @@ namespace Touryo.Infrastructure.Public.Str
         public static string ToZenkaku(string input)
         {
             // VB関数を使用する。
-            return Strings.StrConv(input, VbStrConv.Wide, 0);
+            return Strings.StrConv(input, VbStrConv.Wide, 1041);
         }
 
         /// <summary>→ 半角変換</summary>
@@ -65,7 +65,7 @@ namespace Touryo.Infrastructure.Public.Str
         public static string ToHankaku(string input)
         {
             // VB関数を使用する。
-            return Strings.StrConv(input, VbStrConv.Narrow, 0);
+            return Strings.StrConv(input, VbStrConv.Narrow, 1041);
         }
 
         #endregion
@@ -78,7 +78,7 @@ namespace Touryo.Infrastructure.Public.Str
         public static string ToHiragana(string input)
         {
             // VB関数を使用する。
-            return Strings.StrConv(input, VbStrConv.Hiragana, 0);
+            return Strings.StrConv(input, VbStrConv.Hiragana, 1041);
         }
 
         /// <summary>→ 片仮名変換</summary>
@@ -87,7 +87,7 @@ namespace Touryo.Infrastructure.Public.Str
         public static string ToKatakana(string input)
         {
             // VB関数を使用する。
-            return Strings.StrConv(input, VbStrConv.Katakana, 0);
+            return Strings.StrConv(input, VbStrConv.Katakana, 1041);
         }
 
         #endregion
