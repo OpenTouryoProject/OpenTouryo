@@ -119,599 +119,193 @@
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="cmbDataProvider.Location" type="System.Drawing.Point, System.Drawing">
-    <value>208, 565</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="cmbDataProvider.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="cmbDataProvider.Size" type="System.Drawing.Size, System.Drawing">
-    <value>212, 23</value>
-  </data>
-  <data name="label2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+    <value>103, 50</value>
   </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 569</value>
-  </data>
-  <data name="label2.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
+    <value>12, 50</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>174, 15</value>
+    <value>81, 13</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
-    <value>データプロバイダを選択します</value>
-  </data>
-  <data name="label3.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+    <value>データプロバイダ</value>
   </data>
   <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>429, 569</value>
-  </data>
-  <data name="label3.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
+    <value>26, 79</value>
   </data>
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>158, 15</value>
+    <value>67, 13</value>
   </data>
   <data name="label3.Text" xml:space="preserve">
-    <value>接続文字列を設定します</value>
+    <value>接続文字列</value>
   </data>
   <data name="txtCnnStr.Location" type="System.Drawing.Point, System.Drawing">
-    <value>605, 565</value>
-  </data>
-  <data name="txtCnnStr.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
+    <value>103, 76</value>
   </data>
   <data name="txtCnnStr.Size" type="System.Drawing.Size, System.Drawing">
-    <value>705, 22</value>
-  </data>
-  <data name="btnCnOpen.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="btnCnOpen.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 39</value>
-  </data>
-  <data name="btnCnOpen.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="btnCnOpen.Size" type="System.Drawing.Size, System.Drawing">
-    <value>69, 29</value>
+    <value>624, 20</value>
   </data>
   <data name="btnCnOpen.Text" xml:space="preserve">
     <value>接続</value>
   </data>
-  <data name="btnCnClose.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="btnCnClose.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 88</value>
-  </data>
-  <data name="btnCnClose.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="btnCnClose.Size" type="System.Drawing.Size, System.Drawing">
-    <value>69, 29</value>
-  </data>
   <data name="btnCnClose.Text" xml:space="preserve">
     <value>切断</value>
   </data>
-  <data name="btnSaveConfig.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
   <data name="btnSaveConfig.Location" type="System.Drawing.Point, System.Drawing">
-    <value>181, 72</value>
-  </data>
-  <data name="btnSaveConfig.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="btnSaveConfig.Size" type="System.Drawing.Size, System.Drawing">
-    <value>120, 29</value>
+    <value>318, 20</value>
   </data>
   <data name="btnSaveConfig.Text" xml:space="preserve">
     <value>設定のセーブ</value>
   </data>
-  <data name="btnExecQuery.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="btnExecQuery.Location" type="System.Drawing.Point, System.Drawing">
-    <value>651, 55</value>
-  </data>
-  <data name="btnExecQuery.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="btnExecQuery.Size" type="System.Drawing.Size, System.Drawing">
-    <value>301, 102</value>
-  </data>
   <data name="btnExecQuery.Text" xml:space="preserve">
     <value>クエリ実行</value>
   </data>
-  <data name="btnLoadConfig.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
   <data name="btnLoadConfig.Location" type="System.Drawing.Point, System.Drawing">
-    <value>181, 119</value>
-  </data>
-  <data name="btnLoadConfig.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="btnLoadConfig.Size" type="System.Drawing.Size, System.Drawing">
-    <value>120, 29</value>
+    <value>202, 20</value>
   </data>
   <data name="btnLoadConfig.Text" xml:space="preserve">
     <value>設定のロード</value>
   </data>
-  <data name="btnOpenQueryFile.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="btnOpenQueryFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>11, 39</value>
-  </data>
-  <data name="btnOpenQueryFile.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="btnOpenQueryFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>133, 29</value>
-  </data>
-  <data name="btnOpenQueryFile.Text" xml:space="preserve">
-    <value>を開く</value>
-  </data>
-  <data name="cmbSelMethod.Location" type="System.Drawing.Point, System.Drawing">
-    <value>839, 22</value>
-  </data>
-  <data name="cmbSelMethod.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="cmbSelMethod.Size" type="System.Drawing.Size, System.Drawing">
-    <value>103, 23</value>
-  </data>
-  <data name="label7.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
   <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 52</value>
-  </data>
-  <data name="label7.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
+    <value>19, 48</value>
   </data>
   <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
-    <value>67, 15</value>
+    <value>55, 13</value>
   </data>
   <data name="label7.Text" xml:space="preserve">
     <value>制御方式</value>
   </data>
-  <data name="btnRollbackTx.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
   <data name="btnRollbackTx.Location" type="System.Drawing.Point, System.Drawing">
-    <value>105, 108</value>
-  </data>
-  <data name="btnRollbackTx.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="btnRollbackTx.Size" type="System.Drawing.Size, System.Drawing">
-    <value>93, 29</value>
+    <value>262, 45</value>
   </data>
   <data name="btnRollbackTx.Text" xml:space="preserve">
     <value>ロールバック</value>
   </data>
   <data name="cmbSelIso.Location" type="System.Drawing.Point, System.Drawing">
-    <value>87, 20</value>
-  </data>
-  <data name="cmbSelIso.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="cmbSelIso.Size" type="System.Drawing.Size, System.Drawing">
-    <value>109, 23</value>
-  </data>
-  <data name="label6.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+    <value>80, 17</value>
   </data>
   <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 24</value>
-  </data>
-  <data name="label6.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
+    <value>14, 21</value>
   </data>
   <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 15</value>
+    <value>60, 13</value>
   </data>
   <data name="label6.Text" xml:space="preserve">
     <value>分離レベル</value>
   </data>
-  <data name="btnCommitTx.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
   <data name="btnCommitTx.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 108</value>
-  </data>
-  <data name="btnCommitTx.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="btnCommitTx.Size" type="System.Drawing.Size, System.Drawing">
-    <value>93, 29</value>
+    <value>190, 45</value>
   </data>
   <data name="btnCommitTx.Text" xml:space="preserve">
     <value>コミット</value>
   </data>
-  <data name="btnBeginTx.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
   <data name="btnBeginTx.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 78</value>
-  </data>
-  <data name="btnBeginTx.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="btnBeginTx.Size" type="System.Drawing.Size, System.Drawing">
-    <value>191, 29</value>
+    <value>190, 15</value>
   </data>
   <data name="btnBeginTx.Text" xml:space="preserve">
     <value>開始</value>
   </data>
   <data name="cmbSelTxCtrl.Location" type="System.Drawing.Point, System.Drawing">
-    <value>87, 48</value>
-  </data>
-  <data name="cmbSelTxCtrl.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="cmbSelTxCtrl.Size" type="System.Drawing.Size, System.Drawing">
-    <value>109, 23</value>
+    <value>80, 45</value>
   </data>
   <data name="groupBoxTx.Location" type="System.Drawing.Point, System.Drawing">
-    <value>432, 14</value>
-  </data>
-  <data name="groupBoxTx.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="groupBoxTx.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
+    <value>396, 577</value>
   </data>
   <data name="groupBoxTx.Size" type="System.Drawing.Size, System.Drawing">
-    <value>205, 142</value>
+    <value>343, 79</value>
   </data>
   <data name="groupBoxTx.Text" xml:space="preserve">
     <value>トランザクション</value>
   </data>
-  <data name="label5.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
   <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
-    <value>651, 27</value>
-  </data>
-  <data name="label5.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
+    <value>764, 583</value>
   </data>
   <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>168, 15</value>
+    <value>77, 13</value>
   </data>
   <data name="label5.Text" xml:space="preserve">
-    <value>インターフェイスを選択します</value>
-  </data>
-  <data name="groupBoxCN.Location" type="System.Drawing.Point, System.Drawing">
-    <value>15, 22</value>
-  </data>
-  <data name="groupBoxCN.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="groupBoxCN.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="groupBoxCN.Size" type="System.Drawing.Size, System.Drawing">
-    <value>92, 134</value>
-  </data>
-  <data name="groupBoxCN.Text" xml:space="preserve">
-    <value>DB接続</value>
-  </data>
-  <data name="btnSaveQueryFile.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="btnSaveQueryFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>153, 87</value>
-  </data>
-  <data name="btnSaveQueryFile.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="btnSaveQueryFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>133, 30</value>
-  </data>
-  <data name="btnSaveQueryFile.Text" xml:space="preserve">
-    <value>に保存</value>
-  </data>
-  <data name="btnCloseQueryFile.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="btnCloseQueryFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>153, 39</value>
-  </data>
-  <data name="btnCloseQueryFile.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="btnCloseQueryFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>133, 29</value>
-  </data>
-  <data name="btnCloseQueryFile.Text" xml:space="preserve">
-    <value>を閉じる</value>
-  </data>
-  <data name="btnOverwriteQueryFile.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="btnOverwriteQueryFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>11, 88</value>
-  </data>
-  <data name="btnOverwriteQueryFile.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="btnOverwriteQueryFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>133, 29</value>
-  </data>
-  <data name="btnOverwriteQueryFile.Text" xml:space="preserve">
-    <value>を上書き保存</value>
-  </data>
-  <data name="groupBoxQF.Location" type="System.Drawing.Point, System.Drawing">
-    <value>120, 22</value>
-  </data>
-  <data name="groupBoxQF.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="groupBoxQF.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="groupBoxQF.Size" type="System.Drawing.Size, System.Drawing">
-    <value>297, 134</value>
-  </data>
-  <data name="groupBoxQF.Text" xml:space="preserve">
-    <value>クエリ ファイル</value>
-  </data>
-  <data name="groupBoxEXE.Location" type="System.Drawing.Point, System.Drawing">
-    <value>332, 609</value>
-  </data>
-  <data name="groupBoxEXE.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="groupBoxEXE.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="groupBoxEXE.Size" type="System.Drawing.Size, System.Drawing">
-    <value>980, 164</value>
-  </data>
-  <data name="groupBoxEXE.Text" xml:space="preserve">
-    <value>実行制御</value>
+    <value>インターフェース</value>
   </data>
   <data name="cmbSaveSlot.Location" type="System.Drawing.Point, System.Drawing">
-    <value>31, 105</value>
-  </data>
-  <data name="cmbSaveSlot.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="cmbSaveSlot.Size" type="System.Drawing.Size, System.Drawing">
-    <value>123, 23</value>
-  </data>
-  <data name="label4.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+    <value>103, 23</value>
   </data>
   <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>27, 87</value>
-  </data>
-  <data name="label4.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
+    <value>53, 23</value>
   </data>
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>135, 15</value>
+    <value>40, 13</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
-    <value>スロットを選択します。</value>
-  </data>
-  <data name="btnCreateConfig.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+    <value>スロット</value>
   </data>
   <data name="btnCreateConfig.Location" type="System.Drawing.Point, System.Drawing">
-    <value>21, 24</value>
-  </data>
-  <data name="btnCreateConfig.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="btnCreateConfig.Size" type="System.Drawing.Size, System.Drawing">
-    <value>280, 29</value>
+    <value>434, 20</value>
   </data>
   <data name="btnCreateConfig.Text" xml:space="preserve">
     <value>設定の作成</value>
   </data>
-  <data name="groupBoxR.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 609</value>
-  </data>
-  <data name="groupBoxR.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="groupBoxR.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="groupBoxR.Size" type="System.Drawing.Size, System.Drawing">
-    <value>321, 164</value>
-  </data>
   <data name="groupBoxR.Text" xml:space="preserve">
     <value>設定</value>
   </data>
-  <data name="statBar.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 776</value>
+  <data name="btnOverwriteQueryFile.Location" type="System.Drawing.Point, System.Drawing">
+    <value>199, 588</value>
   </data>
-  <data name="statBar.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1317, 22</value>
+  <data name="btnOverwriteQueryFile.Text" xml:space="preserve">
+    <value>保存</value>
   </data>
-  <data name="lblFilePath.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="btnCloseQueryFile.Location" type="System.Drawing.Point, System.Drawing">
+    <value>108, 588</value>
   </data>
-  <data name="lblFilePath.Location" type="System.Drawing.Point, System.Drawing">
-    <value>109, 532</value>
-  </data>
-  <data name="lblFilePath.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
-  </data>
-  <data name="lblFilePath.Size" type="System.Drawing.Size, System.Drawing">
-    <value>22, 15</value>
-  </data>
-  <data name="label1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 532</value>
-  </data>
-  <data name="label1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
+  <data name="btnCloseQueryFile.Text" xml:space="preserve">
+    <value>閉じる</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 15</value>
+    <value>65, 13</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
     <value>ファイル名：</value>
   </data>
-  <data name="label0.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label0.Location" type="System.Drawing.Point, System.Drawing">
-    <value>227, 500</value>
-  </data>
-  <data name="label0.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
-  </data>
-  <data name="label0.Size" type="System.Drawing.Size, System.Drawing">
-    <value>959, 15</value>
-  </data>
-  <data name="label0.Text" xml:space="preserve">
-    <value>テキスト ボックス内のショートカット ： Alt+O（ファイルを開く），Alt+S（ファイルに保存），Alt+C（ファイルを閉じる），Alt+E（クエリを実行），Alt+F4（終了）</value>
-  </data>
-  <data name="cbxType.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="cbxType.Location" type="System.Drawing.Point, System.Drawing">
-    <value>833, 531</value>
-  </data>
-  <data name="cbxType.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
   <data name="cbxType.Size" type="System.Drawing.Size, System.Drawing">
-    <value>169, 19</value>
+    <value>138, 17</value>
   </data>
   <data name="cbxType.Text" xml:space="preserve">
     <value>型推測モード（型指定）</value>
   </data>
-  <data name="nudNumOfBind.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1060, 528</value>
-  </data>
-  <data name="nudNumOfBind.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="nudNumOfBind.Size" type="System.Drawing.Size, System.Drawing">
-    <value>77, 22</value>
-  </data>
-  <data name="label8.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label8.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1145, 532</value>
-  </data>
-  <data name="label8.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
-  </data>
   <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
-    <value>128, 15</value>
+    <value>104, 13</value>
   </data>
   <data name="label8.Text" xml:space="preserve">
     <value>配列バインド数指定</value>
   </data>
-  <data name="ROOT1_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>131, 28</value>
+  <data name="btnSaveQueryFile.Location" type="System.Drawing.Point, System.Drawing">
+    <value>290, 588</value>
   </data>
-  <data name="ROOT2_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>131, 28</value>
+  <data name="btnSaveQueryFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 30</value>
   </data>
-  <data name="WHERE1_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>143, 28</value>
+  <data name="btnSaveQueryFile.Text" xml:space="preserve">
+    <value>名前をつけて保存</value>
   </data>
-  <data name="WHERE2_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>143, 28</value>
+  <data name="btnOpenQueryFile.Text" xml:space="preserve">
+    <value>開く</value>
   </data>
-  <data name="IF_TXT1_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>152, 28</value>
+  <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
+    <value>342, 26</value>
   </data>
-  <data name="IF_TXT2_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>152, 28</value>
+  <data name="label9.Text" xml:space="preserve">
+    <value>動的パラメタライズド・クエリ 分析ツール</value>
   </data>
-  <data name="IF_TXT_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>134, 28</value>
+  <data name="panel1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>988, 54</value>
   </data>
-  <data name="IF_TAG1_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>143, 28</value>
+  <data name="label0.Location" type="System.Drawing.Point, System.Drawing">
+    <value>251, 545</value>
   </data>
-  <data name="IF_TAG2_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>143, 28</value>
+  <data name="label0.Size" type="System.Drawing.Size, System.Drawing">
+    <value>695, 12</value>
   </data>
-  <data name="IF_TAG_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>134, 28</value>
-  </data>
-  <data name="ELSE1_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>125, 28</value>
-  </data>
-  <data name="ELSE2_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>125, 28</value>
-  </data>
-  <data name="ELSE_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>134, 28</value>
-  </data>
-  <data name="LIST1_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>123, 28</value>
-  </data>
-  <data name="LIST2_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>123, 28</value>
-  </data>
-  <data name="JOIN1_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>124, 28</value>
-  </data>
-  <data name="JOIN2_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>124, 28</value>
-  </data>
-  <data name="SUB1_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>120, 28</value>
-  </data>
-  <data name="SUB2_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>120, 28</value>
-  </data>
-  <data name="DECMA1_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>141, 28</value>
-  </data>
-  <data name="DECMA2_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>141, 28</value>
-  </data>
-  <data name="PARAM1_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>140, 28</value>
-  </data>
-  <data name="PARAM2_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>140, 28</value>
-  </data>
-  <data name="CPARAM1_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>150, 28</value>
-  </data>
-  <data name="CPARAM2_TSMI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>150, 28</value>
-  </data>
-  <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>182, 480</value>
-  </data>
-  <data name="txtSQL.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 3, 4, 3</value>
-  </data>
-  <data name="txtSQL.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1311, 513</value>
-  </data>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>8, 15</value>
-  </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>1317, 798</value>
-  </data>
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="label0.Text" xml:space="preserve">
+    <value>テキスト ボックス内のショートカット ： Alt+O（ファイルを開く），Alt+S（ファイルに保存），Alt+C（ファイルを閉じる），Alt+E（クエリを実行），Alt+F4（終了）</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>棟梁：動的パラメタライズド・クエリ 分析ツール</value>

@@ -39,8 +39,6 @@
             this.btnSaveConfig = new System.Windows.Forms.Button();
             this.btnExecQuery = new System.Windows.Forms.Button();
             this.btnLoadConfig = new System.Windows.Forms.Button();
-            this.btnOpenQueryFile = new System.Windows.Forms.Button();
-            this.groupBoxEXE = new System.Windows.Forms.GroupBox();
             this.cmbSelMethod = new System.Windows.Forms.ComboBox();
             this.groupBoxTx = new System.Windows.Forms.GroupBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -51,22 +49,18 @@
             this.btnBeginTx = new System.Windows.Forms.Button();
             this.cmbSelTxCtrl = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.groupBoxCN = new System.Windows.Forms.GroupBox();
-            this.groupBoxQF = new System.Windows.Forms.GroupBox();
-            this.btnSaveQueryFile = new System.Windows.Forms.Button();
-            this.btnCloseQueryFile = new System.Windows.Forms.Button();
-            this.btnOverwriteQueryFile = new System.Windows.Forms.Button();
             this.groupBoxR = new System.Windows.Forms.GroupBox();
             this.cmbSaveSlot = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.btnCreateConfig = new System.Windows.Forms.Button();
+            this.btnOverwriteQueryFile = new System.Windows.Forms.Button();
+            this.btnCloseQueryFile = new System.Windows.Forms.Button();
             this.statBar = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.lblFilePath = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.label0 = new System.Windows.Forms.Label();
             this.cbxType = new System.Windows.Forms.CheckBox();
             this.nudNumOfBind = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
@@ -113,21 +107,25 @@
             this.CPARAM_TSMI = new System.Windows.Forms.ToolStripMenuItem();
             this.CPARAM1_TSMI = new System.Windows.Forms.ToolStripMenuItem();
             this.CPARAM2_TSMI = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnSaveQueryFile = new System.Windows.Forms.Button();
+            this.btnOpenQueryFile = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label0 = new System.Windows.Forms.Label();
             this.txtSQL = new DPQuery_Tool.RichTextBoxDisableDF();
-            this.groupBoxEXE.SuspendLayout();
             this.groupBoxTx.SuspendLayout();
-            this.groupBoxCN.SuspendLayout();
-            this.groupBoxQF.SuspendLayout();
             this.groupBoxR.SuspendLayout();
             this.statBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudNumOfBind)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmbDataProvider
             // 
             resources.ApplyResources(this.cmbDataProvider, "cmbDataProvider");
-            this.cmbDataProvider.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDataProvider.BackColor = System.Drawing.Color.White;
+            this.cmbDataProvider.Cursor = System.Windows.Forms.Cursors.Default;
             this.cmbDataProvider.Name = "cmbDataProvider";
             this.cmbDataProvider.SelectedIndexChanged += new System.EventHandler(this.cmbDataProvider_SelectedIndexChanged);
             // 
@@ -149,61 +147,56 @@
             // btnCnOpen
             // 
             resources.ApplyResources(this.btnCnOpen, "btnCnOpen");
+            this.btnCnOpen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(163)))), ((int)(((byte)(189)))));
+            this.btnCnOpen.ForeColor = System.Drawing.Color.White;
             this.btnCnOpen.Name = "btnCnOpen";
-            this.btnCnOpen.UseVisualStyleBackColor = true;
+            this.btnCnOpen.UseVisualStyleBackColor = false;
+            this.btnCnOpen.EnabledChanged += new System.EventHandler(this.btnColor1_EnabledChanged);
             this.btnCnOpen.Click += new System.EventHandler(this.btnCnOpen_Click);
             // 
             // btnCnClose
             // 
             resources.ApplyResources(this.btnCnClose, "btnCnClose");
+            this.btnCnClose.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(163)))), ((int)(((byte)(189)))));
+            this.btnCnClose.ForeColor = System.Drawing.Color.White;
             this.btnCnClose.Name = "btnCnClose";
-            this.btnCnClose.UseVisualStyleBackColor = true;
+            this.btnCnClose.UseVisualStyleBackColor = false;
+            this.btnCnClose.EnabledChanged += new System.EventHandler(this.btnColor1_EnabledChanged);
             this.btnCnClose.Click += new System.EventHandler(this.btnCnClose_Click);
             // 
             // btnSaveConfig
             // 
             resources.ApplyResources(this.btnSaveConfig, "btnSaveConfig");
+            this.btnSaveConfig.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(163)))), ((int)(((byte)(189)))));
+            this.btnSaveConfig.ForeColor = System.Drawing.Color.White;
             this.btnSaveConfig.Name = "btnSaveConfig";
-            this.btnSaveConfig.UseVisualStyleBackColor = true;
+            this.btnSaveConfig.UseVisualStyleBackColor = false;
+            this.btnSaveConfig.EnabledChanged += new System.EventHandler(this.btnColor1_EnabledChanged);
             this.btnSaveConfig.Click += new System.EventHandler(this.btnSaveConfig_Click);
             // 
             // btnExecQuery
             // 
             resources.ApplyResources(this.btnExecQuery, "btnExecQuery");
+            this.btnExecQuery.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(166)))), ((int)(((byte)(44)))));
+            this.btnExecQuery.ForeColor = System.Drawing.Color.White;
             this.btnExecQuery.Name = "btnExecQuery";
-            this.btnExecQuery.UseVisualStyleBackColor = true;
+            this.btnExecQuery.UseVisualStyleBackColor = false;
+            this.btnExecQuery.EnabledChanged += new System.EventHandler(this.btnColor2_EnabledChanged);
             this.btnExecQuery.Click += new System.EventHandler(this.btnExecQuery_Click);
             // 
             // btnLoadConfig
             // 
             resources.ApplyResources(this.btnLoadConfig, "btnLoadConfig");
+            this.btnLoadConfig.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(163)))), ((int)(((byte)(189)))));
+            this.btnLoadConfig.ForeColor = System.Drawing.Color.White;
             this.btnLoadConfig.Name = "btnLoadConfig";
-            this.btnLoadConfig.UseVisualStyleBackColor = true;
+            this.btnLoadConfig.UseVisualStyleBackColor = false;
+            this.btnLoadConfig.EnabledChanged += new System.EventHandler(this.btnColor1_EnabledChanged);
             this.btnLoadConfig.Click += new System.EventHandler(this.btnLoadConfig_Click);
-            // 
-            // btnOpenQueryFile
-            // 
-            resources.ApplyResources(this.btnOpenQueryFile, "btnOpenQueryFile");
-            this.btnOpenQueryFile.Name = "btnOpenQueryFile";
-            this.btnOpenQueryFile.UseVisualStyleBackColor = true;
-            this.btnOpenQueryFile.Click += new System.EventHandler(this.btnOpenQueryFile_Click);
-            // 
-            // groupBoxEXE
-            // 
-            resources.ApplyResources(this.groupBoxEXE, "groupBoxEXE");
-            this.groupBoxEXE.Controls.Add(this.cmbSelMethod);
-            this.groupBoxEXE.Controls.Add(this.groupBoxTx);
-            this.groupBoxEXE.Controls.Add(this.label5);
-            this.groupBoxEXE.Controls.Add(this.groupBoxCN);
-            this.groupBoxEXE.Controls.Add(this.groupBoxQF);
-            this.groupBoxEXE.Controls.Add(this.btnExecQuery);
-            this.groupBoxEXE.Name = "groupBoxEXE";
-            this.groupBoxEXE.TabStop = false;
             // 
             // cmbSelMethod
             // 
             resources.ApplyResources(this.cmbSelMethod, "cmbSelMethod");
-            this.cmbSelMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSelMethod.Name = "cmbSelMethod";
             // 
             // groupBoxTx
@@ -227,14 +220,16 @@
             // btnRollbackTx
             // 
             resources.ApplyResources(this.btnRollbackTx, "btnRollbackTx");
+            this.btnRollbackTx.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(163)))), ((int)(((byte)(189)))));
+            this.btnRollbackTx.ForeColor = System.Drawing.Color.White;
             this.btnRollbackTx.Name = "btnRollbackTx";
-            this.btnRollbackTx.UseVisualStyleBackColor = true;
+            this.btnRollbackTx.UseVisualStyleBackColor = false;
+            this.btnRollbackTx.EnabledChanged += new System.EventHandler(this.btnColor1_EnabledChanged);
             this.btnRollbackTx.Click += new System.EventHandler(this.btnRollbackTx_Click);
             // 
             // cmbSelIso
             // 
             resources.ApplyResources(this.cmbSelIso, "cmbSelIso");
-            this.cmbSelIso.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSelIso.Name = "cmbSelIso";
             // 
             // label6
@@ -245,21 +240,26 @@
             // btnCommitTx
             // 
             resources.ApplyResources(this.btnCommitTx, "btnCommitTx");
+            this.btnCommitTx.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(163)))), ((int)(((byte)(189)))));
+            this.btnCommitTx.ForeColor = System.Drawing.Color.White;
             this.btnCommitTx.Name = "btnCommitTx";
-            this.btnCommitTx.UseVisualStyleBackColor = true;
+            this.btnCommitTx.UseVisualStyleBackColor = false;
+            this.btnCommitTx.EnabledChanged += new System.EventHandler(this.btnColor1_EnabledChanged);
             this.btnCommitTx.Click += new System.EventHandler(this.btnCommitTx_Click);
             // 
             // btnBeginTx
             // 
             resources.ApplyResources(this.btnBeginTx, "btnBeginTx");
+            this.btnBeginTx.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(163)))), ((int)(((byte)(189)))));
+            this.btnBeginTx.ForeColor = System.Drawing.Color.White;
             this.btnBeginTx.Name = "btnBeginTx";
-            this.btnBeginTx.UseVisualStyleBackColor = true;
+            this.btnBeginTx.UseVisualStyleBackColor = false;
+            this.btnBeginTx.EnabledChanged += new System.EventHandler(this.btnColor1_EnabledChanged);
             this.btnBeginTx.Click += new System.EventHandler(this.btnBeginTx_Click);
             // 
             // cmbSelTxCtrl
             // 
             resources.ApplyResources(this.cmbSelTxCtrl, "cmbSelTxCtrl");
-            this.cmbSelTxCtrl.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSelTxCtrl.Name = "cmbSelTxCtrl";
             this.cmbSelTxCtrl.SelectedIndexChanged += new System.EventHandler(this.cmbSelTxCtrl_SelectedIndexChanged);
             // 
@@ -268,45 +268,6 @@
             resources.ApplyResources(this.label5, "label5");
             this.label5.Name = "label5";
             // 
-            // groupBoxCN
-            // 
-            resources.ApplyResources(this.groupBoxCN, "groupBoxCN");
-            this.groupBoxCN.Controls.Add(this.btnCnOpen);
-            this.groupBoxCN.Controls.Add(this.btnCnClose);
-            this.groupBoxCN.Name = "groupBoxCN";
-            this.groupBoxCN.TabStop = false;
-            // 
-            // groupBoxQF
-            // 
-            resources.ApplyResources(this.groupBoxQF, "groupBoxQF");
-            this.groupBoxQF.Controls.Add(this.btnSaveQueryFile);
-            this.groupBoxQF.Controls.Add(this.btnOpenQueryFile);
-            this.groupBoxQF.Controls.Add(this.btnCloseQueryFile);
-            this.groupBoxQF.Controls.Add(this.btnOverwriteQueryFile);
-            this.groupBoxQF.Name = "groupBoxQF";
-            this.groupBoxQF.TabStop = false;
-            // 
-            // btnSaveQueryFile
-            // 
-            resources.ApplyResources(this.btnSaveQueryFile, "btnSaveQueryFile");
-            this.btnSaveQueryFile.Name = "btnSaveQueryFile";
-            this.btnSaveQueryFile.UseVisualStyleBackColor = true;
-            this.btnSaveQueryFile.Click += new System.EventHandler(this.btnSaveQueryFile_Click);
-            // 
-            // btnCloseQueryFile
-            // 
-            resources.ApplyResources(this.btnCloseQueryFile, "btnCloseQueryFile");
-            this.btnCloseQueryFile.Name = "btnCloseQueryFile";
-            this.btnCloseQueryFile.UseVisualStyleBackColor = true;
-            this.btnCloseQueryFile.Click += new System.EventHandler(this.btnCloseQueryFile_Click);
-            // 
-            // btnOverwriteQueryFile
-            // 
-            resources.ApplyResources(this.btnOverwriteQueryFile, "btnOverwriteQueryFile");
-            this.btnOverwriteQueryFile.Name = "btnOverwriteQueryFile";
-            this.btnOverwriteQueryFile.UseVisualStyleBackColor = true;
-            this.btnOverwriteQueryFile.Click += new System.EventHandler(this.btnOverwriteQueryFile_Click);
-            // 
             // groupBoxR
             // 
             resources.ApplyResources(this.groupBoxR, "groupBoxR");
@@ -314,14 +275,17 @@
             this.groupBoxR.Controls.Add(this.label4);
             this.groupBoxR.Controls.Add(this.btnCreateConfig);
             this.groupBoxR.Controls.Add(this.btnLoadConfig);
+            this.groupBoxR.Controls.Add(this.label2);
+            this.groupBoxR.Controls.Add(this.cmbDataProvider);
             this.groupBoxR.Controls.Add(this.btnSaveConfig);
+            this.groupBoxR.Controls.Add(this.label3);
+            this.groupBoxR.Controls.Add(this.txtCnnStr);
             this.groupBoxR.Name = "groupBoxR";
             this.groupBoxR.TabStop = false;
             // 
             // cmbSaveSlot
             // 
             resources.ApplyResources(this.cmbSaveSlot, "cmbSaveSlot");
-            this.cmbSaveSlot.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSaveSlot.Name = "cmbSaveSlot";
             // 
             // label4
@@ -332,9 +296,34 @@
             // btnCreateConfig
             // 
             resources.ApplyResources(this.btnCreateConfig, "btnCreateConfig");
+            this.btnCreateConfig.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(163)))), ((int)(((byte)(189)))));
+            this.btnCreateConfig.FlatAppearance.BorderColor = System.Drawing.Color.Turquoise;
+            this.btnCreateConfig.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
+            this.btnCreateConfig.ForeColor = System.Drawing.Color.White;
             this.btnCreateConfig.Name = "btnCreateConfig";
-            this.btnCreateConfig.UseVisualStyleBackColor = true;
+            this.btnCreateConfig.UseVisualStyleBackColor = false;
+            this.btnCreateConfig.EnabledChanged += new System.EventHandler(this.btnColor1_EnabledChanged);
             this.btnCreateConfig.Click += new System.EventHandler(this.btnCreateConfig_Click);
+            // 
+            // btnOverwriteQueryFile
+            // 
+            resources.ApplyResources(this.btnOverwriteQueryFile, "btnOverwriteQueryFile");
+            this.btnOverwriteQueryFile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(163)))), ((int)(((byte)(189)))));
+            this.btnOverwriteQueryFile.ForeColor = System.Drawing.Color.White;
+            this.btnOverwriteQueryFile.Name = "btnOverwriteQueryFile";
+            this.btnOverwriteQueryFile.UseVisualStyleBackColor = false;
+            this.btnOverwriteQueryFile.EnabledChanged += new System.EventHandler(this.btnColor1_EnabledChanged);
+            this.btnOverwriteQueryFile.Click += new System.EventHandler(this.btnOverwriteQueryFile_Click);
+            // 
+            // btnCloseQueryFile
+            // 
+            resources.ApplyResources(this.btnCloseQueryFile, "btnCloseQueryFile");
+            this.btnCloseQueryFile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(163)))), ((int)(((byte)(189)))));
+            this.btnCloseQueryFile.ForeColor = System.Drawing.Color.White;
+            this.btnCloseQueryFile.Name = "btnCloseQueryFile";
+            this.btnCloseQueryFile.UseVisualStyleBackColor = false;
+            this.btnCloseQueryFile.EnabledChanged += new System.EventHandler(this.btnColor1_EnabledChanged);
+            this.btnCloseQueryFile.Click += new System.EventHandler(this.btnCloseQueryFile_Click);
             // 
             // statBar
             // 
@@ -366,11 +355,6 @@
             // 
             resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            // 
-            // label0
-            // 
-            resources.ApplyResources(this.label0, "label0");
-            this.label0.Name = "label0";
             // 
             // cbxType
             // 
@@ -700,6 +684,45 @@
             this.CPARAM2_TSMI.Name = "CPARAM2_TSMI";
             this.CPARAM2_TSMI.Click += new System.EventHandler(this.TSMI_Click);
             // 
+            // btnSaveQueryFile
+            // 
+            resources.ApplyResources(this.btnSaveQueryFile, "btnSaveQueryFile");
+            this.btnSaveQueryFile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(163)))), ((int)(((byte)(189)))));
+            this.btnSaveQueryFile.ForeColor = System.Drawing.Color.White;
+            this.btnSaveQueryFile.Name = "btnSaveQueryFile";
+            this.btnSaveQueryFile.UseVisualStyleBackColor = false;
+            this.btnSaveQueryFile.EnabledChanged += new System.EventHandler(this.btnColor1_EnabledChanged);
+            this.btnSaveQueryFile.Click += new System.EventHandler(this.btnSaveQueryFile_Click);
+            // 
+            // btnOpenQueryFile
+            // 
+            resources.ApplyResources(this.btnOpenQueryFile, "btnOpenQueryFile");
+            this.btnOpenQueryFile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(163)))), ((int)(((byte)(189)))));
+            this.btnOpenQueryFile.ForeColor = System.Drawing.Color.White;
+            this.btnOpenQueryFile.Name = "btnOpenQueryFile";
+            this.btnOpenQueryFile.UseVisualStyleBackColor = false;
+            this.btnOpenQueryFile.EnabledChanged += new System.EventHandler(this.btnColor1_EnabledChanged);
+            this.btnOpenQueryFile.Click += new System.EventHandler(this.btnOpenQueryFile_Click);
+            // 
+            // panel1
+            // 
+            resources.ApplyResources(this.panel1, "panel1");
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(163)))), ((int)(((byte)(189)))));
+            this.panel1.Controls.Add(this.label9);
+            this.panel1.ForeColor = System.Drawing.Color.Black;
+            this.panel1.Name = "panel1";
+            // 
+            // label9
+            // 
+            resources.ApplyResources(this.label9, "label9");
+            this.label9.ForeColor = System.Drawing.Color.White;
+            this.label9.Name = "label9";
+            // 
+            // label0
+            // 
+            resources.ApplyResources(this.label0, "label0");
+            this.label0.Name = "label0";
+            // 
             // txtSQL
             // 
             this.txtSQL.AcceptsTab = true;
@@ -712,6 +735,19 @@
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
+            this.Controls.Add(this.groupBoxR);
+            this.Controls.Add(this.btnExecQuery);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.cmbSelMethod);
+            this.Controls.Add(this.btnCloseQueryFile);
+            this.Controls.Add(this.btnOverwriteQueryFile);
+            this.Controls.Add(this.groupBoxTx);
+            this.Controls.Add(this.btnCnClose);
+            this.Controls.Add(this.btnCnOpen);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.btnSaveQueryFile);
+            this.Controls.Add(this.btnOpenQueryFile);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.nudNumOfBind);
             this.Controls.Add(this.cbxType);
@@ -720,26 +756,19 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lblFilePath);
             this.Controls.Add(this.statBar);
-            this.Controls.Add(this.cmbDataProvider);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.txtCnnStr);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.groupBoxEXE);
-            this.Controls.Add(this.groupBoxR);
+            this.Cursor = System.Windows.Forms.Cursors.Default;
             this.Name = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.groupBoxEXE.ResumeLayout(false);
-            this.groupBoxEXE.PerformLayout();
             this.groupBoxTx.ResumeLayout(false);
             this.groupBoxTx.PerformLayout();
-            this.groupBoxCN.ResumeLayout(false);
-            this.groupBoxQF.ResumeLayout(false);
             this.groupBoxR.ResumeLayout(false);
             this.groupBoxR.PerformLayout();
             this.statBar.ResumeLayout(false);
             this.statBar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudNumOfBind)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -756,8 +785,6 @@
         private System.Windows.Forms.Button btnSaveConfig;
         private System.Windows.Forms.Button btnExecQuery;
         private System.Windows.Forms.Button btnLoadConfig;
-        private System.Windows.Forms.Button btnOpenQueryFile;
-        private System.Windows.Forms.GroupBox groupBoxEXE;
         private System.Windows.Forms.GroupBox groupBoxR;
         private System.Windows.Forms.ComboBox cmbSelMethod;
         private System.Windows.Forms.Label label6;
@@ -768,22 +795,16 @@
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.Button btnCreateConfig;
-        private System.Windows.Forms.Button btnCloseQueryFile;
         private System.Windows.Forms.Label lblFilePath;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button btnOverwriteQueryFile;
         private System.Windows.Forms.ComboBox cmbSaveSlot;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.GroupBox groupBoxQF;
-        private System.Windows.Forms.Button btnSaveQueryFile;
         private RichTextBoxDisableDF txtSQL;
-        private System.Windows.Forms.Label label0;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button btnRollbackTx;
         private System.Windows.Forms.Button btnCommitTx;
         private System.Windows.Forms.Button btnBeginTx;
         private System.Windows.Forms.ComboBox cmbSelTxCtrl;
-        private System.Windows.Forms.GroupBox groupBoxCN;
         private System.Windows.Forms.GroupBox groupBoxTx;
         private System.Windows.Forms.CheckBox cbxType;
         private System.Windows.Forms.NumericUpDown nudNumOfBind;
@@ -831,6 +852,13 @@
         private System.Windows.Forms.ToolStripMenuItem CPARAM_TSMI;
         private System.Windows.Forms.ToolStripMenuItem CPARAM1_TSMI;
         private System.Windows.Forms.ToolStripMenuItem CPARAM2_TSMI;
+        private System.Windows.Forms.Button btnSaveQueryFile;
+        private System.Windows.Forms.Button btnOpenQueryFile;
+        private System.Windows.Forms.Button btnCloseQueryFile;
+        private System.Windows.Forms.Button btnOverwriteQueryFile;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label0;
     }
 }
 
