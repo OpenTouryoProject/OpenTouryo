@@ -121,13 +121,13 @@
     <value>Closing process</value>
   </data>
   <data name="EntryPoint" xml:space="preserve">
-    <value>Entry point:</value>
+    <value>Entry point : {0}</value>
   </data>
   <data name="LogOutputText" xml:space="preserve">
     <value>"[Log output text]"</value>
   </data>
   <data name="MSG_CONFIG_FILE_NOT_EXIST" xml:space="preserve">
-    <value>There was no saved configuration setting.</value>
+    <value>There was no saved configuration file.</value>
   </data>
   <data name="MSG_EXEC_DQP" xml:space="preserve">
     <value>Dynamic parameterized query was executed.</value>
@@ -169,7 +169,7 @@
     <value>Run from TextBox</value>
   </data>
   <data name="ScreenGenerationSuccess" xml:space="preserve">
-    <value>Automatic Screens were generated.</value>
+    <value>The screens were generated automatically.</value>
   </data>
   <data name="STATUS_AUTO_MODE_WAS_SELECTED" xml:space="preserve">
     <value>Automatic control (Ran with auto-commit transaction mode.)</value>
@@ -189,29 +189,11 @@
   <data name="STATUS_CREATE_CONFIGURATION" xml:space="preserve">
     <value>Configured a new connection string setting.</value>
   </data>
-  <data name="STATUS_DB2_CREATED" xml:space="preserve">
-    <value>DB2.NET was generated.</value>
-  </data>
   <data name="STATUS_INIT" xml:space="preserve">
     <value>Initial state</value>
   </data>
   <data name="STATUS_MANUAL_MODE_WAS_SELECTED" xml:space="preserve">
     <value>Manual control (Manually control the transaction using this button.)</value>
-  </data>
-  <data name="STATUS_MSL_CREATED" xml:space="preserve">
-    <value>MySQL Connector / NET is generated.</value>
-  </data>
-  <data name="STATUS_ODB_CREATED" xml:space="preserve">
-    <value>ODBC.NET was generated.</value>
-  </data>
-  <data name="STATUS_ODP_CREATED" xml:space="preserve">
-    <value>ODP.NET was generated.</value>
-  </data>
-  <data name="STATUS_OLE_CREATED" xml:space="preserve">
-    <value>OLEDB.NET was generated.</value>
-  </data>
-  <data name="STATUS_PGS_CREATED" xml:space="preserve">
-    <value>PostgreSQL Npgsql was generated.</value>
   </data>
   <data name="STATUS_PROC_CANCELED" xml:space="preserve">
     <value>Operation was canceled.</value>
@@ -231,9 +213,6 @@
   <data name="STATUS_QUERY_FILE_SAVED" xml:space="preserve">
     <value>Query has been saved to a new query file.</value>
   </data>
-  <data name="STATUS_SQL_CREATED" xml:space="preserve">
-    <value>SqlClient was generated.</value>
-  </data>
   <data name="STATUS_TRANSACTION_COMMITED" xml:space="preserve">
     <value>Transaction was committed.</value>
   </data>
@@ -247,7 +226,7 @@
     <value>app.Config parameter has not been set. :</value>
   </data>
   <data name="CheckExceptionError" xml:space="preserve">
-    <value>Check Error was :</value>
+    <value>Check Error was : {0}</value>
   </data>
   <data name="EscCharacterNotSet" xml:space="preserve">
     <value>Escape character was not set.</value>
@@ -292,15 +271,18 @@
     <value>Primary key was not defined in the table.</value>
   </data>
   <data name="RuntimeError" xml:space="preserve">
-    <value>Is a run-time error:</value>
+    <value>Is a run-time error : {0}</value>
   </data>
   <data name="StringIndentation" xml:space="preserve">
-    <value>Indentation has been specified.</value>
+    <value>Before [{0}], only indent can be specified. : {1}</value>
   </data>
   <data name="TempFilenotExists" xml:space="preserve">
     <value>Template file does not exist. :</value>
   </data>
   <data name="TemplateFolderPath" xml:space="preserve">
     <value>Specifies the root folder path of the input file (template file).</value>
+  </data>
+  <data name="STATUS_DATA_PROVIDER_SELECTED" xml:space="preserve">
+    <value>The {0} data provider was selected.</value>
   </data>
 </root>

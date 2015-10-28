@@ -139,16 +139,16 @@
     <value>データベースサーバのipアドレスを入力</value>
   </data>
   <data name="MSG_INPUT_PWD" xml:space="preserve">
-    <value>データベースへのログオンアカウントを入力：パスワード</value>
+    <value>データベースへのログインアカウントを入力：パスワード</value>
   </data>
   <data name="MSG_INPUT_UID" xml:space="preserve">
-    <value>データベースへのログオンアカウントを入力：ユーザID</value>
+    <value>データベースへのログインアカウントを入力：ユーザID</value>
   </data>
   <data name="MSG_IS_QUERY_FILE_SAVED" xml:space="preserve">
     <value>クエリ ファイルをセーブしますか？</value>
   </data>
   <data name="Nocolumns" xml:space="preserve">
-    <value>コラムが存在しないため、スクリーンが生成できませんでした。</value>
+    <value>カラムが存在しないため、画面が生成できませんでした。</value>
   </data>
   <data name="PerformanceExecution" xml:space="preserve">
     <value>【性能情報－実行処理】</value>
@@ -169,7 +169,7 @@
     <value>TextBoxから実行</value>
   </data>
   <data name="ScreenGenerationSuccess" xml:space="preserve">
-    <value>自動画面を生成しました。</value>
+    <value>画面を自動生成しました。</value>
   </data>
   <data name="STATUS_AUTO_MODE_WAS_SELECTED" xml:space="preserve">
     <value>自動制御（自動コミット トランザクション モードで実行しました。）</value>
@@ -189,29 +189,11 @@
   <data name="STATUS_CREATE_CONFIGURATION" xml:space="preserve">
     <value>新規接続文字列の設定を作成しました。</value>
   </data>
-  <data name="STATUS_DB2_CREATED" xml:space="preserve">
-    <value>DB2.NETを生成しました。</value>
-  </data>
   <data name="STATUS_INIT" xml:space="preserve">
     <value>初期状態</value>
   </data>
   <data name="STATUS_MANUAL_MODE_WAS_SELECTED" xml:space="preserve">
     <value>手動制御（ボタンを使用してトランザクションを手動で制御します）</value>
-  </data>
-  <data name="STATUS_MSL_CREATED" xml:space="preserve">
-    <value>MySQL Connector/NETを生成しました。</value>
-  </data>
-  <data name="STATUS_ODB_CREATED" xml:space="preserve">
-    <value>ODBC.NETを生成しました。</value>
-  </data>
-  <data name="STATUS_ODP_CREATED" xml:space="preserve">
-    <value>ODP.NETを生成しました。</value>
-  </data>
-  <data name="STATUS_OLE_CREATED" xml:space="preserve">
-    <value>OLEDB.NETを生成しました。</value>
-  </data>
-  <data name="STATUS_PGS_CREATED" xml:space="preserve">
-    <value>PostgreSQL Npgsqlを生成しました。</value>
   </data>
   <data name="STATUS_PROC_CANCELED" xml:space="preserve">
     <value>処理をキャンセルしました。</value>
@@ -230,9 +212,6 @@
   </data>
   <data name="STATUS_QUERY_FILE_SAVED" xml:space="preserve">
     <value>クエリを新規クエリファイルに保存しました。</value>
-  </data>
-  <data name="STATUS_SQL_CREATED" xml:space="preserve">
-    <value>sqlClientを生成しました。</value>
   </data>
   <data name="STATUS_TRANSACTION_COMMITED" xml:space="preserve">
     <value>トランザクションをコミットしました。</value>
@@ -295,12 +274,15 @@
     <value>ランタイムエラーです：</value>
   </data>
   <data name="StringIndentation" xml:space="preserve">
-    <value>インデンテーションを指定しました。</value>
+    <value>[{0}] の前には、インデントのみ指定できます。: {1}</value>
   </data>
   <data name="TempFilenotExists" xml:space="preserve">
     <value>テンプレート ファイルが存在しません。：</value>
   </data>
   <data name="TemplateFolderPath" xml:space="preserve">
     <value>入力ファイル（テンプレート ファイル）のルート フォルダ パスを指定します。</value>
+  </data>
+  <data name="STATUS_DATA_PROVIDER_SELECTED" xml:space="preserve">
+    <value>{0}データプロバイダーを選択しました。</value>
   </data>
 </root>

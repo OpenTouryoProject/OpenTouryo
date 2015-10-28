@@ -60,6 +60,7 @@
 //*                                Japanese languages.
 //*  2014/05/12  Rituparna         Removed <start> and <End> tags
 //*  2015/07/19  Sandeep           Improved UI of tools and button controls
+//*  2015/10/28  Sandeep           Optimized messages in the resource file and implemented code to format it
 //**********************************************************************************
 
 // デバッグ
@@ -604,7 +605,7 @@ namespace DPQuery_Tool
                     this.txtCnnStr.Text = csb.ConnectionString;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_SQL_CREATED");
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_SQL);
 
                 }
                 else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_OLE)
@@ -625,7 +626,7 @@ namespace DPQuery_Tool
                     this.nudNumOfBind.Enabled = true;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_OLE_CREATED");
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_OLE);
 
                 }
                 if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ODB)
@@ -645,7 +646,7 @@ namespace DPQuery_Tool
                     this.nudNumOfBind.Enabled = true;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_ODB_CREATED");
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_ODB);
 
                 }
                 if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ORA)
@@ -666,7 +667,7 @@ namespace DPQuery_Tool
                     this.nudNumOfBind.Enabled = true;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_ODP_CREATED");
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_ORA);
 
                 } 
                 if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ODP)
@@ -687,7 +688,7 @@ namespace DPQuery_Tool
                     this.nudNumOfBind.Enabled = true;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_ODP_CREATED");
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_ODP);
 
                 }
                 else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_DB2)
@@ -706,7 +707,7 @@ namespace DPQuery_Tool
                     this.txtCnnStr.Text = csb.ConnectionString;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_DB2_CREATED");
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_DB2);
 
                 }
                 //else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_HiRDB)
@@ -745,7 +746,7 @@ namespace DPQuery_Tool
                     this.txtCnnStr.Text = csb.ConnectionString;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_MSL_CREATED");
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_MySQL);
 
                 }
                 else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_PstgrS)
@@ -771,7 +772,7 @@ namespace DPQuery_Tool
                     this.txtCnnStr.Text = csb;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_PGS_CREATED");
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_PstgrS);
                 }
                 else
                 {
