@@ -629,7 +629,7 @@ namespace DPQuery_Tool
                     ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_OLE);
 
                 }
-                if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ODB)
+                else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ODB)
                 {
                     //ODBC.NET
                     this._dam = new DamODBC();
@@ -649,7 +649,7 @@ namespace DPQuery_Tool
                     ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_ODB);
 
                 }
-                if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ORA)
+                else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ORA)
                 {
                     //Oracle Client
                     this._dam = new DamOraClient();
@@ -670,7 +670,7 @@ namespace DPQuery_Tool
                     ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_ORA);
 
                 } 
-                if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ODP)
+                else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ODP)
                 {
                     //ODP.NET
                     this._dam = new DamOraOdp();
