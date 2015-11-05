@@ -74,7 +74,7 @@ namespace DPQuery_Tool
             }
             catch(Exception ex)
             {
-                MessageBox.Show(RM_GetString("EntryPoint") + ex.Message);
+                MessageBox.Show(string.Format(RM_GetString("EntryPoint"), ex.Message));
             }
         }
 

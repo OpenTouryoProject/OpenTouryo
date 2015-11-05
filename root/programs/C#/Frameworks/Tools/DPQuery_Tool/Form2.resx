@@ -370,10 +370,10 @@
     <value>True</value>
   </metadata>
   <data name="button1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 420</value>
+    <value>309, 420</value>
   </data>
   <data name="button1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>802, 25</value>
+    <value>190, 26</value>
   </data>
   <data name="button1.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -394,7 +394,7 @@
     <value>1</value>
   </data>
   <data name="btnGenerateScreens.Location" type="System.Drawing.Point, System.Drawing">
-    <value>347, 452</value>
+    <value>363, 463</value>
   </data>
   <data name="btnGenerateScreens.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 23</value>
