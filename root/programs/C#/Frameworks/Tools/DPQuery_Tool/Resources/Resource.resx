@@ -121,43 +121,43 @@
     <value>Closing process</value>
   </data>
   <data name="EntryPoint" xml:space="preserve">
-    <value>Entry point:</value>
+    <value>Entry point : {0}</value>
   </data>
   <data name="LogOutputText" xml:space="preserve">
     <value>"[Log output text]"</value>
   </data>
   <data name="MSG_CONFIG_FILE_NOT_EXIST" xml:space="preserve">
-    <value>Save file of configuration does not exist.</value>
+    <value>There was no saved configuration file.</value>
   </data>
   <data name="MSG_EXEC_DQP" xml:space="preserve">
-    <value>I run the dynamic parameterized query.</value>
+    <value>Dynamic parameterized query was executed.</value>
   </data>
   <data name="MSG_EXEC_SPQ" xml:space="preserve">
-    <value>I run a parameterized query normal.</value>
+    <value>Static parameterized query was executed.</value>
   </data>
   <data name="MSG_INPUT_IP" xml:space="preserve">
-    <value>Enter the ip address of the DB server</value>
+    <value>Enter the IP address of the database server</value>
   </data>
   <data name="MSG_INPUT_PWD" xml:space="preserve">
-    <value>Enter the logon account to the DB: password</value>
+    <value>Enter the login account to the database: Password</value>
   </data>
   <data name="MSG_INPUT_UID" xml:space="preserve">
-    <value>Enter the logon account to the DB: user ID</value>
+    <value>Enter the login account to the database: User ID</value>
   </data>
   <data name="MSG_IS_QUERY_FILE_SAVED" xml:space="preserve">
-    <value>Are you sure you want to save the query file?</value>
+    <value>Are you sure you want to save this query file?</value>
   </data>
   <data name="Nocolumns" xml:space="preserve">
-    <value>No columns are available to generate screens</value>
+    <value>There were no columns available to generate screens.</value>
   </data>
   <data name="PerformanceExecution" xml:space="preserve">
     <value>[Performance information - execution process]</value>
   </data>
   <data name="PKnotAvailable" xml:space="preserve">
-    <value>Primary Keys are not set to the table :</value>
+    <value>Primary Keys were not set to the table :</value>
   </data>
   <data name="PkSetMessgae" xml:space="preserve">
-    <value>Please check Primary Keys are set to the Table or not</value>
+    <value>Please check Primary Keys were set to the Table or not.</value>
   </data>
   <data name="Result" xml:space="preserve">
     <value>Result</value>
@@ -169,103 +169,82 @@
     <value>Run from TextBox</value>
   </data>
   <data name="ScreenGenerationSuccess" xml:space="preserve">
-    <value>Hurre!!!!!!!!! Screens are Generated</value>
+    <value>The screens were generated automatically.</value>
   </data>
   <data name="STATUS_AUTO_MODE_WAS_SELECTED" xml:space="preserve">
-    <value>(I run with auto-commit transaction mode) automatic control</value>
+    <value>Automatic control (Ran with auto-commit transaction mode.)</value>
   </data>
   <data name="STATUS_CONFIGURATION_LOADED" xml:space="preserve">
-    <value>I was loading the configuration.</value>
+    <value>Configured connection setting was loaded.</value>
   </data>
   <data name="STATUS_CONFIGURATION_SAVED" xml:space="preserve">
-    <value>I save the settings.</value>
+    <value>Configured connection setting was saved.</value>
   </data>
   <data name="STATUS_CONNECTION_CLOSED" xml:space="preserve">
-    <value>I closed the connection.</value>
+    <value>Connection was closed.</value>
   </data>
   <data name="STATUS_CONNECTION_OPENED" xml:space="preserve">
-    <value>I opened a connection.</value>
+    <value>Connection was opened.</value>
   </data>
   <data name="STATUS_CREATE_CONFIGURATION" xml:space="preserve">
-    <value>I created a new setting.</value>
-  </data>
-  <data name="STATUS_DB2_CREATED" xml:space="preserve">
-    <value>I generated a DB2.NET.</value>
+    <value>Configured a new connection string setting.</value>
   </data>
   <data name="STATUS_INIT" xml:space="preserve">
     <value>Initial state</value>
   </data>
   <data name="STATUS_MANUAL_MODE_WAS_SELECTED" xml:space="preserve">
-    <value>(You manually control the transaction using the button) manual control</value>
-  </data>
-  <data name="STATUS_MSL_CREATED" xml:space="preserve">
-    <value>I generated a MySQL Connector / NET.</value>
-  </data>
-  <data name="STATUS_ODB_CREATED" xml:space="preserve">
-    <value>I generated a ODBC.NET.</value>
-  </data>
-  <data name="STATUS_ODP_CREATED" xml:space="preserve">
-    <value>I generated a ODP.NET.</value>
-  </data>
-  <data name="STATUS_OLE_CREATED" xml:space="preserve">
-    <value>I generated a OLEDB.NET.</value>
-  </data>
-  <data name="STATUS_PGS_CREATED" xml:space="preserve">
-    <value>I generated a PostgreSQL Npgsql.</value>
+    <value>Manual control (Manually control the transaction using this button.)</value>
   </data>
   <data name="STATUS_PROC_CANCELED" xml:space="preserve">
-    <value>I canceled the operation.</value>
+    <value>Operation was canceled.</value>
   </data>
   <data name="STATUS_QUERY_EXECED" xml:space="preserve">
-    <value>I ran the query.</value>
+    <value>Query was executed.</value>
   </data>
   <data name="STATUS_QUERY_FILE_CLOSED" xml:space="preserve">
-    <value>I close the query file.</value>
+    <value>Query file was closed.</value>
   </data>
   <data name="STATUS_QUERY_FILE_OPENED" xml:space="preserve">
-    <value>I opened the query file.</value>
+    <value>Query file was opened.</value>
   </data>
   <data name="STATUS_QUERY_FILE_OVERWRITED" xml:space="preserve">
-    <value>I have Save the query text file.</value>
+    <value>Modified query was saved to the query file.</value>
   </data>
   <data name="STATUS_QUERY_FILE_SAVED" xml:space="preserve">
-    <value>I have been saved to a text file query.</value>
-  </data>
-  <data name="STATUS_SQL_CREATED" xml:space="preserve">
-    <value>I generated a sqlClient.</value>
+    <value>Query has been saved to a new query file.</value>
   </data>
   <data name="STATUS_TRANSACTION_COMMITED" xml:space="preserve">
-    <value>I commit the transaction.</value>
+    <value>Transaction was committed.</value>
   </data>
   <data name="STATUS_TRANSACTION_ROLLBACKED" xml:space="preserve">
-    <value>I roll back the transaction</value>
+    <value>Transaction was rolled back.</value>
   </data>
   <data name="STATUS_TRANSACTION_STARTED" xml:space="preserve">
-    <value>I started the transaction.</value>
+    <value>Transaction was started.</value>
   </data>
   <data name="AppConfigParameterNotSet" xml:space="preserve">
     <value>app.Config parameter has not been set. :</value>
   </data>
   <data name="CheckExceptionError" xml:space="preserve">
-    <value>Check Error is :</value>
+    <value>Check Error was : {0}</value>
   </data>
   <data name="EscCharacterNotSet" xml:space="preserve">
-    <value>Escape character is not set.</value>
+    <value>Escape character was not set.</value>
   </data>
   <data name="FileFormatError" xml:space="preserve">
-    <value>D layer definition information file format error : There is no table name.</value>
+    <value>Data tier definition information file format error : There was no table name.</value>
   </data>
   <data name="FileGenComplete" xml:space="preserve">
     <value>Automatic Generation Completed !</value>
   </data>
   <data name="FilenotExistDBtypeInfo" xml:space="preserve">
-    <value>Check error: file type information DB [{0}] does not exist.</value>
+    <value>Check error: Database type information file [{0}] does not exist.</value>
   </data>
   <data name="FilenotExistDlayerInfo" xml:space="preserve">
-    <value>Check error:Defined D layer Information file  defined  [{0}] does not exist.</value>
+    <value>Check error: Data tier definition information file [{0}] does not exist.</value>
   </data>
   <data name="FilenotExistNETtypeInfo" xml:space="preserve">
-    <value>Check error:. NET type information file [{0}] does not exist.</value>
+    <value>Check error: .NET type information file [{0}] does not exist.</value>
   </data>
   <data name="InputFileRootFolderNotExist" xml:space="preserve">
     <value>Root folder of the input file (template file) does not exist.</value>
@@ -274,13 +253,13 @@
     <value>Invalid Format</value>
   </data>
   <data name="NoTimestampColName" xml:space="preserve">
-    <value>There is no time stamp column name.</value>
+    <value>There was no time stamp column name.</value>
   </data>
   <data name="OpenFileDialogFilter" xml:space="preserve">
     <value>CSV file (*.csv)|*.csv</value>
   </data>
   <data name="OpenFileDialogTitle" xml:space="preserve">
-    <value>D layer definition information file</value>
+    <value>Data tier definition information file.</value>
   </data>
   <data name="OutputFileRootFolderNotExist" xml:space="preserve">
     <value>Root folder (Dao class file, SQL file. Etc) of the output file does not exist.</value>
@@ -289,18 +268,21 @@
     <value>Specifies the root folder path (Dao file, SQL file) of the output file</value>
   </data>
   <data name="PrimaryKeyNotDefined" xml:space="preserve">
-    <value>Primary key is not defined in the table.</value>
+    <value>Primary key was not defined in the table.</value>
   </data>
   <data name="RuntimeError" xml:space="preserve">
-    <value>Is a run-time error:</value>
+    <value>Is a run-time error : {0}</value>
   </data>
   <data name="StringIndentation" xml:space="preserve">
-    <value>In front of, I can only be specified indent:.</value>
+    <value>Before [{0}], only indent can be specified. : {1}</value>
   </data>
   <data name="TempFilenotExists" xml:space="preserve">
     <value>Template file does not exist. :</value>
   </data>
   <data name="TemplateFolderPath" xml:space="preserve">
-    <value>Specifies the root folder path input file (template file)</value>
+    <value>Specifies the root folder path of the input file (template file).</value>
+  </data>
+  <data name="STATUS_DATA_PROVIDER_SELECTED" xml:space="preserve">
+    <value>The {0} data provider was selected.</value>
   </data>
 </root>
