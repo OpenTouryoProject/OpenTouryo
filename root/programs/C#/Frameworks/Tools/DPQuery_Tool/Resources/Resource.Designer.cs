@@ -70,7 +70,7 @@ namespace DPQuery_Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check Error was :.
+        ///   Looks up a localized string similar to Check Error was : {0}.
         /// </summary>
         internal static string CheckExceptionError {
             get {
@@ -88,7 +88,7 @@ namespace DPQuery_Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Entry point:.
+        ///   Looks up a localized string similar to Entry point : {0}.
         /// </summary>
         internal static string EntryPoint {
             get {
@@ -178,7 +178,7 @@ namespace DPQuery_Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There was no saved configuration setting..
+        ///   Looks up a localized string similar to There was no saved configuration file..
         /// </summary>
         internal static string MSG_CONFIG_FILE_NOT_EXIST {
             get {
@@ -358,7 +358,7 @@ namespace DPQuery_Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Is a run-time error:.
+        ///   Looks up a localized string similar to Is a run-time error : {0}.
         /// </summary>
         internal static string RuntimeError {
             get {
@@ -367,7 +367,7 @@ namespace DPQuery_Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatic Screens were generated..
+        ///   Looks up a localized string similar to The screens were generated automatically..
         /// </summary>
         internal static string ScreenGenerationSuccess {
             get {
@@ -430,11 +430,11 @@ namespace DPQuery_Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DB2.NET was generated..
+        ///   Looks up a localized string similar to The {0} data provider was selected..
         /// </summary>
-        internal static string STATUS_DB2_CREATED {
+        internal static string STATUS_DATA_PROVIDER_SELECTED {
             get {
-                return ResourceManager.GetString("STATUS_DB2_CREATED", resourceCulture);
+                return ResourceManager.GetString("STATUS_DATA_PROVIDER_SELECTED", resourceCulture);
             }
         }
         
@@ -453,51 +453,6 @@ namespace DPQuery_Tool.Resources {
         internal static string STATUS_MANUAL_MODE_WAS_SELECTED {
             get {
                 return ResourceManager.GetString("STATUS_MANUAL_MODE_WAS_SELECTED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MySQL Connector / NET is generated..
-        /// </summary>
-        internal static string STATUS_MSL_CREATED {
-            get {
-                return ResourceManager.GetString("STATUS_MSL_CREATED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ODBC.NET was generated..
-        /// </summary>
-        internal static string STATUS_ODB_CREATED {
-            get {
-                return ResourceManager.GetString("STATUS_ODB_CREATED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ODP.NET was generated..
-        /// </summary>
-        internal static string STATUS_ODP_CREATED {
-            get {
-                return ResourceManager.GetString("STATUS_ODP_CREATED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to OLEDB.NET was generated..
-        /// </summary>
-        internal static string STATUS_OLE_CREATED {
-            get {
-                return ResourceManager.GetString("STATUS_OLE_CREATED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to PostgreSQL Npgsql was generated..
-        /// </summary>
-        internal static string STATUS_PGS_CREATED {
-            get {
-                return ResourceManager.GetString("STATUS_PGS_CREATED", resourceCulture);
             }
         }
         
@@ -556,15 +511,6 @@ namespace DPQuery_Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SqlClient was generated..
-        /// </summary>
-        internal static string STATUS_SQL_CREATED {
-            get {
-                return ResourceManager.GetString("STATUS_SQL_CREATED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Transaction was committed..
         /// </summary>
         internal static string STATUS_TRANSACTION_COMMITED {
@@ -592,7 +538,7 @@ namespace DPQuery_Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Indentation has been specified..
+        ///   Looks up a localized string similar to Before [{0}], only indent can be specified. : {1}.
         /// </summary>
         internal static string StringIndentation {
             get {
