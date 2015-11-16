@@ -1,30 +1,30 @@
-name: “—Àfull
-desc: “—Àfull
+ï»¿name: æ£Ÿæ¢full
+desc: æ£Ÿæ¢full
 def: include
 
-f: \.sln$ ## ƒ\ƒŠƒ…[ƒVƒ‡ƒ“ƒtƒ@ƒCƒ‹
-f: \.suo$ ## ƒ\ƒŠƒ…[ƒVƒ‡ƒ“ƒtƒ@ƒCƒ‹
-f: \.user$ ## ƒ†[ƒUƒtƒ@ƒCƒ‹
-f: \.csproj$ ## ƒvƒƒWƒFƒNƒgƒtƒ@ƒCƒ‹
-f: \.vbproj$ ## ƒvƒƒWƒFƒNƒgƒtƒ@ƒCƒ‹
+f: \.sln$ ## ã‚½ãƒªãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚¡ã‚¤ãƒ«
+f: \.suo$ ## ã‚½ãƒªãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚¡ã‚¤ãƒ«
+f: \.user$ ## ãƒ¦ãƒ¼ã‚¶ãƒ•ã‚¡ã‚¤ãƒ«
+f: \.csproj$ ## ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãƒ•ã‚¡ã‚¤ãƒ«
+f: \.vbproj$ ## ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãƒ•ã‚¡ã‚¤ãƒ«
 
-## ƒrƒ‹ƒhƒ‚ƒWƒ…[ƒ‹
+## ãƒ“ãƒ«ãƒ‰ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
 
-f: \.dll$ ## DLLƒtƒ@ƒCƒ‹
-f: \.pdb$ ## PDBƒtƒ@ƒCƒ‹
-f: \.xap$ ## XAPƒtƒ@ƒCƒ‹
+f: \.dll$ ## DLLãƒ•ã‚¡ã‚¤ãƒ«
+f: \.pdb$ ## PDBãƒ•ã‚¡ã‚¤ãƒ«
+f: \.xap$ ## XAPãƒ•ã‚¡ã‚¤ãƒ«
 
-d: \\obj$ ## ƒrƒ‹ƒhƒ‚ƒWƒ…[ƒ‹
-d: \\bin$ ## ƒrƒ‹ƒhƒ‚ƒWƒ…[ƒ‹ 
-d: \\debug$ ## ƒrƒ‹ƒhƒ‚ƒWƒ…[ƒ‹
-d: \\release$ ## ƒrƒ‹ƒhƒ‚ƒWƒ…[ƒ‹
-d: \\build$ ## ƒrƒ‹ƒhƒ‚ƒWƒ…[ƒ‹
+d: \\obj$ ## ãƒ“ãƒ«ãƒ‰ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
+d: \\bin$ ## ãƒ“ãƒ«ãƒ‰ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ« 
+d: \\debug$ ## ãƒ“ãƒ«ãƒ‰ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
+d: \\release$ ## ãƒ“ãƒ«ãƒ‰ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
+d: \\build$ ## ãƒ“ãƒ«ãƒ‰ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
 
-## ƒƒOƒtƒ@ƒCƒ‹
+## ãƒ­ã‚°ãƒ•ã‚¡ã‚¤ãƒ«
 
-f: \.log$ ## LOGƒtƒ@ƒCƒ‹
+f: \.log$ ## LOGãƒ•ã‚¡ã‚¤ãƒ«
 
-## ƒ\[ƒXŠÇ—‚Ì—Þ
+## ã‚½ãƒ¼ã‚¹ç®¡ç†ã®é¡ž
 
 f: \.svnignore$ ## Subversion ignore file
 f: \.(vs[sp])?scc$  ## Visual SourceSafe files
