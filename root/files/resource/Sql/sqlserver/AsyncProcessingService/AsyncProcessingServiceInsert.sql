@@ -1,5 +1,5 @@
--- AsyncProcessingServiceInsert
--- 2014/11/22 “ú—§ ‘¾˜Y
+ï»¿-- AsyncProcessingServiceInsert
+-- 2014/11/22 æ—¥ç«‹ å¤ªéƒŽ
 INSERT INTO 
   [AsyncProcessingServiceStatusManagementTable]
     (

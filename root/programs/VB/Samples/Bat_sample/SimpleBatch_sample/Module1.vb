@@ -1,21 +1,21 @@
-'**********************************************************************************
-'* ƒTƒ“ƒvƒ‹ ƒoƒbƒ`
+ï»¿'**********************************************************************************
+'* ã‚µãƒ³ãƒ—ãƒ« ãƒãƒƒãƒ
 '**********************************************************************************
 
 '**********************************************************************************
-'* ƒNƒ‰ƒX–¼        FModule1
-'* ƒNƒ‰ƒX“ú–{Œê–¼  FƒTƒ“ƒvƒ‹ ƒoƒbƒ`
+'* ã‚¯ãƒ©ã‚¹å        ï¼šModule1
+'* ã‚¯ãƒ©ã‚¹æ—¥æœ¬èªå  ï¼šã‚µãƒ³ãƒ—ãƒ« ãƒãƒƒãƒ
 '*
-'* ì¬“ú        F|
-'* ì¬Ò          Fsas ¶‹Z
-'* XV—š—ğ        F
+'* ä½œæˆæ—¥æ™‚        ï¼šï¼
+'* ä½œæˆè€…          ï¼šsas ç”ŸæŠ€
+'* æ›´æ–°å±¥æ­´        ï¼š
 '*
-'*  “ú        XVÒ            “à—e
+'*  æ—¥æ™‚        æ›´æ–°è€…            å†…å®¹
 '*  ----------  ----------------  -------------------------------------------------
-'*  20xx/xx/xx  ‚w‚w ‚w‚w         ‚w‚w‚w‚w
+'*  20xx/xx/xx  ï¼¸ï¼¸ ï¼¸ï¼¸         ï¼¸ï¼¸ï¼¸ï¼¸
 '**********************************************************************************
 
-' Œ^î•ñ
+' å‹æƒ…å ±
 Imports SimpleBatch_sample.Common
 Imports SimpleBatch_sample.Business
 
@@ -28,7 +28,7 @@ Imports System.Data
 Imports System.Collections
 Imports System.Collections.Generic
 
-' ‹Æ–±ƒtƒŒ[ƒ€ƒ[ƒN
+' æ¥­å‹™ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯
 Imports Touryo.Infrastructure.Business.Business
 Imports Touryo.Infrastructure.Business.Common
 Imports Touryo.Infrastructure.Business.Dao
@@ -36,7 +36,7 @@ Imports Touryo.Infrastructure.Business.Exceptions
 Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Business.Util
 
-' ƒtƒŒ[ƒ€ƒ[ƒN
+' ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯
 Imports Touryo.Infrastructure.Framework.Business
 Imports Touryo.Infrastructure.Framework.Common
 Imports Touryo.Infrastructure.Framework.Dao
@@ -45,7 +45,7 @@ Imports Touryo.Infrastructure.Framework.Presentation
 Imports Touryo.Infrastructure.Framework.Util
 Imports Touryo.Infrastructure.Framework.Transmission
 
-' •”•i
+' éƒ¨å“
 Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Log
@@ -58,21 +58,21 @@ Module Module1
     ''' <summary>Main</summary>
     Sub Main()
         '***********************************************************************
-        '* ŠÈ‘f‚ÈƒTƒ“ƒvƒ‹‚È‚Ì‚ÅA
-        '* E‘½d‰»iƒ^ƒXƒN–ˆAŒ‹‰ÊƒZƒbƒg‚ğ•ªŠ„j
-        '* EƒtƒFƒbƒ`EƒTƒCƒYiƒƒ‚ƒŠÁ”ï—Ê‚ğ—}‚¦‚éj
-        '* EƒRƒ~ƒbƒgEƒCƒ“ƒ^[ƒoƒ‹AƒŠƒ‰ƒ“
-        '* “™‚Ìl—¶‚ª•Ê“r•K—v‚É‚È‚é‚±‚Æ‚ª‚ ‚è‚Ü‚·B
+        '* ç°¡ç´ ãªã‚µãƒ³ãƒ—ãƒ«ãªã®ã§ã€
+        '* ãƒ»å¤šé‡åŒ–ï¼ˆã‚¿ã‚¹ã‚¯æ¯ã€çµæœã‚»ãƒƒãƒˆã‚’åˆ†å‰²ï¼‰
+        '* ãƒ»ãƒ•ã‚§ãƒƒãƒãƒ»ã‚µã‚¤ã‚ºï¼ˆãƒ¡ãƒ¢ãƒªæ¶ˆè²»é‡ã‚’æŠ‘ãˆã‚‹ï¼‰
+        '* ãƒ»ã‚³ãƒŸãƒƒãƒˆãƒ»ã‚¤ãƒ³ã‚¿ãƒ¼ãƒãƒ«ã€ãƒªãƒ©ãƒ³
+        '* ç­‰ã®è€ƒæ…®ãŒåˆ¥é€”å¿…è¦ã«ãªã‚‹ã“ã¨ãŒã‚ã‚Šã¾ã™ã€‚
         '***********************************************************************
 
-        ' ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“‚ğƒoƒ‰‚·ŠÖ”‚ª‚ ‚éB
+        ' ã‚³ãƒãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³ã‚’ãƒãƒ©ã™é–¢æ•°ãŒã‚ã‚‹ã€‚
         Dim valsLst As List(Of String) = Nothing
         Dim argsDic As Dictionary(Of String, String) = Nothing
 
         PubCmnFunction.GetCommandArgs("/"c, argsDic, valsLst)
 
-        ' ˆø”ƒNƒ‰ƒX‚ğ¶¬
-        ' ‰ºˆÊi‚aE‚c‘wj‚ÍAƒeƒXƒg ƒNƒ‰ƒX‚ğ—¬—p‚·‚é
+        ' å¼•æ•°ã‚¯ãƒ©ã‚¹ã‚’ç”Ÿæˆ
+        ' ä¸‹ä½ï¼ˆï¼¢ãƒ»ï¼¤å±¤ï¼‰ã¯ã€ãƒ†ã‚¹ãƒˆ ã‚¯ãƒ©ã‚¹ã‚’æµç”¨ã™ã‚‹
         Dim testParameterValue As New TestParameterValue( _
             System.Reflection.Assembly.GetExecutingAssembly().Location, _
             "-", "SelectCount", _
@@ -82,15 +82,15 @@ Module Module1
             argsDic("/EXROLLBACK"), _
             New MyUserInfo("", ""))
 
-        ' –ß‚è’l
+        ' æˆ»ã‚Šå€¤
         Dim testReturnValue As TestReturnValue
 
-        ' ‚a‘wŒÄo‚µ
+        ' ï¼¢å±¤å‘¼å‡ºã—
         Dim layerB As New LayerB()
         testReturnValue = DirectCast(layerB.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
 
         If testReturnValue.ErrorFlag = True Then
-            ' Œ‹‰Êi‹Æ–±‘±s‰Â”\‚ÈƒGƒ‰[j
+            ' çµæœï¼ˆæ¥­å‹™ç¶šè¡Œå¯èƒ½ãªã‚¨ãƒ©ãƒ¼ï¼‰
             Dim [error] As String = "ErrorMessageID:" + testReturnValue.ErrorMessageID & vbCr & vbLf
             [error] += "ErrorMessage:" + testReturnValue.ErrorMessage & vbCr & vbLf
             [error] += "ErrorInfo:" + testReturnValue.ErrorInfo & vbCr & vbLf
@@ -98,8 +98,8 @@ Module Module1
             Console.WriteLine([error])
             Console.ReadKey()
         Else
-            ' Œ‹‰Êi³íŒnj
-            Console.WriteLine(testReturnValue.Obj.ToString() & "Œ‚Ìƒf[ƒ^‚ª‚ ‚è‚Ü‚·")
+            ' çµæœï¼ˆæ­£å¸¸ç³»ï¼‰
+            Console.WriteLine(testReturnValue.Obj.ToString() & "ä»¶ã®ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚Šã¾ã™")
             Console.ReadKey()
         End If
     End Sub

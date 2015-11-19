@@ -1,26 +1,26 @@
-'**********************************************************************************
-'* ƒTƒ“ƒvƒ‹ ƒAƒvƒŠ‰æ–Ê
+ï»¿'**********************************************************************************
+'* ã‚µãƒ³ãƒ—ãƒ« ã‚¢ãƒ—ãƒªç”»é¢
 '**********************************************************************************
 
 '**********************************************************************************
-'* ƒNƒ‰ƒX–¼        FForm1
-'* ƒNƒ‰ƒX“ú–{Œê–¼  FƒTƒ“ƒvƒ‹ ƒAƒvƒŠ‰æ–Ê
+'* ã‚¯ãƒ©ã‚¹å        ï¼šForm1
+'* ã‚¯ãƒ©ã‚¹æ—¥æœ¬èªå  ï¼šã‚µãƒ³ãƒ—ãƒ« ã‚¢ãƒ—ãƒªç”»é¢
 '*
-'* ì¬“ú        F|
-'* ì¬Ò          Fsas ¶‹Z
-'* XV—š—ğ        F
+'* ä½œæˆæ—¥æ™‚        ï¼šï¼
+'* ä½œæˆè€…          ï¼šsas ç”ŸæŠ€
+'* æ›´æ–°å±¥æ­´        ï¼š
 '*
-'*  “ú        XVÒ            “à—e
+'*  æ—¥æ™‚        æ›´æ–°è€…            å†…å®¹
 '*  ----------  ----------------  -------------------------------------------------
-'*  20xx/xx/xx  ‚w‚w ‚w‚w         ‚w‚w‚w‚w
+'*  20xx/xx/xx  ï¼¸ï¼¸ ï¼¸ï¼¸         ï¼¸ï¼¸ï¼¸ï¼¸
 '**********************************************************************************
 
-' WindowƒAƒvƒŠƒP[ƒVƒ‡ƒ“
+' Windowã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³
 Imports System.Drawing
 Imports System.Windows.Forms
 Imports System.ComponentModel
 
-' Œ^î•ñ
+' å‹æƒ…å ±
 Imports _2CSClientWin_sample.Common
 Imports _2CSClientWin_sample.Business
 
@@ -32,7 +32,7 @@ Imports System.Text
 Imports System.Data
 Imports System.Collections
 
-' ‹Æ–±ƒtƒŒ[ƒ€ƒ[ƒN
+' æ¥­å‹™ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯
 Imports Touryo.Infrastructure.Business.Business
 Imports Touryo.Infrastructure.Business.Common
 Imports Touryo.Infrastructure.Business.Dao
@@ -43,7 +43,7 @@ Imports Touryo.Infrastructure.Business.Util
 Imports Touryo.Infrastructure.Business.RichClient.Asynchronous
 Imports Touryo.Infrastructure.Business.RichClient.Presentation
 
-' ƒtƒŒ[ƒ€ƒ[ƒN
+' ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯
 Imports Touryo.Infrastructure.Framework.Business
 Imports Touryo.Infrastructure.Framework.Common
 Imports Touryo.Infrastructure.Framework.Dao
@@ -54,28 +54,28 @@ Imports Touryo.Infrastructure.Framework.Transmission
 
 Imports Touryo.Infrastructure.Framework.RichClient.Presentation
 
-' •”•i
+' éƒ¨å“
 Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
 
-''' <summary>ƒTƒ“ƒvƒ‹ ƒAƒvƒŠ‰æ–Ê</summary>
+''' <summary>ã‚µãƒ³ãƒ—ãƒ« ã‚¢ãƒ—ãƒªç”»é¢</summary>
 Partial Public Class Form1
 
-#Region "‰Šúˆ—"
+#Region "åˆæœŸå‡¦ç†"
 
-    ''' <summary>ƒRƒ“ƒXƒgƒ‰ƒNƒ^</summary>
+    ''' <summary>ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿</summary>
     Public Sub New()
         InitializeComponent()
     End Sub
 
     ''' <summary>
-    ''' ƒtƒH[ƒ€ƒ[ƒh‚ÌUOCƒƒ\ƒbƒhiŒÂ•Êj
+    ''' ãƒ•ã‚©ãƒ¼ãƒ ãƒ­ãƒ¼ãƒ‰ã®UOCãƒ¡ã‚½ãƒƒãƒ‰ï¼ˆå€‹åˆ¥ï¼‰
     ''' </summary>
     Protected Overrides Sub UOC_FormInit()
-        ' ƒtƒH[ƒ€‰Šú‰»i‰‰ñƒ[ƒhj‚ÉÀs‚·‚éˆ—‚ğÀ‘•‚·‚é
+        ' ãƒ•ã‚©ãƒ¼ãƒ åˆæœŸåŒ–ï¼ˆåˆå›ãƒ­ãƒ¼ãƒ‰ï¼‰æ™‚ã«å®Ÿè¡Œã™ã‚‹å‡¦ç†ã‚’å®Ÿè£…ã™ã‚‹
 
         ' TODO:
 
@@ -91,34 +91,34 @@ Partial Public Class Form1
         Me.ddlDap.SelectedIndex = 0
 
         ' ddlMode1
-        Me.ddlMode1.Items.Add(New ComboBoxItem("ŒÂ•Ê‚c‚‚", "individual"))
-        Me.ddlMode1.Items.Add(New ComboBoxItem("‹¤’Ê‚c‚‚", "common"))
-        Me.ddlMode1.Items.Add(New ComboBoxItem("©“®¶¬‚c‚‚iXV‚Ì‚İj", "generate"))
+        Me.ddlMode1.Items.Add(New ComboBoxItem("å€‹åˆ¥ï¼¤ï½ï½", "individual"))
+        Me.ddlMode1.Items.Add(New ComboBoxItem("å…±é€šï¼¤ï½ï½", "common"))
+        Me.ddlMode1.Items.Add(New ComboBoxItem("è‡ªå‹•ç”Ÿæˆï¼¤ï½ï½ï¼ˆæ›´æ–°ã®ã¿ï¼‰", "generate"))
         Me.ddlMode1.SelectedIndex = 0
 
         ' ddlMode2
-        Me.ddlMode2.Items.Add(New ComboBoxItem("Ã“IƒNƒGƒŠ", "static"))
-        Me.ddlMode2.Items.Add(New ComboBoxItem("“®“IƒNƒGƒŠ", "dynamic"))
+        Me.ddlMode2.Items.Add(New ComboBoxItem("é™çš„ã‚¯ã‚¨ãƒª", "static"))
+        Me.ddlMode2.Items.Add(New ComboBoxItem("å‹•çš„ã‚¯ã‚¨ãƒª", "dynamic"))
         Me.ddlMode2.SelectedIndex = 0
 
         ' ddlIso
-        Me.ddlIso.Items.Add(New ComboBoxItem("ƒmƒbƒgƒRƒlƒNƒg", "NC"))
-        Me.ddlIso.Items.Add(New ComboBoxItem("ƒm[ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“", "NT"))
-        Me.ddlIso.Items.Add(New ComboBoxItem("ƒ_[ƒeƒBƒŠ[ƒh", "RU"))
-        Me.ddlIso.Items.Add(New ComboBoxItem("ƒŠ[ƒhƒRƒ~ƒbƒg", "RC"))
-        Me.ddlIso.Items.Add(New ComboBoxItem("ƒŠƒs[ƒ^ƒuƒ‹ƒŠ[ƒh", "RR"))
-        Me.ddlIso.Items.Add(New ComboBoxItem("ƒVƒŠƒAƒ‰ƒCƒUƒuƒ‹", "SZ"))
-        Me.ddlIso.Items.Add(New ComboBoxItem("ƒXƒiƒbƒvƒVƒ‡ƒbƒg", "SS"))
-        Me.ddlIso.Items.Add(New ComboBoxItem("ƒfƒtƒHƒ‹ƒg", "DF"))
+        Me.ddlIso.Items.Add(New ComboBoxItem("ãƒãƒƒãƒˆã‚³ãƒã‚¯ãƒˆ", "NC"))
+        Me.ddlIso.Items.Add(New ComboBoxItem("ãƒãƒ¼ãƒˆãƒ©ãƒ³ã‚¶ã‚¯ã‚·ãƒ§ãƒ³", "NT"))
+        Me.ddlIso.Items.Add(New ComboBoxItem("ãƒ€ãƒ¼ãƒ†ã‚£ãƒªãƒ¼ãƒ‰", "RU"))
+        Me.ddlIso.Items.Add(New ComboBoxItem("ãƒªãƒ¼ãƒ‰ã‚³ãƒŸãƒƒãƒˆ", "RC"))
+        Me.ddlIso.Items.Add(New ComboBoxItem("ãƒªãƒ”ãƒ¼ã‚¿ãƒ–ãƒ«ãƒªãƒ¼ãƒ‰", "RR"))
+        Me.ddlIso.Items.Add(New ComboBoxItem("ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚¶ãƒ–ãƒ«", "SZ"))
+        Me.ddlIso.Items.Add(New ComboBoxItem("ã‚¹ãƒŠãƒƒãƒ—ã‚·ãƒ§ãƒƒãƒˆ", "SS"))
+        Me.ddlIso.Items.Add(New ComboBoxItem("ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ", "DF"))
         Me.ddlIso.SelectedIndex = 1
 
         ' ddlExRollback
-        Me.ddlExRollback.Items.Add(New ComboBoxItem("³í", "-"))
-        Me.ddlExRollback.Items.Add(New ComboBoxItem("‹Æ–±—áŠO", "Business"))
-        Me.ddlExRollback.Items.Add(New ComboBoxItem("ƒVƒXƒeƒ€—áŠO", "System"))
-        Me.ddlExRollback.Items.Add(New ComboBoxItem("‚»‚Ì‘¼Aˆê”Ê“I‚È—áŠO", "Other"))
-        Me.ddlExRollback.Items.Add(New ComboBoxItem("‹Æ–±—áŠO‚Ö‚ÌU‘Ö", "Other-Business"))
-        Me.ddlExRollback.Items.Add(New ComboBoxItem("ƒVƒXƒeƒ€—áŠO‚Ö‚ÌU‘Ö", "Other-System"))
+        Me.ddlExRollback.Items.Add(New ComboBoxItem("æ­£å¸¸æ™‚", "-"))
+        Me.ddlExRollback.Items.Add(New ComboBoxItem("æ¥­å‹™ä¾‹å¤–", "Business"))
+        Me.ddlExRollback.Items.Add(New ComboBoxItem("ã‚·ã‚¹ãƒ†ãƒ ä¾‹å¤–", "System"))
+        Me.ddlExRollback.Items.Add(New ComboBoxItem("ãã®ä»–ã€ä¸€èˆ¬çš„ãªä¾‹å¤–", "Other"))
+        Me.ddlExRollback.Items.Add(New ComboBoxItem("æ¥­å‹™ä¾‹å¤–ã¸ã®æŒ¯æ›¿", "Other-Business"))
+        Me.ddlExRollback.Items.Add(New ComboBoxItem("ã‚·ã‚¹ãƒ†ãƒ ä¾‹å¤–ã¸ã®æŒ¯æ›¿", "Other-System"))
         Me.ddlExRollback.SelectedIndex = 0
 
         ' ddlOrderColumn
@@ -133,30 +133,30 @@ Partial Public Class Form1
         Me.ddlOrderSequence.SelectedIndex = 0
     End Sub
 
-#Region "ƒRƒ“ƒ{ƒ{ƒbƒNƒX—p"
+#Region "ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ç”¨"
 
-    ''' <summary>ƒRƒ“ƒ{ƒ{ƒbƒNƒX—pƒCƒ“ƒi[ƒNƒ‰ƒX</summary>
+    ''' <summary>ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ç”¨ã‚¤ãƒ³ãƒŠãƒ¼ã‚¯ãƒ©ã‚¹</summary>
     Private Class ComboBoxItem
-        ''' <summary>•\¦–¼</summary>
+        ''' <summary>è¡¨ç¤ºå</summary>
         Private m_name As String = ""
 
-        ''' <summary>’l</summary>
+        ''' <summary>å€¤</summary>
         Private m_value As String = ""
 
-        ''' <summary>ƒRƒ“ƒXƒgƒ‰ƒNƒ^</summary>
+        ''' <summary>ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿</summary>
         Public Sub New(ByVal name As String, ByVal value As String)
             m_name = name
             m_value = value
         End Sub
 
-        ''' <summary>•\¦–¼</summary>
+        ''' <summary>è¡¨ç¤ºå</summary>
         Public ReadOnly Property Name() As String
             Get
                 Return m_name
             End Get
         End Property
 
-        ''' <summary>’l</summary>
+        ''' <summary>å€¤</summary>
         Public ReadOnly Property Value() As String
             Get
                 Return m_value
@@ -164,8 +164,8 @@ Partial Public Class Form1
         End Property
 
         ''' <summary>
-        ''' ƒI[ƒo[ƒ‰ƒCƒh‚µ‚½ƒƒ\ƒbƒh
-        ''' ‚±‚ê‚ªƒRƒ“ƒ{ƒ{ƒbƒNƒX‚É•\¦‚³‚ê‚é
+        ''' ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ã—ãŸãƒ¡ã‚½ãƒƒãƒ‰
+        ''' ã“ã‚ŒãŒã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ã«è¡¨ç¤ºã•ã‚Œã‚‹
         ''' </summary>
         Public Overrides Function ToString() As String
             Return m_name
@@ -176,205 +176,205 @@ Partial Public Class Form1
 
 #End Region
 
-#Region "‚b‚q‚t‚cˆ—ƒƒ\ƒbƒh"
+#Region "ï¼£ï¼²ï¼µï¼¤å‡¦ç†ãƒ¡ã‚½ãƒƒãƒ‰"
 
-#Region "QÆŒn"
+#Region "å‚ç…§ç³»"
 
-    ''' <summary>Œ”æ“¾</summary>
-    ''' <param name="rcFxEventArgs">ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚Ì‹¤’Êˆø”</param>
+    ''' <summary>ä»¶æ•°å–å¾—</summary>
+    ''' <param name="rcFxEventArgs">ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã®å…±é€šå¼•æ•°</param>
     Protected Sub UOC_btnButton1_Click(ByVal rcFxEventArgs As RcFxEventArgs)
-        ' ˆø”ƒNƒ‰ƒX‚ğ¶¬
-        ' ‰ºˆÊi‚aE‚c‘wj‚ÍAƒeƒXƒg ƒNƒ‰ƒX‚ğ—¬—p‚·‚é
+        ' å¼•æ•°ã‚¯ãƒ©ã‚¹ã‚’ç”Ÿæˆ
+        ' ä¸‹ä½ï¼ˆï¼¢ãƒ»ï¼¤å±¤ï¼‰ã¯ã€ãƒ†ã‚¹ãƒˆ ã‚¯ãƒ©ã‚¹ã‚’æµç”¨ã™ã‚‹
         Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "SelectCount", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
-        ' –ß‚è’l
+        ' æˆ»ã‚Šå€¤
         Dim testReturnValue As TestReturnValue
 
-        ' •ª—£ƒŒƒxƒ‹‚Ìİ’è
+        ' åˆ†é›¢ãƒ¬ãƒ™ãƒ«ã®è¨­å®š
         Dim iso As DbEnum.IsolationLevelEnum = Me.SelectIsolationLevel()
 
-        ' ‚a‘wŒÄo‚µ{“s“xƒRƒ~ƒbƒg
+        ' ï¼¢å±¤å‘¼å‡ºã—ï¼‹éƒ½åº¦ã‚³ãƒŸãƒƒãƒˆ
         Dim layerB__1 As New LayerB()
         testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
         LayerB.CommitAndClose()
 
-        ' Œ‹‰Ê•\¦‚·‚éƒƒbƒZ[ƒW ƒGƒŠƒA
+        ' çµæœè¡¨ç¤ºã™ã‚‹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ ã‚¨ãƒªã‚¢
         Me.labelMessage.Text = ""
 
         If testReturnValue.ErrorFlag = True Then
-            ' Œ‹‰Êi‹Æ–±‘±s‰Â”\‚ÈƒGƒ‰[j
+            ' çµæœï¼ˆæ¥­å‹™ç¶šè¡Œå¯èƒ½ãªã‚¨ãƒ©ãƒ¼ï¼‰
             labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID & vbCr & vbLf
             labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage & vbCr & vbLf
             labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo & vbCr & vbLf
         Else
-            ' Œ‹‰Êi³íŒnj
-            labelMessage.Text = testReturnValue.Obj.ToString() & "Œ‚Ìƒf[ƒ^‚ª‚ ‚è‚Ü‚·"
+            ' çµæœï¼ˆæ­£å¸¸ç³»ï¼‰
+            labelMessage.Text = testReturnValue.Obj.ToString() & "ä»¶ã®ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚Šã¾ã™"
         End If
     End Sub
 
-    ''' <summary>ˆê——æ“¾idtj</summary>
-    ''' <param name="rcFxEventArgs">ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚Ì‹¤’Êˆø”</param>
+    ''' <summary>ä¸€è¦§å–å¾—ï¼ˆdtï¼‰</summary>
+    ''' <param name="rcFxEventArgs">ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã®å…±é€šå¼•æ•°</param>
     Protected Sub UOC_btnButton2_Click(ByVal rcFxEventArgs As RcFxEventArgs)
-        ' ˆø”ƒNƒ‰ƒX‚ğ¶¬
-        ' ‰ºˆÊi‚aE‚c‘wj‚ÍAƒeƒXƒg ƒNƒ‰ƒX‚ğ—¬—p‚·‚é
+        ' å¼•æ•°ã‚¯ãƒ©ã‚¹ã‚’ç”Ÿæˆ
+        ' ä¸‹ä½ï¼ˆï¼¢ãƒ»ï¼¤å±¤ï¼‰ã¯ã€ãƒ†ã‚¹ãƒˆ ã‚¯ãƒ©ã‚¹ã‚’æµç”¨ã™ã‚‹
         Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "SelectAll_DT", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
-        ' –ß‚è’l
+        ' æˆ»ã‚Šå€¤
         Dim testReturnValue As TestReturnValue
 
-        ' •ª—£ƒŒƒxƒ‹‚Ìİ’è
+        ' åˆ†é›¢ãƒ¬ãƒ™ãƒ«ã®è¨­å®š
         Dim iso As DbEnum.IsolationLevelEnum = Me.SelectIsolationLevel()
 
-        ' ‚a‘wŒÄo‚µ{“s“xƒRƒ~ƒbƒg
+        ' ï¼¢å±¤å‘¼å‡ºã—ï¼‹éƒ½åº¦ã‚³ãƒŸãƒƒãƒˆ
         Dim layerB__1 As New LayerB()
         testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
         LayerB.CommitAndClose()
 
-        ' Œ‹‰Ê•\¦‚·‚éƒƒbƒZ[ƒW ƒGƒŠƒA
+        ' çµæœè¡¨ç¤ºã™ã‚‹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ ã‚¨ãƒªã‚¢
         Me.labelMessage.Text = ""
 
         If testReturnValue.ErrorFlag = True Then
-            ' Œ‹‰Êi‹Æ–±‘±s‰Â”\‚ÈƒGƒ‰[j
+            ' çµæœï¼ˆæ¥­å‹™ç¶šè¡Œå¯èƒ½ãªã‚¨ãƒ©ãƒ¼ï¼‰
             labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID & vbCr & vbLf
             labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage & vbCr & vbLf
             labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo & vbCr & vbLf
         Else
-            ' Œ‹‰Êi³íŒnj
+            ' çµæœï¼ˆæ­£å¸¸ç³»ï¼‰
             Me.dataGridView1.DataSource = testReturnValue.Obj
         End If
     End Sub
 
-    ''' <summary>ˆê——æ“¾idsj</summary>
-    ''' <param name="rcFxEventArgs">ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚Ì‹¤’Êˆø”</param>
+    ''' <summary>ä¸€è¦§å–å¾—ï¼ˆdsï¼‰</summary>
+    ''' <param name="rcFxEventArgs">ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã®å…±é€šå¼•æ•°</param>
     Protected Sub UOC_btnButton3_Click(ByVal rcFxEventArgs As RcFxEventArgs)
-        ' ˆø”ƒNƒ‰ƒX‚ğ¶¬
-        ' ‰ºˆÊi‚aE‚c‘wj‚ÍAƒeƒXƒg ƒNƒ‰ƒX‚ğ—¬—p‚·‚é
+        ' å¼•æ•°ã‚¯ãƒ©ã‚¹ã‚’ç”Ÿæˆ
+        ' ä¸‹ä½ï¼ˆï¼¢ãƒ»ï¼¤å±¤ï¼‰ã¯ã€ãƒ†ã‚¹ãƒˆ ã‚¯ãƒ©ã‚¹ã‚’æµç”¨ã™ã‚‹
         Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "SelectAll_DS", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
-        ' –ß‚è’l
+        ' æˆ»ã‚Šå€¤
         Dim testReturnValue As TestReturnValue
 
-        ' •ª—£ƒŒƒxƒ‹‚Ìİ’è
+        ' åˆ†é›¢ãƒ¬ãƒ™ãƒ«ã®è¨­å®š
         Dim iso As DbEnum.IsolationLevelEnum = Me.SelectIsolationLevel()
 
-        ' ‚a‘wŒÄo‚µ{“s“xƒRƒ~ƒbƒg
+        ' ï¼¢å±¤å‘¼å‡ºã—ï¼‹éƒ½åº¦ã‚³ãƒŸãƒƒãƒˆ
         Dim layerB__1 As New LayerB()
         testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
         LayerB.CommitAndClose()
 
-        ' Œ‹‰Ê•\¦‚·‚éƒƒbƒZ[ƒW ƒGƒŠƒA
+        ' çµæœè¡¨ç¤ºã™ã‚‹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ ã‚¨ãƒªã‚¢
         Me.labelMessage.Text = ""
 
         If testReturnValue.ErrorFlag = True Then
-            ' Œ‹‰Êi‹Æ–±‘±s‰Â”\‚ÈƒGƒ‰[j
+            ' çµæœï¼ˆæ¥­å‹™ç¶šè¡Œå¯èƒ½ãªã‚¨ãƒ©ãƒ¼ï¼‰
             labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID & vbCr & vbLf
             labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage & vbCr & vbLf
             labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo & vbCr & vbLf
         Else
-            ' Œ‹‰Êi³íŒnj
+            ' çµæœï¼ˆæ­£å¸¸ç³»ï¼‰
             Me.dataGridView1.DataSource = DirectCast(testReturnValue.Obj, DataSet).Tables(0)
         End If
     End Sub
 
-    ''' <summary>ˆê——æ“¾idrj</summary>
-    ''' <param name="rcFxEventArgs">ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚Ì‹¤’Êˆø”</param>
+    ''' <summary>ä¸€è¦§å–å¾—ï¼ˆdrï¼‰</summary>
+    ''' <param name="rcFxEventArgs">ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã®å…±é€šå¼•æ•°</param>
     Protected Sub UOC_btnButton4_Click(ByVal rcFxEventArgs As RcFxEventArgs)
-        ' ˆø”ƒNƒ‰ƒX‚ğ¶¬
-        ' ‰ºˆÊi‚aE‚c‘wj‚ÍAƒeƒXƒg ƒNƒ‰ƒX‚ğ—¬—p‚·‚é
+        ' å¼•æ•°ã‚¯ãƒ©ã‚¹ã‚’ç”Ÿæˆ
+        ' ä¸‹ä½ï¼ˆï¼¢ãƒ»ï¼¤å±¤ï¼‰ã¯ã€ãƒ†ã‚¹ãƒˆ ã‚¯ãƒ©ã‚¹ã‚’æµç”¨ã™ã‚‹
         Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "SelectAll_DR", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
-        ' –ß‚è’l
+        ' æˆ»ã‚Šå€¤
         Dim testReturnValue As TestReturnValue
 
-        ' •ª—£ƒŒƒxƒ‹‚Ìİ’è
+        ' åˆ†é›¢ãƒ¬ãƒ™ãƒ«ã®è¨­å®š
         Dim iso As DbEnum.IsolationLevelEnum = Me.SelectIsolationLevel()
 
-        ' ‚a‘wŒÄo‚µ{“s“xƒRƒ~ƒbƒg
+        ' ï¼¢å±¤å‘¼å‡ºã—ï¼‹éƒ½åº¦ã‚³ãƒŸãƒƒãƒˆ
         Dim layerB__1 As New LayerB()
         testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
         LayerB.CommitAndClose()
 
-        ' Œ‹‰Ê•\¦‚·‚éƒƒbƒZ[ƒW ƒGƒŠƒA
+        ' çµæœè¡¨ç¤ºã™ã‚‹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ ã‚¨ãƒªã‚¢
         Me.labelMessage.Text = ""
 
         If testReturnValue.ErrorFlag = True Then
-            ' Œ‹‰Êi‹Æ–±‘±s‰Â”\‚ÈƒGƒ‰[j
+            ' çµæœï¼ˆæ¥­å‹™ç¶šè¡Œå¯èƒ½ãªã‚¨ãƒ©ãƒ¼ï¼‰
             labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID & vbCr & vbLf
             labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage & vbCr & vbLf
             labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo & vbCr & vbLf
         Else
-            ' Œ‹‰Êi³íŒnj
+            ' çµæœï¼ˆæ­£å¸¸ç³»ï¼‰
             Me.dataGridView1.DataSource = testReturnValue.Obj
         End If
     End Sub
 
-    ''' <summary>ˆê——æ“¾i“®“Isqlj</summary>
-    ''' <param name="rcFxEventArgs">ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚Ì‹¤’Êˆø”</param>
+    ''' <summary>ä¸€è¦§å–å¾—ï¼ˆå‹•çš„sqlï¼‰</summary>
+    ''' <param name="rcFxEventArgs">ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã®å…±é€šå¼•æ•°</param>
     Protected Sub UOC_btnButton5_Click(ByVal rcFxEventArgs As RcFxEventArgs)
-        ' ˆø”ƒNƒ‰ƒX‚ğ¶¬
-        ' ‰ºˆÊi‚aE‚c‘wj‚ÍAƒeƒXƒg ƒNƒ‰ƒX‚ğ—¬—p‚·‚é
+        ' å¼•æ•°ã‚¯ãƒ©ã‚¹ã‚’ç”Ÿæˆ
+        ' ä¸‹ä½ï¼ˆï¼¢ãƒ»ï¼¤å±¤ï¼‰ã¯ã€ãƒ†ã‚¹ãƒˆ ã‚¯ãƒ©ã‚¹ã‚’æµç”¨ã™ã‚‹
         Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "SelectAll_DSQL", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
-        ' “®“ISQL‚Ì—v‘f‚ğİ’è
+        ' å‹•çš„SQLã®è¦ç´ ã‚’è¨­å®š
         testParameterValue.OrderColumn = DirectCast(Me.ddlOrderColumn.SelectedItem, ComboBoxItem).Value
         testParameterValue.OrderSequence = DirectCast(Me.ddlOrderSequence.SelectedItem, ComboBoxItem).Value
 
-        ' –ß‚è’l
+        ' æˆ»ã‚Šå€¤
         Dim testReturnValue As TestReturnValue
 
-        ' •ª—£ƒŒƒxƒ‹‚Ìİ’è
+        ' åˆ†é›¢ãƒ¬ãƒ™ãƒ«ã®è¨­å®š
         Dim iso As DbEnum.IsolationLevelEnum = Me.SelectIsolationLevel()
 
-        ' ‚a‘wŒÄo‚µ{“s“xƒRƒ~ƒbƒg
+        ' ï¼¢å±¤å‘¼å‡ºã—ï¼‹éƒ½åº¦ã‚³ãƒŸãƒƒãƒˆ
         Dim layerB__1 As New LayerB()
         testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
         LayerB.CommitAndClose()
 
-        ' Œ‹‰Ê•\¦‚·‚éƒƒbƒZ[ƒW ƒGƒŠƒA
+        ' çµæœè¡¨ç¤ºã™ã‚‹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ ã‚¨ãƒªã‚¢
         Me.labelMessage.Text = ""
 
         If testReturnValue.ErrorFlag = True Then
-            ' Œ‹‰Êi‹Æ–±‘±s‰Â”\‚ÈƒGƒ‰[j
+            ' çµæœï¼ˆæ¥­å‹™ç¶šè¡Œå¯èƒ½ãªã‚¨ãƒ©ãƒ¼ï¼‰
             labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID & vbCr & vbLf
             labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage & vbCr & vbLf
             labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo & vbCr & vbLf
         Else
-            ' Œ‹‰Êi³íŒnj
+            ' çµæœï¼ˆæ­£å¸¸ç³»ï¼‰
             Me.dataGridView1.DataSource = testReturnValue.Obj
         End If
     End Sub
 
-    ''' <summary>QÆˆ—</summary>
-    ''' <param name="rcFxEventArgs">ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚Ì‹¤’Êˆø”</param>
+    ''' <summary>å‚ç…§å‡¦ç†</summary>
+    ''' <param name="rcFxEventArgs">ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã®å…±é€šå¼•æ•°</param>
     Protected Sub UOC_btnButton6_Click(ByVal rcFxEventArgs As RcFxEventArgs)
-        ' ˆø”ƒNƒ‰ƒX‚ğ¶¬
-        ' ‰ºˆÊi‚aE‚c‘wj‚ÍAƒeƒXƒg ƒNƒ‰ƒX‚ğ—¬—p‚·‚é
+        ' å¼•æ•°ã‚¯ãƒ©ã‚¹ã‚’ç”Ÿæˆ
+        ' ä¸‹ä½ï¼ˆï¼¢ãƒ»ï¼¤å±¤ï¼‰ã¯ã€ãƒ†ã‚¹ãƒˆ ã‚¯ãƒ©ã‚¹ã‚’æµç”¨ã™ã‚‹
         Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "Select", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
-        ' î•ñ‚Ìİ’è
+        ' æƒ…å ±ã®è¨­å®š
         testParameterValue.ShipperID = Integer.Parse(Me.textBox1.Text)
 
-        ' –ß‚è’l
+        ' æˆ»ã‚Šå€¤
         Dim testReturnValue As TestReturnValue
 
-        ' •ª—£ƒŒƒxƒ‹‚Ìİ’è
+        ' åˆ†é›¢ãƒ¬ãƒ™ãƒ«ã®è¨­å®š
         Dim iso As DbEnum.IsolationLevelEnum = Me.SelectIsolationLevel()
 
-        ' ‚a‘wŒÄo‚µ{“s“xƒRƒ~ƒbƒg
+        ' ï¼¢å±¤å‘¼å‡ºã—ï¼‹éƒ½åº¦ã‚³ãƒŸãƒƒãƒˆ
         Dim layerB__1 As New LayerB()
         testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
         LayerB.CommitAndClose()
 
-        ' Œ‹‰Ê•\¦‚·‚éƒƒbƒZ[ƒW ƒGƒŠƒA
+        ' çµæœè¡¨ç¤ºã™ã‚‹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ ã‚¨ãƒªã‚¢
         Me.labelMessage.Text = ""
 
         If testReturnValue.ErrorFlag = True Then
-            ' Œ‹‰Êi‹Æ–±‘±s‰Â”\‚ÈƒGƒ‰[j
+            ' çµæœï¼ˆæ¥­å‹™ç¶šè¡Œå¯èƒ½ãªã‚¨ãƒ©ãƒ¼ï¼‰
             labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID & vbCr & vbLf
             labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage & vbCr & vbLf
             labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo & vbCr & vbLf
         Else
-            ' Œ‹‰Êi³íŒnj
+            ' çµæœï¼ˆæ­£å¸¸ç³»ï¼‰
             Me.textBox1.Text = testReturnValue.ShipperID.ToString()
             Me.textBox2.Text = testReturnValue.CompanyName
             Me.textBox3.Text = testReturnValue.Phone
@@ -383,113 +383,113 @@ Partial Public Class Form1
 
 #End Region
 
-#Region "XVŒn"
+#Region "æ›´æ–°ç³»"
 
-    ''' <summary>’Ç‰Áˆ—</summary>
-    ''' <param name="rcFxEventArgs">ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚Ì‹¤’Êˆø”</param>
+    ''' <summary>è¿½åŠ å‡¦ç†</summary>
+    ''' <param name="rcFxEventArgs">ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã®å…±é€šå¼•æ•°</param>
     Protected Sub UOC_btnButton7_Click(ByVal rcFxEventArgs As RcFxEventArgs)
-        ' ˆø”ƒNƒ‰ƒX‚ğ¶¬
-        ' ‰ºˆÊi‚aE‚c‘wj‚ÍAƒeƒXƒg ƒNƒ‰ƒX‚ğ—¬—p‚·‚é
+        ' å¼•æ•°ã‚¯ãƒ©ã‚¹ã‚’ç”Ÿæˆ
+        ' ä¸‹ä½ï¼ˆï¼¢ãƒ»ï¼¤å±¤ï¼‰ã¯ã€ãƒ†ã‚¹ãƒˆ ã‚¯ãƒ©ã‚¹ã‚’æµç”¨ã™ã‚‹
         Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "Insert", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
-        ' î•ñ‚Ìİ’è
+        ' æƒ…å ±ã®è¨­å®š
         testParameterValue.CompanyName = Me.textBox2.Text
         testParameterValue.Phone = Me.textBox3.Text
 
-        ' –ß‚è’l
+        ' æˆ»ã‚Šå€¤
         Dim testReturnValue As TestReturnValue
 
-        ' •ª—£ƒŒƒxƒ‹‚Ìİ’è
+        ' åˆ†é›¢ãƒ¬ãƒ™ãƒ«ã®è¨­å®š
         Dim iso As DbEnum.IsolationLevelEnum = Me.SelectIsolationLevel()
 
-        ' ‚a‘wŒÄo‚µ{“s“xƒRƒ~ƒbƒg
+        ' ï¼¢å±¤å‘¼å‡ºã—ï¼‹éƒ½åº¦ã‚³ãƒŸãƒƒãƒˆ
         Dim layerB__1 As New LayerB()
         testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
         LayerB.CommitAndClose()
 
-        ' Œ‹‰Ê•\¦‚·‚éƒƒbƒZ[ƒW ƒGƒŠƒA
+        ' çµæœè¡¨ç¤ºã™ã‚‹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ ã‚¨ãƒªã‚¢
         Me.labelMessage.Text = ""
 
         If testReturnValue.ErrorFlag = True Then
-            ' Œ‹‰Êi‹Æ–±‘±s‰Â”\‚ÈƒGƒ‰[j
+            ' çµæœï¼ˆæ¥­å‹™ç¶šè¡Œå¯èƒ½ãªã‚¨ãƒ©ãƒ¼ï¼‰
             labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID & vbCr & vbLf
             labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage & vbCr & vbLf
             labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo & vbCr & vbLf
         Else
-            ' Œ‹‰Êi³íŒnj
-            labelMessage.Text = testReturnValue.Obj.ToString() & "Œ’Ç‰Á"
+            ' çµæœï¼ˆæ­£å¸¸ç³»ï¼‰
+            labelMessage.Text = testReturnValue.Obj.ToString() & "ä»¶è¿½åŠ "
         End If
     End Sub
 
-    ''' <summary>XVˆ—</summary>
-    ''' <param name="rcFxEventArgs">ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚Ì‹¤’Êˆø”</param>
+    ''' <summary>æ›´æ–°å‡¦ç†</summary>
+    ''' <param name="rcFxEventArgs">ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã®å…±é€šå¼•æ•°</param>
     Protected Sub UOC_btnButton8_Click(ByVal rcFxEventArgs As RcFxEventArgs)
-        ' ˆø”ƒNƒ‰ƒX‚ğ¶¬
-        ' ‰ºˆÊi‚aE‚c‘wj‚ÍAƒeƒXƒg ƒNƒ‰ƒX‚ğ—¬—p‚·‚é
+        ' å¼•æ•°ã‚¯ãƒ©ã‚¹ã‚’ç”Ÿæˆ
+        ' ä¸‹ä½ï¼ˆï¼¢ãƒ»ï¼¤å±¤ï¼‰ã¯ã€ãƒ†ã‚¹ãƒˆ ã‚¯ãƒ©ã‚¹ã‚’æµç”¨ã™ã‚‹
         Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "Update", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
-        ' î•ñ‚Ìİ’è
+        ' æƒ…å ±ã®è¨­å®š
         testParameterValue.ShipperID = Integer.Parse(Me.textBox1.Text)
         testParameterValue.CompanyName = Me.textBox2.Text
         testParameterValue.Phone = Me.textBox3.Text
 
-        ' –ß‚è’l
+        ' æˆ»ã‚Šå€¤
         Dim testReturnValue As TestReturnValue
 
-        ' •ª—£ƒŒƒxƒ‹‚Ìİ’è
+        ' åˆ†é›¢ãƒ¬ãƒ™ãƒ«ã®è¨­å®š
         Dim iso As DbEnum.IsolationLevelEnum = Me.SelectIsolationLevel()
 
-        ' ‚a‘wŒÄo‚µ{“s“xƒRƒ~ƒbƒg
+        ' ï¼¢å±¤å‘¼å‡ºã—ï¼‹éƒ½åº¦ã‚³ãƒŸãƒƒãƒˆ
         Dim layerB__1 As New LayerB()
         testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
         LayerB.CommitAndClose()
 
-        ' Œ‹‰Ê•\¦‚·‚éƒƒbƒZ[ƒW ƒGƒŠƒA
+        ' çµæœè¡¨ç¤ºã™ã‚‹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ ã‚¨ãƒªã‚¢
         Me.labelMessage.Text = ""
 
         If testReturnValue.ErrorFlag = True Then
-            ' Œ‹‰Êi‹Æ–±‘±s‰Â”\‚ÈƒGƒ‰[j
+            ' çµæœï¼ˆæ¥­å‹™ç¶šè¡Œå¯èƒ½ãªã‚¨ãƒ©ãƒ¼ï¼‰
             labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID & vbCr & vbLf
             labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage & vbCr & vbLf
             labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo & vbCr & vbLf
         Else
-            ' Œ‹‰Êi³íŒnj
-            labelMessage.Text = testReturnValue.Obj.ToString() & "ŒXV"
+            ' çµæœï¼ˆæ­£å¸¸ç³»ï¼‰
+            labelMessage.Text = testReturnValue.Obj.ToString() & "ä»¶æ›´æ–°"
         End If
     End Sub
 
-    ''' <summary>íœˆ—</summary>
-    ''' <param name="rcFxEventArgs">ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚Ì‹¤’Êˆø”</param>
+    ''' <summary>å‰Šé™¤å‡¦ç†</summary>
+    ''' <param name="rcFxEventArgs">ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã®å…±é€šå¼•æ•°</param>
     Protected Sub UOC_btnButton9_Click(ByVal rcFxEventArgs As RcFxEventArgs)
-        ' ˆø”ƒNƒ‰ƒX‚ğ¶¬
-        ' ‰ºˆÊi‚aE‚c‘wj‚ÍAƒeƒXƒg ƒNƒ‰ƒX‚ğ—¬—p‚·‚é
+        ' å¼•æ•°ã‚¯ãƒ©ã‚¹ã‚’ç”Ÿæˆ
+        ' ä¸‹ä½ï¼ˆï¼¢ãƒ»ï¼¤å±¤ï¼‰ã¯ã€ãƒ†ã‚¹ãƒˆ ã‚¯ãƒ©ã‚¹ã‚’æµç”¨ã™ã‚‹
         Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "Delete", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
-        ' î•ñ‚Ìİ’è
+        ' æƒ…å ±ã®è¨­å®š
         testParameterValue.ShipperID = Integer.Parse(textBox1.Text)
 
-        ' –ß‚è’l
+        ' æˆ»ã‚Šå€¤
         Dim testReturnValue As TestReturnValue
 
-        ' •ª—£ƒŒƒxƒ‹‚Ìİ’è
+        ' åˆ†é›¢ãƒ¬ãƒ™ãƒ«ã®è¨­å®š
         Dim iso As DbEnum.IsolationLevelEnum = Me.SelectIsolationLevel()
 
-        ' ‚a‘wŒÄo‚µ{“s“xƒRƒ~ƒbƒg
+        ' ï¼¢å±¤å‘¼å‡ºã—ï¼‹éƒ½åº¦ã‚³ãƒŸãƒƒãƒˆ
         Dim layerB__1 As New LayerB()
         testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
         LayerB.CommitAndClose()
 
-        ' Œ‹‰Ê•\¦‚·‚éƒƒbƒZ[ƒW ƒGƒŠƒA
+        ' çµæœè¡¨ç¤ºã™ã‚‹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ ã‚¨ãƒªã‚¢
         Me.labelMessage.Text = ""
 
         If testReturnValue.ErrorFlag = True Then
-            ' Œ‹‰Êi‹Æ–±‘±s‰Â”\‚ÈƒGƒ‰[j
+            ' çµæœï¼ˆæ¥­å‹™ç¶šè¡Œå¯èƒ½ãªã‚¨ãƒ©ãƒ¼ï¼‰
             labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID & vbCr & vbLf
             labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage & vbCr & vbLf
             labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo & vbCr & vbLf
         Else
-            ' Œ‹‰Êi³íŒnj
-            labelMessage.Text = testReturnValue.Obj.ToString() & "Œíœ"
+            ' çµæœï¼ˆæ­£å¸¸ç³»ï¼‰
+            labelMessage.Text = testReturnValue.Obj.ToString() & "ä»¶å‰Šé™¤"
         End If
     End Sub
 
@@ -497,31 +497,31 @@ Partial Public Class Form1
 
 #End Region
 
-#Region "‚»‚Ì‘¼"
+#Region "ãã®ä»–"
 
-    ''' <summary>ƒNƒŠƒA</summary>
-    ''' <param name="rcFxEventArgs">ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚Ì‹¤’Êˆø”</param>
+    ''' <summary>ã‚¯ãƒªã‚¢</summary>
+    ''' <param name="rcFxEventArgs">ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã®å…±é€šå¼•æ•°</param>
     Protected Sub UOC_btnButton10_Click(ByVal rcFxEventArgs As RcFxEventArgs)
         Me.dataGridView1.DataSource = Nothing
     End Sub
 
-    ''' <summary>ƒƒbƒZ[ƒWæ“¾i–„‚ß‚Ü‚ê‚½ƒŠƒ\[ƒX‘Î‰j</summary>
-    ''' <param name="rcFxEventArgs">ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚Ì‹¤’Êˆø”</param>
+    ''' <summary>ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å–å¾—ï¼ˆåŸ‹ã‚è¾¼ã¾ã‚ŒãŸãƒªã‚½ãƒ¼ã‚¹å¯¾å¿œï¼‰</summary>
+    ''' <param name="rcFxEventArgs">ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã®å…±é€šå¼•æ•°</param>
     Protected Sub UOC_btnButton11_Click(ByVal rcFxEventArgs As RcFxEventArgs)
         Me.textBox5.Text = GetMessage.GetMessageDescription(Me.textBox4.Text)
     End Sub
 
-    ''' <summary>‹¤—Lî•ñæ“¾i–„‚ß‚Ü‚ê‚½ƒŠƒ\[ƒX‘Î‰j</summary>
-    ''' <param name="rcFxEventArgs">ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚Ì‹¤’Êˆø”</param>
+    ''' <summary>å…±æœ‰æƒ…å ±å–å¾—ï¼ˆåŸ‹ã‚è¾¼ã¾ã‚ŒãŸãƒªã‚½ãƒ¼ã‚¹å¯¾å¿œï¼‰</summary>
+    ''' <param name="rcFxEventArgs">ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã®å…±é€šå¼•æ•°</param>
     Protected Sub UOC_btnButton12_Click(ByVal rcFxEventArgs As RcFxEventArgs)
         Me.textBox7.Text = GetSharedProperty.GetSharedPropertyValue(Me.textBox6.Text)
     End Sub
 
 #End Region
 
-#Region "•ª—£ƒŒƒxƒ‹‚Ìİ’èƒƒ\ƒbƒh"
+#Region "åˆ†é›¢ãƒ¬ãƒ™ãƒ«ã®è¨­å®šãƒ¡ã‚½ãƒƒãƒ‰"
 
-    ''' <summary>•ª—£ƒŒƒxƒ‹‚Ìİ’è</summary>
+    ''' <summary>åˆ†é›¢ãƒ¬ãƒ™ãƒ«ã®è¨­å®š</summary>
     Private Function SelectIsolationLevel() As DbEnum.IsolationLevelEnum
         If DirectCast(Me.ddlIso.SelectedItem, ComboBoxItem).Value = "NC" Then
             Return DbEnum.IsolationLevelEnum.NotConnect
@@ -540,7 +540,7 @@ Partial Public Class Form1
         ElseIf DirectCast(Me.ddlIso.SelectedItem, ComboBoxItem).Value = "DF" Then
             Return DbEnum.IsolationLevelEnum.DefaultTransaction
         Else
-            Throw New Exception("•ª—£ƒŒƒxƒ‹‚Ìİ’è‚ª‚¨‚©‚µ‚¢")
+            Throw New Exception("åˆ†é›¢ãƒ¬ãƒ™ãƒ«ã®è¨­å®šãŒãŠã‹ã—ã„")
         End If
     End Function
 

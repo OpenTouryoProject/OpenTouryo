@@ -1,6 +1,6 @@
-http://technet.microsoft.com/ja-jp/library/ms143221.aspx
-‚ÌSQL2000SampleDb.msi‚É‚ ‚éNORTHWND.MDFANORTHWND.LDF‚ğ
-SQL Server 2005 ƒf[ƒ^ƒx[ƒX‚ÉƒAƒ^ƒbƒ`‚·‚éB
+ï»¿http://technet.microsoft.com/ja-jp/library/ms143221.aspx
+ã®SQL2000SampleDb.msiã«ã‚ã‚‹NORTHWND.MDFã€NORTHWND.LDFã‚’
+SQL Server 2005 ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã«ã‚¢ã‚¿ãƒƒãƒã™ã‚‹ã€‚
 
 ---
 
