@@ -59,6 +59,8 @@
 //*                                the Resource folder.Added proper key and values in those files for English and
 //*                                Japanese languages.
 //*  2014/05/12  Rituparna         Removed <start> and <End> tags
+//*  2015/07/19  Sandeep           Improved UI of tools and button controls
+//*  2015/10/28  Sandeep           Optimized messages in the resource file and implemented code to format it
 //**********************************************************************************
 
 // デバッグ
@@ -169,21 +171,29 @@ namespace DPQuery_Tool
             this.label2.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
             this.label3.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
 
-            this.label8.Anchor = (AnchorStyles.Bottom | AnchorStyles.Right);
+            this.label5.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
+            this.label8.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
 
             // いろいろ
             this.lblFilePath.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
             this.cmbDataProvider.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
             this.txtCnnStr.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
-            this.cbxType.Anchor = (AnchorStyles.Bottom | AnchorStyles.Right);
-            this.nudNumOfBind.Anchor = (AnchorStyles.Bottom | AnchorStyles.Right);
+            this.cbxType.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
+            this.nudNumOfBind.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
+            this.cmbSelMethod.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
 
             // グループボックス
-            this.groupBoxR.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
-            this.groupBoxEXE.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
+            this.groupBoxR.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
+            this.groupBoxTx.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
+            this.panel1.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right);
+            //this.groupBoxEXE.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
 
             // 実行ボタン
-            this.btnExecQuery.Anchor = (AnchorStyles.Left | AnchorStyles.Right);
+            this.btnExecQuery.Anchor = (AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom);
+            this.btnOpenQueryFile.Anchor = (AnchorStyles.Left | AnchorStyles.Bottom);
+            this.btnCloseQueryFile.Anchor = (AnchorStyles.Left | AnchorStyles.Bottom);
+            this.btnOverwriteQueryFile.Anchor = (AnchorStyles.Left | AnchorStyles.Bottom);
+            this.btnSaveQueryFile.Anchor = (AnchorStyles.Left | AnchorStyles.Bottom);
 
             #endregion
 
@@ -306,6 +316,38 @@ namespace DPQuery_Tool
         #endregion
 
         #region 設定のセーブ・ロード
+
+        /// <summary>To handle UI of button controls</summary>
+        private void btnColor1_EnabledChanged(object sender, System.EventArgs e)
+        {
+            Button btnColor1 = (Button)sender;
+            if (btnColor1.Enabled)
+            {
+                btnColor1.BackColor = Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(163)))), ((int)(((byte)(189)))));
+                btnColor1.ForeColor = Color.White;
+            }
+            else
+            {
+                btnColor1.BackColor = System.Drawing.SystemColors.Control;
+                btnColor1.ForeColor = Color.White;
+            }
+        }
+
+        /// <summary>To handle UI of button controls</summary>
+        private void btnColor2_EnabledChanged(object sender, System.EventArgs e)
+        {
+            Button btnColor2 = (Button)sender;
+            if (btnColor2.Enabled)
+            {
+                btnColor2.BackColor = Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(166)))), ((int)(((byte)(44)))));
+                btnColor2.ForeColor = Color.White;
+            }
+            else
+            {
+                btnColor2.BackColor = System.Drawing.SystemColors.Control;
+                btnColor2.ForeColor = Color.White;
+            }
+        }
 
         /// <summary>設定の新規作成</summary>
         private void btnCreateConfig_Click(object sender, EventArgs e)
@@ -563,7 +605,7 @@ namespace DPQuery_Tool
                     this.txtCnnStr.Text = csb.ConnectionString;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_SQL_CREATED");
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_SQL);
 
                 }
                 else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_OLE)
@@ -584,10 +626,10 @@ namespace DPQuery_Tool
                     this.nudNumOfBind.Enabled = true;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_OLE_CREATED");
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_OLE);
 
                 }
-                if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ODB)
+                else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ODB)
                 {
                     //ODBC.NET
                     this._dam = new DamODBC();
@@ -604,10 +646,10 @@ namespace DPQuery_Tool
                     this.nudNumOfBind.Enabled = true;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_ODB_CREATED");
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_ODB);
 
                 }
-                if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ORA)
+                else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ORA)
                 {
                     //Oracle Client
                     this._dam = new DamOraClient();
@@ -625,10 +667,10 @@ namespace DPQuery_Tool
                     this.nudNumOfBind.Enabled = true;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_ODP_CREATED");
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_ORA);
 
                 } 
-                if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ODP)
+                else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ODP)
                 {
                     //ODP.NET
                     this._dam = new DamOraOdp();
@@ -646,7 +688,7 @@ namespace DPQuery_Tool
                     this.nudNumOfBind.Enabled = true;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_ODP_CREATED");
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_ODP);
 
                 }
                 else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_DB2)
@@ -665,7 +707,7 @@ namespace DPQuery_Tool
                     this.txtCnnStr.Text = csb.ConnectionString;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_DB2_CREATED");
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_DB2);
 
                 }
                 //else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_HiRDB)
@@ -704,7 +746,7 @@ namespace DPQuery_Tool
                     this.txtCnnStr.Text = csb.ConnectionString;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_MSL_CREATED");
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_MySQL);
 
                 }
                 else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_PstgrS)
@@ -730,7 +772,7 @@ namespace DPQuery_Tool
                     this.txtCnnStr.Text = csb;
 
                     // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = this.RM_GetString("STATUS_PGS_CREATED");
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_PstgrS);
                 }
                 else
                 {
