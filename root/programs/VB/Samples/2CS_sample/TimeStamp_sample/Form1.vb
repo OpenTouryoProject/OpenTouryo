@@ -1,22 +1,22 @@
-'**********************************************************************************
-'* ƒTƒ“ƒvƒ‹ ƒAƒvƒŠ‰æ–Ê
+ï»¿'**********************************************************************************
+'* ã‚µãƒ³ãƒ—ãƒ« ã‚¢ãƒ—ãƒªç”»é¢
 '**********************************************************************************
 
 '**********************************************************************************
-'* ƒNƒ‰ƒX–¼        FForm1
-'* ƒNƒ‰ƒX“ú–{Œê–¼  FƒTƒ“ƒvƒ‹ ƒAƒvƒŠ‰æ–Ê
+'* ã‚¯ãƒ©ã‚¹å        ï¼šForm1
+'* ã‚¯ãƒ©ã‚¹æ—¥æœ¬èªå  ï¼šã‚µãƒ³ãƒ—ãƒ« ã‚¢ãƒ—ãƒªç”»é¢
 '*
-'* ì¬“ú        F|
-'* ì¬Ò          Fsas ¶‹Z
-'* XV—š—ğ        F
+'* ä½œæˆæ—¥æ™‚        ï¼šï¼
+'* ä½œæˆè€…          ï¼šsas ç”ŸæŠ€
+'* æ›´æ–°å±¥æ­´        ï¼š
 '*
-'*  “ú        XVÒ            “à—e
+'*  æ—¥æ™‚        æ›´æ–°è€…            å†…å®¹
 '*  ----------  ----------------  -------------------------------------------------
-'*  20xx/xx/xx  ‚w‚w ‚w‚w         ‚w‚w‚w‚w
+'*  20xx/xx/xx  ï¼¸ï¼¸ ï¼¸ï¼¸         ï¼¸ï¼¸ï¼¸ï¼¸
 '*
 '**********************************************************************************
 
-' WindowƒAƒvƒŠƒP[ƒVƒ‡ƒ“
+' Windowã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³
 Imports System.Drawing
 Imports System.Windows.Forms
 Imports System.ComponentModel
@@ -29,7 +29,7 @@ Imports System.Text
 Imports System.Data
 Imports System.Collections
 
-' ‹Æ–±ƒtƒŒ[ƒ€ƒ[ƒN
+' æ¥­å‹™ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯
 Imports Touryo.Infrastructure.Business.Business
 Imports Touryo.Infrastructure.Business.Common
 Imports Touryo.Infrastructure.Business.Dao
@@ -37,7 +37,7 @@ Imports Touryo.Infrastructure.Business.Exceptions
 Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Business.Util
 
-' ƒtƒŒ[ƒ€ƒ[ƒN
+' ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯
 Imports Touryo.Infrastructure.Framework.Business
 Imports Touryo.Infrastructure.Framework.Common
 Imports Touryo.Infrastructure.Framework.Dao
@@ -46,57 +46,57 @@ Imports Touryo.Infrastructure.Framework.Presentation
 Imports Touryo.Infrastructure.Framework.Util
 Imports Touryo.Infrastructure.Framework.Transmission
 
-' •”•i
+' éƒ¨å“
 Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
 
-''' <summary>ƒTƒ“ƒvƒ‹ ƒAƒvƒŠ‰æ–Ê</summary>
+''' <summary>ã‚µãƒ³ãƒ—ãƒ« ã‚¢ãƒ—ãƒªç”»é¢</summary>
 Partial Public Class Form1
     Inherits Form
-    ' ƒ^ƒCƒ€ƒXƒ^ƒ“ƒv ƒIƒuƒWƒFƒNƒg‚ÌŠi”[
+    ' ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ— ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æ ¼ç´
     Private ts As Object
 
-#Region "ƒf[ƒ^ƒAƒNƒZƒX"
+#Region "ãƒ‡ãƒ¼ã‚¿ã‚¢ã‚¯ã‚»ã‚¹"
 
-    ' ƒf[ƒ^ƒAƒNƒZƒX§ŒäƒNƒ‰ƒX
+    ' ãƒ‡ãƒ¼ã‚¿ã‚¢ã‚¯ã‚»ã‚¹åˆ¶å¾¡ã‚¯ãƒ©ã‚¹
     Private dam As DamSqlSvr = Nothing
 
     ' Dao
 
     ' datetime
-    ' ––’[
+    ' æœ«ç«¯
     Private dao1 As Daots_test_table1 = Nothing
-    ' ’†ŠÔ
+    ' ä¸­é–“
     Private dao2 As Daots_test_table2 = Nothing
-    ' æ“ª
+    ' å…ˆé ­
     Private dao3 As Daots_test_table3 = Nothing
 
     ' timestamp
-    ' ––’[
+    ' æœ«ç«¯
     Private daoA As Daots_test_tableA = Nothing
-    ' ’†ŠÔ
+    ' ä¸­é–“
     Private daoB As Daots_test_tableB = Nothing
-    ' æ“ª
+    ' å…ˆé ­
     Private daoC As Daots_test_tableC = Nothing
 
 #End Region
 
-#Region "ŠJn-I—¹ˆ—"
+#Region "é–‹å§‹-çµ‚äº†å‡¦ç†"
 
-    ''' <summary>ƒRƒ“ƒXƒgƒ‰ƒNƒ^</summary>
+    ''' <summary>ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿</summary>
     Public Sub New()
         InitializeComponent()
     End Sub
 
-    ''' <summary>ŠJnˆ—</summary>
+    ''' <summary>é–‹å§‹å‡¦ç†</summary>
     Private Sub Form1_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
-        ' ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰
+        ' ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©
         AddHandler Me.dataGridView1.DataError, AddressOf DataGridView_DataError
 
-        ' ƒXƒe[ƒ^ƒX
+        ' ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
         Me.cmbTSColType.SelectedIndex = 0
         Me.cmbTableType.SelectedIndex = 0
 
@@ -105,49 +105,49 @@ Partial Public Class Form1
         Me.dam.ConnectionOpen(GetConfigParameter.GetConnectionString("ConnectionString_SQL"))
     End Sub
 
-    ''' <summary>I—¹ˆ—</summary>
+    ''' <summary>çµ‚äº†å‡¦ç†</summary>
     Private Sub Form1_FormClosing(ByVal sender As Object, ByVal e As FormClosingEventArgs)
         Me.dam.ConnectionClose()
     End Sub
 
-    'DataErrorƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰
+    'DataErrorã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©
     Private Sub DataGridView_DataError(ByVal sender As Object, ByVal e As DataGridViewDataErrorEventArgs)
         e.Cancel = False
     End Sub
 
 #End Region
 
-#Region "ó‘Ô‚Ìæ“¾ˆ—"
+#Region "çŠ¶æ…‹ã®å–å¾—å‡¦ç†"
 
-    ''' <summary>ó‘Ô‚Ìæ“¾</summary>
-    ''' <returns>ó‘Ô‚ğ•\‚·”’l</returns>
+    ''' <summary>çŠ¶æ…‹ã®å–å¾—</summary>
+    ''' <returns>çŠ¶æ…‹ã‚’è¡¨ã™æ•°å€¤</returns>
     Private Function GetStatus() As Integer
-        If Me.cmbTSColType.Text = "RANDifloatj—ñ" Then
-            If Me.cmbTableType.Text = "TS—ñ––’[" Then
+        If Me.cmbTSColType.Text = "RANDï¼ˆfloatï¼‰åˆ—" Then
+            If Me.cmbTableType.Text = "TSåˆ—æœ«ç«¯" Then
                 Return 1
-            ElseIf Me.cmbTableType.Text = "TS—ñ’†ŠÔ" Then
+            ElseIf Me.cmbTableType.Text = "TSåˆ—ä¸­é–“" Then
                 Return 2
-            ElseIf Me.cmbTableType.Text = "TS—ñæ“ª" Then
+            ElseIf Me.cmbTableType.Text = "TSåˆ—å…ˆé ­" Then
                 Return 3
             End If
-        ElseIf Me.cmbTSColType.Text = "timestamp—ñ" Then
-            If Me.cmbTableType.Text = "TS—ñ––’[" Then
+        ElseIf Me.cmbTSColType.Text = "timestampåˆ—" Then
+            If Me.cmbTableType.Text = "TSåˆ—æœ«ç«¯" Then
                 Return 4
-            ElseIf Me.cmbTableType.Text = "TS—ñ’†ŠÔ" Then
+            ElseIf Me.cmbTableType.Text = "TSåˆ—ä¸­é–“" Then
                 Return 5
-            ElseIf Me.cmbTableType.Text = "TS—ñæ“ª" Then
+            ElseIf Me.cmbTableType.Text = "TSåˆ—å…ˆé ­" Then
                 Return 6
             End If
         End If
 
-        Throw New Exception("•s–¾‚Èó‘Ô‚Å‚·B")
+        Throw New Exception("ä¸æ˜ãªçŠ¶æ…‹ã§ã™ã€‚")
     End Function
 
 #End Region
 
-#Region "ƒe[ƒuƒ‹ƒ`ƒFƒbƒN"
+#Region "ãƒ†ãƒ¼ãƒ–ãƒ«ãƒã‚§ãƒƒã‚¯"
 
-    ''' <summary>‘SŒæ“¾</summary>
+    ''' <summary>å…¨ä»¶å–å¾—</summary>
     Private Sub btnGetAll_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGetAll.Click
         Dim dt As New DataTable()
 
@@ -175,14 +175,14 @@ Partial Public Class Form1
 
     End Sub
 
-    ''' <summary>ƒNƒŠƒA</summary>
+    ''' <summary>ã‚¯ãƒªã‚¢</summary>
     Private Sub btnClear_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnClear.Click
         Me.dataGridView1.DataSource = Nothing
     End Sub
 
 #End Region
 
-    ''' <summary>ƒ^ƒCƒ€ƒXƒ^ƒ“ƒv‚ğÁ‚·</summary>
+    ''' <summary>ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—ã‚’æ¶ˆã™</summary>
     Private Sub btnClearTS_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnClearTS.Click
         Me.txtTS.Text = ""
         Me.ts = Nothing
@@ -192,10 +192,10 @@ Partial Public Class Form1
 
     ''' <summary>Insert</summary>
     Private Sub btnInsert_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnInsert.Click
-        ' ‘}“üiÃ“Ij
-        ' Eid FƒI[ƒgƒCƒ“ƒNƒŠƒƒ“ƒg‚Ì‚½‚ß•s—v
-        ' EvalF•K{
-        ' Ets F©“®XVidao“¯«j‚Ì‚½‚ß•s—v
+        ' æŒ¿å…¥ï¼ˆé™çš„ï¼‰
+        ' ãƒ»id ï¼šã‚ªãƒ¼ãƒˆã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆã®ãŸã‚ä¸è¦
+        ' ãƒ»valï¼šå¿…é ˆ
+        ' ãƒ»ts ï¼šè‡ªå‹•æ›´æ–°ï¼ˆdaoåŒæ¢±ï¼‰ã®ãŸã‚ä¸è¦
         If Me.GetStatus() = 1 Then
             Me.dao1 = New Daots_test_table1(Me.dam)
 
@@ -246,7 +246,7 @@ Partial Public Class Form1
             Me.daoC.S1_Insert()
         End If
 
-        ' XV
+        ' æ›´æ–°
         Me.btnGetAll_Click(sender, e)
     End Sub
 
@@ -261,14 +261,14 @@ Partial Public Class Form1
 
         If Integer.TryParse(Me.txtID.Text, id) Then
         Else
-            MessageBox.Show("ID‚Ì’l‚ª•s³‚Å‚·B")
+            MessageBox.Show("IDã®å€¤ãŒä¸æ­£ã§ã™ã€‚")
             Return
         End If
 
-        ' QÆiÃ“Ij
-        ' Eid FÃ“I
-        ' EvalF‚È‚µ
-        ' Ets F“®“I
+        ' å‚ç…§ï¼ˆé™çš„ï¼‰
+        ' ãƒ»id ï¼šé™çš„
+        ' ãƒ»valï¼šãªã—
+        ' ãƒ»ts ï¼šå‹•çš„
         If Me.GetStatus() = 1 Then
             Me.dao1 = New Daots_test_table1(Me.dam)
 
@@ -331,12 +331,12 @@ Partial Public Class Form1
             Me.daoC.S2_Select(dt)
         End If
 
-        ' •\¦
+        ' è¡¨ç¤º
         If dt.Rows.Count <> 0 Then
             Me.txtID.Text = dt.Rows(0)("id").ToString()
             Me.txtVAL.Text = dt.Rows(0)("val").ToString()
 
-            ' •¶š—ñ‰»‚Ì•û–@
+            ' æ–‡å­—åˆ—åŒ–ã®æ–¹æ³•
             If dt.Rows(0)("ts").ToString() = "System.Byte[]" Then
                 ' timestamp
                 Me.txtTS.Text = BitConverter.ToString(DirectCast(dt.Rows(0)("ts"), Byte()))
@@ -345,7 +345,7 @@ Partial Public Class Form1
                 Me.txtTS.Text = dt.Rows(0)("ts").ToString()
             End If
 
-            ' ¨ •¶š—ñ‰» ¨ ƒoƒCƒg‰»‚Æ‚©‰ğ‚ç‚ñ‚Ì‚Å‘Ş”ğ‚µ‚Ä‚¨‚­EEE
+            ' â†’ æ–‡å­—åˆ—åŒ– â†’ ãƒã‚¤ãƒˆåŒ–ã¨ã‹è§£ã‚‰ã‚“ã®ã§é€€é¿ã—ã¦ãŠããƒ»ãƒ»ãƒ»
             Me.ts = dt.Rows(0)("ts")
         Else
             Me.txtID.Text = ""
@@ -365,14 +365,14 @@ Partial Public Class Form1
 
         If Integer.TryParse(Me.txtID.Text, id) Then
         Else
-            MessageBox.Show("ID‚Ì’l‚ª•s³‚Å‚·B")
+            MessageBox.Show("IDã®å€¤ãŒä¸æ­£ã§ã™ã€‚")
             Return
         End If
 
-        ' XViÃ“Ij
-        ' Eid FŒŸõğŒiÃ“Ij
-        ' EvalFXV’lE‹@ŠB“I‚Éw’èiƒpƒ‰ƒƒ^‚ª‚OŒÂ‚É‚È‚é‚Ì‚Åj
-        ' Ets FŒŸõğŒi“®“Ij
+        ' æ›´æ–°ï¼ˆé™çš„ï¼‰
+        ' ãƒ»id ï¼šæ¤œç´¢æ¡ä»¶ï¼ˆé™çš„ï¼‰
+        ' ãƒ»valï¼šæ›´æ–°å€¤ãƒ»æ©Ÿæ¢°çš„ã«æŒ‡å®šï¼ˆãƒ‘ãƒ©ãƒ¡ã‚¿ãŒï¼å€‹ã«ãªã‚‹ã®ã§ï¼‰
+        ' ãƒ»ts ï¼šæ¤œç´¢æ¡ä»¶ï¼ˆå‹•çš„ï¼‰
         If Me.GetStatus() = 1 Then
             Me.dao1 = New Daots_test_table1(Me.dam)
 
@@ -435,7 +435,7 @@ Partial Public Class Form1
             Me.daoC.S3_Update()
         End If
 
-        ' XV
+        ' æ›´æ–°
         Me.btnGetAll_Click(sender, e)
     End Sub
 
@@ -450,14 +450,14 @@ Partial Public Class Form1
 
         If Integer.TryParse(Me.txtID.Text, id) Then
         Else
-            MessageBox.Show("ID‚Ì’l‚ª•s³‚Å‚·B")
+            MessageBox.Show("IDã®å€¤ãŒä¸æ­£ã§ã™ã€‚")
             Return
         End If
 
-        ' íœiÃ“Ij
-        ' Eid FÃ“I
-        ' EvalF‚È‚µ
-        ' Ets F“®“I
+        ' å‰Šé™¤ï¼ˆé™çš„ï¼‰
+        ' ãƒ»id ï¼šé™çš„
+        ' ãƒ»valï¼šãªã—
+        ' ãƒ»ts ï¼šå‹•çš„
         If Me.GetStatus() = 1 Then
             Me.dao1 = New Daots_test_table1(Me.dam)
 
@@ -520,7 +520,7 @@ Partial Public Class Form1
             Me.daoC.S4_Delete()
         End If
 
-        ' XV
+        ' æ›´æ–°
         Me.btnGetAll_Click(sender, e)
     End Sub
 
@@ -530,10 +530,10 @@ Partial Public Class Form1
 
     ''' <summary>DynIns</summary>
     Private Sub btnDynIns_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnDynIns.Click
-        ' ‘}“üi“®“Ij
-        ' Eid FƒI[ƒgƒCƒ“ƒNƒŠƒƒ“ƒg‚Ì‚½‚ß•s—v
-        ' EvalF‹@ŠB“I‚Éw’èiƒpƒ‰ƒƒ^‚ª‚OŒÂ‚É‚È‚é‚Ì‚Åj
-        ' Ets F©“®XVidao“¯«j‚Ì‚½‚ß•s—v
+        ' æŒ¿å…¥ï¼ˆå‹•çš„ï¼‰
+        ' ãƒ»id ï¼šã‚ªãƒ¼ãƒˆã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆã®ãŸã‚ä¸è¦
+        ' ãƒ»valï¼šæ©Ÿæ¢°çš„ã«æŒ‡å®šï¼ˆãƒ‘ãƒ©ãƒ¡ã‚¿ãŒï¼å€‹ã«ãªã‚‹ã®ã§ï¼‰
+        ' ãƒ»ts ï¼šè‡ªå‹•æ›´æ–°ï¼ˆdaoåŒæ¢±ï¼‰ã®ãŸã‚ä¸è¦
         If Me.GetStatus() = 1 Then
             Me.dao1 = New Daots_test_table1(Me.dam)
 
@@ -584,7 +584,7 @@ Partial Public Class Form1
             Me.daoC.D1_Insert()
         End If
 
-        ' XV
+        ' æ›´æ–°
         Me.btnGetAll_Click(sender, e)
     End Sub
 
@@ -601,10 +601,10 @@ Partial Public Class Form1
 
         flg = Integer.TryParse(Me.txtID.Text, id)
 
-        ' QÆi“®“Ij
-        ' Eid F“®“I
-        ' EvalF“®“I
-        ' Ets F“®“I
+        ' å‚ç…§ï¼ˆå‹•çš„ï¼‰
+        ' ãƒ»id ï¼šå‹•çš„
+        ' ãƒ»valï¼šå‹•çš„
+        ' ãƒ»ts ï¼šå‹•çš„
         If Me.GetStatus() = 1 Then
             Me.dao1 = New Daots_test_table1(Me.dam)
 
@@ -704,14 +704,14 @@ Partial Public Class Form1
 
         If Integer.TryParse(Me.txtID.Text, id) Then
         Else
-            MessageBox.Show("ID‚Ì’l‚ª•s³‚Å‚·B")
+            MessageBox.Show("IDã®å€¤ãŒä¸æ­£ã§ã™ã€‚")
             Return
         End If
 
-        ' XVi“®“Ij
-        ' Eid FŒŸõğŒiÃ“Ij
-        ' EvalFXV’lE‹@ŠB“I‚Éw’èiƒpƒ‰ƒƒ^‚ª‚OŒÂ‚É‚È‚é‚Ì‚Åj
-        ' Ets FŒŸõğŒi“®“Ij
+        ' æ›´æ–°ï¼ˆå‹•çš„ï¼‰
+        ' ãƒ»id ï¼šæ¤œç´¢æ¡ä»¶ï¼ˆé™çš„ï¼‰
+        ' ãƒ»valï¼šæ›´æ–°å€¤ãƒ»æ©Ÿæ¢°çš„ã«æŒ‡å®šï¼ˆãƒ‘ãƒ©ãƒ¡ã‚¿ãŒï¼å€‹ã«ãªã‚‹ã®ã§ï¼‰
+        ' ãƒ»ts ï¼šæ¤œç´¢æ¡ä»¶ï¼ˆå‹•çš„ï¼‰
         If Me.GetStatus() = 1 Then
             Me.dao1 = New Daots_test_table1(Me.dam)
 
@@ -774,7 +774,7 @@ Partial Public Class Form1
             Me.daoC.D3_Update()
         End If
 
-        ' XV
+        ' æ›´æ–°
         Me.btnGetAll_Click(sender, e)
     End Sub
 
@@ -789,10 +789,10 @@ Partial Public Class Form1
 
         flg = Integer.TryParse(Me.txtID.Text, id)
 
-        ' íœi“®“Ij
-        ' Eid F“®“I
-        ' EvalF“®“I
-        ' Ets F“®“I
+        ' å‰Šé™¤ï¼ˆå‹•çš„ï¼‰
+        ' ãƒ»id ï¼šå‹•çš„
+        ' ãƒ»valï¼šå‹•çš„
+        ' ãƒ»ts ï¼šå‹•çš„
         If Me.GetStatus() = 1 Then
             Me.dao1 = New Daots_test_table1(Me.dam)
 
@@ -879,7 +879,7 @@ Partial Public Class Form1
             Me.daoC.D4_Delete()
         End If
 
-        ' XV
+        ' æ›´æ–°
         Me.btnGetAll_Click(sender, e)
     End Sub
 

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="shift_jis" ?>
+ï»¿<?xml version="1.0" encoding="utf-8" ?>
 <ROOT>
   -- AsyncProcessingServiceInsert
-  -- 2014/11/22 “ú—§ ‘¾˜Y
+  -- 2014/11/22 æ—¥ç«‹ å¤ªéƒŽ
   INSERT INTO 
     [AsyncProcessingServiceStatusManagementTable]
       (
