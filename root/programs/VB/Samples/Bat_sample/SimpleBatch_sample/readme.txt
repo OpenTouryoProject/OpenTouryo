@@ -1,4 +1,4 @@
-ˆÈ‰º‚ÌƒRƒ}ƒ“ƒhƒ‰ƒCƒ“ˆø”‚ðƒvƒƒWƒFƒNƒg‚ÌƒvƒƒpƒeƒB‚Ì
-ƒfƒoƒbƒO ¨ ŠJŽnƒIƒvƒVƒ‡ƒ“ ¨ ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“ˆø”‚©‚çÝ’è‚µ‚Ä‰º‚³‚¢B
+ï»¿ä»¥ä¸‹ã®ã‚³ãƒžãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³å¼•æ•°ã‚’ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã®
+ãƒ‡ãƒãƒƒã‚° â†’ é–‹å§‹ã‚ªãƒ—ã‚·ãƒ§ãƒ³ â†’ ã‚³ãƒžãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³å¼•æ•°ã‹ã‚‰è¨­å®šã—ã¦ä¸‹ã•ã„ã€‚
 
 /Dap SQL /Mode1 individual /Mode2 static /EXROLLBACK -

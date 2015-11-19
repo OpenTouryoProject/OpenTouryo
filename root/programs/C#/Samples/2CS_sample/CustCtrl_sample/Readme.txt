@@ -1,2 +1,2 @@
-Windows FormƒJƒXƒ^ƒ€EƒRƒ“ƒgƒ[ƒ‹‚Ì—˜—pƒTƒ“ƒvƒ‹
-ƒfƒUƒCƒ“ƒ^ƒCƒ€EƒvƒƒpƒeƒB‚©‚çƒ`ƒFƒbƒNˆ—‚ð•ÏX‰Â”\B
+ï»¿Windows Formã‚«ã‚¹ã‚¿ãƒ ãƒ»ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®åˆ©ç”¨ã‚µãƒ³ãƒ—ãƒ«
+ãƒ‡ã‚¶ã‚¤ãƒ³ã‚¿ã‚¤ãƒ ãƒ»ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã‹ã‚‰ãƒã‚§ãƒƒã‚¯å‡¦ç†ã‚’å¤‰æ›´å¯èƒ½ã€‚
