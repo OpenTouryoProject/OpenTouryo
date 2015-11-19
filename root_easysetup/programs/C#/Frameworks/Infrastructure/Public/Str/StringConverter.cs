@@ -30,6 +30,7 @@
 //*  2009/xx/xx  西野  大介        新規作成
 //*  2009/11/06  西野  大介        平仮名 / 片仮名 変換処理を追加
 //*  2012/10/07  西野  大介        MやDが１桁の場合に、YYYYMMDDに変換（入力補完）
+//*  2015/09/30  Sai-san           Changed the parameter locale ID to 1041(Japanese) in StrConv method
 //**********************************************************************************
 
 // VB.NET関数活用
@@ -56,7 +57,7 @@ namespace Touryo.Infrastructure.Public.Str
         public static string ToZenkaku(string input)
         {
             // VB関数を使用する。
-            return Strings.StrConv(input, VbStrConv.Wide, 0);
+            return Strings.StrConv(input, VbStrConv.Wide, 1041);
         }
 
         /// <summary>→ 半角変換</summary>
@@ -65,7 +66,7 @@ namespace Touryo.Infrastructure.Public.Str
         public static string ToHankaku(string input)
         {
             // VB関数を使用する。
-            return Strings.StrConv(input, VbStrConv.Narrow, 0);
+            return Strings.StrConv(input, VbStrConv.Narrow, 1041);
         }
 
         #endregion
@@ -78,7 +79,7 @@ namespace Touryo.Infrastructure.Public.Str
         public static string ToHiragana(string input)
         {
             // VB関数を使用する。
-            return Strings.StrConv(input, VbStrConv.Hiragana, 0);
+            return Strings.StrConv(input, VbStrConv.Hiragana, 1041);
         }
 
         /// <summary>→ 片仮名変換</summary>
@@ -87,7 +88,7 @@ namespace Touryo.Infrastructure.Public.Str
         public static string ToKatakana(string input)
         {
             // VB関数を使用する。
-            return Strings.StrConv(input, VbStrConv.Katakana, 0);
+            return Strings.StrConv(input, VbStrConv.Katakana, 1041);
         }
 
         #endregion
