@@ -1,3 +1,3 @@
-ƒVƒ‡[ƒgƒJƒbƒg‚ÌƒŠƒ“ƒNæ‚Éİ’è‚·‚é‚ÆŠyB
+ï»¿ã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆã®ãƒªãƒ³ã‚¯å…ˆã«è¨­å®šã™ã‚‹ã¨æ¥½ã€‚
 
 DeployZipPackWithHTTP.exe /cui /wwwurl "http://localhost/test/test.mft" /wwwuid administrator /wwwpwd seigi

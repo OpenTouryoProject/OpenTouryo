@@ -1,6 +1,6 @@
-CREATE DATABASE aspstate (MAXSIZE=5GB, EDITION='web')
+ï»¿CREATE DATABASE aspstate (MAXSIZE=5GB, EDITION='web')
 
-aspstate ƒf[ƒ^ƒx[ƒX‚ÉˆÚs
+aspstate ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã«ç§»è¡Œ
 
 CREATE TABLE ASPStateSessions
 (
