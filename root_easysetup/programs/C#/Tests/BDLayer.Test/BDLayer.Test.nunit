@@ -1,7 +1,6 @@
 ﻿<NUnitProject>
-  <Settings activeconfig="Debug" />
-  <Config name="Debug" binpathtype="Auto">
-    <assembly path="bin\Debug\BDLayer.Test.dll" />
+  <Settings activeconfig="Default" />
+  <Config name="Default" binpathtype="Auto">
+    <assembly path="bin\Release\BDLayer.Test.dll" />
   </Config>
-  <Config name="Release" binpathtype="Auto" />
 </NUnitProject>
