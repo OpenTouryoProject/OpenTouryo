@@ -12,7 +12,7 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//*  2015/12/22 Sai         Modified ReadOnly property of the primary key column textbox to true.  
 //**********************************************************************************
 // System
 using System;
@@ -327,7 +327,7 @@ public partial class _JoinTableName__Screen_Detail : MyBaseController
 
         // 主キー
         // ControlComment:LoopStart-PKColumn
-        this.txt_JoinTextboxColumnName_.ReadOnly = false;
+        this.txt_JoinTextboxColumnName_.ReadOnly = true;
         // ControlComment:LoopEnd-PKColumn
 
         // 主キー以外
