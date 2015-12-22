@@ -85,8 +85,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // アセンブリ ロード
                 string ext = ".dll";
-                int extLen = ext.Length;
-                if (assemblyName.Substring(assemblyName.Length - extLen, extLen) == ext)
+                if (assemblyName.EndsWith(ext))
                 {
                     //  アセンブリ・ファイルのパス指定の場合、Assembly.LoadFile
                     mod = Assembly.LoadFile(assemblyName);
