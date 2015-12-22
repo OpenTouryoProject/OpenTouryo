@@ -1,4 +1,4 @@
-//**********************************************************************************
+﻿//**********************************************************************************
 //* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
@@ -36,7 +36,7 @@
 //*  2010/11/19  西野  大介        オーバーロード メソッド対応
 //*  2011/02/08  西野  大介        リファクタリング（CheckTypeOfMethodByName）
 //*  2012/08/25  西野  大介        Assembly.LoadFile → .Load（ASP.NETシャドウコピー対応）
-//*  2015/12/22  Sai               Replaced substring method with EndsWith string method in first Invoke method.        
+//*  2015/12/22  Sai            Replaced substring method with EndsWith string method in first Invoke method.        
 //**********************************************************************************
 
 using System.Reflection;
