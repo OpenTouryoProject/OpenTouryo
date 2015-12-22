@@ -13,6 +13,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2014/02/14 Sai         created template
+//*  2015/12/22 Sai         Modified ReadOnly property of the primary key column textbox to true.  
 //**********************************************************************************
 
 using MyType;
@@ -269,8 +270,8 @@ public partial class my_tableDetail : MyBaseController
         // ReadOnly
 
         // 主キー
-        this.txtcolumna.ReadOnly = false;
-        this.txtcolumnb.ReadOnly = false;
+        this.txtcolumna.ReadOnly = true;
+        this.txtcolumnb.ReadOnly = true;
 
         // 主キー以外
         this.txtcolumnc.ReadOnly = readOnly;

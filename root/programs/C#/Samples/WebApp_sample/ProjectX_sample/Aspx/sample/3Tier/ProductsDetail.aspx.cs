@@ -12,7 +12,7 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//*  2015/12/22 Sai         Modified ReadOnly property of the primary key column textbox to true.  
 //**********************************************************************************
 
 using MyType;
@@ -367,7 +367,7 @@ public partial class ProductsDetail : MyBaseController
         // ReadOnly
 
         // 主キー
-        this.txtProductID.ReadOnly = false;
+        this.txtProductID.ReadOnly = true;
 
         // 主キー以外
         this.txtProductName.ReadOnly = readOnly;
