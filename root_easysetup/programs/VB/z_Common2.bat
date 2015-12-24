@@ -5,7 +5,7 @@
 @rem --------------------------------------------------
 @rem Set Program Files path
 @rem --------------------------------------------------
-reg Query "HKLM\Hardware\Description\System\CentralProcessor\0" | find /i "x86" > NUL && set PROGRAM_FILES=C:\Program Files || set PROGRAM_FILES=C:\Program Files (x86)
+reg Query "HKLM\Hardware\Description\System\CentralProcessor\0" | find /i "x86" > NUL && set PROGRAM_FILES=C:\Program Files||set PROGRAM_FILES=C:\Program Files (x86)
 
 @rem --------------------------------------------------
 @rem Specifying Build tool.
