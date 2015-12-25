@@ -1,18 +1,18 @@
-Ú‘±•¶Žš—ñ
+ï»¿æŽ¥ç¶šæ–‡å­—åˆ—
   Data Source=localhost\sqlexpress;Initial Catalog=Northwind;Integrated Security=True;
 
 SELECT * FROM SHIPPERS
 
-« ŒŸõðŒŽw’è
+â†“ æ¤œç´¢æ¡ä»¶æŒ‡å®š
 
 SELECT * FROM SHIPPERS WHERE SHIPPERID = 1
 
-« ƒpƒ‰ƒƒ^ƒ‰ƒCƒYƒhEƒNƒGƒŠ‰»iƒpƒ‰ƒƒ^Žw’è‰Â”\
+â†“ ãƒ‘ãƒ©ãƒ¡ã‚¿ãƒ©ã‚¤ã‚ºãƒ‰ãƒ»ã‚¯ã‚¨ãƒªåŒ–ï¼ˆãƒ‘ãƒ©ãƒ¡ã‚¿æŒ‡å®šå¯èƒ½
 
 SELECT * FROM SHIPPERS WHERE SHIPPERID = @p1
 /*PARAM* p1, Int32, 1 *PARAM*/
 
-« “®“I‰»
+â†“ å‹•çš„åŒ–
 
 <?xml version="1.0"?>
 <ROOT>
@@ -35,7 +35,7 @@ SELECT * FROM SHIPPERS WHERE SHIPPERID = @p1
   </PARAM>
 </ROOT>
 
-«p2ðŒ‚ÆðŒŽw’è‚ð’Ç‰Á
+â†“p2æ¡ä»¶ã¨æ¡ä»¶æŒ‡å®šã‚’è¿½åŠ 
 
 <IF>AND COMPANYNAME = @p2</IF>
 
@@ -44,11 +44,11 @@ SELECT * FROM SHIPPERS WHERE SHIPPERID = @p1
   p2, String, Speedy Express
 </PARAM>
 
-«p1ðŒŽw’è‚ð—Ž‚Æ‚·B
+â†“p1æ¡ä»¶æŒ‡å®šã‚’è½ã¨ã™ã€‚
 
-«p1ðŒŽw’è‚ð–ß‚µ‚Äp2ðŒŽw’è‚ð—Ž‚Æ‚·B
+â†“p1æ¡ä»¶æŒ‡å®šã‚’æˆ»ã—ã¦p2æ¡ä»¶æŒ‡å®šã‚’è½ã¨ã™ã€‚
 
-«p1‚ðLIST‰»
+â†“p1ã‚’LISTåŒ–
 
 <?xml version="1.0"?>
 <ROOT>
@@ -63,16 +63,16 @@ SELECT * FROM SHIPPERS WHERE SHIPPERID = @p1
   </PARAM>
 </ROOT>
 
-« COMMENTACDATA‚É‘Î‰žiˆÈ‰º‚Ì—l‚Èˆ—‚à‰Â”\jB
-   ‚½‚¾‚µAƒ^ƒO“àƒpƒ‰ƒƒ^‚ÍCDATA‚É“ü‚ê‚È‚¢‚±‚ÆB
+â†“ COMMENTã€CDATAã«å¯¾å¿œï¼ˆä»¥ä¸‹ã®æ§˜ãªå‡¦ç†ã‚‚å¯èƒ½ï¼‰ã€‚
+   ãŸã ã—ã€ã‚¿ã‚°å†…ãƒ‘ãƒ©ãƒ¡ã‚¿ã¯CDATAã«å…¥ã‚Œãªã„ã“ã¨ã€‚
 
 <?xml version="1.0"?>
 <ROOT>
-  <!--ƒRƒƒ“ƒgA-->
+  <!--ã‚³ãƒ¡ãƒ³ãƒˆA-->
   SELECT * FROM SHIPPERS
   <WHERE>
     WHERE
-      <!--ƒRƒƒ“ƒgB-->
+      <!--ã‚³ãƒ¡ãƒ³ãƒˆB-->
       <IF>SHIPPERID = @p1</IF>
       <!--LIST>AND SHIPPERID IN (@p2)</LIST-->
       <IF>AND SHIPPERID BETWEEN @p3 AND @p4</IF>
@@ -80,7 +80,7 @@ SELECT * FROM SHIPPERS WHERE SHIPPERID = @p1
       <VAL name="pval"/>
   </WHERE>
   <PARAM>
-    p1, <!--ƒRƒƒ“ƒg1-->Int32<!--ƒRƒƒ“ƒg2-->, <!--ƒRƒƒ“ƒg3-->1<DIV/>
+    p1, <!--ã‚³ãƒ¡ãƒ³ãƒˆ1-->Int32<!--ã‚³ãƒ¡ãƒ³ãƒˆ2-->, <!--ã‚³ãƒ¡ãƒ³ãƒˆ3-->1<DIV/>
     <!--p2, Int32, 1, 2<DIV/-->
     p3, Int32, 1<DIV/>
     p4, Int32, 2<DIV/>

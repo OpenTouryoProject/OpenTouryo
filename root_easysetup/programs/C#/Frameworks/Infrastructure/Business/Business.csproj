@@ -85,6 +85,7 @@
     <Compile Include="Dao\MyBaseDao.cs" />
     <Compile Include="Exceptions\MyBusinessApplicationExceptionMessage.cs" />
     <Compile Include="Exceptions\MyBusinessSystemExceptionMessage.cs" />
+    <Compile Include="Business\MyApsBaseLogic.cs" />
     <Compile Include="Presentation\CmnTableAdapter.cs" />
     <Compile Include="Presentation\MyBaseController.cs">
       <SubType>ASPXCodeBehind</SubType>

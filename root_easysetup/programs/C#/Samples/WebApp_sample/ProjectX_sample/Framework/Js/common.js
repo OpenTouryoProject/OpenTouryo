@@ -17,6 +17,7 @@
 //*  2015/02/06  Supragyan         Added condition for check AjaxPostBackElement in Fx_AjaxExtensionInitializeRequest
 //*  2015/02/06  Supragyan         Added condition for check AjaxPostBackElement in Fx_AjaxExtensionEndRequest
 //*  2015/02/09  Supragyan         Added condition for Trident on Internet Explorer
+//*  2015/09/09  Sandeep           Added condition code to detect IE-9, IE-10 and IE-11, to suppress double transmission
 //**********************************************************************************
 
 function Fx_Document_OnLoad() {
@@ -165,6 +166,15 @@ function Fx_OnSubmit() {
         else if (navigator.appVersion.indexOf("MSIE 8.0") != -1) {
             // IE8.0では完全に有効
         }
+        else if (navigator.appVersion.indexOf("MSIE 9.0") != -1) {
+            // IE9.0で問題の報告を受けていません。 
+        }
+        else if (navigator.appVersion.indexOf("MSIE 10.0") != -1) {
+            // IE10.0で問題の報告を受けていません。 
+        }
+        else if (navigator.appVersion.indexOf("Trident/7") != -1) {
+            // IE11.0で問題が合った場合、報告をお願いします。
+        } 
 
         if (document.readyState == "complete") {
 

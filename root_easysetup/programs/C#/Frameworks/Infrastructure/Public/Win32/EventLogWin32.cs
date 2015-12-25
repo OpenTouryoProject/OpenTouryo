@@ -1,4 +1,4 @@
-//**********************************************************************************
+ï»¿//**********************************************************************************
 //* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
@@ -19,16 +19,16 @@
 #endregion
 
 //**********************************************************************************
-//* ƒNƒ‰ƒX–¼        FEventLogWin32
-//* ƒNƒ‰ƒX“ú–{Œê–¼  FƒCƒxƒ“ƒgƒƒOŠÖ˜AWin32 APIéŒ¾ƒNƒ‰ƒX
+//* ã‚¯ãƒ©ã‚¹å        ï¼šEventLogWin32
+//* ã‚¯ãƒ©ã‚¹æ—¥æœ¬èªžå  ï¼šã‚¤ãƒ™ãƒ³ãƒˆãƒ­ã‚°é–¢é€£Win32 APIå®£è¨€ã‚¯ãƒ©ã‚¹
 //*
-//* ì¬ŽÒ          F¶‹Z ¼–ì
-//* XV—š—ð        F
+//* ä½œæˆè€…          ï¼šç”ŸæŠ€ è¥¿é‡Ž
+//* æ›´æ–°å±¥æ­´        ï¼š
 //*
-//*  “úŽž        XVŽÒ            “à—e
+//*  æ—¥æ™‚        æ›´æ–°è€…            å†…å®¹
 //*  ----------  ----------------  -------------------------------------------------
-//*  2012/09/21  ¼–ì  ‘å‰î        V‹Kì¬
-//*  2013/02/18  ¼–ì  ‘å‰î        SetLastError‘Î‰ž
+//*  2012/09/21  è¥¿é‡Ž  å¤§ä»‹        æ–°è¦ä½œæˆ
+//*  2013/02/18  è¥¿é‡Ž  å¤§ä»‹        SetLastErrorå¯¾å¿œ
 //**********************************************************************************
 
 using System;
@@ -38,46 +38,46 @@ namespace Touryo.Infrastructure.Public.Win32
 {
     class EventLogWin32
     {
-        /// <summary>ƒCƒxƒ“ƒgƒƒO‚Ì“o˜^Ï‚Ýƒnƒ“ƒhƒ‹‚ð•Ô‚µ‚Ü‚·B</summary>
+        /// <summary>ã‚¤ãƒ™ãƒ³ãƒˆãƒ­ã‚°ã®ç™»éŒ²æ¸ˆã¿ãƒãƒ³ãƒ‰ãƒ«ã‚’è¿”ã—ã¾ã™ã€‚</summary>
         /// <param name="lpUNCServerName">
-        /// ‘€ì‚ðŽÀs‚·‚éƒT[ƒo‚Ì–¼‘O
-        /// iNULL‚ðŽw’è‚Åƒ[ƒJƒ‹ƒRƒ“ƒsƒ…[ƒ^j
+        /// æ“ä½œã‚’å®Ÿè¡Œã™ã‚‹ã‚µãƒ¼ãƒã®åå‰
+        /// ï¼ˆNULLã‚’æŒ‡å®šã§ãƒ­ãƒ¼ã‚«ãƒ«ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ã‚¿ï¼‰
         /// </param>
         /// <param name="lpSourceName">
-        /// “o˜^Ï‚Ýƒnƒ“ƒhƒ‹‚ðŽæ“¾‚·‚éƒCƒxƒ“ƒgƒ\[ƒX‚Ì–¼‘O
+        /// ç™»éŒ²æ¸ˆã¿ãƒãƒ³ãƒ‰ãƒ«ã‚’å–å¾—ã™ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆã‚½ãƒ¼ã‚¹ã®åå‰
         /// HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application
         /// </param>
         /// <returns>
-        /// ƒCƒxƒ“ƒgƒƒO‚Ì“o˜^Ï‚Ýƒnƒ“ƒhƒ‹
+        /// ã‚¤ãƒ™ãƒ³ãƒˆãƒ­ã‚°ã®ç™»éŒ²æ¸ˆã¿ãƒãƒ³ãƒ‰ãƒ«
         /// </returns>
         [DllImport("advapi32.dll", SetLastError = true)]
         public static extern IntPtr RegisterEventSource(string lpUNCServerName, string lpSourceName);
 
-        /// <summary>Žw’è‚µ‚½ƒCƒxƒ“ƒgƒƒO‚Ìƒnƒ“ƒhƒ‹‚ð•Â‚¶‚Ü‚·B</summary>
+        /// <summary>æŒ‡å®šã—ãŸã‚¤ãƒ™ãƒ³ãƒˆãƒ­ã‚°ã®ãƒãƒ³ãƒ‰ãƒ«ã‚’é–‰ã˜ã¾ã™ã€‚</summary>
         /// <param name="hEventLog">
-        /// ƒCƒxƒ“ƒgƒƒO‚Ì“o˜^Ï‚Ýƒnƒ“ƒhƒ‹
-        /// iRegisterEventSource ŠÖ”‚ª•Ô‚·ƒnƒ“ƒhƒ‹j
+        /// ã‚¤ãƒ™ãƒ³ãƒˆãƒ­ã‚°ã®ç™»éŒ²æ¸ˆã¿ãƒãƒ³ãƒ‰ãƒ«
+        /// ï¼ˆRegisterEventSource é–¢æ•°ãŒè¿”ã™ãƒãƒ³ãƒ‰ãƒ«ï¼‰
         /// </param>
         /// <returns>
-        /// trueFŠÖ”‚ª¬Œ÷
-        /// falseFŠÖ”‚ªŽ¸”s
+        /// trueï¼šé–¢æ•°ãŒæˆåŠŸ
+        /// falseï¼šé–¢æ•°ãŒå¤±æ•—
         /// </returns>
         [DllImport("advapi32.dll", SetLastError = true)]
         public static extern bool DeregisterEventSource(IntPtr hEventLog);
 
-        /// <summary>Žw’è‚µ‚½ƒCƒxƒ“ƒgƒƒO‚ÌÅŒã‚ÉƒGƒ“ƒgƒŠ‚ð‘‚«ž‚Ý‚Ü‚·B</summary>
-        /// <param name="hEventLog">ƒCƒxƒ“ƒgƒƒO‚Ìƒnƒ“ƒhƒ‹</param>
-        /// <param name="wType">ƒƒO‚É‘‚«ž‚ÞƒCƒxƒ“ƒg‚ÌŽí—Þ</param>
-        /// <param name="wCategory">ƒCƒxƒ“ƒg‚Ì•ª—Þ</param>
-        /// <param name="dwEventID">ƒCƒxƒ“ƒgŽ¯•ÊŽq</param>
-        /// <param name="lpUserSid">ƒ†[ƒU[ƒZƒLƒ…ƒŠƒeƒBŽ¯•ÊŽq</param>
-        /// <param name="wNumStrings">ƒƒbƒZ[ƒW‚Éƒ}[ƒW‚·‚é•¶Žš—ñ‚Ì”</param>
-        /// <param name="dwDataSize">ƒoƒCƒiƒŠƒf[ƒ^‚ÌƒTƒCƒYiƒoƒCƒg”j</param>
-        /// <param name="lpStrings">ƒƒbƒZ[ƒW‚Éƒ}[ƒW‚·‚é•¶Žš—ñ‚Ì”z—ñ</param>
-        /// <param name="lpRawData">ƒoƒCƒiƒŠƒf[ƒ^‚ÌƒAƒhƒŒƒX</param>
+        /// <summary>æŒ‡å®šã—ãŸã‚¤ãƒ™ãƒ³ãƒˆãƒ­ã‚°ã®æœ€å¾Œã«ã‚¨ãƒ³ãƒˆãƒªã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚</summary>
+        /// <param name="hEventLog">ã‚¤ãƒ™ãƒ³ãƒˆãƒ­ã‚°ã®ãƒãƒ³ãƒ‰ãƒ«</param>
+        /// <param name="wType">ãƒ­ã‚°ã«æ›¸ãè¾¼ã‚€ã‚¤ãƒ™ãƒ³ãƒˆã®ç¨®é¡ž</param>
+        /// <param name="wCategory">ã‚¤ãƒ™ãƒ³ãƒˆã®åˆ†é¡ž</param>
+        /// <param name="dwEventID">ã‚¤ãƒ™ãƒ³ãƒˆè­˜åˆ¥å­</param>
+        /// <param name="lpUserSid">ãƒ¦ãƒ¼ã‚¶ãƒ¼ã‚»ã‚­ãƒ¥ãƒªãƒ†ã‚£è­˜åˆ¥å­</param>
+        /// <param name="wNumStrings">ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«ãƒžãƒ¼ã‚¸ã™ã‚‹æ–‡å­—åˆ—ã®æ•°</param>
+        /// <param name="dwDataSize">ãƒã‚¤ãƒŠãƒªãƒ‡ãƒ¼ã‚¿ã®ã‚µã‚¤ã‚ºï¼ˆãƒã‚¤ãƒˆæ•°ï¼‰</param>
+        /// <param name="lpStrings">ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«ãƒžãƒ¼ã‚¸ã™ã‚‹æ–‡å­—åˆ—ã®é…åˆ—</param>
+        /// <param name="lpRawData">ãƒã‚¤ãƒŠãƒªãƒ‡ãƒ¼ã‚¿ã®ã‚¢ãƒ‰ãƒ¬ã‚¹</param>
         /// <returns>
-        /// trueFŠÖ”‚ª¬Œ÷
-        /// falseFŠÖ”‚ªŽ¸”s
+        /// trueï¼šé–¢æ•°ãŒæˆåŠŸ
+        /// falseï¼šé–¢æ•°ãŒå¤±æ•—
         /// </returns>
         [DllImport("advapi32.dll", EntryPoint = "ReportEventW", CharSet = CharSet.Unicode, SetLastError=true)]
         public static extern bool ReportEvent(
