@@ -1,28 +1,28 @@
-'**********************************************************************************
-'* ƒTƒ“ƒvƒ‹ ƒAƒvƒŠ‰æ–Ê
+ï»¿'**********************************************************************************
+'* ã‚µãƒ³ãƒ—ãƒ« ã‚¢ãƒ—ãƒªç”»é¢
 '**********************************************************************************
 
 '**********************************************************************************
-'* ƒNƒ‰ƒX–¼        FForm1
-'* ƒNƒ‰ƒX“ú–{Œê–¼  F©“®¶¬‚µ‚½Dao‚Ì—˜—pƒTƒ“ƒvƒ‹
-'*                   { ƒf[ƒ^ƒe[ƒuƒ‹‚ğg—p‚µ‚½ƒoƒbƒ`XVƒTƒ“ƒvƒ‹
+'* ã‚¯ãƒ©ã‚¹å        ï¼šForm1
+'* ã‚¯ãƒ©ã‚¹æ—¥æœ¬èªå  ï¼šè‡ªå‹•ç”Ÿæˆã—ãŸDaoã®åˆ©ç”¨ã‚µãƒ³ãƒ—ãƒ«
+'*                   ï¼‹ ãƒ‡ãƒ¼ã‚¿ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’ä½¿ç”¨ã—ãŸãƒãƒƒãƒæ›´æ–°ã‚µãƒ³ãƒ—ãƒ«
 '*
-'* ì¬“ú        F|
-'* ì¬Ò          Fsas ¶‹Z
-'* XV—š—ğ        F
+'* ä½œæˆæ—¥æ™‚        ï¼šï¼
+'* ä½œæˆè€…          ï¼šsas ç”ŸæŠ€
+'* æ›´æ–°å±¥æ­´        ï¼š
 '*
-'*  “ú        XVÒ            “à—e
+'*  æ—¥æ™‚        æ›´æ–°è€…            å†…å®¹
 '*  ----------  ----------------  -------------------------------------------------
-'*  20xx/xx/xx  ‚w‚w ‚w‚w         ‚w‚w‚w‚w
+'*  20xx/xx/xx  ï¼¸ï¼¸ ï¼¸ï¼¸         ï¼¸ï¼¸ï¼¸ï¼¸
 '*
 '**********************************************************************************
 
-' WindowƒAƒvƒŠƒP[ƒVƒ‡ƒ“
+' Windowã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³
 Imports System.Drawing
 Imports System.Windows.Forms
 Imports System.ComponentModel
 
-' Œ^î•ñ
+' å‹æƒ…å ±
 Imports GenDaoAndBatUpd_sample.Common
 Imports GenDaoAndBatUpd_sample.Business
 
@@ -34,7 +34,7 @@ Imports System.Text
 Imports System.Data
 Imports System.Collections
 
-' ‹Æ–±ƒtƒŒ[ƒ€ƒ[ƒN
+' æ¥­å‹™ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯
 Imports Touryo.Infrastructure.Business.Business
 Imports Touryo.Infrastructure.Business.Common
 Imports Touryo.Infrastructure.Business.Dao
@@ -44,7 +44,7 @@ Imports Touryo.Infrastructure.Business.Util
 
 Imports Touryo.Infrastructure.Business.RichClient.Business
 
-' ƒtƒŒ[ƒ€ƒ[ƒN
+' ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯
 Imports Touryo.Infrastructure.Framework.Business
 Imports Touryo.Infrastructure.Framework.Common
 Imports Touryo.Infrastructure.Framework.Dao
@@ -55,45 +55,45 @@ Imports Touryo.Infrastructure.Framework.Transmission
 
 Imports Touryo.Infrastructure.Framework.RichClient.Business
 
-' •”•i
+' éƒ¨å“
 Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
 
-''' <summary>©“®¶¬‚µ‚½Dao‚Ì—˜—pƒTƒ“ƒvƒ‹{ƒf[ƒ^ƒe[ƒuƒ‹‚ğg—p‚µ‚½ƒoƒbƒ`XVƒTƒ“ƒvƒ‹</summary>
+''' <summary>è‡ªå‹•ç”Ÿæˆã—ãŸDaoã®åˆ©ç”¨ã‚µãƒ³ãƒ—ãƒ«ï¼‹ãƒ‡ãƒ¼ã‚¿ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’ä½¿ç”¨ã—ãŸãƒãƒƒãƒæ›´æ–°ã‚µãƒ³ãƒ—ãƒ«</summary>
 Partial Public Class Form1
     Inherits Form
-    ''' <summary>ƒ†[ƒUî•ñ</summary>
+    ''' <summary>ãƒ¦ãƒ¼ã‚¶æƒ…å ±</summary>
     Private myUserInfo As MyUserInfo
 
-#Region "‰Šúˆ—"
+#Region "åˆæœŸå‡¦ç†"
 
-    ''' <summary>ƒRƒ“ƒXƒgƒ‰ƒNƒ^</summary>
+    ''' <summary>ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿</summary>
     Public Sub New()
         InitializeComponent()
 
-        ' –„‚ß‚Ü‚ê‚½ƒŠƒ\[ƒXƒ‚[ƒh
+        ' åŸ‹ã‚è¾¼ã¾ã‚ŒãŸãƒªã‚½ãƒ¼ã‚¹ãƒ¢ãƒ¼ãƒ‰
         MyBaseDao.UseEmbeddedResource = True
     End Sub
 
-    ''' <summary>ƒ[ƒh ƒCƒxƒ“ƒg</summary>
+    ''' <summary>ãƒ­ãƒ¼ãƒ‰ ã‚¤ãƒ™ãƒ³ãƒˆ</summary>
     Private Sub Form1_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
-        '#Region "ƒtƒ[ƒŒƒCƒAƒEƒg•—‚É‚·‚éB"
+        '#Region "ãƒ•ãƒ­ãƒ¼ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆé¢¨ã«ã™ã‚‹ã€‚"
 
-        ' ƒ^ƒu
+        ' ã‚¿ãƒ–
         Me.tabControl1.Anchor = (AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right)
 
-        ' ƒOƒŠƒbƒh
+        ' ã‚°ãƒªãƒƒãƒ‰
         Me.dataGridView1.Anchor = (AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right)
         Me.dataGridView2.Anchor = (AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right)
         Me.dataGridView3.Anchor = (AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right)
 
-        ' ƒsƒNƒ`ƒƒ
+        ' ãƒ”ã‚¯ãƒãƒ£
         Me.pictureBox1.Anchor = (AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right)
 
-        ' ƒ{ƒ^ƒ“‚`
+        ' ãƒœã‚¿ãƒ³ï¼¡
         Me.btnInsert1.Anchor = (AnchorStyles.Bottom Or AnchorStyles.Left)
         Me.btnInsert2.Anchor = (AnchorStyles.Bottom Or AnchorStyles.Left)
 
@@ -106,7 +106,7 @@ Partial Public Class Form1
         Me.btnDelete1.Anchor = (AnchorStyles.Bottom Or AnchorStyles.Left)
         Me.btnDelete2.Anchor = (AnchorStyles.Bottom Or AnchorStyles.Left)
 
-        ' ƒ{ƒ^ƒ“‚a
+        ' ãƒœã‚¿ãƒ³ï¼¢
         Me.btnSelectAll1.Anchor = (AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right)
         Me.btnSelectAll2.Anchor = (AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right)
         Me.btnSelectAll3.Anchor = (AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right)
@@ -119,55 +119,55 @@ Partial Public Class Form1
 
         '#End Region
 
-        ' ƒ†[ƒUî•ñ
+        ' ãƒ¦ãƒ¼ã‚¶æƒ…å ±
         Me.myUserInfo = New MyUserInfo("userName", Environment.MachineName)
     End Sub
 
 #End Region
 
-#Region "ƒf[ƒ^‚Ìƒ[ƒh"
+#Region "ãƒ‡ãƒ¼ã‚¿ã®ãƒ­ãƒ¼ãƒ‰"
 
-    ''' <summary>Suppliersƒe[ƒuƒ‹‚Ìæ“¾</summary>
+    ''' <summary>Suppliersãƒ†ãƒ¼ãƒ–ãƒ«ã®å–å¾—</summary>
     Private Function GetSuppliers(ByVal controlId As String) As DataTable
-        ' ˆø”
+        ' å¼•æ•°
         Dim testParameterValue As New TestParameterValue(Me.Name, controlId, "SelectAll", "SQL", Me.myUserInfo)
 
-        ' ‚a‘wŒÄ‚Ño‚µ
+        ' ï¼¢å±¤å‘¼ã³å‡ºã—
         Dim lb As New LayerB_Static()
 
         Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
 
-        ' ƒRƒ~ƒbƒg
+        ' ã‚³ãƒŸãƒƒãƒˆ
         BaseLogic2CS.CommitAndClose()
 
-        ' –ß‚è’l
+        ' æˆ»ã‚Šå€¤
         Return DirectCast(testReturnValue.dt, DataTable)
     End Function
 
-    ''' <summary>Categoryƒe[ƒuƒ‹‚Ìæ“¾</summary>
+    ''' <summary>Categoryãƒ†ãƒ¼ãƒ–ãƒ«ã®å–å¾—</summary>
     Private Function GetCategory(ByVal controlId As String) As DataTable
-        ' ˆø”
+        ' å¼•æ•°
         Dim testParameterValue As New TestParameterValue(Me.Name, controlId, "SelectAll", "SQL", Me.myUserInfo)
 
-        ' ‚a‘wŒÄ‚Ño‚µ
+        ' ï¼¢å±¤å‘¼ã³å‡ºã—
         Dim lb As New LayerB_Dynamic()
 
         Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
 
-        ' ƒRƒ~ƒbƒg
+        ' ã‚³ãƒŸãƒƒãƒˆ
         BaseLogic2CS.CommitAndClose()
 
-        ' –ß‚è’l
+        ' æˆ»ã‚Šå€¤
         Return DirectCast(testReturnValue.dt, DataTable)
     End Function
 
 #End Region
 
-#Region "ƒ^ƒu‚P"
+#Region "ã‚¿ãƒ–ï¼‘"
 
-#Region "F‚ğƒNƒŠƒA"
+#Region "è‰²ã‚’ã‚¯ãƒªã‚¢"
 
-    ''' <summary>F‚ğƒNƒŠƒA</summary>
+    ''' <summary>è‰²ã‚’ã‚¯ãƒªã‚¢</summary>
     Private Sub ClearColor1()
         txtSupplierID.BackColor = Color.White
         txtCompanyName.BackColor = Color.White
@@ -185,33 +185,33 @@ Partial Public Class Form1
 
 #End Region
 
-#Region "ƒf[ƒ^ƒOƒŠƒbƒh‚P"
+#Region "ãƒ‡ãƒ¼ã‚¿ã‚°ãƒªãƒƒãƒ‰ï¼‘"
 
-    ''' <summary>ƒOƒŠƒbƒh‚P‚Éƒf[ƒ^‚ğƒ[ƒh</summary>
+    ''' <summary>ã‚°ãƒªãƒƒãƒ‰ï¼‘ã«ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰</summary>
     Private Sub btnSelectAll1_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnSelectAll1.Click
-        ' ƒf[ƒ^‚ğƒ[ƒh
+        ' ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰
         Me.dataGridView1.DataSource = Me.GetSuppliers(DirectCast(sender, Button).Name)
     End Sub
 
-    ''' <summary>ƒOƒŠƒbƒh‚P‚ğƒNƒŠƒA</summary>
+    ''' <summary>ã‚°ãƒªãƒƒãƒ‰ï¼‘ã‚’ã‚¯ãƒªã‚¢</summary>
     Private Sub btnClear1_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnClear1.Click
-        ' F‚ÌƒNƒŠƒA
+        ' è‰²ã®ã‚¯ãƒªã‚¢
         Me.ClearColor1()
 
-        ' ƒNƒŠƒA
+        ' ã‚¯ãƒªã‚¢
         Me.dataGridView1.DataSource = Nothing
     End Sub
 
 #End Region
 
-#Region "Ã“ISQL‚ÌCRUD"
+#Region "é™çš„SQLã®CRUD"
 
-    ''' <summary>ƒCƒ“ƒT[ƒg</summary>
+    ''' <summary>ã‚¤ãƒ³ã‚µãƒ¼ãƒˆ</summary>
     Private Sub btnInsert1_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnInsert1.Click
-        ' F‚ÌƒNƒŠƒA
+        ' è‰²ã®ã‚¯ãƒªã‚¢
         Me.ClearColor1()
 
-        ' ˆø”
+        ' å¼•æ•°
         Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "Insert", "SQL", Me.myUserInfo)
 
         testParameterValue.field1 = ""
@@ -260,45 +260,45 @@ Partial Public Class Form1
         ' HomePage
         txtHomePage.BackColor = Color.LightYellow
 
-        ' ‚a‘wŒÄ‚Ño‚µ
+        ' ï¼¢å±¤å‘¼ã³å‡ºã—
         Dim lb As New LayerB_Static()
 
         Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
 
-        ' ƒRƒ~ƒbƒg
+        ' ã‚³ãƒŸãƒƒãƒˆ
         BaseLogic2CS.CommitAndClose()
 
-        ' ƒf[ƒ^ƒOƒŠƒbƒh‚ğXV
+        ' ãƒ‡ãƒ¼ã‚¿ã‚°ãƒªãƒƒãƒ‰ã‚’æ›´æ–°
         Me.btnSelectAll1_Click(sender, e)
     End Sub
 
-    ''' <summary>ƒZƒŒƒNƒg</summary>
+    ''' <summary>ã‚»ãƒ¬ã‚¯ãƒˆ</summary>
     Private Sub btnSelect1_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnSelect1.Click
-        ' F‚ÌƒNƒŠƒA
+        ' è‰²ã®ã‚¯ãƒªã‚¢
         Me.ClearColor1()
 
-        ' åƒL[‚ª–³‚¯‚ê‚ÎA‰½‚à‚µ‚È‚¢B
+        ' ä¸»ã‚­ãƒ¼ãŒç„¡ã‘ã‚Œã°ã€ä½•ã‚‚ã—ãªã„ã€‚
         If txtSupplierID.Text = "" Then
-            MessageBox.Show("åƒL[iSupplierIDj‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B")
+            MessageBox.Show("ä¸»ã‚­ãƒ¼ï¼ˆSupplierIDï¼‰ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚")
             Return
         End If
 
-        ' ˆø”
+        ' å¼•æ•°
         Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "Select", "SQL", Me.myUserInfo)
 
         testParameterValue.field1 = txtSupplierID.Text
         ' SupplierID
         txtSupplierID.BackColor = Color.LightYellow
 
-        ' ‚a‘wŒÄ‚Ño‚µ
+        ' ï¼¢å±¤å‘¼ã³å‡ºã—
         Dim lb As New LayerB_Static()
 
         Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
 
-        ' ƒRƒ~ƒbƒg
+        ' ã‚³ãƒŸãƒƒãƒˆ
         BaseLogic2CS.CommitAndClose()
 
-        ' –ß‚è’l
+        ' æˆ»ã‚Šå€¤
         txtCompanyName.Text = testReturnValue.field2.ToString()
         ' CompanyName
         txtContactName.Text = testReturnValue.field3.ToString()
@@ -323,18 +323,18 @@ Partial Public Class Form1
         ' HomePage
     End Sub
 
-    ''' <summary>ƒAƒbƒvƒf[ƒg</summary>
+    ''' <summary>ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆ</summary>
     Private Sub btnUpdate1_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnUpdate1.Click
-        ' F‚ÌƒNƒŠƒA
+        ' è‰²ã®ã‚¯ãƒªã‚¢
         Me.ClearColor1()
 
-        ' åƒL[‚ª–³‚¯‚ê‚ÎA‰½‚à‚µ‚È‚¢B
+        ' ä¸»ã‚­ãƒ¼ãŒç„¡ã‘ã‚Œã°ã€ä½•ã‚‚ã—ãªã„ã€‚
         If txtSupplierID.Text = "" Then
-            MessageBox.Show("åƒL[iSupplierIDj‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B")
+            MessageBox.Show("ä¸»ã‚­ãƒ¼ï¼ˆSupplierIDï¼‰ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚")
             Return
         End If
 
-        ' ˆø”
+        ' å¼•æ•°
         Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "Update", "SQL", Me.myUserInfo)
 
         testParameterValue.field1 = txtSupplierID.Text
@@ -385,45 +385,45 @@ Partial Public Class Form1
         ' HomePage
         txtHomePage.BackColor = Color.LightYellow
 
-        ' ‚a‘wŒÄ‚Ño‚µ
+        ' ï¼¢å±¤å‘¼ã³å‡ºã—
         Dim lb As New LayerB_Static()
 
         Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
 
-        ' ƒRƒ~ƒbƒg
+        ' ã‚³ãƒŸãƒƒãƒˆ
         BaseLogic2CS.CommitAndClose()
 
-        ' ƒf[ƒ^ƒOƒŠƒbƒh‚ğXV
+        ' ãƒ‡ãƒ¼ã‚¿ã‚°ãƒªãƒƒãƒ‰ã‚’æ›´æ–°
         Me.btnSelectAll1_Click(sender, e)
     End Sub
 
-    ''' <summary>ƒfƒŠ[ƒg</summary>
+    ''' <summary>ãƒ‡ãƒªãƒ¼ãƒˆ</summary>
     Private Sub btnDelete1_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnDelete1.Click
-        ' F‚ÌƒNƒŠƒA
+        ' è‰²ã®ã‚¯ãƒªã‚¢
         Me.ClearColor1()
 
-        ' åƒL[‚ª–³‚¯‚ê‚ÎA‰½‚à‚µ‚È‚¢B
+        ' ä¸»ã‚­ãƒ¼ãŒç„¡ã‘ã‚Œã°ã€ä½•ã‚‚ã—ãªã„ã€‚
         If txtSupplierID.Text = "" Then
-            MessageBox.Show("åƒL[iSupplierIDj‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B")
+            MessageBox.Show("ä¸»ã‚­ãƒ¼ï¼ˆSupplierIDï¼‰ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚")
             Return
         End If
 
-        ' ˆø”
+        ' å¼•æ•°
         Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "Delete", "SQL", Me.myUserInfo)
 
         testParameterValue.field1 = txtSupplierID.Text
         ' SupplierID
         txtSupplierID.BackColor = Color.LightYellow
 
-        ' ‚a‘wŒÄ‚Ño‚µ
+        ' ï¼¢å±¤å‘¼ã³å‡ºã—
         Dim lb As New LayerB_Static()
 
         Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
 
-        ' ƒRƒ~ƒbƒg
+        ' ã‚³ãƒŸãƒƒãƒˆ
         BaseLogic2CS.CommitAndClose()
 
-        ' ƒf[ƒ^ƒOƒŠƒbƒh‚ğXV
+        ' ãƒ‡ãƒ¼ã‚¿ã‚°ãƒªãƒƒãƒ‰ã‚’æ›´æ–°
         Me.btnSelectAll1_Click(sender, e)
     End Sub
 
@@ -431,11 +431,11 @@ Partial Public Class Form1
 
 #End Region
 
-#Region "ƒ^ƒu‚Q"
+#Region "ã‚¿ãƒ–ï¼’"
 
-#Region "F‚ğƒNƒŠƒA"
+#Region "è‰²ã‚’ã‚¯ãƒªã‚¢"
 
-    ''' <summary>F‚ğƒNƒŠƒA</summary>
+    ''' <summary>è‰²ã‚’ã‚¯ãƒªã‚¢</summary>
     Private Sub ClearColor2()
         txtCategoryID.BackColor = Color.White
         txtCategoryName.BackColor = Color.White
@@ -450,36 +450,36 @@ Partial Public Class Form1
 
 #End Region
 
-#Region "ƒf[ƒ^ƒOƒŠƒbƒh‚Q"
+#Region "ãƒ‡ãƒ¼ã‚¿ã‚°ãƒªãƒƒãƒ‰ï¼’"
 
-    ''' <summary>ƒOƒŠƒbƒh‚Q‚Éƒf[ƒ^‚ğƒ[ƒh</summary>
+    ''' <summary>ã‚°ãƒªãƒƒãƒ‰ï¼’ã«ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰</summary>
     Private Sub btnSelectAll2_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnSelectAll2.Click
-        ' ƒf[ƒ^‚ğƒ[ƒh
+        ' ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰
         Me.dataGridView2.DataSource = Me.GetCategory(DirectCast(sender, Button).Name)
     End Sub
 
-    ''' <summary>ƒOƒŠƒbƒh‚Q‚ğƒNƒŠƒA</summary>
+    ''' <summary>ã‚°ãƒªãƒƒãƒ‰ï¼’ã‚’ã‚¯ãƒªã‚¢</summary>
     Private Sub btnClear2_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnClear2.Click
-        ' F‚ÌƒNƒŠƒA
+        ' è‰²ã®ã‚¯ãƒªã‚¢
         Me.ClearColor2()
 
-        ' ƒNƒŠƒA
+        ' ã‚¯ãƒªã‚¢
         Me.dataGridView2.DataSource = Nothing
     End Sub
 
 #End Region
 
-#Region "“®“ISQL‚ÌCRUD"
+#Region "å‹•çš„SQLã®CRUD"
 
-    ''' <summary>ƒCƒ“ƒT[ƒg</summary>
+    ''' <summary>ã‚¤ãƒ³ã‚µãƒ¼ãƒˆ</summary>
     Private Sub btnInsert2_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnInsert2.Click
-        ' F‚ÌƒNƒŠƒA
+        ' è‰²ã®ã‚¯ãƒªã‚¢
         Me.ClearColor2()
 
-        ' ˆø”
+        ' å¼•æ•°
         Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "Insert", "SQL", Me.myUserInfo)
 
-        ' ƒf[ƒ^‚ğ“ü—Í‚Å‚«‚È‚¢‚Ì‚ÅƒpƒX
+        ' ãƒ‡ãƒ¼ã‚¿ã‚’å…¥åŠ›ã§ããªã„ã®ã§ãƒ‘ã‚¹
         'testParameterValue.field1 = this.txtCategoryID;          // CategoryID
         'this.txtCategoryID.BackColor = Color.LightYellow;
 
@@ -491,28 +491,28 @@ Partial Public Class Form1
         ' Description
         Me.txtDescription.BackColor = Color.LightYellow
 
-        ' ƒf[ƒ^‚ğ“ü—Í‚Å‚«‚È‚¢‚Ì‚ÅƒpƒX
+        ' ãƒ‡ãƒ¼ã‚¿ã‚’å…¥åŠ›ã§ããªã„ã®ã§ãƒ‘ã‚¹
         'testParameterValue.field4 = this.txtPicture.Text;      // Picture
         'this.txtPicture.BackColor = Color.LightYellow;
 
-        ' ‚a‘wŒÄ‚Ño‚µ
+        ' ï¼¢å±¤å‘¼ã³å‡ºã—
         Dim lb As New LayerB_Dynamic()
 
         Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
 
-        ' ƒRƒ~ƒbƒg
+        ' ã‚³ãƒŸãƒƒãƒˆ
         BaseLogic2CS.CommitAndClose()
 
-        ' ƒf[ƒ^ƒOƒŠƒbƒh‚ğXV
+        ' ãƒ‡ãƒ¼ã‚¿ã‚°ãƒªãƒƒãƒ‰ã‚’æ›´æ–°
         Me.btnSelectAll2_Click(sender, e)
     End Sub
 
-    ''' <summary>ƒZƒŒƒNƒg</summary>
+    ''' <summary>ã‚»ãƒ¬ã‚¯ãƒˆ</summary>
     Private Sub btnSelect2_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnSelect2.Click
-        ' F‚ÌƒNƒŠƒA
+        ' è‰²ã®ã‚¯ãƒªã‚¢
         Me.ClearColor2()
 
-        ' ˆø”
+        ' å¼•æ•°
         Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "Select", "SQL", Me.myUserInfo)
 
         testParameterValue.field1_ForSearch = txtCategoryID_where.Text
@@ -523,7 +523,7 @@ Partial Public Class Form1
         ' CategoryName_where
         txtCategoryName_where.BackColor = Color.LightYellow
 
-        ' ŒŸõğŒ‚Ég‚¦‚È‚¢«
+        ' æ¤œç´¢æ¡ä»¶ã«ä½¿ãˆãªã„â†“
 
         'testParameterValue.field3_ForSearch = txtDescription_where.Text;  // Description_where
         'txtDescription_where.BackColor = Color.LightYellow;
@@ -531,27 +531,27 @@ Partial Public Class Form1
         'testParameterValue.field4_ForSearch = txtPicture_where.Text;      // Picture
         'txtPicture_where.BackColor = Color.LightYellow;
 
-        ' ‚a‘wŒÄ‚Ño‚µ
+        ' ï¼¢å±¤å‘¼ã³å‡ºã—
         Dim lb As New LayerB_Dynamic()
 
         Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
 
-        ' ƒRƒ~ƒbƒg
+        ' ã‚³ãƒŸãƒƒãƒˆ
         BaseLogic2CS.CommitAndClose()
 
-        ' –ß‚è’l‚ğİ’è
+        ' æˆ»ã‚Šå€¤ã‚’è¨­å®š
         Me.dataGridView2.DataSource = testReturnValue.dt
     End Sub
 
-    ''' <summary>ƒAƒbƒvƒf[ƒg</summary>
+    ''' <summary>ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆ</summary>
     Private Sub btnUpdate2_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnUpdate2.Click
-        ' F‚ÌƒNƒŠƒA
+        ' è‰²ã®ã‚¯ãƒªã‚¢
         Me.ClearColor2()
 
-        ' ˆø”
+        ' å¼•æ•°
         Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "Update", "SQL", Me.myUserInfo)
 
-        ' XV’l
+        ' æ›´æ–°å€¤
         'testParameterValue.field1_ForUpd = txtCategoryID.Text;     // CategoryID
         'txtCategoryID.BackColor = Color.LightYellow;
 
@@ -563,7 +563,7 @@ Partial Public Class Form1
         ' Description
         txtDescription.BackColor = Color.LightYellow
 
-        ' ŒŸõğŒ
+        ' æ¤œç´¢æ¡ä»¶
         testParameterValue.field1_ForSearch = txtCategoryID_where.Text
         ' CategoryID_where
         txtCategoryID_where.BackColor = Color.LightYellow
@@ -572,7 +572,7 @@ Partial Public Class Form1
         ' CategoryName_where
         txtCategoryName_where.BackColor = Color.LightYellow
 
-        ' ŒŸõğŒ‚Ég‚¦‚È‚¢«
+        ' æ¤œç´¢æ¡ä»¶ã«ä½¿ãˆãªã„â†“
 
         'testParameterValue.field3_ForSearch = txtDescription_where.Text;  // Description_where
         'txtDescription_where.BackColor = Color.LightYellow;
@@ -580,27 +580,27 @@ Partial Public Class Form1
         'testParameterValue.field4_ForSearch = txtPicture_where.Text;      // Picture
         'txtPicture_where.BackColor = Color.LightYellow;
 
-        ' ‚a‘wŒÄ‚Ño‚µ
+        ' ï¼¢å±¤å‘¼ã³å‡ºã—
         Dim lb As New LayerB_Dynamic()
 
         Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
 
-        ' ƒRƒ~ƒbƒg
+        ' ã‚³ãƒŸãƒƒãƒˆ
         BaseLogic2CS.CommitAndClose()
 
-        ' ƒf[ƒ^ƒOƒŠƒbƒh‚ğXV
+        ' ãƒ‡ãƒ¼ã‚¿ã‚°ãƒªãƒƒãƒ‰ã‚’æ›´æ–°
         Me.btnSelectAll2_Click(sender, e)
     End Sub
 
-    ''' <summary>ƒfƒŠ[ƒg</summary>
+    ''' <summary>ãƒ‡ãƒªãƒ¼ãƒˆ</summary>
     Private Sub btnDelete2_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnDelete2.Click
-        ' F‚ÌƒNƒŠƒA
+        ' è‰²ã®ã‚¯ãƒªã‚¢
         Me.ClearColor2()
 
-        ' ˆø”
+        ' å¼•æ•°
         Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "Delete", "SQL", Me.myUserInfo)
 
-        ' ŒŸõğŒ
+        ' æ¤œç´¢æ¡ä»¶
         testParameterValue.field1_ForSearch = txtCategoryID_where.Text
         ' CategoryID_where
         txtCategoryID_where.BackColor = Color.LightYellow
@@ -609,7 +609,7 @@ Partial Public Class Form1
         ' CategoryName_where
         txtCategoryName_where.BackColor = Color.LightYellow
 
-        ' ŒŸõğŒ‚Ég‚¦‚È‚¢«
+        ' æ¤œç´¢æ¡ä»¶ã«ä½¿ãˆãªã„â†“
 
         'testParameterValue.field3_ForSearch = txtDescription_where.Text;  // Description_where
         'txtDescription_where.BackColor = Color.LightYellow;
@@ -617,15 +617,15 @@ Partial Public Class Form1
         'testParameterValue.field4_ForSearch = txtPicture_where.Text;      // Picture
         'txtPicture_where.BackColor = Color.LightYellow;
 
-        ' ‚a‘wŒÄ‚Ño‚µ
+        ' ï¼¢å±¤å‘¼ã³å‡ºã—
         Dim lb As New LayerB_Dynamic()
 
         Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
 
-        ' ƒRƒ~ƒbƒg
+        ' ã‚³ãƒŸãƒƒãƒˆ
         BaseLogic2CS.CommitAndClose()
 
-        ' ƒf[ƒ^ƒOƒŠƒbƒh‚ğXV
+        ' ãƒ‡ãƒ¼ã‚¿ã‚°ãƒªãƒƒãƒ‰ã‚’æ›´æ–°
         Me.btnSelectAll2_Click(sender, e)
     End Sub
 
@@ -633,46 +633,46 @@ Partial Public Class Form1
 
 #End Region
 
-#Region "ƒ^ƒu‚R"
+#Region "ã‚¿ãƒ–ï¼“"
 
-    ''' <summary>ƒOƒŠƒbƒh‚R‚Éƒf[ƒ^‚ğƒ[ƒh</summary>
+    ''' <summary>ã‚°ãƒªãƒƒãƒ‰ï¼“ã«ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰</summary>
     Private Sub btnSelectAll3_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnSelectAll3.Click
-        ' ˆø”
+        ' å¼•æ•°
         Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "SelectAll", "SQL", Me.myUserInfo)
 
-        ' ‚a‘wŒÄ‚Ño‚µ
+        ' ï¼¢å±¤å‘¼ã³å‡ºã—
         Dim lb As New LayerB_BatUpd()
 
         Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
 
-        ' ƒRƒ~ƒbƒg
+        ' ã‚³ãƒŸãƒƒãƒˆ
         BaseLogic2CS.CommitAndClose()
 
-        ' –ß‚è’l‚ğİ’èi—ñ‚ª©“®“I‚Éì¬‚³‚ê‚È‚¢‚æ‚¤‚É‚·‚éj
+        ' æˆ»ã‚Šå€¤ã‚’è¨­å®šï¼ˆåˆ—ãŒè‡ªå‹•çš„ã«ä½œæˆã•ã‚Œãªã„ã‚ˆã†ã«ã™ã‚‹ï¼‰
         Me.dataGridView3.Columns.Clear()
         Me.dataGridView3.AutoGenerateColumns = False
         Me.dataGridView3.DataSource = testReturnValue.dt
 
-        '#Region "ƒ}ƒXƒ^‚ÌƒRƒ“ƒ{¶¬"
+        '#Region "ãƒã‚¹ã‚¿ã®ã‚³ãƒ³ãƒœç”Ÿæˆ"
 
         '#Region "SupplierID - ComboBox"
 
         Dim dtSuppliers As DataTable = Me.GetSuppliers(DirectCast(sender, Button).Name)
 
-        ' DataGridViewComboBoxColumn‚ğì¬
+        ' DataGridViewComboBoxColumnã‚’ä½œæˆ
         Dim cmbColSuppliers As New DataGridViewComboBoxColumn()
         Me.InitDataGridViewComboBoxColumn(cmbColSuppliers)
 
-        ' "SupplierID"—ñ‚ÉƒoƒCƒ“ƒh‚³‚ê‚Ä‚¢‚éƒf[ƒ^‚ÆŠÖ˜A•t‚¯A
+        ' "SupplierID"åˆ—ã«ãƒã‚¤ãƒ³ãƒ‰ã•ã‚Œã¦ã„ã‚‹ãƒ‡ãƒ¼ã‚¿ã¨é–¢é€£ä»˜ã‘ã€
         cmbColSuppliers.DataPropertyName = "SupplierID"
-        ' ƒwƒbƒ_[‚ÌƒeƒLƒXƒg‚ğ•ÏX
+        ' ãƒ˜ãƒƒãƒ€ãƒ¼ã®ãƒ†ã‚­ã‚¹ãƒˆã‚’å¤‰æ›´
         cmbColSuppliers.HeaderText = "Supplier"
 
-        'DataGridViewComboBoxColumn‚ÌDataSource‚ğİ’è
+        'DataGridViewComboBoxColumnã®DataSourceã‚’è¨­å®š
         cmbColSuppliers.DataSource = dtSuppliers
 
-        ' ÀÛ‚Ì’l‚ª"SupplierID"—ñ
-        ' •\¦‚·‚éƒeƒLƒXƒg‚ª"CompanyName"—ñ
+        ' å®Ÿéš›ã®å€¤ãŒ"SupplierID"åˆ—
+        ' è¡¨ç¤ºã™ã‚‹ãƒ†ã‚­ã‚¹ãƒˆãŒ"CompanyName"åˆ—
         cmbColSuppliers.ValueMember = "SupplierID"
         cmbColSuppliers.DisplayMember = "CompanyName"
 
@@ -682,20 +682,20 @@ Partial Public Class Form1
 
         Dim dtCategory As DataTable = Me.GetCategory("btnSelectAll3")
 
-        ' DataGridViewComboBoxColumn‚ğì¬
+        ' DataGridViewComboBoxColumnã‚’ä½œæˆ
         Dim cmbColCategory As New DataGridViewComboBoxColumn()
         Me.InitDataGridViewComboBoxColumn(cmbColCategory)
 
-        ' "SupplierID"—ñ‚ÉƒoƒCƒ“ƒh‚³‚ê‚Ä‚¢‚éƒf[ƒ^‚ÆŠÖ˜A•t‚¯A
+        ' "SupplierID"åˆ—ã«ãƒã‚¤ãƒ³ãƒ‰ã•ã‚Œã¦ã„ã‚‹ãƒ‡ãƒ¼ã‚¿ã¨é–¢é€£ä»˜ã‘ã€
         cmbColCategory.DataPropertyName = "CategoryID"
-        ' ƒwƒbƒ_[‚ÌƒeƒLƒXƒg‚ğ•ÏX
+        ' ãƒ˜ãƒƒãƒ€ãƒ¼ã®ãƒ†ã‚­ã‚¹ãƒˆã‚’å¤‰æ›´
         cmbColCategory.HeaderText = "Category"
 
-        ' DataGridViewComboBoxColumn‚ÌDataSource‚ğİ’è
+        ' DataGridViewComboBoxColumnã®DataSourceã‚’è¨­å®š
         cmbColCategory.DataSource = dtCategory
 
-        ' ÀÛ‚Ì’l‚ª"CategoryID"—ñ
-        ' •\¦‚·‚éƒeƒLƒXƒg‚ª"CategoryName"—ñ
+        ' å®Ÿéš›ã®å€¤ãŒ"CategoryID"åˆ—
+        ' è¡¨ç¤ºã™ã‚‹ãƒ†ã‚­ã‚¹ãƒˆãŒ"CategoryName"åˆ—
         cmbColCategory.ValueMember = "CategoryID"
         cmbColCategory.DisplayMember = "CategoryName"
 
@@ -703,91 +703,91 @@ Partial Public Class Form1
 
         '#End Region
 
-        '#Region "è“®‚Åƒf[ƒ^ƒoƒCƒ“ƒh"
+        '#Region "æ‰‹å‹•ã§ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒ‰"
 
-        ' ‚Í‚¶‚ß‚ÉƒNƒŠƒA
+        ' ã¯ã˜ã‚ã«ã‚¯ãƒªã‚¢
 
         ' DataGridViewTextBoxColumn
         Dim textColumn As DataGridViewTextBoxColumn
 
         Dim checkColumn As DataGridViewCheckBoxColumn
 
-        'ƒf[ƒ^ƒ\[ƒX‚Ì"ProductID"—ñ‚ğƒoƒCƒ“ƒh‚·‚é
+        'ãƒ‡ãƒ¼ã‚¿ã‚½ãƒ¼ã‚¹ã®"ProductID"åˆ—ã‚’ãƒã‚¤ãƒ³ãƒ‰ã™ã‚‹
         textColumn = New DataGridViewTextBoxColumn()
         textColumn.DataPropertyName = "ProductID"
         textColumn.Name = "ProductID"
         textColumn.HeaderText = "ProductID"
 
-        ' åƒL[‚Í“Ç‚İæ‚èê—p
+        ' ä¸»ã‚­ãƒ¼ã¯èª­ã¿å–ã‚Šå°‚ç”¨
         textColumn.[ReadOnly] = True
 
         Me.dataGridView3.Columns.Add(textColumn)
 
-        'ƒf[ƒ^ƒ\[ƒX‚Ì"ProductName"—ñ‚ğƒoƒCƒ“ƒh‚·‚é
+        'ãƒ‡ãƒ¼ã‚¿ã‚½ãƒ¼ã‚¹ã®"ProductName"åˆ—ã‚’ãƒã‚¤ãƒ³ãƒ‰ã™ã‚‹
         textColumn = New DataGridViewTextBoxColumn()
         textColumn.DataPropertyName = "ProductName"
         textColumn.Name = "ProductName"
         textColumn.HeaderText = "ProductName"
         Me.dataGridView3.Columns.Add(textColumn)
 
-        'ƒf[ƒ^ƒ\[ƒX‚Ì"SupplierID"—ñ‚ğƒoƒCƒ“ƒh‚·‚é
+        'ãƒ‡ãƒ¼ã‚¿ã‚½ãƒ¼ã‚¹ã®"SupplierID"åˆ—ã‚’ãƒã‚¤ãƒ³ãƒ‰ã™ã‚‹
         textColumn = New DataGridViewTextBoxColumn()
         textColumn.DataPropertyName = "SupplierID"
         textColumn.Name = "SupplierID"
         textColumn.HeaderText = "SupplierID"
         Me.dataGridView3.Columns.Add(textColumn)
 
-        ' Œ©‚¦‚È‚­‚µ‚Äƒ}ƒXƒ^‚ğƒRƒ“ƒ{‚ğ’Ç‰Á
+        ' è¦‹ãˆãªãã—ã¦ãƒã‚¹ã‚¿ã‚’ã‚³ãƒ³ãƒœã‚’è¿½åŠ 
         Me.dataGridView3.Columns("SupplierID").Visible = False
         Me.dataGridView3.Columns.Add(cmbColSuppliers)
 
-        'ƒf[ƒ^ƒ\[ƒX‚Ì"CategoryID"—ñ‚ğƒoƒCƒ“ƒh‚·‚é
+        'ãƒ‡ãƒ¼ã‚¿ã‚½ãƒ¼ã‚¹ã®"CategoryID"åˆ—ã‚’ãƒã‚¤ãƒ³ãƒ‰ã™ã‚‹
         textColumn = New DataGridViewTextBoxColumn()
         textColumn.DataPropertyName = "CategoryID"
         textColumn.Name = "CategoryID"
         textColumn.HeaderText = "CategoryID"
         Me.dataGridView3.Columns.Add(textColumn)
 
-        ' Œ©‚¦‚È‚­‚µ‚Äƒ}ƒXƒ^‚ğƒRƒ“ƒ{‚ğ’Ç‰Á
+        ' è¦‹ãˆãªãã—ã¦ãƒã‚¹ã‚¿ã‚’ã‚³ãƒ³ãƒœã‚’è¿½åŠ 
         Me.dataGridView3.Columns("CategoryID").Visible = False
         Me.dataGridView3.Columns.Add(cmbColCategory)
 
-        'ƒf[ƒ^ƒ\[ƒX‚Ì"QuantityPerUnit"—ñ‚ğƒoƒCƒ“ƒh‚·‚é
+        'ãƒ‡ãƒ¼ã‚¿ã‚½ãƒ¼ã‚¹ã®"QuantityPerUnit"åˆ—ã‚’ãƒã‚¤ãƒ³ãƒ‰ã™ã‚‹
         textColumn = New DataGridViewTextBoxColumn()
         textColumn.DataPropertyName = "QuantityPerUnit"
         textColumn.Name = "QuantityPerUnit"
         textColumn.HeaderText = "QuantityPerUnit"
         Me.dataGridView3.Columns.Add(textColumn)
 
-        'ƒf[ƒ^ƒ\[ƒX‚Ì"UnitPrice"—ñ‚ğƒoƒCƒ“ƒh‚·‚é
+        'ãƒ‡ãƒ¼ã‚¿ã‚½ãƒ¼ã‚¹ã®"UnitPrice"åˆ—ã‚’ãƒã‚¤ãƒ³ãƒ‰ã™ã‚‹
         textColumn = New DataGridViewTextBoxColumn()
         textColumn.DataPropertyName = "UnitPrice"
         textColumn.Name = "UnitPrice"
         textColumn.HeaderText = "UnitPrice"
         Me.dataGridView3.Columns.Add(textColumn)
 
-        'ƒf[ƒ^ƒ\[ƒX‚Ì"UnitsInStock"—ñ‚ğƒoƒCƒ“ƒh‚·‚é
+        'ãƒ‡ãƒ¼ã‚¿ã‚½ãƒ¼ã‚¹ã®"UnitsInStock"åˆ—ã‚’ãƒã‚¤ãƒ³ãƒ‰ã™ã‚‹
         textColumn = New DataGridViewTextBoxColumn()
         textColumn.DataPropertyName = "UnitsInStock"
         textColumn.Name = "UnitsInStock"
         textColumn.HeaderText = "UnitsInStock"
         Me.dataGridView3.Columns.Add(textColumn)
 
-        'ƒf[ƒ^ƒ\[ƒX‚Ì"UnitsOnOrder"—ñ‚ğƒoƒCƒ“ƒh‚·‚é
+        'ãƒ‡ãƒ¼ã‚¿ã‚½ãƒ¼ã‚¹ã®"UnitsOnOrder"åˆ—ã‚’ãƒã‚¤ãƒ³ãƒ‰ã™ã‚‹
         textColumn = New DataGridViewTextBoxColumn()
         textColumn.DataPropertyName = "UnitsOnOrder"
         textColumn.Name = "UnitsOnOrder"
         textColumn.HeaderText = "UnitsOnOrder"
         Me.dataGridView3.Columns.Add(textColumn)
 
-        'ƒf[ƒ^ƒ\[ƒX‚Ì"ReorderLevel"—ñ‚ğƒoƒCƒ“ƒh‚·‚é
+        'ãƒ‡ãƒ¼ã‚¿ã‚½ãƒ¼ã‚¹ã®"ReorderLevel"åˆ—ã‚’ãƒã‚¤ãƒ³ãƒ‰ã™ã‚‹
         textColumn = New DataGridViewTextBoxColumn()
         textColumn.DataPropertyName = "ReorderLevel"
         textColumn.Name = "ReorderLevel"
         textColumn.HeaderText = "ReorderLevel"
         Me.dataGridView3.Columns.Add(textColumn)
 
-        'ƒf[ƒ^ƒ\[ƒX‚Ì"Discontinued"—ñ‚ğƒoƒCƒ“ƒh‚·‚é
+        'ãƒ‡ãƒ¼ã‚¿ã‚½ãƒ¼ã‚¹ã®"Discontinued"åˆ—ã‚’ãƒã‚¤ãƒ³ãƒ‰ã™ã‚‹
         checkColumn = New DataGridViewCheckBoxColumn()
         checkColumn.DataPropertyName = "Discontinued"
         checkColumn.Name = "Discontinued"
@@ -797,47 +797,47 @@ Partial Public Class Form1
         '#End Region
     End Sub
 
-    ''' <summary>DataGridViewComboBoxColumn‚ÌƒXƒ^ƒCƒ‹‚ğ‰Šú‰»‚·‚éB</summary>
+    ''' <summary>DataGridViewComboBoxColumnã®ã‚¹ã‚¿ã‚¤ãƒ«ã‚’åˆæœŸåŒ–ã™ã‚‹ã€‚</summary>
     Private Sub InitDataGridViewComboBoxColumn(ByVal cmbCol As DataGridViewComboBoxColumn)
-        ' Œ»İ‚ÌƒZƒ‹‚µ‚©ƒRƒ“ƒ{ƒ{ƒbƒNƒX‚ª•\¦‚³‚ê‚È‚¢‚æ‚¤‚É‚·‚éB
+        ' ç¾åœ¨ã®ã‚»ãƒ«ã—ã‹ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ãŒè¡¨ç¤ºã•ã‚Œãªã„ã‚ˆã†ã«ã™ã‚‹ã€‚
         cmbCol.DisplayStyleForCurrentCellOnly = True
-        ' •ÒWƒ‚[ƒh‚Ì‚¾‚¯ƒRƒ“ƒ{ƒ{ƒbƒNƒX‚ğ•\¦‚·‚éB
+        ' ç·¨é›†ãƒ¢ãƒ¼ãƒ‰ã®æ™‚ã ã‘ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ã‚’è¡¨ç¤ºã™ã‚‹ã€‚
         cmbCol.DisplayStyle = DataGridViewComboBoxDisplayStyle.[Nothing]
 
-        ' ƒ}ƒEƒXƒ|ƒCƒ“ƒ^‰º‚ÌƒZƒ‹‚ª‹­’²•\¦‚³‚ê‚é‚æ‚¤‚É‚·‚éB
+        ' ãƒã‚¦ã‚¹ãƒã‚¤ãƒ³ã‚¿ä¸‹ã®ã‚»ãƒ«ãŒå¼·èª¿è¡¨ç¤ºã•ã‚Œã‚‹ã‚ˆã†ã«ã™ã‚‹ã€‚
         cmbCol.DisplayStyle = DataGridViewComboBoxDisplayStyle.ComboBox
-        ' ƒ}ƒEƒXƒ|ƒCƒ“ƒ^‰º‚ÌƒZƒ‹‚Éƒ|ƒbƒvƒAƒbƒv‚ª•\¦‚³‚ê‚é‚æ‚¤‚É‚·‚éB
+        ' ãƒã‚¦ã‚¹ãƒã‚¤ãƒ³ã‚¿ä¸‹ã®ã‚»ãƒ«ã«ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ãŒè¡¨ç¤ºã•ã‚Œã‚‹ã‚ˆã†ã«ã™ã‚‹ã€‚
         cmbCol.FlatStyle = FlatStyle.Popup
     End Sub
 
-    ''' <summary>ƒoƒbƒ`XV</summary>
+    ''' <summary>ãƒãƒƒãƒæ›´æ–°</summary>
     Private Sub btnBatUpd_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBatUpd.Click
-        ' ˆø”
+        ' å¼•æ•°
         Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "BatUpd", "SQL", Me.myUserInfo)
 
-        ' •ÒWÏ‚İ‚ÌDataTable‚ğİ’è
+        ' ç·¨é›†æ¸ˆã¿ã®DataTableã‚’è¨­å®š
         testParameterValue.dt = DirectCast(Me.dataGridView3.DataSource, DataTable)
 
-        ' ‚a‘wŒÄ‚Ño‚µ
+        ' ï¼¢å±¤å‘¼ã³å‡ºã—
         Dim lb As New LayerB_BatUpd()
 
         Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
 
-        ' ƒRƒ~ƒbƒg
+        ' ã‚³ãƒŸãƒƒãƒˆ
         BaseLogic2CS.CommitAndClose()
 
-        ' ƒf[ƒ^ƒOƒŠƒbƒh‚ğXV
+        ' ãƒ‡ãƒ¼ã‚¿ã‚°ãƒªãƒƒãƒ‰ã‚’æ›´æ–°
         Me.btnSelectAll3_Click(sender, e)
     End Sub
 
-    ''' <summary>ƒf[ƒ^ƒGƒ‰[‚ÌƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰</summary>
+    ''' <summary>ãƒ‡ãƒ¼ã‚¿ã‚¨ãƒ©ãƒ¼æ™‚ã®ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©</summary>
     Private Sub dataGridView3_DataError(ByVal sender As Object, ByVal e As DataGridViewDataErrorEventArgs)
         MessageBox.Show(e.Exception.Message)
     End Sub
 
-    ''' <summary>ƒNƒŠƒA</summary>
+    ''' <summary>ã‚¯ãƒªã‚¢</summary>
     Private Sub btnClear3_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnClear3.Click
-        ' ƒNƒŠƒA
+        ' ã‚¯ãƒªã‚¢
         Me.dataGridView3.DataSource = Nothing
     End Sub
 

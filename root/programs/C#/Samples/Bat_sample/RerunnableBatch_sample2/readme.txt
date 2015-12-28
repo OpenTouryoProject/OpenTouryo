@@ -1,3 +1,3 @@
-Ž–‘O‚ÉNorthwindƒf[ƒ^ƒx[ƒX‚É‘Î‚µuCREATE ORDERS2.sqlv‚ðŽÀs‚µORDERS2ƒe[ƒuƒ‹‚ðì¬‚µ‚Ä‚­‚¾‚³‚¢B
+ï»¿äº‹å‰ã«Northwindãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã«å¯¾ã—ã€ŒCREATE ORDERS2.sqlã€ã‚’å®Ÿè¡Œã—ORDERS2ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’ä½œæˆã—ã¦ãã ã•ã„ã€‚
 
-ŽÀs‚Ì“s“xANorthwindƒf[ƒ^ƒx[ƒX‚É‘Î‚µuDELETE FROM ORDERS2v‚ÆŽÀs‚µORDERS2ƒe[ƒuƒ‹‚Ìƒf[ƒ^‚ðƒNƒŠƒA‚µ‚Ä‚­‚¾‚³‚¢B
+å®Ÿè¡Œã®éƒ½åº¦ã€Northwindãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã«å¯¾ã—ã€ŒDELETE FROM ORDERS2ã€ã¨å®Ÿè¡Œã—ORDERS2ãƒ†ãƒ¼ãƒ–ãƒ«ã®ãƒ‡ãƒ¼ã‚¿ã‚’ã‚¯ãƒªã‚¢ã—ã¦ãã ã•ã„ã€‚
