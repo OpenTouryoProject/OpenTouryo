@@ -7,11 +7,11 @@
 以下のファイルを参照してください。
 (Please refer to the following files.)
 
- - [Introduction.pdf](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/Introduction.pdf)
- - [Introduction.pptx](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/Introduction.pptx)
- - [Introduction_EN.pdf](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/Introduction_EN.pdf)
- - [Introduction_EN.pptx](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/Introduction_EN.pptx)
- - [Functional_list.xlsx](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/Functional_list.xlsx)
+ - [Introduction.pdf](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.pdf)
+ - [Introduction.pptx](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.pptx)
+ - [Introduction_EN.pdf](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/en/Introduction_EN.pdf)
+ - [Introduction_EN.pptx](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/en/Introduction_EN.pptx)
+ - [Functional_list.xlsx](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Functional_list.xlsx)
 
 ドキュメント類は[OpenTouryoProject/OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments)リポジトリに格納されています。
 (documents are located in the [OpenTouryoProject/OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments) repository.)

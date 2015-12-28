@@ -34,6 +34,7 @@
 //*  2009/07/31  西野  大介        不正操作の検出機能を追加
 //*  2009/09/01  西野  大介        サブシステム セッション スコープの追加
 //*  2013/12/23  西野  大介        アクセス修飾子をすべてpublicに変更した。
+//*  2015/10/29  Sai               Added constant string to store dummy key and value.
 //**********************************************************************************
 
 // System
@@ -54,10 +55,13 @@ namespace Touryo.Infrastructure.Framework.Util
         //public const string AUTHENTICATION_USER_INFORMATIONS = "AuthenticationUserInformations:";
 
         /// <summary>サブシステム情報を格納するSessionキー</summary>
-        public const string SUB_SYSTEM_INFORMATION = "SubSystemInformation";        
+        public const string SUB_SYSTEM_INFORMATION = "SubSystemInformation";
 
         /// <summary>ボタン履歴を保持する「キュー」を格納するSessionキー</summary>
         public const string BUTTON_HISTORY = "ButtonHistory";
+
+        /// <summary> Session key that contains the dummy value. </summary>
+        public const string DUMMY = "dummy";
 
         /// <summary>画面GUIDを保持する「キュー」を格納するSessionキー</summary>
         public const string SCREEN_GUID_QUEUE = "ScreenGuidQueue";
@@ -74,7 +78,7 @@ namespace Touryo.Infrastructure.Framework.Util
 
         /// <summary>親画面別セッション領域のルートSessionキー</summary>
         public const string SESSION_SCOPE_OF_PARENT_SCREEN_BY_GUID = "SessionScopeOfParentScreenByGUID:";
-        
+
         #endregion
 
         #region ウィンドウ別

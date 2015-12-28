@@ -6,5 +6,5 @@
 ]>
 <!-- idの先頭には、数字を使用できない。 -->
 <TMD>
-  <Transmission id="AzureStrageCopy" assemblyName="AsyncProcess" className="AsyncProcess.ProcessCopyJob" />
+  <Transmission id="AAA" assemblyName="AsyncSvc_sample" className="AsyncSvc_sample.LayerB" />
 </TMD>

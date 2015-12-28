@@ -71,6 +71,7 @@
     <Compile Include="AsyncProcessingService\AsyncProcessingServiceReturnValue.cs" />
     <Compile Include="AsyncProcessingService\LayerB.cs" />
     <Compile Include="AsyncProcessingService\LayerD.cs" />
+    <Compile Include="Business\MyApsBaseLogic.cs" />
     <Compile Include="Business\MyBaseLogic.cs" />
     <Compile Include="Business\MyFcBaseLogic.cs" />
     <Compile Include="Business\_3TierEngine.cs" />

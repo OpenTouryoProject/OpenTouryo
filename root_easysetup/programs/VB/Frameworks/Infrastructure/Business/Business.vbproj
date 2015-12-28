@@ -77,6 +77,11 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncProcessingService\AsyncProcessingServiceParameterValue.vb" />
+    <Compile Include="AsyncProcessingService\AsyncProcessingServiceReturnValue.vb" />
+    <Compile Include="AsyncProcessingService\LayerB.vb" />
+    <Compile Include="AsyncProcessingService\LayerD.vb" />
+    <Compile Include="Business\MyApsBaseLogic.vb" />
     <Compile Include="Business\MyBaseLogic.vb" />
     <Compile Include="Business\MyFcBaseLogic.vb" />
     <Compile Include="Business\_3TierEngine.vb" />
@@ -166,7 +171,38 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\AsyncProcessingServiceInsert.sql">
+      <Link>AsyncProcessingService\AsyncProcessingServiceInsert.sql</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\SelectCommand.sql">
+      <Link>AsyncProcessingService\SelectCommand.sql</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\SelectTask.sql">
+      <Link>AsyncProcessingService\SelectTask.sql</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\StopAllTask.sql">
+      <Link>AsyncProcessingService\StopAllTask.sql</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskCommand.sql">
+      <Link>AsyncProcessingService\UpdateTaskCommand.sql</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskFail.sql">
+      <Link>AsyncProcessingService\UpdateTaskFail.sql</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskProgress.sql">
+      <Link>AsyncProcessingService\UpdateTaskProgress.sql</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskRetry.sql">
+      <Link>AsyncProcessingService\UpdateTaskRetry.sql</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskStart.sql">
+      <Link>AsyncProcessingService\UpdateTaskStart.sql</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskSuccess.sql">
+      <Link>AsyncProcessingService\UpdateTaskSuccess.sql</Link>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

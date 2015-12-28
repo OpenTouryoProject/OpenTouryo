@@ -25,9 +25,10 @@
 //* Author          ：Santosh Avaji
 //* Update History  ：
 //* 
-//*  Date and time        Updated By            Content
-//*  ----------  ----------------  -------------------------------------------------
-//*  2014/09/23  Santosh Avaji     Added Code which is required for Automatic Screen generation for Select join statements
+//*  Date and time   Updated By        Content
+//*  ----------      ----------------  -------------------------------------------------
+//*  2014/09/23      Santosh Avaji     Added Code which is required for Automatic Screen generation for Select join statements
+//*  2015/10/28      Sandeep           Optimized messages in the resource file and implemented code to format it
 //**********************************************************************************
 // Windowアプリケーション
 using System.Drawing;
@@ -1193,13 +1194,13 @@ namespace DPQuery_Tool
             catch (CheckException cex)
             {
                 //MessageBox.Show("チェックエラーです：" + cex.Message);
-                MessageBox.Show(this.RM_GetString("CheckExceptionError") + cex.Message);
+                MessageBox.Show(string.Format(this.RM_GetString("CheckExceptionError"), cex.Message));
 
             }
             catch (Exception ex)
             {
                 //MessageBox.Show("ランタイムエラーです：" + ex.Message);
-                MessageBox.Show(this.RM_GetString("RuntimeError") + ex.Message);
+                MessageBox.Show(string.Format(this.RM_GetString("RuntimeError"), ex.Message));
             }
             finally
             {
@@ -1745,7 +1746,7 @@ namespace DPQuery_Tool
                 {
                     // インデント以外の文字列が混じる場合
                     //throw new CheckException(replaceString + "の前には、インデントのみ指定できます。：" + input);
-                    throw new CheckException(replaceString + this.RM_GetString("StringIndentation") + input);
+                    throw new CheckException(string.Format(this.RM_GetString("StringIndentation"),replaceString, input));
                 }
 
                 return true;
