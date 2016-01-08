@@ -13,6 +13,7 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+'*  2015/12/22 Sai         Modified ReadOnly property of the primary key column textbox to true.  
 '**********************************************************************************
 
 Imports MyType
@@ -333,7 +334,7 @@ Partial Public Class ProductsDetail
         ' ReadOnly
 
         ' 主キー
-        Me.txtProductID.[ReadOnly] = False
+        Me.txtProductID.[ReadOnly] = True
 
         ' 主キー以外
         Me.txtProductName.[ReadOnly] = [readOnly]
