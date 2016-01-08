@@ -1,4 +1,4 @@
-//**********************************************************************************
+﻿//**********************************************************************************
 //* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
@@ -36,6 +36,7 @@
 //*  2010/11/19  西野  大介        オーバーロード メソッド対応
 //*  2011/02/08  西野  大介        リファクタリング（CheckTypeOfMethodByName）
 //*  2012/08/25  西野  大介        Assembly.LoadFile → .Load（ASP.NETシャドウコピー対応）
+//*  2015/12/22  Sai            Replaced substring method with EndsWith string method in first Invoke method.        
 //**********************************************************************************
 
 using System.Reflection;
@@ -84,8 +85,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // アセンブリ ロード
                 string ext = ".dll";
-                int extLen = ext.Length;
-                if (assemblyName.Substring(assemblyName.Length - extLen, extLen) == ext)
+                if (assemblyName.EndsWith(ext))
                 {
                     //  アセンブリ・ファイルのパス指定の場合、Assembly.LoadFile
                     mod = Assembly.LoadFile(assemblyName);
