@@ -17,6 +17,7 @@
 //*  2015/02/06  Supragyan         Added condition for check AjaxPostBackElement in Fx_AjaxExtensionInitializeRequest
 //*  2015/02/06  Supragyan         Added condition for check AjaxPostBackElement in Fx_AjaxExtensionEndRequest
 //*  2015/02/09  Supragyan         Added condition for Trident on Internet Explorer
+//*  2016/01/12  Sai	           Changed interval in method window.setInterval(HttpPing, 5000)            
 //**********************************************************************************
 
 function Fx_Document_OnLoad() {
@@ -52,7 +53,7 @@ function Fx_Document_OnLoad2() {
     //Fx_StandardStyleWindow();
 
     // Webサーバへ一定時間ごとにpingを行う
-    //window.setInterval(HttpPing, 5000);
+    //window.setInterval(HttpPing, 5*60*1000);
 }
 
 //// ---------------------------------------------------------------
