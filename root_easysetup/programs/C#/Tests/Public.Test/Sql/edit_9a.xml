@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<ROOT>
-	SELECT * FROM REGION<WHERE>WHERE and regionid = 1</WHERE>
-	<PARAM>
-		P, int32, 1
-	</PARAM>
-	-- 対応するパラメタが無い場合の動作。
-</ROOT>

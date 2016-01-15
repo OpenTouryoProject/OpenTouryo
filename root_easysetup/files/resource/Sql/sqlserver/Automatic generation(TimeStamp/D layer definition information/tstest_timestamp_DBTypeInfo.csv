@@ -1,7 +1,0 @@
-テーブル名,カラムDB型情報～
-ts_test_tableC,int,
-,timestamp,nvarchar,
-ts_test_tableA,int,
-,nvarchar,timestamp,
-ts_test_tableB,int,
-,timestamp,nvarchar,

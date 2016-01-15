@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<ROOT>
-	SELECT * FROM REGION<WHERE>WHERE<IF>RegionID = @P</IF></WHERE>
-	<PARAM>
-		P, boolean, true
-	</PARAM>
-	-- IFタグ指定（パラメタとしてのtrue）。
-</ROOT>

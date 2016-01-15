@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<ROOT>
-	SELECT * FROM REGION<WHERE>WHERE<LIST>RegionID IN(@PLIST)</LIST></WHERE>
-	<PARAM>
-		PLIST, int32, 1<DIV/>
-	</PARAM>
-	-- LISTタグ指定（１パラメタ）。
-</ROOT>
