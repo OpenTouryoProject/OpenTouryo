@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<ROOT>
-	SELECT * FROM REGION<WHERE>WHERE <IF>RegionID = @P<ELSE>RegionID IS NULL</ELSE></IF></WHERE>
-	<PARAM>
-		P, xxx, null
-	</PARAM>
-	-- IF-ELSEタグ指定（パラメタにnullはELSEが有効になる）。
-</ROOT>

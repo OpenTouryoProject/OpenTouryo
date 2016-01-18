@@ -1,5 +1,0 @@
-﻿テーブル名,カラム.NET型情報～
-SHIPPERS,System.Decimal,
-,System.String,System.String,
-ORDERS2,System.Decimal,
-,System.String,System.Decimal,System.DateTime,System.DateTime,System.DateTime,System.Decimal,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,
