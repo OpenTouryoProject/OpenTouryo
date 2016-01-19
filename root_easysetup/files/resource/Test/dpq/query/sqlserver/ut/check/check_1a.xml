@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<ROOT>
-	SELECT * FROM Region
-	<PARAM>
-		<DIV/>
-	</PARAM>
-	-- 空のPARAM、DIV
-</ROOT>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<ROOT>
-	SELECT * FROM REGION WHERE <LIST>RegionID IN(1, 2, 3, 4)</LIST>
-	<PARAM>
-	</PARAM>
-	-- LISTタグのテスト（パラメタが無い）
-</ROOT>
