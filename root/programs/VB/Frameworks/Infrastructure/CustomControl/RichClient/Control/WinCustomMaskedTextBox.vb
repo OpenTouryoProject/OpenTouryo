@@ -27,7 +27,7 @@
 '* 
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
-'*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
+'*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
 '**********************************************************************************
 
 ' System
@@ -50,7 +50,7 @@ Imports Touryo.Infrastructure.Framework.RichClient.Util
 Imports Touryo.Infrastructure.Public.Str
 
 Namespace Touryo.Infrastructure.CustomControl.RichClient
-	''' <summary>System.Windows.Forms.MaskedTextBoxのカスタム・コントロール</summary>
+    ''' <summary>System.Windows.Forms.MaskedTextBoxのカスタム・コントロール</summary>
     <DefaultProperty("Text")> _
     <Designer(GetType(WinCustomMaskedTextBox.WinCustomMaskedTextBoxDesigner))> _
     Public Class WinCustomMaskedTextBox
@@ -858,10 +858,10 @@ Namespace Touryo.Infrastructure.CustomControl.RichClient
 
             If Me.CheckType IsNot Nothing Then
                 ' 必須入力チェック
-                If Me.CheckType.IsIndispensabile Then
+                If Me.CheckType.IsIndispensable Then
                     If (text = "") Then
                         hasError = True
-                        lstRet.Add(CmnCheckFunction.IsIndispensabileCheckErrorMessage)
+                        lstRet.Add(CmnCheckFunction.IsIndispensableCheckErrorMessage)
                     End If
                 End If
 
