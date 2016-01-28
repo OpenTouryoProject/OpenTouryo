@@ -1,1 +1,0 @@
-UserName=administrator;Password=seigi;Domain=Domain;ProxyUrl=http://xxxxxxxx:8080;PUserName=PUserName;PPassword=PPassword;PDomain=PDomain;UserAgent=UserAgent;ConnGroupName=ConnGroupName;Compression=true;CertFile=C:\certnew.cer;CertPassword=CertPassword;

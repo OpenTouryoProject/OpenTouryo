@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<ROOT>
-  SELECT * FROM REGION<JOIN name="og">INNER JOIN Territories ON REGION.RegionID = Territories.RegionID
-</JOIN>
-  <PARAM>
-    og, boolean, true<DIV>ABC</DIV>
-  </PARAM>
-  -- JOINタグのテスト（name属性が空）
-</ROOT>
