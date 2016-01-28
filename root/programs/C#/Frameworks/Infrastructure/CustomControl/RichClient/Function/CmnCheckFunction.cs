@@ -27,7 +27,7 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
+//*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
 //**********************************************************************************
 
 // System
@@ -54,7 +54,7 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         /// 必須チェック エラー
         /// のエラー メッセージ
         /// </summary>
-        public const string IsIndispensabileCheckErrorMessage = "必須チェック エラー";
+        public const string IsIndispensableCheckErrorMessage = "必須チェック エラー";
 
         /// <summary>
         /// 半角チェック エラー

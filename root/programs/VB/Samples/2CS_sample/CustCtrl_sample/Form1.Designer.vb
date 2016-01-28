@@ -422,7 +422,7 @@ Partial Class Form1
         CheckType1.IsHankaku = False
         CheckType1.IsHanKatakana = False
         CheckType1.IsHiragana = False
-        CheckType1.IsIndispensabile = False
+        CheckType1.IsIndispensable = False
         CheckType1.IsKatakana = False
         CheckType1.IsNumeric = True
         CheckType1.IsZenkaku = True
@@ -447,7 +447,7 @@ Partial Class Form1
         CheckType2.IsHankaku = False
         CheckType2.IsHanKatakana = False
         CheckType2.IsHiragana = False
-        CheckType2.IsIndispensabile = False
+        CheckType2.IsIndispensable = False
         CheckType2.IsKatakana = False
         CheckType2.IsNumeric = True
         CheckType2.IsZenkaku = True
@@ -497,7 +497,7 @@ Partial Class Form1
         CheckType3.IsHankaku = False
         CheckType3.IsHanKatakana = False
         CheckType3.IsHiragana = False
-        CheckType3.IsIndispensabile = False
+        CheckType3.IsIndispensable = False
         CheckType3.IsKatakana = False
         CheckType3.IsNumeric = True
         CheckType3.IsZenkaku = True
@@ -538,7 +538,7 @@ Partial Class Form1
         CheckType4.IsHankaku = True
         CheckType4.IsHanKatakana = False
         CheckType4.IsHiragana = False
-        CheckType4.IsIndispensabile = False
+        CheckType4.IsIndispensable = False
         CheckType4.IsKatakana = False
         CheckType4.IsNumeric = False
         CheckType4.IsZenkaku = False
@@ -709,7 +709,7 @@ Partial Class Form1
         CheckType5.IsHankaku = False
         CheckType5.IsHanKatakana = False
         CheckType5.IsHiragana = False
-        CheckType5.IsIndispensabile = False
+        CheckType5.IsIndispensable = False
         CheckType5.IsKatakana = False
         CheckType5.IsNumeric = False
         CheckType5.IsZenkaku = False
@@ -764,7 +764,7 @@ Partial Class Form1
         CheckType6.IsHankaku = False
         CheckType6.IsHanKatakana = False
         CheckType6.IsHiragana = True
-        CheckType6.IsIndispensabile = False
+        CheckType6.IsIndispensable = False
         CheckType6.IsKatakana = False
         CheckType6.IsNumeric = False
         CheckType6.IsZenkaku = False
@@ -816,7 +816,7 @@ Partial Class Form1
         CheckType7.IsHankaku = False
         CheckType7.IsHanKatakana = True
         CheckType7.IsHiragana = False
-        CheckType7.IsIndispensabile = False
+        CheckType7.IsIndispensable = False
         CheckType7.IsKatakana = False
         CheckType7.IsNumeric = False
         CheckType7.IsZenkaku = False
@@ -868,7 +868,7 @@ Partial Class Form1
         CheckType8.IsHankaku = False
         CheckType8.IsHanKatakana = False
         CheckType8.IsHiragana = False
-        CheckType8.IsIndispensabile = False
+        CheckType8.IsIndispensable = False
         CheckType8.IsKatakana = True
         CheckType8.IsNumeric = False
         CheckType8.IsZenkaku = False
@@ -921,7 +921,7 @@ Partial Class Form1
         CheckType9.IsHankaku = False
         CheckType9.IsHanKatakana = False
         CheckType9.IsHiragana = False
-        CheckType9.IsIndispensabile = False
+        CheckType9.IsIndispensable = False
         CheckType9.IsKatakana = False
         CheckType9.IsNumeric = False
         CheckType9.IsZenkaku = True
@@ -943,7 +943,7 @@ Partial Class Form1
         CheckType10.IsHankaku = False
         CheckType10.IsHanKatakana = False
         CheckType10.IsHiragana = False
-        CheckType10.IsIndispensabile = True
+        CheckType10.IsIndispensable = True
         CheckType10.IsKatakana = False
         CheckType10.IsNumeric = False
         CheckType10.IsZenkaku = False
@@ -983,7 +983,7 @@ Partial Class Form1
         CheckType11.IsHankaku = True
         CheckType11.IsHanKatakana = False
         CheckType11.IsHiragana = False
-        CheckType11.IsIndispensabile = False
+        CheckType11.IsIndispensable = False
         CheckType11.IsKatakana = False
         CheckType11.IsNumeric = False
         CheckType11.IsZenkaku = False
@@ -1043,7 +1043,7 @@ Partial Class Form1
         CheckType12.IsHankaku = False
         CheckType12.IsHanKatakana = False
         CheckType12.IsHiragana = False
-        CheckType12.IsIndispensabile = False
+        CheckType12.IsIndispensable = False
         CheckType12.IsKatakana = False
         CheckType12.IsNumeric = True
         CheckType12.IsZenkaku = False
@@ -1268,7 +1268,7 @@ Partial Class Form1
         CheckType13.IsHankaku = False
         CheckType13.IsHanKatakana = False
         CheckType13.IsHiragana = False
-        CheckType13.IsIndispensabile = False
+        CheckType13.IsIndispensable = False
         CheckType13.IsKatakana = False
         CheckType13.IsNumeric = True
         CheckType13.IsZenkaku = True
@@ -1306,7 +1306,7 @@ Partial Class Form1
         CheckType14.IsHankaku = False
         CheckType14.IsHanKatakana = False
         CheckType14.IsHiragana = False
-        CheckType14.IsIndispensabile = False
+        CheckType14.IsIndispensable = False
         CheckType14.IsKatakana = False
         CheckType14.IsNumeric = False
         CheckType14.IsZenkaku = False
@@ -1326,7 +1326,7 @@ Partial Class Form1
         CheckType15.IsHankaku = False
         CheckType15.IsHanKatakana = False
         CheckType15.IsHiragana = True
-        CheckType15.IsIndispensabile = False
+        CheckType15.IsIndispensable = False
         CheckType15.IsKatakana = False
         CheckType15.IsNumeric = False
         CheckType15.IsZenkaku = False
@@ -1345,7 +1345,7 @@ Partial Class Form1
         CheckType16.IsHankaku = False
         CheckType16.IsHanKatakana = True
         CheckType16.IsHiragana = False
-        CheckType16.IsIndispensabile = False
+        CheckType16.IsIndispensable = False
         CheckType16.IsKatakana = False
         CheckType16.IsNumeric = False
         CheckType16.IsZenkaku = False
@@ -1364,7 +1364,7 @@ Partial Class Form1
         CheckType17.IsHankaku = False
         CheckType17.IsHanKatakana = False
         CheckType17.IsHiragana = False
-        CheckType17.IsIndispensabile = False
+        CheckType17.IsIndispensable = False
         CheckType17.IsKatakana = True
         CheckType17.IsNumeric = False
         CheckType17.IsZenkaku = False
@@ -1383,7 +1383,7 @@ Partial Class Form1
         CheckType18.IsHankaku = False
         CheckType18.IsHanKatakana = False
         CheckType18.IsHiragana = False
-        CheckType18.IsIndispensabile = False
+        CheckType18.IsIndispensable = False
         CheckType18.IsKatakana = False
         CheckType18.IsNumeric = True
         CheckType18.IsZenkaku = False
@@ -1401,7 +1401,7 @@ Partial Class Form1
         CheckType19.IsHankaku = False
         CheckType19.IsHanKatakana = False
         CheckType19.IsHiragana = False
-        CheckType19.IsIndispensabile = False
+        CheckType19.IsIndispensable = False
         CheckType19.IsKatakana = False
         CheckType19.IsNumeric = False
         CheckType19.IsZenkaku = True
@@ -1419,7 +1419,7 @@ Partial Class Form1
         CheckType20.IsHankaku = True
         CheckType20.IsHanKatakana = False
         CheckType20.IsHiragana = False
-        CheckType20.IsIndispensabile = False
+        CheckType20.IsIndispensable = False
         CheckType20.IsKatakana = False
         CheckType20.IsNumeric = False
         CheckType20.IsZenkaku = False
@@ -1437,7 +1437,7 @@ Partial Class Form1
         CheckType21.IsHankaku = False
         CheckType21.IsHanKatakana = False
         CheckType21.IsHiragana = False
-        CheckType21.IsIndispensabile = True
+        CheckType21.IsIndispensable = True
         CheckType21.IsKatakana = False
         CheckType21.IsNumeric = False
         CheckType21.IsZenkaku = False
@@ -1456,7 +1456,7 @@ Partial Class Form1
         CheckType22.IsHankaku = True
         CheckType22.IsHanKatakana = False
         CheckType22.IsHiragana = False
-        CheckType22.IsIndispensabile = False
+        CheckType22.IsIndispensable = False
         CheckType22.IsKatakana = False
         CheckType22.IsNumeric = True
         CheckType22.IsZenkaku = False
@@ -1477,7 +1477,7 @@ Partial Class Form1
         CheckType23.IsHankaku = True
         CheckType23.IsHanKatakana = False
         CheckType23.IsHiragana = False
-        CheckType23.IsIndispensabile = False
+        CheckType23.IsIndispensable = False
         CheckType23.IsKatakana = False
         CheckType23.IsNumeric = False
         CheckType23.IsZenkaku = False
@@ -1518,7 +1518,7 @@ Partial Class Form1
         CheckType24.IsHankaku = False
         CheckType24.IsHanKatakana = False
         CheckType24.IsHiragana = False
-        CheckType24.IsIndispensabile = False
+        CheckType24.IsIndispensable = False
         CheckType24.IsKatakana = False
         CheckType24.IsNumeric = False
         CheckType24.IsZenkaku = False
@@ -1540,7 +1540,7 @@ Partial Class Form1
         CheckType25.IsHankaku = False
         CheckType25.IsHanKatakana = False
         CheckType25.IsHiragana = True
-        CheckType25.IsIndispensabile = False
+        CheckType25.IsIndispensable = False
         CheckType25.IsKatakana = False
         CheckType25.IsNumeric = False
         CheckType25.IsZenkaku = False
@@ -1560,7 +1560,7 @@ Partial Class Form1
         CheckType26.IsHankaku = False
         CheckType26.IsHanKatakana = True
         CheckType26.IsHiragana = False
-        CheckType26.IsIndispensabile = False
+        CheckType26.IsIndispensable = False
         CheckType26.IsKatakana = False
         CheckType26.IsNumeric = False
         CheckType26.IsZenkaku = False
@@ -1581,7 +1581,7 @@ Partial Class Form1
         CheckType27.IsHankaku = False
         CheckType27.IsHanKatakana = False
         CheckType27.IsHiragana = False
-        CheckType27.IsIndispensabile = False
+        CheckType27.IsIndispensable = False
         CheckType27.IsKatakana = True
         CheckType27.IsNumeric = False
         CheckType27.IsZenkaku = False
@@ -1601,7 +1601,7 @@ Partial Class Form1
         CheckType28.IsHankaku = False
         CheckType28.IsHanKatakana = False
         CheckType28.IsHiragana = False
-        CheckType28.IsIndispensabile = False
+        CheckType28.IsIndispensable = False
         CheckType28.IsKatakana = False
         CheckType28.IsNumeric = True
         CheckType28.IsZenkaku = False
@@ -1620,7 +1620,7 @@ Partial Class Form1
         CheckType29.IsHankaku = False
         CheckType29.IsHanKatakana = False
         CheckType29.IsHiragana = False
-        CheckType29.IsIndispensabile = False
+        CheckType29.IsIndispensable = False
         CheckType29.IsKatakana = False
         CheckType29.IsNumeric = False
         CheckType29.IsZenkaku = True
@@ -1639,7 +1639,7 @@ Partial Class Form1
         CheckType30.IsHankaku = True
         CheckType30.IsHanKatakana = False
         CheckType30.IsHiragana = False
-        CheckType30.IsIndispensabile = False
+        CheckType30.IsIndispensable = False
         CheckType30.IsKatakana = False
         CheckType30.IsNumeric = False
         CheckType30.IsZenkaku = False
@@ -1659,7 +1659,7 @@ Partial Class Form1
         CheckType31.IsHankaku = False
         CheckType31.IsHanKatakana = False
         CheckType31.IsHiragana = False
-        CheckType31.IsIndispensabile = True
+        CheckType31.IsIndispensable = True
         CheckType31.IsKatakana = False
         CheckType31.IsNumeric = False
         CheckType31.IsZenkaku = False
