@@ -391,7 +391,7 @@
             checkType1.IsHankaku = false;
             checkType1.IsHanKatakana = false;
             checkType1.IsHiragana = false;
-            checkType1.IsIndispensabile = false;
+            checkType1.IsIndispensable = false;
             checkType1.IsKatakana = false;
             checkType1.IsNumeric = true;
             checkType1.IsZenkaku = true;
@@ -413,7 +413,7 @@
             checkType2.IsHankaku = false;
             checkType2.IsHanKatakana = false;
             checkType2.IsHiragana = false;
-            checkType2.IsIndispensabile = false;
+            checkType2.IsIndispensable = false;
             checkType2.IsKatakana = false;
             checkType2.IsNumeric = true;
             checkType2.IsZenkaku = true;
@@ -460,7 +460,7 @@
             checkType3.IsHankaku = false;
             checkType3.IsHanKatakana = false;
             checkType3.IsHiragana = false;
-            checkType3.IsIndispensabile = false;
+            checkType3.IsIndispensable = false;
             checkType3.IsKatakana = false;
             checkType3.IsNumeric = true;
             checkType3.IsZenkaku = true;
@@ -498,7 +498,7 @@
             checkType4.IsHankaku = true;
             checkType4.IsHanKatakana = false;
             checkType4.IsHiragana = false;
-            checkType4.IsIndispensabile = false;
+            checkType4.IsIndispensable = false;
             checkType4.IsKatakana = false;
             checkType4.IsNumeric = false;
             checkType4.IsZenkaku = false;
@@ -651,7 +651,7 @@
             checkType5.IsHankaku = false;
             checkType5.IsHanKatakana = false;
             checkType5.IsHiragana = false;
-            checkType5.IsIndispensabile = false;
+            checkType5.IsIndispensable = false;
             checkType5.IsKatakana = false;
             checkType5.IsNumeric = false;
             checkType5.IsZenkaku = false;
@@ -701,7 +701,7 @@
             checkType6.IsHankaku = false;
             checkType6.IsHanKatakana = false;
             checkType6.IsHiragana = true;
-            checkType6.IsIndispensabile = false;
+            checkType6.IsIndispensable = false;
             checkType6.IsKatakana = false;
             checkType6.IsNumeric = false;
             checkType6.IsZenkaku = false;
@@ -751,7 +751,7 @@
             checkType7.IsHankaku = false;
             checkType7.IsHanKatakana = true;
             checkType7.IsHiragana = false;
-            checkType7.IsIndispensabile = false;
+            checkType7.IsIndispensable = false;
             checkType7.IsKatakana = false;
             checkType7.IsNumeric = false;
             checkType7.IsZenkaku = false;
@@ -801,7 +801,7 @@
             checkType8.IsHankaku = false;
             checkType8.IsHanKatakana = false;
             checkType8.IsHiragana = false;
-            checkType8.IsIndispensabile = false;
+            checkType8.IsIndispensable = false;
             checkType8.IsKatakana = true;
             checkType8.IsNumeric = false;
             checkType8.IsZenkaku = false;
@@ -848,7 +848,7 @@
             checkType9.IsHankaku = false;
             checkType9.IsHanKatakana = false;
             checkType9.IsHiragana = false;
-            checkType9.IsIndispensabile = false;
+            checkType9.IsIndispensable = false;
             checkType9.IsKatakana = false;
             checkType9.IsNumeric = false;
             checkType9.IsZenkaku = true;
@@ -867,7 +867,7 @@
             checkType10.IsHankaku = false;
             checkType10.IsHanKatakana = false;
             checkType10.IsHiragana = false;
-            checkType10.IsIndispensabile = true;
+            checkType10.IsIndispensable = true;
             checkType10.IsKatakana = false;
             checkType10.IsNumeric = false;
             checkType10.IsZenkaku = false;
@@ -904,7 +904,7 @@
             checkType11.IsHankaku = true;
             checkType11.IsHanKatakana = false;
             checkType11.IsHiragana = false;
-            checkType11.IsIndispensabile = false;
+            checkType11.IsIndispensable = false;
             checkType11.IsKatakana = false;
             checkType11.IsNumeric = false;
             checkType11.IsZenkaku = false;
@@ -958,7 +958,7 @@
             checkType12.IsHankaku = false;
             checkType12.IsHanKatakana = false;
             checkType12.IsHiragana = false;
-            checkType12.IsIndispensabile = false;
+            checkType12.IsIndispensable = false;
             checkType12.IsKatakana = false;
             checkType12.IsNumeric = true;
             checkType12.IsZenkaku = false;
@@ -1181,7 +1181,7 @@
             checkType13.IsHankaku = false;
             checkType13.IsHanKatakana = false;
             checkType13.IsHiragana = false;
-            checkType13.IsIndispensabile = false;
+            checkType13.IsIndispensable = false;
             checkType13.IsKatakana = false;
             checkType13.IsNumeric = true;
             checkType13.IsZenkaku = true;
@@ -1219,7 +1219,7 @@
             checkType14.IsHankaku = false;
             checkType14.IsHanKatakana = false;
             checkType14.IsHiragana = false;
-            checkType14.IsIndispensabile = false;
+            checkType14.IsIndispensable = false;
             checkType14.IsKatakana = false;
             checkType14.IsNumeric = false;
             checkType14.IsZenkaku = false;
@@ -1239,7 +1239,7 @@
             checkType15.IsHankaku = false;
             checkType15.IsHanKatakana = false;
             checkType15.IsHiragana = true;
-            checkType15.IsIndispensabile = false;
+            checkType15.IsIndispensable = false;
             checkType15.IsKatakana = false;
             checkType15.IsNumeric = false;
             checkType15.IsZenkaku = false;
@@ -1258,7 +1258,7 @@
             checkType16.IsHankaku = false;
             checkType16.IsHanKatakana = true;
             checkType16.IsHiragana = false;
-            checkType16.IsIndispensabile = false;
+            checkType16.IsIndispensable = false;
             checkType16.IsKatakana = false;
             checkType16.IsNumeric = false;
             checkType16.IsZenkaku = false;
@@ -1277,7 +1277,7 @@
             checkType17.IsHankaku = false;
             checkType17.IsHanKatakana = false;
             checkType17.IsHiragana = false;
-            checkType17.IsIndispensabile = false;
+            checkType17.IsIndispensable = false;
             checkType17.IsKatakana = true;
             checkType17.IsNumeric = false;
             checkType17.IsZenkaku = false;
@@ -1296,7 +1296,7 @@
             checkType18.IsHankaku = false;
             checkType18.IsHanKatakana = false;
             checkType18.IsHiragana = false;
-            checkType18.IsIndispensabile = false;
+            checkType18.IsIndispensable = false;
             checkType18.IsKatakana = false;
             checkType18.IsNumeric = true;
             checkType18.IsZenkaku = false;
@@ -1314,7 +1314,7 @@
             checkType19.IsHankaku = false;
             checkType19.IsHanKatakana = false;
             checkType19.IsHiragana = false;
-            checkType19.IsIndispensabile = false;
+            checkType19.IsIndispensable = false;
             checkType19.IsKatakana = false;
             checkType19.IsNumeric = false;
             checkType19.IsZenkaku = true;
@@ -1332,7 +1332,7 @@
             checkType20.IsHankaku = true;
             checkType20.IsHanKatakana = false;
             checkType20.IsHiragana = false;
-            checkType20.IsIndispensabile = false;
+            checkType20.IsIndispensable = false;
             checkType20.IsKatakana = false;
             checkType20.IsNumeric = false;
             checkType20.IsZenkaku = false;
@@ -1350,7 +1350,7 @@
             checkType21.IsHankaku = false;
             checkType21.IsHanKatakana = false;
             checkType21.IsHiragana = false;
-            checkType21.IsIndispensabile = true;
+            checkType21.IsIndispensable = true;
             checkType21.IsKatakana = false;
             checkType21.IsNumeric = false;
             checkType21.IsZenkaku = false;
@@ -1369,7 +1369,7 @@
             checkType22.IsHankaku = true;
             checkType22.IsHanKatakana = false;
             checkType22.IsHiragana = false;
-            checkType22.IsIndispensabile = false;
+            checkType22.IsIndispensable = false;
             checkType22.IsKatakana = false;
             checkType22.IsNumeric = true;
             checkType22.IsZenkaku = false;
@@ -1390,7 +1390,7 @@
             checkType23.IsHankaku = true;
             checkType23.IsHanKatakana = false;
             checkType23.IsHiragana = false;
-            checkType23.IsIndispensabile = false;
+            checkType23.IsIndispensable = false;
             checkType23.IsKatakana = false;
             checkType23.IsNumeric = false;
             checkType23.IsZenkaku = false;
@@ -1433,7 +1433,7 @@
             checkType24.IsHankaku = false;
             checkType24.IsHanKatakana = false;
             checkType24.IsHiragana = false;
-            checkType24.IsIndispensabile = false;
+            checkType24.IsIndispensable = false;
             checkType24.IsKatakana = false;
             checkType24.IsNumeric = false;
             checkType24.IsZenkaku = false;
@@ -1457,7 +1457,7 @@
             checkType25.IsHankaku = false;
             checkType25.IsHanKatakana = false;
             checkType25.IsHiragana = true;
-            checkType25.IsIndispensabile = false;
+            checkType25.IsIndispensable = false;
             checkType25.IsKatakana = false;
             checkType25.IsNumeric = false;
             checkType25.IsZenkaku = false;
@@ -1478,7 +1478,7 @@
             checkType26.IsHankaku = false;
             checkType26.IsHanKatakana = true;
             checkType26.IsHiragana = false;
-            checkType26.IsIndispensabile = false;
+            checkType26.IsIndispensable = false;
             checkType26.IsKatakana = false;
             checkType26.IsNumeric = false;
             checkType26.IsZenkaku = false;
@@ -1500,7 +1500,7 @@
             checkType27.IsHankaku = false;
             checkType27.IsHanKatakana = false;
             checkType27.IsHiragana = false;
-            checkType27.IsIndispensabile = false;
+            checkType27.IsIndispensable = false;
             checkType27.IsKatakana = true;
             checkType27.IsNumeric = false;
             checkType27.IsZenkaku = false;
@@ -1521,7 +1521,7 @@
             checkType28.IsHankaku = false;
             checkType28.IsHanKatakana = false;
             checkType28.IsHiragana = false;
-            checkType28.IsIndispensabile = false;
+            checkType28.IsIndispensable = false;
             checkType28.IsKatakana = false;
             checkType28.IsNumeric = true;
             checkType28.IsZenkaku = false;
@@ -1541,7 +1541,7 @@
             checkType29.IsHankaku = false;
             checkType29.IsHanKatakana = false;
             checkType29.IsHiragana = false;
-            checkType29.IsIndispensabile = false;
+            checkType29.IsIndispensable = false;
             checkType29.IsKatakana = false;
             checkType29.IsNumeric = false;
             checkType29.IsZenkaku = true;
@@ -1561,7 +1561,7 @@
             checkType30.IsHankaku = true;
             checkType30.IsHanKatakana = false;
             checkType30.IsHiragana = false;
-            checkType30.IsIndispensabile = false;
+            checkType30.IsIndispensable = false;
             checkType30.IsKatakana = false;
             checkType30.IsNumeric = false;
             checkType30.IsZenkaku = false;
@@ -1582,7 +1582,7 @@
             checkType31.IsHankaku = false;
             checkType31.IsHanKatakana = false;
             checkType31.IsHiragana = false;
-            checkType31.IsIndispensabile = true;
+            checkType31.IsIndispensable = true;
             checkType31.IsKatakana = false;
             checkType31.IsNumeric = false;
             checkType31.IsZenkaku = false;

@@ -18,7 +18,7 @@
             <td>必須入力</td>
             <td>：
                 <cc1:WebCustomTextBox ID="WebCustomTextBox2" runat="server" BackColor="skyblue">
-                    <CheckType IsIndispensabile="True"></CheckType>
+                    <CheckType IsIndispensable="True"></CheckType>
                 </cc1:WebCustomTextBox>
             </td>
         </tr>
@@ -142,7 +142,7 @@
             <asp:TemplateField>
                 <ItemTemplate>
                     <cc1:WebCustomTextBox ID="WebCustomTextBox2_gvw" runat="server" BackColor="skyblue" Text='<%# Bind("field2") %>'>
-                        <CheckType IsIndispensabile="True"></CheckType>
+                        <CheckType IsIndispensable="True"></CheckType>
                     </cc1:WebCustomTextBox>
                 </ItemTemplate>
             </asp:TemplateField>

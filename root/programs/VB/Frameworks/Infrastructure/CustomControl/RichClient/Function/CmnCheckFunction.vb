@@ -27,7 +27,7 @@
 '* 
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
-'*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
+'*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
 '**********************************************************************************
 
 ' System
@@ -43,121 +43,121 @@ Imports System.Windows
 Imports System.Windows.Forms
 
 Namespace Touryo.Infrastructure.CustomControl.RichClient
-	''' <summary>リッチクライアント用カスタムコントロールの共通関数クラス</summary>
-	Public Class CmnCheckFunction
-		#Region "メッセージ"
+    ''' <summary>リッチクライアント用カスタムコントロールの共通関数クラス</summary>
+    Public Class CmnCheckFunction
+#Region "メッセージ"
 
-		''' <summary>
-		''' 必須チェック エラー
-		''' のエラー メッセージ
-		''' </summary>
-		Public Const IsIndispensabileCheckErrorMessage As String = "必須チェック エラー"
+        ''' <summary>
+        ''' 必須チェック エラー
+        ''' のエラー メッセージ
+        ''' </summary>
+        Public Const IsIndispensableCheckErrorMessage As String = "必須チェック エラー"
 
-		''' <summary>
-		''' 半角チェック エラー
-		''' のエラー メッセージ
-		''' </summary>
-		Public Const IsHankakuCheckErrorMessage As String = "半角チェック エラー"
-		''' <summary>
-		''' 全角チェック エラー
-		''' のエラー メッセージ
-		''' </summary>
-		Public Const IsZenkakuCheckErrorMessage As String = "全角チェック エラー"
+        ''' <summary>
+        ''' 半角チェック エラー
+        ''' のエラー メッセージ
+        ''' </summary>
+        Public Const IsHankakuCheckErrorMessage As String = "半角チェック エラー"
+        ''' <summary>
+        ''' 全角チェック エラー
+        ''' のエラー メッセージ
+        ''' </summary>
+        Public Const IsZenkakuCheckErrorMessage As String = "全角チェック エラー"
 
-		''' <summary>
-		''' 数値チェック エラー
-		''' のエラー メッセージ
-		''' </summary>
-		Public Const IsNumericCheckErrorMessage As String = "数値チェック エラー"
+        ''' <summary>
+        ''' 数値チェック エラー
+        ''' のエラー メッセージ
+        ''' </summary>
+        Public Const IsNumericCheckErrorMessage As String = "数値チェック エラー"
 
-		''' <summary>
-		''' 片仮名チェック エラー
-		''' のエラー メッセージ
-		''' </summary>
-		Public Const IsKatakanaCheckErrorMessage As String = "片仮名チェック エラー"
-		''' <summary>
-		''' 半角片仮名チェック エラー
-		''' のエラー メッセージ
-		''' </summary>
-		Public Const IsHanKatakanaCheckErrorMessage As String = "半角片仮名チェック エラー"
+        ''' <summary>
+        ''' 片仮名チェック エラー
+        ''' のエラー メッセージ
+        ''' </summary>
+        Public Const IsKatakanaCheckErrorMessage As String = "片仮名チェック エラー"
+        ''' <summary>
+        ''' 半角片仮名チェック エラー
+        ''' のエラー メッセージ
+        ''' </summary>
+        Public Const IsHanKatakanaCheckErrorMessage As String = "半角片仮名チェック エラー"
 
-		''' <summary>
-		''' 平仮名チェック エラー
-		''' のエラー メッセージ
-		''' </summary>
-		Public Const IsHiraganaCheckErrorMessage As String = "平仮名チェック エラー"
+        ''' <summary>
+        ''' 平仮名チェック エラー
+        ''' のエラー メッセージ
+        ''' </summary>
+        Public Const IsHiraganaCheckErrorMessage As String = "平仮名チェック エラー"
 
-		''' <summary>
-		''' 日付チェック エラー
-		''' のエラー メッセージ
-		''' </summary>
-		Public Const IsDateCheckErrorMessage As String = "日付チェック エラー"
+        ''' <summary>
+        ''' 日付チェック エラー
+        ''' のエラー メッセージ
+        ''' </summary>
+        Public Const IsDateCheckErrorMessage As String = "日付チェック エラー"
 
-		''' <summary>
-		''' 正規表現チェック エラーの
-		''' エラー メッセージ
-		''' </summary>
-		Public Const RegularExpressionCheckErrorMessage As String = "正規表現チェック エラー"
-		''' <summary>
-		''' 禁則文字チェック エラーの
-		''' エラー メッセージ
-		''' </summary>
-		Public Const ProhibitedCharsCheckErrorMessage As String = "禁則文字チェック エラー"
+        ''' <summary>
+        ''' 正規表現チェック エラーの
+        ''' エラー メッセージ
+        ''' </summary>
+        Public Const RegularExpressionCheckErrorMessage As String = "正規表現チェック エラー"
+        ''' <summary>
+        ''' 禁則文字チェック エラーの
+        ''' エラー メッセージ
+        ''' </summary>
+        Public Const ProhibitedCharsCheckErrorMessage As String = "禁則文字チェック エラー"
 
-		#End Region
+#End Region
 
-		#Region "チェック リテラル"
+#Region "チェック リテラル"
 
-		''' <summary>禁則文字</summary>
-		''' <remarks>
-		''' ・#（シャープ）
-		''' ・'（シングルクォーテーション）
-		''' ・\（円マーク）
-		''' ・|（パイプ）
-		''' ・%（パーセント）
-		''' ・_（アンダースコア）
-		''' </remarks>
-		Public Shared ReadOnly ProhibitedChars As Char() = {"#"C, "'"C, "\"C, "|"C, "%"C, "_"C}
+        ''' <summary>禁則文字</summary>
+        ''' <remarks>
+        ''' ・#（シャープ）
+        ''' ・'（シングルクォーテーション）
+        ''' ・\（円マーク）
+        ''' ・|（パイプ）
+        ''' ・%（パーセント）
+        ''' ・_（アンダースコア）
+        ''' </remarks>
+        Public Shared ReadOnly ProhibitedChars As Char() = {"#"c, "'"c, "\"c, "|"c, "%"c, "_"c}
 
-		#End Region
+#End Region
 
-		#Region "一括チェック"
+#Region "一括チェック"
 
-		''' <summary>コントロールのバリデーション</summary>
-		''' <param name="parentCtrl">チェックルートのコントロール</param>
-		''' <param name="lstCheckResult">チェック結果を保持するリスト</param>
-		''' <returns>
-		''' ・エラーあり：true
-		''' ・エラーなし：false
-		''' </returns>
-		Public Shared Function HasErrors(parentCtrl As Control, lstCheckResult As List(Of CheckResult)) As Boolean
-			' チェック結果を保持するリスト
-			If lstCheckResult Is Nothing Then
-				lstCheckResult = New List(Of CheckResult)()
-			End If
+        ''' <summary>コントロールのバリデーション</summary>
+        ''' <param name="parentCtrl">チェックルートのコントロール</param>
+        ''' <param name="lstCheckResult">チェック結果を保持するリスト</param>
+        ''' <returns>
+        ''' ・エラーあり：true
+        ''' ・エラーなし：false
+        ''' </returns>
+        Public Shared Function HasErrors(ByVal parentCtrl As Control, ByVal lstCheckResult As List(Of CheckResult)) As Boolean
+            ' チェック結果を保持するリスト
+            If lstCheckResult Is Nothing Then
+                lstCheckResult = New List(Of CheckResult)()
+            End If
 
-			' チェック対象のコントロールなら、
-			If TypeOf parentCtrl Is WinCustomTextBox OrElse TypeOf parentCtrl Is WinCustomMaskedTextBox Then
-				' チェックし、
-				Dim temp As String() = Nothing
-				Dim ic As ICheck = DirectCast(parentCtrl, ICheck)
-				If Not ic.Validate(temp) Then
-					' エラーならエラー情報を保持する。
-					Dim cr As New CheckResult(parentCtrl.Name)
-					cr.CheckErrorInfo = temp
-					lstCheckResult.Add(cr)
-				End If
-			End If
+            ' チェック対象のコントロールなら、
+            If TypeOf parentCtrl Is WinCustomTextBox OrElse TypeOf parentCtrl Is WinCustomMaskedTextBox Then
+                ' チェックし、
+                Dim temp As String() = Nothing
+                Dim ic As ICheck = DirectCast(parentCtrl, ICheck)
+                If Not ic.Validate(temp) Then
+                    ' エラーならエラー情報を保持する。
+                    Dim cr As New CheckResult(parentCtrl.Name)
+                    cr.CheckErrorInfo = temp
+                    lstCheckResult.Add(cr)
+                End If
+            End If
 
-			' コントロールを再起検索する。
-			For Each childctrl As Control In parentCtrl.Controls
-				CmnCheckFunction.HasErrors(childctrl, lstCheckResult)
-			Next
+            ' コントロールを再起検索する。
+            For Each childctrl As Control In parentCtrl.Controls
+                CmnCheckFunction.HasErrors(childctrl, lstCheckResult)
+            Next
 
-			' エラーが有れば、trueを返す。
-			Return (0 < lstCheckResult.Count)
-		End Function
+            ' エラーが有れば、trueを返す。
+            Return (0 < lstCheckResult.Count)
+        End Function
 
-		#End Region
-	End Class
+#End Region
+    End Class
 End Namespace

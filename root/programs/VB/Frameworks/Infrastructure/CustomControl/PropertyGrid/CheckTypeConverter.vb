@@ -27,7 +27,7 @@
 '* 
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
-'*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
+'*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
 '**********************************************************************************
 
 ' System
@@ -84,106 +84,106 @@ Namespace Touryo.Infrastructure.CustomControl
 
 					Dim s As String = ""
 
-					If ct.IsIndispensabile Then
-						s += "IsIndispensabile, "
-					End If
-					If ct.IsHankaku Then
-						s += "IsHankaku, "
-					End If
-					If ct.IsZenkaku Then
-						s += "IsZenkaku, "
-					End If
-					If ct.IsNumeric Then
-						s += "IsNumeric, "
-					End If
-					If ct.IsKatakana Then
-						s += "IsKatakana, "
-					End If
-					If ct.IsHanKatakana Then
-						s += "IsHanKatakana, "
-					End If
-					If ct.IsHiragana Then
-						s += "IsHiragana, "
-					End If
-					If ct.IsDate Then
-						s += "IsDate, "
-					End If
+                    If ct.IsIndispensable Then
+                        s += "IsIndispensable, "
+                    End If
+                    If ct.IsHankaku Then
+                        s += "IsHankaku, "
+                    End If
+                    If ct.IsZenkaku Then
+                        s += "IsZenkaku, "
+                    End If
+                    If ct.IsNumeric Then
+                        s += "IsNumeric, "
+                    End If
+                    If ct.IsKatakana Then
+                        s += "IsKatakana, "
+                    End If
+                    If ct.IsHanKatakana Then
+                        s += "IsHanKatakana, "
+                    End If
+                    If ct.IsHiragana Then
+                        s += "IsHiragana, "
+                    End If
+                    If ct.IsDate Then
+                        s += "IsDate, "
+                    End If
 
-					Return s.Substring(0, s.Length - 2)
-				End If
-			End If
+                    Return s.Substring(0, s.Length - 2)
+                End If
+            End If
 
-			' 上記以外の場合、ベースへ。
-			Return MyBase.ConvertTo(context, culture, value, destinationType)
-		End Function
+            ' 上記以外の場合、ベースへ。
+            Return MyBase.ConvertTo(context, culture, value, destinationType)
+        End Function
 
-		''' <summary>
-		''' ConvertFrom（プロパティグリッドからの変換）を実行可能か。
-		''' </summary>
-		''' <param name="context">コンテキスト</param>
-		''' <param name="sourceType">文字列</param>
-		''' <returns>
-		''' ConvertFrom実行可：true。
-		''' ConvertFrom実行不可：false。
-		''' </returns>
-		Public Overrides Function CanConvertFrom(context As ITypeDescriptorContext, sourceType As Type) As Boolean
-			' 型をチェック
-			If sourceType Is GetType(String) Then
-				' 文字列型ならtrueを返す。
-				Return True
-			End If
+        ''' <summary>
+        ''' ConvertFrom（プロパティグリッドからの変換）を実行可能か。
+        ''' </summary>
+        ''' <param name="context">コンテキスト</param>
+        ''' <param name="sourceType">文字列</param>
+        ''' <returns>
+        ''' ConvertFrom実行可：true。
+        ''' ConvertFrom実行不可：false。
+        ''' </returns>
+        Public Overrides Function CanConvertFrom(ByVal context As ITypeDescriptorContext, ByVal sourceType As Type) As Boolean
+            ' 型をチェック
+            If sourceType Is GetType(String) Then
+                ' 文字列型ならtrueを返す。
+                Return True
+            End If
 
-			' 上記以外の場合、ベースへ。
-			Return MyBase.CanConvertFrom(context, sourceType)
-		End Function
+            ' 上記以外の場合、ベースへ。
+            Return MyBase.CanConvertFrom(context, sourceType)
+        End Function
 
-		''' <summary>
-		''' ConvertFrom（プロパティグリッドからの変換）を実行する。
-		''' </summary>
-		''' <param name="context">コンテキスト</param>
-		''' <param name="culture">カルチャ</param>
-		''' <param name="value">文字列</param>
-		''' <returns>CheckTypeオブジェクト</returns>
-		Public Overrides Function ConvertFrom(context As ITypeDescriptorContext, culture As CultureInfo, value As Object) As Object
-			' 文字列型の場合
-			If TypeOf value Is String Then
-				Dim arys As String() = value.ToString().Split(","C)
-				Dim ct As New CheckType()
+        ''' <summary>
+        ''' ConvertFrom（プロパティグリッドからの変換）を実行する。
+        ''' </summary>
+        ''' <param name="context">コンテキスト</param>
+        ''' <param name="culture">カルチャ</param>
+        ''' <param name="value">文字列</param>
+        ''' <returns>CheckTypeオブジェクト</returns>
+        Public Overrides Function ConvertFrom(ByVal context As ITypeDescriptorContext, ByVal culture As CultureInfo, ByVal value As Object) As Object
+            ' 文字列型の場合
+            If TypeOf value Is String Then
+                Dim arys As String() = value.ToString().Split(","c)
+                Dim ct As New CheckType()
 
-				For Each s As String In arys
-					Dim t As String = s.Trim()
+                For Each s As String In arys
+                    Dim t As String = s.Trim()
 
-					If t = "IsIndispensabile" Then
-						ct.IsIndispensabile = True
-					End If
-					If t = "IsZenkaku" Then
-						ct.IsZenkaku = True
-					End If
-					If t = "IsHankaku" Then
-						ct.IsHankaku = True
-					End If
-					If t = "IsNumeric" Then
-						ct.IsNumeric = True
-					End If
-					If t = "IsKatakana" Then
-						ct.IsKatakana = True
-					End If
-					If t = "IsHanKatakana" Then
-						ct.IsHanKatakana = True
-					End If
-					If t = "IsHiragana" Then
-						ct.IsHiragana = True
-					End If
-					If t = "IsDate" Then
-						ct.IsDate = True
-					End If
-				Next
+                    If t = "IsIndispensable" Then
+                        ct.IsIndispensable = True
+                    End If
+                    If t = "IsZenkaku" Then
+                        ct.IsZenkaku = True
+                    End If
+                    If t = "IsHankaku" Then
+                        ct.IsHankaku = True
+                    End If
+                    If t = "IsNumeric" Then
+                        ct.IsNumeric = True
+                    End If
+                    If t = "IsKatakana" Then
+                        ct.IsKatakana = True
+                    End If
+                    If t = "IsHanKatakana" Then
+                        ct.IsHanKatakana = True
+                    End If
+                    If t = "IsHiragana" Then
+                        ct.IsHiragana = True
+                    End If
+                    If t = "IsDate" Then
+                        ct.IsDate = True
+                    End If
+                Next
 
-				Return ct
-			End If
+                Return ct
+            End If
 
-			' 上記以外の場合、ベースへ。
-			Return MyBase.ConvertFrom(context, culture, value)
-		End Function
+            ' 上記以外の場合、ベースへ。
+            Return MyBase.ConvertFrom(context, culture, value)
+        End Function
 	End Class
 End Namespace

@@ -27,7 +27,7 @@
 '* 
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
-'*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
+'*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
 '**********************************************************************************
 
 ' System
@@ -48,253 +48,253 @@ Namespace Touryo.Infrastructure.CustomControl
 	Public Class CheckType
 		''' <summary>コンストラクタ</summary>
 		Public Sub New()
-			Me.IsIndispensabile = False
-			Me.IsHankaku = False
-			Me.IsZenkaku = False
-			Me.IsNumeric = False
-			Me.IsKatakana = False
-			Me.IsHanKatakana = False
-			Me.IsHiragana = False
-			Me.IsDate = False
-		End Sub
+            Me.IsIndispensable = False
+            Me.IsHankaku = False
+            Me.IsZenkaku = False
+            Me.IsNumeric = False
+            Me.IsKatakana = False
+            Me.IsHanKatakana = False
+            Me.IsHiragana = False
+            Me.IsDate = False
+        End Sub
 
-		#Region "プロパティ"
+#Region "プロパティ"
 
-		''' <summary>必須</summary>
-		Private _isIndispensabile As Boolean
+        ''' <summary>必須</summary>
+        Private _isIndispensable As Boolean
 
-		''' <summary>必須</summary>
-		<DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
-		Public Property IsIndispensabile() As Boolean
-			Get
-				Return Me._isIndispensabile
-			End Get
+        ''' <summary>必須</summary>
+        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
+        Public Property IsIndispensable() As Boolean
+            Get
+                Return Me._isIndispensable
+            End Get
 
-			Set
-				Me._isIndispensabile = value
-			End Set
-		End Property
+            Set(ByVal value As Boolean)
+                Me._isIndispensable = value
+            End Set
+        End Property
 
-		''' <summary>半角</summary>
-		Private _isHankaku As Boolean
+        ''' <summary>半角</summary>
+        Private _isHankaku As Boolean
 
-		''' <summary>半角</summary>
-		<DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
-		Public Property IsHankaku() As Boolean
-			Get
-				Return Me._isHankaku
-			End Get
+        ''' <summary>半角</summary>
+        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
+        Public Property IsHankaku() As Boolean
+            Get
+                Return Me._isHankaku
+            End Get
 
-			Set
-				Me._isHankaku = value
-			End Set
-		End Property
+            Set(ByVal value As Boolean)
+                Me._isHankaku = value
+            End Set
+        End Property
 
-		''' <summary>全角</summary>
-		Private _isZenkaku As Boolean
+        ''' <summary>全角</summary>
+        Private _isZenkaku As Boolean
 
-		''' <summary>全角</summary>
-		<DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
-		Public Property IsZenkaku() As Boolean
-			Get
-				Return Me._isZenkaku
-			End Get
+        ''' <summary>全角</summary>
+        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
+        Public Property IsZenkaku() As Boolean
+            Get
+                Return Me._isZenkaku
+            End Get
 
-			Set
-				Me._isZenkaku = value
-			End Set
-		End Property
+            Set(ByVal value As Boolean)
+                Me._isZenkaku = value
+            End Set
+        End Property
 
-		''' <summary>数値</summary>
-		Private _isNumeric As Boolean
+        ''' <summary>数値</summary>
+        Private _isNumeric As Boolean
 
-		''' <summary>数値</summary>
-		<DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
-		Public Property IsNumeric() As Boolean
-			Get
-				Return Me._isNumeric
-			End Get
+        ''' <summary>数値</summary>
+        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
+        Public Property IsNumeric() As Boolean
+            Get
+                Return Me._isNumeric
+            End Get
 
-			Set
-				Me._isNumeric = value
-			End Set
-		End Property
+            Set(ByVal value As Boolean)
+                Me._isNumeric = value
+            End Set
+        End Property
 
-		''' <summary>片仮名</summary>
-		Private _isKatakana As Boolean
+        ''' <summary>片仮名</summary>
+        Private _isKatakana As Boolean
 
-		''' <summary>片仮名</summary>
-		<DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
-		Public Property IsKatakana() As Boolean
-			Get
-				Return Me._isKatakana
-			End Get
+        ''' <summary>片仮名</summary>
+        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
+        Public Property IsKatakana() As Boolean
+            Get
+                Return Me._isKatakana
+            End Get
 
-			Set
-				Me._isKatakana = value
-			End Set
-		End Property
+            Set(ByVal value As Boolean)
+                Me._isKatakana = value
+            End Set
+        End Property
 
-		''' <summary>半角片仮名</summary>
-		Private _isHanKatakana As Boolean
+        ''' <summary>半角片仮名</summary>
+        Private _isHanKatakana As Boolean
 
-		''' <summary>半角片仮名</summary>
-		<DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
-		Public Property IsHanKatakana() As Boolean
-			Get
-				Return Me._isHanKatakana
-			End Get
+        ''' <summary>半角片仮名</summary>
+        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
+        Public Property IsHanKatakana() As Boolean
+            Get
+                Return Me._isHanKatakana
+            End Get
 
-			Set
-				Me._isHanKatakana = value
-			End Set
-		End Property
+            Set(ByVal value As Boolean)
+                Me._isHanKatakana = value
+            End Set
+        End Property
 
-		''' <summary>平仮名</summary>
-		Private _isHiragana As Boolean
+        ''' <summary>平仮名</summary>
+        Private _isHiragana As Boolean
 
-		''' <summary>平仮名</summary>
-		<DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
-		Public Property IsHiragana() As Boolean
-			Get
-				Return Me._isHiragana
-			End Get
+        ''' <summary>平仮名</summary>
+        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
+        Public Property IsHiragana() As Boolean
+            Get
+                Return Me._isHiragana
+            End Get
 
-			Set
-				Me._isHiragana = value
-			End Set
-		End Property
+            Set(ByVal value As Boolean)
+                Me._isHiragana = value
+            End Set
+        End Property
 
-		''' <summary>日付</summary>
-		Private _isDate As Boolean
+        ''' <summary>日付</summary>
+        Private _isDate As Boolean
 
-		''' <summary>日付</summary>
-		<DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
-		Public Property IsDate() As Boolean
-			Get
-				Return Me._isDate
-			End Get
+        ''' <summary>日付</summary>
+        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
+        Public Property IsDate() As Boolean
+            Get
+                Return Me._isDate
+            End Get
 
-			Set
-				Me._isDate = value
-			End Set
-		End Property
+            Set(ByVal value As Boolean)
+                Me._isDate = value
+            End Set
+        End Property
 
-		#End Region
+#End Region
 
-		#Region "比較処理"
+#Region "比較処理"
 
-		''' <summary>ハッシュを返す</summary>
-		''' <returns>ハッシュコード</returns>
-		''' <remarks>
-		''' 全メンバのハッシュコードのXORではなく、
-		''' ビットマスクの演算（boolなので）
-		''' </remarks>
-		Public Overrides Function GetHashCode() As Integer
-			Dim hc As Integer = 0
+        ''' <summary>ハッシュを返す</summary>
+        ''' <returns>ハッシュコード</returns>
+        ''' <remarks>
+        ''' 全メンバのハッシュコードのXORではなく、
+        ''' ビットマスクの演算（boolなので）
+        ''' </remarks>
+        Public Overrides Function GetHashCode() As Integer
+            Dim hc As Integer = 0
 
-			If Me.IsIndispensabile Then
-				hc += 1
-			End If
-			If Me.IsHankaku Then
-				hc += 4
-			End If
-			If Me.IsZenkaku Then
-				hc += 2
-			End If
-			If Me.IsNumeric Then
-				hc += 8
-			End If
-			If Me.IsKatakana Then
-				hc += 16
-			End If
-			If Me.IsHanKatakana Then
-				hc += 32
-			End If
-			If Me.IsHiragana Then
-				hc += 64
-			End If
-			If Me.IsDate Then
-				hc += 128
-			End If
+            If Me.IsIndispensable Then
+                hc += 1
+            End If
+            If Me.IsHankaku Then
+                hc += 4
+            End If
+            If Me.IsZenkaku Then
+                hc += 2
+            End If
+            If Me.IsNumeric Then
+                hc += 8
+            End If
+            If Me.IsKatakana Then
+                hc += 16
+            End If
+            If Me.IsHanKatakana Then
+                hc += 32
+            End If
+            If Me.IsHiragana Then
+                hc += 64
+            End If
+            If Me.IsDate Then
+                hc += 128
+            End If
 
-			Return hc
-		End Function
+            Return hc
+        End Function
 
-		''' <summary>Equals</summary>
-		''' <param name="ct">CheckType</param>
-		''' <returns>
-		''' true：等しい
-		''' false：等しくない
-		''' </returns>
-		''' <remarks>全メンバの==のAND</remarks>
-		Public Overloads Function Equals(ct As CheckType) As Boolean
-			' null対応
-			If ct Is Nothing Then
-				Return False
-			End If
+        ''' <summary>Equals</summary>
+        ''' <param name="ct">CheckType</param>
+        ''' <returns>
+        ''' true：等しい
+        ''' false：等しくない
+        ''' </returns>
+        ''' <remarks>全メンバの==のAND</remarks>
+        Public Overloads Function Equals(ByVal ct As CheckType) As Boolean
+            ' null対応
+            If ct Is Nothing Then
+                Return False
+            End If
 
-			Return (Me.IsIndispensabile = ct.IsIndispensabile) AndAlso (Me.IsHankaku = ct.IsHankaku) AndAlso (Me.IsZenkaku = ct.IsZenkaku) AndAlso (Me.IsNumeric = ct.IsNumeric) AndAlso (Me.IsKatakana = ct.IsKatakana) AndAlso (Me.IsHanKatakana = ct.IsHanKatakana) AndAlso (Me.IsHiragana = ct.IsHiragana) AndAlso (Me.IsDate = ct.IsDate)
-		End Function
+            Return (Me.IsIndispensable = ct.IsIndispensable) AndAlso (Me.IsHankaku = ct.IsHankaku) AndAlso (Me.IsZenkaku = ct.IsZenkaku) AndAlso (Me.IsNumeric = ct.IsNumeric) AndAlso (Me.IsKatakana = ct.IsKatakana) AndAlso (Me.IsHanKatakana = ct.IsHanKatakana) AndAlso (Me.IsHiragana = ct.IsHiragana) AndAlso (Me.IsDate = ct.IsDate)
+        End Function
 
-		''' <summary>Equals</summary>
-		''' <param name="obj">CheckType</param>
-		''' <returns>
-		''' true：等しい
-		''' false：等しくない
-		''' </returns>
-		Public Overrides Function Equals(obj As [Object]) As Boolean
-			If obj Is Nothing Then
-				' nullの場合（ベースへ）
-				Return MyBase.Equals(obj)
-			Else
-				' nullでない場合
-				If Not (TypeOf obj Is CheckType) Then
-					' 型が違う
-					Return False
-				Else
-					' 型が一致（オーバロードヘ）
-					Return Equals(TryCast(obj, CheckType))
-				End If
-			End If
-		End Function
+        ''' <summary>Equals</summary>
+        ''' <param name="obj">CheckType</param>
+        ''' <returns>
+        ''' true：等しい
+        ''' false：等しくない
+        ''' </returns>
+        Public Overrides Function Equals(ByVal obj As [Object]) As Boolean
+            If obj Is Nothing Then
+                ' nullの場合（ベースへ）
+                Return MyBase.Equals(obj)
+            Else
+                ' nullでない場合
+                If Not (TypeOf obj Is CheckType) Then
+                    ' 型が違う
+                    Return False
+                Else
+                    ' 型が一致（オーバロードヘ）
+                    Return Equals(TryCast(obj, CheckType))
+                End If
+            End If
+        End Function
 
-		''' <summary>比較演算子（==）</summary>
-		''' <param name="l">右辺</param>
-		''' <param name="r">左辺</param>
-		''' <returns>
-		''' true：等しい
-		''' false：等しくない
-		''' </returns>
-		Public Shared Operator =(l As CheckType, r As CheckType) As Boolean
-			' Check for null on left side.
-			If [Object].ReferenceEquals(l, Nothing) Then
-				' Check for null on right side.
-				If [Object].ReferenceEquals(r, Nothing) Then
-					' null == null = true.
-					Return True
-				Else
-					' Only the left side is null.
-					Return False
-				End If
-			Else
-				' Equals handles case of null on right side.
-				Return l.Equals(r)
-			End If
-		End Operator
+        ''' <summary>比較演算子（==）</summary>
+        ''' <param name="l">右辺</param>
+        ''' <param name="r">左辺</param>
+        ''' <returns>
+        ''' true：等しい
+        ''' false：等しくない
+        ''' </returns>
+        Public Shared Operator =(ByVal l As CheckType, ByVal r As CheckType) As Boolean
+            ' Check for null on left side.
+            If [Object].ReferenceEquals(l, Nothing) Then
+                ' Check for null on right side.
+                If [Object].ReferenceEquals(r, Nothing) Then
+                    ' null == null = true.
+                    Return True
+                Else
+                    ' Only the left side is null.
+                    Return False
+                End If
+            Else
+                ' Equals handles case of null on right side.
+                Return l.Equals(r)
+            End If
+        End Operator
 
-		''' <summary>比較演算子（!=）</summary>
-		''' <param name="l">右辺</param>
-		''' <param name="r">左辺</param>
-		''' <returns>
-		''' true：等しい
-		''' false：等しくない
-		''' </returns>
-		Public Shared Operator <>(l As CheckType, r As CheckType) As Boolean
-			' ==演算子の逆
-			Return Not (l = r)
-		End Operator
+        ''' <summary>比較演算子（!=）</summary>
+        ''' <param name="l">右辺</param>
+        ''' <param name="r">左辺</param>
+        ''' <returns>
+        ''' true：等しい
+        ''' false：等しくない
+        ''' </returns>
+        Public Shared Operator <>(ByVal l As CheckType, ByVal r As CheckType) As Boolean
+            ' ==演算子の逆
+            Return Not (l = r)
+        End Operator
 
-		#End Region
+#End Region
 	End Class
 End Namespace
