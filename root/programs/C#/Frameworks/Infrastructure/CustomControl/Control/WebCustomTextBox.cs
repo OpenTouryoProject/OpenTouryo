@@ -27,7 +27,7 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
+//*  2016/01/28  Sai               Corrected IsIndispensabile property spelling 
 //**********************************************************************************
 
 // System
@@ -326,12 +326,12 @@ namespace Touryo.Infrastructure.CustomControl
             if (this.CheckType != null)
             {
                 // 必須入力チェック
-                if (this.CheckType.IsIndispensabile)
+                if (this.CheckType.IsIndispensable)
                 {
                     if ((text == ""))
                     {
                         hasError = true;
-                        lstRet.Add(CmnCheckFunction.IsIndispensabileCheckErrorMessage);
+                        lstRet.Add(CmnCheckFunction.IsIndispensableCheckErrorMessage);
                     }
                 }
 

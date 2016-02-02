@@ -27,7 +27,7 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
+//*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
 //**********************************************************************************
 
 // System
@@ -91,7 +91,7 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
 
                     string s = "";
 
-                    if (ct.IsIndispensabile) { s += "IsIndispensabile, "; }
+                    if (ct.IsIndispensable) { s += "IsIndispensable, "; }
                     if (ct.IsHankaku) { s += "IsHankaku, "; } 
                     if (ct.IsZenkaku) { s += "IsZenkaku, "; }
                     if (ct.IsNumeric) { s += "IsNumeric, "; }
@@ -151,7 +151,7 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
                 {
                     string t = s.Trim();
 
-                    if (t == "IsIndispensabile") { ct.IsIndispensabile = true; }
+                    if (t == "IsIndispensable") { ct.IsIndispensable = true; }
                     if (t == "IsZenkaku") { ct.IsZenkaku = true; }
                     if (t == "IsHankaku") { ct.IsHankaku = true; }
                     if (t == "IsNumeric") { ct.IsNumeric = true; }
