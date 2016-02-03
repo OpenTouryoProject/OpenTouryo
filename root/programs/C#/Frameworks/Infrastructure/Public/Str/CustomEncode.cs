@@ -31,7 +31,6 @@
 //*  2011/05/27  西野  大介        HtmlDecode、UrlDecode、ToBase64String、FromBase64Stringを追加
 //*  2013/02/12  西野  大介        ToHexString、FormHexStringを追加
 //*  2016/01/29  Sai               Modified the methods UrlEncode and UrlDecode and added method UrlEncode2
-//*  2016/01/29  Sai               Modified the method UrlEncode to call the method Uri.UnescapeDataString 
 //**********************************************************************************
 
 // System
@@ -1088,7 +1087,7 @@ namespace Touryo.Infrastructure.Public.Str
         /// <returns>UrlデコードされたUrl</returns>
         public static string UrlDecode(string input)
         {
-            return Uri.UnescapeDataString(input);
+            return HttpUtility.UrlDecode(input); 
         }
 
 #pragma warning restore
