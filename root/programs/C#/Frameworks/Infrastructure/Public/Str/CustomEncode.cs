@@ -30,6 +30,7 @@
 //*  2007/xx/xx  西野  大介        新規作成
 //*  2011/05/27  西野  大介        HtmlDecode、UrlDecode、ToBase64String、FromBase64Stringを追加
 //*  2013/02/12  西野  大介        ToHexString、FormHexStringを追加
+//*  2016/01/29  Sai               Modified the methods UrlEncode and UrlDecode and added method UrlEncode2
 //**********************************************************************************
 
 // System
@@ -1063,7 +1064,22 @@ namespace Touryo.Infrastructure.Public.Str
         /// </remarks>
         public static string UrlEncode(string input)
         {
-            return HttpUtility.UrlEncodeUnicode(input);
+            return Uri.EscapeDataString(input);
+        }
+
+        /// <summary>Url全体をUrlエンコードする。</summary>
+        /// <param name="input">Url全体</param>
+        /// <returns>UrlエンコードされたUrl全体</returns>
+        /// <remarks>
+        /// URLエンコードとは
+        /// http://ja.wikipedia.org/wiki/URLエンコード
+        /// 
+        /// URLの基本的な構造を崩さずにURLエンコードする場合に限り、使用する。
+        /// ただし、URL全体をURLエンコードしてクエリー文字列を作成する時には、使用できない。
+        /// </remarks>
+        public static string UrlEncode2(string input)
+        {
+            return Uri.EscapeUriString(input);
         }
 
         /// <summary>Urlデコードする。</summary>
@@ -1071,7 +1087,7 @@ namespace Touryo.Infrastructure.Public.Str
         /// <returns>UrlデコードされたUrl</returns>
         public static string UrlDecode(string input)
         {
-            return HttpUtility.UrlEncodeUnicode(input);
+            return HttpUtility.UrlDecode(input); 
         }
 
 #pragma warning restore
