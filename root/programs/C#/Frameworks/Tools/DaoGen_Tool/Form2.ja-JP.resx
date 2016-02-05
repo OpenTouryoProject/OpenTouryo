@@ -231,7 +231,7 @@
     <value>型付きデータセット</value>
   </data>
   <data name="gbxDTO.Text" xml:space="preserve">
-    <value>DTOを生成する（エンコーディングはDaoと同じになる</value>
+    <value>DTOを生成する（エンコーディングはDaoと同じになる）</value>
   </data>
   <data name="lblEscapeChar.Size" type="System.Drawing.Size, System.Drawing">
     <value>83, 13</value>
