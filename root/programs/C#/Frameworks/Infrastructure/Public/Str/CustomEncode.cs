@@ -31,6 +31,7 @@
 //*  2011/05/27  西野  大介        HtmlDecode、UrlDecode、ToBase64String、FromBase64Stringを追加
 //*  2013/02/12  西野  大介        ToHexString、FormHexStringを追加
 //*  2016/01/29  Sai               Modified the methods UrlEncode and UrlDecode and added method UrlEncode2
+//*  2016/02/05  西野  大介        Modified the method header comment of UrlEncode and UrlEncode2.
 //**********************************************************************************
 
 // System
@@ -1050,32 +1051,31 @@ namespace Touryo.Infrastructure.Public.Str
 #pragma warning disable
 
         /// <summary>Urlエンコードする。</summary>
-        /// <param name="input">Url</param>
-        /// <returns>UrlエンコードされたUrl</returns>
+        /// <param name="input">文字列</param>
+        /// <returns>Urlエンコードされた文字列</returns>
         /// <remarks>
         /// URLエンコードとは
         /// http://ja.wikipedia.org/wiki/URLエンコード
         /// 
-        /// 用途は、クエリ文字列の
-        /// ・変数名
-        /// ・変数値
-        /// などに限定する。
-        /// （デコードはASP.NETでは自動になるため、不要である。）
+        /// UrlEncodeの用途は、クエリ文字列の
+        /// 変数名・変数値の作成時などに限定する。
+        /// （デコードはASP.NETが受信したHttpRequest.QueryStringでは自動のため不要。）
         /// </remarks>
         public static string UrlEncode(string input)
         {
             return Uri.EscapeDataString(input);
         }
 
-        /// <summary>Url全体をUrlエンコードする。</summary>
-        /// <param name="input">Url全体</param>
-        /// <returns>UrlエンコードされたUrl全体</returns>
+        /// <summary>URLの基本的な構造を崩さずにURLエンコードする。</summary>
+        /// <param name="input">Url文字列</param>
+        /// <returns>UrlエンコードされたUrl文字列</returns>
         /// <remarks>
         /// URLエンコードとは
         /// http://ja.wikipedia.org/wiki/URLエンコード
         /// 
-        /// URLの基本的な構造を崩さずにURLエンコードする場合に限り、使用する。
-        /// ただし、URL全体をURLエンコードしてクエリー文字列を作成する時には、使用できない。
+        /// UrlEncode2の用途は、URLの基本的な構造を崩さずにURLエンコードする場合に限定する。
+        /// Url文字列をURLエンコードしてRedirectUrl クエリ文字列を作成する場合などはUrlEncodeを使用。
+        /// （デコードはASP.NETが受信したHttpRequest.QueryStringでは自動のため不要。）
         /// </remarks>
         public static string UrlEncode2(string input)
         {
