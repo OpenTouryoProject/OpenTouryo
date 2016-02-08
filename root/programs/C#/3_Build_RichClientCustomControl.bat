@@ -8,7 +8,7 @@ setlocal
 @rem --------------------------------------------------
 @rem Get the path to the executable file.
 @rem --------------------------------------------------
-set CURRENT_DIR=%~dp0
+set CURRENT_DIR="%~dp0"
 
 @rem --------------------------------------------------
 @rem Execution of the common processing.
