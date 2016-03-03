@@ -27,12 +27,5 @@ rem --------------------------------------------------
 
 pause
 
-rem --------------------------------------------------
-rem Batch build of WSClientWPFbap_sample.
-rem --------------------------------------------------
-%BUILDFILEPATH% %COMMANDLINE% "Samples\WS_sample\WSClient_sample\WSClientWPFbap_sample\WSClientWPFbap_sample.sln"
-
-pause
-
 rem -------------------------------------------------------
 endlocal

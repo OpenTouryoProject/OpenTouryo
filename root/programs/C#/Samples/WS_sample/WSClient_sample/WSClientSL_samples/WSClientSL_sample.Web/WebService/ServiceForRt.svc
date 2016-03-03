@@ -1,1 +1,0 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="Touryo.Infrastructure.Framework.ServiceInterface.WCFWebService.ServiceForRt" CodeBehind="~/App_Code/WebService/ServiceForRt.cs" %>
