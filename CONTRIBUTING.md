@@ -45,9 +45,6 @@
     - ASP.NET MVC  
     .NET Fx v4.5  
 
-    - Silverlight  
-    v5.0  
-
     - Windows Store App  
     Windows 8  
 
