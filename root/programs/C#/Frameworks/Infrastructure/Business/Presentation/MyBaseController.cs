@@ -50,6 +50,8 @@
 //*  2012/06/18  西野  大介        OriginalStackTrace（ログ出力）の品質向上
 //*  2013/01/18  西野  大介        public static TransferErrorScreen2追加（他から呼出可能に）
 //*  2013/01/18  西野  大介        public static GetUserInfo2追加（他から呼出可能に）
+//*  2016/01/13  Sandeep           Resolved the URL issue of error screen transition path
+//*  2016/01/18  Sandeep           Modified default relative path of the sample application screens
 //**********************************************************************************
 
 // System
@@ -894,6 +896,9 @@ namespace Touryo.Infrastructure.Business.Presentation
             // エラー画面へのパスを取得 --- チェック不要（ベースクラスでチェック済み）
             string errorScreenPath = GetConfigParameter.GetConfigValue(FxLiteral.ERROR_SCREEN_PATH);
 
+            // Resolves the path of the url with respect to the server
+            BaseController.ResolveServerUrl(ref errorScreenPath);
+
             // エラー画面へ画面遷移
             HttpContext.Current.Server.Transfer(errorScreenPath);
         }
@@ -923,7 +928,7 @@ namespace Touryo.Infrastructure.Business.Presentation
             label.Text = "ログアウトしました。";
 
             // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
-            return "/ProjectX_sample/Aspx/start/menu.aspx";
+            return "~/Aspx/start/menu.aspx";
         }
 
         /// <summary>
@@ -934,7 +939,7 @@ namespace Touryo.Infrastructure.Business.Presentation
         public string UOC_sampleScreen_btnMButton102_Click(FxEventArgs fxEventArgs)
         {
             // ウィンドウの表示
-            this.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx");
+            this.ShowNormalScreen("~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx");
 
             // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
             return "";
@@ -1028,7 +1033,7 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <returns>URL</returns>
         public string UOC_TestScreen1_btnMButton2_Click(FxEventArgs fxEventArgs)
         {
-            return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
+            return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
         }
 
         /// <summary>
@@ -1038,7 +1043,7 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <returns>URL</returns>
         public string UOC_TestScreen1_lbnMLinkButton2_Click(FxEventArgs fxEventArgs)
         {
-            return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
+            return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
         }
 
         /// <summary>
@@ -1048,7 +1053,7 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <returns>URL</returns>
         public string UOC_TestScreen1_ibnMImageButton2_Click(FxEventArgs fxEventArgs)
         {
-            return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
+            return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
         }
 
         /// <summary>
@@ -1058,7 +1063,7 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <returns>URL</returns>
         public string UOC_TestScreen1_impMImageMap2_Click(FxEventArgs fxEventArgs)
         {
-            return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
+            return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
         }
 
         #endregion
@@ -1227,12 +1232,12 @@ namespace Touryo.Infrastructure.Business.Presentation
             if (((CheckBox)this.GetMasterWebControl("CheckBox1")).Checked == true)
             {
                 // スタイル指定あり
-                this.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx", style);
+                this.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx", style);
             }
             else
             {
                 // スタイル指定なし
-                this.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx");
+                this.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx");
             }
 
             return "";
