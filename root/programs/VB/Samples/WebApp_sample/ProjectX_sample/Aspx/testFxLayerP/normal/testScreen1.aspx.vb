@@ -152,7 +152,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 	''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
 	''' <returns>URL</returns>
 	Protected Function UOC_TestScreen1_btnMButton22_Click(fxEventArgs As FxEventArgs) As String
-		Return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
+		Return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
 	End Function
 
 	''' <summary>
@@ -161,7 +161,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 	''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
 	''' <returns>URL</returns>
 	Protected Function UOC_TestScreen1_lbnMLinkButton22_Click(fxEventArgs As FxEventArgs) As String
-		Return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
+		Return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
 	End Function
 
 	''' <summary>
@@ -170,7 +170,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 	''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
 	''' <returns>URL</returns>
 	Protected Function UOC_TestScreen1_ibnMImageButton22_Click(fxEventArgs As FxEventArgs) As String
-		Return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
+		Return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
 	End Function
 
 	''' <summary>
@@ -179,7 +179,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 	''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
 	''' <returns>URL</returns>
 	Protected Function UOC_TestScreen1_impMImageMap22_Click(fxEventArgs As FxEventArgs) As String
-		Return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
+		Return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
 	End Function
 
 	#End Region
@@ -343,11 +343,11 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 		If DirectCast(Me.GetMasterWebControl("CheckBox2"), CheckBox).Checked = True Then
 			' スタイル指定あり
 			' 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
-			Me.ShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx", style)
+			Me.ShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx", style)
 		Else
 			' スタイル指定なし
 			' 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
-			Me.ShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx")
+			Me.ShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx")
 		End If
 
 		Return ""
@@ -364,10 +364,10 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 
 		If DirectCast(Me.GetMasterWebControl("CheckBox2"), CheckBox).Checked = True Then
 			' スタイル指定あり
-			Me.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx", style)
+			Me.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx", style)
 		Else
 			' スタイル指定なし
-			Me.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx")
+			Me.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx")
 		End If
 
 		Return ""
@@ -445,7 +445,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 	''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
 	''' <returns>URL</returns>
 	Protected Function UOC_btnButton2_Click(fxEventArgs As FxEventArgs) As String
-		Return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
+		Return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
 	End Function
 
 	''' <summary>
@@ -454,7 +454,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 	''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
 	''' <returns>URL</returns>
 	Protected Function UOC_lbnLinkButton2_Click(fxEventArgs As FxEventArgs) As String
-		Return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
+		Return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
 	End Function
 
 	''' <summary>
@@ -463,7 +463,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 	''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
 	''' <returns>URL</returns>
 	Protected Function UOC_ibnImageButton2_Click(fxEventArgs As FxEventArgs) As String
-		Return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
+		Return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
 	End Function
 
 	''' <summary>
@@ -472,7 +472,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 	''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
 	''' <returns>URL</returns>
 	Protected Function UOC_impImageMap2_Click(fxEventArgs As FxEventArgs) As String
-		Return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
+		Return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
 	End Function
 
 	#End Region
@@ -639,12 +639,12 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 			' スタイル指定あり
 			' 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
 				' ※ QueryString指定あり
-			Me.ShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", style)
+			Me.ShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", style)
 		Else
 			' スタイル指定なし
 			' 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
 				' ※ QueryString指定あり
-			Me.ShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test")
+			Me.ShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test")
 		End If
 
 		Return ""
@@ -665,19 +665,19 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 		If Me.CheckBox1.Checked = True AndAlso Me.CheckBox1a.Checked = True Then
 			' スタイル指定あり
 				' ※ QueryString指定あり
-			Me.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", style, target)
+			Me.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", style, target)
 		ElseIf Me.CheckBox1.Checked = True Then
 			' スタイル指定あり
 				' ※ QueryString指定あり
-			Me.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", style)
+			Me.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", style)
 		ElseIf Me.CheckBox1a.Checked = True Then
 			' スタイル指定あり
 				' ※ QueryString指定あり
-			Me.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", "", target)
+			Me.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", "", target)
 		Else
 			' スタイル指定なし
 				' ※ QueryString指定あり
-			Me.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test")
+			Me.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test")
 		End If
 
 		Return ""
@@ -994,7 +994,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 	''' <returns>URL</returns>
 	Protected Function UOC_btnButton32_Click(fxEventArgs As FxEventArgs) As String
 		Session("DialogAtOnLoad") = "ok"
-		Return "/ProjectX_sample/Aspx/testFxLayerP/testDialogAtOnLoad.aspx"
+		Return "~/Aspx/testFxLayerP/testDialogAtOnLoad.aspx"
 	End Function
 
 	''' <summary>
@@ -1004,7 +1004,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 	''' <returns>URL</returns>
 	Protected Function UOC_lbnLinkButton32_Click(fxEventArgs As FxEventArgs) As String
 		Session("DialogAtOnLoad") = "yesno"
-		Return "/ProjectX_sample/Aspx/testFxLayerP/testDialogAtOnLoad.aspx"
+		Return "~/Aspx/testFxLayerP/testDialogAtOnLoad.aspx"
 	End Function
 
 	''' <summary>
@@ -1014,7 +1014,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 	''' <returns>URL</returns>
 	Protected Function UOC_ibnImageButton32_Click(fxEventArgs As FxEventArgs) As String
 		Session("DialogAtOnLoad") = "modal"
-		Return "/ProjectX_sample/Aspx/testFxLayerP/testDialogAtOnLoad.aspx"
+		Return "~/Aspx/testFxLayerP/testDialogAtOnLoad.aspx"
 	End Function
 
 	''' <summary>
@@ -1024,7 +1024,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 	''' <returns>URL</returns>
 	Protected Function UOC_impImageMap32_Click(fxEventArgs As FxEventArgs) As String
 		Session("DialogAtOnLoad") = "modaless"
-		Return "/ProjectX_sample/Aspx/testFxLayerP/testDialogAtOnLoad.aspx"
+		Return "~/Aspx/testFxLayerP/testDialogAtOnLoad.aspx"
 	End Function
 
 	#End Region
@@ -1077,7 +1077,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 	''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
 	''' <returns>URL</returns>
 	Protected Function UOC_ibnImageButton33_Click(fxEventArgs As FxEventArgs) As String
-		Me.ShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/testDLScreen.aspx")
+		Me.ShowModalScreen("~/Aspx/testFxLayerP/testDLScreen.aspx")
 		Return ""
 	End Function
 
@@ -1085,8 +1085,8 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1
 	''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
 	''' <returns>URL</returns>
 	Protected Function UOC_impImageMap33_Click(fxEventArgs As FxEventArgs) As String
-		'this.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/testDLScreen.aspx");
-		Me.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/testDLFrame.aspx")
+		'this.ShowNormalScreen("~/Aspx/testFxLayerP/testDLScreen.aspx");
+		Me.ShowNormalScreen("~/Aspx/testFxLayerP/testDLFrame.aspx")
 		Return ""
 	End Function
 

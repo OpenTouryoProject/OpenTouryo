@@ -72,21 +72,21 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen2
 
 		' クライアントからの業務モーダル画面起動
 		' スタイル指定なし
-		Me.btnButton2.OnClientClick = "return " & Me.GetScriptToShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx") & ";"
-		Me.btnButton3.OnClientClick = "return " & Me.GetScriptToShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test") & ";"
+		Me.btnButton2.OnClientClick = "return " & Me.GetScriptToShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx") & ";"
+		Me.btnButton3.OnClientClick = "return " & Me.GetScriptToShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test") & ";"
 
 		' スタイル指定あり（空）
-		Me.btnButton4.OnClientClick = "return " & Me.GetScriptToShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx", "") & ";"
-		Me.btnButton5.OnClientClick = "return " & Me.GetScriptToShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", "") & ";"
+		Me.btnButton4.OnClientClick = "return " & Me.GetScriptToShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx", "") & ";"
+		Me.btnButton5.OnClientClick = "return " & Me.GetScriptToShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", "") & ";"
 
 		' ---
 
 		' クライアントからの業務モードレス画面起動
-		Me.btnButton9.OnClientClick = Me.GetScriptToShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx") & "; return false;"
+		Me.btnButton9.OnClientClick = Me.GetScriptToShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx") & "; return false;"
 
-		Me.btnButton10.OnClientClick = Me.GetScriptToShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", "") & "; return false;"
+		Me.btnButton10.OnClientClick = Me.GetScriptToShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", "") & "; return false;"
 
-		Me.btnButton11.OnClientClick = Me.GetScriptToShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", "", "t") & "; return false;"
+		Me.btnButton11.OnClientClick = Me.GetScriptToShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", "", "t") & "; return false;"
 	End Sub
 
 	''' <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>

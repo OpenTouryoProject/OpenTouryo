@@ -400,7 +400,7 @@ Partial Public Class Aspx_testScreenCtrl_WebForm0
     ''' <returns>URL</returns>
     ''' <remarks>dialog</remarks>
     Protected Function UOC_btnButton22_Click(ByVal fxEventArgs As FxEventArgs) As String
-        Me.ShowModalScreen("/ProjectX_sample/Aspx/testScreenCtrl/WebForm1.aspx")
+        Me.ShowModalScreen("~/Aspx/testScreenCtrl/WebForm1.aspx")
         Return ""
     End Function
 
@@ -409,7 +409,7 @@ Partial Public Class Aspx_testScreenCtrl_WebForm0
     ''' <returns>URL</returns>
     ''' <remarks>dialog</remarks>
     Protected Function UOC_btnButton23_Click(ByVal fxEventArgs As FxEventArgs) As String
-        Me.ShowModalScreen("/ProjectX_sample/Aspx/testScreenCtrl/WebForm2.aspx")
+        Me.ShowModalScreen("~/Aspx/testScreenCtrl/WebForm2.aspx")
         Return ""
     End Function
 
@@ -418,7 +418,7 @@ Partial Public Class Aspx_testScreenCtrl_WebForm0
     ''' <returns>URL</returns>
     ''' <remarks>dialog</remarks>
     Protected Function UOC_btnButton24_Click(ByVal fxEventArgs As FxEventArgs) As String
-        Me.ShowModalScreen("/ProjectX_sample/Aspx/testScreenCtrl/WebForm3.aspx")
+        Me.ShowModalScreen("~/Aspx/testScreenCtrl/WebForm3.aspx")
         Return ""
     End Function
 
@@ -427,7 +427,7 @@ Partial Public Class Aspx_testScreenCtrl_WebForm0
     ''' <returns>URL</returns>
     ''' <remarks>dialog</remarks>
     Protected Function UOC_btnButton25_Click(ByVal fxEventArgs As FxEventArgs) As String
-        Me.ShowModalScreen("/ProjectX_sample/Aspx/testScreenCtrl/WebForm4.aspx")
+        Me.ShowModalScreen("~/Aspx/testScreenCtrl/WebForm4.aspx")
         Return ""
     End Function
 
@@ -436,7 +436,7 @@ Partial Public Class Aspx_testScreenCtrl_WebForm0
     ''' <returns>URL</returns>
     ''' <remarks>dialog</remarks>
     Protected Function UOC_btnButton26_Click(ByVal fxEventArgs As FxEventArgs) As String
-        Me.ShowModalScreen("/ProjectX_sample/Aspx/testScreenCtrl/WebForm5.aspx")
+        Me.ShowModalScreen("~/Aspx/testScreenCtrl/WebForm5.aspx")
         Return ""
     End Function
 

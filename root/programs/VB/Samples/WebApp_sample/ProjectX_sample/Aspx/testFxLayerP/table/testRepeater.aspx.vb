@@ -134,7 +134,7 @@ Public Partial Class Aspx_testFxLayerP_table_testRepeater
 	''' <remarks>repeater1用</remarks>
 	Private Function CreateDataSource1() As DataTable
 		' Server.MapPathはアプリケーション ディレクトリを指す。
-		Dim di As New DirectoryInfo(Server.MapPath("/ProjectX_sample/Aspx/Common"))
+		Dim di As New DirectoryInfo(Server.MapPath("~/Aspx/Common"))
 		Dim fi As FileInfo() = di.GetFiles()
 
 		' Datatableに
