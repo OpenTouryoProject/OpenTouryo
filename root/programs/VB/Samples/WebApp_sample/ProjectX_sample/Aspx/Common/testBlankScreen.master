@@ -8,9 +8,14 @@
 <head id="Head1" runat="server">
     <title>無題のページ</title>
     <!--FxCode：add-start-->
-    <script type="text/javascript" src="/ProjectX_sample/Framework/js/common.js"></script>
-    <script type="text/javascript" src="/ProjectX_sample/Framework/js/ie_key_event.js"></script>
+    <script type="text/javascript" src="<%= Me.ResolveClientUrl("~/Framework/js/common.js") %>"></script>
+    <script type="text/javascript" src="<%= Me.ResolveClientUrl("~/Framework/js/ie_key_event.js") %>"></script>
     
+    <!-- Resolve URL in the javascript-->
+    <script type="text/javascript">
+        var baseUrl = "<%= ResolveUrl("~/") %>";
+    </script>
+
     <!-- onhelpイベントを無効にする。-->
     <script language="javascript" for="document" event="onhelp">
             event.returnValue = false;
@@ -19,7 +24,8 @@
     <!-- IE8をIE7互換モードで動作させる -->
     <!--meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /-->
     
-    <link rel="stylesheet" href="/ProjectX_sample/Css/style.css" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="<%= Me.ResolveClientUrl("~/Css/style.css") %>"/>
+
     <!--FxCode：add-end-->
 </head>
 
@@ -31,7 +37,7 @@
     
         <!--SampleCode：add-start-->
         
-        <a href="/ProjectX_sample/Aspx/start/menu.aspx">メニュー画面</a><br />
+        <a href="<%= Me.ResolveUrl("~/Aspx/start/menu.aspx") %>">メニュー画面</a><br />
         <!--SampleCode：Contents-->
         <asp:contentplaceholder id="ContentPlaceHolder_A" runat="Server">
             This is Default Content -- Override on Page

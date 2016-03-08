@@ -17,7 +17,8 @@
 //*  2015/02/06  Supragyan         Added condition for check AjaxPostBackElement in Fx_AjaxExtensionInitializeRequest
 //*  2015/02/06  Supragyan         Added condition for check AjaxPostBackElement in Fx_AjaxExtensionEndRequest
 //*  2015/02/09  Supragyan         Added condition for Trident on Internet Explorer
-//*  2016/01/12  Sai	           Changed interval in method window.setInterval(HttpPing, 5000)            
+//*  2016/01/12  Sai	           Changed interval in method window.setInterval(HttpPing, 5000) 
+//*  2016/03/03  Supragyan         Implemented ResolveServerUrl method to resolve URL issue in javascript           
 //**********************************************************************************
 
 function Fx_Document_OnLoad() {
@@ -446,7 +447,7 @@ function Fx_InitProgressDialog() {
     // imgを生成
     var _img = document.createElement("img");
 
-    _img.src = "/ProjectX_sample/Framework/Img/loading.gif";
+    _img.src = ResolveServerUrl("~/Framework/Img/loading.gif");
     _img.style.width = "50px";
     _img.style.height = "50px";
     _img.alt = "処理中画像";
@@ -1213,5 +1214,18 @@ function Fx_getBrowserHeight() {
 function Fx_getContentsHeight() {
     // コンテンツ全体の高さを取得する
     return Math.max.apply(null, [document.body.clientHeight, document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight]);
+}
+
+// ---------------------------------------------------------------
+// Resolves the path of a specified url based on the application server
+// ---------------------------------------------------------------
+// Parameter     － Relative url
+// Return value  － Resolved relative url
+// ---------------------------------------------------------------
+function ResolveServerUrl(url) {
+    if (url.indexOf("~/") == 0) {
+        url = baseUrl + url.substring(2);
+    }
+    return url;
 }
 
