@@ -19,42 +19,42 @@
 <!-- Screenタグの現画面の仮想パスはIDにできるが、
 「/」を含むため、XMLのIDとしては利用できない。 -->
 <SCD>
-	<Screen value="/ProjectX_sample/Aspx/start/login.aspx" directLink="allow">
-		<Transition value="/ProjectX_sample/Aspx/start/menu.aspx" label="menu"/>
+	<Screen value="~/Aspx/start/login.aspx" directLink="allow">
+		<Transition value="~/Aspx/start/menu.aspx" label="menu"/>
 	</Screen>
-	<Screen value="/ProjectX_sample/Aspx/start/menu.aspx" directLink="allow">
+	<Screen value="~/Aspx/start/menu.aspx" directLink="allow">
 	</Screen>
-	<Screen value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm0.aspx" directLink="allow">
-		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm1.aspx" label="0→1"/>
-		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm2.aspx" label="0→2"/>
-		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm3.aspx" label="0→3"/>
-		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm4.aspx" label="0→4"/>
-		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm5.aspx" label="0→5"/>
+	<Screen value="~/Aspx/testScreenCtrl/WebForm0.aspx" directLink="allow">
+		<Transition value="~/Aspx/testScreenCtrl/WebForm1.aspx" label="0→1"/>
+		<Transition value="~/Aspx/testScreenCtrl/WebForm2.aspx" label="0→2"/>
+		<Transition value="~/Aspx/testScreenCtrl/WebForm3.aspx" label="0→3"/>
+		<Transition value="~/Aspx/testScreenCtrl/WebForm4.aspx" label="0→4"/>
+		<Transition value="~/Aspx/testScreenCtrl/WebForm5.aspx" label="0→5"/>
 	</Screen>
-	<Screen value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm1.aspx" directLink="deny">
-		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm2.aspx" label="1→2"/>
+	<Screen value="~/Aspx/testScreenCtrl/WebForm1.aspx" directLink="deny">
+		<Transition value="~/Aspx/testScreenCtrl/WebForm2.aspx" label="1→2"/>
 	</Screen>
-	<Screen value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm2.aspx" directLink="deny">
-		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm3.aspx" label="2→3"/>
+	<Screen value="~/Aspx/testScreenCtrl/WebForm2.aspx" directLink="deny">
+		<Transition value="~/Aspx/testScreenCtrl/WebForm3.aspx" label="2→3"/>
 	</Screen>
-	<Screen value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm3.aspx" directLink="allow">
-		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm4.aspx" label="3→4"/>
+	<Screen value="~/Aspx/testScreenCtrl/WebForm3.aspx" directLink="allow">
+		<Transition value="~/Aspx/testScreenCtrl/WebForm4.aspx" label="3→4"/>
 	</Screen>
-	<Screen value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm4.aspx" directLink="deny">
-		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm1.aspx" label="4→1"/>
-		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm5.aspx" label="4→5"/>
+	<Screen value="~/Aspx/testScreenCtrl/WebForm4.aspx" directLink="deny">
+		<Transition value="~/Aspx/testScreenCtrl/WebForm1.aspx" label="4→1"/>
+		<Transition value="~/Aspx/testScreenCtrl/WebForm5.aspx" label="4→5"/>
 	</Screen>
-	<Screen value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm5.aspx" directLink="deny">
-		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm1.aspx" label="5→1"/>
-		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm2.aspx" label="5→2"/>
-		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm3.aspx" label="5→3"/>
-		<Transition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm4.aspx" label="5→4"/>
+	<Screen value="~/Aspx/testScreenCtrl/WebForm5.aspx" directLink="deny">
+		<Transition value="~/Aspx/testScreenCtrl/WebForm1.aspx" label="5→1"/>
+		<Transition value="~/Aspx/testScreenCtrl/WebForm2.aspx" label="5→2"/>
+		<Transition value="~/Aspx/testScreenCtrl/WebForm3.aspx" label="5→3"/>
+		<Transition value="~/Aspx/testScreenCtrl/WebForm4.aspx" label="5→4"/>
 	</Screen>
-	<CmnTransition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm0.aspx" label="WebForm0"/>
-	<CmnTransition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm1.aspx" label="WebForm1"/>
-	<CmnTransition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm2.aspx" label="WebForm2"/>
-	<CmnTransition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm3.aspx" label="WebForm3"/>
-	<CmnTransition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm4.aspx" label="WebForm4"/>
-	<CmnTransition value="/ProjectX_sample/Aspx/testScreenCtrl/WebForm5.aspx" label="WebForm5"/>
+	<CmnTransition value="~/Aspx/testScreenCtrl/WebForm0.aspx" label="WebForm0"/>
+	<CmnTransition value="~/Aspx/testScreenCtrl/WebForm1.aspx" label="WebForm1"/>
+	<CmnTransition value="~/Aspx/testScreenCtrl/WebForm2.aspx" label="WebForm2"/>
+	<CmnTransition value="~/Aspx/testScreenCtrl/WebForm3.aspx" label="WebForm3"/>
+	<CmnTransition value="~/Aspx/testScreenCtrl/WebForm4.aspx" label="WebForm4"/>
+	<CmnTransition value="~/Aspx/testScreenCtrl/WebForm5.aspx" label="WebForm5"/>
 	<CmnTransition value="http://www.google.co.jp/search?sourceid=navclient-ff&amp;ie=UTF-8&amp;rlz=1B3GGGL_jaJP268JP268&amp;aq=t" label="google"/>
 </SCD>

@@ -72,29 +72,29 @@ public partial class Aspx_testFxLayerP_normal_testScreen2nest : MyBaseController
         // クライアントからの業務モーダル画面起動
         // スタイル指定なし
         this.btnButton2.OnClientClick =
-            "return " + this.GetScriptToShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/nest/testScreen1nest.aspx") + ";";
+            "return " + this.GetScriptToShowModalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx") + ";";
         this.btnButton3.OnClientClick =
-            "return " + this.GetScriptToShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test") + ";";
+            "return " + this.GetScriptToShowModalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test") + ";";
 
         // スタイル指定あり（空）
         this.btnButton4.OnClientClick =
-            "return " + this.GetScriptToShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/nest/testScreen1nest.aspx", "") + ";";
+            "return " + this.GetScriptToShowModalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx", "") + ";";
         this.btnButton5.OnClientClick =
-            "return " + this.GetScriptToShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test", "") + ";";
+            "return " + this.GetScriptToShowModalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test", "") + ";";
 
         // ---
 
         // クライアントからの業務モードレス画面起動
         this.btnButton9.OnClientClick =
-            this.GetScriptToShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/nest/testScreen1nest.aspx")
+            this.GetScriptToShowNormalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx")
             + "; return false;";
 
         this.btnButton10.OnClientClick =
-            this.GetScriptToShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test", "")
+            this.GetScriptToShowNormalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test", "")
             + "; return false;";
 
         this.btnButton11.OnClientClick =
-            this.GetScriptToShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test", "", "t")
+            this.GetScriptToShowNormalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test", "", "t")
             + "; return false;";
     }
 
