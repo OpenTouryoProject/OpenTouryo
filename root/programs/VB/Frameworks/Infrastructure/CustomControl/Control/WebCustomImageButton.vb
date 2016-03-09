@@ -58,7 +58,7 @@ Namespace Touryo.Infrastructure.CustomControl
 			' これはサンプル用に残した。
 			Me.Height = 50
 			Me.Width = 50
-			Me.ImageUrl = "/ProjectX_sample/Framework/Img/image.JPG"
+			Me.ImageUrl = "~/Framework/Img/image.JPG"
 		End Sub
 
 		#Region "HTML描画処理のカスタマイズ用テンプレート"
