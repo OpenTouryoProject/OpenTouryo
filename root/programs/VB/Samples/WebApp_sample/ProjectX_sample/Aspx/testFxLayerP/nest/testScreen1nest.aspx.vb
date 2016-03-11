@@ -733,12 +733,12 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen1nest
 			' スタイル指定あり
 			' 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
 				' ※ QueryString指定あり
-			Me.ShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test", style)
+			Me.ShowModalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test", style)
 		Else
 			' スタイル指定なし
 			' 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
 				' ※ QueryString指定あり
-			Me.ShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test")
+			Me.ShowModalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test")
 		End If
 
 		Return ""
