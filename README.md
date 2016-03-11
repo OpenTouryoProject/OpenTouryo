@@ -33,7 +33,10 @@
 ライセンス(license)
 
 #### [/root/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root)
-プログラム(program)
+VS2010, .NET3.5 のプログラム(Program of VS2010, .NET3.5.)
+
+※ 本体はサポートのための最も古い環境で開発されます。  
+   (The body will be developed in the most old environment for support.)
 
 #### [/root_easysetup/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root_easysetup )
 簡易セットアップ版プログラム(Easy Setup program version) 
