@@ -41,10 +41,7 @@ Visual Studio 2015 など、新しい開発環境を使用する場合は、[テ
 ライセンス(license)
 
 #### [/root/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root)
-VS2010, .NET3.5 のプログラム(Program of VS2010, .NET3.5.)
-
-※ 本体はサポートのための最も古い環境で開発されます。  
-   (The body will be developed in the oldest supported environment for support.)
+プログラム
 
 ##テンプレート・ベース(Templates base)
 テンプレート・ベースに同梱されるサンプルはOpen棟梁の評価に利用できます。
