@@ -19,7 +19,8 @@
 //*  2015/02/09  Supragyan         Added condition for Trident on Internet Explorer
 //*  2015/09/09  Sandeep           Added condition code to detect IE-9, IE-10 and IE-11, to suppress double transmission
 //*  2016/01/12  Sai	           Changed interval in method window.setInterval(HttpPing, 5000)
-//*  2016/19/01  Sandeep           Implemented ResolveServerUrl method to resolve URL issue in javascript
+//*  2016/01/19  Sandeep           Implemented ResolveServerUrl method to resolve URL issue in javascript
+//*  2016/03/15  daisukenishino    Fix of issue that is occurred by IFRAME of IE11 correspondance
 //**********************************************************************************
 
 function Fx_Document_OnLoad() {
@@ -734,6 +735,8 @@ function Fx_ShowModalScreen(url, style) {
         // 第2引数 = DialogFrame → DialogLoader.htmから起動するモーダル画面のURL
         // 第3引数 = 画面のスタイル(「項目1:値1;項目2:値2;…;項目n:値n」の形式) 
         var ret = window.showModalDialog(dialogFrameUrl.value, args, style);
+        ret = Fx_GetCookie("fx_window_returnValue");
+
     } finally {
         // マスクを外す。
         Fx_MaskOff();
@@ -766,8 +769,9 @@ function Fx_ShowModalScreen(url, style) {
         }
         else {
             // 当該画面が、モーダル画面の場合、自分を閉じる。
-            window.returnValue = "3";
-            window.close();
+            //window.returnValue = "3";
+            Fx_SetCookie("fx_window_returnValue", "3", "path=/");
+             window.close();
         }
     }
     else {
@@ -858,19 +862,22 @@ function Fx_CloseModalScreen() {
     if (closeFlag.value == "1") {
         // closeFlagが１の場合、自画面を閉じ、
         // 親画面でポストバック（後処理）を実行する。
-        window.returnValue = "1";
+        //window.returnValue = "1";
+        Fx_SetCookie("fx_window_returnValue", "1", "path=/");
         window.close();
     }
     else if (closeFlag.value == "2") {
         // closeFlagが２の場合、自画面を閉じ、
         // 親画面でポストバック（後処理）を実行しない。
-        window.returnValue = "2";
+        //window.returnValue = "2";
+        Fx_SetCookie("fx_window_returnValue", "2", "path=/");
         window.close();
     }
     else if (closeFlag.value == "3") {
         // closeFlagが３の場合、自画面を閉じ、
         // 親のモーダル画面も閉じる。
-        window.returnValue = "3";
+        //window.returnValue = "3";
+        Fx_SetCookie("fx_window_returnValue", "3", "path=/");
         window.close();
     }
 }
