@@ -43,6 +43,9 @@ Visual Studio 2015 など、新しい開発環境を使用する場合は、[テ
 #### [/root/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root)
 プログラム
 
+#### [/root_easysetup/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root_easysetup )
+簡易セットアップ版プログラム(Easy Setup program version) 
+
 ##テンプレート・ベース(Templates base)
 テンプレート・ベースに同梱されるサンプルはOpen棟梁の評価に利用できます。
 また、テンプレート・ベースをチュートリアルの内容に従いカスタマイズすることで
