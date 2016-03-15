@@ -147,7 +147,7 @@ public partial class Aspx_testFxLayerP_table_testRepeater : MyBaseController
     private DataTable CreateDataSource1()
     {
         // Server.MapPathはアプリケーション ディレクトリを指す。
-        DirectoryInfo di = new DirectoryInfo(Server.MapPath("/ProjectX_sample/Aspx/Common"));
+        DirectoryInfo di = new DirectoryInfo(Server.MapPath("~/Aspx/Common"));
         FileInfo[] fi = di.GetFiles();
 
         // Datatableに

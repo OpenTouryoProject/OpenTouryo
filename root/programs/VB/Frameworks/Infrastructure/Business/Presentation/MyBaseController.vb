@@ -50,6 +50,8 @@
 '*  2012/06/18  西野  大介        OriginalStackTrace（ログ出力）の品質向上
 '*  2013/01/18  西野  大介        public static TransferErrorScreen2追加（他から呼出可能に）
 '*  2013/01/18  西野  大介        public static GetUserInfo2追加（他から呼出可能に）
+'*  2016/03/03  Supragyan         Resolved the URL issue of error screen transition path
+'*  2016/03/03  Supragyan         Modified default relative path of the sample application screens
 '**********************************************************************************
 
 ' System
@@ -762,6 +764,9 @@ Namespace Touryo.Infrastructure.Business.Presentation
             ' エラー画面へのパスを取得 --- チェック不要（ベースクラスでチェック済み）
             Dim errorScreenPath As String = GetConfigParameter.GetConfigValue(FxLiteral.ERROR_SCREEN_PATH)
 
+            ' Resolves the path of the url with respect to the server
+            BaseController.ResolveServerUrl(errorScreenPath)
+
             ' エラー画面へ画面遷移
             HttpContext.Current.Server.Transfer(errorScreenPath)
         End Sub
@@ -790,7 +795,7 @@ Namespace Touryo.Infrastructure.Business.Presentation
             label.Text = "ログアウトしました。"
 
             ' 画面遷移しないポストバックの場合は、urlを空文字列に設定する
-			Return "/ProjectX_sample/Aspx/start/menu.aspx"
+			Return "~/Aspx/start/menu.aspx"
         End Function
 
         ''' <summary>
@@ -800,7 +805,7 @@ Namespace Touryo.Infrastructure.Business.Presentation
         ''' <returns>URL</returns>
         Public Function UOC_sampleScreen_btnMButton102_Click(ByVal fxEventArgs As FxEventArgs) As String
             ' ウィンドウの表示
-			Me.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx")
+			Me.ShowNormalScreen("~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx")
 
             ' 画面遷移しないポストバックの場合は、urlを空文字列に設定する
             Return ""
@@ -874,7 +879,7 @@ Namespace Touryo.Infrastructure.Business.Presentation
         ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
         ''' <returns>URL</returns>
         Public Function UOC_TestScreen1_btnMButton2_Click(ByVal fxEventArgs As FxEventArgs) As String
-            Return "testTransitionAheadScreen.aspx"
+            Return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
         End Function
 
         ''' <summary>
@@ -883,7 +888,7 @@ Namespace Touryo.Infrastructure.Business.Presentation
         ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
         ''' <returns>URL</returns>
         Public Function UOC_TestScreen1_lbnMLinkButton2_Click(ByVal fxEventArgs As FxEventArgs) As String
-            Return "testTransitionAheadScreen.aspx"
+            Return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
         End Function
 
         ''' <summary>
@@ -892,7 +897,7 @@ Namespace Touryo.Infrastructure.Business.Presentation
         ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
         ''' <returns>URL</returns>
         Public Function UOC_TestScreen1_ibnMImageButton2_Click(ByVal fxEventArgs As FxEventArgs) As String
-            Return "testTransitionAheadScreen.aspx"
+            Return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
         End Function
 
         ''' <summary>
@@ -901,7 +906,7 @@ Namespace Touryo.Infrastructure.Business.Presentation
         ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
         ''' <returns>URL</returns>
         Public Function UOC_TestScreen1_impMImageMap2_Click(ByVal fxEventArgs As FxEventArgs) As String
-            Return "testTransitionAheadScreen.aspx"
+            Return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx"
         End Function
 
 #End Region
@@ -1030,10 +1035,10 @@ Namespace Touryo.Infrastructure.Business.Presentation
 
             If DirectCast(Me.GetMasterWebControl("CheckBox1"), CheckBox).Checked = True Then
                 ' スタイル指定あり
-				Me.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx", style)
+				Me.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx", style)
             Else
                 ' スタイル指定なし
-				Me.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx")
+				Me.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx")
             End If
 
             Return ""

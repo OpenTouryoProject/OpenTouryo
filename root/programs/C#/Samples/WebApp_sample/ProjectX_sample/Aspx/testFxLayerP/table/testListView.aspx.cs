@@ -133,7 +133,7 @@ public partial class Aspx_testFxLayerP_table_testListView : MyBaseController
     private void CreateDataSource()
     {
         // Server.MapPathはアプリケーション ディレクトリを指す。
-        DirectoryInfo di = new DirectoryInfo(Server.MapPath("/ProjectX_sample/Aspx/Common"));
+        DirectoryInfo di = new DirectoryInfo(Server.MapPath("~/Aspx/Common"));
         FileInfo[] fi = di.GetFiles();
 
         // Datatableに

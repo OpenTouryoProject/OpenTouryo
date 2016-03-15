@@ -25,9 +25,9 @@
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //* 
-//*  日時        更新者            内容
+//*  日時         更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
+//*  2016/01/14  Sandeep           Specified relative path for ImageUrl property
 //**********************************************************************************
 
 // System
@@ -60,7 +60,7 @@ namespace Touryo.Infrastructure.CustomControl
             // これはサンプル用に残した。
             this.Height = 50;
             this.Width = 50;
-            this.ImageUrl = "/ProjectX_sample/Framework/Img/image.JPG";
+            this.ImageUrl = "~/Framework/Img/image.JPG";
         }
 
         #region HTML描画処理のカスタマイズ用テンプレート

@@ -89,10 +89,10 @@ Public Partial Class Aspx_testFxLayerP_testDialogAtOnLoad
 			Me.ShowYesNoMessageDialog("オンロード（初回ロード）で", "Ｙｅｓ Ｎｏメッセージ ダイアログ表示", "オンロードでのテスト")
 		ElseIf dialogAtOnLoad = "modal" Then
 			' 業務モーダル ダイアログ表示
-			Me.ShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/testDialogAtOnLoad.aspx")
+			Me.ShowModalScreen("~/Aspx/testFxLayerP/testDialogAtOnLoad.aspx")
 		ElseIf dialogAtOnLoad = "modaless" Then
 			' 業務モーダレス画面表示
-			Me.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/testDialogAtOnLoad.aspx")
+			Me.ShowNormalScreen("~/Aspx/testFxLayerP/testDialogAtOnLoad.aspx")
 		End If
 	End Sub
 
@@ -136,10 +136,10 @@ Public Partial Class Aspx_testFxLayerP_testDialogAtOnLoad
 
 					'    ※ サンプルでは、後処理で、ShowOKMessageDialogも実行され、
 					'       コチラが優先されるので、無限ループにはならない。
-				Me.ShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/testDialogAtOnLoad.aspx")
+				Me.ShowModalScreen("~/Aspx/testFxLayerP/testDialogAtOnLoad.aspx")
 			ElseIf dialogAtOnLoad = "modaless" Then
 				' 業務モーダレス画面表示
-				Me.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/testDialogAtOnLoad.aspx")
+				Me.ShowNormalScreen("~/Aspx/testFxLayerP/testDialogAtOnLoad.aspx")
 			End If
 		End If
 	End Sub
