@@ -176,7 +176,7 @@ function Fx_OnSubmit() {
             // IE10.0で問題の報告を受けていません。 
         }
         else if (navigator.appVersion.indexOf("Trident/7") != -1) {
-            // IE11.0で問題が合った場合、報告をお願いします。
+            // IE11.0で問題があった場合、報告をお願いします。
         } 
 
         if (document.readyState == "complete") {
