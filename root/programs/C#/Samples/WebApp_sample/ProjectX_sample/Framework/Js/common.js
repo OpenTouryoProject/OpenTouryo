@@ -21,6 +21,7 @@
 //*  2016/01/12  Sai	           Changed interval in method window.setInterval(HttpPing, 5000)
 //*  2016/01/19  Sandeep           Implemented ResolveServerUrl method to resolve URL issue in javascript
 //*  2016/03/15  daisukenishino    Fix of issue that is occurred by IFRAME of IE11 correspondance
+//*  2016/03/17  Bhagya            Implemented code to resolve the progress dialog mask issue in IE9 or more and other browsers
 //**********************************************************************************
 
 function Fx_Document_OnLoad() {
@@ -807,8 +808,8 @@ function Fx_CreateMask() {
 
     _div.style.top = "0px";
     _div.style.left = "0px";
-    _div.style.height = Fx_getContentsHeight(); //"100%";では、初期表示画面サイズになってしまう。
-    _div.style.width = Fx_getBrowserWidth(); //"100%";では、初期表示画面サイズになってしまう。
+    _div.style.height = Fx_getContentsHeight() + "px"; //"100%";では、初期表示画面サイズになってしまう。
+    _div.style.width = Fx_getBrowserWidth() + "px"; //"100%";では、初期表示画面サイズになってしまう。
     _div.style.position = "absolute";
 
     // 1000なら最前面だろうという仕様（ToMost相当が無い）
