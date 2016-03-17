@@ -8,9 +8,4 @@
 <TMD>
 	<Transmission id="testInProcess" assemblyName="WSServer_sample" className="WSServer_sample.Business.LayerB" />
  	<Transmission id="testWebService" assemblyName="WSServer_sample" className="WSServer_sample.Business.LayerB" />
-
- 	<Transmission id="muWebService" assemblyName="dummy" className="WSClientSL_sample.Web.Business.LayerB_mu" />
- 	<Transmission id="sbWebService" assemblyName="dummy" className="WSClientSL_sample.Web.Business.LayerB_sb" />
-
- 	<Transmission id="Authentication" assemblyName="dummy" className="WSClientSL_sample.Web.Business.Authentication" />
 </TMD>
