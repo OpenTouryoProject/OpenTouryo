@@ -295,6 +295,9 @@
   <data name="cbxTableMaintenance.Location" type="System.Drawing.Point, System.Drawing">
     <value>5, 42</value>
   </data>
+  <data name="cbxTableMaintenance.Size" type="System.Drawing.Size, System.Drawing">
+    <value>220, 17</value>
+  </data>
   <data name="groupBox3.Size" type="System.Drawing.Size, System.Drawing">
     <value>525, 76</value>
   </data>
