@@ -128,7 +128,7 @@
     <value>棟梁：D層自動生成ツール（墨壺） - D層、Dao・SQLファイル生成 </value>
   </data>
   <data name="btnDaoAndSqlGen.Text" xml:space="preserve">
-    <value>－ Dao・SQL、DTOファイルを生成する －1</value>
+    <value>－ Dao・SQL、DTOファイルを生成する －</value>
   </data>
   <data name="btnSetDaoDefinition.Text" xml:space="preserve">
     <value>パスを指定</value>
