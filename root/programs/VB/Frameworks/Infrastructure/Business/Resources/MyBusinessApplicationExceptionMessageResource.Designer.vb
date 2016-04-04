@@ -63,5 +63,14 @@ Namespace My.Resources
                 resourceCulture = value
             End Set
         End Property
+        
+        '''<summary>
+        '''  Message_SampleError  に類似しているローカライズされた文字列を検索します。
+        '''</summary>
+        Friend Shared ReadOnly Property SAMPLE_ERROR() As String
+            Get
+                Return ResourceManager.GetString("SAMPLE_ERROR", resourceCulture)
+            End Get
+        End Property
     End Class
 End Namespace
