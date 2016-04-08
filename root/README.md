@@ -43,7 +43,12 @@ Open棟梁 に同梱されるサンプルの実行手順は下記のとおりで
       
    - 下記コマンドを実行します(Run the following command)。
       "C:\Program Files\Microsoft SQL Server\100\Tools\Binn\SQLCMD.EXE" -S localhost\SQLExpress -E -i "C:\SQL Server 2000 Sample Databases\instnwnd.sql"
-
+      
+   - SQL Server 2012 以降のバージョンにNorthwindをインストールする場合は以下の手順に従って下さい。  
+      (Please follow the below steps, if you want to install the Northwind on SQL Server 2012 or a later version.)
+      - SQL ServerにNorthwindとPubsサンプルデータベースを入れる。 - Gobble up pudding  
+http://fa11enprince.hatenablog.com/entry/2014/05/28/234203
+      
 * セッション状態サービスの準備(Preparing the session state service)
    - 管理者としてコマンドプロンプトを起動し、下記コマンドを実行します。
       (Start a command prompt as an administrator, and then run the following command.)
@@ -100,13 +105,7 @@ Open棟梁 に同梱されるサンプルの実行手順は下記のとおりで
          C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSClientWinCone_sample.sln
       - WPF
          C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
-         C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWPFbap_sample\WSClientWPFbap_sample.sln
     
-   - Silverlight の場(In the case of Silverlight)：
-      C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientSL_samples\WSClientSL_samples.sln
-   - Windows Azure の場合(In the case of Windows Azure)：
-      C:\root_org\programs\C#\Samples\WinAzure_sample\WinAzure_sample.sln
-
 * 各チュートリアルの内容に従いOpen棟梁の評価が可能です。
    (Evaluation of OpenTouryo is possible in accordance with the contents of each tutorial.)
    

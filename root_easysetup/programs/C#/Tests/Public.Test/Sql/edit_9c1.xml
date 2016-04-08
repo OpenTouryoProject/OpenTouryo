@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<ROOT>
-	SELECT * FROM REGION<WHERE>WHERE or </WHERE>
-	<PARAM>
-		P, int32, 1
-	</PARAM>
-	-- orの消去ロジックの確認（上記はwhereが消えない）。
-</ROOT>

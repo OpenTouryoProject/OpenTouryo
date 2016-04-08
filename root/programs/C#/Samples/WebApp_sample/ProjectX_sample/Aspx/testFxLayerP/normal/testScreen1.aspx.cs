@@ -175,7 +175,7 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
     /// <returns>URL</returns>
     protected string UOC_TestScreen1_btnMButton22_Click(FxEventArgs fxEventArgs)
     {
-        return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
+        return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
     }
 
     /// <summary>
@@ -185,7 +185,7 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
     /// <returns>URL</returns>
     protected string UOC_TestScreen1_lbnMLinkButton22_Click(FxEventArgs fxEventArgs)
     {
-        return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
+        return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
     }
 
     /// <summary>
@@ -195,7 +195,7 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
     /// <returns>URL</returns>
     protected string UOC_TestScreen1_ibnMImageButton22_Click(FxEventArgs fxEventArgs)
     {
-        return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
+        return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
     }
 
     /// <summary>
@@ -205,7 +205,7 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
     /// <returns>URL</returns>
     protected string UOC_TestScreen1_impMImageMap22_Click(FxEventArgs fxEventArgs)
     {
-        return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
+        return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
     }
 
     #endregion
@@ -418,13 +418,13 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
         {
             // スタイル指定あり
             // 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
-            this.ShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx", style);
+            this.ShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx", style);
         }
         else
         {
             // スタイル指定なし
             // 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
-            this.ShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx");
+            this.ShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx");
         }
 
         return "";
@@ -443,12 +443,12 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
         if (((CheckBox)this.GetMasterWebControl("CheckBox2")).Checked == true)
         {
             // スタイル指定あり
-            this.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx", style);
+            this.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx", style);
         }
         else
         {
             // スタイル指定なし
-            this.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx");
+            this.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx");
         }
 
         return "";
@@ -546,7 +546,7 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
     /// <returns>URL</returns>
     protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
     {
-        return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
+        return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
     }
 
     /// <summary>
@@ -556,7 +556,7 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
     /// <returns>URL</returns>
     protected string UOC_lbnLinkButton2_Click(FxEventArgs fxEventArgs)
     {
-        return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
+        return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
     }
 
     /// <summary>
@@ -566,7 +566,7 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
     /// <returns>URL</returns>
     protected string UOC_ibnImageButton2_Click(FxEventArgs fxEventArgs)
     {
-        return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
+        return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
     }
 
     /// <summary>
@@ -576,7 +576,7 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
     /// <returns>URL</returns>
     protected string UOC_impImageMap2_Click(FxEventArgs fxEventArgs)
     {
-        return "/ProjectX_sample/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
+        return "~/Aspx/testFxLayerP/testTransitionAheadScreen.aspx";
     }
 
     #endregion
@@ -792,14 +792,14 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
         {
             // スタイル指定あり
             // 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
-            this.ShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", style);
+            this.ShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", style);
             // ※ QueryString指定あり
         }
         else
         {
             // スタイル指定なし
             // 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
-            this.ShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test");
+            this.ShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test");
             // ※ QueryString指定あり
         }
 
@@ -822,25 +822,25 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
         if (this.CheckBox1.Checked == true && this.CheckBox1a.Checked == true)
         {
             // スタイル指定あり
-            this.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", style, target);
+            this.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", style, target);
             // ※ QueryString指定あり
         }
         else if (this.CheckBox1.Checked == true)
         {
             // スタイル指定あり
-            this.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", style);
+            this.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", style);
             // ※ QueryString指定あり
         }
         else if (this.CheckBox1a.Checked == true)
         {
             // スタイル指定あり
-            this.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", "", target);
+            this.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", "", target);
             // ※ QueryString指定あり
         }
         else
         {
             // スタイル指定なし
-            this.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test");
+            this.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test");
             // ※ QueryString指定あり
         }
 
@@ -1200,7 +1200,7 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
     protected string UOC_btnButton32_Click(FxEventArgs fxEventArgs)
     {
         Session["DialogAtOnLoad"] = "ok";
-        return "/ProjectX_sample/Aspx/testFxLayerP/testDialogAtOnLoad.aspx";
+        return "~/Aspx/testFxLayerP/testDialogAtOnLoad.aspx";
     }
 
     /// <summary>
@@ -1211,7 +1211,7 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
     protected string UOC_lbnLinkButton32_Click(FxEventArgs fxEventArgs)
     {
         Session["DialogAtOnLoad"] = "yesno";
-        return "/ProjectX_sample/Aspx/testFxLayerP/testDialogAtOnLoad.aspx";
+        return "~/Aspx/testFxLayerP/testDialogAtOnLoad.aspx";
     }
 
     /// <summary>
@@ -1222,7 +1222,7 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
     protected string UOC_ibnImageButton32_Click(FxEventArgs fxEventArgs)
     {
         Session["DialogAtOnLoad"] = "modal";
-        return "/ProjectX_sample/Aspx/testFxLayerP/testDialogAtOnLoad.aspx";
+        return "~/Aspx/testFxLayerP/testDialogAtOnLoad.aspx";
     }
 
     /// <summary>
@@ -1233,7 +1233,7 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
     protected string UOC_impImageMap32_Click(FxEventArgs fxEventArgs)
     {
         Session["DialogAtOnLoad"] = "modaless";
-        return "/ProjectX_sample/Aspx/testFxLayerP/testDialogAtOnLoad.aspx";
+        return "~/Aspx/testFxLayerP/testDialogAtOnLoad.aspx";
     }
 
     #endregion
@@ -1293,7 +1293,7 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
     /// <returns>URL</returns>
     protected string UOC_ibnImageButton33_Click(FxEventArgs fxEventArgs)
     {
-        this.ShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/testDLScreen.aspx");
+        this.ShowModalScreen("~/Aspx/testFxLayerP/testDLScreen.aspx");
         return "";
     }
 
@@ -1302,8 +1302,8 @@ public partial class Aspx_testFxLayerP_normal_testScreen1 : MyBaseController
     /// <returns>URL</returns>
     protected string UOC_impImageMap33_Click(FxEventArgs fxEventArgs)
     {
-        //this.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/testDLScreen.aspx");
-        this.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/testDLFrame.aspx");
+        //this.ShowNormalScreen("~/Aspx/testFxLayerP/testDLScreen.aspx");
+        this.ShowNormalScreen("~/Aspx/testFxLayerP/testDLFrame.aspx");
         return "";
     }
     

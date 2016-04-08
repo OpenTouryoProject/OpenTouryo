@@ -89,6 +89,8 @@
 //*  2014/10/03  Rituparna         Added code for Supporting ItemCommand event to ListViewControl. 
 //*  2014/10/03  Rituparna         Added code SelectedIndexChanged for RadiobuttonList and CheckBoxList. 
 //*  2015/04/16  Supragyan         Added TextChanged event for TextBox.
+//*  2016/01/13  Sandeep           Implemented ResolveServerUrl method to resolve URL issue of screen   
+//*                                transition control, display window and error transition control components.  
 //**********************************************************************************
 
 // 処理に必要
@@ -2629,6 +2631,9 @@ namespace Touryo.Infrastructure.Framework.Presentation
             string okMessageDialogPath =
                 GetConfigParameter.GetConfigValue(FxLiteral.OK_MESSAGE_DIALOG_PATH);
 
+            // Resolves the path of the url with respect to the server
+            BaseController.ResolveServerUrl(ref okMessageDialogPath);
+
             // エラー処理
             if (okMessageDialogPath == null || okMessageDialogPath == "")
             {
@@ -2700,6 +2705,9 @@ namespace Touryo.Infrastructure.Framework.Presentation
             string yesNoMessageDialogPath =
                 GetConfigParameter.GetConfigValue(FxLiteral.YES_NO_MESSAGE_DIALOG_PATH);
 
+            // Resolves the path of the url with respect to the server
+            BaseController.ResolveServerUrl(ref yesNoMessageDialogPath);
+
             // エラー処理
             if (yesNoMessageDialogPath == null || yesNoMessageDialogPath == "")
             {
@@ -2737,6 +2745,9 @@ namespace Touryo.Infrastructure.Framework.Presentation
         /// <remarks>画面コード親クラス２、画面コード クラスから利用する。</remarks>
         protected void ShowModalScreen(string screenURL, string dialogStyle)
         {
+            // Resolves the path of the url with respect to the server
+            BaseController.ResolveServerUrl(ref screenURL);
+
             // 子画面タイプを設定
             this.ChildScreenType.Value = ((int)FxEnum.ChildScreenType.ModalScreen).ToString();
 
@@ -2770,6 +2781,9 @@ namespace Touryo.Infrastructure.Framework.Presentation
 
             // DialogFrameへのパスを取得
             string dialogFramePath = GetConfigParameter.GetConfigValue(FxLiteral.DIALOG_FRAME_PATH);
+
+            // Resolves the path of the url with respect to the server
+            BaseController.ResolveServerUrl(ref dialogFramePath);
 
             // エラー処理
             if (dialogFramePath == null || dialogFramePath == "")
@@ -2833,6 +2847,9 @@ namespace Touryo.Infrastructure.Framework.Presentation
         /// <returns>業務モーダル画面を起動するスクリプト</returns>
         protected string GetScriptToShowModalScreen(string screenURL, string dialogStyle)
         {
+            // Resolves the path of the url with respect to the server
+            BaseController.ResolveServerUrl(ref screenURL);
+
             // HiddenにDialogFrameのパスを設定する。
             this.DialogFrameUrl =
                 (HiddenField)this.RootMasterPage.FindControl(FxLiteral.HIDDEN_DIALOG_FRAME_URL); // 2009/07/21-この行
@@ -2848,6 +2865,9 @@ namespace Touryo.Infrastructure.Framework.Presentation
 
             // DialogFrameへのパスを取得
             string dialogFramePath = GetConfigParameter.GetConfigValue(FxLiteral.DIALOG_FRAME_PATH);
+
+            // Resolves the path of the url with respect to the server
+            BaseController.ResolveServerUrl(ref dialogFramePath);
 
             // エラー処理
             if (dialogFramePath == null || dialogFramePath == "")
@@ -3034,6 +3054,9 @@ namespace Touryo.Infrastructure.Framework.Presentation
         /// <remarks>画面コード親クラス２、画面コード クラスから利用する。</remarks>
         protected void ShowNormalScreen(string screenURL, string screenStyle, string screenTarget)
         {
+            // Resolves the path of the url with respect to the server
+            BaseController.ResolveServerUrl(ref screenURL);
+
             // 開く子画面のURLを設定
             this.ChildScreenUrl.Value = screenURL;
 
@@ -3112,6 +3135,9 @@ namespace Touryo.Infrastructure.Framework.Presentation
         /// <returns>業務モードレス画面を起動するスクリプト</returns>
         protected string GetScriptToShowNormalScreen(string screenURL, string screenStyle, string screenTarget)
         {
+            // Resolves the path of the url with respect to the server
+            BaseController.ResolveServerUrl(ref screenURL);
+
             // スクリプト（注意：リテラル化不可能）
             return "window.open("
                 + "'" + screenURL + "', "
@@ -3682,6 +3708,22 @@ namespace Touryo.Infrastructure.Framework.Presentation
         }
 
         #endregion
+
+        #endregion
+
+        #region Resolve url methods
+
+        /// <summary>
+        /// Resolves the path of a specified url based on the application server
+        /// </summary>
+        /// <param name="url">url of absolute, virtual, relative or root-relative path</param>
+        protected static void ResolveServerUrl(ref string url)
+        {
+            if (!string.IsNullOrEmpty(url))
+            {
+                url = (HttpContext.Current.Handler as Page).ResolveUrl(url);
+            }
+        }
 
         #endregion
 
@@ -4397,6 +4439,9 @@ namespace Touryo.Infrastructure.Framework.Presentation
             /// <remarks>インナークラス</remarks>
             public void FxTransfer(string url, string queryString, string windowGuid)
             {
+                // Resolves the path of the url with respect to the server
+                BaseController.ResolveServerUrl(ref url);
+
                 // ウィンドウGUIDの送信（HttpContext）
                 HttpContext.Current.Items[FxHttpContextIndex.BROWSER_WINDOW_GUID] = windowGuid;
 
@@ -4436,6 +4481,9 @@ namespace Touryo.Infrastructure.Framework.Presentation
             /// <remarks>インナークラス</remarks>
             public void FxRedirect(string url, string queryString, string windowGuid)
             {
+                // Resolves the path of the url with respect to the server
+                BaseController.ResolveServerUrl(ref url);
+
                 // ウィンドウGUIDの送信（QueryString）
 
                 // 既存のQueryStringチェック

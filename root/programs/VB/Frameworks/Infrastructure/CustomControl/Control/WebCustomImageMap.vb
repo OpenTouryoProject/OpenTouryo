@@ -27,7 +27,7 @@
 '* 
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
-'*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
+'*  2016/01/14  Sandeep           Specified relative path for ImageUrl property
 '**********************************************************************************
 
 ' System
@@ -58,7 +58,7 @@ Namespace Touryo.Infrastructure.CustomControl
 			' これはサンプル用に残した。
 			Me.Height = 200
 			Me.Width = 200
-			Me.ImageUrl = "/ProjectX_sample/Framework/Img/image.JPG"
+			Me.ImageUrl = "~/Framework/Img/image.JPG"
 		End Sub
 
 		#Region "HTML描画処理のカスタマイズ用テンプレート"

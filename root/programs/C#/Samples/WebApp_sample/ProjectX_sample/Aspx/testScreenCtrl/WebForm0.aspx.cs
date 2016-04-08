@@ -462,7 +462,7 @@ public partial class Aspx_testScreenCtrl_WebForm0 : MyBaseController
     /// <remarks>dialog</remarks>
     protected string UOC_btnButton22_Click(FxEventArgs fxEventArgs)
     {
-        this.ShowModalScreen("/ProjectX_sample/Aspx/testScreenCtrl/WebForm1.aspx");
+        this.ShowModalScreen("~/Aspx/testScreenCtrl/WebForm1.aspx");
         return "";
     }
 
@@ -472,7 +472,7 @@ public partial class Aspx_testScreenCtrl_WebForm0 : MyBaseController
     /// <remarks>dialog</remarks>
     protected string UOC_btnButton23_Click(FxEventArgs fxEventArgs)
     {
-        this.ShowModalScreen("/ProjectX_sample/Aspx/testScreenCtrl/WebForm2.aspx");
+        this.ShowModalScreen("~/Aspx/testScreenCtrl/WebForm2.aspx");
         return "";
     }
 
@@ -482,7 +482,7 @@ public partial class Aspx_testScreenCtrl_WebForm0 : MyBaseController
     /// <remarks>dialog</remarks>
     protected string UOC_btnButton24_Click(FxEventArgs fxEventArgs)
     {
-        this.ShowModalScreen("/ProjectX_sample/Aspx/testScreenCtrl/WebForm3.aspx");
+        this.ShowModalScreen("~/Aspx/testScreenCtrl/WebForm3.aspx");
         return "";
     }
 
@@ -492,7 +492,7 @@ public partial class Aspx_testScreenCtrl_WebForm0 : MyBaseController
     /// <remarks>dialog</remarks>
     protected string UOC_btnButton25_Click(FxEventArgs fxEventArgs)
     {
-        this.ShowModalScreen("/ProjectX_sample/Aspx/testScreenCtrl/WebForm4.aspx");
+        this.ShowModalScreen("~/Aspx/testScreenCtrl/WebForm4.aspx");
         return "";
     }
 
@@ -502,7 +502,7 @@ public partial class Aspx_testScreenCtrl_WebForm0 : MyBaseController
     /// <remarks>dialog</remarks>
     protected string UOC_btnButton26_Click(FxEventArgs fxEventArgs)
     {
-        this.ShowModalScreen("/ProjectX_sample/Aspx/testScreenCtrl/WebForm5.aspx");
+        this.ShowModalScreen("~/Aspx/testScreenCtrl/WebForm5.aspx");
         return "";
     }
 

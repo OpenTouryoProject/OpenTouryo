@@ -17,6 +17,11 @@
 //*  2015/02/06  Supragyan         Added condition for check AjaxPostBackElement in Fx_AjaxExtensionInitializeRequest
 //*  2015/02/06  Supragyan         Added condition for check AjaxPostBackElement in Fx_AjaxExtensionEndRequest
 //*  2015/02/09  Supragyan         Added condition for Trident on Internet Explorer
+//*  2015/09/09  Sandeep           Added condition code to detect IE-9, IE-10 and IE-11, to suppress double transmission
+//*  2016/01/12  Sai	           Changed interval in method window.setInterval(HttpPing, 5000)
+//*  2016/01/19  Sandeep           Implemented ResolveServerUrl method to resolve URL issue in javascript
+//*  2016/03/15  daisukenishino    Fix of issue that is occurred by IFRAME of IE11 correspondance
+//*  2016/03/17  Bhagya            Implemented code to resolve the progress dialog mask issue in IE9 or more and other browsers
 //**********************************************************************************
 
 function Fx_Document_OnLoad() {
@@ -52,7 +57,7 @@ function Fx_Document_OnLoad2() {
     //Fx_StandardStyleWindow();
 
     // Webサーバへ一定時間ごとにpingを行う
-    //window.setInterval(HttpPing, 5000);
+    //window.setInterval(HttpPing, 5 * 60 * 1000);
 }
 
 //// ---------------------------------------------------------------
@@ -165,6 +170,15 @@ function Fx_OnSubmit() {
         else if (navigator.appVersion.indexOf("MSIE 8.0") != -1) {
             // IE8.0では完全に有効
         }
+        else if (navigator.appVersion.indexOf("MSIE 9.0") != -1) {
+            // IE9.0で問題の報告を受けていません。 
+        }
+        else if (navigator.appVersion.indexOf("MSIE 10.0") != -1) {
+            // IE10.0で問題の報告を受けていません。 
+        }
+        else if (navigator.appVersion.indexOf("Trident/7") != -1) {
+            // IE11.0で問題があった場合、報告をお願いします。
+        } 
 
         if (document.readyState == "complete") {
 
@@ -445,7 +459,7 @@ function Fx_InitProgressDialog() {
     // imgを生成
     var _img = document.createElement("img");
 
-    _img.src = "/ProjectX_sample/Framework/Img/loading.gif";
+    _img.src = ResolveServerUrl("~/Framework/Img/loading.gif");
     _img.style.width = "50px";
     _img.style.height = "50px";
     _img.alt = "処理中画像";
@@ -722,6 +736,8 @@ function Fx_ShowModalScreen(url, style) {
         // 第2引数 = DialogFrame → DialogLoader.htmから起動するモーダル画面のURL
         // 第3引数 = 画面のスタイル(「項目1:値1;項目2:値2;…;項目n:値n」の形式) 
         var ret = window.showModalDialog(dialogFrameUrl.value, args, style);
+        ret = Fx_GetCookie("fx_window_returnValue");
+
     } finally {
         // マスクを外す。
         Fx_MaskOff();
@@ -754,8 +770,9 @@ function Fx_ShowModalScreen(url, style) {
         }
         else {
             // 当該画面が、モーダル画面の場合、自分を閉じる。
-            window.returnValue = "3";
-            window.close();
+            //window.returnValue = "3";
+            Fx_SetCookie("fx_window_returnValue", "3", "path=/");
+             window.close();
         }
     }
     else {
@@ -791,8 +808,8 @@ function Fx_CreateMask() {
 
     _div.style.top = "0px";
     _div.style.left = "0px";
-    _div.style.height = Fx_getContentsHeight(); //"100%";では、初期表示画面サイズになってしまう。
-    _div.style.width = Fx_getBrowserWidth(); //"100%";では、初期表示画面サイズになってしまう。
+    _div.style.height = Fx_getContentsHeight() + "px"; //"100%";では、初期表示画面サイズになってしまう。
+    _div.style.width = Fx_getBrowserWidth() + "px"; //"100%";では、初期表示画面サイズになってしまう。
     _div.style.position = "absolute";
 
     // 1000なら最前面だろうという仕様（ToMost相当が無い）
@@ -846,19 +863,22 @@ function Fx_CloseModalScreen() {
     if (closeFlag.value == "1") {
         // closeFlagが１の場合、自画面を閉じ、
         // 親画面でポストバック（後処理）を実行する。
-        window.returnValue = "1";
+        //window.returnValue = "1";
+        Fx_SetCookie("fx_window_returnValue", "1", "path=/");
         window.close();
     }
     else if (closeFlag.value == "2") {
         // closeFlagが２の場合、自画面を閉じ、
         // 親画面でポストバック（後処理）を実行しない。
-        window.returnValue = "2";
+        //window.returnValue = "2";
+        Fx_SetCookie("fx_window_returnValue", "2", "path=/");
         window.close();
     }
     else if (closeFlag.value == "3") {
         // closeFlagが３の場合、自画面を閉じ、
         // 親のモーダル画面も閉じる。
-        window.returnValue = "3";
+        //window.returnValue = "3";
+        Fx_SetCookie("fx_window_returnValue", "3", "path=/");
         window.close();
     }
 }
@@ -1214,3 +1234,15 @@ function Fx_getContentsHeight() {
     return Math.max.apply(null, [document.body.clientHeight, document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight]);
 }
 
+// ---------------------------------------------------------------
+// Resolves the path of a specified url based on the application server
+// ---------------------------------------------------------------
+// Parameter     － Relative url
+// Return value  － Resolved relative url
+// ---------------------------------------------------------------
+function ResolveServerUrl(url) {
+    if (url.indexOf("~/") == 0) {
+        url = baseUrl + url.substring(2);
+    }
+    return url;
+}

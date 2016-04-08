@@ -13,7 +13,7 @@ set ORG_PATH=%PATH%
 @rem --------------------------------------------------
 @rem Get the path to the executable file.
 @rem --------------------------------------------------
-set CURRENT_DIR=%~dp0
+set CURRENT_DIR="%~dp0"
 
 @rem --------------------------------------------------
 @rem Execution of the common processing.
@@ -24,13 +24,6 @@ rem --------------------------------------------------
 rem Batch build of WSClientWPF_sample.
 rem --------------------------------------------------
 %BUILDFILEPATH% %COMMANDLINE% "Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln"
-
-pause
-
-rem --------------------------------------------------
-rem Batch build of WSClientWPFbap_sample.
-rem --------------------------------------------------
-%BUILDFILEPATH% %COMMANDLINE% "Samples\WS_sample\WSClient_sample\WSClientWPFbap_sample\WSClientWPFbap_sample.sln"
 
 pause
 

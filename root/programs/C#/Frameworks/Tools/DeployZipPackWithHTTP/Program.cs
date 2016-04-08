@@ -59,7 +59,8 @@
 //*                                読み取り専用属性を消去する処理を追加。
 //*  2011/09/12  西野  大介        画面表示せず、ログ出力のみする例外処理方式を追加
 //*  2014/04/26  Sai              Replaced all the Japanese language in both UI and code with ResorceManager.GetString() method call
-//*  2014/05/12  Sai              Removed <start> and <End> tags, added check while reading FxBusinessMessageCulture from app.config file   
+//*  2014/05/12  Sai              Removed <start> and <End> tags, added check while reading FxBusinessMessageCulture from app.config file
+//*  2016/01/07  Sandeep          Comment out the DefaultWebProxy property, because there is no use of this property in the component   
 //**********************************************************************************
 
 using System;
@@ -1863,12 +1864,8 @@ namespace DeployZipPackWithHTTP
             }
             else if (entry.ProxyURL == null || entry.ProxyURL == "")
             {
-                // Proxyサーバなし（デフォルト）
-                //proxy = (WebProxy)GlobalProxySelection.Select;// 古い形式
-
-                proxy = (WebProxy)WebProxy.GetDefaultProxy();// 古い形式
-                // Internet Exploreの設定を使用する
-
+                // proxy = (WebProxy)WebProxy.GetDefaultProxy();// 古い形式
+                // 何もしない → DefaultWebProxyプロパティの値を使用する。
             }
             else
             {

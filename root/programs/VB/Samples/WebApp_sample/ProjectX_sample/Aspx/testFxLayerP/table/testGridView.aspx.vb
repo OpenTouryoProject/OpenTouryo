@@ -157,7 +157,7 @@ Public Partial Class Aspx_testFxLayerP_table_testGridView
 	''' <summary>DataSourceを生成</summary>
 	Private Sub CreateDataSource()
 		' Server.MapPathはアプリケーション ディレクトリを指す。
-		Dim di As New DirectoryInfo(Server.MapPath("/ProjectX_sample/Aspx/Common"))
+		Dim di As New DirectoryInfo(Server.MapPath("~/Aspx/Common"))
 		Dim fi As FileInfo() = di.GetFiles()
 
 		' Datatableに

@@ -12,7 +12,7 @@
 '*
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
-'*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+'*  2015/12/22 Sai         Modified ReadOnly property of the primary key column textbox to true.  
 '**********************************************************************************
 
 Imports MyType
@@ -250,7 +250,7 @@ Partial Public Class _TableName_Detail
 
         ' 主キー
         ' ControlComment:LoopStart-PKColumn
-        Me.txt_ColumnName_.[ReadOnly] = False
+        Me.txt_ColumnName_.[ReadOnly] = True
         ' ControlComment:LoopEnd-PKColumn
 
         ' 主キー以外

@@ -60,5 +60,14 @@ namespace Touryo.Infrastructure.Business.Resources {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message_SampleError .
+        /// </summary>
+        internal static string SAMPLE_ERROR {
+            get {
+                return ResourceManager.GetString("SAMPLE_ERROR", resourceCulture);
+            }
+        }
     }
 }

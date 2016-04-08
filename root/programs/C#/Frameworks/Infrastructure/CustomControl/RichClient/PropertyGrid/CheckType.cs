@@ -27,7 +27,7 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
+//*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
 //**********************************************************************************
 
 // System
@@ -50,7 +50,7 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         /// <summary>コンストラクタ</summary>
         public CheckType()
         {
-            this.IsIndispensabile = false;
+            this.IsIndispensable = false;
             this.IsHankaku = false;
             this.IsZenkaku = false;
             this.IsNumeric = false;
@@ -61,7 +61,7 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         }
 
         /// <summary>必須</summary>
-        public bool IsIndispensabile { get; set; }
+        public bool IsIndispensable { get; set; }
         /// <summary>半角</summary>
         public bool IsHankaku { get; set; }
         /// <summary>全角</summary>
@@ -89,7 +89,7 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         {
             int hc = 0;
 
-            if (this.IsIndispensabile) { hc += 1; }
+            if (this.IsIndispensable) { hc += 1; }
             if (this.IsHankaku) { hc += 4; }
             if (this.IsZenkaku) { hc += 2; }
             if (this.IsNumeric) { hc += 8; }
@@ -114,7 +114,7 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
             if (ct == null) { return false; }
 
             return
-                (this.IsIndispensabile == ct.IsIndispensabile)
+                (this.IsIndispensable == ct.IsIndispensable)
                 && (this.IsHankaku == ct.IsHankaku)
                 && (this.IsZenkaku == ct.IsZenkaku)
                 && (this.IsNumeric == ct.IsNumeric)

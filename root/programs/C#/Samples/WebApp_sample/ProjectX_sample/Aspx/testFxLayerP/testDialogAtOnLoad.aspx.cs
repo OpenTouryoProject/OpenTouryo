@@ -102,12 +102,12 @@ public partial class Aspx_testFxLayerP_testDialogAtOnLoad : MyBaseController
         else if (dialogAtOnLoad == "modal")
         {
             // 業務モーダル ダイアログ表示
-            this.ShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/testDialogAtOnLoad.aspx");
+            this.ShowModalScreen("~/Aspx/testFxLayerP/testDialogAtOnLoad.aspx");
         }
         else if (dialogAtOnLoad == "modaless")
         {
             // 業務モーダレス画面表示
-            this.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/testDialogAtOnLoad.aspx");
+            this.ShowNormalScreen("~/Aspx/testFxLayerP/testDialogAtOnLoad.aspx");
         }
     }
 
@@ -152,7 +152,7 @@ public partial class Aspx_testFxLayerP_testDialogAtOnLoad : MyBaseController
             else if (dialogAtOnLoad == "modal")
             {
                 // 業務モーダル ダイアログ表示
-                this.ShowModalScreen("/ProjectX_sample/Aspx/testFxLayerP/testDialogAtOnLoad.aspx");
+                this.ShowModalScreen("~/Aspx/testFxLayerP/testDialogAtOnLoad.aspx");
 
                 //→　ポストバックのオンロードでShowModalScreenは実行できない。
                 //    ShowModalScreenの後処理のポストバックで無限ループになる。
@@ -170,7 +170,7 @@ public partial class Aspx_testFxLayerP_testDialogAtOnLoad : MyBaseController
             else if (dialogAtOnLoad == "modaless")
             {
                 // 業務モーダレス画面表示
-                this.ShowNormalScreen("/ProjectX_sample/Aspx/testFxLayerP/testDialogAtOnLoad.aspx");
+                this.ShowNormalScreen("~/Aspx/testFxLayerP/testDialogAtOnLoad.aspx");
             }
         }        
     }
