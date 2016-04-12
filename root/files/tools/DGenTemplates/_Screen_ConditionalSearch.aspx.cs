@@ -101,15 +101,6 @@ public partial class _JoinTableName__Screen_ConditionalSearch : MyBaseController
 
     #region イベントハンドラ EVENT HANDLER
 
-    /// <summary>追加ボタン</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_btnInsert_Click(FxEventArgs fxEventArgs)
-    {
-        // 画面遷移（詳細表示）
-        return "_JoinTableName__Screen_Detail.aspx";
-    }
-
     /// <summary>検索ボタン</summary>
     /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
     /// <returns>URL</returns>

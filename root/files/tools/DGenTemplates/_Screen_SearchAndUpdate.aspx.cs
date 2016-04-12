@@ -189,15 +189,6 @@ public partial class _JoinTableName__Screen_SearchAndUpdate : MyBaseController
 
     #region CRUD USING BATCH UPDATE
 
-    /// <summary>追加ボタン</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_btnInsert_Click(FxEventArgs fxEventArgs)
-    {
-        // 画面遷移（詳細表示）
-        return "_JoinTableName__Screen_Detail.aspx";
-    }
-
     /// <summary>バッチ更新ボタン</summary>
     /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
     /// <returns>URL</returns>
