@@ -12,6 +12,11 @@
     <script type="text/javascript" src="/ProjectX_sample/Framework/js/common.js"></script>
     <script type="text/javascript" src="/ProjectX_sample/Framework/js/ie_key_event.js"></script>
     
+    <!-- Resolve URL in the javascript-->
+    <script type="text/javascript">
+        var baseUrl = "<%= ResolveUrl("~/") %>";
+    </script>
+
     <!-- onhelpイベントを無効にする。-->
     <script language="javascript" for="document" event="onhelp">
             event.returnValue = false;
