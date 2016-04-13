@@ -99,14 +99,6 @@ Partial Public Class _JoinTableName__Screen_ConditionalSearch
 
 #Region "イベントハンドラ EVENT HANDLER"
 
-    ''' <summary>追加ボタン</summary>
-    ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    ''' <returns>URL</returns>
-    Protected Function UOC_btnInsert_Click(ByVal fxEventArgs As FxEventArgs) As String
-        ' 画面遷移（詳細表示）
-        Return "_JoinTableName__Screen_Detail.aspx"
-    End Function
-
     ''' <summary>検索ボタン</summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
     ''' <returns>URL</returns>
