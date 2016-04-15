@@ -22,6 +22,7 @@
 //*  2016/01/19  Sandeep           Implemented ResolveServerUrl method to resolve URL issue in javascript
 //*  2016/03/15  daisukenishino    Fix of issue that is occurred by IFRAME of IE11 correspondance
 //*  2016/03/17  Bhagya            Implemented code to resolve the progress dialog mask issue in IE9 or more and other browsers
+//*  2016/04/15  Sandeep           Implemented cross-browser detection method, to suppress double transmission
 //**********************************************************************************
 
 function Fx_Document_OnLoad() {
@@ -58,6 +59,9 @@ function Fx_Document_OnLoad2() {
 
     // Webサーバへ一定時間ごとにpingを行う
     //window.setInterval(HttpPing, 5 * 60 * 1000);
+
+    // Cross-browser detection
+    Fx_WhichBrowser();
 }
 
 //// ---------------------------------------------------------------
@@ -156,8 +160,9 @@ function Fx_OnSubmit() {
 
     // ----------
 
-    if (navigator.appName == "Microsoft Internet Explorer" || navigator.appVersion.indexOf("Trident") != -1) {
-
+    if (Browser_IsIE) {
+        
+        // Detected browser is Internet Explorer
         // スレイプニルもこちらに含まれる。
 
         if (navigator.appVersion.indexOf("MSIE 6.0") != -1) {
@@ -178,7 +183,7 @@ function Fx_OnSubmit() {
         }
         else if (navigator.appVersion.indexOf("Trident/7") != -1) {
             // IE11.0で問題があった場合、報告をお願いします。
-        } 
+        }
 
         if (document.readyState == "complete") {
 
@@ -226,24 +231,17 @@ function Fx_OnSubmit() {
             return false;
         }
     }
-    else if (navigator.appName == "Netscape") {
-        // 実際には、Netscape、Firefox、Safari、Chromeのカバレージ
+    else if (Browser_IsEdge) {
 
-        // Netscapeはブラウザ側の機能で２重送信を抑止していたが、
-        // サポートがなくなったため、サポートしない。
-
-        // ブラウザがデフォルトでonSubmit×２を抑止している。
-        // ・Firefoxはブラウザ側の機能で２重送信を抑止している。
-        // ・Safariはブラウザ側の機能で２重送信を抑止している。
-        // ・Chromeはブラウザ側の機能で２重送信を抑止している。
+        // Detected browser is Edge
 
         if (document.readyState == "complete") {
-            // 実際には、Safari、Chromeのカバレージ
+
+            // 受信完了
 
             // Ajaxがないページ
             if (Ajax_IsProgressed == null || Ajax_IsProgressed == undefined) {
                 // 送信許可
-                Fx_SetProgressDialog();
                 return true;
             }
 
@@ -254,7 +252,7 @@ function Fx_OnSubmit() {
                 // Ajax有効で、処理中の場合
 
                 //                // 送信不許可
-                //                alert("二重送信です(Netscape + Ajax)");
+                //                alert("二重送信です(IE + Ajax)");
 
                 // → ダイアログ表示中は、pageRequestManagerの
                 //    initializeRequest、endRequestのコールバック
@@ -270,12 +268,71 @@ function Fx_OnSubmit() {
                 return true;
             }
         }
-        else if (document.readyState == null || document.readyState == undefined) {
+        else {
 
-            // 実際には、Firefoxのカバレージ
+            // 受信未完了
 
-            // FirefoxでFxの２重送信抑止機能をONにした場合、
-            // hrefのdoPostBackでPOSTできなくなる現象を確認した。  
+            //            // 送信不許可
+            //            alert("二重送信です(Edge)");
+
+            // → ダイアログ表示中は、pageRequestManagerの
+            //    initializeRequest、endRequestのコールバック
+            //    をブロックするのでコメントアウトした。
+            return false;
+        }
+    }
+    else if (Browser_IsChrome || Browser_IsSafari) {
+
+        // Detected browser is Chrome or Safari
+
+        if (document.readyState == "complete") {
+
+            // Ajaxがないページ
+            if (Ajax_IsProgressed == null || Ajax_IsProgressed == undefined) {
+                // 送信許可
+                Fx_SetProgressDialog();
+                return true;
+            }
+
+            // Ajaxでは、completeのままになるので、
+            // フラグでのチェックが必要になる。
+            if (Ajax_IsProgressed) {
+
+                // Ajax有効で、処理中の場合
+
+                //                // 送信不許可
+                //                alert("二重送信です(Safari、Chrome + Ajax)");
+
+                // → ダイアログ表示中は、pageRequestManagerの
+                //    initializeRequest、endRequestのコールバック
+                //    をブロックするのでコメントアウトした。
+                return false;
+            }
+            else {
+
+                // Ajax有効で、処理中でない場合
+
+                // 送信許可
+                Fx_SetProgressDialog();
+                return true;
+            }
+        }
+        else {
+
+            //            // 送信不許可
+            //            alert("二重送信です(Safari、Chrome)");
+
+            // → ダイアログ表示中は、pageRequestManagerの
+            //    initializeRequest、endRequestのコールバック
+            //    をブロックするのでコメントアウトした。
+            return false;
+        }
+    }
+    else if (Browser_IsFirefox) {
+
+        // Detected browser is Firefox
+
+        if (document.readyState == "complete") {
 
             // Ajaxがないページ
             if (Ajax_IsProgressed == null || Ajax_IsProgressed == undefined) {
@@ -306,15 +363,10 @@ function Fx_OnSubmit() {
                 Fx_SetProgressDialog();
                 return true;
             }
-
             // Firefoxの制限事項は、通常のポストバック中にajaxの２重送信を抑止できない。
             // 逆（ajax中に通常のポストバックの２重送信）は抑止できる。
-
         }
         else {
-
-            // 受信未完了（こちらは通過しない）
-            alert(document.readyState); // ← 故に、表示されない。
 
             //            // 送信不許可
             //            alert("二重送信です(Firefox)");
@@ -324,9 +376,10 @@ function Fx_OnSubmit() {
             //    をブロックするのでコメントアウトした。
             return false;
         }
-    }
-    else if (navigator.appName == "Opera") {
+    }    
+    else if (Browser_IsOpera) {
 
+        // Detected browser is Opera
         // Operaでは完全に有効
 
         // ただし、二重送信時のhrefのdoPostBackはハンドルできない。
@@ -772,7 +825,7 @@ function Fx_ShowModalScreen(url, style) {
             // 当該画面が、モーダル画面の場合、自分を閉じる。
             //window.returnValue = "3";
             Fx_SetCookie("fx_window_returnValue", "3", "path=/");
-             window.close();
+            window.close();
         }
     }
     else {
@@ -1245,4 +1298,44 @@ function ResolveServerUrl(url) {
         url = baseUrl + url.substring(2);
     }
     return url;
+}
+
+// ---------------------------------------------------------------
+//  Cross-browser detection function
+// ---------------------------------------------------------------
+
+// To store client browser information
+var Browser_IsIE = false;
+var Browser_IsEdge = false;
+var Browser_IsFirefox = false;
+var Browser_IsChrome = false;
+var Browser_IsOpera = false;
+var Browser_IsSafari = false;
+//var Browser_IsBlink = false;
+
+// ---------------------------------------------------------------
+// To detect client browser information
+// ---------------------------------------------------------------
+function Fx_WhichBrowser() {
+
+    // Value will true, when the client browser is Internet Explorer 6-11
+    Browser_IsIE = /*@cc_on!@*/false || !!document.documentMode;
+
+    // Value will true, when the client browser is Edge 20+
+    Browser_IsEdge = !Browser_IsIE && !!window.StyleMedia;
+
+    // Value will true, when the client browser is Firefox 1.0+
+    Browser_IsFirefox = typeof InstallTrigger !== 'undefined';
+
+    // Value will true, when the client browser is Chrome 1+
+    Browser_IsChrome = !!window.chrome && !!window.chrome.webstore;
+
+    // Value will true, when the client browser is Opera 8.0+
+    Browser_IsOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+    // Value will true, when the client browser is Safari 3+
+    Browser_IsSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+
+    // Value will true, when the client browser having Blink engine
+    //Browser_IsBlink = (Browser_IsChrome || Browser_IsOpera) && !!window.CSS;
 }
