@@ -23,12 +23,16 @@
 //*  2016/03/15  daisukenishino    Fix of issue that is occurred by IFRAME of IE11 correspondance
 //*  2016/03/17  Bhagya            Implemented code to resolve the progress dialog mask issue in IE9 or more and other browsers
 //*  2016/04/15  Sandeep           Implemented cross-browser detection method, to suppress double transmission
+//*  2016/04/20  Sandeep           Created form submission flag, to suppress double transmission
 //**********************************************************************************
 
 function Fx_Document_OnLoad() {
     // OnLoad処理を別スレッドで実行
     setTimeout("Fx_Document_OnLoad2()", 1);
 }
+
+// Form submission flag, to suppress double transmission
+var Form_IsSubmitted = false;
 
 // ---------------------------------------------------------------
 // ページがロードされた時に呼ばれる
@@ -62,6 +66,9 @@ function Fx_Document_OnLoad2() {
 
     // Cross-browser detection
     Fx_WhichBrowser();
+
+    // Reset the form submission flag.
+    Form_IsSubmitted = false;
 }
 
 //// ---------------------------------------------------------------
@@ -197,7 +204,7 @@ function Fx_OnSubmit() {
 
             // Ajaxでは、completeのままになるので、
             // フラグでのチェックが必要になる。
-            if (Ajax_IsProgressed) {
+            if (Ajax_IsProgressed || Form_IsSubmitted) {
 
                 // Ajax有効で、処理中の場合
 
@@ -215,6 +222,7 @@ function Fx_OnSubmit() {
 
                 // 送信許可
                 Fx_SetProgressDialog();
+                Form_IsSubmitted = true;
                 return true;
             }
         }
@@ -247,7 +255,7 @@ function Fx_OnSubmit() {
 
             // Ajaxでは、completeのままになるので、
             // フラグでのチェックが必要になる。
-            if (Ajax_IsProgressed) {
+            if (Ajax_IsProgressed || Form_IsSubmitted) {
 
                 // Ajax有効で、処理中の場合
 
@@ -265,6 +273,7 @@ function Fx_OnSubmit() {
 
                 // 送信許可
                 Fx_SetProgressDialog();
+                Form_IsSubmitted = true;
                 return true;
             }
         }
@@ -296,7 +305,7 @@ function Fx_OnSubmit() {
 
             // Ajaxでは、completeのままになるので、
             // フラグでのチェックが必要になる。
-            if (Ajax_IsProgressed) {
+            if (Ajax_IsProgressed || Form_IsSubmitted) {
 
                 // Ajax有効で、処理中の場合
 
@@ -314,6 +323,7 @@ function Fx_OnSubmit() {
 
                 // 送信許可
                 Fx_SetProgressDialog();
+                Form_IsSubmitted = true;
                 return true;
             }
         }
@@ -343,7 +353,7 @@ function Fx_OnSubmit() {
 
             // Ajaxでは、completeのままになるので、
             // フラグでのチェックが必要になる。
-            if (Ajax_IsProgressed) {
+            if (Ajax_IsProgressed || Form_IsSubmitted) {
 
                 // Ajax有効で、処理中の場合
 
@@ -361,6 +371,7 @@ function Fx_OnSubmit() {
 
                 // 送信許可
                 Fx_SetProgressDialog();
+                Form_IsSubmitted = true;
                 return true;
             }
             // Firefoxの制限事項は、通常のポストバック中にajaxの２重送信を抑止できない。
@@ -398,7 +409,7 @@ function Fx_OnSubmit() {
 
             // Ajaxでは、completeのままになるので、
             // フラグでのチェックが必要になる。
-            if (Ajax_IsProgressed) {
+            if (Ajax_IsProgressed || Form_IsSubmitted) {
 
                 // Ajax有効で、処理中の場合
 
@@ -416,6 +427,7 @@ function Fx_OnSubmit() {
 
                 // 送信許可
                 Fx_SetProgressDialog();
+                Form_IsSubmitted = true;
                 return true;
             }
         }
