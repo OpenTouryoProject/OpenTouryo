@@ -1084,6 +1084,9 @@ function Fx_AjaxExtensionEndRequest(sender, args) {
     // 二重送信フラグの設定
     Ajax_IsProgressed = false;
 
+    // Reset the form submission flag.
+    Form_IsSubmitted = false;
+
     // イベント発生元の要素を有効化
 
     if (AjaxPostBackElement) {
