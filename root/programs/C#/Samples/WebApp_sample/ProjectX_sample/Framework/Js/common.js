@@ -66,9 +66,6 @@ function Fx_Document_OnLoad2() {
 
     // Cross-browser detection
     Fx_WhichBrowser();
-
-    // Reset the form submission flag.
-    Form_IsSubmitted = false;
 }
 
 //// ---------------------------------------------------------------
