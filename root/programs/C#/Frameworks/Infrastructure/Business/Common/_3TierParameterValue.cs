@@ -29,7 +29,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2013/01/10  西野　大介        新規作成
-//*
+//*  2016/04/21  Shashikiran      Defined new dictionary parameter TargetTableNames for adding the multiple table names 
 //**********************************************************************************
 
 // System
@@ -98,7 +98,10 @@ namespace Touryo.Infrastructure.Business.Common
 
         /// <summary>追加・更新値</summary>
         public Dictionary<string, object> InsertUpdateValues;
-        
+
+        /// <summary>Target Table Name</summary>
+        public Dictionary<int,string> TargetTableNames;
+
         /// <summary>データテーブルの型情報</summary>
         /// <remarks>型付きデータテーブルのを指定可能にする</remarks>
         /// <example>typeof(xxxx.xxxDataTable)</example>

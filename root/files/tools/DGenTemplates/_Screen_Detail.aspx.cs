@@ -12,7 +12,8 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2015/12/22 Sai         Modified ReadOnly property of the primary key column textbox to true.  
+//*  2015/12/22 Sai          Modified ReadOnly property of the primary key column textbox to true.  
+//*  2016/04/28 Shashikiran  Modified UOC_btnUpdate_Click event to process multiple table update in single transaction
 //**********************************************************************************
 // System
 using System;
@@ -169,7 +170,7 @@ public partial class _JoinTableName__Screen_Detail : MyBaseController
 
         // 引数クラスを生成
         _3TierParameterValue parameterValue = new _3TierParameterValue(
-                this.ContentPageFileNoEx, fxEventArgs.ButtonID, "UpdateRecord",
+                this.ContentPageFileNoEx, fxEventArgs.ButtonID, "UpdateRecordDM",
                 (string)Session["DAP"], (MyUserInfo)this.UserInfo);
 
         //Initialize the data access procedure
@@ -177,45 +178,54 @@ public partial class _JoinTableName__Screen_Detail : MyBaseController
         // B layer Initialize
         _3TierEngine b = new _3TierEngine();
         Dictionary<string, object> UpdateWhereConditions = (Dictionary<string, object>)Session["PrimaryKeyAndTimeStamp"];
+        // Modifications for DM 
+        parameterValue.AndEqualSearchConditions = new Dictionary<string, object>();
+        //Declare InsertUpdateValue dictionary and add the values to it
+        parameterValue.InsertUpdateValues = new Dictionary<string, object>();
+        parameterValue.TargetTableNames = new Dictionary<int, string>();
+        //Declaring the table counter to add it to TargetTableNames Dictionary
+        int TableCounter = 0;
         #endregion
 
         // ControlComment:LoopStart-JoinTables
         #region  Set the values to be updated to the _TableName_. Then Update to database
+        TableCounter = TableCounter + 1;
         // Remove '_TableName__' from the PrimaryKeyandTimeStamp dictionary Key values so developer need not to change the values manually in Dao_TableName__S3_UPDATE.xml
-        parameterValue.AndEqualSearchConditions = new Dictionary<string, object>();
         foreach (string k in UpdateWhereConditions.Keys)
         {
-            if (k.Split('_')[0] == "_TableName_")
+            if (k.Contains("_TableName_"))
             {
-                parameterValue.AndEqualSearchConditions.Add(k.Split('_')[1], UpdateWhereConditions[k]);
+                //Check to avoid duplicate key addition
+                if (!parameterValue.AndEqualSearchConditions.ContainsKey(k.Replace("_TableName_" + "_", "")))
+                {
+                    parameterValue.AndEqualSearchConditions.Add(k.Replace("_TableName_" + "_", ""), UpdateWhereConditions[k]);
+                }
             }
         }
-        //Declare InsertUpdateValue dictionary and add the values to it
-        parameterValue.InsertUpdateValues = new Dictionary<string, object>();
-        // ControlComment:LoopStart-PKColumn
-        parameterValue.InsertUpdateValues.Add("_ColumnName_", this.txt_JoinTextboxColumnName_.Text);
-        // ControlComment:LoopEnd-PKColumn
+
         // ControlComment:LoopStart-ElseColumn
-        parameterValue.InsertUpdateValues.Add("_ColumnName_", this.txt_JoinTextboxColumnName_.Text);
+        parameterValue.InsertUpdateValues.Add("_JoinTextboxColumnName_", this.txt_JoinTextboxColumnName_.Text);
         // ControlComment:LoopEnd-ElseColumn  
 
         //Reset returnvalue with null;
         returnValue = null;
         //Name of the table  _TableName_
-        parameterValue.TableName = "_TableName_";
+        parameterValue.TargetTableNames.Add(TableCounter, "_TableName_");
+        #endregion
+        // ControlComment:LoopEnd-JoinTables
 
         // Run the Database access process
         returnValue =
            (_3TierReturnValue)b.DoBusinessLogic(
                (BaseParameterValue)parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
 
-        this.lblResult_TableName_.Text = returnValue.Obj.ToString() + " Data is Updated to the table: _TableName_";
-        #endregion
+        this.lblResult_TableName_.Text = returnValue.Obj.ToString() + " Table Data Updated Sucessfully";
 
-        // ControlComment:LoopEnd-JoinTables
+
+
         //Return empty string since there is no need to redirect to any other page.
         return string.Empty;
-    } 
+    }
     #endregion
 
     #region Delete Record
