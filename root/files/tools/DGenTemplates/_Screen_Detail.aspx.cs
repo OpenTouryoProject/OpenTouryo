@@ -158,54 +158,6 @@ public partial class _JoinTableName__Screen_Detail : MyBaseController
 
     #region 更新系 CRUD SYSTEM
 
-    #region Insert Record
-    /// <summary>追加ボタン</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_btnInsert_Click(FxEventArgs fxEventArgs)
-    {
-        #region  Create the instance of classes here
-        // 引数クラスを生成
-        _3TierParameterValue parameterValue = new _3TierParameterValue(
-                this.ContentPageFileNoEx, fxEventArgs.ButtonID, "InsertRecord",
-                (string)Session["DAP"], (MyUserInfo)this.UserInfo);
-
-        //Initialize the data access procedure
-        _3TierReturnValue returnValue = null;
-        // B layer Initialize
-        _3TierEngine b = new _3TierEngine();
-        #endregion
-
-        // ControlComment:LoopStart-JoinTables
-        #region  Set the values to be inserted into to the _TableName_ . Then insert into database
-        //Declare InsertUpdateValue dictionary and add the values to it
-        parameterValue.InsertUpdateValues = new Dictionary<string, object>();
-        // ControlComment:LoopStart-PKColumn
-        parameterValue.InsertUpdateValues.Add("_ColumnName_", this.txt_JoinTextboxColumnName_.Text);
-        // ControlComment:LoopEnd-PKColumn
-        // ControlComment:LoopStart-ElseColumn
-        parameterValue.InsertUpdateValues.Add("_ColumnName_", this.txt_JoinTextboxColumnName_.Text);
-        // ControlComment:LoopEnd-ElseColumn  
-
-        //Reset returnvalue with null;
-        returnValue = null;
-        //Name of the table  _TableName_
-        parameterValue.TableName = "_TableName_";
-
-        // Run the Database access process
-        returnValue =
-           (_3TierReturnValue)b.DoBusinessLogic(
-               (BaseParameterValue)parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
-
-        this.lblResult_TableName_.Text = returnValue.Obj.ToString() + " Data is Inserted into table: _TableName_";
-        #endregion
-
-        // ControlComment:LoopEnd-JoinTables
-        //Return empty string since there is no need to redirect to any other page.
-        return string.Empty;
-    }
-    #endregion
-
     #region Update Record
     /// <summary>更新ボタン</summary>
     /// <param name="fxEventArgs">イベントハンドラの共通引数</param>

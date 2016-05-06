@@ -21,7 +21,7 @@
     <asp:Button ID="btnEdit" runat="server" Text="Edit Record" />
     <asp:Button ID="btnUpdate" runat="server" Text="Update Record" />
     <asp:Button ID="btnDelete" runat="server" Text="Delete Record" />
-    <asp:Button ID="btnInsert" runat="server" Text="Insert New Record" /><br/>
+    <br/>
      Result ：<br />
      <!--  ControlComment:LoopStart-JoinTables-->
    <asp:Label ID="lblResult_TableName_" runat="server" ></asp:Label> <br />

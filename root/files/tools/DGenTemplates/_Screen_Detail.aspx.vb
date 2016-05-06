@@ -150,50 +150,6 @@ Partial Public Class _JoinTableName__Screen_Detail
 
 #Region "更新系 CRUD SYSTEM"
 
-#Region "Insert Record"
-    ''' <summary>追加ボタン</summary>
-    ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    ''' <returns>URL</returns>
-    Protected Function UOC_btnInsert_Click(ByVal fxEventArgs As FxEventArgs) As String
-        '#Region "Create the instance of classes here"
-        ' 引数クラスを生成
-        Dim parameterValue As New _3TierParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "InsertRecord", DirectCast(Session("DAP"), String), DirectCast(Me.UserInfo, MyUserInfo))
-
-        'Initialize the data access procedure
-        Dim returnValue As _3TierReturnValue = Nothing
-        ' B layer Initialize
-        Dim b As New _3TierEngine()
-        '#End Region
-
-        ' ControlComment:LoopStart-JoinTables
-        '#Region "Set the values to be inserted into to the _TableName_ . Then insert into database"
-        'Declare InsertUpdateValue dictionary and add the values to it
-        parameterValue.InsertUpdateValues = New Dictionary(Of String, Object)()
-        ' ControlComment:LoopStart-PKColumn
-        parameterValue.InsertUpdateValues.Add("_ColumnName_", Me.txt_JoinTextboxColumnName_.Text)
-        ' ControlComment:LoopEnd-PKColumn
-        ' ControlComment:LoopStart-ElseColumn
-        parameterValue.InsertUpdateValues.Add("_ColumnName_", Me.txt_JoinTextboxColumnName_.Text)
-        ' ControlComment:LoopEnd-ElseColumn  
-
-        'Reset returnvalue with null;
-        returnValue = Nothing
-        'Name of the table  _TableName_
-        parameterValue.TableName = "_TableName_"
-
-        ' Run the Database access process
-        returnValue = DirectCast(b.DoBusinessLogic(DirectCast(parameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.ReadCommitted), _3TierReturnValue)
-
-        Me.lblResult_TableName_.Text = returnValue.Obj.ToString() + " Data is Inserted into table: _TableName_"
-        '#End Region
-
-        ' ControlComment:LoopEnd-JoinTables
-        'Return empty string since there is no need to redirect to any other page.
-        Return String.Empty
-    End Function
-
-#End Region
-
 #Region "Update Record"
     ''' <summary>更新ボタン</summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
