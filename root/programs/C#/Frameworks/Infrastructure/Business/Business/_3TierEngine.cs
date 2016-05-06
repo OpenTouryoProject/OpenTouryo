@@ -39,6 +39,7 @@
 //*  2014/12/10  西野　大介        Implementations of the related check process has been changed for problem.
 //*                                Change the signature of the CRUD methods. "private" ---> "protected virtual"
 //*  2015/04/29  Sandeep          Modified the code of 'UOC_SelectMethod' to retrive 30 records instead of 31 records
+//*  2016/04/21  Shashikiran      Implemented 'UOC_UpdateRecordDM' method to perform multiple table update in single transaction 
 //**********************************************************************************
 
 // レイトバインド用
@@ -106,8 +107,8 @@ namespace Touryo.Infrastructure.Business.Business
         /// <remarks>Oracle用</remarks>
         private const string SELECT_PAGING_SQL_TEMPLATE_ORACLE =
             "SELECT {0} FROM ( SELECT {0}, ROW_NUMBER() OVER (ORDER BY \"{1}\" {2}) \"RNUM\" FROM {3} {4} ) WHERE \"RNUM\" BETWEEN {5} AND {6}";
-            //"SELECT {0} FROM ( SELECT {0}, ROW_NUMBER() OVER (ORDER BY \"{1}\" {2}) \"RNUM\" FROM \"{3}\" {4} ) WHERE \"RNUM\" BETWEEN {5} AND {6}";
-            
+        //"SELECT {0} FROM ( SELECT {0}, ROW_NUMBER() OVER (ORDER BY \"{1}\" {2}) \"RNUM\" FROM \"{3}\" {4} ) WHERE \"RNUM\" BETWEEN {5} AND {6}";
+
         /// <summary>Selectpaging query from Mysql Database</summary>
         private const string SELECT_PAGING_MYSQL_TEMPLATE =
             "SELECT * FROM(SELECT * FROM ( SELECT *,  @i := @i + 1 AS RESULT FROM {3},(SELECT @i := 0) TEMP ORDER BY \"{1}\"  {2}) TEMP1 {4})TEMP3 WHERE RESULT BETWEEN {5} AND {6}";
@@ -1202,6 +1203,110 @@ namespace Touryo.Infrastructure.Business.Business
             // 件数を返却
             returnValue.Obj = i;
 
+            // ↑業務処理-----------------------------------------------------
+        }
+
+        /// <summary>Implementing Update process of Multiple tables in Single Transaction</summary>
+        /// <param name="parameterValue">Argument class</param>
+        protected virtual void UOC_UpdateRecordDM(_3TierParameterValue parameterValue)
+        {
+            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            _3TierReturnValue returnValue = new _3TierReturnValue();
+            this.ReturnValue = returnValue;
+
+            // 関連チェック処理
+            this.UOC_RelatedCheck(parameterValue);
+
+            // ↓業務処理-----------------------------------------------------
+
+            int i = 0; // Number count of row update
+
+            // Loop through multiple tables for update operation
+            foreach (string tableName in parameterValue.TargetTableNames.Values)
+            {
+                // 共通Dao
+                CmnDao cmnDao = new CmnDao(this.GetDam());
+
+                // AndEqualSearchConditions（主キー
+                foreach (string k in parameterValue.AndEqualSearchConditions.Keys)
+                {
+                    // nullチェック（null相当を要検討
+                    if (parameterValue.AndEqualSearchConditions[k] == null)
+                    {
+                        // == null
+                    }
+                    else
+                    {
+                        // != null
+
+                        //  文字列の場合の扱い
+                        if (parameterValue.AndEqualSearchConditions[k] is string)
+                        {
+                            if (!string.IsNullOrEmpty((string)parameterValue.AndEqualSearchConditions[k]))
+                            {
+                                // パラメタ指定
+                                cmnDao.SetParameter(k, parameterValue.AndEqualSearchConditions[k]);
+                            }
+                        }
+                        else
+                        {
+                            // パラメタ指定
+                            cmnDao.SetParameter(k, parameterValue.AndEqualSearchConditions[k]);
+                        }
+                    }
+                }
+
+                // 更新値
+                // InsertUpdateValues
+                foreach (string k in parameterValue.InsertUpdateValues.Keys)
+                {
+                    // nullチェック（null相当を要検討
+                    if (parameterValue.InsertUpdateValues[k] == null)
+                    {
+                        // == null
+                    }
+                    else
+                    {
+                        // != null
+
+                        // 文字列の場合の扱い
+                        if (parameterValue.InsertUpdateValues[k] is string)
+                        {
+                            // パラメタ指定
+                            if (k.Contains(tableName))
+                            {
+                                // Setting up parameters by removing tablename from the alias
+                                cmnDao.SetParameter(
+                                    this.UpdateParamHeader + k.Remove(0, (tableName + "_").Length) + this.UpdateParamFooter,
+                                    parameterValue.InsertUpdateValues[k]);
+                            }
+
+                        }
+                        else
+                        {
+                            // パラメタ指定
+                            if (k.Contains(tableName))
+                            {
+                                // Setting up parameters by removing tablename from the alias
+                                cmnDao.SetParameter(
+                                    this.UpdateParamHeader + k.Remove(0, (tableName + "_").Length) + this.UpdateParamFooter,
+                                    parameterValue.InsertUpdateValues[k]);
+                            }
+                        }
+                    }
+                }
+
+                // SQLを設定して
+                cmnDao.SQLFileName =
+                    this.DaoClassNameHeader + tableName + this.DaoClassNameFooter
+                    + "_" + this.MethodNameHeaderS + this.MethodLabel_Upd + this.MethodNameFooterS + ".xml";
+
+                // 更新処理を実行
+                i += cmnDao.ExecInsUpDel_NonQuery();
+
+            }
+
+            returnValue.Obj = i;
             // ↑業務処理-----------------------------------------------------
         }
 
