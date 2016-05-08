@@ -151,13 +151,10 @@ function Fx_OnSubmit() {
     // ・ASP.NET Ajax Extension
     // のどちらも、通過する。
 
-    // ・IE6.0のhrefのdoPostBackだと動かない。
-    // ・OperaのhrefのdoPostBack（二重送信時限定）だと動かない。
-
-    // alert(navigator.appName);
-    // alert(navigator.appVersion);
-
     // ----------
+
+    // In Chrome, Safari and Firefox, document.readyState always returns complete
+    // Hence double transmission is prevented using Form_IsSubmitted flag
 
     // ↑Operaの場合、ポスト後直ちにタイマーが無効になるので、実質機能しない。
     //   ※ ただし、Ajaxの場合は、タイマーが無効にならない。
@@ -197,19 +194,11 @@ function Fx_OnSubmit() {
             // フラグでのチェックが必要になる。
             if (Ajax_IsProgressed) {
 
-                // Ajax有効で、処理中の場合
-
-                //                // 送信不許可
-                //                alert("二重送信です(IE + Ajax)");
-
-                // → ダイアログ表示中は、pageRequestManagerの
-                //    initializeRequest、endRequestのコールバック
-                //    をブロックするのでコメントアウトした。
+                // An Ajax request is processing
+                // Prevent other transmissions
                 return false;
             }
             else {
-
-                // Ajax有効で、処理中でない場合
 
                 // 送信許可
                 Fx_SetProgressDialog();
@@ -219,13 +208,7 @@ function Fx_OnSubmit() {
         else {
 
             // 受信未完了
-
-            //            // 送信不許可
-            //            alert("二重送信です(IE)");
-
-            // → ダイアログ表示中は、pageRequestManagerの
-            //    initializeRequest、endRequestのコールバック
-            //    をブロックするのでコメントアウトした。
+            // Prevent other transmissions
             return false;
         }
     }
@@ -241,19 +224,11 @@ function Fx_OnSubmit() {
             // フラグでのチェックが必要になる。
             if (Ajax_IsProgressed) {
 
-                // Ajax有効で、処理中の場合
-
-                //                // 送信不許可
-                //                alert("二重送信です(IE + Ajax)");
-
-                // → ダイアログ表示中は、pageRequestManagerの
-                //    initializeRequest、endRequestのコールバック
-                //    をブロックするのでコメントアウトした。
+                // An Ajax request is processing
+                // Prevent other transmissions
                 return false;
             }
             else {
-
-                // Ajax有効で、処理中でない場合
 
                 // 送信許可
                 Fx_SetProgressDialog();
@@ -263,13 +238,7 @@ function Fx_OnSubmit() {
         else {
 
             // 受信未完了
-
-            //            // 送信不許可
-            //            alert("二重送信です(Edge)");
-
-            // → ダイアログ表示中は、pageRequestManagerの
-            //    initializeRequest、endRequestのコールバック
-            //    をブロックするのでコメントアウトした。
+            // Prevent other transmissions
             return false;
         }
     }
@@ -277,84 +246,40 @@ function Fx_OnSubmit() {
 
         // Detected browser is Chrome or Safari
 
-        if (document.readyState == "complete") {
+        if (Form_IsSubmitted) {
 
-            // Ajaxでは、completeのままになるので、
-            // フラグでのチェックが必要になる。
-            if (Ajax_IsProgressed || Form_IsSubmitted) {
-
-                // Ajax有効で、処理中の場合
-
-                //                // 送信不許可
-                //                alert("二重送信です(Safari、Chrome + Ajax)");
-
-                // → ダイアログ表示中は、pageRequestManagerの
-                //    initializeRequest、endRequestのコールバック
-                //    をブロックするのでコメントアウトした。
-                return false;
-            }
-            else {
-
-                // Ajax有効で、処理中でない場合
-
-                // 送信許可
-                Fx_SetProgressDialog();
-                Form_IsSubmitted = true;
-                return true;
-            }
+            // A postback or an Ajax request is processing
+            // Prevent other transmissions
+            return false;
         }
         else {
 
-            //            // 送信不許可
-            //            alert("二重送信です(Safari、Chrome)");
+            // 送信許可
+            Fx_SetProgressDialog();
 
-            // → ダイアログ表示中は、pageRequestManagerの
-            //    initializeRequest、endRequestのコールバック
-            //    をブロックするのでコメントアウトした。
-            return false;
+            // Set double submission prevention flag
+            Form_IsSubmitted = true;
+            return true;
         }
     }
     else if (Browser_IsFirefox) {
 
         // Detected browser is Firefox
 
-        if (document.readyState == "complete") {
+        if (Form_IsSubmitted) {
 
-            // Ajaxでは、completeのままになるので、
-            // フラグでのチェックが必要になる。
-            if (Ajax_IsProgressed || Form_IsSubmitted) {
-
-                // Ajax有効で、処理中の場合
-
-                //                // 送信不許可
-                //                alert("二重送信です(Firefox + Ajax)");
-
-                // → ダイアログ表示中は、pageRequestManagerの
-                //    initializeRequest、endRequestのコールバック
-                //    をブロックするのでコメントアウトした。
-                return false;
-            }
-            else {
-
-                // Ajax有効で、処理中でない場合
-
-                // 送信許可
-                Fx_SetProgressDialog();
-                Form_IsSubmitted = true;
-                return true;
-            }
-            // Firefoxの制限事項は、通常のポストバック中にajaxの２重送信を抑止できない。
-            // 逆（ajax中に通常のポストバックの２重送信）は抑止できる。
+            // A postback or an Ajax request is processing
+            // Prevent other transmissions
+            return false;
         }
         else {
 
-            //            // 送信不許可
-            //            alert("二重送信です(Firefox)");
+            // 送信許可
+            Fx_SetProgressDialog();
 
-            // → ダイアログ表示中は、pageRequestManagerの
-            //    initializeRequest、endRequestのコールバック
-            //    をブロックするのでコメントアウトした。
-            return false;
+            // Set double submission prevention flag
+            Form_IsSubmitted = true;
+            return true;
         }
     }    
     else if (Browser_IsOpera) {
@@ -371,38 +296,23 @@ function Fx_OnSubmit() {
 
             // Ajaxでは、completeのままになるので、
             // フラグでのチェックが必要になる。
-            if (Ajax_IsProgressed || Form_IsSubmitted) {
+            if (Ajax_IsProgressed) {
 
-                // Ajax有効で、処理中の場合
-
-                //                // 送信不許可
-                //                alert("二重送信です(Opera + Ajax)");
-
-                // → ダイアログ表示中は、pageRequestManagerの
-                //    initializeRequest、endRequestのコールバック
-                //    をブロックするのでコメントアウトした。
+                // An Ajax request is processing
+                // Prevent other transmissions
                 return false;
             }
             else {
 
-                // Ajax有効で、処理中でない場合
-
                 // 送信許可
                 Fx_SetProgressDialog();
-                Form_IsSubmitted = true;
                 return true;
             }
         }
         else {
 
             // 受信未完了
-
-            //            // 送信不許可
-            //            alert("二重送信です(Opera)");
-
-            // → ダイアログ表示中は、pageRequestManagerの
-            //    initializeRequest、endRequestのコールバック
-            //    をブロックするのでコメントアウトした。
+            // Prevent other transmissions
             return false;
         }
     }
