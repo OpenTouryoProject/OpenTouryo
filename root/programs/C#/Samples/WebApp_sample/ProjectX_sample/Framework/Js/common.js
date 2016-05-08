@@ -193,15 +193,9 @@ function Fx_OnSubmit() {
 
             // 受信完了
 
-            // Ajaxがないページ
-            if (Ajax_IsProgressed == null || Ajax_IsProgressed == undefined) {
-                // 送信許可
-                return true;
-            }
-
             // Ajaxでは、completeのままになるので、
             // フラグでのチェックが必要になる。
-            if (Ajax_IsProgressed || Form_IsSubmitted) {
+            if (Ajax_IsProgressed) {
 
                 // Ajax有効で、処理中の場合
 
@@ -219,7 +213,6 @@ function Fx_OnSubmit() {
 
                 // 送信許可
                 Fx_SetProgressDialog();
-                Form_IsSubmitted = true;
                 return true;
             }
         }
@@ -244,15 +237,9 @@ function Fx_OnSubmit() {
 
             // 受信完了
 
-            // Ajaxがないページ
-            if (Ajax_IsProgressed == null || Ajax_IsProgressed == undefined) {
-                // 送信許可
-                return true;
-            }
-
             // Ajaxでは、completeのままになるので、
             // フラグでのチェックが必要になる。
-            if (Ajax_IsProgressed || Form_IsSubmitted) {
+            if (Ajax_IsProgressed) {
 
                 // Ajax有効で、処理中の場合
 
@@ -270,7 +257,6 @@ function Fx_OnSubmit() {
 
                 // 送信許可
                 Fx_SetProgressDialog();
-                Form_IsSubmitted = true;
                 return true;
             }
         }
@@ -292,13 +278,6 @@ function Fx_OnSubmit() {
         // Detected browser is Chrome or Safari
 
         if (document.readyState == "complete") {
-
-            // Ajaxがないページ
-            if (Ajax_IsProgressed == null || Ajax_IsProgressed == undefined) {
-                // 送信許可
-                Fx_SetProgressDialog();
-                return true;
-            }
 
             // Ajaxでは、completeのままになるので、
             // フラグでのチェックが必要になる。
@@ -340,13 +319,6 @@ function Fx_OnSubmit() {
         // Detected browser is Firefox
 
         if (document.readyState == "complete") {
-
-            // Ajaxがないページ
-            if (Ajax_IsProgressed == null || Ajax_IsProgressed == undefined) {
-                // 送信許可
-                Fx_SetProgressDialog();
-                return true;
-            }
 
             // Ajaxでは、completeのままになるので、
             // フラグでのチェックが必要になる。
@@ -396,13 +368,6 @@ function Fx_OnSubmit() {
         if (document.readyState == "complete") {
 
             // 受信完了
-
-            // Ajaxがないページ
-            if (Ajax_IsProgressed == null || Ajax_IsProgressed == undefined) {
-                // 送信許可
-                Fx_SetProgressDialog();
-                return true;
-            }
 
             // Ajaxでは、completeのままになるので、
             // フラグでのチェックが必要になる。
