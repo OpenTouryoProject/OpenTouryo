@@ -285,35 +285,21 @@ function Fx_OnSubmit() {
     else if (Browser_IsOpera) {
 
         // Detected browser is Opera
-        // Operaでは完全に有効
 
-        // ただし、二重送信時のhrefのdoPostBackはハンドルできない。
-        // しかし、こちらは、ブラウザ側の機能で抑止している模様。
+        if (Form_IsSubmitted) {
 
-        if (document.readyState == "complete") {
-
-            // 受信完了
-
-            // Ajaxでは、completeのままになるので、
-            // フラグでのチェックが必要になる。
-            if (Ajax_IsProgressed) {
-
-                // An Ajax request is processing
-                // Prevent other transmissions
-                return false;
-            }
-            else {
-
-                // 送信許可
-                Fx_SetProgressDialog();
-                return true;
-            }
+            // A postback or an Ajax request is processing
+            // Prevent other transmissions
+            return false;
         }
         else {
 
-            // 受信未完了
-            // Prevent other transmissions
-            return false;
+            // 送信許可
+            Fx_SetProgressDialog();
+
+            // Set double submission prevention flag
+            Form_IsSubmitted = true;
+            return true;
         }
     }
     else {
