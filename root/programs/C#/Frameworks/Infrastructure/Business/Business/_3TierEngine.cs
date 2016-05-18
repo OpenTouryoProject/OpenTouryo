@@ -39,7 +39,8 @@
 //*  2014/12/10  西野　大介        Implementations of the related check process has been changed for problem.
 //*                                Change the signature of the CRUD methods. "private" ---> "protected virtual"
 //*  2015/04/29  Sandeep          Modified the code of 'UOC_SelectMethod' to retrive 30 records instead of 31 records
-//*  2016/04/21  Shashikiran      Implemented 'UOC_UpdateRecordDM' method to perform multiple table update in single transaction 
+//*  2016/04/21  Shashikiran      Implemented 'UOC_UpdateRecordDM' method to perform multiple table update in single transaction
+//*  2016/05/10  Shashikiran      Implemented 'UOC_BatchUpdateDM' method to perform batch update in single transaction 
 //**********************************************************************************
 
 // レイトバインド用
@@ -1309,6 +1310,74 @@ namespace Touryo.Infrastructure.Business.Business
             returnValue.Obj = i;
             // ↑業務処理-----------------------------------------------------
         }
+
+        /// <summary>Implementing Batch Update process of Multiple tables in Single Transaction</summary>
+        /// <param name="parameterValue">Argument class</param>
+        protected virtual void UOC_BatchUpdateDM(_3TierParameterValue parameterValue)
+        {
+            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            _3TierReturnValue returnValue = new _3TierReturnValue();
+            this.ReturnValue = returnValue;
+
+            // 関連チェック処理
+            this.UOC_RelatedCheck(parameterValue);
+
+            int i = 0; // Number count of row update
+            // ↓業務処理-----------------------------------------------------
+            foreach (string tableName in parameterValue.TargetTableNames.Values)
+            {
+                // 共通Dao
+                CmnDao cmnDao = new CmnDao(this.GetDam());
+
+                DataTable dt = (DataTable)parameterValue.Obj;
+
+                // バッチ更新
+                foreach (DataRow dr in dt.Rows)
+                {
+                    switch (dr.RowState)
+                    {
+                        case DataRowState.Modified: // 更新
+
+                            // SQLを設定して
+                            cmnDao.SQLFileName =
+                                this.DaoClassNameHeader + tableName + this.DaoClassNameFooter
+                                + "_" + this.MethodNameHeaderS + this.MethodLabel_Upd + this.MethodNameFooterS + ".xml";
+
+                            // パラメタ指定
+                            foreach (DataColumn dc in dt.Columns)
+                            {
+                                // 主キー・タイムスタンプ列の設定はUP側で。
+                                // また、空文字列も通常の値と同一に扱う。
+                                if (parameterValue.AndEqualSearchConditions.ContainsKey(dc.ColumnName))
+                                {
+                                    // Where条件は、DataRowVersion.Originalを付与
+                                    // Setting up parameters by removing tablename from the alias
+                                    cmnDao.SetParameter(dc.ColumnName.Replace(tableName + "_", ""), dr[dc, DataRowVersion.Original]);
+                                }
+                                else
+                                {
+                                    // Setting up parameters by removing tablename from the alias
+                                    cmnDao.SetParameter(
+                                        this.UpdateParamHeader + dc.ColumnName.Replace(tableName + "_", "") + this.UpdateParamFooter, dr[dc]);
+                                }
+                            }
+
+                            // 更新処理を実行
+                            i += cmnDao.ExecInsUpDel_NonQuery();
+
+                            break;
+                        default: // 上記以外
+                            // なにもしない。
+                            break;
+                    }
+                }
+            }
+            // 件数を返却
+            returnValue.Obj = i;
+
+            // ↑業務処理-----------------------------------------------------
+        }
+
 
         #endregion
 
