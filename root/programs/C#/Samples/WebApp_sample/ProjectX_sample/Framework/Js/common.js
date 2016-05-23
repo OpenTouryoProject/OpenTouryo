@@ -1212,10 +1212,3 @@ function Fx_WhichBrowser() {
     // Value will true, when the client browser having Blink engine
     //Browser_IsBlink = (Browser_IsChrome || Browser_IsOpera) && !!window.CSS;
 }
-
-// ---------------------------------------------------------------
-// Prevents the F1 key event
-// ---------------------------------------------------------------
-window.onhelp = function () {
-    return false;
-}
