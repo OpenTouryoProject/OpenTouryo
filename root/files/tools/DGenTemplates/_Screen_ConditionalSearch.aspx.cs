@@ -12,7 +12,7 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//*  2016/05/12  Shashikiran       Added UOC_gvwGridView1_PageIndexChanging function to handle Gridview Paging event
 //**********************************************************************************
 // System
 using System;
@@ -217,6 +217,17 @@ public partial class _JoinTableName__Screen_ConditionalSearch : MyBaseController
     {
         //Screen Transition is required to show more
         return "_JoinTableName__Screen_Detail.aspx";
+    }
+
+    /// <summary>gvwGridView1 Paging Event</summary>
+    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+    /// <returns>URL</returns>
+    protected string UOC_gvwGridView1_PageIndexChanging(FxEventArgs fxEventArgs, GridViewPageEventArgs e)
+    {
+        this.gvwGridView1.PageIndex = e.NewPageIndex;
+        this.gvwGridView1.DataSource = (DataTable)Session["SearchResult"];
+        this.gvwGridView1.DataBind();
+        return "";
     }
 
     #endregion
