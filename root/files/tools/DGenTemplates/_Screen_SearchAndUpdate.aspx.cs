@@ -213,8 +213,6 @@ public partial class _JoinTableName__Screen_SearchAndUpdate : MyBaseController
         int TableCounter = 0;
         //Keep the copy of the table in session because change in the column name causes the problem in the temperory update after batch update. So keep the copy of the table.
         DataTable dtSession = ((DataTable)Session["SearchResult"]).Copy();
-          // to change the column names of table as per Table we should have copy of dtSession table.
-        DataTable dt = dtSession.Copy();
         #endregion
 
         // ControlComment:LoopStart-JoinTables
@@ -224,7 +222,7 @@ public partial class _JoinTableName__Screen_SearchAndUpdate : MyBaseController
       
         #region This is much needed to handle the duplicate column issue while udpating  _TableName_ using batch update
         TableCounter = TableCounter + 1;
-        foreach (DataColumn dc in dt.Columns)
+        foreach (DataColumn dc in dtSession.Columns)
         {
             //Replace "." in column names of other tables with "_". This is needed becuase if columns are having "." then we get sql error, so we need to replace "." with "_"
             dc.ColumnName = dc.ColumnName.Replace('.', '_');
@@ -252,7 +250,7 @@ public partial class _JoinTableName__Screen_SearchAndUpdate : MyBaseController
         // ControlComment:LoopEnd-JoinTables
 
        // DataTableを設定
-       parameterValue.Obj = dt;
+       parameterValue.Obj = dtSession;
 
       // Run the Database access process       
      returnValue =
@@ -261,8 +259,6 @@ public partial class _JoinTableName__Screen_SearchAndUpdate : MyBaseController
 
         // Disable the button
         this.btnBatUpd.Enabled = false;
-        // Keep the original session table with actual column names.
-        Session["SearchResult"] = dtSession;
         //No Screen transition
         return string.Empty;
     }
