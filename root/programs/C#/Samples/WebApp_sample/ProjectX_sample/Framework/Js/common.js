@@ -164,7 +164,6 @@ function Fx_OnSubmit() {
     if (Browser_IsIE) {
         
         // Detected browser is Internet Explorer
-        // スレイプニルもこちらに含まれる。
 
         if (navigator.appVersion.indexOf("MSIE 6.0") != -1) {
             // IE6.0では、hrefのdoPostBackの２重送信を抑止できない。
