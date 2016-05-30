@@ -156,9 +156,6 @@ function Fx_OnSubmit() {
     // In Chrome, Safari and Firefox, document.readyState always returns complete
     // Hence double transmission is prevented using Form_IsSubmitted flag
 
-    // ↑Operaの場合、ポスト後直ちにタイマーが無効になるので、実質機能しない。
-    //   ※ ただし、Ajaxの場合は、タイマーが無効にならない。
-
     // ----------
 
     if (Browser_IsIE) {
