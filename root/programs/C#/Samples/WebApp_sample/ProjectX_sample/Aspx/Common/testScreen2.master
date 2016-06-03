@@ -17,11 +17,6 @@
         var baseUrl = "<%= ResolveUrl("~/") %>";
     </script>
     
-    <!-- onhelpイベントを無効にする。-->
-    <script language="javascript" for="document" event="onhelp">
-            event.returnValue = false;
-    </script>
-    
     <!-- IE8をIE7互換モードで動作させる -->
     <!--meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /-->
     
