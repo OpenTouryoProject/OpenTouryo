@@ -37,6 +37,7 @@
 //*  21/08/2015   Sandeep        Modified code to call layerD of AsynProcessingService instead of do business logic.
 //*  28/08/2015   Sandeep        Resolved transaction timeout issue by using DamKeyForABT and DamKeyForAMT properties.
 //*  07/06/2016   Sandeep        Implemented code that respond to various test cases, other than success state.
+//*  08/06/2016   Sandeep        Implemented method to update the command of selected task.
 //**********************************************************************************
 
 // System
@@ -162,15 +163,8 @@ namespace AsyncSvc_sample
         /// <param name="userReturnValue">asynchronous return value</param>
         private void ResumeProcessing(int taskID, AsyncProcessingServiceReturnValue userReturnValue)
         {
-            // Sets parameters of AsyncProcessingServiceParameterValue to resume asynchronous process in the middle of the processing.
-            AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "UpdateTaskCommand", "UpdateTaskCommand", "SQL",
-                                                                         new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
-            asyncParameterValue.TaskId = taskID;
-            asyncParameterValue.CommandId = 0;
-
-            // Calls data access part of asynchronous processing service.
-            LayerD myDao = new LayerD(this.GetDam(this.DamKeyforAMT));
-            myDao.UpdateTaskCommand(asyncParameterValue, userReturnValue);
+            // Reset the command of selected task.
+            this.UpdateTaskCommand(taskID, 0, userReturnValue);
         }
 
         /// <summary>
@@ -261,10 +255,12 @@ namespace AsyncSvc_sample
                         if (ProgressRate == STOP_STATE)
                         {
                             // Update STOP command to database
+                            this.UpdateTaskCommand(taskID, (int)AsyncProcessingServiceParameterValue.AsyncCommand.Stop, userReturnValue);
                         }
                         else if (ProgressRate == ABORT_STATE)
                         {
                             // Update ABORT command to database
+                            this.UpdateTaskCommand(taskID, (int)AsyncProcessingServiceParameterValue.AsyncCommand.Abort, userReturnValue);
                         }
                         else if (ProgressRate == SUCCESS_STATE)
                         {
@@ -292,6 +288,25 @@ namespace AsyncSvc_sample
             // Generate new progress rate
             Random randProgressRate = new Random();
             return randProgressRate.Next(lastProgressRate + 1, SUCCESS_STATE + 1);
+        }
+
+        /// <summary>
+        ///  Updates the command of selected task
+        /// </summary>
+        /// <param name="taskID">Task ID</param>
+        /// <param name="commandId">Command ID</param>
+        /// <param name="userReturnValue">user parameter value</param>
+        private void UpdateTaskCommand(int taskID, int commandId, AsyncProcessingServiceReturnValue userReturnValue)
+        {
+            // Sets parameters of AsyncProcessingServiceParameterValue to update the command of selected task.
+            AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "UpdateTaskCommand", "UpdateTaskCommand", "SQL",
+                                                                         new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
+            asyncParameterValue.TaskId = taskID;
+            asyncParameterValue.CommandId = commandId;
+
+            // Calls data access part of asynchronous processing service.
+            LayerD myDao = new LayerD(this.GetDam(this.DamKeyforAMT));
+            myDao.UpdateTaskCommand(asyncParameterValue, userReturnValue);
         }
 
         #endregion
