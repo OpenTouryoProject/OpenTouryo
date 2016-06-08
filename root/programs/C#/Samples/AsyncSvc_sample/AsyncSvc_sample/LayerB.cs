@@ -36,6 +36,7 @@
 //*                              Implemented code to resume asynchronous process in the middle of the processing.
 //*  21/08/2015   Sandeep        Modified code to call layerD of AsynProcessingService instead of do business logic.
 //*  28/08/2015   Sandeep        Resolved transaction timeout issue by using DamKeyForABT and DamKeyForAMT properties.
+//*  07/06/2016   Sandeep        Implemented code that respond to various test cases, other than success state.
 //**********************************************************************************
 
 // System
@@ -74,6 +75,14 @@ namespace AsyncSvc_sample
 
         // Number of seconds
         private int NumberOfSeconds;
+
+        // Task progress rate
+        private int ProgressRate;
+
+        // Constant values
+        const int STOP_STATE = 3;
+        const int ABORT_STATE = 10;
+        const int SUCCESS_STATE = 100;
 
         #endregion
 
@@ -202,11 +211,16 @@ namespace AsyncSvc_sample
             {
                 // Retry task: to resume asynchronous process in the middle of the processing.
                 this.ResumeProcessing(userParameterValue.TaskId, userReturnValue);
+
+                // Updated progress rate will be taken as random number.
+                ProgressRate = this.GenerateProgressRate(ProgressRate);
             }
             else
             {
                 // Otherwise, implement code to initiating a new task. 
                 //...
+                // Hence, initializing progress rate to zero.
+                ProgressRate = 0;
             }
 
             // Updates the progress rate and handles abnormal termination of the process.
@@ -221,35 +235,64 @@ namespace AsyncSvc_sample
         private void Update(int taskID, AsyncProcessingServiceReturnValue userReturnValue)
         {
             // Place the following statements in the loop, till the completion of task.
-            // AsyncProcess: Loop-Start
-
-            // Get command information from database to check for retry.
-            this.GetCommandValue(taskID, userReturnValue);
-
-            switch (userReturnValue.CommandId)
+            while (true)
             {
-                case (int)AsyncProcessingServiceParameterValue.AsyncCommand.Stop:
-                    // If you want to retry, then throw the following exception.
-                    throw new BusinessApplicationException("APSStopCommand", GetMessage.GetMessageDescription("CTE0003"), "");
-                case (int)AsyncProcessingServiceParameterValue.AsyncCommand.Abort:
-                    // Implement code to forcefully Abort the task.
-                    //...
+                // Get command information from database to check for retry.
+                this.GetCommandValue(taskID, userReturnValue);
 
-                    // If the task is abnormal terminated, then throw the exception .
-                    throw new BusinessSystemException("APSAbortCommand", GetMessage.GetMessageDescription("CTE0004"));
-                default:
-                    // Update the progress rate in database.
-                    this.UpdateProgressRate(taskID, userReturnValue, 50);
+                switch (userReturnValue.CommandId)
+                {
+                    case (int)AsyncProcessingServiceParameterValue.AsyncCommand.Stop:
+                        // If you want to retry, then throw the following exception.
+                        throw new BusinessApplicationException("APSStopCommand", GetMessage.GetMessageDescription("CTE0003"), "");
+                    case (int)AsyncProcessingServiceParameterValue.AsyncCommand.Abort:
+                        // Implement code to forcefully Abort the task.
+                        //...
 
-                    // Sleeps the thread, to minimize the CPU utilization.
-                    System.Threading.Thread.Sleep(this.NumberOfSeconds * 1000);
-                    break;
+                        // If the task is abnormal terminated, then throw the exception .
+                        throw new BusinessSystemException("APSAbortCommand", GetMessage.GetMessageDescription("CTE0004"));
+                    default:
+                        // Generates new progress rate of the task.
+                        ProgressRate = this.GenerateProgressRate(ProgressRate);
+
+                        // Update the progress rate in database.
+                        this.UpdateProgressRate(taskID, userReturnValue, ProgressRate);
+
+                        if (ProgressRate == STOP_STATE)
+                        {
+                            // Update STOP command to database
+                        }
+                        else if (ProgressRate == ABORT_STATE)
+                        {
+                            // Update ABORT command to database
+                        }
+                        else if (ProgressRate == SUCCESS_STATE)
+                        {
+                            // Task is completed sucessfully.
+                            return;
+                        }
+
+                        // Sleeps the thread, to minimize the CPU utilization.
+                        System.Threading.Thread.Sleep(this.NumberOfSeconds * 1000);
+                        break;
+                }
             }
-            //AsyncProcess: Loop-End
+        }
 
-            // If loop ends with no error, that indicates the task is completed sucessfully.
-            return;
-        }        
+        /// <summary>
+        ///  Generates new progress rate for the task based on last progress rate in increasing order.
+        /// </summary>
+        /// <param name="lastProgressRate">Last progress rate</param>
+        /// <returns>New progress rate</returns>
+        private int GenerateProgressRate(int lastProgressRate)
+        {
+            // Sleeps the thread, to minimize the CPU utilization.
+            System.Threading.Thread.Sleep(this.NumberOfSeconds * 1000);
+
+            // Generate new progress rate
+            Random randProgressRate = new Random();
+            return randProgressRate.Next(lastProgressRate + 1, SUCCESS_STATE + 1);
+        }
 
         #endregion
     }       
