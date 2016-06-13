@@ -80,9 +80,11 @@ namespace AsyncSvc_sample
         // Task progress rate
         private int ProgressRate;
 
+        // Abort and Stop probability
+        private int AbortPercentage;
+        private int StopPercentage;
+
         // Constant values
-        const int STOP_STATE = 3;
-        const int ABORT_STATE = 10;
         const int SUCCESS_STATE = 100;
 
         #endregion
@@ -101,6 +103,28 @@ namespace AsyncSvc_sample
             else
             {
                 this.NumberOfSeconds = 5;
+            }
+
+            // Abort probability.
+            string abortPercentage = GetConfigParameter.GetConfigValue("FxAbortPercentage");
+            if (!string.IsNullOrEmpty(abortPercentage))
+            {
+                this.AbortPercentage = int.Parse(abortPercentage);
+            }
+            else
+            {
+                this.AbortPercentage = 3;
+            }
+
+            // Stop probability.
+            string stopPercentage = GetConfigParameter.GetConfigValue("FxStopPercentage");
+            if (!string.IsNullOrEmpty(stopPercentage))
+            {
+                this.StopPercentage = int.Parse(stopPercentage);
+            }
+            else
+            {
+                this.StopPercentage = 10;
             }
         }
 
@@ -252,15 +276,15 @@ namespace AsyncSvc_sample
                         // Update the progress rate in database.
                         this.UpdateProgressRate(taskID, userReturnValue, ProgressRate);
 
-                        if (ProgressRate == STOP_STATE)
-                        {
-                            // Update STOP command to database
-                            this.UpdateTaskCommand(taskID, (int)AsyncProcessingServiceParameterValue.AsyncCommand.Stop, userReturnValue);
-                        }
-                        else if (ProgressRate == ABORT_STATE)
+                        if (ProgressRate < this.AbortPercentage)
                         {
                             // Update ABORT command to database
                             this.UpdateTaskCommand(taskID, (int)AsyncProcessingServiceParameterValue.AsyncCommand.Abort, userReturnValue);
+                        }
+                        else if (ProgressRate < this.StopPercentage)
+                        {
+                            // Update STOP command to database
+                            this.UpdateTaskCommand(taskID, (int)AsyncProcessingServiceParameterValue.AsyncCommand.Stop, userReturnValue);
                         }
                         else if (ProgressRate == SUCCESS_STATE)
                         {
