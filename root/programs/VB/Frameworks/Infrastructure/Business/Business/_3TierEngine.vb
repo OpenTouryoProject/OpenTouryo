@@ -39,6 +39,7 @@
 '*  2014/12/10  西野　大介        Implementations of the related check process has been changed for problem.
 '*                                Change the signature of the CRUD methods. "private" ---> "protected virtual"
 '*  2015/04/29  Sandeep          Modified the code of 'UOC_SelectMethod' to retrive 30 records instead of 31 records
+'*  2016/06/14  Shashikiran      Implemented 'UOC_UpdateRecordDM' method to perform multiple table update in single transaction
 '**********************************************************************************
 
 ' レイトバインド用
@@ -985,6 +986,87 @@ Namespace Touryo.Infrastructure.Business.Business
 
 			' ↑業務処理-----------------------------------------------------
 		End Sub
+
+        ''' <summary>Implementing Update process of Multiple tables in Single Transaction</summary>
+        ''' <param name="parameterValue">Argument class</param>
+        Protected Overridable Sub UOC_UpdateRecordDM(ByVal parameterValue As _3TierParameterValue)
+            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            Dim returnValue As New _3TierReturnValue()
+            Me.ReturnValue = returnValue
+
+            ' 関連チェック処理
+            Me.UOC_RelatedCheck(parameterValue)
+
+            ' ↓業務処理-----------------------------------------------------
+
+            Dim i As Integer = 0 ' Number count of row update
+
+            ' Loop through multiple tables for update operation
+            For Each TableName As String In parameterValue.TargetTableNames.Values
+
+                ' 共通Dao
+                Dim cmnDao As New CmnDao(Me.GetDam())
+
+                ' AndEqualSearchConditions（主キー
+                For Each k As String In parameterValue.AndEqualSearchConditions.Keys
+                    ' nullチェック（null相当を要検討
+                    ' == null
+                    If parameterValue.AndEqualSearchConditions(k) Is Nothing Then
+                    Else
+                        ' != null
+
+                        ' 文字列の場合の扱い
+                        If TypeOf parameterValue.AndEqualSearchConditions(k) Is String Then
+                            If Not String.IsNullOrEmpty(DirectCast(parameterValue.AndEqualSearchConditions(k), String)) Then
+                                ' パラメタ指定
+                                cmnDao.SetParameter(k, parameterValue.AndEqualSearchConditions(k))
+                            End If
+                        Else
+                            ' パラメタ指定
+                            cmnDao.SetParameter(k, parameterValue.AndEqualSearchConditions(k))
+                        End If
+                    End If
+                Next
+
+                ' 更新値
+                ' InsertUpdateValues
+                For Each k As String In parameterValue.InsertUpdateValues.Keys
+                    ' nullチェック（null相当を要検討
+                    ' == null
+                    If parameterValue.InsertUpdateValues(k) Is Nothing Then
+                    Else
+                        ' != null
+
+                        ' 文字列の場合の扱い
+                        If TypeOf parameterValue.InsertUpdateValues(k) Is String Then
+                            If (k.Contains(TableName)) Then
+                                ' Setting up parameters by removing tablename from the alias
+                                cmnDao.SetParameter(Me.UpdateParamHeader & k.Remove(0, (TableName & "_").Length) & Me.UpdateParamFooter, parameterValue.InsertUpdateValues(k))
+                            End If
+
+                        Else
+                            If (k.Contains(TableName)) Then
+                                ' Setting up parameters by removing tablename from the alias
+                                cmnDao.SetParameter(Me.UpdateParamHeader & k.Remove(0, (TableName & "_").Length) & Me.UpdateParamFooter, parameterValue.InsertUpdateValues(k))
+                            End If
+
+                        End If
+                    End If
+                Next
+
+                ' SQLを設定して
+                cmnDao.SQLFileName = Me.DaoClassNameHeader & Convert.ToString(TableName) & Me.DaoClassNameFooter & "_" & Me.MethodNameHeaderS & Me.MethodLabel_Upd & Me.MethodNameFooterS & ".xml"
+
+                ' パラメタは指定済み
+
+                ' 更新処理を実行
+                i += cmnDao.ExecInsUpDel_NonQuery()
+            Next
+
+            returnValue.Obj = i
+
+            ' ↑業務処理-----------------------------------------------------
+        End Sub
 
 		#End Region
 

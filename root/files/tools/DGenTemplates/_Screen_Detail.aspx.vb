@@ -13,7 +13,8 @@
 '*
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
-'*  2015/12/22 Sai         Modified ReadOnly property of the primary key column textbox to true.  
+'*  2015/12/22 Sai          Modified ReadOnly property of the primary key column textbox to true.  
+'*  2016/06/14 Shashikiran  Modified UOC_btnUpdate_Click event to process multiple table update in single transaction
 '**********************************************************************************
 ' System
 Imports System.IO
@@ -159,45 +160,53 @@ Partial Public Class _JoinTableName__Screen_Detail
         '#Region "Create the instance of classes here"
 
         ' 引数クラスを生成
-        Dim parameterValue As New _3TierParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "UpdateRecord", DirectCast(Session("DAP"), String), DirectCast(Me.UserInfo, MyUserInfo))
+        Dim parameterValue As New _3TierParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "UpdateRecordDM", DirectCast(Session("DAP"), String), DirectCast(Me.UserInfo, MyUserInfo))
 
         'Initialize the data access procedure
         Dim returnValue As _3TierReturnValue = Nothing
         ' B layer Initialize
         Dim b As New _3TierEngine()
         Dim UpdateWhereConditions As Dictionary(Of String, Object) = DirectCast(Session("PrimaryKeyAndTimeStamp"), Dictionary(Of String, Object))
+        '' Modifications for DM 
+        parameterValue.AndEqualSearchConditions = New Dictionary(Of String, Object)()
+        ''Declare InsertUpdateValue dictionary and add the values to it
+        parameterValue.InsertUpdateValues = New Dictionary(Of String, Object)()
+        parameterValue.TargetTableNames = New Dictionary(Of Integer, String)()
+        ''Declaring the table counter to add it to TargetTableNames Dictionary
+        Dim TableCounter As Integer = 0
+
         '#End Region
 
         ' ControlComment:LoopStart-JoinTables
         '#Region "Set the values to be updated to the _TableName_. Then Update to database"
+        TableCounter = TableCounter + 1
         ' Remove '_TableName__' from the PrimaryKeyandTimeStamp dictionary Key values so developer need not to change the values manually in Dao_TableName__S3_UPDATE.xml
-        parameterValue.AndEqualSearchConditions = New Dictionary(Of String, Object)()
+
         For Each k As String In UpdateWhereConditions.Keys
-            If k.Split("_"c)(0) = "_TableName_" Then
-                parameterValue.AndEqualSearchConditions.Add(k.Split("_"c)(1), UpdateWhereConditions(k))
+            If k.Contains("_TableName_") Then
+                If Not parameterValue.AndEqualSearchConditions.ContainsKey(k.Replace("_TableName_" & "_", "")) Then
+                    parameterValue.AndEqualSearchConditions.Add(k.Replace("_TableName_" & "_", ""), UpdateWhereConditions(k))
+                End If
             End If
         Next
-        'Declare InsertUpdateValue dictionary and add the values to it
-        parameterValue.InsertUpdateValues = New Dictionary(Of String, Object)()
-        ' ControlComment:LoopStart-PKColumn
-        parameterValue.InsertUpdateValues.Add("_ColumnName_", Me.txt_JoinTextboxColumnName_.Text)
-        ' ControlComment:LoopEnd-PKColumn
+       
         ' ControlComment:LoopStart-ElseColumn
-        parameterValue.InsertUpdateValues.Add("_ColumnName_", Me.txt_JoinTextboxColumnName_.Text)
+        parameterValue.InsertUpdateValues.Add("_JoinTextboxColumnName_", Me.txt_JoinTextboxColumnName_.Text)
         ' ControlComment:LoopEnd-ElseColumn  
 
         'Reset returnvalue with null;
         returnValue = Nothing
         'Name of the table  _TableName_
-        parameterValue.TableName = "_TableName_"
-
+        parameterValue.TargetTableNames.Add(TableCounter, "_TableName_")
+        '#End Region
+        ' ControlComment:LoopEnd-JoinTables
         ' Run the Database access process
         returnValue = DirectCast(b.DoBusinessLogic(DirectCast(parameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.ReadCommitted), _3TierReturnValue)
 
-        Me.lblResult_TableName_.Text = returnValue.Obj.ToString() + " Data is Updated to the table: _TableName_"
-        '#End Region
+        Me.lblResult_TableName_.Text = returnValue.Obj.ToString() + " Table Data Updated Sucessfully"
 
-        ' ControlComment:LoopEnd-JoinTables
+
+
         'Return empty string since there is no need to redirect to any other page.
         Return String.Empty
     End Function
