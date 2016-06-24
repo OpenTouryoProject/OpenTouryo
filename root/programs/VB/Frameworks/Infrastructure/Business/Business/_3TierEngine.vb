@@ -40,6 +40,7 @@
 '*                                Change the signature of the CRUD methods. "private" ---> "protected virtual"
 '*  2015/04/29  Sandeep          Modified the code of 'UOC_SelectMethod' to retrive 30 records instead of 31 records
 '*  2016/06/14  Shashikiran      Implemented 'UOC_UpdateRecordDM' method to perform multiple table update in single transaction
+'*  2016/06/21  Shashikiran      Implemented 'UOC_BatchUpdateDM' method to perform multiple table Batch update in single transaction
 '**********************************************************************************
 
 ' レイトバインド用
@@ -1068,11 +1069,72 @@ Namespace Touryo.Infrastructure.Business.Business
             ' ↑業務処理-----------------------------------------------------
         End Sub
 
-		#End Region
+        ''' <summary>Implementing Batch Update process of Multiple tables in Single Transaction</summary>
+        ''' <param name="parameterValue">Argument class</param>
+        Protected Overridable Sub UOC_BatchUpdateDM(ByVal parameterValue As _3TierParameterValue)
+            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            Dim returnValue As New _3TierReturnValue()
+            Me.ReturnValue = returnValue
 
-		''' <summary>関連チェック処理を実装可能に</summary>
-		''' <param name="parameterValue">引数</param>
-		Protected Overridable Sub UOC_RelatedCheck(parameterValue As _3TierParameterValue)
-		End Sub
-	End Class
+            ' 関連チェック処理
+            Me.UOC_RelatedCheck(parameterValue)
+
+            Dim i As Integer = 0
+
+            ' ↓業務処理-----------------------------------------------------
+
+            ' Loop through multiple tables for update operation
+            For Each TableName As String In parameterValue.TargetTableNames.Values
+                ' 共通Dao
+                Dim cmnDao As New CmnDao(Me.GetDam())
+
+                ' 件数のカウント
+                Dim dt As DataTable = DirectCast(parameterValue.Obj, DataTable)
+
+                ' バッチ更新
+                For Each dr As DataRow In dt.Rows
+                    Select Case dr.RowState
+                        Case DataRowState.Modified
+                            ' 更新
+                            ' SQLを設定して
+                            cmnDao.SQLFileName = Me.DaoClassNameHeader & Convert.ToString(TableName) & Me.DaoClassNameFooter & "_" & Me.MethodNameHeaderS & Me.MethodLabel_Upd & Me.MethodNameFooterS & ".xml"
+
+                            ' パラメタ指定
+                            For Each dc As DataColumn In dt.Columns
+                                ' 主キー・タイムスタンプ列の設定はUP側で。
+                                ' また、空文字列も通常の値と同一に扱う。
+                                If parameterValue.AndEqualSearchConditions.ContainsKey(dc.ColumnName) Then
+                                    ' Where条件は、DataRowVersion.Originalを付与
+                                    cmnDao.SetParameter(dc.ColumnName.Replace(TableName & "_", ""), dr(dc, DataRowVersion.Current))
+                                Else
+                                    cmnDao.SetParameter(Me.UpdateParamHeader + dc.ColumnName.Replace(TableName & "_", "") & Me.UpdateParamFooter, dr(dc))
+                                End If
+                            Next
+
+                            ' 更新処理を実行
+                            i += cmnDao.ExecInsUpDel_NonQuery()
+
+                            Exit Select
+                        Case Else
+
+                            ' 上記以外
+                            ' なにもしない。
+                            Exit Select
+                    End Select
+                Next
+            Next
+
+            ' 件数を返却
+            returnValue.Obj = i
+
+            ' ↑業務処理-----------------------------------------------------
+        End Sub
+
+#End Region
+
+        ''' <summary>関連チェック処理を実装可能に</summary>
+        ''' <param name="parameterValue">引数</param>
+        Protected Overridable Sub UOC_RelatedCheck(ByVal parameterValue As _3TierParameterValue)
+        End Sub
+    End Class
 End Namespace
