@@ -34,6 +34,7 @@
 //*                              Modified code to reset Exception information, before starting asynchronous task 
 //*  06/26/2015   Sandeep        Implemented code to get commandID in the SelectTask method,
 //*                              to resolve unstable "Register" state, when you invoke [Abort] to AsyncTask, at this "Register" state
+//*  06/01/2016   Sandeep        Implemented method to test the connection of specified database
 //**********************************************************************************
 
 // System
@@ -250,8 +251,20 @@ namespace AsyncProcessingService
         #endregion
 
         #endregion
+
+        #region TestConnection
+
+        /// <summary>
+        /// Tests the connection with the specified database
+        /// </summary>
+        /// <param name="asyncParameterValue">Async Parameter Value</param>
+        private void UOC_TestConnection(AsyncProcessingServiceParameterValue asyncParameterValue)
+        {
+            LayerD myDao = new LayerD(this.GetDam());
+        }
+
+        #endregion
     }
 
     #endregion
 }
-

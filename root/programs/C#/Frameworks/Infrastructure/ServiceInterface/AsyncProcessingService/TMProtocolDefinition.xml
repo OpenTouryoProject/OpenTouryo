@@ -27,5 +27,5 @@
   <!-- 接続先 データ -->
 
   <!-- インプロセス -->
-  <Transmission id="AzureStrageCopy" protocol="1"/>
+  <Transmission id="AsyncSvc_sample" protocol="1"/>
 </TMD>
