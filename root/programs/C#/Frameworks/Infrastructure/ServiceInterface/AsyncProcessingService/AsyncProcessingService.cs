@@ -233,7 +233,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// </summary>
         protected override void OnStop()
         {
-            if (this._isServiceException)
+            if (!this._isServiceException)
             {
                 // Stop the process of asynchronous service and Waits to complete all worker thread to complete.            
                 this.StopAsyncProcess();
@@ -250,7 +250,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// </summary>
         protected override void OnPause()
         {
-            if (this._isServiceException)
+            if (!this._isServiceException)
             {
                 // Stop the process of asynchronous service and Waits to complete all worker thread to complete.            
                 this.StopAsyncProcess();
