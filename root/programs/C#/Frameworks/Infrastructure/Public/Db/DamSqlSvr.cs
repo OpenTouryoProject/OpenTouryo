@@ -114,6 +114,11 @@ namespace Touryo.Infrastructure.Public.Db
                 // コネクションを戻す
                 return _cnn;
             }
+            set
+            {
+                //set the connection
+                _cnn = value;
+            }
         }
 
         /// <summary>SqlDataAdapter（読み取り専用）</summary>
