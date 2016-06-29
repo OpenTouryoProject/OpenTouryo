@@ -47,7 +47,7 @@ namespace DaoGen_Tool
         #region スキーマ情報の表示
 
         //Sets date provider values
-        public static bool enableValue;
+        public static bool enableDbProviderValues;
 
         /// <summary>スキーマ情報の表示</summary>
         /// <param name="table">スキーマ情報</param>
