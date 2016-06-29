@@ -314,6 +314,9 @@
   <data name="btnOK.Location" type="System.Drawing.Point, System.Drawing">
     <value>445, 404</value>
   </data>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
   <data name="lblSep3.Size" type="System.Drawing.Size, System.Drawing">
     <value>585, 2</value>
   </data>
@@ -352,8 +355,5 @@
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>棟梁：D層自動生成ツール（墨壺） - D層、Dao・SQLファイル生成 </value>
-  </data>
-  <data name="btnCancel.Text" xml:space="preserve">
-    <value>キャンセル</value>
   </data>
 </root>

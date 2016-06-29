@@ -332,7 +332,6 @@
             // 
             resources.ApplyResources(this.tabControl1, "tabControl1");
             this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             // 
@@ -576,12 +575,14 @@
             // 
             resources.ApplyResources(this.rbnODB, "rbnODB");
             this.rbnODB.Name = "rbnODB";
+            this.rbnODB.TabStop = true;
             this.rbnODB.UseVisualStyleBackColor = true;
             // 
             // rbnOLE
             // 
             resources.ApplyResources(this.rbnOLE, "rbnOLE");
             this.rbnOLE.Name = "rbnOLE";
+            this.rbnOLE.TabStop = true;
             this.rbnOLE.UseVisualStyleBackColor = true;
             // 
             // rbnPstgrs

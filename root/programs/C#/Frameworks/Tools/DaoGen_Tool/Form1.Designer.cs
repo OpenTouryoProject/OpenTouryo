@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.gbxDataProviders = new System.Windows.Forms.GroupBox();
             this.rbnHiRDB = new System.Windows.Forms.RadioButton();
@@ -104,6 +103,7 @@
             // 
             resources.ApplyResources(this.rbnHiRDB, "rbnHiRDB");
             this.rbnHiRDB.Name = "rbnHiRDB";
+            this.rbnHiRDB.TabStop = true;
             this.rbnHiRDB.UseVisualStyleBackColor = true;
             this.rbnHiRDB.CheckedChanged += new System.EventHandler(this.rbnHiRDB_CheckedChanged);
             // 
@@ -111,6 +111,7 @@
             // 
             resources.ApplyResources(this.rbnODB, "rbnODB");
             this.rbnODB.Name = "rbnODB";
+            this.rbnODB.TabStop = true;
             this.rbnODB.UseVisualStyleBackColor = true;
             this.rbnODB.CheckedChanged += new System.EventHandler(this.rbnODB_CheckedChanged);
             // 
@@ -118,6 +119,7 @@
             // 
             resources.ApplyResources(this.rbnOLE, "rbnOLE");
             this.rbnOLE.Name = "rbnOLE";
+            this.rbnOLE.TabStop = true;
             this.rbnOLE.UseVisualStyleBackColor = true;
             this.rbnOLE.CheckedChanged += new System.EventHandler(this.rbnOLE_CheckedChanged);
             // 
@@ -125,6 +127,7 @@
             // 
             resources.ApplyResources(this.rbnPstgrs, "rbnPstgrs");
             this.rbnPstgrs.Name = "rbnPstgrs";
+            this.rbnPstgrs.TabStop = true;
             this.rbnPstgrs.UseVisualStyleBackColor = true;
             this.rbnPstgrs.CheckedChanged += new System.EventHandler(this.rbnPstgrs_CheckedChanged);
             // 
@@ -132,6 +135,7 @@
             // 
             resources.ApplyResources(this.rbnMySQL, "rbnMySQL");
             this.rbnMySQL.Name = "rbnMySQL";
+            this.rbnMySQL.TabStop = true;
             this.rbnMySQL.UseVisualStyleBackColor = true;
             this.rbnMySQL.CheckedChanged += new System.EventHandler(this.rdbMySQL_CheckedChanged);
             // 
@@ -139,6 +143,7 @@
             // 
             resources.ApplyResources(this.rbnDB2, "rbnDB2");
             this.rbnDB2.Name = "rbnDB2";
+            this.rbnDB2.TabStop = true;
             this.rbnDB2.UseVisualStyleBackColor = true;
             this.rbnDB2.CheckedChanged += new System.EventHandler(this.rdbDB2_CheckedChanged);
             // 
@@ -146,6 +151,7 @@
             // 
             resources.ApplyResources(this.rbnODP, "rbnODP");
             this.rbnODP.Name = "rbnODP";
+            this.rbnODP.TabStop = true;
             this.rbnODP.UseVisualStyleBackColor = true;
             this.rbnODP.CheckedChanged += new System.EventHandler(this.rdbODP_CheckedChanged);
             // 
