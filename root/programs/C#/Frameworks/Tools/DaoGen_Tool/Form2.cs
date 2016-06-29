@@ -932,18 +932,22 @@ namespace DaoGen_Tool
             switch (s)
             {
                 case "OLE":
+                    rbnOLE.Checked = CmnMethods.enableValue;
                     this.rbnOLE.Select();
                     this.strDBMS = "OLE";
                     break;
                 case "ODB":
+                    rbnOLE.Checked = CmnMethods.enableValue;
                     this.rbnODB.Select();
                     this.strDBMS = "ODB";
                     break;
                 case "ODP":
+                    rbnOLE.Checked = CmnMethods.enableValue;
                     this.rbnODP.Select();
                     this.strDBMS = "Oracle";
                     break;
                 case "DB2":
+                    rbnOLE.Checked = CmnMethods.enableValue;
                     this.rbnDB2.Select();
                     this.strDBMS = "DB2";
                     break;
@@ -959,6 +963,7 @@ namespace DaoGen_Tool
                     this.strDBMS = "PstGrS";
                     break;
                 default:
+                    rbnSQL.Checked = CmnMethods.enableValue;
                     this.rbnSQL.Select();
                     this.strDBMS = "SQLServer";
                     break;
@@ -4411,6 +4416,63 @@ namespace DaoGen_Tool
         {
             ResourceManager rm = Resources.Resource.ResourceManager;
             return rm.GetString(key);
+        }
+
+        /// <summary>This Method add the Tab 2 and remove Tab 1</summary>
+        private void btnOptions_Click(object sender, EventArgs e)
+        {
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Remove(this.tabPage1);
+        }
+
+        /// <summary>This Method cancels the Options tab</summary>
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            switch (this.strDAP)
+            {
+                case "OLE":
+                    this.rbnOLE.Checked = true;
+                    break;
+                case "ODB":
+                    this.rbnODB.Checked = true;
+                    break;
+                case "Oracle":
+                    this.rbnODP.Checked = true;
+                    break;
+                case "DB2":
+                    this.rbnDB2.Checked = true;
+                    break;
+                case "MCN":
+                    this.rbnMySQL.Checked = true;
+                    break;
+                case "PstGrS":
+                    this.rbnPstgrs.Checked = true;
+                    break;
+                default:
+                    this.rbnSQL.Checked=true;
+                    break;
+            }
+
+            if (this.cbxOnlyTableMaintenance.Checked || this.cbxTableMaintenance.Checked)
+            {
+                this.cbxOnlyTableMaintenance.Checked = false;
+                this.cbxTableMaintenance.Checked = false;
+            }
+            if (cbxOnlyDTO.Checked || this.cbxEntity.Checked || this.cbxTypedDataSet.Checked)
+            {
+                this.cbxOnlyDTO.Checked = false;
+                this.cbxEntity.Checked = false;
+                this.cbxTypedDataSet.Checked = false;
+            }
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Remove(this.tabPage2);
+        }
+
+        /// <summary>This Method saves options setting and redirects to step2</summary>
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Remove(this.tabPage2);
         }
     }
 }

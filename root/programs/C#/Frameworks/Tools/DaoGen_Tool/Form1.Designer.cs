@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.gbxDataProviders = new System.Windows.Forms.GroupBox();
             this.rbnHiRDB = new System.Windows.Forms.RadioButton();
@@ -38,20 +39,11 @@
             this.rbnDB2 = new System.Windows.Forms.RadioButton();
             this.rbnODP = new System.Windows.Forms.RadioButton();
             this.rbnSQL = new System.Windows.Forms.RadioButton();
-            this.btnListTable = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblConnectionString = new System.Windows.Forms.Label();
             this.txtConnString = new System.Windows.Forms.TextBox();
             this.lbxTables = new System.Windows.Forms.ListBox();
-            this.btnDaoDefinitionGen = new System.Windows.Forms.Button();
-            this.btnDaoAndSqlGen = new System.Windows.Forms.Button();
-            this.btnGetSchemaInfo = new System.Windows.Forms.Button();
-            this.cmbSchemaInfo = new System.Windows.Forms.ComboBox();
-            this.btnDelTable = new System.Windows.Forms.Button();
-            this.btnLoadColumn = new System.Windows.Forms.Button();
-            this.btnSetPrimaryKey = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.Restart_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Close_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sTEP1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.cbxDebug = new System.Windows.Forms.CheckBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -60,9 +52,24 @@
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.dataGridView3 = new System.Windows.Forms.DataGridView();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
+            this.gbxSchemaDetails = new System.Windows.Forms.GroupBox();
+            this.btnGetSchemaInfo = new System.Windows.Forms.Button();
+            this.cmbSchemaInfo = new System.Windows.Forms.ComboBox();
+            this.lblSchemaInfo = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnSetPrimaryKey = new System.Windows.Forms.Button();
+            this.btnLoadColumn = new System.Windows.Forms.Button();
+            this.btnDelTable = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.cmbEncoding = new System.Windows.Forms.ComboBox();
+            this.btnDaoDefinitionGen = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.btnListTable = new System.Windows.Forms.Button();
+            this.btnDaoAndSqlGen = new System.Windows.Forms.Button();
             this.gbxDataProviders.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -72,10 +79,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
+            this.gbxSchemaDetails.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // gbxDataProviders
             // 
+            resources.ApplyResources(this.gbxDataProviders, "gbxDataProviders");
             this.gbxDataProviders.Controls.Add(this.rbnHiRDB);
             this.gbxDataProviders.Controls.Add(this.rbnODB);
             this.gbxDataProviders.Controls.Add(this.rbnOLE);
@@ -84,7 +96,7 @@
             this.gbxDataProviders.Controls.Add(this.rbnDB2);
             this.gbxDataProviders.Controls.Add(this.rbnODP);
             this.gbxDataProviders.Controls.Add(this.rbnSQL);
-            resources.ApplyResources(this.gbxDataProviders, "gbxDataProviders");
+            this.gbxDataProviders.ForeColor = System.Drawing.SystemColors.ControlText;
             this.gbxDataProviders.Name = "gbxDataProviders";
             this.gbxDataProviders.TabStop = false;
             // 
@@ -92,7 +104,6 @@
             // 
             resources.ApplyResources(this.rbnHiRDB, "rbnHiRDB");
             this.rbnHiRDB.Name = "rbnHiRDB";
-            this.rbnHiRDB.TabStop = true;
             this.rbnHiRDB.UseVisualStyleBackColor = true;
             this.rbnHiRDB.CheckedChanged += new System.EventHandler(this.rbnHiRDB_CheckedChanged);
             // 
@@ -100,7 +111,6 @@
             // 
             resources.ApplyResources(this.rbnODB, "rbnODB");
             this.rbnODB.Name = "rbnODB";
-            this.rbnODB.TabStop = true;
             this.rbnODB.UseVisualStyleBackColor = true;
             this.rbnODB.CheckedChanged += new System.EventHandler(this.rbnODB_CheckedChanged);
             // 
@@ -108,7 +118,6 @@
             // 
             resources.ApplyResources(this.rbnOLE, "rbnOLE");
             this.rbnOLE.Name = "rbnOLE";
-            this.rbnOLE.TabStop = true;
             this.rbnOLE.UseVisualStyleBackColor = true;
             this.rbnOLE.CheckedChanged += new System.EventHandler(this.rbnOLE_CheckedChanged);
             // 
@@ -116,7 +125,6 @@
             // 
             resources.ApplyResources(this.rbnPstgrs, "rbnPstgrs");
             this.rbnPstgrs.Name = "rbnPstgrs";
-            this.rbnPstgrs.TabStop = true;
             this.rbnPstgrs.UseVisualStyleBackColor = true;
             this.rbnPstgrs.CheckedChanged += new System.EventHandler(this.rbnPstgrs_CheckedChanged);
             // 
@@ -124,7 +132,6 @@
             // 
             resources.ApplyResources(this.rbnMySQL, "rbnMySQL");
             this.rbnMySQL.Name = "rbnMySQL";
-            this.rbnMySQL.TabStop = true;
             this.rbnMySQL.UseVisualStyleBackColor = true;
             this.rbnMySQL.CheckedChanged += new System.EventHandler(this.rdbMySQL_CheckedChanged);
             // 
@@ -132,7 +139,6 @@
             // 
             resources.ApplyResources(this.rbnDB2, "rbnDB2");
             this.rbnDB2.Name = "rbnDB2";
-            this.rbnDB2.TabStop = true;
             this.rbnDB2.UseVisualStyleBackColor = true;
             this.rbnDB2.CheckedChanged += new System.EventHandler(this.rdbDB2_CheckedChanged);
             // 
@@ -147,21 +153,14 @@
             // 
             resources.ApplyResources(this.rbnSQL, "rbnSQL");
             this.rbnSQL.Name = "rbnSQL";
-            this.rbnSQL.TabStop = true;
             this.rbnSQL.UseVisualStyleBackColor = true;
             this.rbnSQL.CheckedChanged += new System.EventHandler(this.rdbSQL_CheckedChanged);
             // 
-            // btnListTable
+            // lblConnectionString
             // 
-            resources.ApplyResources(this.btnListTable, "btnListTable");
-            this.btnListTable.Name = "btnListTable";
-            this.btnListTable.UseVisualStyleBackColor = true;
-            this.btnListTable.Click += new System.EventHandler(this.btnListTable_Click);
-            // 
-            // label1
-            // 
-            resources.ApplyResources(this.label1, "label1");
-            this.label1.Name = "label1";
+            resources.ApplyResources(this.lblConnectionString, "lblConnectionString");
+            this.lblConnectionString.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lblConnectionString.Name = "lblConnectionString";
             // 
             // txtConnString
             // 
@@ -175,74 +174,19 @@
             this.lbxTables.Name = "lbxTables";
             this.lbxTables.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             // 
-            // btnDaoDefinitionGen
-            // 
-            resources.ApplyResources(this.btnDaoDefinitionGen, "btnDaoDefinitionGen");
-            this.btnDaoDefinitionGen.Name = "btnDaoDefinitionGen";
-            this.btnDaoDefinitionGen.UseVisualStyleBackColor = true;
-            this.btnDaoDefinitionGen.Click += new System.EventHandler(this.btnDaoDefinitionGen_Click);
-            // 
-            // btnDaoAndSqlGen
-            // 
-            resources.ApplyResources(this.btnDaoAndSqlGen, "btnDaoAndSqlGen");
-            this.btnDaoAndSqlGen.Name = "btnDaoAndSqlGen";
-            this.btnDaoAndSqlGen.UseVisualStyleBackColor = true;
-            this.btnDaoAndSqlGen.Click += new System.EventHandler(this.btnDaoAndSqlGen_Click);
-            // 
-            // btnGetSchemaInfo
-            // 
-            resources.ApplyResources(this.btnGetSchemaInfo, "btnGetSchemaInfo");
-            this.btnGetSchemaInfo.Name = "btnGetSchemaInfo";
-            this.btnGetSchemaInfo.UseVisualStyleBackColor = true;
-            this.btnGetSchemaInfo.Click += new System.EventHandler(this.btnGetSchemaInfo_Click);
-            // 
-            // cmbSchemaInfo
-            // 
-            this.cmbSchemaInfo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbSchemaInfo.FormattingEnabled = true;
-            resources.ApplyResources(this.cmbSchemaInfo, "cmbSchemaInfo");
-            this.cmbSchemaInfo.Name = "cmbSchemaInfo";
-            // 
-            // btnDelTable
-            // 
-            resources.ApplyResources(this.btnDelTable, "btnDelTable");
-            this.btnDelTable.Name = "btnDelTable";
-            this.btnDelTable.UseVisualStyleBackColor = true;
-            this.btnDelTable.Click += new System.EventHandler(this.btnDelTable_Click);
-            // 
-            // btnLoadColumn
-            // 
-            resources.ApplyResources(this.btnLoadColumn, "btnLoadColumn");
-            this.btnLoadColumn.Name = "btnLoadColumn";
-            this.btnLoadColumn.UseVisualStyleBackColor = true;
-            this.btnLoadColumn.Click += new System.EventHandler(this.btnLoadColumn_Click);
-            // 
-            // btnSetPrimaryKey
-            // 
-            resources.ApplyResources(this.btnSetPrimaryKey, "btnSetPrimaryKey");
-            this.btnSetPrimaryKey.Name = "btnSetPrimaryKey";
-            this.btnSetPrimaryKey.UseVisualStyleBackColor = true;
-            this.btnSetPrimaryKey.Click += new System.EventHandler(this.btnSetPrimaryKey_Click);
-            // 
             // menuStrip1
             // 
+            this.menuStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(123)))), ((int)(((byte)(155)))));
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.Restart_ToolStripMenuItem,
-            this.Close_ToolStripMenuItem});
+            this.sTEP1ToolStripMenuItem});
             resources.ApplyResources(this.menuStrip1, "menuStrip1");
             this.menuStrip1.Name = "menuStrip1";
             // 
-            // Restart_ToolStripMenuItem
+            // sTEP1ToolStripMenuItem
             // 
-            this.Restart_ToolStripMenuItem.Name = "Restart_ToolStripMenuItem";
-            resources.ApplyResources(this.Restart_ToolStripMenuItem, "Restart_ToolStripMenuItem");
-            this.Restart_ToolStripMenuItem.Click += new System.EventHandler(this.Restart_ToolStripMenuItem_Click);
-            // 
-            // Close_ToolStripMenuItem
-            // 
-            this.Close_ToolStripMenuItem.Name = "Close_ToolStripMenuItem";
-            resources.ApplyResources(this.Close_ToolStripMenuItem, "Close_ToolStripMenuItem");
-            this.Close_ToolStripMenuItem.Click += new System.EventHandler(this.Close_ToolStripMenuItem_Click);
+            resources.ApplyResources(this.sTEP1ToolStripMenuItem, "sTEP1ToolStripMenuItem");
+            this.sTEP1ToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.sTEP1ToolStripMenuItem.Name = "sTEP1ToolStripMenuItem";
             // 
             // dataGridView1
             // 
@@ -307,47 +251,174 @@
             this.dataGridView3.RowTemplate.Height = 21;
             this.dataGridView3.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView_DataError);
             // 
-            // button1
+            // gbxSchemaDetails
             // 
-            resources.ApplyResources(this.button1, "button1");
-            this.button1.Name = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.gbxSchemaDetails.Controls.Add(this.btnGetSchemaInfo);
+            this.gbxSchemaDetails.Controls.Add(this.cmbSchemaInfo);
+            this.gbxSchemaDetails.Controls.Add(this.lblSchemaInfo);
+            resources.ApplyResources(this.gbxSchemaDetails, "gbxSchemaDetails");
+            this.gbxSchemaDetails.Name = "gbxSchemaDetails";
+            this.gbxSchemaDetails.TabStop = false;
             // 
-            // label2
+            // btnGetSchemaInfo
             // 
-            resources.ApplyResources(this.label2, "label2");
-            this.label2.Name = "label2";
+            this.btnGetSchemaInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
+            resources.ApplyResources(this.btnGetSchemaInfo, "btnGetSchemaInfo");
+            this.btnGetSchemaInfo.FlatAppearance.BorderSize = 0;
+            this.btnGetSchemaInfo.ForeColor = System.Drawing.Color.White;
+            this.btnGetSchemaInfo.Name = "btnGetSchemaInfo";
+            this.btnGetSchemaInfo.UseVisualStyleBackColor = false;
+            this.btnGetSchemaInfo.EnabledChanged += new System.EventHandler(this.btnLoadColumn_EnabledChanged);
+            this.btnGetSchemaInfo.Click += new System.EventHandler(this.btnGetSchemaInfo_Click);
+            // 
+            // cmbSchemaInfo
+            // 
+            this.cmbSchemaInfo.FormattingEnabled = true;
+            resources.ApplyResources(this.cmbSchemaInfo, "cmbSchemaInfo");
+            this.cmbSchemaInfo.Name = "cmbSchemaInfo";
+            // 
+            // lblSchemaInfo
+            // 
+            resources.ApplyResources(this.lblSchemaInfo, "lblSchemaInfo");
+            this.lblSchemaInfo.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lblSchemaInfo.Name = "lblSchemaInfo";
+            // 
+            // label4
+            // 
+            resources.ApplyResources(this.label4, "label4");
+            this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label4.Name = "label4";
+            // 
+            // groupBox1
+            // 
+            resources.ApplyResources(this.groupBox1, "groupBox1");
+            this.groupBox1.Controls.Add(this.btnSetPrimaryKey);
+            this.groupBox1.Controls.Add(this.btnLoadColumn);
+            this.groupBox1.Controls.Add(this.btnDelTable);
+            this.groupBox1.Controls.Add(this.label7);
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.TabStop = false;
+            // 
+            // btnSetPrimaryKey
+            // 
+            this.btnSetPrimaryKey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(202)))), ((int)(((byte)(207)))));
+            this.btnSetPrimaryKey.FlatAppearance.BorderSize = 0;
+            resources.ApplyResources(this.btnSetPrimaryKey, "btnSetPrimaryKey");
+            this.btnSetPrimaryKey.ForeColor = System.Drawing.Color.White;
+            this.btnSetPrimaryKey.Name = "btnSetPrimaryKey";
+            this.btnSetPrimaryKey.UseVisualStyleBackColor = false;
+            this.btnSetPrimaryKey.EnabledChanged += new System.EventHandler(this.btnLoadColumn_EnabledChanged);
+            this.btnSetPrimaryKey.Click += new System.EventHandler(this.btnLoadColumn_EnabledChanged);
+            // 
+            // btnLoadColumn
+            // 
+            this.btnLoadColumn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
+            this.btnLoadColumn.FlatAppearance.BorderSize = 0;
+            resources.ApplyResources(this.btnLoadColumn, "btnLoadColumn");
+            this.btnLoadColumn.ForeColor = System.Drawing.Color.White;
+            this.btnLoadColumn.Name = "btnLoadColumn";
+            this.btnLoadColumn.UseVisualStyleBackColor = false;
+            this.btnLoadColumn.EnabledChanged += new System.EventHandler(this.btnLoadColumn_EnabledChanged);
+            this.btnLoadColumn.Click += new System.EventHandler(this.btnLoadColumn_Click);
+            // 
+            // btnDelTable
+            // 
+            this.btnDelTable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
+            resources.ApplyResources(this.btnDelTable, "btnDelTable");
+            this.btnDelTable.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btnDelTable.FlatAppearance.BorderSize = 0;
+            this.btnDelTable.ForeColor = System.Drawing.Color.White;
+            this.btnDelTable.Name = "btnDelTable";
+            this.btnDelTable.UseVisualStyleBackColor = false;
+            this.btnDelTable.Click += new System.EventHandler(this.btnDelTable_Click);
+            // 
+            // label7
+            // 
+            resources.ApplyResources(this.label7, "label7");
+            this.label7.Name = "label7";
+            // 
+            // label6
+            // 
+            resources.ApplyResources(this.label6, "label6");
+            this.label6.Name = "label6";
+            // 
+            // label5
+            // 
+            resources.ApplyResources(this.label5, "label5");
+            this.label5.Name = "label5";
             // 
             // cmbEncoding
             // 
-            this.cmbEncoding.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbEncoding.FormattingEnabled = true;
             resources.ApplyResources(this.cmbEncoding, "cmbEncoding");
             this.cmbEncoding.Name = "cmbEncoding";
+            // 
+            // btnDaoDefinitionGen
+            // 
+            this.btnDaoDefinitionGen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(42)))), ((int)(((byte)(53)))));
+            this.btnDaoDefinitionGen.FlatAppearance.BorderSize = 0;
+            resources.ApplyResources(this.btnDaoDefinitionGen, "btnDaoDefinitionGen");
+            this.btnDaoDefinitionGen.ForeColor = System.Drawing.Color.White;
+            this.btnDaoDefinitionGen.Name = "btnDaoDefinitionGen";
+            this.btnDaoDefinitionGen.UseVisualStyleBackColor = false;
+            this.btnDaoDefinitionGen.EnabledChanged += new System.EventHandler(this.btnDaoDefinitionGen_EnabledChanged);
+            this.btnDaoDefinitionGen.Click += new System.EventHandler(this.btnDaoDefinitionGen_Click);
+            // 
+            // pictureBox1
+            // 
+            resources.ApplyResources(this.pictureBox1, "pictureBox1");
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            resources.ApplyResources(this.pictureBox2, "pictureBox2");
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.TabStop = false;
+            // 
+            // btnListTable
+            // 
+            this.btnListTable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(42)))), ((int)(((byte)(53)))));
+            resources.ApplyResources(this.btnListTable, "btnListTable");
+            this.btnListTable.ForeColor = System.Drawing.Color.White;
+            this.btnListTable.Name = "btnListTable";
+            this.btnListTable.UseVisualStyleBackColor = false;
+            this.btnListTable.Click += new System.EventHandler(this.btnListTable_Click);
+            // 
+            // btnDaoAndSqlGen
+            // 
+            this.btnDaoAndSqlGen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(42)))), ((int)(((byte)(53)))));
+            resources.ApplyResources(this.btnDaoAndSqlGen, "btnDaoAndSqlGen");
+            this.btnDaoAndSqlGen.ForeColor = System.Drawing.Color.White;
+            this.btnDaoAndSqlGen.Name = "btnDaoAndSqlGen";
+            this.btnDaoAndSqlGen.UseVisualStyleBackColor = false;
+            this.btnDaoAndSqlGen.Click += new System.EventHandler(this.btnDaoAndSqlGen_Click);
             // 
             // Form1
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnDaoAndSqlGen);
+            this.Controls.Add(this.pictureBox2);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.btnDaoDefinitionGen);
             this.Controls.Add(this.cmbEncoding);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.btnListTable);
+            this.Controls.Add(this.gbxSchemaDetails);
+            this.Controls.Add(this.gbxDataProviders);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.cbxDebug);
-            this.Controls.Add(this.btnSetPrimaryKey);
-            this.Controls.Add(this.btnLoadColumn);
-            this.Controls.Add(this.btnDelTable);
-            this.Controls.Add(this.cmbSchemaInfo);
-            this.Controls.Add(this.btnGetSchemaInfo);
-            this.Controls.Add(this.btnDaoAndSqlGen);
-            this.Controls.Add(this.btnDaoDefinitionGen);
             this.Controls.Add(this.lbxTables);
             this.Controls.Add(this.txtConnString);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.btnListTable);
-            this.Controls.Add(this.gbxDataProviders);
+            this.Controls.Add(this.lblConnectionString);
             this.Controls.Add(this.menuStrip1);
+            this.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "Form1";
@@ -363,6 +434,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).EndInit();
+            this.gbxSchemaDetails.ResumeLayout(false);
+            this.gbxSchemaDetails.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -374,20 +451,10 @@
         private System.Windows.Forms.RadioButton rbnDB2;
         private System.Windows.Forms.RadioButton rbnODP;
         private System.Windows.Forms.RadioButton rbnSQL;
-        private System.Windows.Forms.Button btnListTable;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblConnectionString;
         private System.Windows.Forms.TextBox txtConnString;
         private System.Windows.Forms.ListBox lbxTables;
-        private System.Windows.Forms.Button btnDaoDefinitionGen;
-        private System.Windows.Forms.Button btnDaoAndSqlGen;
-        private System.Windows.Forms.Button btnGetSchemaInfo;
-        private System.Windows.Forms.ComboBox cmbSchemaInfo;
-        private System.Windows.Forms.Button btnDelTable;
-        private System.Windows.Forms.Button btnLoadColumn;
-        private System.Windows.Forms.Button btnSetPrimaryKey;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem Restart_ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem Close_ToolStripMenuItem;
         private System.Windows.Forms.RadioButton rbnMySQL;
         private System.Windows.Forms.RadioButton rbnPstgrs;
         private System.Windows.Forms.RadioButton rbnODB;
@@ -398,12 +465,31 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.DataGridView dataGridView2;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.DataGridView dataGridView3;
         private System.Windows.Forms.RadioButton rbnHiRDB;
-        private System.Windows.Forms.Label label2;
+
+        private System.Windows.Forms.GroupBox gbxSchemaDetails;
+        private System.Windows.Forms.ComboBox cmbSchemaInfo;
+        private System.Windows.Forms.Label lblSchemaInfo;
+        private System.Windows.Forms.Button btnGetSchemaInfo;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox cmbEncoding;
+        private System.Windows.Forms.Button btnDaoDefinitionGen;
+        private System.Windows.Forms.ToolStripMenuItem sTEP1ToolStripMenuItem;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.Button btnListTable;
+        private System.Windows.Forms.Button btnLoadColumn;
+        private System.Windows.Forms.Button btnSetPrimaryKey;
+        private System.Windows.Forms.Button btnDaoAndSqlGen;
+        private System.Windows.Forms.Button btnDelTable;
+
+
     }
 }
 

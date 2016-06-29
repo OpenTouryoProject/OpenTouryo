@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="gbxDataProviders.Text" xml:space="preserve">
     <value>データプロバイダを選択する </value>
@@ -166,7 +166,19 @@
   <data name="$this.Text" xml:space="preserve">
     <value>棟梁：D層自動生成ツール（墨壺） - D層定義情報ファイル生成 </value>
   </data>
- <data name="btnDaoAndSqlGen.Text" xml:space="preserve">
+  <data name="btnDaoAndSqlGen.Text" xml:space="preserve">
     <value>～ Dao・SQLファイルを生成する ～</value>
+  </data>
+  <data name="cbxDebug.Text" xml:space="preserve">
+    <value>デバッグ</value>
+  </data>
+  <data name="tabPage1.Text" xml:space="preserve">
+    <value>タブ１</value>
+  </data>
+  <data name="tabPage2.Text" xml:space="preserve">
+    <value>タブ２</value>
+  </data>
+  <data name="tabPage3.Text" xml:space="preserve">
+    <value>タブ３</value>
   </data>
 </root>
