@@ -12,7 +12,9 @@
 '*
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
-'*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+'*  2016/06/20  Shashikiran       Modified UOC_btnBatUpd_Click function to call DoBusinessLogic function in single transaction
+'*  2016/06/20  Shashikiran       Added UOC_gvwGridView1_PageIndexChanging function to handle Gridview Paging event
+'*  2016/06/20  Shashikiran       Removed this.gvwGridView1.AllowPaging = false; line of code in UOC_gvwGridView1_RowCommand function to enable paging
 '**********************************************************************************
 ' System
 Imports System.IO
@@ -185,64 +187,60 @@ Partial Public Class _JoinTableName__Screen_SearchAndUpdate
         '#Region "Create the instance of classes here"
 
         ' 引数クラスを生成
-        Dim parameterValue As New _3TierParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "BatchUpdate", DirectCast(Session("DAP"), String), DirectCast(Me.UserInfo, MyUserInfo))
+        Dim parameterValue As New _3TierParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "BatchUpdateDM", DirectCast(Session("DAP"), String), DirectCast(Me.UserInfo, MyUserInfo))
 
         'Initialize the data access procedure
         Dim returnValue As _3TierReturnValue = Nothing
         ' B layer Initialize
         Dim b As New _3TierEngine()
-
+        parameterValue.AndEqualSearchConditions = New Dictionary(Of String, Object)()
+        parameterValue.TargetTableNames = New Dictionary(Of Integer, String)()
         'Keep the copy of the table in session because change in the column name causes the problem in the temperory update after batch update. So keep the copy of the table.
         Dim dtSession As DataTable = DirectCast(Session("SearchResult"), DataTable).Copy()
+
+        ''Declaring the table counter to add it to TargetTableNames Dictionary
+        Dim TableCounter As Integer = 0
         '#End Region
         ' ControlComment:LoopStart-JoinTables
 
         '#Region "Batch Update for _TableName_  table"
         '#Region "This is much needed to handle the duplicate column issue while udpating  _TableName_ using batch update"
-        ' to change the column names of table as per Table we should have copy of dtSession table.
-        Dim dt_TableName_ As DataTable = dtSession.Copy()
-
-        For Each dc As DataColumn In dt_TableName_.Columns
-            'Remove the '_TableName_.' from column names of _TableName_ only so that update will not have any problem.
-            'Otherwise When two tables are having same column names then we get an  error "A column named 'Columname' already belongs to this DataTable."
-            If dc.ColumnName.Split("."c)(0).Trim() = "_TableName_" Then
-                dc.ColumnName = dc.ColumnName.Split("."c)(1).Trim()
-            Else
-                'Replace "." in column names of other tables with "_". This is needed becuase if columns are having "." then we get sql error, so we need to replace "." with "_"
-
-                dc.ColumnName = dc.ColumnName.Replace("."c, "_"c)
-            End If
+        TableCounter = TableCounter + 1
+        For Each dc As DataColumn In dtSession.Columns
+            dc.ColumnName = dc.ColumnName.Replace(".", "_")
         Next
 
         '#End Region
 
-        ' DataTableを設定
-        parameterValue.Obj = dt_TableName_
-
         'Reset returnvalue with null;
         returnValue = Nothing
 
-        parameterValue.AndEqualSearchConditions = New Dictionary(Of String, Object)()
         'Primary Key Columns
         ' ControlComment:LoopStart-PKColumn
-        parameterValue.AndEqualSearchConditions.Add("_ColumnName_", "")
+
+        If Not parameterValue.AndEqualSearchConditions.ContainsKey("_JoinTextboxColumnName_") Then
+            parameterValue.AndEqualSearchConditions.Add("_JoinTextboxColumnName_", "")
+        End If
+
         ' ControlComment:LoopEnd-PKColumn
+
         'Timestamp Column.
-        TS_CommentOut_ parameterValue.AndEqualSearchConditions.Add("_TimeStampColName_", "")
+        TS_CommentOut_(parameterValue.AndEqualSearchConditions.Add("_TimeStampColName_", ""))
 
         ' Table Name
-        parameterValue.TableName = "_TableName_"
+        parameterValue.TargetTableNames.Add(TableCounter, "_TableName_")
+
+        '#End Region
+        ' ControlComment:LoopEnd-JoinTables
+        ' DataTableを設定
+        parameterValue.Obj = dtSession
 
         ' Run the Database access process
         returnValue = DirectCast(b.DoBusinessLogic(DirectCast(parameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.ReadCommitted), _3TierReturnValue)
 
-        '#End Region
-        ' ControlComment:LoopEnd-JoinTables
-
         ' Disable the button
         Me.btnBatUpd.Enabled = False
-        ' Keep the original session table with actual column names.
-        Session("SearchResult") = dtSession
+      
         'No Screen transition
         Return String.Empty
     End Function
@@ -345,8 +343,6 @@ Partial Public Class _JoinTableName__Screen_SearchAndUpdate
         Me.gvwGridView1.PageIndex = 0
         Me.gvwGridView1.Sort("", SortDirection.Ascending)
 
-        ' ページングの中止
-        Me.gvwGridView1.AllowPaging = False
 
         ' GridViewのDataSourceを変更してDataBindする。
         Me.gvwGridView1.DataSource = dt
@@ -360,6 +356,17 @@ Partial Public Class _JoinTableName__Screen_SearchAndUpdate
         Me.btnBatUpd.Enabled = True
 
         ' 画面遷移しない。
+        Return String.Empty
+    End Function
+
+    ''' <summary>gvwGridView1 Paging Event</summary>
+    ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+    ''' <returns>URL</returns>
+    Protected Function UOC_gvwGridView1_PageIndexChanging(ByVal fxEventArgs As FxEventArgs, ByVal e As GridViewPageEventArgs) As String
+        Me.gvwGridView1.PageIndex = e.NewPageIndex
+        Me.gvwGridView1.DataSource = DirectCast(Session("SearchResult"), DataTable)
+        Me.gvwGridView1.DataBind()
+        'Return empty string since there is no need to redirect to any other page.
         Return String.Empty
     End Function
 
