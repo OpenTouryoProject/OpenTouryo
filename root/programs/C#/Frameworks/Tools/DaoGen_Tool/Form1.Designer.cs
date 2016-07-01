@@ -317,7 +317,7 @@
             this.btnSetPrimaryKey.Name = "btnSetPrimaryKey";
             this.btnSetPrimaryKey.UseVisualStyleBackColor = false;
             this.btnSetPrimaryKey.EnabledChanged += new System.EventHandler(this.btnLoadColumn_EnabledChanged);
-            this.btnSetPrimaryKey.Click += new System.EventHandler(this.btnLoadColumn_EnabledChanged);
+            this.btnSetPrimaryKey.Click += new System.EventHandler(this.btnSetPrimaryKey_Click);
             // 
             // btnLoadColumn
             // 
