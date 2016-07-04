@@ -15,6 +15,9 @@
 '*  ----------  ----------------  -------------------------------------------------
 '*  2015/12/22 Sai          Modified ReadOnly property of the primary key column textbox to true.  
 '*  2016/06/14 Shashikiran  Modified UOC_btnUpdate_Click event to process multiple table update in single transaction
+'*  2016/06/24 Shashikiran  Modified UOC_btnDelete_Click event to process multiple table Delete in single transaction
+'*  2016/06/24 Shashikiran  Added remarks above UOC_btnDelete_Click event as a guideline for developers to modify the code to set the
+'*                          table sequence appropriately for successful delete operation
 '**********************************************************************************
 ' System
 Imports System.IO
@@ -217,38 +220,48 @@ Partial Public Class _JoinTableName__Screen_Detail
     ''' <summary>削除ボタン</summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
     ''' <returns>URL</returns>
+    ''' <remarks>In case of deleting from multiple tables and when the tables have dependent relation, the sequence of execution of delete statements for these tables become necessary. 
+    ''' Developer should decide the sequence of table for the delete operation.
+    ''' This can be managed by altering the position of code block present in the region 'Delete the data from the [TableName] table' as required</remarks>
     Protected Function UOC_btnDelete_Click(ByVal fxEventArgs As FxEventArgs) As String
         '#Region "Create the instance of classes here"
         ' 引数クラスを生成
-        Dim parameterValue As New _3TierParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "DeleteRecord", DirectCast(Session("DAP"), String), DirectCast(Me.UserInfo, MyUserInfo))
+        Dim parameterValue As New _3TierParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "DeleteRecordDM", DirectCast(Session("DAP"), String), DirectCast(Me.UserInfo, MyUserInfo))
 
         'Initialize the data access procedure
         Dim returnValue As _3TierReturnValue = Nothing
         ' B layer Initialize
         Dim b As New _3TierEngine()
         Dim DeleteWhereConditions As Dictionary(Of String, Object) = DirectCast(Session("PrimaryKeyAndTimeStamp"), Dictionary(Of String, Object))
+        ' Modifications for DM 
+        parameterValue.AndEqualSearchConditions = New Dictionary(Of String, Object)()
+        parameterValue.TargetTableNames = New Dictionary(Of Integer, String)()
+        ' Declaring the table counter to add it to TargetTableNames Dictionary
+        Dim TableCounter As Integer = 0
+
         '#End Region
         ' ControlComment:LoopStart-JoinTables
         '#Region "Delete the data from the _TableName_  table"
         ' Remove '_TableName__' from the PrimaryKeyandTimeStamp dictionary Key values so developer need not to change the values manually in Dao_TableName__S4_Delete.xml 
-        parameterValue.AndEqualSearchConditions = New Dictionary(Of String, Object)()
+        TableCounter = TableCounter + 1
         For Each k As String In DeleteWhereConditions.Keys
             If k.Split("_"c)(0) = "_TableName_" Then
-                parameterValue.AndEqualSearchConditions.Add(k.Split("_"c)(1), DeleteWhereConditions(k))
+                If Not parameterValue.AndEqualSearchConditions.ContainsKey(k) Then
+                    parameterValue.AndEqualSearchConditions.Add(k, DeleteWhereConditions(k))
+                End If
             End If
         Next
         'Reset returnvalue with null;
         returnValue = Nothing
         'Name of the table  _TableName_
-        parameterValue.TableName = "_TableName_"
-
+        parameterValue.TargetTableNames.Add(TableCounter, "_TableName_")
+        '#End Region
+        ' ControlComment:LoopEnd-JoinTables
         ' Run the Database access process
         returnValue = DirectCast(b.DoBusinessLogic(DirectCast(parameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.ReadCommitted), _3TierReturnValue)
 
         Me.lblResult_TableName_.Text = returnValue.Obj.ToString() + " Data is Deleted from the table: _TableName_"
-        '#End Region
 
-        ' ControlComment:LoopEnd-JoinTables
         'Return empty string since there is no need to redirect to any other page.
         Return String.Empty
     End Function

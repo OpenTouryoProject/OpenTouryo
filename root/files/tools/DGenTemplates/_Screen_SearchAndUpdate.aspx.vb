@@ -15,6 +15,8 @@
 '*  2016/06/20  Shashikiran       Modified UOC_btnBatUpd_Click function to call DoBusinessLogic function in single transaction
 '*  2016/06/20  Shashikiran       Added UOC_gvwGridView1_PageIndexChanging function to handle Gridview Paging event
 '*  2016/06/20  Shashikiran       Removed this.gvwGridView1.AllowPaging = false; line of code in UOC_gvwGridView1_RowCommand function to enable paging
+'*  2016/06/24  Shashikiran       Added remarks above UOC_btnBatUpd_Click event as a guideline for developers to modify the code to set the
+'*                                table sequence appropriately for successful delete operation
 '**********************************************************************************
 ' System
 Imports System.IO
@@ -183,6 +185,9 @@ Partial Public Class _JoinTableName__Screen_SearchAndUpdate
     ''' <summary>バッチ更新ボタン</summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
     ''' <returns>URL</returns>
+    ''' <remarks>In case of deleting from multiple tables and when the tables have dependent relation, the sequence of execution of delete statements for these tables become necessary. 
+    ''' Developer should decide the sequence of table for the delete operation.
+    ''' This can be managed by altering the position of code block present in the region 'Batch Update for [TableName]  table' as required</remarks>
     Protected Function UOC_btnBatUpd_Click(ByVal fxEventArgs As FxEventArgs) As String
         '#Region "Create the instance of classes here"
 
@@ -375,4 +380,3 @@ Partial Public Class _JoinTableName__Screen_SearchAndUpdate
 #End Region
 
 End Class
-
