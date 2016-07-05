@@ -24,6 +24,7 @@
 //*  2016/03/17  Bhagya            Implemented code to resolve the progress dialog mask issue in IE9 or more and other browsers
 //*  2016/04/15  Sandeep           Implemented cross-browser detection method, to suppress double transmission
 //*  2016/04/20  Sandeep           Created form submission flag, to suppress double transmission
+//*  2016/07/05  Sandeep           Added cache property in the Ajax ping request to prevent the session timeout.
 //**********************************************************************************
 
 function Fx_Document_OnLoad() {
@@ -75,9 +76,15 @@ function Fx_Document_OnLoad2() {
 //// 戻り値  －
 //// ---------------------------------------------------------------
 //function HttpPing() {
-//    var httpObj = jQuery.get("/ProjectX_sample/Framework/ping.aspx", null, function () {
-//        //動作確認用コード(ping先の画面のソースをアラート表示)
-////        alert(httpObj.responseText);
+//    $.ajax({
+//        type: 'GET',
+//        url: ResolveServerUrl("~/Aspx/Framework/ping.aspx"),
+//        contentType: "application/json; charset=utf-8",
+//        data: {},
+//        cache:false,
+//        dataType: "json",
+//        success: function () {},
+//        error: function () {}
 //    });
 //}
 
