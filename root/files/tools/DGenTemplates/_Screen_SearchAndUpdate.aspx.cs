@@ -17,6 +17,7 @@
 //*  2016/05/16  Shashikiran       Commented this.gvwGridView1.AllowPaging = false; line of code in UOC_gvwGridView1_RowCommand function to enable paging
 //*  2016/05/27  Shashikiran       Added remarks above UOC_btnBatUpd_Click event as a guideline for developers to modify the code to set the
 //*                                table sequence appropriately for successful delete operation
+//*  2016/07/08  Shashikiran       Modified code UOC_gvwGridView1_RowCommand to fix the gridview row replacement issue
 //**********************************************************************************
 // System
 using System;
@@ -301,10 +302,10 @@ public partial class _JoinTableName__Screen_SearchAndUpdate : MyBaseController
                     else if (dr.RowState != DataRowState.Deleted)
                     {
                         // != Added、Deleted
-
+                        // Pick the exact gridview row value and avoid row replacement
                         // e.NewSelectedIndexとRowsのインデックスをチェック
                         i++;
-                        if (index == i)
+                        if (index + (gvwGridView1.PageSize * gvwGridView1.PageIndex) == i)
                         {
                             // 削除
                             dr.Delete();
@@ -328,16 +329,16 @@ public partial class _JoinTableName__Screen_SearchAndUpdate : MyBaseController
                     if (dr.RowState != DataRowState.Deleted)
                     {
                         // != Deleted
-
+                        // Pick the exact gridview row value and avoid row replacement
                         // e.NewSelectedIndexとRowsのインデックスをチェック
                         i++;
-                        if (index == i)
+                        if (index + (gvwGridView1.PageSize * gvwGridView1.PageIndex) == i)
                         {
                             // 更新
                             GridViewRow gvRow = this.gvwGridView1.Rows[index];
                             foreach (DataColumn dc in dt.Columns)
                             {
-                                TextBox txtBox = ((TextBox)gvRow.FindControl("txt" + dc.ColumnName.Replace('.','_')));
+                                TextBox txtBox = ((TextBox)gvRow.FindControl("txt" + dc.ColumnName.Replace('.', '_')));
 
                                 if (txtBox != null)
                                 {
@@ -377,9 +378,10 @@ public partial class _JoinTableName__Screen_SearchAndUpdate : MyBaseController
                 return string.Empty;
         }
 
+        // Commenting the code as it is not Necessary to reset and to avoid confusion
         // GridViewをリセット
-        this.gvwGridView1.PageIndex = 0;
-        this.gvwGridView1.Sort("", SortDirection.Ascending);
+        //this.gvwGridView1.PageIndex = 0;
+        //this.gvwGridView1.Sort("", SortDirection.Ascending);
 
         // ページングの中止
         //this.gvwGridView1.AllowPaging = false;
