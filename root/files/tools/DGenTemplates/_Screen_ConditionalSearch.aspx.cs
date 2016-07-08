@@ -195,7 +195,7 @@ public partial class _JoinTableName__Screen_ConditionalSearch : MyBaseController
 
         //  Primary key columns
         // ControlComment:LoopStart-PKColumn
-        PrimaryKeyAndTimeStamp.Add("_JoinTextboxColumnName_", dt.Rows[e.NewSelectedIndex]["_JoinColumnName_"].ToString());
+        PrimaryKeyAndTimeStamp.Add("_JoinTextboxColumnName_", dt.Rows[e.NewSelectedIndex + (gvwGridView1.PageSize * gvwGridView1.PageIndex)]["_JoinColumnName_"].ToString());
         // ControlComment:LoopEnd-PKColumn
 
         // Timestamp Column

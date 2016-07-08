@@ -1108,7 +1108,7 @@ Namespace Touryo.Infrastructure.Business.Business
                                 If parameterValue.AndEqualSearchConditions.ContainsKey(dc.ColumnName) Then
                                     ' Where条件は、DataRowVersion.Originalを付与
                                     ' Setting up parameters by removing tablename from the alias
-                                    cmnDao.SetParameter(dc.ColumnName.Replace(TableName & "_", ""), dr(dc, DataRowVersion.Current))
+                                    cmnDao.SetParameter(dc.ColumnName.Replace(TableName & "_", ""), dr(dc, DataRowVersion.Original))
                                 Else
                                     ' Setting up parameters by removing tablename from the alias
                                     cmnDao.SetParameter(Me.UpdateParamHeader + dc.ColumnName.Replace(TableName & "_", "") & Me.UpdateParamFooter, dr(dc))

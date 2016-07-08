@@ -17,6 +17,7 @@
 '*  2016/06/20  Shashikiran       Removed this.gvwGridView1.AllowPaging = false; line of code in UOC_gvwGridView1_RowCommand function to enable paging
 '*  2016/06/24  Shashikiran       Added remarks above UOC_btnBatUpd_Click event as a guideline for developers to modify the code to set the
 '*                                table sequence appropriately for successful delete operation
+'*  2016/07/08  Shashikiran       Modified code UOC_gvwGridView1_RowCommand to fix the gridview row replacement issue
 '**********************************************************************************
 ' System
 Imports System.IO
@@ -279,10 +280,10 @@ Partial Public Class _JoinTableName__Screen_SearchAndUpdate
                         Continue For
                     ElseIf dr.RowState <> DataRowState.Deleted Then
                         ' != Added、Deleted
-
+                        ' Pick the exact gridview row value and avoid row replacement
                         ' e.NewSelectedIndexとRowsのインデックスをチェック
                         i += 1
-                        If index = i Then
+                        If (index + (gvwGridView1.PageSize * gvwGridView1.PageIndex)) = i Then
                             ' 削除
                             dr.Delete()
                             Exit For
@@ -301,10 +302,10 @@ Partial Public Class _JoinTableName__Screen_SearchAndUpdate
                 For Each dr As DataRow In dt.Rows
                     If dr.RowState <> DataRowState.Deleted Then
                         ' != Deleted
-
+                        ' Pick the exact gridview row value and avoid row replacement
                         ' e.NewSelectedIndexとRowsのインデックスをチェック
                         i += 1
-                        If index = i Then
+                        If (index + (gvwGridView1.PageSize * gvwGridView1.PageIndex)) = i Then
                             ' 更新
                             Dim gvRow As GridViewRow = Me.gvwGridView1.Rows(index)
                             For Each dc As DataColumn In dt.Columns
@@ -343,10 +344,10 @@ Partial Public Class _JoinTableName__Screen_SearchAndUpdate
                 ' 不明
                 Return String.Empty
         End Select
-
+        ' Commenting the code as it is not Necessary to reset and to avoid confusion
         ' GridViewをリセット
-        Me.gvwGridView1.PageIndex = 0
-        Me.gvwGridView1.Sort("", SortDirection.Ascending)
+        'Me.gvwGridView1.PageIndex = 0
+        'Me.gvwGridView1.Sort("", SortDirection.Ascending)
 
 
         ' GridViewのDataSourceを変更してDataBindする。
