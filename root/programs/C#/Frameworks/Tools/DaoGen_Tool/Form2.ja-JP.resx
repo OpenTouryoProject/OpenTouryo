@@ -131,7 +131,10 @@
     <value>480, 36</value>
   </data>
   <data name="btnSetDaoDefinition.Text" xml:space="preserve">
-    <value>パスを指定</value>
+    <value>フォルダ</value>
+  </data>
+  <data name="lblSetDaoDefinition.Location" type="System.Drawing.Point, System.Drawing">
+    <value>22, 42</value>
   </data>
   <data name="lblSetDaoDefinition.Size" type="System.Drawing.Size, System.Drawing">
     <value>109, 13</value>
@@ -139,14 +142,68 @@
   <data name="lblSetDaoDefinition.Text" xml:space="preserve">
     <value>D層定義情報ファイル</value>
   </data>
+  <data name="gbxInput.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 17</value>
+  </data>
+  <data name="gbxInput.Size" type="System.Drawing.Size, System.Drawing">
+    <value>587, 190</value>
+  </data>
+  <data name="gbxInput.Text" xml:space="preserve">
+    <value>入力設定</value>
+  </data>
+  <data name="txtPersonalName.Location" type="System.Drawing.Point, System.Drawing">
+    <value>384, 161</value>
+  </data>
   <data name="txtPersonalName.Size" type="System.Drawing.Size, System.Drawing">
     <value>112, 20</value>
+  </data>
+  <data name="lblGivenName.Location" type="System.Drawing.Point, System.Drawing">
+    <value>347, 165</value>
+  </data>
+  <data name="lblGivenName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>25, 13</value>
+  </data>
+  <data name="lblGivenName.Text" xml:space="preserve">
+    <value>名：</value>
+  </data>
+  <data name="lblFamilyName.Location" type="System.Drawing.Point, System.Drawing">
+    <value>108, 168</value>
   </data>
   <data name="lblFamilyName.Size" type="System.Drawing.Size, System.Drawing">
     <value>25, 13</value>
   </data>
   <data name="lblFamilyName.Text" xml:space="preserve">
     <value>姓：</value>
+  </data>
+  <data name="lblEncodingDao.Location" type="System.Drawing.Point, System.Drawing">
+    <value>30, 135</value>
+  </data>
+  <data name="lblEncodingDao.Size" type="System.Drawing.Size, System.Drawing">
+    <value>102, 13</value>
+  </data>
+  <data name="lblEncodingDao.Text" xml:space="preserve">
+    <value>エンコーディング（ダオ</value>
+  </data>
+  <data name="lblInputEncoding.Location" type="System.Drawing.Point, System.Drawing">
+    <value>29, 71</value>
+  </data>
+  <data name="lblInputEncoding.Size" type="System.Drawing.Size, System.Drawing">
+    <value>102, 13</value>
+  </data>
+  <data name="lblInputEncoding.Text" xml:space="preserve">
+    <value>入力エンコーディング</value>
+  </data>
+  <data name="lblLanguage.Location" type="System.Drawing.Point, System.Drawing">
+    <value>95, 16</value>
+  </data>
+  <data name="lblLanguage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>31, 13</value>
+  </data>
+  <data name="lblLanguage.Text" xml:space="preserve">
+    <value>言語</value>
+  </data>
+  <data name="lblSetSourceTemplate.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 101</value>
   </data>
   <data name="lblSetSourceTemplate.Size" type="System.Drawing.Size, System.Drawing">
     <value>129, 13</value>
@@ -158,7 +215,7 @@
     <value>480, 95</value>
   </data>
   <data name="btnSetSourceTemplate.Text" xml:space="preserve">
-    <value>ルート フォルダ パスを指定</value>
+    <value>フォルダ</value>
   </data>
   <data name="txtSetSourceTemplate.Size" type="System.Drawing.Size, System.Drawing">
     <value>338, 20</value>
@@ -169,20 +226,35 @@
   <data name="cbxDaoDefinitionHeader.Text" xml:space="preserve">
     <value>ヘッダありの場合（１行目を無視する）</value>
   </data>
-  <data name="gbxInput.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 17</value>
-  </data>
-  <data name="gbxInput.Size" type="System.Drawing.Size, System.Drawing">
-    <value>578, 190</value>
-  </data>
-  <data name="gbxInput.Text" xml:space="preserve">
-    <value>入力設定</value>
-  </data>
   <data name="btnDaoAndSqlGen.Location" type="System.Drawing.Point, System.Drawing">
     <value>419, 404</value>
   </data>
   <data name="btnDaoAndSqlGen.Text" xml:space="preserve">
-    <value>－ Dao・SQL、DTOファイルを生成する －</value>
+    <value>プログラムを生成する</value>
+  </data>
+  <data name="gbxOutput.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 222</value>
+  </data>
+  <data name="gbxOutput.Size" type="System.Drawing.Size, System.Drawing">
+    <value>588, 75</value>
+  </data>
+  <data name="gbxOutput.Text" xml:space="preserve">
+    <value>出力設定</value>
+  </data>
+  <data name="lblOutputSqlDao.Location" type="System.Drawing.Point, System.Drawing">
+    <value>255, 51</value>
+  </data>
+  <data name="lblOutputEncDao.Location" type="System.Drawing.Point, System.Drawing">
+    <value>24, 51</value>
+  </data>
+  <data name="lblOutputEncDao.Size" type="System.Drawing.Size, System.Drawing">
+    <value>110, 13</value>
+  </data>
+  <data name="lblOutputEncDao.Text" xml:space="preserve">
+    <value>エンコーディング（Dao）</value>
+  </data>
+  <data name="lblSetOutput.Location" type="System.Drawing.Point, System.Drawing">
+    <value>65, 19</value>
   </data>
   <data name="lblSetOutput.Size" type="System.Drawing.Size, System.Drawing">
     <value>65, 13</value>
@@ -194,46 +266,80 @@
     <value>481, 13</value>
   </data>
   <data name="btnSetOutput.Text" xml:space="preserve">
-    <value>ルート フォルダ パスを指定</value>
+    <value>フォルダ</value>
   </data>
   <data name="txtSetOutput.Size" type="System.Drawing.Size, System.Drawing">
     <value>339, 20</value>
   </data>
-  <data name="gbxOutput.Location" type="System.Drawing.Point, System.Drawing">
-    <value>7, 222</value>
+  <data name="tabControl1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>1, 0</value>
   </data>
-  <data name="gbxOutput.Size" type="System.Drawing.Size, System.Drawing">
-    <value>579, 75</value>
-  </data>
-  <data name="gbxOutput.Text" xml:space="preserve">
-    <value>出力設定</value>
-  </data>
-  <data name="lblSelected.Location" type="System.Drawing.Point, System.Drawing">
-    <value>116, 416</value>
-  </data>
-  <data name="cbxTSIndisp.Size" type="System.Drawing.Size, System.Drawing">
-    <value>112, 17</value>
-  </data>
-  <data name="cbxTSIndisp.Text" xml:space="preserve">
-    <value>タイムスタンプ必須</value>
-  </data>
-  <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>5, 315</value>
-  </data>
-  <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>581, 75</value>
-  </data>
-  <data name="groupBox2.Text" xml:space="preserve">
-    <value>その他の設定</value>
-  </data>
-  <data name="btnOptions.Location" type="System.Drawing.Point, System.Drawing">
-    <value>23, 409</value>
+  <data name="tabControl1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>623, 477</value>
   </data>
   <data name="tabPage1.Size" type="System.Drawing.Size, System.Drawing">
     <value>615, 451</value>
   </data>
   <data name="tabPage1.Text" xml:space="preserve">
-    <value>ステップ１</value>
+    <value>ステップ2</value>
+  </data>
+  <data name="lblSelected.Location" type="System.Drawing.Point, System.Drawing">
+    <value>116, 416</value>
+  </data>
+  <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>5, 315</value>
+  </data>
+  <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>590, 75</value>
+  </data>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>その他の設定</value>
+  </data>
+  <data name="cbxTSIndisp.Size" type="System.Drawing.Size, System.Drawing">
+    <value>252, 30</value>
+  </data>
+  <data name="cbxTSIndisp.Text" xml:space="preserve">
+    <value>タイムスタンプが必要であれば、アップデート
+または削除クエリの検索条件に定義してください。</value>
+  </data>
+  <data name="lblTimestampName.Location" type="System.Drawing.Point, System.Drawing">
+    <value>30, 15</value>
+  </data>
+  <data name="lblTimestampName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>99, 13</value>
+  </data>
+  <data name="lblTimestampName.Text" xml:space="preserve">
+    <value>タイムスタンプ列名：</value>
+  </data>
+  <data name="lblHUD.Location" type="System.Drawing.Point, System.Drawing">
+    <value>69, 45</value>
+  </data>
+  <data name="lblHUD.Size" type="System.Drawing.Size, System.Drawing">
+    <value>61, 13</value>
+  </data>
+  <data name="lblHUD.Text" xml:space="preserve">
+    <value>更新方法：</value>
+  </data>
+  <data name="btnOptions.Location" type="System.Drawing.Point, System.Drawing">
+    <value>23, 409</value>
+  </data>
+  <data name="btnOptions.Text" xml:space="preserve">
+    <value>オプション</value>
+  </data>
+  <data name="tabPage2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>615, 451</value>
+  </data>
+  <data name="tabPage2.Text" xml:space="preserve">
+    <value>オプション</value>
+  </data>
+  <data name="groupBox3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>17, 313</value>
+  </data>
+  <data name="groupBox3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>581, 76</value>
+  </data>
+  <data name="groupBox3.Text" xml:space="preserve">
+    <value>テーブルメンテナンス画面を自動生成する（エンコーディングはDaoと同じになる</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="cbxTableMaintenance.AutoSize" type="System.Boolean, mscorlib">
@@ -257,21 +363,6 @@
   <data name="cbxOnlyTableMaintenance.Text" xml:space="preserve">
     <value>テーブルメンテナンス画面のみ生成します。（Dao, SQL, DTOは生成しません）</value>
   </data>
-  <data name="groupBox3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>17, 313</value>
-  </data>
-  <data name="groupBox3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>581, 76</value>
-  </data>
-  <data name="groupBox3.Text" xml:space="preserve">
-    <value>テーブルメンテナンス画面を自動生成する（エンコーディングはDaoと同じになる</value>
-  </data>
-  <data name="cbxTypedDataSet.Size" type="System.Drawing.Size, System.Drawing">
-    <value>112, 17</value>
-  </data>
-  <data name="cbxTypedDataSet.Text" xml:space="preserve">
-    <value>型付きデータセット</value>
-  </data>
   <data name="gbxDTO.Location" type="System.Drawing.Point, System.Drawing">
     <value>18, 220</value>
   </data>
@@ -281,11 +372,29 @@
   <data name="gbxDTO.Text" xml:space="preserve">
     <value>DTOを生成する（エンコーディングはDaoと同じになる）</value>
   </data>
+  <data name="cbxTypedDataSet.Size" type="System.Drawing.Size, System.Drawing">
+    <value>112, 17</value>
+  </data>
+  <data name="cbxTypedDataSet.Text" xml:space="preserve">
+    <value>型付きデータセット</value>
+  </data>
+  <data name="gbxOracleLikeSetting.Location" type="System.Drawing.Point, System.Drawing">
+    <value>18, 121</value>
+  </data>
+  <data name="gbxOracleLikeSetting.Size" type="System.Drawing.Size, System.Drawing">
+    <value>580, 70</value>
+  </data>
+  <data name="gbxOracleLikeSetting.Text" xml:space="preserve">
+    <value>Like検索設定（ODP.NET）</value>
+  </data>
   <data name="lblEscapeChar.Size" type="System.Drawing.Size, System.Drawing">
     <value>83, 13</value>
   </data>
   <data name="lblEscapeChar.Text" xml:space="preserve">
     <value>エスケープ文字：</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>NCHAR、NVARCHAR2、NCLOB生成オプション</value>
   </data>
   <data name="chkEscapeToNChar.Size" type="System.Drawing.Size, System.Drawing">
     <value>164, 17</value>
@@ -298,18 +407,6 @@
   </data>
   <data name="label5.Text" xml:space="preserve">
     <value>LIKE記号：</value>
-  </data>
-  <data name="groupBox1.Text" xml:space="preserve">
-    <value>NCHAR、NVARCHAR2、NCLOB生成オプション</value>
-  </data>
-  <data name="gbxOracleLikeSetting.Location" type="System.Drawing.Point, System.Drawing">
-    <value>18, 121</value>
-  </data>
-  <data name="gbxOracleLikeSetting.Size" type="System.Drawing.Size, System.Drawing">
-    <value>580, 70</value>
-  </data>
-  <data name="gbxOracleLikeSetting.Text" xml:space="preserve">
-    <value>Like検索設定（ODP.NET）</value>
   </data>
   <data name="btnOK.Location" type="System.Drawing.Point, System.Drawing">
     <value>445, 404</value>
@@ -335,18 +432,6 @@
   <data name="gbxDataProviders.Text" xml:space="preserve">
     <value>データプロバイダを選択する</value>
   </data>
-  <data name="tabPage2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>615, 451</value>
-  </data>
-  <data name="tabPage2.Text" xml:space="preserve">
-    <value>ステップ２</value>
-  </data>
-  <data name="tabControl1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1, 0</value>
-  </data>
-  <data name="tabControl1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>623, 477</value>
-  </data>
   <data name="panel1.Size" type="System.Drawing.Size, System.Drawing">
     <value>613, 477</value>
   </data>
@@ -354,6 +439,9 @@
     <value>611, 475</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>棟梁：D層自動生成ツール（墨壺） - D層、Dao・SQLファイル生成 </value>
+    <value>Dレイヤーの自動生成ツール</value>
+  </data>
+  <data name="lblSelected.Text" xml:space="preserve">
+    <value>*選択</value>
   </data>
 </root>

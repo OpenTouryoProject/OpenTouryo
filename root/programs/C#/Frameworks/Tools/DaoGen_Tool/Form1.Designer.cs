@@ -42,7 +42,7 @@
             this.txtConnString = new System.Windows.Forms.TextBox();
             this.lbxTables = new System.Windows.Forms.ListBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.sTEP1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.STEP1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.cbxDebug = new System.Windows.Forms.CheckBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -184,15 +184,15 @@
             // 
             this.menuStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(123)))), ((int)(((byte)(155)))));
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.sTEP1ToolStripMenuItem});
+            this.STEP1ToolStripMenuItem});
             resources.ApplyResources(this.menuStrip1, "menuStrip1");
             this.menuStrip1.Name = "menuStrip1";
             // 
-            // sTEP1ToolStripMenuItem
+            // STEP1ToolStripMenuItem
             // 
-            resources.ApplyResources(this.sTEP1ToolStripMenuItem, "sTEP1ToolStripMenuItem");
-            this.sTEP1ToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.sTEP1ToolStripMenuItem.Name = "sTEP1ToolStripMenuItem";
+            resources.ApplyResources(this.STEP1ToolStripMenuItem, "STEP1ToolStripMenuItem");
+            this.STEP1ToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.STEP1ToolStripMenuItem.Name = "STEP1ToolStripMenuItem";
             // 
             // dataGridView1
             // 
@@ -485,7 +485,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox cmbEncoding;
         private System.Windows.Forms.Button btnDaoDefinitionGen;
-        private System.Windows.Forms.ToolStripMenuItem sTEP1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem STEP1ToolStripMenuItem;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Button btnListTable;

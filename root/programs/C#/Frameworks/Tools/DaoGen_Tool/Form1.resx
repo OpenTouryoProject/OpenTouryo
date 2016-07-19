@@ -465,13 +465,13 @@
   <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <data name="sTEP1ToolStripMenuItem.Font" type="System.Drawing.Font, System.Drawing">
+  <data name="STEP1ToolStripMenuItem.Font" type="System.Drawing.Font, System.Drawing">
     <value>Times New Roman, 9pt, style=Bold</value>
   </data>
-  <data name="sTEP1ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="STEP1ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>57, 20</value>
   </data>
-  <data name="sTEP1ToolStripMenuItem.Text" xml:space="preserve">
+  <data name="STEP1ToolStripMenuItem.Text" xml:space="preserve">
     <value>STEP 1</value>
   </data>
   <data name="menuStrip1.Location" type="System.Drawing.Point, System.Drawing">
@@ -1262,10 +1262,10 @@
   <data name="$this.Text" xml:space="preserve">
     <value>D layer automatic generation tool</value>
   </data>
-  <data name="&gt;&gt;sTEP1ToolStripMenuItem.Name" xml:space="preserve">
-    <value>sTEP1ToolStripMenuItem</value>
+  <data name="&gt;&gt;STEP1ToolStripMenuItem.Name" xml:space="preserve">
+    <value>STEP1ToolStripMenuItem</value>
   </data>
-  <data name="&gt;&gt;sTEP1ToolStripMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;STEP1ToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
