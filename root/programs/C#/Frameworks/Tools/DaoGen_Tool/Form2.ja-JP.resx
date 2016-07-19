@@ -182,7 +182,7 @@
     <value>102, 13</value>
   </data>
   <data name="lblEncodingDao.Text" xml:space="preserve">
-    <value>エンコーディング（ダオ</value>
+    <value>エンコーディング（Dao）</value>
   </data>
   <data name="lblInputEncoding.Location" type="System.Drawing.Point, System.Drawing">
     <value>29, 71</value>

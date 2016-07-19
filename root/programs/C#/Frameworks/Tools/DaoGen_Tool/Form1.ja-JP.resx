@@ -134,7 +134,7 @@
     <value>生成</value>
   </data>
   <data name="btnGetSchemaInfo.Text" xml:space="preserve">
-    <value>スキーマ情報取得 </value>
+    <value>取得</value>
   </data>
   <data name="btnDelTable.Text" xml:space="preserve">
     <value>削除</value>
@@ -167,7 +167,7 @@
     <value>Dレイヤーの自動生成ツール</value>
   </data>
   <data name="btnDaoAndSqlGen.Text" xml:space="preserve">
-    <value>STEP2へ移動</value>
+    <value>STEP2へ遷移</value>
   </data>
   <data name="cbxDebug.Text" xml:space="preserve">
     <value>デバッグ</value>
