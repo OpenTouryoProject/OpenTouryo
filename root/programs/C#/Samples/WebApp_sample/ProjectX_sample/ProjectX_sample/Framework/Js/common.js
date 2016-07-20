@@ -79,12 +79,7 @@ function Fx_Document_OnLoad2() {
 //    $.ajax({
 //        type: 'GET',
 //        url: ResolveServerUrl("~/Aspx/Framework/ping.aspx"),
-//        contentType: "application/json; charset=utf-8",
-//        data: {},
-//        cache:false,
-//        dataType: "json",
-//        success: function () {},
-//        error: function () {}
+//        cache:false
 //    });
 //}
 
