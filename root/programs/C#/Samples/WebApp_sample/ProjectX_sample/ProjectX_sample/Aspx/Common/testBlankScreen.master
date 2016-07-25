@@ -7,6 +7,9 @@
 
 <head id="Head1" runat="server">
     <title>無題のページ</title>
+    <!--Uncomment below line when using jQuery-->
+    <!--<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>-->
+
     <!--FxCode：add-start-->
     <script type="text/javascript" src="<%= this.ResolveClientUrl("~/Framework/js/common.js") %>"></script>
     <script type="text/javascript" src="<%= this.ResolveClientUrl("~/Framework/js/ie_key_event.js") %>"></script>

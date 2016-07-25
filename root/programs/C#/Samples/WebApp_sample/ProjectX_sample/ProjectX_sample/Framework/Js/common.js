@@ -62,6 +62,8 @@ function Fx_Document_OnLoad2() {
     // 標準スタイルのウィンドウを表示
     //Fx_StandardStyleWindow();
 
+    // Sessionタイムアウト防止機能 - Open 棟梁 Wiki
+    // https://opentouryo.osscons.jp/index.php?Session%E3%82%BF%E3%82%A4%E3%83%A0%E3%82%A2%E3%82%A6%E3%83%88%E9%98%B2%E6%AD%A2%E6%A9%9F%E8%83%BD
     // Webサーバへ一定時間ごとにpingを行う
     //window.setInterval(HttpPing, 5 * 60 * 1000);
 
