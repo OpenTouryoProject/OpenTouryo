@@ -2040,7 +2040,7 @@ Delete query If you want to require.</value>
     <value>6</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>D layer automatic generation tool </value>
+    <value>Dao automatic generation tool</value>
   </data>
   <data name="cbxOnlyTableMaintenance.Location" type="System.Drawing.Point, System.Drawing">
     <value>8, 19</value>
@@ -2108,13 +2108,10 @@ Delete query If you want to require.</value>
   <data name="&gt;&gt;btnOptions.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="$this.Localizable" type="System.Boolean, mscorlib">
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
-  </data>
-  <data name="$this.Language" type="System.Globalization.CultureInfo, mscorlib">
-    <value>en-US</value>
-  </data>
-  <data name="$this.TrayHeight" type="System.Int32, mscorlib">
+  </metadata>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>25</value>
-  </data>
+  </metadata>
 </root>

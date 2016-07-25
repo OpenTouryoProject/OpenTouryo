@@ -120,54 +120,30 @@
   <data name="gbxDataProviders.Text" xml:space="preserve">
     <value>データプロバイダを選択する </value>
   </data>
-  <data name="btnListTable.Text" xml:space="preserve">
-    <value>テーブル一覧の取得</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="lblConnectionString.Size" type="System.Drawing.Size, System.Drawing">
+    <value>79, 13</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>76, 13</value>
+  <data name="lblConnectionString.Text" xml:space="preserve">
+    <value>接続文字列：</value>
   </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>接続文字列： </value>
+  <data name="txtConnString.Size" type="System.Drawing.Size, System.Drawing">
+    <value>280, 20</value>
   </data>
-  <data name="btnDaoDefinitionGen.Text" xml:space="preserve">
-    <value>生成</value>
+  <data name="lbxTables.Location" type="System.Drawing.Point, System.Drawing">
+    <value>204, 98</value>
   </data>
-  <data name="btnGetSchemaInfo.Text" xml:space="preserve">
-    <value>取得</value>
+  <data name="lbxTables.Size" type="System.Drawing.Size, System.Drawing">
+    <value>280, 368</value>
   </data>
-  <data name="btnDelTable.Text" xml:space="preserve">
-    <value>削除</value>
+  <data name="STEP1ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>66, 20</value>
   </data>
-  <data name="btnLoadColumn.Text" xml:space="preserve">
-    <value>負荷</value>
+  <data name="STEP1ToolStripMenuItem.Text" xml:space="preserve">
+    <value>ステップ１</value>
   </data>
-  <data name="btnSetPrimaryKey.Text" xml:space="preserve">
-    <value>セット</value>
-  </data>
-  <data name="Restart_ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>130, 20</value>
-  </data>
-  <data name="Restart_ToolStripMenuItem.Text" xml:space="preserve">
-    <value>やり直す（再起動） </value>
-  </data>
-  <data name="Close_ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>58, 20</value>
-  </data>
-  <data name="Close_ToolStripMenuItem.Text" xml:space="preserve">
-    <value>閉じる </value>
-  </data>
-  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>87, 13</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>エンコーディング： </value>
-  </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Dレイヤーの自動生成ツール</value>
-  </data>
-  <data name="btnDaoAndSqlGen.Text" xml:space="preserve">
-    <value>STEP2へ遷移</value>
+  <data name="cbxDebug.Size" type="System.Drawing.Size, System.Drawing">
+    <value>62, 17</value>
   </data>
   <data name="cbxDebug.Text" xml:space="preserve">
     <value>デバッグ</value>
@@ -181,25 +157,130 @@
   <data name="tabPage3.Text" xml:space="preserve">
     <value>タブ３</value>
   </data>
-  <data name="label4.Text" xml:space="preserve">
-    <value>テーブル一覧</value>
+  <data name="btnGetSchemaInfo.Text" xml:space="preserve">
+    <value>取得</value>
   </data>
-  <data name="label5.Text" xml:space="preserve">
-    <value>選択したテーブル</value>
-  </data>
-  <data name="label6.Text" xml:space="preserve">
-    <value>列情報</value>
-  </data>
-  <data name="label7.Text" xml:space="preserve">
-    <value>プライマリーキー</value>
-  </data>
-  <data name="lblConnectionString.Text" xml:space="preserve">
-    <value>接続文字列：</value>
+  <data name="lblSchemaInfo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>69, 13</value>
   </data>
   <data name="lblSchemaInfo.Text" xml:space="preserve">
     <value>スキーマ情報</value>
   </data>
-  <data name="STEP1ToolStripMenuItem.Text" xml:space="preserve">
-    <value>ステップ１</value>
+  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 13</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>テーブル一覧</value>
+  </data>
+  <data name="btnSetPrimaryKey.Location" type="System.Drawing.Point, System.Drawing">
+    <value>5, 142</value>
+  </data>
+  <data name="btnSetPrimaryKey.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 22</value>
+  </data>
+  <data name="btnSetPrimaryKey.Text" xml:space="preserve">
+    <value>セット</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="btnLoadColumn.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btnLoadColumn.Location" type="System.Drawing.Point, System.Drawing">
+    <value>5, 87</value>
+  </data>
+  <data name="btnLoadColumn.Size" type="System.Drawing.Size, System.Drawing">
+    <value>116, 22</value>
+  </data>
+  <data name="btnLoadColumn.Text" xml:space="preserve">
+    <value>読み込み or ロード</value>
+  </data>
+  <data name="btnDelTable.Location" type="System.Drawing.Point, System.Drawing">
+    <value>5, 34</value>
+  </data>
+  <data name="btnDelTable.Size" type="System.Drawing.Size, System.Drawing">
+    <value>116, 22</value>
+  </data>
+  <data name="btnDelTable.Text" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
+    <value>21, 127</value>
+  </data>
+  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
+    <value>79, 13</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value>プライマリーキー</value>
+  </data>
+  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>35, 73</value>
+  </data>
+  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>43, 13</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>列情報</value>
+  </data>
+  <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 16</value>
+  </data>
+  <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>87, 15</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>選択したテーブル</value>
+  </data>
+  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>490, 92</value>
+  </data>
+  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 191</value>
+  </data>
+  <data name="cmbEncoding.Location" type="System.Drawing.Point, System.Drawing">
+    <value>513, 291</value>
+  </data>
+  <data name="btnDaoDefinitionGen.Location" type="System.Drawing.Point, System.Drawing">
+    <value>490, 322</value>
+  </data>
+  <data name="btnDaoDefinitionGen.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 29</value>
+  </data>
+  <data name="btnDaoDefinitionGen.Text" xml:space="preserve">
+    <value>中間情報の生成</value>
+  </data>
+  <data name="pictureBox1.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABMAAAAcCAYAAACDBoQZAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADrwAAA68AZW8ckkAAADISURBVEhLrdQ9CgIxEIZh7+kJvIa9J7DaC1htb2VjHyxc
+        0CIgsixKLhD5igVnNj8zky3eKskDgWQ2IYS4VgQbpy9Z1EYw9xhjd36SDZoW2PbozGASQ4d+UF87i6H9
+        6a4Ci5gWrGIzOPiJHEwlwtCuu1VBMYZqoApDJVCNzV3ci0DIjCEONmHoH2zG8GxWwfiXM2OpYWDCclNF
+        jZXGkwrrr54c5omx1CPliTAJhKqYFEJZTDJyeEnMAqEFZoUQwfz7Y4YQwdoK8QfFJ0pSPMtRmgAAAABJ
+        RU5ErkJggg==
+</value>
+  </data>
+  <data name="pictureBox2.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAB0AAAASCAYAAACnxdXaAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADrwAAA68AZW8ckkAAADHSURBVEhL5dQxCsIwFIBh7+kJvIbXcOoFPIHg5ChOQVBB
+        h6KUUpRcIPJvNX1JXiJxcfi39H2QPDqz1rpf94do2z2dufZV64fXJ3ppB7dojm6+MlVars9TtCY8Bico
+        7U+d+GFpPkjiIu3MQxyQG7fGrvjzRZS+hQF5Lml2EKXN4S4OTBUDKYpSs72Jg0OlQEqilAPzLNKMcSqU
+        NLAGJDXK2rP+EkZakNQohWAWTjofKgslH+bapXOxslECZktLQCpCSfrT6LLuDaJoH5zGD+7hAAAAAElF
+        TkSuQmCC
+</value>
+  </data>
+  <data name="btnListTable.Location" type="System.Drawing.Point, System.Drawing">
+    <value>490, 49</value>
+  </data>
+  <data name="btnListTable.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 24</value>
+  </data>
+  <data name="btnListTable.Text" xml:space="preserve">
+    <value>テーブル一覧の取得</value>
+  </data>
+  <data name="btnDaoAndSqlGen.Text" xml:space="preserve">
+    <value>STEP2へ遷移</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Dao自動生成ツール</value>
   </data>
 </root>

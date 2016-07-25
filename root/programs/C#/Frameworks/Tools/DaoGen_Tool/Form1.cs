@@ -2290,12 +2290,12 @@ namespace DaoGen_Tool
             Button btnLoadColor = (Button)sender;
             if (btnLoadColor.Enabled)
             {
-                btnLoadColor.BackColor = Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
+                btnLoadColor.BackColor = Color.FromArgb(91,155,213);
                 btnLoadColor.ForeColor = Color.White;
             }
             else
             {
-                btnLoadColor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(202)))), ((int)(((byte)(207)))));
+                btnLoadColor.BackColor = Color.FromArgb(191,202,207);
                 btnLoadColor.ForeColor = Color.White;
             }
         }
@@ -2306,12 +2306,12 @@ namespace DaoGen_Tool
             Button btnDaoDefinitionGenColor = (Button)sender;
             if (btnDaoDefinitionGenColor.Enabled)
             {
-                btnDaoDefinitionGenColor.BackColor = Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(42)))), ((int)(((byte)(53)))));
+                btnDaoDefinitionGenColor.BackColor = Color.FromArgb(34,42,53);
                 btnDaoDefinitionGenColor.ForeColor = Color.White;
             }
             else
             {
-                btnDaoDefinitionGenColor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(202)))), ((int)(((byte)(207))))); 
+                btnDaoDefinitionGenColor.BackColor = Color.FromArgb(191,202,207); 
                 btnDaoDefinitionGenColor.ForeColor = Color.White;
             }
         }
