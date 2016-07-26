@@ -281,6 +281,6 @@
     <value>STEP2へ遷移</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Dao自動生成ツール</value>
+    <value>D層自動生成ツール</value>
   </data>
 </root>
