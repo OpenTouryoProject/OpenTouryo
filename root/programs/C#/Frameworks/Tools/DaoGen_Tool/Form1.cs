@@ -2217,11 +2217,16 @@ namespace DaoGen_Tool
                             }
                         }
                     }
+                    // メッセージ
+                    //MessageBox.Show("Ｄ層定義情報の生成完了！");
+                    MessageBox.Show(this.RM_GetString("DlayerGeneratedMessage"));
                 }
-
-                // メッセージ
-                //MessageBox.Show("Ｄ層定義情報の生成完了！");
-                MessageBox.Show(this.RM_GetString("DlayerGeneratedMessage"));
+                else
+                {
+                    // メッセージ
+                    //MessageBox.Show("操作はキャンセルされました。");
+                    MessageBox.Show(this.RM_GetString("DLayerCancelledmessage"));
+                }
             }
             catch (Exception ex)
             {

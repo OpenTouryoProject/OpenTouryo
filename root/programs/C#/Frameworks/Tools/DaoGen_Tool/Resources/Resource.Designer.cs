@@ -124,6 +124,15 @@ namespace DaoGen_Tool.Resources {
         }
         
         /// <summary>
+        ///   The operation was canceled..に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string DLayerCancelledmessage {
+            get {
+                return ResourceManager.GetString("DLayerCancelledmessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Completion of generation of the D-layer definition information! に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string DlayerGeneratedMessage {
