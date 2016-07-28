@@ -932,22 +932,22 @@ namespace DaoGen_Tool
             switch (s)
             {
                 case "OLE":
-                    rbnOLE.Checked = CmnMethods.enableDbProviderValues;
+                    rbnOLE.Checked = true;
                     this.rbnOLE.Select();
                     this.strDBMS = "OLE";
                     break;
                 case "ODB":
-                    rbnOLE.Checked = CmnMethods.enableDbProviderValues;
+                    rbnODB.Checked = true;
                     this.rbnODB.Select();
                     this.strDBMS = "ODB";
                     break;
                 case "ODP":
-                    rbnOLE.Checked = CmnMethods.enableDbProviderValues;
+                    rbnODP.Checked = true;
                     this.rbnODP.Select();
                     this.strDBMS = "Oracle";
                     break;
                 case "DB2":
-                    rbnOLE.Checked = CmnMethods.enableDbProviderValues;
+                    rbnDB2.Checked = true;
                     this.rbnDB2.Select();
                     this.strDBMS = "DB2";
                     break;
@@ -955,15 +955,17 @@ namespace DaoGen_Tool
                 //    this.rbnHiRDB.Select();
                 //    break;
                 case "MCN":
+                    rbnMySQL.Checked = true;
                     this.rbnMySQL.Select();
                     this.strDBMS = "MCN";
                     break;
                 case "NPS":
+                    rbnPstgrs.Checked = true;
                     this.rbnPstgrs.Select();
                     this.strDBMS = "PstGrS";
                     break;
                 default:
-                    rbnSQL.Checked = CmnMethods.enableDbProviderValues;
+                    rbnSQL.Checked = true;
                     this.rbnSQL.Select();
                     this.strDBMS = "SQLServer";
                     break;

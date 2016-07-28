@@ -46,9 +46,6 @@ namespace DaoGen_Tool
 
         #region スキーマ情報の表示
 
-        /// <summary>Sets data provider values</summary>
-        public static bool enableDbProviderValues;
-
         /// <summary>スキーマ情報の表示</summary>
         /// <param name="table">スキーマ情報</param>
         /// <param name="writeLine">線を低か引かないか</param>

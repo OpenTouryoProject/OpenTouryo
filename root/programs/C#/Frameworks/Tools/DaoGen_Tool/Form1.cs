@@ -293,7 +293,6 @@ namespace DaoGen_Tool
             {
                 this.Dap = "SQL";
                 this.txtConnString.Text = GetConfigParameter.GetConfigValue("ConnectionString_SQL");
-                CmnMethods.enableDbProviderValues = rbnSQL.Checked;
             }
 
             // コンボを初期化する。
@@ -308,7 +307,6 @@ namespace DaoGen_Tool
             {
                 this.Dap = "OLE";
                 this.txtConnString.Text = GetConfigParameter.GetConfigValue("ConnectionString_OLE");
-                CmnMethods.enableDbProviderValues = rbnOLE.Checked;
             }
 
             // コンボを初期化する。
@@ -323,7 +321,6 @@ namespace DaoGen_Tool
             {
                 this.Dap = "ODB";
                 this.txtConnString.Text = GetConfigParameter.GetConfigValue("ConnectionString_ODBC");
-                CmnMethods.enableDbProviderValues = rbnODB.Checked;
             }
 
             // コンボを初期化する。
@@ -338,7 +335,6 @@ namespace DaoGen_Tool
             {
                 this.Dap = "ODP";
                 this.txtConnString.Text = GetConfigParameter.GetConfigValue("ConnectionString_ODP2");
-                CmnMethods.enableDbProviderValues = rbnODP.Checked;
             }
 
             // コンボを初期化する。
@@ -353,7 +349,6 @@ namespace DaoGen_Tool
             {
                 this.Dap = "DB2";
                 this.txtConnString.Text = GetConfigParameter.GetConfigValue("ConnectionString_DB2");
-                CmnMethods.enableDbProviderValues = rbnDB2.Checked;
             }
 
             // コンボを初期化する。
@@ -368,7 +363,6 @@ namespace DaoGen_Tool
             {
                 this.Dap = "HIR";
                 this.txtConnString.Text = GetConfigParameter.GetConfigValue("ConnectionString_HIR");
-                CmnMethods.enableDbProviderValues = rbnHiRDB.Checked;
             }
 
             // コンボを初期化する。
@@ -383,7 +377,6 @@ namespace DaoGen_Tool
             {
                 this.Dap = "MCN";
                 this.txtConnString.Text = GetConfigParameter.GetConfigValue("ConnectionString_MCN");
-                CmnMethods.enableDbProviderValues = rbnMySQL.Checked;
             }
 
             // コンボを初期化する。
@@ -398,7 +391,6 @@ namespace DaoGen_Tool
             {
                 this.Dap = "NPS";
                 this.txtConnString.Text = GetConfigParameter.GetConfigValue("ConnectionString_NPS");
-                CmnMethods.enableDbProviderValues = rbnPstgrs.Checked;
             }
 
             // コンボを初期化する。
