@@ -9,7 +9,7 @@
 <head id="Head1" runat="server">
     <title>無題のページ</title>
     <!--Uncomment below line when using jQuery-->
-    <!--<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>-->
+    <!--<script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>-->
 
     <!--FxCode：add-start-->
     <script type="text/javascript" src="<%= this.ResolveClientUrl("~/Framework/js/common.js") %>"></script>
