@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testClientCallback.master" AutoEventWireup="true" CodeFile="testClientCallback.aspx.vb" Inherits="Aspx_testFxLayerP_withAjax_testClientCallback" Title="Untitled Page" %>
+﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testClientCallback.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_testFxLayerP_withAjax_testClientCallback" Title="Untitled Page" Codebehind="testClientCallback.aspx.vb" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">

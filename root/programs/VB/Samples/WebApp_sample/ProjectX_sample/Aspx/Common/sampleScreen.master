@@ -1,4 +1,4 @@
-﻿<%@ Master Language="VB" AutoEventWireup="true" CodeFile="sampleScreen.master.vb" Inherits="Aspx_Common_sampleScreen" %>
+﻿<%@ Master Language="VB" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_Common_sampleScreen" Codebehind="sampleScreen.master.vb" %>
 <%@ Register Src="sampleControl.ascx" TagName="sampleControl" TagPrefix="uc1" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 

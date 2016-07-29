@@ -1,4 +1,4 @@
-<%@ Page Language="VB" AutoEventWireup="true" CodeFile="noMasterScreen.aspx.vb" Inherits="Aspx_testFxLayerP_normal_noMasterScreen" %>
+<%@ Page Language="VB" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_testFxLayerP_normal_noMasterScreen" Codebehind="noMasterScreen.aspx.vb" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 

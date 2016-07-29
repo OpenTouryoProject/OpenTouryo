@@ -16,8 +16,6 @@
 '*  2015/12/22 Sai         Modified ReadOnly property of the primary key column textbox to true.  
 '**********************************************************************************
 
-Imports MyType
-
 ' System
 Imports System
 Imports System.IO

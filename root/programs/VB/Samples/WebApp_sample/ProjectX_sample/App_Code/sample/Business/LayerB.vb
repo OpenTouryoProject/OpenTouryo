@@ -15,10 +15,6 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '*
 '**********************************************************************************
-
-' 型情報
-Imports MyType
-
 ' System
 Imports System
 Imports System.IO
@@ -50,6 +46,9 @@ Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
+
+' MyType
+Imports ProjectX_sample.MyType
 
 ''' <summary>
 ''' LayerB の概要の説明です
@@ -824,3 +823,5 @@ Public Class LayerB
 
 #End Region
 End Class
+
+

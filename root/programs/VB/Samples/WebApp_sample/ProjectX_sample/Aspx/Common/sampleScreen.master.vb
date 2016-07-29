@@ -37,14 +37,15 @@
 Imports Touryo.Infrastructure.Framework.Presentation
 
 ''' <summary>サンプル画面用のマスタ ページ</summary>
-Public Partial Class Aspx_Common_sampleScreen
-	Inherits BaseMasterController
-	''' <summary>マスタページにイベントハンドラを実装可能にしたのでそのテスト。</summary>
-	''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
-	''' <returns>URL</returns>
-	Protected Function UOC_btnMPButton_Click(fxEventArgs As FxEventArgs) As String
-		Response.Write("UOC_btnMPButton_Clickを実行できた。")
+Partial Public Class Aspx_Common_sampleScreen
+    Inherits BaseMasterController
+    ''' <summary>マスタページにイベントハンドラを実装可能にしたのでそのテスト。</summary>
+    ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+    ''' <returns>URL</returns>
+    Protected Function UOC_btnMPButton_Click(ByVal fxEventArgs As FxEventArgs) As String
+        Response.Write("UOC_btnMPButton_Clickを実行できた。")
 
-		Return ""
-	End Function
+        Return ""
+    End Function
 End Class
+

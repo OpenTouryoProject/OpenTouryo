@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" CodeFile="testWCTextBox.aspx.vb" Inherits="Aspx_testFxLayerP_wcc_testWCTextBox" Title="Untitled Page" %>
+﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_testFxLayerP_wcc_testWCTextBox" Title="Untitled Page" Codebehind="testWCTextBox.aspx.vb" %>
 
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl"
     TagPrefix="cc1" %>

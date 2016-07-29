@@ -36,6 +36,7 @@
 
 Imports Touryo.Infrastructure.Framework.Presentation
 
-Public Partial Class Aspx_Common_testNest_testScreen2bmp1
-	Inherits BaseMasterController
+Partial Public Class Aspx_Common_testNest_testScreen2bmp1
+    Inherits BaseMasterController
 End Class
+

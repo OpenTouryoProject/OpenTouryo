@@ -1,4 +1,4 @@
-﻿<%@ Master Language="VB" AutoEventWireup="true" CodeFile="testClientCallback.master.vb" Inherits="Aspx_Common_testClientCallback" %>
+﻿<%@ Master Language="VB" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_Common_testClientCallback" Codebehind="testClientCallback.master.vb" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <!-- All Rights Reserved, Copyright (C) 2007,2012 Hitachi Solutions,Ltd. -->
