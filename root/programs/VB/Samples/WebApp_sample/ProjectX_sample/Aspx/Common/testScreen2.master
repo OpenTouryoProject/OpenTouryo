@@ -1,4 +1,4 @@
-<%@ Master Language="VB" AutoEventWireup="true" CodeFile="testScreen2.master.vb" Inherits="Aspx_Common_testScreen2" %>
+<%@ Master Language="VB" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_Common_testScreen2" Codebehind="testScreen2.master.vb" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <!-- All Rights Reserved, Copyright (C) 2007,2012 Hitachi Solutions,Ltd. -->

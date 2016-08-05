@@ -15,10 +15,6 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '*
 '**********************************************************************************
-
-' 型情報
-Imports MyType
-
 ' System
 Imports System
 
@@ -38,6 +34,9 @@ Imports Touryo.Infrastructure.Framework.Exceptions
 ' 部品
 Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.Util
+
+' MyType
+Imports ProjectX_sample.MyType
 
 ''' <summary>
 ''' TestMTC_mcn の概要の説明です
