@@ -1,4 +1,4 @@
-<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testNest/testScreen1bmp2.master" AutoEventWireup="true" CodeFile="testScreen1nest.aspx.vb" Inherits="Aspx_testFxLayerP_normal_testScreen1nest" Title="Untitled Page" %>
+<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testNest/testScreen1bmp2.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_testFxLayerP_normal_testScreen1nest" Title="Untitled Page" Codebehind="testScreen1nest.aspx.vb" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A2" Runat="Server">

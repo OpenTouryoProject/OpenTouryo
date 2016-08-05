@@ -1,4 +1,4 @@
-<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" CodeFile="testGridView.aspx.vb" Inherits="Aspx_testFxLayerP_table_testGridView" Title="Untitled Page" EnableEventValidation="false" %>
+<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_testFxLayerP_table_testGridView" Title="Untitled Page" EnableEventValidation="false" Codebehind="testGridView.aspx.vb" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">

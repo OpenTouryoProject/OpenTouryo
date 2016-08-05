@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master"
-    AutoEventWireup="false" CodeFile="testListView.aspx.vb" Inherits="Aspx_testFxLayerP_table_testListView" %>
+    AutoEventWireup="false" Inherits="ProjectX_sample.Aspx_testFxLayerP_table_testListView" Codebehind="testListView.aspx.vb" %>
 
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl"
     TagPrefix="cc1" %>

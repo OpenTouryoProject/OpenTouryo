@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="true" CodeFile="ErrorScreen.aspx.vb" Inherits="Aspx_Common_ErrorScreen" %>
+﻿<%@ Page Language="VB" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_Common_ErrorScreen" Codebehind="ErrorScreen.aspx.vb" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <!-- Copyright (C) 2007,2014 Hitachi Solutions,Ltd. -->

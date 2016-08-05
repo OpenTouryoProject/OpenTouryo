@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="true" CodeFile="myOKMessageDialog.aspx.vb" Inherits="Aspx_Framework_myOKMessageDialog" %>
+﻿<%@ Page Language="VB" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_Framework_myOKMessageDialog" Codebehind="myOKMessageDialog.aspx.vb" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <!-- Copyright (C) 2007,2014 Hitachi Solutions,Ltd. -->

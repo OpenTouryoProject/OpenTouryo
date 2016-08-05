@@ -15,6 +15,7 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
 
+' System
 Imports System
 Imports System.Data
 Imports System.Configuration
@@ -32,3 +33,4 @@ Partial Public Class Aspx_Framework_Ping
 
     End Sub
 End Class
+

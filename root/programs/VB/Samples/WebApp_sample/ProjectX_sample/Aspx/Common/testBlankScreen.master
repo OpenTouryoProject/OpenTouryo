@@ -1,4 +1,4 @@
-<%@ Master Language="VB" AutoEventWireup="true" CodeFile="testBlankScreen.master.vb" Inherits="Aspx_Common_testBlankScreen" %>
+<%@ Master Language="VB" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_Common_testBlankScreen" Codebehind="testBlankScreen.master.vb" %>
 
 <!-- All Rights Reserved, Copyright (C) 2007,2012 Hitachi Solutions,Ltd. -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
