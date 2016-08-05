@@ -6,7 +6,7 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2313C19E-9ACC-4EB9-A4A8-6B6A02BA5906}</ProjectGuid>
+    <ProjectGuid>{502B90CC-0F83-41E1-9B72-525028E6A4EB}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -34,80 +34,80 @@
   <ItemGroup>
     <Reference Include="Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Business.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Business.dll</HintPath>
     </Reference>
     <Reference Include="Business.RichClient, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Business.RichClient.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Business.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="CustomControl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\CustomControl.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\CustomControl.dll</HintPath>
     </Reference>
     <Reference Include="CustomControl.RichClient, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\CustomControl.RichClient.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\CustomControl.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="DamDB2, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\DamDB2.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\DamDB2.dll</HintPath>
     </Reference>
     <Reference Include="DamMySQL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\DamMySQL.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\DamMySQL.dll</HintPath>
     </Reference>
     <Reference Include="DamOraOdp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\DamOraOdp.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\DamOraOdp.dll</HintPath>
     </Reference>
     <Reference Include="DamPstGrS, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\DamPstGrS.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\DamPstGrS.dll</HintPath>
     </Reference>
     <Reference Include="Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Framework.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Framework.dll</HintPath>
     </Reference>
     <Reference Include="Framework.RichClient, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Framework.RichClient.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Framework.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="IBM.Data.DB2, Version=9.0.0.2, Culture=neutral, PublicKeyToken=7c307b91aa13d208, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\IBM.Data.DB2.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\IBM.Data.DB2.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zip, Version=1.9.1.5, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Ionic.Zip.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\log4net.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Mono.Security.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Mono.Security.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data, Version=6.8.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\MySql.Data.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Npgsql, Version=2.0.14.3, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Npgsql.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="Oracle.DataAccess, Version=2.112.3.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Oracle.DataAccess.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Oracle.DataAccess.dll</HintPath>
     </Reference>
     <Reference Include="Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Public.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Public.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.DynamicData" />
@@ -123,7 +123,7 @@
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WSIFType_sample">
-      <HintPath>..\..\..\WS_sample\Build\WSIFType_sample.dll</HintPath>
+      <HintPath>..\..\WS_sample\Build\WSIFType_sample.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
