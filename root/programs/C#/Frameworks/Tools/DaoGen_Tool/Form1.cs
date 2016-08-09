@@ -59,31 +59,26 @@ using IBM.Data.DB2;
 using Hitachi.HiRDB;
 using MySql.Data.MySqlClient;
 using Npgsql;
-using NpgsqlTypes;
 
 // Windowアプリケーション
 using System.Drawing;
 using System.Windows.Forms;
-using System.ComponentModel;
 
 // System
 using System;
 using System.IO;
-using System.Xml;
 using System.Text;
 using System.Data;
 using System.Collections;
+using System.Resources;
+using System.Diagnostics;
 
 // 業務フレームワーク（参照しない）
 // フレームワーク（参照しない）
 
 // 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
-using System.Resources;
 
 namespace DaoGen_Tool
 {
@@ -126,6 +121,15 @@ namespace DaoGen_Tool
 
         #endregion
 
+        #region Help Information
+
+        /// <summary>strEnglishHelpDoc</summary>
+        string strEnglishHelpDoc;
+        /// <summary>strJapaneseHelpDoc</summary>
+        string strJapaneseHelpDoc;
+
+        #endregion
+
         #endregion
 
         #region 初期処理
@@ -152,11 +156,22 @@ namespace DaoGen_Tool
             // コンボを初期化する。
             this.Init_cmb();
 
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                // デバッグ実行のときは、リサイズ可とする
+                this.FormBorderStyle = FormBorderStyle.Sizable;
+            }
+            else
+            {
+                // デバッグなしで実行するときは、リサイズ不可とする
+                this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            }
+
             // ボタン状態の変更
             this.btnDelTable.Enabled = false;
             this.btnLoadColumn.Enabled = false;
             this.btnSetPrimaryKey.Enabled = false;
-            
+
             this.btnDaoDefinitionGen.Enabled = false;
         }
 
@@ -2287,13 +2302,13 @@ namespace DaoGen_Tool
             Button btnLoadColor = (Button)sender;
             if (btnLoadColor.Enabled)
             {
-                btnLoadColor.BackColor = Color.FromArgb(91,155,213);
+                btnLoadColor.BackColor = Color.FromArgb(91, 155, 213);
                 btnLoadColor.ForeColor = Color.White;
             }
             else
             {
-                btnLoadColor.BackColor = Color.FromArgb(191,202,207);
-                btnLoadColor.ForeColor = Color.White;
+                btnLoadColor.BackColor = Color.LightGray;
+                btnLoadColor.ForeColor = Color.DarkGray;
             }
         }
 
@@ -2303,13 +2318,28 @@ namespace DaoGen_Tool
             Button btnDaoDefinitionGenColor = (Button)sender;
             if (btnDaoDefinitionGenColor.Enabled)
             {
-                btnDaoDefinitionGenColor.BackColor = Color.FromArgb(34,42,53);
+                btnDaoDefinitionGenColor.BackColor = Color.FromArgb(34, 42, 53);
                 btnDaoDefinitionGenColor.ForeColor = Color.White;
             }
             else
             {
-                btnDaoDefinitionGenColor.BackColor = Color.FromArgb(191,202,207); 
+                btnDaoDefinitionGenColor.BackColor = Color.FromArgb(191, 202, 207);
                 btnDaoDefinitionGenColor.ForeColor = Color.White;
+            }
+        }
+
+        /// <summary> To get more information on DaoGen tool.</summary> 
+        private void lnkHelp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (Application.CurrentCulture.Name == "ja-JP")
+            {
+                strJapaneseHelpDoc = GetConfigParameter.GetConfigValue("LnkHelpDoc_Ja");
+                Process.Start(strJapaneseHelpDoc);
+            }
+            else
+            {
+                strEnglishHelpDoc = GetConfigParameter.GetConfigValue("LnkHelpDoc_En");
+                Process.Start(strEnglishHelpDoc);
             }
         }
     }

@@ -38,7 +38,7 @@
             this.lblGivenName = new System.Windows.Forms.Label();
             this.txtFamilyName = new System.Windows.Forms.TextBox();
             this.lblFamilyName = new System.Windows.Forms.Label();
-            this.lblSql = new System.Windows.Forms.Label();
+            this.lblEncodingSql = new System.Windows.Forms.Label();
             this.cmbSTEncoding = new System.Windows.Forms.ComboBox();
             this.cmbDTEncoding = new System.Windows.Forms.ComboBox();
             this.lblEncodingDao = new System.Windows.Forms.Label();
@@ -146,7 +146,7 @@
             this.gbxInput.Controls.Add(this.lblGivenName);
             this.gbxInput.Controls.Add(this.txtFamilyName);
             this.gbxInput.Controls.Add(this.lblFamilyName);
-            this.gbxInput.Controls.Add(this.lblSql);
+            this.gbxInput.Controls.Add(this.lblEncodingSql);
             this.gbxInput.Controls.Add(this.cmbSTEncoding);
             this.gbxInput.Controls.Add(this.cmbDTEncoding);
             this.gbxInput.Controls.Add(this.lblEncodingDao);
@@ -185,10 +185,10 @@
             resources.ApplyResources(this.lblFamilyName, "lblFamilyName");
             this.lblFamilyName.Name = "lblFamilyName";
             // 
-            // lblSql
+            // lblEncodingSql
             // 
-            resources.ApplyResources(this.lblSql, "lblSql");
-            this.lblSql.Name = "lblSql";
+            resources.ApplyResources(this.lblEncodingSql, "lblEncodingSql");
+            this.lblEncodingSql.Name = "lblEncodingSql";
             // 
             // cmbSTEncoding
             // 
@@ -338,6 +338,7 @@
             // tabPage1
             // 
             resources.ApplyResources(this.tabPage1, "tabPage1");
+            this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
             this.tabPage1.Controls.Add(this.lblSelected);
             this.tabPage1.Controls.Add(this.groupBox2);
             this.tabPage1.Controls.Add(this.btnOptions);
@@ -345,7 +346,6 @@
             this.tabPage1.Controls.Add(this.gbxInput);
             this.tabPage1.Controls.Add(this.gbxOutput);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // lblSelected
             // 
@@ -624,7 +624,7 @@
             // panel1
             // 
             resources.ApplyResources(this.panel1, "panel1");
-            this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(123)))), ((int)(((byte)(155)))));
             this.panel1.Controls.Add(this.tabControl1);
             this.panel1.Name = "panel1";
             // 
@@ -632,10 +632,11 @@
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.Controls.Add(this.panel1);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "Form2";
             this.Load += new System.EventHandler(this.Form2_Load);
             this.gbxInput.ResumeLayout(false);
@@ -697,7 +698,7 @@
         private System.Windows.Forms.TextBox txtFamilyName;
         private System.Windows.Forms.Label lblFamilyName;
         private System.Windows.Forms.Label lblOutputEncDao;
-        private System.Windows.Forms.Label lblSql;
+        private System.Windows.Forms.Label lblEncodingSql;
         private System.Windows.Forms.Label lblOutputSqlDao;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label lblTimestampName;
