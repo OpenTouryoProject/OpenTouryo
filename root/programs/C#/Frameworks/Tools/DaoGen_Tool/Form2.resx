@@ -135,7 +135,7 @@
     <value>75, 19</value>
   </data>
   <data name="lblSep3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>15, 298</value>
+    <value>15, 285</value>
   </data>
   <data name="&gt;&gt;cmbSFEncoding.Name" xml:space="preserve">
     <value>cmbSFEncoding</value>
@@ -346,7 +346,7 @@
     <value>Disable</value>
   </data>
   <data name="lblSep4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>16, 396</value>
+    <value>16, 379</value>
   </data>
   <data name="lblFamilyName.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -528,8 +528,8 @@
   <data name="btnOK.Size" type="System.Drawing.Size, System.Drawing">
     <value>149, 35</value>
   </data>
-  <data name="&gt;&gt;cbxDaoDefinitionHeader.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;tabPage2.Parent" xml:space="preserve">
+    <value>tabControl1</value>
   </data>
   <data name="btnSetSourceTemplate.Text" xml:space="preserve">
     <value>Folder</value>
@@ -634,7 +634,7 @@
     <value>480, 17</value>
   </data>
   <data name="lblSep1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>14, 14</value>
+    <value>14, 10</value>
   </data>
   <data name="lblInputEncoding.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -797,6 +797,9 @@
   <data name="cmbSTEncoding.Location" type="System.Drawing.Point, System.Drawing">
     <value>410, 131</value>
   </data>
+  <data name="&gt;&gt;tabPage2.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
   <data name="lblSep2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -837,7 +840,7 @@
     <value>gbxInput</value>
   </data>
   <data name="gbxDTO.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 223</value>
+    <value>22, 212</value>
   </data>
   <data name="btnOptions.Size" type="System.Drawing.Size, System.Drawing">
     <value>80, 25</value>
@@ -911,8 +914,8 @@
   <data name="&gt;&gt;btnCancel.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="rbnDB2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>71, 17</value>
+  <data name="&gt;&gt;cmbLikeStatement.Parent" xml:space="preserve">
+    <value>groupBox1</value>
   </data>
   <data name="&gt;&gt;groupBox2.Parent" xml:space="preserve">
     <value>tabPage1</value>
@@ -951,7 +954,7 @@
     <value>cmbSTEncoding</value>
   </data>
   <data name="groupBox3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 313</value>
+    <value>22, 299</value>
   </data>
   <data name="&gt;&gt;rbnSQL.Type" xml:space="preserve">
     <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1030,6 +1033,9 @@
   </data>
   <data name="tabPage2.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
+  </data>
+  <data name="btnSetDaoDefinition.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="gbxOutput.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -1223,7 +1229,7 @@
     <value>1</value>
   </data>
   <data name="gbxOracleLikeSetting.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 117</value>
+    <value>22, 113</value>
   </data>
   <data name="&gt;&gt;cbxTSIndisp.Parent" xml:space="preserve">
     <value>groupBox2</value>
@@ -1429,6 +1435,9 @@
   <data name="cmbDFEncoding.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>2, 3, 2, 3</value>
   </data>
+  <data name="&gt;&gt;txtEscapeChar.Name" xml:space="preserve">
+    <value>txtEscapeChar</value>
+  </data>
   <data name="lblGivenName.Size" type="System.Drawing.Size, System.Drawing">
     <value>70, 13</value>
   </data>
@@ -1479,9 +1488,6 @@
   </data>
   <data name="&gt;&gt;txtEscapeChar.ZOrder" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="cmbLikeStatement.Items" xml:space="preserve">
-    <value>LIKE</value>
   </data>
   <data name="&gt;&gt;lblOutputEncDao.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1712,13 +1718,13 @@
     <value>1</value>
   </data>
   <data name="btnOK.Location" type="System.Drawing.Point, System.Drawing">
-    <value>506, 402</value>
+    <value>506, 389</value>
   </data>
   <data name="cmbDDEncoding.Location" type="System.Drawing.Point, System.Drawing">
     <value>141, 68</value>
   </data>
   <data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>16, 408</value>
+    <value>18, 394</value>
   </data>
   <data name="lblSep1.Size" type="System.Drawing.Size, System.Drawing">
     <value>641, 2</value>
@@ -1868,7 +1874,7 @@
     <value>Flat</value>
   </data>
   <data name="lblSep2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>15, 206</value>
+    <value>15, 194</value>
   </data>
   <data name="&gt;&gt;rbnPstgrs.Name" xml:space="preserve">
     <value>rbnPstgrs</value>
@@ -1878,6 +1884,9 @@
   </data>
   <data name="&gt;&gt;lblOutputSqlDao.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbxDaoDefinitionHeader.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
     <value>10, 319</value>
@@ -1974,9 +1983,6 @@ Delete query If you want to require.</value>
   <data name="lblEncodingSql.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="rbnMySQL.Size" type="System.Drawing.Size, System.Drawing">
-    <value>139, 17</value>
-  </data>
   <data name="lblSetOutput.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -2010,8 +2016,8 @@ Delete query If you want to require.</value>
   <data name="&gt;&gt;btnSetSourceTemplate.ZOrder" xml:space="preserve">
     <value>14</value>
   </data>
-  <data name="&gt;&gt;txtEscapeChar.Name" xml:space="preserve">
-    <value>txtEscapeChar</value>
+  <data name="rbnMySQL.Size" type="System.Drawing.Size, System.Drawing">
+    <value>139, 17</value>
   </data>
   <data name="&gt;&gt;lblEncodingSql.ZOrder" xml:space="preserve">
     <value>4</value>
@@ -2028,9 +2034,6 @@ Delete query If you want to require.</value>
   <data name="rbnOLE.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="&gt;&gt;cmbLikeStatement.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
   <data name="&gt;&gt;cmbDTEncoding.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
@@ -2038,7 +2041,7 @@ Delete query If you want to require.</value>
     <value>D layer automatic generation tool</value>
   </data>
   <data name="cbxOnlyTableMaintenance.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 19</value>
+    <value>8, 15</value>
   </data>
   <data name="&gt;&gt;lblEscapeChar.Name" xml:space="preserve">
     <value>lblEscapeChar</value>
@@ -2085,8 +2088,8 @@ Delete query If you want to require.</value>
   <data name="cbxTableMaintenance.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="btnSetDaoDefinition.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="cmbLikeStatement.Items" xml:space="preserve">
+    <value>LIKE</value>
   </data>
   <data name="&gt;&gt;rbnOLE.Parent" xml:space="preserve">
     <value>gbxDataProviders</value>
@@ -2104,7 +2107,10 @@ Delete query If you want to require.</value>
     <value>16</value>
   </data>
   <data name="gbxDataProviders.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 19</value>
+    <value>22, 15</value>
+  </data>
+  <data name="rbnDB2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>71, 17</value>
   </data>
   <data name="&gt;&gt;btnOptions.ZOrder" xml:space="preserve">
     <value>2</value>
