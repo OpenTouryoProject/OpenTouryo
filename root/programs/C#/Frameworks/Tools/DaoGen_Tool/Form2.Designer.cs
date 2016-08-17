@@ -116,8 +116,8 @@
             // 
             // Close_ToolStripMenuItem
             // 
-            resources.ApplyResources(this.Close_ToolStripMenuItem, "Close_ToolStripMenuItem");
             this.Close_ToolStripMenuItem.Name = "Close_ToolStripMenuItem";
+            resources.ApplyResources(this.Close_ToolStripMenuItem, "Close_ToolStripMenuItem");
             this.Close_ToolStripMenuItem.Click += new System.EventHandler(this.Close_ToolStripMenuItem_Click);
             // 
             // txtSetDaoDefinition
@@ -127,8 +127,8 @@
             // 
             // btnSetDaoDefinition
             // 
-            resources.ApplyResources(this.btnSetDaoDefinition, "btnSetDaoDefinition");
             this.btnSetDaoDefinition.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
+            resources.ApplyResources(this.btnSetDaoDefinition, "btnSetDaoDefinition");
             this.btnSetDaoDefinition.ForeColor = System.Drawing.Color.White;
             this.btnSetDaoDefinition.Name = "btnSetDaoDefinition";
             this.btnSetDaoDefinition.UseVisualStyleBackColor = false;
@@ -141,7 +141,6 @@
             // 
             // gbxInput
             // 
-            resources.ApplyResources(this.gbxInput, "gbxInput");
             this.gbxInput.Controls.Add(this.txtPersonalName);
             this.gbxInput.Controls.Add(this.lblGivenName);
             this.gbxInput.Controls.Add(this.txtFamilyName);
@@ -162,6 +161,7 @@
             this.gbxInput.Controls.Add(this.btnSetDaoDefinition);
             this.gbxInput.Controls.Add(this.txtSetDaoDefinition);
             this.gbxInput.Controls.Add(this.lblSetDaoDefinition);
+            resources.ApplyResources(this.gbxInput, "gbxInput");
             this.gbxInput.Name = "gbxInput";
             this.gbxInput.TabStop = false;
             // 
@@ -192,14 +192,14 @@
             // 
             // cmbSTEncoding
             // 
-            resources.ApplyResources(this.cmbSTEncoding, "cmbSTEncoding");
             this.cmbSTEncoding.FormattingEnabled = true;
+            resources.ApplyResources(this.cmbSTEncoding, "cmbSTEncoding");
             this.cmbSTEncoding.Name = "cmbSTEncoding";
             // 
             // cmbDTEncoding
             // 
-            resources.ApplyResources(this.cmbDTEncoding, "cmbDTEncoding");
             this.cmbDTEncoding.FormattingEnabled = true;
+            resources.ApplyResources(this.cmbDTEncoding, "cmbDTEncoding");
             this.cmbDTEncoding.Name = "cmbDTEncoding";
             // 
             // lblEncodingDao
@@ -209,10 +209,10 @@
             // 
             // cmbDDEncoding
             // 
-            resources.ApplyResources(this.cmbDDEncoding, "cmbDDEncoding");
             this.cmbDDEncoding.FormattingEnabled = true;
             this.cmbDDEncoding.Items.AddRange(new object[] {
             resources.GetString("cmbDDEncoding.Items")});
+            resources.ApplyResources(this.cmbDDEncoding, "cmbDDEncoding");
             this.cmbDDEncoding.Name = "cmbDDEncoding";
             // 
             // lblInputEncoding
@@ -246,8 +246,8 @@
             // 
             // btnSetSourceTemplate
             // 
-            resources.ApplyResources(this.btnSetSourceTemplate, "btnSetSourceTemplate");
             this.btnSetSourceTemplate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
+            resources.ApplyResources(this.btnSetSourceTemplate, "btnSetSourceTemplate");
             this.btnSetSourceTemplate.ForeColor = System.Drawing.Color.White;
             this.btnSetSourceTemplate.Name = "btnSetSourceTemplate";
             this.btnSetSourceTemplate.UseVisualStyleBackColor = false;
@@ -266,8 +266,8 @@
             // 
             // btnDaoAndSqlGen
             // 
-            resources.ApplyResources(this.btnDaoAndSqlGen, "btnDaoAndSqlGen");
             this.btnDaoAndSqlGen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(42)))), ((int)(((byte)(53)))));
+            resources.ApplyResources(this.btnDaoAndSqlGen, "btnDaoAndSqlGen");
             this.btnDaoAndSqlGen.ForeColor = System.Drawing.Color.White;
             this.btnDaoAndSqlGen.Name = "btnDaoAndSqlGen";
             this.btnDaoAndSqlGen.UseVisualStyleBackColor = false;
@@ -275,7 +275,6 @@
             // 
             // gbxOutput
             // 
-            resources.ApplyResources(this.gbxOutput, "gbxOutput");
             this.gbxOutput.Controls.Add(this.cmbSFEncoding);
             this.gbxOutput.Controls.Add(this.lblOutputSqlDao);
             this.gbxOutput.Controls.Add(this.lblOutputEncDao);
@@ -283,13 +282,14 @@
             this.gbxOutput.Controls.Add(this.lblSetOutput);
             this.gbxOutput.Controls.Add(this.btnSetOutput);
             this.gbxOutput.Controls.Add(this.txtSetOutput);
+            resources.ApplyResources(this.gbxOutput, "gbxOutput");
             this.gbxOutput.Name = "gbxOutput";
             this.gbxOutput.TabStop = false;
             // 
             // cmbSFEncoding
             // 
-            resources.ApplyResources(this.cmbSFEncoding, "cmbSFEncoding");
             this.cmbSFEncoding.FormattingEnabled = true;
+            resources.ApplyResources(this.cmbSFEncoding, "cmbSFEncoding");
             this.cmbSFEncoding.Name = "cmbSFEncoding";
             this.cmbSFEncoding.UseWaitCursor = true;
             // 
@@ -305,8 +305,8 @@
             // 
             // cmbDFEncoding
             // 
-            resources.ApplyResources(this.cmbDFEncoding, "cmbDFEncoding");
             this.cmbDFEncoding.FormattingEnabled = true;
+            resources.ApplyResources(this.cmbDFEncoding, "cmbDFEncoding");
             this.cmbDFEncoding.Name = "cmbDFEncoding";
             // 
             // lblSetOutput
@@ -316,8 +316,8 @@
             // 
             // btnSetOutput
             // 
-            resources.ApplyResources(this.btnSetOutput, "btnSetOutput");
             this.btnSetOutput.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
+            resources.ApplyResources(this.btnSetOutput, "btnSetOutput");
             this.btnSetOutput.ForeColor = System.Drawing.Color.White;
             this.btnSetOutput.Name = "btnSetOutput";
             this.btnSetOutput.UseVisualStyleBackColor = false;
@@ -330,14 +330,13 @@
             // 
             // tabControl1
             // 
-            resources.ApplyResources(this.tabControl1, "tabControl1");
             this.tabControl1.Controls.Add(this.tabPage1);
+            resources.ApplyResources(this.tabControl1, "tabControl1");
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             // 
             // tabPage1
             // 
-            resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
             this.tabPage1.Controls.Add(this.lblSelected);
             this.tabPage1.Controls.Add(this.groupBox2);
@@ -345,6 +344,7 @@
             this.tabPage1.Controls.Add(this.btnDaoAndSqlGen);
             this.tabPage1.Controls.Add(this.gbxInput);
             this.tabPage1.Controls.Add(this.gbxOutput);
+            resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Name = "tabPage1";
             // 
             // lblSelected
@@ -354,12 +354,12 @@
             // 
             // groupBox2
             // 
-            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Controls.Add(this.txtTimeStampUpdMethod);
             this.groupBox2.Controls.Add(this.cbxTSIndisp);
             this.groupBox2.Controls.Add(this.lblTimestampName);
             this.groupBox2.Controls.Add(this.lblHUD);
             this.groupBox2.Controls.Add(this.txtTimeStampColName);
+            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
             // 
@@ -391,8 +391,8 @@
             // 
             // btnOptions
             // 
-            resources.ApplyResources(this.btnOptions, "btnOptions");
             this.btnOptions.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
+            resources.ApplyResources(this.btnOptions, "btnOptions");
             this.btnOptions.ForeColor = System.Drawing.Color.White;
             this.btnOptions.Name = "btnOptions";
             this.btnOptions.UseVisualStyleBackColor = false;
@@ -400,7 +400,6 @@
             // 
             // tabPage2
             // 
-            resources.ApplyResources(this.tabPage2, "tabPage2");
             this.tabPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(189)))), ((int)(((byte)(215)))), ((int)(((byte)(238)))));
             this.tabPage2.Controls.Add(this.groupBox3);
             this.tabPage2.Controls.Add(this.gbxDTO);
@@ -412,13 +411,14 @@
             this.tabPage2.Controls.Add(this.lblSep2);
             this.tabPage2.Controls.Add(this.lblSep1);
             this.tabPage2.Controls.Add(this.gbxDataProviders);
+            resources.ApplyResources(this.tabPage2, "tabPage2");
             this.tabPage2.Name = "tabPage2";
             // 
             // groupBox3
             // 
-            resources.ApplyResources(this.groupBox3, "groupBox3");
             this.groupBox3.Controls.Add(this.cbxTableMaintenance);
             this.groupBox3.Controls.Add(this.cbxOnlyTableMaintenance);
+            resources.ApplyResources(this.groupBox3, "groupBox3");
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.TabStop = false;
             // 
@@ -437,10 +437,10 @@
             // 
             // gbxDTO
             // 
-            resources.ApplyResources(this.gbxDTO, "gbxDTO");
             this.gbxDTO.Controls.Add(this.cbxOnlyDTO);
             this.gbxDTO.Controls.Add(this.cbxTypedDataSet);
             this.gbxDTO.Controls.Add(this.cbxEntity);
+            resources.ApplyResources(this.gbxDTO, "gbxDTO");
             this.gbxDTO.Name = "gbxDTO";
             this.gbxDTO.TabStop = false;
             // 
@@ -465,10 +465,10 @@
             // 
             // gbxOracleLikeSetting
             // 
-            resources.ApplyResources(this.gbxOracleLikeSetting, "gbxOracleLikeSetting");
             this.gbxOracleLikeSetting.Controls.Add(this.txtEscapeChar);
             this.gbxOracleLikeSetting.Controls.Add(this.lblEscapeChar);
             this.gbxOracleLikeSetting.Controls.Add(this.groupBox1);
+            resources.ApplyResources(this.gbxOracleLikeSetting, "gbxOracleLikeSetting");
             this.gbxOracleLikeSetting.Name = "gbxOracleLikeSetting";
             this.gbxOracleLikeSetting.TabStop = false;
             // 
@@ -484,10 +484,10 @@
             // 
             // groupBox1
             // 
-            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Controls.Add(this.chkEscapeToNChar);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.cmbLikeStatement);
+            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.TabStop = false;
             // 
@@ -504,7 +504,6 @@
             // 
             // cmbLikeStatement
             // 
-            resources.ApplyResources(this.cmbLikeStatement, "cmbLikeStatement");
             this.cmbLikeStatement.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbLikeStatement.FormattingEnabled = true;
             this.cmbLikeStatement.Items.AddRange(new object[] {
@@ -512,13 +511,14 @@
             resources.GetString("cmbLikeStatement.Items1"),
             resources.GetString("cmbLikeStatement.Items2"),
             resources.GetString("cmbLikeStatement.Items3")});
+            resources.ApplyResources(this.cmbLikeStatement, "cmbLikeStatement");
             this.cmbLikeStatement.Name = "cmbLikeStatement";
             // 
             // btnOK
             // 
-            resources.ApplyResources(this.btnOK, "btnOK");
             this.btnOK.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(42)))), ((int)(((byte)(53)))));
             this.btnOK.FlatAppearance.BorderSize = 0;
+            resources.ApplyResources(this.btnOK, "btnOK");
             this.btnOK.ForeColor = System.Drawing.Color.White;
             this.btnOK.Name = "btnOK";
             this.btnOK.UseVisualStyleBackColor = false;
@@ -526,9 +526,9 @@
             // 
             // btnCancel
             // 
-            resources.ApplyResources(this.btnCancel, "btnCancel");
             this.btnCancel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
             this.btnCancel.FlatAppearance.BorderSize = 0;
+            resources.ApplyResources(this.btnCancel, "btnCancel");
             this.btnCancel.ForeColor = System.Drawing.Color.White;
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.UseVisualStyleBackColor = false;
@@ -536,31 +536,30 @@
             // 
             // lblSep4
             // 
-            resources.ApplyResources(this.lblSep4, "lblSep4");
             this.lblSep4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            resources.ApplyResources(this.lblSep4, "lblSep4");
             this.lblSep4.Name = "lblSep4";
             // 
             // lblSep3
             // 
-            resources.ApplyResources(this.lblSep3, "lblSep3");
             this.lblSep3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            resources.ApplyResources(this.lblSep3, "lblSep3");
             this.lblSep3.Name = "lblSep3";
             // 
             // lblSep2
             // 
-            resources.ApplyResources(this.lblSep2, "lblSep2");
             this.lblSep2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            resources.ApplyResources(this.lblSep2, "lblSep2");
             this.lblSep2.Name = "lblSep2";
             // 
             // lblSep1
             // 
-            resources.ApplyResources(this.lblSep1, "lblSep1");
             this.lblSep1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            resources.ApplyResources(this.lblSep1, "lblSep1");
             this.lblSep1.Name = "lblSep1";
             // 
             // gbxDataProviders
             // 
-            resources.ApplyResources(this.gbxDataProviders, "gbxDataProviders");
             this.gbxDataProviders.Controls.Add(this.rbnODB);
             this.gbxDataProviders.Controls.Add(this.rbnOLE);
             this.gbxDataProviders.Controls.Add(this.rbnPstgrs);
@@ -568,6 +567,7 @@
             this.gbxDataProviders.Controls.Add(this.rbnDB2);
             this.gbxDataProviders.Controls.Add(this.rbnODP);
             this.gbxDataProviders.Controls.Add(this.rbnSQL);
+            resources.ApplyResources(this.gbxDataProviders, "gbxDataProviders");
             this.gbxDataProviders.Name = "gbxDataProviders";
             this.gbxDataProviders.TabStop = false;
             // 
@@ -623,9 +623,9 @@
             // 
             // panel1
             // 
-            resources.ApplyResources(this.panel1, "panel1");
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(123)))), ((int)(((byte)(155)))));
             this.panel1.Controls.Add(this.tabControl1);
+            resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Name = "panel1";
             // 
             // Form2
