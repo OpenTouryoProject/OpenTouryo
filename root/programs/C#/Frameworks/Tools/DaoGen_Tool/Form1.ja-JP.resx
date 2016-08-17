@@ -190,8 +190,14 @@
   <data name="label4.Text" xml:space="preserve">
     <value>テーブル一覧</value>
   </data>
+  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>490, 92</value>
+  </data>
+  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 191</value>
+  </data>
   <data name="btnSetPrimaryKey.Location" type="System.Drawing.Point, System.Drawing">
-    <value>9, 142</value>
+    <value>10, 142</value>
   </data>
   <data name="btnSetPrimaryKey.Text" xml:space="preserve">
     <value>セット</value>
@@ -201,7 +207,7 @@
     <value>NoControl</value>
   </data>
   <data name="btnLoadColumn.Location" type="System.Drawing.Point, System.Drawing">
-    <value>9, 88</value>
+    <value>10, 88</value>
   </data>
   <data name="btnLoadColumn.Text" xml:space="preserve">
     <value>ロード</value>
@@ -209,26 +215,17 @@
   <data name="btnDelTable.Text" xml:space="preserve">
     <value>削除</value>
   </data>
-  <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
-    <value>21, 127</value>
-  </data>
   <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
-    <value>77, 12</value>
+    <value>79, 15</value>
   </data>
   <data name="label7.Text" xml:space="preserve">
     <value>プライマリーキー</value>
   </data>
-  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
-    <value>35, 73</value>
-  </data>
   <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>41, 12</value>
+    <value>43, 15</value>
   </data>
   <data name="label6.Text" xml:space="preserve">
     <value>列情報</value>
-  </data>
-  <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 16</value>
   </data>
   <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
     <value>87, 15</value>
@@ -236,14 +233,8 @@
   <data name="label5.Text" xml:space="preserve">
     <value>選択したテーブル</value>
   </data>
-  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>490, 92</value>
-  </data>
-  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>125, 191</value>
-  </data>
   <data name="cmbEncoding.Location" type="System.Drawing.Point, System.Drawing">
-    <value>513, 291</value>
+    <value>505, 291</value>
   </data>
   <data name="btnDaoDefinitionGen.Location" type="System.Drawing.Point, System.Drawing">
     <value>490, 322</value>
