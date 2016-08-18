@@ -26,7 +26,6 @@
     </table>
 
     <asp:Button ID="btnSearch" runat="server" Text="Search Record" />
-    <asp:Button ID="btnInsert" runat="server" Text="Insert Record" />
     <asp:Button ID="btnBatUpd" runat="server" Text="Update the Result Set Using Batch Update" />
         
     <asp:GridView ID="gvwGridView1" runat="server" 

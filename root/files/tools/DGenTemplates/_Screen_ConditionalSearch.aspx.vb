@@ -12,7 +12,8 @@
 '*
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
-'*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+'*  2016/06/15  Shashikiran       Added UOC_gvwGridView1_PageIndexChanging function to handle Gridview Paging event
+'*  2016/06/15  Shashikiran       Modified gvwGridView1_SelectedIndexChanging function to handle Gridview row selection during paging
 '**********************************************************************************
 ' System
 Imports System
@@ -99,14 +100,6 @@ Partial Public Class _JoinTableName__Screen_ConditionalSearch
 
 #Region "イベントハンドラ EVENT HANDLER"
 
-    ''' <summary>追加ボタン</summary>
-    ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    ''' <returns>URL</returns>
-    Protected Function UOC_btnInsert_Click(ByVal fxEventArgs As FxEventArgs) As String
-        ' 画面遷移（詳細表示）
-        Return "_JoinTableName__Screen_Detail.aspx"
-    End Function
-
     ''' <summary>検索ボタン</summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
     ''' <returns>URL</returns>
@@ -189,7 +182,7 @@ Partial Public Class _JoinTableName__Screen_ConditionalSearch
 
         ' Primary key columns
         ' ControlComment:LoopStart-PKColumn
-        PrimaryKeyAndTimeStamp.Add("_JoinTextboxColumnName_", dt.Rows(e.NewSelectedIndex)("_JoinColumnName_").ToString())
+        PrimaryKeyAndTimeStamp.Add("_JoinTextboxColumnName_", dt.Rows(e.NewSelectedIndex + ((gvwGridView1.PageSize * gvwGridView1.PageIndex)))("_JoinColumnName_").ToString())
         ' ControlComment:LoopEnd-PKColumn
         'Timestamp Column
         ' タイムスタンプ列	
@@ -209,6 +202,17 @@ Partial Public Class _JoinTableName__Screen_ConditionalSearch
     Protected Function UOC_gvwGridView1_SelectedIndexChanged(ByVal fxEventArgs As FxEventArgs) As String
         'Screen Transition is required to show more
         Return "_JoinTableName__Screen_Detail.aspx"
+    End Function
+
+    ''' <summary>gvwGridView1 Paging Event</summary>
+    ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+    ''' <returns>URL</returns>
+    Protected Function UOC_gvwGridView1_PageIndexChanging(ByVal fxEventArgs As FxEventArgs, ByVal e As GridViewPageEventArgs) As String
+        Me.gvwGridView1.PageIndex = e.NewPageIndex
+        Me.gvwGridView1.DataSource = DirectCast(Session("SearchResult"), DataTable)
+        Me.gvwGridView1.DataBind()
+        'Return empty string since there is no need to redirect to any other page.
+        Return String.Empty
     End Function
 
 #End Region

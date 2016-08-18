@@ -36,7 +36,6 @@
         </tr>
     </table>
     <asp:Button ID="btnSearch" runat="server" Text="Search Result" />
-    <asp:Button ID="btnInsert" runat="server" Text="Insert Record" />
     <asp:GridView ID="gvwGridView1" runat="server" AutoGenerateColumns="False" DataKeyNames="_PKColumnList_"
         AllowPaging="True" AllowSorting="True" PageSize="30" Width="100%" BorderWidth="1px">
         <HeaderStyle BackColor="darkturquoise" />
