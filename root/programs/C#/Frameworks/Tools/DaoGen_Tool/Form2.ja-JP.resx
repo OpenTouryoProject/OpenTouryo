@@ -158,25 +158,25 @@
     <value>372, 161</value>
   </data>
   <data name="lblGivenName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>340, 164</value>
+    <value>342, 164</value>
   </data>
   <data name="lblGivenName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>29, 13</value>
+    <value>25, 13</value>
   </data>
   <data name="lblGivenName.Text" xml:space="preserve">
-    <value>*名：</value>
+    <value>名：</value>
   </data>
   <data name="txtFamilyName.Location" type="System.Drawing.Point, System.Drawing">
     <value>134, 162</value>
   </data>
   <data name="lblFamilyName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>99, 165</value>
+    <value>103, 165</value>
   </data>
   <data name="lblFamilyName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>29, 13</value>
+    <value>25, 13</value>
   </data>
   <data name="lblFamilyName.Text" xml:space="preserve">
-    <value>*姓：</value>
+    <value>姓：</value>
   </data>
   <data name="lblEncodingSql.Location" type="System.Drawing.Point, System.Drawing">
     <value>289, 131</value>
@@ -343,13 +343,13 @@
     <value>ステップ2</value>
   </data>
   <data name="lblSelected.Location" type="System.Drawing.Point, System.Drawing">
-    <value>116, 416</value>
+    <value>112, 416</value>
   </data>
   <data name="lblSelected.Size" type="System.Drawing.Size, System.Drawing">
-    <value>35, 13</value>
+    <value>31, 13</value>
   </data>
   <data name="lblSelected.Text" xml:space="preserve">
-    <value>*選択</value>
+    <value>選択</value>
   </data>
   <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
     <value>5, 315</value>
