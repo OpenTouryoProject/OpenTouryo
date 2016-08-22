@@ -650,13 +650,13 @@
     <value>274, 71</value>
   </data>
   <data name="cbxDaoDefinitionHeader.Size" type="System.Drawing.Size, System.Drawing">
-    <value>216, 17</value>
+    <value>214, 17</value>
   </data>
   <data name="cbxDaoDefinitionHeader.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
   </data>
   <data name="cbxDaoDefinitionHeader.Text" xml:space="preserve">
-    <value>When there is Header (Skip the first line)</value>
+    <value>When there is header (Skip the first line)</value>
   </data>
   <data name="&gt;&gt;cbxDaoDefinitionHeader.Name" xml:space="preserve">
     <value>cbxDaoDefinitionHeader</value>
@@ -723,6 +723,114 @@
   </data>
   <data name="&gt;&gt;btnDaoAndSqlGen.ZOrder" xml:space="preserve">
     <value>3</value>
+  </data>
+  <data name="&gt;&gt;cmbSFEncoding.Name" xml:space="preserve">
+    <value>cmbSFEncoding</value>
+  </data>
+  <data name="&gt;&gt;cmbSFEncoding.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmbSFEncoding.Parent" xml:space="preserve">
+    <value>gbxOutput</value>
+  </data>
+  <data name="&gt;&gt;cmbSFEncoding.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;lblOutputSqlDao.Name" xml:space="preserve">
+    <value>lblOutputSqlDao</value>
+  </data>
+  <data name="&gt;&gt;lblOutputSqlDao.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblOutputSqlDao.Parent" xml:space="preserve">
+    <value>gbxOutput</value>
+  </data>
+  <data name="&gt;&gt;lblOutputSqlDao.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;lblOutputEncDao.Name" xml:space="preserve">
+    <value>lblOutputEncDao</value>
+  </data>
+  <data name="&gt;&gt;lblOutputEncDao.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblOutputEncDao.Parent" xml:space="preserve">
+    <value>gbxOutput</value>
+  </data>
+  <data name="&gt;&gt;lblOutputEncDao.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;cmbDFEncoding.Name" xml:space="preserve">
+    <value>cmbDFEncoding</value>
+  </data>
+  <data name="&gt;&gt;cmbDFEncoding.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmbDFEncoding.Parent" xml:space="preserve">
+    <value>gbxOutput</value>
+  </data>
+  <data name="&gt;&gt;cmbDFEncoding.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;lblSetOutput.Name" xml:space="preserve">
+    <value>lblSetOutput</value>
+  </data>
+  <data name="&gt;&gt;lblSetOutput.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblSetOutput.Parent" xml:space="preserve">
+    <value>gbxOutput</value>
+  </data>
+  <data name="&gt;&gt;lblSetOutput.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;btnSetOutput.Name" xml:space="preserve">
+    <value>btnSetOutput</value>
+  </data>
+  <data name="&gt;&gt;btnSetOutput.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnSetOutput.Parent" xml:space="preserve">
+    <value>gbxOutput</value>
+  </data>
+  <data name="&gt;&gt;btnSetOutput.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;txtSetOutput.Name" xml:space="preserve">
+    <value>txtSetOutput</value>
+  </data>
+  <data name="&gt;&gt;txtSetOutput.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtSetOutput.Parent" xml:space="preserve">
+    <value>gbxOutput</value>
+  </data>
+  <data name="&gt;&gt;txtSetOutput.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="gbxOutput.Location" type="System.Drawing.Point, System.Drawing">
+    <value>10, 221</value>
+  </data>
+  <data name="gbxOutput.Size" type="System.Drawing.Size, System.Drawing">
+    <value>660, 75</value>
+  </data>
+  <data name="gbxOutput.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="gbxOutput.Text" xml:space="preserve">
+    <value>Output settings</value>
+  </data>
+  <data name="&gt;&gt;gbxOutput.Name" xml:space="preserve">
+    <value>gbxOutput</value>
+  </data>
+  <data name="&gt;&gt;gbxOutput.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;gbxOutput.Parent" xml:space="preserve">
+    <value>tabPage1</value>
+  </data>
+  <data name="&gt;&gt;gbxOutput.ZOrder" xml:space="preserve">
+    <value>5</value>
   </data>
   <data name="cmbSFEncoding.Location" type="System.Drawing.Point, System.Drawing">
     <value>410, 45</value>
@@ -916,30 +1024,6 @@
   <data name="&gt;&gt;txtSetOutput.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
-  <data name="gbxOutput.Location" type="System.Drawing.Point, System.Drawing">
-    <value>10, 221</value>
-  </data>
-  <data name="gbxOutput.Size" type="System.Drawing.Size, System.Drawing">
-    <value>660, 75</value>
-  </data>
-  <data name="gbxOutput.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="gbxOutput.Text" xml:space="preserve">
-    <value>Output settings</value>
-  </data>
-  <data name="&gt;&gt;gbxOutput.Name" xml:space="preserve">
-    <value>gbxOutput</value>
-  </data>
-  <data name="&gt;&gt;gbxOutput.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;gbxOutput.Parent" xml:space="preserve">
-    <value>tabPage1</value>
-  </data>
-  <data name="&gt;&gt;gbxOutput.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
   <data name="lblSelected.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -967,15 +1051,6 @@
   <data name="&gt;&gt;lblSelected.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="txtTimeStampUpdMethod.Location" type="System.Drawing.Point, System.Drawing">
-    <value>140, 40</value>
-  </data>
-  <data name="txtTimeStampUpdMethod.Size" type="System.Drawing.Size, System.Drawing">
-    <value>204, 20</value>
-  </data>
-  <data name="txtTimeStampUpdMethod.TabIndex" type="System.Int32, mscorlib">
-    <value>21</value>
-  </data>
   <data name="&gt;&gt;txtTimeStampUpdMethod.Name" xml:space="preserve">
     <value>txtTimeStampUpdMethod</value>
   </data>
@@ -987,32 +1062,6 @@
   </data>
   <data name="&gt;&gt;txtTimeStampUpdMethod.ZOrder" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="cbxTSIndisp.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="cbxTSIndisp.CheckAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>TopLeft</value>
-  </data>
-  <data name="cbxTSIndisp.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="cbxTSIndisp.Location" type="System.Drawing.Point, System.Drawing">
-    <value>353, 14</value>
-  </data>
-  <data name="cbxTSIndisp.Size" type="System.Drawing.Size, System.Drawing">
-    <value>191, 43</value>
-  </data>
-  <data name="cbxTSIndisp.TabIndex" type="System.Int32, mscorlib">
-    <value>20</value>
-  </data>
-  <data name="cbxTSIndisp.Text" xml:space="preserve">
-    <value>Time stamp to be specified in the 
-search condition of Update, or 
-Delete query If you want to require.</value>
-  </data>
-  <data name="cbxTSIndisp.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleCenter</value>
   </data>
   <data name="&gt;&gt;cbxTSIndisp.Name" xml:space="preserve">
     <value>cbxTSIndisp</value>
@@ -1026,24 +1075,6 @@ Delete query If you want to require.</value>
   <data name="&gt;&gt;cbxTSIndisp.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="lblTimestampName.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="lblTimestampName.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="lblTimestampName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 15</value>
-  </data>
-  <data name="lblTimestampName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>129, 13</value>
-  </data>
-  <data name="lblTimestampName.TabIndex" type="System.Int32, mscorlib">
-    <value>14</value>
-  </data>
-  <data name="lblTimestampName.Text" xml:space="preserve">
-    <value>TimeStamp Column Name</value>
-  </data>
   <data name="&gt;&gt;lblTimestampName.Name" xml:space="preserve">
     <value>lblTimestampName</value>
   </data>
@@ -1056,24 +1087,6 @@ Delete query If you want to require.</value>
   <data name="&gt;&gt;lblTimestampName.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="lblHUD.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="lblHUD.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="lblHUD.Location" type="System.Drawing.Point, System.Drawing">
-    <value>49, 44</value>
-  </data>
-  <data name="lblHUD.Size" type="System.Drawing.Size, System.Drawing">
-    <value>80, 13</value>
-  </data>
-  <data name="lblHUD.TabIndex" type="System.Int32, mscorlib">
-    <value>16</value>
-  </data>
-  <data name="lblHUD.Text" xml:space="preserve">
-    <value>How to update:</value>
-  </data>
   <data name="&gt;&gt;lblHUD.Name" xml:space="preserve">
     <value>lblHUD</value>
   </data>
@@ -1085,15 +1098,6 @@ Delete query If you want to require.</value>
   </data>
   <data name="&gt;&gt;lblHUD.ZOrder" xml:space="preserve">
     <value>3</value>
-  </data>
-  <data name="txtTimeStampColName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>140, 12</value>
-  </data>
-  <data name="txtTimeStampColName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>204, 20</value>
-  </data>
-  <data name="txtTimeStampColName.TabIndex" type="System.Int32, mscorlib">
-    <value>15</value>
   </data>
   <data name="&gt;&gt;txtTimeStampColName.Name" xml:space="preserve">
     <value>txtTimeStampColName</value>
@@ -1218,6 +1222,350 @@ Delete query If you want to require.</value>
   <data name="&gt;&gt;tabControl1.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="txtTimeStampUpdMethod.Location" type="System.Drawing.Point, System.Drawing">
+    <value>140, 40</value>
+  </data>
+  <data name="txtTimeStampUpdMethod.Size" type="System.Drawing.Size, System.Drawing">
+    <value>204, 20</value>
+  </data>
+  <data name="txtTimeStampUpdMethod.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
+  </data>
+  <data name="&gt;&gt;txtTimeStampUpdMethod.Name" xml:space="preserve">
+    <value>txtTimeStampUpdMethod</value>
+  </data>
+  <data name="&gt;&gt;txtTimeStampUpdMethod.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtTimeStampUpdMethod.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;txtTimeStampUpdMethod.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="cbxTSIndisp.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="cbxTSIndisp.CheckAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>TopLeft</value>
+  </data>
+  <data name="cbxTSIndisp.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="cbxTSIndisp.Location" type="System.Drawing.Point, System.Drawing">
+    <value>353, 14</value>
+  </data>
+  <data name="cbxTSIndisp.Size" type="System.Drawing.Size, System.Drawing">
+    <value>191, 43</value>
+  </data>
+  <data name="cbxTSIndisp.TabIndex" type="System.Int32, mscorlib">
+    <value>20</value>
+  </data>
+  <data name="cbxTSIndisp.Text" xml:space="preserve">
+    <value>Time stamp to be specified in the 
+search condition of Update, or 
+Delete query If you want to require.</value>
+  </data>
+  <data name="cbxTSIndisp.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
+  </data>
+  <data name="&gt;&gt;cbxTSIndisp.Name" xml:space="preserve">
+    <value>cbxTSIndisp</value>
+  </data>
+  <data name="&gt;&gt;cbxTSIndisp.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbxTSIndisp.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;cbxTSIndisp.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="lblTimestampName.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblTimestampName.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="lblTimestampName.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 15</value>
+  </data>
+  <data name="lblTimestampName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>129, 13</value>
+  </data>
+  <data name="lblTimestampName.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="lblTimestampName.Text" xml:space="preserve">
+    <value>TimeStamp Column Name</value>
+  </data>
+  <data name="&gt;&gt;lblTimestampName.Name" xml:space="preserve">
+    <value>lblTimestampName</value>
+  </data>
+  <data name="&gt;&gt;lblTimestampName.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblTimestampName.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;lblTimestampName.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="lblHUD.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblHUD.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="lblHUD.Location" type="System.Drawing.Point, System.Drawing">
+    <value>49, 44</value>
+  </data>
+  <data name="lblHUD.Size" type="System.Drawing.Size, System.Drawing">
+    <value>80, 13</value>
+  </data>
+  <data name="lblHUD.TabIndex" type="System.Int32, mscorlib">
+    <value>16</value>
+  </data>
+  <data name="lblHUD.Text" xml:space="preserve">
+    <value>How to update:</value>
+  </data>
+  <data name="&gt;&gt;lblHUD.Name" xml:space="preserve">
+    <value>lblHUD</value>
+  </data>
+  <data name="&gt;&gt;lblHUD.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblHUD.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;lblHUD.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="txtTimeStampColName.Location" type="System.Drawing.Point, System.Drawing">
+    <value>140, 12</value>
+  </data>
+  <data name="txtTimeStampColName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>204, 20</value>
+  </data>
+  <data name="txtTimeStampColName.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="&gt;&gt;txtTimeStampColName.Name" xml:space="preserve">
+    <value>txtTimeStampColName</value>
+  </data>
+  <data name="&gt;&gt;txtTimeStampColName.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtTimeStampColName.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;txtTimeStampColName.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;groupBox3.Name" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="&gt;&gt;groupBox3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox3.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;groupBox3.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;gbxDTO.Name" xml:space="preserve">
+    <value>gbxDTO</value>
+  </data>
+  <data name="&gt;&gt;gbxDTO.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;gbxDTO.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;gbxDTO.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;gbxOracleLikeSetting.Name" xml:space="preserve">
+    <value>gbxOracleLikeSetting</value>
+  </data>
+  <data name="&gt;&gt;gbxOracleLikeSetting.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;gbxOracleLikeSetting.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;gbxOracleLikeSetting.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;btnOK.Name" xml:space="preserve">
+    <value>btnOK</value>
+  </data>
+  <data name="&gt;&gt;btnOK.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnOK.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;btnOK.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.Name" xml:space="preserve">
+    <value>btnCancel</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;lblSep4.Name" xml:space="preserve">
+    <value>lblSep4</value>
+  </data>
+  <data name="&gt;&gt;lblSep4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblSep4.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;lblSep4.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;lblSep3.Name" xml:space="preserve">
+    <value>lblSep3</value>
+  </data>
+  <data name="&gt;&gt;lblSep3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblSep3.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;lblSep3.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;lblSep2.Name" xml:space="preserve">
+    <value>lblSep2</value>
+  </data>
+  <data name="&gt;&gt;lblSep2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblSep2.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;lblSep2.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;lblSep1.Name" xml:space="preserve">
+    <value>lblSep1</value>
+  </data>
+  <data name="&gt;&gt;lblSep1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblSep1.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;lblSep1.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;gbxDataProviders.Name" xml:space="preserve">
+    <value>gbxDataProviders</value>
+  </data>
+  <data name="&gt;&gt;gbxDataProviders.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;gbxDataProviders.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;gbxDataProviders.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="tabPage2.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 8.25pt</value>
+  </data>
+  <data name="tabPage2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>Disable</value>
+  </data>
+  <data name="tabPage2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="tabPage2.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 3, 2, 3</value>
+  </data>
+  <data name="tabPage2.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 3, 2, 3</value>
+  </data>
+  <data name="tabPage2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>680, 443</value>
+  </data>
+  <data name="tabPage2.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="tabPage2.Text" xml:space="preserve">
+    <value>OPTIONS</value>
+  </data>
+  <data name="&gt;&gt;tabPage2.Name" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;tabPage2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbxTableMaintenance.Name" xml:space="preserve">
+    <value>cbxTableMaintenance</value>
+  </data>
+  <data name="&gt;&gt;cbxTableMaintenance.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbxTableMaintenance.Parent" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="&gt;&gt;cbxTableMaintenance.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;cbxOnlyTableMaintenance.Name" xml:space="preserve">
+    <value>cbxOnlyTableMaintenance</value>
+  </data>
+  <data name="&gt;&gt;cbxOnlyTableMaintenance.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbxOnlyTableMaintenance.Parent" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="&gt;&gt;cbxOnlyTableMaintenance.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="groupBox3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>22, 299</value>
+  </data>
+  <data name="groupBox3.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 3, 2, 3</value>
+  </data>
+  <data name="groupBox3.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 3, 2, 3</value>
+  </data>
+  <data name="groupBox3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>624, 70</value>
+  </data>
+  <data name="groupBox3.TabIndex" type="System.Int32, mscorlib">
+    <value>40</value>
+  </data>
+  <data name="groupBox3.Text" xml:space="preserve">
+    <value>To automatically generate the table maintenance screen (encoding is the same as the Dao</value>
+  </data>
+  <data name="&gt;&gt;groupBox3.Name" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="&gt;&gt;groupBox3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox3.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;groupBox3.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="cbxTableMaintenance.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -1278,35 +1626,65 @@ Delete query If you want to require.</value>
   <data name="&gt;&gt;cbxOnlyTableMaintenance.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="groupBox3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 299</value>
+  <data name="&gt;&gt;cbxOnlyDTO.Name" xml:space="preserve">
+    <value>cbxOnlyDTO</value>
   </data>
-  <data name="groupBox3.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>2, 3, 2, 3</value>
+  <data name="&gt;&gt;cbxOnlyDTO.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="groupBox3.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>2, 3, 2, 3</value>
+  <data name="&gt;&gt;cbxOnlyDTO.Parent" xml:space="preserve">
+    <value>gbxDTO</value>
   </data>
-  <data name="groupBox3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>624, 70</value>
+  <data name="&gt;&gt;cbxOnlyDTO.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
-  <data name="groupBox3.TabIndex" type="System.Int32, mscorlib">
-    <value>40</value>
+  <data name="&gt;&gt;cbxTypedDataSet.Name" xml:space="preserve">
+    <value>cbxTypedDataSet</value>
   </data>
-  <data name="groupBox3.Text" xml:space="preserve">
-    <value>To automatically generate the table maintenance screen (encoding is the same as the Dao</value>
+  <data name="&gt;&gt;cbxTypedDataSet.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;groupBox3.Name" xml:space="preserve">
-    <value>groupBox3</value>
+  <data name="&gt;&gt;cbxTypedDataSet.Parent" xml:space="preserve">
+    <value>gbxDTO</value>
   </data>
-  <data name="&gt;&gt;groupBox3.Type" xml:space="preserve">
+  <data name="&gt;&gt;cbxTypedDataSet.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;cbxEntity.Name" xml:space="preserve">
+    <value>cbxEntity</value>
+  </data>
+  <data name="&gt;&gt;cbxEntity.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbxEntity.Parent" xml:space="preserve">
+    <value>gbxDTO</value>
+  </data>
+  <data name="&gt;&gt;cbxEntity.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="gbxDTO.Location" type="System.Drawing.Point, System.Drawing">
+    <value>22, 212</value>
+  </data>
+  <data name="gbxDTO.Size" type="System.Drawing.Size, System.Drawing">
+    <value>624, 59</value>
+  </data>
+  <data name="gbxDTO.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="gbxDTO.Text" xml:space="preserve">
+    <value>To generate DTO (encoding is the same as the Dao)</value>
+  </data>
+  <data name="&gt;&gt;gbxDTO.Name" xml:space="preserve">
+    <value>gbxDTO</value>
+  </data>
+  <data name="&gt;&gt;gbxDTO.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;groupBox3.Parent" xml:space="preserve">
+  <data name="&gt;&gt;gbxDTO.Parent" xml:space="preserve">
     <value>tabPage2</value>
   </data>
-  <data name="&gt;&gt;groupBox3.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="&gt;&gt;gbxDTO.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="cbxOnlyDTO.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1398,29 +1776,68 @@ Delete query If you want to require.</value>
   <data name="&gt;&gt;cbxEntity.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="gbxDTO.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 212</value>
+  <data name="&gt;&gt;txtEscapeChar.Name" xml:space="preserve">
+    <value>txtEscapeChar</value>
   </data>
-  <data name="gbxDTO.Size" type="System.Drawing.Size, System.Drawing">
-    <value>624, 59</value>
+  <data name="&gt;&gt;txtEscapeChar.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="gbxDTO.TabIndex" type="System.Int32, mscorlib">
-    <value>15</value>
+  <data name="&gt;&gt;txtEscapeChar.Parent" xml:space="preserve">
+    <value>gbxOracleLikeSetting</value>
   </data>
-  <data name="gbxDTO.Text" xml:space="preserve">
-    <value>To generate DTO (encoding is the same as the Dao)</value>
+  <data name="&gt;&gt;txtEscapeChar.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
-  <data name="&gt;&gt;gbxDTO.Name" xml:space="preserve">
-    <value>gbxDTO</value>
+  <data name="&gt;&gt;lblEscapeChar.Name" xml:space="preserve">
+    <value>lblEscapeChar</value>
   </data>
-  <data name="&gt;&gt;gbxDTO.Type" xml:space="preserve">
+  <data name="&gt;&gt;lblEscapeChar.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblEscapeChar.Parent" xml:space="preserve">
+    <value>gbxOracleLikeSetting</value>
+  </data>
+  <data name="&gt;&gt;lblEscapeChar.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;gbxDTO.Parent" xml:space="preserve">
+  <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
+    <value>gbxOracleLikeSetting</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="gbxOracleLikeSetting.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="gbxOracleLikeSetting.Location" type="System.Drawing.Point, System.Drawing">
+    <value>22, 113</value>
+  </data>
+  <data name="gbxOracleLikeSetting.Size" type="System.Drawing.Size, System.Drawing">
+    <value>624, 70</value>
+  </data>
+  <data name="gbxOracleLikeSetting.TabIndex" type="System.Int32, mscorlib">
+    <value>39</value>
+  </data>
+  <data name="gbxOracleLikeSetting.Text" xml:space="preserve">
+    <value>Like Search Settings (ODP.NET)</value>
+  </data>
+  <data name="&gt;&gt;gbxOracleLikeSetting.Name" xml:space="preserve">
+    <value>gbxOracleLikeSetting</value>
+  </data>
+  <data name="&gt;&gt;gbxOracleLikeSetting.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;gbxOracleLikeSetting.Parent" xml:space="preserve">
     <value>tabPage2</value>
   </data>
-  <data name="&gt;&gt;gbxDTO.ZOrder" xml:space="preserve">
-    <value>1</value>
+  <data name="&gt;&gt;gbxOracleLikeSetting.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="txtEscapeChar.Location" type="System.Drawing.Point, System.Drawing">
     <value>105, 25</value>
@@ -1481,6 +1898,66 @@ Delete query If you want to require.</value>
   </data>
   <data name="&gt;&gt;lblEscapeChar.ZOrder" xml:space="preserve">
     <value>1</value>
+  </data>
+  <data name="&gt;&gt;chkEscapeToNChar.Name" xml:space="preserve">
+    <value>chkEscapeToNChar</value>
+  </data>
+  <data name="&gt;&gt;chkEscapeToNChar.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;chkEscapeToNChar.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;chkEscapeToNChar.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;label5.Name" xml:space="preserve">
+    <value>label5</value>
+  </data>
+  <data name="&gt;&gt;label5.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label5.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;cmbLikeStatement.Name" xml:space="preserve">
+    <value>cmbLikeStatement</value>
+  </data>
+  <data name="&gt;&gt;cmbLikeStatement.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmbLikeStatement.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;cmbLikeStatement.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>159, 16</value>
+  </data>
+  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>354, 48</value>
+  </data>
+  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>NCHAR, NVARCHAR2, NCLOB Generation Options</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
+    <value>gbxOracleLikeSetting</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="chkEscapeToNChar.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1573,57 +2050,6 @@ Delete query If you want to require.</value>
     <value>groupBox1</value>
   </data>
   <data name="&gt;&gt;cmbLikeStatement.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>159, 16</value>
-  </data>
-  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>354, 48</value>
-  </data>
-  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="groupBox1.Text" xml:space="preserve">
-    <value>NCHAR, NVARCHAR2, NCLOB Generation Options</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
-    <value>gbxOracleLikeSetting</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="gbxOracleLikeSetting.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="gbxOracleLikeSetting.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 113</value>
-  </data>
-  <data name="gbxOracleLikeSetting.Size" type="System.Drawing.Size, System.Drawing">
-    <value>624, 70</value>
-  </data>
-  <data name="gbxOracleLikeSetting.TabIndex" type="System.Int32, mscorlib">
-    <value>39</value>
-  </data>
-  <data name="gbxOracleLikeSetting.Text" xml:space="preserve">
-    <value>Like Search Settings (ODP.NET)</value>
-  </data>
-  <data name="&gt;&gt;gbxOracleLikeSetting.Name" xml:space="preserve">
-    <value>gbxOracleLikeSetting</value>
-  </data>
-  <data name="&gt;&gt;gbxOracleLikeSetting.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;gbxOracleLikeSetting.Parent" xml:space="preserve">
-    <value>tabPage2</value>
-  </data>
-  <data name="&gt;&gt;gbxOracleLikeSetting.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
   <data name="btnOK.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
@@ -1802,6 +2228,114 @@ Delete query If you want to require.</value>
   </data>
   <data name="&gt;&gt;lblSep1.ZOrder" xml:space="preserve">
     <value>8</value>
+  </data>
+  <data name="&gt;&gt;rbnODB.Name" xml:space="preserve">
+    <value>rbnODB</value>
+  </data>
+  <data name="&gt;&gt;rbnODB.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbnODB.Parent" xml:space="preserve">
+    <value>gbxDataProviders</value>
+  </data>
+  <data name="&gt;&gt;rbnODB.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;rbnOLE.Name" xml:space="preserve">
+    <value>rbnOLE</value>
+  </data>
+  <data name="&gt;&gt;rbnOLE.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbnOLE.Parent" xml:space="preserve">
+    <value>gbxDataProviders</value>
+  </data>
+  <data name="&gt;&gt;rbnOLE.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;rbnPstgrs.Name" xml:space="preserve">
+    <value>rbnPstgrs</value>
+  </data>
+  <data name="&gt;&gt;rbnPstgrs.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbnPstgrs.Parent" xml:space="preserve">
+    <value>gbxDataProviders</value>
+  </data>
+  <data name="&gt;&gt;rbnPstgrs.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;rbnMySQL.Name" xml:space="preserve">
+    <value>rbnMySQL</value>
+  </data>
+  <data name="&gt;&gt;rbnMySQL.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbnMySQL.Parent" xml:space="preserve">
+    <value>gbxDataProviders</value>
+  </data>
+  <data name="&gt;&gt;rbnMySQL.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;rbnDB2.Name" xml:space="preserve">
+    <value>rbnDB2</value>
+  </data>
+  <data name="&gt;&gt;rbnDB2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbnDB2.Parent" xml:space="preserve">
+    <value>gbxDataProviders</value>
+  </data>
+  <data name="&gt;&gt;rbnDB2.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;rbnODP.Name" xml:space="preserve">
+    <value>rbnODP</value>
+  </data>
+  <data name="&gt;&gt;rbnODP.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbnODP.Parent" xml:space="preserve">
+    <value>gbxDataProviders</value>
+  </data>
+  <data name="&gt;&gt;rbnODP.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;rbnSQL.Name" xml:space="preserve">
+    <value>rbnSQL</value>
+  </data>
+  <data name="&gt;&gt;rbnSQL.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbnSQL.Parent" xml:space="preserve">
+    <value>gbxDataProviders</value>
+  </data>
+  <data name="&gt;&gt;rbnSQL.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="gbxDataProviders.Location" type="System.Drawing.Point, System.Drawing">
+    <value>22, 15</value>
+  </data>
+  <data name="gbxDataProviders.Size" type="System.Drawing.Size, System.Drawing">
+    <value>624, 83</value>
+  </data>
+  <data name="gbxDataProviders.TabIndex" type="System.Int32, mscorlib">
+    <value>38</value>
+  </data>
+  <data name="gbxDataProviders.Text" xml:space="preserve">
+    <value>Select Data Provider</value>
+  </data>
+  <data name="&gt;&gt;gbxDataProviders.Name" xml:space="preserve">
+    <value>gbxDataProviders</value>
+  </data>
+  <data name="&gt;&gt;gbxDataProviders.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;gbxDataProviders.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;gbxDataProviders.ZOrder" xml:space="preserve">
+    <value>9</value>
   </data>
   <data name="rbnODB.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2009,60 +2543,6 @@ Delete query If you want to require.</value>
   </data>
   <data name="&gt;&gt;rbnSQL.ZOrder" xml:space="preserve">
     <value>6</value>
-  </data>
-  <data name="gbxDataProviders.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 15</value>
-  </data>
-  <data name="gbxDataProviders.Size" type="System.Drawing.Size, System.Drawing">
-    <value>624, 83</value>
-  </data>
-  <data name="gbxDataProviders.TabIndex" type="System.Int32, mscorlib">
-    <value>38</value>
-  </data>
-  <data name="gbxDataProviders.Text" xml:space="preserve">
-    <value>Select Data Provider</value>
-  </data>
-  <data name="&gt;&gt;gbxDataProviders.Name" xml:space="preserve">
-    <value>gbxDataProviders</value>
-  </data>
-  <data name="&gt;&gt;gbxDataProviders.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;gbxDataProviders.Parent" xml:space="preserve">
-    <value>tabPage2</value>
-  </data>
-  <data name="&gt;&gt;gbxDataProviders.ZOrder" xml:space="preserve">
-    <value>9</value>
-  </data>
-  <data name="tabPage2.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 8.25pt</value>
-  </data>
-  <data name="tabPage2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>Disable</value>
-  </data>
-  <data name="tabPage2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
-  </data>
-  <data name="tabPage2.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>2, 3, 2, 3</value>
-  </data>
-  <data name="tabPage2.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>2, 3, 2, 3</value>
-  </data>
-  <data name="tabPage2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>680, 443</value>
-  </data>
-  <data name="tabPage2.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="tabPage2.Text" xml:space="preserve">
-    <value>OPTIONS</value>
-  </data>
-  <data name="&gt;&gt;tabPage2.Name" xml:space="preserve">
-    <value>tabPage2</value>
-  </data>
-  <data name="&gt;&gt;tabPage2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="panel1.Location" type="System.Drawing.Point, System.Drawing">
     <value>-1, 1</value>

@@ -156,7 +156,7 @@ namespace DaoGen_Tool
             // コンボを初期化する。
             this.Init_cmb();
 
-            if (System.Diagnostics.Debugger.IsAttached)
+            if (System.Diagnostics.Debugger.IsAttached || Environment.CommandLine.ToUpper() == "DBG")
             {
                 // デバッグ実行のときは、リサイズ可とする
                 this.FormBorderStyle = FormBorderStyle.Sizable;
