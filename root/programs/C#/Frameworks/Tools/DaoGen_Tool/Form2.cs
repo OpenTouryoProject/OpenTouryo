@@ -975,6 +975,13 @@ namespace DaoGen_Tool
         /// <summary>初期設定</summary>
         private void Form2_Load(object sender, EventArgs e)
         {
+            #region label visibility
+
+            //Sets label visibilty valur
+            this.lblSelected.Visible = false;
+
+            #endregion
+
             #region ラジオ（など）を初期化する。
 
             //// データプロバイダ
@@ -4451,7 +4458,7 @@ namespace DaoGen_Tool
                     this.rbnPstgrs.Checked = true;
                     break;
                 default:
-                    this.rbnSQL.Checked=true;
+                    this.rbnSQL.Checked = true;
                     break;
             }
 
@@ -4475,6 +4482,7 @@ namespace DaoGen_Tool
         {
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Remove(this.tabPage2);
+            this.lblSelected.Visible = true;
         }
     }
 }
