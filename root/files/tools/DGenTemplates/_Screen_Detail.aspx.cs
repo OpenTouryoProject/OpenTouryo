@@ -12,7 +12,11 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2015/12/22 Sai         Modified ReadOnly property of the primary key column textbox to true.  
+//*  2015/12/22 Sai          Modified ReadOnly property of the primary key column textbox to true.  
+//*  2016/04/28 Shashikiran  Modified UOC_btnUpdate_Click event to process multiple table update in single transaction
+//*  2016/05/24 Shashikiran  Modified UOC_btnDelete_Click event to process multiple table delete operation in single transaction
+//*  2016/05/27 Shashikiran  Added remarks above UOC_btnDelete_Click event as a guideline for developers to modify the code to set the
+//*                          table sequence appropriately for successful delete operation
 //**********************************************************************************
 // System
 using System;
@@ -158,54 +162,6 @@ public partial class _JoinTableName__Screen_Detail : MyBaseController
 
     #region 更新系 CRUD SYSTEM
 
-    #region Insert Record
-    /// <summary>追加ボタン</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_btnInsert_Click(FxEventArgs fxEventArgs)
-    {
-        #region  Create the instance of classes here
-        // 引数クラスを生成
-        _3TierParameterValue parameterValue = new _3TierParameterValue(
-                this.ContentPageFileNoEx, fxEventArgs.ButtonID, "InsertRecord",
-                (string)Session["DAP"], (MyUserInfo)this.UserInfo);
-
-        //Initialize the data access procedure
-        _3TierReturnValue returnValue = null;
-        // B layer Initialize
-        _3TierEngine b = new _3TierEngine();
-        #endregion
-
-        // ControlComment:LoopStart-JoinTables
-        #region  Set the values to be inserted into to the _TableName_ . Then insert into database
-        //Declare InsertUpdateValue dictionary and add the values to it
-        parameterValue.InsertUpdateValues = new Dictionary<string, object>();
-        // ControlComment:LoopStart-PKColumn
-        parameterValue.InsertUpdateValues.Add("_ColumnName_", this.txt_JoinTextboxColumnName_.Text);
-        // ControlComment:LoopEnd-PKColumn
-        // ControlComment:LoopStart-ElseColumn
-        parameterValue.InsertUpdateValues.Add("_ColumnName_", this.txt_JoinTextboxColumnName_.Text);
-        // ControlComment:LoopEnd-ElseColumn  
-
-        //Reset returnvalue with null;
-        returnValue = null;
-        //Name of the table  _TableName_
-        parameterValue.TableName = "_TableName_";
-
-        // Run the Database access process
-        returnValue =
-           (_3TierReturnValue)b.DoBusinessLogic(
-               (BaseParameterValue)parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
-
-        this.lblResult_TableName_.Text = returnValue.Obj.ToString() + " Data is Inserted into table: _TableName_";
-        #endregion
-
-        // ControlComment:LoopEnd-JoinTables
-        //Return empty string since there is no need to redirect to any other page.
-        return string.Empty;
-    }
-    #endregion
-
     #region Update Record
     /// <summary>更新ボタン</summary>
     /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
@@ -217,7 +173,7 @@ public partial class _JoinTableName__Screen_Detail : MyBaseController
 
         // 引数クラスを生成
         _3TierParameterValue parameterValue = new _3TierParameterValue(
-                this.ContentPageFileNoEx, fxEventArgs.ButtonID, "UpdateRecord",
+                this.ContentPageFileNoEx, fxEventArgs.ButtonID, "UpdateRecordDM",
                 (string)Session["DAP"], (MyUserInfo)this.UserInfo);
 
         //Initialize the data access procedure
@@ -225,57 +181,69 @@ public partial class _JoinTableName__Screen_Detail : MyBaseController
         // B layer Initialize
         _3TierEngine b = new _3TierEngine();
         Dictionary<string, object> UpdateWhereConditions = (Dictionary<string, object>)Session["PrimaryKeyAndTimeStamp"];
+        // Modifications for DM 
+        parameterValue.AndEqualSearchConditions = new Dictionary<string, object>();
+        //Declare InsertUpdateValue dictionary and add the values to it
+        parameterValue.InsertUpdateValues = new Dictionary<string, object>();
+        parameterValue.TargetTableNames = new Dictionary<int, string>();
+        //Declaring the table counter to add it to TargetTableNames Dictionary
+        int TableCounter = 0;
         #endregion
 
         // ControlComment:LoopStart-JoinTables
         #region  Set the values to be updated to the _TableName_. Then Update to database
+        TableCounter = TableCounter + 1;
         // Remove '_TableName__' from the PrimaryKeyandTimeStamp dictionary Key values so developer need not to change the values manually in Dao_TableName__S3_UPDATE.xml
-        parameterValue.AndEqualSearchConditions = new Dictionary<string, object>();
         foreach (string k in UpdateWhereConditions.Keys)
         {
-            if (k.Split('_')[0] == "_TableName_")
+            if (k.Contains("_TableName_"))
             {
-                parameterValue.AndEqualSearchConditions.Add(k.Split('_')[1], UpdateWhereConditions[k]);
+                //Check to avoid duplicate key addition
+                if (!parameterValue.AndEqualSearchConditions.ContainsKey(k.Replace("_TableName_" + "_", "")))
+                {
+                    parameterValue.AndEqualSearchConditions.Add(k.Replace("_TableName_" + "_", ""), UpdateWhereConditions[k]);
+                }
             }
         }
-        //Declare InsertUpdateValue dictionary and add the values to it
-        parameterValue.InsertUpdateValues = new Dictionary<string, object>();
-        // ControlComment:LoopStart-PKColumn
-        parameterValue.InsertUpdateValues.Add("_ColumnName_", this.txt_JoinTextboxColumnName_.Text);
-        // ControlComment:LoopEnd-PKColumn
+
         // ControlComment:LoopStart-ElseColumn
-        parameterValue.InsertUpdateValues.Add("_ColumnName_", this.txt_JoinTextboxColumnName_.Text);
+        parameterValue.InsertUpdateValues.Add("_JoinTextboxColumnName_", this.txt_JoinTextboxColumnName_.Text);
         // ControlComment:LoopEnd-ElseColumn  
 
         //Reset returnvalue with null;
         returnValue = null;
         //Name of the table  _TableName_
-        parameterValue.TableName = "_TableName_";
+        parameterValue.TargetTableNames.Add(TableCounter, "_TableName_");
+        #endregion
+        // ControlComment:LoopEnd-JoinTables
 
         // Run the Database access process
         returnValue =
            (_3TierReturnValue)b.DoBusinessLogic(
                (BaseParameterValue)parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
 
-        this.lblResult_TableName_.Text = returnValue.Obj.ToString() + " Data is Updated to the table: _TableName_";
-        #endregion
+        this.lblResult_TableName_.Text = returnValue.Obj.ToString() + " Table Data Updated Sucessfully";
 
-        // ControlComment:LoopEnd-JoinTables
+
+
         //Return empty string since there is no need to redirect to any other page.
         return string.Empty;
-    } 
+    }
     #endregion
 
     #region Delete Record
     /// <summary>削除ボタン</summary>
     /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
     /// <returns>URL</returns>
+    /// <remarks>In case of deleting from multiple tables and when the tables have dependent relation, the sequence of execution of delete statements for these tables become necessary. 
+    /// Developer should decide the sequence of table for the delete operation.
+    /// This can be managed by altering the position of code block present in the region 'Delete the data from the [TableName] table' as required</remarks>
     protected string UOC_btnDelete_Click(FxEventArgs fxEventArgs)
     {
         #region  Create the instance of classes here
         // 引数クラスを生成
         _3TierParameterValue parameterValue = new _3TierParameterValue(
-                this.ContentPageFileNoEx, fxEventArgs.ButtonID, "DeleteRecord",
+                this.ContentPageFileNoEx, fxEventArgs.ButtonID, "DeleteRecordDM",
                 (string)Session["DAP"], (MyUserInfo)this.UserInfo);
 
         //Initialize the data access procedure
@@ -283,33 +251,41 @@ public partial class _JoinTableName__Screen_Detail : MyBaseController
         // B layer Initialize
         _3TierEngine b = new _3TierEngine();
         Dictionary<string, object> DeleteWhereConditions = (Dictionary<string, object>)Session["PrimaryKeyAndTimeStamp"];
+        // Modifications for DM 
+        parameterValue.AndEqualSearchConditions = new Dictionary<string, object>();
+        parameterValue.TargetTableNames = new Dictionary<int, string>();
+        //Declaring the table counter to add it to TargetTableNames Dictionary
+        int TableCounter = 0;
         #endregion
 
         // ControlComment:LoopStart-JoinTables
         #region  Delete the data from the _TableName_  table
         // Remove '_TableName__' from the PrimaryKeyandTimeStamp dictionary Key values so developer need not to change the values manually in Dao_TableName__S4_Delete.xml 
-        parameterValue.AndEqualSearchConditions = new Dictionary<string, object>();
+        TableCounter = TableCounter + 1;
         foreach (string k in DeleteWhereConditions.Keys)
         {
             if (k.Split('_')[0] == "_TableName_")
             {
-                parameterValue.AndEqualSearchConditions.Add(k.Split('_')[1], DeleteWhereConditions[k]);
+                //Check to avoid duplicate key addition
+                if (!parameterValue.AndEqualSearchConditions.ContainsKey(k))
+                {
+                    parameterValue.AndEqualSearchConditions.Add(k, DeleteWhereConditions[k]);
+                }
             }
         }
         //Reset returnvalue with null;
         returnValue = null;
         //Name of the table  _TableName_
-        parameterValue.TableName = "_TableName_";
-
+        parameterValue.TargetTableNames.Add(TableCounter, "_TableName_");
+        #endregion
+        // ControlComment:LoopEnd-JoinTables
         // Run the Database access process
         returnValue =
            (_3TierReturnValue)b.DoBusinessLogic(
                (BaseParameterValue)parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
 
-        this.lblResult_TableName_.Text = returnValue.Obj.ToString() + " Data is Deleted from the table: _TableName_";
-        #endregion
+        this.lblResult_TableName_.Text = returnValue.Obj.ToString() + " Data is Deleted from the table Successfully";
 
-        // ControlComment:LoopEnd-JoinTables
         //Return empty string since there is no need to redirect to any other page.
         return string.Empty;
     }

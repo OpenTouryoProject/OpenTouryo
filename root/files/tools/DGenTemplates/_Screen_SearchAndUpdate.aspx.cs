@@ -12,7 +12,12 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//*  2016/05/09  Shashikiran       Modified UOC_btnBatUpd_Click function to call DoBusinessLogic function in single transaction
+//*  2016/05/12  Shashikiran       Added UOC_gvwGridView1_PageIndexChanging function to handle Gridview Paging event
+//*  2016/05/16  Shashikiran       Commented this.gvwGridView1.AllowPaging = false; line of code in UOC_gvwGridView1_RowCommand function to enable paging
+//*  2016/05/27  Shashikiran       Added remarks above UOC_btnBatUpd_Click event as a guideline for developers to modify the code to set the
+//*                                table sequence appropriately for successful delete operation
+//*  2016/07/08  Shashikiran       Modified code UOC_gvwGridView1_RowCommand to fix the gridview row replacement issue
 //**********************************************************************************
 // System
 using System;
@@ -189,90 +194,77 @@ public partial class _JoinTableName__Screen_SearchAndUpdate : MyBaseController
 
     #region CRUD USING BATCH UPDATE
 
-    /// <summary>追加ボタン</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_btnInsert_Click(FxEventArgs fxEventArgs)
-    {
-        // 画面遷移（詳細表示）
-        return "_JoinTableName__Screen_Detail.aspx";
-    }
-
     /// <summary>バッチ更新ボタン</summary>
     /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
     /// <returns>URL</returns>
+    /// <remarks>In case of deleting from multiple tables and when the tables have dependent relation, the sequence of execution of delete statements for these tables become necessary. 
+    /// Developer should decide the sequence of table for the delete operation.
+    /// This can be managed by altering the position of code block present in the region 'Batch Update for [TableName]  table' as required</remarks>
     protected string UOC_btnBatUpd_Click(FxEventArgs fxEventArgs)
     {
         #region  Create the instance of classes here
 
         // 引数クラスを生成
         _3TierParameterValue parameterValue = new _3TierParameterValue(
-            this.ContentPageFileNoEx, fxEventArgs.ButtonID, "BatchUpdate",
+            this.ContentPageFileNoEx, fxEventArgs.ButtonID, "BatchUpdateDM",
             (string)Session["DAP"], (MyUserInfo)this.UserInfo);
 
         //Initialize the data access procedure
         _3TierReturnValue returnValue = null;
         // B layer Initialize
         _3TierEngine b = new _3TierEngine();
-
+        parameterValue.AndEqualSearchConditions = new Dictionary<string, object>();
+        parameterValue.TargetTableNames = new Dictionary<int, string>();
+         //Declaring the table counter to add it to TargetTableNames Dictionary
+        int TableCounter = 0;
         //Keep the copy of the table in session because change in the column name causes the problem in the temperory update after batch update. So keep the copy of the table.
         DataTable dtSession = ((DataTable)Session["SearchResult"]).Copy();
         #endregion
+
         // ControlComment:LoopStart-JoinTables
 
         #region  Batch Update for _TableName_  table
 
+      
         #region This is much needed to handle the duplicate column issue while udpating  _TableName_ using batch update
-        // to change the column names of table as per Table we should have copy of dtSession table.
-        DataTable dt_TableName_ = dtSession.Copy();
-
-        foreach (DataColumn dc in dt_TableName_.Columns)
+        TableCounter = TableCounter + 1;
+        foreach (DataColumn dc in dtSession.Columns)
         {
-            //Remove the '_TableName_.' from column names of _TableName_ only so that update will not have any problem.
-            //Otherwise When two tables are having same column names then we get an  error "A column named 'Columname' already belongs to this DataTable."
-            if (dc.ColumnName.Split('.')[0].Trim() == "_TableName_")
-            {
-                dc.ColumnName = dc.ColumnName.Split('.')[1].Trim();
-            }
             //Replace "." in column names of other tables with "_". This is needed becuase if columns are having "." then we get sql error, so we need to replace "." with "_"
-            else
-            {
-               
-                dc.ColumnName = dc.ColumnName.Replace('.', '_');
-            }
+            dc.ColumnName = dc.ColumnName.Replace('.', '_');
         }
 
         #endregion
 
-        // DataTableを設定
-       parameterValue.Obj = dt_TableName_;
-
         //Reset returnvalue with null;
         returnValue = null;
 
-        parameterValue.AndEqualSearchConditions = new Dictionary<string, object>();
+       
         //Primary Key Columns
         // ControlComment:LoopStart-PKColumn
-        parameterValue.AndEqualSearchConditions.Add("_ColumnName_", "");
+        if(!parameterValue.AndEqualSearchConditions.ContainsKey("_JoinTextboxColumnName_"))
+        {
+            parameterValue.AndEqualSearchConditions.Add("_JoinTextboxColumnName_", "");
+        }
         // ControlComment:LoopEnd-PKColumn
         //Timestamp column
 	TS_CommentOut_ parameterValue.AndEqualSearchConditions.Add("_TimeStampColName_", "");
 
         // Table Name
-        parameterValue.TableName = "_TableName_";
-
-        // Run the Database access process
-        returnValue =
-            (_3TierReturnValue)b.DoBusinessLogic(
-                (BaseParameterValue)parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
-
+        parameterValue.TargetTableNames.Add(TableCounter, "_TableName_");
         #endregion
         // ControlComment:LoopEnd-JoinTables
 
+       // DataTableを設定
+       parameterValue.Obj = dtSession;
+
+      // Run the Database access process       
+     returnValue =
+            (_3TierReturnValue)b.DoBusinessLogic(
+                (BaseParameterValue)parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted);
+
         // Disable the button
         this.btnBatUpd.Enabled = false;
-        // Keep the original session table with actual column names.
-        Session["SearchResult"] = dtSession;
         //No Screen transition
         return string.Empty;
     }
@@ -310,10 +302,10 @@ public partial class _JoinTableName__Screen_SearchAndUpdate : MyBaseController
                     else if (dr.RowState != DataRowState.Deleted)
                     {
                         // != Added、Deleted
-
+                        // Pick the exact gridview row value and avoid row replacement
                         // e.NewSelectedIndexとRowsのインデックスをチェック
                         i++;
-                        if (index == i)
+                        if (index + (gvwGridView1.PageSize * gvwGridView1.PageIndex) == i)
                         {
                             // 削除
                             dr.Delete();
@@ -337,16 +329,16 @@ public partial class _JoinTableName__Screen_SearchAndUpdate : MyBaseController
                     if (dr.RowState != DataRowState.Deleted)
                     {
                         // != Deleted
-
+                        // Pick the exact gridview row value and avoid row replacement
                         // e.NewSelectedIndexとRowsのインデックスをチェック
                         i++;
-                        if (index == i)
+                        if (index + (gvwGridView1.PageSize * gvwGridView1.PageIndex) == i)
                         {
                             // 更新
                             GridViewRow gvRow = this.gvwGridView1.Rows[index];
                             foreach (DataColumn dc in dt.Columns)
                             {
-                                TextBox txtBox = ((TextBox)gvRow.FindControl("txt" + dc.ColumnName.Replace('.','_')));
+                                TextBox txtBox = ((TextBox)gvRow.FindControl("txt" + dc.ColumnName.Replace('.', '_')));
 
                                 if (txtBox != null)
                                 {
@@ -386,12 +378,13 @@ public partial class _JoinTableName__Screen_SearchAndUpdate : MyBaseController
                 return string.Empty;
         }
 
+        // Commenting the code as it is not Necessary to reset and to avoid confusion
         // GridViewをリセット
-        this.gvwGridView1.PageIndex = 0;
-        this.gvwGridView1.Sort("", SortDirection.Ascending);
+        //this.gvwGridView1.PageIndex = 0;
+        //this.gvwGridView1.Sort("", SortDirection.Ascending);
 
         // ページングの中止
-        this.gvwGridView1.AllowPaging = false;
+        //this.gvwGridView1.AllowPaging = false;
 
         // GridViewのDataSourceを変更してDataBindする。
         this.gvwGridView1.DataSource = dt;
@@ -406,6 +399,17 @@ public partial class _JoinTableName__Screen_SearchAndUpdate : MyBaseController
 
         // 画面遷移しない。
         return string.Empty;
+    }
+
+    /// <summary>gvwGridView1 Paging Event</summary>
+    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+    /// <returns>URL</returns>
+    protected string UOC_gvwGridView1_PageIndexChanging(FxEventArgs fxEventArgs, GridViewPageEventArgs e)
+    {
+        this.gvwGridView1.PageIndex = e.NewPageIndex;
+        this.gvwGridView1.DataSource = (DataTable)Session["SearchResult"];
+        this.gvwGridView1.DataBind();
+        return "";
     }
 
     #endregion

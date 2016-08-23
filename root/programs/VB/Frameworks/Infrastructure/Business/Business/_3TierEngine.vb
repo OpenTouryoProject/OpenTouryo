@@ -39,6 +39,10 @@
 '*  2014/12/10  西野　大介        Implementations of the related check process has been changed for problem.
 '*                                Change the signature of the CRUD methods. "private" ---> "protected virtual"
 '*  2015/04/29  Sandeep          Modified the code of 'UOC_SelectMethod' to retrive 30 records instead of 31 records
+'*  2016/06/14  Shashikiran      Implemented 'UOC_UpdateRecordDM' method to perform multiple table update in single transaction
+'*  2016/06/21  Shashikiran      Implemented 'UOC_BatchUpdateDM' method to perform multiple table Batch update in single transaction
+'*  2016/06/27  Shashikiran      Implemented 'UOC_DeleteRecordDM' method to perform multiple table Delete in single transaction
+'*  2016/06/27  Shashikiran      Modified 'UOC_BatchUpdateDM' method to perform multiple table Batch delete operation in single transaction
 '**********************************************************************************
 
 ' レイトバインド用
@@ -986,11 +990,232 @@ Namespace Touryo.Infrastructure.Business.Business
 			' ↑業務処理-----------------------------------------------------
 		End Sub
 
-		#End Region
+        ''' <summary>Implementing Update process of Multiple tables in Single Transaction</summary>
+        ''' <param name="parameterValue">Argument class</param>
+        Protected Overridable Sub UOC_UpdateRecordDM(ByVal parameterValue As _3TierParameterValue)
+            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            Dim returnValue As New _3TierReturnValue()
+            Me.ReturnValue = returnValue
 
-		''' <summary>関連チェック処理を実装可能に</summary>
-		''' <param name="parameterValue">引数</param>
-		Protected Overridable Sub UOC_RelatedCheck(parameterValue As _3TierParameterValue)
-		End Sub
-	End Class
+            ' 関連チェック処理
+            Me.UOC_RelatedCheck(parameterValue)
+
+            ' ↓業務処理-----------------------------------------------------
+
+            Dim i As Integer = 0 ' Number count of row update
+
+            ' Loop through multiple tables for update operation
+            For Each TableName As String In parameterValue.TargetTableNames.Values
+
+                ' 共通Dao
+                Dim cmnDao As New CmnDao(Me.GetDam())
+
+                ' AndEqualSearchConditions（主キー
+                For Each k As String In parameterValue.AndEqualSearchConditions.Keys
+                    ' nullチェック（null相当を要検討
+                    ' == null
+                    If parameterValue.AndEqualSearchConditions(k) Is Nothing Then
+                    Else
+                        ' != null
+
+                        ' 文字列の場合の扱い
+                        If TypeOf parameterValue.AndEqualSearchConditions(k) Is String Then
+                            If Not String.IsNullOrEmpty(DirectCast(parameterValue.AndEqualSearchConditions(k), String)) Then
+                                ' パラメタ指定
+                                cmnDao.SetParameter(k, parameterValue.AndEqualSearchConditions(k))
+                            End If
+                        Else
+                            ' パラメタ指定
+                            cmnDao.SetParameter(k, parameterValue.AndEqualSearchConditions(k))
+                        End If
+                    End If
+                Next
+
+                ' 更新値
+                ' InsertUpdateValues
+                For Each k As String In parameterValue.InsertUpdateValues.Keys
+                    ' nullチェック（null相当を要検討
+                    ' == null
+                    If parameterValue.InsertUpdateValues(k) Is Nothing Then
+                    Else
+                        ' != null
+
+                        ' 文字列の場合の扱い
+                        If TypeOf parameterValue.InsertUpdateValues(k) Is String Then
+                            If (k.Contains(TableName)) Then
+                                ' Setting up parameters by removing tablename from the alias
+                                cmnDao.SetParameter(Me.UpdateParamHeader & k.Remove(0, (TableName & "_").Length) & Me.UpdateParamFooter, parameterValue.InsertUpdateValues(k))
+                            End If
+
+                        Else
+                            If (k.Contains(TableName)) Then
+                                ' Setting up parameters by removing tablename from the alias
+                                cmnDao.SetParameter(Me.UpdateParamHeader & k.Remove(0, (TableName & "_").Length) & Me.UpdateParamFooter, parameterValue.InsertUpdateValues(k))
+                            End If
+
+                        End If
+                    End If
+                Next
+
+                ' SQLを設定して
+                cmnDao.SQLFileName = Me.DaoClassNameHeader & Convert.ToString(TableName) & Me.DaoClassNameFooter & "_" & Me.MethodNameHeaderS & Me.MethodLabel_Upd & Me.MethodNameFooterS & ".xml"
+
+                ' パラメタは指定済み
+
+                ' 更新処理を実行
+                i += cmnDao.ExecInsUpDel_NonQuery()
+            Next
+
+            returnValue.Obj = i
+
+            ' ↑業務処理-----------------------------------------------------
+        End Sub
+
+        ''' <summary>Implementing Batch Update and Delete process of Multiple tables in Single Transaction</summary>
+        ''' <param name="parameterValue">Argument class</param>
+        Protected Overridable Sub UOC_BatchUpdateDM(ByVal parameterValue As _3TierParameterValue)
+            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            Dim returnValue As New _3TierReturnValue()
+            Me.ReturnValue = returnValue
+
+            ' 関連チェック処理
+            Me.UOC_RelatedCheck(parameterValue)
+
+            Dim i As Integer = 0 ' Number count of row update
+
+            ' ↓業務処理-----------------------------------------------------
+
+            ' Loop through multiple tables for update operation
+            For Each TableName As String In parameterValue.TargetTableNames.Values
+                ' 共通Dao
+                Dim cmnDao As New CmnDao(Me.GetDam())
+
+                ' 件数のカウント
+                Dim dt As DataTable = DirectCast(parameterValue.Obj, DataTable)
+
+                ' バッチ更新
+                For Each dr As DataRow In dt.Rows
+                    Select Case dr.RowState
+                        Case DataRowState.Modified
+                            ' 更新
+                            ' SQLを設定して
+                            cmnDao.SQLFileName = Me.DaoClassNameHeader & Convert.ToString(TableName) & Me.DaoClassNameFooter & "_" & Me.MethodNameHeaderS & Me.MethodLabel_Upd & Me.MethodNameFooterS & ".xml"
+
+                            ' パラメタ指定
+                            For Each dc As DataColumn In dt.Columns
+                                ' 主キー・タイムスタンプ列の設定はUP側で。
+                                ' また、空文字列も通常の値と同一に扱う。
+                                If parameterValue.AndEqualSearchConditions.ContainsKey(dc.ColumnName) Then
+                                    ' Where条件は、DataRowVersion.Originalを付与
+                                    ' Setting up parameters by removing tablename from the alias
+                                    cmnDao.SetParameter(dc.ColumnName.Replace(TableName & "_", ""), dr(dc, DataRowVersion.Original))
+                                Else
+                                    ' Setting up parameters by removing tablename from the alias
+                                    cmnDao.SetParameter(Me.UpdateParamHeader + dc.ColumnName.Replace(TableName & "_", "") & Me.UpdateParamFooter, dr(dc))
+                                End If
+                            Next
+
+                            ' 更新処理を実行
+                            i += cmnDao.ExecInsUpDel_NonQuery()
+
+                            Exit Select
+                        Case DataRowState.Deleted
+                            ' 削除
+                            ' SQLを設定して
+                            cmnDao.SQLFileName = Me.DaoClassNameHeader & Convert.ToString(TableName) & Me.DaoClassNameFooter & "_" & Me.MethodNameHeaderS & Me.MethodLabel_Del & Me.MethodNameFooterS & ".xml"
+
+                            ' パラメタ指定
+                            For Each c As DataColumn In dt.Columns
+                                ' 主キー・タイムスタンプ列の設定はUP側で。
+                                ' また、空文字列も通常の値と同一に扱う。
+                                If parameterValue.AndEqualSearchConditions.ContainsKey(c.ColumnName) Then
+                                    ' Where条件は、DataRowVersion.Originalを付与
+                                    ' Setting up parameters by removing tablename from the alias
+                                    cmnDao.SetParameter(c.ColumnName.Replace(TableName & "_", ""), dr(c, DataRowVersion.Original))
+                                End If
+                            Next
+
+                            ' 更新処理を実行
+                            i += cmnDao.ExecInsUpDel_NonQuery()
+
+                            Exit Select
+                        Case Else
+
+                            ' 上記以外
+                            ' なにもしない。
+                            Exit Select
+                    End Select
+                Next
+            Next
+
+            ' 件数を返却
+            returnValue.Obj = i
+
+            ' ↑業務処理-----------------------------------------------------
+        End Sub
+
+        ''' <summary>Implementing Delete process of Multiple tables in Single Transaction</summary>
+        ''' <param name="parameterValue">Argument class</param>
+        Protected Overridable Sub UOC_DeleteRecordDM(ByVal parameterValue As _3TierParameterValue)
+            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            Dim returnValue As New _3TierReturnValue()
+            Me.ReturnValue = returnValue
+
+            ' 関連チェック処理
+            Me.UOC_RelatedCheck(parameterValue)
+
+            ' ↓業務処理-----------------------------------------------------
+
+            Dim i As Integer = 0 ' Number count of row update
+
+            ' Loop through multiple tables for update operation
+            For Each TableName As String In parameterValue.TargetTableNames.Values
+                ' 共通Dao
+                Dim cmnDao As New CmnDao(Me.GetDam())
+
+                ' 検索条件の指定
+
+                ' AndEqualSearchConditions（主キー
+                For Each k As String In parameterValue.AndEqualSearchConditions.Keys
+                    ' nullチェック（null相当を要検討
+                    ' == null
+                    If parameterValue.AndEqualSearchConditions(k) Is Nothing Then
+                    Else
+                        ' != null
+
+                        ' 文字列の場合の扱い
+                        If TypeOf parameterValue.AndEqualSearchConditions(k) Is String Then
+                            If Not String.IsNullOrEmpty(DirectCast(parameterValue.AndEqualSearchConditions(k), String)) Then
+                                ' パラメタ指定
+                                ' Removing Tablename from the parameters
+                                cmnDao.SetParameter(k.Replace(TableName + "_", ""), parameterValue.AndEqualSearchConditions(k))
+                            End If
+                        Else
+                            ' パラメタ指定
+                            ' Removing Tablename from the parameters
+                            cmnDao.SetParameter(k.Replace(TableName + "_", ""), parameterValue.AndEqualSearchConditions(k))
+                        End If
+                    End If
+                Next
+
+                ' SQLを設定して
+                cmnDao.SQLFileName = Me.DaoClassNameHeader & Convert.ToString(TableName) & Me.DaoClassNameFooter & "_" & Me.MethodNameHeaderS & Me.MethodLabel_Del & Me.MethodNameFooterS & ".xml"
+
+                ' パラメタは指定済み
+
+                ' 削除処理を実行
+                i += cmnDao.ExecInsUpDel_NonQuery()
+            Next
+
+            returnValue.Obj = i
+            ' ↑業務処理-----------------------------------------------------
+        End Sub
+
+#End Region
+
+        ''' <summary>関連チェック処理を実装可能に</summary>
+        ''' <param name="parameterValue">引数</param>
+        Protected Overridable Sub UOC_RelatedCheck(ByVal parameterValue As _3TierParameterValue)
+        End Sub
+    End Class
 End Namespace
