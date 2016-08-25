@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             this.Close_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.txtSetDaoDefinition = new System.Windows.Forms.TextBox();
@@ -100,6 +101,7 @@
             this.rbnODP = new System.Windows.Forms.RadioButton();
             this.rbnSQL = new System.Windows.Forms.RadioButton();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.gbxInput.SuspendLayout();
             this.gbxOutput.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -176,6 +178,7 @@
             resources.ApplyResources(this.lblGivenName, "lblGivenName");
             this.lblGivenName.ForeColor = System.Drawing.Color.DarkGray;
             this.lblGivenName.Name = "lblGivenName";
+            this.toolTip1.SetToolTip(this.lblGivenName, resources.GetString("lblGivenName.ToolTip"));
             // 
             // txtFamilyName
             // 
@@ -188,6 +191,7 @@
             resources.ApplyResources(this.lblFamilyName, "lblFamilyName");
             this.lblFamilyName.ForeColor = System.Drawing.Color.DarkGray;
             this.lblFamilyName.Name = "lblFamilyName";
+            this.toolTip1.SetToolTip(this.lblFamilyName, resources.GetString("lblFamilyName.ToolTip"));
             // 
             // lblEncodingSql
             // 
@@ -742,5 +746,6 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.CheckBox cbxTableMaintenance;
         private System.Windows.Forms.CheckBox cbxOnlyTableMaintenance;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

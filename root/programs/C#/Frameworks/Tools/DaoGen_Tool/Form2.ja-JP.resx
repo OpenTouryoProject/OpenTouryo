@@ -166,6 +166,9 @@
   <data name="lblGivenName.Text" xml:space="preserve">
     <value>名：</value>
   </data>
+  <data name="lblGivenName.ToolTip" xml:space="preserve">
+    <value>この項目は省略可能です。</value>
+  </data>
   <data name="txtFamilyName.Location" type="System.Drawing.Point, System.Drawing">
     <value>134, 162</value>
   </data>
@@ -177,6 +180,9 @@
   </data>
   <data name="lblFamilyName.Text" xml:space="preserve">
     <value>姓：</value>
+  </data>
+  <data name="lblFamilyName.ToolTip" xml:space="preserve">
+    <value>この項目は省略可能です。</value>
   </data>
   <data name="lblEncodingSql.Location" type="System.Drawing.Point, System.Drawing">
     <value>289, 131</value>
@@ -343,13 +349,13 @@
     <value>ステップ2</value>
   </data>
   <data name="lblSelected.Location" type="System.Drawing.Point, System.Drawing">
-    <value>112, 416</value>
+    <value>109, 415</value>
   </data>
   <data name="lblSelected.Size" type="System.Drawing.Size, System.Drawing">
-    <value>31, 13</value>
+    <value>138, 13</value>
   </data>
   <data name="lblSelected.Text" xml:space="preserve">
-    <value>選択</value>
+    <value>オプションが指定されました。</value>
   </data>
   <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
     <value>5, 315</value>
