@@ -922,6 +922,7 @@ namespace DaoGen_Tool
         public Form2()
         {
             InitializeComponent();
+            this.tabControl1.Controls.Remove(this.tabPage2);
         }
 
         /// <summary>プロバイダの設定</summary>
@@ -979,6 +980,14 @@ namespace DaoGen_Tool
 
             //Sets label visibilty valur
             this.lblSelected.Visible = false;
+
+            #endregion
+
+            #region ToolTip
+
+            ToolTip toolTip1 = new ToolTip();
+            toolTip1.SetToolTip(this.txtFamilyName, this.RM_GetString("ToolTipText"));
+            toolTip1.SetToolTip(this.txtPersonalName, this.RM_GetString("ToolTipText"));
 
             #endregion
 

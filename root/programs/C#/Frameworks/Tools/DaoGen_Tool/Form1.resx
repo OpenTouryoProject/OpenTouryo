@@ -1054,7 +1054,7 @@
     <value>NoControl</value>
   </data>
   <data name="btnDaoDefinitionGen.Location" type="System.Drawing.Point, System.Drawing">
-    <value>493, 318</value>
+    <value>492, 318</value>
   </data>
   <data name="btnDaoDefinitionGen.Size" type="System.Drawing.Size, System.Drawing">
     <value>123, 43</value>
@@ -1161,7 +1161,7 @@
     <value>NoControl</value>
   </data>
   <data name="btnListTable.Location" type="System.Drawing.Point, System.Drawing">
-    <value>493, 49</value>
+    <value>492, 49</value>
   </data>
   <data name="btnListTable.Size" type="System.Drawing.Size, System.Drawing">
     <value>123, 27</value>
@@ -1200,7 +1200,7 @@
     <value>NoControl</value>
   </data>
   <data name="btnDaoAndSqlGen.Location" type="System.Drawing.Point, System.Drawing">
-    <value>519, 436</value>
+    <value>517, 436</value>
   </data>
   <data name="btnDaoAndSqlGen.Size" type="System.Drawing.Size, System.Drawing">
     <value>98, 30</value>

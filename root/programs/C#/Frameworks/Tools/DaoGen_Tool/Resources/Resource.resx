@@ -267,4 +267,7 @@
   <data name="DLayerCancelledmessage" xml:space="preserve">
     <value>The operation was canceled.</value>
   </data>
+  <data name="ToolTipText" xml:space="preserve">
+    <value>Options were specified.</value>
+  </data>
 </root>

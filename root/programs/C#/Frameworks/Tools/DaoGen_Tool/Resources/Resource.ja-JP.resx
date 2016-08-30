@@ -261,4 +261,7 @@
   <data name="DLayerCancelledmessage" xml:space="preserve">
     <value>操作はキャンセルされました。</value>
   </data>
+  <data name="ToolTipText" xml:space="preserve">
+    <value>オプションが指定されました。</value>
+  </data>
 </root>

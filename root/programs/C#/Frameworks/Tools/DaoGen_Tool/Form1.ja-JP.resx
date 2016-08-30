@@ -237,7 +237,7 @@
     <value>505, 291</value>
   </data>
   <data name="btnDaoDefinitionGen.Location" type="System.Drawing.Point, System.Drawing">
-    <value>490, 322</value>
+    <value>488, 322</value>
   </data>
   <data name="btnDaoDefinitionGen.Size" type="System.Drawing.Size, System.Drawing">
     <value>125, 29</value>
@@ -266,13 +266,16 @@
 </value>
   </data>
   <data name="btnListTable.Location" type="System.Drawing.Point, System.Drawing">
-    <value>490, 49</value>
+    <value>488, 49</value>
   </data>
   <data name="btnListTable.Size" type="System.Drawing.Size, System.Drawing">
     <value>125, 29</value>
   </data>
   <data name="btnListTable.Text" xml:space="preserve">
     <value>テーブル一覧の取得</value>
+  </data>
+  <data name="btnDaoAndSqlGen.Location" type="System.Drawing.Point, System.Drawing">
+    <value>515, 436</value>
   </data>
   <data name="btnDaoAndSqlGen.Text" xml:space="preserve">
     <value>STEP2へ遷移</value>
