@@ -262,6 +262,6 @@
     <value>操作はキャンセルされました。</value>
   </data>
   <data name="ToolTipText" xml:space="preserve">
-    <value>オプションが指定されました。</value>
+    <value>この項目は省略可能です。</value>
   </data>
 </root>
