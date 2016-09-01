@@ -174,16 +174,16 @@
             // 
             // lbxTables
             // 
-            this.lbxTables.FormattingEnabled = true;
             resources.ApplyResources(this.lbxTables, "lbxTables");
+            this.lbxTables.FormattingEnabled = true;
             this.lbxTables.Name = "lbxTables";
             this.lbxTables.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             // 
             // dataGridView1
             // 
+            resources.ApplyResources(this.dataGridView1, "dataGridView1");
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            resources.ApplyResources(this.dataGridView1, "dataGridView1");
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 21;
             this.dataGridView1.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView_DataError);
@@ -196,65 +196,65 @@
             // 
             // tabControl1
             // 
+            resources.ApplyResources(this.tabControl1, "tabControl1");
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
-            resources.ApplyResources(this.tabControl1, "tabControl1");
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.dataGridView1);
             resources.ApplyResources(this.tabPage1, "tabPage1");
+            this.tabPage1.Controls.Add(this.dataGridView1);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.dataGridView2);
             resources.ApplyResources(this.tabPage2, "tabPage2");
+            this.tabPage2.Controls.Add(this.dataGridView2);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // dataGridView2
             // 
+            resources.ApplyResources(this.dataGridView2, "dataGridView2");
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView2.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            resources.ApplyResources(this.dataGridView2, "dataGridView2");
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowTemplate.Height = 21;
             this.dataGridView2.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView_DataError);
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.dataGridView3);
             resources.ApplyResources(this.tabPage3, "tabPage3");
+            this.tabPage3.Controls.Add(this.dataGridView3);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // dataGridView3
             // 
+            resources.ApplyResources(this.dataGridView3, "dataGridView3");
             this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView3.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            resources.ApplyResources(this.dataGridView3, "dataGridView3");
             this.dataGridView3.Name = "dataGridView3";
             this.dataGridView3.RowTemplate.Height = 21;
             this.dataGridView3.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView_DataError);
             // 
             // gbxSchemaDetails
             // 
+            resources.ApplyResources(this.gbxSchemaDetails, "gbxSchemaDetails");
             this.gbxSchemaDetails.Controls.Add(this.btnGetSchemaInfo);
             this.gbxSchemaDetails.Controls.Add(this.cmbSchemaInfo);
             this.gbxSchemaDetails.Controls.Add(this.lblSchemaInfo);
-            resources.ApplyResources(this.gbxSchemaDetails, "gbxSchemaDetails");
             this.gbxSchemaDetails.Name = "gbxSchemaDetails";
             this.gbxSchemaDetails.TabStop = false;
             // 
             // btnGetSchemaInfo
             // 
-            this.btnGetSchemaInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
             resources.ApplyResources(this.btnGetSchemaInfo, "btnGetSchemaInfo");
+            this.btnGetSchemaInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
             this.btnGetSchemaInfo.FlatAppearance.BorderSize = 0;
             this.btnGetSchemaInfo.ForeColor = System.Drawing.Color.White;
             this.btnGetSchemaInfo.Name = "btnGetSchemaInfo";
@@ -264,8 +264,8 @@
             // 
             // cmbSchemaInfo
             // 
-            this.cmbSchemaInfo.FormattingEnabled = true;
             resources.ApplyResources(this.cmbSchemaInfo, "cmbSchemaInfo");
+            this.cmbSchemaInfo.FormattingEnabled = true;
             this.cmbSchemaInfo.Name = "cmbSchemaInfo";
             // 
             // lblSchemaInfo
@@ -295,9 +295,9 @@
             // 
             // btnSetPrimaryKey
             // 
+            resources.ApplyResources(this.btnSetPrimaryKey, "btnSetPrimaryKey");
             this.btnSetPrimaryKey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(202)))), ((int)(((byte)(207)))));
             this.btnSetPrimaryKey.FlatAppearance.BorderSize = 0;
-            resources.ApplyResources(this.btnSetPrimaryKey, "btnSetPrimaryKey");
             this.btnSetPrimaryKey.ForeColor = System.Drawing.Color.White;
             this.btnSetPrimaryKey.Name = "btnSetPrimaryKey";
             this.btnSetPrimaryKey.UseVisualStyleBackColor = false;
@@ -306,9 +306,9 @@
             // 
             // btnLoadColumn
             // 
+            resources.ApplyResources(this.btnLoadColumn, "btnLoadColumn");
             this.btnLoadColumn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
             this.btnLoadColumn.FlatAppearance.BorderSize = 0;
-            resources.ApplyResources(this.btnLoadColumn, "btnLoadColumn");
             this.btnLoadColumn.ForeColor = System.Drawing.Color.White;
             this.btnLoadColumn.Name = "btnLoadColumn";
             this.btnLoadColumn.UseVisualStyleBackColor = false;
@@ -317,8 +317,8 @@
             // 
             // btnDelTable
             // 
-            this.btnDelTable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
             resources.ApplyResources(this.btnDelTable, "btnDelTable");
+            this.btnDelTable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
             this.btnDelTable.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.btnDelTable.FlatAppearance.BorderSize = 0;
             this.btnDelTable.ForeColor = System.Drawing.Color.White;
@@ -344,15 +344,15 @@
             // 
             // cmbEncoding
             // 
-            this.cmbEncoding.FormattingEnabled = true;
             resources.ApplyResources(this.cmbEncoding, "cmbEncoding");
+            this.cmbEncoding.FormattingEnabled = true;
             this.cmbEncoding.Name = "cmbEncoding";
             // 
             // btnDaoDefinitionGen
             // 
+            resources.ApplyResources(this.btnDaoDefinitionGen, "btnDaoDefinitionGen");
             this.btnDaoDefinitionGen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(42)))), ((int)(((byte)(53)))));
             this.btnDaoDefinitionGen.FlatAppearance.BorderSize = 0;
-            resources.ApplyResources(this.btnDaoDefinitionGen, "btnDaoDefinitionGen");
             this.btnDaoDefinitionGen.ForeColor = System.Drawing.Color.White;
             this.btnDaoDefinitionGen.Name = "btnDaoDefinitionGen";
             this.btnDaoDefinitionGen.UseVisualStyleBackColor = false;
@@ -373,8 +373,8 @@
             // 
             // btnListTable
             // 
-            this.btnListTable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(42)))), ((int)(((byte)(53)))));
             resources.ApplyResources(this.btnListTable, "btnListTable");
+            this.btnListTable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(42)))), ((int)(((byte)(53)))));
             this.btnListTable.ForeColor = System.Drawing.Color.White;
             this.btnListTable.Name = "btnListTable";
             this.btnListTable.UseVisualStyleBackColor = false;
@@ -382,8 +382,8 @@
             // 
             // btnDaoAndSqlGen
             // 
-            this.btnDaoAndSqlGen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(42)))), ((int)(((byte)(53)))));
             resources.ApplyResources(this.btnDaoAndSqlGen, "btnDaoAndSqlGen");
+            this.btnDaoAndSqlGen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(42)))), ((int)(((byte)(53)))));
             this.btnDaoAndSqlGen.ForeColor = System.Drawing.Color.White;
             this.btnDaoAndSqlGen.Name = "btnDaoAndSqlGen";
             this.btnDaoAndSqlGen.UseVisualStyleBackColor = false;
@@ -391,15 +391,15 @@
             // 
             // lblStep1
             // 
-            this.lblStep1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(123)))), ((int)(((byte)(155)))));
             resources.ApplyResources(this.lblStep1, "lblStep1");
+            this.lblStep1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(123)))), ((int)(((byte)(155)))));
             this.lblStep1.ForeColor = System.Drawing.Color.White;
             this.lblStep1.Name = "lblStep1";
             // 
             // lnkHelp
             // 
-            this.lnkHelp.ActiveLinkColor = System.Drawing.SystemColors.Highlight;
             resources.ApplyResources(this.lnkHelp, "lnkHelp");
+            this.lnkHelp.ActiveLinkColor = System.Drawing.SystemColors.Highlight;
             this.lnkHelp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(123)))), ((int)(((byte)(155)))));
             this.lnkHelp.ForeColor = System.Drawing.Color.White;
             this.lnkHelp.LinkColor = System.Drawing.Color.White;
@@ -444,9 +444,7 @@
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).EndInit();
             this.gbxSchemaDetails.ResumeLayout(false);
-            this.gbxSchemaDetails.PerformLayout();
             this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);

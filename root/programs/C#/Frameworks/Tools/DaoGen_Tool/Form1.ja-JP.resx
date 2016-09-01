@@ -190,12 +190,6 @@
   <data name="label4.Text" xml:space="preserve">
     <value>テーブル一覧</value>
   </data>
-  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>490, 92</value>
-  </data>
-  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>125, 191</value>
-  </data>
   <data name="btnSetPrimaryKey.Location" type="System.Drawing.Point, System.Drawing">
     <value>10, 142</value>
   </data>
@@ -232,6 +226,12 @@
   </data>
   <data name="label5.Text" xml:space="preserve">
     <value>選択したテーブル</value>
+  </data>
+  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>490, 92</value>
+  </data>
+  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 191</value>
   </data>
   <data name="cmbEncoding.Location" type="System.Drawing.Point, System.Drawing">
     <value>505, 291</value>
