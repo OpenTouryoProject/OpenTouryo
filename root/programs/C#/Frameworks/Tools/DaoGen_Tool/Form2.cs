@@ -922,6 +922,7 @@ namespace DaoGen_Tool
         public Form2()
         {
             InitializeComponent();
+            this.tabControl1.Controls.Remove(this.tabPage2);
         }
 
         /// <summary>プロバイダの設定</summary>
@@ -932,18 +933,22 @@ namespace DaoGen_Tool
             switch (s)
             {
                 case "OLE":
+                    rbnOLE.Checked = true;
                     this.rbnOLE.Select();
                     this.strDBMS = "OLE";
                     break;
                 case "ODB":
+                    rbnODB.Checked = true;
                     this.rbnODB.Select();
                     this.strDBMS = "ODB";
                     break;
                 case "ODP":
+                    rbnODP.Checked = true;
                     this.rbnODP.Select();
                     this.strDBMS = "Oracle";
                     break;
                 case "DB2":
+                    rbnDB2.Checked = true;
                     this.rbnDB2.Select();
                     this.strDBMS = "DB2";
                     break;
@@ -951,14 +956,17 @@ namespace DaoGen_Tool
                 //    this.rbnHiRDB.Select();
                 //    break;
                 case "MCN":
+                    rbnMySQL.Checked = true;
                     this.rbnMySQL.Select();
                     this.strDBMS = "MCN";
                     break;
                 case "NPS":
+                    rbnPstgrs.Checked = true;
                     this.rbnPstgrs.Select();
                     this.strDBMS = "PstGrS";
                     break;
                 default:
+                    rbnSQL.Checked = true;
                     this.rbnSQL.Select();
                     this.strDBMS = "SQLServer";
                     break;
@@ -968,6 +976,21 @@ namespace DaoGen_Tool
         /// <summary>初期設定</summary>
         private void Form2_Load(object sender, EventArgs e)
         {
+            #region label visibility
+
+            //Sets label visibilty valur
+            this.lblSelected.Visible = false;
+
+            #endregion
+
+            #region ToolTip
+
+            ToolTip toolTip1 = new ToolTip();
+            toolTip1.SetToolTip(this.txtFamilyName, this.RM_GetString("ToolTipText"));
+            toolTip1.SetToolTip(this.txtPersonalName, this.RM_GetString("ToolTipText"));
+
+            #endregion
+
             #region ラジオ（など）を初期化する。
 
             //// データプロバイダ
@@ -4411,6 +4434,64 @@ namespace DaoGen_Tool
         {
             ResourceManager rm = Resources.Resource.ResourceManager;
             return rm.GetString(key);
+        }
+
+        /// <summary>This Method add the Tab 2 and remove Tab 1</summary>
+        private void btnOptions_Click(object sender, EventArgs e)
+        {
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Remove(this.tabPage1);
+        }
+
+        /// <summary>This Method cancels the Options tab</summary>
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            switch (this.strDAP)
+            {
+                case "OLE":
+                    this.rbnOLE.Checked = true;
+                    break;
+                case "ODB":
+                    this.rbnODB.Checked = true;
+                    break;
+                case "Oracle":
+                    this.rbnODP.Checked = true;
+                    break;
+                case "DB2":
+                    this.rbnDB2.Checked = true;
+                    break;
+                case "MCN":
+                    this.rbnMySQL.Checked = true;
+                    break;
+                case "PstGrS":
+                    this.rbnPstgrs.Checked = true;
+                    break;
+                default:
+                    this.rbnSQL.Checked = true;
+                    break;
+            }
+
+            if (this.cbxOnlyTableMaintenance.Checked || this.cbxTableMaintenance.Checked)
+            {
+                this.cbxOnlyTableMaintenance.Checked = false;
+                this.cbxTableMaintenance.Checked = false;
+            }
+            if (cbxOnlyDTO.Checked || this.cbxEntity.Checked || this.cbxTypedDataSet.Checked)
+            {
+                this.cbxOnlyDTO.Checked = false;
+                this.cbxEntity.Checked = false;
+                this.cbxTypedDataSet.Checked = false;
+            }
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Remove(this.tabPage2);
+        }
+
+        /// <summary>This Method saves options setting and redirects to step2</summary>
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Remove(this.tabPage2);
+            this.lblSelected.Visible = true;
         }
     }
 }
