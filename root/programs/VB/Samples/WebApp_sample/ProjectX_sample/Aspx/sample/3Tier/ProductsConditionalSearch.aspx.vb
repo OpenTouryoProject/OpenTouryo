@@ -161,7 +161,7 @@ Partial Public Class ProductsConditionalSearch
             Return DirectCast(Session("ddldsdt_SupplierID"), DataTable)
         End Get
         Set(value As DataTable)
-            Session("ddldsdt_SupplierID") = value
+            Session("ddldsdt_SupplierID") = Value
         End Set
     End Property
 
@@ -171,7 +171,7 @@ Partial Public Class ProductsConditionalSearch
             Return DirectCast(Session("ddldsdt_CategoryID"), DataTable)
         End Get
         Set(value As DataTable)
-            Session("ddldsdt_CategoryID") = value
+            Session("ddldsdt_CategoryID") = Value
         End Set
     End Property
 
