@@ -37,7 +37,7 @@
 Imports Touryo.Infrastructure.Framework.Presentation
 
 ''' <summary>テスト画面１用のマスタ ページ</summary>
-Partial Public Class Aspx_Common_testScreen1
+Public Partial Class Aspx_Common_testScreen1
     Inherits BaseMasterController
 End Class
 

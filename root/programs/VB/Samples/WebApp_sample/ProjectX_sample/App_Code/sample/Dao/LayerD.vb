@@ -58,7 +58,7 @@ Public Class LayerD
     ''' <summary>
     ''' コンストラクタ
     ''' </summary>
-    Public Sub New(ByVal dam As BaseDam)
+    Public Sub New(dam As BaseDam)
         MyBase.New(dam)
     End Sub
 
@@ -67,7 +67,7 @@ Public Class LayerD
     ''' <summary>テンプレ</summary>
     ''' <param name="testParameter">引数クラス</param>
     ''' <param name="testReturn">戻り値クラス</param>
-    Public Sub テンプレ(ByVal testParameter As TestParameterValue, ByVal testReturn As TestReturnValue)
+    Public Sub テンプレ(testParameter As TestParameterValue, testReturn As TestReturnValue)
 
         ' ↓DBアクセス-----------------------------------------------------
 
@@ -118,15 +118,15 @@ Public Class LayerD
     ''' <summary>件数情報を返すSELECTクエリを実行する</summary>
     ''' <param name="testParameter">引数クラス</param>
     ''' <param name="testReturn">戻り値クラス</param>
-    Public Sub SelectCount(ByVal testParameter As TestParameterValue, ByVal testReturn As TestReturnValue)
+    Public Sub SelectCount(testParameter As TestParameterValue, testReturn As TestReturnValue)
         ' ↓DBアクセス-----------------------------------------------------
 
         Dim filename As String = ""
 
-        If (testParameter.ActionType.Split("%"c))(2) = "static" Then
+        If (testParameter.ActionType.Split("%"C))(2) = "static" Then
             ' 静的SQL
             filename = "ShipperCount.sql"
-        ElseIf (testParameter.ActionType.Split("%"c))(2) = "dynamic" Then
+        ElseIf (testParameter.ActionType.Split("%"C))(2) = "dynamic" Then
             ' 動的SQL
             filename = "ShipperCount.xml"
         End If
@@ -152,15 +152,15 @@ Public Class LayerD
     ''' <summary>一覧を返すSELECTクエリを実行する（DT）</summary>
     ''' <param name="testParameter">引数クラス</param>
     ''' <param name="testReturn">戻り値クラス</param>
-    Public Sub SelectAll_DT(ByVal testParameter As TestParameterValue, ByVal testReturn As TestReturnValue)
+    Public Sub SelectAll_DT(testParameter As TestParameterValue, testReturn As TestReturnValue)
         ' ↓DBアクセス-----------------------------------------------------
 
         Dim commandText As String = ""
 
-        If (testParameter.ActionType.Split("%"c))(2) = "static" Then
+        If (testParameter.ActionType.Split("%"C))(2) = "static" Then
             ' 静的SQL
             commandText = "SELECT * FROM Shippers"
-        ElseIf (testParameter.ActionType.Split("%"c))(2) = "dynamic" Then
+        ElseIf (testParameter.ActionType.Split("%"C))(2) = "dynamic" Then
             ' 動的SQL
             ' 通常、動的SQLをSetSqlByCommandで直接指定するような使い方はしない。
             commandText = "<?xml version=""1.0"" encoding=""utf-8"" ?><ROOT>SELECT * FROM Shippers</ROOT>"
@@ -184,15 +184,15 @@ Public Class LayerD
     ''' <summary>一覧を返すSELECTクエリを実行する（DS）</summary>
     ''' <param name="testParameter">引数クラス</param>
     ''' <param name="testReturn">戻り値クラス</param>
-    Public Sub SelectAll_DS(ByVal testParameter As TestParameterValue, ByVal testReturn As TestReturnValue)
+    Public Sub SelectAll_DS(testParameter As TestParameterValue, testReturn As TestReturnValue)
         ' ↓DBアクセス-----------------------------------------------------
 
         Dim commandText As String = ""
 
-        If (testParameter.ActionType.Split("%"c))(2) = "static" Then
+        If (testParameter.ActionType.Split("%"C))(2) = "static" Then
             ' 静的SQL
             commandText = "SELECT * FROM Shippers"
-        ElseIf (testParameter.ActionType.Split("%"c))(2) = "dynamic" Then
+        ElseIf (testParameter.ActionType.Split("%"C))(2) = "dynamic" Then
             ' 動的SQL
             ' 通常、動的SQLをSetSqlByCommandで直接指定するような使い方はしない。
             commandText = "<?xml version=""1.0"" encoding=""utf-8"" ?><ROOT>SELECT * FROM Shippers</ROOT>"
@@ -216,15 +216,15 @@ Public Class LayerD
     ''' <summary>一覧を返すSELECTクエリを実行する（DR）</summary>
     ''' <param name="testParameter">引数クラス</param>
     ''' <param name="testReturn">戻り値クラス</param>
-    Public Sub SelectAll_DR(ByVal testParameter As TestParameterValue, ByVal testReturn As TestReturnValue)
+    Public Sub SelectAll_DR(testParameter As TestParameterValue, testReturn As TestReturnValue)
         ' ↓DBアクセス-----------------------------------------------------
 
         Dim commandText As String = ""
 
-        If (testParameter.ActionType.Split("%"c))(2) = "static" Then
+        If (testParameter.ActionType.Split("%"C))(2) = "static" Then
             ' 静的SQL
             commandText = "SELECT * FROM Shippers"
-        ElseIf (testParameter.ActionType.Split("%"c))(2) = "dynamic" Then
+        ElseIf (testParameter.ActionType.Split("%"C))(2) = "dynamic" Then
             ' 動的SQL
             ' 通常、動的SQLをSetSqlByCommandで直接指定するような使い方はしない。
             commandText = "<?xml version=""1.0"" encoding=""shift_jis"" ?><ROOT>SELECT * FROM Shippers</ROOT>"
@@ -267,15 +267,15 @@ Public Class LayerD
     ''' <summary>一覧を返すSELECTクエリを実行する</summary>
     ''' <param name="testParameter">引数クラス</param>
     ''' <param name="testReturn">戻り値クラス</param>
-    Public Sub SelectAll_DSQL(ByVal testParameter As TestParameterValue, ByVal testReturn As TestReturnValue)
+    Public Sub SelectAll_DSQL(testParameter As TestParameterValue, testReturn As TestReturnValue)
         ' ↓DBアクセス-----------------------------------------------------
 
         Dim filename As String = ""
 
-        If (testParameter.ActionType.Split("%"c))(2) = "static" Then
+        If (testParameter.ActionType.Split("%"C))(2) = "static" Then
             ' 静的SQL
             filename = "ShipperSelectOrder.sql"
-        ElseIf (testParameter.ActionType.Split("%"c))(2) = "dynamic" Then
+        ElseIf (testParameter.ActionType.Split("%"C))(2) = "dynamic" Then
             ' 動的SQL
             filename = "ShipperSelectOrder.xml"
         End If
@@ -331,15 +331,15 @@ Public Class LayerD
     ''' <summary>１レコードを返すSELECTクエリを実行する</summary>
     ''' <param name="testParameter">引数クラス</param>
     ''' <param name="testReturn">戻り値クラス</param>
-    Public Sub [Select](ByVal testParameter As TestParameterValue, ByVal testReturn As TestReturnValue)
+    Public Sub [Select](testParameter As TestParameterValue, testReturn As TestReturnValue)
         ' ↓DBアクセス-----------------------------------------------------
 
         Dim filename As String = ""
 
-        If (testParameter.ActionType.Split("%"c))(2) = "static" Then
+        If (testParameter.ActionType.Split("%"C))(2) = "static" Then
             ' 静的SQL
             filename = "ShipperSelect.sql"
-        ElseIf (testParameter.ActionType.Split("%"c))(2) = "dynamic" Then
+        ElseIf (testParameter.ActionType.Split("%"C))(2) = "dynamic" Then
             ' 動的SQL
             filename = "ShipperSelect.xml"
         End If
@@ -389,7 +389,7 @@ Public Class LayerD
     ''' <summary>Insertクエリを実行する</summary>
     ''' <param name="testParameter">引数クラス</param>
     ''' <param name="testReturn">戻り値クラス</param>
-    Public Sub Insert(ByVal testParameter As TestParameterValue, ByVal testReturn As TestReturnValue)
+    Public Sub Insert(testParameter As TestParameterValue, testReturn As TestReturnValue)
         ' ↓DBアクセス-----------------------------------------------------
 
         '   -- ファイルから読み込む場合。
@@ -417,16 +417,16 @@ Public Class LayerD
     ''' <summary>Updateクエリを実行する</summary>
     ''' <param name="testParameter">引数クラス</param>
     ''' <param name="testReturn">戻り値クラス</param>
-    Public Sub Update(ByVal testParameter As TestParameterValue, ByVal testReturn As TestReturnValue)
+    Public Sub Update(testParameter As TestParameterValue, testReturn As TestReturnValue)
 
         ' ↓DBアクセス-----------------------------------------------------
 
         Dim filename As String = ""
 
-        If (testParameter.ActionType.Split("%"c))(2) = "static" Then
+        If (testParameter.ActionType.Split("%"C))(2) = "static" Then
             ' 静的SQL
             filename = "ShipperUpdate.sql"
-        ElseIf (testParameter.ActionType.Split("%"c))(2) = "dynamic" Then
+        ElseIf (testParameter.ActionType.Split("%"C))(2) = "dynamic" Then
             ' 動的SQL
             filename = "ShipperUpdate.xml"
         End If
@@ -457,15 +457,15 @@ Public Class LayerD
     ''' <summary>Deleteクエリを実行する</summary>
     ''' <param name="testParameter">引数クラス</param>
     ''' <param name="testReturn">戻り値クラス</param>
-    Public Sub Delete(ByVal testParameter As TestParameterValue, ByVal testReturn As TestReturnValue)
+    Public Sub Delete(testParameter As TestParameterValue, testReturn As TestReturnValue)
         ' ↓DBアクセス-----------------------------------------------------
 
         Dim filename As String = ""
 
-        If (testParameter.ActionType.Split("%"c))(2) = "static" Then
+        If (testParameter.ActionType.Split("%"C))(2) = "static" Then
             ' 静的SQL
             filename = "ShipperDelete.sql"
-        ElseIf (testParameter.ActionType.Split("%"c))(2) = "dynamic" Then
+        ElseIf (testParameter.ActionType.Split("%"C))(2) = "dynamic" Then
             ' 動的SQL
             filename = "ShipperDelete.xml"
         End If
