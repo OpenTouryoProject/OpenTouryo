@@ -251,7 +251,7 @@ You can confirm the structure of Open Touryo and the specification of each featu
 You can see the *first step guide* of Open Touryo.
 
 ### Copyright and license
-Refer to [License](license) directory.
+Refer to [License](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/license) directory.
 
 ### Bug fix
 If you find the bug while you are using Open Touryo, create an new [issue](https://github.com/OpenTouryoProject/OpenTouryo/issues).  

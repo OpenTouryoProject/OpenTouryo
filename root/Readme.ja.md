@@ -243,7 +243,7 @@ Open 棟梁の仕組みや、各機能の仕様などをご覧いただけます
 Open 棟梁のファーストステップガイドです。     
    
 ### 著作権、ライセンス
-[License](license)ディレクトリをご確認ください。
+[License](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/license)ディレクトリをご確認ください。
 
 ### バグ対応
 ご利用いただく中で、バグを発見されましたら、[issue](https://github.com/OpenTouryoProject/OpenTouryo/issues) としてご連絡ください。  
