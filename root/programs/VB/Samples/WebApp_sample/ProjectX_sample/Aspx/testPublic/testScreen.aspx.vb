@@ -71,12 +71,12 @@ Imports Touryo.Infrastructure.Public.Win32
 Imports ProjectX_sample.MyType
 
 ''' <summary>共通部品テスト画面</summary>
-Partial Public Class Aspx_testPublic_testScreen
+Public Partial Class Aspx_testPublic_testScreen
     Inherits System.Web.UI.Page
 #Region "初期化処理"
 
     ''' <summary>初期化処理</summary>
-    Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub Page_Load(sender As Object, e As EventArgs)
         If Not Me.IsPostBack Then
             Me.txtFilePath1.Text = GetConfigParameter.GetConfigValue("TestFilePath") & "\testWrite.txt"
 
@@ -100,31 +100,31 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "ログ出力のテスト"
 
     ''' <summary>デバッグログ</summary>
-    Protected Sub btnDebugLog_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnDebugLog_Click(sender As Object, e As EventArgs)
         ' Log4Netへデバッグ・ログ出力
         LogIF.DebugLog(ddlLog.SelectedItem.Text, "わしょ～い")
     End Sub
 
     ''' <summary>情報ログ</summary>
-    Protected Sub btnInfoLog_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnInfoLog_Click(sender As Object, e As EventArgs)
         ' Log4Netへデバッグ・ログ出力
         LogIF.InfoLog(ddlLog.SelectedItem.Text, "わしょ～い")
     End Sub
 
     ''' <summary>警告ログ</summary>
-    Protected Sub btnWarnLog_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnWarnLog_Click(sender As Object, e As EventArgs)
         ' Log4Netへデバッグ・ログ出力
         LogIF.WarnLog(ddlLog.SelectedItem.Text, "わしょ～い")
     End Sub
 
     ''' <summary>（通常の）エラーログ</summary>
-    Protected Sub btnErrLog_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnErrLog_Click(sender As Object, e As EventArgs)
         ' Log4Netへデバッグ・ログ出力
         LogIF.ErrorLog(ddlLog.SelectedItem.Text, "わしょ～い")
     End Sub
 
     ''' <summary>致命的なエラーログ</summary>
-    Protected Sub btnFatalLog_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnFatalLog_Click(sender As Object, e As EventArgs)
         ' Log4Netへデバッグ・ログ出力
         LogIF.FatalLog(ddlLog.SelectedItem.Text, "わしょ～い")
     End Sub
@@ -134,7 +134,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "性能測定のテスト"
 
     ''' <summary>インクリメント</summary>
-    Protected Sub btnRoop_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnRoop_Click(sender As Object, e As EventArgs)
         ' ループ回数
         Dim j As Integer = Integer.Parse(Me.txtExecCnt.Text)
 
@@ -162,7 +162,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>スリープ</summary>
-    Protected Sub btnSleep_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnSleep_Click(sender As Object, e As EventArgs)
         ' ループ回数
         Dim j As Integer = Integer.Parse(Me.txtExecCnt.Text)
 
@@ -188,7 +188,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>ファイルIO（書込）</summary>
-    Protected Sub btnFileIOO_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnFileIOO_Click(sender As Object, e As EventArgs)
         ' ループ回数
         Dim j As Integer = Integer.Parse(Me.txtExecCnt.Text)
 
@@ -219,7 +219,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>ファイルIO（読込）</summary>
-    Protected Sub btnFileIOI_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnFileIOI_Click(sender As Object, e As EventArgs)
         ' ループ回数
         Dim j As Integer = Integer.Parse(Me.txtExecCnt.Text)
 
@@ -253,7 +253,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "ファイルIO部品のテスト"
 
     ''' <summary>ファイルIO（リソースのロード１）</summary>
-    Protected Sub btnLoadResource1_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnLoadResource1_Click(sender As Object, e As EventArgs)
         ' チェック
         If ResourceLoader.Exists(txtFilePath2.Text, False) Then
             ' 存在する場合
@@ -279,7 +279,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>ファイルIO（リソースのロード２）</summary>
-    Protected Sub btnLoadResource2_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnLoadResource2_Click(sender As Object, e As EventArgs)
         ' チェック
         If ResourceLoader.Exists(txtFilePath2.Text, txtFileName.Text, False) Then
             ' 存在する場合
@@ -310,7 +310,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "共有情報取得部品"
 
     ''' <summary>共有情報の取得</summary>
-    Protected Sub btnGetSP_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnGetSP_Click(sender As Object, e As EventArgs)
         ' 共有情報を取得する。
         Me.lblSP.Text = GetSharedProperty.GetSharedPropertyValue(Me.txtSPID.Text)
     End Sub
@@ -320,7 +320,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "メッセージ取得部品"
 
     ''' <summary>メッセージの取得</summary>
-    Protected Sub btnGetMSG_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnGetMSG_Click(sender As Object, e As EventArgs)
         ' メッセージを取得する。
         Me.lblMSG.Text = GetMessage.GetMessageDescription(Me.txtMSGID.Text)
     End Sub
@@ -330,7 +330,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "トランザクション制御機能"
 
     ''' <summary>トランザクション制御機能のテスト（InitDam）</summary>
-    Protected Sub btnTxPID_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnTxPID_Click(sender As Object, e As EventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
         Dim myParameterValue As New MyParameterValue("画面ID", "ボタンID", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue) & "%" & Convert.ToString(Me.ddlExStatus.SelectedValue), New MyUserInfo("ユーザ名", Request.UserHostAddress))
@@ -353,7 +353,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>トランザクション制御機能のテスト（GetTransactionPatterns）</summary>
-    Protected Sub btnTxGID_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnTxGID_Click(sender As Object, e As EventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
         Dim testParameterValue As New TestParameterValue("", "画面ID", "ボタンID", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue) & "%" & Convert.ToString(Me.ddlExStatus.SelectedValue), New MyUserInfo("ユーザ名", Request.UserHostAddress))
@@ -393,13 +393,13 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "情報表示"
 
     ''' <summary>JIS2004追加文字の文字列を表示</summary>
-    Protected Sub btnDispJis2K4_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnDispJis2K4_Click(sender As Object, e As EventArgs)
         Dim jis2k4 As New JIS2k4Checker()
         Me.lblJis2K4.Text = jis2k4.JIS2k4String
     End Sub
 
     ''' <summary>文字列の情報を出力する。</summary>
-    Protected Sub btnDispJis2K4Info_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnDispJis2K4Info_Click(sender As Object, e As EventArgs)
         ' GetStringInfoメソッドのテスト
         Dim jis2k4 As New JIS2k4Checker()
 
@@ -417,7 +417,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "サロゲート ペア文字"
 
     ''' <summary>サロゲート ペア文字のチェック１</summary>
-    Protected Sub btnCheckSPC1_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnCheckSPC1_Click(sender As Object, e As EventArgs)
         ' CheckSurrogatesPairChar(1)メソッドのテスト
         Dim jis2k4 As New JIS2k4Checker()
 
@@ -429,7 +429,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>サロゲート ペア文字のチェック２</summary>
-    Protected Sub btnCheckSPC2_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnCheckSPC2_Click(sender As Object, e As EventArgs)
         ' CheckSurrogatesPairChar(2)メソッドのテスト
         Dim jis2k4 As New JIS2k4Checker()
 
@@ -443,14 +443,14 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>サロゲート ペア文字の削除</summary>
-    Protected Sub btnDelSPC_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnDelSPC_Click(sender As Object, e As EventArgs)
         ' DeleteSurrogatesPairCharメソッドのテスト
         Dim jis2k4 As New JIS2k4Checker()
         Me.lblJis2K4Output.Text = jis2k4.DeleteSurrogatesPairChar(Me.txtJis2K4Input.Text)
     End Sub
 
     ''' <summary>サロゲート ペア文字の置換</summary>
-    Protected Sub btnRepSPC1_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnRepSPC1_Click(sender As Object, e As EventArgs)
         ' DeleteSurrogatesPairCharメソッドのテスト
         Dim jis2k4 As New JIS2k4Checker()
 
@@ -460,7 +460,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>サロゲート ペア文字の置換</summary>
-    Protected Sub btnRepSPC2_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnRepSPC2_Click(sender As Object, e As EventArgs)
         ' DeleteSurrogatesPairCharメソッドのテスト
         Dim jis2k4 As New JIS2k4Checker()
         Me.lblJis2K4Output.Text = jis2k4.DeleteSurrogatesPairChar(Me.txtJis2K4Input.Text, Me.txtJis2K4Replace.Text)
@@ -471,7 +471,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "追加文字"
 
     ''' <summary>JIS2004追加文字のチェック１</summary>
-    Protected Sub btnCheckJis2K4_1_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnCheckJis2K4_1_Click(sender As Object, e As EventArgs)
         ' CheckCharAddedWithJIS2k4(1)メソッドのテスト
         Dim jis2k4 As New JIS2k4Checker()
 
@@ -483,7 +483,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>JIS2004追加文字のチェック２</summary>
-    Protected Sub btnCheckJis2K4_2_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnCheckJis2K4_2_Click(sender As Object, e As EventArgs)
         ' CheckCharAddedWithJIS2k4(2)メソッドのテスト
         Dim jis2k4 As New JIS2k4Checker()
 
@@ -497,14 +497,14 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>JIS2004追加文字の削除</summary>
-    Protected Sub btnDelJis2K4_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnDelJis2K4_Click(sender As Object, e As EventArgs)
         ' DeleteCharAddedWithJIS2k4メソッドのテスト
         Dim jis2k4 As New JIS2k4Checker()
         Me.lblJis2K4Output.Text = jis2k4.DeleteCharAddedWithJIS2k4(Me.txtJis2K4Input.Text)
     End Sub
 
     ''' <summary>JIS2004追加文字の置換</summary>
-    Protected Sub btnRepJis2K4_1_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnRepJis2K4_1_Click(sender As Object, e As EventArgs)
         ' DeleteSurrogatesPairCharメソッドのテスト
         Dim jis2k4 As New JIS2k4Checker()
 
@@ -514,7 +514,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>JIS2004追加文字の置換</summary>
-    Protected Sub btnRepJis2K4_2_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnRepJis2K4_2_Click(sender As Object, e As EventArgs)
         ' DeleteSurrogatesPairCharメソッドのテスト
         Dim jis2k4 As New JIS2k4Checker()
         Me.lblJis2K4Output.Text = jis2k4.DeleteCharAddedWithJIS2k4(Me.txtJis2K4Input.Text, Me.txtJis2K4Replace.Text)
@@ -527,7 +527,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "JISX0208-1983"
 
     ''' <summary>JISX0208-1983チェック</summary>
-    Protected Sub btnCheckJISX0208_1983_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnCheckJISX0208_1983_Click(sender As Object, e As EventArgs)
         Dim index As Integer
         Dim ch As String = ""
         If JISX0208_1983Checker.IsJISX0208_1983(Me.txtCheckJISX0208_1983.Text, index, ch) Then
@@ -544,7 +544,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "ローカル⇔UTC対応"
 
     ''' <summary>ローカル→UTC対応</summary>
-    Protected Sub btnLocalToUtc_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnLocalToUtc_Click(sender As Object, e As EventArgs)
         'DateTime dt = new DateTime(this.Calendar1.SelectedDate.Ticks, DateTimeKind.Local); // 正
         Dim dt As New DateTime(Me.Calendar1.SelectedDate.Ticks, DateTimeKind.Unspecified)
         ' 略
@@ -559,7 +559,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>UTC→ローカル対応</summary>
-    Protected Sub btnUtcToLocal_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnUtcToLocal_Click(sender As Object, e As EventArgs)
         'DateTime dt = new DateTime(this.Calendar1.SelectedDate.Ticks, DateTimeKind.Utc); // 正
         Dim dt As New DateTime(Me.Calendar1.SelectedDate.Ticks, DateTimeKind.Unspecified)
         ' 略
@@ -577,19 +577,19 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "文字列処理"
 
     ''' <summary>出力を入力に設定</summary>
-    Protected Sub btnCopy_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnCopy_Click(sender As Object, e As EventArgs)
         Me.txtStrIn.Text = Me.lblStrOut.Text
     End Sub
 
 #Region "CustomEncode"
 
     ''' <summary>HTMLエンコード（サニタイジング）</summary>
-    Protected Sub btnHtmlEncode_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnHtmlEncode_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = CustomEncode.HtmlEncode(""" id=""txtXXXXX"" />" & "<script type=""text/javascript"">alert(""XSS!!!"")</script>" & "<input name=""txtXXXXX"" type=""text"" value=""")
     End Sub
 
     ''' <summary>URLエンコード</summary>
-    Protected Sub btnUrlEncode_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnUrlEncode_Click(sender As Object, e As EventArgs)
         ' グーグルで「&」を検索したい。
         Response.Redirect("http://www.google.co.jp/search?hl=ja&q=" & CustomEncode.UrlEncode("&"))
 
@@ -606,23 +606,23 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "StringConverter"
 
     ''' <summary>半角へ</summary>
-    Protected Sub btnToHankaku_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnToHankaku_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringConverter.ToHankaku(Me.txtStrIn.Text)
 
     End Sub
 
     ''' <summary>全角へ</summary>
-    Protected Sub btnToZenkaku_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnToZenkaku_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringConverter.ToZenkaku(Me.txtStrIn.Text)
     End Sub
 
     ''' <summary>片仮名へ</summary>
-    Protected Sub btnToKatakana_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnToKatakana_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringConverter.ToKatakana(Me.txtStrIn.Text)
     End Sub
 
     ''' <summary>平仮名へ</summary>
-    Protected Sub btnToHiragana_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnToHiragana_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringConverter.ToHiragana(Me.txtStrIn.Text)
     End Sub
 
@@ -633,15 +633,15 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "数字"
 
     ''' <summary>数字チェック</summary>
-    Protected Sub btnIsNumbers_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsNumbers_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringChecker.IsNumbers(Me.txtStrIn.Text).ToString()
     End Sub
     ''' <summary>数字（半角）チェック</summary>
-    Protected Sub btnIsNumbers_Hankaku_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsNumbers_Hankaku_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringChecker.IsNumbers_Hankaku(Me.txtStrIn.Text).ToString()
     End Sub
     ''' <summary>数字（全角）チェック</summary>
-    Protected Sub btnIsNumbers_Zenkaku_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsNumbers_Zenkaku_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringChecker.IsNumbers_Zenkaku(Me.txtStrIn.Text).ToString()
     End Sub
 
@@ -650,15 +650,15 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "英字"
 
     ''' <summary>英字チェック</summary>
-    Protected Sub btnIsAlphabet_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsAlphabet_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringChecker.IsAlphabet(Me.txtStrIn.Text).ToString()
     End Sub
     ''' <summary>英字（全角）チェック</summary>
-    Protected Sub btnIsAlphabet_Hankaku_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsAlphabet_Hankaku_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringChecker.IsAlphabet_Hankaku(Me.txtStrIn.Text).ToString()
     End Sub
     ''' <summary>英字（半角）チェック</summary>
-    Protected Sub btnIsAlphabet_Zenkaku_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsAlphabet_Zenkaku_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringChecker.IsAlphabet_Zenkaku(Me.txtStrIn.Text).ToString()
     End Sub
 
@@ -668,19 +668,19 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "日本語"
 
     ''' <summary>平仮名チェック</summary>
-    Protected Sub btnIsHiragana_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsHiragana_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringChecker.IsHiragana(Me.txtStrIn.Text).ToString()
     End Sub
     ''' <summary>平仮名（全角）チェック</summary>
-    Protected Sub btnIsKatakana_Zenkaku_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsKatakana_Zenkaku_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringChecker.IsKatakana_Zenkaku(Me.txtStrIn.Text).ToString()
     End Sub
     ''' <summary>平仮名（半角）チェック</summary>
-    Protected Sub btnIsKatakana_Hankaku_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsKatakana_Hankaku_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringChecker.IsKatakana_Hankaku(Me.txtStrIn.Text).ToString()
     End Sub
     ''' <summary>漢字チェック</summary>
-    Protected Sub btnIsKanji_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsKanji_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringChecker.IsKanji(Me.txtStrIn.Text).ToString()
     End Sub
 
@@ -689,16 +689,16 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "SJIS"
 
     ''' <summary>SJISチェック</summary>
-    Protected Sub btnIsShift_Jis_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsShift_Jis_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringChecker.IsShift_Jis(Me.txtStrIn.Text).ToString()
     End Sub
 
     ''' <summary>SJIS全角チェック</summary>
-    Protected Sub btnIsShift_Jis_Zenkaku_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsShift_Jis_Zenkaku_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringChecker.IsShift_Jis_Zenkaku(Me.txtStrIn.Text).ToString()
     End Sub
     ''' <summary>SJIS半角チェック</summary>
-    Protected Sub btnIsShift_Jis_Hankaku_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsShift_Jis_Hankaku_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = StringChecker.IsShift_Jis_Hankaku(Me.txtStrIn.Text).ToString()
     End Sub
 
@@ -711,7 +711,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "和暦・西暦"
 
     ''' <summary>和暦→西暦</summary>
-    Protected Sub btnSeirekiToWareki_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnSeirekiToWareki_Click(sender As Object, e As EventArgs)
         Dim ret As String = ""
 
         ' 基本バージョン
@@ -745,7 +745,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>西暦→和暦</summary>
-    Protected Sub btnWarekiToSeireki_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnWarekiToSeireki_Click(sender As Object, e As EventArgs)
         Dim ret As String = ""
 
         ' 基本バージョン
@@ -783,7 +783,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "桁区切り"
 
     ''' <summary>３桁区切り</summary>
-    Protected Sub btnAddFigure3_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnAddFigure3_Click(sender As Object, e As EventArgs)
         Debug.WriteLine(FormatConverter.AddFigure3(12345))
         Debug.WriteLine(FormatConverter.AddFigure3(123456789))
         Debug.WriteLine(FormatConverter.AddFigure3(123.45))
@@ -806,7 +806,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>４桁区切り</summary>
-    Protected Sub btnAddFigure4_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnAddFigure4_Click(sender As Object, e As EventArgs)
         Debug.WriteLine(FormatConverter.AddFigure4(12345))
         Debug.WriteLine(FormatConverter.AddFigure4(123456789))
         Debug.WriteLine(FormatConverter.AddFigure4(123.45))
@@ -833,26 +833,26 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "サプレス"
 
     ''' <summary>サプレス</summary>
-    Protected Sub btnSuppress_Click(ByVal sender As Object, ByVal e As EventArgs)
-        Debug.WriteLine(FormatConverter.Suppress("", 10, "＠"c))
+    Protected Sub btnSuppress_Click(sender As Object, e As EventArgs)
+        Debug.WriteLine(FormatConverter.Suppress("", 10, "＠"C))
         'Debug.WriteLine(FormatConverter.Suppress("123456789", -1, '＠'));
-        Debug.WriteLine(FormatConverter.Suppress("123456789", 0, "＠"c))
-        Debug.WriteLine(FormatConverter.Suppress("123456789", 1, "＠"c))
-        Debug.WriteLine(FormatConverter.Suppress("123456789", 5, "＠"c))
-        Debug.WriteLine(FormatConverter.Suppress("123456789", 9, "＠"c))
-        Debug.WriteLine(FormatConverter.Suppress("123456789", 10, "＠"c))
-        Debug.WriteLine(FormatConverter.Suppress("123456789", 11, "＠"c))
-        Debug.WriteLine(FormatConverter.Suppress("123456789", 20, "＠"c))
+        Debug.WriteLine(FormatConverter.Suppress("123456789", 0, "＠"C))
+        Debug.WriteLine(FormatConverter.Suppress("123456789", 1, "＠"C))
+        Debug.WriteLine(FormatConverter.Suppress("123456789", 5, "＠"C))
+        Debug.WriteLine(FormatConverter.Suppress("123456789", 9, "＠"C))
+        Debug.WriteLine(FormatConverter.Suppress("123456789", 10, "＠"C))
+        Debug.WriteLine(FormatConverter.Suppress("123456789", 11, "＠"C))
+        Debug.WriteLine(FormatConverter.Suppress("123456789", 20, "＠"C))
 
-        Debug.WriteLine(FormatConverter.Suppress("", 10, "0"c))
+        Debug.WriteLine(FormatConverter.Suppress("", 10, "0"C))
         'Debug.WriteLine(FormatConverter.Suppress("abcdefg", -1, '0'));
-        Debug.WriteLine(FormatConverter.Suppress("abcdefg", 0, "0"c))
-        Debug.WriteLine(FormatConverter.Suppress("abcdefg", 1, "0"c))
-        Debug.WriteLine(FormatConverter.Suppress("abcdefg", 5, "0"c))
-        Debug.WriteLine(FormatConverter.Suppress("abcdefg", 7, "0"c))
-        Debug.WriteLine(FormatConverter.Suppress("abcdefg", 8, "0"c))
-        Debug.WriteLine(FormatConverter.Suppress("abcdefg", 10, "0"c))
-        Debug.WriteLine(FormatConverter.Suppress("abcdefg", 20, "0"c))
+        Debug.WriteLine(FormatConverter.Suppress("abcdefg", 0, "0"C))
+        Debug.WriteLine(FormatConverter.Suppress("abcdefg", 1, "0"C))
+        Debug.WriteLine(FormatConverter.Suppress("abcdefg", 5, "0"C))
+        Debug.WriteLine(FormatConverter.Suppress("abcdefg", 7, "0"C))
+        Debug.WriteLine(FormatConverter.Suppress("abcdefg", 8, "0"C))
+        Debug.WriteLine(FormatConverter.Suppress("abcdefg", 10, "0"C))
+        Debug.WriteLine(FormatConverter.Suppress("abcdefg", 20, "0"C))
     End Sub
 
 #End Region
@@ -866,7 +866,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "郵便（区）番号"
 
     ''' <summary>郵便（区）番号</summary>
-    Protected Sub btnIsJpZipCode_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpZipCode_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpZipCode(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpZipCode--")
@@ -911,7 +911,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>郵便（区）番号（ハイフン有り）</summary>
-    Protected Sub btnIsJpZipCode_H_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpZipCode_H_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpZipCode_Hyphen(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpZipCode_Hyphen--")
@@ -944,7 +944,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>郵便（区）番号（ハイフン無し）</summary>
-    Protected Sub btnIsJpZipCode_N_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpZipCode_N_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpZipCode_NoHyphen(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpZipCode_NoHyphen--")
@@ -973,7 +973,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "郵便 番号"
 
     ''' <summary>郵便 番号</summary>
-    Protected Sub btnIsJpZipCode7_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpZipCode7_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpZipCode7(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpZipCode7--")
@@ -995,7 +995,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>郵便 番号（ハイフン有り）</summary>
-    Protected Sub btnIsJpZipCode7_H_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpZipCode7_H_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpZipCode7_Hyphen(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpZipCode7_Hyphen--")
@@ -1012,7 +1012,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>郵便 番号（ハイフン無し）</summary>
-    Protected Sub btnIsJpZipCode7_N_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpZipCode7_N_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpZipCode7_NoHyphen(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpZipCode7_NoHyphen--")
@@ -1029,7 +1029,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "郵便 区 番号"
 
     ''' <summary>郵便 区 番号</summary>
-    Protected Sub btnIsJpZipCode5_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpZipCode5_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpZipCode5(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpZipCode5--")
@@ -1058,7 +1058,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>郵便 区 番号（ハイフン有り）</summary>
-    Protected Sub btnIsJpZipCode5_H_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpZipCode5_H_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpZipCode5_Hyphen(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpZipCode5_Hyphen--")
@@ -1081,7 +1081,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>郵便 区 番号（ハイフン無し）</summary>
-    Protected Sub btnIsJpZipCode5_N_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpZipCode5_N_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpZipCode5_NoHyphen(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpZipCode5_NoHyphen--")
@@ -1108,7 +1108,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "電話番号（日本）"
 
     ''' <summary>電話番号（日本）</summary>
-    Protected Sub btnIsJpTelephoneNumber_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpTelephoneNumber_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpTelephoneNumber(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpTelephoneNumber--")
@@ -1313,7 +1313,7 @@ Partial Public Class Aspx_testPublic_testScreen
         Debug.WriteLine("-----")
     End Sub
     ''' <summary>電話番号（日本, ハイフン有り）</summary>
-    Protected Sub btnIsJpTelephoneNumber_H_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpTelephoneNumber_H_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpTelephoneNumber_Hyphen(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpTelephoneNumber_Hyphen--")
@@ -1471,7 +1471,7 @@ Partial Public Class Aspx_testPublic_testScreen
         Debug.WriteLine("-----")
     End Sub
     ''' <summary>電話番号（日本, ハイフン無し）</summary>
-    Protected Sub btnIsJpTelephoneNumber_N_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpTelephoneNumber_N_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpTelephoneNumber_NoHyphen(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpTelephoneNumber_NoHyphen--")
@@ -1533,7 +1533,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "固定電話番号（日本）"
 
     ''' <summary>固定電話番号（日本）</summary>
-    Protected Sub btnIsJpFixedLinePhoneNumber_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpFixedLinePhoneNumber_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpFixedLinePhoneNumber(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpFixedLinePhoneNumber--")
@@ -1594,7 +1594,7 @@ Partial Public Class Aspx_testPublic_testScreen
         Debug.WriteLine(FormatChecker.IsJpFixedLinePhoneNumber("099999999"))
     End Sub
     ''' <summary>固定電話番号（日本, ハイフン有り）</summary>
-    Protected Sub btnIsJpFixedLinePhoneNumber_H_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpFixedLinePhoneNumber_H_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpFixedLinePhoneNumber_Hyphen(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpFixedLinePhoneNumber_Hyphen--")
@@ -1650,7 +1650,7 @@ Partial Public Class Aspx_testPublic_testScreen
 
     End Sub
     ''' <summary>固定電話番号（日本, ハイフン無し）</summary>
-    Protected Sub btnIsJpFixedLinePhoneNumber_N_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpFixedLinePhoneNumber_N_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpFixedLinePhoneNumber_NoHyphen(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpFixedLinePhoneNumber_NoHyphen--")
@@ -1667,7 +1667,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "携帯電話番号（日本）"
 
     ''' <summary>携帯電話番号（日本）</summary>
-    Protected Sub btnIsJpCellularPhoneNumber_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpCellularPhoneNumber_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpCellularPhoneNumber(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpCellularPhoneNumber--")
@@ -1749,7 +1749,7 @@ Partial Public Class Aspx_testPublic_testScreen
         Debug.WriteLine(FormatChecker.IsJpCellularPhoneNumber("05099999999"))
     End Sub
     ''' <summary>携帯電話番号（日本, ハイフン有り）</summary>
-    Protected Sub btnIsJpCellularPhoneNumber_H_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpCellularPhoneNumber_H_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpCellularPhoneNumber_Hyphen(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpCellularPhoneNumber_Hyphen--")
@@ -1815,7 +1815,7 @@ Partial Public Class Aspx_testPublic_testScreen
         Debug.WriteLine(FormatChecker.IsJpCellularPhoneNumber_Hyphen("090-9999-999"))
     End Sub
     ''' <summary>携帯電話番号（日本, ハイフン無し）</summary>
-    Protected Sub btnIsJpCellularPhoneNumber_N_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpCellularPhoneNumber_N_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpCellularPhoneNumber_NoHyphen(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpCellularPhoneNumber_NoHyphen--")
@@ -1842,7 +1842,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "IP電話番号（日本）"
 
     ''' <summary>IP電話番号（日本）</summary>
-    Protected Sub btnIsJpIpPhoneNumber_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpIpPhoneNumber_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpIpPhoneNumber(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpIpPhoneNumber--")
@@ -1885,7 +1885,7 @@ Partial Public Class Aspx_testPublic_testScreen
         Debug.WriteLine(FormatChecker.IsJpIpPhoneNumber("09099999999"))
     End Sub
     ''' <summary>IP電話番号（日本, ハイフン有り）</summary>
-    Protected Sub btnIsJpIpPhoneNumber_H_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpIpPhoneNumber_H_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpIpPhoneNumber_Hyphen(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpIpPhoneNumber_Hyphen--")
@@ -1913,7 +1913,7 @@ Partial Public Class Aspx_testPublic_testScreen
         Debug.WriteLine(FormatChecker.IsJpIpPhoneNumber("090-9999-9999"))
     End Sub
     ''' <summary>IP電話番号（日本, ハイフン無し）</summary>
-    Protected Sub btnIsJpIpPhoneNumber_N_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnIsJpIpPhoneNumber_N_Click(sender As Object, e As EventArgs)
         Me.lblStrOut.Text = FormatChecker.IsJpIpPhoneNumber_NoHyphen(Me.txtStrIn.Text).ToString()
 
         Debug.WriteLine("--IsJpIpPhoneNumber_NoHyphen--")
@@ -1945,7 +1945,7 @@ Partial Public Class Aspx_testPublic_testScreen
 #Region "その他"
 
     ''' <summary>Sessionサイズ</summary>
-    Protected Sub btnSessionSize_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnSessionSize_Click(sender As Object, e As EventArgs)
         Me.lblElse.Text = PubCmnFunction.CalculateSessionSize().ToString() & "バイト"
     End Sub
 
@@ -2053,7 +2053,7 @@ Partial Public Class Aspx_testPublic_testScreen
     End Sub
 
     ''' <summary>その他、なんでも（カバレージ上げる用）</summary>
-    Protected Sub btnElse_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub btnElse_Click(sender As Object, e As EventArgs)
         ' TextBox9.Text = (string)BinarySerialize.BytesToObject(BinarySerialize.ObjectToBytes(TextBox8.Text));
         ' BinarySerialize.ObjectToBytes(null); // 引数例外
         ' BinarySerialize.BytesToObject(null); // 引数例外

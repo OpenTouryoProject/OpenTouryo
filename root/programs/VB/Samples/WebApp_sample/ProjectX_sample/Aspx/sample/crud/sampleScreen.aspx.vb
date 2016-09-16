@@ -204,7 +204,7 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 	''' </summary>
 	''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
 	''' <returns>URL</returns>
-    Protected Function UOC_sampleScreen_btnMButton4_Click(ByVal fxEventArgs As FxEventArgs) As String
+    Protected Function UOC_sampleScreen_btnMButton4_Click(fxEventArgs As FxEventArgs) As String
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
         Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "SelectAll_DR", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
