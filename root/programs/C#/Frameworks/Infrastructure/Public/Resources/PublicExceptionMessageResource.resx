@@ -178,7 +178,7 @@
     <value>Method name: [{2}] whose number of arguments corresponds does not exist in assembly name: [{0}] and class name: [{1}].</value>
   </data>
   <data name="NOT_IMPLEMENTED" xml:space="preserve">
-    <value>This processing is not Implemented.</value>
+    <value>This processing is not implemented.</value>
   </data>
   <data name="NO_CONFIG" xml:space="preserve">
     <value>Config does not have specification. Config key:{0}</value>

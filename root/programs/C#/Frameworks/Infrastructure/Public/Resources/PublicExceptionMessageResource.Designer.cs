@@ -250,7 +250,7 @@ namespace Touryo.Infrastructure.Public.Resources {
         }
         
         /// <summary>
-        ///   This processing is not Implemented. に類似しているローカライズされた文字列を検索します。
+        ///   This processing is not implemented. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string NOT_IMPLEMENTED {
             get {
