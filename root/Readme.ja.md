@@ -17,7 +17,7 @@ Open 棟梁のプログラムは、以下のリポジトリで公開していま
 このため、システム開発プロジェクトで Open 棟梁を使用される方は、[OpenTouryoTemplates リポジトリ](https://github.com/OpenTouryoProject/OpenTouryoTemplates)を使用してください。  
 以下、**OSS 開発者向け**に、Open 棟梁の利用方法をご紹介します。  
 
-このファイルの英語版は[こちら](Readme.md)から。
+このファイルの英語版は[こちら](README.md)から。
 
 ## サンプルの実行手順
 Open 棟梁に同梱されるサンプルアプリケーションの実行手順は以下のとおりです。
