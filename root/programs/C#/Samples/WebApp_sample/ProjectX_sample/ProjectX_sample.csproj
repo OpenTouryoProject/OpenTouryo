@@ -587,6 +587,9 @@
     <Compile Include="App_Code\sample\Dao\DaoShippers.cs" />
     <Compile Include="App_Code\sample\Dao\DaoSuppliers.cs" />
     <Compile Include="App_Code\sample\Dao\LayerD.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
     <Compile Include="App_Code\testPublic\Business\TestMTC.cs" />
     <Compile Include="App_Code\testPublic\Business\TestMTC_mcn.cs" />
     <Compile Include="App_Code\testPublic\Business\TestMTC_txg.cs" />
@@ -611,7 +614,6 @@
     <Content Include="Aspx\Common\testScreen2.master" />
     <Content Include="Aspx\Common\testScreenCtrl.master" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <ProjectExtensions>
