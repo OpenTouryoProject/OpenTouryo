@@ -20,8 +20,6 @@ set CURRENT_DIR="%~dp0"
 @rem --------------------------------------------------
 call %CURRENT_DIR%z_Common.bat
 
-pause
-
 rem --------------------------------------------------
 rem Batch build of ProjectX_sample.
 rem --------------------------------------------------
