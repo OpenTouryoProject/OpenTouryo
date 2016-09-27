@@ -51,6 +51,7 @@ Imports System.Web.UI.HtmlControls
 ' フレームワーク
 Imports Touryo.Infrastructure.Framework.Presentation
 
+''' <summary>WebUserControl class</summary>
 Public Partial Class Aspx_Common_WebUserControl
     Inherits System.Web.UI.UserControl
     ''' <summary>ユーザコントロールにイベントハンドラを実装可能にしたのでそのテスト。</summary>
