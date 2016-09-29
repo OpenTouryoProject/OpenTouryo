@@ -209,18 +209,18 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Code\sample\3TierTableAdapter\ProductsTableAdapter.vb" />
-    <Compile Include="App_Code\sample\Business\GetMasterData.vb" />
-    <Compile Include="App_Code\sample\Business\LayerB.vb" />
-    <Compile Include="App_Code\sample\Common\TestParameterValue.vb" />
-    <Compile Include="App_Code\sample\Common\TestReturnValue.vb" />
-    <Compile Include="App_Code\sample\Dao\DaoCategories.vb" />
-    <Compile Include="App_Code\sample\Dao\DaoShippers.vb" />
-    <Compile Include="App_Code\sample\Dao\DaoSuppliers.vb" />
-    <Compile Include="App_Code\sample\Dao\LayerD.vb" />
-    <Compile Include="App_Code\testPublic\Business\TestMTC.vb" />
-    <Compile Include="App_Code\testPublic\Business\TestMTC_mcn.vb" />
-    <Compile Include="App_Code\testPublic\Business\TestMTC_txg.vb" />
+    <Compile Include="AppCode\sample\3TierTableAdapter\ProductsTableAdapter.vb" />
+    <Compile Include="AppCode\sample\Business\GetMasterData.vb" />
+    <Compile Include="AppCode\sample\Business\LayerB.vb" />
+    <Compile Include="AppCode\sample\Common\TestParameterValue.vb" />
+    <Compile Include="AppCode\sample\Common\TestReturnValue.vb" />
+    <Compile Include="AppCode\sample\Dao\DaoCategories.vb" />
+    <Compile Include="AppCode\sample\Dao\DaoShippers.vb" />
+    <Compile Include="AppCode\sample\Dao\DaoSuppliers.vb" />
+    <Compile Include="AppCode\sample\Dao\LayerD.vb" />
+    <Compile Include="AppCode\testPublic\Business\TestMTC.vb" />
+    <Compile Include="AppCode\testPublic\Business\TestMTC_mcn.vb" />
+    <Compile Include="AppCode\testPublic\Business\TestMTC_txg.vb" />
     <Compile Include="Aspx\Common\ErrorScreen.aspx.designer.vb">
       <DependentUpon>ErrorScreen.aspx</DependentUpon>
     </Compile>
