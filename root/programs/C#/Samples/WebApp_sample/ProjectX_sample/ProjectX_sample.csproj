@@ -578,21 +578,21 @@
     <Compile Include="Aspx\testScreenCtrl\WebForm5.aspx.designer.cs">
       <DependentUpon>WebForm5.aspx</DependentUpon>
     </Compile>
-    <Compile Include="App_Code\sample\3TierTableAdapter\ProductsTableAdapter.cs" />
-    <Compile Include="App_Code\sample\Business\GetMasterData.cs" />
-    <Compile Include="App_Code\sample\Business\LayerB.cs" />
-    <Compile Include="App_Code\sample\Common\TestParameterValue.cs" />
-    <Compile Include="App_Code\sample\Common\TestReturnValue.cs" />
-    <Compile Include="App_Code\sample\Dao\DaoCategories.cs" />
-    <Compile Include="App_Code\sample\Dao\DaoShippers.cs" />
-    <Compile Include="App_Code\sample\Dao\DaoSuppliers.cs" />
-    <Compile Include="App_Code\sample\Dao\LayerD.cs" />
+    <Compile Include="AppCode\sample\3TierTableAdapter\ProductsTableAdapter.cs" />
+    <Compile Include="AppCode\sample\Business\GetMasterData.cs" />
+    <Compile Include="AppCode\sample\Business\LayerB.cs" />
+    <Compile Include="AppCode\sample\Common\TestParameterValue.cs" />
+    <Compile Include="AppCode\sample\Common\TestReturnValue.cs" />
+    <Compile Include="AppCode\sample\Dao\DaoCategories.cs" />
+    <Compile Include="AppCode\sample\Dao\DaoShippers.cs" />
+    <Compile Include="AppCode\sample\Dao\DaoSuppliers.cs" />
+    <Compile Include="AppCode\sample\Dao\LayerD.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="App_Code\testPublic\Business\TestMTC.cs" />
-    <Compile Include="App_Code\testPublic\Business\TestMTC_mcn.cs" />
-    <Compile Include="App_Code\testPublic\Business\TestMTC_txg.cs" />
+    <Compile Include="AppCode\testPublic\Business\TestMTC.cs" />
+    <Compile Include="AppCode\testPublic\Business\TestMTC_mcn.cs" />
+    <Compile Include="AppCode\testPublic\Business\TestMTC_txg.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
