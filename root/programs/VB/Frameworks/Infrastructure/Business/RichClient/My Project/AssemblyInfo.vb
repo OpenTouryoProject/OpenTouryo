@@ -1,11 +1,8 @@
 ﻿'**********************************************************************************
-'* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+'* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 '**********************************************************************************
 
 #Region "Apache License"
-'
-'  
-' 
 '  
 ' Licensed under the Apache License, Version 2.0 (the "License");
 ' you may not use this file except in compliance with the License. 
@@ -47,7 +44,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("Hitachi Solutions")> 
 <Assembly: AssemblyProduct("Business.RichClient")> 
-<Assembly: AssemblyCopyright("Copyright (C) 2007,2014 Hitachi Solutions,Ltd.")> 
+<Assembly: AssemblyCopyright("Copyright (C) 2007,2016 Hitachi Solutions,Ltd.")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>

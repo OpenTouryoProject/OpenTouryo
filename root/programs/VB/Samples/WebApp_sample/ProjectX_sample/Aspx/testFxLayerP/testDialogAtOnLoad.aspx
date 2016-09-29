@@ -2,7 +2,7 @@
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
-    <!-- Copyright (C) 2007,2014 Hitachi Solutions,Ltd. -->
+    <!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
     <cc1:WebCustomCheckBox ID="CheckBox1" runat="server" AutoPostBack="False" Checked="true" Text="ポストバックのテスト" /><br />
     <cc1:WebCustomButton ID="WebCustomButton1" runat="server" Text="ポストバックのテスト用" Width="250px" /><br />
     <br />

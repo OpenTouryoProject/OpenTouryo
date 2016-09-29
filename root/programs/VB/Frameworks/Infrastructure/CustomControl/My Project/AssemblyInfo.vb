@@ -1,5 +1,5 @@
 ﻿'**********************************************************************************
-'* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+'* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 '**********************************************************************************
 
 #Region "Apache License"
@@ -44,7 +44,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("Hitachi Solutions")> 
 <Assembly: AssemblyProduct("CustomControl")> 
-<Assembly: AssemblyCopyright("Copyright (C) 2007,2014 Hitachi Solutions,Ltd.")> 
+<Assembly: AssemblyCopyright("Copyright (C) 2007,2016 Hitachi Solutions,Ltd.")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>

@@ -2,7 +2,7 @@
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_AAA" Runat="Server">
-    <!-- Copyright (C) 2007,2014 Hitachi Solutions,Ltd. -->
+    <!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
     <cc1:WebCustomLabel id="lblTestAAA" runat="server">nmsのC_AAAのlblTestAAA</cc1:WebCustomLabel><br/>
     <cc1:WebCustomButton ID="btnButtonAAA" runat="server" Text="nmsのC_AAAのbtnButtonAAA" Width="200px" /><br/>
 </asp:Content>
