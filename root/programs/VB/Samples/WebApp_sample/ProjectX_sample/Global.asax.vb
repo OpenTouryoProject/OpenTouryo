@@ -32,7 +32,7 @@ Imports System.Web.Security
 Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Util
 
-Public Class Global_asax
+Public Class [Global]
     Inherits System.Web.HttpApplication
 
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
