@@ -1,11 +1,8 @@
 ﻿'**********************************************************************************
-'* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+'* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 '**********************************************************************************
 
 #Region "Apache License"
-'
-'  
-' 
 '  
 ' Licensed under the Apache License, Version 2.0 (the "License");
 ' you may not use this file except in compliance with the License. 
@@ -37,14 +34,14 @@
 Imports Touryo.Infrastructure.Framework.Presentation
 
 ''' <summary>画面遷移制御機能テスト画面用のマスタ ページ</summary>
-Partial Public Class Aspx_Common_testScreenCtrl
+Public Partial Class Aspx_Common_testScreenCtrl
     Inherits BaseMasterController
     ''' <summary>
     ''' btnMButton1のクリックイベント
     ''' </summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
     ''' <returns>URL</returns>
-    Public Function UOC_btnMButton1_Click(ByVal fxEventArgs As FxEventArgs) As String
+    Public Function UOC_btnMButton1_Click(fxEventArgs As FxEventArgs) As String
 
         Return "WebForm0"
     End Function
@@ -56,7 +53,7 @@ Partial Public Class Aspx_Common_testScreenCtrl
     ''' </summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
     ''' <returns>URL</returns>
-    Public Function UOC_lbnMLinkButton1_Click(ByVal fxEventArgs As FxEventArgs) As String
+    Public Function UOC_lbnMLinkButton1_Click(fxEventArgs As FxEventArgs) As String
 
         Return "WebForm3"
     End Function
@@ -66,7 +63,7 @@ Partial Public Class Aspx_Common_testScreenCtrl
     ''' </summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
     ''' <returns>URL</returns>
-    Public Function UOC_lbnMLinkButton2_Click(ByVal fxEventArgs As FxEventArgs) As String
+    Public Function UOC_lbnMLinkButton2_Click(fxEventArgs As FxEventArgs) As String
 
         Return "WebForm1"
     End Function
@@ -76,7 +73,7 @@ Partial Public Class Aspx_Common_testScreenCtrl
     ''' </summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
     ''' <returns>URL</returns>
-    Public Function UOC_lbnMLinkButton3_Click(ByVal fxEventArgs As FxEventArgs) As String
+    Public Function UOC_lbnMLinkButton3_Click(fxEventArgs As FxEventArgs) As String
 
         Return "WebForm2"
     End Function
@@ -86,7 +83,7 @@ Partial Public Class Aspx_Common_testScreenCtrl
     ''' </summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
     ''' <returns>URL</returns>
-    Public Function UOC_lbnMLinkButton4_Click(ByVal fxEventArgs As FxEventArgs) As String
+    Public Function UOC_lbnMLinkButton4_Click(fxEventArgs As FxEventArgs) As String
 
         Return "WebForm4"
     End Function
@@ -96,7 +93,7 @@ Partial Public Class Aspx_Common_testScreenCtrl
     ''' </summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
     ''' <returns>URL</returns>
-    Public Function UOC_lbnMLinkButton5_Click(ByVal fxEventArgs As FxEventArgs) As String
+    Public Function UOC_lbnMLinkButton5_Click(fxEventArgs As FxEventArgs) As String
 
         Return "WebForm5"
     End Function

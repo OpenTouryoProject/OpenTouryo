@@ -209,49 +209,42 @@
     </Compile>
     <Compile Include="Aspx\Common\sampleScreen.master.cs">
       <DependentUpon>sampleScreen.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\sampleScreen.master.designer.cs">
       <DependentUpon>sampleScreen.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testAspNetAjaxExtension_Separate.master.cs">
       <DependentUpon>testAspNetAjaxExtension_Separate.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testAspNetAjaxExtension_Separate.master.designer.cs">
       <DependentUpon>testAspNetAjaxExtension_Separate.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testAspNetAjaxExtension_Single.master.cs">
       <DependentUpon>testAspNetAjaxExtension_Single.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testAspNetAjaxExtension_Single.master.designer.cs">
       <DependentUpon>testAspNetAjaxExtension_Single.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testBlankScreen.master.cs">
       <DependentUpon>testBlankScreen.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testBlankScreen.master.designer.cs">
       <DependentUpon>testBlankScreen.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testClientCallback.master.cs">
       <DependentUpon>testClientCallback.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testClientCallback.master.designer.cs">
       <DependentUpon>testClientCallback.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testNest\branchMasterPage1.master.cs">
       <DependentUpon>branchMasterPage1.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testNest\branchMasterPage1.master.designer.cs">
       <DependentUpon>branchMasterPage1.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testNest\branchMasterPage2.master.cs">
       <DependentUpon>branchMasterPage2.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testNest\branchMasterPage2.master.designer.cs">
       <DependentUpon>branchMasterPage2.master</DependentUpon>
@@ -265,56 +258,48 @@
     </Compile>
     <Compile Include="Aspx\Common\testNest\rootMasterPage.master.cs">
       <DependentUpon>rootMasterPage.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testNest\rootMasterPage.master.designer.cs">
       <DependentUpon>rootMasterPage.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testNest\testScreen1bmp1.master.cs">
       <DependentUpon>testScreen1bmp1.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testNest\testScreen1bmp1.master.designer.cs">
       <DependentUpon>testScreen1bmp1.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testNest\testScreen1bmp2.master.cs">
       <DependentUpon>testScreen1bmp2.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testNest\testScreen1bmp2.master.designer.cs">
       <DependentUpon>testScreen1bmp2.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testNest\testScreen2bmp1.master.cs">
       <DependentUpon>testScreen2bmp1.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testNest\testScreen2bmp1.master.designer.cs">
       <DependentUpon>testScreen2bmp1.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testNest\testScreen2bmp2.master.cs">
       <DependentUpon>testScreen2bmp2.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testNest\testScreen2bmp2.master.designer.cs">
       <DependentUpon>testScreen2bmp2.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testScreen1.master.cs">
       <DependentUpon>testScreen1.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testScreen1.master.designer.cs">
       <DependentUpon>testScreen1.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testScreen2.master.cs">
       <DependentUpon>testScreen2.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testScreen2.master.designer.cs">
       <DependentUpon>testScreen2.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testScreenCtrl.master.cs">
       <DependentUpon>testScreenCtrl.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testScreenCtrl.master.designer.cs">
       <DependentUpon>testScreenCtrl.master</DependentUpon>
@@ -342,154 +327,132 @@
     </Compile>
     <Compile Include="Aspx\sample\3Tier\ProductsConditionalSearch.aspx.cs">
       <DependentUpon>ProductsConditionalSearch.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\sample\3Tier\ProductsConditionalSearch.aspx.designer.cs">
       <DependentUpon>ProductsConditionalSearch.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\sample\3Tier\ProductsDetail.aspx.cs">
       <DependentUpon>ProductsDetail.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\sample\3Tier\ProductsDetail.aspx.designer.cs">
       <DependentUpon>ProductsDetail.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\sample\3Tier\ProductsSearchAndUpdate.aspx.cs">
       <DependentUpon>ProductsSearchAndUpdate.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\sample\3Tier\ProductsSearchAndUpdate.aspx.designer.cs">
       <DependentUpon>ProductsSearchAndUpdate.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\sample\crud\sampleScreen.aspx.cs">
       <DependentUpon>sampleScreen.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\sample\crud\sampleScreen.aspx.designer.cs">
       <DependentUpon>sampleScreen.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\sample\crud\sampleScreen_cc.aspx.cs">
       <DependentUpon>sampleScreen_cc.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\sample\crud\sampleScreen_cc.aspx.designer.cs">
       <DependentUpon>sampleScreen_cc.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\start\login.aspx.cs">
       <DependentUpon>login.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\start\login.aspx.designer.cs">
       <DependentUpon>login.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\start\logout.aspx.cs">
       <DependentUpon>logout.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\start\logout.aspx.designer.cs">
       <DependentUpon>logout.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\start\menu.aspx.cs">
       <DependentUpon>menu.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\start\menu.aspx.designer.cs">
       <DependentUpon>menu.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\nest\testNestMasterScreen.aspx.cs">
       <DependentUpon>testNestMasterScreen.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\nest\testNestMasterScreen.aspx.designer.cs">
       <DependentUpon>testNestMasterScreen.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\nest\testScreen1nest.aspx.cs">
       <DependentUpon>testScreen1nest.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\nest\testScreen1nest.aspx.designer.cs">
       <DependentUpon>testScreen1nest.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\nest\testScreen2nest.aspx.cs">
       <DependentUpon>testScreen2nest.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\nest\testScreen2nest.aspx.designer.cs">
       <DependentUpon>testScreen2nest.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\normal\noBaseMasterScreen.aspx.cs">
       <DependentUpon>noBaseMasterScreen.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\normal\noBaseMasterScreen.aspx.designer.cs">
       <DependentUpon>noBaseMasterScreen.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\normal\noMasterScreen.aspx.cs">
       <DependentUpon>noMasterScreen.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\normal\noMasterScreen.aspx.designer.cs">
       <DependentUpon>noMasterScreen.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\normal\testScreen0.aspx.cs">
       <DependentUpon>testScreen0.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\normal\testScreen0.aspx.designer.cs">
       <DependentUpon>testScreen0.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\normal\testScreen1.aspx.cs">
       <DependentUpon>testScreen1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\normal\testScreen1.aspx.designer.cs">
       <DependentUpon>testScreen1.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\normal\testScreen2.aspx.cs">
       <DependentUpon>testScreen2.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\normal\testScreen2.aspx.designer.cs">
       <DependentUpon>testScreen2.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\table\testGridView.aspx.cs">
       <DependentUpon>testGridView.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\table\testGridView.aspx.designer.cs">
       <DependentUpon>testGridView.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\table\testListView.aspx.cs">
       <DependentUpon>testListView.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\table\testListView.aspx.designer.cs">
       <DependentUpon>testListView.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\table\testRepeater.aspx.cs">
       <DependentUpon>testRepeater.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\table\testRepeater.aspx.designer.cs">
       <DependentUpon>testRepeater.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\testDialogAtOnLoad.aspx.cs">
       <DependentUpon>testDialogAtOnLoad.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\testDialogAtOnLoad.aspx.designer.cs">
       <DependentUpon>testDialogAtOnLoad.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\testDLFrame.aspx.cs">
       <DependentUpon>testDLFrame.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\testDLFrame.aspx.designer.cs">
       <DependentUpon>testDLFrame.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\testDLScreen.aspx.cs">
       <DependentUpon>testDLScreen.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\testDLScreen.aspx.designer.cs">
       <DependentUpon>testDLScreen.aspx</DependentUpon>
@@ -510,21 +473,18 @@
     </Compile>
     <Compile Include="Aspx\testFxLayerP\withAjax\testClientCallback.aspx.cs">
       <DependentUpon>testClientCallback.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\withAjax\testClientCallback.aspx.designer.cs">
       <DependentUpon>testClientCallback.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\withAjax\testExtension_Separate.aspx.cs">
       <DependentUpon>testExtension_Separate.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\withAjax\testExtension_Separate.aspx.designer.cs">
       <DependentUpon>testExtension_Separate.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\withAjax\testExtension_Single.aspx.cs">
       <DependentUpon>testExtension_Single.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testFxLayerP\withAjax\testExtension_Single.aspx.designer.cs">
       <DependentUpon>testExtension_Single.aspx</DependentUpon>
@@ -538,58 +498,55 @@
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm0.aspx.cs">
       <DependentUpon>WebForm0.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm0.aspx.designer.cs">
       <DependentUpon>WebForm0.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm1.aspx.cs">
       <DependentUpon>WebForm1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm1.aspx.designer.cs">
       <DependentUpon>WebForm1.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm2.aspx.cs">
       <DependentUpon>WebForm2.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm2.aspx.designer.cs">
       <DependentUpon>WebForm2.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm3.aspx.cs">
       <DependentUpon>WebForm3.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm3.aspx.designer.cs">
       <DependentUpon>WebForm3.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm4.aspx.cs">
       <DependentUpon>WebForm4.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm4.aspx.designer.cs">
       <DependentUpon>WebForm4.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm5.aspx.cs">
       <DependentUpon>WebForm5.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm5.aspx.designer.cs">
       <DependentUpon>WebForm5.aspx</DependentUpon>
     </Compile>
-    <Compile Include="App_Code\sample\3TierTableAdapter\ProductsTableAdapter.cs" />
-    <Compile Include="App_Code\sample\Business\GetMasterData.cs" />
-    <Compile Include="App_Code\sample\Business\LayerB.cs" />
-    <Compile Include="App_Code\sample\Common\TestParameterValue.cs" />
-    <Compile Include="App_Code\sample\Common\TestReturnValue.cs" />
-    <Compile Include="App_Code\sample\Dao\DaoCategories.cs" />
-    <Compile Include="App_Code\sample\Dao\DaoShippers.cs" />
-    <Compile Include="App_Code\sample\Dao\DaoSuppliers.cs" />
-    <Compile Include="App_Code\sample\Dao\LayerD.cs" />
-    <Compile Include="App_Code\testPublic\Business\TestMTC.cs" />
-    <Compile Include="App_Code\testPublic\Business\TestMTC_mcn.cs" />
-    <Compile Include="App_Code\testPublic\Business\TestMTC_txg.cs" />
+    <Compile Include="AppCode\sample\3TierTableAdapter\ProductsTableAdapter.cs" />
+    <Compile Include="AppCode\sample\Business\GetMasterData.cs" />
+    <Compile Include="AppCode\sample\Business\LayerB.cs" />
+    <Compile Include="AppCode\sample\Common\TestParameterValue.cs" />
+    <Compile Include="AppCode\sample\Common\TestReturnValue.cs" />
+    <Compile Include="AppCode\sample\Dao\DaoCategories.cs" />
+    <Compile Include="AppCode\sample\Dao\DaoShippers.cs" />
+    <Compile Include="AppCode\sample\Dao\DaoSuppliers.cs" />
+    <Compile Include="AppCode\sample\Dao\LayerD.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="AppCode\testPublic\Business\TestMTC.cs" />
+    <Compile Include="AppCode\testPublic\Business\TestMTC_mcn.cs" />
+    <Compile Include="AppCode\testPublic\Business\TestMTC_txg.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -611,7 +568,6 @@
     <Content Include="Aspx\Common\testScreen2.master" />
     <Content Include="Aspx\Common\testScreenCtrl.master" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <ProjectExtensions>

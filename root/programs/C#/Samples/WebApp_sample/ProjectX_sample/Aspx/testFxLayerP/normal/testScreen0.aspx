@@ -2,7 +2,7 @@
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
-    <!-- Copyright (C) 2007,2014 Hitachi Solutions,Ltd. -->
+    <!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
     ＜例外処理のテスト＞<br />
     <cc1:WebCustomButton id="btnAppEx" runat="server" text="業務例外" width="171px"></cc1:WebCustomButton><br/>
     <cc1:WebCustomButton id="btnSysEx" runat="server" text="システム例外" width="171px"></cc1:WebCustomButton><br/>

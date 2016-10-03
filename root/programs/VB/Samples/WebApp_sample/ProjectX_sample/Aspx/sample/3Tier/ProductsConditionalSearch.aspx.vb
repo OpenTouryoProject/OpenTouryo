@@ -61,7 +61,7 @@ Imports Touryo.Infrastructure.Public.Util
 Partial Public Class ProductsConditionalSearch
     Inherits MyBaseController
     ''' <summary>Page_InitイベントでASP.NET標準イベントハンドラを設定</summary>
-    Protected Sub Page_Init(ByVal sender As Object, ByVal e As EventArgs)
+    Protected Sub Page_Init(sender As Object, e As EventArgs)
         ' 行選択についてのイベント
         AddHandler Me.gvwGridView1.SelectedIndexChanging, AddressOf gvwGridView1_SelectedIndexChanging
     End Sub
@@ -160,8 +160,8 @@ Partial Public Class ProductsConditionalSearch
         Get
             Return DirectCast(Session("ddldsdt_SupplierID"), DataTable)
         End Get
-        Set(ByVal value As DataTable)
-            Session("ddldsdt_SupplierID") = value
+        Set(value As DataTable)
+            Session("ddldsdt_SupplierID") = Value
         End Set
     End Property
 
@@ -170,8 +170,8 @@ Partial Public Class ProductsConditionalSearch
         Get
             Return DirectCast(Session("ddldsdt_CategoryID"), DataTable)
         End Get
-        Set(ByVal value As DataTable)
-            Session("ddldsdt_CategoryID") = value
+        Set(value As DataTable)
+            Session("ddldsdt_CategoryID") = Value
         End Set
     End Property
 
@@ -184,7 +184,7 @@ Partial Public Class ProductsConditionalSearch
     ''' <summary>追加ボタン</summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
     ''' <returns>URL</returns>
-    Protected Function UOC_btnInsert_Click(ByVal fxEventArgs As FxEventArgs) As String
+    Protected Function UOC_btnInsert_Click(fxEventArgs As FxEventArgs) As String
         ' 画面遷移（詳細表示）
         Return "ProductsDetail.aspx"
     End Function
@@ -192,7 +192,7 @@ Partial Public Class ProductsConditionalSearch
     ''' <summary>検索ボタン</summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
     ''' <returns>URL</returns>
-    Protected Function UOC_btnSearch_Click(ByVal fxEventArgs As FxEventArgs) As String
+    Protected Function UOC_btnSearch_Click(fxEventArgs As FxEventArgs) As String
         ' GridViewをリセット
         Me.gvwGridView1.PageIndex = 0
         Me.gvwGridView1.Sort("", SortDirection.Ascending)
@@ -294,7 +294,7 @@ Partial Public Class ProductsConditionalSearch
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
     ''' <param name="e">オリジナルのイベント引数</param>
     ''' <returns>URL</returns>
-    Protected Function UOC_gvwGridView1_Sorting(ByVal fxEventArgs As FxEventArgs, ByVal e As GridViewSortEventArgs) As String
+    Protected Function UOC_gvwGridView1_Sorting(fxEventArgs As FxEventArgs, e As GridViewSortEventArgs) As String
         ' ソート条件の変更
         Session("SortExpression") = e.SortExpression
 
@@ -311,7 +311,7 @@ Partial Public Class ProductsConditionalSearch
     End Function
 
     ''' <summary>GridViewの行の選択ボタンがクリックされ、行が選択される前に発生するイベント</summary>
-    Protected Sub gvwGridView1_SelectedIndexChanging(ByVal sender As Object, ByVal e As GridViewSelectEventArgs)
+    Protected Sub gvwGridView1_SelectedIndexChanging(sender As Object, e As GridViewSelectEventArgs)
         ' 選択されたレコードの主キーとタイムスタンプ列を取得
         Dim dt As DataTable = DirectCast(Session("SearchResult"), DataTable)
         Dim PrimaryKeyAndTimeStamp As New Dictionary(Of String, Object)()
@@ -328,7 +328,7 @@ Partial Public Class ProductsConditionalSearch
     ''' <summary>gvwGridView1の行選択後イベント</summary>
     ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
     ''' <returns>URL</returns>
-    Protected Function UOC_gvwGridView1_SelectedIndexChanged(ByVal fxEventArgs As FxEventArgs) As String
+    Protected Function UOC_gvwGridView1_SelectedIndexChanged(fxEventArgs As FxEventArgs) As String
         ' 画面遷移（詳細表示）
         Return "ProductsDetail.aspx"
     End Function

@@ -1,11 +1,8 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
-//
-//  
-// 
 //  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
@@ -22,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：Aspx_Common_ErrorScreen
-//* クラス日本語名  ：例外発生時に表示されるページ（開発用 ※ 本稼動時には、本番用に差し替える）
+//* クラス名        ：WebUserControl
+//* クラス日本語名  ：WebUserControl上のイベントハンドラをハンドルする。
 //*
 //* 作成日時        ：－
 //* 作成者          ：sas 生技
