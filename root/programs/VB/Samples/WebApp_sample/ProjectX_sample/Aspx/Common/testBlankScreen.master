@@ -1,4 +1,4 @@
-<%@ Master Language="VB" AutoEventWireup="true" CodeFile="testBlankScreen.master.vb" Inherits="Aspx_Common_testBlankScreen" %>
+<%@ Master Language="VB" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_Common_testBlankScreen" Codebehind="testBlankScreen.master.vb" %>
 
 <!-- All Rights Reserved, Copyright (C) 2007,2012 Hitachi Solutions,Ltd. -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -7,6 +7,9 @@
 
 <head id="Head1" runat="server">
     <title>無題のページ</title>
+    <!--Uncomment below line when using jQuery-->
+    <!--<script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>-->
+
     <!--FxCode：add-start-->
     <script type="text/javascript" src="<%= Me.ResolveClientUrl("~/Framework/js/common.js") %>"></script>
     <script type="text/javascript" src="<%= Me.ResolveClientUrl("~/Framework/js/ie_key_event.js") %>"></script>
@@ -14,11 +17,6 @@
     <!-- Resolve URL in the javascript-->
     <script type="text/javascript">
         var baseUrl = "<%= ResolveUrl("~/") %>";
-    </script>
-
-    <!-- onhelpイベントを無効にする。-->
-    <script language="javascript" for="document" event="onhelp">
-            event.returnValue = false;
     </script>
     
     <!-- IE8をIE7互換モードで動作させる -->

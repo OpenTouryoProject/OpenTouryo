@@ -1,9 +1,9 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
-
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -49,6 +49,7 @@
 //*  06/26/2015   Sandeep        Implemented code to handle unstable "Register" state, when you invoke [Abort] to AsyncTask, at this "Register" state,
 //*                              Implemented code to 'Enable and Handle pre-shutdown notification' technique, to resolve the issue of 
 //*                              OnShutdown method, when you restart or shutdown the OS 
+//*  06/01/2016   Sandeep        Implemented '_isServiceException' property and 'SetServiceException' method, to enhance the Start and Stop behavior
 //**********************************************************************************
 
 // System
@@ -128,6 +129,9 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         const int SERVICE_ACCEPT_PRESHUTDOWN = 0x100;
         const int SERVICE_CONTROL_PRESHUTDOWN = 0xf;
 
+        // <summary>Asynchronous Processing Service exception flag (thread-safe)</summary>
+        private volatile bool _isServiceException = false;
+
         #endregion
 
         #region Constructor
@@ -157,6 +161,9 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
             }
             int value = (int)acceptedCommandsFieldInfo.GetValue(this);
             acceptedCommandsFieldInfo.SetValue(this, value | SERVICE_ACCEPT_PRESHUTDOWN);
+
+            // Sets Asynchronous Processing Service exception flag
+            this.SetServiceException();
         }
 
         #endregion
@@ -194,19 +201,27 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// </summary>
         protected override void OnStart(string[] args)
         {
-            // Set initial values
-            this._infiniteLoop = true;
+            if (this._isServiceException)
+            {
+                // Stop this service, if AsyncProcess has service exception
+                this.Stop();
+            }
+            else
+            {
+                // Set initial values
+                this._infiniteLoop = true;
 
-            // Set initial values from .config file
-            this.SetFromConfig();
+                // Set initial values from .config file
+                this.SetFromConfig();
 
-            // Thread pool initialization with maxium and minimum threads. 
-            ThreadPool.SetMinThreads(1, 0);
-            ThreadPool.SetMaxThreads(this._maxThreadCount, 0);
+                // Thread pool initialization with maxium and minimum threads. 
+                ThreadPool.SetMinThreads(1, 0);
+                ThreadPool.SetMaxThreads(this._maxThreadCount, 0);
 
-            // Starts main thread invocation.
-            _mainThread = new Thread(new ThreadStart(MainThreadInvoke));
-            _mainThread.Start();
+                // Starts main thread invocation.
+                _mainThread = new Thread(new ThreadStart(MainThreadInvoke));
+                _mainThread.Start();
+            }
         }
 
         #endregion
@@ -218,8 +233,11 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// </summary>
         protected override void OnStop()
         {
-            // Stop the process of asynchronous service and Waits to complete all worker thread to complete.            
-            this.StopAsyncProcess();
+            if (!this._isServiceException)
+            {
+                // Stop the process of asynchronous service and Waits to complete all worker thread to complete.            
+                this.StopAsyncProcess();
+            }
             LogIF.InfoLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("I0005"));
         }
 
@@ -232,8 +250,11 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
         /// </summary>
         protected override void OnPause()
         {
-            // Stop the process of asynchronous service and Waits to complete all worker thread to complete.            
-            this.StopAsyncProcess();
+            if (!this._isServiceException)
+            {
+                // Stop the process of asynchronous service and Waits to complete all worker thread to complete.            
+                this.StopAsyncProcess();
+            }
             LogIF.InfoLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("I0006"));
         }
 
@@ -347,6 +368,7 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
                 catch (Exception ex)
                 {
                     // Service Failed due to unexpected exception.
+                    this._isServiceException = true;
                     this._infiniteLoop = false;
                     LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0000"), ex.Message.ToString()));
                 }
@@ -633,6 +655,34 @@ namespace Touryo.Infrastructure.Framework.AsyncProcessingService
 
             // Log after completing all worker threads
             LogIF.InfoLog("ASYNC-SERVICE", GetMessage.GetMessageDescription("I0008"));
+        }
+
+        #endregion
+
+        #region SetServiceException
+
+        /// <summary>
+        /// Sets Asynchronous Processing Service exception flag by checking prerequisites
+        /// </summary>
+        public void SetServiceException()
+        {
+            try
+            {
+                // Checks for successful connection to the database.
+                AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "TestConnection", "TestConnection", "SQL",
+                                                                                        new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
+                LayerB layerB = new LayerB();
+                layerB.DoBusinessLogic((BaseParameterValue)asyncParameterValue, DbEnum.IsolationLevelEnum.NoTransaction);
+
+                // Asynchronous Processing Service initializes successfully without any errors
+                this._isServiceException = false;
+            }
+            catch (Exception ex)
+            {
+                // Service Failed due to unexpected exception.
+                this._isServiceException = true;
+                LogIF.ErrorLog("ASYNC-SERVICE", string.Format(GetMessage.GetMessageDescription("E0000"), ex.Message.ToString()));
+            }
         }
 
         #endregion

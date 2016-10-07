@@ -1,11 +1,8 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
-//
-//  
-// 
 //  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
@@ -34,10 +31,15 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+// System
 using System;
 using System.Web;
 using System.Web.UI;
 
-public partial class Aspx_Common_testNest_noBaseMasterPage : System.Web.UI.MasterPage
+namespace ProjectX_sample.Aspx.Common.testNest
 {
+    /// <summary>noBaseMasterPage class</summary>
+    public partial class noBaseMasterPage : System.Web.UI.MasterPage
+    {
+    } 
 }

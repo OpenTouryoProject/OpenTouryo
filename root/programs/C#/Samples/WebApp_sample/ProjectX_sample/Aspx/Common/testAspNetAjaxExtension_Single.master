@@ -1,4 +1,4 @@
-<%@ Master Language="C#" AutoEventWireup="true" CodeFile="testAspNetAjaxExtension_Single.master.cs" Inherits="Aspx_Common_testAspNetAjaxExtension_Single" %>
+<%@ Master Language="C#" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Common.testAspNetAjaxExtension_Single" Codebehind="testAspNetAjaxExtension_Single.master.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 <%@ Register Assembly="System.Web.Extensions, Version=1.0.61025.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Namespace="System.Web.UI" TagPrefix="asp" %>
 
@@ -9,6 +9,9 @@
 
 <head id="Head1" runat="server">
     <title>無題のページ</title>
+    <!--Uncomment below line when using jQuery-->
+    <!--<script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>-->
+
     <!--FxCode：add-start-->
     <script type="text/javascript" src="<%= this.ResolveClientUrl("~/Framework/js/common.js") %>"></script>
     <script type="text/javascript" src="<%= this.ResolveClientUrl("~/Framework/js/ie_key_event.js") %>"></script>
@@ -16,11 +19,6 @@
     <!-- Resolve URL in the javascript-->
     <script type="text/javascript">
         var baseUrl = "<%= ResolveUrl("~/") %>";
-    </script>
-    
-    <!-- onhelpイベントを無効にする。-->
-    <script language="javascript" for="document" event="onhelp">
-            event.returnValue = false;
     </script>
     
     <!-- IE8をIE7互換モードで動作させる -->

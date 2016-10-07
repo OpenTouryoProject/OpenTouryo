@@ -1,5 +1,5 @@
 //**********************************************************************************
-//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
@@ -113,6 +113,11 @@ namespace Touryo.Infrastructure.Public.Db
             {
                 // コネクションを戻す
                 return _cnn;
+            }
+            set
+            {
+                //set the connection
+                _cnn = value;
             }
         }
 

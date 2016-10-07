@@ -15,8 +15,6 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
 
-Imports MyType
-
 ' System
 Imports System
 Imports System.IO

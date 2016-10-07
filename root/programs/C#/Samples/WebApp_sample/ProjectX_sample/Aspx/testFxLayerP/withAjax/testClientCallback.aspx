@@ -1,8 +1,8 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testClientCallback.master" AutoEventWireup="true" CodeFile="testClientCallback.aspx.cs" Inherits="Aspx_testFxLayerP_withAjax_testClientCallback" Title="Untitled Page" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testClientCallback.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.testFxLayerP.withAjax.testClientCallback" Title="Untitled Page" Codebehind="testClientCallback.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
-    <!-- Copyright (C) 2007,2014 Hitachi Solutions,Ltd. -->
+    <!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
     <br />
     コンテンツ ページ（個別）<br />
     <cc1:WebCustomTextBox ID="TextBox1" runat="server"></cc1:WebCustomTextBox>

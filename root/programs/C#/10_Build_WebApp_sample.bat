@@ -21,15 +21,6 @@ set CURRENT_DIR="%~dp0"
 call %CURRENT_DIR%z_Common.bat
 
 rem --------------------------------------------------
-rem Copy the Bin folder assembly.
-rem --------------------------------------------------
-md "Samples\WebApp_sample\ProjectX_sample\Bin"
-xcopy /E /Y "Frameworks\Infrastructure\Build" "Samples\WebApp_sample\ProjectX_sample\Bin\"
-xcopy /E /Y "Samples\WS_sample\Build" "Samples\WebApp_sample\ProjectX_sample\Bin\"
-
-pause
-
-rem --------------------------------------------------
 rem Batch build of ProjectX_sample.
 rem --------------------------------------------------
 %BUILDFILEPATH% %COMMANDLINE% "Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln"

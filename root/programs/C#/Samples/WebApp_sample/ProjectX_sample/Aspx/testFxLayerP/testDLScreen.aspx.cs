@@ -56,43 +56,46 @@ using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
-/// <summary>PDFダウンロードのテスト画面（Ｐ層）</summary>
-public partial class Aspx_testFxLayerP_testDLScreen : MyBaseController
+namespace ProjectX_sample.Aspx.testFxLayerP
 {
-    #region ページロードのUOCメソッド
-
-    /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
-    /// <remarks>実装必須</remarks>
-    protected override void UOC_FormInit()
+    /// <summary>PDFダウンロードのテスト画面（Ｐ層）</summary>
+    public partial class testDLScreen : MyBaseController
     {
-        // フォーム初期化（初回ロード）時に実行する処理を実装する
-        // TODO:
+        #region ページロードのUOCメソッド
 
-        Response.Clear();
+        /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
+        /// <remarks>実装必須</remarks>
+        protected override void UOC_FormInit()
+        {
+            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // TODO:
 
-        Response.ContentType = "application/pdf";
+            Response.Clear();
 
-        // HTTPヘッダーの書き方で、
-        //こっちは、専用アプリケーションで開く
-        //Response.AppendHeader("Content-Disposition", "attachment;filename=test.pdf");
+            Response.ContentType = "application/pdf";
 
-        //こっちは、IEからOLEオブジェクトを開く
-        Response.AppendHeader("Content-Disposition", "inline;filename=test.pdf");
+            // HTTPヘッダーの書き方で、
+            //こっちは、専用アプリケーションで開く
+            //Response.AppendHeader("Content-Disposition", "attachment;filename=test.pdf");
 
-        Response.WriteFile(
-            Path.Combine(
-                GetConfigParameter.GetConfigValue("TestFilePath"), "test.pdf"));
+            //こっちは、IEからOLEオブジェクトを開く
+            Response.AppendHeader("Content-Disposition", "inline;filename=test.pdf");
 
-        Response.End(); 
-    }
+            Response.WriteFile(
+                Path.Combine(
+                    GetConfigParameter.GetConfigValue("TestFilePath"), "test.pdf"));
 
-    /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
-    /// <remarks>実装必須</remarks>
-    protected override void UOC_FormInit_PostBack()
-    {
-        // フォーム初期化（ポストバック）時に実行する処理を実装する
-        // TODO:
-    }
+            Response.End();
+        }
 
-    #endregion
+        /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
+        /// <remarks>実装必須</remarks>
+        protected override void UOC_FormInit_PostBack()
+        {
+            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // TODO:
+        }
+
+        #endregion
+    } 
 }

@@ -1,11 +1,8 @@
 ﻿'**********************************************************************************
-'* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+'* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 '**********************************************************************************
 
 #Region "Apache License"
-'
-'  
-' 
 '  
 ' Licensed under the Apache License, Version 2.0 (the "License");
 ' you may not use this file except in compliance with the License. 
@@ -38,13 +35,14 @@ Imports Touryo.Infrastructure.Framework.Presentation
 
 ''' <summary>サンプル画面用のマスタ ページ</summary>
 Public Partial Class Aspx_Common_sampleScreen
-	Inherits BaseMasterController
-	''' <summary>マスタページにイベントハンドラを実装可能にしたのでそのテスト。</summary>
-	''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
-	''' <returns>URL</returns>
-	Protected Function UOC_btnMPButton_Click(fxEventArgs As FxEventArgs) As String
-		Response.Write("UOC_btnMPButton_Clickを実行できた。")
+    Inherits BaseMasterController
+    ''' <summary>マスタページにイベントハンドラを実装可能にしたのでそのテスト。</summary>
+    ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+    ''' <returns>URL</returns>
+    Protected Function UOC_btnMPButton_Click(fxEventArgs As FxEventArgs) As String
+        Response.Write("UOC_btnMPButton_Clickを実行できた。")
 
-		Return ""
-	End Function
+        Return ""
+    End Function
 End Class
+

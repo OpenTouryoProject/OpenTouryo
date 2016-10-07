@@ -14,11 +14,7 @@
 '*  ----------  ----------------  -------------------------------------------------
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '*
-'**********************************************************************************
-
-' 型情報
-Imports MyType
-
+'*********************************************************************************
 ' System
 Imports System
 Imports System.IO
@@ -60,6 +56,9 @@ Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
 
+' MyType
+Imports ProjectX_sample.MyType
+
 ''' <summary>サンプル アプリ画面</summary>
 Public Partial Class Aspx_sample_crud_sampleScreen
 	Inherits MyBaseController
@@ -94,16 +93,16 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 	Protected Function UOC_sampleScreen_btnMButton1_Click(fxEventArgs As FxEventArgs) As String
 		' 引数クラスを生成
 		' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-		Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "SelectCount", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
+        Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "SelectCount", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
 
 		' 分離レベルの設定
 		Dim iso As DbEnum.IsolationLevelEnum = Me.SelectIsolationLevel()
 
 		' B層を生成
-		Dim myBusiness As New LayerB()
+        Dim myBusiness As New LayerB()
 
 		' 業務処理を実行
-		Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
 
 		' 結果表示するメッセージ エリア
 		Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
@@ -131,7 +130,7 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 	Protected Function UOC_sampleScreen_btnMButton2_Click(fxEventArgs As FxEventArgs) As String
 		' 引数クラスを生成
 		' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-		Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "SelectAll_DT", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
+        Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "SelectAll_DT", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
 
 		' 分離レベルの設定
 		Dim iso As DbEnum.IsolationLevelEnum = Me.SelectIsolationLevel()
@@ -140,7 +139,7 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 		Dim myBusiness As New LayerB()
 
 		' 業務処理を実行
-		Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
 
 		' 結果表示するメッセージ エリア
 		Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
@@ -169,7 +168,7 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 	Protected Function UOC_sampleScreen_btnMButton3_Click(fxEventArgs As FxEventArgs) As String
 		' 引数クラスを生成
 		' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-		Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "SelectAll_DS", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
+        Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "SelectAll_DS", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
 
 		' 分離レベルの設定
 		Dim iso As DbEnum.IsolationLevelEnum = Me.SelectIsolationLevel()
@@ -178,7 +177,7 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 		Dim myBusiness As New LayerB()
 
 		' 業務処理を実行
-		Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
 
 		' 結果表示するメッセージ エリア
 		Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
@@ -205,38 +204,38 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 	''' </summary>
 	''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
 	''' <returns>URL</returns>
-	Protected Function UOC_sampleScreen_btnMButton4_Click(fxEventArgs As FxEventArgs) As String
-		' 引数クラスを生成
-		' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-		Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "SelectAll_DR", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
+    Protected Function UOC_sampleScreen_btnMButton4_Click(fxEventArgs As FxEventArgs) As String
+        ' 引数クラスを生成
+        ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
+        Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "SelectAll_DR", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
 
-		' 分離レベルの設定
-		Dim iso As DbEnum.IsolationLevelEnum = Me.SelectIsolationLevel()
+        ' 分離レベルの設定
+        Dim iso As DbEnum.IsolationLevelEnum = Me.SelectIsolationLevel()
 
-		' B層を生成
-		Dim myBusiness As New LayerB()
+        ' B層を生成
+        Dim myBusiness As New LayerB()
 
-		' 業務処理を実行
-		Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
+        ' 業務処理を実行
+        Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
 
-		' 結果表示するメッセージ エリア
-		Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
-		label.Text = ""
+        ' 結果表示するメッセージ エリア
+        Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
+        label.Text = ""
 
-		If testReturnValue.ErrorFlag = True Then
-			' 結果（業務続行可能なエラー）
-			label.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID & vbCr & vbLf
-			label.Text += "ErrorMessage:" + testReturnValue.ErrorMessage & vbCr & vbLf
-			label.Text += "ErrorInfo:" + testReturnValue.ErrorInfo & vbCr & vbLf
-		Else
-			' 結果（正常系）
-			Me.GridView1.DataSource = testReturnValue.Obj
-			Me.GridView1.DataBind()
-		End If
+        If testReturnValue.ErrorFlag = True Then
+            ' 結果（業務続行可能なエラー）
+            label.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID & vbCr & vbLf
+            label.Text += "ErrorMessage:" + testReturnValue.ErrorMessage & vbCr & vbLf
+            label.Text += "ErrorInfo:" + testReturnValue.ErrorInfo & vbCr & vbLf
+        Else
+            ' 結果（正常系）
+            Me.GridView1.DataSource = testReturnValue.Obj
+            Me.GridView1.DataBind()
+        End If
 
-		' 画面遷移しないポストバックの場合は、urlを空文字列に設定する
-		Return ""
-	End Function
+        ' 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+        Return ""
+    End Function
 
 	''' <summary>
 	''' btnMButton5のクリックイベント（一覧取得（動的sql））
@@ -246,7 +245,7 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 	Protected Function UOC_sampleScreen_btnMButton5_Click(fxEventArgs As FxEventArgs) As String
 		' 引数クラスを生成
 		' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-		Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "SelectAll_DSQL", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
+        Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "SelectAll_DSQL", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
 
 		' 動的SQLの要素を設定
 		testParameterValue.OrderColumn = Me.ddlOrderColumn.SelectedValue
@@ -259,7 +258,7 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 		Dim myBusiness As New LayerB()
 
 		' 業務処理を実行
-		Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
 
 		' 結果表示するメッセージ エリア
 		Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
@@ -288,7 +287,7 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 	Protected Function UOC_sampleScreen_btnMButton6_Click(fxEventArgs As FxEventArgs) As String
 		' 引数クラスを生成
 		' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-		Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "Select", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
+        Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "Select", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
 
 		' 情報の設定
 		testParameterValue.ShipperID = Integer.Parse(Me.TextBox1.Text)
@@ -300,7 +299,7 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 		Dim myBusiness As New LayerB()
 
 		' 業務処理を実行
-		Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
 
 		' 結果表示するメッセージ エリア
 		Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
@@ -334,7 +333,7 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 	Protected Function UOC_sampleScreen_btnMButton7_Click(fxEventArgs As FxEventArgs) As String
 		' 引数クラスを生成
 		' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-		Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "Insert", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
+        Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "Insert", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
 
 		' 情報の設定
 		testParameterValue.CompanyName = Me.TextBox2.Text
@@ -347,7 +346,7 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 		Dim myBusiness As New LayerB()
 
 		' 業務処理を実行
-		Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
 
 		' 結果表示するメッセージ エリア
 		Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
@@ -375,7 +374,7 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 	Protected Function UOC_sampleScreen_btnMButton8_Click(fxEventArgs As FxEventArgs) As String
 		' 引数クラスを生成
 		' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-		Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "Update", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
+        Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "Update", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
 
 		' 情報の設定
 		testParameterValue.ShipperID = Integer.Parse(Me.TextBox1.Text)
@@ -389,7 +388,7 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 		Dim myBusiness As New LayerB()
 
 		' 業務処理を実行
-		Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
 
 		' 結果表示するメッセージ エリア
 		Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
@@ -417,7 +416,7 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 	Protected Function UOC_sampleScreen_btnMButton9_Click(fxEventArgs As FxEventArgs) As String
 		' 引数クラスを生成
 		' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-		Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "Delete", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
+        Dim testParameterValue As New TestParameterValue(Me.ContentPageFileNoEx, fxEventArgs.ButtonID, "Delete", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlMode1.SelectedValue) & "%" & Convert.ToString(Me.ddlMode2.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue), Me.UserInfo)
 
 		' 情報の設定
 		testParameterValue.ShipperID = Integer.Parse(TextBox1.Text)
@@ -429,7 +428,7 @@ Public Partial Class Aspx_sample_crud_sampleScreen
 		Dim myBusiness As New LayerB()
 
 		' 業務処理を実行
-		Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = DirectCast(myBusiness.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), iso), TestReturnValue)
 
 		' 結果表示するメッセージ エリア
 		Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)

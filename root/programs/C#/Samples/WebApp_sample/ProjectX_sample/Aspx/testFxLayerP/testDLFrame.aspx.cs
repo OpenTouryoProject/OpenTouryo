@@ -57,27 +57,30 @@ using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
-/// <summary>PDFダウンロードのテスト・フレーム（Ｐ層）</summary>
-public partial class Aspx_testFxLayerP_testDLFrame : MyBaseController
+namespace ProjectX_sample.Aspx.testFxLayerP
 {
-    #region ページロードのUOCメソッド
-
-    /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
-    /// <remarks>実装必須</remarks>
-    protected override void UOC_FormInit()
+    /// <summary>PDFダウンロードのテスト・フレーム（Ｐ層）</summary>
+    public partial class testDLFrame : MyBaseController
     {
-        // フォーム初期化（初回ロード）時に実行する処理を実装する
-        // TODO:
-        this.iframe1.Attributes.Add("src", "testDLScreen.aspx");
-    }
+        #region ページロードのUOCメソッド
 
-    /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
-    /// <remarks>実装必須</remarks>
-    protected override void UOC_FormInit_PostBack()
-    {
-        // フォーム初期化（ポストバック）時に実行する処理を実装する
-        // TODO:
-    }
+        /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
+        /// <remarks>実装必須</remarks>
+        protected override void UOC_FormInit()
+        {
+            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // TODO:
+            this.iframe1.Attributes.Add("src", "testDLScreen.aspx");
+        }
 
-    #endregion
+        /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
+        /// <remarks>実装必須</remarks>
+        protected override void UOC_FormInit_PostBack()
+        {
+            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // TODO:
+        }
+
+        #endregion
+    } 
 }

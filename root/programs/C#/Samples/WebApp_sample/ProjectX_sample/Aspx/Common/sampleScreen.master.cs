@@ -1,11 +1,8 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
-//
-//  
-// 
 //  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
@@ -34,18 +31,22 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+// Touryo
 using Touryo.Infrastructure.Framework.Presentation;
 
-/// <summary>サンプル画面用のマスタ ページ</summary>
-public partial class Aspx_Common_sampleScreen : BaseMasterController
+namespace ProjectX_sample.Aspx.Common
 {
-    /// <summary>マスタページにイベントハンドラを実装可能にしたのでそのテスト。</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_btnMPButton_Click(FxEventArgs fxEventArgs)
+    /// <summary>サンプル画面用のマスタ ページ</summary>
+    public partial class sampleScreen : BaseMasterController
     {
-        Response.Write("UOC_btnMPButton_Clickを実行できた。");
+        /// <summary>マスタページにイベントハンドラを実装可能にしたのでそのテスト。</summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        protected string UOC_btnMPButton_Click(FxEventArgs fxEventArgs)
+        {
+            Response.Write("UOC_btnMPButton_Clickを実行できた。");
 
-        return "";
-    }
+            return "";
+        }
+    } 
 }

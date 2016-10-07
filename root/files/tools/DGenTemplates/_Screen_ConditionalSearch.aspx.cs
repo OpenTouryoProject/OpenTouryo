@@ -12,7 +12,7 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//*  2016/05/12  Shashikiran       Added UOC_gvwGridView1_PageIndexChanging function to handle Gridview Paging event
 //**********************************************************************************
 // System
 using System;
@@ -100,15 +100,6 @@ public partial class _JoinTableName__Screen_ConditionalSearch : MyBaseController
     #endregion
 
     #region イベントハンドラ EVENT HANDLER
-
-    /// <summary>追加ボタン</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_btnInsert_Click(FxEventArgs fxEventArgs)
-    {
-        // 画面遷移（詳細表示）
-        return "_JoinTableName__Screen_Detail.aspx";
-    }
 
     /// <summary>検索ボタン</summary>
     /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
@@ -204,7 +195,7 @@ public partial class _JoinTableName__Screen_ConditionalSearch : MyBaseController
 
         //  Primary key columns
         // ControlComment:LoopStart-PKColumn
-        PrimaryKeyAndTimeStamp.Add("_JoinTextboxColumnName_", dt.Rows[e.NewSelectedIndex]["_JoinColumnName_"].ToString());
+        PrimaryKeyAndTimeStamp.Add("_JoinTextboxColumnName_", dt.Rows[e.NewSelectedIndex + (gvwGridView1.PageSize * gvwGridView1.PageIndex)]["_JoinColumnName_"].ToString());
         // ControlComment:LoopEnd-PKColumn
 
         // Timestamp Column
@@ -226,6 +217,17 @@ public partial class _JoinTableName__Screen_ConditionalSearch : MyBaseController
     {
         //Screen Transition is required to show more
         return "_JoinTableName__Screen_Detail.aspx";
+    }
+
+    /// <summary>gvwGridView1 Paging Event</summary>
+    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+    /// <returns>URL</returns>
+    protected string UOC_gvwGridView1_PageIndexChanging(FxEventArgs fxEventArgs, GridViewPageEventArgs e)
+    {
+        this.gvwGridView1.PageIndex = e.NewPageIndex;
+        this.gvwGridView1.DataSource = (DataTable)Session["SearchResult"];
+        this.gvwGridView1.DataBind();
+        return "";
     }
 
     #endregion

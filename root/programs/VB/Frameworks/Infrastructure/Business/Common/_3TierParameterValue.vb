@@ -1,5 +1,5 @@
 ﻿'**********************************************************************************
-'* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+'* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 '**********************************************************************************
 
 #Region "Apache License"
@@ -97,6 +97,9 @@ Namespace Touryo.Infrastructure.Business.Common
 
 		''' <summary>追加・更新値</summary>
 		Public InsertUpdateValues As Dictionary(Of String, Object)
+
+        ''' <summary>Target Table Name</summary>
+        public TargetTableNames As Dictionary(Of Integer, String) 
 
 		''' <summary>データテーブルの型情報</summary>
 		''' <remarks>型付きデータテーブルのを指定可能にする</remarks>

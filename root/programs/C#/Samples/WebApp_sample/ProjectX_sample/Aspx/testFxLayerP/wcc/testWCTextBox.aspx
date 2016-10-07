@@ -1,9 +1,9 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" CodeFile="testWCTextBox.aspx.cs" Inherits="Aspx_testFxLayerP_wcc_testWCTextBox" Title="Untitled Page" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.testFxLayerP.wcc.testWCTextBox" Title="Untitled Page" Codebehind="testWCTextBox.aspx.cs" %>
 
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl"
     TagPrefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
-    <!-- Copyright (C) 2007,2014 Hitachi Solutions,Ltd. -->
+    <!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
     <br/>
     ＜基本＞<br/>
     <table>

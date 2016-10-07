@@ -56,60 +56,63 @@ using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
-/// <summary>ログアウト画面（Forms認証対応）</summary>
-public partial class Aspx_Start_logout : MyBaseController
+namespace ProjectX_sample.Aspx.Start
 {
-    #region ページロードのUOCメソッド
-
-    /// <summary>
-    /// ページロードのUOCメソッド（個別：初回ロード）
-    /// </summary>
-    /// <remarks>
-    /// 実装必須
-    /// </remarks>
-    protected override void UOC_FormInit()
+    /// <summary>ログアウト画面（Forms認証対応）</summary>
+    public partial class logout : MyBaseController
     {
-        // フォーム初期化（初回ロード）時に実行する処理を実装する
+        #region ページロードのUOCメソッド
 
-        // TODO:
-        // ここでは何もしない
-    }
+        /// <summary>
+        /// ページロードのUOCメソッド（個別：初回ロード）
+        /// </summary>
+        /// <remarks>
+        /// 実装必須
+        /// </remarks>
+        protected override void UOC_FormInit()
+        {
+            // フォーム初期化（初回ロード）時に実行する処理を実装する
 
-    /// <summary>
-    /// ページロードのUOCメソッド（個別：ポストバック）
-    /// </summary>
-    /// <remarks>
-    /// 実装必須
-    /// </remarks>
-    protected override void UOC_FormInit_PostBack()
-    {
-        // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // TODO:
+            // ここでは何もしない
+        }
 
-        // TODO:
-        // ここでは何もしない
-    }
+        /// <summary>
+        /// ページロードのUOCメソッド（個別：ポストバック）
+        /// </summary>
+        /// <remarks>
+        /// 実装必須
+        /// </remarks>
+        protected override void UOC_FormInit_PostBack()
+        {
+            // フォーム初期化（ポストバック）時に実行する処理を実装する
 
-    #endregion
+            // TODO:
+            // ここでは何もしない
+        }
 
-    #region イベントハンドラ
+        #endregion
 
-    /// <summary>ログアウト</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_btnButton1_Click(FxEventArgs fxEventArgs)
-    {
-        // ログオフ（認証チケットを削除する）
-        FormsAuthentication.SignOut();
+        #region イベントハンドラ
 
-        // ログインページ（login.aspx）に遷移する。
-        Response.Redirect("login.aspx");
+        /// <summary>ログアウト</summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        protected string UOC_btnButton1_Click(FxEventArgs fxEventArgs)
+        {
+            // ログオフ（認証チケットを削除する）
+            FormsAuthentication.SignOut();
 
-        // 任意のページに飛ばした場合、認証チケットが無いので、
-        // ログインページ（login.aspx）強制的に遷移する。
-        // ※ ポストバックのままだと、そのまま画面が表示されてしまう。
+            // ログインページ（login.aspx）に遷移する。
+            Response.Redirect("login.aspx");
 
-        return string.Empty;
-    }
+            // 任意のページに飛ばした場合、認証チケットが無いので、
+            // ログインページ（login.aspx）強制的に遷移する。
+            // ※ ポストバックのままだと、そのまま画面が表示されてしまう。
 
-    #endregion
+            return string.Empty;
+        }
+
+        #endregion
+    } 
 }

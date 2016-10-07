@@ -1,5 +1,5 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
@@ -29,6 +29,8 @@
 //*  ----------      ----------------  -------------------------------------------------
 //*  2014/09/23      Santosh Avaji     Added Code which is required for Automatic Screen generation for Select join statements
 //*  2015/10/28      Sandeep           Optimized messages in the resource file and implemented code to format it
+//*  2016/04/06      Shashikiran       Modified the code to replace space in Table Names with underscore operator 
+//*  2016/05/03      Shashikiran       Modified the code to replace space in column Names with underscore operator  
 //**********************************************************************************
 // Windowアプリケーション
 using System.Drawing;
@@ -1068,10 +1070,11 @@ namespace DPQuery_Tool
                     if (strRlDaoDef2[0] != "")
                     {
                         //Only Include the tables which are used in the Select Join statements of DpqueryTool
-                        if (DPQTableNames.Contains(strRlDaoDef2[0]))
+                        // If table name has space in it. Repalce with '_' operator
+                        if (DPQTableNames.Contains(strRlDaoDef2[0].Replace(" ", "_")))
                         {
-                            strTableName = strRlDaoDef2[0].Trim();
-                            AllTableNames.Add(strRlDaoDef2[0].Trim());
+                            strTableName = strRlDaoDef2[0].Trim().Replace(" ", "_");
+                            AllTableNames.Add(strRlDaoDef2[0].Trim().Replace(" ", "_"));
 
                         }
                         else
@@ -1118,7 +1121,8 @@ namespace DPQuery_Tool
                         for (int i = 1; i < strRlDaoDef2.Length; i++)
                         {
                             if (strRlDaoDef2[i] == "") { break; }
-                            if (DPQAllCoumns.Contains(strTableName + "." + strRlDaoDef2[i].Trim()))
+                            // Verify column name existance and replace space with '_' operator if column name has space in it
+                            if (DPQAllCoumns.Contains(strTableName + "." + strRlDaoDef2[i].Trim().Replace(" ","_")))
                                 colelseList.Add(strTableName + "." + strRlDaoDef2[i].Trim());
                             else if (DPQAllCoumns.Contains(strRlDaoDef2[i].Trim()))
                             {
@@ -1385,7 +1389,6 @@ namespace DPQuery_Tool
                                 this.WriteJoinsColumn(joinsTableTemplate, swClassFile);
                                 isProcessed = true;
                             }
-
                         }
                     }
 
@@ -1612,8 +1615,9 @@ namespace DPQuery_Tool
                     if (Elsetest[i].ToString().Split('.').Length > 1)
                     {
                         this.ColumnName = Elsetest[i].ToString().Split('.')[1].Trim();
-                        this.JoinColumnName = Elsetest[i].ToString();
-                        this.JoinTextBoxColumnName = Elsetest[i].ToString().Replace('.', '_');
+                        this.JoinColumnName = Elsetest[i].ToString().Replace(' ', '_');
+                        // Replace space with '_' operator if column name has space in it
+                        this.JoinTextBoxColumnName = Elsetest[i].ToString().Replace('.', '_').Replace(' ', '_');
                     }
                     else
                     {
@@ -1678,14 +1682,18 @@ namespace DPQuery_Tool
                         if (Elsetest[i].ToString().Split('.').Length > 1)
                         {
                             this.ColumnName = Elsetest[i].ToString().Split('.')[1].Trim();
-                            this.JoinColumnName = Elsetest[i].ToString();
-                            this.JoinTextBoxColumnName = Elsetest[i].ToString().Replace('.', '_');
+                            // Replace space with '_' operator if column name has space in it
+                            this.JoinColumnName = Elsetest[i].ToString().Replace(' ', '_');
+                            // Replace space with '_' operator if column name has space in it
+                            this.JoinTextBoxColumnName = Elsetest[i].ToString().Replace('.', '_').Replace(' ','_');
                         }
                         else
                         {
                             this.ColumnName = Elsetest[i].ToString().Trim();
-                            this.JoinColumnName = Elsetest[i].ToString();
-                            this.JoinTextBoxColumnName = this.TableName + "_" + Elsetest[i].ToString().Trim();
+                            // Replace space with '_' operator if column name has space in it
+                            this.JoinColumnName = Elsetest[i].ToString().Replace(' ', '_');
+                            // Replace space with '_' operator if column name has space in it
+                            this.JoinTextBoxColumnName = this.TableName + "_" + Elsetest[i].ToString().Trim().Replace(' ', '_');
                         }
 
                         foreach (string rl in elseTemplate)

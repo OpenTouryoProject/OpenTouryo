@@ -1,7 +1,7 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="myYesNoMessageDialog.aspx.cs" Inherits="Aspx_Framework_myYesNoMessageDialog" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Framework.myYesNoMessageDialog" Codebehind="myYesNoMessageDialog.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<!-- Copyright (C) 2007,2014 Hitachi Solutions,Ltd. -->
+<!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" >

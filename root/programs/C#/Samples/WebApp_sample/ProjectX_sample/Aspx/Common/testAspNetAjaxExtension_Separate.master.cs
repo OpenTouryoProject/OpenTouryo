@@ -1,11 +1,8 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
-//
-//  
-// 
 //  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
@@ -34,69 +31,75 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+// System
 using System;
+
+// Touryo
 using Touryo.Infrastructure.Framework.Presentation;
 
-/// <summary>Ajaxテスト用のマスタ ページ（updateパネルを親・子で２つ別けて使用）</summary>
-public partial class Aspx_Common_testAspNetAjaxExtension_Separate : BaseMasterController
+namespace ProjectX_sample.Aspx.Common
 {
-    /// <summary>btnMButton1のクリックイベント</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    public string UOC_btnMButton1_Click(FxEventArgs fxEventArgs)
+    /// <summary>Ajaxテスト用のマスタ ページ（updateパネルを親・子で２つ別けて使用）</summary>
+    public partial class testAspNetAjaxExtension_Separate : BaseMasterController
     {
-        // テキストボックスの値を変更
-        this.TextBox1.Text = "ajaxのポストバック（ボタンクリック）";
+        /// <summary>btnMButton1のクリックイベント</summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        public string UOC_btnMButton1_Click(FxEventArgs fxEventArgs)
+        {
+            // テキストボックスの値を変更
+            this.TextBox1.Text = "ajaxのポストバック（ボタンクリック）";
 
-        // ajaxのイベントハンドラでは画面遷移しないこと。
-        return "";
-    }
+            // ajaxのイベントハンドラでは画面遷移しないこと。
+            return "";
+        }
 
-    /// <summary>btnMButton2のクリックイベント</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    public string UOC_btnMButton2_Click(FxEventArgs fxEventArgs)
-    {
-        // テキストボックスの値を変更
-        this.TextBox2.Text = "通常のポストバック（ボタンクリック）";
+        /// <summary>btnMButton2のクリックイベント</summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        public string UOC_btnMButton2_Click(FxEventArgs fxEventArgs)
+        {
+            // テキストボックスの値を変更
+            this.TextBox2.Text = "通常のポストバック（ボタンクリック）";
 
-        return "";
-    }
+            return "";
+        }
 
-    /// <summary>
-    /// ddlMDropDownList1のSelectedIndexChangedイベント
-    /// </summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    public string UOC_ddlMDropDownList1_SelectedIndexChanged(FxEventArgs fxEventArgs)
-    {
-        // テキストボックスの値を変更
-        this.TextBox3.Text = "ajaxのポストバック（ＤＤＬのセレクト インデックス チェンジ）";
+        /// <summary>
+        /// ddlMDropDownList1のSelectedIndexChangedイベント
+        /// </summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        public string UOC_ddlMDropDownList1_SelectedIndexChanged(FxEventArgs fxEventArgs)
+        {
+            // テキストボックスの値を変更
+            this.TextBox3.Text = "ajaxのポストバック（ＤＤＬのセレクト インデックス チェンジ）";
 
-        // ajaxのイベントハンドラでは画面遷移しないこと。
-        return "";
-    }
+            // ajaxのイベントハンドラでは画面遷移しないこと。
+            return "";
+        }
 
-    /// <summary>
-    /// ddlMDropDownList2のSelectedIndexChangedイベント
-    /// </summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    public string UOC_ddlMDropDownList2_SelectedIndexChanged(FxEventArgs fxEventArgs)
-    {
-        // テキストボックスの値を変更
-        this.TextBox4.Text = "通常のポストバック（ＤＤＬのセレクト インデックス チェンジ）";
+        /// <summary>
+        /// ddlMDropDownList2のSelectedIndexChangedイベント
+        /// </summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        public string UOC_ddlMDropDownList2_SelectedIndexChanged(FxEventArgs fxEventArgs)
+        {
+            // テキストボックスの値を変更
+            this.TextBox4.Text = "通常のポストバック（ＤＤＬのセレクト インデックス チェンジ）";
 
-        return "";
-    }
+            return "";
+        }
 
-    /// <summary>btnMButton3のクリックイベント</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    public string UOC_btnMButton3_Click(FxEventArgs fxEventArgs)
-    {
-        throw new Exception("Ajaxでエラー");
+        /// <summary>btnMButton3のクリックイベント</summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        public string UOC_btnMButton3_Click(FxEventArgs fxEventArgs)
+        {
+            throw new Exception("Ajaxでエラー");
 
-        //return "";
-    }
+            //return "";
+        }
+    } 
 }

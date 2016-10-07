@@ -1,5 +1,5 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
@@ -59,31 +59,26 @@ using IBM.Data.DB2;
 using Hitachi.HiRDB;
 using MySql.Data.MySqlClient;
 using Npgsql;
-using NpgsqlTypes;
 
 // Windowアプリケーション
 using System.Drawing;
 using System.Windows.Forms;
-using System.ComponentModel;
 
 // System
 using System;
 using System.IO;
-using System.Xml;
 using System.Text;
 using System.Data;
 using System.Collections;
+using System.Resources;
+using System.Diagnostics;
 
 // 業務フレームワーク（参照しない）
 // フレームワーク（参照しない）
 
 // 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
-using System.Resources;
 
 namespace DaoGen_Tool
 {
@@ -126,6 +121,15 @@ namespace DaoGen_Tool
 
         #endregion
 
+        #region Help Information
+
+        /// <summary>strEnglishHelpDoc</summary>
+        string strEnglishHelpDoc;
+        /// <summary>strJapaneseHelpDoc</summary>
+        string strJapaneseHelpDoc;
+
+        #endregion
+
         #endregion
 
         #region 初期処理
@@ -152,12 +156,23 @@ namespace DaoGen_Tool
             // コンボを初期化する。
             this.Init_cmb();
 
+            if (System.Diagnostics.Debugger.IsAttached || (Environment.GetCommandLineArgs().Length > 1 && Environment.GetCommandLineArgs()[1].ToUpper() == "DBG"))
+            {
+                // デバッグ実行のときは、リサイズ可とする
+                this.FormBorderStyle = FormBorderStyle.Sizable;
+            }
+            else
+            {
+                // デバッグなしで実行するときは、リサイズ不可とする
+                this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            }
+
             // ボタン状態の変更
             this.btnDelTable.Enabled = false;
             this.btnLoadColumn.Enabled = false;
             this.btnSetPrimaryKey.Enabled = false;
-  
-            this.btnDaoDefinitionGen.Enabled = false;       
+
+            this.btnDaoDefinitionGen.Enabled = false;
         }
 
         #endregion
@@ -239,7 +254,7 @@ namespace DaoGen_Tool
         private void ConnectionClose()
         {
             // 全部閉じる
-            
+
             if (this.SqlCn != null)
             {
                 this.SqlCn.Close();
@@ -259,7 +274,7 @@ namespace DaoGen_Tool
             {
                 this.OdpCn.Close();
             }
-            
+
             if (this.DB2Cn != null)
             {
                 this.DB2Cn.Close();
@@ -269,7 +284,7 @@ namespace DaoGen_Tool
             {
                 this.HiRDBCn.Close();
             }
-            
+
             if (this.MySqlCn != null)
             {
                 this.MySqlCn.Close();
@@ -439,10 +454,10 @@ namespace DaoGen_Tool
         private void LbxUpdateItems()
         {
             // ソートしてから、
-            SortedList sortedList = new SortedList(); 
+            SortedList sortedList = new SortedList();
             foreach (CTable table in this.HtSchemaCustom.Values)
             {
-                sortedList.Add(table.Name, table); 
+                sortedList.Add(table.Name, table);
             }
 
             // アイテムをクリアする。
@@ -507,7 +522,7 @@ namespace DaoGen_Tool
             this.tabPage2.Text = this.RM_GetString("TabPage2");
             //this.tabPage3.Text = "タブ３";
             this.tabPage3.Text = this.RM_GetString("TabPage3");
-            
+
             this.dataGridView1.DataSource = null;
             this.dataGridView2.DataSource = null;
             this.dataGridView3.DataSource = null;
@@ -536,7 +551,7 @@ namespace DaoGen_Tool
             {
                 // カーソルを待機状態にする
                 System.Windows.Forms.Cursor.Current = Cursors.WaitCursor;
-                
+
                 // コネクション オープン
                 this.ConnectionOpen();
 
@@ -691,7 +706,7 @@ namespace DaoGen_Tool
                 else if (this.rbnODP.Checked)
                 {
                     #region Oracle
-                    
+
                     if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
                     {
                         // DataSourceInformation
@@ -739,7 +754,7 @@ namespace DaoGen_Tool
                 else if (this.rbnDB2.Checked)
                 {
                     #region DB2
-                    
+
                     if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
                     {
                         // DataSourceInformation
@@ -947,7 +962,7 @@ namespace DaoGen_Tool
                 // 子画面タイトル編集
                 string temp = "";
 
-                if (this.cmbSchemaInfo.SelectedItem.ToString().Substring(0,2) == "・ ")
+                if (this.cmbSchemaInfo.SelectedItem.ToString().Substring(0, 2) == "・ ")
                 {
                     temp = this.cmbSchemaInfo.SelectedItem.ToString().Substring(2);
                 }
@@ -955,11 +970,11 @@ namespace DaoGen_Tool
                 {
                     temp = this.cmbSchemaInfo.SelectedItem.ToString();
                 }
-                
+
                 // スキーマ情報を子画面に表示
                 SimpleTextBoxWindow win = new SimpleTextBoxWindow();
                 //win._title = "DBMSのスキーマ情報の表示（" + temp + "）ダイアログ";
-                win._title = string.Format(this.RM_GetString("DisplaySchemaInfoDialogBox"),temp);
+                win._title = string.Format(this.RM_GetString("DisplaySchemaInfoDialogBox"), temp);
                 win._param = CmnMethods.DisplayDataString(this.DtSchma, writeLineFlag);
                 win.ShowDialog(this);
 
@@ -1007,12 +1022,12 @@ namespace DaoGen_Tool
 
                     // 注釈
                     //MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（SQL Server用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
-                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "SQL Server"),this.RM_GetString("CautionPrerequisiteCaption"));
-                    
+                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "SQL Server"), this.RM_GetString("CautionPrerequisiteCaption"));
+
                     #region テーブル・ビューの情報を取得
 
                     dtSchmaTables = this.SqlCn.GetSchema("Tables");
-                    
+
                     // スキーマの情報（カスタム）の作成
                     this.HtSchemaCustom = new Hashtable();
 
@@ -1028,7 +1043,7 @@ namespace DaoGen_Tool
                         else if ((string)row["TABLE_TYPE"] == "VIEW")
                         {
                             // ビューの取り込み。更新可能かどうかは判断しない。
-                            HtSchemaCustom.Add((string)row["TABLE_NAME"], 
+                            HtSchemaCustom.Add((string)row["TABLE_NAME"],
                                 new CTable((string)row["TABLE_NAME"], true));
                         }
                         else
@@ -1140,12 +1155,12 @@ namespace DaoGen_Tool
 
                     // 注釈
                     //MessageBox.Show("[" + userId + "]スキーマ（ユーザ）の所有するテーブルのみを対象とします（Oracle用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
-                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisiteOracle"),userId), this.RM_GetString("CautionPrerequisiteCaption"));
+                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisiteOracle"), userId), this.RM_GetString("CautionPrerequisiteCaption"));
 
                     #region テーブル・ビューの情報を取得
 
                     dtSchmaTables = this.OdpCn.GetSchema("Tables");
-                    dtSchmaViews = this.OdpCn.GetSchema("Views");                    
+                    dtSchmaViews = this.OdpCn.GetSchema("Views");
 
                     // スキーマの情報（カスタム）の作成
                     this.HtSchemaCustom = new Hashtable();
@@ -1164,7 +1179,7 @@ namespace DaoGen_Tool
                                     new CTable((string)row["TABLE_NAME"], false));
                             }
                             else { }
-                        }                        
+                        }
                     }
 
                     // ビューの取り込み。更新可能かどうかは判断しない。
@@ -1248,7 +1263,7 @@ namespace DaoGen_Tool
                     // 注釈
                     //MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（HiRDB用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
                     MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "ODBC"), this.RM_GetString("CautionPrerequisiteCaption"));
-                    
+
                     #region テーブル・ビューの情報を取得
 
                     dtSchmaTables = this.HiRDBCn.GetSchema("Tables");
@@ -1261,8 +1276,8 @@ namespace DaoGen_Tool
                     {
                         // システム テーブルは避ける。
                         if ((string)row["TABLE_TYPE"] == "TABLE")
-                            //|| (string)row["TABLE_TYPE"] == "ALIAS" →　別名はサポートしない
-                            //|| (string)row["TABLE_TYPE"] == "MATERIALIZED QUERY TABLE")
+                        //|| (string)row["TABLE_TYPE"] == "ALIAS" →　別名はサポートしない
+                        //|| (string)row["TABLE_TYPE"] == "MATERIALIZED QUERY TABLE")
                         {
                             // システム テーブルは避ける。
                             if ((string)row["TABLE_SCHEMA"].ToString().Substring(0, 3) == "SYS")
@@ -1350,7 +1365,7 @@ namespace DaoGen_Tool
                     // テーブル・ビューの取り込み。
                     foreach (System.Data.DataRow row in dtSchmaTables.Rows)
                     {
-                        string tableSchema =((string)row["TABLE_SCHEMA"]).ToUpper();
+                        string tableSchema = ((string)row["TABLE_SCHEMA"]).ToUpper();
 
                         if (tableSchema == "INFORMATION_SCHEMA" || tableSchema == "PG_CATALOG")
                         {
@@ -1388,7 +1403,7 @@ namespace DaoGen_Tool
                     if (dtSchmaViews != null)
                     {
                         //this.tabPage2.Text = "ヴュー情報";
-                        this.tabPage2.Text = this.RM_GetString("TabPage2VieuxInfo");                        
+                        this.tabPage2.Text = this.RM_GetString("TabPage2VieuxInfo");
                         this.dataGridView2.DataSource = dtSchmaViews;
                     }
                 }
@@ -1408,7 +1423,7 @@ namespace DaoGen_Tool
                 this.btnSetPrimaryKey.Enabled = false;
 
                 this.cmbEncoding.Enabled = false;
-                this.btnDaoDefinitionGen.Enabled = false;                     
+                this.btnDaoDefinitionGen.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -1422,7 +1437,7 @@ namespace DaoGen_Tool
                 // カーソルを元に戻す
                 System.Windows.Forms.Cursor.Current = Cursors.Default;
             }
-        }        
+        }
 
         /// <summary>テーブルの削除処理</summary>
         private void btnDelTable_Click(object sender, EventArgs e)
@@ -1584,7 +1599,7 @@ namespace DaoGen_Tool
                         foreach (System.Data.DataRow row in dtSchmaConstraint.Rows)
                         {
                             //　制約レコードが主キーか？
-                            if(row["constraint_type"].ToString().IndexOf(
+                            if (row["constraint_type"].ToString().IndexOf(
                                 "PRIMARY KEY", StringComparison.CurrentCultureIgnoreCase) == -1)
                             {
                                 // 主キーでない。
@@ -1782,7 +1797,7 @@ namespace DaoGen_Tool
                                     // 自分のもの以外
                                 }
                             }
-                        }                        
+                        }
                     }
 
                     #endregion
@@ -1882,7 +1897,7 @@ namespace DaoGen_Tool
                                 // カラム名をキーにしてカラムを追加
                                 table.HtColumns_Name[(string)row["COLUMN_NAME"]] = column;
                             }
-                        }                        
+                        }
                     }
 
                     // 主キーの情報をロード・・・しない。
@@ -2070,7 +2085,7 @@ namespace DaoGen_Tool
         private void btnSetPrimaryKey_Click(object sender, EventArgs e)
         {
             bool isFirst = true;
-            
+
             foreach (string tableName in this.lbxTables.SelectedItems)
             {
                 // キャンセル処理
@@ -2106,7 +2121,7 @@ namespace DaoGen_Tool
         #endregion
 
         #region D層定義情報を生成する
-        
+
         /// <summary>D層定義情報を生成する</summary>
         private void btnDaoDefinitionGen_Click(object sender, EventArgs e)
         {
@@ -2140,7 +2155,7 @@ namespace DaoGen_Tool
                         // ファイルが指定されている。
 
                         // ファイル出力
-                        
+
                         // エンコーディングの指定
                         Encoding enc = Encoding.GetEncoding((int)this.cmbEncoding.SelectedValue);
 
@@ -2149,7 +2164,7 @@ namespace DaoGen_Tool
                         sw = new StreamWriter(sfd.FileName, false, enc);
                         sw_DBTypeInfo = new StreamWriter(sfd.FileName.Substring(0, temp) + "_DBTypeInfo" + sfd.FileName.Substring(temp), false, enc);
                         sw_DotNetTypeInfo = new StreamWriter(sfd.FileName.Substring(0, temp) + "_DotNetTypeInfo" + sfd.FileName.Substring(temp), false, enc);
-                        
+
                         // ファイル ヘッダーを出力
                         //sw.WriteLine("テーブル名,カラム情報～");
                         sw.WriteLine(this.RM_GetString("TableNameColInfo"));
@@ -2175,7 +2190,7 @@ namespace DaoGen_Tool
                                 string _else = "";
                                 string _else_DBTypeInfo = "";
                                 string _else_DotNetTypeInfo = "";
-                                
+
                                 // ソート後のカラム ポジション配列を廻す
                                 foreach (Int32 position in sort)
                                 {
@@ -2186,14 +2201,14 @@ namespace DaoGen_Tool
                                     {
                                         // 主キー列 // １行目
                                         pk += column.Name + ",";
-                                        pk_DBTypeInfo += column.DBTypeInfo + ","; 
+                                        pk_DBTypeInfo += column.DBTypeInfo + ",";
                                         pk_DotNetTypeInfo += column.DotNetTypeInfo + ",";
                                     }
                                     else
                                     {
                                         // その他の列 // ２行目
                                         _else += column.Name + ",";
-                                        _else_DBTypeInfo += column.DBTypeInfo + ","; 
+                                        _else_DBTypeInfo += column.DBTypeInfo + ",";
                                         _else_DotNetTypeInfo += column.DotNetTypeInfo + ",";
                                     }
                                 }
@@ -2209,11 +2224,16 @@ namespace DaoGen_Tool
                             }
                         }
                     }
+                    // メッセージ
+                    //MessageBox.Show("Ｄ層定義情報の生成完了！");
+                    MessageBox.Show(this.RM_GetString("DlayerGeneratedMessage"));
                 }
-
-                // メッセージ
-                //MessageBox.Show("Ｄ層定義情報の生成完了！");
-                MessageBox.Show(this.RM_GetString("DlayerGeneratedMessage"));
+                else
+                {
+                    // メッセージ
+                    //MessageBox.Show("操作はキャンセルされました。");
+                    MessageBox.Show(this.RM_GetString("DLayerCancelledmessage"));
+                }
             }
             catch (Exception ex)
             {
@@ -2275,6 +2295,52 @@ namespace DaoGen_Tool
         {
             ResourceManager rm = Resources.Resource.ResourceManager;
             return rm.GetString(key);
+        }
+        /// <summary> To handle UI of button controls</summary> 
+        private void btnLoadColumn_EnabledChanged(object sender, EventArgs e)
+        {
+            Button btnLoadColor = (Button)sender;
+            if (btnLoadColor.Enabled)
+            {
+                btnLoadColor.BackColor = Color.FromArgb(91, 155, 213);
+                btnLoadColor.ForeColor = Color.White;
+            }
+            else
+            {
+                btnLoadColor.BackColor = Color.LightGray;
+                btnLoadColor.ForeColor = Color.DarkGray;
+            }
+        }
+
+        /// <summary> To handle UI of button controls</summary> 
+        private void btnDaoDefinitionGen_EnabledChanged(object sender, EventArgs e)
+        {
+            Button btnDaoDefinitionGenColor = (Button)sender;
+            if (btnDaoDefinitionGenColor.Enabled)
+            {
+                btnDaoDefinitionGenColor.BackColor = Color.FromArgb(34, 42, 53);
+                btnDaoDefinitionGenColor.ForeColor = Color.White;
+            }
+            else
+            {
+                btnDaoDefinitionGenColor.BackColor = Color.FromArgb(191, 202, 207);
+                btnDaoDefinitionGenColor.ForeColor = Color.White;
+            }
+        }
+
+        /// <summary> To get more information on DaoGen tool.</summary> 
+        private void lnkHelp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (Application.CurrentCulture.Name == "ja-JP")
+            {
+                strJapaneseHelpDoc = GetConfigParameter.GetConfigValue("LnkHelpDoc_Ja");
+                Process.Start(strJapaneseHelpDoc);
+            }
+            else
+            {
+                strEnglishHelpDoc = GetConfigParameter.GetConfigValue("LnkHelpDoc_En");
+                Process.Start(strEnglishHelpDoc);
+            }
         }
     }
 }

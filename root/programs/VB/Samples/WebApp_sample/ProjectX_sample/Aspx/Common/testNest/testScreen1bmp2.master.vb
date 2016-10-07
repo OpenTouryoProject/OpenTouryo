@@ -1,11 +1,8 @@
 ﻿'**********************************************************************************
-'* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+'* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 '**********************************************************************************
 
 #Region "Apache License"
-'
-'  
-' 
 '  
 ' Licensed under the Apache License, Version 2.0 (the "License");
 ' you may not use this file except in compliance with the License. 
@@ -37,5 +34,6 @@
 Imports Touryo.Infrastructure.Framework.Presentation
 
 Public Partial Class Aspx_Common_testNest_testScreen1bmp2
-	Inherits BaseMasterController
+    Inherits BaseMasterController
 End Class
+

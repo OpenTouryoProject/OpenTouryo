@@ -1,8 +1,8 @@
-<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/TestScreen1.master" AutoEventWireup="true" CodeFile="testScreen1.aspx.vb" Inherits="Aspx_testFxLayerP_normal_testScreen1" Title="Untitled Page" %>
+<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/TestScreen1.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_testFxLayerP_normal_testScreen1" Title="Untitled Page" Codebehind="testScreen1.aspx.vb" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
-    <!-- Copyright (C) 2007,2014 Hitachi Solutions,Ltd. -->
+    <!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
     コンテンツ ページ１（個別）<br />
     <table border="1">
         <tr>

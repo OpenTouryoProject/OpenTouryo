@@ -15,8 +15,6 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
 
-Imports MyType
-
 ' System
 Imports System
 Imports System.IO
@@ -57,6 +55,7 @@ Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
+
 
 ''' <summary>三層データバインド・サンプル アプリ画面（検索一覧表示）</summary>
 Partial Public Class ProductsConditionalSearch
@@ -336,3 +335,5 @@ Partial Public Class ProductsConditionalSearch
 
 #End Region
 End Class
+
+

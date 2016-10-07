@@ -56,39 +56,42 @@ using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
-/// <summary>メニュー画面</summary>
-public partial class Aspx_start_menu : MyBaseController
+namespace ProjectX_sample.Aspx.Start
 {
-    #region ページロードのUOCメソッド
-
-    /// <summary>
-    /// ページロードのUOCメソッド（個別：初回ロード）
-    /// </summary>
-    /// <remarks>
-    /// 実装必須
-    /// </remarks>
-    protected override void UOC_FormInit()
+    /// <summary>メニュー画面</summary>
+    public partial class menu : MyBaseController
     {
-        // フォーム初期化（初回ロード）時に実行する処理を実装する
+        #region ページロードのUOCメソッド
 
-        // TODO:
-        // ここでは何もしない
-        Response.Write(Session["test"]);
-    }
+        /// <summary>
+        /// ページロードのUOCメソッド（個別：初回ロード）
+        /// </summary>
+        /// <remarks>
+        /// 実装必須
+        /// </remarks>
+        protected override void UOC_FormInit()
+        {
+            // フォーム初期化（初回ロード）時に実行する処理を実装する
 
-    /// <summary>
-    /// ページロードのUOCメソッド（個別：ポストバック）
-    /// </summary>
-    /// <remarks>
-    /// 実装必須
-    /// </remarks>
-    protected override void UOC_FormInit_PostBack()
-    {
-        // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // TODO:
+            // ここでは何もしない
+            Response.Write(Session["test"]);
+        }
 
-        // TODO:
-        // ここでは何もしない
-    }
+        /// <summary>
+        /// ページロードのUOCメソッド（個別：ポストバック）
+        /// </summary>
+        /// <remarks>
+        /// 実装必須
+        /// </remarks>
+        protected override void UOC_FormInit_PostBack()
+        {
+            // フォーム初期化（ポストバック）時に実行する処理を実装する
 
-    #endregion
+            // TODO:
+            // ここでは何もしない
+        }
+
+        #endregion
+    } 
 }

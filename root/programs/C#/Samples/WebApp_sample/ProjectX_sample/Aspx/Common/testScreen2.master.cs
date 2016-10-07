@@ -1,11 +1,8 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
-//
-//  
-// 
 //  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
@@ -34,9 +31,13 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+// Touryo
 using Touryo.Infrastructure.Framework.Presentation;
 
-/// <summary>テスト画面２用のマスタ ページ</summary>
-public partial class Aspx_Common_testScreen2 : BaseMasterController
+namespace ProjectX_sample.Aspx.Common
 {
+    /// <summary>テスト画面２用のマスタ ページ</summary>
+    public partial class testScreen2 : BaseMasterController
+    {
+    } 
 }

@@ -56,217 +56,221 @@ using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
-/// <summary>AspnetAjaxのテスト画面（Ｐ層）</summary>
-public partial class Aspx_testFxLayerP_withAjax_testExtension_Separate : MyBaseController
+namespace ProjectX_sample.Aspx.testFxLayerP.withAjax
 {
-    #region ページロードのUOCメソッド
-
-    /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
-    /// <remarks>実装必須</remarks>
-    protected override void UOC_FormInit()
+    /// <summary>AspnetAjaxのテスト画面（Ｐ層）</summary>
+    public partial class testExtension_Separate : MyBaseController
     {
-        // フォーム初期化（初回ロード）時に実行する処理を実装する
-        // TODO:
+        #region ページロードのUOCメソッド
+
+        /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
+        /// <remarks>実装必須</remarks>
+        protected override void UOC_FormInit()
+        {
+            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // TODO:
+        }
+
+        /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
+        /// <remarks>実装必須</remarks>
+        protected override void UOC_FormInit_PostBack()
+        {
+            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // TODO:
+        }
+
+        #endregion
+
+        #region マスタ ページ上のフレームワーク対象コントロール
+
+        /// <summary>btnMButton4のクリックイベント</summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        protected string UOC_testAspNetAjaxExtension_Separate_btnMButton4_Click(FxEventArgs fxEventArgs)
+        {
+            // 待機する（UpdateProgress、二重送信確認用）
+            System.Threading.Thread.Sleep(3000);
+
+            // テキストボックスの値を変更
+            TextBox textBox = (TextBox)this.GetMasterWebControl("TextBox5");
+            textBox.Text = "ajaxのポストバック（ボタンクリック）";
+
+            // ajaxのイベントハンドラでは画面遷移しないこと。
+            return "";
+        }
+
+        /// <summary>btnMButton5のクリックイベント</summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        protected string UOC_testAspNetAjaxExtension_Separate_btnMButton5_Click(FxEventArgs fxEventArgs)
+        {
+            // 待機する（二重送信確認用）
+            System.Threading.Thread.Sleep(3000);
+
+            // テキストボックスの値を変更
+            TextBox textBox = (TextBox)this.GetMasterWebControl("TextBox6");
+            textBox.Text = "通常のポストバック（ボタンクリック）";
+
+            return "";
+        }
+
+        /// <summary>
+        /// ddlMDropDownList3のSelectedIndexChangedイベント
+        /// </summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        protected string UOC_testAspNetAjaxExtension_Separate_ddlMDropDownList3_SelectedIndexChanged(FxEventArgs fxEventArgs)
+        {
+            // 待機する（UpdateProgress、二重送信確認用）
+            System.Threading.Thread.Sleep(3000);
+
+            // テキストボックスの値を変更
+            TextBox textBox = (TextBox)this.GetMasterWebControl("TextBox7");
+            textBox.Text = "ajaxのポストバック（ＤＤＬのセレクト インデックス チェンジ）";
+
+            // ajaxのイベントハンドラでは画面遷移しないこと。
+            return "";
+        }
+
+        /// <summary>
+        /// ddlMDropDownList4のSelectedIndexChangedイベント
+        /// </summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        protected string UOC_testAspNetAjaxExtension_Separate_ddlMDropDownList4_SelectedIndexChanged(FxEventArgs fxEventArgs)
+        {
+            // 待機する（二重送信確認用）
+            System.Threading.Thread.Sleep(3000);
+
+            // テキストボックスの値を変更
+            TextBox textBox = (TextBox)this.GetMasterWebControl("TextBox8");
+            textBox.Text = "通常のポストバック（ＤＤＬのセレクト インデックス チェンジ）";
+
+            return "";
+        }
+
+        /// <summary>btnMButton6のクリックイベント</summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        protected string UOC_testAspNetAjaxExtension_Separate_btnMButton6_Click(FxEventArgs fxEventArgs)
+        {
+            // 待機する（二重送信確認用）
+            System.Threading.Thread.Sleep(3000);
+
+            throw new Exception("Ajaxでエラー");
+
+            //return "";
+        }
+
+        #endregion
+
+        #region コンテンツ ページ上のフレームワーク対象コントロール
+
+        /// <summary>btnButton1のクリックイベント</summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        protected string UOC_btnButton1_Click(FxEventArgs fxEventArgs)
+        {
+            // Ajaxを制御する場合は、ScriptManagerを使用する。
+            // このクラスを使用すると、Ajax中であるかどうかを判別できる。
+            bool isInAsyncPostBack = this.CurrentScriptManager.IsInAsyncPostBack;
+            FxEnum.AjaxExtStat ajaxES = this.AjaxExtensionStatus;
+
+            // 待機する（UpdateProgress、二重送信確認用）
+            System.Threading.Thread.Sleep(3000);
+
+            // テキストボックスの値を変更
+            TextBox textBox = (TextBox)this.GetContentWebControl("TextBox1");
+            textBox.Text = "ajaxのポストバック（ボタンクリック）";
+
+            // ajaxのイベントハンドラでは画面遷移しないこと。
+            return "";
+        }
+
+        /// <summary>btnButton2のクリックイベント</summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
+        {
+            // Ajaxを制御する場合は、ScriptManagerを使用する。
+            // このクラスを使用すると、Ajax中であるかどうかを判別できる。
+            bool isInAsyncPostBack = this.CurrentScriptManager.IsInAsyncPostBack;
+            FxEnum.AjaxExtStat ajaxES = this.AjaxExtensionStatus;
+
+            // 待機する（二重送信確認用）
+            System.Threading.Thread.Sleep(3000);
+
+            // テキストボックスの値を変更
+            TextBox textBox = (TextBox)this.GetContentWebControl("TextBox2");
+            textBox.Text = "通常のポストバック（ボタンクリック）";
+
+            return "";
+        }
+
+        /// <summary>
+        /// ddlDropDownList1のSelectedIndexChangedイベント
+        /// </summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        protected string UOC_ddlDropDownList1_SelectedIndexChanged(FxEventArgs fxEventArgs)
+        {
+            // Ajaxを制御する場合は、ScriptManagerを使用する。
+            // このクラスを使用すると、Ajax中であるかどうかを判別できる。
+            bool isInAsyncPostBack = this.CurrentScriptManager.IsInAsyncPostBack;
+            FxEnum.AjaxExtStat ajaxES = this.AjaxExtensionStatus;
+
+            // 待機する（UpdateProgress、二重送信確認用）
+            System.Threading.Thread.Sleep(3000);
+
+            // テキストボックスの値を変更
+            TextBox textBox = (TextBox)this.GetContentWebControl("TextBox3");
+            textBox.Text = "ajaxのポストバック（ＤＤＬのセレクト インデックス チェンジ）";
+
+            // ajaxのイベントハンドラでは画面遷移しないこと。
+            return "";
+        }
+
+        /// <summary>
+        /// ddlDropDownList2のSelectedIndexChangedイベント
+        /// </summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        protected string UOC_ddlDropDownList2_SelectedIndexChanged(FxEventArgs fxEventArgs)
+        {
+            // Ajaxを制御する場合は、ScriptManagerを使用する。
+            // このクラスを使用すると、Ajax中であるかどうかを判別できる。
+            bool isInAsyncPostBack = this.CurrentScriptManager.IsInAsyncPostBack;
+            FxEnum.AjaxExtStat ajaxES = this.AjaxExtensionStatus;
+
+            // 待機する（二重送信確認用）
+            System.Threading.Thread.Sleep(3000);
+
+            // テキストボックスの値を変更
+            TextBox textBox = (TextBox)this.GetContentWebControl("TextBox4");
+            textBox.Text = "通常のポストバック（ＤＤＬのセレクト インデックス チェンジ）";
+
+            return "";
+        }
+
+        /// <summary>btnButton3のクリックイベント</summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        protected string UOC_btnButton3_Click(FxEventArgs fxEventArgs)
+        {
+            // Ajaxを制御する場合は、ScriptManagerを使用する。
+            // このクラスを使用すると、Ajax中であるかどうかを判別できる。
+            bool isInAsyncPostBack = this.CurrentScriptManager.IsInAsyncPostBack;
+            FxEnum.AjaxExtStat ajaxES = this.AjaxExtensionStatus;
+
+            // 待機する（UpdateProgress、二重送信確認用）
+            System.Threading.Thread.Sleep(3000);
+
+            throw new Exception("Ajaxでエラー");
+
+            //return "";
+        }
+
+        #endregion
     }
-
-    /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
-    /// <remarks>実装必須</remarks>
-    protected override void UOC_FormInit_PostBack()
-    {
-        // フォーム初期化（ポストバック）時に実行する処理を実装する
-        // TODO:
-    }
-
-    #endregion
-
-    #region マスタ ページ上のフレームワーク対象コントロール
-
-    /// <summary>btnMButton4のクリックイベント</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_testAspNetAjaxExtension_Separate_btnMButton4_Click(FxEventArgs fxEventArgs)
-    {
-        // 待機する（UpdateProgress、二重送信確認用）
-        System.Threading.Thread.Sleep(3000);
-
-        // テキストボックスの値を変更
-        TextBox textBox = (TextBox)this.GetMasterWebControl("TextBox5");
-        textBox.Text = "ajaxのポストバック（ボタンクリック）";
-
-        // ajaxのイベントハンドラでは画面遷移しないこと。
-        return "";
-    }
-
-    /// <summary>btnMButton5のクリックイベント</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_testAspNetAjaxExtension_Separate_btnMButton5_Click(FxEventArgs fxEventArgs)
-    {
-        // 待機する（二重送信確認用）
-        System.Threading.Thread.Sleep(3000);
-
-        // テキストボックスの値を変更
-        TextBox textBox = (TextBox)this.GetMasterWebControl("TextBox6");
-        textBox.Text = "通常のポストバック（ボタンクリック）";
-
-        return "";
-    }
-
-    /// <summary>
-    /// ddlMDropDownList3のSelectedIndexChangedイベント
-    /// </summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_testAspNetAjaxExtension_Separate_ddlMDropDownList3_SelectedIndexChanged(FxEventArgs fxEventArgs)
-    {
-        // 待機する（UpdateProgress、二重送信確認用）
-        System.Threading.Thread.Sleep(3000);
-
-        // テキストボックスの値を変更
-        TextBox textBox = (TextBox)this.GetMasterWebControl("TextBox7");
-        textBox.Text = "ajaxのポストバック（ＤＤＬのセレクト インデックス チェンジ）";
-
-        // ajaxのイベントハンドラでは画面遷移しないこと。
-        return "";
-    }
-
-    /// <summary>
-    /// ddlMDropDownList4のSelectedIndexChangedイベント
-    /// </summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_testAspNetAjaxExtension_Separate_ddlMDropDownList4_SelectedIndexChanged(FxEventArgs fxEventArgs)
-    {
-        // 待機する（二重送信確認用）
-        System.Threading.Thread.Sleep(3000);
-
-        // テキストボックスの値を変更
-        TextBox textBox = (TextBox)this.GetMasterWebControl("TextBox8");
-        textBox.Text = "通常のポストバック（ＤＤＬのセレクト インデックス チェンジ）";
-
-        return "";
-    }
-
-    /// <summary>btnMButton6のクリックイベント</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_testAspNetAjaxExtension_Separate_btnMButton6_Click(FxEventArgs fxEventArgs)
-    {
-        // 待機する（二重送信確認用）
-        System.Threading.Thread.Sleep(3000);
-
-        throw new Exception("Ajaxでエラー");
-
-        //return "";
-    }
-
-    #endregion
-
-    #region コンテンツ ページ上のフレームワーク対象コントロール
-
-    /// <summary>btnButton1のクリックイベント</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_btnButton1_Click(FxEventArgs fxEventArgs)
-    {
-        // Ajaxを制御する場合は、ScriptManagerを使用する。
-        // このクラスを使用すると、Ajax中であるかどうかを判別できる。
-        bool isInAsyncPostBack = this.CurrentScriptManager.IsInAsyncPostBack;
-        FxEnum.AjaxExtStat ajaxES = this.AjaxExtensionStatus;
-
-        // 待機する（UpdateProgress、二重送信確認用）
-        System.Threading.Thread.Sleep(3000);
-
-        // テキストボックスの値を変更
-        TextBox textBox = (TextBox)this.GetContentWebControl("TextBox1");
-        textBox.Text = "ajaxのポストバック（ボタンクリック）";
-
-        // ajaxのイベントハンドラでは画面遷移しないこと。
-        return "";
-    }
-
-    /// <summary>btnButton2のクリックイベント</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
-    {
-        // Ajaxを制御する場合は、ScriptManagerを使用する。
-        // このクラスを使用すると、Ajax中であるかどうかを判別できる。
-        bool isInAsyncPostBack = this.CurrentScriptManager.IsInAsyncPostBack;
-        FxEnum.AjaxExtStat ajaxES = this.AjaxExtensionStatus;
-        
-        // 待機する（二重送信確認用）
-        System.Threading.Thread.Sleep(3000);
-
-        // テキストボックスの値を変更
-        TextBox textBox = (TextBox)this.GetContentWebControl("TextBox2");
-        textBox.Text = "通常のポストバック（ボタンクリック）"; 
-
-        return "";
-    }
-
-    /// <summary>
-    /// ddlDropDownList1のSelectedIndexChangedイベント
-    /// </summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_ddlDropDownList1_SelectedIndexChanged(FxEventArgs fxEventArgs)
-    {
-        // Ajaxを制御する場合は、ScriptManagerを使用する。
-        // このクラスを使用すると、Ajax中であるかどうかを判別できる。
-        bool isInAsyncPostBack = this.CurrentScriptManager.IsInAsyncPostBack;
-        FxEnum.AjaxExtStat ajaxES = this.AjaxExtensionStatus;
-
-        // 待機する（UpdateProgress、二重送信確認用）
-        System.Threading.Thread.Sleep(3000);
-
-        // テキストボックスの値を変更
-        TextBox textBox = (TextBox)this.GetContentWebControl("TextBox3");
-        textBox.Text = "ajaxのポストバック（ＤＤＬのセレクト インデックス チェンジ）";
-
-        // ajaxのイベントハンドラでは画面遷移しないこと。
-        return "";
-    }
-
-    /// <summary>
-    /// ddlDropDownList2のSelectedIndexChangedイベント
-    /// </summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_ddlDropDownList2_SelectedIndexChanged(FxEventArgs fxEventArgs)
-    {
-        // Ajaxを制御する場合は、ScriptManagerを使用する。
-        // このクラスを使用すると、Ajax中であるかどうかを判別できる。
-        bool isInAsyncPostBack = this.CurrentScriptManager.IsInAsyncPostBack;
-        FxEnum.AjaxExtStat ajaxES = this.AjaxExtensionStatus;
-
-        // 待機する（二重送信確認用）
-        System.Threading.Thread.Sleep(3000);
-
-        // テキストボックスの値を変更
-        TextBox textBox = (TextBox)this.GetContentWebControl("TextBox4");
-        textBox.Text = "通常のポストバック（ＤＤＬのセレクト インデックス チェンジ）";
-
-        return "";
-    }
-
-    /// <summary>btnButton3のクリックイベント</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_btnButton3_Click(FxEventArgs fxEventArgs)
-    {
-        // Ajaxを制御する場合は、ScriptManagerを使用する。
-        // このクラスを使用すると、Ajax中であるかどうかを判別できる。
-        bool isInAsyncPostBack = this.CurrentScriptManager.IsInAsyncPostBack;
-        FxEnum.AjaxExtStat ajaxES = this.AjaxExtensionStatus;
-
-        // 待機する（UpdateProgress、二重送信確認用）
-        System.Threading.Thread.Sleep(3000);
-
-        throw new Exception("Ajaxでエラー");
-
-        //return "";
-    }
-
-    #endregion
+    
 }

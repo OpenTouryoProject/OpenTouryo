@@ -1,6 +1,5 @@
-<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true"
-    CodeFile="testListView.aspx.cs" Inherits="Aspx_testFxLayerP_table_testListView"
-    Title="Untitled Page" EnableEventValidation="false" %>
+<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.testFxLayerP.table.testListView"
+    Title="Untitled Page" EnableEventValidation="false" Codebehind="testListView.aspx.cs" %>
 
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl"
     TagPrefix="cc1" %>

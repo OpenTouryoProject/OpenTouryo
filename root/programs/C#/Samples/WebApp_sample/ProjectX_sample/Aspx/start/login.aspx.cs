@@ -15,7 +15,7 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System～
+// System
 using System;
 using System.IO;
 using System.Data;
@@ -56,132 +56,135 @@ using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
-/// <summary>ログイン画面（Forms認証対応）</summary>
-public partial class Aspx_Start_login : MyBaseController
+namespace ProjectX_sample.Aspx.Start
 {
-    public Aspx_Start_login()
+    /// <summary>ログイン画面（Forms認証対応）</summary>
+    public partial class login : MyBaseController
     {
-        this.IsNoSession = true;
-    }
-
-    #region ページロードのUOCメソッド
-
-    /// <summary>
-    /// ページロードのUOCメソッド（個別：初回ロード）
-    /// </summary>
-    /// <remarks>
-    /// 実装必須
-    /// </remarks>
-    protected override void UOC_FormInit()
-    {
-        // フォーム初期化（初回ロード）時に実行する処理を実装する
-
-        // TODO:
-        // ここでは何もしない
-
-        // Session消去
-        this.FxSessionAbandon();
-        
-    }
-
-    /// <summary>
-    /// ページロードのUOCメソッド（個別：ポストバック）
-    /// </summary>
-    /// <remarks>
-    /// 実装必須
-    /// </remarks>
-    protected override void UOC_FormInit_PostBack()
-    {
-        // フォーム初期化（ポストバック）時に実行する処理を実装する
-
-        // TODO:
-        // ここでは何もしない
-
-        // btnButton1のイベントであれば、Session消去しない
-        if (Request.Form["ctl00$ContentPlaceHolder_A$btnButton1"] == null)
+        public login()
         {
-            // Session消去
-            this.FxSessionAbandon();
+            this.IsNoSession = true;
         }
-    }
 
-    #endregion
+        #region ページロードのUOCメソッド
 
-    #region イベントハンドラ 
-
-    /// <summary>ログイン</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_btnButton1_Click(FxEventArgs fxEventArgs)
-    {
-        // ここで、入力されたユーザIDと、パスワードをチェックし、ユーザ認証する。
-
-        if (this.txtUserID.Text != "")  // 現時点では、全て(空文字以外)認証する。
+        /// <summary>
+        /// ページロードのUOCメソッド（個別：初回ロード）
+        /// </summary>
+        /// <remarks>
+        /// 実装必須
+        /// </remarks>
+        protected override void UOC_FormInit()
         {
-            // 認証か完了した場合、認証チケットを生成し、元のページにRedirectする。
-            // 第２引数は、「クライアントがCookieを永続化（ファイルとして保存）するかどうか。」
-            // を設定する引数であるが、セキュリティを考慮して、falseの設定を勧める。
-            FormsAuthentication.RedirectFromLoginPage(this.txtUserID.Text, false);
+            // フォーム初期化（初回ロード）時に実行する処理を実装する
 
-            // 認証情報を保存する。
-            MyUserInfo ui = new MyUserInfo(this.txtUserID.Text, Request.UserHostAddress);
-            UserInfoHandle.SetUserInformation(ui);
-
-            // 認証Sessionの場合のテスト
-            Session["test"] = "test";
-        }
-        else
-        {
-            // 認証に失敗した場合は、メッセージを表示する
-            this.lblMessage.Text = "認証に失敗しました。ユーザIDか、パスワードが間違っています。";
+            // TODO:
+            // ここでは何もしない
 
             // Session消去
             this.FxSessionAbandon();
+
         }
 
-        // 画面遷移はしない（基盤に任せるため）。
-        return string.Empty;
-    }
-
-    /*
-    /// <summary>ログイン</summary>
-    /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-    /// <returns>URL</returns>
-    protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
-    {
-        // ここで、入力されたユーザIDと、パスワードをチェックし、ユーザ認証する。
-
-        if (this.txtUserID.Text != "")  // 現時点では、全て(空文字以外)認証する。
+        /// <summary>
+        /// ページロードのUOCメソッド（個別：ポストバック）
+        /// </summary>
+        /// <remarks>
+        /// 実装必須
+        /// </remarks>
+        protected override void UOC_FormInit_PostBack()
         {
-            // 認証か完了した場合、認証チケットを生成し、元のページにRedirectする。
-            // 第２引数は、「クライアントがCookieを永続化（ファイルとして保存）するかどうか。」
-            // を設定する引数であるが、セキュリティを考慮して、falseの設定を勧める。
-            FormsAuthentication.RedirectFromLoginPage(this.txtUserID.Text, false);
+            // フォーム初期化（ポストバック）時に実行する処理を実装する
 
-            // 認証情報を保存する。
-            MyUserInfo ui = new MyUserInfo(this.txtUserID.Text, Request.UserHostAddress);
-            UserInfoHandle.SetUserInformation(ui);
+            // TODO:
+            // ここでは何もしない
 
-            // 認証Sessionの場合のテスト
-            Session["test"] = "test";
-
-            // 画面遷移制御機能を使用する。
-            // （mode：Tで遷移するとエラー）
-            return "menu";
+            // btnButton1のイベントであれば、Session消去しない
+            if (Request.Form["ctl00$ContentPlaceHolder_A$btnButton1"] == null)
+            {
+                // Session消去
+                this.FxSessionAbandon();
+            }
         }
-        else
+
+        #endregion
+
+        #region イベントハンドラ
+
+        /// <summary>ログイン</summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        protected string UOC_btnButton1_Click(FxEventArgs fxEventArgs)
         {
-            // 認証に失敗した場合は、メッセージを表示する
-            this.lblMessage.Text = "認証に失敗しました。ユーザIDか、パスワードが間違っています。";
+            // ここで、入力されたユーザIDと、パスワードをチェックし、ユーザ認証する。
 
-            // Session消去
-            this.FxSessionAbandon();
+            if (this.txtUserID.Text != "")  // 現時点では、全て(空文字以外)認証する。
+            {
+                // 認証か完了した場合、認証チケットを生成し、元のページにRedirectする。
+                // 第２引数は、「クライアントがCookieを永続化（ファイルとして保存）するかどうか。」
+                // を設定する引数であるが、セキュリティを考慮して、falseの設定を勧める。
+                FormsAuthentication.RedirectFromLoginPage(this.txtUserID.Text, false);
+
+                // 認証情報を保存する。
+                MyUserInfo ui = new MyUserInfo(this.txtUserID.Text, Request.UserHostAddress);
+                UserInfoHandle.SetUserInformation(ui);
+
+                // 認証Sessionの場合のテスト
+                Session["test"] = "test";
+            }
+            else
+            {
+                // 認証に失敗した場合は、メッセージを表示する
+                this.lblMessage.Text = "認証に失敗しました。ユーザIDか、パスワードが間違っています。";
+
+                // Session消去
+                this.FxSessionAbandon();
+            }
+
+            // 画面遷移はしない（基盤に任せるため）。
+            return string.Empty;
         }
 
-        // 画面遷移はしない
-        return string.Empty;
-    }
-    */
+        /*
+        /// <summary>ログイン</summary>
+        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <returns>URL</returns>
+        protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
+        {
+            // ここで、入力されたユーザIDと、パスワードをチェックし、ユーザ認証する。
 
-    #endregion
+            if (this.txtUserID.Text != "")  // 現時点では、全て(空文字以外)認証する。
+            {
+                // 認証か完了した場合、認証チケットを生成し、元のページにRedirectする。
+                // 第２引数は、「クライアントがCookieを永続化（ファイルとして保存）するかどうか。」
+                // を設定する引数であるが、セキュリティを考慮して、falseの設定を勧める。
+                FormsAuthentication.RedirectFromLoginPage(this.txtUserID.Text, false);
+
+                // 認証情報を保存する。
+                MyUserInfo ui = new MyUserInfo(this.txtUserID.Text, Request.UserHostAddress);
+                UserInfoHandle.SetUserInformation(ui);
+
+                // 認証Sessionの場合のテスト
+                Session["test"] = "test";
+
+                // 画面遷移制御機能を使用する。
+                // （mode：Tで遷移するとエラー）
+                return "menu";
+            }
+            else
+            {
+                // 認証に失敗した場合は、メッセージを表示する
+                this.lblMessage.Text = "認証に失敗しました。ユーザIDか、パスワードが間違っています。";
+
+                // Session消去
+                this.FxSessionAbandon();
+            }
+
+            // 画面遷移はしない
+            return string.Empty;
+        }
+        */
+
+        #endregion
+    } 
 }

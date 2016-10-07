@@ -1,5 +1,5 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
@@ -45,10 +45,10 @@ namespace DaoGen_Tool
     {
 
         #region スキーマ情報の表示
-        
+
         /// <summary>スキーマ情報の表示</summary>
         /// <param name="table">スキーマ情報</param>
-        /// <param name="writeLine">線を低か引かないか</param>
+        /// <param name="writeLine">線を引くか引かないか</param>
         /// <returns>スキーマ情報</returns>
         public static string DisplayDataString(DataTable table, bool writeLine)
         {
@@ -81,7 +81,7 @@ namespace DaoGen_Tool
 
         /// <summary>スキーマ情報の表示</summary>
         /// <param name="table">スキーマ情報</param>
-        /// <param name="writeLine">線を低か引かないか</param>
+        /// <param name="writeLine">線を引くか引かないか</param>
         public static void DisplayDataConsole(DataTable table, bool writeLine)
         {
             if (writeLine)

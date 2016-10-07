@@ -1,8 +1,8 @@
-﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" CodeFile="testScreen0.aspx.vb" Inherits="Aspx_testFxLayerP_normal_testScreen0" Title="Untitled Page" %>
+﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_testFxLayerP_normal_testScreen0" Title="Untitled Page" Codebehind="testScreen0.aspx.vb" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
-    <!-- Copyright (C) 2007,2014 Hitachi Solutions,Ltd. -->
+    <!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
     ＜例外処理のテスト＞<br />
     <cc1:WebCustomButton id="btnAppEx" runat="server" text="業務例外" width="171px"></cc1:WebCustomButton><br/>
     <cc1:WebCustomButton id="btnSysEx" runat="server" text="システム例外" width="171px"></cc1:WebCustomButton><br/>

@@ -1,9 +1,9 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
-
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -36,6 +36,8 @@
 //*                              Implemented code to resume asynchronous process in the middle of the processing.
 //*  21/08/2015   Sandeep        Modified code to call layerD of AsynProcessingService instead of do business logic.
 //*  28/08/2015   Sandeep        Resolved transaction timeout issue by using DamKeyForABT and DamKeyForAMT properties.
+//*  07/06/2016   Sandeep        Implemented code that respond to various test cases, other than success state.
+//*  08/06/2016   Sandeep        Implemented method to update the command of selected task.
 //**********************************************************************************
 
 // System
@@ -75,6 +77,16 @@ namespace AsyncSvc_sample
         // Number of seconds
         private int NumberOfSeconds;
 
+        // Task progress rate
+        private int ProgressRate;
+
+        // Abort and Stop probability
+        private int AbortPercentage;
+        private int StopPercentage;
+
+        // Constant values
+        const int SUCCESS_STATE = 100;
+
         #endregion
 
         #region Member initialization
@@ -91,6 +103,28 @@ namespace AsyncSvc_sample
             else
             {
                 this.NumberOfSeconds = 5;
+            }
+
+            // Abort probability.
+            string abortPercentage = GetConfigParameter.GetConfigValue("FxAbortPercentage");
+            if (!string.IsNullOrEmpty(abortPercentage))
+            {
+                this.AbortPercentage = int.Parse(abortPercentage);
+            }
+            else
+            {
+                this.AbortPercentage = 3;
+            }
+
+            // Stop probability.
+            string stopPercentage = GetConfigParameter.GetConfigValue("FxStopPercentage");
+            if (!string.IsNullOrEmpty(stopPercentage))
+            {
+                this.StopPercentage = int.Parse(stopPercentage);
+            }
+            else
+            {
+                this.StopPercentage = 10;
             }
         }
 
@@ -153,15 +187,8 @@ namespace AsyncSvc_sample
         /// <param name="userReturnValue">asynchronous return value</param>
         private void ResumeProcessing(int taskID, AsyncProcessingServiceReturnValue userReturnValue)
         {
-            // Sets parameters of AsyncProcessingServiceParameterValue to resume asynchronous process in the middle of the processing.
-            AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "UpdateTaskCommand", "UpdateTaskCommand", "SQL",
-                                                                         new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
-            asyncParameterValue.TaskId = taskID;
-            asyncParameterValue.CommandId = 0;
-
-            // Calls data access part of asynchronous processing service.
-            LayerD myDao = new LayerD(this.GetDam(this.DamKeyforAMT));
-            myDao.UpdateTaskCommand(asyncParameterValue, userReturnValue);
+            // Reset the command of selected task.
+            this.UpdateTaskCommand(taskID, 0, userReturnValue);
         }
 
         /// <summary>
@@ -202,11 +229,16 @@ namespace AsyncSvc_sample
             {
                 // Retry task: to resume asynchronous process in the middle of the processing.
                 this.ResumeProcessing(userParameterValue.TaskId, userReturnValue);
+
+                // Updated progress rate will be taken as random number.
+                ProgressRate = this.GenerateProgressRate(ProgressRate);
             }
             else
             {
                 // Otherwise, implement code to initiating a new task. 
                 //...
+                // Hence, initializing progress rate to zero.
+                ProgressRate = 0;
             }
 
             // Updates the progress rate and handles abnormal termination of the process.
@@ -221,35 +253,85 @@ namespace AsyncSvc_sample
         private void Update(int taskID, AsyncProcessingServiceReturnValue userReturnValue)
         {
             // Place the following statements in the loop, till the completion of task.
-            // AsyncProcess: Loop-Start
-
-            // Get command information from database to check for retry.
-            this.GetCommandValue(taskID, userReturnValue);
-
-            switch (userReturnValue.CommandId)
+            while (true)
             {
-                case (int)AsyncProcessingServiceParameterValue.AsyncCommand.Stop:
-                    // If you want to retry, then throw the following exception.
-                    throw new BusinessApplicationException("APSStopCommand", GetMessage.GetMessageDescription("CTE0003"), "");
-                case (int)AsyncProcessingServiceParameterValue.AsyncCommand.Abort:
-                    // Implement code to forcefully Abort the task.
-                    //...
+                // Get command information from database to check for retry.
+                this.GetCommandValue(taskID, userReturnValue);
 
-                    // If the task is abnormal terminated, then throw the exception .
-                    throw new BusinessSystemException("APSAbortCommand", GetMessage.GetMessageDescription("CTE0004"));
-                default:
-                    // Update the progress rate in database.
-                    this.UpdateProgressRate(taskID, userReturnValue, 50);
+                switch (userReturnValue.CommandId)
+                {
+                    case (int)AsyncProcessingServiceParameterValue.AsyncCommand.Stop:
+                        // If you want to retry, then throw the following exception.
+                        throw new BusinessApplicationException("APSStopCommand", GetMessage.GetMessageDescription("CTE0003"), "");
+                    case (int)AsyncProcessingServiceParameterValue.AsyncCommand.Abort:
+                        // Implement code to forcefully Abort the task.
+                        //...
 
-                    // Sleeps the thread, to minimize the CPU utilization.
-                    System.Threading.Thread.Sleep(this.NumberOfSeconds * 1000);
-                    break;
+                        // If the task is abnormal terminated, then throw the exception .
+                        throw new BusinessSystemException("APSAbortCommand", GetMessage.GetMessageDescription("CTE0004"));
+                    default:
+                        // Generates new progress rate of the task.
+                        ProgressRate = this.GenerateProgressRate(ProgressRate);
+
+                        // Update the progress rate in database.
+                        this.UpdateProgressRate(taskID, userReturnValue, ProgressRate);
+
+                        if (ProgressRate < this.AbortPercentage)
+                        {
+                            // Update ABORT command to database
+                            this.UpdateTaskCommand(taskID, (int)AsyncProcessingServiceParameterValue.AsyncCommand.Abort, userReturnValue);
+                        }
+                        else if (ProgressRate < this.StopPercentage)
+                        {
+                            // Update STOP command to database
+                            this.UpdateTaskCommand(taskID, (int)AsyncProcessingServiceParameterValue.AsyncCommand.Stop, userReturnValue);
+                        }
+                        else if (ProgressRate == SUCCESS_STATE)
+                        {
+                            // Task is completed sucessfully.
+                            return;
+                        }
+
+                        // Sleeps the thread, to minimize the CPU utilization.
+                        System.Threading.Thread.Sleep(this.NumberOfSeconds * 1000);
+                        break;
+                }
             }
-            //AsyncProcess: Loop-End
+        }
 
-            // If loop ends with no error, that indicates the task is completed sucessfully.
-            return;
-        }        
+        /// <summary>
+        ///  Generates new progress rate for the task based on last progress rate in increasing order.
+        /// </summary>
+        /// <param name="lastProgressRate">Last progress rate</param>
+        /// <returns>New progress rate</returns>
+        private int GenerateProgressRate(int lastProgressRate)
+        {
+            // Sleeps the thread, to minimize the CPU utilization.
+            System.Threading.Thread.Sleep(this.NumberOfSeconds * 1000);
+
+            // Generate new progress rate
+            Random randProgressRate = new Random();
+            return randProgressRate.Next(lastProgressRate + 1, SUCCESS_STATE + 1);
+        }
+
+        /// <summary>
+        ///  Updates the command of selected task
+        /// </summary>
+        /// <param name="taskID">Task ID</param>
+        /// <param name="commandId">Command ID</param>
+        /// <param name="userReturnValue">user parameter value</param>
+        private void UpdateTaskCommand(int taskID, int commandId, AsyncProcessingServiceReturnValue userReturnValue)
+        {
+            // Sets parameters of AsyncProcessingServiceParameterValue to update the command of selected task.
+            AsyncProcessingServiceParameterValue asyncParameterValue = new AsyncProcessingServiceParameterValue("AsyncProcessingService", "UpdateTaskCommand", "UpdateTaskCommand", "SQL",
+                                                                         new MyUserInfo("AsyncProcessingService", "AsyncProcessingService"));
+            asyncParameterValue.TaskId = taskID;
+            asyncParameterValue.CommandId = commandId;
+
+            // Calls data access part of asynchronous processing service.
+            LayerD myDao = new LayerD(this.GetDam(this.DamKeyforAMT));
+            myDao.UpdateTaskCommand(asyncParameterValue, userReturnValue);
+        }
 
         #endregion
     }       

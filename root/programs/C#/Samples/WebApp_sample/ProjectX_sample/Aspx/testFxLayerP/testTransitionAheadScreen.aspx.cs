@@ -56,7 +56,10 @@ using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
-/// <summary>遷移先画面</summary>
-public partial class Aspx_testFxLayerP_testTransitionAheadScreen : System.Web.UI.Page
+namespace ProjectX_sample.Aspx.testFxLayerP
 {
+    /// <summary>遷移先画面</summary>
+    public partial class testTransitionAheadScreen : System.Web.UI.Page
+    {
+    } 
 }

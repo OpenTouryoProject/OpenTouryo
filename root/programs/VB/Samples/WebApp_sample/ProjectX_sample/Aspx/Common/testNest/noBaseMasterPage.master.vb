@@ -1,11 +1,8 @@
 ﻿'**********************************************************************************
-'* Copyright (C) 2007,2014 Hitachi Solutions,Ltd.
+'* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 '**********************************************************************************
 
 #Region "Apache License"
-'
-'  
-' 
 '  
 ' Licensed under the Apache License, Version 2.0 (the "License");
 ' you may not use this file except in compliance with the License. 
@@ -39,5 +36,5 @@ Imports System.Web
 Imports System.Web.UI
 
 Public Partial Class Aspx_Common_testNest_noBaseMasterPage
-	Inherits System.Web.UI.MasterPage
+    Inherits System.Web.UI.MasterPage
 End Class
