@@ -5,11 +5,11 @@
 ## 開発／動作環境(develop/run-time environment)
 このリポジトリのプログラムは、サポートされる最も古い開発／実行環境を使用して開発しています。 (I am developing the program of this repository, using the oldest supported develop/run-time environment.)
 - 開発環境 (develop environment)
-    - Visual Studio 2010
+    - Visual Studio 2016
 - 実行環境 (run-time environment)
-    - .NET Framework 3.5 SP1
+    - .NET Framework 4.6
 
-Visual Studio 2015 など、新しい開発環境を使用する場合は、[テンプレート・ベース](https://github.com/OpenTouryoProject/OpenTouryoTemplates)を参照してください。 (If you want to use the latest develop environment (e.g. Visual Studio 2015), please refer [Templates base](https://github.com/OpenTouryoProject/OpenTouryoTemplates).)
+新しい開発環境を使用する場合は、[テンプレート・ベース](https://github.com/OpenTouryoProject/OpenTouryoTemplatesV2)を参照してください。 (If you want to use the latest develop environment (e.g. Visual Studio 2015), please refer [Templates base](https://github.com/OpenTouryoProject/OpenTouryoTemplatesV2).)
 
 ## 概要(summary)
 以下のファイルを参照してください。
@@ -55,4 +55,4 @@ you can create a project template for the project for the appropriate Visual Stu
 以下のリポジトリを参照してください。詳しくは、各フォルダのReadmeを参照下さい。
 (Please refer to the following repository. For more information, please refer to the Readme for each folder.)
 
- - [OpenTouryoTemplates](https://github.com/OpenTouryoProject/OpenTouryoTemplates)
+ - [OpenTouryoTemplatesV2](https://github.com/OpenTouryoProject/OpenTouryoTemplatesV2)
