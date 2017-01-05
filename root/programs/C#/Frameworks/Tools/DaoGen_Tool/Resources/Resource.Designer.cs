@@ -124,15 +124,6 @@ namespace DaoGen_Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The operation was canceled..
-        /// </summary>
-        internal static string DLayerCancelledmessage {
-            get {
-                return ResourceManager.GetString("DLayerCancelledmessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Completion of generation of the D-layer definition information!.
         /// </summary>
         internal static string DlayerGeneratedMessage {

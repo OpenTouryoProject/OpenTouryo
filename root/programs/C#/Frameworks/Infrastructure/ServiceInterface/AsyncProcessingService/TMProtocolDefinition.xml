@@ -17,8 +17,8 @@
   <!-- マスタ データ -->
 
   <!-- 接続URL（asmx単位に定義する） -->
-  <Url id="url_a" value="http://localhost:8888/ASPNETWebService/ServiceForFx.asmx"/>
-  <Url id="url_b" value="http://localhost:8888/ASPNETWebService/WCFHTTPSvcForFx.svc"/>
+  <Url id="url_a" value="http://localhost/ASPNETWebService/ServiceForFx.asmx"/>
+  <Url id="url_b" value="http://localhost/ASPNETWebService/WCFHTTPSvcForFx.svc"/>
   <Url id="url_c" value="net.tcp://localhost:7777/WCFService/WCFTCPSvcForFx/"/>
 
   <!-- 接続オプション（必要に応じて） -->

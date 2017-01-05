@@ -19,6 +19,6 @@ namespace ProjectX_sample.Aspx.testFxLayerP {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl iframe1;
+        protected global::System.Web.UI.HtmlControls.HtmlIframe iframe1;
     }
 }

@@ -1,0 +1,9 @@
+﻿@if (Request.IsAuthenticated) {
+    <text>
+        こんにちは、@Html.ActionLink(User.Identity.Name, "Manage", "Account", routeValues: new { area = "" }, htmlAttributes: new { @class = "username", title = "管理" })
+        @using (Html.BeginForm("LogOff", "Account", new { area = "" }, FormMethod.Post, new { id = "logoutForm" })) {
+            @Html.AntiForgeryToken()
+            <a href="javascript:document.getElementById('logoutForm').submit()">ログオフ</a>
+        }
+    </text>
+}

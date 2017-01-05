@@ -1,0 +1,25 @@
+﻿@model MVC_Sample.Models.CrudModel
+@using MVC_Sample.DataSets
+
+@if (Model != null && Model.shippers != null)
+{
+                <table class="resultTable" border="1" style="border-collapse: collapse; border-color: black">
+                    <thead>
+                        <tr>
+                            <th>ShipperId</th>
+                            <th>CompanyName</th>
+                            <th>Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (DsNorthwind.ShippersRow row in Model.shippers.Rows)
+                    {
+                        <tr>
+                            <td>@row.ShipperID</td>
+                            <td>@row.CompanyName</td>
+                            <td>@row.Phone</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+}

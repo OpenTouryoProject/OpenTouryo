@@ -30,7 +30,6 @@ xcopy /E /Y "Frameworks\Infrastructure\Business\bin\%BUILD_CONFIG%" "Frameworks\
 xcopy /E /Y "Frameworks\Infrastructure\CustomControl\bin\%BUILD_CONFIG%" "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%\"
 
 xcopy /E /Y "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%" "Frameworks\Infrastructure\Build\"
-xcopy /E /Y "Frameworks\Infrastructure\Public\Dll" "Frameworks\Infrastructure\Build\"
 
 pause
 
@@ -46,6 +45,12 @@ xcopy /E /Y "Frameworks\Infrastructure\CustomControl\RichClient\bin\%BUILD_CONFI
 xcopy /E /Y "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%" "Frameworks\Infrastructure\Build\"
 
 pause
+
+rem --------------------------------------------------
+rem Delete the System.Web.MVC.dll after the bulk copy
+rem --------------------------------------------------
+del "Frameworks\Infrastructure\Build\System.Web.MVC.*"
+del "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%\System.Web.MVC.*"
 
 rem -------------------------------------------------------
 endlocal

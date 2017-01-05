@@ -20,5 +20,5 @@ Partial Public Class Aspx_testFxLayerP_testDLFrame
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents iframe1 As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+    Protected WithEvents iframe1 As Global.System.Web.UI.HtmlControls.HtmlIframe
 End Class

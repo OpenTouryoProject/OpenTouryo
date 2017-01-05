@@ -36,7 +36,7 @@
         <Button Height="23" HorizontalAlignment="Left" Margin="93,0,0,97" Name="button7" VerticalAlignment="Bottom" Width="140" Click="button7_Click" Canvas.Left="59.336" Canvas.Top="585">追加</Button>
         <Button Height="23" HorizontalAlignment="Left" Margin="174,0,0,97" Name="button8" VerticalAlignment="Bottom" Width="140" Click="button8_Click" Canvas.Left="124.336" Canvas.Top="585">更新</Button>
         <Button Height="23" HorizontalAlignment="Left" Margin="255,0,0,97" Name="button9" VerticalAlignment="Bottom" Width="140" Click="button9_Click" Canvas.Left="189.336" Canvas.Top="585">削除</Button>
-        <my:DataGrid AutoGenerateColumns="True" Canvas.Left="313" Canvas.Top="6.33" Height="437.67" Name="dataGrid1" Width="442" ItemsSource="{Binding}" xmlns:my="http://schemas.microsoft.com/wpf/2008/toolkit" />
+        <DataGrid AutoGenerateColumns="True" Canvas.Left="313" Canvas.Top="6.33" Height="437.67" Name="dataGrid1" Width="442" ItemsSource="{Binding}" />
         <Button Canvas.Left="313" Canvas.Top="450" Height="24" Name="button10" Width="442" Click="button10_Click">クリア</Button>
         <Label Canvas.Left="5" Canvas.Top="622" Height="23" Name="label13" Width="70">メッセージID：</Label>
         <TextBox Canvas.Left="86" Canvas.Top="624" Height="23" Name="textBox4" Width="120" />

@@ -177,63 +177,69 @@ Namespace Touryo.Infrastructure.Business.Business
 
                 '#Region "データ プロバイダ選択"
 
-                If parameterValue.ActionType.Split("%"c)(0) = "SQL" Then
-                    ' SQL Server / SQL Client用のDamを生成
-                    dam = New DamSqlSvr()
+                ' SQL Server / SQL Client用のDamを生成
+                dam = New DamSqlSvr()
 
-                    ' 接続文字列をロード
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL")
-                ElseIf parameterValue.ActionType.Split("%"c)(0) = "OLE" Then
-                    ' OLEDB.NET用のDamを生成
-                    dam = New DamOLEDB()
+                ' 接続文字列をロード
+                connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL")
 
-                    ' 接続文字列をロード
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_OLE")
-                ElseIf parameterValue.ActionType.Split("%"c)(0) = "ODB" Then
-                    ' ODBC.NET用のDamを生成
-                    dam = New DamODBC()
+                'If parameterValue.ActionType.Split("%"c)(0) = "SQL" Then
+                '    ' SQL Server / SQL Client用のDamを生成
+                '    dam = New DamSqlSvr()
 
-                    ' 接続文字列をロード
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODBC")
-                ElseIf parameterValue.ActionType.Split("%"c)(0) = "ORA" Then
-                    ' Oracle / Oracle Client用のDamを生成
-                    dam = New DamOraClient()
+                '    ' 接続文字列をロード
+                '    connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL")
+                'ElseIf parameterValue.ActionType.Split("%"c)(0) = "OLE" Then
+                '    ' OLEDB.NET用のDamを生成
+                '    dam = New DamOLEDB()
 
-                    ' 接続文字列をロード
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ORA")
-                ElseIf parameterValue.ActionType.Split("%"c)(0) = "ODP" Then
-                    ' Oracle / ODP.NET用のDamを生成
-                    dam = New DamOraOdp()
+                '    ' 接続文字列をロード
+                '    connstring = GetConfigParameter.GetConnectionString("ConnectionString_OLE")
+                'ElseIf parameterValue.ActionType.Split("%"c)(0) = "ODB" Then
+                '    ' ODBC.NET用のDamを生成
+                '    dam = New DamODBC()
 
-                    ' 接続文字列をロード（ODP2：Instant Client）
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP2")
-                ElseIf parameterValue.ActionType.Split("%"c)(0) = "DB2" Then
-                    ' DB2.NET用のDamを生成
-                    dam = New DamDB2()
+                '    ' 接続文字列をロード
+                '    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODBC")
+                'ElseIf parameterValue.ActionType.Split("%"c)(0) = "ORA" Then
+                '    ' Oracle / Oracle Client用のDamを生成
+                '    dam = New DamOraClient()
 
-                    ' 接続文字列をロード
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_DB2")
-                    'ElseIf parameterValue.ActionType.Split("%"c)(0) = "HIR" Then
-                    '    ' HiRDBデータプロバイダ用のDamを生成
-                    '    dam = New DamHiRDB()
+                '    ' 接続文字列をロード
+                '    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ORA")
+                'ElseIf parameterValue.ActionType.Split("%"c)(0) = "ODP" Then
+                '    ' Oracle / ODP.NET用のDamを生成
+                '    dam = New DamOraOdp()
 
-                    '    ' 接続文字列をロード
-                    '    connstring = GetConfigParameter.GetConnectionString("ConnectionString_HIR")
-                ElseIf parameterValue.ActionType.Split("%"c)(0) = "MCN" Then
-                    ' MySQL Cnn/NET用のDamを生成
-                    dam = New DamMySQL()
+                '    ' 接続文字列をロード（ODP2：Instant Client）
+                '    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP2")
+                'ElseIf parameterValue.ActionType.Split("%"c)(0) = "DB2" Then
+                '    ' DB2.NET用のDamを生成
+                '    dam = New DamDB2()
 
-                    ' 接続文字列をロード
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_MCN")
-                ElseIf parameterValue.ActionType.Split("%"c)(0) = "NPS" Then
-                    ' PostgreSQL / Npgsql用のDamを生成
-                    dam = New DamPstGrS()
+                '    ' 接続文字列をロード
+                '    connstring = GetConfigParameter.GetConnectionString("ConnectionString_DB2")
+                '    'ElseIf parameterValue.ActionType.Split("%"c)(0) = "HIR" Then
+                '    '    ' HiRDBデータプロバイダ用のDamを生成
+                '    '    dam = New DamHiRDB()
 
-                    ' 接続文字列をロード
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_NPS")
-                Else
-                    ' ここは通らない
-                End If
+                '    '    ' 接続文字列をロード
+                '    '    connstring = GetConfigParameter.GetConnectionString("ConnectionString_HIR")
+                'ElseIf parameterValue.ActionType.Split("%"c)(0) = "MCN" Then
+                '    ' MySQL Cnn/NET用のDamを生成
+                '    dam = New DamMySQL()
+
+                '    ' 接続文字列をロード
+                '    connstring = GetConfigParameter.GetConnectionString("ConnectionString_MCN")
+                'ElseIf parameterValue.ActionType.Split("%"c)(0) = "NPS" Then
+                '    ' PostgreSQL / Npgsql用のDamを生成
+                '    dam = New DamPstGrS()
+
+                '    ' 接続文字列をロード
+                '    connstring = GetConfigParameter.GetConnectionString("ConnectionString_NPS")
+                'Else
+                '    ' ここは通らない
+                'End If
 
                 '#End Region
 

@@ -180,6 +180,9 @@
   <data name="NOT_IMPLEMENTED" xml:space="preserve">
     <value>This processing is not implemented.</value>
   </data>
+  <data name="NOT_SUPPORTED" xml:space="preserve">
+    <value>This process is not supported.</value>
+  </data>
   <data name="NO_CONFIG" xml:space="preserve">
     <value>Config does not have specification. Config key:{0}</value>
   </data>

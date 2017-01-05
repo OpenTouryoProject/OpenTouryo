@@ -17,7 +17,7 @@
 	<!-- マスタ データ -->
 
 		<!-- 接続URL（asmx単位に定義する） -->
-		<Url id="url_a" value="http://localhost:8888/ASPNETWebService/ServiceForFx.asmx"/>
+		<Url id="url_a" value="http://localhost/ASPNETWebService/ServiceForFx.asmx"/>
 
 		<!-- 接続オプション（必要に応じて） -->
 		<Prop id="prop_a" value="aaa=AAA;bbb=BBB;ccc=CCC;"/>
@@ -28,7 +28,7 @@
 		<Transmission id="testInProcess" protocol="1"/>
 
 		<!-- Webサービス -->
-		<Transmission id="testWebService" protocol="2" url="http://localhost:8888/ASPNETWebService/ServiceForFx.asmx" timeout="60" />
+		<Transmission id="testWebService" protocol="2" url="http://localhost/ASPNETWebService/ServiceForFx.asmx" timeout="60" />
 		
 		<!-- Webサービス（マスタ データを活用）-->
 		<Transmission id="_testWebService" protocol="2" url_ref="url_a" timeout="60" prop_ref="prop_a" />

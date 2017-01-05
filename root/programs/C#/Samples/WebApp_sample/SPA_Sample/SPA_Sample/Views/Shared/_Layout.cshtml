@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title - マイ ASP.NET MVC アプリケーション</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Content/themes/base/css")
+</head>
+<body>
+@*    <div id="userSettings">
+        @Html.Partial("_UserSettings")
+    </div>*@
+
+    <div id="body">
+        @RenderBody()
+    </div>
+
+@*    <footer>
+        <nav>
+            <ul id="menu">
+                <li>@Html.ActionLink("Todo リスト", "Index", "Home", new { area = "" }, null)</li>
+                <li>@Html.ActionLink("API", "Index", "Help", new { area = "HelpPage" }, null)</li>
+            </ul>
+        </nav> 
+        <p>詳細については、<a href="http://go.microsoft.com/fwlink/?LinkId=273732">シングル ページ アプリケーション</a> を参照してください</p>
+        <p>&copy; @DateTime.Now.Year - マイ ASP.NET MVC アプリケーション</p>
+    </footer>*@
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/ajaxlogin")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,124 @@
+﻿<Page
+    x:Class="WinStore_sample.Views.CRUDPage_mu"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinStore_sample.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    FontSize="20"
+    FontFamily="メイリオ"
+    mc:Ignorable="d"
+    Loaded="Page_Loaded_1">
+    <Page.Resources>
+        <Style TargetType="Button">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </Page.Resources>
+
+    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" FontSize="32" Text="DTO 汎用サービスインタフェースの CRUD サンプル"></TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="4" FontSize="16" HorizontalAlignment="Right" Text="アプリバーで画面を切り替えられます"></TextBlock>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="データアクセス制御クラス（データプロバイダ）を選択"></TextBlock>
+        <ComboBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Name="ddlDap"></ComboBox>
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="静的、動的のクエリ モードを選択（共通Dao選択時）"></TextBlock>
+        <ComboBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Name="ddlMode1"></ComboBox>
+
+        <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Text="静的、動的のクエリ モードを選択"></TextBlock>
+        <ComboBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Name="ddlMode2"></ComboBox>
+
+        <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Text="分離レベルを選択"></TextBlock>
+        <ComboBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Name="ddlIso"></ComboBox>
+
+        <TextBlock Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Text="コミット、ロールバックを設定（例外発生時、ロールバック）"></TextBlock>
+        <ComboBox Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Name="ddlExRollback"></ComboBox>
+
+        <TextBlock Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="2" Text="通信制御"></TextBlock>
+        <ComboBox Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Name="ddlTransmission"></ComboBox>
+
+        <TextBlock Grid.Row="13" Grid.Column="0" Text="ShipperID："></TextBlock>
+        <TextBox Grid.Row="13" Grid.Column="1" Name="textBox1" />
+
+        <TextBlock Grid.Row="14" Grid.Column="0" Text="CompanyName："></TextBlock>
+        <TextBox Grid.Row="14" Grid.Column="1" Name="textBox2" />
+
+        <TextBlock Grid.Row="15" Grid.Column="0" Text="Phone："></TextBlock>
+        <TextBox Grid.Row="15" Grid.Column="1" Name="textBox3" />
+
+        <TextBlock Grid.Row="16" Grid.Column="0" Text="並び替え対象列"></TextBlock>
+        <ComboBox Grid.Row="16" Grid.Column="1" Name="ddlOrderColumn"></ComboBox>
+
+        <TextBlock Grid.Row="17" Grid.Column="0" Text="昇順・降順"></TextBlock>
+        <ComboBox Grid.Row="17" Grid.Column="1" Name="ddlOrderSequence"></ComboBox>
+
+        <TextBlock Grid.Row="18" Grid.Column="0" Grid.ColumnSpan="2" Text="処理結果："></TextBlock>
+        <TextBox Grid.Row="18" Grid.Column="1" Name="labelMessage" />
+
+        <Button Grid.Row="19" Grid.Column="0" Name="button1" Click="button1_Click">件数取得</Button>
+        <Button Grid.Row="19" Grid.Column="1" Name="button2" Click="button2_Click">一覧取得（dt）</Button>
+        <Button Grid.Row="19" Grid.Column="2" Name="button3" Click="button3_Click">一覧取得（ds）</Button>
+        <Button Grid.Row="19" Grid.Column="3" Name="button4" Click="button4_Click">一覧取得（dr）</Button>
+        <Button Grid.Row="19" Grid.Column="4" Name="button5" Click="button5_Click">一覧取得（動的SQL）</Button>
+        <Button Grid.Row="20" Grid.Column="0" Name="button6" Click="button6_Click">一件参照</Button>
+        <Button Grid.Row="20" Grid.Column="1" Name="button7" Click="button7_Click">追加</Button>
+        <Button Grid.Row="20" Grid.Column="2" Name="button8" Click="button8_Click">更新</Button>
+        <Button Grid.Row="20" Grid.Column="3" Name="button9" Click="button9_Click">削除</Button>
+        <Button Grid.Row="16" Grid.Column="2" Grid.ColumnSpan="3" Name="button10" Click="button10_Click">クリア</Button>
+
+        <ListView Grid.Row="1" Grid.Column="2" Grid.RowSpan="15" Grid.ColumnSpan="3" Name="ListView1" DataContext="{Binding}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Grid.Column="0" Text="{Binding Path=[ShipperID]}" IsReadOnly="True" />
+                        <TextBox Grid.Column="1" Text="{Binding Path=[CompanyName]}" IsReadOnly="True" />
+                        <TextBox Grid.Column="2" Text="{Binding Path=[Phone]}" IsReadOnly="True" />
+                        <TextBox Grid.Column="3" Text="{Binding Path=RowState, Mode=OneWay}" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</Page>

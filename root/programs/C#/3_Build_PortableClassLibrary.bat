@@ -15,6 +15,11 @@ set CURRENT_DIR="%~dp0"
 @rem --------------------------------------------------
 call %CURRENT_DIR%z_Common.bat
 
+@rem --------------------------------------------------
+@rem Add environment variable to avoid build error.
+@rem --------------------------------------------------
+set VisualStudioVersion=12.0
+
 rem --------------------------------------------------
 rem Build the batch PortableClassLibrary(PortableClassLibrary)
 rem --------------------------------------------------

@@ -27,5 +27,12 @@ rem --------------------------------------------------
 
 pause
 
+rem --------------------------------------------------
+rem Batch build of MVC_Sample.
+rem --------------------------------------------------
+%BUILDFILEPATH% %COMMANDLINE% "Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln"
+
+pause
+
 rem -------------------------------------------------------
 endlocal
