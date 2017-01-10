@@ -63,12 +63,13 @@ namespace EncAndDecUtil
             if (this.rbnHSString.Checked)
             {
                 txtHSCode.Text = GetHash.GetHashString(
-                    txtHSString.Text, (EnumHashAlgorithm)cbxHSPV.SelectedValue);
+                    txtHSString.Text, (EnumHashAlgorithm)cbxHSPV.SelectedValue, (int)this.nudHSStretching.Value);
             }
             else
             {
                 txtHSCode.Text = CustomEncode.ToHexString(GetHash.GetHashBytes(
-                    CustomEncode.StringToByte(txtHSString.Text, CustomEncode.UTF_8), (EnumHashAlgorithm)cbxHSPV.SelectedValue));
+                    CustomEncode.StringToByte(txtHSString.Text, CustomEncode.UTF_8),
+                    (EnumHashAlgorithm)cbxHSPV.SelectedValue, (int)this.nudHSStretching.Value));
             }
         }
 
@@ -112,7 +113,7 @@ namespace EncAndDecUtil
                                 this.txtKHSString.Text,
                                 (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue,
                                 this.txtKHSPassword.Text,
-                                CustomEncode.StringToByte(this.txtKHSPassword.Text, CustomEncode.UTF_8));
+                                CustomEncode.StringToByte(this.txtKHSSalt.Text, CustomEncode.UTF_8));
                     }
                     else
                     {
@@ -123,7 +124,7 @@ namespace EncAndDecUtil
                                     CustomEncode.StringToByte(txtKHSString.Text, CustomEncode.UTF_8),
                                     (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue,
                                     this.txtKHSPassword.Text,
-                                    CustomEncode.StringToByte(this.txtKHSPassword.Text, CustomEncode.UTF_8)));
+                                    CustomEncode.StringToByte(this.txtKHSSalt.Text, CustomEncode.UTF_8)));
                     }
                 }
                 else
@@ -137,7 +138,7 @@ namespace EncAndDecUtil
                                 this.txtKHSString.Text,
                                 (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue,
                                 this.txtKHSPassword.Text,
-                                CustomEncode.StringToByte(this.txtKHSPassword.Text, CustomEncode.UTF_8),
+                                CustomEncode.StringToByte(this.txtKHSSalt.Text, CustomEncode.UTF_8),
                                 (int)nudKHSStretching.Value);
                     }
                     else
@@ -149,7 +150,7 @@ namespace EncAndDecUtil
                                     CustomEncode.StringToByte(txtKHSString.Text, CustomEncode.UTF_8),
                                     (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue,
                                     this.txtKHSPassword.Text,
-                                    CustomEncode.StringToByte(this.txtKHSPassword.Text, CustomEncode.UTF_8),
+                                    CustomEncode.StringToByte(this.txtKHSSalt.Text, CustomEncode.UTF_8),
                                     (int)nudKHSStretching.Value));
                     }
                 }
@@ -167,8 +168,9 @@ namespace EncAndDecUtil
         private void btnSPWDAuth_Click(object sender, EventArgs e)
         {
             if (GetHash.EqualSaltedPasswd(
-                this.txtSPWDRawPassword.Text, this.txtSPWDSaltedPassword.Text,
-                (EnumHashAlgorithm)this.cbxSPWDPV.SelectedValue, (int)this.nudSPWDSaltLength.Value))
+                this.txtSPWDRawPassword.Text,
+                this.txtSPWDSaltedPassword.Text,
+                (EnumHashAlgorithm)this.cbxSPWDPV.SelectedValue))
             {
                 MessageBox.Show("認証成功");
             }

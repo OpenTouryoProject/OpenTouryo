@@ -30,6 +30,9 @@
 //*  2013/02/15  西野  大介        新規作成
 //*  2014/03/13  西野  大介        devps(1703):Createメソッドを使用してcryptoオブジェクトを作成します。
 //*  2014/03/13  西野  大介        devps(1725):暗号クラスの使用終了時にデータをクリアする。
+//*  2016/01/10  西野  大介        HMAC(HMACMD5、HMACRIPEMD160、HMACSHA256、HMACSHA384、HMACSHA512)を追加
+//*  2016/01/10  西野  大介        ストレッチ回数とsaltのpublic property procedureを追加
+//*  2016/01/10  西野  大介        全てHMACSHA1になる問題があったため、KeyedHashAlgorithm生成方法を変更。
 //**********************************************************************************
 
 // System
@@ -65,6 +68,21 @@ namespace Touryo.Infrastructure.Public.Util
         /// <summary>HMACSHA1</summary>
         HMACSHA1,
 
+        /// <summary>HMACMD5</summary>
+        HMACMD5,
+
+        /// <summary>HMACRIPEMD160</summary>
+        HMACRIPEMD160,
+
+        /// <summary>HMACSHA256</summary>
+        HMACSHA256,
+
+        /// <summary>HMACSHA384</summary>
+        HMACSHA384,
+
+        /// <summary>HMACSHA512</summary>
+        HMACSHA512,
+
         /// <summary>MACTripleDES</summary>
         MACTripleDES
     };
@@ -72,13 +90,25 @@ namespace Touryo.Infrastructure.Public.Util
     /// <summary>ハッシュ（キー付き）を取得するクラス</summary>
     public class GetKeyedHash
     {
-        /// <summary>固定ソルト</summary>
-        /// <remarks>以前のVerからデフォルト値を修正しているので、</remarks>
-        private static byte[] Salt = CustomEncode.StringToByte(
-            "Touryo.Infrastructure.Public.Util.GetKeyedHash.alt", CustomEncode.UTF_8);
+        /// <summary>ソルト</summary>
+        private static string _salt = "Touryo.Infrastructure.Public.Util.GetKeyedHash.Salt";
 
-        /// <summary>固定ストレッチング</summary>
-        private static int Stretching = 1000;
+        /// <summary>ソルト</summary>
+        public static string Salt
+        {
+            get { return GetKeyedHash._salt; }
+            set { GetKeyedHash._salt = value; }
+        }
+
+        /// <summary>ストレッチ回数</summary>
+        private static int _stretching = 1000;
+
+        /// <summary>ストレッチ回数</summary>
+        public static int Stretching
+        {
+            get { return GetKeyedHash._stretching; }
+            set { GetKeyedHash._stretching = value; }
+        }
 
         #region GetKeyedHashString
 
@@ -90,7 +120,7 @@ namespace Touryo.Infrastructure.Public.Util
         public static string GetKeyedHashString(string ss, EnumKeyedHashAlgorithm ekha, string password)
         {
             return GetKeyedHash.GetKeyedHashString(
-                ss, ekha, password, GetKeyedHash.Salt, GetKeyedHash.Stretching);
+                ss, ekha, password, CustomEncode.StringToByte(GetKeyedHash._salt, CustomEncode.UTF_8), GetKeyedHash.Stretching);
         }
 
         /// <summary>文字列のハッシュ値を計算して返す。</summary>
@@ -116,9 +146,7 @@ namespace Touryo.Infrastructure.Public.Util
         {
             // ハッシュ（Base64）
             return CustomEncode.ToBase64String(
-                GetKeyedHashBytes(
-                    CustomEncode.StringToByte(ss, CustomEncode.UTF_8),
-                    ekha, password, salt, stretching));
+                GetKeyedHashBytes(CustomEncode.StringToByte(ss, CustomEncode.UTF_8), ekha, password, salt, stretching));
         }
 
         #endregion
@@ -133,7 +161,7 @@ namespace Touryo.Infrastructure.Public.Util
         public static byte[] GetKeyedHashBytes(byte[] asb, EnumKeyedHashAlgorithm ekha, string password)
         {
             return GetKeyedHash.GetKeyedHashBytes(
-                asb, ekha, password, GetKeyedHash.Salt, GetKeyedHash.Stretching);
+                asb, ekha, password, CustomEncode.StringToByte(GetKeyedHash._salt, CustomEncode.UTF_8), GetKeyedHash.Stretching);
         }
 
         /// <summary>バイト配列のハッシュ値を計算して返す。</summary>
@@ -157,18 +185,27 @@ namespace Touryo.Infrastructure.Public.Util
         /// <returns>ハッシュ値（バイト配列）</returns>
         public static byte[] GetKeyedHashBytes(byte[] asb, EnumKeyedHashAlgorithm ekha, string password, byte[] salt, int stretching)
         {
-            // ハッシュ（キー付き）サービスプロバイダを生成
-            KeyedHashAlgorithm kha = GetKeyedHash.CreateKeyedHashAlgorithmServiceProvider(ekha);
-
             // キーを生成する。
             Rfc2898DeriveBytes passwordKey = new Rfc2898DeriveBytes(password, salt, stretching);
-            // HMACSHA1     ：どのサイズのキーでも受け入れる
+            // HMACMD5      ：どのサイズのキーでも受け入れる ◯
+            // HMACRIPEMD160：どのサイズのキーでも受け入れる ◯
+            // HMACSHA1     ：どのサイズのキーでも受け入れる ◯
+            // HMACSHA256   ：どのサイズのキーでも受け入れる ◯
+            // HMACSHA384   ：どのサイズのキーでも受け入れる ◯
+            // HMACSHA512   ：どのサイズのキーでも受け入れる ◯
             // MACTripleDES ：長さが 16 または 24 バイトのキーを受け入れる
-            kha.Key = passwordKey.GetBytes(24); // 上記より、24 決め打ちとする。
+
+            // ハッシュ（キー付き）サービスプロバイダを生成
+            KeyedHashAlgorithm kha = GetKeyedHash.CreateKeyedHashAlgorithmServiceProvider(
+                    ekha,
+                    passwordKey.GetBytes(24) // 上記より、24 決め打ちとする。
+                );
 
             // ハッシュ（キー付き）を生成して返す。
             byte[] temp = kha.ComputeHash(asb);
+
             kha.Clear(); // devps(1725)
+
             return temp;
         }
 
@@ -178,26 +215,57 @@ namespace Touryo.Infrastructure.Public.Util
 
         /// <summary>ハッシュ（キー付き）サービスプロバイダの生成</summary>
         /// <param name="ekha">ハッシュ（キー付き）サービスプロバイダの列挙型</param>
+        /// <param name="key">キー</param>
         /// <returns>ハッシュ（キー付き）サービスプロバイダ</returns>
-        private static KeyedHashAlgorithm CreateKeyedHashAlgorithmServiceProvider(EnumKeyedHashAlgorithm ekha)
+        private static KeyedHashAlgorithm CreateKeyedHashAlgorithmServiceProvider(EnumKeyedHashAlgorithm ekha, byte[] key)
         {
             // ハッシュ（キー付き）サービスプロバイダ
             KeyedHashAlgorithm kha = null;
 
+            // HMACSHA1.Create(); だと、全部、HMACSHA1になってしまう現象があったので、
+            // 全部、= new HMACSHA1(key); のスタイルに変更した。
+
             if (ekha == EnumKeyedHashAlgorithm.Default)
             {
                 // 既定の暗号化サービスプロバイダ
-                kha = KeyedHashAlgorithm.Create(); // devps(1703)
+                kha = new HMACSHA1(key); // devps(1703)
             }
             else if (ekha == EnumKeyedHashAlgorithm.HMACSHA1)
             {
                 // HMACSHA1サービスプロバイダ
-                kha = HMACSHA1.Create(); // devps(1703)
+                kha = new HMACSHA1(key); // devps(1703)
             }
+            // -- ▼追加▼ --
+            else if (ekha == EnumKeyedHashAlgorithm.HMACMD5)
+            {
+                // HMACMD5サービスプロバイダ
+                kha = new HMACMD5(key);
+            }
+            else if (ekha == EnumKeyedHashAlgorithm.HMACRIPEMD160)
+            {
+                // HMACRIPEMD160サービスプロバイダ
+                kha = new HMACRIPEMD160(key);
+            }
+            else if (ekha == EnumKeyedHashAlgorithm.HMACSHA256)
+            {
+                // HMACSHA256サービスプロバイダ
+                kha = new HMACSHA256(key);
+            }
+            else if (ekha == EnumKeyedHashAlgorithm.HMACSHA384)
+            {
+                // HMACSHA384サービスプロバイダ
+                kha = new HMACSHA384(key);
+            }
+            else if (ekha == EnumKeyedHashAlgorithm.HMACSHA512)
+            {
+                // HMACSHA512サービスプロバイダ
+                kha = new HMACSHA512(key);
+            }
+            // -- ▲追加▲ --
             else if (ekha == EnumKeyedHashAlgorithm.MACTripleDES)
             {
                 // MACTripleDESサービスプロバイダ
-                kha = MACTripleDES.Create(); // devps(1703)
+                kha = new MACTripleDES(key); // devps(1703)
             }
 
             return kha;

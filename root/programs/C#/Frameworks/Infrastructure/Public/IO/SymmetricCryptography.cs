@@ -34,6 +34,8 @@
 //*  2013/02/18  西野  大介        CustomEncode使用に統一
 //*  2014/03/13  西野  大介        devps(1703):Createメソッドを使用してcryptoオブジェクトを作成します。
 //*  2014/03/13  西野  大介        devps(1725):暗号クラスの使用終了時にデータをクリアする。
+//*  2016/01/10  西野  大介        stretch回数の指定方法をPropertyからConstructorに変更した。
+//*  2016/01/10  西野  大介        AesCryptoServiceProviderを削除（.NET3.5から実装されたAesManagedを残す）
 //**********************************************************************************
 
 // System
@@ -64,8 +66,11 @@ namespace Touryo.Infrastructure.Public.IO
     /// </summary>
     public enum EnumSymmetricAlgorithm
     {
-        /// <summary>AesCryptoServiceProvider</summary>
-        AesCryptoServiceProvider,
+        // AesCryptoServiceProvider, AesManagedは3.5からの提供。
+        // ポリシーに合わせて、AesCryptoServiceProviderを削除。
+
+        ///// <summary>AesCryptoServiceProvider</summary>
+        //AesCryptoServiceProvider,
 
         /// <summary>AesManaged</summary>
         AesManaged,
@@ -402,13 +407,14 @@ namespace Touryo.Infrastructure.Public.IO
             //パスワードから共有キーと初期化ベクタを作成する
 
             //Rfc2898DeriveBytesオブジェクトを作成する
-            Rfc2898DeriveBytes deriveBytes = new Rfc2898DeriveBytes(password, salt);
+            Rfc2898DeriveBytes deriveBytes = new Rfc2898DeriveBytes(password, salt, stretching);
 
             //.NET Framework 1.1以下の時は、PasswordDeriveBytesを使用する
             //PasswordDeriveBytes deriveBytes = new PasswordDeriveBytes(password, salt);
 
-            //反復処理回数を指定する
-            deriveBytes.IterationCount = stretching;
+            // コンストラクタで指定するように変更した。
+            ////反復処理回数を指定する
+            //deriveBytes.IterationCount = stretching;
 
             //共有キーと初期化ベクタを生成する
             key = deriveBytes.GetBytes(keySize / 8);
@@ -432,13 +438,15 @@ namespace Touryo.Infrastructure.Public.IO
             SymmetricAlgorithm sa = null;
 
             // AesCryptoServiceProvider, AesManagedは3.5からの提供。
+            // ポリシーに合わせて、AesCryptoServiceProviderを削除。
 
-            if (esa == EnumSymmetricAlgorithm.AesCryptoServiceProvider)
-            {
-                // AesCryptoServiceProviderサービスプロバイダ
-                sa = AesCryptoServiceProvider.Create(); // devps(1703)
-            }
-            else if (esa == EnumSymmetricAlgorithm.AesManaged)
+            //if (esa == EnumSymmetricAlgorithm.AesCryptoServiceProvider)
+            //{
+            //    // AesCryptoServiceProviderサービスプロバイダ
+            //    sa = AesCryptoServiceProvider.Create(); // devps(1703)
+            //}
+            //else
+            if (esa == EnumSymmetricAlgorithm.AesManaged)
             {
                 // AesManagedサービスプロバイダ
                 sa = AesManaged.Create(); // devps(1703)

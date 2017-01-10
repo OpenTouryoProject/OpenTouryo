@@ -120,6 +120,7 @@
     <Compile Include="Util\CustomMarshaler.cs" />
     <Compile Include="Util\GetHash.cs" />
     <Compile Include="Util\GetKeyedHash.cs" />
+    <Compile Include="Util\GetPassword.cs" />
     <Compile Include="Util\IdentityImpersonation.cs" />
     <Compile Include="Util\ObjectInspector.cs" />
     <Compile Include="Util\PubCmnFunction.cs" />

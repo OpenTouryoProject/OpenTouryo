@@ -30,7 +30,7 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabHash = new System.Windows.Forms.TabPage();
-            this.lblHS3 = new System.Windows.Forms.Label();
+            this.lblHS4 = new System.Windows.Forms.Label();
             this.txtHSCode = new System.Windows.Forms.TextBox();
             this.lblHS2 = new System.Windows.Forms.Label();
             this.txtHSString = new System.Windows.Forms.TextBox();
@@ -102,6 +102,8 @@
             this.cbxSPWDPV = new System.Windows.Forms.ComboBox();
             this.lblSPWD1 = new System.Windows.Forms.Label();
             this.btnSPWDGen = new System.Windows.Forms.Button();
+            this.nudHSStretching = new System.Windows.Forms.NumericUpDown();
+            this.lblHS3 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabHash.SuspendLayout();
             this.gbxHS.SuspendLayout();
@@ -115,6 +117,7 @@
             this.gbxASC.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSPWDSaltLength)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudHSStretching)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -132,7 +135,9 @@
             // 
             // tabHash
             // 
+            this.tabHash.Controls.Add(this.nudHSStretching);
             this.tabHash.Controls.Add(this.lblHS3);
+            this.tabHash.Controls.Add(this.lblHS4);
             this.tabHash.Controls.Add(this.txtHSCode);
             this.tabHash.Controls.Add(this.lblHS2);
             this.tabHash.Controls.Add(this.txtHSString);
@@ -140,25 +145,25 @@
             this.tabHash.Controls.Add(this.cbxHSPV);
             this.tabHash.Controls.Add(this.lblHS1);
             this.tabHash.Controls.Add(this.btnGetHash);
-            this.tabHash.Location = new System.Drawing.Point(4, 21);
+            this.tabHash.Location = new System.Drawing.Point(4, 22);
             this.tabHash.Name = "tabHash";
-            this.tabHash.Size = new System.Drawing.Size(326, 243);
+            this.tabHash.Size = new System.Drawing.Size(326, 242);
             this.tabHash.TabIndex = 2;
             this.tabHash.Text = "ハッシュ";
             this.tabHash.UseVisualStyleBackColor = true;
             // 
-            // lblHS3
+            // lblHS4
             // 
-            this.lblHS3.AutoSize = true;
-            this.lblHS3.Location = new System.Drawing.Point(9, 113);
-            this.lblHS3.Name = "lblHS3";
-            this.lblHS3.Size = new System.Drawing.Size(76, 12);
-            this.lblHS3.TabIndex = 33;
-            this.lblHS3.Text = "ハッシュ文字列";
+            this.lblHS4.AutoSize = true;
+            this.lblHS4.Location = new System.Drawing.Point(7, 138);
+            this.lblHS4.Name = "lblHS4";
+            this.lblHS4.Size = new System.Drawing.Size(76, 12);
+            this.lblHS4.TabIndex = 33;
+            this.lblHS4.Text = "ハッシュ文字列";
             // 
             // txtHSCode
             // 
-            this.txtHSCode.Location = new System.Drawing.Point(103, 110);
+            this.txtHSCode.Location = new System.Drawing.Point(103, 135);
             this.txtHSCode.Name = "txtHSCode";
             this.txtHSCode.ReadOnly = true;
             this.txtHSCode.Size = new System.Drawing.Size(212, 19);
@@ -233,7 +238,7 @@
             // 
             // btnGetHash
             // 
-            this.btnGetHash.Location = new System.Drawing.Point(102, 135);
+            this.btnGetHash.Location = new System.Drawing.Point(103, 160);
             this.btnGetHash.Name = "btnGetHash";
             this.btnGetHash.Size = new System.Drawing.Size(213, 23);
             this.btnGetHash.TabIndex = 0;
@@ -257,9 +262,9 @@
             this.tabKeyedHash.Controls.Add(this.lblKHS1);
             this.tabKeyedHash.Controls.Add(this.txtKHSPassword);
             this.tabKeyedHash.Controls.Add(this.txtKHSString);
-            this.tabKeyedHash.Location = new System.Drawing.Point(4, 21);
+            this.tabKeyedHash.Location = new System.Drawing.Point(4, 22);
             this.tabKeyedHash.Name = "tabKeyedHash";
-            this.tabKeyedHash.Size = new System.Drawing.Size(326, 243);
+            this.tabKeyedHash.Size = new System.Drawing.Size(326, 242);
             this.tabKeyedHash.TabIndex = 3;
             this.tabKeyedHash.Text = "キー付きハッシュ";
             this.tabKeyedHash.UseVisualStyleBackColor = true;
@@ -428,10 +433,10 @@
             this.tabSC.Controls.Add(this.lblSC1);
             this.tabSC.Controls.Add(this.txtSCPassword);
             this.tabSC.Controls.Add(this.txtSCString);
-            this.tabSC.Location = new System.Drawing.Point(4, 21);
+            this.tabSC.Location = new System.Drawing.Point(4, 22);
             this.tabSC.Name = "tabSC";
             this.tabSC.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSC.Size = new System.Drawing.Size(326, 243);
+            this.tabSC.Size = new System.Drawing.Size(326, 242);
             this.tabSC.TabIndex = 0;
             this.tabSC.Text = "秘密鍵";
             this.tabSC.UseVisualStyleBackColor = true;
@@ -608,10 +613,10 @@
             this.tabASC.Controls.Add(this.lblASC2);
             this.tabASC.Controls.Add(this.lblASC1);
             this.tabASC.Controls.Add(this.txtASCString);
-            this.tabASC.Location = new System.Drawing.Point(4, 21);
+            this.tabASC.Location = new System.Drawing.Point(4, 22);
             this.tabASC.Name = "tabASC";
             this.tabASC.Padding = new System.Windows.Forms.Padding(3);
-            this.tabASC.Size = new System.Drawing.Size(326, 243);
+            this.tabASC.Size = new System.Drawing.Size(326, 242);
             this.tabASC.TabIndex = 1;
             this.tabASC.Text = "共通鍵";
             this.tabASC.UseVisualStyleBackColor = true;
@@ -768,9 +773,9 @@
             this.tabPage1.Controls.Add(this.cbxSPWDPV);
             this.tabPage1.Controls.Add(this.lblSPWD1);
             this.tabPage1.Controls.Add(this.btnSPWDGen);
-            this.tabPage1.Location = new System.Drawing.Point(4, 21);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(326, 243);
+            this.tabPage1.Size = new System.Drawing.Size(326, 242);
             this.tabPage1.TabIndex = 4;
             this.tabPage1.Text = "パスワードDB保存";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -876,6 +881,27 @@
             this.btnSPWDGen.UseVisualStyleBackColor = true;
             this.btnSPWDGen.Click += new System.EventHandler(this.btnSPWDGen_Click);
             // 
+            // nudHSStretching
+            // 
+            this.nudHSStretching.Location = new System.Drawing.Point(103, 110);
+            this.nudHSStretching.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.nudHSStretching.Name = "nudHSStretching";
+            this.nudHSStretching.Size = new System.Drawing.Size(212, 19);
+            this.nudHSStretching.TabIndex = 42;
+            // 
+            // lblHS3
+            // 
+            this.lblHS3.AutoSize = true;
+            this.lblHS3.Location = new System.Drawing.Point(9, 112);
+            this.lblHS3.Name = "lblHS3";
+            this.lblHS3.Size = new System.Drawing.Size(65, 12);
+            this.lblHS3.TabIndex = 41;
+            this.lblHS3.Text = "ストレッチング";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -907,6 +933,7 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSPWDSaltLength)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudHSStretching)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -955,7 +982,7 @@
         private System.Windows.Forms.RadioButton rbnHSString;
         private System.Windows.Forms.ComboBox cbxHSPV;
         private System.Windows.Forms.Label lblHS1;
-        private System.Windows.Forms.Label lblHS3;
+        private System.Windows.Forms.Label lblHS4;
         private System.Windows.Forms.TextBox txtHSCode;
         private System.Windows.Forms.Label lblHS2;
         private System.Windows.Forms.TextBox txtHSString;
@@ -987,7 +1014,8 @@
         private System.Windows.Forms.Button btnSPWDAuth;
         private System.Windows.Forms.NumericUpDown nudSPWDSaltLength;
         private System.Windows.Forms.Label lblSPWD3;
-
+        private System.Windows.Forms.NumericUpDown nudHSStretching;
+        private System.Windows.Forms.Label lblHS3;
     }
 }
 
