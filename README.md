@@ -1,48 +1,45 @@
 # OpenTouryo
-"OpenTouryo", is an application framework for .NET which was developed using the accumulated know-how with a long track record in .NET application development.
+*Open Touryo* is an application framework for .NET Framework which was developed using the accumulated know-how with a longstanding application development results.
 
 ## Develop/Run-time environment
-The program in this repository is developed, using the oldest supported develop/run-time environment.
+The programs in this repository are developed in the following environments:
 
 - Develop environment
   - Visual Studio 2015
 - Run-time environment
   - .NET Framework 4.6
 
-If you want to use the latest development environment (e.g. Visual Studio 2015), please refer [Templates base](https://github.com/OpenTouryoProject/OpenTouryoTemplatesV2).
+The programs in this repository are for *open source developers*.
+The users who use Open Touryo in a system development project need to use [OpenTouryoTemplates repository](https://github.com/OpenTouryoProject/OpenTouryoTemplatesV2).
 
 ## Summary
 Please refer to the following files.
- - [Introduction.pdf](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.pdf)
- - [Introduction.pptx](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.pptx)
- - [Introduction_EN.pdf](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/en/Introduction_EN.pdf)
- - [Introduction_EN.pptx](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/en/Introduction_EN.pptx)
- - [Functional_list.xlsx](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Functional_list.xlsx)
-
-Documents are located in the [OpenTouryoProject/OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments) repository.
+ - [Introduction of Open Touryo, Japanese Version (PDF)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.pdf)
+ - [Introduction of Open Touryo, Japanese Version (PowerPoint)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.pptx)
+ - [Introduction of Open Touryo, English Version (PDF)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/en/Introduction_EN.pdf)
+ - [Introduction of Open Touryo, English Version (PowerPoint)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/en/Introduction_EN.pptx)
+ - [Function List, Japanese Version (Excel)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Functional_list.xlsx)
 
 ## Details
-Please refer to the following directories.
-
- - [documents](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents)
-
-Documents are located in the [OpenTouryoProject/OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments) repository.
+The documents are stored in [OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments) repository.
+For more details, refer to the documents in [OpenTouryoDocuments](https://github.com/OpenTouryoProject/OpenTouryoDocuments) repository.
 
 ## Contents
 
 ### Directory
 
 #### [/license/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/license)
-License
+License files are stored in this directory.
 
 #### [/root/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root)
-Program
+Programs, configuration files, sql files, and more are stored in this directory.
 
 ## Templates base
-Samples that are shipped with the templates base can be used to evaluate the OpenTouryo. 
-Further, by using templates base customized according to the contents of the tutorial, 
-you can create a project template for the project for the appropriate Visual Studio version.
+*Open Touryo Template Base* is the *foundation* of the development infrastructure (project template) of the programs using Open Touryo.
+The samples included in *Open Touryo Template Base* can be used to evaluate Open Touryo. 
 
-Please refer to the following repository. For more information, please refer to the Readme for each folder.
+When the mismatch is generated between *the features of Open Touryo* and *the requirements of the development project*, the customizing template base is useful for resolving the mismatch.  
+Refer to the [tutorial document](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/2_Tutorial/ja-JP/Tutorial_Template_development.doc) about the customizing method of template base.
 
+For more information, please refer to the Readme files in the following repository.
  - [OpenTouryoTemplatesV2](https://github.com/OpenTouryoProject/OpenTouryoTemplatesV2)
