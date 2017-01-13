@@ -30,9 +30,9 @@
 //*  2013/02/15  西野  大介        新規作成
 //*  2014/03/13  西野  大介        devps(1703):Createメソッドを使用してcryptoオブジェクトを作成します。
 //*  2014/03/13  西野  大介        devps(1725):暗号クラスの使用終了時にデータをクリアする。
-//*  2016/01/10  西野  大介        HMAC(HMACMD5、HMACRIPEMD160、HMACSHA256、HMACSHA384、HMACSHA512)を追加
-//*  2016/01/10  西野  大介        ストレッチ回数とsaltのpublic property procedureを追加
-//*  2016/01/10  西野  大介        全てHMACSHA1になる問題があったため、KeyedHashAlgorithm生成方法を変更。
+//*  2017/01/10  西野  大介        HMAC(HMACMD5、HMACRIPEMD160、HMACSHA256、HMACSHA384、HMACSHA512)を追加
+//*  2017/01/10  西野  大介        ストレッチ回数とsaltのpublic property procedureを追加
+//*  2017/01/10  西野  大介        全てHMACSHA1になる問題があったため、KeyedHashAlgorithm生成方法を変更。
 //**********************************************************************************
 
 // System
@@ -57,6 +57,8 @@ using System.Security.Cryptography;
 
 namespace Touryo.Infrastructure.Public.Util
 {
+    #region Enum
+
     /// <summary>
     /// ハッシュ（キー付き）アルゴリズムのサービスプロバイダの種類
     /// </summary>
@@ -87,9 +89,15 @@ namespace Touryo.Infrastructure.Public.Util
         MACTripleDES
     };
 
+    #endregion
+
+    #region GetKeyedHash
+
     /// <summary>ハッシュ（キー付き）を取得するクラス</summary>
     public class GetKeyedHash
     {
+        #region mem & prop
+
         /// <summary>ソルト</summary>
         private static string _salt = "Touryo.Infrastructure.Public.Util.GetKeyedHash.Salt";
 
@@ -101,16 +109,90 @@ namespace Touryo.Infrastructure.Public.Util
         }
 
         /// <summary>ストレッチ回数</summary>
-        private static int _stretching = 1000;
+        private static int _stretchCount = 0;
 
         /// <summary>ストレッチ回数</summary>
-        public static int Stretching
+        public static int StretchCount
         {
-            get { return GetKeyedHash._stretching; }
-            set { GetKeyedHash._stretching = value; }
+            get { return GetKeyedHash._stretchCount; }
+            set { GetKeyedHash._stretchCount = value; }
         }
 
-        #region GetKeyedHashString
+        #endregion
+
+        #region GetSaltedPassword
+
+        /// <summary>パスワードをDB保存する際には塩味パスワードとして保存する。</summary>
+        /// <param name="rawPassword">ユーザが入力した生のパスワード</param>
+        /// <param name="ekha">ハッシュ・アルゴリズム列挙型</param>
+        /// <param name="key">キー（システム共通）</param>
+        /// <param name="saltLength">ソルトの文字列長</param>
+        /// <returns>塩味パスワード</returns>
+        /// <see ref="http://www.atmarkit.co.jp/ait/articles/1110/06/news154_2.html"/>
+        public static string GetSaltedPassword(string rawPassword, EnumKeyedHashAlgorithm ekha, string key, int saltLength)
+        {
+            // overlordへ
+            return GetKeyedHash.GetSaltedPassword(rawPassword, ekha, key, saltLength, 1);
+        }
+
+        /// <summary>パスワードをDB保存する際には塩味パスワードとして保存する。</summary>
+        /// <param name="rawPassword">ユーザが入力した生のパスワード</param>
+        /// <param name="ekha">ハッシュ・アルゴリズム列挙型</param>
+        /// <param name="key">キー（システム共通）</param>
+        /// <param name="saltLength">ソルトの文字列長</param>
+        /// <param name="stretchCount">ストレッチ回数</param>
+        /// <returns>塩味パスワード</returns>
+        public static string GetSaltedPassword(string rawPassword, EnumKeyedHashAlgorithm ekha, string key, int saltLength, int stretchCount)
+        {
+            // ランダム・ソルト文字列を生成（区切り記号は含まなくても良い）
+            string salt = GetPassword.Generate(saltLength, 0); //Membership.GeneratePassword(saltLength, 0);
+            byte[] saltByte = CustomEncode.StringToByte(salt, CustomEncode.UTF_8);
+
+            // 塩味パスワード（文字列）を生成して返す。
+            return
+                CustomEncode.ToBase64String(saltByte)
+                + "." + CustomEncode.ToBase64String(CustomEncode.StringToByte(stretchCount.ToString(), CustomEncode.UTF_8))
+                + "." + CustomEncode.ToBase64String(CustomEncode.StringToByte(
+                    GetKeyedHash.GetKeyedHashString(salt + rawPassword, ekha, key, saltByte, stretchCount), CustomEncode.UTF_8));
+            // バイト配列仕様は、フィールドが文字列の可能性が高いので辞めた。
+        }
+
+        /// <summary>パスワードを比較して認証する。</summary>
+        /// <param name="rawPassword">ユーザが入力した生のパスワード</param>
+        /// <param name="saltedPassword">塩味パスワード</param>
+        /// <param name="ekha">ハッシュ・アルゴリズム列挙型</param>
+        /// <param name="key">キー（システム共通）</param>
+        /// <returns>
+        /// true：パスワードは一致した。
+        /// false：パスワードは一致しない。
+        /// </returns>
+        public static bool EqualSaltedPassword(string rawPassword, string saltedPassword, EnumKeyedHashAlgorithm ekha, string key)
+        {
+            // ソルト部分を取得
+            string[] temp = saltedPassword.Split('.');
+            byte[] saltByte = CustomEncode.FromBase64String(temp[0]);
+            string salt = CustomEncode.ByteToString(saltByte, CustomEncode.UTF_8);
+            int stretchCount = int.Parse(CustomEncode.ByteToString(CustomEncode.FromBase64String(temp[1]), CustomEncode.UTF_8));
+            string hashedPassword = CustomEncode.ByteToString(CustomEncode.FromBase64String(temp[2]), CustomEncode.UTF_8);
+
+            // 引数のsaltedPasswordと、rawPasswordから自作したsaltedPasswordを比較
+            if (hashedPassword == GetKeyedHash.GetKeyedHashString(salt + rawPassword, ekha, key, saltByte, stretchCount))
+            {
+                // 一致した。
+                return true;
+            }
+            else
+            {
+                // 一致しなかった。
+                return false;
+            }
+        }
+
+        #endregion
+
+        #region GetKeyedHash
+
+        #region String
 
         /// <summary>文字列のハッシュ値を計算して返す。</summary>
         /// <param name="ss">文字列</param>
@@ -120,7 +202,7 @@ namespace Touryo.Infrastructure.Public.Util
         public static string GetKeyedHashString(string ss, EnumKeyedHashAlgorithm ekha, string password)
         {
             return GetKeyedHash.GetKeyedHashString(
-                ss, ekha, password, CustomEncode.StringToByte(GetKeyedHash._salt, CustomEncode.UTF_8), GetKeyedHash.Stretching);
+                ss, ekha, password, CustomEncode.StringToByte(GetKeyedHash._salt, CustomEncode.UTF_8), GetKeyedHash.StretchCount);
         }
 
         /// <summary>文字列のハッシュ値を計算して返す。</summary>
@@ -132,7 +214,7 @@ namespace Touryo.Infrastructure.Public.Util
         public static string GetKeyedHashString(string ss, EnumKeyedHashAlgorithm ekha, string password, byte[] salt)
         {
             return GetKeyedHash.GetKeyedHashString(
-                ss, ekha, password, salt, GetKeyedHash.Stretching);
+                ss, ekha, password, salt, GetKeyedHash.StretchCount);
         }
 
         /// <summary>文字列のハッシュ値を計算して返す。</summary>
@@ -140,18 +222,17 @@ namespace Touryo.Infrastructure.Public.Util
         /// <param name="ekha">ハッシュ（キー付き）アルゴリズム列挙型</param>
         /// <param name="password">使用するパスワード</param>
         /// <param name="salt">ソルト</param>
-        /// <param name="stretching">ストレッチング</param>
+        /// <param name="stretching">ストレッチ回数</param>
         /// <returns>ハッシュ値（文字列）</returns>
         public static string GetKeyedHashString(string ss, EnumKeyedHashAlgorithm ekha, string password, byte[] salt, int stretching)
         {
-            // ハッシュ（Base64）
             return CustomEncode.ToBase64String(
                 GetKeyedHashBytes(CustomEncode.StringToByte(ss, CustomEncode.UTF_8), ekha, password, salt, stretching));
         }
 
         #endregion
 
-        #region GetKeyedHashBytes
+        #region Bytes
 
         /// <summary>バイト配列のハッシュ値を計算して返す。</summary>
         /// <param name="asb">バイト配列</param>
@@ -161,7 +242,7 @@ namespace Touryo.Infrastructure.Public.Util
         public static byte[] GetKeyedHashBytes(byte[] asb, EnumKeyedHashAlgorithm ekha, string password)
         {
             return GetKeyedHash.GetKeyedHashBytes(
-                asb, ekha, password, CustomEncode.StringToByte(GetKeyedHash._salt, CustomEncode.UTF_8), GetKeyedHash.Stretching);
+                asb, ekha, password, CustomEncode.StringToByte(GetKeyedHash._salt, CustomEncode.UTF_8), GetKeyedHash.StretchCount);
         }
 
         /// <summary>バイト配列のハッシュ値を計算して返す。</summary>
@@ -173,7 +254,7 @@ namespace Touryo.Infrastructure.Public.Util
         public static byte[] GetKeyedHashBytes(byte[] asb, EnumKeyedHashAlgorithm ekha, string password, byte[] salt)
         {
             return GetKeyedHash.GetKeyedHashBytes(
-                asb, ekha, password, salt, GetKeyedHash.Stretching);
+                asb, ekha, password, salt, GetKeyedHash.StretchCount);
         }
 
         /// <summary>バイト配列のハッシュ値を計算して返す。</summary>
@@ -181,12 +262,12 @@ namespace Touryo.Infrastructure.Public.Util
         /// <param name="ekha">ハッシュ（キー付き）アルゴリズム列挙型</param>
         /// <param name="password">使用するパスワード</param>
         /// <param name="salt">ソルト</param>
-        /// <param name="stretching">ストレッチング</param>
+        /// <param name="stretchCount">ストレッチ回数</param>
         /// <returns>ハッシュ値（バイト配列）</returns>
-        public static byte[] GetKeyedHashBytes(byte[] asb, EnumKeyedHashAlgorithm ekha, string password, byte[] salt, int stretching)
+        public static byte[] GetKeyedHashBytes(byte[] asb, EnumKeyedHashAlgorithm ekha, string password, byte[] salt, int stretchCount)
         {
             // キーを生成する。
-            Rfc2898DeriveBytes passwordKey = new Rfc2898DeriveBytes(password, salt, stretching);
+            Rfc2898DeriveBytes passwordKey = new Rfc2898DeriveBytes(password, salt, stretchCount);
             // HMACMD5      ：どのサイズのキーでも受け入れる ◯
             // HMACRIPEMD160：どのサイズのキーでも受け入れる ◯
             // HMACSHA1     ：どのサイズのキーでも受け入れる ◯
@@ -208,6 +289,8 @@ namespace Touryo.Infrastructure.Public.Util
 
             return temp;
         }
+
+        #endregion
 
         #endregion
 
@@ -273,4 +356,6 @@ namespace Touryo.Infrastructure.Public.Util
 
         #endregion
     }
+
+    #endregion
 }

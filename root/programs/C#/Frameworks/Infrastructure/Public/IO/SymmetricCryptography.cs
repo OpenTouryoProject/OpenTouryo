@@ -34,8 +34,8 @@
 //*  2013/02/18  西野  大介        CustomEncode使用に統一
 //*  2014/03/13  西野  大介        devps(1703):Createメソッドを使用してcryptoオブジェクトを作成します。
 //*  2014/03/13  西野  大介        devps(1725):暗号クラスの使用終了時にデータをクリアする。
-//*  2016/01/10  西野  大介        stretch回数の指定方法をPropertyからConstructorに変更した。
-//*  2016/01/10  西野  大介        AesCryptoServiceProviderを削除（.NET3.5から実装されたAesManagedを残す）
+//*  2017/01/10  西野  大介        stretch回数の指定方法をPropertyからConstructorに変更した。
+//*  2017/01/10  西野  大介        AesCryptoServiceProviderを削除（.NET3.5から実装されたAesManagedを残す）
 //**********************************************************************************
 
 // System
@@ -80,10 +80,10 @@ namespace Touryo.Infrastructure.Public.IO
 
         /// <summary>RC2CryptoServiceProvider</summary>
         RC2CryptoServiceProvider,
-        
+
         /// <summary>RijndaelManaged</summary>
         RijndaelManaged,
-        
+
         /// <summary>TripleDESCryptoServiceProvider</summary>
         TripleDESCryptoServiceProvider
     };
@@ -143,7 +143,7 @@ namespace Touryo.Infrastructure.Public.IO
             return SymmetricCryptography.EncryptString(
                 sourceString, password, esa, salt, SymmetricCryptography.Stretching);
         }
-        
+
         /// <summary>文字列を暗号化する</summary>
         /// <param name="sourceString">暗号化する文字列</param>
         /// <param name="password">暗号化に使用するパスワード</param>

@@ -30,9 +30,9 @@
 //*  2013/02/15  西野  大介        新規作成
 //*  2014/03/13  西野  大介        devps(1703):Createメソッドを使用してcryptoオブジェクトを作成します。
 //*  2014/03/13  西野  大介        devps(1725):暗号クラスの使用終了時にデータをクリアする。
-//*  2016/01/10  西野  大介        ストレッチ回数を指定可能にし、新設したGetPasswordを利用するように変更。
-//*  2016/01/10  西野  大介        塩味パスワードのformat変更(salt+stretchCount+hashedPassword)。
-//*  2016/01/10  西野  大介        上記のformat変更に伴い、EqualSaltedPasswd側のI/F変更が発生。
+//*  2017/01/10  西野  大介        ストレッチ回数を指定可能にし、新設したGetPasswordを利用するように変更。
+//*  2017/01/10  西野  大介        saltedPasswdのformat変更(salt+stretchCount+hashedPassword)。
+//*  2017/01/10  西野  大介        上記のformat変更に伴い、EqualSaltedPasswd側のI/F変更が発生。
 //**********************************************************************************
 
 
@@ -59,6 +59,8 @@ using System.Security.Cryptography;
 
 namespace Touryo.Infrastructure.Public.Util
 {
+    #region Enum
+
     /// <summary>
     /// ハッシュアルゴリズムのサービスプロバイダの種類
     /// </summary>
@@ -86,28 +88,34 @@ namespace Touryo.Infrastructure.Public.Util
         SHA512Managed,
     };
 
+    #endregion
+
+    #region GetHash
+
     /// <summary>ハッシュを取得するクラス</summary>
     public class GetHash
     {
+        #region GetSaltedPassword
+
         /// <summary>パスワードをDB保存する際には塩味パスワードとして保存する。</summary>
-        /// <param name="rawPasswd">ユーザが入力した生のパスワード</param>
+        /// <param name="rawPassword">ユーザが入力した生のパスワード</param>
         /// <param name="eha">ハッシュ・アルゴリズム列挙型</param>
         /// <param name="saltLength">ソルトの文字列長</param>
         /// <returns>塩味パスワード</returns>
         /// <see ref="http://www.atmarkit.co.jp/ait/articles/1110/06/news154_2.html"/>
-        public static string GetSaltedPasswd(string rawPasswd, EnumHashAlgorithm eha, int saltLength)
+        public static string GetSaltedPassword(string rawPassword, EnumHashAlgorithm eha, int saltLength)
         {
             // overlordへ
-            return GetHash.GetSaltedPasswd(rawPasswd, eha, saltLength, 1);
+            return GetHash.GetSaltedPassword(rawPassword, eha, saltLength, 1);
         }
 
         /// <summary>パスワードをDB保存する際には塩味パスワードとして保存する。</summary>
-        /// <param name="rawPasswd">ユーザが入力した生のパスワード</param>
+        /// <param name="rawPassword">ユーザが入力した生のパスワード</param>
         /// <param name="eha">ハッシュ・アルゴリズム列挙型</param>
         /// <param name="saltLength">ソルトの文字列長</param>
         /// <param name="stretchCount">ストレッチ回数</param>
         /// <returns>塩味パスワード</returns>
-        public static string GetSaltedPasswd(string rawPasswd, EnumHashAlgorithm eha, int saltLength, int stretchCount)
+        public static string GetSaltedPassword(string rawPassword, EnumHashAlgorithm eha, int saltLength, int stretchCount)
         {
             // ランダム・ソルト文字列を生成（区切り記号は含まなくても良い）
             string salt = GetPassword.Generate(saltLength, 0); //Membership.GeneratePassword(saltLength, 0);
@@ -116,28 +124,28 @@ namespace Touryo.Infrastructure.Public.Util
             return
                 CustomEncode.ToBase64String(CustomEncode.StringToByte(salt, CustomEncode.UTF_8))
                 + "." + CustomEncode.ToBase64String(CustomEncode.StringToByte(stretchCount.ToString(), CustomEncode.UTF_8))
-                + "." + CustomEncode.ToBase64String(CustomEncode.StringToByte(GetHash.GetHashString(salt + rawPasswd, eha, stretchCount), CustomEncode.UTF_8));
+                + "." + CustomEncode.ToBase64String(CustomEncode.StringToByte(GetHash.GetHashString(salt + rawPassword, eha, stretchCount), CustomEncode.UTF_8));
             // バイト配列仕様は、フィールドが文字列の可能性が高いので辞めた。
         }
 
         /// <summary>パスワードを比較して認証する。</summary>
-        /// <param name="rawPasswd">ユーザが入力した生のパスワード</param>
-        /// <param name="saltedPasswd">塩味パスワード</param>
+        /// <param name="rawPassword">ユーザが入力した生のパスワード</param>
+        /// <param name="saltedPassword">塩味パスワード</param>
         /// <param name="eha">ハッシュ・アルゴリズム列挙型</param>
         /// <returns>
         /// true：パスワードは一致した。
         /// false：パスワードは一致しない。
         /// </returns>
-        public static bool EqualSaltedPasswd(string rawPasswd, string saltedPasswd, EnumHashAlgorithm eha)
+        public static bool EqualSaltedPassword(string rawPassword, string saltedPassword, EnumHashAlgorithm eha)
         {
             // ソルト部分を取得
-            string[] temp = saltedPasswd.Split('.');
+            string[] temp = saltedPassword.Split('.');
             string salt = CustomEncode.ByteToString(CustomEncode.FromBase64String(temp[0]), CustomEncode.UTF_8);
             int stretchCount = int.Parse(CustomEncode.ByteToString(CustomEncode.FromBase64String(temp[1]), CustomEncode.UTF_8));
-            string hashedPasswd = CustomEncode.ByteToString(CustomEncode.FromBase64String(temp[2]), CustomEncode.UTF_8);
+            string hashedPassword = CustomEncode.ByteToString(CustomEncode.FromBase64String(temp[2]), CustomEncode.UTF_8);
 
-            // 引数のsaltedPasswdと、rawPasswdから自作したsaltedPasswdを比較
-            if (hashedPasswd == GetHash.GetHashString(salt + rawPasswd, eha, stretchCount))
+            // 引数のsaltedPasswordと、rawPasswordから自作したsaltedPasswordを比較
+            if (hashedPassword == GetHash.GetHashString(salt + rawPassword, eha, stretchCount))
             {
                 // 一致した。
                 return true;
@@ -148,7 +156,13 @@ namespace Touryo.Infrastructure.Public.Util
                 return false;
             }
         }
-        
+
+        #endregion
+
+        #region GetHash
+
+        #region String
+
         /// <summary>文字列のハッシュ値を計算して返す。</summary>
         /// <param name="sourceString">文字列</param>
         /// <param name="eha">ハッシュ・アルゴリズム列挙型</param>
@@ -166,11 +180,14 @@ namespace Touryo.Infrastructure.Public.Util
         /// <returns>ハッシュ値（文字列）</returns>
         public static string GetHashString(string sourceString, EnumHashAlgorithm eha, int stretchCount)
         {
-            // ハッシュ（Base64）
             return CustomEncode.ToBase64String(
                 GetHash.GetHashBytes(
                     CustomEncode.StringToByte(sourceString, CustomEncode.UTF_8), eha, stretchCount));
         }
+
+        #endregion
+
+        #region Bytes
 
         /// <summary>バイト配列のハッシュ値を計算して返す。</summary>
         /// <param name="asb">バイト配列</param>
@@ -204,6 +221,10 @@ namespace Touryo.Infrastructure.Public.Util
             ha.Clear(); // devps(1725)
             return temp;
         }
+
+        #endregion
+
+        #endregion
 
         #region 内部関数
 
@@ -256,4 +277,6 @@ namespace Touryo.Infrastructure.Public.Util
 
         #endregion
     }
+
+    #endregion
 }
