@@ -30,7 +30,10 @@
 //*  2013/02/12  西野  大介        新規作成
 //*  2017/01/10  西野  大介        引数指定の誤りと、HashのStretchCountを指定可能に修正
 //*  2017/01/10  西野  大介        秘密鍵と公開鍵の画面表示が誤っていたため、これを修正
+//*  2017/01/13  西野  大介        上記修正への対応と、GetSaltedPasswordのI/F変更に対する修正対応
+//*  2017/01/13  西野  大介        追加のGetSaltedPasswordメソッド、CodeSigning、JWTクラスの検証画面
 //**********************************************************************************
+
 
 using System;
 using System.Text;
@@ -41,11 +44,14 @@ using System.Security.Cryptography.X509Certificates;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Util.JWT;
 
 namespace EncAndDecUtil
 {
     public partial class Form1 : Form
     {
+        #region 初期処理
+
         /// <summary>コンストラクタ</summary>
         public Form1()
         {
@@ -62,6 +68,8 @@ namespace EncAndDecUtil
             cbxSPWDPV2.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
             cbxCCXMLPV.DataSource = Enum.GetValues(typeof(EnumCodeSigningAlgorithm));
         }
+        
+        #endregion
 
         #region ハッシュ
 
@@ -458,7 +466,7 @@ namespace EncAndDecUtil
 
         #endregion
 
-        #region 署名
+        #region 証明書
 
         // ココの署名・検証処理を実行するには、ClickOnce署名機能などを使用し予め、
         // *.pfx 証明書を、password = "test" などとして、生成しておく必要があります。
@@ -471,6 +479,10 @@ namespace EncAndDecUtil
         private string CertificateFilePath_pfx = @"..\..\EncAndDecUtil_TemporaryKey_RSA256.pfx";
         private string CertificateFilePath_cer = @"..\..\EncAndDecUtil_TemporaryKey_RSA256.cer";
         private string CertificateFilePassword = "test";
+
+        #endregion
+
+        #region 署名
 
         /// <summary>rbnCCXML_CheckedChanged</summary>
         private void rbnCCXML_CheckedChanged(object sender, EventArgs e)
@@ -559,5 +571,79 @@ namespace EncAndDecUtil
         }
 
         #endregion
+
+        #region JWT
+
+        /// <summary>JWT生成</summary>
+        private void btnJWTSign_Click(object sender, EventArgs e)
+        {
+            //JWT_HS256 jwtHS256 = null;
+            JWT_RS256 jwtRS256 = null;
+
+            if (rbnJWTHS256.Checked)
+            {
+            }
+            else
+            {
+                // X509Cer
+                jwtRS256 = new JWT_RS256(new CodeSigningX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, "SHA256"));
+
+                // 生成
+                string jwt = jwtRS256.Create(this.txtJWTPayload.Text);
+
+                // 出力
+                this.txtJWTSign.Text = jwt;
+
+                // 改竄可能なフィールドに出力
+                string[] temp = jwt.Split('.');
+                this.txtJWTHeader.Text =  CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(temp[0]),CustomEncode.UTF_8);
+                this.txtJWTPayload.Text = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(temp[1]), CustomEncode.UTF_8);
+            }
+        }
+
+        /// <summary>JWT検証</summary>
+        private void btnJWTVerify_Click(object sender, EventArgs e)
+        {
+            //JWT_HS256 jwtHS256 = null;
+            JWT_RS256 jwtRS256 = null;
+
+            bool ret = false;
+
+
+            if (rbnJWTHS256.Checked)
+            {
+            }
+            else
+            {
+                // X509Cer
+
+                // 入力
+                string[] temp = this.txtJWTSign.Text.Split('.');
+
+                // 改変可能なフィールドから入力
+                string newJWT =
+                    CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTHeader.Text, CustomEncode.UTF_8))
+                    + "." + CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTPayload.Text, CustomEncode.UTF_8))
+                    + "." + temp[2];
+
+                // 検証
+                jwtRS256 = new JWT_RS256(new CodeSigningX509(this.CertificateFilePath_cer, "", "SHA256"));
+                ret = jwtRS256.Verify(newJWT);
+            }
+
+            if (ret)
+            {
+                MessageBox.Show("検証成功");
+            }
+            else
+            {
+                MessageBox.Show("検証失敗");
+            }
+        }
+        
+        #endregion
+
     }
 }

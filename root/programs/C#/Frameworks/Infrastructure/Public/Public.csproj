@@ -125,6 +125,8 @@
     <Compile Include="Util\GetKeyedHash.cs" />
     <Compile Include="Util\GetPassword.cs" />
     <Compile Include="Util\IdentityImpersonation.cs" />
+    <Compile Include="Util\JWT_HS256.cs" />
+    <Compile Include="Util\JWT_RS256.cs" />
     <Compile Include="Util\JWT.cs" />
     <Compile Include="Util\ObjectInspector.cs" />
     <Compile Include="Util\PubCmnFunction.cs" />

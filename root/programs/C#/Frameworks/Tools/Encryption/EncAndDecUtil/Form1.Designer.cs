@@ -122,6 +122,7 @@
             this.lblASC1 = new System.Windows.Forms.Label();
             this.txtASCString = new System.Windows.Forms.TextBox();
             this.tabCodeSigning = new System.Windows.Forms.TabPage();
+            this.btnCCVerify = new System.Windows.Forms.Button();
             this.lblCC6 = new System.Windows.Forms.Label();
             this.txtCCSign = new System.Windows.Forms.TextBox();
             this.lblCC5 = new System.Windows.Forms.Label();
@@ -139,7 +140,16 @@
             this.rbnCCXML = new System.Windows.Forms.RadioButton();
             this.btnCCSign = new System.Windows.Forms.Button();
             this.tabJWT = new System.Windows.Forms.TabPage();
-            this.btnCCVerify = new System.Windows.Forms.Button();
+            this.btnJWTVerify = new System.Windows.Forms.Button();
+            this.btnJWTSign = new System.Windows.Forms.Button();
+            this.gbxJWT = new System.Windows.Forms.GroupBox();
+            this.rbnJWTRS256 = new System.Windows.Forms.RadioButton();
+            this.rbnJWTHS256 = new System.Windows.Forms.RadioButton();
+            this.lblJWT2 = new System.Windows.Forms.Label();
+            this.txtJWTSign = new System.Windows.Forms.TextBox();
+            this.lblJWT1 = new System.Windows.Forms.Label();
+            this.txtJWTPayload = new System.Windows.Forms.TextBox();
+            this.txtJWTHeader = new System.Windows.Forms.TextBox();
             this.btnSPWDAuth2.SuspendLayout();
             this.tabHash.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHSStretching)).BeginInit();
@@ -160,6 +170,8 @@
             this.gbxASC.SuspendLayout();
             this.tabCodeSigning.SuspendLayout();
             this.gbxCC.SuspendLayout();
+            this.tabJWT.SuspendLayout();
+            this.gbxJWT.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSPWDAuth2
@@ -1176,6 +1188,16 @@
             this.tabCodeSigning.Text = "署名";
             this.tabCodeSigning.UseVisualStyleBackColor = true;
             // 
+            // btnCCVerify
+            // 
+            this.btnCCVerify.Location = new System.Drawing.Point(174, 210);
+            this.btnCCVerify.Name = "btnCCVerify";
+            this.btnCCVerify.Size = new System.Drawing.Size(141, 23);
+            this.btnCCVerify.TabIndex = 43;
+            this.btnCCVerify.Text = "検証";
+            this.btnCCVerify.UseVisualStyleBackColor = true;
+            this.btnCCVerify.Click += new System.EventHandler(this.btnCCVerify_Click);
+            // 
             // lblCC6
             // 
             this.lblCC6.AutoSize = true;
@@ -1294,10 +1316,10 @@
             this.rbnCCX509.AutoSize = true;
             this.rbnCCX509.Location = new System.Drawing.Point(118, 18);
             this.rbnCCX509.Name = "rbnCCX509";
-            this.rbnCCX509.Size = new System.Drawing.Size(66, 16);
+            this.rbnCCX509.Size = new System.Drawing.Size(72, 16);
             this.rbnCCX509.TabIndex = 1;
             this.rbnCCX509.TabStop = true;
-            this.rbnCCX509.Text = "X509Cer";
+            this.rbnCCX509.Text = "X.509 Cer";
             this.rbnCCX509.UseVisualStyleBackColor = true;
             this.rbnCCX509.CheckedChanged += new System.EventHandler(this.rbnCCX509_CheckedChanged);
             // 
@@ -1307,10 +1329,10 @@
             this.rbnCCXML.Checked = true;
             this.rbnCCXML.Location = new System.Drawing.Point(20, 18);
             this.rbnCCXML.Name = "rbnCCXML";
-            this.rbnCCXML.Size = new System.Drawing.Size(64, 16);
+            this.rbnCCXML.Size = new System.Drawing.Size(68, 16);
             this.rbnCCXML.TabIndex = 0;
             this.rbnCCXML.TabStop = true;
-            this.rbnCCXML.Text = "XMLKey";
+            this.rbnCCXML.Text = "XML Key";
             this.rbnCCXML.UseVisualStyleBackColor = true;
             this.rbnCCXML.CheckedChanged += new System.EventHandler(this.rbnCCXML_CheckedChanged);
             // 
@@ -1326,6 +1348,14 @@
             // 
             // tabJWT
             // 
+            this.tabJWT.Controls.Add(this.txtJWTHeader);
+            this.tabJWT.Controls.Add(this.lblJWT2);
+            this.tabJWT.Controls.Add(this.txtJWTSign);
+            this.tabJWT.Controls.Add(this.lblJWT1);
+            this.tabJWT.Controls.Add(this.txtJWTPayload);
+            this.tabJWT.Controls.Add(this.gbxJWT);
+            this.tabJWT.Controls.Add(this.btnJWTVerify);
+            this.tabJWT.Controls.Add(this.btnJWTSign);
             this.tabJWT.Location = new System.Drawing.Point(4, 40);
             this.tabJWT.Name = "tabJWT";
             this.tabJWT.Size = new System.Drawing.Size(384, 241);
@@ -1333,15 +1363,102 @@
             this.tabJWT.Text = "JWT";
             this.tabJWT.UseVisualStyleBackColor = true;
             // 
-            // btnCCVerify
+            // btnJWTVerify
             // 
-            this.btnCCVerify.Location = new System.Drawing.Point(174, 210);
-            this.btnCCVerify.Name = "btnCCVerify";
-            this.btnCCVerify.Size = new System.Drawing.Size(141, 23);
-            this.btnCCVerify.TabIndex = 43;
-            this.btnCCVerify.Text = "検証";
-            this.btnCCVerify.UseVisualStyleBackColor = true;
-            this.btnCCVerify.Click += new System.EventHandler(this.btnCCVerify_Click);
+            this.btnJWTVerify.Location = new System.Drawing.Point(174, 210);
+            this.btnJWTVerify.Name = "btnJWTVerify";
+            this.btnJWTVerify.Size = new System.Drawing.Size(141, 23);
+            this.btnJWTVerify.TabIndex = 45;
+            this.btnJWTVerify.Text = "検証";
+            this.btnJWTVerify.UseVisualStyleBackColor = true;
+            this.btnJWTVerify.Click += new System.EventHandler(this.btnJWTVerify_Click);
+            // 
+            // btnJWTSign
+            // 
+            this.btnJWTSign.Location = new System.Drawing.Point(11, 210);
+            this.btnJWTSign.Name = "btnJWTSign";
+            this.btnJWTSign.Size = new System.Drawing.Size(141, 23);
+            this.btnJWTSign.TabIndex = 44;
+            this.btnJWTSign.Text = "署名";
+            this.btnJWTSign.UseVisualStyleBackColor = true;
+            this.btnJWTSign.Click += new System.EventHandler(this.btnJWTSign_Click);
+            // 
+            // gbxJWT
+            // 
+            this.gbxJWT.Controls.Add(this.rbnJWTRS256);
+            this.gbxJWT.Controls.Add(this.rbnJWTHS256);
+            this.gbxJWT.Location = new System.Drawing.Point(9, 7);
+            this.gbxJWT.Name = "gbxJWT";
+            this.gbxJWT.Size = new System.Drawing.Size(306, 46);
+            this.gbxJWT.TabIndex = 46;
+            this.gbxJWT.TabStop = false;
+            this.gbxJWT.Text = "API選択";
+            // 
+            // rbnJWTRS256
+            // 
+            this.rbnJWTRS256.AutoSize = true;
+            this.rbnJWTRS256.Location = new System.Drawing.Point(118, 18);
+            this.rbnJWTRS256.Name = "rbnJWTRS256";
+            this.rbnJWTRS256.Size = new System.Drawing.Size(56, 16);
+            this.rbnJWTRS256.TabIndex = 1;
+            this.rbnJWTRS256.TabStop = true;
+            this.rbnJWTRS256.Text = "RS256";
+            this.rbnJWTRS256.UseVisualStyleBackColor = true;
+            // 
+            // rbnJWTHS256
+            // 
+            this.rbnJWTHS256.AutoSize = true;
+            this.rbnJWTHS256.Checked = true;
+            this.rbnJWTHS256.Location = new System.Drawing.Point(20, 18);
+            this.rbnJWTHS256.Name = "rbnJWTHS256";
+            this.rbnJWTHS256.Size = new System.Drawing.Size(56, 16);
+            this.rbnJWTHS256.TabIndex = 0;
+            this.rbnJWTHS256.TabStop = true;
+            this.rbnJWTHS256.Text = "HS256";
+            this.rbnJWTHS256.UseVisualStyleBackColor = true;
+            // 
+            // lblJWT2
+            // 
+            this.lblJWT2.AutoSize = true;
+            this.lblJWT2.Location = new System.Drawing.Point(9, 188);
+            this.lblJWT2.Name = "lblJWT2";
+            this.lblJWT2.Size = new System.Drawing.Size(29, 12);
+            this.lblJWT2.TabIndex = 50;
+            this.lblJWT2.Text = "署名";
+            // 
+            // txtJWTSign
+            // 
+            this.txtJWTSign.Location = new System.Drawing.Point(48, 185);
+            this.txtJWTSign.Name = "txtJWTSign";
+            this.txtJWTSign.ReadOnly = true;
+            this.txtJWTSign.Size = new System.Drawing.Size(267, 19);
+            this.txtJWTSign.TabIndex = 49;
+            // 
+            // lblJWT1
+            // 
+            this.lblJWT1.AutoSize = true;
+            this.lblJWT1.Location = new System.Drawing.Point(9, 63);
+            this.lblJWT1.Name = "lblJWT1";
+            this.lblJWT1.Size = new System.Drawing.Size(33, 12);
+            this.lblJWT1.TabIndex = 48;
+            this.lblJWT1.Text = "データ";
+            // 
+            // txtJWTPayload
+            // 
+            this.txtJWTPayload.Location = new System.Drawing.Point(48, 102);
+            this.txtJWTPayload.Multiline = true;
+            this.txtJWTPayload.Name = "txtJWTPayload";
+            this.txtJWTPayload.Size = new System.Drawing.Size(267, 77);
+            this.txtJWTPayload.TabIndex = 47;
+            this.txtJWTPayload.Text = "{ \"aaa\": \"AAA\", \"bbb\": \"BBB\", \"ccc\": \"CCC\"}";
+            // 
+            // txtJWTHeader
+            // 
+            this.txtJWTHeader.Location = new System.Drawing.Point(48, 63);
+            this.txtJWTHeader.Multiline = true;
+            this.txtJWTHeader.Name = "txtJWTHeader";
+            this.txtJWTHeader.Size = new System.Drawing.Size(267, 33);
+            this.txtJWTHeader.TabIndex = 51;
             // 
             // Form1
             // 
@@ -1384,6 +1501,10 @@
             this.tabCodeSigning.PerformLayout();
             this.gbxCC.ResumeLayout(false);
             this.gbxCC.PerformLayout();
+            this.tabJWT.ResumeLayout(false);
+            this.tabJWT.PerformLayout();
+            this.gbxJWT.ResumeLayout(false);
+            this.gbxJWT.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1502,6 +1623,16 @@
         private System.Windows.Forms.Label lblCC4;
         private System.Windows.Forms.TextBox txtCCPrivateKey;
         private System.Windows.Forms.Button btnCCVerify;
+        private System.Windows.Forms.GroupBox gbxJWT;
+        private System.Windows.Forms.RadioButton rbnJWTRS256;
+        private System.Windows.Forms.RadioButton rbnJWTHS256;
+        private System.Windows.Forms.Button btnJWTVerify;
+        private System.Windows.Forms.Button btnJWTSign;
+        private System.Windows.Forms.Label lblJWT2;
+        private System.Windows.Forms.TextBox txtJWTSign;
+        private System.Windows.Forms.Label lblJWT1;
+        private System.Windows.Forms.TextBox txtJWTPayload;
+        private System.Windows.Forms.TextBox txtJWTHeader;
     }
 }
 

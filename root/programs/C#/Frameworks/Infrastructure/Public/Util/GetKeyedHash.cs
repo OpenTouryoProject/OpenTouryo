@@ -30,9 +30,10 @@
 //*  2013/02/15  西野  大介        新規作成
 //*  2014/03/13  西野  大介        devps(1703):Createメソッドを使用してcryptoオブジェクトを作成します。
 //*  2014/03/13  西野  大介        devps(1725):暗号クラスの使用終了時にデータをクリアする。
-//*  2017/01/10  西野  大介        HMAC(HMACMD5、HMACRIPEMD160、HMACSHA256、HMACSHA384、HMACSHA512)を追加
 //*  2017/01/10  西野  大介        ストレッチ回数とsaltのpublic property procedureを追加
+//*  2017/01/10  西野  大介        HMAC(HMACMD5、HMACRIPEMD160、HMACSHA256、HMACSHA384、HMACSHA512)を追加
 //*  2017/01/10  西野  大介        全てHMACSHA1になる問題があったため、KeyedHashAlgorithm生成方法を変更。
+//*  2017/01/10  西野  大介        GetSaltedPasswordとEqualSaltedPasswordを追加。
 //**********************************************************************************
 
 // System

@@ -20,7 +20,7 @@
 
 //**********************************************************************************
 //* クラス名        ：JWT
-//* クラス日本語名  ：JWTクラス
+//* クラス日本語名  ：JWT抽象クラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -30,23 +30,42 @@
 //*  2017/01/10  西野  大介        新規作成
 //**********************************************************************************
 
+// System
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Touryo.Infrastructure.Public.Util
+// 業務フレームワーク（循環参照になるため、参照しない）
+// フレームワーク（循環参照になるため、参照しない）
+
+// 部品
+using Touryo.Infrastructure.Public.Db;
+using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Public.Log;
+using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Util;
+
+namespace Touryo.Infrastructure.Public.Util.JWT
 {
-    /// <summary>JWT</summary>
-    public class JWT
+    /// <summary>JWT Header</summary>
+    public class Header
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public string CreateByRS256(string json)
-        {
-            return "";
-        }
+        /// <summary>alg = HS256 or RS256</summary>
+        public string alg = "";
+        /// <summary>typ=JWT</summary>
+        public readonly string typ = "JWT";
+    }
+
+    /// <summary>JWT</summary>
+    public abstract class JWT
+    {
+        /// <summary>JWT生成メソッド</summary>
+        /// <param name="payloadJson">ペイロード部のJson文字列</param>
+        /// <returns>JWTの文字列表現</returns>
+        public abstract string Create(string payloadJson);
+
+        /// <summary>JWT検証メソッド</summary>
+        /// <param name="jwtString">JWTの文字列表現</param>
+        /// <returns>署名の検証結果</returns>
+        public abstract bool Verify(string jwtString);
+        
     }
 }
