@@ -1,6 +1,8 @@
 # OpenTouryo
 *Open Touryo* is an application framework for .NET Framework which was developed using the accumulated know-how with a longstanding application development results.
 
+Click [here](Readme.ja.md) for Japanese version of this file.
+
 ## Develop/Run-time environment
 The programs in this repository are developed in the following environments:
 
