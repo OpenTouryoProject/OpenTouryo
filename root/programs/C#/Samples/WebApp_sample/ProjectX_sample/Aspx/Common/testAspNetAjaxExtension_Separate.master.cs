@@ -19,7 +19,7 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：Aspx_Common_testAspNetAjaxExtension_Separate
+//* クラス名        ：testAspNetAjaxExtension_Separate
 //* クラス日本語名  ：Ajaxテスト用のマスタ ページ（updateパネルを親・子で２つ別けて使用）
 //*
 //* 作成日時        ：－
@@ -34,7 +34,7 @@
 // System
 using System;
 
-// Touryo
+// OpenTouryo
 using Touryo.Infrastructure.Framework.Presentation;
 
 namespace ProjectX_sample.Aspx.Common

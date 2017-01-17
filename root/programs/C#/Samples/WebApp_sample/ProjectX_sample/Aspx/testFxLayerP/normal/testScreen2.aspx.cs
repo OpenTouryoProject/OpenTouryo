@@ -3,7 +3,7 @@
 //**********************************************************************************
 
 //**********************************************************************************
-//* クラス名        ：Aspx_testFxLayerP_normal_testScreen2
+//* クラス名        ：testScreen2
 //* クラス日本語名  ：テスト画面２（Ｐ層）
 //*
 //* 作成日時        ：－
@@ -17,28 +17,18 @@
 //**********************************************************************************
 
 // System
-using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
-
 // System.Web
-using System.Web;
-using System.Web.Security;
-
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 
+#region OpenTouryo
 // 業務フレームワーク
 using Touryo.Infrastructure.Business.Business;
 using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Business.Dao;
 using Touryo.Infrastructure.Business.Exceptions;
 using Touryo.Infrastructure.Business.Presentation;
+using Touryo.Infrastructure.Business.Str;
+using Touryo.Infrastructure.Business.Transmission;
 using Touryo.Infrastructure.Business.Util;
 
 // フレームワーク
@@ -47,8 +37,8 @@ using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Framework.Transmission;
+using Touryo.Infrastructure.Framework.Util;
 
 // 部品
 using Touryo.Infrastructure.Public.Db;
@@ -56,8 +46,9 @@ using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
+#endregion
 
-namespace ProjectX_sample.Aspx.testFxLayerP.normal
+namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
 {
     /// <summary>テスト画面２（Ｐ層）</summary>
     public partial class testScreen2 : MyBaseController
@@ -75,29 +66,29 @@ namespace ProjectX_sample.Aspx.testFxLayerP.normal
             // クライアントからの業務モーダル画面起動
             // スタイル指定なし
             this.btnButton2.OnClientClick =
-                "return " + this.GetScriptToShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx") + ";";
+                "return " + this.GetScriptToShowModalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx") + ";";
             this.btnButton3.OnClientClick =
-                "return " + this.GetScriptToShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test") + ";";
+                "return " + this.GetScriptToShowModalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx?test=test") + ";";
 
             // スタイル指定あり（空）
             this.btnButton4.OnClientClick =
-                "return " + this.GetScriptToShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx", "") + ";";
+                "return " + this.GetScriptToShowModalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx", "") + ";";
             this.btnButton5.OnClientClick =
-                "return " + this.GetScriptToShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", "") + ";";
+                "return " + this.GetScriptToShowModalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx?test=test", "") + ";";
 
             // ---
 
             // クライアントからの業務モードレス画面起動
             this.btnButton9.OnClientClick =
-                this.GetScriptToShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx")
+                this.GetScriptToShowNormalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx")
                 + "; return false;";
 
             this.btnButton10.OnClientClick =
-                this.GetScriptToShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", "")
+                this.GetScriptToShowNormalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx?test=test", "")
                 + "; return false;";
 
             this.btnButton11.OnClientClick =
-                this.GetScriptToShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", "", "t")
+                this.GetScriptToShowNormalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx?test=test", "", "t")
                 + "; return false;";
         }
 

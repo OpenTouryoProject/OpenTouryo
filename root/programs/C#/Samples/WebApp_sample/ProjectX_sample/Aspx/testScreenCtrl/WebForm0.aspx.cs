@@ -3,7 +3,7 @@
 //**********************************************************************************
 
 //**********************************************************************************
-//* クラス名        ：Aspx_testScreenCtrl_WebForm0
+//* クラス名        ：WebForm0
 //* クラス日本語名  ：画面遷移制御機能テスト画面０（Ｐ層）
 //*
 //* 作成日時        ：－
@@ -15,32 +15,19 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System.Collections
-using System.Collections.Specialized;
-
 // System
-using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
-
 // System.Web
-using System.Web;
-using System.Web.Security;
-
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 
+#region OpenTouryo
 // 業務フレームワーク
 using Touryo.Infrastructure.Business.Business;
 using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Business.Dao;
 using Touryo.Infrastructure.Business.Exceptions;
 using Touryo.Infrastructure.Business.Presentation;
+using Touryo.Infrastructure.Business.Str;
+using Touryo.Infrastructure.Business.Transmission;
 using Touryo.Infrastructure.Business.Util;
 
 // フレームワーク
@@ -49,8 +36,8 @@ using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Framework.Transmission;
+using Touryo.Infrastructure.Framework.Util;
 
 // 部品
 using Touryo.Infrastructure.Public.Db;
@@ -58,8 +45,9 @@ using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
+#endregion
 
-namespace ProjectX_sample.Aspx.testScreenCtrl
+namespace ProjectX_sample.Aspx.TestScreenCtrl
 {
     /// <summary>画面遷移制御機能テスト画面０（Ｐ層）</summary>
     public partial class WebForm0 : MyBaseController
@@ -465,7 +453,7 @@ namespace ProjectX_sample.Aspx.testScreenCtrl
         /// <remarks>dialog</remarks>
         protected string UOC_btnButton22_Click(FxEventArgs fxEventArgs)
         {
-            this.ShowModalScreen("~/Aspx/testScreenCtrl/WebForm1.aspx");
+            this.ShowModalScreen("~/Aspx/TestScreenCtrl/WebForm1.aspx");
             return "";
         }
 
@@ -475,7 +463,7 @@ namespace ProjectX_sample.Aspx.testScreenCtrl
         /// <remarks>dialog</remarks>
         protected string UOC_btnButton23_Click(FxEventArgs fxEventArgs)
         {
-            this.ShowModalScreen("~/Aspx/testScreenCtrl/WebForm2.aspx");
+            this.ShowModalScreen("~/Aspx/TestScreenCtrl/WebForm2.aspx");
             return "";
         }
 
@@ -485,7 +473,7 @@ namespace ProjectX_sample.Aspx.testScreenCtrl
         /// <remarks>dialog</remarks>
         protected string UOC_btnButton24_Click(FxEventArgs fxEventArgs)
         {
-            this.ShowModalScreen("~/Aspx/testScreenCtrl/WebForm3.aspx");
+            this.ShowModalScreen("~/Aspx/TestScreenCtrl/WebForm3.aspx");
             return "";
         }
 
@@ -495,7 +483,7 @@ namespace ProjectX_sample.Aspx.testScreenCtrl
         /// <remarks>dialog</remarks>
         protected string UOC_btnButton25_Click(FxEventArgs fxEventArgs)
         {
-            this.ShowModalScreen("~/Aspx/testScreenCtrl/WebForm4.aspx");
+            this.ShowModalScreen("~/Aspx/TestScreenCtrl/WebForm4.aspx");
             return "";
         }
 
@@ -505,7 +493,7 @@ namespace ProjectX_sample.Aspx.testScreenCtrl
         /// <remarks>dialog</remarks>
         protected string UOC_btnButton26_Click(FxEventArgs fxEventArgs)
         {
-            this.ShowModalScreen("~/Aspx/testScreenCtrl/WebForm5.aspx");
+            this.ShowModalScreen("~/Aspx/TestScreenCtrl/WebForm5.aspx");
             return "";
         }
 

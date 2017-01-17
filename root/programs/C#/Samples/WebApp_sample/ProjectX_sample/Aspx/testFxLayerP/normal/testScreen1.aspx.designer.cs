@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ProjectX_sample.Aspx.testFxLayerP.normal {
+namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
     
     
     public partial class testScreen1 {

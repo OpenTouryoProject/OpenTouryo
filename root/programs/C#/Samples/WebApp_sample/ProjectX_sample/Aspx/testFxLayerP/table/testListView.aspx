@@ -1,8 +1,6 @@
-<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.testFxLayerP.table.testListView"
-    Title="Untitled Page" EnableEventValidation="false" Codebehind="testListView.aspx.cs" %>
+<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.Table.testListView" Title="Untitled Page" EnableEventValidation="false" Codebehind="testListView.aspx.cs" %>
+<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl"
-    TagPrefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" runat="Server">
     <asp:ListView ID="lvwListView1" runat="server" OnItemEditing="lvwListView1_ItemEditing"
         OnItemCanceling="lvwListView1_ItemCanceling" DataKeyNames="fileid">

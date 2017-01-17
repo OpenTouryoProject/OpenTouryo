@@ -19,7 +19,7 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：Aspx_Common_testScreen1
+//* クラス名        ：testScreen1
 //* クラス日本語名  ：テスト画面１用のマスタ ページ
 //*
 //* 作成日時        ：－
@@ -31,7 +31,7 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// Touryo
+// OpenTouryo
 using Touryo.Infrastructure.Framework.Presentation;
 
 namespace ProjectX_sample.Aspx.Common

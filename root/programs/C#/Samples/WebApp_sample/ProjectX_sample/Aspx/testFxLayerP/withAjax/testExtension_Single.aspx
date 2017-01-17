@@ -1,4 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testAspNetAjaxExtension_Single.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.testFxLayerP.withAjax.testExtension_Single" Title="Untitled Page" Codebehind="testExtension_Single.aspx.cs" %>
+<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testAspNetAjaxExtension_Single.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.WithAjax.testExtension_Single" Title="Untitled Page" Codebehind="testExtension_Single.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 <%@ Register Assembly="System.Web.Extensions, Version=1.0.61025.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Namespace="System.Web.UI" TagPrefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">

@@ -13,17 +13,17 @@ $.extend($.jgrid,{
 	defaults : {
 		recordtext: "Pregled {0} - {1} od {2}",
 		emptyrecords: "Nema zapisa",
-		loadtext: "Uï¿½itavam...",
+		loadtext: "Uèitavam...",
 		pgtext : "Stranica {0} od {1}"
 	},
 	search : {
-		caption: "Traï¿½i...",
-		Find: "Pretraï¿½ivanje",
-		Reset: "Poniï¿½ti",
-		odata : [{ oper:'eq', text:'jednak'}, { oper:'ne', text:'nije identiï¿½an'}, { oper:'lt', text:'manje'}, { oper:'le', text:'manje ili identiï¿½no'},{ oper:'gt', text:'veï¿½e'},{ oper:'ge', text:'veï¿½e ili identiï¿½no'}, { oper:'bw', text:'poï¿½inje sa'},{ oper:'bn', text:'ne poï¿½inje sa '},{ oper:'in', text:'je u'},{ oper:'ni', text:'nije u'},{ oper:'ew', text:'zavrï¿½ava sa'},{ oper:'en', text:'ne zavrï¿½ava sa'},{ oper:'cn', text:'sadrï¿½i'},{ oper:'nc', text:'ne sadrï¿½i'},{ oper:'nu', text:'is null'},{ oper:'nn', text:'is not null'}],
+		caption: "Traži...",
+		Find: "Pretraživanje",
+		Reset: "Poništi",
+		odata : ['jednak', 'nije identièan', 'manje', 'manje ili identièno','veæe','veše ili identièno', 'poèinje sa','ne poèinje sa ','je u','nije u','završava sa','ne završava sa','sadrži','ne sadrži'],
 		groupOps: [	{ op: "I", text: "sve" },	{ op: "ILI",  text: "bilo koji" }	],
-		operandTitle : "Click to select search operation.",
-		resetTitle : "Reset Search Value"
+		matchText: " podudata se",
+		rulesText: " pravila"
 	},
 	edit : {
 		addCaption: "Dodaj zapis",
@@ -38,8 +38,8 @@ $.extend($.jgrid,{
 		msg: {
 			required:"Polje je obavezno",
 			number:"Molim, unesite ispravan broj",
-			minValue:"Vrijednost mora biti veï¿½a ili identiï¿½na ",
-			maxValue:"Vrijednost mora biti manja ili identiï¿½na",
+			minValue:"Vrijednost mora biti veæa ili identièna ",
+			maxValue:"Vrijednost mora biti manja ili identièna",
 			email: "neispravan e-mail",
 			integer: "Molim, unjeti ispravan cijeli broj (integer)",
 			date: "Molim, unjeti ispravan datum ",
@@ -56,56 +56,55 @@ $.extend($.jgrid,{
 		bClose: "Zatvori"
 	},
 	del : {
-		caption: "Obriï¿½i",
-		msg: "Obriï¿½i oznaï¿½en zapis ili viï¿½e njih?",
-		bSubmit: "Obriï¿½i",
+		caption: "Obriši",
+		msg: "Obriši oznaèen zapis ili više njih?",
+		bSubmit: "Obriši",
 		bCancel: "Odustani"
 	},
 	nav : {
-		edittext: "",
-		edittitle: "Promijeni obiljeï¿½eni red",
-		addtext: "",
+		edittext: " ",
+		edittitle: "Promijeni obilježeni red",
+		addtext:" ",
 		addtitle: "Dodaj novi red",
-		deltext: "",
-		deltitle: "Obriï¿½i obiljeï¿½eni red",
-		searchtext: "",
-		searchtitle: "Potraï¿½i zapise",
+		deltext: " ",
+		deltitle: "Obriši obilježeni red",
+		searchtext: " ",
+		searchtitle: "Potraži zapise",
 		refreshtext: "",
 		refreshtitle: "Ponovo preuzmi podatke",
 		alertcap: "Upozorenje",
 		alerttext: "Molim, odaberi red",
 		viewtext: "",
-		viewtitle: "Pregled obiljeï¿½enog reda"
+		viewtitle: "Pregled obilježenog reda"
 	},
 	col : {
-		caption: "Obiljeï¿½i kolonu",
+		caption: "Obilježi kolonu",
 		bSubmit: "Uredu",
 		bCancel: "Odustani"
 	},
 	errors : {
-		errcap : "Greï¿½ka",
+		errcap : "Greška",
 		nourl : "Nedostaje URL",
 		norecords: "Bez zapisa za obradu",
-		model : "colNames i colModel imaju razliï¿½itu duljinu!"
+		model : "colNames i colModel imaju razlièitu duljinu!"
 	},
 	formatter : {
 		integer : {thousandsSeparator: ".", defaultValue: '0'},
 		number : {decimalSeparator:",", thousandsSeparator: ".", decimalPlaces: 2, defaultValue: '0,00'},
-		currency : {decimalSeparator:",", thousandsSeparator: ".", decimalPlaces: 2, prefix: "", suffix:"", defaultValue: '0,00'},
+		currency : {decimalSeparator:",", thousandsSeparator: ".", decimalPlaces: 2, prefix: "", suffix:" Kn", defaultValue: '0,00'},
 		date : {
 			dayNames:   [
-				"Ned", "Pon", "Uto", "Sri", "ï¿½et", "Pet", "Sub",
-				"Nedjelja", "Ponedjeljak", "Utorak", "Srijeda", "ï¿½etvrtak", "Petak", "Subota"
+				"Ned", "Pon", "Uto", "Sri", "Èet", "Pet", "Sub",
+				"Nedjelja", "Ponedjeljak", "Utorak", "Srijeda", "Èetvrtak", "Petak", "Subota"
 			],
 			monthNames: [
-				"Sij", "Velj", "Oï¿½u", "Tra", "Svi", "Lip", "Srp", "Kol", "Ruj", "Lis", "Stu", "Pro",
-				"Sijeï¿½anj", "Veljaï¿½a", "Oï¿½ujak", "Travanj", "Svibanj", "Lipanj", "Srpanj", "Kolovoz", "Rujan", "Listopad", "Studeni", "Prosinac"
+				"Sij", "Vel", "Ožu", "Tra", "Svi", "Lip", "Srp", "Kol", "Ruj", "Lis", "Stu", "Pro",
+				"Sijeèanj", "Veljaèa", "Ožujak", "Travanj", "Svibanj", "Lipanj", "Srpanj", "Kolovoz", "Rujan", "Listopad", "Studeni", "Prosinac"
 			],
 			AmPm : ["am","pm","AM","PM"],
 			S: function (j) {return ''},
 			srcformat: 'Y-m-d',
 			newformat: 'd.m.Y.',
-			parseRe : /[#%\\\/:_;.,\t\s-]/,
 			masks : {
 				// see http://php.net/manual/en/function.date.php for PHP format used in jqGrid
 				// and see http://docs.jquery.com/UI/Datepicker/formatDate

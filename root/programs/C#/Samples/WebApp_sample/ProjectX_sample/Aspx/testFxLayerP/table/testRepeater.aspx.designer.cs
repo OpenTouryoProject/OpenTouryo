@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ProjectX_sample.Aspx.testFxLayerP.table {
+namespace ProjectX_sample.Aspx.TestFxLayerP.Table {
     
     
     public partial class testRepeater {

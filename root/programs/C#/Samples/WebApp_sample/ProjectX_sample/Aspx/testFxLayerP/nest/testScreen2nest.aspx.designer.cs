@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ProjectX_sample.Aspx.testFxLayerP.nest {
+namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
     
     
     public partial class testScreen2nest {

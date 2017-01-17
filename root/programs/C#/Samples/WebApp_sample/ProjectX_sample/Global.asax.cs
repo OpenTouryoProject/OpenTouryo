@@ -17,18 +17,10 @@
 //*  2012/04/05  西野 大介         Application_OnPreRequestHandlerExecute
 //*                                OnPostRequestHandlerExecuteにACCESSログを追加
 //**********************************************************************************
+
 // System
 using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
-
-using System.Web;
-using System.Web.Security;
-
-// Touryo
+// OpenTouryo
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
 

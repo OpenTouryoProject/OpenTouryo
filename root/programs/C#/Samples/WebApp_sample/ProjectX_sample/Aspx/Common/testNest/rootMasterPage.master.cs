@@ -19,7 +19,7 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：Aspx_Common_testNest_rootMasterPage
+//* クラス名        ：rootMasterPage
 //* クラス日本語名  ：マスタ ページのネストのテスト画面用のマスタ ページ（ルート）
 //*
 //* 作成日時        ：－
@@ -31,10 +31,10 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// Touryo
+// OpenTouryo
 using Touryo.Infrastructure.Framework.Presentation;
 
-namespace ProjectX_sample.Aspx.Common.testNest
+namespace ProjectX_sample.Aspx.Common.TestNest
 {
     /// <summary>rootMasterPage class</summary>
     public partial class rootMasterPage : BaseMasterController

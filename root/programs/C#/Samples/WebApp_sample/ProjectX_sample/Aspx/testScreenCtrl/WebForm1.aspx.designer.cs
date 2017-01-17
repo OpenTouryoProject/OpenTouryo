@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ProjectX_sample.Aspx.testScreenCtrl {
+namespace ProjectX_sample.Aspx.TestScreenCtrl {
     
     
     public partial class WebForm1 {

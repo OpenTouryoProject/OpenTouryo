@@ -16,7 +16,7 @@
 //*
 //**********************************************************************************
 
-// ベースクラス
+// OpenTouryo
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Business.Common;
 

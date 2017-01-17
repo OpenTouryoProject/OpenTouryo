@@ -19,7 +19,7 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：Aspx_Common_testBlankScreen
+//* クラス名        ：testBlankScreen
 //* クラス日本語名  ：ブランクのマスタ ページ
 //*
 //* 作成日時        ：－
@@ -31,13 +31,32 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// Touryo
+// OpenTouryo
+using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Presentation;
+using Touryo.Infrastructure.Framework.Util;
 
 namespace ProjectX_sample.Aspx.Common
 {
     /// <summary>ブランクのマスタ ページ</summary>
     public partial class testBlankScreen : BaseMasterController
     {
+        /// <summary>UserName</summary>
+        public string UserName
+        {
+            get
+            {
+                var user = (MyUserInfo)UserInfoHandle.GetUserInformation();
+
+                if (user == null)
+                {
+                    return "anonymous";
+                }
+                else
+                {
+                    return user.UserName;
+                }
+            }
+        }
     } 
 }

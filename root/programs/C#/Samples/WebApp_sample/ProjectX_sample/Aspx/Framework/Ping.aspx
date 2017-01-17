@@ -9,7 +9,7 @@
 <body>
     <form id="form1" runat="server">
     <div>
-        <%=Session.SessionID.ToString()%>
+        
     </div>
     </form>
 </body>

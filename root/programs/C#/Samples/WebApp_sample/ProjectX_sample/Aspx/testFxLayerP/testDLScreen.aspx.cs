@@ -3,7 +3,7 @@
 //**********************************************************************************
 
 //**********************************************************************************
-//* クラス名        ：Aspx_testFxLayerP_testDLScreen
+//* クラス名        ：testDLScreen
 //* クラス日本語名  ：PDFダウンロードのテスト画面（Ｐ層）
 //*
 //* 作成日時        ：－
@@ -56,7 +56,7 @@ using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
-namespace ProjectX_sample.Aspx.testFxLayerP
+namespace ProjectX_sample.Aspx.TestFxLayerP
 {
     /// <summary>PDFダウンロードのテスト画面（Ｐ層）</summary>
     public partial class testDLScreen : MyBaseController

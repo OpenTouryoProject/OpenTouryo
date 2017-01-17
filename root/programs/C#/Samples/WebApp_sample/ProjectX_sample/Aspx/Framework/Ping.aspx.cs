@@ -3,7 +3,7 @@
 //**********************************************************************************
 
 //**********************************************************************************
-//* クラス名        ：Aspx_Framework_Ping
+//* クラス名        ：Ping
 //* クラス日本語名  ：Session延命のPing受けるASPX
 //*
 //* 作成日時        ：－
@@ -17,17 +17,8 @@
 
 // System
 using System;
-using System.Data;
-using System.Configuration;
-using System.Collections;
 
 // System.Web
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 
 namespace ProjectX_sample.Aspx.Framework
 {

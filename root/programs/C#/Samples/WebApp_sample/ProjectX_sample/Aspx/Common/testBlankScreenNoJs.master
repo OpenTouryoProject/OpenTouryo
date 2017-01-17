@@ -1,0 +1,66 @@
+<%@ Master Language="C#" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Common.testBlankScreenNoJs" Codebehind="testBlankScreenNoJs.master.cs" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+
+<head id="Head1" runat="server">
+    <title>無題のページ</title>
+    <asp:PlaceHolder runat="server">
+        <%--<%: Scripts.Render("~/bundles/modernizr") %>--%>
+        <%: Scripts.Render("~/bundles/Framework") %>>
+    </asp:PlaceHolder>
+    <webopt:bundlereference runat="server" path="~/Content/css" />
+
+    <!-- Resolve URL in the javascript-->
+    <script type="text/javascript">
+        var baseUrl = "<%= ResolveUrl("~/") %>";
+    </script>
+    
+    <!-- IE8をIE7互換モードで動作させる -->
+    <!--meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /-->
+    
+    <asp:ContentPlaceHolder ID="cphHeader" runat="server">
+        This is header area for define the scripts. -- Override on Page.
+    </asp:ContentPlaceHolder>
+</head>
+
+<!--FxCode：add-js-event-->
+<body onload="Fx_Document_OnLoad();" onunload="Fx_Document_OnClose();">
+
+    <!-- オートコンプリートを指定 -->
+    <form id="form1" runat="server" autocomplete="on">
+
+        <!--SampleCode：add-start-->
+        
+        <a href="<%= this.ResolveUrl("~/Aspx/start/menu.aspx") %>">メニュー画面</a><br />
+
+        <!--SampleCode：Contents-->
+        <asp:contentplaceholder id="ContentPlaceHolder_A" runat="Server">
+            This is Default Content -- Override on Page
+        </asp:contentplaceholder>
+        <!--SampleCode：add-end-->
+
+        <!--FxCode：add-start-->
+        <asp:HiddenField ID="ChildScreenType" runat="server" Value="0" />
+        <asp:HiddenField ID="ChildScreenUrl" runat="server" Value="0" />
+        <asp:HiddenField ID="CloseFlag" runat="server" Value="0" />
+        <asp:HiddenField ID="SubmitFlag" runat="server" Value="0" />
+        <asp:HiddenField ID="ScreenGuid" runat="server" Value="0" />
+        <asp:HiddenField ID="FxDialogStyle" runat="server" Value="0" />
+        <asp:HiddenField ID="BusinessDialogStyle" runat="server" Value="0" />
+        <asp:HiddenField ID="NormalScreenStyle" runat="server" Value="0" />
+        <asp:HiddenField ID="NormalScreenTarget" runat="server" Value="0" />
+        <asp:HiddenField ID="DialogFrameUrl" runat="server" Value="0" />
+        <asp:HiddenField ID="WindowGuid" runat="server" Value="0" />
+        <asp:HiddenField ID="RequestTicketGuid" runat="server" Value="0" />
+        <!--FxCode：add-end-->
+        
+    </form>
+
+    <asp:ContentPlaceHolder ID="cphFooter" runat="server">
+        This is footer area for define the scripts. -- Override on Page.
+    </asp:ContentPlaceHolder>
+
+</body>
+</html>

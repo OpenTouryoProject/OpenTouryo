@@ -3,7 +3,7 @@
 //**********************************************************************************
 
 //**********************************************************************************
-//* クラス名        ：Aspx_testFxLayerP_testTransitionAheadScreen
+//* クラス名        ：testTransitionAheadScreen
 //* クラス日本語名  ：遷移先画面
 //*
 //* 作成日時        ：－
@@ -56,7 +56,7 @@ using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
-namespace ProjectX_sample.Aspx.testFxLayerP
+namespace ProjectX_sample.Aspx.TestFxLayerP
 {
     /// <summary>遷移先画面</summary>
     public partial class testTransitionAheadScreen : System.Web.UI.Page

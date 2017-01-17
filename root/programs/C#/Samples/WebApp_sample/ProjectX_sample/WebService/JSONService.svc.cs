@@ -18,7 +18,7 @@
 //*  2015/06/08  Supragyan         Modified startIndex and maximumRows in method 'GetProductData()'    
 //**********************************************************************************
 
-//System
+// System
 using System.Data;
 using System.Web;
 using System.Collections.Specialized;
@@ -27,13 +27,14 @@ using System.ServiceModel.Web;
 using System.Text;
 using System.ServiceModel.Channels;
 
-//Touryo
+// OpenTouryo
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.Dto;
 
-//Newtonsoft
+// Newtonsoft
 using Newtonsoft.Json;
 
+/// <summary>ProjectX_sample</summary>
 namespace ProjectX_sample
 {
     /// <summary>
@@ -45,6 +46,7 @@ namespace ProjectX_sample
         /// <summary>
         /// GetProductData method for fetching product table data.
         /// </summary>
+        /// <returns>Message</returns>
         public Message GetProductData()
         {
             HttpContext.Current.Session["DAP"] = "SQL";

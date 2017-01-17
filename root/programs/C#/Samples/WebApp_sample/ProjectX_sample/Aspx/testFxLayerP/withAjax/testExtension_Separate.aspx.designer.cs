@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ProjectX_sample.Aspx.testFxLayerP.withAjax {
+namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax {
     
     
     public partial class testExtension_Separate {

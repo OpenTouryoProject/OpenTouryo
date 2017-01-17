@@ -16,7 +16,7 @@
 //*
 //**********************************************************************************
 
-// ベースクラス
+// OpenTouryo
 using Touryo.Infrastructure.Business.Common;
 
 namespace MyType

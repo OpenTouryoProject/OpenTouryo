@@ -19,7 +19,7 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：Aspx_Common_testNest_testScreen1bmp2
+//* クラス名        ：testScreen1bmp2
 //* クラス日本語名  ：テスト画面１をマスタ ページのネスト化（枝２）
 //*
 //* 作成日時        ：－
@@ -31,10 +31,10 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// Touryo
+// OpenTouryo
 using Touryo.Infrastructure.Framework.Presentation;
 
-namespace ProjectX_sample.Aspx.Common.testNest
+namespace ProjectX_sample.Aspx.Common.TestNest
 {
     /// <summary>testScreen1bmp2 class</summary>
     public partial class testScreen1bmp2 : BaseMasterController

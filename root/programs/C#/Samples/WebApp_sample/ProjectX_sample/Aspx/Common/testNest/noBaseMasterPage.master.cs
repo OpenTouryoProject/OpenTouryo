@@ -19,7 +19,7 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：Aspx_Common_testNest_noBaseMasterPage
+//* クラス名        ：noBaseMasterPage
 //* クラス日本語名  ：ベースを継承しないマスタページでのテスト。
 //*
 //* 作成日時        ：－
@@ -31,12 +31,7 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System
-using System;
-using System.Web;
-using System.Web.UI;
-
-namespace ProjectX_sample.Aspx.Common.testNest
+namespace ProjectX_sample.Aspx.Common.TestNest
 {
     /// <summary>noBaseMasterPage class</summary>
     public partial class noBaseMasterPage : System.Web.UI.MasterPage

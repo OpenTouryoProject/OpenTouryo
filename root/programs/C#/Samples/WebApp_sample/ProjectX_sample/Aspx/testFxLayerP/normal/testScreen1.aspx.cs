@@ -3,7 +3,7 @@
 //**********************************************************************************
 
 //**********************************************************************************
-//* クラス名        ：Aspx_testFxLayerP_normal_testScreen1
+//* クラス名        ：testScreen1
 //* クラス日本語名  ：テスト画面１（Ｐ層）
 //*
 //* 作成日時        ：－
@@ -18,26 +18,19 @@
 // System
 using System;
 using System.IO;
-using System.Data;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
-
 // System.Web
-using System.Web;
-using System.Web.Security;
-
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 
+#region OpenTouryo
 // 業務フレームワーク
 using Touryo.Infrastructure.Business.Business;
 using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Business.Dao;
 using Touryo.Infrastructure.Business.Exceptions;
 using Touryo.Infrastructure.Business.Presentation;
+using Touryo.Infrastructure.Business.Str;
+using Touryo.Infrastructure.Business.Transmission;
 using Touryo.Infrastructure.Business.Util;
 
 // フレームワーク
@@ -46,8 +39,8 @@ using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Framework.Transmission;
+using Touryo.Infrastructure.Framework.Util;
 
 // 部品
 using Touryo.Infrastructure.Public.Db;
@@ -55,8 +48,9 @@ using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
+#endregion
 
-namespace ProjectX_sample.Aspx.testFxLayerP.normal
+namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
 {
     /// <summary>テスト画面１（Ｐ層）</summary>
     public partial class testScreen1 : MyBaseController
@@ -420,13 +414,13 @@ namespace ProjectX_sample.Aspx.testFxLayerP.normal
             {
                 // スタイル指定あり
                 // 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
-                this.ShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx", style);
+                this.ShowModalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx", style);
             }
             else
             {
                 // スタイル指定なし
                 // 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
-                this.ShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx");
+                this.ShowModalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx");
             }
 
             return "";
@@ -445,12 +439,12 @@ namespace ProjectX_sample.Aspx.testFxLayerP.normal
             if (((CheckBox)this.GetMasterWebControl("CheckBox2")).Checked == true)
             {
                 // スタイル指定あり
-                this.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx", style);
+                this.ShowNormalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx", style);
             }
             else
             {
                 // スタイル指定なし
-                this.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx");
+                this.ShowNormalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx");
             }
 
             return "";
@@ -794,14 +788,14 @@ namespace ProjectX_sample.Aspx.testFxLayerP.normal
             {
                 // スタイル指定あり
                 // 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
-                this.ShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", style);
+                this.ShowModalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx?test=test", style);
                 // ※ QueryString指定あり
             }
             else
             {
                 // スタイル指定なし
                 // 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
-                this.ShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test");
+                this.ShowModalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx?test=test");
                 // ※ QueryString指定あり
             }
 
@@ -824,25 +818,25 @@ namespace ProjectX_sample.Aspx.testFxLayerP.normal
             if (this.CheckBox1.Checked == true && this.CheckBox1a.Checked == true)
             {
                 // スタイル指定あり
-                this.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", style, target);
+                this.ShowNormalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx?test=test", style, target);
                 // ※ QueryString指定あり
             }
             else if (this.CheckBox1.Checked == true)
             {
                 // スタイル指定あり
-                this.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", style);
+                this.ShowNormalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx?test=test", style);
                 // ※ QueryString指定あり
             }
             else if (this.CheckBox1a.Checked == true)
             {
                 // スタイル指定あり
-                this.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test", "", target);
+                this.ShowNormalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx?test=test", "", target);
                 // ※ QueryString指定あり
             }
             else
             {
                 // スタイル指定なし
-                this.ShowNormalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test");
+                this.ShowNormalScreen("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx?test=test");
                 // ※ QueryString指定あり
             }
 

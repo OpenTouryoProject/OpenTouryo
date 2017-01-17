@@ -19,7 +19,7 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：Aspx_Common_testScreenCtrl
+//* クラス名        ：testScreenCtrl
 //* クラス日本語名  ：画面遷移制御機能テスト画面用のマスタ ページ
 //*
 //* 作成日時        ：－
@@ -31,7 +31,7 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// Touryo
+// OpenTouryo
 using Touryo.Infrastructure.Framework.Presentation;
 
 namespace ProjectX_sample.Aspx.Common

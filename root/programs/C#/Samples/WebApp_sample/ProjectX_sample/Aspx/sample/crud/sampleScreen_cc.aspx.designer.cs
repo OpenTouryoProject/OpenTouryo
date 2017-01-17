@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ProjectX_sample.Aspx.sample.crud {
+namespace ProjectX_sample.Aspx.sample.Crud {
     
     
     public partial class sampleScreen_cc {
