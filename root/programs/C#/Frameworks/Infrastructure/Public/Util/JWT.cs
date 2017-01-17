@@ -1,5 +1,5 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2017 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
@@ -48,9 +48,17 @@ namespace Touryo.Infrastructure.Public.Util.JWT
     /// <summary>JWT Header</summary>
     public class Header
     {
-        /// <summary>alg = HS256 or RS256</summary>
+        /// <summary>
+        /// alg=HS256 or RS256
+        /// JWTのデジタル署名アルゴリズムを指定する。
+        /// HS256 or RS256の署名アルゴリズムのみサポート。
+        /// </summary>
         public string alg = "";
-        /// <summary>typ=JWT</summary>
+
+        /// <summary>
+        /// typ=JWT
+        /// アサーションのタイプを指定。JWT固定。
+        /// </summary>
         public readonly string typ = "JWT";
     }
 

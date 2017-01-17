@@ -1,5 +1,5 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2017 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：CodeSigning
-//* クラス日本語名  ：CodeSigningクラス
+//* クラス名        ：DigitalSignX509
+//* クラス日本語名  ：DigitalSignX509クラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -49,15 +49,15 @@ using System.Security.Cryptography.X509Certificates;
 namespace Touryo.Infrastructure.Public.Util
 {
     /// <summary>
-    /// CodeSigningクラス
+    /// DigitalSignX509クラス
     /// - RSACryptoServiceProvider:
     ///   MD5, SHA1, SHA256, SHA384, SHA512
     /// - DSACryptoServiceProvider:SHA1
     /// だけ、サポート。
     /// </summary>
-    public class CodeSigningX509 : CodeSigning
+    public class DigitalSignX509 : DigitalSign
     {
-        // 署名の場合は、秘密鍵で署名して、公開鍵で検証。
+        // デジタル署名の場合は、秘密鍵で署名して、公開鍵で検証。
 
         #region mem & prop & constructor
 
@@ -100,7 +100,7 @@ namespace Touryo.Infrastructure.Public.Util
         /// RSAの場合、以下からHashAlgorithm名を指定する。
         /// MD5, SHA1, SHA256, SHA384, SHA512
         /// </param>
-        public CodeSigningX509(string certificateFilePath, string password, string hashAlgorithmName)
+        public DigitalSignX509(string certificateFilePath, string password, string hashAlgorithmName)
         {
             this._X509Certificate = new X509Certificate2(
                 certificateFilePath, password, X509KeyStorageFlags.Exportable);
@@ -110,48 +110,48 @@ namespace Touryo.Infrastructure.Public.Util
 
         #endregion
 
-        #region 署名(X509Certificate)
+        #region デジタル署名(X509Certificate)
 
-        /// <summary>Sign</summary>
+        /// <summary>デジタル署名を作成する</summary>
         /// <param name="data">data</param>
-        /// <returns>署名</returns>
+        /// <returns>デジタル署名</returns>
         public override byte[] Sign(byte[] data)
         {
             // アルゴリズム（RSA or DSA）は、ココで決まるもよう。
             AsymmetricAlgorithm aa = this._X509Certificate.PrivateKey;
 
-            // 署名
+            // デジタル署名
             byte[] signedByte = null;
 
             if (aa is RSACryptoServiceProvider)
             {
                 // RSACryptoServiceProvider : ExportParametersして生成し直している。
-                RSAParameters rsaPara = ((RSACryptoServiceProvider)(aa)).ExportParameters(true);
+                RSAParameters rsaParam = ((RSACryptoServiceProvider)(aa)).ExportParameters(true);
                 RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(this._X509Certificate.PrivateKey.KeySize);
-                rsa.ImportParameters(rsaPara);
+                rsa.ImportParameters(rsaParam);
                 signedByte = rsa.SignData(data, this._hashAlgorithmName);
             }
             else
             {
                 // DSACryptoServiceProvider : ExportParametersして生成し直している。
-                DSAParameters dsaPara = ((DSACryptoServiceProvider)(aa)).ExportParameters(true);
+                DSAParameters dsaParam = ((DSACryptoServiceProvider)(aa)).ExportParameters(true);
                 DSACryptoServiceProvider dsa = new DSACryptoServiceProvider(this._X509Certificate.PrivateKey.KeySize);
-                dsa.ImportParameters(dsaPara);
+                dsa.ImportParameters(dsaParam);
                 signedByte = dsa.SignData(data); // SHA-1 固定のため？
             }
 
             return signedByte;
         }
 
-        /// <summary>Verify</summary>
+        /// <summary>デジタル署名を検証する</summary>
         /// <param name="data">data</param>
-        /// <param name="sign">署名</param>
-        /// <returns>検証結果</returns>
+        /// <param name="sign">デジタル署名</param>
+        /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
         public override bool Verify(byte[] data, byte[] sign)
         {
             AsymmetricAlgorithm aa = null;
 
-            // 結果フラグ
+            // 検証結果フラグ ( true:検証成功, false:検証失敗 )
             bool flg = false;
 
             // アルゴリズム（RSA or DSA）は、ココで決まるもよう。
@@ -175,17 +175,17 @@ namespace Touryo.Infrastructure.Public.Util
                 if (aa is RSACryptoServiceProvider)
                 {
                     // RSACryptoServiceProvider : ExportParametersして生成し直している。
-                    RSAParameters rsaPara = ((RSACryptoServiceProvider)(aa)).ExportParameters(true);
+                    RSAParameters rsaParam = ((RSACryptoServiceProvider)(aa)).ExportParameters(true);
                     RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(this._X509Certificate.PrivateKey.KeySize);
-                    rsa.ImportParameters(rsaPara);
+                    rsa.ImportParameters(rsaParam);
                     flg = rsa.VerifyData(data, this._hashAlgorithmName, sign);
                 }
                 else
                 {
                     // DSACryptoServiceProvider : ExportParametersして生成し直している。
-                    DSAParameters dsaPara = ((DSACryptoServiceProvider)(aa)).ExportParameters(true);
+                    DSAParameters dsaParam = ((DSACryptoServiceProvider)(aa)).ExportParameters(true);
                     DSACryptoServiceProvider dsa = new DSACryptoServiceProvider(this._X509Certificate.PrivateKey.KeySize);
-                    dsa.ImportParameters(dsaPara);
+                    dsa.ImportParameters(dsaParam);
                     flg = dsa.VerifyData(data, sign); // SHA-1 固定のため？
                 }
             }

@@ -1,5 +1,5 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2017 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：CodeSigning
-//* クラス日本語名  ：CodeSigningクラス
+//* クラス名        ：DigitalSignXML
+//* クラス日本語名  ：DigitalSignXMLクラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -49,15 +49,15 @@ using System.Security.Cryptography.X509Certificates;
 namespace Touryo.Infrastructure.Public.Util
 {
     /// <summary>
-    /// CodeSigningクラス
+    /// CodeSigningXMLクラス
     /// - RSACryptoServiceProvider:
     ///   MD5, SHA1, SHA256, SHA384, SHA512
     /// - DSACryptoServiceProvider:SHA1
     /// だけ、サポート。
     /// </summary>
-    public class CodeSigningXML : CodeSigning
+    public class DigitalSignXML : DigitalSign
     {
-        // 署名の場合は、秘密鍵で署名して、公開鍵で検証。
+        // デジタル署名の場合は、秘密鍵で署名して、公開鍵で検証。
 
         #region mem & prop & constructor
 
@@ -82,7 +82,7 @@ namespace Touryo.Infrastructure.Public.Util
         /// Constructor
         /// RFC 3275のXMLからキーペアを設定する。
         /// </summary>
-        public CodeSigningXML(EnumCodeSigningAlgorithm eaa)
+        public DigitalSignXML(EnumDigitalSignAlgorithm eaa)
         {
             this.CreateAsymmetricAlgorithmServiceProvider(eaa, out this._aa, out this._ha);
 
@@ -97,16 +97,16 @@ namespace Touryo.Infrastructure.Public.Util
 
         #endregion
 
-        #region 署名(XML)
+        #region デジタル署名(XML)
 
-        /// <summary>Sign</summary>
+        /// <summary>デジタル署名を作成する</summary>
         /// <param name="data">data</param>
-        /// <returns>署名</returns>
+        /// <returns>デジタル署名</returns>
         public override byte[] Sign(byte[] data)
         {
             // ハッシュ
             byte[] hashedByte = this._ha.ComputeHash(data);
-            // 署名
+            // デジタル署名
             byte[] signedByte = null;
 
             if (this._aa is RSACryptoServiceProvider)
@@ -122,7 +122,7 @@ namespace Touryo.Infrastructure.Public.Util
                 // DSASignatureFormatterオブジェクトを作成
                 DSASignatureFormatter dsaFormatter = new DSASignatureFormatter(this._aa);
 
-                // 署名を作成
+                // デジタル署名を作成
                 dsaFormatter.SetHashAlgorithm("SHA1");
                 signedByte = dsaFormatter.CreateSignature(hashedByte);
             }
@@ -130,10 +130,10 @@ namespace Touryo.Infrastructure.Public.Util
             return signedByte;
         }
 
-        /// <summary>Verify</summary>
+        /// <summary>デジタル署名を検証する</summary>
         /// <param name="data">data</param>
-        /// <param name="sign">署名</param>
-        /// <returns>検証結果</returns>
+        /// <param name="sign">デジタル署名</param>
+        /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
         public override bool Verify(byte[] data, byte[] sign)
         {
             // 以下でイケるらしい。
@@ -192,43 +192,43 @@ namespace Touryo.Infrastructure.Public.Util
 
         /// <summary>公開鍵・暗号化サービスプロバイダの生成</summary>
         /// <returns>公開鍵・暗号化サービスプロバイダ</returns>
-        private void CreateAsymmetricAlgorithmServiceProvider(EnumCodeSigningAlgorithm eaa, out AsymmetricAlgorithm aa, out HashAlgorithm ha)
+        private void CreateAsymmetricAlgorithmServiceProvider(EnumDigitalSignAlgorithm eaa, out AsymmetricAlgorithm aa, out HashAlgorithm ha)
         {
             aa = null;
             ha = null;
 
             // 公開鍵・暗号化サービスプロバイダ
-            if (eaa == EnumCodeSigningAlgorithm.RSACryptoServiceProvider_MD5)
+            if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_MD5)
             {
                 // RSACryptoServiceProviderサービスプロバイダ
                 aa = new RSACryptoServiceProvider();
                 ha = MD5.Create();
             }
-            else if (eaa == EnumCodeSigningAlgorithm.RSACryptoServiceProvider_SHA1)
+            else if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA1)
             {
                 // RSACryptoServiceProviderサービスプロバイダ
                 aa = new RSACryptoServiceProvider();
                 ha = SHA1.Create();
             }
-            else if (eaa == EnumCodeSigningAlgorithm.RSACryptoServiceProvider_SHA256)
+            else if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256)
             {
                 // RSACryptoServiceProviderサービスプロバイダ
                 aa = new RSACryptoServiceProvider();
                 ha = SHA256.Create();
             }
-            else if (eaa == EnumCodeSigningAlgorithm.RSACryptoServiceProvider_SHA384)
+            else if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA384)
             {
                 // RSACryptoServiceProviderサービスプロバイダ
                 aa = new RSACryptoServiceProvider();
                 ha = SHA384.Create();
             }
-            else if (eaa == EnumCodeSigningAlgorithm.RSACryptoServiceProvider_SHA512)
+            else if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA512)
             {
                 // RSACryptoServiceProviderサービスプロバイダ
                 aa = new RSACryptoServiceProvider();
                 ha = SHA512.Create();
             }
-            else if (eaa == EnumCodeSigningAlgorithm.DSACryptoServiceProvider_SHA1)
+            else if (eaa == EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
             {
                 // DSACryptoServiceProvider
                 aa = new DSACryptoServiceProvider();

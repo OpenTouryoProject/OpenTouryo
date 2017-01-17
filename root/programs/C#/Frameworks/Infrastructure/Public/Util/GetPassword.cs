@@ -1,5 +1,5 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2017 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
@@ -45,12 +45,12 @@ namespace Touryo.Infrastructure.Public.Util
         /// <returns>Password</returns>
         public static string Generate(int length, int numberOfNonAlphanumericCharacters)
         {
-            if (((length < 1) || (length > 128)))
+            if ((length < 1) || (length > 128))
             {
                 throw new ArgumentException("Password length is incorrect.");
             }
 
-            if (((numberOfNonAlphanumericCharacters > length) || (numberOfNonAlphanumericCharacters < 0)))
+            if ((numberOfNonAlphanumericCharacters > length) || (numberOfNonAlphanumericCharacters < 0))
             {
                 throw new ArgumentException("Minimum required non alphanumeric character count is incorrect.");
             }

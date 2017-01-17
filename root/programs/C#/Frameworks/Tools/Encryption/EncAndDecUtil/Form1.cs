@@ -66,7 +66,7 @@ namespace EncAndDecUtil
             cbxSCPV.DataSource = Enum.GetValues(typeof(EnumSymmetricAlgorithm));
             cbxSPWDPV1.DataSource = Enum.GetValues(typeof(EnumHashAlgorithm));
             cbxSPWDPV2.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
-            cbxCCXMLPV.DataSource = Enum.GetValues(typeof(EnumCodeSigningAlgorithm));
+            cbxCCXMLPV.DataSource = Enum.GetValues(typeof(EnumDigitalSignAlgorithm));
         }
         
         #endregion
@@ -499,8 +499,8 @@ namespace EncAndDecUtil
         /// <summary>署名</summary>
         private void btnCCSign_Click(object sender, EventArgs e)
         {
-            CodeSigningXML csXML = null;
-            CodeSigningX509 csX509 = null;
+            DigitalSignXML csXML = null;
+            DigitalSignX509 csX509 = null;
 
             byte[] data = CustomEncode.StringToByte(this.txtCCData.Text, CustomEncode.UTF_8);
             byte[] sign = null;
@@ -509,7 +509,7 @@ namespace EncAndDecUtil
             if (rbnCCXML.Checked)
             {
                 // XMLKey
-                csXML = new CodeSigningXML((EnumCodeSigningAlgorithm)this.cbxCCXMLPV.SelectedValue);
+                csXML = new DigitalSignXML((EnumDigitalSignAlgorithm)this.cbxCCXMLPV.SelectedValue);
                 sign = csXML.Sign(data);
                 //ret = csXML.Verify(data, sign);
 
@@ -519,7 +519,7 @@ namespace EncAndDecUtil
             else
             {
                 // X509Cer
-                csX509 = new CodeSigningX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text);
+                csX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text);
 
                 sign = csX509.Sign(data);
                 //ret = csX509.Verify(data, sign);
@@ -534,8 +534,8 @@ namespace EncAndDecUtil
         /// <summary>検証</summary>
         private void btnCCVerify_Click(object sender, EventArgs e)
         {
-            CodeSigningXML csXML = null;
-            CodeSigningX509 csX509 = null;
+            DigitalSignXML csXML = null;
+            DigitalSignX509 csX509 = null;
 
             byte[] data = CustomEncode.StringToByte(this.txtCCData.Text, CustomEncode.UTF_8);
             byte[] sign = CustomEncode.FromBase64String(this.txtCCSign.Text);
@@ -544,7 +544,7 @@ namespace EncAndDecUtil
             if (rbnCCXML.Checked)
             {
                 // XMLKey
-                csXML = new CodeSigningXML((EnumCodeSigningAlgorithm)this.cbxCCXMLPV.SelectedValue);
+                csXML = new DigitalSignXML((EnumDigitalSignAlgorithm)this.cbxCCXMLPV.SelectedValue);
                 csXML.XMLPublicKey = txtCCPublicKey.Text;
                 ret = csXML.Verify(data, sign);
             }
@@ -554,7 +554,7 @@ namespace EncAndDecUtil
                 // *.pfxを使用して、検証することもできるが、
                 //csX509 = new CodeSigningX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text);
                 // 通常は、*.cerを使用して検証する。
-                csX509 = new CodeSigningX509(CertificateFilePath_cer, "", this.txtCCHash.Text);
+                csX509 = new DigitalSignX509(CertificateFilePath_cer, "", this.txtCCHash.Text);
 
                 ret = csX509.Verify(data, sign);
             }
@@ -586,7 +586,7 @@ namespace EncAndDecUtil
             else
             {
                 // X509Cer
-                jwtRS256 = new JWT_RS256(new CodeSigningX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, "SHA256"));
+                jwtRS256 = new JWT_RS256(new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, "SHA256"));
 
                 // 生成
                 string jwt = jwtRS256.Create(this.txtJWTPayload.Text);
@@ -629,7 +629,7 @@ namespace EncAndDecUtil
                     + "." + temp[2];
 
                 // 検証
-                jwtRS256 = new JWT_RS256(new CodeSigningX509(this.CertificateFilePath_cer, "", "SHA256"));
+                jwtRS256 = new JWT_RS256(new DigitalSignX509(this.CertificateFilePath_cer, "", "SHA256"));
                 ret = jwtRS256.Verify(newJWT);
             }
 

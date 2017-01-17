@@ -66,8 +66,9 @@ namespace Touryo.Infrastructure.Public.IO
     /// </summary>
     public enum EnumSymmetricAlgorithm
     {
-        // AesCryptoServiceProvider, AesManagedは3.5からの提供。
-        // ポリシーに合わせて、AesCryptoServiceProviderを削除。
+        // AesCryptoServiceProvider, AesManagedは.NET Framework 3.5からの提供。
+        // 暗号化プロバイダ選択のポリシー（Managed → CSP → CNG）
+        // に合わせて、AesCryptoServiceProviderを削除。
 
         ///// <summary>AesCryptoServiceProvider</summary>
         //AesCryptoServiceProvider,
@@ -438,7 +439,8 @@ namespace Touryo.Infrastructure.Public.IO
             SymmetricAlgorithm sa = null;
 
             // AesCryptoServiceProvider, AesManagedは3.5からの提供。
-            // ポリシーに合わせて、AesCryptoServiceProviderを削除。
+            // 暗号化プロバイダ選択のポリシー（Managed → CSP → CNG）
+            // に合わせて、AesCryptoServiceProviderを削除。
 
             //if (esa == EnumSymmetricAlgorithm.AesCryptoServiceProvider)
             //{

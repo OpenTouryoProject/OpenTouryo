@@ -123,33 +123,39 @@ namespace Touryo.Infrastructure.Public.Util
 
         #region GetSaltedPassword
 
-        /// <summary>パスワードをDB保存する際には塩味パスワードとして保存する。</summary>
-        /// <param name="rawPassword">ユーザが入力した生のパスワード</param>
+        /// <summary>
+        /// Password entered by the userをDB保存する際、
+        /// Salted and hashed passwordとして保存する必要がある。
+        /// </summary>
+        /// <param name="rawPassword">Password entered by the user.</param>
         /// <param name="ekha">ハッシュ・アルゴリズム列挙型</param>
         /// <param name="key">キー（システム共通）</param>
         /// <param name="saltLength">ソルトの文字列長</param>
-        /// <returns>塩味パスワード</returns>
+        /// <returns>Salted and hashed password.</returns>
         /// <see ref="http://www.atmarkit.co.jp/ait/articles/1110/06/news154_2.html"/>
         public static string GetSaltedPassword(string rawPassword, EnumKeyedHashAlgorithm ekha, string key, int saltLength)
         {
-            // overlordへ
+            // overloadへ
             return GetKeyedHash.GetSaltedPassword(rawPassword, ekha, key, saltLength, 1);
         }
 
-        /// <summary>パスワードをDB保存する際には塩味パスワードとして保存する。</summary>
-        /// <param name="rawPassword">ユーザが入力した生のパスワード</param>
+        /// <summary>
+        /// Password entered by the userをDB保存する際、
+        /// Salted and hashed passwordとして保存する必要がある。
+        /// </summary>
+        /// <param name="rawPassword">Password entered by the user.</param>
         /// <param name="ekha">ハッシュ・アルゴリズム列挙型</param>
         /// <param name="key">キー（システム共通）</param>
         /// <param name="saltLength">ソルトの文字列長</param>
         /// <param name="stretchCount">ストレッチ回数</param>
-        /// <returns>塩味パスワード</returns>
+        /// <returns>Salted and hashed password.</returns>
         public static string GetSaltedPassword(string rawPassword, EnumKeyedHashAlgorithm ekha, string key, int saltLength, int stretchCount)
         {
             // ランダム・ソルト文字列を生成（区切り記号は含まなくても良い）
             string salt = GetPassword.Generate(saltLength, 0); //Membership.GeneratePassword(saltLength, 0);
             byte[] saltByte = CustomEncode.StringToByte(salt, CustomEncode.UTF_8);
 
-            // 塩味パスワード（文字列）を生成して返す。
+            // Salted and hashed password（文字列）を生成して返す。
             return
                 CustomEncode.ToBase64String(saltByte)
                 + "." + CustomEncode.ToBase64String(CustomEncode.StringToByte(stretchCount.ToString(), CustomEncode.UTF_8))
@@ -159,8 +165,8 @@ namespace Touryo.Infrastructure.Public.Util
         }
 
         /// <summary>パスワードを比較して認証する。</summary>
-        /// <param name="rawPassword">ユーザが入力した生のパスワード</param>
-        /// <param name="saltedPassword">塩味パスワード</param>
+        /// <param name="rawPassword">Password entered by the user.</param>
+        /// <param name="saltedPassword">Salted and hashed password.</param>
         /// <param name="ekha">ハッシュ・アルゴリズム列挙型</param>
         /// <param name="key">キー（システム共通）</param>
         /// <returns>

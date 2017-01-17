@@ -1,5 +1,5 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2017 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
@@ -53,14 +53,14 @@ namespace Touryo.Infrastructure.Public.Util.JWT
         #region mem & prop & constructor
 
         /// <summary>RS256のJWTを作成するためのCodeSigningプロバイダ</summary>
-        CodeSigning _cs = null;
+        DigitalSign _cs = null;
 
         /// <summary>検証用JWK</summary>
         public string JWK = "";
 
         /// <summary>Constructor</summary>
         /// <param name="csRS256">RS256の署名・検証が可能なように設定されたCodeSigningオブジェクト</param>
-        public JWT_RS256(CodeSigning csRS256)
+        public JWT_RS256(DigitalSign csRS256)
         {
             this._cs = csRS256;
         }

@@ -1,5 +1,5 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2017 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：CodeSigning
-//* クラス日本語名  ：CodeSigningクラス抽象クラス
+//* クラス名        ：DigitalSign
+//* クラス日本語名  ：DigitalSign抽象クラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -53,7 +53,7 @@ namespace Touryo.Infrastructure.Public.Util
     /// <summary>
     /// アルゴリズムのサービスプロバイダの種類
     /// </summary>
-    public enum EnumCodeSigningAlgorithm
+    public enum EnumDigitalSignAlgorithm
     {
         /// <summary>RSACryptoServiceProvider:MD5</summary>
         RSACryptoServiceProvider_MD5,
@@ -79,7 +79,7 @@ namespace Touryo.Infrastructure.Public.Util
     /// <summary>
     /// CodeSigningクラス抽象クラス
     /// </summary>
-    public abstract class CodeSigning
+    public abstract class DigitalSign
     {   
         /// <summary>Sign</summary>
         /// <param name="data">data</param>

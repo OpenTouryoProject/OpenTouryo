@@ -117,9 +117,9 @@
     <Compile Include="Db\BaseDam.cs" />
     <Compile Include="Db\DamSqlSvr.cs" />
     <Compile Include="Db\DbEnum.cs" />
-    <Compile Include="Util\CodeSigningX509.cs" />
-    <Compile Include="Util\CodeSigningXML.cs" />
-    <Compile Include="Util\CodeSigning.cs" />
+    <Compile Include="Util\DigitalSignX509.cs" />
+    <Compile Include="Util\DigitalSignXML.cs" />
+    <Compile Include="Util\DigitalSign.cs" />
     <Compile Include="Util\CustomMarshaler.cs" />
     <Compile Include="Util\GetHash.cs" />
     <Compile Include="Util\GetKeyedHash.cs" />

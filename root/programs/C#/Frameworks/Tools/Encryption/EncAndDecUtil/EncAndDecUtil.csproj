@@ -41,7 +41,7 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>6DB66D72D11D651EB1BAE7BAB98E200FC3C977FB</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>ACF6843411079F33F4EA079A3D32D03A99DAADD5</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>EncAndDecUtil_TemporaryKey.pfx</ManifestKeyFile>
