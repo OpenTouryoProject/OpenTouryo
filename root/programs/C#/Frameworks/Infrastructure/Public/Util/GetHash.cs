@@ -104,7 +104,7 @@ namespace Touryo.Infrastructure.Public.Util
         /// <param name="rawPassword">>Password entered by the user.</param>
         /// <param name="eha">ハッシュ・アルゴリズム列挙型</param>
         /// <param name="saltLength">ソルトの文字列長</param>
-        /// <returns>塩味パスワード</returns>
+        /// <returns>Salted and hashed password.</returns>
         /// <see ref="http://www.atmarkit.co.jp/ait/articles/1110/06/news154_2.html"/>
         public static string GetSaltedPassword(string rawPassword, EnumHashAlgorithm eha, int saltLength)
         {

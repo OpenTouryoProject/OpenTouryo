@@ -113,8 +113,8 @@ namespace Touryo.Infrastructure.Public.Util
         #region デジタル署名(X509Certificate)
 
         /// <summary>デジタル署名を作成する</summary>
-        /// <param name="data">data</param>
-        /// <returns>デジタル署名</returns>
+        /// <param name="data">デジタル署名を行なう対象データ</param>
+        /// <returns>対象データに対してデジタル署名したデジタル署名部分のデータ</returns>
         public override byte[] Sign(byte[] data)
         {
             // アルゴリズム（RSA or DSA）は、ココで決まるもよう。
@@ -144,8 +144,8 @@ namespace Touryo.Infrastructure.Public.Util
         }
 
         /// <summary>デジタル署名を検証する</summary>
-        /// <param name="data">data</param>
-        /// <param name="sign">デジタル署名</param>
+        /// <param name="data">デジタル署名を行なった対象データ</param>
+        /// <param name="sign">対象データに対してデジタル署名したデジタル署名部分のデータ</param>
         /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
         public override bool Verify(byte[] data, byte[] sign)
         {

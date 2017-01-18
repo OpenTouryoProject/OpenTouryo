@@ -77,7 +77,7 @@ namespace Touryo.Infrastructure.Public.Util
     #endregion
 
     /// <summary>
-    /// CodeSigningクラス抽象クラス
+    /// DigitalSignクラス抽象クラス
     /// </summary>
     public abstract class DigitalSign
     {   

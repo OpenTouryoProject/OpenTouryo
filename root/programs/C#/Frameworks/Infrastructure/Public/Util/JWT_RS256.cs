@@ -52,14 +52,14 @@ namespace Touryo.Infrastructure.Public.Util.JWT
     {
         #region mem & prop & constructor
 
-        /// <summary>RS256のJWTを作成するためのCodeSigningプロバイダ</summary>
+        /// <summary>RS256のJWTを作成するためのDigitalSignプロバイダ</summary>
         DigitalSign _cs = null;
 
         /// <summary>検証用JWK</summary>
         public string JWK = "";
 
         /// <summary>Constructor</summary>
-        /// <param name="csRS256">RS256の署名・検証が可能なように設定されたCodeSigningオブジェクト</param>
+        /// <param name="csRS256">RS256の署名・検証が可能なように設定されたDigitalSignオブジェクト</param>
         public JWT_RS256(DigitalSign csRS256)
         {
             this._cs = csRS256;
