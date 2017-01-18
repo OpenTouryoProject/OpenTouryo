@@ -29,9 +29,12 @@ namespace ProjectX_sample
             BundleTable.EnableOptimizations = true;
             BundleTable.Bundles.UseCdn = true;    // same as: bundles.UseCdn = true;
 
-            bundles.Add(new ScriptBundle("~/bundles/Framework").Include(
-                                    "~/Framework/js/common.js",
-                                    "~/Framework/js/ie_key_event.js"));
+            bundles.Add(new ScriptBundle("~/bundles/app").Include(
+                                    "~/Scripts/app/Site.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/otr").Include(
+                                    "~/Scripts/otr/common.js",
+                                    "~/Scripts/otr/ie_key_event.js"));
             
             bundles.Add(new ScriptBundle("~/bundles/WebFormsJs").Include(
                             "~/Scripts/WebForms/WebForms.js",

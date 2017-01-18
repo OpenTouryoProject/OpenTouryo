@@ -8,7 +8,8 @@
     <title>無題のページ</title>
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
-        <%: Scripts.Render("~/bundles/Framework") %>
+        <%: Scripts.Render("~/bundles/otr") %>
+        <%: Scripts.Render("~/bundles/app") %>
     </asp:PlaceHolder>
     <webopt:bundlereference runat="server" path="~/Content/css" />
 
@@ -31,7 +32,7 @@
     <div id="header-fixed">
         <div id="header-bk">
             <div id="header">
-                <div id="header-logo"><img src="<%= this.ResolveClientUrl("~/img/logoantW.png") %>" /></div>
+                <div id="header-logo"><img style="width:80px; height:80px;" src="<%= this.ResolveClientUrl("~/images/otr/logo.png") %>" /></div>
                 <div >You has signed-in as "<%= this.UserName %>".</div>
                 <div id="header-button">
                     <button type="button" class="btn btn-info" onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/logout.aspx") %>';">Sign-out</button>
@@ -110,6 +111,7 @@
             </div>
         </div>
     </div>
+
     <asp:ContentPlaceHolder ID="cphFooter" runat="server">
         This is footer area for define the scripts. -- Override on Page.
     </asp:ContentPlaceHolder>

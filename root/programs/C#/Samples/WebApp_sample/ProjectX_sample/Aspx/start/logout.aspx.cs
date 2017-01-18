@@ -65,7 +65,12 @@ namespace ProjectX_sample.Aspx.Start
             // フォーム初期化（初回ロード）時に実行する処理を実装する
 
             // TODO:
-            // ここでは何もしない
+
+            // ログオフ（認証チケットを削除する）
+            FormsAuthentication.SignOut();
+
+            // ログインページ（login.aspx）に遷移する。
+            Response.Redirect("login.aspx");
         }
 
         /// <summary>
@@ -80,28 +85,6 @@ namespace ProjectX_sample.Aspx.Start
 
             // TODO:
             // ここでは何もしない
-        }
-
-        #endregion
-
-        #region イベントハンドラ
-
-        /// <summary>ログアウト</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
-        /// <returns>URL</returns>
-        protected string UOC_btnButton1_Click(FxEventArgs fxEventArgs)
-        {
-            // ログオフ（認証チケットを削除する）
-            FormsAuthentication.SignOut();
-
-            // ログインページ（login.aspx）に遷移する。
-            Response.Redirect("login.aspx");
-
-            // 任意のページに飛ばした場合、認証チケットが無いので、
-            // ログインページ（login.aspx）強制的に遷移する。
-            // ※ ポストバックのままだと、そのまま画面が表示されてしまう。
-
-            return string.Empty;
         }
 
         #endregion

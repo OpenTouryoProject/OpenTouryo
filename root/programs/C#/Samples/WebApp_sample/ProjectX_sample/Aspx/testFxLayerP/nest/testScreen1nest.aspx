@@ -2,7 +2,6 @@
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A2" Runat="Server">
-    <!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
     コンテンツ ページ１（個別）<br />
     <table border="1">
         <tr>

@@ -18,7 +18,7 @@
 // System
 using System.Web.Routing;
 // Microsoft
-using Microsoft.AspNet.FriendlyUrls;
+//using Microsoft.AspNet.FriendlyUrls;
 
 namespace ProjectX_sample
 {

@@ -88,10 +88,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Frameworks\Infrastructure\Build\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AspNet.FriendlyUrls, Version=1.0.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNet.FriendlyUrls.Core.1.0.2\lib\net45\Microsoft.AspNet.FriendlyUrls.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.AspNet.Web.Optimization.WebForms, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.AspNet.Web.Optimization.WebForms.1.1.3\lib\net45\Microsoft.AspNet.Web.Optimization.WebForms.dll</HintPath>
       <Private>True</Private>
@@ -208,6 +204,7 @@
     <Content Include="Aspx\TestScreenCtrl\WebForm3.aspx" />
     <Content Include="Aspx\TestScreenCtrl\WebForm4.aspx" />
     <Content Include="Aspx\TestScreenCtrl\WebForm5.aspx" />
+    <Content Include="Content\app\Site.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -264,6 +261,13 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="images\otr\error.ico" />
+    <Content Include="images\otr\image.jpg" />
+    <Content Include="images\otr\information.ico" />
+    <Content Include="images\otr\loading.gif" />
+    <Content Include="images\otr\question.ico" />
+    <Content Include="images\otr\warning.ico" />
+    <Content Include="Scripts\app\Site.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Bundle.config" />
@@ -321,6 +325,8 @@
     <Content Include="Scripts\jquery.jqGrid.js" />
     <Content Include="Scripts\jquery.jqGrid.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\otr\common.js" />
+    <Content Include="Scripts\otr\ie_key_event.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
@@ -346,117 +352,11 @@
     <Content Include="Scripts\WebForms\WebForms.js" />
     <Content Include="Scripts\WebForms\WebParts.js" />
     <Content Include="Scripts\WebForms\WebUIValidation.js" />
-    <Content Include="_Content\jquery.jqGrid\ui.jqgrid.css" />
-    <Content Include="_Content\themes\base\accordion.css" />
-    <Content Include="_Content\themes\base\all.css" />
-    <Content Include="_Content\themes\base\autocomplete.css" />
-    <Content Include="_Content\themes\base\base.css" />
-    <Content Include="_Content\themes\base\button.css" />
-    <Content Include="_Content\themes\base\core.css" />
-    <Content Include="_Content\themes\base\datepicker.css" />
-    <Content Include="_Content\themes\base\dialog.css" />
-    <Content Include="_Content\themes\base\draggable.css" />
-    <Content Include="_Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
-    <Content Include="_Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
-    <Content Include="_Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
-    <Content Include="_Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
-    <Content Include="_Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
-    <Content Include="_Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
-    <Content Include="_Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
-    <Content Include="_Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
-    <Content Include="_Content\themes\base\images\ui-icons_222222_256x240.png" />
-    <Content Include="_Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
-    <Content Include="_Content\themes\base\images\ui-icons_454545_256x240.png" />
-    <Content Include="_Content\themes\base\images\ui-icons_888888_256x240.png" />
-    <Content Include="_Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
-    <Content Include="_Content\themes\base\menu.css" />
-    <Content Include="_Content\themes\base\progressbar.css" />
-    <Content Include="_Content\themes\base\resizable.css" />
-    <Content Include="_Content\themes\base\selectable.css" />
-    <Content Include="_Content\themes\base\selectmenu.css" />
-    <Content Include="_Content\themes\base\slider.css" />
-    <Content Include="_Content\themes\base\sortable.css" />
-    <Content Include="_Content\themes\base\spinner.css" />
-    <Content Include="_Content\themes\base\tabs.css" />
-    <Content Include="_Content\themes\base\theme.css" />
-    <Content Include="_Content\themes\base\tooltip.css" />
-    <Content Include="_Content\themes\images\ui-bg_flat_0_aaaaaa_40x100.png" />
-    <Content Include="_Content\themes\images\ui-bg_flat_75_ffffff_40x100.png" />
-    <Content Include="_Content\themes\images\ui-bg_glass_55_fbf9ee_1x400.png" />
-    <Content Include="_Content\themes\images\ui-bg_glass_65_ffffff_1x400.png" />
-    <Content Include="_Content\themes\images\ui-bg_glass_75_dadada_1x400.png" />
-    <Content Include="_Content\themes\images\ui-bg_glass_75_e6e6e6_1x400.png" />
-    <Content Include="_Content\themes\images\ui-bg_glass_95_fef1ec_1x400.png" />
-    <Content Include="_Content\themes\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
-    <Content Include="_Content\themes\images\ui-icons_222222_256x240.png" />
-    <Content Include="_Content\themes\images\ui-icons_2e83ff_256x240.png" />
-    <Content Include="_Content\themes\images\ui-icons_454545_256x240.png" />
-    <Content Include="_Content\themes\images\ui-icons_888888_256x240.png" />
-    <Content Include="_Content\themes\images\ui-icons_cd0a0a_256x240.png" />
-    <Content Include="Css\style.css" />
-    <Content Include="Framework\Img\error.ico" />
-    <Content Include="Framework\Img\image.JPG" />
-    <Content Include="Framework\Img\information.ico" />
-    <Content Include="Framework\Img\loading.gif" />
-    <Content Include="Framework\Img\question.ico" />
-    <Content Include="Framework\Img\warning.ico" />
-    <Content Include="Framework\Js\common.js" />
-    <Content Include="Framework\Js\ie_key_event.js" />
+    <Content Include="Content\otr\Style.css" />
     <Content Include="Global.asax" />
-    <Content Include="_Scripts\i18n\grid.locale-ar.js" />
-    <Content Include="_Scripts\i18n\grid.locale-bg.js" />
-    <Content Include="_Scripts\i18n\grid.locale-bg1251.js" />
-    <Content Include="_Scripts\i18n\grid.locale-cat.js" />
-    <Content Include="_Scripts\i18n\grid.locale-cn.js" />
-    <Content Include="_Scripts\i18n\grid.locale-cs.js" />
-    <Content Include="_Scripts\i18n\grid.locale-da.js" />
-    <Content Include="_Scripts\i18n\grid.locale-de.js" />
-    <Content Include="_Scripts\i18n\grid.locale-dk.js" />
-    <Content Include="_Scripts\i18n\grid.locale-el.js" />
-    <Content Include="_Scripts\i18n\grid.locale-en.js" />
-    <Content Include="_Scripts\i18n\grid.locale-es.js" />
-    <Content Include="_Scripts\i18n\grid.locale-fa.js" />
-    <Content Include="_Scripts\i18n\grid.locale-fi.js" />
-    <Content Include="_Scripts\i18n\grid.locale-fr.js" />
-    <Content Include="_Scripts\i18n\grid.locale-gl.js" />
-    <Content Include="_Scripts\i18n\grid.locale-he.js" />
-    <Content Include="_Scripts\i18n\grid.locale-hr.js" />
-    <Content Include="_Scripts\i18n\grid.locale-hr1250.js" />
-    <Content Include="_Scripts\i18n\grid.locale-hu.js" />
-    <Content Include="_Scripts\i18n\grid.locale-id.js" />
-    <Content Include="_Scripts\i18n\grid.locale-is.js" />
-    <Content Include="_Scripts\i18n\grid.locale-it.js" />
-    <Content Include="_Scripts\i18n\grid.locale-ja.js" />
-    <Content Include="_Scripts\i18n\grid.locale-kr.js" />
-    <Content Include="_Scripts\i18n\grid.locale-lt.js" />
-    <Content Include="_Scripts\i18n\grid.locale-mne.js" />
-    <Content Include="_Scripts\i18n\grid.locale-nl.js" />
-    <Content Include="_Scripts\i18n\grid.locale-no.js" />
-    <Content Include="_Scripts\i18n\grid.locale-pl.js" />
-    <Content Include="_Scripts\i18n\grid.locale-pt-br.js" />
-    <Content Include="_Scripts\i18n\grid.locale-pt.js" />
-    <Content Include="_Scripts\i18n\grid.locale-ro.js" />
-    <Content Include="_Scripts\i18n\grid.locale-ru.js" />
-    <Content Include="_Scripts\i18n\grid.locale-sk.js" />
-    <Content Include="_Scripts\i18n\grid.locale-sr-latin.js" />
-    <Content Include="_Scripts\i18n\grid.locale-sr.js" />
-    <Content Include="_Scripts\i18n\grid.locale-sv.js" />
-    <Content Include="_Scripts\i18n\grid.locale-th.js" />
-    <Content Include="_Scripts\i18n\grid.locale-tr.js" />
-    <Content Include="_Scripts\i18n\grid.locale-tw.js" />
-    <Content Include="_Scripts\i18n\grid.locale-ua.js" />
-    <Content Include="_Scripts\i18n\grid.locale-vi.js" />
     <Content Include="packages.config" />
     <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.1.min.map" />
-    <None Include="_Scripts\jquery-2.1.3.intellisense.js" />
-    <Content Include="_Scripts\jquery-2.1.3.js" />
-    <Content Include="_Scripts\jquery-2.1.3.min.js" />
-    <Content Include="_Scripts\jquery-ui-1.11.2.js" />
-    <Content Include="_Scripts\jquery-ui-1.11.2.min.js" />
-    <Content Include="_Scripts\jquery.jqGrid.min.js" />
-    <Content Include="_Scripts\jquery.jqGrid.src.js" />
-    <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -882,13 +782,6 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="ViewSwitcher.ascx.cs">
-      <DependentUpon>ViewSwitcher.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ViewSwitcher.ascx.designer.cs">
-      <DependentUpon>ViewSwitcher.ascx</DependentUpon>
-    </Compile>
     <Compile Include="WebService\IJSONService.cs" />
     <Compile Include="WebService\JSONService.svc.cs">
       <DependentUpon>JSONService.svc</DependentUpon>
@@ -912,11 +805,9 @@
     <Content Include="Aspx\Common\testScreen1.master" />
     <Content Include="Aspx\Common\testScreen2.master" />
     <Content Include="Aspx\Common\testScreenCtrl.master" />
-    <Content Include="_Scripts\jquery-2.1.3.min.map" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Framework\Css\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -10,7 +10,8 @@
     <title>無題のページ</title>
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
-        <%: Scripts.Render("~/bundles/Framework") %>
+        <%: Scripts.Render("~/bundles/otr") %>
+        <%: Scripts.Render("~/bundles/app") %>
     </asp:PlaceHolder>
     <webopt:bundlereference runat="server" path="~/Content/css" />
 
@@ -32,7 +33,7 @@
     <div id="header-fixed">
         <div id="header-bk">
             <div id="header">
-                <div id="header-logo"><img src="<%= this.ResolveClientUrl("~/img/logoantW.png") %>" /></div>
+                <div id="header-logo"><img style="width:80px; height:80px;" src="<%= this.ResolveClientUrl("~/images/otr/logo.png") %>" /></div>
                 <div >You has signed-in as "<%= this.UserName %>".</div>
                 <div id="header-button">
                     <button type="button" class="btn btn-info" onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/logout.aspx") %>';">Sign-out</button>
@@ -74,66 +75,65 @@
                         </Scripts>
                     </asp:ScriptManager>
 
-                    <div>
-                        <!--SampleCode：add-start-->
+                    <!--SampleCode：add-start-->
         
-                        <!--SampleCode：Header（共通）-->
-                        <a href="<%= this.ResolveUrl("~/Aspx/start/menu.aspx") %>">メニュー画面</a>
-                        <br />
+                    <!--SampleCode：Header（共通）-->
+                    <a href="<%= this.ResolveUrl("~/Aspx/start/menu.aspx") %>">メニュー画面</a>
+                    <br />
         
-                        <asp:Button ID="btnMPButton" runat="server" Text="マスタページ上の上のボタン" />
+                    <asp:Button ID="btnMPButton" runat="server" Text="マスタページ上の上のボタン" />
 
-                        <!-- ユーザコントロール上のボタン -->
-                        <uc1:sampleControl ID="sampleControl1" runat="server"/>
-                        <uc1:sampleControl ID="sampleControl2" runat="server"/>
+                    <!-- ユーザコントロール上のボタン -->
+                    <uc1:sampleControl ID="sampleControl1" runat="server"/>
+                    <uc1:sampleControl ID="sampleControl2" runat="server"/>
         
-                        <br />
-                        ＜共通イベント エリア＞<br />
-                        <cc1:WebCustomButton ID="btnMButton101" runat="server" text="ログアウト" Width="120px" />
-                        <cc1:WebCustomButton ID="btnMButton102" runat="server" text="説明（ウィンドオープン）" Width="240px" />
-                        <hr />
-                        ＜汎用メッセージ エリア＞<br />
-                        <cc1:WebCustomLabel ID="Label1" runat="server" text="Label"></cc1:WebCustomLabel><br />
-                        <hr />
+                    <br />
+                    ＜共通イベント エリア＞<br />
+                    <cc1:WebCustomButton ID="btnMButton101" runat="server" text="ログアウト" Width="120px" />
+                    <cc1:WebCustomButton ID="btnMButton102" runat="server" text="説明（ウィンドオープン）" Width="240px" />
+                    <hr />
+                    ＜汎用メッセージ エリア＞<br />
+                    <cc1:WebCustomLabel ID="Label1" runat="server" text="Label"></cc1:WebCustomLabel><br />
+                    <hr />
         
-                        <!--SampleCode：Contents（個別１）-->
-                        <asp:contentplaceholder id="ContentPlaceHolder_A" runat="Server">
-                            This is Default Content -- Override on Page
-                        </asp:contentplaceholder>
-                        <!--SampleCode：add-end-->
+                    <!--SampleCode：Contents（個別１）-->
+                    <asp:contentplaceholder id="ContentPlaceHolder_A" runat="Server">
+                        This is Default Content -- Override on Page
+                    </asp:contentplaceholder>
+                    <!--SampleCode：add-end-->
         
-                        <hr />
+                    <hr />
         
-                        <!--SampleCode：Header（デザイン共通・実装個別）-->
-                        <cc1:WebCustomButton ID="btnMButton1" runat="server" text="件数取得" Width="100px" />
-                        <cc1:WebCustomButton ID="btnMButton2" runat="server" text="一覧取得（dt）" Width="131px" />
-                        <cc1:WebCustomButton ID="btnMButton3" runat="server" text="一覧取得（ds）" Width="130px" />
-                        <cc1:WebCustomButton ID="btnMButton4" runat="server" text="一覧取得（dr）" Width="130px" />
-                        <cc1:WebCustomButton ID="btnMButton5" runat="server" text="一覧取得（動的sql）" Width="160px" /><br />
-                        <cc1:WebCustomButton ID="btnMButton6" runat="server" text="一件参照" Width="100px" />
-                        <cc1:WebCustomButton ID="btnMButton7" runat="server" text="追加" Width="60px" />
-                        <cc1:WebCustomButton ID="btnMButton8" runat="server" text="更新" Width="61px" />
-                        <cc1:WebCustomButton ID="btnMButton9" runat="server" text="削除" Width="60px" />
-                        <hr />
-                        <br />
+                    <!--SampleCode：Header（デザイン共通・実装個別）-->
+                    <cc1:WebCustomButton ID="btnMButton1" runat="server" text="件数取得" Width="100px" />
+                    <cc1:WebCustomButton ID="btnMButton2" runat="server" text="一覧取得（dt）" Width="131px" />
+                    <cc1:WebCustomButton ID="btnMButton3" runat="server" text="一覧取得（ds）" Width="130px" />
+                    <cc1:WebCustomButton ID="btnMButton4" runat="server" text="一覧取得（dr）" Width="130px" />
+                    <cc1:WebCustomButton ID="btnMButton5" runat="server" text="一覧取得（動的sql）" Width="160px" /><br />
+                    <cc1:WebCustomButton ID="btnMButton6" runat="server" text="一件参照" Width="100px" />
+                    <cc1:WebCustomButton ID="btnMButton7" runat="server" text="追加" Width="60px" />
+                    <cc1:WebCustomButton ID="btnMButton8" runat="server" text="更新" Width="61px" />
+                    <cc1:WebCustomButton ID="btnMButton9" runat="server" text="削除" Width="60px" />
+                    <hr />
+                    <br />
         
-                        <!--SampleCode：add-end-->
+                    <!--SampleCode：add-end-->
         
-                        <!--FxCode：add-start-->
-                        <asp:HiddenField ID="ChildScreenType" runat="server" Value="0" />
-                        <asp:HiddenField ID="ChildScreenUrl" runat="server" Value="0" />
-                        <asp:HiddenField ID="CloseFlag" runat="server" Value="0" />
-                        <asp:HiddenField ID="SubmitFlag" runat="server" Value="0" />
-                        <asp:HiddenField ID="ScreenGuid" runat="server" Value="0" />
-                        <asp:HiddenField ID="FxDialogStyle" runat="server" Value="0" />
-                        <asp:HiddenField ID="BusinessDialogStyle" runat="server" Value="0" />
-                        <asp:HiddenField ID="NormalScreenStyle" runat="server" Value="0" />
-                        <asp:HiddenField ID="NormalScreenTarget" runat="server" Value="0" />
-                        <asp:HiddenField ID="DialogFrameUrl" runat="server" Value="0" />
-                        <asp:HiddenField ID="WindowGuid" runat="server" Value="0" />
-                        <asp:HiddenField ID="RequestTicketGuid" runat="server" Value="0" />
-                        <!--FxCode：add-end-->
-                    </div>
+                    <!--FxCode：add-start-->
+                    <asp:HiddenField ID="ChildScreenType" runat="server" Value="0" />
+                    <asp:HiddenField ID="ChildScreenUrl" runat="server" Value="0" />
+                    <asp:HiddenField ID="CloseFlag" runat="server" Value="0" />
+                    <asp:HiddenField ID="SubmitFlag" runat="server" Value="0" />
+                    <asp:HiddenField ID="ScreenGuid" runat="server" Value="0" />
+                    <asp:HiddenField ID="FxDialogStyle" runat="server" Value="0" />
+                    <asp:HiddenField ID="BusinessDialogStyle" runat="server" Value="0" />
+                    <asp:HiddenField ID="NormalScreenStyle" runat="server" Value="0" />
+                    <asp:HiddenField ID="NormalScreenTarget" runat="server" Value="0" />
+                    <asp:HiddenField ID="DialogFrameUrl" runat="server" Value="0" />
+                    <asp:HiddenField ID="WindowGuid" runat="server" Value="0" />
+                    <asp:HiddenField ID="RequestTicketGuid" runat="server" Value="0" />
+                    <!--FxCode：add-end-->
+
                 </form>
             </div>
         </div>
