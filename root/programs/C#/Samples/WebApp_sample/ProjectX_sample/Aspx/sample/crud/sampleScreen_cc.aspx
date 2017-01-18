@@ -1,7 +1,11 @@
 <%@ Page Language="C#" MasterPageFile="~/Aspx/Common/sampleScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.sample.Crud.sampleScreen_cc" Title="Untitled Page" Codebehind="sampleScreen_cc.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+<asp:Content ID="cphHeader" ContentPlaceHolderID="cphHeader" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
     データアクセス制御クラス（データプロバイダ）を選択<br />
     <cc1:WebCustomDropDownList ID="ddlDap" runat="server">
         <asp:ListItem Value="SQL">SQL Server / SQL Client</asp:ListItem>
@@ -87,3 +91,6 @@
     &nbsp;<cc1:WebCustomButton ID="btnButton3" runat="server" Text="その他、一般的な例外" Width="190px" />
 </asp:Content>
 
+<asp:Content ID="cphFooter" ContentPlaceHolderID="cphFooter" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
+</asp:Content>

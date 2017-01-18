@@ -1,6 +1,11 @@
 <%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.sample._3Tier.ProductsSearchAndUpdate" Title="ProductsSearchAndUpdate" Codebehind="ProductsSearchAndUpdate.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+
+<asp:Content ID="cphHeader" ContentPlaceHolderID="cphHeader" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
     <!--
         [ProductID] [int] IDENTITY(1,1) NOT NULL,
 	    [ProductName] [nvarchar](40) NOT NULL,
@@ -234,14 +239,14 @@
                 <ItemTemplate>
                     <cc1:WebCustomDropDownList ID="ddlSupplierID" runat="server" AutoPostBack="false"
                         DataSource="<%# this.ddldsdt_Suppliers %>" DataValueField="value" DataTextField="text"
-                        SelectedValue='<%# Bind(Container.DataItem, "SupplierID") %>'/>
+                        SelectedValue='<%# Bind((string)Container.DataItem, "SupplierID") %>'/>
                 </ItemTemplate>
             </asp:TemplateField>
             <asp:TemplateField SortExpression="CategoryID">
                 <ItemTemplate>
                     <cc1:WebCustomDropDownList ID="ddlCategoryID" runat="server" AutoPostBack="false"
                         DataSource="<%# this.ddldsdt_Categories %>" DataValueField="value" DataTextField="text"
-                        SelectedValue='<%# Bind(Container.DataItem, "CategoryID") %>'/>
+                        SelectedValue='<%# Bind((string)Container.DataItem, "CategoryID") %>'/>
                 </ItemTemplate>
             </asp:TemplateField>
             <asp:TemplateField SortExpression="QuantityPerUnit">
@@ -289,3 +294,6 @@
     
 </asp:Content>
 
+<asp:Content ID="cphFooter" ContentPlaceHolderID="cphFooter" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
+</asp:Content>

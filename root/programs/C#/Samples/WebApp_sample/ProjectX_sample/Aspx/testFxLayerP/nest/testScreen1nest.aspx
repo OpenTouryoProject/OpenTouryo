@@ -1,7 +1,7 @@
 <%@ Page Language="C#" MasterPageFile="~/Aspx/Common/TestNest/testScreen1bmp2.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.Nest.testScreen1nest" Title="Untitled Page" Codebehind="testScreen1nest.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A2" Runat="Server">
+<asp:Content ID="ContentPlaceHolder_A2" ContentPlaceHolderID="ContentPlaceHolder_A2" Runat="Server">
     コンテンツ ページ１（個別）<br />
     <table border="1">
         <tr>
@@ -69,7 +69,7 @@
     <hr />
 </asp:Content>
 
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder_B2" Runat="Server">
+<asp:Content ID="ContentPlaceHolder_B2" ContentPlaceHolderID="ContentPlaceHolder_B2" Runat="Server">
     コンテンツ ページ２（個別）<br />
     <table border="1">
         <tr>
@@ -131,7 +131,7 @@
     </table>
     <hr />
 </asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder_C2" Runat="Server">
+<asp:Content ID="ContentPlaceHolder_C2" ContentPlaceHolderID="ContentPlaceHolder_C2" Runat="Server">
     コンテンツ ページ３（個別）<br />
     <table border="1">
         <tr>
@@ -197,4 +197,3 @@
     </table>
     <hr />
 </asp:Content>
-

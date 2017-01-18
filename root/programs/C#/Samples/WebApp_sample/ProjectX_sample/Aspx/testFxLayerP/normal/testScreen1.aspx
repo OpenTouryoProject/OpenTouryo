@@ -1,7 +1,11 @@
 <%@ Page Language="C#" MasterPageFile="~/Aspx/Common/TestScreen1.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.Normal.testScreen1" Title="Untitled Page" Codebehind="testScreen1.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+<asp:Content ID="cphHeader" ContentPlaceHolderID="cphHeader" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
     コンテンツ ページ１（個別）<br />
     <table border="1">
         <tr>
@@ -69,7 +73,7 @@
     <hr />
 </asp:Content>
 
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder_B" Runat="Server">
+<asp:Content ID="ContentPlaceHolder_B" ContentPlaceHolderID="ContentPlaceHolder_B" Runat="Server">
     コンテンツ ページ２（個別）<br />
     <table border="1">
         <tr>
@@ -131,7 +135,7 @@
     </table>
     <hr />
 </asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder_C" Runat="Server">
+<asp:Content ID="ContentPlaceHolder_C" ContentPlaceHolderID="ContentPlaceHolder_C" Runat="Server">
     コンテンツ ページ３（個別）<br />
     <table border="1">
         <tr>
@@ -196,5 +200,9 @@
         </tr>
     </table>
     <hr />
+</asp:Content>
+
+<asp:Content ID="cphFooter" ContentPlaceHolderID="cphFooter" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
 </asp:Content>
 

@@ -1,7 +1,11 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.Table.testRepeater" Title="Untitled Page" EnableEventValidation="false" Codebehind="testRepeater.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+<asp:Content ID="cphHeader" ContentPlaceHolderID="cphHeader" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
     <asp:Repeater id="rptRepeater1" runat="server">
         <HeaderTemplate>
             <table border="1" style="width:100%;">
@@ -50,4 +54,8 @@
                 
     <asp:Button ID="btnButton1" runat="server" Text="ポストバック"/>
     <asp:Button ID="btnButton2" runat="server" Text="変更の反映"/>
+</asp:Content>
+
+<asp:Content ID="cphFooter" ContentPlaceHolderID="cphFooter" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
 </asp:Content>

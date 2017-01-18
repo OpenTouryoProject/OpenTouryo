@@ -1,7 +1,12 @@
 <%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testAspNetAjaxExtension_Single.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.WithAjax.testExtension_Single" Title="Untitled Page" Codebehind="testExtension_Single.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 <%@ Register Assembly="System.Web.Extensions, Version=1.0.61025.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Namespace="System.Web.UI" TagPrefix="asp" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+
+<asp:Content ID="cphHeader" ContentPlaceHolderID="cphHeader" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
     <asp:ScriptManagerProxy ID="ContentsScriptManagerProxy" runat="server"></asp:ScriptManagerProxy>
     
     コンテンツ ページ（個別）　→　３秒待ちます。<br />
@@ -31,3 +36,6 @@
     <cc1:WebCustomButton ID="btnButton3" runat="server"  Text="例外ボタン" Width="180px" /><br />    
 </asp:Content>
 
+<asp:Content ID="cphFooter" ContentPlaceHolderID="cphFooter" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
+</asp:Content>

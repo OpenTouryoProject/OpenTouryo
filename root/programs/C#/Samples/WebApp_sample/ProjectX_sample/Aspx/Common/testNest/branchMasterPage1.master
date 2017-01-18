@@ -1,8 +1,8 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/Aspx/Common/TestNest/rootMasterPage.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Common.TestNest.branchMasterPage1" Codebehind="branchMasterPage1.master.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="cphHeader" Runat="Server"> 
-    branchMasterPage1のhead<br/>
+<asp:Content ID="cphHeader" ContentPlaceHolderID="cphHeader" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
@@ -48,4 +48,8 @@
     <asp:ContentPlaceHolder id="ContentPlaceHolder_CC" runat="server">
         This is Default Content -- Override on Page
     </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content ID="cphFooter" ContentPlaceHolderID="cphFooter" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
 </asp:Content>

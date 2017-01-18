@@ -1,7 +1,11 @@
 <%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.Table.testListView" Title="Untitled Page" EnableEventValidation="false" Codebehind="testListView.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" runat="Server">
+<asp:Content ID="cphHeader" ContentPlaceHolderID="cphHeader" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
     <asp:ListView ID="lvwListView1" runat="server" OnItemEditing="lvwListView1_ItemEditing"
         OnItemCanceling="lvwListView1_ItemCanceling" DataKeyNames="fileid">
         <LayoutTemplate>
@@ -165,4 +169,8 @@
         <asp:Button ID="btnButton1" runat="server" Text="ポストバック" />
     </p>
    <asp:Label ID="lblResultOfItemCommand" runat="server"></asp:Label>
+</asp:Content>
+
+<asp:Content ID="cphFooter" ContentPlaceHolderID="cphFooter" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
 </asp:Content>

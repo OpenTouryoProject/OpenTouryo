@@ -1,7 +1,11 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.Normal.testScreen0" Title="Untitled Page" Codebehind="testScreen0.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+<asp:Content ID="cphHeader" ContentPlaceHolderID="cphHeader" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
     ＜例外処理のテスト＞<br />
     <cc1:WebCustomButton id="btnAppEx" runat="server" text="業務例外" width="171px"></cc1:WebCustomButton><br/>
     <cc1:WebCustomButton id="btnSysEx" runat="server" text="システム例外" width="171px"></cc1:WebCustomButton><br/>
@@ -79,3 +83,6 @@
     <asp:Button ID="btnIllegalOperationCheckOFF" runat="server" Text="IllegalOperationCheckOFF" />
 </asp:Content>
 
+<asp:Content ID="cphFooter" ContentPlaceHolderID="cphFooter" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
+</asp:Content>
