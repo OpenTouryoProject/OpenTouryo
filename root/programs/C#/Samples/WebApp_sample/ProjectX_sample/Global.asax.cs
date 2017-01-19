@@ -1,6 +1,9 @@
 ﻿//**********************************************************************************
-//* Global.asax
+//* テンプレート
 //**********************************************************************************
+
+// 以下のLicenseに従い、このProjectをTemplateとして使用可能です。Release時にCopyright表示してSublicenseして下さい。
+// https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LicenseForTemplates.txt
 
 //**********************************************************************************
 //* クラス名        ：Global_asax

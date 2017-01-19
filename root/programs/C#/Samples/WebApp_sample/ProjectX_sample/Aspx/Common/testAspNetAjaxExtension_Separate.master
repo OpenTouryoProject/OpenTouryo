@@ -10,8 +10,6 @@
     <title>無題のページ</title>
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
-        <%: Scripts.Render("~/bundles/otr") %>
-        <%: Scripts.Render("~/bundles/app") %>
     </asp:PlaceHolder>
     <webopt:bundlereference runat="server" path="~/Content/css" />
 
@@ -162,6 +160,9 @@
         <!--FxCode：add-end-->
         
     </form>
+
+    <%: Scripts.Render("~/bundles/otr") %>
+    <%: Scripts.Render("~/bundles/app") %>
 
     <asp:ContentPlaceHolder ID="cphFooter" runat="server">
         This is footer area for define the scripts. -- Override on Page.

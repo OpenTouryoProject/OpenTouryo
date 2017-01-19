@@ -7,8 +7,7 @@
 <head id="Head1" runat="server">
     <title>無題のページ</title>
     <asp:PlaceHolder runat="server">
-        <%: Scripts.Render("~/bundles/otr") %>
-        <%: Scripts.Render("~/bundles/app") %>
+        <%: Scripts.Render("~/bundles/modernizr") %>
     </asp:PlaceHolder>
     <webopt:bundlereference runat="server" path="~/Content/css" />
 
@@ -31,10 +30,11 @@
     <div id="header-fixed">
         <div id="header-bk">
             <div id="header">
-                <div id="header-logo"><img style="width:80px; height:80px;" src="<%= this.ResolveClientUrl("~/images/otr/logo.png") %>" /></div>
-                <div >You has signed-in as "<%= this.UserName %>".</div>
+                <div id="header-logo"><img alt="logo" style="width:80px; height:80px;" src="<%= this.ResolveClientUrl("~/images/otr/logo.png") %>" /></div>
+                <div style="margin: 20px 0 0 100px">You has signed-in as "<%= this.UserName %>".</div>
                 <div id="header-button">
-                    <button type="button" class="btn btn-info" onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/logout.aspx") %>';">Sign-out</button>
+                    <button type="button" class="btn btn-info" onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/menu.aspx") %>';">Menu</button>
+                    <button type="button" class="btn btn-default" onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/logout.aspx") %>';">Sign-out</button>
                 </div>
             </div>
         </div>
@@ -49,12 +49,10 @@
             <div id="contents">
 
                 <!-- オートコンプリートを指定 -->
-                <form id="form1" runat="server" autocomplete="on">
+                <form id="form1" runat="server">
 
                     <!--SampleCode：add-start-->
         
-                    <a href="<%= this.ResolveUrl("~/Aspx/start/menu.aspx") %>">メニュー画面</a><br />
-
                     <!--SampleCode：Contents-->
                     <asp:contentplaceholder id="ContentPlaceHolder_A" runat="Server">
                         This is Default Content -- Override on Page
@@ -87,6 +85,27 @@
             </div>
         </div>
     </div>
+
+    <%: Scripts.Render("~/bundles/otr") %>
+    <%: Scripts.Render("~/bundles/app") %>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var sidemenu = $("#sidemenu");
+            var contents = $("#contents");
+
+            if (contents.height() >= sidemenu.height())
+            {
+                sidemenu.height(contents.height());
+            }
+            else
+            {
+                contents.height(sidemenu.height());
+            }
+        });
+
+    </script>
 
     <asp:ContentPlaceHolder ID="cphFooter" runat="server">
         This is footer area for define the scripts. -- Override on Page.

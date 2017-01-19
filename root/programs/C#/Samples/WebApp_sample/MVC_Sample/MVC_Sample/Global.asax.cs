@@ -16,13 +16,6 @@
 //**********************************************************************************
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Http;
-using System.Web.Mvc;
-using System.Web.Optimization;
-using System.Web.Routing;
 
 namespace MVC_Sample
 {
@@ -46,21 +39,6 @@ namespace MVC_Sample
         protected void Application_Start(object sender, EventArgs e)
         {
             // アプリケーションのスタートアップで実行するコード
-
-            // 
-            AreaRegistration.RegisterAllAreas();
-
-            // 
-            WebApiConfig.Register(GlobalConfiguration.Configuration);
-
-            // グローバルフィルタの登録
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-
-            // ルート定義の登録
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-
-            // バンドル＆ミニフィケーションの登録
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
         /// <summary>

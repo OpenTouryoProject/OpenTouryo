@@ -2,6 +2,8 @@
 //* サンプル アプリ画面
 //**********************************************************************************
 
+// サンプル アプリ画面なので、必要に応じて流用 or 削除して下さい。
+
 //**********************************************************************************
 //* クラス名        ：sampleScreen  
 //* クラス日本語名  ：サンプル アプリ画面
@@ -672,7 +674,7 @@ namespace ProjectX_sample.Aspx.sample.Crud
         /// <returns>URL</returns>
         protected string UOC_sampleScreen_btnMPButton_Click(FxEventArgs fxEventArgs)
         {
-            Response.Write("UOC_sampleScreen_btnMPButton_Clickを実行できた。");
+            this.lblResult.Text = "sampleScreen.masterのbtnMPButtonのClickイベントを、UOC_sampleScreen_btnMPButton_Clickで実行";
 
             return "";
         }
@@ -682,7 +684,7 @@ namespace ProjectX_sample.Aspx.sample.Crud
         /// <returns>URL</returns>
         protected string UOC_sampleControl1_btnUCButton_Click(FxEventArgs fxEventArgs)
         {
-            Response.Write("UOC_sampleControl1_btnUCButton_Clickを実行できた。");
+            this.lblResult.Text = "sampleControl.ascxのbtnUCButtonのClickイベントを、UOC_sampleControl1_btnUCButton_Clickで実行";
 
             return "";
         }
@@ -692,7 +694,7 @@ namespace ProjectX_sample.Aspx.sample.Crud
         /// <returns>URL</returns>
         protected string UOC_sampleControl2_btnUCButton_Click(FxEventArgs fxEventArgs)
         {
-            Response.Write("UOC_sampleControl2_btnUCButton_Clickを実行できた。");
+            this.lblResult.Text = "sampleControl.ascxのbtnUCButtonのClickイベントを、UOC_sampleControl2_btnUCButton_Clickで実行";
 
             return "";
         }

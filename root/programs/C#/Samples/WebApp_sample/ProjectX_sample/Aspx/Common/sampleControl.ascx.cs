@@ -1,4 +1,10 @@
 ﻿//**********************************************************************************
+//* フレームワーク・テスト UI（Ｐ層）
+//**********************************************************************************
+
+// テスト画面なので、必要に応じて流用 or 削除して下さい。
+
+//**********************************************************************************
 //* クラス名        ：WebUserControl
 //* クラス日本語名  ：WebUserControl上のイベントハンドラをハンドルする。
 //*
@@ -24,8 +30,7 @@ namespace ProjectX_sample.Aspx.Common
         /// <returns>URL</returns>
         protected string UOC_btnUCButton_Click(FxEventArgs fxEventArgs)
         {
-            Response.Write("UOC_btnUCButton_Clickを実行できた。");
-
+            this.lblResult.Text = "UOC_btnUCButton_Clickを実行できた。";
             return "";
         }
     } 

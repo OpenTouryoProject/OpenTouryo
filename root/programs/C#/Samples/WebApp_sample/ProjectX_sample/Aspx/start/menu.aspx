@@ -73,11 +73,7 @@
                 </li>
             </ul>
         </li>
-        <li><a href="<%= this.ResolveUrl("~/Aspx/TestPublic/testScreen.aspx") %>">単体テスト（共通部品）</a></li></li>
-    </ul>
-    -------------------------<br />
-    <ul>
-        <li><a href="logout.aspx">ログアウト画面</a></li>
+        <li><a href="<%= this.ResolveUrl("~/Aspx/TestPublic/testScreen.aspx") %>">単体テスト（共通部品）</a></li>
     </ul>
 </asp:Content>
 

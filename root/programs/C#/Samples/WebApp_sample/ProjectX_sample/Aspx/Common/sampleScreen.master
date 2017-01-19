@@ -10,8 +10,6 @@
     <title>無題のページ</title>
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
-        <%: Scripts.Render("~/bundles/otr") %>
-        <%: Scripts.Render("~/bundles/app") %>
     </asp:PlaceHolder>
     <webopt:bundlereference runat="server" path="~/Content/css" />
 
@@ -33,10 +31,11 @@
     <div id="header-fixed">
         <div id="header-bk">
             <div id="header">
-                <div id="header-logo"><img style="width:80px; height:80px;" src="<%= this.ResolveClientUrl("~/images/otr/logo.png") %>" /></div>
-                <div >You has signed-in as "<%= this.UserName %>".</div>
+                <div id="header-logo"><img alt="logo" style="width:80px; height:80px;" src="<%= this.ResolveClientUrl("~/images/otr/logo.png") %>" /></div>
+                <div style="margin: 20px 0 0 100px">You has signed-in as "<%= this.UserName %>".</div>
                 <div id="header-button">
-                    <button type="button" class="btn btn-info" onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/logout.aspx") %>';">Sign-out</button>
+                    <button type="button" class="btn btn-info" onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/menu.aspx") %>';">Menu</button>
+                    <button type="button" class="btn btn-default" onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/logout.aspx") %>';">Sign-out</button>
                 </div>
             </div>
         </div>
@@ -51,7 +50,7 @@
             <div id="contents">
 
                 <!-- オートコンプリートを指定 -->
-                <form id="form1" runat="server" autocomplete="on">
+                <form id="form1" runat="server">
 
                     <asp:ScriptManager runat="server">
                         <Scripts>
@@ -78,12 +77,10 @@
                     <!--SampleCode：add-start-->
         
                     <!--SampleCode：Header（共通）-->
-                    <a href="<%= this.ResolveUrl("~/Aspx/start/menu.aspx") %>">メニュー画面</a>
-                    <br />
-        
                     <asp:Button ID="btnMPButton" runat="server" Text="マスタページ上の上のボタン" />
 
                     <!-- ユーザコントロール上のボタン -->
+                    <asp:Label ID="lblResult" runat="server" Text=""></asp:Label>
                     <uc1:sampleControl ID="sampleControl1" runat="server"/>
                     <uc1:sampleControl ID="sampleControl2" runat="server"/>
         
@@ -145,8 +142,31 @@
             </div>
         </div>
     </div>
+
+    <%: Scripts.Render("~/bundles/otr") %>
+    <%: Scripts.Render("~/bundles/app") %>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var sidemenu = $("#sidemenu");
+            var contents = $("#contents");
+
+            if (contents.height() >= sidemenu.height())
+            {
+                sidemenu.height(contents.height());
+            }
+            else
+            {
+                contents.height(sidemenu.height());
+            }
+        });
+
+    </script>
+
     <asp:ContentPlaceHolder ID="cphFooter" runat="server">
         This is footer area for define the scripts. -- Override on Page.
     </asp:ContentPlaceHolder>
+
 </body>
 </html>
