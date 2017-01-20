@@ -108,7 +108,13 @@ namespace Touryo.Infrastructure.Public.IO
 
             // 暗号化する（XP以降の場合のみ2項目にTrueを指定し、OAEPパディングを使用できる）
             byte[] temp = rsa.Encrypt(source, false);
+
+            // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
+            // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
+            rsa.PersistKeyInCsp = false;
+
             rsa.Clear(); // devps(1725)
+
             return temp;
         }
 
@@ -145,7 +151,13 @@ namespace Touryo.Infrastructure.Public.IO
 
             // 復号化（XP以降の場合のみ2項目にTrueを指定し、OAEPパディングを使用できる）
             byte[] temp = rsa.Decrypt(source, false);
+
+            // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
+            // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
+            rsa.PersistKeyInCsp = false;
+
             rsa.Clear(); // devps(1725)
+
             return temp;
         }
 
@@ -157,12 +169,17 @@ namespace Touryo.Infrastructure.Public.IO
         public static void GetKeys(out string publicKey, out string privateKey)
         {
             // RSACryptoServiceProviderオブジェクトの作成
-            RSA rsa = RSACryptoServiceProvider.Create(); // devps(1703)
+            RSACryptoServiceProvider rsa =
+                (RSACryptoServiceProvider)RSACryptoServiceProvider.Create();
 
             // 公開鍵をXML形式で取得
             publicKey = rsa.ToXmlString(false);
             // 秘密鍵をXML形式で取得
             privateKey = rsa.ToXmlString(true);
+
+            // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
+            // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
+            rsa.PersistKeyInCsp = false;
 
             rsa.Clear(); // devps(1725)
         }

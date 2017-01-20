@@ -63,6 +63,7 @@ namespace Touryo.Infrastructure.Public.Util.JWT
         public JWT_HS256(byte[] key)
         {
             this._key = key;
+            this.JWK = this.JWK.Replace("password", CustomEncode.ToBase64UrlString(key));
         }
 
         #endregion
@@ -85,9 +86,9 @@ namespace Touryo.Infrastructure.Public.Util.JWT
             var payloadEncoded = CustomEncode.ToBase64UrlString(payloadBytes);
 
             // 署名
-            byte[] temp = CustomEncode.StringToByte(headerEncoded + "." + payloadEncoded, CustomEncode.UTF_8);
+            byte[] data = CustomEncode.StringToByte(headerEncoded + "." + payloadEncoded, CustomEncode.UTF_8);
             HMACSHA256 sa = new HMACSHA256(this._key);
-            string signEncoded = CustomEncode.ToBase64UrlString(sa.ComputeHash(temp));
+            string signEncoded = CustomEncode.ToBase64UrlString(sa.ComputeHash(data));
 
             // return JWT by RS256
             return headerEncoded + "." + payloadEncoded + "." + signEncoded;
@@ -110,7 +111,9 @@ namespace Touryo.Infrastructure.Public.Util.JWT
                 byte[] sign = CustomEncode.FromBase64UrlString(temp[2]);
 
                 HMACSHA256 sa = new HMACSHA256(this._key);
-                return (sign == sa.ComputeHash(data));
+
+                return (CustomEncode.ToBase64UrlString(sign) 
+                    == CustomEncode.ToBase64UrlString(sa.ComputeHash(data)));
             }
             else
             {

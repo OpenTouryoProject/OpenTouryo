@@ -268,6 +268,48 @@ namespace Touryo.Infrastructure.Public.Util
         }
 
         #endregion
+        
+        #region MyDispose (派生の末端を呼ぶ)
+
+        /// <summary>MyDispose (派生の末端を呼ぶ)</summary>
+        /// <param name="isDisposing">isDisposing</param>
+        protected override void MyDispose(bool isDisposing)
+        {
+            if (this.IsDisposed)
+            {
+                // 後処理済み。
+                // 何もしない。
+            }
+            else
+            {
+                // 後処理。
+                if (isDisposing)
+                {
+                    // Dispose all owned managed objects
+                    if (this._aa is RSACryptoServiceProvider)
+                    {
+                        // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
+                        // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
+                        ((RSACryptoServiceProvider)this._aa).PersistKeyInCsp = false;
+                        this._aa.Clear();
+                    }
+                    else
+                    {
+                        // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
+                        // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
+                        ((DSACryptoServiceProvider)this._aa).PersistKeyInCsp = false;
+                        this._aa.Clear();
+                    }
+                }
+
+                // Release unmanaged resources
+                // 無し
+
+                this.IsDisposed = true;
+            }
+        }
+
+        #endregion
 
         #endregion
     }

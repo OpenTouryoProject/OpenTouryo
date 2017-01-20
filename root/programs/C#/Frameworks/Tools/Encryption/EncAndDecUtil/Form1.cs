@@ -577,16 +577,31 @@ namespace EncAndDecUtil
         /// <summary>JWT生成</summary>
         private void btnJWTSign_Click(object sender, EventArgs e)
         {
-            //JWT_HS256 jwtHS256 = null;
-            JWT_RS256 jwtRS256 = null;
-
             if (rbnJWTHS256.Checked)
             {
+                // HS256
+                string password = GetPassword.Generate(20, 10);
+                JWT_HS256 jwtHS256 = new JWT_HS256(CustomEncode.StringToByte(password, CustomEncode.UTF_8));
+
+                // 生成
+                string jwt = jwtHS256.Create(this.txtJWTPayload.Text);
+
+                // 出力
+                this.txtJWTKey.Text = password;
+                this.txtJWTJWK.Text = jwtHS256.JWK;
+                this.txtJWTSign.Text = jwt;
+
+                // 改竄可能なフィールドに出力
+                string[] temp = jwt.Split('.');
+                this.txtJWTHeader.Text = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8);
+                this.txtJWTPayload.Text = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(temp[1]), CustomEncode.UTF_8);
             }
             else
             {
-                // X509Cer
-                jwtRS256 = new JWT_RS256(new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, "SHA256"));
+                // RS256 (X509Cer)
+                JWT_RS256 jwtRS256 = new JWT_RS256(new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, "SHA256"));
 
                 // 生成
                 string jwt = jwtRS256.Create(this.txtJWTPayload.Text);
@@ -606,19 +621,13 @@ namespace EncAndDecUtil
         /// <summary>JWT検証</summary>
         private void btnJWTVerify_Click(object sender, EventArgs e)
         {
-            //JWT_HS256 jwtHS256 = null;
-            JWT_RS256 jwtRS256 = null;
 
             bool ret = false;
 
-
             if (rbnJWTHS256.Checked)
             {
-            }
-            else
-            {
-                // X509Cer
-
+                // HS256
+                
                 // 入力
                 string[] temp = this.txtJWTSign.Text.Split('.');
 
@@ -629,7 +638,24 @@ namespace EncAndDecUtil
                     + "." + temp[2];
 
                 // 検証
-                jwtRS256 = new JWT_RS256(new DigitalSignX509(this.CertificateFilePath_cer, "", "SHA256"));
+                JWT_HS256 jwtHS256 = new JWT_HS256(CustomEncode.StringToByte(this.txtJWTKey.Text, CustomEncode.UTF_8));
+                ret = jwtHS256.Verify(newJWT);
+            }
+            else
+            {
+                // RS256 (X509Cer)
+                
+                // 入力
+                string[] temp = this.txtJWTSign.Text.Split('.');
+
+                // 改変可能なフィールドから入力
+                string newJWT =
+                    CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTHeader.Text, CustomEncode.UTF_8))
+                    + "." + CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTPayload.Text, CustomEncode.UTF_8))
+                    + "." + temp[2];
+
+                // 検証
+                JWT_RS256 jwtRS256 = new JWT_RS256(new DigitalSignX509(this.CertificateFilePath_cer, "", "SHA256"));
                 ret = jwtRS256.Verify(newJWT);
             }
 

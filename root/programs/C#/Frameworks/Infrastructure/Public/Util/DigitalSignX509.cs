@@ -130,6 +130,7 @@ namespace Touryo.Infrastructure.Public.Util
                 RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(this._X509Certificate.PrivateKey.KeySize);
                 rsa.ImportParameters(rsaParam);
                 signedByte = rsa.SignData(data, this._hashAlgorithmName);
+
             }
             else
             {
@@ -194,5 +195,7 @@ namespace Touryo.Infrastructure.Public.Util
         }
 
         #endregion
+
+        // こちらは、MyDispose (派生の末端を呼ぶ) の実装は不要。
     }
 }

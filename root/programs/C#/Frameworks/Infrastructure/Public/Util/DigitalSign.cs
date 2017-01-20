@@ -79,7 +79,7 @@ namespace Touryo.Infrastructure.Public.Util
     /// <summary>
     /// DigitalSignクラス抽象クラス
     /// </summary>
-    public abstract class DigitalSign
+    public abstract class DigitalSign : IDisposable
     {   
         /// <summary>Sign</summary>
         /// <param name="data">data</param>
@@ -91,5 +91,32 @@ namespace Touryo.Infrastructure.Public.Util
         /// <param name="sign">署名</param>
         /// <returns>検証結果</returns>
         public abstract bool Verify(byte[] data, byte[] sign);
+
+        /// <summary>IsDisposed</summary>
+        protected bool IsDisposed = false;
+        
+        /// <summary>finalizer</summary>
+        ~DigitalSign()
+        {
+            this.MyDispose(false);
+        }
+
+        /// <summary>Close</summary>
+        public void Close()
+        {
+            this.Dispose();
+        }
+
+        /// <summary>Dispose</summary>
+        public void Dispose()
+        {
+            this.MyDispose(true);
+            // so that Dispose(false) isn't called later from finalizer.
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>MyDispose (派生の末端を呼ぶ)</summary>
+        /// <param name="disposing">disposing</param>
+        protected virtual void MyDispose(bool disposing) { }
     }
 }
