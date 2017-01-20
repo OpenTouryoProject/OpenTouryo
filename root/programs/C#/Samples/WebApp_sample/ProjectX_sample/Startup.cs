@@ -33,9 +33,12 @@ namespace ProjectX_sample
         public void Configuration(IAppBuilder app)
         {
             // アプリケーションの設定方法の詳細については、http://go.microsoft.com/fwlink/?LinkID=316888 を参照してください
-            
+
             // アプリケーションのスタートアップで実行するコードです
+
+            // URLルーティングの登録
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            // バンドル＆ミニフィケーションの登録
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
     }

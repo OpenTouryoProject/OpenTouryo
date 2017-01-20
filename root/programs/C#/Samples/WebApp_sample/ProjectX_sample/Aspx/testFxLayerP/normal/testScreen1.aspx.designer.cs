@@ -13,6 +13,15 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
     public partial class testScreen1 {
         
         /// <summary>
+        /// lblResult コントロール。
+        /// </summary>
+        /// <remarks>
+        /// 自動生成されたフィールド。
+        /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblResult;
+        
+        /// <summary>
         /// btnButton1 コントロール。
         /// </summary>
         /// <remarks>

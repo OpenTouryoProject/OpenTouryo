@@ -6,6 +6,7 @@
 </asp:Content>
 
 <asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+    <asp:Label ID="lblResult" runat="server" Text=""></asp:Label><br />
 
     <asp:GridView ID="gvwGridView1" runat="server" 
         AutoGenerateColumns="False" DataKeyNames="fileid"

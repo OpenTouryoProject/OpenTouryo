@@ -6,6 +6,8 @@
 </asp:Content>
 
 <asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+    <asp:Label ID="lblResult" runat="server" Text=""></asp:Label><br />
+
     コンテンツ ページ１（個別）<br />
     <table border="1">
         <tr>

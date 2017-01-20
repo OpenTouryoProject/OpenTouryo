@@ -6,6 +6,8 @@
 </asp:Content>
 
 <asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+    <asp:Label ID="lblResult" runat="server" Text=""></asp:Label><br />
+
     <asp:ListView ID="lvwListView1" runat="server" OnItemEditing="lvwListView1_ItemEditing"
         OnItemCanceling="lvwListView1_ItemCanceling" DataKeyNames="fileid">
         <LayoutTemplate>

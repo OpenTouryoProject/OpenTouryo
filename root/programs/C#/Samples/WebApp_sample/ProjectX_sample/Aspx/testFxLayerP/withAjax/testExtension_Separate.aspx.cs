@@ -57,6 +57,9 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
     /// <summary>AspnetAjaxのテスト画面（Ｐ層）</summary>
     public partial class testExtension_Separate : MyBaseController
     {
+        /// <summary>二重送信防止機能の確認用</summary>
+        private int SleepCnt = 5000;
+
         #region ページロードのUOCメソッド
 
         /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
@@ -85,7 +88,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
         protected string UOC_testAspNetAjaxExtension_Separate_btnMButton4_Click(FxEventArgs fxEventArgs)
         {
             // 待機する（UpdateProgress、二重送信確認用）
-            System.Threading.Thread.Sleep(3000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // テキストボックスの値を変更
             TextBox textBox = (TextBox)this.GetMasterWebControl("TextBox5");
@@ -101,7 +104,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
         protected string UOC_testAspNetAjaxExtension_Separate_btnMButton5_Click(FxEventArgs fxEventArgs)
         {
             // 待機する（二重送信確認用）
-            System.Threading.Thread.Sleep(3000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // テキストボックスの値を変更
             TextBox textBox = (TextBox)this.GetMasterWebControl("TextBox6");
@@ -118,7 +121,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
         protected string UOC_testAspNetAjaxExtension_Separate_ddlMDropDownList3_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {
             // 待機する（UpdateProgress、二重送信確認用）
-            System.Threading.Thread.Sleep(3000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // テキストボックスの値を変更
             TextBox textBox = (TextBox)this.GetMasterWebControl("TextBox7");
@@ -136,7 +139,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
         protected string UOC_testAspNetAjaxExtension_Separate_ddlMDropDownList4_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {
             // 待機する（二重送信確認用）
-            System.Threading.Thread.Sleep(3000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // テキストボックスの値を変更
             TextBox textBox = (TextBox)this.GetMasterWebControl("TextBox8");
@@ -151,7 +154,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
         protected string UOC_testAspNetAjaxExtension_Separate_btnMButton6_Click(FxEventArgs fxEventArgs)
         {
             // 待機する（二重送信確認用）
-            System.Threading.Thread.Sleep(3000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             throw new Exception("Ajaxでエラー");
 
@@ -173,7 +176,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
             FxEnum.AjaxExtStat ajaxES = this.AjaxExtensionStatus;
 
             // 待機する（UpdateProgress、二重送信確認用）
-            System.Threading.Thread.Sleep(3000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // テキストボックスの値を変更
             TextBox textBox = (TextBox)this.GetContentWebControl("TextBox1");
@@ -194,7 +197,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
             FxEnum.AjaxExtStat ajaxES = this.AjaxExtensionStatus;
 
             // 待機する（二重送信確認用）
-            System.Threading.Thread.Sleep(3000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // テキストボックスの値を変更
             TextBox textBox = (TextBox)this.GetContentWebControl("TextBox2");
@@ -216,7 +219,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
             FxEnum.AjaxExtStat ajaxES = this.AjaxExtensionStatus;
 
             // 待機する（UpdateProgress、二重送信確認用）
-            System.Threading.Thread.Sleep(3000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // テキストボックスの値を変更
             TextBox textBox = (TextBox)this.GetContentWebControl("TextBox3");
@@ -239,7 +242,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
             FxEnum.AjaxExtStat ajaxES = this.AjaxExtensionStatus;
 
             // 待機する（二重送信確認用）
-            System.Threading.Thread.Sleep(3000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // テキストボックスの値を変更
             TextBox textBox = (TextBox)this.GetContentWebControl("TextBox4");
@@ -259,7 +262,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
             FxEnum.AjaxExtStat ajaxES = this.AjaxExtensionStatus;
 
             // 待機する（UpdateProgress、二重送信確認用）
-            System.Threading.Thread.Sleep(3000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             throw new Exception("Ajaxでエラー");
 

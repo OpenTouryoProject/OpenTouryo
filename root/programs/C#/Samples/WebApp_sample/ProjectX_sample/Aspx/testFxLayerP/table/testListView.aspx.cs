@@ -97,9 +97,9 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
             // Radio Buttonの選択状態を出力
             if (Request.Form["radio-grp1"] != null)
             {
-                Response.Write(string.Format(
+                this.lblResult.Text = string.Format(
                         "name=\"radio-grp1\" value=\"{0}\"が選択されました。<br/>",
-                        Request.Form["radio-grp1"].ToString()));
+                        Request.Form["radio-grp1"].ToString());
             }
 
             int i = 0;
@@ -118,8 +118,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
                     // != null
                     if (rbn.Checked)
                     {
-                        Response.Write(string.Format(
-                            "name=\"radio-grp1\" value=\"{0}\"行目が選択されました。<br/>", i.ToString()));
+                        this.lblResult.Text = string.Format(
+                            "name=\"radio-grp1\" value=\"{0}\"行目が選択されました。<br/>", i.ToString());
                     }
                 }
             }

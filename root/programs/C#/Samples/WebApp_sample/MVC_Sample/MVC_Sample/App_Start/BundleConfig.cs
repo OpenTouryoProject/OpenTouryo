@@ -31,6 +31,20 @@ namespace MVC_Sample
         /// </summary>
         public static void RegisterBundles(BundleCollection bundles)
         {
+            //BundleTable.EnableOptimizations = true;
+            //BundleTable.Bundles.UseCdn = true; // same as: bundles.UseCdn = true;
+
+            // ( new ScriptBundle("~/XXXX") のパスは実在するpathと被るとRender時にバグる。
+            // なので、bundlesと実在しないpathを指定している（CSSも同じbundlesを使用する）。
+
+            bundles.Add(new ScriptBundle("~/bundles/app").Include(
+                        "~/Scripts/app/Site.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/otr").Include(
+                        "~/Scripts/otr/common.js",
+                        "~/Scripts/otr/ie_key_event.js",
+                        "~/Scripts/otr/else.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
 
@@ -38,18 +52,26 @@ namespace MVC_Sample
                         "~/Scripts/jquery-ui-{version}.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                        "~/Scripts/jquery.unobtrusive*",
                         "~/Scripts/jquery.validate*"));
 
-            // 開発と学習には、Modernizr の開発バージョンを使用します。次に、実稼働の準備が
-            // できたら、http://modernizr.com にあるビルド ツールを使用して、必要なテストのみを選択します。
+            bundles.Add(new ScriptBundle("~/bundles/jqueryuno").Include(
+                        "~/Scripts/jquery.unobtrusive"));
+
+            // 開発と学習には、Modernizr の開発バージョンを使用します。次に、実稼働の準備ができたら、
+            // http://modernizr.com にあるビルド ツールを使用して、必要なテストのみを選択します。
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-*"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include(
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
+                        "~/Scripts/bootstrap.js",
+                        "~/Scripts/respond.js"));
+
+            bundles.Add(new StyleBundle("~/bundles/css").Include(
+                        "~/Content/bootstrap.css",
                         "~/Content/themes/base/all.css",
-                        "~/Content/themes/base/jquery-ui.css"));
-            // http://rich.hrd.co.jp/asp-net-razor-jueryui%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9/
+                        "~/Content/themes/base/jquery-ui.css",
+                        "~/Content/otr/Style.css",
+                        "~/Content/app/Site.css"));
         }
     }
 }

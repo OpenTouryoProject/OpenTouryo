@@ -42,6 +42,8 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
+using Touryo.Infrastructure.Public.Util;
+
 namespace Touryo.Infrastructure.CustomControl
 {
     /// <summary>イメージボタン（Web）のカスタム・コントロール</summary>
@@ -60,7 +62,7 @@ namespace Touryo.Infrastructure.CustomControl
             // これはサンプル用に残した。
             this.Height = 50;
             this.Width = 50;
-            this.ImageUrl = "~/Framework/Img/image.JPG";
+            this.ImageUrl = GetConfigParameter.GetConfigValue("ImagePath");
         }
 
         #region HTML描画処理のカスタマイズ用テンプレート

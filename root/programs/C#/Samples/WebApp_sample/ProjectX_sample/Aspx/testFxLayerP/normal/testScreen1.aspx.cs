@@ -57,6 +57,9 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
     /// <summary>テスト画面１（Ｐ層）</summary>
     public partial class testScreen1 : MyBaseController
     {
+        /// <summary>二重送信防止機能の確認用</summary>
+        private int SleepCnt = 5000;
+
         #region ページロードのUOCメソッド
 
         /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
@@ -65,7 +68,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
         {
             // フォーム初期化（初回ロード）時に実行する処理を実装する
             // TODO:
-            Response.Write(this.ContentPageFileNoEx + "<br/>");
+            this.lblResult.Text = this.ContentPageFileNoEx + "<br/>";
 
             // QueryStringの通知
             string qs = "";
@@ -73,7 +76,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
             {
                 qs += qsKey + "=" + Request.QueryString[qsKey] + ";";
             }
-            Response.Write(qs);
+            this.lblResult.Text = qs;
         }
 
         /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
@@ -971,7 +974,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
         protected string UOC_btnButton23_Click(FxEventArgs fxEventArgs)
         {
             // ２重送信防止テスト
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // 確認用のカウンタ
             if (Session["cnt"] == null)
@@ -983,7 +986,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
                 Session["cnt"] = ((int)Session["cnt"]) + 1;
             }
 
-            Response.Write(Session["cnt"].ToString());
+            this.lblResult.Text = Session["cnt"].ToString();
 
             return "";
         }
@@ -996,7 +999,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
         protected string UOC_lbnLinkButton23_Click(FxEventArgs fxEventArgs)
         {
             // ２重送信防止テスト
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // 確認用のカウンタ
             if (Session["cnt"] == null)
@@ -1008,7 +1011,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
                 Session["cnt"] = ((int)Session["cnt"]) + 1;
             }
 
-            Response.Write(Session["cnt"].ToString());
+            this.lblResult.Text = Session["cnt"].ToString();
 
             return "";
         }
@@ -1021,7 +1024,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
         protected string UOC_ibnImageButton23_Click(FxEventArgs fxEventArgs)
         {
             // ２重送信防止テスト
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // 確認用のカウンタ
             if (Session["cnt"] == null)
@@ -1033,7 +1036,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
                 Session["cnt"] = ((int)Session["cnt"]) + 1;
             }
 
-            Response.Write(Session["cnt"].ToString());
+            this.lblResult.Text = Session["cnt"].ToString();
 
             return "";
         }
@@ -1046,7 +1049,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
         protected string UOC_impImageMap23_Click(FxEventArgs fxEventArgs)
         {
             // ２重送信防止テスト
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // 確認用のカウンタ
             if (Session["cnt"] == null)
@@ -1058,7 +1061,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
                 Session["cnt"] = ((int)Session["cnt"]) + 1;
             }
 
-            Response.Write(Session["cnt"].ToString());
+            this.lblResult.Text = Session["cnt"].ToString();
 
             return "";
         }
@@ -1253,9 +1256,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
             //こっちは、専用アプリケーションで開く
             Response.AppendHeader("Content-Disposition", "attachment;filename=test.pdf");
 
-            Response.WriteFile(
-                Path.Combine(
-                    GetConfigParameter.GetConfigValue("TestFilePath"), "test.pdf"));
+            this.lblResult.Text = Path.Combine(GetConfigParameter.GetConfigValue("TestFilePath"), "test.pdf");
 
             Response.End();
 
@@ -1277,9 +1278,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
             //こっちは、IEからOLEオブジェクトを開く
             Response.AppendHeader("Content-Disposition", "inline;filename=test.pdf");
 
-            Response.WriteFile(
-                Path.Combine(
-                    GetConfigParameter.GetConfigValue("TestFilePath"), "test.pdf"));
+            this.lblResult.Text = Path.Combine(GetConfigParameter.GetConfigValue("TestFilePath"), "test.pdf");
 
             Response.End();
 

@@ -54,31 +54,31 @@ function Fx_Document_OnLoad2() {
     // プログレス ダイアログの初期化
     Fx_InitProgressDialog();
 
-    // Webサーバへ一定時間ごとにpingを行う
+    //// Webサーバへ一定時間ごとにpingを行う
     //window.setInterval(HttpPing, 5 * 60 * 1000);
 
     // Cross-browser detection
     Fx_WhichBrowser();
 }
 
-//// ---------------------------------------------------------------
-//// セッションタイムアウトを防ぐため、Webサーバへ一定期間ごとにPINGを行う
-//// ---------------------------------------------------------------
-//// 引数    －
-//// 戻り値  －
-//// ---------------------------------------------------------------
-//function HttpPing() {
-//    $.ajax({
-//        type: 'GET',
-//        url: URL,
-//        contentType: "application/json; charset=utf-8",
-//        data: {},
-//        cache:false,
-//        dataType: "json",
-//        success: function () {},
-//        error: function () {}
-//    });
-//}
+// ---------------------------------------------------------------
+// セッションタイムアウトを防ぐため、Webサーバへ一定期間ごとにPINGを行う
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+function HttpPing() {
+    $.ajax({
+        type: 'GET',
+        url: ResolveServerUrl('~/Ping'),
+        contentType: "application/json; charset=utf-8",
+        data: {},
+        cache:false,
+        dataType: "json",
+        success: function () {},
+        error: function () {}
+    });
+}
 
 // ダウンロード処理の場合、ダイアログを表示しない。
 var IsDownload = false;
@@ -587,6 +587,19 @@ function Fx_getBrowserHeight() {
 function Fx_getContentsHeight() {
     // コンテンツ全体の高さを取得する
     return Math.max.apply(null, [document.body.clientHeight, document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight]);
+}
+
+// ---------------------------------------------------------------
+// Resolves the path of a specified url based on the application server
+// ---------------------------------------------------------------
+// Parameter     － Relative url
+// Return value  － Resolved relative url
+// ---------------------------------------------------------------
+function ResolveServerUrl(url) {
+    if (url.indexOf("~/") == 0) {
+        url = baseUrl +url.substring(2);
+}
+    return url;
 }
 
 // ---------------------------------------------------------------

@@ -6,7 +6,7 @@
 </asp:Content>
 
 <asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
-    <asp:Label ID="lblResult" runat="server" Text=""></asp:Label><br/>
+    <asp:Label ID="lblResult" runat="server" Text=""></asp:Label><br />
 
     データアクセス制御クラス（データプロバイダ）を選択<br />
     <cc1:WebCustomDropDownList ID="ddlDap" runat="server">

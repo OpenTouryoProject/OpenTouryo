@@ -49,7 +49,7 @@ namespace MVC_Sample
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "CrudMu", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "CrudMu1", action = "Index", id = UrlParameter.Optional }
             );
 
             routes.MapRoute(

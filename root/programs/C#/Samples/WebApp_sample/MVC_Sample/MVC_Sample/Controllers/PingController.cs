@@ -27,11 +27,9 @@ namespace MVC_Sample.Controllers
     /// </summary>
     public class PingController : Controller
     {
-        //
-        // GET: /Ping/
-
         /// <summary>
         /// 画面の初期表示
+        /// GET: /Ping/
         /// </summary>
         /// <returns>空の結果を返す (EmptyResult)</returns>
         [HttpGet]

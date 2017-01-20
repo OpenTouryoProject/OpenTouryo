@@ -51,7 +51,7 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace ProjectX_sample.Aspx.sample._3Tier
 {
-    /// <summary>三層データバインド・サンプル アプリ画面（詳細表示）</summary>
+    /// <summary>三層データバインド・詳細表示画面</summary>
     public partial class ProductsDetail : MyBaseController
     {
         #region ページロードのUOCメソッド

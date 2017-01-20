@@ -3,23 +3,58 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
-    @Styles.Render("~/Content/css")
-    @Styles.Render("~/Content/themes/base/css")
+    @Styles.Render("~/bundles/css")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/jqueryui")
-    <script src="~/Framework/Js/common.js"></script>
-    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-    @RenderSection("scripts", required: false)
+
+    @RenderSection("HeaderSection", required: true)
 
     <script type="text/javascript">
-        URL = '@Url.Action("Index", "Ping")';
+        // Resolve URL in the javascript
+        var baseUrl = '@Url.Content("~/")'
     </script>
 
 </head>
-<body onload="Fx_Document_OnLoad()">
-    @RenderBody()
+<body onload="Fx_Document_OnLoad();Fx_AdjustStyle();">
+
+    <div id="header-fixed">
+        <div id="header-bk">
+            <div id="header">
+                <div id="header-logo"><img alt="logo" style="width:80px; height:80px;" src="~/images/otr/logo.png" /></div>
+            </div>
+        </div>
+    </div>
+    <div id="body-bk">
+        <div id="body">
+            <div id="sidemenu">
+                <ul>
+                    <li>・・・</li>
+                </ul>
+            </div>
+            <div id="contents">
+
+                @RenderBody()
+
+            </div>
+        </div>
+    </div>
+    <div id="footer-fixed">
+        <div id="footer-bk">
+            <div id="footer">
+                Powered by <a target="_blank" href="https://github.com/OpenTouryoProject">OpenTouryo</a>.
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryuno")
+    @Scripts.Render("~/bundles/otr")
+    @Scripts.Render("~/bundles/app")
+
+    @RenderSection("FooterSection", required: true)
+
 </body>
 </html>
+

@@ -6,6 +6,8 @@
 </asp:Content>
 
 <asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+    <asp:Label ID="lblResult" runat="server" Text=""></asp:Label><br />
+
     <asp:Repeater id="rptRepeater1" runat="server">
         <HeaderTemplate>
             <table border="1" style="width:100%;">

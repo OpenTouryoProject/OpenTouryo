@@ -9,8 +9,9 @@
     <title>無題のページ</title>
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
+        <%: Scripts.Render("~/bundles/jquery") %>
     </asp:PlaceHolder>
-    <webopt:bundlereference runat="server" path="~/Content/css" />
+    <webopt:bundlereference runat="server" path="~/bundles/css" />
 
     <!-- Resolve URL in the javascript-->
     <script type="text/javascript">
@@ -36,7 +37,7 @@
             <%--ScriptManager のバンドル スクリプトの詳細については、http://go.microsoft.com/fwlink/?LinkID=301884 を参照してください --%>
             <%--Framework スクリプト--%>
             <asp:ScriptReference Name="MsAjaxBundle" />
-            <asp:ScriptReference Name="jquery" />
+            <%--<asp:ScriptReference Name="jquery" />--%>
             <asp:ScriptReference Name="bootstrap" />
             <asp:ScriptReference Name="respond" />
             <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />

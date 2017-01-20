@@ -63,7 +63,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
         {
             // フォーム初期化（初回ロード）時に実行する処理を実装する
             // TODO:
-            Response.Write(this.ContentPageFileNoEx + "<br/>");
+            this.lblResult.Text = this.ContentPageFileNoEx + "<br/>";
 
             // クライアントからの業務モーダル画面起動
             // スタイル指定なし

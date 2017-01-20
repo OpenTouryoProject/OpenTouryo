@@ -13,6 +13,15 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table {
     public partial class testRepeater {
         
         /// <summary>
+        /// lblResult コントロール。
+        /// </summary>
+        /// <remarks>
+        /// 自動生成されたフィールド。
+        /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblResult;
+        
+        /// <summary>
         /// rptRepeater1 コントロール。
         /// </summary>
         /// <remarks>

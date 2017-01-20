@@ -58,6 +58,9 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
     /// <summary>テスト画面１のネスト版（Ｐ層）</summary>
     public partial class testScreen1nest : MyBaseController
     {
+        /// <summary>二重送信防止機能の確認用</summary>
+        private int SleepCnt = 5000;
+
         #region ページロードのUOCメソッド
 
         /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
@@ -1090,7 +1093,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
         protected string UOC_btnButton23_Click(FxEventArgs fxEventArgs)
         {
             // ２重送信防止テスト
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // 確認用のカウンタ
             if (Session["cnt"] == null)
@@ -1115,7 +1118,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
         protected string UOC_lbnLinkButton23_Click(FxEventArgs fxEventArgs)
         {
             // ２重送信防止テスト
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // 確認用のカウンタ
             if (Session["cnt"] == null)
@@ -1140,7 +1143,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
         protected string UOC_ibnImageButton23_Click(FxEventArgs fxEventArgs)
         {
             // ２重送信防止テスト
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // 確認用のカウンタ
             if (Session["cnt"] == null)
@@ -1165,7 +1168,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
         protected string UOC_impImageMap23_Click(FxEventArgs fxEventArgs)
         {
             // ２重送信防止テスト
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // 確認用のカウンタ
             if (Session["cnt"] == null)

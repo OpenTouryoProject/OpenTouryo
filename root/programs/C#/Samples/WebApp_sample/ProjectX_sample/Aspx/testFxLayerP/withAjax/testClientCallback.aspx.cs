@@ -59,6 +59,9 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
     public partial class testClientCallback : MyBaseController,
         System.Web.UI.ICallbackEventHandler // 注意：System.Web.UI.ICallbackEventHandlerの実装のため必要になる。
     {
+        /// <summary>二重送信防止機能の確認用</summary>
+        private int SleepCnt = 5000;
+
         #region ページロードのUOCメソッド
 
         /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
@@ -148,7 +151,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
         string ICallbackEventHandler.GetCallbackResult()
         {
             //// テスト用スリープ
-            //System.Threading.Thread.Sleep(3000);
+            //System.Threading.Thread.Sleep(this.SleepCnt);
 
             // 処理結果を値を戻す。
             return this.CallbackResult;

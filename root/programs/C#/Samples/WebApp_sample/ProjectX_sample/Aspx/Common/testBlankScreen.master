@@ -8,8 +8,9 @@
     <title>無題のページ</title>
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
+        <%: Scripts.Render("~/bundles/jquery") %>
     </asp:PlaceHolder>
-    <webopt:bundlereference runat="server" path="~/Content/css" />
+    <webopt:bundlereference runat="server" path="~/bundles/css" />
 
     <!-- Resolve URL in the javascript-->
     <script type="text/javascript">
@@ -25,7 +26,7 @@
 </head>
 
 <!--FxCode：add-js-event-->
-<body onload="Fx_Document_OnLoad();" onunload="Fx_Document_OnClose();">
+<body onload="Fx_Document_OnLoad();Fx_AdjustStyle();" onunload="Fx_Document_OnClose();">
     
     <div id="header-fixed">
         <div id="header-bk">
@@ -57,7 +58,7 @@
                             <%--ScriptManager のバンドル スクリプトの詳細については、http://go.microsoft.com/fwlink/?LinkID=301884 を参照してください --%>
                             <%--Framework スクリプト--%>
                             <asp:ScriptReference Name="MsAjaxBundle" />
-                            <asp:ScriptReference Name="jquery" />
+                            <%--<asp:ScriptReference Name="jquery" />--%>
                             <asp:ScriptReference Name="jquery.ui.combined" />
                             <asp:ScriptReference Name="bootstrap" />
                             <asp:ScriptReference Name="respond" />
@@ -111,24 +112,6 @@
     
     <%: Scripts.Render("~/bundles/otr") %>
     <%: Scripts.Render("~/bundles/app") %>
-
-    <script type="text/javascript">
-
-        $(document).ready(function () {
-            var sidemenu = $("#sidemenu");
-            var contents = $("#contents");
-
-            if (contents.height() >= sidemenu.height())
-            {
-                sidemenu.height(contents.height());
-            }
-            else
-            {
-                contents.height(sidemenu.height());
-            }
-        });
-
-    </script>
 
     <asp:ContentPlaceHolder ID="cphFooter" runat="server">
         This is footer area for define the scripts. -- Override on Page.

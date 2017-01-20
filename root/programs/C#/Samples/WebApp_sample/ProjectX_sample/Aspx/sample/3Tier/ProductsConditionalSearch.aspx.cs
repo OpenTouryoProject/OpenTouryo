@@ -55,7 +55,7 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace ProjectX_sample.Aspx.sample._3Tier
 {
-    /// <summary>三層データバインド・サンプル アプリ画面（検索一覧表示）</summary>
+    /// <summary>三層データバインド・検索一覧表示画面</summary>
     public partial class ProductsConditionalSearch : MyBaseController
     {
         /// <summary>Page_InitイベントでASP.NET標準イベントハンドラを設定</summary>

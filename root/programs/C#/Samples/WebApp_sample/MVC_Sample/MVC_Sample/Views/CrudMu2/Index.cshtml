@@ -2,22 +2,30 @@
 @using Touryo.Infrastructure.Public.Util
 @{
     // ページタイトル
-    ViewBag.Title = "CRUDサンプル（Html.BeginForm）";
+    ViewBag.Title = "CRUDサンプル（Ajax.BeginForm）";
 
     // マスターページ
     Layout = "~/Views/Shared/_CrudSampleLayout.cshtml";
 }
 
+@* スクリプト・セクション（RenderSection("HeaderSection", required: true)に出力されます） *@
+@section HeaderSection{
+    <!-- Head 部の section -->
+}
+
 @* 本文レイアウト（RenderBodyに出力されます） *@
 @* Html.BeginFormは従来の全体方式、Ajax.BeginFormは部分更新方式（UpdateTargetIdの範囲を部分更新） *@
-@using (Html.BeginForm(null, "CrudMu2", FormMethod.Post, new { id = "form1" }))
+@using (Ajax.BeginForm(
+    null, null,
+    new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "messageResult" },
+    new { id = "form1" }))
 {
     <table style="width:100%; height:100%; border: none">
         <!-- データプロバイダ -->
         <tr>
             <td colspan="5">データアクセス制御クラス（データプロバイダ）を選択</td>
             <td colspan="5" rowspan="15" style="height: 100%">
-                <div id="chartResult" style="width: 100%; height: 100%;">@Html.Partial("_ChartView")</div>
+                <div id="chartResult" style="width: 100%; height: 100%;"></div>
             </td>
         </tr>
         <tr>
@@ -87,21 +95,21 @@
             <td colspan="2">ShipperID：</td>
             <td colspan="3">
                 @* HTMLヘルパー（Html.TextBoxメソッド → input type="text"タグを生成する） *@
-                @Html.TextBox("textBox1", Model.InputValues == null ? null : Model.InputValues["textBox1"], new { style = "width: 100%" })
+                @Html.TextBox("textBox1", null, new { style = "width: 100%" })
             </td>
         </tr>
         <tr>
             <td colspan="2">CompanyName：</td>
             <td colspan="3">
                 @* HTMLヘルパー（Html.TextBoxメソッド → input type="text"タグを生成する） *@
-                @Html.TextBox("textBox2", Model.InputValues == null ? null : Model.InputValues["textBox2"], new { style = "width: 100%" })
+                @Html.TextBox("textBox2", null, new { style = "width: 100%" })
             </td>
         </tr>
         <tr>
             <td colspan="2">Phone：</td>
             <td colspan="3">
                 @* HTMLヘルパー（Html.TextBoxメソッド → input type="text"タグを生成する） *@
-                @Html.TextBox("textBox3", Model.InputValues == null ? null : Model.InputValues["textBox3"], new { style = "width: 100%" })
+                @Html.TextBox("textBox3", null, new { style = "width: 100%" })
             </td>
         </tr>
 
@@ -112,7 +120,7 @@
                 @* HTMLヘルパー（Html.DropDownListメソッド → selectタグを生成する） *@
                 @Html.DropDownList("ddlOrderColumn", Model.DdlOrderColumnItems, new { style = "width: 100%" })
             </td>
-            <td colspan="5"><button id="button11" style="width: 100%">クリア</button></td>
+            <td colspan="5"><button id="button10" style="width: 100%">クリア</button></td>
         </tr>
 
         <!-- 昇順・降順 -->
@@ -162,14 +170,19 @@
     </table>
 }
 
-@* スクリプト・セクション（RenderSection("scripts", required: false)に出力されます） *@
-@section scripts{
-<script type="text/javascript">
+@* スクリプト・セクション（RenderSection("FooterSection", required: true)に出力されます） *@
+@section FooterSection{
 
+<script type="text/javascript">
     $(function () {
         $('#button1').click(function () {
             // button1 の場合は、GetCountのActionを実行しメッセージ部分を更新する
+            $('#form1').attr('data-ajax-update', '#messageResult');
             $('#form1').attr('action', '@Url.Action("GetCount")');
+
+            // If prevent double submission, then sets the flag to true.
+            PreventAjaxDoubleSubmit = true;
+
             $('#form1').submit();
 
             // サブミットが 2 回発生しないよう、false を返す
@@ -178,6 +191,7 @@
 
         $('#button2').click(function () {
             // button2 の場合は、SelectAll_DTのActionを実行し表部分を更新する
+            $('#form1').attr('data-ajax-update', '#chartResult');
             $('#form1').attr('action', '@Url.Action("SelectAll_DT")');
             $('#form1').submit();
 
@@ -187,6 +201,7 @@
 
         $('#button3').click(function () {
             // button3 の場合は、SelectAll_DSのActionを実行し表部分を更新する
+            $('#form1').attr('data-ajax-update', '#chartResult');
             $('#form1').attr('action', '@Url.Action("SelectAll_DS")');
             $('#form1').submit();
 
@@ -196,6 +211,7 @@
 
         $('#button4').click(function () {
             // button4 の場合は、SelectAll_DRのActionを実行し表部分を更新する
+            $('#form1').attr('data-ajax-update', '#chartResult');
             $('#form1').attr('action', '@Url.Action("SelectAll_DR")');
             $('#form1').submit();
 
@@ -205,48 +221,62 @@
 
         $('#button5').click(function () {
             // button5 の場合は、SelectAll_DSQLのActionを実行し表部分を更新する
+            $('#form1').attr('data-ajax-update', '#chartResult');
             $('#form1').attr('action', '@Url.Action("SelectAll_DSQL")');
             $('#form1').submit();
-
+            
             // サブミットが 2 回発生しないよう、false を返す
             return false;
         });
 
         $('#button6').click(function () {
             // button6 の場合は、SelectのActionを実行しメッセージ部分を更新する
+            $('#form1').attr('data-ajax-update', '#messageResult');
             $('#form1').attr('action', '@Url.Action("Select")');
             $('#form1').submit();
-
+            
             // サブミットが 2 回発生しないよう、false を返す
             return false;
         });
 
         $('#button7').click(function () {
             // button7 の場合は、InsertのActionを実行しメッセージ部分を更新する
+            $('#form1').attr('data-ajax-update', '#messageResult');
             $('#form1').attr('action', '@Url.Action("Insert")');
             $('#form1').submit();
-
+                        
             // サブミットが 2 回発生しないよう、false を返す
             return false;
         });
 
         $('#button8').click(function () {
             // button8 の場合は、UpdateのActionを実行しメッセージ部分を更新する
+            $('#form1').attr('data-ajax-update', '#messageResult');
             $('#form1').attr('action', '@Url.Action("Update")');
             $('#form1').submit();
-
+                        
             // サブミットが 2 回発生しないよう、false を返す
             return false;
         });
 
         $('#button9').click(function () {
             // button9 の場合は、DeleteのActionを実行しメッセージ部分を更新する
+            $('#form1').attr('data-ajax-update', '#messageResult');
             $('#form1').attr('action', '@Url.Action("Delete")');
             $('#form1').submit();
-
+                        
             // サブミットが 2 回発生しないよう、false を返す
             return false;
         });
+
+        $('#button10').click(function () {
+            // 結果をクリアする
+            $('#chartResult').html('');
+
+            // Form をサブミットしないよう、false を返す
+            return false;
+        });
+
 
         $('#button21').click(function () {
             // button21 の場合は、TransitionsのActionを実行し画面遷移する
@@ -260,16 +290,17 @@
         $('#button22').click(function () {
             // button22 の場合は、PreventDoubleSubmissionを実行し二重送信防止機能をテストする
             $('#form1').attr('action', '@Url.Action("PreventDoubleSubmission")');
-            $('#form1').submit();
 
-            // サブミットが 2 回発生しないよう、false を返す
-            return false;
-        });
+            // If prevent double submission, then sets the flag to true.
+            PreventAjaxDoubleSubmit = true;
 
-        // Html.BeginFormの時は二重送信防止機能を組込む為にこの実装を追記する。
-        $("form").live("submit", function () {
-            return Fx_OnSubmit();
-        });    
+             $('#form1').submit();
+
+             // サブミットが 2 回発生しないよう、false を返す
+             return false;
+         });
+
+        
     });
 </script>
 }
