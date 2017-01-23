@@ -199,13 +199,14 @@
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.ItemHeight = 12;
             this.comboBox1.Items.AddRange(new object[] {
-            "既定のプロバイダ",
-            "MD5CryptoServiceProvider",
-            "SHA1CryptoServiceProvider",
-            "SHA1Managed",
-            "SHA256Managed",
-            "SHA384Managed",
-            "SHA512Managed"});
+                "既定のプロバイダ",
+                "MD5CryptoServiceProvider",
+                "SHA1CryptoServiceProvider",
+                "SHA1Managed",
+                "SHA256Managed",
+                "SHA384Managed",
+                "SHA512Managed"
+            });
             this.comboBox1.Location = new System.Drawing.Point(8, 20);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(182, 20);
@@ -373,9 +374,15 @@
             this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox2.FormattingEnabled = true;
             this.comboBox2.Items.AddRange(new object[] {
-            "既定のプロバイダ",
-            "HMACSHA1",
-            "MACTripleDES"});
+                "既定のプロバイダ",
+                "HMACMD5",
+                "HMACRIPEMD160",
+                "HMACSHA1",
+                "HMACSHA256",
+                "HMACSHA384",
+                "HMACSHA512",
+                "MACTripleDES"
+            });
             this.comboBox2.Location = new System.Drawing.Point(8, 20);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(182, 20);
@@ -542,12 +549,12 @@
             this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox3.FormattingEnabled = true;
             this.comboBox3.Items.AddRange(new object[] {
-            "AesCryptoServiceProvider",
-            "AesManaged",
-            "DESCryptoServiceProvider",
-            "RC2CryptoServiceProvider",
-            "RijndaelManaged",
-            "TripleDESCryptoServiceProvider"});
+                "AesManaged",
+                "DESCryptoServiceProvider",
+                "RC2CryptoServiceProvider",
+                "RijndaelManaged",
+                "TripleDESCryptoServiceProvider"
+            });
             this.comboBox3.Location = new System.Drawing.Point(8, 20);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(182, 20);
@@ -744,10 +751,11 @@
             this.comboBox4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox4.FormattingEnabled = true;
             this.comboBox4.Items.AddRange(new object[] {
-            "DSACryptoServiceProvider",
-            "ECDiffieHellmanCng",
-            "ECDsaCng",
-            "RSACryptoServiceProvider"});
+                "RSACryptoServiceProvider",
+                "DSACryptoServiceProvider",
+                "ECDsaCng",
+                "ECDiffieHellmanCng"
+            });
             this.comboBox4.Location = new System.Drawing.Point(8, 20);
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(182, 20);
@@ -974,9 +982,21 @@
             this.comboBox5.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox5.FormattingEnabled = true;
             this.comboBox5.Items.AddRange(new object[] {
-            "DSACryptoServiceProvider - SHA1",
-            "RSACryptoServiceProvider - SHA1",
-            "RSACryptoServiceProvider - MD5"});
+                "RSACryptoServiceProvider:MD5",
+                "RSACryptoServiceProvider:SHA1",
+                "RSACryptoServiceProvider:SHA256",
+                "RSACryptoServiceProvider:SHA384",
+                "RSACryptoServiceProvider:SHA512",
+                "DSACryptoServiceProvider:MD5",
+                "DSACryptoServiceProvider:SHA1",
+                "DSACryptoServiceProvider:SHA256",
+                "ECDsaCng:P256",
+                "ECDsaCng:P384",
+                "ECDsaCng:P521",
+                "ECDiffieHellmanCng:P256",
+                "ECDiffieHellmanCng:P384",
+                "ECDiffieHellmanCng:P521"
+            });
             this.comboBox5.Location = new System.Drawing.Point(8, 20);
             this.comboBox5.Name = "comboBox5";
             this.comboBox5.Size = new System.Drawing.Size(182, 20);
