@@ -77,6 +77,8 @@ namespace Touryo.Infrastructure.Public.IO
     /// </remarks>
     public class ASymmetricCryptography
     {
+        #region Encrypt(publicKey)
+
         /// <summary>文字列を暗号化する</summary>
         /// <param name="sourceString">暗号化する文字列</param>
         /// <param name="publicKey">暗号化に使用する公開鍵</param>
@@ -100,15 +102,25 @@ namespace Touryo.Infrastructure.Public.IO
             // RSACryptoServiceProviderオブジェクトの作成
             RSACryptoServiceProvider rsa
                 = (RSACryptoServiceProvider)RSACryptoServiceProvider.Create(); // devps(1703)
-            
+
             // 公開鍵
             rsa.FromXmlString(publicKey);
 
-            // 暗号化する
+            // 暗号化する（XP以降の場合のみ2項目にTrueを指定し、OAEPパディングを使用できる）
             byte[] temp = rsa.Encrypt(source, false);
+
+            // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
+            // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
+            rsa.PersistKeyInCsp = false;
+
             rsa.Clear(); // devps(1725)
+
             return temp;
         }
+
+        #endregion
+
+        #region Decrypt(privateKey)
 
         /// <summary>暗号化された文字列を復号化する</summary>
         /// <param name="sourceString">暗号化された文字列</param>
@@ -131,17 +143,25 @@ namespace Touryo.Infrastructure.Public.IO
         public static byte[] DecryptBytes(byte[] source, string privateKey)
         {
             // RSACryptoServiceProviderオブジェクトの作成
-            RSACryptoServiceProvider rsa 
+            RSACryptoServiceProvider rsa
                 = (RSACryptoServiceProvider)RSACryptoServiceProvider.Create(); // devps(1703)
 
             // 秘密鍵
             rsa.FromXmlString(privateKey);
 
-            // 復号化
+            // 復号化（XP以降の場合のみ2項目にTrueを指定し、OAEPパディングを使用できる）
             byte[] temp = rsa.Decrypt(source, false);
+
+            // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
+            // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
+            rsa.PersistKeyInCsp = false;
+
             rsa.Clear(); // devps(1725)
+
             return temp;
         }
+
+        #endregion
 
         /// <summary>秘密鍵と公開鍵を取得する。</summary>
         /// <param name="publicKey">公開鍵</param>
@@ -149,12 +169,17 @@ namespace Touryo.Infrastructure.Public.IO
         public static void GetKeys(out string publicKey, out string privateKey)
         {
             // RSACryptoServiceProviderオブジェクトの作成
-            RSA rsa = RSACryptoServiceProvider.Create(); // devps(1703)
+            RSACryptoServiceProvider rsa =
+                (RSACryptoServiceProvider)RSACryptoServiceProvider.Create();
 
             // 公開鍵をXML形式で取得
             publicKey = rsa.ToXmlString(false);
             // 秘密鍵をXML形式で取得
             privateKey = rsa.ToXmlString(true);
+
+            // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
+            // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
+            rsa.PersistKeyInCsp = false;
 
             rsa.Clear(); // devps(1725)
         }

@@ -117,10 +117,17 @@
     <Compile Include="Db\BaseDam.cs" />
     <Compile Include="Db\DamSqlSvr.cs" />
     <Compile Include="Db\DbEnum.cs" />
+    <Compile Include="Util\DigitalSignX509.cs" />
+    <Compile Include="Util\DigitalSignXML.cs" />
+    <Compile Include="Util\DigitalSign.cs" />
     <Compile Include="Util\CustomMarshaler.cs" />
     <Compile Include="Util\GetHash.cs" />
     <Compile Include="Util\GetKeyedHash.cs" />
+    <Compile Include="Util\GetPassword.cs" />
     <Compile Include="Util\IdentityImpersonation.cs" />
+    <Compile Include="Util\JWT_HS256.cs" />
+    <Compile Include="Util\JWT_RS256.cs" />
+    <Compile Include="Util\JWT.cs" />
     <Compile Include="Util\ObjectInspector.cs" />
     <Compile Include="Util\PubCmnFunction.cs" />
     <Compile Include="Util\PublicExceptionMessage.cs" />

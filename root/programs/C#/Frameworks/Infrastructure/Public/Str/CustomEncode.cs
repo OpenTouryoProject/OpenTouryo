@@ -32,6 +32,7 @@
 //*  2013/02/12  西野  大介        ToHexString、FormHexStringを追加
 //*  2016/01/29  Sai               Modified the methods UrlEncode and UrlDecode and added method UrlEncode2
 //*  2016/02/05  西野  大介        Modified the method header comment of UrlEncode and UrlEncode2.
+//*  2017/01/10  西野  大介        ToBase64UrlString、FromBase64UrlStringを追加した。
 //**********************************************************************************
 
 // System
@@ -42,6 +43,7 @@ using System.Collections;
 using System.Data;
 
 using System.Web;
+//using Microsoft.Owin.Security.DataHandler.Encoder;
 
 namespace Touryo.Infrastructure.Public.Str
 {
@@ -1091,10 +1093,10 @@ namespace Touryo.Infrastructure.Public.Str
         }
 
 #pragma warning restore
-        
+
         #endregion
 
-        #region その他
+        #region Base64エンコード
 
         /// <summary>バイト配列をBase64文字列に変換</summary>
         /// <param name="aryByt">Base64文字列に変更するバイト配列</param>
@@ -1111,6 +1113,52 @@ namespace Touryo.Infrastructure.Public.Str
         {
             return Convert.FromBase64String(base64Str);
         }
+
+        // JSON Web Token (JWT)
+        // 13.  Appendix - Non-Normative - Notes on implementing base64url encoding without padding
+        // http://self-issued.info/docs/draft-goland-json-web-token-00.html#base64urlnotes
+
+        /// <summary>バイト配列をBase64Url文字列に変換</summary>
+        /// <param name="aryByt">Base64Url文字列に変更するバイト配列</param>
+        /// <returns>Base64Url文字列</returns>
+        public static string ToBase64UrlString(byte[] aryByt)
+        {
+            //Base64UrlTextEncoder encoder = new Base64UrlTextEncoder();
+            //return encoder.Encode(aryByt);
+
+            string s = Convert.ToBase64String(aryByt); // Standard base64 encoder
+            s = s.Split('=')[0]; // Remove any trailing '='s
+            s = s.Replace('+', '-'); // 62nd char of encoding
+            s = s.Replace('/', '_'); // 63rd char of encoding
+            return s;
+        }
+
+        /// <summary>Base64Url文字列をバイト配列に変換</summary>
+        /// <param name="base64UrlStr">バイト配列に変換するBase64Url文字列</param>
+        /// <returns>バイト配列</returns>
+        public static byte[] FromBase64UrlString(string base64UrlStr)
+        {
+            //Base64UrlTextEncoder encoder = new Base64UrlTextEncoder();
+            //return encoder.Decode(base64Str);
+
+            string s = base64UrlStr;
+            s = s.Replace('-', '+'); // 62nd char of encoding
+            s = s.Replace('_', '/'); // 63rd char of encoding
+            switch (s.Length % 4) // Pad with trailing '='s
+            {
+                case 0: break; // No pad chars in this case
+                case 2: s += "=="; break; // Two pad chars
+                case 3: s += "="; break; // One pad char
+                default:
+                    throw new System.Exception(
+             "Illegal base64url string!");
+            }
+            return Convert.FromBase64String(s); // Standard base64 decoder
+        }
+
+        #endregion
+
+        #region その他エンコード
 
         /// <summary>バイト配列をHex文字列に変換</summary>
         /// <param name="bytes">Hex文字列に変換するバイト配列</param>
