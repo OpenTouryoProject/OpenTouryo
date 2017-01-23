@@ -52,10 +52,11 @@ namespace MVC_Sample
                         "~/Scripts/jquery-ui-{version}.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                        "~/Scripts/jquery.validate*"));
+                        "~/Scripts/jquery.validate.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryuno").Include(
-                        "~/Scripts/jquery.unobtrusive"));
+                        "~/Scripts/jquery.unobtrusive-ajax.js",
+                        "~/Scripts/jquery.validate.unobtrusive.js"));
 
             // 開発と学習には、Modernizr の開発バージョンを使用します。次に、実稼働の準備ができたら、
             // http://modernizr.com にあるビルド ツールを使用して、必要なテストのみを選択します。

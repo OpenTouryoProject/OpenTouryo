@@ -111,7 +111,7 @@ namespace ProjectX_sample.Aspx.Start
         {
             // ここで、入力されたユーザIDと、パスワードをチェックし、ユーザ認証する。
 
-            if (this.txtUserID.Text != "")  // 現時点では、全て(空文字以外)認証する。
+            if (!string.IsNullOrEmpty(this.txtUserID.Text))  // 現時点では、全て(空文字以外)認証する。
             {
                 // 認証か完了した場合、認証チケットを生成し、元のページにRedirectする。
                 // 第２引数は、「クライアントがCookieを永続化（ファイルとして保存）するかどうか。」
@@ -121,9 +121,6 @@ namespace ProjectX_sample.Aspx.Start
                 // 認証情報を保存する。
                 MyUserInfo ui = new MyUserInfo(this.txtUserID.Text, Request.UserHostAddress);
                 UserInfoHandle.SetUserInformation(ui);
-
-                // 認証Sessionの場合のテスト
-                Session["test"] = "test";
             }
             else
             {

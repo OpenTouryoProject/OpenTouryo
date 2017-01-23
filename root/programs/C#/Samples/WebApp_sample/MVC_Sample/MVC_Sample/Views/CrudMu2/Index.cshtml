@@ -1,11 +1,13 @@
-﻿@model MVC_Sample.Models.CrudModel
+﻿@using MVC_Sample.Models.ViewModels
 @using Touryo.Infrastructure.Public.Util
+@model CrudModel
+
 @{
     // ページタイトル
     ViewBag.Title = "CRUDサンプル（Ajax.BeginForm）";
 
     // マスターページ
-    Layout = "~/Views/Shared/_CrudSampleLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @* スクリプト・セクション（RenderSection("HeaderSection", required: true)に出力されます） *@
@@ -162,7 +164,7 @@
             <td colspan="10"><label id="lblErrorMessage"></label></td>
         </tr>
         <tr>
-            <td colspan="10"><button id="button21" style="width: 100%">（ポスト後）画面遷移（リダイレクト）</button></td>
+            <td colspan="10"><button id="button21" style="width: 100%">画面遷移（ポストバック後リダイレクト）</button></td>
         </tr>
         <tr>
             <td colspan="10"><button id="button22" style="width: 100%">二重送信防止</button></td>

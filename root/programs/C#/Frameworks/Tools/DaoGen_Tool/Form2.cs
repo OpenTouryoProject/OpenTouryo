@@ -715,7 +715,7 @@ namespace DaoGen_Tool
         private bool CreateMaintenanceScreen = false;
 
         // .NET型情報ファイルのパス
-        private bool ReadDotNetTypeInfo = false;
+        //private bool ReadDotNetTypeInfo = false;
         // .NET型情報ファイルのパス
         private string DotNetTypeInfoFilePath = "";
 

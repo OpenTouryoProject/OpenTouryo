@@ -1,0 +1,39 @@
+﻿@using MVC_Sample.Models.ViewModels
+@model LoginViewModel
+@{
+    ViewBag.Title = "Sign-in";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Sign-in</h2>
+
+@* スクリプト・セクション（RenderSection("HeaderSection", required: true)に出力されます） *@
+@section HeaderSection{
+    <!-- Head 部の section -->
+}
+
+@Html.ValidationSummary()
+
+@using (@Html.BeginForm())
+{
+    <table>
+        <tr>
+            <th>ユーザーID</th>
+            <td>@Html.TextBoxFor(model => model.UserName)</td>
+        </tr>
+        <tr>
+            <th>パスワード</th>
+            <td>@Html.PasswordFor(model => model.Passwowd)</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:right;">
+                <input type="submit" value="ログイン" />
+            <td>
+        </tr>
+    </table>
+}
+
+@* スクリプト・セクション（RenderSection("FooterSection", required: true)に出力されます） *@
+@section FooterSection{
+    <!-- Footer 部の section -->
+}

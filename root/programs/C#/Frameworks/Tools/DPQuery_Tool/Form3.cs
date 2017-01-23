@@ -116,7 +116,7 @@ namespace DPQuery_Tool
         /// <summary>囲い文字のない カラム リスト（置換対象）</summary>
         private string RpAllColumnList = "";
         /// <summary>囲い文字のない カラム リスト（置換文字列）</summary>
-        private string AllColumnList = "";
+        //private string AllColumnList = "";
 
         /// <summary>囲い文字のない PKカラム リスト（置換対象）</summary>
         private string RpPKColumnList = "";

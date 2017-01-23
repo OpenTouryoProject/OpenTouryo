@@ -1,0 +1,29 @@
+﻿@using MVC_Sample.Models.ViewModels
+@model LoginViewModel
+@{
+    ViewBag.Title = "Menu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@* スクリプト・セクション（RenderSection("HeaderSection", required: true)に出力されます） *@
+@section HeaderSection{
+    <!-- Head 部の section -->
+}
+
+<h2>Menu</h2>
+
+<ul>
+    <li>
+        サンプル
+        <ul>
+            <li>@Html.ActionLink("メニュー", "Index", "Home")</li>
+            <li>@Html.ActionLink("Crudテスト（Html.BeginForm）", "Index", "CrudMu1")</li>
+            <li>@Html.ActionLink("Crudテスト（Ajax.BeginForm）", "Index", "CrudMu2")</li>
+        </ul>
+    </li>
+</ul>
+
+@* スクリプト・セクション（RenderSection("FooterSection", required: true)に出力されます） *@
+@section FooterSection{
+       <!-- Footer 部の section -->
+}

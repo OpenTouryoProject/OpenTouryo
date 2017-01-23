@@ -26,12 +26,12 @@ using System.Collections.Generic;
 // DataSet をインポート
 using MVC_Sample.DataSets;
 
-namespace MVC_Sample.Models
+namespace MVC_Sample.Models.ViewModels
 {
     /// <summary>
     /// サンプル アプリ・モデル
     /// </summary>
-    public class CrudModel
+    public class CrudModel : BaseViewModel
     {
         /// <summary>shippersテーブル</summary>
         public DsNorthwind.ShippersDataTable shippers { get; set; }

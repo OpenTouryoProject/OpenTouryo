@@ -31,15 +31,18 @@
 //*  2015/08/31  Supragyan        Modified OnException method to display error message on Error screen
 //*  2015/09/03  Supragyan        Modified ExceptionType,Session,RedireResult on OnException method 
 //*  2015/10/27  Sai              Moved the code of SessionTimeout from OnActionExecuting method to BaseMVController class.  
-//*  2015/10/30  Sai              Added else part to the filterContext If statement in OnException method to resolve the exception occurs
-//*                               in the redirection method in the child action as per the comments in Github.  
-//*  2015/11/03  Sai              Implemeted performance measurement in the methods OnActionExecuting, OnActionExecuted, OnResultExecuting
-//*                               and OnResultExecuted     
+//*  2015/10/30  Sai              Added else part to the filterContext If statement in OnException method to resolve
+//*                               the exception occurs in the redirection method in the child action as per the comments in Github.  
+//*  2015/11/03  Sai              Implemeted performance measurement in the methods
+//*                               OnActionExecuting, OnActionExecuted, OnResultExecuting and OnResultExecuted
+//*  2017/01/23  西野  大介       UserInfoプロパティとGetUserInfoメソッドを追加した。
 //**********************************************************************************
 
 // System
-// System.Web
+using System.Web;
 using System.Web.Mvc;
+
+using Touryo.Infrastructure.Business.Util;
 // フレームワーク
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Presentation;
@@ -47,6 +50,26 @@ using Touryo.Infrastructure.Framework.Util;
 // 部品
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
+
+#region イベント実行順
+// お楽しみはこれからだ！: イベントの実行順が面白くて
+// http://takepara.blogspot.jp/2008/08/blog-post.html
+//
+// before Execute
+//
+// - OnAuthorization
+//
+// - OnActionExecuting
+// -- Index action execute ← ここでアクション実行
+// -- View
+// - OnActionExecuted
+//
+// - OnResultExecuting
+// -- page rendering ← ここでレンダリング
+// - OnResultExecuted
+//
+// after Execute
+#endregion
 
 namespace Touryo.Infrastructure.Business.Presentation
 {
@@ -56,6 +79,69 @@ namespace Touryo.Infrastructure.Business.Presentation
     {
         /// <summary>性能測定</summary>
         private PerformanceRecorder perfRec;
+
+        /// <summary>ユーザ情報</summary>
+        /// <remarks>画面コード親クラス２、画面コード クラスから利用する。</remarks>
+        protected MyUserInfo UserInfo;
+
+        #region OnAction
+
+        /// <summary>
+        /// アクション メソッドの呼び出し前に呼び出されます。  
+        /// Controller.OnActionExecuting メソッド (System.Web.Mvc)
+        /// http://msdn.microsoft.com/ja-jp/library/system.web.mvc.controller.onactionexecuting.aspx
+        /// </summary>
+        /// <param name="filterContext">
+        /// 型: System.Web.Mvc.ActionExecutingContext
+        /// 現在の要求およびアクションに関する情報。
+        /// </param>
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            // 認証情報のロード
+            this.GetUserInfo();
+
+            // 性能測定開始
+            this.perfRec = new PerformanceRecorder();
+            this.perfRec.StartsPerformanceRecord();
+
+            // Calling base class method.
+            base.OnActionExecuting(filterContext);
+
+            // Logging.
+
+            string strLogMessage = ", -" + "," + Request.UserHostAddress + "," + "<-----" + "," + filterContext.Controller.ToString() +
+                                   "," + filterContext.ActionDescriptor.ActionName + "," + "OnActionExecuting" + "," + perfRec.ExecTime +
+                                   "," + perfRec.CpuTime;
+
+            LogIF.InfoLog("ACCESS", strLogMessage);
+
+        }
+
+        /// <summary>
+        /// アクション メソッドの呼び出し後に呼び出されます。
+        /// Controller.OnActionExecuted メソッド (System.Web.Mvc)
+        /// http://msdn.microsoft.com/ja-jp/library/system.web.mvc.controller.onactionexecuted.aspx
+        /// </summary>
+        /// <param name="filterContext">
+        /// 型: System.Web.Mvc.ActionExecutedContext
+        /// 現在の要求およびアクションに関する情報。
+        /// </param>
+        protected override void OnActionExecuted(ActionExecutedContext filterContext)
+        {
+            // Calling base class method.
+            base.OnActionExecuted(filterContext);
+
+            // 性能測定終了
+            this.perfRec.EndsPerformanceRecord();
+
+            string strLogMessage = ", -" + "," + Request.UserHostAddress + "," + "<-----" + "," + filterContext.Controller.ToString() +
+                                   "," + filterContext.ActionDescriptor.ActionName + "," + "OnActionExecuted" + "," + perfRec.ExecTime +
+                                   "," + perfRec.CpuTime;
+
+            LogIF.InfoLog("ACCESS", strLogMessage);
+        }
+
+        #region View
 
         /// <summary>
         /// 応答にビューを表示する ViewResult オブジェクトを作成します。
@@ -90,56 +176,11 @@ namespace Touryo.Infrastructure.Business.Presentation
             return base.View(viewName, masterName, model);
         }
 
-        /// <summary>
-        /// アクション メソッドの呼び出し前に呼び出されます。  
-        /// Controller.OnActionExecuting メソッド (System.Web.Mvc)
-        /// http://msdn.microsoft.com/ja-jp/library/system.web.mvc.controller.onactionexecuting.aspx
-        /// </summary>
-        /// <param name="filterContext">
-        /// 型: System.Web.Mvc.ActionExecutingContext
-        /// 現在の要求およびアクションに関する情報。
-        /// </param>
-        protected override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            // 性能測定開始
-            this.perfRec = new PerformanceRecorder();
-            this.perfRec.StartsPerformanceRecord();
+        #endregion
 
-            // Calling base class method.
-            base.OnActionExecuting(filterContext);
+        #endregion
 
-            // Logging.
-
-            string strLogMessage = ", -" + "," + Request.UserHostAddress + "," + "<-----" + "," + filterContext.Controller.ToString() +
-                                   "," + filterContext.ActionDescriptor.ActionName + "," + "OnActionExecuting" + "," + perfRec.ExecTime +
-                                   "," + perfRec.CpuTime;
-
-            LogIF.InfoLog("ACCESS", strLogMessage);
-        }
-
-        /// <summary>
-        /// アクション メソッドの呼び出し後に呼び出されます。
-        /// Controller.OnActionExecuted メソッド (System.Web.Mvc)
-        /// http://msdn.microsoft.com/ja-jp/library/system.web.mvc.controller.onactionexecuted.aspx
-        /// </summary>
-        /// <param name="filterContext">
-        /// 型: System.Web.Mvc.ActionExecutedContext
-        /// 現在の要求およびアクションに関する情報。
-        /// </param>
-        protected override void OnActionExecuted(ActionExecutedContext filterContext)
-        {
-            // Calling base class method.
-            base.OnActionExecuted(filterContext);
-
-            // 性能測定終了
-            this.perfRec.EndsPerformanceRecord();
-
-            string strLogMessage = ", -" + "," + Request.UserHostAddress + "," + "<-----" + "," + filterContext.Controller.ToString() +
-                                   "," + filterContext.ActionDescriptor.ActionName + "," + "OnActionExecuted" + "," + perfRec.ExecTime +
-                                   "," + perfRec.CpuTime;
-
-            LogIF.InfoLog("ACCESS", strLogMessage);
-        }
+        #region OnException
 
         /// <summary>アクションでハンドルされない例外が発生したときに呼び出されます。</summary>
         /// <param name="filterContext">
@@ -253,6 +294,10 @@ namespace Touryo.Infrastructure.Business.Presentation
             LogIF.ErrorLog("ACCESS", strLogMessage);
         }
 
+        #endregion
+
+        #region OnResult
+
         /// <summary>
         /// アクション メソッドによって返されたアクション結果が実行される前に呼び出されます。  
         /// Controller.OnResultExecuting メソッド (System.Web.Mvc)
@@ -315,6 +360,50 @@ namespace Touryo.Infrastructure.Business.Presentation
                                    "," + perfRec.CpuTime;
 
             LogIF.InfoLog("ACCESS", strLogMessage);
+        }
+
+        #endregion
+
+        /// <summary>ユーザ情報を取得する</summary>
+        /// <remarks>他から呼び出し可能に変更（static）</remarks>
+        protected void GetUserInfo()
+        {
+            // セッションステートレス対応
+            if (this.HttpContext.Session == null)
+            {
+                // SessionがOFFの場合
+            }
+            else
+            {
+                // 取得を試みる。
+                this.UserInfo = (MyUserInfo)UserInfoHandle.GetUserInformation();
+            }
+
+            // nullチェック
+            if (this.UserInfo == null)
+            {
+                // nullの場合、仮の値を生成 / 設定する。
+                string userName = System.Threading.Thread.CurrentPrincipal.Identity.Name;
+
+                if (userName == null || userName == "")
+                {
+                    // 未認証状態
+                    this.UserInfo = new MyUserInfo("未認証", this.HttpContext.Request.UserHostAddress);
+                }
+                else
+                {
+                    // 認証状態
+                    this.UserInfo = new MyUserInfo(userName, this.HttpContext.Request.UserHostAddress);
+                    // 必要に応じて認証チケットの
+                    // ユーザ名からユーザ情報を復元する。
+                }
+            }
+            else
+            {
+                // nullで無い場合、取得した値を設定する。
+            }
+
+            // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
         }
     }
 }
