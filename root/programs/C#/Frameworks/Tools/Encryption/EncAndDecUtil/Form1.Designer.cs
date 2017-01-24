@@ -146,12 +146,12 @@
             this.lblJWT1 = new System.Windows.Forms.Label();
             this.txtJWTPayload = new System.Windows.Forms.TextBox();
             this.gbxJWT = new System.Windows.Forms.GroupBox();
+            this.txtJWTJWK = new System.Windows.Forms.TextBox();
+            this.txtJWTKey = new System.Windows.Forms.TextBox();
             this.rbnJWTRS256 = new System.Windows.Forms.RadioButton();
             this.rbnJWTHS256 = new System.Windows.Forms.RadioButton();
             this.btnJWTVerify = new System.Windows.Forms.Button();
             this.btnJWTSign = new System.Windows.Forms.Button();
-            this.txtJWTKey = new System.Windows.Forms.TextBox();
-            this.txtJWTJWK = new System.Windows.Forms.TextBox();
             this.btnSPWDAuth2.SuspendLayout();
             this.tabHash.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHSStretching)).BeginInit();
@@ -709,9 +709,9 @@
             this.lblSPWD23.AutoSize = true;
             this.lblSPWD23.Location = new System.Drawing.Point(10, 63);
             this.lblSPWD23.Name = "lblSPWD23";
-            this.lblSPWD23.Size = new System.Drawing.Size(93, 12);
+            this.lblSPWD23.Size = new System.Drawing.Size(25, 12);
             this.lblSPWD23.TabIndex = 55;
-            this.lblSPWD23.Text = "キー（システム共通";
+            this.lblSPWD23.Text = "キー";
             // 
             // txtSPWDKey2
             // 
@@ -759,7 +759,7 @@
             this.button1.TabIndex = 51;
             this.button1.Text = "認証";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            this.button1.Click += new System.EventHandler(this.btnSPWDAuth2_Click);
             // 
             // lblSPWD26
             // 
@@ -1421,6 +1421,22 @@
             this.gbxJWT.TabStop = false;
             this.gbxJWT.Text = "API選択";
             // 
+            // txtJWTJWK
+            // 
+            this.txtJWTJWK.Location = new System.Drawing.Point(130, 38);
+            this.txtJWTJWK.Name = "txtJWTJWK";
+            this.txtJWTJWK.ReadOnly = true;
+            this.txtJWTJWK.Size = new System.Drawing.Size(170, 19);
+            this.txtJWTJWK.TabIndex = 3;
+            // 
+            // txtJWTKey
+            // 
+            this.txtJWTKey.Location = new System.Drawing.Point(130, 13);
+            this.txtJWTKey.Name = "txtJWTKey";
+            this.txtJWTKey.ReadOnly = true;
+            this.txtJWTKey.Size = new System.Drawing.Size(170, 19);
+            this.txtJWTKey.TabIndex = 2;
+            // 
             // rbnJWTRS256
             // 
             this.rbnJWTRS256.AutoSize = true;
@@ -1462,22 +1478,6 @@
             this.btnJWTSign.Text = "署名";
             this.btnJWTSign.UseVisualStyleBackColor = true;
             this.btnJWTSign.Click += new System.EventHandler(this.btnJWTSign_Click);
-            // 
-            // txtJWTKey
-            // 
-            this.txtJWTKey.Location = new System.Drawing.Point(130, 13);
-            this.txtJWTKey.Name = "txtJWTKey";
-            this.txtJWTKey.ReadOnly = true;
-            this.txtJWTKey.Size = new System.Drawing.Size(170, 19);
-            this.txtJWTKey.TabIndex = 2;
-            // 
-            // txtJWTJWK
-            // 
-            this.txtJWTJWK.Location = new System.Drawing.Point(130, 38);
-            this.txtJWTJWK.Name = "txtJWTJWK";
-            this.txtJWTJWK.ReadOnly = true;
-            this.txtJWTJWK.Size = new System.Drawing.Size(170, 19);
-            this.txtJWTJWK.TabIndex = 3;
             // 
             // Form1
             // 

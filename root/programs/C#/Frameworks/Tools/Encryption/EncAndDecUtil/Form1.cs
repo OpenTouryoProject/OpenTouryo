@@ -218,13 +218,13 @@ namespace EncAndDecUtil
                 this.txtSPWDKey2.Text, (int)this.nudSPWDSaltLength2.Value, (int)this.nudSPWDStretchCount2.Value);
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
+        private void btnSPWDAuth2_Click(object sender, EventArgs e)
         {
             // パラメタ系は渡さないで検証可能
             if (GetKeyedHash.EqualSaltedPassword(
                 this.txtSPWDRawPassword2.Text,
                 this.txtSPWDSaltedPassword2.Text,
-                (EnumKeyedHashAlgorithm)this.cbxSPWDPV2.SelectedValue, this.txtSPWDKey2.Text))
+                (EnumKeyedHashAlgorithm)this.cbxSPWDPV2.SelectedValue))
             {
                 MessageBox.Show("認証成功");
             }
@@ -668,8 +668,7 @@ namespace EncAndDecUtil
                 MessageBox.Show("検証失敗");
             }
         }
-        
-        #endregion
 
+        #endregion
     }
 }

@@ -131,7 +131,6 @@ namespace Touryo.Infrastructure.Public.Util
                 CustomEncode.ToBase64String(CustomEncode.StringToByte(salt, CustomEncode.UTF_8))
                 + "." + CustomEncode.ToBase64String(CustomEncode.StringToByte(stretchCount.ToString(), CustomEncode.UTF_8))
                 + "." + CustomEncode.ToBase64String(CustomEncode.StringToByte(GetHash.GetHashString(salt + rawPassword, eha, stretchCount), CustomEncode.UTF_8));
-            // バイト配列仕様は、フィールドが文字列の可能性が高いので辞めた。
         }
 
         /// <summary>パスワードを比較して認証する。</summary>

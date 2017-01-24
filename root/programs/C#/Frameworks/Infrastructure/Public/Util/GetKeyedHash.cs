@@ -145,7 +145,7 @@ namespace Touryo.Infrastructure.Public.Util
         /// </summary>
         /// <param name="rawPassword">Password entered by the user.</param>
         /// <param name="ekha">ハッシュ・アルゴリズム列挙型</param>
-        /// <param name="key">キー（システム共通）</param>
+        /// <param name="key">キー</param>
         /// <param name="saltLength">ソルトの文字列長</param>
         /// <param name="stretchCount">ストレッチ回数</param>
         /// <returns>Salted and hashed password.</returns>
@@ -157,30 +157,30 @@ namespace Touryo.Infrastructure.Public.Util
 
             // Salted and hashed password（文字列）を生成して返す。
             return
-                CustomEncode.ToBase64String(saltByte)
+                CustomEncode.ToBase64String(CustomEncode.StringToByte(key, CustomEncode.UTF_8))
+                + "." + CustomEncode.ToBase64String(saltByte)
                 + "." + CustomEncode.ToBase64String(CustomEncode.StringToByte(stretchCount.ToString(), CustomEncode.UTF_8))
                 + "." + CustomEncode.ToBase64String(CustomEncode.StringToByte(
                     GetKeyedHash.GetKeyedHashString(salt + rawPassword, ekha, key, saltByte, stretchCount), CustomEncode.UTF_8));
-            // バイト配列仕様は、フィールドが文字列の可能性が高いので辞めた。
         }
 
         /// <summary>パスワードを比較して認証する。</summary>
         /// <param name="rawPassword">Password entered by the user.</param>
         /// <param name="saltedPassword">Salted and hashed password.</param>
         /// <param name="ekha">ハッシュ・アルゴリズム列挙型</param>
-        /// <param name="key">キー（システム共通）</param>
         /// <returns>
         /// true：パスワードは一致した。
         /// false：パスワードは一致しない。
         /// </returns>
-        public static bool EqualSaltedPassword(string rawPassword, string saltedPassword, EnumKeyedHashAlgorithm ekha, string key)
+        public static bool EqualSaltedPassword(string rawPassword, string saltedPassword, EnumKeyedHashAlgorithm ekha)
         {
             // ソルト部分を取得
             string[] temp = saltedPassword.Split('.');
-            byte[] saltByte = CustomEncode.FromBase64String(temp[0]);
+            string key = CustomEncode.ByteToString(CustomEncode.FromBase64String(temp[0]), CustomEncode.UTF_8);
+            byte[] saltByte = CustomEncode.FromBase64String(temp[1]);
             string salt = CustomEncode.ByteToString(saltByte, CustomEncode.UTF_8);
-            int stretchCount = int.Parse(CustomEncode.ByteToString(CustomEncode.FromBase64String(temp[1]), CustomEncode.UTF_8));
-            string hashedPassword = CustomEncode.ByteToString(CustomEncode.FromBase64String(temp[2]), CustomEncode.UTF_8);
+            int stretchCount = int.Parse(CustomEncode.ByteToString(CustomEncode.FromBase64String(temp[2]), CustomEncode.UTF_8));
+            string hashedPassword = CustomEncode.ByteToString(CustomEncode.FromBase64String(temp[3]), CustomEncode.UTF_8);
 
             // 引数のsaltedPasswordと、rawPasswordから自作したsaltedPasswordを比較
             if (hashedPassword == GetKeyedHash.GetKeyedHashString(salt + rawPassword, ekha, key, saltByte, stretchCount))
