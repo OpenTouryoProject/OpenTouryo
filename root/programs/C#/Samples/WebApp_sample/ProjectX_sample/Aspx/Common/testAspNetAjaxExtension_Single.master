@@ -22,7 +22,7 @@
     <!-- IE8をIE7互換モードで動作させる -->
     <!--meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /-->
     
-    <asp:ContentPlaceHolder ID="cphHeader" runat="server">
+    <asp:ContentPlaceHolder ID="cphHeaderScripts" runat="server">
         This is header area for define the scripts. -- Override on Page.
     </asp:ContentPlaceHolder>
 </head>
@@ -166,7 +166,7 @@
     <%: Scripts.Render("~/bundles/otr") %>
     <%: Scripts.Render("~/bundles/app") %>
     
-    <asp:ContentPlaceHolder ID="cphFooter" runat="server">
+    <asp:ContentPlaceHolder ID="cphFooterScripts" runat="server">
         This is footer area for define the scripts. -- Override on Page.
     </asp:ContentPlaceHolder>
 

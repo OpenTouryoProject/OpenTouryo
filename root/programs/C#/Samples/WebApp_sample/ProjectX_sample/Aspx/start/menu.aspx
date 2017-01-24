@@ -1,6 +1,6 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Start.menu" Title="Untitled Page" Codebehind="menu.aspx.cs" %>
 
-<asp:Content ID="cphHeader" ContentPlaceHolderID="cphHeader" Runat="Server">
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
     <!-- Head 部の ContentPlaceHolder -->
 </asp:Content>
 
@@ -77,6 +77,6 @@
     </ul>
 </asp:Content>
 
-<asp:Content ID="cphFooter" ContentPlaceHolderID="cphFooter" Runat="Server">
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">
     <!-- Footer 部の ContentPlaceHolder -->
 </asp:Content>

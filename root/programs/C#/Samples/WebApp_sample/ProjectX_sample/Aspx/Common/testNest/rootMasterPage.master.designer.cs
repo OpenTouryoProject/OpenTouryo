@@ -22,13 +22,13 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.HtmlControls.HtmlHead Head1;
         
         /// <summary>
-        /// cphHeader コントロール。
+        /// cphHeaderScripts コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder cphHeader;
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder cphHeaderScripts;
         
         /// <summary>
         /// form1 コントロール。
@@ -202,12 +202,12 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.HiddenField RequestTicketGuid;
         
         /// <summary>
-        /// cphFooter コントロール。
+        /// cphFooterScripts コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder cphFooter;
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder cphFooterScripts;
     }
 }

@@ -2,7 +2,7 @@
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 <%@ Register Assembly="System.Web.Extensions, Version=1.0.61025.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Namespace="System.Web.UI" TagPrefix="asp" %>
 
-<asp:Content ID="cphHeader" ContentPlaceHolderID="cphHeader" Runat="Server">
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
     <!-- Head 部の ContentPlaceHolder -->
 </asp:Content>
 
@@ -36,6 +36,6 @@
     <cc1:WebCustomButton ID="btnButton3" runat="server"  Text="例外ボタン" Width="180px" /><br />    
 </asp:Content>
 
-<asp:Content ID="cphFooter" ContentPlaceHolderID="cphFooter" Runat="Server">
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">
     <!-- Footer 部の ContentPlaceHolder -->
 </asp:Content>

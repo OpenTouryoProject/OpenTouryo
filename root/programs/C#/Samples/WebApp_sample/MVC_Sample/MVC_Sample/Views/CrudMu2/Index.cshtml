@@ -10,8 +10,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@* スクリプト・セクション（RenderSection("HeaderSection", required: true)に出力されます） *@
-@section HeaderSection{
+@* スクリプト・セクション（RenderSection("HeaderScriptsSection", required: true)に出力されます） *@
+@section HeaderScriptsSection{
     <!-- Head 部の section -->
 }
 
@@ -172,8 +172,8 @@
     </table>
 }
 
-@* スクリプト・セクション（RenderSection("FooterSection", required: true)に出力されます） *@
-@section FooterSection{
+@* スクリプト・セクション（RenderSection("FooterScriptsSection", required: true)に出力されます） *@
+@section FooterScriptsSection{
 
 <script type="text/javascript">
     $(function () {
@@ -182,7 +182,8 @@
             $('#form1').attr('data-ajax-update', '#messageResult');
             $('#form1').attr('action', '@Url.Action("SelectCount")');
 
-            // If prevent double submission, then sets the flag to true.
+            // If prevent double submission in Ajax.BeginForm(), then sets this flag to true.
+            // Ajax.BeginForm() で二重送信を防止する場合は、このフラグをtrueに設定します。
             PreventAjaxDoubleSubmit = true;
 
             $('#form1').submit();
@@ -293,7 +294,8 @@
             // button22 の場合は、PreventDoubleSubmissionを実行し二重送信防止機能をテストする
             $('#form1').attr('action', '@Url.Action("PreventDoubleSubmission")');
 
-            // If prevent double submission, then sets the flag to true.
+            // If prevent double submission in Ajax.BeginForm(), then sets this flag to true.
+            // Ajax.BeginForm() で二重送信を防止する場合は、このフラグをtrueに設定します。
             PreventAjaxDoubleSubmit = true;
 
              $('#form1').submit();

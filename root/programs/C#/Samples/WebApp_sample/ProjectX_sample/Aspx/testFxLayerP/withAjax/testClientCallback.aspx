@@ -1,7 +1,7 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testClientCallback.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.WithAjax.testClientCallback" Title="Untitled Page" Codebehind="testClientCallback.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<asp:Content ID="cphHeader" ContentPlaceHolderID="cphHeader" Runat="Server">
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
     <!-- Head 部の ContentPlaceHolder -->
 </asp:Content>
 
@@ -33,6 +33,6 @@
     </script>
 </asp:Content>
 
-<asp:Content ID="cphFooter" ContentPlaceHolderID="cphFooter" Runat="Server">
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">
     <!-- Footer 部の ContentPlaceHolder -->
 </asp:Content>

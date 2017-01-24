@@ -9,7 +9,7 @@
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
 
-    @RenderSection("HeaderSection", required: true)
+    @RenderSection("HeaderScriptsSection", required: true)
 
     <script type="text/javascript">
         // Resolve URL in the javascript
@@ -53,13 +53,12 @@
         </div>
     </div>
 
-    @Scripts.Render("~/bundles/jqueryui")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/jqueryuno")
     @Scripts.Render("~/bundles/otr")
     @Scripts.Render("~/bundles/app")
 
-    @RenderSection("FooterSection", required: true)
+    @RenderSection("FooterScriptsSection", required: true)
 
 </body>
 </html>

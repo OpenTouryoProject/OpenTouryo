@@ -54,10 +54,6 @@
       <HintPath>packages\AspNet.ScriptManager.jQuery.3.1.1\lib\net45\AspNet.ScriptManager.jQuery.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="AspNet.ScriptManager.jQuery.UI.Combined, Version=1.12.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\AspNet.ScriptManager.jQuery.UI.Combined.1.12.1\lib\net45\AspNet.ScriptManager.jQuery.UI.Combined.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Frameworks\Infrastructure\Build\Business.dll</HintPath>
@@ -191,49 +187,6 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\jquery.jqGrid\ellipsis-xbl.xml" />
-    <Content Include="Content\jquery.jqGrid\ui.jqgrid.css" />
-    <Content Include="Content\themes\base\accordion.css" />
-    <Content Include="Content\themes\base\all.css" />
-    <Content Include="Content\themes\base\autocomplete.css" />
-    <Content Include="Content\themes\base\base.css" />
-    <Content Include="Content\themes\base\button.css" />
-    <Content Include="Content\themes\base\core.css" />
-    <Content Include="Content\themes\base\datepicker.css" />
-    <Content Include="Content\themes\base\dialog.css" />
-    <Content Include="Content\themes\base\draggable.css" />
-    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
-    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
-    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
-    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
-    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
-    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
-    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
-    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
-    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_444444_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_555555_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_777620_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_777777_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_cc0000_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_ffffff_256x240.png" />
-    <Content Include="Content\themes\base\jquery-ui.css" />
-    <Content Include="Content\themes\base\jquery-ui.min.css" />
-    <Content Include="Content\themes\base\menu.css" />
-    <Content Include="Content\themes\base\progressbar.css" />
-    <Content Include="Content\themes\base\resizable.css" />
-    <Content Include="Content\themes\base\selectable.css" />
-    <Content Include="Content\themes\base\selectmenu.css" />
-    <Content Include="Content\themes\base\slider.css" />
-    <Content Include="Content\themes\base\sortable.css" />
-    <Content Include="Content\themes\base\spinner.css" />
-    <Content Include="Content\themes\base\tabs.css" />
-    <Content Include="Content\themes\base\theme.css" />
-    <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -255,57 +208,10 @@
     <Content Include="Bundle.config" />
     <Content Include="Aspx\Common\testBlankScreenNoJs.master" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
-    <Content Include="Scripts\i18n\grid.locale-ar.js" />
-    <Content Include="Scripts\i18n\grid.locale-bg.js" />
-    <Content Include="Scripts\i18n\grid.locale-bg1251.js" />
-    <Content Include="Scripts\i18n\grid.locale-cat.js" />
-    <Content Include="Scripts\i18n\grid.locale-cn.js" />
-    <Content Include="Scripts\i18n\grid.locale-cs.js" />
-    <Content Include="Scripts\i18n\grid.locale-da.js" />
-    <Content Include="Scripts\i18n\grid.locale-de.js" />
-    <Content Include="Scripts\i18n\grid.locale-dk.js" />
-    <Content Include="Scripts\i18n\grid.locale-el.js" />
-    <Content Include="Scripts\i18n\grid.locale-en.js" />
-    <Content Include="Scripts\i18n\grid.locale-es.js" />
-    <Content Include="Scripts\i18n\grid.locale-fa.js" />
-    <Content Include="Scripts\i18n\grid.locale-fi.js" />
-    <Content Include="Scripts\i18n\grid.locale-fr.js" />
-    <Content Include="Scripts\i18n\grid.locale-gl.js" />
-    <Content Include="Scripts\i18n\grid.locale-he.js" />
-    <Content Include="Scripts\i18n\grid.locale-hr.js" />
-    <Content Include="Scripts\i18n\grid.locale-hr1250.js" />
-    <Content Include="Scripts\i18n\grid.locale-hu.js" />
-    <Content Include="Scripts\i18n\grid.locale-id.js" />
-    <Content Include="Scripts\i18n\grid.locale-is.js" />
-    <Content Include="Scripts\i18n\grid.locale-it.js" />
-    <Content Include="Scripts\i18n\grid.locale-ja.js" />
-    <Content Include="Scripts\i18n\grid.locale-kr.js" />
-    <Content Include="Scripts\i18n\grid.locale-lt.js" />
-    <Content Include="Scripts\i18n\grid.locale-mne.js" />
-    <Content Include="Scripts\i18n\grid.locale-nl.js" />
-    <Content Include="Scripts\i18n\grid.locale-no.js" />
-    <Content Include="Scripts\i18n\grid.locale-pl.js" />
-    <Content Include="Scripts\i18n\grid.locale-pt-br.js" />
-    <Content Include="Scripts\i18n\grid.locale-pt.js" />
-    <Content Include="Scripts\i18n\grid.locale-ro.js" />
-    <Content Include="Scripts\i18n\grid.locale-ru.js" />
-    <Content Include="Scripts\i18n\grid.locale-sk.js" />
-    <Content Include="Scripts\i18n\grid.locale-sr-latin.js" />
-    <Content Include="Scripts\i18n\grid.locale-sr.js" />
-    <Content Include="Scripts\i18n\grid.locale-sv.js" />
-    <Content Include="Scripts\i18n\grid.locale-th.js" />
-    <Content Include="Scripts\i18n\grid.locale-tr.js" />
-    <Content Include="Scripts\i18n\grid.locale-tw.js" />
-    <Content Include="Scripts\i18n\grid.locale-ua.js" />
-    <Content Include="Scripts\i18n\grid.locale-vi.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.slim.js" />
     <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
-    <Content Include="Scripts\jquery-ui-1.12.1.js" />
-    <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
-    <Content Include="Scripts\jquery.jqGrid.js" />
-    <Content Include="Scripts\jquery.jqGrid.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\otr\common.js" />
     <Content Include="Scripts\otr\else.js" />

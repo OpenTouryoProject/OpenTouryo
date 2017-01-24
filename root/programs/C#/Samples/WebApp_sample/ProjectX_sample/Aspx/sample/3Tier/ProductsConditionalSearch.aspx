@@ -1,7 +1,7 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.sample._3Tier.ProductsConditionalSearch" Title="ProductsConditionalSearch" CodeBehind="ProductsConditionalSearch.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<asp:Content ID="cphHeader" ContentPlaceHolderID="cphHeader" Runat="Server">
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
     <!-- Head 部の ContentPlaceHolder -->
 </asp:Content>
 
@@ -436,6 +436,6 @@
         StartRowIndexParameterName="startRowIndex"></asp:ObjectDataSource>
 </asp:Content>
 
-<asp:Content ID="cphFooter" ContentPlaceHolderID="cphFooter" Runat="Server">
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">
     <!-- Footer 部の ContentPlaceHolder -->
 </asp:Content>

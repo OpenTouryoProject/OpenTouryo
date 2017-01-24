@@ -10,14 +10,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@* スクリプト・セクション（RenderSection("HeaderSection", required: true)に出力されます） *@
-@section HeaderSection{
+@* スクリプト・セクション（RenderSection("HeaderScriptsSection", required: true)に出力されます） *@
+@section HeaderScriptsSection{
     <!-- Head 部の section -->
 }
 
 @* 本文レイアウト（RenderBodyに出力されます） *@
 @* Html.BeginFormは従来の全体方式、Ajax.BeginFormは部分更新方式（UpdateTargetIdの範囲を部分更新） *@
-@using (Html.BeginForm(null, "CrudMu2", FormMethod.Post, new { id = "form1", onsubmit = "Fx_OnSubmit();" }))
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "form1", onsubmit = "Fx_OnSubmit();" }))
 {
     <table style="width:100%; height:100%; border: none">
         <!-- データプロバイダ -->
@@ -169,8 +169,8 @@
     </table>
 }
 
-@* スクリプト・セクション（RenderSection("FooterSection", required: true)に出力されます） *@
-@section FooterSection{
+@* スクリプト・セクション（RenderSection("FooterScriptsSection", required: true)に出力されます） *@
+@section FooterScriptsSection{
 <script type="text/javascript">
     $('#button10').click(function () {
         // 結果をクリアする

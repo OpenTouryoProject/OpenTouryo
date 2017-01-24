@@ -1,6 +1,6 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreenNoJs.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.Table.testJQGridJson" Title="Untitled Page" EnableEventValidation="false" Codebehind="testJQGridJson.aspx.cs" %>
 
-<asp:Content ID="cphHeader" ContentPlaceHolderID="cphHeader" Runat="Server">
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jqgrid/4.6.0/css/ui.jqgrid.css" rel="stylesheet" type="text/css" />
 </asp:Content>
@@ -17,7 +17,7 @@
     </div>
 </asp:Content>
 
-<asp:Content ID="cphFooter" ContentPlaceHolderID="cphFooter" runat="Server">
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" runat="Server">
 
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.3.min.js" type="text/javascript"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>

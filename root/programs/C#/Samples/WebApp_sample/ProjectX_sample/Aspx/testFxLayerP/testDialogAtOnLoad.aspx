@@ -1,7 +1,7 @@
 <%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.testDialogAtOnLoad" Title="Untitled Page" Codebehind="testDialogAtOnLoad.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<asp:Content ID="cphHeader" ContentPlaceHolderID="cphHeader" Runat="Server">
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
     <!-- Head 部の ContentPlaceHolder -->
 </asp:Content>
 
@@ -14,6 +14,6 @@
     <cc1:WebCustomButton ID="btnButton3" runat="server" Text="閉じるボタン（WithAllParent）" Width="250px" /><br />
 </asp:Content>
 
-<asp:Content ID="cphFooter" ContentPlaceHolderID="cphFooter" Runat="Server">
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">
     <!-- Footer 部の ContentPlaceHolder -->
 </asp:Content>
