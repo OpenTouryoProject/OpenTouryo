@@ -34,12 +34,40 @@
 using System;
 using System.Security.Cryptography;
 
+using Touryo.Infrastructure.Public.Str;
+
 namespace Touryo.Infrastructure.Public.Util
 {
     /// <summary>GetPassword</summary>
     public class GetPassword
     {
-        /// <summary>Generate</summary>
+        /// <summary>Base64Secretを生成</summary>
+        /// <param name="keySize">int</param>
+        /// <returns>Base64Secret</returns>
+        public static string Base64Secret(int keySize)
+        {
+            return CustomEncode.ToBase64String(GetPassword.RandomByte(keySize));
+        }
+
+        /// <summary>Base64UrlSecretを生成</summary>
+        /// <param name="keySize">int</param>
+        /// <returns>Base64UrlSecret</returns>
+        public static string Base64UrlSecret(int keySize)
+        {
+            return CustomEncode.ToBase64UrlString(GetPassword.RandomByte(keySize));
+        }
+
+        /// <summary>RandomByte</summary>
+        /// <param name="byteSize">int</param>
+        /// <returns>RandomByte</returns>
+        public static byte[] RandomByte(int byteSize)
+        {
+            byte[] key = new byte[byteSize];
+            RNGCryptoServiceProvider.Create().GetBytes(key);
+            return key;
+        }
+
+        /// <summary>PasswordをGenerate</summary>
         /// <param name="length">長さ</param>
         /// <param name="numberOfNonAlphanumericCharacters">Alphanumeric以外の文字数</param>
         /// <returns>Password</returns>
