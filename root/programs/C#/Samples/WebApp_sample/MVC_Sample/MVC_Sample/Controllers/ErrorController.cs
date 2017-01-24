@@ -44,7 +44,7 @@ namespace MVC_Sample.Controllers
         /// <summary>
         /// Index Action method to display an error message error information on the screen
         /// </summary>
-        /// <returns></returns>
+        /// <returns>ActionResult</returns>
         public ActionResult Index()
         {
             //To get an error message from Session

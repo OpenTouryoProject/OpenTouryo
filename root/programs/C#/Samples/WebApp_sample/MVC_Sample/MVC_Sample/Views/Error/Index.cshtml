@@ -6,8 +6,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@using (Html.BeginForm(null, "Error", FormMethod.Post, new { id = "form1" }))
-{
+@* スクリプト・セクション（RenderSection("HeaderSection", required: true)に出力されます） *@
+@section HeaderSection{
+    <!-- Head 部の section -->
+}
+
+@{
     var label1Data = "";
     var label2Data = "";
 
@@ -28,7 +32,8 @@
     {
         label2Data = MVC_Sample.ErrorInformation.ErrorInfo;
     }
-    <h1>開発用エラー画面</h1>
+}
+<h1>開発用エラー画面</h1>
 <p>
     システム障害が発生しました。<br />
     エラーメッセージおよびスタックトレース情報を以下に示します。<br />
@@ -63,29 +68,36 @@
         </thead>
         <tbody>
             @{
-    if (ViewBag.datas.Count != 0)
-    {
-        foreach (var row in ViewBag.datas)
-        {
-            <tr>
-                <td>@row.key</td>
-                <td>@row.value</td>
-            </tr>
-            }
-    }
-    else
-    {
-        ViewBag.datas = MVC_Sample.ErrorInformation.ErrorDatas;
-        foreach (var row in ViewBag.datas)
-        {
-            <tr>
-                <td>@row.key</td>
-                <td>@row.value</td>
-            </tr>
-            }
-    }
+                if (ViewBag.datas.Count != 0)
+                {
+                    foreach (var row in ViewBag.datas)
+                    {
+                        <tr>
+                            <td>@row.key</td>
+                            <td>@row.value</td>
+                        </tr>
+                    }
                 }
+                else
+                {
+                    ViewBag.datas = MVC_Sample.ErrorInformation.ErrorDatas;
+                    foreach (var row in ViewBag.datas)
+                    {
+                        <tr>
+                            <td>@row.key</td>
+                            <td>@row.value</td>
+                        </tr>
+                    }
+                }
+            }
         </tbody>
     </table>
 </div>
+
+
+
+
+@* スクリプト・セクション（RenderSection("FooterSection", required: true)に出力されます） *@
+@section FooterSection{
+    <!-- Footer 部の section -->
 }

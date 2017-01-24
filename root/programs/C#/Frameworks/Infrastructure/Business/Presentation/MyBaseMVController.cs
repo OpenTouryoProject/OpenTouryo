@@ -36,10 +36,15 @@
 //*  2015/11/03  Sai              Implemeted performance measurement in the methods
 //*                               OnActionExecuting, OnActionExecuted, OnResultExecuting and OnResultExecuted
 //*  2017/01/23  西野  大介       UserInfoプロパティとGetUserInfoメソッドを追加した。
+//*  2017/01/24  西野  大介       ControllerName, ActionNameプロパティとGetRouteDataメソッドを追加した。
+//*  2017/01/24  西野  大介       ログ出力の見直し（OnResultメソッドではDebugを使用、ViewではViewNameを表示。）
+//*  2017/01/24  西野  大介       ログ出力の見直し（ログ出力フォーマットの全面的な見直し）
 //**********************************************************************************
+
 
 // System
 using System.Web;
+using System.Web.Routing;
 using System.Web.Mvc;
 
 using Touryo.Infrastructure.Business.Util;
@@ -80,9 +85,14 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <summary>性能測定</summary>
         private PerformanceRecorder perfRec;
 
-        /// <summary>ユーザ情報</summary>
-        /// <remarks>画面コード親クラス２、画面コード クラスから利用する。</remarks>
+        /// <summary>UserInfo</summary>
         protected MyUserInfo UserInfo;
+
+        /// <summary>ControllerName</summary>
+        protected string ControllerName = "";
+
+        /// <summary>ActionName</summary>
+        protected string ActionName = "";
 
         #region OnAction
 
@@ -97,8 +107,8 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// </param>
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            // 認証情報のロード
             this.GetUserInfo();
+            this.GetRouteData();
 
             // 性能測定開始
             this.perfRec = new PerformanceRecorder();
@@ -107,11 +117,20 @@ namespace Touryo.Infrastructure.Business.Presentation
             // Calling base class method.
             base.OnActionExecuting(filterContext);
 
-            // Logging.
-
-            string strLogMessage = ", -" + "," + Request.UserHostAddress + "," + "<-----" + "," + filterContext.Controller.ToString() +
-                                   "," + filterContext.ActionDescriptor.ActionName + "," + "OnActionExecuting" + "," + perfRec.ExecTime +
-                                   "," + perfRec.CpuTime;
+            // ------------
+            // メッセージ部
+            // ------------
+            // ユーザ名, IPアドレス,
+            // レイヤ, 画面名, コントロール名, 処理名
+            // 処理時間（実行時間）, 処理時間（CPU時間）
+            // エラーメッセージID, エラーメッセージ等
+            // ------------
+            string strLogMessage =
+                "," + UserInfo.UserName + 
+                "," + UserInfo.IPAddress +
+                "," + "----->" +
+                "," + this.ControllerName + 
+                "," + this.ActionName + "(" + "OnActionExecuting" + ")";
 
             LogIF.InfoLog("ACCESS", strLogMessage);
 
@@ -134,9 +153,22 @@ namespace Touryo.Infrastructure.Business.Presentation
             // 性能測定終了
             this.perfRec.EndsPerformanceRecord();
 
-            string strLogMessage = ", -" + "," + Request.UserHostAddress + "," + "<-----" + "," + filterContext.Controller.ToString() +
-                                   "," + filterContext.ActionDescriptor.ActionName + "," + "OnActionExecuted" + "," + perfRec.ExecTime +
-                                   "," + perfRec.CpuTime;
+            // ------------
+            // メッセージ部
+            // ------------
+            // ユーザ名, IPアドレス,
+            // レイヤ, 画面名, コントロール名, 処理名
+            // 処理時間（実行時間）, 処理時間（CPU時間）
+            // エラーメッセージID, エラーメッセージ等
+            // ------------
+            string strLogMessage =
+                "," + UserInfo.UserName +
+                "," + UserInfo.IPAddress +
+                "," + "<-----" +
+                "," + this.ControllerName +
+                "," + this.ActionName + "(" + "OnActionExecuted" + ")" +
+                "," + perfRec.ExecTime +
+                "," + perfRec.CpuTime;
 
             LogIF.InfoLog("ACCESS", strLogMessage);
         }
@@ -154,9 +186,24 @@ namespace Touryo.Infrastructure.Business.Presentation
         protected override ViewResult View(IView view, object model)
         {
             ViewResult vr = base.View(view, model);
+            string[] temp = vr.ViewName.Split('.');
 
-            // Logging.
-            LogIF.InfoLog("ACCESS", "View");
+            // ------------
+            // メッセージ部
+            // ------------
+            // ユーザ名, IPアドレス,
+            // レイヤ, 画面名, コントロール名, 処理名
+            // 処理時間（実行時間）, 処理時間（CPU時間）
+            // エラーメッセージID, エラーメッセージ等
+            // ------------
+            string strLogMessage =
+                "," + UserInfo.UserName +
+                "," + UserInfo.IPAddress +
+                "," + "----->>" +
+                "," + this.ControllerName +
+                "," + this.ActionName + " -> " + temp[temp.Length - 1];
+
+            LogIF.InfoLog("ACCESS", strLogMessage);
 
             return vr;
         }
@@ -172,11 +219,120 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <returns>ViewResult オブジェクト</returns>
         protected override ViewResult View(string viewName, string masterName, object model)
         {
-            LogIF.InfoLog("ACCESS", "View");
-            return base.View(viewName, masterName, model);
+            ViewResult vr = base.View(viewName, masterName, model);
+            string[] temp = vr.ViewName.Split('.');
+
+            // ------------
+            // メッセージ部
+            // ------------
+            // ユーザ名, IPアドレス,
+            // レイヤ, 画面名, コントロール名, 処理名
+            // 処理時間（実行時間）, 処理時間（CPU時間）
+            // エラーメッセージID, エラーメッセージ等
+            // ------------
+            string strLogMessage =
+                "," + UserInfo.UserName +
+                "," + UserInfo.IPAddress +
+                "," + "----->>" +
+                "," + this.ControllerName +
+                "," + this.ActionName + " -> " + temp[temp.Length - 1];
+
+            LogIF.InfoLog("ACCESS", strLogMessage);
+
+            return vr;
         }
 
         #endregion
+
+        #endregion
+
+        #region OnResult
+
+        /// <summary>
+        /// アクション メソッドによって返されたアクション結果が実行される前に呼び出されます。  
+        /// Controller.OnResultExecuting メソッド (System.Web.Mvc)
+        /// http://msdn.microsoft.com/ja-jp/library/system.web.mvc.controller.onresultexecuting.aspx
+        /// </summary>
+        /// <param name="filterContext">
+        /// 型: System.Web.Mvc.ResultExecutingContext
+        /// 現在の要求およびアクション結果に関する情報。
+        /// </param>
+        protected override void OnResultExecuting(ResultExecutingContext filterContext)
+        {
+            // イベント処理開始前にエラーが発生した場合は、
+            // this.perfRecがnullの場合があるので、null対策コードを挿入する。
+            if (this.perfRec == null)
+            {
+                // nullの場合、新しいインスタンスを生成し、性能測定開始。
+                this.perfRec = new PerformanceRecorder();
+                perfRec.StartsPerformanceRecord();
+            }
+
+            // Calling base class method.
+            base.OnResultExecuting(filterContext);
+
+            // ------------
+            // メッセージ部
+            // ------------
+            // ユーザ名, IPアドレス,
+            // レイヤ, 画面名, コントロール名, 処理名
+            // 処理時間（実行時間）, 処理時間（CPU時間）
+            // エラーメッセージID, エラーメッセージ等
+            // ------------
+            string strLogMessage =
+                "," + UserInfo.UserName +
+                "," + UserInfo.IPAddress +
+                "," + "----->" +
+                "," + this.ControllerName +
+                "," + this.ActionName + "(" + "OnResultExecuting" + ")";
+
+            LogIF.DebugLog("ACCESS", strLogMessage);
+        }
+
+        /// <summary>
+        /// アクション メソッドによって返されたアクション結果が実行された後に呼び出されます。 
+        /// Controller.OnResultExecuted メソッド (System.Web.Mvc)
+        /// http://msdn.microsoft.com/ja-jp/library/system.web.mvc.controller.onresultexecuted.aspx
+        /// </summary>
+        /// <param name="filterContext">
+        /// 型: System.Web.Mvc.ResultExecutingContext
+        /// 現在の要求およびアクション結果に関する情報。
+        /// </param>
+        protected override void OnResultExecuted(ResultExecutedContext filterContext)
+        {
+            // Calling base class method.
+            base.OnResultExecuted(filterContext);
+
+            // イベント処理開始前にエラーが発生した場合は、
+            // this.perfRecがnullの場合があるので、null対策コードを挿入する。
+            if (this.perfRec == null)
+            {
+                // nullの場合、新しいインスタンスを生成し、性能測定開始。
+                this.perfRec = new PerformanceRecorder();
+                perfRec.StartsPerformanceRecord();
+            }
+
+            this.perfRec.EndsPerformanceRecord();
+
+            // ------------
+            // メッセージ部
+            // ------------
+            // ユーザ名, IPアドレス,
+            // レイヤ, 画面名, コントロール名, 処理名
+            // 処理時間（実行時間）, 処理時間（CPU時間）
+            // エラーメッセージID, エラーメッセージ等
+            // ------------
+            string strLogMessage =
+                "," + UserInfo.UserName +
+                "," + UserInfo.IPAddress +
+                "," + "<-----" +
+                "," + this.ControllerName +
+                "," + this.ActionName + "(" + "OnResultExecuted" + ")" +
+                "," + perfRec.ExecTime +
+                "," + perfRec.CpuTime;
+
+            LogIF.DebugLog("ACCESS", strLogMessage);
+        }
 
         #endregion
 
@@ -269,10 +425,10 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             #endregion
 
+            #region  エラー画面へ画面遷移
+
             filterContext.ExceptionHandled = true;
             filterContext.HttpContext.Response.Clear();
-
-            // エラー画面へ画面遷移
 
             if (filterContext.HttpContext.Request.IsAjaxRequest())
             {
@@ -287,86 +443,41 @@ namespace Touryo.Infrastructure.Business.Presentation
                 filterContext.Result = new RedirectResult(errorScreenPath);
             }
 
-            // Logging.
-            string strLogMessage = ", -" + "," + Request.UserHostAddress + "," + "<-----" + "," + filterContext.Controller.ToString() + " - "
-                                   + "OnException" + " - " + filterContext.Exception.Message;
+            #endregion
+
+            #region ログ出力
+
+            // ------------
+            // メッセージ部
+            // ------------
+            // ユーザ名, IPアドレス,
+            // レイヤ, 画面名, コントロール名, 処理名
+            // 処理時間（実行時間）, 処理時間（CPU時間）
+            // エラーメッセージID, エラーメッセージ等
+            // ------------
+
+            string strLogMessage =
+                "," + UserInfo.UserName +
+                "," + UserInfo.IPAddress +
+                "," + "----->>" +
+                "," + this.ControllerName +
+                "," + this.ActionName + "(" + "OnException" + ")" +
+                "," + //this.perfRec.ExecTime +
+                "," + //this.perfRec.CpuTime + 
+                "," + errMsgId +
+                "," + filterContext.Exception.Message;
 
             LogIF.ErrorLog("ACCESS", strLogMessage);
+
+            #endregion
         }
 
         #endregion
 
-        #region OnResult
-
-        /// <summary>
-        /// アクション メソッドによって返されたアクション結果が実行される前に呼び出されます。  
-        /// Controller.OnResultExecuting メソッド (System.Web.Mvc)
-        /// http://msdn.microsoft.com/ja-jp/library/system.web.mvc.controller.onresultexecuting.aspx
-        /// </summary>
-        /// <param name="filterContext">
-        /// 型: System.Web.Mvc.ResultExecutingContext
-        /// 現在の要求およびアクション結果に関する情報。
-        /// </param>
-        protected override void OnResultExecuting(ResultExecutingContext filterContext)
-        {
-            // イベント処理開始前にエラーが発生した場合は、
-            // this.perfRecがnullの場合があるので、null対策コードを挿入する。
-            if (this.perfRec == null)
-            {
-                // nullの場合、新しいインスタンスを生成し、性能測定開始。
-                this.perfRec = new PerformanceRecorder();
-                perfRec.StartsPerformanceRecord();
-            }
-
-            // Calling base class method.
-            base.OnResultExecuting(filterContext);
-
-            // Logging.
-            string strLogMessage = ", -" + "," + Request.UserHostAddress + "," + "<-----" + "," + filterContext.Controller.ToString() +
-                                   "," + filterContext.Result + "," + "OnResultExecuting" + "," + perfRec.ExecTime +
-                                   "," + perfRec.CpuTime;
-
-            LogIF.InfoLog("ACCESS", strLogMessage);
-        }
-
-        /// <summary>
-        /// アクション メソッドによって返されたアクション結果が実行された後に呼び出されます。 
-        /// Controller.OnResultExecuted メソッド (System.Web.Mvc)
-        /// http://msdn.microsoft.com/ja-jp/library/system.web.mvc.controller.onresultexecuted.aspx
-        /// </summary>
-        /// <param name="filterContext">
-        /// 型: System.Web.Mvc.ResultExecutingContext
-        /// 現在の要求およびアクション結果に関する情報。
-        /// </param>
-        protected override void OnResultExecuted(ResultExecutedContext filterContext)
-        {
-            // Calling base class method.
-            base.OnResultExecuted(filterContext);
-
-            // イベント処理開始前にエラーが発生した場合は、
-            // this.perfRecがnullの場合があるので、null対策コードを挿入する。
-            if (this.perfRec == null)
-            {
-                // nullの場合、新しいインスタンスを生成し、性能測定開始。
-                this.perfRec = new PerformanceRecorder();
-                perfRec.StartsPerformanceRecord();
-            }
-
-            this.perfRec.EndsPerformanceRecord();
-
-            // Logging.
-            string strLogMessage = ", -" + "," + Request.UserHostAddress + "," + "<-----" + "," + filterContext.Controller.ToString() +
-                                   "," + filterContext.Result + "," + "OnResultExecuted" + "," + perfRec.ExecTime +
-                                   "," + perfRec.CpuTime;
-
-            LogIF.InfoLog("ACCESS", strLogMessage);
-        }
-
-        #endregion
+        #region 情報取得用
 
         /// <summary>ユーザ情報を取得する</summary>
-        /// <remarks>他から呼び出し可能に変更（static）</remarks>
-        protected void GetUserInfo()
+        private void GetUserInfo()
         {
             // セッションステートレス対応
             if (this.HttpContext.Session == null)
@@ -405,5 +516,18 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
         }
+
+        /// <summary>ルーティング情報を取得する</summary>
+        private void GetRouteData()
+        {
+            RouteData routeData = RouteTable.Routes.GetRouteData(this.HttpContext);
+
+            string[] temp = null;
+            temp =routeData.Values["controller"].ToString().Split('.');
+            this.ControllerName = routeData.Values["controller"].ToString();
+            this.ActionName = routeData.Values["action"].ToString();
+        }
+
+        #endregion
     }
 }

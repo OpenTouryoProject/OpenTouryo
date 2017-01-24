@@ -24,9 +24,19 @@ using System.Web.Optimization;
 
 namespace ProjectX_sample
 {
+    /// <summary>
+    /// バンドル＆ミニフィケーションに関する指定
+    /// </summary>
     public class BundleConfig
     {
-        // バンドルの詳細については、http://go.microsoft.com/fwlink/?LinkID=303951 を参照してください。
+        /// <summary>
+        /// 特集：ASP.NET 4.5新機能概説（1）：
+        /// Visual Studio 2012の新機能とASP.NET 4.5のコア機能 (3-4) - ＠IT
+        /// http://www.atmarkit.co.jp/ait/articles/1303/08/news072_3.html
+        /// ASP.NET 4.5では、リクエスト時のファイル読み込み時間を
+        /// 削減するためにバンドル＆ミニフィケーションの仕組みが導入された。
+        /// Bundling の詳細については、http://go.microsoft.com/fwlink/?LinkId=254725 を参照してください
+        /// </summary>
         public static void RegisterBundles(BundleCollection bundles)
         {
             //BundleTable.EnableOptimizations = true;

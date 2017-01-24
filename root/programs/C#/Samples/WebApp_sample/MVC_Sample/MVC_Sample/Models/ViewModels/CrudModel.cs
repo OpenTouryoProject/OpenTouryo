@@ -20,11 +20,10 @@
 using System;
 using System.Web;
 using System.Web.Mvc;
-
 using System.Collections.Generic;
 
 // DataSet をインポート
-using MVC_Sample.DataSets;
+using MVC_Sample.Models.DataSets;
 
 namespace MVC_Sample.Models.ViewModels
 {

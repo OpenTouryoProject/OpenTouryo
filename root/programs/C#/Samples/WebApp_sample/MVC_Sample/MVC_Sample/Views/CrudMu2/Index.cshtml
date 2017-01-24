@@ -180,7 +180,7 @@
         $('#button1').click(function () {
             // button1 の場合は、GetCountのActionを実行しメッセージ部分を更新する
             $('#form1').attr('data-ajax-update', '#messageResult');
-            $('#form1').attr('action', '@Url.Action("GetCount")');
+            $('#form1').attr('action', '@Url.Action("SelectCount")');
 
             // If prevent double submission, then sets the flag to true.
             PreventAjaxDoubleSubmit = true;

@@ -50,6 +50,7 @@ using Touryo.Infrastructure.Public.Util;
 using MVC_Sample.Logic.Business;
 using MVC_Sample.Logic.Common;
 using MVC_Sample.Models.ViewModels;
+using MVC_Sample.Models.DataSets;
 
 namespace MVC_Sample.Controllers
 {
@@ -79,15 +80,15 @@ namespace MVC_Sample.Controllers
         /// <param name="ddlExRollback">コミット、ロールバック</param>
         /// <param name="form">入力フォームの情報</param>
         /// <returns>再描画（ViewResult）</returns>
-        public ActionResult GetCount(string ddlDap, string ddlMode1, string ddlMode2, string ddlExRollback, FormCollection form)
+        public ActionResult SelectCount(string ddlDap, string ddlMode1, string ddlMode2, string ddlExRollback, FormCollection form)
         {
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
-                    "CrudMu", "button1", "SelectCount",
+                    this.ControllerName, "-", this.ActionName,
                     ddlDap + "%" + ddlMode1 + "%" + ddlMode2 + "%" + ddlExRollback,
-                    new MyUserInfo("aaa", "192.168.1.1"));
+                    this.UserInfo);
 
             // 戻り値
             TestReturnValue testReturnValue;
@@ -141,9 +142,9 @@ namespace MVC_Sample.Controllers
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
-                    "CrudMu", "button2", "SelectAll_DT",
+                    this.ControllerName, "-", this.ActionName,
                     ddlDap + "%" + ddlMode1 + "%" + ddlMode2 + "%" + ddlExRollback,
-                    new MyUserInfo("aaa", "192.168.1.1"));
+                    this.UserInfo);
 
             // 戻り値
             TestReturnValue testReturnValue;
@@ -175,12 +176,12 @@ namespace MVC_Sample.Controllers
             else
             {
                 // 結果（正常系）
-                model.shippers = new DataSets.DsNorthwind.ShippersDataTable();
+                model.shippers = new DsNorthwind.ShippersDataTable();
                 DataTable dt = (DataTable)testReturnValue.Obj;
 
                 foreach (DataRow row in dt.Rows)
                 {
-                    DataSets.DsNorthwind.ShippersRow srow = model.shippers.NewShippersRow();
+                    DsNorthwind.ShippersRow srow = model.shippers.NewShippersRow();
                     srow.ShipperID = int.Parse(row[0].ToString());
                     srow.CompanyName = row[1].ToString();
                     srow.Phone = row[2].ToString();
@@ -208,9 +209,9 @@ namespace MVC_Sample.Controllers
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
-                    "CrudMu", "button3", "SelectAll_DS",
+                    this.ControllerName, "-", this.ActionName,
                     ddlDap + "%" + ddlMode1 + "%" + ddlMode2 + "%" + ddlExRollback,
-                    new MyUserInfo("aaa", "192.168.1.1"));
+                    this.UserInfo);
 
             // 戻り値
             TestReturnValue testReturnValue;
@@ -242,12 +243,12 @@ namespace MVC_Sample.Controllers
             else
             {
                 // 結果（正常系）
-                model.shippers = new DataSets.DsNorthwind.ShippersDataTable();
+                model.shippers = new DsNorthwind.ShippersDataTable();
                 DataSet ds = (DataSet)testReturnValue.Obj;
 
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
-                    DataSets.DsNorthwind.ShippersRow srow = model.shippers.NewShippersRow();
+                    DsNorthwind.ShippersRow srow = model.shippers.NewShippersRow();
                     srow.ShipperID = int.Parse(row[0].ToString());
                     srow.CompanyName = row[1].ToString();
                     srow.Phone = row[2].ToString();
@@ -275,9 +276,9 @@ namespace MVC_Sample.Controllers
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
-                    "CrudMu", "button4", "SelectAll_DR",
+                    this.ControllerName, "-", this.ActionName,
                     ddlDap + "%" + ddlMode1 + "%" + ddlMode2 + "%" + ddlExRollback,
-                    new MyUserInfo("aaa", "192.168.1.1"));
+                    this.UserInfo);
 
             // 戻り値
             TestReturnValue testReturnValue;
@@ -309,12 +310,12 @@ namespace MVC_Sample.Controllers
             else
             {
                 // 結果（正常系）
-                model.shippers = new DataSets.DsNorthwind.ShippersDataTable();
+                model.shippers = new DsNorthwind.ShippersDataTable();
                 DataTable dt = (DataTable)testReturnValue.Obj;
 
                 foreach (DataRow row in dt.Rows)
                 {
-                    DataSets.DsNorthwind.ShippersRow srow = model.shippers.NewShippersRow();
+                    DsNorthwind.ShippersRow srow = model.shippers.NewShippersRow();
                     srow.ShipperID = int.Parse(row[0].ToString());
                     srow.CompanyName = row[1].ToString();
                     srow.Phone = row[2].ToString();
@@ -344,9 +345,9 @@ namespace MVC_Sample.Controllers
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
-                    "CrudMu", "button5", "SelectAll_DSQL",
+                    this.ControllerName, "-", this.ActionName,
                     ddlDap + "%" + ddlMode1 + "%" + ddlMode2 + "%" + ddlExRollback,
-                    new MyUserInfo("aaa", "192.168.1.1"));
+                    this.UserInfo);
 
             // 動的SQLの要素を設定
             testParameterValue.OrderColumn = ddlOrderColumn;
@@ -382,12 +383,12 @@ namespace MVC_Sample.Controllers
             else
             {
                 // 結果（正常系）
-                model.shippers = new DataSets.DsNorthwind.ShippersDataTable();
+                model.shippers = new DsNorthwind.ShippersDataTable();
                 DataTable dt = (DataTable)testReturnValue.Obj;
 
                 foreach (DataRow row in dt.Rows)
                 {
-                    DataSets.DsNorthwind.ShippersRow srow = model.shippers.NewShippersRow();
+                    DsNorthwind.ShippersRow srow = model.shippers.NewShippersRow();
                     srow.ShipperID = int.Parse(row[0].ToString());
                     srow.CompanyName = row[1].ToString();
                     srow.Phone = row[2].ToString();
@@ -416,9 +417,9 @@ namespace MVC_Sample.Controllers
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
-                    "CrudMu", "button6", "Select",
+                    this.ControllerName, "-", this.ActionName,
                     ddlDap + "%" + ddlMode1 + "%" + ddlMode2 + "%" + ddlExRollback,
-                    new MyUserInfo("aaa", "192.168.1.1"));
+                    this.UserInfo);
 
             // 動的SQLの要素を設定
             testParameterValue.ShipperID = int.Parse(textBox1);
@@ -480,9 +481,9 @@ namespace MVC_Sample.Controllers
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
-                    "CrudMu", "button7", "Insert",
+                    this.ControllerName, "-", this.ActionName,
                     ddlDap + "%" + ddlMode1 + "%" + ddlMode2 + "%" + ddlExRollback,
-                    new MyUserInfo("aaa", "192.168.1.1"));
+                    this.UserInfo);
 
             // 動的SQLの要素を設定
             testParameterValue.CompanyName = textBox2;
@@ -542,9 +543,9 @@ namespace MVC_Sample.Controllers
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
-                    "CrudMu", "button8", "Update",
+                    this.ControllerName, "-", this.ActionName,
                     ddlDap + "%" + ddlMode1 + "%" + ddlMode2 + "%" + ddlExRollback,
-                    new MyUserInfo("aaa", "192.168.1.1"));
+                    this.UserInfo);
 
             // 動的SQLの要素を設定
             testParameterValue.ShipperID = int.Parse(textBox1);
@@ -603,9 +604,9 @@ namespace MVC_Sample.Controllers
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
-                    "CrudMu", "button9", "Delete",
+                    this.ControllerName, "-", this.ActionName,
                     ddlDap + "%" + ddlMode1 + "%" + ddlMode2 + "%" + ddlExRollback,
-                    new MyUserInfo("aaa", "192.168.1.1"));
+                    this.UserInfo);
 
             // 動的SQLの要素を設定
             testParameterValue.ShipperID = int.Parse(textBox1);
