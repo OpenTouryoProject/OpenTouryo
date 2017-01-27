@@ -59,10 +59,11 @@ namespace Touryo.Infrastructure.Public.Util.JWT
         public string JWK = "";
 
         /// <summary>Constructor</summary>
-        /// <param name="csRS256">RS256の署名・検証が可能なように設定されたDigitalSignオブジェクト</param>
-        public JWT_RS256(DigitalSign csRS256)
+        /// <param name="certificateFilePath">DigitalSignX509に渡すcertificateFilePathパラメタ</param>
+        /// <param name="password">DigitalSignX509に渡すpasswordパラメタ</param>
+        public JWT_RS256(string certificateFilePath, string password)
         {
-            this._cs = csRS256;
+            this._cs = new DigitalSignX509(certificateFilePath, password, "SHA256");
         }
 
         #endregion

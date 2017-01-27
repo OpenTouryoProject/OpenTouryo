@@ -80,8 +80,8 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
-    <None Include="EncAndDecUtil_TemporaryKey_RSA256.cer" />
-    <None Include="EncAndDecUtil_TemporaryKey_RSA256.pfx" />
+    <None Include="EncAndDecUtil_RS256.cer" />
+    <None Include="EncAndDecUtil_RS256.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -476,8 +476,8 @@ namespace EncAndDecUtil
         // 「信頼されたルート証明機関」にインストールする必要があります（実行アカウントにも注意が必要） 。
 
         /// <summary>CertificateFilePath</summary>
-        private string CertificateFilePath_pfx = @"..\..\EncAndDecUtil_TemporaryKey_RSA256.pfx";
-        private string CertificateFilePath_cer = @"..\..\EncAndDecUtil_TemporaryKey_RSA256.cer";
+        private string CertificateFilePath_pfx = @"..\..\EncAndDecUtil_RS256.pfx";
+        private string CertificateFilePath_cer = @"..\..\EncAndDecUtil_RS256.cer";
         private string CertificateFilePassword = "test";
 
         #endregion
@@ -601,7 +601,7 @@ namespace EncAndDecUtil
             else
             {
                 // RS256 (X509Cer)
-                JWT_RS256 jwtRS256 = new JWT_RS256(new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, "SHA256"));
+                JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_pfx, this.CertificateFilePassword);
 
                 // 生成
                 string jwt = jwtRS256.Create(this.txtJWTPayload.Text);
@@ -655,7 +655,7 @@ namespace EncAndDecUtil
                     + "." + temp[2];
 
                 // 検証
-                JWT_RS256 jwtRS256 = new JWT_RS256(new DigitalSignX509(this.CertificateFilePath_cer, "", "SHA256"));
+                JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_cer, "");
                 ret = jwtRS256.Verify(newJWT);
             }
 
