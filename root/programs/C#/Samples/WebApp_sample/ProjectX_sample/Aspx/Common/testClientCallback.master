@@ -9,7 +9,6 @@
     <title>無題のページ</title>
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
-        <%: Scripts.Render("~/bundles/jquery") %>
     </asp:PlaceHolder>
     <webopt:bundlereference runat="server" path="~/bundles/css" />
 
@@ -32,7 +31,7 @@
     <!-- オートコンプリートを指定 -->
     <form id="form1" runat="server" autocomplete="on">
 
-    <asp:ScriptManager runat="server">
+    <asp:ScriptManager EnableCdn="true" runat="server">
         <Scripts>
             <%--ScriptManager のバンドル スクリプトの詳細については、http://go.microsoft.com/fwlink/?LinkID=301884 を参照してください --%>
             <%--Framework スクリプト--%>

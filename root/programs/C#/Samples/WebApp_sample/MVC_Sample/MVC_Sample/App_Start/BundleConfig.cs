@@ -31,8 +31,12 @@ namespace MVC_Sample
         /// </summary>
         public static void RegisterBundles(BundleCollection bundles)
         {
-            //BundleTable.EnableOptimizations = true;
-            //BundleTable.Bundles.UseCdn = true; // same as: bundles.UseCdn = true;
+            // see : https://www.asp.net/ajax/cdn
+
+            string jqueryVersion = "3.1.1";
+
+            BundleTable.EnableOptimizations = true;
+            BundleTable.Bundles.UseCdn = true; // same as: bundles.UseCdn = true;
 
             // ( new ScriptBundle("~/XXXX") のパスは実在するpathと被るとRender時にバグる。
             // なので、bundlesと実在しないpathを指定している（CSSも同じbundlesを使用する）。
@@ -45,24 +49,52 @@ namespace MVC_Sample
                         "~/Scripts/otr/ie_key_event.js",
                         "~/Scripts/otr/else.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
+            bundles.Add(new ScriptBundle(
+                "~/bundles/jquery",
+                string.Format("//ajax.aspnetcdn.com/ajax/jquery/jquery-{0}.min.js", jqueryVersion))
+                {
+                    CdnFallbackExpression = "window.jQuery"
+                }.Include(string.Format("~/Scripts/jquery-{0}.js", jqueryVersion)));
+
+            bundles.Add(new ScriptBundle(
+                "~/bundles/jqueryval",
+                "//ajax.aspnetcdn.com/ajax/jquery.validate/1.16.0/jquery.validate.min.js")
+                {
+                    CdnFallbackExpression = "window.jQuery.validator"
+                }.Include("~/Scripts/jquery.validate.js"));
+
+            bundles.Add(new ScriptBundle(
+                "~/bundles/jqueryvaluno",
+                "//ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js")
+                {
+                    CdnFallbackExpression = "window.jQuery.validator.unobtrusive"
+                }.Include("~/Scripts/jquery.validate.unobtrusive.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/jqueryunoajax").Include(
+                "~/Scripts/jquery.unobtrusive-ajax.js")); // CDNで提供されていない。
             
-            bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                        "~/Scripts/jquery.validate.js"));
-
-            bundles.Add(new ScriptBundle("~/bundles/jqueryuno").Include(
-                        "~/Scripts/jquery.unobtrusive-ajax.js",
-                        "~/Scripts/jquery.validate.unobtrusive.js"));
-
             // 開発と学習には、Modernizr の開発バージョンを使用します。次に、実稼働の準備ができたら、
             // http://modernizr.com にあるビルド ツールを使用して、必要なテストのみを選択します。
-            bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
-                        "~/Scripts/modernizr-*"));
+            bundles.Add(new ScriptBundle(
+                "~/bundles/modernizr",
+                "//ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js") // min 無し
+                {
+                    CdnFallbackExpression = "window.Modernizr"
+                }.Include("~/Scripts/modernizr-*"));
 
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                        "~/Scripts/bootstrap.js",
-                        "~/Scripts/respond.js"));
+            bundles.Add(new ScriptBundle(
+                "~/bundles/bootstrap",
+                "//ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js")
+                {
+                    CdnFallbackExpression = "window.jQuery.fn.modal"
+                }.Include("~/Scripts/bootstrap.js"));
+
+            bundles.Add(new ScriptBundle(
+                "~/bundles/respond",
+                "//ajax.aspnetcdn.com/ajax/respond/1.4.2/respond.min.js")
+                {
+                    CdnFallbackExpression = "window.respond"
+                }.Include("~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/bundles/css").Include(
                         "~/Content/bootstrap.css",

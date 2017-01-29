@@ -39,8 +39,8 @@ namespace ProjectX_sample
         /// </summary>
         public static void RegisterBundles(BundleCollection bundles)
         {
-            //BundleTable.EnableOptimizations = true;
-            //BundleTable.Bundles.UseCdn = true; // same as: bundles.UseCdn = true;
+            BundleTable.EnableOptimizations = true;
+            BundleTable.Bundles.UseCdn = true; // same as: bundles.UseCdn = true;
 
             // ( new ScriptBundle("~/XXXX") のパスは実在するpathと被るとRender時にバグる。
             // なので、bundlesと実在しないpathを指定している（CSSも同じbundlesを使用する）。
@@ -53,9 +53,7 @@ namespace ProjectX_sample
                     "~/Scripts/otr/ie_key_event.js",
                     "~/Scripts/otr/else.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                    "~/Scripts/jquery-{version}.js"));
-
+            // こちらのCDNフォールバック設定はScriptManager内で行われているため不要
             bundles.Add(new ScriptBundle("~/bundles/WebFormsJs").Include(
                     "~/Scripts/WebForms/WebForms.js",
                     "~/Scripts/WebForms/WebUIValidation.js",
@@ -66,6 +64,7 @@ namespace ProjectX_sample
                     "~/Scripts/WebForms/TreeView.js",
                     "~/Scripts/WebForms/WebParts.js"));
 
+            // こちらのCDNフォールバック設定はScriptManager内で行われているため不要
             // これらのファイルには明示的な依存関係があり、ファイルが動作するためには順序が重要です
             bundles.Add(new ScriptBundle("~/bundles/MsAjaxJs").Include(
                     "~/Scripts/WebForms/MsAjax/MicrosoftAjax.js",
@@ -75,7 +74,12 @@ namespace ProjectX_sample
 
             // 開発と学習には、Modernizr の開発バージョンを使用します。次に、実稼働の準備ができたら、
             // http://modernizr.com にあるビルド ツールを使用して、必要なテストのみを選択します。
-            bundles.Add(new ScriptBundle("~/bundles/modernizr").Include("~/Scripts/modernizr-*"));
+            bundles.Add(new ScriptBundle(
+                "~/bundles/modernizr",
+                "//ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js") // min 無し
+                {
+                    CdnFallbackExpression = "window.Modernizr"
+                }.Include("~/Scripts/modernizr-*"));
 
             ScriptManager.ScriptResourceMapping.AddDefinition(
                 "respond",
@@ -83,6 +87,10 @@ namespace ProjectX_sample
                 {
                     Path = "~/Scripts/respond.min.js",
                     DebugPath = "~/Scripts/respond.js",
+                    CdnPath = "//ajax.aspnetcdn.com/ajax/respond/1.4.2/respond.min.js",
+                    CdnDebugPath = "//ajax.aspnetcdn.com/ajax/respond/1.4.2/respond.js",
+                    CdnSupportsSecureConnection = false,
+                    LoadSuccessExpression = "window.respond"
                 });
         }
     }
