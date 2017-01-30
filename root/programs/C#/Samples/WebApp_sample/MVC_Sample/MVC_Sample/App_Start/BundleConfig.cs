@@ -46,7 +46,6 @@ namespace MVC_Sample
 
             bundles.Add(new ScriptBundle("~/bundles/otr").Include(
                         "~/Scripts/otr/common.js",
-                        "~/Scripts/otr/ie_key_event.js",
                         "~/Scripts/otr/else.js"));
 
             bundles.Add(new ScriptBundle(

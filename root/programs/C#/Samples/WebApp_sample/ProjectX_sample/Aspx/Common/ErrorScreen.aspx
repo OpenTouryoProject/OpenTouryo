@@ -1,14 +1,12 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Common.ErrorScreen" Codebehind="ErrorScreen.aspx.cs" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Common.ErrorScreen" Codebehind="ErrorScreen.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <%--Copyright (C) 2007,2016 Hitachi Solutions,Ltd.--%> <%-- Apache License, Version 2.0 --%>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" >
-<head runat="server">
-    <title>無題のページ</title>
-</head>
-<body>
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" runat="Server">
     <h1>開発用エラー画面</h1>
     <p>
         システム障害が発生しました。<br/>
@@ -82,5 +80,8 @@
              
        </asp:Repeater>
     </div>
-</body>
-</html>
+</asp:Content>
+
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" runat="Server">
+
+</asp:Content>

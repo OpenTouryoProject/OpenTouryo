@@ -82,6 +82,13 @@
     margin           : 0;
     padding          : 5px 0 60px 5px;
     width            : 20%;
+    height           : 800px;                  /* 最小値を決め打ち */
+}
+
+#sidemenucontent{                              /* scrollについてくる */
+    background-color : #4D6082;                /* 背景色 */
+    margin           : 0;
+    padding          : 0;
 }
 
 /* コンテンツの定義 */

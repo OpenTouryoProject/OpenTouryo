@@ -71,6 +71,16 @@ namespace MVC_Sample.Controllers
         }
 
         /// <summary>
+        /// Get: /Home/Scroll
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult Scroll()
+        {
+            return this.View();
+        }
+
+        /// <summary>
         /// Get: /Home/Logout
         /// </summary>
         /// <returns></returns>
