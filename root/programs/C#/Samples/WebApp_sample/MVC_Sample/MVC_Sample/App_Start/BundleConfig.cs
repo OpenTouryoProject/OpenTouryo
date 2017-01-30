@@ -97,8 +97,6 @@ namespace MVC_Sample
 
             bundles.Add(new StyleBundle("~/bundles/css").Include(
                         "~/Content/bootstrap.css",
-                        "~/Content/themes/base/all.css",
-                        "~/Content/themes/base/jquery-ui.css",
                         "~/Content/otr/Style.css",
                         "~/Content/app/Site.css"));
         }

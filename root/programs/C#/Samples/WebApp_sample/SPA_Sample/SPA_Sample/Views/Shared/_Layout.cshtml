@@ -1,38 +1,63 @@
 ﻿<!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8" />
-    <title>@ViewBag.Title - マイ ASP.NET MVC アプリケーション</title>
-    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-    <meta name="viewport" content="width=device-width" />
-    @Styles.Render("~/Content/css")
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/bundles/css")
     @Scripts.Render("~/bundles/modernizr")
-    @Styles.Render("~/Content/themes/base/css")
-</head>
-<body>
-@*    <div id="userSettings">
-        @Html.Partial("_UserSettings")
-    </div>*@
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("HeaderScriptsSection", required: true)
 
-    <div id="body">
-        @RenderBody()
+    <script type="text/javascript">
+        // Resolve URL in the javascript
+        var baseUrl = '@Url.Content("~/")'
+    </script>
+
+</head>
+<body onload="Fx_Document_OnLoad();Fx_AdjustStyle();">
+
+    <div id="header-fixed">
+        <div id="header-bk">
+            <div id="header">
+                <div id="header-logo"><img alt="logo" style="width:80px; height:80px;" src="~/images/otr/logo.png" /></div>
+                <div style="margin: 20px 0 0 100px">
+                    <span>You has signed-in as "・・・".</span>
+                    <span class="test">scroll value</span>
+                </div>
+                <div id="header-button">
+                    <button type="button" class="btn btn-info" onclick="window.location.href = '@Url.Action("Index", "Home")';">Menu</button>
+                    <button type="button" class="btn btn-default" onclick="window.location.href = '@Url.Action("Logout", "Home")';">Sign-out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="body-bk">
+        <div id="body">
+            <div id="sidemenu">
+                <div id="sidemenucontent">
+                    <ul>
+                        <li><span style="color:#ffffff; font-weight:bold;">スクロールに合わせ移動</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="contents">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    <div id="footer-fixed">
+        <div id="footer-bk">
+            <div id="footer">
+                Powered by <a target="_blank" href="https://github.com/OpenTouryoProject">OpenTouryo</a>.
+            </div>
+        </div>
     </div>
 
-@*    <footer>
-        <nav>
-            <ul id="menu">
-                <li>@Html.ActionLink("Todo リスト", "Index", "Home", new { area = "" }, null)</li>
-                <li>@Html.ActionLink("API", "Index", "Help", new { area = "HelpPage" }, null)</li>
-            </ul>
-        </nav> 
-        <p>詳細については、<a href="http://go.microsoft.com/fwlink/?LinkId=273732">シングル ページ アプリケーション</a> を参照してください</p>
-        <p>&copy; @DateTime.Now.Year - マイ ASP.NET MVC アプリケーション</p>
-    </footer>*@
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/otr")
+    @Scripts.Render("~/bundles/app")
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/jqueryui")
-    @Scripts.Render("~/bundles/ajaxlogin")
-    @RenderSection("scripts", required: false)
+    @RenderSection("FooterScriptsSection", required: true)
+
 </body>
 </html>

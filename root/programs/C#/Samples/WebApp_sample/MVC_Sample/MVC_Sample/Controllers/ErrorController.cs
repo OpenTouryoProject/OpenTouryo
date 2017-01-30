@@ -23,6 +23,8 @@ using System;
 using System.Web.Mvc;
 using System.Collections.Generic;
 
+using MVC_Sample.Models;
+
 // フレームワーク
 using Touryo.Infrastructure.Framework.Util;
 

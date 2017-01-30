@@ -1,0 +1,101 @@
+﻿/* *.master の 分割で使用している。 */
+
+/* ヘッダーの固定 */
+#header-fixed
+{
+    position         : fixed;                  /* ヘッダーの固定 */
+    top              : 0;                      /* 位置 (上0px) */
+    left             : 0;                      /* 位置 (右0px) */
+    margin           : 0;
+    padding          : 0;
+    width            : 100%;                   /* 横幅 100%　*/
+    height           : 100px;                  /* 縦幅 100px */
+}
+#header-bk { 
+	background-color : #D6DBE9;                /* 背景色 */
+    margin           : 0;
+    padding          : 0;
+	width            : 100%;                   /* 横幅 100% */
+	height           : 100%;                   /* 縦高 header-fixedと同じ */
+}
+#header { 
+    margin           : 0;
+    padding          : 5px 0 0 5px;
+	width            : 100%;                   /* 横幅 100% */
+    height           : 100%;                   /* 縦高 header-fixedと同じ */
+}
+
+#header-logo {
+   float             : left;
+   text-align        : left;
+}
+#header-button {
+   margin            : 0 50px 0 0;
+   text-align        : right;
+}
+
+/* フッターの固定 */
+#footer-fixed
+{
+    position         : fixed;                  /* フッターの固定 */
+    bottom           : 0;                      /* 位置 (下0px) */
+    left             : 0;                      /* 位置 (左0px) */
+    margin           : 0;
+    padding          : 0;
+    width            : 100%;                   /* 横幅 100%　*/
+    height           : 50px;                   /* 縦幅 100px */
+}
+#footer-bk
+{
+	background-color : #283955;                /* 背景色 */
+    margin           : 0;
+    padding          : 0;
+	width            : 100%;                   /* 横幅 100% */
+	height           : 100%;                   /* 縦高 footer-fixedと同じ */
+}
+#footer { 
+    margin           : 0;
+    padding          : 5px 0 0 5px;
+	width            : 100%;                   /* 横幅 100% */
+    height           : 100%;                   /* 縦高 footer-fixedと同じ */
+	
+}
+
+/* ボディの定義 */
+#body-bk{
+    margin           : 0;
+    padding          : 100px 0 50px 0;         /* 上下にヘッダーフッター分の余白を取る */
+    width            : 100%;                   /* 横幅 100% */
+    height           : 100%;                   /* 縦幅 100px */
+}
+#body{
+    margin           : 0;
+    padding          : 0;
+	width            : 100%;                   /* 横幅 100% */
+    height           : 100%;                   /* 縦高 body-fixedと同じ */
+}
+
+/* 左メニューの定義 */
+#sidemenu{
+    background-color : #4D6082;                /* 背景色 */
+    float            : left;
+    margin           : 0;
+    padding          : 5px 0 60px 5px;
+    width            : 20%;
+    height           : 800px;                  /* 最小値を決め打ち */
+}
+
+#sidemenucontent{                              /* scrollについてくる */
+    background-color : #4D6082;                /* 背景色 */
+    margin           : 0;
+    padding          : 0;
+}
+
+/* コンテンツの定義 */
+#contents{
+    background-color : #FFFFFF;                /* 背景色 */
+    float            : left;
+    margin           : 0;
+    padding          : 5px 0 60px 5px;
+    width            : 80%;
+}
