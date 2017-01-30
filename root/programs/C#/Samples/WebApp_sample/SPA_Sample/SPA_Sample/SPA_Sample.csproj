@@ -146,23 +146,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\AuthConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Codes\Business\LayerB.cs" />
-    <Compile Include="Codes\Common\TestParameterValue.cs" />
-    <Compile Include="Codes\Common\TestReturnValue.cs" />
-    <Compile Include="Codes\Dao\DaoShippers.cs" />
-    <Compile Include="Codes\Dao\LayerD.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Crud2Controller.cs" />
     <Compile Include="Controllers\Crud1Controller.cs" />
+    <Compile Include="Controllers\PingController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Logic\Business\LayerB.cs" />
+    <Compile Include="Logic\Common\TestParameterValue.cs" />
+    <Compile Include="Logic\Common\TestReturnValue.cs" />
+    <Compile Include="Logic\Dao\DaoShippers.cs" />
+    <Compile Include="Logic\Dao\LayerD.cs" />
     <Compile Include="Models\ErrorInformation.cs" />
     <Compile Include="Models\ViewModels\BaseViewModel.cs" />
     <Compile Include="Models\ViewModels\LoginViewModel.cs" />
@@ -211,7 +211,6 @@
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\app\Sample2.viewmodel.js" />
     <Content Include="Scripts\app\Site.js" />
-    <Content Include="Scripts\app\Test.viewmodel.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\errors.json" />
@@ -994,10 +993,6 @@
     </Content>
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Scripts\app\todo.viewmodel.js" />
-    <Content Include="Scripts\app\todo.bindings.js" />
-    <Content Include="Scripts\app\todo.datacontext.js" />
-    <Content Include="Scripts\app\todo.model.js" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -1008,6 +1003,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Home\Scroll.cshtml" />
+    <Content Include="Views\Error\Index.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

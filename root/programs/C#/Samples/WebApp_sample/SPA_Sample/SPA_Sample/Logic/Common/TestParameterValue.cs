@@ -1,4 +1,23 @@
-﻿using System;
+﻿//**********************************************************************************
+//* フレームワーク・テストクラス（引数・戻り値）
+//**********************************************************************************
+
+// テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+
+//**********************************************************************************
+//* クラス名        ：TestParameterValue
+//* クラス日本語名  ：テスト用の引数クラス
+//*
+//* 作成日時        ：－
+//* 作成者          ：sas 生技
+//* 更新履歴        ：
+//*
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//**********************************************************************************
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,7 +26,7 @@ using System.Web;
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Business.Common;
 
-namespace SPA_Sample.Codes.Common
+namespace SPA_Sample.Logic.Common
 {
     public class TestParameterValue : MyParameterValue
     {

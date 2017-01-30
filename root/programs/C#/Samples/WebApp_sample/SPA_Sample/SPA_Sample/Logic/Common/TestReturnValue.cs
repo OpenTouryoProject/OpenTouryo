@@ -25,7 +25,7 @@ using System.Web;
 // ベースクラス
 using Touryo.Infrastructure.Business.Common;
 
-namespace MVC_Sample.Logic.Common
+namespace SPA_Sample.Logic.Common
 {
     public class TestReturnValue : MyReturnValue
     {

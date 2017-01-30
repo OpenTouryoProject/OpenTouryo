@@ -1,4 +1,23 @@
-﻿using System;
+﻿//**********************************************************************************
+//* フレームワーク・テストクラス（Ｄ層）
+//**********************************************************************************
+
+// テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+
+//**********************************************************************************
+//* クラス名        ：LayerD
+//* クラス日本語名  ：Ｄ層のテスト
+//*
+//* 作成日時        ：－
+//* 作成者          ：sas 生技
+//* 更新履歴        ：
+//*
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//**********************************************************************************
+
+using System;
 using System.IO;
 using System.Data;
 using System.Text;
@@ -29,9 +48,9 @@ using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
-using SPA_Sample.Codes.Common;
+using SPA_Sample.Logic.Common;
 
-namespace SPA_Sample.Codes.Dao
+namespace SPA_Sample.Logic.Dao
 {
     public class LayerD : MyBaseDao
     {

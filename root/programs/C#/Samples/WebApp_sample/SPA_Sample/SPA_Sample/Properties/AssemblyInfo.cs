@@ -1,4 +1,23 @@
-﻿using System.Reflection;
+﻿//**********************************************************************************
+//* テンプレート
+//**********************************************************************************
+
+// 以下のLicenseに従い、このProjectをTemplateとして使用可能です。Release時にCopyright表示してSublicenseして下さい。
+// https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LicenseForTemplates.txt
+
+//**********************************************************************************
+//* クラス名        ：AssemblyInfo
+//* クラス日本語名  ：AssemblyInfo設定
+//*
+//* 作成者          ：生技 西野
+//* 更新履歴        ：
+//*
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  20xx/xx/xx  ＸＸ ＸＸ         新規作成
+//**********************************************************************************
+
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -8,9 +27,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SPA_Sample")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("日立ソリューションズ")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SPA_Sample")]
-[assembly: AssemblyCopyright("Copyright © 日立ソリューションズ 2014")]
+[assembly: AssemblyCopyright("Copyright (C) 20XX")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -1,4 +1,27 @@
-﻿<!DOCTYPE html>
+﻿@*
+    //**********************************************************************************
+    //* サンプル アプリ・モデル
+    //**********************************************************************************
+
+    // テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+
+    //**********************************************************************************
+    //* クラス名        ：_Layout
+    //* クラス日本語名  ：マスタ・ページ相当
+    //*
+    //* 作成日時        ：－
+    //* 作成者          ：－
+    //* 更新履歴        ：－
+    //*
+    //*  日時        更新者            内容
+    //*  ----------  ----------------  -------------------------------------------------
+    //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+    //**********************************************************************************
+*@
+
+@* マスタ・ページに相当 *@
+@using SPA_Sample.Models.ViewModels
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -6,6 +29,7 @@
     @Styles.Render("~/bundles/css")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
+
     @RenderSection("HeaderScriptsSection", required: true)
 
     <script type="text/javascript">
@@ -21,7 +45,7 @@
             <div id="header">
                 <div id="header-logo"><img alt="logo" style="width:80px; height:80px;" src="~/images/otr/logo.png" /></div>
                 <div style="margin: 20px 0 0 100px">
-                    <span>You has signed-in as "・・・".</span>
+                    <span>You has signed-in as "@BaseViewModel.UserName".</span>
                     <span class="test">scroll value</span>
                 </div>
                 <div id="header-button">

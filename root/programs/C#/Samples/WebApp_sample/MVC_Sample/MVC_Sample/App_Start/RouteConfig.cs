@@ -1,4 +1,11 @@
 ﻿//**********************************************************************************
+//* テンプレート
+//**********************************************************************************
+
+// 以下のLicenseに従い、このProjectをTemplateとして使用可能です。Release時にCopyright表示してSublicenseして下さい。
+// https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LicenseForTemplates.txt
+
+//**********************************************************************************
 //* クラス名        ：RouteConfig
 //* クラス日本語名  ：ルート定義に関する指定
 //*
@@ -8,13 +15,10 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2015/11/03  Sai               Changed controller to Crud in RegisterRoutes method to display startup page.
+//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 

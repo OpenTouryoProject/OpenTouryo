@@ -1,4 +1,11 @@
 ﻿//**********************************************************************************
+//* テンプレート
+//**********************************************************************************
+
+// 以下のLicenseに従い、このProjectをTemplateとして使用可能です。Release時にCopyright表示してSublicenseして下さい。
+// https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LicenseForTemplates.txt
+
+//**********************************************************************************
 //* クラス名        ：BundleConfig
 //* クラス日本語名  ：バンドル＆ミニフィケーションに関する指定
 //*
@@ -13,7 +20,6 @@
 
 using System.Web;
 using System.Web.Optimization;
-
 
 namespace SPA_Sample
 {

@@ -98,7 +98,7 @@
             ddlMode1: $scope.ddlMode1,
             ddlMode2: $scope.ddlMode2,
             ddlExRollback: $scope.ddlExRollback
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -114,7 +114,7 @@
                     });
                 }
                 else {
-                    $scope.$apply(function(){
+                    $scope.$apply(function () {
                         // 結果格納
                         $scope.Result = data.message;
                     });
@@ -140,7 +140,7 @@
             ddlMode1: $scope.ddlMode1,
             ddlMode2: $scope.ddlMode2,
             ddlExRollback: $scope.ddlExRollback
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -184,7 +184,7 @@
             ddlMode1: $scope.ddlMode1,
             ddlMode2: $scope.ddlMode2,
             ddlExRollback: $scope.ddlExRollback
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -228,7 +228,7 @@
             ddlMode1: $scope.ddlMode1,
             ddlMode2: $scope.ddlMode2,
             ddlExRollback: $scope.ddlExRollback
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -274,7 +274,7 @@
             ddlExRollback: $scope.ddlExRollback,
             OrderColumn: $scope.ddlOrderColumn,
             OrderSequence: $scope.ddlOrderSequence
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -319,7 +319,7 @@
             ddlMode2: $scope.ddlMode2,
             ddlExRollback: $scope.ddlExRollback,
             ShipperId: $scope.ShipperId
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -364,7 +364,7 @@
             ddlExRollback: $scope.ddlExRollback,
             CompanyName: $scope.CompanyName,
             Phone: $scope.Phone
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -407,7 +407,7 @@
             ShipperId: $scope.ShipperId,
             CompanyName: $scope.CompanyName,
             Phone: $scope.Phone
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -449,7 +449,7 @@
             ddlMode2: $scope.ddlMode2,
             ddlExRollback: $scope.ddlExRollback,
             ShipperId: $scope.ShipperId
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -483,11 +483,11 @@
     $scope.ClearList = function () {
         // レコードリストをクリアする
         $scope.dataLists = [];
-    }
+    };
 
     // エラーメッセージを監視し、メッセージが設定されたらエラーダイアログを出す
     $scope.$watch('ErrorMessage', function (newVal, oldVal) {
-        if (newVal != '') {
+        if (newVal !== '') {
             $('<div>' + newVal + '</div>').dialog({
                 title: 'エラーが発生しました',
                 modal: true,
@@ -502,4 +502,4 @@
             });
         }
     }, true);
-}
+};

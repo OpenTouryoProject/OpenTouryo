@@ -100,7 +100,7 @@
             ddlMode1: this.ddlMode1(),
             ddlMode2: this.ddlMode2(),
             ddlExRollback: this.ddlExRollback()
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -138,7 +138,7 @@
             ddlMode1: this.ddlMode1(),
             ddlMode2: this.ddlMode2(),
             ddlExRollback: this.ddlExRollback()
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -178,7 +178,7 @@
             ddlMode1: this.ddlMode1(),
             ddlMode2: this.ddlMode2(),
             ddlExRollback: this.ddlExRollback()
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -218,7 +218,7 @@
             ddlMode1: this.ddlMode1(),
             ddlMode2: this.ddlMode2(),
             ddlExRollback: this.ddlExRollback()
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -260,7 +260,7 @@
             ddlExRollback: this.ddlExRollback(),
             OrderColumn: this.ddlOrderColumn(),
             OrderSequence: this.ddlOrderSequence()
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -301,7 +301,7 @@
             ddlMode2: this.ddlMode2(),
             ddlExRollback: this.ddlExRollback(),
             ShipperId: this.ShipperId()
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -342,7 +342,7 @@
             ddlExRollback: this.ddlExRollback(),
             CompanyName: this.CompanyName(),
             Phone: this.Phone()
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -381,7 +381,7 @@
             ShipperId: this.ShipperId(),
             CompanyName: this.CompanyName(),
             Phone: this.Phone()
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -419,7 +419,7 @@
             ddlMode2: this.ddlMode2(),
             ddlExRollback: this.ddlExRollback(),
             ShipperId: this.ShipperId()
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
@@ -447,7 +447,7 @@
     this.ClearList = function () {
         // レコードリストをクリアする
         this.dataLists([]);
-    }
+    };
 }
 
 // ViewModel を作成
@@ -455,7 +455,7 @@ var model = new Sample1ViewModel();
 
 // エラーメッセージが格納されたら、ダイアログを出す
 model.ErrorMessage.subscribe(function (newValue) {
-    if (newValue != '') {
+    if (newValue !== '') {
         $('<div>' + newValue + '</div>').dialog({
             title: 'エラーが発生しました',
             modal: true,

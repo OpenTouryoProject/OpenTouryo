@@ -6,7 +6,7 @@
 // https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LicenseForTemplates.txt
 
 //**********************************************************************************
-//* クラス名        ：Global_asax
+//* クラス名        ：Global
 //* クラス日本語名  ：Global.asaxのコード ビハインド
 //*
 //* 作成日時        ：－

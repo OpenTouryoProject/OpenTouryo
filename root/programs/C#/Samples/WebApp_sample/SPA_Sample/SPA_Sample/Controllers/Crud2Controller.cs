@@ -1,16 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿//**********************************************************************************
+//* サンプル アプリ・コントローラ
+//**********************************************************************************
+
+// テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+
+//**********************************************************************************
+//* クラス名        ：Crud2Controller
+//* クラス日本語名  ：AngularJS用サンプル アプリ・コントローラ
+//*
+//* 作成日時        ：－
+//* 作成者          ：sas 生技
+//* 更新履歴        ：
+//*
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//**********************************************************************************
+
 using System.Web.Mvc;
 
 namespace SPA_Sample.Controllers
 {
+    /// <summary>
+    /// Crud2Controller
+    /// AngularJS用サンプル アプリ・コントローラ
+    /// </summary>
     public class Crud2Controller : Controller
     {
-        //
-        // GET: /Crud2/
-
+        /// <summary>
+        /// GET: /Crud2/
+        /// </summary>
+        /// <returns>ActionResult</returns>
         public ActionResult Index()
         {
             return View();

@@ -1,4 +1,11 @@
 ﻿//**********************************************************************************
+//* テンプレート
+//**********************************************************************************
+
+// 以下のLicenseに従い、このProjectをTemplateとして使用可能です。Release時にCopyright表示してSublicenseして下さい。
+// https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LicenseForTemplates.txt
+
+//**********************************************************************************
 //* クラス名        ：WebApiConfig
 //* クラス日本語名  ：ルート定義に関する指定（WebApi用）
 //*
@@ -12,8 +19,6 @@
 //**********************************************************************************
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web.Http;
 
 namespace MVC_Sample

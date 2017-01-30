@@ -1,4 +1,28 @@
-﻿using System;
+﻿//**********************************************************************************
+//* Ｄ層 自動生成・テストクラス
+//**********************************************************************************
+
+// テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+
+//**********************************************************************************
+//* クラス名        ：DaoShippers
+//* クラス日本語名  ：自動生成Ｄａｏクラス
+//*
+//* 作成日時        ：2014/2/9
+//* 作成者          ：棟梁 D層自動生成ツール（墨壺）, 日立 太郎
+//* 更新履歴        ：
+//*
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//*  2012/06/14  西野  大介        ResourceLoaderに加え、EmbeddedResourceLoaderに対応
+//*  2013/09/09  西野  大介        ExecGenerateSQLメソッドを追加した（バッチ更新用）。
+//**********************************************************************************
+
+#region using
+
+// System～
+using System;
 using System.IO;
 using System.Data;
 using System.Collections;
@@ -14,8 +38,11 @@ using Touryo.Infrastructure.Public.Util;
 // 業務フレームワーク
 using Touryo.Infrastructure.Business.Dao;
 
-namespace SPA_Sample.Codes.Dao
+#endregion
+
+namespace SPA_Sample.Logic.Dao
 {
+    /// <summary>自動生成Ｄａｏクラス</summary>
     public class DaoShippers : MyBaseDao
     {
         #region インスタンス変数
@@ -178,6 +205,52 @@ namespace SPA_Sample.Codes.Dao
         }
 
 
+
+        /// <summary>ShipperID_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+        /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+        public object ShipperID_Like
+        {
+            set
+            {
+                this.HtParameter["ShipperID_Like"] = value;
+            }
+            get
+            {
+                return this.HtParameter["ShipperID_Like"];
+            }
+        }
+
+
+        /// <summary>CompanyName_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+        /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+        public object CompanyName_Like
+        {
+            set
+            {
+                this.HtParameter["CompanyName_Like"] = value;
+            }
+            get
+            {
+                return this.HtParameter["CompanyName_Like"];
+            }
+        }
+
+
+        /// <summary>Phone_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+        /// <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
+        public object Phone_Like
+        {
+            set
+            {
+                this.HtParameter["Phone_Like"] = value;
+            }
+            get
+            {
+                return this.HtParameter["Phone_Like"];
+            }
+        }
+
+
         #endregion
 
         #region クエリ メソッド
@@ -327,6 +400,21 @@ namespace SPA_Sample.Codes.Dao
 
             // SQL（SELECT COUNT）を実行し、戻り値を戻す。
             return this.ExecSelectScalar();
+        }
+
+        /// <summary>静的SQLを生成する。</summary>
+        /// <param name="fileName">ファイル名</param>
+        /// <param name="sqlUtil">SQLユーティリティ</param>
+        /// <returns>生成した静的SQL</returns>
+        public string ExecGenerateSQL(string fileName, SQLUtility sqlUtil)
+        {
+            // ファイルからSQLを設定する。
+            this.SetSqlByFile2(fileName);
+
+            // パラメタの設定
+            this.SetParametersFromHt();
+
+            return base.ExecGenerateSQL(sqlUtil);
         }
 
         #endregion

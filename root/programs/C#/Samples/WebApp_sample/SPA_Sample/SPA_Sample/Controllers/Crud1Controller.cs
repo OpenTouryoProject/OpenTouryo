@@ -1,12 +1,31 @@
-﻿using SPA_Sample.Models;
-using System;
+﻿//**********************************************************************************
+//* サンプル アプリ・コントローラ
+//**********************************************************************************
+
+// テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+
+//**********************************************************************************
+//* クラス名        ：Crud1Controller
+//* クラス日本語名  ：knockout.js用サンプル アプリ・コントローラ
+//*
+//* 作成日時        ：－
+//* 作成者          ：sas 生技
+//* 更新履歴        ：
+//*
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//**********************************************************************************
+
+//System
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Mvc;
+
+using SPA_Sample.Models;
 
 // 業務フレームワーク
 using Touryo.Infrastructure.Business.Business;
@@ -31,22 +50,35 @@ using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
-using SPA_Sample.Codes.Business;
-using SPA_Sample.Codes.Common;
+using SPA_Sample.Logic.Business;
+using SPA_Sample.Logic.Common;
 
 namespace SPA_Sample.Controllers
 {
+    /// <summary>
+    /// Crud1Controller
+    /// knockout.js用サンプル アプリ・コントローラ
+    /// </summary>
     public class Crud1Controller : Controller
     {
+        /// <summary>
+        /// GET: /Crud1/
+        /// </summary>
+        /// <returns>ActionResult</returns>
         public ActionResult Index()
         {
             return View();
         }
     }
 
+    /// <summary>GetCountController</summary>
     public class GetCountController : ApiController
     {
-        // POST api/GetCount
+        /// <summary>
+        /// POST api/GetCount
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
         public HttpResponseMessage Post(WebApiParams param)
         {
             // 引数クラスを生成
@@ -94,9 +126,14 @@ namespace SPA_Sample.Controllers
         }
     }
 
+    /// <summary>SelectDTController</summary>
     public class SelectDTController : ApiController
     {
-        // POST api/SelectDT
+        /// <summary>
+        /// POST api/SelectDT
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
         public HttpResponseMessage Post(WebApiParams param)
         {
             // 引数クラスを生成
@@ -154,9 +191,14 @@ namespace SPA_Sample.Controllers
         }
     }
 
+    /// <summary>SelectDSController</summary>
     public class SelectDSController : ApiController
     {
-        // POST api/SelectDS
+        /// <summary>
+        /// POST api/SelectDS
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
         public HttpResponseMessage Post(WebApiParams param)
         {
             // 引数クラスを生成
@@ -214,9 +256,14 @@ namespace SPA_Sample.Controllers
         }
     }
 
+    /// <summary>SelectDRController</summary>
     public class SelectDRController : ApiController
     {
-        // POST api/SelectDR
+        /// <summary>
+        /// POST api/SelectDR
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
         public HttpResponseMessage Post(WebApiParams param)
         {
             // 引数クラスを生成
@@ -277,9 +324,14 @@ namespace SPA_Sample.Controllers
         }
     }
 
+    /// <summary>SelectDSQLController</summary>
     public class SelectDSQLController : ApiController
     {
-        // POST api/SelectDSQL
+        /// <summary>
+        /// POST api/SelectDSQL
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
         public HttpResponseMessage Post(WebApiParams param)
         {
             // 引数クラスを生成
@@ -339,9 +391,14 @@ namespace SPA_Sample.Controllers
         }
     }
 
+    /// <summary>SelectController</summary>
     public class SelectController : ApiController
     {
-        // POST api/Select
+        /// <summary>
+        /// POST api/Select
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
         public HttpResponseMessage Post(WebApiParams param)
         {
             // 引数クラスを生成
@@ -389,9 +446,14 @@ namespace SPA_Sample.Controllers
         }
     }
 
+    /// <summary>InsertController</summary>
     public class InsertController : ApiController
     {
-        // POST api/Insert
+        /// <summary>
+        /// POST api/Insert
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
         public HttpResponseMessage Post(WebApiParams param)
         {
             // 引数クラスを生成
@@ -440,9 +502,14 @@ namespace SPA_Sample.Controllers
         }
     }
 
+    /// <summary>UpdateController</summary>
     public class UpdateController : ApiController
     {
-        // POST api/Update
+        /// <summary>
+        /// POST api/Update
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
         public HttpResponseMessage Post(WebApiParams param)
         {
             // 引数クラスを生成
@@ -492,9 +559,14 @@ namespace SPA_Sample.Controllers
         }
     }
 
+    /// <summary>DeleteController</summary>
     public class DeleteController : ApiController
     {
-        // POST api/Delete
+        /// <summary>
+        /// POST api/Delete
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
         public HttpResponseMessage Post(WebApiParams param)
         {
             // 引数クラスを生成
