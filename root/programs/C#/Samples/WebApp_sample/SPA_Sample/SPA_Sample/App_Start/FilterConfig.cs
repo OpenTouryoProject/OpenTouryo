@@ -18,7 +18,6 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-using System.Web;
 using System.Web.Mvc;
 
 namespace SPA_Sample

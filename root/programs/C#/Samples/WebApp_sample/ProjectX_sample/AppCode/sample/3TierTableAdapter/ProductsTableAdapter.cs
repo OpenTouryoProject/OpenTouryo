@@ -17,36 +17,16 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System
 using System;
 using System.Data;
-
-// System.Web
 using System.Web;
 
-// 業務フレームワーク
 using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
 using Touryo.Infrastructure.Business.Presentation;
+using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
 using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
 
 namespace ProjectX_sample
 {

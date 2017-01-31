@@ -56,7 +56,7 @@
     }
     else
     {
-        label1Data = MVC_Sample.ErrorInformation.ErrorMessage;
+        label1Data = SPA_Sample.Models.ErrorInformation.ErrorMessage;
     }
     if (@ViewBag.label2Data != null)
     {
@@ -65,7 +65,7 @@
     }
     else
     {
-        label2Data = MVC_Sample.ErrorInformation.ErrorInfo;
+        label2Data = SPA_Sample.Models.ErrorInformation.ErrorInfo;
     }
 }
 <h1>開発用エラー画面</h1>
@@ -115,7 +115,7 @@
                 }
                 else
                 {
-                    ViewBag.datas = MVC_Sample.ErrorInformation.ErrorDatas;
+                    ViewBag.datas = SPA_Sample.Models.ErrorInformation.ErrorDatas;
                     foreach (var row in ViewBag.datas)
                     {
                         <tr>

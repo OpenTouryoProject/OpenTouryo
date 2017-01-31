@@ -18,9 +18,7 @@
 //*  20xx/xx/xx  ‚w‚w ‚w‚w         ‚w‚w‚w‚w
 //**********************************************************************************
 
-// System
 using System.Web.Routing;
-// Microsoft
 //using Microsoft.AspNet.FriendlyUrls;
 
 namespace ProjectX_sample

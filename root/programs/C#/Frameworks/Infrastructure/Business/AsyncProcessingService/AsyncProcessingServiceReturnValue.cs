@@ -19,22 +19,19 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名             : AsyncProcessingServiceReturnValue.cs
-//* クラス名クラス名     :
+//* クラス名        ：AsyncProcessingServiceReturnValue
+//* クラス日本語名  ：AsyncProcessingServiceReturnValue
 //*
-//* 作成者               : Supragyan
-//* クラス日本語名       :
-//* 更新履歴
-//*  Date:        Author:        Comments:
-//*  ----------   -------------- -------------------------------------------------
-//*  11/28/2014   Supragyan      Paramter Return Value class for Asynchronous Processing Service
-//*  04/15/2015   Sandeep        Changed datatype of ProgressRate to decimal.
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  11/28/2014  Supragyan         Paramter Return Value class for Asynchronous Processing Service
+//*  04/15/2015  Sandeep           Changed datatype of ProgressRate to decimal.
 //**********************************************************************************
 
 using System;
 using Touryo.Infrastructure.Business.Common;
 
-namespace AsyncProcessingService
+namespace Touryo.Infrastructure.Business.AsyncProcessingService
 {
 
     /// <summary>

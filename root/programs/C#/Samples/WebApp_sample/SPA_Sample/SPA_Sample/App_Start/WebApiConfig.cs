@@ -18,7 +18,6 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-using System;
 using System.Web.Http;
 using Newtonsoft.Json.Serialization;
 

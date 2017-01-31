@@ -50,7 +50,7 @@
 //*  06/26/2015   Sandeep          Implemented code to handle unstable "Register" state, when you invoke [Abort] to AsyncTask, at this "Register" state,
 //*                                Implemented code to 'Enable and Handle pre-shutdown notification' technique, to resolve the issue of 
 //*                                OnShutdown method, when you restart or shutdown the OS 
-//*  06/01/2016   Sandeep        Implemented '_isServiceException' property and 'SetServiceException' method, to enhance the Start and Stop behavior
+//*  06/01/2016   Sandeep          Implemented '_isServiceException' property and 'SetServiceException' method, to enhance the Start and Stop behavior
 //**********************************************************************************
 
 using System;
@@ -60,8 +60,7 @@ using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.ServiceProcess;
 
-using AsyncProcessingService;
-
+using Touryo.Infrastructure.Business.AsyncProcessingService;
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Transmission;
 using Touryo.Infrastructure.Framework.Exceptions;

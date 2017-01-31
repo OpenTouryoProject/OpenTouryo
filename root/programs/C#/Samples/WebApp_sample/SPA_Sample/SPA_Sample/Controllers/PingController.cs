@@ -33,7 +33,6 @@
 //*  2016/01/12  Sai               Modfied XML comments.
 //**********************************************************************************
 
-//System
 using System.Web.Mvc;
 
 namespace MVC_Sample.Controllers

@@ -23,7 +23,7 @@
 //* クラス日本語名  ：Ping Controller for Html.BeginForm
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
@@ -33,7 +33,6 @@
 //*  2016/01/12  Sai               Modfied XML comments.
 //**********************************************************************************
 
-//System
 using System.Web.Mvc;
 
 namespace MVC_Sample.Controllers

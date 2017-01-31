@@ -17,7 +17,6 @@
 //*  2015/03/05  Supragyan         Created testJQGridJson class.
 //**********************************************************************************
 
-// System
 using System;
 
 namespace ProjectX_sample.Aspx.TestFxLayerP.Table

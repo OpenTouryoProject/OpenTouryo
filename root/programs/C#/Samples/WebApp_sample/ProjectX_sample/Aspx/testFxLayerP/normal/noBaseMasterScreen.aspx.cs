@@ -17,10 +17,6 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System
-// System.Web
-
-// OpenTouryo
 using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Framework.Presentation;
 

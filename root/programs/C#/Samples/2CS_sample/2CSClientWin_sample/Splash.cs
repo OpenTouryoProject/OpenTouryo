@@ -2,29 +2,24 @@
 //* サンプル アプリ画面
 //**********************************************************************************
 
+// テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
 //**********************************************************************************
 //* クラス名        ：Splash
 //* クラス日本語名  ：スプラッシュ画面
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
-//*
 //**********************************************************************************
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-
 using System.Threading;
+using System.Windows.Forms;
 
 using Touryo.Infrastructure.Public.Log;
 

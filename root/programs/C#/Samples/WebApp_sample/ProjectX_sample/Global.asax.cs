@@ -21,9 +21,8 @@
 //*                                OnPostRequestHandlerExecuteにACCESSログを追加
 //**********************************************************************************
 
-// System
 using System;
-// OpenTouryo
+
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
 

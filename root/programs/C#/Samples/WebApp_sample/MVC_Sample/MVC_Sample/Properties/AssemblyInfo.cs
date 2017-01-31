@@ -1,24 +1,23 @@
 ﻿//**********************************************************************************
-//* テンプレート
+//* ASP.NET MVC・サンプル アプリ
 //**********************************************************************************
 
-// 以下のLicenseに従い、このProjectをTemplateとして使用可能です。Release時にCopyright表示してSublicenseして下さい。
-// https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LicenseForTemplates.txt
+// テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
 
 //**********************************************************************************
 //* クラス名        ：AssemblyInfo
 //* クラス日本語名  ：AssemblyInfo設定
 //*
-//* 作成者          ：生技 西野
+//* 作成日時        ：－
+//* 作成者          ：生技
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  20xx/xx/xx  ＸＸ ＸＸ         新規作成
+//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // アセンブリに関する一般情報は、以下の属性セットによって 
@@ -27,7 +26,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("MVC_Sample")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("xxxx")]
 [assembly: AssemblyProduct("MVC_Sample")]
 [assembly: AssemblyCopyright("Copyright (C) 20XX")]
 [assembly: AssemblyTrademark("")]

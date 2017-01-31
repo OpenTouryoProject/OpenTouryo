@@ -28,7 +28,7 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  11/28/2014   Supragyan      ServiceInstaller class for installing windows service
+//*  11/28/2014  Supragyan         ServiceInstaller class for installing windows service
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.ServiceInterface.AsyncProcessingService

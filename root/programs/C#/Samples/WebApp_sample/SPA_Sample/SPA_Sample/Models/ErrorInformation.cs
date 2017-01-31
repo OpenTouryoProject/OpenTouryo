@@ -31,15 +31,9 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-//System
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-//SPA_Sample
 using SPA_Sample.Controllers;
+
+using System.Collections.Generic;
 
 namespace SPA_Sample.Models
 {

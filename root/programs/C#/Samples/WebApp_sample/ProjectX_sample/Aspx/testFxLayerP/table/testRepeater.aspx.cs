@@ -17,46 +17,15 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System
 using System;
 using System.IO;
 using System.Data;
 using System.Collections.Generic;
-
-// System.Web
 using System.Web.UI.WebControls;
 
-#region OpenTouryo
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Str;
-using Touryo.Infrastructure.Business.Transmission;
-using Touryo.Infrastructure.Business.Util;
-
 using Touryo.Infrastructure.CustomControl;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
+using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Transmission;
-using Touryo.Infrastructure.Framework.Util;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
-#endregion
-
-using System.Text.RegularExpressions;
 
 namespace ProjectX_sample.Aspx.TestFxLayerP.Table
 {

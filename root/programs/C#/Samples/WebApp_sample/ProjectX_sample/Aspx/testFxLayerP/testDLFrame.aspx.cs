@@ -18,9 +18,6 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System
-
-// OpenTouryo
 using Touryo.Infrastructure.Business.Presentation;
 
 namespace ProjectX_sample.Aspx.TestFxLayerP

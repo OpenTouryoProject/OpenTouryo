@@ -1,55 +1,26 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
+//* 非同期処理サービス・サンプル アプリ
 //**********************************************************************************
 
-#region Apache License
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License. 
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-#endregion
+// テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
 
 //**********************************************************************************
-//* クラス名            :Program.cs
-//* クラス名クラス名     :
+//* クラス名        ：Program
+//* クラス日本語名  ：Program
 //*
-//* 作成者              :Supragyan
-//* クラス日本語名       :
-//* 更新履歴
-//*  Date:        Author:        Comments:
+//*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  11/28/2014   Supragyan      For Inserts data to database 
-//*  17/08/2015   Sandeep        Modified insert method name from 'Start' to 'InsertTask'.
-//*                              Modified object of LayerB that is related to Business project,
-//*                              instead of AsyncSvc_sample project. 
+//*  11/28/2014  Supragyan         For Inserts data to database.
+//*  17/08/2015  Sandeep           Modified insert method name from 'Start' to 'InsertTask'.
+//*                                Modified object of LayerB that is related to Business project,
+//*                                instead of AsyncSvc_sample project. 
 //**********************************************************************************
-//system
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-//部品
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Db;
-
-//業務フレームワーク
+using Touryo.Infrastructure.Business.AsyncProcessingService;
 using Touryo.Infrastructure.Business.Util;
-
-//AsyncSvc_Sample
-using AsyncSvc_sample;
-
-//AsyncProcessingService
-using AsyncProcessingService;
+using Touryo.Infrastructure.Public.Db;
 
 namespace TestAsyncSvc_Sample
 {
@@ -93,7 +64,7 @@ namespace TestAsyncSvc_Sample
             AsyncProcessingServiceReturnValue asyncReturnValue;
 
             // Execute do business logic method.
-            AsyncProcessingService.LayerB layerB = new AsyncProcessingService.LayerB();
+            LayerB layerB = new LayerB();
             asyncReturnValue = (AsyncProcessingServiceReturnValue)layerB.DoBusinessLogic((AsyncProcessingServiceParameterValue)asyncParameterValue, iso);
             return asyncParameterValue;
         }

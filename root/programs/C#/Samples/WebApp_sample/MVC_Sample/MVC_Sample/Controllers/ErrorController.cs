@@ -23,7 +23,7 @@
 //* クラス日本語名  ：エラー処理用コントローラ
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
@@ -34,17 +34,13 @@
 //*  2015/09/04  Supragyan         Modified ArrayList to List of ExceptionData on Index action method
 //**********************************************************************************
 
-//system
+using MVC_Sample.Models;
+
 using System;
 using System.Web.Mvc;
 using System.Collections.Generic;
 
-using MVC_Sample.Models;
-
-// フレームワーク
 using Touryo.Infrastructure.Framework.Util;
-
-// 部品
 using Touryo.Infrastructure.Public.Str;
 
 namespace MVC_Sample.Controllers

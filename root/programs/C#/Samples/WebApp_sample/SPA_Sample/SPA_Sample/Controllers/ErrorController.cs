@@ -34,17 +34,13 @@
 //*  2015/09/04  Supragyan         Modified ArrayList to List of ExceptionData on Index action method
 //**********************************************************************************
 
-//system
+using SPA_Sample.Models;
+
 using System;
 using System.Web.Mvc;
 using System.Collections.Generic;
 
-using SPA_Sample.Models;
-
-// フレームワーク
 using Touryo.Infrastructure.Framework.Util;
-
-// 部品
 using Touryo.Infrastructure.Public.Str;
 
 namespace SPA_Sample.Controllers

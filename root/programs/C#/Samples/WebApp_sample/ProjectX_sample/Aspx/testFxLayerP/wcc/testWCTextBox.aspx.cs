@@ -17,13 +17,10 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System
 using System;
 using System.Data;
 using System.Collections.Generic;
-// System.Web
 
-// OpenTouryo
 using Touryo.Infrastructure.CustomControl;
 
 namespace ProjectX_sample.Aspx.TestFxLayerP.Wcc

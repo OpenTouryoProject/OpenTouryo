@@ -1,69 +1,37 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
+//* 非同期処理サービス・サンプル アプリ
 //**********************************************************************************
 
-#region Apache License
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License. 
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-#endregion
+// テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
 
 //**********************************************************************************
-//* クラス名            :LayerB.cs
-//* クラス名クラス名     :
+//* クラス名        ：LayerB
+//* クラス日本語名  ：LayerB
 //*
-//* 作成者              :Supragyan
-//* クラス日本語名       :
-//* 更新履歴
-//*  Date:        Author:        Comments:
+//*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  11/28/2014   Supragyan      LayerB class for AsyncProcessing Service.
-//*  17/08/2015   Sandeep        Implemented serialization and deserialization methods.
-//*                              Modified the code to start and update asynchronous task.
-//*                              Implemented code to get command value and update progress rate.
-//*                              Implemented code to declare and initialize the member variable.
-//*                              Implemented code to handle abnormal termination, while updating the asynchronous process.
-//*                              Implemented code to resume asynchronous process in the middle of the processing.
-//*  21/08/2015   Sandeep        Modified code to call layerD of AsynProcessingService instead of do business logic.
-//*  28/08/2015   Sandeep        Resolved transaction timeout issue by using DamKeyForABT and DamKeyForAMT properties.
-//*  07/06/2016   Sandeep        Implemented code that respond to various test cases, other than success state.
-//*  08/06/2016   Sandeep        Implemented method to update the command of selected task.
+//*  11/28/2014   Supragyan        LayerB class for AsyncProcessing Service.
+//*  17/08/2015   Sandeep          Implemented serialization and deserialization methods.
+//*                                Modified the code to start and update asynchronous task.
+//*                                Implemented code to get command value and update progress rate.
+//*                                Implemented code to declare and initialize the member variable.
+//*                                Implemented code to handle abnormal termination, while updating the asynchronous process.
+//*                                Implemented code to resume asynchronous process in the middle of the processing.
+//*  21/08/2015   Sandeep          Modified code to call layerD of AsynProcessingService instead of do business logic.
+//*  28/08/2015   Sandeep          Resolved transaction timeout issue by using DamKeyForABT and DamKeyForAMT properties.
+//*  07/06/2016   Sandeep          Implemented code that respond to various test cases, other than success state.
+//*  08/06/2016   Sandeep          Implemented method to update the command of selected task.
 //**********************************************************************************
 
-// System
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.Serialization.Formatters.Binary;
 
-//業務フレームワーク
+using Touryo.Infrastructure.Business.AsyncProcessingService;
 using Touryo.Infrastructure.Business.Business;
 using Touryo.Infrastructure.Business.Util;
-
-// Framework
-using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
-
-//部品
 using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Util;
-using Touryo.Infrastructure.Public.Db;
-
-//AsyncProcessingService
-using AsyncProcessingService;
 
 namespace AsyncSvc_sample
 {

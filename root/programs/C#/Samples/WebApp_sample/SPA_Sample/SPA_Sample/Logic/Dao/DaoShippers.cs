@@ -19,26 +19,11 @@
 //*  2013/09/09  西野  大介        ExecGenerateSQLメソッドを追加した（バッチ更新用）。
 //**********************************************************************************
 
-#region using
-
-// System～
-using System;
-using System.IO;
 using System.Data;
 using System.Collections;
 
-// フレームワーク
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Common;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.Util;
-
-// 業務フレームワーク
 using Touryo.Infrastructure.Business.Dao;
-
-#endregion
+using Touryo.Infrastructure.Public.Db;
 
 namespace SPA_Sample.Logic.Dao
 {

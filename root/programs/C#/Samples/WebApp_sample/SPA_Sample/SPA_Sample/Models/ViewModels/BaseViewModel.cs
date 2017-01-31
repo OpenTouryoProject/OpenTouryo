@@ -31,7 +31,6 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-using System.ComponentModel.DataAnnotations;
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Util;
 

@@ -9,7 +9,7 @@
 //* クラス日本語名  ：認証用サンプル アプリ・コントローラ
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
@@ -17,15 +17,14 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+using MVC_Sample.Models.ViewModels;
+
 using System.Web.Mvc;
 using System.Web.Security;
-
-using MVC_Sample.Models.ViewModels;
 
 using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Util;
-
 
 namespace MVC_Sample.Controllers
 {

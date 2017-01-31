@@ -18,7 +18,6 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System
 using System.Web.UI;
 using System.Web.Optimization;
 

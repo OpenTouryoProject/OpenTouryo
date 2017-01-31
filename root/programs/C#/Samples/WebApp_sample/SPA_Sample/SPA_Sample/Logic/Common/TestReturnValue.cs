@@ -17,12 +17,6 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-// ベースクラス
 using Touryo.Infrastructure.Business.Common;
 
 namespace SPA_Sample.Logic.Common

@@ -19,23 +19,20 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名             : LayerD.cs
-//* クラス名クラス名     :
+//* クラス名        ：LayerD
+//* クラス日本語名  ：LayerD
 //*
-//* 作成者               : Supragyan
-//* クラス日本語名       :
-//* 更新履歴
-//*  Date:        Author:        Comments:
-//*  ----------   -------------- -------------------------------------------------
-//*  11/28/2014   Supragyan      Created LayerD class for AsyncProcessing Service
-//*  11/28/2014   Supragyan      Created Insert,Update,Select method for AsyncProcessing Service
-//*  04/14/2015   Sandeep        Did code modification of update and select asynchronous task 
-//*  04/14/2015   Sandeep        Did code implementation of SetSqlByFile3 to access the SQL from embedded resource
-//*  05/28/2015   Sandeep        Did code implementation to update Exception information to the database
-//*  06/09/2015   Sandeep        Implemented code to update stop command to all the running asynchronous task
-//*                              Modified code to reset Exception information, before starting asynchronous task 
-//*  06/26/2015   Sandeep        Removed the where condition command <> 'Abort' from the SelectTask asynchronous task,
-//*                              to resolve unstable "Register" state, when you invoke [Abort] to AsyncTask, at this "Register" state
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  11/28/2014  Supragyan         Created LayerD class for AsyncProcessing Service
+//*  11/28/2014  Supragyan         Created Insert,Update,Select method for AsyncProcessing Service
+//*  04/14/2015  Sandeep           Did code modification of update and select asynchronous task 
+//*  04/14/2015  Sandeep           Did code implementation of SetSqlByFile3 to access the SQL from embedded resource
+//*  05/28/2015  Sandeep           Did code implementation to update Exception information to the database
+//*  06/09/2015  Sandeep           Implemented code to update stop command to all the running asynchronous task
+//*                                Modified code to reset Exception information, before starting asynchronous task 
+//*  06/26/2015  Sandeep           Removed the where condition command <> 'Abort' from the SelectTask asynchronous task,
+//*                                to resolve unstable "Register" state, when you invoke [Abort] to AsyncTask, at this "Register" state
 //**********************************************************************************
 
 using System;
@@ -47,7 +44,7 @@ using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Util;
 
-namespace AsyncProcessingService
+namespace Touryo.Infrastructure.Business.AsyncProcessingService
 {
     /// <summary>
     /// LayerD class for AsyncProcessing Service

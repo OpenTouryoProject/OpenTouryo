@@ -17,10 +17,6 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System
-// System.Web
-
-// OpenTouryo
 using Touryo.Infrastructure.Business.Presentation;
 
 namespace ProjectX_sample.Aspx.Start

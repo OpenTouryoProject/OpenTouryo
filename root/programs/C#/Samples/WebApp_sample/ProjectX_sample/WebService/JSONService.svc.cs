@@ -20,21 +20,18 @@
 //*  2015/06/08  Supragyan         Modified startIndex and maximumRows in method 'GetProductData()'    
 //**********************************************************************************
 
-// System
+using Newtonsoft.Json;
+
+using System.Text;
 using System.Data;
 using System.Web;
 using System.Collections.Specialized;
-using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
-using System.Text;
+using System.ServiceModel.Activation;
 using System.ServiceModel.Channels;
 
-// OpenTouryo
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.Dto;
-
-// Newtonsoft
-using Newtonsoft.Json;
 
 /// <summary>ProjectX_sample</summary>
 namespace ProjectX_sample

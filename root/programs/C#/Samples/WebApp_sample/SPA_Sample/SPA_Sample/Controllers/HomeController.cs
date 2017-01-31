@@ -17,10 +17,10 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+using SPA_Sample.Models.ViewModels;
+
 using System.Web.Mvc;
 using System.Web.Security;
-
-using SPA_Sample.Models.ViewModels;
 
 using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Util;
@@ -97,6 +97,16 @@ namespace SPA_Sample.Controllers
         public ActionResult Scroll()
         {
             return this.View();
+        }
+
+        /// <summary>
+        /// Get: /Home/Error
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult Error()
+        {
+            throw new System.Exception("");
         }
 
         /// <summary>

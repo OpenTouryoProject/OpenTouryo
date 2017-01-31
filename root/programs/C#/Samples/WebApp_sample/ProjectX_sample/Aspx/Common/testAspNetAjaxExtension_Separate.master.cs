@@ -9,7 +9,7 @@
 //* クラス日本語名  ：Ajaxテスト用のマスタ ページ（updateパネルを親・子で２つ別けて使用）
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
@@ -17,10 +17,7 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System
 using System;
-
-// OpenTouryo
 using Touryo.Infrastructure.Framework.Presentation;
 
 namespace ProjectX_sample.Aspx.Common

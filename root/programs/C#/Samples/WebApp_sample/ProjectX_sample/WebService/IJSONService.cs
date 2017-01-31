@@ -18,7 +18,6 @@
 //*  2015/03/20  Supragyan         Modified method 'GetProductData()' return type to Message 
 //**********************************************************************************
 
-// System
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.ServiceModel.Channels;

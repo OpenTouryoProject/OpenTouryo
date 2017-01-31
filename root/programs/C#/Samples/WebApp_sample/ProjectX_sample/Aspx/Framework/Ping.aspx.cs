@@ -31,10 +31,7 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System
 using System;
-
-// System.Web
 
 namespace ProjectX_sample.Aspx.Framework
 {
