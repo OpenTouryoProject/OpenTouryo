@@ -28,36 +28,23 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2014/07/23  西野  大介        新規作成
-//*  2014/09/05  Sai               Created property ResourceMgr and Replaced all the Japanese language in code with ResorceManager.GetString() method call
-//*  2014/11/11  Sai               Added buttons Switch Per In Charge, Forced Terminaion and Turnback Into First and implemented code for calling the 
-//*                                corresponding methods of workflow.cs class 
-//*  2014/12/12  Sai               Added if condition for settting TouserId based on action type TurnBack and Reply otherwise DBNull in events button2_Click and
-//*                                button7_Click                     
+//*  2014/09/05  Sai               Created property ResourceMgr and Replaced all the Japanese language in code with ResorceManager.GetString() method call.
+//*  2014/11/11  Sai               Added buttons Switch Per In Charge, Forced Terminaion and Turnback Into First
+//*                                and implemented code for calling the corresponding methods of workflow.cs class.
+//*  2014/12/12  Sai               Added if condition for settting TouserId based on action type TurnBack
+//*                                and Reply otherwise DBNull in events button2_Click and button7_Click.
 //**********************************************************************************
 
-// Windowアプリケーション
-using System.Drawing;
-using System.Windows.Forms;
-
-// System
 using System;
 using System.Data;
+using System.Drawing;
+using System.Resources;
+using System.Windows.Forms;
 
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Business.Workflow;
-
-//using Touryo.Infrastructure.Business.RichClient.Asynchronous;
-//using Touryo.Infrastructure.Business.RichClient.Presentation;
-
-// フレームワーク
-
-//using Touryo.Infrastructure.Framework.RichClient.Presentation;
-
-// 部品
+using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.Util;
-using System.Resources;
 
 namespace Workflow_Tool
 {

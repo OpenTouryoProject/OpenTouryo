@@ -33,9 +33,7 @@
 //*  2011/12/02  西野 大介         上記を汎用利用可能なobjectに変更した（Bean、DS・DT）。
 //**********************************************************************************
 
-// System
 using System;
-using System.Data;
 
 namespace Touryo.Infrastructure.Business.Common
 {

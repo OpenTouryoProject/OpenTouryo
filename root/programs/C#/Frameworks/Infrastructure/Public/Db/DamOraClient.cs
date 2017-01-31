@@ -27,29 +27,16 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2014/02/04  西野  大介        新規作成（.NET4.0以降、非推奨）
-//*  2015/07/05  Sai              Implemented virtual property of IDbCommand in DamOraClient class
+//*  2014/02/04  西野 大介         新規作成（.NET4.0以降、非推奨）
+//*  2015/07/05  Sai               Implemented virtual property of IDbCommand in DamOraClient class
 //**********************************************************************************
 
-// データアクセスプロバイダ（OracleClient）
-using System.Data.OracleClient;
-
-// System
 using System;
-using System.IO;
-using System.Xml;
-using System.Text;
-using System.Data;
 using System.Collections;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
+using System.Data;
+using System.Data.OracleClient;
 
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Db

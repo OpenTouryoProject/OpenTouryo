@@ -27,38 +27,26 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2007/xx/xx  西野  大介        新規作成
-//*  2008/09/19  西野  大介        設計不良の対策（シングルトンクラス → 静的クラスに変更）
-//*  2009/01/28  西野  大介        クラス名の変更（WebLogManager → LogManager）
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2007/xx/xx  西野 大介         新規作成
+//*  2008/09/19  西野 大介         設計不良の対策（シングルトンクラス → 静的クラスに変更）
+//*  2009/01/28  西野 大介         クラス名の変更（WebLogManager → LogManager）
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#12 ： 定義ファイルなしの場合、ログ出力しない仕様に変更
-//*  2010/09/24  西野  大介        ジェネリック対応（Dictionary、List、Queue、Stack<T>）
+//*  2010/09/24  西野 大介         ジェネリック対応（Dictionary、List、Queue、Stack<T>）
 //*                                nullチェック方法、Contains → ContainsKeyなどに注意
-//*  2010/12/03  西野  大介        log4netの埋め込まれたリソース対応（RichClient）
-//*  2011/01/19  西野  大介        環境変数の組み込み処理に対応
-//*  2011/10/09  西野  大介        国際化対応
+//*  2010/12/03  西野 大介         log4netの埋め込まれたリソース対応（RichClient）
+//*  2011/01/19  西野 大介         環境変数の組み込み処理に対応
+//*  2011/10/09  西野 大介         国際化対応
 //**********************************************************************************
 
-// log4net
-using log4net.Config;
-
-// System
 using System;
 using System.IO;
 using System.Xml;
-using System.Text;
-using System.Data;
-using System.Collections;
 using System.Collections.Generic;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
+using log4net.Config;
 
-// 部品
-using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Log

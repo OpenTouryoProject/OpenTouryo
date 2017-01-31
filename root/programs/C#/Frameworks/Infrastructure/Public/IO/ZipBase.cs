@@ -27,21 +27,17 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2011/04/18  西野  大介        新規作成
+//*  2011/04/18  西野 大介         新規作成
 //*  2012/04/05  西野 大介         \n → \r\n 化
 //*  2012/09/21  西野 大介         abstractを追加
 //*  2017/01/23  西野 大介         UseUnicodeAsNecessary廃止の対応
 //**********************************************************************************
 
-// System
 using System;
 using System.IO;
 using System.Text;
 
-// Ionic
-using Ionic;
 using Ionic.Zip;
-using Ionic.Zlib;
 
 using Touryo.Infrastructure.Public.Str;
 

@@ -27,21 +27,18 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  
 //*  2014/09/05  Sai               Added DefaultCulture key in app.Config file and did coding for reading the culture value from app.Config file.
-//*                                Created Resource folder and Resource.ja-JP.resx, Resource.resx files inside
-//*                                the Resource folder. Added proper key and values in those files for English and
-//*                                Japanese languages.
-//*
-//* 
+//*                                Created Resource folder and Resource.ja-JP.resx, Resource.resx files inside the Resource folder.
+//*                                Added proper key and values in those files for English and Japanese languages.
 //**********************************************************************************
 
 using System;
-using System.Windows.Forms;
-using Touryo.Infrastructure.Public.Util;
 using System.Threading;
-using System.Globalization;
 using System.Resources;
+using System.Globalization;
+using System.Windows.Forms;
+
+using Touryo.Infrastructure.Public.Util;
 
 namespace Workflow_Tool
 {

@@ -27,34 +27,17 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2013/02/15  西野  大介        新規作成
-//*  2014/03/13  西野  大介        devps(1703):Createメソッドを使用してcryptoオブジェクトを作成します。
-//*  2014/03/13  西野  大介        devps(1725):暗号クラスの使用終了時にデータをクリアする。
-//*  2017/01/10  西野  大介        ストレッチ回数とsaltのpublic property procedureを追加
-//*  2017/01/10  西野  大介        HMAC(HMACMD5、HMACRIPEMD160、HMACSHA256、HMACSHA384、HMACSHA512)を追加
-//*  2017/01/10  西野  大介        全てHMACSHA1になる問題があったため、KeyedHashAlgorithm生成方法を変更。
-//*  2017/01/10  西野  大介        GetSaltedPasswordとEqualSaltedPasswordを追加。
+//*  2013/02/15  西野 大介         新規作成
+//*  2014/03/13  西野 大介         devps(1703):Createメソッドを使用してcryptoオブジェクトを作成します。
+//*  2014/03/13  西野 大介         devps(1725):暗号クラスの使用終了時にデータをクリアする。
+//*  2017/01/10  西野 大介         ストレッチ回数とsaltのpublic property procedureを追加
+//*  2017/01/10  西野 大介         HMAC(HMACMD5、HMACRIPEMD160、HMACSHA256、HMACSHA384、HMACSHA512)を追加
+//*  2017/01/10  西野 大介         全てHMACSHA1になる問題があったため、KeyedHashAlgorithm生成方法を変更。
+//*  2017/01/10  西野 大介         GetSaltedPasswordとEqualSaltedPasswordを追加。
 //**********************************************************************************
 
-// System
-using System;
-using System.IO;
-using System.Xml;
-using System.Text;
-using System.Data;
-using System.Collections;
-
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
-
 using System.Security.Cryptography;
+using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Util
 {

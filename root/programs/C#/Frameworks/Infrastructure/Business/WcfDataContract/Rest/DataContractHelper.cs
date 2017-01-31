@@ -32,11 +32,9 @@
 //*  2012/08/13  西野 大介         新規作成
 //**********************************************************************************
 
-using System;
 using System.Data;
 using System.Linq;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace Touryo.Infrastructure.Business.ServiceInterface.WcfDataContract.Rest
 {

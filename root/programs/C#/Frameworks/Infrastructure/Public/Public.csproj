@@ -79,11 +79,9 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Csp\CstSqlSessionStateProvider.cs" />
     <Compile Include="Db\DamODBC.cs" />
     <Compile Include="Db\DamOLEDB.cs" />
     <Compile Include="Db\SQLUtility.cs" />

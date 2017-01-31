@@ -27,32 +27,27 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2015/08/04  Supragyan        Added code for SessionTimeout to OnActionExecuting method.
-//*  2015/08/31  Supragyan        Modified OnException method to display error message on Error screen
-//*  2015/09/03  Supragyan        Modified ExceptionType,Session,RedireResult on OnException method 
-//*  2015/10/27  Sai              Moved the code of SessionTimeout from OnActionExecuting method to BaseMVController class.  
-//*  2015/10/30  Sai              Added else part to the filterContext If statement in OnException method to resolve
-//*                               the exception occurs in the redirection method in the child action as per the comments in Github.  
-//*  2015/11/03  Sai              Implemeted performance measurement in the methods
-//*                               OnActionExecuting, OnActionExecuted, OnResultExecuting and OnResultExecuted
-//*  2017/01/23  西野  大介       UserInfoプロパティとGetUserInfoメソッドを追加した。
-//*  2017/01/24  西野  大介       ControllerName, ActionNameプロパティとGetRouteDataメソッドを追加した。
-//*  2017/01/24  西野  大介       ログ出力の見直し（OnResultメソッドではDebugを使用、ViewではViewNameを表示。）
-//*  2017/01/24  西野  大介       ログ出力の見直し（ログ出力フォーマットの全面的な見直し）
+//*  2015/08/04  Supragyan         Added code for SessionTimeout to OnActionExecuting method.
+//*  2015/08/31  Supragyan         Modified OnException method to display error message on Error screen
+//*  2015/09/03  Supragyan         Modified ExceptionType,Session,RedireResult on OnException method 
+//*  2015/10/27  Sai               Moved the code of SessionTimeout from OnActionExecuting method to BaseMVController class.  
+//*  2015/10/30  Sai               Added else part to the filterContext If statement in OnException method to resolve
+//*                                the exception occurs in the redirection method in the child action as per the comments in Github.  
+//*  2015/11/03  Sai               Implemeted performance measurement in the methods
+//*                                OnActionExecuting, OnActionExecuted, OnResultExecuting and OnResultExecuted
+//*  2017/01/23  西野 大介         UserInfoプロパティとGetUserInfoメソッドを追加した。
+//*  2017/01/24  西野 大介         ControllerName, ActionNameプロパティとGetRouteDataメソッドを追加した。
+//*  2017/01/24  西野 大介         ログ出力の見直し（OnResultメソッドではDebugを使用、ViewではViewNameを表示。）
+//*  2017/01/24  西野 大介         ログ出力の見直し（ログ出力フォーマットの全面的な見直し）
 //**********************************************************************************
 
-
-// System
-using System.Web;
 using System.Web.Routing;
 using System.Web.Mvc;
 
 using Touryo.Infrastructure.Business.Util;
-// フレームワーク
-using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Presentation;
+using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
-// 部品
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
 

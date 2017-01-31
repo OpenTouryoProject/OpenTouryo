@@ -27,25 +27,19 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2016/04/22  Supragyan        Created DamSqlDbWithMultiShard class to support MultiShard Query
-//*  2016/04/22  Supragyan        Created MultiShardConnection,MultiShardCommand,MultiShardDataReader 
-//*                               to support MultiShard Query
+//*  2016/04/22  Supragyan         Created DamSqlDbWithMultiShard class to support MultiShard Query.
+//*  2016/04/22  Supragyan         Created MultiShardConnection,MultiShardCommand,MultiShardDataReader to support MultiShard Query.
 //**********************************************************************************
 
-// データアクセスプロバイダ（SqlClient）
-using System.Data.SqlClient;
-
-// System
 using System;
-using System.Data;
 using System.Collections;
 
-// Microsoft
+using System.Data;
+using System.Data.SqlClient;
 using Microsoft.Azure.SqlDatabase.ElasticScale.Query;
 
-// 部品
-using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Log;
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Db
 {

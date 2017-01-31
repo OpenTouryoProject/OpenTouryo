@@ -9,30 +9,15 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
-//*  2012/06/14  西野  大介        ResourceLoaderに加え、EmbeddedResourceLoaderに対応
-//*  2013/09/09  西野  大介        ExecGenerateSQLメソッドを追加した（バッチ更新用）。
+//*  2012/06/14  西野 大介         ResourceLoaderに加え、EmbeddedResourceLoaderに対応
+//*  2013/09/09  西野 大介         ExecGenerateSQLメソッドを追加した（バッチ更新用）。
 //**********************************************************************************
 
-#region using
-
-// System～
-using System;
-using System.IO;
 using System.Data;
 using System.Collections;
 
-// フレームワーク
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Common;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.Util;
-
-// 業務フレームワーク
 using Touryo.Infrastructure.Business.Dao;
-
-#endregion
+using Touryo.Infrastructure.Public.Db;
 
 /// <summary>自動生成Ｄａｏクラス</summary>
 public class DaoT_CurrentWorkflow : MyBaseDao

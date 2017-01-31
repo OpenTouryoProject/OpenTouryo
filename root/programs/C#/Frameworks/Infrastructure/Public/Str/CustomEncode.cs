@@ -27,23 +27,19 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2007/xx/xx  西野  大介        新規作成
-//*  2011/05/27  西野  大介        HtmlDecode、UrlDecode、ToBase64String、FromBase64Stringを追加
-//*  2013/02/12  西野  大介        ToHexString、FormHexStringを追加
+//*  2007/xx/xx  西野 大介         新規作成
+//*  2011/05/27  西野 大介         HtmlDecode、UrlDecode、ToBase64String、FromBase64Stringを追加
+//*  2013/02/12  西野 大介         ToHexString、FormHexStringを追加
 //*  2016/01/29  Sai               Modified the methods UrlEncode and UrlDecode and added method UrlEncode2
-//*  2016/02/05  西野  大介        Modified the method header comment of UrlEncode and UrlEncode2.
-//*  2017/01/10  西野  大介        ToBase64UrlString、FromBase64UrlStringを追加した。
+//*  2016/02/05  西野 大介         Modified the method header comment of UrlEncode and UrlEncode2.
+//*  2017/01/10  西野 大介         ToBase64UrlString、FromBase64UrlStringを追加した。
+//*  2017/01/31  西野 大介         System.Web.HttpUtility ---> System.Net.WebUtility
 //**********************************************************************************
 
-// System
 using System;
 using System.Text;
-using System.Collections;
-
+using System.Net;
 using System.Data;
-
-using System.Web;
-//using Microsoft.Owin.Security.DataHandler.Encoder;
 
 namespace Touryo.Infrastructure.Public.Str
 {
@@ -1039,7 +1035,7 @@ namespace Touryo.Infrastructure.Public.Str
         /// </remarks>
         public static string HtmlEncode(string input)
         {
-            return HttpUtility.HtmlEncode(input);
+            return WebUtility.HtmlEncode(input);
         }
 
         /// <summary>HTMLデコードする。</summary>
@@ -1047,10 +1043,8 @@ namespace Touryo.Infrastructure.Public.Str
         /// <returns>HTMLデコードされた文字列</returns>
         public static string HtmlDecode(string input)
         {
-            return HttpUtility.HtmlDecode(input);
+            return WebUtility.HtmlDecode(input);
         }
-
-#pragma warning disable
 
         /// <summary>Urlエンコードする。</summary>
         /// <param name="input">文字列</param>
@@ -1089,10 +1083,8 @@ namespace Touryo.Infrastructure.Public.Str
         /// <returns>UrlデコードされたUrl</returns>
         public static string UrlDecode(string input)
         {
-            return HttpUtility.UrlDecode(input); 
+            return WebUtility.UrlDecode(input); 
         }
-
-#pragma warning restore
 
         #endregion
 

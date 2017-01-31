@@ -28,54 +28,24 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
-//*  2012/06/14  西野  大介        コントロール検索の再帰処理性能の集約＆効率化。
-//*  2012/06/18  西野  大介        OriginalStackTrace（ログ出力）の品質向上
-//*  2012/09/19  西野  大介        UOC_CMNAfterFormInitの追加
-//*  2013/03/05  西野  大介        UOC_CMNAfterFormInit、UOC_CMNAfterFormEndの呼出処理を追加
-//*  2014/03/03  西野  大介        ユーザ コントロールのインスタンスの区別。
+//*  2012/06/14  西野 大介         コントロール検索の再帰処理性能の集約＆効率化。
+//*  2012/06/18  西野 大介         OriginalStackTrace（ログ出力）の品質向上
+//*  2012/09/19  西野 大介         UOC_CMNAfterFormInitの追加
+//*  2013/03/05  西野 大介         UOC_CMNAfterFormInit、UOC_CMNAfterFormEndの呼出処理を追加
+//*  2014/03/03  西野 大介         ユーザ コントロールのインスタンスの区別。
 //**********************************************************************************
 
-// System
 using System;
-using System.Xml;
-using System.Data;
-using System.Collections;
 using System.Collections.Generic;
-
-// Windowアプリケーション
-using System.Drawing;
 using System.Windows.Forms;
-using System.ComponentModel;
-
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
 
 using Touryo.Infrastructure.Business.RichClient.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
+using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.RichClient.Presentation;
-using Touryo.Infrastructure.Framework.RichClient.Util;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Framework.Exceptions;
+using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
-using Touryo.Infrastructure.Public.WinProc;
 
 namespace Touryo.Infrastructure.Business.RichClient.Presentation
 {

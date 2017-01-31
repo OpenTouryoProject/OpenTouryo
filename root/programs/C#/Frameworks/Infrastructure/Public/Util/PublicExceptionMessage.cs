@@ -27,33 +27,31 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2009/04/21  西野  大介        新規作成
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2009/04/21  西野 大介         新規作成
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#11 ： レイトバインド（assemblyが存在しない場合）
 //*                                ・#x  ： CommandTimeOutデフォルト値を設定
-//*  2010/09/24  西野  大介        SELECT-CASE-DEFAULTタグの追加
-//*  2010/09/24  西野  大介        DB Lib 別プロジェクト化対応
-//*  2010/11/20  西野  大介        オーバーロード メソッド対応
-//*  2010/12/03  西野  大介        log4netの埋め込まれたリソース対応（RichClient）
-//*  2011/01/14  西野  大介        GetPropsFromPropStringをPubCmnFunctionに移動
-//*  2011/10/09  西野  大介        国際化対応
-//*  2013/02/15  加藤  幸紀        順番バインド置き換え時のパラメタ設定不足用のメッセージ追加
+//*  2010/09/24  西野 大介         SELECT-CASE-DEFAULTタグの追加
+//*  2010/09/24  西野 大介         DB Lib 別プロジェクト化対応
+//*  2010/11/20  西野 大介         オーバーロード メソッド対応
+//*  2010/12/03  西野 大介         log4netの埋め込まれたリソース対応（RichClient）
+//*  2011/01/14  西野 大介         GetPropsFromPropStringをPubCmnFunctionに移動
+//*  2011/10/09  西野 大介         国際化対応
+//*  2013/02/15  加藤 幸紀         順番バインド置き換え時のパラメタ設定不足用のメッセージ追加
 //*                                （順番バインドのパラメタ置換処理方式の見直し）
-//*  2013/07/03  西野  大介        NotImplementedExceptionの場合のメッセージを追加
-//*  2013/12/23  西野  大介        アクセス修飾子をすべてpublicに変更した。
+//*  2013/07/03  西野 大介         NotImplementedExceptionの場合のメッセージを追加
+//*  2013/12/23  西野 大介         アクセス修飾子をすべてpublicに変更した。
 //*  2014/01/17  Rituparna.Biswas  国際化対応の見直し。
 //*  2014/01/22  Rituparna.Biswas  Changes from ConfigurationManager.AppSettings to GetConfigParameter.GetConfigValue in CmnFunc
-//*  2014/02/03  西野  大介        取り込み：リソースファイル名とスイッチ名の変更、#pragma warning disableの追加。
-//*  2016/05/30  Supragyan        Added a message in the case of NotSupportedException
+//*  2014/02/03  西野 大介         取り込み：リソースファイル名とスイッチ名の変更、#pragma warning disableの追加。
+//*  2016/05/30  Supragyan         Added a message in the case of NotSupportedException
 //**********************************************************************************
 
-// System
 using System;
-using System.Threading;
 using System.Resources;
-using Touryo.Infrastructure.Public.Resources;
-using System.Configuration;
 using System.Globalization;
+
+using Touryo.Infrastructure.Public.Resources;
 
 namespace Touryo.Infrastructure.Public.Util
 {

@@ -27,22 +27,13 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2009/xx/xx  西野  大介        新規作成
-//*  2009/11/06  西野  大介        平仮名 / 片仮名 変換処理を追加
-//*  2012/10/07  西野  大介        MやDが１桁の場合に、YYYYMMDDに変換（入力補完）
+//*  2009/xx/xx  西野 大介         新規作成
+//*  2009/11/06  西野 大介         平仮名 / 片仮名 変換処理を追加
+//*  2012/10/07  西野 大介         MやDが１桁の場合に、YYYYMMDDに変換（入力補完）
 //*  2015/09/30  Sai-san           Changed the parameter locale ID to 1041(Japanese) in StrConv method
 //**********************************************************************************
 
-// VB.NET関数活用
 using Microsoft.VisualBasic;
-
-// System
-using System;
-using System.Text;
-using System.Collections;
-
-using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace Touryo.Infrastructure.Public.Str
 {

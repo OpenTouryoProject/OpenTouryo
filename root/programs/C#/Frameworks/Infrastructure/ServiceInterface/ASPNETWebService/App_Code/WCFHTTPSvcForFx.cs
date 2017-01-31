@@ -21,7 +21,7 @@
 //**********************************************************************************
 //* クラス名        ：WCFHTTPSvcForFx
 //* クラス日本語名  ：WCF HTTP Webサービス（サービス インターフェイス基盤）
-//*                   .NET言語用のWebメソッド（.NETオブジェクトI/F）を公開する。
+//*                   SOAPの.NETオブジェクトのバイナリ転送用メソッドを公開する。
 //*
 //* 作成日時        ：－
 //* 作成者          ：生技
@@ -32,38 +32,17 @@
 //*  2012/12/14  西野 大介         新規作成
 //**********************************************************************************
 
-using System.ServiceModel;
-using System.ServiceModel.Activation;
-
-// System
 using System;
-using System.Xml;
-using System.Data;
-using System.Collections;
+using System.ServiceModel;
 
-// System.Web
-using System.Web;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Framework.Transmission;
+using Touryo.Infrastructure.Framework.Exceptions;
+using Touryo.Infrastructure.Framework.Common;
+using Touryo.Infrastructure.Framework.Util;
 
-// 部品
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService

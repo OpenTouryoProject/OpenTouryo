@@ -28,35 +28,18 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2010/06/11  西野  大介        新規作成
-//*  2010/09/24  西野  大介        ジェネリック対応（XMLのDictionary化）
+//*  2010/06/11  西野 大介         新規作成
+//*  2010/09/24  西野 大介         ジェネリック対応（XMLのDictionary化）
 //*                                nullチェック方法、Contains → ContainsKeyなどに注意
-//*  2011/01/19  西野  大介        環境変数の組み込み処理に対応
+//*  2011/01/19  西野 大介         環境変数の組み込み処理に対応
 //**********************************************************************************
 
-// System
 using System;
 using System.Xml;
-using System.Data;
-using System.Collections;
 using System.Collections.Generic;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Util

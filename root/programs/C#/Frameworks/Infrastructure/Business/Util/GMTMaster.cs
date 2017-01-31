@@ -31,22 +31,11 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2012/06/20  西野  大介        新規作成
+//*  2012/06/20  西野 大介         新規作成
 //**********************************************************************************
 
-using System.Globalization;
-using System.ComponentModel;
-
-// System
 using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
-
-// System.Web
-using System.Web;
+using System.ComponentModel;
 
 namespace Touryo.Infrastructure.Business.Util
 {

@@ -27,35 +27,21 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2012/02/09  西野  大介        新規作成
-//*  2012/03/16  西野  大介        ClearTextの所の仕様変更（文字列中は、空白・タブを詰めない）。
-//*  2012/03/21  西野  大介        SQLの型指定（.net型）対応
-//*  2013/02/15  加藤  幸紀        ChangesToOrderBind()修正。（順番バインドのパラメタ置換処理方式の見直し）
-//*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
-//*  2013/07/09  西野  大介        静的SQLでもユーザパラメタを保存（操作ログで使用する用途）
-//*  2015/07/05  Sai              Implemented virtual property of IDbCommand in DamOLEDB class 
+//*  2012/02/09  西野 大介         新規作成
+//*  2012/03/16  西野 大介         ClearTextの所の仕様変更（文字列中は、空白・タブを詰めない）。
+//*  2012/03/21  西野 大介         SQLの型指定（.net型）対応
+//*  2013/02/15  加藤 幸紀         ChangesToOrderBind()修正。（順番バインドのパラメタ置換処理方式の見直し）
+//*  2013/07/07  西野 大介         ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
+//*  2013/07/09  西野 大介         静的SQLでもユーザパラメタを保存（操作ログで使用する用途）
+//*  2015/07/05  Sai               Implemented virtual property of IDbCommand in DamOLEDB class 
 //**********************************************************************************
 
-// データアクセスプロバイダ（OLEDB）
-using System.Data.OleDb;
-
-// System
 using System;
-using System.IO;
-using System.Xml;
-using System.Text;
 using System.Data;
+using System.Data.OleDb;
 using System.Collections;
 using System.Collections.Generic;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Db

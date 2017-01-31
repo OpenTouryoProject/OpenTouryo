@@ -27,23 +27,19 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2013/02/12  西野  大介        新規作成
-//*  2017/01/10  西野  大介        引数指定の誤りと、HashのStretchCountを指定可能に修正
-//*  2017/01/10  西野  大介        秘密鍵と公開鍵の画面表示が誤っていたため、これを修正
-//*  2017/01/13  西野  大介        上記修正への対応と、GetSaltedPasswordのI/F変更に対する修正対応
-//*  2017/01/13  西野  大介        追加のGetSaltedPasswordメソッド、CodeSigning、JWTクラスの検証画面
+//*  2013/02/12  西野 大介         新規作成
+//*  2017/01/10  西野 大介         引数指定の誤りと、HashのStretchCountを指定可能に修正
+//*  2017/01/10  西野 大介         秘密鍵と公開鍵の画面表示が誤っていたため、これを修正
+//*  2017/01/13  西野 大介         上記修正への対応と、GetSaltedPasswordのI/F変更に対する修正対応
+//*  2017/01/13  西野 大介         追加のGetSaltedPasswordメソッド、CodeSigning、JWTクラスの検証画面
 //**********************************************************************************
 
-
 using System;
-using System.Text;
 using System.Windows.Forms;
 
-using System.Security.Cryptography.X509Certificates;
-
 using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Util.JWT;
 
 namespace EncAndDecUtil

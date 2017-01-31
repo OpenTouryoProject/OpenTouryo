@@ -27,34 +27,16 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2010/10/26  西野  大介        新規作成
-//*  2010/11/04  西野  大介        アンロックの実装変更、マップの実装変更、
+//*  2010/10/26  西野 大介         新規作成
+//*  2010/11/04  西野 大介         アンロックの実装変更、マップの実装変更、
 //*                                ・・・ミューテックス名の指定方法の変更
-//*  2011/10/09  西野  大介        国際化対応
+//*  2011/10/09  西野 大介         国際化対応
 //**********************************************************************************
 
-// 同期とマーシャリング
+using System;
 using System.Threading;
-using System.Runtime;
 using System.Runtime.InteropServices;
 
-// System
-using System;
-using System.IO;
-using System.Xml;
-using System.Text;
-using System.Data;
-using System.Collections;
-
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Win32;
 
 namespace Touryo.Infrastructure.Public.Util

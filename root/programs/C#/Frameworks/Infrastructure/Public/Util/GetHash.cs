@@ -27,35 +27,16 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2013/02/15  西野  大介        新規作成
-//*  2014/03/13  西野  大介        devps(1703):Createメソッドを使用してcryptoオブジェクトを作成します。
-//*  2014/03/13  西野  大介        devps(1725):暗号クラスの使用終了時にデータをクリアする。
-//*  2017/01/10  西野  大介        ストレッチ回数を指定可能にし、新設したGetPasswordを利用するように変更。
-//*  2017/01/10  西野  大介        saltedPasswdのformat変更(salt+stretchCount+hashedPassword)。
-//*  2017/01/10  西野  大介        上記のformat変更に伴い、EqualSaltedPasswd側のI/F変更が発生。
+//*  2013/02/15  西野 大介         新規作成
+//*  2014/03/13  西野 大介         devps(1703):Createメソッドを使用してcryptoオブジェクトを作成します。
+//*  2014/03/13  西野 大介         devps(1725):暗号クラスの使用終了時にデータをクリアする。
+//*  2017/01/10  西野 大介         ストレッチ回数を指定可能にし、新設したGetPasswordを利用するように変更。
+//*  2017/01/10  西野 大介         saltedPasswdのformat変更(salt+stretchCount+hashedPassword)。
+//*  2017/01/10  西野 大介         上記のformat変更に伴い、EqualSaltedPasswd側のI/F変更が発生。
 //**********************************************************************************
 
-
-// System
-using System;
-using System.IO;
-using System.Xml;
-using System.Text;
-using System.Data;
-using System.Collections;
-
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
-
-//using System.Web.Security;
 using System.Security.Cryptography;
+using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Util
 {

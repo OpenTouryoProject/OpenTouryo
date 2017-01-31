@@ -27,16 +27,11 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2009/xx/xx  西野  大介        新規作成
+//*  2009/xx/xx  西野 大介         新規作成
 //**********************************************************************************
 
-// System
-using System;
 using System.Text;
-using System.Collections;
-
 using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace Touryo.Infrastructure.Public.Str
 {

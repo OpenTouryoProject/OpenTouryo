@@ -21,10 +21,10 @@
 //**********************************************************************************
 //* クラス名        ：ServiceForFx
 //* クラス日本語名  ：ASP.NET Webサービス（サービス インターフェイス基盤）
-//*                   .NET言語用のWebメソッド（.NETオブジェクトI/F）を公開する。
+//*                   SOAPの.NETオブジェクトのバイナリ転送用メソッドを公開する。
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //* 
 //*  日時        更新者            内容
@@ -42,40 +42,21 @@
 //*  2011/07/06  西野 大介         認証サービス・テンプレートに対応したコードを追加
 //*  2011/12/02  西野 大介         contextObjectにrefを追加した。
 //*  2011/12/08  西野 大介         業務例外のcatchのカバレージは通らないのでコメントアウト
-//*  2012/08/25  西野  大介        Assembly.LoadFile → .Load（ASP.NETシャドウコピー対応）
+//*  2012/08/25  西野 大介         Assembly.LoadFile → .Load（ASP.NETシャドウコピー対応）
 //**********************************************************************************
 
+using System;
+using System.Web.Services;
 using System.EnterpriseServices;
 
-// System
-using System;
-using System.Xml;
-using System.Data;
-using System.Collections;
-
-// System.Web
-using System.Web;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
+using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Framework.Transmission;
 
-// 部品
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService

@@ -26,31 +26,24 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2009/xx/xx  西野  大介        新規作成
-//*  2009/11/16  西野  大介        ニーズを考慮してAPIを見直し。
-//*  2010/09/24  西野  大介        型チェック方式の見直し（ GetType() & typeof() ）
-//*  2010/09/27  西野  大介        AddFigureｘ：非数値型の場合、エラー → ０を返す。
-//*  2011/04/13  西野  大介        AddFigureｘ：小数点数以下に対応。
-//*  2011/01/31  西野  大介        Roundｘ関数を追加（四捨五入、銀行家の丸め）
-//*  2011/02/06  西野  大介        AddFigureｘ：リファクタリング
-//*  2013/04/04  西野  大介        Math.Roundに合わせ処理後に「0」を付与（Floor、Ceiling）
-//*  2013/07/17  西野  大介        AddFigure内のlongをdecimalに変更（オーバーフロー対策対策）。
+//*  2009/xx/xx  西野 大介         新規作成
+//*  2009/11/16  西野 大介         ニーズを考慮してAPIを見直し。
+//*  2010/09/24  西野 大介         型チェック方式の見直し（ GetType() & typeof() ）
+//*  2010/09/27  西野 大介         AddFigureｘ：非数値型の場合、エラー → ０を返す。
+//*  2011/04/13  西野 大介         AddFigureｘ：小数点数以下に対応。
+//*  2011/01/31  西野 大介         Roundｘ関数を追加（四捨五入、銀行家の丸め）
+//*  2011/02/06  西野 大介         AddFigureｘ：リファクタリング
+//*  2013/04/04  西野 大介         Math.Roundに合わせ処理後に「0」を付与（Floor、Ceiling）
+//*  2013/07/17  西野 大介         AddFigure内のlongをdecimalに変更（オーバーフロー対策対策）。
 //*  2014/05/19  Rituparna Biswas  Change in "AddZerosAfterDecimal" method for 100% Test Code coverage.
 //*  2014/06/12  Rituparna Biswas  Deleted the commented code in "AddZerosAfterDecimal" method
-//*  2017/01/13  西野  大介        ToUnixTime, FromUnixTimeメソッドを追加した。
+//*  2017/01/13  西野 大介         ToUnixTime, FromUnixTimeメソッドを追加した。
 //**********************************************************************************
 
-// VB.NET関数活用
-using Microsoft.VisualBasic;
-
-// System
 using System;
 using System.Text;
-using System.Collections;
-
 using System.Threading;
 using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace Touryo.Infrastructure.Public.Str
 {

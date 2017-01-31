@@ -30,19 +30,10 @@
 //*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
 //**********************************************************************************
 
-// System
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
 
-// System.Web
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace Touryo.Infrastructure.CustomControl
 {

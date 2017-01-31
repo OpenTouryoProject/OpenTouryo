@@ -27,46 +27,27 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2007/xx/xx  西野  大介        新規作成
-//*  
-//*  2009/01/28  西野  大介        モジュール追加により、コメントなどを修正。
-//*  2009/01/28  西野  大介        GetDam()のメンバ アクセス修飾子をprotectedに変更。
-//*  
-//*  2009/04/17  西野  大介        トランザクション手動制御を可能に。
-//*  2009/04/17  西野  大介        UOC_ConnectionOpenの戻りをvoidに（SetDam()利用に統一）。
-//*  2009/04/17  西野  大介        データアクセス制御クラスを配列化。
-//*  2009/04/17  西野  大介        トランザクション制御部品による制御。
-//*  2009/04/17  西野  大介        トランザクションパターンとグループの概念を追加。
-//*  2010/03/11  西野  大介        自動振り分け対応でpublicメソッド直呼びをエラーにする。
-//*  2010/09/24  西野  大介        ジェネリック対応（Dictionary、List、Queue、Stack<T>）
+//*  2007/xx/xx  西野 大介         新規作成
+//*  2009/01/28  西野 大介         モジュール追加により、コメントなどを修正。
+//*  2009/01/28  西野 大介         GetDam()のメンバ アクセス修飾子をprotectedに変更。
+//*  2009/04/17  西野 大介         トランザクション手動制御を可能に。
+//*  2009/04/17  西野 大介         UOC_ConnectionOpenの戻りをvoidに（SetDam()利用に統一）。
+//*  2009/04/17  西野 大介         データアクセス制御クラスを配列化。
+//*  2009/04/17  西野 大介         トランザクション制御部品による制御。
+//*  2009/04/17  西野 大介         トランザクションパターンとグループの概念を追加。
+//*  2010/03/11  西野 大介         自動振り分け対応でpublicメソッド直呼びをエラーにする。
+//*  2010/09/24  西野 大介         ジェネリック対応（Dictionary、List、Queue、Stack<T>）
 //*                                nullチェック方法、Contains → ContainsKeyなどに注意
-//*  2010/11/16  西野  大介        DoBusinessLogicのIsolationLevelEnum無しオーバーロード
-//*  2012/06/18  西野  大介        OriginalStackTrace（ログ出力）の品質向上
+//*  2010/11/16  西野 大介         DoBusinessLogicのIsolationLevelEnum無しオーバーロード
+//*  2012/06/18  西野 大介         OriginalStackTrace（ログ出力）の品質向上
 //**********************************************************************************
 
-// System
 using System;
-using System.Data;
-using System.Collections;
 using System.Collections.Generic;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
+using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Business
 {

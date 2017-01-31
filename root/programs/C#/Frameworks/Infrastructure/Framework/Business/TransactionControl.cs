@@ -31,39 +31,24 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2009/03/13  西野  大介        新規作成
-//*  2009/03/29  西野  大介        定義が無い場合、間違っている場合の処理を追加
-//*  2009/04/21  西野  大介        FrameworkExceptionの追加に伴い、実装変更
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2009/03/13  西野 大介         新規作成
+//*  2009/03/29  西野 大介         定義が無い場合、間違っている場合の処理を追加
+//*  2009/04/21  西野 大介         FrameworkExceptionの追加に伴い、実装変更
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#14 ： XMLチェック処理追加
 //*                                ・#15 ： XML要素のリテラル化
 //*                                ・#23 ： ncではconnkeyなし可だがNullReference発生
-//*  2010/10/29  西野  大介        RichClientフレームワーク分割によりアクセス修飾子を変更
-//*  2011/05/18  西野  大介        埋め込まれたリソース対応（Azure対応）
+//*  2010/10/29  西野 大介         RichClientフレームワーク分割によりアクセス修飾子を変更
+//*  2011/05/18  西野 大介         埋め込まれたリソース対応（Azure対応）
 //**********************************************************************************
 
-// System
 using System;
 using System.Xml;
-using System.Data;
-using System.Collections;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Business

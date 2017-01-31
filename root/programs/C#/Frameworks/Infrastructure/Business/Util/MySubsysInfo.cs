@@ -30,11 +30,9 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
 //**********************************************************************************
 
-// System
 using System;
 using System.Collections;
 
-// フレームワーク
 using Touryo.Infrastructure.Framework.Util;
 
 namespace Touryo.Infrastructure.Business.Util

@@ -27,30 +27,11 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2007/xx/xx  西野  大介        新規作成
-//*  2010/11/22  西野  大介        NullReferenceException対応
+//*  2007/xx/xx  西野 大介         新規作成
+//*  2010/11/22  西野 大介         NullReferenceException対応
 //**********************************************************************************
 
-// Config
 using System.Configuration;
-
-// System
-using System;
-using System.IO;
-using System.Xml;
-using System.Text;
-using System.Data;
-using System.Collections;
-
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Util
 {

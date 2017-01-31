@@ -27,35 +27,21 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2009/04/05  西野  大介        新規作成（XBAP、ClickOnce対応）
-//*  2009/04/20  西野  大介        XMLロード時のエンコーディング指定を不要に
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2009/04/05  西野 大介         新規作成（XBAP、ClickOnce対応）
+//*  2009/04/20  西野 大介         XMLロード時のエンコーディング指定を不要に
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#4 ： 対象ファイルが存在しない場合、NullReference
-//*  2011/05/18  西野  大介        Azure対応（アセンブリの取得方法の変更）
-//*  2012/07/20  西野  大介        Azureで動作しない状態になっていたので修正
-//*  2012/10/23  西野  大介        Azureで別のアセンブリからロード可能に修正
+//*  2011/05/18  西野 大介         Azure対応（アセンブリの取得方法の変更）
+//*  2012/07/20  西野 大介         Azureで動作しない状態になっていたので修正
+//*  2012/10/23  西野 大介         Azureで別のアセンブリからロード可能に修正
 //**********************************************************************************
 
-// Reflection
-// 埋め込まれたリソース ファイルの読み込みのため。
-using System.Reflection;
-
-// System
 using System;
 using System.IO;
 using System.Xml;
 using System.Text;
-using System.Data;
-using System.Collections;
+using System.Reflection;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.IO

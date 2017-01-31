@@ -27,27 +27,12 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2010/11/19  西野  大介        新規作成
-//*  2015/01/15	 Supragyan         Added  StringFromPrimitivetype method to convert 
-//*                                premitive data to string.
-//*  2015/01/15	 Supragyan         Added  PrimitivetypeFromString method to convert 
-//*                                string to premitive data.
+//*  2010/11/19  西野 大介         新規作成
+//*  2015/01/15	 Supragyan         Added  StringFromPrimitivetype method to convert premitive data to string.
+//*  2015/01/15	 Supragyan         Added  PrimitivetypeFromString method to convert string to premitive data.
 //**********************************************************************************
 
-// System
 using System;
-using System.IO;
-using System.Xml;
-using System.Text;
-using System.Collections;
-
-using System.Runtime.InteropServices;
-
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Dto;
 
 namespace Touryo.Infrastructure.Public.Util

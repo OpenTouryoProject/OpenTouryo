@@ -28,18 +28,11 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
+//*  2017/01/31  西野 大介         "Indispensable" ---> "Required"
 //**********************************************************************************
 
-// System
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Text;
-
-// System.Windows
-using System.Windows;
-using System.Windows.Forms;
 
 namespace Touryo.Infrastructure.CustomControl.RichClient
 {
@@ -47,10 +40,26 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
     [TypeConverter(typeof(CheckTypeConverter))]
     public class CheckType
     {
+        /// <summary>
+        /// ビット・フィールド
+        /// </summary>
+        [Flags]
+        public enum BF
+        {
+            Required = 1,
+            IsHankaku = 2,
+            IsZenkaku = 4,
+            IsNumeric = 8,
+            IsKatakana = 16,
+            IsHanKatakana = 32,
+            IsHiragana = 64,
+            IsDate = 128
+        }
+
         /// <summary>コンストラクタ</summary>
         public CheckType()
         {
-            this.IsIndispensable = false;
+            this.Required = false;
             this.IsHankaku = false;
             this.IsZenkaku = false;
             this.IsNumeric = false;
@@ -61,7 +70,7 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         }
 
         /// <summary>必須</summary>
-        public bool IsIndispensable { get; set; }
+        public bool Required { get; set; }
         /// <summary>半角</summary>
         public bool IsHankaku { get; set; }
         /// <summary>全角</summary>
@@ -89,14 +98,14 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         {
             int hc = 0;
 
-            if (this.IsIndispensable) { hc += 1; }
-            if (this.IsHankaku) { hc += 4; }
-            if (this.IsZenkaku) { hc += 2; }
-            if (this.IsNumeric) { hc += 8; }
-            if (this.IsKatakana) { hc += 16; }
-            if (this.IsHanKatakana) { hc += 32; }
-            if (this.IsHiragana) { hc += 64; }
-            if (this.IsDate) { hc += 128; }
+            if (this.Required) { hc += (int)BF.Required; }
+            if (this.IsHankaku) { hc += (int)BF.IsHankaku; }
+            if (this.IsZenkaku) { hc += (int)BF.IsZenkaku; }
+            if (this.IsNumeric) { hc += (int)BF.IsNumeric; }
+            if (this.IsKatakana) { hc += (int)BF.IsKatakana; }
+            if (this.IsHanKatakana) { hc += (int)BF.IsHanKatakana; }
+            if (this.IsHiragana) { hc += (int)BF.IsHiragana; }
+            if (this.IsDate) { hc += (int)BF.IsDate; }
 
             return hc;
         }
@@ -114,7 +123,7 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
             if (ct == null) { return false; }
 
             return
-                (this.IsIndispensable == ct.IsIndispensable)
+                (this.Required == ct.Required)
                 && (this.IsHankaku == ct.IsHankaku)
                 && (this.IsZenkaku == ct.IsZenkaku)
                 && (this.IsNumeric == ct.IsNumeric)

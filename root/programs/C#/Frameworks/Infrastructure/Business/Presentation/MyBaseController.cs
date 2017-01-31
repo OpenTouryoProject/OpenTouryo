@@ -28,71 +28,45 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
-//*  2009/04/21  西野  大介        FrameworkExceptionの追加に伴い、実装変更
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2009/04/21  西野 大介         FrameworkExceptionの追加に伴い、実装変更
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#5  ： コントロール数取得処理（デフォルト値不正）
 //*                                ・#19 ： InnerException対策
 //*                                ・#21 ： 不要なコードブロックの削除
 //*                                ・#z  ： Finally節のUOCメソッドを追加した。
-//*  2009/07/21  西野  大介        コントロール取得処理の仕様変更
-//*  2009/07/31  西野  大介        エラー時に、セッションを開放しないで、
+//*  2009/07/21  西野 大介         コントロール取得処理の仕様変更
+//*  2009/07/31  西野 大介         エラー時に、セッションを開放しないで、
 //*                                業務を続行可能にする処理を追加（不正操作エラー）
-//*  2009/08/10  西野  大介        他の修正により、urlの引数がnullとなり得るので、修正。
-//*  2009/09/01  西野  大介        サブシステム情報クラスの実装を追加した。
-//*  2009/09/25  西野  大介        セッション ステートレス対応。
-//*  2010/09/24  西野  大介        共通引数クラス内にユーザ情報を格納したので
-//*  2010/10/21  西野  大介        幾つかのイベント処理の正式対応（ベースクラス２→１へ）
-//*  2010/11/21  西野  大介        集約イベント ハンドラをprotectedに変更（動的追加を考慮）
-//*  2011/01/14  西野  大介        エラー時に、セッションを開放しないで、
+//*  2009/08/10  西野 大介         他の修正により、urlの引数がnullとなり得るので、修正。
+//*  2009/09/01  西野 大介         サブシステム情報クラスの実装を追加した。
+//*  2009/09/25  西野 大介         セッション ステートレス対応。
+//*  2010/09/24  西野 大介         共通引数クラス内にユーザ情報を格納したので
+//*  2010/10/21  西野 大介         幾つかのイベント処理の正式対応（ベースクラス２→１へ）
+//*  2010/11/21  西野 大介         集約イベント ハンドラをprotectedに変更（動的追加を考慮）
+//*  2011/01/14  西野 大介         エラー時に、セッションを開放しないで、
 //*                                業務を続行可能にする処理を追加（画面遷移制御チェック エラー）
 //*  2012/04/05  西野 大介         \n → \r\n 化
-//*  2012/06/14  西野  大介        コントロール検索の再帰処理性能の集約＆効率化。
-//*  2012/06/18  西野  大介        OriginalStackTrace（ログ出力）の品質向上
-//*  2013/01/18  西野  大介        public static TransferErrorScreen2追加（他から呼出可能に）
-//*  2013/01/18  西野  大介        public static GetUserInfo2追加（他から呼出可能に）
+//*  2012/06/14  西野 大介         コントロール検索の再帰処理性能の集約＆効率化。
+//*  2012/06/18  西野 大介         OriginalStackTrace（ログ出力）の品質向上
+//*  2013/01/18  西野 大介         public static TransferErrorScreen2追加（他から呼出可能に）
+//*  2013/01/18  西野 大介         public static GetUserInfo2追加（他から呼出可能に）
 //*  2016/01/13  Sandeep           Resolved the URL issue of error screen transition path
 //*  2016/01/18  Sandeep           Modified default relative path of the sample application screens
 //**********************************************************************************
 
-// System
 using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Collections;
 using System.Collections.Generic;
 
-// System.Web
 using System.Web;
 using System.Web.Security;
-
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Presentation;
+using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Business.Presentation

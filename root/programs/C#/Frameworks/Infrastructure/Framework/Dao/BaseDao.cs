@@ -27,41 +27,23 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2007/xx/xx  西野  大介        新規作成
-//*  2009/03/19  西野  大介        DRのインターフェイスをobject→IDataReaderへ変更。
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2007/xx/xx  西野 大介         新規作成
+//*  2009/03/19  西野 大介         DRのインターフェイスをobject→IDataReaderへ変更。
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#18 ： 例外の振り替え処理は不要。
 //*                                ・#x  ： Warning落とし。
-//*  2009/11/26  西野  大介        SetParameterメソッドの型指定有りオーバーロードの追加
-//*  2010/03/03  西野  大介        SetParameterメソッドのその他オーバーロードの追加
-//*  2010/11/02  西野  大介        GetParameterメソッドを追加（ｽﾄｱﾄﾞ ﾕｰｻﾞﾋﾞﾘﾃｨ向上）
-//*  2012/08/23  西野  大介        ログ出力情報の追加依頼へ対応（情報取得処理追加）。
-//*  2013/05/28  西野  大介        SetParameterオーバライドでPJ毎のカスタム型推論を実装可能に。
-//*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
+//*  2009/11/26  西野 大介         SetParameterメソッドの型指定有りオーバーロードの追加
+//*  2010/03/03  西野 大介         SetParameterメソッドのその他オーバーロードの追加
+//*  2010/11/02  西野 大介         GetParameterメソッドを追加（ｽﾄｱﾄﾞ ﾕｰｻﾞﾋﾞﾘﾃｨ向上）
+//*  2012/08/23  西野 大介         ログ出力情報の追加依頼へ対応（情報取得処理追加）。
+//*  2013/05/28  西野 大介         SetParameterオーバライドでPJ毎のカスタム型推論を実装可能に。
+//*  2013/07/07  西野 大介         ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
 //**********************************************************************************
 
-// System
 using System;
 using System.Data;
-using System.Collections;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Dao
 {

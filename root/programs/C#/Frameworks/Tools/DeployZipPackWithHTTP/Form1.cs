@@ -27,43 +27,30 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2011/04/18  西野  大介        新規作成
-//*  2011/07/01  西野  大介        履歴コンボは都度クリア
-//*  2011/07/04  西野  大介        圧縮・解凍に入力チェック＋例外処理を追加
-//*  2011/07/04  西野  大介        マニュフェスト作成に入力チェック＋例外処理を追加
-//*  2011/08/30  西野  大介        異常終了時に退避ディレクトリからリカバリ。
-//*  2011/08/30  西野  大介        テンポラリの削除処理を追加した（例外処理を追加）。
-//*  2011/08/30  西野  大介        ファイル ダイアログのリセット処理を追加した。
-//*  2011/08/30  西野  大介        ChangeProgressParameterの使用に漏れがあった。
-//*  2011/09/05  西野  大介        GCするコードを追加→修正（解凍ZIPがCloseされないため）
-//*  2011/09/08  西野  大介        リカバリ処理のログ出力位置の変更
+//*  2011/04/18  西野 大介         新規作成
+//*  2011/07/01  西野 大介         履歴コンボは都度クリア
+//*  2011/07/04  西野 大介         圧縮・解凍に入力チェック＋例外処理を追加
+//*  2011/07/04  西野 大介         マニュフェスト作成に入力チェック＋例外処理を追加
+//*  2011/08/30  西野 大介         異常終了時に退避ディレクトリからリカバリ。
+//*  2011/08/30  西野 大介         テンポラリの削除処理を追加した（例外処理を追加）。
+//*  2011/08/30  西野 大介         ファイル ダイアログのリセット処理を追加した。
+//*  2011/08/30  西野 大介         ChangeProgressParameterの使用に漏れがあった。
+//*  2011/09/05  西野 大介         GCするコードを追加→修正（解凍ZIPがCloseされないため）
+//*  2011/09/08  西野 大介         リカバリ処理のログ出力位置の変更
 //*                                （リカバリしない時ログを出力しないよう変更）。
-//*  2011/09/12  西野  大介        画面表示せず、ログ出力のみする例外処理方式を追加
-//*
-//*  2014/04/24  Sai              For internationalization, Replaced all the Japanese language exception messages with GetMessage.GetMessageDescription() method call 
-//*                               Moved all the Japanese language exception messages to MSGDefinition_ja-JP.xml file
-//*                               Placed all the converted Japanese language exception messages to MSGDefinition.xml file for internationalization 
-//*                               supporting English Language 
-//*
-//*  2014/04/25  Sai              Replaced all the Japanese language in both UI and code with ResorceManager.GetString() method call
+//*  2011/09/12  西野 大介         画面表示せず、ログ出力のみする例外処理方式を追加
+//*  2014/04/24  Sai               For internationalization, Replaced all the Japanese language exception messages with GetMessage.GetMessageDescription() method call 
+//*                                Moved all the Japanese language exception messages to MSGDefinition_ja-JP.xml file Placed all the converted
+//*                                Japanese language exception messages to MSGDefinition.xml file for internationalization supporting English Language.
+//*  2014/04/25  Sai               Replaced all the Japanese language in both UI and code with ResorceManager.GetString() method call
 //**********************************************************************************
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-
 using System.IO;
-using System.Net;
-using System.Diagnostics;
-
-using System.Threading;
-using System.Configuration;
-using System.Globalization;
-using System.Reflection;
+using System.Text;
+using System.Drawing;
+using System.Resources;
+using System.Windows.Forms;
 
 using Ionic.Zip;
 using Ionic.Zlib;
@@ -71,13 +58,8 @@ using Ionic.Zlib;
 using Touryo.Infrastructure.Business.RichClient.Asynchronous;
 using Touryo.Infrastructure.Framework.RichClient.Asynchronous;
 using Touryo.Infrastructure.Framework.Util;
-
 using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
-
-using System.Resources;
 
 namespace DeployZipPackWithHTTP
 {

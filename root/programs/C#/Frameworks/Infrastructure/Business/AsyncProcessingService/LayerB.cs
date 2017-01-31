@@ -19,14 +19,14 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名            :LayerB.cs
+//* クラス名             : LayerB.cs
 //* クラス名クラス名     :
 //*
-//* 作成者              :Supragyan
+//* 作成者               : Supragyan
 //* クラス日本語名       :
 //* 更新履歴
 //*  Date:        Author:        Comments:
-//*  ----------  ----------------  -------------------------------------------------
+//*  ----------   -------------- -------------------------------------------------
 //*  11/28/2014   Supragyan      Created LayerB class for AsyncProcessing Service
 //*  11/28/2014   Supragyan      Created Insert,Update,Select method for AsyncProcessing Service
 //*  04/15/2015   Sandeep        Did code modification of insert, update and select for AsyncProcessing Service
@@ -37,14 +37,9 @@
 //*  06/01/2016   Sandeep        Implemented method to test the connection of specified database
 //**********************************************************************************
 
-// System
 using System;
 using System.Data;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-//業務フレームワーク
 using Touryo.Infrastructure.Business.Business;
 
 namespace AsyncProcessingService

@@ -19,14 +19,14 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名            :LayerD.cs
+//* クラス名             : LayerD.cs
 //* クラス名クラス名     :
 //*
-//* 作成者              :Supragyan
+//* 作成者               : Supragyan
 //* クラス日本語名       :
 //* 更新履歴
 //*  Date:        Author:        Comments:
-//*  ----------  ----------------  -------------------------------------------------
+//*  ----------   -------------- -------------------------------------------------
 //*  11/28/2014   Supragyan      Created LayerD class for AsyncProcessing Service
 //*  11/28/2014   Supragyan      Created Insert,Update,Select method for AsyncProcessing Service
 //*  04/14/2015   Sandeep        Did code modification of update and select asynchronous task 
@@ -38,17 +38,11 @@
 //*                              to resolve unstable "Register" state, when you invoke [Abort] to AsyncTask, at this "Register" state
 //**********************************************************************************
 
-// System
 using System;
 using System.Data;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
-//業務フレームワーク
 using Touryo.Infrastructure.Business.Dao;
-
-//部品
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Util;

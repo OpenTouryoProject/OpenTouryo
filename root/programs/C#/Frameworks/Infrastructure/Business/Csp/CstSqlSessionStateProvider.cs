@@ -27,36 +27,23 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2011/xx/xx  西野  大介        新規作成
+//*  2011/xx/xx  西野 大介         新規作成
 //*  2012/04/05  西野 大介         \n → \r\n 化
 //**********************************************************************************
 
-// System
 using System;
-using System.Web;
-using System.Web.SessionState;
-using System.Web.Configuration;
-
+using System.IO;
 using System.Configuration;
 using System.Configuration.Provider;
-using System.Collections.Specialized;
-
 using System.Data;
 using System.Data.SqlClient;
-
-using System.IO;
+using System.Collections.Specialized;
 using System.Timers;
 using System.Diagnostics;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
+using System.Web;
+using System.Web.SessionState;
+using System.Web.Configuration;
 
 #region ORGコメント
 
@@ -261,7 +248,7 @@ CREATE TABLE ASPStateSessions
 
 #endregion
 
-namespace Touryo.Infrastructure.Public.Csp
+namespace Touryo.Infrastructure.Business.Csp
 {
     /// <summary>
     /// CstSqlSessionStateProvider
