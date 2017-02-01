@@ -1,14 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WSClientWPF_sample", "WSClientWPF_sample.csproj", "{F9737483-DC6C-45D1-8CB7-27138FD76D36}"
 	ProjectSection(ProjectDependencies) = postProject
-		{CF10219E-032C-4669-B9A1-D19F1C5A26E2} = {CF10219E-032C-4669-B9A1-D19F1C5A26E2}
+		{DD95A8C3-982B-4286-BB1E-9D00CD95CE02} = {DD95A8C3-982B-4286-BB1E-9D00CD95CE02}
 	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ASPNETWebService", "..\..\..\..\Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\", "{CF10219E-032C-4669-B9A1-D19F1C5A26E2}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ASPNETWebService", "..\..\..\..\Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\", "{DD95A8C3-982B-4286-BB1E-9D00CD95CE02}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6"
 		Debug.AspNetCompiler.VirtualPath = "/ASPNETWebService"
@@ -41,10 +41,10 @@ Global
 		{F9737483-DC6C-45D1-8CB7-27138FD76D36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9737483-DC6C-45D1-8CB7-27138FD76D36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9737483-DC6C-45D1-8CB7-27138FD76D36}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF10219E-032C-4669-B9A1-D19F1C5A26E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF10219E-032C-4669-B9A1-D19F1C5A26E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF10219E-032C-4669-B9A1-D19F1C5A26E2}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF10219E-032C-4669-B9A1-D19F1C5A26E2}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{DD95A8C3-982B-4286-BB1E-9D00CD95CE02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD95A8C3-982B-4286-BB1E-9D00CD95CE02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD95A8C3-982B-4286-BB1E-9D00CD95CE02}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD95A8C3-982B-4286-BB1E-9D00CD95CE02}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

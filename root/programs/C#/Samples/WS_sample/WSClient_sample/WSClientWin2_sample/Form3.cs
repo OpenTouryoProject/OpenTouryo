@@ -1,66 +1,29 @@
 //**********************************************************************************
-//* サンプル アプリ画面
+//* Windows Forms用 Ｐ層 フレームワーク・テスト アプリ画面
 //**********************************************************************************
+
+// テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
 
 //**********************************************************************************
 //* クラス名        ：Form3
 //* クラス日本語名  ：サンプル アプリ画面
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
-//*
 //**********************************************************************************
 
-// System
 using System;
-using System.IO;
-using System.Xml;
-using System.Text;
-using System.Data;
-using System.Collections;
-
-// Windowアプリケーション
-using System.Drawing;
-using System.Windows.Forms;
-using System.ComponentModel;
-
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
-
-using Touryo.Infrastructure.Business.RichClient.Asynchronous;
-using Touryo.Infrastructure.Business.RichClient.Presentation;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-using Touryo.Infrastructure.Framework.RichClient.Asynchronous;
-using Touryo.Infrastructure.Framework.RichClient.Presentation;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
-
 using System.Threading;
-using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows.Forms;
+
+using Touryo.Infrastructure.Business.RichClient.Presentation;
+using Touryo.Infrastructure.Framework.RichClient.Presentation;
 
 namespace WSClientWin2_sample
 {
@@ -93,67 +56,67 @@ namespace WSClientWin2_sample
 
         protected void UOC_btnButton1_Click(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_btnButton1_Click");
+            Debug.WriteLine("UOC_btnButton1_Click");
         }
 
         protected void UOC_pbxPictureBox1_Click(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_pbxPictureBox1_Click");
+            Debug.WriteLine("UOC_pbxPictureBox1_Click");
         }
 
         protected void UOC_rbnRadioButton1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_rbnRadioButton1_CheckedChanged");
+            Debug.WriteLine("UOC_rbnRadioButton1_CheckedChanged");
         }
 
         protected void UOC_cbxCheckBox1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_cbxCheckBox1_CheckedChanged");
+            Debug.WriteLine("UOC_cbxCheckBox1_CheckedChanged");
         }
 
         protected void UOC_cbbComboBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_cbbComboBox1_SelectedIndexChanged");
+            Debug.WriteLine("UOC_cbbComboBox1_SelectedIndexChanged");
         }
 
         protected void UOC_lbxListBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_lbxListBox1_SelectedIndexChanged");
+            Debug.WriteLine("UOC_lbxListBox1_SelectedIndexChanged");
         }
 
         protected void UOC_tsmiItem1_Click(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_tsmiItem1_Click");
+            Debug.WriteLine("UOC_tsmiItem1_Click");
         }
 
         protected void UOC_tsmiItem2_Click(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_tsmiItem2_Click");
+            Debug.WriteLine("UOC_tsmiItem2_Click");
         }
 
         protected void UOC_tsmiItem21_Click(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_tsmiItem21_Click");
+            Debug.WriteLine("UOC_tsmiItem21_Click");
         }
 
         protected void UOC_tsmiItem22_Click(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_tsmiItem22_Click");
+            Debug.WriteLine("UOC_tsmiItem22_Click");
         }
 
         protected void UOC_tsmiItem221_Click(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_tsmiItem221_Click");
+            Debug.WriteLine("UOC_tsmiItem221_Click");
         }
 
         protected void UOC_tsmiItem222_Click(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_tsmiItem222_Click");
+            Debug.WriteLine("UOC_tsmiItem222_Click");
         }
 
         protected void UOC_tsmiItem3_Click(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_tsmiItem3_Click");
+            Debug.WriteLine("UOC_tsmiItem3_Click");
         }
         
         //---
@@ -163,32 +126,32 @@ namespace WSClientWin2_sample
 
         //protected void UOC_userControl3_btnUCButton1_Click(RcFxEventArgs rcFxEventArgs)
         //{
-        //    System.Diagnostics.Debug.WriteLine("UOC_userControl3_btnUCButton1_Click");
+        //    Debug.WriteLine("UOC_userControl3_btnUCButton1_Click");
         //}
 
         //protected void UOC_userControl3_pbxUCPictureBox1_Click(RcFxEventArgs rcFxEventArgs)
         //{
-        //    System.Diagnostics.Debug.WriteLine("UOC_userControl3_pbxUCPictureBox1_Click");
+        //    Debug.WriteLine("UOC_userControl3_pbxUCPictureBox1_Click");
         //}
 
         //protected void UOC_userControl3_rbnUCRadioButton1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
         //{
-        //    System.Diagnostics.Debug.WriteLine("UOC_userControl3_rbnUCRadioButton1_CheckedChanged");
+        //    Debug.WriteLine("UOC_userControl3_rbnUCRadioButton1_CheckedChanged");
         //}
 
         //protected void UOC_userControl3_cbxUCCheckBox1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
         //{
-        //    System.Diagnostics.Debug.WriteLine("UOC_userControl3_cbxUCCheckBox1_CheckedChanged");
+        //    Debug.WriteLine("UOC_userControl3_cbxUCCheckBox1_CheckedChanged");
         //}
 
         //protected void UOC_userControl3_cbbUCComboBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
         //{
-        //    System.Diagnostics.Debug.WriteLine("UOC_userControl3_cbbUCComboBox1_SelectedIndexChanged");
+        //    Debug.WriteLine("UOC_userControl3_cbbUCComboBox1_SelectedIndexChanged");
         //}
 
         //protected void UOC_userControl3_lbxUCListBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
         //{
-        //    System.Diagnostics.Debug.WriteLine("UOC_userControl3_lbxUCListBox1_SelectedIndexChanged");
+        //    Debug.WriteLine("UOC_userControl3_lbxUCListBox1_SelectedIndexChanged");
         //}
 
         /// <summary>テスト１</summary>
@@ -222,63 +185,63 @@ namespace WSClientWin2_sample
 
         protected void UOC_Form_Enter_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_Form_Enter_KeyDown");
+            Debug.WriteLine("UOC_Form_Enter_KeyDown");
         }
         protected void UOC_Form_F1_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_Form_F1_KeyDown");
+            Debug.WriteLine("UOC_Form_F1_KeyDown");
         }
         protected void UOC_Form_F2_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_Form_F2_KeyDown");
+            Debug.WriteLine("UOC_Form_F2_KeyDown");
         }
         protected void UOC_Form_F3_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_Form_F3_KeyDown");
+            Debug.WriteLine("UOC_Form_F3_KeyDown");
         }
         protected void UOC_Form_F4_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_Form_F4_KeyDown");
+            Debug.WriteLine("UOC_Form_F4_KeyDown");
         }
         protected void UOC_Form_F5_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_Form_F5_KeyDown");
+            Debug.WriteLine("UOC_Form_F5_KeyDown");
         }
         protected void UOC_Form_F6_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_Form_F6_KeyDown");
+            Debug.WriteLine("UOC_Form_F6_KeyDown");
         }
         protected void UOC_Form_F7_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_Form_F7_KeyDown");
+            Debug.WriteLine("UOC_Form_F7_KeyDown");
         }
         protected void UOC_Form_F8_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_Form_F8_KeyDown");
+            Debug.WriteLine("UOC_Form_F8_KeyDown");
         }
         protected void UOC_Form_F9_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_Form_F9_KeyDown");
+            Debug.WriteLine("UOC_Form_F9_KeyDown");
         }
         protected void UOC_Form_F10_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_Form_F10_KeyDown");
+            Debug.WriteLine("UOC_Form_F10_KeyDown");
         }
         protected void UOC_Form_F11_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_Form_F11_KeyDown");
+            Debug.WriteLine("UOC_Form_F11_KeyDown");
         }
         protected void UOC_Form_F12_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_Form_F12_KeyDown");
+            Debug.WriteLine("UOC_Form_F12_KeyDown");
         }
         protected void UOC_Form_AltAndF4_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_Form_AltAndF4_KeyDown");
+            Debug.WriteLine("UOC_Form_AltAndF4_KeyDown");
         }
         protected void UOC_Form_Closing(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_Form_Closing");
+            Debug.WriteLine("UOC_Form_Closing");
         }
 
         #endregion
@@ -288,15 +251,15 @@ namespace WSClientWin2_sample
 
         //protected void UOC_Form_KeyDown(RcFxEventArgs rcFxEventArgs)
         //{
-        //    System.Diagnostics.Debug.WriteLine("UOC_Form_KeyDown");
+        //    Debug.WriteLine("UOC_Form_KeyDown");
         //}
         //protected void UOC_Form_KeyPress(RcFxEventArgs rcFxEventArgs)
         //{
-        //    System.Diagnostics.Debug.WriteLine("UOC_Form_KeyPress");
+        //    Debug.WriteLine("UOC_Form_KeyPress");
         //}
         //protected void UOC_Form_KeyUp(RcFxEventArgs rcFxEventArgs)
         //{
-        //    System.Diagnostics.Debug.WriteLine("UOC_Form_KeyUp");
+        //    Debug.WriteLine("UOC_Form_KeyUp");
         //}
 
         #endregion
@@ -305,64 +268,64 @@ namespace WSClientWin2_sample
 
         protected void UOC_userControl31_btnUCButton1_Click(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_userControl31_btnUCButton1_Click");
+            Debug.WriteLine("UOC_userControl31_btnUCButton1_Click");
         }
 
         protected void UOC_userControl31_pbxUCPictureBox1_Click(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_userControl31_pbxUCPictureBox1_Click");
+            Debug.WriteLine("UOC_userControl31_pbxUCPictureBox1_Click");
         }
 
         protected void UOC_userControl31_rbnUCRadioButton1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_userControl31_rbnUCRadioButton1_CheckedChanged");
+            Debug.WriteLine("UOC_userControl31_rbnUCRadioButton1_CheckedChanged");
         }
 
         protected void UOC_userControl31_cbxUCCheckBox1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_userControl31_cbxUCCheckBox1_CheckedChanged");
+            Debug.WriteLine("UOC_userControl31_cbxUCCheckBox1_CheckedChanged");
         }
 
         protected void UOC_userControl31_cbbUCComboBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_userControl31_cbbUCComboBox1_SelectedIndexChanged");
+            Debug.WriteLine("UOC_userControl31_cbbUCComboBox1_SelectedIndexChanged");
         }
 
         protected void UOC_userControl31_lbxUCListBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_userControl31_lbxUCListBox1_SelectedIndexChanged");
+            Debug.WriteLine("UOC_userControl31_lbxUCListBox1_SelectedIndexChanged");
         }
 
         // ---
 
         protected void UOC_userControl32_btnUCButton1_Click(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_userControl32_btnUCButton1_Click");
+            Debug.WriteLine("UOC_userControl32_btnUCButton1_Click");
         }
 
         protected void UOC_userControl32_pbxUCPictureBox1_Click(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_userControl32_pbxUCPictureBox1_Click");
+            Debug.WriteLine("UOC_userControl32_pbxUCPictureBox1_Click");
         }
 
         protected void UOC_userControl32_rbnUCRadioButton1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_userControl32_rbnUCRadioButton1_CheckedChanged");
+            Debug.WriteLine("UOC_userControl32_rbnUCRadioButton1_CheckedChanged");
         }
 
         protected void UOC_userControl32_cbxUCCheckBox1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_userControl32_cbxUCCheckBox1_CheckedChanged");
+            Debug.WriteLine("UOC_userControl32_cbxUCCheckBox1_CheckedChanged");
         }
 
         protected void UOC_userControl32_cbbUCComboBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_userControl32_cbbUCComboBox1_SelectedIndexChanged");
+            Debug.WriteLine("UOC_userControl32_cbbUCComboBox1_SelectedIndexChanged");
         }
 
         protected void UOC_userControl32_lbxUCListBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
         {
-            System.Diagnostics.Debug.WriteLine("UOC_userControl32_lbxUCListBox1_SelectedIndexChanged");
+            Debug.WriteLine("UOC_userControl32_lbxUCListBox1_SelectedIndexChanged");
         }
 
         #endregion

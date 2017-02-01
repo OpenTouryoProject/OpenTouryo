@@ -102,7 +102,6 @@
             ddlExRollback: this.ddlExRollback()
         };
 
-        alert(baseUrl);
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
