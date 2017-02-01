@@ -1,0 +1,87 @@
+﻿@*
+    //**********************************************************************************
+    //* サンプル アプリ・モデル
+    //**********************************************************************************
+
+    // テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+
+    //**********************************************************************************
+    //* クラス名        ：_Layout
+    //* クラス日本語名  ：マスタ・ページ相当
+    //*
+    //* 作成日時        ：－
+    //* 作成者          ：－
+    //* 更新履歴        ：－
+    //*
+    //*  日時        更新者            内容
+    //*  ----------  ----------------  -------------------------------------------------
+    //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+    //**********************************************************************************
+*@
+
+@* マスタ・ページに相当 *@
+@using SPA_Sample.Models.ViewModels
+<!DOCTYPE html>
+<html ng-app="myapp">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/bundles/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+
+    @RenderSection("HeaderScriptsSection", required: true)
+
+    <script type="text/javascript">
+        // Resolve URL in the javascript
+        var baseUrl = '@Url.Content("~/")'
+    </script>
+
+</head>
+<body onload="Fx_Document_OnLoad();Fx_AdjustStyle();">
+
+    <div id="header-fixed">
+        <div id="header-bk">
+            <div id="header">
+                <div id="header-logo"><img alt="logo" style="width:80px; height:80px;" src="~/images/otr/logo.png" /></div>
+                <div style="margin: 20px 0 0 100px">
+                    <span>You has signed-in as "@BaseViewModel.UserName".</span>
+                    <span class="test">scroll value</span>
+                </div>
+                <div id="header-button">
+                    <button type="button" class="btn btn-info" onclick="window.location.href = '@Url.Action("Index", "Home")';">Menu</button>
+                    <button type="button" class="btn btn-default" onclick="window.location.href = '@Url.Action("Logout", "Home")';">Sign-out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="body-bk">
+        <div id="body">
+            <div id="sidemenu">
+                <div id="sidemenucontent">
+                    <ul>
+                        <li><span style="color:#ffffff; font-weight:bold;">スクロールに合わせ移動</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="contents">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    <div id="footer-fixed">
+        <div id="footer-bk">
+            <div id="footer">
+                Powered by <a target="_blank" href="https://github.com/OpenTouryoProject">OpenTouryo</a>.
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/otr")
+    @Scripts.Render("~/bundles/app")
+
+    @RenderSection("FooterScriptsSection", required: true)
+
+</body>
+</html>
