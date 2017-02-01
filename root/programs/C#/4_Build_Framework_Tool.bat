@@ -6,11 +6,6 @@ setlocal
 @echo off
 
 @rem --------------------------------------------------
-@rem Save the value of the PATH environment variable.
-@rem --------------------------------------------------
-set ORG_PATH=%PATH% 
-
-@rem --------------------------------------------------
 @rem Get the path to the executable file.
 @rem --------------------------------------------------
 set CURRENT_DIR="%~dp0"
