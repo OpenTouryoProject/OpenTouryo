@@ -1004,6 +1004,7 @@
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Home\Scroll.cshtml" />
     <Content Include="Views\Error\Index.cshtml" />
+    <Content Include="Views\Shared\_Layout2.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

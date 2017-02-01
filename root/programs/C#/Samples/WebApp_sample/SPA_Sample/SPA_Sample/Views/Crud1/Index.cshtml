@@ -168,6 +168,24 @@
     </tbody>
 </table>
 
+@* モーダルダイアログ *@
+<div class="modal fade" id="modal_box">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-header-danger">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">エラーが発生しました</h4>
+            </div>
+            <div class="modal-body">
+                <p data-bind="text: ErrorMessage">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @* スクリプト・セクション（RenderSection("FooterScriptsSection", required: true)に出力されます） *@
 @section FooterScriptsSection{
     @Scripts.Render("~/bundles/knockoutjs")

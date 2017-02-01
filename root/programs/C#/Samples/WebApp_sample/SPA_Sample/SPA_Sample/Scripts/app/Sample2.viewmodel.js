@@ -1,4 +1,4 @@
-﻿var Sample2ViewModel = function ($scope) {
+﻿angular.module('myapp', []).controller('Sample2ViewModel', ['$scope', function($scope) {
     // shippers テーブルのレコードリスト (JSON 形式)
     $scope.dataLists = [];
 
@@ -488,18 +488,7 @@
     // エラーメッセージを監視し、メッセージが設定されたらエラーダイアログを出す
     $scope.$watch('ErrorMessage', function (newVal, oldVal) {
         if (newVal !== '') {
-            $('<div>' + newVal + '</div>').dialog({
-                title: 'エラーが発生しました',
-                modal: true,
-                resizable: false,
-                height: 600,
-                width: 800,
-                buttons: {
-                    'OK': function (event) {
-                        $(this).dialog('close');
-                    }
-                }
-            });
+            $('#modal_box').modal('show');
         }
     }, true);
-};
+}]);

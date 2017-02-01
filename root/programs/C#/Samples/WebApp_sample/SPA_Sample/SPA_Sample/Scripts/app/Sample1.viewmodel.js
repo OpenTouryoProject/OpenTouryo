@@ -457,18 +457,7 @@ var model = new Sample1ViewModel();
 // エラーメッセージが格納されたら、ダイアログを出す
 model.ErrorMessage.subscribe(function (newValue) {
     if (newValue !== '') {
-        $('<div>' + newValue + '</div>').dialog({
-            title: 'エラーが発生しました',
-            modal: true,
-            resizable: false,
-            height: 600,
-            width: 800,
-            buttons: {
-                'OK': function (event) {
-                    $(this).dialog('close');
-                }
-            }
-        });
+        $('#modal_box').modal('show');
     }
 });
 
