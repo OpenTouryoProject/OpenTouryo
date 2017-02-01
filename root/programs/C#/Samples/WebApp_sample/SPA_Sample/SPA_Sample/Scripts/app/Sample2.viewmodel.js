@@ -103,7 +103,7 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/GetCount',
+            url: baseUrl + 'api/GetCount',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -145,7 +145,7 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/SelectDT',
+            url: baseUrl + 'api/SelectDT',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -189,7 +189,7 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/SelectDS',
+            url: baseUrl + 'api/SelectDS',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -233,7 +233,7 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/SelectDR',
+            url: baseUrl + 'api/SelectDR',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -279,7 +279,7 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/SelectDSQL',
+            url: baseUrl + 'api/SelectDSQL',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -324,7 +324,7 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/Select',
+            url: baseUrl + 'api/Select',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -369,7 +369,7 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/Insert',
+            url: baseUrl + 'api/Insert',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -412,7 +412,7 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/Update',
+            url: baseUrl + 'api/Update',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -454,7 +454,7 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/Delete',
+            url: baseUrl + 'api/Delete',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
