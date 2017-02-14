@@ -40,10 +40,12 @@
 //*                                nullチェック方法、Contains → ContainsKeyなどに注意
 //*  2010/11/16  西野 大介         DoBusinessLogicのIsolationLevelEnum無しオーバーロード
 //*  2012/06/18  西野 大介         OriginalStackTrace（ログ出力）の品質向上
+//*  2017/02/14  西野 大介         DoBusinessLogicの非同期バージョン（DoBusinessLogicAsync）を追加
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Common;
@@ -135,16 +137,41 @@ namespace Touryo.Infrastructure.Framework.Business
 
         #region 業務コード呼び出しメソッド（業務ロジックの入り口）
 
-        /// <summary>
-        /// 業務コード呼び出しメソッド（業務ロジックの入り口）
-        /// </summary>
+        #region 非同期バージョン
+
+        /// <summary>DoBusinessLogicメソッドの非同期バージョン</summary>
         /// <param name="parameterValue">引数クラス</param>
         /// <returns>戻り値クラス</returns>
-        /// <remarks>
-        /// 画面コード クラスから利用する。
-        /// ※ オーバーロードしないのは、
-        ///    レイトバインドが面倒になるため。
-        /// </remarks>
+        /// <remarks>画面コード クラスから利用する。</remarks>
+        public Task<BaseReturnValue> DoBusinessLogicAsync(BaseParameterValue parameterValue)
+        {
+            return new Task<BaseReturnValue>(() => {
+                return this.DoBusinessLogic(parameterValue, DbEnum.IsolationLevelEnum.User);
+            });
+            // IsolationLevelEnum.Userで呼び出す
+        }
+
+        /// <summary>DoBusinessLogicメソッドの非同期バージョン</summary>
+        /// <param name="parameterValue">引数クラス</param>
+        /// <param name="iso">分離レベル（ＤＢＭＳ毎の分離レベルの違いを理解して設定すること）</param>
+        /// <returns>戻り値クラス</returns>
+        /// <remarks>画面コード クラスから利用する。</remarks>
+        public Task<BaseReturnValue> DoBusinessLogicAsync(
+            BaseParameterValue parameterValue, DbEnum.IsolationLevelEnum iso)
+        {
+            return new Task<BaseReturnValue>(() => {
+                return this.DoBusinessLogic(parameterValue, iso);
+            });
+        }
+
+        #endregion
+
+            /// <summary>
+            /// 業務コード呼び出しメソッド（業務ロジックの入り口）
+            /// </summary>
+            /// <param name="parameterValue">引数クラス</param>
+            /// <returns>戻り値クラス</returns>
+            /// <remarks>画面コード クラスから利用する。</remarks>
         public BaseReturnValue DoBusinessLogic(BaseParameterValue parameterValue)
         {
             // IsolationLevelEnum.Userで呼び出す

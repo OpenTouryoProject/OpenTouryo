@@ -39,8 +39,13 @@
 //*  2017/01/24  西野 大介         ControllerName, ActionNameプロパティとGetRouteDataメソッドを追加した。
 //*  2017/01/24  西野 大介         ログ出力の見直し（OnResultメソッドではDebugを使用、ViewではViewNameを表示。）
 //*  2017/01/24  西野 大介         ログ出力の見直し（ログ出力フォーマットの全面的な見直し）
+//*  2017/02/14  西野 大介         OnException内での null reference 対策を行った。
+//*  2017/02/14  西野 大介         スイッチ付きのキャッシュ無効化処理を追加した。
 //**********************************************************************************
 
+using System;
+
+using System.Web;
 using System.Web.Routing;
 using System.Web.Mvc;
 
@@ -121,11 +126,11 @@ namespace Touryo.Infrastructure.Business.Presentation
             // エラーメッセージID, エラーメッセージ等
             // ------------
             string strLogMessage =
-                "," + UserInfo.UserName + 
-                "," + UserInfo.IPAddress +
+                "," + this.UserInfo.UserName + 
+                "," + this.UserInfo.IPAddress +
                 "," + "----->" +
                 "," + this.ControllerName + 
-                "," + this.ActionName + "(" + "OnActionExecuting" + ")";
+                "," + this.ActionName + "(OnActionExecuting)";
 
             LogIF.InfoLog("ACCESS", strLogMessage);
 
@@ -157,11 +162,11 @@ namespace Touryo.Infrastructure.Business.Presentation
             // エラーメッセージID, エラーメッセージ等
             // ------------
             string strLogMessage =
-                "," + UserInfo.UserName +
-                "," + UserInfo.IPAddress +
+                "," + this.UserInfo.UserName +
+                "," + this.UserInfo.IPAddress +
                 "," + "<-----" +
                 "," + this.ControllerName +
-                "," + this.ActionName + "(" + "OnActionExecuted" + ")" +
+                "," + this.ActionName + "(OnActionExecuted)" +
                 "," + perfRec.ExecTime +
                 "," + perfRec.CpuTime;
 
@@ -192,8 +197,8 @@ namespace Touryo.Infrastructure.Business.Presentation
             // エラーメッセージID, エラーメッセージ等
             // ------------
             string strLogMessage =
-                "," + UserInfo.UserName +
-                "," + UserInfo.IPAddress +
+                "," + this.UserInfo.UserName +
+                "," + this.UserInfo.IPAddress +
                 "," + "----->>" +
                 "," + this.ControllerName +
                 "," + this.ActionName + " -> " + temp[temp.Length - 1];
@@ -226,8 +231,8 @@ namespace Touryo.Infrastructure.Business.Presentation
             // エラーメッセージID, エラーメッセージ等
             // ------------
             string strLogMessage =
-                "," + UserInfo.UserName +
-                "," + UserInfo.IPAddress +
+                "," + this.UserInfo.UserName +
+                "," + this.UserInfo.IPAddress +
                 "," + "----->>" +
                 "," + this.ControllerName +
                 "," + this.ActionName + " -> " + temp[temp.Length - 1];
@@ -275,11 +280,11 @@ namespace Touryo.Infrastructure.Business.Presentation
             // エラーメッセージID, エラーメッセージ等
             // ------------
             string strLogMessage =
-                "," + UserInfo.UserName +
-                "," + UserInfo.IPAddress +
+                "," + this.UserInfo.UserName +
+                "," + this.UserInfo.IPAddress +
                 "," + "----->" +
                 "," + this.ControllerName +
-                "," + this.ActionName + "(" + "OnResultExecuting" + ")";
+                "," + this.ActionName + "(OnResultExecuting)";
 
             LogIF.DebugLog("ACCESS", strLogMessage);
         }
@@ -318,11 +323,11 @@ namespace Touryo.Infrastructure.Business.Presentation
             // エラーメッセージID, エラーメッセージ等
             // ------------
             string strLogMessage =
-                "," + UserInfo.UserName +
-                "," + UserInfo.IPAddress +
+                "," + this.UserInfo.UserName +
+                "," + this.UserInfo.IPAddress +
                 "," + "<-----" +
                 "," + this.ControllerName +
-                "," + this.ActionName + "(" + "OnResultExecuted" + ")" +
+                "," + this.ActionName + "(OnResultExecuted)" +
                 "," + perfRec.ExecTime +
                 "," + perfRec.CpuTime;
 
@@ -452,11 +457,11 @@ namespace Touryo.Infrastructure.Business.Presentation
             // ------------
 
             string strLogMessage =
-                "," + UserInfo.UserName +
-                "," + UserInfo.IPAddress +
+                "," + (this.UserInfo != null ? this.UserInfo.UserName : "null") +
+                "," + (this.UserInfo != null ? this.UserInfo.IPAddress : "null") +
                 "," + "----->>" +
                 "," + this.ControllerName +
-                "," + this.ActionName + "(" + "OnException" + ")" +
+                "," + this.ActionName + "(OnException)" +
                 "," + //this.perfRec.ExecTime +
                 "," + //this.perfRec.CpuTime + 
                 "," + errMsgId +
@@ -521,6 +526,51 @@ namespace Touryo.Infrastructure.Business.Presentation
             temp =routeData.Values["controller"].ToString().Split('.');
             this.ControllerName = routeData.Values["controller"].ToString();
             this.ActionName = routeData.Values["action"].ToString();
+        }
+
+        /// <summary>キャッシュ無効化処理（スイッチ付き）</summary>
+        private void NoCacheWithSwitch()
+        {
+            // システムで固定に出来る場合は、ここでキャッシュ無効化する。
+            // また、ファイル・ダウンロード処理などでUPでFxの設定した
+            // キャッシュ制御を変更したい場合は、Response.Clearを実行して再設定する。
+
+            // 画面遷移方法の定義を取得
+            string noCache = GetConfigParameter.GetConfigValue(FxLiteral.NO_CACHE);
+
+            // デフォルト値対策：設定なし（null）の場合の扱いを決定
+            if (noCache == null)
+            {
+                // OFF扱い
+                noCache = FxLiteral.OFF;
+            }
+
+            if (noCache.ToUpper() == FxLiteral.ON)
+            {
+                // ON
+
+                // http - How to control web page caching, across all browsers? - Stack Overflow
+                // http://stackoverflow.com/questions/49547/how-to-control-web-page-caching-across-all-browsers
+
+                // Using ASP.NET-MVC:
+                this.Response.Cache.SetCacheability(HttpCacheability.NoCache);  // HTTP 1.1.
+                this.Response.Cache.AppendCacheExtension("no-store, must-revalidate");
+                this.Response.AppendHeader("Pragma", "no-cache"); // HTTP 1.0.
+                this.Response.AppendHeader("Expires", "0"); // Proxies.
+
+            }
+            else if (noCache.ToUpper() == FxLiteral.OFF)
+            {
+                // OFF
+            }
+            else
+            {
+                // パラメータ・エラー（書式不正）
+                throw new FrameworkException(
+                    FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH1[0],
+                    String.Format(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH1[1],
+                        FxLiteral.NO_CACHE));
+            }
         }
 
         #endregion

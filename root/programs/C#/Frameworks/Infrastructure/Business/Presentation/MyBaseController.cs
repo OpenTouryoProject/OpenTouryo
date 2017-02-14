@@ -52,6 +52,7 @@
 //*  2013/01/18  西野 大介         public static GetUserInfo2追加（他から呼出可能に）
 //*  2016/01/13  Sandeep           Resolved the URL issue of error screen transition path
 //*  2016/01/18  Sandeep           Modified default relative path of the sample application screens
+//*  2017/02/14  西野 大介         キャッシュ無効化処理にスイッチを追加した。
 //**********************************************************************************
 
 using System;
@@ -206,6 +207,7 @@ namespace Touryo.Infrastructure.Business.Presentation
             this.addControlEvent();
 
             // カスタム認証処理 --------------------------------------------
+            // ・・・
             // -------------------------------------------------------------
 
             // 2009/09/01-start
@@ -219,26 +221,15 @@ namespace Touryo.Infrastructure.Business.Presentation
             // 2009/09/01-end
 
             // 権限チェック ------------------------------------------------
+            // ・・・
             // -------------------------------------------------------------
 
             // 閉塞チェック ------------------------------------------------
+            // ・・・
             // -------------------------------------------------------------
 
             // キャッシュ無効化処理 ----------------------------------------
-
-            // システムで固定に出来る場合は、ここでキャッシュ無効化する。
-            // Ｆｘテスト段階では、IISの設定により制御したほうが楽。
-
-            // また、ファイルダウンロード処理などで
-            // ＵＰでＦｘの設定したキャッシュ制御を
-            // 変更したい場合は、Response.Clearを実行する。
-
-            Response.AddHeader("Cache-Control", "no-cache");
-            Response.CacheControl = "no-cache";
-
-            //Response.AddHeader("Cache-Control", "private");
-            //Response.CacheControl = "private";
-
+            this.NoCacheWithSwitch();
             // -------------------------------------------------------------
 
             // ポストバック後の位置復元 ------------------------------------
@@ -363,6 +354,50 @@ namespace Touryo.Infrastructure.Business.Presentation
         }
 
         // 2009/09/01 & 2009/09/25-end
+
+        /// <summary>キャッシュ無効化処理（スイッチ付き）</summary>
+        private void NoCacheWithSwitch()
+        {
+            // システムで固定に出来る場合は、ここでキャッシュ無効化する。
+            // また、ファイル・ダウンロード処理などでUPでFxの設定した
+            // キャッシュ制御を変更したい場合は、Response.Clearを実行して再設定する。
+
+            // 画面遷移方法の定義を取得
+            string noCache = GetConfigParameter.GetConfigValue(FxLiteral.NO_CACHE);
+
+            // デフォルト値対策：設定なし（null）の場合の扱いを決定
+            if (noCache == null)
+            {
+                // OFF扱い
+                noCache = FxLiteral.OFF;
+            }
+
+            if (noCache.ToUpper() == FxLiteral.ON)
+            {
+                // ON
+
+                // http - How to control web page caching, across all browsers? - Stack Overflow
+                // http://stackoverflow.com/questions/49547/how-to-control-web-page-caching-across-all-browsers
+
+                // Using ASP.NET:
+                Response.AppendHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+                Response.AppendHeader("Pragma", "no-cache"); // HTTP 1.0.
+                Response.AppendHeader("Expires", "0"); // Proxies.
+
+            }
+            else if (noCache.ToUpper() == FxLiteral.OFF)
+            {
+                // OFF
+            }
+            else
+            {
+                // パラメータ・エラー（書式不正）
+                throw new FrameworkException(
+                    FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH1[0],
+                    String.Format(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH1[1],
+                        FxLiteral.NO_CACHE));
+            }
+        }
 
         #endregion
 

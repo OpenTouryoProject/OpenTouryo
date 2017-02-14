@@ -150,11 +150,6 @@ namespace Touryo.Infrastructure.Framework.Presentation
             }
 
             #endregion
-
-            //string strLogMessage = "OnActionExecuting" + " - " + filterContext.Controller.ToString() + " - "
-            //                 + filterContext.ActionDescriptor.ActionName;
-
-            //LogIF.InfoLog("ACCESS", strLogMessage);
         }
 
         /// <summary>セッションを消去</summary>

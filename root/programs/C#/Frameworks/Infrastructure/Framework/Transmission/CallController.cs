@@ -53,11 +53,13 @@
 //*  2012/12/17  西野 大介         WCF-TCP/IP対応
 //*  2013/01/22  西野 大介         WCF-TCP/IP：Channelの解放（Close、Dispose）を明示
 //*  2014/11/14	 Sandeep-san       Implemented WCF communication options(i.e, Client, proxy credentials and Certificate)
+//*  2017/02/14  西野 大介         Invokeの非同期バージョン（InvokeAsync）を追加
 //**********************************************************************************
 
 using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using System.Net;
 using System.ServiceModel;
@@ -285,6 +287,22 @@ namespace Touryo.Infrastructure.Framework.Transmission
         #endregion
 
         #region インボーク
+
+        #region 非同期バージョン
+
+        /// <summary>Invokeメソッドの非同期バージョン</summary>
+        /// <param name="serviceName">サービス名</param>
+        /// <param name="parameterValue">引数</param>
+        /// <returns>戻り値</returns>
+        /// <remarks>自由に利用できる。</remarks>
+        public object InvokeAsync(string serviceName, object parameterValue)
+        {
+            return new Task<object>(() => {
+                return this.Invoke(serviceName, parameterValue);
+            });
+        }
+
+        #endregion
 
         /// <summary>サービス インターフェイスに対するクライアント モジュール</summary>
         /// <param name="serviceName">サービス名</param>

@@ -31,6 +31,7 @@
 //**********************************************************************************
 
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 
 using Touryo.Infrastructure.Public.Str;
@@ -67,11 +68,17 @@ namespace Touryo.Infrastructure.Public.Util
         }
 
         /// <summary>PasswordをGenerate</summary>
-        /// <param name="length">長さ</param>
-        /// <param name="numberOfNonAlphanumericCharacters">Alphanumeric以外の文字数</param>
+        /// <param name="length">長さ（1-127）</param>
+        /// <param name="numberOfNonAlphanumericCharacters">Alphanumeric以外の文字数(0-length)</param>
         /// <returns>Password</returns>
         public static string Generate(int length, int numberOfNonAlphanumericCharacters)
         {
+            // 以下を参考に実装したが、元のコードにバグがあったので修正も含めている。
+            // ASP.NETを使ってランダムなパスワードを生成する － インターネットコム
+            // https://internetcom.jp/developer/20060131/26.html
+
+            RNGCryptoServiceProvider rng = null;
+
             if ((length < 1) || (length > 128))
             {
                 throw new ArgumentException("Password length is incorrect.");
@@ -82,67 +89,88 @@ namespace Touryo.Infrastructure.Public.Util
                 throw new ArgumentException("Minimum required non alphanumeric character count is incorrect.");
             }
 
-            while (true)
+            byte[] bufferPwd = new byte[length];
+            byte[] bufferSelectIdx = new byte[numberOfNonAlphanumericCharacters];
+            byte[] bufferSelectChar = new byte[numberOfNonAlphanumericCharacters];
+
+            // chPassword contains the password's characters as it's built up
+            char[] chPassword = new char[length];
+
+            // chPunctionations contains the list of legal non-alphanumeric characters
+            char[] chPunctuations = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~".ToCharArray(); //"!@@$%^^*()_-+=[{]};:>|./?".ToCharArray();
+
+            // Get a cryptographically strong series of bytes
+            rng = new RNGCryptoServiceProvider();
+            rng.GetBytes(bufferPwd);
+
+            // C# ASCII Table - Dot Net Perls
+            // https://www.dotnetperls.com/ascii-table
+
+            for (int i = 0; i < length; i++)
             {
-                int i = 0;
-                int nonANcount = 0;
-                byte[] buffer1 = new byte[length];
+                // Convert each byte into its representative character
+                // 何故 87 ? ---> 62 の間違い（ 0~9(10) + A~Z(26) + a~z(26) = 62 ）
+                uint rndChr = (bufferPwd[i] % (uint)62); // 0-61(の62文字)
 
-                //chPassword contains the password's characters as it's built up
-                char[] chPassword = new char[length];
-
-                //chPunctionations contains the list of legal non-alphanumeric characters
-                char[] chPunctuations = "!@@$%^^*()_-+=[{]};:>|./?".ToCharArray();
-
-                //Get a cryptographically strong series of bytes
-                RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-                rng.GetBytes(buffer1);
-
-                for (i = 0; i <= length - 1; i++)
+                if ((rndChr < 10))
                 {
-                    //Convert each byte into its representative character
-                    int rndChr = (buffer1[i] % 87);
-                    if ((rndChr < 10))
+                    // 48 + (0~9) = 48~57 => charで、0~9を表す。
+                    chPassword[i] = Convert.ToChar(Convert.ToUInt16(48 + rndChr));
+                }
+                else
+                {
+                    if ((rndChr < 36))
                     {
-                        chPassword[i] = Convert.ToChar(Convert.ToUInt16(48 + rndChr));
+                        // 55 + (10~35) = 65~90 => charで、A~Zを表す。
+                        chPassword[i] = Convert.ToChar(Convert.ToUInt16(55 + rndChr));
                     }
                     else
                     {
-                        if ((rndChr < 36))
+                        // 61 + (36~61) = 97~122 => charで、a~zを表す。
+                        chPassword[i] = Convert.ToChar(Convert.ToUInt16(61 + rndChr));
+                    }
+                }
+            }
+
+            // 0-lengthの位置に、適当なNAC文字を入れる。
+
+            // Get a cryptographically strong series of bytes
+            rng = new RNGCryptoServiceProvider();
+            rng.GetBytes(bufferSelectIdx); // index選択用
+            rng = new RNGCryptoServiceProvider();
+            rng.GetBytes(bufferSelectChar); // char選択用
+
+            List<char> list = new List<char>();
+            list.AddRange(chPunctuations); // .Contains() を使いたい。
+
+            for (int i = 0; i < numberOfNonAlphanumericCharacters; i++)
+            {
+                uint selectIdx = (bufferSelectIdx[i] % (uint)length); // index選択
+                uint selectChar = (bufferSelectChar[i] % (uint)chPunctuations.Length); // char選択
+
+                if (list.Contains(chPassword[selectIdx]))
+                {
+                    // 既にalphabet以外が入っている場合、先頭から埋める。
+                    for (int j = 0; j < length; j++)
+                    {
+                        if (list.Contains(chPassword[j]))
                         {
-                            chPassword[i] = Convert.ToChar(Convert.ToUInt16((65 + rndChr) - 10));
+                            // 既にalphabet以外が入っている。
                         }
                         else
                         {
-                            if ((rndChr < 62))
-                            {
-                                chPassword[i] = Convert.ToChar(Convert.ToUInt16((97 + rndChr) - 36));
-                            }
-                            else
-                            {
-                                chPassword[i] = chPunctuations[rndChr - 62];
-                                nonANcount += 1;
-                            }
+                            chPassword[j] = chPunctuations[selectChar];
+                            break; // 忘れてた。
                         }
                     }
                 }
-
-                if (nonANcount < numberOfNonAlphanumericCharacters)
+                else
                 {
-                    Random rndNumber = new Random();
-                    for (i = 0; i <= (numberOfNonAlphanumericCharacters - nonANcount) - 1; i++)
-                    {
-                        int passwordPos = 0;
-                        do
-                        {
-                            passwordPos = rndNumber.Next(0, length);
-                        } while (!char.IsLetterOrDigit(chPassword[passwordPos]));
-                        chPassword[passwordPos] = chPunctuations[rndNumber.Next(0, chPunctuations.Length)];
-                    }
+                    chPassword[selectIdx] = chPunctuations[selectChar];
                 }
-
-                return new string(chPassword);
             }
+
+            return new string(chPassword);
         }
     }
 }

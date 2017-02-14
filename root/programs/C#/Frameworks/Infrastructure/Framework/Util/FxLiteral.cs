@@ -55,6 +55,7 @@
 //*  2014/10/03  Rituparna         Added constants for ListView events and prefix for supporting ItemCommand event.
 //*  2014/10/03  Rituparna         Added constants for RadioButtonList,CheckBoxList events and prefix. 
 //*  2015/04/16  Supragyan         Added constants for Textbox events and prefix. 
+//*  2017/02/14  西野 大介         キャッシュ無効化処理にスイッチを追加した。
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Util
@@ -79,7 +80,7 @@ namespace Touryo.Infrastructure.Framework.Util
         public const string REQUEST_TICKET_GUID_MAX_QUEUE_LENGTH = "FxRequestTicketGuidMaxQueueLength";
 
         ///// <summary>ボタン履歴情報記録機能のON / OFFを設定するキー</summary>
-        //public const string BUTTON_HISTORY_RECORDER = "FxButtonHistoryRecorder";
+        //public const string BUTTON_HISTORY_RECORDER = "FxButtonHistoryRecorder"; // 下記のキュー長で制御
 
         /// <summary>ボタン履歴情報記録機能のキュー長を設定するキー</summary>
         public const string BUTTON_HISTORY_MAX_QUEUE_LENGTH = "FxButtonhistoryMaxQueueLength";
@@ -101,6 +102,9 @@ namespace Touryo.Infrastructure.Framework.Util
 
         /// <summary>画面遷移チェック機能のON / OFFを設定するキー</summary>
         public const string SCREEN_TRANSITION_CHECK = "FxScreenTransitionCheck";
+
+        /// <summary>キャッシュ無効化機能のON / OFFを設定するキー</summary>
+        public const string NO_CACHE = "FxNoCache";
 
         #endregion
 
