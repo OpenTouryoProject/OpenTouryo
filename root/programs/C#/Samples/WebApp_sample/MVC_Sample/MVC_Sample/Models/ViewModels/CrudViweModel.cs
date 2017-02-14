@@ -5,7 +5,7 @@
 // テスト用クラスなので、必要に応じて流用 or 削除して下さい。
 
 //**********************************************************************************
-//* クラス名        ：CrudModel
+//* クラス名        ：CrudViweModel
 //* クラス日本語名  ：サンプル アプリ・モデル
 //*
 //* 作成日時        ：－
@@ -32,7 +32,7 @@ namespace MVC_Sample.Models.ViewModels
     /// <summary>
     /// サンプル アプリ・モデル
     /// </summary>
-    public class CrudModel : BaseViewModel
+    public class CrudViweModel : BaseViewModel
     {
         /// <summary>shippersテーブル</summary>
         public DsNorthwind.ShippersDataTable shippers { get; set; }
@@ -40,11 +40,39 @@ namespace MVC_Sample.Models.ViewModels
         /// <summary>メッセージ</summary>
         public string Message { get; set; }
 
+        /// <summary>ShipperID</summary>
+        public string ShipperID { get; set; }
+        
+        /// <summary>CompanyName</summary>
+        public string CompanyName { get; set; }
+        
+        /// <summary>Phone</summary>
+        public string Phone { get; set; }
+        
         #region ドロップダウンリストに表示するアイテム
 
-        /// <summary>
-        /// ddlDap に表示するアイテムリスト
-        /// </summary>
+        /// <summary>データアクセス制御クラス（データプロバイダ）</summary>
+        public string DdlDap { get; set; }
+        
+        /// <summary>個別、共通、自動生成のＤａｏ種別</summary>
+        public string DdlMode1 { get; set; }
+        
+        /// <summary>静的、動的のクエリ モード</summary>
+        public string DdlMode2 { get; set; }
+        
+        /// <summary>分離レベル</summary>
+        public string DdlIso { get; set; }
+
+        /// <summary>コミット、ロールバック</summary>
+        public string DdlExRollback { get; set; }
+
+        /// <summary>コミット、ロールバック</summary>
+        public string DdlOrderColumn { get; set; }
+
+        /// <summary>コミット、ロールバック</summary>
+        public string DdlOrderSequence { get; set; }
+        
+        /// <summary>データアクセス制御クラス（データプロバイダ） アイテムリスト</summary>
         public List<SelectListItem> DdlDapItems
         {
             get
@@ -63,9 +91,7 @@ namespace MVC_Sample.Models.ViewModels
             }
         }
 
-        /// <summary>
-        /// ddlMode1 に表示するアイテムリスト
-        /// </summary>
+        /// <summary>個別、共通、自動生成のＤａｏ種別 アイテムリスト</summary>
         public List<SelectListItem> DdlMode1Items
         {
             get
@@ -79,9 +105,7 @@ namespace MVC_Sample.Models.ViewModels
             }
         }
 
-        /// <summary>
-        /// ddlMode2 に表示するアイテムリスト
-        /// </summary>
+        /// <summary>静的、動的のクエリ モード アイテムリスト</summary>
         public List<SelectListItem> DdlMode2Items
         {
             get
@@ -94,9 +118,7 @@ namespace MVC_Sample.Models.ViewModels
             }
         }
 
-        /// <summary>
-        /// ddlIso に表示するアイテムリスト
-        /// </summary>
+        /// <summary>分離レベル アイテムリスト</summary>
         public List<SelectListItem> DdlIsoItems
         {
             get
@@ -115,9 +137,7 @@ namespace MVC_Sample.Models.ViewModels
             }
         }
 
-        /// <summary>
-        /// ddlExRollback に表示するアイテムリスト
-        /// </summary>
+        /// <summary>コミット、ロールバック アイテムリスト</summary>
         public List<SelectListItem> DdlExRollbackItems
         {
             get
@@ -134,24 +154,7 @@ namespace MVC_Sample.Models.ViewModels
             }
         }
 
-        /// <summary>
-        /// ddlTransmission に表示するアイテムリスト
-        /// </summary>
-        public List<SelectListItem> DdlTransmissionItems
-        {
-            get
-            {
-                return new List<SelectListItem>()
-                {
-                    new SelectListItem() { Text = "Webサービス呼出", Value = "testWebService", Selected = true }, 
-                    new SelectListItem() { Text = "インプロセス呼出", Value = "testInProcess" }
-                };
-            }
-        }
-
-        /// <summary>
-        /// ddlOrderColumn に表示するアイテムリスト
-        /// </summary>
+        /// <summary>並び替え対象列 アイテムリスト</summary>
         public List<SelectListItem> DdlOrderColumnItems
         {
             get
@@ -165,9 +168,7 @@ namespace MVC_Sample.Models.ViewModels
             }
         }
 
-        /// <summary>
-        /// ddlOrderSequence に表示するアイテムリスト
-        /// </summary>
+        /// <summary>昇順・降順 アイテムリスト</summary>
         public List<SelectListItem> DdlOrderSequenceItems
         {
             get
@@ -177,25 +178,6 @@ namespace MVC_Sample.Models.ViewModels
                     new SelectListItem() { Text = "ASC", Value = "A", Selected = true }, 
                     new SelectListItem() { Text = "DESC", Value = "D" }
                 };
-            }
-        }
-
-        #endregion
-
-        #region HTML.BeginFormで値を復元用途
-        
-        /// <summary>HTML.BeginFormで値を復元するためのワーク領域</summary>
-        public Dictionary<string, string> InputValues { get; set; }
-
-        /// <summary>HTML.BeginFormDe値を復元するためのワーク領域の初期化</summary>
-        /// <param name="form">入力フォームの情報</param>
-        public void CopyInputValues(FormCollection form)
-        {
-            InputValues = new Dictionary<string, string>();
-
-            foreach (string key in form.AllKeys)
-            {
-                InputValues.Add(key, form[key]);
             }
         }
 

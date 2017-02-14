@@ -297,7 +297,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
         /// <remarks>自由に利用できる。</remarks>
         public object InvokeAsync(string serviceName, object parameterValue)
         {
-            return new Task<object>(() => {
+            return Task<object>.Factory.StartNew(() => {
                 return this.Invoke(serviceName, parameterValue);
             });
         }

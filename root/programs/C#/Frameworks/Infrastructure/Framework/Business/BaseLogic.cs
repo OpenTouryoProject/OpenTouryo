@@ -145,7 +145,7 @@ namespace Touryo.Infrastructure.Framework.Business
         /// <remarks>画面コード クラスから利用する。</remarks>
         public Task<BaseReturnValue> DoBusinessLogicAsync(BaseParameterValue parameterValue)
         {
-            return new Task<BaseReturnValue>(() => {
+            return Task<BaseReturnValue>.Factory.StartNew(() => {
                 return this.DoBusinessLogic(parameterValue, DbEnum.IsolationLevelEnum.User);
             });
             // IsolationLevelEnum.Userで呼び出す
@@ -159,7 +159,7 @@ namespace Touryo.Infrastructure.Framework.Business
         public Task<BaseReturnValue> DoBusinessLogicAsync(
             BaseParameterValue parameterValue, DbEnum.IsolationLevelEnum iso)
         {
-            return new Task<BaseReturnValue>(() => {
+            return Task<BaseReturnValue>.Factory.StartNew(() => {
                 return this.DoBusinessLogic(parameterValue, iso);
             });
         }

@@ -46,28 +46,6 @@
     <!-- Head 部の section -->
 }
 
-@{
-    var label1Data = "";
-    var label2Data = "";
-
-    if (@ViewBag.label1Data != null)
-    {
-        label1Data = @ViewBag.label1Data;
-    }
-    else
-    {
-        label1Data = MVC_Sample.Models.ErrorInformation.ErrorMessage;
-    }
-    if (@ViewBag.label2Data != null)
-    {
-        label2Data = @ViewBag.label2Data;
-
-    }
-    else
-    {
-        label2Data = MVC_Sample.Models.ErrorInformation.ErrorInfo;
-    }
-}
 <h1>開発用エラー画面</h1>
 <p>
     システム障害が発生しました。<br />
@@ -81,16 +59,38 @@
 <hr />
 <div>
     エラーメッセージ：<br />
-    @Html.Label("Label1", (string)label1Data)
+    @Html.Label("Label1", (string)ViewBag.label1Data)
 </div>
 <hr />
 <div>
     その他の情報：<br />
-    @Html.Label("Label2", (string)label2Data)
+    @Html.Label("Label2", (string)ViewBag.label2Data)
 </div>
 <hr />
 <div>
     <br />
+    <br />
+    ＨＴＴＰリクエスト・フォーム情報の一覧：<br />
+    <br />
+    <table id="" border="1" width="600">
+        <thead>
+            <tr>
+                <th style="width: 300px"><b>キー</b></th>
+                <th style="width: 700px"><b>バリュー</b></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var row in ViewBag.list_form)
+                {
+                    <tr>
+                        <td>@row.key</td>
+                        <td>@row.value</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
     <br />
     ＨＴＴＰセッション情報の一覧：<br />
     <br />
@@ -103,34 +103,17 @@
         </thead>
         <tbody>
             @{
-                if (ViewBag.datas.Count != 0)
+                foreach (var row in ViewBag.list_session)
                 {
-                    foreach (var row in ViewBag.datas)
-                    {
-                        <tr>
-                            <td>@row.key</td>
-                            <td>@row.value</td>
-                        </tr>
-                    }
-                }
-                else
-                {
-                    ViewBag.datas = MVC_Sample.Models.ErrorInformation.ErrorDatas;
-                    foreach (var row in ViewBag.datas)
-                    {
-                        <tr>
-                            <td>@row.key</td>
-                            <td>@row.value</td>
-                        </tr>
-                    }
+                    <tr>
+                        <td>@row.key</td>
+                        <td>@row.value</td>
+                    </tr>
                 }
             }
         </tbody>
     </table>
 </div>
-
-
-
 
 @* スクリプト・セクション（RenderSection("FooterScriptsSection", required: true)に出力されます） *@
 @section FooterScriptsSection{
