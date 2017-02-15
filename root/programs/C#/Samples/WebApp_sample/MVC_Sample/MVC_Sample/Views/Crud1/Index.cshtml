@@ -39,6 +39,8 @@
 @* Html.BeginFormは従来の全体方式、Ajax.BeginFormは部分更新方式（UpdateTargetIdの範囲を部分更新） *@
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "form1", onsubmit = "Fx_OnSubmit();" }))
 {
+    @Html.AntiForgeryToken()
+
     <div class="form-inline">
         <div class="form-group">
             <span>データアクセス制御クラス（データプロバイダ）を選択</span><br />

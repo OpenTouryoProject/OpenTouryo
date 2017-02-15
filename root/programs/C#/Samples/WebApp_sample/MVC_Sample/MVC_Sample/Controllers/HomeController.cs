@@ -29,12 +29,15 @@ using Touryo.Infrastructure.Framework.Util;
 namespace MVC_Sample.Controllers
 {
     /// <summary>HomeController</summary>
+    [Authorize]
     public class HomeController : MyBaseMVController
     {
         /// <summary>
         /// GET: Home
         /// </summary>
         /// <returns>ActionResult</returns>
+        [HttpGet]
+        [AllowAnonymous]
         public ActionResult Index()
         {
             return View();
@@ -45,6 +48,7 @@ namespace MVC_Sample.Controllers
         /// </summary>
         /// <returns>ActionResult</returns>
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult Login()
         {
             // Session消去
@@ -59,6 +63,8 @@ namespace MVC_Sample.Controllers
         /// <param name="model">LoginViewModel</param>
         /// <returns>ActionResult</returns>
         [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         public ActionResult Login(LoginViewModel model)
         {
             if (!string.IsNullOrEmpty(model.UserName))

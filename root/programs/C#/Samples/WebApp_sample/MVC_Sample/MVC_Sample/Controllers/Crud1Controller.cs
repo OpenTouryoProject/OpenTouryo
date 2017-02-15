@@ -36,6 +36,7 @@ namespace MVC_Sample.Controllers
     /// <summary>
     /// Html.BeginForm用サンプル アプリ・コントローラ
     /// </summary>
+    [Authorize]
     public class Crud1Controller : MyBaseMVController
     {
         /// <summary>
@@ -53,6 +54,8 @@ namespace MVC_Sample.Controllers
         /// Shippers テーブルのレコード数をカウントする
         /// </summary>
         /// <returns>再描画（ViewResult）</returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> SelectCount(CrudViweModel model)
         {
             // 引数クラスを生成。下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -91,6 +94,8 @@ namespace MVC_Sample.Controllers
         /// Shippers テーブルのレコード全件を DataTable として取得する
         /// </summary>
         /// <returns>再描画（ViewResult）</returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> SelectAll_DT(CrudViweModel model)
         {
             // 引数クラスを生成。下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -140,6 +145,8 @@ namespace MVC_Sample.Controllers
         /// Shippers テーブルのレコード全件を DataSet として取得する
         /// </summary>
         /// <returns>再描画（ViewResult）</returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> SelectAll_DS(CrudViweModel model)
         {
             // 引数クラスを生成。下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -189,6 +196,8 @@ namespace MVC_Sample.Controllers
         /// Shippers テーブルのレコード全件を DataReader として取得する
         /// </summary>
         /// <returns>再描画（ViewResult）</returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> SelectAll_DR(CrudViweModel model)
         {
             // 引数クラスを生成。下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -238,6 +247,8 @@ namespace MVC_Sample.Controllers
         /// Shippers テーブルのレコード全件を、動的 SQL を使用して取得する
         /// </summary>
         /// <returns>再描画（ViewResult）</returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> SelectAll_DSQL(CrudViweModel model)
         {
             // 引数クラスを生成。下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -291,6 +302,8 @@ namespace MVC_Sample.Controllers
         /// ShipperId をキーにして Shippers テーブルのレコードを取得する
         /// </summary>
         /// <returns>再描画（ViewResult）</returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Select(CrudViweModel model)
         {
             // 引数クラスを生成。下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -335,6 +348,8 @@ namespace MVC_Sample.Controllers
         /// Shippers テーブルに新規レコードを追加する
         /// </summary>
         /// <returns>再描画（ViewResult）</returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Insert(CrudViweModel model)
         {
             // 引数クラスを生成。下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -376,6 +391,8 @@ namespace MVC_Sample.Controllers
         /// Shippers テーブルに新規レコードを更新する
         /// </summary>
         /// <returns>再描画（ViewResult）</returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Update(CrudViweModel model)
         {
             // 引数クラスを生成。下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -419,6 +436,8 @@ namespace MVC_Sample.Controllers
         /// Shippers テーブルに新規レコードを削除する
         /// </summary>
         /// <returns>再描画（ViewResult）</returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(CrudViweModel model)
         {
             // 引数クラスを生成。下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -458,6 +477,8 @@ namespace MVC_Sample.Controllers
 
         /// <summary>画面遷移する</summary>
         /// <returns>画面遷移のためのRedirectResult</returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Transitions()
         {
             return Redirect(Url.Action("Index", "Crud2"));
@@ -467,6 +488,8 @@ namespace MVC_Sample.Controllers
         /// Sleepを実行し二重送信防止機能をテストする
         /// </summary>        
         /// <returns>再描画（ViewResult）</returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult PreventDoubleSubmission(CrudViweModel model)
         {
             System.Threading.Thread.Sleep(5 * 1000);

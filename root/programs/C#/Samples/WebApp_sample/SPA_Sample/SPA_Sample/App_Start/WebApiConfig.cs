@@ -44,6 +44,9 @@ namespace SPA_Sample
 
             // JSON データにはキャメル ケースを使用します。
             config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            
+            //// トレース機能を有効化します。
+            //TraceConfig.Register(config);
         }
     }
 }

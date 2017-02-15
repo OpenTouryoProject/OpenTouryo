@@ -23,7 +23,7 @@
 //* クラス日本語名  ：エラー処理用コントローラ
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
@@ -34,11 +34,10 @@
 //*  2015/09/04  Supragyan         Modified ArrayList to List of ExceptionData on Index action method
 //**********************************************************************************
 
-using SPA_Sample.Models;
-
 using System;
 using System.Web.Mvc;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Str;
@@ -51,8 +50,11 @@ namespace SPA_Sample.Controllers
     /// </summary>
     public class ErrorController : Controller
     {
-        /// <summary>Session情報：リピータ処理用</summary>
-        private List<ExceptionData> listData = new List<ExceptionData>();
+        /// <summary>Form情報</summary>
+        private List<PositionData> list_form = new List<PositionData>();
+
+        /// <summary>Session情報</summary>
+        private List<PositionData> list_session = new List<PositionData>();
 
         #region Index
         /// <summary>
@@ -61,6 +63,8 @@ namespace SPA_Sample.Controllers
         /// <returns>ActionResult</returns>
         public ActionResult Index()
         {
+            //画面にエラーメッセージ・エラー情報を表示する-----------------------------
+
             //To get an error message from Session
             string err_msg = (string)Session[FxHttpContextIndex.SYSTEM_EXCEPTION_MESSAGE];
 
@@ -73,6 +77,31 @@ namespace SPA_Sample.Controllers
             //To encode error information and display on Error screen
             ViewBag.label2Data = CustomEncode.HtmlEncode(err_info);
 
+            // ------------------------------------------------------------------------
+
+            //画面にフォーム情報を表示する---------------------------------------------
+            NameValueCollection form = Request.Form;
+
+            if (form != null)
+            {
+                //foreach
+                foreach (string strKey in form)
+                {
+                    if (form[strKey] == null)
+                    {
+                        //Add key and value to PositionData
+                        list_form.Add(new PositionData(strKey, "null"));
+                    }
+                    else
+                    {
+                        //Add key and value to PositionData
+                        list_form.Add(new PositionData(strKey, CustomEncode.HtmlEncode(form[strKey].ToString())));
+                    }
+                }
+                //データバインド
+                ViewBag.list_form = list_form;
+            }
+
             // 画面にセッション情報を表示する------------------------------------------
 
             if (Session != null)
@@ -83,21 +112,22 @@ namespace SPA_Sample.Controllers
                     if (Session[strKey] == null)
                     {
                         //Add key and value to PositionData
-                        listData.Add(new ExceptionData(strKey, "null"));
+                        list_session.Add(new PositionData(strKey, "null"));
                     }
                     else
                     {
                         //Add key and value to PositionData
-                        listData.Add(new ExceptionData(strKey, CustomEncode.HtmlEncode(Session[strKey].ToString())));
+                        list_session.Add(new PositionData(strKey, CustomEncode.HtmlEncode(Session[strKey].ToString())));
                     }
                 }
                 //データバインド
-                ViewBag.datas = listData;
+                ViewBag.list_session = list_session;
             }
+
+            // セッション情報を削除する------------------------------------------------
 
             if (Session[FxHttpContextIndex.SESSION_ABANDON_FLAG] != null)
             {
-                // セッション情報を削除する------------------------------------------------
                 if ((bool)Session[FxHttpContextIndex.SESSION_ABANDON_FLAG])
                 {
                     // セッション タイムアウト検出用Cookieを消去
@@ -108,11 +138,6 @@ namespace SPA_Sample.Controllers
 
                     try
                     {
-                        //To store error information from session before clear the session
-                        ErrorInformation.ErrorMessage = (string)Session[FxHttpContextIndex.SYSTEM_EXCEPTION_MESSAGE];
-                        ErrorInformation.ErrorInfo = (string)Session[FxHttpContextIndex.SYSTEM_EXCEPTION_INFORMATION];
-                        ErrorInformation.ErrorDatas = listData;
-
                         // セッションを消去                       
                         Session.Abandon();
                     }
@@ -134,12 +159,12 @@ namespace SPA_Sample.Controllers
 
     #endregion
 
-    # region ExceptionData
+    # region PositionData
 
     /// <summary>
     /// ExceptionData class to set key and value for throwing exception 
     /// </summary>
-    public class ExceptionData
+    public class PositionData
     {
         /// <summary>キー</summary>
         private string _key;
@@ -148,7 +173,7 @@ namespace SPA_Sample.Controllers
         private string _value;
 
         /// <summary>コンストラクタ</summary>
-        public ExceptionData(string key, string value)
+        public PositionData(string key, string value)
         {
             this._key = key;
             this._value = value;

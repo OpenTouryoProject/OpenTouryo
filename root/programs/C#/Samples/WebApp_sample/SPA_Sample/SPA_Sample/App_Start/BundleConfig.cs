@@ -100,9 +100,10 @@ namespace SPA_Sample
             {
                 CdnFallbackExpression = "window.jQuery.fn.modal"
             }.Include("~/Scripts/bootstrap.js"));
-
+            
             bundles.Add(new StyleBundle("~/bundles/css").Include(
                 "~/Content/bootstrap.css",
+                        "~/Content/font-awesome.min.css",
                 "~/Content/otr/Style.css",
                 "~/Content/app/Site.css",
                 "~/Content/TodoList.css"));

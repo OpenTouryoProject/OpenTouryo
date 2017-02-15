@@ -37,6 +37,7 @@
 
 @using (@Html.BeginForm())
 {
+    @Html.AntiForgeryToken()
     <table>
         <tr>
             <th>ユーザーID</th>
