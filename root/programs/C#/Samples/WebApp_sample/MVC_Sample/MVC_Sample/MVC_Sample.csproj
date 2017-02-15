@@ -154,6 +154,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\Crud1Controller.cs" />
+    <Compile Include="Controllers\Crud2Controller.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PingController.cs" />
@@ -257,6 +258,9 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Home\Scroll.cshtml" />
+    <Content Include="Views\Crud2\Index.cshtml" />
+    <Content Include="Views\Crud2\_ChartView.cshtml" />
+    <Content Include="Views\Crud2\_MessageView.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

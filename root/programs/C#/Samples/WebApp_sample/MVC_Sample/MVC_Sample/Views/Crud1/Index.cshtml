@@ -74,13 +74,11 @@
             @Html.DropDownListFor(model => model.DdlOrderSequence, Model.DdlOrderSequenceItems)
 
             <span>処理結果：</span>
-            <div id="messageResult">
-                @Html.Partial("_MessageView")
-            </div>
+            <div id="messageResult">@Html.Partial("_MessageView")</div>
         </div>
         <div class="form-group">
             <div id="chartResult" style="width: 100%; height: 100%;">@Html.Partial("_ChartView")</div>
-            <input type="submit" id="button10" value="クリア" />
+            <button id="button10">クリア</button>
         </div>
     </div>
     <div class="form-inline">
@@ -99,8 +97,9 @@
         </div><br />
         <div class="form-group">
             <label id="lblErrorMessage"></label>
-            <input type="submit" id="button21" value="画面遷移（ポストバック後リダイレクト）" formaction="@Url.Action("Transitions")" />
-            <input type="submit" id="button22" value="二重送信防止" formaction="@Url.Action("PreventDoubleSubmission")" />
+            <input type="submit" id="button21" value="二重送信防止" formaction="@Url.Action("PreventDoubleSubmission")" />
+            <input type="submit" id="button22" value="画面遷移（ポストバック後リダイレクト）" formaction="@Url.Action("Transitions")" />
+
         </div>
     </div>
 }
