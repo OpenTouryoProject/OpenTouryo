@@ -27,32 +27,39 @@
 <!--FxCode：add-js-event-->
 <body onload="Fx_Document_OnLoad();Fx_AdjustStyle();" onunload="Fx_Document_OnClose();">
     
-    <div id="header-fixed">
-        <div id="header-bk">
-            <div id="header">
-                <div id="header-logo"><img alt="logo" style="width:80px; height:80px;" src="<%= this.ResolveClientUrl("~/images/otr/logo.png") %>" /></div>
-                <div style="margin: 20px 0 0 100px">
-                    <span>You has signed-in as "<%= this.UserName %>".</span>
-                    <span class="test">scroll value</span>
-                </div>
-                <div id="header-button">
-                    <button type="button" class="btn btn-info" onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/menu.aspx") %>';">Menu</button>
-                    <button type="button" class="btn btn-default" onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/logout.aspx") %>';">Sign-out</button>
-                </div>
+    <div class="page-header row">
+        <div class="col-xs-10" style="padding: 0">
+            <div id="header-logo"><a href="<%= this.ResolveClientUrl("~/Aspx/Start/menu.aspx") %>"><img alt="logo" src="<%= this.ResolveClientUrl("~/images/otr/logo.png") %>" /></a></div>
+            <div id="header-title">
+                <span>You has signed-in as "<%= this.UserName %>".</span>
+                <span class="test">scroll value</span>
             </div>
         </div>
+        <div id="header-button" class="col-xs-2">
+            <button type="button" class="btn btn-info pull-right" onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/logout.aspx") %>';">Sign-out</button>
+        </div>
     </div>
-    <div id="body-bk">                
-        <div id="body">
-            <div id="sidemenu">
-                <div id="sidemenucontent">
-                    <ul>
-                        <li><span style="color:#ffffff; font-weight:bold;">スクロールに合わせ移動</span></li>
+
+    <div id="body-bk">
+        <div id="body" class="row">
+            <div class="nav-side-menu col-sm-2">
+                <div class="brand">メニュー</div>
+                <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+                <div class="menu-list">
+                    <ul id="menu-content" class="menu-content collapse out">
+                        <li onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/menu.aspx") %>';">
+                            <i class="fa fa-arrow-circle-right"></i> メニュートップ
+                        </li>
+                        <li onclick="window.location.href = '@Url.Content("~/")';">
+                            <i class="fa fa-arrow-circle-right"></i> メニュー１
+                        </li>
+                        <li onclick="window.location.href = '@Url.Content("~/")';">
+                            <i class="fa fa-arrow-circle-right"></i> メニュー２
+                        </li>
                     </ul>
                 </div>
             </div>
-            <div id="contents">
-
+            <div id="contents" class="col-sm-10">
 
                 <!-- オートコンプリートを指定 -->
                 <form id="form1" runat="server">
@@ -105,13 +112,12 @@
             </div>
         </div>
     </div>
-    <div id="footer-fixed">
-        <div id="footer-bk">
-            <div id="footer">
-                Powered by <a target="_blank" href="https://github.com/OpenTouryoProject">OpenTouryo</a>.
-            </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted">Powered by <a target="_blank" href="https://github.com/OpenTouryoProject">OpenTouryo</a></p>
         </div>
-    </div>
+    </footer>
     
     <%: Scripts.Render("~/bundles/otr") %>
     <%: Scripts.Render("~/bundles/app") %>

@@ -16,45 +16,49 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function Fx_AdjustStyle() {
+function Fx_CommonAdjustStyle(offset) {
+    var menuTopMargin = $('.page-header').height();
+    var targetScrollValue = offset.top - menuTopMargin;
 
-    // 左menuのサイズを調整
-    var sidemenu = $("#sidemenu");
-    var contents = $("#contents");
+    var wScrollvalue = $(window).scrollTop();
+    var span_test = $("span.test");
+    if (span_test) { span_test.text(wScrollvalue); }
 
-    if (contents.height() >= sidemenu.height()) {
-        sidemenu.height(contents.height());
-    }
-    else {
-        contents.height(sidemenu.height());
-    }
+    var menuZIndex = $(".nav-side-menu").css('z-index');
+    if (menuZIndex === 'auto') {
+        // サイドバーの z-index が auto の場合は、画面の横幅が広い (PC 向け)
 
-    var browserHeight = Fx_getBrowserHeight()
-    if (sidemenu.height() < browserHeight) {
-        sidemenu.height(browserHeight);
-    }
-
-    // 左menuをスクロールに合わせて移動
-    var memuPosi = $("#sidemenucontent").offset();
-    var menuTopMargin = 105;
-    var targetScrollValue = memuPosi.top - menuTopMargin;
-
-    $(window).scroll(function () {
-        var wScrollvalue = $(window).scrollTop();
-        var span_test = $("span.test");
-        if (span_test) { span_test.text(wScrollvalue); }
         if (wScrollvalue > targetScrollValue) {
-            if (span_test) { span_test.append(" / " + targetScrollValue + " / " + memuPosi.top); }
-            $("#sidemenucontent").css({
-                position: "fixed",
-                top: menuTopMargin
-            });
+            if (span_test) { span_test.append(" / " + targetScrollValue + " / " + offset.top); }
+
+            // サイドバーの位置を調整する
+            var movePosition = wScrollvalue + "px";
+            $(".nav-side-menu").css('top', movePosition);
         }
         else {
-            $("#sidemenucontent").css({
-                position: "absolute",
-                top: menuTopMargin
-            });
+            $(".nav-side-menu").css('top', 0);
         }
+    }
+    else {
+        // サイドバーの z-index が auto でない場合は、画面の横幅が狭い (スマホ・タブレット向け)
+        $(".nav-side-menu").css('top', menuTopMargin);
+    }
+}
+
+function Fx_AdjustStyle() {
+    // 画面初期化時の、サイドバーのオフセットを退避しておく
+    offset = $(".nav-side-menu").offset();
+
+    // 画面表示時に、描画位置を調整する
+    Fx_CommonAdjustStyle(offset);
+
+    // スクロール時に、サイドバーの位置を調整する
+    $(window).scroll(function () {
+        Fx_CommonAdjustStyle(offset);
+    });
+    // ウィンドウのリサイズ時に、描画位置を調整する
+    $(window).resize(function () {
+        var scrollTop = $(window).scrollTop();
+        Fx_CommonAdjustStyle(offset);
     });
 }
