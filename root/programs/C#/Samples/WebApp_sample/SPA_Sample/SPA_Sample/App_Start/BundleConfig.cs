@@ -103,7 +103,7 @@ namespace SPA_Sample
             
             bundles.Add(new StyleBundle("~/bundles/css").Include(
                 "~/Content/bootstrap.css",
-                        "~/Content/font-awesome.min.css",
+                "~/Content/font-awesome.min.css",
                 "~/Content/otr/Style.css",
                 "~/Content/app/Site.css",
                 "~/Content/TodoList.css"));

@@ -1031,7 +1031,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>63877</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:63877/</IISUrl>
+          <IISUrl>http://localhost:63877/SPA_Sample</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
