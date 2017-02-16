@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<discovery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/disco/">
-  <contractRef ref="http://localhost:9996/WebService/ServiceForMu.asmx?wsdl" docRef="http://localhost:9996/WebService/ServiceForMu.asmx" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
-  <soap address="http://localhost:9996/WebService/ServiceForMu.asmx" xmlns:q1="http://tempuri.org/" binding="q1:ServiceForMuSoap" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
-  <soap address="http://localhost:9996/WebService/ServiceForMu.asmx" xmlns:q2="http://tempuri.org/" binding="q2:ServiceForMuSoap12" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
-</discovery>

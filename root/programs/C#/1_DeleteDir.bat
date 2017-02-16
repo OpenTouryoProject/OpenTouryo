@@ -19,6 +19,9 @@ for /D /R %%i in ( Build ) do (
 for /D /R %%i in ( PrecompiledWeb ) do (
   if exist "%%~i" RD /S /Q "%%~i"
 )
+for /D /R %%i in ( packages ) do (
+  if exist "%%~i" RD /S /Q "%%~i"
+)
 
 @echo --------------------------------------------------
 @echo Deleted the obj, bin, Temp, Build, PrecompiledWeb folders.
