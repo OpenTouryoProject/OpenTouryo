@@ -228,8 +228,8 @@ namespace Touryo.Infrastructure.Business.Presentation
             // ・・・
             // -------------------------------------------------------------
 
-            // キャッシュ無効化処理 ----------------------------------------
-            this.NoCacheWithSwitch();
+            // キャッシュ制御処理 ------------------------------------------
+            this.CacheControlWithSwitch();
             // -------------------------------------------------------------
 
             // ポストバック後の位置復元 ------------------------------------
@@ -355,15 +355,15 @@ namespace Touryo.Infrastructure.Business.Presentation
 
         // 2009/09/01 & 2009/09/25-end
 
-        /// <summary>キャッシュ無効化処理（スイッチ付き）</summary>
-        private void NoCacheWithSwitch()
+        /// <summary>キャッシュ制御処理（スイッチ付き）</summary>
+        private void CacheControlWithSwitch()
         {
             // システムで固定に出来る場合は、ここでキャッシュ無効化する。
             // また、ファイル・ダウンロード処理などでUPでFxの設定した
             // キャッシュ制御を変更したい場合は、Response.Clearを実行して再設定する。
 
             // 画面遷移方法の定義を取得
-            string noCache = GetConfigParameter.GetConfigValue(FxLiteral.NO_CACHE);
+            string noCache = GetConfigParameter.GetConfigValue(MyLiteral.CACHE_CONTROL);
 
             // デフォルト値対策：設定なし（null）の場合の扱いを決定
             if (noCache == null)
@@ -395,7 +395,7 @@ namespace Touryo.Infrastructure.Business.Presentation
                 throw new FrameworkException(
                     FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH1[0],
                     String.Format(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH1[1],
-                        FxLiteral.NO_CACHE));
+                        MyLiteral.CACHE_CONTROL));
             }
         }
 

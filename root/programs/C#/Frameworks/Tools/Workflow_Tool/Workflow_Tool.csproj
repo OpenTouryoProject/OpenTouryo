@@ -38,7 +38,7 @@
   <ItemGroup>
     <Reference Include="Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\Business.dll</HintPath>
+      <HintPath>..\..\Infrastructure\Build\Business.dll</HintPath>
     </Reference>
     <Reference Include="Framework">
       <HintPath>..\..\Infrastructure\Build\Framework.dll</HintPath>
