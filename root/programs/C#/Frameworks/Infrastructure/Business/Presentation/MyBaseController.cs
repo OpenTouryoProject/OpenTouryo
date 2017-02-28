@@ -53,6 +53,9 @@
 //*  2016/01/13  Sandeep           Resolved the URL issue of error screen transition path
 //*  2016/01/18  Sandeep           Modified default relative path of the sample application screens
 //*  2017/02/14  西野 大介         キャッシュ無効化処理にスイッチを追加した。
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
+//*  2017/02/28  西野 大介         TransferErrorScreen2のErrorMessage生成処理の見直し。
+//*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
 //**********************************************************************************
 
 using System;
@@ -653,7 +656,7 @@ namespace Touryo.Infrastructure.Business.Presentation
                 "," + this.perfRec.ExecTime +
                 "," + this.perfRec.CpuTime +
                 "," + baEx.messageID +
-                "," + baEx.Message;
+                "," + baEx.Message; // baEx
 
             // Log4Netへログ出力
             LogIF.WarnLog("ACCESS", strLogMessage);
@@ -706,16 +709,8 @@ namespace Touryo.Infrastructure.Business.Presentation
                 "," + this.perfRec.ExecTime +
                 "," + this.perfRec.CpuTime +
                 "," + bsEx.messageID +
-                "," + bsEx.Message + "\r\n";
-            // OriginalStackTrace（ログ出力）の品質向上
-            if (this.OriginalStackTrace == "")
-            {
-                strLogMessage += bsEx.StackTrace;
-            }
-            else
-            {
-                strLogMessage += this.OriginalStackTrace;
-            }
+                "," + bsEx.Message + "\r\n" +
+                "," + bsEx.StackTrace; // bsEX
 
             // Log4Netへログ出力
             LogIF.ErrorLog("ACCESS", strLogMessage);
@@ -772,16 +767,9 @@ namespace Touryo.Infrastructure.Business.Presentation
                 "," + this.perfRec.ExecTime +
                 "," + this.perfRec.CpuTime +
                 "," + "other Exception" +
-                "," + ex.Message + "\r\n";
-            // OriginalStackTrace（ログ出力）の品質向上
-            if (this.OriginalStackTrace == "")
-            {
-                strLogMessage += ex.StackTrace;
-            }
-            else
-            {
-                strLogMessage += this.OriginalStackTrace;
-            }
+                "," + ex.Message + "\r\n" + 
+                "," + ex.StackTrace + "\r\n" +
+                "," + ex.ToString(); // ex
 
             // Log4Netへログ出力
             LogIF.ErrorLog("ACCESS", strLogMessage);
@@ -818,7 +806,7 @@ namespace Touryo.Infrastructure.Business.Presentation
             }
         }
 
-        /// <summary>例外発生時に、エラー画面に画面遷移</summary>
+        /// <summary>例外発生時に、エラー画面に遷移</summary>
         /// <param name="ex">例外オブジェクト</param>
         /// <remarks>他から呼び出し可能に変更（static）</remarks>
         public static void TransferErrorScreen2(Exception ex)
@@ -862,7 +850,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             // 2009/07/31-start
 
-            #region エラー時に、セッションを開放しないで、業務を続行可能にする処理を追加。
+            #region エラー時に、セッションを解放しないで、業務を続行可能にする処理を追加。
 
             // 不正操作エラー or 画面遷移制御チェック エラー
             if (errMsgId == "IllegalOperationCheckError"
@@ -883,20 +871,18 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             #region エラー画面に表示するエラー情報を作成
 
-            err_msg = System.Environment.NewLine +
-                "エラーメッセージＩＤ: " + errMsgId + System.Environment.NewLine +
-                "エラーメッセージ: " + ex.Message.ToString();
+            err_msg = Environment.NewLine +
+                "Error Message ID : " + errMsgId + Environment.NewLine +
+                "Error Message : " + ex.Message.ToString();
 
-            // #19-start
-            err_info = System.Environment.NewLine +
-                "対象URL: " + HttpContext.Current.Request.Url.ToString() + System.Environment.NewLine +
-                "スタックトレース:" + ex.StackTrace.ToString() + System.Environment.NewLine +
-                "Exception.ToString():" + ex.ToString();
-            // #19-end
+            err_info = Environment.NewLine +
+                "Current Request Url : " + HttpContext.Current.Request.Url.ToString() + Environment.NewLine +
+                "Exception.StackTrace : " + ex.StackTrace + Environment.NewLine +
+                "Exception.ToString() : " + ex.ToString();
 
-            // Form情報を出力するために、遷移方法をServer.Transferに変更。
+            // Form情報を出力するために、
+            // 遷移方法をServer.Transferに変更。
             // また、情報受け渡しを、HttpContextに変更。
-
             HttpContext.Current.Items.Add(FxHttpContextIndex.SYSTEM_EXCEPTION_MESSAGE, err_msg);
             HttpContext.Current.Items.Add(FxHttpContextIndex.SYSTEM_EXCEPTION_INFORMATION, err_info);
 

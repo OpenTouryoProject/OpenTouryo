@@ -65,22 +65,30 @@ namespace SPA_Sample.Controllers
         {
             //画面にエラーメッセージ・エラー情報を表示する-----------------------------
 
-            //To get an error message from Session
+            // To get an error message from Session
             string err_msg = (string)Session[FxHttpContextIndex.SYSTEM_EXCEPTION_MESSAGE];
 
-            //To get an error information from Session
+            // To get an error information from Session
             string err_info = (string)Session[FxHttpContextIndex.SYSTEM_EXCEPTION_INFORMATION];
 
-            //To encode error message and display on Error screen
+            // Remove exception information from Session
+            Session.Remove(FxHttpContextIndex.SYSTEM_EXCEPTION_MESSAGE);
+            Session.Remove(FxHttpContextIndex.SYSTEM_EXCEPTION_INFORMATION);
+
+            // To encode error message and display on Error screen
             ViewBag.label1Data = CustomEncode.HtmlEncode(err_msg);
 
-            //To encode error information and display on Error screen
+            // To encode error information and display on Error screen
             ViewBag.label2Data = CustomEncode.HtmlEncode(err_info);
+
+            bool sessionAbandonFlag = (bool)Session[FxHttpContextIndex.SESSION_ABANDON_FLAG];
+            Session.Remove(FxHttpContextIndex.SESSION_ABANDON_FLAG);
 
             // ------------------------------------------------------------------------
 
             //画面にフォーム情報を表示する---------------------------------------------
-            NameValueCollection form = Request.Form;
+            NameValueCollection form = (NameValueCollection)Session[FxHttpContextIndex.FORMS_INFORMATION];
+            Session.Remove(FxHttpContextIndex.FORMS_INFORMATION);
 
             if (form != null)
             {
@@ -126,9 +134,7 @@ namespace SPA_Sample.Controllers
 
             // セッション情報を削除する------------------------------------------------
 
-            if (Session[FxHttpContextIndex.SESSION_ABANDON_FLAG] != null)
-            {
-                if ((bool)Session[FxHttpContextIndex.SESSION_ABANDON_FLAG])
+            if (sessionAbandonFlag)
                 {
                     // セッション タイムアウト検出用Cookieを消去
                     // ※ Removeが正常に動作しないため、値を空文字に設定 ＝ 消去とする
@@ -150,7 +156,7 @@ namespace SPA_Sample.Controllers
                         Console.WriteLine(ex.Message);
                     }
                 }
-            }
+
             return View();
         }
 

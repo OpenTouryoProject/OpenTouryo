@@ -36,9 +36,12 @@
 //*  2011/01/31  西野 大介         Damがnullの場合は処理しないように修正
 //*  2012/02/09  西野 大介         OLEDB、ODBCのデータプロバイダ対応
 //*  2012/04/05  西野 大介         \n → \r\n 化
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
+//*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
 //**********************************************************************************
 
 using System;
+using System.Runtime.ExceptionServices;
 
 using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Framework.Business;
@@ -377,7 +380,7 @@ namespace Touryo.Infrastructure.Business.Business
                     "," + this.perfRec.ExecTime +
                     "," + this.perfRec.CpuTime +
                     "," + baEx.messageID +
-                    "," + baEx.Message;
+                    "," + baEx.Message; // baEX
 
                 // Log4Netへログ出力
                 LogIF.WarnLog("ACCESS", strLogMessage);
@@ -431,7 +434,8 @@ namespace Touryo.Infrastructure.Business.Business
                     "," + this.perfRec.ExecTime +
                     "," + this.perfRec.CpuTime +
                     "," + bsEx.messageID +
-                    "," + bsEx.Message + "\r\n" + bsEx.StackTrace;
+                    "," + bsEx.Message +
+                    "\r\n" + bsEx.StackTrace; // bsEX
 
                 // Log4Netへログ出力
                 LogIF.ErrorLog("ACCESS", strLogMessage);
@@ -457,8 +461,8 @@ namespace Touryo.Infrastructure.Business.Business
             {
                 // なにもしない
 
-                // リスロー
-                throw ex;
+                // スタックトレースを保って InnerException を throw
+                ExceptionDispatchInfo.Capture(ex).Throw();
             }
             else
             {
@@ -518,7 +522,7 @@ namespace Touryo.Infrastructure.Business.Business
                         "," + this.perfRec.ExecTime +
                         "," + this.perfRec.CpuTime +
                         "," + returnValue.ErrorMessageID +
-                        "," + returnValue.ErrorMessage;
+                        "," + returnValue.ErrorMessage; // baEX
 
                     // Log4Netへログ出力
                     LogIF.WarnLog("ACCESS", strLogMessage);
@@ -546,7 +550,8 @@ namespace Touryo.Infrastructure.Business.Business
                         "," + this.perfRec.ExecTime +
                         "," + this.perfRec.CpuTime +
                         "," + sysErrorMessageID +
-                        "," + sysErrorMessage + "\r\n" + ex.StackTrace;
+                        "," + sysErrorMessage +
+                        "\r\n" + ex.StackTrace; // bsEX
 
                     // Log4Netへログ出力
                     LogIF.ErrorLog("ACCESS", strLogMessage);
@@ -577,13 +582,15 @@ namespace Touryo.Infrastructure.Business.Business
                         "," + this.perfRec.ExecTime +
                         "," + this.perfRec.CpuTime +
                         "," + "other Exception" +
-                        "," + ex.Message + "\r\n" + ex.StackTrace;
+                        "," + ex.Message +
+                        "\r\n" + ex.StackTrace +
+                        "\r\n" + ex.ToString(); // ex
 
                     // Log4Netへログ出力
                     LogIF.ErrorLog("ACCESS", strLogMessage);
-
-                    // リスロー
-                    throw ex;
+                    
+                    // スタックトレースを保って InnerException を throw
+                    ExceptionDispatchInfo.Capture(ex).Throw();
                 }
 
                 #endregion

@@ -81,6 +81,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\Bin\WSIFType_sample.dll</HintPath>
     </Reference>
+    <Reference Include="WSServer_sample">
+      <HintPath>..\..\Build\WSServer_sample.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncFunc.cs" />

@@ -43,11 +43,13 @@
 //*  2011/12/02  西野 大介         contextObjectにrefを追加した。
 //*  2011/12/08  西野 大介         業務例外のcatchのカバレージは通らないのでコメントアウト
 //*  2012/08/25  西野 大介         Assembly.LoadFile → .Load（ASP.NETシャドウコピー対応）
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れた。
 //**********************************************************************************
 
 using System;
 using System.Web.Services;
 using System.EnterpriseServices;
+using System.Runtime.ExceptionServices;
 
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Common;
@@ -144,8 +146,8 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
             object context; // 2009/09/29-この行
 
             // 引数・戻り値の.NETオブジェクト
-            BaseParameterValue parameterValue;
-            BaseReturnValue returnValue;
+            BaseParameterValue parameterValue = null;
+            BaseReturnValue returnValue = null;
 
             // エラー情報（クライアント側で復元するため）
             WSErrorInfo wsErrorInfo = new WSErrorInfo();
@@ -247,8 +249,11 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                 }
                 catch (System.Reflection.TargetInvocationException rtEx)
                 {
-                    // InnerExceptionを投げなおす。
-                    throw rtEx.InnerException;
+                    //// InnerExceptionを投げなおす。
+                    //throw rtEx.InnerException;
+
+                    // スタックトレースを保って InnerException を throw
+                    ExceptionDispatchInfo.Capture(rtEx.InnerException).Throw();
                 }
                 // #17-end
 

@@ -26,7 +26,9 @@ using System.Windows.Controls;
 using System.Windows;
 
 using Touryo.Infrastructure.Business.RichClient.Asynchronous;
+using Touryo.Infrastructure.Business.RichClient.Util;
 using Touryo.Infrastructure.Business.Util;
+
 using Touryo.Infrastructure.Framework.RichClient.Asynchronous;
 using Touryo.Infrastructure.Framework.Transmission;
 using Touryo.Infrastructure.Framework.Util;
@@ -248,7 +250,7 @@ namespace WSClientWPF_sample
                 if (retVal is Exception)
                 {
                     // 例外発生時
-                    MessageBox.Show(retVal.ToString(), "非同期処理で例外発生！");
+                    RcMyCmnFunction.ShowErrorMessageWPF((Exception)retVal, "非同期処理で例外発生！");
                 }
                 else
                 {
@@ -481,7 +483,7 @@ namespace WSClientWPF_sample
                 if (retVal is Exception)
                 {
                     // 例外発生時
-                    MessageBox.Show(retVal.ToString(), "非同期処理で例外発生！");
+                    RcMyCmnFunction.ShowErrorMessageWPF((Exception)retVal, "非同期処理で例外発生！");
                 }
                 else
                 {

@@ -41,6 +41,7 @@
 //*  2010/11/16  西野 大介         DoBusinessLogicのIsolationLevelEnum無しオーバーロード
 //*  2012/06/18  西野 大介         OriginalStackTrace（ログ出力）の品質向上
 //*  2017/02/14  西野 大介         DoBusinessLogicの非同期バージョン（DoBusinessLogicAsync）を追加
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
 //**********************************************************************************
 
 using System;
@@ -88,9 +89,6 @@ namespace Touryo.Infrastructure.Framework.Business
         // 2009/03/13---Ｂ層内：トランザクション手動制御を可能に（ここまで）
 
         #region 自動振り分け対応
-
-        /// <summary>オリジナルのスタックトレース値</summary>
-        protected string OriginalStackTrace = "";
 
         /// <summary>DoBusinessLogicから呼ばれたかフラグ</summary>
         private bool WasCalledFromDoBusinessLogic = false;
@@ -190,10 +188,7 @@ namespace Touryo.Infrastructure.Framework.Business
         {
             // 戻り値クラス
             BaseReturnValue returnValue = null;
-
-            // オリジナルのスタックトレース値のクリア
-            this.OriginalStackTrace = "";
-
+            
             // ★データアクセス制御クラス（ＤＡＭ）の生成し、コネクションを確立、
             // トランザクションを開始する処理（業務フレームワークに、UOCで実装する）
             // this._dam = this.UOC_ConnectionOpen(parameterValue, iso);

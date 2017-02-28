@@ -122,6 +122,9 @@
     <Reference Include="WSIFType_sample">
       <HintPath>..\..\WS_sample\Build\WSIFType_sample.dll</HintPath>
     </Reference>
+    <Reference Include="WSServer_sample">
+      <HintPath>..\..\WS_sample\Build\WSServer_sample.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Aspx\Common\ErrorScreen.aspx" />

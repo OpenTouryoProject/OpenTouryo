@@ -33,6 +33,7 @@
 //*  2010/11/16  西野 大介         DoBusinessLogicのIsolationLevelEnum無しオーバーロードを追加
 //*  2012/06/18  西野 大介         OriginalStackTrace（ログ出力）の品質向上
 //*  2012/09/03  西野 大介         Connection、Transaction等が不正な状態に陥ったらDamを解放
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
 //**********************************************************************************
 
 using System;
@@ -73,10 +74,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Business
         private static readonly object _lock = new object();
 
         #region 自動振り分け対応
-
-        /// <summary>オリジナルのスタックトレース値</summary>
-        protected string OriginalStackTrace = "";
-
+        
         /// <summary>DoBusinessLogicから呼ばれたかフラグ</summary>
         private bool WasCalledFromDoBusinessLogic = false;
 
@@ -152,10 +150,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Business
         {
             // 戻り値クラス
             BaseReturnValue returnValue = null;
-
-            // オリジナルのスタックトレース値のクリア
-            this.OriginalStackTrace = "";
-
+            
             // データアクセス制御クラス（ＤＡＭ）がグローバルなので、全てロックする。
             lock (BaseLogic2CS._lock)
             {

@@ -36,9 +36,12 @@
 //*  2012/02/09  西野 大介         OLEDB、ODBCのデータプロバイダ対応
 //*  2012/04/05  西野 大介         \n → \r\n 化
 //*  2012/06/18  西野 大介         OriginalStackTrace（ログ出力）の品質向上
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
+//*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
 //**********************************************************************************
 
 using System;
+using System.Runtime.ExceptionServices;
 
 using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Framework.Business;
@@ -80,11 +83,8 @@ namespace Touryo.Infrastructure.Business.Business
             }
             catch (System.Reflection.TargetInvocationException rtEx)
             {
-                // InnerExceptionのスタックトレースを保存しておく（以下のリスローで消去されるため）。
-                this.OriginalStackTrace = rtEx.InnerException.StackTrace;
-
-                // InnerExceptionを投げなおす。
-                throw rtEx.InnerException;
+                // スタックトレースを保って InnerException を throw
+                ExceptionDispatchInfo.Capture(rtEx.InnerException).Throw();
             }
             finally
             {
@@ -421,7 +421,7 @@ namespace Touryo.Infrastructure.Business.Business
                     "," + this.perfRec.ExecTime +
                     "," + this.perfRec.CpuTime +
                     "," + baEx.messageID +
-                    "," + baEx.Message;
+                    "," + baEx.Message; // baEX
 
                 // Log4Netへログ出力
                 LogIF.WarnLog("ACCESS", strLogMessage);
@@ -475,16 +475,8 @@ namespace Touryo.Infrastructure.Business.Business
                         "," + this.perfRec.ExecTime +
                         "," + this.perfRec.CpuTime +
                         "," + bsEx.messageID +
-                        "," + bsEx.Message + "\r\n";
-                // OriginalStackTrace（ログ出力）の品質向上
-                if (this.OriginalStackTrace == "")
-                {
-                    strLogMessage += bsEx.StackTrace;
-                }
-                else
-                {
-                    strLogMessage += this.OriginalStackTrace;
-                }
+                        "," + bsEx.Message +
+                        "\r\n" + bsEx.StackTrace; // bsEX
                 
                 // Log4Netへログ出力
                 LogIF.ErrorLog("ACCESS", strLogMessage);
@@ -510,8 +502,8 @@ namespace Touryo.Infrastructure.Business.Business
             {
                 // なにもしない
 
-                // リスロー
-                throw ex;
+                // スタックトレースを保って InnerException を throw
+                ExceptionDispatchInfo.Capture(ex).Throw();
             }
             else
             {
@@ -571,7 +563,7 @@ namespace Touryo.Infrastructure.Business.Business
                         "," + this.perfRec.ExecTime +
                         "," + this.perfRec.CpuTime +
                         "," + returnValue.ErrorMessageID +
-                        "," + returnValue.ErrorMessage;
+                        "," + returnValue.ErrorMessage; // baEX
 
                     // Log4Netへログ出力
                     LogIF.WarnLog("ACCESS", strLogMessage);
@@ -599,16 +591,8 @@ namespace Touryo.Infrastructure.Business.Business
                         "," + this.perfRec.ExecTime +
                         "," + this.perfRec.CpuTime +
                         "," + sysErrorMessageID +
-                        "," + sysErrorMessage + "\r\n";
-                    // OriginalStackTrace（ログ出力）の品質向上
-                    if (this.OriginalStackTrace == "")
-                    {
-                        strLogMessage += ex.StackTrace;
-                    }
-                    else
-                    {
-                        strLogMessage += this.OriginalStackTrace;
-                    }
+                        "," + sysErrorMessage +
+                        "\r\n" + ex.StackTrace; // bsEX
 
                     // Log4Netへログ出力
                     LogIF.ErrorLog("ACCESS", strLogMessage);
@@ -639,22 +623,15 @@ namespace Touryo.Infrastructure.Business.Business
                         "," + this.perfRec.ExecTime +
                         "," + this.perfRec.CpuTime +
                         "," + "other Exception" +
-                        "," + ex.Message + "\r\n";
-                    // OriginalStackTrace（ログ出力）の品質向上
-                    if (this.OriginalStackTrace == "")
-                    {
-                        strLogMessage += ex.StackTrace;
-                    }
-                    else
-                    {
-                        strLogMessage += this.OriginalStackTrace;
-                    }
+                        "," + ex.Message +
+                        "\r\n" + ex.StackTrace +
+                        "\r\n" + ex.ToString(); // ex
 
                     // Log4Netへログ出力
                     LogIF.ErrorLog("ACCESS", strLogMessage);
 
-                    // リスロー
-                    throw ex;
+                    // スタックトレースを保って InnerException を throw
+                    ExceptionDispatchInfo.Capture(ex).Throw();
                 }
 
                 #endregion

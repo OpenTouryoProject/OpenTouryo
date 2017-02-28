@@ -59,12 +59,12 @@
 <hr />
 <div>
     エラーメッセージ：<br />
-    @Html.Label("Label1", (string)ViewBag.label1Data)
+    @Html.TextArea("Label1", (string)ViewBag.label1Data, new { @readonly = true, style = "width: 100%; height:100px;" })
 </div>
 <hr />
 <div>
     その他の情報：<br />
-    @Html.Label("Label2", (string)ViewBag.label2Data)
+    @Html.TextArea("Label2", (string)ViewBag.label2Data, new { @readonly = true, style = "width: 100%; height:300px;" })
 </div>
 <hr />
 <div>

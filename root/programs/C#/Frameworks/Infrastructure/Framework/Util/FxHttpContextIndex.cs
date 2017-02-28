@@ -52,6 +52,9 @@ namespace Touryo.Infrastructure.Framework.Util
         /// <summary>システムエラー発生時、セッション削除フラグをHttpContextに設定～取得するためのキー</summary>
         public const string SESSION_ABANDON_FLAG = "SessionAbandonFlag";
 
+        /// <summary>システムエラー発生時、セッション削除フラグをHttpContextに設定～取得するためのキー</summary>
+        public const string FORMS_INFORMATION = "FormsInformation";
+
         #endregion
     }
 }

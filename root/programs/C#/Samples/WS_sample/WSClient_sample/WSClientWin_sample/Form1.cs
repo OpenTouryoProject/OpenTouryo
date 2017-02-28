@@ -25,6 +25,7 @@ using System.Windows.Forms;
 
 using Touryo.Infrastructure.Business.RichClient.Presentation;
 using Touryo.Infrastructure.Business.RichClient.Asynchronous;
+using Touryo.Infrastructure.Business.RichClient.Util;
 using Touryo.Infrastructure.Framework.RichClient.Presentation;
 using Touryo.Infrastructure.Framework.RichClient.Asynchronous;
 using Touryo.Infrastructure.Framework.Transmission;
@@ -266,7 +267,7 @@ namespace WSClientWin_sample
                 if (retVal is Exception)
                 {
                     // 例外発生時
-                    MessageBox.Show(retVal.ToString(), "非同期処理で例外発生！");
+                    RcMyCmnFunction.ShowErrorMessageWin((Exception)retVal, "非同期処理で例外発生！");
                 }
                 else
                 {
@@ -502,7 +503,7 @@ namespace WSClientWin_sample
                 if (retVal is Exception)
                 {
                     // 例外発生時
-                    MessageBox.Show(retVal.ToString(), "非同期処理で例外発生！");
+                    RcMyCmnFunction.ShowErrorMessageWin((Exception)retVal, "非同期処理で例外発生！");
                 }
                 else
                 {

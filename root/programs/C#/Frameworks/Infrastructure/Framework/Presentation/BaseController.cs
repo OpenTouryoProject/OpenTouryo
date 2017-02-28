@@ -90,7 +90,8 @@
 //*  2014/10/03  Rituparna         Added code SelectedIndexChanged for RadiobuttonList and CheckBoxList. 
 //*  2015/04/16  Supragyan         Added TextChanged event for TextBox.
 //*  2016/01/13  Sandeep           Implemented ResolveServerUrl method to resolve URL issue of screen   
-//*                                transition control, display window and error transition control components.  
+//*                                transition control, display window and error transition control components.
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
 //**********************************************************************************
 
 using System;
@@ -98,6 +99,7 @@ using System.Xml;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.ExceptionServices;
 
 using System.Web;
 using System.Web.UI;
@@ -174,11 +176,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         /// <summary>フレームワークのイベント処理対応コントロールを保持する</summary>
         /// <remarks>画面コード親クラス２から利用する。</remarks>
         protected Dictionary<string, Control> ControlHt = new Dictionary<string, Control>();
-
-        /// <summary>オリジナルのスタックトレース値</summary>
-        /// <remarks>画面コード親クラス２から利用する。</remarks>
-        protected string OriginalStackTrace = "";
-
+        
         #region 画面遷移制御機能
 
         /// <summary>現在の画面（.aspx）の仮想パス</summary>
@@ -2307,10 +2305,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         {
             // UOCメソッドの戻り値、urlを受ける。
             string url = "";
-
-            // オリジナルのスタックトレース値のクリア
-            this.OriginalStackTrace = "";
-
+            
             try
             {
                 /////////////////////////////////////////////////
@@ -2495,11 +2490,8 @@ namespace Touryo.Infrastructure.Framework.Presentation
             }
             catch (System.Reflection.TargetInvocationException rtEx)
             {
-                // InnerExceptionのスタックトレースを保存しておく（以下のリスローで消去されるため）。
-                this.OriginalStackTrace = rtEx.InnerException.StackTrace;
-
-                // InnerExceptionを投げなおす。
-                throw rtEx.InnerException;
+                // スタックトレースを保って InnerException を throw
+                ExceptionDispatchInfo.Capture(rtEx.InnerException).Throw();
             }
 
             return url;

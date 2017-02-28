@@ -33,6 +33,8 @@
 //*  2012/09/19  西野 大介         UOC_CMNAfterFormInitの追加
 //*  2013/03/05  西野 大介         UOC_CMNAfterFormInit、UOC_CMNAfterFormEndの呼出処理を追加
 //*  2014/03/03  西野 大介         ユーザ コントロールのインスタンスの区別。
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
+//*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
 //**********************************************************************************
 
 using System;
@@ -652,7 +654,7 @@ namespace Touryo.Infrastructure.Business.RichClient.Presentation
                     "," + this.perfRec.ExecTime +
                     "," + this.perfRec.CpuTime +
                     "," + baEx.messageID +
-                    "," + baEx.Message;
+                    "," + baEx.Message; // baEx
 
                 // Log4Netへログ出力
                 LogIF.WarnLog("ACCESS", strLogMessage);
@@ -702,16 +704,9 @@ namespace Touryo.Infrastructure.Business.RichClient.Presentation
                     "," + this.perfRec.ExecTime +
                     "," + this.perfRec.CpuTime +
                     "," + bsEx.messageID +
-                    "," + bsEx.Message + "\r\n" + this.OriginalStackTrace;
-                // OriginalStackTrace（ログ出力）の品質向上
-                if (this.OriginalStackTrace == "")
-                {
-                    strLogMessage += bsEx.StackTrace;
-                }
-                else
-                {
-                    strLogMessage += this.OriginalStackTrace;
-                }
+                    "," + bsEx.Message +
+                    "\r\n" + bsEx.StackTrace +
+                    "\r\n" + bsEx.ToString(); // bsEx
 
                 // Log4Netへログ出力
                 LogIF.ErrorLog("ACCESS", strLogMessage);
@@ -761,16 +756,9 @@ namespace Touryo.Infrastructure.Business.RichClient.Presentation
                     "," + this.perfRec.ExecTime +
                     "," + this.perfRec.CpuTime +
                     "," + "other Exception" +
-                    "," + ex.Message + "\r\n" + this.OriginalStackTrace;
-                // OriginalStackTrace（ログ出力）の品質向上
-                if (this.OriginalStackTrace == "")
-                {
-                    strLogMessage += ex.StackTrace;
-                }
-                else
-                {
-                    strLogMessage += this.OriginalStackTrace;
-                }
+                    "," + ex.Message +
+                    "\r\n" + ex.StackTrace +
+                    "\r\n" + ex.ToString(); // ex
 
                 // Log4Netへログ出力
                 LogIF.ErrorLog("ACCESS", strLogMessage);

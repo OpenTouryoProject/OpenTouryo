@@ -47,10 +47,12 @@
 //*  2012/09/19  西野 大介         イベント名不正を修正（EVENT_FORM_LOAD、EVENT_FORM_CLOSED）
 //*  2013/03/05  西野 大介         UOC_CMNAfterFormInit、UOC_CMNAfterFormEndの呼出処理を追加
 //*  2014/03/03  西野 大介         ユーザ コントロールのインスタンスの区別。
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 using System.Windows.Forms;
 
 using Touryo.Infrastructure.Framework.RichClient.Util;
@@ -172,11 +174,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
 
         /// <summary>全てのユーザ コントロールを保存するワーク領域</summary>
         protected List<UserControl> LstUserControl = null;
-
-        /// <summary>オリジナルのスタックトレース値</summary>
-        /// <remarks>画面コード親クラス２から利用する。</remarks>
-        protected string OriginalStackTrace = "";
-
+        
         #endregion
 
         #region 多重ロック・アンロック管理
@@ -664,10 +662,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
         {
             // UOCメソッドの戻り値、urlを受ける。
             //string url = "";
-
-            // オリジナルのスタックトレース値のクリア
-            this.OriginalStackTrace = "";
-
+            
             #region メソッドが無ければ、何もしないコードを追加。
 
             // Formをチェック
@@ -791,11 +786,8 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
             }
             catch (System.Reflection.TargetInvocationException rtEx)
             {
-                //InnerExceptionのスタックトレースを保存しておく（以下のリスローで消去されるため）。
-                this.OriginalStackTrace = rtEx.InnerException.StackTrace;
-
-                // InnerExceptionを投げなおす。
-                throw rtEx.InnerException;
+                // スタックトレースを保って InnerException を throw
+                ExceptionDispatchInfo.Capture(rtEx.InnerException).Throw();
             }
 
             //return url;

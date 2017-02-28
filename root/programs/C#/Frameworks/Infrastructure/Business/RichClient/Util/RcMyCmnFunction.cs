@@ -203,5 +203,30 @@ namespace Touryo.Infrastructure.Business.RichClient.Util
 
             #endregion
         }
+
+        /// <summary>
+        /// ユーザー・フレンドリなダイアログを表示するメソッド
+        /// </summary>
+        public static void ShowErrorMessageWin(Exception ex, string extraMessage)
+        {
+            System.Windows.Forms.MessageBox.Show(extraMessage + " \r\n――――――――\r\n\r\n" +
+              "エラーが発生しました。開発元にお知らせください\r\n\r\n" +
+              "ex.Message : \r\n" + ex.Message + "\r\n\r\n" +
+              "ex.StackTrace : \r\n" + ex.StackTrace + "\r\n\r\n" +
+              "ex.ToString() : \r\n" + ex.ToString());
+        }
+
+
+        /// <summary>
+        /// ユーザー・フレンドリなダイアログを表示するメソッド
+        /// </summary>
+        public static void ShowErrorMessageWPF(Exception ex, string extraMessage)
+        {
+            System.Windows.MessageBox.Show(extraMessage + " \r\n――――――――\r\n\r\n" +
+              "エラーが発生しました。開発元にお知らせください\r\n\r\n" +
+              "ex.Message : \r\n" + ex.Message + "\r\n\r\n" +
+              "ex.StackTrace : \r\n" + ex.StackTrace + "\r\n\r\n" +
+              "ex.ToString() : \r\n" + ex.ToString());
+        }
     }
 }

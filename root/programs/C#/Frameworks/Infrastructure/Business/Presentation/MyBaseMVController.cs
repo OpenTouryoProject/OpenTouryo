@@ -41,6 +41,9 @@
 //*  2017/01/24  西野 大介         ログ出力の見直し（ログ出力フォーマットの全面的な見直し）
 //*  2017/02/14  西野 大介         OnException内での null reference 対策を行った。
 //*  2017/02/14  西野 大介         スイッチ付きのキャッシュ無効化処理を追加した。
+//*  2017/02/28  西野 大介         OnExceptionのErrorMessage生成処理の見直し。
+//*  2017/02/28  西野 大介         TransferErrorScreenメソッドを追加した。
+//*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
 //**********************************************************************************
 
 using System;
@@ -368,7 +371,61 @@ namespace Touryo.Infrastructure.Business.Presentation
         protected override void OnException(ExceptionContext filterContext)
         {
             // Calling base class method.
-            base.OnException(filterContext);
+            base.OnException(filterContext);            
+            // エラーログの出力
+            this.OutputErrorLog(filterContext);
+            // エラー画面に画面遷移する
+            this.TransferErrorScreen(filterContext);
+        }
+
+        /// <summary>エラーログの出力</summary>
+        /// <param name="filterContext">ExceptionContext</param>
+        private void OutputErrorLog(ExceptionContext filterContext)
+        {
+            // 非同期ControllerのInnerException対策（底のExceptionを取得する）。
+            Exception ex = filterContext.Exception;
+            Exception bottomException = ex;
+            while (bottomException.InnerException != null)
+            {
+                bottomException = bottomException.InnerException;
+            }
+
+            // ------------
+            // メッセージ部
+            // ------------
+            // ユーザ名, IPアドレス,
+            // レイヤ, 画面名, コントロール名, 処理名
+            // 処理時間（実行時間）, 処理時間（CPU時間）
+            // エラーメッセージID, エラーメッセージ等
+            // ------------
+
+            string strLogMessage =
+                "," + (this.UserInfo != null ? this.UserInfo.UserName : "null") +
+                "," + (this.UserInfo != null ? this.UserInfo.IPAddress : "null") +
+                "," + "----->>" +
+                "," + this.ControllerName +
+                "," + this.ActionName + "(OnException)" +
+                "," + //this.perfRec.ExecTime +
+                "," + //this.perfRec.CpuTime + 
+                "," + GetExceptionMessageID(bottomException) +
+                "," + bottomException.Message + "\r\n"+
+                "," + bottomException.StackTrace + "\r\n" +
+                "," + ex.ToString(); // Exception.ToString()はRootのExceptionに対して行なう。
+
+            LogIF.ErrorLog("ACCESS", strLogMessage);
+        }
+
+        /// <summary>例外発生時に、エラー画面に画面遷移</summary>
+        /// <param name="filterContext">ExceptionContext</param>
+        private void TransferErrorScreen(ExceptionContext filterContext)
+        {
+            // 非同期ControllerのInnerException対策（底のExceptionを取得する）。
+            Exception ex = filterContext.Exception;
+            Exception bottomException = ex;
+            while (bottomException.InnerException != null)
+            {
+                bottomException = bottomException.InnerException;
+            }
 
             #region 例外型を判別しエラーメッセージIDを取得
 
@@ -380,33 +437,9 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             // エラー画面へのパスを取得 --- チェック不要（ベースクラスでチェック済み）
             string errorScreenPath = GetConfigParameter.GetConfigValue(FxLiteral.ERROR_SCREEN_PATH);
-
-            // Store the exception information for a Session.
-            Session["ExceptionInformation"] = filterContext.Exception.ToString();
-
-            // エラーのタイプ
-
+            
             // エラーメッセージＩＤ
-            string errMsgId = "";
-
-            // Check exception type 
-            if (filterContext.Exception is BusinessSystemException)
-            {
-                // システム例外
-                BusinessSystemException bsEx = (BusinessSystemException)filterContext.Exception;
-                errMsgId = bsEx.messageID;
-            }
-            else if (filterContext.Exception is FrameworkException)
-            {
-                // フレームワーク例外
-                FrameworkException fxEx = (FrameworkException)filterContext.Exception;
-                errMsgId = fxEx.messageID;
-            }
-            else
-            {
-                // それ以外の例外
-                errMsgId = "－";
-            }
+            string errMsgId = this.GetExceptionMessageID(ex);
 
             #endregion
 
@@ -429,19 +462,22 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             #region エラー画面に表示するエラー情報を作成
 
-            err_msg = System.Environment.NewLine +
-                "エラーメッセージＩＤ: " + errMsgId + System.Environment.NewLine +
-                "エラーメッセージ: " + filterContext.Exception.Message.ToString();
+            err_msg = Environment.NewLine +
+                "Error Message ID : " + errMsgId + Environment.NewLine +
+                "Error Message : " + bottomException.Message.ToString();
 
             err_info = System.Environment.NewLine +
-                "対象URL: " + Request.Url.ToString() + System.Environment.NewLine +
-                "スタックトレース:" + filterContext.Exception.StackTrace.ToString() + System.Environment.NewLine +
-                "Exception.ToString():" + filterContext.ToString();
+                "Current Request Url : " + Request.Url.ToString() + Environment.NewLine +
+                "Exception.StackTrace : " + bottomException.StackTrace + Environment.NewLine +
+                "Exception.ToString() : " + ex.ToString(); // Exception.ToString()はRootのExceptionに対して行なう。
 
-            // Add exception information to Session。
+            // Add exception information to Session
             Session[FxHttpContextIndex.SYSTEM_EXCEPTION_MESSAGE] = err_msg;
             Session[FxHttpContextIndex.SYSTEM_EXCEPTION_INFORMATION] = err_info;
 
+            // Add Form information to Session
+            Session[FxHttpContextIndex.FORMS_INFORMATION] = Request.Form;
+            
             #endregion
 
             #region  エラー画面へ画面遷移
@@ -463,32 +499,31 @@ namespace Touryo.Infrastructure.Business.Presentation
             }
 
             #endregion
+        }
 
-            #region ログ出力
-
-            // ------------
-            // メッセージ部
-            // ------------
-            // ユーザ名, IPアドレス,
-            // レイヤ, 画面名, コントロール名, 処理名
-            // 処理時間（実行時間）, 処理時間（CPU時間）
-            // エラーメッセージID, エラーメッセージ等
-            // ------------
-
-            string strLogMessage =
-                "," + (this.UserInfo != null ? this.UserInfo.UserName : "null") +
-                "," + (this.UserInfo != null ? this.UserInfo.IPAddress : "null") +
-                "," + "----->>" +
-                "," + this.ControllerName +
-                "," + this.ActionName + "(OnException)" +
-                "," + //this.perfRec.ExecTime +
-                "," + //this.perfRec.CpuTime + 
-                "," + errMsgId +
-                "," + filterContext.Exception.Message;
-
-            LogIF.ErrorLog("ACCESS", strLogMessage);
-
-            #endregion
+        /// <summary>ExceptionのMessageIDを返す。</summary>
+        /// <param name="ex">Exception</param>
+        /// <returns>ExceptionのMessageID</returns>
+        private string GetExceptionMessageID(Exception ex)
+        {
+            // Check exception type 
+            if (ex is BusinessSystemException)
+            {
+                // システム例外
+                BusinessSystemException bsEx = (BusinessSystemException)ex;
+                return bsEx.messageID;
+            }
+            else if (ex is FrameworkException)
+            {
+                // フレームワーク例外
+                FrameworkException fxEx = (FrameworkException)ex;
+                return fxEx.messageID;
+            }
+            else
+            {
+                // それ以外の例外
+                return "other Exception";
+            }
         }
 
         #endregion

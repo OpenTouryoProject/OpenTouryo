@@ -54,12 +54,14 @@
 //*  2013/01/22  西野 大介         WCF-TCP/IP：Channelの解放（Close、Dispose）を明示
 //*  2014/11/14	 Sandeep-san       Implemented WCF communication options(i.e, Client, proxy credentials and Certificate)
 //*  2017/02/14  西野 大介         Invokeの非同期バージョン（InvokeAsync）を追加
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れた。
 //**********************************************************************************
 
 using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Runtime.ExceptionServices;
 
 using System.Net;
 using System.ServiceModel;
@@ -386,8 +388,13 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 }
                 catch (System.Reflection.TargetInvocationException rtEx)
                 {
-                    // InnerExceptionを投げなおす。
-                    throw rtEx.InnerException;
+                    //// InnerExceptionを投げなおす。
+                    //throw rtEx.InnerException;
+
+                    // スタックトレースを保って InnerException を throw
+                    ExceptionDispatchInfo.Capture(rtEx.InnerException).Throw();
+
+                    return null; // warningを消すためのコード。
                 }
                 // #30-end                
 
