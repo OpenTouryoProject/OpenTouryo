@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CautionPrerequisite" xml:space="preserve">
-    <value>Do not have more than one table with the same name on the same DB ( the specification for the D-layer automatic generation tool for {0}) </value>
+    <value>Do not have more than one table with the same name on the same DB ( the specification for the Data layer generator for {0}) </value>
   </data>
   <data name="CautionPrerequisiteCaption" xml:space="preserve">
     <value>Note - ( prerequisite ) </value>
   </data>
   <data name="CautionPrerequisiteOracle" xml:space="preserve">
-    <value>(Is the specification of D-layer automatic generation tool for Oracle ) that we only consider the table owned by the ( user ) schema [{0}]</value>
+    <value>(Is the specification of Data layer generator for Oracle ) that we only consider the table owned by the ( user ) schema [{0}]</value>
   </data>
   <data name="Confirm" xml:space="preserve">
     <value>Confirmation</value>
@@ -151,7 +151,7 @@
     <value>CSV file (*.csv)|*.csv</value>
   </data>
   <data name="SaveFileDialogTitle" xml:space="preserve">
-    <value>D layer definition information file</value>
+    <value>Data layer definition information file</value>
   </data>
   <data name="SetPrimaryKeyInfo" xml:space="preserve">
     <value>Setting the primary key information ({0}) dialog</value>
@@ -172,7 +172,7 @@
     <value>Type Information</value>
   </data>
   <data name="DlayerGeneratedMessage" xml:space="preserve">
-    <value>Completion of generation of the D-layer definition information!</value>
+    <value>Completion of generation of the Data layer definition information!</value>
   </data>
   <data name="TabPage1" xml:space="preserve">
     <value>Tab 1</value>
@@ -214,7 +214,7 @@
     <value>Escape character is not set.</value>
   </data>
   <data name="FileFormatError" xml:space="preserve">
-    <value>D layer definition information file format error : There is no table name.</value>
+    <value>Data layer definition information file format error : There is no table name.</value>
   </data>
   <data name="FileGenComplete" xml:space="preserve">
     <value>Automatic Generation Completed !</value>
@@ -223,7 +223,7 @@
     <value>Check error: file type information DB [{0}] does not exist.</value>
   </data>
   <data name="FilenotExistDlayerInfo" xml:space="preserve">
-    <value>Check error:Defined D layer Information file  defined  [{0}] does not exist.</value>
+    <value>Check error:Defined Data layer Information file  defined  [{0}] does not exist.</value>
   </data>
   <data name="FilenotExistNETtypeInfo" xml:space="preserve">
     <value>Check error:. NET type information file [{0}] does not exist.</value>
@@ -241,7 +241,7 @@
     <value>CSV file (*.csv)|*.csv</value>
   </data>
   <data name="OpenFileDialogTitle" xml:space="preserve">
-    <value>D layer definition information file</value>
+    <value>Data layer definition information file</value>
   </data>
   <data name="OutputFileRootFolderNotExist" xml:space="preserve">
     <value>Root folder (Dao class file, SQL file. Etc) of the output file does not exist.</value>
