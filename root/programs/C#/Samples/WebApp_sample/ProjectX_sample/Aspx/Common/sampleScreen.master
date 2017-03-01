@@ -52,10 +52,10 @@
                         <li onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/menu.aspx") %>';">
                             <i class="fa fa-arrow-circle-right"></i> メニュートップ
                         </li>
-                        <li onclick="window.location.href = '@Url.Content("~/")';">
+                        <li onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/menu.aspx") %>';">
                             <i class="fa fa-arrow-circle-right"></i> メニュー１
                         </li>
-                        <li onclick="window.location.href = '@Url.Content("~/")';">
+                        <li onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/menu.aspx") %>';">
                             <i class="fa fa-arrow-circle-right"></i> メニュー２
                         </li>
                     </ul>
