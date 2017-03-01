@@ -7,7 +7,7 @@
     Shippers
   <WHERE>
     WHERE
-      <IF>CompanyName &lt;&gt; :P1</IF>
+      <IF>CompanyName &lt;&gt; @P1</IF>
       -- 大なり、小なりは、&lt; &gt;で記述する必要がある。
   </WHERE>
   ORDER BY <VAL name="COLUMN"/> <VAL name="SEQUENCE"/>

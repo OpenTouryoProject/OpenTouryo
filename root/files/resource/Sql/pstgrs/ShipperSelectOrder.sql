@@ -4,6 +4,6 @@ SELECT
 FROM
   Shippers
 WHERE
-  CompanyName <> :P1
+  CompanyName <> @P1
 ORDER BY %COLUMN% %SEQUENCE%
   
