@@ -2608,14 +2608,14 @@ namespace Touryo.Infrastructure.Public.Db
             // ★↓のカラム名は他で使っていないのでリテラル化しない。
 
             // 区分
-            dt.Columns.Add("UserParameter", System.Type.GetType(typeof(Boolean).ToString()));
+            dt.Columns.Add("UserParameter", typeof(bool));
             // パラメタ名
-            dt.Columns.Add("ParameterName", System.Type.GetType(typeof(String).ToString()));
+            dt.Columns.Add("ParameterName", typeof(string));
             // パラメタ値
-            dt.Columns.Add("Object", System.Type.GetType(typeof(Object).ToString()));
+            dt.Columns.Add("Object", typeof(object));
 
             // 2008/10/16---null・DBNull対応（ここから）
-            dt.Columns.Add(PubLiteral.VALUE_STR_NULL, System.Type.GetType(typeof(String).ToString()));
+            dt.Columns.Add(PubLiteral.VALUE_STR_NULL, typeof(string));
             // 2008/10/16---null・DBNull対応（ここまで）
 
             if (this._QueryStatus == DbEnum.QueryStatusEnum.DPQ)

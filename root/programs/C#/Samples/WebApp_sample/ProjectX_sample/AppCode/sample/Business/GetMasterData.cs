@@ -33,7 +33,7 @@ namespace ProjectX_sample
         private void UOC_Invoke(_3TierParameterValue parameterValue)
         { //メソッド引数にBaseParameterValueの派生の型を定義可能。
 
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 

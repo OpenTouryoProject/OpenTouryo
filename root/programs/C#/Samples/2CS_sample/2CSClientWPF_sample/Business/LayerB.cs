@@ -42,7 +42,7 @@ namespace _2CSClientWPF_sample.Business
         private void UOC_メソッド名(TestParameterValue testParameter)
         { //メソッド引数にBaseParameterValueの派生の型を定義可能。
 
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -69,7 +69,7 @@ namespace _2CSClientWPF_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_SelectCount(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -132,7 +132,7 @@ namespace _2CSClientWPF_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_SelectAll_DT(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -205,7 +205,7 @@ namespace _2CSClientWPF_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_SelectAll_DS(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -279,7 +279,7 @@ namespace _2CSClientWPF_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_SelectAll_DR(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -310,9 +310,9 @@ namespace _2CSClientWPF_sample.Business
                     dt = new DataTable();
 
                     // ３列生成
-                    dt.Columns.Add("c1", System.Type.GetType("System.String"));
-                    dt.Columns.Add("c2", System.Type.GetType("System.String"));
-                    dt.Columns.Add("c3", System.Type.GetType("System.String"));
+                    dt.Columns.Add("c1", typeof(string));
+                    dt.Columns.Add("c2", typeof(string));
+                    dt.Columns.Add("c3", typeof(string));
 
                     // 共通Daoを実行
                     IDataReader idr = cmnDao.ExecSelect_DR();
@@ -375,7 +375,7 @@ namespace _2CSClientWPF_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_SelectAll_DSQL(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -473,7 +473,7 @@ namespace _2CSClientWPF_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_Select(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -585,7 +585,7 @@ namespace _2CSClientWPF_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_Insert(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -645,7 +645,7 @@ namespace _2CSClientWPF_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_Update(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -718,7 +718,7 @@ namespace _2CSClientWPF_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_Delete(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 

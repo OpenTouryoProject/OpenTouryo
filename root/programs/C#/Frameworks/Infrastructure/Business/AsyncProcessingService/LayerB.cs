@@ -56,7 +56,7 @@ namespace Touryo.Infrastructure.Business.AsyncProcessingService
         /// <param name="asyncParameterValue"></param>
         public void UOC_InsertTask(AsyncProcessingServiceParameterValue asyncParameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             AsyncProcessingServiceReturnValue asyncReturnValue = new AsyncProcessingServiceReturnValue();
             this.ReturnValue = asyncReturnValue;
 

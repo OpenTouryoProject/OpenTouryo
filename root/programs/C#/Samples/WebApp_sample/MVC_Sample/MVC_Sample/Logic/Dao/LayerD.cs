@@ -228,9 +228,9 @@ namespace MVC_Sample.Logic.Dao
             DataTable dt = new DataTable();
 
             // ３列生成
-            dt.Columns.Add("c1", System.Type.GetType("System.String"));
-            dt.Columns.Add("c2", System.Type.GetType("System.String"));
-            dt.Columns.Add("c3", System.Type.GetType("System.String"));
+            dt.Columns.Add("c1", typeof(string));
+            dt.Columns.Add("c2", typeof(string));
+            dt.Columns.Add("c3", typeof(string));
 
             //   -- 一覧を返すSELECTクエリを実行する
             IDataReader idr = (IDataReader)this.ExecSelect_DR();

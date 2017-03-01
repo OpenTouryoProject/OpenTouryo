@@ -207,7 +207,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">引数クラス</param>
         private void UOC_メソッド名(BaseParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue testReturn = new _3TierReturnValue();
             this.ReturnValue = testReturn;
 
@@ -228,7 +228,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">引数クラス</param>
         private void UOC_SelectCountMethod(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -316,7 +316,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">引数クラス</param>
         private void UOC_SelectMethod(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -788,7 +788,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">引数クラス</param>
         protected virtual void UOC_InsertRecord(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -849,7 +849,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">引数クラス</param>
         protected virtual void UOC_SelectRecord(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -926,7 +926,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">引数クラス</param>
         protected virtual void UOC_UpdateRecord(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -1020,7 +1020,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">引数クラス</param>
         protected virtual void UOC_DeleteRecord(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -1080,7 +1080,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">引数クラス</param>
         protected virtual void UOC_BatchUpdate(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -1188,7 +1188,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">Argument class</param>
         protected virtual void UOC_UpdateRecordDM(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -1292,7 +1292,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">Argument class</param>
         protected virtual void UOC_BatchUpdateDM(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -1385,7 +1385,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">Argument class</param>
         protected virtual void UOC_DeleteRecordDM(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
