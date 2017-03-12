@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.sample._3Tier.ProductsConditionalSearch" Title="ProductsConditionalSearch" CodeBehind="ProductsConditionalSearch.aspx.cs" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Sample._3Tier.ProductsConditionalSearch" Title="ProductsConditionalSearch" CodeBehind="ProductsConditionalSearch.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
@@ -24,7 +24,7 @@
         <asp:ListItem Value="ODP">Oracle / ODP.NET</asp:ListItem>
     </cc1:WebCustomDropDownList>
     <br />
-    <table width="100%">
+    <table style="width:100%;">
         <tr>
             <td>
                 AND = 条件<br />

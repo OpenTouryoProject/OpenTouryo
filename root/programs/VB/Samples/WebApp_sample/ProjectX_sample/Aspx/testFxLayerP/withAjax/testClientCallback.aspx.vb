@@ -98,16 +98,16 @@ Public Partial Class Aspx_testFxLayerP_withAjax_testClientCallback
 
 	''' <summary>クライアント コールバックを有効にする。</summary>
 	Private Function InitClientCallback() As String
-		'''/ 第一引数：サーバの画面インスタンス
-		'''/ 第二引数：WebForm_DoCallback（サーバ呼び出し）関数への引数
-		'''/           getElementById（javascript） ＋ Control.ClientIDなどを併用することもある。
+        '/ 第一引数：サーバの画面インスタンス
+        '/ 第二引数：WebForm_DoCallback（サーバ呼び出し）関数への引数
+        '/           getElementById（javascript） ＋ Control.ClientIDなどを併用することもある。
 
-		'''/ 第三引数：コールバック関数
-		'''/ 第四引数：コールバック関数への引数
-		'''/           getElementById（javascript） ＋ Control.ClientIDなどを併用することもある。
+        '/ 第三引数：コールバック関数
+        '/ 第四引数：コールバック関数への引数
+        '/           getElementById（javascript） ＋ Control.ClientIDなどを併用することもある。
 
-		' 第二引数、第三引数は可変にする。
-		Return Me.ClientScript.GetCallbackEventReference(Me, "$SvrParam$", "$ClientCallbackReceiveEventHandler$", "$CliParam$")
+        ' 第二引数、第三引数は可変にする。
+        Return Me.ClientScript.GetCallbackEventReference(Me, "$SvrParam$", "$ClientCallbackReceiveEventHandler$", "$CliParam$")
 	End Function
 
 	#End Region
@@ -143,11 +143,11 @@ Public Partial Class Aspx_testFxLayerP_withAjax_testClientCallback
 	''' <summary>ClientCallbackにおいて、値を戻すイベント ハンドラ</summary>
 	''' <returns>処理結果</returns>
 	Private Function ICallbackEventHandler_GetCallbackResult() As String Implements ICallbackEventHandler.GetCallbackResult
-		'''/ テスト用スリープ
-		'System.Threading.Thread.Sleep(3000);
+        '/ テスト用スリープ
+        'System.Threading.Thread.Sleep(3000);
 
-		' 処理結果を値を戻す。
-		Return Me.CallbackResult
+        ' 処理結果を値を戻す。
+        Return Me.CallbackResult
 	End Function
 
 	#End Region

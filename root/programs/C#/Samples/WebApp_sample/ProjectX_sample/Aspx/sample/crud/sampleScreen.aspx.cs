@@ -29,7 +29,7 @@ using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Public.Db;
 
-namespace ProjectX_sample.Aspx.sample.Crud
+namespace ProjectX_sample.Aspx.Sample.Crud
 {
     /// <summary>サンプル アプリ画面</summary>
     public partial class sampleScreen : MyBaseController

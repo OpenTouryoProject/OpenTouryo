@@ -18,7 +18,7 @@
     		    </td>
 		    </tr>
 		    <tr>
-	    	    <td colspan="2" align="right">
+	    	    <td colspan="2" style="text-align:right;">
                     <cc1:WebCustomButton ID="btnButton1" runat="server" Text="ログイン" Width="150px" />
                     <!--<cc1:WebCustomButton ID="btnButton2" runat="server" Text="ログイン" Width="150px" />-->
                 </td>

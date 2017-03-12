@@ -7,7 +7,7 @@
 // </自動生成>
 //------------------------------------------------------------------------------
 
-namespace ProjectX_sample.Aspx.sample.Crud {
+namespace ProjectX_sample.Aspx.Sample.Crud {
     
     
     public partial class sampleScreen {

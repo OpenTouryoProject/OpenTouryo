@@ -242,7 +242,7 @@ Public Class [Global]
             ' 画面名, コントロール名, メソッド名, 処理名
             ' 処理時間（実行時間）, 処理時間（CPU時間）
             ' ------------
-            Dim strLogMessage As String = ("," & "－" & ",") + Request.UserHostAddress & "," & "-----↑" & "," & "Global.asax" & "," & "Application_OnPostRequest" & "," & "－" & "," & "－" & "," & Convert.ToString(Me.perfRec.ExecTime) & "," & Convert.ToString(Me.perfRec.CpuTime)
+            Dim strLogMessage As String = ("," & "－" & ",") + Request.UserHostAddress & "," & "-----↑" & "," & "Global.asax" & "," & "Application_OnPostRequest" & "," & "－" & "," & "－" & "," & Me.perfRec.ExecTime & "," & Me.perfRec.CpuTime
 
             ' Log4Netへログ出力
             LogIF.DebugLog("ACCESS", strLogMessage)

@@ -447,12 +447,12 @@ Public Partial Class Aspx_testFxLayerP_normal_testNestMasterScreen
 		Return System.[String].Empty
 	End Function
 
-	'''/// ちなみに存在しないコントロールを検索した場合どうなるかチェックする。
-	'''/Control ctrl = null;
-	'''/ctrl = this.GetMasterWebControl("xxxx");
-	'''/ctrl = this.GetContentWebControl("xxxx");
+    '/// ちなみに存在しないコントロールを検索した場合どうなるかチェックする。
+    '/Control ctrl = null;
+    '/ctrl = this.GetMasterWebControl("xxxx");
+    '/ctrl = this.GetContentWebControl("xxxx");
 
-	#End Region
+#End Region
 
-	#End Region
+#End Region
 End Class

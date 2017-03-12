@@ -94,44 +94,43 @@ Public Partial Class Aspx_testFxLayerP_wcc_testWCTextBox
 	End Sub
 
 
-	''' <summary>DataSourceを生成</summary>
-	''' <returns>Datatableを返す</returns>
-	Private Sub CreateDataSource()
-		Dim dt As New DataTable()
-		Dim dr As DataRow
+    ''' <summary>DataSourceを生成</summary>
+    Private Sub CreateDataSource()
+        Dim dt As New DataTable()
+        Dim dr As DataRow
 
-		' 列生成
-		dt.Columns.Add(New DataColumn("fileid", GetType(Integer)))
-		dt.Columns.Add(New DataColumn("field1", GetType(String)))
-		dt.Columns.Add(New DataColumn("field2", GetType(String)))
-		dt.Columns.Add(New DataColumn("field3", GetType(String)))
-		dt.Columns.Add(New DataColumn("field4", GetType(String)))
-		dt.Columns.Add(New DataColumn("field5", GetType(String)))
-		dt.Columns.Add(New DataColumn("field6", GetType(String)))
-		dt.Columns.Add(New DataColumn("field7", GetType(String)))
-		dt.Columns.Add(New DataColumn("field8", GetType(String)))
-		dt.Columns.Add(New DataColumn("field9", GetType(String)))
-		dt.Columns.Add(New DataColumn("field10", GetType(String)))
-		dt.Columns.Add(New DataColumn("field11", GetType(String)))
-		dt.Columns.Add(New DataColumn("field12", GetType(String)))
-		dt.Columns.Add(New DataColumn("field13", GetType(String)))
+        ' 列生成
+        dt.Columns.Add(New DataColumn("fileid", GetType(Integer)))
+        dt.Columns.Add(New DataColumn("field1", GetType(String)))
+        dt.Columns.Add(New DataColumn("field2", GetType(String)))
+        dt.Columns.Add(New DataColumn("field3", GetType(String)))
+        dt.Columns.Add(New DataColumn("field4", GetType(String)))
+        dt.Columns.Add(New DataColumn("field5", GetType(String)))
+        dt.Columns.Add(New DataColumn("field6", GetType(String)))
+        dt.Columns.Add(New DataColumn("field7", GetType(String)))
+        dt.Columns.Add(New DataColumn("field8", GetType(String)))
+        dt.Columns.Add(New DataColumn("field9", GetType(String)))
+        dt.Columns.Add(New DataColumn("field10", GetType(String)))
+        dt.Columns.Add(New DataColumn("field11", GetType(String)))
+        dt.Columns.Add(New DataColumn("field12", GetType(String)))
+        dt.Columns.Add(New DataColumn("field13", GetType(String)))
 
-		' 行生成
-		For i As Integer = 1 To 9
-			dr = dt.NewRow()
-			dr("fileid") = i
-			dt.Rows.Add(dr)
-		Next
+        ' 行生成
+        For i As Integer = 1 To 9
+            dr = dt.NewRow()
+            dr("fileid") = i
+            dt.Rows.Add(dr)
+        Next
 
-		' 変更のコミット
-		dt.AcceptChanges()
+        ' 変更のコミット
+        dt.AcceptChanges()
 
-		' DataTableをSessionに格納する
-		Session("SampleData") = dt
-	End Sub
+        ' DataTableをSessionに格納する
+        Session("SampleData") = dt
+    End Sub
 
-	''' <summary>データバインドする</summary>
-	Private Sub BindGridData()
+    ''' <summary>データバインドする</summary>
+    Private Sub BindGridData()
 		Me.gvwGridView1.DataSource = Session("SampleData")
 		Me.gvwGridView1.DataBind()
 	End Sub

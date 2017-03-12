@@ -299,11 +299,11 @@ Public Partial Class Aspx_testFxLayerP_table_testRepeater
 	''' <returns>URL</returns>
 	Protected Function UOC_rptRepeater1_ItemCommand(fxEventArgs As FxEventArgs) As String
 		System.Diagnostics.Debug.WriteLine("--------------------")
-		System.Diagnostics.Debug.WriteLine("ButtonID:" & Convert.ToString(fxEventArgs.ButtonID))
-		System.Diagnostics.Debug.WriteLine("InnerButtonID:" & Convert.ToString(fxEventArgs.InnerButtonID))
-		System.Diagnostics.Debug.WriteLine("PostBackValue:" & Convert.ToString(fxEventArgs.PostBackValue))
+        System.Diagnostics.Debug.WriteLine("ButtonID:" & fxEventArgs.ButtonID)
+        System.Diagnostics.Debug.WriteLine("InnerButtonID:" & fxEventArgs.InnerButtonID)
+        System.Diagnostics.Debug.WriteLine("PostBackValue:" & fxEventArgs.PostBackValue)
 
-		Return ""
+        Return ""
 	End Function
 
 	#End Region
@@ -318,11 +318,11 @@ Public Partial Class Aspx_testFxLayerP_table_testRepeater
 	''' <returns>URL</returns>
 	Protected Function UOC_cbxCheckBox1_CheckedChanged(fxEventArgs As FxEventArgs) As String
 		System.Diagnostics.Debug.WriteLine("--------------------")
-		System.Diagnostics.Debug.WriteLine("ButtonID:" & Convert.ToString(fxEventArgs.ButtonID))
-		System.Diagnostics.Debug.WriteLine("InnerButtonID:" & Convert.ToString(fxEventArgs.InnerButtonID))
-		System.Diagnostics.Debug.WriteLine("PostBackValue:" & Convert.ToString(fxEventArgs.PostBackValue))
+        System.Diagnostics.Debug.WriteLine("ButtonID:" & fxEventArgs.ButtonID)
+        System.Diagnostics.Debug.WriteLine("InnerButtonID:" & fxEventArgs.InnerButtonID)
+        System.Diagnostics.Debug.WriteLine("PostBackValue:" & fxEventArgs.PostBackValue)
 
-		Dim cbx As CheckBox = DirectCast(Me.rptRepeater1.Items(Integer.Parse(fxEventArgs.PostBackValue)).FindControl("cbxCheckBox1"), CheckBox)
+        Dim cbx As CheckBox = DirectCast(Me.rptRepeater1.Items(Integer.Parse(fxEventArgs.PostBackValue)).FindControl("cbxCheckBox1"), CheckBox)
 
 		System.Diagnostics.Debug.WriteLine(cbx.Checked.ToString())
 
@@ -334,11 +334,11 @@ Public Partial Class Aspx_testFxLayerP_table_testRepeater
 	''' <returns>URL</returns>
 	Protected Function UOC_rbnRadioButton1_CheckedChanged(fxEventArgs As FxEventArgs) As String
 		System.Diagnostics.Debug.WriteLine("--------------------")
-		System.Diagnostics.Debug.WriteLine("ButtonID:" & Convert.ToString(fxEventArgs.ButtonID))
-		System.Diagnostics.Debug.WriteLine("InnerButtonID:" & Convert.ToString(fxEventArgs.InnerButtonID))
-		System.Diagnostics.Debug.WriteLine("PostBackValue:" & Convert.ToString(fxEventArgs.PostBackValue))
+        System.Diagnostics.Debug.WriteLine("ButtonID:" & fxEventArgs.ButtonID)
+        System.Diagnostics.Debug.WriteLine("InnerButtonID:" & fxEventArgs.InnerButtonID)
+        System.Diagnostics.Debug.WriteLine("PostBackValue:" & fxEventArgs.PostBackValue)
 
-		Dim cbx As RadioButton = DirectCast(Me.rptRepeater1.Items(Integer.Parse(fxEventArgs.PostBackValue)).FindControl("rbnRadioButton1"), RadioButton)
+        Dim cbx As RadioButton = DirectCast(Me.rptRepeater1.Items(Integer.Parse(fxEventArgs.PostBackValue)).FindControl("rbnRadioButton1"), RadioButton)
 
 		System.Diagnostics.Debug.WriteLine(cbx.Checked.ToString())
 
@@ -350,11 +350,11 @@ Public Partial Class Aspx_testFxLayerP_table_testRepeater
 	''' <returns>URL</returns>
 	Protected Function UOC_ddlDropDownList1_SelectedIndexChanged(fxEventArgs As FxEventArgs) As String
 		System.Diagnostics.Debug.WriteLine("--------------------")
-		System.Diagnostics.Debug.WriteLine("ButtonID:" & Convert.ToString(fxEventArgs.ButtonID))
-		System.Diagnostics.Debug.WriteLine("InnerButtonID:" & Convert.ToString(fxEventArgs.InnerButtonID))
-		System.Diagnostics.Debug.WriteLine("PostBackValue:" & Convert.ToString(fxEventArgs.PostBackValue))
+        System.Diagnostics.Debug.WriteLine("ButtonID:" & fxEventArgs.ButtonID)
+        System.Diagnostics.Debug.WriteLine("InnerButtonID:" & fxEventArgs.InnerButtonID)
+        System.Diagnostics.Debug.WriteLine("PostBackValue:" & fxEventArgs.PostBackValue)
 
-		Dim ddl As DropDownList = DirectCast(Me.rptRepeater1.Items(Integer.Parse(fxEventArgs.PostBackValue)).FindControl("ddlDropDownList1"), DropDownList)
+        Dim ddl As DropDownList = DirectCast(Me.rptRepeater1.Items(Integer.Parse(fxEventArgs.PostBackValue)).FindControl("ddlDropDownList1"), DropDownList)
 
 		System.Diagnostics.Debug.WriteLine(ddl.SelectedValue)
 
@@ -366,11 +366,11 @@ Public Partial Class Aspx_testFxLayerP_table_testRepeater
 	''' <returns>URL</returns>
 	Protected Function UOC_lbxListBox1_SelectedIndexChanged(fxEventArgs As FxEventArgs) As String
 		System.Diagnostics.Debug.WriteLine("--------------------")
-		System.Diagnostics.Debug.WriteLine("ButtonID:" & Convert.ToString(fxEventArgs.ButtonID))
-		System.Diagnostics.Debug.WriteLine("InnerButtonID:" & Convert.ToString(fxEventArgs.InnerButtonID))
-		System.Diagnostics.Debug.WriteLine("PostBackValue:" & Convert.ToString(fxEventArgs.PostBackValue))
+        System.Diagnostics.Debug.WriteLine("ButtonID:" & fxEventArgs.ButtonID)
+        System.Diagnostics.Debug.WriteLine("InnerButtonID:" & fxEventArgs.InnerButtonID)
+        System.Diagnostics.Debug.WriteLine("PostBackValue:" & fxEventArgs.PostBackValue)
 
-		Dim ddl As ListBox = DirectCast(Me.rptRepeater1.Items(Integer.Parse(fxEventArgs.PostBackValue)).FindControl("lbxListBox1"), ListBox)
+        Dim ddl As ListBox = DirectCast(Me.rptRepeater1.Items(Integer.Parse(fxEventArgs.PostBackValue)).FindControl("lbxListBox1"), ListBox)
 
 		System.Diagnostics.Debug.WriteLine(ddl.SelectedValue)
 

@@ -29,7 +29,7 @@ using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Public.Db;
 
-namespace ProjectX_sample.Aspx.sample._3Tier
+namespace ProjectX_sample.Aspx.Sample._3Tier
 {
     /// <summary>三層データバインド・検索一覧更新画面</summary>
     public partial class ProductsSearchAndUpdate : MyBaseController

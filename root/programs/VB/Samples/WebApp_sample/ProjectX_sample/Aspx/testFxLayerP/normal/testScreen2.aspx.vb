@@ -66,13 +66,13 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen2
 	''' <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
 	''' <remarks>実装必須</remarks>
 	Protected Overrides Sub UOC_FormInit()
-		' フォーム初期化（初回ロード）時に実行する処理を実装する
-		' TODO:
-		Response.Write(Convert.ToString(Me.ContentPageFileNoEx) & "<br/>")
+        ' フォーム初期化（初回ロード）時に実行する処理を実装する
+        ' TODO:
+        Response.Write(Me.ContentPageFileNoEx & "<br/>")
 
-		' クライアントからの業務モーダル画面起動
-		' スタイル指定なし
-		Me.btnButton2.OnClientClick = "return " & Me.GetScriptToShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx") & ";"
+        ' クライアントからの業務モーダル画面起動
+        ' スタイル指定なし
+        Me.btnButton2.OnClientClick = "return " & Me.GetScriptToShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx") & ";"
 		Me.btnButton3.OnClientClick = "return " & Me.GetScriptToShowModalScreen("~/Aspx/testFxLayerP/normal/testScreen1.aspx?test=test") & ";"
 
 		' スタイル指定あり（空）
@@ -425,7 +425,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen2
         ' switch文
 
         ' メッセージ表示
-        Me.ShowOKMessageDialog(Convert.ToString(parentFxEventArgs.ButtonID) & "で開いた「YES」・「NO」メッセージ・ダイアログ", "[×]ボタンを押した時の後処理", FxEnum.IconType.Information, "テスト結果")
+        Me.ShowOKMessageDialog(parentFxEventArgs.ButtonID & "で開いた「YES」・「NO」メッセージ・ダイアログ", "[×]ボタンを押した時の後処理", FxEnum.IconType.Information, "テスト結果")
     End Sub
 
     ''' <summary>「YES」・「NO」メッセージ・ダイアログの「YES」が押され閉じられた場合の処理を実装する。</summary>
@@ -437,7 +437,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen2
         ' switch文
 
         ' メッセージ表示
-        Me.ShowOKMessageDialog(Convert.ToString(parentFxEventArgs.ButtonID) & "で開いた「YES」・「NO」メッセージ・ダイアログ", "[Yes]ボタンを押した時の後処理", FxEnum.IconType.Information, "テスト結果")
+        Me.ShowOKMessageDialog(parentFxEventArgs.ButtonID & "で開いた「YES」・「NO」メッセージ・ダイアログ", "[Yes]ボタンを押した時の後処理", FxEnum.IconType.Information, "テスト結果")
     End Sub
 
     ''' <summary>「YES」・「NO」メッセージ・ダイアログの「NO」が押され閉じられた場合の処理を実装する。</summary>
@@ -449,7 +449,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen2
         ' switch文
 
         ' メッセージ表示
-        Me.ShowOKMessageDialog(Convert.ToString(parentFxEventArgs.ButtonID) & "で開いた「YES」・「NO」メッセージ・ダイアログ", "[No]ボタンを押した時の後処理", FxEnum.IconType.Information, "テスト結果")
+        Me.ShowOKMessageDialog(parentFxEventArgs.ButtonID & "で開いた「YES」・「NO」メッセージ・ダイアログ", "[No]ボタンを押した時の後処理", FxEnum.IconType.Information, "テスト結果")
     End Sub
 
     ''' <summary>業務モーダル画面の後処理を実装する。</summary>
@@ -462,7 +462,7 @@ Public Partial Class Aspx_testFxLayerP_normal_testScreen2
         ' switch文
 
         ' メッセージ表示
-        Me.ShowOKMessageDialog(Convert.ToString(parentFxEventArgs.ButtonID) & "で開いた業務モーダル・ダイアログの", Convert.ToString(childFxEventArgs.ButtonID) & "ボタンを押して閉じた時の後処理", FxEnum.IconType.Information, "テスト結果")
+        Me.ShowOKMessageDialog(parentFxEventArgs.ButtonID & "で開いた業務モーダル・ダイアログの", childFxEventArgs.ButtonID & "ボタンを押して閉じた時の後処理", FxEnum.IconType.Information, "テスト結果")
     End Sub
 
 #Region "RadioButtonList"

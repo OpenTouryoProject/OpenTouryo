@@ -7,7 +7,7 @@
 // </自動生成>
 //------------------------------------------------------------------------------
 
-namespace ProjectX_sample.Aspx.sample._3Tier {
+namespace ProjectX_sample.Aspx.Sample._3Tier {
     
     
     public partial class ProductsDetail {

@@ -242,11 +242,11 @@ Public Partial Class Aspx_testFxLayerP_table_testGridView
 
 		System.Diagnostics.Debug.WriteLine("--------------------")
 		System.Diagnostics.Debug.WriteLine("Event:RowCommand")
-		System.Diagnostics.Debug.WriteLine("ButtonID:" & Convert.ToString(fxEventArgs.ButtonID))
-		System.Diagnostics.Debug.WriteLine("InnerButtonID:" & Convert.ToString(fxEventArgs.InnerButtonID))
-		System.Diagnostics.Debug.WriteLine("PostBackValue:" & Convert.ToString(fxEventArgs.PostBackValue))
+        System.Diagnostics.Debug.WriteLine("ButtonID:" & fxEventArgs.ButtonID)
+        System.Diagnostics.Debug.WriteLine("InnerButtonID:" & fxEventArgs.InnerButtonID)
+        System.Diagnostics.Debug.WriteLine("PostBackValue:" & fxEventArgs.PostBackValue)
 
-		Return ""
+        Return ""
 	End Function
 
 	#End Region
@@ -266,11 +266,11 @@ Public Partial Class Aspx_testFxLayerP_table_testGridView
 
 		System.Diagnostics.Debug.WriteLine("--------------------")
 		System.Diagnostics.Debug.WriteLine("Event:SelectedIndexChanged")
-		System.Diagnostics.Debug.WriteLine("ButtonID:" & Convert.ToString(fxEventArgs.ButtonID))
-		System.Diagnostics.Debug.WriteLine("InnerButtonID:" & Convert.ToString(fxEventArgs.InnerButtonID))
-		System.Diagnostics.Debug.WriteLine("PostBackValue:" & Convert.ToString(fxEventArgs.PostBackValue))
+        System.Diagnostics.Debug.WriteLine("ButtonID:" & fxEventArgs.ButtonID)
+        System.Diagnostics.Debug.WriteLine("InnerButtonID:" & fxEventArgs.InnerButtonID)
+        System.Diagnostics.Debug.WriteLine("PostBackValue:" & fxEventArgs.PostBackValue)
 
-		Return ""
+        Return ""
 	End Function
 
 	#End Region
@@ -410,11 +410,11 @@ Public Partial Class Aspx_testFxLayerP_table_testGridView
 				' ソート定義情報を更新する
 				DirectCast(Session("SortDirection"), Dictionary(Of String, SortDirection))(e.SortExpression) = SortDirection.Descending
 			Else
-				' 降順
-				dv.Sort = Convert.ToString(e.SortExpression) & " DESC"
+                ' 降順
+                dv.Sort = e.SortExpression & " DESC"
 
-				' ソート定義情報を更新する
-				DirectCast(Session("SortDirection"), Dictionary(Of String, SortDirection))(e.SortExpression) = SortDirection.Ascending
+                ' ソート定義情報を更新する
+                DirectCast(Session("SortDirection"), Dictionary(Of String, SortDirection))(e.SortExpression) = SortDirection.Ascending
 			End If
 		End If
 
@@ -447,11 +447,11 @@ Public Partial Class Aspx_testFxLayerP_table_testGridView
 	''' <returns>URL</returns>
 	Protected Function UOC_cbxCheckBox3_CheckedChanged(fxEventArgs As FxEventArgs) As String
 		System.Diagnostics.Debug.WriteLine("--------------------")
-		System.Diagnostics.Debug.WriteLine("ButtonID:" & Convert.ToString(fxEventArgs.ButtonID))
-		System.Diagnostics.Debug.WriteLine("InnerButtonID:" & Convert.ToString(fxEventArgs.InnerButtonID))
-		System.Diagnostics.Debug.WriteLine("PostBackValue:" & Convert.ToString(fxEventArgs.PostBackValue))
+        System.Diagnostics.Debug.WriteLine("ButtonID:" & fxEventArgs.ButtonID)
+        System.Diagnostics.Debug.WriteLine("InnerButtonID:" & fxEventArgs.InnerButtonID)
+        System.Diagnostics.Debug.WriteLine("PostBackValue:" & fxEventArgs.PostBackValue)
 
-		Dim cbx As CheckBox = DirectCast(Me.gvwGridView1.Rows(Integer.Parse(fxEventArgs.PostBackValue)).FindControl("cbxCheckBox3"), CheckBox)
+        Dim cbx As CheckBox = DirectCast(Me.gvwGridView1.Rows(Integer.Parse(fxEventArgs.PostBackValue)).FindControl("cbxCheckBox3"), CheckBox)
 
 		System.Diagnostics.Debug.WriteLine(cbx.Checked.ToString())
 
@@ -462,12 +462,12 @@ Public Partial Class Aspx_testFxLayerP_table_testGridView
 	''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
 	''' <returns>URL</returns>
 	Protected Function UOC_rbnRadioButton3_CheckedChanged(fxEventArgs As FxEventArgs) As String
-		System.Diagnostics.Debug.WriteLine("--------------------")
-		System.Diagnostics.Debug.WriteLine("ButtonID:" & Convert.ToString(fxEventArgs.ButtonID))
-		System.Diagnostics.Debug.WriteLine("InnerButtonID:" & Convert.ToString(fxEventArgs.InnerButtonID))
-		System.Diagnostics.Debug.WriteLine("PostBackValue:" & Convert.ToString(fxEventArgs.PostBackValue))
+        System.Diagnostics.Debug.WriteLine("--------------------")
+        System.Diagnostics.Debug.WriteLine("ButtonID:" & fxEventArgs.ButtonID)
+        System.Diagnostics.Debug.WriteLine("InnerButtonID:" & fxEventArgs.InnerButtonID)
+        System.Diagnostics.Debug.WriteLine("PostBackValue:" & fxEventArgs.PostBackValue)
 
-		Dim cbx As RadioButton = DirectCast(Me.gvwGridView1.Rows(Integer.Parse(fxEventArgs.PostBackValue)).FindControl("rbnRadioButton3"), RadioButton)
+        Dim cbx As RadioButton = DirectCast(Me.gvwGridView1.Rows(Integer.Parse(fxEventArgs.PostBackValue)).FindControl("rbnRadioButton3"), RadioButton)
 
 		System.Diagnostics.Debug.WriteLine(cbx.Checked.ToString())
 
@@ -479,11 +479,11 @@ Public Partial Class Aspx_testFxLayerP_table_testGridView
 	''' <returns>URL</returns>
 	Protected Function UOC_ddlDropDownList1_SelectedIndexChanged(fxEventArgs As FxEventArgs) As String
 		System.Diagnostics.Debug.WriteLine("--------------------")
-		System.Diagnostics.Debug.WriteLine("ButtonID:" & Convert.ToString(fxEventArgs.ButtonID))
-		System.Diagnostics.Debug.WriteLine("InnerButtonID:" & Convert.ToString(fxEventArgs.InnerButtonID))
-		System.Diagnostics.Debug.WriteLine("PostBackValue:" & Convert.ToString(fxEventArgs.PostBackValue))
+        System.Diagnostics.Debug.WriteLine("ButtonID:" & fxEventArgs.ButtonID)
+        System.Diagnostics.Debug.WriteLine("InnerButtonID:" & fxEventArgs.InnerButtonID)
+        System.Diagnostics.Debug.WriteLine("PostBackValue:" & fxEventArgs.PostBackValue)
 
-		Dim ddl As DropDownList = DirectCast(Me.gvwGridView1.Rows(Integer.Parse(fxEventArgs.PostBackValue)).FindControl("ddlDropDownList1"), DropDownList)
+        Dim ddl As DropDownList = DirectCast(Me.gvwGridView1.Rows(Integer.Parse(fxEventArgs.PostBackValue)).FindControl("ddlDropDownList1"), DropDownList)
 
 		System.Diagnostics.Debug.WriteLine(ddl.SelectedValue)
 
@@ -495,11 +495,11 @@ Public Partial Class Aspx_testFxLayerP_table_testGridView
 	''' <returns>URL</returns>
 	Protected Function UOC_lbxListBox1_SelectedIndexChanged(fxEventArgs As FxEventArgs) As String
 		System.Diagnostics.Debug.WriteLine("--------------------")
-		System.Diagnostics.Debug.WriteLine("ButtonID:" & Convert.ToString(fxEventArgs.ButtonID))
-		System.Diagnostics.Debug.WriteLine("InnerButtonID:" & Convert.ToString(fxEventArgs.InnerButtonID))
-		System.Diagnostics.Debug.WriteLine("PostBackValue:" & Convert.ToString(fxEventArgs.PostBackValue))
+        System.Diagnostics.Debug.WriteLine("ButtonID:" & fxEventArgs.ButtonID)
+        System.Diagnostics.Debug.WriteLine("InnerButtonID:" & fxEventArgs.InnerButtonID)
+        System.Diagnostics.Debug.WriteLine("PostBackValue:" & fxEventArgs.PostBackValue)
 
-		Dim ddl As ListBox = DirectCast(Me.gvwGridView1.Rows(Integer.Parse(fxEventArgs.PostBackValue)).FindControl("lbxListBox1"), ListBox)
+        Dim ddl As ListBox = DirectCast(Me.gvwGridView1.Rows(Integer.Parse(fxEventArgs.PostBackValue)).FindControl("lbxListBox1"), ListBox)
 
 		System.Diagnostics.Debug.WriteLine(ddl.SelectedValue)
 

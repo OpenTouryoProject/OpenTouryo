@@ -1,10 +1,8 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Common.testScreenCtrl" Codebehind="testScreenCtrl.master.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" >
-
+<!DOCTYPE html>
+<html>
 <head id="Head1" runat="server">
     <title>無題のページ</title>
     <asp:PlaceHolder runat="server">
@@ -14,7 +12,7 @@
 
     <!-- Resolve URL in the javascript-->
     <script type="text/javascript">
-        var baseUrl = "<%= ResolveUrl("~/") %>";
+        var baseUrl = "<%= this.ResolveUrl("~/") %>";
     </script>
     
     <!-- IE8をIE7互換モードで動作させる -->
