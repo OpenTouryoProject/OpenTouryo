@@ -61,9 +61,6 @@
     <Reference Include="Framework">
       <HintPath>..\..\..\Frameworks\Infrastructure\Build\Framework.dll</HintPath>
     </Reference>
-    <Reference Include="Public">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Public.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />

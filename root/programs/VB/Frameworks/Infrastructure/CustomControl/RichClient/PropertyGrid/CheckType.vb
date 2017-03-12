@@ -28,6 +28,7 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
+'*  2017/01/31  西野 大介         "Indispensable" ---> "Required"
 '**********************************************************************************
 
 ' System
@@ -43,11 +44,32 @@ Imports System.Windows.Forms
 
 Namespace Touryo.Infrastructure.CustomControl.RichClient
     ''' <summary>チェック タイプ</summary>
-    <TypeConverter(GetType(CheckTypeConverter))> _
+    <TypeConverter(GetType(CheckTypeConverter))>
     Public Class CheckType
+
+        ''' <summary>ビット・フィールド</summary>
+        Public Enum BF
+            ''' <summary>必須入力</summary>
+            Required = 1
+            ''' <summary>半角</summary>
+            IsHankaku = 2
+            ''' <summary>全角</summary>
+            IsZenkaku = 4
+            ''' <summary>数値</summary>
+            IsNumeric = 8
+            ''' <summary>片仮名</summary>
+            IsKatakana = 16
+            ''' <summary>半角片仮名</summary>
+            IsHanKatakana = 32
+            ''' <summary>平仮名</summary>
+            IsHiragana = 64
+            ''' <summary>日付</summary>
+            IsDate = 128
+        End Enum
+
         ''' <summary>コンストラクタ</summary>
         Public Sub New()
-            Me.IsIndispensable = False
+            Me.Required = False
             Me.IsHankaku = False
             Me.IsZenkaku = False
             Me.IsNumeric = False
@@ -58,22 +80,22 @@ Namespace Touryo.Infrastructure.CustomControl.RichClient
         End Sub
 
         ''' <summary>必須</summary>
-        Public Property IsIndispensable() As Boolean
+        Public Property Required() As Boolean
             Get
-                Return m_IsIndispensable
+                Return m_Required
             End Get
             Set(ByVal value As Boolean)
-                m_IsIndispensable = value
+                m_Required = value
             End Set
         End Property
-        Private m_IsIndispensable As Boolean
+        Private m_Required As Boolean
         ''' <summary>半角</summary>
         Public Property IsHankaku() As Boolean
             Get
                 Return m_IsHankaku
             End Get
             Set(ByVal value As Boolean)
-                m_IsHankaku = Value
+                m_IsHankaku = value
             End Set
         End Property
         Private m_IsHankaku As Boolean
@@ -83,7 +105,7 @@ Namespace Touryo.Infrastructure.CustomControl.RichClient
                 Return m_IsZenkaku
             End Get
             Set(ByVal value As Boolean)
-                m_IsZenkaku = Value
+                m_IsZenkaku = value
             End Set
         End Property
         Private m_IsZenkaku As Boolean
@@ -93,7 +115,7 @@ Namespace Touryo.Infrastructure.CustomControl.RichClient
                 Return m_IsNumeric
             End Get
             Set(ByVal value As Boolean)
-                m_IsNumeric = Value
+                m_IsNumeric = value
             End Set
         End Property
         Private m_IsNumeric As Boolean
@@ -103,7 +125,7 @@ Namespace Touryo.Infrastructure.CustomControl.RichClient
                 Return m_IsKatakana
             End Get
             Set(ByVal value As Boolean)
-                m_IsKatakana = Value
+                m_IsKatakana = value
             End Set
         End Property
         Private m_IsKatakana As Boolean
@@ -113,7 +135,7 @@ Namespace Touryo.Infrastructure.CustomControl.RichClient
                 Return m_IsHanKatakana
             End Get
             Set(ByVal value As Boolean)
-                m_IsHanKatakana = Value
+                m_IsHanKatakana = value
             End Set
         End Property
         Private m_IsHanKatakana As Boolean
@@ -123,7 +145,7 @@ Namespace Touryo.Infrastructure.CustomControl.RichClient
                 Return m_IsHiragana
             End Get
             Set(ByVal value As Boolean)
-                m_IsHiragana = Value
+                m_IsHiragana = value
             End Set
         End Property
         Private m_IsHiragana As Boolean
@@ -133,7 +155,7 @@ Namespace Touryo.Infrastructure.CustomControl.RichClient
                 Return m_IsDate
             End Get
             Set(ByVal value As Boolean)
-                m_IsDate = Value
+                m_IsDate = value
             End Set
         End Property
         Private m_IsDate As Boolean
@@ -149,7 +171,7 @@ Namespace Touryo.Infrastructure.CustomControl.RichClient
         Public Overrides Function GetHashCode() As Integer
             Dim hc As Integer = 0
 
-            If Me.IsIndispensable Then
+            If Me.Required Then
                 hc += 1
             End If
             If Me.IsHankaku Then
@@ -190,7 +212,16 @@ Namespace Touryo.Infrastructure.CustomControl.RichClient
                 Return False
             End If
 
-            Return (Me.IsIndispensable = ct.IsIndispensable) AndAlso (Me.IsHankaku = ct.IsHankaku) AndAlso (Me.IsZenkaku = ct.IsZenkaku) AndAlso (Me.IsNumeric = ct.IsNumeric) AndAlso (Me.IsKatakana = ct.IsKatakana) AndAlso (Me.IsHanKatakana = ct.IsHanKatakana) AndAlso (Me.IsHiragana = ct.IsHiragana) AndAlso (Me.IsDate = ct.IsDate)
+            Return _
+                (Me.Required = ct.Required) _
+                AndAlso (Me.IsHankaku = ct.IsHankaku) _
+                AndAlso (Me.IsZenkaku = ct.IsZenkaku) _
+                AndAlso (Me.IsNumeric = ct.IsNumeric) _
+                AndAlso (Me.IsKatakana = ct.IsKatakana) _
+                AndAlso (Me.IsHanKatakana = ct.IsHanKatakana) _
+                AndAlso (Me.IsHiragana = ct.IsHiragana) _
+                AndAlso (Me.IsDate = ct.IsDate)
+
         End Function
 
         ''' <summary>Equals</summary>

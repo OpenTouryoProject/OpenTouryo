@@ -40,19 +40,25 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
     [TypeConverter(typeof(CheckTypeConverter))]
     public class CheckType
     {
-        /// <summary>
-        /// ビット・フィールド
-        /// </summary>
+        /// <summary>ビット・フィールド</summary>
         [Flags]
         public enum BF
         {
+            /// <summary>必須入力</summary>
             Required = 1,
+            /// <summary>半角</summary>
             IsHankaku = 2,
+            /// <summary>全角</summary>
             IsZenkaku = 4,
+            /// <summary>数値</summary>
             IsNumeric = 8,
+            /// <summary>片仮名</summary>
             IsKatakana = 16,
+            /// <summary>半角片仮名</summary>
             IsHanKatakana = 32,
+            /// <summary>平仮名</summary>
             IsHiragana = 64,
+            /// <summary>日付</summary>
             IsDate = 128
         }
 

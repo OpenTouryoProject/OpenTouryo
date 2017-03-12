@@ -33,70 +33,49 @@
 '**********************************************************************************
 
 Imports System.ServiceModel
-Imports System.ServiceModel.Activation
+Imports System.Runtime.ExceptionServices
 
-' System
-Imports System
-Imports System.Xml
-Imports System.Data
-Imports System.Collections
-
-' 業務フレームワーク
-Imports Touryo.Infrastructure.Business.Business
-Imports Touryo.Infrastructure.Business.Common
-Imports Touryo.Infrastructure.Business.Dao
-Imports Touryo.Infrastructure.Business.Exceptions
-Imports Touryo.Infrastructure.Business.Presentation
-Imports Touryo.Infrastructure.Business.Util
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Business
-Imports Touryo.Infrastructure.Framework.Common
-Imports Touryo.Infrastructure.Framework.Dao
-Imports Touryo.Infrastructure.Framework.Exceptions
-Imports Touryo.Infrastructure.Framework.Presentation
-Imports Touryo.Infrastructure.Framework.Util
 Imports Touryo.Infrastructure.Framework.Transmission
-
-' 部品
+Imports Touryo.Infrastructure.Framework.Exceptions
+Imports Touryo.Infrastructure.Framework.Common
+Imports Touryo.Infrastructure.Framework.Util
 Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Log
-Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
 
 Namespace Touryo.Infrastructure.Business.Transmission
-	' メモ: [リファクター] メニューの [名前の変更] コマンドを使用すると、コード、svc、および config ファイルで同時にクラス名 "WCFSvcForFx" を変更できます。
+    ' メモ: [リファクター] メニューの [名前の変更] コマンドを使用すると、コード、svc、および config ファイルで同時にクラス名 "WCFSvcForFx" を変更できます。
 
-	''' <summary>
-	''' WCF TCP/IPサービス（サービス インターフェイス基盤）
-	''' .NET言語用のTCP/IPメソッド（.NETオブジェクトI/F）を公開する。
-	''' </summary>
-	<ServiceBehavior> _
-	Public Class WCFTCPSvcForFx
-		Implements IWCFTCPSvcForFx
-		#Region "グローバル変数"
+    ''' <summary>
+    ''' WCF TCP/IPサービス（サービス インターフェイス基盤）
+    ''' .NET言語用のTCP/IPメソッド（.NETオブジェクトI/F）を公開する。
+    ''' </summary>
+    <ServiceBehavior>
+    Public Class WCFTCPSvcForFx
+        Implements IWCFTCPSvcForFx
+#Region "グローバル変数"
 
-		''' <summary>インプロセス呼び出しの名前解決シングルトン クラス</summary>
-		''' <remarks>
-		''' 初期化は起動時の１回のみであり、
-		''' 読み取り専用のデータを保持する場合
-		''' のみに適用するデザインパターンとする。
-		''' </remarks>
-		Private Shared IPR_NS As New InProcessNameService()
+        ''' <summary>インプロセス呼び出しの名前解決シングルトン クラス</summary>
+        ''' <remarks>
+        ''' 初期化は起動時の１回のみであり、
+        ''' 読み取り専用のデータを保持する場合
+        ''' のみに適用するデザインパターンとする。
+        ''' </remarks>
+        Private Shared IPR_NS As New InProcessNameService()
 
-		#End Region
+#End Region
 
-		''' <summary>
-		''' WCF TCP/IPサービスを使用した
-		''' サービス インターフェイス基盤（.NETオンライン）
-		''' </summary>
-		''' <param name="serviceName">サービス名</param>
-		''' <param name="contextObject">コンテキスト</param>
-		''' <param name="parameterValueObject">引数</param>
-		''' <param name="returnValueObject">戻り値</param>
-		''' <returns>返すべきエラーの情報</returns>
-		''' <remarks>値は全て.NETオブジェクトをバイナリシリアライズしたバイト配列データ</remarks>
+        ''' <summary>
+        ''' WCF TCP/IPサービスを使用した
+        ''' サービス インターフェイス基盤（.NETオンライン）
+        ''' </summary>
+        ''' <param name="serviceName">サービス名</param>
+        ''' <param name="contextObject">コンテキスト</param>
+        ''' <param name="parameterValueObject">引数</param>
+        ''' <param name="returnValueObject">戻り値</param>
+        ''' <returns>返すべきエラーの情報</returns>
+        ''' <remarks>値は全て.NETオブジェクトをバイナリシリアライズしたバイト配列データ</remarks>
         Public Function DotNETOnlineTCP(serviceName As String, ByRef contextObject As Byte(), parameterValueObject As Byte(), ByRef returnValueObject As Byte()) As Byte() Implements IWCFTCPSvcForFx.DotNETOnlineTCP
             ' ステータス
             Dim status As String = "－"
@@ -120,8 +99,8 @@ Namespace Touryo.Infrastructure.Business.Transmission
             Dim context As Object
             ' 2009/09/29-この行
             ' 引数・戻り値の.NETオブジェクト
-            Dim parameterValue As BaseParameterValue
-            Dim returnValue As BaseReturnValue
+            Dim parameterValue As BaseParameterValue = Nothing
+            Dim returnValue As BaseReturnValue = Nothing
 
             ' エラー情報（クライアント側で復元するため）
             Dim wsErrorInfo As New WSErrorInfo()
@@ -218,8 +197,11 @@ Namespace Touryo.Infrastructure.Business.Transmission
                     '    className, FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet);
                     returnValue = DirectCast(Latebind.InvokeMethod(assemblyName, className, FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet), BaseReturnValue)
                 Catch rtEx As System.Reflection.TargetInvocationException
-                    ' InnerExceptionを投げなおす。
-                    Throw rtEx.InnerException
+                    '/ InnerExceptionを投げなおす。
+                    'throw rtEx.InnerException;
+
+                    ' スタックトレースを保って InnerException を throw
+                    ExceptionDispatchInfo.Capture(rtEx.InnerException).[Throw]()
                 End Try
                 ' #17-end
 
@@ -303,5 +285,5 @@ Namespace Touryo.Infrastructure.Business.Transmission
                 End If
             End Try
         End Function
-	End Class
+    End Class
 End Namespace

@@ -118,8 +118,6 @@
     <Compile Include="Util\MyAttribute.cs" />
     <Compile Include="Util\MyLiteral.cs" />
     <Compile Include="Util\MySubsysInfo.cs" />
-    <Compile Include="Util\MyTimeZone.cs" />
-    <Compile Include="Util\MyTimeZoneEnum.cs" />
     <Compile Include="Util\MyUserInfo.cs" />
     <Compile Include="Workflow\DaoM_User.cs" />
     <Compile Include="Workflow\DaoM_Workflow.cs" />

@@ -583,7 +583,6 @@ namespace Touryo.Infrastructure.Business.Business
                         "," + this.perfRec.CpuTime +
                         "," + "other Exception" +
                         "," + ex.Message +
-                        "\r\n" + ex.StackTrace +
                         "\r\n" + ex.ToString(); // ex
 
                     // Log4Netへログ出力

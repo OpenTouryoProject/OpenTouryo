@@ -30,7 +30,6 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         新規作成
 '**********************************************************************************
 
-Imports System
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 

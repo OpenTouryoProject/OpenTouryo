@@ -557,7 +557,6 @@ namespace Touryo.Infrastructure.Business.RichClient.Business
                         "," + this.perfRec.CpuTime +
                         "," + "other Exception" +
                         "," + ex.Message +
-                        "\r\n" + ex.StackTrace +
                         "\r\n" + ex.ToString(); // ex
 
                     // Log4Netへログ出力

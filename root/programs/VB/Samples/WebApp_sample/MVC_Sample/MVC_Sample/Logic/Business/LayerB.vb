@@ -41,7 +41,7 @@ Namespace Logic.Business
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_メソッド名(testParameter As TestParameterValue)
             'メソッド引数にBaseParameterValueの派生の型を定義可能。
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -67,7 +67,7 @@ Namespace Logic.Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_SelectCount(testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -128,7 +128,7 @@ Namespace Logic.Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_SelectAll_DT(testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -199,7 +199,7 @@ Namespace Logic.Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_SelectAll_DS(testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -271,7 +271,7 @@ Namespace Logic.Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_SelectAll_DR(testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -300,9 +300,9 @@ Namespace Logic.Business
                     dt = New DataTable()
 
                     ' ３列生成
-                    dt.Columns.Add("c1", System.Type.[GetType]("System.String"))
-                    dt.Columns.Add("c2", System.Type.[GetType]("System.String"))
-                    dt.Columns.Add("c3", System.Type.[GetType]("System.String"))
+                    dt.Columns.Add("c1", GetType(String))
+                    dt.Columns.Add("c2", GetType(String))
+                    dt.Columns.Add("c3", GetType(String))
 
                     ' 共通Daoを実行
                     Dim idr As IDataReader = cmnDao.ExecSelect_DR()
@@ -364,7 +364,7 @@ Namespace Logic.Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_SelectAll_DSQL(testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -452,7 +452,7 @@ Namespace Logic.Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_Select(testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -556,7 +556,7 @@ Namespace Logic.Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_Insert(testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -615,7 +615,7 @@ Namespace Logic.Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_Update(testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -686,7 +686,7 @@ Namespace Logic.Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_Delete(testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 

@@ -63,7 +63,7 @@ Public Class GetMasterData
     ''' <param name="parameterValue">引数クラス</param>
 	Private Sub UOC_Invoke(parameterValue As _3TierParameterValue)
 		'メソッド引数にBaseParameterValueの派生の型を定義可能。
-		' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+		' 戻り値クラスを生成して、事前に戻り値に設定しておく。
 		Dim returnValue As New _3TierReturnValue()
 		Me.ReturnValue = returnValue
 

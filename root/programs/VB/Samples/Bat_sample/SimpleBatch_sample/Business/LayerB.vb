@@ -2,57 +2,27 @@
 '* フレームワーク・テストクラス（Ｂ層）
 '**********************************************************************************
 
+' テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
 '**********************************************************************************
 '* クラス名        ：LayerB
 '* クラス日本語名  ：Ｂ層のテスト
 '*
 '* 作成日時        ：－
-'* 作成者          ：sas 生技
+'* 作成者          ：生技
 '* 更新履歴        ：
 '*
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
-'*
 '**********************************************************************************
 
-' 型情報
 Imports SimpleBatch_sample.Common
-
-' Ｄ層
 Imports SimpleBatch_sample.Dao
 
-' System
-Imports System
-Imports System.IO
-Imports System.Data
-Imports System.Text
-Imports System.Collections
-Imports System.Collections.Generic
-
-' 業務フレームワーク
 Imports Touryo.Infrastructure.Business.Business
-Imports Touryo.Infrastructure.Business.Common
 Imports Touryo.Infrastructure.Business.Dao
-Imports Touryo.Infrastructure.Business.Exceptions
-Imports Touryo.Infrastructure.Business.Presentation
-Imports Touryo.Infrastructure.Business.Util
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Business
-Imports Touryo.Infrastructure.Framework.Common
-Imports Touryo.Infrastructure.Framework.Dao
 Imports Touryo.Infrastructure.Framework.Exceptions
-Imports Touryo.Infrastructure.Framework.Presentation
-Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Framework.Transmission
-
-' 部品
-Imports Touryo.Infrastructure.Public.Db
-Imports Touryo.Infrastructure.Public.IO
-Imports Touryo.Infrastructure.Public.Log
-Imports Touryo.Infrastructure.Public.Str
-Imports Touryo.Infrastructure.Public.Util
 
 Namespace Business
     ''' <summary>
@@ -66,7 +36,7 @@ Namespace Business
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_メソッド名(ByVal testParameter As TestParameterValue)
             'メソッド引数にBaseParameterValueの派生の型を定義可能。
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -92,7 +62,7 @@ Namespace Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_SelectCount(ByVal testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -153,7 +123,7 @@ Namespace Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_SelectAll_DT(ByVal testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -224,7 +194,7 @@ Namespace Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_SelectAll_DS(ByVal testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -296,7 +266,7 @@ Namespace Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_SelectAll_DR(ByVal testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -325,9 +295,9 @@ Namespace Business
                     dt = New DataTable()
 
                     ' ３列生成
-                    dt.Columns.Add("c1", System.Type.[GetType]("System.String"))
-                    dt.Columns.Add("c2", System.Type.[GetType]("System.String"))
-                    dt.Columns.Add("c3", System.Type.[GetType]("System.String"))
+                    dt.Columns.Add("c1", GetType(String))
+                    dt.Columns.Add("c2", GetType(String))
+                    dt.Columns.Add("c3", GetType(String))
 
                     ' 共通Daoを実行
                     Dim idr As IDataReader = cmnDao.ExecSelect_DR()
@@ -389,7 +359,7 @@ Namespace Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_SelectAll_DSQL(ByVal testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -477,7 +447,7 @@ Namespace Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_Select(ByVal testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -581,7 +551,7 @@ Namespace Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_Insert(ByVal testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -640,7 +610,7 @@ Namespace Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_Update(ByVal testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 
@@ -711,7 +681,7 @@ Namespace Business
         ''' <summary>業務処理を実装</summary>
         ''' <param name="testParameter">引数クラス</param>
         Private Sub UOC_Delete(ByVal testParameter As TestParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim testReturn As New TestReturnValue()
             Me.ReturnValue = testReturn
 

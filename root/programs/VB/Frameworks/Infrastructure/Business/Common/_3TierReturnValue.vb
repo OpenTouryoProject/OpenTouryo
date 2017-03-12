@@ -32,17 +32,8 @@
 '*
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
-'*  2013/01/10  西野　大介        新規作成
-'*
+'*  2013/01/10  西野 大介         新規作成
 '**********************************************************************************
-
-' System
-Imports System
-Imports System.IO
-Imports System.Data
-Imports System.Text
-Imports System.Collections
-Imports System.Collections.Generic
 
 Namespace Touryo.Infrastructure.Business.Common
 	''' <summary>三層データバインド用の戻り値クラス</summary>

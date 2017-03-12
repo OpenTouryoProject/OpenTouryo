@@ -320,12 +320,12 @@ namespace Touryo.Infrastructure.CustomControl
             if (this.CheckType != null)
             {
                 // 必須入力チェック
-                if (this.CheckType.IsIndispensable)
+                if (this.CheckType.Required)
                 {
                     if ((text == ""))
                     {
                         hasError = true;
-                        lstRet.Add(CmnCheckFunction.IsIndispensableCheckErrorMessage);
+                        lstRet.Add(CmnCheckFunction.RequiredCheckErrorMessage);
                     }
                 }
 

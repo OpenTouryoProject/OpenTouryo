@@ -28,6 +28,7 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
+'*  2017/01/31  西野 大介         "Indispensable" ---> "Required"
 '**********************************************************************************
 
 ' System
@@ -83,8 +84,8 @@ Namespace Touryo.Infrastructure.CustomControl.RichClient
 
                     Dim s As String = ""
 
-                    If ct.IsIndispensable Then
-                        s += "IsIndispensable, "
+                    If ct.Required Then
+                        s += "Required, "
                     End If
                     If ct.IsHankaku Then
                         s += "IsHankaku, "
@@ -152,8 +153,8 @@ Namespace Touryo.Infrastructure.CustomControl.RichClient
                 For Each s As String In arys
                     Dim t As String = s.Trim()
 
-                    If t = "IsIndispensable" Then
-                        ct.IsIndispensable = True
+                    If t = "Required" Then
+                        ct.Required = True
                     End If
                     If t = "IsZenkaku" Then
                         ct.IsZenkaku = True

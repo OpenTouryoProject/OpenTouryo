@@ -768,8 +768,7 @@ namespace Touryo.Infrastructure.Business.Presentation
                 "," + this.perfRec.CpuTime +
                 "," + "other Exception" +
                 "," + ex.Message + "\r\n" + 
-                "," + ex.StackTrace + "\r\n" +
-                "," + ex.ToString(); // ex
+                ex.ToString(); // ex
 
             // Log4Netへログ出力
             LogIF.ErrorLog("ACCESS", strLogMessage);

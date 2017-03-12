@@ -30,17 +30,7 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.Collections.Generic
 Imports System.ComponentModel
-Imports System.Drawing
-Imports System.Text
-
-' System.Web
-Imports System.Web
-Imports System.Web.UI
-Imports System.Web.UI.WebControls
 
 Namespace Touryo.Infrastructure.CustomControl
 	''' <summary>チェック処理に関するプロパティ グリッドのインターフェイス（テンプレート）</summary>

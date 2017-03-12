@@ -23,6 +23,9 @@ using System.Text;
 using System.Diagnostics;
 using System.Security.Principal;
 
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
 using Touryo.Infrastructure.Business.Str;
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Util;
@@ -55,8 +58,16 @@ namespace ProjectX_sample.Aspx.TestPublic
                 //---
 
                 //コンピュータ上に存在するすべてのタイムゾーンをComboBoxに表示
-                //this.ddlTimeZone.DataSource = System.TimeZoneInfo.GetSystemTimeZones();
-                this.ddlTimeZone.DataSource = Enum.GetValues(typeof(MyTimeZoneEnum));
+                Dictionary<string, string> dic_tzs = new Dictionary<string, string>();
+                ReadOnlyCollection<TimeZoneInfo> roc_tzs = TimeZoneInfo.GetSystemTimeZones();
+                foreach (TimeZoneInfo tz in roc_tzs)
+                {
+                    dic_tzs.Add(tz.DisplayName, tz.Id);
+                }
+
+                this.ddlTimeZone.DataSource = dic_tzs;
+                this.ddlTimeZone.DataTextField = "Key";
+                this.ddlTimeZone.DataValueField = "Value";
                 this.ddlTimeZone.DataBind();
             }
 
@@ -627,15 +638,14 @@ namespace ProjectX_sample.Aspx.TestPublic
             //DateTime dt = new DateTime(this.Calendar1.SelectedDate.Ticks, DateTimeKind.Local); // 正
             DateTime dt = new DateTime(this.Calendar1.SelectedDate.Ticks, DateTimeKind.Unspecified); // 略
             //DateTime dt = new DateTime(this.Calendar1.SelectedDate.Ticks, DateTimeKind.Utc); // 不正
+
             if (this.cbxTimeZone.Checked)
             {
-                dt = GMTMaster.ConvertLocalTimeToUtcTimeManual(dt, (MyTimeZoneEnum)Enum.Parse(
-                        typeof(MyTimeZoneEnum), (string)this.ddlTimeZone.SelectedItem.Text));
-
+                dt = GMTMaster.ConvertLocalTimeToUtcTime35(dt, TimeZoneInfo.FindSystemTimeZoneById(this.ddlTimeZone.SelectedItem.Value));
             }
             else
             {
-                dt = GMTMaster.ConvertLocalTimeToUtcTimeManual(dt, MyTimeZoneEnum.TokyoStandardTime);
+                dt = GMTMaster.ConvertLocalTimeToUtcTime35(dt, TimeZoneInfo.Local);
             }
             this.lblDateString.Text = dt.ToString("yyyy/MM/dd HH:mm:ss.fff");
         }
@@ -649,12 +659,11 @@ namespace ProjectX_sample.Aspx.TestPublic
 
             if (this.cbxTimeZone.Checked)
             {
-                dt = GMTMaster.ConvertUtcTimeToLocalTimeManual(dt, (MyTimeZoneEnum)Enum.Parse(
-                        typeof(MyTimeZoneEnum), (string)this.ddlTimeZone.SelectedItem.Text));
+                dt = GMTMaster.ConvertUtcTimeToLocalTime35(dt, TimeZoneInfo.FindSystemTimeZoneById(this.ddlTimeZone.SelectedItem.Value));
             }
             else
             {
-                dt = GMTMaster.ConvertUtcTimeToLocalTimeManual(dt, MyTimeZoneEnum.TokyoStandardTime);
+                dt = GMTMaster.ConvertUtcTimeToLocalTime35(dt, TimeZoneInfo.Local);
             }
             this.lblDateString.Text = dt.ToString("yyyy/MM/dd HH:mm:ss.fff");
         }

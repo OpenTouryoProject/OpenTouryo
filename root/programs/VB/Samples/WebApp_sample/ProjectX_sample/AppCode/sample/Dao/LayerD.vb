@@ -237,9 +237,9 @@ Public Class LayerD
         Dim dt As New DataTable()
 
         ' ３列生成
-        dt.Columns.Add("c1", System.Type.[GetType]("System.String"))
-        dt.Columns.Add("c2", System.Type.[GetType]("System.String"))
-        dt.Columns.Add("c3", System.Type.[GetType]("System.String"))
+        dt.Columns.Add("c1", GetType(String))
+        dt.Columns.Add("c2", GetType(String))
+        dt.Columns.Add("c3", GetType(String))
 
         '   -- 一覧を返すSELECTクエリを実行する
         Dim idr As IDataReader = DirectCast(Me.ExecSelect_DR(), IDataReader)

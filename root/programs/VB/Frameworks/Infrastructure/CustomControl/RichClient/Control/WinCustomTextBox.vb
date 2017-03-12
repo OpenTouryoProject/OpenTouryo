@@ -28,6 +28,7 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
+'*  2017/01/31  西野 大介         "Indispensable" ---> "Required"
 '**********************************************************************************
 
 ' System
@@ -1205,10 +1206,10 @@ Namespace Touryo.Infrastructure.CustomControl.RichClient
 
             If Me.CheckType IsNot Nothing Then
                 ' 必須入力チェック
-                If Me.CheckType.IsIndispensable Then
+                If Me.CheckType.Required Then
                     If (txt = "") Then
                         hasError = True
-                        lstRet.Add(CmnCheckFunction.IsIndispensableCheckErrorMessage)
+                        lstRet.Add(CmnCheckFunction.RequiredCheckErrorMessage)
                     End If
                 End If
 

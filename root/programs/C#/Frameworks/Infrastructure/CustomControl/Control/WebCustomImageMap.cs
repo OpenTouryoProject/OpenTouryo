@@ -28,6 +28,7 @@
 //*  日時         更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2016/01/14  Sandeep           Specified relative path for ImageUrl property
+//*  2017/01/31  西野 大介         ImageUrl設定にGetConfigParameter.GetConfigValueを使用
 //**********************************************************************************
 
 using System.ComponentModel;

@@ -28,21 +28,15 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
-'*  2009/08/06  西野  大介        クラス属性だけでなく、メソッド属性も処理可能に修正
+'*  2009/08/06  西野 大介         クラス属性だけでなく、メソッド属性も処理可能に修正
 '**********************************************************************************
 
 Imports System.Reflection
 
-' System
-Imports System
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Util
-
 Namespace Touryo.Infrastructure.Business.Util
     ''' <summary>カスタム属性クラス</summary>
     ''' <remarks>自由に（拡張して）利用できる。</remarks>
-    <System.AttributeUsage(AttributeTargets.[Class] Or AttributeTargets.Method, AllowMultiple:=True)> _
+    <System.AttributeUsage(AttributeTargets.[Class] Or AttributeTargets.Method, AllowMultiple:=True)>
     Public Class MyAttribute
         Inherits Attribute
         ''' <summary>カスタム属性A</summary>

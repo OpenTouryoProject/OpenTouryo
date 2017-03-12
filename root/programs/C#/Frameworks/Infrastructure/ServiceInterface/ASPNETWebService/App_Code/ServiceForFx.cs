@@ -72,7 +72,7 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
     /// </summary>
     [WebService(Namespace = FxLiteral.WS_NAME_SPACE)]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-    public class ServiceForFx : System.Web.Services.WebService
+    public class ServiceForFx : WebService
     {
         #region グローバル変数
 
@@ -197,36 +197,8 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                 // ★
                 status = FxLiteral.SIF_STATUS_AUTHENTICATION;
 
-                // ★★　コンテキストの情報を使用するなどして
-                //       認証処理をＵＯＣする（必要に応じて）。
-
-                //// 認証チケットの復号化
-                //string[] authTicket = (string[])BinarySerialize.BytesToObject(
-                //    CustomEncode.FromBase64String(
-                //        SymmetricCryptography.DecryptString(
-                //            (string)context, GetConfigParameter.GetConfigValue("private-key"),
-                //            EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider)));
-
-                //// 認証チケットの整合性を確認
-
-                //// Ｂ層・Ｄ層呼出し
-                ////   スライディング・タイムアウトの実装、
-                ////   タイムスタンプのチェックと、更新
-                //returnValue = (BaseReturnValue)Latebind.InvokeMethod(
-                //    "xxxx", "yyyy",
-                //    FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME,
-                //    new object[] { new AuthParameterValue("－", "－", "zzzz", "",
-                //        ((MyParameterValue)parameterValue).User, authTicket[1]),
-                //        DbEnum.IsolationLevelEnum.User });
-
-                //if (returnValue.ErrorFlag)
-                //{
-                //    // 認証エラー
-                //    throw new BusinessSystemException("xxxx", "認証チケットが不正か、タイムアウトです。");
-                //}
-
-                // 持ち回るならCookieにするか、
-                // contextをrefにするなどとする。
+                // ★★　contextの情報を使用するなどして認証処理をＵＯＣする（必要に応じて）。
+                // 持ち回るならCookieにするか、contextをrefにするなどとする。
                 contextObject = BinarySerialize.ObjectToBytes(DateTime.Now); // 更新されたかのテストコード
 
                 #endregion
@@ -345,7 +317,7 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                         + "エラー タイプ：" + errorType + "\r\n" // 2009/09/15-この行
                         + "エラー メッセージID：" + errorMessageID + "\r\n"
                         + "エラー メッセージ：" + errorMessage + "\r\n"
-                        + errorToString + "\r\n");
+                        + errorToString);
                 }
             }
         }

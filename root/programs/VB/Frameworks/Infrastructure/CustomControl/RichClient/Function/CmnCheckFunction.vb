@@ -51,7 +51,7 @@ Namespace Touryo.Infrastructure.CustomControl.RichClient
         ''' 必須チェック エラー
         ''' のエラー メッセージ
         ''' </summary>
-        Public Const IsIndispensableCheckErrorMessage As String = "必須チェック エラー"
+        Public Const RequiredCheckErrorMessage As String = "必須チェック エラー"
 
         ''' <summary>
         ''' 半角チェック エラー

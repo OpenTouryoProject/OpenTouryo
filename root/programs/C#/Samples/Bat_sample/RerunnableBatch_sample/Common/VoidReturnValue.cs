@@ -17,7 +17,6 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// ベースクラス
 using Touryo.Infrastructure.Business.Common;
 
 namespace RerunnableBatch_sample.Common

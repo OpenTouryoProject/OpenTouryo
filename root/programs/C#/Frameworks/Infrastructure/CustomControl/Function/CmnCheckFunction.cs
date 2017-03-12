@@ -46,7 +46,7 @@ namespace Touryo.Infrastructure.CustomControl
         /// 必須チェック エラー
         /// のエラー メッセージ
         /// </summary>
-        public const string IsIndispensableCheckErrorMessage = "必須チェック エラー";
+        public const string RequiredCheckErrorMessage = "必須チェック エラー";
 
         /// <summary>
         /// 半角チェック エラー

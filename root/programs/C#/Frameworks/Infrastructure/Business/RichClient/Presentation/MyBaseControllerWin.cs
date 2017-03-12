@@ -705,8 +705,7 @@ namespace Touryo.Infrastructure.Business.RichClient.Presentation
                     "," + this.perfRec.CpuTime +
                     "," + bsEx.messageID +
                     "," + bsEx.Message +
-                    "\r\n" + bsEx.StackTrace +
-                    "\r\n" + bsEx.ToString(); // bsEx
+                    "\r\n" + bsEx.StackTrace; // bsEx
 
                 // Log4Netへログ出力
                 LogIF.ErrorLog("ACCESS", strLogMessage);
@@ -757,7 +756,6 @@ namespace Touryo.Infrastructure.Business.RichClient.Presentation
                     "," + this.perfRec.CpuTime +
                     "," + "other Exception" +
                     "," + ex.Message +
-                    "\r\n" + ex.StackTrace +
                     "\r\n" + ex.ToString(); // ex
 
                 // Log4Netへログ出力

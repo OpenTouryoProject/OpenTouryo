@@ -1,18 +1,29 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.ComponentModel
-Imports System.Data
-Imports System.Drawing
-Imports System.Linq
-Imports System.Text
-Imports System.Windows.Forms
+﻿'**********************************************************************************
+'* 非同期イベント・サンプル アプリ画面
+'**********************************************************************************
 
+' テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
+'**********************************************************************************
+'* クラス名        ：Form1
+'* クラス日本語名  ：Form1
+'*
+'* 作成日時        ：－
+'* 作成者          ：生技
+'* 更新履歴        ：
+'*
+'*  日時        更新者            内容
+'*  ----------  ----------------  -------------------------------------------------
+'*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+'**********************************************************************************
+
+Imports System
 Imports System.IO
 Imports System.Threading
-Imports System.Diagnostics
+Imports System.Windows.Forms
 
-Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Framework.RichClient.Asynchronous
+Imports Touryo.Infrastructure.Public.IO
 
 Partial Public Class Form1
 #Region "メンバ変数"

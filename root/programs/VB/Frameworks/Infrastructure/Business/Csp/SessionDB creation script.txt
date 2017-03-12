@@ -1,0 +1,18 @@
+﻿CREATE DATABASE aspstate (MAXSIZE=5GB, EDITION='web')
+
+aspstate データベースに移行
+
+CREATE TABLE ASPStateSessions
+(
+    SessionId       varchar(80)  NOT NULL,
+    ApplicationName varchar(255) NOT NULL,
+    Created         DateTime  NOT NULL,
+    Expires         DateTime  NOT NULL,
+    LockDate        DateTime  NOT NULL,
+    LockId          Integer   NOT NULL,
+    Timeout         Integer   NOT NULL,
+    Locked          Bit     NOT NULL,
+    SessionItems    Text,
+    Flags           Integer   NOT NULL,
+    CONSTRAINT PKSessions PRIMARY KEY (SessionId, ApplicationName)
+)

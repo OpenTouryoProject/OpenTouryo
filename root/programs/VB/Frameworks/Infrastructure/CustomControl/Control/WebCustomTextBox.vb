@@ -28,23 +28,16 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
+'*  2017/01/31  西野 大介         "Indispensable" ---> "Required"
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.Collections.Generic
-Imports System.ComponentModel
 Imports System.Drawing
-Imports System.Text
-Imports System.IO
+Imports System.ComponentModel
+Imports System.Globalization
 
-' System.Web
-Imports System.Web
 Imports System.Web.UI
 Imports System.Web.UI.WebControls
 
-Imports System.Diagnostics
-Imports System.Globalization
 
 Imports Touryo.Infrastructure.Public.Str
 
@@ -296,10 +289,10 @@ Namespace Touryo.Infrastructure.CustomControl
 
             If Me.CheckType IsNot Nothing Then
                 ' 必須入力チェック
-                If Me.CheckType.IsIndispensable Then
+                If Me.CheckType.Required Then
                     If (text = "") Then
                         hasError = True
-                        lstRet.Add(CmnCheckFunction.IsIndispensableCheckErrorMessage)
+                        lstRet.Add(CmnCheckFunction.RequiredCheckErrorMessage)
                     End If
                 End If
 
