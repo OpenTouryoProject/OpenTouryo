@@ -59,13 +59,15 @@ Class Program
         ' ↓B層実行：主キー値を全て検索(ORDER BY 主キー)-----------------------------------------------------
 
         ' 引数クラスを生成
-		Dim selectPkListParameterValue As New VoidParameterValue(screenId, controlId, "SelectPkList", actionType, myUserInfo)
+        Dim selectPkListParameterValue As New VoidParameterValue(
+            screenId, controlId, "SelectPkList", actionType, myUserInfo)
 
         ' Ｂ層呼出し
-		Dim selectPkReturnValue As SelectPkListReturnValue = DirectCast(layerB.DoBusinessLogic(selectPkListParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), SelectPkListReturnValue)
+        Dim selectPkReturnValue As SelectPkListReturnValue =
+            layerB.DoBusinessLogic(selectPkListParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
         ' 実行結果確認
-		If selectPkReturnValue.ErrorFlag = True Then
+        If selectPkReturnValue.ErrorFlag = True Then
             ' 結果（業務続行可能なエラー）
 			Dim [error] As String = "ErrorMessageID:" & selectPkReturnValue.ErrorMessageID & vbCr & vbLf
 			[error] += "ErrorMessage:" & selectPkReturnValue.ErrorMessage & vbCr & vbLf
@@ -104,14 +106,16 @@ Class Program
             ' ↓B層実行：バッチ処理を実行(1トランザクション分)----------------------------------------------------
 
             ' 引数クラスを生成
-			Dim executeBatchProcessParameterValue As New ExecuteBatchProcessParameterValue(screenId, controlId, "ExecuteBatchProcess", actionType, myUserInfo)
-			executeBatchProcessParameterValue.SubPkList = subPkList
+            Dim executeBatchProcessParameterValue As New ExecuteBatchProcessParameterValue(
+                screenId, controlId, "ExecuteBatchProcess", actionType, myUserInfo)
+            executeBatchProcessParameterValue.SubPkList = subPkList
 
-			' Ｂ層呼出し
-			Dim executeBatchProcessReturnValue As VoidReturnValue = DirectCast(layerB.DoBusinessLogic(executeBatchProcessParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), VoidReturnValue)
+            ' Ｂ層呼出し
+            Dim executeBatchProcessReturnValue As VoidReturnValue =
+                layerB.DoBusinessLogic(executeBatchProcessParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
             ' 実行結果確認
-			If selectPkReturnValue.ErrorFlag = True Then
+            If selectPkReturnValue.ErrorFlag = True Then
                 ' 結果（業務続行可能なエラー）
 				Dim [error] As String = "ErrorMessageID:" & selectPkReturnValue.ErrorMessageID & vbCr & vbLf
 				[error] += "ErrorMessage:" & selectPkReturnValue.ErrorMessage & vbCr & vbLf

@@ -228,7 +228,7 @@ Partial Public Class Form1
         Dim callCtrl As New CallController("")
 
         ' Invoke
-        testReturnValue = DirectCast(callCtrl.Invoke(Me.LogicalName, testParameterValue), TestReturnValue)
+        testReturnValue = callCtrl.Invoke(Me.LogicalName, testParameterValue)
 
         '' 進捗表示のテスト
         'Me.Af1.ChangeProgress = New BaseAsyncFunc.ChangeProgressDelegate(AddressOf MyChangeProgress1)
@@ -293,8 +293,7 @@ Partial Public Class Form1
         Dim testReturnValue As TestReturnValue
 
         ' Invoke
-        testReturnValue = DirectCast(Me.CallCtrl.Invoke( _
-            DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue), TestReturnValue)
+        testReturnValue = Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue)
 
         ' 結果表示するメッセージ エリア
         Me.labelMessage.Text = ""
@@ -326,8 +325,7 @@ Partial Public Class Form1
         Dim testReturnValue As TestReturnValue
 
         ' Invoke
-        testReturnValue = DirectCast(Me.CallCtrl.Invoke( _
-            DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue), TestReturnValue)
+        testReturnValue = Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue)
 
         ' 結果表示するメッセージ エリア
         Me.labelMessage.Text = ""
@@ -359,8 +357,7 @@ Partial Public Class Form1
         Dim testReturnValue As TestReturnValue
 
         ' Invoke
-        testReturnValue = DirectCast(Me.CallCtrl.Invoke(DirectCast( _
-            Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue), TestReturnValue)
+        testReturnValue = Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue)
 
         ' 結果表示するメッセージ エリア
         Me.labelMessage.Text = ""
@@ -396,8 +393,7 @@ Partial Public Class Form1
         Dim testReturnValue As TestReturnValue
 
         ' Invoke
-        testReturnValue = DirectCast(Me.CallCtrl.Invoke( _
-            DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue), TestReturnValue)
+        testReturnValue = Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue)
 
         ' 結果表示するメッセージ エリア
         Me.labelMessage.Text = ""
@@ -506,8 +502,7 @@ Partial Public Class Form1
         Dim testReturnValue As TestReturnValue
 
         ' Invoke
-        testReturnValue = DirectCast(Me.CallCtrl.Invoke( _
-            DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue), TestReturnValue)
+        testReturnValue = Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue)
 
         ' 結果表示するメッセージ エリア
         Me.labelMessage.Text = ""
@@ -544,8 +539,7 @@ Partial Public Class Form1
         Dim testReturnValue As TestReturnValue
 
         ' Invoke
-        testReturnValue = DirectCast(Me.CallCtrl.Invoke( _
-            DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue), TestReturnValue)
+        testReturnValue = Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue)
 
         ' 結果表示するメッセージ エリア
         Me.labelMessage.Text = ""
@@ -580,8 +574,7 @@ Partial Public Class Form1
         Dim testReturnValue As TestReturnValue
 
         ' Invoke
-        testReturnValue = DirectCast(Me.CallCtrl.Invoke( _
-            DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue), TestReturnValue)
+        testReturnValue = Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue)
 
         ' 結果表示するメッセージ エリア
         Me.labelMessage.Text = ""

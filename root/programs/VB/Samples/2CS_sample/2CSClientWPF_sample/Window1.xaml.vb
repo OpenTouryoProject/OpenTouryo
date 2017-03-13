@@ -163,7 +163,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -194,7 +194,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -226,7 +226,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -258,7 +258,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -294,7 +294,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -329,7 +329,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -370,7 +370,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -406,7 +406,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -440,7 +440,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア

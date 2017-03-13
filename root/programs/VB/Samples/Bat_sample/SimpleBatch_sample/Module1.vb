@@ -59,7 +59,7 @@ Module Module1
 
         ' Ｂ層呼出し
         Dim layerB As New LayerB()
-        testReturnValue = DirectCast(layerB.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
+        testReturnValue = layerB.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
         If testReturnValue.ErrorFlag = True Then
             ' 結果（業務続行可能なエラー）

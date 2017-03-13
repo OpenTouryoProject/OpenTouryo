@@ -99,7 +99,7 @@ Partial Public Class Form1
         ' Ｂ層呼び出し
         Dim lb As New LayerB_Static()
 
-        Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
         ' コミット
         BaseLogic2CS.CommitAndClose()
@@ -116,7 +116,7 @@ Partial Public Class Form1
         ' Ｂ層呼び出し
         Dim lb As New LayerB_Dynamic()
 
-        Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
         ' コミット
         BaseLogic2CS.CommitAndClose()
@@ -227,7 +227,7 @@ Partial Public Class Form1
         ' Ｂ層呼び出し
         Dim lb As New LayerB_Static()
 
-        Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
         ' コミット
         BaseLogic2CS.CommitAndClose()
@@ -257,7 +257,7 @@ Partial Public Class Form1
         ' Ｂ層呼び出し
         Dim lb As New LayerB_Static()
 
-        Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
         ' コミット
         BaseLogic2CS.CommitAndClose()
@@ -352,7 +352,7 @@ Partial Public Class Form1
         ' Ｂ層呼び出し
         Dim lb As New LayerB_Static()
 
-        Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
         ' コミット
         BaseLogic2CS.CommitAndClose()
@@ -382,7 +382,7 @@ Partial Public Class Form1
         ' Ｂ層呼び出し
         Dim lb As New LayerB_Static()
 
-        Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
         ' コミット
         BaseLogic2CS.CommitAndClose()
@@ -462,7 +462,7 @@ Partial Public Class Form1
         ' Ｂ層呼び出し
         Dim lb As New LayerB_Dynamic()
 
-        Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
         ' コミット
         BaseLogic2CS.CommitAndClose()
@@ -498,7 +498,7 @@ Partial Public Class Form1
         ' Ｂ層呼び出し
         Dim lb As New LayerB_Dynamic()
 
-        Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
         ' コミット
         BaseLogic2CS.CommitAndClose()
@@ -547,7 +547,7 @@ Partial Public Class Form1
         ' Ｂ層呼び出し
         Dim lb As New LayerB_Dynamic()
 
-        Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
         ' コミット
         BaseLogic2CS.CommitAndClose()
@@ -584,7 +584,7 @@ Partial Public Class Form1
         ' Ｂ層呼び出し
         Dim lb As New LayerB_Dynamic()
 
-        Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
         ' コミット
         BaseLogic2CS.CommitAndClose()
@@ -607,7 +607,7 @@ Partial Public Class Form1
         ' Ｂ層呼び出し
         Dim lb As New LayerB_BatUpd()
 
-        Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
         ' コミット
         BaseLogic2CS.CommitAndClose()
@@ -785,7 +785,7 @@ Partial Public Class Form1
         ' Ｂ層呼び出し
         Dim lb As New LayerB_BatUpd()
 
-        Dim testReturnValue As TestReturnValue = DirectCast(lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted), TestReturnValue)
+        Dim testReturnValue As TestReturnValue = lb.DoBusinessLogic(testParameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
         ' コミット
         BaseLogic2CS.CommitAndClose()

@@ -281,13 +281,18 @@ Partial Public Class Window1
     Private Sub button2_Click(sender As Object, e As RoutedEventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "SelectAll_DT", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, Me.myUserInfo)
+        Dim testParameterValue As New TestParameterValue(
+            Me.Name, DirectCast(sender, Button).Name, "SelectAll_DT",
+            DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, Me.myUserInfo)
 
         ' 戻り値
         Dim testReturnValue As TestReturnValue
 
         ' Invoke
-        testReturnValue = DirectCast(Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue), TestReturnValue)
+        testReturnValue = Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue)
 
         ' 結果表示するメッセージ エリア
         Me.labelMessage.Content = ""
@@ -308,13 +313,18 @@ Partial Public Class Window1
     Private Sub button3_Click(sender As Object, e As RoutedEventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "SelectAll_DS", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, Me.myUserInfo)
+        Dim testParameterValue As New TestParameterValue(
+            Me.Name, DirectCast(sender, Button).Name, "SelectAll_DS",
+            DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, Me.myUserInfo)
 
         ' 戻り値
         Dim testReturnValue As TestReturnValue
 
         ' Invoke
-        testReturnValue = DirectCast(Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue), TestReturnValue)
+        testReturnValue = Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue)
 
         ' 結果表示するメッセージ エリア
         Me.labelMessage.Content = ""
@@ -335,13 +345,18 @@ Partial Public Class Window1
     Private Sub button4_Click(sender As Object, e As RoutedEventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "SelectAll_DR", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, Me.myUserInfo)
+        Dim testParameterValue As New TestParameterValue(
+            Me.Name, DirectCast(sender, Button).Name, "SelectAll_DR",
+            DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, Me.myUserInfo)
 
         ' 戻り値
         Dim testReturnValue As TestReturnValue
 
         ' Invoke
-        testReturnValue = DirectCast(Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue), TestReturnValue)
+        testReturnValue = Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue)
 
         ' 結果表示するメッセージ エリア
         Me.labelMessage.Content = ""
@@ -362,7 +377,12 @@ Partial Public Class Window1
     Private Sub button5_Click(sender As Object, e As RoutedEventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "SelectAll_DSQL", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, Me.myUserInfo)
+        Dim testParameterValue As New TestParameterValue(
+            Me.Name, DirectCast(sender, Button).Name, "SelectAll_DSQL",
+            DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, Me.myUserInfo)
 
         ' 動的SQLの要素を設定
         testParameterValue.OrderColumn = DirectCast(Me.ddlOrderColumn.SelectedItem, ComboBoxItem).Value
@@ -372,7 +392,7 @@ Partial Public Class Window1
         Dim testReturnValue As TestReturnValue
 
         ' Invoke
-        testReturnValue = DirectCast(Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue), TestReturnValue)
+        testReturnValue = Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue)
 
         ' 結果表示するメッセージ エリア
         Me.labelMessage.Content = ""
@@ -464,7 +484,12 @@ Partial Public Class Window1
     Private Sub button7_Click(sender As Object, e As RoutedEventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "Insert", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, Me.myUserInfo)
+        Dim testParameterValue As New TestParameterValue(
+            Me.Name, DirectCast(sender, Button).Name, "Insert",
+            DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, Me.myUserInfo)
 
         ' 情報の設定
         testParameterValue.CompanyName = Me.textBox2.Text
@@ -474,7 +499,7 @@ Partial Public Class Window1
         Dim testReturnValue As TestReturnValue
 
         ' Invoke
-        testReturnValue = DirectCast(Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue), TestReturnValue)
+        testReturnValue = Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue)
 
         ' 結果表示するメッセージ エリア
         Me.labelMessage.Content = ""
@@ -494,7 +519,12 @@ Partial Public Class Window1
     Private Sub button8_Click(sender As Object, e As RoutedEventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "Update", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, Me.myUserInfo)
+        Dim testParameterValue As New TestParameterValue(
+            Me.Name, DirectCast(sender, Button).Name, "Update",
+            DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, Me.myUserInfo)
 
         ' 情報の設定
         testParameterValue.ShipperID = Integer.Parse(Me.textBox1.Text)
@@ -505,7 +535,7 @@ Partial Public Class Window1
         Dim testReturnValue As TestReturnValue
 
         ' Invoke
-        testReturnValue = DirectCast(Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue), TestReturnValue)
+        testReturnValue = Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue)
 
         ' 結果表示するメッセージ エリア
         Me.labelMessage.Content = ""
@@ -525,7 +555,12 @@ Partial Public Class Window1
     Private Sub button9_Click(sender As Object, e As RoutedEventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim testParameterValue As New TestParameterValue(Me.Name, DirectCast(sender, Button).Name, "Delete", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, Me.myUserInfo)
+        Dim testParameterValue As New TestParameterValue(
+            Me.Name, DirectCast(sender, Button).Name, "Delete",
+            DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, Me.myUserInfo)
 
         ' 情報の設定
         testParameterValue.ShipperID = Integer.Parse(textBox1.Text)
@@ -534,7 +569,7 @@ Partial Public Class Window1
         Dim testReturnValue As TestReturnValue
 
         ' Invoke
-        testReturnValue = DirectCast(Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue), TestReturnValue)
+        testReturnValue = Me.CallCtrl.Invoke(DirectCast(Me.ddlTransmission.SelectedItem, ComboBoxItem).Value, testParameterValue)
 
         ' 結果表示するメッセージ エリア
         Me.labelMessage.Content = ""
