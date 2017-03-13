@@ -6,7 +6,7 @@
 
 '**********************************************************************************
 '* クラス名        ：testScreen2
-'* クラス日本語名  ：テスト画面２用のマスタ ページ
+'* クラス日本語名  ：テスト画面２用のMaster Page
 '*
 '* 作成日時        ：－
 '* 作成者          ：生技
@@ -20,7 +20,7 @@
 Imports Touryo.Infrastructure.Framework.Presentation
 
 Namespace Aspx.Common
-    ''' <summary>テスト画面２用のマスタ ページ</summary>
+    ''' <summary>テスト画面２用のMaster Page</summary>
     Partial Public Class testScreen2
         Inherits BaseMasterController
     End Class

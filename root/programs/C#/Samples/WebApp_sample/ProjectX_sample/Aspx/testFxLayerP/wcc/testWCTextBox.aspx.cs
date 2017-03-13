@@ -6,7 +6,7 @@
 
 //**********************************************************************************
 //* クラス名        ：testWCTextBox
-//* クラス日本語名  ：Webカスタム・コントロール部品テスト画面
+//* クラス日本語名  ：Web Custom Control部品テスト画面
 //*
 //* 作成日時        ：－
 //* 作成者          ：－
@@ -36,7 +36,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Wcc
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // 初回ロード時に、データソースを
+            // 初回Load時に、データソースを
             // 生成 ＆ データバインドする。
             this.gvwGridView1.Columns[0].HeaderText = "ID";
             this.gvwGridView1.Columns[1].HeaderText = "チェック";

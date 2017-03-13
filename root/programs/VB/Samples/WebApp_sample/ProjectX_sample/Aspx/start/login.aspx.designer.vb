@@ -10,51 +10,53 @@
 Option Strict On
 Option Explicit On
 
-
-Partial Public Class Aspx_Start_login
+Namespace Aspx.Start
     
-    '''<summary>
-    '''txtUserID コントロール。
-    '''</summary>
-    '''<remarks>
-    '''自動生成されたフィールド。
-    '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
-    '''</remarks>
-    Protected WithEvents txtUserID As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
-    
-    '''<summary>
-    '''txtPassword コントロール。
-    '''</summary>
-    '''<remarks>
-    '''自動生成されたフィールド。
-    '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
-    '''</remarks>
-    Protected WithEvents txtPassword As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
-    
-    '''<summary>
-    '''btnButton1 コントロール。
-    '''</summary>
-    '''<remarks>
-    '''自動生成されたフィールド。
-    '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
-    '''</remarks>
-    Protected WithEvents btnButton1 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
-    
-    '''<summary>
-    '''btnButton2 コントロール。
-    '''</summary>
-    '''<remarks>
-    '''自動生成されたフィールド。
-    '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
-    '''</remarks>
-    Protected WithEvents btnButton2 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
-    
-    '''<summary>
-    '''lblMessage コントロール。
-    '''</summary>
-    '''<remarks>
-    '''自動生成されたフィールド。
-    '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
-    '''</remarks>
-    Protected WithEvents lblMessage As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
-End Class
+    Partial Public Class login
+        
+        '''<summary>
+        '''txtUserID Control。
+        '''</summary>
+        '''<remarks>
+        '''自動生成されたフィールド。
+        '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        '''</remarks>
+        Protected WithEvents txtUserID As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
+        
+        '''<summary>
+        '''txtPassword Control。
+        '''</summary>
+        '''<remarks>
+        '''自動生成されたフィールド。
+        '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        '''</remarks>
+        Protected WithEvents txtPassword As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
+        
+        '''<summary>
+        '''btnButton1 Control。
+        '''</summary>
+        '''<remarks>
+        '''自動生成されたフィールド。
+        '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        '''</remarks>
+        Protected WithEvents btnButton1 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
+        
+        '''<summary>
+        '''btnButton2 Control。
+        '''</summary>
+        '''<remarks>
+        '''自動生成されたフィールド。
+        '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        '''</remarks>
+        Protected WithEvents btnButton2 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
+        
+        '''<summary>
+        '''lblMessage Control。
+        '''</summary>
+        '''<remarks>
+        '''自動生成されたフィールド。
+        '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        '''</remarks>
+        Protected WithEvents lblMessage As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
+    End Class
+End Namespace

@@ -20,7 +20,7 @@
 
 '**********************************************************************************
 '* クラス名        ：myOKMessageDialog
-'* クラス日本語名  ：「OK」メッセージ・ダイアログ
+'* クラス日本語名  ：「OK」Message Dialog
 '*
 '* 作成日時        ：－
 '* 作成者          ：－
@@ -38,7 +38,7 @@ Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Util
 
 Namespace Aspx.Framework
-    ''' <summary>「OK」メッセージ・ダイアログ</summary>
+    ''' <summary>「OK」Message Dialog</summary>
     ''' <remarks>サンプル ※ プロジェクト毎、必要に応じて改修</remarks>
     Partial Public Class myOKMessageDialog
         Inherits System.Web.UI.Page
@@ -47,7 +47,7 @@ Namespace Aspx.Framework
             ' 親画面の画面GUIDを設定（QueryString）から取得
             Dim parentScreenGuid As String = DirectCast(Request.QueryString(FxHttpQueryStringIndex.PARENT_SCREEN_GUID), String)
 
-            ' メッセージIDとメッセージをセッションより取得し、設定
+            ' MessageIDとMessageをセッションより取得し、設定
             Me.lblmessage.Text = DirectCast(Session(parentScreenGuid + FxHttpSessionIndex.MODAL_DIALOG_MESSAGE), String)
             Me.lblmessageID.Text = DirectCast(Session(parentScreenGuid + FxHttpSessionIndex.MODAL_DIALOG_MESSAGEID), String)
 
@@ -113,12 +113,12 @@ Namespace Aspx.Framework
             ' ACCESSログ出力 ----------------------------------------------
 
             ' ------------
-            ' メッセージ部
+            ' Message部
             ' ------------
             ' ユーザ名, IPアドレス,
-            ' レイヤ, 画面名, コントロール名, 処理名
+            ' レイヤ, 画面名, Control名, 処理名
             ' 処理時間（実行時間）, 処理時間（CPU時間）
-            ' エラーメッセージID, エラーメッセージ等
+            ' Error MessageID, Error Message等
             ' ------------
             Dim strLogMessage As String = "," + Me.GetUserInfo().UserName + "," + Request.UserHostAddress + ",init" + ",OKMessageDialog" + ","
 

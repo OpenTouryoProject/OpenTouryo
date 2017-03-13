@@ -17,7 +17,7 @@
                     <th><% = this.HeaderInfo["col2"] %></th>
                     <th><% = this.HeaderInfo["col3"] %></th>
                     <th><% = this.HeaderInfo["col4"] %></th>
-                    <th>ボタン</th>
+                    <th>Button</th>
                 </tr>
         </HeaderTemplate>
         
@@ -54,7 +54,7 @@
                     
     </asp:Repeater>
                 
-    <asp:Button ID="btnButton1" runat="server" Text="ポストバック"/>
+    <asp:Button ID="btnButton1" runat="server" Text="Post Back"/>
     <asp:Button ID="btnButton2" runat="server" Text="変更の反映"/>
 </asp:Content>
 

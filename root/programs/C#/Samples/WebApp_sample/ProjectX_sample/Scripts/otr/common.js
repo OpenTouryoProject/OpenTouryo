@@ -58,13 +58,13 @@ function Fx_Document_OnLoad2() {
     // マスクの初期化
     Fx_CreateMask();
 
-    // プログレス ダイアログの初期化
+    // Progress Dialogの初期化
     Fx_InitProgressDialog();
 
     // 子ウィンドウを開く関数  
     Fx_ShowChildScreen();
 
-    // 子ウィンドウ（ダイアログ）を閉じる関数
+    // 子ウィンドウ（Dialog）を閉じる関数
     Fx_CloseModalScreen();
 
     // Ajaxの初期化処理
@@ -140,7 +140,7 @@ function Fx_StandardStyleWindow() {
 }
 
 // ---------------------------------------------------------------
-// このダイアログを閉じた時に呼ばれる（ダミー）
+// このDialogを閉じた時に呼ばれる（ダミー）
 // ---------------------------------------------------------------
 // 引数    －
 // 戻り値  －
@@ -148,7 +148,7 @@ function Fx_StandardStyleWindow() {
 function Fx_Document_OnClose() {
 }
 
-// ダウンロード処理の場合、ダイアログを表示しない。
+// ダウンロード処理の場合、Dialogを表示しない。
 var IsDownload = false;
 
 // ---------------------------------------------------------------
@@ -321,7 +321,7 @@ function Fx_OnSubmit() {
 
 
 // ---------------------------------------------------------------
-// プログレス ダイアログ表示を仕掛ける。
+// Progress Dialog表示を仕掛ける。
 // ---------------------------------------------------------------
 // 引数    －
 // 戻り値  －
@@ -336,7 +336,7 @@ function Fx_SetProgressDialog() {
     else {
         // ダウンロードでない場合
 
-        // ダイアログ表示（２秒後）
+        // Dialog表示（２秒後）
         ProgressDialogTimer = setTimeout("Fx_DisplayProgressDialog()", 2000);
     }
 }
@@ -344,21 +344,21 @@ function Fx_SetProgressDialog() {
 //**********************************************************************************
 
 // ------------------------------------------------------------
-//  プログレス ダイアログの表示
+//  Progress Dialogの表示
 // ------------------------------------------------------------
 
-// Ajax：プログレス ダイアログ（div）
+// Ajax：Progress Dialog（div）
 var AjaxProgressDialog;
 
-// Ajax：プログレス ダイアログの表示タイマ
+// Ajax：Progress Dialogの表示タイマ
 var ProgressDialogTimer;
 
 // ---------------------------------------------------------------
-// プログレス ダイアログの初期化
+// Progress Dialogの初期化
 // ---------------------------------------------------------------
 // 引数    －
 // 戻り値  －
-// ★★★  ダイアログのデザインを変える場合は、ここを直接編集
+// ★★★  Dialogのデザインを変える場合は、ここを直接編集
 // ---------------------------------------------------------------
 function Fx_InitProgressDialog() {
 
@@ -401,12 +401,12 @@ function Fx_InitProgressDialog() {
     // divにimgを追加
     _div.appendChild(_img);
 
-    // div → プログレス ダイアログ
+    // div → Progress Dialog
     AjaxProgressDialog = _div
 }
 
 // ---------------------------------------------------------------
-// プログレス ダイアログ表示
+// Progress Dialog表示
 // ---------------------------------------------------------------
 // 引数    －
 // 戻り値  －
@@ -423,7 +423,7 @@ function Fx_DisplayProgressDialog() {
         AjaxProgressDialog.style.left = (Fx_getBrowserWidth() / 2)
             - (AjaxProgressDialog_Width / 2) + "px";
 
-        // プログレス ダイアログを表示する。
+        // Progress Dialogを表示する。
         document.body.appendChild(AjaxMask);
         document.body.appendChild(AjaxProgressDialog);
 
@@ -435,7 +435,7 @@ function Fx_DisplayProgressDialog() {
 //**********************************************************************************
 
 // ---------------------------------------------------------------
-//  フレームワーク機能（ダイアログ）
+//  フレームワーク機能（Dialog）
 // ---------------------------------------------------------------
 
 // ---------------------------------------------------------------
@@ -468,27 +468,27 @@ function Fx_ShowChildScreen() {
         return;
     }
 
-    // childScreenTypeが「1」の場合、「OK」メッセージ・ダイアログを表示
+    // childScreenTypeが「1」の場合、「OK」Message Dialogを表示
     if (childScreenType.value == "1") {
-        // Cookieフラグを確認（バックボタン押下時の不具合対応）
+        // Cookieフラグを確認（バックButton押下時の不具合対応）
         if (Fx_GetCookie("BackButtonControl") == "TRUE") {
-            // Cookieを更新し、戻るボタンで戻った時に画面を表示しないようにする。
+            // Cookieを更新し、戻るButtonで戻った時に画面を表示しないようにする。
             Fx_SetCookie("BackButtonControl", "FALSE", "path=/");
 
             // OKMessageBox
             return Fx_ShowMessageDialog(childScreenUrl.value);
         }
         else {
-            // 戻るボタンで戻ったので、画面は表示しない。
+            // 戻るButtonで戻ったので、画面は表示しない。
             return;
         }
     }
 
-    // childScreenTypeが「2」の場合、「YES」・「NO」メッセージ・ダイアログを表示
+    // childScreenTypeが「2」の場合、「YES」・「NO」Message Dialogを表示
     if (childScreenType.value == "2") {
-        // Cookieフラグを確認（バックボタン押下時の不具合対応）
+        // Cookieフラグを確認（バックButton押下時の不具合対応）
         if (Fx_GetCookie("BackButtonControl") == "TRUE") {
-            // Cookieを更新し、戻るボタンで戻った時に画面を表示しないようにする。
+            // Cookieを更新し、戻るButtonで戻った時に画面を表示しないようにする。
             Fx_SetCookie("BackButtonControl", "FALSE", "path=/");
 
             // myFlagの初期化
@@ -502,7 +502,7 @@ function Fx_ShowChildScreen() {
 
             if (myFlag == 0) {
                 // myFlagが「0」の場合、
-                // 「×」ボタンが押されたことを意味する。
+                // 「×」Buttonが押されたことを意味する。
 
                 // submitFlagを「1」に設定
                 submitFlag.value = "1";
@@ -513,7 +513,7 @@ function Fx_ShowChildScreen() {
             }
             else if (myFlag == 1) {
                 // myFlagが「1」の場合、
-                // 「YES」ボタンが押されたことを意味する。
+                // 「YES」Buttonが押されたことを意味する。
 
                 // submitFlagを「2」に設定
                 submitFlag.value = "2";
@@ -524,7 +524,7 @@ function Fx_ShowChildScreen() {
             }
             else if (myFlag == 2) {
                 // myFlagが「2」の場合、
-                // 「NO」ボタンが押されたことを意味する。
+                // 「NO」Buttonが押されたことを意味する。
 
                 // submitFlagを「3」に設定
                 submitFlag.value = "3";
@@ -537,50 +537,50 @@ function Fx_ShowChildScreen() {
             return;
         }
         else {
-            // 戻るボタンで戻ったので、画面は表示しない。
+            // 戻るButtonで戻ったので、画面は表示しない。
             return;
         }
     }
 
-    // childScreenTypeが「3」の場合、業務モーダル・ダイアログを表示
+    // childScreenTypeが「3」の場合、業務Modal Dialogを表示
     if (childScreenType.value == "3") {
-        // Cookieフラグを確認（バックボタン押下時の不具合対応）
+        // Cookieフラグを確認（バックButton押下時の不具合対応）
         if (Fx_GetCookie("BackButtonControl") == "TRUE") {
-            // Cookieを更新し、戻るボタンで戻った時に画面を表示しないようにする。
+            // Cookieを更新し、戻るButtonで戻った時に画面を表示しないようにする。
             Fx_SetCookie("BackButtonControl", "FALSE", "path=/");
 
-            // 業務モーダル・ダイアログ
+            // 業務Modal Dialog
             Fx_ShowModalScreen(childScreenUrl.value);
 
             return;
         }
         else {
-            // 戻るボタンで戻ったので、画面は表示しない。
+            // 戻るButtonで戻ったので、画面は表示しない。
             return;
         }
     }
 
-    // childScreenTypeが「4」の場合、モードレス画面を表示
+    // childScreenTypeが「4」の場合、Modeless画面を表示
     if (childScreenType.value == "4") {
-        // Cookieフラグを確認（バックボタン押下時の不具合対応）
+        // Cookieフラグを確認（バックButton押下時の不具合対応）
         if (Fx_GetCookie("BackButtonControl") == "TRUE") {
-            // Cookieを更新し、戻るボタンで戻った時に画面を表示しないようにする。
+            // Cookieを更新し、戻るButtonで戻った時に画面を表示しないようにする。
             Fx_SetCookie("BackButtonControl", "FALSE", "path=/");
 
-            // モードレス画面
+            // Modeless画面
             Fx_ShowNormalScreen(childScreenUrl.value);
 
             return;
         }
         else {
-            // 戻るボタンで戻ったので、画面は表示しない。
+            // 戻るButtonで戻ったので、画面は表示しない。
             return;
         }
     }
 }
 
 // ---------------------------------------------------------------
-// メッセージ ダイアログを表示
+// Message Dialogを表示
 // ---------------------------------------------------------------
 // 引数    url
 // 戻り値  window.showModalDialogの戻り値
@@ -606,13 +606,13 @@ function Fx_ShowMessageDialog(url) {
     Fx_MaskOn();
 
     try {
-        // ダイアログを表示(window.showModalDialog)
+        // Dialogを表示(window.showModalDialog)
         // 第1引数 = URL
         // 第2引数 = 該当ページに引き渡すArrayクラス(不要ならば null)
         // 第3引数 = オプション(「項目1:値1;項目2:値2;…;項目n:値n」の形式)
-        // 戻り値  = ダイアログ側の window.returnValue プロパティ設定値
+        // 戻り値  = Dialog側の window.returnValue プロパティ設定値
 
-        // ★ダイアログのサイズはここに記述する。
+        // ★Dialogのサイズはここに記述する。
         var ret = window.showModalDialog(url, args,
                      GetElementByName_SuffixSearch("ctl00$FxDialogStyle").value);
     } finally {
@@ -625,7 +625,7 @@ function Fx_ShowMessageDialog(url) {
 
 
 // ---------------------------------------------------------------
-// モーダル画面を表示
+// Modal画面を表示
 // ---------------------------------------------------------------
 // 引数    url, style
 // 戻り値  false（クライアント側起動の際に、イベントを無効にするため）
@@ -652,7 +652,7 @@ function Fx_ShowModalScreen(url, style) {
         default:
     }
 
-    // ダイアログ フレームへのURL
+    // Dialog フレームへのURL
     var dialogFrameUrl = GetElementByName_SuffixSearch("ctl00$DialogFrameUrl");
 
     // サブミット フラグの設定用
@@ -665,9 +665,9 @@ function Fx_ShowModalScreen(url, style) {
     Fx_MaskOn();
 
     try {
-        // モーダル画面を表示
+        // Modal画面を表示
         // 第1引数 = DialogFrameのURL
-        // 第2引数 = DialogFrame → DialogLoader.htmから起動するモーダル画面のURL
+        // 第2引数 = DialogFrame → DialogLoader.htmから起動するModal画面のURL
         // 第3引数 = 画面のスタイル(「項目1:値1;項目2:値2;…;項目n:値n」の形式) 
         var ret = window.showModalDialog(dialogFrameUrl.value, args, style);
         ret = Fx_GetCookie("fx_window_returnValue");
@@ -678,8 +678,8 @@ function Fx_ShowModalScreen(url, style) {
     }
 
     if (ret == "1") {
-        // 戻り値が１の場合、ポストバック（後処理）を実行する。
-        // →  後処理のためのポストバックを実行する。
+        // 戻り値が１の場合、Post Back（後処理）を実行する。
+        // →  後処理のためのPost Backを実行する。
 
         // submitFlagを「4」に設定
         submitFlag.value = "4";
@@ -688,13 +688,13 @@ function Fx_ShowModalScreen(url, style) {
         fobj.submit();
     }
     else if (ret == "2") {
-        // closeFlagが２の場合、ポストバック（後処理）を実行しない。
+        // closeFlagが２の場合、Post Back（後処理）を実行しない。
         // →  なにもしない。
     }
     else if (ret == "3") {
-        // closeFlagが３の場合、当該画面が、モーダル画面かどうかを判定する。
+        // closeFlagが３の場合、当該画面が、Modal画面かどうかを判定する。
         if (window.dialogArguments == null || window.dialogArguments == undefined) {
-            // 当該画面が、モーダル画面でない場合、ポストバック（後処理）を実行する。
+            // 当該画面が、Modal画面でない場合、Post Back（後処理）を実行する。
 
             // submitFlagを「4」に設定
             submitFlag.value = "4";
@@ -703,15 +703,15 @@ function Fx_ShowModalScreen(url, style) {
             fobj.submit();
         }
         else {
-            // 当該画面が、モーダル画面の場合、自分を閉じる。
+            // 当該画面が、Modal画面の場合、自分を閉じる。
             //window.returnValue = "3";
             Fx_SetCookie("fx_window_returnValue", "3", "path=/");
             window.close();
         }
     }
     else {
-        // 不明なステータスポストバック（後処理）を実行する。
-        // →  後処理のためのポストバックを実行する（★ プロジェクトによって動作を変更）。
+        // 不明なステータスPost Back（後処理）を実行する。
+        // →  後処理のためのPost Backを実行する（★ プロジェクトによって動作を変更）。
 
         // submitFlagを「4」に設定
         submitFlag.value = "4";
@@ -780,7 +780,7 @@ function Fx_MaskOff() {
 }
 
 // ---------------------------------------------------------------
-// モーダル画面をポストバックで閉じるためのメソッド
+// Modal画面をPost Backで閉じるためのメソッド
 // ---------------------------------------------------------------
 // 引数    －
 // 戻り値  －
@@ -796,21 +796,21 @@ function Fx_CloseModalScreen() {
 
     if (closeFlag.value == "1") {
         // closeFlagが１の場合、自画面を閉じ、
-        // 親画面でポストバック（後処理）を実行する。
+        // 親画面でPost Back（後処理）を実行する。
         //window.returnValue = "1";
         Fx_SetCookie("fx_window_returnValue", "1", "path=/");
         window.close();
     }
     else if (closeFlag.value == "2") {
         // closeFlagが２の場合、自画面を閉じ、
-        // 親画面でポストバック（後処理）を実行しない。
+        // 親画面でPost Back（後処理）を実行しない。
         //window.returnValue = "2";
         Fx_SetCookie("fx_window_returnValue", "2", "path=/");
         window.close();
     }
     else if (closeFlag.value == "3") {
         // closeFlagが３の場合、自画面を閉じ、
-        // 親のモーダル画面も閉じる。
+        // 親のModal画面も閉じる。
         //window.returnValue = "3";
         Fx_SetCookie("fx_window_returnValue", "3", "path=/");
         window.close();
@@ -819,7 +819,7 @@ function Fx_CloseModalScreen() {
 
 
 // ---------------------------------------------------------------
-// モードレス画面を表示
+// Modeless画面を表示
 // ---------------------------------------------------------------
 // 引数    －
 // 戻り値  －
@@ -843,14 +843,14 @@ function Fx_ShowNormalScreen(url) {
 //  フレームワーク機能（Ajax）
 // ---------------------------------------------------------------
 
-// Ajax：ポストバックエレメント
+// Ajax：Post Backエレメント
 var AjaxPostBackElement;
 
-// Ajax：プログレス ダイアログのサイズ（div）
+// Ajax：Progress Dialogのサイズ（div）
 var AjaxProgressDialog_Width = 300;
 var AjaxProgressDialog_Height = 200;
 
-// Ajax：プログレス中かどうか
+// Ajax：Progress中かどうか
 var Ajax_IsProgressed = false;
 
 // ---------------------------------------------------------------
@@ -885,7 +885,7 @@ function Fx_AjaxExtensionInit() {
 // 戻り値  －
 // ---------------------------------------------------------------
 function Fx_AjaxExtensionRegPreAndAfter(pageRequestManager) {
-    // 非同期ポストバックの開始前、終了後に呼び出されるイベント・ハンドラを定義
+    // 非同期Post Backの開始前、終了後に呼び出されるイベント・ハンドラを定義
 
     // 開始前イベント
     pageRequestManager.add_initializeRequest(Fx_AjaxExtensionInitializeRequest);
@@ -908,7 +908,7 @@ function Fx_AjaxExtensionInitializeRequest(sender, args) {
     // // 現在、実行中の非同期通信が存在するかを判定
     // if (pageRequestManager.get_isInAsyncPostBack())
     // { 
-    //     // 非同期通信中である場合にはエラー メッセージを表示
+    //     // 非同期通信中である場合にはエラー Messageを表示
     //     alert("二重送信です(ajax)");
     // 
     //     // 後続の処理をキャンセル
@@ -918,7 +918,7 @@ function Fx_AjaxExtensionInitializeRequest(sender, args) {
     // ★★ Fx_OnSubmitが呼ばれるのは、Ajax Extensionのみ。
     // 　　 ClientCallbackや、WebServiceBridgeでは、呼ばれない。
 
-    // ポストバック エレメントを取得
+    // Post Back エレメントを取得
     AjaxPostBackElement = args.get_postBackElement();
 
     if (AjaxPostBackElement) {
@@ -940,7 +940,7 @@ function Fx_AjaxExtensionEndRequest(sender, args) {
     // はじめにタイマをクリアする。
     clearTimeout(ProgressDialogTimer);
 
-    // プログレス ダイアログを非表示にする。
+    // Progress Dialogを非表示にする。
     try {
 
         document.body.removeChild(AjaxMask);

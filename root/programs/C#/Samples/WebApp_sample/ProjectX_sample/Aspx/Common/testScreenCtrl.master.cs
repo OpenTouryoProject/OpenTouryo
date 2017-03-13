@@ -6,7 +6,7 @@
 
 //**********************************************************************************
 //* クラス名        ：testScreenCtrl
-//* クラス日本語名  ：画面遷移制御機能テスト画面用のマスタ ページ
+//* クラス日本語名  ：画面遷移制御機能テスト画面用のMaster Page
 //*
 //* 作成日時        ：－
 //* 作成者          ：生技
@@ -21,13 +21,13 @@ using Touryo.Infrastructure.Framework.Presentation;
 
 namespace ProjectX_sample.Aspx.Common
 {
-    /// <summary>画面遷移制御機能テスト画面用のマスタ ページ</summary>
+    /// <summary>画面遷移制御機能テスト画面用のMaster Page</summary>
     public partial class testScreenCtrl : BaseMasterController
     {
         /// <summary>
-        /// btnMButton1のクリックイベント
+        /// btnMButton1のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         public string UOC_btnMButton1_Click(FxEventArgs fxEventArgs)
         {
@@ -38,9 +38,9 @@ namespace ProjectX_sample.Aspx.Common
         //---
 
         /// <summary>
-        /// lbnMLinkButton1のクリックイベント
+        /// lbnMLinkButton1のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         public string UOC_lbnMLinkButton1_Click(FxEventArgs fxEventArgs)
         {
@@ -49,9 +49,9 @@ namespace ProjectX_sample.Aspx.Common
         }
 
         /// <summary>
-        /// lbnMLinkButton2のクリックイベント
+        /// lbnMLinkButton2のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         public string UOC_lbnMLinkButton2_Click(FxEventArgs fxEventArgs)
         {
@@ -60,9 +60,9 @@ namespace ProjectX_sample.Aspx.Common
         }
 
         /// <summary>
-        /// lbnMLinkButton3のクリックイベント
+        /// lbnMLinkButton3のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         public string UOC_lbnMLinkButton3_Click(FxEventArgs fxEventArgs)
         {
@@ -71,9 +71,9 @@ namespace ProjectX_sample.Aspx.Common
         }
 
         /// <summary>
-        /// lbnMLinkButton4のクリックイベント
+        /// lbnMLinkButton4のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         public string UOC_lbnMLinkButton4_Click(FxEventArgs fxEventArgs)
         {
@@ -82,9 +82,9 @@ namespace ProjectX_sample.Aspx.Common
         }
 
         /// <summary>
-        /// lbnMLinkButton5のクリックイベント
+        /// lbnMLinkButton5のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         public string UOC_lbnMLinkButton5_Click(FxEventArgs fxEventArgs)
         {

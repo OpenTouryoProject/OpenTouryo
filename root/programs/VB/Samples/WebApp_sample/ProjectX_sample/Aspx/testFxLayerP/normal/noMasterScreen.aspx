@@ -1,4 +1,4 @@
-<%@ Page Language="VB" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_testFxLayerP_normal_noMasterScreen" Codebehind="noMasterScreen.aspx.vb" %>
+<%@ Page Language="C#" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.Normal.noMasterScreen" Codebehind="noMasterScreen.aspx.cs" %>
 
 <!DOCTYPE html>
 <html>
@@ -6,7 +6,7 @@
     <title>無題のページ</title>
 </head>
 <body>
-    <form id="form1" runat="server">
+    <form id="form1" runat="server" autocomplete="on">
     <div>
     
     </div>

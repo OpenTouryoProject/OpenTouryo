@@ -10,15 +10,17 @@
 Option Strict On
 Option Explicit On
 
-
-Partial Public Class Aspx_testFxLayerP_normal_noMasterScreen
+Namespace Aspx.TestFxLayerP.Normal
     
-    '''<summary>
-    '''form1 コントロール。
-    '''</summary>
-    '''<remarks>
-    '''自動生成されたフィールド。
-    '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
-    '''</remarks>
-    Protected WithEvents form1 As Global.System.Web.UI.HtmlControls.HtmlForm
-End Class
+    Partial Public Class noMasterScreen
+        
+        '''<summary>
+        '''form1 コントロール。
+        '''</summary>
+        '''<remarks>
+        '''自動生成されたフィールド。
+        '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        '''</remarks>
+        Protected WithEvents form1 As Global.System.Web.UI.HtmlControls.HtmlForm
+    End Class
+End Namespace

@@ -6,7 +6,7 @@
 
 //**********************************************************************************
 //* クラス名        ：noBaseMasterScreen
-//* クラス日本語名  ：マスタページのベースクラスを実装しない画面
+//* クラス日本語名  ：Master Pageのベースクラスを実装しない画面
 //*
 //* 作成日時        ：－
 //* 作成者          ：－
@@ -25,30 +25,30 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
     /// <summary>noBaseMasterScreen class</summary>
     public partial class noBaseMasterScreen : MyBaseController
     {
-        #region ページロードのUOCメソッド
+        #region Page LoadのUOCメソッド
 
-        /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：初回Load）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit()
         {
-            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // Form初期化（初回Load）時に実行する処理を実装する
             // TODO:
         }
 
-        /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：Post Back）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit_PostBack()
         {
-            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // Form初期化（Post Back）時に実行する処理を実装する
             // TODO:
         }
 
         #endregion
 
         /// <summary>
-        /// btnButton1のクリックイベント
+        /// btnButton1のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton1_Click(FxEventArgs fxEventArgs)
         {

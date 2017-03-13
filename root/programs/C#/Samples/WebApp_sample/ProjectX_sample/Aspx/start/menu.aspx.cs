@@ -24,31 +24,31 @@ namespace ProjectX_sample.Aspx.Start
     /// <summary>メニュー画面</summary>
     public partial class menu : MyBaseController
     {
-        #region ページロードのUOCメソッド
+        #region Page LoadのUOCメソッド
 
         /// <summary>
-        /// ページロードのUOCメソッド（個別：初回ロード）
+        /// Page LoadのUOCメソッド（個別：初回Load）
         /// </summary>
         /// <remarks>
         /// 実装必須
         /// </remarks>
         protected override void UOC_FormInit()
         {
-            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // Form初期化（初回Load）時に実行する処理を実装する
 
             // TODO:
             // ここでは何もしない
         }
 
         /// <summary>
-        /// ページロードのUOCメソッド（個別：ポストバック）
+        /// Page LoadのUOCメソッド（個別：Post Back）
         /// </summary>
         /// <remarks>
         /// 実装必須
         /// </remarks>
         protected override void UOC_FormInit_PostBack()
         {
-            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // Form初期化（Post Back）時に実行する処理を実装する
 
             // TODO:
             // ここでは何もしない

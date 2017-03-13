@@ -45,23 +45,23 @@ Namespace Aspx.Common
         ''' <summary>Session情報：リピータ処理用</summary>
         Private al_session As New ArrayList()
 
-#Region "イベントハンドラ"
+#Region "Event Handler"
 
         ''' <summary>
-        ''' 画面起動時に実行されるイベントハンドラ
+        ''' 画面起動時に実行されるEvent Handler
         ''' </summary>
         ''' <param name="sender"></param>
         ''' <param name="e"></param>
         Protected Sub Page_Load(sender As Object, e As EventArgs)
-            '画面にエラーメッセージ・エラー情報を表示する-----------------------------
+            '画面にError Message・エラー情報を表示する-----------------------------
 
-            'エラーメッセージをＨＴＴＰコンテキストから取得
+            'Error MessageをＨＴＴＰコンテキストから取得
             Dim err_msg As String = DirectCast(HttpContext.Current.Items(FxHttpContextIndex.SYSTEM_EXCEPTION_MESSAGE), String)
 
             'エラー情報をＨＴＴＰコンテキストから取得
             Dim err_info As String = DirectCast(HttpContext.Current.Items(FxHttpContextIndex.SYSTEM_EXCEPTION_INFORMATION), String)
 
-            '画面にエラーメッセージを表示する
+            '画面にError Messageを表示する
             Me.Label1.Text = CustomEncode.HtmlEncode(err_msg)
 
             '画面にエラー情報を表示する

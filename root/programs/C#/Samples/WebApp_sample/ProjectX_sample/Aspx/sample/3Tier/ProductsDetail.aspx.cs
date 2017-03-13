@@ -33,17 +33,17 @@ namespace ProjectX_sample.Aspx.Sample._3Tier
     /// <summary>三層データバインド・詳細表示画面</summary>
     public partial class ProductsDetail : MyBaseController
     {
-        #region ページロードのUOCメソッド
+        #region Page LoadのUOCメソッド
 
         /// <summary>
-        /// ページロードのUOCメソッド（個別：初回ロード）
+        /// Page LoadのUOCメソッド（個別：初回Load）
         /// </summary>
         /// <remarks>
         /// 実装必須
         /// </remarks>
         protected override void UOC_FormInit()
         {
-            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // Form初期化（初回Load）時に実行する処理を実装する
 
             // TODO:
             _3TierParameterValue parameterValue = null;
@@ -168,14 +168,14 @@ namespace ProjectX_sample.Aspx.Sample._3Tier
         }
 
         /// <summary>
-        /// ページロードのUOCメソッド（個別：ポストバック）
+        /// Page LoadのUOCメソッド（個別：Post Back）
         /// </summary>
         /// <remarks>
         /// 実装必須
         /// </remarks>
         protected override void UOC_FormInit_PostBack()
         {
-            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // Form初期化（Post Back）時に実行する処理を実装する
 
             // TODO:
             Session["DAP"] = this.ddlDap.SelectedValue;
@@ -183,12 +183,12 @@ namespace ProjectX_sample.Aspx.Sample._3Tier
 
         #endregion
 
-        #region イベントハンドラ
+        #region Event Handler
 
         #region 編集状態の変更
 
-        /// <summary>編集ボタン</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>編集Button</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnEdit_Click(FxEventArgs fxEventArgs)
         {
@@ -205,8 +205,8 @@ namespace ProjectX_sample.Aspx.Sample._3Tier
 
         #region 更新系
 
-        /// <summary>追加ボタン</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>追加Button</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnInsert_Click(FxEventArgs fxEventArgs)
         {
@@ -250,8 +250,8 @@ namespace ProjectX_sample.Aspx.Sample._3Tier
             return string.Empty;
         }
 
-        /// <summary>更新ボタン</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>更新Button</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnUpdate_Click(FxEventArgs fxEventArgs)
         {
@@ -298,8 +298,8 @@ namespace ProjectX_sample.Aspx.Sample._3Tier
             return string.Empty;
         }
 
-        /// <summary>削除ボタン</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>削除Button</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnDelete_Click(FxEventArgs fxEventArgs)
         {

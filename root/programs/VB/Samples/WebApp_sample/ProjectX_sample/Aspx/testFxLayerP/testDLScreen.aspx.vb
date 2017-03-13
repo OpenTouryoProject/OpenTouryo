@@ -1,9 +1,11 @@
 ﻿'**********************************************************************************
-'* フレームワーク・テスト画面
+'* フレームワーク・テスト画面（Ｐ層）
 '**********************************************************************************
 
+' テスト画面なので、必要に応じて流用 or 削除して下さい。
+
 '**********************************************************************************
-'* クラス名        ：Aspx_testFxLayerP_testDLScreen
+'* クラス名        ：testDLScreen
 '* クラス日本語名  ：PDFダウンロードのテスト画面（Ｐ層）
 '*
 '* 作成日時        ：－
@@ -15,80 +17,46 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
 
-' System
-Imports System
 Imports System.IO
-Imports System.Data
-Imports System.Text
-Imports System.Collections
-Imports System.Collections.Generic
 
-' System.Web
-Imports System.Web
-Imports System.Web.Security
-
-Imports System.Web.UI
-Imports System.Web.UI.WebControls
-Imports System.Web.UI.WebControls.WebParts
-Imports System.Web.UI.HtmlControls
-
-' 業務フレームワーク
-Imports Touryo.Infrastructure.Business.Business
-Imports Touryo.Infrastructure.Business.Common
-Imports Touryo.Infrastructure.Business.Dao
-Imports Touryo.Infrastructure.Business.Exceptions
 Imports Touryo.Infrastructure.Business.Presentation
-Imports Touryo.Infrastructure.Business.Util
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Business
-Imports Touryo.Infrastructure.Framework.Common
-Imports Touryo.Infrastructure.Framework.Dao
-Imports Touryo.Infrastructure.Framework.Exceptions
-Imports Touryo.Infrastructure.Framework.Presentation
-Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Framework.Transmission
-
-' 部品
-Imports Touryo.Infrastructure.Public.Db
-Imports Touryo.Infrastructure.Public.IO
-Imports Touryo.Infrastructure.Public.Log
-Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
 
-''' <summary>PDFダウンロードのテスト画面（Ｐ層）</summary>
-Public Partial Class Aspx_testFxLayerP_testDLScreen
-	Inherits MyBaseController
-	#Region "ページロードのUOCメソッド"
+Namespace Aspx.TestFxLayerP
+    ''' <summary>PDFダウンロードのテスト画面（Ｐ層）</summary>
+    Partial Public Class testDLScreen
+        Inherits MyBaseController
+#Region "Page LoadのUOCメソッド"
 
-	''' <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
-	''' <remarks>実装必須</remarks>
-	Protected Overrides Sub UOC_FormInit()
-		' フォーム初期化（初回ロード）時に実行する処理を実装する
-		' TODO:
+        ''' <summary>Page LoadのUOCメソッド（個別：初回Load）</summary>
+        ''' <remarks>実装必須</remarks>
+        Protected Overrides Sub UOC_FormInit()
+            ' Form初期化（初回Load）時に実行する処理を実装する
+            ' TODO:
 
-		Response.Clear()
+            Response.Clear()
 
-		Response.ContentType = "application/pdf"
+            Response.ContentType = "application/pdf"
 
-		' HTTPヘッダーの書き方で、
-		'こっちは、専用アプリケーションで開く
-		'Response.AppendHeader("Content-Disposition", "attachment;filename=test.pdf");
+            ' HTTPヘッダーの書き方で、
+            'こっちは、専用アプリケーションで開く
+            'Response.AppendHeader("Content-Disposition", "attachment;filename=test.pdf");
 
-		'こっちは、IEからOLEオブジェクトを開く
-		Response.AppendHeader("Content-Disposition", "inline;filename=test.pdf")
+            'こっちは、IEからOLEオブジェクトを開く
+            Response.AppendHeader("Content-Disposition", "inline;filename=test.pdf")
 
-		Response.WriteFile(Path.Combine(GetConfigParameter.GetConfigValue("TestFilePath"), "test.pdf"))
+            Response.WriteFile(Path.Combine(GetConfigParameter.GetConfigValue("TestFilePath"), "test.pdf"))
 
-		Response.[End]()
-	End Sub
+            Response.[End]()
+        End Sub
 
-	''' <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
-	''' <remarks>実装必須</remarks>
-	Protected Overrides Sub UOC_FormInit_PostBack()
-		' フォーム初期化（ポストバック）時に実行する処理を実装する
-		' TODO:
-	End Sub
+        ''' <summary>Page LoadのUOCメソッド（個別：Post Back）</summary>
+        ''' <remarks>実装必須</remarks>
+        Protected Overrides Sub UOC_FormInit_PostBack()
+            ' Form初期化（Post Back）時に実行する処理を実装する
+            ' TODO:
+        End Sub
 
-	#End Region
-End Class
+#End Region
+    End Class
+End Namespace

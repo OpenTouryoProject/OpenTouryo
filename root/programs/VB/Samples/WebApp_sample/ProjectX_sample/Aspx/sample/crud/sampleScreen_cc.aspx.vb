@@ -29,32 +29,32 @@ Namespace Aspx.Sample.Crud
     ''' <summary>サンプル アプリ画面</summary>
     Partial Public Class sampleScreen_cc
         Inherits MyBaseController
-#Region "ページロードのUOCメソッド"
+#Region "Page LoadのUOCメソッド"
 
-        ''' <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
+        ''' <summary>Page LoadのUOCメソッド（個別：初回Load）</summary>
         ''' <remarks>実装必須</remarks>
         Protected Overrides Sub UOC_FormInit()
-            ' フォーム初期化（初回ロード）時に実行する処理を実装する
+            ' Form初期化（初回Load）時に実行する処理を実装する
             ' TODO:
         End Sub
 
-        ''' <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
+        ''' <summary>Page LoadのUOCメソッド（個別：Post Back）</summary>
         ''' <remarks>実装必須</remarks>
         Protected Overrides Sub UOC_FormInit_PostBack()
-            ' フォーム初期化（ポストバック）時に実行する処理を実装する
+            ' Form初期化（Post Back）時に実行する処理を実装する
             ' TODO:
         End Sub
 
 #End Region
 
-#Region "ＣＲＵＤ処理メソッド"
+#Region "CRUD処理メソッド"
 
 #Region "参照系"
 
         ''' <summary>
-        ''' btnMButton1のクリックイベント（件数取得）
+        ''' btnMButton1のClickイベント（件数取得）
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_sampleScreen_btnMButton1_Click(fxEventArgs As FxEventArgs) As String
             ' 引数クラスを生成
@@ -73,9 +73,9 @@ Namespace Aspx.Sample.Crud
             Dim cctrl As New CallController(Me.UserInfo)
 
             ' Invoke
-            testReturnValue = DirectCast(cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue), TestReturnValue)
+            testReturnValue = cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue)
 
-            ' 結果表示するメッセージ エリア
+            ' 結果表示するMessage エリア
             Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
             label.Text = ""
 
@@ -89,14 +89,14 @@ Namespace Aspx.Sample.Crud
                 label.Text = testReturnValue.Obj.ToString() & "件のデータがあります"
             End If
 
-            ' 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            ' 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             Return ""
         End Function
 
         ''' <summary>
-        ''' btnMButton2のクリックイベント（一覧取得（dt））
+        ''' btnMButton2のClickイベント（一覧取得（dt））
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_sampleScreen_btnMButton2_Click(fxEventArgs As FxEventArgs) As String
             ' 引数クラスを生成
@@ -115,9 +115,9 @@ Namespace Aspx.Sample.Crud
             Dim cctrl As New CallController(Me.UserInfo)
 
             ' Invoke
-            testReturnValue = DirectCast(cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue), TestReturnValue)
+            testReturnValue = cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue)
 
-            ' 結果表示するメッセージ エリア
+            ' 結果表示するMessage エリア
             Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
             label.Text = ""
 
@@ -132,14 +132,14 @@ Namespace Aspx.Sample.Crud
                 Me.GridView1.DataBind()
             End If
 
-            ' 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            ' 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             Return ""
         End Function
 
         ''' <summary>
-        ''' btnMButton3のクリックイベント（一覧取得（ds））
+        ''' btnMButton3のClickイベント（一覧取得（ds））
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_sampleScreen_btnMButton3_Click(fxEventArgs As FxEventArgs) As String
             ' 引数クラスを生成
@@ -158,9 +158,9 @@ Namespace Aspx.Sample.Crud
             Dim cctrl As New CallController(Me.UserInfo)
 
             ' Invoke
-            testReturnValue = DirectCast(cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue), TestReturnValue)
+            testReturnValue = cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue)
 
-            ' 結果表示するメッセージ エリア
+            ' 結果表示するMessage エリア
             Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
             label.Text = ""
 
@@ -176,14 +176,14 @@ Namespace Aspx.Sample.Crud
                 Me.GridView1.DataBind()
             End If
 
-            ' 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            ' 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             Return ""
         End Function
 
         ''' <summary>
-        ''' btnMButton4のクリックイベント（一覧取得（dr））
+        ''' btnMButton4のClickイベント（一覧取得（dr））
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_sampleScreen_btnMButton4_Click(fxEventArgs As FxEventArgs) As String
             ' 引数クラスを生成
@@ -202,9 +202,9 @@ Namespace Aspx.Sample.Crud
             Dim cctrl As New CallController(Me.UserInfo)
 
             ' Invoke
-            testReturnValue = DirectCast(cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue), TestReturnValue)
+            testReturnValue = cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue)
 
-            ' 結果表示するメッセージ エリア
+            ' 結果表示するMessage エリア
             Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
             label.Text = ""
 
@@ -219,14 +219,14 @@ Namespace Aspx.Sample.Crud
                 Me.GridView1.DataBind()
             End If
 
-            ' 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            ' 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             Return ""
         End Function
 
         ''' <summary>
-        ''' btnMButton5のクリックイベント（一覧取得（動的sql））
+        ''' btnMButton5のClickイベント（一覧取得（動的sql））
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_sampleScreen_btnMButton5_Click(fxEventArgs As FxEventArgs) As String
             ' 引数クラスを生成
@@ -249,9 +249,9 @@ Namespace Aspx.Sample.Crud
             Dim cctrl As New CallController(Me.UserInfo)
 
             ' Invoke
-            testReturnValue = DirectCast(cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue), TestReturnValue)
+            testReturnValue = cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue)
 
-            ' 結果表示するメッセージ エリア
+            ' 結果表示するMessage エリア
             Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
             label.Text = ""
 
@@ -266,14 +266,14 @@ Namespace Aspx.Sample.Crud
                 Me.GridView1.DataBind()
             End If
 
-            ' 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            ' 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             Return ""
         End Function
 
         ''' <summary>
-        ''' btnMButton6のクリックイベント（参照処理）
+        ''' btnMButton6のClickイベント（参照処理）
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_sampleScreen_btnMButton6_Click(fxEventArgs As FxEventArgs) As String
             ' 引数クラスを生成
@@ -295,9 +295,9 @@ Namespace Aspx.Sample.Crud
             Dim cctrl As New CallController(Me.UserInfo)
 
             ' Invoke
-            testReturnValue = DirectCast(cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue), TestReturnValue)
+            testReturnValue = cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue)
 
-            ' 結果表示するメッセージ エリア
+            ' 結果表示するMessage エリア
             Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
             label.Text = ""
 
@@ -313,7 +313,7 @@ Namespace Aspx.Sample.Crud
                 Me.TextBox3.Text = testReturnValue.Phone
             End If
 
-            ' 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            ' 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             Return ""
         End Function
 
@@ -322,9 +322,9 @@ Namespace Aspx.Sample.Crud
 #Region "更新系"
 
         ''' <summary>
-        ''' btnMButton7のクリックイベント（追加処理）
+        ''' btnMButton7のClickイベント（追加処理）
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_sampleScreen_btnMButton7_Click(fxEventArgs As FxEventArgs) As String
             ' 引数クラスを生成
@@ -347,9 +347,9 @@ Namespace Aspx.Sample.Crud
             Dim cctrl As New CallController(Me.UserInfo)
 
             ' Invoke
-            testReturnValue = DirectCast(cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue), TestReturnValue)
+            testReturnValue = cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue)
 
-            ' 結果表示するメッセージ エリア
+            ' 結果表示するMessage エリア
             Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
             label.Text = ""
 
@@ -363,14 +363,14 @@ Namespace Aspx.Sample.Crud
                 label.Text = testReturnValue.Obj.ToString() & "件追加"
             End If
 
-            ' 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            ' 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             Return ""
         End Function
 
         ''' <summary>
-        ''' btnMButton8のクリックイベント（更新処理）
+        ''' btnMButton8のClickイベント（更新処理）
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_sampleScreen_btnMButton8_Click(fxEventArgs As FxEventArgs) As String
             ' 引数クラスを生成
@@ -394,9 +394,9 @@ Namespace Aspx.Sample.Crud
             Dim cctrl As New CallController(Me.UserInfo)
 
             ' Invoke
-            testReturnValue = DirectCast(cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue), TestReturnValue)
+            testReturnValue = cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue)
 
-            ' 結果表示するメッセージ エリア
+            ' 結果表示するMessage エリア
             Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
             label.Text = ""
 
@@ -410,14 +410,14 @@ Namespace Aspx.Sample.Crud
                 label.Text = testReturnValue.Obj.ToString() & "件更新"
             End If
 
-            ' 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            ' 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             Return ""
         End Function
 
         ''' <summary>
-        ''' btnMButton9のクリックイベント（削除処理）
+        ''' btnMButton9のClickイベント（削除処理）
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_sampleScreen_btnMButton9_Click(fxEventArgs As FxEventArgs) As String
             ' 引数クラスを生成
@@ -439,9 +439,9 @@ Namespace Aspx.Sample.Crud
             Dim cctrl As New CallController(Me.UserInfo)
 
             ' Invoke
-            testReturnValue = DirectCast(cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue), TestReturnValue)
+            testReturnValue = cctrl.Invoke(Me.ddlCmctCtrl.SelectedValue, testParameterValue)
 
-            ' 結果表示するメッセージ エリア
+            ' 結果表示するMessage エリア
             Dim label As Label = DirectCast(Me.GetMasterWebControl("Label1"), Label)
             label.Text = ""
 
@@ -455,7 +455,7 @@ Namespace Aspx.Sample.Crud
                 label.Text = testReturnValue.Obj.ToString() & "件削除"
             End If
 
-            ' 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            ' 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             Return ""
         End Function
 
@@ -466,36 +466,36 @@ Namespace Aspx.Sample.Crud
 #Region "Ｐ層で例外をスロー"
 
         ''' <summary>
-        ''' btnButton1のクリックイベント（業務例外）
+        ''' btnButton1のClickイベント（業務例外）
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnButton1_Click(fxEventArgs As FxEventArgs) As String
             Throw New BusinessApplicationException("Ｐ層で「業務例外」をスロー", "Ｐ層で「業務例外」をスロー", "Ｐ層で「業務例外」をスロー")
         End Function
 
         ''' <summary>
-        ''' btnButton2のクリックイベント（システム例外）
+        ''' btnButton2のClickイベント（システム例外）
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnButton2_Click(fxEventArgs As FxEventArgs) As String
             Throw New BusinessSystemException("Ｐ層で「システム例外」をスロー", "Ｐ層で「システム例外」をスロー")
         End Function
 
         ''' <summary>
-        ''' btnButton3のクリックイベント（その他、一般的な例外）
+        ''' btnButton3のClickイベント（その他、一般的な例外）
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnButton3_Click(fxEventArgs As FxEventArgs) As String
             Throw New Exception("Ｐ層で「その他、一般的な例外」をスロー")
         End Function
 
         ''' <summary>
-        ''' btnButton4のクリックイベント（その他、一般的な例外）
+        ''' btnButton4のClickイベント（その他、一般的な例外）
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnButton4_Click(fxEventArgs As FxEventArgs) As String
             Me.GridView1.DataSource = Nothing
@@ -506,10 +506,10 @@ Namespace Aspx.Sample.Crud
 
 #End Region
 
-#Region "マスタページ、ユーザコントロールのイベント"
+#Region "Master Page、User Controlのイベント"
 
-        ''' <summary>マスタページにイベントハンドラを実装可能にしたのでそのテスト。</summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <summary>Master PageにEvent Handlerを実装可能にしたのでそのテスト。</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_sampleScreen_btnMPButton_Click(fxEventArgs As FxEventArgs) As String
             Me.lblResult.Text = "sampleScreen.masterのbtnMPButtonのClickイベントを、UOC_sampleScreen_btnMPButton_Clickで実行"
@@ -517,8 +517,8 @@ Namespace Aspx.Sample.Crud
             Return ""
         End Function
 
-        ''' <summary>ユーザコントロールにイベントハンドラを実装可能にしたのでそのテスト。</summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <summary>User ControlにEvent Handlerを実装可能にしたのでそのテスト。</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_sampleControl1_btnUCButton_Click(fxEventArgs As FxEventArgs) As String
             Me.lblResult.Text = "sampleControl.ascxのbtnUCButtonのClickイベントを、UOC_sampleControl1_btnUCButton_Clickで実行"
@@ -526,8 +526,8 @@ Namespace Aspx.Sample.Crud
             Return ""
         End Function
 
-        ''' <summary>ユーザコントロールにイベントハンドラを実装可能にしたのでそのテスト。</summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <summary>User ControlにEvent Handlerを実装可能にしたのでそのテスト。</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_sampleControl2_btnUCButton_Click(fxEventArgs As FxEventArgs) As String
             Me.lblResult.Text = "sampleControl.ascxのbtnUCButtonのClickイベントを、UOC_sampleControl2_btnUCButton_Clickで実行"

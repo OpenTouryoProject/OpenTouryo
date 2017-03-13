@@ -15,7 +15,7 @@ Namespace Aspx.Common.TestNest
     Partial Public Class testScreen1bmp2
         
         '''<summary>
-        '''lblCPF_A1 コントロール。
+        '''lblCPF_A1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents lblCPF_A1 As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnCPF_A1 コントロール。
+        '''btnCPF_A1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -33,7 +33,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents btnCPF_A1 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ContentPlaceHolder_A2 コントロール。
+        '''ContentPlaceHolder_A2 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -42,7 +42,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_A2 As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''lblCPF_B1 コントロール。
+        '''lblCPF_B1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -51,7 +51,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents lblCPF_B1 As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnCPF_B1 コントロール。
+        '''btnCPF_B1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -60,7 +60,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents btnCPF_B1 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ContentPlaceHolder_B2 コントロール。
+        '''ContentPlaceHolder_B2 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -69,7 +69,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_B2 As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''lblCPF_C1 コントロール。
+        '''lblCPF_C1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -78,7 +78,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents lblCPF_C1 As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnCPF_C1 コントロール。
+        '''btnCPF_C1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -87,7 +87,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents btnCPF_C1 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ContentPlaceHolder_C2 コントロール。
+        '''ContentPlaceHolder_C2 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

@@ -6,7 +6,7 @@
 
 //**********************************************************************************
 //* クラス名        ：sampleScreen
-//* クラス日本語名  ：サンプル画面用のマスタ ページ
+//* クラス日本語名  ：サンプル画面用のMaster Page
 //*
 //* 作成日時        ：－
 //* 作成者          ：生技
@@ -23,11 +23,11 @@ using Touryo.Infrastructure.Framework.Util;
 
 namespace ProjectX_sample.Aspx.Common
 {
-    /// <summary>サンプル画面用のマスタ ページ</summary>
+    /// <summary>サンプル画面用のMaster Page</summary>
     public partial class sampleScreen : BaseMasterController
     {
-        /// <summary>マスタページにイベントハンドラを実装可能にしたのでそのテスト。</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>Master PageにEvent Handlerを実装可能にしたのでそのテスト。</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnMPButton_Click(FxEventArgs fxEventArgs)
         {

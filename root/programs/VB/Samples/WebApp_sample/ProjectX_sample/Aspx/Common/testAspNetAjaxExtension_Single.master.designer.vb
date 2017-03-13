@@ -15,7 +15,7 @@ Namespace Aspx.Common
     Partial Public Class testAspNetAjaxExtension_Single
         
         '''<summary>
-        '''Head1 コントロール。
+        '''Head1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.Common
         Protected WithEvents Head1 As Global.System.Web.UI.HtmlControls.HtmlHead
         
         '''<summary>
-        '''cphHeaderScripts コントロール。
+        '''cphHeaderScripts Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -33,7 +33,7 @@ Namespace Aspx.Common
         Protected WithEvents cphHeaderScripts As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''form1 コントロール。
+        '''form1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -42,7 +42,7 @@ Namespace Aspx.Common
         Protected WithEvents form1 As Global.System.Web.UI.HtmlControls.HtmlForm
         
         '''<summary>
-        '''MasterScriptManager コントロール。
+        '''MasterScriptManager Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -51,7 +51,7 @@ Namespace Aspx.Common
         Protected WithEvents MasterScriptManager As Global.System.Web.UI.ScriptManager
         
         '''<summary>
-        '''MasterUpdatePanel コントロール。
+        '''MasterUpdatePanel Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -60,7 +60,7 @@ Namespace Aspx.Common
         Protected WithEvents MasterUpdatePanel As Global.System.Web.UI.UpdatePanel
         
         '''<summary>
-        '''TextBox1 コントロール。
+        '''TextBox1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -69,7 +69,7 @@ Namespace Aspx.Common
         Protected WithEvents TextBox1 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''btnMButton1 コントロール。
+        '''btnMButton1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -78,7 +78,7 @@ Namespace Aspx.Common
         Protected WithEvents btnMButton1 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''TextBox2 コントロール。
+        '''TextBox2 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -87,7 +87,7 @@ Namespace Aspx.Common
         Protected WithEvents TextBox2 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''btnMButton2 コントロール。
+        '''btnMButton2 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -96,7 +96,7 @@ Namespace Aspx.Common
         Protected WithEvents btnMButton2 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ddlMDropDownList1 コントロール。
+        '''ddlMDropDownList1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -105,7 +105,7 @@ Namespace Aspx.Common
         Protected WithEvents ddlMDropDownList1 As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
         
         '''<summary>
-        '''TextBox3 コントロール。
+        '''TextBox3 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -114,7 +114,7 @@ Namespace Aspx.Common
         Protected WithEvents TextBox3 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''ddlMDropDownList2 コントロール。
+        '''ddlMDropDownList2 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -123,7 +123,7 @@ Namespace Aspx.Common
         Protected WithEvents ddlMDropDownList2 As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
         
         '''<summary>
-        '''TextBox4 コントロール。
+        '''TextBox4 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -132,7 +132,7 @@ Namespace Aspx.Common
         Protected WithEvents TextBox4 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''btnMButton3 コントロール。
+        '''btnMButton3 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -141,7 +141,7 @@ Namespace Aspx.Common
         Protected WithEvents btnMButton3 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''TextBox5 コントロール。
+        '''TextBox5 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -150,7 +150,7 @@ Namespace Aspx.Common
         Protected WithEvents TextBox5 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''btnMButton4 コントロール。
+        '''btnMButton4 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -159,7 +159,7 @@ Namespace Aspx.Common
         Protected WithEvents btnMButton4 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''TextBox6 コントロール。
+        '''TextBox6 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -168,7 +168,7 @@ Namespace Aspx.Common
         Protected WithEvents TextBox6 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''btnMButton5 コントロール。
+        '''btnMButton5 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -177,7 +177,7 @@ Namespace Aspx.Common
         Protected WithEvents btnMButton5 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ddlMDropDownList3 コントロール。
+        '''ddlMDropDownList3 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -186,7 +186,7 @@ Namespace Aspx.Common
         Protected WithEvents ddlMDropDownList3 As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
         
         '''<summary>
-        '''TextBox7 コントロール。
+        '''TextBox7 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -195,7 +195,7 @@ Namespace Aspx.Common
         Protected WithEvents TextBox7 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''ddlMDropDownList4 コントロール。
+        '''ddlMDropDownList4 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -204,7 +204,7 @@ Namespace Aspx.Common
         Protected WithEvents ddlMDropDownList4 As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
         
         '''<summary>
-        '''TextBox8 コントロール。
+        '''TextBox8 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -213,7 +213,7 @@ Namespace Aspx.Common
         Protected WithEvents TextBox8 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''btnMButton6 コントロール。
+        '''btnMButton6 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -222,7 +222,7 @@ Namespace Aspx.Common
         Protected WithEvents btnMButton6 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ContentPlaceHolder_A コントロール。
+        '''ContentPlaceHolder_A Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -231,7 +231,7 @@ Namespace Aspx.Common
         Protected WithEvents ContentPlaceHolder_A As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ChildScreenType コントロール。
+        '''ChildScreenType Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -240,7 +240,7 @@ Namespace Aspx.Common
         Protected WithEvents ChildScreenType As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''ChildScreenUrl コントロール。
+        '''ChildScreenUrl Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -249,7 +249,7 @@ Namespace Aspx.Common
         Protected WithEvents ChildScreenUrl As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''CloseFlag コントロール。
+        '''CloseFlag Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -258,7 +258,7 @@ Namespace Aspx.Common
         Protected WithEvents CloseFlag As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''SubmitFlag コントロール。
+        '''SubmitFlag Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -267,7 +267,7 @@ Namespace Aspx.Common
         Protected WithEvents SubmitFlag As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''ScreenGuid コントロール。
+        '''ScreenGuid Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -276,7 +276,7 @@ Namespace Aspx.Common
         Protected WithEvents ScreenGuid As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''FxDialogStyle コントロール。
+        '''FxDialogStyle Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -285,7 +285,7 @@ Namespace Aspx.Common
         Protected WithEvents FxDialogStyle As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''BusinessDialogStyle コントロール。
+        '''BusinessDialogStyle Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -294,7 +294,7 @@ Namespace Aspx.Common
         Protected WithEvents BusinessDialogStyle As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''NormalScreenStyle コントロール。
+        '''NormalScreenStyle Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -303,7 +303,7 @@ Namespace Aspx.Common
         Protected WithEvents NormalScreenStyle As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''NormalScreenTarget コントロール。
+        '''NormalScreenTarget Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -312,7 +312,7 @@ Namespace Aspx.Common
         Protected WithEvents NormalScreenTarget As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''DialogFrameUrl コントロール。
+        '''DialogFrameUrl Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -321,7 +321,7 @@ Namespace Aspx.Common
         Protected WithEvents DialogFrameUrl As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''WindowGuid コントロール。
+        '''WindowGuid Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -330,7 +330,7 @@ Namespace Aspx.Common
         Protected WithEvents WindowGuid As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''RequestTicketGuid コントロール。
+        '''RequestTicketGuid Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -339,7 +339,7 @@ Namespace Aspx.Common
         Protected WithEvents RequestTicketGuid As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''cphFooterScripts コントロール。
+        '''cphFooterScripts Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

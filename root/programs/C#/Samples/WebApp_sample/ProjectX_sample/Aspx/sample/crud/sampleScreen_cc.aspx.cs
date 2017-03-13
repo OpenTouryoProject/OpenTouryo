@@ -34,34 +34,34 @@ namespace ProjectX_sample.Aspx.Sample.Crud
     /// <summary>サンプル アプリ画面</summary>
     public partial class sampleScreen_cc : MyBaseController
     {
-        #region ページロードのUOCメソッド
+        #region Page LoadのUOCメソッド
 
-        /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：初回Load）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit()
         {
-            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // Form初期化（初回Load）時に実行する処理を実装する
             // TODO:
         }
 
-        /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：Post Back）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit_PostBack()
         {
-            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // Form初期化（Post Back）時に実行する処理を実装する
             // TODO:
         }
 
         #endregion
 
-        #region ＣＲＵＤ処理メソッド
+        #region CRUD処理メソッド
 
         #region 参照系
 
         /// <summary>
-        /// btnMButton1のクリックイベント（件数取得）
+        /// btnMButton1のClickイベント（件数取得）
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_sampleScreen_btnMButton1_Click(FxEventArgs fxEventArgs)
         {
@@ -86,7 +86,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud
             testReturnValue = (TestReturnValue)cctrl.Invoke(
                 this.ddlCmctCtrl.SelectedValue, testParameterValue);
 
-            // 結果表示するメッセージ エリア
+            // 結果表示するMessage エリア
             Label label = (Label)this.GetMasterWebControl("Label1");
             label.Text = "";
 
@@ -103,14 +103,14 @@ namespace ProjectX_sample.Aspx.Sample.Crud
                 label.Text = testReturnValue.Obj.ToString() + "件のデータがあります";
             }
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// btnMButton2のクリックイベント（一覧取得（dt））
+        /// btnMButton2のClickイベント（一覧取得（dt））
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_sampleScreen_btnMButton2_Click(FxEventArgs fxEventArgs)
         {
@@ -135,7 +135,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud
             testReturnValue = (TestReturnValue)cctrl.Invoke(
                 this.ddlCmctCtrl.SelectedValue, testParameterValue);
 
-            // 結果表示するメッセージ エリア
+            // 結果表示するMessage エリア
             Label label = (Label)this.GetMasterWebControl("Label1");
             label.Text = "";
 
@@ -153,14 +153,14 @@ namespace ProjectX_sample.Aspx.Sample.Crud
                 this.GridView1.DataBind();
             }
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// btnMButton3のクリックイベント（一覧取得（ds））
+        /// btnMButton3のClickイベント（一覧取得（ds））
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_sampleScreen_btnMButton3_Click(FxEventArgs fxEventArgs)
         {
@@ -185,7 +185,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud
             testReturnValue = (TestReturnValue)cctrl.Invoke(
                 this.ddlCmctCtrl.SelectedValue, testParameterValue);
 
-            // 結果表示するメッセージ エリア
+            // 結果表示するMessage エリア
             Label label = (Label)this.GetMasterWebControl("Label1");
             label.Text = "";
 
@@ -204,14 +204,14 @@ namespace ProjectX_sample.Aspx.Sample.Crud
                 this.GridView1.DataBind();
             }
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// btnMButton4のクリックイベント（一覧取得（dr））
+        /// btnMButton4のClickイベント（一覧取得（dr））
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_sampleScreen_btnMButton4_Click(FxEventArgs fxEventArgs)
         {
@@ -236,7 +236,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud
             testReturnValue = (TestReturnValue)cctrl.Invoke(
                 this.ddlCmctCtrl.SelectedValue, testParameterValue);
 
-            // 結果表示するメッセージ エリア
+            // 結果表示するMessage エリア
             Label label = (Label)this.GetMasterWebControl("Label1");
             label.Text = "";
 
@@ -254,14 +254,14 @@ namespace ProjectX_sample.Aspx.Sample.Crud
                 this.GridView1.DataBind();
             }
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// btnMButton5のクリックイベント（一覧取得（動的sql））
+        /// btnMButton5のClickイベント（一覧取得（動的sql））
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_sampleScreen_btnMButton5_Click(FxEventArgs fxEventArgs)
         {
@@ -290,7 +290,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud
             testReturnValue = (TestReturnValue)cctrl.Invoke(
                 this.ddlCmctCtrl.SelectedValue, testParameterValue);
 
-            // 結果表示するメッセージ エリア
+            // 結果表示するMessage エリア
             Label label = (Label)this.GetMasterWebControl("Label1");
             label.Text = "";
 
@@ -308,14 +308,14 @@ namespace ProjectX_sample.Aspx.Sample.Crud
                 this.GridView1.DataBind();
             }
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// btnMButton6のクリックイベント（参照処理）
+        /// btnMButton6のClickイベント（参照処理）
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_sampleScreen_btnMButton6_Click(FxEventArgs fxEventArgs)
         {
@@ -343,7 +343,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud
             testReturnValue = (TestReturnValue)cctrl.Invoke(
                 this.ddlCmctCtrl.SelectedValue, testParameterValue);
 
-            // 結果表示するメッセージ エリア
+            // 結果表示するMessage エリア
             Label label = (Label)this.GetMasterWebControl("Label1");
             label.Text = "";
 
@@ -362,7 +362,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud
                 this.TextBox3.Text = testReturnValue.Phone;
             }
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
@@ -371,9 +371,9 @@ namespace ProjectX_sample.Aspx.Sample.Crud
         #region 更新系
 
         /// <summary>
-        /// btnMButton7のクリックイベント（追加処理）
+        /// btnMButton7のClickイベント（追加処理）
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_sampleScreen_btnMButton7_Click(FxEventArgs fxEventArgs)
         {
@@ -402,7 +402,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud
             testReturnValue = (TestReturnValue)cctrl.Invoke(
                 this.ddlCmctCtrl.SelectedValue, testParameterValue);
 
-            // 結果表示するメッセージ エリア
+            // 結果表示するMessage エリア
             Label label = (Label)this.GetMasterWebControl("Label1");
             label.Text = "";
 
@@ -419,14 +419,14 @@ namespace ProjectX_sample.Aspx.Sample.Crud
                 label.Text = testReturnValue.Obj.ToString() + "件追加";
             }
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// btnMButton8のクリックイベント（更新処理）
+        /// btnMButton8のClickイベント（更新処理）
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_sampleScreen_btnMButton8_Click(FxEventArgs fxEventArgs)
         {
@@ -456,7 +456,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud
             testReturnValue = (TestReturnValue)cctrl.Invoke(
                 this.ddlCmctCtrl.SelectedValue, testParameterValue);
 
-            // 結果表示するメッセージ エリア
+            // 結果表示するMessage エリア
             Label label = (Label)this.GetMasterWebControl("Label1");
             label.Text = "";
 
@@ -473,14 +473,14 @@ namespace ProjectX_sample.Aspx.Sample.Crud
                 label.Text = testReturnValue.Obj.ToString() + "件更新";
             }
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// btnMButton9のクリックイベント（削除処理）
+        /// btnMButton9のClickイベント（削除処理）
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_sampleScreen_btnMButton9_Click(FxEventArgs fxEventArgs)
         {
@@ -508,7 +508,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud
             testReturnValue = (TestReturnValue)cctrl.Invoke(
                 this.ddlCmctCtrl.SelectedValue, testParameterValue);
 
-            // 結果表示するメッセージ エリア
+            // 結果表示するMessage エリア
             Label label = (Label)this.GetMasterWebControl("Label1");
             label.Text = "";
 
@@ -525,7 +525,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud
                 label.Text = testReturnValue.Obj.ToString() + "件削除";
             }
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
@@ -536,9 +536,9 @@ namespace ProjectX_sample.Aspx.Sample.Crud
         #region Ｐ層で例外をスロー
 
         /// <summary>
-        /// btnButton1のクリックイベント（業務例外）
+        /// btnButton1のClickイベント（業務例外）
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton1_Click(FxEventArgs fxEventArgs)
         {
@@ -549,9 +549,9 @@ namespace ProjectX_sample.Aspx.Sample.Crud
         }
 
         /// <summary>
-        /// btnButton2のクリックイベント（システム例外）
+        /// btnButton2のClickイベント（システム例外）
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
         {
@@ -561,9 +561,9 @@ namespace ProjectX_sample.Aspx.Sample.Crud
         }
 
         /// <summary>
-        /// btnButton3のクリックイベント（その他、一般的な例外）
+        /// btnButton3のClickイベント（その他、一般的な例外）
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton3_Click(FxEventArgs fxEventArgs)
         {
@@ -571,9 +571,9 @@ namespace ProjectX_sample.Aspx.Sample.Crud
         }
 
         /// <summary>
-        /// btnButton4のクリックイベント（その他、一般的な例外）
+        /// btnButton4のClickイベント（その他、一般的な例外）
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton4_Click(FxEventArgs fxEventArgs)
         {
@@ -585,10 +585,10 @@ namespace ProjectX_sample.Aspx.Sample.Crud
 
         #endregion
 
-        #region マスタページ、ユーザコントロールのイベント
+        #region Master Page、User Controlのイベント
 
-        /// <summary>マスタページにイベントハンドラを実装可能にしたのでそのテスト。</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>Master PageにEvent Handlerを実装可能にしたのでそのテスト。</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_sampleScreen_btnMPButton_Click(FxEventArgs fxEventArgs)
         {
@@ -597,8 +597,8 @@ namespace ProjectX_sample.Aspx.Sample.Crud
             return "";
         }
 
-        /// <summary>ユーザコントロールにイベントハンドラを実装可能にしたのでそのテスト。</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>User ControlにEvent Handlerを実装可能にしたのでそのテスト。</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_sampleControl1_btnUCButton_Click(FxEventArgs fxEventArgs)
         {
@@ -607,8 +607,8 @@ namespace ProjectX_sample.Aspx.Sample.Crud
             return "";
         }
 
-        /// <summary>ユーザコントロールにイベントハンドラを実装可能にしたのでそのテスト。</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>User ControlにEvent Handlerを実装可能にしたのでそのテスト。</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_sampleControl2_btnUCButton_Click(FxEventArgs fxEventArgs)
         {

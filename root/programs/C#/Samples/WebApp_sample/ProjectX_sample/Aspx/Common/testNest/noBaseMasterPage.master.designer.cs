@@ -13,7 +13,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
     public partial class noBaseMasterPage {
         
         /// <summary>
-        /// ContentPlaceHolder_B コントロール。
+        /// ContentPlaceHolder_B Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

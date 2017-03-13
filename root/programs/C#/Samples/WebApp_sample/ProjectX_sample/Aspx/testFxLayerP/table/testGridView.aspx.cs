@@ -37,7 +37,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
         /// <summary>ヘッダーに表示する文字列</summary>
         public Dictionary<string, string> HeaderInfo = new Dictionary<string, string>();
 
-        /// <summary>Page_InitイベントでASP.NET標準イベントハンドラを設定</summary>
+        /// <summary>Page_InitイベントでASP.NET標準Event Handlerを設定</summary>
         protected void Page_Init(object sender, EventArgs e)
         {
             // 行編集についてのイベント
@@ -54,15 +54,15 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
             this.gvwGridView1.Sorted += new EventHandler(gvwGridView1_Sorted);
         }
 
-        /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：初回Load）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit()
         {
-            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // Form初期化（初回Load）時に実行する処理を実装する
             // TODO:
             this.CmnInit();
 
-            // 初回ロード時に、データソースを
+            // 初回Load時に、データソースを
             // 生成 ＆ データバインドする。
             this.CreateDataSource();
             this.gvwGridView1.Columns[0].HeaderText = this.HeaderInfo["col0"];
@@ -80,11 +80,11 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
             this.BindGridData();
         }
 
-        /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：Post Back）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit_PostBack()
         {
-            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // Form初期化（Post Back）時に実行する処理を実装する
             // TODO:
             this.CmnInit();
 
@@ -140,7 +140,6 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
         #region データソースの生成
 
         /// <summary>DataSourceを生成</summary>
-        /// <returns>Datatableを返す</returns>
         private void CreateDataSource()
         {
             // Server.MapPathはアプリケーション ディレクトリを指す。
@@ -188,16 +187,16 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
 
         #endregion
 
-        #region イベントハンドラ
+        #region Event Handler
 
         #region 通常のイベント
 
-        /// <summary>btnButton1のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButton1のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton1_Click(FxEventArgs fxEventArgs)
         {
-            // ポストバックをまたいで値が保存されるかの確認
+            // Post Backをまたいで値が保存されるかの確認
             return "";
         }
 
@@ -217,7 +216,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
         #region Command
 
         /// <summary>gvwGridView1のコマンドイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_gvwGridView1_RowCommand(FxEventArgs fxEventArgs)
         {
@@ -245,14 +244,14 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
 
         #region 選択
 
-        /// <summary>GridViewの行の選択ボタンがクリックされ、行が選択される前に発生するイベント</summary>
+        /// <summary>GridViewの行の選択ButtonがClickされ、行が選択される前に発生するイベント</summary>
         protected void gvwGridView1_SelectedIndexChanging(object sender, GridViewSelectEventArgs e)
         {
             // ここでは何もしない
         }
 
         /// <summary>gvwGridView1の行選択後イベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_gvwGridView1_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {
@@ -273,7 +272,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
 
         // Updating、Deletingのみ棟梁でハンドル。
 
-        /// <summary>GridViewの行の編集ボタンがクリックされ、編集モードになる前に発生するイベント</summary>
+        /// <summary>GridViewの行の編集ButtonがClickされ、編集モードになる前に発生するイベント</summary>
         protected void gvwGridView1_RowEditing(object sender, GridViewEditEventArgs e)
         {
             // GridViewを編集モードにする
@@ -281,7 +280,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
             this.BindGridData();
         }
 
-        /// <summary>編集モードの行のキャンセルボタンがクリックされ、編集モードが終了する前に発生するイベント</summary>
+        /// <summary>編集モードの行のキャンセルButtonがClickされ、編集モードが終了する前に発生するイベント</summary>
         protected void gvwGridView1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
         {
             // GridViewを編集モードから解除する
@@ -290,12 +289,12 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
         }
 
         /// <summary>gvwGridView1の行更新前イベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <param name="e">オリジナルのイベント引数</param>
         /// <returns>URL</returns>
         protected string UOC_gvwGridView1_RowUpdating(FxEventArgs fxEventArgs, GridViewUpdateEventArgs e)
         {
-            // 編集行のコントロールを取得する
+            // 編集行のControlを取得する
             GridViewRow gvRow = this.gvwGridView1.Rows[e.RowIndex];
 
             TextBox txt1 = (TextBox)gvRow.FindControl("TextBox1");
@@ -321,14 +320,14 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
             return "";
         }
 
-        /// <summary>GridViewの行の更新ボタンがクリックされ、行が更新された後に発生するイベント</summary>
+        /// <summary>GridViewの行の更新ButtonがClickされ、行が更新された後に発生するイベント</summary>
         protected void gvwGridView1_RowUpdated(object sender, GridViewUpdatedEventArgs e)
         {
             // ここでは何もしない
         }
 
         /// <summary>gvwGridView1の行削除前イベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <param name="e">オリジナルのイベント引数</param>
         /// <returns>URL</returns>
         protected string UOC_gvwGridView1_RowDeleting(FxEventArgs fxEventArgs, GridViewDeleteEventArgs e)
@@ -345,7 +344,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
             return "";
         }
 
-        /// <summary>GridViewの行の削除ボタンがクリックされ、行が削除された後に発生するイベント</summary>
+        /// <summary>GridViewの行の削除ButtonがClickされ、行が削除された後に発生するイベント</summary>
         protected void gvwGridView1_RowDeleted(object sender, GridViewDeletedEventArgs e)
         {
             // ここでは何もしない
@@ -358,7 +357,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
         // PageIndexChanging、Sortingのみ棟梁でハンドル。
 
         /// <summary>gvwGridView1のPageIndexChangingイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <param name="e">オリジナルのイベント引数</param>
         /// <returns>URL</returns>
         protected string UOC_gvwGridView1_PageIndexChanging(FxEventArgs fxEventArgs, GridViewPageEventArgs e)
@@ -376,7 +375,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
         }
 
         /// <summary>gvwGridView1のSortingイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <param name="e">オリジナルのイベント引数</param>
         /// <returns>URL</returns>
         protected string UOC_gvwGridView1_Sorting(FxEventArgs fxEventArgs, GridViewSortEventArgs e)
@@ -441,7 +440,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
             return "";
         }
 
-        /// <summary>GridViewの列ヘッダーがクリックされ、行がソートされた後に発生するイベント</summary>
+        /// <summary>GridViewの列ヘッダーがClickされ、行がソートされた後に発生するイベント</summary>
         protected void gvwGridView1_Sorted(object sender, EventArgs e)
         {
             // ここでは何もしない
@@ -452,10 +451,10 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
         #region GridView内のCommand、Click以外のイベント
 
         // GridViewのイベントに行かないので通常通りハンドルする。
-        // （各コントロールのAutoPostBackを"true"に設定する）
+        // （各ControlのAutoPostBackを"true"に設定する）
 
         /// <summary>cbxCheckBox3のCheckedChangedイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_cbxCheckBox3_CheckedChanged(FxEventArgs fxEventArgs)
         {
@@ -473,7 +472,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
         }
 
         /// <summary>rbnRadioButton3のCheckedChangedイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_rbnRadioButton3_CheckedChanged(FxEventArgs fxEventArgs)
         {
@@ -491,7 +490,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
         }
 
         /// <summary>ddlDropDownList1のSelectedIndexChangedイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ddlDropDownList1_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {
@@ -509,7 +508,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
         }
 
         /// <summary>lbxListBox1のSelectedIndexChangedイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_lbxListBox1_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {

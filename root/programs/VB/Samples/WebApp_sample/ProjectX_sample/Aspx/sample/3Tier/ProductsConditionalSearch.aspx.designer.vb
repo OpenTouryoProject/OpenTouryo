@@ -15,7 +15,7 @@ Namespace Aspx.Sample._3Tier
     Partial Public Class ProductsConditionalSearch
 
         '''<summary>
-        '''ddlDap コントロール。
+        '''ddlDap Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents ddlDap As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
 
         '''<summary>
-        '''txtProductID_And コントロール。
+        '''txtProductID_And Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -33,7 +33,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtProductID_And As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtProductName_And コントロール。
+        '''txtProductName_And Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -42,7 +42,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtProductName_And As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''ddlSupplierID_And コントロール。
+        '''ddlSupplierID_And Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -51,7 +51,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents ddlSupplierID_And As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
 
         '''<summary>
-        '''ddlCategoryID_And コントロール。
+        '''ddlCategoryID_And Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -60,7 +60,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents ddlCategoryID_And As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
 
         '''<summary>
-        '''txtQuantityPerUnit_And コントロール。
+        '''txtQuantityPerUnit_And Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -69,7 +69,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtQuantityPerUnit_And As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtUnitPrice_And コントロール。
+        '''txtUnitPrice_And Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -78,7 +78,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtUnitPrice_And As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtUnitsInStock_And コントロール。
+        '''txtUnitsInStock_And Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -87,7 +87,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtUnitsInStock_And As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtUnitsOnOrder_And コントロール。
+        '''txtUnitsOnOrder_And Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -96,7 +96,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtUnitsOnOrder_And As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtReorderLevel_And コントロール。
+        '''txtReorderLevel_And Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -105,7 +105,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtReorderLevel_And As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtDiscontinued_And コントロール。
+        '''txtDiscontinued_And Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -114,7 +114,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtDiscontinued_And As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtProductID_And_Like コントロール。
+        '''txtProductID_And_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -123,7 +123,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtProductID_And_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtProductName_And_Like コントロール。
+        '''txtProductName_And_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -132,7 +132,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtProductName_And_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtSupplierID_And_Like コントロール。
+        '''txtSupplierID_And_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -141,7 +141,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtSupplierID_And_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtCategoryID_And_Like コントロール。
+        '''txtCategoryID_And_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -150,7 +150,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtCategoryID_And_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtQuantityPerUnit_And_Like コントロール。
+        '''txtQuantityPerUnit_And_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -159,7 +159,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtQuantityPerUnit_And_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtUnitPrice_And_Like コントロール。
+        '''txtUnitPrice_And_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -168,7 +168,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtUnitPrice_And_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtUnitsInStock_And_Like コントロール。
+        '''txtUnitsInStock_And_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -177,7 +177,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtUnitsInStock_And_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtUnitsOnOrder_And_Like コントロール。
+        '''txtUnitsOnOrder_And_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -186,7 +186,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtUnitsOnOrder_And_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtReorderLevel_And_Like コントロール。
+        '''txtReorderLevel_And_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -195,7 +195,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtReorderLevel_And_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtDiscontinued_And_Like コントロール。
+        '''txtDiscontinued_And_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -204,7 +204,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtDiscontinued_And_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtProductID_OR コントロール。
+        '''txtProductID_OR Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -213,7 +213,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtProductID_OR As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtProductName_OR コントロール。
+        '''txtProductName_OR Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -222,7 +222,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtProductName_OR As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtSupplierID_OR コントロール。
+        '''txtSupplierID_OR Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -231,7 +231,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtSupplierID_OR As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtCategoryID_OR コントロール。
+        '''txtCategoryID_OR Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -240,7 +240,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtCategoryID_OR As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtQuantityPerUnit_OR コントロール。
+        '''txtQuantityPerUnit_OR Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -249,7 +249,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtQuantityPerUnit_OR As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtUnitPrice_OR コントロール。
+        '''txtUnitPrice_OR Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -258,7 +258,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtUnitPrice_OR As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtUnitsInStock_OR コントロール。
+        '''txtUnitsInStock_OR Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -267,7 +267,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtUnitsInStock_OR As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtUnitsOnOrder_OR コントロール。
+        '''txtUnitsOnOrder_OR Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -276,7 +276,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtUnitsOnOrder_OR As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtReorderLevel_OR コントロール。
+        '''txtReorderLevel_OR Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -285,7 +285,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtReorderLevel_OR As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtDiscontinued_OR コントロール。
+        '''txtDiscontinued_OR Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -294,7 +294,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtDiscontinued_OR As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtProductID_OR_Like コントロール。
+        '''txtProductID_OR_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -303,7 +303,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtProductID_OR_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtProductName_OR_Like コントロール。
+        '''txtProductName_OR_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -312,7 +312,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtProductName_OR_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtSupplierID_OR_Like コントロール。
+        '''txtSupplierID_OR_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -321,7 +321,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtSupplierID_OR_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtCategoryID_OR_Like コントロール。
+        '''txtCategoryID_OR_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -330,7 +330,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtCategoryID_OR_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtQuantityPerUnit_OR_Like コントロール。
+        '''txtQuantityPerUnit_OR_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -339,7 +339,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtQuantityPerUnit_OR_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtUnitPrice_OR_Like コントロール。
+        '''txtUnitPrice_OR_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -348,7 +348,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtUnitPrice_OR_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtUnitsInStock_OR_Like コントロール。
+        '''txtUnitsInStock_OR_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -357,7 +357,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtUnitsInStock_OR_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtUnitsOnOrder_OR_Like コントロール。
+        '''txtUnitsOnOrder_OR_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -366,7 +366,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtUnitsOnOrder_OR_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtReorderLevel_OR_Like コントロール。
+        '''txtReorderLevel_OR_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -375,7 +375,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtReorderLevel_OR_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtDiscontinued_OR_Like コントロール。
+        '''txtDiscontinued_OR_Like Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -384,7 +384,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtDiscontinued_OR_Like As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''btnSearch コントロール。
+        '''btnSearch Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -393,7 +393,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents btnSearch As Global.System.Web.UI.WebControls.Button
 
         '''<summary>
-        '''btnInsert コントロール。
+        '''btnInsert Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -402,7 +402,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents btnInsert As Global.System.Web.UI.WebControls.Button
 
         '''<summary>
-        '''gvwGridView1 コントロール。
+        '''gvwGridView1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -411,7 +411,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents gvwGridView1 As Global.System.Web.UI.WebControls.GridView
 
         '''<summary>
-        '''ObjectDataSource1 コントロール。
+        '''ObjectDataSource1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

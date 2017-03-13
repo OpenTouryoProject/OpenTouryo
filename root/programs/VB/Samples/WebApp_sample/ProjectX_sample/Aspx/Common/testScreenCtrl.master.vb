@@ -6,7 +6,7 @@
 
 '**********************************************************************************
 '* クラス名        ：testScreenCtrl
-'* クラス日本語名  ：画面遷移制御機能テスト画面用のマスタ ページ
+'* クラス日本語名  ：画面遷移制御機能テスト画面用のMaster Page
 '*
 '* 作成日時        ：－
 '* 作成者          ：生技
@@ -20,11 +20,11 @@
 Imports Touryo.Infrastructure.Framework.Presentation
 
 Namespace Aspx.Common
-    ''' <summary>画面遷移制御機能テスト画面用のマスタ ページ</summary>
+    ''' <summary>画面遷移制御機能テスト画面用のMaster Page</summary>
     Partial Public Class testScreenCtrl
         Inherits BaseMasterController
         ''' <summary>
-        ''' btnMButton1のクリックイベント
+        ''' btnMButton1のClickイベント
         ''' </summary>
         ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
         ''' <returns>URL</returns>
@@ -36,9 +36,9 @@ Namespace Aspx.Common
         '---
 
         ''' <summary>
-        ''' lbnMLinkButton1のクリックイベント
+        ''' lbnMLinkButton1のClickイベント
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Public Function UOC_lbnMLinkButton1_Click(fxEventArgs As FxEventArgs) As String
 
@@ -46,9 +46,9 @@ Namespace Aspx.Common
         End Function
 
         ''' <summary>
-        ''' lbnMLinkButton2のクリックイベント
+        ''' lbnMLinkButton2のClickイベント
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Public Function UOC_lbnMLinkButton2_Click(fxEventArgs As FxEventArgs) As String
 
@@ -56,9 +56,9 @@ Namespace Aspx.Common
         End Function
 
         ''' <summary>
-        ''' lbnMLinkButton3のクリックイベント
+        ''' lbnMLinkButton3のClickイベント
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Public Function UOC_lbnMLinkButton3_Click(fxEventArgs As FxEventArgs) As String
 
@@ -66,9 +66,9 @@ Namespace Aspx.Common
         End Function
 
         ''' <summary>
-        ''' lbnMLinkButton4のクリックイベント
+        ''' lbnMLinkButton4のClickイベント
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Public Function UOC_lbnMLinkButton4_Click(fxEventArgs As FxEventArgs) As String
 
@@ -76,9 +76,9 @@ Namespace Aspx.Common
         End Function
 
         ''' <summary>
-        ''' lbnMLinkButton5のクリックイベント
+        ''' lbnMLinkButton5のClickイベント
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Public Function UOC_lbnMLinkButton5_Click(fxEventArgs As FxEventArgs) As String
 

@@ -44,9 +44,9 @@ Public Class ProductsTableAdapter
 			' B層を生成
 			Dim b As New _3TierEngine()
 
-			' データ件数取得処理を実行
-			returnValue = DirectCast(b.DoBusinessLogic(DirectCast(parameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.ReadCommitted), _3TierReturnValue)
-		Catch ex As Exception
+            ' データ件数取得処理を実行
+            returnValue = b.DoBusinessLogic(parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
+        Catch ex As Exception
 			MyBaseController.TransferErrorScreen2(ex)
 			Return 0
 		End Try
@@ -72,11 +72,21 @@ Public Class ProductsTableAdapter
 			' 引数クラスを生成
 			Dim parameterValue As _3TierParameterValue = Me.CreateParameter("Products", "SelectMethod", myUserInfo)
 
-			' カラムリスト（射影
-			parameterValue.ColumnList = "_s_ProductID_e_, " & "_s_ProductName_e_, " & "_s_SupplierID_e_, " & "_s_CategoryID_e_, " & "_s_QuantityPerUnit_e_, " & "_s_UnitPrice_e_, " & "_s_UnitsInStock_e_, " & "_s_UnitsOnOrder_e_, " & "_s_ReorderLevel_e_, " & "_s_Discontinued_e_"
+            ' カラムリスト（射影
+            parameterValue.ColumnList =
+                "_s_ProductID_e_, " &
+                "_s_ProductName_e_, " &
+                "_s_SupplierID_e_, " &
+                "_s_CategoryID_e_, " &
+                "_s_QuantityPerUnit_e_, " &
+                "_s_UnitPrice_e_, " &
+                "_s_UnitsInStock_e_, " &
+                "_s_UnitsOnOrder_e_, " &
+                "_s_ReorderLevel_e_, " &
+                "_s_Discontinued_e_"
 
-			' ソート条件
-			parameterValue.SortExpression = DirectCast(HttpContext.Current.Session("SortExpression"), String)
+            ' ソート条件
+            parameterValue.SortExpression = DirectCast(HttpContext.Current.Session("SortExpression"), String)
 			parameterValue.SortDirection = DirectCast(HttpContext.Current.Session("SortDirection"), String)
 
 			' ページング条件
@@ -86,11 +96,11 @@ Public Class ProductsTableAdapter
 			' B層を生成
 			Dim b As New _3TierEngine()
 
-			' データ取得処理を実行
-			returnValue = DirectCast(b.DoBusinessLogic(DirectCast(parameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.ReadCommitted), _3TierReturnValue)
+            ' データ取得処理を実行
+            returnValue = b.DoBusinessLogic(parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
-			' GridView1.DataSourceから取得できなかったのでSessionに格納。
-			HttpContext.Current.Session("SearchResult") = returnValue.Dt
+            ' GridView1.DataSourceから取得できなかったのでSessionに格納。
+            HttpContext.Current.Session("SearchResult") = returnValue.Dt
 		Catch ex As Exception
 			MyBaseController.TransferErrorScreen2(ex)
 			Return Nothing

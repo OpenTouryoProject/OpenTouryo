@@ -28,7 +28,7 @@
 <!--FxCode：add-js-event-->
 <body onload="Fx_Document_OnLoad();" onunload="Fx_Document_OnClose();">
 
-    <!-- オートコンプリートを指定 -->
+    <!-- auto completeを指定 -->
     <form id="form1" runat="server" autocomplete="on">
 
         <asp:ScriptManager EnableCdn="true" runat="server">
@@ -56,7 +56,7 @@
         
         <a href="<%= Me.ResolveUrl("~/Aspx/start/menu.aspx") %>">メニュー画面</a><br />
         <br/>
-        押下されたボタン：<cc1:WebCustomLabel id="lblMSG" runat="server">rmpのformのlblMSG</cc1:WebCustomLabel><br/>
+        押下されたButton：<cc1:WebCustomLabel id="lblMSG" runat="server">rmpのformのlblMSG</cc1:WebCustomLabel><br/>
         <br/>
         <cc1:WebCustomLabel id="lblTest" runat="server">rmpのformのlblTest</cc1:WebCustomLabel><br/>
         <cc1:WebCustomButton ID="btnButton" runat="server" Text="rmpのformのbtnButton" Width="200px" /><br/>

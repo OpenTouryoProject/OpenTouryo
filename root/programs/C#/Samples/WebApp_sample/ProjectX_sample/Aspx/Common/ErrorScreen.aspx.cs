@@ -51,18 +51,18 @@ namespace ProjectX_sample.Aspx.Common
         /// <summary>Session情報：リピータ処理用</summary>
         private ArrayList al_session = new ArrayList();
 
-        #region イベントハンドラ
+        #region Event Handler
 
         /// <summary>
-        /// 画面起動時に実行されるイベントハンドラ
+        /// 画面起動時に実行されるEvent Handler
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         protected void Page_Load(object sender, EventArgs e)
         {
-            //画面にエラーメッセージ・エラー情報を表示する-----------------------------
+            //画面にError Message・エラー情報を表示する-----------------------------
 
-            //エラーメッセージをＨＴＴＰコンテキストから取得
+            //Error MessageをＨＴＴＰコンテキストから取得
             string err_msg =
                 (string)HttpContext.Current.Items[FxHttpContextIndex.SYSTEM_EXCEPTION_MESSAGE];
 
@@ -70,7 +70,7 @@ namespace ProjectX_sample.Aspx.Common
             string err_info =
                 (string)HttpContext.Current.Items[FxHttpContextIndex.SYSTEM_EXCEPTION_INFORMATION];
 
-            //画面にエラーメッセージを表示する
+            //画面にError Messageを表示する
             this.Label1.Text = CustomEncode.HtmlEncode(err_msg);
 
             //画面にエラー情報を表示する

@@ -13,7 +13,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier {
     public partial class ProductsDetail {
         
         /// <summary>
-        /// ddlDap コントロール。
+        /// ddlDap Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -22,7 +22,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomDropDownList ddlDap;
         
         /// <summary>
-        /// txtProductID コントロール。
+        /// txtProductID Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -31,7 +31,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier {
         protected global::System.Web.UI.WebControls.TextBox txtProductID;
         
         /// <summary>
-        /// txtProductName コントロール。
+        /// txtProductName Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -40,7 +40,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier {
         protected global::System.Web.UI.WebControls.TextBox txtProductName;
         
         /// <summary>
-        /// ddlSupplierID コントロール。
+        /// ddlSupplierID Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -49,7 +49,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomDropDownList ddlSupplierID;
         
         /// <summary>
-        /// ddlCategoryID コントロール。
+        /// ddlCategoryID Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -58,7 +58,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomDropDownList ddlCategoryID;
         
         /// <summary>
-        /// txtQuantityPerUnit コントロール。
+        /// txtQuantityPerUnit Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -67,7 +67,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier {
         protected global::System.Web.UI.WebControls.TextBox txtQuantityPerUnit;
         
         /// <summary>
-        /// txtUnitPrice コントロール。
+        /// txtUnitPrice Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -76,7 +76,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier {
         protected global::System.Web.UI.WebControls.TextBox txtUnitPrice;
         
         /// <summary>
-        /// txtUnitsInStock コントロール。
+        /// txtUnitsInStock Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -85,7 +85,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier {
         protected global::System.Web.UI.WebControls.TextBox txtUnitsInStock;
         
         /// <summary>
-        /// txtUnitsOnOrder コントロール。
+        /// txtUnitsOnOrder Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -94,7 +94,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier {
         protected global::System.Web.UI.WebControls.TextBox txtUnitsOnOrder;
         
         /// <summary>
-        /// txtReorderLevel コントロール。
+        /// txtReorderLevel Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -103,7 +103,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier {
         protected global::System.Web.UI.WebControls.TextBox txtReorderLevel;
         
         /// <summary>
-        /// txtDiscontinued コントロール。
+        /// txtDiscontinued Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -112,7 +112,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier {
         protected global::System.Web.UI.WebControls.TextBox txtDiscontinued;
         
         /// <summary>
-        /// btnEdit コントロール。
+        /// btnEdit Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -121,7 +121,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier {
         protected global::System.Web.UI.WebControls.Button btnEdit;
         
         /// <summary>
-        /// btnUpdate コントロール。
+        /// btnUpdate Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -130,7 +130,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier {
         protected global::System.Web.UI.WebControls.Button btnUpdate;
         
         /// <summary>
-        /// btnDelete コントロール。
+        /// btnDelete Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -139,7 +139,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier {
         protected global::System.Web.UI.WebControls.Button btnDelete;
         
         /// <summary>
-        /// btnInsert コントロール。
+        /// btnInsert Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -148,7 +148,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier {
         protected global::System.Web.UI.WebControls.Button btnInsert;
         
         /// <summary>
-        /// lblResult コントロール。
+        /// lblResult Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

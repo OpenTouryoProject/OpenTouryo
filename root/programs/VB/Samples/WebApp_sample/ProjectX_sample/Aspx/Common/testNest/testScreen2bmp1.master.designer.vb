@@ -15,7 +15,7 @@ Namespace Aspx.Common.TestNest
     Partial Public Class testScreen2bmp1
         
         '''<summary>
-        '''ddlCPF_A コントロール。
+        '''ddlCPF_A Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ddlCPF_A As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
         
         '''<summary>
-        '''ContentPlaceHolder_A1 コントロール。
+        '''ContentPlaceHolder_A1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

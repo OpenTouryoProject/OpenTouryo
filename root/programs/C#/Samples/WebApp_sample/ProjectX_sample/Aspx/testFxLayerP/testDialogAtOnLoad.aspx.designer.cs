@@ -13,7 +13,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP {
     public partial class testDialogAtOnLoad {
         
         /// <summary>
-        /// CheckBox1 コントロール。
+        /// CheckBox1 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -22,7 +22,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomCheckBox CheckBox1;
         
         /// <summary>
-        /// WebCustomButton1 コントロール。
+        /// WebCustomButton1 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -31,7 +31,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton WebCustomButton1;
         
         /// <summary>
-        /// btnButton1 コントロール。
+        /// btnButton1 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -40,7 +40,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButton1;
         
         /// <summary>
-        /// btnButton2 コントロール。
+        /// btnButton2 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -49,7 +49,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButton2;
         
         /// <summary>
-        /// btnButton3 コントロール。
+        /// btnButton3 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

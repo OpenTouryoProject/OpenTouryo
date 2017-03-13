@@ -13,7 +13,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
     public partial class testScreen1bmp2 {
         
         /// <summary>
-        /// lblCPF_A1 コントロール。
+        /// lblCPF_A1 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -22,7 +22,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblCPF_A1;
         
         /// <summary>
-        /// btnCPF_A1 コントロール。
+        /// btnCPF_A1 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -31,7 +31,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnCPF_A1;
         
         /// <summary>
-        /// ContentPlaceHolder_A2 コントロール。
+        /// ContentPlaceHolder_A2 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -40,7 +40,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.ContentPlaceHolder ContentPlaceHolder_A2;
         
         /// <summary>
-        /// lblCPF_B1 コントロール。
+        /// lblCPF_B1 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -49,7 +49,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblCPF_B1;
         
         /// <summary>
-        /// btnCPF_B1 コントロール。
+        /// btnCPF_B1 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -58,7 +58,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnCPF_B1;
         
         /// <summary>
-        /// ContentPlaceHolder_B2 コントロール。
+        /// ContentPlaceHolder_B2 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -67,7 +67,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.ContentPlaceHolder ContentPlaceHolder_B2;
         
         /// <summary>
-        /// lblCPF_C1 コントロール。
+        /// lblCPF_C1 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -76,7 +76,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblCPF_C1;
         
         /// <summary>
-        /// btnCPF_C1 コントロール。
+        /// btnCPF_C1 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -85,7 +85,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnCPF_C1;
         
         /// <summary>
-        /// ContentPlaceHolder_C2 コントロール。
+        /// ContentPlaceHolder_C2 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

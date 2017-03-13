@@ -10,7 +10,7 @@
     <h1>開発用エラー画面</h1>
     <p>
         システム障害が発生しました。<br/>
-        エラーメッセージおよびスタックトレース情報を以下に示します。<br />
+        Error Messageおよびスタックトレース情報を以下に示します。<br />
         ※ スタック トレースの正確な情報はアクセス トレース ログから確認下さい。<br />
     </p>
     <p>
@@ -19,7 +19,7 @@
     </p>
     <hr />
     <div>
-       エラーメッセージ：<br />
+       Error Message：<br />
        <pre><cc1:WebCustomLabel ID="Label1" runat="server"></cc1:WebCustomLabel></pre>
     </div>
     <hr />
@@ -33,7 +33,7 @@
         <br />
         <asp:Repeater id="Repeater1" runat="server">
           <HeaderTemplate>
-             <table border="1" width="1000">
+             <table border="1" style="width:1000px;">
                 <tr>
                    <td style="width:300px"><b>キー</b></td>
                    <td style="width:700px"><b>バリュー</b></td>
@@ -60,7 +60,7 @@
         <br />
         <asp:Repeater id="Repeater2" runat="server">
           <HeaderTemplate>
-             <table border="1" width="600">
+             <table border="1" style="width:600px;">
                 <tr>
                   <td style="width:300px"><b>キー</b></td>
                   <td style="width:700px"><b>バリュー</b></td>

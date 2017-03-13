@@ -15,7 +15,7 @@ Namespace Aspx.Common.TestNest
     Partial Public Class rootMasterPage
         
         '''<summary>
-        '''Head1 コントロール。
+        '''Head1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents Head1 As Global.System.Web.UI.HtmlControls.HtmlHead
         
         '''<summary>
-        '''cphHeaderScripts コントロール。
+        '''cphHeaderScripts Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -33,7 +33,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents cphHeaderScripts As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''form1 コントロール。
+        '''form1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -42,7 +42,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents form1 As Global.System.Web.UI.HtmlControls.HtmlForm
         
         '''<summary>
-        '''lblMSG コントロール。
+        '''lblMSG Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -51,7 +51,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents lblMSG As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''lblTest コントロール。
+        '''lblTest Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -60,7 +60,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents lblTest As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButton コントロール。
+        '''btnButton Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -69,7 +69,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents btnButton As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ContentPlaceHolder_A コントロール。
+        '''ContentPlaceHolder_A Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -78,7 +78,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_A As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_B コントロール。
+        '''ContentPlaceHolder_B Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -87,7 +87,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_B As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_C コントロール。
+        '''ContentPlaceHolder_C Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -96,7 +96,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_C As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ChildScreenType コントロール。
+        '''ChildScreenType Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -105,7 +105,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ChildScreenType As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''ChildScreenUrl コントロール。
+        '''ChildScreenUrl Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -114,7 +114,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ChildScreenUrl As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''CloseFlag コントロール。
+        '''CloseFlag Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -123,7 +123,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents CloseFlag As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''SubmitFlag コントロール。
+        '''SubmitFlag Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -132,7 +132,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents SubmitFlag As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''ScreenGuid コントロール。
+        '''ScreenGuid Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -141,7 +141,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ScreenGuid As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''FxDialogStyle コントロール。
+        '''FxDialogStyle Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -150,7 +150,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents FxDialogStyle As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''BusinessDialogStyle コントロール。
+        '''BusinessDialogStyle Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -159,7 +159,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents BusinessDialogStyle As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''NormalScreenStyle コントロール。
+        '''NormalScreenStyle Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -168,7 +168,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents NormalScreenStyle As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''NormalScreenTarget コントロール。
+        '''NormalScreenTarget Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -177,7 +177,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents NormalScreenTarget As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''DialogFrameUrl コントロール。
+        '''DialogFrameUrl Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -186,7 +186,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents DialogFrameUrl As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''WindowGuid コントロール。
+        '''WindowGuid Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -195,7 +195,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents WindowGuid As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''RequestTicketGuid コントロール。
+        '''RequestTicketGuid Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -204,7 +204,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents RequestTicketGuid As Global.System.Web.UI.WebControls.HiddenField
         
         '''<summary>
-        '''cphFooterScripts コントロール。
+        '''cphFooterScripts Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

@@ -13,7 +13,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
     public partial class testScreen0 {
         
         /// <summary>
-        /// btnAppEx コントロール。
+        /// btnAppEx Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -22,7 +22,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnAppEx;
         
         /// <summary>
-        /// btnSysEx コントロール。
+        /// btnSysEx Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -31,7 +31,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnSysEx;
         
         /// <summary>
-        /// btnElseEx コントロール。
+        /// btnElseEx Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -40,7 +40,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnElseEx;
         
         /// <summary>
-        /// txtUserName コントロール。
+        /// txtUserName Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -49,7 +49,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox txtUserName;
         
         /// <summary>
-        /// txtUserInfoKey コントロール。
+        /// txtUserInfoKey Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -58,7 +58,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox txtUserInfoKey;
         
         /// <summary>
-        /// lblUserName コントロール。
+        /// lblUserName Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -67,7 +67,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblUserName;
         
         /// <summary>
-        /// btnSetUserInfo コントロール。
+        /// btnSetUserInfo Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -76,7 +76,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnSetUserInfo;
         
         /// <summary>
-        /// btnGetUserInfo コントロール。
+        /// btnGetUserInfo Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -85,7 +85,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnGetUserInfo;
         
         /// <summary>
-        /// btnUpdUserInfo コントロール。
+        /// btnUpdUserInfo Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -94,7 +94,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnUpdUserInfo;
         
         /// <summary>
-        /// btnDelUserInfo コントロール。
+        /// btnDelUserInfo Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -103,7 +103,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnDelUserInfo;
         
         /// <summary>
-        /// btnSetUserInfos コントロール。
+        /// btnSetUserInfos Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -112,7 +112,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnSetUserInfos;
         
         /// <summary>
-        /// btnGetUserInfos コントロール。
+        /// btnGetUserInfos Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -121,7 +121,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnGetUserInfos;
         
         /// <summary>
-        /// btnDelUserInfos コントロール。
+        /// btnDelUserInfos Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -130,7 +130,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnDelUserInfos;
         
         /// <summary>
-        /// btnGetAllKeys コントロール。
+        /// btnGetAllKeys Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -139,7 +139,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnGetAllKeys;
         
         /// <summary>
-        /// txtSubSysID コントロール。
+        /// txtSubSysID Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -148,7 +148,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox txtSubSysID;
         
         /// <summary>
-        /// txtSubSysInfoKey コントロール。
+        /// txtSubSysInfoKey Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -157,7 +157,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox txtSubSysInfoKey;
         
         /// <summary>
-        /// txtSubSysInfo コントロール。
+        /// txtSubSysInfo Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -166,7 +166,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox txtSubSysInfo;
         
         /// <summary>
-        /// lblSubSysInfo コントロール。
+        /// lblSubSysInfo Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -175,7 +175,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblSubSysInfo;
         
         /// <summary>
-        /// btnSetSubSysInfo コントロール。
+        /// btnSetSubSysInfo Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -184,7 +184,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnSetSubSysInfo;
         
         /// <summary>
-        /// btnGetSubSysInfo コントロール。
+        /// btnGetSubSysInfo Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -193,7 +193,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnGetSubSysInfo;
         
         /// <summary>
-        /// btnDelSubSysInfo コントロール。
+        /// btnDelSubSysInfo Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -202,7 +202,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnDelSubSysInfo;
         
         /// <summary>
-        /// TextBox1 コントロール。
+        /// TextBox1 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -211,7 +211,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::System.Web.UI.WebControls.TextBox TextBox1;
         
         /// <summary>
-        /// btnIllegalOperationCheckON コントロール。
+        /// btnIllegalOperationCheckON Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -220,7 +220,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
         protected global::System.Web.UI.WebControls.Button btnIllegalOperationCheckON;
         
         /// <summary>
-        /// btnIllegalOperationCheckOFF コントロール。
+        /// btnIllegalOperationCheckOFF Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

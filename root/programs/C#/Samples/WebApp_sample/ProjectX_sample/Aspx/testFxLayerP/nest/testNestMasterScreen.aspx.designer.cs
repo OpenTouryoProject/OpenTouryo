@@ -13,7 +13,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
     public partial class testNestMasterScreen {
         
         /// <summary>
-        /// lblTestAAA コントロール。
+        /// lblTestAAA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -22,7 +22,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestAAA;
         
         /// <summary>
-        /// btnButtonAAA コントロール。
+        /// btnButtonAAA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -31,7 +31,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonAAA;
         
         /// <summary>
-        /// lblTestAAB コントロール。
+        /// lblTestAAB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -40,7 +40,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestAAB;
         
         /// <summary>
-        /// btnButtonAAB コントロール。
+        /// btnButtonAAB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -49,7 +49,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonAAB;
         
         /// <summary>
-        /// lblTestAAC コントロール。
+        /// lblTestAAC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -58,7 +58,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestAAC;
         
         /// <summary>
-        /// btnButtonAAC コントロール。
+        /// btnButtonAAC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -67,7 +67,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonAAC;
         
         /// <summary>
-        /// lblTestABA コントロール。
+        /// lblTestABA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -76,7 +76,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestABA;
         
         /// <summary>
-        /// btnButtonABA コントロール。
+        /// btnButtonABA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -85,7 +85,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonABA;
         
         /// <summary>
-        /// lblTestABB コントロール。
+        /// lblTestABB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -94,7 +94,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestABB;
         
         /// <summary>
-        /// btnButtonABB コントロール。
+        /// btnButtonABB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -103,7 +103,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonABB;
         
         /// <summary>
-        /// lblTestABC コントロール。
+        /// lblTestABC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -112,7 +112,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestABC;
         
         /// <summary>
-        /// btnButtonABC コントロール。
+        /// btnButtonABC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -121,7 +121,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonABC;
         
         /// <summary>
-        /// lblTestACA コントロール。
+        /// lblTestACA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -130,7 +130,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestACA;
         
         /// <summary>
-        /// btnButtonACA コントロール。
+        /// btnButtonACA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -139,7 +139,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonACA;
         
         /// <summary>
-        /// lblTestACB コントロール。
+        /// lblTestACB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -148,7 +148,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestACB;
         
         /// <summary>
-        /// btnButtonACB コントロール。
+        /// btnButtonACB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -157,7 +157,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonACB;
         
         /// <summary>
-        /// lblTestACC コントロール。
+        /// lblTestACC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -166,7 +166,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestACC;
         
         /// <summary>
-        /// btnButtonACC コントロール。
+        /// btnButtonACC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -175,7 +175,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonACC;
         
         /// <summary>
-        /// lblTestBAA コントロール。
+        /// lblTestBAA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -184,7 +184,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestBAA;
         
         /// <summary>
-        /// btnButtonBAA コントロール。
+        /// btnButtonBAA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -193,7 +193,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonBAA;
         
         /// <summary>
-        /// lblTestBAB コントロール。
+        /// lblTestBAB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -202,7 +202,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestBAB;
         
         /// <summary>
-        /// btnButtonBAB コントロール。
+        /// btnButtonBAB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -211,7 +211,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonBAB;
         
         /// <summary>
-        /// lblTestBAC コントロール。
+        /// lblTestBAC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -220,7 +220,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestBAC;
         
         /// <summary>
-        /// btnButtonBAC コントロール。
+        /// btnButtonBAC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -229,7 +229,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonBAC;
         
         /// <summary>
-        /// lblTestBBA コントロール。
+        /// lblTestBBA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -238,7 +238,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestBBA;
         
         /// <summary>
-        /// btnButtonBBA コントロール。
+        /// btnButtonBBA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -247,7 +247,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonBBA;
         
         /// <summary>
-        /// lblTestBBB コントロール。
+        /// lblTestBBB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -256,7 +256,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestBBB;
         
         /// <summary>
-        /// btnButtonBBB コントロール。
+        /// btnButtonBBB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -265,7 +265,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonBBB;
         
         /// <summary>
-        /// lblTestBBC コントロール。
+        /// lblTestBBC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -274,7 +274,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestBBC;
         
         /// <summary>
-        /// btnButtonBBC コントロール。
+        /// btnButtonBBC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -283,7 +283,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonBBC;
         
         /// <summary>
-        /// lblTestBCA コントロール。
+        /// lblTestBCA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -292,7 +292,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestBCA;
         
         /// <summary>
-        /// btnButtonBCA コントロール。
+        /// btnButtonBCA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -301,7 +301,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonBCA;
         
         /// <summary>
-        /// lblTestBCB コントロール。
+        /// lblTestBCB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -310,7 +310,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestBCB;
         
         /// <summary>
-        /// btnButtonBCB コントロール。
+        /// btnButtonBCB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -319,7 +319,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonBCB;
         
         /// <summary>
-        /// lblTestBCC コントロール。
+        /// lblTestBCC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -328,7 +328,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestBCC;
         
         /// <summary>
-        /// btnButtonBCC コントロール。
+        /// btnButtonBCC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -337,7 +337,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonBCC;
         
         /// <summary>
-        /// lblTestCAA コントロール。
+        /// lblTestCAA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -346,7 +346,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestCAA;
         
         /// <summary>
-        /// btnButtonCAA コントロール。
+        /// btnButtonCAA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -355,7 +355,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonCAA;
         
         /// <summary>
-        /// lblTestCAB コントロール。
+        /// lblTestCAB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -364,7 +364,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestCAB;
         
         /// <summary>
-        /// btnButtonCAB コントロール。
+        /// btnButtonCAB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -373,7 +373,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonCAB;
         
         /// <summary>
-        /// lblTestCAC コントロール。
+        /// lblTestCAC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -382,7 +382,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestCAC;
         
         /// <summary>
-        /// btnButtonCAC コントロール。
+        /// btnButtonCAC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -391,7 +391,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonCAC;
         
         /// <summary>
-        /// lblTestCBA コントロール。
+        /// lblTestCBA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -400,7 +400,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestCBA;
         
         /// <summary>
-        /// btnButtonCBA コントロール。
+        /// btnButtonCBA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -409,7 +409,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonCBA;
         
         /// <summary>
-        /// lblTestCBB コントロール。
+        /// lblTestCBB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -418,7 +418,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestCBB;
         
         /// <summary>
-        /// btnButtonCBB コントロール。
+        /// btnButtonCBB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -427,7 +427,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonCBB;
         
         /// <summary>
-        /// lblTestCBC コントロール。
+        /// lblTestCBC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -436,7 +436,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestCBC;
         
         /// <summary>
-        /// btnButtonCBC コントロール。
+        /// btnButtonCBC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -445,7 +445,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonCBC;
         
         /// <summary>
-        /// lblTestCCA コントロール。
+        /// lblTestCCA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -454,7 +454,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestCCA;
         
         /// <summary>
-        /// btnButtonCCA コントロール。
+        /// btnButtonCCA Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -463,7 +463,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonCCA;
         
         /// <summary>
-        /// lblTestCCB コントロール。
+        /// lblTestCCB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -472,7 +472,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestCCB;
         
         /// <summary>
-        /// btnButtonCCB コントロール。
+        /// btnButtonCCB Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -481,7 +481,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButtonCCB;
         
         /// <summary>
-        /// lblTestCCC コントロール。
+        /// lblTestCCC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -490,7 +490,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTestCCC;
         
         /// <summary>
-        /// btnButtonCCC コントロール。
+        /// btnButtonCCC Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

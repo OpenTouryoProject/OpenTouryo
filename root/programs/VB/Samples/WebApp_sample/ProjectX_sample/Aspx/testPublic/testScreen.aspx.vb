@@ -19,7 +19,6 @@
 
 Imports System.IO
 Imports System.Security.Principal
-
 Imports System.Collections.ObjectModel
 
 Imports Touryo.Infrastructure.Business.Str
@@ -32,7 +31,6 @@ Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
 
 Namespace Aspx.TestPublic
-
     ''' <summary>共通部品テスト画面</summary>
     Partial Public Class testScreen
         Inherits System.Web.UI.Page
@@ -287,11 +285,11 @@ Namespace Aspx.TestPublic
 
 #End Region
 
-#Region "メッセージ取得部品"
+#Region "Message取得部品"
 
-        ''' <summary>メッセージの取得</summary>
+        ''' <summary>Messageの取得</summary>
         Protected Sub btnGetMSG_Click(sender As Object, e As EventArgs)
-            ' メッセージを取得する。
+            ' Messageを取得する。
             Me.lblMSG.Text = GetMessage.GetMessageDescription(Me.txtMSGID.Text)
         End Sub
 
@@ -306,7 +304,7 @@ Namespace Aspx.TestPublic
         '    // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
         '    MyParameterValue myParameterValue
         '        = new MyParameterValue(
-        '              "画面ID", "ボタンID",
+        '              "画面ID", "ButtonID",
         '              this.ddlDap.SelectedValue + "%"
         '              + this.ddlExRollback.SelectedValue + "%"
         '              + this.ddlExStatus.SelectedValue,
@@ -342,7 +340,7 @@ Namespace Aspx.TestPublic
         '    // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
         '    MyType.TestParameterValue testParameterValue
         '        = new MyType.TestParameterValue(
-        '              "", "画面ID", "ボタンID",
+        '              "", "画面ID", "ButtonID",
         '              this.ddlDap.SelectedValue + "%"
         '              + this.ddlExRollback.SelectedValue + "%"
         '              + this.ddlExStatus.SelectedValue,
@@ -366,7 +364,7 @@ Namespace Aspx.TestPublic
         '    // 例外判定
         '    if (myReturnValue.ErrorFlag)
         '    {
-        '        // エラーメッセージ
+        '        // Error Message
         '        this.lblTxID.Text = myReturnValue.ErrorMessage;
         '    }
         '    else
@@ -1994,7 +1992,7 @@ Namespace Aspx.TestPublic
             If TypeOf User.Identity Is WindowsIdentity Then
                 Try
                     ' コードの特定部分を実行するときのみ、認証中のユーザ (User.Identity) を偽装する。
-                    ' このため、Windows認証に設定して、ダイアログや、ケルベロス（SSO）で認証する必要がある。
+                    ' このため、Windows認証で認証する必要がある。
 
                     ' 偽装して
                     ii = New IdentityImpersonation()
@@ -2057,4 +2055,5 @@ Namespace Aspx.TestPublic
 
 #End Region
     End Class
+
 End Namespace

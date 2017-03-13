@@ -6,7 +6,7 @@
 
 //**********************************************************************************
 //* クラス名        ：testNestMasterScreen
-//* クラス日本語名  ：マスタページのテスト画面（Ｐ層）
+//* クラス日本語名  ：Master Pageのテスト画面（Ｐ層）
 //*
 //* 作成日時        ：－
 //* 作成者          ：－
@@ -28,21 +28,21 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
     /// <summary>テスト画面ネスト（Ｐ層）</summary>
     public partial class testNestMasterScreen : MyBaseController
     {
-        #region ページロードのUOCメソッド
+        #region Page LoadのUOCメソッド
 
-        /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：初回Load）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit()
         {
-            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // Form初期化（初回Load）時に実行する処理を実装する
             // TODO:
         }
 
-        /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：Post Back）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit_PostBack()
         {
-            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // Form初期化（Post Back）時に実行する処理を実装する
             // TODO:
         }
 
@@ -51,11 +51,11 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
         #region 共通処理
 
         /// <summary>共通処理１</summary>
-        /// <param name="buttonID">ボタンID</param>
+        /// <param name="buttonID">ButtonID</param>
         /// <param name="x">CPFを表す文字数</param>
         private void commonM(string buttonID, int x)
         {
-            // コントロールの取得
+            // Controlの取得
             ((Label)this.GetMasterWebControl("lblMSG")).Text = buttonID;
 
             // ラベルを非表示
@@ -66,11 +66,11 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
         }
 
         /// <summary>共通処理２</summary>
-        /// <param name="buttonID">ボタンID</param>
+        /// <param name="buttonID">ButtonID</param>
         /// <param name="x">CPFを表す文字数</param>
         private void commonC(string buttonID, int x)
         {
-            // コントロールの取得
+            // Controlの取得
             ((Label)this.GetMasterWebControl("lblMSG")).Text = buttonID;
 
             // ラベルを非表示
@@ -84,12 +84,12 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
 
         #region イベント処理
 
-        #region マスタ
+        #region Master Page
 
         #region rootMasterPage
 
-        /// <summary>btnButtonのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_rootMasterPage_btnButton_Click(FxEventArgs fxEventArgs)
         {
@@ -101,8 +101,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
 
         #region branchMasterPage1
 
-        /// <summary>btnButtonAのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonAのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_branchMasterPage1_btnButtonA_Click(FxEventArgs fxEventArgs)
         {
@@ -110,8 +110,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonBのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonBのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_branchMasterPage1_btnButtonB_Click(FxEventArgs fxEventArgs)
         {
@@ -119,8 +119,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonCのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonCのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_branchMasterPage1_btnButtonC_Click(FxEventArgs fxEventArgs)
         {
@@ -132,8 +132,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
 
         #region branchMasterPage2
 
-        /// <summary>btnButtonAAのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonAAのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_branchMasterPage2_btnButtonAA_Click(FxEventArgs fxEventArgs)
         {
@@ -141,8 +141,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonABのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonABのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_branchMasterPage2_btnButtonAB_Click(FxEventArgs fxEventArgs)
         {
@@ -150,8 +150,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonACのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonACのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_branchMasterPage2_btnButtonAC_Click(FxEventArgs fxEventArgs)
         {
@@ -159,8 +159,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonBAのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonBAのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_branchMasterPage2_btnButtonBA_Click(FxEventArgs fxEventArgs)
         {
@@ -168,8 +168,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonBBのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonBBのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_branchMasterPage2_btnButtonBB_Click(FxEventArgs fxEventArgs)
         {
@@ -177,8 +177,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonBCのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonBCのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_branchMasterPage2_btnButtonBC_Click(FxEventArgs fxEventArgs)
         {
@@ -186,8 +186,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonCAのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonCAのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_branchMasterPage2_btnButtonCA_Click(FxEventArgs fxEventArgs)
         {
@@ -195,8 +195,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonCBのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonCBのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_branchMasterPage2_btnButtonCB_Click(FxEventArgs fxEventArgs)
         {
@@ -204,8 +204,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonCCのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonCCのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_branchMasterPage2_btnButtonCC_Click(FxEventArgs fxEventArgs)
         {
@@ -219,8 +219,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
 
         #region コンテンツ
 
-        /// <summary>btnButtonAAAのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonAAAのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonAAA_Click(FxEventArgs fxEventArgs)
         {
@@ -228,8 +228,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonAABのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonAABのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonAAB_Click(FxEventArgs fxEventArgs)
         {
@@ -237,8 +237,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonAACのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonAACのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonAAC_Click(FxEventArgs fxEventArgs)
         {
@@ -246,8 +246,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonABAのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonABAのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonABA_Click(FxEventArgs fxEventArgs)
         {
@@ -255,8 +255,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonABBのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonABBのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonABB_Click(FxEventArgs fxEventArgs)
         {
@@ -264,8 +264,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonABCのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonABCのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonABC_Click(FxEventArgs fxEventArgs)
         {
@@ -273,8 +273,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonACAのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonACAのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonACA_Click(FxEventArgs fxEventArgs)
         {
@@ -282,8 +282,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonACBのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonACBのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonACB_Click(FxEventArgs fxEventArgs)
         {
@@ -291,8 +291,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonACCのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonACCのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonACC_Click(FxEventArgs fxEventArgs)
         {
@@ -300,8 +300,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonBAAのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonBAAのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonBAA_Click(FxEventArgs fxEventArgs)
         {
@@ -309,8 +309,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonBABのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonBABのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonBAB_Click(FxEventArgs fxEventArgs)
         {
@@ -318,8 +318,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonBACのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonBACのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonBAC_Click(FxEventArgs fxEventArgs)
         {
@@ -327,8 +327,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonBBAのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonBBAのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonBBA_Click(FxEventArgs fxEventArgs)
         {
@@ -336,8 +336,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonBBBのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonBBBのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonBBB_Click(FxEventArgs fxEventArgs)
         {
@@ -345,8 +345,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonBBCのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonBBCのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonBBC_Click(FxEventArgs fxEventArgs)
         {
@@ -354,8 +354,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonBCAのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonBCAのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonBCA_Click(FxEventArgs fxEventArgs)
         {
@@ -363,8 +363,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonBCBのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonBCBのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonBCB_Click(FxEventArgs fxEventArgs)
         {
@@ -372,8 +372,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonBCCのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonBCCのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonBCC_Click(FxEventArgs fxEventArgs)
         {
@@ -381,8 +381,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonCAAのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonCAAのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonCAA_Click(FxEventArgs fxEventArgs)
         {
@@ -390,8 +390,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonCABのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonCABのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonCAB_Click(FxEventArgs fxEventArgs)
         {
@@ -399,8 +399,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonCACのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonCACのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonCAC_Click(FxEventArgs fxEventArgs)
         {
@@ -408,8 +408,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonCBAのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonCBAのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonCBA_Click(FxEventArgs fxEventArgs)
         {
@@ -417,8 +417,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonCBBのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonCBBのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonCBB_Click(FxEventArgs fxEventArgs)
         {
@@ -426,8 +426,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonCBCのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonCBCのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonCBC_Click(FxEventArgs fxEventArgs)
         {
@@ -435,8 +435,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonCCAのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonCCAのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonCCA_Click(FxEventArgs fxEventArgs)
         {
@@ -444,8 +444,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonCCBのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonCCBのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonCCB_Click(FxEventArgs fxEventArgs)
         {
@@ -453,8 +453,8 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        /// <summary>btnButtonCCCのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButtonCCCのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButtonCCC_Click(FxEventArgs fxEventArgs)
         {
@@ -462,7 +462,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
             return System.String.Empty;
         }
 
-        ////// ちなみに存在しないコントロールを検索した場合どうなるかチェックする。
+        ////// ちなみに存在しないControlを検索した場合どうなるかチェックする。
         ////Control ctrl = null;
         ////ctrl = this.GetMasterWebControl("xxxx");
         ////ctrl = this.GetContentWebControl("xxxx");

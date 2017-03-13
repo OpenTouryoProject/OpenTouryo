@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_testFxLayerP_testTransitionAheadScreen" Codebehind="testTransitionAheadScreen.aspx.vb" %>
+﻿<%@ Page Language="VB" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.testTransitionAheadScreen" Codebehind="testTransitionAheadScreen.aspx.vb" %>
 
 <!DOCTYPE html>
 <html>
@@ -6,7 +6,7 @@
     <title>無題のページ</title>
 </head>
 <body>
-    <form id="form1" runat="server">
+    <form id="form1" runat="server" autocomplete="on">
     <div>
         遷移先
     </div>

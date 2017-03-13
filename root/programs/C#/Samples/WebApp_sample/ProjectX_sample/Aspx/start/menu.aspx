@@ -54,7 +54,7 @@
                         <li><a href="<%= this.ResolveUrl("~/Aspx/TestFxLayerP/Table/testJQGridJson.aspx") %>">JQGridのテスト</a></li>
                     </ul>
                 </li>
-                <li>Webカスタム・コントロール系
+                <li>Web Custom Control系
                     <ul>
                         <li><a href="<%= this.ResolveUrl("~/Aspx/TestFxLayerP/Wcc/testWCTextBox.aspx") %>">WebCustomTextBoxのテスト</a></li>
                     </ul>

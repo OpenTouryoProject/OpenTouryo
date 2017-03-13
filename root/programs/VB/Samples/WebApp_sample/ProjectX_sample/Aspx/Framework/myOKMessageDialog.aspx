@@ -11,12 +11,12 @@
         <!--
         
         // 戻り値
-        // 初期戻り値(-1)は、ダイアログ右上の[×]で閉じた場合に戻る値
-        // [OK]ボタン押下時点で、この変数値を書き換える
+        // 初期戻り値(-1)は、Dialog右上の[×]で閉じた場合に戻る値
+        // [OK]Button押下時点で、この変数値を書き換える
         var dialogreturn = -1;
         
-        // [ＯＫ]ボタン押下
-        // 戻り値を 1 に書き換えた上で、このダイアログを閉じる
+        // [OK]Button押下
+        // 戻り値を 1 に書き換えた上で、このDialogを閉じる
         function onOK(){
             window.returnValue = 1;
             window.close();
@@ -44,7 +44,7 @@
         </div>
         <br />
         <div style="text-align:center">
-            <input type="button" id="Button1" name="btnOK" value="ＯＫ" onclick="onOK();" tabindex="1" style="width: 100px" />
+            <input type="button" id="Button1" name="btnOK" value="OK" onclick="onOK();" tabindex="1" style="width: 100px" />
         </div>
     </body>
 </html>

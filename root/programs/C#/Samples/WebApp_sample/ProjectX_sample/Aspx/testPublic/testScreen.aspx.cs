@@ -334,12 +334,12 @@ namespace ProjectX_sample.Aspx.TestPublic
 
         #endregion
 
-        #region メッセージ取得部品
+        #region Message取得部品
 
-        /// <summary>メッセージの取得</summary>
+        /// <summary>Messageの取得</summary>
         protected void btnGetMSG_Click(object sender, EventArgs e)
         {
-            // メッセージを取得する。
+            // Messageを取得する。
             this.lblMSG.Text = GetMessage.GetMessageDescription(this.txtMSGID.Text);
         }
 
@@ -354,7 +354,7 @@ namespace ProjectX_sample.Aspx.TestPublic
         //    // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
         //    MyParameterValue myParameterValue
         //        = new MyParameterValue(
-        //              "画面ID", "ボタンID",
+        //              "画面ID", "ButtonID",
         //              this.ddlDap.SelectedValue + "%"
         //              + this.ddlExRollback.SelectedValue + "%"
         //              + this.ddlExStatus.SelectedValue,
@@ -390,7 +390,7 @@ namespace ProjectX_sample.Aspx.TestPublic
         //    // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
         //    MyType.TestParameterValue testParameterValue
         //        = new MyType.TestParameterValue(
-        //              "", "画面ID", "ボタンID",
+        //              "", "画面ID", "ButtonID",
         //              this.ddlDap.SelectedValue + "%"
         //              + this.ddlExRollback.SelectedValue + "%"
         //              + this.ddlExStatus.SelectedValue,
@@ -414,7 +414,7 @@ namespace ProjectX_sample.Aspx.TestPublic
         //    // 例外判定
         //    if (myReturnValue.ErrorFlag)
         //    {
-        //        // エラーメッセージ
+        //        // Error Message
         //        this.lblTxID.Text = myReturnValue.ErrorMessage;
         //    }
         //    else
@@ -2119,7 +2119,7 @@ namespace ProjectX_sample.Aspx.TestPublic
                 try
                 {
                     // コードの特定部分を実行するときのみ、認証中のユーザ (User.Identity) を偽装する。
-                    // このため、Windows認証に設定して、ダイアログや、ケルベロス（SSO）で認証する必要がある。
+                    // このため、Windows認証で認証する必要がある。
 
                     // 偽装して
                     ii = new IdentityImpersonation();

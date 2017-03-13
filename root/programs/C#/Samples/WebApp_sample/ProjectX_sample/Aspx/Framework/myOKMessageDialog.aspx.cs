@@ -20,7 +20,7 @@
 
 //**********************************************************************************
 //* クラス名        ：myOKMessageDialog
-//* クラス日本語名  ：「OK」メッセージ・ダイアログ
+//* クラス日本語名  ：「OK」Message Dialog
 //*
 //* 作成日時        ：－
 //* 作成者          ：－
@@ -43,7 +43,7 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace ProjectX_sample.Aspx.Framework
 {
-    /// <summary>「OK」メッセージ・ダイアログ</summary>
+    /// <summary>「OK」Message Dialog</summary>
     /// <remarks>サンプル ※ プロジェクト毎、必要に応じて改修</remarks>
     public partial class myOKMessageDialog : System.Web.UI.Page
     {
@@ -54,7 +54,7 @@ namespace ProjectX_sample.Aspx.Framework
             string parentScreenGuid
                 = (string)Request.QueryString[FxHttpQueryStringIndex.PARENT_SCREEN_GUID];
 
-            // メッセージIDとメッセージをセッションより取得し、設定
+            // MessageIDとMessageをセッションより取得し、設定
             this.lblmessage.Text = (string)Session[parentScreenGuid + FxHttpSessionIndex.MODAL_DIALOG_MESSAGE];
             this.lblmessageID.Text = (string)Session[parentScreenGuid + FxHttpSessionIndex.MODAL_DIALOG_MESSAGEID];
 
@@ -133,12 +133,12 @@ namespace ProjectX_sample.Aspx.Framework
             // ACCESSログ出力 ----------------------------------------------
 
             // ------------
-            // メッセージ部
+            // Message部
             // ------------
             // ユーザ名, IPアドレス,
-            // レイヤ, 画面名, コントロール名, 処理名
+            // レイヤ, 画面名, Control名, 処理名
             // 処理時間（実行時間）, 処理時間（CPU時間）
-            // エラーメッセージID, エラーメッセージ等
+            // Error MessageID, Error Message等
             // ------------
             string strLogMessage =
                 "," + this.GetUserInfo().UserName +

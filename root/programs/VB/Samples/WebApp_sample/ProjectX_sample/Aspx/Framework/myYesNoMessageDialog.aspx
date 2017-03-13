@@ -12,7 +12,7 @@
         
         // 戻り値
         
-        // 初期値は０、ダイアログ右上の[×]で閉じた場合に戻る値
+        // 初期値は０、Dialog右上の[×]で閉じた場合に戻る値
         var dialogreturn = 0;
         
         // 開始処理
@@ -24,13 +24,13 @@
             window.returnValue = dialogreturn;
         }
         
-        // [YES]ボタン押下、戻り値を１に書き換えダイアログを閉じる
+        // [YES]Button押下、戻り値を１に書き換えDialogを閉じる
         function onYes(){
             dialogreturn = 1;
             window.close();
         }
         
-        // [NO]ボタン押下、戻り値を２に書き換えダイアログを閉じる
+        // [NO]Button押下、戻り値を２に書き換えDialogを閉じる
         function onNo(){
             dialogreturn = 2;
             window.close();

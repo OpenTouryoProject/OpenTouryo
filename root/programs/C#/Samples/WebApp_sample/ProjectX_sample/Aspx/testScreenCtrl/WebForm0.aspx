@@ -16,14 +16,14 @@
     <br />
     <cc1:WebCustomCheckBox ID="CheckBox1" runat="server" AutoPostBack="False" Checked="False" Text="Fx付与" /><br />
     <br />
-    画面遷移（Ｔｒａｎｓｆｅｒ　ｏｒ　ＦｘＴｒａｎｓｆｅｒ）：<br />
+    画面遷移（Transfer or FxTransfer）：<br />
     <cc1:WebCustomButton ID="btnButton6" runat="server" Text="画面１へ" Width="80px" />
     <cc1:WebCustomButton ID="btnButton7" runat="server" Text="画面２へ" Width="80px" />
     <cc1:WebCustomButton ID="btnButton8" runat="server" Text="画面３へ" Width="80px" />
     <cc1:WebCustomButton ID="btnButton9" runat="server" Text="画面４へ" Width="80px" />
     <cc1:WebCustomButton ID="btnButton10" runat="server" Text="画面５へ" Width="80px" /><br />
     <br />
-    画面遷移（Ｒｅｄｉｒｅｃｔ　ｏｒ　ＦｘＲｅｄｉｒｅｃｔ）：<br />
+    画面遷移（Redirect or FxRedirect）：<br />
     <cc1:WebCustomButton ID="btnButton11" runat="server" Text="画面１へ" Width="80px" />
     <cc1:WebCustomButton ID="btnButton12" runat="server" Text="画面２へ" Width="80px" />
     <cc1:WebCustomButton ID="btnButton13" runat="server" Text="画面３へ" Width="80px" />
@@ -37,9 +37,9 @@
     <a href="WebForm4.aspx">画面４へ</a> 
     <a href="WebForm5.aspx">画面５へ</a><br />
     <br />
-    ポストバック：<cc1:WebCustomButton ID="btnButton16" runat="server" Text="ポストバック" Width="120px" /><br />
+    Post Back：<cc1:WebCustomButton ID="btnButton16" runat="server" Text="Post Back" Width="120px" /><br />
     <br />
-    初期画面からは、全画面に遷移可能。Ｇｅｔは初期画面と画面３のみ許可<br />
+    初期画面からは、全画面に遷移可能。Getは初期画面と画面３のみ許可<br />
     <br />
     子画面など：<br />
     <cc1:WebCustomButton ID="btnButton17" runat="server" Text="画面１（window open）" Width="170px" />

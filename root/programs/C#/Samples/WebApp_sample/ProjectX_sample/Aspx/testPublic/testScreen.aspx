@@ -7,7 +7,7 @@
     <title>無題のページ</title>
 </head>
 <body>
-    <form id="form1" runat="server">
+    <form id="form1" runat="server" autocomplete="on">
         <div>
             <a href="../start/menu.aspx">メニュー画面</a><br />
             <br />
@@ -121,11 +121,11 @@
                         <br />
                         <hr />
                         <br />
-                        ＜メッセージ取得＞<br />
+                        ＜Message取得＞<br />
                         <br />
-                        メッセージID：<cc1:WebCustomTextBox ID="txtMSGID" runat="server"></cc1:WebCustomTextBox><br />
-                        メッセージ記述：<cc1:WebCustomLabel ID="lblMSG" runat="server" Text="Label"></cc1:WebCustomLabel><br />
-                        <cc1:WebCustomButton ID="btnGetMSG" runat="server" Text="メッセージ記述の所得" Width="200px" OnClick="btnGetMSG_Click"/>
+                        MessageID：<cc1:WebCustomTextBox ID="txtMSGID" runat="server"></cc1:WebCustomTextBox><br />
+                        Message記述：<cc1:WebCustomLabel ID="lblMSG" runat="server" Text="Label"></cc1:WebCustomLabel><br />
+                        <cc1:WebCustomButton ID="btnGetMSG" runat="server" Text="Message記述の所得" Width="200px" OnClick="btnGetMSG_Click"/>
                         <br />
                     </td>
                     <td style="width:33%;vertical-align:top;">

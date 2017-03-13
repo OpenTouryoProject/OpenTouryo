@@ -6,7 +6,7 @@
 
 '**********************************************************************************
 '* クラス名        ：testAspNetAjaxExtension_Single
-'* クラス日本語名  ：Ajaxテスト用のマスタ ページ（updateパネルを親から纏めて使用）
+'* クラス日本語名  ：Ajaxテスト用のMaster Page（updateパネルを親から纏めて使用）
 '*
 '* 作成日時        ：－
 '* 作成者          ：生技
@@ -20,26 +20,26 @@
 Imports Touryo.Infrastructure.Framework.Presentation
 
 Namespace Aspx.Common
-    ''' <summary>Ajaxテスト用のマスタ ページ（updateパネルを親から纏めて使用）</summary>
+    ''' <summary>Ajaxテスト用のMaster Page（updateパネルを親から纏めて使用）</summary>
     Partial Public Class testAspNetAjaxExtension_Single
         Inherits BaseMasterController
-        ''' <summary>btnMButton1のクリックイベント</summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <summary>btnMButton1のClickイベント</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Public Function UOC_btnMButton1_Click(fxEventArgs As FxEventArgs) As String
             ' テキストボックスの値を変更
-            Me.TextBox1.Text = "ajaxのポストバック（ボタンクリック）"
+            Me.TextBox1.Text = "ajaxのPost Back（Button Click）"
 
-            ' ajaxのイベントハンドラでは画面遷移しないこと。
+            ' ajaxのEvent Handlerでは画面遷移しないこと。
             Return ""
         End Function
 
-        ''' <summary>btnMButton2のクリックイベント</summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <summary>btnMButton2のClickイベント</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Public Function UOC_btnMButton2_Click(fxEventArgs As FxEventArgs) As String
             ' テキストボックスの値を変更
-            Me.TextBox2.Text = "通常のポストバック（ボタンクリック）"
+            Me.TextBox2.Text = "通常のPost Back（Button Click）"
 
             Return ""
         End Function
@@ -47,30 +47,30 @@ Namespace Aspx.Common
         ''' <summary>
         ''' ddlMDropDownList1のSelectedIndexChangedイベント
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Public Function UOC_ddlMDropDownList1_SelectedIndexChanged(fxEventArgs As FxEventArgs) As String
             ' テキストボックスの値を変更
-            Me.TextBox3.Text = "ajaxのポストバック（ＤＤＬのセレクト インデックス チェンジ）"
+            Me.TextBox3.Text = "ajaxのPost Back（DDLのSelected Index Changed）"
 
-            ' ajaxのイベントハンドラでは画面遷移しないこと。
+            ' ajaxのEvent Handlerでは画面遷移しないこと。
             Return ""
         End Function
 
         ''' <summary>
         ''' ddlMDropDownList2のSelectedIndexChangedイベント
         ''' </summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Public Function UOC_ddlMDropDownList2_SelectedIndexChanged(fxEventArgs As FxEventArgs) As String
             ' テキストボックスの値を変更
-            Me.TextBox4.Text = "通常のポストバック（ＤＤＬのセレクト インデックス チェンジ）"
+            Me.TextBox4.Text = "通常のPost Back（DDLのSelected Index Changed）"
 
             Return ""
         End Function
 
-        ''' <summary>btnMButton3のクリックイベント</summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <summary>btnMButton3のClickイベント</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Public Function UOC_btnMButton3_Click(fxEventArgs As FxEventArgs) As String
             Throw New Exception("Ajaxでエラー")

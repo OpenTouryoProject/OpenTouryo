@@ -6,7 +6,7 @@
 
 '**********************************************************************************
 '* クラス名        ：testScreen1
-'* クラス日本語名  ：テスト画面１用のマスタ ページ
+'* クラス日本語名  ：テスト画面１用のMaster Page
 '*
 '* 作成日時        ：－
 '* 作成者          ：生技
@@ -19,9 +19,9 @@
 
 Imports Touryo.Infrastructure.Framework.Presentation
 
-Namespace ProjectX_sample.Aspx.Common
-    ''' <summary>テスト画面１用のマスタ ページ</summary>
-    Partial Public Class Aspx_Common_testScreen1
+Namespace Aspx.Common
+    ''' <summary>テスト画面１用のMaster Page</summary>
+    Partial Public Class testScreen1
         Inherits BaseMasterController
     End Class
 End Namespace

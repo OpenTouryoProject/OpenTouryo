@@ -15,7 +15,7 @@ Namespace Aspx.Sample._3Tier
     Partial Public Class ProductsDetail
 
         '''<summary>
-        '''ddlDap コントロール。
+        '''ddlDap Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents ddlDap As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
 
         '''<summary>
-        '''txtProductID コントロール。
+        '''txtProductID Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -33,7 +33,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtProductID As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtProductName コントロール。
+        '''txtProductName Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -42,7 +42,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtProductName As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''ddlSupplierID コントロール。
+        '''ddlSupplierID Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -51,7 +51,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents ddlSupplierID As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
 
         '''<summary>
-        '''ddlCategoryID コントロール。
+        '''ddlCategoryID Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -60,7 +60,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents ddlCategoryID As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
 
         '''<summary>
-        '''txtQuantityPerUnit コントロール。
+        '''txtQuantityPerUnit Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -69,7 +69,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtQuantityPerUnit As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtUnitPrice コントロール。
+        '''txtUnitPrice Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -78,7 +78,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtUnitPrice As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtUnitsInStock コントロール。
+        '''txtUnitsInStock Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -87,7 +87,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtUnitsInStock As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtUnitsOnOrder コントロール。
+        '''txtUnitsOnOrder Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -96,7 +96,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtUnitsOnOrder As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtReorderLevel コントロール。
+        '''txtReorderLevel Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -105,7 +105,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtReorderLevel As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''txtDiscontinued コントロール。
+        '''txtDiscontinued Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -114,7 +114,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents txtDiscontinued As Global.System.Web.UI.WebControls.TextBox
 
         '''<summary>
-        '''btnEdit コントロール。
+        '''btnEdit Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -123,7 +123,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents btnEdit As Global.System.Web.UI.WebControls.Button
 
         '''<summary>
-        '''btnUpdate コントロール。
+        '''btnUpdate Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -132,7 +132,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents btnUpdate As Global.System.Web.UI.WebControls.Button
 
         '''<summary>
-        '''btnDelete コントロール。
+        '''btnDelete Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -141,7 +141,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents btnDelete As Global.System.Web.UI.WebControls.Button
 
         '''<summary>
-        '''btnInsert コントロール。
+        '''btnInsert Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -150,7 +150,7 @@ Namespace Aspx.Sample._3Tier
         Protected WithEvents btnInsert As Global.System.Web.UI.WebControls.Button
 
         '''<summary>
-        '''lblResult コントロール。
+        '''lblResult Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

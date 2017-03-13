@@ -15,7 +15,7 @@ Namespace Aspx.Common.TestNest
     Partial Public Class noBaseMasterPage
         
         '''<summary>
-        '''ContentPlaceHolder_B コントロール。
+        '''ContentPlaceHolder_B Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

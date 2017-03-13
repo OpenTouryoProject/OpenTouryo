@@ -15,7 +15,7 @@ Namespace Aspx.Common.TestNest
     Partial Public Class branchMasterPage2
         
         '''<summary>
-        '''lblTestAA コントロール。
+        '''lblTestAA Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents lblTestAA As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonAA コントロール。
+        '''btnButtonAA Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -33,7 +33,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents btnButtonAA As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ContentPlaceHolder_AAA コントロール。
+        '''ContentPlaceHolder_AAA Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -42,7 +42,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_AAA As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_AAB コントロール。
+        '''ContentPlaceHolder_AAB Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -51,7 +51,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_AAB As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_AAC コントロール。
+        '''ContentPlaceHolder_AAC Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -60,7 +60,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_AAC As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''lblTestAB コントロール。
+        '''lblTestAB Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -69,7 +69,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents lblTestAB As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonAB コントロール。
+        '''btnButtonAB Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -78,7 +78,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents btnButtonAB As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ContentPlaceHolder_ABA コントロール。
+        '''ContentPlaceHolder_ABA Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -87,7 +87,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_ABA As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_ABB コントロール。
+        '''ContentPlaceHolder_ABB Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -96,7 +96,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_ABB As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_ABC コントロール。
+        '''ContentPlaceHolder_ABC Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -105,7 +105,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_ABC As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''lblTestAC コントロール。
+        '''lblTestAC Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -114,7 +114,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents lblTestAC As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonAC コントロール。
+        '''btnButtonAC Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -123,7 +123,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents btnButtonAC As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ContentPlaceHolder_ACA コントロール。
+        '''ContentPlaceHolder_ACA Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -132,7 +132,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_ACA As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_ACB コントロール。
+        '''ContentPlaceHolder_ACB Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -141,7 +141,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_ACB As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_ACC コントロール。
+        '''ContentPlaceHolder_ACC Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -150,7 +150,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_ACC As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''lblTestBA コントロール。
+        '''lblTestBA Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -159,7 +159,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents lblTestBA As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonBA コントロール。
+        '''btnButtonBA Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -168,7 +168,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents btnButtonBA As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ContentPlaceHolder_BAA コントロール。
+        '''ContentPlaceHolder_BAA Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -177,7 +177,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_BAA As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_BAB コントロール。
+        '''ContentPlaceHolder_BAB Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -186,7 +186,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_BAB As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_BAC コントロール。
+        '''ContentPlaceHolder_BAC Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -195,7 +195,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_BAC As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''lblTestBB コントロール。
+        '''lblTestBB Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -204,7 +204,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents lblTestBB As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonBB コントロール。
+        '''btnButtonBB Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -213,7 +213,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents btnButtonBB As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ContentPlaceHolder_BBA コントロール。
+        '''ContentPlaceHolder_BBA Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -222,7 +222,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_BBA As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_BBB コントロール。
+        '''ContentPlaceHolder_BBB Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -231,7 +231,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_BBB As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_BBC コントロール。
+        '''ContentPlaceHolder_BBC Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -240,7 +240,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_BBC As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''lblTestBC コントロール。
+        '''lblTestBC Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -249,7 +249,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents lblTestBC As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonBC コントロール。
+        '''btnButtonBC Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -258,7 +258,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents btnButtonBC As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ContentPlaceHolder_BCA コントロール。
+        '''ContentPlaceHolder_BCA Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -267,7 +267,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_BCA As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_BCB コントロール。
+        '''ContentPlaceHolder_BCB Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -276,7 +276,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_BCB As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_BCC コントロール。
+        '''ContentPlaceHolder_BCC Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -285,7 +285,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_BCC As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''lblTestCA コントロール。
+        '''lblTestCA Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -294,7 +294,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents lblTestCA As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonCA コントロール。
+        '''btnButtonCA Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -303,7 +303,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents btnButtonCA As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ContentPlaceHolder_CAA コントロール。
+        '''ContentPlaceHolder_CAA Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -312,7 +312,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_CAA As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_CAB コントロール。
+        '''ContentPlaceHolder_CAB Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -321,7 +321,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_CAB As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_CAC コントロール。
+        '''ContentPlaceHolder_CAC Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -330,7 +330,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_CAC As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''lblTestCB コントロール。
+        '''lblTestCB Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -339,7 +339,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents lblTestCB As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonCB コントロール。
+        '''btnButtonCB Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -348,7 +348,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents btnButtonCB As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ContentPlaceHolder_CBA コントロール。
+        '''ContentPlaceHolder_CBA Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -357,7 +357,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_CBA As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_CBB コントロール。
+        '''ContentPlaceHolder_CBB Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -366,7 +366,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_CBB As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_CBC コントロール。
+        '''ContentPlaceHolder_CBC Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -375,7 +375,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_CBC As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''lblTestCC コントロール。
+        '''lblTestCC Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -384,7 +384,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents lblTestCC As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonCC コントロール。
+        '''btnButtonCC Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -393,7 +393,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents btnButtonCC As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ContentPlaceHolder_CCA コントロール。
+        '''ContentPlaceHolder_CCA Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -402,7 +402,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_CCA As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_CCB コントロール。
+        '''ContentPlaceHolder_CCB Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -411,7 +411,7 @@ Namespace Aspx.Common.TestNest
         Protected WithEvents ContentPlaceHolder_CCB As Global.System.Web.UI.WebControls.ContentPlaceHolder
         
         '''<summary>
-        '''ContentPlaceHolder_CCC コントロール。
+        '''ContentPlaceHolder_CCC Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

@@ -61,8 +61,8 @@
             </div>
             <div id="contents" class="col-sm-10">
 
-                <!-- オートコンプリートを指定 -->
-                <form id="form1" runat="server">
+                <!-- auto completeを指定 -->
+                <form id="form1" runat="server" autocomplete="on">
 
                     <asp:ScriptManager EnableCdn="true" runat="server">
                         <Scripts>
@@ -89,8 +89,8 @@
         
                     <!--SampleCode：Header（共通）-->
                     <asp:Label ID="lblResult" runat="server" Text=""></asp:Label><br />
-                    <asp:Button ID="btnMPButton" runat="server" Text="マスタページ上の上のボタン" />
-                    <!-- ユーザコントロール上のボタン -->
+                    <asp:Button ID="btnMPButton" runat="server" Text="Master Page上の上のButton" />
+                    <!-- User Control上のButton -->
                     <uc1:sampleControl ID="sampleControl1" runat="server"/>
                     <uc1:sampleControl ID="sampleControl2" runat="server"/>
         
@@ -99,7 +99,7 @@
                     <cc1:WebCustomButton ID="btnMButton101" runat="server" text="ログアウト" Width="120px" />
                     <cc1:WebCustomButton ID="btnMButton102" runat="server" text="説明（ウィンドオープン）" Width="240px" />
                     <hr />
-                    ＜汎用メッセージ エリア＞<br />
+                    ＜汎用Message エリア＞<br />
                     <cc1:WebCustomLabel ID="Label1" runat="server" text="Label"></cc1:WebCustomLabel><br />
                     <hr />
         

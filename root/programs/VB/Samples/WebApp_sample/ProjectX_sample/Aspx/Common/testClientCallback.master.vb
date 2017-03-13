@@ -6,7 +6,7 @@
 
 '**********************************************************************************
 '* クラス名        ：testClientCallback
-'* クラス日本語名  ：ClientCallbackテスト用のマスタ ページ
+'* クラス日本語名  ：Client Callbackテスト用のMaster Page
 '*
 '* 作成日時        ：－
 '* 作成者          ：生技
@@ -20,7 +20,7 @@
 Imports Touryo.Infrastructure.Framework.Presentation
 
 Namespace Aspx.Common
-    ''' <summary>ClientCallbackテスト用のマスタ ページ</summary>
+    ''' <summary>Client Callbackテスト用のMaster Page</summary>
     Partial Public Class testClientCallback
         Inherits BaseMasterController
     End Class

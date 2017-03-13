@@ -60,8 +60,8 @@
             </div>
             <div id="contents" class="col-sm-10">
 
-                <!-- オートコンプリートを指定 -->
-                <form id="form1" runat="server">
+                <!-- auto completeを指定 -->
+                <form id="form1" runat="server" autocomplete="on">
 
                     <!--SampleCode：add-start-->
         

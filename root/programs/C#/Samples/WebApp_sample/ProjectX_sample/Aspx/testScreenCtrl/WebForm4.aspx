@@ -37,9 +37,9 @@
     <a href="WebForm4.aspx">画面４へ</a> 
     <a href="WebForm5.aspx">画面５へ</a><br />
     <br />
-    ポストバック：<cc1:WebCustomButton ID="btnButton16" runat="server" Text="ポストバック" Width="120px" /><br />
+    Post Back：<cc1:WebCustomButton ID="btnButton16" runat="server" Text="Post Back" Width="120px" /><br />
     <br />
-    初期画面からは、全画面に遷移可能。Ｇｅｔは初期画面と画面３のみ許可<br />
+    初期画面からは、全画面に遷移可能。Getは初期画面と画面３のみ許可<br />
     <br />
     子画面など：<br />
     <cc1:WebCustomButton ID="btnButton17" runat="server" Text="画面１（window open）" Width="170px" />

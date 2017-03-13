@@ -13,7 +13,7 @@ namespace ProjectX_sample.Aspx.Start {
     public partial class login {
         
         /// <summary>
-        /// txtUserID コントロール。
+        /// txtUserID Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -22,7 +22,7 @@ namespace ProjectX_sample.Aspx.Start {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox txtUserID;
         
         /// <summary>
-        /// txtPassword コントロール。
+        /// txtPassword Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -31,7 +31,7 @@ namespace ProjectX_sample.Aspx.Start {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox txtPassword;
         
         /// <summary>
-        /// btnButton1 コントロール。
+        /// btnButton1 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -40,7 +40,7 @@ namespace ProjectX_sample.Aspx.Start {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButton1;
         
         /// <summary>
-        /// btnButton2 コントロール。
+        /// btnButton2 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -49,7 +49,7 @@ namespace ProjectX_sample.Aspx.Start {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButton2;
         
         /// <summary>
-        /// lblMessage コントロール。
+        /// lblMessage Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

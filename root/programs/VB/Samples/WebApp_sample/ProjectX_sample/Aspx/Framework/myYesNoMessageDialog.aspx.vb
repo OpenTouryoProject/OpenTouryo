@@ -20,7 +20,7 @@
 
 '**********************************************************************************
 '* クラス名        ：myYesNoMessageDialog
-'* クラス日本語名  ：「YES」・「NO」メッセージ・ダイアログ
+'* クラス日本語名  ：「YES」・「NO」Message Dialog
 '*
 '* 作成日時        ：－
 '* 作成者          ：－
@@ -38,7 +38,7 @@ Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Util
 
 Namespace Aspx.Framework
-    ''' <summary>「YES」・「NO」メッセージ・ダイアログ</summary>
+    ''' <summary>「YES」・「NO」Message Dialog</summary>
     ''' <remarks>サンプル ※ プロジェクト毎、必要に応じて改修</remarks>
     Partial Public Class myYesNoMessageDialog
         Inherits System.Web.UI.Page
@@ -47,7 +47,7 @@ Namespace Aspx.Framework
             ' 親画面の画面GUIDを設定（QueryString）から取得
             Dim parentScreenGuid As String = DirectCast(Request.QueryString(FxHttpQueryStringIndex.PARENT_SCREEN_GUID), String)
 
-            ' メッセージIDとメッセージをセッションより取得し、設定
+            ' MessageIDとMessageをセッションより取得し、設定
             Me.lblmessage.Text = DirectCast(Session(parentScreenGuid + FxHttpSessionIndex.MODAL_DIALOG_MESSAGE), String)
 
             Me.lblmessageID.Text = DirectCast(Session(parentScreenGuid + FxHttpSessionIndex.MODAL_DIALOG_MESSAGEID), String)
@@ -63,7 +63,9 @@ Namespace Aspx.Framework
 
             ' エラー処理
             If iconPath = "" Then
-                Throw New FrameworkException(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_PATH1(0), [String].Format(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_PATH1(1), FxLiteral.QUESTION_ICON_PATH))
+                Throw New FrameworkException(
+                    FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_PATH1(0),
+                    [String].Format(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_PATH1(1), FxLiteral.QUESTION_ICON_PATH))
             End If
 
             Me.imgIcon.ImageUrl = iconPath
@@ -76,12 +78,12 @@ Namespace Aspx.Framework
             ' ACCESSログ出力 ----------------------------------------------
 
             ' ------------
-            ' メッセージ部
+            ' Message部
             ' ------------
             ' ユーザ名, IPアドレス,
-            ' レイヤ, 画面名, コントロール名, 処理名
+            ' レイヤ, 画面名, Control名, 処理名
             ' 処理時間（実行時間）, 処理時間（CPU時間）
-            ' エラーメッセージID, エラーメッセージ等
+            ' Error MessageID, Error Message等
             ' ------------
             Dim strLogMessage As String = "," + Me.GetUserInfo().UserName + "," + Request.UserHostAddress + ",init" + ",YesNoMessageDialog" + ","
 

@@ -26,7 +26,7 @@
 <!--FxCode：add-js-event-->
 <body onload="Fx_Document_OnLoad();" onunload="Fx_Document_OnClose();">
 
-    <!-- オートコンプリートを指定 -->
+    <!-- auto completeを指定 -->
     <form id="form1" runat="server" autocomplete="on">
 
         <asp:ScriptManager EnableCdn="true" runat="server">
@@ -57,9 +57,9 @@
         <!--SampleCode：Header（共通）-->
         ＜ヘッダー（共通）＞<br />
         <br />
-        それぞれのマスタ ページ上にある同一名称のマスタボタンの<br />
+        それぞれのMaster Page上にある同一名称のMaster Buttonの<br />
         イベント処理を１つの「画面コード親クラス２」に実装するテスト。<br />
-        <cc1:WebCustomButton ID="btnMButton1" runat="server" Text="マスタ共通ボタン（重複）" Width="220px" /><br />
+        <cc1:WebCustomButton ID="btnMButton1" runat="server" Text="Master Page共通Button（重複）" Width="220px" /><br />
         <br />
         <hr />
         <br />
@@ -82,19 +82,19 @@
                         <asp:ListItem>おおお</asp:ListItem>
                     </cc1:WebCustomDropDownList>
                     <br />
-                    ※ ＡｕｔｏＰｏｓｔＢａｃｋ ＝ Ｔｒｕｅ<br />
+                    ※ AutoPostBack = True<br />
                     <br />
                     ・RadioButton<br />
-                    <cc1:WebCustomRadioButton ID="rbnMRadioButton1" runat="server" AutoPostBack="True" GroupName="Group1" Text="ＭＢＲ１" />
-                    <cc1:WebCustomRadioButton ID="rbnMRadioButton2" runat="server" AutoPostBack="True" GroupName="Group1" Text="ＭＢＲ２" />
+                    <cc1:WebCustomRadioButton ID="rbnMRadioButton1" runat="server" AutoPostBack="True" GroupName="Group1" Text="MRB１" />
+                    <cc1:WebCustomRadioButton ID="rbnMRadioButton2" runat="server" AutoPostBack="True" GroupName="Group1" Text="MRB２" />
                     <br />
-                    ※ ＡｕｔｏＰｏｓｔＢａｃｋ ＝ Ｔｒｕｅ<br />
+                    ※ AutoPostBack = True<br />
                     <br />
                     ・CheckBox<br />
-                    <cc1:WebCustomCheckBox ID="cbxMCheckBox1" runat="server" AutoPostBack="True" Text="ＭＣＢ１" />
-                    <cc1:WebCustomCheckBox ID="cbxMCheckBox2" runat="server" AutoPostBack="True" Text="ＭＣＢ２" />
+                    <cc1:WebCustomCheckBox ID="cbxMCheckBox1" runat="server" AutoPostBack="True" Text="MCB１" />
+                    <cc1:WebCustomCheckBox ID="cbxMCheckBox2" runat="server" AutoPostBack="True" Text="MCB２" />
                     <br />
-                    ※ ＡｕｔｏＰｏｓｔＢａｃｋ ＝ Ｔｒｕｅ<br />
+                    ※ AutoPostBack = True<br />
                 </td>
                 <td>
                     ・ListBox<br />
@@ -106,7 +106,7 @@
                         <asp:ListItem>おおお</asp:ListItem>
                     </cc1:WebCustomListBox>
                     <br />
-                    ※ ＡｕｔｏＰｏｓｔＢａｃｋ ＝ Ｔｒｕｅ<br />
+                    ※ AutoPostBack = True<br />
                 </td>
             </tr>
         </table>

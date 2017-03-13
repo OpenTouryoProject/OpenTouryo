@@ -1,9 +1,11 @@
-﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_testFxLayerP_wcc_testWCTextBox" Title="Untitled Page" Codebehind="testWCTextBox.aspx.vb" %>
+﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.Wcc.testWCTextBox" Codebehind="testWCTextBox.aspx.vb" %>
+<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl"
-    TagPrefix="cc1" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
-    <!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
     <br/>
     ＜基本＞<br/>
     <table>
@@ -18,7 +20,7 @@
             <td>必須入力</td>
             <td>：
                 <cc1:WebCustomTextBox ID="WebCustomTextBox2" runat="server" BackColor="skyblue">
-                    <CheckType IsIndispensable="True"></CheckType>
+                    <CheckType Required="True"></CheckType>
                 </cc1:WebCustomTextBox>
             </td>
         </tr>
@@ -142,7 +144,7 @@
             <asp:TemplateField>
                 <ItemTemplate>
                     <cc1:WebCustomTextBox ID="WebCustomTextBox2_gvw" runat="server" BackColor="skyblue" Text='<%# Bind("field2") %>'>
-                        <CheckType IsIndispensable="True"></CheckType>
+                        <CheckType Required="True"></CheckType>
                     </cc1:WebCustomTextBox>
                 </ItemTemplate>
             </asp:TemplateField>
@@ -242,3 +244,6 @@
     
 </asp:Content>
 
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
+</asp:Content>

@@ -29,20 +29,20 @@ Namespace Aspx.Sample._3Tier
     ''' <summary>三層データバインド・検索一覧更新画面</summary>
     Partial Public Class ProductsSearchAndUpdate
         Inherits MyBaseController
-#Region "ページロードのUOCメソッド"
+#Region "Page LoadのUOCメソッド"
 
         ''' <summary>
-        ''' ページロードのUOCメソッド（個別：初回ロード）
+        ''' Page LoadのUOCメソッド（個別：初回Load）
         ''' </summary>
         ''' <remarks>
         ''' 実装必須
         ''' </remarks>
         Protected Overrides Sub UOC_FormInit()
-            ' フォーム初期化（初回ロード）時に実行する処理を実装する
+            ' Form初期化（初回Load）時に実行する処理を実装する
 
             ' TODO:
 
-            ' 更新ボタンの非活性化
+            ' 更新Buttonの非活性化
             Me.btnBatUpd.Enabled = False
 
             '#Region "マスタ・データのロードと設定"
@@ -55,7 +55,7 @@ Namespace Aspx.Sample._3Tier
             Dim getMasterData As New GetMasterData()
 
             ' 業務処理を実行
-            Dim returnValue As _3TierReturnValue = DirectCast(getMasterData.DoBusinessLogic(DirectCast(parameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.ReadCommitted), _3TierReturnValue)
+            Dim returnValue As _3TierReturnValue = getMasterData.DoBusinessLogic(parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
             Dim dts As DataTable() = DirectCast(returnValue.Obj, DataTable())
             Dim dt As DataTable = Nothing
@@ -101,13 +101,13 @@ Namespace Aspx.Sample._3Tier
         End Sub
 
         ''' <summary>
-        ''' ページロードのUOCメソッド（個別：ポストバック）
+        ''' Page LoadのUOCメソッド（個別：Post Back）
         ''' </summary>
         ''' <remarks>
         ''' 実装必須
         ''' </remarks>
         Protected Overrides Sub UOC_FormInit_PostBack()
-            ' フォーム初期化（ポストバック）時に実行する処理を実装する
+            ' Form初期化（Post Back）時に実行する処理を実装する
 
             ' TODO:
             Session("DAP") = Me.ddlDap.SelectedValue
@@ -145,16 +145,16 @@ Namespace Aspx.Sample._3Tier
 
 #End Region
 
-#Region "イベントハンドラ"
+#Region "Event Handler"
 
 #Region "一覧検索"
 
-        ''' <summary>検索ボタン</summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <summary>検索Button</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnSearch_Click(fxEventArgs As FxEventArgs) As String
 
-            ' 更新ボタンの非活性化
+            ' 更新Buttonの非活性化
             Me.btnBatUpd.Enabled = False
 
             ' GridViewをリセット
@@ -260,7 +260,7 @@ Namespace Aspx.Sample._3Tier
         End Function
 
         ''' <summary>gvwGridView1のSortingイベント</summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <param name="e">オリジナルのイベント引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_gvwGridView1_Sorting(fxEventArgs As FxEventArgs, e As GridViewSortEventArgs) As String
@@ -283,16 +283,16 @@ Namespace Aspx.Sample._3Tier
 
 #Region "CRUD"
 
-        ''' <summary>追加ボタン</summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <summary>追加Button</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnInsert_Click(fxEventArgs As FxEventArgs) As String
             ' 画面遷移（詳細表示）
             Return "ProductsDetail.aspx"
         End Function
 
-        ''' <summary>バッチ更新ボタン</summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <summary>バッチ更新Button</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnBatUpd_Click(fxEventArgs As FxEventArgs) As String
             ' 引数クラスを生成
@@ -317,12 +317,12 @@ Namespace Aspx.Sample._3Tier
             Dim b As New _3TierEngine()
 
             ' データ取得処理を実行
-            Dim returnValue As _3TierReturnValue = DirectCast(b.DoBusinessLogic(DirectCast(parameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.ReadCommitted), _3TierReturnValue)
+            Dim returnValue As _3TierReturnValue = b.DoBusinessLogic(parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
             ' 結果表示
             'this.lblResult.Text = returnValue.Obj.ToString() + "件更新しました。";
 
-            ' 更新ボタンの非活性化
+            ' 更新Buttonの非活性化
             Me.btnBatUpd.Enabled = False
 
             ' 画面遷移しない。
@@ -330,7 +330,7 @@ Namespace Aspx.Sample._3Tier
         End Function
 
         ''' <summary>gvwGridView1のコマンドイベント</summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_gvwGridView1_RowCommand(fxEventArgs As FxEventArgs) As String
             ' ソートの場合は無視
@@ -434,7 +434,7 @@ Namespace Aspx.Sample._3Tier
             ' DataTableの設定
             Session("SearchResult") = dt
 
-            ' 更新ボタンの活性化
+            ' 更新Buttonの活性化
             Me.btnBatUpd.Enabled = True
 
             ' 画面遷移しない。

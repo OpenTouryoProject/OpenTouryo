@@ -37,11 +37,11 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
         /// <summary>ヘッダーに表示する文字列</summary>
         public Dictionary<string, string> HeaderInfo = new Dictionary<string, string>();
 
-        /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：初回Load）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit()
         {
-            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // Form初期化（初回Load）時に実行する処理を実装する
             // TODO:
             this.CmnInit();
 
@@ -58,11 +58,11 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
             this.rptRepeater1.DataBind();
         }
 
-        /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：Post Back）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit_PostBack()
         {
-            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // Form初期化（Post Back）時に実行する処理を実装する
             // TODO:
             this.CmnInit();
 
@@ -222,21 +222,21 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
 
         #endregion
 
-        #region イベントハンドラ
+        #region Event Handler
 
         #region 通常のイベント
 
-        /// <summary>btnButton1のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButton1のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton1_Click(FxEventArgs fxEventArgs)
         {
-            // ポストバックをまたいで値が保存されるかの確認
+            // Post Backをまたいで値が保存されるかの確認
             return "";
         }
 
-        /// <summary>btnButton2のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButton2のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
         {
@@ -295,7 +295,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
         #region Repeater内のClickイベント（Command）
 
         /// <summary>rptRepeater1のコマンドイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_rptRepeater1_ItemCommand(FxEventArgs fxEventArgs)
         {
@@ -312,10 +312,10 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
         #region Repeater内のClick以外のイベント
 
         // ItemCommandイベントに行かないので通常通りハンドルする。
-        // （各コントロールのAutoPostBackを"true"に設定する）
+        // （各ControlのAutoPostBackを"true"に設定する）
 
         /// <summary>cbxCheckBox1のCheckedChangedイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_cbxCheckBox1_CheckedChanged(FxEventArgs fxEventArgs)
         {
@@ -333,7 +333,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
         }
 
         /// <summary>rbnRadioButton1のCheckedChangedイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_rbnRadioButton1_CheckedChanged(FxEventArgs fxEventArgs)
         {
@@ -351,7 +351,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
         }
 
         /// <summary>ddlDropDownList1のSelectedIndexChangedイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ddlDropDownList1_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {
@@ -369,7 +369,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table
         }
 
         /// <summary>lbxListBox1のSelectedIndexChangedイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_lbxListBox1_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {

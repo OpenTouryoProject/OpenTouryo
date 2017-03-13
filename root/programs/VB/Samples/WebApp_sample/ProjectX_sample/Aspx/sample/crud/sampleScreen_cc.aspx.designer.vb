@@ -15,7 +15,7 @@ Namespace Aspx.Sample.Crud
     Partial Public Class sampleScreen_cc
 
         '''<summary>
-        '''lblResult コントロール。
+        '''lblResult Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.Sample.Crud
         Protected WithEvents lblResult As Global.System.Web.UI.WebControls.Label
 
         '''<summary>
-        '''ddlDap コントロール。
+        '''ddlDap Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -33,7 +33,7 @@ Namespace Aspx.Sample.Crud
         Protected WithEvents ddlDap As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
 
         '''<summary>
-        '''ddlMode1 コントロール。
+        '''ddlMode1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -42,7 +42,7 @@ Namespace Aspx.Sample.Crud
         Protected WithEvents ddlMode1 As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
 
         '''<summary>
-        '''ddlMode2 コントロール。
+        '''ddlMode2 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -51,7 +51,7 @@ Namespace Aspx.Sample.Crud
         Protected WithEvents ddlMode2 As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
 
         '''<summary>
-        '''ddlExRollback コントロール。
+        '''ddlExRollback Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -60,7 +60,7 @@ Namespace Aspx.Sample.Crud
         Protected WithEvents ddlExRollback As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
 
         '''<summary>
-        '''ddlCmctCtrl コントロール。
+        '''ddlCmctCtrl Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -69,7 +69,7 @@ Namespace Aspx.Sample.Crud
         Protected WithEvents ddlCmctCtrl As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
 
         '''<summary>
-        '''TextBox1 コントロール。
+        '''TextBox1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -78,7 +78,7 @@ Namespace Aspx.Sample.Crud
         Protected WithEvents TextBox1 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
 
         '''<summary>
-        '''TextBox2 コントロール。
+        '''TextBox2 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -87,7 +87,7 @@ Namespace Aspx.Sample.Crud
         Protected WithEvents TextBox2 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
 
         '''<summary>
-        '''TextBox3 コントロール。
+        '''TextBox3 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -96,7 +96,7 @@ Namespace Aspx.Sample.Crud
         Protected WithEvents TextBox3 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
 
         '''<summary>
-        '''ddlOrderColumn コントロール。
+        '''ddlOrderColumn Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -105,7 +105,7 @@ Namespace Aspx.Sample.Crud
         Protected WithEvents ddlOrderColumn As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
 
         '''<summary>
-        '''ddlOrderSequence コントロール。
+        '''ddlOrderSequence Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -114,7 +114,7 @@ Namespace Aspx.Sample.Crud
         Protected WithEvents ddlOrderSequence As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
 
         '''<summary>
-        '''GridView1 コントロール。
+        '''GridView1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -123,7 +123,7 @@ Namespace Aspx.Sample.Crud
         Protected WithEvents GridView1 As Global.System.Web.UI.WebControls.GridView
 
         '''<summary>
-        '''btnButton4 コントロール。
+        '''btnButton4 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -132,7 +132,7 @@ Namespace Aspx.Sample.Crud
         Protected WithEvents btnButton4 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
 
         '''<summary>
-        '''btnButton1 コントロール。
+        '''btnButton1 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -141,7 +141,7 @@ Namespace Aspx.Sample.Crud
         Protected WithEvents btnButton1 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
 
         '''<summary>
-        '''btnButton2 コントロール。
+        '''btnButton2 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -150,7 +150,7 @@ Namespace Aspx.Sample.Crud
         Protected WithEvents btnButton2 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
 
         '''<summary>
-        '''btnButton3 コントロール。
+        '''btnButton3 Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

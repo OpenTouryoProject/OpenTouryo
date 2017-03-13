@@ -15,7 +15,7 @@ Namespace Aspx.Common
     Partial Public Class WebUserControl
         
         '''<summary>
-        '''btnUCButton コントロール。
+        '''btnUCButton Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.Common
         Protected WithEvents btnUCButton As Global.System.Web.UI.WebControls.Button
         
         '''<summary>
-        '''lblResult コントロール。
+        '''lblResult Control。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

@@ -82,7 +82,7 @@
   ○：Ctrl + W                      現在のウィンドウを閉じる (1 つのタブのみが開かれている場合)
   ○：Ctrl + S                      現在のページを保存する
   ○：Ctrl + P                      現在のページまたはアクティブなフレームを印刷する
-  ○：Enter                           選択したリンク先に移動する
+  ○：Enter                         選択したリンク先に移動する
   ○：Ctrl + I                      お気に入りを開く
   ○：Ctrl + H                      履歴を開く
   ○：Ctrl + J                      ダウンロード マネージャーを開く
@@ -91,15 +91,15 @@
   ×：Alt + H                       [ヘルプ] メニューを開く (コマンド バーが表示されている場合)
   
   // タブを操作する
-  ×：Ctrl + クリック               バックグラウンドで新しいタブにリンクを開く
-  ×：Ctrl + Shift + クリック       フォアグラウンドで新しいタブにリンクを開く
+  ×：Ctrl + Click                  バックグラウンドで新しいタブにリンクを開く
+  ×：Ctrl + Shift + Click          フォアグラウンドで新しいタブにリンクを開く
   ○：Ctrl + T                      フォアグラウンドで新しいタブを開く
   ×：Ctrl + Tab                    タブを切り替える
   ×：Ctrl + Shift + Tab            タブを切り替える
   ○：Ctrl + W                      現在のタブを閉じる (または、タブ ブラウズが無効の場合は現在のウィンドウを閉じる)
-  ？：Ctrl + n (n は 1 ～ 8 の数字)   特定のタブ番号に切り替える
-  ？：Ctrl + 9                        最後のタブに切り替える
-  ○：Ctrl + Alt + F4                 他のタブを閉じる
+  ？：Ctrl + n (n は 1 ～ 8 の数字) 特定のタブ番号に切り替える
+  ？：Ctrl + 9                      最後のタブに切り替える
+  ○：Ctrl + Alt + F4               他のタブを閉じる
   
   // 拡大縮小を使用する（抑止不可能、WB.ExecWBを使えば少し制御できる）
   ×：Ctrl + 正符号 (+) キー        拡大する (+ 10%)
@@ -109,7 +109,7 @@
   // アドレス バーで検索を使用する
   ○：Ctrl + E                      アドレス バーで検索クエリを開く
   ×：Alt + Enter                   新しいタブで検索クエリを開く
-  ？：Ctrl + ↓                       [アドレス バー] メニューを開く (履歴、お気に入り、検索プロバイダーを表示するため)
+  ？：Ctrl + ↓                     [アドレス バー] メニューを開く (履歴、お気に入り、検索プロバイダーを表示するため)
   ○：Ctrl + Shift + L              コピーしたテキストを使って検索する
   
   // 印刷プレビューの使用
@@ -129,8 +129,8 @@
   ×：Ctrl + ←                     アドレス バー上にあるカーソルを左側の次の論理単位 ("." または "/") に移動する
   ×：Ctrl + →                     アドレス バー上にあるカーソルを右側の次の論理単位 ("." または "/") に移動する
   ×：Ctrl + Enter                  アドレス バーに入力した文字列の前後に「www.」と「.com」を追加する
-  ×：↑                            オートコンプリートの候補の一覧で、次の候補に移動する
-  ×：↓                            オートコンプリートの候補の一覧で、前の候補に移動する
+  ×：↑                            auto completeの候補の一覧で、次の候補に移動する
+  ×：↓                            auto completeの候補の一覧で、前の候補に移動する
 
   // Internet Explorer のツールバー メニューを開く
   ×：Alt + M                       [ホーム] メニューを開く
@@ -144,9 +144,9 @@
   ○：Ctrl + D                      現在のページをお気に入りに追加する (または、フィードのプレビュー時にフィードを購読する)
   －：Ctrl + Shift + Delete         閲覧履歴を削除する
   ○：Ctrl + Shift + P              InPrivate ブラウズ ウィンドウを表示する
-  ○：Ctrl + B                      [お気に入りの整理] ダイアログ ボックスを表示する
-  ×：Alt + ↑                      [お気に入りの整理] ダイアログ ボックスのお気に入りの一覧で選択した項目を上に移動する
-  ×：Alt + ↓                      [お気に入りの整理] ダイアログ ボックスのお気に入りの一覧で選択した項目を下に移動する
+  ○：Ctrl + B                      [お気に入りの整理] Dialog ボックスを表示する
+  ×：Alt + ↑                      [お気に入りの整理] Dialog ボックスのお気に入りの一覧で選択した項目を上に移動する
+  ×：Alt + ↓                      [お気に入りの整理] Dialog ボックスのお気に入りの一覧で選択した項目を下に移動する
   ×：Alt + C                       お気に入りセンターを開いて、お気に入りを表示する
   ○：Ctrl + H                      お気に入りセンターを開いて、履歴を表示する
   ○：Ctrl + Shift + H              お気に入りセンターを固定して、履歴を表示する
@@ -162,8 +162,8 @@
   ○：F12                           Internet Explorer 開発者ツールを開く
 
   // 通知バーを使用する
-  ？：Alt + N                         通知バーにフォーカスを移動する
-  ？：Space キー                      通知バーをクリックする
+  ？：Alt + N                       通知バーにフォーカスを移動する
+  ？：Space キー                    通知バーをClickする
 
 */
 
@@ -175,7 +175,7 @@ document.onkeyup = Fx_OnKeyUp;
 document.onclick = Fx_OnClick;
 
 // ---------------------------------------------------------------
-// 右クリック（コンテキスト メニュー表示）を抑止
+// 右Click（コンテキスト メニュー表示）を抑止
 // ---------------------------------------------------------------
 // document.oncontextmenu = function () { return false; }
 
@@ -256,7 +256,7 @@ function Fx_OnKeyDown() {
         !(event.srcElement.type == "submit"
          || event.srcElement.type == "textarea")
         ) {
-        // enterの場合 (submitボタンやtextarea領域以外)
+        // enterの場合 (submitButtonやtextarea領域以外)
         // Can check the undefined or null 
         if (event.srcElement.attributes.cansubmitbyenter == undefined || event.srcElement.attributes.cansubmitbyenter.value == undefined) {
             // cansubmitbyenter属性が定義されていない場合、enter不許可
@@ -274,7 +274,7 @@ function Fx_OnKeyDown() {
         }
     }
     else {
-        // enterの場合もsubmitボタンやtextarea領域はenter許可
+        // enterの場合もsubmitButtonやtextarea領域はenter許可
     }
 
     // BackSpace(8)による、戻る操作を無効化（テキスト編集中は押下可能にする）
@@ -448,7 +448,7 @@ function Fx_OnKeyDown() {
     // フィード、履歴、およびお気に入りを操作する
     //////////////////////////////////////////////////////////
     
-    // Ctrl + B(66)による、[お気に入りの整理] ダイアログ ボックス表示操作を無効化
+    // Ctrl + B(66)による、[お気に入りの整理] Dialog ボックス表示操作を無効化
     if (event.ctrlKey && event.keyCode == 66) { return false; }
     
     // Ctrl + D(68)による、お気に入りに追加操作を無効化
@@ -530,29 +530,29 @@ function Fx_OnKeyDown() {
     */
 
     // -----------------------------------------------------------
-    // PFキーに画面上のボタンをマップする実装テンプレート
+    // PFキーに画面上のButtonをマップする実装テンプレート
     // -----------------------------------------------------------
     
     // GetElementByName_SuffixSearchは後方一致で検索可能なので、
-    // ボタン：「ctl00$ContentPlaceHolder_A$btnButton1」の場合、
+    // Button：「ctl00$ContentPlaceHolder_A$btnButton1」の場合、
     // GetElementByName_SuffixSearch("btnButton1")で検索可能。
     // 遅い場合は、getElementsByName、getElementByIdを使用。
     
     // F1キー
     /*
     if (event.keyCode == 112) {
-        // ボタンをクリック
-        btn = GetElementByName_SuffixSearch("HTML上のボタン名");
+        // ButtonをClick
+        btn = GetElementByName_SuffixSearch("HTML上のButton名");
         // 遅い場合は、getElementsByName、getElementByIdを使用。
         
         if (btn == null || btn == undefined) {
-            // ボタンが無い場合。
+            // Buttonが無い場合。
         }
         else if (btn.isDisabled == true) {
-            // ボタンが非活性の場合。
+            // Buttonが非活性の場合。
         }
         else {
-            // ボタンがあり、且つ活性の場合。
+            // Buttonがあり、且つ活性の場合。
             btn.focus();
             btn.click();
         }
@@ -565,18 +565,18 @@ function Fx_OnKeyDown() {
     // F2キー
     /*
     if (event.keyCode == 113) {
-        // ボタンをクリック
-        btn = GetElementByName_SuffixSearch("HTML上のボタン名");
+        // ButtonをClick
+        btn = GetElementByName_SuffixSearch("HTML上のButton名");
         // 遅い場合は、getElementsByName、getElementByIdを使用。
         
         if (btn == null || btn == undefined) {
-            // ボタンが無い場合。
+            // Buttonが無い場合。
         }
         else if (btn.isDisabled == true) {
-            // ボタンが非活性の場合。
+            // Buttonが非活性の場合。
         }
         else {
-            // ボタンがあり、且つ活性の場合。
+            // Buttonがあり、且つ活性の場合。
             btn.focus();
             btn.click();
         }
@@ -589,18 +589,18 @@ function Fx_OnKeyDown() {
     // F3キー
     /*
     if (event.keyCode == 114) {
-        // ボタンをクリック
-        btn = GetElementByName_SuffixSearch("HTML上のボタン名");
+        // ButtonをClick
+        btn = GetElementByName_SuffixSearch("HTML上のButton名");
         // 遅い場合は、getElementsByName、getElementByIdを使用。
 
         if (btn == null || btn == undefined) {
-            // ボタンが無い場合。
+            // Buttonが無い場合。
         }
         else if (btn.isDisabled == true) {
-            // ボタンが非活性の場合。
+            // Buttonが非活性の場合。
         }
         else {
-            // ボタンがあり、且つ活性の場合。
+            // Buttonがあり、且つ活性の場合。
             btn.focus();
             btn.click();
         }
@@ -617,18 +617,18 @@ function Fx_OnKeyDown() {
             // ブラウザのショートカットが動く
         }
         else {
-            // ボタンをクリック
-            btn = GetElementByName_SuffixSearch("HTML上のボタン名");
+            // ButtonをClick
+            btn = GetElementByName_SuffixSearch("HTML上のButton名");
             // 遅い場合は、getElementsByName、getElementByIdを使用。
 
             if (btn == null || btn == undefined) {
-                // ボタンが無い場合。
+                // Buttonが無い場合。
             }
             else if (btn.isDisabled == true) {
-                // ボタンが非活性の場合。
+                // Buttonが非活性の場合。
             }
             else {
-                // ボタンがあり、且つ活性の場合。
+                // Buttonがあり、且つ活性の場合。
                 btn.focus();
                 btn.click();
             }
@@ -646,18 +646,18 @@ function Fx_OnKeyDown() {
             // ブラウザのショートカットが動く
         }
         else {
-            // ボタンをクリック
-            btn = GetElementByName_SuffixSearch("HTML上のボタン名");
+            // ButtonをClick
+            btn = GetElementByName_SuffixSearch("HTML上のButton名");
             // 遅い場合は、getElementsByName、getElementByIdを使用。
 
             if (btn == null || btn == undefined) {
-                // ボタンが無い場合。
+                // Buttonが無い場合。
             }
             else if (btn.isDisabled == true) {
-                // ボタンが非活性の場合。
+                // Buttonが非活性の場合。
             }
             else {
-                // ボタンがあり、且つ活性の場合。
+                // Buttonがあり、且つ活性の場合。
                 btn.focus();
                 btn.click();
             }
@@ -675,18 +675,18 @@ function Fx_OnKeyDown() {
             // ブラウザのショートカットが動く
         }
         else {
-            // ボタンをクリック
-            btn = GetElementByName_SuffixSearch("HTML上のボタン名");
+            // ButtonをClick
+            btn = GetElementByName_SuffixSearch("HTML上のButton名");
             // 遅い場合は、getElementsByName、getElementByIdを使用。
 
             if (btn == null || btn == undefined) {
-                // ボタンが無い場合。
+                // Buttonが無い場合。
             }
             else if (btn.isDisabled == true) {
-                // ボタンが非活性の場合。
+                // Buttonが非活性の場合。
             }
             else {
-                // ボタンがあり、且つ活性の場合。
+                // Buttonがあり、且つ活性の場合。
                 btn.focus();
                 btn.click();
             }
@@ -700,18 +700,18 @@ function Fx_OnKeyDown() {
     // F7キー
     /*
     if (event.keyCode == 118) {
-        // ボタンをクリック
-        btn = GetElementByName_SuffixSearch("HTML上のボタン名");
+        // ButtonをClick
+        btn = GetElementByName_SuffixSearch("HTML上のButton名");
         // 遅い場合は、getElementsByName、getElementByIdを使用。
 
         if (btn == null || btn == undefined) {
-            // ボタンが無い場合。
+            // Buttonが無い場合。
         }
         else if (btn.isDisabled == true) {
-            // ボタンが非活性の場合。
+            // Buttonが非活性の場合。
         }
         else {
-            // ボタンがあり、且つ活性の場合。
+            // Buttonがあり、且つ活性の場合。
             btn.focus();
             btn.click();
         }
@@ -724,18 +724,18 @@ function Fx_OnKeyDown() {
     // F8キー
     /*
     if (event.keyCode == 119) {
-        // ボタンをクリック
-        btn = GetElementByName_SuffixSearch("HTML上のボタン名");
+        // ButtonをClick
+        btn = GetElementByName_SuffixSearch("HTML上のButton名");
         // 遅い場合は、getElementsByName、getElementByIdを使用。
 
         if (btn == null || btn == undefined) {
-            // ボタンが無い場合。
+            // Buttonが無い場合。
         }
         else if (btn.isDisabled == true) {
-            // ボタンが非活性の場合。
+            // Buttonが非活性の場合。
         }
         else {
-            // ボタンがあり、且つ活性の場合。
+            // Buttonがあり、且つ活性の場合。
             btn.focus();
             btn.click();
         }
@@ -748,18 +748,18 @@ function Fx_OnKeyDown() {
     // F9キー
     /*
     if (event.keyCode == 120) {
-        // ボタンをクリック
-        btn = GetElementByName_SuffixSearch("HTML上のボタン名");
+        // ButtonをClick
+        btn = GetElementByName_SuffixSearch("HTML上のButton名");
         // 遅い場合は、getElementsByName、getElementByIdを使用。
 
         if (btn == null || btn == undefined) {
-            // ボタンが無い場合。
+            // Buttonが無い場合。
         }
         else if (btn.isDisabled == true) {
-            // ボタンが非活性の場合。
+            // Buttonが非活性の場合。
         }
         else {
-            // ボタンがあり、且つ活性の場合。
+            // Buttonがあり、且つ活性の場合。
             btn.focus();
             btn.click();
         }
@@ -776,18 +776,18 @@ function Fx_OnKeyDown() {
             // ブラウザのショートカットが動く
         }
         else {
-            // ボタンをクリック
-            btn = GetElementByName_SuffixSearch("HTML上のボタン名");
+            // ButtonをClick
+            btn = GetElementByName_SuffixSearch("HTML上のButton名");
             // 遅い場合は、getElementsByName、getElementByIdを使用。
 
             if (btn == null || btn == undefined) {
-                // ボタンが無い場合。
+                // Buttonが無い場合。
             }
             else if (btn.isDisabled == true) {
-                // ボタンが非活性の場合。
+                // Buttonが非活性の場合。
             }
             else {
-                // ボタンがあり、且つ活性の場合。
+                // Buttonがあり、且つ活性の場合。
                 btn.focus();
                 btn.click();
             }
@@ -802,18 +802,18 @@ function Fx_OnKeyDown() {
     // F11キー
     /*
     if (event.keyCode == 122) {
-        // ボタンをクリック
-        btn = GetElementByName_SuffixSearch("HTML上のボタン名");
+        // ButtonをClick
+        btn = GetElementByName_SuffixSearch("HTML上のButton名");
         // 遅い場合は、getElementsByName、getElementByIdを使用。
 
         if (btn == null || btn == undefined) {
-            // ボタンが無い場合。
+            // Buttonが無い場合。
         }
         else if (btn.isDisabled == true) {
-            // ボタンが非活性の場合。
+            // Buttonが非活性の場合。
         }
         else {
-            // ボタンがあり、且つ活性の場合。
+            // Buttonがあり、且つ活性の場合。
             btn.focus();
             btn.click();
         }
@@ -826,18 +826,18 @@ function Fx_OnKeyDown() {
     // F12キー
     /*
     if (event.keyCode == 123) {
-        // ボタンをクリック
-        btn = GetElementByName_SuffixSearch("HTML上のボタン名");
+        // ButtonをClick
+        btn = GetElementByName_SuffixSearch("HTML上のButton名");
         // 遅い場合は、getElementsByName、getElementByIdを使用。
 
         if (btn == null || btn == undefined) {
-            // ボタンが無い場合。
+            // Buttonが無い場合。
         }
         else if (btn.isDisabled == true) {
-            // ボタンが非活性の場合。
+            // Buttonが非活性の場合。
         }
         else {
-            // ボタンがあり、且つ活性の場合。
+            // Buttonがあり、且つ活性の場合。
             btn.focus();
             btn.click();
         }

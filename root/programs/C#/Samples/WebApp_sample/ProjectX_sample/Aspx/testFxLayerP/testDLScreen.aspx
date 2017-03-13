@@ -5,7 +5,7 @@
 </asp:Content>
 
 <asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
-    オンロードでダウンロードします。
+    onloadでダウンロードします。
 </asp:Content>
         
 <asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">

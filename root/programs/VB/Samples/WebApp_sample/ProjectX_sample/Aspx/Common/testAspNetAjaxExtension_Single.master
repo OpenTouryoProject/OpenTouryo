@@ -29,7 +29,7 @@
 <!--FxCode：add-js-event-->
 <body onload="Fx_Document_OnLoad();" onunload="Fx_Document_OnClose();">
         
-    <!-- オートコンプリートを指定 -->
+    <!-- auto completeを指定 -->
     <form id="form1" runat="server" autocomplete="on">
 
         <asp:ScriptManager ID="MasterScriptManager" runat="server"
@@ -60,18 +60,18 @@
         <a href="<%= Me.ResolveUrl("~/Aspx/start/menu.aspx") %>">メニュー画面</a><br />
         <br />
         この画面では、<br />
-        マスタ ページから、コンテンツ ページごとMasterUpdatePanelで囲っている。<br />
-        コンテンツ ページで一部のコントロールを非Ajax化にするため、サーバ側でScriptManagerを操作している。<br />
+        Master Pageから、Content PageごとMasterUpdatePanelで囲っている。<br />
+        Content Pageで一部のControlを非Ajax化にするため、サーバ側でScriptManagerを操作している。<br />
         <br />
         <asp:UpdatePanel ID="MasterUpdatePanel" runat="server">
             <ContentTemplate>
                 ヘッダー（共通）　→　待ちません。<br />
                 <cc1:WebCustomTextBox ID="TextBox1" runat="server"></cc1:WebCustomTextBox>
-                <cc1:WebCustomButton ID="btnMButton1" runat="server"  Text="Ajaxボタン" Width="180px" /><br />
+                <cc1:WebCustomButton ID="btnMButton1" runat="server"  Text="Ajax Button" Width="180px" /><br />
                 <cc1:WebCustomTextBox ID="TextBox2" runat="server"></cc1:WebCustomTextBox>
-                <cc1:WebCustomButton ID="btnMButton2" runat="server"  Text="通常ボタン" Width="180px" /><br />
+                <cc1:WebCustomButton ID="btnMButton2" runat="server"  Text="通常 Button" Width="180px" /><br />
                 <br />
-                ※ ＡｕｔｏＰｏｓｔＢａｃｋ ＝ Ｔｒｕｅ<br />
+                ※ AutoPostBack = True<br />
                 <cc1:WebCustomDropDownList ID="ddlMDropDownList1" runat="server" AutoPostBack="True">
                     <asp:ListItem>あああ</asp:ListItem>
                     <asp:ListItem>いいい</asp:ListItem>
@@ -89,17 +89,17 @@
                 </cc1:WebCustomDropDownList>
                 <cc1:WebCustomTextBox ID="TextBox4" runat="server"></cc1:WebCustomTextBox><br />
                 <br />
-                <cc1:WebCustomButton ID="btnMButton3" runat="server"  Text="例外ボタン" Width="180px" /><br />
+                <cc1:WebCustomButton ID="btnMButton3" runat="server"  Text="例外 Button" Width="180px" /><br />
                 <br />
                 <hr />
                 <br />
                 ヘッダー（個別）　→　３秒待ちます。<br />
                 <cc1:WebCustomTextBox ID="TextBox5" runat="server"></cc1:WebCustomTextBox>
-                <cc1:WebCustomButton ID="btnMButton4" runat="server"  Text="Ajaxボタン" Width="180px" /><br />
+                <cc1:WebCustomButton ID="btnMButton4" runat="server"  Text="Ajax Button" Width="180px" /><br />
                 <cc1:WebCustomTextBox ID="TextBox6" runat="server"></cc1:WebCustomTextBox>
-                <cc1:WebCustomButton ID="btnMButton5" runat="server"  Text="通常ボタン" Width="180px" /><br />
+                <cc1:WebCustomButton ID="btnMButton5" runat="server"  Text="通常 Button" Width="180px" /><br />
                 <br />
-                ※ ＡｕｔｏＰｏｓｔＢａｃｋ ＝ Ｔｒｕｅ<br />
+                ※ AutoPostBack = True<br />
                 <cc1:WebCustomDropDownList ID="ddlMDropDownList3" runat="server" AutoPostBack="True">
                     <asp:ListItem>あああ</asp:ListItem>
                     <asp:ListItem>いいい</asp:ListItem>
@@ -117,7 +117,7 @@
                 </cc1:WebCustomDropDownList>
                 <cc1:WebCustomTextBox ID="TextBox8" runat="server"></cc1:WebCustomTextBox><br />
                 <br />
-                <cc1:WebCustomButton ID="btnMButton6" runat="server"  Text="例外ボタン" Width="180px" /><br />
+                <cc1:WebCustomButton ID="btnMButton6" runat="server"  Text="例外 Button" Width="180px" /><br />
                 
                 <br />
                 <hr />

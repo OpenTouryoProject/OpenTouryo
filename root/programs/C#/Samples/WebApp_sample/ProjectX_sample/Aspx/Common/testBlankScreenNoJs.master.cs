@@ -6,7 +6,7 @@
 
 //**********************************************************************************
 //* クラス名        ：testBlankScreenNoJs
-//* クラス日本語名  ：ブランクのマスタ ページ
+//* クラス日本語名  ：ブランクのMaster Page
 //*
 //* 作成日時        ：－
 //* 作成者          ：生技
@@ -23,7 +23,7 @@ using Touryo.Infrastructure.Framework.Util;
 
 namespace ProjectX_sample.Aspx.Common
 {
-    /// <summary>ブランクのマスタ ページ</summary>
+    /// <summary>ブランクのMaster Page</summary>
     public partial class testBlankScreenNoJs : BaseMasterController
     {
         /// <summary>UserName</summary>

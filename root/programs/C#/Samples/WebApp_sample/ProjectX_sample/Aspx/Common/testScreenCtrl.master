@@ -26,7 +26,7 @@
 <!--FxCode：add-js-event-->
 <body onload="Fx_Document_OnLoad();" onunload="Fx_Document_OnClose();">
 
-    <!-- オートコンプリートを指定 -->
+    <!-- auto completeを指定 -->
     <form id="form1" runat="server" autocomplete="on">
     
         <asp:ScriptManager EnableCdn="true" runat="server">
@@ -55,7 +55,7 @@
         <cc1:WebCustomLabel ID="lblStatus" runat="server"></cc1:WebCustomLabel><br />
         <cc1:WebCustomLabel ID="lblQueryString" runat="server"></cc1:WebCustomLabel><br />
         <br />
-        ＜マスタ共通＞<br />
+        ＜Master Page共通＞<br />
         直リン：
         <a href="WebForm0.aspx">初期画面へ</a>、
         <a href="WebForm3.aspx">画面３へ</a><br />
@@ -67,7 +67,7 @@
         <cc1:WebCustomLinkButton ID="lbnMLinkButton4" runat="server" Width="80px">画面４へ</cc1:WebCustomLinkButton>
         <cc1:WebCustomLinkButton ID="lbnMLinkButton5" runat="server" Width="80px">画面５へ</cc1:WebCustomLinkButton>
         <br />
-        ＜マスタ個別＞<br />
+        ＜Master Page個別＞<br />
         外部サイト：<cc1:WebCustomImageButton ID="ibnMImageButton1" runat="server" ImageUrl="../TestScreenCtrl/Google.PNG" Height="25px" Width="65px"/><br />
         <br />
         <!--SampleCode：Contents-->

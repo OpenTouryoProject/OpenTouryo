@@ -13,7 +13,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table {
     public partial class testListView {
         
         /// <summary>
-        /// lblResult コントロール。
+        /// lblResult Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -22,7 +22,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table {
         protected global::System.Web.UI.WebControls.Label lblResult;
         
         /// <summary>
-        /// lvwListView1 コントロール。
+        /// lvwListView1 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -31,7 +31,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table {
         protected global::System.Web.UI.WebControls.ListView lvwListView1;
         
         /// <summary>
-        /// DataPager1 コントロール。
+        /// DataPager1 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -40,7 +40,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table {
         protected global::System.Web.UI.WebControls.DataPager DataPager1;
         
         /// <summary>
-        /// btnButton1 コントロール。
+        /// btnButton1 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -49,7 +49,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Table {
         protected global::System.Web.UI.WebControls.Button btnButton1;
         
         /// <summary>
-        /// lblResultOfItemCommand コントロール。
+        /// lblResultOfItemCommand Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

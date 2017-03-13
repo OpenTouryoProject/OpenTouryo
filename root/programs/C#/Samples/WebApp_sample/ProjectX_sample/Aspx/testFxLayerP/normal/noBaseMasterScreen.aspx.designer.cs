@@ -13,7 +13,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.Normal {
     public partial class noBaseMasterScreen {
         
         /// <summary>
-        /// btnButton1 コントロール。
+        /// btnButton1 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

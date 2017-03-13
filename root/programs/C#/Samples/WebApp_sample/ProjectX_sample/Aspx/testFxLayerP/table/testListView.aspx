@@ -168,7 +168,7 @@
         </Fields>
     </asp:DataPager>
     <p>
-        <asp:Button ID="btnButton1" runat="server" Text="ポストバック" />
+        <asp:Button ID="btnButton1" runat="server" Text="Post Back" />
     </p>
    <asp:Label ID="lblResultOfItemCommand" runat="server"></asp:Label>
 </asp:Content>

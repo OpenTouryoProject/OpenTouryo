@@ -88,29 +88,29 @@
     <Content Include="Aspx\Sample\3Tier\ProductsSearchAndUpdate.aspx" />
     <Content Include="Aspx\Sample\Crud\sampleScreen.aspx" />
     <Content Include="Aspx\Sample\Crud\sampleScreen_cc.aspx" />
-    <Content Include="Aspx\start\login.aspx" />
-    <Content Include="Aspx\start\logout.aspx" />
-    <Content Include="Aspx\start\menu.aspx" />
-    <Content Include="Aspx\testFxLayerP\nest\testNestMasterScreen.aspx" />
-    <Content Include="Aspx\testFxLayerP\nest\testScreen1nest.aspx" />
-    <Content Include="Aspx\testFxLayerP\nest\testScreen2nest.aspx" />
-    <Content Include="Aspx\testFxLayerP\normal\noBaseMasterScreen.aspx" />
-    <Content Include="Aspx\testFxLayerP\normal\noMasterScreen.aspx" />
-    <Content Include="Aspx\testFxLayerP\normal\testScreen0.aspx" />
-    <Content Include="Aspx\testFxLayerP\normal\testScreen1.aspx" />
-    <Content Include="Aspx\testFxLayerP\normal\testScreen2.aspx" />
-    <Content Include="Aspx\testFxLayerP\table\testGridView.aspx" />
-    <Content Include="Aspx\testFxLayerP\table\testJQGridJson.aspx" />
-    <Content Include="Aspx\testFxLayerP\table\testListView.aspx" />
-    <Content Include="Aspx\testFxLayerP\table\testRepeater.aspx" />
-    <Content Include="Aspx\testFxLayerP\testDialogAtOnLoad.aspx" />
-    <Content Include="Aspx\testFxLayerP\testDLFrame.aspx" />
-    <Content Include="Aspx\testFxLayerP\testDLScreen.aspx" />
-    <Content Include="Aspx\testFxLayerP\testTransitionAheadScreen.aspx" />
-    <Content Include="Aspx\testFxLayerP\wcc\testWCTextBox.aspx" />
-    <Content Include="Aspx\testFxLayerP\withAjax\testClientCallback.aspx" />
-    <Content Include="Aspx\testFxLayerP\withAjax\testExtension_Separate.aspx" />
-    <Content Include="Aspx\testFxLayerP\withAjax\testExtension_Single.aspx" />
+    <Content Include="Aspx\Start\login.aspx" />
+    <Content Include="Aspx\Start\logout.aspx" />
+    <Content Include="Aspx\Start\menu.aspx" />
+    <Content Include="Aspx\TestFxLayerP\nest\testNestMasterScreen.aspx" />
+    <Content Include="Aspx\TestFxLayerP\nest\testScreen1nest.aspx" />
+    <Content Include="Aspx\TestFxLayerP\nest\testScreen2nest.aspx" />
+    <Content Include="Aspx\TestFxLayerP\normal\noBaseMasterScreen.aspx" />
+    <Content Include="Aspx\TestFxLayerP\normal\noMasterScreen.aspx" />
+    <Content Include="Aspx\TestFxLayerP\normal\testScreen0.aspx" />
+    <Content Include="Aspx\TestFxLayerP\normal\testScreen1.aspx" />
+    <Content Include="Aspx\TestFxLayerP\normal\testScreen2.aspx" />
+    <Content Include="Aspx\TestFxLayerP\table\testGridView.aspx" />
+    <Content Include="Aspx\TestFxLayerP\table\testJQGridJson.aspx" />
+    <Content Include="Aspx\TestFxLayerP\table\testListView.aspx" />
+    <Content Include="Aspx\TestFxLayerP\table\testRepeater.aspx" />
+    <Content Include="Aspx\TestFxLayerP\testDialogAtOnLoad.aspx" />
+    <Content Include="Aspx\TestFxLayerP\testDLFrame.aspx" />
+    <Content Include="Aspx\TestFxLayerP\testDLScreen.aspx" />
+    <Content Include="Aspx\TestFxLayerP\testTransitionAheadScreen.aspx" />
+    <Content Include="Aspx\TestFxLayerP\wcc\testWCTextBox.aspx" />
+    <Content Include="Aspx\TestFxLayerP\withAjax\testClientCallback.aspx" />
+    <Content Include="Aspx\TestFxLayerP\withAjax\testExtension_Separate.aspx" />
+    <Content Include="Aspx\TestFxLayerP\withAjax\testExtension_Single.aspx" />
     <Content Include="Aspx\testPublic\testScreen.aspx" />
     <Content Include="Aspx\testScreenCtrl\Google.PNG" />
     <Content Include="Aspx\testScreenCtrl\sc1.PNG" />
@@ -404,164 +404,164 @@
       <DependentUpon>sampleScreen_cc.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\start\login.aspx.designer.vb">
+    <Compile Include="Aspx\Start\login.aspx.designer.vb">
       <DependentUpon>login.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\start\login.aspx.vb">
+    <Compile Include="Aspx\Start\login.aspx.vb">
       <DependentUpon>login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\start\logout.aspx.designer.vb">
+    <Compile Include="Aspx\Start\logout.aspx.designer.vb">
       <DependentUpon>logout.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\start\logout.aspx.vb">
+    <Compile Include="Aspx\Start\logout.aspx.vb">
       <DependentUpon>logout.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\start\menu.aspx.designer.vb">
+    <Compile Include="Aspx\Start\menu.aspx.designer.vb">
       <DependentUpon>menu.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\start\menu.aspx.vb">
+    <Compile Include="Aspx\Start\menu.aspx.vb">
       <DependentUpon>menu.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\nest\testNestMasterScreen.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\nest\testNestMasterScreen.aspx.designer.vb">
       <DependentUpon>testNestMasterScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\nest\testNestMasterScreen.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\nest\testNestMasterScreen.aspx.vb">
       <DependentUpon>testNestMasterScreen.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\nest\testScreen1nest.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\nest\testScreen1nest.aspx.designer.vb">
       <DependentUpon>testScreen1nest.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\nest\testScreen1nest.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\nest\testScreen1nest.aspx.vb">
       <DependentUpon>testScreen1nest.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\nest\testScreen2nest.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\nest\testScreen2nest.aspx.designer.vb">
       <DependentUpon>testScreen2nest.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\nest\testScreen2nest.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\nest\testScreen2nest.aspx.vb">
       <DependentUpon>testScreen2nest.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\noBaseMasterScreen.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\noBaseMasterScreen.aspx.designer.vb">
       <DependentUpon>noBaseMasterScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\noBaseMasterScreen.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\noBaseMasterScreen.aspx.vb">
       <DependentUpon>noBaseMasterScreen.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\noMasterScreen.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\noMasterScreen.aspx.designer.vb">
       <DependentUpon>noMasterScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\noMasterScreen.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\noMasterScreen.aspx.vb">
       <DependentUpon>noMasterScreen.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\testScreen0.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\testScreen0.aspx.designer.vb">
       <DependentUpon>testScreen0.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\testScreen0.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\testScreen0.aspx.vb">
       <DependentUpon>testScreen0.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\testScreen1.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\testScreen1.aspx.designer.vb">
       <DependentUpon>testScreen1.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\testScreen1.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\testScreen1.aspx.vb">
       <DependentUpon>testScreen1.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\testScreen2.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\testScreen2.aspx.designer.vb">
       <DependentUpon>testScreen2.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\testScreen2.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\testScreen2.aspx.vb">
       <DependentUpon>testScreen2.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\table\testGridView.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\table\testGridView.aspx.designer.vb">
       <DependentUpon>testGridView.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\table\testGridView.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\table\testGridView.aspx.vb">
       <DependentUpon>testGridView.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\table\testJQGridJson.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\table\testJQGridJson.aspx.designer.vb">
       <DependentUpon>testJQGridJson.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\table\testJQGridJson.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\table\testJQGridJson.aspx.vb">
       <DependentUpon>testJQGridJson.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\table\testListView.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\table\testListView.aspx.designer.vb">
       <DependentUpon>testListView.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\table\testListView.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\table\testListView.aspx.vb">
       <DependentUpon>testListView.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\table\testRepeater.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\table\testRepeater.aspx.designer.vb">
       <DependentUpon>testRepeater.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\table\testRepeater.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\table\testRepeater.aspx.vb">
       <DependentUpon>testRepeater.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\testDialogAtOnLoad.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\testDialogAtOnLoad.aspx.designer.vb">
       <DependentUpon>testDialogAtOnLoad.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\testDialogAtOnLoad.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\testDialogAtOnLoad.aspx.vb">
       <DependentUpon>testDialogAtOnLoad.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\testDLFrame.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\testDLFrame.aspx.designer.vb">
       <DependentUpon>testDLFrame.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\testDLFrame.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\testDLFrame.aspx.vb">
       <DependentUpon>testDLFrame.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\testDLScreen.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\testDLScreen.aspx.designer.vb">
       <DependentUpon>testDLScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\testDLScreen.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\testDLScreen.aspx.vb">
       <DependentUpon>testDLScreen.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\testTransitionAheadScreen.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\testTransitionAheadScreen.aspx.designer.vb">
       <DependentUpon>testTransitionAheadScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\testTransitionAheadScreen.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\testTransitionAheadScreen.aspx.vb">
       <DependentUpon>testTransitionAheadScreen.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\wcc\testWCTextBox.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\wcc\testWCTextBox.aspx.designer.vb">
       <DependentUpon>testWCTextBox.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\wcc\testWCTextBox.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\wcc\testWCTextBox.aspx.vb">
       <DependentUpon>testWCTextBox.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\withAjax\testClientCallback.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\withAjax\testClientCallback.aspx.designer.vb">
       <DependentUpon>testClientCallback.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\withAjax\testClientCallback.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\withAjax\testClientCallback.aspx.vb">
       <DependentUpon>testClientCallback.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\withAjax\testExtension_Separate.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\withAjax\testExtension_Separate.aspx.designer.vb">
       <DependentUpon>testExtension_Separate.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\withAjax\testExtension_Separate.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\withAjax\testExtension_Separate.aspx.vb">
       <DependentUpon>testExtension_Separate.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\withAjax\testExtension_Single.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\withAjax\testExtension_Single.aspx.designer.vb">
       <DependentUpon>testExtension_Single.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\withAjax\testExtension_Single.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\withAjax\testExtension_Single.aspx.vb">
       <DependentUpon>testExtension_Single.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -625,7 +625,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app.config" />
+    <Content Include="app.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Aspx\Common\sampleScreen.master" />
     <Content Include="Aspx\Common\testAspNetAjaxExtension_Separate.master" />
     <Content Include="Aspx\Common\testAspNetAjaxExtension_Single.master" />

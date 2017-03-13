@@ -91,12 +91,12 @@ namespace ProjectX_sample
             // ACCESSログ出力 ----------------------------------------------
 
             // ------------
-            // メッセージ部
+            // Message部
             // ------------
             // ユーザ名, IPアドレス,レイヤ, 
-            // 画面名, コントロール名, メソッド名, 処理名
+            // 画面名, Control名, メソッド名, 処理名
             // 処理時間（実行時間）, 処理時間（CPU時間）
-            // エラーメッセージID, エラーメッセージ等
+            // Error MessageID, Error Message等
             // ------------
             string strLogMessage =
                 "," + "－" +
@@ -214,10 +214,10 @@ namespace ProjectX_sample
         void Application_OnPreRequestHandlerExecute(object sender, EventArgs e)
         {
             // ------------
-            // メッセージ部
+            // Message部
             // ------------
             // ユーザ名, IPアドレス, レイヤ, 
-            // 画面名, コントロール名, メソッド名, 処理名
+            // 画面名, Control名, メソッド名, 処理名
             // ------------
             string strLogMessage =
                 "," + "－" +
@@ -258,10 +258,10 @@ namespace ProjectX_sample
                 // ACCESSログ出力-----------------------------------------------
 
                 // ------------
-                // メッセージ部
+                // Message部
                 // ------------
                 // ユーザ名, IPアドレス, レイヤ, 
-                // 画面名, コントロール名, メソッド名, 処理名
+                // 画面名, Control名, メソッド名, 処理名
                 // 処理時間（実行時間）, 処理時間（CPU時間）
                 // ------------
                 string strLogMessage =

@@ -75,7 +75,7 @@
                 sortorder: 'desc',
                 loadonce: false,
                 beforeProcessing: function (data, status, xhr) {  // レスポンスの受信時に呼び出されるイベント
-                    // サーバからエラーが返ってきた場合にダイアログを表示し、以降の処理を中止する
+                    // サーバからエラーが返ってきた場合にDialogを表示し、以降の処理を中止する
                     // Check current page number will not be greater than maximum page
                     if ((data.page) > (data.total)) {
                         alert("You will not specify a greater than value to the maximum page");

@@ -6,7 +6,7 @@
 
 //**********************************************************************************
 //* クラス名        ：testClientCallback
-//* クラス日本語名  ：ClientCallbackテスト用のマスタ ページ
+//* クラス日本語名  ：ClientCallbackテスト用のMaster Page
 //*
 //* 作成日時        ：－
 //* 作成者          ：生技
@@ -21,7 +21,7 @@ using Touryo.Infrastructure.Framework.Presentation;
 
 namespace ProjectX_sample.Aspx.Common
 {
-    /// <summary>ClientCallbackテスト用のマスタ ページ</summary>
+    /// <summary>ClientCallbackテスト用のMaster Page</summary>
     public partial class testClientCallback : BaseMasterController
     {
     } 

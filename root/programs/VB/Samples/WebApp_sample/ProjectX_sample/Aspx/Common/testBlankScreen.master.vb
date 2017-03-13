@@ -6,7 +6,7 @@
 
 '**********************************************************************************
 '* クラス名        ：testBlankScreen
-'* クラス日本語名  ：ブランクのマスタ ページ
+'* クラス日本語名  ：ブランクのMaster Page
 '*
 '* 作成日時        ：－
 '* 作成者          ：生技
@@ -22,7 +22,7 @@ Imports Touryo.Infrastructure.Framework.Presentation
 Imports Touryo.Infrastructure.Framework.Util
 
 Namespace Aspx.Common
-    ''' <summary>ブランクのマスタ ページ</summary>
+    ''' <summary>ブランクのMaster Page</summary>
     Partial Public Class testBlankScreen
         Inherits BaseMasterController
         ''' <summary>UserName</summary>

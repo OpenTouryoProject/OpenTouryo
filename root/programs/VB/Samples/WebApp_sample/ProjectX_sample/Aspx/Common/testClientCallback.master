@@ -26,7 +26,7 @@
 <!--FxCode：add-js-event-->
 <body onload="Fx_Document_OnLoad();" onunload="Fx_Document_OnClose();">
         
-    <!-- オートコンプリートを指定 -->
+    <!-- auto completeを指定 -->
     <form id="form1" runat="server" autocomplete="on">
 
     <asp:ScriptManager EnableCdn="true" runat="server">
@@ -57,7 +57,7 @@
         <a href="<%= Me.ResolveUrl("~/Aspx/start/menu.aspx") %>">メニュー画面</a><br />
         
         <br />
-        ヘッダー（個別）　→　ClientCallbackでは、共通を実装できない。<br />
+        ヘッダー（個別）　→　Client Callbackでは、共通を実装できない。<br />
         <cc1:WebCustomTextBox ID="TextBox1" runat="server"></cc1:WebCustomTextBox>
         →　
         <cc1:WebCustomTextBox ID="TextBox2" runat="server"></cc1:WebCustomTextBox><br />

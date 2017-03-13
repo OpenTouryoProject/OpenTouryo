@@ -32,30 +32,30 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
         /// <summary>二重送信防止機能の確認用</summary>
         private int SleepCnt = 5000;
 
-        #region ページロードのUOCメソッド
+        #region Page LoadのUOCメソッド
 
-        /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：初回Load）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit()
         {
-            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // Form初期化（初回Load）時に実行する処理を実装する
             // TODO:
         }
 
-        /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：Post Back）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit_PostBack()
         {
-            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // Form初期化（Post Back）時に実行する処理を実装する
             // TODO:
         }
 
         #endregion
 
-        #region マスタ ページ上のフレームワーク対象コントロール
+        #region Master Page上のフレームワーク対象Control
 
-        /// <summary>btnMButton4のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnMButton4のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_testAspNetAjaxExtension_Separate_btnMButton4_Click(FxEventArgs fxEventArgs)
         {
@@ -64,14 +64,14 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
 
             // テキストボックスの値を変更
             TextBox textBox = (TextBox)this.GetMasterWebControl("TextBox5");
-            textBox.Text = "ajaxのポストバック（ボタンクリック）";
+            textBox.Text = "ajaxのPost Back（Button Click）";
 
-            // ajaxのイベントハンドラでは画面遷移しないこと。
+            // ajaxのEvent Handlerでは画面遷移しないこと。
             return "";
         }
 
-        /// <summary>btnMButton5のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnMButton5のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_testAspNetAjaxExtension_Separate_btnMButton5_Click(FxEventArgs fxEventArgs)
         {
@@ -80,7 +80,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
 
             // テキストボックスの値を変更
             TextBox textBox = (TextBox)this.GetMasterWebControl("TextBox6");
-            textBox.Text = "通常のポストバック（ボタンクリック）";
+            textBox.Text = "通常のPost Back（Button Click）";
 
             return "";
         }
@@ -88,7 +88,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
         /// <summary>
         /// ddlMDropDownList3のSelectedIndexChangedイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_testAspNetAjaxExtension_Separate_ddlMDropDownList3_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {
@@ -97,16 +97,16 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
 
             // テキストボックスの値を変更
             TextBox textBox = (TextBox)this.GetMasterWebControl("TextBox7");
-            textBox.Text = "ajaxのポストバック（ＤＤＬのセレクト インデックス チェンジ）";
+            textBox.Text = "ajaxのPost Back（DDLのSelected Index Changed）";
 
-            // ajaxのイベントハンドラでは画面遷移しないこと。
+            // ajaxのEvent Handlerでは画面遷移しないこと。
             return "";
         }
 
         /// <summary>
         /// ddlMDropDownList4のSelectedIndexChangedイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_testAspNetAjaxExtension_Separate_ddlMDropDownList4_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {
@@ -115,13 +115,13 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
 
             // テキストボックスの値を変更
             TextBox textBox = (TextBox)this.GetMasterWebControl("TextBox8");
-            textBox.Text = "通常のポストバック（ＤＤＬのセレクト インデックス チェンジ）";
+            textBox.Text = "通常のPost Back（DDLのSelected Index Changed）";
 
             return "";
         }
 
-        /// <summary>btnMButton6のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnMButton6のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_testAspNetAjaxExtension_Separate_btnMButton6_Click(FxEventArgs fxEventArgs)
         {
@@ -135,10 +135,10 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
 
         #endregion
 
-        #region コンテンツ ページ上のフレームワーク対象コントロール
+        #region Content Page上のフレームワーク対象Control
 
-        /// <summary>btnButton1のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButton1のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton1_Click(FxEventArgs fxEventArgs)
         {
@@ -152,14 +152,14 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
 
             // テキストボックスの値を変更
             TextBox textBox = (TextBox)this.GetContentWebControl("TextBox1");
-            textBox.Text = "ajaxのポストバック（ボタンクリック）";
+            textBox.Text = "ajaxのPost Back（Button Click）";
 
-            // ajaxのイベントハンドラでは画面遷移しないこと。
+            // ajaxのEvent Handlerでは画面遷移しないこと。
             return "";
         }
 
-        /// <summary>btnButton2のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButton2のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
         {
@@ -173,7 +173,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
 
             // テキストボックスの値を変更
             TextBox textBox = (TextBox)this.GetContentWebControl("TextBox2");
-            textBox.Text = "通常のポストバック（ボタンクリック）";
+            textBox.Text = "通常のPost Back（Button Click）";
 
             return "";
         }
@@ -181,7 +181,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
         /// <summary>
         /// ddlDropDownList1のSelectedIndexChangedイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ddlDropDownList1_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {
@@ -195,16 +195,16 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
 
             // テキストボックスの値を変更
             TextBox textBox = (TextBox)this.GetContentWebControl("TextBox3");
-            textBox.Text = "ajaxのポストバック（ＤＤＬのセレクト インデックス チェンジ）";
+            textBox.Text = "ajaxのPost Back（DDLのSelected Index Changed）";
 
-            // ajaxのイベントハンドラでは画面遷移しないこと。
+            // ajaxのEvent Handlerでは画面遷移しないこと。
             return "";
         }
 
         /// <summary>
         /// ddlDropDownList2のSelectedIndexChangedイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ddlDropDownList2_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {
@@ -218,13 +218,13 @@ namespace ProjectX_sample.Aspx.TestFxLayerP.WithAjax
 
             // テキストボックスの値を変更
             TextBox textBox = (TextBox)this.GetContentWebControl("TextBox4");
-            textBox.Text = "通常のポストバック（ＤＤＬのセレクト インデックス チェンジ）";
+            textBox.Text = "通常のPost Back（DDLのSelected Index Changed）";
 
             return "";
         }
 
-        /// <summary>btnButton3のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButton3のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton3_Click(FxEventArgs fxEventArgs)
         {

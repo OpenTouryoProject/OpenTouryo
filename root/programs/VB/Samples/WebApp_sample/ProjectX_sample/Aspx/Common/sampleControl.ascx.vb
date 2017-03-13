@@ -6,7 +6,7 @@
 
 '**********************************************************************************
 '* クラス名        ：WebUserControl
-'* クラス日本語名  ：WebUserControl上のイベントハンドラをハンドルする。
+'* クラス日本語名  ：WebUserControl上のEvent Handlerをハンドルする。
 '*
 '* 作成日時        ：－
 '* 作成者          ：生技
@@ -23,8 +23,8 @@ Namespace Aspx.Common
     ''' <summary>WebUserControl class</summary>
     Partial Public Class WebUserControl
         Inherits System.Web.UI.UserControl
-        ''' <summary>ユーザコントロールにイベントハンドラを実装可能にしたのでそのテスト。</summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <summary>User ControlにEvent Handlerを実装可能にしたのでそのテスト。</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnUCButton_Click(fxEventArgs As FxEventArgs) As String
             Me.lblResult.Text = "UOC_btnUCButton_Clickを実行できた。"

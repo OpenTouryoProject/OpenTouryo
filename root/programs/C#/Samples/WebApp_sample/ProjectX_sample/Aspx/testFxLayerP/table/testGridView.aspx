@@ -70,14 +70,14 @@
                 
                 <asp:CommandField ShowEditButton="True" />
                 
-                <%-- 削除列 (TemplatedFieldを用い、削除時に確認メッセージを表示するサンプル) --%>
+                <%-- 削除列 (TemplatedFieldを用い、削除時に確認Messageを表示するサンプル) --%>
                 <asp:TemplateField ShowHeader="false">
                     <ItemTemplate>
                         <asp:LinkButton ID="LinkButton1" runat="server" CommandName="Delete" Text="削除" OnClientClick="return confirm('選択されたレコードを削除してよろしいですか？');" />
                     </ItemTemplate>
                 </asp:TemplateField>
                 
-                <%-- 削除列 (CommandFieldを用いるサンプル。削除確認メッセージは表示されない) --%>
+                <%-- 削除列 (CommandFieldを用いるサンプル。削除確認Messageは表示されない) --%>
                 <%--
                 <asp:CommandField ShowDeleteButton="True" />
                 --%>
@@ -97,7 +97,7 @@
             </Columns>
         </asp:GridView>
         
-        <asp:Button ID="btnButton1" runat="server" Text="ポストバック"/>
+        <asp:Button ID="btnButton1" runat="server" Text="Post Back"/>
 </asp:Content>
 
 <asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">

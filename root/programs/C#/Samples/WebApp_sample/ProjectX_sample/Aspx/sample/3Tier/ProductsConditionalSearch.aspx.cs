@@ -34,24 +34,24 @@ namespace ProjectX_sample.Aspx.Sample._3Tier
     /// <summary>三層データバインド・検索一覧表示画面</summary>
     public partial class ProductsConditionalSearch : MyBaseController
     {
-        /// <summary>Page_InitイベントでASP.NET標準イベントハンドラを設定</summary>
+        /// <summary>Page_InitイベントでASP.NET標準Event Handlerを設定</summary>
         protected void Page_Init(object sender, EventArgs e)
         {
             // 行選択についてのイベント
             this.gvwGridView1.SelectedIndexChanging += new GridViewSelectEventHandler(gvwGridView1_SelectedIndexChanging);
         }
 
-        #region ページロードのUOCメソッド
+        #region Page LoadのUOCメソッド
 
         /// <summary>
-        /// ページロードのUOCメソッド（個別：初回ロード）
+        /// Page LoadのUOCメソッド（個別：初回Load）
         /// </summary>
         /// <remarks>
         /// 実装必須
         /// </remarks>
         protected override void UOC_FormInit()
         {
-            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // Form初期化（初回Load）時に実行する処理を実装する
 
             // TODO:
 
@@ -120,14 +120,14 @@ namespace ProjectX_sample.Aspx.Sample._3Tier
         }
 
         /// <summary>
-        /// ページロードのUOCメソッド（個別：ポストバック）
+        /// Page LoadのUOCメソッド（個別：Post Back）
         /// </summary>
         /// <remarks>
         /// 実装必須
         /// </remarks>
         protected override void UOC_FormInit_PostBack()
         {
-            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // Form初期化（Post Back）時に実行する処理を実装する
 
             // TODO:
             Session["DAP"] = this.ddlDap.SelectedValue;
@@ -174,10 +174,10 @@ namespace ProjectX_sample.Aspx.Sample._3Tier
 
         #endregion
 
-        #region イベントハンドラ
+        #region Event Handler
 
-        /// <summary>追加ボタン</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>追加Button</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnInsert_Click(FxEventArgs fxEventArgs)
         {
@@ -185,8 +185,8 @@ namespace ProjectX_sample.Aspx.Sample._3Tier
             return "ProductsDetail.aspx";
         }
 
-        /// <summary>検索ボタン</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>検索Button</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnSearch_Click(FxEventArgs fxEventArgs)
         {
@@ -287,7 +287,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier
         }
 
         /// <summary>gvwGridView1のSortingイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <param name="e">オリジナルのイベント引数</param>
         /// <returns>URL</returns>
         protected string UOC_gvwGridView1_Sorting(FxEventArgs fxEventArgs, GridViewSortEventArgs e)
@@ -310,7 +310,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier
             return string.Empty;
         }
 
-        /// <summary>GridViewの行の選択ボタンがクリックされ、行が選択される前に発生するイベント</summary>
+        /// <summary>GridViewの行の選択ButtonがClickされ、行が選択される前に発生するイベント</summary>
         protected void gvwGridView1_SelectedIndexChanging(object sender, GridViewSelectEventArgs e)
         {
             // 選択されたレコードの主キーとタイムスタンプ列を取得
@@ -327,7 +327,7 @@ namespace ProjectX_sample.Aspx.Sample._3Tier
         }
 
         /// <summary>gvwGridView1の行選択後イベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_gvwGridView1_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {

@@ -1,8 +1,7 @@
-﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testNest/branchMasterPage2.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_testFxLayerP_normal_testNestMasterScreen" Title="Untitled Page" Codebehind="testNestMasterScreen.aspx.vb" %>
+﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/TestNest/branchMasterPage2.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.Nest.testNestMasterScreen" Codebehind="testNestMasterScreen.aspx.vb" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_AAA" Runat="Server">
-    <!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
     <cc1:WebCustomLabel id="lblTestAAA" runat="server">nmsのC_AAAのlblTestAAA</cc1:WebCustomLabel><br/>
     <cc1:WebCustomButton ID="btnButtonAAA" runat="server" Text="nmsのC_AAAのbtnButtonAAA" Width="200px" /><br/>
 </asp:Content>

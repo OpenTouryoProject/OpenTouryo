@@ -1,17 +1,27 @@
-﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_start_menu" Title="Untitled Page" Codebehind="menu.aspx.vb" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Start.menu" Codebehind="menu.aspx.vb" %>
+
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
     -------------------------<br />
     サンプル プログラム<br />
     -------------------------<br />
-    <br />
-    ● サンプル（全層結合テスト）<br />
-    　・ <a href="<%= Me.ResolveUrl("~/Aspx/sample/crud/sampleScreen.aspx") %>">ノーマル</a><br />
-    　・ <a href="<%= Me.ResolveUrl("~/Aspx/sample/crud/sampleScreen_cc.aspx") %>">通信制御</a><br />
-    <br />
-    ● サンプル（３層データバインド・テスト）<br />
-    　・ <a href="<%= Me.ResolveUrl("~/Aspx/sample/3Tier/ProductsConditionalSearch.aspx") %>">一覧→更新</a><br />
-    　・ <a href="<%= Me.ResolveUrl("~/Aspx/sample/3Tier/ProductsSearchAndUpdate.aspx") %>">一覧＆更新</a><br />
-    <br />
+    <ul>
+        <li>サンプル（全層結合テスト）
+            <ul>
+                <li><a href="<%= Me.ResolveUrl("~/Aspx/Sample/Crud/sampleScreen.aspx") %>">ノーマル</a></li>
+                <li><a href="<%= Me.ResolveUrl("~/Aspx/Sample/Crud/sampleScreen_cc.aspx") %>">通信制御</a></li>
+            </ul>
+        </li>
+        <li>サンプル（3層データバインド・テスト）
+            <ul>
+                <li><a href="<%= Me.ResolveUrl("~/Aspx/Sample/3Tier/ProductsConditionalSearch.aspx") %>">一覧 → 更新</a></li>
+                <li><a href="<%= Me.ResolveUrl("~/Aspx/Sample/3Tier/ProductsSearchAndUpdate.aspx") %>">一覧 & 更新</a></li>
+            </ul>
+        </li>
+    </ul>
     -------------------------<br />
     単体テスト プログラム<br />
     -------------------------<br />
@@ -19,40 +29,54 @@
     ユーザ入力をそのままHTML表示する等<br />
     脆弱性が含まれる部分があります。<br />
     -------------------------<br />
-    <br />
-    ● Ｐ層フレームワーク<br />
-    　<br />
-    　・ Ｐ層イベント処理<br />
-　　　　－ <a href="<%= Me.ResolveUrl("~/Aspx/testFxLayerP/normal/testScreen0.aspx") %>">単機能</a><br />
-　　　　－ <a href="<%= Me.ResolveUrl("~/Aspx/testFxLayerP/normal/testScreen1.aspx") %>">基本パターン</a><br />
-　　　　－ <a href="<%= Me.ResolveUrl("~/Aspx/testFxLayerP/normal/testScreen2.aspx") %>">特殊パターン</a><br />
-　　　　<br />
-　　　　・ネスト系<br />
-　　　　　－ <a href="<%= Me.ResolveUrl("~/Aspx/testFxLayerP/nest/testNestMasterScreen.aspx") %>">ネスト パターン</a><br />
-　　　　　－ <a href="<%= Me.ResolveUrl("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx") %>">基本パターン（ネスト）</a><br />
-　　　　　－ <a href="<%= Me.ResolveUrl("~/Aspx/testFxLayerP/nest/testScreen2nest.aspx") %>">特殊パターン（ネスト）</a><br />
-　　　　<br />
-　　　　・ テーブル系<br />
-　　　　　－ <a href="<%= Me.ResolveUrl("~/Aspx/testFxLayerP/table/testRepeater.aspx") %>">Repeaterのイベントテスト</a><br />
-　　　　　－ <a href="<%= Me.ResolveUrl("~/Aspx/testFxLayerP/table/testGridView.aspx") %>">GridViewのイベントテスト</a><br />
-　　　　<br />
-　　　　・ Webカスタム・コントロール系<br />
-　　　　　－ <a href="<%= Me.ResolveUrl("~/Aspx/testFxLayerP/wcc/testWCTextBox.aspx") %>">WebCustomTextBoxのテスト</a><br />
-　　　　<br />
-　　　　・ Ａｊａｘ対応処理<br />
-　　　　　－ <a href="<%= Me.ResolveUrl("~/Aspx/testFxLayerP/withAjax/testClientCallback.aspx") %>">ClientCallbackのテスト</a><br />
-　　　　　－ <a href="<%= Me.ResolveUrl("~/Aspx/testFxLayerP/withAjax/testExtension_Single.aspx") %>">ASP.NET AJAX Extensionのテスト（単一UpdPnl）</a><br />
-　　　　　－ <a href="<%= Me.ResolveUrl("~/Aspx/testFxLayerP/withAjax/testExtension_Separate.aspx") %>">ASP.NET AJAX Extensionのテスト（分割UpdPnl）</a><br />
-　　　　<br />
-　　　・ その他<br />
-　　　　－ <a href="<%= Me.ResolveUrl("~/Aspx/testScreenCtrl/WebForm0.aspx") %>">画面遷移制御</a><br />
-　　　　－ <a href="<%= Me.ResolveUrl("~/Aspx/testScreenCtrl/WebForm0.aspx") %>">画面遷移制御</a><br />
-　　<br />
-    ● <a href="<%= Me.ResolveUrl("~/Aspx/testPublic/testScreen.aspx") %>">単体テスト（共通部品）</a><br />
-    <br />
-    -------------------------<br />
-    <br />
-    ● <a href="logout.aspx">ログアウト画面</a><br />
-    <br />
+    <ul>
+        <li>P層フレームワーク
+            <ul>
+                <li>P層イベント処理
+                    <ul>
+                        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/Normal/testScreen0.aspx") %>">単機能</a></li>
+                        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/Normal/testScreen1.aspx") %>">基本パターン</a></li>
+                        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/Normal/testScreen2.aspx") %>">特殊パターン</a></li>
+                    </ul>
+                </li>
+                <li>ネスト系
+                    <ul>
+                        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/Nest/testNestMasterScreen.aspx") %>">ネスト パターン</a></li>
+                        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/Nest/testScreen1nest.aspx") %>">基本パターン（ネスト）</a></li>
+                        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/Nest/testScreen2nest.aspx") %>">特殊パターン（ネスト）</a></li>
+                    </ul>
+                </li>
+                <li>テーブル系
+                    <ul>
+                        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/Table/testRepeater.aspx") %>">Repeaterのイベントテスト</a></li>
+                        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/Table/testGridView.aspx") %>">GridViewのイベントテスト</a></li>
+                        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/Table/testListView.aspx") %>">ListViewのイベントテスト</a></li>
+                        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/Table/testJQGridJson.aspx") %>">JQGridのテスト</a></li>
+                    </ul>
+                </li>
+                <li>Web Custom Control系
+                    <ul>
+                        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/Wcc/testWCTextBox.aspx") %>">WebCustomTextBoxのテスト</a></li>
+                    </ul>
+                </li>
+                <li>Ajax対応処理
+                    <ul>
+                        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/WithAjax/testClientCallback.aspx") %>">ClientCallbackのテスト</a></li>
+                        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/WithAjax/testExtension_Single.aspx") %>">ASP.NET AJAX Extensionのテスト（単一UpdPnl）</a></li>
+                        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/WithAjax/testExtension_Separate.aspx") %>">ASP.NET AJAX Extensionのテスト（分割UpdPnl）</a></li>
+                    </ul>
+                </li>
+                <li>その他
+                    <ul>
+                        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestScreenCtrl/WebForm0.aspx") %>">画面遷移制御</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestPublic/testScreen.aspx") %>">単体テスト（共通部品）</a></li>
+    </ul>
 </asp:Content>
 
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
+</asp:Content>

@@ -29,16 +29,16 @@ Namespace Aspx.Sample._3Tier
     ''' <summary>三層データバインド・詳細表示画面</summary>
     Partial Public Class ProductsDetail
         Inherits MyBaseController
-#Region "ページロードのUOCメソッド"
+#Region "Page LoadのUOCメソッド"
 
         ''' <summary>
-        ''' ページロードのUOCメソッド（個別：初回ロード）
+        ''' Page LoadのUOCメソッド（個別：初回Load）
         ''' </summary>
         ''' <remarks>
         ''' 実装必須
         ''' </remarks>
         Protected Overrides Sub UOC_FormInit()
-            ' フォーム初期化（初回ロード）時に実行する処理を実装する
+            ' Form初期化（初回Load）時に実行する処理を実装する
 
             ' TODO:
             Dim parameterValue As _3TierParameterValue = Nothing
@@ -68,7 +68,7 @@ Namespace Aspx.Sample._3Tier
                 Dim b As New _3TierEngine()
 
                 ' データ取得処理を実行
-                returnValue = DirectCast(b.DoBusinessLogic(DirectCast(parameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.ReadCommitted), _3TierReturnValue)
+                returnValue = b.DoBusinessLogic(parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
                 ' 編集状態の初期化
 
@@ -102,7 +102,7 @@ Namespace Aspx.Sample._3Tier
             Dim getMasterData As New GetMasterData()
 
             ' 業務処理を実行
-            returnValue = DirectCast(getMasterData.DoBusinessLogic(DirectCast(parameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.ReadCommitted), _3TierReturnValue)
+            returnValue = getMasterData.DoBusinessLogic(parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
             Dim dts As DataTable() = DirectCast(returnValue.Obj, DataTable())
             Dim dt As DataTable = Nothing
@@ -148,13 +148,13 @@ Namespace Aspx.Sample._3Tier
         End Sub
 
         ''' <summary>
-        ''' ページロードのUOCメソッド（個別：ポストバック）
+        ''' Page LoadのUOCメソッド（個別：Post Back）
         ''' </summary>
         ''' <remarks>
         ''' 実装必須
         ''' </remarks>
         Protected Overrides Sub UOC_FormInit_PostBack()
-            ' フォーム初期化（ポストバック）時に実行する処理を実装する
+            ' Form初期化（Post Back）時に実行する処理を実装する
 
             ' TODO:
             Session("DAP") = Me.ddlDap.SelectedValue
@@ -162,12 +162,12 @@ Namespace Aspx.Sample._3Tier
 
 #End Region
 
-#Region "イベントハンドラ"
+#Region "Event Handler"
 
 #Region "編集状態の変更"
 
-        ''' <summary>編集ボタン</summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <summary>編集Button</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnEdit_Click(fxEventArgs As FxEventArgs) As String
             ' 編集状態の変更
@@ -183,8 +183,8 @@ Namespace Aspx.Sample._3Tier
 
 #Region "更新系"
 
-        ''' <summary>追加ボタン</summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <summary>追加Button</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnInsert_Click(fxEventArgs As FxEventArgs) As String
             ' 引数クラスを生成
@@ -214,7 +214,7 @@ Namespace Aspx.Sample._3Tier
             Dim b As New _3TierEngine()
 
             ' データ取得処理を実行
-            Dim returnValue As _3TierReturnValue = DirectCast(b.DoBusinessLogic(DirectCast(parameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.ReadCommitted), _3TierReturnValue)
+            Dim returnValue As _3TierReturnValue = b.DoBusinessLogic(parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
             ' 結果表示
             Me.lblResult.Text = returnValue.Obj.ToString() & "件追加しました。"
@@ -223,8 +223,8 @@ Namespace Aspx.Sample._3Tier
             Return String.Empty
         End Function
 
-        ''' <summary>更新ボタン</summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <summary>更新Button</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnUpdate_Click(fxEventArgs As FxEventArgs) As String
             ' 引数クラスを生成
@@ -257,7 +257,7 @@ Namespace Aspx.Sample._3Tier
             Dim b As New _3TierEngine()
 
             ' データ取得処理を実行
-            Dim returnValue As _3TierReturnValue = DirectCast(b.DoBusinessLogic(DirectCast(parameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.ReadCommitted), _3TierReturnValue)
+            Dim returnValue As _3TierReturnValue = b.DoBusinessLogic(parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
             ' 結果表示
             Me.lblResult.Text = returnValue.Obj.ToString() & "件更新しました。"
@@ -266,8 +266,8 @@ Namespace Aspx.Sample._3Tier
             Return String.Empty
         End Function
 
-        ''' <summary>削除ボタン</summary>
-        ''' <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        ''' <summary>削除Button</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnDelete_Click(fxEventArgs As FxEventArgs) As String
             ' 引数クラスを生成
@@ -283,7 +283,7 @@ Namespace Aspx.Sample._3Tier
             Dim b As New _3TierEngine()
 
             ' データ取得処理を実行
-            Dim returnValue As _3TierReturnValue = DirectCast(b.DoBusinessLogic(DirectCast(parameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.ReadCommitted), _3TierReturnValue)
+            Dim returnValue As _3TierReturnValue = b.DoBusinessLogic(parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
             ' 結果表示
             Me.lblResult.Text = returnValue.Obj.ToString() & "件削除しました。"

@@ -7,6 +7,6 @@
     <title>無題のページ</title>
 </head>
 <body>
-    <form id="form1" runat="server"></form>
+    <form id="form1" runat="server" autocomplete="on"></form>
 </body>
 </html>

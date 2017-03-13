@@ -13,7 +13,7 @@ namespace ProjectX_sample.Aspx.TestFxLayerP {
     public partial class testDLFrame {
         
         /// <summary>
-        /// iframe1 コントロール。
+        /// iframe1 Control。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

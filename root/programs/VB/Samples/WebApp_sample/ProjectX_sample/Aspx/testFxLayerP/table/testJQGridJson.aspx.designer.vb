@@ -10,15 +10,8 @@
 Option Strict On
 Option Explicit On
 
-
-Partial Public Class Aspx_testFxLayerP_table_testJQGridJson
+Namespace Aspx.TestFxLayerP.Table
     
-    '''<summary>
-    '''form1 コントロール。
-    '''</summary>
-    '''<remarks>
-    '''自動生成されたフィールド。
-    '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
-    '''</remarks>
-    Protected WithEvents form1 As Global.System.Web.UI.HtmlControls.HtmlForm
-End Class
+    Partial Public Class testJQGridJson
+    End Class
+End Namespace
