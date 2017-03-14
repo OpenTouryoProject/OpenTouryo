@@ -10,8 +10,6 @@
     <script type="text/javascript">
         <!--
         
-        // 戻り値
-        Form
         // 初期値は０、Dialog右上の[×]で閉じた場合に戻る値
         var dialogreturn = 0;
         
