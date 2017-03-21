@@ -1,0 +1,118 @@
+﻿@*
+    //**********************************************************************************
+    //* サンプル アプリ・モデル
+    //**********************************************************************************
+
+    // テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+
+    //**********************************************************************************
+    //* クラス名        ：Index
+    //* クラス日本語名  ：CRUDサンプル（Html.BeginForm）
+    //*
+    //* 作成日時        ：－
+    //* 作成者          ：－
+    //* 更新履歴        ：－
+    //*
+    //*  日時        更新者            内容
+    //*  ----------  ----------------  -------------------------------------------------
+    //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+    //**********************************************************************************
+*@
+
+@using MVC_Sample.Models.ViewModels
+@model CrudViweModel
+
+@{
+    // ページタイトル
+    ViewBag.Title = "CRUDサンプル（Html.BeginForm）";
+
+    // マスターページ
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@* スクリプト・セクション（RenderSection("HeaderScriptsSection", required: true)に出力されます） *@
+@section HeaderScriptsSection{
+    <!-- Head 部の section -->
+}
+
+@* 本文レイアウト（RenderBodyに出力されます） *@
+@* Html.BeginFormは従来の全体方式、Ajax.BeginFormは部分更新方式（UpdateTargetIdの範囲を部分更新） *@
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "form1", onsubmit = "Fx_OnSubmit();" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-inline">
+        <div class="form-group">
+            <span>データアクセス制御クラス（データプロバイダ）を選択</span><br />
+            @Html.DropDownListFor(model => model.DdlDap, Model.DdlDapItems)<br />
+
+            <span>個別、共通、自動生成のＤａｏ種別</span><br />
+            @Html.DropDownListFor(model => model.DdlMode1, Model.DdlMode1Items)<br />
+
+            <span>静的、動的のクエリ モードを選択</span><br />
+            @Html.DropDownListFor(model => model.DdlMode2, Model.DdlMode2Items)<br />
+
+            <span>分離レベルを選択</span><br />
+            @Html.DropDownListFor(model => model.DdlIso, Model.DdlIsoItems)<br />
+
+            <span>コミット、ロールバックを設定（例外発生時、ロールバック）</span><br />
+            @Html.DropDownListFor(model => model.DdlExRollback, Model.DdlExRollbackItems)<br />
+
+            <span>ShipperID：</span><br />
+            @Html.TextBoxFor(model => model.ShipperID)<br />
+
+            <span>CompanyName：</span><br />
+            @Html.TextBoxFor(model => model.CompanyName)<br />
+
+            <span>Phone：</span><br />
+            @Html.TextBoxFor(model => model.Phone)<br />
+
+            <span>並び替え対象列</span><br />
+            @Html.DropDownListFor(model => model.DdlOrderColumn, Model.DdlOrderColumnItems)<br />
+
+            <span>昇順・降順</span>
+            @Html.DropDownListFor(model => model.DdlOrderSequence, Model.DdlOrderSequenceItems)
+
+            <span>処理結果：</span>
+            <div id="messageResult">@Html.Partial("_MessageView")</div>
+        </div>
+        <div class="form-group">
+            <div id="chartResult" style="width: 100%; height: 100%;">@Html.Partial("_ChartView")</div>
+            <button id="button10">クリア</button>
+        </div>
+    </div>
+    <div class="form-inline">
+        <div class="form-group">
+            <input type="submit" id="button1" value="件数取得" formaction="@Url.Action("SelectCount")" />
+            <input type="submit" id="button2" value="一覧取得（dt）" formaction="@Url.Action("SelectAll_DT")" />
+            <input type="submit" id="button3" value="一覧取得（ds）" formaction="@Url.Action("SelectAll_DS")" />
+            <input type="submit" id="button4" value="一覧取得（dr）" formaction="@Url.Action("SelectAll_DR")" />
+            <input type="submit" id="button5" value="一覧取得（動的SQL）" formaction="@Url.Action("SelectAll_DSQL")" />
+        </div><br />
+        <div class="form-group">
+            <input type="submit" id="button6" value="一件参照" formaction="@Url.Action("Select")" />
+            <input type="submit" id="button7" value="追加" formaction="@Url.Action("Insert")" />
+            <input type="submit" id="button8" value="更新" formaction="@Url.Action("Update")" />
+            <input type="submit" id="button9" value="削除" formaction="@Url.Action("Delete")" />
+        </div><br />
+        <div class="form-group">
+            <label id="lblErrorMessage"></label>
+            <input type="submit" id="button21" value="二重送信防止" formaction="@Url.Action("PreventDoubleSubmission")" />
+            <input type="submit" id="button22" value="画面遷移（ポストバック後リダイレクト）" formaction="@Url.Action("Transitions")" />
+
+        </div>
+    </div>
+}
+
+@* スクリプト・セクション（RenderSection("FooterScriptsSection", required: true)に出力されます） *@
+@section FooterScriptsSection{
+    <script type="text/javascript">
+        $('#button10').click(function () {
+            // 結果をクリアする
+            $('#chartResult').html('');
+
+            // Form をサブミットしないよう、false を返す
+            return false;
+        });
+    </script>
+}

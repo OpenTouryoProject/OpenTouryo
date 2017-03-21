@@ -1,4 +1,11 @@
 ﻿'**********************************************************************************
+'* テンプレート
+'**********************************************************************************
+
+' 以下のLicenseに従い、このProjectをTemplateとして使用可能です。Release時にCopyright表示してSublicenseして下さい。
+' https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LicenseForTemplates.txt
+
+'**********************************************************************************
 '* クラス名        ：WebApiConfig
 '* クラス日本語名  ：ルート定義に関する指定（WebApi用）
 '*
@@ -11,32 +18,27 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
 
-Imports System
-Imports System.Collections.Generic
-Imports System.Linq
 Imports System.Web.Http
 
 ''' <summary>
 ''' ルート定義に関する指定（WebApi用）
 ''' </summary>
 Public NotInheritable Class WebApiConfig
-    Private Sub New()
-    End Sub
-    ''' <summary>
-    ''' Routing in ASP.NET Web API  The Official Microsoft ASP.NET Site
-    ''' http://www.asp.net/web-api/overview/web-api-routing-and-actions/routing-in-aspnet-web-api
-    '''  Web API RoutingはMVC Routingに非常に似ています。
-    '''  主な違いは Web API URI パスではなく HTTP メソッドを使用してアクションを選択することです。
-    '''  さらに、Web APIの中でMVC Routingを使用しても良い。
-    ''' </summary>
-    Public Shared Sub Register(config As HttpConfiguration)
-        config.Routes.MapHttpRoute( _
-            name:="DefaultApi", _
-            routeTemplate:="api/{controller}/{id}", _
-            defaults:=New With {.id = RouteParameter.[Optional]} _
-            )
+        Private Sub New()
+        End Sub
+        ''' <summary>
+        ''' Routing in ASP.NET Web API  The Official Microsoft ASP.NET Site
+        ''' http://www.asp.net/web-api/overview/web-api-routing-and-actions/routing-in-aspnet-web-api
+        '''  Web API RoutingはMVC Routingに非常に似ています。
+        '''  主な違いは Web API URI パスではなく HTTP メソッドを使用してアクションを選択することです。
+        '''  さらに、Web APIの中でMVC Routingを使用しても良い。
+        ''' </summary>
+        Public Shared Sub Register(config As HttpConfiguration)
+            config.Routes.MapHttpRoute(name:="DefaultApi", routeTemplate:="api/{controller}/{id}", defaults:=New With {
+                Key .id = RouteParameter.[Optional]
+            })
 
-        '' トレース機能を有効化します。
+        '/ トレース機能を有効化します。
         'TraceConfig.Register(config);
     End Sub
-End Class
+    End Class

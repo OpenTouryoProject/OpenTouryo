@@ -1,4 +1,11 @@
 ﻿'**********************************************************************************
+'* テンプレート
+'**********************************************************************************
+
+' 以下のLicenseに従い、このProjectをTemplateとして使用可能です。Release時にCopyright表示してSublicenseして下さい。
+' https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LicenseForTemplates.txt
+
+'**********************************************************************************
 '* クラス名        ：FilterConfig
 '* クラス日本語名  ：グローバルフィルタに関する指定
 '*
@@ -10,9 +17,6 @@
 '*  ----------  ----------------  -------------------------------------------------
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
-
-Imports System.Web
-Imports System.Web.Mvc
 
 ''' <summary>
 ''' グローバルフィルタに関する指定
@@ -30,8 +34,8 @@ Public Class FilterConfig
         ' デフォルトで HandleError アクションフィルタを全てのコントローラへ適用するようになっている。
         filters.Add(New HandleErrorAttribute())
 
-        '' OutputCache アクションフィルタ
-        '' 全てのページを 60 秒間キャッシュする
+        '/ OutputCache アクションフィルタ
+        '/ 全てのページを 60 秒間キャッシュする
         'filters.Add(new OutputCacheAttribute { Duration = 60 });
     End Sub
 End Class
