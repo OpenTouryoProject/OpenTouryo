@@ -108,7 +108,7 @@ Namespace Aspx.TestFxLayerP.WithAjax
         ''' <returns>処理結果</returns>
         Private Function ICallbackEventHandler_GetCallbackResult() As String Implements ICallbackEventHandler.GetCallbackResult
             '/ テスト用スリープ
-            'System.Threading.Thread.Sleep(this.SleepCnt);
+            'System.Threading.Thread.Sleep(Me.SleepCnt);
 
             ' 処理結果を値を戻す。
             Return Me.CallbackResult

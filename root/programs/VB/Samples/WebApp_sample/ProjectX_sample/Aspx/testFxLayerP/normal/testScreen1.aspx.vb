@@ -1092,7 +1092,7 @@ Namespace Aspx.TestFxLayerP.Normal
         ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_impImageMap33_Click(fxEventArgs As FxEventArgs) As String
-            'this.ShowNormalScreen("~/Aspx/testFxLayerP/testDLScreen.aspx");
+            'Me.ShowNormalScreen("~/Aspx/testFxLayerP/testDLScreen.aspx");
             Me.ShowNormalScreen("~/Aspx/testFxLayerP/testDLFrame.aspx")
             Return ""
         End Function

@@ -20,7 +20,7 @@
 Imports Touryo.Infrastructure.Framework.Presentation
 
 Namespace Aspx.Common.TestNest
-    Partial Public Class Aspx_Common_testNest_rootMasterPage
+    Partial Public Class rootMasterPage
         Inherits BaseMasterController
     End Class
 End Namespace

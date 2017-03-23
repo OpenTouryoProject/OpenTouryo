@@ -18,7 +18,7 @@
 '**********************************************************************************
 
 Namespace Aspx.Common.TestNest
-    Partial Public Class Aspx_Common_testNest_noBaseMasterPage
+    Partial Public Class noBaseMasterPage
         Inherits System.Web.UI.MasterPage
     End Class
 End Namespace

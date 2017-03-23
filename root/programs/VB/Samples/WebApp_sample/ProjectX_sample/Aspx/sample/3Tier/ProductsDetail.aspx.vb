@@ -306,9 +306,9 @@ Namespace Aspx.Sample._3Tier
             ' 主キー以外
             Me.txtProductName.[ReadOnly] = [readOnly]
 
-            'this.txtSupplierID.ReadOnly = readOnly;
+            'Me.txtSupplierID.ReadOnly = readOnly;
             Me.ddlSupplierID.[ReadOnly] = [readOnly]
-            'this.txtCategoryID.ReadOnly = readOnly;
+            'Me.txtCategoryID.ReadOnly = readOnly;
             Me.ddlCategoryID.[ReadOnly] = [readOnly]
 
             Me.txtQuantityPerUnit.[ReadOnly] = [readOnly]
@@ -334,9 +334,9 @@ Namespace Aspx.Sample._3Tier
             ' 主キー以外
             Me.txtProductName.BackColor = backColor
 
-            'this.txtSupplierID.BackColor = backColor;
+            'Me.txtSupplierID.BackColor = backColor;
             Me.ddlSupplierID.BackColor = backColor
-            'this.txtCategoryID.BackColor = backColor;
+            'Me.txtCategoryID.BackColor = backColor;
             Me.ddlCategoryID.BackColor = backColor
 
             Me.txtQuantityPerUnit.BackColor = backColor

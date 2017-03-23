@@ -229,7 +229,7 @@ Namespace Aspx.TestFxLayerP.Table
 
                 ' 変更されていればDataTableに反映（RowStateが変更される）
                 Dim cbx As CheckBox = DirectCast(Me.rptRepeater1.Items(i).FindControl("cbxCheckBox1"), CheckBox)
-                'RadioButton cbx = ((RadioButton)this.rptRepeater1.Items[i].FindControl("rbnRadioButton1"));
+                'RadioButton cbx = ((RadioButton)Me.rptRepeater1.Items[i].FindControl("rbnRadioButton1"));
                 If CBool(dr("checkbox")) <> cbx.Checked Then
                     dr("checkbox") = cbx.Checked
                     isUpd = True
@@ -237,7 +237,7 @@ Namespace Aspx.TestFxLayerP.Table
 
                 ' 変更されていればDataTableに反映（RowStateが変更される）
                 Dim ddl As DropDownList = DirectCast(Me.rptRepeater1.Items(i).FindControl("ddlDropDownList1"), DropDownList)
-                'ListBox ddl = ((ListBox)this.rptRepeater1.Items[i].FindControl("lbxListBox1"));
+                'ListBox ddl = ((ListBox)Me.rptRepeater1.Items[i].FindControl("lbxListBox1"));
                 If dr("dropdownlist").ToString() <> ddl.SelectedValue Then
                     dr("dropdownlist") = ddl.SelectedValue
                     isUpd = True

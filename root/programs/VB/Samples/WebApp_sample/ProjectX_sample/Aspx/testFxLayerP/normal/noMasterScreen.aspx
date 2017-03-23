@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.Normal.noMasterScreen" Codebehind="noMasterScreen.aspx.cs" %>
+<%@ Page Language="VB" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.Normal.noMasterScreen" Codebehind="noMasterScreen.aspx.vb" %>
 
 <!DOCTYPE html>
 <html>

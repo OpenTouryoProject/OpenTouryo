@@ -414,8 +414,8 @@ Namespace Aspx.TestFxLayerP.Nest
 
         '/// ちなみに存在しないControlを検索した場合どうなるかチェックする。
         '/Control ctrl = null;
-        '/ctrl = this.GetMasterWebControl("xxxx");
-        '/ctrl = this.GetContentWebControl("xxxx");
+        '/ctrl = Me.GetMasterWebControl("xxxx");
+        '/ctrl = Me.GetContentWebControl("xxxx");
 
 #End Region
 

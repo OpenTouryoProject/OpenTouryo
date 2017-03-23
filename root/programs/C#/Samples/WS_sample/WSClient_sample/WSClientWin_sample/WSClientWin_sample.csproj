@@ -116,7 +116,9 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MSGDefinition.xml" />
+    <EmbeddedResource Include="MSGDefinition.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="TMProtocolDefinition.xml">

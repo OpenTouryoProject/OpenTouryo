@@ -35,7 +35,7 @@
 
 using System.Web.Mvc;
 
-namespace MVC_Sample.Controllers
+namespace SPA_Sample.Controllers
 {
     /// <summary>
     /// Ping Controller

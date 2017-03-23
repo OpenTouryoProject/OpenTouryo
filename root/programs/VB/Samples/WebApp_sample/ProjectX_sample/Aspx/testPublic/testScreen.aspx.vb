@@ -305,9 +305,9 @@ Namespace Aspx.TestPublic
         '    MyParameterValue myParameterValue
         '        = new MyParameterValue(
         '              "画面ID", "ButtonID",
-        '              this.ddlDap.SelectedValue + "%"
-        '              + this.ddlExRollback.SelectedValue + "%"
-        '              + this.ddlExStatus.SelectedValue,
+        '              Me.ddlDap.SelectedValue + "%"
+        '              + Me.ddlExRollback.SelectedValue + "%"
+        '              + Me.ddlExStatus.SelectedValue,
         '              new MyUserInfo("ユーザ名", Request.UserHostAddress));
 
         '    // ※ ActionTypeのフォーマット：Dap%Err%Stat%
@@ -315,7 +315,7 @@ Namespace Aspx.TestPublic
         '    MyBaseLogic testMTC;
 
         '    // B層を生成
-        '    if (this.cbxCnnMode.Checked)
+        '    if (Me.cbxCnnMode.Checked)
         '    {
         '        // マルチ コネクション モード
         '        testMTC = new TestMTC_mcn();
@@ -341,15 +341,15 @@ Namespace Aspx.TestPublic
         '    MyType.TestParameterValue testParameterValue
         '        = new MyType.TestParameterValue(
         '              "", "画面ID", "ButtonID",
-        '              this.ddlDap.SelectedValue + "%"
-        '              + this.ddlExRollback.SelectedValue + "%"
-        '              + this.ddlExStatus.SelectedValue,
+        '              Me.ddlDap.SelectedValue + "%"
+        '              + Me.ddlExRollback.SelectedValue + "%"
+        '              + Me.ddlExStatus.SelectedValue,
         '              new MyUserInfo("ユーザ名", Request.UserHostAddress));
 
         '    // ※ ActionTypeのフォーマット：Dap
 
         '    // TransactionGroupIDを設定
-        '    testParameterValue.Obj = this.ddlTxGpID.SelectedValue;
+        '    testParameterValue.Obj = Me.ddlTxGpID.SelectedValue;
 
         '    // 業務処理を実行
         '    TestMTC_txg testMTC = new TestMTC_txg();
@@ -359,13 +359,13 @@ Namespace Aspx.TestPublic
         '            (BaseParameterValue)testParameterValue,
         '            DbEnum.IsolationLevelEnum.User);
 
-        '    this.lblTxID.Text = "";
+        '    Me.lblTxID.Text = "";
 
         '    // 例外判定
         '    if (myReturnValue.ErrorFlag)
         '    {
         '        // Error Message
-        '        this.lblTxID.Text = myReturnValue.ErrorMessage;
+        '        Me.lblTxID.Text = myReturnValue.ErrorMessage;
         '    }
         '    else
         '    {
@@ -374,7 +374,7 @@ Namespace Aspx.TestPublic
         '        // TransactionPatternIDをリストする。
         '        foreach (string temp2 in temp1)
         '        {
-        '            this.lblTxID.Text += temp2 + "<br/>";
+        '            Me.lblTxID.Text += temp2 + "<br/>";
         '        }
         '    }
         '}
@@ -540,10 +540,10 @@ Namespace Aspx.TestPublic
 
         ''' <summary>ローカル→UTC対応</summary>
         Protected Sub btnLocalToUtc_Click(sender As Object, e As EventArgs)
-            'DateTime dt = new DateTime(this.Calendar1.SelectedDate.Ticks, DateTimeKind.Local); // 正
+            'DateTime dt = new DateTime(Me.Calendar1.SelectedDate.Ticks, DateTimeKind.Local); // 正
             Dim dt As New DateTime(Me.Calendar1.SelectedDate.Ticks, DateTimeKind.Unspecified)
             ' 略
-            'DateTime dt = new DateTime(this.Calendar1.SelectedDate.Ticks, DateTimeKind.Utc); // 不正
+            'DateTime dt = new DateTime(Me.Calendar1.SelectedDate.Ticks, DateTimeKind.Utc); // 不正
             If Me.cbxTimeZone.Checked Then
                 dt = GMTMaster.ConvertLocalTimeToUtcTime35(dt, TimeZoneInfo.FindSystemTimeZoneById(Me.ddlTimeZone.SelectedItem.Value))
             Else
@@ -554,10 +554,10 @@ Namespace Aspx.TestPublic
 
         ''' <summary>UTC→ローカル対応</summary>
         Protected Sub btnUtcToLocal_Click(sender As Object, e As EventArgs)
-            'DateTime dt = new DateTime(this.Calendar1.SelectedDate.Ticks, DateTimeKind.Utc); // 正
+            'DateTime dt = new DateTime(Me.Calendar1.SelectedDate.Ticks, DateTimeKind.Utc); // 正
             Dim dt As New DateTime(Me.Calendar1.SelectedDate.Ticks, DateTimeKind.Unspecified)
             ' 略
-            'DateTime dt = new DateTime(this.Calendar1.SelectedDate.Ticks, DateTimeKind.Local); // 不正
+            'DateTime dt = new DateTime(Me.Calendar1.SelectedDate.Ticks, DateTimeKind.Local); // 不正
             If Me.cbxTimeZone.Checked Then
                 dt = GMTMaster.ConvertUtcTimeToLocalTime35(dt, TimeZoneInfo.FindSystemTimeZoneById(Me.ddlTimeZone.SelectedItem.Value))
             Else
@@ -1952,7 +1952,7 @@ Namespace Aspx.TestPublic
                 ' 偽装前の実行アカウント（ASP.NET偽装はある）
 
                 '/ 偽装起動のテスト → OK 正しく動作する。
-                'this.testCreateProcessAsImpersonationUser();
+                'Me.testCreateProcessAsImpersonationUser();
 
                 ' 存在チェック
                 Debug.WriteLine(System.Security.Principal.WindowsIdentity.GetCurrent().Name)
@@ -1976,7 +1976,7 @@ Namespace Aspx.TestPublic
                 ret = ii.ImpersonateValidUser("x", "", "x")
 
                 '/ 偽装起動のテスト → OK 正しく動作する。
-                'this.testCreateProcessAsImpersonationUser();
+                'Me.testCreateProcessAsImpersonationUser();
 
                 ' 存在チェック
                 Me.lblElse.Text += String.Format("、偽装後（任意のユーザ「{0}」を偽装）：", WindowsIdentity.GetCurrent().Name) & ResourceLoader.LoadAsString("c:\test.txt", Encoding.GetEncoding(CustomEncode.UTF_8))
@@ -1999,7 +1999,7 @@ Namespace Aspx.TestPublic
                     ret = ii.ImpersonateWinIdUser(DirectCast(User.Identity, WindowsIdentity))
 
                     '/ 偽装起動のテスト → OK 正しく動作する。
-                    'this.testCreateProcessAsImpersonationUser();
+                    'Me.testCreateProcessAsImpersonationUser();
 
                     ' 存在チェック
                     Me.lblElse.Text += String.Format("、偽装後（認証中のユーザ「{0}」を偽装）：", WindowsIdentity.GetCurrent().Name) & ResourceLoader.LoadAsString("c:\test.txt", Encoding.GetEncoding(CustomEncode.UTF_8))

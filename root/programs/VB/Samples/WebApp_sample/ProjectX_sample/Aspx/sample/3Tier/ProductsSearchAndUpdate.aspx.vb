@@ -320,7 +320,7 @@ Namespace Aspx.Sample._3Tier
             Dim returnValue As _3TierReturnValue = b.DoBusinessLogic(parameterValue, DbEnum.IsolationLevelEnum.ReadCommitted)
 
             ' 結果表示
-            'this.lblResult.Text = returnValue.Obj.ToString() + "件更新しました。";
+            'Me.lblResult.Text = returnValue.Obj.ToString() + "件更新しました。";
 
             ' 更新Buttonの非活性化
             Me.btnBatUpd.Enabled = False
