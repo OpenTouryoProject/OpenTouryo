@@ -26,6 +26,26 @@
             <Setter Property="Foreground" Value="White" />
             <Setter Property="BorderBrush" Value="#D43F3A" />
         </Style>
+
+        <!-- 明細表示、リスト表示のスタイル -->
+        <Style x:Key="DisplayPanel" TargetType="StackPanel">
+            <Setter Property="BorderBrush" Value="#C8E5F4" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="Margin" Value="10" />
+        </Style>
+        <Style x:Key="PanelHeader" TargetType="Border">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="#C8E5F4" />
+            <Setter Property="Padding" Value="5" />
+        </Style>
+        <Style x:Key="PanelHeaderText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#31708F" />
+            <Setter Property="FontSize" Value="20" />
+        </Style>
+        <Style x:Key="PanelBody" TargetType="StackPanel">
+            <Setter Property="Margin" Value="10" />
+        </Style>
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -55,6 +75,8 @@
                     <ComboBox Name="ddlDap">
                         <ComboBox.Items>
                             <ComboBoxItem Content="SQL Server / SQL Client" Tag="SQL" IsSelected="True" />
+                            <!--
+                                このサンプルでは、SQL Server のみ選択可能とする
                             <ComboBoxItem Content="Multi-DB / OLEDB.NET" Tag="OLE" />
                             <ComboBoxItem Content="Multi-DB / ODBC.NET" Tag="ODB" />
                             <ComboBoxItem Content="Oracle / ODP.NET" Tag="ODP" />
@@ -62,6 +84,7 @@
                             <ComboBoxItem Content="HiRDB / HiRDB-DP" Tag="HIR" />
                             <ComboBoxItem Content="MySQL Cnn/NET" Tag="MCN" />
                             <ComboBoxItem Content="PostgreSQL / Npgsql" Tag="NPS" />
+                            -->
                         </ComboBox.Items>
                     </ComboBox>
                     <TextBlock Text="■共通 Dao 選択時のクエリモード" />
@@ -79,19 +102,6 @@
                             <ComboBoxItem Content="動的クエリ" Tag="dynamic" />
                         </ComboBox.Items>
                     </ComboBox>
-                    <TextBlock Text="■トランザクション分離レベル" />
-                    <ComboBox Name="ddlIso">
-                        <ComboBox.Items>
-                            <ComboBoxItem Content="Not Connect" Tag="NC" />
-                            <ComboBoxItem Content="No Transaction" Tag="NT" IsSelected="True" />
-                            <ComboBoxItem Content="Read Uncommitted" Tag="RU" />
-                            <ComboBoxItem Content="Read Committed" Tag="RC" />
-                            <ComboBoxItem Content="Repeatable Read" Tag="RR" />
-                            <ComboBoxItem Content="Serializable" Tag="SZ" />
-                            <ComboBoxItem Content="Snapshot" Tag="SS" />
-                            <ComboBoxItem Content="Default" Tag="DF" />
-                        </ComboBox.Items>
-                    </ComboBox>
                     <TextBlock Text="■正常／エラーの動作確認用" />
                     <ComboBox Name="ddlExRollback">
                         <ComboBox.Items>
@@ -101,13 +111,6 @@
                             <ComboBoxItem Content="その他、一般的な例外を発生させる" Tag="Other" />
                             <ComboBoxItem Content="業務例外に振り替える" Tag="Other-Business" />
                             <ComboBoxItem Content="システム例外に振り替える" Tag="Other-System" />
-                        </ComboBox.Items>
-                    </ComboBox>
-                    <TextBlock Text="■アーキテクチャ構成" />
-                    <ComboBox Name="ddlTransmission">
-                        <ComboBox.Items>
-                            <ComboBoxItem Content="論理 3 階層 (Webサービス呼出)" Tag="testWebService" IsSelected="True" />
-                            <ComboBoxItem Content="論理 2 階層 (インプロセス呼出)" Tag="testInProcess" />
                         </ComboBox.Items>
                     </ComboBox>
                 </StackPanel>
@@ -127,20 +130,26 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
-                    <TextBlock Text="１件表示" FontSize="20" />
-                    <TextBlock Text="ShipperID:" Margin="0,15,0,0" FontWeight="Bold" />
-                    <TextBox x:Name="txtShipperID" PlaceholderText="Shipper ID" />
-                    <TextBlock Text="CompanyName:" Margin="0,15,0,0" FontWeight="Bold" />
-                    <TextBox x:Name="txtCompanyName" PlaceholderText="Company Name" />
-                    <TextBlock Text="Phone:" Margin="0,15,0,0" FontWeight="Bold" />
-                    <TextBox x:Name="txtPhone" PlaceholderText="Phone" />
+                <StackPanel Style="{StaticResource DisplayPanel}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+                    <Border Style="{StaticResource PanelHeader}">
+                        <TextBlock Style="{StaticResource PanelHeaderText}" Text="明細表示" />
+                    </Border>
+                    <StackPanel Style="{StaticResource PanelBody}">
+                        <TextBlock Text="ShipperID:" Margin="0,15,0,0" FontWeight="Bold" />
+                        <TextBox x:Name="txtShipperID" PlaceholderText="Shipper ID" />
+                        <TextBlock Text="CompanyName:" Margin="0,15,0,0" FontWeight="Bold" />
+                        <TextBox x:Name="txtCompanyName" PlaceholderText="Company Name" />
+                        <TextBlock Text="Phone:" Margin="0,15,0,0" FontWeight="Bold" />
+                        <TextBox x:Name="txtPhone" PlaceholderText="Phone" />
+                    </StackPanel>
                 </StackPanel>
 
-                <StackPanel Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="3" Padding="10">
-                    <!--<StackPanel Orientation="Horizontal">
-                        <TextBlock Text="リスト表示" FontSize="20" />
-                        <Button Name="btnClear" Click="btnClear_Click" Style="{StaticResource ResourceKey=ClearButton}" Foreground="White" Margin="50,0,0,0">
+                <StackPanel Style="{StaticResource DisplayPanel}" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="3">
+                    <Border Style="{StaticResource PanelHeader}">
+                        <TextBlock Style="{StaticResource PanelHeaderText}" Text="リスト表示" />
+                    </Border>
+                    <StackPanel Style="{StaticResource PanelBody}">
+                        <Button Grid.Column="1" Name="btnClear" Click="btnClear_Click" Style="{StaticResource ResourceKey=ClearButton}" Foreground="White" HorizontalAlignment="Right">
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
                                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE107;" />
@@ -148,30 +157,14 @@
                                 </StackPanel>
                             </Button.Content>
                         </Button>
-                    </StackPanel>-->
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        
-                        <TextBlock Grid.Column="0" Text="リスト表示" FontSize="20" />
-                        <Button Grid.Column="1" Name="btnClear" Click="btnClear_Click" Style="{StaticResource ResourceKey=ClearButton}" Foreground="White">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE107;" />
-                                    <TextBlock Text="クリア" />
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-                    </Grid>
-                    <controls:DataGrid x:Name="lstRecords" ItemsSource="{Binding}">
-                        <controls:DataGrid.Columns>
-                            <controls:DataGridTextColumn Header="Shipper ID" Width="150" CanSort="False" Binding="{Binding Path=[shipperID]}" />
-                            <controls:DataGridTextColumn Header="Company Name" Width="150" CanSort="False" Binding="{Binding Path=[companyName]}" />
-                            <controls:DataGridTextColumn Header="Phone" Width="150" CanSort="False" Binding="{Binding Path=[phone]}" />
-                        </controls:DataGrid.Columns>
-                    </controls:DataGrid>
+                        <controls:DataGrid x:Name="lstRecords" ItemsSource="{Binding}">
+                            <controls:DataGrid.Columns>
+                                <controls:DataGridTextColumn Header="Shipper ID" Width="150" CanSort="False" Binding="{Binding Path=[shipperID]}" />
+                                <controls:DataGridTextColumn Header="Company Name" Width="150" CanSort="False" Binding="{Binding Path=[companyName]}" />
+                                <controls:DataGridTextColumn Header="Phone" Width="150" CanSort="False" Binding="{Binding Path=[phone]}" />
+                            </controls:DataGrid.Columns>
+                        </controls:DataGrid>
+                    </StackPanel>
                 </StackPanel>
                     
                 <Button x:Name="btnGetCount" Style="{StaticResource ResourceKey=CommandButton}" Grid.Row="1" Grid.Column="0" Click="btnGetCount_Click">
