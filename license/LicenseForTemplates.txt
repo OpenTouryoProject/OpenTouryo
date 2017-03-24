@@ -1,34 +1,20 @@
 License Agreement
-使用許諾契約書
 
 "This Template File Part" assuming customization and additional implementation in this software is licensed to everyone who acquires this copy under the following terms and The MIT License.
-本ソフトウェア中のカスタマイズや追加実装を前提とした「本テンプレート ファイル部分」は、この複製を取得するすべての人に対し、以下の条項、及び The MIT License に従い、使用等許諾します。
 
 Article 1: Since "This Template File Part" contains "Microsoft's Distributable Code". Therefore, users should comply with the following conditions in this part.
-第 1 条 「本テンプレート ファイル部分」には、「マイクロソフト社の再頒布可能コード」が含まれているため、当該部分に以下の条件を遵守するものとします。
 (1) The user may not make any claims, requests or "responsible pursuit" to Microsoft regarding the distribution or use of "programs developed by users" including "This Template File Part".
-「本テンプレート ファイル部分」を含む「ユーザによって開発されたプログラム」の頒布又は使用に関して、マイクロソフト社に対して何らの請求、要求又は責任追及をしないこと。
 (2) The user should indemnify, defend, and hold harmless Microsoft from any claims, including attorneys’ fees, related to the distribution or use of "This Template File Part".
-「本テンプレート ファイル部分」の使用又は頒布に基づき又は関連して発生したあらゆる請求又は訴訟（弁護士費用を含む。） について、マイクロソフト社及びマイクロソフト社のサプライヤーに補償し、マイクロソフト社及びマイクロソフト社のサプライヤーを免責及び防御すること。
 (3) To sell a "program developed by a user" with "This Template File Part" embedded, the user should include a valid copyright in the program developed by that user without including the name, logo or trademark of Microsoft Corporation.
-「本テンプレート ファイル部分」が組み込まれた「ユーザによって開発されたプログラム」を販売する際にマイクロソフト社の名称、ロゴ又は商標を使用せず、当該ユーザによって開発されたプログラムに有効な著作表示を含めること。
 (4) The user may not use Microsoft’s trademarks in name of "program developed by a user" with "This Template File Part" embedded, or in a way that suggests its programs come from or are endorsed by Microsoft.
-マイクロソフト社の商標を、「本テンプレート ファイル部分」を含む「ユーザによって開発されたプログラム」の名称の一部に使用したり、マイクロソフト社から由来している又はマイクロソフト社が推奨していることを示唆するような方法で使用しないこと。 
 (5) The user may not distribute "This Template File Part" in or with any malicious or, deceptive programs or in an unlawful manner.
-悪意のある又は欺瞞的なプログラムに含めもしくはそのようなプログラムと共に、又は違法な手段で、「本テンプレート ファイル部分」を頒布しないこと。
 (6) The user may not modify or distribute the source code of any "This Template File Part" so that any part of it becomes subject to an "Excluded License".
-「本テンプレート ファイル部分」の一部に除外ライセンスが適用されることになるような方法でソースコードを改変又は再頒布しないこと。
 An "Excluded License" is one that requires, as a condition of use, modification or distribution, that the code be disclosed or distributed in source code form, or others have the right to modify it.
-「除外ライセンス」とは、使用、改変又は頒布の条件として、コードをソース コード形式で公表又は頒布すること又はその他の者がコードを改変することができることを要求するライセンスを意味する。
 
 Article 2: The MIT License also be applied to "This Template File Part", and if the MIT License has a different provision of Article 1, the provisions of Article 1 prevail.
-第 2 条 「本テンプレート ファイル部分」には The MIT License が併せて適用されるものとし、The MIT License に第 1 条と異なる定めがある場合は、第 1 条の定めが優先して適用されるものとする。
 
 The MIT License
 Copyright (c) 2017 Hitachi Solutions,Ltd.
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-以下に定める条件に従い、本ソフトウェアおよび関連文書のファイル（以下「ソフトウェア」）の複製を取得するすべての人に対し、ソフトウェアを無制限に扱うことを無償で許可します。これには、ソフトウェアの複製を使用、複写、変更、結合、掲載、頒布、サブライセンス、および/または販売する権利、およびソフトウェアを提供する相手に同じことを許可する権利も無制限に含まれます。
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-上記の著作権表示および本許諾表示を、ソフトウェアのすべての複製または重要な部分に記載するものとします。
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-ソフトウェアは「現状のまま」で、明示であるか暗黙であるかを問わず、何らの保証もなく提供されます。ここでいう保証とは、商品性、特定の目的への適合性、および権利非侵害についての保証も含みますが、それに限定されるものではありません。作者または著作権者は、契約行為、不法行為、またはそれ以外であろうと、ソフトウェアに起因または関連し、あるいはソフトウェアの使用またはその他の扱いによって生じる一切の請求、損害、その他の義務について何らの責任も負わないものとします。

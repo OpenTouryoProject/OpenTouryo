@@ -2,8 +2,7 @@
 //* テンプレート
 //**********************************************************************************
 
-// 以下のLicenseに従い、このProjectをTemplateとして使用可能です。Release時にCopyright表示してSublicenseして下さい。
-// https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LicenseForTemplates.txt
+// サンプル中のテンプレートなので、必要に応じて流用して下さい。
 
 //**********************************************************************************
 //* クラス名        ：RouteConfig
