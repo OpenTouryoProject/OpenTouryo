@@ -16,10 +16,7 @@ The users who use Open Touryo in a system development project need to use [OpenT
 
 ## Summary
 Please refer to the following files.
- - [Introduction of Open Touryo, Japanese Version (PDF)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.pdf)
- - [Introduction of Open Touryo, Japanese Version (PowerPoint)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.pptx)
- - [Introduction of Open Touryo, English Version (PDF)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/en/Introduction_EN.pdf)
- - [Introduction of Open Touryo, English Version (PowerPoint)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/en/Introduction_EN.pptx)
+ - [Introductions of Open Touryo, Japanese Version](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.md)
  - [Function List, Japanese Version (Excel)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Functional_list.xlsx)
 
 ## Details

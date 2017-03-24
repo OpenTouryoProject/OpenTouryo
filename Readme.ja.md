@@ -1,7 +1,7 @@
 # Open棟梁
 ”Open棟梁”は、長年の.NETアプリケーション開発実績にて蓄積したノウハウに基づき開発した.NET用アプリケーション フレームワークです。
 
-このファイルの英語版は[こちら](Readme.md)から。
+このファイルの英語版は[こちら](README.md)から。
 
 ## 開発 / 動作環境
 このリポジトリのプログラムは、以下の開発／実行環境を使用して開発しています。
@@ -16,11 +16,8 @@
 
 ## 概要
 以下のファイルを参照してください。
- - [概要資料 日本語版 (PDF)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.pdf)
- - [概要資料 日本語版 (PowerPoint)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.pptx)
- - [概要資料 英語版 (PDF)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/en/Introduction_EN.pdf)
- - [概要資料 英語版 (PowerPoint)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/en/Introduction_EN.pptx)
- - [機能一覧 日本語版 (Excel)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Functional_list.xlsx)
+ - [概要資料集](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.md)
+ - [機能一覧 (Excel)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Functional_list.xlsx)
 
 ## 詳細
 Open 棟梁のドキュメントは、[OpenTouryoDocuments リポジトリ](https://github.com/OpenTouryoProject/OpenTouryoDocuments)にあります。

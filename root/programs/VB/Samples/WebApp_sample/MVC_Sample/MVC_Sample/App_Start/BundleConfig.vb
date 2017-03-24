@@ -77,7 +77,7 @@ Public Class BundleConfig
         ' http://modernizr.com にあるビルド ツールを使用して、必要なテストのみを選択します。
         bundles.Add(New ScriptBundle(
                     "~/bundles/modernizr",
-                    "//ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js") With ' min 無し
+                    "//ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js") With
                     {
                         .CdnFallbackExpression = "window.Modernizr"
                     }.Include("~/Scripts/modernizr-*"))
