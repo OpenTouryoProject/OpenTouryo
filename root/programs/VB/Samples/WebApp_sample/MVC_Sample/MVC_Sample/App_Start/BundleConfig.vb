@@ -45,9 +45,9 @@ Public Class BundleConfig
         bundles.Add(New ScriptBundle("~/bundles/app").Include(
                     "~/Scripts/app/Site.js"))
 
-        bundles.Add(New ScriptBundle("~/bundles/otr").Include(
-                    "~/Scripts/otr/common.js",
-                    "~/Scripts/otr/else.js"))
+        bundles.Add(New ScriptBundle("~/bundles/touryo").Include(
+                    "~/Scripts/touryo/common.js",
+                    "~/Scripts/touryo/else.js"))
 
         bundles.Add(New ScriptBundle(
                     "~/bundles/jquery",
@@ -99,7 +99,7 @@ Public Class BundleConfig
         bundles.Add(New StyleBundle("~/bundles/css").Include(
                     "~/Content/bootstrap.css",
                     "~/Content/font-awesome.min.css",
-                    "~/Content/otr/Style.css",
+                    "~/Content/touryo/Style.css",
                     "~/Content/app/Site.css"))
     End Sub
 End Class

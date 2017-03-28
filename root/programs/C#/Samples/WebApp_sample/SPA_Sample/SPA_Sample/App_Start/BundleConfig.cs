@@ -48,9 +48,9 @@ namespace SPA_Sample
             bundles.Add(new ScriptBundle("~/bundles/app").Include(
                         "~/Scripts/app/Site.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/otr").Include(
-                        "~/Scripts/otr/common.js",
-                        "~/Scripts/otr/else.js"));
+            bundles.Add(new ScriptBundle("~/bundles/touryo").Include(
+                        "~/Scripts/touryo/common.js",
+                        "~/Scripts/touryo/else.js"));
 
             bundles.Add(new ScriptBundle(
                 "~/bundles/jquery",
@@ -103,7 +103,7 @@ namespace SPA_Sample
             bundles.Add(new StyleBundle("~/bundles/css").Include(
                 "~/Content/bootstrap.css",
                 "~/Content/font-awesome.min.css",
-                "~/Content/otr/Style.css",
+                "~/Content/touryo/Style.css",
                 "~/Content/app/Site.css",
                 "~/Content/TodoList.css"));
         }

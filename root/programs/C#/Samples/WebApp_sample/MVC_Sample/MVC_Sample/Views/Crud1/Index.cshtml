@@ -41,66 +41,75 @@
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-inline">
-        <div class="form-group">
-            <span>データアクセス制御クラス（データプロバイダ）を選択</span><br />
-            @Html.DropDownListFor(model => model.DdlDap, Model.DdlDapItems)<br />
-
-            <span>個別、共通、自動生成のＤａｏ種別</span><br />
-            @Html.DropDownListFor(model => model.DdlMode1, Model.DdlMode1Items)<br />
-
-            <span>静的、動的のクエリ モードを選択</span><br />
-            @Html.DropDownListFor(model => model.DdlMode2, Model.DdlMode2Items)<br />
-
-            <span>分離レベルを選択</span><br />
-            @Html.DropDownListFor(model => model.DdlIso, Model.DdlIsoItems)<br />
-
-            <span>コミット、ロールバックを設定（例外発生時、ロールバック）</span><br />
-            @Html.DropDownListFor(model => model.DdlExRollback, Model.DdlExRollbackItems)<br />
-
-            <span>ShipperID：</span><br />
-            @Html.TextBoxFor(model => model.ShipperID)<br />
-
-            <span>CompanyName：</span><br />
-            @Html.TextBoxFor(model => model.CompanyName)<br />
-
-            <span>Phone：</span><br />
-            @Html.TextBoxFor(model => model.Phone)<br />
-
-            <span>並び替え対象列</span><br />
-            @Html.DropDownListFor(model => model.DdlOrderColumn, Model.DdlOrderColumnItems)<br />
-
-            <span>昇順・降順</span>
-            @Html.DropDownListFor(model => model.DdlOrderSequence, Model.DdlOrderSequenceItems)
-
+    <div class="row">
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+            <div class="form-group">
+                <label>データアクセス制御クラス（データプロバイダ）を選択</label>
+                @Html.DropDownListFor(model => model.DdlDap, Model.DdlDapItems, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>個別、共通、自動生成のＤａｏ種別</label>
+                @Html.DropDownListFor(model => model.DdlMode1, Model.DdlMode1Items, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>静的、動的のクエリ モードを選択</label>
+                @Html.DropDownListFor(model => model.DdlMode2, Model.DdlMode2Items, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>分離レベルを選択</label>
+                @Html.DropDownListFor(model => model.DdlIso, Model.DdlIsoItems, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>コミット、ロールバックを設定（例外発生時、ロールバック）</label>
+                @Html.DropDownListFor(model => model.DdlExRollback, Model.DdlExRollbackItems, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <div class="form-group">
+                <label>ShipperID：</label>
+                @Html.TextBoxFor(model => model.ShipperID, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>CompanyName：</label>
+                @Html.TextBoxFor(model => model.CompanyName, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>Phone：</label>
+                @Html.TextBoxFor(model => model.Phone, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>並び替え対象列</label>
+                @Html.DropDownListFor(model => model.DdlOrderColumn, Model.DdlOrderColumnItems, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>昇順・降順</label>
+                @Html.DropDownListFor(model => model.DdlOrderSequence, Model.DdlOrderSequenceItems, new { @class = "form-control" })
+            </div>
             <span>処理結果：</span>
             <div id="messageResult">@Html.Partial("_MessageView")</div>
         </div>
-        <div class="form-group">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
             <div id="chartResult" style="width: 100%; height: 100%;">@Html.Partial("_ChartView")</div>
-            <button id="button10">クリア</button>
+            <button id="button10" class="btn btn-default">クリア</button>
         </div>
     </div>
-    <div class="form-inline">
-        <div class="form-group">
-            <input type="submit" id="button1" value="件数取得" formaction="@Url.Action("SelectCount")" />
-            <input type="submit" id="button2" value="一覧取得（dt）" formaction="@Url.Action("SelectAll_DT")" />
-            <input type="submit" id="button3" value="一覧取得（ds）" formaction="@Url.Action("SelectAll_DS")" />
-            <input type="submit" id="button4" value="一覧取得（dr）" formaction="@Url.Action("SelectAll_DR")" />
-            <input type="submit" id="button5" value="一覧取得（動的SQL）" formaction="@Url.Action("SelectAll_DSQL")" />
-        </div><br />
-        <div class="form-group">
-            <input type="submit" id="button6" value="一件参照" formaction="@Url.Action("Select")" />
-            <input type="submit" id="button7" value="追加" formaction="@Url.Action("Insert")" />
-            <input type="submit" id="button8" value="更新" formaction="@Url.Action("Update")" />
-            <input type="submit" id="button9" value="削除" formaction="@Url.Action("Delete")" />
-        </div><br />
-        <div class="form-group">
-            <label id="lblErrorMessage"></label>
-            <input type="submit" id="button21" value="二重送信防止" formaction="@Url.Action("PreventDoubleSubmission")" />
-            <input type="submit" id="button22" value="画面遷移（ポストバック後リダイレクト）" formaction="@Url.Action("Transitions")" />
-
-        </div>
+    <div>
+        <input type="submit" id="button1" class="btn btn-default" value="件数取得" formaction="@Url.Action("SelectCount")" />
+        <input type="submit" id="button2" class="btn btn-default" value="一覧取得（dt）" formaction="@Url.Action("SelectAll_DT")" />
+        <input type="submit" id="button3" class="btn btn-default" value="一覧取得（ds）" formaction="@Url.Action("SelectAll_DS")" />
+        <input type="submit" id="button4" class="btn btn-default" value="一覧取得（dr）" formaction="@Url.Action("SelectAll_DR")" />
+        <input type="submit" id="button5" class="btn btn-default" value="一覧取得（動的SQL）" formaction="@Url.Action("SelectAll_DSQL")" />
+    </div>
+    <div>
+        <input type="submit" id="button6" class="btn btn-default" value="一件参照" formaction="@Url.Action("Select")" />
+        <input type="submit" id="button7" class="btn btn-default" value="追加" formaction="@Url.Action("Insert")" />
+        <input type="submit" id="button8" class="btn btn-default" value="更新" formaction="@Url.Action("Update")" />
+        <input type="submit" id="button9" class="btn btn-default" value="削除" formaction="@Url.Action("Delete")" />
+    </div>
+    <div>
+        <label id="lblErrorMessage"></label>
+        <input type="submit" id="button21" class="btn btn-default" value="二重送信防止" formaction="@Url.Action("PreventDoubleSubmission")" />
+        <input type="submit" id="button22" class="btn btn-default" value="画面遷移（ポストバック後リダイレクト）" formaction="@Url.Action("Transitions")" />
     </div>
 }
 

@@ -27,7 +27,7 @@
 
     <div class="page-header row">
         <div class="col-xs-10" style="padding: 0">
-            <div id="header-logo"><a href="<%= this.ResolveClientUrl("~/Aspx/Start/menu.aspx") %>"><img alt="logo" src="<%= this.ResolveClientUrl("~/images/otr/logo.png") %>" /></a></div>
+            <div id="header-logo"><a href="<%= this.ResolveClientUrl("~/Aspx/Start/menu.aspx") %>"><img alt="logo" src="<%= this.ResolveClientUrl("~/images/touryo/logo.png") %>" /></a></div>
             <div id="header-title">
                 <span>You has signed-in as "<%= this.UserName %>".</span>
                 <span class="test">scroll value</span>
@@ -96,7 +96,7 @@
         </div>
     </footer>
 
-    <%: Scripts.Render("~/bundles/otr") %>
+    <%: Scripts.Render("~/bundles/touryo") %>
     <%: Scripts.Render("~/bundles/app") %>
 
     <asp:ContentPlaceHolder ID="cphFooterScripts" runat="server">

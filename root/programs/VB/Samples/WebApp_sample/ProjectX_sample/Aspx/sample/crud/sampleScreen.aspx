@@ -86,7 +86,7 @@
     <br />
     <table>
         <tr>
-            <td><asp:GridView ID="GridView1" runat="server" EmptyDataText="グリッド ビュー"></asp:GridView></td>
+            <td><asp:GridView ID="GridView1" runat="server" EmptyDataText="グリッド ビュー" CssClass="table"></asp:GridView></td>
             <td style="width: 50px"><cc1:WebCustomButton ID="btnButton4" runat="server" Text="クリア" Width="82px" /></td>
         </tr>
     </table>

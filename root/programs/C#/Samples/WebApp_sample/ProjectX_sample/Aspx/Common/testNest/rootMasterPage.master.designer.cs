@@ -13,7 +13,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
     public partial class rootMasterPage {
         
         /// <summary>
-        /// Head1 Control。
+        /// Head1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -22,7 +22,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.HtmlControls.HtmlHead Head1;
         
         /// <summary>
-        /// cphHeaderScripts Control。
+        /// cphHeaderScripts コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -31,7 +31,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.ContentPlaceHolder cphHeaderScripts;
         
         /// <summary>
-        /// form1 Control。
+        /// form1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -40,7 +40,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
         
         /// <summary>
-        /// lblMSG Control。
+        /// lblMSG コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -49,7 +49,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblMSG;
         
         /// <summary>
-        /// lblTest Control。
+        /// lblTest コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -58,7 +58,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTest;
         
         /// <summary>
-        /// btnButton Control。
+        /// btnButton コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -67,7 +67,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButton;
         
         /// <summary>
-        /// ContentPlaceHolder_A Control。
+        /// ContentPlaceHolder_A コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -76,7 +76,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.ContentPlaceHolder ContentPlaceHolder_A;
         
         /// <summary>
-        /// ContentPlaceHolder_B Control。
+        /// ContentPlaceHolder_B コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -85,7 +85,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.ContentPlaceHolder ContentPlaceHolder_B;
         
         /// <summary>
-        /// ContentPlaceHolder_C Control。
+        /// ContentPlaceHolder_C コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -94,7 +94,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.ContentPlaceHolder ContentPlaceHolder_C;
         
         /// <summary>
-        /// ChildScreenType Control。
+        /// ChildScreenType コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -103,7 +103,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.HiddenField ChildScreenType;
         
         /// <summary>
-        /// ChildScreenUrl Control。
+        /// ChildScreenUrl コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -112,7 +112,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.HiddenField ChildScreenUrl;
         
         /// <summary>
-        /// CloseFlag Control。
+        /// CloseFlag コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -121,7 +121,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.HiddenField CloseFlag;
         
         /// <summary>
-        /// SubmitFlag Control。
+        /// SubmitFlag コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -130,7 +130,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.HiddenField SubmitFlag;
         
         /// <summary>
-        /// ScreenGuid Control。
+        /// ScreenGuid コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -139,7 +139,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.HiddenField ScreenGuid;
         
         /// <summary>
-        /// FxDialogStyle Control。
+        /// FxDialogStyle コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -148,7 +148,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.HiddenField FxDialogStyle;
         
         /// <summary>
-        /// BusinessDialogStyle Control。
+        /// BusinessDialogStyle コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -157,7 +157,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.HiddenField BusinessDialogStyle;
         
         /// <summary>
-        /// NormalScreenStyle Control。
+        /// NormalScreenStyle コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -166,7 +166,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.HiddenField NormalScreenStyle;
         
         /// <summary>
-        /// NormalScreenTarget Control。
+        /// NormalScreenTarget コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -175,7 +175,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.HiddenField NormalScreenTarget;
         
         /// <summary>
-        /// DialogFrameUrl Control。
+        /// DialogFrameUrl コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -184,7 +184,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.HiddenField DialogFrameUrl;
         
         /// <summary>
-        /// WindowGuid Control。
+        /// WindowGuid コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -193,7 +193,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.HiddenField WindowGuid;
         
         /// <summary>
-        /// RequestTicketGuid Control。
+        /// RequestTicketGuid コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -202,7 +202,7 @@ namespace ProjectX_sample.Aspx.Common.TestNest {
         protected global::System.Web.UI.WebControls.HiddenField RequestTicketGuid;
         
         /// <summary>
-        /// cphFooterScripts Control。
+        /// cphFooterScripts コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

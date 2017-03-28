@@ -40,10 +40,10 @@ Public Class BundleConfig
 
         bundles.Add(New ScriptBundle("~/bundles/app").Include("~/Scripts/app/Site.js"))
 
-        bundles.Add(New ScriptBundle("~/bundles/otr").Include(
-                        "~/Scripts/otr/common.js",
-                        "~/Scripts/otr/ie_key_event.js",
-                        "~/Scripts/otr/else.js"))
+        bundles.Add(New ScriptBundle("~/bundles/touryo").Include(
+                        "~/Scripts/touryo/common.js",
+                        "~/Scripts/touryo/ie_key_event.js",
+                        "~/Scripts/touryo/else.js"))
 
         ' こちらのCDNフォールバック設定はScriptManager内で行われているため不要
         bundles.Add(New ScriptBundle("~/bundles/WebFormsJs").Include(

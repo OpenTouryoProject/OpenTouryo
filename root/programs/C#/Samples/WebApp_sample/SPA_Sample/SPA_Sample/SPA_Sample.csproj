@@ -178,13 +178,13 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
-    <Content Include="Content\otr\Style.css" />
+    <Content Include="Content\touryo\Style.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="images\otr\loading.gif" />
-    <Content Include="images\otr\logo.png" />
+    <Content Include="images\touryo\loading.gif" />
+    <Content Include="images\touryo\logo.png" />
     <Content Include="Scripts\angular-animate.js" />
     <Content Include="Scripts\angular-animate.min.js" />
     <Content Include="Scripts\angular-aria.js" />
@@ -986,8 +986,8 @@
     <Content Include="Scripts\knockout-3.4.1.debug.js" />
     <Content Include="Scripts\knockout-3.4.1.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\otr\common.js" />
-    <Content Include="Scripts\otr\else.js" />
+    <Content Include="Scripts\touryo\common.js" />
+    <Content Include="Scripts\touryo\else.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -1008,6 +1008,7 @@
     <Content Include="Views\Home\Scroll.cshtml" />
     <Content Include="Views\Error\Index.cshtml" />
     <Content Include="Scripts\version.json" />
+    <Content Include="Views\Shared\_Layout2.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

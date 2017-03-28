@@ -13,7 +13,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud {
     public partial class sampleScreen_cc {
         
         /// <summary>
-        /// lblResult Control。
+        /// lblResult コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -22,7 +22,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud {
         protected global::System.Web.UI.WebControls.Label lblResult;
         
         /// <summary>
-        /// ddlDap Control。
+        /// ddlDap コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -31,7 +31,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomDropDownList ddlDap;
         
         /// <summary>
-        /// ddlMode1 Control。
+        /// ddlMode1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -40,7 +40,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomDropDownList ddlMode1;
         
         /// <summary>
-        /// ddlMode2 Control。
+        /// ddlMode2 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -49,7 +49,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomDropDownList ddlMode2;
         
         /// <summary>
-        /// ddlExRollback Control。
+        /// ddlExRollback コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -58,7 +58,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomDropDownList ddlExRollback;
         
         /// <summary>
-        /// ddlCmctCtrl Control。
+        /// ddlCmctCtrl コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -67,7 +67,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomDropDownList ddlCmctCtrl;
         
         /// <summary>
-        /// TextBox1 Control。
+        /// TextBox1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -76,7 +76,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox TextBox1;
         
         /// <summary>
-        /// TextBox2 Control。
+        /// TextBox2 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -85,7 +85,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox TextBox2;
         
         /// <summary>
-        /// TextBox3 Control。
+        /// TextBox3 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -94,7 +94,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox TextBox3;
         
         /// <summary>
-        /// ddlOrderColumn Control。
+        /// ddlOrderColumn コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -103,7 +103,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomDropDownList ddlOrderColumn;
         
         /// <summary>
-        /// ddlOrderSequence Control。
+        /// ddlOrderSequence コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -112,7 +112,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomDropDownList ddlOrderSequence;
         
         /// <summary>
-        /// GridView1 Control。
+        /// GridView1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -121,7 +121,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud {
         protected global::System.Web.UI.WebControls.GridView GridView1;
         
         /// <summary>
-        /// btnButton4 Control。
+        /// btnButton4 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -130,7 +130,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButton4;
         
         /// <summary>
-        /// btnButton1 Control。
+        /// btnButton1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -139,7 +139,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButton1;
         
         /// <summary>
-        /// btnButton2 Control。
+        /// btnButton2 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -148,7 +148,7 @@ namespace ProjectX_sample.Aspx.Sample.Crud {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButton2;
         
         /// <summary>
-        /// btnButton3 Control。
+        /// btnButton3 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

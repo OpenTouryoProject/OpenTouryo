@@ -93,7 +93,7 @@
         
     </form>
 
-    <%: Scripts.Render("~/bundles/otr") %>
+    <%: Scripts.Render("~/bundles/touryo") %>
     <%: Scripts.Render("~/bundles/app") %>
 
     <asp:ContentPlaceHolder ID="cphFooterScripts" runat="server">

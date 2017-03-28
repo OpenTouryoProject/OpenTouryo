@@ -393,7 +393,7 @@ function Fx_InitProgressDialog() {
     // imgを生成
     var _img = document.createElement("img");
 
-    _img.src = ResolveServerUrl("~/images/otr/loading.gif");
+    _img.src = ResolveServerUrl("~/images/touryo/loading.gif");
     _img.style.width = "50px";
     _img.style.height = "50px";
     _img.alt = "処理中画像";
@@ -470,25 +470,25 @@ function Fx_ShowChildScreen() {
 
     // childScreenTypeが「1」の場合、「OK」Message Dialogを表示
     if (childScreenType.value == "1") {
-        // Cookieフラグを確認（バックButton押下時の不具合対応）
+        // Cookieフラグを確認（Back Button押下時の不具合対応）
         if (Fx_GetCookie("BackButtonControl") == "TRUE") {
-            // Cookieを更新し、戻るButtonで戻った時に画面を表示しないようにする。
+            // Cookieを更新し、戻る Buttonで戻った時に画面を表示しないようにする。
             Fx_SetCookie("BackButtonControl", "FALSE", "path=/");
 
             // OKMessageBox
             return Fx_ShowMessageDialog(childScreenUrl.value);
         }
         else {
-            // 戻るButtonで戻ったので、画面は表示しない。
+            // 戻る Buttonで戻ったので、画面は表示しない。
             return;
         }
     }
 
     // childScreenTypeが「2」の場合、「YES」・「NO」Message Dialogを表示
     if (childScreenType.value == "2") {
-        // Cookieフラグを確認（バックButton押下時の不具合対応）
+        // Cookieフラグを確認（Back Button押下時の不具合対応）
         if (Fx_GetCookie("BackButtonControl") == "TRUE") {
-            // Cookieを更新し、戻るButtonで戻った時に画面を表示しないようにする。
+            // Cookieを更新し、戻る Buttonで戻った時に画面を表示しないようにする。
             Fx_SetCookie("BackButtonControl", "FALSE", "path=/");
 
             // myFlagの初期化
@@ -537,16 +537,16 @@ function Fx_ShowChildScreen() {
             return;
         }
         else {
-            // 戻るButtonで戻ったので、画面は表示しない。
+            // 戻る Buttonで戻ったので、画面は表示しない。
             return;
         }
     }
 
     // childScreenTypeが「3」の場合、業務Modal Dialogを表示
     if (childScreenType.value == "3") {
-        // Cookieフラグを確認（バックButton押下時の不具合対応）
+        // Cookieフラグを確認（Back Button押下時の不具合対応）
         if (Fx_GetCookie("BackButtonControl") == "TRUE") {
-            // Cookieを更新し、戻るButtonで戻った時に画面を表示しないようにする。
+            // Cookieを更新し、戻る Buttonで戻った時に画面を表示しないようにする。
             Fx_SetCookie("BackButtonControl", "FALSE", "path=/");
 
             // 業務Modal Dialog
@@ -555,16 +555,16 @@ function Fx_ShowChildScreen() {
             return;
         }
         else {
-            // 戻るButtonで戻ったので、画面は表示しない。
+            // 戻る Buttonで戻ったので、画面は表示しない。
             return;
         }
     }
 
     // childScreenTypeが「4」の場合、Modeless画面を表示
     if (childScreenType.value == "4") {
-        // Cookieフラグを確認（バックButton押下時の不具合対応）
+        // Cookieフラグを確認（Back Button押下時の不具合対応）
         if (Fx_GetCookie("BackButtonControl") == "TRUE") {
-            // Cookieを更新し、戻るButtonで戻った時に画面を表示しないようにする。
+            // Cookieを更新し、戻る Buttonで戻った時に画面を表示しないようにする。
             Fx_SetCookie("BackButtonControl", "FALSE", "path=/");
 
             // Modeless画面
@@ -573,7 +573,7 @@ function Fx_ShowChildScreen() {
             return;
         }
         else {
-            // 戻るButtonで戻ったので、画面は表示しない。
+            // 戻る Buttonで戻ったので、画面は表示しない。
             return;
         }
     }
