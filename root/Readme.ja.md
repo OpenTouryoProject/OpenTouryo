@@ -124,7 +124,7 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
       <td>4_Build_Framework_Tool.bat</td><td>付属ツールをビルドする。</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>5_Build_2CS_sample.bat</td><td>サンプルアプリ (2 層 C/S) をビルドする。</td><td rowspan="9" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>5_Build_2CS_sample.bat</td><td>サンプルアプリ (2 層 C/S) をビルドする。</td><td rowspan="10" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
       <td>5_Build_Bat_sample.bat</td><td>サンプルアプリ (バッチ) をビルドする。</td><td></td>

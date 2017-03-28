@@ -133,7 +133,7 @@ Legend:
       <td>4_Build_Framework_Tool.bat</td><td>Build the tools bundled with Open Touryo.</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>5_Build_2CS_sample.bat</td><td>Build the sample application. (Two-tier client server application)</td><td rowspan="9" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>5_Build_2CS_sample.bat</td><td>Build the sample application. (Two-tier client server application)</td><td rowspan="10" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
       <td>5_Build_Bat_sample.bat</td><td>Build the sample application. (Batch application)</td><td></td>
