@@ -154,7 +154,7 @@ Legend:
       <td>10_Build_WebApp_sample.bat</td><td>Build the sample application. (ASP.NET)</td><td></td>
     </tr>
     <tr>
-      <td>11_Build_UWP_sample.bat</td><td>Build the sample application. (Web service client (UWP))</td><td></td>
+      <td>11_Build_UWP_sample.bat</td><td>Build the sample application. (UWP)</td><td></td>
     </tr>
     <tr>
       <td>z_Common.bat</td><td>Set common settings to build using MSBuild.</td><td></td><td></td>
