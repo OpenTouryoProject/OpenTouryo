@@ -1943,6 +1943,16 @@ Namespace Aspx.TestPublic
             Me.lblElse.Text = MyCmnFunction.CalculateSessionSize().ToString() & "バイト"
         End Sub
 
+        ''' <summary>Sessionサイズ(KB)</summary>
+        Protected Sub btnSessionSizeKB_Click(sender As Object, e As EventArgs)
+            Me.lblElse.Text = MyCmnFunction.CalculateSessionSizeKB().ToString() & "Kバイト"
+        End Sub
+
+        ''' <summary>Sessionサイズ(MB)</summary>
+        Protected Sub btnSessionSizeMB_Click(sender As Object, e As EventArgs)
+            Me.lblElse.Text = MyCmnFunction.CalculateSessionSizeMB().ToString() & "Mバイト"
+        End Sub
+
         ''' <summary>偽装のテスト</summary>
         Protected Sub btnImpersonation_Click(sender As Object, e As EventArgs)
             ' クリア

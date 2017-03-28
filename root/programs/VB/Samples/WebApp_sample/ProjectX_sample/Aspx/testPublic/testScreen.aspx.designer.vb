@@ -960,6 +960,24 @@ Namespace Aspx.TestPublic
         Protected WithEvents btnSessionSize As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
+        '''WebCustomButton1 コントロール。
+        '''</summary>
+        '''<remarks>
+        '''自動生成されたフィールド。
+        '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        '''</remarks>
+        Protected WithEvents WebCustomButton1 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
+        
+        '''<summary>
+        '''WebCustomButton2 コントロール。
+        '''</summary>
+        '''<remarks>
+        '''自動生成されたフィールド。
+        '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        '''</remarks>
+        Protected WithEvents WebCustomButton2 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
+        
+        '''<summary>
         '''btnImpersonation コントロール。
         '''</summary>
         '''<remarks>

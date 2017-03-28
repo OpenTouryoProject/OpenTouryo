@@ -1,7 +1,7 @@
 ﻿# Open 棟梁
 Open 棟梁は、.NET Framework をベースとしたアプリケーション フレームワークです。  
 Open 棟梁のプログラムは、以下のリポジトリで公開しています。
-- OpenTouryoTemplates V2 リポジトリ
+- OpenTouryoTemplates リポジトリ
     - 概要  
     Open 棟梁を使用したアプリケーションの**開発基盤 (テンプレート)** となるもの  
     SQL Server を既定の DBMS とし、Visual Studio のバージョンごとにフォルダが分かれている
@@ -9,12 +9,12 @@ Open 棟梁のプログラムは、以下のリポジトリで公開していま
     Open 棟梁を使用してアプリケーションを開発する人
 - OpenTouryo リポジトリ (**現在のリポジトリ**)
     - 概要  
-    OpenTouryoTemplates V2 リポジトリの**母体**となるもの  
-    (Open 棟梁の各機能は、まず OpenTouryo リポジトリで開発され、その後 OpenTouryoTemplates V2 リポジトリに取り込まれる)
+    OpenTouryoTemplates リポジトリの**母体**となるもの  
+    (Open 棟梁の各機能は、まず OpenTouryo リポジトリで開発され、その後 OpenTouryoTemplates リポジトリに取り込まれる)
     - 想定利用者  
     OSS 開発者
 
-このため、システム開発プロジェクトで Open 棟梁を使用される方は、[OpenTouryoTemplates V2 リポジトリ](https://github.com/OpenTouryoProject/OpenTouryoTemplatesV2)を使用してください。  
+このため、システム開発プロジェクトで Open 棟梁を使用される方は、[OpenTouryoTemplates リポジトリ](https://github.com/OpenTouryoProject/OpenTouryoTemplates)を使用してください。  
 以下、**OSS 開発者向け**に、Open 棟梁の利用方法をご紹介します。  
 
 このファイルの英語版は[こちら](README.md)から。

@@ -257,9 +257,11 @@
                             </tr>
                         </table>
                         <hr />
-                        <cc1:WebCustomButton ID="btnSessionSize" runat="server" Text="Sessionサイズ" Width="100px" OnClick="btnSessionSize_Click"/><br />
-                        <cc1:WebCustomButton ID="btnImpersonation" runat="server" Text="偽装" Width="100px" OnClick="btnImpersonation_Click"/><br />
-                        <cc1:WebCustomButton ID="btnElse" runat="server" Text="その他" Width="100px" OnClick="btnElse_Click"/><br />
+                        <cc1:WebCustomButton ID="btnSessionSize" runat="server" Text="Sessionサイズ" Width="200px" OnClick="btnSessionSize_Click"/><br />
+                        <cc1:WebCustomButton ID="WebCustomButton1" runat="server" Text="Sessionサイズ(KB)" Width="200px" OnClick="btnSessionSizeKB_Click"/><br />
+                        <cc1:WebCustomButton ID="WebCustomButton2" runat="server" Text="Sessionサイズ(MB)" Width="200px" OnClick="btnSessionSizeMB_Click"/><br />
+                        <cc1:WebCustomButton ID="btnImpersonation" runat="server" Text="偽装" Width="200px" OnClick="btnImpersonation_Click"/><br />
+                        <cc1:WebCustomButton ID="btnElse" runat="server" Text="その他" Width="200px" OnClick="btnElse_Click"/><br />
                         出力：<cc1:WebCustomLabel ID="lblElse" runat="server"></cc1:WebCustomLabel>&nbsp;
                     </td>
                 </tr>

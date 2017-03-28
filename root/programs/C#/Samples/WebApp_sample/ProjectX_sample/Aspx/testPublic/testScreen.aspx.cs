@@ -2055,6 +2055,18 @@ namespace ProjectX_sample.Aspx.TestPublic
             this.lblElse.Text = MyCmnFunction.CalculateSessionSize().ToString() + "バイト";
         }
 
+        /// <summary>Sessionサイズ(KB)</summary>
+        protected void btnSessionSizeKB_Click(object sender, EventArgs e)
+        {
+            this.lblElse.Text = MyCmnFunction.CalculateSessionSizeKB().ToString() + "Kバイト";
+        }
+
+        /// <summary>Sessionサイズ(MB)</summary>
+        protected void btnSessionSizeMB_Click(object sender, EventArgs e)
+        {
+            this.lblElse.Text = MyCmnFunction.CalculateSessionSizeMB().ToString() + "Mバイト";
+        }
+
         /// <summary>偽装のテスト</summary>
         protected void btnImpersonation_Click(object sender, EventArgs e)
         {

@@ -12,7 +12,7 @@ The programs in this repository are developed in the following environments:
   - .NET Framework 4.6
 
 The programs in this repository are for *open source developers*.
-The users who use Open Touryo in a system development project need to use [OpenTouryoTemplates repository](https://github.com/OpenTouryoProject/OpenTouryoTemplatesV2).
+The users who use Open Touryo in a system development project need to use [OpenTouryoTemplates repository](https://github.com/OpenTouryoProject/OpenTouryoTemplates).
 
 ## Summary
 Please refer to the following files.
@@ -41,4 +41,4 @@ When the mismatch is generated between *the features of Open Touryo* and *the re
 Refer to the [tutorial document](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/2_Tutorial/ja-JP/Tutorial_Template_development.doc) about the customizing method of template base.
 
 For more information, please refer to the Readme files in the following repository.
- - [OpenTouryoTemplatesV2](https://github.com/OpenTouryoProject/OpenTouryoTemplatesV2)
+ - [OpenTouryoTemplates](https://github.com/OpenTouryoProject/OpenTouryoTemplates)

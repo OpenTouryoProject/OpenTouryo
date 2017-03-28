@@ -41,4 +41,4 @@ Open 棟梁テンプレート・ベースに含まれるサンプルは、Open �
 テンプレートベースのカスタマイズ方法につきましては、[チュートリアル](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/2_Tutorial/ja-JP/Tutorial_Template_development.doc)をご覧ください。
 
 詳細は、以下リポジトリの Readme ファイルを参照してください。
- - [OpenTouryoTemplatesV2](https://github.com/OpenTouryoProject/OpenTouryoTemplatesV2)
+ - [OpenTouryoTemplates](https://github.com/OpenTouryoProject/OpenTouryoTemplates)

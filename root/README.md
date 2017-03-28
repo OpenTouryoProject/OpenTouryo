@@ -1,7 +1,7 @@
 ﻿# Open Touryo
 *Open Touryo* is an application framework based on .NET Framework.  
 The programs of Open Touryo are available in the following repositories:
-- OpenTouryoTemplates V2 repository
+- OpenTouryoTemplates repository
     - Summary  
     The programs in this repository are the *development infrastructure (project template)* of the programs using Open Touryo.  
     Default DBMS is *SQL Server*, and the programs are partitioned into the folders for each version of Visual Studio.
@@ -9,12 +9,12 @@ The programs of Open Touryo are available in the following repositories:
     The *application developers* using Open Touryo.
 - OpenTouryo repository (*Current repository*)
     - Summary  
-    The programs in this repository are the *matrix* of OpenTouryoTemplates V2 repository.  
-    (First, the features of Open Touryo are implemented in this repository. And then, the features are introduced into OpenTouryoTemplates V2 repository.)
+    The programs in this repository are the *matrix* of OpenTouryoTemplates repository.  
+    (First, the features of Open Touryo are implemented in this repository. And then, the features are introduced into OpenTouryoTemplates repository.)
     - Intended User  
     *Open source developers*.
 
-Therefore, the users who use Open Touryo in a system development project need to use [OpenTouryoTemplates V2 repository](https://github.com/OpenTouryoProject/OpenTouryoTemplatesV2).  
+Therefore, the users who use Open Touryo in a system development project need to use [OpenTouryoTemplates repository](https://github.com/OpenTouryoProject/OpenTouryoTemplates).  
 The following contents are the usage of Open Touryo for *open source developers*.
 
 Click [here](Readme.ja.md) for Japanese version of this file.

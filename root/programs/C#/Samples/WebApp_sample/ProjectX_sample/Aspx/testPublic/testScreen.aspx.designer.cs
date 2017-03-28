@@ -958,6 +958,24 @@ namespace ProjectX_sample.Aspx.TestPublic {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnSessionSize;
         
         /// <summary>
+        /// WebCustomButton1 コントロール。
+        /// </summary>
+        /// <remarks>
+        /// 自動生成されたフィールド。
+        /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        /// </remarks>
+        protected global::Touryo.Infrastructure.CustomControl.WebCustomButton WebCustomButton1;
+        
+        /// <summary>
+        /// WebCustomButton2 コントロール。
+        /// </summary>
+        /// <remarks>
+        /// 自動生成されたフィールド。
+        /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        /// </remarks>
+        protected global::Touryo.Infrastructure.CustomControl.WebCustomButton WebCustomButton2;
+        
+        /// <summary>
         /// btnImpersonation コントロール。
         /// </summary>
         /// <remarks>
