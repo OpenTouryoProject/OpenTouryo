@@ -1,9 +1,11 @@
 ﻿//**********************************************************************************
-//* フレームワーク・テスト画面
+//* フレームワーク・テスト画面（Ｐ層）
 //**********************************************************************************
 
+// テスト画面なので、必要に応じて流用 or 削除して下さい。
+
 //**********************************************************************************
-//* クラス名        ：Aspx_testFxLayerP_normal_testScreen0
+//* クラス名        ：testScreen0
 //* クラス日本語名  ：例外テスト画面（Ｐ層）
 //*
 //* 作成日時        ：－
@@ -15,48 +17,15 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System
 using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
 
-// System.Web
-using System.Web;
-using System.Web.Security;
-
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
-
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
 using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Presentation;
+using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
 
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
-
-namespace ProjectX_sample.Aspx.testFxLayerP.normal
+namespace ProjectX_sample.Aspx.TestFxLayerP.Normal
 {
     /// <summary>例外テスト画面（Ｐ層）</summary>
     public partial class testScreen0 : MyBaseController
@@ -72,46 +41,46 @@ namespace ProjectX_sample.Aspx.testFxLayerP.normal
             {
                 if (key.IndexOf("btnIllegalOperationCheckOFF") != -1)
                 {
-                    // btnIllegalOperationCheckOFFボタンによりサブミットされた。
+                    // btnIllegalOperationCheckOFFButtonによりサブミットされた。
                     this.CanCheckIllegalOperation = false;
                 }
 
                 if (key.IndexOf("btnIllegalOperationCheckON") != -1)
                 {
-                    // btnIllegalOperationCheckONボタンによりサブミットされた。
+                    // btnIllegalOperationCheckONButtonによりサブミットされた。
                     this.CanCheckIllegalOperation = true;
                 }
             }
         }
 
-        #region ページロードのUOCメソッド
+        #region Page LoadのUOCメソッド
 
-        /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：初回Load）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit()
         {
-            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // Form初期化（初回Load）時に実行する処理を実装する
             // TODO:
         }
 
-        /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：Post Back）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit_PostBack()
         {
-            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // Form初期化（Post Back）時に実行する処理を実装する
             // TODO:
         }
 
         #endregion
 
-        #region コンテンツ ページ上のフレームワーク対象コントロール
+        #region Content Page上のフレームワーク対象Control
 
         #region 例外処理
 
         /// <summary>
-        /// btnAppExのクリックイベント
+        /// btnAppExのClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnAppEx_Click(FxEventArgs fxEventArgs)
         {
@@ -120,9 +89,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.normal
         }
 
         /// <summary>
-        /// btnSysExのクリックイベント
+        /// btnSysExのClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnSysEx_Click(FxEventArgs fxEventArgs)
         {
@@ -131,9 +100,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.normal
         }
 
         /// <summary>
-        /// btnElseExのクリックイベント
+        /// btnElseExのClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnElseEx_Click(FxEventArgs fxEventArgs)
         {
@@ -148,8 +117,8 @@ namespace ProjectX_sample.Aspx.testFxLayerP.normal
         #region キー無し
 
 
-        /// <summary>btnSetUserInfoのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnSetUserInfoのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnSetUserInfo_Click(FxEventArgs fxEventArgs)
         {
@@ -158,8 +127,8 @@ namespace ProjectX_sample.Aspx.testFxLayerP.normal
             return string.Empty;
         }
 
-        /// <summary>btnGetUserInfoのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnGetUserInfoのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnGetUserInfo_Click(FxEventArgs fxEventArgs)
         {
@@ -176,8 +145,8 @@ namespace ProjectX_sample.Aspx.testFxLayerP.normal
             return string.Empty;
         }
 
-        /// <summary>btnUpdUserInfoのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnUpdUserInfoのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnUpdUserInfo_Click(FxEventArgs fxEventArgs)
         {
@@ -194,8 +163,8 @@ namespace ProjectX_sample.Aspx.testFxLayerP.normal
             return string.Empty;
         }
 
-        /// <summary>btnDelUserInfoのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnDelUserInfoのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnDelUserInfo_Click(FxEventArgs fxEventArgs)
         {
@@ -210,8 +179,8 @@ namespace ProjectX_sample.Aspx.testFxLayerP.normal
 
         #region サブシステム情報のハンドル
 
-        /// <summary>btnSetSubSysInfoのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnSetSubSysInfoのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnSetSubSysInfo_Click(FxEventArgs fxEventArgs)
         {
@@ -220,8 +189,8 @@ namespace ProjectX_sample.Aspx.testFxLayerP.normal
             return string.Empty;
         }
 
-        /// <summary>btnGetSubSysInfoのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnGetSubSysInfoのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnGetSubSysInfo_Click(FxEventArgs fxEventArgs)
         {
@@ -230,8 +199,8 @@ namespace ProjectX_sample.Aspx.testFxLayerP.normal
             return string.Empty;
         }
 
-        /// <summary>btnDelSubSysInfoのクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnDelSubSysInfoのClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnDelSubSysInfo_Click(FxEventArgs fxEventArgs)
         {

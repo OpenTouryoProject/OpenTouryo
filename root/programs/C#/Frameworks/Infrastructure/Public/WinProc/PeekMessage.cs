@@ -27,14 +27,10 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2013/02/18  西野  大介        新規作成
+//*  2013/02/18  西野 大介         新規作成
 //**********************************************************************************
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
-
-using System.Diagnostics;
 using Touryo.Infrastructure.Public.Win32;
 
 namespace Touryo.Infrastructure.Public.WinProc

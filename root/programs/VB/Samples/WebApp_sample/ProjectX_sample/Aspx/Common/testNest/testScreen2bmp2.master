@@ -1,8 +1,7 @@
-<%@ Master Language="VB" MasterPageFile="~/Aspx/Common/testNest/testScreen2bmp1.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_Common_testNest_testScreen2bmp2" Codebehind="testScreen2bmp2.master.vb" %>
+<%@ Master Language="VB" MasterPageFile="~/Aspx/Common/TestNest/testScreen2bmp1.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Common.TestNest.testScreen2bmp2" Codebehind="testScreen2bmp2.master.vb" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A1" Runat="Server">
-    <!-- All Rights Reserved, Copyright (C) 2007,2012 Hitachi Solutions,Ltd. -->
     ContentPlaceHolder_A1<br/>
     <cc1:WebCustomDropDownList ID="ddlCPF_A1" runat="server" AutoPostBack="True" Width="150px">
         <asp:ListItem>あああ</asp:ListItem>
@@ -13,5 +12,6 @@
     </cc1:WebCustomDropDownList><br/>
     <hr/>
     <asp:ContentPlaceHolder id="ContentPlaceHolder_A2" runat="server">
+        This is Default Content -- Override on Page
     </asp:ContentPlaceHolder>
 </asp:Content>

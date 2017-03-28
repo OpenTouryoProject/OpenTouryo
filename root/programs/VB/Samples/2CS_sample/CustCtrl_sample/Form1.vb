@@ -1,13 +1,23 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.ComponentModel
-Imports System.Data
-Imports System.Drawing
-Imports System.Linq
-Imports System.Text
-Imports System.Windows.Forms
+﻿'**********************************************************************************
+'* カスタム コントロール・サンプル アプリ画面
+'**********************************************************************************
 
-Imports System.Collections
+' テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
+'**********************************************************************************
+'* クラス名        ：Form1
+'* クラス日本語名  ：Form1
+'*
+'* 作成日時        ：－
+'* 作成者          ：生技
+'* 更新履歴        ：
+'*
+'*  日時        更新者            内容
+'*  ----------  ----------------  -------------------------------------------------
+'*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+'**********************************************************************************
+
+Imports System.Text
 
 Imports Touryo.Infrastructure.CustomControl.RichClient
 

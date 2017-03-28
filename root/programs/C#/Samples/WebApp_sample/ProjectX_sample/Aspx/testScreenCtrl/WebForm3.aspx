@@ -1,8 +1,11 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testScreenCtrl.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.testScreenCtrl.WebForm3" Title="Untitled Page" Codebehind="WebForm3.aspx.cs" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/TestScreenCtrl.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestScreenCtrl.WebForm3" Codebehind="WebForm3.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
-    <!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
     <br />
     画面遷移（部品使用）：<br />
     <cc1:WebCustomButton ID="btnButton1" runat="server" Text="画面１へ" Width="80px" />
@@ -34,9 +37,9 @@
     <a href="WebForm4.aspx">画面４へ</a> 
     <a href="WebForm5.aspx">画面５へ</a><br />
     <br />
-    ポストバック：<cc1:WebCustomButton ID="btnButton16" runat="server" Text="ポストバック" Width="120px" /><br />
+    Post Back：<cc1:WebCustomButton ID="btnButton16" runat="server" Text="Post Back" Width="120px" /><br />
     <br />
-    初期画面からは、全画面に遷移可能。Ｇｅｔは初期画面と画面３のみ許可<br />
+    初期画面からは、全画面に遷移可能。Getは初期画面と画面３のみ許可<br />
     <br />
     子画面など：<br />
     <cc1:WebCustomButton ID="btnButton17" runat="server" Text="画面１（window open）" Width="170px" />
@@ -58,3 +61,6 @@
     <asp:Image ID="Image1" runat="server" ImageUrl="./sc3.PNG" /><br />
 </asp:Content>
 
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
+</asp:Content>

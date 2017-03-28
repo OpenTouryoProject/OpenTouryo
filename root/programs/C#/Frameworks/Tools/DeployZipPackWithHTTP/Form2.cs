@@ -27,55 +27,37 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2011/06/17  西野  大介        新規作成
-//*  2011/07/01  西野  大介        最後に進捗が100％になるように変更
-//*  2011/07/01  西野  大介        コマンドライン引数のハッシュキーを全て大文字化
-//*  2011/08/01  西野  大介        タイトルをメッセージ定義から取得するように変更。
-//*  2011/08/01  西野  大介        最大化、最小化、閉じるボタンを無効にした。
-//*  2011/08/01  西野  大介        最後、自身を閉じる（非同期待機時間を設定可能に）
-//*  2011/08/01  西野  大介        /QUIET クワイエット モードを追加した。
-//*  2011/08/01  西野  大介        進捗値の進み具合を調整した。
-//*  2011/08/01  西野  大介        ステータスの書き込み（終了時）
-//*  2011/08/30  西野  大介        異常終了時に退避ディレクトリからリカバリ。
-//*  2011/08/30  西野  大介        テンポラリの削除処理を追加した（例外処理を追加）。
-//*  2011/08/30  西野  大介        Exceptionではメッセージ表示しないよう修正した。
-//*  2011/09/05  西野  大介        GCするコードを追加→修正（解凍ZIPがCloseされないため）
-//*  2011/09/08  西野  大介        リカバリ処理のログ出力位置の変更
+//*  2011/06/17  西野 大介         新規作成
+//*  2011/07/01  西野 大介         最後に進捗が100％になるように変更
+//*  2011/07/01  西野 大介         コマンドライン引数のハッシュキーを全て大文字化
+//*  2011/08/01  西野 大介         タイトルをメッセージ定義から取得するように変更。
+//*  2011/08/01  西野 大介         最大化、最小化、閉じるボタンを無効にした。
+//*  2011/08/01  西野 大介         最後、自身を閉じる（非同期待機時間を設定可能に）
+//*  2011/08/01  西野 大介         /QUIET クワイエット モードを追加した。
+//*  2011/08/01  西野 大介         進捗値の進み具合を調整した。
+//*  2011/08/01  西野 大介         ステータスの書き込み（終了時）
+//*  2011/08/30  西野 大介         異常終了時に退避ディレクトリからリカバリ。
+//*  2011/08/30  西野 大介         テンポラリの削除処理を追加した（例外処理を追加）。
+//*  2011/08/30  西野 大介         Exceptionではメッセージ表示しないよう修正した。
+//*  2011/09/05  西野 大介         GCするコードを追加→修正（解凍ZIPがCloseされないため）
+//*  2011/09/08  西野 大介         リカバリ処理のログ出力位置の変更
 //*                                （リカバリしない時ログを出力しないよう変更）。
-//*  2011/09/12  西野  大介        画面表示せず、ログ出力のみする例外処理方式を追加
-//*  2014/04/26  Sai              Replaced all the Japanese language in both UI and code with ResorceManager.GetString() method call
+//*  2011/09/12  西野 大介         画面表示せず、ログ出力のみする例外処理方式を追加
+//*  2014/04/26  Sai               Replaced all the Japanese language in both UI and code with ResorceManager.GetString() method call
 //**********************************************************************************
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-
 using System.IO;
-using System.Net;
+using System.Collections.Generic;
 using System.Threading;
-using System.Diagnostics;
 using System.Security.Permissions;
-
-using System.Configuration;
-using System.Globalization;
-
-using Ionic.Zip;
-using Ionic.Zlib;
+using System.Resources;
+using System.Windows.Forms;
 
 using Touryo.Infrastructure.Business.RichClient.Asynchronous;
 using Touryo.Infrastructure.Framework.RichClient.Asynchronous;
 using Touryo.Infrastructure.Framework.Util;
-
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
-
-using System.Resources;
 
 namespace DeployZipPackWithHTTP
 {
@@ -135,6 +117,7 @@ namespace DeployZipPackWithHTTP
             }
         }
 
+        /// <summary>Form2_Load</summary>
         private void Form2_Load(object sender, EventArgs e)
         {
             // コマンドの確認

@@ -31,106 +31,96 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2012/06/20  西野  大介        新規作成
+//*  2012/06/20  西野 大介         新規作成
+//*  2017/03/10  西野 大介         .NET3.0以前の独自実装を破棄
 //**********************************************************************************
 
-using System.Globalization;
-using System.ComponentModel;
-
-// System
 using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
-
-// System.Web
-using System.Web;
+using System.ComponentModel;
 
 namespace Touryo.Infrastructure.Business.Util
 {
     /// <summary>ローカル時刻⇔世界協定時刻(UTC)変換クラス</summary>
     public class GMTMaster
     {
-        #region カスタム
+        #region カスタム（.NET3.0以前）
 
-        /// <summary>ロック・オブジェクト</summary>
-        private static object Lock = new object();
+        ///// <summary>ロック・オブジェクト</summary>
+        //private static object Lock = new object();
 
-        /// <summary>MyTimeZone</summary>
-        private static MyTimeZone TZ = new MyTimeZone();
+        ///// <summary>MyTimeZone</summary>
+        //private static MyTimeZone TZ = new MyTimeZone();
 
-        /// <summary>MyTimeZone更新用の隠しメソッド</summary>
-        /// <remarks>隠しメソッドなのでインテリセンスから参照不可</remarks>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static void RefreshMyTimeZone()
-        {
-            lock (GMTMaster.Lock)
-            {
-                // 再読み込み
-                GMTMaster.TZ = new MyTimeZone();
-            }
-        }
+        ///// <summary>MyTimeZone更新用の隠しメソッド</summary>
+        ///// <remarks>隠しメソッドなのでインテリセンスから参照不可</remarks>
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public static void RefreshMyTimeZone()
+        //{
+        //    lock (GMTMaster.Lock)
+        //    {
+        //        // 再読み込み
+        //        GMTMaster.TZ = new MyTimeZone();
+        //    }
+        //}
 
-        /// <summary>ローカル時刻→世界協定時刻(UTC)変換</summary>
-        /// <param name="localTime">ローカル時刻</param>
-        /// <param name="myTimeZoneId">ローカル時刻のタイムゾーン</param>
-        /// <returns>世界協定時刻(UTC)</returns>
-        public static DateTime ConvertLocalTimeToUtcTimeManual(DateTime localTime, MyTimeZoneEnum myTimeZoneId)
-        {
-            // チェック
-            if (localTime.Kind != DateTimeKind.Utc)
-            {
-                // != DateTimeKind.Utc
-                DateTime utcTime = new DateTime(localTime.Ticks, DateTimeKind.Utc);
+        ///// <summary>ローカル時刻→世界協定時刻(UTC)変換</summary>
+        ///// <param name="localTime">ローカル時刻</param>
+        ///// <param name="myTimeZoneId">ローカル時刻のタイムゾーン</param>
+        ///// <returns>世界協定時刻(UTC)</returns>
+        //public static DateTime ConvertLocalTimeToUtcTimeManual(DateTime localTime, MyTimeZoneEnum myTimeZoneId)
+        //{
+        //    // チェック
+        //    if (localTime.Kind != DateTimeKind.Utc)
+        //    {
+        //        // != DateTimeKind.Utc
+        //        DateTime utcTime = new DateTime(localTime.Ticks, DateTimeKind.Utc);
 
-                // 変換
-                lock (GMTMaster.Lock)
-                {
-                    // 時差（分数）を引算
-                    utcTime = utcTime.AddMinutes(GMTMaster.TZ.GetTimezoneOffset(myTimeZoneId) * -1);
-                }
+        //        // 変換
+        //        lock (GMTMaster.Lock)
+        //        {
+        //            // 時差（分数）を引算
+        //            utcTime = utcTime.AddMinutes(GMTMaster.TZ.GetTimezoneOffset(myTimeZoneId) * -1);
+        //        }
 
-                return utcTime;
-            }
-            else
-            {
-                // == DateTimeKind.Utc
-                throw new ArgumentException("localTime.Kind == DateTimeKind.Utc", "localTime");
-            }
-        }
+        //        return utcTime;
+        //    }
+        //    else
+        //    {
+        //        // == DateTimeKind.Utc
+        //        throw new ArgumentException("localTime.Kind == DateTimeKind.Utc", "localTime");
+        //    }
+        //}
 
-        /// <summary>世界協定時刻(UTC)→ローカル時刻変換</summary>
-        /// <param name="utcTime">世界協定時刻(UTC)</param>
-        /// <param name="myTimeZoneId">ローカル時刻のタイムゾーン</param>
-        /// <returns>
-        /// true:成功
-        /// false：失敗（≠ DateTimeKind.Utc）
-        /// </returns>
-        public static DateTime ConvertUtcTimeToLocalTimeManual(DateTime utcTime, MyTimeZoneEnum myTimeZoneId)
-        {
-            // チェック
-            if (utcTime.Kind != DateTimeKind.Local)
-            {
-                // != DateTimeKind.Local
-                DateTime localTime = new DateTime(utcTime.Ticks, DateTimeKind.Local);
+        ///// <summary>世界協定時刻(UTC)→ローカル時刻変換</summary>
+        ///// <param name="utcTime">世界協定時刻(UTC)</param>
+        ///// <param name="myTimeZoneId">ローカル時刻のタイムゾーン</param>
+        ///// <returns>
+        ///// true:成功
+        ///// false：失敗（≠ DateTimeKind.Utc）
+        ///// </returns>
+        //public static DateTime ConvertUtcTimeToLocalTimeManual(DateTime utcTime, MyTimeZoneEnum myTimeZoneId)
+        //{
+        //    // チェック
+        //    if (utcTime.Kind != DateTimeKind.Local)
+        //    {
+        //        // != DateTimeKind.Local
+        //        DateTime localTime = new DateTime(utcTime.Ticks, DateTimeKind.Local);
 
-                // 変換
-                lock (GMTMaster.Lock)
-                {
-                    // 時差（分数）を加算
-                    localTime = localTime.AddMinutes(GMTMaster.TZ.GetTimezoneOffset(myTimeZoneId));
-                }
+        //        // 変換
+        //        lock (GMTMaster.Lock)
+        //        {
+        //            // 時差（分数）を加算
+        //            localTime = localTime.AddMinutes(GMTMaster.TZ.GetTimezoneOffset(myTimeZoneId));
+        //        }
 
-                return localTime;
-            }
-            else
-            {
-                // == DateTimeKind.Local
-                throw new ArgumentException("utcTime.Kind == DateTimeKind.Local", "utcTime");
-            }
-        }
+        //        return localTime;
+        //    }
+        //    else
+        //    {
+        //        // == DateTimeKind.Local
+        //        throw new ArgumentException("utcTime.Kind == DateTimeKind.Local", "utcTime");
+        //    }
+        //}
 
         #endregion
 

@@ -2,12 +2,14 @@
 '* フレームワーク・テストクラス（Ｄ層）
 '**********************************************************************************
 
+' テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
 '**********************************************************************************
 '* クラス名        ：LayerD
 '* クラス日本語名  ：Ｄ層のテスト
 '*
 '* 作成日時        ：－
-'* 作成者          ：sas 生技
+'* 作成者          ：生技
 '* 更新履歴        ：
 '*
 '*  日時        更新者            内容
@@ -16,40 +18,12 @@
 '*
 '**********************************************************************************
 
-' 型情報
 Imports _2CSClientWPF_sample.Common
 
-' System
-Imports System
-Imports System.IO
 Imports System.Data
-Imports System.Text
-Imports System.Collections
-Imports System.Collections.Generic
 
-' 業務フレームワーク
-Imports Touryo.Infrastructure.Business.Business
-Imports Touryo.Infrastructure.Business.Common
 Imports Touryo.Infrastructure.Business.Dao
-Imports Touryo.Infrastructure.Business.Exceptions
-Imports Touryo.Infrastructure.Business.Presentation
-Imports Touryo.Infrastructure.Business.Util
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Business
-Imports Touryo.Infrastructure.Framework.Common
-Imports Touryo.Infrastructure.Framework.Dao
-Imports Touryo.Infrastructure.Framework.Exceptions
-Imports Touryo.Infrastructure.Framework.Presentation
-Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Framework.Transmission
-
-' 部品
 Imports Touryo.Infrastructure.Public.Db
-Imports Touryo.Infrastructure.Public.IO
-Imports Touryo.Infrastructure.Public.Log
-Imports Touryo.Infrastructure.Public.Str
-Imports Touryo.Infrastructure.Public.Util
 
 Namespace Dao
     ''' <summary>
@@ -239,9 +213,9 @@ Namespace Dao
             Dim dt As New DataTable()
 
             ' ３列生成
-            dt.Columns.Add("c1", System.Type.[GetType]("System.String"))
-            dt.Columns.Add("c2", System.Type.[GetType]("System.String"))
-            dt.Columns.Add("c3", System.Type.[GetType]("System.String"))
+            dt.Columns.Add("c1", GetType(String))
+            dt.Columns.Add("c2", GetType(String))
+            dt.Columns.Add("c3", GetType(String))
 
             '   -- 一覧を返すSELECTクエリを実行する
             Dim idr As IDataReader = DirectCast(Me.ExecSelect_DR(), IDataReader)

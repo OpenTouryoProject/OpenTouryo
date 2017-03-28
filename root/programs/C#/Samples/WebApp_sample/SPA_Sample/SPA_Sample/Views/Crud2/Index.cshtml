@@ -1,0 +1,188 @@
+﻿@*
+    //**********************************************************************************
+    //* サンプル アプリ・モデル
+    //**********************************************************************************
+
+    // テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+
+    //**********************************************************************************
+    //* クラス名        ：Index
+    //* クラス日本語名  ：CRUDサンプル（AngularJS ）
+    //*
+    //* 作成日時        ：－
+    //* 作成者          ：－
+    //* 更新履歴        ：－
+    //*
+    //*  日時        更新者            内容
+    //*  ----------  ----------------  -------------------------------------------------
+    //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+    //**********************************************************************************
+*@
+
+@{
+    ViewBag.Title = "AngularJS サンプル";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@* スクリプト・セクション（RenderSection("HeaderScriptsSection", required: true)に出力されます） *@
+@section HeaderScriptsSection{
+    <!-- Head 部の section -->
+}
+
+@* 本文レイアウト *@
+<div ng-controller="Sample2ViewModel">
+    <table style="height: 100%; width: 100%">
+        <thead style="visibility: hidden">
+            <tr>
+                <th style="width: 20%"></th>
+                <th style="width: 20%"></th>
+                <th style="width: 20%"></th>
+                <th style="width: 20%"></th>
+                <th style="width: 20%"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="height: 2%">
+                <td colspan="2">データアクセス制御クラス（データプロバイダ）を選択</td>
+                <td colspan="3" rowspan="15" style="vertical-align: top">
+                    <table id="table1" class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 33%">ShipperID</th>
+                                <th style="width: 33%">CompanyName</th>
+                                <th style="width: 33%">Phone</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultRecords">
+                            <tr ng-repeat="item in dataLists">
+                                <td>{{item.shipperID}}</td>
+                                <td>{{item.companyName}}</td>
+                                <td>{{item.phone}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr style="height: 2%">
+                <td colspan="2">
+                    <select id="ddlDap" style="height: 100%; width: 100%"
+                            ng-model="ddlDap" ng-options="item.value as item.displayText for item in ddlDapItems"></select>
+                </td>
+            </tr>
+            <tr style="height: 2%">
+                <td colspan="2">静的、動的のクエリ モードを選択（共通Dao選択時）</td>
+            </tr>
+            <tr style="height: 2%">
+                <td colspan="2">
+                    <select id="ddlMode1" style="height: 100%; width: 100%"
+                            ng-model="ddlMode1" ng-options="item.value as item.displayText for item in ddlMode1Items"></select>
+                </td>
+            </tr>
+            <tr style="height: 2%">
+                <td colspan="2">静的、動的のクエリ モードを選択</td>
+            </tr>
+            <tr style="height: 2%">
+                <td colspan="2">
+                    <select id="ddlMode2" style="height: 100%; width: 100%"
+                            ng-model="ddlMode2" ng-options="item.value as item.displayText for item in ddlMode2Items"></select>
+                </td>
+            </tr>
+            <tr style="height: 2%">
+                <td colspan="2">分離レベルを選択</td>
+            </tr>
+            <tr style="height: 2%">
+                <td colspan="2">
+                    <select id="ddlIso" style="height: 100%; width: 100%" disabled="disabled"
+                            ng-model="ddlIso" ng-options="item.value as item.displayText for item in ddlIsoItems"></select>
+                </td>
+            </tr>
+            <tr style="height: 2%">
+                <td colspan="2">コミット、ロールバックを設定（例外発生時、ロールバック）</td>
+            </tr>
+            <tr style="height: 2%">
+                <td colspan="2">
+                    <select id="ddlExRollback" style="height: 100%; width: 100%"
+                            ng-model="ddlExRollback" ng-options="item.value as item.displayText for item in ddlExRollbackItems"></select>
+                </td>
+            </tr>
+            <tr style="height: 2%">
+                <td colspan="2">通信制御</td>
+            </tr>
+            <tr style="height: 2%">
+                <td colspan="2">
+                    <select id="ddlTransmission" style="height: 100%; width: 100%" disabled="disabled"
+                            ng-model="ddlTransmission" ng-options="item.value as item.displayText for item in ddlTransmissionItems"></select>
+                </td>
+            </tr>
+            <tr style="height: 2%">
+                <td>ShipperId：</td>
+                <td><input type="text" id="textBox1" style="width: 100%; height: 100%" ng-model="ShipperId" value="{{ShipperId}}" /></td>
+            </tr>
+            <tr style="height: 2%">
+                <td>CompanyName：</td>
+                <td><input type="text" id="textBox2" style="width: 100%; height: 100%" ng-model="CompanyName" value="{{CompanyName}}" /></td>
+            </tr>
+            <tr style="height: 2%">
+                <td>Phone：</td>
+                <td><input type="text" id="textBox3" style="width: 100%; height: 100%" ng-model="Phone" value="{{Phone}}" /></td>
+            </tr>
+            <tr style="height: 2%">
+                <td>並び替え対象列</td>
+                <td>
+                    <select id="ddlOrderColumn" style="height: 100%; width: 100%"
+                            ng-model="ddlOrderColumn" ng-options="item.value as item.displayText for item in ddlOrderColumnItems"></select>
+                </td>
+                <td colspan="3"><input type="button" id="button10" value="クリア" style="width: 100%" ng-click="ClearList()" /></td>
+            </tr>
+            <tr style="height: 2%">
+                <td>昇順・降順</td>
+                <td>
+                    <select id="ddlOrderSequence" style="height: 100%; width: 100%"
+                            ng-model="ddlOrderSequence" ng-options="item.value as item.displayText for item in ddlOrderSequenceItems"></select>
+                </td>
+            </tr>
+            <tr style="height: 2%">
+                <td>処理結果：</td>
+                <td colspan="4"><input type="text" id="labelMessage" style="width: 100%" value="{{Result}}" /></td>
+            </tr>
+            <tr style="height: 2%">
+                <td><input type="button" id="button1" value="件数取得" ng-click="GetCount()" /></td>
+                <td><input type="button" id="button2" value="一覧取得（dt）" ng-click="GetList_dt()" /></td>
+                <td><input type="button" id="button3" value="一覧取得（ds）" ng-click="GetList_ds()" /></td>
+                <td><input type="button" id="button4" value="一覧取得（dr）" ng-click="GetList_dr()" /></td>
+                <td><input type="button" id="button5" value="一覧取得（動的SQL）" ng-click="GetList_dsql()" /></td>
+            </tr>
+            <tr style="height: 2%">
+                <td><input type="button" id="button6" value="一件参照" ng-click="GetDetail()" /></td>
+                <td><input type="button" id="button7" value="追加" ng-click="InsertRecord()" /></td>
+                <td><input type="button" id="button8" value="更新" ng-click="UpdateRecord()" /></td>
+                <td><input type="button" id="button9" value="削除" ng-click="DeleteRecord()" /></td>
+            </tr>
+        </tbody>
+    </table>
+
+    @* モーダルダイアログ *@
+    <div class="modal fade" id="modal_box">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header modal-header-danger">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">エラーが発生しました</h4>
+                </div>
+                <div class="modal-body">
+                    <p>{{ErrorMessage}}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* スクリプト・セクション（RenderSection("FooterScriptsSection", required: true)に出力されます） *@
+@section FooterScriptsSection{
+    @Scripts.Render("~/bundles/angularjs")
+    <script src="~/Scripts/app/Sample2.viewmodel.js"></script>
+    <script type="text/javascript"></script>
+}

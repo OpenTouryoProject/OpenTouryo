@@ -29,24 +29,19 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ             新規作成（テンプレート）
-//*  2011/10/09  西野  大介            国際化対応
-//*  2013/12/23  西野  大介            アクセス修飾子をすべてpublicに変更した。
+//*  2011/10/09  西野 大介             国際化対応
+//*  2013/12/23  西野 大介             アクセス修飾子をすべてpublicに変更した。
 //*  2014/01/17  Pradeepa.Shanmugham   Code for Internalization
 //*  2014/01/22  Pradeepa.Shanmugham   Changes from ConfigurationManager.AppSettings to GetConfigParameter.GetConfigValue in CmnFunc
-//*  2014/02/03  西野  大介            取り込み：リソースファイル名とスイッチ名の変更、#pragma warning disableの追加。
+//*  2014/02/03  西野 大介             取り込み：リソースファイル名とスイッチ名の変更、#pragma warning disableの追加。
 //**********************************************************************************
 
-// System;
 using System;
-using System.Threading;
-
-using Touryo.Infrastructure.Public.Util;
-
 using System.Resources;
-using Touryo.Infrastructure.Business.Resources;
-using System.Configuration;
 using System.Globalization;
 
+using Touryo.Infrastructure.Business.Resources;
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Business.Exceptions
 {

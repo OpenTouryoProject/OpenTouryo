@@ -38,7 +38,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>45EC214193E5088CCA6F8B3AD1075B1627C28C7B</ManifestCertificateThumbprint>
@@ -52,20 +52,8 @@
       <HintPath>..\..\..\Infrastructure\Build\Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Form1.cs">
@@ -80,8 +68,8 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
-    <None Include="EncAndDecUtil_TemporaryKey_RSA256.cer" />
-    <None Include="EncAndDecUtil_TemporaryKey_RSA256.pfx" />
+    <None Include="EncAndDecUtil_RS256.cer" />
+    <None Include="EncAndDecUtil_RS256.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

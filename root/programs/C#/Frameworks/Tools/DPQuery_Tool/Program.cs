@@ -27,23 +27,18 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2008/xx/xx  西野  大介        新規作成
-//*  2014/04/28  Rituparna        Add DefaultCulture key in app.Config file and take the culture value from app.Config file.
-//*                                Created Resource folder and Resource.ja-JP.resx,Resource.resx files inside
-//*                                the Resource folder.Added proper key and values in those files for English and
-//*                                Japanese languages.
-//*
-//*  2014/05/12  Rituparna        Removed <start> and <End> tags, added check while reading DefaultCulture from app.config file   
+//*  2008/xx/xx  西野 大介         新規作成
+//*  2014/04/28  Rituparna         Add DefaultCulture key in app.Config file and take the culture value from app.Config file.
+//*                                Created Resource folder and Resource.ja-JP.resx,Resource.resx files inside the Resource folder.
+//*                                Added proper key and values in those files for English and Japanese languages.
+//*  2014/05/12  Rituparna         Removed <start> and <End> tags, added check while reading DefaultCulture from app.config file   
 //**********************************************************************************
 
 using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-
 using System.Threading;
-using System.Configuration;
 using System.Globalization;
 using System.Resources;
+using System.Windows.Forms;
 
 using Touryo.Infrastructure.Public.Util;
 
@@ -85,6 +80,5 @@ namespace DPQuery_Tool
             ResourceManager rm = Resources.Resource.ResourceManager;
             return rm.GetString(key);
         }
-
     }
 }

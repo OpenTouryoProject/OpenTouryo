@@ -27,45 +27,23 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2010/10/29  西野  大介        新規作成
-//*  2010/11/19  西野  大介        非同期メッセージボックスと、進捗報告デリゲード追加
-//*  2010/12/06  西野  大介        スレッド数管理と画面ロック、アンロック
-//*  2010/12/30  西野  大介        Control.Invoke前にIsDisposedをチェック(WPFでは不要)
-//*  2011/02/24  西野  大介        Windows Formsの多重ロック・アンロック対応
-//*  2011/05/17  西野  大介        thisWinForm, thisWPFのgetterをpublicに。
-//*  2011/05/18  西野  大介        BaseControllerWin以外でも多重ロック対応（Tag利用）。
-//*  2011/06/09  西野  大介        WindowUnlockデッドロック対応（Invoke→BeginInvoke）
-//*  2011/06/13  西野  大介        WPFの多重ロック・アンロック対応（は不可能である模様）
+//*  2010/10/29  西野 大介         新規作成
+//*  2010/11/19  西野 大介         非同期メッセージボックスと、進捗報告デリゲード追加
+//*  2010/12/06  西野 大介         スレッド数管理と画面ロック、アンロック
+//*  2010/12/30  西野 大介         Control.Invoke前にIsDisposedをチェック(WPFでは不要)
+//*  2011/02/24  西野 大介         Windows Formsの多重ロック・アンロック対応
+//*  2011/05/17  西野 大介         thisWinForm, thisWPFのgetterをpublicに。
+//*  2011/05/18  西野 大介         BaseControllerWin以外でも多重ロック対応（Tag利用）。
+//*  2011/06/09  西野 大介         WindowUnlockデッドロック対応（Invoke→BeginInvoke）
+//*  2011/06/13  西野 大介         WPFの多重ロック・アンロック対応（は不可能である模様）
 //**********************************************************************************
 
-// System
 using System;
-using System.Threading;
-using System.Diagnostics;
-using System.Collections.Generic;
-
 using System.Windows;
 using System.Windows.Forms;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
 using Touryo.Infrastructure.Framework.RichClient.Presentation;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Framework.Exceptions;
 
 namespace Touryo.Infrastructure.Framework.RichClient.Asynchronous
 {

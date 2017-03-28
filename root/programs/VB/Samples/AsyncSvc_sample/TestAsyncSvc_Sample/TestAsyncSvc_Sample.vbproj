@@ -67,35 +67,28 @@
       <HintPath>..\..\..\Frameworks\Infrastructure\Build\Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
     <Import Include="System.Collections.Generic" />
-    <Import Include="System.Data" />
     <Import Include="System.Diagnostics" />
     <Import Include="System.Linq" />
-    <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="Program.vb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AsyncSvc_sample\AsyncSvc_sample.vbproj">
-      <Project>{396D8B5D-92AC-46B3-A97B-6FC11BDFA47E}</Project>
-      <Name>AsyncSvc_sample</Name>
-    </ProjectReference>
+    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <ProjectReference Include="..\AsyncSvc_sample\AsyncSvc_sample.vbproj">
+      <Project>{396d8b5d-92ac-46b3-a97b-6fc11bdfa47e}</Project>
+      <Name>AsyncSvc_sample</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -70,7 +70,7 @@ namespace DaoGen_Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do not have more than one table with the same name on the same DB ( the specification for the D-layer automatic generation tool for {0}) .
+        ///   Looks up a localized string similar to Do not have more than one table with the same name on the same DB ( the specification for the Data layer generator for {0}) .
         /// </summary>
         internal static string CautionPrerequisite {
             get {
@@ -88,7 +88,7 @@ namespace DaoGen_Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (Is the specification of D-layer automatic generation tool for Oracle ) that we only consider the table owned by the ( user ) schema [{0}].
+        ///   Looks up a localized string similar to (Is the specification of Data layer generator for Oracle ) that we only consider the table owned by the ( user ) schema [{0}].
         /// </summary>
         internal static string CautionPrerequisiteOracle {
             get {
@@ -124,7 +124,7 @@ namespace DaoGen_Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Completion of generation of the D-layer definition information!.
+        ///   Looks up a localized string similar to Completion of generation of the Data layer definition information!.
         /// </summary>
         internal static string DlayerGeneratedMessage {
             get {
@@ -151,7 +151,7 @@ namespace DaoGen_Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to D layer definition information file format error : There is no table name..
+        ///   Looks up a localized string similar to Data layer definition information file format error : There is no table name..
         /// </summary>
         internal static string FileFormatError {
             get {
@@ -178,7 +178,7 @@ namespace DaoGen_Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check error:Defined D layer Information file  defined  [{0}] does not exist..
+        ///   Looks up a localized string similar to Check error:Defined Data layer Information file  defined  [{0}] does not exist..
         /// </summary>
         internal static string FilenotExistDlayerInfo {
             get {
@@ -250,7 +250,7 @@ namespace DaoGen_Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to D layer definition information file.
+        ///   Looks up a localized string similar to Data layer definition information file.
         /// </summary>
         internal static string OpenFileDialogTitle {
             get {
@@ -322,7 +322,7 @@ namespace DaoGen_Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to D layer definition information file.
+        ///   Looks up a localized string similar to Data layer definition information file.
         /// </summary>
         internal static string SaveFileDialogTitle {
             get {

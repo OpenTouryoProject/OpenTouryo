@@ -27,44 +27,18 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2010/11/20  西野  大介        新規作成
-//*  2012/06/14  西野  大介        コントロール検索の再帰処理性能の集約＆効率化。
-//*  2014/05/16  西野  大介        キャスト可否チェックのロジックを見直した。
+//*  2010/11/20  西野 大介         新規作成
+//*  2012/06/14  西野 大介         コントロール検索の再帰処理性能の集約＆効率化。
+//*  2014/05/16  西野 大介         キャスト可否チェックのロジックを見直した。
 //**********************************************************************************
 
-using System.Diagnostics;
-
-// System
 using System;
-using System.Xml;
-using System.Data;
-using System.Collections;
 using System.Collections.Generic;
-
-// Windowアプリケーション
-using System.Drawing;
+using System.Diagnostics;
 using System.Windows.Forms;
-using System.ComponentModel;
 
-// WPFアプリケーション
-using System.Windows;
-
-// 業務フレームワーク（循環参照になるため、参照しない）
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.RichClient.Util

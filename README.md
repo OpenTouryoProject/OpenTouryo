@@ -12,14 +12,11 @@ The programs in this repository are developed in the following environments:
   - .NET Framework 4.6
 
 The programs in this repository are for *open source developers*.
-The users who use Open Touryo in a system development project need to use [OpenTouryoTemplates repository](https://github.com/OpenTouryoProject/OpenTouryoTemplatesV2).
+The users who use Open Touryo in a system development project need to use [OpenTouryoTemplates repository](https://github.com/OpenTouryoProject/OpenTouryoTemplates).
 
 ## Summary
 Please refer to the following files.
- - [Introduction of Open Touryo, Japanese Version (PDF)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.pdf)
- - [Introduction of Open Touryo, Japanese Version (PowerPoint)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.pptx)
- - [Introduction of Open Touryo, English Version (PDF)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/en/Introduction_EN.pdf)
- - [Introduction of Open Touryo, English Version (PowerPoint)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/en/Introduction_EN.pptx)
+ - [Introductions of Open Touryo, Japanese Version](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.md)
  - [Function List, Japanese Version (Excel)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Functional_list.xlsx)
 
 ## Details
@@ -44,4 +41,4 @@ When the mismatch is generated between *the features of Open Touryo* and *the re
 Refer to the [tutorial document](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/2_Tutorial/ja-JP/Tutorial_Template_development.doc) about the customizing method of template base.
 
 For more information, please refer to the Readme files in the following repository.
- - [OpenTouryoTemplatesV2](https://github.com/OpenTouryoProject/OpenTouryoTemplatesV2)
+ - [OpenTouryoTemplates](https://github.com/OpenTouryoProject/OpenTouryoTemplates)

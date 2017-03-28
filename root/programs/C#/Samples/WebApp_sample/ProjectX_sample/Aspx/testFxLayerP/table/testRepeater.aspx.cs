@@ -1,9 +1,11 @@
 ﻿//**********************************************************************************
-//* フレームワーク・テスト画面
+//* フレームワーク・テスト画面（Ｐ層）
 //**********************************************************************************
 
+// テスト画面なので、必要に応じて流用 or 削除して下さい。
+
 //**********************************************************************************
-//* クラス名        ：Aspx_testFxLayerP_table_testRepeater
+//* クラス名        ：testRepeater
 //* クラス日本語名  ：Repeaterテスト画面（Ｐ層）
 //*
 //* 作成日時        ：－
@@ -15,51 +17,17 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System
 using System;
 using System.IO;
 using System.Data;
-using System.Text;
-using System.Collections;
 using System.Collections.Generic;
-
-// System.Web
-using System.Web;
-using System.Web.Security;
-
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.CustomControl;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
+using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
 
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
-
-using System.Text.RegularExpressions;
-
-namespace ProjectX_sample.Aspx.testFxLayerP.table
+namespace ProjectX_sample.Aspx.TestFxLayerP.Table
 {
     /// <summary>Repeaterテスト画面（Ｐ層）</summary>
     public partial class testRepeater : MyBaseController
@@ -69,11 +37,11 @@ namespace ProjectX_sample.Aspx.testFxLayerP.table
         /// <summary>ヘッダーに表示する文字列</summary>
         public Dictionary<string, string> HeaderInfo = new Dictionary<string, string>();
 
-        /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：初回Load）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit()
         {
-            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // Form初期化（初回Load）時に実行する処理を実装する
             // TODO:
             this.CmnInit();
 
@@ -90,20 +58,20 @@ namespace ProjectX_sample.Aspx.testFxLayerP.table
             this.rptRepeater1.DataBind();
         }
 
-        /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：Post Back）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit_PostBack()
         {
-            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // Form初期化（Post Back）時に実行する処理を実装する
             // TODO:
             this.CmnInit();
 
             // Radio Buttonの選択状態を出力
             if (Request.Form["radio-grp1"] != null)
             {
-                Response.Write(string.Format(
+                this.lblResult.Text = string.Format(
                         "name=\"radio-grp1\" value=\"{0}\"が選択されました。<br/>",
-                        Request.Form["radio-grp1"].ToString()));
+                        Request.Form["radio-grp1"].ToString());
             }
 
             int i = 0;
@@ -122,8 +90,8 @@ namespace ProjectX_sample.Aspx.testFxLayerP.table
                     // != null
                     if (rbn.Checked)
                     {
-                        Response.Write(string.Format(
-                            "name=\"radio-grp1\" value=\"{0}\"行目が選択されました。<br/>", i.ToString()));
+                        this.lblResult.Text = string.Format(
+                            "name=\"radio-grp1\" value=\"{0}\"行目が選択されました。<br/>", i.ToString());
                     }
                 }
             }
@@ -254,21 +222,21 @@ namespace ProjectX_sample.Aspx.testFxLayerP.table
 
         #endregion
 
-        #region イベントハンドラ
+        #region Event Handler
 
         #region 通常のイベント
 
-        /// <summary>btnButton1のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButton1のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton1_Click(FxEventArgs fxEventArgs)
         {
-            // ポストバックをまたいで値が保存されるかの確認
+            // Post Backをまたいで値が保存されるかの確認
             return "";
         }
 
-        /// <summary>btnButton2のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButton2のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
         {
@@ -327,7 +295,7 @@ namespace ProjectX_sample.Aspx.testFxLayerP.table
         #region Repeater内のClickイベント（Command）
 
         /// <summary>rptRepeater1のコマンドイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_rptRepeater1_ItemCommand(FxEventArgs fxEventArgs)
         {
@@ -344,10 +312,10 @@ namespace ProjectX_sample.Aspx.testFxLayerP.table
         #region Repeater内のClick以外のイベント
 
         // ItemCommandイベントに行かないので通常通りハンドルする。
-        // （各コントロールのAutoPostBackを"true"に設定する）
+        // （各ControlのAutoPostBackを"true"に設定する）
 
         /// <summary>cbxCheckBox1のCheckedChangedイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_cbxCheckBox1_CheckedChanged(FxEventArgs fxEventArgs)
         {
@@ -365,7 +333,7 @@ namespace ProjectX_sample.Aspx.testFxLayerP.table
         }
 
         /// <summary>rbnRadioButton1のCheckedChangedイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_rbnRadioButton1_CheckedChanged(FxEventArgs fxEventArgs)
         {
@@ -383,7 +351,7 @@ namespace ProjectX_sample.Aspx.testFxLayerP.table
         }
 
         /// <summary>ddlDropDownList1のSelectedIndexChangedイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ddlDropDownList1_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {
@@ -401,7 +369,7 @@ namespace ProjectX_sample.Aspx.testFxLayerP.table
         }
 
         /// <summary>lbxListBox1のSelectedIndexChangedイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_lbxListBox1_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {

@@ -1,9 +1,11 @@
 ﻿//**********************************************************************************
-//* フレームワーク・テスト画面
+//* フレームワーク・テスト画面（Ｐ層）
 //**********************************************************************************
 
+// テスト画面なので、必要に応じて流用 or 削除して下さい。
+
 //**********************************************************************************
-//* クラス名        ：Aspx_testFxLayerP_table_testJQGridJson
+//* クラス名        ：testJQGridJson
 //* クラス日本語名  ：GridViewテスト画面（Ｐ層）
 //*
 //* 作成日時        ：－
@@ -14,18 +16,10 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2015/03/05  Supragyan         Created testJQGridJson class.
 //**********************************************************************************
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Data;
-using System.Collections.Specialized;
-using Newtonsoft.Json;
-using System.Web.Script.Serialization;
 
-namespace ProjectX_sample.Aspx.testFxLayerP.table
+using System;
+
+namespace ProjectX_sample.Aspx.TestFxLayerP.Table
 {
     /// <summary>
     /// testJQGridJson class

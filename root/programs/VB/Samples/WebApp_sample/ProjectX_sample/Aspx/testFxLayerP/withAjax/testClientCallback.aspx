@@ -1,25 +1,28 @@
-﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testClientCallback.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_testFxLayerP_withAjax_testClientCallback" Title="Untitled Page" Codebehind="testClientCallback.aspx.vb" %>
+﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testClientCallback.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.WithAjax.testClientCallback" Codebehind="testClientCallback.aspx.vb" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
-    <!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
     <br />
-    コンテンツ ページ（個別）<br />
+    Content Page（個別）<br />
     <cc1:WebCustomTextBox ID="TextBox1" runat="server"></cc1:WebCustomTextBox>
     →　
     <cc1:WebCustomTextBox ID="TextBox2" runat="server"></cc1:WebCustomTextBox><br />
     <br />
-    <cc1:WebCustomButton ID="btnButton1" runat="server"  Text="ポストバックを起こすボタン" Width="250px" /><br />   
+    <cc1:WebCustomButton ID="btnButton1" runat="server"  Text="Post Backを起こすButton" Width="250px" /><br />   
     <script type="text/javascript">
         function CCREH_Reverse(arg, context)
         {
             //// デバッグ：argは処理結果
             //alert(arg.toString());
             
-            //// デバッグ：contextは処理対象のコントロール
+            //// デバッグ：contextは処理対象のControl
             //alert(context.toString());
             
-            // 元コントロールと、先コントロールとのマップ
+            // 元Controlと、先Controlとのマップ
             // context のTextBox1はTextBox2へ置き換える。
             // ※ TextBox1の入力をTextBox2に指定。
             context = context.replace("TextBox1", "TextBox2");
@@ -30,3 +33,6 @@
     </script>
 </asp:Content>
 
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
+</asp:Content>

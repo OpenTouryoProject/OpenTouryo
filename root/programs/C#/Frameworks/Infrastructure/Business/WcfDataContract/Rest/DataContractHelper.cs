@@ -24,7 +24,7 @@
 //*                   REST（XML、JSON）汎用Webメソッド用のList相互変換クラス
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //* 
 //*  日時        更新者            内容
@@ -32,11 +32,9 @@
 //*  2012/08/13  西野 大介         新規作成
 //**********************************************************************************
 
-using System;
 using System.Data;
 using System.Linq;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace Touryo.Infrastructure.Business.ServiceInterface.WcfDataContract.Rest
 {

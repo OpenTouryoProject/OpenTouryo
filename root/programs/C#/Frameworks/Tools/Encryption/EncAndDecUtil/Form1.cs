@@ -27,23 +27,19 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2013/02/12  西野  大介        新規作成
-//*  2017/01/10  西野  大介        引数指定の誤りと、HashのStretchCountを指定可能に修正
-//*  2017/01/10  西野  大介        秘密鍵と公開鍵の画面表示が誤っていたため、これを修正
-//*  2017/01/13  西野  大介        上記修正への対応と、GetSaltedPasswordのI/F変更に対する修正対応
-//*  2017/01/13  西野  大介        追加のGetSaltedPasswordメソッド、CodeSigning、JWTクラスの検証画面
+//*  2013/02/12  西野 大介         新規作成
+//*  2017/01/10  西野 大介         引数指定の誤りと、HashのStretchCountを指定可能に修正
+//*  2017/01/10  西野 大介         秘密鍵と公開鍵の画面表示が誤っていたため、これを修正
+//*  2017/01/13  西野 大介         上記修正への対応と、GetSaltedPasswordのI/F変更に対する修正対応
+//*  2017/01/13  西野 大介         追加のGetSaltedPasswordメソッド、CodeSigning、JWTクラスの検証画面
 //**********************************************************************************
 
-
 using System;
-using System.Text;
 using System.Windows.Forms;
 
-using System.Security.Cryptography.X509Certificates;
-
 using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Util.JWT;
 
 namespace EncAndDecUtil
@@ -218,13 +214,13 @@ namespace EncAndDecUtil
                 this.txtSPWDKey2.Text, (int)this.nudSPWDSaltLength2.Value, (int)this.nudSPWDStretchCount2.Value);
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
+        private void btnSPWDAuth2_Click(object sender, EventArgs e)
         {
             // パラメタ系は渡さないで検証可能
             if (GetKeyedHash.EqualSaltedPassword(
                 this.txtSPWDRawPassword2.Text,
                 this.txtSPWDSaltedPassword2.Text,
-                (EnumKeyedHashAlgorithm)this.cbxSPWDPV2.SelectedValue, this.txtSPWDKey2.Text))
+                (EnumKeyedHashAlgorithm)this.cbxSPWDPV2.SelectedValue))
             {
                 MessageBox.Show("認証成功");
             }
@@ -476,8 +472,8 @@ namespace EncAndDecUtil
         // 「信頼されたルート証明機関」にインストールする必要があります（実行アカウントにも注意が必要） 。
 
         /// <summary>CertificateFilePath</summary>
-        private string CertificateFilePath_pfx = @"..\..\EncAndDecUtil_TemporaryKey_RSA256.pfx";
-        private string CertificateFilePath_cer = @"..\..\EncAndDecUtil_TemporaryKey_RSA256.cer";
+        private string CertificateFilePath_pfx = @"..\..\EncAndDecUtil_RS256.pfx";
+        private string CertificateFilePath_cer = @"..\..\EncAndDecUtil_RS256.cer";
         private string CertificateFilePassword = "test";
 
         #endregion
@@ -601,7 +597,7 @@ namespace EncAndDecUtil
             else
             {
                 // RS256 (X509Cer)
-                JWT_RS256 jwtRS256 = new JWT_RS256(new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, "SHA256"));
+                JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_pfx, this.CertificateFilePassword);
 
                 // 生成
                 string jwt = jwtRS256.Create(this.txtJWTPayload.Text);
@@ -655,7 +651,7 @@ namespace EncAndDecUtil
                     + "." + temp[2];
 
                 // 検証
-                JWT_RS256 jwtRS256 = new JWT_RS256(new DigitalSignX509(this.CertificateFilePath_cer, "", "SHA256"));
+                JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_cer, "");
                 ret = jwtRS256.Verify(newJWT);
             }
 
@@ -668,8 +664,7 @@ namespace EncAndDecUtil
                 MessageBox.Show("検証失敗");
             }
         }
-        
-        #endregion
 
+        #endregion
     }
 }

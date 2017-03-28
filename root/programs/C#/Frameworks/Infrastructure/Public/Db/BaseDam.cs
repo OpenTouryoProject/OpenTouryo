@@ -29,49 +29,44 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2007/xx/xx  西野  大介        新規作成
-//*  2008/10/16  西野  大介        各種、問題点の修正
-//*  2008/12/25  西野  大介        新機能（更新系クエリ対応機能）の追加
-//*  2008/12/30  西野  大介        上記に対応して、パラメタ終了文字に[,]を追加した。
-//*  2009/01/06  西野  大介        VALの置換時の仕様を変更した。
-//*  2009/01/07  西野  大介        InnerXML→InnerTextに変更した。
-//*  2009/03/19  西野  大介        DRのインターフェイスをobject→IDataReaderへ変更。
-//*  2009/04/26  西野  大介        配列バインド対応を兼ね、型指定を可能にした。
-//*  2009/04/28  西野  大介        デフォルト値を設けた
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2007/xx/xx  西野 大介         新規作成
+//*  2008/10/16  西野 大介         各種、問題点の修正
+//*  2008/12/25  西野 大介         新機能（更新系クエリ対応機能）の追加
+//*  2008/12/30  西野 大介         上記に対応して、パラメタ終了文字に[,]を追加した。
+//*  2009/01/06  西野 大介         VALの置換時の仕様を変更した。
+//*  2009/01/07  西野 大介         InnerXML→InnerTextに変更した。
+//*  2009/03/19  西野 大介         DRのインターフェイスをobject→IDataReaderへ変更。
+//*  2009/04/26  西野 大介         配列バインド対応を兼ね、型指定を可能にした。
+//*  2009/04/28  西野 大介         デフォルト値を設けた
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#x ： CommandTimeOutデフォルト値を設定
-//*  2009/08/12  西野  大介        比較演算子の向きを「<」に統一した。
-//*  2009/09/25  西野  大介        内部の性能測定ログ出力処理を挿入した。
+//*  2009/08/12  西野 大介         比較演算子の向きを「<」に統一した。
+//*  2009/09/25  西野 大介         内部の性能測定ログ出力処理を挿入した。
 //*                                ※ Debug.WriteLineは意外に時間がかかるので注意！
 //*                                   特に、繰り返し呼ばれるメソッド内では出力しない。
-//*  2010/02/18  西野  大介        HiRDB対応として、サイズ指定を可能に、また、
+//*  2010/02/18  西野 大介         HiRDB対応として、サイズ指定を可能に、また、
 //*                                合わせてSize, Directionなどのプロパティもサポート
-//*  2010/09/24  西野  大介        JOINタグのネスト条件緩和
-//*  2010/09/24  西野  大介        SELECT-CASE-DEFAULTタグの追加
-//*  2010/09/24  西野  大介        型チェック方式の見直し（ GetType() & typeof() ）
-//*  2010/09/24  西野  大介        ジェネリック対応（Dictionary、List、Queue、Stack<T>）
+//*  2010/09/24  西野 大介         JOINタグのネスト条件緩和
+//*  2010/09/24  西野 大介         SELECT-CASE-DEFAULTタグの追加
+//*  2010/09/24  西野 大介         型チェック方式の見直し（ GetType() & typeof() ）
+//*  2010/09/24  西野 大介         ジェネリック対応（Dictionary、List、Queue、Stack<T>）
 //*                                nullチェック方法、Contains → ContainsKeyなどに注意
-//*  2010/09/24  西野  大介        SQLトレース詳細化用フィールド追加（UserInfo）
-//*  2010/11/02  西野  大介        GetParameterメソッドを追加（ｽﾄｱﾄﾞ ﾕｰｻﾞﾋﾞﾘﾃｨ向上）
-//*  2010/11/22  西野  大介        XmDPQのXMLを外部公開（パラメタ設定の自動化対応）
-//*  2011/02/08  西野  大介        COMMENTタグの追加（チェック緩和）
-//*  2012/03/16  西野  大介        ClearTextの仕様変更（文字列中は、空白・タブを詰めない）。
-//*  2012/06/14  西野  大介        ResourceLoaderに加え、EmbeddedResourceLoaderに対応
-//*  2012/09/10  西野  大介        CDATAタグの追加（チェック緩和）
-//*  2013/02/15  加藤  幸紀        GetParamByText(string,char,out int)作成（順番バインドのパラメタ置換処理方式の見直し）
-//*  2013/03/18  西野  大介        DeleteFirstLogicalOperatoronWhereClause部分を関数化して外出し
-//*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
+//*  2010/09/24  西野 大介         SQLトレース詳細化用フィールド追加（UserInfo）
+//*  2010/11/02  西野 大介         GetParameterメソッドを追加（ｽﾄｱﾄﾞ ﾕｰｻﾞﾋﾞﾘﾃｨ向上）
+//*  2010/11/22  西野 大介         XmDPQのXMLを外部公開（パラメタ設定の自動化対応）
+//*  2011/02/08  西野 大介         COMMENTタグの追加（チェック緩和）
+//*  2012/03/16  西野 大介         ClearTextの仕様変更（文字列中は、空白・タブを詰めない）。
+//*  2012/06/14  西野 大介         ResourceLoaderに加え、EmbeddedResourceLoaderに対応
+//*  2012/09/10  西野 大介         CDATAタグの追加（チェック緩和）
+//*  2013/02/15  加藤 幸紀         GetParamByText(string,char,out int)作成（順番バインドのパラメタ置換処理方式の見直し）
+//*  2013/03/18  西野 大介         DeleteFirstLogicalOperatoronWhereClause部分を関数化して外出し
+//*  2013/07/07  西野 大介         ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
 //*  2014/07/04  Rituparna         Commented Code for blank else statement to improve code coverage in Basedam.cs class
 //*  2015/06/25  Sai               Fixed the bug of removing 'AND' and 'OR' if the column name contains at the begininng  
 //*                                by adding space after "AND" and "OR" in the method 'DeleteFirstLogicalOperatoronWhereClause'  
 //*  2015/07/05  Sai               Added virtual property of IDbCommand
 //**********************************************************************************
 
-// デバッグ用
-//#define PERFORMANCE_LOG_SWITCH
-using System.Diagnostics;
-
-// System
 using System;
 using System.IO;
 using System.Xml;
@@ -80,14 +75,7 @@ using System.Data;
 using System.Collections;
 using System.Collections.Generic;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Db
@@ -2620,14 +2608,14 @@ namespace Touryo.Infrastructure.Public.Db
             // ★↓のカラム名は他で使っていないのでリテラル化しない。
 
             // 区分
-            dt.Columns.Add("UserParameter", System.Type.GetType(typeof(Boolean).ToString()));
+            dt.Columns.Add("UserParameter", typeof(bool));
             // パラメタ名
-            dt.Columns.Add("ParameterName", System.Type.GetType(typeof(String).ToString()));
+            dt.Columns.Add("ParameterName", typeof(string));
             // パラメタ値
-            dt.Columns.Add("Object", System.Type.GetType(typeof(Object).ToString()));
+            dt.Columns.Add("Object", typeof(object));
 
             // 2008/10/16---null・DBNull対応（ここから）
-            dt.Columns.Add(PubLiteral.VALUE_STR_NULL, System.Type.GetType(typeof(String).ToString()));
+            dt.Columns.Add(PubLiteral.VALUE_STR_NULL, typeof(string));
             // 2008/10/16---null・DBNull対応（ここまで）
 
             if (this._QueryStatus == DbEnum.QueryStatusEnum.DPQ)

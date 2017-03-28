@@ -3,7 +3,7 @@
 '**********************************************************************************
 
 #Region "Apache License"
-'
+' 
 ' Licensed under the Apache License, Version 2.0 (the "License");
 ' you may not use this file except in compliance with the License. 
 ' You may obtain a copy of the License at
@@ -28,43 +28,19 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
-'*  2009/04/21  西野  大介        FrameworkExceptionの追加に伴い、実装変更
+'*  2009/04/21  西野 大介         FrameworkExceptionの追加に伴い、実装変更
 '*  2010/09/24  西野 大介         Damクラス内にユーザ情報を格納したので
-'*  2012/06/14  西野  大介        SetSqlByFile2を追加（SetSqlByFile強化版）
+'*  2012/06/14  西野 大介         SetSqlByFile2を追加（SetSqlByFile強化版）
 '*                                ・sqlTextFilePathを自動連結
 '*                                ・EmbeddedResourceLoaderに対応
 '**********************************************************************************
 
-' System
-Imports System
 Imports System.IO
-Imports System.Data
-Imports System.Text
-Imports System.Collections
-Imports System.Collections.Generic
 
-' 業務フレームワーク
-Imports Touryo.Infrastructure.Business.Business
-Imports Touryo.Infrastructure.Business.Common
-Imports Touryo.Infrastructure.Business.Dao
-Imports Touryo.Infrastructure.Business.Exceptions
-Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Business.Util
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Business
-Imports Touryo.Infrastructure.Framework.Common
 Imports Touryo.Infrastructure.Framework.Dao
-Imports Touryo.Infrastructure.Framework.Exceptions
-Imports Touryo.Infrastructure.Framework.Presentation
-Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Framework.Transmission
-
-' 部品
 Imports Touryo.Infrastructure.Public.Db
-Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Log
-Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
 
 Namespace Touryo.Infrastructure.Business.Dao
@@ -127,27 +103,29 @@ Namespace Touryo.Infrastructure.Business.Dao
 			' 性能測定終了
 			Me.perfRec.EndsPerformanceRecord()
 
-			' SQLトレースログ出力
+            ' SQLトレースログ出力
 
-			' ------------
-			' メッセージ部
-			' ------------
-			' 処理時間（実行時間）, 処理時間（CPU時間）, 実行したSQLの情報
-			' ------------
-			Dim strLogMessage As String = Convert.ToString(Me.perfRec.ExecTime) & "," & Convert.ToString(Me.perfRec.CpuTime) & "," & sql
+            ' ------------
+            ' メッセージ部
+            ' ------------
+            ' 処理時間（実行時間）, 処理時間（CPU時間）, 実行したSQLの情報
+            ' ------------
+            Dim strLogMessage As String =
+                Me.perfRec.ExecTime &
+                "," & Me.perfRec.CpuTime & "," & sql
 
-			' Log4Netへログ出力
-			Dim sqlTracelog As String = GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG)
+            ' Log4Netへログ出力
+            Dim sqlTracelog As String = GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG)
 
-					' SQLトレースログ（OFF）
-			If sqlTracelog Is Nothing OrElse sqlTracelog = "" Then
-			ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.[ON] Then
-				LogIF.InfoLog("SQLTRACE", strLogMessage)
-					' SQLトレースログ（OFF）
-			ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.OFF Then
-			Else
-				' パラメータ・エラー（書式不正）
-				Throw New ArgumentException([String].Format(PublicExceptionMessage.SWITCH_ERROR, PubLiteral.SQL_TRACELOG))
+            If sqlTracelog Is Nothing OrElse sqlTracelog = "" Then
+                ' SQLトレースログ（OFF）
+            ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.[ON] Then
+                LogIF.InfoLog("SQLTRACE", strLogMessage)
+            ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.OFF Then
+                ' SQLトレースログ（OFF）
+            Else
+                ' パラメータ・エラー（書式不正）
+                Throw New ArgumentException([String].Format(PublicExceptionMessage.SWITCH_ERROR, PubLiteral.SQL_TRACELOG))
             End If
 
             ' ---
@@ -181,27 +159,30 @@ Namespace Touryo.Infrastructure.Business.Dao
 			' 性能測定終了
 			Me.perfRec.EndsPerformanceRecord()
 
-			' SQLトレースログ出力
+            ' SQLトレースログ出力
 
-			' ------------
-			' メッセージ部
-			' ------------
-			' 処理時間（実行時間）, 処理時間（CPU時間）, ユーザ名, 実行したSQLの情報
-			' ------------
-            Dim strLogMessage As String = (Convert.ToString(Me.perfRec.ExecTime) & "," & Convert.ToString(Me.perfRec.CpuTime) & ",") & DirectCast(Me.GetDam().Obj, MyUserInfo).UserName & "," & sql
+            ' ------------
+            ' メッセージ部
+            ' ------------
+            ' 処理時間（実行時間）, 処理時間（CPU時間）, ユーザ名, 実行したSQLの情報
+            ' ------------
+            Dim strLogMessage As String =
+                Me.perfRec.ExecTime &
+                "," & Me.perfRec.CpuTime &
+                "," & DirectCast(Me.GetDam().Obj, MyUserInfo).UserName & "," & sql
 
-			' Log4Netへログ出力
-			Dim sqlTracelog As String = GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG)
+            ' Log4Netへログ出力
+            Dim sqlTracelog As String = GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG)
 
-					' SQLトレースログ（OFF）
-			If sqlTracelog Is Nothing OrElse sqlTracelog = "" Then
-			ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.[ON] Then
-				LogIF.ErrorLog("SQLTRACE", strLogMessage)
-					' SQLトレースログ（OFF）
-			ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.OFF Then
-			Else
-				' パラメータ・エラー（書式不正）
-				Throw New ArgumentException([String].Format(PublicExceptionMessage.SWITCH_ERROR, PubLiteral.SQL_TRACELOG))
+            If sqlTracelog Is Nothing OrElse sqlTracelog = "" Then
+                ' SQLトレースログ（OFF）
+            ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.[ON] Then
+                LogIF.ErrorLog("SQLTRACE", strLogMessage)
+            ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.OFF Then
+                ' SQLトレースログ（OFF）
+            Else
+                ' パラメータ・エラー（書式不正）
+                Throw New ArgumentException([String].Format(PublicExceptionMessage.SWITCH_ERROR, PubLiteral.SQL_TRACELOG))
             End If
 
             ' ---

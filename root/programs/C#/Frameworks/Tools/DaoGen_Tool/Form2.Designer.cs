@@ -706,7 +706,6 @@
         private System.Windows.Forms.Label lblOutputSqlDao;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label lblTimestampName;
-        private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label lblHUD;
         private System.Windows.Forms.TextBox txtTimeStampColName;
         private System.Windows.Forms.TextBox txtTimeStampUpdMethod;

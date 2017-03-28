@@ -1,4 +1,10 @@
 ﻿//**********************************************************************************
+//* テンプレート
+//**********************************************************************************
+
+// サンプル中のテンプレートなので、必要に応じて流用して下さい。
+
+//**********************************************************************************
 //* クラス名        ：RouteConfig
 //* クラス日本語名  ：ルート定義に関する指定
 //*
@@ -8,13 +14,9 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2015/11/03  Sai               Changed controller to CrudMu in RegisterRoutes method to display startup page.
+//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -49,13 +51,13 @@ namespace MVC_Sample
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "CrudMu", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Crud1", action = "Index", id = UrlParameter.Optional }
             );
 
             routes.MapRoute(
                 name: "Default2",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "CrudMu2", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Crud2", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

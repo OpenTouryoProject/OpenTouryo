@@ -2,6 +2,8 @@
 '* フレームワーク・テストクラス
 '**********************************************************************************
 
+' テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
 '**********************************************************************************
 '* クラス名        ：ExecuteBatchProcessParameterValue
 '* クラス日本語名  ：テスト用の引数クラス
@@ -13,17 +15,10 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
-'*
 '**********************************************************************************
 
-' System
-Imports System.IO
-Imports System.Data
-Imports System.Text
 Imports System.Collections
-Imports System.Collections.Generic
 
-' ベースクラス
 Imports Touryo.Infrastructure.Business.Util
 Imports Touryo.Infrastructure.Business.Common
 

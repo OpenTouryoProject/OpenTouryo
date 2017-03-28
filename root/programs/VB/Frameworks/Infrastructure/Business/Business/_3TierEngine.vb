@@ -27,57 +27,30 @@
 '* 
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
-'*  2013/01/10  西野　大介        新規作成
-'*  2014/07/14  西野　大介        関連チェック処理を実装可能に
+'*  2013/01/10  西野 大介         新規作成
+'*  2014/07/14  西野 大介         関連チェック処理を実装可能に
 '*  2014/07/17  Sai-San           Added Select count query and select paging query constants and checks for PostgreSQL db support 
 '*                                Added UOC_RelatedCheck override method and method calls in methods
 '*                                'UOC_InsertRecord', 'UOC_UpdateRecord', 'UOC_DeleteRecord' and 'UOC_BatchUpdate' 
 '*  2014/07/21  Rituparna         Added SelectCount and SelectPaging query constatnts and check for MySql db support
 '*
 '*  2014/08/14  Santosh Avaji     Added and modidfied code for DB2 support
-'*  2014/12/10  西野　大介        Modified because there was a problem with the SELECT_PAGING_SQL_TEMPLATE_ORACLE.
-'*  2014/12/10  西野　大介        Implementations of the related check process has been changed for problem.
+'*  2014/12/10  西野 大介         Modified because there was a problem with the SELECT_PAGING_SQL_TEMPLATE_ORACLE.
+'*  2014/12/10  西野 大介         Implementations of the related check process has been changed for problem.
 '*                                Change the signature of the CRUD methods. "private" ---> "protected virtual"
-'*  2015/04/29  Sandeep          Modified the code of 'UOC_SelectMethod' to retrive 30 records instead of 31 records
-'*  2016/06/14  Shashikiran      Implemented 'UOC_UpdateRecordDM' method to perform multiple table update in single transaction
-'*  2016/06/21  Shashikiran      Implemented 'UOC_BatchUpdateDM' method to perform multiple table Batch update in single transaction
-'*  2016/06/27  Shashikiran      Implemented 'UOC_DeleteRecordDM' method to perform multiple table Delete in single transaction
-'*  2016/06/27  Shashikiran      Modified 'UOC_BatchUpdateDM' method to perform multiple table Batch delete operation in single transaction
+'*  2015/04/29  Sandeep           Modified the code of 'UOC_SelectMethod' to retrive 30 records instead of 31 records
+'*  2016/04/21  Shashikiran       Implemented 'UOC_UpdateRecordDM' method to perform multiple table update in single transaction
+'*  2016/05/10  Shashikiran       Implemented 'UOC_BatchUpdateDM' method to perform batch update in single transaction 
+'*  2016/05/25  Shashikiran       Implemented 'UOC_DeleteRecordDM' method to perform delete operation in single transaction
+'*  2016/05/26  Shashikiran       Modified the code of 'UOC_BatchUpdateDM' method to perform batch delete operation in single transaction 
 '**********************************************************************************
 
-' レイトバインド用
 Imports System.Reflection
 
-' System
-Imports System
-Imports System.IO
-Imports System.Data
-Imports System.Text
-Imports System.Collections
-Imports System.Collections.Generic
-
-' 業務フレームワーク
-Imports Touryo.Infrastructure.Business.Business
-Imports Touryo.Infrastructure.Business.Common
 Imports Touryo.Infrastructure.Business.Dao
-Imports Touryo.Infrastructure.Business.Exceptions
-Imports Touryo.Infrastructure.Business.Presentation
-Imports Touryo.Infrastructure.Business.Util
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Business
+Imports Touryo.Infrastructure.Business.Common
 Imports Touryo.Infrastructure.Framework.Common
-Imports Touryo.Infrastructure.Framework.Dao
-Imports Touryo.Infrastructure.Framework.Exceptions
-Imports Touryo.Infrastructure.Framework.Presentation
-Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Framework.Transmission
-
-' 部品
 Imports Touryo.Infrastructure.Public.Db
-Imports Touryo.Infrastructure.Public.IO
-Imports Touryo.Infrastructure.Public.Log
-Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
 
 Namespace Touryo.Infrastructure.Business.Business
@@ -218,7 +191,7 @@ Namespace Touryo.Infrastructure.Business.Business
 		''' <summary>業務処理を実装</summary>
 		''' <param name="parameterValue">引数クラス</param>
 		Private Sub UOC_メソッド名(parameterValue As BaseParameterValue)
-			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+			' 戻り値クラスを生成して、事前に戻り値に設定しておく。
 			Dim testReturn As New _3TierReturnValue()
 			Me.ReturnValue = testReturn
 
@@ -238,7 +211,7 @@ Namespace Touryo.Infrastructure.Business.Business
 		''' <summary>データ件数取得処理を実装</summary>
 		''' <param name="parameterValue">引数クラス</param>
 		Private Sub UOC_SelectCountMethod(parameterValue As _3TierParameterValue)
-			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+			' 戻り値クラスを生成して、事前に戻り値に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
 
@@ -306,7 +279,7 @@ Namespace Touryo.Infrastructure.Business.Business
 		''' <summary>データ取得処理を実装</summary>
 		''' <param name="parameterValue">引数クラス</param>
 		Private Sub UOC_SelectMethod(parameterValue As _3TierParameterValue)
-			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+			' 戻り値クラスを生成して、事前に戻り値に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
 
@@ -669,7 +642,7 @@ Namespace Touryo.Infrastructure.Business.Business
 		''' <summary>１件追加処理を実装</summary>
 		''' <param name="parameterValue">引数クラス</param>
 		Protected Overridable Sub UOC_InsertRecord(parameterValue As _3TierParameterValue)
-			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+			' 戻り値クラスを生成して、事前に戻り値に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
 
@@ -719,7 +692,7 @@ Namespace Touryo.Infrastructure.Business.Business
 		''' <summary>１件取得処理を実装</summary>
 		''' <param name="parameterValue">引数クラス</param>
 		Protected Overridable Sub UOC_SelectRecord(parameterValue As _3TierParameterValue)
-			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+			' 戻り値クラスを生成して、事前に戻り値に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
 
@@ -780,7 +753,7 @@ Namespace Touryo.Infrastructure.Business.Business
 		''' <summary>１件更新処理を実装</summary>
 		''' <param name="parameterValue">引数クラス</param>
 		Protected Overridable Sub UOC_UpdateRecord(parameterValue As _3TierParameterValue)
-			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+			' 戻り値クラスを生成して、事前に戻り値に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
 
@@ -851,7 +824,7 @@ Namespace Touryo.Infrastructure.Business.Business
 		''' <summary>１件削除処理を実装</summary>
 		''' <param name="parameterValue">引数クラス</param>
 		Protected Overridable Sub UOC_DeleteRecord(parameterValue As _3TierParameterValue)
-			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+			' 戻り値クラスを生成して、事前に戻り値に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
 
@@ -900,7 +873,7 @@ Namespace Touryo.Infrastructure.Business.Business
 		''' <summary>バッチ更新処理を実装</summary>
 		''' <param name="parameterValue">引数クラス</param>
 		Protected Overridable Sub UOC_BatchUpdate(parameterValue As _3TierParameterValue)
-			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+			' 戻り値クラスを生成して、事前に戻り値に設定しておく。
 			Dim returnValue As New _3TierReturnValue()
 			Me.ReturnValue = returnValue
 
@@ -993,7 +966,7 @@ Namespace Touryo.Infrastructure.Business.Business
         ''' <summary>Implementing Update process of Multiple tables in Single Transaction</summary>
         ''' <param name="parameterValue">Argument class</param>
         Protected Overridable Sub UOC_UpdateRecordDM(ByVal parameterValue As _3TierParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim returnValue As New _3TierReturnValue()
             Me.ReturnValue = returnValue
 
@@ -1074,7 +1047,7 @@ Namespace Touryo.Infrastructure.Business.Business
         ''' <summary>Implementing Batch Update and Delete process of Multiple tables in Single Transaction</summary>
         ''' <param name="parameterValue">Argument class</param>
         Protected Overridable Sub UOC_BatchUpdateDM(ByVal parameterValue As _3TierParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim returnValue As New _3TierReturnValue()
             Me.ReturnValue = returnValue
 
@@ -1157,7 +1130,7 @@ Namespace Touryo.Infrastructure.Business.Business
         ''' <summary>Implementing Delete process of Multiple tables in Single Transaction</summary>
         ''' <param name="parameterValue">Argument class</param>
         Protected Overridable Sub UOC_DeleteRecordDM(ByVal parameterValue As _3TierParameterValue)
-            ' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            ' 戻り値クラスを生成して、事前に戻り値に設定しておく。
             Dim returnValue As New _3TierReturnValue()
             Me.ReturnValue = returnValue
 

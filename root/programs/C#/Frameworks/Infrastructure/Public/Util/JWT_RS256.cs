@@ -27,23 +27,11 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2017/01/13  西野  大介        新規作成
+//*  2017/01/13  西野 大介         新規作成
 //**********************************************************************************
 
-// System
-using System;
-
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
-
 using Newtonsoft.Json;
+using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Util.JWT
 {
@@ -59,10 +47,11 @@ namespace Touryo.Infrastructure.Public.Util.JWT
         public string JWK = "";
 
         /// <summary>Constructor</summary>
-        /// <param name="csRS256">RS256の署名・検証が可能なように設定されたDigitalSignオブジェクト</param>
-        public JWT_RS256(DigitalSign csRS256)
+        /// <param name="certificateFilePath">DigitalSignX509に渡すcertificateFilePathパラメタ</param>
+        /// <param name="password">DigitalSignX509に渡すpasswordパラメタ</param>
+        public JWT_RS256(string certificateFilePath, string password)
         {
-            this._cs = csRS256;
+            this._cs = new DigitalSignX509(certificateFilePath, password, "SHA256");
         }
 
         #endregion

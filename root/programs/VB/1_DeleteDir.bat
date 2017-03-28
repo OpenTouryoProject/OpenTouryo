@@ -1,9 +1,12 @@
 @echo off
 
 @echo --------------------------------------------------
-@echo Delete the obj, bin, Temp, Build, PrecompiledWeb folders.
+@echo Delete the packages, obj, bin, Temp, Build, PrecompiledWeb folders.
 @echo --------------------------------------------------
 
+for /D /R %%i in ( packages ) do (
+  if exist "%%~i" RD /S /Q "%%~i"
+)
 for /D /R %%i in ( obj ) do (
   if exist "%%~i" RD /S /Q "%%~i"
 )
@@ -19,9 +22,5 @@ for /D /R %%i in ( Build ) do (
 for /D /R %%i in ( PrecompiledWeb ) do (
   if exist "%%~i" RD /S /Q "%%~i"
 )
-
-@echo --------------------------------------------------
-@echo Deleted the obj, bin, Temp, Build, PrecompiledWeb folders.
-@echo --------------------------------------------------
 
 pause

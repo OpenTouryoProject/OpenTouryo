@@ -27,57 +27,32 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2013/01/10  西野　大介        新規作成
-//*  2014/07/14  西野　大介        関連チェック処理を実装可能に
+//*  2013/01/10  西野 大介         新規作成
+//*  2014/07/14  西野 大介         関連チェック処理を実装可能に
 //*  2014/07/17  Sai-San           Added Select count query and select paging query constants and checks for PostgreSQL db support 
 //*                                Added UOC_RelatedCheck override method and method calls in methods
 //*                                'UOC_InsertRecord', 'UOC_UpdateRecord', 'UOC_DeleteRecord' and 'UOC_BatchUpdate' 
 //*  2014/07/21  Rituparna         Added SelectCount and SelectPaging query constatnts and check for MySql db support
 //*
 //*  2014/08/14  Santosh Avaji     Added and modidfied code for DB2 support
-//*  2014/12/10  西野　大介        Modified because there was a problem with the SELECT_PAGING_SQL_TEMPLATE_ORACLE.
-//*  2014/12/10  西野　大介        Implementations of the related check process has been changed for problem.
+//*  2014/12/10  西野 大介         Modified because there was a problem with the SELECT_PAGING_SQL_TEMPLATE_ORACLE.
+//*  2014/12/10  西野 大介         Implementations of the related check process has been changed for problem.
 //*                                Change the signature of the CRUD methods. "private" ---> "protected virtual"
-//*  2015/04/29  Sandeep          Modified the code of 'UOC_SelectMethod' to retrive 30 records instead of 31 records
-//*  2016/04/21  Shashikiran      Implemented 'UOC_UpdateRecordDM' method to perform multiple table update in single transaction
-//*  2016/05/10  Shashikiran      Implemented 'UOC_BatchUpdateDM' method to perform batch update in single transaction 
-//*  2016/05/25  Shashikiran      Implemented 'UOC_DeleteRecordDM' method to perform delete operation in single transaction
-//*  2016/05/26  Shashikiran      Modified the code of 'UOC_BatchUpdateDM' method to perform batch delete operation in single transaction 
+//*  2015/04/29  Sandeep           Modified the code of 'UOC_SelectMethod' to retrive 30 records instead of 31 records
+//*  2016/04/21  Shashikiran       Implemented 'UOC_UpdateRecordDM' method to perform multiple table update in single transaction
+//*  2016/05/10  Shashikiran       Implemented 'UOC_BatchUpdateDM' method to perform batch update in single transaction 
+//*  2016/05/25  Shashikiran       Implemented 'UOC_DeleteRecordDM' method to perform delete operation in single transaction
+//*  2016/05/26  Shashikiran       Modified the code of 'UOC_BatchUpdateDM' method to perform batch delete operation in single transaction 
 //**********************************************************************************
 
-// レイトバインド用
+using System;
+using System.Data;
 using System.Reflection;
 
-// System
-using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
-
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
+using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Business.Business
@@ -232,7 +207,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">引数クラス</param>
         private void UOC_メソッド名(BaseParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue testReturn = new _3TierReturnValue();
             this.ReturnValue = testReturn;
 
@@ -253,7 +228,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">引数クラス</param>
         private void UOC_SelectCountMethod(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -341,7 +316,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">引数クラス</param>
         private void UOC_SelectMethod(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -813,7 +788,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">引数クラス</param>
         protected virtual void UOC_InsertRecord(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -874,7 +849,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">引数クラス</param>
         protected virtual void UOC_SelectRecord(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -951,7 +926,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">引数クラス</param>
         protected virtual void UOC_UpdateRecord(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -1045,7 +1020,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">引数クラス</param>
         protected virtual void UOC_DeleteRecord(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -1105,7 +1080,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">引数クラス</param>
         protected virtual void UOC_BatchUpdate(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -1213,7 +1188,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">Argument class</param>
         protected virtual void UOC_UpdateRecordDM(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -1317,7 +1292,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">Argument class</param>
         protected virtual void UOC_BatchUpdateDM(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 
@@ -1410,7 +1385,7 @@ namespace Touryo.Infrastructure.Business.Business
         /// <param name="parameterValue">Argument class</param>
         protected virtual void UOC_DeleteRecordDM(_3TierParameterValue parameterValue)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             _3TierReturnValue returnValue = new _3TierReturnValue();
             this.ReturnValue = returnValue;
 

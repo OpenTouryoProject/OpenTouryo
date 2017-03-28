@@ -27,63 +27,42 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2008/xx/xx  西野  大介        新規作成
-//*  2010/02/18  西野  大介        データプロバイダ追加（HiRDB、PostgreSQL）
-//*  2012/02/06  西野  大介        Select Countメソッドの追加
-//*  2012/02/09  西野  大介        HiRDBデータプロバイダのコメントアウト（（ソフト）対応せず）
-//*  2012/02/09  西野  大介        OLEDB、ODBCのデータプロバイダ対応
-//*  2012/08/21  西野  大介        データプロバイダ設定の引き継ぎ処理を追加
-//*  2012/08/21  西野  大介        動的SQL（SELECT系）のLIKE検索対応
-//*  2012/11/21  西野  大介        Entity、DataSet自動生成の対応
-//*  2013/03/13  加藤  幸紀        ODP.NET Like検索用エスケープ文字設定対応
-//*  2013/11/19  西野  大介        Entity、DataSet自動生成の対応（DTOのみの生成）
-//*  2013/11/19  西野  大介        静・動共用 PKカラム リストを追加。
-//*  2013/12/23  西野  大介        テーブルメンテ自動生成コードの追加準備
-//*  2014/01/20  西野  大介        I/O時のエンコーディング制御方式を見直し。
-//*  2014/02/04  西野  大介        テーブル・メンテ自動生成の実装例を追加
-//*  2014/02/28  Sai-san          Timestamp related code
-//*  2014/02/28  Santosh-san      Gridview Header column number issue fix in the template
-//*  2014/04/30  Santosh san      Internationalization: Added Method to get the strings from the resource files based on the keys values passed.
-//*                               and and replaced this method wherever hard coded values.
-//*  2014/07/16  Sai-san          Changed ParamSign value to @ in case of PostGreSQL db  
-//*  2014/08/25  Santosh Avaji    Added key values to app.config and constants after removing dropdownlist from Template files, and did code 
-//*                               modification for selecting data provider type
-//*  2015/03/20  Sandeep Nayak    Added TimeStamp placeholder's Key values in app.config file and 
-//*                               added constant to get the TimeStamp placeholder from the app.config file and 
-//*                               did code modification to replace the required TimeStamp code in the template, if TimeStamp selected in the tool.
-//*  2015/06/18  Sai-san          Added <Else></Else> tag in create string method and ReplaceSQL method to fix the bug 'DynInsParameter of dynamic insert'       
+//*  2008/xx/xx  西野 大介         新規作成
+//*  2010/02/18  西野 大介         データプロバイダ追加（HiRDB、PostgreSQL）
+//*  2012/02/06  西野 大介         Select Countメソッドの追加
+//*  2012/02/09  西野 大介         HiRDBデータプロバイダのコメントアウト（（ソフト）対応せず）
+//*  2012/02/09  西野 大介         OLEDB、ODBCのデータプロバイダ対応
+//*  2012/08/21  西野 大介         データプロバイダ設定の引き継ぎ処理を追加
+//*  2012/08/21  西野 大介         動的SQL（SELECT系）のLIKE検索対応
+//*  2012/11/21  西野 大介         Entity、DataSet自動生成の対応
+//*  2013/03/13  加藤 幸紀         ODP.NET Like検索用エスケープ文字設定対応
+//*  2013/11/19  西野 大介         Entity、DataSet自動生成の対応（DTOのみの生成）
+//*  2013/11/19  西野 大介         静・動共用 PKカラム リストを追加。
+//*  2013/12/23  西野 大介         テーブルメンテ自動生成コードの追加準備
+//*  2014/01/20  西野 大介         I/O時のエンコーディング制御方式を見直し。
+//*  2014/02/04  西野 大介         テーブル・メンテ自動生成の実装例を追加
+//*  2014/02/28  Sai-san           Timestamp related code
+//*  2014/02/28  Santosh-san       Gridview Header column number issue fix in the template
+//*  2014/04/30  Santosh san       Internationalization: Added Method to get the strings from the resource files based on the keys values passed.
+//*                                and and replaced this method wherever hard coded values.
+//*  2014/07/16  Sai-san           Changed ParamSign value to @ in case of PostGreSQL db.
+//*  2014/08/25  Santosh Avaji     Added key values to app.config and constants after removing dropdownlist from Template files,
+//*                                and did code modification for selecting data provider type.
+//*  2015/03/20  Sandeep Nayak     Added TimeStamp placeholder's Key values in app.config file and 
+//*                                added constant to get the TimeStamp placeholder from the app.config file and 
+//*                                did code modification to replace the required TimeStamp code in the template, if TimeStamp selected in the tool.
+//*  2015/06/18  Sai-san           Added <Else></Else> tag in create string method and ReplaceSQL method to fix the bug 'DynInsParameter of dynamic insert'.
 //**********************************************************************************
 
-// データプロバイダ
-using System.Data.SqlClient;
-using Oracle.DataAccess.Client;
-using IBM.Data.DB2;
-using MySql.Data.MySqlClient;
-
-// Windowアプリケーション
-using System.Drawing;
-using System.Windows.Forms;
-using System.ComponentModel;
-
-//System
 using System;
 using System.IO;
-using System.Xml;
 using System.Text;
-using System.Data;
 using System.Collections;
+using System.Resources;
+using System.Windows.Forms;
 
-// 業務フレームワーク（参照しない）
-// フレームワーク（参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
-
-using System.Resources;
 
 // [何某]
 // ・プロパティ プロシージャ
@@ -715,7 +694,7 @@ namespace DaoGen_Tool
         private bool CreateMaintenanceScreen = false;
 
         // .NET型情報ファイルのパス
-        private bool ReadDotNetTypeInfo = false;
+        //private bool ReadDotNetTypeInfo = false;
         // .NET型情報ファイルのパス
         private string DotNetTypeInfoFilePath = "";
 

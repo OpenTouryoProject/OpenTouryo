@@ -33,35 +33,11 @@
 '*  2011/02/27  西野  大介        上記処理をクリティカルセクションに格納
 '**********************************************************************************
 
-' System
-Imports System
 Imports System.Threading
-Imports System.Diagnostics
-
-' 業務フレームワーク
-Imports Touryo.Infrastructure.Business.Business
-Imports Touryo.Infrastructure.Business.Common
-Imports Touryo.Infrastructure.Business.Dao
-Imports Touryo.Infrastructure.Business.Exceptions
-Imports Touryo.Infrastructure.Business.Presentation
-Imports Touryo.Infrastructure.Business.Util
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Business
-Imports Touryo.Infrastructure.Framework.Common
-Imports Touryo.Infrastructure.Framework.Dao
-Imports Touryo.Infrastructure.Framework.Exceptions
-Imports Touryo.Infrastructure.Framework.Presentation
-Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Framework.Transmission
 
 Imports Touryo.Infrastructure.Framework.RichClient.Asynchronous
-
-' 部品
-Imports Touryo.Infrastructure.Public.Db
-Imports Touryo.Infrastructure.Public.IO
+Imports Touryo.Infrastructure.Framework.Util
 Imports Touryo.Infrastructure.Public.Log
-Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
 
 Namespace Touryo.Infrastructure.Business.RichClient.Asynchronous
@@ -95,17 +71,21 @@ Namespace Touryo.Infrastructure.Business.RichClient.Asynchronous
 			' ACCESSログ出力 ----------------------------------------------
 
 			If MyBaseAsyncFunc.CanOutPutLog Then
-				' ------------
-				' メッセージ部
-				' ------------
-				' ユーザ名, レイヤ, 画面名, コントロール名,
-				' 処理時間（実行時間）, 処理時間（CPU時間）
-				' エラーメッセージID, エラーメッセージ等
-				' ------------
-				Dim strLogMessage As String = "," & "－" & "," & "-----*" & "," & Convert.ToString(Me.UIElementName) & "," & Convert.ToString(Me.AsyncFunc.Method.Name)
+                ' ------------
+                ' メッセージ部
+                ' ------------
+                ' ユーザ名, レイヤ, 画面名, コントロール名,
+                ' 処理時間（実行時間）, 処理時間（CPU時間）
+                ' エラーメッセージID, エラーメッセージ等
+                ' ------------
+                Dim strLogMessage As String =
+                    "," & "－" &
+                    "," & "-----*" &
+                    "," & Me.UIElementName &
+                    "," & Me.AsyncFunc.Method.Name
 
-				' Log4Netへログ出力
-				LogIF.InfoLog("ACCESS", strLogMessage)
+                ' Log4Netへログ出力
+                LogIF.InfoLog("ACCESS", strLogMessage)
 			End If
 
 			' -------------------------------------------------------------
@@ -123,17 +103,23 @@ Namespace Touryo.Infrastructure.Business.RichClient.Asynchronous
 			' ACCESSログ出力 ----------------------------------------------
 
 			If MyBaseAsyncFunc.CanOutPutLog Then
-				' ------------
-				' メッセージ部
-				' ------------
-				' ユーザ名, レイヤ, 画面名, コントロール名,
-				' 処理時間（実行時間）, 処理時間（CPU時間）
-				' エラーメッセージID, エラーメッセージ等
-				' ------------
-				Dim strLogMessage As String = "," & "－" & "," & "*-----" & "," & Convert.ToString(Me.UIElementName) & "," & Convert.ToString(Me.AsyncFunc.Method.Name) & "," & Convert.ToString(perfRec.ExecTime) & "," & Convert.ToString(perfRec.CpuTime)
+                ' ------------
+                ' メッセージ部
+                ' ------------
+                ' ユーザ名, レイヤ, 画面名, コントロール名,
+                ' 処理時間（実行時間）, 処理時間（CPU時間）
+                ' エラーメッセージID, エラーメッセージ等
+                ' ------------
+                Dim strLogMessage As String =
+                    "," & "－" &
+                    "," & "*-----" &
+                    "," & Me.UIElementName &
+                    "," & Me.AsyncFunc.Method.Name &
+                    "," & perfRec.ExecTime &
+                    "," & perfRec.CpuTime
 
-				' Log4Netへログ出力
-				LogIF.InfoLog("ACCESS", strLogMessage)
+                ' Log4Netへログ出力
+                LogIF.InfoLog("ACCESS", strLogMessage)
 			End If
 
 			' -------------------------------------------------------------
@@ -156,17 +142,24 @@ Namespace Touryo.Infrastructure.Business.RichClient.Asynchronous
 			' ACCESSログ出力-----------------------------------------------
 
 			If MyBaseAsyncFunc.CanOutPutLog Then
-				' ------------
-				' メッセージ部
-				' ------------
-				' ユーザ名, レイヤ, 画面名, コントロール名,
-				' 処理時間（実行時間）, 処理時間（CPU時間）
-				' エラーメッセージ等
-				' ------------
-				Dim strLogMessage As String = "," & "－" & "," & "*-----" & "," & Convert.ToString(Me.UIElementName) & "," & Convert.ToString(Me.AsyncFunc.Method.Name) & "," & Convert.ToString(Me.perfRec.ExecTime) & "," & Convert.ToString(Me.perfRec.CpuTime) & "," & ex.Message
+                ' ------------
+                ' メッセージ部
+                ' ------------
+                ' ユーザ名, レイヤ, 画面名, コントロール名,
+                ' 処理時間（実行時間）, 処理時間（CPU時間）
+                ' エラーメッセージ等
+                ' ------------
+                Dim strLogMessage As String =
+                    "," & "－" &
+                    "," & "*-----" &
+                    "," & Me.UIElementName &
+                    "," & Me.AsyncFunc.Method.Name &
+                    "," & Me.perfRec.ExecTime &
+                    "," & Me.perfRec.CpuTime & "," &
+                    ex.Message
 
-				' Log4Netへログ出力
-				LogIF.WarnLog("ACCESS", strLogMessage)
+                ' Log4Netへログ出力
+                LogIF.WarnLog("ACCESS", strLogMessage)
 			End If
 
 			' -------------------------------------------------------------    

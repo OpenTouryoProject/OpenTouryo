@@ -1,13 +1,29 @@
 ﻿//**********************************************************************************
-//* サンプル アプリ・コントローラ
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
+
+#region Apache License
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+#endregion
 
 //**********************************************************************************
 //* クラス名        ：ErrorController
-//* クラス日本語名  ：Html.BeginForm用サンプル アプリ・コントローラ
+//* クラス日本語名  ：エラー処理用コントローラ
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
@@ -18,15 +34,12 @@
 //*  2015/09/04  Supragyan         Modified ArrayList to List of ExceptionData on Index action method
 //**********************************************************************************
 
-//system
 using System;
 using System.Web.Mvc;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
-// フレームワーク
 using Touryo.Infrastructure.Framework.Util;
-
-// 部品
 using Touryo.Infrastructure.Public.Str;
 
 namespace MVC_Sample.Controllers
@@ -37,27 +50,65 @@ namespace MVC_Sample.Controllers
     /// </summary>
     public class ErrorController : Controller
     {
-        /// <summary>Session情報：リピータ処理用</summary>
-        private List<ExceptionData> listData = new List<ExceptionData>();
+        /// <summary>Form情報</summary>
+        private List<PositionData> list_form = new List<PositionData>();
+
+        /// <summary>Session情報</summary>
+        private List<PositionData> list_session = new List<PositionData>();
 
         #region Index
         /// <summary>
         /// Index Action method to display an error message error information on the screen
         /// </summary>
-        /// <returns></returns>
+        /// <returns>ActionResult</returns>
         public ActionResult Index()
         {
-            //To get an error message from Session
+            //画面にエラーメッセージ・エラー情報を表示する-----------------------------
+
+            // To get an error message from Session
             string err_msg = (string)Session[FxHttpContextIndex.SYSTEM_EXCEPTION_MESSAGE];
 
-            //To get an error information from Session
+            // To get an error information from Session
             string err_info = (string)Session[FxHttpContextIndex.SYSTEM_EXCEPTION_INFORMATION];
 
-            //To encode error message and display on Error screen
+            // Remove exception information from Session
+            Session.Remove(FxHttpContextIndex.SYSTEM_EXCEPTION_MESSAGE);
+            Session.Remove(FxHttpContextIndex.SYSTEM_EXCEPTION_INFORMATION);
+
+            // To encode error message and display on Error screen
             ViewBag.label1Data = CustomEncode.HtmlEncode(err_msg);
 
-            //To encode error information and display on Error screen
+            // To encode error information and display on Error screen
             ViewBag.label2Data = CustomEncode.HtmlEncode(err_info);
+
+            bool sessionAbandonFlag = (bool)Session[FxHttpContextIndex.SESSION_ABANDON_FLAG];
+            Session.Remove(FxHttpContextIndex.SESSION_ABANDON_FLAG);
+
+            // ------------------------------------------------------------------------
+
+            //画面にフォーム情報を表示する---------------------------------------------
+            NameValueCollection form = (NameValueCollection)Session[FxHttpContextIndex.FORMS_INFORMATION];
+            Session.Remove(FxHttpContextIndex.FORMS_INFORMATION);
+
+            if (form != null)
+            {
+                //foreach
+                foreach (string strKey in form)
+                {
+                    if (form[strKey] == null)
+                    {
+                        //Add key and value to PositionData
+                        list_form.Add(new PositionData(strKey, "null"));
+                    }
+                    else
+                    {
+                        //Add key and value to PositionData
+                        list_form.Add(new PositionData(strKey, CustomEncode.HtmlEncode(form[strKey].ToString())));
+                    }
+                }
+                //データバインド
+                ViewBag.list_form = list_form;
+            }
 
             // 画面にセッション情報を表示する------------------------------------------
 
@@ -69,49 +120,43 @@ namespace MVC_Sample.Controllers
                     if (Session[strKey] == null)
                     {
                         //Add key and value to PositionData
-                        listData.Add(new ExceptionData(strKey, "null"));
+                        list_session.Add(new PositionData(strKey, "null"));
                     }
                     else
                     {
                         //Add key and value to PositionData
-                        listData.Add(new ExceptionData(strKey, CustomEncode.HtmlEncode(Session[strKey].ToString())));
+                        list_session.Add(new PositionData(strKey, CustomEncode.HtmlEncode(Session[strKey].ToString())));
                     }
                 }
                 //データバインド
-                ViewBag.datas = listData;
+                ViewBag.list_session = list_session;
             }
 
-            if (Session[FxHttpContextIndex.SESSION_ABANDON_FLAG] != null)
+            // セッション情報を削除する------------------------------------------------
+
+            if (sessionAbandonFlag)
             {
-                // セッション情報を削除する------------------------------------------------
-                if ((bool)Session[FxHttpContextIndex.SESSION_ABANDON_FLAG])
+                // セッション タイムアウト検出用Cookieを消去
+                // ※ Removeが正常に動作しないため、値を空文字に設定 ＝ 消去とする
+
+                // Set-Cookie HTTPヘッダをレスポンス
+                Response.Cookies.Set(FxCmnFunction.DeleteCookieForSessionTimeoutDetection());
+
+                try
                 {
-                    // セッション タイムアウト検出用Cookieを消去
-                    // ※ Removeが正常に動作しないため、値を空文字に設定 ＝ 消去とする
-
-                    // Set-Cookie HTTPヘッダをレスポンス
-                    Response.Cookies.Set(FxCmnFunction.DeleteCookieForSessionTimeoutDetection());
-
-                    try
-                    {
-                        //To store error information from session before clear the session
-                        ErrorInformation.ErrorMessage = (string)Session[FxHttpContextIndex.SYSTEM_EXCEPTION_MESSAGE];
-                        ErrorInformation.ErrorInfo = (string)Session[FxHttpContextIndex.SYSTEM_EXCEPTION_INFORMATION];
-                        ErrorInformation.ErrorDatas = listData;
-
-                        // セッションを消去                       
-                        Session.Abandon();
-                    }
-                    catch (Exception ex)
-                    {
-                        // エラー発生時
-                        // このカバレージを通過する場合、
-                        // おそらく起動した画面のパスが間違っている。
-                        Console.WriteLine("このカバレージを通過する場合、おそらく起動した画面のパスが間違っている。");
-                        Console.WriteLine(ex.Message);
-                    }
+                    // セッションを消去                       
+                    Session.Abandon();
+                }
+                catch (Exception ex)
+                {
+                    // エラー発生時
+                    // このカバレージを通過する場合、
+                    // おそらく起動した画面のパスが間違っている。
+                    Console.WriteLine("このカバレージを通過する場合、おそらく起動した画面のパスが間違っている。");
+                    Console.WriteLine(ex.Message);
                 }
             }
+
             return View();
         }
 
@@ -120,12 +165,12 @@ namespace MVC_Sample.Controllers
 
     #endregion
 
-    # region ExceptionData
+    # region PositionData
 
     /// <summary>
     /// ExceptionData class to set key and value for throwing exception 
     /// </summary>
-    public class ExceptionData
+    public class PositionData
     {
         /// <summary>キー</summary>
         private string _key;
@@ -134,7 +179,7 @@ namespace MVC_Sample.Controllers
         private string _value;
 
         /// <summary>コンストラクタ</summary>
-        public ExceptionData(string key, string value)
+        public PositionData(string key, string value)
         {
             this._key = key;
             this._value = value;

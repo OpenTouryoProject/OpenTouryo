@@ -21,10 +21,10 @@
 //**********************************************************************************
 //* クラス名        ：ServiceForFx
 //* クラス日本語名  ：ASP.NET Webサービス（サービス インターフェイス基盤）
-//*                   .NET言語用のWebメソッド（.NETオブジェクトI/F）を公開する。
+//*                   SOAPの.NETオブジェクトのバイナリ転送用メソッドを公開する。
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //* 
 //*  日時        更新者            内容
@@ -42,40 +42,23 @@
 //*  2011/07/06  西野 大介         認証サービス・テンプレートに対応したコードを追加
 //*  2011/12/02  西野 大介         contextObjectにrefを追加した。
 //*  2011/12/08  西野 大介         業務例外のcatchのカバレージは通らないのでコメントアウト
-//*  2012/08/25  西野  大介        Assembly.LoadFile → .Load（ASP.NETシャドウコピー対応）
+//*  2012/08/25  西野 大介         Assembly.LoadFile → .Load（ASP.NETシャドウコピー対応）
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れた。
 //**********************************************************************************
 
-using System.EnterpriseServices;
-
-// System
 using System;
-using System.Xml;
-using System.Data;
-using System.Collections;
-
-// System.Web
-using System.Web;
 using System.Web.Services;
-using System.Web.Services.Protocols;
+using System.EnterpriseServices;
+using System.Runtime.ExceptionServices;
 
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
+using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Framework.Transmission;
 
-// 部品
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
@@ -89,7 +72,7 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
     /// </summary>
     [WebService(Namespace = FxLiteral.WS_NAME_SPACE)]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-    public class ServiceForFx : System.Web.Services.WebService
+    public class ServiceForFx : WebService
     {
         #region グローバル変数
 
@@ -163,8 +146,8 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
             object context; // 2009/09/29-この行
 
             // 引数・戻り値の.NETオブジェクト
-            BaseParameterValue parameterValue;
-            BaseReturnValue returnValue;
+            BaseParameterValue parameterValue = null;
+            BaseReturnValue returnValue = null;
 
             // エラー情報（クライアント側で復元するため）
             WSErrorInfo wsErrorInfo = new WSErrorInfo();
@@ -214,36 +197,8 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                 // ★
                 status = FxLiteral.SIF_STATUS_AUTHENTICATION;
 
-                // ★★　コンテキストの情報を使用するなどして
-                //       認証処理をＵＯＣする（必要に応じて）。
-
-                //// 認証チケットの復号化
-                //string[] authTicket = (string[])BinarySerialize.BytesToObject(
-                //    CustomEncode.FromBase64String(
-                //        SymmetricCryptography.DecryptString(
-                //            (string)context, GetConfigParameter.GetConfigValue("private-key"),
-                //            EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider)));
-
-                //// 認証チケットの整合性を確認
-
-                //// Ｂ層・Ｄ層呼出し
-                ////   スライディング・タイムアウトの実装、
-                ////   タイムスタンプのチェックと、更新
-                //returnValue = (BaseReturnValue)Latebind.InvokeMethod(
-                //    "xxxx", "yyyy",
-                //    FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME,
-                //    new object[] { new AuthParameterValue("－", "－", "zzzz", "",
-                //        ((MyParameterValue)parameterValue).User, authTicket[1]),
-                //        DbEnum.IsolationLevelEnum.User });
-
-                //if (returnValue.ErrorFlag)
-                //{
-                //    // 認証エラー
-                //    throw new BusinessSystemException("xxxx", "認証チケットが不正か、タイムアウトです。");
-                //}
-
-                // 持ち回るならCookieにするか、
-                // contextをrefにするなどとする。
+                // ★★　contextの情報を使用するなどして認証処理をＵＯＣする（必要に応じて）。
+                // 持ち回るならCookieにするか、contextをrefにするなどとする。
                 contextObject = BinarySerialize.ObjectToBytes(DateTime.Now); // 更新されたかのテストコード
 
                 #endregion
@@ -266,8 +221,11 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                 }
                 catch (System.Reflection.TargetInvocationException rtEx)
                 {
-                    // InnerExceptionを投げなおす。
-                    throw rtEx.InnerException;
+                    //// InnerExceptionを投げなおす。
+                    //throw rtEx.InnerException;
+
+                    // スタックトレースを保って InnerException を throw
+                    ExceptionDispatchInfo.Capture(rtEx.InnerException).Throw();
                 }
                 // #17-end
 
@@ -359,7 +317,7 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                         + "エラー タイプ：" + errorType + "\r\n" // 2009/09/15-この行
                         + "エラー メッセージID：" + errorMessageID + "\r\n"
                         + "エラー メッセージ：" + errorMessage + "\r\n"
-                        + errorToString + "\r\n");
+                        + errorToString);
                 }
             }
         }

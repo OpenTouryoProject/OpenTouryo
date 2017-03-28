@@ -30,19 +30,6 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
 //**********************************************************************************
 
-// System
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
-
-// System.Web
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-
 namespace Touryo.Infrastructure.CustomControl
 {
     /// <summary>チェック結果格納クラス</summary>

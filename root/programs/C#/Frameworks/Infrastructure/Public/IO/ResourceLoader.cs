@@ -27,27 +27,15 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2007/xx/xx  西野  大介        新規作成
-//*  2009/03/13  西野  大介        存在チェック処理メソッドを追加
-//*  2011/01/14  西野  大介        環境変数の組み込み処理に対応
+//*  2007/xx/xx  西野 大介         新規作成
+//*  2009/03/13  西野 大介         存在チェック処理メソッドを追加
+//*  2011/01/14  西野 大介         環境変数の組み込み処理に対応
 //**********************************************************************************
 
-// System
 using System;
 using System.IO;
-using System.Xml;
 using System.Text;
-using System.Data;
-using System.Collections;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.IO

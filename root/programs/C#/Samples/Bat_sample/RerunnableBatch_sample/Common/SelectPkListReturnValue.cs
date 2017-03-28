@@ -2,6 +2,8 @@
 //* フレームワーク・テストクラス
 //**********************************************************************************
 
+// テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
 //**********************************************************************************
 //* クラス名        ：SelectPkListReturnValue
 //* クラス日本語名  ：テスト用の戻り値クラス
@@ -13,18 +15,9 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
-//*
 //**********************************************************************************
 
-// System
-using System;
-using System.IO;
-using System.Data;
-using System.Text;
 using System.Collections;
-using System.Collections.Generic;
-
-// ベースクラス
 using Touryo.Infrastructure.Business.Common;
 
 namespace RerunnableBatch_sample.Common

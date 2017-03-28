@@ -33,10 +33,6 @@
 '*  2011/12/02  西野 大介         上記を汎用利用可能なobjectに変更した（Bean、DS・DT）。
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.Data
-
 Namespace Touryo.Infrastructure.Business.Common
 	''' <summary>汎用戻り値クラス</summary>
 	''' <remarks>

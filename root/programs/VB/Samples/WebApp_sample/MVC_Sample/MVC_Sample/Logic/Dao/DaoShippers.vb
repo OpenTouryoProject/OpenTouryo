@@ -1,4 +1,10 @@
 ﻿'**********************************************************************************
+'* Ｄ層 自動生成・テストクラス
+'**********************************************************************************
+
+' テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+
+'**********************************************************************************
 '* クラス名        ：DaoShippers
 '* クラス日本語名  ：自動生成Ｄａｏクラス
 '*
@@ -13,26 +19,8 @@
 '*  2013/09/09  西野  大介        ExecGenerateSQLメソッドを追加した（バッチ更新用）。
 '**********************************************************************************
 
-#Region "using"
-
-' System～
-Imports System
-Imports System.IO
-Imports System.Data
-Imports System.Collections
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Dao
-Imports Touryo.Infrastructure.Framework.Common
-
-' 部品
-Imports Touryo.Infrastructure.Public.Db
-Imports Touryo.Infrastructure.Public.Util
-
-' 業務フレームワーク
 Imports Touryo.Infrastructure.Business.Dao
-
-#End Region
+Imports Touryo.Infrastructure.Public.Db
 
 Namespace Logic.Dao
     ''' <summary>自動生成Ｄａｏクラス</summary>
@@ -103,16 +91,19 @@ Namespace Logic.Dao
 
 #Region "プロパティ プロシージャ（setter、getter）"
 
+
         ''' <summary>ShipperID列（主キー列）に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
         ''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
         Public Property PK_ShipperID() As Object
             Get
                 Return Me.HtParameter("ShipperID")
             End Get
-            Set(value As Object)
-                Me.HtParameter("ShipperID") = value
+            Set
+                Me.HtParameter("ShipperID") = Value
             End Set
         End Property
+
+
 
         ''' <summary>CompanyName列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
         ''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
@@ -120,8 +111,8 @@ Namespace Logic.Dao
             Get
                 Return Me.HtParameter("CompanyName")
             End Get
-            Set(value As Object)
-                Me.HtParameter("CompanyName") = value
+            Set
+                Me.HtParameter("CompanyName") = Value
             End Set
         End Property
 
@@ -131,10 +122,11 @@ Namespace Logic.Dao
             Get
                 Return Me.HtParameter("Phone")
             End Get
-            Set(value As Object)
-                Me.HtParameter("Phone") = value
+            Set
+                Me.HtParameter("Phone") = Value
             End Set
         End Property
+
 
         ''' <summary>Set_ShipperID_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
         ''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
@@ -142,10 +134,11 @@ Namespace Logic.Dao
             Get
                 Return Me.HtParameter("Set_ShipperID_forUPD")
             End Get
-            Set(value As Object)
-                Me.HtParameter("Set_ShipperID_forUPD") = value
+            Set
+                Me.HtParameter("Set_ShipperID_forUPD") = Value
             End Set
         End Property
+
 
         ''' <summary>Set_CompanyName_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
         ''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
@@ -153,10 +146,11 @@ Namespace Logic.Dao
             Get
                 Return Me.HtParameter("Set_CompanyName_forUPD")
             End Get
-            Set(value As Object)
-                Me.HtParameter("Set_CompanyName_forUPD") = value
+            Set
+                Me.HtParameter("Set_CompanyName_forUPD") = Value
             End Set
         End Property
+
 
         ''' <summary>Set_Phone_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
         ''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
@@ -164,10 +158,12 @@ Namespace Logic.Dao
             Get
                 Return Me.HtParameter("Set_Phone_forUPD")
             End Get
-            Set(value As Object)
-                Me.HtParameter("Set_Phone_forUPD") = value
+            Set
+                Me.HtParameter("Set_Phone_forUPD") = Value
             End Set
         End Property
+
+
 
         ''' <summary>ShipperID_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
         ''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
@@ -175,10 +171,11 @@ Namespace Logic.Dao
             Get
                 Return Me.HtParameter("ShipperID_Like")
             End Get
-            Set(value As Object)
-                Me.HtParameter("ShipperID_Like") = value
+            Set
+                Me.HtParameter("ShipperID_Like") = Value
             End Set
         End Property
+
 
         ''' <summary>CompanyName_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
         ''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
@@ -186,10 +183,11 @@ Namespace Logic.Dao
             Get
                 Return Me.HtParameter("CompanyName_Like")
             End Get
-            Set(value As Object)
-                Me.HtParameter("CompanyName_Like") = value
+            Set
+                Me.HtParameter("CompanyName_Like") = Value
             End Set
         End Property
+
 
         ''' <summary>Phone_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
         ''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
@@ -197,10 +195,11 @@ Namespace Logic.Dao
             Get
                 Return Me.HtParameter("Phone_Like")
             End Get
-            Set(value As Object)
-                Me.HtParameter("Phone_Like") = value
+            Set
+                Me.HtParameter("Phone_Like") = Value
             End Set
         End Property
+
 
 #End Region
 

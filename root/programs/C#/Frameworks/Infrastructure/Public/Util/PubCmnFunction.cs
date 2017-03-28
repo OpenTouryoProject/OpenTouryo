@@ -27,41 +27,23 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2011/01/14  西野  大介        新規作成
-//*  2011/02/10  西野  大介        GetFileNameNoExメソッドを追加
-//*  2011/02/14  西野  大介        BuiltStringIntoEnvironmentVariableにチェック追加
-//*  2011/06/01  西野  大介        コマンドライン引数の取得処理の追加
-//*  2011/10/09  西野  大介        国際化対応
-//*  2012/06/14  西野  大介        CalculateSessionSizeメソッドを追加
-//*  2012/06/21  西野  大介        1～8バイト → 数値変換メソッドを追加
-//*  2012/12/26  西野  大介        コマンドライン引数の取得処理の修正（.exe無しのケース）
-//*  2013/02/12  西野  大介        ShortenByteArrayメソッドを追加（暗号化ツールで使用）
-//*  2013/12/23  西野  大介        ファイル・行数・メソッド・プロパティなどコード情報の取得メソッドを追加
+//*  2011/01/14  西野 大介         新規作成
+//*  2011/02/10  西野 大介         GetFileNameNoExメソッドを追加
+//*  2011/02/14  西野 大介         BuiltStringIntoEnvironmentVariableにチェック追加
+//*  2011/06/01  西野 大介         コマンドライン引数の取得処理の追加
+//*  2011/10/09  西野 大介         国際化対応
+//*  2012/06/14  西野 大介         CalculateSessionSizeメソッドを追加
+//*  2012/06/21  西野 大介         1～8バイト → 数値変換メソッドを追加
+//*  2012/12/26  西野 大介         コマンドライン引数の取得処理の修正（.exe無しのケース）
+//*  2013/02/12  西野 大介         ShortenByteArrayメソッドを追加（暗号化ツールで使用）
+//*  2013/12/23  西野 大介         ファイル・行数・メソッド・プロパティなどコード情報の取得メソッドを追加
+//*  2017/01/31  西野 大介         System.Webを使用しているCalculateSessionSizeメソッドをBusinessへ移動
 //**********************************************************************************
 
-// 処理に必要
-using System.Collections.Generic;
-
-// System
 using System;
-using System.IO;
-using System.Xml;
 using System.Text;
-using System.Data;
-using System.Web;
-using System.Collections;
 using System.Diagnostics;
-
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
-using Touryo.Infrastructure.Public.Win32;
+using System.Collections.Generic;
 
 namespace Touryo.Infrastructure.Public.Util
 {
@@ -668,45 +650,6 @@ namespace Touryo.Infrastructure.Public.Util
 
             // 環境変数値を組み込んだ文字列を返す。
             return retStr;
-        }
-
-        #endregion
-
-        #region Web系
-
-        /// <summary>Sessionサイズ測定</summary>
-        /// <returns>Sessionサイズ（MB）</returns>
-        /// <remarks>シリアル化できないオブジェクトを含む場合は落ちる。</remarks>
-        public static long CalculateSessionSizeMB()
-        {
-            return PubCmnFunction.CalculateSessionSizeKB() / 1000;
-        }
-
-        /// <summary>Sessionサイズ測定</summary>
-        /// <returns>Sessionサイズ（KB）</returns>
-        /// <remarks>シリアル化できないオブジェクトを含む場合は落ちる。</remarks>
-        public static long CalculateSessionSizeKB()
-        {
-            return PubCmnFunction.CalculateSessionSize() / 1000;
-        }
-
-        /// <summary>Sessionサイズ測定</summary>
-        /// <returns>Sessionサイズ（バイト）</returns>
-        /// <remarks>シリアル化できないオブジェクトを含む場合は落ちる。</remarks>
-        public static long CalculateSessionSize()
-        {
-            // ワーク変数
-            long size = 0;
-
-            // SessionのオブジェクトをBinarySerializeしてサイズを取得。
-            foreach (string key in HttpContext.Current.Session.Keys)
-            {
-                // 当該キーのオブジェクト・サイズを足しこむ。
-                size += BinarySerialize.ObjectToBytes(HttpContext.Current.Session[key]).Length;
-            }
-
-            // Sessionサイズ（バイト）
-            return size;
         }
 
         #endregion

@@ -1,13 +1,29 @@
 ﻿'**********************************************************************************
-'* サンプル アプリ・コントローラ
+'* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 '**********************************************************************************
+
+#Region "Apache License"
+'
+' Licensed under the Apache License, Version 2.0 (the "License");
+' you may not use this file except in compliance with the License. 
+' You may obtain a copy of the License at
+'
+' http://www.apache.org/licenses/LICENSE-2.0
+'
+' Unless required by applicable law or agreed to in writing, software
+' distributed under the License is distributed on an "AS IS" BASIS,
+' WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+' See the License for the specific language governing permissions and
+' limitations under the License.
+'
+#End Region
 
 '**********************************************************************************
 '* クラス名        ：ErrorController
-'* クラス日本語名  ：Html.BeginForm用サンプル アプリ・コントローラ
+'* クラス日本語名  ：エラー処理用コントローラ
 '*
 '* 作成日時        ：－
-'* 作成者          ：sas 生技
+'* 作成者          ：生技
 '* 更新履歴        ：
 '*
 '*  日時        更新者            内容
@@ -18,15 +34,7 @@
 '*  2015/09/04  Supragyan         Modified ArrayList to List of ExceptionData on Index action method
 '**********************************************************************************
 
-'system
-Imports System
-Imports System.Web.Mvc
-Imports System.Collections.Generic
-
-' フレームワーク
 Imports Touryo.Infrastructure.Framework.Util
-
-' 部品
 Imports Touryo.Infrastructure.Public.Str
 
 Namespace Controllers
@@ -36,26 +44,59 @@ Namespace Controllers
     ''' </summary>
     Public Class ErrorController
         Inherits Controller
-        ''' <summary>Session情報：リピータ処理用</summary>
-        Private listData As New List(Of ExceptionData)()
+        ''' <summary>Form情報</summary>
+        Private list_form As New List(Of PositionData)()
+
+        ''' <summary>Session情報</summary>
+        Private list_session As New List(Of PositionData)()
 
 #Region "Index"
         ''' <summary>
         ''' Index Action method to display an error message error information on the screen
         ''' </summary>
-        ''' <returns></returns>
+        ''' <returns>ActionResult</returns>
         Public Function Index() As ActionResult
-            'To get an error message from Session
+            '画面にエラーメッセージ・エラー情報を表示する-----------------------------
+
+            ' To get an error message from Session
             Dim err_msg As String = DirectCast(Session(FxHttpContextIndex.SYSTEM_EXCEPTION_MESSAGE), String)
 
-            'To get an error information from Session
+            ' To get an error information from Session
             Dim err_info As String = DirectCast(Session(FxHttpContextIndex.SYSTEM_EXCEPTION_INFORMATION), String)
 
-            'To encode error message and display on Error screen
+            ' Remove exception information from Session
+            Session.Remove(FxHttpContextIndex.SYSTEM_EXCEPTION_MESSAGE)
+            Session.Remove(FxHttpContextIndex.SYSTEM_EXCEPTION_INFORMATION)
+
+            ' To encode error message and display on Error screen
             ViewBag.label1Data = CustomEncode.HtmlEncode(err_msg)
 
-            'To encode error information and display on Error screen
+            ' To encode error information and display on Error screen
             ViewBag.label2Data = CustomEncode.HtmlEncode(err_info)
+
+            Dim sessionAbandonFlag As Boolean = CBool(Session(FxHttpContextIndex.SESSION_ABANDON_FLAG))
+            Session.Remove(FxHttpContextIndex.SESSION_ABANDON_FLAG)
+
+            ' ------------------------------------------------------------------------
+
+            '画面にフォーム情報を表示する---------------------------------------------
+            Dim form As NameValueCollection = DirectCast(Session(FxHttpContextIndex.FORMS_INFORMATION), NameValueCollection)
+            Session.Remove(FxHttpContextIndex.FORMS_INFORMATION)
+
+            If form IsNot Nothing Then
+                'foreach
+                For Each strKey As String In form
+                    If form(strKey) Is Nothing Then
+                        'Add key and value to PositionData
+                        list_form.Add(New PositionData(strKey, "null"))
+                    Else
+                        'Add key and value to PositionData
+                        list_form.Add(New PositionData(strKey, CustomEncode.HtmlEncode(form(strKey).ToString())))
+                    End If
+                Next
+                'データバインド
+                ViewBag.list_form = list_form
+            End If
 
             ' 画面にセッション情報を表示する------------------------------------------
 
@@ -64,42 +105,37 @@ Namespace Controllers
                 For Each strKey As String In Session
                     If Session(strKey) Is Nothing Then
                         'Add key and value to PositionData
-                        listData.Add(New ExceptionData(strKey, "null"))
+                        list_session.Add(New PositionData(strKey, "null"))
                     Else
                         'Add key and value to PositionData
-                        listData.Add(New ExceptionData(strKey, CustomEncode.HtmlEncode(Session(strKey).ToString())))
+                        list_session.Add(New PositionData(strKey, CustomEncode.HtmlEncode(Session(strKey).ToString())))
                     End If
                 Next
                 'データバインド
-                ViewBag.datas = listData
+                ViewBag.list_session = list_session
             End If
 
-            If Session(FxHttpContextIndex.SESSION_ABANDON_FLAG) IsNot Nothing Then
-                ' セッション情報を削除する------------------------------------------------
-                If CBool(Session(FxHttpContextIndex.SESSION_ABANDON_FLAG)) Then
-                    ' セッション タイムアウト検出用Cookieを消去
-                    ' ※ Removeが正常に動作しないため、値を空文字に設定 ＝ 消去とする
+            ' セッション情報を削除する------------------------------------------------
 
-                    ' Set-Cookie HTTPヘッダをレスポンス
-                    Response.Cookies.[Set](FxCmnFunction.DeleteCookieForSessionTimeoutDetection())
+            If sessionAbandonFlag Then
+                ' セッション タイムアウト検出用Cookieを消去
+                ' ※ Removeが正常に動作しないため、値を空文字に設定 ＝ 消去とする
 
-                    Try
-                        'To store error information from session before clear the session
-                        ErrorInformation.ErrorMessage = DirectCast(Session(FxHttpContextIndex.SYSTEM_EXCEPTION_MESSAGE), String)
-                        ErrorInformation.ErrorInfo = DirectCast(Session(FxHttpContextIndex.SYSTEM_EXCEPTION_INFORMATION), String)
-                        ErrorInformation.ErrorDatas = listData
+                ' Set-Cookie HTTPヘッダをレスポンス
+                Response.Cookies.[Set](FxCmnFunction.DeleteCookieForSessionTimeoutDetection())
 
-                        ' セッションを消去                       
-                        Session.Abandon()
-                    Catch ex As Exception
-                        ' エラー発生時
-                        ' このカバレージを通過する場合、
-                        ' おそらく起動した画面のパスが間違っている。
-                        Console.WriteLine("このカバレージを通過する場合、おそらく起動した画面のパスが間違っている。")
-                        Console.WriteLine(ex.Message)
-                    End Try
-                End If
+                Try
+                    ' セッションを消去                       
+                    Session.Abandon()
+                Catch ex As Exception
+                    ' エラー発生時
+                    ' このカバレージを通過する場合、
+                    ' おそらく起動した画面のパスが間違っている。
+                    Console.WriteLine("このカバレージを通過する場合、おそらく起動した画面のパスが間違っている。")
+                    Console.WriteLine(ex.Message)
+                End Try
             End If
+
             Return View()
         End Function
 
@@ -108,12 +144,12 @@ Namespace Controllers
 
 #End Region
 
-#Region "ExceptionData"
+#Region "PositionData"
 
     ''' <summary>
     ''' ExceptionData class to set key and value for throwing exception 
     ''' </summary>
-    Public Class ExceptionData
+    Public Class PositionData
         ''' <summary>キー</summary>
         Private _key As String
 

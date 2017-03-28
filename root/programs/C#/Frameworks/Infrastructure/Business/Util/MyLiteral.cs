@@ -28,15 +28,13 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#6 ： Fxプレフィックスの欠如
-//*  2009/07/21  西野  大介        コントロール取得処理の仕様変更
-//*  2010/10/21  西野  大介        幾つかのイベント処理の正式対応（ベースクラス２→１へ）
-//*  2011/11/20  西野  大介        リッチクライアント用P層フレームワークを追加
+//*  2009/07/21  西野 大介         コントロール取得処理の仕様変更
+//*  2010/10/21  西野 大介         幾つかのイベント処理の正式対応（ベースクラス２→１へ）
+//*  2011/11/20  西野 大介         リッチクライアント用P層フレームワークを追加
+//*  2017/02/28  西野 大介         キャッシュ制御処理にスイッチを追加した。
 //**********************************************************************************
-
-// System
-using System;
 
 namespace Touryo.Infrastructure.Business.Util
 {
@@ -44,31 +42,13 @@ namespace Touryo.Infrastructure.Business.Util
     public class MyLiteral
     {
         #region app.configのキー（とデフォルト値）
-
-        // 2009/07/21-start
-
-        #region コントロールのプレフィックス
-
+        
         /// <summary>チェック ボックスのプレフィックスを設定するキー。</summary>
         /// <remarks>ベースクラス２から利用するので、internal</remarks>
         public const string PREFIX_OF_CHECK_BOX = "FxPrefixOfCheckBox";
 
-        #endregion
-        
-        // 2009/07/21-end
-
-        #endregion
-
-        #region P層のリテラル
-
-        // 2009/07/21-start ～ end
-        
-        #region イベントハンドラのヘッダ・フッタ
-
-        ///// <summary>UOCメソッドフッタ（CheckedChanged）</summary>
-        //public const string UOC_METHOD_FOOTER_CHECKED_CHANGED = "CheckedChanged";
-
-        #endregion
+        /// <summary>キャッシュ制御機能のON / OFFを設定するキー</summary>
+        public const string CACHE_CONTROL = "FxCacheControl";
 
         #endregion
     }

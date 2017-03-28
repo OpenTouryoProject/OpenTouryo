@@ -27,24 +27,10 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2017/01/10  西野  大介        新規作成
+//*  2017/01/10  西野 大介         新規作成
 //**********************************************************************************
 
-// System
 using System;
-
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
-
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Touryo.Infrastructure.Public.Util
 {

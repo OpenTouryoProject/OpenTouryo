@@ -34,46 +34,19 @@
 //*  2010/09/24  西野 大介         Damクラス内にユーザ情報を格納したので
 //*  2012/02/09  西野 大介         OLEDB、ODBCのデータプロバイダ対応
 //*  2012/04/05  西野 大介         \n → \r\n 化
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
+//*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
 //**********************************************************************************
 
-// デバッグ用
-using System.Diagnostics;
-
-// メソッドの属性を取得
-using System.Reflection;
-
-// System
 using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
 using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
 using Touryo.Infrastructure.Framework.RichClient.Business;
-
-// 部品
+using Touryo.Infrastructure.Framework.Exceptions;
+using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Business.RichClient.Business
@@ -393,7 +366,7 @@ namespace Touryo.Infrastructure.Business.RichClient.Business
                     "," + this.perfRec.ExecTime +
                     "," + this.perfRec.CpuTime +
                     "," + baEx.messageID +
-                    "," + baEx.Message;
+                    "," + baEx.Message; // baEX
 
                 // Log4Netへログ出力
                 LogIF.WarnLog("ACCESS", strLogMessage);
@@ -444,7 +417,8 @@ namespace Touryo.Infrastructure.Business.RichClient.Business
                     "," + this.perfRec.ExecTime +
                     "," + this.perfRec.CpuTime +
                     "," + bsEx.messageID +
-                    "," + bsEx.Message + "\r\n" + bsEx.StackTrace;
+                    "," + bsEx.Message + 
+                    "\r\n" + bsEx.StackTrace; // bsEX
 
                 // Log4Netへログ出力
                 LogIF.ErrorLog("ACCESS", strLogMessage);
@@ -470,8 +444,8 @@ namespace Touryo.Infrastructure.Business.RichClient.Business
             {
                 // なにもしない
 
-                // リスロー
-                throw ex;
+                // スタックトレースを保って InnerException を throw
+                ExceptionDispatchInfo.Capture(ex).Throw();
             }
             else
             {
@@ -528,7 +502,7 @@ namespace Touryo.Infrastructure.Business.RichClient.Business
                         "," + this.perfRec.ExecTime +
                         "," + this.perfRec.CpuTime +
                         "," + returnValue.ErrorMessageID +
-                        "," + returnValue.ErrorMessage;
+                        "," + returnValue.ErrorMessage; // baEX
 
                     // Log4Netへログ出力
                     LogIF.WarnLog("ACCESS", strLogMessage);
@@ -553,7 +527,8 @@ namespace Touryo.Infrastructure.Business.RichClient.Business
                         "," + this.perfRec.ExecTime +
                         "," + this.perfRec.CpuTime +
                         "," + sysErrorMessageID +
-                        "," + sysErrorMessage + "\r\n" + ex.StackTrace;
+                        "," + sysErrorMessage +
+                        "\r\n" + ex.StackTrace; // bsEX
 
                     // Log4Netへログ出力
                     LogIF.ErrorLog("ACCESS", strLogMessage);
@@ -581,13 +556,14 @@ namespace Touryo.Infrastructure.Business.RichClient.Business
                         "," + this.perfRec.ExecTime +
                         "," + this.perfRec.CpuTime +
                         "," + "other Exception" +
-                        "," + ex.Message + "\r\n" + ex.StackTrace;
+                        "," + ex.Message +
+                        "\r\n" + ex.ToString(); // ex
 
                     // Log4Netへログ出力
                     LogIF.ErrorLog("ACCESS", strLogMessage);
 
-                    // リスロー
-                    throw ex;
+                    // スタックトレースを保って InnerException を throw
+                    ExceptionDispatchInfo.Capture(ex).Throw();
                 }
 
                 #endregion

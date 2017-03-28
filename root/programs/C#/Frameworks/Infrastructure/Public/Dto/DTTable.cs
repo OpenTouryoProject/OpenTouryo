@@ -27,21 +27,21 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2010/03/xx  西野  大介        新規作成
-//*  2010/11/11  前川  祐介        メソッド追加
+//*  2010/03/xx  西野 大介         新規作成
+//*  2010/11/11  前川 祐介         メソッド追加
 //*                                  一覧更新処理対応
-//*                                    ・AcceptChanges、GetChanges
+//*                                  ・AcceptChanges、GetChanges
 //*                                  Datatable対応
-//*                                    ・ToDataTable、FromDataTable
-//*                                    ・ConvertDTTypeToType、ConvertTypeToDTType
-//*  2011/10/09  西野  大介        国際化対応
-//*  2015/03/05  Supragyan        Created  SavejqGridJson method for saving datatable data to JQGrid.
-//*  2015/06/08  Supragyan        Modified SavejqGridJson method for saving datatable data to JQGrid.
+//*                                  ・ToDataTable、FromDataTable
+//*                                  ・ConvertDTTypeToType、ConvertTypeToDTType
+//*  2011/10/09  西野 大介         国際化対応
+//*  2015/03/05  Supragyan         Created  SavejqGridJson method for saving datatable data to JQGrid.
+//*  2015/06/08  Supragyan         Modified SavejqGridJson method for saving datatable data to JQGrid.
 //**********************************************************************************
-//system
+
 using System;
-using System.Collections.Generic;
 using System.Data;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Touryo.Infrastructure.Public.Dto

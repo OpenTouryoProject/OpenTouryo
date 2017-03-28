@@ -28,16 +28,11 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
-//*  2009/08/06  西野  大介        クラス属性だけでなく、メソッド属性も処理可能に修正
+//*  2009/08/06  西野 大介         クラス属性だけでなく、メソッド属性も処理可能に修正
 //**********************************************************************************
 
-using System.Reflection;
-
-// System
 using System;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Util;
+using System.Reflection;
 
 namespace Touryo.Infrastructure.Business.Util
 {

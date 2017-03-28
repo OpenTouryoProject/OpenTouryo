@@ -1,7 +1,7 @@
 ﻿# Open 棟梁
 Open 棟梁は、.NET Framework をベースとしたアプリケーション フレームワークです。  
 Open 棟梁のプログラムは、以下のリポジトリで公開しています。
-- OpenTouryoTemplates V2 リポジトリ
+- OpenTouryoTemplates リポジトリ
     - 概要  
     Open 棟梁を使用したアプリケーションの**開発基盤 (テンプレート)** となるもの  
     SQL Server を既定の DBMS とし、Visual Studio のバージョンごとにフォルダが分かれている
@@ -9,12 +9,12 @@ Open 棟梁のプログラムは、以下のリポジトリで公開していま
     Open 棟梁を使用してアプリケーションを開発する人
 - OpenTouryo リポジトリ (**現在のリポジトリ**)
     - 概要  
-    OpenTouryoTemplates V2 リポジトリの**母体**となるもの  
-    (Open 棟梁の各機能は、まず OpenTouryo リポジトリで開発され、その後 OpenTouryoTemplates V2 リポジトリに取り込まれる)
+    OpenTouryoTemplates リポジトリの**母体**となるもの  
+    (Open 棟梁の各機能は、まず OpenTouryo リポジトリで開発され、その後 OpenTouryoTemplates リポジトリに取り込まれる)
     - 想定利用者  
     OSS 開発者
 
-このため、システム開発プロジェクトで Open 棟梁を使用される方は、[OpenTouryoTemplates V2 リポジトリ](https://github.com/OpenTouryoProject/OpenTouryoTemplatesV2)を使用してください。  
+このため、システム開発プロジェクトで Open 棟梁を使用される方は、[OpenTouryoTemplates リポジトリ](https://github.com/OpenTouryoProject/OpenTouryoTemplates)を使用してください。  
 以下、**OSS 開発者向け**に、Open 棟梁の利用方法をご紹介します。  
 
 このファイルの英語版は[こちら](README.md)から。
@@ -106,7 +106,7 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
   </thead>
   <tbody>
     <tr>
-      <td rowspan="15" style="vertical-align: top">C:\root\programs\C#</td><td>1_DeleteDir.bat</td><td>ビルドによってできたフォルダを削除 (クリーン) する。</td><td>○</td><td>○</td>
+      <td rowspan="16" style="vertical-align: top">C:\root\programs\C#</td><td>1_DeleteDir.bat</td><td>ビルドによってできたフォルダを削除 (クリーン) する。</td><td>○</td><td>○</td>
     </tr>
     <tr>
       <td>2_DeleteFile.bat</td><td>一時ファイルなどを削除 (クリーン) する。</td><td>○</td><td>○</td>
@@ -118,13 +118,13 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
       <td>3_Build_PortableClassLibrary.bat</td><td>ポータブルクラスライブラリをビルドする。</td><td>△<span style="color: red"><sup>*1</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>3_Build_RichClientCustomControl.bat</td><td>リッチクライアント用カスタムコントロールをビルドする。</td><td>△<span style="color: red"><sup>*2</sup></span></td><td>△<span style="color: red"><sup>*2</sup></span></td>
+      <td>3_Build_RichClientCustomControl.bat</td><td>リッチクライアント用カスタムコントロールをビルドする。</td><td>△<span style="color: red"><sup>*2</sup></span></td><td></td>
     </tr>
     <tr>
       <td>4_Build_Framework_Tool.bat</td><td>付属ツールをビルドする。</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>5_Build_2CS_sample.bat</td><td>サンプルアプリ (2 層 C/S) をビルドする。</td><td rowspan="9" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>5_Build_2CS_sample.bat</td><td>サンプルアプリ (2 層 C/S) をビルドする。</td><td rowspan="8" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
       <td>5_Build_Bat_sample.bat</td><td>サンプルアプリ (バッチ) をビルドする。</td><td></td>
@@ -143,6 +143,9 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
     </tr>
     <tr>
       <td>10_Build_WebApp_sample.bat</td><td>サンプルアプリ (ASP.NET) をビルドする。</td><td></td>
+    </tr>
+    <tr>
+      <td>11_Build_UWP_sample.bat</td><td>サンプルアプリ (UWP) をビルドする。</td><td></td>
     </tr>
     <tr>
       <td>z_Common.bat</td><td>共通設定 (MSBuild 用)</td><td></td><td></td>
@@ -189,7 +192,7 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
   </tbody>
 </table>
 <div style="font-size: small">
-  <span style="color: red;">*1</span>　Windows ストアアプリを作成する場合は必須<br />
+  <span style="color: red;">*1</span>　Portable Class Libraryを作成する場合は必須<br />
   <span style="color: red;">*2</span>　リッチクライアント アプリケーションを作成する場合は必須<br />
   <span style="color: red;">*3</span>　実際のアプリケーションの形態に応じて選択してください
 </div>
@@ -218,22 +221,35 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(2863,5): 
 ログイン画面が出た場合は、任意の英数字を入力してください。(既定ではパスワード認証を行っていません)  
    
 #### Web の場合：
-C:\root\programs\C#\Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln
+- ASP.NET Web Forms  
+  - C:\root\programs\C#\Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln
+  - C:\root\programs\VB\Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln
+- ASP.NET MVC  
+  - C:\root\programs\C#\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
+  - C:\root\programs\VB\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
+- ASP.NET Single Page Application  
+C:\root\programs\C#\Samples\WebApp_sample\SPA_Sample\SPA_Sample.sln
  
 #### C/S 2階層の場合：
 - Windows Forms  
-C:\root\programs\C#\Samples\2CS_sample\2CSClientWin_sample\2CSClientWin_sample.sln
+  - C:\root\programs\C#\Samples\2CS_sample\2CSClientWin_sample\2CSClientWin_sample.sln
+  - C:\root\programs\VB\Samples\2CS_sample\2CSClientWin_sample\2CSClientWin_sample.sln
 - WPF  
-C:\root\programs\C#\Samples\2CS_sample\2CSClientWPF_sample\2CSClientWPF_sample.sln
+  - C:\root\programs\C#\Samples\2CS_sample\2CSClientWPF_sample\2CSClientWPF_sample.sln
+  - C:\root\programs\VB\Samples\2CS_sample\2CSClientWPF_sample\2CSClientWPF_sample.sln
 
 #### C/S 3階層の場合：
 - Windows Forms  
-  - 通常の Windows フォームアプリケーション  
-  C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln
+  - 通常の Windows フォームアプリケーション
+    - C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln
+    - C:\root\programs\VB\Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln
   - ClickOnce アプリケーション  
-  C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSClientWinCone_sample.sln
-- WPF  
-C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
+C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSClientWinCone_sample.sln
+- WPF
+  - C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
+  - C:\root\programs\VB\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
+- UWP  
+C:\root\programs\C#\Samples\UWP_sample\UWP_sample.sln
 
 ### 参考資料
 Open 棟梁をご利用いただくにあたり、OpenTouryoDocument リポジトリのドキュメントをご利用いただけます。

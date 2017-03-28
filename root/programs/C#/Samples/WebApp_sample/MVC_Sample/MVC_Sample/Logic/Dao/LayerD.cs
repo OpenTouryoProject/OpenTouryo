@@ -1,35 +1,28 @@
-﻿using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
+﻿//**********************************************************************************
+//* フレームワーク・テストクラス（Ｄ層）
+//**********************************************************************************
 
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
+// テスト用クラスなので、必要に応じて流用 or 削除して下さい。
 
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
+//**********************************************************************************
+//* クラス名        ：LayerD
+//* クラス日本語名  ：Ｄ層のテスト
+//*
+//* 作成日時        ：－
+//* 作成者          ：生技
+//* 更新履歴        ：
+//*
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//**********************************************************************************
 
 using MVC_Sample.Logic.Common;
+
+using System.Data;
+
+using Touryo.Infrastructure.Business.Dao;
+using Touryo.Infrastructure.Public.Db;
 
 namespace MVC_Sample.Logic.Dao
 {
@@ -235,9 +228,9 @@ namespace MVC_Sample.Logic.Dao
             DataTable dt = new DataTable();
 
             // ３列生成
-            dt.Columns.Add("c1", System.Type.GetType("System.String"));
-            dt.Columns.Add("c2", System.Type.GetType("System.String"));
-            dt.Columns.Add("c3", System.Type.GetType("System.String"));
+            dt.Columns.Add("c1", typeof(string));
+            dt.Columns.Add("c2", typeof(string));
+            dt.Columns.Add("c3", typeof(string));
 
             //   -- 一覧を返すSELECTクエリを実行する
             IDataReader idr = (IDataReader)this.ExecSelect_DR();

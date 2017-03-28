@@ -1,4 +1,10 @@
 ﻿'**********************************************************************************
+'* テンプレート
+'**********************************************************************************
+
+' サンプル中のテンプレートなので、必要に応じて流用して下さい。
+
+'**********************************************************************************
 '* クラス名        ：RouteConfig
 '* クラス日本語名  ：ルート定義に関する指定
 '*
@@ -8,15 +14,8 @@
 '*
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
-'*  2015/11/03  Sai               Changed controller to CrudMu in RegisterRoutes method to display startup page.
+'*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
-
-Imports System
-Imports System.Collections.Generic
-Imports System.Linq
-Imports System.Web
-Imports System.Web.Mvc
-Imports System.Web.Routing
 
 ''' <summary>
 ''' ルート定義に関する指定
@@ -42,16 +41,16 @@ Public Class RouteConfig
         ' ・ defaults：初期値。 
 
         ' Defaultルートを定義
-        routes.MapRoute( _
-            name:="Default", _
-            url:="{controller}/{action}/{id}", _
-            defaults:=New With {.controller = "CrudMu", .action = "Index", .id = UrlParameter.[Optional]} _
-            )
+        routes.MapRoute(name:="Default", url:="{controller}/{action}/{id}", defaults:=New With {
+            Key .controller = "Crud1",
+            Key .action = "Index",
+            Key .id = UrlParameter.[Optional]
+        })
 
-        routes.MapRoute( _
-            name:="Default2", _
-            url:="{controller}/{action}/{id}", _
-            defaults:=New With {.controller = "CrudMu2", .action = "Index", .id = UrlParameter.[Optional]} _
-            )
+        routes.MapRoute(name:="Default2", url:="{controller}/{action}/{id}", defaults:=New With {
+            Key .controller = "Crud2",
+            Key .action = "Index",
+            Key .id = UrlParameter.[Optional]
+        })
     End Sub
 End Class

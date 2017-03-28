@@ -27,19 +27,19 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2008/xx/xx  西野  大介        新規作成
+//*  2008/xx/xx  西野 大介         新規作成
 //*  2014/04/30  Santosh san       Internationalization: Added Method to get the strings from the resource files based on the keys values passed.
 //*                                and and replaced this method wherever hard coded values.
 //*                                Also Added code to get the Culture information from app.config file.                                   
 //**********************************************************************************
 
 using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using System.Globalization;
 using System.Threading;
-using Touryo.Infrastructure.Public.Util;
 using System.Resources;
+using System.Globalization;
+using System.Windows.Forms;
+
+using Touryo.Infrastructure.Public.Util;
 
 namespace DaoGen_Tool
 {

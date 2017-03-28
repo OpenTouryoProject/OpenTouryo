@@ -6,6 +6,6 @@
     Shippers
   <WHERE>
     WHERE
-      <IF>ShipperID = :P1</IF>
+      <IF>ShipperID = @P1</IF>
   </WHERE>
 </ROOT>

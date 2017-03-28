@@ -27,15 +27,10 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2008/xx/xx  西野  大介        新規作成
+//*  2008/xx/xx  西野 大介         新規作成
 //**********************************************************************************
 
-// System
 using System;
-using System.Text;
-using System.Data;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace DaoGen_Tool
 {

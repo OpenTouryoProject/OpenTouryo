@@ -2,12 +2,14 @@
 '* フレームワーク・テストクラス（Ｂ層）
 '**********************************************************************************
 
+' テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
 '**********************************************************************************
 '* クラス名        ：LayerB_Static
 '* クラス日本語名  ：Ｂ層（静的SQLのCRUD：Suppliersテーブル）
 '*
 '* 作成日時        ：－
-'* 作成者          ：sas 生技
+'* 作成者          ：生技
 '* 更新履歴        ：
 '*
 '*  日時        更新者            内容
@@ -15,27 +17,10 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
 
-' 型情報
 Imports GenDaoAndBatUpd_sample.Common
 
-' System
-Imports System
-
-' データセット利用
-Imports System.Data
-
-' 業務フレームワーク
-Imports Touryo.Infrastructure.Business.Business
 Imports Touryo.Infrastructure.Business.RichClient.Business
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Business
 Imports Touryo.Infrastructure.Framework.Common
-Imports Touryo.Infrastructure.Framework.Exceptions
-Imports Touryo.Infrastructure.Framework.RichClient.Business
-
-' 部品
-Imports Touryo.Infrastructure.Public.Util
 
 Namespace Business
     ''' <summary>Ｂ層（静的SQLのCRUD：Suppliersテーブル）</summary>

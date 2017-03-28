@@ -28,50 +28,22 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
-'*  2010/09/24  西野  大介        ジェネリック対応（Dictionary、List、Queue、Stack<T>）
+'*  2010/09/24  西野 大介         ジェネリック対応（Dictionary、List、Queue、Stack<T>）
 '*                                nullチェック方法、Contains → ContainsKeyなどに注意
-'*  2010/11/02  西野  大介        GetParameterメソッドを追加（ｽﾄｱﾄﾞ ﾕｰｻﾞﾋﾞﾘﾃｨ向上）
-'*  2010/11/02  西野  大介        その他、リファクタリングなど（メソッド名、修飾子の変更）
+'*  2010/11/02  西野 大介         GetParameterメソッドを追加（ｽﾄｱﾄﾞ ﾕｰｻﾞﾋﾞﾘﾃｨ向上）
+'*  2010/11/02  西野 大介         その他、リファクタリングなど（メソッド名、修飾子の変更）
 '*                                特にprotected → public化の「new & base」に注意！
 '*                                （ミスると再帰呼び出しの無限ループになる...疎通で確認可）
-'*  2011/10/09  西野  大介        国際化対応
-'*  2012/06/14  西野  大介        ResourceLoaderに加え、EmbeddedResourceLoaderに対応
-'*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
-'*  2014/11/20  Sandeep          Implemented CommandTimeout property and SetCommandTimeout method.
-'*  2015/06/04  Sai				 Replaced SqlCommand property with IDbCommand property in SetCommandTimeout method.
+'*  2011/10/09  西野 大介         国際化対応
+'*  2012/06/14  西野 大介         ResourceLoaderに加え、EmbeddedResourceLoaderに対応
+'*  2013/07/07  西野 大介         ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
+'*  2014/11/20  Sandeep           Implemented CommandTimeout property and SetCommandTimeout method.
+'*  2014/11/20  Sai               removed IDbCommand property in SetCommandTimeout method.
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.IO
-Imports System.Data
-Imports System.Text
-Imports System.Collections
-Imports System.Collections.Generic
-
-' 業務フレームワーク
-Imports Touryo.Infrastructure.Business.Business
-Imports Touryo.Infrastructure.Business.Common
-Imports Touryo.Infrastructure.Business.Dao
 Imports Touryo.Infrastructure.Business.Exceptions
-Imports Touryo.Infrastructure.Business.Presentation
-Imports Touryo.Infrastructure.Business.Util
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Business
-Imports Touryo.Infrastructure.Framework.Common
-Imports Touryo.Infrastructure.Framework.Dao
 Imports Touryo.Infrastructure.Framework.Exceptions
-Imports Touryo.Infrastructure.Framework.Presentation
-Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Framework.Transmission
-
-' 部品
 Imports Touryo.Infrastructure.Public.Db
-Imports Touryo.Infrastructure.Public.IO
-Imports Touryo.Infrastructure.Public.Log
-Imports Touryo.Infrastructure.Public.Str
-Imports Touryo.Infrastructure.Public.Util
 
 Namespace Touryo.Infrastructure.Business.Dao
 	''' <summary>共通Daoクラス</summary>

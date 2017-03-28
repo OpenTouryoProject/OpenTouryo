@@ -27,21 +27,13 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2011/06/16  西野  大介        新規作成
-//*  2011/07/01  西野  大介        アイコンの変更を可能に
+//*  2011/06/16  西野 大介         新規作成
+//*  2011/07/01  西野 大介         アイコンの変更を可能に
 //**********************************************************************************
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.Threading;
-using System.Configuration;
-using System.Globalization;
 
 namespace DeployZipPackWithHTTP
 {

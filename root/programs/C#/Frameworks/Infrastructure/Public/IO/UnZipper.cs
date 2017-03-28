@@ -27,21 +27,12 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2011/04/18  西野  大介        新規作成
+//*  2011/04/18  西野 大介         新規作成
 //**********************************************************************************
 
-// System
-using System;
-using System.IO;
 using System.Text;
-using System.Collections.Generic;
 
-// Ionic
-using Ionic;
 using Ionic.Zip;
-using Ionic.Zlib;
-
-using System.Diagnostics;
 
 namespace Touryo.Infrastructure.Public.IO
 {

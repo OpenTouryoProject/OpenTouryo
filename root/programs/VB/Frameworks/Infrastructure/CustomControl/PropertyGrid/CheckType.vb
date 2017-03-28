@@ -28,27 +28,40 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
+'*  2017/01/31  西野 大介         "Indispensable" ---> "Required"
+'*  2017/01/31  西野 大介         Added the enum of CheckItems.
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.Collections.Generic
 Imports System.ComponentModel
-Imports System.Drawing
-Imports System.Text
-
-' System.Web
-Imports System.Web
-Imports System.Web.UI
-Imports System.Web.UI.WebControls
 
 Namespace Touryo.Infrastructure.CustomControl
-	''' <summary>チェック タイプ</summary>
-	<TypeConverter(GetType(CheckTypeConverter))> _
-	Public Class CheckType
-		''' <summary>コンストラクタ</summary>
-		Public Sub New()
-            Me.IsIndispensable = False
+    ''' <summary>チェック タイプ</summary>
+    <TypeConverter(GetType(CheckTypeConverter))>
+    Public Class CheckType
+
+        ''' <summary>ビット・フィールド</summary>
+        Public Enum CheckItems
+            ''' <summary>必須入力</summary>
+            Required = 1
+            ''' <summary>半角</summary>
+            IsHankaku = 2
+            ''' <summary>全角</summary>
+            IsZenkaku = 4
+            ''' <summary>数値</summary>
+            IsNumeric = 8
+            ''' <summary>片仮名</summary>
+            IsKatakana = 16
+            ''' <summary>半角片仮名</summary>
+            IsHanKatakana = 32
+            ''' <summary>平仮名</summary>
+            IsHiragana = 64
+            ''' <summary>日付</summary>
+            IsDate = 128
+        End Enum
+
+        ''' <summary>コンストラクタ</summary>
+        Public Sub New()
+            Me.Required = False
             Me.IsHankaku = False
             Me.IsZenkaku = False
             Me.IsNumeric = False
@@ -64,8 +77,8 @@ Namespace Touryo.Infrastructure.CustomControl
         Private _isIndispensable As Boolean
 
         ''' <summary>必須</summary>
-        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
-        Public Property IsIndispensable() As Boolean
+        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)>
+        Public Property Required() As Boolean
             Get
                 Return Me._isIndispensable
             End Get
@@ -79,7 +92,7 @@ Namespace Touryo.Infrastructure.CustomControl
         Private _isHankaku As Boolean
 
         ''' <summary>半角</summary>
-        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
+        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)>
         Public Property IsHankaku() As Boolean
             Get
                 Return Me._isHankaku
@@ -94,7 +107,7 @@ Namespace Touryo.Infrastructure.CustomControl
         Private _isZenkaku As Boolean
 
         ''' <summary>全角</summary>
-        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
+        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)>
         Public Property IsZenkaku() As Boolean
             Get
                 Return Me._isZenkaku
@@ -109,7 +122,7 @@ Namespace Touryo.Infrastructure.CustomControl
         Private _isNumeric As Boolean
 
         ''' <summary>数値</summary>
-        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
+        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)>
         Public Property IsNumeric() As Boolean
             Get
                 Return Me._isNumeric
@@ -124,7 +137,7 @@ Namespace Touryo.Infrastructure.CustomControl
         Private _isKatakana As Boolean
 
         ''' <summary>片仮名</summary>
-        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
+        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)>
         Public Property IsKatakana() As Boolean
             Get
                 Return Me._isKatakana
@@ -139,7 +152,7 @@ Namespace Touryo.Infrastructure.CustomControl
         Private _isHanKatakana As Boolean
 
         ''' <summary>半角片仮名</summary>
-        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
+        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)>
         Public Property IsHanKatakana() As Boolean
             Get
                 Return Me._isHanKatakana
@@ -154,7 +167,7 @@ Namespace Touryo.Infrastructure.CustomControl
         Private _isHiragana As Boolean
 
         ''' <summary>平仮名</summary>
-        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
+        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)>
         Public Property IsHiragana() As Boolean
             Get
                 Return Me._isHiragana
@@ -169,7 +182,7 @@ Namespace Touryo.Infrastructure.CustomControl
         Private _isDate As Boolean
 
         ''' <summary>日付</summary>
-        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)> _
+        <DefaultValue(False), NotifyParentProperty(True), RefreshProperties(RefreshProperties.Repaint)>
         Public Property IsDate() As Boolean
             Get
                 Return Me._isDate
@@ -193,29 +206,29 @@ Namespace Touryo.Infrastructure.CustomControl
         Public Overrides Function GetHashCode() As Integer
             Dim hc As Integer = 0
 
-            If Me.IsIndispensable Then
-                hc += 1
+            If Me.Required Then
+                hc += CInt(CheckItems.Required)
             End If
             If Me.IsHankaku Then
-                hc += 4
+                hc += CInt(CheckItems.IsHankaku)
             End If
             If Me.IsZenkaku Then
-                hc += 2
+                hc += CInt(CheckItems.IsZenkaku)
             End If
             If Me.IsNumeric Then
-                hc += 8
+                hc += CInt(CheckItems.IsNumeric)
             End If
             If Me.IsKatakana Then
-                hc += 16
+                hc += CInt(CheckItems.IsKatakana)
             End If
             If Me.IsHanKatakana Then
-                hc += 32
+                hc += CInt(CheckItems.IsHanKatakana)
             End If
             If Me.IsHiragana Then
-                hc += 64
+                hc += CInt(CheckItems.IsHiragana)
             End If
             If Me.IsDate Then
-                hc += 128
+                hc += CInt(CheckItems.IsDate)
             End If
 
             Return hc
@@ -234,7 +247,16 @@ Namespace Touryo.Infrastructure.CustomControl
                 Return False
             End If
 
-            Return (Me.IsIndispensable = ct.IsIndispensable) AndAlso (Me.IsHankaku = ct.IsHankaku) AndAlso (Me.IsZenkaku = ct.IsZenkaku) AndAlso (Me.IsNumeric = ct.IsNumeric) AndAlso (Me.IsKatakana = ct.IsKatakana) AndAlso (Me.IsHanKatakana = ct.IsHanKatakana) AndAlso (Me.IsHiragana = ct.IsHiragana) AndAlso (Me.IsDate = ct.IsDate)
+            Return _
+                (Me.Required = ct.Required) _
+                AndAlso (Me.IsHankaku = ct.IsHankaku) _
+                AndAlso (Me.IsZenkaku = ct.IsZenkaku) _
+                AndAlso (Me.IsNumeric = ct.IsNumeric) _
+                AndAlso (Me.IsKatakana = ct.IsKatakana) _
+                AndAlso (Me.IsHanKatakana = ct.IsHanKatakana) _
+                AndAlso (Me.IsHiragana = ct.IsHiragana) _
+                AndAlso (Me.IsDate = ct.IsDate)
+
         End Function
 
         ''' <summary>Equals</summary>
@@ -296,5 +318,5 @@ Namespace Touryo.Infrastructure.CustomControl
         End Operator
 
 #End Region
-	End Class
+    End Class
 End Namespace

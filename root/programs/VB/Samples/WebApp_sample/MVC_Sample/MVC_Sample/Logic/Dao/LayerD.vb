@@ -1,35 +1,26 @@
-﻿Imports System
-Imports System.IO
-Imports System.Data
-Imports System.Text
-Imports System.Collections
-Imports System.Collections.Generic
+﻿'**********************************************************************************
+'* フレームワーク・テストクラス（Ｄ層）
+'**********************************************************************************
 
-' 業務フレームワーク
-Imports Touryo.Infrastructure.Business.Business
-Imports Touryo.Infrastructure.Business.Common
-Imports Touryo.Infrastructure.Business.Dao
-Imports Touryo.Infrastructure.Business.Exceptions
-Imports Touryo.Infrastructure.Business.Presentation
-Imports Touryo.Infrastructure.Business.Util
+' テスト用クラスなので、必要に応じて流用 or 削除して下さい。
 
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Business
-Imports Touryo.Infrastructure.Framework.Common
-Imports Touryo.Infrastructure.Framework.Dao
-Imports Touryo.Infrastructure.Framework.Exceptions
-Imports Touryo.Infrastructure.Framework.Presentation
-Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Framework.Transmission
-
-' 部品
-Imports Touryo.Infrastructure.Public.Db
-Imports Touryo.Infrastructure.Public.IO
-Imports Touryo.Infrastructure.Public.Log
-Imports Touryo.Infrastructure.Public.Str
-Imports Touryo.Infrastructure.Public.Util
+'**********************************************************************************
+'* クラス名        ：LayerD
+'* クラス日本語名  ：Ｄ層のテスト
+'*
+'* 作成日時        ：－
+'* 作成者          ：生技
+'* 更新履歴        ：
+'*
+'*  日時        更新者            内容
+'*  ----------  ----------------  -------------------------------------------------
+'*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+'**********************************************************************************
 
 Imports MVC_Sample.Logic.Common
+
+Imports Touryo.Infrastructure.Business.Dao
+Imports Touryo.Infrastructure.Public.Db
 
 Namespace Logic.Dao
     Public Class LayerD
@@ -216,9 +207,9 @@ Namespace Logic.Dao
             Dim dt As New DataTable()
 
             ' ３列生成
-            dt.Columns.Add("c1", System.Type.[GetType]("System.String"))
-            dt.Columns.Add("c2", System.Type.[GetType]("System.String"))
-            dt.Columns.Add("c3", System.Type.[GetType]("System.String"))
+            dt.Columns.Add("c1", GetType(String))
+            dt.Columns.Add("c2", GetType(String))
+            dt.Columns.Add("c3", GetType(String))
 
             '   -- 一覧を返すSELECTクエリを実行する
             Dim idr As IDataReader = DirectCast(Me.ExecSelect_DR(), IDataReader)
@@ -337,7 +328,7 @@ Namespace Logic.Dao
 
             ' ↑DBアクセス-----------------------------------------------------
 
-            '' 戻り値を設定 ' 不要
+            '/ 戻り値を設定 // 不要
             'testReturn.Obj = dt;
 
             ' キャストの対策コードを挿入

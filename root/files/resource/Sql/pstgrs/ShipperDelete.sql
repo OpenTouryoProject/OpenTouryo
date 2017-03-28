@@ -1,4 +1,4 @@
 DELETE FROM
   Shippers
 WHERE
-  ShipperID = :P1
+  ShipperID = @P1

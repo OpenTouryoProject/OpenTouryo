@@ -92,12 +92,12 @@ Public Class [Global]
         ' ACCESSログ出力 ----------------------------------------------
 
         ' ------------
-        ' メッセージ部
+        ' Message部
         ' ------------
         ' ユーザ名, IPアドレス,レイヤ, 
-        ' 画面名, コントロール名, メソッド名, 処理名
+        ' 画面名, Control名, メソッド名, 処理名
         ' 処理時間（実行時間）, 処理時間（CPU時間）
-        ' エラーメッセージID, エラーメッセージ等
+        ' Error MessageID, Error Message等
         ' ------------
         Dim strLogMessage As String = ("," & "－" & ",") + Request.UserHostAddress & "," & "－" & "," & "Global.asax" & "," & "Application_Error" & ",,,,," & ex.ToString()
 
@@ -201,10 +201,10 @@ Public Class [Global]
     ''' </summary>
     Private Sub Application_OnPreRequestHandlerExecute(ByVal sender As Object, ByVal e As EventArgs)
         ' ------------
-        ' メッセージ部
+        ' Message部
         ' ------------
         ' ユーザ名, IPアドレス, レイヤ, 
-        ' 画面名, コントロール名, メソッド名, 処理名
+        ' 画面名, Control名, メソッド名, 処理名
         ' ------------
         Dim strLogMessage As String = ("," & "－" & ",") + Request.UserHostAddress & "," & "-----↓" & "," & "Global.asax" & "," & "Application_OnPreRequest"
 
@@ -236,13 +236,13 @@ Public Class [Global]
             ' ACCESSログ出力-----------------------------------------------
 
             ' ------------
-            ' メッセージ部
+            ' Message部
             ' ------------
             ' ユーザ名, IPアドレス, レイヤ, 
-            ' 画面名, コントロール名, メソッド名, 処理名
+            ' 画面名, Control名, メソッド名, 処理名
             ' 処理時間（実行時間）, 処理時間（CPU時間）
             ' ------------
-            Dim strLogMessage As String = ("," & "－" & ",") + Request.UserHostAddress & "," & "-----↑" & "," & "Global.asax" & "," & "Application_OnPostRequest" & "," & "－" & "," & "－" & "," & Convert.ToString(Me.perfRec.ExecTime) & "," & Convert.ToString(Me.perfRec.CpuTime)
+            Dim strLogMessage As String = ("," & "－" & ",") + Request.UserHostAddress & "," & "-----↑" & "," & "Global.asax" & "," & "Application_OnPostRequest" & "," & "－" & "," & "－" & "," & Me.perfRec.ExecTime & "," & Me.perfRec.CpuTime
 
             ' Log4Netへログ出力
             LogIF.DebugLog("ACCESS", strLogMessage)

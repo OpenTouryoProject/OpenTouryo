@@ -1,9 +1,8 @@
-<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testNest/testScreen1bmp2.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.testFxLayerP.nest.testScreen1nest" Title="Untitled Page" Codebehind="testScreen1nest.aspx.cs" %>
+<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/TestNest/testScreen1bmp2.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.Nest.testScreen1nest" Codebehind="testScreen1nest.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A2" Runat="Server">
-    <!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
-    コンテンツ ページ１（個別）<br />
+<asp:Content ID="ContentPlaceHolder_A2" ContentPlaceHolderID="ContentPlaceHolder_A2" Runat="Server">
+    Content Page１（個別）<br />
     <table border="1">
         <tr>
             <th>
@@ -14,7 +13,7 @@
                 （画面遷移制御機能 = OFF）
             </th>
             <th>
-                コントロール取得
+                Control取得
             </th>
             <th>
                 子画面表示
@@ -22,9 +21,9 @@
         </tr>
         <tr>
             <td style="vertical-align:bottom">
-                <cc1:WebCustomButton ID="btnButton1" runat="server" Text="コンテンツ個別ボタン" Width="220px" /><br />
-                <cc1:WebCustomLinkButton ID="lbnLinkButton1" runat="server" Width="220px">コンテンツ個別リンクボタン</cc1:WebCustomLinkButton><br />
-                <cc1:WebCustomImageButton ID="ibnImageButton1" runat="server" ToolTip="コンテンツ個別イメージボタン" /><br />
+                <cc1:WebCustomButton ID="btnButton1" runat="server" Text="コンテンツ個別Button" Width="220px" /><br />
+                <cc1:WebCustomLinkButton ID="lbnLinkButton1" runat="server" Width="220px">コンテンツ個別リンクButton</cc1:WebCustomLinkButton><br />
+                <cc1:WebCustomImageButton ID="ibnImageButton1" runat="server" ToolTip="コンテンツ個別イメージButton" /><br />
                 <cc1:WebCustomImageMap ID="impImageMap1" runat="server" ToolTip="コンテンツ個別イメージマップ" >
                     <asp:CircleHotSpot HotSpotMode="PostBack" PostBackValue="spot1" X="100" Y="50" Radius="30" />
                     <asp:RectangleHotSpot Bottom="180" HotSpotMode="PostBack" Left="120" PostBackValue="spot2" Right="180" Top="120" />
@@ -40,12 +39,12 @@
                     <asp:PolygonHotSpot Coordinates="25,110,10,190,90,190" HotSpotMode="PostBack" PostBackValue="spot3" />
                 </cc1:WebCustomImageMap></td>
             <td>
-                コントロール名を入力<br />
+                Control名を入力<br />
                 <cc1:WebCustomTextBox ID="TextBox1" runat="server"></cc1:WebCustomTextBox><br />
                 <br />
-                <cc1:WebCustomButton ID="btnButton3" runat="server" Text="コントロール取得（Fx）" Width="220px" ForeColor="Black" /><br />
-                <cc1:WebCustomLinkButton ID="lbnLinkButton3" runat="server" Width="220px">コントロール取得（Master）</cc1:WebCustomLinkButton><br />
-                <cc1:WebCustomImageButton ID="ibnImageButton3" runat="server" ToolTip="コントロール取得（Content）" /></td>
+                <cc1:WebCustomButton ID="btnButton3" runat="server" Text="Control取得（Fx）" Width="220px" ForeColor="Black" /><br />
+                <cc1:WebCustomLinkButton ID="lbnLinkButton3" runat="server" Width="220px">Control取得（Master）</cc1:WebCustomLinkButton><br />
+                <cc1:WebCustomImageButton ID="ibnImageButton3" runat="server" ToolTip="Control取得（Content）" /></td>
             <td>
                 <cc1:WebCustomCheckBox ID="CheckBox1" runat="server" Text="スタイルを設定する" /><br />
                 <cc1:WebCustomTextBox ID="TextBox2" runat="server"></cc1:WebCustomTextBox><br />
@@ -55,10 +54,10 @@
                 <br />
                 引き渡す情報を入力<br />
                 <cc1:WebCustomTextBox ID="TextBox3" runat="server"></cc1:WebCustomTextBox><br />
-                <cc1:WebCustomButton ID="btnButton4" runat="server" Text="ＯＫ" Width="220px" ToolTip="ＯＫ" /><br />
-                <cc1:WebCustomLinkButton ID="lbnLinkButton4" runat="server" Width="220px" ToolTip="ＹＥＳ・ＮＯ">ＹＥＳ・ＮＯ</cc1:WebCustomLinkButton><br />
-                <cc1:WebCustomImageButton ID="ibnImageButton4" runat="server" ToolTip="モーダル画面" /><br />
-                <cc1:WebCustomImageMap ID="impImageMap4" runat="server" ToolTip="モーダレス画面" >
+                <cc1:WebCustomButton ID="btnButton4" runat="server" Text="OK" Width="220px" ToolTip="OK" /><br />
+                <cc1:WebCustomLinkButton ID="lbnLinkButton4" runat="server" Width="220px" ToolTip="YES・NO">YES・NO</cc1:WebCustomLinkButton><br />
+                <cc1:WebCustomImageButton ID="ibnImageButton4" runat="server" ToolTip="Modal画面" /><br />
+                <cc1:WebCustomImageMap ID="impImageMap4" runat="server" ToolTip="Modeless画面" >
                     <asp:CircleHotSpot HotSpotMode="PostBack" PostBackValue="spot1" X="100" Y="50" Radius="30" />
                     <asp:RectangleHotSpot Bottom="180" HotSpotMode="PostBack" Left="120" PostBackValue="spot2" Right="180" Top="120" />
                     <asp:PolygonHotSpot Coordinates="25,110,10,190,90,190" HotSpotMode="PostBack" PostBackValue="spot3" />
@@ -70,16 +69,16 @@
     <hr />
 </asp:Content>
 
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder_B2" Runat="Server">
-    コンテンツ ページ２（個別）<br />
+<asp:Content ID="ContentPlaceHolder_B2" ContentPlaceHolderID="ContentPlaceHolder_B2" Runat="Server">
+    Content Page２（個別）<br />
     <table border="1">
         <tr>
             <th>
-                モーダル ダイアログの<br />
-                Ｉ / Ｆの値
+                Modal Dialogの<br />
+                I/Fの値
             </th>
             <th>
-                閉じるボタン
+                閉じるButton
             </th>
             <th>
                 ２重送信防止確認
@@ -90,7 +89,7 @@
         </tr>
         <tr>
             <td style="vertical-align:bottom">
-                モーダル ダイアログのＩ / Ｆ<br />
+                Modal DialogのI/F<br />
                 （親画面別セッション領域）<br />
                 （画面GUIDを使用して識別する）<br />
                 <cc1:WebCustomTextBox ID="TextBox4" runat="server"></cc1:WebCustomTextBox><br />
@@ -104,10 +103,10 @@
                 </cc1:WebCustomImageMap>
             </td>
             <td style="vertical-align:bottom">
-                <cc1:WebCustomButton ID="btnButton22" runat="server" Text="閉じるボタン" Width="220px" /><br />
-                <cc1:WebCustomLinkButton ID="lbnLinkButton22" runat="server" Width="220px">閉じるボタン（NoPostback）</cc1:WebCustomLinkButton><br />
-                <cc1:WebCustomImageButton ID="ibnImageButton22" runat="server" ToolTip="閉じるボタン（WithAllParent）" /><br />
-                <cc1:WebCustomImageMap ID="impImageMap22" runat="server" ToolTip="閉じるボタン" >
+                <cc1:WebCustomButton ID="btnButton22" runat="server" Text="閉じるButton" Width="220px" /><br />
+                <cc1:WebCustomLinkButton ID="lbnLinkButton22" runat="server" Width="220px">閉じるButton（NoPostback）</cc1:WebCustomLinkButton><br />
+                <cc1:WebCustomImageButton ID="ibnImageButton22" runat="server" ToolTip="閉じるButton（WithAllParent）" /><br />
+                <cc1:WebCustomImageMap ID="impImageMap22" runat="server" ToolTip="閉じるButton" >
                     <asp:CircleHotSpot HotSpotMode="PostBack" PostBackValue="spot1" X="100" Y="50" Radius="30" />
                     <asp:RectangleHotSpot Bottom="180" HotSpotMode="PostBack" Left="120" PostBackValue="spot2" Right="180" Top="120" />
                     <asp:PolygonHotSpot Coordinates="25,110,10,190,90,190" HotSpotMode="PostBack" PostBackValue="spot3" />
@@ -132,8 +131,8 @@
     </table>
     <hr />
 </asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder_C2" Runat="Server">
-    コンテンツ ページ３（個別）<br />
+<asp:Content ID="ContentPlaceHolder_C2" ContentPlaceHolderID="ContentPlaceHolder_C2" Runat="Server">
+    Content Page３（個別）<br />
     <table border="1">
         <tr>
             <th>
@@ -141,7 +140,7 @@
                 （画面遷移制御機能 = OFF）
             </th>
             <th>
-                オンロードで子画面を表示
+                onloadで子画面を表示
             </th>
             <th>
                 ファイルのダウンロード
@@ -166,26 +165,26 @@
             </td>
             <td>
                 <br />
-                <cc1:WebCustomButton ID="btnButton32" runat="server" Text="ＯＫ" Width="220px" /><br />
-                <cc1:WebCustomLinkButton ID="lbnLinkButton32" runat="server" Width="200px" ToolTip="ＹＥＳ・ＮＯ">ＹＥＳ・ＮＯ</cc1:WebCustomLinkButton><br />
-                <cc1:WebCustomImageButton ID="ibnImageButton32" runat="server" ToolTip="モーダル画面" /><br />
-                <cc1:WebCustomImageMap ID="impImageMap32" runat="server" ToolTip="モーダレス画面" >
+                <cc1:WebCustomButton ID="btnButton32" runat="server" Text="OK" Width="220px" /><br />
+                <cc1:WebCustomLinkButton ID="lbnLinkButton32" runat="server" Width="200px" ToolTip="YES・NO">YES・NO</cc1:WebCustomLinkButton><br />
+                <cc1:WebCustomImageButton ID="ibnImageButton32" runat="server" ToolTip="Modal画面" /><br />
+                <cc1:WebCustomImageMap ID="impImageMap32" runat="server" ToolTip="Modeless画面" >
                     <asp:CircleHotSpot HotSpotMode="PostBack" PostBackValue="spot1" X="100" Y="50" Radius="30" />
                     <asp:RectangleHotSpot Bottom="180" HotSpotMode="PostBack" Left="120" PostBackValue="spot2" Right="180" Top="120" />
                     <asp:PolygonHotSpot Coordinates="25,110,10,190,90,190" HotSpotMode="PostBack" PostBackValue="spot3" />
                 </cc1:WebCustomImageMap>
             </td>
             <td>
-                当該ポストバックで開く<br />
+                当該Post Backで開く<br />
                 <cc1:WebCustomButton ID="btnButton33" runat="server" Text="専用アプリ" Width="220px" OnClientClick="IsDownload = true;" /><br />
                 <cc1:WebCustomLinkButton ID="lbnLinkButton33" runat="server" Text="IE OLE" Width="200px"/><br />
                 <br />
-                モーダル ダイアログで開く<br />
+                Modal Dialogで開く<br />
                 （IEからOLEオブジェクト）<br />
                 <cc1:WebCustomImageButton ID="ibnImageButton33" runat="server" ToolTip="IE OLE" /><br />
                 →　ただし、後処理が動いてしまう。<br />
                 <br />
-                業務モーダレス画面で開く<br />
+                業務Modeless画面で開く<br />
                 （IEからOLEオブジェクト）<br />
                 <cc1:WebCustomImageMap ID="impImageMap33" runat="server" ToolTip="IE OLE" >
                     <asp:CircleHotSpot HotSpotMode="PostBack" PostBackValue="spot1" X="100" Y="50" Radius="30" />
@@ -198,4 +197,3 @@
     </table>
     <hr />
 </asp:Content>
-

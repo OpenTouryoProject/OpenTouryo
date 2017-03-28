@@ -2,12 +2,14 @@
 '* サンプル アプリ画面
 '**********************************************************************************
 
+' テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
 '**********************************************************************************
 '* クラス名        ：Window1
 '* クラス日本語名  ：サンプル アプリ画面
 '*
 '* 作成日時        ：－
-'* 作成者          ：sas 生技
+'* 作成者          ：生技
 '* 更新履歴        ：
 '*
 '*  日時        更新者            内容
@@ -15,53 +17,18 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
 
-' WPFアプリケーション
-Imports System.Windows
-Imports System.Windows.Controls
-Imports System.Windows.Data
-Imports System.Windows.Documents
-Imports System.Windows.Input
-Imports System.Windows.Media
-Imports System.Windows.Media.Imaging
-Imports System.Windows.Navigation
-Imports System.Windows.Shapes
-
-' 型情報
 Imports _2CSClientWPF_sample.Common
 Imports _2CSClientWPF_sample.Business
 
-' System
 Imports System
-Imports System.IO
-Imports System.Xml
-Imports System.Text
 Imports System.Data
-Imports System.Linq
-Imports System.Collections
+Imports System.Windows
+Imports System.Windows.Controls
 
-' 業務フレームワーク
-Imports Touryo.Infrastructure.Business.Business
-Imports Touryo.Infrastructure.Business.Common
-Imports Touryo.Infrastructure.Business.Dao
-Imports Touryo.Infrastructure.Business.Exceptions
-Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Business.Util
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Business
-Imports Touryo.Infrastructure.Framework.Common
-Imports Touryo.Infrastructure.Framework.Dao
-Imports Touryo.Infrastructure.Framework.Exceptions
-Imports Touryo.Infrastructure.Framework.Presentation
 Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Framework.Transmission
-
-' 部品
 Imports Touryo.Infrastructure.Public.Db
-Imports Touryo.Infrastructure.Public.IO
-Imports Touryo.Infrastructure.Public.Log
-Imports Touryo.Infrastructure.Public.Str
-Imports Touryo.Infrastructure.Public.Util
+
 
 ''' <summary>Window1.xaml の相互作用ロジック（サンプル アプリ画面）</summary>
 Partial Public Class Window1
@@ -196,7 +163,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -227,7 +194,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -259,7 +226,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -291,7 +258,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -327,7 +294,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -362,7 +329,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -403,7 +370,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -439,7 +406,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -473,7 +440,7 @@ Partial Public Class Window1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア

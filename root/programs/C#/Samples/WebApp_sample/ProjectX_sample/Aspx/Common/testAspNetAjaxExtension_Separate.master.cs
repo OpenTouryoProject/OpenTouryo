@@ -1,29 +1,15 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
+//* フレームワーク・テスト画面（Ｐ層）
 //**********************************************************************************
 
-#region Apache License
-//  
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License. 
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-#endregion
+// テスト画面なので、必要に応じて流用 or 削除して下さい。
 
 //**********************************************************************************
-//* クラス名        ：Aspx_Common_testAspNetAjaxExtension_Separate
-//* クラス日本語名  ：Ajaxテスト用のマスタ ページ（updateパネルを親・子で２つ別けて使用）
+//* クラス名        ：testAspNetAjaxExtension_Separate
+//* クラス日本語名  ：Ajaxテスト用のMaster Page（updateパネルを親・子で２つ別けて使用）
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
@@ -31,36 +17,33 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System
 using System;
-
-// Touryo
 using Touryo.Infrastructure.Framework.Presentation;
 
 namespace ProjectX_sample.Aspx.Common
 {
-    /// <summary>Ajaxテスト用のマスタ ページ（updateパネルを親・子で２つ別けて使用）</summary>
+    /// <summary>Ajaxテスト用のMaster Page（updateパネルを親・子で２つ別けて使用）</summary>
     public partial class testAspNetAjaxExtension_Separate : BaseMasterController
     {
-        /// <summary>btnMButton1のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnMButton1のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         public string UOC_btnMButton1_Click(FxEventArgs fxEventArgs)
         {
             // テキストボックスの値を変更
-            this.TextBox1.Text = "ajaxのポストバック（ボタンクリック）";
+            this.TextBox1.Text = "ajaxのPost Back（Button Click）";
 
-            // ajaxのイベントハンドラでは画面遷移しないこと。
+            // ajaxのEvent Handlerでは画面遷移しないこと。
             return "";
         }
 
-        /// <summary>btnMButton2のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnMButton2のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         public string UOC_btnMButton2_Click(FxEventArgs fxEventArgs)
         {
             // テキストボックスの値を変更
-            this.TextBox2.Text = "通常のポストバック（ボタンクリック）";
+            this.TextBox2.Text = "通常のPost Back（Button Click）";
 
             return "";
         }
@@ -68,32 +51,32 @@ namespace ProjectX_sample.Aspx.Common
         /// <summary>
         /// ddlMDropDownList1のSelectedIndexChangedイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         public string UOC_ddlMDropDownList1_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {
             // テキストボックスの値を変更
-            this.TextBox3.Text = "ajaxのポストバック（ＤＤＬのセレクト インデックス チェンジ）";
+            this.TextBox3.Text = "ajaxのPost Back（DDLのSelected Index Changed）";
 
-            // ajaxのイベントハンドラでは画面遷移しないこと。
+            // ajaxのEvent Handlerでは画面遷移しないこと。
             return "";
         }
 
         /// <summary>
         /// ddlMDropDownList2のSelectedIndexChangedイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         public string UOC_ddlMDropDownList2_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {
             // テキストボックスの値を変更
-            this.TextBox4.Text = "通常のポストバック（ＤＤＬのセレクト インデックス チェンジ）";
+            this.TextBox4.Text = "通常のPost Back（DDLのSelected Index Changed）";
 
             return "";
         }
 
-        /// <summary>btnMButton3のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnMButton3のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         public string UOC_btnMButton3_Click(FxEventArgs fxEventArgs)
         {

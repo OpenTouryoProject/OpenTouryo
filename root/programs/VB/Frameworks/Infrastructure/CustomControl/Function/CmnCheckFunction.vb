@@ -30,35 +30,24 @@
 '*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.Collections
-Imports System.Collections.Generic
-Imports System.ComponentModel
-Imports System.Drawing
-Imports System.Text
-
-' System.Web
-Imports System.Web
 Imports System.Web.UI
-Imports System.Web.UI.WebControls
 
 Namespace Touryo.Infrastructure.CustomControl
 	''' <summary>リッチクライアント用カスタムコントロールの共通関数クラス</summary>
 	Public Class CmnCheckFunction
-		#Region "メッセージ"
+#Region "メッセージ"
 
-		''' <summary>
-		''' 必須チェック エラー
-		''' のエラー メッセージ
-		''' </summary>
-        Public Const IsIndispensableCheckErrorMessage As String = "必須チェック エラー"
+        ''' <summary>
+        ''' 必須チェック エラー
+        ''' のエラー メッセージ
+        ''' </summary>
+        Public Const RequiredCheckErrorMessage As String = "必須チェック エラー"
 
-		''' <summary>
-		''' 半角チェック エラー
-		''' のエラー メッセージ
-		''' </summary>
-		Public Const IsHankakuCheckErrorMessage As String = "半角チェック エラー"
+        ''' <summary>
+        ''' 半角チェック エラー
+        ''' のエラー メッセージ
+        ''' </summary>
+        Public Const IsHankakuCheckErrorMessage As String = "半角チェック エラー"
 		''' <summary>
 		''' 全角チェック エラー
 		''' のエラー メッセージ

@@ -21,6 +21,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
+    <WebGreaseLibPath>packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,62 +54,12 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Business">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Business.dll</HintPath>
-    </Reference>
-    <Reference Include="Business.RichClient">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Business.RichClient.dll</HintPath>
-    </Reference>
-    <Reference Include="CustomControl">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\CustomControl.dll</HintPath>
-    </Reference>
-    <Reference Include="Framework">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="Framework.RichClient">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Framework.RichClient.dll</HintPath>
-    </Reference>
-    <Reference Include="Ionic.Zip">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Ionic.Zip.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Public">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Public.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Web" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Web.Services" />
-    <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.Web.DynamicData" />
-    <Reference Include="System.Web.Entity" />
-    <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="WSIFType_sample">
-      <HintPath>..\..\WS_sample\Build\WSIFType_sample.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
     <Import Include="System.Collections.Generic" />
     <Import Include="System.Data" />
     <Import Include="System.Linq" />
-    <Import Include="System.Xml.Linq" />
     <Import Include="System.Diagnostics" />
     <Import Include="System.Collections.Specialized" />
     <Import Include="System.Configuration" />
@@ -132,34 +83,34 @@
     <Content Include="Aspx\Framework\myOKMessageDialog.aspx" />
     <Content Include="Aspx\Framework\myYesNoMessageDialog.aspx" />
     <Content Include="Aspx\Framework\Ping.aspx" />
-    <Content Include="Aspx\sample\3Tier\ProductsConditionalSearch.aspx" />
-    <Content Include="Aspx\sample\3Tier\ProductsDetail.aspx" />
-    <Content Include="Aspx\sample\3Tier\ProductsSearchAndUpdate.aspx" />
-    <Content Include="Aspx\sample\crud\sampleScreen.aspx" />
-    <Content Include="Aspx\sample\crud\sampleScreen_cc.aspx" />
-    <Content Include="Aspx\start\login.aspx" />
-    <Content Include="Aspx\start\logout.aspx" />
-    <Content Include="Aspx\start\menu.aspx" />
-    <Content Include="Aspx\testFxLayerP\nest\testNestMasterScreen.aspx" />
-    <Content Include="Aspx\testFxLayerP\nest\testScreen1nest.aspx" />
-    <Content Include="Aspx\testFxLayerP\nest\testScreen2nest.aspx" />
-    <Content Include="Aspx\testFxLayerP\normal\noBaseMasterScreen.aspx" />
-    <Content Include="Aspx\testFxLayerP\normal\noMasterScreen.aspx" />
-    <Content Include="Aspx\testFxLayerP\normal\testScreen0.aspx" />
-    <Content Include="Aspx\testFxLayerP\normal\testScreen1.aspx" />
-    <Content Include="Aspx\testFxLayerP\normal\testScreen2.aspx" />
-    <Content Include="Aspx\testFxLayerP\table\testGridView.aspx" />
-    <Content Include="Aspx\testFxLayerP\table\testJQGridJson.aspx" />
-    <Content Include="Aspx\testFxLayerP\table\testListView.aspx" />
-    <Content Include="Aspx\testFxLayerP\table\testRepeater.aspx" />
-    <Content Include="Aspx\testFxLayerP\testDialogAtOnLoad.aspx" />
-    <Content Include="Aspx\testFxLayerP\testDLFrame.aspx" />
-    <Content Include="Aspx\testFxLayerP\testDLScreen.aspx" />
-    <Content Include="Aspx\testFxLayerP\testTransitionAheadScreen.aspx" />
-    <Content Include="Aspx\testFxLayerP\wcc\testWCTextBox.aspx" />
-    <Content Include="Aspx\testFxLayerP\withAjax\testClientCallback.aspx" />
-    <Content Include="Aspx\testFxLayerP\withAjax\testExtension_Separate.aspx" />
-    <Content Include="Aspx\testFxLayerP\withAjax\testExtension_Single.aspx" />
+    <Content Include="Aspx\Sample\3Tier\ProductsConditionalSearch.aspx" />
+    <Content Include="Aspx\Sample\3Tier\ProductsDetail.aspx" />
+    <Content Include="Aspx\Sample\3Tier\ProductsSearchAndUpdate.aspx" />
+    <Content Include="Aspx\Sample\Crud\sampleScreen.aspx" />
+    <Content Include="Aspx\Sample\Crud\sampleScreen_cc.aspx" />
+    <Content Include="Aspx\Start\login.aspx" />
+    <Content Include="Aspx\Start\logout.aspx" />
+    <Content Include="Aspx\Start\menu.aspx" />
+    <Content Include="Aspx\TestFxLayerP\nest\testNestMasterScreen.aspx" />
+    <Content Include="Aspx\TestFxLayerP\nest\testScreen1nest.aspx" />
+    <Content Include="Aspx\TestFxLayerP\nest\testScreen2nest.aspx" />
+    <Content Include="Aspx\TestFxLayerP\normal\noBaseMasterScreen.aspx" />
+    <Content Include="Aspx\TestFxLayerP\normal\noMasterScreen.aspx" />
+    <Content Include="Aspx\TestFxLayerP\normal\testScreen0.aspx" />
+    <Content Include="Aspx\TestFxLayerP\normal\testScreen1.aspx" />
+    <Content Include="Aspx\TestFxLayerP\normal\testScreen2.aspx" />
+    <Content Include="Aspx\TestFxLayerP\table\testGridView.aspx" />
+    <Content Include="Aspx\TestFxLayerP\table\testJQGridJson.aspx" />
+    <Content Include="Aspx\TestFxLayerP\table\testListView.aspx" />
+    <Content Include="Aspx\TestFxLayerP\table\testRepeater.aspx" />
+    <Content Include="Aspx\TestFxLayerP\testDialogAtOnLoad.aspx" />
+    <Content Include="Aspx\TestFxLayerP\testDLFrame.aspx" />
+    <Content Include="Aspx\TestFxLayerP\testDLScreen.aspx" />
+    <Content Include="Aspx\TestFxLayerP\testTransitionAheadScreen.aspx" />
+    <Content Include="Aspx\TestFxLayerP\wcc\testWCTextBox.aspx" />
+    <Content Include="Aspx\TestFxLayerP\withAjax\testClientCallback.aspx" />
+    <Content Include="Aspx\TestFxLayerP\withAjax\testExtension_Separate.aspx" />
+    <Content Include="Aspx\TestFxLayerP\withAjax\testExtension_Single.aspx" />
     <Content Include="Aspx\testPublic\testScreen.aspx" />
     <Content Include="Aspx\testScreenCtrl\Google.PNG" />
     <Content Include="Aspx\testScreenCtrl\sc1.PNG" />
@@ -173,114 +124,74 @@
     <Content Include="Aspx\testScreenCtrl\WebForm3.aspx" />
     <Content Include="Aspx\testScreenCtrl\WebForm4.aspx" />
     <Content Include="Aspx\testScreenCtrl\WebForm5.aspx" />
-    <Content Include="Content\jquery.jqGrid\ui.jqgrid.css" />
-    <Content Include="Content\themes\base\accordion.css" />
-    <Content Include="Content\themes\base\all.css" />
-    <Content Include="Content\themes\base\autocomplete.css" />
-    <Content Include="Content\themes\base\base.css" />
-    <Content Include="Content\themes\base\button.css" />
-    <Content Include="Content\themes\base\core.css" />
-    <Content Include="Content\themes\base\datepicker.css" />
-    <Content Include="Content\themes\base\dialog.css" />
-    <Content Include="Content\themes\base\draggable.css" />
-    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
-    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
-    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
-    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
-    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
-    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
-    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
-    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
-    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
-    <Content Include="Content\themes\base\menu.css" />
-    <Content Include="Content\themes\base\progressbar.css" />
-    <Content Include="Content\themes\base\resizable.css" />
-    <Content Include="Content\themes\base\selectable.css" />
-    <Content Include="Content\themes\base\selectmenu.css" />
-    <Content Include="Content\themes\base\slider.css" />
-    <Content Include="Content\themes\base\sortable.css" />
-    <Content Include="Content\themes\base\spinner.css" />
-    <Content Include="Content\themes\base\tabs.css" />
-    <Content Include="Content\themes\base\theme.css" />
-    <Content Include="Content\themes\base\tooltip.css" />
-    <Content Include="Content\themes\images\ui-bg_flat_0_aaaaaa_40x100.png" />
-    <Content Include="Content\themes\images\ui-bg_flat_75_ffffff_40x100.png" />
-    <Content Include="Content\themes\images\ui-bg_glass_55_fbf9ee_1x400.png" />
-    <Content Include="Content\themes\images\ui-bg_glass_65_ffffff_1x400.png" />
-    <Content Include="Content\themes\images\ui-bg_glass_75_dadada_1x400.png" />
-    <Content Include="Content\themes\images\ui-bg_glass_75_e6e6e6_1x400.png" />
-    <Content Include="Content\themes\images\ui-bg_glass_95_fef1ec_1x400.png" />
-    <Content Include="Content\themes\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
-    <Content Include="Content\themes\images\ui-icons_222222_256x240.png" />
-    <Content Include="Content\themes\images\ui-icons_2e83ff_256x240.png" />
-    <Content Include="Content\themes\images\ui-icons_454545_256x240.png" />
-    <Content Include="Content\themes\images\ui-icons_888888_256x240.png" />
-    <Content Include="Content\themes\images\ui-icons_cd0a0a_256x240.png" />
-    <Content Include="Css\style.css" />
-    <Content Include="Framework\Img\error.ico" />
-    <Content Include="Framework\Img\image.JPG" />
-    <Content Include="Framework\Img\information.ico" />
-    <Content Include="Framework\Img\loading.gif" />
-    <Content Include="Framework\Img\question.ico" />
-    <Content Include="Framework\Img\warning.ico" />
-    <Content Include="Framework\Js\common.js" />
-    <Content Include="Framework\Js\ie_key_event.js" />
+    <Content Include="Content\app\Site.css" />
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\touryo\Style.css" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Scripts\i18n\grid.locale-ar.js" />
-    <Content Include="Scripts\i18n\grid.locale-bg.js" />
-    <Content Include="Scripts\i18n\grid.locale-bg1251.js" />
-    <Content Include="Scripts\i18n\grid.locale-cat.js" />
-    <Content Include="Scripts\i18n\grid.locale-cn.js" />
-    <Content Include="Scripts\i18n\grid.locale-cs.js" />
-    <Content Include="Scripts\i18n\grid.locale-da.js" />
-    <Content Include="Scripts\i18n\grid.locale-de.js" />
-    <Content Include="Scripts\i18n\grid.locale-dk.js" />
-    <Content Include="Scripts\i18n\grid.locale-el.js" />
-    <Content Include="Scripts\i18n\grid.locale-en.js" />
-    <Content Include="Scripts\i18n\grid.locale-es.js" />
-    <Content Include="Scripts\i18n\grid.locale-fa.js" />
-    <Content Include="Scripts\i18n\grid.locale-fi.js" />
-    <Content Include="Scripts\i18n\grid.locale-fr.js" />
-    <Content Include="Scripts\i18n\grid.locale-gl.js" />
-    <Content Include="Scripts\i18n\grid.locale-he.js" />
-    <Content Include="Scripts\i18n\grid.locale-hr.js" />
-    <Content Include="Scripts\i18n\grid.locale-hr1250.js" />
-    <Content Include="Scripts\i18n\grid.locale-hu.js" />
-    <Content Include="Scripts\i18n\grid.locale-id.js" />
-    <Content Include="Scripts\i18n\grid.locale-is.js" />
-    <Content Include="Scripts\i18n\grid.locale-it.js" />
-    <Content Include="Scripts\i18n\grid.locale-ja.js" />
-    <Content Include="Scripts\i18n\grid.locale-kr.js" />
-    <Content Include="Scripts\i18n\grid.locale-lt.js" />
-    <Content Include="Scripts\i18n\grid.locale-mne.js" />
-    <Content Include="Scripts\i18n\grid.locale-nl.js" />
-    <Content Include="Scripts\i18n\grid.locale-no.js" />
-    <Content Include="Scripts\i18n\grid.locale-pl.js" />
-    <Content Include="Scripts\i18n\grid.locale-pt-br.js" />
-    <Content Include="Scripts\i18n\grid.locale-pt.js" />
-    <Content Include="Scripts\i18n\grid.locale-ro.js" />
-    <Content Include="Scripts\i18n\grid.locale-ru.js" />
-    <Content Include="Scripts\i18n\grid.locale-sk.js" />
-    <Content Include="Scripts\i18n\grid.locale-sr-latin.js" />
-    <Content Include="Scripts\i18n\grid.locale-sr.js" />
-    <Content Include="Scripts\i18n\grid.locale-sv.js" />
-    <Content Include="Scripts\i18n\grid.locale-th.js" />
-    <Content Include="Scripts\i18n\grid.locale-tr.js" />
-    <Content Include="Scripts\i18n\grid.locale-tw.js" />
-    <Content Include="Scripts\i18n\grid.locale-ua.js" />
-    <Content Include="Scripts\i18n\grid.locale-vi.js" />
-    <None Include="Scripts\jquery-2.1.3.intellisense.js" />
-    <Content Include="Scripts\jquery-2.1.3.js" />
-    <Content Include="Scripts\jquery-2.1.3.min.js" />
-    <Content Include="Scripts\jquery-ui-1.11.2.js" />
-    <Content Include="Scripts\jquery-ui-1.11.2.min.js" />
-    <Content Include="Scripts\jquery.jqGrid.min.js" />
-    <Content Include="Scripts\jquery.jqGrid.src.js" />
-    <Content Include="Scripts\jquery-2.1.3.min.map" />
+    <Content Include="fonts\FontAwesome.otf" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="Bundle.config" />
+    <Content Include="Aspx\Common\testBlankScreenNoJs.master" />
+    <Content Include="images\touryo\error.ico" />
+    <Content Include="images\touryo\image.jpg" />
+    <Content Include="images\touryo\information.ico" />
+    <Content Include="images\touryo\loading.gif" />
+    <Content Include="images\touryo\logo.png" />
+    <Content Include="images\touryo\question.ico" />
+    <Content Include="images\touryo\warning.ico" />
+    <Content Include="Scripts\app\Site.js" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <None Include="Scripts\jquery-1.12.4.intellisense.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\jquery-1.12.4.js" />
+    <Content Include="Scripts\jquery-1.12.4.min.js" />
+    <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\touryo\common.js" />
+    <Content Include="Scripts\touryo\else.js" />
+    <Content Include="Scripts\touryo\ie_key_event.js" />
+    <Content Include="Scripts\respond.js" />
+    <Content Include="Scripts\respond.matchmedia.addListener.js" />
+    <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
+    <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\WebForms\DetailsView.js" />
+    <Content Include="Scripts\WebForms\Focus.js" />
+    <Content Include="Scripts\WebForms\GridView.js" />
+    <Content Include="Scripts\WebForms\Menu.js" />
+    <Content Include="Scripts\WebForms\MenuStandards.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjax.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxApplicationServices.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxComponentModel.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxCore.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxGlobalization.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxHistory.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxNetwork.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxSerialization.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxTimer.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxWebForms.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxWebServices.js" />
+    <Content Include="Scripts\WebForms\SmartNav.js" />
+    <Content Include="Scripts\WebForms\TreeView.js" />
+    <Content Include="Scripts\WebForms\WebForms.js" />
+    <Content Include="Scripts\WebForms\WebParts.js" />
+    <Content Include="Scripts\WebForms\WebUIValidation.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -300,6 +211,8 @@
     <Compile Include="AppCode\sample\Dao\DaoShippers.vb" />
     <Compile Include="AppCode\sample\Dao\DaoSuppliers.vb" />
     <Compile Include="AppCode\sample\Dao\LayerD.vb" />
+    <Compile Include="App_Start\BundleConfig.vb" />
+    <Compile Include="App_Start\RouteConfig.vb" />
     <Compile Include="Aspx\Common\ErrorScreen.aspx.designer.vb">
       <DependentUpon>ErrorScreen.aspx</DependentUpon>
     </Compile>
@@ -319,42 +232,56 @@
     </Compile>
     <Compile Include="Aspx\Common\sampleScreen.master.vb">
       <DependentUpon>sampleScreen.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testAspNetAjaxExtension_Separate.master.designer.vb">
       <DependentUpon>testAspNetAjaxExtension_Separate.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testAspNetAjaxExtension_Separate.master.vb">
       <DependentUpon>testAspNetAjaxExtension_Separate.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testAspNetAjaxExtension_Single.master.designer.vb">
       <DependentUpon>testAspNetAjaxExtension_Single.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testAspNetAjaxExtension_Single.master.vb">
       <DependentUpon>testAspNetAjaxExtension_Single.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testBlankScreen.master.designer.vb">
       <DependentUpon>testBlankScreen.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testBlankScreen.master.vb">
       <DependentUpon>testBlankScreen.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Aspx\Common\testBlankScreenNoJs.master.designer.vb">
+      <DependentUpon>testBlankScreenNoJs.master</DependentUpon>
+    </Compile>
+    <Compile Include="Aspx\Common\testBlankScreenNoJs.master.vb">
+      <DependentUpon>testBlankScreenNoJs.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testClientCallback.master.designer.vb">
       <DependentUpon>testClientCallback.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testClientCallback.master.vb">
       <DependentUpon>testClientCallback.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testNest\branchMasterPage1.master.designer.vb">
       <DependentUpon>branchMasterPage1.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testNest\branchMasterPage1.master.vb">
       <DependentUpon>branchMasterPage1.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testNest\branchMasterPage2.master.designer.vb">
       <DependentUpon>branchMasterPage2.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testNest\branchMasterPage2.master.vb">
       <DependentUpon>branchMasterPage2.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testNest\noBaseMasterPage.master.designer.vb">
       <DependentUpon>noBaseMasterPage.master</DependentUpon>
@@ -368,48 +295,56 @@
     </Compile>
     <Compile Include="Aspx\Common\testNest\rootMasterPage.master.vb">
       <DependentUpon>rootMasterPage.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testNest\testScreen1bmp1.master.designer.vb">
       <DependentUpon>testScreen1bmp1.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testNest\testScreen1bmp1.master.vb">
       <DependentUpon>testScreen1bmp1.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testNest\testScreen1bmp2.master.designer.vb">
       <DependentUpon>testScreen1bmp2.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testNest\testScreen1bmp2.master.vb">
       <DependentUpon>testScreen1bmp2.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testNest\testScreen2bmp1.master.designer.vb">
       <DependentUpon>testScreen2bmp1.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testNest\testScreen2bmp1.master.vb">
       <DependentUpon>testScreen2bmp1.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testNest\testScreen2bmp2.master.designer.vb">
       <DependentUpon>testScreen2bmp2.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testNest\testScreen2bmp2.master.vb">
       <DependentUpon>testScreen2bmp2.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testScreen1.master.designer.vb">
       <DependentUpon>testScreen1.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testScreen1.master.vb">
       <DependentUpon>testScreen1.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testScreen2.master.designer.vb">
       <DependentUpon>testScreen2.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testScreen2.master.vb">
       <DependentUpon>testScreen2.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\testScreenCtrl.master.designer.vb">
       <DependentUpon>testScreenCtrl.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\testScreenCtrl.master.vb">
       <DependentUpon>testScreenCtrl.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Framework\myOKMessageDialog.aspx.designer.vb">
       <DependentUpon>myOKMessageDialog.aspx</DependentUpon>
@@ -432,176 +367,201 @@
       <DependentUpon>Ping.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\sample\3Tier\ProductsConditionalSearch.aspx.designer.vb">
+    <Compile Include="Aspx\Sample\3Tier\ProductsConditionalSearch.aspx.designer.vb">
       <DependentUpon>ProductsConditionalSearch.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\sample\3Tier\ProductsConditionalSearch.aspx.vb">
+    <Compile Include="Aspx\Sample\3Tier\ProductsConditionalSearch.aspx.vb">
       <DependentUpon>ProductsConditionalSearch.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\sample\3Tier\ProductsDetail.aspx.designer.vb">
+    <Compile Include="Aspx\Sample\3Tier\ProductsDetail.aspx.designer.vb">
       <DependentUpon>ProductsDetail.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\sample\3Tier\ProductsDetail.aspx.vb">
+    <Compile Include="Aspx\Sample\3Tier\ProductsDetail.aspx.vb">
       <DependentUpon>ProductsDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\sample\3Tier\ProductsSearchAndUpdate.aspx.designer.vb">
+    <Compile Include="Aspx\Sample\3Tier\ProductsSearchAndUpdate.aspx.designer.vb">
       <DependentUpon>ProductsSearchAndUpdate.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\sample\3Tier\ProductsSearchAndUpdate.aspx.vb">
+    <Compile Include="Aspx\Sample\3Tier\ProductsSearchAndUpdate.aspx.vb">
       <DependentUpon>ProductsSearchAndUpdate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\sample\crud\sampleScreen.aspx.designer.vb">
+    <Compile Include="Aspx\Sample\Crud\sampleScreen.aspx.designer.vb">
       <DependentUpon>sampleScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\sample\crud\sampleScreen.aspx.vb">
+    <Compile Include="Aspx\Sample\Crud\sampleScreen.aspx.vb">
       <DependentUpon>sampleScreen.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\sample\crud\sampleScreen_cc.aspx.designer.vb">
+    <Compile Include="Aspx\Sample\Crud\sampleScreen_cc.aspx.designer.vb">
       <DependentUpon>sampleScreen_cc.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\sample\crud\sampleScreen_cc.aspx.vb">
+    <Compile Include="Aspx\Sample\Crud\sampleScreen_cc.aspx.vb">
       <DependentUpon>sampleScreen_cc.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\start\login.aspx.designer.vb">
+    <Compile Include="Aspx\Start\login.aspx.designer.vb">
       <DependentUpon>login.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\start\login.aspx.vb">
+    <Compile Include="Aspx\Start\login.aspx.vb">
       <DependentUpon>login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\start\logout.aspx.designer.vb">
+    <Compile Include="Aspx\Start\logout.aspx.designer.vb">
       <DependentUpon>logout.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\start\logout.aspx.vb">
+    <Compile Include="Aspx\Start\logout.aspx.vb">
       <DependentUpon>logout.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\start\menu.aspx.designer.vb">
+    <Compile Include="Aspx\Start\menu.aspx.designer.vb">
       <DependentUpon>menu.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\start\menu.aspx.vb">
+    <Compile Include="Aspx\Start\menu.aspx.vb">
       <DependentUpon>menu.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\nest\testNestMasterScreen.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\nest\testNestMasterScreen.aspx.designer.vb">
       <DependentUpon>testNestMasterScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\nest\testNestMasterScreen.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\nest\testNestMasterScreen.aspx.vb">
       <DependentUpon>testNestMasterScreen.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\nest\testScreen1nest.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\nest\testScreen1nest.aspx.designer.vb">
       <DependentUpon>testScreen1nest.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\nest\testScreen1nest.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\nest\testScreen1nest.aspx.vb">
       <DependentUpon>testScreen1nest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\nest\testScreen2nest.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\nest\testScreen2nest.aspx.designer.vb">
       <DependentUpon>testScreen2nest.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\nest\testScreen2nest.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\nest\testScreen2nest.aspx.vb">
       <DependentUpon>testScreen2nest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\noBaseMasterScreen.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\noBaseMasterScreen.aspx.designer.vb">
       <DependentUpon>noBaseMasterScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\noBaseMasterScreen.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\noBaseMasterScreen.aspx.vb">
       <DependentUpon>noBaseMasterScreen.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\noMasterScreen.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\noMasterScreen.aspx.designer.vb">
       <DependentUpon>noMasterScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\noMasterScreen.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\noMasterScreen.aspx.vb">
       <DependentUpon>noMasterScreen.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\testScreen0.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\testScreen0.aspx.designer.vb">
       <DependentUpon>testScreen0.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\testScreen0.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\testScreen0.aspx.vb">
       <DependentUpon>testScreen0.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\testScreen1.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\testScreen1.aspx.designer.vb">
       <DependentUpon>testScreen1.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\testScreen1.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\testScreen1.aspx.vb">
       <DependentUpon>testScreen1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\testScreen2.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\testScreen2.aspx.designer.vb">
       <DependentUpon>testScreen2.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\normal\testScreen2.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\normal\testScreen2.aspx.vb">
       <DependentUpon>testScreen2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\table\testGridView.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\table\testGridView.aspx.designer.vb">
       <DependentUpon>testGridView.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\table\testGridView.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\table\testGridView.aspx.vb">
       <DependentUpon>testGridView.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\table\testJQGridJson.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\table\testJQGridJson.aspx.designer.vb">
       <DependentUpon>testJQGridJson.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\table\testJQGridJson.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\table\testJQGridJson.aspx.vb">
       <DependentUpon>testJQGridJson.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\table\testListView.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\table\testListView.aspx.designer.vb">
       <DependentUpon>testListView.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\table\testListView.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\table\testListView.aspx.vb">
       <DependentUpon>testListView.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\table\testRepeater.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\table\testRepeater.aspx.designer.vb">
       <DependentUpon>testRepeater.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\table\testRepeater.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\table\testRepeater.aspx.vb">
       <DependentUpon>testRepeater.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\testDialogAtOnLoad.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\testDialogAtOnLoad.aspx.designer.vb">
       <DependentUpon>testDialogAtOnLoad.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\testDialogAtOnLoad.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\testDialogAtOnLoad.aspx.vb">
       <DependentUpon>testDialogAtOnLoad.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\testDLFrame.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\testDLFrame.aspx.designer.vb">
       <DependentUpon>testDLFrame.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\testDLFrame.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\testDLFrame.aspx.vb">
       <DependentUpon>testDLFrame.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\testDLScreen.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\testDLScreen.aspx.designer.vb">
       <DependentUpon>testDLScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\testDLScreen.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\testDLScreen.aspx.vb">
       <DependentUpon>testDLScreen.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\testTransitionAheadScreen.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\testTransitionAheadScreen.aspx.designer.vb">
       <DependentUpon>testTransitionAheadScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\testTransitionAheadScreen.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\testTransitionAheadScreen.aspx.vb">
       <DependentUpon>testTransitionAheadScreen.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\wcc\testWCTextBox.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\wcc\testWCTextBox.aspx.designer.vb">
       <DependentUpon>testWCTextBox.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\wcc\testWCTextBox.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\wcc\testWCTextBox.aspx.vb">
       <DependentUpon>testWCTextBox.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\withAjax\testClientCallback.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\withAjax\testClientCallback.aspx.designer.vb">
       <DependentUpon>testClientCallback.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\withAjax\testClientCallback.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\withAjax\testClientCallback.aspx.vb">
       <DependentUpon>testClientCallback.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\withAjax\testExtension_Separate.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\withAjax\testExtension_Separate.aspx.designer.vb">
       <DependentUpon>testExtension_Separate.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\withAjax\testExtension_Separate.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\withAjax\testExtension_Separate.aspx.vb">
       <DependentUpon>testExtension_Separate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\withAjax\testExtension_Single.aspx.designer.vb">
+    <Compile Include="Aspx\TestFxLayerP\withAjax\testExtension_Single.aspx.designer.vb">
       <DependentUpon>testExtension_Single.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\testFxLayerP\withAjax\testExtension_Single.aspx.vb">
+    <Compile Include="Aspx\TestFxLayerP\withAjax\testExtension_Single.aspx.vb">
       <DependentUpon>testExtension_Single.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testPublic\testScreen.aspx.designer.vb">
       <DependentUpon>testScreen.aspx</DependentUpon>
@@ -615,48 +575,57 @@
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm0.aspx.vb">
       <DependentUpon>WebForm0.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm1.aspx.designer.vb">
       <DependentUpon>WebForm1.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm1.aspx.vb">
       <DependentUpon>WebForm1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm2.aspx.designer.vb">
       <DependentUpon>WebForm2.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm2.aspx.vb">
       <DependentUpon>WebForm2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm3.aspx.designer.vb">
       <DependentUpon>WebForm3.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm3.aspx.vb">
       <DependentUpon>WebForm3.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm4.aspx.designer.vb">
       <DependentUpon>WebForm4.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm4.aspx.vb">
       <DependentUpon>WebForm4.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm5.aspx.designer.vb">
       <DependentUpon>WebForm5.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm5.aspx.vb">
       <DependentUpon>WebForm5.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Global.asax.vb">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="Startup.vb" />
     <Compile Include="WebService\IJSONService.vb" />
     <Compile Include="WebService\JSONService.svc.vb">
       <DependentUpon>JSONService.svc</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app.config" />
+    <Content Include="app.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Aspx\Common\sampleScreen.master" />
     <Content Include="Aspx\Common\testAspNetAjaxExtension_Separate.master" />
     <Content Include="Aspx\Common\testAspNetAjaxExtension_Single.master" />
@@ -673,6 +642,105 @@
     <Content Include="Aspx\Common\testScreen1.master" />
     <Content Include="Aspx\Common\testScreen2.master" />
     <Content Include="Aspx\Common\testScreenCtrl.master" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="AspNet.ScriptManager.bootstrap, Version=3.3.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\AspNet.ScriptManager.bootstrap.3.3.7\lib\net45\AspNet.ScriptManager.bootstrap.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="AspNet.ScriptManager.jQuery, Version=1.12.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\AspNet.ScriptManager.jQuery.1.12.4\lib\net45\AspNet.ScriptManager.jQuery.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Business.dll</HintPath>
+    </Reference>
+    <Reference Include="CustomControl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\CustomControl.dll</HintPath>
+    </Reference>
+    <Reference Include="Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.FriendlyUrls, Version=1.0.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.FriendlyUrls.Core.1.0.2\lib\net45\Microsoft.AspNet.FriendlyUrls.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Web.Optimization.WebForms, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.Web.Optimization.WebForms.1.1.3\lib\net45\Microsoft.AspNet.Web.Optimization.WebForms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ScriptManager.MSAjax, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.ScriptManager.MSAjax.5.0.0\lib\net45\Microsoft.ScriptManager.MSAjax.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ScriptManager.WebForms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.ScriptManager.WebForms.5.0.0\lib\net45\Microsoft.ScriptManager.WebForms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Public.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="WSIFType_sample, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\WS_sample\Build\WSIFType_sample.dll</HintPath>
+    </Reference>
+    <Reference Include="WSServer_sample">
+      <HintPath>..\..\WS_sample\Build\WSServer_sample.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\jquery-1.12.4.min.map" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

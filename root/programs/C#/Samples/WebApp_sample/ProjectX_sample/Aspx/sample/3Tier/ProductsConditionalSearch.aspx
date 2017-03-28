@@ -1,11 +1,11 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true"
-    Inherits="ProjectX_sample.Aspx.sample._3Tier.ProductsConditionalSearch" Title="ProductsConditionalSearch"
-    CodeBehind="ProductsConditionalSearch.aspx.cs" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Sample._3Tier.ProductsConditionalSearch" Title="ProductsConditionalSearch" CodeBehind="ProductsConditionalSearch.aspx.cs" %>
+<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl"
-    TagPrefix="cc1" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" runat="Server">
-    <!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
     <!--
         [ProductID] [int] IDENTITY(1,1) NOT NULL,
 	    [ProductName] [nvarchar](40) NOT NULL,
@@ -24,7 +24,7 @@
         <asp:ListItem Value="ODP">Oracle / ODP.NET</asp:ListItem>
     </cc1:WebCustomDropDownList>
     <br />
-    <table width="100%">
+    <table style="width:100%;">
         <tr>
             <td>
                 AND = 条件<br />
@@ -389,14 +389,14 @@
                 <ItemTemplate>
                     <cc1:WebCustomDropDownList ID="ddlSupplierID" runat="server" AutoPostBack="false"
                         ReadOnly="true" DataSource="<%# this.ddldsdt_Suppliers %>" DataValueField="value"
-                        DataTextField="text" SelectedValue='<%# Bind(Container.DataItem, "SupplierID") %>' />
+                        DataTextField="text" SelectedValue='<%# Bind((string)Container.DataItem, "SupplierID") %>' />
                 </ItemTemplate>
             </asp:TemplateField>
             <asp:TemplateField SortExpression="CategoryID">
                 <ItemTemplate>
                     <cc1:WebCustomDropDownList ID="ddlCategoryID" runat="server" AutoPostBack="false"
                         ReadOnly="true" DataSource="<%# this.ddldsdt_Categories %>" DataValueField="value"
-                        DataTextField="text" SelectedValue='<%# Bind(Container.DataItem, "CategoryID") %>' />
+                        DataTextField="text" SelectedValue='<%# Bind((string)Container.DataItem, "CategoryID") %>' />
                 </ItemTemplate>
             </asp:TemplateField>
             <asp:TemplateField SortExpression="QuantityPerUnit">
@@ -434,4 +434,8 @@
     <asp:ObjectDataSource ID="ObjectDataSource1" runat="server" EnablePaging="True" TypeName="ProjectX_sample.ProductsTableAdapter"
         SelectCountMethod="SelectCountMethod" SelectMethod="SelectMethod" MaximumRowsParameterName="maximumRows"
         StartRowIndexParameterName="startRowIndex"></asp:ObjectDataSource>
+</asp:Content>
+
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
 </asp:Content>

@@ -1,9 +1,11 @@
 ﻿//**********************************************************************************
-//* Global.asax
+//* テンプレート
 //**********************************************************************************
 
+// サンプル中のテンプレートなので、必要に応じて流用して下さい。
+
 //**********************************************************************************
-//* クラス名        ：MvcApplication
+//* クラス名        ：Global
 //* クラス日本語名  ：Global.asaxのコード ビハインド
 //*
 //* 作成日時        ：－
@@ -13,24 +15,40 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//*  2011/12/07  西野 大介         Application_ErrorにACCESSログを追加
+//*  2012/04/05  西野 大介         Application_OnPreRequestHandlerExecute
+//*                                OnPostRequestHandlerExecuteにACCESSログを追加
 //**********************************************************************************
 
+// System
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Http;
-using System.Web.Mvc;
-using System.Web.Optimization;
-using System.Web.Routing;
+// OpenTouryo
+using Touryo.Infrastructure.Public.Log;
+using Touryo.Infrastructure.Public.Util;
 
 namespace MVC_Sample
 {
-    // メモ: IIS6 または IIS7 のクラシック モードの詳細については、
-    // http://go.microsoft.com/?LinkId=9394801 を参照してください
-
-    public class MvcApplication : System.Web.HttpApplication
+    /// <summary>Global.asax class </summary>
+    public class Global : System.Web.HttpApplication
     {
+        /////////////////////////////////////////////////////////////////////////////////
+        // Global_asaxのメンバ変数(インスタンス変数）はスレッドセーフ
+        /////////////////////////////////////////////////////////////////////////////////
+
+        // ここにインスタンス変数を定義した場合、これは、各スレッドに割り当てられる。
+        // 故に、マルチスレッド（ユーザ）のASP.NETアプリケーションでも競合しない。
+        // http:// support.microsoft.com/kb/312607/ja
+
+        // ---
+
+        // 静的変数の場合は競合する。
+
+        // ASP.NET1.0、1.1では、Applicationオブジェクトではなく、静的変数の使用が推奨されていたが、
+        // ASP.NET2.0では、静的変数が使用できないので、静的変数ではなく、Applicationオブジェクトを
+        // 使用する（ただし、Applicationオブジェクトも競合するので注意する）。
+
+        /// <summary>性能測定</summary>                                                       
+        private PerformanceRecorder perfRec;
 
         /////////////////////////////////////////////////////////////////////////////////
         // イベント ハンドラ
@@ -43,24 +61,9 @@ namespace MVC_Sample
         /// <summary>
         /// アプリケーションの開始に関するイベント
         /// </summary>
-        protected void Application_Start(object sender, EventArgs e)
+        void Application_Start(object sender, EventArgs e)
         {
             // アプリケーションのスタートアップで実行するコード
-
-            // 
-            AreaRegistration.RegisterAllAreas();
-
-            // 
-            WebApiConfig.Register(GlobalConfiguration.Configuration);
-
-            // グローバルフィルタの登録
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-
-            // ルート定義の登録
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-
-            // バンドル＆ミニフィケーションの登録
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
         /// <summary>
@@ -78,9 +81,35 @@ namespace MVC_Sample
         /// <summary>
         /// アプリケーションのエラーに関するイベント
         /// </summary>
-        protected void Application_Error(object sender, EventArgs e)
+        void Application_Error(object sender, EventArgs e)
         {
             // ハンドルされていないエラーが発生したときに実行するコード
+
+            Exception ex = Server.GetLastError().GetBaseException();
+            //Server.ClearError(); // Server.GetLastError()をクリア
+
+            // ACCESSログ出力 ----------------------------------------------
+
+            // ------------
+            // メッセージ部
+            // ------------
+            // ユーザ名, IPアドレス,レイヤ, 
+            // 画面名, コントロール名, メソッド名, 処理名
+            // 処理時間（実行時間）, 処理時間（CPU時間）
+            // エラーメッセージID, エラーメッセージ等
+            // ------------
+            string strLogMessage =
+                "," + "－" +
+                "," + Request.UserHostAddress +
+                "," + "－" +
+                "," + "Global.asax" +
+                "," + "Application_Error" +
+                ",,,,," + ex.ToString();
+
+            // Log4Netへログ出力
+            LogIF.FatalLog("ACCESS", strLogMessage);
+
+            // -------------------------------------------------------------
         }
 
         ///////////////////////////////////////////////////
@@ -149,7 +178,6 @@ namespace MVC_Sample
         /// </summary>
         void Application_OnBeginRequest(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Application_OnBeginRequest");
         }
 
         /// <summary>
@@ -157,7 +185,6 @@ namespace MVC_Sample
         /// </summary>
         void Application_OnAuthenticateRequest(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Application_OnAuthenticateRequest");
         }
 
         /// <summary>
@@ -165,7 +192,6 @@ namespace MVC_Sample
         /// </summary>
         void Application_OnAuthorizeRequest(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Application_OnAuthorizeRequest");
         }
 
         /// <summary>
@@ -173,7 +199,6 @@ namespace MVC_Sample
         /// </summary>
         void Application_OnResolveRequestCache(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Application_OnResolveRequestCache");
         }
 
         /// <summary>
@@ -181,7 +206,6 @@ namespace MVC_Sample
         /// </summary>
         void Application_OnAcquireRequestState(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Application_OnAcquireRequestState");
         }
 
         /// <summary>
@@ -189,7 +213,27 @@ namespace MVC_Sample
         /// </summary>
         void Application_OnPreRequestHandlerExecute(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Application_OnPreRequestHandlerExecute");
+            // ------------
+            // メッセージ部
+            // ------------
+            // ユーザ名, IPアドレス, レイヤ, 
+            // 画面名, コントロール名, メソッド名, 処理名
+            // ------------
+            string strLogMessage =
+                "," + "－" +
+                "," + Request.UserHostAddress +
+                "," + "-----↓" +
+                "," + "Global.asax" +
+                "," + "Application_OnPreRequest";
+
+            // Log4Netへログ出力
+            LogIF.DebugLog("ACCESS", strLogMessage);
+
+            // -------------------------------------------------------------
+
+            // 性能測定開始
+            this.perfRec = new PerformanceRecorder();
+            this.perfRec.StartsPerformanceRecord();
         }
 
         ///////////////////////////////////////////////////////////////////
@@ -201,7 +245,39 @@ namespace MVC_Sample
         /// </summary>
         void Application_OnPostRequestHandlerExecute(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Application_OnPostRequestHandlerExecute");
+            // nullチェック
+            if (this.perfRec == null)
+            {
+                // なにもしない
+            }
+            else
+            {
+                // 性能測定終了
+                this.perfRec.EndsPerformanceRecord();
+
+                // ACCESSログ出力-----------------------------------------------
+
+                // ------------
+                // メッセージ部
+                // ------------
+                // ユーザ名, IPアドレス, レイヤ, 
+                // 画面名, コントロール名, メソッド名, 処理名
+                // 処理時間（実行時間）, 処理時間（CPU時間）
+                // ------------
+                string strLogMessage =
+                    "," + "－" +
+                    "," + Request.UserHostAddress +
+                    "," + "-----↑" +
+                    "," + "Global.asax" +
+                    "," + "Application_OnPostRequest" +
+                    "," + "－" +
+                    "," + "－" +
+                    "," + this.perfRec.ExecTime +
+                    "," + this.perfRec.CpuTime;
+
+                // Log4Netへログ出力
+                LogIF.DebugLog("ACCESS", strLogMessage);
+            }
         }
 
         /// <summary>
@@ -209,7 +285,6 @@ namespace MVC_Sample
         /// </summary>
         void Application_OnReleaseRequestState(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Application_OnReleaseRequestState");
         }
 
         /// <summary>
@@ -217,7 +292,6 @@ namespace MVC_Sample
         /// </summary>
         void Application_OnUpdateRequestCache(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Application_OnUpdateRequestCache");
         }
 
         /// <summary>
@@ -225,7 +299,6 @@ namespace MVC_Sample
         /// </summary>
         void Application_OnEndRequest(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Application_OnEndRequest");
         }
 
         /// <summary>
@@ -233,7 +306,6 @@ namespace MVC_Sample
         /// </summary>
         void Application_OnPreSendRequestHeaders(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Application_OnPreSendRequestHeaders");
         }
 
         /// <summary>
@@ -241,7 +313,6 @@ namespace MVC_Sample
         /// </summary>
         void Application_OnPreSendRequestContent(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Application_OnPreSendRequestContent");
         }
 
     }

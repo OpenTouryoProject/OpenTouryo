@@ -27,33 +27,16 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2012/06/14  西野  大介        新規作成
-//*  2013/03/13  西野  大介        偽装ユーザでEXE起動するメソッドを追加。
-//*  2013/03/13  西野  大介        クラス名の誤りを修正した。
-//*  2013/03/13  西野  大介        CreateProcessAsImpersonationUser追加対応
+//*  2012/06/14  西野 大介         新規作成
+//*  2013/03/13  西野 大介         偽装ユーザでEXE起動するメソッドを追加。
+//*  2013/03/13  西野 大介         クラス名の誤りを修正した。
+//*  2013/03/13  西野 大介         CreateProcessAsImpersonationUser追加対応
 //**********************************************************************************
 
-// System
 using System;
-using System.IO;
-using System.Xml;
-using System.Text;
-using System.Data;
-using System.Collections;
-
-using System.Web.Security;
 using System.Security.Principal;
 using System.Runtime.InteropServices;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Win32;
 
 namespace Touryo.Infrastructure.Public.Util

@@ -1,9 +1,11 @@
 ﻿//**********************************************************************************
-//* フレームワーク・テスト画面
+//* フレームワーク・テスト画面（部品）
 //**********************************************************************************
 
+// テスト画面なので、必要に応じて流用 or 削除して下さい。
+
 //**********************************************************************************
-//* クラス名        ：Aspx_testPublic_testScreen
+//* クラス名        ：testScreen
 //* クラス日本語名  ：共通部品テスト画面
 //*
 //* 作成日時        ：－
@@ -15,59 +17,25 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// デバッグ用
-using System.Diagnostics;
-
-// メソッドの属性を取得
-using System.Reflection;
-
-using System.Security.Principal;
-
-// System
 using System;
 using System.IO;
-using System.Data;
 using System.Text;
-using System.Collections;
+using System.Diagnostics;
+using System.Security.Principal;
+
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
-// System.Web
-using System.Web;
-using System.Web.Security;
-
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
-
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Str;
 using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
 
-// 部品
-using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
-using Touryo.Infrastructure.Public.Win32;
-
-namespace ProjectX_sample.Aspx.testPublic
+namespace ProjectX_sample.Aspx.TestPublic
 {
     /// <summary>共通部品テスト画面</summary>
     public partial class testScreen : System.Web.UI.Page
@@ -90,8 +58,16 @@ namespace ProjectX_sample.Aspx.testPublic
                 //---
 
                 //コンピュータ上に存在するすべてのタイムゾーンをComboBoxに表示
-                //this.ddlTimeZone.DataSource = System.TimeZoneInfo.GetSystemTimeZones();
-                this.ddlTimeZone.DataSource = Enum.GetValues(typeof(MyTimeZoneEnum));
+                Dictionary<string, string> dic_tzs = new Dictionary<string, string>();
+                ReadOnlyCollection<TimeZoneInfo> roc_tzs = TimeZoneInfo.GetSystemTimeZones();
+                foreach (TimeZoneInfo tz in roc_tzs)
+                {
+                    dic_tzs.Add(tz.DisplayName, tz.Id);
+                }
+
+                this.ddlTimeZone.DataSource = dic_tzs;
+                this.ddlTimeZone.DataTextField = "Key";
+                this.ddlTimeZone.DataValueField = "Value";
                 this.ddlTimeZone.DataBind();
             }
 
@@ -358,12 +334,12 @@ namespace ProjectX_sample.Aspx.testPublic
 
         #endregion
 
-        #region メッセージ取得部品
+        #region Message取得部品
 
-        /// <summary>メッセージの取得</summary>
+        /// <summary>Messageの取得</summary>
         protected void btnGetMSG_Click(object sender, EventArgs e)
         {
-            // メッセージを取得する。
+            // Messageを取得する。
             this.lblMSG.Text = GetMessage.GetMessageDescription(this.txtMSGID.Text);
         }
 
@@ -378,7 +354,7 @@ namespace ProjectX_sample.Aspx.testPublic
         //    // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
         //    MyParameterValue myParameterValue
         //        = new MyParameterValue(
-        //              "画面ID", "ボタンID",
+        //              "画面ID", "ButtonID",
         //              this.ddlDap.SelectedValue + "%"
         //              + this.ddlExRollback.SelectedValue + "%"
         //              + this.ddlExStatus.SelectedValue,
@@ -414,7 +390,7 @@ namespace ProjectX_sample.Aspx.testPublic
         //    // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
         //    MyType.TestParameterValue testParameterValue
         //        = new MyType.TestParameterValue(
-        //              "", "画面ID", "ボタンID",
+        //              "", "画面ID", "ButtonID",
         //              this.ddlDap.SelectedValue + "%"
         //              + this.ddlExRollback.SelectedValue + "%"
         //              + this.ddlExStatus.SelectedValue,
@@ -438,7 +414,7 @@ namespace ProjectX_sample.Aspx.testPublic
         //    // 例外判定
         //    if (myReturnValue.ErrorFlag)
         //    {
-        //        // エラーメッセージ
+        //        // Error Message
         //        this.lblTxID.Text = myReturnValue.ErrorMessage;
         //    }
         //    else
@@ -662,15 +638,14 @@ namespace ProjectX_sample.Aspx.testPublic
             //DateTime dt = new DateTime(this.Calendar1.SelectedDate.Ticks, DateTimeKind.Local); // 正
             DateTime dt = new DateTime(this.Calendar1.SelectedDate.Ticks, DateTimeKind.Unspecified); // 略
             //DateTime dt = new DateTime(this.Calendar1.SelectedDate.Ticks, DateTimeKind.Utc); // 不正
+
             if (this.cbxTimeZone.Checked)
             {
-                dt = GMTMaster.ConvertLocalTimeToUtcTimeManual(dt, (MyTimeZoneEnum)Enum.Parse(
-                        typeof(MyTimeZoneEnum), (string)this.ddlTimeZone.SelectedItem.Text));
-
+                dt = GMTMaster.ConvertLocalTimeToUtcTime35(dt, TimeZoneInfo.FindSystemTimeZoneById(this.ddlTimeZone.SelectedItem.Value));
             }
             else
             {
-                dt = GMTMaster.ConvertLocalTimeToUtcTimeManual(dt, MyTimeZoneEnum.TokyoStandardTime);
+                dt = GMTMaster.ConvertLocalTimeToUtcTime35(dt, TimeZoneInfo.Local);
             }
             this.lblDateString.Text = dt.ToString("yyyy/MM/dd HH:mm:ss.fff");
         }
@@ -684,12 +659,11 @@ namespace ProjectX_sample.Aspx.testPublic
 
             if (this.cbxTimeZone.Checked)
             {
-                dt = GMTMaster.ConvertUtcTimeToLocalTimeManual(dt, (MyTimeZoneEnum)Enum.Parse(
-                        typeof(MyTimeZoneEnum), (string)this.ddlTimeZone.SelectedItem.Text));
+                dt = GMTMaster.ConvertUtcTimeToLocalTime35(dt, TimeZoneInfo.FindSystemTimeZoneById(this.ddlTimeZone.SelectedItem.Value));
             }
             else
             {
-                dt = GMTMaster.ConvertUtcTimeToLocalTimeManual(dt, MyTimeZoneEnum.TokyoStandardTime);
+                dt = GMTMaster.ConvertUtcTimeToLocalTime35(dt, TimeZoneInfo.Local);
             }
             this.lblDateString.Text = dt.ToString("yyyy/MM/dd HH:mm:ss.fff");
         }
@@ -2078,7 +2052,19 @@ namespace ProjectX_sample.Aspx.testPublic
         /// <summary>Sessionサイズ</summary>
         protected void btnSessionSize_Click(object sender, EventArgs e)
         {
-            this.lblElse.Text = PubCmnFunction.CalculateSessionSize().ToString() + "バイト";
+            this.lblElse.Text = MyCmnFunction.CalculateSessionSize().ToString() + "バイト";
+        }
+
+        /// <summary>Sessionサイズ(KB)</summary>
+        protected void btnSessionSizeKB_Click(object sender, EventArgs e)
+        {
+            this.lblElse.Text = MyCmnFunction.CalculateSessionSizeKB().ToString() + "Kバイト";
+        }
+
+        /// <summary>Sessionサイズ(MB)</summary>
+        protected void btnSessionSizeMB_Click(object sender, EventArgs e)
+        {
+            this.lblElse.Text = MyCmnFunction.CalculateSessionSizeMB().ToString() + "Mバイト";
         }
 
         /// <summary>偽装のテスト</summary>
@@ -2145,7 +2131,7 @@ namespace ProjectX_sample.Aspx.testPublic
                 try
                 {
                     // コードの特定部分を実行するときのみ、認証中のユーザ (User.Identity) を偽装する。
-                    // このため、Windows認証に設定して、ダイアログや、ケルベロス（SSO）で認証する必要がある。
+                    // このため、Windows認証で認証する必要がある。
 
                     // 偽装して
                     ii = new IdentityImpersonation();

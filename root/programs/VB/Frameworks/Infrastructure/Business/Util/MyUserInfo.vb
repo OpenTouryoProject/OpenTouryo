@@ -32,16 +32,13 @@
 '*  2010/09/24  西野 大介         共通引数クラス内にユーザ情報を格納したので
 '**********************************************************************************
 
-' System
-Imports System
-
 ' フレームワーク
 Imports Touryo.Infrastructure.Framework.Util
 
 Namespace Touryo.Infrastructure.Business.Util
     ''' <summary>ユーザ情報クラス（必要なコンテキスト情報を追加）</summary>
     ''' <remarks>自由に（拡張して）利用できる。</remarks>
-    <Serializable()> _
+    <Serializable()>
     Public Class MyUserInfo
         Inherits UserInfo
         ''' <summary>ユーザ名</summary>

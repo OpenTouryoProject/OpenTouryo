@@ -27,48 +27,34 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2007/xx/xx  西野  大介        新規作成
-//*  2008/10/24  西野  大介        問題点の修正
-//*  2009/03/19  西野  大介        DRのインターフェイスをobject→IDataReaderへ変更。
-//*  2009/03/29  西野  大介        追加したNotConnectの対応。
-//*  2009/04/20  西野  大介        実行後、初期化して連続実行可能にする。
-//*  2009/04/26  西野  大介        配列バインド対応を兼ね、型指定を可能にした。
-//*  2009/04/28  西野  大介        デフォルト値を設けた
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2007/xx/xx  西野 大介         新規作成
+//*  2008/10/24  西野 大介         問題点の修正
+//*  2009/03/19  西野 大介         DRのインターフェイスをobject→IDataReaderへ変更。
+//*  2009/03/29  西野 大介         追加したNotConnectの対応。
+//*  2009/04/20  西野 大介         実行後、初期化して連続実行可能にする。
+//*  2009/04/26  西野 大介         配列バインド対応を兼ね、型指定を可能にした。
+//*  2009/04/28  西野 大介         デフォルト値を設けた
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#12 ： FxSqlTracelogがnullの場合NullReferenceとなる
 //*                                ・#x  ： CommandTimeOutデフォルト値を設定
-//*  2010/02/18  西野  大介        HiRDB対応として、サイズ指定を可能に、また、
+//*  2010/02/18  西野 大介         HiRDB対応として、サイズ指定を可能に、また、
 //*                                合わせてSize, Directionなどのプロパティもサポート
-//*  2010/09/24  西野  大介        型チェック方式の見直し（ GetType() & typeof() ）
-//*  2010/09/24  西野  大介        ジェネリック対応（Dictionary、List、Queue、Stack<T>）
+//*  2010/09/24  西野 大介         型チェック方式の見直し（ GetType() & typeof() ）
+//*  2010/09/24  西野 大介         ジェネリック対応（Dictionary、List、Queue、Stack<T>）
 //*                                nullチェック方法、Contains → ContainsKeyなどに注意
-//*  2010/11/02  西野  大介        GetParameterメソッドを追加（ｽﾄｱﾄﾞ ﾕｰｻﾞﾋﾞﾘﾃｨ向上）
-//*  2012/03/16  西野  大介        ClearTextの所の仕様変更（文字列中は、空白・タブを詰めない）。
-//*  2012/03/21  西野  大介        SQLの型指定（.net型）対応
-//*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
-//*  2013/07/09  西野  大介        静的SQLでもユーザパラメタを保存（操作ログで使用する用途）
-//*  2015/07/05  Sai              Implemented virtual property of IDbCommand in DamSqlSvr class
+//*  2010/11/02  西野 大介         GetParameterメソッドを追加（ｽﾄｱﾄﾞ ﾕｰｻﾞﾋﾞﾘﾃｨ向上）
+//*  2012/03/16  西野 大介         ClearTextの所の仕様変更（文字列中は、空白・タブを詰めない）。
+//*  2012/03/21  西野 大介         SQLの型指定（.net型）対応
+//*  2013/07/07  西野 大介         ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
+//*  2013/07/09  西野 大介         静的SQLでもユーザパラメタを保存（操作ログで使用する用途）
+//*  2015/07/05  Sai               Implemented virtual property of IDbCommand in DamSqlSvr class
 //**********************************************************************************
 
-// データアクセスプロバイダ（SqlClient）
-using System.Data.SqlClient;
-
-// System
 using System;
-using System.IO;
-using System.Xml;
-using System.Text;
 using System.Data;
+using System.Data.SqlClient;
 using System.Collections;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Db

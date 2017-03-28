@@ -3,7 +3,7 @@
 //**********************************************************************************
 
 #region Apache License
-//
+//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -19,22 +19,17 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名            :ServiceInstaller.cs
-//* クラス名クラス名     :
+//* クラス名        ：ServiceInstaller
+//* クラス日本語名  ：ServiceInstaller
 //*
-//* 作成者              :Supragyan
-//* クラス日本語名       :
-//* 更新履歴
-//*  Date:        Author:        Comments:
+//* 作成日時        ：－
+//* 作成者          ：Supragyan
+//* 更新履歴        ：
+//*
+//*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  11/28/2014   Supragyan      ServiceInstaller class for installing windows service
+//*  11/28/2014  Supragyan         ServiceInstaller class for installing windows service
 //**********************************************************************************
-
-//system
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Touryo.Infrastructure.Framework.ServiceInterface.AsyncProcessingService
 {

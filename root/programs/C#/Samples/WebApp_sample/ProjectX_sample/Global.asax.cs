@@ -1,9 +1,11 @@
 ﻿//**********************************************************************************
-//* Global.asax
+//* テンプレート
 //**********************************************************************************
 
+// サンプル中のテンプレートなので、必要に応じて流用して下さい。
+
 //**********************************************************************************
-//* クラス名        ：Global_asax
+//* クラス名        ：Global
 //* クラス日本語名  ：Global.asaxのコード ビハインド
 //*
 //* 作成日時        ：－
@@ -17,18 +19,9 @@
 //*  2012/04/05  西野 大介         Application_OnPreRequestHandlerExecute
 //*                                OnPostRequestHandlerExecuteにACCESSログを追加
 //**********************************************************************************
-// System
+
 using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
 
-using System.Web;
-using System.Web.Security;
-
-// Touryo
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
 
@@ -97,12 +90,12 @@ namespace ProjectX_sample
             // ACCESSログ出力 ----------------------------------------------
 
             // ------------
-            // メッセージ部
+            // Message部
             // ------------
             // ユーザ名, IPアドレス,レイヤ, 
-            // 画面名, コントロール名, メソッド名, 処理名
+            // 画面名, Control名, メソッド名, 処理名
             // 処理時間（実行時間）, 処理時間（CPU時間）
-            // エラーメッセージID, エラーメッセージ等
+            // Error MessageID, Error Message等
             // ------------
             string strLogMessage =
                 "," + "－" +
@@ -220,10 +213,10 @@ namespace ProjectX_sample
         void Application_OnPreRequestHandlerExecute(object sender, EventArgs e)
         {
             // ------------
-            // メッセージ部
+            // Message部
             // ------------
             // ユーザ名, IPアドレス, レイヤ, 
-            // 画面名, コントロール名, メソッド名, 処理名
+            // 画面名, Control名, メソッド名, 処理名
             // ------------
             string strLogMessage =
                 "," + "－" +
@@ -264,10 +257,10 @@ namespace ProjectX_sample
                 // ACCESSログ出力-----------------------------------------------
 
                 // ------------
-                // メッセージ部
+                // Message部
                 // ------------
                 // ユーザ名, IPアドレス, レイヤ, 
-                // 画面名, コントロール名, メソッド名, 処理名
+                // 画面名, Control名, メソッド名, 処理名
                 // 処理時間（実行時間）, 処理時間（CPU時間）
                 // ------------
                 string strLogMessage =

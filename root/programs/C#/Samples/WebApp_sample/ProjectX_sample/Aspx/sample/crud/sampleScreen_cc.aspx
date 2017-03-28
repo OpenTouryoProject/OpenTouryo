@@ -1,8 +1,13 @@
-<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/sampleScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.sample.crud.sampleScreen_cc" Title="Untitled Page" Codebehind="sampleScreen_cc.aspx.cs" %>
+<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/sampleScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Sample.Crud.sampleScreen_cc" Codebehind="sampleScreen_cc.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
-    <!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+    <asp:Label ID="lblResult" runat="server" Text=""></asp:Label><br />
+
     データアクセス制御クラス（データプロバイダ）を選択<br />
     <cc1:WebCustomDropDownList ID="ddlDap" runat="server">
         <asp:ListItem Value="SQL">SQL Server / SQL Client</asp:ListItem>
@@ -76,7 +81,7 @@
     <br />
     <table>
         <tr>
-            <td><asp:GridView ID="GridView1" runat="server" EmptyDataText="グリッド ビュー"></asp:GridView></td>
+            <td><asp:GridView ID="GridView1" runat="server" EmptyDataText="グリッド ビュー" CssClass="table"></asp:GridView></td>
             <td style="width: 50px"><cc1:WebCustomButton ID="btnButton4" runat="server" Text="クリア" Width="82px" /></td>
         </tr>
     </table>
@@ -88,3 +93,6 @@
     &nbsp;<cc1:WebCustomButton ID="btnButton3" runat="server" Text="その他、一般的な例外" Width="190px" />
 </asp:Content>
 
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
+</asp:Content>

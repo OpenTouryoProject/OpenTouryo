@@ -1,8 +1,11 @@
-﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_Start_login" Codebehind="login.aspx.vb" %>
+﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Start.login" Codebehind="login.aspx.vb" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
 <asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">    
-    <!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
     <div>
         <table id="Table1" border="1">
             <tr>
@@ -26,4 +29,8 @@
 	    </table>
 	    <cc1:WebCustomLabel id="lblMessage" runat="server" Width="250px">Label</cc1:WebCustomLabel>    
     </div>
+</asp:Content>
+
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
 </asp:Content>

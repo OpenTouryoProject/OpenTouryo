@@ -76,13 +76,11 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="WSIFType_sample, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\Bin\WSIFType_sample.dll</HintPath>
+    <Reference Include="WSIFType_sample">
+      <HintPath>..\..\..\..\..\C#\Samples\WS_sample\Build\WSIFType_sample.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -97,7 +95,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncFunc.vb" />
-    <Compile Include="Form1.vb" />
+    <Compile Include="Form1.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Form1.Designer.vb">
       <DependentUpon>Form1.vb</DependentUpon>
       <SubType>Form</SubType>
@@ -105,7 +105,9 @@
     <Compile Include="Login.Designer.vb">
       <DependentUpon>Login.vb</DependentUpon>
     </Compile>
-    <Compile Include="Login.vb" />
+    <Compile Include="Login.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Program.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">

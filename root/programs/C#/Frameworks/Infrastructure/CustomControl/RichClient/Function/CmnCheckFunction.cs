@@ -28,19 +28,11 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
+//*  2017/01/31  西野 大介         "Indispensable" ---> "Required"
 //**********************************************************************************
 
-// System
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
-
-// System.Windows
-using System.Windows;
 using System.Windows.Forms;
 
 namespace Touryo.Infrastructure.CustomControl.RichClient
@@ -54,7 +46,7 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         /// 必須チェック エラー
         /// のエラー メッセージ
         /// </summary>
-        public const string IsIndispensableCheckErrorMessage = "必須チェック エラー";
+        public const string RequiredCheckErrorMessage = "必須チェック エラー";
 
         /// <summary>
         /// 半角チェック エラー

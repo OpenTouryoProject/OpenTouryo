@@ -73,18 +73,16 @@
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WSIFType_sample, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\Bin\WSIFType_sample.dll</HintPath>
+    </Reference>
+    <Reference Include="WSServer_sample">
+      <HintPath>..\..\Build\WSServer_sample.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -118,7 +116,9 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MSGDefinition.xml" />
+    <EmbeddedResource Include="MSGDefinition.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="TMProtocolDefinition.xml">

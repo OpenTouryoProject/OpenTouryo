@@ -27,36 +27,22 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2011/xx/xx  西野  大介        新規作成
-//*  2011/10/09  西野  大介        国際化対応
-//*  2013/02/11  西野  大介        Aes系プロバイダ対応（2.0ではサポートされず）
-//*  2013/02/12  西野  大介        ソルト、ストレッチング可変のオーバーロード追加
-//*  2013/02/18  西野  大介        CustomEncode使用に統一
-//*  2014/03/13  西野  大介        devps(1703):Createメソッドを使用してcryptoオブジェクトを作成します。
-//*  2014/03/13  西野  大介        devps(1725):暗号クラスの使用終了時にデータをクリアする。
-//*  2017/01/10  西野  大介        stretch回数の指定方法をPropertyからConstructorに変更した。
-//*  2017/01/10  西野  大介        AesCryptoServiceProviderを削除（.NET3.5から実装されたAesManagedを残す）
+//*  2011/xx/xx  西野 大介         新規作成
+//*  2011/10/09  西野 大介         国際化対応
+//*  2013/02/11  西野 大介         Aes系プロバイダ対応（2.0ではサポートされず）
+//*  2013/02/12  西野 大介         ソルト、ストレッチング可変のオーバーロード追加
+//*  2013/02/18  西野 大介         CustomEncode使用に統一
+//*  2014/03/13  西野 大介         devps(1703):Createメソッドを使用してcryptoオブジェクトを作成します。
+//*  2014/03/13  西野 大介         devps(1725):暗号クラスの使用終了時にデータをクリアする。
+//*  2017/01/10  西野 大介         stretch回数の指定方法をPropertyからConstructorに変更した。
+//*  2017/01/10  西野 大介         AesCryptoServiceProviderを削除（.NET3.5から実装されたAesManagedを残す）
 //**********************************************************************************
 
-// System
 using System;
-using System.IO;
-using System.Xml;
-using System.Text;
-using System.Data;
-using System.Collections;
+using System.Security.Cryptography;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
-
-using System.Security.Cryptography;
 
 namespace Touryo.Infrastructure.Public.IO
 {

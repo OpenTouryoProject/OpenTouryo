@@ -3,9 +3,9 @@
   UPDATE
     Shippers
   SET
-    CompanyName = :P2, Phone = :P3
+    CompanyName = @P2, Phone = @P3
   <WHERE>
     WHERE
-      <IF>ShipperID = :P1</IF>
+      <IF>ShipperID = @P1</IF>
   </WHERE>
 </ROOT>

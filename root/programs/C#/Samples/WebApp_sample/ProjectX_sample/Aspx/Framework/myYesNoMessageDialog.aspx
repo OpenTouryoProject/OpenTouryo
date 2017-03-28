@@ -1,19 +1,16 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Framework.myYesNoMessageDialog" Codebehind="myYesNoMessageDialog.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" >
+<%--Copyright (C) 2007,2016 Hitachi Solutions,Ltd.--%> <%-- Apache License, Version 2.0 --%>
+<!DOCTYPE html>
+<html>
     <head id="Head1" runat="server">
         <title>myYesNoMessageBox</title>
     </head>
     <script type="text/javascript">
         <!--
         
-        // 戻り値
-        
-        // 初期値は０、ダイアログ右上の[×]で閉じた場合に戻る値
+        // 初期値は０、Dialog右上の[×]で閉じた場合に戻る値
         var dialogreturn = 0;
         
         // 開始処理
@@ -25,13 +22,13 @@
             window.returnValue = dialogreturn;
         }
         
-        // [YES]ボタン押下、戻り値を１に書き換えダイアログを閉じる
+        // [YES]Button押下、戻り値を１に書き換えDialogを閉じる
         function onYes(){
             dialogreturn = 1;
             window.close();
         }
         
-        // [NO]ボタン押下、戻り値を２に書き換えダイアログを閉じる
+        // [NO]Button押下、戻り値を２に書き換えDialogを閉じる
         function onNo(){
             dialogreturn = 2;
             window.close();
@@ -41,7 +38,7 @@
     </script>
     <body onload="Document_OnLoad()" onunload="Document_OnClose()">
         <div style="text-align:left">
-            <table border="0" cellpadding="10" cellspacing="10">
+            <table style="border-spacing:10px; border-collapse:collapse;" border="0">
                 <tr>
                     <td rowspan="2">
                         <asp:Image ID="imgIcon" runat="server" />

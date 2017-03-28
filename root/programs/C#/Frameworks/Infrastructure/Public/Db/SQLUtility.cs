@@ -27,21 +27,21 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2013/07/03  西野  大介        新規作成
-//*  2013/09/20  西野  大介        設計変更：GetInsertSQLParts、GetUpdateSQLParts
-//*  2013/10/04  西野  大介        Convert関数：30文字以上はサイズ指定（エスケープ前）
+//*  2013/07/03  西野 大介         新規作成
+//*  2013/09/20  西野 大介         設計変更：GetInsertSQLParts、GetUpdateSQLParts
+//*  2013/10/04  西野 大介         Convert関数：30文字以上はサイズ指定（エスケープ前）
 //*  2014/01/24  Sai Krishna       added code for batch processing supporting PostGreSQL
 //*  2014/01/24  Santoshkumar      added code for batch processing supporting Oracle
 //*  2014/01/30  Sai Krishna       added code for batch processing supporting MySQL
 //*  2014/01/30  Santoshkumar      added code for batch processing supporting DB2
-//*  2014/03/04 Santoshkumar       Modified code for converting char data type for batch processing supporting DB2 and Oracle
+//*  2014/03/04  Santoshkumar      Modified code for converting char data type for batch processing supporting DB2 and Oracle
 //**********************************************************************************
 
 using System;
-using System.Collections.Generic;
 using System.Text;
-
 using System.Data;
+using System.Collections.Generic;
+
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 

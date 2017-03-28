@@ -3,7 +3,7 @@
 //**********************************************************************************
 
 #region Apache License
-//
+//  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -19,67 +19,57 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名            :AsyncProcessingService.cs
-//* クラス名クラス名     :
+//* クラス名        ：AsyncProcessingService
+//* クラス日本語名  ：AsyncProcessingService
 //*
-//* 作成者              :Supragyan
-//* クラス日本語名       :
-//* 更新履歴
-//*  Date:        Author:        Comments:
+//* 作成日時        ：－
+//* 作成者          ：Supragyan
+//* 更新履歴        ：
+//*
+//*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  11/28/2014   Supragyan      Created Asynchronous Processing Service class for windows service
-//*  02/20/2015   Supragyan      Created SelectProcessName method from service data.
-//*  02/20/2015   Supragyan      Modified call controller class by implement process name column's information.
-//*  02/24/2015   Supragyan      Created main thread inside OnStart method.
-//*  02/24/2015   Supragyan      Created MainThreadInvoke method for implementing main thread and worker thread functionality.
-//*  02/26/2015   Supragyan      Modified code in Invoke controller. 
-//*  03/04/2015   Sai            Modifed the code as per the review comments given by Niahino-san on 03/3/2015.
-//*  03/16/2015   Sai            Modifed the code as per the change request given by Niahino-san on 03/9/2015.   
-//*  03/20/2015   Sai            Added lock mechanism while selecting task from database and change resquests.
-//*  03/26/2015   Sai            Did Nihsini-san review comment changes as on 25-Mar-2015.
-//*  04/13/2015   Sandeep        Did Nihsini-san review comment changes as on 04-Apr-2015.
-//*  04/21/2015   Sandeep        Did code changes to break the main thread when service failed(i.e. unexpected exceptions)
-//*  05/28/2015   Sandeep        Did code changes to update exception information to database
-//*                              Did code changes to resolve OnStop event error
-//*  06/01/2015   Sandeep        Added new variable "_workerThreadCount" to handle the worker thread and to resolve OnStop event error,
-//*                              because thread pool may be shared by other tasks, such as .NET runtime
-//*                              Did code modification related to log information, for debugging purpose
-//*  06/09/2015   Sandeep        Added user name(email-id) and asynchronous processing task ID to the arguments of user information,
-//*                              for the log and the failure analysis
-//*  06/26/2015   Sandeep        Implemented code to handle unstable "Register" state, when you invoke [Abort] to AsyncTask, at this "Register" state,
-//*                              Implemented code to 'Enable and Handle pre-shutdown notification' technique, to resolve the issue of 
-//*                              OnShutdown method, when you restart or shutdown the OS 
-//*  06/01/2016   Sandeep        Implemented '_isServiceException' property and 'SetServiceException' method, to enhance the Start and Stop behavior
+//*  11/28/2014   Supragyan        Created Asynchronous Processing Service class for windows service
+//*  02/20/2015   Supragyan        Created SelectProcessName method from service data.
+//*  02/20/2015   Supragyan        Modified call controller class by implement process name column's information.
+//*  02/24/2015   Supragyan        Created main thread inside OnStart method.
+//*  02/24/2015   Supragyan        Created MainThreadInvoke method for implementing main thread and worker thread functionality.
+//*  02/26/2015   Supragyan        Modified code in Invoke controller. 
+//*  03/04/2015   Sai              Modifed the code as per the review comments given by Niahino-san on 03/3/2015.
+//*  03/16/2015   Sai              Modifed the code as per the change request given by Niahino-san on 03/9/2015.   
+//*  03/20/2015   Sai              Added lock mechanism while selecting task from database and change resquests.
+//*  03/26/2015   Sai              Did Nihsini-san review comment changes as on 25-Mar-2015.
+//*  04/13/2015   Sandeep          Did Nihsini-san review comment changes as on 04-Apr-2015.
+//*  04/21/2015   Sandeep          Did code changes to break the main thread when service failed(i.e. unexpected exceptions)
+//*  05/28/2015   Sandeep          Did code changes to update exception information to database
+//*                                Did code changes to resolve OnStop event error
+//*  06/01/2015   Sandeep          Added new variable "_workerThreadCount" to handle the worker thread and to resolve OnStop event error,
+//*                                because thread pool may be shared by other tasks, such as .NET runtime
+//*                                Did code modification related to log information, for debugging purpose
+//*  06/09/2015   Sandeep          Added user name(email-id) and asynchronous processing task ID to the arguments of user information,
+//*                                for the log and the failure analysis
+//*  06/26/2015   Sandeep          Implemented code to handle unstable "Register" state, when you invoke [Abort] to AsyncTask, at this "Register" state,
+//*                                Implemented code to 'Enable and Handle pre-shutdown notification' technique, to resolve the issue of 
+//*                                OnShutdown method, when you restart or shutdown the OS 
+//*  06/01/2016   Sandeep          Implemented '_isServiceException' property and 'SetServiceException' method, to enhance the Start and Stop behavior
 //**********************************************************************************
 
-// System
 using System;
-using System.Data;
-using System.Text;
 using System.IO;
 using System.Threading;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Configuration;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.ServiceProcess;
 
-//業務フレームワーク
+using Touryo.Infrastructure.Business.AsyncProcessingService;
 using Touryo.Infrastructure.Business.Util;
-
-//部品
+using Touryo.Infrastructure.Framework.Transmission;
+using Touryo.Infrastructure.Framework.Exceptions;
+using Touryo.Infrastructure.Framework.Common;
+using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
-
-//Framework
-using Touryo.Infrastructure.Framework.Transmission;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Exceptions;
-
-//AsyncProcessingService
-using AsyncProcessingService;
 
 namespace Touryo.Infrastructure.Framework.AsyncProcessingService
 {

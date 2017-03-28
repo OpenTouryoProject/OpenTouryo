@@ -32,30 +32,16 @@
 //*  2016/04/06      Shashikiran       Modified the code to replace space in Table Names with underscore operator 
 //*  2016/05/03      Shashikiran       Modified the code to replace space in column Names with underscore operator  
 //**********************************************************************************
-// Windowアプリケーション
-using System.Drawing;
-using System.Windows.Forms;
-using System.ComponentModel;
 
-//System
 using System;
 using System.IO;
-using System.Xml;
 using System.Text;
-using System.Data;
 using System.Collections;
+using System.Resources;
+using System.Windows.Forms;
 
-// 業務フレームワーク（参照しない）
-// フレームワーク（参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
-using System.Resources;
-
 
 namespace DPQuery_Tool
 {
@@ -116,7 +102,7 @@ namespace DPQuery_Tool
         /// <summary>囲い文字のない カラム リスト（置換対象）</summary>
         private string RpAllColumnList = "";
         /// <summary>囲い文字のない カラム リスト（置換文字列）</summary>
-        private string AllColumnList = "";
+        //private string AllColumnList = "";
 
         /// <summary>囲い文字のない PKカラム リスト（置換対象）</summary>
         private string RpPKColumnList = "";

@@ -28,71 +28,49 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
-//*  2009/04/21  西野  大介        FrameworkExceptionの追加に伴い、実装変更
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2009/04/21  西野 大介         FrameworkExceptionの追加に伴い、実装変更
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#5  ： コントロール数取得処理（デフォルト値不正）
 //*                                ・#19 ： InnerException対策
 //*                                ・#21 ： 不要なコードブロックの削除
 //*                                ・#z  ： Finally節のUOCメソッドを追加した。
-//*  2009/07/21  西野  大介        コントロール取得処理の仕様変更
-//*  2009/07/31  西野  大介        エラー時に、セッションを開放しないで、
+//*  2009/07/21  西野 大介         コントロール取得処理の仕様変更
+//*  2009/07/31  西野 大介         エラー時に、セッションを開放しないで、
 //*                                業務を続行可能にする処理を追加（不正操作エラー）
-//*  2009/08/10  西野  大介        他の修正により、urlの引数がnullとなり得るので、修正。
-//*  2009/09/01  西野  大介        サブシステム情報クラスの実装を追加した。
-//*  2009/09/25  西野  大介        セッション ステートレス対応。
-//*  2010/09/24  西野  大介        共通引数クラス内にユーザ情報を格納したので
-//*  2010/10/21  西野  大介        幾つかのイベント処理の正式対応（ベースクラス２→１へ）
-//*  2010/11/21  西野  大介        集約イベント ハンドラをprotectedに変更（動的追加を考慮）
-//*  2011/01/14  西野  大介        エラー時に、セッションを開放しないで、
+//*  2009/08/10  西野 大介         他の修正により、urlの引数がnullとなり得るので、修正。
+//*  2009/09/01  西野 大介         サブシステム情報クラスの実装を追加した。
+//*  2009/09/25  西野 大介         セッション ステートレス対応。
+//*  2010/09/24  西野 大介         共通引数クラス内にユーザ情報を格納したので
+//*  2010/10/21  西野 大介         幾つかのイベント処理の正式対応（ベースクラス２→１へ）
+//*  2010/11/21  西野 大介         集約イベント ハンドラをprotectedに変更（動的追加を考慮）
+//*  2011/01/14  西野 大介         エラー時に、セッションを開放しないで、
 //*                                業務を続行可能にする処理を追加（画面遷移制御チェック エラー）
 //*  2012/04/05  西野 大介         \n → \r\n 化
-//*  2012/06/14  西野  大介        コントロール検索の再帰処理性能の集約＆効率化。
-//*  2012/06/18  西野  大介        OriginalStackTrace（ログ出力）の品質向上
-//*  2013/01/18  西野  大介        public static TransferErrorScreen2追加（他から呼出可能に）
-//*  2013/01/18  西野  大介        public static GetUserInfo2追加（他から呼出可能に）
+//*  2012/06/14  西野 大介         コントロール検索の再帰処理性能の集約＆効率化。
+//*  2012/06/18  西野 大介         OriginalStackTrace（ログ出力）の品質向上
+//*  2013/01/18  西野 大介         public static TransferErrorScreen2追加（他から呼出可能に）
+//*  2013/01/18  西野 大介         public static GetUserInfo2追加（他から呼出可能に）
 //*  2016/01/13  Sandeep           Resolved the URL issue of error screen transition path
 //*  2016/01/18  Sandeep           Modified default relative path of the sample application screens
+//*  2017/02/14  西野 大介         キャッシュ無効化処理にスイッチを追加した。
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
+//*  2017/02/28  西野 大介         TransferErrorScreen2のErrorMessage生成処理の見直し。
+//*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
 //**********************************************************************************
 
-// System
 using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Collections;
 using System.Collections.Generic;
 
-// System.Web
 using System.Web;
 using System.Web.Security;
-
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Presentation;
+using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Business.Presentation
@@ -232,6 +210,7 @@ namespace Touryo.Infrastructure.Business.Presentation
             this.addControlEvent();
 
             // カスタム認証処理 --------------------------------------------
+            // ・・・
             // -------------------------------------------------------------
 
             // 2009/09/01-start
@@ -245,26 +224,15 @@ namespace Touryo.Infrastructure.Business.Presentation
             // 2009/09/01-end
 
             // 権限チェック ------------------------------------------------
+            // ・・・
             // -------------------------------------------------------------
 
             // 閉塞チェック ------------------------------------------------
+            // ・・・
             // -------------------------------------------------------------
 
-            // キャッシュ無効化処理 ----------------------------------------
-
-            // システムで固定に出来る場合は、ここでキャッシュ無効化する。
-            // Ｆｘテスト段階では、IISの設定により制御したほうが楽。
-
-            // また、ファイルダウンロード処理などで
-            // ＵＰでＦｘの設定したキャッシュ制御を
-            // 変更したい場合は、Response.Clearを実行する。
-
-            Response.AddHeader("Cache-Control", "no-cache");
-            Response.CacheControl = "no-cache";
-
-            //Response.AddHeader("Cache-Control", "private");
-            //Response.CacheControl = "private";
-
+            // キャッシュ制御処理 ------------------------------------------
+            this.CacheControlWithSwitch();
             // -------------------------------------------------------------
 
             // ポストバック後の位置復元 ------------------------------------
@@ -389,6 +357,50 @@ namespace Touryo.Infrastructure.Business.Presentation
         }
 
         // 2009/09/01 & 2009/09/25-end
+
+        /// <summary>キャッシュ制御処理（スイッチ付き）</summary>
+        private void CacheControlWithSwitch()
+        {
+            // システムで固定に出来る場合は、ここでキャッシュ無効化する。
+            // また、ユーザープログラムのファイル・ダウンロード処理などで
+            // フレームワークの設定したキャッシュ制御を変更したい場合は、Response.Clearを実行して再設定する。
+
+            // 画面遷移方法の定義を取得
+            string noCache = GetConfigParameter.GetConfigValue(MyLiteral.CACHE_CONTROL);
+
+            // デフォルト値対策：設定なし（null）の場合の扱いを決定
+            if (noCache == null)
+            {
+                // OFF扱い
+                noCache = FxLiteral.OFF;
+            }
+
+            if (noCache.ToUpper() == FxLiteral.ON)
+            {
+                // ON
+
+                // http - How to control web page caching, across all browsers? - Stack Overflow
+                // http://stackoverflow.com/questions/49547/how-to-control-web-page-caching-across-all-browsers
+
+                // Using ASP.NET:
+                Response.AppendHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+                Response.AppendHeader("Pragma", "no-cache"); // HTTP 1.0.
+                Response.AppendHeader("Expires", "0"); // Proxies.
+
+            }
+            else if (noCache.ToUpper() == FxLiteral.OFF)
+            {
+                // OFF
+            }
+            else
+            {
+                // パラメータ・エラー（書式不正）
+                throw new FrameworkException(
+                    FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH1[0],
+                    String.Format(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH1[1],
+                        MyLiteral.CACHE_CONTROL));
+            }
+        }
 
         #endregion
 
@@ -644,7 +656,7 @@ namespace Touryo.Infrastructure.Business.Presentation
                 "," + this.perfRec.ExecTime +
                 "," + this.perfRec.CpuTime +
                 "," + baEx.messageID +
-                "," + baEx.Message;
+                "," + baEx.Message; // baEx
 
             // Log4Netへログ出力
             LogIF.WarnLog("ACCESS", strLogMessage);
@@ -697,16 +709,8 @@ namespace Touryo.Infrastructure.Business.Presentation
                 "," + this.perfRec.ExecTime +
                 "," + this.perfRec.CpuTime +
                 "," + bsEx.messageID +
-                "," + bsEx.Message + "\r\n";
-            // OriginalStackTrace（ログ出力）の品質向上
-            if (this.OriginalStackTrace == "")
-            {
-                strLogMessage += bsEx.StackTrace;
-            }
-            else
-            {
-                strLogMessage += this.OriginalStackTrace;
-            }
+                "," + bsEx.Message + "\r\n" +
+                "," + bsEx.StackTrace; // bsEX
 
             // Log4Netへログ出力
             LogIF.ErrorLog("ACCESS", strLogMessage);
@@ -763,16 +767,8 @@ namespace Touryo.Infrastructure.Business.Presentation
                 "," + this.perfRec.ExecTime +
                 "," + this.perfRec.CpuTime +
                 "," + "other Exception" +
-                "," + ex.Message + "\r\n";
-            // OriginalStackTrace（ログ出力）の品質向上
-            if (this.OriginalStackTrace == "")
-            {
-                strLogMessage += ex.StackTrace;
-            }
-            else
-            {
-                strLogMessage += this.OriginalStackTrace;
-            }
+                "," + ex.Message + "\r\n" + 
+                ex.ToString(); // ex
 
             // Log4Netへログ出力
             LogIF.ErrorLog("ACCESS", strLogMessage);
@@ -809,7 +805,7 @@ namespace Touryo.Infrastructure.Business.Presentation
             }
         }
 
-        /// <summary>例外発生時に、エラー画面に画面遷移</summary>
+        /// <summary>例外発生時に、エラー画面に遷移</summary>
         /// <param name="ex">例外オブジェクト</param>
         /// <remarks>他から呼び出し可能に変更（static）</remarks>
         public static void TransferErrorScreen2(Exception ex)
@@ -853,7 +849,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             // 2009/07/31-start
 
-            #region エラー時に、セッションを開放しないで、業務を続行可能にする処理を追加。
+            #region エラー時に、セッションを解放しないで、業務を続行可能にする処理を追加。
 
             // 不正操作エラー or 画面遷移制御チェック エラー
             if (errMsgId == "IllegalOperationCheckError"
@@ -874,20 +870,18 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             #region エラー画面に表示するエラー情報を作成
 
-            err_msg = System.Environment.NewLine +
-                "エラーメッセージＩＤ: " + errMsgId + System.Environment.NewLine +
-                "エラーメッセージ: " + ex.Message.ToString();
+            err_msg = Environment.NewLine +
+                "Error Message ID : " + errMsgId + Environment.NewLine +
+                "Error Message : " + ex.Message.ToString();
 
-            // #19-start
-            err_info = System.Environment.NewLine +
-                "対象URL: " + HttpContext.Current.Request.Url.ToString() + System.Environment.NewLine +
-                "スタックトレース:" + ex.StackTrace.ToString() + System.Environment.NewLine +
-                "Exception.ToString():" + ex.ToString();
-            // #19-end
+            err_info = Environment.NewLine +
+                "Current Request Url : " + HttpContext.Current.Request.Url.ToString() + Environment.NewLine +
+                "Exception.StackTrace : " + ex.StackTrace + Environment.NewLine +
+                "Exception.ToString() : " + ex.ToString();
 
-            // Form情報を出力するために、遷移方法をServer.Transferに変更。
+            // Form情報を出力するために、
+            // 遷移方法をServer.Transferに変更。
             // また、情報受け渡しを、HttpContextに変更。
-
             HttpContext.Current.Items.Add(FxHttpContextIndex.SYSTEM_EXCEPTION_MESSAGE, err_msg);
             HttpContext.Current.Items.Add(FxHttpContextIndex.SYSTEM_EXCEPTION_INFORMATION, err_info);
 

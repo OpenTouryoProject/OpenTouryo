@@ -31,13 +31,12 @@
 //*                                common properties,methods to get the shards 
 //**********************************************************************************
 
-// system
 using System.Configuration;
 using System.Collections.Generic;
+
 using System.Data.SqlClient;
-// Microsoft
 using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement;
-// Touryo
+
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Db

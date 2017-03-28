@@ -1,15 +1,13 @@
-﻿<%@ Page Language="vb" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx_testPublic_testScreen" ValidateRequest="false" Codebehind="testScreen.aspx.vb" %>
+﻿<%@ Page Language="VB" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestPublic.testScreen" ValidateRequest="false" Codebehind="testScreen.aspx.vb" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<!-- Copyright (C) 2007,2016 Hitachi Solutions,Ltd. -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" >
+<!DOCTYPE html>
+<html>
 <head runat="server">
     <title>無題のページ</title>
 </head>
 <body>
-    <form id="form1" runat="server">
+    <form id="form1" runat="server" autocomplete="on">
         <div>
             <a href="../start/menu.aspx">メニュー画面</a><br />
             <br />
@@ -123,11 +121,11 @@
                         <br />
                         <hr />
                         <br />
-                        ＜メッセージ取得＞<br />
+                        ＜Message取得＞<br />
                         <br />
-                        メッセージID：<cc1:WebCustomTextBox ID="txtMSGID" runat="server"></cc1:WebCustomTextBox><br />
-                        メッセージ記述：<cc1:WebCustomLabel ID="lblMSG" runat="server" Text="Label"></cc1:WebCustomLabel><br />
-                        <cc1:WebCustomButton ID="btnGetMSG" runat="server" Text="メッセージ記述の所得" Width="200px" OnClick="btnGetMSG_Click"/>
+                        MessageID：<cc1:WebCustomTextBox ID="txtMSGID" runat="server"></cc1:WebCustomTextBox><br />
+                        Message記述：<cc1:WebCustomLabel ID="lblMSG" runat="server" Text="Label"></cc1:WebCustomLabel><br />
+                        <cc1:WebCustomButton ID="btnGetMSG" runat="server" Text="Message記述の所得" Width="200px" OnClick="btnGetMSG_Click"/>
                         <br />
                     </td>
                     <td style="width:33%;vertical-align:top;">
@@ -259,9 +257,11 @@
                             </tr>
                         </table>
                         <hr />
-                        <cc1:WebCustomButton ID="btnSessionSize" runat="server" Text="Sessionサイズ" Width="100px" OnClick="btnSessionSize_Click"/><br />
-                        <cc1:WebCustomButton ID="btnImpersonation" runat="server" Text="偽装" Width="100px" OnClick="btnImpersonation_Click"/><br />
-                        <cc1:WebCustomButton ID="btnElse" runat="server" Text="その他" Width="100px" OnClick="btnElse_Click"/><br />
+                        <cc1:WebCustomButton ID="btnSessionSize" runat="server" Text="Sessionサイズ" Width="200px" OnClick="btnSessionSize_Click"/><br />
+                        <cc1:WebCustomButton ID="WebCustomButton1" runat="server" Text="Sessionサイズ(KB)" Width="200px" OnClick="btnSessionSizeKB_Click"/><br />
+                        <cc1:WebCustomButton ID="WebCustomButton2" runat="server" Text="Sessionサイズ(MB)" Width="200px" OnClick="btnSessionSizeMB_Click"/><br />
+                        <cc1:WebCustomButton ID="btnImpersonation" runat="server" Text="偽装" Width="200px" OnClick="btnImpersonation_Click"/><br />
+                        <cc1:WebCustomButton ID="btnElse" runat="server" Text="その他" Width="200px" OnClick="btnElse_Click"/><br />
                         出力：<cc1:WebCustomLabel ID="lblElse" runat="server"></cc1:WebCustomLabel>&nbsp;
                     </td>
                 </tr>

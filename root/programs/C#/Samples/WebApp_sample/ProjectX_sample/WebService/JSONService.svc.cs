@@ -1,6 +1,8 @@
 ﻿//**********************************************************************************
-//* フレームワーク・テスト画面
+//* フレームワーク・テスト API
 //**********************************************************************************
+
+//  API画面なので、必要に応じて流用 or 削除して下さい。
 
 //**********************************************************************************
 //* クラス名        ：JSONService
@@ -18,22 +20,20 @@
 //*  2015/06/08  Supragyan         Modified startIndex and maximumRows in method 'GetProductData()'    
 //**********************************************************************************
 
-//System
+using Newtonsoft.Json;
+
+using System.Text;
 using System.Data;
 using System.Web;
 using System.Collections.Specialized;
-using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
-using System.Text;
+using System.ServiceModel.Activation;
 using System.ServiceModel.Channels;
 
-//Touryo
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.Dto;
 
-//Newtonsoft
-using Newtonsoft.Json;
-
+/// <summary>ProjectX_sample</summary>
 namespace ProjectX_sample
 {
     /// <summary>
@@ -45,6 +45,7 @@ namespace ProjectX_sample
         /// <summary>
         /// GetProductData method for fetching product table data.
         /// </summary>
+        /// <returns>Message</returns>
         public Message GetProductData()
         {
             HttpContext.Current.Session["DAP"] = "SQL";

@@ -2,12 +2,14 @@
 //* フレームワーク・テストクラス（Ｂ層）
 //**********************************************************************************
 
+// テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
 //**********************************************************************************
 //* クラス名        ：LayerB_BatUpd
 //* クラス日本語名  ：Ｂ層（静的SQLのCRUD：Productsテーブル）
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
@@ -15,27 +17,12 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// 型情報
 using GenDaoAndBatUpd_sample.Common;
 
-// System
-using System;
-
-// データセット利用
 using System.Data;
 
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
 using Touryo.Infrastructure.Business.RichClient.Business;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
 using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.RichClient.Business;
-
-// 部品
-using Touryo.Infrastructure.Public.Util;
 
 namespace GenDaoAndBatUpd_sample.Business
 {

@@ -27,23 +27,19 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2011/04/18  西野  大介        新規作成
+//*  2011/04/18  西野 大介         新規作成
 //*  2012/04/05  西野 大介         \n → \r\n 化
 //*  2012/09/21  西野 大介         abstractを追加
+//*  2017/01/23  西野 大介         UseUnicodeAsNecessary廃止の対応
 //**********************************************************************************
 
-// System
 using System;
 using System.IO;
 using System.Text;
-using System.Collections.Generic;
 
-// Ionic
-using Ionic;
 using Ionic.Zip;
-using Ionic.Zlib;
 
-using System.Diagnostics;
+using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.IO
 {
@@ -275,11 +271,17 @@ namespace Touryo.Infrastructure.Public.IO
             // 4G以上のファイルがある時には、ZIP64を使用
             zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
 
-            // 必要に応じてUnicodeを使用
-            // （自動解凍書庫の文字化け対策）
+            // 警告 CS0618  'ZipFile.UseUnicodeAsNecessary' は旧形式です
+            // Beginning with v1.9.1.6 of DotNetZip, this property is obsolete.
+            // It will be removed in a future version of the library.
+            // Your applications should  use AlternateEncoding and AlternateEncodingUsage instead.'
+
+            // 必要に応じてUnicodeを使用（自動解凍書庫の文字化け対策）
             if (selfEx != null)
             {
-                zip.UseUnicodeAsNecessary = true;
+                // zip.UseUnicodeAsNecessary = true;
+                zip.AlternateEncoding = Encoding.GetEncoding(CustomEncode.shift_jis);
+                zip.AlternateEncodingUsage = ZipOption.AsNecessary;
             }
 
             // コメント付与

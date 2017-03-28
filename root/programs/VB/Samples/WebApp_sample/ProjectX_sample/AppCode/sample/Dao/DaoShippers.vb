@@ -1,4 +1,10 @@
 ﻿'**********************************************************************************
+'* Ｄ層 自動生成・テストクラス
+'**********************************************************************************
+
+' テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+
+'**********************************************************************************
 '* クラス名        ：DaoShippers
 '* クラス日本語名  ：自動生成Ｄａｏクラス
 '*
@@ -13,26 +19,8 @@
 '*  2013/09/09  西野  大介        ExecGenerateSQLメソッドを追加した（バッチ更新用）。
 '**********************************************************************************
 
-#Region "using"
-
-' System～
-Imports System
-Imports System.IO
-Imports System.Data
-Imports System.Collections
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Dao
-Imports Touryo.Infrastructure.Framework.Common
-
-' 部品
-Imports Touryo.Infrastructure.Public.Db
-Imports Touryo.Infrastructure.Public.Util
-
-' 業務フレームワーク
 Imports Touryo.Infrastructure.Business.Dao
-
-#End Region
+Imports Touryo.Infrastructure.Public.Db
 
 ''' <summary>自動生成Ｄａｏクラス</summary>
 Public Class DaoShippers

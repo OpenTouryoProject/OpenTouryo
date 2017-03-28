@@ -2,12 +2,14 @@
 '* サンプル アプリ画面
 '**********************************************************************************
 
+' テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
 '**********************************************************************************
 '* クラス名        ：Form1
 '* クラス日本語名  ：サンプル アプリ画面
 '*
 '* 作成日時        ：－
-'* 作成者          ：sas 生技
+'* 作成者          ：生技
 '* 更新履歴        ：
 '*
 '*  日時        更新者            内容
@@ -15,51 +17,13 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
 
-' Windowアプリケーション
-Imports System.Drawing
-Imports System.Windows.Forms
-Imports System.ComponentModel
-
-' 型情報
-Imports _2CSClientWin_sample.Common
 Imports _2CSClientWin_sample.Business
+Imports _2CSClientWin_sample.Common
 
-' System
-Imports System
-Imports System.IO
-Imports System.Xml
-Imports System.Text
-Imports System.Data
-Imports System.Collections
-
-' 業務フレームワーク
-Imports Touryo.Infrastructure.Business.Business
-Imports Touryo.Infrastructure.Business.Common
-Imports Touryo.Infrastructure.Business.Dao
-Imports Touryo.Infrastructure.Business.Exceptions
-Imports Touryo.Infrastructure.Business.Presentation
-Imports Touryo.Infrastructure.Business.Util
-
-Imports Touryo.Infrastructure.Business.RichClient.Asynchronous
 Imports Touryo.Infrastructure.Business.RichClient.Presentation
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Business
-Imports Touryo.Infrastructure.Framework.Common
-Imports Touryo.Infrastructure.Framework.Dao
-Imports Touryo.Infrastructure.Framework.Exceptions
-Imports Touryo.Infrastructure.Framework.Presentation
-Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Framework.Transmission
-
 Imports Touryo.Infrastructure.Framework.RichClient.Presentation
-
-' 部品
+Imports Touryo.Infrastructure.Framework.Util
 Imports Touryo.Infrastructure.Public.Db
-Imports Touryo.Infrastructure.Public.IO
-Imports Touryo.Infrastructure.Public.Log
-Imports Touryo.Infrastructure.Public.Str
-Imports Touryo.Infrastructure.Public.Util
 
 ''' <summary>サンプル アプリ画面</summary>
 Partial Public Class Form1
@@ -185,7 +149,12 @@ Partial Public Class Form1
     Protected Sub UOC_btnButton1_Click(ByVal rcFxEventArgs As RcFxEventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "SelectCount", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
+        Dim testParameterValue As New TestParameterValue(
+            Me.Name, rcFxEventArgs.ControlName, "SelectCount",
+            DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
         ' 戻り値
         Dim testReturnValue As TestReturnValue
@@ -195,7 +164,7 @@ Partial Public Class Form1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -217,7 +186,12 @@ Partial Public Class Form1
     Protected Sub UOC_btnButton2_Click(ByVal rcFxEventArgs As RcFxEventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "SelectAll_DT", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
+        Dim testParameterValue As New TestParameterValue(
+            Me.Name, rcFxEventArgs.ControlName, "SelectAll_DT",
+            DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
         ' 戻り値
         Dim testReturnValue As TestReturnValue
@@ -227,7 +201,7 @@ Partial Public Class Form1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -249,7 +223,12 @@ Partial Public Class Form1
     Protected Sub UOC_btnButton3_Click(ByVal rcFxEventArgs As RcFxEventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "SelectAll_DS", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
+        Dim testParameterValue As New TestParameterValue(
+            Me.Name, rcFxEventArgs.ControlName, "SelectAll_DS",
+            DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
         ' 戻り値
         Dim testReturnValue As TestReturnValue
@@ -259,7 +238,7 @@ Partial Public Class Form1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -281,7 +260,12 @@ Partial Public Class Form1
     Protected Sub UOC_btnButton4_Click(ByVal rcFxEventArgs As RcFxEventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "SelectAll_DR", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
+        Dim testParameterValue As New TestParameterValue(
+            Me.Name, rcFxEventArgs.ControlName, "SelectAll_DR",
+            DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
         ' 戻り値
         Dim testReturnValue As TestReturnValue
@@ -291,7 +275,7 @@ Partial Public Class Form1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -313,7 +297,12 @@ Partial Public Class Form1
     Protected Sub UOC_btnButton5_Click(ByVal rcFxEventArgs As RcFxEventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "SelectAll_DSQL", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
+        Dim testParameterValue As New TestParameterValue(
+            Me.Name, rcFxEventArgs.ControlName, "SelectAll_DSQL",
+            DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
         ' 動的SQLの要素を設定
         testParameterValue.OrderColumn = DirectCast(Me.ddlOrderColumn.SelectedItem, ComboBoxItem).Value
@@ -327,7 +316,7 @@ Partial Public Class Form1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -349,7 +338,12 @@ Partial Public Class Form1
     Protected Sub UOC_btnButton6_Click(ByVal rcFxEventArgs As RcFxEventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "Select", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
+        Dim testParameterValue As New TestParameterValue(
+            Me.Name, rcFxEventArgs.ControlName, "Select",
+            DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
         ' 情報の設定
         testParameterValue.ShipperID = Integer.Parse(Me.textBox1.Text)
@@ -362,7 +356,7 @@ Partial Public Class Form1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -390,7 +384,12 @@ Partial Public Class Form1
     Protected Sub UOC_btnButton7_Click(ByVal rcFxEventArgs As RcFxEventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "Insert", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
+        Dim testParameterValue As New TestParameterValue(
+            Me.Name, rcFxEventArgs.ControlName, "Insert",
+            DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
         ' 情報の設定
         testParameterValue.CompanyName = Me.textBox2.Text
@@ -404,7 +403,7 @@ Partial Public Class Form1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -426,7 +425,12 @@ Partial Public Class Form1
     Protected Sub UOC_btnButton8_Click(ByVal rcFxEventArgs As RcFxEventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "Update", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
+        Dim testParameterValue As New TestParameterValue(
+            Me.Name, rcFxEventArgs.ControlName, "Update",
+            DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
         ' 情報の設定
         testParameterValue.ShipperID = Integer.Parse(Me.textBox1.Text)
@@ -441,7 +445,7 @@ Partial Public Class Form1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア
@@ -463,7 +467,12 @@ Partial Public Class Form1
     Protected Sub UOC_btnButton9_Click(ByVal rcFxEventArgs As RcFxEventArgs)
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        Dim testParameterValue As New TestParameterValue(Me.Name, rcFxEventArgs.ControlName, "Delete", DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" & DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
+        Dim testParameterValue As New TestParameterValue(
+            Me.Name, rcFxEventArgs.ControlName, "Delete",
+            DirectCast(Me.ddlDap.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode1.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlMode2.SelectedItem, ComboBoxItem).Value & "%" &
+            DirectCast(Me.ddlExRollback.SelectedItem, ComboBoxItem).Value, MyBaseControllerWin.UserInfo)
 
         ' 情報の設定
         testParameterValue.ShipperID = Integer.Parse(textBox1.Text)
@@ -476,7 +485,7 @@ Partial Public Class Form1
 
         ' Ｂ層呼出し＋都度コミット
         Dim layerB__1 As New LayerB()
-        testReturnValue = DirectCast(layerB__1.DoBusinessLogic(testParameterValue, iso), TestReturnValue)
+        testReturnValue = layerB__1.DoBusinessLogic(testParameterValue, iso)
         LayerB.CommitAndClose()
 
         ' 結果表示するメッセージ エリア

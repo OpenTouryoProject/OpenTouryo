@@ -1,21 +1,33 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.testFxLayerP.table.testJQGridJson" EnableEventValidation="false" Codebehind="testJQGridJson.aspx.cs" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreenNoJs.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.Table.testJQGridJson" EnableEventValidation="false" Codebehind="testJQGridJson.aspx.cs" %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title></title>
-    <link href="<%= this.ResolveClientUrl("~/Content/themes/base/all.css") %>" rel="stylesheet" type="text/css" />
-    <link href="<%= this.ResolveClientUrl("~/Content/jquery.jqGrid/ui.jqgrid.css") %>" rel="stylesheet" type="text/css" />
-    <script src="<%= this.ResolveClientUrl("~/Scripts/jquery-2.1.3.min.js") %>" type="text/javascript"></script>
-    <script src="<%= this.ResolveClientUrl("~/Scripts/jquery-ui-1.11.2.min.js") %>" type="text/javascript"></script>
-    <script src="<%= this.ResolveClientUrl("~/Scripts/i18n/grid.locale-da.js") %>" type="text/javascript"></script>
-    <script src="<%= this.ResolveClientUrl("~/Scripts/jquery.jqGrid.min.js") %>" type="text/javascript"></script>
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqgrid/4.6.0/css/ui.jqgrid.css" rel="stylesheet" type="text/css" />
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" runat="Server">
+    <div>
+        <table id="list">
+        </table>
+        <br />
+        <table id="list2">
+        </table>
+        <div id="pager">
+        </div>
+    </div>
+</asp:Content>
+
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" runat="Server">
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.3.min.js" type="text/javascript"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqgrid/4.6.0/js/i18n/grid.locale-ja.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqgrid/4.6.0/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+
     <script type="text/javascript">
-
         $(function () {
             $('#list').jqGrid({
-                url: '<%=ResolveUrl("~/WebService/JSONService.svc/GetProductData")%>',
+                url: '<% = ResolveUrl("~/WebService/JSONService.svc/GetProductData")%>',
                 datatype: 'json',
                 colNames: ['ProductID', 'ProductName', 'SupplierID', 'CategoryID', 'QuantityPerUnit', 'UnitPrice', 'UnitsInStock', 'UnitsOnOrder', 'ReorderLevel', 'Discontinued'],
                 colModel: [
@@ -63,8 +75,8 @@
                 sortorder: 'desc',
                 loadonce: false,
                 beforeProcessing: function (data, status, xhr) {  // レスポンスの受信時に呼び出されるイベント
-                    // サーバからエラーが返ってきた場合にダイアログを表示し、以降の処理を中止する
-                    //Check current page number will not be greater than maximum page
+                    // サーバからエラーが返ってきた場合にDialogを表示し、以降の処理を中止する
+                    // Check current page number will not be greater than maximum page
                     if ((data.page) > (data.total)) {
                         alert("You will not specify a greater than value to the maximum page");
                         return false;
@@ -75,18 +87,4 @@
             $('#list2').navGrid('#pager', { del: false, add: false, edit: false, search: true, refresh: true });
         });
     </script>
-</head>
-<body>
-    <form id="form1" runat="server">
-    <div>
-        <table id="list">
-        </table>
-        <br />
-        <table id="list2">
-        </table>
-        <div id="pager">
-        </div>
-    </div>
-    </form>
-</body>
-</html>
+</asp:Content>

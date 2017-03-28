@@ -1,9 +1,11 @@
 ﻿'**********************************************************************************
-'* Global.asax
+'* テンプレート
 '**********************************************************************************
 
+' サンプル中のテンプレートなので、必要に応じて流用して下さい。
+
 '**********************************************************************************
-'* クラス名        ：MvcApplication
+'* クラス名        ：Global
 '* クラス日本語名  ：Global.asaxのコード ビハインド
 '*
 '* 作成日時        ：－
@@ -13,51 +15,49 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+'*  2011/12/07  西野 大介         Application_ErrorにACCESSログを追加
+'*  2012/04/05  西野 大介         Application_OnPreRequestHandlerExecute
+'*                                OnPostRequestHandlerExecuteにACCESSログを追加
 '**********************************************************************************
 
-Imports System
-Imports System.Collections.Generic
-Imports System.Linq
-Imports System.Web
-Imports System.Web.Http
-Imports System.Web.Mvc
-Imports System.Web.Optimization
-Imports System.Web.Routing
+Imports Touryo.Infrastructure.Public.Log
+Imports Touryo.Infrastructure.Public.Util
 
-' メモ: IIS6 または IIS7 のクラシック モードの詳細については、
-' http://go.microsoft.com/?LinkId=9394801 を参照してください
+''' <summary>Global.asax class </summary>
+Public Class [Global]
+    Inherits HttpApplication
+    '//////////////////////////////////////////////////////////////////////////////
+    ' Global_asaxのメンバ変数(インスタンス変数）はスレッドセーフ
+    '//////////////////////////////////////////////////////////////////////////////
 
-Public Class MvcApplication
-    Inherits System.Web.HttpApplication
+    ' ここにインスタンス変数を定義した場合、これは、各スレッドに割り当てられる。
+    ' 故に、マルチスレッド（ユーザ）のASP.NETアプリケーションでも競合しない。
+    ' http:// support.microsoft.com/kb/312607/ja
 
-    '''''''''''''''''''''''''''''''''''''''''''
+    ' ---
+
+    ' 静的変数の場合は競合する。
+
+    ' ASP.NET1.0、1.1では、Applicationオブジェクトではなく、静的変数の使用が推奨されていたが、
+    ' ASP.NET2.0では、静的変数が使用できないので、静的変数ではなく、Applicationオブジェクトを
+    ' 使用する（ただし、Applicationオブジェクトも競合するので注意する）。
+
+    ''' <summary>性能測定</summary>                                                       
+    Private perfRec As PerformanceRecorder
+
+    '//////////////////////////////////////////////////////////////////////////////
     ' イベント ハンドラ
-    '''''''''''''''''''''''''''''''''''''''''''
+    '//////////////////////////////////////////////////////////////////////////////
 
-    '''''''''''''''''''''''''''''''''''''''''''
+    '////////////////////////////////////////////////
     ' アプリケーションの開始、終了に関するイベント
-    '''''''''''''''''''''''''''''''''''''''''''
+    '////////////////////////////////////////////////
 
     ''' <summary>
     ''' アプリケーションの開始に関するイベント
     ''' </summary>
-    Protected Sub Application_Start(sender As Object, e As EventArgs)
+    Private Sub Application_Start(sender As Object, e As EventArgs)
         ' アプリケーションのスタートアップで実行するコード
-
-        ' 
-        AreaRegistration.RegisterAllAreas()
-
-        ' 
-        WebApiConfig.Register(GlobalConfiguration.Configuration)
-
-        ' グローバルフィルタの登録
-        FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters)
-
-        ' ルート定義の登録
-        RouteConfig.RegisterRoutes(RouteTable.Routes)
-
-        ' バンドル＆ミニフィケーションの登録
-        BundleConfig.RegisterBundles(BundleTable.Bundles)
     End Sub
 
     ''' <summary>
@@ -67,20 +67,40 @@ Public Class MvcApplication
         ' アプリケーションのシャットダウンで実行するコード
     End Sub
 
-    '''''''''''''''''''''''''''''''''''''''''''
+    '////////////////////////////////////////////////
     ' アプリケーションのエラーに関するイベント
-    '''''''''''''''''''''''''''''''''''''''''''
+    '////////////////////////////////////////////////
 
     ''' <summary>
     ''' アプリケーションのエラーに関するイベント
     ''' </summary>
-    Protected Sub Application_Error(sender As Object, e As EventArgs)
+    Private Sub Application_Error(sender As Object, e As EventArgs)
         ' ハンドルされていないエラーが発生したときに実行するコード
+
+        Dim ex As Exception = Server.GetLastError().GetBaseException()
+        'Server.ClearError(); // Server.GetLastError()をクリア
+
+        ' ACCESSログ出力 ----------------------------------------------
+
+        ' ------------
+        ' メッセージ部
+        ' ------------
+        ' ユーザ名, IPアドレス,レイヤ, 
+        ' 画面名, コントロール名, メソッド名, 処理名
+        ' 処理時間（実行時間）, 処理時間（CPU時間）
+        ' エラーメッセージID, エラーメッセージ等
+        ' ------------
+        Dim strLogMessage As String = ("," & "－" & ",") + Request.UserHostAddress & "," & "－" & "," & "Global.asax" & "," & "Application_Error" & ",,,,," & ex.ToString()
+
+        ' Log4Netへログ出力
+        LogIF.FatalLog("ACCESS", strLogMessage)
+
+        ' -------------------------------------------------------------
     End Sub
 
-    '''''''''''''''''''''''''''''''''''''''''''
+    '////////////////////////////////////////////////
     ' セッションの開始、終了に関するイベント
-    '''''''''''''''''''''''''''''''''''''''''''
+    '////////////////////////////////////////////////
 
     ''' <summary>
     ''' セッションの開始に関するイベント
@@ -100,11 +120,11 @@ Public Class MvcApplication
 
     End Sub
 
-    '''''''''''''''''''''''''''''''''''''''''''
+    '//////////////////////////////////////////////////////////////////////////////
     ' ASP.NETパイプライン処理のイベント ハンドラ
-    '''''''''''''''''''''''''''''''''''''''''''
+    '//////////////////////////////////////////////////////////////////////////////
 
-    '''''''''''''''''''''''''''''''''''''''''''
+    '////////////////////////////////////////////////
 
     ' Global.asaxが対応しているASP.NETパイプライン処理のイベント ハンドラの一覧
     ' -----------------------------------------------------------------------------------
@@ -141,87 +161,113 @@ Public Class MvcApplication
     ''' ① リクエスト処理を開始する前に発生
     ''' </summary>
     Private Sub Application_OnBeginRequest(sender As Object, e As EventArgs)
-        System.Diagnostics.Debug.WriteLine("Application_OnBeginRequest")
     End Sub
 
     ''' <summary>
     ''' ② 認証の直前に発生
     ''' </summary>
     Private Sub Application_OnAuthenticateRequest(sender As Object, e As EventArgs)
-        System.Diagnostics.Debug.WriteLine("Application_OnAuthenticateRequest")
     End Sub
 
     ''' <summary>
     ''' ③ 認証が完了したタイミングで発生
     ''' </summary>
     Private Sub Application_OnAuthorizeRequest(sender As Object, e As EventArgs)
-        System.Diagnostics.Debug.WriteLine("Application_OnAuthorizeRequest")
     End Sub
 
     ''' <summary>
     ''' ④ リクエストをキャッシングするタイミングで発生
     ''' </summary>
     Private Sub Application_OnResolveRequestCache(sender As Object, e As EventArgs)
-        System.Diagnostics.Debug.WriteLine("Application_OnResolveRequestCache")
     End Sub
 
     ''' <summary>
     ''' ⑤ セッション状態などを取得するタイミングで発生
     ''' </summary>
     Private Sub Application_OnAcquireRequestState(sender As Object, e As EventArgs)
-        System.Diagnostics.Debug.WriteLine("Application_OnAcquireRequestState")
     End Sub
 
     ''' <summary>
     ''' ⑥ ページの実行を開始する直前に発生
     ''' </summary>
     Private Sub Application_OnPreRequestHandlerExecute(sender As Object, e As EventArgs)
-        System.Diagnostics.Debug.WriteLine("Application_OnPreRequestHandlerExecute")
+        ' ------------
+        ' メッセージ部
+        ' ------------
+        ' ユーザ名, IPアドレス, レイヤ, 
+        ' 画面名, コントロール名, メソッド名, 処理名
+        ' ------------
+        Dim strLogMessage As String = ("," & "－" & ",") + Request.UserHostAddress & "," & "-----↓" & "," & "Global.asax" & "," & "Application_OnPreRequest"
+
+        ' Log4Netへログ出力
+        LogIF.DebugLog("ACCESS", strLogMessage)
+
+        ' -------------------------------------------------------------
+
+        ' 性能測定開始
+        Me.perfRec = New PerformanceRecorder()
+        Me.perfRec.StartsPerformanceRecord()
     End Sub
 
-    '''''''''''''''''''''''''''''''''''''''''''
+    '////////////////////////////////////////////////////////////////
     ' ページの実行が⑥～⑦の間に入る。
-    '''''''''''''''''''''''''''''''''''''''''''
+    '////////////////////////////////////////////////////////////////
 
     ''' <summary>
     ''' ⑦ ページの実行を完了した直後に発生
     ''' </summary>
     Private Sub Application_OnPostRequestHandlerExecute(sender As Object, e As EventArgs)
-        System.Diagnostics.Debug.WriteLine("Application_OnPostRequestHandlerExecute")
+        ' nullチェック
+        ' なにもしない
+        If Me.perfRec Is Nothing Then
+        Else
+            ' 性能測定終了
+            Me.perfRec.EndsPerformanceRecord()
+
+            ' ACCESSログ出力-----------------------------------------------
+
+            ' ------------
+            ' メッセージ部
+            ' ------------
+            ' ユーザ名, IPアドレス, レイヤ, 
+            ' 画面名, コントロール名, メソッド名, 処理名
+            ' 処理時間（実行時間）, 処理時間（CPU時間）
+            ' ------------
+            Dim strLogMessage As String = ("," & "－" & ",") + Request.UserHostAddress & "," & "-----↑" & "," & "Global.asax" & "," & "Application_OnPostRequest" & "," & "－" & "," & "－" & "," & Convert.ToString(Me.perfRec.ExecTime) & "," & Convert.ToString(Me.perfRec.CpuTime)
+
+            ' Log4Netへログ出力
+            LogIF.DebugLog("ACCESS", strLogMessage)
+        End If
     End Sub
 
     ''' <summary>
     ''' ⑧ すべての処理を完了したタイミングで発生
     ''' </summary>
     Private Sub Application_OnReleaseRequestState(sender As Object, e As EventArgs)
-        System.Diagnostics.Debug.WriteLine("Application_OnReleaseRequestState")
     End Sub
 
     ''' <summary>
     ''' ⑨ 出力キャッシュを更新したタイミングで発生
     ''' </summary>
     Private Sub Application_OnUpdateRequestCache(sender As Object, e As EventArgs)
-        System.Diagnostics.Debug.WriteLine("Application_OnUpdateRequestCache")
     End Sub
 
     ''' <summary>
     ''' ⑩ すべてのリクエスト処理が完了したタイミングで発生
     ''' </summary>
     Private Sub Application_OnEndRequest(sender As Object, e As EventArgs)
-        System.Diagnostics.Debug.WriteLine("Application_OnEndRequest")
     End Sub
 
     ''' <summary>
     ''' ⑪ ヘッダをクライアントに送信する直前に発生
     ''' </summary>
     Private Sub Application_OnPreSendRequestHeaders(sender As Object, e As EventArgs)
-        System.Diagnostics.Debug.WriteLine("Application_OnPreSendRequestHeaders")
     End Sub
 
     ''' <summary>
     ''' ⑫ コンテンツをクライアントに送信する直前に発生
     ''' </summary>
     Private Sub Application_OnPreSendRequestContent(sender As Object, e As EventArgs)
-        System.Diagnostics.Debug.WriteLine("Application_OnPreSendRequestContent")
     End Sub
+
 End Class

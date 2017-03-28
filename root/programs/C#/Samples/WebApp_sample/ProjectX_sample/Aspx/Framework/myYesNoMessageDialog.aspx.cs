@@ -1,10 +1,26 @@
 ﻿//**********************************************************************************
-//* サンプル
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
+#region Apache License
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+#endregion
+
 //**********************************************************************************
-//* クラス名        ：Aspx_Framework_myYesNoMessageDialog
-//* クラス日本語名  ：「YES」・「NO」メッセージ・ダイアログ（サンプル ※ プロジェクト毎、必要に応じて改修）
+//* クラス名        ：myYesNoMessageDialog
+//* クラス日本語名  ：「YES」・「NO」Message Dialog
 //*
 //* 作成日時        ：－
 //* 作成者          ：－
@@ -15,35 +31,19 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System
 using System;
-using System.Data;
-using System.Configuration;
-using System.Collections;
-
-// System.Web
 using System.Web;
 using System.Web.Security;
 
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
-
-// 業務フレームワーク
 using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Framework.Exceptions;
-
-// 部品
-using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Log;
+using Touryo.Infrastructure.Public.Util;
 
 namespace ProjectX_sample.Aspx.Framework
 {
-    /// <summary>「YES」・「NO」メッセージ・ダイアログ</summary>
+    /// <summary>「YES」・「NO」Message Dialog</summary>
     /// <remarks>サンプル ※ プロジェクト毎、必要に応じて改修</remarks>
     public partial class myYesNoMessageDialog : System.Web.UI.Page
     {
@@ -54,7 +54,7 @@ namespace ProjectX_sample.Aspx.Framework
             string parentScreenGuid
                 = (string)Request.QueryString[FxHttpQueryStringIndex.PARENT_SCREEN_GUID];
 
-            // メッセージIDとメッセージをセッションより取得し、設定
+            // MessageIDとMessageをセッションより取得し、設定
             this.lblmessage.Text =
                 (string)Session[parentScreenGuid + FxHttpSessionIndex.MODAL_DIALOG_MESSAGE];
 
@@ -90,12 +90,12 @@ namespace ProjectX_sample.Aspx.Framework
             // ACCESSログ出力 ----------------------------------------------
 
             // ------------
-            // メッセージ部
+            // Message部
             // ------------
             // ユーザ名, IPアドレス,
-            // レイヤ, 画面名, コントロール名, 処理名
+            // レイヤ, 画面名, Control名, 処理名
             // 処理時間（実行時間）, 処理時間（CPU時間）
-            // エラーメッセージID, エラーメッセージ等
+            // Error MessageID, Error Message等
             // ------------
             string strLogMessage =
                 "," + this.GetUserInfo().UserName +

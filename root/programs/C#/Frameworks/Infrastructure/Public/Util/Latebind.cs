@@ -27,37 +27,21 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2009/04/15  西野  大介        新規作成
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2009/04/15  西野 大介         新規作成
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#11 ： レイトバインド（assemblyが存在しない場合）
-//*  2009/08/10  西野  大介        メソッドが無くても例外をスローしないメソッドを追加
-//*  2010/10/21  西野  大介        NonPublic.etc対応（GetMethodとInvokeMemberに適用）
-//*  2010/10/21  西野  大介        リファクタリング＋メソッド追加の実施
-//*  2010/11/19  西野  大介        オーバーロード メソッド対応
-//*  2011/02/08  西野  大介        リファクタリング（CheckTypeOfMethodByName）
-//*  2012/08/25  西野  大介        Assembly.LoadFile → .Load（ASP.NETシャドウコピー対応）
-//*  2015/12/22  Sai            Replaced substring method with EndsWith string method in first Invoke method.
-//*  2016/01/08  Sai            Added ToLower method in first Invoke method.
+//*  2009/08/10  西野 大介         メソッドが無くても例外をスローしないメソッドを追加
+//*  2010/10/21  西野 大介         NonPublic.etc対応（GetMethodとInvokeMemberに適用）
+//*  2010/10/21  西野 大介         リファクタリング＋メソッド追加の実施
+//*  2010/11/19  西野 大介         オーバーロード メソッド対応
+//*  2011/02/08  西野 大介         リファクタリング（CheckTypeOfMethodByName）
+//*  2012/08/25  西野 大介         Assembly.LoadFile → .Load（ASP.NETシャドウコピー対応）
+//*  2015/12/22  Sai               Replaced substring method with EndsWith string method in first Invoke method.
+//*  2016/01/08  Sai               Added ToLower method in first Invoke method.
 //**********************************************************************************
 
-using System.Reflection;
-
-// System
 using System;
-using System.IO;
-using System.Xml;
-using System.Text;
-using System.Collections;
-
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
+using System.Reflection;
 
 namespace Touryo.Infrastructure.Public.Util
 {

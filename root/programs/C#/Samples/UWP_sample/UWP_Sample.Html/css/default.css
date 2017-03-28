@@ -1,0 +1,28 @@
+﻿body {
+	position: relative;
+	left: 0;
+	overflow-x: hidden;
+}
+#slide_menu {
+	position: fixed;
+	top: 0;
+	left: -280px;
+	width: 280px;
+	height: 100%;
+    background: #243B71;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#slide_menu span, #slide_menu label {
+    color: white;
+}
+
+/*.container, .row, .row div {
+    margin: 0;
+    padding: 0;
+}*/
+
+.row button {
+    width: 100%;
+}

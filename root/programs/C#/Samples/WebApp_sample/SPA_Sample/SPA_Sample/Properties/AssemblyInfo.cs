@@ -1,5 +1,23 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿//**********************************************************************************
+//* ASP.NET SPA・サンプル アプリ
+//**********************************************************************************
+
+// テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
+//**********************************************************************************
+//* クラス名        ：AssemblyInfo
+//* クラス日本語名  ：AssemblyInfo設定
+//*
+//* 作成日時        ：－
+//* 作成者          ：生技
+//* 更新履歴        ：
+//*
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//**********************************************************************************
+
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 // アセンブリに関する一般情報は、以下の属性セットによって 
@@ -8,9 +26,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SPA_Sample")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("日立ソリューションズ")]
+[assembly: AssemblyCompany("xxxx")]
 [assembly: AssemblyProduct("SPA_Sample")]
-[assembly: AssemblyCopyright("Copyright © 日立ソリューションズ 2014")]
+[assembly: AssemblyCopyright("Copyright (C) 20XX")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

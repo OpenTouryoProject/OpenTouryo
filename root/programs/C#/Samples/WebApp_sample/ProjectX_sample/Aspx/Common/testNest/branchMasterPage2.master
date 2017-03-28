@@ -1,9 +1,7 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/Aspx/Common/testNest/branchMasterPage1.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Common.testNest.branchMasterPage2" Codebehind="branchMasterPage2.master.cs" %>
+﻿<%@ Master Language="C#" MasterPageFile="~/Aspx/Common/TestNest/branchMasterPage1.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Common.TestNest.branchMasterPage2" Codebehind="branchMasterPage2.master.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_AA" Runat="Server">
-    <!-- All Rights Reserved, Copyright (C) 2007,2012 Hitachi Solutions,Ltd. -->
-    
     <cc1:WebCustomLabel id="lblTestAA" runat="server">bmp2のC_AAのlblTestAA</cc1:WebCustomLabel><br/>
     <cc1:WebCustomButton ID="btnButtonAA" runat="server" Text="bmp2のC_AAのbtnButtonAA" Width="200px" /><br/>
     <hr/>
@@ -82,8 +80,6 @@
 </asp:Content>
 
 <asp:Content ID="Content7" ContentPlaceHolderID="ContentPlaceHolder_CA" Runat="Server">
-    <!-- All Rights Reserved, Copyright (C) 2007,2012 Hitachi Solutions,Ltd. -->
-    
     <cc1:WebCustomLabel id="lblTestCA" runat="server">bmp2のC_CAのlblTestCA</cc1:WebCustomLabel><br/>
     <cc1:WebCustomButton ID="btnButtonCA" runat="server" Text="bmp2のC_CAのbtnButtonCA" Width="200px" /><br/>
     <hr/>
@@ -114,10 +110,13 @@
     <cc1:WebCustomButton ID="btnButtonCC" runat="server" Text="bmp2のC_CCのbtnButtonCC" Width="200px" /><br/>
     <hr/>
     <asp:ContentPlaceHolder id="ContentPlaceHolder_CCA" runat="server">
+        This is Default Content -- Override on Page
     </asp:ContentPlaceHolder>
     <asp:ContentPlaceHolder id="ContentPlaceHolder_CCB" runat="server">
+        This is Default Content -- Override on Page
     </asp:ContentPlaceHolder>
     <asp:ContentPlaceHolder id="ContentPlaceHolder_CCC" runat="server">
+        This is Default Content -- Override on Page
     </asp:ContentPlaceHolder>
     <hr/>
 </asp:Content>

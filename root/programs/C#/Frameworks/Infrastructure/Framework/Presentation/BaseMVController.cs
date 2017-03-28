@@ -27,25 +27,20 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2015/10/27  Sai              Created new class and moved the code of SessionTimeout from OnActionExecuting
-//*                               method in MyBaseMVController to this class.
+//*  2015/10/27  Sai              Created new class and moved the code of SessionTimeout
+//*                               from OnActionExecuting method in MyBaseMVController to this class.
 //*                               Removed unnecessary log information.
-//*                                 
+//*  2017/01/23  西野 大介        ログ実装はココではないので削除。
+//*  2013/01/23  西野 大介        FxSessionAbandonメソッドの追加を行った。
 //**********************************************************************************
 
-// System
 using System;
 
-// System.Web
 using System.Web;
 using System.Web.Mvc;
 
-// フレームワーク
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
-
-// 部品
-using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Presentation
@@ -155,11 +150,16 @@ namespace Touryo.Infrastructure.Framework.Presentation
             }
 
             #endregion
+        }
 
-            string strLogMessage = "OnActionExecuting" + " - " + filterContext.Controller.ToString() + " - "
-                             + filterContext.ActionDescriptor.ActionName;
-
-            LogIF.InfoLog("ACCESS", strLogMessage);
+        /// <summary>セッションを消去</summary>
+        /// <remarks>併せてSessionタイムアウト検出用Cookieを消去</remarks>
+        protected void FxSessionAbandon()
+        {
+            // Set-Cookie HTTPヘッダをレスポンス
+            Response.Cookies.Set(FxCmnFunction.DeleteCookieForSessionTimeoutDetection());
+            // セッションを消去
+            Session.Abandon();
         }
     }
 }

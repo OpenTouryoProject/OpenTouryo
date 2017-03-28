@@ -27,11 +27,11 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2008/xx/xx  西野  大介        新規作成
-//*  2008/10/20  西野  大介        問題点の修正
-//*  2008/12/18  西野  大介        MySQL対応
-//*  2009/05/02  西野  大介        配列バインド対応と、型推測モードの実装
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2008/xx/xx  西野 大介         新規作成
+//*  2008/10/20  西野 大介         問題点の修正
+//*  2008/12/18  西野 大介         MySQL対応
+//*  2009/05/02  西野 大介         配列バインド対応と、型推測モードの実装
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#3  ： 配列バインド対応方法を「手動」にする。
 //*                                ・#24 ： 空値でセーブした場合エラーとなる。
 //*                                ・#25 ： DataReader＋トランザクション制御部分の見直し。
@@ -39,74 +39,51 @@
 //*                                ・#27 ： 接続時、コミット/ロールバックが活性になる。
 //*                                ・#28 ： 「に保存」ボタン押下時、「閉じる」「上書き」ボタン活性
 //*                                ・#x  ： デバッグ用に機能追加。
-//*  2009/08/12  西野  大介        比較演算子の向きを「<」に統一した。
-//*  2009/09/18  西野  大介        比較/論理演算の記述部を括弧を付与（可読性）。
-//*  2009/09/25  西野  大介        実行時、性能測定機能を追加した。
-//*  2010/02/18  西野  大介        データプロバイダ追加（HiRDB、PostgreSQL）
-//*  2012/02/09  西野  大介        HiRDBデータプロバイダのコメントアウト（（ソフト）対応せず）
-//*  2012/02/09  西野  大介        OLEDB、ODBCのデータプロバイダ対応
-//*  2012/09/28  西野  大介        ファイル実行箇所明示、IDE・D&D機能追加
-//*  2013/03/05  西野  大介        「閉じる」で保存されないまま画面上のクエリが消える現象を修正
-//*  2013/03/05  西野  大介        「閉じる」に、キャンセルボタンを追加
-//*  2014/01/20  西野  大介        「保存」時のエンコーディング制御方式を見直し。
-//*  2014/01/20  西野  大介        「保存」時のエンコーディング制御方式を見直し。
-//*  2014/02/05  西野  大介        System.Data.OracleClientデータプロバイダ対応
-//*
-//*  2014/04/24  Rituparna         Created Resource files for UI language changes and moved the English 
-//*                                and Japanese languages to proper Resouce files.Changed the control size
-//*                                to adjust the text properly in different languages.
-//*  2014/04/25  Rituparna         Created Resource folder and Resource.ja-JP.resx,Resource.resx files inside
-//*                                the Resource folder.Added proper key and values in those files for English and
-//*                                Japanese languages.
-//*  2014/05/12  Rituparna         Removed <start> and <End> tags
-//*  2015/07/19  Sandeep           Improved UI of tools and button controls
-//*  2015/10/28  Sandeep           Optimized messages in the resource file and implemented code to format it
+//*  2009/08/12  西野 大介         比較演算子の向きを「<」に統一した。
+//*  2009/09/18  西野 大介         比較/論理演算の記述部を括弧を付与（可読性）。
+//*  2009/09/25  西野 大介         実行時、性能測定機能を追加した。
+//*  2010/02/18  西野 大介         データプロバイダ追加（HiRDB、PostgreSQL）
+//*  2012/02/09  西野 大介         HiRDBデータプロバイダのコメントアウト（（ソフト）対応せず）
+//*  2012/02/09  西野 大介         OLEDB、ODBCのデータプロバイダ対応
+//*  2012/09/28  西野 大介         ファイル実行箇所明示、IDE・D&D機能追加
+//*  2013/03/05  西野 大介         「閉じる」で保存されないまま画面上のクエリが消える現象を修正
+//*  2013/03/05  西野 大介         「閉じる」に、キャンセルボタンを追加
+//*  2014/01/20  西野 大介         「保存」時のエンコーディング制御方式を見直し。
+//*  2014/01/20  西野 大介         「保存」時のエンコーディング制御方式を見直し。
+//*  2014/02/05  西野 大介         System.Data.OracleClientデータプロバイダ対応
+//*  2014/04/24  Rituparna         Created Resource files for UI language changes and moved the English and Japanese languages
+//*                                to proper Resouce files.Changed the control size to adjust the text properly in different languages.
+//*  2014/04/25  Rituparna         Created Resource folder and Resource.ja-JP.resx,Resource.resx files inside the Resource folder.
+//*                                Added proper key and values in those files for English and Japanese languages.
+//*  2014/05/12  Rituparna         Removed <start> and <End> tags.
+//*  2015/07/19  Sandeep           Improved UI of tools and button controls.
+//*  2015/10/28  Sandeep           Optimized messages in the resource file and implemented code to format it.
 //**********************************************************************************
 
-// デバッグ
-using System.Diagnostics;
-
+// --------------------
 // データプロバイダ
+// --------------------
 using System.Data.SqlClient;
+using Oracle.DataAccess.Client;
 using System.Data.OleDb;
 using System.Data.Odbc;
-//using System.Data.OracleClient;
-using Oracle.DataAccess.Client;
-using IBM.Data.DB2;
-//using Hitachi.HiRDB;
-using MySql.Data.MySqlClient;
 using Npgsql;
-using NpgsqlTypes;
+using MySql.Data.MySqlClient;
+using IBM.Data.DB2;
+using Hitachi.HiRDB;
+// --------------------
 
-// Windowアプリケーション
-using System.Drawing;
-using System.Windows.Forms;
-using System.ComponentModel;
-
-// System
 using System;
 using System.IO;
-using System.Xml;
 using System.Text;
 using System.Data;
-using System.Collections;
+using System.Drawing;
+using System.Resources;
+using System.Windows.Forms;
 
-using System.Threading;
-using System.Configuration;
-using System.Globalization;
-
-// 業務フレームワーク（参照しない）
-// フレームワーク（参照しない）
-
-// 部品
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
-
-using System.Resources;
-using DPQuery_Tool.Properties;
 
 namespace DPQuery_Tool
 {

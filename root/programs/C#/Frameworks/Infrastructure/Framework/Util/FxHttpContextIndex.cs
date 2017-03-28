@@ -27,14 +27,11 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2007/xx/xx  西野  大介        新規作成
-//*  2009/03/13  西野  大介        ラベルの追加
-//*  2009/07/31  西野  大介        ラベルの追加
-//*  2013/12/23  西野  大介        アクセス修飾子をすべてpublicに変更した。
+//*  2007/xx/xx  西野 大介         新規作成
+//*  2009/03/13  西野 大介         ラベルの追加
+//*  2009/07/31  西野 大介         ラベルの追加
+//*  2013/12/23  西野 大介         アクセス修飾子をすべてpublicに変更した。
 //**********************************************************************************
-
-// System
-using System;
 
 namespace Touryo.Infrastructure.Framework.Util
 {
@@ -54,6 +51,9 @@ namespace Touryo.Infrastructure.Framework.Util
 
         /// <summary>システムエラー発生時、セッション削除フラグをHttpContextに設定～取得するためのキー</summary>
         public const string SESSION_ABANDON_FLAG = "SessionAbandonFlag";
+
+        /// <summary>システムエラー発生時、セッション削除フラグをHttpContextに設定～取得するためのキー</summary>
+        public const string FORMS_INFORMATION = "FormsInformation";
 
         #endregion
     }

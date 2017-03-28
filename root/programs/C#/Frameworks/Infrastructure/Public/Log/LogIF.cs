@@ -27,33 +27,13 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2007/xx/xx  西野  大介        新規作成
-//*  2008/09/19  西野  大介        WebLogManagerクラスの設計不良に対応したIF変更に対応
-//*  2009/01/28  西野  大介        クラス名の変更（WebLog → LogIF）
-//*  2012/03/16  西野  大介        ログ・レベル情報取得インターフェイスの追加
+//*  2007/xx/xx  西野 大介         新規作成
+//*  2008/09/19  西野 大介         WebLogManagerクラスの設計不良に対応したIF変更に対応
+//*  2009/01/28  西野 大介         クラス名の変更（WebLog → LogIF）
+//*  2012/03/16  西野 大介         ログ・レベル情報取得インターフェイスの追加
 //**********************************************************************************
 
-// log4net
-using log4net.Config;
 using log4net.Repository.Hierarchy;
-
-// System
-using System;
-using System.IO;
-using System.Xml;
-using System.Text;
-using System.Data;
-using System.Collections;
-
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Log
 {

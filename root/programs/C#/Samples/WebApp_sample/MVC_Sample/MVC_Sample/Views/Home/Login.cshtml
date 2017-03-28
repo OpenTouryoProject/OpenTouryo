@@ -1,0 +1,61 @@
+﻿@*
+    //**********************************************************************************
+    //* サンプル アプリ・モデル
+    //**********************************************************************************
+
+    // テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+
+    //**********************************************************************************
+    //* クラス名        ：Sign-in
+    //* クラス日本語名  ：Sign-in
+    //*
+    //* 作成日時        ：－
+    //* 作成者          ：－
+    //* 更新履歴        ：－
+    //*
+    //*  日時        更新者            内容
+    //*  ----------  ----------------  -------------------------------------------------
+    //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+    //**********************************************************************************
+*@
+
+@using MVC_Sample.Models.ViewModels
+@model LoginViewModel
+@{
+    ViewBag.Title = "Sign-in";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Sign-in</h2>
+
+@* スクリプト・セクション（RenderSection("HeaderScriptsSection", required: true)に出力されます） *@
+@section HeaderScriptsSection{
+    <!-- Head 部の section -->
+}
+
+@Html.ValidationSummary()
+
+@using (@Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <table>
+        <tr>
+            <th>ユーザーID</th>
+            <td>@Html.TextBoxFor(model => model.UserName)</td>
+        </tr>
+        <tr>
+            <th>パスワード</th>
+            <td>@Html.PasswordFor(model => model.Passwowd)</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:right;">
+                <input type="submit" value="ログイン" />
+            <td>
+        </tr>
+    </table>
+}
+
+@* スクリプト・セクション（RenderSection("FooterScriptsSection", required: true)に出力されます） *@
+@section FooterScriptsSection{
+    <!-- Footer 部の section -->
+}

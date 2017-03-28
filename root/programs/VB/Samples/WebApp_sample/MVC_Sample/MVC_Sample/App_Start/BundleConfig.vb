@@ -1,4 +1,10 @@
 ﻿'**********************************************************************************
+'* テンプレート
+'**********************************************************************************
+
+' サンプル中のテンプレートなので、必要に応じて流用して下さい。
+
+'**********************************************************************************
 '* クラス名        ：BundleConfig
 '* クラス日本語名  ：バンドル＆ミニフィケーションに関する指定
 '*
@@ -11,7 +17,6 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
 
-Imports System.Web
 Imports System.Web.Optimization
 
 ''' <summary>
@@ -27,36 +32,74 @@ Public Class BundleConfig
     ''' Bundling の詳細については、http://go.microsoft.com/fwlink/?LinkId=254725 を参照してください
     ''' </summary>
     Public Shared Sub RegisterBundles(bundles As BundleCollection)
-        bundles.Add(New ScriptBundle("~/bundles/jquery").Include( _
-                    "~/Scripts/jquery-{version}.js"))
+        ' see : https://www.asp.net/ajax/cdn
 
-        bundles.Add(New ScriptBundle("~/bundles/jqueryui").Include( _
-                    "~/Scripts/jquery-ui-{version}.js"))
+        Dim jqueryVersion As String = "3.1.1"
 
-        bundles.Add(New ScriptBundle("~/bundles/jqueryval").Include( _
-                    "~/Scripts/jquery.unobtrusive*", _
-                    "~/Scripts/jquery.validate*"))
+        BundleTable.EnableOptimizations = True
+        BundleTable.Bundles.UseCdn = True
+        ' same as: bundles.UseCdn = true;
+        ' ( new ScriptBundle("~/XXXX") のパスは実在するpathと被るとRender時にバグる。
+        ' なので、bundlesと実在しないpathを指定している（CSSも同じbundlesを使用する）。
 
-        ' 開発と学習には、Modernizr の開発バージョンを使用します。次に、実稼働の準備が
-        ' できたら、http://modernizr.com にあるビルド ツールを使用して、必要なテストのみを選択します。
-        bundles.Add(New ScriptBundle("~/bundles/modernizr").Include( _
-                    "~/Scripts/modernizr-*"))
+        bundles.Add(New ScriptBundle("~/bundles/app").Include(
+                    "~/Scripts/app/Site.js"))
 
-        bundles.Add(New StyleBundle("~/Content/css").Include("~/Content/site.css"))
+        bundles.Add(New ScriptBundle("~/bundles/touryo").Include(
+                    "~/Scripts/touryo/common.js",
+                    "~/Scripts/touryo/else.js"))
 
-        bundles.Add(New StyleBundle("~/Content/themes/base/css").Include( _
-                    "~/Content/themes/base/jquery.ui.core.css", _
-                    "~/Content/themes/base/jquery.ui.resizable.css", _
-                    "~/Content/themes/base/jquery.ui.selectable.css", _
-                    "~/Content/themes/base/jquery.ui.accordion.css", _
-                    "~/Content/themes/base/jquery.ui.autocomplete.css", _
-                    "~/Content/themes/base/jquery.ui.button.css", _
-                    "~/Content/themes/base/jquery.ui.dialog.css", _
-                    "~/Content/themes/base/jquery.ui.slider.css", _
-                    "~/Content/themes/base/jquery.ui.tabs.css", _
-                    "~/Content/themes/base/jquery.ui.datepicker.css", _
-                    "~/Content/themes/base/jquery.ui.progressbar.css", _
-                    "~/Content/themes/base/jquery.ui.theme.css", _
-                    "~/Content/themes/base/jquery-ui.css"))
+        bundles.Add(New ScriptBundle(
+                    "~/bundles/jquery",
+                    String.Format("//ajax.aspnetcdn.com/ajax/jquery/jquery-{0}.min.js", jqueryVersion)) With
+                    {
+                        .CdnFallbackExpression = "window.jQuery"
+                    }.Include(String.Format("~/Scripts/jquery-{0}.js", jqueryVersion)))
+
+        bundles.Add(New ScriptBundle(
+                    "~/bundles/jqueryval",
+                    "//ajax.aspnetcdn.com/ajax/jquery.validate/1.16.0/jquery.validate.min.js") With
+                    {
+                        .CdnFallbackExpression = "window.jQuery.validator"
+                    }.Include("~/Scripts/jquery.validate.js"))
+
+        bundles.Add(New ScriptBundle(
+                    "~/bundles/jqueryvaluno",
+                    "//ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js") With
+                    {
+                        .CdnFallbackExpression = "window.jQuery.validator.unobtrusive"
+                    }.Include("~/Scripts/jquery.validate.unobtrusive.js"))
+
+        bundles.Add(New ScriptBundle("~/bundles/jqueryunoajax").Include(
+                    "~/Scripts/jquery.unobtrusive-ajax.js")) ' CDNで提供されていない。
+
+        ' 開発と学習には、Modernizr の開発バージョンを使用します。次に、実稼働の準備ができたら、
+        ' http://modernizr.com にあるビルド ツールを使用して、必要なテストのみを選択します。
+        bundles.Add(New ScriptBundle(
+                    "~/bundles/modernizr",
+                    "//ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js") With
+                    {
+                        .CdnFallbackExpression = "window.Modernizr"
+                    }.Include("~/Scripts/modernizr-*"))
+
+        bundles.Add(New ScriptBundle(
+                    "~/bundles/bootstrap",
+                    "//ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js") With
+                    {
+                        .CdnFallbackExpression = "window.jQuery.fn.modal"
+                    }.Include("~/Scripts/bootstrap.js"))
+
+        bundles.Add(New ScriptBundle(
+                    "~/bundles/respond",
+                    "//ajax.aspnetcdn.com/ajax/respond/1.4.2/respond.min.js") With
+                    {
+                        .CdnFallbackExpression = "window.respond"
+                    }.Include("~/Scripts/respond.js"))
+
+        bundles.Add(New StyleBundle("~/bundles/css").Include(
+                    "~/Content/bootstrap.css",
+                    "~/Content/font-awesome.min.css",
+                    "~/Content/touryo/Style.css",
+                    "~/Content/app/Site.css"))
     End Sub
 End Class

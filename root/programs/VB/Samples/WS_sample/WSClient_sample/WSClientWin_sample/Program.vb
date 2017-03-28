@@ -1,26 +1,25 @@
 '**********************************************************************************
-'* サンプル アプリ
+'* ３層型 サンプル アプリ
 '**********************************************************************************
+
+' テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
 
 '**********************************************************************************
 '* クラス名        ：Program
 '* クラス日本語名  ：アプリケーションのメイン エントリ ポイント
 '*
 '* 作成日時        ：－
-'* 作成者          ：sas 生技
+'* 作成者          ：生技
 '* 更新履歴        ：
 '*
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
-'*
 '**********************************************************************************
 
-Imports System
-Imports System.Collections.Generic
-Imports System.Windows.Forms
-
 Imports System.Threading
+
+Imports Touryo.Infrastructure.Business.RichClient.Util
 
 Public Class Program
 
@@ -85,7 +84,7 @@ Public Class Program
     ''' 未処理例外をキャッチするイベント・ハンドラ
     ''' </summary>
     Public Shared Sub Application_ThreadException(ByVal sender As Object, ByVal e As ThreadExceptionEventArgs)
-        ShowErrorMessage(e.Exception, "Application_ThreadExceptionによる例外通知です。")
+        RcMyCmnFunction.ShowErrorMessageWin(e.Exception, "Application_ThreadExceptionによる例外通知です。")
     End Sub
 
     ''' <summary>
@@ -97,15 +96,7 @@ Public Class Program
     Public Shared Sub Application_UnhandledException(ByVal sender As Object, ByVal e As UnhandledExceptionEventArgs)
         Dim ex As Exception = TryCast(e.ExceptionObject, Exception)
         If ex IsNot Nothing Then
-            ShowErrorMessage(ex, "Application_UnhandledExceptionによる例外通知です。")
+            RcMyCmnFunction.ShowErrorMessageWin(ex, "Application_UnhandledExceptionによる例外通知です。")
         End If
     End Sub
-
-    ''' <summary>
-    ''' ユーザー・フレンドリなダイアログを表示するメソッド
-    ''' </summary>
-    Public Shared Sub ShowErrorMessage(ByVal ex As Exception, ByVal extraMessage As String)
-        MessageBox.Show(extraMessage & " " & vbCrLf & "――――――――" & vbCrLf & vbCrLf & "エラーが発生しました。開発元にお知らせください" & vbCrLf & vbCrLf & "【エラー内容】" & vbCrLf & ex.Message & vbCrLf & vbCrLf & "【スタックトレース】" & vbCrLf & ex.StackTrace)
-    End Sub
-
 End Class

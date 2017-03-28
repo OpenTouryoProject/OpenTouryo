@@ -1,4 +1,4 @@
-﻿var Sample2ViewModel = function ($scope) {
+﻿angular.module('myapp', []).controller('Sample2ViewModel', ['$scope', function($scope) {
     // shippers テーブルのレコードリスト (JSON 形式)
     $scope.dataLists = [];
 
@@ -98,12 +98,12 @@
             ddlMode1: $scope.ddlMode1,
             ddlMode2: $scope.ddlMode2,
             ddlExRollback: $scope.ddlExRollback
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/GetCount',
+            url: baseUrl + 'api/GetCount',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -114,7 +114,7 @@
                     });
                 }
                 else {
-                    $scope.$apply(function(){
+                    $scope.$apply(function () {
                         // 結果格納
                         $scope.Result = data.message;
                     });
@@ -140,12 +140,12 @@
             ddlMode1: $scope.ddlMode1,
             ddlMode2: $scope.ddlMode2,
             ddlExRollback: $scope.ddlExRollback
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/SelectDT',
+            url: baseUrl + 'api/SelectDT',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -184,12 +184,12 @@
             ddlMode1: $scope.ddlMode1,
             ddlMode2: $scope.ddlMode2,
             ddlExRollback: $scope.ddlExRollback
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/SelectDS',
+            url: baseUrl + 'api/SelectDS',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -228,12 +228,12 @@
             ddlMode1: $scope.ddlMode1,
             ddlMode2: $scope.ddlMode2,
             ddlExRollback: $scope.ddlExRollback
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/SelectDR',
+            url: baseUrl + 'api/SelectDR',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -274,12 +274,12 @@
             ddlExRollback: $scope.ddlExRollback,
             OrderColumn: $scope.ddlOrderColumn,
             OrderSequence: $scope.ddlOrderSequence
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/SelectDSQL',
+            url: baseUrl + 'api/SelectDSQL',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -319,12 +319,12 @@
             ddlMode2: $scope.ddlMode2,
             ddlExRollback: $scope.ddlExRollback,
             ShipperId: $scope.ShipperId
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/Select',
+            url: baseUrl + 'api/Select',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -364,12 +364,12 @@
             ddlExRollback: $scope.ddlExRollback,
             CompanyName: $scope.CompanyName,
             Phone: $scope.Phone
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/Insert',
+            url: baseUrl + 'api/Insert',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -407,12 +407,12 @@
             ShipperId: $scope.ShipperId,
             CompanyName: $scope.CompanyName,
             Phone: $scope.Phone
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/Update',
+            url: baseUrl + 'api/Update',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -449,12 +449,12 @@
             ddlMode2: $scope.ddlMode2,
             ddlExRollback: $scope.ddlExRollback,
             ShipperId: $scope.ShipperId
-        }
+        };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: '/api/Delete',
+            url: baseUrl + 'api/Delete',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
@@ -483,23 +483,12 @@
     $scope.ClearList = function () {
         // レコードリストをクリアする
         $scope.dataLists = [];
-    }
+    };
 
     // エラーメッセージを監視し、メッセージが設定されたらエラーダイアログを出す
     $scope.$watch('ErrorMessage', function (newVal, oldVal) {
-        if (newVal != '') {
-            $('<div>' + newVal + '</div>').dialog({
-                title: 'エラーが発生しました',
-                modal: true,
-                resizable: false,
-                height: 600,
-                width: 800,
-                buttons: {
-                    'OK': function (event) {
-                        $(this).dialog('close');
-                    }
-                }
-            });
+        if (newVal !== '') {
+            $('#modal_box').modal('show');
         }
     }, true);
-}
+}]);
