@@ -145,7 +145,7 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
       <td>10_Build_WebApp_sample.bat</td><td>サンプルアプリ (ASP.NET) をビルドする。</td><td></td>
     </tr>
     <tr>
-      <td>11_Build_UWP_sample.bat</td><td>サンプルアプリ (Web サービスクライアント (UWP)) をビルドする。</td><td></td>
+      <td>11_Build_UWP_sample.bat</td><td>サンプルアプリ (UWP) をビルドする。</td><td></td>
     </tr>
     <tr>
       <td>z_Common.bat</td><td>共通設定 (MSBuild 用)</td><td></td><td></td>
