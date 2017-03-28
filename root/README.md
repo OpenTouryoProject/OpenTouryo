@@ -154,6 +154,9 @@ Legend:
       <td>10_Build_WebApp_sample.bat</td><td>Build the sample application. (ASP.NET)</td><td></td>
     </tr>
     <tr>
+      <td>11_Build_UWP_sample.bat</td><td>Build the sample application. (Web service client (UWP))</td><td></td>
+    </tr>
+    <tr>
       <td>z_Common.bat</td><td>Set common settings to build using MSBuild.</td><td></td><td></td>
     </tr>
     <tr>
@@ -198,7 +201,7 @@ Legend:
   </tbody>
 </table>
 <div style="font-size: small">
-  <span style="color: red;">*1</span>　Need to run when creating Windows store app.<br />
+  <span style="color: red;">*1</span>　Need to run when using portable class library.<br />
   <span style="color: red;">*2</span>　Need to run when creating rich client application.<br />
   <span style="color: red;">*3</span>　Select according to the actual architecture.
 </div>
@@ -227,22 +230,35 @@ Open a command prompt as an administrator and execute the following commands.
 At the login screen, enter the arbitrary alphanumeric characters. (By default, the password authentication is not executed.)
    
 #### Web application:
-C:\root\programs\C#\Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln
+- ASP.NET Web Forms  
+  - C:\root\programs\C#\Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln
+  - C:\root\programs\VB\Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln
+- ASP.NET MVC  
+  - C:\root\programs\C#\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
+  - C:\root\programs\VB\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
+- ASP.NET Single Page Application  
+C:\root\programs\C#\Samples\WebApp_sample\SPA_Sample\SPA_Sample.sln
  
 #### Two-tier client server application:
 - Windows Forms  
-C:\root\programs\C#\Samples\2CS_sample\2CSClientWin_sample\2CSClientWin_sample.sln
+  - C:\root\programs\C#\Samples\2CS_sample\2CSClientWin_sample\2CSClientWin_sample.sln
+  - C:\root\programs\VB\Samples\2CS_sample\2CSClientWin_sample\2CSClientWin_sample.sln
 - WPF  
-C:\root\programs\C#\Samples\2CS_sample\2CSClientWPF_sample\2CSClientWPF_sample.sln
+  - C:\root\programs\C#\Samples\2CS_sample\2CSClientWPF_sample\2CSClientWPF_sample.sln
+  - C:\root\programs\VB\Samples\2CS_sample\2CSClientWPF_sample\2CSClientWPF_sample.sln
 
 #### Three-tier client server application:
 - Windows Forms  
-  - Windows forms application  
-  C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln
+  - Windows forms application
+    - C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln
+    - C:\root\programs\VB\Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln
   - ClickOnce application  
-  C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSClientWinCone_sample.sln
-- WPF  
-C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
+C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSClientWinCone_sample.sln
+- WPF
+  - C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
+  - C:\root\programs\VB\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
+- UWP  
+C:\root\programs\C#\Samples\UWP_sample\UWP_sample.sln
 
 ### Reference
 The documents in *OpenTouryoDocument repository* are useful when using Open Touryo.  
