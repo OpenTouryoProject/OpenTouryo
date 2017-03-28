@@ -59,14 +59,17 @@ Namespace Touryo.Infrastructure.Business.Util
         ''' <returns>Sessionサイズ（MB）</returns>
         ''' <remarks>シリアル化できないオブジェクトを含む場合は落ちる。</remarks>
         Public Shared Function CalculateSessionSizeMB() As Long
-            Return MyCmnFunction.CalculateSessionSizeKB() \ 1000
+            'return MyCmnFunction.CalculateSessionSizeKB() / 1000;
+            Return CLng(Math.Truncate(Math.Round(MyCmnFunction.CalculateSessionSize() / 1000000.0, 0, MidpointRounding.AwayFromZero)))
+
         End Function
 
         ''' <summary>Sessionサイズ測定</summary>
         ''' <returns>Sessionサイズ（KB）</returns>
         ''' <remarks>シリアル化できないオブジェクトを含む場合は落ちる。</remarks>
         Public Shared Function CalculateSessionSizeKB() As Long
-            Return MyCmnFunction.CalculateSessionSize() \ 1000
+            'return MyCmnFunction.CalculateSessionSize() / 1000;
+            Return CLng(Math.Truncate(Math.Round(MyCmnFunction.CalculateSessionSize() / 1000.0, 0, MidpointRounding.AwayFromZero)))
         End Function
 
         ''' <summary>Sessionサイズ測定</summary>

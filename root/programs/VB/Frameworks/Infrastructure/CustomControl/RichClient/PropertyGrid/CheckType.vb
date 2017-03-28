@@ -29,18 +29,10 @@
 '*  ----------  ----------------  -------------------------------------------------
 '*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
 '*  2017/01/31  西野 大介         "Indispensable" ---> "Required"
+'*  2017/01/31  西野 大介         Added the enum of CheckItems.
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.Collections.Generic
 Imports System.ComponentModel
-Imports System.Drawing
-Imports System.Text
-
-' System.Windows
-Imports System.Windows
-Imports System.Windows.Forms
 
 Namespace Touryo.Infrastructure.CustomControl.RichClient
     ''' <summary>チェック タイプ</summary>
@@ -48,7 +40,7 @@ Namespace Touryo.Infrastructure.CustomControl.RichClient
     Public Class CheckType
 
         ''' <summary>ビット・フィールド</summary>
-        Public Enum BF
+        Public Enum CheckItems
             ''' <summary>必須入力</summary>
             Required = 1
             ''' <summary>半角</summary>
@@ -172,28 +164,28 @@ Namespace Touryo.Infrastructure.CustomControl.RichClient
             Dim hc As Integer = 0
 
             If Me.Required Then
-                hc += 1
+                hc += CInt(CheckItems.Required)
             End If
             If Me.IsHankaku Then
-                hc += 4
+                hc += CInt(CheckItems.IsHankaku)
             End If
             If Me.IsZenkaku Then
-                hc += 2
+                hc += CInt(CheckItems.IsZenkaku)
             End If
             If Me.IsNumeric Then
-                hc += 8
+                hc += CInt(CheckItems.IsNumeric)
             End If
             If Me.IsKatakana Then
-                hc += 16
+                hc += CInt(CheckItems.IsKatakana)
             End If
             If Me.IsHanKatakana Then
-                hc += 32
+                hc += CInt(CheckItems.IsHanKatakana)
             End If
             If Me.IsHiragana Then
-                hc += 64
+                hc += CInt(CheckItems.IsHiragana)
             End If
             If Me.IsDate Then
-                hc += 128
+                hc += CInt(CheckItems.IsDate)
             End If
 
             Return hc

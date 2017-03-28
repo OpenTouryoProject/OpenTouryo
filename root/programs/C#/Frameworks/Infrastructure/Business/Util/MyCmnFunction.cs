@@ -63,7 +63,8 @@ namespace Touryo.Infrastructure.Business.Util
         /// <remarks>シリアル化できないオブジェクトを含む場合は落ちる。</remarks>
         public static long CalculateSessionSizeMB()
         {
-            return MyCmnFunction.CalculateSessionSizeKB() / 1000;
+            //return MyCmnFunction.CalculateSessionSizeKB() / 1000;
+            return (long)Math.Round(MyCmnFunction.CalculateSessionSize() / 1000000.0, 0, MidpointRounding.AwayFromZero);
         }
 
         /// <summary>Sessionサイズ測定</summary>
@@ -71,7 +72,8 @@ namespace Touryo.Infrastructure.Business.Util
         /// <remarks>シリアル化できないオブジェクトを含む場合は落ちる。</remarks>
         public static long CalculateSessionSizeKB()
         {
-            return MyCmnFunction.CalculateSessionSize() / 1000;
+            //return MyCmnFunction.CalculateSessionSize() / 1000;
+            return (long)Math.Round(MyCmnFunction.CalculateSessionSize() / 1000.0, 0, MidpointRounding.AwayFromZero);
         }
 
         /// <summary>Sessionサイズ測定</summary>

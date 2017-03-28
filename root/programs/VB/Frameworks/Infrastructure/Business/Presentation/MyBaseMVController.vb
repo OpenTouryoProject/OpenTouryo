@@ -553,8 +553,8 @@ Namespace Touryo.Infrastructure.Business.Presentation
         ''' <summary>キャッシュ制御処理（スイッチ付き）</summary>
         Private Sub CacheControlWithSwitch()
             ' システムで固定に出来る場合は、ここでキャッシュ無効化する。
-            ' また、ファイル・ダウンロード処理などでUPでFxの設定した
-            ' キャッシュ制御を変更したい場合は、Response.Clearを実行して再設定する。
+            ' また、ユーザープログラムのファイル・ダウンロード処理などで
+            ' フレームワークの設定したキャッシュ制御を変更したい場合は、Response.Clearを実行して再設定する。
 
             ' 画面遷移方法の定義を取得
             Dim noCache As String = GetConfigParameter.GetConfigValue(MyLiteral.CACHE_CONTROL)

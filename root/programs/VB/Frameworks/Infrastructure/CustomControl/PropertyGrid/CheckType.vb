@@ -29,6 +29,7 @@
 '*  ----------  ----------------  -------------------------------------------------
 '*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
 '*  2017/01/31  西野 大介         "Indispensable" ---> "Required"
+'*  2017/01/31  西野 大介         Added the enum of CheckItems.
 '**********************************************************************************
 
 Imports System.ComponentModel
@@ -39,7 +40,7 @@ Namespace Touryo.Infrastructure.CustomControl
     Public Class CheckType
 
         ''' <summary>ビット・フィールド</summary>
-        Public Enum BF
+        Public Enum CheckItems
             ''' <summary>必須入力</summary>
             Required = 1
             ''' <summary>半角</summary>
@@ -206,28 +207,28 @@ Namespace Touryo.Infrastructure.CustomControl
             Dim hc As Integer = 0
 
             If Me.Required Then
-                hc += CInt(BF.Required)
+                hc += CInt(CheckItems.Required)
             End If
             If Me.IsHankaku Then
-                hc += CInt(BF.IsHankaku)
+                hc += CInt(CheckItems.IsHankaku)
             End If
             If Me.IsZenkaku Then
-                hc += CInt(BF.IsZenkaku)
+                hc += CInt(CheckItems.IsZenkaku)
             End If
             If Me.IsNumeric Then
-                hc += CInt(BF.IsNumeric)
+                hc += CInt(CheckItems.IsNumeric)
             End If
             If Me.IsKatakana Then
-                hc += CInt(BF.IsKatakana)
+                hc += CInt(CheckItems.IsKatakana)
             End If
             If Me.IsHanKatakana Then
-                hc += CInt(BF.IsHanKatakana)
+                hc += CInt(CheckItems.IsHanKatakana)
             End If
             If Me.IsHiragana Then
-                hc += CInt(BF.IsHiragana)
+                hc += CInt(CheckItems.IsHiragana)
             End If
             If Me.IsDate Then
-                hc += CInt(BF.IsDate)
+                hc += CInt(CheckItems.IsDate)
             End If
 
             Return hc

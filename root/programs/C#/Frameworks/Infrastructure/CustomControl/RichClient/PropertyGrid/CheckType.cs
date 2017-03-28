@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
 //*  2017/01/31  西野 大介         "Indispensable" ---> "Required"
+//*  2017/01/31  西野 大介         Added the enum of CheckItems.
 //**********************************************************************************
 
 using System;
@@ -42,7 +43,7 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
     {
         /// <summary>ビット・フィールド</summary>
         [Flags]
-        public enum BF
+        public enum CheckItems
         {
             /// <summary>必須入力</summary>
             Required = 1,
@@ -104,14 +105,14 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         {
             int hc = 0;
 
-            if (this.Required) { hc += (int)BF.Required; }
-            if (this.IsHankaku) { hc += (int)BF.IsHankaku; }
-            if (this.IsZenkaku) { hc += (int)BF.IsZenkaku; }
-            if (this.IsNumeric) { hc += (int)BF.IsNumeric; }
-            if (this.IsKatakana) { hc += (int)BF.IsKatakana; }
-            if (this.IsHanKatakana) { hc += (int)BF.IsHanKatakana; }
-            if (this.IsHiragana) { hc += (int)BF.IsHiragana; }
-            if (this.IsDate) { hc += (int)BF.IsDate; }
+            if (this.Required) { hc += (int)CheckItems.Required; }
+            if (this.IsHankaku) { hc += (int)CheckItems.IsHankaku; }
+            if (this.IsZenkaku) { hc += (int)CheckItems.IsZenkaku; }
+            if (this.IsNumeric) { hc += (int)CheckItems.IsNumeric; }
+            if (this.IsKatakana) { hc += (int)CheckItems.IsKatakana; }
+            if (this.IsHanKatakana) { hc += (int)CheckItems.IsHanKatakana; }
+            if (this.IsHiragana) { hc += (int)CheckItems.IsHiragana; }
+            if (this.IsDate) { hc += (int)CheckItems.IsDate; }
 
             return hc;
         }

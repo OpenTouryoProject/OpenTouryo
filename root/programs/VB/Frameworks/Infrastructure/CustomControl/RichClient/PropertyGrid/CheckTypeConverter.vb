@@ -31,17 +31,8 @@
 '*  2017/01/31  西野 大介         "Indispensable" ---> "Required"
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.Collections.Generic
-Imports System.ComponentModel
-Imports System.Drawing
-Imports System.Text
 Imports System.Globalization
-
-' System.Windows
-Imports System.Windows
-Imports System.Windows.Forms
+Imports System.ComponentModel
 
 Namespace Touryo.Infrastructure.CustomControl.RichClient
     ''' <summary>デザインタイム プロパティ用　CheckTypeクラスのコンバータ（テンプレート）</summary>

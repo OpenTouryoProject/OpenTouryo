@@ -42,29 +42,29 @@ namespace Touryo.Infrastructure.Public.Util
     public class GetPassword
     {
         /// <summary>Base64Secretを生成</summary>
-        /// <param name="keySize">int</param>
+        /// <param name="byteSize">サイズ（バイト）</param>
         /// <returns>Base64Secret</returns>
-        public static string Base64Secret(int keySize)
+        public static string Base64Secret(int byteSize)
         {
-            return CustomEncode.ToBase64String(GetPassword.RandomByte(keySize));
+            return CustomEncode.ToBase64String(GetPassword.RandomByte(byteSize));
         }
 
         /// <summary>Base64UrlSecretを生成</summary>
-        /// <param name="keySize">int</param>
+        /// <param name="byteSize">サイズ（バイト）</param>
         /// <returns>Base64UrlSecret</returns>
-        public static string Base64UrlSecret(int keySize)
+        public static string Base64UrlSecret(int byteSize)
         {
-            return CustomEncode.ToBase64UrlString(GetPassword.RandomByte(keySize));
+            return CustomEncode.ToBase64UrlString(GetPassword.RandomByte(byteSize));
         }
 
         /// <summary>RandomByte</summary>
-        /// <param name="byteSize">int</param>
+        /// <param name="byteSize">Byteサイズ</param>
         /// <returns>RandomByte</returns>
         public static byte[] RandomByte(int byteSize)
         {
-            byte[] key = new byte[byteSize];
-            RNGCryptoServiceProvider.Create().GetBytes(key);
-            return key;
+            byte[] data = new byte[byteSize];
+            RNGCryptoServiceProvider.Create().GetBytes(data);
+            return data;
         }
 
         /// <summary>PasswordをGenerate</summary>

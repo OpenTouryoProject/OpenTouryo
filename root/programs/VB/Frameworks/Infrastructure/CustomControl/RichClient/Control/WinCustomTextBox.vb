@@ -31,21 +31,13 @@
 '*  2017/01/31  西野 大介         "Indispensable" ---> "Required"
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.Collections
-Imports System.Collections.Generic
-Imports System.ComponentModel
-Imports System.Drawing
 Imports System.Text
+Imports System.Globalization
+Imports System.Drawing
+Imports System.ComponentModel
 
-' System.Windows
-Imports System.Windows
 Imports System.Windows.Forms
 Imports System.Windows.Forms.Design
-
-Imports System.Diagnostics
-Imports System.Globalization
 
 Imports Touryo.Infrastructure.Framework.RichClient.Util
 Imports Touryo.Infrastructure.Public.Str

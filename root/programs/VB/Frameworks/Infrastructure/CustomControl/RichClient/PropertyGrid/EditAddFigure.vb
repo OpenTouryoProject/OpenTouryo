@@ -30,25 +30,14 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.Collections.Generic
-Imports System.ComponentModel
-Imports System.Drawing
-Imports System.Text
-
-' System.Windows
-Imports System.Windows
-Imports System.Windows.Forms
-
 Namespace Touryo.Infrastructure.CustomControl.RichClient
     ''' <summary>EditAddFigure</summary>
-	Public Enum EditAddFigure
-		''' <summary>区切りなし</summary>
-		None
-		''' <summary>三桁区切り</summary>
-		Af3
-		''' <summary>四桁区切り</summary>
-		Af4
-	End Enum
+    Public Enum EditAddFigure
+        ''' <summary>区切りなし</summary>
+        None
+        ''' <summary>三桁区切り</summary>
+        Af3
+        ''' <summary>四桁区切り</summary>
+        Af4
+    End Enum
 End Namespace
