@@ -106,7 +106,7 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
   </thead>
   <tbody>
     <tr>
-      <td rowspan="15" style="vertical-align: top">C:\root\programs\C#</td><td>1_DeleteDir.bat</td><td>ビルドによってできたフォルダを削除 (クリーン) する。</td><td>○</td><td>○</td>
+      <td rowspan="16" style="vertical-align: top">C:\root\programs\C#</td><td>1_DeleteDir.bat</td><td>ビルドによってできたフォルダを削除 (クリーン) する。</td><td>○</td><td>○</td>
     </tr>
     <tr>
       <td>2_DeleteFile.bat</td><td>一時ファイルなどを削除 (クリーン) する。</td><td>○</td><td>○</td>
@@ -118,13 +118,13 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
       <td>3_Build_PortableClassLibrary.bat</td><td>ポータブルクラスライブラリをビルドする。</td><td>△<span style="color: red"><sup>*1</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>3_Build_RichClientCustomControl.bat</td><td>リッチクライアント用カスタムコントロールをビルドする。</td><td>△<span style="color: red"><sup>*2</sup></span></td><td>△<span style="color: red"><sup>*2</sup></span></td>
+      <td>3_Build_RichClientCustomControl.bat</td><td>リッチクライアント用カスタムコントロールをビルドする。</td><td>△<span style="color: red"><sup>*2</sup></span></td><td></td>
     </tr>
     <tr>
       <td>4_Build_Framework_Tool.bat</td><td>付属ツールをビルドする。</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>5_Build_2CS_sample.bat</td><td>サンプルアプリ (2 層 C/S) をビルドする。</td><td rowspan="10" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>5_Build_2CS_sample.bat</td><td>サンプルアプリ (2 層 C/S) をビルドする。</td><td rowspan="8" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
       <td>5_Build_Bat_sample.bat</td><td>サンプルアプリ (バッチ) をビルドする。</td><td></td>
