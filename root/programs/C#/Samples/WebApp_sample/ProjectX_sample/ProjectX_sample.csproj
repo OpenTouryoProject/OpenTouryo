@@ -62,6 +62,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Frameworks\Infrastructure\Build\CustomControl.dll</HintPath>
     </Reference>
+    <Reference Include="DamMySQL">
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\DamMySQL.dll</HintPath>
+    </Reference>
+    <Reference Include="DamOraOdp">
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\DamOraOdp.dll</HintPath>
+    </Reference>
+    <Reference Include="DamPstGrS">
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\DamPstGrS.dll</HintPath>
+    </Reference>
     <Reference Include="Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Frameworks\Infrastructure\Build\Framework.dll</HintPath>
@@ -93,9 +102,21 @@
       <HintPath>packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\MySql.Data.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Npgsql, Version=3.0.5.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.DataAccess, Version=4.112.3.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Oracle.DataAccess.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
@@ -256,6 +277,9 @@
     <Content Include="WebService\JSONService.svc" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppCode\testPublic\Business\TestMTC.cs" />
+    <Compile Include="AppCode\testPublic\Business\TestMTC_mcn.cs" />
+    <Compile Include="AppCode\testPublic\Business\TestMTC_txg.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Aspx\Common\ErrorScreen.aspx.cs">

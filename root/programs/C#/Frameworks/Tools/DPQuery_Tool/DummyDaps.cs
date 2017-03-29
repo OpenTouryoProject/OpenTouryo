@@ -44,13 +44,13 @@ namespace Touryo.Infrastructure.Public.Db
     /// </summary>
     public class DamOraClient { }
 
-    /// <summary>
-    /// DamOraOdpのダミー
-    /// </summary>
-    public class DamOraOdp
-    {
-        public int ArrayBindCount;
-    }
+    ///// <summary>
+    ///// DamOraOdpのダミー
+    ///// </summary>
+    //public class DamOraOdp
+    //{
+    //    public int ArrayBindCount;
+    //}
 
     /// <summary>
     /// DamDB2のダミー
@@ -62,15 +62,15 @@ namespace Touryo.Infrastructure.Public.Db
     /// </summary>
     public class DamHiRDB { }
 
-    /// <summary>
-    /// DamMySQLのダミー
-    /// </summary>
-    public class DamMySQL { }
+    ///// <summary>
+    ///// DamMySQLのダミー
+    ///// </summary>
+    //public class DamMySQL { }
 
-    /// <summary>
-    /// DamPstGrSのダミー
-    /// </summary>
-    public class DamPstGrS { }
+    ///// <summary>
+    ///// DamPstGrSのダミー
+    ///// </summary>
+    //public class DamPstGrS { }
 }
 
 //////////////////////////////////////////////////
@@ -162,86 +162,86 @@ namespace System.Data.OracleClient
 // Oracle.DataAccess.Client
 //////////////////////////////////////////////////
 
-namespace Oracle.DataAccess.Client
-{
-    /// <summary>
-    /// OracleConnectionのダミー
-    /// </summary>
-    public class OracleConnection
-    {
-        /// <summary>コンストラクタ</summary>
-        /// <param name="s">接続文字列</param>
-        public OracleConnection(string s)
-        {
-            throw new NotImplementedException("this is dummy.");
-        }
+//namespace Oracle.DataAccess.Client
+//{
+//    /// <summary>
+//    /// OracleConnectionのダミー
+//    /// </summary>
+//    public class OracleConnection
+//    {
+//        /// <summary>コンストラクタ</summary>
+//        /// <param name="s">接続文字列</param>
+//        public OracleConnection(string s)
+//        {
+//            throw new NotImplementedException("this is dummy.");
+//        }
 
-        /// <summary>Openメソッド</summary>
-        public void Open()
-        {
-            throw new NotImplementedException("this is dummy.");
-        }
+//        /// <summary>Openメソッド</summary>
+//        public void Open()
+//        {
+//            throw new NotImplementedException("this is dummy.");
+//        }
 
-        /// <summary>Closeメソッド</summary>
-        public void Close()
-        {
-            throw new NotImplementedException("this is dummy.");
-        }
+//        /// <summary>Closeメソッド</summary>
+//        public void Close()
+//        {
+//            throw new NotImplementedException("this is dummy.");
+//        }
 
-        /// <summary>GetSchemaメソッド</summary>
-        public DataTable GetSchema(object o)
-        {
-            throw new NotImplementedException("this is dummy.");
-            //return null;
-        }
-    }
+//        /// <summary>GetSchemaメソッド</summary>
+//        public DataTable GetSchema(object o)
+//        {
+//            throw new NotImplementedException("this is dummy.");
+//            //return null;
+//        }
+//    }
 
-    /// <summary>
-    /// OracleConnectionStringBuilderのダミー
-    /// </summary>
-    public class OracleConnectionStringBuilder
-    {
-        public string DataSource;
-        public string UserID;
-        public string Password;
-        public string ConnectionString;
-    }
+//    /// <summary>
+//    /// OracleConnectionStringBuilderのダミー
+//    /// </summary>
+//    public class OracleConnectionStringBuilder
+//    {
+//        public string DataSource;
+//        public string UserID;
+//        public string Password;
+//        public string ConnectionString;
+//    }
 
-    /// <summary>
-    /// OracleDbTypeのダミー
-    /// </summary>
-    public enum OracleDbType
-    {
-        BFile,
-        BinaryFloat,
-        BinaryDouble,
-        Blob,
-        Byte,
-        Char,
-        Clob,
-        Date,
-        Decimal,
-        Double,
-        Int16,
-        Int32,
-        Int64,
-        IntervalDS,
-        IntervalYM,
-        Long,
-        LongRaw,
-        NChar,
-        NClob,
-        NVarchar2,
-        Raw,
-        RefCursor,
-        Single,
-        TimeStamp,
-        TimeStampLTZ,
-        TimeStampTZ,
-        Varchar2,
-        XmlType
-    }
-}
+//    /// <summary>
+//    /// OracleDbTypeのダミー
+//    /// </summary>
+//    public enum OracleDbType
+//    {
+//        BFile,
+//        BinaryFloat,
+//        BinaryDouble,
+//        Blob,
+//        Byte,
+//        Char,
+//        Clob,
+//        Date,
+//        Decimal,
+//        Double,
+//        Int16,
+//        Int32,
+//        Int64,
+//        IntervalDS,
+//        IntervalYM,
+//        Long,
+//        LongRaw,
+//        NChar,
+//        NClob,
+//        NVarchar2,
+//        Raw,
+//        RefCursor,
+//        Single,
+//        TimeStamp,
+//        TimeStampLTZ,
+//        TimeStampTZ,
+//        Varchar2,
+//        XmlType
+//    }
+//}
 
 //////////////////////////////////////////////////
 // IBM.Data.DB2
@@ -377,98 +377,98 @@ namespace Hitachi.HiRDB
 // MySql.Data.MySqlClient
 //////////////////////////////////////////////////
 
-namespace MySql.Data.MySqlClient
-{
-    /// <summary>
-    /// MySqlConnectionのダミー
-    /// </summary>
-    public class MySqlConnection
-    {
-        /// <summary>コンストラクタ</summary>
-        /// <param name="s">接続文字列</param>
-        public MySqlConnection(string s)
-        {
-            throw new NotImplementedException("this is dummy.");
-        }
+//namespace MySql.Data.MySqlClient
+//{
+//    /// <summary>
+//    /// MySqlConnectionのダミー
+//    /// </summary>
+//    public class MySqlConnection
+//    {
+//        /// <summary>コンストラクタ</summary>
+//        /// <param name="s">接続文字列</param>
+//        public MySqlConnection(string s)
+//        {
+//            throw new NotImplementedException("this is dummy.");
+//        }
 
-        /// <summary>Openメソッド</summary>
-        public void Open()
-        {
-            throw new NotImplementedException("this is dummy.");
-        }
+//        /// <summary>Openメソッド</summary>
+//        public void Open()
+//        {
+//            throw new NotImplementedException("this is dummy.");
+//        }
 
-        /// <summary>Closeメソッド</summary>
-        public void Close()
-        {
-            throw new NotImplementedException("this is dummy.");
-        }
+//        /// <summary>Closeメソッド</summary>
+//        public void Close()
+//        {
+//            throw new NotImplementedException("this is dummy.");
+//        }
 
-        /// <summary>GetSchemaメソッド</summary>
-        public DataTable GetSchema(object o)
-        {
-            throw new NotImplementedException("this is dummy.");
-            //return null;
-        }
-    }
+//        /// <summary>GetSchemaメソッド</summary>
+//        public DataTable GetSchema(object o)
+//        {
+//            throw new NotImplementedException("this is dummy."); 
+//            //return null;
+//        }
+//    }
 
-    /// <summary>
-    /// MySqlConnectionStringBuilderのダミー
-    /// </summary>
-    public class MySqlConnectionStringBuilder
-    {
-        public string Server;
-        public string Database;
-        public string UserID;
-        public string Password;
-        public string ConnectionString;
-    }
-}
+//    /// <summary>
+//    /// MySqlConnectionStringBuilderのダミー
+//    /// </summary>
+//    public class MySqlConnectionStringBuilder
+//    {
+//        public string Server;
+//        public string Database;
+//        public string UserID;
+//        public string Password;
+//        public string ConnectionString;
+//    }
+//}
 
 //////////////////////////////////////////////////
 // Npgsql
 //////////////////////////////////////////////////
 
-namespace Npgsql
-{
-    /// <summary>
-    /// NpgsqlConnectionのダミー
-    /// </summary>
-    public class NpgsqlConnection
-    {
-        /// <summary>コンストラクタ</summary>
-        /// <param name="s">接続文字列</param>
-        public NpgsqlConnection(string s)
-        {
-            throw new NotImplementedException("this is dummy.");
-        }
+//namespace Npgsql
+//{
+//    /// <summary>
+//    /// NpgsqlConnectionのダミー
+//    /// </summary>
+//    public class NpgsqlConnection
+//    {
+//        /// <summary>コンストラクタ</summary>
+//        /// <param name="s">接続文字列</param>
+//        public NpgsqlConnection(string s)
+//        {
+//            throw new NotImplementedException("this is dummy."); 
+//        }
 
-        /// <summary>Openメソッド</summary>
-        public void Open()
-        {
-            throw new NotImplementedException("this is dummy.");
-        }
+//        /// <summary>Openメソッド</summary>
+//        public void Open()
+//        {
+//            throw new NotImplementedException("this is dummy."); 
+//        }
 
-        /// <summary>Closeメソッド</summary>
-        public void Close()
-        {
-            throw new NotImplementedException("this is dummy.");
-        }
+//        /// <summary>Closeメソッド</summary>
+//        public void Close()
+//        {
+//            throw new NotImplementedException("this is dummy."); 
+//        }
 
-        /// <summary>GetSchemaメソッド</summary>
-        public DataTable GetSchema(object o)
-        {
-            throw new NotImplementedException("this is dummy.");
-            //return null;
-        }
-    }
-}
+//        /// <summary>GetSchemaメソッド</summary>
+//        public DataTable GetSchema(object o)
+//        {
+//            throw new NotImplementedException("this is dummy."); 
+//            //return null;
+//        }
+//    }
+//}
 
-namespace NpgsqlTypes
-{
-    /// <summary>
-    /// xxxのダミー
-    /// </summary>
-    public class xxx
-    {
-    }
-}
+//namespace NpgsqlTypes
+//{
+//    /// <summary>
+//    /// xxxのダミー
+//    /// </summary>
+//    public class xxx
+//    {
+//    }
+//}

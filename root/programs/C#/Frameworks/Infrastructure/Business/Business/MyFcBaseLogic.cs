@@ -165,36 +165,30 @@ namespace Touryo.Infrastructure.Business.Business
 
                 #region データ プロバイダ選択
 
+                if (parameterValue.ActionType.Split('%')[0] == "SQL")
+                {
                 // SQL Server / SQL Client用のDamを生成
                 dam = new DamSqlSvr();
 
                 // 接続文字列をロード
                 connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL");
+                }
+                else if (parameterValue.ActionType.Split('%')[0] == "OLE")
+                {
+                    // OLEDB.NET用のDamを生成
+                    dam = new DamOLEDB();
 
-                //if (parameterValue.ActionType.Split('%')[0] == "SQL")
-                //{
-                //    // SQL Server / SQL Client用のDamを生成
-                //    dam = new DamSqlSvr();
+                    // 接続文字列をロード
+                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_OLE");
+                }
+                else if (parameterValue.ActionType.Split('%')[0] == "ODB")
+                {
+                    // ODBC.NET用のDamを生成
+                    dam = new DamODBC();
 
-                //    // 接続文字列をロード
-                //    connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL");
-                //}
-                //else if (parameterValue.ActionType.Split('%')[0] == "OLE")
-                //{
-                //    // OLEDB.NET用のDamを生成
-                //    dam = new DamOLEDB();
-
-                //    // 接続文字列をロード
-                //    connstring = GetConfigParameter.GetConnectionString("ConnectionString_OLE");
-                //}
-                //else if (parameterValue.ActionType.Split('%')[0] == "ODB")
-                //{
-                //    // ODBC.NET用のDamを生成
-                //    dam = new DamODBC();
-
-                //    // 接続文字列をロード
-                //    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODBC");
-                //}
+                    // 接続文字列をロード
+                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODBC");
+                }
                 //else if (parameterValue.ActionType.Split('%')[0] == "ORA")
                 //{
                 //    // Oracle / Oracle Client用のDamを生成
@@ -203,14 +197,14 @@ namespace Touryo.Infrastructure.Business.Business
                 //    // 接続文字列をロード
                 //    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ORA");
                 //}
-                //else if (parameterValue.ActionType.Split('%')[0] == "ODP")
-                //{
-                //    // Oracle / ODP.NET用のDamを生成
-                //    dam = new DamOraOdp();
+                else if (parameterValue.ActionType.Split('%')[0] == "ODP")
+                {
+                    // Oracle / ODP.NET用のDamを生成
+                    dam = new DamOraOdp();
 
-                //    // 接続文字列をロード（ODP2：Instant Client）
-                //    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP2");
-                //}
+                    // 接続文字列をロード（ODP2：Instant Client）
+                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP2");
+                }
                 //else if (parameterValue.ActionType.Split('%')[0] == "DB2")
                 //{
                 //    // DB2.NET用のDamを生成
@@ -227,26 +221,26 @@ namespace Touryo.Infrastructure.Business.Business
                 //    // 接続文字列をロード
                 //    connstring = GetConfigParameter.GetConnectionString("ConnectionString_HIR");
                 //}
-                //else if (parameterValue.ActionType.Split('%')[0] == "MCN")
-                //{
-                //    // MySQL Cnn/NET用のDamを生成
-                //    dam = new DamMySQL();
+                else if (parameterValue.ActionType.Split('%')[0] == "MCN")
+                {
+                    // MySQL Cnn/NET用のDamを生成
+                    dam = new DamMySQL();
 
-                //    // 接続文字列をロード
-                //    connstring = GetConfigParameter.GetConnectionString("ConnectionString_MCN");
-                //}
-                //else if (parameterValue.ActionType.Split('%')[0] == "NPS")
-                //{
-                //    // PostgreSQL / Npgsql用のDamを生成
-                //    dam = new DamPstGrS();
+                    // 接続文字列をロード
+                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_MCN");
+                }
+                else if (parameterValue.ActionType.Split('%')[0] == "NPS")
+                {
+                    // PostgreSQL / Npgsql用のDamを生成
+                    dam = new DamPstGrS();
 
-                //    // 接続文字列をロード
-                //    connstring = GetConfigParameter.GetConnectionString("ConnectionString_NPS");
-                //}
-                //else
-                //{
-                //    // ここは通らない
-                //}
+                    // 接続文字列をロード
+                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_NPS");
+                }
+                else
+                {
+                    // ここは通らない
+                }
 
                 #endregion
 

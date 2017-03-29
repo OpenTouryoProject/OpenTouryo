@@ -26,10 +26,15 @@ using System.Security.Principal;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+using Touryo.Infrastructure.Business.Common;
+using Touryo.Infrastructure.Business.Business;
 using Touryo.Infrastructure.Business.Str;
 using Touryo.Infrastructure.Business.Util;
+
+using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Util;
 
+using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
@@ -347,87 +352,87 @@ namespace ProjectX_sample.Aspx.TestPublic
 
         #region トランザクション制御機能
 
-        ///// <summary>トランザクション制御機能のテスト（InitDam）</summary>
-        //protected void btnTxPID_Click(object sender, EventArgs e)
-        //{
-        //    // 引数クラスを生成
-        //    // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        //    MyParameterValue myParameterValue
-        //        = new MyParameterValue(
-        //              "画面ID", "ButtonID",
-        //              this.ddlDap.SelectedValue + "%"
-        //              + this.ddlExRollback.SelectedValue + "%"
-        //              + this.ddlExStatus.SelectedValue,
-        //              new MyUserInfo("ユーザ名", Request.UserHostAddress));
+        /// <summary>トランザクション制御機能のテスト（InitDam）</summary>
+        protected void btnTxPID_Click(object sender, EventArgs e)
+        {
+            // 引数クラスを生成
+            // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
+            MyParameterValue myParameterValue
+                = new MyParameterValue(
+                      "画面ID", "ボタンID",
+                      this.ddlDap.SelectedValue + "%"
+                      + this.ddlExRollback.SelectedValue + "%"
+                      + this.ddlExStatus.SelectedValue,
+                      new MyUserInfo("ユーザ名", Request.UserHostAddress));
 
-        //    // ※ ActionTypeのフォーマット：Dap%Err%Stat%
+            // ※ ActionTypeのフォーマット：Dap%Err%Stat%
 
-        //    MyBaseLogic testMTC;
+            MyBaseLogic testMTC;
 
-        //    // B層を生成
-        //    if (this.cbxCnnMode.Checked)
-        //    {
-        //        // マルチ コネクション モード
-        //        testMTC = new TestMTC_mcn();
-        //    }
-        //    else
-        //    {
-        //        // シングル コネクション モード
-        //        testMTC = new TestMTC();
-        //    }
+            // B層を生成
+            if (this.cbxCnnMode.Checked)
+            {
+                // マルチ コネクション モード
+                testMTC = new TestMTC_mcn();
+            }
+            else
+            {
+                // シングル コネクション モード
+                testMTC = new TestMTC();
+            }
 
-        //    // 業務処理を実行
-        //    MyReturnValue myReturnValue =
-        //        (MyReturnValue)testMTC.DoBusinessLogic(
-        //            (BaseParameterValue)myParameterValue,
-        //            DbEnum.IsolationLevelEnum.User);
-        //}
+            // 業務処理を実行
+            MyReturnValue myReturnValue =
+                (MyReturnValue)testMTC.DoBusinessLogic(
+                    (BaseParameterValue)myParameterValue,
+                    DbEnum.IsolationLevelEnum.User);
+        }
 
-        ///// <summary>トランザクション制御機能のテスト（GetTransactionPatterns）</summary>
-        //protected void btnTxGID_Click(object sender, EventArgs e)
-        //{
-        //    // 引数クラスを生成
-        //    // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        //    MyType.TestParameterValue testParameterValue
-        //        = new MyType.TestParameterValue(
-        //              "", "画面ID", "ButtonID",
-        //              this.ddlDap.SelectedValue + "%"
-        //              + this.ddlExRollback.SelectedValue + "%"
-        //              + this.ddlExStatus.SelectedValue,
-        //              new MyUserInfo("ユーザ名", Request.UserHostAddress));
+        /// <summary>トランザクション制御機能のテスト（GetTransactionPatterns）</summary>
+        protected void btnTxGID_Click(object sender, EventArgs e)
+        {
+            // 引数クラスを生成
+            // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
+            MyType.TestParameterValue testParameterValue
+                = new MyType.TestParameterValue(
+                      "", "画面ID", "ボタンID",
+                      this.ddlDap.SelectedValue + "%"
+                      + this.ddlExRollback.SelectedValue + "%"
+                      + this.ddlExStatus.SelectedValue,
+                      new MyUserInfo("ユーザ名", Request.UserHostAddress));
 
-        //    // ※ ActionTypeのフォーマット：Dap
+            // ※ ActionTypeのフォーマット：Dap
 
-        //    // TransactionGroupIDを設定
-        //    testParameterValue.Obj = this.ddlTxGpID.SelectedValue;
+            // TransactionGroupIDを設定
+            testParameterValue.Obj = this.ddlTxGpID.SelectedValue;
 
-        //    // 業務処理を実行
-        //    TestMTC_txg testMTC = new TestMTC_txg();
+            // 業務処理を実行
+            TestMTC_txg testMTC = new TestMTC_txg();
 
-        //    MyReturnValue myReturnValue =
-        //        (MyReturnValue)testMTC.DoBusinessLogic(
-        //            (BaseParameterValue)testParameterValue,
-        //            DbEnum.IsolationLevelEnum.User);
+            MyReturnValue myReturnValue =
+                (MyReturnValue)testMTC.DoBusinessLogic(
+                    (BaseParameterValue)testParameterValue,
+                    DbEnum.IsolationLevelEnum.User);
 
-        //    this.lblTxID.Text = "";
+            this.lblTxID.Text = "";
 
-        //    // 例外判定
-        //    if (myReturnValue.ErrorFlag)
-        //    {
-        //        // Error Message
-        //        this.lblTxID.Text = myReturnValue.ErrorMessage;
-        //    }
-        //    else
-        //    {
-        //        string[] temp1 = (string[])((MyType.TestReturnValue)myReturnValue).Obj;
+            // 例外判定
+            if (myReturnValue.ErrorFlag)
+            {
+                // Error Message
+                this.lblTxID.Text = myReturnValue.ErrorMessage;
+            }
+            else
+            {
+                string[] temp1 = (string[])((MyType.TestReturnValue)myReturnValue).Obj;
 
-        //        // TransactionPatternIDをリストする。
-        //        foreach (string temp2 in temp1)
-        //        {
-        //            this.lblTxID.Text += temp2 + "<br/>";
-        //        }
-        //    }
-        //}
+                // TransactionPatternIDをリストする。
+                foreach (string temp2 in temp1)
+                {
+                    this.lblTxID.Text += temp2 + "<br/>";
+                }
+            }
+        }
 
         #endregion
 

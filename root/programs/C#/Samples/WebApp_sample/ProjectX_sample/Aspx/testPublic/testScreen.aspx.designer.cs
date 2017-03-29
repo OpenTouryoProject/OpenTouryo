@@ -292,6 +292,78 @@ namespace ProjectX_sample.Aspx.TestPublic {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnGetMSG;
         
         /// <summary>
+        /// cbxCnnMode コントロール。
+        /// </summary>
+        /// <remarks>
+        /// 自動生成されたフィールド。
+        /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        /// </remarks>
+        protected global::Touryo.Infrastructure.CustomControl.WebCustomCheckBox cbxCnnMode;
+        
+        /// <summary>
+        /// ddlDap コントロール。
+        /// </summary>
+        /// <remarks>
+        /// 自動生成されたフィールド。
+        /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        /// </remarks>
+        protected global::Touryo.Infrastructure.CustomControl.WebCustomDropDownList ddlDap;
+        
+        /// <summary>
+        /// btnTxPID コントロール。
+        /// </summary>
+        /// <remarks>
+        /// 自動生成されたフィールド。
+        /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        /// </remarks>
+        protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnTxPID;
+        
+        /// <summary>
+        /// ddlTxGpID コントロール。
+        /// </summary>
+        /// <remarks>
+        /// 自動生成されたフィールド。
+        /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        /// </remarks>
+        protected global::Touryo.Infrastructure.CustomControl.WebCustomDropDownList ddlTxGpID;
+        
+        /// <summary>
+        /// btnTxGID コントロール。
+        /// </summary>
+        /// <remarks>
+        /// 自動生成されたフィールド。
+        /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        /// </remarks>
+        protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnTxGID;
+        
+        /// <summary>
+        /// lblTxID コントロール。
+        /// </summary>
+        /// <remarks>
+        /// 自動生成されたフィールド。
+        /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        /// </remarks>
+        protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblTxID;
+        
+        /// <summary>
+        /// ddlExStatus コントロール。
+        /// </summary>
+        /// <remarks>
+        /// 自動生成されたフィールド。
+        /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        /// </remarks>
+        protected global::Touryo.Infrastructure.CustomControl.WebCustomDropDownList ddlExStatus;
+        
+        /// <summary>
+        /// ddlExRollback コントロール。
+        /// </summary>
+        /// <remarks>
+        /// 自動生成されたフィールド。
+        /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        /// </remarks>
+        protected global::Touryo.Infrastructure.CustomControl.WebCustomDropDownList ddlExRollback;
+        
+        /// <summary>
         /// lblJis2K4 コントロール。
         /// </summary>
         /// <remarks>

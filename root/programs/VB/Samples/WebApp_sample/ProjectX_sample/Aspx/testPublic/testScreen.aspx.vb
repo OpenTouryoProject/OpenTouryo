@@ -21,10 +21,14 @@ Imports System.IO
 Imports System.Security.Principal
 Imports System.Collections.ObjectModel
 
+Imports Touryo.Infrastructure.Business.Common
+Imports Touryo.Infrastructure.Business.Business
 Imports Touryo.Infrastructure.Business.Str
 Imports Touryo.Infrastructure.Business.Util
+Imports Touryo.Infrastructure.Framework.Common
 Imports Touryo.Infrastructure.Framework.Util
 
+Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Str
@@ -297,87 +301,60 @@ Namespace Aspx.TestPublic
 
 #Region "トランザクション制御機能"
 
-        '// <summary>トランザクション制御機能のテスト（InitDam）</summary>
-        'protected void btnTxPID_Click(object sender, EventArgs e)
-        '{
-        '    // 引数クラスを生成
-        '    // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        '    MyParameterValue myParameterValue
-        '        = new MyParameterValue(
-        '              "画面ID", "ButtonID",
-        '              Me.ddlDap.SelectedValue + "%"
-        '              + Me.ddlExRollback.SelectedValue + "%"
-        '              + Me.ddlExStatus.SelectedValue,
-        '              new MyUserInfo("ユーザ名", Request.UserHostAddress));
+        ''' <summary>トランザクション制御機能のテスト（InitDam）</summary>
+        Protected Sub btnTxPID_Click(sender As Object, e As EventArgs)
+            ' 引数クラスを生成
+            ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
+            Dim myParameterValue As New MyParameterValue("画面ID", "ボタンID", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue) & "%" & Convert.ToString(Me.ddlExStatus.SelectedValue), New MyUserInfo("ユーザ名", Request.UserHostAddress))
 
-        '    // ※ ActionTypeのフォーマット：Dap%Err%Stat%
+            ' ※ ActionTypeのフォーマット：Dap%Err%Stat%
 
-        '    MyBaseLogic testMTC;
+            Dim testMTC As MyBaseLogic
 
-        '    // B層を生成
-        '    if (Me.cbxCnnMode.Checked)
-        '    {
-        '        // マルチ コネクション モード
-        '        testMTC = new TestMTC_mcn();
-        '    }
-        '    else
-        '    {
-        '        // シングル コネクション モード
-        '        testMTC = new TestMTC();
-        '    }
+            ' B層を生成
+            If Me.cbxCnnMode.Checked Then
+                ' マルチ コネクション モード
+                testMTC = New TestMTC_mcn()
+            Else
+                ' シングル コネクション モード
+                testMTC = New TestMTC()
+            End If
 
-        '    // 業務処理を実行
-        '    MyReturnValue myReturnValue =
-        '        (MyReturnValue)testMTC.DoBusinessLogic(
-        '            (BaseParameterValue)myParameterValue,
-        '            DbEnum.IsolationLevelEnum.User);
-        '}
+            ' 業務処理を実行
+            Dim myReturnValue As MyReturnValue = DirectCast(testMTC.DoBusinessLogic(DirectCast(myParameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.User), MyReturnValue)
+        End Sub
 
-        '// <summary>トランザクション制御機能のテスト（GetTransactionPatterns）</summary>
-        'protected void btnTxGID_Click(object sender, EventArgs e)
-        '{
-        '    // 引数クラスを生成
-        '    // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
-        '    MyType.TestParameterValue testParameterValue
-        '        = new MyType.TestParameterValue(
-        '              "", "画面ID", "ButtonID",
-        '              Me.ddlDap.SelectedValue + "%"
-        '              + Me.ddlExRollback.SelectedValue + "%"
-        '              + Me.ddlExStatus.SelectedValue,
-        '              new MyUserInfo("ユーザ名", Request.UserHostAddress));
+        ''' <summary>トランザクション制御機能のテスト（GetTransactionPatterns）</summary>
+        Protected Sub btnTxGID_Click(sender As Object, e As EventArgs)
+            ' 引数クラスを生成
+            ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
+            Dim testParameterValue As New MyType.TestParameterValue("", "画面ID", "ボタンID", Convert.ToString(Me.ddlDap.SelectedValue) & "%" & Convert.ToString(Me.ddlExRollback.SelectedValue) & "%" & Convert.ToString(Me.ddlExStatus.SelectedValue), New MyUserInfo("ユーザ名", Request.UserHostAddress))
 
-        '    // ※ ActionTypeのフォーマット：Dap
+            ' ※ ActionTypeのフォーマット：Dap
 
-        '    // TransactionGroupIDを設定
-        '    testParameterValue.Obj = Me.ddlTxGpID.SelectedValue;
+            ' TransactionGroupIDを設定
+            testParameterValue.Obj = Me.ddlTxGpID.SelectedValue
 
-        '    // 業務処理を実行
-        '    TestMTC_txg testMTC = new TestMTC_txg();
+            ' 業務処理を実行
+            Dim testMTC As New TestMTC_txg()
 
-        '    MyReturnValue myReturnValue =
-        '        (MyReturnValue)testMTC.DoBusinessLogic(
-        '            (BaseParameterValue)testParameterValue,
-        '            DbEnum.IsolationLevelEnum.User);
+            Dim myReturnValue As MyReturnValue = DirectCast(testMTC.DoBusinessLogic(DirectCast(testParameterValue, BaseParameterValue), DbEnum.IsolationLevelEnum.User), MyReturnValue)
 
-        '    Me.lblTxID.Text = "";
+            Me.lblTxID.Text = ""
 
-        '    // 例外判定
-        '    if (myReturnValue.ErrorFlag)
-        '    {
-        '        // Error Message
-        '        Me.lblTxID.Text = myReturnValue.ErrorMessage;
-        '    }
-        '    else
-        '    {
-        '        string[] temp1 = (string[])((MyType.TestReturnValue)myReturnValue).Obj;
+            ' 例外判定
+            If myReturnValue.ErrorFlag Then
+                ' Error Message
+                Me.lblTxID.Text = myReturnValue.ErrorMessage
+            Else
+                Dim temp1 As String() = DirectCast(DirectCast(myReturnValue, MyType.TestReturnValue).Obj, String())
 
-        '        // TransactionPatternIDをリストする。
-        '        foreach (string temp2 in temp1)
-        '        {
-        '            Me.lblTxID.Text += temp2 + "<br/>";
-        '        }
-        '    }
-        '}
+                ' TransactionPatternIDをリストする。
+                For Each temp2 As String In temp1
+                    Me.lblTxID.Text += temp2 & "<br/>"
+                Next
+            End If
+        End Sub
 
 #End Region
 
