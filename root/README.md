@@ -210,8 +210,13 @@ Refer to the above table and build programs by running the batch files in numeri
 
 - If necessary, revise the environment variable *BUILDFILEPATH* in z_Common.bat according to the build environment.
 
-- When the following error occurred at build time, install *Windows SDK*. (Refer to [issue of Open Touryo](https://github.com/OpenTouryoProject/OpenTouryoTemplates/issues/48#issuecomment-241349223).)  
-Further, you can know the version of Windows SDK by error message. For example, in case of the following error message, you can judge that *Windows SDK for Windows 8* should be installed because the following error message says "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\\*v8.0A*\WinSDK-NetFx40Tools-x86".
+- The libraries which are used by Open Touryo Template Base for Visual Studio 2015 are downloaded by NuGet. NuGet libraries might not be downloaded normally under proxy environment. So, when using proxy environment, create environment variable *http_proxy* as follows:
+    - Open *C:\root\programs\C#\z_Common.bat* and *C:\root\programs\VB\z_Common.bat* in an editor.
+    - By default, the code which creates environment variable *http_proxy* is commented.  
+    So, uncomment this code by removing '@rem'.
+    - Set your proxy information in environment variable *http_proxy*.
+
+- When the following error occurred at build time, install *Windows SDK for Windows 8*. (Refer to [issue of Open Touryo](https://github.com/OpenTouryoProject/OpenTouryoTemplates/issues/48#issuecomment-241349223).)
 ```
 C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(2863,5): error MSB3086: Task could not find "AL.exe" using the SdkToolsPath "" or the registry key "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v8.0A\WinSDK-NetFx40Tools-x86". Make sure the SdkToolsPath is set and the tool exists in the correct processor specific location under the SdkToolsPath and that the Microsoft Windows SDK is installed
 ```
