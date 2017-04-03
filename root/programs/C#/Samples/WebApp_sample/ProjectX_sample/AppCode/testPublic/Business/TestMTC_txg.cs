@@ -16,28 +16,15 @@
 //*
 //**********************************************************************************
 
-// 型情報
-using MyType;
-
-// System
 using System;
 
-// データセット利用
-using System.Data;
-
-// 業務フレームワーク
 using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Common;
-
-// フレームワーク
 using Touryo.Infrastructure.Framework.Business;
 using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Exceptions;
-
-// 部品
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.Util;
+
+using MyType;
 
 namespace ProjectX_sample
 {
@@ -96,13 +83,13 @@ namespace ProjectX_sample
                     BaseLogic.InitDam(transactionPatternID, tempDam);
                     this.SetDam(transactionPatternID, tempDam);
                 }
-                else if (transactionPatternID.IndexOf("DB2") != -1)
-                {
-                    // DamDB2を初期化してセット
-                    tempDam = new DamDB2();
-                    BaseLogic.InitDam(transactionPatternID, tempDam);
-                    this.SetDam(transactionPatternID, tempDam);
-                }
+                //else if (transactionPatternID.IndexOf("DB2") != -1)
+                //{
+                //    // DamDB2を初期化してセット
+                //    tempDam = new DamDB2();
+                //    BaseLogic.InitDam(transactionPatternID, tempDam);
+                //    this.SetDam(transactionPatternID, tempDam);
+                //}
                 else if (transactionPatternID.IndexOf("MCN") != -1)
                 {
                     // DamMySQLを初期化してセット

@@ -24,6 +24,7 @@ md "Frameworks\Infrastructure\Build"
 rem --------------------------------------------------
 rem Output xcopy after you build the batch Infrastructure(AllComponent)
 rem --------------------------------------------------
+..\nuget.exe restore "Frameworks\Infrastructure\AllComponent.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\AllComponent.sln"
 
 xcopy /E /Y "Frameworks\Infrastructure\Business\bin\%BUILD_CONFIG%" "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%\"
@@ -45,6 +46,12 @@ xcopy /E /Y "Frameworks\Infrastructure\CustomControl\RichClient\bin\%BUILD_CONFI
 xcopy /E /Y "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%" "Frameworks\Infrastructure\Build\"
 
 pause
+
+rem --------------------------------------------------
+rem Delete the System.Web.MVC.dll after the bulk copy
+rem --------------------------------------------------
+del "Frameworks\Infrastructure\Build\System.Web.MVC.*"
+del "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%\System.Web.MVC.*"
 
 rem -------------------------------------------------------
 endlocal

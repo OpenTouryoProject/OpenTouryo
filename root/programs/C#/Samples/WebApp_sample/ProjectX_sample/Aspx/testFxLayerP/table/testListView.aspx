@@ -1,9 +1,13 @@
-<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.testFxLayerP.table.testListView"
-    Title="Untitled Page" EnableEventValidation="false" Codebehind="testListView.aspx.cs" %>
+<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.TestFxLayerP.Table.testListView" EnableEventValidation="false" Codebehind="testListView.aspx.cs" %>
+<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl"
-    TagPrefix="cc1" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" runat="Server">
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+    <asp:Label ID="lblResult" runat="server" Text=""></asp:Label><br />
+
     <asp:ListView ID="lvwListView1" runat="server" OnItemEditing="lvwListView1_ItemEditing"
         OnItemCanceling="lvwListView1_ItemCanceling" DataKeyNames="fileid">
         <LayoutTemplate>
@@ -164,7 +168,11 @@
         </Fields>
     </asp:DataPager>
     <p>
-        <asp:Button ID="btnButton1" runat="server" Text="ポストバック" />
+        <asp:Button ID="btnButton1" runat="server" Text="Post Back" />
     </p>
    <asp:Label ID="lblResultOfItemCommand" runat="server"></asp:Label>
+</asp:Content>
+
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
 </asp:Content>

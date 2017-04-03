@@ -1,38 +1,55 @@
 <%@ Master Language="C#" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Common.testScreen1" Codebehind="testScreen1.master.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
-<!-- All Rights Reserved, Copyright (C) 2007,2012 Hitachi Solutions,Ltd. -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" >
-
+<!DOCTYPE html>
+<html>
 <head id="Head1" runat="server">
     <title>無題のページ</title>
-    <!--Uncomment below line when using jQuery-->
-    <!--<script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>-->
-
-    <!--FxCode：add-start-->
-    <script type="text/javascript" src="<%= this.ResolveClientUrl("~/Framework/js/common.js") %>"></script>
-    <script type="text/javascript" src="<%= this.ResolveClientUrl("~/Framework/js/ie_key_event.js") %>"></script>
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+    <webopt:bundlereference runat="server" path="~/bundles/css" />
 
     <!-- Resolve URL in the javascript-->
     <script type="text/javascript">
-        var baseUrl = "<%= ResolveUrl("~/") %>";
+        var baseUrl = "<%= this.ResolveUrl("~/") %>";
     </script>
     
     <!-- IE8をIE7互換モードで動作させる -->
     <!--meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /-->
     
-    <link rel="stylesheet" href="<%= this.ResolveClientUrl("~/Css/style.css") %>" type="text/css"/>
-    <!--FxCode：add-end-->
+    <asp:ContentPlaceHolder ID="cphHeaderScripts" runat="server">
+        This is header area for define the scripts. -- Override on Page.
+    </asp:ContentPlaceHolder>
 </head>
 
 <!--FxCode：add-js-event-->
 <body onload="Fx_Document_OnLoad();" onunload="Fx_Document_OnClose();">
         
-    <!-- オートコンプリートを指定 -->
+    <!-- auto completeを指定 -->
     <form id="form1" runat="server" autocomplete="on">
-    
+
+        <asp:ScriptManager EnableCdn="true" runat="server">
+            <Scripts>
+                <%--ScriptManager のバンドル スクリプトの詳細については、http://go.microsoft.com/fwlink/?LinkID=301884 を参照してください --%>
+                <%--Framework スクリプト--%>
+                <asp:ScriptReference Name="MsAjaxBundle" />
+                <asp:ScriptReference Name="jquery" />
+                <asp:ScriptReference Name="bootstrap" />
+                <asp:ScriptReference Name="respond" />
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
+                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+                <asp:ScriptReference Name="WebFormsBundle" />
+                <%--サイト スクリプト--%>
+            </Scripts>
+        </asp:ScriptManager>
+
         <!--SampleCode：add-start-->
         
         <a href="<%= this.ResolveUrl("~/Aspx/start/menu.aspx") %>">メニュー画面</a><br />
@@ -49,7 +66,7 @@
                     （画面遷移制御機能 = OFF）
                 </th>
                 <th>
-                    コントロール取得
+                    Control取得
                 </th>
                 <th style="width: 221px">
                     子画面表示
@@ -57,10 +74,10 @@
             </tr>
             <tr>
                 <td>
-                    <cc1:WebCustomButton ID="btnMButton1" runat="server" Text="マスタ共通ボタン" Width="220px" /><br />
-                    <cc1:WebCustomLinkButton ID="lbnMLinkButton1" runat="server" Width="220px">マスタ共通リンクボタン</cc1:WebCustomLinkButton><br />
-                    <cc1:WebCustomImageButton ID="ibnMImageButton1" runat="server" ToolTip="マスタ共通イメージボタン" /><br />
-                    <cc1:WebCustomImageMap ID="impMImageMap1" runat="server" ToolTip="マスタ共通イメージマップ" >
+                    <cc1:WebCustomButton ID="btnMButton1" runat="server" Text="Master Page共通Button" Width="220px" /><br />
+                    <cc1:WebCustomLinkButton ID="lbnMLinkButton1" runat="server" Width="220px">Master Page共通リンクButton</cc1:WebCustomLinkButton><br />
+                    <cc1:WebCustomImageButton ID="ibnMImageButton1" runat="server" ToolTip="Master Page共通イメージButton" /><br />
+                    <cc1:WebCustomImageMap ID="impMImageMap1" runat="server" ToolTip="Master Page共通イメージマップ" >
                         <asp:CircleHotSpot HotSpotMode="PostBack" PostBackValue="spot1" X="100" Y="50" Radius="30" />
                         <asp:RectangleHotSpot Bottom="180" HotSpotMode="PostBack" Left="120" PostBackValue="spot2" Right="180" Top="120" />
                         <asp:PolygonHotSpot Coordinates="25,110,10,190,90,190" HotSpotMode="PostBack" PostBackValue="spot3" />
@@ -75,12 +92,12 @@
                         <asp:PolygonHotSpot Coordinates="25,110,10,190,90,190" HotSpotMode="PostBack" PostBackValue="spot3" />
                     </cc1:WebCustomImageMap></td>
                 <td>
-                    コントロール名を入力<br />
+                    Control名を入力<br />
                     <cc1:WebCustomTextBox ID="TextBox1" runat="server"></cc1:WebCustomTextBox><br />
                     <br />
-                    <cc1:WebCustomButton ID="btnMButton3" runat="server" Text="コントロール取得（Fx）" Width="220px" /><br />
-                    <cc1:WebCustomLinkButton ID="lbnMLinkButton3" runat="server" Width="220px">コントロール取得（Master）</cc1:WebCustomLinkButton><br />
-                    <cc1:WebCustomImageButton ID="ibnMImageButton3" runat="server" ToolTip="コントロール取得（Content）" /></td> 
+                    <cc1:WebCustomButton ID="btnMButton3" runat="server" Text="Control取得（Fx）" Width="220px" /><br />
+                    <cc1:WebCustomLinkButton ID="lbnMLinkButton3" runat="server" Width="220px">Control取得（Master）</cc1:WebCustomLinkButton><br />
+                    <cc1:WebCustomImageButton ID="ibnMImageButton3" runat="server" ToolTip="Control取得（Content）" /></td> 
                 <td style="width: 221px">
                     <cc1:WebCustomCheckBox ID="CheckBox1" runat="server" Text="スタイルを設定する" /><br />
                     <cc1:WebCustomTextBox ID="TextBox2" runat="server"></cc1:WebCustomTextBox><br />
@@ -88,13 +105,13 @@
                     <br />
                     引き渡す情報を入力<br />
                     <cc1:WebCustomTextBox ID="TextBox3" runat="server"></cc1:WebCustomTextBox><br />
-                    <cc1:WebCustomButton ID="btnMButton4" runat="server" Text="ＯＫ" Width="220px" ToolTip="ＯＫ" /><br />
-                    <cc1:WebCustomLinkButton ID="lbnMLinkButton4" runat="server" Width="220px" ToolTip="モードレス画面">モードレス画面（非ネストに行くので注意）</cc1:WebCustomLinkButton><br />
+                    <cc1:WebCustomButton ID="btnMButton4" runat="server" Text="OK" Width="220px" ToolTip="OK" /><br />
+                    <cc1:WebCustomLinkButton ID="lbnMLinkButton4" runat="server" Width="220px" ToolTip="Modeless画面">Modeless画面（非ネストに行くので注意）</cc1:WebCustomLinkButton><br />
                     <br />
-                    共通処理で、ダイアログの<br />
+                    共通処理で、Dialogの<br />
                     後処理はサポートしないので<br />
-                    ・YES・NOメッセージ ダイアログ<br />
-                    ・業務モーダル ダイアログ<br />
+                    ・YES・NOMessage Dialog<br />
+                    ・業務Modal Dialog<br />
                     は、テストケースからも除く。<br />
                     
                 </td>
@@ -113,7 +130,7 @@
                     （画面遷移制御機能 = OFF）
                 </th>
                 <th>
-                    コントロール取得
+                    Control取得
                 </th>
                 <th>
                     子画面表示
@@ -121,10 +138,10 @@
             </tr>
             <tr>
                 <td>
-                    <cc1:WebCustomButton ID="btnMButton21" runat="server" Text="マスタ個別ボタン" Width="220px" /><br />
-                    <cc1:WebCustomLinkButton ID="lbnMLinkButton21" runat="server" Width="220px">マスタ個別リンクボタン</cc1:WebCustomLinkButton><br />
-                    <cc1:WebCustomImageButton ID="ibnMImageButton21" runat="server" ToolTip="マスタ個別イメージボタン" /><br />
-                    <cc1:WebCustomImageMap ID="impMImageMap21" runat="server" ToolTip="マスタ個別イメージマップ" >
+                    <cc1:WebCustomButton ID="btnMButton21" runat="server" Text="Master Page個別Button" Width="220px" /><br />
+                    <cc1:WebCustomLinkButton ID="lbnMLinkButton21" runat="server" Width="220px">Master Page個別リンクButton</cc1:WebCustomLinkButton><br />
+                    <cc1:WebCustomImageButton ID="ibnMImageButton21" runat="server" ToolTip="Master Page個別イメージButton" /><br />
+                    <cc1:WebCustomImageMap ID="impMImageMap21" runat="server" ToolTip="Master Page個別イメージマップ" >
                         <asp:CircleHotSpot HotSpotMode="PostBack" PostBackValue="spot1" X="100" Y="50" Radius="30" />
                         <asp:RectangleHotSpot Bottom="180" HotSpotMode="PostBack" Left="120" PostBackValue="spot2" Right="180" Top="120" />
                         <asp:PolygonHotSpot Coordinates="25,110,10,190,90,190" HotSpotMode="PostBack" PostBackValue="spot3" />
@@ -139,12 +156,12 @@
                         <asp:PolygonHotSpot Coordinates="25,110,10,190,90,190" HotSpotMode="PostBack" PostBackValue="spot3" />
                     </cc1:WebCustomImageMap></td>
                 <td>
-                    コントロール名を入力<br />
+                    Control名を入力<br />
                     <cc1:WebCustomTextBox ID="TextBox4" runat="server"></cc1:WebCustomTextBox><br />
                     <br />
-                    <cc1:WebCustomButton ID="btnMButton23" runat="server" Text="コントロール取得（Fx）" Width="220px" /><br />
-                    <cc1:WebCustomLinkButton ID="lbnMLinkButton23" runat="server" Width="220px">コントロール取得（Master）</cc1:WebCustomLinkButton><br />
-                    <cc1:WebCustomImageButton ID="ibnMImageButton23" runat="server" ToolTip="コントロール取得（Content）" /></td>
+                    <cc1:WebCustomButton ID="btnMButton23" runat="server" Text="Control取得（Fx）" Width="220px" /><br />
+                    <cc1:WebCustomLinkButton ID="lbnMLinkButton23" runat="server" Width="220px">Control取得（Master）</cc1:WebCustomLinkButton><br />
+                    <cc1:WebCustomImageButton ID="ibnMImageButton23" runat="server" ToolTip="Control取得（Content）" /></td>
                 <td>
                     <cc1:WebCustomCheckBox ID="CheckBox2" runat="server" Text="スタイルを設定する" /><br />
                     <cc1:WebCustomTextBox ID="TextBox5" runat="server"></cc1:WebCustomTextBox><br />
@@ -152,10 +169,10 @@
                     <br />
                     引き渡す情報を入力<br />
                     <cc1:WebCustomTextBox ID="TextBox6" runat="server"></cc1:WebCustomTextBox><br />
-                    <cc1:WebCustomButton ID="btnMButton24" runat="server" Text="ＯＫ" Width="220px" ToolTip="ＯＫ" /><br />
-                    <cc1:WebCustomLinkButton ID="lbnMLinkButton24" runat="server" Width="220px" ToolTip="ＹＥＳ・ＮＯ">ＹＥＳ・ＮＯ</cc1:WebCustomLinkButton><br />
-                    <cc1:WebCustomImageButton ID="ibnMImageButton24" runat="server" ToolTip="モーダル画面（非ネストに行くので注意）" /><br />
-                    <cc1:WebCustomImageMap ID="impMImageMap24" runat="server" ToolTip="モードレス画面（非ネストに行くので注意）" >
+                    <cc1:WebCustomButton ID="btnMButton24" runat="server" Text="OK" Width="220px" ToolTip="OK" /><br />
+                    <cc1:WebCustomLinkButton ID="lbnMLinkButton24" runat="server" Width="220px" ToolTip="YES・NO">YES・NO</cc1:WebCustomLinkButton><br />
+                    <cc1:WebCustomImageButton ID="ibnMImageButton24" runat="server" ToolTip="Modal画面（非ネストに行くので注意）" /><br />
+                    <cc1:WebCustomImageMap ID="impMImageMap24" runat="server" ToolTip="Modeless画面（非ネストに行くので注意）" >
                         <asp:CircleHotSpot HotSpotMode="PostBack" PostBackValue="spot1" X="100" Y="50" Radius="30" />
                         <asp:RectangleHotSpot Bottom="180" HotSpotMode="PostBack" Left="120" PostBackValue="spot2" Right="180" Top="120" />
                         <asp:PolygonHotSpot Coordinates="25,110,10,190,90,190" HotSpotMode="PostBack" PostBackValue="spot3" />
@@ -166,19 +183,19 @@
         </table>
         <hr />
         <!--SampleCode：Contents（個別１）-->
-        <asp:contentplaceholder id="ContentPlaceHolder_A" runat="Server">
+        <asp:ContentPlaceHolder id="ContentPlaceHolder_A" runat="Server">
             This is Default Content -- Override on Page
-        </asp:contentplaceholder>
+        </asp:ContentPlaceHolder>
         
         <!--SampleCode：Contents（個別２）-->
-        <asp:contentplaceholder id="ContentPlaceHolder_B" runat="Server">
+        <asp:ContentPlaceHolder id="ContentPlaceHolder_B" runat="Server">
             This is Default Content -- Override on Page
-        </asp:contentplaceholder>
+        </asp:ContentPlaceHolder>
         
         <!--SampleCode：Contents（個別３）-->
-        <asp:contentplaceholder id="ContentPlaceHolder_C" runat="Server">
+        <asp:ContentPlaceHolder id="ContentPlaceHolder_C" runat="Server">
             This is Default Content -- Override on Page
-        </asp:contentplaceholder>
+        </asp:ContentPlaceHolder>
         
         <!--SampleCode：add-end-->
 
@@ -197,6 +214,14 @@
         <asp:HiddenField ID="RequestTicketGuid" runat="server" Value="0" />
         <!--FxCode：add-end-->
     </form>
+
+    <%: Scripts.Render("~/bundles/touryo") %>
+    <%: Scripts.Render("~/bundles/app") %>
+
+    <asp:ContentPlaceHolder ID="cphFooterScripts" runat="server">
+        This is footer area for define the scripts. -- Override on Page.
+    </asp:ContentPlaceHolder>
+
 </body>
 </html>
 

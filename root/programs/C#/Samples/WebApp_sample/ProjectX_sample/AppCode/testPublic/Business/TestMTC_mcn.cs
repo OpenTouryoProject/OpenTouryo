@@ -16,25 +16,15 @@
 //*
 //**********************************************************************************
 
-// System
 using System;
 
-// データセット利用
-using System.Data;
-
-// 業務フレームワーク
 using Touryo.Infrastructure.Business.Business;
 using Touryo.Infrastructure.Business.Dao;
 using Touryo.Infrastructure.Business.Common;
-
-// フレームワーク
 using Touryo.Infrastructure.Framework.Business;
 using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Exceptions;
-
-// 部品
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.Util;
 
 namespace ProjectX_sample
 {
@@ -330,106 +320,106 @@ namespace ProjectX_sample
 
             #region DB2_NT
 
-            // Damを生成
-            damWork = new DamDB2();
-            // Damを初期化
-            BaseLogic.InitDam("DB2_NT", damWork);
-            // Damを設定
-            this.SetDam("DB2_NT", damWork);
+            //// Damを生成
+            //damWork = new DamDB2();
+            //// Damを初期化
+            //BaseLogic.InitDam("DB2_NT", damWork);
+            //// Damを設定
+            //this.SetDam("DB2_NT", damWork);
 
-            // インサート
-            // Damを直接使用することもできるが、
-            // 通常は、データアクセスにはDaoを使用する。        
-            cmnDao = new CmnDao(this.GetDam("DB2_NT"));
-            cmnDao.SQLText = "INSERT INTO Shippers (ShipperID, CompanyName, Phone) VALUES(NEXTVAL for TS_ShipperID, 'DB2_NT', 'DB2_NT')";
-            obj = (object)cmnDao.ExecSelectScalar();
+            //// インサート
+            //// Damを直接使用することもできるが、
+            //// 通常は、データアクセスにはDaoを使用する。        
+            //cmnDao = new CmnDao(this.GetDam("DB2_NT"));
+            //cmnDao.SQLText = "INSERT INTO Shippers (ShipperID, CompanyName, Phone) VALUES(NEXTVAL for TS_ShipperID, 'DB2_NT', 'DB2_NT')";
+            //obj = (object)cmnDao.ExecSelectScalar();
 
-            //this.GetDam("DB2_NT").CommitTransaction();
-            //this.GetDam("DB2_NT").ConnectionClose();
+            ////this.GetDam("DB2_NT").CommitTransaction();
+            ////this.GetDam("DB2_NT").ConnectionClose();
 
             #endregion
 
             #region DB2_UC
 
-            // Damを生成
-            damWork = new DamDB2();
-            // Damを初期化
-            BaseLogic.InitDam("DB2_UC", damWork);
-            // Damを設定
-            this.SetDam("DB2_UC", damWork);
+            //// Damを生成
+            //damWork = new DamDB2();
+            //// Damを初期化
+            //BaseLogic.InitDam("DB2_UC", damWork);
+            //// Damを設定
+            //this.SetDam("DB2_UC", damWork);
 
-            // インサート
-            // Damを直接使用することもできるが、
-            // 通常は、データアクセスにはDaoを使用する。        
-            cmnDao = new CmnDao(this.GetDam("DB2_UC"));
-            cmnDao.SQLText = "INSERT INTO Shippers (ShipperID, CompanyName, Phone) VALUES(NEXTVAL for TS_ShipperID, 'DB2_UC', 'DB2_UC')";
-            obj = (object)cmnDao.ExecSelectScalar();
+            //// インサート
+            //// Damを直接使用することもできるが、
+            //// 通常は、データアクセスにはDaoを使用する。        
+            //cmnDao = new CmnDao(this.GetDam("DB2_UC"));
+            //cmnDao.SQLText = "INSERT INTO Shippers (ShipperID, CompanyName, Phone) VALUES(NEXTVAL for TS_ShipperID, 'DB2_UC', 'DB2_UC')";
+            //obj = (object)cmnDao.ExecSelectScalar();
 
-            //this.GetDam("DB2_UC").CommitTransaction();
-            //this.GetDam("DB2_UC").ConnectionClose();
+            ////this.GetDam("DB2_UC").CommitTransaction();
+            ////this.GetDam("DB2_UC").ConnectionClose();
 
             #endregion
 
             #region DB2_RC
 
-            // Damを生成
-            damWork = new DamDB2();
-            // Damを初期化
-            BaseLogic.InitDam("DB2_RC", damWork);
-            // Damを設定
-            this.SetDam("DB2_RC", damWork);
+            //// Damを生成
+            //damWork = new DamDB2();
+            //// Damを初期化
+            //BaseLogic.InitDam("DB2_RC", damWork);
+            //// Damを設定
+            //this.SetDam("DB2_RC", damWork);
 
-            // インサート
-            // Damを直接使用することもできるが、
-            // 通常は、データアクセスにはDaoを使用する。        
-            cmnDao = new CmnDao(this.GetDam("DB2_UC"));
-            cmnDao.SQLText = "INSERT INTO Shippers (ShipperID, CompanyName, Phone) VALUES(NEXTVAL for TS_ShipperID, 'DB2_RC', 'DB2_RC')";
-            obj = (object)cmnDao.ExecSelectScalar();
+            //// インサート
+            //// Damを直接使用することもできるが、
+            //// 通常は、データアクセスにはDaoを使用する。        
+            //cmnDao = new CmnDao(this.GetDam("DB2_UC"));
+            //cmnDao.SQLText = "INSERT INTO Shippers (ShipperID, CompanyName, Phone) VALUES(NEXTVAL for TS_ShipperID, 'DB2_RC', 'DB2_RC')";
+            //obj = (object)cmnDao.ExecSelectScalar();
 
-            //this.GetDam("DB2_RC").CommitTransaction();
-            //this.GetDam("DB2_RC").ConnectionClose();
+            ////this.GetDam("DB2_RC").CommitTransaction();
+            ////this.GetDam("DB2_RC").ConnectionClose();
 
             #endregion
 
             #region DB2_RR
 
-            // Damを生成
-            damWork = new DamDB2();
-            // Damを初期化
-            BaseLogic.InitDam("DB2_RR", damWork);
-            // Damを設定
-            this.SetDam("DB2_RR", damWork);
+            //// Damを生成
+            //damWork = new DamDB2();
+            //// Damを初期化
+            //BaseLogic.InitDam("DB2_RR", damWork);
+            //// Damを設定
+            //this.SetDam("DB2_RR", damWork);
 
-            // インサート
-            // Damを直接使用することもできるが、
-            // 通常は、データアクセスにはDaoを使用する。        
-            cmnDao = new CmnDao(this.GetDam("DB2_RR"));
-            cmnDao.SQLText = "INSERT INTO Shippers (ShipperID, CompanyName, Phone) VALUES(NEXTVAL for TS_ShipperID, 'DB2_RR', 'DB2_RR')";
-            obj = (object)cmnDao.ExecSelectScalar();
+            //// インサート
+            //// Damを直接使用することもできるが、
+            //// 通常は、データアクセスにはDaoを使用する。        
+            //cmnDao = new CmnDao(this.GetDam("DB2_RR"));
+            //cmnDao.SQLText = "INSERT INTO Shippers (ShipperID, CompanyName, Phone) VALUES(NEXTVAL for TS_ShipperID, 'DB2_RR', 'DB2_RR')";
+            //obj = (object)cmnDao.ExecSelectScalar();
 
-            //this.GetDam("DB2_RR").CommitTransaction();
-            //this.GetDam("DB2_RR").ConnectionClose();
+            ////this.GetDam("DB2_RR").CommitTransaction();
+            ////this.GetDam("DB2_RR").ConnectionClose();
 
             #endregion
 
             #region DB2_SZ
 
-            // Damを生成
-            damWork = new DamDB2();
-            // Damを初期化
-            BaseLogic.InitDam("DB2_SZ", damWork);
-            // Damを設定
-            this.SetDam("DB2_SZ", damWork);
+            //// Damを生成
+            //damWork = new DamDB2();
+            //// Damを初期化
+            //BaseLogic.InitDam("DB2_SZ", damWork);
+            //// Damを設定
+            //this.SetDam("DB2_SZ", damWork);
 
-            // インサート
-            // Damを直接使用することもできるが、
-            // 通常は、データアクセスにはDaoを使用する。        
-            cmnDao = new CmnDao(this.GetDam("DB2_SZ"));
-            cmnDao.SQLText = "INSERT INTO Shippers (ShipperID, CompanyName, Phone) VALUES(NEXTVAL for TS_ShipperID, 'DB2_SZ', 'DB2_SZ')";
-            obj = (object)cmnDao.ExecSelectScalar();
+            //// インサート
+            //// Damを直接使用することもできるが、
+            //// 通常は、データアクセスにはDaoを使用する。        
+            //cmnDao = new CmnDao(this.GetDam("DB2_SZ"));
+            //cmnDao.SQLText = "INSERT INTO Shippers (ShipperID, CompanyName, Phone) VALUES(NEXTVAL for TS_ShipperID, 'DB2_SZ', 'DB2_SZ')";
+            //obj = (object)cmnDao.ExecSelectScalar();
 
-            //this.GetDam("DB2_SZ").CommitTransaction();
-            //this.GetDam("DB2_SZ").ConnectionClose();
+            ////this.GetDam("DB2_SZ").CommitTransaction();
+            ////this.GetDam("DB2_SZ").ConnectionClose();
 
             #endregion
 
@@ -441,22 +431,22 @@ namespace ProjectX_sample
 
             #region DB2_DF
 
-            // Damを生成
-            damWork = new DamDB2();
-            // Damを初期化
-            BaseLogic.InitDam("DB2_DF", damWork);
-            // Damを設定
-            this.SetDam("DB2_DF", damWork);
+            //// Damを生成
+            //damWork = new DamDB2();
+            //// Damを初期化
+            //BaseLogic.InitDam("DB2_DF", damWork);
+            //// Damを設定
+            //this.SetDam("DB2_DF", damWork);
 
-            // インサート
-            // Damを直接使用することもできるが、
-            // 通常は、データアクセスにはDaoを使用する。        
-            cmnDao = new CmnDao(this.GetDam("DB2_DF"));
-            cmnDao.SQLText = "INSERT INTO Shippers (ShipperID, CompanyName, Phone) VALUES(NEXTVAL for TS_ShipperID, 'DB2_DF', 'DB2_DF')";
-            obj = (object)cmnDao.ExecSelectScalar();
+            //// インサート
+            //// Damを直接使用することもできるが、
+            //// 通常は、データアクセスにはDaoを使用する。        
+            //cmnDao = new CmnDao(this.GetDam("DB2_DF"));
+            //cmnDao.SQLText = "INSERT INTO Shippers (ShipperID, CompanyName, Phone) VALUES(NEXTVAL for TS_ShipperID, 'DB2_DF', 'DB2_DF')";
+            //obj = (object)cmnDao.ExecSelectScalar();
 
-            //this.GetDam("DB2_DF").CommitTransaction();
-            //this.GetDam("DB2_DF").ConnectionClose();
+            ////this.GetDam("DB2_DF").CommitTransaction();
+            ////this.GetDam("DB2_DF").ConnectionClose();
 
             #endregion
 

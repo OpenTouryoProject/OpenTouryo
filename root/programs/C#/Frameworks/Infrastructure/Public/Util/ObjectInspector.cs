@@ -27,31 +27,14 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2012/03/16  西野  大介        新規作成
-//*  2012/03/23  西野  大介        DateTime、TimeSpanの対応（最小化）
+//*  2012/03/16  西野 大介         新規作成
+//*  2012/03/23  西野 大介         DateTime、TimeSpanの対応（最小化）
 //**********************************************************************************
 
-using System.Reflection;
-using System.Collections.Generic;
-
-using System.Diagnostics;
-
-// System
 using System;
-using System.IO;
-using System.Xml;
 using System.Text;
 using System.Collections;
-
-// 業務フレームワーク（循環参照になるため、参照しない）
-// フレームワーク（循環参照になるため、参照しない）
-
-// 部品
-//using Touryo.Infrastructure.Public.Db;
-//using Touryo.Infrastructure.Public.IO;
-//using Touryo.Infrastructure.Public.Log;
-//using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
+using System.Reflection;
 
 namespace Touryo.Infrastructure.Public.Util
 {

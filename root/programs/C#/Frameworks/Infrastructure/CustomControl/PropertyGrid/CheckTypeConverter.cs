@@ -28,20 +28,12 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
+//*  2017/01/31  西野 大介         "Indispensable" ---> "Required"
 //**********************************************************************************
 
-// System
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Text;
 using System.Globalization;
-
-// System.Web
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace Touryo.Infrastructure.CustomControl
 {
@@ -92,7 +84,7 @@ namespace Touryo.Infrastructure.CustomControl
 
                     string s = "";
 
-                    if (ct.IsIndispensable) { s += "IsIndispensable, "; }
+                    if (ct.Required) { s += "Required, "; }
                     if (ct.IsHankaku) { s += "IsHankaku, "; } 
                     if (ct.IsZenkaku) { s += "IsZenkaku, "; }
                     if (ct.IsNumeric) { s += "IsNumeric, "; }
@@ -152,7 +144,7 @@ namespace Touryo.Infrastructure.CustomControl
                 {
                     string t = s.Trim();
 
-                    if (t == "IsIndispensable") { ct.IsIndispensable = true; }
+                    if (t == "Required") { ct.Required = true; }
                     if (t == "IsZenkaku") { ct.IsZenkaku = true; }
                     if (t == "IsHankaku") { ct.IsHankaku = true; }
                     if (t == "IsNumeric") { ct.IsNumeric = true; }

@@ -3,7 +3,7 @@
 //**********************************************************************************
 
 #region Apache License
-//  
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at
@@ -19,11 +19,11 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：Aspx_Common_ErrorScreen
-//* クラス日本語名  ：例外発生時に表示されるページ（開発用 ※ 本稼動時には、本番用に差し替える）
+//* クラス名        ：ErrorScreen
+//* クラス日本語名  ：例外発生時に表示される画面（開発用 ※ 本稼動時には、本番用に差し替える）
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
@@ -31,46 +31,12 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System
 using System;
-using System.IO;
-using System.Data;
-using System.Text;
 using System.Collections;
-using System.Collections.Generic;
-
-// System.Web
 using System.Web;
-using System.Web.Security;
 
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
-
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
 
 namespace ProjectX_sample.Aspx.Common
 {
@@ -85,18 +51,18 @@ namespace ProjectX_sample.Aspx.Common
         /// <summary>Session情報：リピータ処理用</summary>
         private ArrayList al_session = new ArrayList();
 
-        #region イベントハンドラ
+        #region Event Handler
 
         /// <summary>
-        /// 画面起動時に実行されるイベントハンドラ
+        /// 画面起動時に実行されるEvent Handler
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         protected void Page_Load(object sender, EventArgs e)
         {
-            //画面にエラーメッセージ・エラー情報を表示する-----------------------------
+            //画面にError Message・エラー情報を表示する-----------------------------
 
-            //エラーメッセージをＨＴＴＰコンテキストから取得
+            //Error MessageをＨＴＴＰコンテキストから取得
             string err_msg =
                 (string)HttpContext.Current.Items[FxHttpContextIndex.SYSTEM_EXCEPTION_MESSAGE];
 
@@ -104,7 +70,7 @@ namespace ProjectX_sample.Aspx.Common
             string err_info =
                 (string)HttpContext.Current.Items[FxHttpContextIndex.SYSTEM_EXCEPTION_INFORMATION];
 
-            //画面にエラーメッセージを表示する
+            //画面にError Messageを表示する
             this.Label1.Text = CustomEncode.HtmlEncode(err_msg);
 
             //画面にエラー情報を表示する

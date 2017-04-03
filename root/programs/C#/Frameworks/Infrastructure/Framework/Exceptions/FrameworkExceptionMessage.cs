@@ -28,39 +28,35 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2007/xx/xx  西野  大介        新規作成
-//*  2009/04/21  西野  大介        FrameworkExceptionの追加に伴い、名称変更
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2007/xx/xx  西野 大介         新規作成
+//*  2009/04/21  西野 大介         FrameworkExceptionの追加に伴い、名称変更
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#7, 8, 9 ： 「エラーメッセージ：」
 //*                                ・#14 ： XMLチェック処理追加
 //*                                ・#15 ： XML要素のリテラル化
-//*  2009/07/21  西野  大介        コントロール取得処理の仕様変更
-//*  2009/07/21  西野  大介        マスタ ページのネストに対応
-//*  2009/07/31  西野  大介        セッション情報の自動削除機能を追加
-//*  2009/07/31  西野  大介        不正操作の検出機能を追加
-//*  2010/09/24  西野  大介        ジェネリック対応（XMLのDictionary化）
+//*  2009/07/21  西野 大介         コントロール取得処理の仕様変更
+//*  2009/07/21  西野 大介         マスタ ページのネストに対応
+//*  2009/07/31  西野 大介         セッション情報の自動削除機能を追加
+//*  2009/07/31  西野 大介         不正操作の検出機能を追加
+//*  2010/09/24  西野 大介         ジェネリック対応（XMLのDictionary化）
 //*                                nullチェック方法、Contains → ContainsKeyなどに注意
-//*  2010/10/29  西野  大介        RichClientフレームワークの分割によりアクセス修飾子を変更
-//*  2010/11/15  西野  大介        RichClientフレームワーク（非同期呼び出し）のメッセージを追加
-//*  2010/12/21  西野  大介        RichClientフレームワーク（非同期イベント）のメッセージを追加
-//*  2011/01/14  西野  大介        GetPropsFromPropStringをPubCmnFunctionに移動
-//*  2011/10/09  西野  大介        国際化対応
-//*  2013/12/23  西野  大介        アクセス修飾子をすべてpublicに変更した。
+//*  2010/10/29  西野 大介         RichClientフレームワークの分割によりアクセス修飾子を変更
+//*  2010/11/15  西野 大介         RichClientフレームワーク（非同期呼び出し）のメッセージを追加
+//*  2010/12/21  西野 大介         RichClientフレームワーク（非同期イベント）のメッセージを追加
+//*  2011/01/14  西野 大介         GetPropsFromPropStringをPubCmnFunctionに移動
+//*  2011/10/09  西野 大介         国際化対応
+//*  2013/12/23  西野 大介         アクセス修飾子をすべてpublicに変更した。
 //*  2014/01/18  Rituparna.Biswas  国際化対応の見直し。
 //*  2014/01/22  Rituparna.Biswas  Changes from ConfigurationManager.AppSettings to GetConfigParameter.GetConfigValue in CmnFunc
-//*  2014/02/03  西野  大介        取り込み：リソースファイル名とスイッチ名の変更、#pragma warning disableの追加。
+//*  2014/02/03  西野 大介         取り込み：リソースファイル名とスイッチ名の変更、#pragma warning disableの追加。
 //**********************************************************************************
 
-// System
 using System;
-using System.Threading;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Util;
 using System.Resources;
 using System.Globalization;
-using System.Configuration;
+
 using Touryo.Infrastructure.Framework.Resources;
+using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Exceptions

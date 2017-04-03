@@ -19,6 +19,26 @@
 #End Region
 
 '**********************************************************************************
+'* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
+'**********************************************************************************
+
+#Region "Apache License"
+'
+' Licensed under the Apache License, Version 2.0 (the "License");
+' you may not use this file except in compliance with the License. 
+' You may obtain a copy of the License at
+'
+' http://www.apache.org/licenses/LICENSE-2.0
+'
+' Unless required by applicable law or agreed to in writing, software
+' distributed under the License is distributed on an "AS IS" BASIS,
+' WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+' See the License for the specific language governing permissions and
+' limitations under the License.
+'
+#End Region
+
+'**********************************************************************************
 '* クラス名        ：Workflow
 '* クラス日本語名  ：ワークフロー
 '*
@@ -27,39 +47,15 @@
 '*
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
-'*  2014/07/15  西野  大介        新規作成
-'*  2014/11/11  Sai-san          Created methods for Forced termination, Getting SlipIssuanceUserID, 
-'*                               TurnBack to Original user using the voucher and Switching person in charge
+'*  2014/07/15  西野 大介         新規作成
+'*  2014/11/11  Sai-san           Created methods for Forced termination, Getting SlipIssuanceUserID, 
+'*                                TurnBack to Original user using the voucher and Switching person in charge
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.IO
-Imports System.Data
-Imports System.Text
-Imports System.Collections
-Imports System.Collections.Generic
-
-' 業務フレームワーク
-Imports Touryo.Infrastructure.Business.Business
-Imports Touryo.Infrastructure.Business.Common
 Imports Touryo.Infrastructure.Business.Dao
 Imports Touryo.Infrastructure.Business.Exceptions
-Imports Touryo.Infrastructure.Business.Presentation
-Imports Touryo.Infrastructure.Business.Util
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Business
-Imports Touryo.Infrastructure.Framework.Common
-Imports Touryo.Infrastructure.Framework.Dao
 Imports Touryo.Infrastructure.Framework.Exceptions
-Imports Touryo.Infrastructure.Framework.Presentation
-Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Framework.Transmission
-
-' 部品
 Imports Touryo.Infrastructure.Public.Db
-Imports Touryo.Infrastructure.Public.IO
 
 Namespace Touryo.Infrastructure.Business.Workflow
 	''' <summary>デリゲート型を定義</summary>
@@ -91,10 +87,16 @@ Namespace Touryo.Infrastructure.Business.Workflow
 			'#Region "チェック処理を実装"
 
 			If String.IsNullOrEmpty(subSystemId) Then
-				Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "subSystemId")))
-			ElseIf String.IsNullOrEmpty(workflowName) Then
-				Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowName")))
-			End If
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "subSystemId")))
+            ElseIf String.IsNullOrEmpty(workflowName) Then
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowName")))
+            End If
 
 			'#End Region
 
@@ -132,7 +134,10 @@ Namespace Touryo.Infrastructure.Business.Workflow
             '#Region "チェック処理を実装"
 
             If String.IsNullOrEmpty(workflowControlNo) Then
-                Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")))
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")))
             End If
 
             '#End Region
@@ -271,9 +276,15 @@ Namespace Touryo.Infrastructure.Business.Workflow
             '#Region "チェック処理を実装"
 
             If workflowRequest Is Nothing Then
-                Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowRequest")))
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowRequest")))
             ElseIf Not workflowRequest.Table.Columns.Contains("WorkflowControlNo") Then
-                Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED, "WorkflowControlNo", "workflowRequest")))
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED, "WorkflowControlNo", "workflowRequest")))
             End If
 
             '#End Region
@@ -366,9 +377,15 @@ Namespace Touryo.Infrastructure.Business.Workflow
             '#Region "チェック処理を実装"
 
             If processingWfReq Is Nothing Then
-                Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "processingWfReq")))
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "processingWfReq")))
             ElseIf Not processingWfReq.Table.Columns.Contains("SubSystemId") Then
-                Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED, "SubSystemId", "processingWfReq")))
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED, "SubSystemId", "processingWfReq")))
             End If
 
             '#End Region
@@ -478,11 +495,20 @@ Namespace Touryo.Infrastructure.Business.Workflow
             '#Region "チェック処理を実装"
 
             If turnBackWorkflow Is Nothing Then
-                Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "turnBackWorkflow")))
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "turnBackWorkflow")))
             ElseIf Not turnBackWorkflow.Table.Columns.Contains("SubSystemId") Then
-                Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED, "SubSystemId", "turnBackWorkflow")))
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED, "SubSystemId", "turnBackWorkflow")))
             ElseIf String.IsNullOrEmpty(workflowControlNo) Then
-                Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")))
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")))
             End If
 
             '#End Region
@@ -509,11 +535,20 @@ Namespace Touryo.Infrastructure.Business.Workflow
             '#Region "チェック処理を実装"
 
             If replyBackWorkflow Is Nothing Then
-                Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "replyBackWorkflow")))
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "replyBackWorkflow")))
             ElseIf Not replyBackWorkflow.Table.Columns.Contains("SubSystemId") Then
-                Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED, "SubSystemId", "replyBackWorkflow")))
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED, "SubSystemId", "replyBackWorkflow")))
             ElseIf String.IsNullOrEmpty(workflowControlNo) Then
-                Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")))
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")))
             End If
 
             '#End Region
@@ -543,11 +578,20 @@ Namespace Touryo.Infrastructure.Business.Workflow
             '#Region "チェック処理を実装"
 
             If nextWorkflow Is Nothing Then
-                Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "nextWorkflow")))
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "nextWorkflow")))
             ElseIf Not nextWorkflow.Table.Columns.Contains("SubSystemId") Then
-                Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED, "SubSystemId", "nextWorkflow")))
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED, "SubSystemId", "nextWorkflow")))
             ElseIf String.IsNullOrEmpty(workflowControlNo) Then
-                Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")))
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")))
             End If
 
             ' ユーザIDからユーザ情報を取得
@@ -763,10 +807,16 @@ Namespace Touryo.Infrastructure.Business.Workflow
 			'#Region "チェック処理を実装"
 
 			If String.IsNullOrEmpty(subSystemId) Then
-				Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED, "SubSystemId", "turnBackWorkflow")))
-			ElseIf String.IsNullOrEmpty(workflowControlNo) Then
-				Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")))
-			End If
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED, "SubSystemId", "turnBackWorkflow")))
+            ElseIf String.IsNullOrEmpty(workflowControlNo) Then
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")))
+            End If
 
 			'#End Region
 
@@ -797,12 +847,21 @@ Namespace Touryo.Infrastructure.Business.Workflow
 			'#Region "チェック処理を実装"
 
 			If nextWorkflow Is Nothing Then
-				Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "nextWorkflow")))
-			ElseIf Not nextWorkflow.Table.Columns.Contains("SubSystemId") Then
-				Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED, "SubSystemId", "nextWorkflow")))
-			ElseIf String.IsNullOrEmpty(workflowControlNo) Then
-				Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")))
-			End If
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "nextWorkflow")))
+            ElseIf Not nextWorkflow.Table.Columns.Contains("SubSystemId") Then
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED, "SubSystemId", "nextWorkflow")))
+            ElseIf String.IsNullOrEmpty(workflowControlNo) Then
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")))
+            End If
 
 			' ユーザIDからユーザ情報を取得
 			Dim fromUserInfo As String = Workflow.GetUserInfo(fromUserId)
@@ -919,12 +978,21 @@ Namespace Touryo.Infrastructure.Business.Workflow
 			'#Region "チェック処理を実装"
 
 			If nextWorkflow Is Nothing Then
-				Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "nextWorkflow")))
-			ElseIf Not nextWorkflow.Table.Columns.Contains("SubSystemId") Then
-				Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED, "SubSystemId", "nextWorkflow")))
-			ElseIf String.IsNullOrEmpty(workflowControlNo) Then
-				Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1), [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")))
-			End If
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "nextWorkflow")))
+            ElseIf Not nextWorkflow.Table.Columns.Contains("SubSystemId") Then
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED, "SubSystemId", "nextWorkflow")))
+            ElseIf String.IsNullOrEmpty(workflowControlNo) Then
+                Throw New BusinessSystemException(
+                    MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(0),
+                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR(1),
+                                    [String].Format(MyBusinessSystemExceptionMessage.WORKFLOW_ERROR_CHECK_EMPTY, "workflowControlNo")))
+            End If
 
 			'#End Region
 

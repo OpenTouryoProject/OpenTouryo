@@ -27,41 +27,18 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2010/10/29  西野  大介        新規作成
-//*  2010/12/06  西野  大介        スタート メソッドの追加
-//*  2010/12/06  西野  大介        スレッド数管理と画面ロック、アンロック
-//*  2011/02/27  西野  大介        上記処理をクリティカルセクションに格納
+//*  2010/10/29  西野 大介         新規作成
+//*  2010/12/06  西野 大介         スタート メソッドの追加
+//*  2010/12/06  西野 大介         スレッド数管理と画面ロック、アンロック
+//*  2011/02/27  西野 大介         上記処理をクリティカルセクションに格納
 //**********************************************************************************
 
-// System
 using System;
 using System.Threading;
-using System.Diagnostics;
-
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
 
 using Touryo.Infrastructure.Framework.RichClient.Asynchronous;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Business.RichClient.Asynchronous

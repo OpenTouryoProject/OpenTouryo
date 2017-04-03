@@ -30,16 +30,8 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
 //**********************************************************************************
 
-// System
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
-
-// System.Windows
-using System.Windows;
 using System.Windows.Forms;
 
 namespace Touryo.Infrastructure.CustomControl.RichClient

@@ -28,8 +28,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2009/04/02  自動生成          新規作成
-//*  2009/04/21  西野  大介        FrameworkExceptionの追加に伴い、実装追加
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2009/04/21  西野 大介         FrameworkExceptionの追加に伴い、実装追加
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#18 ： SoapException対策（例外情報の転送）
 //*                                ・#30 ： レイトバインド時のTargetInvocationExceptionを考慮
 //*                                ・#32 ： チェック処理のメッセージ変更でデグレ
@@ -40,49 +40,40 @@
 //*                                ・#x  ： リファクタリング
 //*                                ・#y  ： 性能対策（I/F：string→byte[]）
 //*                                ・#z  ： クライアント証明書対応
-//*  2009/08/10  西野  大介        アセンブリ ロード位置の場合分けを実装
-//*  2009/09/29  西野  大介        ユーザ情報をコンテキストに（名前の変更）
-//*  2010/09/24  西野  大介        ジェネリック対応（Dictionary、List、Queue、Stack<T>）
+//*  2009/08/10  西野 大介         アセンブリ ロード位置の場合分けを実装
+//*  2009/09/29  西野 大介         ユーザ情報をコンテキストに（名前の変更）
+//*  2010/09/24  西野 大介         ジェネリック対応（Dictionary、List、Queue、Stack<T>）
 //*                                nullチェック方法、Contains → ContainsKeyなどに注意
-//*  2011/05/30  西野  大介        ドメイン指定を省略可能な実装に変更。
-//*  2011/12/02  西野　大介        contextObjectにrefを追加した。
-//*  2012/06/14  西野　大介        Web参照の（TimeOut、CookieContainer）プロパティ追加
-//*  2012/08/25  西野  大介        Assembly.LoadFile → .Load（ASP.NETシャドウコピー対応）
-//*  2012/11/28  西野  大介        Web参照を再度自動生成（バグ対応ではなく）
-//*  2012/12/14  西野　大介        WCF-HTTP対応
-//*  2012/12/17  西野　大介        WCF-TCP/IP対応
-//*  2013/01/22  西野　大介        WCF-TCP/IP：Channelの解放（Close、Dispose）を明示
-//*  2014/11/14	 Sandeep-san      Implemented WCF communication options(i.e, Client, proxy credentials and Certificate)
+//*  2011/05/30  西野 大介         ドメイン指定を省略可能な実装に変更。
+//*  2011/12/02  西野 大介         contextObjectにrefを追加した。
+//*  2012/06/14  西野 大介         Web参照の（TimeOut、CookieContainer）プロパティ追加
+//*  2012/08/25  西野 大介         Assembly.LoadFile → .Load（ASP.NETシャドウコピー対応）
+//*  2012/11/28  西野 大介         Web参照を再度自動生成（バグ対応ではなく）
+//*  2012/12/14  西野 大介         WCF-HTTP対応
+//*  2012/12/17  西野 大介         WCF-TCP/IP対応
+//*  2013/01/22  西野 大介         WCF-TCP/IP：Channelの解放（Close、Dispose）を明示
+//*  2014/11/14	 Sandeep-san       Implemented WCF communication options(i.e, Client, proxy credentials and Certificate)
+//*  2017/02/14  西野 大介         Invokeの非同期バージョン（InvokeAsync）を追加
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れた。
 //**********************************************************************************
+
+using System;
+using System.Text;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Runtime.ExceptionServices;
 
 using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
-using System.ServiceModel.Description;
 using System.Security.Cryptography.X509Certificates;
 
-// System
-using System;
-using System.IO;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
-
-// 業務フレームワーク（循環参照になるため、参照しない）
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
+using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
 
-// 部品
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
@@ -299,6 +290,22 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
         #region インボーク
 
+        #region 非同期バージョン
+
+        /// <summary>Invokeメソッドの非同期バージョン</summary>
+        /// <param name="serviceName">サービス名</param>
+        /// <param name="parameterValue">引数</param>
+        /// <returns>戻り値</returns>
+        /// <remarks>自由に利用できる。</remarks>
+        public object InvokeAsync(string serviceName, object parameterValue)
+        {
+            return Task<object>.Factory.StartNew(() => {
+                return this.Invoke(serviceName, parameterValue);
+            });
+        }
+
+        #endregion
+
         /// <summary>サービス インターフェイスに対するクライアント モジュール</summary>
         /// <param name="serviceName">サービス名</param>
         /// <param name="parameterValue">引数</param>
@@ -381,8 +388,13 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 }
                 catch (System.Reflection.TargetInvocationException rtEx)
                 {
-                    // InnerExceptionを投げなおす。
-                    throw rtEx.InnerException;
+                    //// InnerExceptionを投げなおす。
+                    //throw rtEx.InnerException;
+
+                    // スタックトレースを保って InnerException を throw
+                    ExceptionDispatchInfo.Capture(rtEx.InnerException).Throw();
+
+                    return null; // warningを消すためのコード。
                 }
                 // #30-end                
 

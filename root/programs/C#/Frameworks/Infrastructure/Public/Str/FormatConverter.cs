@@ -26,33 +26,29 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2009/xx/xx  西野  大介        新規作成
-//*  2009/11/16  西野  大介        ニーズを考慮してAPIを見直し。
-//*  2010/09/24  西野  大介        型チェック方式の見直し（ GetType() & typeof() ）
-//*  2010/09/27  西野  大介        AddFigureｘ：非数値型の場合、エラー → ０を返す。
-//*  2011/04/13  西野  大介        AddFigureｘ：小数点数以下に対応。
-//*  2011/01/31  西野  大介        Roundｘ関数を追加（四捨五入、銀行家の丸め）
-//*  2011/02/06  西野  大介        AddFigureｘ：リファクタリング
-//*  2013/04/04  西野  大介        Math.Roundに合わせ処理後に「0」を付与（Floor、Ceiling）
-//*  2013/07/17  西野  大介        AddFigure内のlongをdecimalに変更（オーバーフロー対策対策）。
-//* 2014/05/19   Rituparna Biswas  Change in "AddZerosAfterDecimal" method for 100% Test Code coverage.
-//* 2014/06/12   Rituparna Biswas  Deleted the commented code in "AddZerosAfterDecimal" method
+//*  2009/xx/xx  西野 大介         新規作成
+//*  2009/11/16  西野 大介         ニーズを考慮してAPIを見直し。
+//*  2010/09/24  西野 大介         型チェック方式の見直し（ GetType() & typeof() ）
+//*  2010/09/27  西野 大介         AddFigureｘ：非数値型の場合、エラー → ０を返す。
+//*  2011/04/13  西野 大介         AddFigureｘ：小数点数以下に対応。
+//*  2011/01/31  西野 大介         Roundｘ関数を追加（四捨五入、銀行家の丸め）
+//*  2011/02/06  西野 大介         AddFigureｘ：リファクタリング
+//*  2013/04/04  西野 大介         Math.Roundに合わせ処理後に「0」を付与（Floor、Ceiling）
+//*  2013/07/17  西野 大介         AddFigure内のlongをdecimalに変更（オーバーフロー対策対策）。
+//*  2014/05/19  Rituparna Biswas  Change in "AddZerosAfterDecimal" method for 100% Test Code coverage.
+//*  2014/06/12  Rituparna Biswas  Deleted the commented code in "AddZerosAfterDecimal" method
+//*  2017/01/13  西野 大介         ToUnixTime, FromUnixTimeメソッドを追加した。
 //**********************************************************************************
 
-// VB.NET関数活用
-using Microsoft.VisualBasic;
-
-// System
 using System;
 using System.Text;
-using System.Collections;
-
 using System.Threading;
 using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace Touryo.Infrastructure.Public.Str
 {
+    #region Enum
+
     /// <summary>切り捨て処理の方向</summary>
     /// <remarks>
     /// ・0への丸め (rounding toward zero; RZ)
@@ -80,6 +76,8 @@ namespace Touryo.Infrastructure.Public.Str
         /// <summary>rounding toward plus infinity（正の無限大への丸め：大小・算術）</summary>
         RP
     }
+
+    #endregion
 
     /// <summary>文字列書式の変換処理クラス</summary>
     public class FormatConverter
@@ -509,6 +507,36 @@ namespace Touryo.Infrastructure.Public.Str
 
         #endregion
 
+        #region 時間
+
+        /// <summary>unix epochをDateTimeで表した定数</summary>
+        private readonly static DateTime _unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        #region UNIX時間
+
+        /// <summary>DateTimeをUNIX時間に変換するメソッド</summary>
+        /// <param name="dateTime">DateTime</param>
+        /// <returns>UNIX時間</returns>
+        public static long ToUnixTime(DateTime dateTime)
+        {
+            // 時刻をUTCに変換
+            dateTime = dateTime.ToUniversalTime();
+
+            // unix epochからの経過秒数を求める
+            return (long)dateTime.Subtract(_unixEpoch).TotalSeconds;
+        }
+
+        /// <summary>UNIX時間からDateTimeに変換するメソッド</summary>
+        /// <param name="unixTime">long</param>
+        /// <returns>DateTime</returns>
+        public static DateTime FromUnixTime(long unixTime)
+        {
+            // unix epochからunixTime秒だけ経過した時刻を求める
+            return _unixEpoch.AddSeconds(unixTime);
+        }
+
+        #endregion
+
         #region 和暦 ⇔ 西暦変換
 
         #region 西暦（DateTime） → 和暦（文字列）
@@ -621,6 +649,8 @@ namespace Touryo.Infrastructure.Public.Str
 
         #endregion
 
+        #endregion
+        
         #endregion
     }
 }

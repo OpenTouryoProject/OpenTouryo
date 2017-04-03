@@ -27,36 +27,21 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2009/01/28  西野  大介        新規作成
-//*  2009/03/13  西野  大介        トランザクション制御部品による制御。
-//*  2010/03/11  西野  大介        自動振り分け対応でpublicメソッド直呼びをエラーにする。
-//*  2010/11/16  西野  大介        DoBusinessLogicのIsolationLevelEnum無しオーバーロードを追加
-//*  2012/06/18  西野  大介        OriginalStackTrace（ログ出力）の品質向上
-//*  2012/09/03  西野  大介        Connection、Transaction等が不正な状態に陥ったらDamを解放
+//*  2009/01/28  西野 大介         新規作成
+//*  2009/03/13  西野 大介         トランザクション制御部品による制御。
+//*  2010/03/11  西野 大介         自動振り分け対応でpublicメソッド直呼びをエラーにする。
+//*  2010/11/16  西野 大介         DoBusinessLogicのIsolationLevelEnum無しオーバーロードを追加
+//*  2012/06/18  西野 大介         OriginalStackTrace（ログ出力）の品質向上
+//*  2012/09/03  西野 大介         Connection、Transaction等が不正な状態に陥ったらDamを解放
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
 //**********************************************************************************
 
-// System
 using System;
-using System.Data;
-using System.Collections;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-
-// フレームワーク
 using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
+using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.RichClient.Business
 {
@@ -89,10 +74,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Business
         private static readonly object _lock = new object();
 
         #region 自動振り分け対応
-
-        /// <summary>オリジナルのスタックトレース値</summary>
-        protected string OriginalStackTrace = "";
-
+        
         /// <summary>DoBusinessLogicから呼ばれたかフラグ</summary>
         private bool WasCalledFromDoBusinessLogic = false;
 
@@ -168,10 +150,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Business
         {
             // 戻り値クラス
             BaseReturnValue returnValue = null;
-
-            // オリジナルのスタックトレース値のクリア
-            this.OriginalStackTrace = "";
-
+            
             // データアクセス制御クラス（ＤＡＭ）がグローバルなので、全てロックする。
             lock (BaseLogic2CS._lock)
             {

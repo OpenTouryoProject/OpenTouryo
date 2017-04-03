@@ -3,7 +3,7 @@
 '**********************************************************************************
 
 #Region "Apache License"
-'  
+'
 ' Licensed under the Apache License, Version 2.0 (the "License");
 ' you may not use this file except in compliance with the License. 
 ' You may obtain a copy of the License at
@@ -34,46 +34,18 @@
 '*  2010/09/24  西野 大介         Damクラス内にユーザ情報を格納したので
 '*  2012/02/09  西野 大介         OLEDB、ODBCのデータプロバイダ対応
 '*  2012/04/05  西野 大介         \n → \r\n 化
+'*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
+'*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
 '**********************************************************************************
 
-' デバッグ用
-Imports System.Diagnostics
+Imports System.Runtime.ExceptionServices
 
-' メソッドの属性を取得
-Imports System.Reflection
-
-' System
-Imports System
-Imports System.IO
-Imports System.Data
-Imports System.Text
-Imports System.Collections
-Imports System.Collections.Generic
-
-' 業務フレームワーク
-Imports Touryo.Infrastructure.Business.Business
 Imports Touryo.Infrastructure.Business.Common
-Imports Touryo.Infrastructure.Business.Dao
-Imports Touryo.Infrastructure.Business.Exceptions
-Imports Touryo.Infrastructure.Business.Presentation
-Imports Touryo.Infrastructure.Business.Util
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Business
-Imports Touryo.Infrastructure.Framework.Common
-Imports Touryo.Infrastructure.Framework.Dao
-Imports Touryo.Infrastructure.Framework.Exceptions
-Imports Touryo.Infrastructure.Framework.Presentation
-Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Framework.Transmission
-
 Imports Touryo.Infrastructure.Framework.RichClient.Business
-
-' 部品
+Imports Touryo.Infrastructure.Framework.Exceptions
+Imports Touryo.Infrastructure.Framework.Common
 Imports Touryo.Infrastructure.Public.Db
-Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Log
-Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
 
 Namespace Touryo.Infrastructure.Business.RichClient.Business
@@ -92,7 +64,7 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
         ''' <param name="parameterValue">引数クラス</param>
         ''' <param name="iso">分離レベル（ＤＢＭＳ毎の分離レベルの違いを理解して設定すること）</param>
         ''' <remarks>業務コード親クラス１から利用される派生の末端</remarks>
-        Protected Overrides Sub UOC_ConnectionOpen(ByVal parameterValue As BaseParameterValue, ByVal iso As DbEnum.IsolationLevelEnum)
+        Protected Overrides Sub UOC_ConnectionOpen(parameterValue As BaseParameterValue, iso As DbEnum.IsolationLevelEnum)
             '#Region "トランザクション属性取得例"
 
             '' クラスの属性、メソッドの属性から調査
@@ -140,11 +112,11 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
                 '#Region "データ プロバイダ選択"
 
                 If parameterValue.ActionType.Split("%"c)(0) = "SQL" Then
-                    ' SQL Server / SQL Client用のDamを生成
-                    dam = New DamSqlSvr()
+                ' SQL Server / SQL Client用のDamを生成
+                dam = New DamSqlSvr()
 
-                    ' 接続文字列をロード
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL")
+                ' 接続文字列をロード
+                connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL")
                 ElseIf parameterValue.ActionType.Split("%"c)(0) = "OLE" Then
                     ' OLEDB.NET用のDamを生成
                     dam = New DamOLEDB()
@@ -157,24 +129,24 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
 
                     ' 接続文字列をロード
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODBC")
-                ElseIf parameterValue.ActionType.Split("%"c)(0) = "ORA" Then
-                    ' Oracle / Oracle Client用のDamを生成
-                    dam = New DamOraClient()
+                    'ElseIf parameterValue.ActionType.Split("%"c)(0) = "ORA" Then
+                    '    ' Oracle / Oracle Client用のDamを生成
+                    '    dam = New DamOraClient()
 
-                    ' 接続文字列をロード
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ORA")
+                    '    ' 接続文字列をロード
+                    '    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ORA")
                 ElseIf parameterValue.ActionType.Split("%"c)(0) = "ODP" Then
                     ' Oracle / ODP.NET用のDamを生成
                     dam = New DamOraOdp()
 
                     ' 接続文字列をロード（ODP2：Instant Client）
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP2")
-                ElseIf parameterValue.ActionType.Split("%"c)(0) = "DB2" Then
-                    ' DB2.NET用のDamを生成
-                    dam = New DamDB2()
+                    'ElseIf parameterValue.ActionType.Split("%"c)(0) = "DB2" Then
+                    '    ' DB2.NET用のDamを生成
+                    '    dam = New DamDB2()
 
-                    ' 接続文字列をロード
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_DB2")
+                    '    ' 接続文字列をロード
+                    '    connstring = GetConfigParameter.GetConnectionString("ConnectionString_DB2")
                     'ElseIf parameterValue.ActionType.Split("%"c)(0) = "HIR" Then
                     '    ' HiRDBデータプロバイダ用のDamを生成
                     '    dam = New DamHiRDB()
@@ -233,7 +205,7 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
         ''' </summary>
         ''' <param name="parameterValue">引数クラス</param>
         ''' <remarks>業務コード親クラス１から利用される派生の末端</remarks>
-        Protected Overrides Sub UOC_PreAction(ByVal parameterValue As BaseParameterValue)
+        Protected Overrides Sub UOC_PreAction(parameterValue As BaseParameterValue)
             ' ACCESSログ出力-----------------------------------------------
 
             Dim myPV As MyParameterValue = DirectCast(parameterValue, MyParameterValue)
@@ -243,7 +215,12 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
             ' ------------
             ' ユーザ名, 画面名, コントロール名 メソッド名, 処理名
             ' ------------
-            Dim strLogMessage As String = (((("," & myPV.User.UserName & ",") & myPV.ScreenId & ",") & myPV.ControlId & ",") & myPV.MethodName & ",") & myPV.ActionType
+            Dim strLogMessage As String =
+                "," & myPV.User.UserName &
+                "," & myPV.ScreenId &
+                "," & myPV.ControlId &
+                "," & myPV.MethodName &
+                "," & myPV.ActionType
 
             ' Log4Netへログ出力
             LogIF.InfoLog("ACCESS", strLogMessage)
@@ -262,7 +239,7 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
         ''' <param name="parameterValue">引数クラス</param>
         ''' <param name="returnValue">戻り値クラス</param>
         ''' <remarks>業務コード親クラス１から利用される派生の末端</remarks>
-        Protected Overrides Sub UOC_AfterAction(ByVal parameterValue As BaseParameterValue, ByVal returnValue As BaseReturnValue)
+        Protected Overrides Sub UOC_AfterAction(parameterValue As BaseParameterValue, returnValue As BaseReturnValue)
             ' 性能測定終了
             Me.perfRec.EndsPerformanceRecord()
 
@@ -276,7 +253,14 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
             ' ユーザ名, 画面名, コントロール名 メソッド名, 処理名
             ' 処理時間（実行時間）, 処理時間（CPU時間）
             ' ------------
-            Dim strLogMessage As String = (((("," & myPV.User.UserName & ",") & myPV.ScreenId & ",") & myPV.ControlId & ",") & myPV.MethodName & ",") & myPV.ActionType & "," & Convert.ToString(Me.perfRec.ExecTime) & "," & Convert.ToString(Me.perfRec.CpuTime)
+            Dim strLogMessage As String =
+                "," & myPV.User.UserName &
+                "," & myPV.ScreenId &
+                "," & myPV.ControlId &
+                "," & myPV.MethodName &
+                "," & myPV.ActionType &
+                "," & Me.perfRec.ExecTime &
+                "," & Me.perfRec.CpuTime
 
             ' Log4Netへログ出力
             LogIF.InfoLog("ACCESS", strLogMessage)
@@ -290,7 +274,7 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
         ''' <param name="parameterValue">引数クラス</param>
         ''' <param name="returnValue">戻り値クラス</param>
         ''' <remarks>業務コード親クラス１から利用される派生の末端</remarks>
-        Protected Overrides Sub UOC_AfterTransaction(ByVal parameterValue As BaseParameterValue, ByVal returnValue As BaseReturnValue)
+        Protected Overrides Sub UOC_AfterTransaction(parameterValue As BaseParameterValue, returnValue As BaseReturnValue)
             ' TODO:
         End Sub
 
@@ -305,7 +289,7 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
         ''' <param name="returnValue">戻り値クラス</param>
         ''' <param name="baEx">BusinessApplicationException</param>
         ''' <remarks>業務コード親クラス１から利用される派生の末端</remarks>
-        Protected Overrides Sub UOC_ABEND(ByVal parameterValue As BaseParameterValue, ByVal returnValue As BaseReturnValue, ByVal baEx As BusinessApplicationException)
+        Protected Overrides Sub UOC_ABEND(parameterValue As BaseParameterValue, returnValue As BaseReturnValue, baEx As BusinessApplicationException)
             ' 業務例外発生時の処理を実装
             ' TODO:
 
@@ -327,7 +311,16 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
                 ' 処理時間（実行時間）, 処理時間（CPU時間）
                 ' エラーメッセージID, エラーメッセージ等
                 ' ------------
-                Dim strLogMessage As String = (((("," & myPV.User.UserName & ",") & myPV.ScreenId & ",") & myPV.ControlId & ",") & myPV.MethodName & ",") & myPV.ActionType & "," & Convert.ToString(Me.perfRec.ExecTime) & "," & Convert.ToString(Me.perfRec.CpuTime) & "," & Convert.ToString(baEx.messageID) & "," & Convert.ToString(baEx.Message)
+                Dim strLogMessage As String =
+                    "," & myPV.User.UserName &
+                    "," & myPV.ScreenId &
+                    "," & myPV.ControlId &
+                    "," & myPV.MethodName &
+                    "," & myPV.ActionType &
+                    "," & Me.perfRec.ExecTime &
+                    "," & Me.perfRec.CpuTime &
+                    "," & baEx.messageID &
+                    "," & baEx.Message ' baEX
 
                 ' Log4Netへログ出力
                 LogIF.WarnLog("ACCESS", strLogMessage)
@@ -343,7 +336,7 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
         ''' <param name="returnValue">戻り値クラス</param>
         ''' <param name="bsEx">BusinessSystemException</param>
         ''' <remarks>業務コード親クラス１から利用される派生の末端</remarks>
-        Protected Overrides Sub UOC_ABEND(ByVal parameterValue As BaseParameterValue, ByVal returnValue As BaseReturnValue, ByVal bsEx As BusinessSystemException)
+        Protected Overrides Sub UOC_ABEND(parameterValue As BaseParameterValue, returnValue As BaseReturnValue, bsEx As BusinessSystemException)
             ' システム例外発生時の処理を実装
             ' TODO:
 
@@ -365,7 +358,17 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
                 ' 処理時間（実行時間）, 処理時間（CPU時間）
                 ' エラーメッセージID, エラーメッセージ等
                 ' ------------
-                Dim strLogMessage As String = (((("," & myPV.User.UserName & ",") & myPV.ScreenId & ",") & myPV.ControlId & ",") & myPV.MethodName & ",") & myPV.ActionType & "," & Convert.ToString(Me.perfRec.ExecTime) & "," & Convert.ToString(Me.perfRec.CpuTime) & "," & Convert.ToString(bsEx.messageID) & "," & Convert.ToString(bsEx.Message) & vbCrLf & Convert.ToString(bsEx.StackTrace)
+                Dim strLogMessage As String =
+                    "," & myPV.User.UserName &
+                    "," & myPV.ScreenId &
+                    "," & myPV.ControlId &
+                    "," & myPV.MethodName &
+                    "," & myPV.ActionType &
+                    "," & Me.perfRec.ExecTime &
+                    "," & Me.perfRec.CpuTime &
+                    "," & bsEx.messageID &
+                    "," & bsEx.Message & vbCr & vbLf &
+                    bsEx.StackTrace ' bsEX
 
                 ' Log4Netへログ出力
                 LogIF.ErrorLog("ACCESS", strLogMessage)
@@ -381,7 +384,7 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
         ''' <param name="returnValue">戻り値クラス</param>
         ''' <param name="ex">Exception</param>
         ''' <remarks>業務コード親クラス１から利用される派生の末端</remarks>
-        Protected Overrides Sub UOC_ABEND(ByVal parameterValue As BaseParameterValue, ByRef returnValue As BaseReturnValue, ByVal ex As Exception)
+        Protected Overrides Sub UOC_ABEND(parameterValue As BaseParameterValue, ByRef returnValue As BaseReturnValue, ex As Exception)
             ' 一般的な例外発生時の処理を実装
             ' TODO:
 
@@ -389,8 +392,8 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
             If Me.perfRec Is Nothing Then
                 ' なにもしない
 
-                ' リスロー
-                Throw ex
+                ' スタックトレースを保って InnerException を throw
+                ExceptionDispatchInfo.Capture(ex).[Throw]()
             Else
                 ' 性能測定終了
                 Me.perfRec.EndsPerformanceRecord()
@@ -432,7 +435,16 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
                     ' 処理時間（実行時間）, 処理時間（CPU時間）
                     ' エラーメッセージID, エラーメッセージ等
                     ' ------------
-                    Dim strLogMessage As String = (((("," & myPV.User.UserName & ",") & myPV.ScreenId & ",") & myPV.ControlId & ",") & myPV.MethodName & ",") & myPV.ActionType & "," & Convert.ToString(Me.perfRec.ExecTime) & "," & Convert.ToString(Me.perfRec.CpuTime) & "," & Convert.ToString(returnValue.ErrorMessageID) & "," & Convert.ToString(returnValue.ErrorMessage)
+                    Dim strLogMessage As String =
+                    "," & myPV.User.UserName &
+                    "," & myPV.ScreenId &
+                    "," & myPV.ControlId &
+                    "," & myPV.MethodName &
+                    "," & myPV.ActionType &
+                    "," & Me.perfRec.ExecTime &
+                    "," & Me.perfRec.CpuTime &
+                    "," & returnValue.ErrorMessageID &
+                    "," & returnValue.ErrorMessage ' baEX
 
                     ' Log4Netへログ出力
                     LogIF.WarnLog("ACCESS", strLogMessage)
@@ -446,7 +458,17 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
                     ' 処理時間（実行時間）, 処理時間（CPU時間）
                     ' エラーメッセージID, エラーメッセージ等
                     ' ------------
-                    Dim strLogMessage As String = (((("," & myPV.User.UserName & ",") & myPV.ScreenId & ",") & myPV.ControlId & ",") & myPV.MethodName & ",") & myPV.ActionType & "," & Convert.ToString(Me.perfRec.ExecTime) & "," & Convert.ToString(Me.perfRec.CpuTime) & "," & sysErrorMessageID & "," & sysErrorMessage & vbCrLf & ex.StackTrace
+                    Dim strLogMessage As String =
+                        "," & myPV.User.UserName &
+                        "," & myPV.ScreenId &
+                        "," & myPV.ControlId &
+                        "," & myPV.MethodName &
+                        "," & myPV.ActionType &
+                        "," & Me.perfRec.ExecTime &
+                        "," & Me.perfRec.CpuTime &
+                        "," & sysErrorMessageID &
+                        "," & sysErrorMessage & vbCr & vbLf &
+                        ex.StackTrace ' bsEX
 
                     ' Log4Netへログ出力
                     LogIF.ErrorLog("ACCESS", strLogMessage)
@@ -463,13 +485,23 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
                     ' 処理時間（実行時間）, 処理時間（CPU時間）
                     ' エラーメッセージID, エラーメッセージ等
                     ' ------------
-                    Dim strLogMessage As String = (((("," & myPV.User.UserName & ",") & myPV.ScreenId & ",") & myPV.ControlId & ",") & myPV.MethodName & ",") & myPV.ActionType & "," & Convert.ToString(Me.perfRec.ExecTime) & "," & Convert.ToString(Me.perfRec.CpuTime) & "," & "other Exception" & "," & ex.Message & vbCrLf & ex.StackTrace
+                    Dim strLogMessage As String =
+                    "," & myPV.User.UserName &
+                    "," & myPV.ScreenId &
+                    "," & myPV.ControlId &
+                    "," & myPV.MethodName &
+                    "," & myPV.ActionType &
+                    "," & Me.perfRec.ExecTime &
+                    "," & Me.perfRec.CpuTime &
+                    "," & "other Exception" &
+                    "," & ex.Message & vbCr & vbLf &
+                    ex.ToString() ' ex
 
                     ' Log4Netへログ出力
                     LogIF.ErrorLog("ACCESS", strLogMessage)
 
-                    ' リスロー
-                    Throw ex
+                    ' スタックトレースを保って InnerException を throw
+                    ExceptionDispatchInfo.Capture(ex).[Throw]()
 
                     '#End Region
                 End If

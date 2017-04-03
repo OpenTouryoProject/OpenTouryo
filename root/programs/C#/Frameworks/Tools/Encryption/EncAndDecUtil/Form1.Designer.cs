@@ -28,9 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.btnSPWDAuth2 = new System.Windows.Forms.TabControl();
             this.tabHash = new System.Windows.Forms.TabPage();
+            this.nudHSStretching = new System.Windows.Forms.NumericUpDown();
             this.lblHS3 = new System.Windows.Forms.Label();
+            this.lblHS4 = new System.Windows.Forms.Label();
             this.txtHSCode = new System.Windows.Forms.TextBox();
             this.lblHS2 = new System.Windows.Forms.Label();
             this.txtHSString = new System.Windows.Forms.TextBox();
@@ -57,6 +59,34 @@
             this.lblKHS1 = new System.Windows.Forms.Label();
             this.txtKHSPassword = new System.Windows.Forms.TextBox();
             this.txtKHSString = new System.Windows.Forms.TextBox();
+            this.tabPwd2DB1 = new System.Windows.Forms.TabPage();
+            this.nudSPWDStretchCount1 = new System.Windows.Forms.NumericUpDown();
+            this.lblSPWD14 = new System.Windows.Forms.Label();
+            this.nudSPWDSaltLength1 = new System.Windows.Forms.NumericUpDown();
+            this.lblSPWD13 = new System.Windows.Forms.Label();
+            this.btnSPWDAuth1 = new System.Windows.Forms.Button();
+            this.lblSPWD15 = new System.Windows.Forms.Label();
+            this.txtSPWDSaltedPassword1 = new System.Windows.Forms.TextBox();
+            this.lblSPWD12 = new System.Windows.Forms.Label();
+            this.txtSPWDRawPassword1 = new System.Windows.Forms.TextBox();
+            this.cbxSPWDPV1 = new System.Windows.Forms.ComboBox();
+            this.lblSPWD11 = new System.Windows.Forms.Label();
+            this.btnSPWDGen1 = new System.Windows.Forms.Button();
+            this.tabPwd2DB2 = new System.Windows.Forms.TabPage();
+            this.nudSPWDStretchCount2 = new System.Windows.Forms.NumericUpDown();
+            this.lblSPWD25 = new System.Windows.Forms.Label();
+            this.lblSPWD23 = new System.Windows.Forms.Label();
+            this.txtSPWDKey2 = new System.Windows.Forms.TextBox();
+            this.nudSPWDSaltLength2 = new System.Windows.Forms.NumericUpDown();
+            this.lblSPWD24 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.lblSPWD26 = new System.Windows.Forms.Label();
+            this.txtSPWDSaltedPassword2 = new System.Windows.Forms.TextBox();
+            this.lblSPWD22 = new System.Windows.Forms.Label();
+            this.txtSPWDRawPassword2 = new System.Windows.Forms.TextBox();
+            this.cbxSPWDPV2 = new System.Windows.Forms.ComboBox();
+            this.lblSPWD21 = new System.Windows.Forms.Label();
+            this.btnSPWDGen2 = new System.Windows.Forms.Button();
             this.tabSC = new System.Windows.Forms.TabPage();
             this.gbxSC = new System.Windows.Forms.GroupBox();
             this.rbnSCBytes = new System.Windows.Forms.RadioButton();
@@ -91,48 +121,83 @@
             this.lblASC2 = new System.Windows.Forms.Label();
             this.lblASC1 = new System.Windows.Forms.Label();
             this.txtASCString = new System.Windows.Forms.TextBox();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.nudSPWDSaltLength = new System.Windows.Forms.NumericUpDown();
-            this.lblSPWD3 = new System.Windows.Forms.Label();
-            this.btnSPWDAuth = new System.Windows.Forms.Button();
-            this.lblSPWD4 = new System.Windows.Forms.Label();
-            this.txtSPWDSaltedPassword = new System.Windows.Forms.TextBox();
-            this.lblSPWD2 = new System.Windows.Forms.Label();
-            this.txtSPWDRawPassword = new System.Windows.Forms.TextBox();
-            this.cbxSPWDPV = new System.Windows.Forms.ComboBox();
-            this.lblSPWD1 = new System.Windows.Forms.Label();
-            this.btnSPWDGen = new System.Windows.Forms.Button();
-            this.tabControl1.SuspendLayout();
+            this.tabCodeSigning = new System.Windows.Forms.TabPage();
+            this.btnCCVerify = new System.Windows.Forms.Button();
+            this.lblCC6 = new System.Windows.Forms.Label();
+            this.txtCCSign = new System.Windows.Forms.TextBox();
+            this.lblCC5 = new System.Windows.Forms.Label();
+            this.txtCCPublicKey = new System.Windows.Forms.TextBox();
+            this.lblCC4 = new System.Windows.Forms.Label();
+            this.txtCCPrivateKey = new System.Windows.Forms.TextBox();
+            this.lblCC3 = new System.Windows.Forms.Label();
+            this.lblCC2 = new System.Windows.Forms.Label();
+            this.txtCCData = new System.Windows.Forms.TextBox();
+            this.txtCCHash = new System.Windows.Forms.TextBox();
+            this.cbxCCXMLPV = new System.Windows.Forms.ComboBox();
+            this.lblCC1 = new System.Windows.Forms.Label();
+            this.gbxCC = new System.Windows.Forms.GroupBox();
+            this.rbnCCX509 = new System.Windows.Forms.RadioButton();
+            this.rbnCCXML = new System.Windows.Forms.RadioButton();
+            this.btnCCSign = new System.Windows.Forms.Button();
+            this.tabJWT = new System.Windows.Forms.TabPage();
+            this.txtJWTHeader = new System.Windows.Forms.TextBox();
+            this.lblJWT2 = new System.Windows.Forms.Label();
+            this.txtJWTSign = new System.Windows.Forms.TextBox();
+            this.lblJWT1 = new System.Windows.Forms.Label();
+            this.txtJWTPayload = new System.Windows.Forms.TextBox();
+            this.gbxJWT = new System.Windows.Forms.GroupBox();
+            this.txtJWTJWK = new System.Windows.Forms.TextBox();
+            this.txtJWTKey = new System.Windows.Forms.TextBox();
+            this.rbnJWTRS256 = new System.Windows.Forms.RadioButton();
+            this.rbnJWTHS256 = new System.Windows.Forms.RadioButton();
+            this.btnJWTVerify = new System.Windows.Forms.Button();
+            this.btnJWTSign = new System.Windows.Forms.Button();
+            this.btnSPWDAuth2.SuspendLayout();
             this.tabHash.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudHSStretching)).BeginInit();
             this.gbxHS.SuspendLayout();
             this.tabKeyedHash.SuspendLayout();
             this.gbxKHS.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKHSStretching)).BeginInit();
+            this.tabPwd2DB1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSPWDStretchCount1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSPWDSaltLength1)).BeginInit();
+            this.tabPwd2DB2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSPWDStretchCount2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSPWDSaltLength2)).BeginInit();
             this.tabSC.SuspendLayout();
             this.gbxSC.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSCStretching)).BeginInit();
             this.tabASC.SuspendLayout();
             this.gbxASC.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSPWDSaltLength)).BeginInit();
+            this.tabCodeSigning.SuspendLayout();
+            this.gbxCC.SuspendLayout();
+            this.tabJWT.SuspendLayout();
+            this.gbxJWT.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tabControl1
+            // btnSPWDAuth2
             // 
-            this.tabControl1.Controls.Add(this.tabHash);
-            this.tabControl1.Controls.Add(this.tabKeyedHash);
-            this.tabControl1.Controls.Add(this.tabSC);
-            this.tabControl1.Controls.Add(this.tabASC);
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Location = new System.Drawing.Point(4, 4);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(334, 268);
-            this.tabControl1.TabIndex = 10;
+            this.btnSPWDAuth2.Controls.Add(this.tabHash);
+            this.btnSPWDAuth2.Controls.Add(this.tabKeyedHash);
+            this.btnSPWDAuth2.Controls.Add(this.tabPwd2DB1);
+            this.btnSPWDAuth2.Controls.Add(this.tabPwd2DB2);
+            this.btnSPWDAuth2.Controls.Add(this.tabSC);
+            this.btnSPWDAuth2.Controls.Add(this.tabASC);
+            this.btnSPWDAuth2.Controls.Add(this.tabCodeSigning);
+            this.btnSPWDAuth2.Controls.Add(this.tabJWT);
+            this.btnSPWDAuth2.Location = new System.Drawing.Point(4, 4);
+            this.btnSPWDAuth2.Multiline = true;
+            this.btnSPWDAuth2.Name = "btnSPWDAuth2";
+            this.btnSPWDAuth2.SelectedIndex = 0;
+            this.btnSPWDAuth2.Size = new System.Drawing.Size(392, 285);
+            this.btnSPWDAuth2.TabIndex = 10;
             // 
             // tabHash
             // 
+            this.tabHash.Controls.Add(this.nudHSStretching);
             this.tabHash.Controls.Add(this.lblHS3);
+            this.tabHash.Controls.Add(this.lblHS4);
             this.tabHash.Controls.Add(this.txtHSCode);
             this.tabHash.Controls.Add(this.lblHS2);
             this.tabHash.Controls.Add(this.txtHSString);
@@ -140,25 +205,46 @@
             this.tabHash.Controls.Add(this.cbxHSPV);
             this.tabHash.Controls.Add(this.lblHS1);
             this.tabHash.Controls.Add(this.btnGetHash);
-            this.tabHash.Location = new System.Drawing.Point(4, 21);
+            this.tabHash.Location = new System.Drawing.Point(4, 40);
             this.tabHash.Name = "tabHash";
-            this.tabHash.Size = new System.Drawing.Size(326, 243);
+            this.tabHash.Size = new System.Drawing.Size(384, 241);
             this.tabHash.TabIndex = 2;
             this.tabHash.Text = "ハッシュ";
             this.tabHash.UseVisualStyleBackColor = true;
             // 
+            // nudHSStretching
+            // 
+            this.nudHSStretching.Location = new System.Drawing.Point(103, 110);
+            this.nudHSStretching.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.nudHSStretching.Name = "nudHSStretching";
+            this.nudHSStretching.Size = new System.Drawing.Size(212, 19);
+            this.nudHSStretching.TabIndex = 42;
+            // 
             // lblHS3
             // 
             this.lblHS3.AutoSize = true;
-            this.lblHS3.Location = new System.Drawing.Point(9, 113);
+            this.lblHS3.Location = new System.Drawing.Point(9, 112);
             this.lblHS3.Name = "lblHS3";
-            this.lblHS3.Size = new System.Drawing.Size(76, 12);
-            this.lblHS3.TabIndex = 33;
-            this.lblHS3.Text = "ハッシュ文字列";
+            this.lblHS3.Size = new System.Drawing.Size(65, 12);
+            this.lblHS3.TabIndex = 41;
+            this.lblHS3.Text = "ストレッチング";
+            // 
+            // lblHS4
+            // 
+            this.lblHS4.AutoSize = true;
+            this.lblHS4.Location = new System.Drawing.Point(7, 138);
+            this.lblHS4.Name = "lblHS4";
+            this.lblHS4.Size = new System.Drawing.Size(76, 12);
+            this.lblHS4.TabIndex = 33;
+            this.lblHS4.Text = "ハッシュ文字列";
             // 
             // txtHSCode
             // 
-            this.txtHSCode.Location = new System.Drawing.Point(103, 110);
+            this.txtHSCode.Location = new System.Drawing.Point(103, 135);
             this.txtHSCode.Name = "txtHSCode";
             this.txtHSCode.ReadOnly = true;
             this.txtHSCode.Size = new System.Drawing.Size(212, 19);
@@ -233,7 +319,7 @@
             // 
             // btnGetHash
             // 
-            this.btnGetHash.Location = new System.Drawing.Point(102, 135);
+            this.btnGetHash.Location = new System.Drawing.Point(103, 160);
             this.btnGetHash.Name = "btnGetHash";
             this.btnGetHash.Size = new System.Drawing.Size(213, 23);
             this.btnGetHash.TabIndex = 0;
@@ -257,9 +343,9 @@
             this.tabKeyedHash.Controls.Add(this.lblKHS1);
             this.tabKeyedHash.Controls.Add(this.txtKHSPassword);
             this.tabKeyedHash.Controls.Add(this.txtKHSString);
-            this.tabKeyedHash.Location = new System.Drawing.Point(4, 21);
+            this.tabKeyedHash.Location = new System.Drawing.Point(4, 40);
             this.tabKeyedHash.Name = "tabKeyedHash";
-            this.tabKeyedHash.Size = new System.Drawing.Size(326, 243);
+            this.tabKeyedHash.Size = new System.Drawing.Size(384, 241);
             this.tabKeyedHash.TabIndex = 3;
             this.tabKeyedHash.Text = "キー付きハッシュ";
             this.tabKeyedHash.UseVisualStyleBackColor = true;
@@ -411,6 +497,330 @@
             this.txtKHSString.Size = new System.Drawing.Size(212, 19);
             this.txtKHSString.TabIndex = 27;
             // 
+            // tabPwd2DB1
+            // 
+            this.tabPwd2DB1.Controls.Add(this.nudSPWDStretchCount1);
+            this.tabPwd2DB1.Controls.Add(this.lblSPWD14);
+            this.tabPwd2DB1.Controls.Add(this.nudSPWDSaltLength1);
+            this.tabPwd2DB1.Controls.Add(this.lblSPWD13);
+            this.tabPwd2DB1.Controls.Add(this.btnSPWDAuth1);
+            this.tabPwd2DB1.Controls.Add(this.lblSPWD15);
+            this.tabPwd2DB1.Controls.Add(this.txtSPWDSaltedPassword1);
+            this.tabPwd2DB1.Controls.Add(this.lblSPWD12);
+            this.tabPwd2DB1.Controls.Add(this.txtSPWDRawPassword1);
+            this.tabPwd2DB1.Controls.Add(this.cbxSPWDPV1);
+            this.tabPwd2DB1.Controls.Add(this.lblSPWD11);
+            this.tabPwd2DB1.Controls.Add(this.btnSPWDGen1);
+            this.tabPwd2DB1.Location = new System.Drawing.Point(4, 40);
+            this.tabPwd2DB1.Name = "tabPwd2DB1";
+            this.tabPwd2DB1.Size = new System.Drawing.Size(384, 241);
+            this.tabPwd2DB1.TabIndex = 4;
+            this.tabPwd2DB1.Text = "パスワードDB保存 1";
+            this.tabPwd2DB1.UseVisualStyleBackColor = true;
+            // 
+            // nudSPWDStretchCount1
+            // 
+            this.nudSPWDStretchCount1.Location = new System.Drawing.Point(114, 85);
+            this.nudSPWDStretchCount1.Maximum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+            this.nudSPWDStretchCount1.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudSPWDStretchCount1.Name = "nudSPWDStretchCount1";
+            this.nudSPWDStretchCount1.Size = new System.Drawing.Size(212, 19);
+            this.nudSPWDStretchCount1.TabIndex = 45;
+            this.nudSPWDStretchCount1.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // lblSPWD14
+            // 
+            this.lblSPWD14.AutoSize = true;
+            this.lblSPWD14.Location = new System.Drawing.Point(9, 88);
+            this.lblSPWD14.Name = "lblSPWD14";
+            this.lblSPWD14.Size = new System.Drawing.Size(71, 12);
+            this.lblSPWD14.TabIndex = 44;
+            this.lblSPWD14.Text = "ストレッチ回数";
+            // 
+            // nudSPWDSaltLength1
+            // 
+            this.nudSPWDSaltLength1.Location = new System.Drawing.Point(114, 60);
+            this.nudSPWDSaltLength1.Maximum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+            this.nudSPWDSaltLength1.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudSPWDSaltLength1.Name = "nudSPWDSaltLength1";
+            this.nudSPWDSaltLength1.Size = new System.Drawing.Size(212, 19);
+            this.nudSPWDSaltLength1.TabIndex = 43;
+            this.nudSPWDSaltLength1.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // lblSPWD13
+            // 
+            this.lblSPWD13.AutoSize = true;
+            this.lblSPWD13.Location = new System.Drawing.Point(9, 62);
+            this.lblSPWD13.Name = "lblSPWD13";
+            this.lblSPWD13.Size = new System.Drawing.Size(62, 12);
+            this.lblSPWD13.TabIndex = 42;
+            this.lblSPWD13.Text = "ソルトの長さ";
+            // 
+            // btnSPWDAuth1
+            // 
+            this.btnSPWDAuth1.Location = new System.Drawing.Point(113, 164);
+            this.btnSPWDAuth1.Name = "btnSPWDAuth1";
+            this.btnSPWDAuth1.Size = new System.Drawing.Size(213, 23);
+            this.btnSPWDAuth1.TabIndex = 41;
+            this.btnSPWDAuth1.Text = "認証";
+            this.btnSPWDAuth1.UseVisualStyleBackColor = true;
+            this.btnSPWDAuth1.Click += new System.EventHandler(this.btnSPWDAuth1_Click);
+            // 
+            // lblSPWD15
+            // 
+            this.lblSPWD15.AutoSize = true;
+            this.lblSPWD15.Location = new System.Drawing.Point(9, 113);
+            this.lblSPWD15.Name = "lblSPWD15";
+            this.lblSPWD15.Size = new System.Drawing.Size(76, 12);
+            this.lblSPWD15.TabIndex = 40;
+            this.lblSPWD15.Text = "塩味パスワード";
+            // 
+            // txtSPWDSaltedPassword1
+            // 
+            this.txtSPWDSaltedPassword1.Location = new System.Drawing.Point(113, 110);
+            this.txtSPWDSaltedPassword1.Name = "txtSPWDSaltedPassword1";
+            this.txtSPWDSaltedPassword1.ReadOnly = true;
+            this.txtSPWDSaltedPassword1.Size = new System.Drawing.Size(212, 19);
+            this.txtSPWDSaltedPassword1.TabIndex = 39;
+            // 
+            // lblSPWD12
+            // 
+            this.lblSPWD12.AutoSize = true;
+            this.lblSPWD12.Location = new System.Drawing.Point(9, 38);
+            this.lblSPWD12.Name = "lblSPWD12";
+            this.lblSPWD12.Size = new System.Drawing.Size(64, 12);
+            this.lblSPWD12.TabIndex = 38;
+            this.lblSPWD12.Text = "生パスワード";
+            // 
+            // txtSPWDRawPassword1
+            // 
+            this.txtSPWDRawPassword1.Location = new System.Drawing.Point(113, 35);
+            this.txtSPWDRawPassword1.Name = "txtSPWDRawPassword1";
+            this.txtSPWDRawPassword1.Size = new System.Drawing.Size(212, 19);
+            this.txtSPWDRawPassword1.TabIndex = 37;
+            // 
+            // cbxSPWDPV1
+            // 
+            this.cbxSPWDPV1.FormattingEnabled = true;
+            this.cbxSPWDPV1.Location = new System.Drawing.Point(113, 9);
+            this.cbxSPWDPV1.Name = "cbxSPWDPV1";
+            this.cbxSPWDPV1.Size = new System.Drawing.Size(212, 20);
+            this.cbxSPWDPV1.TabIndex = 36;
+            // 
+            // lblSPWD11
+            // 
+            this.lblSPWD11.AutoSize = true;
+            this.lblSPWD11.Location = new System.Drawing.Point(9, 13);
+            this.lblSPWD11.Name = "lblSPWD11";
+            this.lblSPWD11.Size = new System.Drawing.Size(75, 12);
+            this.lblSPWD11.TabIndex = 35;
+            this.lblSPWD11.Text = "暗号プロバイダ";
+            // 
+            // btnSPWDGen1
+            // 
+            this.btnSPWDGen1.Location = new System.Drawing.Point(113, 135);
+            this.btnSPWDGen1.Name = "btnSPWDGen1";
+            this.btnSPWDGen1.Size = new System.Drawing.Size(213, 23);
+            this.btnSPWDGen1.TabIndex = 34;
+            this.btnSPWDGen1.Text = "塩味パスワードの生成";
+            this.btnSPWDGen1.UseVisualStyleBackColor = true;
+            this.btnSPWDGen1.Click += new System.EventHandler(this.btnSPWDGen1_Click);
+            // 
+            // tabPwd2DB2
+            // 
+            this.tabPwd2DB2.Controls.Add(this.nudSPWDStretchCount2);
+            this.tabPwd2DB2.Controls.Add(this.lblSPWD25);
+            this.tabPwd2DB2.Controls.Add(this.lblSPWD23);
+            this.tabPwd2DB2.Controls.Add(this.txtSPWDKey2);
+            this.tabPwd2DB2.Controls.Add(this.nudSPWDSaltLength2);
+            this.tabPwd2DB2.Controls.Add(this.lblSPWD24);
+            this.tabPwd2DB2.Controls.Add(this.button1);
+            this.tabPwd2DB2.Controls.Add(this.lblSPWD26);
+            this.tabPwd2DB2.Controls.Add(this.txtSPWDSaltedPassword2);
+            this.tabPwd2DB2.Controls.Add(this.lblSPWD22);
+            this.tabPwd2DB2.Controls.Add(this.txtSPWDRawPassword2);
+            this.tabPwd2DB2.Controls.Add(this.cbxSPWDPV2);
+            this.tabPwd2DB2.Controls.Add(this.lblSPWD21);
+            this.tabPwd2DB2.Controls.Add(this.btnSPWDGen2);
+            this.tabPwd2DB2.Location = new System.Drawing.Point(4, 40);
+            this.tabPwd2DB2.Name = "tabPwd2DB2";
+            this.tabPwd2DB2.Size = new System.Drawing.Size(384, 241);
+            this.tabPwd2DB2.TabIndex = 5;
+            this.tabPwd2DB2.Text = "パスワードDB保存 2";
+            this.tabPwd2DB2.UseVisualStyleBackColor = true;
+            // 
+            // nudSPWDStretchCount2
+            // 
+            this.nudSPWDStretchCount2.Location = new System.Drawing.Point(114, 110);
+            this.nudSPWDStretchCount2.Maximum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+            this.nudSPWDStretchCount2.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudSPWDStretchCount2.Name = "nudSPWDStretchCount2";
+            this.nudSPWDStretchCount2.Size = new System.Drawing.Size(212, 19);
+            this.nudSPWDStretchCount2.TabIndex = 57;
+            this.nudSPWDStretchCount2.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // lblSPWD25
+            // 
+            this.lblSPWD25.AutoSize = true;
+            this.lblSPWD25.Location = new System.Drawing.Point(9, 112);
+            this.lblSPWD25.Name = "lblSPWD25";
+            this.lblSPWD25.Size = new System.Drawing.Size(71, 12);
+            this.lblSPWD25.TabIndex = 56;
+            this.lblSPWD25.Text = "ストレッチ回数";
+            // 
+            // lblSPWD23
+            // 
+            this.lblSPWD23.AutoSize = true;
+            this.lblSPWD23.Location = new System.Drawing.Point(10, 63);
+            this.lblSPWD23.Name = "lblSPWD23";
+            this.lblSPWD23.Size = new System.Drawing.Size(25, 12);
+            this.lblSPWD23.TabIndex = 55;
+            this.lblSPWD23.Text = "キー";
+            // 
+            // txtSPWDKey2
+            // 
+            this.txtSPWDKey2.Location = new System.Drawing.Point(114, 60);
+            this.txtSPWDKey2.Name = "txtSPWDKey2";
+            this.txtSPWDKey2.Size = new System.Drawing.Size(212, 19);
+            this.txtSPWDKey2.TabIndex = 54;
+            // 
+            // nudSPWDSaltLength2
+            // 
+            this.nudSPWDSaltLength2.Location = new System.Drawing.Point(114, 85);
+            this.nudSPWDSaltLength2.Maximum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+            this.nudSPWDSaltLength2.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudSPWDSaltLength2.Name = "nudSPWDSaltLength2";
+            this.nudSPWDSaltLength2.Size = new System.Drawing.Size(212, 19);
+            this.nudSPWDSaltLength2.TabIndex = 53;
+            this.nudSPWDSaltLength2.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // lblSPWD24
+            // 
+            this.lblSPWD24.AutoSize = true;
+            this.lblSPWD24.Location = new System.Drawing.Point(9, 87);
+            this.lblSPWD24.Name = "lblSPWD24";
+            this.lblSPWD24.Size = new System.Drawing.Size(62, 12);
+            this.lblSPWD24.TabIndex = 52;
+            this.lblSPWD24.Text = "ソルトの長さ";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(113, 190);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(213, 23);
+            this.button1.TabIndex = 51;
+            this.button1.Text = "認証";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.btnSPWDAuth2_Click);
+            // 
+            // lblSPWD26
+            // 
+            this.lblSPWD26.AutoSize = true;
+            this.lblSPWD26.Location = new System.Drawing.Point(9, 139);
+            this.lblSPWD26.Name = "lblSPWD26";
+            this.lblSPWD26.Size = new System.Drawing.Size(76, 12);
+            this.lblSPWD26.TabIndex = 50;
+            this.lblSPWD26.Text = "塩味パスワード";
+            // 
+            // txtSPWDSaltedPassword2
+            // 
+            this.txtSPWDSaltedPassword2.Location = new System.Drawing.Point(113, 136);
+            this.txtSPWDSaltedPassword2.Name = "txtSPWDSaltedPassword2";
+            this.txtSPWDSaltedPassword2.ReadOnly = true;
+            this.txtSPWDSaltedPassword2.Size = new System.Drawing.Size(212, 19);
+            this.txtSPWDSaltedPassword2.TabIndex = 49;
+            // 
+            // lblSPWD22
+            // 
+            this.lblSPWD22.AutoSize = true;
+            this.lblSPWD22.Location = new System.Drawing.Point(9, 38);
+            this.lblSPWD22.Name = "lblSPWD22";
+            this.lblSPWD22.Size = new System.Drawing.Size(64, 12);
+            this.lblSPWD22.TabIndex = 48;
+            this.lblSPWD22.Text = "生パスワード";
+            // 
+            // txtSPWDRawPassword2
+            // 
+            this.txtSPWDRawPassword2.Location = new System.Drawing.Point(113, 35);
+            this.txtSPWDRawPassword2.Name = "txtSPWDRawPassword2";
+            this.txtSPWDRawPassword2.Size = new System.Drawing.Size(212, 19);
+            this.txtSPWDRawPassword2.TabIndex = 47;
+            // 
+            // cbxSPWDPV2
+            // 
+            this.cbxSPWDPV2.FormattingEnabled = true;
+            this.cbxSPWDPV2.Location = new System.Drawing.Point(113, 9);
+            this.cbxSPWDPV2.Name = "cbxSPWDPV2";
+            this.cbxSPWDPV2.Size = new System.Drawing.Size(212, 20);
+            this.cbxSPWDPV2.TabIndex = 46;
+            // 
+            // lblSPWD21
+            // 
+            this.lblSPWD21.AutoSize = true;
+            this.lblSPWD21.Location = new System.Drawing.Point(9, 13);
+            this.lblSPWD21.Name = "lblSPWD21";
+            this.lblSPWD21.Size = new System.Drawing.Size(75, 12);
+            this.lblSPWD21.TabIndex = 45;
+            this.lblSPWD21.Text = "暗号プロバイダ";
+            // 
+            // btnSPWDGen2
+            // 
+            this.btnSPWDGen2.Location = new System.Drawing.Point(113, 161);
+            this.btnSPWDGen2.Name = "btnSPWDGen2";
+            this.btnSPWDGen2.Size = new System.Drawing.Size(213, 23);
+            this.btnSPWDGen2.TabIndex = 44;
+            this.btnSPWDGen2.Text = "塩味パスワードの生成";
+            this.btnSPWDGen2.UseVisualStyleBackColor = true;
+            this.btnSPWDGen2.Click += new System.EventHandler(this.btnSPWDGen2_Click);
+            // 
             // tabSC
             // 
             this.tabSC.Controls.Add(this.gbxSC);
@@ -428,12 +838,12 @@
             this.tabSC.Controls.Add(this.lblSC1);
             this.tabSC.Controls.Add(this.txtSCPassword);
             this.tabSC.Controls.Add(this.txtSCString);
-            this.tabSC.Location = new System.Drawing.Point(4, 21);
+            this.tabSC.Location = new System.Drawing.Point(4, 40);
             this.tabSC.Name = "tabSC";
             this.tabSC.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSC.Size = new System.Drawing.Size(326, 243);
+            this.tabSC.Size = new System.Drawing.Size(384, 241);
             this.tabSC.TabIndex = 0;
-            this.tabSC.Text = "秘密鍵";
+            this.tabSC.Text = "秘密鍵・暗号化";
             this.tabSC.UseVisualStyleBackColor = true;
             // 
             // gbxSC
@@ -608,12 +1018,12 @@
             this.tabASC.Controls.Add(this.lblASC2);
             this.tabASC.Controls.Add(this.lblASC1);
             this.tabASC.Controls.Add(this.txtASCString);
-            this.tabASC.Location = new System.Drawing.Point(4, 21);
+            this.tabASC.Location = new System.Drawing.Point(4, 40);
             this.tabASC.Name = "tabASC";
             this.tabASC.Padding = new System.Windows.Forms.Padding(3);
-            this.tabASC.Size = new System.Drawing.Size(326, 243);
+            this.tabASC.Size = new System.Drawing.Size(384, 241);
             this.tabASC.TabIndex = 1;
-            this.tabASC.Text = "共通鍵";
+            this.tabASC.Text = "共通鍵・暗号化";
             this.tabASC.UseVisualStyleBackColor = true;
             // 
             // btnASCGetKey
@@ -756,138 +1166,332 @@
             this.txtASCString.Size = new System.Drawing.Size(212, 19);
             this.txtASCString.TabIndex = 27;
             // 
-            // tabPage1
+            // tabCodeSigning
             // 
-            this.tabPage1.Controls.Add(this.nudSPWDSaltLength);
-            this.tabPage1.Controls.Add(this.lblSPWD3);
-            this.tabPage1.Controls.Add(this.btnSPWDAuth);
-            this.tabPage1.Controls.Add(this.lblSPWD4);
-            this.tabPage1.Controls.Add(this.txtSPWDSaltedPassword);
-            this.tabPage1.Controls.Add(this.lblSPWD2);
-            this.tabPage1.Controls.Add(this.txtSPWDRawPassword);
-            this.tabPage1.Controls.Add(this.cbxSPWDPV);
-            this.tabPage1.Controls.Add(this.lblSPWD1);
-            this.tabPage1.Controls.Add(this.btnSPWDGen);
-            this.tabPage1.Location = new System.Drawing.Point(4, 21);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(326, 243);
-            this.tabPage1.TabIndex = 4;
-            this.tabPage1.Text = "パスワードDB保存";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabCodeSigning.Controls.Add(this.btnCCVerify);
+            this.tabCodeSigning.Controls.Add(this.lblCC6);
+            this.tabCodeSigning.Controls.Add(this.txtCCSign);
+            this.tabCodeSigning.Controls.Add(this.lblCC5);
+            this.tabCodeSigning.Controls.Add(this.txtCCPublicKey);
+            this.tabCodeSigning.Controls.Add(this.lblCC4);
+            this.tabCodeSigning.Controls.Add(this.txtCCPrivateKey);
+            this.tabCodeSigning.Controls.Add(this.lblCC3);
+            this.tabCodeSigning.Controls.Add(this.lblCC2);
+            this.tabCodeSigning.Controls.Add(this.txtCCData);
+            this.tabCodeSigning.Controls.Add(this.txtCCHash);
+            this.tabCodeSigning.Controls.Add(this.cbxCCXMLPV);
+            this.tabCodeSigning.Controls.Add(this.lblCC1);
+            this.tabCodeSigning.Controls.Add(this.gbxCC);
+            this.tabCodeSigning.Controls.Add(this.btnCCSign);
+            this.tabCodeSigning.Location = new System.Drawing.Point(4, 40);
+            this.tabCodeSigning.Name = "tabCodeSigning";
+            this.tabCodeSigning.Size = new System.Drawing.Size(384, 241);
+            this.tabCodeSigning.TabIndex = 7;
+            this.tabCodeSigning.Text = "署名";
+            this.tabCodeSigning.UseVisualStyleBackColor = true;
             // 
-            // nudSPWDSaltLength
+            // btnCCVerify
             // 
-            this.nudSPWDSaltLength.Location = new System.Drawing.Point(104, 60);
-            this.nudSPWDSaltLength.Maximum = new decimal(new int[] {
-            128,
-            0,
-            0,
-            0});
-            this.nudSPWDSaltLength.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudSPWDSaltLength.Name = "nudSPWDSaltLength";
-            this.nudSPWDSaltLength.Size = new System.Drawing.Size(212, 19);
-            this.nudSPWDSaltLength.TabIndex = 43;
-            this.nudSPWDSaltLength.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.btnCCVerify.Location = new System.Drawing.Point(174, 210);
+            this.btnCCVerify.Name = "btnCCVerify";
+            this.btnCCVerify.Size = new System.Drawing.Size(141, 23);
+            this.btnCCVerify.TabIndex = 43;
+            this.btnCCVerify.Text = "検証";
+            this.btnCCVerify.UseVisualStyleBackColor = true;
+            this.btnCCVerify.Click += new System.EventHandler(this.btnCCVerify_Click);
             // 
-            // lblSPWD3
+            // lblCC6
             // 
-            this.lblSPWD3.AutoSize = true;
-            this.lblSPWD3.Location = new System.Drawing.Point(9, 62);
-            this.lblSPWD3.Name = "lblSPWD3";
-            this.lblSPWD3.Size = new System.Drawing.Size(62, 12);
-            this.lblSPWD3.TabIndex = 42;
-            this.lblSPWD3.Text = "ソルトの長さ";
+            this.lblCC6.AutoSize = true;
+            this.lblCC6.Location = new System.Drawing.Point(9, 188);
+            this.lblCC6.Name = "lblCC6";
+            this.lblCC6.Size = new System.Drawing.Size(29, 12);
+            this.lblCC6.TabIndex = 42;
+            this.lblCC6.Text = "署名";
             // 
-            // btnSPWDAuth
+            // txtCCSign
             // 
-            this.btnSPWDAuth.Location = new System.Drawing.Point(103, 139);
-            this.btnSPWDAuth.Name = "btnSPWDAuth";
-            this.btnSPWDAuth.Size = new System.Drawing.Size(213, 23);
-            this.btnSPWDAuth.TabIndex = 41;
-            this.btnSPWDAuth.Text = "認証";
-            this.btnSPWDAuth.UseVisualStyleBackColor = true;
-            this.btnSPWDAuth.Click += new System.EventHandler(this.btnSPWDAuth_Click);
+            this.txtCCSign.Location = new System.Drawing.Point(103, 185);
+            this.txtCCSign.Name = "txtCCSign";
+            this.txtCCSign.ReadOnly = true;
+            this.txtCCSign.Size = new System.Drawing.Size(212, 19);
+            this.txtCCSign.TabIndex = 41;
             // 
-            // lblSPWD4
+            // lblCC5
             // 
-            this.lblSPWD4.AutoSize = true;
-            this.lblSPWD4.Location = new System.Drawing.Point(9, 88);
-            this.lblSPWD4.Name = "lblSPWD4";
-            this.lblSPWD4.Size = new System.Drawing.Size(76, 12);
-            this.lblSPWD4.TabIndex = 40;
-            this.lblSPWD4.Text = "塩味パスワード";
+            this.lblCC5.AutoSize = true;
+            this.lblCC5.Location = new System.Drawing.Point(9, 163);
+            this.lblCC5.Name = "lblCC5";
+            this.lblCC5.Size = new System.Drawing.Size(41, 12);
+            this.lblCC5.TabIndex = 40;
+            this.lblCC5.Text = "公開鍵";
             // 
-            // txtSPWDSaltedPassword
+            // txtCCPublicKey
             // 
-            this.txtSPWDSaltedPassword.Location = new System.Drawing.Point(103, 85);
-            this.txtSPWDSaltedPassword.Name = "txtSPWDSaltedPassword";
-            this.txtSPWDSaltedPassword.ReadOnly = true;
-            this.txtSPWDSaltedPassword.Size = new System.Drawing.Size(212, 19);
-            this.txtSPWDSaltedPassword.TabIndex = 39;
+            this.txtCCPublicKey.Location = new System.Drawing.Point(103, 160);
+            this.txtCCPublicKey.Name = "txtCCPublicKey";
+            this.txtCCPublicKey.ReadOnly = true;
+            this.txtCCPublicKey.Size = new System.Drawing.Size(212, 19);
+            this.txtCCPublicKey.TabIndex = 39;
             // 
-            // lblSPWD2
+            // lblCC4
             // 
-            this.lblSPWD2.AutoSize = true;
-            this.lblSPWD2.Location = new System.Drawing.Point(9, 38);
-            this.lblSPWD2.Name = "lblSPWD2";
-            this.lblSPWD2.Size = new System.Drawing.Size(64, 12);
-            this.lblSPWD2.TabIndex = 38;
-            this.lblSPWD2.Text = "生パスワード";
+            this.lblCC4.AutoSize = true;
+            this.lblCC4.Location = new System.Drawing.Point(9, 138);
+            this.lblCC4.Name = "lblCC4";
+            this.lblCC4.Size = new System.Drawing.Size(41, 12);
+            this.lblCC4.TabIndex = 38;
+            this.lblCC4.Text = "秘密鍵";
             // 
-            // txtSPWDRawPassword
+            // txtCCPrivateKey
             // 
-            this.txtSPWDRawPassword.Location = new System.Drawing.Point(103, 35);
-            this.txtSPWDRawPassword.Name = "txtSPWDRawPassword";
-            this.txtSPWDRawPassword.Size = new System.Drawing.Size(212, 19);
-            this.txtSPWDRawPassword.TabIndex = 37;
+            this.txtCCPrivateKey.Location = new System.Drawing.Point(103, 135);
+            this.txtCCPrivateKey.Name = "txtCCPrivateKey";
+            this.txtCCPrivateKey.ReadOnly = true;
+            this.txtCCPrivateKey.Size = new System.Drawing.Size(212, 19);
+            this.txtCCPrivateKey.TabIndex = 37;
             // 
-            // cbxSPWDPV
+            // lblCC3
             // 
-            this.cbxSPWDPV.FormattingEnabled = true;
-            this.cbxSPWDPV.Location = new System.Drawing.Point(103, 9);
-            this.cbxSPWDPV.Name = "cbxSPWDPV";
-            this.cbxSPWDPV.Size = new System.Drawing.Size(212, 20);
-            this.cbxSPWDPV.TabIndex = 36;
+            this.lblCC3.AutoSize = true;
+            this.lblCC3.Location = new System.Drawing.Point(9, 113);
+            this.lblCC3.Name = "lblCC3";
+            this.lblCC3.Size = new System.Drawing.Size(33, 12);
+            this.lblCC3.TabIndex = 36;
+            this.lblCC3.Text = "データ";
             // 
-            // lblSPWD1
+            // lblCC2
             // 
-            this.lblSPWD1.AutoSize = true;
-            this.lblSPWD1.Location = new System.Drawing.Point(9, 13);
-            this.lblSPWD1.Name = "lblSPWD1";
-            this.lblSPWD1.Size = new System.Drawing.Size(75, 12);
-            this.lblSPWD1.TabIndex = 35;
-            this.lblSPWD1.Text = "暗号プロバイダ";
+            this.lblCC2.AutoSize = true;
+            this.lblCC2.Location = new System.Drawing.Point(9, 88);
+            this.lblCC2.Name = "lblCC2";
+            this.lblCC2.Size = new System.Drawing.Size(73, 12);
+            this.lblCC2.TabIndex = 35;
+            this.lblCC2.Text = "ハッシュ(X509)";
             // 
-            // btnSPWDGen
+            // txtCCData
             // 
-            this.btnSPWDGen.Location = new System.Drawing.Point(103, 110);
-            this.btnSPWDGen.Name = "btnSPWDGen";
-            this.btnSPWDGen.Size = new System.Drawing.Size(213, 23);
-            this.btnSPWDGen.TabIndex = 34;
-            this.btnSPWDGen.Text = "塩味パスワードの生成";
-            this.btnSPWDGen.UseVisualStyleBackColor = true;
-            this.btnSPWDGen.Click += new System.EventHandler(this.btnSPWDGen_Click);
+            this.txtCCData.Location = new System.Drawing.Point(103, 110);
+            this.txtCCData.Name = "txtCCData";
+            this.txtCCData.Size = new System.Drawing.Size(212, 19);
+            this.txtCCData.TabIndex = 34;
+            // 
+            // txtCCHash
+            // 
+            this.txtCCHash.Location = new System.Drawing.Point(103, 85);
+            this.txtCCHash.Name = "txtCCHash";
+            this.txtCCHash.ReadOnly = true;
+            this.txtCCHash.Size = new System.Drawing.Size(212, 19);
+            this.txtCCHash.TabIndex = 33;
+            this.txtCCHash.Text = "SHA1";
+            // 
+            // cbxCCXMLPV
+            // 
+            this.cbxCCXMLPV.FormattingEnabled = true;
+            this.cbxCCXMLPV.Location = new System.Drawing.Point(103, 59);
+            this.cbxCCXMLPV.Name = "cbxCCXMLPV";
+            this.cbxCCXMLPV.Size = new System.Drawing.Size(212, 20);
+            this.cbxCCXMLPV.TabIndex = 32;
+            // 
+            // lblCC1
+            // 
+            this.lblCC1.AutoSize = true;
+            this.lblCC1.Location = new System.Drawing.Point(9, 63);
+            this.lblCC1.Name = "lblCC1";
+            this.lblCC1.Size = new System.Drawing.Size(81, 12);
+            this.lblCC1.TabIndex = 31;
+            this.lblCC1.Text = "プロバイダ(XML)";
+            // 
+            // gbxCC
+            // 
+            this.gbxCC.Controls.Add(this.rbnCCX509);
+            this.gbxCC.Controls.Add(this.rbnCCXML);
+            this.gbxCC.Location = new System.Drawing.Point(9, 7);
+            this.gbxCC.Name = "gbxCC";
+            this.gbxCC.Size = new System.Drawing.Size(306, 46);
+            this.gbxCC.TabIndex = 30;
+            this.gbxCC.TabStop = false;
+            this.gbxCC.Text = "API選択";
+            // 
+            // rbnCCX509
+            // 
+            this.rbnCCX509.AutoSize = true;
+            this.rbnCCX509.Location = new System.Drawing.Point(118, 18);
+            this.rbnCCX509.Name = "rbnCCX509";
+            this.rbnCCX509.Size = new System.Drawing.Size(72, 16);
+            this.rbnCCX509.TabIndex = 1;
+            this.rbnCCX509.TabStop = true;
+            this.rbnCCX509.Text = "X.509 Cer";
+            this.rbnCCX509.UseVisualStyleBackColor = true;
+            this.rbnCCX509.CheckedChanged += new System.EventHandler(this.rbnCCX509_CheckedChanged);
+            // 
+            // rbnCCXML
+            // 
+            this.rbnCCXML.AutoSize = true;
+            this.rbnCCXML.Checked = true;
+            this.rbnCCXML.Location = new System.Drawing.Point(20, 18);
+            this.rbnCCXML.Name = "rbnCCXML";
+            this.rbnCCXML.Size = new System.Drawing.Size(68, 16);
+            this.rbnCCXML.TabIndex = 0;
+            this.rbnCCXML.TabStop = true;
+            this.rbnCCXML.Text = "XML Key";
+            this.rbnCCXML.UseVisualStyleBackColor = true;
+            this.rbnCCXML.CheckedChanged += new System.EventHandler(this.rbnCCXML_CheckedChanged);
+            // 
+            // btnCCSign
+            // 
+            this.btnCCSign.Location = new System.Drawing.Point(11, 210);
+            this.btnCCSign.Name = "btnCCSign";
+            this.btnCCSign.Size = new System.Drawing.Size(141, 23);
+            this.btnCCSign.TabIndex = 0;
+            this.btnCCSign.Text = "署名";
+            this.btnCCSign.UseVisualStyleBackColor = true;
+            this.btnCCSign.Click += new System.EventHandler(this.btnCCSign_Click);
+            // 
+            // tabJWT
+            // 
+            this.tabJWT.Controls.Add(this.txtJWTHeader);
+            this.tabJWT.Controls.Add(this.lblJWT2);
+            this.tabJWT.Controls.Add(this.txtJWTSign);
+            this.tabJWT.Controls.Add(this.lblJWT1);
+            this.tabJWT.Controls.Add(this.txtJWTPayload);
+            this.tabJWT.Controls.Add(this.gbxJWT);
+            this.tabJWT.Controls.Add(this.btnJWTVerify);
+            this.tabJWT.Controls.Add(this.btnJWTSign);
+            this.tabJWT.Location = new System.Drawing.Point(4, 40);
+            this.tabJWT.Name = "tabJWT";
+            this.tabJWT.Size = new System.Drawing.Size(384, 241);
+            this.tabJWT.TabIndex = 6;
+            this.tabJWT.Text = "JWT";
+            this.tabJWT.UseVisualStyleBackColor = true;
+            // 
+            // txtJWTHeader
+            // 
+            this.txtJWTHeader.Location = new System.Drawing.Point(48, 77);
+            this.txtJWTHeader.Multiline = true;
+            this.txtJWTHeader.Name = "txtJWTHeader";
+            this.txtJWTHeader.Size = new System.Drawing.Size(267, 33);
+            this.txtJWTHeader.TabIndex = 51;
+            // 
+            // lblJWT2
+            // 
+            this.lblJWT2.AutoSize = true;
+            this.lblJWT2.Location = new System.Drawing.Point(9, 188);
+            this.lblJWT2.Name = "lblJWT2";
+            this.lblJWT2.Size = new System.Drawing.Size(29, 12);
+            this.lblJWT2.TabIndex = 50;
+            this.lblJWT2.Text = "署名";
+            // 
+            // txtJWTSign
+            // 
+            this.txtJWTSign.Location = new System.Drawing.Point(48, 185);
+            this.txtJWTSign.Name = "txtJWTSign";
+            this.txtJWTSign.ReadOnly = true;
+            this.txtJWTSign.Size = new System.Drawing.Size(267, 19);
+            this.txtJWTSign.TabIndex = 49;
+            // 
+            // lblJWT1
+            // 
+            this.lblJWT1.AutoSize = true;
+            this.lblJWT1.Location = new System.Drawing.Point(9, 80);
+            this.lblJWT1.Name = "lblJWT1";
+            this.lblJWT1.Size = new System.Drawing.Size(33, 12);
+            this.lblJWT1.TabIndex = 48;
+            this.lblJWT1.Text = "データ";
+            // 
+            // txtJWTPayload
+            // 
+            this.txtJWTPayload.Location = new System.Drawing.Point(48, 116);
+            this.txtJWTPayload.Multiline = true;
+            this.txtJWTPayload.Name = "txtJWTPayload";
+            this.txtJWTPayload.Size = new System.Drawing.Size(267, 63);
+            this.txtJWTPayload.TabIndex = 47;
+            this.txtJWTPayload.Text = "{ \"aaa\": \"AAA\", \"bbb\": \"BBB\", \"ccc\": \"CCC\"}";
+            // 
+            // gbxJWT
+            // 
+            this.gbxJWT.Controls.Add(this.txtJWTJWK);
+            this.gbxJWT.Controls.Add(this.txtJWTKey);
+            this.gbxJWT.Controls.Add(this.rbnJWTRS256);
+            this.gbxJWT.Controls.Add(this.rbnJWTHS256);
+            this.gbxJWT.Location = new System.Drawing.Point(9, 7);
+            this.gbxJWT.Name = "gbxJWT";
+            this.gbxJWT.Size = new System.Drawing.Size(306, 64);
+            this.gbxJWT.TabIndex = 46;
+            this.gbxJWT.TabStop = false;
+            this.gbxJWT.Text = "API選択";
+            // 
+            // txtJWTJWK
+            // 
+            this.txtJWTJWK.Location = new System.Drawing.Point(130, 38);
+            this.txtJWTJWK.Name = "txtJWTJWK";
+            this.txtJWTJWK.ReadOnly = true;
+            this.txtJWTJWK.Size = new System.Drawing.Size(170, 19);
+            this.txtJWTJWK.TabIndex = 3;
+            // 
+            // txtJWTKey
+            // 
+            this.txtJWTKey.Location = new System.Drawing.Point(130, 13);
+            this.txtJWTKey.Name = "txtJWTKey";
+            this.txtJWTKey.ReadOnly = true;
+            this.txtJWTKey.Size = new System.Drawing.Size(170, 19);
+            this.txtJWTKey.TabIndex = 2;
+            // 
+            // rbnJWTRS256
+            // 
+            this.rbnJWTRS256.AutoSize = true;
+            this.rbnJWTRS256.Checked = true;
+            this.rbnJWTRS256.Location = new System.Drawing.Point(6, 26);
+            this.rbnJWTRS256.Name = "rbnJWTRS256";
+            this.rbnJWTRS256.Size = new System.Drawing.Size(56, 16);
+            this.rbnJWTRS256.TabIndex = 1;
+            this.rbnJWTRS256.TabStop = true;
+            this.rbnJWTRS256.Text = "RS256";
+            this.rbnJWTRS256.UseVisualStyleBackColor = true;
+            // 
+            // rbnJWTHS256
+            // 
+            this.rbnJWTHS256.AutoSize = true;
+            this.rbnJWTHS256.Location = new System.Drawing.Point(68, 26);
+            this.rbnJWTHS256.Name = "rbnJWTHS256";
+            this.rbnJWTHS256.Size = new System.Drawing.Size(56, 16);
+            this.rbnJWTHS256.TabIndex = 0;
+            this.rbnJWTHS256.Text = "HS256";
+            this.rbnJWTHS256.UseVisualStyleBackColor = true;
+            // 
+            // btnJWTVerify
+            // 
+            this.btnJWTVerify.Location = new System.Drawing.Point(174, 210);
+            this.btnJWTVerify.Name = "btnJWTVerify";
+            this.btnJWTVerify.Size = new System.Drawing.Size(141, 23);
+            this.btnJWTVerify.TabIndex = 45;
+            this.btnJWTVerify.Text = "検証";
+            this.btnJWTVerify.UseVisualStyleBackColor = true;
+            this.btnJWTVerify.Click += new System.EventHandler(this.btnJWTVerify_Click);
+            // 
+            // btnJWTSign
+            // 
+            this.btnJWTSign.Location = new System.Drawing.Point(11, 210);
+            this.btnJWTSign.Name = "btnJWTSign";
+            this.btnJWTSign.Size = new System.Drawing.Size(141, 23);
+            this.btnJWTSign.TabIndex = 44;
+            this.btnJWTSign.Text = "署名";
+            this.btnJWTSign.UseVisualStyleBackColor = true;
+            this.btnJWTSign.Click += new System.EventHandler(this.btnJWTSign_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(408, 278);
-            this.Controls.Add(this.tabControl1);
+            this.ClientSize = new System.Drawing.Size(408, 309);
+            this.Controls.Add(this.btnSPWDAuth2);
             this.Name = "Form1";
             this.Text = "暗号化・復号化ユーティリティ";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.tabControl1.ResumeLayout(false);
+            this.btnSPWDAuth2.ResumeLayout(false);
             this.tabHash.ResumeLayout(false);
             this.tabHash.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudHSStretching)).EndInit();
             this.gbxHS.ResumeLayout(false);
             this.gbxHS.PerformLayout();
             this.tabKeyedHash.ResumeLayout(false);
@@ -895,6 +1499,14 @@
             this.gbxKHS.ResumeLayout(false);
             this.gbxKHS.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKHSStretching)).EndInit();
+            this.tabPwd2DB1.ResumeLayout(false);
+            this.tabPwd2DB1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSPWDStretchCount1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSPWDSaltLength1)).EndInit();
+            this.tabPwd2DB2.ResumeLayout(false);
+            this.tabPwd2DB2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSPWDStretchCount2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSPWDSaltLength2)).EndInit();
             this.tabSC.ResumeLayout(false);
             this.tabSC.PerformLayout();
             this.gbxSC.ResumeLayout(false);
@@ -904,16 +1516,21 @@
             this.tabASC.PerformLayout();
             this.gbxASC.ResumeLayout(false);
             this.gbxASC.PerformLayout();
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSPWDSaltLength)).EndInit();
+            this.tabCodeSigning.ResumeLayout(false);
+            this.tabCodeSigning.PerformLayout();
+            this.gbxCC.ResumeLayout(false);
+            this.gbxCC.PerformLayout();
+            this.tabJWT.ResumeLayout(false);
+            this.tabJWT.PerformLayout();
+            this.gbxJWT.ResumeLayout(false);
+            this.gbxJWT.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl btnSPWDAuth2;
         private System.Windows.Forms.TabPage tabSC;
         private System.Windows.Forms.ComboBox cbxSCPV;
         private System.Windows.Forms.Button btnSCDecrypt;
@@ -955,7 +1572,7 @@
         private System.Windows.Forms.RadioButton rbnHSString;
         private System.Windows.Forms.ComboBox cbxHSPV;
         private System.Windows.Forms.Label lblHS1;
-        private System.Windows.Forms.Label lblHS3;
+        private System.Windows.Forms.Label lblHS4;
         private System.Windows.Forms.TextBox txtHSCode;
         private System.Windows.Forms.Label lblHS2;
         private System.Windows.Forms.TextBox txtHSString;
@@ -976,18 +1593,67 @@
         private System.Windows.Forms.Label lblKHS1;
         private System.Windows.Forms.TextBox txtKHSPassword;
         private System.Windows.Forms.TextBox txtKHSString;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.Label lblSPWD4;
-        private System.Windows.Forms.TextBox txtSPWDSaltedPassword;
-        private System.Windows.Forms.Label lblSPWD2;
-        private System.Windows.Forms.TextBox txtSPWDRawPassword;
-        private System.Windows.Forms.ComboBox cbxSPWDPV;
-        private System.Windows.Forms.Label lblSPWD1;
-        private System.Windows.Forms.Button btnSPWDGen;
-        private System.Windows.Forms.Button btnSPWDAuth;
-        private System.Windows.Forms.NumericUpDown nudSPWDSaltLength;
-        private System.Windows.Forms.Label lblSPWD3;
-
+        private System.Windows.Forms.TabPage tabPwd2DB1;
+        private System.Windows.Forms.Label lblSPWD15;
+        private System.Windows.Forms.TextBox txtSPWDSaltedPassword1;
+        private System.Windows.Forms.Label lblSPWD12;
+        private System.Windows.Forms.TextBox txtSPWDRawPassword1;
+        private System.Windows.Forms.ComboBox cbxSPWDPV1;
+        private System.Windows.Forms.Label lblSPWD11;
+        private System.Windows.Forms.Button btnSPWDGen1;
+        private System.Windows.Forms.Button btnSPWDAuth1;
+        private System.Windows.Forms.NumericUpDown nudSPWDSaltLength1;
+        private System.Windows.Forms.Label lblSPWD13;
+        private System.Windows.Forms.NumericUpDown nudHSStretching;
+        private System.Windows.Forms.Label lblHS3;
+        private System.Windows.Forms.TabPage tabPwd2DB2;
+        private System.Windows.Forms.TabPage tabJWT;
+        private System.Windows.Forms.TabPage tabCodeSigning;
+        private System.Windows.Forms.NumericUpDown nudSPWDSaltLength2;
+        private System.Windows.Forms.Label lblSPWD24;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label lblSPWD26;
+        private System.Windows.Forms.TextBox txtSPWDSaltedPassword2;
+        private System.Windows.Forms.Label lblSPWD22;
+        private System.Windows.Forms.TextBox txtSPWDRawPassword2;
+        private System.Windows.Forms.ComboBox cbxSPWDPV2;
+        private System.Windows.Forms.Label lblSPWD21;
+        private System.Windows.Forms.Button btnSPWDGen2;
+        private System.Windows.Forms.Label lblSPWD23;
+        private System.Windows.Forms.TextBox txtSPWDKey2;
+        private System.Windows.Forms.NumericUpDown nudSPWDStretchCount2;
+        private System.Windows.Forms.Label lblSPWD25;
+        private System.Windows.Forms.NumericUpDown nudSPWDStretchCount1;
+        private System.Windows.Forms.Label lblSPWD14;
+        private System.Windows.Forms.Button btnCCSign;
+        private System.Windows.Forms.GroupBox gbxCC;
+        private System.Windows.Forms.RadioButton rbnCCX509;
+        private System.Windows.Forms.RadioButton rbnCCXML;
+        private System.Windows.Forms.ComboBox cbxCCXMLPV;
+        private System.Windows.Forms.Label lblCC1;
+        private System.Windows.Forms.Label lblCC3;
+        private System.Windows.Forms.Label lblCC2;
+        private System.Windows.Forms.TextBox txtCCData;
+        private System.Windows.Forms.TextBox txtCCHash;
+        private System.Windows.Forms.Label lblCC6;
+        private System.Windows.Forms.TextBox txtCCSign;
+        private System.Windows.Forms.Label lblCC5;
+        private System.Windows.Forms.TextBox txtCCPublicKey;
+        private System.Windows.Forms.Label lblCC4;
+        private System.Windows.Forms.TextBox txtCCPrivateKey;
+        private System.Windows.Forms.Button btnCCVerify;
+        private System.Windows.Forms.GroupBox gbxJWT;
+        private System.Windows.Forms.RadioButton rbnJWTRS256;
+        private System.Windows.Forms.RadioButton rbnJWTHS256;
+        private System.Windows.Forms.Button btnJWTVerify;
+        private System.Windows.Forms.Button btnJWTSign;
+        private System.Windows.Forms.Label lblJWT2;
+        private System.Windows.Forms.TextBox txtJWTSign;
+        private System.Windows.Forms.Label lblJWT1;
+        private System.Windows.Forms.TextBox txtJWTPayload;
+        private System.Windows.Forms.TextBox txtJWTHeader;
+        private System.Windows.Forms.TextBox txtJWTKey;
+        private System.Windows.Forms.TextBox txtJWTJWK;
     }
 }
 

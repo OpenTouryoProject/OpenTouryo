@@ -32,7 +32,6 @@
 //*  2012/12/17  西野 大介         新規作成
 //**********************************************************************************
 
-using System;
 using System.ServiceModel;
 
 namespace Touryo.Infrastructure.Framework.Transmission

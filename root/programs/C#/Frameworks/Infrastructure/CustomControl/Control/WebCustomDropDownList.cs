@@ -31,16 +31,8 @@
 //**********************************************************************************
 
 using System.Drawing;
-
-// System
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
-using System.IO;
 
-// System.Web
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 

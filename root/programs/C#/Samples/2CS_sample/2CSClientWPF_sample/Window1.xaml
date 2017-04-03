@@ -1,7 +1,6 @@
 ﻿<Window x:Class="_2CSClientWPF_sample.Window1"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:my="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit"
     Title="Window1" Height="683" Width="797" Loaded="Window_Loaded">
     <Canvas>
         <Label Height="23" Margin="12,12,272,0" Name="label1" VerticalAlignment="Top" Canvas.Left="-6" Canvas.Top="-6.003" Width="285">データアクセス制御クラス（データプロバイダ）を選択</Label>
@@ -35,7 +34,7 @@
         <Button Height="23" HorizontalAlignment="Left" Margin="93,0,0,97" Name="button7" VerticalAlignment="Bottom" Width="140" Click="button7_Click" Canvas.Left="59.643" Canvas.Top="531">追加</Button>
         <Button Height="23" HorizontalAlignment="Left" Margin="174,0,0,97" Name="button8" VerticalAlignment="Bottom" Width="140" Click="button8_Click" Canvas.Left="124.643" Canvas.Top="531">更新</Button>
         <Button Height="23" HorizontalAlignment="Left" Margin="255,0,0,97" Name="button9" VerticalAlignment="Bottom" Width="140" Click="button9_Click" Canvas.Left="189.643" Canvas.Top="531">削除</Button>
-        <my:DataGrid Canvas.Left="312" Canvas.Top="13" Height="431.25" Name="dataGridControl1" ItemsSource="{Binding}" Width="443"/>
+        <DataGrid Canvas.Left="312" Canvas.Top="13" Height="431.25" Name="dataGridControl1" ItemsSource="{Binding}" Width="443"/>
         <Button Canvas.Left="313" Canvas.Top="450" Height="24" Name="button10" Width="442" Click="button10_Click">クリア</Button>
         <Label Canvas.Left="6" Canvas.Top="578" Height="23" Name="label12" Width="70">メッセージID：</Label>
         <TextBox Canvas.Left="86" Canvas.Top="580" Height="23" Name="textBox4" Width="120" />

@@ -30,17 +30,8 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.Collections.Generic
-Imports System.ComponentModel
-Imports System.Drawing
-Imports System.Text
 Imports System.Globalization
-
-' System.Windows
-Imports System.Windows
-Imports System.Windows.Forms
+Imports System.ComponentModel
 
 Namespace Touryo.Infrastructure.CustomControl.RichClient
     ''' <summary>デザインタイム プロパティ用　パディング指定クラスのコンバータ（テンプレート）</summary>

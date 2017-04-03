@@ -2,43 +2,36 @@
 '* サンプル アプリ画面
 '**********************************************************************************
 
+' テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
 '**********************************************************************************
 '* クラス名        ：Splash
 '* クラス日本語名  ：スプラッシュ画面
 '*
 '* 作成日時        ：－
-'* 作成者          ：sas 生技
+'* 作成者          ：生技
 '* 更新履歴        ：
 '*
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
-'*
 '**********************************************************************************
-
-Imports System
-Imports System.Collections.Generic
-Imports System.ComponentModel
-Imports System.Data
-Imports System.Drawing
-Imports System.Text
-Imports System.Windows.Forms
 
 Imports System.Threading
 
 Imports Touryo.Infrastructure.Public.Log
 
-    ''' <summary>
-    ''' スプラッシュ画面
-    ''' </summary>
-    ''' <remarks>
-    ''' DOBON.NET > プログラミング道 > .NET Tips
-    '''  >  フォーム >  スプラッシュウィンドウを表示する
-    ''' http://dobon.net/vb/dotnet/form/splashwindow.html
-    ''' 
-    ''' ここでは、フレームワークは使用しない。
-    ''' </remarks>
-    Partial Public Class Splash
+''' <summary>
+''' スプラッシュ画面
+''' </summary>
+''' <remarks>
+''' DOBON.NET > プログラミング道 > .NET Tips
+'''  >  フォーム >  スプラッシュウィンドウを表示する
+''' http://dobon.net/vb/dotnet/form/splashwindow.html
+''' 
+''' ここでは、フレームワークは使用しない。
+''' </remarks>
+Partial Public Class Splash
         Inherits Form
         ''' <summary>コンストラクタ</summary>
         Public Sub New()

@@ -1,36 +1,18 @@
 ﻿'**********************************************************************************
-'* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
+'* 非同期処理サービス・サンプル アプリ
 '**********************************************************************************
 
-#Region "Apache License"
-'
-' Licensed under the Apache License, Version 2.0 (the "License");
-' you may not use this file except in compliance with the License. 
-' You may obtain a copy of the License at
-'
-' http://www.apache.org/licenses/LICENSE-2.0
-'
-' Unless required by applicable law or agreed to in writing, software
-' distributed under the License is distributed on an "AS IS" BASIS,
-' WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-' See the License for the specific language governing permissions and
-' limitations under the License.
-'
-#End Region
+' テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
 
 '**********************************************************************************
-'* クラス名            :AssemblyInfo.vb
-'* クラス名クラス名     :
+'* クラス名        ：AssemblyInfo
+'* クラス日本語名  ：AssemblyInfo設定
 '*
-'* 作成者              :Sandeep
-'* クラス日本語名       :
-'* 更新履歴
-'*  Date:        Author:        Comments:
-'*  ----------  -------------  -------------------------------------------------
-'*  11/28/2014   Sandeep       Added AssemblyInfo setting.
+'*  日時        更新者            内容
+'*  ----------  ----------------  -------------------------------------------------
+'*  2015/04/15  Sandeep           Added AssemblyInfo setting.
 '**********************************************************************************
 
-Imports System
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 
@@ -41,10 +23,10 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("TestAsyncSvc_Sample")> 
-<Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("TestAsyncSvc_Sample")> 
-<Assembly: AssemblyCopyright("Copyright (C) 2007,2016 Hitachi Solutions,Ltd.")> 
+<Assembly: AssemblyDescription("")>
+<Assembly: AssemblyCompany("xxxx")>
+<Assembly: AssemblyProduct("TestAsyncSvc_Sample")>
+<Assembly: AssemblyCopyright("Copyright (C) xxxx")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>

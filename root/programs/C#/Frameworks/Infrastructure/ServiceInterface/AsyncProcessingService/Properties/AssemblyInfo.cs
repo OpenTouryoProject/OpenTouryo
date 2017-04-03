@@ -18,19 +18,20 @@
 //
 #endregion
 
-// ************************************************ **********************************
-// * Class name: AssemblyInfo
-// *
-// * Author: AssemblyInfo setting
-// * Update history:
-// *
-// * Date and time update's content
-// * ---------- ---------------- --------------------- -------------------------------
-//*  2015/04/15	 Sandeep         Added AssemblyInfo setting.
+//**********************************************************************************
+//* クラス名        ：AssemblyInfo
+//* クラス日本語名  ：AssemblyInfo
+//*
+//* 作成日時        ：－
+//* 作成者          ：Supragyan
+//* 更新履歴        ：
+//*
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  2015/04/15	 Sandeep           Added AssemblyInfo setting.
 //**********************************************************************************
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -39,7 +40,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("AsyncProcessingService")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Hitachi Solutions")]
 [assembly: AssemblyProduct("AsyncProcessingService")]
 [assembly: AssemblyCopyright("Copyright (C) 2007,2016 Hitachi Solutions,Ltd.")]
 [assembly: AssemblyTrademark("")]

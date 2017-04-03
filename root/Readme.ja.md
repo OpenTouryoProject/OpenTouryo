@@ -23,7 +23,7 @@ Open 棟梁のプログラムは、以下のリポジトリで公開していま
 Open 棟梁に同梱されるサンプルアプリケーションの実行手順は以下のとおりです。
 
 ### 前提ツールのインストール
-あらかじめ、Visual Studio 2010 をインストールしておいてください。
+あらかじめ、Visual Studio 2015 をインストールしておいてください。
 
 また、Open 棟梁がサポートしている以下の DBMS へのデータアクセスクラスの開発・テストを行う場合は、使用する DBMS をインストールしてください。
 - SQL Server  
@@ -106,7 +106,7 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
   </thead>
   <tbody>
     <tr>
-      <td rowspan="15" style="vertical-align: top">C:\root\programs\C#</td><td>1_DeleteDir.bat</td><td>ビルドによってできたフォルダを削除 (クリーン) する。</td><td>○</td><td>○</td>
+      <td rowspan="16" style="vertical-align: top">C:\root\programs\C#</td><td>1_DeleteDir.bat</td><td>ビルドによってできたフォルダを削除 (クリーン) する。</td><td>○</td><td>○</td>
     </tr>
     <tr>
       <td>2_DeleteFile.bat</td><td>一時ファイルなどを削除 (クリーン) する。</td><td>○</td><td>○</td>
@@ -118,13 +118,13 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
       <td>3_Build_PortableClassLibrary.bat</td><td>ポータブルクラスライブラリをビルドする。</td><td>△<span style="color: red"><sup>*1</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>3_Build_RichClientCustomControl.bat</td><td>リッチクライアント用カスタムコントロールをビルドする。</td><td>△<span style="color: red"><sup>*2</sup></span></td><td>△<span style="color: red"><sup>*2</sup></span></td>
+      <td>3_Build_RichClientCustomControl.bat</td><td>リッチクライアント用カスタムコントロールをビルドする。</td><td>△<span style="color: red"><sup>*2</sup></span></td><td></td>
     </tr>
     <tr>
       <td>4_Build_Framework_Tool.bat</td><td>付属ツールをビルドする。</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>5_Build_2CS_sample.bat</td><td>サンプルアプリ (2 層 C/S) をビルドする。</td><td rowspan="9" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>5_Build_2CS_sample.bat</td><td>サンプルアプリ (2 層 C/S) をビルドする。</td><td rowspan="8" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
       <td>5_Build_Bat_sample.bat</td><td>サンプルアプリ (バッチ) をビルドする。</td><td></td>
@@ -143,6 +143,9 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
     </tr>
     <tr>
       <td>10_Build_WebApp_sample.bat</td><td>サンプルアプリ (ASP.NET) をビルドする。</td><td></td>
+    </tr>
+    <tr>
+      <td>11_Build_UWP_sample.bat</td><td>サンプルアプリ (UWP) をビルドする。</td><td></td>
     </tr>
     <tr>
       <td>z_Common.bat</td><td>共通設定 (MSBuild 用)</td><td></td><td></td>
@@ -189,7 +192,7 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
   </tbody>
 </table>
 <div style="font-size: small">
-  <span style="color: red;">*1</span>　Windows ストアアプリを作成する場合は必須<br />
+  <span style="color: red;">*1</span>　Portable Class Libraryを作成する場合は必須<br />
   <span style="color: red;">*2</span>　リッチクライアント アプリケーションを作成する場合は必須<br />
   <span style="color: red;">*3</span>　実際のアプリケーションの形態に応じて選択してください
 </div>
@@ -198,8 +201,12 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
 
 - 必要であれば、環境に合わせて、z_Common.bat 内の BUILDFILEPATH を書き換えてください。  
 
-- ビルド時に以下のエラーが発生した場合は、Windows SDK をインストールしてください。([Open 棟梁の issue](https://github.com/OpenTouryoProject/OpenTouryoTemplates/issues/48#issuecomment-241349223) が参考になります。)  
-なお、どのバージョンの Windows 用の Windows SDK を入れたらよいかは、エラーメッセージから判断できます。例えば、以下のメッセージであれば、「"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\\**v8.0A**\WinSDK-NetFx40Tools-x86" を使用して」とありますので、「Windows 8 用の Windows SDK」をインストールしたらよいことが分かります。
+- Open 棟梁 が利用するライブラリは、NuGet 経由でダウンロードします。このため、プロキシ環境では、正常に NuGet ライブラリがダウンロードできないことがあります。プロキシ環境をお使いの場合は、以下のように http_proxy 環境変数を定義してください。
+    - C:\root\programs\C#\z_Common.bat および C:\root\programs\VB\z_Common.bat を、テキストエディタで開きます。
+    - 既定では、http_proxy 環境変数の定義部分はコメントアウトされていますので、"@rem" を削除して、このコメントを解除します。
+    - http_proxy 環境変数に、お使いのプロキシ情報を設定してください。
+
+- ビルド時に以下のエラーが発生した場合は、Windows 8 用の Windows SDK をインストールしてください。([Open 棟梁の issue](https://github.com/OpenTouryoProject/OpenTouryoTemplates/issues/48#issuecomment-241349223) が参考になります。)
 ```
 C:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(2863,5): error MSB3086: タスクは SdkToolsPath "" またはレジストリ キー "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v8.0A\WinSDK-NetFx40Tools-x86" を使用して "AL.exe"を見つけられませんでした。SdkToolsPath が設定されていること、SdkToolsPath の下の適切なプロセッサ固有の場所にツールが存在すること、および Microsoft Windows SDK がインストールされていることを確認してください。 [C:\root\programs\C#\Frameworks\Infrastructure\Public\Public.csproj]
 ```
@@ -218,22 +225,35 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(2863,5): 
 ログイン画面が出た場合は、任意の英数字を入力してください。(既定ではパスワード認証を行っていません)  
    
 #### Web の場合：
-C:\root\programs\C#\Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln
+- ASP.NET Web Forms  
+  - C:\root\programs\C#\Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln
+  - C:\root\programs\VB\Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln
+- ASP.NET MVC  
+  - C:\root\programs\C#\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
+  - C:\root\programs\VB\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
+- ASP.NET Single Page Application  
+C:\root\programs\C#\Samples\WebApp_sample\SPA_Sample\SPA_Sample.sln
  
 #### C/S 2階層の場合：
 - Windows Forms  
-C:\root\programs\C#\Samples\2CS_sample\2CSClientWin_sample\2CSClientWin_sample.sln
+  - C:\root\programs\C#\Samples\2CS_sample\2CSClientWin_sample\2CSClientWin_sample.sln
+  - C:\root\programs\VB\Samples\2CS_sample\2CSClientWin_sample\2CSClientWin_sample.sln
 - WPF  
-C:\root\programs\C#\Samples\2CS_sample\2CSClientWPF_sample\2CSClientWPF_sample.sln
+  - C:\root\programs\C#\Samples\2CS_sample\2CSClientWPF_sample\2CSClientWPF_sample.sln
+  - C:\root\programs\VB\Samples\2CS_sample\2CSClientWPF_sample\2CSClientWPF_sample.sln
 
 #### C/S 3階層の場合：
 - Windows Forms  
-  - 通常の Windows フォームアプリケーション  
-  C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln
+  - 通常の Windows フォームアプリケーション
+    - C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln
+    - C:\root\programs\VB\Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln
   - ClickOnce アプリケーション  
-  C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSClientWinCone_sample.sln
-- WPF  
-C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
+C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSClientWinCone_sample.sln
+- WPF
+  - C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
+  - C:\root\programs\VB\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
+- UWP  
+C:\root\programs\C#\Samples\UWP_sample\UWP_sample.sln
 
 ### 参考資料
 Open 棟梁をご利用いただくにあたり、OpenTouryoDocument リポジトリのドキュメントをご利用いただけます。

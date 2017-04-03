@@ -27,8 +27,8 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2011/xx/xx  西野  大介        新規作成
-//*  2014/02/05  西野  大介        System.Data.OracleClientデータプロバイダ対応
+//*  2011/xx/xx  西野 大介         新規作成
+//*  2014/02/05  西野 大介         System.Data.OracleClientデータプロバイダ対応
 //**********************************************************************************
 
 using System;
@@ -39,10 +39,10 @@ using System.Data;
 //////////////////////////////////////////////////
 namespace Touryo.Infrastructure.Public.Db
 {
-    ///// <summary>
-    ///// DamOraClientのダミー
-    ///// </summary>
-    //public class DamOraClient { }
+    /// <summary>
+    /// DamOraClientのダミー
+    /// </summary>
+    public class DamOraClient { }
 
     ///// <summary>
     ///// DamOraOdpのダミー
@@ -52,10 +52,10 @@ namespace Touryo.Infrastructure.Public.Db
     //    public int ArrayBindCount;
     //}
 
-    ///// <summary>
-    ///// DamDB2のダミー
-    ///// </summary>
-    //public class DamDB2 { }
+    /// <summary>
+    /// DamDB2のダミー
+    /// </summary>
+    public class DamDB2 { }
 
     /// <summary>
     /// DamHiRDBのダミー
@@ -77,86 +77,86 @@ namespace Touryo.Infrastructure.Public.Db
 // System.Data.OracleClient
 //////////////////////////////////////////////////
 
-//namespace System.Data.OracleClient
-//{
-//    /// <summary>
-//    /// OracleConnectionのダミー
-//    /// </summary>
-//    public class OracleConnection
-//    {
-//        /// <summary>コンストラクタ</summary>
-//        /// <param name="s">接続文字列</param>
-//        public OracleConnection(string s)
-//        {
-//            throw new NotImplementedException("this is dummy.");
-//        }
+namespace System.Data.OracleClient
+{
+    /// <summary>
+    /// OracleConnectionのダミー
+    /// </summary>
+    public class OracleConnection
+    {
+        /// <summary>コンストラクタ</summary>
+        /// <param name="s">接続文字列</param>
+        public OracleConnection(string s)
+        {
+            throw new NotImplementedException("this is dummy.");
+        }
 
-//        /// <summary>Openメソッド</summary>
-//        public void Open()
-//        {
-//            throw new NotImplementedException("this is dummy.");
-//        }
+        /// <summary>Openメソッド</summary>
+        public void Open()
+        {
+            throw new NotImplementedException("this is dummy.");
+        }
 
-//        /// <summary>Closeメソッド</summary>
-//        public void Close()
-//        {
-//            throw new NotImplementedException("this is dummy.");
-//        }
+        /// <summary>Closeメソッド</summary>
+        public void Close()
+        {
+            throw new NotImplementedException("this is dummy.");
+        }
 
-//        /// <summary>GetSchemaメソッド</summary>
-//        public DataTable GetSchema(object o)
-//        {
-//            throw new NotImplementedException("this is dummy.");
-//            //return null;
-//        }
-//    }
+        /// <summary>GetSchemaメソッド</summary>
+        public DataTable GetSchema(object o)
+        {
+            throw new NotImplementedException("this is dummy.");
+            //return null;
+        }
+    }
 
-//    /// <summary>
-//    /// OracleConnectionStringBuilderのダミー
-//    /// </summary>
-//    public class OracleConnectionStringBuilder
-//    {
-//        public string DataSource;
-//        public string UserID;
-//        public string Password;
-//        public string ConnectionString;
-//    }
+    /// <summary>
+    /// OracleConnectionStringBuilderのダミー
+    /// </summary>
+    public class OracleConnectionStringBuilder
+    {
+        public string DataSource;
+        public string UserID;
+        public string Password;
+        public string ConnectionString;
+    }
 
-//    /// <summary>
-//    /// OracleTypeのダミー
-//    /// </summary>
-//    public enum OracleType
-//    {
-//        BFile,
-//        Blob,
-//        Byte,
-//        Char,
-//        Clob,
-//        Cursor,
-//        DateTime,
-//        Double,
-//        Float,
-//        Int16,
-//        Int32,
-//        IntervalDayToSecond,
-//        IntervalYearToMonth,
-//        LongRaw,
-//        LongVarChar,
-//        NChar,
-//        NClob,
-//        Number,
-//        NVarChar,
-//        Raw,
-//        RowId,
-//        SByte,
-//        Timestamp,
-//        TimestampLocal,
-//        TimestampWithTZ,
-//        UInt16,
-//        UInt32,
-//        VarChar
-//    }
-//}
+    /// <summary>
+    /// OracleTypeのダミー
+    /// </summary>
+    public enum OracleType
+    {
+        BFile,
+        Blob,
+        Byte,
+        Char,
+        Clob,
+        Cursor,
+        DateTime,
+        Double,
+        Float,
+        Int16,
+        Int32,
+        IntervalDayToSecond,
+        IntervalYearToMonth,
+        LongRaw,
+        LongVarChar,
+        NChar,
+        NClob,
+        Number,
+        NVarChar,
+        Raw,
+        RowId,
+        SByte,
+        Timestamp,
+        TimestampLocal,
+        TimestampWithTZ,
+        UInt16,
+        UInt32,
+        VarChar
+    }
+}
 
 //////////////////////////////////////////////////
 // Oracle.DataAccess.Client
@@ -247,92 +247,92 @@ namespace Touryo.Infrastructure.Public.Db
 // IBM.Data.DB2
 //////////////////////////////////////////////////
 
-//namespace IBM.Data.DB2
-//{
-//    /// <summary>
-//    /// DB2Connectionのダミー
-//    /// </summary>
-//    public class DB2Connection
-//    {
-//        /// <summary>コンストラクタ</summary>
-//        /// <param name="s">接続文字列</param>
-//        public DB2Connection(string s)
-//        {
-//            throw new NotImplementedException("this is dummy.");
-//        }
+namespace IBM.Data.DB2
+{
+    /// <summary>
+    /// DB2Connectionのダミー
+    /// </summary>
+    public class DB2Connection
+    {
+        /// <summary>コンストラクタ</summary>
+        /// <param name="s">接続文字列</param>
+        public DB2Connection(string s)
+        {
+            throw new NotImplementedException("this is dummy.");
+        }
 
-//        /// <summary>Openメソッド</summary>
-//        public void Open()
-//        {
-//            throw new NotImplementedException("this is dummy.");
-//        }
+        /// <summary>Openメソッド</summary>
+        public void Open()
+        {
+            throw new NotImplementedException("this is dummy.");
+        }
 
-//        /// <summary>Closeメソッド</summary>
-//        public void Close()
-//        {
-//            throw new NotImplementedException("this is dummy.");
-//        }
+        /// <summary>Closeメソッド</summary>
+        public void Close()
+        {
+            throw new NotImplementedException("this is dummy.");
+        }
 
-//        /// <summary>GetSchemaメソッド</summary>
-//        public DataTable GetSchema(object o)
-//        {
-//            throw new NotImplementedException("this is dummy.");
-//            //return null;
-//        }
-//    }
+        /// <summary>GetSchemaメソッド</summary>
+        public DataTable GetSchema(object o)
+        {
+            throw new NotImplementedException("this is dummy.");
+            //return null;
+        }
+    }
 
-//    /// <summary>
-//    /// DB2ConnectionStringBuilderのダミー
-//    /// </summary>
-//    public class DB2ConnectionStringBuilder
-//    {
-//        public string Database;
-//        public string UserID;
-//        public string Password;
-//        public string ConnectionString;
-//    }
+    /// <summary>
+    /// DB2ConnectionStringBuilderのダミー
+    /// </summary>
+    public class DB2ConnectionStringBuilder
+    {
+        public string Database;
+        public string UserID;
+        public string Password;
+        public string ConnectionString;
+    }
 
-//    /// <summary>
-//    /// DB2Typeのダミー
-//    /// </summary>
-//    public enum DB2Type
-//    {
-//        BigInt,
-//        BigSerial,
-//        Binary,
-//        Blob,
-//        Byte,
-//        Char,
-//        Clob,
-//        Date,
-//        DateTime,
-//        DbClob,
-//        Decimal,
-//        DecimalFloat,
-//        Double,
-//        Float,
-//        Graphic,
-//        Integer,
-//        Int8,
-//        LongVarBinary,
-//        LongVarGraphic,
-//        Money,
-//        Numeric,
-//        Real,
-//        Real370,
-//        RowId,
-//        Serial,
-//        Serial8,
-//        SmallInt,
-//        Text,
-//        Time,
-//        Timestamp,
-//        VarBinary,
-//        VarChar,
-//        VarGraphic,
-//        Xml
-//    }
-//}
+    /// <summary>
+    /// DB2Typeのダミー
+    /// </summary>
+    public enum DB2Type
+    {
+        BigInt,
+        BigSerial,
+        Binary,
+        Blob,
+        Byte,
+        Char,
+        Clob,
+        Date,
+        DateTime,
+        DbClob,
+        Decimal,
+        DecimalFloat,
+        Double,
+        Float,
+        Graphic,
+        Integer,
+        Int8,
+        LongVarBinary,
+        LongVarGraphic,
+        Money,
+        Numeric,
+        Real,
+        Real370,
+        RowId,
+        Serial,
+        Serial8,
+        SmallInt,
+        Text,
+        Time,
+        Timestamp,
+        VarBinary,
+        VarChar,
+        VarGraphic,
+        Xml
+    }
+}
 
 //////////////////////////////////////////////////
 // Hitachi.HiRDB

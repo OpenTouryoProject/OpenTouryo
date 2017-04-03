@@ -27,22 +27,18 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2010/03/xx  西野  大介        新規作成
-//*  2010/11/11  前川  祐介        一覧更新処理対応
-//*                                  ・行ステータス
-//*                                  ・メソッド追加
-//*                                    DeleteFromList、Find、ToDataSource
-//*  2010/11/11  前川  祐介        Silverlight対応（ジェネリック）
-//*  2011/10/09  西野  大介        国際化対応
+//*  2010/03/xx  西野 大介         新規作成
+//*  2010/11/11  前川 祐介         一覧更新処理対応
+//*                                ・行ステータス
+//*                                ・メソッド追加
+//*                                  DeleteFromList、Find、ToDataSource
+//*  2010/11/11  前川 祐介         Silverlight対応（ジェネリック）
+//*  2011/10/09  西野 大介         国際化対応
 //**********************************************************************************
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
-// .NET Framework 3.5 以降で開発する場合は
-// 以下の行のコメントを解除できます。
-//using System.Linq;
 
 namespace Touryo.Infrastructure.Public.Dto
 {

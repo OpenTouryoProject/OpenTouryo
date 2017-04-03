@@ -27,39 +27,35 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2009/04/22  西野  大介        新規作成
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2009/04/22  西野 大介         新規作成
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#15 ： XML要素のリテラル化
 //*                                ・#x  ： クライアント証明書対応
 //*                                ・#y  ： 汎用サービスインターフェイスの追加のため
-//*  2009/07/21  西野  大介        コントロール取得処理の仕様変更
-//*  2009/07/31  西野  大介        セッション情報の自動削除機能を追加
-//*  2009/07/31  西野  大介        不正操作の検出機能を追加
-//*  2009/09/15  西野  大介        Webサービス ブリッジ用サービス I/Fを追加
-//*  2010/06/11  西野  大介        共有情報取得機能を追加
-//*  2010/09/20  西野  大介        業務モードレス画面表示時のターゲット指定対応
-//*  2010/09/24  西野  大介        ジェネリック対応（XMLのDictionary化）
+//*  2009/07/21  西野 大介         コントロール取得処理の仕様変更
+//*  2009/07/31  西野 大介         セッション情報の自動削除機能を追加
+//*  2009/07/31  西野 大介         不正操作の検出機能を追加
+//*  2009/09/15  西野 大介         Webサービス ブリッジ用サービス I/Fを追加
+//*  2010/06/11  西野 大介         共有情報取得機能を追加
+//*  2010/09/20  西野 大介         業務モードレス画面表示時のターゲット指定対応
+//*  2010/09/24  西野 大介         ジェネリック対応（XMLのDictionary化）
 //*                                nullチェック方法、Contains → ContainsKeyなどに注意
-//*  2010/10/04  西野  大介        ボタン履歴情報記録機能のON / OFFスイッチ変更
-//*  2010/10/21  西野  大介        幾つかのイベント処理の正式対応（ベースクラス２→１へ）
-//*  2010/10/21  西野  大介        RepeaterコントロールのItemCommandイベント追加
-//*  2011/11/20  西野  大介        リッチクライアント用P層フレームワークを追加
-//*  2011/12/06  西野  大介        非同期処理スレッド数の最大値の定義を追加
-//*  2011/01/18  西野  大介        GridViewコントロールのRowCommand、SelectedIndexChanged、
+//*  2010/10/04  西野 大介         ボタン履歴情報記録機能のON / OFFスイッチ変更
+//*  2010/10/21  西野 大介         幾つかのイベント処理の正式対応（ベースクラス２→１へ）
+//*  2010/10/21  西野 大介         RepeaterコントロールのItemCommandイベント追加
+//*  2011/11/20  西野 大介         リッチクライアント用P層フレームワークを追加
+//*  2011/12/06  西野 大介         非同期処理スレッド数の最大値の定義を追加
+//*  2011/01/18  西野 大介         GridViewコントロールのRowCommand、SelectedIndexChanged、
 //*                                RowUpdating、RowDeleting、PageIndexChanging、Sortingイベントを追加する。
-//*  2011/03/01  西野  大介        Formのキーイベント処理用のP層イベント処理の追加など
-//*  2011/10/09  西野  大介        国際化対応
-//*  2013/12/23  西野  大介        アクセス修飾子をすべてpublicに変更した。
-//*  2014/02/03  西野  大介        国際化対応のスイッチ（app.config）を追加した。
+//*  2011/03/01  西野 大介         Formのキーイベント処理用のP層イベント処理の追加など
+//*  2011/10/09  西野 大介         国際化対応
+//*  2013/12/23  西野 大介         アクセス修飾子をすべてpublicに変更した。
+//*  2014/02/03  西野 大介         国際化対応のスイッチ（app.config）を追加した。
 //*  2014/08/18  Sai-San           Added constants for ListView events and prefix.
 //*  2014/10/03  Rituparna         Added constants for ListView events and prefix for supporting ItemCommand event.
 //*  2014/10/03  Rituparna         Added constants for RadioButtonList,CheckBoxList events and prefix. 
 //*  2015/04/16  Supragyan         Added constants for Textbox events and prefix. 
 //**********************************************************************************
-
-// System
-using System;
-using System.Threading;
 
 namespace Touryo.Infrastructure.Framework.Util
 {
@@ -83,7 +79,7 @@ namespace Touryo.Infrastructure.Framework.Util
         public const string REQUEST_TICKET_GUID_MAX_QUEUE_LENGTH = "FxRequestTicketGuidMaxQueueLength";
 
         ///// <summary>ボタン履歴情報記録機能のON / OFFを設定するキー</summary>
-        //public const string BUTTON_HISTORY_RECORDER = "FxButtonHistoryRecorder";
+        //public const string BUTTON_HISTORY_RECORDER = "FxButtonHistoryRecorder"; // 下記のキュー長で制御
 
         /// <summary>ボタン履歴情報記録機能のキュー長を設定するキー</summary>
         public const string BUTTON_HISTORY_MAX_QUEUE_LENGTH = "FxButtonhistoryMaxQueueLength";
@@ -105,7 +101,7 @@ namespace Touryo.Infrastructure.Framework.Util
 
         /// <summary>画面遷移チェック機能のON / OFFを設定するキー</summary>
         public const string SCREEN_TRANSITION_CHECK = "FxScreenTransitionCheck";
-
+        
         #endregion
 
         #region ダイアログ関係

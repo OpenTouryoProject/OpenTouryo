@@ -1,0 +1,194 @@
+﻿@*
+    //**********************************************************************************
+    //* サンプル アプリ・モデル
+    //**********************************************************************************
+
+    // テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+
+    //**********************************************************************************
+    //* クラス名        ：Index
+    //* クラス日本語名  ：CRUDサンプル（knockout.js）
+    //*
+    //* 作成日時        ：－
+    //* 作成者          ：－
+    //* 更新履歴        ：－
+    //*
+    //*  日時        更新者            内容
+    //*  ----------  ----------------  -------------------------------------------------
+    //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+    //**********************************************************************************
+*@
+
+@{
+    ViewBag.Title = "knockout.js サンプル";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@* スクリプト・セクション（RenderSection("HeaderScriptsSection", required: true)に出力されます） *@
+@section HeaderScriptsSection{
+    <!-- Head 部の section -->
+}
+
+@* 本文レイアウト *@
+<table style="height: 100%; width: 100%">
+    <thead style="visibility: hidden">
+        <tr>
+            <th style="width: 20%"></th>
+            <th style="width: 20%"></th>
+            <th style="width: 20%"></th>
+            <th style="width: 20%"></th>
+            <th style="width: 20%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr style="height: 2%">
+            <td colspan="2">データアクセス制御クラス（データプロバイダ）を選択</td>
+            <td colspan="3" rowspan="15" style="vertical-align: top">
+                <table id="table1" class="table">
+                    <thead>
+                        <tr>
+                            <th style="width: 33%">ShipperID</th>
+                            <th style="width: 33%">CompanyName</th>
+                            <th style="width: 33%">Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultRecords" data-bind="foreach: dataLists">
+                        <tr>
+                            <td data-bind="text: shipperID"></td>
+                            <td data-bind="text: companyName"></td>
+                            <td data-bind="text: phone"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr style="height: 2%">
+            <td colspan="2">
+                <select id="ddlDap" style="height: 100%; width: 100%" 
+                    data-bind="options: ddlDapItems, optionsText: 'displayText', optionsValue: 'value', value: ddlDap">
+                </select>
+            </td>
+        </tr>
+        <tr style="height: 2%">
+            <td colspan="2">静的、動的のクエリ モードを選択（共通Dao選択時）</td>
+        </tr>
+        <tr style="height: 2%">
+            <td colspan="2">
+                <select id="ddlMode1" style="height: 100%; width: 100%" 
+                    data-bind="options: ddlMode1Items, optionsText: 'displayText', optionsValue: 'value', value: ddlMode1">
+                </select>
+            </td>
+        </tr>
+        <tr style="height: 2%">
+            <td colspan="2">静的、動的のクエリ モードを選択</td>
+        </tr>
+        <tr style="height: 2%">
+            <td colspan="2">
+                <select id="ddlMode2" style="height: 100%; width: 100%" 
+                    data-bind="options: ddlMode2Items, optionsText: 'displayText', optionsValue: 'value', value: ddlMode2">
+                </select>
+            </td>
+        </tr>
+        <tr style="height: 2%">
+            <td colspan="2">分離レベルを選択</td>
+        </tr>
+        <tr style="height: 2%">
+            <td colspan="2">
+                <select id="ddlIso" style="height: 100%; width: 100%" disabled="disabled" 
+                    data-bind="options: ddlIsoItems, optionsText: 'displayText', optionsValue: 'value', value: ddlIso">
+                </select>
+            </td>
+        </tr>
+        <tr style="height: 2%">
+            <td colspan="2">コミット、ロールバックを設定（例外発生時、ロールバック）</td>
+        </tr>
+        <tr style="height: 2%">
+            <td colspan="2">
+                <select id="ddlExRollback" style="height: 100%; width: 100%" 
+                    data-bind="options: ddlExRollbackItems, optionsText: 'displayText', optionsValue: 'value', value: ddlExRollback">
+                </select>
+            </td>
+        </tr>
+        <tr style="height: 2%">
+            <td colspan="2">通信制御</td>
+        </tr>
+        <tr style="height: 2%">
+            <td colspan="2">
+                <select id="ddlTransmission" style="height: 100%; width: 100%" disabled="disabled" 
+                    data-bind="options: ddlTransmissionItems, optionsText: 'displayText', optionsValue: 'value', value: ddlTransmission">
+                </select>
+            </td>
+        </tr>
+        <tr style="height: 2%">
+            <td>ShipperId：</td>
+            <td><input type="text" id="textBox1" style="width: 100%; height: 100%" data-bind="value: ShipperId" /></td>
+        </tr>
+        <tr style="height: 2%">
+            <td>CompanyName：</td>
+            <td><input type="text" id="textBox2" style="width: 100%; height: 100%" data-bind="value: CompanyName" /></td>
+        </tr>
+        <tr style="height: 2%">
+            <td>Phone：</td>
+            <td><input type="text" id="textBox3" style="width: 100%; height: 100%" data-bind="value: Phone" /></td>
+        </tr>
+        <tr style="height: 2%">
+            <td>並び替え対象列</td>
+            <td>
+                <select id="ddlOrderColumn" style="height: 100%; width: 100%"
+                    data-bind="options: ddlOrderColumnItems, optionsText: 'displayText', optionsValue: 'value', value: ddlOrderColumn">
+                </select>
+            </td>
+            <td colspan="3"><input type="button" id="button10" value="クリア" style="width: 100%" data-bind="click: ClearList" /></td>
+        </tr>
+        <tr style="height: 2%">
+            <td>昇順・降順</td>
+            <td>
+                <select id="ddlOrderSequence" style="height: 100%; width: 100%"
+                    data-bind="options: ddlOrderSequenceItems, optionsText: 'displayText', optionsValue: 'value', value: ddlOrderSequence">
+                </select>
+            </td>
+        </tr>
+        <tr style="height: 2%">
+            <td>処理結果：</td>
+            <td colspan="4"><input type="text" id="labelMessage" style="width: 100%; height: 100%" data-bind="value: Result" /></td>
+        </tr>
+        <tr style="height: 2%">
+            <td><input type="button" id="button1" value="件数取得" data-bind="click: GetCount" /></td>
+            <td><input type="button" id="button2" value="一覧取得（dt）" data-bind="click: GetList_dt" /></td>
+            <td><input type="button" id="button3" value="一覧取得（ds）" data-bind="click: GetList_ds" /></td>
+            <td><input type="button" id="button4" value="一覧取得（dr）" data-bind="click: GetList_dr" /></td>
+            <td><input type="button" id="button5" value="一覧取得（動的SQL）" data-bind="click: GetList_dsql" /></td>
+        </tr>
+        <tr style="height: 2%">
+            <td><input type="button" id="button6" value="一件参照" data-bind="click: GetDetail" /></td>
+            <td><input type="button" id="button7" value="追加" data-bind="click: InsertRecord" /></td>
+            <td><input type="button" id="button8" value="更新" data-bind="click: UpdateRecord" /></td>
+            <td><input type="button" id="button9" value="削除" data-bind="click: DeleteRecord" /></td>
+        </tr>
+    </tbody>
+</table>
+
+@* モーダルダイアログ *@
+<div class="modal fade" id="modal_box">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-header-danger">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">エラーが発生しました</h4>
+            </div>
+            <div class="modal-body">
+                <p data-bind="text: ErrorMessage">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* スクリプト・セクション（RenderSection("FooterScriptsSection", required: true)に出力されます） *@
+@section FooterScriptsSection{
+    @Scripts.Render("~/bundles/knockoutjs")
+    <script src="~/Scripts/app/Sample1.viewmodel.js"></script>
+    <script type="text/javascript"></script>
+}

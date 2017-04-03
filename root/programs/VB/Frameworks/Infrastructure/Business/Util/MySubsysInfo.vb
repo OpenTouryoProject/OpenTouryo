@@ -30,17 +30,12 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.Collections
-
-' フレームワーク
 Imports Touryo.Infrastructure.Framework.Util
 
 Namespace Touryo.Infrastructure.Business.Util
     ''' <summary>サブシステム情報クラス（使いやすいインデクサを追加）</summary>
     ''' <remarks>自由に（拡張して）利用できる。</remarks>
-    <Serializable()> _
+    <Serializable()>
     Public Class MySubsysInfo
         Inherits SubsysInfo
         ''' <summary>インデクサ</summary>

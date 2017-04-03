@@ -27,7 +27,7 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2008/xx/xx  西野  大介        新規作成
+//*  2008/xx/xx  西野 大介         新規作成
 //*  2014/04/24  Rituparna         Created Resource files for UI language changes and moved the English 
 //*                                and Japanese languages to proper Resouce files.Changed the control size
 //*                                to adjust the text properly in different languages.
@@ -36,36 +36,15 @@
 //*                                the Resource folder.Added proper key and values in those files for English and
 //*                                Japanese languages.
 //*  2014/05/12  Rituparna         Removed <start> and <End> tags
-//*  2014/09/16  西野  大介        Overcoming .NET problem of displaying binary columns in a DataGridView.
+//*  2014/09/16  西野 大介         Overcoming .NET problem of displaying binary columns in a DataGridView.
 //*  2014/09/16  Santosh Avaji     Added Code which is required for Automatic Screen generation for Select join statements
 //**********************************************************************************
 
-// Windowアプリケーション
-using System.Drawing;
-using System.Windows.Forms;
-using System.ComponentModel;
-
-// System
 using System;
-using System.IO;
-using System.Xml;
-using System.Text;
 using System.Data;
 using System.Collections;
-using System.Threading;
-using System.Configuration;
-using System.Globalization;
-
-// 業務フレームワーク（参照しない）
-// フレームワーク（参照しない）
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
 using System.Resources;
+using System.Windows.Forms;
 
 namespace DPQuery_Tool
 {

@@ -16,23 +16,12 @@
 '*
 '**********************************************************************************
 
-' System
-Imports System
-
-' データセット利用
-Imports System.Data
-
-' 業務フレームワーク
 Imports Touryo.Infrastructure.Business.Business
 Imports Touryo.Infrastructure.Business.Dao
 Imports Touryo.Infrastructure.Business.Common
-
-' フレームワーク
 Imports Touryo.Infrastructure.Framework.Business
 Imports Touryo.Infrastructure.Framework.Common
 Imports Touryo.Infrastructure.Framework.Exceptions
-
-' 部品
 Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.Util
 
@@ -352,119 +341,119 @@ Public Class TestMTC
 
         '#Region "DB2"
 
-        damWork = New DamDB2()
+        'damWork = New DamDB2()
 
         '#Region "接続しない"
 
-        BaseLogic.InitDam("XXXX", damWork)
-        Me.SetDam(damWork)
+        'BaseLogic.InitDam("XXXX", damWork)
+        'Me.SetDam(damWork)
 
-        ' なにもしない。
+        '' なにもしない。
 
-        ' プロパティにアクセス（デバッガで確認）
-        idcnn = DirectCast(Me.GetDam(), DamDB2).DamDB2Connection
-        idtx = DirectCast(Me.GetDam(), DamDB2).DamDB2Transaction
+        '' プロパティにアクセス（デバッガで確認）
+        'idcnn = DirectCast(Me.GetDam(), DamDB2).DamDB2Connection
+        'idtx = DirectCast(Me.GetDam(), DamDB2).DamDB2Transaction
 
-        ' nullの時に呼んだ場合。
-        Me.GetDam().CommitTransaction()
-        Me.GetDam().ConnectionClose()
+        '' nullの時に呼んだ場合。
+        'Me.GetDam().CommitTransaction()
+        'Me.GetDam().ConnectionClose()
 
         '#End Region
 
         '#Region "DB2_NT"
 
-        BaseLogic.InitDam("DB2_NT", damWork)
-        Me.SetDam(damWork)
+        'BaseLogic.InitDam("DB2_NT", damWork)
+        'Me.SetDam(damWork)
 
-        ' 行数
-        ' Damを直接使用することもできるが、
-        ' 通常は、データアクセスにはDaoを使用する。        
-        cmnDao = New CmnDao(Me.GetDam())
-        cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS"
-        obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
+        '' 行数
+        '' Damを直接使用することもできるが、
+        '' 通常は、データアクセスにはDaoを使用する。        
+        'cmnDao = New CmnDao(Me.GetDam())
+        'cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS"
+        'obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
 
-        'this.GetDam().CommitTransaction();
-        Me.GetDam().ConnectionClose()
+        ''this.GetDam().CommitTransaction();
+        'Me.GetDam().ConnectionClose()
 
         '#End Region
 
         '#Region "DB2_UC"
 
-        BaseLogic.InitDam("DB2_UC", damWork)
-        Me.SetDam(damWork)
+        'BaseLogic.InitDam("DB2_UC", damWork)
+        'Me.SetDam(damWork)
 
-        ' 行数
-        ' Damを直接使用することもできるが、
-        ' 通常は、データアクセスにはDaoを使用する。        
-        cmnDao = New CmnDao(Me.GetDam())
-        cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS"
-        obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
+        '' 行数
+        '' Damを直接使用することもできるが、
+        '' 通常は、データアクセスにはDaoを使用する。        
+        'cmnDao = New CmnDao(Me.GetDam())
+        'cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS"
+        'obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
 
-        Me.GetDam().CommitTransaction()
-        Me.GetDam().ConnectionClose()
+        'Me.GetDam().CommitTransaction()
+        'Me.GetDam().ConnectionClose()
 
         '#End Region
 
         '#Region "DB2_RC"
 
-        BaseLogic.InitDam("DB2_RC", damWork)
-        Me.SetDam(damWork)
+        'BaseLogic.InitDam("DB2_RC", damWork)
+        'Me.SetDam(damWork)
 
-        ' 行数
-        ' Damを直接使用することもできるが、
-        ' 通常は、データアクセスにはDaoを使用する。        
-        cmnDao = New CmnDao(Me.GetDam())
-        cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS"
-        obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
+        '' 行数
+        '' Damを直接使用することもできるが、
+        '' 通常は、データアクセスにはDaoを使用する。        
+        'cmnDao = New CmnDao(Me.GetDam())
+        'cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS"
+        'obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
 
-        ' プロパティにアクセス（デバッガで確認）
-        idcnn = DirectCast(Me.GetDam(), DamDB2).DamDB2Connection
-        idtx = DirectCast(Me.GetDam(), DamDB2).DamDB2Transaction
-        idcmd = DirectCast(Me.GetDam(), DamDB2).DamDB2Command
-        idapt = DirectCast(Me.GetDam(), DamDB2).DamDB2DataAdapter
-        ds = New DataSet()
-        idapt.Fill(ds)
+        '' プロパティにアクセス（デバッガで確認）
+        'idcnn = DirectCast(Me.GetDam(), DamDB2).DamDB2Connection
+        'idtx = DirectCast(Me.GetDam(), DamDB2).DamDB2Transaction
+        'idcmd = DirectCast(Me.GetDam(), DamDB2).DamDB2Command
+        'idapt = DirectCast(Me.GetDam(), DamDB2).DamDB2DataAdapter
+        'ds = New DataSet()
+        'idapt.Fill(ds)
 
-        Me.GetDam().CommitTransaction()
-        Me.GetDam().ConnectionClose()
+        'Me.GetDam().CommitTransaction()
+        'Me.GetDam().ConnectionClose()
 
-        ' ２連続で呼んだ場合。
-        Me.GetDam().CommitTransaction()
-        Me.GetDam().ConnectionClose()
+        '' ２連続で呼んだ場合。
+        'Me.GetDam().CommitTransaction()
+        'Me.GetDam().ConnectionClose()
 
         '#End Region
 
         '#Region "DB2_RR"
 
-        BaseLogic.InitDam("DB2_RR", damWork)
-        Me.SetDam(damWork)
+        'BaseLogic.InitDam("DB2_RR", damWork)
+        'Me.SetDam(damWork)
 
-        ' 行数
-        ' Damを直接使用することもできるが、
-        ' 通常は、データアクセスにはDaoを使用する。        
-        cmnDao = New CmnDao(Me.GetDam())
-        cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS"
-        obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
+        '' 行数
+        '' Damを直接使用することもできるが、
+        '' 通常は、データアクセスにはDaoを使用する。        
+        'cmnDao = New CmnDao(Me.GetDam())
+        'cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS"
+        'obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
 
-        Me.GetDam().CommitTransaction()
-        Me.GetDam().ConnectionClose()
+        'Me.GetDam().CommitTransaction()
+        'Me.GetDam().ConnectionClose()
 
         '#End Region
 
         '#Region "DB2_SZ"
 
-        BaseLogic.InitDam("DB2_SZ", damWork)
-        Me.SetDam(damWork)
+        'BaseLogic.InitDam("DB2_SZ", damWork)
+        'Me.SetDam(damWork)
 
-        ' 行数
-        ' Damを直接使用することもできるが、
-        ' 通常は、データアクセスにはDaoを使用する。        
-        cmnDao = New CmnDao(Me.GetDam())
-        cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS"
-        obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
+        '' 行数
+        '' Damを直接使用することもできるが、
+        '' 通常は、データアクセスにはDaoを使用する。        
+        'cmnDao = New CmnDao(Me.GetDam())
+        'cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS"
+        'obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
 
-        Me.GetDam().CommitTransaction()
-        Me.GetDam().ConnectionClose()
+        'Me.GetDam().CommitTransaction()
+        'Me.GetDam().ConnectionClose()
 
         '#End Region
 
@@ -476,18 +465,18 @@ Public Class TestMTC
 
         '#Region "DB2_DF"
 
-        BaseLogic.InitDam("DB2_DF", damWork)
-        Me.SetDam(damWork)
+        'BaseLogic.InitDam("DB2_DF", damWork)
+        'Me.SetDam(damWork)
 
-        ' 行数
-        ' Damを直接使用することもできるが、
-        ' 通常は、データアクセスにはDaoを使用する。        
-        cmnDao = New CmnDao(Me.GetDam())
-        cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS"
-        obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
+        '' 行数
+        '' Damを直接使用することもできるが、
+        '' 通常は、データアクセスにはDaoを使用する。        
+        'cmnDao = New CmnDao(Me.GetDam())
+        'cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS"
+        'obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
 
-        Me.GetDam().CommitTransaction()
-        Me.GetDam().ConnectionClose()
+        'Me.GetDam().CommitTransaction()
+        'Me.GetDam().ConnectionClose()
 
         '#End Region
 

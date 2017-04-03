@@ -6,11 +6,6 @@ setlocal
 @echo off
 
 @rem --------------------------------------------------
-@rem Save the value of the PATH environment variable.
-@rem --------------------------------------------------
-set ORG_PATH=%PATH% 
-
-@rem --------------------------------------------------
 @rem Get the path to the executable file.
 @rem --------------------------------------------------
 set CURRENT_DIR="%~dp0"
@@ -37,6 +32,7 @@ pause
 rem --------------------------------------------------
 rem Batch build of Deploy ZipPack With HTTP.
 rem --------------------------------------------------
+..\nuget.exe restore "Frameworks\Tools\DeployZipPackWithHTTP\DeployZipPackWithHTTP.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\DeployZipPackWithHTTP\DeployZipPackWithHTTP.sln"
 
 pause

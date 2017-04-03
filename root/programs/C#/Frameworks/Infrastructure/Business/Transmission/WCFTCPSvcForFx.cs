@@ -30,39 +30,20 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2012/12/17  西野 大介         新規作成
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れた。
 //**********************************************************************************
 
-using System.ServiceModel;
-using System.ServiceModel.Activation;
-
-// System
 using System;
-using System.Xml;
-using System.Data;
-using System.Collections;
+using System.ServiceModel;
+using System.Runtime.ExceptionServices;
 
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
+using Touryo.Infrastructure.Framework.Exceptions;
+using Touryo.Infrastructure.Framework.Common;
+using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Business.Transmission
@@ -124,8 +105,8 @@ namespace Touryo.Infrastructure.Business.Transmission
             object context; // 2009/09/29-この行
 
             // 引数・戻り値の.NETオブジェクト
-            BaseParameterValue parameterValue;
-            BaseReturnValue returnValue;
+            BaseParameterValue parameterValue = null;
+            BaseReturnValue returnValue = null;
 
             // エラー情報（クライアント側で復元するため）
             WSErrorInfo wsErrorInfo = new WSErrorInfo();
@@ -227,8 +208,11 @@ namespace Touryo.Infrastructure.Business.Transmission
                 }
                 catch (System.Reflection.TargetInvocationException rtEx)
                 {
-                    // InnerExceptionを投げなおす。
-                    throw rtEx.InnerException;
+                    //// InnerExceptionを投げなおす。
+                    //throw rtEx.InnerException;
+
+                    // スタックトレースを保って InnerException を throw
+                    ExceptionDispatchInfo.Capture(rtEx.InnerException).Throw();
                 }
                 // #17-end
 

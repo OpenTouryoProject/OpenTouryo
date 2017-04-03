@@ -30,19 +30,8 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.Collections
-Imports System.Collections.Generic
 Imports System.ComponentModel
-Imports System.Drawing
-Imports System.Text
-
-' System.Windows
-Imports System.Windows
 Imports System.Windows.Forms
-
-Imports Touryo.Infrastructure.Public.Str
 
 Namespace Touryo.Infrastructure.CustomControl.RichClient
 	''' <summary>System.Windows.Forms.ComboBoxのカスタム・コントロール</summary>

@@ -28,25 +28,11 @@
 '*
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
-'*  2013/01/10  西野　大介        新規作成
-'*
+'*  2013/01/10  西野 大介         新規作成
+'*  2016/04/21  Shashikiran       Defined new dictionary parameter TargetTableNames for adding the multiple table names 
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.IO
-Imports System.Data
-Imports System.Text
-Imports System.Collections
-Imports System.Collections.Generic
-
-' 業務フレームワーク
 Imports Touryo.Infrastructure.Business.Util
-
-' フレームワーク
-'・・・
-
-' 部品
 Imports Touryo.Infrastructure.Public.Db
 
 Namespace Touryo.Infrastructure.Business.Common

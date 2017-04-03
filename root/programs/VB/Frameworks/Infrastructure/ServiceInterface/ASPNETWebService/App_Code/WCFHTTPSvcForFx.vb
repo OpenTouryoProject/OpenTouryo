@@ -21,7 +21,7 @@
 '**********************************************************************************
 '* クラス名        ：WCFHTTPSvcForFx
 '* クラス日本語名  ：WCF HTTP Webサービス（サービス インターフェイス基盤）
-'*                   .NET言語用のWebメソッド（.NETオブジェクトI/F）を公開する。
+'*                   SOAPの.NETオブジェクトのバイナリ転送用メソッドを公開する。
 '*
 '* 作成日時        ：－
 '* 作成者          ：生技
@@ -30,52 +30,31 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  2012/12/14  西野 大介         新規作成
+'*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れた。
 '**********************************************************************************
 
-Imports System.ServiceModel
-Imports System.ServiceModel.Activation
-
-' System
 Imports System
-Imports System.Xml
-Imports System.Data
-Imports System.Collections
+Imports System.ServiceModel
+Imports System.Runtime.ExceptionServices
 
-' System.Web
-Imports System.Web
-Imports System.Web.Services
-Imports System.Web.Services.Protocols
-
-' 業務フレームワーク
-Imports Touryo.Infrastructure.Business.Common
-Imports Touryo.Infrastructure.Business.Util
-
-' フレームワーク
-Imports Touryo.Infrastructure.Framework.Business
-Imports Touryo.Infrastructure.Framework.Common
-Imports Touryo.Infrastructure.Framework.Dao
-Imports Touryo.Infrastructure.Framework.Exceptions
-Imports Touryo.Infrastructure.Framework.Presentation
-Imports Touryo.Infrastructure.Framework.Util
 Imports Touryo.Infrastructure.Framework.Transmission
+Imports Touryo.Infrastructure.Framework.Exceptions
+Imports Touryo.Infrastructure.Framework.Common
+Imports Touryo.Infrastructure.Framework.Util
 
-' 部品
 Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Log
-Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
 
 Namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
     ' メモ: [リファクター] メニューの [名前の変更] コマンドを使用すると、コード、svc、および config ファイルで同時にクラス名 "WCFSvcForFx" を変更できます。
 
-    '[AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
-
     ''' <summary>
     ''' WCF HTTP Webサービス（サービス インターフェイス基盤）
     ''' .NET言語用のWebメソッド（.NETオブジェクトI/F）を公開する。
-    ''' </summary>
-    <ServiceBehavior()> _
+    ''' </summary> '[AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
+    <ServiceBehavior>
     Public Class WCFHTTPSvcForFx
         Implements IWCFHTTPSvcForFx
 #Region "グローバル変数"
@@ -123,8 +102,8 @@ Namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
             Dim context As Object
             ' 2009/09/29-この行
             ' 引数・戻り値の.NETオブジェクト
-            Dim parameterValue As BaseParameterValue
-            Dim returnValue As BaseReturnValue
+            Dim parameterValue As BaseParameterValue = Nothing
+            Dim returnValue As BaseReturnValue = Nothing
 
             ' エラー情報（クライアント側で復元するため）
             Dim wsErrorInfo As New WSErrorInfo()
@@ -174,38 +153,12 @@ Namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                 ' ★
                 status = FxLiteral.SIF_STATUS_AUTHENTICATION
 
-                ' ★★　コンテキストの情報を使用するなどして
+                ' ★★　contextの情報を使用するなどして
                 '       認証処理をＵＯＣする（必要に応じて）。
 
-                '/ 認証チケットの復号化
-                'string[] authTicket = (string[])BinarySerialize.BytesToObject(
-                '    CustomEncode.FromBase64String(
-                '        SymmetricCryptography.DecryptString(
-                '            (string)context, GetConfigParameter.GetConfigValue("private-key"),
-                '            EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider)));
+                ' 持ち回るならCookieにするか、contextをrefにするなどとする。
+                contextObject = BinarySerialize.ObjectToBytes(DateTime.Now) ' 更新されたかのテストコード
 
-                '/ 認証チケットの整合性を確認
-
-                '/ Ｂ層・Ｄ層呼出し
-                '/   スライディング・タイムアウトの実装、
-                '/   タイムスタンプのチェックと、更新
-                'returnValue = (BaseReturnValue)Latebind.InvokeMethod(
-                '    "xxxx", "yyyy",
-                '    FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME,
-                '    new object[] { new AuthParameterValue("－", "－", "zzzz", "",
-                '        ((MyParameterValue)parameterValue).User, authTicket[1]),
-                '        DbEnum.IsolationLevelEnum.User });
-
-                'if (returnValue.ErrorFlag)
-                '{
-                '    // 認証エラー
-                '    throw new BusinessSystemException("xxxx", "認証チケットが不正か、タイムアウトです。");
-                '}
-
-                ' 持ち回るならCookieにするか、
-                ' contextをrefにするなどとする。
-                contextObject = BinarySerialize.ObjectToBytes(DateTime.Now)
-                ' 更新されたかのテストコード
                 '#End Region
 
                 '#Region "Ｂ層・Ｄ層呼出し"
@@ -221,8 +174,11 @@ Namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                     '    className, FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet);
                     returnValue = DirectCast(Latebind.InvokeMethod(assemblyName, className, FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet), BaseReturnValue)
                 Catch rtEx As System.Reflection.TargetInvocationException
-                    ' InnerExceptionを投げなおす。
-                    Throw rtEx.InnerException
+                    '''/ InnerExceptionを投げなおす。
+                    'throw rtEx.InnerException;
+
+                    ' スタックトレースを保って InnerException を throw
+                    ExceptionDispatchInfo.Capture(rtEx.InnerException).[Throw]()
                 End Try
                 ' #17-end
 
@@ -302,7 +258,10 @@ Namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                 Else
                     ' 終了ログ出力
                     ' 2009/09/15-この行
-                    LogIF.ErrorLog("SERVICE-IF", "異常終了" & "：" & status & vbCr & vbLf & "エラー タイプ：" & errorType & vbCr & vbLf & "エラー メッセージID：" & errorMessageID & vbCr & vbLf & "エラー メッセージ：" & errorMessage & vbCr & vbLf & errorToString & vbCr & vbLf)
+                    LogIF.ErrorLog("SERVICE-IF", "異常終了" & "：" & status & vbCr & vbLf &
+                                   "エラー タイプ：" & errorType & vbCr & vbLf &
+                                   "エラー メッセージID：" & errorMessageID & vbCr & vbLf &
+                                   "エラー メッセージ：" & errorMessage & vbCr & vbLf & errorToString)
                 End If
             End Try
         End Function

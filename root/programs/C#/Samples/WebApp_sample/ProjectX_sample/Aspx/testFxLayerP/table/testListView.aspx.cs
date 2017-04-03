@@ -1,9 +1,11 @@
 ﻿//**********************************************************************************
-//* フレームワーク・テスト画面
+//* フレームワーク・テスト画面（Ｐ層）
 //**********************************************************************************
 
+// テスト画面なので、必要に応じて流用 or 削除して下さい。
+
 //**********************************************************************************
-//* クラス名        ：Aspx_testFxLayerP_table_testListView
+//* クラス名        ：testListView
 //* クラス日本語名  ：ListViewテスト画面（Ｐ層）
 //*
 //* 作成日時        ：－
@@ -17,23 +19,17 @@
 //*  2014/10/03  Rituparna         Added ItemCommandEvent to ListView control
 //**********************************************************************************
 
-// System
 using System;
-using System.Collections.Generic;
-using System.Data;
 using System.IO;
-// System.Web
-
+using System.Data;
+using System.Collections.Generic;
 using System.Web.UI.WebControls;
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Presentation;
+
 using Touryo.Infrastructure.CustomControl;
-// フレームワーク
+using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Framework.Presentation;
 
-// 部品
-
-namespace ProjectX_sample.Aspx.testFxLayerP.table
+namespace ProjectX_sample.Aspx.TestFxLayerP.Table
 {
     /// <summary>ListView test screen (P layer）</summary>
     public partial class testListView : MyBaseController
@@ -43,36 +39,36 @@ namespace ProjectX_sample.Aspx.testFxLayerP.table
         /// <summary>ヘッダーに表示する文字列</summary>
         public Dictionary<string, string> HeaderInfo = new Dictionary<string, string>();
 
-        /// <summary>Page_InitイベントでASP.NET標準イベントハンドラを設定</summary>
+        /// <summary>Page_InitイベントでASP.NET標準Event Handlerを設定</summary>
         protected void Page_Init(object sender, EventArgs e)
         {
         }
 
-        /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：初回Load）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit()
         {
-            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // Form初期化（初回Load）時に実行する処理を実装する
             // TODO:
-            // 初回ロード時に、データソースを
+            // 初回Load時に、データソースを
             // 生成 ＆ データバインドする。
             this.CreateDataSource();
             this.BindListViewData();
         }
 
-        /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：Post Back）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit_PostBack()
         {
-            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // Form初期化（Post Back）時に実行する処理を実装する
             this.CmnInit();
 
             // Radio Buttonの選択状態を出力
             if (Request.Form["radio-grp1"] != null)
             {
-                Response.Write(string.Format(
+                this.lblResult.Text = string.Format(
                         "name=\"radio-grp1\" value=\"{0}\"が選択されました。<br/>",
-                        Request.Form["radio-grp1"].ToString()));
+                        Request.Form["radio-grp1"].ToString());
             }
 
             int i = 0;
@@ -91,8 +87,8 @@ namespace ProjectX_sample.Aspx.testFxLayerP.table
                     // != null
                     if (rbn.Checked)
                     {
-                        Response.Write(string.Format(
-                            "name=\"radio-grp1\" value=\"{0}\"行目が選択されました。<br/>", i.ToString()));
+                        this.lblResult.Text = string.Format(
+                            "name=\"radio-grp1\" value=\"{0}\"行目が選択されました。<br/>", i.ToString());
                     }
                 }
             }
@@ -131,7 +127,6 @@ namespace ProjectX_sample.Aspx.testFxLayerP.table
         #region データソースの生成
 
         /// <summary>DataSourceを生成</summary>
-        /// <returns>Datatableを返す</returns>
         private void CreateDataSource()
         {
             // Server.MapPathはアプリケーション ディレクトリを指す。
@@ -179,12 +174,12 @@ namespace ProjectX_sample.Aspx.testFxLayerP.table
 
         #region 通常のイベント
 
-        /// <summary>btnButton1のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButton1のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton1_Click(FxEventArgs fxEventArgs)
         {
-            // ポストバックをまたいで値が保存されるかの確認
+            // Post Backをまたいで値が保存されるかの確認
             return "";
         }
 
@@ -347,7 +342,7 @@ namespace ProjectX_sample.Aspx.testFxLayerP.table
         }
 
         /// <summary>cbxCheckBox3のCheckedChangedイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_cbxCheckBox3_CheckedChanged(FxEventArgs fxEventArgs)
         {
@@ -364,7 +359,7 @@ namespace ProjectX_sample.Aspx.testFxLayerP.table
         }
 
         /// <summary>ddlDropDownList1のSelectedIndexChangedイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ddlDropDownList1_SelectedIndexChanged(FxEventArgs fxEventArgs)
         {

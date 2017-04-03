@@ -27,108 +27,87 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2007/xx/xx  西野  大介        新規作成
-//*  2008/10/16  西野  大介        問題点の修正
-//*  2008/10/22  西野  大介        問題点の修正
-//*  2008/11/28  西野  大介        問題点の修正
-//*  2009/03/13  西野  大介        機能追加（画面遷移制御機能など）、修正など。
-//*  2009/03/27  西野  大介        Ajax対応（不要なカバレージを実行しないように修正）。
-//*  2009/04/21  西野  大介        FrameworkExceptionの追加に伴い、実装変更
-//*  2009/04/28  西野  大介        デフォルト値を設けた
-//*  2009/05/11  西野  大介        画面遷移制御処理の機能改修（Cmnタグの追加）
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2007/xx/xx  西野 大介         新規作成
+//*  2008/10/16  西野 大介         問題点の修正
+//*  2008/10/22  西野 大介         問題点の修正
+//*  2008/11/28  西野 大介         問題点の修正
+//*  2009/03/13  西野 大介         機能追加（画面遷移制御機能など）、修正など。
+//*  2009/03/27  西野 大介         Ajax対応（不要なカバレージを実行しないように修正）。
+//*  2009/04/21  西野 大介         FrameworkExceptionの追加に伴い、実装変更
+//*  2009/04/28  西野 大介         デフォルト値を設けた
+//*  2009/05/11  西野 大介         画面遷移制御処理の機能改修（Cmnタグの追加）
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#5  ： コントロール数取得処理（デフォルト値不正）
 //*                                ・#22 ： 通過しないカバレッジを削除
 //*                                ・#x  ： QueryString付きのダイアログ起動を可能にした。
 //*                                ・#y  ： クライアント側からのダイアログ起動を可能にした。
 //*                                ・#z  ： Finally節のUOCメソッドを追加した。
-//*  2009/07/21  西野  大介        コントロール取得処理の仕様変更
-//*  2009/07/21  西野  大介        マスタ ページのネストに対応
-//*  2009/07/31  西野  大介        セッション情報の自動削除機能を追加
-//*  2009/07/31  西野  大介        不正操作の検出機能を追加
-//*  2009/08/10  西野  大介        メソッドが無くても例外をスローしないように変更
-//*  2009/08/12  西野  大介        比較演算子の向きを「<」に統一した。
-//*  2009/09/01  西野  大介        コントロール取得処理（イベント設定用）の性能チェック
+//*  2009/07/21  西野 大介         コントロール取得処理の仕様変更
+//*  2009/07/21  西野 大介         マスタ ページのネストに対応
+//*  2009/07/31  西野 大介         セッション情報の自動削除機能を追加
+//*  2009/07/31  西野 大介         不正操作の検出機能を追加
+//*  2009/08/10  西野 大介         メソッドが無くても例外をスローしないように変更
+//*  2009/08/12  西野 大介         比較演算子の向きを「<」に統一した。
+//*  2009/09/01  西野 大介         コントロール取得処理（イベント設定用）の性能チェック
 //*                                問題なかったので、コメントアウト
-//*  2009/09/07  西野  大介        コントロール取得処理（参照取得用）のバグ修正
-//*  2009/09/18  西野  大介        セッション タイム アウト検出用cookieのパス属性を明示
-//*  2009/09/25  西野  大介        セッション ステートレス対応。
-//*  2009/10/15  西野  大介        画面遷移制御機能（遷移＆チェック）の性能チェック
+//*  2009/09/07  西野 大介         コントロール取得処理（参照取得用）のバグ修正
+//*  2009/09/18  西野 大介         セッション タイム アウト検出用cookieのパス属性を明示
+//*  2009/09/25  西野 大介         セッション ステートレス対応。
+//*  2009/10/15  西野 大介         画面遷移制御機能（遷移＆チェック）の性能チェック
 //*                                問題なかったので、コメントアウト（但し、改善の余地有り）
-//*  2009/11/06  西野  大介        画面遷移の性能対策をしてみたが、
+//*  2009/11/06  西野 大介         画面遷移の性能対策をしてみたが、
 //*                                （GetElementById → GetElementsByTagName ＋ ループ)
 //*                                逆に遅くなるので、元に戻した。
 //*                                GetElementByIdには、データ量によらず、
 //*                                大体20msec程度のオーバヘッドがある模様。
-//*  2010/09/20  西野  大介        業務モードレス画面表示時のターゲット指定対応
-//*  2010/09/24  西野  大介        ジェネリック対応（Dictionary、List、Queue、Stack<T>）
+//*  2010/09/20  西野 大介         業務モードレス画面表示時のターゲット指定対応
+//*  2010/09/24  西野 大介         ジェネリック対応（Dictionary、List、Queue、Stack<T>）
 //*                                nullチェック方法、Contains → ContainsKeyなどに注意
-//*  2010/10/04  西野  大介        ボタン履歴情報記録機能のON / OFFスイッチ変更
-//*  2010/10/13  西野  大介        ダイアログ表示で消費ウィンドウGUIDを消費しない仕様に変更
-//*  2010/10/21  西野  大介        幾つかのイベント処理の正式対応（ベースクラス２→１へ）
-//*  2010/10/21  西野  大介        RepeaterコントロールのItemCommandイベントを追加する。
-//*  2010/11/21  西野  大介        集約イベント ハンドラをprotectedに変更（動的追加を考慮）
-//*  2010/12/09  西野  大介        IsNoSession隠しフラグを追加（当該画面でSessionIDを返さない）
-//*  2010/12/10  西野  大介        セッション消去メソッドを追加（IsNoSessionでは解放しない）
-//*  2011/01/14  西野  大介        CanCheckIllegalOperationフラグを追加（当該画面の不正操作動作を変更）
-//*  2011/01/18  西野  大介        GridViewコントロールのRowCommand、SelectedIndexChanged、
+//*  2010/10/04  西野 大介         ボタン履歴情報記録機能のON / OFFスイッチ変更
+//*  2010/10/13  西野 大介         ダイアログ表示で消費ウィンドウGUIDを消費しない仕様に変更
+//*  2010/10/21  西野 大介         幾つかのイベント処理の正式対応（ベースクラス２→１へ）
+//*  2010/10/21  西野 大介         RepeaterコントロールのItemCommandイベントを追加する。
+//*  2010/11/21  西野 大介         集約イベント ハンドラをprotectedに変更（動的追加を考慮）
+//*  2010/12/09  西野 大介         IsNoSession隠しフラグを追加（当該画面でSessionIDを返さない）
+//*  2010/12/10  西野 大介         セッション消去メソッドを追加（IsNoSessionでは解放しない）
+//*  2011/01/14  西野 大介         CanCheckIllegalOperationフラグを追加（当該画面の不正操作動作を変更）
+//*  2011/01/18  西野 大介         GridViewコントロールのRowCommand、SelectedIndexChanged、
 //*                                RowUpdating、RowDeleting、PageIndexChanging、Sortingイベントを追加する。
-//*  2011/01/19  西野  大介        環境変数の組み込み処理に対応
-//*  2011/02/08  西野  大介        マスタ ページ上にイベントハンドラを実装可能にする。
-//*  2011/02/08  西野  大介        ユーザ コントロール上にイベントハンドラを実装可能にする。
-//*  2011/02/10  西野  大介        Clickイベント以外、Repeater、GridViewの
+//*  2011/01/19  西野 大介         環境変数の組み込み処理に対応
+//*  2011/02/08  西野 大介         マスタ ページ上にイベントハンドラを実装可能にする。
+//*  2011/02/08  西野 大介         ユーザ コントロール上にイベントハンドラを実装可能にする。
+//*  2011/02/10  西野 大介         Clickイベント以外、Repeater、GridViewの
 //*                                行数をPostBackValueに含める処理を追加した。
-//*  2011/02/10  西野  大介        GetFileNameNoExメソッドを追加し、処理を共通化。
-//*  2011/05/18  西野  大介        画面遷移制御機能の埋め込まれたリソース対応（Azure対応）
-//*  2012/04/05  西野  大介         \n → \r\n 化
-//*  2012/06/14  西野  大介        コントロール検索の再帰処理性能の集約＆効率化。
-//*  2012/06/18  西野  大介        OriginalStackTrace（ログ出力）の品質向上
-//*  2012/06/18  西野  大介        Screenタグの中にコメントを記述可能にした。
-//*  2014/03/03  西野  大介        ユーザ コントロールのインスタンスの区別。
+//*  2011/02/10  西野 大介         GetFileNameNoExメソッドを追加し、処理を共通化。
+//*  2011/05/18  西野 大介         画面遷移制御機能の埋め込まれたリソース対応（Azure対応）
+//*  2012/04/05  西野 大介         \n → \r\n 化
+//*  2012/06/14  西野 大介         コントロール検索の再帰処理性能の集約＆効率化。
+//*  2012/06/18  西野 大介         OriginalStackTrace（ログ出力）の品質向上
+//*  2012/06/18  西野 大介         Screenタグの中にコメントを記述可能にした。
+//*  2014/03/03  西野 大介         ユーザ コントロールのインスタンスの区別。
 //*  2014/08/18  Sai-San           Added Postback Value, events and event handlers for ListView events.   
 //*  2014/10/03  Rituparna         Added code for Supporting ItemCommand event to ListViewControl. 
 //*  2014/10/03  Rituparna         Added code SelectedIndexChanged for RadiobuttonList and CheckBoxList. 
 //*  2015/04/16  Supragyan         Added TextChanged event for TextBox.
 //*  2016/01/13  Sandeep           Implemented ResolveServerUrl method to resolve URL issue of screen   
-//*                                transition control, display window and error transition control components.  
+//*                                transition control, display window and error transition control components.
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
 //**********************************************************************************
 
-// 処理に必要
-using System.Diagnostics;
-using System.ComponentModel;
-
-// System
 using System;
 using System.Xml;
-using System.Data;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.ExceptionServices;
 
-// System.Web
 using System.Web;
-using System.Web.Security;
-
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 
-// 業務フレームワーク（循環参照になるため、参照しない）
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Presentation
@@ -197,11 +176,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         /// <summary>フレームワークのイベント処理対応コントロールを保持する</summary>
         /// <remarks>画面コード親クラス２から利用する。</remarks>
         protected Dictionary<string, Control> ControlHt = new Dictionary<string, Control>();
-
-        /// <summary>オリジナルのスタックトレース値</summary>
-        /// <remarks>画面コード親クラス２から利用する。</remarks>
-        protected string OriginalStackTrace = "";
-
+        
         #region 画面遷移制御機能
 
         /// <summary>現在の画面（.aspx）の仮想パス</summary>
@@ -2330,10 +2305,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         {
             // UOCメソッドの戻り値、urlを受ける。
             string url = "";
-
-            // オリジナルのスタックトレース値のクリア
-            this.OriginalStackTrace = "";
-
+            
             try
             {
                 /////////////////////////////////////////////////
@@ -2518,11 +2490,8 @@ namespace Touryo.Infrastructure.Framework.Presentation
             }
             catch (System.Reflection.TargetInvocationException rtEx)
             {
-                // InnerExceptionのスタックトレースを保存しておく（以下のリスローで消去されるため）。
-                this.OriginalStackTrace = rtEx.InnerException.StackTrace;
-
-                // InnerExceptionを投げなおす。
-                throw rtEx.InnerException;
+                // スタックトレースを保って InnerException を throw
+                ExceptionDispatchInfo.Capture(rtEx.InnerException).Throw();
             }
 
             return url;
@@ -3849,14 +3818,14 @@ namespace Touryo.Infrastructure.Framework.Presentation
         //* クラス日本語名  ：画面遷移制御クラス
         //*
         //* 作成日時        ：－
-        //* 作成者          ：sas 生技
+        //* 作成者          ：生技
         //* 更新履歴        ：
         //*
         //*  日時        更新者            内容
         //*  ----------  ----------------  -------------------------------------------------
-        //*  2009/03/13  西野  大介        新規作成
-        //*  2009/04/21  西野  大介        FrameworkExceptionの追加に伴い、実装変更
-        //*  2009/06/02  西野  大介        sln - IR版からの修正
+        //*  2009/03/13  西野 大介         新規作成
+        //*  2009/04/21  西野 大介         FrameworkExceptionの追加に伴い、実装変更
+        //*  2009/06/02  西野 大介         sln - IR版からの修正
         //*                                ・#1  ： 画面遷移制御のチェック処理不正（比較対象不正）
         //*                                ・#10 ： 画面遷移制御のmode属性不正時はラベルを組込む
         //*                                ・#14 ： XMLチェック処理追加
@@ -4842,6 +4811,8 @@ namespace Touryo.Infrastructure.Framework.Presentation
         }
 
         #endregion
+
+        #endregion
     }
 }
-        #endregion
+        

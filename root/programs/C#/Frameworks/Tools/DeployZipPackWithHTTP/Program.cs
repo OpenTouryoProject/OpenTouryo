@@ -27,75 +27,65 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2011/04/18  西野  大介        新規作成
-//*  2011/07/01  西野  大介        SelectionCriteriaDlgt2のSplit文字を修正
-//*  2011/07/01  西野  大介        プロキシ設定、プロキシ認証のコードを修正
-//*  2011/07/01  西野  大介        強制モードで、インストール ディレクトリ
+//*  2011/04/18  西野 大介         新規作成
+//*  2011/07/01  西野 大介         SelectionCriteriaDlgt2のSplit文字を修正
+//*  2011/07/01  西野 大介         プロキシ設定、プロキシ認証のコードを修正
+//*  2011/07/01  西野 大介         強制モードで、インストール ディレクトリ
 //*                                の削除処理の前に存在チェックを追加した。
-//*  2011/07/01  西野  大介        マニュフェストの起動exeのチェックエラー処理に
+//*  2011/07/01  西野 大介         マニュフェストの起動exeのチェックエラー処理に
 //*                                MyExceptionが使用されていたところを修正。
-//*  2011/07/01  西野  大介        ZIP部位もマニュフェスト ファイル不正例外を使用
-//*  2011/07/01  西野  大介        コマンドライン引数のハッシュキーを全て大文字化
-//*  2011/07/04  西野  大介        インストール ディレクトリ変更は例外に
-//*  2011/07/04  西野  大介        アンインストール相当の処理コマンドを追加した。
+//*  2011/07/01  西野 大介         ZIP部位もマニュフェスト ファイル不正例外を使用
+//*  2011/07/01  西野 大介         コマンドライン引数のハッシュキーを全て大文字化
+//*  2011/07/04  西野 大介         インストール ディレクトリ変更は例外に
+//*  2011/07/04  西野 大介         アンインストール相当の処理コマンドを追加した。
 //*                                （ZIPを全て消去する方法ではEXE起動で例外になるので）
-//*  2011/07/04  西野  大介        マニュフェスト ファイルのZIPのラインに何も無いとき、
+//*  2011/07/04  西野 大介         マニュフェスト ファイルのZIPのラインに何も無いとき、
 //*                                処理が中断してしまう件を、例外を発生するよう修正
-//*  2011/08/01  西野  大介        /QUIET クワイエット モードを追加した。
-//*  2011/08/01  西野  大介        進捗値の進み具合を調整した。
-//*  2011/08/30  西野  大介        /NB モードを追加した。
-//*  2011/08/30  西野  大介        異常終了時に退避ディレクトリからリカバリ。
-//*  2011/08/30  西野  大介        テンポラリの削除処理を追加した（例外処理を追加）。
-//*  2011/09/01  西野  大介        オープン状態の場合、MyExceptionに振り替える。
-//*  2011/09/01  西野  大介        モジュール比較を大文字化してからに変更。
-//*  2011/09/01  西野  大介        マニュフェストファイルのfinally、Close処理を追加
-//*  2011/09/01  西野  大介        サーバに接続できない場合の例外処理を追加した。
+//*  2011/08/01  西野 大介         /QUIET クワイエット モードを追加した。
+//*  2011/08/01  西野 大介         進捗値の進み具合を調整した。
+//*  2011/08/30  西野 大介         /NB モードを追加した。
+//*  2011/08/30  西野 大介         異常終了時に退避ディレクトリからリカバリ。
+//*  2011/08/30  西野 大介         テンポラリの削除処理を追加した（例外処理を追加）。
+//*  2011/09/01  西野 大介         オープン状態の場合、MyExceptionに振り替える。
+//*  2011/09/01  西野 大介         モジュール比較を大文字化してからに変更。
+//*  2011/09/01  西野 大介         マニュフェストファイルのfinally、Close処理を追加
+//*  2011/09/01  西野 大介         サーバに接続できない場合の例外処理を追加した。
 //*                                接続できない場合でEXE起動する場合はログを出力する。
-//*  2011/09/05  西野  大介        GCするコードを追加→修正（解凍ZIPがCloseされないため）
-//*  2011/09/05  西野  大介        起動プロセスのウィンドウを最前面にする処理を追加
-//*  2011/09/08  西野  大介        リカバリ処理のログ出力位置の変更
+//*  2011/09/05  西野 大介         GCするコードを追加→修正（解凍ZIPがCloseされないため）
+//*  2011/09/05  西野 大介         起動プロセスのウィンドウを最前面にする処理を追加
+//*  2011/09/08  西野 大介         リカバリ処理のログ出力位置の変更
 //*                                （リカバリしない時ログを出力しないよう変更）。
-//*  2011/09/09  西野  大介        先頭部分でインストール ディレクトリの
+//*  2011/09/09  西野 大介         先頭部分でインストール ディレクトリの
 //*                                読み取り専用属性を消去する処理を追加。
-//*  2011/09/12  西野  大介        画面表示せず、ログ出力のみする例外処理方式を追加
-//*  2014/04/26  Sai              Replaced all the Japanese language in both UI and code with ResorceManager.GetString() method call
-//*  2014/05/12  Sai              Removed <start> and <End> tags, added check while reading FxBusinessMessageCulture from app.config file
-//*  2016/01/07  Sandeep          Comment out the DefaultWebProxy property, because there is no use of this property in the component   
+//*  2011/09/12  西野 大介         画面表示せず、ログ出力のみする例外処理方式を追加
+//*  2014/04/26  Sai               Replaced all the Japanese language in both UI and code with ResorceManager.GetString() method call
+//*  2014/05/12  Sai               Removed <start> and <End> tags, added check while reading FxBusinessMessageCulture from app.config file
+//*  2016/01/07  Sandeep           Comment out the DefaultWebProxy property, because there is no use of this property in the component   
 //**********************************************************************************
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-
 using System.IO;
 using System.Net;
-using System.Net.Sockets;
+using System.Text;
+using System.Collections.Generic;
 using System.Threading;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Runtime.InteropServices;
-
-using System.Configuration;
 using System.Globalization;
+using System.Resources;
+using System.Windows.Forms;
 
+using Microsoft.VisualBasic.FileIO;
 using Ionic.Zip;
-using Ionic.Zlib;
 
 using Touryo.Infrastructure.Business.RichClient.Asynchronous;
-using Touryo.Infrastructure.Framework.RichClient.Asynchronous;
 using Touryo.Infrastructure.Framework.Util;
-
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
-using Microsoft.VisualBasic.FileIO;
-using System.Resources;
 
 namespace DeployZipPackWithHTTP
 {

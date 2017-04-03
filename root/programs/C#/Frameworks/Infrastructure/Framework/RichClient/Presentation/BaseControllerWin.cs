@@ -27,61 +27,38 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2010/11/20  西野  大介        新規作成。以後、BaseControllerの実装にあわせエンハンス
-//*  2010/11/21  西野  大介        集約イベント ハンドラをprotectedに変更（動的追加を考慮）
-//*  2010/12/06  西野  大介        メソッドが無い場合、トレースしない仕様に変更
-//*  2010/12/06  西野  大介        ウィンドウ数管理機能の追加
-//*  2011/02/04  西野  大介        ウィンドウ インスタンス管理機能の追加
-//*  2011/02/10  西野  大介        ユーザ コントロール上にイベントハンドラを実装可能にする。
-//*  2011/02/24  西野  大介        ウィンドウ数管理（全Form型、当該Form型）と全Form型追加。
-//*  2011/02/24  西野  大介        多重ロック・アンロック管理のカウンタ、メソッドを追加。
-//*  2011/02/24  西野  大介        主スレッドでロック不要のため、ロックステートメントを削除
-//*  2011/03/01  西野  大介        Formのキーイベント処理用のP層イベント処理の追加したが、
+//*  2010/11/20  西野 大介         新規作成。以後、BaseControllerの実装にあわせエンハンス
+//*  2010/11/21  西野 大介         集約イベント ハンドラをprotectedに変更（動的追加を考慮）
+//*  2010/12/06  西野 大介         メソッドが無い場合、トレースしない仕様に変更
+//*  2010/12/06  西野 大介         ウィンドウ数管理機能の追加
+//*  2011/02/04  西野 大介         ウィンドウ インスタンス管理機能の追加
+//*  2011/02/10  西野 大介         ユーザ コントロール上にイベントハンドラを実装可能にする。
+//*  2011/02/24  西野 大介         ウィンドウ数管理（全Form型、当該Form型）と全Form型追加。
+//*  2011/02/24  西野 大介         多重ロック・アンロック管理のカウンタ、メソッドを追加。
+//*  2011/02/24  西野 大介         主スレッドでロック不要のため、ロックステートメントを削除
+//*  2011/03/01  西野 大介         Formのキーイベント処理用のP層イベント処理の追加したが、
 //*                                （キーイベントを処理するとログが膨大になるので採用見送り）
-//*  2011/03/02  西野  大介        ThreadAbortExceptionのハンドルが冗長であったため削除。
-//*  2011/03/03  西野  大介        FormLoadに対応するCosedの仮想関数イベントハンドラを準備。
-//*  2011/03/08  西野  大介        ウィンドウ管理処理をコンストラクタからLoadイベントへ移動
-//*  2012/06/14  西野  大介        コントロール検索の再帰処理性能の集約＆効率化。
-//*  2012/06/18  西野  大介        OriginalStackTrace（ログ出力）の品質向上
-//*  2012/09/19  西野  大介        UOC_CMNAfterFormInitの追加
-//*  2012/09/19  西野  大介        イベント名不正を修正（EVENT_FORM_LOAD、EVENT_FORM_CLOSED）
-//*  2013/03/05  西野  大介        UOC_CMNAfterFormInit、UOC_CMNAfterFormEndの呼出処理を追加
-//*  2014/03/03  西野  大介        ユーザ コントロールのインスタンスの区別。
+//*  2011/03/02  西野 大介         ThreadAbortExceptionのハンドルが冗長であったため削除。
+//*  2011/03/03  西野 大介         FormLoadに対応するCosedの仮想関数イベントハンドラを準備。
+//*  2011/03/08  西野 大介         ウィンドウ管理処理をコンストラクタからLoadイベントへ移動
+//*  2012/06/14  西野 大介         コントロール検索の再帰処理性能の集約＆効率化。
+//*  2012/06/18  西野 大介         OriginalStackTrace（ログ出力）の品質向上
+//*  2012/09/19  西野 大介         UOC_CMNAfterFormInitの追加
+//*  2012/09/19  西野 大介         イベント名不正を修正（EVENT_FORM_LOAD、EVENT_FORM_CLOSED）
+//*  2013/03/05  西野 大介         UOC_CMNAfterFormInit、UOC_CMNAfterFormEndの呼出処理を追加
+//*  2014/03/03  西野 大介         ユーザ コントロールのインスタンスの区別。
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
 //**********************************************************************************
 
-using System.Reflection;
-
-// System
 using System;
-using System.Xml;
-using System.Data;
-using System.Collections;
 using System.Collections.Generic;
-
-// Windowアプリケーション
-using System.Drawing;
+using System.Runtime.ExceptionServices;
 using System.Windows.Forms;
-using System.ComponentModel;
-
-// 業務フレームワーク（循環参照になるため、参照しない）
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
 
 using Touryo.Infrastructure.Framework.RichClient.Util;
+using Touryo.Infrastructure.Framework.Exceptions;
+using Touryo.Infrastructure.Framework.Util;
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.RichClient.Presentation
 {
@@ -197,11 +174,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
 
         /// <summary>全てのユーザ コントロールを保存するワーク領域</summary>
         protected List<UserControl> LstUserControl = null;
-
-        /// <summary>オリジナルのスタックトレース値</summary>
-        /// <remarks>画面コード親クラス２から利用する。</remarks>
-        protected string OriginalStackTrace = "";
-
+        
         #endregion
 
         #region 多重ロック・アンロック管理
@@ -689,10 +662,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
         {
             // UOCメソッドの戻り値、urlを受ける。
             //string url = "";
-
-            // オリジナルのスタックトレース値のクリア
-            this.OriginalStackTrace = "";
-
+            
             #region メソッドが無ければ、何もしないコードを追加。
 
             // Formをチェック
@@ -816,11 +786,8 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
             }
             catch (System.Reflection.TargetInvocationException rtEx)
             {
-                //InnerExceptionのスタックトレースを保存しておく（以下のリスローで消去されるため）。
-                this.OriginalStackTrace = rtEx.InnerException.StackTrace;
-
-                // InnerExceptionを投げなおす。
-                throw rtEx.InnerException;
+                // スタックトレースを保って InnerException を throw
+                ExceptionDispatchInfo.Capture(rtEx.InnerException).Throw();
             }
 
             //return url;

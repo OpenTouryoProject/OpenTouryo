@@ -15,27 +15,13 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '*
 '**********************************************************************************
-' System
-Imports System
 
-' データセット利用
-Imports System.Data
-
-' 業務フレームワーク
 Imports Touryo.Infrastructure.Business.Business
-Imports Touryo.Infrastructure.Business.Dao
-Imports Touryo.Infrastructure.Business.Common
-
-' フレームワーク
 Imports Touryo.Infrastructure.Framework.Business
 Imports Touryo.Infrastructure.Framework.Common
 Imports Touryo.Infrastructure.Framework.Exceptions
-
-' 部品
 Imports Touryo.Infrastructure.Public.Db
-Imports Touryo.Infrastructure.Public.Util
 
-' MyType
 Imports ProjectX_sample.MyType
 
 ''' <summary>
@@ -86,11 +72,11 @@ Public Class TestMTC_txg
                 tempDam = New DamOraOdp()
                 BaseLogic.InitDam(transactionPatternID, tempDam)
                 Me.SetDam(transactionPatternID, tempDam)
-            ElseIf transactionPatternID.IndexOf("DB2") <> -1 Then
-                ' DamDB2を初期化してセット
-                tempDam = New DamDB2()
-                BaseLogic.InitDam(transactionPatternID, tempDam)
-                Me.SetDam(transactionPatternID, tempDam)
+                'ElseIf transactionPatternID.IndexOf("DB2") <> -1 Then
+                '    ' DamDB2を初期化してセット
+                '    tempDam = New DamDB2()
+                '    BaseLogic.InitDam(transactionPatternID, tempDam)
+                '    Me.SetDam(transactionPatternID, tempDam)
             ElseIf transactionPatternID.IndexOf("MCN") <> -1 Then
                 ' DamMySQLを初期化してセット
                 tempDam = New DamMySQL()

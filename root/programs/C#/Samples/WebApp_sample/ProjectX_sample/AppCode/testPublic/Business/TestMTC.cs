@@ -16,23 +16,15 @@
 //*
 //**********************************************************************************
 
-// System
 using System;
-
-// データセット利用
 using System.Data;
 
-// 業務フレームワーク
 using Touryo.Infrastructure.Business.Business;
 using Touryo.Infrastructure.Business.Dao;
 using Touryo.Infrastructure.Business.Common;
-
-// フレームワーク
 using Touryo.Infrastructure.Framework.Business;
 using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Exceptions;
-
-// 部品
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.Util;
 
@@ -353,119 +345,119 @@ namespace ProjectX_sample
 
             #region DB2
 
-            damWork = new DamDB2();
+            //damWork = new DamDB2();
 
             #region 接続しない
 
-            BaseLogic.InitDam("XXXX", damWork);
-            this.SetDam(damWork);
+            //BaseLogic.InitDam("XXXX", damWork);
+            //this.SetDam(damWork);
 
-            // なにもしない。
+            //// なにもしない。
 
-            // プロパティにアクセス（デバッガで確認）
-            idcnn = ((DamDB2)this.GetDam()).DamDB2Connection;
-            idtx = ((DamDB2)this.GetDam()).DamDB2Transaction;
+            //// プロパティにアクセス（デバッガで確認）
+            //idcnn = ((DamDB2)this.GetDam()).DamDB2Connection;
+            //idtx = ((DamDB2)this.GetDam()).DamDB2Transaction;
 
-            // nullの時に呼んだ場合。
-            this.GetDam().CommitTransaction();
-            this.GetDam().ConnectionClose();
+            //// nullの時に呼んだ場合。
+            //this.GetDam().CommitTransaction();
+            //this.GetDam().ConnectionClose();
 
             #endregion
 
             #region DB2_NT
 
-            BaseLogic.InitDam("DB2_NT", damWork);
-            this.SetDam(damWork);
+            //BaseLogic.InitDam("DB2_NT", damWork);
+            //this.SetDam(damWork);
 
-            // 行数
-            // Damを直接使用することもできるが、
-            // 通常は、データアクセスにはDaoを使用する。        
-            cmnDao = new CmnDao(this.GetDam());
-            cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS";
-            obj = (object)cmnDao.ExecSelectScalar();
+            //// 行数
+            //// Damを直接使用することもできるが、
+            //// 通常は、データアクセスにはDaoを使用する。        
+            //cmnDao = new CmnDao(this.GetDam());
+            //cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS";
+            //obj = (object)cmnDao.ExecSelectScalar();
 
-            //this.GetDam().CommitTransaction();
-            this.GetDam().ConnectionClose();
+            ////this.GetDam().CommitTransaction();
+            //this.GetDam().ConnectionClose();
 
             #endregion
 
             #region DB2_UC
 
-            BaseLogic.InitDam("DB2_UC", damWork);
-            this.SetDam(damWork);
+            //BaseLogic.InitDam("DB2_UC", damWork);
+            //this.SetDam(damWork);
 
-            // 行数
-            // Damを直接使用することもできるが、
-            // 通常は、データアクセスにはDaoを使用する。        
-            cmnDao = new CmnDao(this.GetDam());
-            cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS";
-            obj = (object)cmnDao.ExecSelectScalar();
+            //// 行数
+            //// Damを直接使用することもできるが、
+            //// 通常は、データアクセスにはDaoを使用する。        
+            //cmnDao = new CmnDao(this.GetDam());
+            //cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS";
+            //obj = (object)cmnDao.ExecSelectScalar();
 
-            this.GetDam().CommitTransaction();
-            this.GetDam().ConnectionClose();
+            //this.GetDam().CommitTransaction();
+            //this.GetDam().ConnectionClose();
 
             #endregion
 
             #region DB2_RC
 
-            BaseLogic.InitDam("DB2_RC", damWork);
-            this.SetDam(damWork);
+            //BaseLogic.InitDam("DB2_RC", damWork);
+            //this.SetDam(damWork);
 
-            // 行数
-            // Damを直接使用することもできるが、
-            // 通常は、データアクセスにはDaoを使用する。        
-            cmnDao = new CmnDao(this.GetDam());
-            cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS";
-            obj = (object)cmnDao.ExecSelectScalar();
+            //// 行数
+            //// Damを直接使用することもできるが、
+            //// 通常は、データアクセスにはDaoを使用する。        
+            //cmnDao = new CmnDao(this.GetDam());
+            //cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS";
+            //obj = (object)cmnDao.ExecSelectScalar();
 
-            // プロパティにアクセス（デバッガで確認）
-            idcnn = ((DamDB2)this.GetDam()).DamDB2Connection;
-            idtx = ((DamDB2)this.GetDam()).DamDB2Transaction;
-            idcmd = ((DamDB2)this.GetDam()).DamDB2Command;
-            idapt = ((DamDB2)this.GetDam()).DamDB2DataAdapter;
-            ds = new DataSet();
-            idapt.Fill(ds);
+            //// プロパティにアクセス（デバッガで確認）
+            //idcnn = ((DamDB2)this.GetDam()).DamDB2Connection;
+            //idtx = ((DamDB2)this.GetDam()).DamDB2Transaction;
+            //idcmd = ((DamDB2)this.GetDam()).DamDB2Command;
+            //idapt = ((DamDB2)this.GetDam()).DamDB2DataAdapter;
+            //ds = new DataSet();
+            //idapt.Fill(ds);
 
-            this.GetDam().CommitTransaction();
-            this.GetDam().ConnectionClose();
+            //this.GetDam().CommitTransaction();
+            //this.GetDam().ConnectionClose();
 
-            // ２連続で呼んだ場合。
-            this.GetDam().CommitTransaction();
-            this.GetDam().ConnectionClose();
+            //// ２連続で呼んだ場合。
+            //this.GetDam().CommitTransaction();
+            //this.GetDam().ConnectionClose();
 
             #endregion
 
             #region DB2_RR
 
-            BaseLogic.InitDam("DB2_RR", damWork);
-            this.SetDam(damWork);
+            //BaseLogic.InitDam("DB2_RR", damWork);
+            //this.SetDam(damWork);
 
-            // 行数
-            // Damを直接使用することもできるが、
-            // 通常は、データアクセスにはDaoを使用する。        
-            cmnDao = new CmnDao(this.GetDam());
-            cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS";
-            obj = (object)cmnDao.ExecSelectScalar();
+            //// 行数
+            //// Damを直接使用することもできるが、
+            //// 通常は、データアクセスにはDaoを使用する。        
+            //cmnDao = new CmnDao(this.GetDam());
+            //cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS";
+            //obj = (object)cmnDao.ExecSelectScalar();
 
-            this.GetDam().CommitTransaction();
-            this.GetDam().ConnectionClose();
+            //this.GetDam().CommitTransaction();
+            //this.GetDam().ConnectionClose();
 
             #endregion
 
             #region DB2_SZ
 
-            BaseLogic.InitDam("DB2_SZ", damWork);
-            this.SetDam(damWork);
+            //BaseLogic.InitDam("DB2_SZ", damWork);
+            //this.SetDam(damWork);
 
-            // 行数
-            // Damを直接使用することもできるが、
-            // 通常は、データアクセスにはDaoを使用する。        
-            cmnDao = new CmnDao(this.GetDam());
-            cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS";
-            obj = (object)cmnDao.ExecSelectScalar();
+            //// 行数
+            //// Damを直接使用することもできるが、
+            //// 通常は、データアクセスにはDaoを使用する。        
+            //cmnDao = new CmnDao(this.GetDam());
+            //cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS";
+            //obj = (object)cmnDao.ExecSelectScalar();
 
-            this.GetDam().CommitTransaction();
-            this.GetDam().ConnectionClose();
+            //this.GetDam().CommitTransaction();
+            //this.GetDam().ConnectionClose();
 
             #endregion
 
@@ -477,18 +469,18 @@ namespace ProjectX_sample
 
             #region DB2_DF
 
-            BaseLogic.InitDam("DB2_DF", damWork);
-            this.SetDam(damWork);
+            //BaseLogic.InitDam("DB2_DF", damWork);
+            //this.SetDam(damWork);
 
-            // 行数
-            // Damを直接使用することもできるが、
-            // 通常は、データアクセスにはDaoを使用する。        
-            cmnDao = new CmnDao(this.GetDam());
-            cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS";
-            obj = (object)cmnDao.ExecSelectScalar();
+            //// 行数
+            //// Damを直接使用することもできるが、
+            //// 通常は、データアクセスにはDaoを使用する。        
+            //cmnDao = new CmnDao(this.GetDam());
+            //cmnDao.SQLText = "SELECT COUNT(*) FROM SHIPPERS";
+            //obj = (object)cmnDao.ExecSelectScalar();
 
-            this.GetDam().CommitTransaction();
-            this.GetDam().ConnectionClose();
+            //this.GetDam().CommitTransaction();
+            //this.GetDam().ConnectionClose();
 
             #endregion
 

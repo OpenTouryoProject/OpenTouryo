@@ -2,25 +2,26 @@
 //* サンプル アプリ
 //**********************************************************************************
 
+// テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
 //**********************************************************************************
 //* クラス名        ：Program
 //* クラス日本語名  ：アプリケーションのメイン エントリ ポイント
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
-//*
 //**********************************************************************************
 
 using System;
-using System.Collections.Generic;
+using System.Threading;
 using System.Windows.Forms;
 
-using System.Threading;
+using Touryo.Infrastructure.Business.RichClient.Util;
 
 namespace _2CSClientWin_sample
 {
@@ -93,7 +94,7 @@ namespace _2CSClientWin_sample
         /// </summary>
         public static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            ShowErrorMessage(e.Exception, "Application_ThreadExceptionによる例外通知です。");
+            RcMyCmnFunction.ShowErrorMessageWin(e.Exception, "Application_ThreadExceptionによる例外通知です。");
         }
 
         /// <summary>
@@ -107,19 +108,8 @@ namespace _2CSClientWin_sample
             Exception ex = e.ExceptionObject as Exception;
             if (ex != null)
             {
-                ShowErrorMessage(ex, "Application_UnhandledExceptionによる例外通知です。");
+                RcMyCmnFunction.ShowErrorMessageWin(ex, "Application_UnhandledExceptionによる例外通知です。");
             }
-        }
-
-        /// <summary>
-        /// ユーザー・フレンドリなダイアログを表示するメソッド
-        /// </summary>
-        public static void ShowErrorMessage(Exception ex, string extraMessage)
-        {
-            MessageBox.Show(extraMessage + " \r\n――――――――\r\n\r\n" +
-              "エラーが発生しました。開発元にお知らせください\r\n\r\n" +
-              "【エラー内容】\r\n" + ex.Message + "\r\n\r\n" +
-              "【スタックトレース】\r\n" + ex.StackTrace);
         }
     }
 }

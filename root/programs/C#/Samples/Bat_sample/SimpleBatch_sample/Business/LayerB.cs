@@ -2,57 +2,30 @@
 //* フレームワーク・テストクラス（Ｂ層）
 //**********************************************************************************
 
+// テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
 //**********************************************************************************
 //* クラス名        ：LayerB
 //* クラス日本語名  ：Ｂ層のテスト
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
-//*
 //**********************************************************************************
 
-// 型情報
 using SimpleBatch_sample.Common;
-
-// Ｄ層
 using SimpleBatch_sample.Dao;
 
-// System
 using System;
-using System.IO;
 using System.Data;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
 
-// 業務フレームワーク
 using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
 
 namespace SimpleBatch_sample.Business
 {
@@ -68,7 +41,7 @@ namespace SimpleBatch_sample.Business
         private void UOC_メソッド名(TestParameterValue testParameter)
         { //メソッド引数にBaseParameterValueの派生の型を定義可能。
 
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -95,7 +68,7 @@ namespace SimpleBatch_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_SelectCount(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -158,7 +131,7 @@ namespace SimpleBatch_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_SelectAll_DT(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -231,7 +204,7 @@ namespace SimpleBatch_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_SelectAll_DS(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -305,7 +278,7 @@ namespace SimpleBatch_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_SelectAll_DR(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -336,9 +309,9 @@ namespace SimpleBatch_sample.Business
                     dt = new DataTable();
 
                     // ３列生成
-                    dt.Columns.Add("c1", System.Type.GetType("System.String"));
-                    dt.Columns.Add("c2", System.Type.GetType("System.String"));
-                    dt.Columns.Add("c3", System.Type.GetType("System.String"));
+                    dt.Columns.Add("c1", typeof(string));
+                    dt.Columns.Add("c2", typeof(string));
+                    dt.Columns.Add("c3", typeof(string));
 
                     // 共通Daoを実行
                     IDataReader idr = cmnDao.ExecSelect_DR();
@@ -401,7 +374,7 @@ namespace SimpleBatch_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_SelectAll_DSQL(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -499,7 +472,7 @@ namespace SimpleBatch_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_Select(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -611,7 +584,7 @@ namespace SimpleBatch_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_Insert(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -671,7 +644,7 @@ namespace SimpleBatch_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_Update(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 
@@ -744,7 +717,7 @@ namespace SimpleBatch_sample.Business
         /// <param name="testParameter">引数クラス</param>
         private void UOC_Delete(TestParameterValue testParameter)
         {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
+            // 戻り値クラスを生成して、事前に戻り値に設定しておく。
             TestReturnValue testReturn = new TestReturnValue();
             this.ReturnValue = testReturn;
 

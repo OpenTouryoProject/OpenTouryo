@@ -1,9 +1,11 @@
 ﻿//**********************************************************************************
-//* フレームワーク・テスト画面
+//* フレームワーク・テスト画面（Ｐ層）
 //**********************************************************************************
 
+// テスト画面なので、必要に応じて流用 or 削除して下さい。
+
 //**********************************************************************************
-//* クラス名        ：Aspx_testFxLayerP_normal_testScreen1nest
+//* クラス名        ：testScreen1nest
 //* クラス日本語名  ：テスト画面１のネスト版（Ｐ層）
 //*
 //* 作成日時        ：－
@@ -15,59 +17,33 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-// System
 using System;
 using System.IO;
-using System.Data;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
-
-// System.Web
-using System.Web;
-using System.Web.Security;
 
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
 using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Presentation;
+using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
-namespace ProjectX_sample.Aspx.testFxLayerP.nest
+namespace ProjectX_sample.Aspx.TestFxLayerP.Nest
 {
     /// <summary>テスト画面１のネスト版（Ｐ層）</summary>
     public partial class testScreen1nest : MyBaseController
     {
-        #region ページロードのUOCメソッド
+        /// <summary>二重送信防止機能の確認用</summary>
+        private int SleepCnt = 5000;
 
-        /// <summary>ページロードのUOCメソッド（個別：初回ロード）</summary>
+        #region Page LoadのUOCメソッド
+
+        /// <summary>Page LoadのUOCメソッド（個別：初回Load）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit()
         {
-            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // Form初期化（初回Load）時に実行する処理を実装する
             // TODO:
             Response.Write(this.ContentPageFileNoEx + "<br/>");
 
@@ -80,91 +56,91 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
             Response.Write(qs);
         }
 
-        /// <summary>ページロードのUOCメソッド（個別：ポストバック）</summary>
+        /// <summary>Page LoadのUOCメソッド（個別：Post Back）</summary>
         /// <remarks>実装必須</remarks>
         protected override void UOC_FormInit_PostBack()
         {
-            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // Form初期化（Post Back）時に実行する処理を実装する
             // TODO:
 
         }
 
         #endregion
 
-        #region マスタ ページ上のフレームワーク対象コントロール
+        #region Master Page上のフレームワーク対象Control
 
-        #region 既存のルートのマスタ ページ上のフレームワーク対象コントロール
+        #region 既存のルートのMaster Page上のフレームワーク対象Control
 
         #region 基本処理
 
         /// <summary>
-        /// btnMButton21のクリックイベント
+        /// btnMButton21のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_TestScreen1_btnMButton21_Click(FxEventArgs fxEventArgs)
         {
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                fxEventArgs.ButtonID + "クリック イベント",
+                fxEventArgs.ButtonID + "Click イベント",
                 fxEventArgs.MethodName + "の実行",
                 FxEnum.IconType.Information, "テスト結果");
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// lbnMLinkButton21のクリックイベント
+        /// lbnMLinkButton21のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_TestScreen1_lbnMLinkButton21_Click(FxEventArgs fxEventArgs)
         {
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                fxEventArgs.ButtonID + "クリック イベント",
+                fxEventArgs.ButtonID + "Click イベント",
                 fxEventArgs.MethodName + "の実行",
                 FxEnum.IconType.Information, "テスト結果");
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// ibnMImageButton21のクリックイベント
+        /// ibnMImageButton21のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_TestScreen1_ibnMImageButton21_Click(FxEventArgs fxEventArgs)
         {
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                fxEventArgs.ButtonID + "クリック イベント",
+                fxEventArgs.ButtonID + "Click イベント",
                 fxEventArgs.MethodName + "の実行 - " +
                 "x:" + fxEventArgs.X.ToString() +
                 ",y:" + fxEventArgs.Y.ToString(),
                 FxEnum.IconType.Information, "テスト結果");
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// impMImageMap21のクリックイベント
+        /// impMImageMap21のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_TestScreen1_impMImageMap21_Click(FxEventArgs fxEventArgs)
         {
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                fxEventArgs.ButtonID + "クリック イベント",
+                fxEventArgs.ButtonID + "Click イベント",
                 fxEventArgs.MethodName + "の実行 - " +
                 "pbv:" + fxEventArgs.PostBackValue,
                 FxEnum.IconType.Information, "テスト結果");
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
@@ -173,9 +149,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         #region 画面遷移処理
 
         /// <summary>
-        /// btnMButton22のクリックイベント
+        /// btnMButton22のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_TestScreen1_btnMButton22_Click(FxEventArgs fxEventArgs)
         {
@@ -183,9 +159,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// lbnMLinkButton22のクリックイベント
+        /// lbnMLinkButton22のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_TestScreen1_lbnMLinkButton22_Click(FxEventArgs fxEventArgs)
         {
@@ -193,9 +169,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// ibnMImageButton22のクリックイベント
+        /// ibnMImageButton22のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_TestScreen1_ibnMImageButton22_Click(FxEventArgs fxEventArgs)
         {
@@ -203,9 +179,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// impMImageMap2のクリックイベント
+        /// impMImageMap2のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_TestScreen1_impMImageMap22_Click(FxEventArgs fxEventArgs)
         {
@@ -214,26 +190,26 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
 
         #endregion
 
-        #region コントロール取得
+        #region Control取得
 
         /// <summary>
-        /// btnMButton23のクリックイベント
+        /// btnMButton23のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_TestScreen1_btnMButton23_Click(FxEventArgs fxEventArgs)
         {
-            // コントロールを取得し
+            // Controlを取得し
             Control temp = (Control)this.GetFxWebControl(((TextBox)this.GetMasterWebControl("TextBox4")).Text);
 
             if (temp == null)
             {
                 // 取得できなかった
 
-                // メッセージ表示
+                // Message表示
                 this.ShowOKMessageDialog(
                     "GetFxWebControl",
-                    "コントロールを取得できませんでした。",
+                    "Controlを取得できませんでした。",
                     FxEnum.IconType.Information, "テスト結果");
             }
             else
@@ -255,23 +231,23 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// lbnMLinkButton23のクリックイベント
+        /// lbnMLinkButton23のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_TestScreen1_lbnMLinkButton23_Click(FxEventArgs fxEventArgs)
         {
-            // コントロールを取得し
+            // Controlを取得し
             Control temp = (Control)this.GetMasterWebControl(((TextBox)this.GetMasterWebControl("TextBox4")).Text);
 
             if (temp == null)
             {
                 // 取得できなかった
 
-                // メッセージ表示
+                // Message表示
                 this.ShowOKMessageDialog(
                     "GetMasterWebControl",
-                    "コントロールを取得できませんでした。",
+                    "Controlを取得できませんでした。",
                     FxEnum.IconType.Information, "テスト結果");
             }
             else
@@ -293,23 +269,23 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// ibnMImageButton23のクリックイベント
+        /// ibnMImageButton23のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_TestScreen1_ibnMImageButton23_Click(FxEventArgs fxEventArgs)
         {
-            // コントロールを取得し
+            // Controlを取得し
             Control temp = (Control)this.GetContentWebControl(((TextBox)this.GetMasterWebControl("TextBox4")).Text);
 
             if (temp == null)
             {
                 // 取得できなかった
 
-                // メッセージ表示
+                // Message表示
                 this.ShowOKMessageDialog(
                     "GetContentWebControl",
-                    "コントロールを取得できませんでした。",
+                    "Controlを取得できませんでした。",
                     FxEnum.IconType.Information, "テスト結果");
             }
             else
@@ -332,12 +308,12 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
 
         #endregion
 
-        #region ダイアログ表示
+        #region Dialog表示
 
         /// <summary>
-        /// btnMButton24のクリックイベント
+        /// btnMButton24のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_TestScreen1_btnMButton24_Click(FxEventArgs fxEventArgs)
         {
@@ -351,14 +327,14 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
             {
                 // スタイル指定あり
                 this.ShowOKMessageDialog(
-                    "メッセージＩＤ", "メッセージ：" + msg,
+                    "MessageID", "Message：" + msg,
                     FxEnum.IconType.Information, "テスト", style);
             }
             else
             {
                 // スタイル指定なし
                 this.ShowOKMessageDialog(
-                    "メッセージＩＤ", "メッセージ：" + msg,
+                    "MessageID", "Message：" + msg,
                     FxEnum.IconType.Information, "テスト");
             }
 
@@ -366,9 +342,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// lbnMLinkButton24のクリックイベント
+        /// lbnMLinkButton24のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_TestScreen1_lbnMLinkButton24_Click(FxEventArgs fxEventArgs)
         {
@@ -382,25 +358,25 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
             {
                 // スタイル指定あり
                 this.ShowYesNoMessageDialog(
-                    "メッセージＩＤ", "メッセージ：" + msg,
-                    "ダイアログ表示テスト",
+                    "MessageID", "Message：" + msg,
+                    "Dialog表示テスト",
                     style);
             }
             else
             {
                 // スタイル指定なし
                 this.ShowYesNoMessageDialog(
-                    "メッセージＩＤ", "メッセージ：" + msg,
-                    "ダイアログ表示テスト");
+                    "MessageID", "Message：" + msg,
+                    "Dialog表示テスト");
             }
 
             return "";
         }
 
         /// <summary>
-        /// ibnMImageButton24のクリックイベント
+        /// ibnMImageButton24のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_TestScreen1_ibnMImageButton24_Click(FxEventArgs fxEventArgs)
         {
@@ -422,22 +398,22 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
             {
                 // スタイル指定あり
                 // 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
-                this.ShowModalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx", style);
+                this.ShowModalScreen("~/Aspx/TestFxLayerP/Nest/testScreen1nest.aspx", style);
             }
             else
             {
                 // スタイル指定なし
                 // 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
-                this.ShowModalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx");
+                this.ShowModalScreen("~/Aspx/TestFxLayerP/Nest/testScreen1nest.aspx");
             }
 
             return "";
         }
 
         /// <summary>
-        /// impMImageMap24のクリックイベント
+        /// impMImageMap24のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_TestScreen1_impMImageMap24_Click(FxEventArgs fxEventArgs)
         {
@@ -447,12 +423,12 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
             if (((CheckBox)this.GetMasterWebControl("CheckBox2")).Checked == true)
             {
                 // スタイル指定あり
-                this.ShowNormalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx", style);
+                this.ShowNormalScreen("~/Aspx/TestFxLayerP/Nest/testScreen1nest.aspx", style);
             }
             else
             {
                 // スタイル指定なし
-                this.ShowNormalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx");
+                this.ShowNormalScreen("~/Aspx/TestFxLayerP/Nest/testScreen1nest.aspx");
             }
 
             return "";
@@ -462,58 +438,58 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
 
         #endregion
 
-        #region 追加のブランチのマスタ ページ上のフレームワーク対象コントロール
+        #region 追加のブランチのMaster Page上のフレームワーク対象Control
 
         #region testScreen1bmp1.master上
 
         /// <summary>
-        /// btnCPF_Aのクリックイベント
+        /// btnCPF_AのClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_testScreen1bmp1_btnCPF_A_Click(FxEventArgs fxEventArgs)
         {
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                fxEventArgs.ButtonID + "クリック イベント",
+                fxEventArgs.ButtonID + "Click イベント",
                 fxEventArgs.MethodName + "の実行",
                 FxEnum.IconType.Information, "テスト結果");
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// btnCPF_Bのクリックイベント
+        /// btnCPF_BのClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_testScreen1bmp1_btnCPF_B_Click(FxEventArgs fxEventArgs)
         {
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                fxEventArgs.ButtonID + "クリック イベント",
+                fxEventArgs.ButtonID + "Click イベント",
                 fxEventArgs.MethodName + "の実行",
                 FxEnum.IconType.Information, "テスト結果");
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// btnCPF_Cのクリックイベント
+        /// btnCPF_CのClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_testScreen1bmp1_btnCPF_C_Click(FxEventArgs fxEventArgs)
         {
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                fxEventArgs.ButtonID + "クリック イベント",
+                fxEventArgs.ButtonID + "Click イベント",
                 fxEventArgs.MethodName + "の実行",
                 FxEnum.IconType.Information, "テスト結果");
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
@@ -522,53 +498,53 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         #region testScreen1bmp2.master上
 
         /// <summary>
-        /// btnCPF_A1のクリックイベント
+        /// btnCPF_A1のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_testScreen1bmp2_btnCPF_A1_Click(FxEventArgs fxEventArgs)
         {
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                fxEventArgs.ButtonID + "クリック イベント",
+                fxEventArgs.ButtonID + "Click イベント",
                 fxEventArgs.MethodName + "の実行",
                 FxEnum.IconType.Information, "テスト結果");
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// btnCPF_B1のクリックイベント
+        /// btnCPF_B1のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_testScreen1bmp2_btnCPF_B1_Click(FxEventArgs fxEventArgs)
         {
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                fxEventArgs.ButtonID + "クリック イベント",
+                fxEventArgs.ButtonID + "Click イベント",
                 fxEventArgs.MethodName + "の実行",
                 FxEnum.IconType.Information, "テスト結果");
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// btnCPF_C1のクリックイベント
+        /// btnCPF_C1のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_testScreen1bmp2_btnCPF_C1_Click(FxEventArgs fxEventArgs)
         {
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                fxEventArgs.ButtonID + "クリック イベント",
+                fxEventArgs.ButtonID + "Click イベント",
                 fxEventArgs.MethodName + "の実行",
                 FxEnum.IconType.Information, "テスト結果");
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
@@ -578,80 +554,80 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
 
         #endregion
 
-        #region コンテンツ ページ上のフレームワーク対象コントロール
+        #region Content Page上のフレームワーク対象Control
 
-        #region コンテンツ ページ１
+        #region Content Page１
 
         #region 基本処理
 
         /// <summary>
-        /// btnButton1のクリックイベント
+        /// btnButton1のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton1_Click(FxEventArgs fxEventArgs)
         {
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                fxEventArgs.ButtonID + "クリック イベント",
+                fxEventArgs.ButtonID + "Click イベント",
                 fxEventArgs.MethodName + "の実行",
                 FxEnum.IconType.Information, "テスト結果");
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// lbnLinkButton1のクリックイベント
+        /// lbnLinkButton1のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_lbnLinkButton1_Click(FxEventArgs fxEventArgs)
         {
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                fxEventArgs.ButtonID + "クリック イベント",
+                fxEventArgs.ButtonID + "Click イベント",
                 fxEventArgs.MethodName + "の実行",
                 FxEnum.IconType.Information, "テスト結果");
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// ibnImageButton1のクリックイベント
+        /// ibnImageButton1のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ibnImageButton1_Click(FxEventArgs fxEventArgs)
         {
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                fxEventArgs.ButtonID + "クリック イベント",
+                fxEventArgs.ButtonID + "Click イベント",
                 fxEventArgs.MethodName + "の実行 - " +
                 "x:" + fxEventArgs.X.ToString() +
                 ",y:" + fxEventArgs.Y.ToString(),
                 FxEnum.IconType.Information, "テスト結果");
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
         /// <summary>
-        /// impImageMap1のクリックイベント
+        /// impImageMap1のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_impImageMap1_Click(FxEventArgs fxEventArgs)
         {
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                fxEventArgs.ButtonID + "クリック イベント",
+                fxEventArgs.ButtonID + "Click イベント",
                 fxEventArgs.MethodName + "の実行 - " +
                 "pbv:" + fxEventArgs.PostBackValue,
                 FxEnum.IconType.Information, "テスト結果");
 
-            // 画面遷移しないポストバックの場合は、urlを空文字列に設定する
+            // 画面遷移しないPost Backの場合は、urlを空文字列に設定する
             return "";
         }
 
@@ -660,9 +636,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         #region 画面遷移処理
 
         /// <summary>
-        /// btnButton2のクリックイベント
+        /// btnButton2のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
         {
@@ -670,9 +646,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// lbnLinkButton2のクリックイベント
+        /// lbnLinkButton2のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_lbnLinkButton2_Click(FxEventArgs fxEventArgs)
         {
@@ -680,9 +656,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// ibnImageButton2のクリックイベント
+        /// ibnImageButton2のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ibnImageButton2_Click(FxEventArgs fxEventArgs)
         {
@@ -690,9 +666,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// impImageMap2のクリックイベント
+        /// impImageMap2のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_impImageMap2_Click(FxEventArgs fxEventArgs)
         {
@@ -701,26 +677,26 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
 
         #endregion
 
-        #region コントロール取得
+        #region Control取得
 
         /// <summary>
-        /// btnButton3のクリックイベント
+        /// btnButton3のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton3_Click(FxEventArgs fxEventArgs)
         {
-            // コントロールを取得し
+            // Controlを取得し
             Control temp = (Control)this.GetFxWebControl(this.TextBox1.Text);
 
             if (temp == null)
             {
                 // 取得できなかった
 
-                // メッセージ表示
+                // Message表示
                 this.ShowOKMessageDialog(
                     "GetFxWebControl",
-                    "コントロールを取得できませんでした。",
+                    "Controlを取得できませんでした。",
                     FxEnum.IconType.Information, "テスト結果");
             }
             else
@@ -742,23 +718,23 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// lbnLinkButton3のクリックイベント
+        /// lbnLinkButton3のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_lbnLinkButton3_Click(FxEventArgs fxEventArgs)
         {
-            // コントロールを取得し
+            // Controlを取得し
             Control temp = (Control)this.GetMasterWebControl(this.TextBox1.Text);
 
             if (temp == null)
             {
                 // 取得できなかった
 
-                // メッセージ表示
+                // Message表示
                 this.ShowOKMessageDialog(
                     "GetMasterWebControl",
-                    "コントロールを取得できませんでした。",
+                    "Controlを取得できませんでした。",
                     FxEnum.IconType.Information, "テスト結果");
             }
             else
@@ -780,23 +756,23 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// ibnImageButton3のクリックイベント
+        /// ibnImageButton3のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ibnImageButton3_Click(FxEventArgs fxEventArgs)
         {
-            // コントロールを取得し
+            // Controlを取得し
             Control temp = (Control)this.GetContentWebControl(this.TextBox1.Text);
 
             if (temp == null)
             {
                 // 取得できなかった
 
-                // メッセージ表示
+                // Message表示
                 this.ShowOKMessageDialog(
                     "GetContentWebControl",
-                    "コントロールを取得できませんでした。",
+                    "Controlを取得できませんでした。",
                     FxEnum.IconType.Information, "テスト結果");
             }
             else
@@ -819,12 +795,12 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
 
         #endregion
 
-        #region ダイアログ表示
+        #region Dialog表示
 
         /// <summary>
-        /// btnButton4のクリックイベント
+        /// btnButton4のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton4_Click(FxEventArgs fxEventArgs)
         {
@@ -838,14 +814,14 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
             {
                 // スタイル指定あり
                 this.ShowOKMessageDialog(
-                    "メッセージＩＤ", "メッセージ：" + msg,
+                    "MessageID", "Message：" + msg,
                     FxEnum.IconType.Information, "テスト", style);
             }
             else
             {
                 // スタイル指定なし
                 this.ShowOKMessageDialog(
-                    "メッセージＩＤ", "メッセージ：" + msg,
+                    "MessageID", "Message：" + msg,
                     FxEnum.IconType.Information, "テスト");
             }
 
@@ -853,9 +829,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// lbnLinkButton4のクリックイベント
+        /// lbnLinkButton4のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_lbnLinkButton4_Click(FxEventArgs fxEventArgs)
         {
@@ -869,25 +845,25 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
             {
                 // スタイル指定あり
                 this.ShowYesNoMessageDialog(
-                    "メッセージＩＤ", "メッセージ：" + msg,
-                    "ダイアログ表示テスト",
+                    "MessageID", "Message：" + msg,
+                    "Dialog表示テスト",
                     style);
             }
             else
             {
                 // スタイル指定なし
                 this.ShowYesNoMessageDialog(
-                    "メッセージＩＤ", "メッセージ：" + msg,
-                    "ダイアログ表示テスト");
+                    "MessageID", "Message：" + msg,
+                    "Dialog表示テスト");
             }
 
             return "";
         }
 
         /// <summary>
-        /// ibnImageButton4のクリックイベント
+        /// ibnImageButton4のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ibnImageButton4_Click(FxEventArgs fxEventArgs)
         {
@@ -912,14 +888,14 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
             {
                 // スタイル指定あり
                 // 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
-                this.ShowModalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test", style);
+                this.ShowModalScreen("~/Aspx/TestFxLayerP/Nest/testScreen1nest.aspx?test=test", style);
                 // ※ QueryString指定あり
             }
             else
             {
                 // スタイル指定なし
                 // 注意：ここだけDialogLoader.htmからの相対パス or 仮想パスを指定する。
-                this.ShowModalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test");
+                this.ShowModalScreen("~/Aspx/TestFxLayerP/Nest/testScreen1nest.aspx?test=test");
                 // ※ QueryString指定あり
             }
 
@@ -927,9 +903,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// impImageMap4のクリックイベント
+        /// impImageMap4のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_impImageMap4_Click(FxEventArgs fxEventArgs)
         {
@@ -942,25 +918,25 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
             if (this.CheckBox1.Checked == true && this.CheckBox1a.Checked == true)
             {
                 // スタイル指定あり
-                this.ShowNormalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test", style, target);
+                this.ShowNormalScreen("~/Aspx/TestFxLayerP/Nest/testScreen1nest.aspx?test=test", style, target);
                 // ※ QueryString指定あり
             }
             else if (this.CheckBox1.Checked == true)
             {
                 // スタイル指定あり
-                this.ShowNormalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test", style);
+                this.ShowNormalScreen("~/Aspx/TestFxLayerP/Nest/testScreen1nest.aspx?test=test", style);
                 // ※ QueryString指定あり
             }
             else if (this.CheckBox1a.Checked == true)
             {
                 // スタイル指定あり
-                this.ShowNormalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test", "", target);
+                this.ShowNormalScreen("~/Aspx/TestFxLayerP/Nest/testScreen1nest.aspx?test=test", "", target);
                 // ※ QueryString指定あり
             }
             else
             {
                 // スタイル指定なし
-                this.ShowNormalScreen("~/Aspx/testFxLayerP/nest/testScreen1nest.aspx?test=test");
+                this.ShowNormalScreen("~/Aspx/TestFxLayerP/Nest/testScreen1nest.aspx?test=test");
                 // ※ QueryString指定あり
             }
 
@@ -971,14 +947,14 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
 
         #endregion
 
-        #region コンテンツ ページ２
+        #region Content Page２
 
-        #region モーダルダイアログのインターフェイス
+        #region ModalDialogのインターフェイス
 
         /// <summary>
-        /// btnButton21のクリックイベント
+        /// btnButton21のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton21_Click(FxEventArgs fxEventArgs)
         {
@@ -988,15 +964,15 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// lbnLinkButton21のクリックイベント
+        /// lbnLinkButton21のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_lbnLinkButton21_Click(FxEventArgs fxEventArgs)
         {
             // 親画面別セッション領域 - 取得
 
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
                 "親画面別セッション（キー：msg）は、",
                 (string)this.GetDataFromModalInterface("msg"),
@@ -1006,9 +982,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// ibnImageButton21のクリックイベント
+        /// ibnImageButton21のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ibnImageButton21_Click(FxEventArgs fxEventArgs)
         {
@@ -1018,9 +994,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// impImageMap21のクリックイベント
+        /// impImageMap21のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_impImageMap21_Click(FxEventArgs fxEventArgs)
         {
@@ -1034,9 +1010,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         #region 自画面を閉じる
 
         /// <summary>
-        /// btnButton22のクリックイベント
+        /// btnButton22のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton22_Click(FxEventArgs fxEventArgs)
         {
@@ -1046,9 +1022,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// lbnLinkButton22のクリックイベント
+        /// lbnLinkButton22のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_lbnLinkButton22_Click(FxEventArgs fxEventArgs)
         {
@@ -1058,9 +1034,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// ImageButton22のクリックイベント
+        /// ImageButton22のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ibnImageButton22_Click(FxEventArgs fxEventArgs)
         {
@@ -1070,9 +1046,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// ImageMap22のクリックイベント
+        /// ImageMap22のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_impImageMap22_Click(FxEventArgs fxEventArgs)
         {
@@ -1086,14 +1062,14 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         #region ２重送信防止テスト
 
         /// <summary>
-        /// btnButton23のクリックイベント
+        /// btnButton23のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton23_Click(FxEventArgs fxEventArgs)
         {
             // ２重送信防止テスト
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // 確認用のカウンタ
             if (Session["cnt"] == null)
@@ -1111,14 +1087,14 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// lbnLinkButton23のクリックイベント
+        /// lbnLinkButton23のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_lbnLinkButton23_Click(FxEventArgs fxEventArgs)
         {
             // ２重送信防止テスト
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // 確認用のカウンタ
             if (Session["cnt"] == null)
@@ -1136,14 +1112,14 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// ImageButton23のクリックイベント
+        /// ImageButton23のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ibnImageButton23_Click(FxEventArgs fxEventArgs)
         {
             // ２重送信防止テスト
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // 確認用のカウンタ
             if (Session["cnt"] == null)
@@ -1161,14 +1137,14 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// ImageMap23のクリックイベント
+        /// ImageMap23のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_impImageMap23_Click(FxEventArgs fxEventArgs)
         {
             // ２重送信防止テスト
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(this.SleepCnt);
 
             // 確認用のカウンタ
             if (Session["cnt"] == null)
@@ -1190,9 +1166,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         #region エラーを起こす
 
         /// <summary>
-        /// btnButton24のクリックイベント
+        /// btnButton24のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton24_Click(FxEventArgs fxEventArgs)
         {
@@ -1203,9 +1179,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// lbnLinkButton24のクリックイベント
+        /// lbnLinkButton24のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_lbnLinkButton24_Click(FxEventArgs fxEventArgs)
         {
@@ -1217,9 +1193,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// ImageButton24のクリックイベント
+        /// ImageButton24のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ibnImageButton24_Click(FxEventArgs fxEventArgs)
         {
@@ -1235,14 +1211,14 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
 
         #endregion
 
-        #region コンテンツ ページ３
+        #region Content Page３
 
         #region 自画面に画面遷移
 
         /// <summary>
-        /// btnButton31のクリックイベント
+        /// btnButton31のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton31_Click(FxEventArgs fxEventArgs)
         {
@@ -1253,15 +1229,15 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// lbnLinkButton31のクリックイベント
+        /// lbnLinkButton31のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_lbnLinkButton31_Click(FxEventArgs fxEventArgs)
         {
             // ウィンドウ別セッション領域 - 取得
 
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
                 "ウィンドウ別セッション（キー：msg）は、",
                 (string)this.GetDataFromBrowserWindow("msg"),
@@ -1271,20 +1247,20 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// ibnImageButton31のクリックイベント
+        /// ibnImageButton31のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ibnImageButton31_Click(FxEventArgs fxEventArgs)
         {
             // 次画面（自画面）に画面遷移
-            return "~/Aspx/testFxLayerP/nest/testScreen1nest.aspx";
+            return "~/Aspx/TestFxLayerP/Nest/testScreen1nest.aspx";
         }
 
         /// <summary>
-        /// impImageMap31のクリックイベント
+        /// impImageMap31のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_impImageMap31_Click(FxEventArgs fxEventArgs)
         {
@@ -1310,12 +1286,12 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
 
         #endregion
 
-        #region オンロードで子画面表示
+        #region onloadで子画面表示
 
         /// <summary>
-        /// btnButton32のクリックイベント
+        /// btnButton32のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton32_Click(FxEventArgs fxEventArgs)
         {
@@ -1324,9 +1300,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// lbnLinkButton32のクリックイベント
+        /// lbnLinkButton32のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_lbnLinkButton32_Click(FxEventArgs fxEventArgs)
         {
@@ -1335,9 +1311,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// ibnImageButton32のクリックイベント
+        /// ibnImageButton32のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ibnImageButton32_Click(FxEventArgs fxEventArgs)
         {
@@ -1346,9 +1322,9 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
         }
 
         /// <summary>
-        /// impImageMap32のクリックイベント
+        /// impImageMap32のClickイベント
         /// </summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_impImageMap32_Click(FxEventArgs fxEventArgs)
         {
@@ -1360,8 +1336,8 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
 
         #region ファイルのダウンロード
 
-        /// <summary>btnButton33のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>btnButton33のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnButton33_Click(FxEventArgs fxEventArgs)
         {
@@ -1384,8 +1360,8 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
             return "";
         }
 
-        /// <summary>lbnLinkButton33のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>lbnLinkButton33のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_lbnLinkButton33_Click(FxEventArgs fxEventArgs)
         {
@@ -1408,8 +1384,8 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
             return "";
         }
 
-        /// <summary>ibnImageButton33のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>ibnImageButton33のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_ibnImageButton33_Click(FxEventArgs fxEventArgs)
         {
@@ -1417,8 +1393,8 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
             return "";
         }
 
-        /// <summary>ibnImageButton33のクリックイベント</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>ibnImageButton33のClickイベント</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_impImageMap33_Click(FxEventArgs fxEventArgs)
         {
@@ -1435,68 +1411,68 @@ namespace ProjectX_sample.Aspx.testFxLayerP.nest
 
         #region 後処理のUOCメソッド
 
-        /// <summary>「YES」・「NO」メッセージ・ダイアログの「×」が押され閉じられた場合の処理を実装する。</summary>
-        /// <param name="parentFxEventArgs">「YES」・「NO」メッセージ・ダイアログを開いた（親画面側の）ボタンのボタン履歴</param>
+        /// <summary>「YES」・「NO」Message Dialogの「×」が押され閉じられた場合の処理を実装する。</summary>
+        /// <param name="parentFxEventArgs">「YES」・「NO」Message Dialogを開いた（親画面側の）ButtonのButton履歴</param>
         protected override void UOC_YesNoDialog_X_Click(FxEventArgs parentFxEventArgs)
         {
-            // 「YES」・「NO」メッセージ・ダイアログの「×」が押され閉じられた場合の処理を実装
+            // 「YES」・「NO」Message Dialogの「×」が押され閉じられた場合の処理を実装
             // TODO:
 
             // switch文
 
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                parentFxEventArgs.ButtonID + "で開いた「YES」・「NO」メッセージ・ダイアログ",
-                "[×]ボタンを押した時の後処理",
+                parentFxEventArgs.ButtonID + "で開いた「YES」・「NO」Message Dialog",
+                "[×]Buttonを押した時の後処理",
                 FxEnum.IconType.Information, "テスト結果");
         }
 
-        /// <summary>「YES」・「NO」メッセージ・ダイアログの「YES」が押され閉じられた場合の処理を実装する。</summary>
-        /// <param name="parentFxEventArgs">「YES」・「NO」メッセージ・ダイアログを開いた（親画面側の）ボタンのボタン履歴</param>
+        /// <summary>「YES」・「NO」Message Dialogの「YES」が押され閉じられた場合の処理を実装する。</summary>
+        /// <param name="parentFxEventArgs">「YES」・「NO」Message Dialogを開いた（親画面側の）ButtonのButton履歴</param>
         protected override void UOC_YesNoDialog_Yes_Click(FxEventArgs parentFxEventArgs)
         {
-            // 「YES」・「NO」メッセージ・ダイアログの「YES」が押され閉じられた場合の処理を実装
+            // 「YES」・「NO」Message Dialogの「YES」が押され閉じられた場合の処理を実装
             // TODO:
 
             // switch文
 
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                parentFxEventArgs.ButtonID + "で開いた「YES」・「NO」メッセージ・ダイアログ",
-                "[Yes]ボタンを押した時の後処理",
+                parentFxEventArgs.ButtonID + "で開いた「YES」・「NO」Message Dialog",
+                "[Yes]Buttonを押した時の後処理",
                 FxEnum.IconType.Information, "テスト結果");
         }
 
-        /// <summary>「YES」・「NO」メッセージ・ダイアログの「NO」が押され閉じられた場合の処理を実装する。</summary>
-        /// <param name="parentFxEventArgs">「YES」・「NO」メッセージ・ダイアログを開いた（親画面側の）ボタンのボタン履歴</param>
+        /// <summary>「YES」・「NO」Message Dialogの「NO」が押され閉じられた場合の処理を実装する。</summary>
+        /// <param name="parentFxEventArgs">「YES」・「NO」Message Dialogを開いた（親画面側の）ButtonのButton履歴</param>
         protected override void UOC_YesNoDialog_No_Click(FxEventArgs parentFxEventArgs)
         {
-            // 「YES」・「NO」メッセージ・ダイアログの「NO」が押され閉じられた場合の処理を実装
+            // 「YES」・「NO」Message Dialogの「NO」が押され閉じられた場合の処理を実装
             // TODO:
 
             // switch文
 
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                parentFxEventArgs.ButtonID + "で開いた「YES」・「NO」メッセージ・ダイアログ",
-                "[No]ボタンを押した時の後処理",
+                parentFxEventArgs.ButtonID + "で開いた「YES」・「NO」Message Dialog",
+                "[No]Buttonを押した時の後処理",
                 FxEnum.IconType.Information, "テスト結果");
         }
 
-        /// <summary>業務モーダル画面の後処理を実装する。</summary>
-        /// <param name="parentFxEventArgs">業務モーダル画面を開いた（親画面側の）ボタンのボタン履歴</param>
-        /// <param name="childFxEventArgs">業務モーダル画面を閉じた（若しくは一番最後に押された子画面側の）ボタンのボタン履歴</param>
+        /// <summary>業務Modal画面の後処理を実装する。</summary>
+        /// <param name="parentFxEventArgs">業務Modal画面を開いた（親画面側の）ButtonのButton履歴</param>
+        /// <param name="childFxEventArgs">業務Modal画面を閉じた（若しくは一番最後に押された子画面側の）ButtonのButton履歴</param>
         protected override void UOC_ModalDialog_End(FxEventArgs parentFxEventArgs, FxEventArgs childFxEventArgs)
         {
-            // 業務モーダル画面の後処理を実装
+            // 業務Modal画面の後処理を実装
             // TODO:
 
             // switch文
 
-            // メッセージ表示
+            // Message表示
             this.ShowOKMessageDialog(
-                parentFxEventArgs.ButtonID + "で開いた業務モーダル・ダイアログの",
-                childFxEventArgs.ButtonID + "ボタンを押して閉じた時の後処理",
+                parentFxEventArgs.ButtonID + "で開いた業務Modal Dialogの",
+                childFxEventArgs.ButtonID + "Buttonを押して閉じた時の後処理",
                 FxEnum.IconType.Information, "テスト結果");
         }
 

@@ -30,15 +30,8 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
 //**********************************************************************************
 
-// System
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
-using System.IO;
 
-// System.Web
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 

@@ -27,11 +27,11 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2010/03/xx  西野  大介        新規作成
-//*  2010/11/11  前川  祐介        一覧更新処理対応（行ステータス）
-//*  2010/11/11  前川  祐介        Silverlight対応（ジェネリック）
-//*  2011/10/09  西野  大介        国際化対応
-//*  2011/11/21  西野  大介        マーシャリングのサポート メソッドを追加
+//*  2010/03/xx  西野 大介         新規作成
+//*  2010/11/11  前川 祐介         一覧更新処理対応（行ステータス）
+//*  2010/11/11  前川 祐介         Silverlight対応（ジェネリック）
+//*  2011/10/09  西野 大介         国際化対応
+//*  2011/11/21  西野 大介         マーシャリングのサポート メソッドを追加
 //*  2014/09/05  Rituparna         Added TableRecords class ,SaveJson and LoadJson Method
 //*  2014/09/09  Rituparna         Modified TableRecords class ,SaveJson and LoadJson Method
 //*  2015/01/15	 Supragyan         Added StringFromPrimitivetypes and PrimitivetypeFromString method
@@ -39,17 +39,15 @@
 //*                                StringFromPrimitivetypes and PrimitivetypeFromString method
 //*  2015/03/20  Sai               Modifed varaiable '_tbls' access specifier to Private instead of Public 
 //**********************************************************************************
-//System
+
 using System;
 using System.IO;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
-//Newtonsoft
 using Newtonsoft.Json;
 
-//Public
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Dto

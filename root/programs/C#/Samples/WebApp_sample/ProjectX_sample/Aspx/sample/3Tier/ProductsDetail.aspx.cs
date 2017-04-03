@@ -1,6 +1,8 @@
 ﻿//**********************************************************************************
-//* 三層データバインド・アプリ画面
+//* テーブル・メンテナンス自動生成・テスト画面
 //**********************************************************************************
+
+// テスト画面なので、必要に応じて流用 or 削除して下さい。
 
 //**********************************************************************************
 //* クラス名        ：_Detail_
@@ -15,66 +17,33 @@
 //*  2015/12/22 Sai         Modified ReadOnly property of the primary key column textbox to true.  
 //**********************************************************************************
 
-// MyType
-using MyType;
-
-// System
-using System;
-using System.IO;
 using System.Data;
-using System.Text;
-using System.Collections;
 using System.Collections.Generic;
 
-// System.Web
-using System.Web;
-using System.Web.Security;
-
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
-
-// 業務フレームワーク
 using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
 using Touryo.Infrastructure.Business.Presentation;
+using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
+using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
 
-namespace ProjectX_sample.Aspx.sample._3Tier
+namespace ProjectX_sample.Aspx.Sample._3Tier
 {
-    /// <summary>三層データバインド・サンプル アプリ画面（詳細表示）</summary>
+    /// <summary>三層データバインド・詳細表示画面</summary>
     public partial class ProductsDetail : MyBaseController
     {
-        #region ページロードのUOCメソッド
+        #region Page LoadのUOCメソッド
 
         /// <summary>
-        /// ページロードのUOCメソッド（個別：初回ロード）
+        /// Page LoadのUOCメソッド（個別：初回Load）
         /// </summary>
         /// <remarks>
         /// 実装必須
         /// </remarks>
         protected override void UOC_FormInit()
         {
-            // フォーム初期化（初回ロード）時に実行する処理を実装する
+            // Form初期化（初回Load）時に実行する処理を実装する
 
             // TODO:
             _3TierParameterValue parameterValue = null;
@@ -199,14 +168,14 @@ namespace ProjectX_sample.Aspx.sample._3Tier
         }
 
         /// <summary>
-        /// ページロードのUOCメソッド（個別：ポストバック）
+        /// Page LoadのUOCメソッド（個別：Post Back）
         /// </summary>
         /// <remarks>
         /// 実装必須
         /// </remarks>
         protected override void UOC_FormInit_PostBack()
         {
-            // フォーム初期化（ポストバック）時に実行する処理を実装する
+            // Form初期化（Post Back）時に実行する処理を実装する
 
             // TODO:
             Session["DAP"] = this.ddlDap.SelectedValue;
@@ -214,12 +183,12 @@ namespace ProjectX_sample.Aspx.sample._3Tier
 
         #endregion
 
-        #region イベントハンドラ
+        #region Event Handler
 
         #region 編集状態の変更
 
-        /// <summary>編集ボタン</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>編集Button</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnEdit_Click(FxEventArgs fxEventArgs)
         {
@@ -236,8 +205,8 @@ namespace ProjectX_sample.Aspx.sample._3Tier
 
         #region 更新系
 
-        /// <summary>追加ボタン</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>追加Button</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnInsert_Click(FxEventArgs fxEventArgs)
         {
@@ -281,8 +250,8 @@ namespace ProjectX_sample.Aspx.sample._3Tier
             return string.Empty;
         }
 
-        /// <summary>更新ボタン</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>更新Button</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnUpdate_Click(FxEventArgs fxEventArgs)
         {
@@ -329,8 +298,8 @@ namespace ProjectX_sample.Aspx.sample._3Tier
             return string.Empty;
         }
 
-        /// <summary>削除ボタン</summary>
-        /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
+        /// <summary>削除Button</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
         protected string UOC_btnDelete_Click(FxEventArgs fxEventArgs)
         {

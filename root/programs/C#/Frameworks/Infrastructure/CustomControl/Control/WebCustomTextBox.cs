@@ -30,21 +30,15 @@
 //*  2016/01/28  Sai               Corrected IsIndispensabile property spelling 
 //**********************************************************************************
 
-// System
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
-using System.Text;
-using System.IO;
+using System.ComponentModel;
+using System.Globalization;
 
-// System.Web
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
-using System.Diagnostics;
-using System.Globalization;
 
 using Touryo.Infrastructure.Public.Str;
 
@@ -326,12 +320,12 @@ namespace Touryo.Infrastructure.CustomControl
             if (this.CheckType != null)
             {
                 // 必須入力チェック
-                if (this.CheckType.IsIndispensable)
+                if (this.CheckType.Required)
                 {
                     if ((text == ""))
                     {
                         hasError = true;
-                        lstRet.Add(CmnCheckFunction.IsIndispensableCheckErrorMessage);
+                        lstRet.Add(CmnCheckFunction.RequiredCheckErrorMessage);
                     }
                 }
 

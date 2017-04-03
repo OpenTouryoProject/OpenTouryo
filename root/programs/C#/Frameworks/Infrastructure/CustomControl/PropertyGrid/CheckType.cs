@@ -28,19 +28,12 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
+//*  2017/01/31  西野 大介         "Indispensable" ---> "Required"
+//*  2017/01/31  西野 大介         Added the enum of CheckItems.
 //**********************************************************************************
 
-// System
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Text;
-
-// System.Web
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace Touryo.Infrastructure.CustomControl
 {
@@ -48,10 +41,32 @@ namespace Touryo.Infrastructure.CustomControl
     [TypeConverter(typeof(CheckTypeConverter))]
     public class CheckType
     {
+        /// <summary>ビット・フィールド</summary>
+        [Flags]
+        public enum CheckItems
+        {
+            /// <summary>必須入力</summary>
+            Required = 1,
+            /// <summary>半角</summary>
+            IsHankaku = 2,
+            /// <summary>全角</summary>
+            IsZenkaku = 4,
+            /// <summary>数値</summary>
+            IsNumeric = 8,
+            /// <summary>片仮名</summary>
+            IsKatakana = 16,
+            /// <summary>半角片仮名</summary>
+            IsHanKatakana = 32,
+            /// <summary>平仮名</summary>
+            IsHiragana = 64,
+            /// <summary>日付</summary>
+            IsDate = 128
+        }
+
         /// <summary>コンストラクタ</summary>
         public CheckType()
         {
-            this.IsIndispensable = false;
+            this.Required = false;
             this.IsHankaku = false;
             this.IsZenkaku = false;
             this.IsNumeric = false;
@@ -69,7 +84,7 @@ namespace Touryo.Infrastructure.CustomControl
         /// <summary>必須</summary>
         [DefaultValue(false), NotifyParentProperty(true),
         RefreshProperties(RefreshProperties.Repaint)]
-        public bool IsIndispensable
+        public bool Required
         {
             get 
             {
@@ -229,14 +244,14 @@ namespace Touryo.Infrastructure.CustomControl
         {
             int hc = 0;
 
-            if (this.IsIndispensable) { hc += 1; }
-            if (this.IsHankaku) { hc += 4; }
-            if (this.IsZenkaku) { hc += 2; }
-            if (this.IsNumeric) { hc += 8; }
-            if (this.IsKatakana) { hc += 16; }
-            if (this.IsHanKatakana) { hc += 32; }
-            if (this.IsHiragana) { hc += 64; }
-            if (this.IsDate) { hc += 128; }
+            if (this.Required) { hc += (int)CheckItems.Required; }
+            if (this.IsHankaku) { hc += (int)CheckItems.IsHankaku; }
+            if (this.IsZenkaku) { hc += (int)CheckItems.IsZenkaku; }
+            if (this.IsNumeric) { hc += (int)CheckItems.IsNumeric; }
+            if (this.IsKatakana) { hc += (int)CheckItems.IsKatakana; }
+            if (this.IsHanKatakana) { hc += (int)CheckItems.IsHanKatakana; }
+            if (this.IsHiragana) { hc += (int)CheckItems.IsHiragana; }
+            if (this.IsDate) { hc += (int)CheckItems.IsDate; }
 
             return hc;
         }
@@ -254,7 +269,7 @@ namespace Touryo.Infrastructure.CustomControl
             if (ct == null) { return false; }
 
             return
-                (this.IsIndispensable == ct.IsIndispensable)
+                (this.Required == ct.Required)
                 && (this.IsHankaku == ct.IsHankaku)
                 && (this.IsZenkaku == ct.IsZenkaku)
                 && (this.IsNumeric == ct.IsNumeric)

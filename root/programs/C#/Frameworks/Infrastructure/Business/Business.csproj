@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -18,7 +18,7 @@
     </SccAuxPath>
     <SccProvider>
     </SccProvider>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
@@ -39,6 +39,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,6 +51,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Business.XML</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -57,13 +60,18 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Mobile" />
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +89,7 @@
     <Compile Include="Common\MyReturnValue.cs" />
     <Compile Include="Common\_3TierParameterValue.cs" />
     <Compile Include="Common\_3TierReturnValue.cs" />
+    <Compile Include="Csp\CstSqlSessionStateProvider.cs" />
     <Compile Include="Dao\BaseConsolidateDao.cs" />
     <Compile Include="Dao\CmnDao.cs" />
     <Compile Include="Dao\MyBaseDao.cs" />
@@ -90,6 +99,7 @@
     <Compile Include="Presentation\MyBaseController.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Presentation\MyBaseMVController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\MyBusinessApplicationExceptionMessageResource.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -108,8 +118,6 @@
     <Compile Include="Util\MyAttribute.cs" />
     <Compile Include="Util\MyLiteral.cs" />
     <Compile Include="Util\MySubsysInfo.cs" />
-    <Compile Include="Util\MyTimeZone.cs" />
-    <Compile Include="Util\MyTimeZoneEnum.cs" />
     <Compile Include="Util\MyUserInfo.cs" />
     <Compile Include="Workflow\DaoM_User.cs" />
     <Compile Include="Workflow\DaoM_Workflow.cs" />
@@ -123,20 +131,16 @@
       <Project>{33133F7E-FCF4-4438-8241-FE5CDF6E52FD}</Project>
       <Name>Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Public\Db\DamDB2\DamDB2.csproj">
-      <Project>{F7B93ED0-8046-408E-A2BB-BAE8AF040E4A}</Project>
-      <Name>DamDB2</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Public\Db\DamMySQL\DamMySQL.csproj">
-      <Project>{18345E81-5ECB-4B2F-8304-0E94F8763216}</Project>
+      <Project>{18345e81-5ecb-4b2f-8304-0e94f8763216}</Project>
       <Name>DamMySQL</Name>
     </ProjectReference>
     <ProjectReference Include="..\Public\Db\DamOraOdp\DamOraOdp.csproj">
-      <Project>{FE4533B3-53F0-4BE2-8390-9486FFF380A3}</Project>
+      <Project>{fe4533b3-53f0-4be2-8390-9486fff380a3}</Project>
       <Name>DamOraOdp</Name>
     </ProjectReference>
     <ProjectReference Include="..\Public\Db\DamPstGrS\DamPstGrS.csproj">
-      <Project>{1A3B3376-716C-4AB2-9FB5-427227D8037F}</Project>
+      <Project>{1a3b3376-716c-4ab2-9fb5-427227d8037f}</Project>
       <Name>DamPstGrS</Name>
     </ProjectReference>
     <ProjectReference Include="..\Public\Public.csproj">
@@ -206,6 +210,9 @@
     <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\StopAllTask.sql">
       <Link>AsyncProcessingService\StopAllTask.sql</Link>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

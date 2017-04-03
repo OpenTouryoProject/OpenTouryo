@@ -1,74 +1,37 @@
 ﻿//**********************************************************************************
-//* サンプル アプリ画面
+//* ３層型 サンプル アプリ
 //**********************************************************************************
+
+// テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
 
 //**********************************************************************************
 //* クラス名        ：Window1
 //* クラス日本語名  ：サンプル アプリ画面
 //*
 //* 作成日時        ：－
-//* 作成者          ：sas 生技
+//* 作成者          ：生技
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
-//*
 //**********************************************************************************
 
-// 型情報
 using WSIFType_sample;
 
-// 非同期処理
-using System.Threading;
-
-// System
 using System;
-using System.IO;
-using System.Xml;
-using System.Text;
 using System.Data;
-using System.Linq;
-using System.Collections;
-
-// WPFアプリケーション
-using System.Windows;
+using System.Threading;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
-using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
+using System.Windows;
 
 using Touryo.Infrastructure.Business.RichClient.Asynchronous;
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
+using Touryo.Infrastructure.Business.RichClient.Util;
+using Touryo.Infrastructure.Business.Util;
 
 using Touryo.Infrastructure.Framework.RichClient.Asynchronous;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Framework.Transmission;
+using Touryo.Infrastructure.Framework.Util;
 
 namespace WSClientWPF_sample
 {
@@ -287,7 +250,7 @@ namespace WSClientWPF_sample
                 if (retVal is Exception)
                 {
                     // 例外発生時
-                    MessageBox.Show(retVal.ToString(), "非同期処理で例外発生！");
+                    RcMyCmnFunction.ShowErrorMessageWPF((Exception)retVal, "非同期処理で例外発生！");
                 }
                 else
                 {
@@ -520,7 +483,7 @@ namespace WSClientWPF_sample
                 if (retVal is Exception)
                 {
                     // 例外発生時
-                    MessageBox.Show(retVal.ToString(), "非同期処理で例外発生！");
+                    RcMyCmnFunction.ShowErrorMessageWPF((Exception)retVal, "非同期処理で例外発生！");
                 }
                 else
                 {

@@ -180,6 +180,9 @@
   <data name="NOT_IMPLEMENTED" xml:space="preserve">
     <value>この処理は実装されていません。</value>
   </data>
+  <data name="NOT_SUPPORTED" xml:space="preserve">
+    <value>この処理はサポートされていません。</value>
+  </data>
   <data name="NO_CONFIG" xml:space="preserve">
     <value>コンフィグに指定がありません。Configキー：{0}</value>
   </data>

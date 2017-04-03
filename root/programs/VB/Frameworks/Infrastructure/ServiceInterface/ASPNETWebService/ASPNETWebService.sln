@@ -1,9 +1,11 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ASPNETWebService", ".", "{7C55FEF4-7C30-4F8A-A62B-DCB280579527}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ASPNETWebService", ".", "{4418C1E8-B9A4-45BF-BF83-DFA2F8458288}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6"
 		Debug.AspNetCompiler.VirtualPath = "/ASPNETWebService"
 		Debug.AspNetCompiler.PhysicalPath = "..\ASPNETWebService\"
 		Debug.AspNetCompiler.TargetPath = "..\PrecompiledWeb\ASPNETWebService\"
@@ -20,6 +22,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ASPNETWebService", ".", "{7
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "8888"
 		VWDDynamicPort = "false"
+		SlnRelativePath = "..\ASPNETWebService\"
 	EndProjectSection
 EndProject
 Global
@@ -27,8 +30,8 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7C55FEF4-7C30-4F8A-A62B-DCB280579527}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C55FEF4-7C30-4F8A-A62B-DCB280579527}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4418C1E8-B9A4-45BF-BF83-DFA2F8458288}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4418C1E8-B9A4-45BF-BF83-DFA2F8458288}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

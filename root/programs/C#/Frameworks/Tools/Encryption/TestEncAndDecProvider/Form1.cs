@@ -27,7 +27,12 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2013/02/12  西野  大介        新規作成
+//*  2013/02/12  西野 大介         新規作成
+//*  2017/01/10  西野 大介         秘密鍵、暗号化のプロバイダを削除（AesCryptoServiceProvider）
+//*  2017/01/10  西野 大介         ハッシュ（キー付き）のHMACプロバイダを複数追加した。
+//*  2017/01/10  西野 大介         公開鍵、署名・検証のECDsaCngプロバイダの検証処理を追加した。
+//*  2017/01/10  西野 大介         公開鍵、署名・検証の各プロバイダのHashアルゴリズムを追加した。
+//*  2017/01/10  西野 大介         内部文書化（変数名の見直し）を行った。
 //**********************************************************************************
 
 using System;
@@ -83,45 +88,45 @@ namespace TestEncAndDecProvider
         private HashAlgorithm CreateHashAlgorithmServiceProvider()
         {
             // ハッシュ（キー無し）サービスプロバイダ
-            HashAlgorithm ha = null;
+            HashAlgorithm hashAlgorithm = null;
 
             if (this.comboBox1.SelectedItem.ToString() == "既定のプロバイダ")
             {
                 // 既定の暗号化サービスプロバイダ
-                ha = HashAlgorithm.Create();
+                hashAlgorithm = HashAlgorithm.Create();
             }
             else if (this.comboBox1.SelectedItem.ToString() == "MD5CryptoServiceProvider")
             {
                 // MD5CryptoServiceProviderサービスプロバイダ
-                ha = new MD5CryptoServiceProvider();
+                hashAlgorithm = new MD5CryptoServiceProvider();
             }
             else if (this.comboBox1.SelectedItem.ToString() == "SHA1CryptoServiceProvider")
             {
                 // SHA1CryptoServiceProviderサービスプロバイダ
-                ha = new SHA1CryptoServiceProvider();
+                hashAlgorithm = new SHA1CryptoServiceProvider();
             }
             else if (this.comboBox1.SelectedItem.ToString() == "SHA1Managed")
             {
                 // SHA1Managedサービスプロバイダ
-                ha = new SHA1Managed();
+                hashAlgorithm = new SHA1Managed();
             }
             else if (this.comboBox1.SelectedItem.ToString() == "SHA256Managed")
             {
                 // SHA256Managedサービスプロバイダ
-                ha = new SHA256Managed();
+                hashAlgorithm = new SHA256Managed();
             }
             else if (this.comboBox1.SelectedItem.ToString() == "SHA384Managed")
             {
                 // SHA384Managedサービスプロバイダ
-                ha = new SHA384Managed();
+                hashAlgorithm = new SHA384Managed();
             }
             else if (this.comboBox1.SelectedItem.ToString() == "SHA512Managed")
             {
                 // SHA512Managedサービスプロバイダ
-                ha = new SHA512Managed();
+                hashAlgorithm = new SHA512Managed();
             }
 
-            return ha;
+            return hashAlgorithm;
         }
 
         #endregion
@@ -132,49 +137,49 @@ namespace TestEncAndDecProvider
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             // ハッシュ（キー無し）サービスプロバイダ
-            HashAlgorithm ha = this.CreateHashAlgorithmServiceProvider();
+            HashAlgorithm hashAlgorithm = this.CreateHashAlgorithmServiceProvider();
 
-            if (ha is MD5CryptoServiceProvider)
+            if (hashAlgorithm is MD5CryptoServiceProvider)
             {
                 this.textBox15.Text = "MD5 ハッシュ";
                 this.textBox16.Text = "ハッシュ サイズは 16 バイトです。";   
             }
-            else if (ha is SHA1CryptoServiceProvider)
+            else if (hashAlgorithm is SHA1CryptoServiceProvider)
             {
                 this.textBox15.Text = "SHA1 ハッシュ";
                 this.textBox16.Text = "ハッシュ サイズは 20 バイトです。";
             }
-            else if (ha is SHA1Managed)
+            else if (hashAlgorithm is SHA1Managed)
             {
                 this.textBox15.Text = "SHA1 ハッシュ（マネージ ライブラリ）";
                 this.textBox16.Text = "ハッシュ サイズは 20 バイトです。";
             }
-            else if (ha is SHA256Managed)
+            else if (hashAlgorithm is SHA256Managed)
             {
                 this.textBox15.Text = "SHA256 ハッシュ（マネージ ライブラリ）";
                 this.textBox16.Text = "ハッシュ サイズは 32 バイトです。";
             }
-            else if (ha is SHA384Managed)
+            else if (hashAlgorithm is SHA384Managed)
             {
                 this.textBox15.Text = "SHA384 ハッシュ（マネージ ライブラリ）";
                 this.textBox16.Text = "ハッシュ サイズは 48 バイトです。";
             }
-            else if (ha is SHA512Managed)
+            else if (hashAlgorithm is SHA512Managed)
             {
                 this.textBox15.Text = "SHA512 ハッシュ（マネージ ライブラリ）";
                 this.textBox16.Text = "ハッシュ サイズは 64 バイトです。";
             }
 
             // ハッシュ（キー無し）サービスプロバイダの各プロパティを出力
-            if (ha != null)
+            if (hashAlgorithm != null)
             {
                 this.textBox1.Text = "";
                 
-                this.textBox1.Text += "・HashSize:" + ha.HashSize.ToString() + "\r\n";
-                this.textBox1.Text += "・InputBlockSize:" + ha.InputBlockSize.ToString() + "\r\n";
-                this.textBox1.Text += "・OutputBlockSize:" + ha.OutputBlockSize.ToString() + "\r\n";
-                this.textBox1.Text += "・CanReuseTransform:" + ha.CanReuseTransform.ToString() + "\r\n";
-                this.textBox1.Text += "・CanTransformMultipleBlocks:" + ha.CanTransformMultipleBlocks.ToString() + "\r\n";
+                this.textBox1.Text += "・HashSize:" + hashAlgorithm.HashSize.ToString() + "\r\n";
+                this.textBox1.Text += "・InputBlockSize:" + hashAlgorithm.InputBlockSize.ToString() + "\r\n";
+                this.textBox1.Text += "・OutputBlockSize:" + hashAlgorithm.OutputBlockSize.ToString() + "\r\n";
+                this.textBox1.Text += "・CanReuseTransform:" + hashAlgorithm.CanReuseTransform.ToString() + "\r\n";
+                this.textBox1.Text += "・CanTransformMultipleBlocks:" + hashAlgorithm.CanTransformMultipleBlocks.ToString() + "\r\n";
             }
         }
 
@@ -194,23 +199,23 @@ namespace TestEncAndDecProvider
             }
 
             // ハッシュ（キー無し）サービスプロバイダ
-            HashAlgorithm ha = this.CreateHashAlgorithmServiceProvider();
+            HashAlgorithm hashAlgorithm = this.CreateHashAlgorithmServiceProvider();
 
             // 元文字列
-            string ss = this.textBox11.Text;
+            string sourceString = this.textBox11.Text;
 
-            //元文字列をbyte型配列に変換する（UTF-8 Enc）
-            byte[] asb = Encoding.UTF8.GetBytes(ss);
+            // 元文字列をbyte型配列に変換する（UTF-8 Enc）
+            byte[] sourceStringByte = Encoding.UTF8.GetBytes(sourceString);
 
             // ハッシュ値を計算する
-            byte[] hb = ha.ComputeHash(asb);
+            byte[] hashByte = hashAlgorithm.ComputeHash(sourceStringByte);
 
             //結果を表示
 
             // 生バイト
-            this.textBox12.Text = CustomEncode.ToHexString(hb);
+            this.textBox12.Text = CustomEncode.ToHexString(hashByte);
             // Base64
-            this.textBox13.Text = Convert.ToBase64String(hb);
+            this.textBox13.Text = Convert.ToBase64String(hashByte);
         }
 
         #endregion
@@ -226,25 +231,50 @@ namespace TestEncAndDecProvider
         private KeyedHashAlgorithm CreateKeyedHashAlgorithmServiceProvider()
         {
             // ハッシュ（キー付き）サービスプロバイダ
-            KeyedHashAlgorithm kha = null;
+            KeyedHashAlgorithm keyedHashAlgorithm = null;
 
             if (this.comboBox2.SelectedItem.ToString() == "既定のプロバイダ")
             {
                 // 既定の暗号化サービスプロバイダ
-                kha = KeyedHashAlgorithm.Create();
+                keyedHashAlgorithm = KeyedHashAlgorithm.Create();
+            }
+            else if (this.comboBox2.SelectedItem.ToString() == "HMACMD5")
+            {
+                // HMACMD5サービスプロバイダ
+                keyedHashAlgorithm = new HMACMD5();
+            }
+            else if (this.comboBox2.SelectedItem.ToString() == "HMACRIPEMD160")
+            {
+                // HMACRIPEMD160サービスプロバイダ
+                keyedHashAlgorithm = new HMACRIPEMD160();
             }
             else if (this.comboBox2.SelectedItem.ToString() == "HMACSHA1")
             {
                 // HMACSHA1サービスプロバイダ
-                kha = new HMACSHA1();
+                keyedHashAlgorithm = new HMACSHA1();
+            }
+            else if (this.comboBox2.SelectedItem.ToString() == "HMACSHA256")
+            {
+                // HMACSHA256サービスプロバイダ
+                keyedHashAlgorithm = new HMACSHA256();
+            }
+            else if (this.comboBox2.SelectedItem.ToString() == "HMACSHA384")
+            {
+                // HMACSHA384サービスプロバイダ
+                keyedHashAlgorithm = new HMACSHA384();
+            }
+            else if (this.comboBox2.SelectedItem.ToString() == "HMACSHA512")
+            {
+                // HMACSHA512サービスプロバイダ
+                keyedHashAlgorithm = new HMACSHA512();
             }
             else if (this.comboBox2.SelectedItem.ToString() == "MACTripleDES")
             {
                 // MACTripleDESサービスプロバイダ
-                kha = new MACTripleDES();
+                keyedHashAlgorithm = new MACTripleDES();
             }
 
-           return kha;
+           return keyedHashAlgorithm;
         }
 
         #endregion
@@ -255,29 +285,54 @@ namespace TestEncAndDecProvider
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             // ハッシュ（キー付き）サービスプロバイダ
-            KeyedHashAlgorithm kha = this.CreateKeyedHashAlgorithmServiceProvider();
+            KeyedHashAlgorithm keyedHashAlgorithm = this.CreateKeyedHashAlgorithmServiceProvider();
 
-            if (kha is HMACSHA1)
+            if (keyedHashAlgorithm is HMACMD5)
+            {
+                this.textBox25.Text = "MD5 を使用して、ハッシュ メッセージ認証コード（HMAC）を計算します。";
+                this.textBox26.Text = "どのサイズのキーでも受け入れ、長さが 128 ビットのハッシュ シーケンスを生成します。";
+            }
+            else if (keyedHashAlgorithm is HMACRIPEMD160)
+            {
+                this.textBox25.Text = "MD160 を使用して、ハッシュ メッセージ認証コード（HMAC）を計算します。";
+                this.textBox26.Text = "どのサイズのキーでも受け入れ、長さが 160 ビットのハッシュ シーケンスを生成します。";
+            }
+            else if (keyedHashAlgorithm is HMACSHA1)
             {
                 this.textBox25.Text = "SHA1 を使用して、ハッシュ メッセージ認証コード（HMAC）を計算します。";
-                this.textBox26.Text = "どのサイズのキーでも受け入れ、長さが 20 バイトのハッシュ シーケンスを生成します。";
+                this.textBox26.Text = "どのサイズのキーでも受け入れ、長さが 160 ビットのハッシュ シーケンスを生成します。";
             }
-            else if (kha is MACTripleDES)
+            else if (keyedHashAlgorithm is HMACSHA256)
+            {
+                this.textBox25.Text = "SHA256 を使用して、ハッシュ メッセージ認証コード（HMAC）を計算します。";
+                this.textBox26.Text = "どのサイズのキーでも受け入れ、長さが 256 ビットのハッシュ シーケンスを生成します。";
+            }
+            else if (keyedHashAlgorithm is HMACSHA384)
+            {
+                this.textBox25.Text = "SHA1 を使用して、ハッシュ メッセージ認証コード（HMAC）を計算します。";
+                this.textBox26.Text = "どのサイズのキーでも受け入れ、長さが 384 ビットのハッシュ シーケンスを生成します。";
+            }
+            else if (keyedHashAlgorithm is HMACSHA512)
+            {
+                this.textBox25.Text = "SHA1 を使用して、ハッシュ メッセージ認証コード（HMAC）を計算します。";
+                this.textBox26.Text = "どのサイズのキーでも受け入れ、長さが 512 ビットのハッシュ シーケンスを生成します。";
+            }
+            else if (keyedHashAlgorithm is MACTripleDES)
             {
                 this.textBox25.Text = "TripleDES を使用して、メッセージ認証コード（MAC）を計算します。";
-                this.textBox26.Text = "長さが 16 または 24 バイトのキーを使用し、長さが 8 バイトのハッシュ シーケンスを生成します。";
+                this.textBox26.Text = "長さが 16 または 24 バイトのキーを使用し、長さが 64 ビットのハッシュ シーケンスを生成します。";
             }
 
             // ハッシュ（キー付き）サービスプロバイダの各プロパティを出力
-            if (kha != null)
+            if (keyedHashAlgorithm != null)
             {
                 this.textBox1.Text = "";
 
-                this.textBox1.Text += "・HashSize:" + kha.HashSize.ToString() + "\r\n";
-                this.textBox1.Text += "・InputBlockSize:" + kha.InputBlockSize.ToString() + "\r\n";
-                this.textBox1.Text += "・OutputBlockSize:" + kha.OutputBlockSize.ToString() + "\r\n";
-                this.textBox1.Text += "・CanReuseTransform:" + kha.CanReuseTransform.ToString() + "\r\n";
-                this.textBox1.Text += "・CanTransformMultipleBlocks:" + kha.CanTransformMultipleBlocks.ToString() + "\r\n";
+                this.textBox1.Text += "・HashSize:" + keyedHashAlgorithm.HashSize.ToString() + "\r\n";
+                this.textBox1.Text += "・InputBlockSize:" + keyedHashAlgorithm.InputBlockSize.ToString() + "\r\n";
+                this.textBox1.Text += "・OutputBlockSize:" + keyedHashAlgorithm.OutputBlockSize.ToString() + "\r\n";
+                this.textBox1.Text += "・CanReuseTransform:" + keyedHashAlgorithm.CanReuseTransform.ToString() + "\r\n";
+                this.textBox1.Text += "・CanTransformMultipleBlocks:" + keyedHashAlgorithm.CanTransformMultipleBlocks.ToString() + "\r\n";
             }
         }
 
@@ -297,27 +352,27 @@ namespace TestEncAndDecProvider
             }
 
             // ハッシュ（キー付き）サービスプロバイダ
-            KeyedHashAlgorithm kha = this.CreateKeyedHashAlgorithmServiceProvider();
+            KeyedHashAlgorithm keyedHashAlgorithm = this.CreateKeyedHashAlgorithmServiceProvider();
 
             // 元文字列
-            string ss = this.textBox21a.Text;
+            string sourceString = this.textBox21a.Text;
 
             // 元文字列をbyte型配列に変換する（UTF-8 Enc）
-            byte[] asb = Encoding.UTF8.GetBytes(ss);
+            byte[] sourceStringByte = Encoding.UTF8.GetBytes(sourceString);
 
             // キー文字列
-            string ks = this.textBox21b.Text;
+            string keyString = this.textBox21b.Text;
 
             // キー文字列をbyte型配列に変換する（UTF-8 Enc）
-            byte[] akb = Encoding.UTF8.GetBytes(ks);
+            byte[] akb = Encoding.UTF8.GetBytes(keyString);
 
             // ハッシュ値を計算する
-            if (kha is HMACSHA1)
+            if (keyedHashAlgorithm is HMACSHA1)
             {
                 // どのサイズのキーでも受け入れる
-                kha.Key = akb;
+                keyedHashAlgorithm.Key = akb;
             }
-            else if (kha is MACTripleDES)
+            else if (keyedHashAlgorithm is MACTripleDES)
             {
                 // 長さが 16 または 24 バイトのキーを受け入れる
                 if (akb.Length < 16)
@@ -327,23 +382,23 @@ namespace TestEncAndDecProvider
                 }
                 else if (akb.Length < 24)
                 {
-                    kha.Key = PubCmnFunction.ShortenByteArray(akb, 16);
+                    keyedHashAlgorithm.Key = PubCmnFunction.ShortenByteArray(akb, 16);
                 }
                 else
                 {
                     // 24バイトに切り詰め
-                    kha.Key = PubCmnFunction.ShortenByteArray(akb, 24);
+                    keyedHashAlgorithm.Key = PubCmnFunction.ShortenByteArray(akb, 24);
                 }
             }
 
-            byte[] hb = kha.ComputeHash(asb);
+            byte[] hashByte = keyedHashAlgorithm.ComputeHash(sourceStringByte);
 
             //結果を表示
 
             // 生バイト
-            this.textBox22.Text = CustomEncode.ToHexString(hb);
+            this.textBox22.Text = CustomEncode.ToHexString(hashByte);
             // Base64
-            this.textBox23.Text = Convert.ToBase64String(hb);
+            this.textBox23.Text = Convert.ToBase64String(hashByte);
         }
 
         #endregion
@@ -359,40 +414,35 @@ namespace TestEncAndDecProvider
         private SymmetricAlgorithm CreateSymmetricAlgorithmServiceProvider()
         {
             // 秘密鍵・暗号化サービスプロバイダ
-            SymmetricAlgorithm sa = null;
+            SymmetricAlgorithm symmetricAlgorithm = null;
 
-            if (this.comboBox3.SelectedItem.ToString() == "AesCryptoServiceProvider")
-            {
-                // AesCryptoServiceProviderサービスプロバイダ
-                sa = new AesCryptoServiceProvider();
-            }
-            else if (this.comboBox3.SelectedItem.ToString() == "AesManaged")
+            if (this.comboBox3.SelectedItem.ToString() == "AesManaged")
             {
                 // AesManagedサービスプロバイダ
-                sa = new AesManaged();
+                symmetricAlgorithm = new AesManaged();
             }
             else if (this.comboBox3.SelectedItem.ToString() == "DESCryptoServiceProvider")
             {
                 // DESCryptoServiceProviderサービスプロバイダ
-                sa = new DESCryptoServiceProvider();
+                symmetricAlgorithm = new DESCryptoServiceProvider();
             }
             else if (this.comboBox3.SelectedItem.ToString() == "RC2CryptoServiceProvider")
             {
                 // RC2CryptoServiceProviderサービスプロバイダ
-                sa = new RC2CryptoServiceProvider();
+                symmetricAlgorithm = new RC2CryptoServiceProvider();
             }
             else if (this.comboBox3.SelectedItem.ToString() == "RijndaelManaged")
             {
                 // RijndaelManagedサービスプロバイダ
-                sa = new RijndaelManaged();
+                symmetricAlgorithm = new RijndaelManaged();
             }
             else if (this.comboBox3.SelectedItem.ToString() == "TripleDESCryptoServiceProvider")
             {
                 // TripleDESCryptoServiceProviderサービスプロバイダ
-                sa = new TripleDESCryptoServiceProvider();
+                symmetricAlgorithm = new TripleDESCryptoServiceProvider();
             }
 
-            return sa;
+            return symmetricAlgorithm;
         }
 
         #endregion
@@ -408,53 +458,48 @@ namespace TestEncAndDecProvider
             }
 
             // 秘密鍵・暗号化サービスプロバイダ
-            SymmetricAlgorithm sa = this.CreateSymmetricAlgorithmServiceProvider();
+            SymmetricAlgorithm symmetricAlgorithm = this.CreateSymmetricAlgorithmServiceProvider();
             
-            if (sa is AesCryptoServiceProvider)
+            if (symmetricAlgorithm is AesManaged)
             {
                 this.textBox35.Text = "AESアルゴリズム";
                 this.textBox36.Text = "16 バイト、24 バイト、32 バイトのキー長";
             }
-            else if (sa is AesManaged)
-            {
-                this.textBox35.Text = "AESアルゴリズム";
-                this.textBox36.Text = "16 バイト、24 バイト、32 バイトのキー長";
-            }
-            else if (sa is DESCryptoServiceProvider)
+            else if (symmetricAlgorithm is DESCryptoServiceProvider)
             {
                 this.textBox35.Text = "DESアルゴリズム";
                 this.textBox36.Text = "8 バイトのキー長";
             }
-            else if (sa is RC2CryptoServiceProvider)
+            else if (symmetricAlgorithm is RC2CryptoServiceProvider)
             {
                 this.textBox35.Text = "RC2 アルゴリズム";
                 this.textBox36.Text = "5 バイトから 16 バイトのキー長を 1 バイト単位";
             }
-            else if (sa is RijndaelManaged)
+            else if (symmetricAlgorithm is RijndaelManaged)
             {
                 this.textBox35.Text = "Rijndael アルゴリズム";
                 this.textBox36.Text = "16 バイト、24 バイト、32 バイトのキー長";
             }
-            else if (sa is TripleDESCryptoServiceProvider)
+            else if (symmetricAlgorithm is TripleDESCryptoServiceProvider)
             {
                 this.textBox35.Text = "TripleDES アルゴリズム";
                 this.textBox36.Text = "16 バイト、24 バイトのキー長";
             }
 
             // 秘密鍵・暗号化サービスプロバイダの各プロパティを出力
-            if (sa != null)
+            if (symmetricAlgorithm != null)
             {
                 this.textBox1.Text = "";
                 KeySizes[] kszs = null;
                 
-                this.textBox1.Text += "・Mode:" + sa.Mode.ToString() + "\r\n";
-                this.textBox1.Text += "・Padding:" + sa.Padding.ToString() + "\r\n";
-                this.textBox1.Text += "・FeedbackSize:" + sa.FeedbackSize.ToString() + "\r\n";
+                this.textBox1.Text += "・Mode:" + symmetricAlgorithm.Mode.ToString() + "\r\n";
+                this.textBox1.Text += "・Padding:" + symmetricAlgorithm.Padding.ToString() + "\r\n";
+                this.textBox1.Text += "・FeedbackSize:" + symmetricAlgorithm.FeedbackSize.ToString() + "\r\n";
 
                 this.textBox1.Text += "\r\n";
 
-                this.textBox1.Text += "・KeySize:" + sa.KeySize.ToString() + "\r\n";
-                kszs = sa.LegalKeySizes;
+                this.textBox1.Text += "・KeySize:" + symmetricAlgorithm.KeySize.ToString() + "\r\n";
+                kszs = symmetricAlgorithm.LegalKeySizes;
                 this.textBox1.Text += "・LegalKeySizes:\r\n";
                 foreach (KeySizes ksz in kszs)
                 {
@@ -464,8 +509,8 @@ namespace TestEncAndDecProvider
                     this.textBox1.Text += "\r\n";
                 }
 
-                this.textBox1.Text += "・BlockSize:" + sa.BlockSize.ToString() + "\r\n";
-                kszs = sa.LegalBlockSizes;
+                this.textBox1.Text += "・BlockSize:" + symmetricAlgorithm.BlockSize.ToString() + "\r\n";
+                kszs = symmetricAlgorithm.LegalBlockSizes;
                 this.textBox1.Text += "・LegalBlockSizes:\r\n";
                 foreach (KeySizes ksz in kszs)
                 {
@@ -482,9 +527,9 @@ namespace TestEncAndDecProvider
         #region プロバイダ設定
 
         /// <summary>秘密鍵・暗号化サービスプロバイダの設定</summary>
-        /// <param name="sa">秘密鍵・暗号化サービスプロバイダ</param>
-        /// <param name="akb">byte型配列に変換したキー文字列（UTF-8 Enc）</param>
-        private void SetKeyAndInitializationVectorToSymmetricAlgorithmServiceProvider(SymmetricAlgorithm sa, byte[] akb)
+        /// <param name="symmetricAlgorithm">秘密鍵・暗号化サービスプロバイダ</param>
+        /// <param name="keyStringByte">byte型配列に変換したキー文字列（UTF-8 Enc）</param>
+        private void SetKeyAndInitializationVectorToSymmetricAlgorithmServiceProvider(SymmetricAlgorithm symmetricAlgorithm, byte[] keyStringByte)
         {
             // SymmetricAlgorithm.IV プロパティ (System.Security.Cryptography)
             // http://msdn.microsoft.com/ja-jp/library/system.security.cryptography.symmetricalgorithm.iv.aspx
@@ -501,37 +546,7 @@ namespace TestEncAndDecProvider
             //sa.GenerateKey();
 
             // 共有キーと初期化ベクタを設定
-            if (sa is AesCryptoServiceProvider)
-            {
-                // AesCryptoServiceProvider クラス (System.Security.Cryptography)
-                // http://msdn.microsoft.com/ja-jp/library/system.security.cryptography.aescryptoserviceprovider.aspx
-                // 高度暗号化標準 (AES: Advanced Encryption Standard) アルゴリズムの CAPI実装を使用して、対称の暗号化と復号化を実行します。
-
-                // AesCryptoServiceProvider.KeySize プロパティ (System.Security.Cryptography)
-                // http://msdn.microsoft.com/ja-jp/library/system.security.cryptography.aescryptoserviceprovider.keysize.aspx
-                // キーの最小サイズは 128 ビット（16バイト）で、最大サイズは 256 ビット（32バイト）です。
-
-                // 秘密鍵
-                // 16 バイト、24 バイト、32 バイトのキー長
-                if (akb.Length < 16)
-                {
-                    MessageBox.Show("キーの長さが不足しています。");
-                    return;
-                }
-                else if (akb.Length < 24)
-                {
-                    sa.Key = PubCmnFunction.ShortenByteArray(akb, 16);
-                }
-                else if (akb.Length < 32)
-                {
-                    sa.Key = PubCmnFunction.ShortenByteArray(akb, 24);
-                }
-                else
-                {
-                    sa.Key = PubCmnFunction.ShortenByteArray(akb, 32);
-                }
-            }
-            else if (sa is AesManaged)
+            if (symmetricAlgorithm is AesManaged)
             {
                 // AesManaged クラス (System.Security.Cryptography)
                 // http://msdn.microsoft.com/ja-jp/library/system.security.cryptography.aesmanaged.aspx
@@ -543,25 +558,25 @@ namespace TestEncAndDecProvider
 
                 // 秘密鍵
                 // 16 バイト、24 バイト、32 バイトのキー長
-                if (akb.Length < 16)
+                if (keyStringByte.Length < 16)
                 {
                     MessageBox.Show("キーの長さが不足しています。");
                     return;
                 }
-                else if (akb.Length < 24)
+                else if (keyStringByte.Length < 24)
                 {
-                    sa.Key = PubCmnFunction.ShortenByteArray(akb, 16);
+                    symmetricAlgorithm.Key = PubCmnFunction.ShortenByteArray(keyStringByte, 16);
                 }
-                else if (akb.Length < 32)
+                else if (keyStringByte.Length < 32)
                 {
-                    sa.Key = PubCmnFunction.ShortenByteArray(akb, 24);
+                    symmetricAlgorithm.Key = PubCmnFunction.ShortenByteArray(keyStringByte, 24);
                 }
                 else
                 {
-                    sa.Key = PubCmnFunction.ShortenByteArray(akb, 32);
+                    symmetricAlgorithm.Key = PubCmnFunction.ShortenByteArray(keyStringByte, 32);
                 }
             }
-            else if (sa is DESCryptoServiceProvider)
+            else if (symmetricAlgorithm is DESCryptoServiceProvider)
             {
                 // DESCryptoServiceProvider クラス (System.Security.Cryptography)
                 // http://msdn.microsoft.com/ja-jp/library/system.security.cryptography.descryptoserviceprovider.aspx
@@ -573,17 +588,17 @@ namespace TestEncAndDecProvider
 
                 // 秘密鍵
                 // 8 バイトのキー長
-                if (akb.Length < 8)
+                if (keyStringByte.Length < 8)
                 {
                     MessageBox.Show("キーの長さが不足しています。");
                     return;
                 }
                 else
                 {
-                    sa.Key = PubCmnFunction.ShortenByteArray(akb, 8);
+                    symmetricAlgorithm.Key = PubCmnFunction.ShortenByteArray(keyStringByte, 8);
                 }
             }
-            else if (sa is RC2CryptoServiceProvider)
+            else if (symmetricAlgorithm is RC2CryptoServiceProvider)
             {
                 // RC2CryptoServiceProvider クラス (System.Security.Cryptography)
                 // http://msdn.microsoft.com/ja-jp/library/system.security.cryptography.rc2cryptoserviceprovider.aspx
@@ -596,22 +611,22 @@ namespace TestEncAndDecProvider
 
                 // 秘密鍵
                 // 5 バイトから 16 バイトのキー長を 1 バイト単位
-                if (akb.Length < 5)
+                if (keyStringByte.Length < 5)
                 {
                     MessageBox.Show("キーの長さが不足しています。");
                     return;
                 }
-                else if (akb.Length < 16)
+                else if (keyStringByte.Length < 16)
                 {
-                    sa.Key = PubCmnFunction.ShortenByteArray(akb, akb.Length);
+                    symmetricAlgorithm.Key = PubCmnFunction.ShortenByteArray(keyStringByte, keyStringByte.Length);
                 }
                 else
                 {
-                    sa.Key = PubCmnFunction.ShortenByteArray(akb, 16);
+                    symmetricAlgorithm.Key = PubCmnFunction.ShortenByteArray(keyStringByte, 16);
                 }
 
             }
-            else if (sa is RijndaelManaged)
+            else if (symmetricAlgorithm is RijndaelManaged)
             {
                 // RijndaelManaged クラス (System.Security.Cryptography)
                 // http://msdn.microsoft.com/ja-jp/library/system.security.cryptography.rijndaelmanaged.aspx
@@ -623,25 +638,25 @@ namespace TestEncAndDecProvider
 
                 // 秘密鍵
                 // 16 バイト、24 バイト、32 バイトのキー長
-                if (akb.Length < 16)
+                if (keyStringByte.Length < 16)
                 {
                     MessageBox.Show("キーの長さが不足しています。");
                     return;
                 }
-                else if (akb.Length < 24)
+                else if (keyStringByte.Length < 24)
                 {
-                    sa.Key = PubCmnFunction.ShortenByteArray(akb, 16);
+                    symmetricAlgorithm.Key = PubCmnFunction.ShortenByteArray(keyStringByte, 16);
                 }
-                else if (akb.Length < 32)
+                else if (keyStringByte.Length < 32)
                 {
-                    sa.Key = PubCmnFunction.ShortenByteArray(akb, 24);
+                    symmetricAlgorithm.Key = PubCmnFunction.ShortenByteArray(keyStringByte, 24);
                 }
                 else
                 {
-                    sa.Key = PubCmnFunction.ShortenByteArray(akb, 32);
+                    symmetricAlgorithm.Key = PubCmnFunction.ShortenByteArray(keyStringByte, 32);
                 }
             }
-            else if (sa is TripleDESCryptoServiceProvider)
+            else if (symmetricAlgorithm is TripleDESCryptoServiceProvider)
             {
                 // TripleDESCryptoServiceProvider クラス (System.Security.Cryptography)
                 // http://msdn.microsoft.com/ja-jp/library/system.security.cryptography.tripledescryptoserviceprovider.aspx
@@ -653,23 +668,23 @@ namespace TestEncAndDecProvider
 
                 // 秘密鍵
                 // 16 バイト、24 バイトのキー長
-                if (akb.Length < 16)
+                if (keyStringByte.Length < 16)
                 {
                     MessageBox.Show("キーの長さが不足しています。");
                     return;
                 }
-                else if (akb.Length < 24)
+                else if (keyStringByte.Length < 24)
                 {
-                    sa.Key = PubCmnFunction.ShortenByteArray(akb, 16);
+                    symmetricAlgorithm.Key = PubCmnFunction.ShortenByteArray(keyStringByte, 16);
                 }
                 else
                 {
-                    sa.Key = PubCmnFunction.ShortenByteArray(akb, 24);
+                    symmetricAlgorithm.Key = PubCmnFunction.ShortenByteArray(keyStringByte, 24);
                 }
             }
 
             // 初期化ベクタ
-            sa.IV = PubCmnFunction.ShortenByteArray(akb, sa.BlockSize / 8);
+            symmetricAlgorithm.IV = PubCmnFunction.ShortenByteArray(keyStringByte, symmetricAlgorithm.BlockSize / 8);
         }
 
         #endregion
@@ -689,32 +704,32 @@ namespace TestEncAndDecProvider
             }
 
             // 元文字列
-            string ss = this.textBox31a.Text;
+            string sourceString = this.textBox31a.Text;
 
             // 元文字列をbyte型配列に変換する（UTF-8 Enc）
-            byte[] asb = Encoding.UTF8.GetBytes(ss);
+            byte[] sourceStringByte = Encoding.UTF8.GetBytes(sourceString);
 
             // キー文字列
-            string ks = this.textBox31b.Text;
+            string keyString = this.textBox31b.Text;
 
             // キー文字列をbyte型配列に変換する（UTF-8 Enc）
-            byte[] akb = Encoding.UTF8.GetBytes(ks);
+            byte[] keyStringByte = Encoding.UTF8.GetBytes(keyString);
 
             // 秘密鍵・暗号化サービスプロバイダを生成、初期化
-            SymmetricAlgorithm sa = this.CreateSymmetricAlgorithmServiceProvider();
-            this.SetKeyAndInitializationVectorToSymmetricAlgorithmServiceProvider(sa, akb);
+            SymmetricAlgorithm symmetricAlgorithm = this.CreateSymmetricAlgorithmServiceProvider();
+            this.SetKeyAndInitializationVectorToSymmetricAlgorithmServiceProvider(symmetricAlgorithm, keyStringByte);
 
             // データ出力先メモリストリーム
             MemoryStream ms = new MemoryStream();
             
             // 暗号化オブジェクトの作成
-            ICryptoTransform ict = sa.CreateEncryptor();
+            ICryptoTransform ict = symmetricAlgorithm.CreateEncryptor();
 
             // メモリストリームを暗号化ストリームで装飾
             CryptoStream cs = new CryptoStream(ms, ict, CryptoStreamMode.Write);
 
             // 暗号化ストリーム⇒メモリストリームに書き込む
-            cs.Write(asb, 0, asb.Length);
+            cs.Write(sourceStringByte, 0, sourceStringByte.Length);
             cs.FlushFinalBlock();
 
             // 暗号をメモリストリームから取得
@@ -747,22 +762,22 @@ namespace TestEncAndDecProvider
             }
 
             // 暗号
-            byte[] acb = Convert.FromBase64String(this.textBox33.Text);
+            byte[] encryptedStringByte = Convert.FromBase64String(this.textBox33.Text);
 
             // キー文字列
-            string ks = this.textBox31b.Text;
+            string keyString = this.textBox31b.Text;
 
             // キー文字列をbyte型配列に変換する（UTF-8 Enc）
-            byte[] akb = Encoding.UTF8.GetBytes(ks);
+            byte[] keyStringByte = Encoding.UTF8.GetBytes(keyString);
 
             // 秘密鍵・暗号化サービスプロバイダを生成、初期化
             SymmetricAlgorithm sa = this.CreateSymmetricAlgorithmServiceProvider();
-            this.SetKeyAndInitializationVectorToSymmetricAlgorithmServiceProvider(sa, akb);
+            this.SetKeyAndInitializationVectorToSymmetricAlgorithmServiceProvider(sa, keyStringByte);
 
             try
             {
                 // データ入力元メモリストリーム
-                MemoryStream ms = new MemoryStream(acb);
+                MemoryStream ms = new MemoryStream(encryptedStringByte);
 
                 // 復号化オブジェクトの作成
                 ICryptoTransform ict = sa.CreateDecryptor();
@@ -806,29 +821,29 @@ namespace TestEncAndDecProvider
         private AsymmetricAlgorithm CreateAsymmetricAlgorithmServiceProvider()
         {
             // 公開鍵・暗号化サービスプロバイダ
-            AsymmetricAlgorithm aa = null;
-            if (this.comboBox4.SelectedItem.ToString() == "DSACryptoServiceProvider")
+            AsymmetricAlgorithm asymmetricAlgorithm = null;
+            if (this.comboBox4.SelectedItem.ToString() == "RSACryptoServiceProvider")
+            {
+                // RSACryptoServiceProviderサービスプロバイダ
+                asymmetricAlgorithm = new RSACryptoServiceProvider();
+            }
+            else if(this.comboBox4.SelectedItem.ToString() == "DSACryptoServiceProvider")
             {
                 // DSACryptoServiceProviderサービスプロバイダ
-                aa = new DSACryptoServiceProvider();
-            }
-            else if (this.comboBox4.SelectedItem.ToString() == "ECDiffieHellmanCng")
-            {
-                // ECDiffieHellmanCngサービスプロバイダ
-                aa = new ECDiffieHellmanCng();
+                asymmetricAlgorithm = new DSACryptoServiceProvider();
             }
             else if (this.comboBox4.SelectedItem.ToString() == "ECDsaCng")
             {
                 // ECDsaCngサービスプロバイダ
-                aa = new ECDsaCng();
+                asymmetricAlgorithm = new ECDsaCng();
             }
-            else if (this.comboBox4.SelectedItem.ToString() == "RSACryptoServiceProvider")
+            else if (this.comboBox4.SelectedItem.ToString() == "ECDiffieHellmanCng")
             {
-                // RSACryptoServiceProviderサービスプロバイダ
-                aa = new RSACryptoServiceProvider();
+                // ECDiffieHellmanCngサービスプロバイダ
+                asymmetricAlgorithm = new ECDiffieHellmanCng();
             }
 
-            return aa;
+            return asymmetricAlgorithm;
         }
 
         #endregion
@@ -846,46 +861,46 @@ namespace TestEncAndDecProvider
             try
             {
                 // 公開鍵・暗号化サービスプロバイダ
-                AsymmetricAlgorithm aa = this.CreateAsymmetricAlgorithmServiceProvider();
+                AsymmetricAlgorithm asymmetricAlgorithm = this.CreateAsymmetricAlgorithmServiceProvider();
 
-                if (aa is DSACryptoServiceProvider)
-                {
-                    this.textBox45.Text = "DSAアルゴリズム";
-                    this.textBox46.Text = "64 バイトから 128 バイトのキー長を 8 バイト単位";
-                }
-                else if (aa is ECDiffieHellmanCng)
-                {
-                    this.textBox45.Text = "ECDHアルゴリズムのCNG実装";
-                    this.textBox46.Text = "";
-                }
-                else if (aa is ECDsaCng)
-                {
-                    this.textBox45.Text = "ECDSAのCNG実装";
-                    this.textBox46.Text = "";
-                }
-                else if (aa is RSACryptoServiceProvider)
+                if (asymmetricAlgorithm is RSACryptoServiceProvider)
                 {
                     this.textBox45.Text = "RSAアルゴリズム";
                     this.textBox46.Text = "48 バイトから 2048 バイトのキー長を 1 バイト単位";
                 }
+                else if (asymmetricAlgorithm is DSACryptoServiceProvider)
+                {
+                    this.textBox45.Text = "DSAアルゴリズム";
+                    this.textBox46.Text = "64 バイトから 128 バイトのキー長を 8 バイト単位";
+                }
+                else if (asymmetricAlgorithm is ECDsaCng)
+                {
+                    this.textBox45.Text = "ECDSAのCNG実装";
+                    this.textBox46.Text = "";
+                }
+                else if (asymmetricAlgorithm is ECDiffieHellmanCng)
+                {
+                    this.textBox45.Text = "ECDHアルゴリズムのCNG実装";
+                    this.textBox46.Text = "";
+                }
 
                 // 公開鍵・暗号化サービスプロバイダの各プロパティを出力
-                if (aa != null)
+                if (asymmetricAlgorithm != null)
                 {
                     this.textBox1.Text = "";
                     KeySizes[] kszs = null;
 
-                    this.textBox1.Text += "・SignatureAlgorithm:" + aa.SignatureAlgorithm.ToString() + "\r\n";
+                    this.textBox1.Text += "・SignatureAlgorithm:" + asymmetricAlgorithm.SignatureAlgorithm.ToString() + "\r\n";
 
-                    if (aa.KeyExchangeAlgorithm != null)
+                    if (asymmetricAlgorithm.KeyExchangeAlgorithm != null)
                     {
-                        this.textBox1.Text += "・KeyExchangeAlgorithm:" + aa.KeyExchangeAlgorithm.ToString() + "\r\n";
+                        this.textBox1.Text += "・KeyExchangeAlgorithm:" + asymmetricAlgorithm.KeyExchangeAlgorithm.ToString() + "\r\n";
                     }
 
                     this.textBox1.Text += "\r\n";
 
-                    this.textBox1.Text += "・KeySize:" + aa.KeySize.ToString() + "\r\n";
-                    kszs = aa.LegalKeySizes;
+                    this.textBox1.Text += "・KeySize:" + asymmetricAlgorithm.KeySize.ToString() + "\r\n";
+                    kszs = asymmetricAlgorithm.LegalKeySizes;
                     this.textBox1.Text += "・LegalKeySizes:\r\n";
                     foreach (KeySizes ksz in kszs)
                     {
@@ -914,12 +929,12 @@ namespace TestEncAndDecProvider
             try
             {
                 // 公開鍵・暗号化サービスプロバイダ
-                AsymmetricAlgorithm aa = this.CreateAsymmetricAlgorithmServiceProvider();
+                AsymmetricAlgorithm asymmetricAlgorithm = this.CreateAsymmetricAlgorithmServiceProvider();
 
                 // 公開鍵をXML形式で取得
-                this.textBox41b.Text = aa.ToXmlString(false);
+                this.textBox41b.Text = asymmetricAlgorithm.ToXmlString(false);
                 // 秘密鍵をXML形式で取得
-                this.textBox41c.Text = aa.ToXmlString(true);
+                this.textBox41c.Text = asymmetricAlgorithm.ToXmlString(true);
             }
             catch (Exception ex)
             {
@@ -934,30 +949,30 @@ namespace TestEncAndDecProvider
         #region プロバイダ設定
 
         /// <summary>公開鍵・暗号化サービスプロバイダの設定</summary>
-        /// <param name="sa">公開鍵・暗号化サービスプロバイダ</param>
-        private void SetKeyAndInitializationVectorToAsymmetricAlgorithmServiceProvider(AsymmetricAlgorithm aa)
+        /// <param name="asymmetricAlgorithm">公開鍵・暗号化サービスプロバイダ</param>
+        private void SetKeyAndInitializationVectorToAsymmetricAlgorithmServiceProvider(AsymmetricAlgorithm asymmetricAlgorithm)
         {
-            if (aa is DSACryptoServiceProvider)
+            if (asymmetricAlgorithm is RSACryptoServiceProvider)
             {
-                DSACryptoServiceProvider dsacsp = (DSACryptoServiceProvider)aa;
+                RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)asymmetricAlgorithm;
 
                 // 設定する
             }
-            else if (aa is ECDiffieHellmanCng)
+            else if(asymmetricAlgorithm is DSACryptoServiceProvider)
             {
-                ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)aa;
+                DSACryptoServiceProvider dsacsp = (DSACryptoServiceProvider)asymmetricAlgorithm;
 
                 // 設定する
             }
-            else if (aa is ECDsaCng)
+            else if (asymmetricAlgorithm is ECDsaCng)
             {
-                ECDsaCng ecdsa = (ECDsaCng)aa;
+                ECDsaCng ecdsa = (ECDsaCng)asymmetricAlgorithm;
 
                 // 設定する
             }
-            else if (aa is RSACryptoServiceProvider)
+            else if (asymmetricAlgorithm is ECDiffieHellmanCng)
             {
-                RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)aa;
+                ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)asymmetricAlgorithm;
 
                 // 設定する
             }
@@ -984,52 +999,52 @@ namespace TestEncAndDecProvider
             try
             {
                 // 暗号のbyte型配列
-                byte[] acb = null;
+                byte[] encryptedStringByte = null;
                 // 元文字列をbyte型配列に変換する（UTF-8 Enc）
-                byte[] asb = Encoding.UTF8.GetBytes(this.textBox41a.Text);
+                byte[] sourceStringByte = Encoding.UTF8.GetBytes(this.textBox41a.Text);
 
                 // 公開鍵・暗号化サービスプロバイダ
-                AsymmetricAlgorithm aa = this.CreateAsymmetricAlgorithmServiceProvider();
-                this.SetKeyAndInitializationVectorToAsymmetricAlgorithmServiceProvider(aa);
+                AsymmetricAlgorithm asymmetricAlgorithm = this.CreateAsymmetricAlgorithmServiceProvider();
+                this.SetKeyAndInitializationVectorToAsymmetricAlgorithmServiceProvider(asymmetricAlgorithm);
 
                 // 公開鍵
-                aa.FromXmlString(this.textBox41b.Text);
+                asymmetricAlgorithm.FromXmlString(this.textBox41b.Text);
 
-                if (aa is DSACryptoServiceProvider)
+                if (asymmetricAlgorithm is RSACryptoServiceProvider)
                 {
-                    DSACryptoServiceProvider dsacsp = (DSACryptoServiceProvider)aa;
+                    RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)asymmetricAlgorithm;
+
+                    // 暗号化する（XP以降の場合のみ2項目にTrueを指定し、OAEPパディングを使用できる）
+                    encryptedStringByte = rsa.Encrypt(sourceStringByte, false);
+                }
+                else if (asymmetricAlgorithm is DSACryptoServiceProvider)
+                {
+                    DSACryptoServiceProvider dsacsp = (DSACryptoServiceProvider)asymmetricAlgorithm;
 
                     // 暗号化する
                     throw new NotImplementedException("DSACryptoServiceProviderの共通鍵暗号化はサポートされていません。");
                 }
-                else if (aa is ECDiffieHellmanCng)
+                else if (asymmetricAlgorithm is ECDsaCng)
                 {
-                    ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)aa;
-
-                    // 暗号化する
-                    throw new NotImplementedException("ECDiffieHellmanCngの共通鍵暗号化はサポートされていません。");
-                }
-                else if (aa is ECDsaCng)
-                {
-                    ECDsaCng ecdsa = (ECDsaCng)aa;
+                    ECDsaCng ecdsa = (ECDsaCng)asymmetricAlgorithm;
 
                     // 暗号化する
                     throw new NotImplementedException("ECDsaCngの共通鍵暗号化はサポートされていません。");
                 }
-                else if (aa is RSACryptoServiceProvider)
+                else if (asymmetricAlgorithm is ECDiffieHellmanCng)
                 {
-                    RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)aa;
+                    ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)asymmetricAlgorithm;
 
-                    // 暗号化する（XP以降の場合のみ2項目にTrueを指定し、OAEPパディングを使用できる）
-                    acb = rsa.Encrypt(asb, false);
+                    // 暗号化する
+                    throw new NotImplementedException("ECDiffieHellmanCngの共通鍵暗号化はサポートされていません。");
                 }
 
                 // 結果を表示
 
                 // 生バイト
-                this.textBox42.Text = CustomEncode.ToHexString(acb);
+                this.textBox42.Text = CustomEncode.ToHexString(encryptedStringByte);
                 // Base64
-                this.textBox43.Text = Convert.ToBase64String(acb);
+                this.textBox43.Text = Convert.ToBase64String(encryptedStringByte);
             }
             catch (Exception ex)
             {
@@ -1056,51 +1071,50 @@ namespace TestEncAndDecProvider
             }
 
             try
-            {
-                
+            {   
                 // 暗号のbyte型配列
-                byte[] acb = Convert.FromBase64String(this.textBox43.Text);
+                byte[] encryptedStringByte = Convert.FromBase64String(this.textBox43.Text);
                 // 元文字列（バイト配列に）
-                byte[] asb = null;
+                byte[] sourceStringByte = null;
 
                 // 公開鍵・暗号化サービスプロバイダ
-                AsymmetricAlgorithm aa = this.CreateAsymmetricAlgorithmServiceProvider();
-                this.SetKeyAndInitializationVectorToAsymmetricAlgorithmServiceProvider(aa);
+                AsymmetricAlgorithm asymmetricAlgorithm = this.CreateAsymmetricAlgorithmServiceProvider();
+                this.SetKeyAndInitializationVectorToAsymmetricAlgorithmServiceProvider(asymmetricAlgorithm);
 
                 // 秘密鍵
-                aa.FromXmlString(this.textBox41c.Text);
+                asymmetricAlgorithm.FromXmlString(this.textBox41c.Text);
 
-                if (aa is DSACryptoServiceProvider)
+                if (asymmetricAlgorithm is RSACryptoServiceProvider)
                 {
-                    DSACryptoServiceProvider dsacsp = (DSACryptoServiceProvider)aa;
+                    RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)asymmetricAlgorithm;
+
+                    // 復号化（XP以降の場合のみ2項目にTrueを指定し、OAEPパディングを使用できる）
+                    sourceStringByte = rsa.Decrypt(encryptedStringByte, false);
+                }
+                else if (asymmetricAlgorithm is DSACryptoServiceProvider)
+                {
+                    DSACryptoServiceProvider dsacsp = (DSACryptoServiceProvider)asymmetricAlgorithm;
 
                     // 復号化する
                     throw new NotImplementedException("DSACryptoServiceProviderの共通鍵暗号化はサポートされていません。");
                 }
-                else if (aa is ECDiffieHellmanCng)
+                else if (asymmetricAlgorithm is ECDsaCng)
                 {
-                    ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)aa;
-
-                    // 復号化する
-                    throw new NotImplementedException("ECDiffieHellmanCngの共通鍵暗号化はサポートされていません。");
-                }
-                else if (aa is ECDsaCng)
-                {
-                    ECDsaCng ecdsa = (ECDsaCng)aa;
+                    ECDsaCng ecdsa = (ECDsaCng)asymmetricAlgorithm;
 
                     // 復号化する
                     throw new NotImplementedException("ECDsaCngの共通鍵暗号化はサポートされていません。");
                 }
-                else if (aa is RSACryptoServiceProvider)
+                else if (asymmetricAlgorithm is ECDiffieHellmanCng)
                 {
-                    RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)aa;
+                    ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)asymmetricAlgorithm;
 
-                    // 復号化（XP以降の場合のみ2項目にTrueを指定し、OAEPパディングを使用できる）
-                    asb = rsa.Decrypt(acb, false);
+                    // 復号化する
+                    throw new NotImplementedException("ECDiffieHellmanCngの共通鍵暗号化はサポートされていません。");
                 }
 
                 // 結果を表示
-                this.textBox44.Text = Encoding.UTF8.GetString(asb);
+                this.textBox44.Text = Encoding.UTF8.GetString(sourceStringByte);
             }
             catch (Exception ex)
             {
@@ -1118,34 +1132,43 @@ namespace TestEncAndDecProvider
 
         #region プロバイダ生成
 
+        /// <summary>署名で使用するAsymmetricAlgorithm</summary>
+        private string _signinAsymmetricAlgorithm = "";
+        /// <summary>>署名で使用するAsymmetricAlgorithmのHashAlgorithm</summary>
+        private string _signinHashAlgorithmOfAsymmetricAlgorithm = "";
+
         /// <summary>公開鍵・暗号化サービスプロバイダの生成</summary>
         /// <returns>公開鍵・暗号化サービスプロバイダ</returns>
         private AsymmetricAlgorithm CreateAsymmetricAlgorithmServiceProvider2()
         {
             // 公開鍵・暗号化サービスプロバイダ
-            AsymmetricAlgorithm aa = null;
-            if (this.comboBox5.SelectedItem.ToString().IndexOf("DSACryptoServiceProvider") != -1)
-            {
-                // DSACryptoServiceProviderサービスプロバイダ
-                aa = new DSACryptoServiceProvider();
-            }
-            else if (this.comboBox5.SelectedItem.ToString().IndexOf("ECDiffieHellmanCng") != -1)
-            {
-                // ECDiffieHellmanCngサービスプロバイダ
-                aa = new ECDiffieHellmanCng();
-            }
-            else if (this.comboBox5.SelectedItem.ToString().IndexOf("ECDsaCng") != -1)
-            {
-                // ECDsaCngサービスプロバイダ
-                aa = new ECDsaCng();
-            }
-            else if (this.comboBox5.SelectedItem.ToString().IndexOf("RSACryptoServiceProvider") != -1)
+            AsymmetricAlgorithm asymmetricAlgorithm = null;
+            string[] temp = this.comboBox5.SelectedItem.ToString().Split(':');
+            this._signinAsymmetricAlgorithm = temp[0];
+            this._signinHashAlgorithmOfAsymmetricAlgorithm = temp[1];
+
+            if (this._signinAsymmetricAlgorithm == "RSACryptoServiceProvider")
             {
                 // RSACryptoServiceProviderサービスプロバイダ
-                aa = new RSACryptoServiceProvider();
+                asymmetricAlgorithm = new RSACryptoServiceProvider();
             }
-
-            return aa;
+            else if (this._signinAsymmetricAlgorithm == "DSACryptoServiceProvider")
+            {
+                // DSACryptoServiceProviderサービスプロバイダ
+                asymmetricAlgorithm = new DSACryptoServiceProvider();
+            }
+            else if (this._signinAsymmetricAlgorithm == "ECDsaCng")
+            {
+                // ECDsaCngサービスプロバイダ
+                asymmetricAlgorithm = new ECDsaCng();
+            }
+            else if (this._signinAsymmetricAlgorithm == "ECDiffieHellmanCng")
+            {
+                // ECDiffieHellmanCngサービスプロバイダ
+                asymmetricAlgorithm = new ECDiffieHellmanCng();
+            }
+            
+            return asymmetricAlgorithm;
         }
 
         #endregion
@@ -1162,46 +1185,47 @@ namespace TestEncAndDecProvider
             try
             {
                 // 公開鍵・暗号化サービスプロバイダ
-                AsymmetricAlgorithm aa = this.CreateAsymmetricAlgorithmServiceProvider2();
+                AsymmetricAlgorithm asymmetricAlgorithm = this.CreateAsymmetricAlgorithmServiceProvider2();
 
-                if (aa is DSACryptoServiceProvider)
-                {
-                    this.textBox55.Text = "DSAアルゴリズム";
-                    this.textBox56.Text = "64 バイトから 128 バイトのキー長を 8 バイト単位";
-                }
-                else if (aa is ECDiffieHellmanCng)
-                {
-                    this.textBox55.Text = "ECDHアルゴリズムのCNG実装";
-                    this.textBox56.Text = "";
-                }
-                else if (aa is ECDsaCng)
-                {
-                    this.textBox55.Text = "ECDSAのCNG実装";
-                    this.textBox56.Text = "";
-                }
-                else if (aa is RSACryptoServiceProvider)
+                if (asymmetricAlgorithm is RSACryptoServiceProvider)
                 {
                     this.textBox55.Text = "RSAアルゴリズム";
                     this.textBox56.Text = "48 バイトから 2048 バイトのキー長を 1 バイト単位";
                 }
+                else if (asymmetricAlgorithm is DSACryptoServiceProvider)
+                {
+                    this.textBox55.Text = "DSAアルゴリズム";
+                    this.textBox56.Text = "64 バイトから 128 バイトのキー長を 8 バイト単位";
+                }
+                
+                else if (asymmetricAlgorithm is ECDsaCng)
+                {
+                    this.textBox55.Text = "ECDSAのCNG実装";
+                    this.textBox56.Text = "";
+                }
+                else if (asymmetricAlgorithm is ECDiffieHellmanCng)
+                {
+                    this.textBox55.Text = "ECDHアルゴリズムのCNG実装";
+                    this.textBox56.Text = "";
+                }
 
                 // 公開鍵・暗号化サービスプロバイダの各プロパティを出力
-                if (aa != null)
+                if (asymmetricAlgorithm != null)
                 {
                     this.textBox1.Text = "";
                     KeySizes[] kszs = null;
 
-                    this.textBox1.Text += "・SignatureAlgorithm:" + aa.SignatureAlgorithm.ToString() + "\r\n";
+                    this.textBox1.Text += "・SignatureAlgorithm:" + asymmetricAlgorithm.SignatureAlgorithm.ToString() + "\r\n";
 
-                    if (aa.KeyExchangeAlgorithm != null)
+                    if (asymmetricAlgorithm.KeyExchangeAlgorithm != null)
                     {
-                        this.textBox1.Text += "・KeyExchangeAlgorithm:" + aa.KeyExchangeAlgorithm.ToString() + "\r\n";
+                        this.textBox1.Text += "・KeyExchangeAlgorithm:" + asymmetricAlgorithm.KeyExchangeAlgorithm.ToString() + "\r\n";
                     }
 
                     this.textBox1.Text += "\r\n";
 
-                    this.textBox1.Text += "・KeySize:" + aa.KeySize.ToString() + "\r\n";
-                    kszs = aa.LegalKeySizes;
+                    this.textBox1.Text += "・KeySize:" + asymmetricAlgorithm.KeySize.ToString() + "\r\n";
+                    kszs = asymmetricAlgorithm.LegalKeySizes;
                     this.textBox1.Text += "・LegalKeySizes:\r\n";
                     foreach (KeySizes ksz in kszs)
                     {
@@ -1224,18 +1248,68 @@ namespace TestEncAndDecProvider
 
         #region 鍵の取得
 
+        /// <summary>CngKey</summary>
+        private CngKey _cngKey = null;
+
         /// <summary>鍵の取得</summary>
         private void button50_Click(object sender, EventArgs e)
         {
             try
             {
                 // 公開鍵・暗号化サービスプロバイダ
-                AsymmetricAlgorithm aa = this.CreateAsymmetricAlgorithmServiceProvider2();
+                AsymmetricAlgorithm asymmetricAlgorithm = this.CreateAsymmetricAlgorithmServiceProvider2();
 
-                // 公開鍵をXML形式で取得
-                this.textBox51b.Text = aa.ToXmlString(false);
-                // 秘密鍵をXML形式で取得
-                this.textBox51c.Text = aa.ToXmlString(true);
+                if (asymmetricAlgorithm is RSACryptoServiceProvider
+                    || asymmetricAlgorithm is DSACryptoServiceProvider)
+                {
+                    // 公開鍵をXML形式で取得
+                    this.textBox51b.Text = asymmetricAlgorithm.ToXmlString(false);
+                    // 秘密鍵をXML形式で取得
+                    this.textBox51c.Text = asymmetricAlgorithm.ToXmlString(true);
+                }
+                else
+                {
+                    byte[] publicKey = null;
+                    //byte[] privateKey = null;
+
+                    if (asymmetricAlgorithm is ECDsaCng)
+                    {
+                        // 署名の作成に使用するハッシュアルゴリズムを指定し、ハッシュ値を計算
+                        if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "P256")
+                        {
+                            this.CreateCngKey(CngAlgorithm.ECDsaP256, out this._cngKey, out publicKey);//, out privateKey);
+                        }
+                        else if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "P384")
+                        {
+                            this.CreateCngKey(CngAlgorithm.ECDsaP256, out this._cngKey, out publicKey);//, out privateKey);
+                        }
+                        else if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "P521")
+                        {
+                            this.CreateCngKey(CngAlgorithm.ECDsaP256, out this._cngKey, out publicKey);//, out privateKey);
+                        }
+                    }
+                    else if (asymmetricAlgorithm is ECDiffieHellmanCng)
+                    {
+                        // 署名の作成に使用するハッシュアルゴリズムを指定し、ハッシュ値を計算
+                        if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "P256")
+                        {
+                            this.CreateCngKey(CngAlgorithm.ECDiffieHellmanP256, out this._cngKey, out publicKey);//, out privateKey);
+                        }
+                        else if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "P384")
+                        {
+                            this.CreateCngKey(CngAlgorithm.ECDiffieHellmanP384, out this._cngKey, out publicKey);//, out privateKey);
+                        }
+                        else if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "P521")
+                        {
+                            this.CreateCngKey(CngAlgorithm.ECDiffieHellmanP521, out this._cngKey, out publicKey);//, out privateKey);
+                        }
+                    }
+
+                    // 公開鍵
+                    this.textBox51b.Text = CustomEncode.ToBase64String(publicKey);
+                    // 秘密鍵
+                    this.textBox51c.Text = " - cngKey - ";
+                }
             }
             catch (Exception ex)
             {
@@ -1268,84 +1342,136 @@ namespace TestEncAndDecProvider
             try
             {
                 // 公開鍵・暗号化サービスプロバイダ
-                AsymmetricAlgorithm aa = this.CreateAsymmetricAlgorithmServiceProvider2();
-
-                // 秘密鍵
-                aa.FromXmlString(this.textBox51c.Text);
+                AsymmetricAlgorithm asymmetricAlgorithm = this.CreateAsymmetricAlgorithmServiceProvider2();
 
                 // 元文字列をbyte型配列に変換する（UTF-8 Enc）
-                byte[] asb  = Encoding.UTF8.GetBytes(this.textBox51a.Text);
+                byte[] sourceStringByte  = Encoding.UTF8.GetBytes(this.textBox51a.Text);
                 // ハッシュ値
-                byte[] ahb = null;
+                byte[] hashedSourceStringByte = null;
                 // 署名
                 byte[] ab_sign = null;
 
-                if (aa is DSACryptoServiceProvider)
+                if (asymmetricAlgorithm is RSACryptoServiceProvider)
                 {
+                    // 秘密鍵
+                    asymmetricAlgorithm.FromXmlString(this.textBox51c.Text);
+
                     // キャスト
-                    DSACryptoServiceProvider dsa = (DSACryptoServiceProvider)aa;
-
-                    // DSASignatureFormatterオブジェクトを作成
-                    DSASignatureFormatter dsaFormatter = new DSASignatureFormatter(dsa);
-
-                    // 署名の作成に使用するハッシュアルゴリズムを指定し、ハッシュ値を計算
-                    if (this.comboBox5.SelectedItem.ToString().IndexOf("SHA1") != -1)
-                    {
-                        dsaFormatter.SetHashAlgorithm("SHA1");
-                        ahb = SHA1.Create().ComputeHash(asb);
-                    }
-
-                    // 署名を作成
-                    ab_sign = dsaFormatter.CreateSignature(ahb);
-                }
-                else if (aa is ECDiffieHellmanCng)
-                {
-                    // キャスト
-                    ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)aa;
-
-                    // 署名を作成
-                    throw new NotImplementedException("ECDiffieHellmanCng:未実装");
-                }
-                else if (aa is ECDsaCng)
-                {
-                    // キャスト
-                    ECDsaCng ecdsa = (ECDsaCng)aa;
-
-                    // 署名を作成
-                    throw new NotImplementedException("ECDsaCng:未実装");
-                }
-                else if (aa is RSACryptoServiceProvider)
-                {
-                    // キャスト
-                    RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)aa;
+                    RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)asymmetricAlgorithm;
 
                     // RSAPKCS1SignatureFormatterオブジェクトを作成
                     RSAPKCS1SignatureFormatter rsaFormatter = new RSAPKCS1SignatureFormatter(rsa);
 
                     // 署名の作成に使用するハッシュアルゴリズムを指定し、ハッシュ値を計算
-                    if (this.comboBox5.SelectedItem.ToString().IndexOf("SHA1") != -1)
+                    if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "MD5")
                     {
-                        rsaFormatter.SetHashAlgorithm("SHA1");
-                        ahb = SHA1.Create().ComputeHash(asb);
+                        rsaFormatter.SetHashAlgorithm(this._signinHashAlgorithmOfAsymmetricAlgorithm);
+                        hashedSourceStringByte = MD5.Create().ComputeHash(sourceStringByte);
                     }
-                    else if (this.comboBox5.SelectedItem.ToString().IndexOf("MD5") != -1)
+                    else if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "SHA1")
                     {
-                        rsaFormatter.SetHashAlgorithm("MD5");
-                        ahb = MD5.Create().ComputeHash(asb);
+                        rsaFormatter.SetHashAlgorithm(this._signinHashAlgorithmOfAsymmetricAlgorithm);
+                        hashedSourceStringByte = SHA1.Create().ComputeHash(sourceStringByte);
+                    }
+                    else if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "SHA256")
+                    {
+                        rsaFormatter.SetHashAlgorithm(this._signinHashAlgorithmOfAsymmetricAlgorithm);
+                        hashedSourceStringByte = SHA256.Create().ComputeHash(sourceStringByte);
+                    }
+                    else if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "SHA384")
+                    {
+                        rsaFormatter.SetHashAlgorithm(this._signinHashAlgorithmOfAsymmetricAlgorithm);
+                        hashedSourceStringByte = SHA384.Create().ComputeHash(sourceStringByte);
+                    }
+                    else if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "SHA512")
+                    {
+                        rsaFormatter.SetHashAlgorithm(this._signinHashAlgorithmOfAsymmetricAlgorithm);
+                        hashedSourceStringByte = SHA512.Create().ComputeHash(sourceStringByte);
                     }
 
                     // 署名を作成
-                    ab_sign = rsaFormatter.CreateSignature(ahb);
+                    ab_sign = rsaFormatter.CreateSignature(hashedSourceStringByte);
+                }
+                else if (asymmetricAlgorithm is DSACryptoServiceProvider)
+                {
+                    // 秘密鍵
+                    asymmetricAlgorithm.FromXmlString(this.textBox51c.Text);
+
+                    // キャスト
+                    DSACryptoServiceProvider dsa = (DSACryptoServiceProvider)asymmetricAlgorithm;
+
+                    // DSASignatureFormatterオブジェクトを作成
+                    DSASignatureFormatter dsaFormatter = new DSASignatureFormatter(dsa);
+
+                    // 署名の作成に使用するハッシュアルゴリズムを指定し、ハッシュ値を計算
+                    if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "MD5")
+                    {
+                        dsaFormatter.SetHashAlgorithm(this._signinHashAlgorithmOfAsymmetricAlgorithm);
+                        hashedSourceStringByte = MD5.Create().ComputeHash(sourceStringByte);
+                    }
+                    else if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "SHA1")
+                    {
+                        dsaFormatter.SetHashAlgorithm(this._signinHashAlgorithmOfAsymmetricAlgorithm);
+                        hashedSourceStringByte = SHA1.Create().ComputeHash(sourceStringByte);
+                    }
+                    else if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "SHA256")
+                    {
+                        dsaFormatter.SetHashAlgorithm(this._signinHashAlgorithmOfAsymmetricAlgorithm);
+                        hashedSourceStringByte = SHA256.Create().ComputeHash(sourceStringByte);
+                    }
+
+                    // 署名を作成
+                    ab_sign = dsaFormatter.CreateSignature(hashedSourceStringByte);
+                }
+                else if (asymmetricAlgorithm is ECDsaCng)
+                {
+                    // キャスト
+                    ECDsaCng ecdsa = (ECDsaCng)asymmetricAlgorithm;
+
+                    // こんなんで、すいません。
+                    using (ecdsa = new ECDsaCng(this._cngKey))
+                    {
+                        // 署名を作成
+                        ab_sign = ecdsa.SignData(sourceStringByte);
+                        ecdsa.Clear();
+                    }
+                }
+                else if (asymmetricAlgorithm is ECDiffieHellmanCng)
+                {
+                    // キャスト
+                    ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)asymmetricAlgorithm;
+
+                    throw new NotImplementedException("ECDsaCng:未実装");
+
+                    // ・・・SignDataが無かった。
+
+                    //// こんなんで、すいません。
+                    //using (ecdhcng = new ECDiffieHellmanCng(this._cngKey))
+                    //{
+                    //    // 署名を作成
+                    //    ab_sign = ecdhcng.SignData(asb);
+                    //    ecdhcng.Clear();
+                    //}
                 }
 
                 // 結果を表示
 
                 // ハッシュ
 
-                // 生バイト
-                this.textBox52.Text = CustomEncode.ToHexString(ahb);
-                // Base64
-                this.textBox53.Text = Convert.ToBase64String(ahb);
+                if (hashedSourceStringByte == null)
+                {
+                    // 生バイト
+                    this.textBox52.Text = " - cngKey - ";
+                    // Base64
+                    this.textBox53.Text = " - cngKey - ";
+                }
+                else
+                {
+                    // 生バイト
+                    this.textBox52.Text = CustomEncode.ToHexString(hashedSourceStringByte);
+                    // Base64
+                    this.textBox53.Text = Convert.ToBase64String(hashedSourceStringByte);
+                }
 
                 // 署名
 
@@ -1360,6 +1486,19 @@ namespace TestEncAndDecProvider
                 this.textBox56.Text = "エラーです。キーを変更した可能性があります。\r\n"
                     + ex.ToString();
             }
+        }
+
+        /// <summary>CreateCngKey</summary>
+        /// <param name="ca">CngAlgorithm</param>
+        /// <param name="cngKey">CngKey</param>
+        /// <param name="publicKey">publicKey</param>
+        private void CreateCngKey(CngAlgorithm cngAlgorithm, out CngKey cngKey, out byte[] publicKey)//, out byte[] privateKey)
+        {
+            cngKey = CngKey.Create(cngAlgorithm);
+            publicKey = cngKey.Export(CngKeyBlobFormat.GenericPublicBlob);
+
+            // ↓サポートされない操作であるらしい。
+            //privateKey = cngKey.Export(CngKeyBlobFormat.GenericPrivateBlob);
         }
 
         #endregion
@@ -1378,10 +1517,7 @@ namespace TestEncAndDecProvider
             }
 
             // 公開鍵・暗号化サービスプロバイダ
-            AsymmetricAlgorithm aa = this.CreateAsymmetricAlgorithmServiceProvider2();
-
-            // 公開鍵
-            aa.FromXmlString(this.textBox51b.Text);
+            AsymmetricAlgorithm asymmetricAlgorithm = this.CreateAsymmetricAlgorithmServiceProvider2();
 
             try
             {
@@ -1389,66 +1525,76 @@ namespace TestEncAndDecProvider
                 bool flg = false;
 
                 // 元文字列をbyte型配列に変換する（UTF-8 Enc）
-                byte[] asb = Encoding.UTF8.GetBytes(this.textBox51a.Text);
+                byte[] sourceStringByte = Encoding.UTF8.GetBytes(this.textBox51a.Text);
 
-                // ハッシュ値を取得
-                byte[] ahb = Convert.FromBase64String(this.textBox53.Text);
+                // ハッシュ値
+                byte[] hashStringByte = null;
 
-                if (aa is DSACryptoServiceProvider)
+                if (asymmetricAlgorithm is RSACryptoServiceProvider)
                 {
-                    // キャスト
-                    DSACryptoServiceProvider dsa = (DSACryptoServiceProvider)aa;
-                    
-                    // DSASignatureFormatterオブジェクトを作成
-                    DSASignatureDeformatter dsaSignatureDeformatter = new DSASignatureDeformatter(dsa);
+                    // 公開鍵
+                    asymmetricAlgorithm.FromXmlString(this.textBox51b.Text);
+                    // ハッシュ値を取得
+                    hashStringByte = Convert.FromBase64String(this.textBox53.Text);
 
-                    //　検証に使用するハッシュアルゴリズムを指定し
-                    // 上記で、ハッシュ値を計算した際と同じアルゴリズムを使用すること。
-                    if (this.comboBox5.SelectedItem.ToString().IndexOf("SHA1") != -1)
-                    {
-                        dsaSignatureDeformatter.SetHashAlgorithm("SHA1");
-                    }
-
-                    // 検証する
-                    flg = dsaSignatureDeformatter.VerifySignature(ahb, Convert.FromBase64String(this.textBox55.Text));
-                }
-                else if (aa is ECDiffieHellmanCng)
-                {
                     // キャスト
-                    ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)aa;
-
-                    // 検証する
-                    throw new NotImplementedException("ECDiffieHellmanCng:未実装");
-                }
-                else if (aa is ECDsaCng)
-                {
-                    // キャスト
-                    ECDsaCng ecdsa = (ECDsaCng)aa;
-
-                    // 検証する
-                    throw new NotImplementedException("ECDsaCng:未実装");
-                }
-                else if (aa is RSACryptoServiceProvider)
-                {
-                    // キャスト
-                    RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)aa;
+                    RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)asymmetricAlgorithm;
 
                     // RSAPKCS1SignatureDeformatterオブジェクトを作成
                     RSAPKCS1SignatureDeformatter rsaDeformatter = new RSAPKCS1SignatureDeformatter(rsa);
 
                     //　検証に使用するハッシュアルゴリズムを指定し
                     // 上記で、ハッシュ値を計算した際と同じアルゴリズムを使用すること。
-                    if (this.comboBox5.SelectedItem.ToString().IndexOf("SHA1") != -1)
-                    {
-                        rsaDeformatter.SetHashAlgorithm("SHA1");
-                    }
-                    else if (this.comboBox5.SelectedItem.ToString().IndexOf("MD5") != -1)
-                    {
-                        rsaDeformatter.SetHashAlgorithm("MD5");
-                    }
+                    rsaDeformatter.SetHashAlgorithm(this._signinHashAlgorithmOfAsymmetricAlgorithm);
 
                     // 検証する
-                    flg = rsaDeformatter.VerifySignature(ahb, Convert.FromBase64String(this.textBox55.Text));
+                    flg = rsaDeformatter.VerifySignature(hashStringByte, Convert.FromBase64String(this.textBox55.Text));
+                }
+                else if (asymmetricAlgorithm is DSACryptoServiceProvider)
+                {
+                    // 公開鍵
+                    asymmetricAlgorithm.FromXmlString(this.textBox51b.Text);
+                    // ハッシュ値を取得
+                    hashStringByte = Convert.FromBase64String(this.textBox53.Text);
+
+                    // キャスト
+                    DSACryptoServiceProvider dsa = (DSACryptoServiceProvider)asymmetricAlgorithm;
+                    
+                    // DSASignatureFormatterオブジェクトを作成
+                    DSASignatureDeformatter dsaSignatureDeformatter = new DSASignatureDeformatter(dsa);
+
+                    //　検証に使用するハッシュアルゴリズムを指定し
+                    // 上記で、ハッシュ値を計算した際と同じアルゴリズムを使用すること。
+                    dsaSignatureDeformatter.SetHashAlgorithm(this._signinHashAlgorithmOfAsymmetricAlgorithm);
+
+                    // 検証する
+                    flg = dsaSignatureDeformatter.VerifySignature(hashStringByte, Convert.FromBase64String(this.textBox55.Text));
+                }
+                else if (asymmetricAlgorithm is ECDsaCng)
+                {
+                    // キャスト
+                    ECDsaCng ecdsa = (ECDsaCng)asymmetricAlgorithm;
+
+                    // こんなんで、すいません。
+                    //using (ecdsa = new ECDsaCng(this._cngKey))
+
+                    // 公開鍵
+                    using (ecdsa = new ECDsaCng(CngKey.Import(
+                        CustomEncode.FromBase64String(this.textBox51b.Text),
+                        CngKeyBlobFormat.GenericPublicBlob)))
+                    {
+                        // 検証する
+                        flg = ecdsa.VerifyData(sourceStringByte, Convert.FromBase64String(this.textBox55.Text));
+                        ecdsa.Clear();
+                    }
+                }
+                else if (asymmetricAlgorithm is ECDiffieHellmanCng)
+                {
+                    // キャスト
+                    ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)asymmetricAlgorithm;
+
+                    // 検証する
+                    throw new NotImplementedException("ECDiffieHellmanCng:未実装");
                 }
 
                 // 検証結果を表示

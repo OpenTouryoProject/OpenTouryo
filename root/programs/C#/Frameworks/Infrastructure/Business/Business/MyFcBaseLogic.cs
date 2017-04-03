@@ -35,45 +35,20 @@
 //*  2011/01/31  西野 大介         Damがnullの場合は処理しないように修正
 //*  2012/02/09  西野 大介         OLEDB、ODBCのデータプロバイダ対応
 //*  2012/04/05  西野 大介         \n → \r\n 化
-//*  2012/06/18  西野  大介        OriginalStackTrace（ログ出力）の品質向上
+//*  2012/06/18  西野 大介         OriginalStackTrace（ログ出力）の品質向上
+//*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
+//*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
 //**********************************************************************************
 
-// デバッグ用
-using System.Diagnostics;
-
-// メソッドの属性を取得
-using System.Reflection;
-
-// System
 using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 
-// 業務フレームワーク
-using Touryo.Infrastructure.Business.Business;
 using Touryo.Infrastructure.Business.Common;
-using Touryo.Infrastructure.Business.Dao;
-using Touryo.Infrastructure.Business.Exceptions;
-using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
-
-// フレームワーク
 using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
+using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Business.Business
@@ -108,11 +83,8 @@ namespace Touryo.Infrastructure.Business.Business
             }
             catch (System.Reflection.TargetInvocationException rtEx)
             {
-                // InnerExceptionのスタックトレースを保存しておく（以下のリスローで消去されるため）。
-                this.OriginalStackTrace = rtEx.InnerException.StackTrace;
-
-                // InnerExceptionを投げなおす。
-                throw rtEx.InnerException;
+                // スタックトレースを保って InnerException を throw
+                ExceptionDispatchInfo.Capture(rtEx.InnerException).Throw();
             }
             finally
             {
@@ -195,11 +167,11 @@ namespace Touryo.Infrastructure.Business.Business
 
                 if (parameterValue.ActionType.Split('%')[0] == "SQL")
                 {
-                    // SQL Server / SQL Client用のDamを生成
-                    dam = new DamSqlSvr();
+                // SQL Server / SQL Client用のDamを生成
+                dam = new DamSqlSvr();
 
-                    // 接続文字列をロード
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL");
+                // 接続文字列をロード
+                connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL");
                 }
                 else if (parameterValue.ActionType.Split('%')[0] == "OLE")
                 {
@@ -217,14 +189,14 @@ namespace Touryo.Infrastructure.Business.Business
                     // 接続文字列をロード
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODBC");
                 }
-                else if (parameterValue.ActionType.Split('%')[0] == "ORA")
-                {
-                    // Oracle / Oracle Client用のDamを生成
-                    dam = new DamOraClient();
+                //else if (parameterValue.ActionType.Split('%')[0] == "ORA")
+                //{
+                //    // Oracle / Oracle Client用のDamを生成
+                //    dam = new DamOraClient();
 
-                    // 接続文字列をロード
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ORA");
-                }
+                //    // 接続文字列をロード
+                //    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ORA");
+                //}
                 else if (parameterValue.ActionType.Split('%')[0] == "ODP")
                 {
                     // Oracle / ODP.NET用のDamを生成
@@ -233,14 +205,14 @@ namespace Touryo.Infrastructure.Business.Business
                     // 接続文字列をロード（ODP2：Instant Client）
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP2");
                 }
-                else if (parameterValue.ActionType.Split('%')[0] == "DB2")
-                {
-                    // DB2.NET用のDamを生成
-                    dam = new DamDB2();
+                //else if (parameterValue.ActionType.Split('%')[0] == "DB2")
+                //{
+                //    // DB2.NET用のDamを生成
+                //    dam = new DamDB2();
 
-                    // 接続文字列をロード
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_DB2");
-                }
+                //    // 接続文字列をロード
+                //    connstring = GetConfigParameter.GetConnectionString("ConnectionString_DB2");
+                //}
                 //else if (parameterValue.ActionType.Split('%')[0] == "HIR")
                 //{
                 //    // HiRDBデータプロバイダ用のDamを生成
@@ -443,7 +415,7 @@ namespace Touryo.Infrastructure.Business.Business
                     "," + this.perfRec.ExecTime +
                     "," + this.perfRec.CpuTime +
                     "," + baEx.messageID +
-                    "," + baEx.Message;
+                    "," + baEx.Message; // baEX
 
                 // Log4Netへログ出力
                 LogIF.WarnLog("ACCESS", strLogMessage);
@@ -497,16 +469,8 @@ namespace Touryo.Infrastructure.Business.Business
                         "," + this.perfRec.ExecTime +
                         "," + this.perfRec.CpuTime +
                         "," + bsEx.messageID +
-                        "," + bsEx.Message + "\r\n";
-                // OriginalStackTrace（ログ出力）の品質向上
-                if (this.OriginalStackTrace == "")
-                {
-                    strLogMessage += bsEx.StackTrace;
-                }
-                else
-                {
-                    strLogMessage += this.OriginalStackTrace;
-                }
+                        "," + bsEx.Message +
+                        "\r\n" + bsEx.StackTrace; // bsEX
                 
                 // Log4Netへログ出力
                 LogIF.ErrorLog("ACCESS", strLogMessage);
@@ -532,8 +496,8 @@ namespace Touryo.Infrastructure.Business.Business
             {
                 // なにもしない
 
-                // リスロー
-                throw ex;
+                // スタックトレースを保って InnerException を throw
+                ExceptionDispatchInfo.Capture(ex).Throw();
             }
             else
             {
@@ -593,7 +557,7 @@ namespace Touryo.Infrastructure.Business.Business
                         "," + this.perfRec.ExecTime +
                         "," + this.perfRec.CpuTime +
                         "," + returnValue.ErrorMessageID +
-                        "," + returnValue.ErrorMessage;
+                        "," + returnValue.ErrorMessage; // baEX
 
                     // Log4Netへログ出力
                     LogIF.WarnLog("ACCESS", strLogMessage);
@@ -621,16 +585,8 @@ namespace Touryo.Infrastructure.Business.Business
                         "," + this.perfRec.ExecTime +
                         "," + this.perfRec.CpuTime +
                         "," + sysErrorMessageID +
-                        "," + sysErrorMessage + "\r\n";
-                    // OriginalStackTrace（ログ出力）の品質向上
-                    if (this.OriginalStackTrace == "")
-                    {
-                        strLogMessage += ex.StackTrace;
-                    }
-                    else
-                    {
-                        strLogMessage += this.OriginalStackTrace;
-                    }
+                        "," + sysErrorMessage +
+                        "\r\n" + ex.StackTrace; // bsEX
 
                     // Log4Netへログ出力
                     LogIF.ErrorLog("ACCESS", strLogMessage);
@@ -661,22 +617,14 @@ namespace Touryo.Infrastructure.Business.Business
                         "," + this.perfRec.ExecTime +
                         "," + this.perfRec.CpuTime +
                         "," + "other Exception" +
-                        "," + ex.Message + "\r\n";
-                    // OriginalStackTrace（ログ出力）の品質向上
-                    if (this.OriginalStackTrace == "")
-                    {
-                        strLogMessage += ex.StackTrace;
-                    }
-                    else
-                    {
-                        strLogMessage += this.OriginalStackTrace;
-                    }
+                        "," + ex.Message +
+                        "\r\n" + ex.ToString(); // ex
 
                     // Log4Netへログ出力
                     LogIF.ErrorLog("ACCESS", strLogMessage);
 
-                    // リスロー
-                    throw ex;
+                    // スタックトレースを保って InnerException を throw
+                    ExceptionDispatchInfo.Capture(ex).Throw();
                 }
 
                 #endregion

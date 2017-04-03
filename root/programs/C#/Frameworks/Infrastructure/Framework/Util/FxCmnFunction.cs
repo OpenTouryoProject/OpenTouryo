@@ -27,25 +27,25 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2009/03/13  西野  大介        新規作成
-//*  2009/06/02  西野  大介        sln - IR版からの修正
+//*  2009/03/13  西野 大介         新規作成
+//*  2009/06/02  西野 大介         sln - IR版からの修正
 //*                                ・#5  ： コントロール数取得処理（デフォルト値不正）
 //*                                ・#33 ： プロパティの大文字 / 小文字をなくす。
-//*  2009/07/21  西野  大介        コントロール取得処理の仕様変更
-//*  2009/07/31  西野  大介        セッション情報の自動削除機能を追加
-//*  2009/08/10  西野  大介        同名のコントロール追加に対応（GridView/ItemTemplate）。
-//*  2009/09/18  西野  大介        セッション タイム アウト検出用cookieのパス属性を明示
-//*  2010/09/24  西野  大介        ジェネリック対応（Dictionary、List、Queue、Stack<T>）
+//*  2009/07/21  西野 大介         コントロール取得処理の仕様変更
+//*  2009/07/31  西野 大介         セッション情報の自動削除機能を追加
+//*  2009/08/10  西野 大介         同名のコントロール追加に対応（GridView/ItemTemplate）。
+//*  2009/09/18  西野 大介         セッション タイム アウト検出用cookieのパス属性を明示
+//*  2010/09/24  西野 大介         ジェネリック対応（Dictionary、List、Queue、Stack<T>）
 //*                                nullチェック方法、Contains → ContainsKeyなどに注意
-//*  2010/10/21  西野  大介        幾つかのイベント処理の正式対応（ベースクラス２→１へ）
-//*  2010/10/21  西野  大介        RepeaterコントロールのItemCommandイベント追加
-//*  2010/11/20  西野  大介        リッチクライアント用P層フレームワークを追加
-//*  2011/01/14  西野  大介        GetPropsFromPropStringをPubCmnFunctionに移動
-//*  2011/01/18  西野  大介        GridViewコントロールのRowCommand、SelectedIndexChanged、
+//*  2010/10/21  西野 大介         幾つかのイベント処理の正式対応（ベースクラス２→１へ）
+//*  2010/10/21  西野 大介         RepeaterコントロールのItemCommandイベント追加
+//*  2010/11/20  西野 大介         リッチクライアント用P層フレームワークを追加
+//*  2011/01/14  西野 大介         GetPropsFromPropStringをPubCmnFunctionに移動
+//*  2011/01/18  西野 大介         GridViewコントロールのRowCommand、SelectedIndexChanged、
 //*                                RowUpdating、RowDeleting、PageIndexChanging、Sortingイベントを追加する。
-//*  2012/06/14  西野  大介        コントロール検索の再帰処理性能の集約＆効率化。
-//*  2013/03/05  西野  大介        cookieのパス属性のApplicationPathが「/」になるケースの考慮
-//*  2014/05/16  西野  大介        キャスト可否チェックのロジックを見直した。
+//*  2012/06/14  西野 大介         コントロール検索の再帰処理性能の集約＆効率化。
+//*  2013/03/05  西野 大介         cookieのパス属性のApplicationPathが「/」になるケースの考慮
+//*  2014/05/16  西野 大介         キャスト可否チェックのロジックを見直した。
 //*  2014/08/18  Sai-San           Added code for adding events dynamically for ListView events. 
 //*  2014/10/03  Rituparna         Added code for Supporting ItemCommand event to ListViewControl. 
 //*  2014/10/03  Rituparna         Added code SelectedIndexChanged for RadiobuttonList and CheckBoxList.
@@ -53,39 +53,15 @@
 //*  2014/04/16  Supragyan         Added TextChanged event to TextBox control in method GetCtrlAndSetClickEventHandler.
 //**********************************************************************************
 
-// System
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
-// System.Web
 using System.Web;
-using System.Web.Security;
-
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
 
-using System.Web.UI.HtmlControls;
-using System.Web.UI.MobileControls;
-
-// 業務フレームワーク（循環参照になるため、参照しない）
-
-// フレームワーク
-using Touryo.Infrastructure.Framework.Business;
-using Touryo.Infrastructure.Framework.Common;
-using Touryo.Infrastructure.Framework.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
-
-// 部品
-using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Log;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Util

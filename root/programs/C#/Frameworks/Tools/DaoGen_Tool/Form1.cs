@@ -27,56 +27,52 @@
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2008/xx/xx  西野  大介        新規作成
-//*  2009/12/09  西野  大介        主キー取得機能の追加
-//*  2009/12/09  西野  大介        カラム名をキーにしたハッシュテーブルを追加
-//*  2009/12/09  西野  大介        ODP.NETにて、テーブルとインデックスの
+//*  2008/xx/xx  西野 大介         新規作成
+//*  2009/12/09  西野 大介         主キー取得機能の追加
+//*  2009/12/09  西野 大介         カラム名をキーにしたハッシュテーブルを追加
+//*  2009/12/09  西野 大介         ODP.NETにて、テーブルとインデックスの
 //*                                カラム ポジション不一致により、主キー取得に失敗する。
 //*                                （主キー位置がテーブルの中間から定義されている場合）
-//*  2010/02/18  西野  大介        データプロバイダ追加（HiRDB、PostgreSQL）
-//*  2012/02/09  西野  大介        HiRDBデータプロバイダのコメントアウト（（ソフト）対応せず）
-//*  2012/02/09  西野  大介        OLEDB、ODBCのデータプロバイダ対応
-//*  2012/08/21  西野  大介        データプロバイダ設定の引き継ぎ処理を追加
-//*  2012/08/21  西野  大介        リストボックスのソート処理を追加
-//*  2012/08/21  西野  大介        SQL Serverの主キー設定機能で別スキーマ上の
+//*  2010/02/18  西野 大介         データプロバイダ追加（HiRDB、PostgreSQL）
+//*  2012/02/09  西野 大介         HiRDBデータプロバイダのコメントアウト（（ソフト）対応せず）
+//*  2012/02/09  西野 大介         OLEDB、ODBCのデータプロバイダ対応
+//*  2012/08/21  西野 大介         データプロバイダ設定の引き継ぎ処理を追加
+//*  2012/08/21  西野 大介         リストボックスのソート処理を追加
+//*  2012/08/21  西野 大介         SQL Serverの主キー設定機能で別スキーマ上の
 //*                                テーブルが見つからない場合があったため対応した。
-//*  2012/11/21  西野  大介        Entity、DataSet自動生成の対応
-//*  2012/11/21  西野  大介        デフォルト・エンコーディングをSJISに指定
-//*  2012/12/21  西野  大介        HiRDB戻し検討・・・
-//*  2014/01/20  西野  大介        I/O時のエンコーディング制御方式を見直し。
+//*  2012/11/21  西野 大介         Entity、DataSet自動生成の対応
+//*  2012/11/21  西野 大介         デフォルト・エンコーディングをSJISに指定
+//*  2012/12/21  西野 大介         HiRDB戻し検討・・・
+//*  2014/01/20  西野 大介         I/O時のエンコーディング制御方式を見直し。
 //*  2014/04/30  Santosh san       Internationalization:
 //*                                Added Method to get the strings from the resource files based on the keys values passed.
 //*                                and and replaced this method wherever hard coded values.
-//*  2014/08/19  西野  大介        カラム取得時のスキーマ考慮が無かったため追加（奥井さんからの提供）
+//*  2014/08/19  西野 大介         カラム取得時のスキーマ考慮が無かったため追加（奥井さんからの提供）
 //**********************************************************************************
 
+// --------------------
 // データプロバイダ
+// --------------------
 using System.Data.SqlClient;
+using Oracle.DataAccess.Client;
 using System.Data.OleDb;
 using System.Data.Odbc;
-using Oracle.DataAccess.Client;
+using Npgsql;
+using MySql.Data.MySqlClient;
 using IBM.Data.DB2;
 using Hitachi.HiRDB;
-using MySql.Data.MySqlClient;
-using Npgsql;
+// --------------------
 
-// Windowアプリケーション
-using System.Drawing;
-using System.Windows.Forms;
-
-// System
 using System;
 using System.IO;
 using System.Text;
 using System.Data;
 using System.Collections;
-using System.Resources;
 using System.Diagnostics;
+using System.Resources;
+using System.Drawing;
+using System.Windows.Forms;
 
-// 業務フレームワーク（参照しない）
-// フレームワーク（参照しない）
-
-// 部品
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 

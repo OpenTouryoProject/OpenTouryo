@@ -30,19 +30,12 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
 //**********************************************************************************
 
-// System
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
 using System.IO;
+using System.Collections.Specialized;
+using System.ComponentModel;
 
-// System.Web
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
-using System.Collections.Specialized;
 
 namespace Touryo.Infrastructure.CustomControl
 {

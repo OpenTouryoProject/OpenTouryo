@@ -30,54 +30,41 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         新規作成（テンプレート）
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.Collections
-Imports System.Collections.Generic
-Imports System.ComponentModel
-Imports System.Drawing
-Imports System.Text
-
-' System.Web
-Imports System.Web
-Imports System.Web.UI
-Imports System.Web.UI.WebControls
-
 Namespace Touryo.Infrastructure.CustomControl
-	''' <summary>チェック結果格納クラス</summary>
-	Public Class CheckResult
-		''' <summary>コントロール名</summary>
-		Private _ctrlName As String = ""
+    ''' <summary>チェック結果格納クラス</summary>
+    Public Class CheckResult
+        ''' <summary>コントロール名</summary>
+        Private _ctrlName As String = ""
 
-		''' <summary>コントロール名</summary>
-		Public Property CtrlName() As String
-			Get
-				Return Me._ctrlName
-			End Get
+        ''' <summary>コントロール名</summary>
+        Public Property CtrlName() As String
+            Get
+                Return Me._ctrlName
+            End Get
 
-			Private Set
-				Me._ctrlName = value
-			End Set
-		End Property
+            Private Set
+                Me._ctrlName = Value
+            End Set
+        End Property
 
-		''' <summary>チェックエラー情報名</summary>
-		Private _checkErrorInfo As String() = Nothing
+        ''' <summary>チェックエラー情報名</summary>
+        Private _checkErrorInfo As String() = Nothing
 
-		''' <summary>チェックエラー情報名</summary>
-		Public Property CheckErrorInfo() As String()
-			Get
-				Return Me._checkErrorInfo
-			End Get
+        ''' <summary>チェックエラー情報名</summary>
+        Public Property CheckErrorInfo() As String()
+            Get
+                Return Me._checkErrorInfo
+            End Get
 
-			Set
-				Me._checkErrorInfo = value
-			End Set
-		End Property
+            Set
+                Me._checkErrorInfo = Value
+            End Set
+        End Property
 
-		''' <summary>コンストラクタ</summary>
-		''' <param name="ctrlName">コントロール名</param>
-		Public Sub New(ctrlName As String)
-			Me.CtrlName = ctrlName
-		End Sub
-	End Class
+        ''' <summary>コンストラクタ</summary>
+        ''' <param name="ctrlName">コントロール名</param>
+        Public Sub New(ctrlName As String)
+            Me.CtrlName = ctrlName
+        End Sub
+    End Class
 End Namespace

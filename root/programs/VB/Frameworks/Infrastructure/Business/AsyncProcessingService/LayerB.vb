@@ -19,34 +19,24 @@
 #End Region
 
 '**********************************************************************************
-'* クラス名            :LayerB.cs
-'* クラス名クラス名     :
+'* クラス名        ：LayerB
+'* クラス日本語名  ：LayerB
 '*
-'* 作成者              :Supragyan
-'* クラス日本語名       :
-'* 更新履歴
-'*  Date:        Author:        Comments:
-'*  ----------  --------------  -------------------------------------------------
-'*  11/28/2014   Supragyan      Created LayerB class for AsyncProcessing Service
-'*  11/28/2014   Supragyan      Created Insert,Update,Select method for AsyncProcessing Service
-'*  04/15/2015   Sandeep        Did code modification of insert, update and select for AsyncProcessing Service
-'*  06/09/2015   Sandeep        Implemented code to update stop command to all the running asynchronous task
-'*                              Modified code to reset Exception information, before starting asynchronous task 
-'*  06/26/2015   Sandeep        Implemented code to get commandID in the SelectTask method,
-'*                              to resolve unstable "Register" state, when you invoke [Abort] to AsyncTask, at this "Register" state
+'*  日時        更新者            内容
+'*  ----------  ----------------  -------------------------------------------------
+'*  11/28/2014  Supragyan         Created LayerB class for AsyncProcessing Service
+'*  11/28/2014  Supragyan         Created Insert,Update,Select method for AsyncProcessing Service
+'*  04/15/2015  Sandeep           Did code modification of insert, update and select for AsyncProcessing Service
+'*  06/09/2015  Sandeep           Implemented code to update stop command to all the running asynchronous task
+'*                                Modified code to reset Exception information, before starting asynchronous task 
+'*  06/26/2015  Sandeep           Implemented code to get commandID in the SelectTask method,
+'*                                to resolve unstable "Register" state, when you invoke [Abort] to AsyncTask, at this "Register" state
+'*  06/01/2016  Sandeep           Implemented method to test the connection of specified database
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.Data
-Imports System.Collections.Generic
-Imports System.Linq
-Imports System.Text
-
-'業務フレームワーク
 Imports Touryo.Infrastructure.Business.Business
 
-Namespace AsyncProcessingService
+Namespace Touryo.Infrastructure.Business.AsyncProcessingService
 	#Region "LayerB"
 
 	''' <summary>
@@ -61,7 +51,7 @@ Namespace AsyncProcessingService
 		''' </summary>
 		''' <param name="asyncParameterValue"></param>
 		Public Sub UOC_InsertTask(asyncParameterValue As AsyncProcessingServiceParameterValue)
-			' 戻り値クラスを生成して、事前に戻り地に設定しておく。
+			' 戻り値クラスを生成して、事前に戻り値に設定しておく。
 			Dim asyncReturnValue As New AsyncProcessingServiceReturnValue()
 			Me.ReturnValue = asyncReturnValue
 

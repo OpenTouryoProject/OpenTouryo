@@ -28,19 +28,15 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  2016/01/14  Sandeep           Specified relative path for ImageUrl property
+'*  2017/01/31  西野 大介         ImageUrl設定にGetConfigParameter.GetConfigValueを使用
 '**********************************************************************************
 
-' System
-Imports System
-Imports System.Collections.Generic
 Imports System.ComponentModel
-Imports System.Text
-Imports System.IO
 
-' System.Web
-Imports System.Web
 Imports System.Web.UI
 Imports System.Web.UI.WebControls
+
+Imports Touryo.Infrastructure.Public.Util
 
 Namespace Touryo.Infrastructure.CustomControl
 	''' <summary>イメージボタン（Web）のカスタム・コントロール</summary>
@@ -58,8 +54,8 @@ Namespace Touryo.Infrastructure.CustomControl
 			' これはサンプル用に残した。
 			Me.Height = 50
 			Me.Width = 50
-			Me.ImageUrl = "~/Framework/Img/image.JPG"
-		End Sub
+            Me.ImageUrl = GetConfigParameter.GetConfigValue("ImagePath")
+        End Sub
 
 		#Region "HTML描画処理のカスタマイズ用テンプレート"
 

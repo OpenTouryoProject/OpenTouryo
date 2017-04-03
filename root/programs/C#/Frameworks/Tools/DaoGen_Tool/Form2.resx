@@ -1826,7 +1826,7 @@
     <value>TopLeft</value>
   </data>
   <data name="lblSetDaoDefinition.Text" xml:space="preserve">
-    <value>D layer definition file</value>
+    <value>Data layer definition file</value>
   </data>
   <data name="&gt;&gt;lblSep1.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -2041,7 +2041,7 @@ Delete query If you want to require.</value>
     <value>6</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>D layer automatic generation tool</value>
+    <value>Data layer generator</value>
   </data>
   <data name="lblSetDaoDefinition.Size" type="System.Drawing.Size, System.Drawing">
     <value>101, 13</value>
