@@ -1,0 +1,3 @@
+[submodule "document"]
+	path = document
+	url = git@github.com:regtan/OpenToryoDocument.git
