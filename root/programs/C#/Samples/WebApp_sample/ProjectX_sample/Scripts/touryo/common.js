@@ -30,6 +30,7 @@
 //*  2016/04/15  Sandeep           Implemented cross-browser detection method, to suppress double transmission
 //*  2016/04/20  Sandeep           Created form submission flag, to suppress double transmission
 //*  2016/07/05  Sandeep           Added cache property in the Ajax ping request to prevent the session timeout.
+//*  2017/04/20  西野 大介         showModalDialogのないモダン・ブラウザをサポートするための実装。
 //**********************************************************************************
 
 // ---------------------------------------------------------------
@@ -53,33 +54,31 @@ var Form_IsSubmitted = false;
 // 戻り値  －
 // ---------------------------------------------------------------
 function Fx_Document_OnLoad2() {
+
     window.returnValue = "";
 
-    // マスクの初期化
-    Fx_CreateMask();
+    // Cross-browser detection(先頭に移動)
+    Fx_WhichBrowser();
 
-    // Progress Dialogの初期化
-    Fx_InitProgressDialog();
+    // Dialogの初期化
+    Fx_CreateDialogMask();   // Dialog Maskの初期化
+    Fx_InitProgressDialog(); // Progress Dialogの初期化
+    Fx_InitPseudoDialog();   // OK and Yes/No Pseudo Dialogの初期化
 
-    // 子ウィンドウを開く関数  
-    Fx_ShowChildScreen();
+    // 子ウィンドウ（Dialog、Window）を 
+    Fx_ShowChildScreen(); // 開く関数 
+    Fx_CloseModalScreen(); // 閉じる関数
 
-    // 子ウィンドウ（Dialog）を閉じる関数
-    Fx_CloseModalScreen();
-
-    // Ajaxの初期化処理
+    // AjaxExtensionの初期化処理
     Fx_AjaxExtensionInit();
 
-    // 標準スタイルのウィンドウを表示
+    // 標準スタイルのWindowを表示
     //Fx_StandardStyleWindow();
 
     // Sessionタイムアウト防止機能 - Open 棟梁 Wiki
     // https://opentouryo.osscons.jp/index.php?Session%E3%82%BF%E3%82%A4%E3%83%A0%E3%82%A2%E3%82%A6%E3%83%88%E9%98%B2%E6%AD%A2%E6%A9%9F%E8%83%BD
     // Webサーバへ一定時間ごとにpingを行う
-    //window.setInterval(HttpPing, 5 * 60 * 1000);
-
-    // Cross-browser detection
-    Fx_WhichBrowser();
+    //window.setInterval(HttpPing, 5 * 60 * 1000);    
 }
 
 //// ---------------------------------------------------------------
@@ -319,36 +318,71 @@ function Fx_OnSubmit() {
     }
 }
 
+//**********************************************************************************
+// Dialog Mask
+//**********************************************************************************
+
+// Ajax：マスク（div）
+var AjaxDialogMask;
 
 // ---------------------------------------------------------------
-// Progress Dialog表示を仕掛ける。
+// マスク生成
 // ---------------------------------------------------------------
 // 引数    －
 // 戻り値  －
 // ---------------------------------------------------------------
-function Fx_SetProgressDialog() {
-    if (IsDownload) {
-        // ダウンロードの場合
+function Fx_CreateDialogMask() {
 
-        // フラグを戻す
-        IsDownload = false;
-    }
-    else {
-        // ダウンロードでない場合
+    var _div = document.createElement("div");
 
-        // Dialog表示（２秒後）
-        ProgressDialogTimer = setTimeout("Fx_DisplayProgressDialog()", 2000);
-    }
+    _div.style.top = "0px";
+    _div.style.left = "0px";
+    _div.style.height = Fx_getContentsHeight() + "px"; //"100%";では、初期表示画面サイズになってしまう。
+    _div.style.width = Fx_getBrowserWidth() + "px"; //"100%";では、初期表示画面サイズになってしまう。
+    _div.style.position = "absolute";
+
+    // 1000なら最前面だろうという仕様（ToMost相当が無い）
+    _div.style.zIndex = "1000";
+
+    // 分かりやすいように半透明 (0に設定しても良い)
+    _div.style.opacity = 0.5;
+    // IE 8用の透明度の設定(0に設定しても良い)
+    _div.style.filter = "alpha(opacity=50)";
+    // 分かりやすいように着色(若しくは無色)
+    _div.style.backgroundColor = 'gray';
+
+    AjaxDialogMask = _div;
+}
+
+// ---------------------------------------------------------------
+// マスクする。
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_DialogMaskOn() {
+    document.body.appendChild(AjaxDialogMask);
+}
+
+// ---------------------------------------------------------------
+// マスクを外す。
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_DialogMaskOff() {
+    document.body.removeChild(AjaxDialogMask);
 }
 
 //**********************************************************************************
-
-// ------------------------------------------------------------
-//  Progress Dialogの表示
-// ------------------------------------------------------------
-
+//  Progress Dialog
+//**********************************************************************************
 // Ajax：Progress Dialog（div）
 var AjaxProgressDialog;
+
+// Ajax：Progress Dialogのサイズ（div）
+var AjaxProgressDialog_Width = 300;
+var AjaxProgressDialog_Height = 200;
 
 // Ajax：Progress Dialogの表示タイマ
 var ProgressDialogTimer;
@@ -384,7 +418,7 @@ function Fx_InitProgressDialog() {
     _div.style.position = "absolute";
 
     // 1000なら最前面だろうという仕様（ToMost相当が無い）
-    _div.style.zIndex = "1001"; // Maskより前面に出す。
+    _div.style.zIndex = "1001"; // DialogMaskより前面に出す。
 
     // 内容を指定
     _div.innerHTML = "処理中です。しばらくお待ち下さい・・・<hr />";
@@ -406,12 +440,32 @@ function Fx_InitProgressDialog() {
 }
 
 // ---------------------------------------------------------------
+// Progress Dialog表示を仕掛ける。
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_SetProgressDialog() {
+    if (IsDownload) {
+        // ダウンロードの場合
+
+        // フラグを戻す
+        IsDownload = false;
+    }
+    else {
+        // ダウンロードでない場合
+
+        // Dialog表示（２秒後）
+        ProgressDialogTimer = setTimeout("Fx_DisplayProgressDialog()", 2000);
+    }
+}
+
+// ---------------------------------------------------------------
 // Progress Dialog表示
 // ---------------------------------------------------------------
 // 引数    －
 // 戻り値  －
 // ---------------------------------------------------------------
-
 function Fx_DisplayProgressDialog() {
     // はじめにタイマをクリアする。
     clearTimeout(ProgressDialogTimer);
@@ -424,8 +478,165 @@ function Fx_DisplayProgressDialog() {
             - (AjaxProgressDialog_Width / 2) + "px";
 
         // Progress Dialogを表示する。
-        document.body.appendChild(AjaxMask);
+        document.body.appendChild(AjaxDialogMask);
         document.body.appendChild(AjaxProgressDialog);
+
+    } catch (e) {
+        //alert( e );//エラー内容
+    }
+}
+
+//**********************************************************************************
+// Pseudo Dialog（擬似ダイアログ）
+//**********************************************************************************
+// Ajax：Pseudo Dialog（div）
+var AjaxOKPseudoDialog;
+var AjaxYesNoPseudoDialog;
+
+// Ajax：Pseudo Dialogのサイズ（div）
+var AjaxOKPseudoDialog_Width = 500;
+var AjaxOKPseudoDialog_Height = 300;
+var AjaxYesNoPseudoDialog_Width = 500;
+var AjaxYesNoPseudoDialog_Height = 300;
+
+// ---------------------------------------------------------------
+// OK Pseudo Dialogの初期化
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ★★★  Dialogのデザインを変える場合は、ここを直接編集
+// ---------------------------------------------------------------
+function Fx_InitPseudoDialog() {
+
+    // divを生成   
+    var _div = null;
+
+    // ---------------------------------------------------------------------
+    // OK Pseudo Dialog ----------------------------------------------------
+     
+    _div = document.createElement("div");
+    _div.id = "AjaxOKPseudoDialog";
+
+    // 幅を指定
+    _div.style.width = AjaxOKPseudoDialog_Width + "px";
+    _div.style.height = AjaxOKPseudoDialog_Height + "px";
+
+    // スタイルを指定
+    _div.style.top = "0px";
+    _div.style.left = "0px";
+
+    _div.style.paddingTop = "10px";
+    _div.style.paddingLeft = "10px";
+    _div.style.paddingRight = "10px";
+
+    _div.style.textAlign = "center";
+    _div.style.overflow = "auto";
+
+    _div.style.position = "absolute";
+
+    // 1000なら最前面だろうという仕様（ToMost相当が無い）
+    _div.style.zIndex = "1001"; // DialogMaskより前面に出す。
+
+    // 内容を指定
+    _div.innerHTML =
+            "<iframe id=\"FxIFrame\" src=\"dummy\" scrolling=\"no\" " +
+                "width=\"" + (AjaxYesNoPseudoDialog_Width - 30) + "\" " +
+                "height=\"" + (AjaxYesNoPseudoDialog_Height - 30) + "\"></iframe>";
+
+    _div.style.backgroundColor = "lightcyan";
+
+    //// imgを生成
+    //var _img = document.createElement("img");
+
+    //_img.src = ResolveServerUrl("~/images/touryo/loading.gif");
+    //_img.style.width = "50px";
+    //_img.style.height = "50px";
+    //_img.alt = "処理中画像";
+
+    //// divにimgを追加
+    //_div.appendChild(_img);
+
+    // div → OK Pseudo Dialog
+    AjaxOKPseudoDialog = _div
+
+    // ---------------------------------------------------------------------
+    // Yes/No Pseudo Dialog ------------------------------------------------
+
+    _div = document.createElement("div");
+    _div.id = "AjaxYesNoPseudoDialog";
+
+    // 幅を指定
+    _div.style.width = AjaxYesNoPseudoDialog_Width + "px";
+    _div.style.height = AjaxYesNoPseudoDialog_Height + "px";
+
+    // スタイルを指定
+    _div.style.top = "0px";
+    _div.style.left = "0px";
+
+    _div.style.paddingTop = "10px";
+    _div.style.paddingLeft = "10px";
+    _div.style.paddingRight = "10px";
+
+    _div.style.textAlign = "center";
+    _div.style.overflow = "auto";
+
+    _div.style.position = "absolute";
+
+    // 1000なら最前面だろうという仕様（ToMost相当が無い）
+    _div.style.zIndex = "1001"; // DialogMaskより前面に出す。
+
+    // 内容を指定
+    _div.innerHTML =
+            "<iframe id=\"FxIFrame\" src=\"dummy\" scrolling=\"no\" " +
+                "width=\"" + (AjaxYesNoPseudoDialog_Width - 30) + "\" " +
+                "height=\"" + (AjaxYesNoPseudoDialog_Height - 30) + "\"></iframe>";
+
+    _div.style.backgroundColor = "lightcyan";
+
+    //// imgを生成
+    //var _img = document.createElement("img");
+
+    //_img.src = ResolveServerUrl("~/images/touryo/loading.gif");
+    //_img.style.width = "50px";
+    //_img.style.height = "50px";
+    //_img.alt = "処理中画像";
+
+    //// divにimgを追加
+    //_div.appendChild(_img);
+
+    // div → Yes/No Pseudo Dialog
+    AjaxYesNoPseudoDialog = _div
+
+    // ---------------------------------------------------------------------
+
+}
+
+// ---------------------------------------------------------------
+// Pseudo Dialog表示
+// ---------------------------------------------------------------
+// 引数    AjaxPseudoDialog, url
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_DisplayPseudoDialog(AjaxPseudoDialog, url) {
+    try {
+        // 表示位置の計算
+        AjaxPseudoDialog.style.top = (Fx_getBrowserHeight() / 2) //(Fx_getContentsHeight() / 2)
+            - (AjaxProgressDialog_Height / 2) + "px";
+        AjaxPseudoDialog.style.left = (Fx_getBrowserWidth() / 2)
+            - (AjaxProgressDialog_Width / 2) + "px";
+
+        // urlの組み込み
+        var elementChildren = AjaxPseudoDialog.children;
+        for (var i = 0; i < elementChildren.length; i++) {
+            if (elementChildren[i].id = "FxIFrame")
+            {
+                elementChildren[i].src = url;
+            }
+        }
+
+        // Pseudo Dialogを表示する。
+        document.body.appendChild(AjaxDialogMask);
+        document.body.appendChild(AjaxPseudoDialog);
 
     } catch (e) {
         //alert( e );//エラー内容
@@ -446,15 +657,8 @@ function Fx_DisplayProgressDialog() {
 // ---------------------------------------------------------------
 function Fx_ShowChildScreen() {
 
-    var fobj = document.aspnetForm;
-
-    if (fobj == null || fobj == undefined) {
-        fobj = document.getElementById("form1");
-    }
-
-    if (fobj == null || fobj == undefined) {
-        fobj = document.getElementById("aspnetForm");
-    }
+    // ASP.NET Web Forms の Form objectを取得
+    var fobj = Fx_GetFormObject();
 
     // 子画面型と子画面URLは必須
     var childScreenType = GetElementByName_SuffixSearch("ctl00$ChildScreenType");
@@ -475,8 +679,8 @@ function Fx_ShowChildScreen() {
             // Cookieを更新し、戻るButtonで戻った時に画面を表示しないようにする。
             Fx_SetCookie("BackButtonControl", "FALSE", "path=/");
 
-            // OKMessageBox
-            return Fx_ShowMessageDialog(childScreenUrl.value);
+            // OK Message Dialog を表示する。
+            return Fx_ShowMessageDialog(childScreenUrl.value, true);
         }
         else {
             // 戻るButtonで戻ったので、画面は表示しない。
@@ -491,50 +695,11 @@ function Fx_ShowChildScreen() {
             // Cookieを更新し、戻るButtonで戻った時に画面を表示しないようにする。
             Fx_SetCookie("BackButtonControl", "FALSE", "path=/");
 
-            // myFlagの初期化
-            var myFlag = 0;
+            //// myFlagの初期化
+            //var myFlag = 0;
 
-            // YesNoMessageBoxを表示する
-            myFlag = Fx_ShowMessageDialog(childScreenUrl.value);
-
-            // サブミット フラグの確認
-            var submitFlag = GetElementByName_SuffixSearch("ctl00$SubmitFlag");
-
-            if (myFlag == 0) {
-                // myFlagが「0」の場合、
-                // 「×」Buttonが押されたことを意味する。
-
-                // submitFlagを「1」に設定
-                submitFlag.value = "1";
-
-                // サーバ後処理を実行するため、サブミット
-                Fx_SetProgressDialog();
-                fobj.submit();
-            }
-            else if (myFlag == 1) {
-                // myFlagが「1」の場合、
-                // 「YES」Buttonが押されたことを意味する。
-
-                // submitFlagを「2」に設定
-                submitFlag.value = "2";
-
-                // サーバ後処理を実行するため、サブミット
-                Fx_SetProgressDialog();
-                fobj.submit();
-            }
-            else if (myFlag == 2) {
-                // myFlagが「2」の場合、
-                // 「NO」Buttonが押されたことを意味する。
-
-                // submitFlagを「3」に設定
-                submitFlag.value = "3";
-
-                // サーバ後処理を実行するため、サブミット
-                Fx_SetProgressDialog();
-                fobj.submit();
-            }
-
-            return;
+            // Yes/No Message Dialog を表示する。
+            return Fx_ShowMessageDialog(childScreenUrl.value, false);
         }
         else {
             // 戻るButtonで戻ったので、画面は表示しない。
@@ -585,7 +750,7 @@ function Fx_ShowChildScreen() {
 // 引数    url
 // 戻り値  window.showModalDialogの戻り値
 // ---------------------------------------------------------------
-function Fx_ShowMessageDialog(url) {
+function Fx_ShowMessageDialog(url, isOK) {
 
     var args = new Array();
 
@@ -603,24 +768,123 @@ function Fx_ShowMessageDialog(url) {
     url = url + "&Time=" + year_now + month_now + date_now + day_now + hour_now + minute_now + second_now;
 
     // マスクする。
-    Fx_MaskOn();
+    Fx_DialogMaskOn();
 
-    try {
-        // Dialogを表示(window.showModalDialog)
-        // 第1引数 = URL
-        // 第2引数 = 該当ページに引き渡すArrayクラス(不要ならば null)
-        // 第3引数 = オプション(「項目1:値1;項目2:値2;…;項目n:値n」の形式)
-        // 戻り値  = Dialog側の window.returnValue プロパティ設定値
+    if (Browser_IsIE) {
 
-        // ★Dialogのサイズはここに記述する。
-        var ret = window.showModalDialog(url, args,
-                     GetElementByName_SuffixSearch("ctl00$FxDialogStyle").value);
-    } finally {
-        // マスクを外す。
-        Fx_MaskOff();
+        try {
+            // Dialogを表示(window.showModalDialog)
+            // 第1引数 = URL
+            // 第2引数 = 該当ページに引き渡すArrayクラス(不要ならば null)
+            // 第3引数 = オプション(「項目1:値1;項目2:値2;…;項目n:値n」の形式)
+            // 戻り値  = Dialog側の window.returnValue プロパティ設定値
+
+            // ★Dialogのサイズはここに記述する。
+            var ret = window.showModalDialog(url, args,
+                         GetElementByName_SuffixSearch("ctl00$FxDialogStyle").value);
+
+        } finally {
+            
+            // 後処理
+            if (isOK) {
+                Fx_CallbackOfOKMessageDialog();
+            }
+            else {
+                Fx_CallbackOfYesNoMessageDialog(ret);
+            }
+        }
+    }
+    else {
+
+        // モダンブラウザは擬似ダイアログを使用する。
+
+        if (isOK) {
+            Fx_DisplayPseudoDialog(AjaxOKPseudoDialog, url);
+        }
+        else {
+            Fx_DisplayPseudoDialog(AjaxYesNoPseudoDialog, url);
+        }
     }
 
     return ret;
+}
+
+// ---------------------------------------------------------------
+// OK Message Dialogの後処理
+// ---------------------------------------------------------------
+// 引数    myFlag
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_CallbackOfOKMessageDialog(myFlag) {
+    // マスクを外す。
+    Fx_DialogMaskOff();
+
+    if (Browser_IsIE) {
+        // なにもしない。
+    }
+    else {
+        // 擬似ダイアログを閉じる。
+        document.body.removeChild(AjaxOKPseudoDialog);
+    }
+}
+
+// ---------------------------------------------------------------
+// Yes/No Message Dialogの後処理
+// ---------------------------------------------------------------
+// 引数    myFlag
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_CallbackOfYesNoMessageDialog(myFlag) {
+    // マスクを外す。
+    Fx_DialogMaskOff();
+
+    if (Browser_IsIE) {
+        // なにもしない。
+    }
+    else {
+        // 擬似ダイアログを閉じる。
+        document.body.removeChild(AjaxYesNoPseudoDialog);
+    }
+
+    // ASP.NET Web Forms の Form objectを取得
+    var fobj = Fx_GetFormObject();
+
+    // サブミット フラグの確認
+    var submitFlag = GetElementByName_SuffixSearch("ctl00$SubmitFlag");
+
+    if (myFlag == 0) {
+        // myFlagが「0」の場合、
+        // 「×」Buttonが押されたことを意味する。
+
+        // submitFlagを「1」に設定
+        submitFlag.value = "1";
+
+        // サーバ後処理を実行するため、サブミット
+        Fx_SetProgressDialog();
+        fobj.submit();
+    }
+    else if (myFlag == 1) {
+        // myFlagが「1」の場合、
+        // 「YES」Buttonが押されたことを意味する。
+
+        // submitFlagを「2」に設定
+        submitFlag.value = "2";
+
+        // サーバ後処理を実行するため、サブミット
+        Fx_SetProgressDialog();
+        fobj.submit();
+    }
+    else if (myFlag == 2) {
+        // myFlagが「2」の場合、
+        // 「NO」Buttonが押されたことを意味する。
+
+        // submitFlagを「3」に設定
+        submitFlag.value = "3";
+
+        // サーバ後処理を実行するため、サブミット
+        Fx_SetProgressDialog();
+        fobj.submit();
+    }
 }
 
 
@@ -632,15 +896,8 @@ function Fx_ShowMessageDialog(url) {
 // ---------------------------------------------------------------
 function Fx_ShowModalScreen(url, style) {
 
-    var fobj = document.aspnetForm;
-
-    if (fobj == null || fobj == undefined) {
-        fobj = document.getElementById("form1");
-    }
-
-    if (fobj == null || fobj == undefined) {
-        fobj = document.getElementById("aspnetForm");
-    }
+    // ASP.NET Web Forms の Form objectを取得
+    var fobj = Fx_GetFormObject();
 
     // 引数の個数を判別
     switch (arguments.length) {
@@ -662,7 +919,7 @@ function Fx_ShowModalScreen(url, style) {
     args[0] = url;
 
     // マスクする。
-    Fx_MaskOn();
+    Fx_DialogMaskOn();
 
     try {
         // Modal画面を表示
@@ -674,7 +931,7 @@ function Fx_ShowModalScreen(url, style) {
 
     } finally {
         // マスクを外す。
-        Fx_MaskOff();
+        Fx_DialogMaskOff();
     }
 
     if (ret == "1") {
@@ -721,62 +978,6 @@ function Fx_ShowModalScreen(url, style) {
     }
 
     return false;
-}
-
-// ------------------------------------------------------------
-//  マスクの表示
-// ------------------------------------------------------------
-
-// Ajax：マスク（div）
-var AjaxMask;
-
-// ---------------------------------------------------------------
-// マスク生成
-// ---------------------------------------------------------------
-// 引数    －
-// 戻り値  －
-// ---------------------------------------------------------------
-function Fx_CreateMask() {
-
-    var _div = document.createElement("div");
-
-    _div.style.top = "0px";
-    _div.style.left = "0px";
-    _div.style.height = Fx_getContentsHeight() + "px"; //"100%";では、初期表示画面サイズになってしまう。
-    _div.style.width = Fx_getBrowserWidth() + "px"; //"100%";では、初期表示画面サイズになってしまう。
-    _div.style.position = "absolute";
-
-    // 1000なら最前面だろうという仕様（ToMost相当が無い）
-    _div.style.zIndex = "1000";
-
-    // 分かりやすいように半透明 (0に設定しても良い)
-    _div.style.opacity = 0.5;
-    // IE 8用の透明度の設定(0に設定しても良い)
-    _div.style.filter = "alpha(opacity=50)";
-    // 分かりやすいように着色(若しくは無色)
-    _div.style.backgroundColor = 'gray';
-
-    AjaxMask = _div;
-}
-
-// ---------------------------------------------------------------
-// マスクする。
-// ---------------------------------------------------------------
-// 引数    －
-// 戻り値  －
-// ---------------------------------------------------------------
-function Fx_MaskOn() {
-    document.body.appendChild(AjaxMask);
-}
-
-// ---------------------------------------------------------------
-// マスクを外す。
-// ---------------------------------------------------------------
-// 引数    －
-// 戻り値  －
-// ---------------------------------------------------------------
-function Fx_MaskOff() {
-    document.body.removeChild(AjaxMask);
 }
 
 // ---------------------------------------------------------------
@@ -845,10 +1046,6 @@ function Fx_ShowNormalScreen(url) {
 
 // Ajax：Post Backエレメント
 var AjaxPostBackElement;
-
-// Ajax：Progress Dialogのサイズ（div）
-var AjaxProgressDialog_Width = 300;
-var AjaxProgressDialog_Height = 200;
 
 // Ajax：Progress中かどうか
 var Ajax_IsProgressed = false;
@@ -943,7 +1140,7 @@ function Fx_AjaxExtensionEndRequest(sender, args) {
     // Progress Dialogを非表示にする。
     try {
 
-        document.body.removeChild(AjaxMask);
+        document.body.removeChild(AjaxDialogMask);
         document.body.removeChild(AjaxProgressDialog);
 
     } catch (e) {
@@ -991,15 +1188,8 @@ function GetElementByName_SuffixSearch(name) {
     var nameLength = name.length;
     var elementNameLength = 0;
 
-    var fobj = document.aspnetForm;
-
-    if (fobj == null || fobj == undefined) {
-        fobj = document.getElementById("form1");
-    }
-
-    if (fobj == null || fobj == undefined) {
-        fobj = document.getElementById("aspnetForm");
-    }
+    // ASP.NET Web Forms の Form objectを取得
+    var fobj = Fx_GetFormObject();
 
     // 必要なHiddenは後方にあるので、
     // 後方から検索するように変更。
@@ -1169,6 +1359,26 @@ function Fx_getBrowserHeight() {
 function Fx_getContentsHeight() {
     // コンテンツ全体の高さを取得する
     return Math.max.apply(null, [document.body.clientHeight, document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight]);
+}
+
+// ---------------------------------------------------------------
+// Get Form object in the ASP.NET Web Forms.
+// ---------------------------------------------------------------
+// Parameter     －
+// Return value  － Form object in the ASP.NET Web Forms
+// ---------------------------------------------------------------
+function Fx_GetFormObject() {
+    var fobj = document.aspnetForm;
+
+    if (fobj == null || fobj == undefined) {
+        fobj = document.getElementById("form1");
+    }
+
+    if (fobj == null || fobj == undefined) {
+        fobj = document.getElementById("aspnetForm");
+    }
+
+    return fobj;
 }
 
 // ---------------------------------------------------------------
