@@ -11,15 +11,16 @@
         </asp:PlaceHolder>
         <webopt:bundlereference runat="server" path="~/bundles/css" />
 
-        <!-- Resolve URL in the javascript-->
         <script type="text/javascript">
+            // Resolve URL in the javascript
             var baseUrl = "<%= this.ResolveUrl("~/") %>";
         
-           // 初期値は０、Dialog右上の[×]で閉じた場合に戻る値
-           var dialogreturn = 0;
+            // 初期値は０、Dialog右上の[×]で閉じた場合に戻る値
+            var dialogreturn = 0;
         
             // 開始処理
-            function Document_OnLoad(){
+            function Document_OnLoad() {
+                Fx_WhichBrowser();
             }
         
             // 終了処理
@@ -53,7 +54,7 @@
         </script>
     </head>
     
-    <body onload="Document_OnLoad()" onunload="Document_OnClose()">
+    <body onload="Document_OnLoad();" onunload="Document_OnClose();">
         <div style="text-align:left">
             <table style="border-spacing:10px; border-collapse:collapse;" border="0">
                 <tr>
