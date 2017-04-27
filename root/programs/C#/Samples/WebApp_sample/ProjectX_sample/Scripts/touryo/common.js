@@ -106,12 +106,12 @@ function Fx_StandardStyleWindow() {
     var childScreenType = GetElementByName_SuffixSearch("ChildScreenType");
 
     // hiddenがnullになることがある・・・
-    if (childScreenType == null || childScreenType == undefined) {
+    if (childScreenType === null || childScreenType === undefined) {
         return;
     }
 
     // childScreenTypeが「0」の場合、画面最大化を表示
-    if (childScreenType.value == "0") {
+    if (childScreenType.value === "0") {
 
         // 幅と高さ、スタイルを指定する。
         var width = 1024;
@@ -122,9 +122,9 @@ function Fx_StandardStyleWindow() {
 
         var arg = "top=" + wl + ",left=" + wt + ",width=" + width + ",height=" + height + style;
 
-        if (this.name != 'StandardStyleWindow') {
+        if (this.name !== 'StandardStyleWindow') {
             // 自分を指定のスタイルで開きなおし、
-            if (window.open(this.location, 'StandardStyleWindow', arg) != null) {
+            if (window.open(this.location, 'StandardStyleWindow', arg) !== null) {
 
                 // 自身（開いた元の画面）を閉じる。
                 //window.opener = null;
@@ -176,27 +176,27 @@ function Fx_OnSubmit() {
         
         // Detected browser is Internet Explorer
 
-        if (navigator.appVersion.indexOf("MSIE 6.0") != -1) {
+        if (navigator.appVersion.indexOf("MSIE 6.0") !== -1) {
             // IE6.0では、hrefのdoPostBackの２重送信を抑止できない。
             // （onSubmitイベントがハンドルされないため）
         }
-        else if (navigator.appVersion.indexOf("MSIE 7.0") != -1) {
+        else if (navigator.appVersion.indexOf("MSIE 7.0") !== -1) {
             // IE7.0では完全に有効
         }
-        else if (navigator.appVersion.indexOf("MSIE 8.0") != -1) {
+        else if (navigator.appVersion.indexOf("MSIE 8.0") !== -1) {
             // IE8.0では完全に有効
         }
-        else if (navigator.appVersion.indexOf("MSIE 9.0") != -1) {
+        else if (navigator.appVersion.indexOf("MSIE 9.0") !== -1) {
             // IE9.0で問題の報告を受けていません。 
         }
-        else if (navigator.appVersion.indexOf("MSIE 10.0") != -1) {
+        else if (navigator.appVersion.indexOf("MSIE 10.0") !== -1) {
             // IE10.0で問題の報告を受けていません。 
         }
-        else if (navigator.appVersion.indexOf("Trident/7") != -1) {
+        else if (navigator.appVersion.indexOf("Trident/7") !== -1) {
             // IE11.0で問題があった場合、報告をお願いします。
         }
 
-        if (document.readyState == "complete") {
+        if (document.readyState === "complete") {
 
             // 受信完了
 
@@ -226,7 +226,7 @@ function Fx_OnSubmit() {
 
         // Detected browser is Edge
 
-        if (document.readyState == "complete") {
+        if (document.readyState === "complete") {
 
             // 受信完了
 
@@ -436,7 +436,7 @@ function Fx_InitProgressDialog() {
     _div.appendChild(_img);
 
     // div → Progress Dialog
-    AjaxProgressDialog = _div
+    AjaxProgressDialog = _div;
 }
 
 // ---------------------------------------------------------------
@@ -549,7 +549,7 @@ function Fx_InitPseudoDialog() {
     _div.style.backgroundColor = "lightcyan";
 
     // div → OK Pseudo Dialog
-    AjaxOKPseudoDialog = _div
+    AjaxOKPseudoDialog = _div;
 
     // ---------------------------------------------------------------------
     // Yes/No Pseudo Dialog ------------------------------------------------
@@ -586,7 +586,7 @@ function Fx_InitPseudoDialog() {
     _div.style.backgroundColor = "lightcyan";
     
     // div → Yes/No Pseudo Dialog
-    AjaxYesNoPseudoDialog = _div
+    AjaxYesNoPseudoDialog = _div;
 
     // ---------------------------------------------------------------------
 
@@ -612,7 +612,7 @@ function Fx_DisplayPseudoDialog(AjaxPseudoDialog, url) {
         // urlの組み込み
         var elementChildren = AjaxPseudoDialog.children;
         for (var i = 0; i < elementChildren.length; i++) {
-            if (elementChildren[i].id = "FxIFrame")
+            if (elementChildren[i].id === "FxIFrame")
             {
                 elementChildren[i].src = url;
             }
@@ -647,17 +647,17 @@ function Fx_ShowChildScreen() {
     var childScreenUrl = GetElementByName_SuffixSearch("ctl00$ChildScreenUrl");
 
     // hiddenがnullになることがある・・・
-    if (childScreenType == null || childScreenType == undefined) {
+    if (childScreenType === null || childScreenType === undefined) {
         return;
     }
-    if (childScreenUrl == null || childScreenUrl == undefined) {
+    if (childScreenUrl === null || childScreenUrl === undefined) {
         return;
     }
 
     // childScreenTypeが「1」の場合、「OK」Message Dialogを表示
-    if (childScreenType.value == "1") {
+    if (childScreenType.value === "1") {
         // Cookieフラグを確認（バックButton押下時の不具合対応）
-        if (Fx_GetCookie("BackButtonControl") == "TRUE") {
+        if (Fx_GetCookie("BackButtonControl") === "TRUE") {
             // Cookieを更新し、戻るButtonで戻った時に画面を表示しないようにする。
             Fx_SetCookie("BackButtonControl", "FALSE", "path=/");
 
@@ -671,9 +671,9 @@ function Fx_ShowChildScreen() {
     }
 
     // childScreenTypeが「2」の場合、「YES」・「NO」Message Dialogを表示
-    if (childScreenType.value == "2") {
+    if (childScreenType.value === "2") {
         // Cookieフラグを確認（バックButton押下時の不具合対応）
-        if (Fx_GetCookie("BackButtonControl") == "TRUE") {
+        if (Fx_GetCookie("BackButtonControl") === "TRUE") {
             // Cookieを更新し、戻るButtonで戻った時に画面を表示しないようにする。
             Fx_SetCookie("BackButtonControl", "FALSE", "path=/");
 
@@ -690,9 +690,9 @@ function Fx_ShowChildScreen() {
     }
 
     // childScreenTypeが「3」の場合、業務Modal Dialogを表示
-    if (childScreenType.value == "3") {
+    if (childScreenType.value === "3") {
         // Cookieフラグを確認（バックButton押下時の不具合対応）
-        if (Fx_GetCookie("BackButtonControl") == "TRUE") {
+        if (Fx_GetCookie("BackButtonControl") === "TRUE") {
             // Cookieを更新し、戻るButtonで戻った時に画面を表示しないようにする。
             Fx_SetCookie("BackButtonControl", "FALSE", "path=/");
 
@@ -708,9 +708,9 @@ function Fx_ShowChildScreen() {
     }
 
     // childScreenTypeが「4」の場合、Modeless画面を表示
-    if (childScreenType.value == "4") {
+    if (childScreenType.value === "4") {
         // Cookieフラグを確認（バックButton押下時の不具合対応）
-        if (Fx_GetCookie("BackButtonControl") == "TRUE") {
+        if (Fx_GetCookie("BackButtonControl") === "TRUE") {
             // Cookieを更新し、戻るButtonで戻った時に画面を表示しないようにする。
             Fx_SetCookie("BackButtonControl", "FALSE", "path=/");
 
@@ -835,7 +835,7 @@ function Fx_CallbackOfYesNoMessageDialog(myFlag) {
     // サブミット フラグの確認
     var submitFlag = GetElementByName_SuffixSearch("ctl00$SubmitFlag");
 
-    if (myFlag == 0) {
+    if (myFlag === 0) {
         // myFlagが「0」の場合、
         // 「×」Buttonが押されたことを意味する。
 
@@ -846,7 +846,7 @@ function Fx_CallbackOfYesNoMessageDialog(myFlag) {
         Fx_SetProgressDialog();
         fobj.submit();
     }
-    else if (myFlag == 1) {
+    else if (myFlag === 1) {
         // myFlagが「1」の場合、
         // 「YES」Buttonが押されたことを意味する。
 
@@ -857,7 +857,7 @@ function Fx_CallbackOfYesNoMessageDialog(myFlag) {
         Fx_SetProgressDialog();
         fobj.submit();
     }
-    else if (myFlag == 2) {
+    else if (myFlag === 2) {
         // myFlagが「2」の場合、
         // 「NO」Buttonが押されたことを意味する。
 
@@ -879,33 +879,34 @@ function Fx_CallbackOfYesNoMessageDialog(myFlag) {
 // ---------------------------------------------------------------
 function Fx_ShowModalScreen(url, style) {
 
-    // 引数の個数を判別
-    switch (arguments.length) {
-        case 1:
-            // スタイルの指定が無い場合（サーバ起動）
-            style = GetElementByName_SuffixSearch("ctl00$BusinessDialogStyle").value
-        case 2:
-            // スタイルの指定が有る場合（クライアント起動）
-        default:
-    }
-
-    // Dialog フレームへのURL
-    var dialogFrameUrl = GetElementByName_SuffixSearch("ctl00$DialogFrameUrl");
-
-    var args = new Array();
-    args[0] = url;
-
     // マスクする。
     Fx_DialogMaskOn();
 
     if (Browser_IsIE) {
         try {
-            // Business Modal Dialogを表示
+                // Business Modal Dialogを表示
 
-            // 第1引数 = DialogFrameのURL
-            // 第2引数 = DialogFrame → DialogLoader.htmから起動するModal画面のURL
-            // 第3引数 = 画面のスタイル(「項目1:値1;項目2:値2;…;項目n:値n」の形式) 
-            var ret = window.showModalDialog(dialogFrameUrl.value, args, style);
+                // 引数の個数を判別
+                switch (arguments.length) {
+                    case 1:
+                        // スタイルの指定が無い場合（サーバ起動）
+                        style = GetElementByName_SuffixSearch("ctl00$BusinessDialogStyle").value;
+                        break;
+                    case 2:
+                        // スタイルの指定が有る場合（クライアント起動）
+                        break;
+                    default:
+                }
+
+                // Dialog フレームへのURL
+                var dialogFrameUrl = GetElementByName_SuffixSearch("ctl00$DialogFrameUrl");
+
+                var args = new Array();
+                args[0] = url;
+                // 第1引数 = DialogFrameのURL
+                // 第2引数 = DialogFrame → DialogLoader.htmから起動するModal画面のURL
+                // 第3引数 = 画面のスタイル(「項目1:値1;項目2:値2;…;項目n:値n」の形式) 
+                var ret = window.showModalDialog(dialogFrameUrl.value, args, style);
             
         } finally {
             // 後処理
@@ -915,13 +916,13 @@ function Fx_ShowModalScreen(url, style) {
     else {
         // モダンブラウザは window.open を使用する。
 
-        // IFRAME有り
+        // Dialog フレーム有り
         //// args代替でCookieを使用する。
         //Fx_SetCookie("fx_window_args", url, "path=/");
         //Fx_ShowNormalScreen(dialogFrameUrl.value);
 
-        // IFRAME無し
-        Fx_ShowNormalScreen(url);
+        // Dialog フレーム無し
+        Fx_ShowNormalScreen2(url);
     }
 
     return false;
@@ -948,7 +949,7 @@ function Fx_CallbackOfBusinessModalScreen() {
     // 戻り値を確認
     var ret = Fx_GetCookie("fx_window_returnValue");
 
-    if (ret == "1") {
+    if (ret === "1") {
         // 戻り値が１の場合、Post Back（後処理）を実行する。
         // →  後処理のためのPost Backを実行する。
 
@@ -958,13 +959,13 @@ function Fx_CallbackOfBusinessModalScreen() {
         Fx_SetProgressDialog();
         fobj.submit();
     }
-    else if (ret == "2") {
+    else if (ret === "2") {
         // closeFlagが２の場合、Post Back（後処理）を実行しない。
         // →  なにもしない。
     }
-    else if (ret == "3") {
+    else if (ret === "3") {
         // closeFlagが３の場合、当該画面が、Business Modal Dialogかどうかを判定する。
-        if (window.dialogArguments == null || window.dialogArguments == undefined) {
+        if (window.dialogArguments === null || window.dialogArguments === undefined) {
             // 当該画面が、Business Modal Dialogでない場合、Post Back（後処理）を実行する。
 
             // submitFlagを「4」に設定
@@ -1003,23 +1004,23 @@ function Fx_CloseModalScreen() {
     var closeFlag = GetElementByName_SuffixSearch("ctl00$CloseFlag");
 
     // hiddenがnullになることがある・・・
-    if (closeFlag == null || closeFlag == undefined) {
+    if (closeFlag === null || closeFlag === undefined) {
         return;
     }
 
-    if (closeFlag.value == "1") {
+    if (closeFlag.value === "1") {
         // closeFlagが１の場合、自画面を閉じ、親画面でPost Back（後処理）を実行する。
         //window.returnValue = "1";
         Fx_SetCookie("fx_window_returnValue", closeFlag.value, "path=/");
         Fx_WindowClose(closeFlag.value);
     }
-    else if (closeFlag.value == "2") {
+    else if (closeFlag.value === "2") {
         // closeFlagが2の場合、自画面を閉じ、親画面でPost Back（後処理）を実行しない。
         //window.returnValue = "2";
         Fx_SetCookie("fx_window_returnValue", closeFlag.value, "path=/");
         Fx_WindowClose(closeFlag.value);
     }
-    else if (closeFlag.value == "3") {
+    else if (closeFlag.value === "3") {
         // closeFlagが3の場合、自画面を閉じ、親のBusiness Modal Dialogも閉じる。
         //window.returnValue = "3";
         Fx_SetCookie("fx_window_returnValue", closeFlag.value, "path=/");
@@ -1072,6 +1073,20 @@ function Fx_ShowNormalScreen(url) {
     // ウィンドウ名を固定にすると、複数のウィンドウが開かなくなる。
     window.open(url,
            GetElementByName_SuffixSearch("ctl00$NormalScreenTarget").value,
+           GetElementByName_SuffixSearch("ctl00$NormalScreenStyle").value);
+}
+
+function Fx_ShowNormalScreen2(url) {
+
+    // ウィンドウを表示(window.open)
+
+    // 第1引数 = URL
+    // 第2引数 = ウィンドウ名
+    // 第3引数 = 画面のスタイル(「項目1:値1;項目2:値2;…;項目n:値n」の形式)
+
+    // ウィンドウ名を、Fx_GetRandomString() を使用して可変に実装。
+    window.open(url,
+           Fx_GetRandomString(10), //Math.random().toString(),
            GetElementByName_SuffixSearch("ctl00$NormalScreenStyle").value);
 }
 
@@ -1236,7 +1251,7 @@ function GetElementByName_SuffixSearch(name) {
         elementName = e.name;
 
         // name属性の存在チェック
-        if (elementName == null || elementName == undefined) {
+        if (elementName === null || elementName === undefined) {
             // name属性がない。
         }
         else {
@@ -1248,7 +1263,7 @@ function GetElementByName_SuffixSearch(name) {
             if (nameLength <= elementNameLength) {
 
                 // 検索名と同じか、長い場合
-                if (elementName.substring((elementNameLength - nameLength), elementNameLength) == name) {
+                if (elementName.substring((elementNameLength - nameLength), elementNameLength) === name) {
                     // 対象elementである。
                     // elementを返す
                     return e;
@@ -1289,7 +1304,7 @@ function Fx_GetCookie(name) {
     // 指定されたセクション名を検索する
     start = myCookie.indexOf(name);
 
-    if (start != -1) {
+    if (start !== -1) {
         // 見つかった場合
 
         // データを抜きだす
@@ -1310,7 +1325,7 @@ function Fx_GetCookie(name) {
 // ---------------------------------------------------------------
 function Fx_SetCookie(name, value, option) {
     // nullチェック
-    if ((name != null) && (value != null)) {
+    if ((name !== null) && (value !== null)) {
         // データ保存
         document.cookie = name + "=" + escape(value) + ";" + option;
         return true;
@@ -1336,13 +1351,13 @@ function Fx_getBrowserWidth() {
     }
 
     // documentがnullになることがある・・・
-    if (document == null || document == undefined) {
+    if (document === null || document === undefined) {
         // 処理しない。
     }
     else {
         // 処理する。
 
-        if (document.documentElement && document.documentElement.clientWidth != 0) {
+        if (document.documentElement && document.documentElement.clientWidth !== 0) {
             return document.documentElement.clientWidth;
         }
 
@@ -1367,13 +1382,13 @@ function Fx_getBrowserHeight() {
     }
 
     // documentがnullになることがある・・・
-    if (document == null || document == undefined) {
+    if (document === null || document === undefined) {
         // 処理しない。
     }
     else {
         // 処理する。
 
-        if (document.documentElement && document.documentElement.clientHeight != 0) {
+        if (document.documentElement && document.documentElement.clientHeight !== 0) {
             return document.documentElement.clientHeight;
         }
 
@@ -1397,41 +1412,8 @@ function Fx_getContentsHeight() {
 }
 
 // ---------------------------------------------------------------
-// その他
+// Cross-browser関連の関数
 // ---------------------------------------------------------------
-
-// ---------------------------------------------------------------
-// Get Form object in the ASP.NET Web Forms.
-// ---------------------------------------------------------------
-// Parameter     －
-// Return value  － Form object in the ASP.NET Web Forms
-// ---------------------------------------------------------------
-function Fx_GetFormObject() {
-    var fobj = document.aspnetForm;
-
-    if (fobj == null || fobj == undefined) {
-        fobj = document.getElementById("form1");
-    }
-
-    if (fobj == null || fobj == undefined) {
-        fobj = document.getElementById("aspnetForm");
-    }
-
-    return fobj;
-}
-
-// ---------------------------------------------------------------
-// Resolves the path of a specified url based on the application server
-// ---------------------------------------------------------------
-// Parameter     － Relative url
-// Return value  － Resolved relative url
-// ---------------------------------------------------------------
-function ResolveServerUrl(url) {
-    if (url.indexOf("~/") == 0) {
-        url = baseUrl + url.substring(2);
-    }
-    return url;
-}
 
 // ---------------------------------------------------------------
 //  Cross-browser detection function
@@ -1472,3 +1454,61 @@ function Fx_WhichBrowser() {
     // Value will true, when the client browser having Blink engine
     //Browser_IsBlink = (Browser_IsChrome || Browser_IsOpera) && !!window.CSS;
 }
+
+
+// ---------------------------------------------------------------
+// その他
+// ---------------------------------------------------------------
+
+// ---------------------------------------------------------------
+// Get Form object in the ASP.NET Web Forms.
+// ---------------------------------------------------------------
+// Parameter     －
+// Return value  － Form object in the ASP.NET Web Forms
+// ---------------------------------------------------------------
+function Fx_GetFormObject() {
+    var fobj = document.aspnetForm;
+
+    if (fobj === null || fobj === undefined) {
+        fobj = document.getElementById("form1");
+    }
+
+    if (fobj === null || fobj === undefined) {
+        fobj = document.getElementById("aspnetForm");
+    }
+
+    return fobj;
+}
+
+// ---------------------------------------------------------------
+// Resolves the path of a specified url based on the application server
+// ---------------------------------------------------------------
+// Parameter     － Relative url
+// Return value  － Resolved relative url
+// ---------------------------------------------------------------
+function ResolveServerUrl(url) {
+    if (url.indexOf("~/") === 0) {
+        url = baseUrl + url.substring(2);
+    }
+    return url;
+}
+
+// ---------------------------------------------------------------
+// ランダムな文字列を生成する
+// ---------------------------------------------------------------
+// 引数    len
+// 戻り値  Random String
+// ---------------------------------------------------------------
+function Fx_GetRandomString(len) {
+    //使用文字の定義
+    var str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&=~/*-+";
+
+    //ランダムな文字列の生成
+    var result = "";
+    for (var i = 0; i < len; i++) {
+        result += str.charAt(Math.floor(Math.random() * str.length));
+    }
+    return result;
+}
+
+
