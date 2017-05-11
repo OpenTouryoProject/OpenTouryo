@@ -37,6 +37,8 @@
 //*  2016/04/15  Sandeep           Implemented cross-browser detection method, to suppress double transmission
 //*  2016/04/20  Sandeep           Created form submission flag, to suppress double transmission
 //*  2016/07/05  Sandeep           Added cache property in the Ajax ping request to prevent the session timeout.
+//*  2017/04/20  西野 大介         showModalDialogのないモダン・ブラウザをサポートするための実装。
+//*  2017/05/11  西野 大介         擬似dialog系のstyleについて色々調整を行った（css化やsize計算方法の変更）。
 //**********************************************************************************
 
 // ---------------------------------------------------------------
@@ -62,17 +64,17 @@ var Form_IsSubmitted = false;
 function Fx_Document_OnLoad2() {
     window.returnValue = "";
 
-    // マスクの初期化
-    Fx_CreateMask();
-
-    // プログレス ダイアログの初期化
-    Fx_InitProgressDialog();
-
-    //// Webサーバへ一定時間ごとにpingを行う
-    //window.setInterval(HttpPing, 5 * 60 * 1000);
-
-    // Cross-browser detection
+	// Cross-browser detection(先頭に移動)
     Fx_WhichBrowser();
+    
+    // Dialogの初期化
+    Fx_InitDialogMask();      // Dialog Maskの初期化
+    Fx_InitProgressDialog();  // Progress Dialogの初期化
+
+    // Sessionタイムアウト防止機能 - Open 棟梁 Wiki
+    // https://opentouryo.osscons.jp/index.php?Session%E3%82%BF%E3%82%A4%E3%83%A0%E3%82%A2%E3%82%A6%E3%83%88%E9%98%B2%E6%AD%A2%E6%A9%9F%E8%83%BD
+    // Webサーバへ一定時間ごとにpingを行う
+    //window.setInterval(HttpPing, 5 * 60 * 1000);
 }
 
 // ---------------------------------------------------------------
@@ -94,7 +96,16 @@ function HttpPing() {
     });
 }
 
-// ダウンロード処理の場合、ダイアログを表示しない。
+// ---------------------------------------------------------------
+// このDialogを閉じた時に呼ばれる（ダミー）
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_Document_OnClose() {
+}
+
+// ダウンロード処理の場合、Dialogを表示しない。
 var IsDownload = false;
 
 // ---------------------------------------------------------------
@@ -123,27 +134,27 @@ function Fx_OnSubmit() {
         
         // Detected browser is Internet Explorer
 
-        if (navigator.appVersion.indexOf("MSIE 6.0") != -1) {
+        if (navigator.appVersion.indexOf("MSIE 6.0") !== -1) {
             // IE6.0では、hrefのdoPostBackの２重送信を抑止できない。
             // （onSubmitイベントがハンドルされないため）
         }
-        else if (navigator.appVersion.indexOf("MSIE 7.0") != -1) {
+        else if (navigator.appVersion.indexOf("MSIE 7.0") !== -1) {
             // IE7.0では完全に有効
         }
-        else if (navigator.appVersion.indexOf("MSIE 8.0") != -1) {
+        else if (navigator.appVersion.indexOf("MSIE 8.0") !== -1) {
             // IE8.0では完全に有効
         }
-        else if (navigator.appVersion.indexOf("MSIE 9.0") != -1) {
+        else if (navigator.appVersion.indexOf("MSIE 9.0") !== -1) {
             // IE9.0で問題の報告を受けていません。 
         }
-        else if (navigator.appVersion.indexOf("MSIE 10.0") != -1) {
+        else if (navigator.appVersion.indexOf("MSIE 10.0") !== -1) {
             // IE10.0で問題の報告を受けていません。 
         }
-        else if (navigator.appVersion.indexOf("Trident/7") != -1) {
+        else if (navigator.appVersion.indexOf("Trident/7") !== -1) {
             // IE11.0で問題があった場合、報告をお願いします。
         }
 
-        if (document.readyState == "complete") {
+        if (document.readyState === "complete") {
 
             // 受信完了
 
@@ -173,7 +184,7 @@ function Fx_OnSubmit() {
 
         // Detected browser is Edge
 
-        if (document.readyState == "complete") {
+        if (document.readyState === "complete") {
 
             // 受信完了
 
@@ -265,9 +276,125 @@ function Fx_OnSubmit() {
     }
 }
 
+//**********************************************************************************
+// Dialog Mask
+//**********************************************************************************
+
+// Ajax：マスク（div）
+var Fx_AjaxDialogMask;
 
 // ---------------------------------------------------------------
-// プログレス ダイアログ表示を仕掛ける。
+// マスクの初期化
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_InitDialogMask() {
+
+    var _div = document.createElement("div");
+    _div.className = "dialog-mask";
+
+    //"100%";では、初期表示画面サイズになってしまう。
+    _div.style.height = Math.max.apply(null, [Fx_getBrowserHeight(), Fx_getContentsHeight()]) + "px";
+    _div.style.width = Math.max.apply(null, [Fx_getBrowserWidth(), Fx_getContentsWidth()]) + "px";
+
+    // div → Dialog Mask
+    Fx_AjaxDialogMask = _div;
+}
+
+// ---------------------------------------------------------------
+// マスクのリサイズ
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+var Fx_AjaxDialogMaskResizeTimer;
+
+window.addEventListener('resize', function (event) {
+    
+    if (Fx_AjaxDialogMaskResizeTimer !== false) {
+        clearTimeout(Fx_AjaxDialogMaskResizeTimer);
+    }
+
+    Fx_AjaxDialogMaskResizeTimer = setTimeout(function () {
+
+        // マスクのサイズの再計算
+        Fx_AjaxDialogMask.style.height = Math.max.apply(null, [Fx_getBrowserHeight(), Fx_getContentsHeight()]) + "px";
+        Fx_AjaxDialogMask.style.width = Math.max.apply(null, [Fx_getBrowserWidth(), Fx_getContentsWidth()]) + "px";
+        
+    }, 100); // 100 msec 間隔
+});
+
+// ---------------------------------------------------------------
+// マスクする。
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_DialogMaskOn() {
+    document.body.appendChild(Fx_AjaxDialogMask);
+}
+
+// ---------------------------------------------------------------
+// マスクを外す。
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_DialogMaskOff() {
+    document.body.removeChild(Fx_AjaxDialogMask);
+}
+
+//**********************************************************************************
+//  Progress Dialog
+//**********************************************************************************
+// Ajax：Progress Dialog（div）
+var Fx_AjaxProgressDialog;
+
+// Ajax：Progress Dialogのサイズ（div）
+var Fx_AjaxProgressDialog_Width = 300;
+var Fx_AjaxProgressDialog_Height = 200;
+
+// Ajax：Progress Dialogの表示タイマ
+var Fx_ProgressDialogTimer;
+
+// ---------------------------------------------------------------
+// Progress Dialogの初期化
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ★★★  Dialogのデザインを変える場合は、ここを直接編集
+// ---------------------------------------------------------------
+function Fx_InitProgressDialog() {
+
+    // divを生成   
+    var _div = document.createElement("div");
+    _div.id = "AjaxProgressDialog";
+    _div.className = "progress-dialog";
+
+    // 幅を指定
+    _div.style.width = Fx_AjaxProgressDialog_Width + "px";
+    _div.style.height = Fx_AjaxProgressDialog_Height + "px";
+
+    // 内容を指定
+    _div.innerHTML = "処理中です。しばらくお待ち下さい・・・<hr />";
+    
+    // imgを生成
+    var _img = document.createElement("img");
+    _img.src = ResolveServerUrl("~/images/touryo/loading.gif");
+    _img.style.width = "50px";
+    _img.style.height = "50px";
+    _img.alt = "処理中画像";
+
+    // divにimgを追加
+    _div.appendChild(_img);
+
+    // div → Progress Dialog
+    Fx_AjaxProgressDialog = _div;
+}
+
+// ---------------------------------------------------------------
+// Progress Dialog表示を仕掛ける。
 // ---------------------------------------------------------------
 // 引数    －
 // 戻り値  －
@@ -282,156 +409,45 @@ function Fx_SetProgressDialog() {
     else {
         // ダウンロードでない場合
 
-        // ダイアログ表示（２秒後）
-        ProgressDialogTimer = setTimeout("Fx_DisplayProgressDialog()", 2000);
+        // Dialog表示（２秒後）
+        Fx_ProgressDialogTimer = setTimeout("Fx_DisplayProgressDialog()", 2000);
     }
 }
 
-//**********************************************************************************
-
-// ------------------------------------------------------------
-//  プログレス ダイアログの表示
-// ------------------------------------------------------------
-
-// Ajax：プログレス ダイアログ（div）
-var AjaxProgressDialog;
-
-// Ajax：プログレス ダイアログの表示タイマ
-var ProgressDialogTimer;
-
 // ---------------------------------------------------------------
-// プログレス ダイアログの初期化
-// ---------------------------------------------------------------
-// 引数    －
-// 戻り値  －
-// ★★★  ダイアログのデザインを変える場合は、ここを直接編集
-// ---------------------------------------------------------------
-function Fx_InitProgressDialog() {
-
-    // divを生成   
-    var _div = document.createElement("div");
-    _div.id = "AjaxProgressDialog";
-
-    // 幅を指定
-    _div.style.width = AjaxProgressDialog_Width + "px";
-    _div.style.height = AjaxProgressDialog_Height + "px";
-
-    // スタイルを指定
-    _div.style.top = "0px";
-    _div.style.left = "0px";
-
-    _div.style.paddingTop = "10px";
-    _div.style.paddingLeft = "10px";
-    _div.style.paddingRight = "10px";
-
-    _div.style.textAlign = "center";
-    _div.style.overflow = "auto";
-
-    _div.style.position = "absolute";
-
-    // 1000なら最前面だろうという仕様（ToMost相当が無い）
-    _div.style.zIndex = "1001"; // Maskより前面に出す。
-
-    // 内容を指定
-    _div.innerHTML = "処理中です。しばらくお待ち下さい・・・<hr />";
-    _div.style.backgroundColor = "lightcyan";
-
-    // imgを生成
-    var _img = document.createElement("img");
-
-    _img.src = ResolveServerUrl("~/images/touryo/loading.gif");
-    _img.style.width = "50px";
-    _img.style.height = "50px";
-    _img.alt = "処理中画像";
-
-    // divにimgを追加
-    _div.appendChild(_img);
-
-    // div → プログレス ダイアログ
-    AjaxProgressDialog = _div
-}
-
-// ---------------------------------------------------------------
-// プログレス ダイアログ表示
+// Progress Dialog表示
 // ---------------------------------------------------------------
 // 引数    －
 // 戻り値  －
 // ---------------------------------------------------------------
-
 function Fx_DisplayProgressDialog() {
     // はじめにタイマをクリアする。
-    clearTimeout(ProgressDialogTimer);
+    clearTimeout(Fx_ProgressDialogTimer);
 
     try {
         // 表示位置の計算
-        AjaxProgressDialog.style.top = (Fx_getContentsHeight() / 2) //(Fx_getBrowserHeight() / 2)
-            - (AjaxProgressDialog_Height / 2) + "px";
-        AjaxProgressDialog.style.left = (Fx_getBrowserWidth() / 2)
-            - (AjaxProgressDialog_Width / 2) + "px";
-
-        // プログレス ダイアログを表示する。
-        document.body.appendChild(AjaxMask);
-        document.body.appendChild(AjaxProgressDialog);
+        Fx_AjaxProgressDialog.style.top = (Fx_getBrowserHeight() / 2) - (Fx_AjaxProgressDialog_Height / 2) + "px";
+        Fx_AjaxProgressDialog.style.left = (Fx_getBrowserWidth() / 2) - (Fx_AjaxProgressDialog_Width / 2) + "px";
+        
+        // Progress Dialogを表示する。
+        Fx_DialogMaskOn();
+        document.body.appendChild(Fx_AjaxProgressDialog);
 
     } catch (e) {
         //alert( e );//エラー内容
     }
 }
 
-//**********************************************************************************
-
-// ------------------------------------------------------------
-//  マスクの表示
-// ------------------------------------------------------------
-
-// Ajax：マスク（div）
-var AjaxMask;
-
-// ---------------------------------------------------------------
-// マスク生成
-// ---------------------------------------------------------------
-// 引数    －
-// 戻り値  －
-// ---------------------------------------------------------------
-function Fx_CreateMask() {
-
-    var _div = document.createElement("div");
-
-    _div.style.top = "0px";
-    _div.style.left = "0px";
-    _div.style.height = Fx_getContentsHeight() + "px"; //"100%";では、初期表示画面サイズになってしまう。
-    _div.style.width = Fx_getBrowserWidth() + "px"; //"100%";では、初期表示画面サイズになってしまう。
-    _div.style.position = "absolute";
-
-    // 1000なら最前面だろうという仕様（ToMost相当が無い）
-    _div.style.zIndex = "1000";
-
-    // 分かりやすいように半透明 (0に設定しても良い)
-    _div.style.opacity = 0.5;
-    // IE 8用の透明度の設定(0に設定しても良い)
-    _div.style.filter = "alpha(opacity=50)";
-    // 分かりやすいように着色(若しくは無色)
-    _div.style.backgroundColor = 'gray';
-
-    AjaxMask = _div;
-}
 
 //**********************************************************************************
 
 // ---------------------------------------------------------------
 //  フレームワーク機能（Ajax）
 // ---------------------------------------------------------------
-
-// Ajax：プログレス ダイアログのサイズ（div）
-var AjaxProgressDialog_Width = 300;
-var AjaxProgressDialog_Height = 200;
-
 // Ajax：処理中かどうか
 var Ajax_IsProgressed = false;
-
 // Flag variable for enable/disable "Prevent Double Submit functionality" for Ajax.BeginForm.
 var PreventAjaxDoubleSubmit = false;
-
 //  Flag variable for control "Prevent Double Submit functionality" for Ajax.BeginForm.
 var IsAborted = false;
 
@@ -506,33 +522,84 @@ $(document).ajaxError(function (eo, jqXHRo, settings, error) {
 function Fx_ClearPreventDoubleSubmissionSettings()
 {
     // はじめにタイマをクリアする。
-    clearTimeout(ProgressDialogTimer);
+    clearTimeout(Fx_ProgressDialogTimer);
     // プログレス ダイアログを非表示にする。
     try {
-        document.body.removeChild(AjaxMask);
-        document.body.removeChild(AjaxProgressDialog);
+        Fx_DialogMaskOff();
+        document.body.removeChild(Fx_AjaxProgressDialog);
     } catch (e) {
         //alert( e );//エラー内容
     }
 
     // 二重送信フラグの設定
     Ajax_IsProgressed = false;
-
     // Reset the form submission flag.
     Form_IsSubmitted = false;
-
     //Disables Prevent Double Submit finctionality by setting flag to flase.
     PreventAjaxDoubleSubmit = false;
 }
 
 //**********************************************************************************
+//  ユーティリティ
+//**********************************************************************************
 
 // ---------------------------------------------------------------
-//  ユーティリティ：画面サイズ取得関数
+// Cookie処理関数
 // ---------------------------------------------------------------
 
 // ---------------------------------------------------------------
-// 画面の幅取得
+// Cookieを参照する関数（Cookieから指定されたデータを抜きだす）
+// ---------------------------------------------------------------
+// 引数    Cookie名
+// 戻り値  成功した時はCookie値、失敗した時はfalseを返す
+// ---------------------------------------------------------------
+function Fx_GetCookie(name) {
+    // "="を追加
+    name += "=";
+
+    // 検索時最終項目で-1になるのを防ぐ
+    myCookie = document.cookie + ";";
+
+    // 指定されたセクション名を検索する
+    start = myCookie.indexOf(name);
+
+    if (start !== -1) {
+        // 見つかった場合
+
+        // データを抜きだす
+        end = myCookie.indexOf(";", start);
+        return unescape(myCookie.substring(start + name.length, end));
+    }
+    else {
+        // 見つからなかった場合
+        return false;
+    }
+}
+
+// ---------------------------------------------------------------
+// Cookieを設定する関数（Cookieにデータを保存する）
+// ---------------------------------------------------------------
+// 引数    Cookie名
+// 戻り値  成功した時はtrue、失敗した時はfalseを返す
+// ---------------------------------------------------------------
+function Fx_SetCookie(name, value, option) {
+    // nullチェック
+    if ((name !== null) && (value !== null)) {
+        // データ保存
+        document.cookie = name + "=" + escape(value) + ";" + option;
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+// ---------------------------------------------------------------
+// サイズ取得関数
+// ---------------------------------------------------------------
+
+// ---------------------------------------------------------------
+// ブラウザ画面の幅取得
 // ---------------------------------------------------------------
 // 引数    －
 // 戻り値  －
@@ -543,13 +610,13 @@ function Fx_getBrowserWidth() {
     }
 
     // documentがnullになることがある・・・
-    if (document == null || document == undefined) {
+    if (document === null || document === undefined) {
         // 処理しない。
     }
     else {
         // 処理する。
 
-        if (document.documentElement && document.documentElement.clientWidth != 0) {
+        if (document.documentElement && document.documentElement.clientWidth !== 0) {
             return document.documentElement.clientWidth;
         }
 
@@ -574,13 +641,13 @@ function Fx_getBrowserHeight() {
     }
 
     // documentがnullになることがある・・・
-    if (document == null || document == undefined) {
+    if (document === null || document === undefined) {
         // 処理しない。
     }
     else {
         // 処理する。
 
-        if (document.documentElement && document.documentElement.clientHeight != 0) {
+        if (document.documentElement && document.documentElement.clientHeight !== 0) {
             return document.documentElement.clientHeight;
         }
 
@@ -593,6 +660,22 @@ function Fx_getBrowserHeight() {
 }
 
 // ---------------------------------------------------------------
+// コンテンツ全体の幅を取得
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_getContentsWidth() {
+    // コンテンツ全体の幅を取得する
+    return Math.max.apply(
+        null,
+        [document.body.clientWidth,
+            document.body.scrollWidth,
+            document.documentElement.scrollWidth,
+            document.documentElement.clientWidth]);
+}
+
+// ---------------------------------------------------------------
 // コンテンツ全体の高さ取得
 // ---------------------------------------------------------------
 // 引数    －
@@ -600,21 +683,17 @@ function Fx_getBrowserHeight() {
 // ---------------------------------------------------------------
 function Fx_getContentsHeight() {
     // コンテンツ全体の高さを取得する
-    return Math.max.apply(null, [document.body.clientHeight, document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight]);
+    return Math.max.apply(
+        null,
+        [document.body.clientHeight,
+            document.body.scrollHeight,
+            document.documentElement.scrollHeight,
+            document.documentElement.clientHeight]);
 }
 
 // ---------------------------------------------------------------
-// Resolves the path of a specified url based on the application server
+// Cross-browser関連の関数
 // ---------------------------------------------------------------
-// Parameter     － Relative url
-// Return value  － Resolved relative url
-// ---------------------------------------------------------------
-function ResolveServerUrl(url) {
-    if (url.indexOf("~/") == 0) {
-        url = baseUrl +url.substring(2);
-}
-    return url;
-}
 
 // ---------------------------------------------------------------
 //  Cross-browser detection function
@@ -655,3 +734,40 @@ function Fx_WhichBrowser() {
     // Value will true, when the client browser having Blink engine
     //Browser_IsBlink = (Browser_IsChrome || Browser_IsOpera) && !!window.CSS;
 }
+
+// ---------------------------------------------------------------
+// その他
+// ---------------------------------------------------------------
+
+// ---------------------------------------------------------------
+// Resolves the path of a specified url based on the application server
+// ---------------------------------------------------------------
+// Parameter     － Relative url
+// Return value  － Resolved relative url
+// ---------------------------------------------------------------
+function ResolveServerUrl(url) {
+    if (url.indexOf("~/") === 0) {
+        url = baseUrl + url.substring(2);
+    }
+    return url;
+}
+
+// ---------------------------------------------------------------
+// ランダムな文字列を生成する
+// ---------------------------------------------------------------
+// 引数    len
+// 戻り値  Random String
+// ---------------------------------------------------------------
+function Fx_GetRandomString(len) {
+    //使用文字の定義
+    var str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&=~/*-+";
+
+    //ランダムな文字列の生成
+    var result = "";
+    for (var i = 0; i < len; i++) {
+        result += str.charAt(Math.floor(Math.random() * str.length));
+    }
+    return result;
+}
+
+
