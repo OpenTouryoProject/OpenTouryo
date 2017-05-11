@@ -31,6 +31,7 @@
 //*  2016/04/20  Sandeep           Created form submission flag, to suppress double transmission
 //*  2016/07/05  Sandeep           Added cache property in the Ajax ping request to prevent the session timeout.
 //*  2017/04/20  西野 大介         showModalDialogのないモダン・ブラウザをサポートするための実装。
+//*  2017/05/11  西野 大介         擬似dialog系のstyleについて色々調整を行った（css化やsize計算方法の変更）。
 //**********************************************************************************
 
 // ---------------------------------------------------------------
@@ -338,12 +339,35 @@ function Fx_InitDialogMask() {
     _div.className = "dialog-mask";
 
     //"100%";では、初期表示画面サイズになってしまう。
-    _div.style.height = Fx_getContentsHeight() + "px";
-    _div.style.width = Fx_getBrowserWidth() + "px";
+    _div.style.height = Math.max.apply(null, [Fx_getBrowserHeight(), Fx_getContentsHeight()]) + "px";
+    _div.style.width = Math.max.apply(null, [Fx_getBrowserWidth(), Fx_getContentsWidth()]) + "px";
 
     // div → Dialog Mask
     Fx_AjaxDialogMask = _div;
 }
+
+// ---------------------------------------------------------------
+// マスクのリサイズ
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+var Fx_AjaxDialogMaskResizeTimer;
+
+window.addEventListener('resize', function (event) {
+    
+    if (Fx_AjaxDialogMaskResizeTimer !== false) {
+        clearTimeout(Fx_AjaxDialogMaskResizeTimer);
+    }
+
+    Fx_AjaxDialogMaskResizeTimer = setTimeout(function () {
+        
+        // マスクのサイズの再計算
+        Fx_AjaxDialogMask.style.height = Math.max.apply(null, [Fx_getBrowserHeight(), Fx_getContentsHeight()]) + "px";
+        Fx_AjaxDialogMask.style.width = Math.max.apply(null, [Fx_getBrowserWidth(), Fx_getContentsWidth()]) + "px";
+        
+    }, 100); // 100 msec 間隔
+});
 
 // ---------------------------------------------------------------
 // マスクする。
@@ -1335,6 +1359,22 @@ function Fx_getBrowserHeight() {
 }
 
 // ---------------------------------------------------------------
+// コンテンツ全体の幅を取得
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_getContentsWidth() {
+    // コンテンツ全体の幅を取得する
+    return Math.max.apply(
+        null,
+        [document.body.clientWidth,
+            document.body.scrollWidth,
+            document.documentElement.scrollWidth,
+            document.documentElement.clientWidth]);
+}
+
+// ---------------------------------------------------------------
 // コンテンツ全体の高さ取得
 // ---------------------------------------------------------------
 // 引数    －
@@ -1342,8 +1382,14 @@ function Fx_getBrowserHeight() {
 // ---------------------------------------------------------------
 function Fx_getContentsHeight() {
     // コンテンツ全体の高さを取得する
-    return Math.max.apply(null, [document.body.clientHeight, document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight]);
+    return Math.max.apply(
+        null,
+        [document.body.clientHeight,
+            document.body.scrollHeight,
+            document.documentElement.scrollHeight,
+            document.documentElement.clientHeight]);
 }
+
 
 // ---------------------------------------------------------------
 // Cross-browser関連の関数
