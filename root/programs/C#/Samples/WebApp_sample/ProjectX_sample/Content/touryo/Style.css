@@ -32,8 +32,20 @@
     padding          : 10px 10px 0 10px;
     text-align       : center;
     overflow         : hidden;                 /* hiddenに変更*/
-    background-color : lightcyan;
+    background-color : white;
     z-index          : 1001;                   /* dialog-maskより前面に出す。*/
+
+    /* 角丸四角 */
+    border-radius         : 10px;
+    -webkit-border-radius : 10px;
+    -moz-border-radius    : 10px;
+
+    /* 影 */
+    box-shadow       : 10px 10px 10px rgba(0,0,0,0.6);
+}
+
+.ok-dialog iframe {
+    border           : none;
 }
 
 .yesno-dialog
@@ -44,8 +56,20 @@
     padding          : 10px 10px 0 10px;
     text-align       : center;
     overflow         : hidden;                 /* hiddenに変更*/
-    background-color : lightcyan;
+    background-color : white;
     z-index          : 1001;                   /* dialog-maskより前面に出す。*/
+
+    /* 角丸四角 */
+    border-radius         : 10px;
+    -webkit-border-radius : 10px;
+    -moz-border-radius    : 10px;
+
+    /* 影 */
+    box-shadow       : 10px 10px 10px rgba(0,0,0,0.6);
+}
+
+.yesno-dialog iframe {
+    border           : none;
 }
 
 /* *.master の 分割で使用している。 */
