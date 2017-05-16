@@ -47,7 +47,7 @@
         
     <body onload="Document_OnLoad();">
         <div style="text-align:left;">
-            <div id="PseudoDialogTitle"></div>
+            <div id="PseudoDialogTitle" style="font-size: large"></div>
             <hr />
             <table style="border-spacing:10px;" border="0">
                 <tr>
