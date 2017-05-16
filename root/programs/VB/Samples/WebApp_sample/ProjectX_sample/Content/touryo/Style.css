@@ -1,4 +1,78 @@
-﻿/* *.master の 分割で使用している。 */
+﻿/* common.jsで使用している。 */
+.dialog-mask
+{
+    position         : absolute;
+    top              : 0;
+    left             : 0;
+    opacity          : 0.5;
+    -ms-filter       : "alpha(opacity=50)";    /* IE対応 */
+    background-color : gray;
+    z-index          : 1000;                   /* 1000なら最前面だろう ( ToMost相当が無い */
+}
+
+.progress-dialog
+{
+    position         : fixed;
+    top              : 0;
+    left             : 0;
+    padding          : 10px 10px 0 10px;
+    text-align       : center;
+    overflow         : hidden;                 /* hiddenに変更*/
+    /*width            : 300px;*/              /* 位置計算はJSで行うため */
+    /*height           : 200px;*/              /* 位置計算はJSで行うため */
+    background-color : lightcyan;
+    z-index          : 1001;                   /* dialog-maskより前面に出す。*/
+}
+
+.ok-dialog
+{
+    position         : fixed;
+    top              : 0;
+    left             : 0;
+    padding          : 10px 10px 0 10px;
+    text-align       : center;
+    overflow         : hidden;                 /* hiddenに変更*/
+    background-color : white;
+    z-index          : 1001;                   /* dialog-maskより前面に出す。*/
+
+    /* 角丸四角 */
+    border-radius         : 10px;
+    -webkit-border-radius : 10px;
+    -moz-border-radius    : 10px;
+
+    /* 影 */
+    box-shadow       : 10px 10px 10px rgba(0,0,0,0.6);
+}
+
+.ok-dialog iframe {
+    border           : none;
+}
+
+.yesno-dialog
+{
+    position         : fixed;
+    top              : 0;
+    left             : 0;
+    padding          : 10px 10px 0 10px;
+    text-align       : center;
+    overflow         : hidden;                 /* hiddenに変更*/
+    background-color : white;
+    z-index          : 1001;                   /* dialog-maskより前面に出す。*/
+
+    /* 角丸四角 */
+    border-radius         : 10px;
+    -webkit-border-radius : 10px;
+    -moz-border-radius    : 10px;
+
+    /* 影 */
+    box-shadow       : 10px 10px 10px rgba(0,0,0,0.6);
+}
+
+.yesno-dialog iframe {
+    border           : none;
+}
+
+/* *.master の 分割で使用している。 */
 
 /* ヘッダー固定 */
 .page-header

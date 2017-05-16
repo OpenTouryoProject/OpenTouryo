@@ -212,6 +212,7 @@
     <Content Include="images\touryo\image.jpg" />
     <Content Include="images\touryo\information.ico" />
     <Content Include="images\touryo\loading.gif" />
+    <Content Include="images\touryo\logo.png" />
     <Content Include="images\touryo\question.ico" />
     <Content Include="images\touryo\warning.ico" />
     <Content Include="Scripts\app\Site.js" />
