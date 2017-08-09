@@ -202,52 +202,23 @@
 
 ====================================================================
 
-Open Touryo SubComponent: 
-
-- For the log4net component:
-
-  - License:http://www.apache.org/licenses/
-  - See the following path.
-   ./log4net/LICENSE
-
-- For the Json.NET component:
-
-  - License:https://json.codeplex.com/license
-  - See the following path.
-   ./Json.NET/LICENSE
-   
-- For the Dotnetzip component:
-
-  - License:http://opensource.org/licenses/MS-PL
-  - See the following path.
-    - ./DotNetZip/License.txt
-    - ./DotNetZip/License.Combined.rtf
-
-    - Dotnetzip SubComponent:
-
-      - BZip2
-        - License:http://www.apache.org/licenses/LICENSE-2.0
-        - See the following path.
-          ./DotNetZip/License.BZip2.txt
-
-      - zlib
-        - License:http://www.zlib.net/zlib_license.html
-        - See the following path.
-          ./DotNetZip/License.zlib.txt
-
-- For the testing framework components:
- ├NUnit.2.6.3
- ├NUnit.Runners.2.6.3
- ├NUnitTestAdapter
- ├OpenCover.4.5.2506
- ├OpenCoverToCoberturaConverter.0.1.1.0
- └ReportGenerator.1.9.1.0
-
-  - See the following path. 
-    ./Testing Frameworks/ 
-
-  - NUnit 2.6.3
-      NUnit 2.6.3 assemblies distributed with this sample are subject to the the NUnit license.
-      Copyright © 2002-2014 Charlie Poole
-      Copyright © 2002-2004 James W. Newkirk, Michael C. Two, Alexei A. Vorontsov
-      Copyright © 2000-2002 Philip A. Craig
+   - OpenTouryo SubComponent : 
+     The OSS included in the source code such as JavaScript / CSS
+     
+     - jQuery
+     - jQuery.Validation
+     - bootstrap
+     - FontAwesome
+     - knockoutjs
+     - angularjs
+     - Respond
+     - Modernizr
+     - Microsoft.AspNet.ScriptManager.WebForms
+     - Microsoft.AspNet.ScriptManager.MSAjax
+ 
+   - Notes : 
+     There is possibility that the library of OSS that not include
+     source code automatically acquired from the Internet by the
+     package manager like the NuGet. If so, must follow these licenses of the
+     oss when using / distributing this OSS. Incidentally, the OSS that will
+     be obtained by NuGet can be checked by referring to each package.cponfig.
