@@ -5,6 +5,8 @@
 <!DOCTYPE html>
 <html>
 <head id="Head1" runat="server">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>無題のページ</title>
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
@@ -42,7 +44,7 @@
 
     <div id="body-bk">
         <div id="body" class="row">
-            <div class="nav-side-menu col-sm-2">
+            <div class="nav-side-menu col-sm-4 col-md-3">
                 <div class="brand">メニュー</div>
                 <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
                 <div class="menu-list">
@@ -59,7 +61,7 @@
                     </ul>
                 </div>
             </div>
-            <div id="contents" class="col-sm-10">
+            <div id="contents" class="col-sm-8 col-md-9">
 
                 <!-- auto completeを指定 -->
                 <form id="form1" runat="server" autocomplete="on">

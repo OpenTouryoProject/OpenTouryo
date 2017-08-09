@@ -185,6 +185,7 @@
     <Content Include="Global.asax" />
     <Content Include="images\touryo\loading.gif" />
     <Content Include="images\touryo\logo.png" />
+    <Content Include="Index.html" />
     <Content Include="Scripts\angular-animate.js" />
     <Content Include="Scripts\angular-animate.min.js" />
     <Content Include="Scripts\angular-aria.js" />

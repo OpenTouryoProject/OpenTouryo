@@ -205,6 +205,7 @@
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Index.html" />
     <Content Include="Models\DataSets\DsNorthwind.xsc">
       <DependentUpon>DsNorthwind.xsd</DependentUpon>
     </Content>

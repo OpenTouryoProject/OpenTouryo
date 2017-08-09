@@ -149,6 +149,7 @@
     <Content Include="images\touryo\logo.png" />
     <Content Include="images\touryo\question.ico" />
     <Content Include="images\touryo\warning.ico" />
+    <Content Include="Index.html" />
     <Content Include="Scripts\app\Site.js" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

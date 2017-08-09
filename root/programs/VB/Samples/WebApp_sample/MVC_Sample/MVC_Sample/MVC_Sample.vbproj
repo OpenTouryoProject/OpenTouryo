@@ -128,6 +128,7 @@
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="images\touryo\loading.gif" />
     <Content Include="images\touryo\logo.png" />
+    <Content Include="Index.html" />
     <Content Include="Scripts\app\Site.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

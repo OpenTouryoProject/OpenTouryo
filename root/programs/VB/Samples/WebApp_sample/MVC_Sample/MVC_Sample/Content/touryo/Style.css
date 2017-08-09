@@ -245,7 +245,7 @@
   #header-button{
     padding-top: 10px;
   }
-  #header-button > button{
+  #header-button button{
     padding: 1px 5px;
     font-size: 12px;
     line-height: 1.5;
