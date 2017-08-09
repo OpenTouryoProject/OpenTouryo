@@ -16,10 +16,10 @@ set CURRENT_DIR="%~dp0"
 call %CURRENT_DIR%z_Common.bat
 
 rem --------------------------------------------------
-rem Batch build of ProjectX_sample.
+rem Batch build of WebForms_Sample.
 rem --------------------------------------------------
-..\nuget.exe restore "Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln"
-%BUILDFILEPATH% %COMMANDLINE% "Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln"
+..\nuget.exe restore "Samples\WebApp_sample\WebForms_Sample\WebForms_Sample.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Samples\WebApp_sample\WebForms_Sample\WebForms_Sample.sln"
 
 pause
 

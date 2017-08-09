@@ -1,6 +1,0 @@
-<%@ Master Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="ProjectX_sample.Aspx.Common.TestNest.noBaseMasterPage" Codebehind="noBaseMasterPage.master.vb" %>
-<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
-    <asp:contentplaceholder id="ContentPlaceHolder_B" runat="Server">
-        This is Default Content -- Override on Page
-    </asp:contentplaceholder>
-</asp:Content>
