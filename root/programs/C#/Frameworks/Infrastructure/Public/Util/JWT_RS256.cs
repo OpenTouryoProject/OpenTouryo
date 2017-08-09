@@ -32,6 +32,7 @@
 
 using Newtonsoft.Json;
 using Touryo.Infrastructure.Public.Str;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Touryo.Infrastructure.Public.Util.JWT
 {
@@ -49,11 +50,17 @@ namespace Touryo.Infrastructure.Public.Util.JWT
         /// <summary>Constructor</summary>
         /// <param name="certificateFilePath">DigitalSignX509に渡すcertificateFilePathパラメタ</param>
         /// <param name="password">DigitalSignX509に渡すpasswordパラメタ</param>
-        public JWT_RS256(string certificateFilePath, string password)
-        {
-            this._cs = new DigitalSignX509(certificateFilePath, password, "SHA256");
-        }
+        public JWT_RS256(string certificateFilePath, string password) 
+            : this(certificateFilePath, password, X509KeyStorageFlags.DefaultKeySet) { }
 
+        /// <summary>Constructor</summary>
+        /// <param name="certificateFilePath">DigitalSignX509に渡すcertificateFilePathパラメタ</param>
+        /// <param name="password">DigitalSignX509に渡すpasswordパラメタ</param>
+        /// <param name="flag">X509KeyStorageFlags</param>
+        public JWT_RS256(string certificateFilePath, string password, X509KeyStorageFlags flag)
+        {
+            this._cs = new DigitalSignX509(certificateFilePath, password, "SHA256", flag);
+        }
         #endregion
 
         #region RS256署名・検証

@@ -89,10 +89,25 @@ namespace Touryo.Infrastructure.Public.Util
         /// RSAの場合、以下からHashAlgorithm名を指定する。
         /// MD5, SHA1, SHA256, SHA384, SHA512
         /// </param>
-        public DigitalSignX509(string certificateFilePath, string password, string hashAlgorithmName)
+        public DigitalSignX509(string certificateFilePath, string password, string hashAlgorithmName) :
+            this(certificateFilePath, password, hashAlgorithmName, X509KeyStorageFlags.DefaultKeySet) { }
+
+        /// <summary>
+        /// Constructor
+        /// X.509証明書(*.pfx, *.cer)からキーを設定する。
+        /// *.cer証明書の場合は、証明書チェーンが繋がっている必要がある。
+        /// 自己証明書の場合「信頼されたルート証明機関」にInstallするなどする。
+        /// </summary>
+        /// <param name="certificateFilePath">X.509証明書(*.pfx, *.cer)へのパス</param>
+        /// <param name="password">パスワード</param>
+        /// <param name="hashAlgorithmName">
+        /// RSAの場合、以下からHashAlgorithm名を指定する。
+        /// MD5, SHA1, SHA256, SHA384, SHA512
+        /// </param>
+        /// <param name="flag">X509KeyStorageFlags</param>
+        public DigitalSignX509(string certificateFilePath, string password, string hashAlgorithmName, X509KeyStorageFlags flag)
         {
-            this._X509Certificate = new X509Certificate2(
-                certificateFilePath, password, X509KeyStorageFlags.Exportable);
+            this._X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
 
             this._hashAlgorithmName = hashAlgorithmName;
         }

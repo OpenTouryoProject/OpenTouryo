@@ -38,10 +38,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>45EC214193E5088CCA6F8B3AD1075B1627C28C7B</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>44953D376F646F634815EE63DBF5AD4A09A37776</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>EncAndDecUtil_TemporaryKey.pfx</ManifestKeyFile>
