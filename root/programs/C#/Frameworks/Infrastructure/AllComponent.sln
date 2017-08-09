@@ -13,9 +13,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework", "Framework\Fram
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamMySQL", "Public\Db\DamMySQL\DamMySQL.csproj", "{18345E81-5ECB-4B2F-8304-0E94F8763216}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamOraOdp", "Public\Db\DamOraOdp\DamOraOdp.csproj", "{FE4533B3-53F0-4BE2-8390-9486FFF380A3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamPstGrS", "Public\Db\DamPstGrS\DamPstGrS.csproj", "{1A3B3376-716C-4AB2-9FB5-427227D8037F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamManagedOdp", "Public\Db\DamManagedOdp\DamManagedOdp.csproj", "{FE4533B3-53F0-4BE2-8390-9486FFF380A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,14 +43,14 @@ Global
 		{18345E81-5ECB-4B2F-8304-0E94F8763216}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18345E81-5ECB-4B2F-8304-0E94F8763216}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18345E81-5ECB-4B2F-8304-0E94F8763216}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1A3B3376-716C-4AB2-9FB5-427227D8037F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1A3B3376-716C-4AB2-9FB5-427227D8037F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A3B3376-716C-4AB2-9FB5-427227D8037F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A3B3376-716C-4AB2-9FB5-427227D8037F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

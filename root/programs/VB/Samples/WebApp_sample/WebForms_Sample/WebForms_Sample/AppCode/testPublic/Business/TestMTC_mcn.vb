@@ -212,7 +212,7 @@ Public Class TestMTC_mcn
         '#Region "ODP2_NT"
 
         ' Damを生成
-        damWork = New DamOraOdp()
+        damWork = New DamManagedOdp()
         ' Damを初期化
         BaseLogic.InitDam("ODP2_NT", damWork)
         ' Damを設定
@@ -239,7 +239,7 @@ Public Class TestMTC_mcn
         '#Region "ODP2_RC"
 
         ' Damを生成
-        damWork = New DamOraOdp()
+        damWork = New DamManagedOdp()
         ' Damを初期化
         BaseLogic.InitDam("ODP2_RC", damWork)
         ' Damを設定
@@ -266,7 +266,7 @@ Public Class TestMTC_mcn
         '#Region "ODP2_SZ"
 
         ' Damを生成
-        damWork = New DamOraOdp()
+        damWork = New DamManagedOdp()
         ' Damを初期化
         BaseLogic.InitDam("ODP2_SZ", damWork)
         ' Damを設定
@@ -293,7 +293,7 @@ Public Class TestMTC_mcn
         '#Region "ODP2_DF"
 
         ' Damを生成
-        damWork = New DamOraOdp()
+        damWork = New DamManagedOdp()
         ' Damを初期化
         BaseLogic.InitDam("ODP2_DF", damWork)
         ' Damを設定

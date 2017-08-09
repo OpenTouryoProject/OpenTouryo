@@ -131,13 +131,13 @@
       <Project>{33133F7E-FCF4-4438-8241-FE5CDF6E52FD}</Project>
       <Name>Framework</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Public\Db\DamManagedOdp\DamManagedOdp.csproj">
+      <Project>{fe4533b3-53f0-4be2-8390-9486fff380a3}</Project>
+      <Name>DamManagedOdp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Public\Db\DamMySQL\DamMySQL.csproj">
       <Project>{18345e81-5ecb-4b2f-8304-0e94f8763216}</Project>
       <Name>DamMySQL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Public\Db\DamOraOdp\DamOraOdp.csproj">
-      <Project>{fe4533b3-53f0-4be2-8390-9486fff380a3}</Project>
-      <Name>DamOraOdp</Name>
     </ProjectReference>
     <ProjectReference Include="..\Public\Db\DamPstGrS\DamPstGrS.csproj">
       <Project>{1a3b3376-716c-4ab2-9fb5-427227d8037f}</Project>

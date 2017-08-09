@@ -68,8 +68,8 @@ Public Class TestMTC_txg
                 BaseLogic.InitDam(transactionPatternID, tempDam)
                 Me.SetDam(transactionPatternID, tempDam)
             ElseIf transactionPatternID.IndexOf("ODP") <> -1 Then
-                ' DamOraOdpを初期化してセット
-                tempDam = New DamOraOdp()
+                ' DamManagedOdpを初期化してセット
+                tempDam = New DamManagedOdp()
                 BaseLogic.InitDam(transactionPatternID, tempDam)
                 Me.SetDam(transactionPatternID, tempDam)
                 'ElseIf transactionPatternID.IndexOf("DB2") <> -1 Then

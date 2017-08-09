@@ -650,7 +650,7 @@ namespace DPQuery_Tool
                 else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ODP)
                 {
                     //ODP.NET
-                    this._dam = new DamOraOdp();
+                    this._dam = new DamManagedOdp();
 
                     //接続文字列のサンプルを設定する（空の場合）。
                     Oracle.DataAccess.Client.OracleConnectionStringBuilder csb = new Oracle.DataAccess.Client.OracleConnectionStringBuilder();
@@ -1288,7 +1288,7 @@ namespace DPQuery_Tool
                         {
                             // null以外の値を指定
 
-                            if ((this._dam.GetType() == typeof(DamOraOdp))
+                            if ((this._dam.GetType() == typeof(DamManagedOdp))
                                 & (0 < (int)this.nudNumOfBind.Value) // 2009/09/18-この行
                                 & (dr[2].GetType().ToString().IndexOf("[]") != -1)) // 2009/08/12-この行
                             {
@@ -1299,7 +1299,7 @@ namespace DPQuery_Tool
                                 // ・パラメタに配列が指定されている。
 
                                 // ArrayBindCountプロパティを指定
-                                ((DamOraOdp)this._dam).ArrayBindCount = (int)this.nudNumOfBind.Value;
+                                ((DamManagedOdp)this._dam).ArrayBindCount = (int)this.nudNumOfBind.Value;
 
                                 // 型情報を取得（ODP.NETの配列バインドでは必須のため）
                                 object dbTypeInfo = null;
@@ -1379,7 +1379,7 @@ namespace DPQuery_Tool
                                         this.InferORAType(dr[2].GetType(), out dbTypeInfo);
                                     }
 
-                                    else if (this._dam.GetType() == typeof(DamOraOdp))
+                                    else if (this._dam.GetType() == typeof(DamManagedOdp))
                                     {
                                         // ODP.NETの型情報を推論
                                         this.InferODPType(dr[2].GetType(), out dbTypeInfo);

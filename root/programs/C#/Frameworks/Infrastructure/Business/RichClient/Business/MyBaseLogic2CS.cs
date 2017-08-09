@@ -157,7 +157,7 @@ namespace Touryo.Infrastructure.Business.RichClient.Business
                 else if (parameterValue.ActionType.Split('%')[0] == "ODP")
                 {
                     // Oracle / ODP.NET用のDamを生成
-                    dam = new DamOraOdp();
+                    dam = new DamManagedOdp();
 
                     // 接続文字列をロード（ODP2：Instant Client）
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP2");

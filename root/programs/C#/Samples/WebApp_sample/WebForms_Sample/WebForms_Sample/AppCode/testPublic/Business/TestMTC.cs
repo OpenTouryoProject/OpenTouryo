@@ -224,7 +224,7 @@ namespace WebForms_Sample
 
             #region Oracle
 
-            damWork = new DamOraOdp();
+            damWork = new DamManagedOdp();
 
             #region 接続しない
 
@@ -234,8 +234,8 @@ namespace WebForms_Sample
             // なにもしない。
 
             // プロパティにアクセス（デバッガで確認）
-            idcnn = ((DamOraOdp)this.GetDam()).DamOracleConnection;
-            idtx = ((DamOraOdp)this.GetDam()).DamOracleTransaction;
+            idcnn = ((DamManagedOdp)this.GetDam()).DamOracleConnection;
+            idtx = ((DamManagedOdp)this.GetDam()).DamOracleTransaction;
 
             // nullの時に呼んだ場合。
             this.GetDam().CommitTransaction();
@@ -279,10 +279,10 @@ namespace WebForms_Sample
             obj = (object)cmnDao.ExecSelectScalar();
 
             // プロパティにアクセス（デバッガで確認）
-            idcnn = ((DamOraOdp)this.GetDam()).DamOracleConnection;
-            idtx = ((DamOraOdp)this.GetDam()).DamOracleTransaction;
-            idcmd = ((DamOraOdp)this.GetDam()).DamOracleCommand;
-            idapt = ((DamOraOdp)this.GetDam()).DamOracleDataAdapter;
+            idcnn = ((DamManagedOdp)this.GetDam()).DamOracleConnection;
+            idtx = ((DamManagedOdp)this.GetDam()).DamOracleTransaction;
+            idcmd = ((DamManagedOdp)this.GetDam()).DamOracleCommand;
+            idapt = ((DamManagedOdp)this.GetDam()).DamOracleDataAdapter;
             ds = new DataSet();
             idapt.Fill(ds);
 

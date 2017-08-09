@@ -78,8 +78,8 @@ namespace WebForms_Sample
                 }
                 else if (transactionPatternID.IndexOf("ODP") != -1)
                 {
-                    // DamOraOdpを初期化してセット
-                    tempDam = new DamOraOdp();
+                    // DamManagedOdpを初期化してセット
+                    tempDam = new DamManagedOdp();
                     BaseLogic.InitDam(transactionPatternID, tempDam);
                     this.SetDam(transactionPatternID, tempDam);
                 }

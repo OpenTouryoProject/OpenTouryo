@@ -59,11 +59,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DamManagedOdp">
+      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\DamManagedOdp.dll</HintPath>
+    </Reference>
     <Reference Include="DamMySQL">
       <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\DamMySQL.dll</HintPath>
-    </Reference>
-    <Reference Include="DamOraOdp">
-      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\DamOraOdp.dll</HintPath>
     </Reference>
     <Reference Include="DamPstGrS">
       <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\DamPstGrS.dll</HintPath>

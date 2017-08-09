@@ -54,7 +54,7 @@
 // データプロバイダ
 // --------------------
 using System.Data.SqlClient;
-using Oracle.DataAccess.Client;
+using Oracle.ManagedDataAccess.Client;
 using System.Data.OleDb;
 using System.Data.Odbc;
 using Npgsql;

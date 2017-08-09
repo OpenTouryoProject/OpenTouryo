@@ -45,9 +45,9 @@ namespace Touryo.Infrastructure.Public.Db
     public class DamOraClient { }
 
     ///// <summary>
-    ///// DamOraOdpのダミー
+    ///// DamManagedOdpのダミー
     ///// </summary>
-    //public class DamOraOdp
+    //public class DamManagedOdp
     //{
     //    public int ArrayBindCount;
     //}

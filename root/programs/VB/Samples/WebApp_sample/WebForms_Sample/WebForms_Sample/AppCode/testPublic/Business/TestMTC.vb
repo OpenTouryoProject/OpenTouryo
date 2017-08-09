@@ -220,7 +220,7 @@ Public Class TestMTC
 
         '#Region "Oracle"
 
-        damWork = New DamOraOdp()
+        damWork = New DamManagedOdp()
 
         '#Region "接続しない"
 
@@ -230,8 +230,8 @@ Public Class TestMTC
         ' なにもしない。
 
         ' プロパティにアクセス（デバッガで確認）
-        idcnn = DirectCast(Me.GetDam(), DamOraOdp).DamOracleConnection
-        idtx = DirectCast(Me.GetDam(), DamOraOdp).DamOracleTransaction
+        idcnn = DirectCast(Me.GetDam(), DamManagedOdp).DamOracleConnection
+        idtx = DirectCast(Me.GetDam(), DamManagedOdp).DamOracleTransaction
 
         ' nullの時に呼んだ場合。
         Me.GetDam().CommitTransaction()
@@ -275,10 +275,10 @@ Public Class TestMTC
         obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
 
         ' プロパティにアクセス（デバッガで確認）
-        idcnn = DirectCast(Me.GetDam(), DamOraOdp).DamOracleConnection
-        idtx = DirectCast(Me.GetDam(), DamOraOdp).DamOracleTransaction
-        idcmd = DirectCast(Me.GetDam(), DamOraOdp).DamOracleCommand
-        idapt = DirectCast(Me.GetDam(), DamOraOdp).DamOracleDataAdapter
+        idcnn = DirectCast(Me.GetDam(), DamManagedOdp).DamOracleConnection
+        idtx = DirectCast(Me.GetDam(), DamManagedOdp).DamOracleTransaction
+        idcmd = DirectCast(Me.GetDam(), DamManagedOdp).DamOracleCommand
+        idapt = DirectCast(Me.GetDam(), DamManagedOdp).DamOracleDataAdapter
         ds = New DataSet()
         idapt.Fill(ds)
 

@@ -202,8 +202,8 @@ Namespace Touryo.Infrastructure.Business.Business
                     '    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ORA")
                 ElseIf parameterValue.ActionType.Split("%"c)(0) = "ODP" Then
                     ' Oracle / ODP.NET用のDamを生成
-                    damABT = New DamOraOdp()
-                    damAMT = New DamOraOdp()
+                    damABT = New DamManagedOdp()
+                    damAMT = New DamManagedOdp()
 
                     ' 接続文字列をロード（ODP2：Instant Client）
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP2")

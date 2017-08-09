@@ -5,13 +5,13 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamMySQL", "DamMySQL\DamMySQL.csproj", "{18345E81-5ECB-4B2F-8304-0E94F8763216}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamOraOdp", "DamOraOdp\DamOraOdp.csproj", "{FE4533B3-53F0-4BE2-8390-9486FFF380A3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamPstGrS", "DamPstGrS\DamPstGrS.csproj", "{1A3B3376-716C-4AB2-9FB5-427227D8037F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamSqlDbWithMultiShard", "DamSqlDbWithMultiShard\DamSqlDbWithMultiShard.csproj", "{1AD61B64-54D8-476E-BFE7-4CBC2E4A135B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Public", "..\Public.csproj", "{81CC573A-0DF9-49E5-AF10-A50F9B194DA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamManagedOdp", "DamManagedOdp\DamManagedOdp.csproj", "{FE4533B3-53F0-4BE2-8390-9486FFF380A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		{18345E81-5ECB-4B2F-8304-0E94F8763216}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18345E81-5ECB-4B2F-8304-0E94F8763216}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18345E81-5ECB-4B2F-8304-0E94F8763216}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1A3B3376-716C-4AB2-9FB5-427227D8037F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1A3B3376-716C-4AB2-9FB5-427227D8037F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A3B3376-716C-4AB2-9FB5-427227D8037F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{81CC573A-0DF9-49E5-AF10-A50F9B194DA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81CC573A-0DF9-49E5-AF10-A50F9B194DA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81CC573A-0DF9-49E5-AF10-A50F9B194DA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

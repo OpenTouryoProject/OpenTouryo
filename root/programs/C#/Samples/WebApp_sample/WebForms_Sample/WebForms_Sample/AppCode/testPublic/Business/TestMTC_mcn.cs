@@ -215,7 +215,7 @@ namespace WebForms_Sample
             #region ODP2_NT
 
             // Damを生成
-            damWork = new DamOraOdp();
+            damWork = new DamManagedOdp();
             // Damを初期化
             BaseLogic.InitDam("ODP2_NT", damWork);
             // Damを設定
@@ -242,7 +242,7 @@ namespace WebForms_Sample
             #region ODP2_RC
 
             // Damを生成
-            damWork = new DamOraOdp();
+            damWork = new DamManagedOdp();
             // Damを初期化
             BaseLogic.InitDam("ODP2_RC", damWork);
             // Damを設定
@@ -269,7 +269,7 @@ namespace WebForms_Sample
             #region ODP2_SZ
 
             // Damを生成
-            damWork = new DamOraOdp();
+            damWork = new DamManagedOdp();
             // Damを初期化
             BaseLogic.InitDam("ODP2_SZ", damWork);
             // Damを設定
@@ -296,7 +296,7 @@ namespace WebForms_Sample
             #region ODP2_DF
 
             // Damを生成
-            damWork = new DamOraOdp();
+            damWork = new DamManagedOdp();
             // Damを初期化
             BaseLogic.InitDam("ODP2_DF", damWork);
             // Damを設定
