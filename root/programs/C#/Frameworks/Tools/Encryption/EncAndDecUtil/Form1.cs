@@ -36,6 +36,7 @@
 
 using System;
 using System.Windows.Forms;
+using System.Security.Cryptography.X509Certificates;
 
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
@@ -515,7 +516,8 @@ namespace EncAndDecUtil
             else
             {
                 // X509Cer
-                csX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text);
+                csX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text,
+                    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
 
                 sign = csX509.Sign(data);
                 //ret = csX509.Verify(data, sign);
@@ -550,7 +552,8 @@ namespace EncAndDecUtil
                 // *.pfxを使用して、検証することもできるが、
                 //csX509 = new CodeSigningX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text);
                 // 通常は、*.cerを使用して検証する。
-                csX509 = new DigitalSignX509(CertificateFilePath_cer, "", this.txtCCHash.Text);
+                csX509 = new DigitalSignX509(CertificateFilePath_cer, "", this.txtCCHash.Text,
+                    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
 
                 ret = csX509.Verify(data, sign);
             }
@@ -597,7 +600,8 @@ namespace EncAndDecUtil
             else
             {
                 // RS256 (X509Cer)
-                JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_pfx, this.CertificateFilePassword);
+                JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_pfx, this.CertificateFilePassword,
+                    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
 
                 // 生成
                 string jwt = jwtRS256.Create(this.txtJWTPayload.Text);
@@ -651,7 +655,8 @@ namespace EncAndDecUtil
                     + "." + temp[2];
 
                 // 検証
-                JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_cer, "");
+                JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_cer, "",
+                    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
                 ret = jwtRS256.Verify(newJWT);
             }
 
