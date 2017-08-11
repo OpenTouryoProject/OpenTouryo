@@ -113,6 +113,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
     </Compile>
+    <Compile Include="Presentation\MyBaseApiController.vb" />
     <Compile Include="Presentation\MyBaseMVController.vb" />
     <Compile Include="Workflow\DaoM_User.vb" />
     <Compile Include="Workflow\DaoM_Workflow.vb" />

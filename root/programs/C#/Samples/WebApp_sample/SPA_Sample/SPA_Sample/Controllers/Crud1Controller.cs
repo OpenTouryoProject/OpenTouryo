@@ -28,6 +28,7 @@ using System.Net;
 using System.Net.Http;
 using System.Collections.Generic;
 
+using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Public.Db;
 
@@ -50,6 +51,7 @@ namespace SPA_Sample.Controllers
     }
 
     /// <summary>GetCountController</summary>
+    [MyBaseApiController()]
     public class GetCountController : ApiController
     {
         /// <summary>
