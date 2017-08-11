@@ -65,6 +65,7 @@
 //*  2015/06/25  Sai               Fixed the bug of removing 'AND' and 'OR' if the column name contains at the begininng  
 //*                                by adding space after "AND" and "OR" in the method 'DeleteFirstLogicalOperatoronWhereClause'  
 //*  2015/07/05  Sai               Added virtual property of IDbCommand
+//*  2017/08/11  西野 大介         BaseDam.ClearText ---> StringConverter.FormattingForOneLineLog
 //**********************************************************************************
 
 using System;
@@ -76,6 +77,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Db
@@ -3066,152 +3068,8 @@ namespace Touryo.Infrastructure.Public.Db
         /// <remarks>派生のDamXXXから利用する。</remarks>
         protected string ClearText(string text)
         {
-            // StringBuilderを使用して
-            // インナーテキストをキレイにする。
-            StringBuilder sb = new StringBuilder();
-
-            // キャリッジリターン文字とラインフィード文字
-            // '\r\n'
-            // キャリッジリターン文字
-            // '\r'
-            // ラインフィード文字
-            // '\n'
-            //// タブ文字
-            //// '\t'
-            // を取り除く
-            text = text.Replace("\r\n", " ");
-            text = text.Replace('\r', ' ');
-            text = text.Replace('\n', ' ');
-            //text = text.Replace('\t', ' ');
-
-            // & → &amp;置換
-            text = text.Replace("&", "&amp;");
-            // エスケープされているシングルクォートを置換
-            text = text.Replace("''", "&SingleQuote2;");
-
-            // 連続した空白は、詰める
-            bool isConsecutive = false;
-
-            // 文字列中は、詰めない
-            bool isString = false;
-
-            foreach (char ch in text)
-            {
-                if (ch == '\'')
-                {
-                    // 出たり入ったり（文字列）。
-                    isString = !isString;
-                }
-
-                if (ch == ' ')
-                {
-                    if (isConsecutive && !isString)
-                    {
-                        // 空白（半角スペース）が連続＆文字列外。
-                        // → アペンドしない。
-                    }
-                    else
-                    {
-                        // 空白（半角スペース）が初回 or 文字列中。
-                        // → アペンドする。
-                        sb.Append(ch);
-
-                        // 空白（半角スペース）が連続しているフラグを立てる。
-                        isConsecutive = true;
-                    }
-                }
-                else if (ch == '\t')
-                {
-                    if (isConsecutive && !isString)
-                    {
-                        // 空白（タブ文字）が連続＆文字列外。
-                        // → アペンドしない。
-                    }
-                    else
-                    {
-                        // 空白（タブ文字）が初回 or 文字列中。
-                        // → アペンドする。
-                        sb.Append(ch);
-
-                        // 空白（タブ文字）が連続しているフラグを立てる。
-                        isConsecutive = true;
-                    }
-                }
-                else
-                {
-                    // アペンドする。
-                    sb.Append(ch);
-
-                    // 連続した空白が途切れたので、フラグを倒す。
-                    isConsecutive = false;
-                }
-            }
-
-            // 戻し（エスケープされているシングルクォートを置換）。
-            text = sb.ToString().Replace("&SingleQuote2;", "''");
-
-            // 戻し（& → &amp;置換）
-            text = text.Replace("&amp;", "&");
-
-            // 結果を返す
-            return text;
+            return StringConverter.FormattingForOneLineLog(text);
         }
-
-        //↓旧メソッド
-
-        //protected string ClearText(string text)
-        //{
-        //    // StringBuilderを使用して
-        //    // インナーテキストをキレイにする。
-        //    StringBuilder sb = new StringBuilder();
-
-        //    // キャリッジリターン文字とラインフィード文字
-        //    // '\r\n'
-        //    // キャリッジリターン文字
-        //    // '\r'
-        //    // ラインフィード文字
-        //    // '\n'
-        //    // タブ文字
-        //    // '\t'
-        //    // を取り除く
-        //    text = text.Replace("\r\n", " ");
-        //    text = text.Replace('\r', ' ');
-        //    text = text.Replace('\n', ' ');
-        //    text = text.Replace('\t', ' ');
-
-        //    // 連続した空白は、詰める
-        //    bool IsConsecutive = false;
-
-        //    foreach (char ch in text)
-        //    {
-        //        if (ch == ' ')
-        //        {
-        //            if (IsConsecutive == true)
-        //            {
-        //                // 空白が連続しているのでアペンドしない。
-        //            }
-        //            else
-        //            {
-        //                // 空白が初回なのでアペンドする。
-        //                sb.Append(ch);
-
-        //                // 空白が連続しているフラグを立てる。
-        //                IsConsecutive = true;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            // アペンドする。
-        //            sb.Append(ch);
-
-        //            // 連続した空白が途切れたので、フラグを倒す。
-        //            IsConsecutive = false;
-        //        }
-        //    }
-
-        //    // 結果を返す。
-        //    return sb.ToString();
-        //}
 
         #endregion
 
