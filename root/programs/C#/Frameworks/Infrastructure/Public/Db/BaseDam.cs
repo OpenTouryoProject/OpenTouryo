@@ -3047,21 +3047,10 @@ namespace Touryo.Infrastructure.Public.Db
         #region テキストデータをキレイにする
 
         /// <summary>
-        /// テキストデータをキレイにする。
+        /// 1行ログ出力用整形
         /// 
-        /// （１）
-        /// 以下の文字を半角空白に変換する。
-        /// キャリッジリターン文字とラインフィード文字
-        /// '\r\n'
-        /// キャリッジリターン文字
-        /// '\r'
-        /// ラインフィード文字
-        /// '\n'
-        /// 
-        /// （２）
-        /// ２文字以上連続する
-        /// 半角スペース・タブ（\t）は削除する。
-        /// （ただし、文字列中は、詰めない。）
+        /// 仕様については下記を参照
+        /// StringConverter.FormattingForOneLineLog
         /// </summary>
         /// <param name="text">テキスト</param>
         /// <returns>処理後のテキスト</returns>
