@@ -26,6 +26,8 @@ Namespace Aspx.Start
     ''' <summary>ログイン画面（Forms認証対応）</summary>
     Partial Public Class login
         Inherits MyBaseController
+
+        ''' <summary>constructor</summary>
         Public Sub New()
             Me.IsNoSession = True
         End Sub
@@ -98,6 +100,13 @@ Namespace Aspx.Start
 
             ' 画面遷移はしない（基盤に任せるため）。
             Return String.Empty
+        End Function
+
+        ''' <summary>外部ログイン</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
+        ''' <returns>URL</returns>
+        Protected Function UOC_btnButton2_Click(fxEventArgs As FxEventArgs) As String
+            Return "../Auth/OAuthAuthorizationCodeGrantClient.aspx"
         End Function
 
 #End Region

@@ -11,47 +11,47 @@ Option Strict On
 Option Explicit On
 
 Namespace Aspx.Start
-    
+
     Partial Public Class login
-        
+
         '''<summary>
-        '''txtUserID Control。
+        '''txtUserID コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtUserID As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
-        
+
         '''<summary>
-        '''txtPassword Control。
+        '''txtPassword コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtPassword As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
-        
+
         '''<summary>
-        '''btnButton1 Control。
+        '''btnButton1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents btnButton1 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
-        
+
         '''<summary>
-        '''btnButton2 Control。
+        '''btnButton2 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents btnButton2 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
-        
+
         '''<summary>
-        '''lblMessage Control。
+        '''lblMessage コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

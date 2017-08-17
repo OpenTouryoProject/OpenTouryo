@@ -9,29 +9,29 @@
     <div>
         <table id="Table1" border="1">
             <tr>
-		        <td>ユーザID</td>
-		        <td>
-		            <cc1:WebCustomTextBox id="txtUserID" runat="server"></cc1:WebCustomTextBox>
+                <td>ユーザID</td>
+                <td>
+                    <cc1:WebCustomTextBox id="txtUserID" runat="server"></cc1:WebCustomTextBox>
                 </td>
-		    </tr>
-		    <tr>
-		        <td>パスワード</td>
-		        <td>
-		            <cc1:WebCustomTextBox id="txtPassword" runat="server" TextMode="Password"></cc1:WebCustomTextBox>
-    		    </td>
-		    </tr>
-		    <tr>
-	    	    <td colspan="2" align="right">
+            </tr>
+            <tr>
+                <td>パスワード</td>
+                <td>
+                    <cc1:WebCustomTextBox id="txtPassword" runat="server" TextMode="Password"></cc1:WebCustomTextBox>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="right">
                     <cc1:WebCustomButton ID="btnButton1" runat="server" Text="ログイン" Width="150px" />
                 </td>
-		    </tr>
+            </tr>
             <tr>
                 <td colspan="2" align="right">
                     <cc1:WebCustomButton ID="btnButton2" runat="server" Text="外部ログイン" Width="150px" />
                 </td>
-		    </tr>
-	    </table>
-	    <cc1:WebCustomLabel id="lblMessage" runat="server" Width="250px">Label</cc1:WebCustomLabel>    
+            </tr>
+        </table>
+        <cc1:WebCustomLabel id="lblMessage" runat="server" Width="250px">Label</cc1:WebCustomLabel>    
     </div>
 </asp:Content>
 
