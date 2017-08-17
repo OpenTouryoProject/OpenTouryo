@@ -41,14 +41,12 @@ namespace SPA_Sample.Models.ViewModels
         /// <summary>
         /// UserName
         /// </summary>
-        [Required(AllowEmptyStrings = false)]
         [Display(Name = "User name")]
         public string UserName { get; set; }
 
         /// <summary>
         /// PWDS
         /// </summary>
-        [Required(AllowEmptyStrings = false)]
         [Display(Name = "passwowd")]
         public string Passwowd { get; set; }
     }
