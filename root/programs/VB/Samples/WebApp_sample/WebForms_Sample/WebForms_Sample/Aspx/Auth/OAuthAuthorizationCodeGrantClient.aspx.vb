@@ -1,9 +1,5 @@
-﻿Imports System
-Imports System.Text
-Imports System.Collections.Generic
-Imports System.Net.Http
+﻿Imports System.Net.Http
 Imports System.Net.Http.Headers
-Imports System.Web.Security
 
 Imports Microsoft.Owin.Security.DataHandler.Encoder
 

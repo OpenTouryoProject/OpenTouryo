@@ -39,7 +39,6 @@ Namespace Models.ViewModels
         ''' <summary>
         ''' UserName
         ''' </summary>
-        <Required(AllowEmptyStrings:=False)>
         <Display(Name:="User name")>
         Public Property UserName() As String
             Get
@@ -54,7 +53,6 @@ Namespace Models.ViewModels
         ''' <summary>
         ''' PWDS
         ''' </summary>
-        <Required(AllowEmptyStrings:=False)>
         <Display(Name:="passwowd")>
         Public Property Passwowd() As String
             Get
