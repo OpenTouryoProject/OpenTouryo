@@ -29,6 +29,7 @@ namespace WebForms_Sample.Aspx.Start
     /// <summary>ログイン画面（Forms認証対応）</summary>
     public partial class login : MyBaseController
     {
+        /// <summary>constructor</summary>
         public login()
         {
             this.IsNoSession = true;
@@ -108,6 +109,14 @@ namespace WebForms_Sample.Aspx.Start
 
             // 画面遷移はしない（基盤に任せるため）。
             return string.Empty;
+        }
+
+        /// <summary>外部ログイン</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
+        /// <returns>URL</returns>
+        protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
+        {
+            return "../Auth/OAuthAuthorizationCodeGrantClient.aspx";
         }
 
         #endregion

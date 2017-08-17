@@ -23,7 +23,11 @@
 		    <tr>
 	    	    <td colspan="2" align="right">
                     <cc1:WebCustomButton ID="btnButton1" runat="server" Text="ログイン" Width="150px" />
-                    <!--<cc1:WebCustomButton ID="btnButton2" runat="server" Text="ログイン" Width="150px" />-->
+                </td>
+		    </tr>
+            <tr>
+                <td colspan="2" align="right">
+                    <cc1:WebCustomButton ID="btnButton2" runat="server" Text="外部ログイン" Width="150px" />
                 </td>
 		    </tr>
 	    </table>
