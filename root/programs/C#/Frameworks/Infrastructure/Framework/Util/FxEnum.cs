@@ -188,7 +188,12 @@ namespace Touryo.Infrastructure.Framework.Util
             /// <summary>
             /// WCF : netTcpBinding
             /// </summary>
-            WCF_TCPIP
+            WCF_TCPIP,
+
+            /// <summary>
+            /// ASP.NET WebAPI (JSON-RPC)
+            /// </summary>
+            AspNetWebAPI
         }
 
         /// <summary>エラー型情報を表す列挙型</summary>
