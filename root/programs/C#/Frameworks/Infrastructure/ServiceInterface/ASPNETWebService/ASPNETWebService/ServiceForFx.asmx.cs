@@ -88,6 +88,7 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
 
         #region コンストラクタ
 
+        /// <summary>constructor</summary>
         public ServiceForFx()
         {
             //デザインされたコンポーネントを使用する場合、次の行をコメントを解除してください 

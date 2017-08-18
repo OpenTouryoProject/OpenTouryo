@@ -45,9 +45,10 @@
     <br />
     通信制御<br />
     <cc1:WebCustomDropDownList ID="ddlCmctCtrl" runat="server">
-        <asp:ListItem Value="testWebService">Webサービス呼出</asp:ListItem>
+        <asp:ListItem Value="testWebService">ASP.NET Webサービス呼出</asp:ListItem>
         <asp:ListItem Value="testWebService2">WCF Webサービス呼出</asp:ListItem>
         <asp:ListItem Value="testWebService3">WCF TCPサービス呼出</asp:ListItem>
+        <asp:ListItem Value="testWebService4">ASP.NET WebAPI呼出</asp:ListItem>
         <asp:ListItem Value="testInProcess">インプロセス呼出</asp:ListItem>
     </cc1:WebCustomDropDownList><br />
     <hr />

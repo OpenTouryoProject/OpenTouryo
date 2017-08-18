@@ -60,6 +60,7 @@
 
 using System;
 using System.Text;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Runtime.ExceptionServices;
@@ -728,6 +729,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     HttpClient client = new HttpClient(handler);
 
                     HttpRequestMessage httpRequestMessage = null;
+                    HttpResponseMessage httpResponseMessage = null;
                     httpRequestMessage = new HttpRequestMessage
                     {
                         Method = HttpMethod.Post,
@@ -750,15 +752,13 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     #endregion
 
                     // 同期呼び出しで実行
-                    Task<HttpResponseMessage> task1 = client.SendAsync(httpRequestMessage);
-                    task1.RunSynchronously();
-                    Task<string> task2 = task1.Result.Content.ReadAsStringAsync();
-                    task2.RunSynchronously();
-                    JObject jObject = (JObject)JsonConvert.DeserializeObject(task2.Result);
+                    httpResponseMessage = client.SendAsync(httpRequestMessage).Result;
+                    string temp = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                    JObject jObject = (JObject)JsonConvert.DeserializeObject(temp);
 
-                    ret = CustomEncode.FromBase64String((string)jObject["ret"]);
-                    contextObject = CustomEncode.FromBase64String((string)jObject["contextObject"]);
-                    returnValueObject = CustomEncode.FromBase64String((string)jObject["returnValueObject"]);
+                    ret = CustomEncode.FromBase64String((string)jObject["Return"]);
+                    contextObject = CustomEncode.FromBase64String((string)jObject["ContextObject"]);
+                    returnValueObject = CustomEncode.FromBase64String((string)jObject["ReturnValueObject"]);
 
                     #endregion
                 }
@@ -778,6 +778,10 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 #region エラー情報
 
                 if (ret == null)
+                {
+                    // 正常（例外発生：無し）
+                }
+                else if (Enumerable.SequenceEqual(ret, (BinarySerialize.ObjectToBytes(""))))
                 {
                     // 正常（例外発生：無し）
                 }
