@@ -10,7 +10,11 @@ Documentation
 =============
 
 For the latest documentation see the Open Touryo web site at:
-https://github.com/OpenTouryoProject/OpenTouryoDocuments
+
+- OpenTouryoProject/OpenTouryoDocuments
+  https://github.com/OpenTouryoProject/OpenTouryoDocuments
+- FrontPage - Open 棟梁 Wiki
+  https://opentouryo.osscons.jp/
 
 ==================================================
 
@@ -26,4 +30,8 @@ Webサイト：http://www.osscons.jp/dotNetDevelopmentInfrastructure/
 ============= 
 
 最新のマニュアルは、Open棟梁のWebサイトを参照してください。 
-https://github.com/OpenTouryoProject/OpenTouryoDocuments
+
+- OpenTouryoProject/OpenTouryoDocuments
+  https://github.com/OpenTouryoProject/OpenTouryoDocuments
+- FrontPage - Open 棟梁 Wiki
+  https://opentouryo.osscons.jp/
