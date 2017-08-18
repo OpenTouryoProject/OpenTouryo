@@ -39,21 +39,8 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <Folder Include="ServiceInterface\WcfDataContract\Rest\" />
   </ItemGroup>
   <ItemGroup>
-  <Compile Include="..\..\Infrastructure\Business\WcfDataContract\Rest\ErrorInfo.cs">
-      <Link>ServiceInterface\WcfDataContract\Rest\ErrorInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Infrastructure\Business\WcfDataContract\Rest\Informations.cs">
-      <Link>ServiceInterface\WcfDataContract\Rest\Informations.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Infrastructure\Business\WcfDataContract\Rest\ParamDataContract.cs">
-      <Link>ServiceInterface\WcfDataContract\Rest\ParamDataContract.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Infrastructure\Business\WcfDataContract\Rest\ReturnDataContract.cs">
-      <Link>ServiceInterface\WcfDataContract\Rest\ReturnDataContract.cs</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

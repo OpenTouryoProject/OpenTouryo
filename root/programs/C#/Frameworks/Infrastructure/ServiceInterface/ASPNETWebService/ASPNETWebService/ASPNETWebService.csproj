@@ -45,6 +45,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Business">
+      <HintPath>..\..\..\Build\Business.dll</HintPath>
+    </Reference>
     <Reference Include="Framework">
       <HintPath>..\..\..\Build\Framework.dll</HintPath>
     </Reference>
@@ -194,6 +197,8 @@
     <Content Include="Scripts\_references.js" />
     <Content Include="Global.asax" />
     <Content Include="ServiceForFx.asmx" />
+    <Content Include="ServiceForMu.asmx" />
+    <Content Include="ServiceForSb.asmx" />
     <Content Include="WCFHTTPSvcForFx.svc" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
@@ -218,6 +223,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceForFx.asmx.cs">
       <DependentUpon>ServiceForFx.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ServiceForMu.asmx.cs">
+      <DependentUpon>ServiceForMu.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ServiceForSb.asmx.cs">
+      <DependentUpon>ServiceForSb.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="WCFHTTPSvcForFx.svc.cs">

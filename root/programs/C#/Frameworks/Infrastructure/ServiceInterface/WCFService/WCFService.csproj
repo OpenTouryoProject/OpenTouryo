@@ -38,21 +38,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Business">
-      <HintPath>dll\Business.dll</HintPath>
+      <HintPath>..\..\Build\Business.dll</HintPath>
     </Reference>
     <Reference Include="Framework">
-      <HintPath>dll\Framework.dll</HintPath>
+      <HintPath>..\..\Build\Framework.dll</HintPath>
     </Reference>
     <Reference Include="Public">
-      <HintPath>dll\Public.dll</HintPath>
+      <HintPath>..\..\Build\Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="WSIFType_sample">
-      <HintPath>dll\WSIFType_sample.dll</HintPath>
+      <HintPath>..\..\..\..\Samples\WS_sample\Build\WSIFType_sample.dll</HintPath>
     </Reference>
     <Reference Include="WSServer_sample">
-      <HintPath>dll\WSServer_sample.dll</HintPath>
+      <HintPath>..\..\..\..\Samples\WS_sample\Build\WSServer_sample.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
