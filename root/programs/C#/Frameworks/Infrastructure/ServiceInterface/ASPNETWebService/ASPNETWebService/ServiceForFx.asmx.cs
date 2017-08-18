@@ -126,7 +126,7 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
         {
             // ステータス
             string status = "－";
-            
+
             // 初期化のため
             returnValueObject = null;
 
@@ -235,7 +235,7 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
 
                 // ★
                 status = FxLiteral.SIF_STATUS_SERIALIZE;
-                
+
                 returnValueObject = BinarySerialize.ObjectToBytes(returnValue);
 
                 #endregion
