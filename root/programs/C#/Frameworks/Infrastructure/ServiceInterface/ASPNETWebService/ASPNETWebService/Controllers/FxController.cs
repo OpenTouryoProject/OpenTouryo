@@ -20,8 +20,8 @@
 
 //**********************************************************************************
 //* クラス名        ：FxController
-//* クラス日本語名  ：ASP.NET WebAPI（サービス インターフェイス基盤）
-//*                   JSON-RPCの.NETオブジェクトのバイナリ転送用メソッドを公開する。
+//* クラス日本語名  ：ASP.NET WebAPI JSON-RPCの.NETオブジェクトの
+//*                   バイナリ転送用メソッドを公開するサービス インターフェイス基盤
 //*
 //* 作成日時        ：－
 //* 作成者          ：生技
@@ -45,7 +45,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Business.Presentation;
-
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Util;
@@ -59,6 +58,10 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace ASPNETWebService.Controllers
 {
+    /// <summary>
+    /// ASP.NET WebAPI JSON-RPCの.NETオブジェクトの
+    /// バイナリ転送用メソッドを公開するサービス インターフェイス基盤
+    /// </summary>
     [EnableCors(
         // リソースへのアクセスを許可されている発生元
         origins: "*",
@@ -70,18 +73,10 @@ namespace ASPNETWebService.Controllers
         SupportsCredentials = true)]
     public class FxController : ApiController
     {
-        #region グローバル変数
+        #region テスト用
 
-        /// <summary>インプロセス呼び出しの名前解決シングルトン クラス</summary>
-        /// <remarks>
-        /// 初期化は起動時の１回のみであり、
-        /// 読み取り専用のデータを保持する場合
-        /// のみに適用するデザインパターンとする。
-        /// </remarks>
-        private static InProcessNameService IPR_NS = new InProcessNameService();
-
-        #endregion
-
+        /// <summary>test</summary>
+        /// <returns>Dictionary(string, string)</returns>
         [HttpGet]
         [Route("test")]
         public Dictionary<string, string> test()
@@ -94,6 +89,37 @@ namespace ASPNETWebService.Controllers
             return dic;
         }
 
+        #endregion
+
+        #region グローバル変数
+
+        /// <summary>インプロセス呼び出しの名前解決シングルトン クラス</summary>
+        /// <remarks>
+        /// 初期化は起動時の１回のみであり、
+        /// 読み取り専用のデータを保持する場合
+        /// のみに適用するデザインパターンとする。
+        /// </remarks>
+        private static InProcessNameService IPR_NS = new InProcessNameService();
+
+        #endregion
+
+        #region ASP.NET WebAPI JSON-RPCの.NETオブジェクトのバイナリ転送用メソッド
+
+        /// <summary>
+        /// ASP.NET WebAPI JSON-RPCの.NETオブジェクトのバイナリ転送用メソッド
+        /// </summary>
+        /// <param name="paramDic">
+        /// 引数：Dictionary(string, string)
+        /// ・ServiceName
+        /// ・ContextObject
+        /// ・ParameterValueObject
+        /// </param>
+        /// <returns>
+        /// 戻り値：Dictionary(string, string)
+        /// ・Return
+        /// ・ContextObject
+        /// ・ReturnValueObject
+        /// </returns>
         [HttpPost]
         [Route("DotNETOnlineWAPI")]
         public Dictionary<string, string> DotNETOnlineWAPI(Dictionary<string, string> paramDic)
@@ -311,5 +337,7 @@ namespace ASPNETWebService.Controllers
             
             return returnDic;
         }
+
+        #endregion
     }
 }

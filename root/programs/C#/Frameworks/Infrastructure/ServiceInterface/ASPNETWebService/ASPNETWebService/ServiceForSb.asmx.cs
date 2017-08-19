@@ -20,8 +20,7 @@
 
 //**********************************************************************************
 //* クラス名        ：ServiceForSb
-//* クラス日本語名  ：ASP.NET Webサービス（サービス インターフェイス基盤）
-//*                  Soap & Bean の個別Webメソッドを公開する。
+//* クラス日本語名  ：Soap & Bean 個別Soap Webメソッドを公開するサービス インターフェイス基盤
 //*
 //* 作成日時        ：－
 //* 作成者          ：sas 生技
@@ -57,12 +56,11 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
     // 名前空間は、必要に応じて書き換え下さい。
 
     /// <summary>
-    /// ASP.NET Webサービス（サービス インターフェイス基盤）
-    /// Soap & Bean の個別Webメソッドを公開する。
+    /// Soap & Bean 個別Soap Webメソッドを公開するサービス インターフェイス基盤
     /// </summary>
     [WebService(Namespace = FxLiteral.WS_NAME_SPACE)]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-    public class ServiceForSb : System.Web.Services.WebService
+    public class ServiceForSb : WebService
     {
         #region グローバル変数
 
@@ -78,6 +76,7 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
 
         #region コンストラクタ
 
+        /// <summary>constructor</summary>
         public ServiceForSb()
         {
             //デザインされたコンポーネントを使用する場合、次の行をコメントを解除してください 
@@ -85,6 +84,8 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
         }
 
         #endregion
+
+        #region Soap & Bean Webメソッド
 
         #region 個別部
 
@@ -248,7 +249,7 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
 
         #region 共通部
 
-        /// <summary>Soap & Bean の個別Webメソッドの共通部</summary>
+        /// <summary>Soap & Bean 個別Soap Webメソッドの共通部</summary>
         /// <param name="context">コンテキスト</param>
         /// <param name="methodName">メソッド名</param>
         /// <param name="parameterValue">引数Bean（個別・・・サブ）</param>
@@ -557,6 +558,8 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                 }
             }
         }
+
+        #endregion
 
         #endregion
     }

@@ -4,7 +4,7 @@
 
 //**********************************************************************************
 //* クラス名        ：LayerB_mu
-//* クラス日本語名  ：Ｂ層のテスト（SOAP汎用Webメソッドのテスト用）
+//* クラス日本語名  ：Ｂ層のテスト（Soap or Json & Bean の個別Webメソッドのテスト用）
 //*
 //* 作成日時        ：－
 //* 作成者          ：sas 生技
@@ -16,6 +16,7 @@
 //*
 //**********************************************************************************
 
+// System
 using System;
 using System.Data;
 
@@ -23,8 +24,8 @@ using Touryo.Infrastructure.Business.Business;
 using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Business.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Public.Dto;
 
+using WSServer_sample.Common;
 using WSServer_sample.Dao;
 
 namespace WSServer_sample.Business
@@ -35,51 +36,6 @@ namespace WSServer_sample.Business
     public class LayerB_mu : MyFcBaseLogic
     {
         #region CRUDPage
-
-        #region テンプレ
-
-        /// <summary>業務処理を実装</summary>
-        /// <param name="muParameter">汎用引数クラス</param>
-        private void UOC_メソッド名(MuParameterValue muParameter)
-        { //メソッド引数にBaseParameterValueの派生の型を定義可能。
-
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
-            MuReturnValue muReturn = new MuReturnValue();
-            this.ReturnValue = muReturn;
-
-            // 引数をアンマーシャル
-            DTTables dtts_in = DTTables.StringToDTTables(muParameter.Value);
-            DTTable dtt_in = dtts_in[0];
-            DTRow dtrow_in = dtt_in.Rows[0];
-
-            DTTables dtts_out = null;
-            DTTable dtt_out = null;
-            DTRow dtrow_out = null;
-
-            // ↓業務処理-----------------------------------------------------
-
-            // 個別Dao
-            LayerD_mu myDao = new LayerD_mu(this.GetDam());
-            //myDao.xxxx(muParameter.ActionType, dtts, muReturn);
-
-            // 共通Dao
-            CmnDao cmnDao = new CmnDao(this.GetDam());
-            cmnDao.ExecSelectScalar();
-
-            // 戻り値をマーシャリングして設定
-            dtts_out = new DTTables();
-            dtt_out = new DTTable("ret");
-            dtt_out.Cols.Add(new DTColumn("ret", DTType.String));
-            dtrow_out = dtt_out.Rows.AddNew();
-            dtrow_out["ret"] = "戻り値";
-            dtts_out.Add(dtt_out);
-
-            muReturn.Value = DTTables.DTTablesToString(dtts_out);
-
-            // ↑業務処理-----------------------------------------------------
-        }
-
-        #endregion
 
         #region UOCメソッド
 
@@ -92,15 +48,6 @@ namespace WSServer_sample.Business
             // 戻り値クラスを生成して、事前に戻り地に設定しておく。
             MuReturnValue muReturn = new MuReturnValue();
             this.ReturnValue = muReturn;
-
-            // 引数をアンマーシャル
-            DTTables dtts_in = DTTables.StringToDTTables(muParameter.Value);
-            DTTable dtt_in = dtts_in[0];
-            //DTRow dtrow_in = dtt_in.Rows[0];
-
-            //DTTables dtts_out = null;
-            //DTTable dtt_out = null;
-            //DTRow dtrow_out = null;
 
             // ↓業務処理-----------------------------------------------------
 
@@ -126,7 +73,7 @@ namespace WSServer_sample.Business
 
                     // 共通Daoを実行
                     // 戻り値を設定
-                    muReturn.Value = cmnDao.ExecSelectScalar().ToString();
+                    muReturn.Bean = cmnDao.ExecSelectScalar().ToString();
 
                     break;
 
@@ -137,19 +84,15 @@ namespace WSServer_sample.Business
 
                     // 共通Daoを実行
                     // 戻り値を設定
-                    muReturn.Value = genDao.D5_SelCnt().ToString();
+                    muReturn.Bean = genDao.D5_SelCnt().ToString();
 
                     break;
 
                 default: // 個別Daoを使用する。
-
-                    // 個別Daoを実行
                     string ret = "";
                     LayerD_mu myDao = new LayerD_mu(this.GetDam());
                     myDao.SelectCount(muParameter.ActionType, out ret);
-
-                    // 戻り値を設定
-                    muReturn.Value = ret;
+                    muReturn.Bean = ret;
 
                     break;
             }
@@ -172,17 +115,9 @@ namespace WSServer_sample.Business
             MuReturnValue muReturn = new MuReturnValue();
             this.ReturnValue = muReturn;
 
-            // 引数をアンマーシャル
-            DTTables dtts_in = DTTables.StringToDTTables(muParameter.Value);
-            DTTable dtt_in = dtts_in[0];
-            //DTRow dtrow_in = dtt_in.Rows[0];
-
-            DTTables dtts_out = null;
-            //DTTable dtt_out = null;
-            //DTRow dtrow_out = null;
-
             // ↓業務処理-----------------------------------------------------
             DataTable dt = null;
+            Shipper[] shippers = null;
 
             switch ((muParameter.ActionType.Split('%'))[1])
             {
@@ -210,10 +145,18 @@ namespace WSServer_sample.Business
                     // 共通Daoを実行
                     cmnDao.ExecSelectFill_DT(dt);
 
-                    // 戻り値をマーシャリングして設定
-                    dtts_out = new DTTables();
-                    dtts_out.Add(DTTable.FromDataTable(dt));
-                    muReturn.Value = DTTables.DTTablesToString(dtts_out);
+                    // 戻り値を設定
+                    shippers = new Shipper[dt.Rows.Count];
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        Shipper shipper = new Shipper();
+                        shipper.ShipperID = (int)dt.Rows[i]["ShipperID"];
+                        shipper.CompanyName = (string)dt.Rows[i]["CompanyName"];
+                        shipper.Phone = (string)dt.Rows[i]["Phone"];
+                        shippers[i] = shipper;
+                    }
+
+                    muReturn.Bean = shippers;
 
                     break;
 
@@ -228,23 +171,37 @@ namespace WSServer_sample.Business
                     // 自動生成Daoを実行
                     genDao.D2_Select(dt);
 
-                    // 戻り値をマーシャリングして設定
-                    dtts_out = new DTTables();
-                    dtts_out.Add(DTTable.FromDataTable(dt));
-                    muReturn.Value = DTTables.DTTablesToString(dtts_out);
+                    // 戻り値を設定
+                    shippers = new Shipper[dt.Rows.Count];
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        Shipper shipper = new Shipper();
+                        shipper.ShipperID = (int)dt.Rows[i]["ShipperID"];
+                        shipper.CompanyName = (string)dt.Rows[i]["CompanyName"];
+                        shipper.Phone = (string)dt.Rows[i]["Phone"];
+                        shippers[i] = shipper;
+                    }
+
+                    muReturn.Bean = shippers;
 
                     break;
 
                 default: // 個別Daoを使用する。
-
-                    // 個別Daoを実行
                     LayerD_mu myDao = new LayerD_mu(this.GetDam());
                     myDao.SelectAll_DT(muParameter.ActionType, out dt);
 
-                    // 戻り値をマーシャリングして設定
-                    dtts_out = new DTTables();
-                    dtts_out.Add(DTTable.FromDataTable(dt));
-                    muReturn.Value = DTTables.DTTablesToString(dtts_out);
+                    // 戻り値を設定
+                    shippers = new Shipper[dt.Rows.Count];
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        Shipper shipper = new Shipper();
+                        shipper.ShipperID = (int)dt.Rows[i]["ShipperID"];
+                        shipper.CompanyName = (string)dt.Rows[i]["CompanyName"];
+                        shipper.Phone = (string)dt.Rows[i]["Phone"];
+                        shippers[i] = shipper;
+                    }
+
+                    muReturn.Bean = shippers;
 
                     break;
             }
@@ -267,17 +224,10 @@ namespace WSServer_sample.Business
             MuReturnValue muReturn = new MuReturnValue();
             this.ReturnValue = muReturn;
 
-            // 引数をアンマーシャル
-            DTTables dtts_in = DTTables.StringToDTTables(muParameter.Value);
-            DTTable dtt_in = dtts_in[0];
-            //DTRow dtrow_in = dtt_in.Rows[0];
-
-            DTTables dtts_out = null;
-            //DTTable dtt_out = null;
-            //DTRow dtrow_out = null;
-
             // ↓業務処理-----------------------------------------------------
             DataSet ds = null;
+            DataTable dt = null;
+            Shipper[] shippers = null;
 
             switch ((muParameter.ActionType.Split('%'))[1])
             {
@@ -305,10 +255,19 @@ namespace WSServer_sample.Business
                     // 共通Daoを実行
                     cmnDao.ExecSelectFill_DS(ds);
 
-                    // 戻り値をマーシャリングして設定
-                    dtts_out = new DTTables();
-                    dtts_out.Add(DTTable.FromDataTable(ds.Tables[0]));
-                    muReturn.Value = DTTables.DTTablesToString(dtts_out);
+                    // 戻り値を設定
+                    dt = ds.Tables[0];
+                    shippers = new Shipper[dt.Rows.Count];
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        Shipper shipper = new Shipper();
+                        shipper.ShipperID = (int)dt.Rows[i]["ShipperID"];
+                        shipper.CompanyName = (string)dt.Rows[i]["CompanyName"];
+                        shipper.Phone = (string)dt.Rows[i]["Phone"];
+                        shippers[i] = shipper;
+                    }
+
+                    muReturn.Bean = shippers;
 
                     break;
 
@@ -324,23 +283,39 @@ namespace WSServer_sample.Business
                     // 自動生成Daoを実行
                     genDao.D2_Select(ds.Tables[0]);
 
-                    // 戻り値をマーシャリングして設定
-                    dtts_out = new DTTables();
-                    dtts_out.Add(DTTable.FromDataTable(ds.Tables[0]));
-                    muReturn.Value = DTTables.DTTablesToString(dtts_out);
+                    // 戻り値を設定
+                    dt = ds.Tables[0];
+                    shippers = new Shipper[dt.Rows.Count];
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        Shipper shipper = new Shipper();
+                        shipper.ShipperID = (int)dt.Rows[i]["ShipperID"];
+                        shipper.CompanyName = (string)dt.Rows[i]["CompanyName"];
+                        shipper.Phone = (string)dt.Rows[i]["Phone"];
+                        shippers[i] = shipper;
+                    }
+
+                    muReturn.Bean = shippers;
 
                     break;
 
                 default: // 個別Daoを使用する。
-
-                    // 個別Daoを実行
                     LayerD_mu myDao = new LayerD_mu(this.GetDam());
                     myDao.SelectAll_DS(muParameter.ActionType, out ds);
 
-                    // 戻り値をマーシャリングして設定
-                    dtts_out = new DTTables();
-                    dtts_out.Add(DTTable.FromDataTable(ds.Tables[0]));
-                    muReturn.Value = DTTables.DTTablesToString(dtts_out);
+                    // 戻り値を設定
+                    dt = ds.Tables[0];
+                    shippers = new Shipper[dt.Rows.Count];
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        Shipper shipper = new Shipper();
+                        shipper.ShipperID = (int)dt.Rows[i]["ShipperID"];
+                        shipper.CompanyName = (string)dt.Rows[i]["CompanyName"];
+                        shipper.Phone = (string)dt.Rows[i]["Phone"];
+                        shippers[i] = shipper;
+                    }
+
+                    muReturn.Bean = shippers;
 
                     break;
             }
@@ -363,17 +338,9 @@ namespace WSServer_sample.Business
             MuReturnValue muReturn = new MuReturnValue();
             this.ReturnValue = muReturn;
 
-            // 引数をアンマーシャル
-            DTTables dtts_in = DTTables.StringToDTTables(muParameter.Value);
-            DTTable dtt_in = dtts_in[0];
-            //DTRow dtrow_in = dtt_in.Rows[0];
-
-            DTTables dtts_out = null;
-            //DTTable dtt_out = null;
-            //DTRow dtrow_out = null;
-
             // ↓業務処理-----------------------------------------------------
             DataTable dt = null;
+            Shipper[] shippers = null;
 
             switch ((muParameter.ActionType.Split('%'))[1])
             {
@@ -421,10 +388,18 @@ namespace WSServer_sample.Business
                     // 終了したらクローズ
                     idr.Close();
 
-                    // 戻り値をマーシャリングして設定
-                    dtts_out = new DTTables();
-                    dtts_out.Add(DTTable.FromDataTable(dt));
-                    muReturn.Value = DTTables.DTTablesToString(dtts_out);
+                    // 戻り値を設定
+                    shippers = new Shipper[dt.Rows.Count];
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        Shipper shipper = new Shipper();
+                        shipper.ShipperID = int.Parse((string)dt.Rows[i]["ShipperID"]);
+                        shipper.CompanyName = (string)dt.Rows[i]["CompanyName"];
+                        shipper.Phone = (string)dt.Rows[i]["Phone"];
+                        shippers[i] = shipper;
+                    }
+
+                    muReturn.Bean = shippers;
 
                     break;
 
@@ -441,23 +416,37 @@ namespace WSServer_sample.Business
                     // 自動生成Daoを実行
                     genDao.D2_Select(dt);
 
-                    // 戻り値をマーシャリングして設定
-                    dtts_out = new DTTables();
-                    dtts_out.Add(DTTable.FromDataTable(dt));
-                    muReturn.Value = DTTables.DTTablesToString(dtts_out);
+                    // 戻り値を設定
+                    shippers = new Shipper[dt.Rows.Count];
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        Shipper shipper = new Shipper();
+                        shipper.ShipperID = int.Parse(dt.Rows[i]["ShipperID"].ToString());
+                        shipper.CompanyName = (string)dt.Rows[i]["CompanyName"];
+                        shipper.Phone = (string)dt.Rows[i]["Phone"];
+                        shippers[i] = shipper;
+                    }
+
+                    muReturn.Bean = shippers;
 
                     break;
 
                 default: // 個別Daoを使用する。
-
-                    // 個別Daoを実行
                     LayerD_mu myDao = new LayerD_mu(this.GetDam());
                     myDao.SelectAll_DR(muParameter.ActionType, out dt);
 
-                    // 戻り値をマーシャリングして設定
-                    dtts_out = new DTTables();
-                    dtts_out.Add(DTTable.FromDataTable(dt));
-                    muReturn.Value = DTTables.DTTablesToString(dtts_out);
+                    // 戻り値を設定
+                    shippers = new Shipper[dt.Rows.Count];
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        Shipper shipper = new Shipper();
+                        shipper.ShipperID = int.Parse((string)dt.Rows[i]["ShipperID"]);
+                        shipper.CompanyName = (string)dt.Rows[i]["CompanyName"];
+                        shipper.Phone = (string)dt.Rows[i]["Phone"];
+                        shippers[i] = shipper;
+                    }
+
+                    muReturn.Bean = shippers;
 
                     break;
             }
@@ -480,17 +469,12 @@ namespace WSServer_sample.Business
             MuReturnValue muReturn = new MuReturnValue();
             this.ReturnValue = muReturn;
 
-            // 引数をアンマーシャル
-            DTTables dtts_in = DTTables.StringToDTTables(muParameter.Value);
-            DTTable dtt_in = dtts_in[0];
-            DTRow dtrow_in = dtt_in.Rows[0];
-
-            DTTables dtts_out = null;
-            //DTTable dtt_out = null;
-            //DTRow dtrow_out = null;
-
             // ↓業務処理-----------------------------------------------------
             DataTable dt = null;
+            Shipper[] shippers = null;
+
+            string orderColumn = ((string[])(muParameter.Bean))[0];
+            string orderSequence = ((string[])(muParameter.Bean))[1];
 
             switch ((muParameter.ActionType.Split('%'))[1])
             {
@@ -513,28 +497,25 @@ namespace WSServer_sample.Business
                     }
 
                     // ユーザ定義パラメタに対して、動的に値を設定する。
-                    string orderColumn = "";
-                    string orderSequence = "";
-
-                    if (dtrow_in["OrderColumn"].ToString() == "c1")
+                    if (orderColumn == "c1")
                     {
                         orderColumn = "ShipperID";
                     }
-                    else if (dtrow_in["OrderColumn"].ToString() == "c2")
+                    else if (orderColumn == "c2")
                     {
                         orderColumn = "CompanyName";
                     }
-                    else if (dtrow_in["OrderColumn"].ToString() == "c3")
+                    else if (orderColumn == "c3")
                     {
                         orderColumn = "Phone";
                     }
                     else { }
 
-                    if (dtrow_in["OrderSequence"].ToString() == "A")
+                    if (orderSequence == "A")
                     {
                         orderSequence = "ASC";
                     }
-                    else if (dtrow_in["OrderSequence"].ToString() == "D")
+                    else if (orderSequence == "D")
                     {
                         orderSequence = "DESC";
                     }
@@ -555,10 +536,18 @@ namespace WSServer_sample.Business
                     // 共通Daoを実行
                     cmnDao.ExecSelectFill_DT(dt);
 
-                    // 戻り値をマーシャリングして設定
-                    dtts_out = new DTTables();
-                    dtts_out.Add(DTTable.FromDataTable(dt));
-                    muReturn.Value = DTTables.DTTablesToString(dtts_out);
+                    // 戻り値を設定
+                    shippers = new Shipper[dt.Rows.Count];
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        Shipper shipper = new Shipper();
+                        shipper.ShipperID = (int)dt.Rows[i]["ShipperID"];
+                        shipper.CompanyName = (string)dt.Rows[i]["CompanyName"];
+                        shipper.Phone = (string)dt.Rows[i]["Phone"];
+                        shippers[i] = shipper;
+                    }
+
+                    muReturn.Bean = shippers;
 
                     break;
 
@@ -567,18 +556,22 @@ namespace WSServer_sample.Business
                 //    break;
 
                 default: // 個別Daoを使用する。
-
-                    // 個別Daoを実行
                     LayerD_mu myDao = new LayerD_mu(this.GetDam());
-                    myDao.SelectAll_DSQL(
-                        muParameter.ActionType,
-                        dtrow_in["OrderColumn"].ToString(),
-                        dtrow_in["OrderSequence"].ToString(), out dt);
+                    myDao.SelectAll_DSQL(muParameter.ActionType,
+                        orderColumn, orderSequence, out dt);
 
-                    // 戻り値をマーシャリングして設定
-                    dtts_out = new DTTables();
-                    dtts_out.Add(DTTable.FromDataTable(dt));
-                    muReturn.Value = DTTables.DTTablesToString(dtts_out);
+                    // 戻り値を設定
+                    shippers = new Shipper[dt.Rows.Count];
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        Shipper shipper = new Shipper();
+                        shipper.ShipperID = (int)dt.Rows[i]["ShipperID"];
+                        shipper.CompanyName = (string)dt.Rows[i]["CompanyName"];
+                        shipper.Phone = (string)dt.Rows[i]["Phone"];
+                        shippers[i] = shipper;
+                    }
+
+                    muReturn.Bean = shippers;
 
                     break;
             }
@@ -601,17 +594,9 @@ namespace WSServer_sample.Business
             MuReturnValue muReturn = new MuReturnValue();
             this.ReturnValue = muReturn;
 
-            // 引数をアンマーシャル
-            //DTTables dtts_in = Marshalling.StringToDTTables(muParameter.Value);
-            //DTTable dtt_in = dtts_in[0];
-            //DTRow dtrow_in = dtt_in.Rows[0];
-
-            DTTables dtts_out = null;
-            DTTable dtt_out = null;
-            DTRow dtrow_out = null;
-
             // ↓業務処理-----------------------------------------------------
             DataTable dt = null;
+            Shipper shipper = null;
 
             switch ((muParameter.ActionType.Split('%'))[1])
             {
@@ -634,7 +619,7 @@ namespace WSServer_sample.Business
                     }
 
                     // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-                    cmnDao.SetParameter("P1", muParameter.Value);
+                    cmnDao.SetParameter("P1", muParameter.Bean.ToString());
 
                     // 戻り値 dt
                     dt = new DataTable("rtn");
@@ -642,34 +627,12 @@ namespace WSServer_sample.Business
                     // 共通Daoを実行
                     cmnDao.ExecSelectFill_DT(dt);
 
-                    // キャストの対策コードを挿入
-                    dtt_out = new DTTable("ret");
-                    dtt_out.Cols.Add(new DTColumn("ShipperID", DTType.Int32));
-                    dtt_out.Cols.Add(new DTColumn("CompanyName", DTType.String));
-                    dtt_out.Cols.Add(new DTColumn("Phone", DTType.String));
-                    dtrow_out = dtt_out.Rows.AddNew();
-
-                    // ・SQLの場合、ShipperIDのintがInt32型にマップされる。
-                    // ・ODPの場合、ShipperIDのNUMBERがInt64型にマップされる。
-                    // ・DB2の場合、ShipperIDのDECIMALがｘｘｘ型にマップされる。
-                    if (dt.Rows[0].ItemArray.GetValue(0).GetType().ToString() == "System.Int32")
-                    {
-                        // Int32なのでキャスト
-                        dtrow_out["ShipperID"] = (int)dt.Rows[0].ItemArray.GetValue(0);
-                    }
-                    else
-                    {
-                        // それ以外の場合、一度、文字列に変換してInt32.Parseする。
-                        dtrow_out["ShipperID"] = int.Parse(dt.Rows[0].ItemArray.GetValue(0).ToString());
-                    }
-
-                    dtrow_out["CompanyName"] = (string)dt.Rows[0].ItemArray.GetValue(1);
-                    dtrow_out["Phone"] = (string)dt.Rows[0].ItemArray.GetValue(2);
-
-                    // 戻り値をマーシャリングして設定
-                    dtts_out = new DTTables();
-                    dtts_out.Add(dtt_out);
-                    muReturn.Value = DTTables.DTTablesToString(dtts_out);
+                    // 戻り値を設定
+                    shipper = new Shipper();
+                    shipper.ShipperID = (int)muParameter.Bean;
+                    shipper.CompanyName = (string)dt.Rows[0].ItemArray.GetValue(1);
+                    shipper.Phone = (string)dt.Rows[0].ItemArray.GetValue(2);
+                    muReturn.Bean = shipper;
 
                     break;
 
@@ -679,7 +642,7 @@ namespace WSServer_sample.Business
                     DaoShippers genDao = new DaoShippers(this.GetDam());
 
                     // パラメタに対して、動的に値を設定する。
-                    genDao.PK_ShipperID = muParameter.Value;
+                    genDao.PK_ShipperID = muParameter.Bean.ToString();
 
                     // 戻り値 dt
                     dt = new DataTable("rtn");
@@ -687,61 +650,30 @@ namespace WSServer_sample.Business
                     // 自動生成Daoを実行
                     genDao.S2_Select(dt);
 
-                    // キャストの対策コードを挿入
-                    dtt_out = new DTTable("ret");
-                    dtt_out.Cols.Add(new DTColumn("ShipperID", DTType.Int32));
-                    dtt_out.Cols.Add(new DTColumn("CompanyName", DTType.String));
-                    dtt_out.Cols.Add(new DTColumn("Phone", DTType.String));
-                    dtrow_out = dtt_out.Rows.AddNew();
-
-                    // ・SQLの場合、ShipperIDのintがInt32型にマップされる。
-                    // ・ODPの場合、ShipperIDのNUMBERがInt64型にマップされる。
-                    // ・DB2の場合、ShipperIDのDECIMALがｘｘｘ型にマップされる。
-                    if (dt.Rows[0].ItemArray.GetValue(0).GetType().ToString() == "System.Int32")
-                    {
-                        // Int32なのでキャスト
-                        dtrow_out["ShipperID"] = (int)dt.Rows[0].ItemArray.GetValue(0);
-                    }
-                    else
-                    {
-                        // それ以外の場合、一度、文字列に変換してInt32.Parseする。
-                        dtrow_out["ShipperID"] = int.Parse(dt.Rows[0].ItemArray.GetValue(0).ToString());
-                    }
-
-                    dtrow_out["CompanyName"] = (string)dt.Rows[0].ItemArray.GetValue(1);
-                    dtrow_out["Phone"] = (string)dt.Rows[0].ItemArray.GetValue(2);
-
-                    // 戻り値をマーシャリングして設定
-                    dtts_out = new DTTables();
-                    dtts_out.Add(dtt_out);
-                    muReturn.Value = DTTables.DTTablesToString(dtts_out);
+                    // 戻り値を設定
+                    shipper = new Shipper();
+                    shipper.ShipperID = (int)muParameter.Bean;
+                    shipper.CompanyName = (string)dt.Rows[0].ItemArray.GetValue(1);
+                    shipper.Phone = (string)dt.Rows[0].ItemArray.GetValue(2);
+                    muReturn.Bean = shipper;
 
                     break;
 
                 default: // 個別Daoを使用する。
-
-                    // 個別Daoを実行
                     string companyName;
                     string phone;
 
                     LayerD_mu myDao = new LayerD_mu(this.GetDam());
-                    myDao.Select(muParameter.ActionType, muParameter.Value,
+                    myDao.Select(muParameter.ActionType,
+                        muParameter.Bean.ToString(),
                         out companyName, out phone);
 
-                    // 戻り値をマーシャリングして設定
-                    dtt_out = new DTTable("ret");
-                    dtt_out.Cols.Add(new DTColumn("ShipperID", DTType.Int32));
-                    dtt_out.Cols.Add(new DTColumn("CompanyName", DTType.String));
-                    dtt_out.Cols.Add(new DTColumn("Phone", DTType.String));
-                    dtrow_out = dtt_out.Rows.AddNew();
-
-                    dtrow_out["ShipperID"] = int.Parse(muParameter.Value);
-                    dtrow_out["CompanyName"] = companyName;
-                    dtrow_out["Phone"] = phone;
-                    
-                    dtts_out = new DTTables();
-                    dtts_out.Add(dtt_out);
-                    muReturn.Value = DTTables.DTTablesToString(dtts_out);
+                    // 戻り値を設定
+                    shipper = new Shipper();
+                    shipper.ShipperID = (int)muParameter.Bean;
+                    shipper.CompanyName = companyName;
+                    shipper.Phone = phone;
+                    muReturn.Bean = shipper;
 
                     break;
             }
@@ -763,18 +695,11 @@ namespace WSServer_sample.Business
             // 戻り値クラスを生成して、事前に戻り地に設定しておく。
             MuReturnValue muReturn = new MuReturnValue();
             this.ReturnValue = muReturn;
-
-            // 引数をアンマーシャル
-            DTTables dtts_in = DTTables.StringToDTTables(muParameter.Value);
-            DTTable dtt_in = dtts_in[0];
-            DTRow dtrow_in = dtt_in.Rows[0];
-
-            //DTTables dtts_out = null;
-            //DTTable dtt_out = null;
-            //DTRow dtrow_out = null;
-
-            // ↓業務処理-----------------------------------------------------
             
+            // ↓業務処理-----------------------------------------------------
+            string companyName = ((string[])(muParameter.Bean))[0];
+            string phone = ((string[])(muParameter.Bean))[1];
+
             switch ((muParameter.ActionType.Split('%'))[1])
             {
                 case "common": // 共通Daoを使用する。
@@ -785,12 +710,12 @@ namespace WSServer_sample.Business
                     cmnDao.SQLFileName = "ShipperInsert.sql";
 
                     // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-                    cmnDao.SetParameter("P2", dtrow_in["CompanyName"]);
-                    cmnDao.SetParameter("P3", dtrow_in["Phone"]);
+                    cmnDao.SetParameter("P2", companyName);
+                    cmnDao.SetParameter("P3", phone);
 
                     // 共通Daoを実行
                     // 戻り値を設定
-                    muReturn.Value = cmnDao.ExecInsUpDel_NonQuery().ToString();
+                    muReturn.Bean = cmnDao.ExecInsUpDel_NonQuery().ToString();
 
                     break;
 
@@ -800,24 +725,20 @@ namespace WSServer_sample.Business
                     DaoShippers genDao = new DaoShippers(this.GetDam());
 
                     // パラメタに対して、動的に値を設定する。
-                    genDao.CompanyName = dtrow_in["CompanyName"];
-                    genDao.Phone = dtrow_in["Phone"];
+                    genDao.CompanyName = companyName;
+                    genDao.Phone = phone;
 
                     // 自動生成Daoを実行
                     // 戻り値を設定
-                    muReturn.Value = genDao.D1_Insert().ToString();
+                    muReturn.Bean = genDao.D1_Insert().ToString();
 
                     break;
 
                 default: // 個別Daoを使用する。
-
-                    // 個別Daoを実行
-                    // 戻り値を設定
+                    string ret = "";
                     LayerD_mu myDao = new LayerD_mu(this.GetDam());
-                    myDao.Insert(muParameter.ActionType,
-                        (string)dtrow_in["CompanyName"],
-                        (string)dtrow_in["Phone"],
-                        out muReturn.Value);
+                    myDao.Insert(muParameter.ActionType, companyName, phone, out ret);
+                    muReturn.Bean = ret;
 
                     break;
             }
@@ -840,17 +761,9 @@ namespace WSServer_sample.Business
             MuReturnValue muReturn = new MuReturnValue();
             this.ReturnValue = muReturn;
 
-            // 引数をアンマーシャル
-            DTTables dtts_in = DTTables.StringToDTTables(muParameter.Value);
-            DTTable dtt_in = dtts_in[0];
-            DTRow dtrow_in = dtt_in.Rows[0];
-
-            //DTTables dtts_out = null;
-            //DTTable dtt_out = null;
-            //DTRow dtrow_out = null;
-
             // ↓業務処理-----------------------------------------------------
-            
+            Shipper shipper = (Shipper)muParameter.Bean;
+
             switch ((muParameter.ActionType.Split('%'))[1])
             {
                 case "common": // 共通Daoを使用する。
@@ -872,13 +785,13 @@ namespace WSServer_sample.Business
                     }
 
                     // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-                    cmnDao.SetParameter("P1", dtrow_in["ShipperID"]);
-                    cmnDao.SetParameter("P2", dtrow_in["CompanyName"]);
-                    cmnDao.SetParameter("P3", dtrow_in["Phone"]);
+                    cmnDao.SetParameter("P1", shipper.ShipperID);
+                    cmnDao.SetParameter("P2", shipper.CompanyName);
+                    cmnDao.SetParameter("P3", shipper.Phone);
 
                     // 共通Daoを実行
                     // 戻り値を設定
-                    muReturn.Value = cmnDao.ExecInsUpDel_NonQuery().ToString();
+                    muReturn.Bean = cmnDao.ExecInsUpDel_NonQuery().ToString();
 
                     break;
 
@@ -888,26 +801,22 @@ namespace WSServer_sample.Business
                     DaoShippers genDao = new DaoShippers(this.GetDam());
 
                     // パラメタに対して、動的に値を設定する。
-                    genDao.PK_ShipperID = dtrow_in["ShipperID"];
-                    genDao.Set_CompanyName_forUPD = dtrow_in["CompanyName"];
-                    genDao.Set_Phone_forUPD = dtrow_in["Phone"];
+                    genDao.PK_ShipperID = shipper.ShipperID;
+                    genDao.Set_CompanyName_forUPD = shipper.CompanyName;
+                    genDao.Set_Phone_forUPD = shipper.Phone;
 
                     // 自動生成Daoを実行
                     // 戻り値を設定
-                    muReturn.Value = genDao.S3_Update().ToString();
+                    muReturn.Bean = genDao.S3_Update().ToString();
 
                     break;
 
                 default: // 個別Daoを使用する。
-
-                    // 個別Daoを実行
-                    // 戻り値を設定
+                    string ret = "";
                     LayerD_mu myDao = new LayerD_mu(this.GetDam());
-                    myDao.Update(muParameter.ActionType, 
-                        (string)dtrow_in["ShipperID"],
-                        (string)dtrow_in["CompanyName"],
-                        (string)dtrow_in["Phone"],
-                        out muReturn.Value);
+                    myDao.Update(muParameter.ActionType,
+                        shipper.ShipperID.ToString(), shipper.CompanyName, shipper.Phone, out ret);
+                    muReturn.Bean = ret;
 
                     break;
             }
@@ -929,15 +838,6 @@ namespace WSServer_sample.Business
             // 戻り値クラスを生成して、事前に戻り地に設定しておく。
             MuReturnValue muReturn = new MuReturnValue();
             this.ReturnValue = muReturn;
-
-            /// 引数をアンマーシャル
-            DTTables dtts_in = DTTables.StringToDTTables(muParameter.Value);
-            //DTTable dtt_in = dtts_in[0];
-            //DTRow dtrow_in = dtt_in.Rows[0];
-
-            //DTTables dtts_out = null;
-            //DTTable dtt_out = null;
-            //DTRow dtrow_out = null;
 
             // ↓業務処理-----------------------------------------------------
             
@@ -962,11 +862,11 @@ namespace WSServer_sample.Business
                     }
 
                     // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-                    cmnDao.SetParameter("P1", muParameter.Value);
+                    cmnDao.SetParameter("P1", muParameter.Bean);
 
                     // 共通Daoを実行
                     // 戻り値を設定
-                    muReturn.Value = cmnDao.ExecInsUpDel_NonQuery().ToString();
+                    muReturn.Bean = cmnDao.ExecInsUpDel_NonQuery().ToString();
 
                     break;
 
@@ -976,20 +876,19 @@ namespace WSServer_sample.Business
                     DaoShippers genDao = new DaoShippers(this.GetDam());
 
                     // パラメタに対して、動的に値を設定する。
-                    genDao.PK_ShipperID = muParameter.Value;
+                    genDao.PK_ShipperID = muParameter.Bean;
 
                     // 自動生成Daoを実行
                     // 戻り値を設定
-                    muReturn.Value = genDao.S4_Delete().ToString();
+                    muReturn.Bean = genDao.S4_Delete().ToString();
 
                     break;
 
                 default: // 個別Daoを使用する。
-
-                    // 個別Daoを実行
-                    // 戻り値を設定
+                    string ret = "";
                     LayerD_mu myDao = new LayerD_mu(this.GetDam());
-                    myDao.Delete(muParameter.ActionType, muParameter.Value, out muReturn.Value);
+                    myDao.Delete(muParameter.ActionType, muParameter.Bean.ToString(), out ret);
+                    muReturn.Bean = ret;
 
                     break;
             }
@@ -1015,7 +914,7 @@ namespace WSServer_sample.Business
                 case "Business":
 
                     // 戻り値が見えるか確認する。
-                    ((MuReturnValue)this.ReturnValue).Value = "戻り値が戻るか？";
+                    ((MuReturnValue)this.ReturnValue).Bean = 9999; //"戻り値が戻るか？";
 
                     // 業務例外のスロー
                     throw new BusinessApplicationException(
@@ -1027,7 +926,7 @@ namespace WSServer_sample.Business
                 case "System":
 
                     // 戻り値が見えるか確認する。
-                    ((MuReturnValue)this.ReturnValue).Value = "戻り値が戻るか？";
+                    ((MuReturnValue)this.ReturnValue).Bean = 9999; //"戻り値が戻るか？";
 
                     // システム例外のスロー
                     throw new BusinessSystemException(
@@ -1038,7 +937,7 @@ namespace WSServer_sample.Business
                 case "Other":
 
                     // 戻り値が見えるか確認する。
-                    ((MuReturnValue)this.ReturnValue).Value = "戻り値が戻るか？";
+                    ((MuReturnValue)this.ReturnValue).Bean = 9999; //"戻り値が戻るか？";
 
                     // その他、一般的な例外のスロー
                     throw new Exception("ロールバックのテスト");
@@ -1046,7 +945,7 @@ namespace WSServer_sample.Business
 
                 case "Other-Business":
                     // 戻り値が見えるか確認する。
-                    ((MuReturnValue)this.ReturnValue).Value = "戻り値が戻るか？";
+                    ((MuReturnValue)this.ReturnValue).Bean = 9999; //"戻り値が戻るか？";
 
                     // その他、一般的な例外（業務例外へ振り替え）のスロー
                     throw new Exception("Other-Business");
@@ -1055,136 +954,12 @@ namespace WSServer_sample.Business
                 case "Other-System":
 
                     // 戻り値が見えるか確認する。
-                    ((MuReturnValue)this.ReturnValue).Value = "戻り値が戻るか？";
+                    ((MuReturnValue)this.ReturnValue).Bean = 9999; //"戻り値が戻るか？";
 
                     // その他、一般的な例外（システム例外へ振り替え）のスロー
                     throw new Exception("Other-System");
                 //break; // 到達できないためコメントアウト
             }
-        }
-
-        #endregion
-
-        #endregion
-
-        #region DTOPage
-
-        #region UOCメソッド
-
-        /// <summary>Silverlight＆汎用DTOのテスト（DataGrid初期化処理）</summary>
-        /// <param name="muParameter">引数クラス</param>
-        protected void UOC_InitDataGrid(MuParameterValue muParameter)
-        {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
-            MuReturnValue muReturn = new MuReturnValue();
-            this.ReturnValue = muReturn;
-
-            // 引数をアンマーシャル
-            //DTTables dtts_in = Marshalling.StringToDTTables(muParameter.Value);
-            //DTTable dtt_in = dtts_in[0];
-            //DTRow dtrow_in = dtt_in.Rows[0];
-
-            DTTables dtts_out = null;
-            DTTable dtt_out = null;
-            DTRow dtrow_out = null;
-
-            // テーブル生成＠汎用DTO
-            dtt_out = new DTTable("test");
-
-            // カラム定義＠汎用DTOテーブル
-            dtt_out.Cols.Add(new DTColumn("boolVal", DTType.Boolean));
-            dtt_out.Cols.Add(new DTColumn("charVal", DTType.Char));
-            dtt_out.Cols.Add(new DTColumn("dateVal", DTType.DateTime));
-            dtt_out.Cols.Add(new DTColumn("decimalVal", DTType.Decimal));
-            dtt_out.Cols.Add(new DTColumn("doubleVal", DTType.Double));
-            dtt_out.Cols.Add(new DTColumn("shortVal", DTType.Int16));
-            dtt_out.Cols.Add(new DTColumn("intVal", DTType.Int32));
-            dtt_out.Cols.Add(new DTColumn("longVal", DTType.Int64));
-            dtt_out.Cols.Add(new DTColumn("singleVal", DTType.Single));
-            dtt_out.Cols.Add(new DTColumn("stringVal", DTType.String));
-
-            // 行追加＠汎用DTOテーブル
-            
-            // 1行目
-            dtrow_out = dtt_out.Rows.AddNew();
-            dtrow_out["boolVal"] = true;
-            dtrow_out["charVal"] = 'a';
-            dtrow_out["dateVal"] = new DateTime(1977, 7, 22, 10, 20, 30, 444);
-            dtrow_out["decimalVal"] = 10000;
-            dtrow_out["doubleVal"] = 3.55D;
-            dtrow_out["shortVal"] = 100;
-            dtrow_out["intVal"] = 1000000;
-            dtrow_out["longVal"] = 1000000000000;
-            dtrow_out["singleVal"] = 3.5f;
-            dtrow_out["stringVal"] = "test";
-
-            // 2行目
-            dtrow_out = dtt_out.Rows.AddNew();
-            dtrow_out["boolVal"] = false;
-            dtrow_out["charVal"] = 'b';
-            dtrow_out["dateVal"] = new DateTime(1976, 4, 23, 10, 20, 30, 444);
-            dtrow_out["decimalVal"] = 20000;
-            dtrow_out["doubleVal"] = 6.11D;
-            dtrow_out["shortVal"] = 200;
-            dtrow_out["intVal"] = 2000000;
-            dtrow_out["longVal"] = 2000000000000;
-            dtrow_out["singleVal"] = 6.5f;
-            dtrow_out["stringVal"] = "test2";
-
-            // 3行目
-            dtrow_out = dtt_out.Rows.AddNew();
-            dtrow_out["boolVal"] = true;
-            dtrow_out["charVal"] = 'c';
-            dtrow_out["dateVal"] = new DateTime(1975, 1, 1, 10, 20, 30, 444);
-            dtrow_out["decimalVal"] = 30000;
-            dtrow_out["doubleVal"] = 8.25D;
-            dtrow_out["shortVal"] = 300;
-            dtrow_out["intVal"] = 3000000;
-            dtrow_out["longVal"] = 3000000000000;
-            dtrow_out["singleVal"] = 7.2f;
-            dtrow_out["stringVal"] = "test3";
-
-            // ここで変更を確定させる
-            dtt_out.AcceptChanges();
-
-            // 戻り値をマーシャリングして設定
-            dtts_out = new DTTables();
-            dtts_out.Add(dtt_out);
-            ((MuReturnValue)this.ReturnValue).Value = DTTables.DTTablesToString(dtts_out);
-        }
-
-        /// <summary>Silverlight＆汎用DTOのテスト（行追加）</summary>
-        /// <param name="muParameter">引数クラス</param>
-        protected void UOC_AddRow(MuParameterValue muParameter)
-        {
-            // 戻り値クラスを生成して、事前に戻り地に設定しておく。
-            MuReturnValue muReturn = new MuReturnValue();
-            this.ReturnValue = muReturn;
-
-            // 引数をアンマーシャル
-            DTTables dtts_in = DTTables.StringToDTTables(muParameter.Value);
-            DTTable dtt_in = dtts_in[0];
-            DTRow dtrow_in = null;// dtt_in.Rows[0];
-
-            //DTTables dtts_out = null;
-            //DTTable dtt_out = null;
-            //DTRow dtrow_out = null;
-
-            // 1行追加
-            dtrow_in = dtt_in.Rows.AddNew();
-            dtrow_in["boolVal"] = true;
-            dtrow_in["charVal"] = 'z';
-            dtrow_in["dateVal"] = new DateTime(1946, 12, 11, 10, 20, 30, 444);
-            dtrow_in["decimalVal"] = 99999;
-            dtrow_in["doubleVal"] = 9.99D;
-            dtrow_in["shortVal"] = 900;
-            dtrow_in["intVal"] = 9000000;
-            dtrow_in["longVal"] = 9000000000000;
-            dtrow_in["singleVal"] = 9.9f;
-            dtrow_in["stringVal"] = "test" + dtt_in.Rows.Count.ToString();
-
-            // 戻り値をマーシャリングして設定
-            ((MuReturnValue)this.ReturnValue).Value = DTTables.DTTablesToString(dtts_in);
         }
 
         #endregion

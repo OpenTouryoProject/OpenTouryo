@@ -20,8 +20,8 @@
 
 //**********************************************************************************
 //* クラス名        ：ServiceForFx
-//* クラス日本語名  ：ASP.NET Webサービス（サービス インターフェイス基盤）
-//*                   SOAPの.NETオブジェクトのバイナリ転送用メソッドを公開する。
+//* クラス日本語名  ：Soapの.NETオブジェクトのバイナリ転送用
+//*                   Soap Webメソッドを公開するサービス インターフェイス基盤。
 //*
 //* 作成日時        ：－
 //* 作成者          ：生技
@@ -67,8 +67,8 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
     // 名前空間は、必要に応じて書き換え下さい。
 
     /// <summary>
-    /// ASP.NET Webサービス（サービス インターフェイス基盤）
-    /// .NET言語用のWebメソッド（.NETオブジェクトI/F）を公開する。
+    /// Soapの.NETオブジェクトのバイナリ転送用
+    /// Soap Webメソッドを公開するサービス インターフェイス基盤。
     /// </summary>
     [WebService(Namespace = FxLiteral.WS_NAME_SPACE)]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
@@ -97,9 +97,10 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
 
         #endregion
 
+        #region Soapの.NETオブジェクトのバイナリ転送用Soap Webメソッド
+
         /// <summary>
-        /// ASP.NET Webサービスを使用した
-        /// サービス インターフェイス基盤（.NETオンライン）
+        /// Soapの.NETオブジェクトのバイナリ転送用Soap Webメソッド
         /// </summary>
         /// <param name="serviceName">サービス名</param>
         /// <param name="contextObject">コンテキスト</param>
@@ -322,5 +323,7 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                 }
             }
         }
+
+        #endregion
     }
 }

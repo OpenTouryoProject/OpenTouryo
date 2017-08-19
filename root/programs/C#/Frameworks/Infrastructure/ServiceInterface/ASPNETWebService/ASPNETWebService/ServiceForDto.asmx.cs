@@ -19,9 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：ServiceForMu
-//* クラス日本語名  ：ASP.NET Webサービス（サービス インターフェイス基盤）
-//*                   SOAP汎用Webメソッドを公開する。
+//* クラス名        ：ServiceForDto
+//* クラス日本語名  ：汎用DTOを使用した汎用Soap Webメソッドを公開するサービス インターフェイス基盤。
 //*
 //* 作成日時        ：－
 //* 作成者          ：sas 生技
@@ -70,12 +69,11 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
     // 名前空間は、必要に応じて書き換え下さい。
 
     /// <summary>
-    /// ASP.NET Webサービス（サービス インターフェイス基盤）
-    /// SOAP汎用Webメソッドを公開する。
+    /// 汎用DTOを使用した汎用Soap Webメソッドを公開するサービス インターフェイス基盤。
     /// </summary>
     [WebService(Namespace = FxLiteral.WS_NAME_SPACE)]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-    public class ServiceForMu : System.Web.Services.WebService
+    public class ServiceForDto : WebService
     {
         #region グローバル変数
 
@@ -91,7 +89,8 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
 
         #region コンストラクタ
 
-        public ServiceForMu()
+        /// <summary>constructor</summary>
+        public ServiceForDto()
         {
             //デザインされたコンポーネントを使用する場合、次の行をコメントを解除してください 
             //InitializeComponent(); 
@@ -99,7 +98,9 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
 
         #endregion
 
-        /// <summary>SOAP汎用Webメソッド</summary>
+        #region 汎用DTOを使用した汎用Soap Webメソッド
+        
+        /// <summary>汎用DTOを使用した汎用Soap Webメソッド</summary>
         /// <param name="context">コンテキスト</param>
         /// <param name="serviceName">サービス名</param>
         /// <param name="cmnParameterValue">引数文字列配列（共通・・・ベース１・２）</param>
@@ -170,7 +171,7 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                 status = FxLiteral.SIF_STATUS_NAME_SERVICE;
 
                 // 名前解決（インプロセス）
-                ServiceForMu.IPR_NS.NameResolution(serviceName, out assemblyName, out className);
+                ServiceForDto.IPR_NS.NameResolution(serviceName, out assemblyName, out className);
 
                 #endregion
 
@@ -425,5 +426,7 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                 }
             }
         }
+
+        #endregion
     }
 }
