@@ -20,8 +20,8 @@
 
 '**********************************************************************************
 '* クラス名        ：IWCFHTTPSvcForFx
-'* クラス日本語名  ：WCF HTTP Webサービス インターフェイス（サービス インターフェイス基盤）
-'*                   SOAPの.NETオブジェクトのバイナリ転送用メソッドを公開する。
+'* クラス日本語名  ：WCFの.NETオブジェクトのバイナリ転送用
+'*                   Soap Webメソッドを公開するサービス インターフェイス基盤。
 '*
 '* 作成日時        ：－
 '* 作成者          ：生技
@@ -35,17 +35,17 @@
 Imports System.ServiceModel
 
 Namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
-    ' メモ: [リファクター] メニューの [名前の変更] コマンドを使用すると、コードと config ファイルの両方で同時にインターフェイス名 "IWCFSvcForFx" を変更できます。
+    ' メモ: [リファクター] メニューの [名前の変更] コマンドを使用すると、
+    ' コードと config ファイルの両方で同時にインターフェイス名 "IWCFSvcForFx" を変更できます。
 
     ''' <summary>
-    ''' WCF HTTP Webサービス（サービス インターフェイス基盤）
-    ''' .NET言語用のWebメソッド（.NETオブジェクトI/F）を公開する。
+    ''' WCFの.NETオブジェクトのバイナリ転送用Soap Webメソッドを公開するサービス インターフェイス基盤。
     ''' </summary>
-    <ServiceContract()> _
+    <ServiceContract>
     Public Interface IWCFHTTPSvcForFx
+
         ''' <summary>
-        ''' ASP.NET Webサービスを使用した
-        ''' サービス インターフェイス基盤（.NETオンライン）
+        ''' WCFの.NETオブジェクトのバイナリ転送用Soap Webメソッド
         ''' </summary>
         ''' <param name="serviceName">サービス名</param>
         ''' <param name="contextObject">コンテキスト</param>
@@ -53,7 +53,7 @@ Namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
         ''' <param name="returnValueObject">戻り値</param>
         ''' <returns>返すべきエラーの情報</returns>
         ''' <remarks>値は全て.NETオブジェクトをバイナリシリアライズしたバイト配列データ</remarks>
-        <OperationContract()> _
+        <OperationContract>
         Function DotNETOnlineWS(serviceName As String, ByRef contextObject As Byte(), parameterValueObject As Byte(), ByRef returnValueObject As Byte()) As Byte()
     End Interface
 End Namespace

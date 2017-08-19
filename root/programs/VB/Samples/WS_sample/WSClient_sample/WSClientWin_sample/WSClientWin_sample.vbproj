@@ -80,7 +80,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WSIFType_sample">
-      <HintPath>..\..\..\..\..\C#\Samples\WS_sample\Build\WSIFType_sample.dll</HintPath>
+      <HintPath>..\..\Build\WSIFType_sample.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -142,7 +142,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Blue hills.jpg" />
     <EmbeddedResource Include="TMProtocolDefinition2.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
