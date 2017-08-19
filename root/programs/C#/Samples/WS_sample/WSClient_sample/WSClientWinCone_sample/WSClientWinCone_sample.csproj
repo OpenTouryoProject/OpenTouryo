@@ -11,7 +11,7 @@
     <RootNamespace>WSClientWinCone_sample</RootNamespace>
     <AssemblyName>WSClientWinCone_sample</AssemblyName>
     <SignManifests>true</SignManifests>
-    <ManifestCertificateThumbprint>7DCDF2554713EB83F457CB760E42FC1C1FD6363C</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>CC35F655E475FD164C9F496A90CD62D43318CF7A</ManifestCertificateThumbprint>
     <TargetZone>Internet</TargetZone>
     <GenerateManifests>true</GenerateManifests>
     <IsWebBootstrapper>true</IsWebBootstrapper>
@@ -83,9 +83,8 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="WSIFType_sample, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\Bin\WSIFType_sample.dll</HintPath>
+    <Reference Include="WSIFType_sample">
+      <HintPath>..\..\Build\WSIFType_sample.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -117,8 +116,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="WSClientWinCone_sample_TemporaryKey.pfx" />
     <BaseApplicationManifest Include="Properties\app.manifest" />
+    <None Include="WSClientWinCone_sample_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MSGDefinition.xml" />

@@ -53,14 +53,7 @@
         { displayText: "システム例外への振替", value: "Other-System" }
     ]);
     this.ddlExRollback = ko.observable("-");
-
-    // 通信制御
-    this.ddlTransmissionItems = ko.observableArray([
-        { displayText: "Webサービス呼出", value: "testWebService" },
-        { displayText: "インプロセス呼出", value: "testInProcess" }
-    ]);
-    this.ddlTransmission = ko.observable("testWebService");
-
+    
     // Shipper テーブルの各項目
     this.ShipperId = ko.observable("");
     this.CompanyName = ko.observable("");

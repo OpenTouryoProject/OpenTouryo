@@ -53,14 +53,7 @@
         { displayText: "システム例外への振替", value: "Other-System" }
     ];
     $scope.ddlExRollback = '-';
-
-    // 通信制御
-    $scope.ddlTransmissionItems = [
-        { displayText: "Webサービス呼出", value: "testWebService" },
-        { displayText: "インプロセス呼出", value: "testInProcess" }
-    ];
-    $scope.ddlTransmission = 'testWebService';
-
+    
     // Shipper テーブルの各項目
     $scope.ShipperId = '';
     $scope.CompanyName = '';
