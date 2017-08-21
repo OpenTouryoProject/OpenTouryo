@@ -73,6 +73,7 @@
     <Compile Include="Business\LayerB_dto.cs" />
     <Compile Include="Business\LayerB_mu.cs" />
     <Compile Include="Common\Shipper.cs" />
+    <Compile Include="Common\WebApiParams.cs" />
     <Compile Include="Dao\DaoShippers.cs" />
     <Compile Include="Dao\LayerD.cs" />
     <Compile Include="Dao\LayerD_mu.cs" />

@@ -33,11 +33,14 @@
 
 using System;
 using System.Xml;
+using System.Data;
 using System.Reflection;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
-using System.Threading.Tasks;
+using System.Net;
+using System.Net.Http;
+using System.Collections.Generic;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -52,6 +55,7 @@ using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
 
+using WSIFType_sample;
 using WSServer_sample.Common;
 
 namespace ASPNETWebService.Controllers
@@ -68,6 +72,7 @@ namespace ASPNETWebService.Controllers
         methods: "*",
         // 
         SupportsCredentials = true)]
+    [MyBaseApiController()]
     public class JsonController : ApiController
     {
         #region テスト用
@@ -107,160 +112,583 @@ namespace ASPNETWebService.Controllers
 
         #region 個別部
 
-        /// <summary>SelectCount</summary>
-        /// <param name="context">コンテキスト</param>
-        /// <param name="actionType">アクションタイプ</param>
-        /// <param name="returnValue">戻り値</param>
-        /// <returns>返すべきエラーの情報</returns>
+        /// <summary>
+        /// POST JsonController/SelectCount
+        /// </summary>
+        /// <param name="param">引数</param>
+        /// <returns>戻り値</returns>
         [HttpPost]
-        public string SelectCount(ref string context, string actionType, out int returnValue)
+        [Route("JsonController/SelectCount")]
+        public HttpResponseMessage SelectCount(WebApiParams param)
         {
-            object temp = null;
-            string ret = Call(ref context, "sbWebService", "SelectCount", actionType, null, out temp);
-            if (!int.TryParse((string)temp, out returnValue))
+            // 引数クラスを生成
+            // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
+            TestParameterValue testParameterValue
+                = new TestParameterValue(
+                    "JsonController", "SelectCount", "SelectCount",
+                    param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
+                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+
+            // 戻り値
+            MyReturnValue returnValue = null;
+            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
+
+            HttpStatusCode httpStateCode = HttpStatusCode.OK;
+            object ret = null;
+
+            if (string.IsNullOrEmpty(exceptionMSG))
             {
-                returnValue = -1;
+                // ランタイムエラー
+                httpStateCode = HttpStatusCode.InternalServerError;
+                ret = new { ExceptionMSG = exceptionMSG };
+            }
+            else
+            {
+                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                string message = "";
+
+                if (testReturnValue.ErrorFlag == true)
+                {
+                    // 結果（業務続行可能なエラー）
+                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
+                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
+                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
+
+                    httpStateCode = HttpStatusCode.OK;
+                    ret = new { ErrorMSG = message };
+                }
+                else
+                {
+                    // 結果（正常系）
+                    message = testReturnValue.Obj.ToString() + "件のデータがあります";
+
+                    httpStateCode = HttpStatusCode.OK;
+                    ret = new { Message = message };
+                }
             }
 
-            return ret;
+            return Request.CreateResponse(httpStateCode, ret);
         }
 
-        /// <summary>SelectAll_DT</summary>
-        /// <param name="context">コンテキスト</param>
-        /// <param name="actionType">アクションタイプ</param>
-        /// <param name="returnValue">戻り値</param>
-        /// <returns>返すべきエラーの情報</returns>
+        /// <summary>
+        /// POST JsonController/SelectAll_DT
+        /// </summary>
+        /// <param name="param">引数</param>
+        /// <returns>戻り値</returns>
         [HttpPost]
-        public string SelectAll_DT(ref string context, string actionType, out Shipper[] returnValue)
+        [Route("JsonController/SelectAll_DT")]
+        public HttpResponseMessage SelectAll_DT(WebApiParams param)
         {
-            object temp = null;
-            string ret = Call(ref context, "sbWebService", "SelectAll_DT", actionType, null, out temp);
-            returnValue = (Shipper[])temp;
+            // 引数クラスを生成
+            // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
+            TestParameterValue testParameterValue
+                = new TestParameterValue(
+                    "JsonController", "SelectAll_DT", "SelectAll_DT",
+                    param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
+                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
 
-            return ret;
-        }
+            // 戻り値
+            MyReturnValue returnValue = null;
+            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
 
-        /// <summary>SelectAll_DS</summary>
-        /// <param name="context">コンテキスト</param>
-        /// <param name="actionType">アクションタイプ</param>
-        /// <param name="returnValue">戻り値</param>
-        /// <returns>返すべきエラーの情報</returns>
-        [HttpPost]
-        public string SelectAll_DS(ref string context, string actionType, out Shipper[] returnValue)
-        {
-            object temp = null;
-            string ret = Call(ref context, "sbWebService", "SelectAll_DS", actionType, null, out temp);
-            returnValue = (Shipper[])temp;
+            HttpStatusCode httpStateCode = HttpStatusCode.OK;
+            object ret = null;
 
-            return ret;
-        }
-
-        /// <summary>SelectAll_DR</summary>
-        /// <param name="context">コンテキスト</param>
-        /// <param name="actionType">アクションタイプ</param>
-        /// <param name="returnValue">戻り値</param>
-        /// <returns>返すべきエラーの情報</returns>
-        [HttpPost]
-        public string SelectAll_DR(ref string context, string actionType, out Shipper[] returnValue)
-        {
-            object temp = null;
-            string ret = Call(ref context, "sbWebService", "SelectAll_DR", actionType, null, out temp);
-            returnValue = (Shipper[])temp;
-
-            return ret;
-        }
-
-        /// <summary>SelectAll_DSQL</summary>
-        /// <param name="context">コンテキスト</param>
-        /// <param name="actionType">アクションタイプ</param>
-        /// <param name="orderColumn">orderColumn</param>
-        /// <param name="orderSequence">orderSequence</param>
-        /// <param name="returnValue">戻り値</param>
-        /// <returns>返すべきエラーの情報</returns>
-        [HttpPost]
-        public string SelectAll_DSQL(ref string context, string actionType, string orderColumn, string orderSequence, out Shipper[] returnValue)
-        {
-            object temp = null;
-            string ret = Call(ref context, "sbWebService", "SelectAll_DSQL", actionType,
-                new string[] { orderColumn, orderSequence }, out temp);
-            returnValue = (Shipper[])temp;
-
-            return ret;
-        }
-
-        /// <summary>Select</summary>
-        /// <param name="context">コンテキスト</param>
-        /// <param name="actionType">アクションタイプ</param>
-        /// <param name="shipperID">shipperID</param>
-        /// <param name="returnValue">戻り値</param>
-        /// <returns>返すべきエラーの情報</returns>
-        [HttpPost]
-        public string Select(ref string context, string actionType, int shipperID, out Shipper returnValue)
-        {
-            object temp = null;
-            string ret = Call(ref context, "sbWebService", "Select", actionType, shipperID, out temp);
-            returnValue = (Shipper)temp;
-
-            return ret;
-        }
-
-        /// <summary>Insert</summary>
-        /// <param name="context">コンテキスト</param>
-        /// <param name="actionType">アクションタイプ</param>
-        /// <param name="companyName">companyName</param>
-        /// <param name="phone">phone</param>
-        /// <param name="returnValue">戻り値</param>
-        /// <returns>返すべきエラーの情報</returns>
-        [HttpPost]
-        public string Insert(ref string context, string actionType, string companyName, string phone, out int returnValue)
-        {
-            object temp = null;
-            string ret = Call(ref context, "sbWebService", "Insert", actionType,
-                new string[] { companyName, phone }, out temp);
-            if (!int.TryParse((string)temp, out returnValue))
+            if (string.IsNullOrEmpty(exceptionMSG))
             {
-                returnValue = -1;
+                // ランタイムエラー
+                httpStateCode = HttpStatusCode.InternalServerError;
+                ret = new { ExceptionMSG = exceptionMSG };
+            }
+            else
+            {
+                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                string message = "";
+
+                if (testReturnValue.ErrorFlag == true)
+                {
+                    // 結果（業務続行可能なエラー）
+                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
+                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
+                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
+
+                    httpStateCode = HttpStatusCode.OK;
+                    ret = new { ErrorMSG = message };
+                }
+                else
+                {
+                    // 結果（正常系）
+                    DataTable dt = (DataTable)testReturnValue.Obj;
+
+                    List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        Dictionary<string, string> dic = new Dictionary<string, string>();
+                        dic.Add(dt.Columns[0].ColumnName, row[0].ToString());
+                        dic.Add(dt.Columns[1].ColumnName, row[1].ToString());
+                        dic.Add(dt.Columns[2].ColumnName, row[2].ToString());
+
+                        list.Add(dic);
+                    }
+
+                    httpStateCode = HttpStatusCode.OK;
+                    ret = new { Message = list };
+                }
             }
 
-            return ret;
+            return Request.CreateResponse(httpStateCode, ret);
         }
 
-        /// <summary>Update</summary>
-        /// <param name="context">コンテキスト</param>
-        /// <param name="actionType">アクションタイプ</param>
-        /// <param name="shipper">shipper</param>
-        /// <param name="returnValue">戻り値</param>
-        /// <returns>返すべきエラーの情報</returns>
+        /// <summary>
+        /// POST JsonController/SelectAll_DS
+        /// </summary>
+        /// <param name="param">引数</param>
+        /// <returns>戻り値</returns>
         [HttpPost]
-        public string Update(ref string context, string actionType, Shipper shipper, out int returnValue)
+        [Route("JsonController/SelectAll_DS")]
+        public HttpResponseMessage SelectAll_DS(WebApiParams param)
         {
-            object temp = null;
-            string ret = Call(ref context, "sbWebService", "Update", actionType, shipper, out temp);
-            if (!int.TryParse((string)temp, out returnValue))
-            {
-                returnValue = -1;
-            }
+            // 引数クラスを生成
+            // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
+            TestParameterValue testParameterValue
+                = new TestParameterValue(
+                    "JsonController", "SelectAll_DS", "SelectAll_DS",
+                    param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
+                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
 
-            return ret;
+            // 戻り値
+            MyReturnValue returnValue = null;
+            string message = this.Call("testInProcess", testParameterValue, out returnValue);
+
+            if (string.IsNullOrEmpty(message))
+            {
+                // ランタイムエラー
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, message);
+            }
+            else
+            {
+                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                Dictionary<string, string> ret = new Dictionary<string, string>();
+
+                if (testReturnValue.ErrorFlag == true)
+                {
+                    // 結果（業務続行可能なエラー）
+                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
+                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
+                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
+
+                    ret.Add("Error", message);
+                }
+                else
+                {
+                    // 結果（正常系）
+                    DataTable dt = ((DataSet)testReturnValue.Obj).Tables[0];
+
+                    List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        Dictionary<string, string> dic = new Dictionary<string, string>();
+                        dic.Add(dt.Columns[0].ColumnName, row[0].ToString());
+                        dic.Add(dt.Columns[1].ColumnName, row[1].ToString());
+                        dic.Add(dt.Columns[2].ColumnName, row[2].ToString());
+
+                        list.Add(dic);
+                    }
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, ret);
+            }
         }
 
-        /// <summary>Delete</summary>
-        /// <param name="context">コンテキスト</param>
-        /// <param name="actionType">アクションタイプ</param>
-        /// <param name="shipperID">shipperID</param>
-        /// <param name="returnValue">戻り値</param>
-        /// <returns>返すべきエラーの情報</returns>
+        /// <summary>
+        /// POST JsonController/SelectAll_DR
+        /// </summary>
+        /// <param name="param">引数</param>
+        /// <returns>戻り値</returns>
         [HttpPost]
-        public string Delete(ref string context, string actionType, int shipperID, out int returnValue)
+        [Route("JsonController/SelectAll_DR")]
+        public HttpResponseMessage SelectAll_DR(WebApiParams param)
         {
-            object temp = null;
-            string ret = Call(ref context, "sbWebService", "Delete", actionType, shipperID, out temp);
-            if (!int.TryParse((string)temp, out returnValue))
+            // 引数クラスを生成
+            // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
+            TestParameterValue testParameterValue
+                = new TestParameterValue(
+                    "JsonController", "SelectAll_DR", "SelectAll_DR",
+                    param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
+                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+
+            // 戻り値
+            MyReturnValue returnValue = null;
+            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
+
+            HttpStatusCode httpStateCode = HttpStatusCode.OK;
+            object ret = null;
+
+            if (string.IsNullOrEmpty(exceptionMSG))
             {
-                returnValue = -1;
+                // ランタイムエラー
+                httpStateCode = HttpStatusCode.InternalServerError;
+                ret = new { ExceptionMSG = exceptionMSG };
+            }
+            else
+            {
+                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                string message = "";
+
+                if (testReturnValue.ErrorFlag == true)
+                {
+                    // 結果（業務続行可能なエラー）
+                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
+                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
+                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
+
+                    httpStateCode = HttpStatusCode.OK;
+                    ret = new { ErrorMSG = message };
+                }
+                else
+                {
+                    // 結果（正常系）
+                    DataTable dt = (DataTable)testReturnValue.Obj;
+
+                    List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        Dictionary<string, string> dic = new Dictionary<string, string>();
+                        //dic.Add(dt.Columns[0].ColumnName, row[0].ToString());
+                        //dic.Add(dt.Columns[1].ColumnName, row[1].ToString());
+                        //dic.Add(dt.Columns[2].ColumnName, row[2].ToString());
+                        dic.Add("ShipperID", row[0].ToString());
+                        dic.Add("CompanyName", row[1].ToString());
+                        dic.Add("Phone", row[2].ToString());
+
+                        list.Add(dic);
+                    }
+
+                    httpStateCode = HttpStatusCode.OK;
+                    ret = new { Message = list };
+                }
             }
 
-            return ret;
+            return Request.CreateResponse(httpStateCode, ret);
+        }
+
+        /// <summary>
+        /// POST JsonController/SelectAll_DSQL
+        /// </summary>
+        /// <param name="param">引数</param>
+        /// <returns>戻り値</returns>
+        [HttpPost]
+        [Route("JsonController/SelectAll_DSQL")]
+        public HttpResponseMessage SelectAll_DSQL(WebApiParams param)
+        {
+            // 引数クラスを生成
+            // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
+            TestParameterValue testParameterValue
+                = new TestParameterValue(
+                    "JsonController", "SelectAll_DSQL", "SelectAll_DSQL",
+                    param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
+                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+            testParameterValue.OrderColumn = param.OrderColumn;
+            testParameterValue.OrderSequence = param.OrderSequence;
+
+            // 戻り値
+            MyReturnValue returnValue = null;
+            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
+
+            HttpStatusCode httpStateCode = HttpStatusCode.OK;
+            object ret = null;
+
+            if (string.IsNullOrEmpty(exceptionMSG))
+            {
+                // ランタイムエラー
+                httpStateCode = HttpStatusCode.InternalServerError;
+                ret = new { ExceptionMSG = exceptionMSG };
+            }
+            else
+            {
+                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                string message = "";
+
+                if (testReturnValue.ErrorFlag == true)
+                {
+                    // 結果（業務続行可能なエラー）
+                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
+                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
+                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
+
+                    httpStateCode = HttpStatusCode.OK;
+                    ret = new { ErrorMSG = message };
+                }
+                else
+                {
+                    // 結果（正常系）
+                    DataTable dt = (DataTable)testReturnValue.Obj;
+
+                    List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        Dictionary<string, string> dic = new Dictionary<string, string>();
+                        dic.Add(dt.Columns[0].ColumnName, row[0].ToString());
+                        dic.Add(dt.Columns[1].ColumnName, row[1].ToString());
+                        dic.Add(dt.Columns[2].ColumnName, row[2].ToString());
+
+                        list.Add(dic);
+                    }
+
+                    httpStateCode = HttpStatusCode.OK;
+                    ret = new { Message = list };
+                }
+            }
+
+            return Request.CreateResponse(httpStateCode, ret);
+        }
+
+        /// <summary>
+        /// POST JsonController/Select
+        /// </summary>
+        /// <param name="param">引数</param>
+        /// <returns>戻り値</returns>
+        [HttpPost]
+        [Route("JsonController/Select")]
+        public HttpResponseMessage Select(WebApiParams param)
+        {
+            // 引数クラスを生成
+            // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
+            TestParameterValue testParameterValue
+                = new TestParameterValue(
+                    "JsonController", "Select", "Select",
+                    param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
+                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+            testParameterValue.ShipperID = param.Shipper.ShipperID;
+
+            // 戻り値
+            MyReturnValue returnValue = null;
+            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
+
+            HttpStatusCode httpStateCode = HttpStatusCode.OK;
+            object ret = null;
+
+            if (string.IsNullOrEmpty(exceptionMSG))
+            {
+                // ランタイムエラー
+                httpStateCode = HttpStatusCode.InternalServerError;
+                ret = new { ExceptionMSG = exceptionMSG };
+            }
+            else
+            {
+                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                string message = "";
+
+                if (testReturnValue.ErrorFlag == true)
+                {
+                    // 結果（業務続行可能なエラー）
+                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
+                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
+                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
+
+                    httpStateCode = HttpStatusCode.OK;
+                    ret = new { ErrorMSG = message };
+                }
+                else
+                {
+                    // 結果（正常系）
+                    Dictionary<string, string> dic = new Dictionary<string, string>();
+                    dic.Add("ShipperID", testReturnValue.ShipperID.ToString());
+                    dic.Add("CompanyName", testReturnValue.CompanyName);
+                    dic.Add("Phone", testReturnValue.Phone);
+
+                    httpStateCode = HttpStatusCode.OK;
+                    ret = new { Message = dic };
+                }
+            }
+
+            return Request.CreateResponse(httpStateCode, ret);
+        }
+
+        /// <summary>
+        /// POST JsonController/Insert
+        /// </summary>
+        /// <param name="param">引数</param>
+        /// <returns>戻り値</returns>
+        [HttpPost]
+        [Route("JsonController/Insert")]
+        public HttpResponseMessage Insert(WebApiParams param)
+        {
+            // 引数クラスを生成
+            // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
+            TestParameterValue testParameterValue
+                = new TestParameterValue(
+                    "JsonController", "Insert", "Insert",
+                    param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
+                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+            testParameterValue.CompanyName = param.Shipper.CompanyName;
+            testParameterValue.Phone = param.Shipper.Phone;
+
+            // 戻り値
+            MyReturnValue returnValue = null;
+            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
+
+            HttpStatusCode httpStateCode = HttpStatusCode.OK;
+            object ret = null;
+
+            if (string.IsNullOrEmpty(exceptionMSG))
+            {
+                // ランタイムエラー
+                httpStateCode = HttpStatusCode.InternalServerError;
+                ret = new { ExceptionMSG = exceptionMSG };
+            }
+            else
+            {
+                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                string message = "";
+
+                if (testReturnValue.ErrorFlag == true)
+                {
+                    // 結果（業務続行可能なエラー）
+                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
+                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
+                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
+
+                    httpStateCode = HttpStatusCode.OK;
+                    ret = new { ErrorMSG = message };
+                }
+                else
+                {
+                    // 結果（正常系）
+                    message = testReturnValue.Obj.ToString() + "件追加";
+
+                    httpStateCode = HttpStatusCode.OK;
+                    ret = new { Message = message };
+                }
+            }
+
+            return Request.CreateResponse(httpStateCode, ret);
+        }
+
+        /// <summary>
+        /// POST JsonController/Update
+        /// </summary>
+        /// <param name="param">引数</param>
+        /// <returns>戻り値</returns>
+        [HttpPost]
+        [Route("JsonController/Update")]
+        public HttpResponseMessage Update(WebApiParams param)
+        {
+            // 引数クラスを生成
+            // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
+            TestParameterValue testParameterValue
+                = new TestParameterValue(
+                    "JsonController", "Update", "Update",
+                    param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
+                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+            testParameterValue.ShipperID = param.Shipper.ShipperID;
+            testParameterValue.CompanyName = param.Shipper.CompanyName;
+            testParameterValue.Phone = param.Shipper.Phone;
+
+            // 戻り値
+            MyReturnValue returnValue = null;
+            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
+
+            HttpStatusCode httpStateCode = HttpStatusCode.OK;
+            object ret = null;
+
+            if (string.IsNullOrEmpty(exceptionMSG))
+            {
+                // ランタイムエラー
+                httpStateCode = HttpStatusCode.InternalServerError;
+                ret = new { ExceptionMSG = exceptionMSG };
+            }
+            else
+            {
+                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                string message = "";
+
+                if (testReturnValue.ErrorFlag == true)
+                {
+                    // 結果（業務続行可能なエラー）
+                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
+                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
+                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
+
+                    httpStateCode = HttpStatusCode.OK;
+                    ret = new { ErrorMSG = message };
+                }
+                else
+                {
+                    // 結果（正常系）
+                    // 結果（正常系）
+                    message = testReturnValue.Obj.ToString() + "件更新";
+
+                    httpStateCode = HttpStatusCode.OK;
+                    ret = new { Message = message };
+                }
+            }
+
+            return Request.CreateResponse(httpStateCode, ret);
+        }
+
+        /// <summary>
+        /// POST JsonController/Delete
+        /// </summary>
+        /// <param name="param">引数</param>
+        /// <returns>戻り値</returns>
+        [HttpPost]
+        [Route("JsonController/Delete")]
+        public HttpResponseMessage Delete(WebApiParams param)
+        {
+            // 引数クラスを生成
+            // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
+            TestParameterValue testParameterValue
+                = new TestParameterValue(
+                    "JsonController", "Delete", "Delete",
+                    param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
+                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+            testParameterValue.ShipperID = param.Shipper.ShipperID;
+
+            // 戻り値
+            MyReturnValue returnValue = null;
+            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
+
+            HttpStatusCode httpStateCode = HttpStatusCode.OK;
+            object ret = null;
+
+            if (string.IsNullOrEmpty(exceptionMSG))
+            {
+                // ランタイムエラー
+                httpStateCode = HttpStatusCode.InternalServerError;
+                ret = new { ExceptionMSG = exceptionMSG };
+            }
+            else
+            {
+                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                string message = "";
+
+                if (testReturnValue.ErrorFlag == true)
+                {
+                    // 結果（業務続行可能なエラー）
+                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
+                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
+                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
+
+                    httpStateCode = HttpStatusCode.OK;
+                    ret = new { ErrorMSG = message };
+                }
+                else
+                {
+                    // 結果（正常系）
+                    // 結果（正常系）
+                    message = testReturnValue.Obj.ToString() + "件削除";
+                    
+                    httpStateCode = HttpStatusCode.OK;
+                    ret = new { Message = message };
+                }
+            }
+
+            return Request.CreateResponse(httpStateCode, ret);
         }
 
         #endregion
@@ -268,19 +696,15 @@ namespace ASPNETWebService.Controllers
         #region 共通部
 
         /// <summary>ASP.NET WebAPI JSON-RPCの個別Webメソッドの共通部</summary>
-        /// <param name="context">コンテキスト</param>
-        /// <param name="methodName">メソッド名</param>
-        /// <param name="parameterValue">引数Bean（個別・・・サブ）</param>
-        /// <param name="returnValue">戻り値Bean（個別・・・サブ）</param>
+        /// <param name="serviceName">サービス名</param>
+        /// <param name="parameterValue">引数</param>
+        /// <param name="returnValue">戻り値</param>
         /// <returns>返すべきエラーの情報</returns>
-        private string Call(ref string context, string serviceName, string methodName, string actionType, object parameterValue, out object returnValue)
+        private string Call(string serviceName, MyParameterValue parameterValue, out MyReturnValue returnValue)
         {
             // ステータス
             string status = "－";
-
-            // 初期化のため
-            returnValue = "";
-
+            
             #region 呼出し制御関係の変数
 
             // アセンブリ名
@@ -293,9 +717,7 @@ namespace ASPNETWebService.Controllers
 
             #region 引数・戻り値関係の変数
 
-            // 引数・戻り値の.NETオブジェクト
-            MuParameterValue muParameterValue = null;
-            MuReturnValue muReturnValue = null;
+            returnValue = null;
 
             // エラー情報（XMLフォーマット）
             XmlDocument wsErrorInfo = new XmlDocument();
@@ -329,44 +751,15 @@ namespace ASPNETWebService.Controllers
 
                 // ★
                 status = FxLiteral.SIF_STATUS_DESERIALIZE;
-
-                // ★★　引数の.NETオブジェクト化をＵＯＣする（必要に応じて）。
-
-                // 引数文字列の.NETオブジェクト化
-
-                // string[] cmnParameterValueを使用して初期化するなど
-                muParameterValue = new MuParameterValue(
-                    "", //cmnParameterValue[0], // 画面名
-                    "", //cmnParameterValue[1], // ボタン名
-                    methodName, //cmnParameterValue[2], // メソッド名
-                    actionType, //cmnParameterValue[3], // アクションタイプ
-                    new MyUserInfo(context, HttpContext.Current.Request.UserHostAddress));
-
-                // parameterValueを引数の文字列フィールドに設定
-                muParameterValue.Bean = parameterValue;
-
+                                
                 // 引数クラスをパラメタ セットに格納
-                object[] paramSet = new object[] { muParameterValue, DbEnum.IsolationLevelEnum.User };
+                object[] paramSet = new object[] { parameterValue, DbEnum.IsolationLevelEnum.User };
 
                 #endregion
 
                 #region 認証処理（ＵＯＣ）
 
-                // ★
-                status = FxLiteral.SIF_STATUS_AUTHENTICATION;
-
-                // ★★　認証が通っているかどうか確認する。
-                if (!HttpContext.Current.Request.IsAuthenticated)
-                {
-                    throw new BusinessSystemException("Authentication", "認証されていません。");
-                }
-
-                // ★★　コンテキストの情報を使用するなどして
-                //       認証処理をＵＯＣする（必要に応じて）。
-
-                // 持ち回るならCookieにするか、
-                // contextをrefにするなどとする。
-                context = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fff"); // 更新されたかのテストコード
+                // MyBaseApiControllerに実装する。
 
                 #endregion
 
@@ -394,7 +787,7 @@ namespace ASPNETWebService.Controllers
                     }
 
                     object o = Activator.CreateInstance(t);
-                    muReturnValue = (MuReturnValue)Latebind.InvokeMethod(o, FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet);
+                    returnValue = (MyReturnValue)Latebind.InvokeMethod(o, FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet);
                 }
                 catch (System.Reflection.TargetInvocationException rtEx)
                 {
@@ -408,10 +801,8 @@ namespace ASPNETWebService.Controllers
 
                 // ★
                 status = FxLiteral.SIF_STATUS_SERIALIZE;
-
-                returnValue = muReturnValue.Bean;
-
-                if (muReturnValue.ErrorFlag)
+                
+                if (returnValue.ErrorFlag)
                 {
                     // エラー情報を設定する。
                     wsErrorRoot = wsErrorInfo.CreateElement("ErrorInfo");
@@ -423,22 +814,22 @@ namespace ASPNETWebService.Controllers
                     wsErrorRoot.AppendChild(wsErrorItem);
 
                     wsErrorItem = wsErrorInfo.CreateElement("MessageID");
-                    wsErrorItem.InnerText = muReturnValue.ErrorMessageID;
+                    wsErrorItem.InnerText = returnValue.ErrorMessageID;
                     wsErrorRoot.AppendChild(wsErrorItem);
 
                     wsErrorItem = wsErrorInfo.CreateElement("Message");
-                    wsErrorItem.InnerText = muReturnValue.ErrorMessage;
+                    wsErrorItem.InnerText = returnValue.ErrorMessage;
                     wsErrorRoot.AppendChild(wsErrorItem);
 
                     wsErrorItem = wsErrorInfo.CreateElement("Information");
-                    wsErrorItem.InnerText = muReturnValue.ErrorInfo;
+                    wsErrorItem.InnerText = returnValue.ErrorInfo;
                     wsErrorRoot.AppendChild(wsErrorItem);
 
                     // ログ出力用の情報を保存
                     errorType = FxEnum.ErrorType.BusinessApplicationException.ToString(); // 2009/09/15-この行
-                    errorMessageID = muReturnValue.ErrorMessageID;
-                    errorMessage = muReturnValue.ErrorMessage;
-                    errorToString = muReturnValue.ErrorInfo;
+                    errorMessageID = returnValue.ErrorMessageID;
+                    errorMessage = returnValue.ErrorMessage;
+                    errorToString = returnValue.ErrorInfo;
 
                     // エラー情報を戻す。
                     return wsErrorInfo.InnerXml;
