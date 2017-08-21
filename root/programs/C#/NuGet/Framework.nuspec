@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Touryo.Infrastructure.Framework</id>
+    <title>OpenTouryo.Framework</title>
+    <version>2.1</version>
+    <authors>OSS Consortium .net subcommittee</authors>
+    <owners>daisukenishino77</owners>
+    <licenseUrl>https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root/programs/C%23/Frameworks/Infrastructure/Framework</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <summary>Framework of OpenTouryo.</summary>
+    <description>Framework of OpenTouryo. This package is used from template of OpenTouryo.</description>
+    <releaseNotes>https://github.com/OpenTouryoProject/OpenTouryo/releases</releaseNotes>
+    <copyright></copyright>
+    <tags>OpenTouryo</tags>
+    <dependencies>
+      <dependency id="Touryo.Infrastructure.Public" version="2.1" />
+      <dependency id="Microsoft.AspNet.Mvc" version="5.2.3" />
+      <dependency id="Newtonsoft.Json" version="10.0.3" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="in\net46\Framework.dll" target="lib\net46" />
+    <file src="in\net46\Framework.pdb" target="lib\net46" />
+    <file src="in\net46\Framework.xml" target="lib\net46" />
+  </files>
+</package>

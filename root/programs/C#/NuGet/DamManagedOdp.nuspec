@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Touryo.Infrastructure.Public.Db.DamManagedOdp</id>
+    <title>Touryo.DamManagedOdp</title>
+    <version>2.1</version>
+    <authors>OSS Consortium .net subcommittee</authors>
+    <owners>daisukenishino77</owners>
+    <licenseUrl>https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root/programs/C%23/Frameworks/Infrastructure/Public/Db/DamManagedOdp</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <summary>DataAccess library of Oracle.ManagedDataAccess in OpenTouryo.</summary>
+    <description>DataAccess library of Oracle.ManagedDataAccess in OpenTouryo. This package is used from template of OpenTouryo.</description>
+    <releaseNotes>https://github.com/OpenTouryoProject/OpenTouryo/releases</releaseNotes>
+    <copyright></copyright>
+    <tags>OpenTouryo</tags>
+    <dependencies>
+      <dependency id="Touryo.Infrastructure.Public" version="2.1" />
+      <dependency id="Oracle.ManagedDataAccess" version="12.2.1100" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="in\net46\DamManagedOdp.dll" target="lib\net46" />
+    <file src="in\net46\DamManagedOdp.pdb" target="lib\net46" />
+    <file src="in\net46\DamManagedOdp.xml" target="lib\net46" />
+  </files>
+</package>
