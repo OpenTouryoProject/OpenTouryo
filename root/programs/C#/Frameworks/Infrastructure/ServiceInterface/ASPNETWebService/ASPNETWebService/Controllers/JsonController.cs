@@ -41,6 +41,7 @@ using System.Web.Http.Cors;
 using System.Net;
 using System.Net.Http;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -48,9 +49,10 @@ using Newtonsoft.Json.Linq;
 using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Business.Util;
+using Touryo.Infrastructure.Framework.Common;
+using Touryo.Infrastructure.Framework.Transmission;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
@@ -130,16 +132,14 @@ namespace ASPNETWebService.Controllers
                     new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
 
             // 戻り値
-            MyReturnValue returnValue = null;
+            BaseReturnValue returnValue = null;
             string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
-
-            HttpStatusCode httpStateCode = HttpStatusCode.OK;
+            
             object ret = null;
 
-            if (string.IsNullOrEmpty(exceptionMSG))
+            if (!string.IsNullOrEmpty(exceptionMSG))
             {
                 // ランタイムエラー
-                httpStateCode = HttpStatusCode.InternalServerError;
                 ret = new { ExceptionMSG = exceptionMSG };
             }
             else
@@ -153,21 +153,18 @@ namespace ASPNETWebService.Controllers
                     message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
                     message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
                     message += "ErrorInfo:" + testReturnValue.ErrorInfo;
-
-                    httpStateCode = HttpStatusCode.OK;
+                    
                     ret = new { ErrorMSG = message };
                 }
                 else
                 {
                     // 結果（正常系）
                     message = testReturnValue.Obj.ToString() + "件のデータがあります";
-
-                    httpStateCode = HttpStatusCode.OK;
                     ret = new { Message = message };
                 }
             }
 
-            return Request.CreateResponse(httpStateCode, ret);
+            return Request.CreateResponse(HttpStatusCode.OK, ret);
         }
 
         /// <summary>
@@ -188,16 +185,14 @@ namespace ASPNETWebService.Controllers
                     new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
 
             // 戻り値
-            MyReturnValue returnValue = null;
+            BaseReturnValue returnValue = null;
             string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
-
-            HttpStatusCode httpStateCode = HttpStatusCode.OK;
+            
             object ret = null;
 
-            if (string.IsNullOrEmpty(exceptionMSG))
+            if (!string.IsNullOrEmpty(exceptionMSG))
             {
                 // ランタイムエラー
-                httpStateCode = HttpStatusCode.InternalServerError;
                 ret = new { ExceptionMSG = exceptionMSG };
             }
             else
@@ -211,15 +206,13 @@ namespace ASPNETWebService.Controllers
                     message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
                     message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
                     message += "ErrorInfo:" + testReturnValue.ErrorInfo;
-
-                    httpStateCode = HttpStatusCode.OK;
+                    
                     ret = new { ErrorMSG = message };
                 }
                 else
                 {
                     // 結果（正常系）
                     DataTable dt = (DataTable)testReturnValue.Obj;
-
                     List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
 
                     foreach (DataRow row in dt.Rows)
@@ -231,13 +224,12 @@ namespace ASPNETWebService.Controllers
 
                         list.Add(dic);
                     }
-
-                    httpStateCode = HttpStatusCode.OK;
-                    ret = new { Message = list };
+                    
+                    ret = new { Message = "", Result = list };
                 }
             }
 
-            return Request.CreateResponse(httpStateCode, ret);
+            return Request.CreateResponse(HttpStatusCode.OK, ret);
         }
 
         /// <summary>
@@ -258,18 +250,20 @@ namespace ASPNETWebService.Controllers
                     new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
 
             // 戻り値
-            MyReturnValue returnValue = null;
-            string message = this.Call("testInProcess", testParameterValue, out returnValue);
+            BaseReturnValue returnValue = null;
+            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
 
-            if (string.IsNullOrEmpty(message))
+            object ret = null;
+
+            if (string.IsNullOrEmpty(exceptionMSG))
             {
                 // ランタイムエラー
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, message);
+                ret = new { ExceptionMSG = exceptionMSG };
             }
             else
             {
                 TestReturnValue testReturnValue = (TestReturnValue)returnValue;
-                Dictionary<string, string> ret = new Dictionary<string, string>();
+                string message = "";
 
                 if (testReturnValue.ErrorFlag == true)
                 {
@@ -278,13 +272,12 @@ namespace ASPNETWebService.Controllers
                     message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
                     message += "ErrorInfo:" + testReturnValue.ErrorInfo;
 
-                    ret.Add("Error", message);
+                    ret = new { ErrorMSG = message };
                 }
                 else
                 {
                     // 結果（正常系）
                     DataTable dt = ((DataSet)testReturnValue.Obj).Tables[0];
-
                     List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
 
                     foreach (DataRow row in dt.Rows)
@@ -294,12 +287,12 @@ namespace ASPNETWebService.Controllers
                         dic.Add(dt.Columns[1].ColumnName, row[1].ToString());
                         dic.Add(dt.Columns[2].ColumnName, row[2].ToString());
 
-                        list.Add(dic);
+                        ret = new { Message = "", Result = list };
                     }
                 }
-
-                return Request.CreateResponse(HttpStatusCode.OK, ret);
             }
+
+            return Request.CreateResponse(HttpStatusCode.OK, ret);
         }
 
         /// <summary>
@@ -320,16 +313,14 @@ namespace ASPNETWebService.Controllers
                     new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
 
             // 戻り値
-            MyReturnValue returnValue = null;
+            BaseReturnValue returnValue = null;
             string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
-
-            HttpStatusCode httpStateCode = HttpStatusCode.OK;
+            
             object ret = null;
 
-            if (string.IsNullOrEmpty(exceptionMSG))
+            if (!string.IsNullOrEmpty(exceptionMSG))
             {
                 // ランタイムエラー
-                httpStateCode = HttpStatusCode.InternalServerError;
                 ret = new { ExceptionMSG = exceptionMSG };
             }
             else
@@ -343,15 +334,13 @@ namespace ASPNETWebService.Controllers
                     message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
                     message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
                     message += "ErrorInfo:" + testReturnValue.ErrorInfo;
-
-                    httpStateCode = HttpStatusCode.OK;
+                    
                     ret = new { ErrorMSG = message };
                 }
                 else
                 {
                     // 結果（正常系）
                     DataTable dt = (DataTable)testReturnValue.Obj;
-
                     List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
 
                     foreach (DataRow row in dt.Rows)
@@ -367,12 +356,11 @@ namespace ASPNETWebService.Controllers
                         list.Add(dic);
                     }
 
-                    httpStateCode = HttpStatusCode.OK;
-                    ret = new { Message = list };
+                    ret = new { Message = "", Result = list };
                 }
             }
 
-            return Request.CreateResponse(httpStateCode, ret);
+            return Request.CreateResponse(HttpStatusCode.OK, ret);
         }
 
         /// <summary>
@@ -395,16 +383,14 @@ namespace ASPNETWebService.Controllers
             testParameterValue.OrderSequence = param.OrderSequence;
 
             // 戻り値
-            MyReturnValue returnValue = null;
+            BaseReturnValue returnValue = null;
             string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
-
-            HttpStatusCode httpStateCode = HttpStatusCode.OK;
+            
             object ret = null;
 
-            if (string.IsNullOrEmpty(exceptionMSG))
+            if (!string.IsNullOrEmpty(exceptionMSG))
             {
                 // ランタイムエラー
-                httpStateCode = HttpStatusCode.InternalServerError;
                 ret = new { ExceptionMSG = exceptionMSG };
             }
             else
@@ -418,15 +404,13 @@ namespace ASPNETWebService.Controllers
                     message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
                     message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
                     message += "ErrorInfo:" + testReturnValue.ErrorInfo;
-
-                    httpStateCode = HttpStatusCode.OK;
+                    
                     ret = new { ErrorMSG = message };
                 }
                 else
                 {
                     // 結果（正常系）
                     DataTable dt = (DataTable)testReturnValue.Obj;
-
                     List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
 
                     foreach (DataRow row in dt.Rows)
@@ -439,12 +423,11 @@ namespace ASPNETWebService.Controllers
                         list.Add(dic);
                     }
 
-                    httpStateCode = HttpStatusCode.OK;
-                    ret = new { Message = list };
+                    ret = new { Message = "", Result = list };
                 }
             }
 
-            return Request.CreateResponse(httpStateCode, ret);
+            return Request.CreateResponse(HttpStatusCode.OK, ret);
         }
 
         /// <summary>
@@ -466,16 +449,14 @@ namespace ASPNETWebService.Controllers
             testParameterValue.ShipperID = param.Shipper.ShipperID;
 
             // 戻り値
-            MyReturnValue returnValue = null;
+            BaseReturnValue returnValue = null;
             string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
-
-            HttpStatusCode httpStateCode = HttpStatusCode.OK;
+            
             object ret = null;
 
-            if (string.IsNullOrEmpty(exceptionMSG))
+            if (!string.IsNullOrEmpty(exceptionMSG))
             {
                 // ランタイムエラー
-                httpStateCode = HttpStatusCode.InternalServerError;
                 ret = new { ExceptionMSG = exceptionMSG };
             }
             else
@@ -489,8 +470,7 @@ namespace ASPNETWebService.Controllers
                     message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
                     message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
                     message += "ErrorInfo:" + testReturnValue.ErrorInfo;
-
-                    httpStateCode = HttpStatusCode.OK;
+                    
                     ret = new { ErrorMSG = message };
                 }
                 else
@@ -501,12 +481,11 @@ namespace ASPNETWebService.Controllers
                     dic.Add("CompanyName", testReturnValue.CompanyName);
                     dic.Add("Phone", testReturnValue.Phone);
 
-                    httpStateCode = HttpStatusCode.OK;
-                    ret = new { Message = dic };
+                    ret = new { Message = "", Result = dic };
                 }
             }
 
-            return Request.CreateResponse(httpStateCode, ret);
+            return Request.CreateResponse(HttpStatusCode.OK, ret);
         }
 
         /// <summary>
@@ -529,16 +508,14 @@ namespace ASPNETWebService.Controllers
             testParameterValue.Phone = param.Shipper.Phone;
 
             // 戻り値
-            MyReturnValue returnValue = null;
+            BaseReturnValue returnValue = null;
             string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
-
-            HttpStatusCode httpStateCode = HttpStatusCode.OK;
+            
             object ret = null;
 
-            if (string.IsNullOrEmpty(exceptionMSG))
+            if (!string.IsNullOrEmpty(exceptionMSG))
             {
                 // ランタイムエラー
-                httpStateCode = HttpStatusCode.InternalServerError;
                 ret = new { ExceptionMSG = exceptionMSG };
             }
             else
@@ -552,21 +529,19 @@ namespace ASPNETWebService.Controllers
                     message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
                     message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
                     message += "ErrorInfo:" + testReturnValue.ErrorInfo;
-
-                    httpStateCode = HttpStatusCode.OK;
+                    
                     ret = new { ErrorMSG = message };
                 }
                 else
                 {
                     // 結果（正常系）
                     message = testReturnValue.Obj.ToString() + "件追加";
-
-                    httpStateCode = HttpStatusCode.OK;
+                    
                     ret = new { Message = message };
                 }
             }
 
-            return Request.CreateResponse(httpStateCode, ret);
+            return Request.CreateResponse(HttpStatusCode.OK, ret);
         }
 
         /// <summary>
@@ -590,16 +565,14 @@ namespace ASPNETWebService.Controllers
             testParameterValue.Phone = param.Shipper.Phone;
 
             // 戻り値
-            MyReturnValue returnValue = null;
+            BaseReturnValue returnValue = null;
             string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
-
-            HttpStatusCode httpStateCode = HttpStatusCode.OK;
+            
             object ret = null;
 
-            if (string.IsNullOrEmpty(exceptionMSG))
+            if (!string.IsNullOrEmpty(exceptionMSG))
             {
                 // ランタイムエラー
-                httpStateCode = HttpStatusCode.InternalServerError;
                 ret = new { ExceptionMSG = exceptionMSG };
             }
             else
@@ -613,8 +586,7 @@ namespace ASPNETWebService.Controllers
                     message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
                     message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
                     message += "ErrorInfo:" + testReturnValue.ErrorInfo;
-
-                    httpStateCode = HttpStatusCode.OK;
+                    
                     ret = new { ErrorMSG = message };
                 }
                 else
@@ -622,13 +594,12 @@ namespace ASPNETWebService.Controllers
                     // 結果（正常系）
                     // 結果（正常系）
                     message = testReturnValue.Obj.ToString() + "件更新";
-
-                    httpStateCode = HttpStatusCode.OK;
+                    
                     ret = new { Message = message };
                 }
             }
 
-            return Request.CreateResponse(httpStateCode, ret);
+            return Request.CreateResponse(HttpStatusCode.OK, ret);
         }
 
         /// <summary>
@@ -650,16 +621,14 @@ namespace ASPNETWebService.Controllers
             testParameterValue.ShipperID = param.Shipper.ShipperID;
 
             // 戻り値
-            MyReturnValue returnValue = null;
+            BaseReturnValue returnValue = null;
             string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
-
-            HttpStatusCode httpStateCode = HttpStatusCode.OK;
+            
             object ret = null;
 
-            if (string.IsNullOrEmpty(exceptionMSG))
+            if (!string.IsNullOrEmpty(exceptionMSG))
             {
                 // ランタイムエラー
-                httpStateCode = HttpStatusCode.InternalServerError;
                 ret = new { ExceptionMSG = exceptionMSG };
             }
             else
@@ -673,8 +642,7 @@ namespace ASPNETWebService.Controllers
                     message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
                     message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
                     message += "ErrorInfo:" + testReturnValue.ErrorInfo;
-
-                    httpStateCode = HttpStatusCode.OK;
+                    
                     ret = new { ErrorMSG = message };
                 }
                 else
@@ -683,12 +651,11 @@ namespace ASPNETWebService.Controllers
                     // 結果（正常系）
                     message = testReturnValue.Obj.ToString() + "件削除";
                     
-                    httpStateCode = HttpStatusCode.OK;
                     ret = new { Message = message };
                 }
             }
 
-            return Request.CreateResponse(httpStateCode, ret);
+            return Request.CreateResponse(HttpStatusCode.OK, ret);
         }
 
         #endregion
@@ -700,7 +667,10 @@ namespace ASPNETWebService.Controllers
         /// <param name="parameterValue">引数</param>
         /// <param name="returnValue">戻り値</param>
         /// <returns>返すべきエラーの情報</returns>
-        private string Call(string serviceName, MyParameterValue parameterValue, out MyReturnValue returnValue)
+        private string Call(
+            string serviceName, 
+            BaseParameterValue parameterValue, 
+            out BaseReturnValue returnValue)
         {
             // ステータス
             string status = "－";
@@ -772,67 +742,29 @@ namespace ASPNETWebService.Controllers
                 {
                     // Ｂ層・Ｄ層呼出し
 
-                    //// DLL名も指定するパターン（別DLLに含まれる）
-                    //muReturnValue = (MuReturnValue)Latebind.InvokeMethod(
-                    //    assemblyName, className, FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet);
-
-                    // DLL名は指定しないパターン（ExecutingAssemblyに含まれる）
-                    Assembly asm = Assembly.GetExecutingAssembly();
-
-                    // DLL名は指定しないパターンでの例外処理
-                    Type t = asm.GetType(className);
-                    if (t == null)
+                    try
                     {
-                        throw new BusinessSystemException("NoLBTypeInExecutingAssembly", string.Format("{0}クラスがExecutingAssemblyに存在しません。", className));
+                        // Ｂ層・Ｄ層呼出し
+                        //returnValue = (BaseReturnValue)Latebind.InvokeMethod(
+                        //    AppDomain.CurrentDomain.BaseDirectory + "\\bin\\" + assemblyName + ".dll",
+                        //    className, FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet);
+                        returnValue = (BaseReturnValue)Latebind.InvokeMethod(
+                            assemblyName, className,
+                            FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet);
                     }
+                    catch (System.Reflection.TargetInvocationException rtEx)
+                    {
+                        //// InnerExceptionを投げなおす。
+                        //throw rtEx.InnerException;
 
-                    object o = Activator.CreateInstance(t);
-                    returnValue = (MyReturnValue)Latebind.InvokeMethod(o, FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet);
+                        // スタックトレースを保って InnerException を throw
+                        ExceptionDispatchInfo.Capture(rtEx.InnerException).Throw();
+                    }
                 }
                 catch (System.Reflection.TargetInvocationException rtEx)
                 {
                     // InnerExceptionを投げなおす。
                     throw rtEx.InnerException;
-                }
-
-                #endregion
-
-                #region 戻り値
-
-                // ★
-                status = FxLiteral.SIF_STATUS_SERIALIZE;
-                
-                if (returnValue.ErrorFlag)
-                {
-                    // エラー情報を設定する。
-                    wsErrorRoot = wsErrorInfo.CreateElement("ErrorInfo");
-                    wsErrorInfo.AppendChild(wsErrorRoot);
-
-                    // 業務例外
-                    wsErrorItem = wsErrorInfo.CreateElement("ErrorType");
-                    wsErrorItem.InnerText = FxEnum.ErrorType.BusinessApplicationException.ToString();
-                    wsErrorRoot.AppendChild(wsErrorItem);
-
-                    wsErrorItem = wsErrorInfo.CreateElement("MessageID");
-                    wsErrorItem.InnerText = returnValue.ErrorMessageID;
-                    wsErrorRoot.AppendChild(wsErrorItem);
-
-                    wsErrorItem = wsErrorInfo.CreateElement("Message");
-                    wsErrorItem.InnerText = returnValue.ErrorMessage;
-                    wsErrorRoot.AppendChild(wsErrorItem);
-
-                    wsErrorItem = wsErrorInfo.CreateElement("Information");
-                    wsErrorItem.InnerText = returnValue.ErrorInfo;
-                    wsErrorRoot.AppendChild(wsErrorItem);
-
-                    // ログ出力用の情報を保存
-                    errorType = FxEnum.ErrorType.BusinessApplicationException.ToString(); // 2009/09/15-この行
-                    errorMessageID = returnValue.ErrorMessageID;
-                    errorMessage = returnValue.ErrorMessage;
-                    errorToString = returnValue.ErrorInfo;
-
-                    // エラー情報を戻す。
-                    return wsErrorInfo.InnerXml;
                 }
 
                 #endregion
