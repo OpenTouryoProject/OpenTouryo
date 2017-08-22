@@ -22,5 +22,9 @@
     <file src="in\net46\DamPstGrS.dll" target="lib\net46" />
     <file src="in\net46\DamPstGrS.pdb" target="lib\net46" />
     <file src="in\net46\DamPstGrS.xml" target="lib\net46" />
+
+    <file src="in\net47\DamPstGrS.dll" target="lib\net47" />
+    <file src="in\net47\DamPstGrS.pdb" target="lib\net47" />
+    <file src="in\net47\DamPstGrS.xml" target="lib\net47" />
   </files>
 </package>

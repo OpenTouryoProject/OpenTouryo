@@ -24,5 +24,9 @@
     <file src="in\net46\Framework.dll" target="lib\net46" />
     <file src="in\net46\Framework.pdb" target="lib\net46" />
     <file src="in\net46\Framework.xml" target="lib\net46" />
+
+    <file src="in\net47\Framework.dll" target="lib\net47" />
+    <file src="in\net47\Framework.pdb" target="lib\net47" />
+    <file src="in\net47\Framework.xml" target="lib\net47" />
   </files>
 </package>

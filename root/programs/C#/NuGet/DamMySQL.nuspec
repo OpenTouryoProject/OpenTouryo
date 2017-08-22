@@ -23,5 +23,9 @@
     <file src="in\net46\DamMySQL.dll" target="lib\net46" />
     <file src="in\net46\DamMySQL.pdb" target="lib\net46" />
     <file src="in\net46\DamMySQL.xml" target="lib\net46" />
+
+    <file src="in\net47\DamMySQL.dll" target="lib\net47" />
+    <file src="in\net47\DamMySQL.pdb" target="lib\net47" />
+    <file src="in\net47\DamMySQL.xml" target="lib\net47" />
   </files>
 </package>

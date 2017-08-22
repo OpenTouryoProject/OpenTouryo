@@ -24,5 +24,9 @@
     <file src="in\net46\Public.dll" target="lib\net46" />
     <file src="in\net46\Public.pdb" target="lib\net46" />
     <file src="in\net46\Public.xml" target="lib\net46" />
+
+    <file src="in\net47\Public.dll" target="lib\net47" />
+    <file src="in\net47\Public.pdb" target="lib\net47" />
+    <file src="in\net47\Public.xml" target="lib\net47" />
   </files>
 </package>
