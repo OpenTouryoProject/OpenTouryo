@@ -1,20 +1,20 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>名前空間（Touryo.Infrastructure.XXXX）</id>★
-    <title>略号（OpenTouryo.XXXX）</title>
-    <version>バージョン番号</version>★
+    <id>[名前空間（Touryo.Infrastructure.XXXX）]</id>★
+    <title>[略号（OpenTouryo.XXXX）]</title>
+    <version>[バージョン番号]</version>★
     <authors>OSS Consortium .net subcommittee</authors>★
     <owners>daisukenishino77</owners>
     <licenseUrl>https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LICENSE.txt</licenseUrl>
-    <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master</projectUrl>
-    <iconUrl>*.png, *.iconなどの64*64の画像</iconUrl>
+    <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/・・・</projectUrl>
+    <iconUrl>[*.png, *.iconなどの64*64の画像]</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <summary>[概要説明を記入する]</summary>
     <description>[詳細説明を記入する]</description>★
     <releaseNotes>https://github.com/OpenTouryoProject/OpenTouryo/releases</releaseNotes>
     <copyright></copyright>
-    <tags>OpenTouryo</tags>
+    <tags>[スペース区切りのタグ]</tags>
     <dependencies>
       <dependency id="必要に応じて記入" version="必要に応じて記入" />
     </dependencies>

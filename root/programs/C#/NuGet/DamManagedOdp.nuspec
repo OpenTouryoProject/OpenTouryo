@@ -14,7 +14,7 @@
     <description>DataAccess library of Oracle.ManagedDataAccess in OpenTouryo. This package is used from template of OpenTouryo.</description>
     <releaseNotes>https://github.com/OpenTouryoProject/OpenTouryo/releases</releaseNotes>
     <copyright></copyright>
-    <tags>OpenTouryo</tags>
+    <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
       <dependency id="Touryo.Infrastructure.Public" version="2.1" />
       <dependency id="Oracle.ManagedDataAccess" version="12.2.1100" />
