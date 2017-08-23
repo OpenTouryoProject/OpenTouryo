@@ -8,6 +8,7 @@
     <owners>daisukenishino77</owners>
     <licenseUrl>https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master</projectUrl>
+    <iconUrl>*.png, *.iconなどの64*64の画像</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <summary>[概要説明を記入する]</summary>
     <description>[詳細説明を記入する]</description>★
