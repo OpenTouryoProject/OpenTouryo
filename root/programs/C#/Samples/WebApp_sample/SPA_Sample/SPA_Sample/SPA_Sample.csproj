@@ -156,10 +156,10 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\Crud1Controller.cs" />
+    <Compile Include="Controllers\Crud2Controller.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\Crud2Controller.cs" />
-    <Compile Include="Controllers\Crud1Controller.cs" />
     <Compile Include="Controllers\PingController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

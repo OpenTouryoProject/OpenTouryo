@@ -255,7 +255,7 @@ namespace ASPNETWebService.Controllers
 
             object ret = null;
 
-            if (string.IsNullOrEmpty(exceptionMSG))
+            if (!string.IsNullOrEmpty(exceptionMSG))
             {
                 // ランタイムエラー
                 ret = new { ExceptionMSG = exceptionMSG };
@@ -287,8 +287,10 @@ namespace ASPNETWebService.Controllers
                         dic.Add(dt.Columns[1].ColumnName, row[1].ToString());
                         dic.Add(dt.Columns[2].ColumnName, row[2].ToString());
 
-                        ret = new { Message = "", Result = list };
+                        list.Add(dic);
                     }
+
+                    ret = new { Message = "", Result = list };
                 }
             }
 

@@ -1,4 +1,6 @@
-﻿function Sample1ViewModel() {
+﻿var rootUrl = 'http://localhost:8888/JsonController/';
+
+function Sample1ViewModel() {
     // shippers テーブルのレコードリスト (JSON 形式)
     this.dataLists = ko.observableArray();
 
@@ -55,7 +57,7 @@
     this.ddlExRollback = ko.observable("-");
     
     // Shipper テーブルの各項目
-    this.ShipperId = ko.observable("");
+    this.ShipperID = ko.observable("");
     this.CompanyName = ko.observable("");
     this.Phone = ko.observable("");
 
@@ -98,17 +100,21 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/GetCount',
+            url: rootUrl + 'SelectCount',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
-                if (data.error) {
-                    // エラーメッセージ格納
-                    self.ErrorMessage(data.error);
+                if (data.Message != undefined) {
+                    // 正常終了
+                    self.Result(data.Message);
                 }
-                else {
-                    // 結果格納
-                    self.Result(data.message);
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
+                    self.ErrorMessage(data.ErrorMSG);
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    self.ErrorMessage(data.ExceptionMSG);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -136,20 +142,22 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/SelectDT',
+            url: rootUrl + 'SelectAll_DT',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
-                if (data.error) {
-                    // エラーメッセージ格納
-                    self.ErrorMessage(data.error);
-                }
-                else {
-                    // 一旦レコードリストをクリアする
+                if (data.Message != undefined) {
+                    // 正常終了
                     self.ClearList();
-
-                    // 結果格納
-                    self.dataLists(data);
+                    self.dataLists(data.Result);
+                }
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
+                    self.ErrorMessage(data.ErrorMSG);
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    self.ErrorMessage(data.ExceptionMSG);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -176,20 +184,22 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/SelectDS',
+            url: rootUrl + 'SelectAll_DS',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
-                if (data.error) {
-                    // エラーメッセージ格納
-                    self.ErrorMessage(data.error);
-                }
-                else {
-                    // 一旦レコードリストをクリアする
+                if (data.Message != undefined) {
+                    // 正常終了
                     self.ClearList();
-
-                    // 結果格納
-                    self.dataLists(data);
+                    self.dataLists(data.Result);
+                }
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
+                    self.ErrorMessage(data.ErrorMSG);
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    self.ErrorMessage(data.ExceptionMSG);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -216,20 +226,22 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/SelectDR',
+            url: rootUrl + 'SelectAll_DR',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
-                if (data.error) {
-                    // エラーメッセージ格納
-                    self.ErrorMessage(data.error);
-                }
-                else {
-                    // 一旦レコードリストをクリアする
+                if (data.Message != undefined) {
+                    // 正常終了
                     self.ClearList();
-
-                    // 結果格納
-                    self.dataLists(data);
+                    self.dataLists(data.Result);
+                }
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
+                    self.ErrorMessage(data.ErrorMSG);
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    self.ErrorMessage(data.ExceptionMSG);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -258,20 +270,22 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/SelectDSQL',
+            url: rootUrl + 'SelectAll_DSQL',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
-                if (data.error) {
-                    // エラーメッセージ格納
-                    self.ErrorMessage(data.error);
-                }
-                else {
-                    // 一旦レコードリストをクリアする
+                if (data.Message != undefined) {
+                    // 正常終了
                     self.ClearList();
-
-                    // 結果格納
-                    self.dataLists(data);
+                    self.dataLists(data.Result);
+                }
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
+                    self.ErrorMessage(data.ErrorMSG);
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    self.ErrorMessage(data.ExceptionMSG);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -293,25 +307,34 @@
             ddlMode1: this.ddlMode1(),
             ddlMode2: this.ddlMode2(),
             ddlExRollback: this.ddlExRollback(),
-            ShipperId: this.ShipperId()
+            Shipper: {
+                ShipperID: this.ShipperID(),
+                CompanyName: "",
+                Phone: "",
+            }
         };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/Select',
-            data: param,
+            url: rootUrl + 'Select',
+            data: JSON.stringify(param),
             dataType: 'json',
+            contentType: 'application/json',
             success: function (data, dataType) {
-                if (data.error) {
-                    // エラーメッセージ格納
-                    self.ErrorMessage(data.error);
+                if (data.Message != undefined) {
+                    // 正常終了
+                    self.ShipperID(data.Result.ShipperID);
+                    self.CompanyName(data.Result.CompanyName);
+                    self.Phone(data.Result.Phone);
                 }
-                else {
-                    // 結果格納
-                    self.ShipperId(data.shipperID);
-                    self.CompanyName(data.companyName);
-                    self.Phone(data.phone);
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
+                    self.ErrorMessage(data.ErrorMSG);
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    self.ErrorMessage(data.ExceptionMSG);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -333,24 +356,32 @@
             ddlMode1: this.ddlMode1(),
             ddlMode2: this.ddlMode2(),
             ddlExRollback: this.ddlExRollback(),
-            CompanyName: this.CompanyName(),
-            Phone: this.Phone()
+            Shipper: {
+                ShipperID: "0",
+                CompanyName: this.CompanyName(),
+                Phone: this.Phone()
+            }
         };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/Insert',
-            data: param,
+            url: rootUrl + 'Insert',
+            data: JSON.stringify(param),
             dataType: 'json',
+            contentType: 'application/json',
             success: function (data, dataType) {
-                if (data.error) {
-                    // エラーメッセージ格納
-                    self.ErrorMessage(data.error);
+                if (data.Message != undefined) {
+                    // 正常終了
+                    self.Result(data.Message);
                 }
-                else {
-                    // 結果格納
-                    self.Result(data.message);
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
+                    self.ErrorMessage(data.ErrorMSG);
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    self.ErrorMessage(data.ExceptionMSG);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -371,25 +402,32 @@
             ddlMode1: this.ddlMode1(),
             ddlMode2: this.ddlMode2(),
             ddlExRollback: this.ddlExRollback(),
-            ShipperId: this.ShipperId(),
-            CompanyName: this.CompanyName(),
-            Phone: this.Phone()
+            Shipper: {
+                ShipperID: this.ShipperID(),
+                CompanyName: this.CompanyName(),
+                Phone: this.Phone()
+            }            
         };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/Update',
-            data: param,
+            url: rootUrl + 'Update',
+            data: JSON.stringify(param),
             dataType: 'json',
+            contentType: 'application/json',
             success: function (data, dataType) {
-                if (data.error) {
-                    // エラーダイアログを表示する
-                    self.ErrorMessage(data.error);
+                if (data.Message != undefined) {
+                    // 正常終了
+                    self.Result(data.Message);
                 }
-                else {
-                    // 結果格納
-                    self.Result(data.message);
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
+                    self.ErrorMessage(data.ErrorMSG);
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    self.ErrorMessage(data.ExceptionMSG);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -411,23 +449,32 @@
             ddlMode1: this.ddlMode1(),
             ddlMode2: this.ddlMode2(),
             ddlExRollback: this.ddlExRollback(),
-            ShipperId: this.ShipperId()
+            Shipper: {
+                ShipperID: this.ShipperID(),
+                CompanyName: "",
+                Phone: "",
+            }
         };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/Delete',
-            data: param,
+            url: rootUrl + 'Delete',
+            data: JSON.stringify(param),
             dataType: 'json',
+            contentType: 'application/json',
             success: function (data, dataType) {
-                if (data.error) {
-                    // エラーメッセージ格納
-                    self.ErrorMessage(data.error);
+                if (data.Message != undefined) {
+                    // 正常終了
+                    self.Result(data.Message);
                 }
-                else {
-                    // 結果格納
-                    self.Result(data.message);
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
+                    self.ErrorMessage(data.ErrorMSG);
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    self.ErrorMessage(data.ExceptionMSG);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
