@@ -16,7 +16,7 @@ namespace UWP_Sample.Xaml
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public string root = "http://localhost:8888/JsonController/";
+        public string rootUrl = "http://localhost:8888/JsonController/";
 
         /// <summary>constructor</summary>
         public MainPage()
@@ -56,7 +56,7 @@ namespace UWP_Sample.Xaml
                 string message = string.Empty; // 結果メッセージ
 
                 // Web API の URL
-                Uri uri = new Uri(root + "SelectCount");
+                Uri uri = new Uri(rootUrl + "SelectCount");
 
                 // Request Header を定義する
                 client.DefaultRequestHeaders.Accept.Clear();
@@ -114,7 +114,7 @@ namespace UWP_Sample.Xaml
                 string message = string.Empty; // 結果メッセージ
 
                 // Web API の URL
-                Uri uri = new Uri(root + "SelectAll_DT");
+                Uri uri = new Uri(rootUrl + "SelectAll_DT");
 
                 // Request Header を定義する
                 client.DefaultRequestHeaders.Accept.Clear();
@@ -185,7 +185,7 @@ namespace UWP_Sample.Xaml
                 }
 
                 // Web API の URL
-                Uri uri = new Uri(root + "Select");
+                Uri uri = new Uri(rootUrl + "Select");
 
                 // Request Header を定義する
                 client.DefaultRequestHeaders.Accept.Clear();
@@ -201,7 +201,7 @@ namespace UWP_Sample.Xaml
                         ddlExRollback = ((ComboBoxItem)this.ddlExRollback.SelectedItem).Tag.ToString(),
                         Shipper = new
                         {
-                            ShipperId = this.txtShipperID.Text
+                            ShipperID = this.txtShipperID.Text
                         },
                     }),
                     Windows.Storage.Streams.UnicodeEncoding.Utf8,
@@ -263,7 +263,7 @@ namespace UWP_Sample.Xaml
                 }
 
                 // Web API の URL
-                Uri uri = new Uri(root + "Insert");
+                Uri uri = new Uri(rootUrl + "Insert");
 
                 // Request Header を定義する
                 client.DefaultRequestHeaders.Accept.Clear();
@@ -337,7 +337,7 @@ namespace UWP_Sample.Xaml
                 }
 
                 // Web API の URL
-                Uri uri = new Uri(root + "Update");
+                Uri uri = new Uri(rootUrl + "Update");
 
                 // Request Header を定義する
                 client.DefaultRequestHeaders.Accept.Clear();
@@ -412,7 +412,7 @@ namespace UWP_Sample.Xaml
                 }
 
                 // Web API の URL
-                Uri uri = new Uri(root + "Delete");
+                Uri uri = new Uri(rootUrl + "Delete");
 
                 // Request Header を定義する
                 client.DefaultRequestHeaders.Accept.Clear();
