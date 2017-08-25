@@ -112,13 +112,13 @@ angular.module('myapp', []).controller('Sample2ViewModel', ['$scope', function (
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ErrorMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
                     });
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ExceptionMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },
@@ -161,13 +161,13 @@ angular.module('myapp', []).controller('Sample2ViewModel', ['$scope', function (
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ErrorMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
                     });
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ExceptionMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },
@@ -209,13 +209,13 @@ angular.module('myapp', []).controller('Sample2ViewModel', ['$scope', function (
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ErrorMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
                     });
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ExceptionMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },
@@ -257,13 +257,13 @@ angular.module('myapp', []).controller('Sample2ViewModel', ['$scope', function (
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ErrorMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
                     });
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ExceptionMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },
@@ -307,13 +307,13 @@ angular.module('myapp', []).controller('Sample2ViewModel', ['$scope', function (
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ErrorMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
                     });
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ExceptionMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },
@@ -362,13 +362,13 @@ angular.module('myapp', []).controller('Sample2ViewModel', ['$scope', function (
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ErrorMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
                     });
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ExceptionMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },
@@ -415,13 +415,13 @@ angular.module('myapp', []).controller('Sample2ViewModel', ['$scope', function (
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ErrorMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
                     });
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ExceptionMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },
@@ -467,13 +467,13 @@ angular.module('myapp', []).controller('Sample2ViewModel', ['$scope', function (
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ErrorMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
                     });
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ExceptionMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },
@@ -520,13 +520,13 @@ angular.module('myapp', []).controller('Sample2ViewModel', ['$scope', function (
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ErrorMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
                     });
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
                     $scope.$apply(function () {
-                        $scope.ErrorMessage = data.ExceptionMSG;
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },

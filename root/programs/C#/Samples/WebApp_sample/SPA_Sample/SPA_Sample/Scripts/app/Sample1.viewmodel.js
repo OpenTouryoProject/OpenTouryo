@@ -110,11 +110,11 @@ function Sample1ViewModel() {
                 }
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
-                    self.ErrorMessage(data.ErrorMSG);
+                    self.ErrorMessage(JSON.stringify(data.ErrorMSG));
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
-                    self.ErrorMessage(data.ExceptionMSG);
+                    self.ErrorMessage(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -153,11 +153,11 @@ function Sample1ViewModel() {
                 }
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
-                    self.ErrorMessage(data.ErrorMSG);
+                    self.ErrorMessage(JSON.stringify(data.ErrorMSG));
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
-                    self.ErrorMessage(data.ExceptionMSG);
+                    self.ErrorMessage(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -195,11 +195,11 @@ function Sample1ViewModel() {
                 }
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
-                    self.ErrorMessage(data.ErrorMSG);
+                    self.ErrorMessage(JSON.stringify(data.ErrorMSG));
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
-                    self.ErrorMessage(data.ExceptionMSG);
+                    self.ErrorMessage(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -237,11 +237,11 @@ function Sample1ViewModel() {
                 }
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
-                    self.ErrorMessage(data.ErrorMSG);
+                    self.ErrorMessage(JSON.stringify(data.ErrorMSG));
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
-                    self.ErrorMessage(data.ExceptionMSG);
+                    self.ErrorMessage(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -281,11 +281,11 @@ function Sample1ViewModel() {
                 }
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
-                    self.ErrorMessage(data.ErrorMSG);
+                    self.ErrorMessage(JSON.stringify(data.ErrorMSG));
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
-                    self.ErrorMessage(data.ExceptionMSG);
+                    self.ErrorMessage(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -330,11 +330,11 @@ function Sample1ViewModel() {
                 }
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
-                    self.ErrorMessage(data.ErrorMSG);
+                    self.ErrorMessage(JSON.stringify(data.ErrorMSG));
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
-                    self.ErrorMessage(data.ExceptionMSG);
+                    self.ErrorMessage(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -377,11 +377,11 @@ function Sample1ViewModel() {
                 }
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
-                    self.ErrorMessage(data.ErrorMSG);
+                    self.ErrorMessage(JSON.stringify(data.ErrorMSG));
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
-                    self.ErrorMessage(data.ExceptionMSG);
+                    self.ErrorMessage(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -423,11 +423,11 @@ function Sample1ViewModel() {
                 }
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
-                    self.ErrorMessage(data.ErrorMSG);
+                    self.ErrorMessage(JSON.stringify(data.ErrorMSG));
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
-                    self.ErrorMessage(data.ExceptionMSG);
+                    self.ErrorMessage(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -470,11 +470,11 @@ function Sample1ViewModel() {
                 }
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
-                    self.ErrorMessage(data.ErrorMSG);
+                    self.ErrorMessage(JSON.stringify(data.ErrorMSG));
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
-                    self.ErrorMessage(data.ExceptionMSG);
+                    self.ErrorMessage(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {

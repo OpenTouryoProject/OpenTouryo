@@ -49,11 +49,11 @@ $(function () {
                 }
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
-                    $('#result').text(data.ErrorMSG);
+                    $('#result').text(JSON.stringify(data.ErrorMSG));
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
-                    $('#result').text(data.ExceptionMSG);
+                    $('#result').text(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -97,11 +97,11 @@ $(function () {
                 }
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
-                    $('#result').text(data.ErrorMSG);
+                    $('#result').text(JSON.stringify(data.ErrorMSG));
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
-                    $('#result').text(data.ExceptionMSG);
+                    $('#result').text(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -149,11 +149,11 @@ $(function () {
                 }
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
-                    $('#result').text(data.ErrorMSG);
+                    $('#result').text(JSON.stringify(data.ErrorMSG));
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
-                    $('#result').text(data.ExceptionMSG);
+                    $('#result').text(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -198,11 +198,11 @@ $(function () {
                 }
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
-                    $('#result').text(data.ErrorMSG);
+                    $('#result').text(JSON.stringify(data.ErrorMSG));
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
-                    $('#result').text(data.ExceptionMSG);
+                    $('#result').text(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -248,11 +248,11 @@ $(function () {
                 }
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
-                    $('#result').text(data.ErrorMSG);
+                    $('#result').text(JSON.stringify(data.ErrorMSG));
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
-                    $('#result').text(data.ExceptionMSG);
+                    $('#result').text(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -296,11 +296,11 @@ $(function () {
                 }
                 else if (data.ErrorMSG != undefined) {
                     // 業務例外
-                    $('#result').text(data.ErrorMSG);
+                    $('#result').text(JSON.stringify(data.ErrorMSG));
                 }
                 else if (data.ExceptionMSG != undefined) {
                     // その他例外
-                    $('#result').text(data.ExceptionMSG);
+                    $('#result').text(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {

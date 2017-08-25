@@ -133,33 +133,34 @@ namespace ASPNETWebService.Controllers
 
             // 戻り値
             BaseReturnValue returnValue = null;
-            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
+            Dictionary<string, string> wsErrorInfo = 
+                this.Call("testInProcess", testParameterValue, out returnValue);
             
             object ret = null;
 
-            if (!string.IsNullOrEmpty(exceptionMSG))
+            if (wsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = exceptionMSG };
+                ret = new { ExceptionMSG = wsErrorInfo };
             }
             else
             {
                 TestReturnValue testReturnValue = (TestReturnValue)returnValue;
-                string message = "";
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
-                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
-                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
-                    
-                    ret = new { ErrorMSG = message };
+                    wsErrorInfo = new Dictionary<string, string>();
+                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
+
+                    ret = new { ErrorMSG = wsErrorInfo };
                 }
                 else
                 {
                     // 結果（正常系）
-                    message = testReturnValue.Obj.ToString() + "件のデータがあります";
+                    string message = testReturnValue.Obj.ToString() + "件のデータがあります";
                     ret = new { Message = message };
                 }
             }
@@ -186,28 +187,29 @@ namespace ASPNETWebService.Controllers
 
             // 戻り値
             BaseReturnValue returnValue = null;
-            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
-            
+            Dictionary<string, string> wsErrorInfo =
+                            this.Call("testInProcess", testParameterValue, out returnValue);
+
             object ret = null;
 
-            if (!string.IsNullOrEmpty(exceptionMSG))
+            if (wsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = exceptionMSG };
+                ret = new { ExceptionMSG = wsErrorInfo };
             }
             else
             {
                 TestReturnValue testReturnValue = (TestReturnValue)returnValue;
-                string message = "";
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
-                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
-                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
-                    
-                    ret = new { ErrorMSG = message };
+                    wsErrorInfo = new Dictionary<string, string>();
+                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
+
+                    ret = new { ErrorMSG = wsErrorInfo };
                 }
                 else
                 {
@@ -251,28 +253,29 @@ namespace ASPNETWebService.Controllers
 
             // 戻り値
             BaseReturnValue returnValue = null;
-            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
+            Dictionary<string, string> wsErrorInfo =
+                            this.Call("testInProcess", testParameterValue, out returnValue);
 
             object ret = null;
 
-            if (!string.IsNullOrEmpty(exceptionMSG))
+            if (wsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = exceptionMSG };
+                ret = new { ExceptionMSG = wsErrorInfo };
             }
             else
             {
                 TestReturnValue testReturnValue = (TestReturnValue)returnValue;
-                string message = "";
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
-                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
-                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
+                    wsErrorInfo = new Dictionary<string, string>();
+                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
 
-                    ret = new { ErrorMSG = message };
+                    ret = new { ErrorMSG = wsErrorInfo };
                 }
                 else
                 {
@@ -316,28 +319,29 @@ namespace ASPNETWebService.Controllers
 
             // 戻り値
             BaseReturnValue returnValue = null;
-            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
-            
+            Dictionary<string, string> wsErrorInfo =
+                            this.Call("testInProcess", testParameterValue, out returnValue);
+
             object ret = null;
 
-            if (!string.IsNullOrEmpty(exceptionMSG))
+            if (wsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = exceptionMSG };
+                ret = new { ExceptionMSG = wsErrorInfo };
             }
             else
             {
                 TestReturnValue testReturnValue = (TestReturnValue)returnValue;
-                string message = "";
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
-                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
-                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
-                    
-                    ret = new { ErrorMSG = message };
+                    wsErrorInfo = new Dictionary<string, string>();
+                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
+
+                    ret = new { ErrorMSG = wsErrorInfo };
                 }
                 else
                 {
@@ -381,33 +385,35 @@ namespace ASPNETWebService.Controllers
                     "JsonController", "SelectAll_DSQL", "SelectAll_DSQL",
                     param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
                     new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+
             testParameterValue.OrderColumn = param.OrderColumn;
             testParameterValue.OrderSequence = param.OrderSequence;
 
             // 戻り値
             BaseReturnValue returnValue = null;
-            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
-            
+            Dictionary<string, string> wsErrorInfo =
+                            this.Call("testInProcess", testParameterValue, out returnValue);
+
             object ret = null;
 
-            if (!string.IsNullOrEmpty(exceptionMSG))
+            if (wsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = exceptionMSG };
+                ret = new { ExceptionMSG = wsErrorInfo };
             }
             else
             {
                 TestReturnValue testReturnValue = (TestReturnValue)returnValue;
-                string message = "";
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
-                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
-                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
-                    
-                    ret = new { ErrorMSG = message };
+                    wsErrorInfo = new Dictionary<string, string>();
+                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
+
+                    ret = new { ErrorMSG = wsErrorInfo };
                 }
                 else
                 {
@@ -452,28 +458,29 @@ namespace ASPNETWebService.Controllers
 
             // 戻り値
             BaseReturnValue returnValue = null;
-            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
-            
+            Dictionary<string, string> wsErrorInfo =
+                            this.Call("testInProcess", testParameterValue, out returnValue);
+
             object ret = null;
 
-            if (!string.IsNullOrEmpty(exceptionMSG))
+            if (wsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = exceptionMSG };
+                ret = new { ExceptionMSG = wsErrorInfo };
             }
             else
             {
                 TestReturnValue testReturnValue = (TestReturnValue)returnValue;
-                string message = "";
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
-                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
-                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
-                    
-                    ret = new { ErrorMSG = message };
+                    wsErrorInfo = new Dictionary<string, string>();
+                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
+
+                    ret = new { ErrorMSG = wsErrorInfo };
                 }
                 else
                 {
@@ -506,38 +513,40 @@ namespace ASPNETWebService.Controllers
                     "JsonController", "Insert", "Insert",
                     param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
                     new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+
             testParameterValue.CompanyName = param.Shipper.CompanyName;
             testParameterValue.Phone = param.Shipper.Phone;
 
             // 戻り値
             BaseReturnValue returnValue = null;
-            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
-            
+            Dictionary<string, string> wsErrorInfo =
+                            this.Call("testInProcess", testParameterValue, out returnValue);
+
             object ret = null;
 
-            if (!string.IsNullOrEmpty(exceptionMSG))
+            if (wsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = exceptionMSG };
+                ret = new { ExceptionMSG = wsErrorInfo };
             }
             else
             {
                 TestReturnValue testReturnValue = (TestReturnValue)returnValue;
-                string message = "";
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
-                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
-                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
-                    
-                    ret = new { ErrorMSG = message };
+                    wsErrorInfo = new Dictionary<string, string>();
+                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
+
+                    ret = new { ErrorMSG = wsErrorInfo };
                 }
                 else
                 {
                     // 結果（正常系）
-                    message = testReturnValue.Obj.ToString() + "件追加";
+                    string message = testReturnValue.Obj.ToString() + "件追加";
                     
                     ret = new { Message = message };
                 }
@@ -562,40 +571,41 @@ namespace ASPNETWebService.Controllers
                     "JsonController", "Update", "Update",
                     param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
                     new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+
             testParameterValue.ShipperID = param.Shipper.ShipperID;
             testParameterValue.CompanyName = param.Shipper.CompanyName;
             testParameterValue.Phone = param.Shipper.Phone;
 
             // 戻り値
             BaseReturnValue returnValue = null;
-            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
-            
+            Dictionary<string, string> wsErrorInfo =
+                            this.Call("testInProcess", testParameterValue, out returnValue);
+
             object ret = null;
 
-            if (!string.IsNullOrEmpty(exceptionMSG))
+            if (wsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = exceptionMSG };
+                ret = new { ExceptionMSG = wsErrorInfo };
             }
             else
             {
                 TestReturnValue testReturnValue = (TestReturnValue)returnValue;
-                string message = "";
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
-                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
-                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
-                    
-                    ret = new { ErrorMSG = message };
+                    wsErrorInfo = new Dictionary<string, string>();
+                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
+
+                    ret = new { ErrorMSG = wsErrorInfo };
                 }
                 else
                 {
                     // 結果（正常系）
-                    // 結果（正常系）
-                    message = testReturnValue.Obj.ToString() + "件更新";
+                    string message = testReturnValue.Obj.ToString() + "件更新";
                     
                     ret = new { Message = message };
                 }
@@ -624,34 +634,34 @@ namespace ASPNETWebService.Controllers
 
             // 戻り値
             BaseReturnValue returnValue = null;
-            string exceptionMSG = this.Call("testInProcess", testParameterValue, out returnValue);
-            
+            Dictionary<string, string> wsErrorInfo =
+                            this.Call("testInProcess", testParameterValue, out returnValue);
+
             object ret = null;
 
-            if (!string.IsNullOrEmpty(exceptionMSG))
+            if (wsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = exceptionMSG };
+                ret = new { ExceptionMSG = wsErrorInfo };
             }
             else
             {
                 TestReturnValue testReturnValue = (TestReturnValue)returnValue;
-                string message = "";
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    message = "ErrorMessageID:" + testReturnValue.ErrorMessageID + ";";
-                    message += "ErrorMessage:" + testReturnValue.ErrorMessage + ";";
-                    message += "ErrorInfo:" + testReturnValue.ErrorInfo;
+                    wsErrorInfo = new Dictionary<string, string>();
+                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
                     
-                    ret = new { ErrorMSG = message };
+                    ret = new { ErrorMSG = wsErrorInfo };
                 }
                 else
                 {
                     // 結果（正常系）
-                    // 結果（正常系）
-                    message = testReturnValue.Obj.ToString() + "件削除";
+                    string message = testReturnValue.Obj.ToString() + "件削除";
                     
                     ret = new { Message = message };
                 }
@@ -669,7 +679,7 @@ namespace ASPNETWebService.Controllers
         /// <param name="parameterValue">引数</param>
         /// <param name="returnValue">戻り値</param>
         /// <returns>返すべきエラーの情報</returns>
-        private string Call(
+        private Dictionary<string, string> Call(
             string serviceName, 
             BaseParameterValue parameterValue, 
             out BaseReturnValue returnValue)
@@ -692,9 +702,7 @@ namespace ASPNETWebService.Controllers
             returnValue = null;
 
             // エラー情報（XMLフォーマット）
-            XmlDocument wsErrorInfo = new XmlDocument();
-            XmlElement wsErrorRoot = null;
-            XmlElement wsErrorItem = null;
+            Dictionary<string, string> wsErrorInfo = new Dictionary<string, string>();
 
             // エラー情報（ログ出力用）
             string errorType = ""; // 2009/09/15-この行
@@ -775,7 +783,7 @@ namespace ASPNETWebService.Controllers
                 status = "";
 
                 // 戻り値を返す。
-                return "";
+                return null;
             }
             //catch (BusinessApplicationException baEx)
             //{
@@ -784,21 +792,10 @@ namespace ASPNETWebService.Controllers
             catch (BusinessSystemException bsEx)
             {
                 // エラー情報を設定する。
-                wsErrorRoot = wsErrorInfo.CreateElement("ErrorInfo");
-                wsErrorInfo.AppendChild(wsErrorRoot);
-
                 // システム例外
-                wsErrorItem = wsErrorInfo.CreateElement("ErrorType");
-                wsErrorItem.InnerText = FxEnum.ErrorType.BusinessSystemException.ToString();
-                wsErrorRoot.AppendChild(wsErrorItem);
-
-                wsErrorItem = wsErrorInfo.CreateElement("MessageID");
-                wsErrorItem.InnerText = bsEx.messageID;
-                wsErrorRoot.AppendChild(wsErrorItem);
-
-                wsErrorItem = wsErrorInfo.CreateElement("Message");
-                wsErrorItem.InnerText = bsEx.Message;
-                wsErrorRoot.AppendChild(wsErrorItem);
+                wsErrorInfo["ErrorType"] = FxEnum.ErrorType.BusinessSystemException.ToString();
+                wsErrorInfo["MessageID"] = bsEx.messageID;
+                wsErrorInfo["Message"] = bsEx.Message;
 
                 // ログ出力用の情報を保存
                 errorType = FxEnum.ErrorType.BusinessSystemException.ToString(); // 2009/09/15-この行
@@ -808,28 +805,17 @@ namespace ASPNETWebService.Controllers
                 errorToString = bsEx.ToString();
 
                 // エラー情報を戻す。
-                return wsErrorInfo.InnerXml;
+                return wsErrorInfo;
             }
             catch (FrameworkException fxEx)
             {
                 // エラー情報を設定する。
-                wsErrorRoot = wsErrorInfo.CreateElement("ErrorInfo");
-                wsErrorInfo.AppendChild(wsErrorRoot);
-
                 // フレームワーク例外
                 // ★ インナーエクセプション情報は消失
-                wsErrorItem = wsErrorInfo.CreateElement("ErrorType");
-                wsErrorItem.InnerText = FxEnum.ErrorType.FrameworkException.ToString();
-                wsErrorRoot.AppendChild(wsErrorItem);
-
-                wsErrorItem = wsErrorInfo.CreateElement("MessageID");
-                wsErrorItem.InnerText = fxEx.messageID;
-                wsErrorRoot.AppendChild(wsErrorItem);
-
-                wsErrorItem = wsErrorInfo.CreateElement("Message");
-                wsErrorItem.InnerText = fxEx.Message;
-                wsErrorRoot.AppendChild(wsErrorItem);
-
+                wsErrorInfo["ErrorType"] = FxEnum.ErrorType.FrameworkException.ToString();
+                wsErrorInfo["MessageID"] = fxEx.messageID;
+                wsErrorInfo["Message"] = fxEx.Message;
+                
                 // ログ出力用の情報を保存
                 errorType = FxEnum.ErrorType.FrameworkException.ToString(); // 2009/09/15-この行
                 errorMessageID = fxEx.messageID;
@@ -838,28 +824,17 @@ namespace ASPNETWebService.Controllers
                 errorToString = fxEx.ToString();
 
                 // エラー情報を戻す。
-                return wsErrorInfo.InnerXml;
+                return wsErrorInfo;
             }
             catch (Exception ex)
             {
                 // エラー情報を設定する。
-                wsErrorRoot = wsErrorInfo.CreateElement("ErrorInfo");
-                wsErrorInfo.AppendChild(wsErrorRoot);
-
                 // フレームワーク例外
                 // ★ インナーエクセプション情報は消失
-                wsErrorItem = wsErrorInfo.CreateElement("ErrorType");
-                wsErrorItem.InnerText = FxEnum.ErrorType.ElseException.ToString();
-                wsErrorRoot.AppendChild(wsErrorItem);
-
-                wsErrorItem = wsErrorInfo.CreateElement("MessageID");
-                wsErrorItem.InnerText = "-";
-                wsErrorRoot.AppendChild(wsErrorItem);
-
-                wsErrorItem = wsErrorInfo.CreateElement("Message");
-                wsErrorItem.InnerText = ex.ToString();
-                wsErrorRoot.AppendChild(wsErrorItem);
-
+                wsErrorInfo["ErrorType"] = FxEnum.ErrorType.ElseException.ToString();
+                wsErrorInfo["MessageID"] = "-";
+                wsErrorInfo["Message"] = ex.ToString();
+                
                 // ログ出力用の情報を保存
                 errorType = FxEnum.ErrorType.ElseException.ToString(); // 2009/09/15-この行
                 errorMessageID = "-";
@@ -871,7 +846,7 @@ namespace ASPNETWebService.Controllers
                 //errorToString = ex.ToString();
 
                 // エラー情報を戻す。
-                return wsErrorInfo.InnerXml;
+                return wsErrorInfo;
                 //throw; // コメントアウト
             }
             finally

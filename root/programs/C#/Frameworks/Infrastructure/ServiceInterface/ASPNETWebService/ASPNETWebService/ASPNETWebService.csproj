@@ -173,6 +173,7 @@
     <Content Include="WCFHTTPSvcForFx.svc" />
     <Content Include="Web.config" />
     <Content Include="packages.config" />
+    <Content Include="app.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

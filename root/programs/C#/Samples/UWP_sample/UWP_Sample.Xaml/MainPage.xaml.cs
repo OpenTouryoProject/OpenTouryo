@@ -75,22 +75,22 @@ namespace UWP_Sample.Xaml
                 if (response.IsSuccessStatusCode)
                 {
                     string jsonResult = await response.Content.ReadAsStringAsync();
-                    Dictionary<string, string> dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResult);
+                    JObject jObject = (JObject)JsonConvert.DeserializeObject(jsonResult);
 
-                    if (dic.ContainsKey("Message"))
+                    if (jObject["Message"] != null)
                     {
                         // 正常終了
-                        message = dic["Message"];
+                        message = jObject["Message"].ToString();
                     }
-                    else if (dic.ContainsKey("ErrorMSG"))
+                    else if (jObject["ErrorMSG"] != null)
                     {
                         // 業務例外
-                        message = dic["ErrorMSG"];
+                        message = jObject["ErrorMSG"].ToString();
                     }
-                    else if (dic.ContainsKey("ExceptionMSG"))
+                    else if (jObject["ExceptionMSG"] != null)
                     {
                         // その他例外
-                        message = dic["ExceptionMSG"];
+                        message = jObject["ExceptionMSG"].ToString();
                     }
                 }
                 else
