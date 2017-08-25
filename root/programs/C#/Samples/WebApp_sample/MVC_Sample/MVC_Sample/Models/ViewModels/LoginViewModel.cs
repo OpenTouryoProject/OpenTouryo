@@ -47,7 +47,7 @@ namespace MVC_Sample.Models.ViewModels
         /// <summary>
         /// PWDS
         /// </summary>
-        [Display(Name = "passwowd")]
-        public string Passwowd { get; set; }
+        [Display(Name = "Password")]
+        public string Password { get; set; }
     }
 }

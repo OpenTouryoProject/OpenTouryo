@@ -504,8 +504,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     }
                     else
                     {
-                        if (props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION] == null
-                            || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION] == "")
+                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION]))
                         {
                             // XML定義：null or 空文字列
                         }
@@ -515,7 +514,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
                             bool temp;
 
-                            if (Boolean.TryParse((string)props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION], out temp))
+                            if (Boolean.TryParse(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION], out temp))
                             {
                                 // 書式正常
                                 WR.EnableDecompression = temp;
@@ -543,15 +542,14 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     }
                     else
                     {
-                        if (props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT] == null
-                            || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT] == "")
+                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT]))
                         {
                             // XML定義：null or 空文字列
                         }
                         else
                         {
                             // XML定義：あり
-                            WR.UserAgent = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT]; // #34-この行
+                            WR.UserAgent = props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT]; // #34-この行
                         }
                     }
 
@@ -565,15 +563,14 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     }
                     else
                     {
-                        if (props[FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME] == null
-                            || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME] == "")
+                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME]))
                         {
                             // XML定義：null or 空文字列
                         }
                         else
                         {
                             // XML定義：あり
-                            WR.ConnectionGroupName = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME];
+                            WR.ConnectionGroupName = props[FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME];
                         }
                     }
 
@@ -858,7 +855,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
             #region プロキシ生成
 
-            if (this._proxyUrl == null || this._proxyUrl == "")
+            if (string.IsNullOrEmpty(this._proxyUrl))
             {
                 // ユーザ指定：なし
 
@@ -868,8 +865,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 }
                 else
                 {
-                    if (props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_URL] == null
-                        || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_URL] == "")
+                    if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_URL]))
                     {
                         // XML定義：null or 空文字列
                     }
@@ -878,7 +874,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         // XML定義：あり
 
                         // プロキシを生成（XML定義）
-                        proxy = new WebProxy(new Uri((string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_URL]));
+                        proxy = new WebProxy(new Uri(props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_URL]));
                     }
                 }
             }
@@ -921,8 +917,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     }
                     else
                     {
-                        if (props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_USER_NAME] == null
-                            || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_USER_NAME] == "")
+                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_USER_NAME]))
                         {
                             // XML定義：null or 空文字列
                         }
@@ -933,13 +928,13 @@ namespace Touryo.Infrastructure.Framework.Transmission
                             // Proxyのセキュリティ資格情報を生成する。
                             NetworkCredential nwcProxy = new NetworkCredential();
 
-                            nwcProxy.UserName = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_USER_NAME];
-                            nwcProxy.Password = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_PASSWORD];
+                            nwcProxy.UserName = props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_USER_NAME];
+                            nwcProxy.Password = props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_PASSWORD];
 
                             // 省略可能に変更した。
                             if (props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_DOMAIN))
                             {
-                                nwcProxy.Domain = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_DOMAIN];
+                                nwcProxy.Domain = props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_DOMAIN];
                             }
 
                             // Proxyのセキュリティ資格情報を設定する（XML定義）。
@@ -981,8 +976,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 }
                 else
                 {
-                    if (props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME] == null
-                        || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME] == "")
+                    if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME]))
                     {
                         // XML定義：null or 空文字列
                     }
@@ -992,13 +986,13 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
                         // WASのセキュリティ資格情報を生成する。
                         nwcWAS = new NetworkCredential();
-                        nwcWAS.UserName = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME];
-                        nwcWAS.Password = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PASSWORD];
+                        nwcWAS.UserName = props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME];
+                        nwcWAS.Password = props[FxLiteral.TRANSMISSION_HTTP_PROP_PASSWORD];
 
                         // 省略可能に変更した。
                         if (props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_DOMAIN))
                         {
-                            nwcWAS.Domain = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_DOMAIN];
+                            nwcWAS.Domain = props[FxLiteral.TRANSMISSION_HTTP_PROP_DOMAIN];
                         }
                     }
                 }
@@ -1030,8 +1024,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
             }
             else
             {
-                if (props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE] == null
-                    || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE] == "")
+                if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]))
                 {
                     // XML定義：null or 空文字列
                 }
@@ -1042,17 +1035,16 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         // XML定義：キーが無い
 
                         // クライアント証明書のファイルパス
-                        x509 = new X509Certificate2((string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]);
+                        x509 = new X509Certificate2(props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]);
                     }
                     else
                     {
-                        if (props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD] == null
-                            || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD] == "")
+                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD]))
                         {
                             // XML定義：null or 空文字列
 
                             // クライアント証明書のファイルパス
-                            x509 = new X509Certificate2((string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]);
+                            x509 = new X509Certificate2(props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]);
                         }
                         else
                         {
@@ -1060,8 +1052,8 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
                             // クライアント証明書のファイルパス ＋ クライアント証明書ＤＢのパスワード
                             x509 = new X509Certificate2(
-                                (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE],
-                                (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD]);
+                                props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE],
+                                props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD]);
                         }
                     }
                 }

@@ -121,8 +121,8 @@ namespace ASPNETWebService.Controllers
         /// ・ReturnValueObject
         /// </returns>
         [HttpPost]
-        [Route("DotNETOnlineWAPI")]
-        public Dictionary<string, string> DotNETOnlineWAPI(Dictionary<string, string> paramDic)
+        [Route("DotNETOnlineWebAPI")]
+        public Dictionary<string, string> DotNETOnlineWebAPI(Dictionary<string, string> paramDic)
         {
             // 引数
             string serviceName = paramDic["ServiceName"];

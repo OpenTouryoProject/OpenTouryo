@@ -583,10 +583,10 @@ namespace Touryo.Infrastructure.Public.Db
                             (int)this._parameterSize[paramName],
                             (ParameterDirection)this._parameterDirection[paramName]);
                     }
-                    else if (this._parameter[paramName].GetType() == typeof(ArrayList))
+                    else if (this._parameter[paramName] is IList)
                     {
                         // パラメタがLISTの場合
-                        ArrayList al = (ArrayList)this._parameter[paramName];
+                        IList al = (IList)this._parameter[paramName];
 
                         // パラメタを展開して設定。 
 
@@ -785,8 +785,7 @@ namespace Touryo.Infrastructure.Public.Db
         public override string GetCurrentQueryForLog()
         {
             // #16-start
-            if (GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG) == null
-                || GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG) == "")
+            if (string.IsNullOrEmpty(GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG)))
             {
                 // デフォルト値対策：設定なし（null）の場合の扱いを決定
                 // Log4Netへログ出力（OFF）
