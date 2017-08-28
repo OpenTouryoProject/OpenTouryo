@@ -117,8 +117,8 @@ Namespace ASPNETWebService.Controllers
         ''' ・ReturnValueObject
         ''' </returns>
         <HttpPost>
-        <Route("DotNETOnlineWAPI")>
-        Public Function DotNETOnlineWAPI(paramDic As Dictionary(Of String, String)) As Dictionary(Of String, String)
+        <Route("DotNETOnlineWebAPI")>
+        Public Async Function DotNETOnlineWebAPI(paramDic As Dictionary(Of String, String)) As Task(Of Dictionary(Of String, String))
             ' 引数
             Dim serviceName As String = paramDic("ServiceName")
             Dim contextObject As Byte() = CustomEncode.FromBase64String(paramDic("ContextObject"))
@@ -216,10 +216,10 @@ Namespace ASPNETWebService.Controllers
                 ' #17-start
                 Try
                     ' Ｂ層・Ｄ層呼出し
-                    'returnValue = (BaseReturnValue)Latebind.InvokeMethod(
-                    '    AppDomain.CurrentDomain.BaseDirectory + "\\bin\\" + assemblyName + ".dll",
-                    '    className, FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet);
-                    returnValue = DirectCast(Latebind.InvokeMethod(assemblyName, className, FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet), BaseReturnValue)
+                    Dim result As Task(Of BaseReturnValue) = DirectCast(Latebind.InvokeMethod(
+                        assemblyName, className,
+                        FxLiteral.TRANSMISSION_INPROCESS_ASYNC_METHOD_NAME, paramSet), Task(Of BaseReturnValue))
+                    returnValue = Await result
                 Catch rtEx As System.Reflection.TargetInvocationException
                     '/ InnerExceptionを投げなおす。
                     'throw rtEx.InnerException;

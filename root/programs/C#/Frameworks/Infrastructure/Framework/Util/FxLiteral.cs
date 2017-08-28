@@ -55,6 +55,7 @@
 //*  2014/10/03  Rituparna         Added constants for ListView events and prefix for supporting ItemCommand event.
 //*  2014/10/03  Rituparna         Added constants for RadioButtonList,CheckBoxList events and prefix. 
 //*  2015/04/16  Supragyan         Added constants for Textbox events and prefix. 
+//*  2017/08/28  西野 大介         非同期メソッドのリテラルを追加した。
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Util
@@ -503,6 +504,9 @@ namespace Touryo.Infrastructure.Framework.Util
         /// <summary>インプロセス呼び出しで呼ぶメソッド名</summary>
         public const string TRANSMISSION_INPROCESS_METHOD_NAME = "DoBusinessLogic";
 
+        /// <summary>インプロセス呼び出しで呼ぶメソッド名（非同期）</summary>
+        public const string TRANSMISSION_INPROCESS_ASYNC_METHOD_NAME = "DoBusinessLogicAsync";
+        
         #endregion
 
         #endregion

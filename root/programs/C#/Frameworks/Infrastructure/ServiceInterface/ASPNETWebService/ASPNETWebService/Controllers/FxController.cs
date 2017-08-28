@@ -122,7 +122,7 @@ namespace ASPNETWebService.Controllers
         /// </returns>
         [HttpPost]
         [Route("DotNETOnlineWebAPI")]
-        public Dictionary<string, string> DotNETOnlineWebAPI(Dictionary<string, string> paramDic)
+        public async Task<Dictionary<string, string>> DotNETOnlineWebAPI(Dictionary<string, string> paramDic)
         {
             // 引数
             string serviceName = paramDic["ServiceName"];
@@ -222,12 +222,10 @@ namespace ASPNETWebService.Controllers
                 try
                 {
                     // Ｂ層・Ｄ層呼出し
-                    //returnValue = (BaseReturnValue)Latebind.InvokeMethod(
-                    //    AppDomain.CurrentDomain.BaseDirectory + "\\bin\\" + assemblyName + ".dll",
-                    //    className, FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet);
-                    returnValue = (BaseReturnValue)Latebind.InvokeMethod(
+                    Task<BaseReturnValue> result = (Task<BaseReturnValue>)Latebind.InvokeMethod(
                         assemblyName, className,
-                        FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet);
+                        FxLiteral.TRANSMISSION_INPROCESS_ASYNC_METHOD_NAME, paramSet);
+                    returnValue = await result;
                 }
                 catch (System.Reflection.TargetInvocationException rtEx)
                 {

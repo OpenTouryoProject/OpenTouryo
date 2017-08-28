@@ -32,16 +32,15 @@
 //**********************************************************************************
 
 using System;
-using System.Xml;
 using System.Data;
-using System.Reflection;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Net;
 using System.Net.Http;
-using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
+using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -101,6 +100,15 @@ namespace ASPNETWebService.Controllers
 
         #endregion
 
+        /// <summary>非同期化のため</summary>
+        public class AsyncRetVal
+        {
+            /// <summary>返すべきエラーの情報</summary>
+            public Dictionary<string, string> WsErrorInfo = null;
+            /// <summary>戻り値</summary>
+            public BaseReturnValue ReturnValue = null;
+        }
+
         #region コンストラクタ
 
         /// <summary>constructor</summary>
@@ -121,7 +129,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/SelectCount")]
-        public HttpResponseMessage SelectCount(WebApiParams param)
+        public async Task<HttpResponseMessage> SelectCount(WebApiParams param)
         {
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -131,31 +139,29 @@ namespace ASPNETWebService.Controllers
                     param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
                     new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
 
-            // 戻り値
-            BaseReturnValue returnValue = null;
-            Dictionary<string, string> wsErrorInfo = 
-                this.Call("testInProcess", testParameterValue, out returnValue);
-            
+            // 非同期呼び出し
+            AsyncRetVal asyncRetVal = await this.Call("testInProcess", testParameterValue);
+
             object ret = null;
 
-            if (wsErrorInfo != null)
+            if (asyncRetVal.WsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = wsErrorInfo };
+                ret = new { ExceptionMSG = asyncRetVal.WsErrorInfo };
             }
             else
             {
-                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                TestReturnValue testReturnValue = (TestReturnValue)asyncRetVal.ReturnValue;
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    wsErrorInfo = new Dictionary<string, string>();
-                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
-                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
-                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
+                    asyncRetVal.WsErrorInfo = new Dictionary<string, string>();
+                    asyncRetVal.WsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    asyncRetVal.WsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    asyncRetVal.WsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
 
-                    ret = new { ErrorMSG = wsErrorInfo };
+                    ret = new { ErrorMSG = asyncRetVal.WsErrorInfo };
                 }
                 else
                 {
@@ -175,7 +181,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/SelectAll_DT")]
-        public HttpResponseMessage SelectAll_DT(WebApiParams param)
+        public async Task<HttpResponseMessage> SelectAll_DT(WebApiParams param)
         {
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -185,31 +191,29 @@ namespace ASPNETWebService.Controllers
                     param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
                     new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
 
-            // 戻り値
-            BaseReturnValue returnValue = null;
-            Dictionary<string, string> wsErrorInfo =
-                            this.Call("testInProcess", testParameterValue, out returnValue);
+            // 非同期呼び出し
+            AsyncRetVal asyncRetVal = await this.Call("testInProcess", testParameterValue);
 
             object ret = null;
 
-            if (wsErrorInfo != null)
+            if (asyncRetVal.WsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = wsErrorInfo };
+                ret = new { ExceptionMSG = asyncRetVal.WsErrorInfo };
             }
             else
             {
-                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                TestReturnValue testReturnValue = (TestReturnValue)asyncRetVal.ReturnValue;
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    wsErrorInfo = new Dictionary<string, string>();
-                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
-                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
-                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
+                    asyncRetVal.WsErrorInfo = new Dictionary<string, string>();
+                    asyncRetVal.WsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    asyncRetVal.WsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    asyncRetVal.WsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
 
-                    ret = new { ErrorMSG = wsErrorInfo };
+                    ret = new { ErrorMSG = asyncRetVal.WsErrorInfo };
                 }
                 else
                 {
@@ -241,7 +245,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/SelectAll_DS")]
-        public HttpResponseMessage SelectAll_DS(WebApiParams param)
+        public async Task<HttpResponseMessage> SelectAll_DS(WebApiParams param)
         {
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -251,31 +255,29 @@ namespace ASPNETWebService.Controllers
                     param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
                     new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
 
-            // 戻り値
-            BaseReturnValue returnValue = null;
-            Dictionary<string, string> wsErrorInfo =
-                            this.Call("testInProcess", testParameterValue, out returnValue);
+            // 非同期呼び出し
+            AsyncRetVal asyncRetVal = await this.Call("testInProcess", testParameterValue);
 
             object ret = null;
 
-            if (wsErrorInfo != null)
+            if (asyncRetVal.WsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = wsErrorInfo };
+                ret = new { ExceptionMSG = asyncRetVal.WsErrorInfo };
             }
             else
             {
-                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                TestReturnValue testReturnValue = (TestReturnValue)asyncRetVal.ReturnValue;
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    wsErrorInfo = new Dictionary<string, string>();
-                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
-                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
-                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
+                    asyncRetVal.WsErrorInfo = new Dictionary<string, string>();
+                    asyncRetVal.WsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    asyncRetVal.WsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    asyncRetVal.WsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
 
-                    ret = new { ErrorMSG = wsErrorInfo };
+                    ret = new { ErrorMSG = asyncRetVal.WsErrorInfo };
                 }
                 else
                 {
@@ -307,7 +309,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/SelectAll_DR")]
-        public HttpResponseMessage SelectAll_DR(WebApiParams param)
+        public async Task<HttpResponseMessage> SelectAll_DR(WebApiParams param)
         {
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -317,31 +319,29 @@ namespace ASPNETWebService.Controllers
                     param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
                     new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
 
-            // 戻り値
-            BaseReturnValue returnValue = null;
-            Dictionary<string, string> wsErrorInfo =
-                            this.Call("testInProcess", testParameterValue, out returnValue);
+            // 非同期呼び出し
+            AsyncRetVal asyncRetVal = await this.Call("testInProcess", testParameterValue);
 
             object ret = null;
 
-            if (wsErrorInfo != null)
+            if (asyncRetVal.WsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = wsErrorInfo };
+                ret = new { ExceptionMSG = asyncRetVal.WsErrorInfo };
             }
             else
             {
-                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                TestReturnValue testReturnValue = (TestReturnValue)asyncRetVal.ReturnValue;
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    wsErrorInfo = new Dictionary<string, string>();
-                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
-                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
-                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
+                    asyncRetVal.WsErrorInfo = new Dictionary<string, string>();
+                    asyncRetVal.WsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    asyncRetVal.WsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    asyncRetVal.WsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
 
-                    ret = new { ErrorMSG = wsErrorInfo };
+                    ret = new { ErrorMSG = asyncRetVal.WsErrorInfo };
                 }
                 else
                 {
@@ -376,7 +376,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/SelectAll_DSQL")]
-        public HttpResponseMessage SelectAll_DSQL(WebApiParams param)
+        public async Task<HttpResponseMessage> SelectAll_DSQL(WebApiParams param)
         {
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -389,31 +389,29 @@ namespace ASPNETWebService.Controllers
             testParameterValue.OrderColumn = param.OrderColumn;
             testParameterValue.OrderSequence = param.OrderSequence;
 
-            // 戻り値
-            BaseReturnValue returnValue = null;
-            Dictionary<string, string> wsErrorInfo =
-                            this.Call("testInProcess", testParameterValue, out returnValue);
+            // 非同期呼び出し
+            AsyncRetVal asyncRetVal = await this.Call("testInProcess", testParameterValue);
 
             object ret = null;
 
-            if (wsErrorInfo != null)
+            if (asyncRetVal.WsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = wsErrorInfo };
+                ret = new { ExceptionMSG = asyncRetVal.WsErrorInfo };
             }
             else
             {
-                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                TestReturnValue testReturnValue = (TestReturnValue)asyncRetVal.ReturnValue;
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    wsErrorInfo = new Dictionary<string, string>();
-                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
-                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
-                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
+                    asyncRetVal.WsErrorInfo = new Dictionary<string, string>();
+                    asyncRetVal.WsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    asyncRetVal.WsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    asyncRetVal.WsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
 
-                    ret = new { ErrorMSG = wsErrorInfo };
+                    ret = new { ErrorMSG = asyncRetVal.WsErrorInfo };
                 }
                 else
                 {
@@ -445,7 +443,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/Select")]
-        public HttpResponseMessage Select(WebApiParams param)
+        public async Task<HttpResponseMessage> Select(WebApiParams param)
         {
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -456,31 +454,29 @@ namespace ASPNETWebService.Controllers
                     new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
             testParameterValue.ShipperID = param.Shipper.ShipperID;
 
-            // 戻り値
-            BaseReturnValue returnValue = null;
-            Dictionary<string, string> wsErrorInfo =
-                            this.Call("testInProcess", testParameterValue, out returnValue);
+            // 非同期呼び出し
+            AsyncRetVal asyncRetVal = await this.Call("testInProcess", testParameterValue);
 
             object ret = null;
 
-            if (wsErrorInfo != null)
+            if (asyncRetVal.WsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = wsErrorInfo };
+                ret = new { ExceptionMSG = asyncRetVal.WsErrorInfo };
             }
             else
             {
-                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                TestReturnValue testReturnValue = (TestReturnValue)asyncRetVal.ReturnValue;
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    wsErrorInfo = new Dictionary<string, string>();
-                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
-                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
-                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
+                    asyncRetVal.WsErrorInfo = new Dictionary<string, string>();
+                    asyncRetVal.WsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    asyncRetVal.WsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    asyncRetVal.WsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
 
-                    ret = new { ErrorMSG = wsErrorInfo };
+                    ret = new { ErrorMSG = asyncRetVal.WsErrorInfo };
                 }
                 else
                 {
@@ -504,7 +500,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/Insert")]
-        public HttpResponseMessage Insert(WebApiParams param)
+        public async Task<HttpResponseMessage> Insert(WebApiParams param)
         {
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -517,31 +513,29 @@ namespace ASPNETWebService.Controllers
             testParameterValue.CompanyName = param.Shipper.CompanyName;
             testParameterValue.Phone = param.Shipper.Phone;
 
-            // 戻り値
-            BaseReturnValue returnValue = null;
-            Dictionary<string, string> wsErrorInfo =
-                            this.Call("testInProcess", testParameterValue, out returnValue);
+            // 非同期呼び出し
+            AsyncRetVal asyncRetVal = await this.Call("testInProcess", testParameterValue);
 
             object ret = null;
 
-            if (wsErrorInfo != null)
+            if (asyncRetVal.WsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = wsErrorInfo };
+                ret = new { ExceptionMSG = asyncRetVal.WsErrorInfo };
             }
             else
             {
-                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                TestReturnValue testReturnValue = (TestReturnValue)asyncRetVal.ReturnValue;
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    wsErrorInfo = new Dictionary<string, string>();
-                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
-                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
-                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
+                    asyncRetVal.WsErrorInfo = new Dictionary<string, string>();
+                    asyncRetVal.WsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    asyncRetVal.WsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    asyncRetVal.WsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
 
-                    ret = new { ErrorMSG = wsErrorInfo };
+                    ret = new { ErrorMSG = asyncRetVal.WsErrorInfo };
                 }
                 else
                 {
@@ -562,7 +556,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/Update")]
-        public HttpResponseMessage Update(WebApiParams param)
+        public async Task<HttpResponseMessage> Update(WebApiParams param)
         {
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -576,31 +570,29 @@ namespace ASPNETWebService.Controllers
             testParameterValue.CompanyName = param.Shipper.CompanyName;
             testParameterValue.Phone = param.Shipper.Phone;
 
-            // 戻り値
-            BaseReturnValue returnValue = null;
-            Dictionary<string, string> wsErrorInfo =
-                            this.Call("testInProcess", testParameterValue, out returnValue);
+            // 非同期呼び出し
+            AsyncRetVal asyncRetVal = await this.Call("testInProcess", testParameterValue);
 
             object ret = null;
 
-            if (wsErrorInfo != null)
+            if (asyncRetVal.WsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = wsErrorInfo };
+                ret = new { ExceptionMSG = asyncRetVal.WsErrorInfo };
             }
             else
             {
-                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                TestReturnValue testReturnValue = (TestReturnValue)asyncRetVal.ReturnValue;
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    wsErrorInfo = new Dictionary<string, string>();
-                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
-                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
-                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
+                    asyncRetVal.WsErrorInfo = new Dictionary<string, string>();
+                    asyncRetVal.WsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    asyncRetVal.WsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    asyncRetVal.WsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
 
-                    ret = new { ErrorMSG = wsErrorInfo };
+                    ret = new { ErrorMSG = asyncRetVal.WsErrorInfo };
                 }
                 else
                 {
@@ -621,7 +613,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/Delete")]
-        public HttpResponseMessage Delete(WebApiParams param)
+        public async Task<HttpResponseMessage> Delete(WebApiParams param)
         {
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -632,31 +624,29 @@ namespace ASPNETWebService.Controllers
                     new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
             testParameterValue.ShipperID = param.Shipper.ShipperID;
 
-            // 戻り値
-            BaseReturnValue returnValue = null;
-            Dictionary<string, string> wsErrorInfo =
-                            this.Call("testInProcess", testParameterValue, out returnValue);
+            // 非同期呼び出し
+            AsyncRetVal asyncRetVal = await this.Call("testInProcess", testParameterValue);            
 
             object ret = null;
 
-            if (wsErrorInfo != null)
+            if (asyncRetVal.WsErrorInfo != null)
             {
                 // ランタイムエラー
-                ret = new { ExceptionMSG = wsErrorInfo };
+                ret = new { ExceptionMSG = asyncRetVal.WsErrorInfo };
             }
             else
             {
-                TestReturnValue testReturnValue = (TestReturnValue)returnValue;
+                TestReturnValue testReturnValue = (TestReturnValue)asyncRetVal.ReturnValue;
 
                 if (testReturnValue.ErrorFlag == true)
                 {
                     // 結果（業務続行可能なエラー）
-                    wsErrorInfo = new Dictionary<string, string>();
-                    wsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
-                    wsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
-                    wsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
+                    asyncRetVal.WsErrorInfo = new Dictionary<string, string>();
+                    asyncRetVal.WsErrorInfo["ErrorMessageID"] = testReturnValue.ErrorMessageID;
+                    asyncRetVal.WsErrorInfo["ErrorMessage"] = testReturnValue.ErrorMessage;
+                    asyncRetVal.WsErrorInfo["ErrorInfo"] = testReturnValue.ErrorInfo;
                     
-                    ret = new { ErrorMSG = wsErrorInfo };
+                    ret = new { ErrorMSG = asyncRetVal.WsErrorInfo };
                 }
                 else
                 {
@@ -677,12 +667,14 @@ namespace ASPNETWebService.Controllers
         /// <summary>ASP.NET WebAPI JSON-RPCの個別Webメソッドの共通部</summary>
         /// <param name="serviceName">サービス名</param>
         /// <param name="parameterValue">引数</param>
-        /// <param name="returnValue">戻り値</param>
-        /// <returns>返すべきエラーの情報</returns>
-        private Dictionary<string, string> Call(
+        /// <returns>
+        /// AsyncRetVal（非同期化のため）
+        /// ・WsErrorInfo：返すべきエラーの情報
+        /// ・ReturnValue：戻り値
+        /// </returns>
+        private async Task<AsyncRetVal> Call(
             string serviceName, 
-            BaseParameterValue parameterValue, 
-            out BaseReturnValue returnValue)
+            BaseParameterValue parameterValue)
         {
             // ステータス
             string status = "－";
@@ -699,7 +691,7 @@ namespace ASPNETWebService.Controllers
 
             #region 引数・戻り値関係の変数
 
-            returnValue = null;
+            BaseReturnValue returnValue = null;
 
             // エラー情報（XMLフォーマット）
             Dictionary<string, string> wsErrorInfo = new Dictionary<string, string>();
@@ -755,12 +747,10 @@ namespace ASPNETWebService.Controllers
                     try
                     {
                         // Ｂ層・Ｄ層呼出し
-                        //returnValue = (BaseReturnValue)Latebind.InvokeMethod(
-                        //    AppDomain.CurrentDomain.BaseDirectory + "\\bin\\" + assemblyName + ".dll",
-                        //    className, FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet);
-                        returnValue = (BaseReturnValue)Latebind.InvokeMethod(
+                        Task<BaseReturnValue> result = (Task<BaseReturnValue>)Latebind.InvokeMethod(
                             assemblyName, className,
-                            FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet);
+                            FxLiteral.TRANSMISSION_INPROCESS_ASYNC_METHOD_NAME, paramSet);
+                        returnValue = await result;
                     }
                     catch (System.Reflection.TargetInvocationException rtEx)
                     {
@@ -783,7 +773,11 @@ namespace ASPNETWebService.Controllers
                 status = "";
 
                 // 戻り値を返す。
-                return null;
+                return new AsyncRetVal
+                {
+                    WsErrorInfo = null,
+                    ReturnValue = returnValue
+                };
             }
             //catch (BusinessApplicationException baEx)
             //{
@@ -805,7 +799,11 @@ namespace ASPNETWebService.Controllers
                 errorToString = bsEx.ToString();
 
                 // エラー情報を戻す。
-                return wsErrorInfo;
+                return new AsyncRetVal
+                {
+                    WsErrorInfo = wsErrorInfo,
+                    ReturnValue = returnValue
+                };
             }
             catch (FrameworkException fxEx)
             {
@@ -824,7 +822,11 @@ namespace ASPNETWebService.Controllers
                 errorToString = fxEx.ToString();
 
                 // エラー情報を戻す。
-                return wsErrorInfo;
+                return new AsyncRetVal
+                {
+                    WsErrorInfo = wsErrorInfo,
+                    ReturnValue = returnValue
+                };
             }
             catch (Exception ex)
             {
@@ -846,8 +848,11 @@ namespace ASPNETWebService.Controllers
                 //errorToString = ex.ToString();
 
                 // エラー情報を戻す。
-                return wsErrorInfo;
-                //throw; // コメントアウト
+                return new AsyncRetVal
+                {
+                    WsErrorInfo = wsErrorInfo,
+                    ReturnValue = returnValue
+                };
             }
             finally
             {
