@@ -168,7 +168,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ServiceForFx.asmx" />
-    <Content Include="ServiceForDto.asmx" />
     <Content Include="ServiceForSb.asmx" />
     <Content Include="WCFHTTPSvcForFx.svc" />
     <Content Include="Web.config" />
@@ -192,10 +191,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceForFx.asmx.cs">
       <DependentUpon>ServiceForFx.asmx</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ServiceForDto.asmx.cs">
-      <DependentUpon>ServiceForDto.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ServiceForSb.asmx.cs">
