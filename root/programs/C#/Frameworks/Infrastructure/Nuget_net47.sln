@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Public", "Public\Public47.csproj", "{81CC573A-0DF9-49E5-AF10-A50F9B194DA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Public", "Public\Public_net47.csproj", "{81CC573A-0DF9-49E5-AF10-A50F9B194DA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework", "Framework\Framework47.csproj", "{33133F7E-FCF4-4438-8241-FE5CDF6E52FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework", "Framework\Framework_net47.csproj", "{33133F7E-FCF4-4438-8241-FE5CDF6E52FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamMySQL", "Public\Db\DamMySQL\DamMySQL47.csproj", "{18345E81-5ECB-4B2F-8304-0E94F8763216}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamMySQL", "Public\Db\DamMySQL\DamMySQL_net47.csproj", "{18345E81-5ECB-4B2F-8304-0E94F8763216}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamPstGrS", "Public\Db\DamPstGrS\DamPstGrS47.csproj", "{1A3B3376-716C-4AB2-9FB5-427227D8037F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamPstGrS", "Public\Db\DamPstGrS\DamPstGrS_net47.csproj", "{1A3B3376-716C-4AB2-9FB5-427227D8037F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamManagedOdp", "Public\Db\DamManagedOdp\DamManagedOdp47.csproj", "{FE4533B3-53F0-4BE2-8390-9486FFF380A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamManagedOdp", "Public\Db\DamManagedOdp\DamManagedOdp_net47.csproj", "{FE4533B3-53F0-4BE2-8390-9486FFF380A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

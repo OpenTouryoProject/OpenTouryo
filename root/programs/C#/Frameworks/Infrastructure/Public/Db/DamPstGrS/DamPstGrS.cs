@@ -583,10 +583,10 @@ namespace Touryo.Infrastructure.Public.Db
                             (int)this._parameterSize[paramName],
                             (ParameterDirection)this._parameterDirection[paramName]);
                     }
-                    else if (this._parameter[paramName] is IList)
+                    else if (this._parameter[paramName] is ArrayList)
                     {
                         // パラメタがLISTの場合
-                        IList al = (IList)this._parameter[paramName];
+                        ArrayList al = (ArrayList)this._parameter[paramName];
 
                         // パラメタを展開して設定。 
 

@@ -24,8 +24,8 @@ md "Frameworks\Infrastructure\Build"
 rem --------------------------------------------------
 rem Build the batch Infrastructure(Nuget47)
 rem --------------------------------------------------
-..\nuget.exe restore "Frameworks\Infrastructure\Nuget47.sln"
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\Nuget47.sln"
+..\nuget.exe restore "Frameworks\Infrastructure\Nuget_net47.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\Nuget_net47.sln"
 
 pause
 
