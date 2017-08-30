@@ -64,7 +64,8 @@
 // データプロバイダ
 // --------------------
 using System.Data.SqlClient;
-using Oracle.DataAccess.Client;
+//using Oracle.DataAccess.Client;
+using Oracle.ManagedDataAccess.Client;
 using System.Data.OleDb;
 using System.Data.Odbc;
 using Npgsql;
@@ -653,7 +654,7 @@ namespace DPQuery_Tool
                     this._dam = new DamManagedOdp();
 
                     //接続文字列のサンプルを設定する（空の場合）。
-                    Oracle.DataAccess.Client.OracleConnectionStringBuilder csb = new Oracle.DataAccess.Client.OracleConnectionStringBuilder();
+                    Oracle.ManagedDataAccess.Client.OracleConnectionStringBuilder csb = new Oracle.ManagedDataAccess.Client.OracleConnectionStringBuilder();
 
                     csb.DataSource = this._ip + "/orcl";
                     csb.UserID = this._uid;
@@ -2229,63 +2230,63 @@ namespace DPQuery_Tool
 
             if (type == typeof(Byte))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Byte;
+                oracleDbType = Oracle.ManagedDataAccess.Client.OracleDbType.Byte;
                 return true;
             }
             else if (type == typeof(Byte[]))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Raw;
+                oracleDbType = Oracle.ManagedDataAccess.Client.OracleDbType.Raw;
                 return true;
             }
             else if (type == typeof(Char))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Varchar2;
+                oracleDbType = Oracle.ManagedDataAccess.Client.OracleDbType.Varchar2;
                 return true;
             }
             else if (type == typeof(Char[]))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Varchar2;
+                oracleDbType = Oracle.ManagedDataAccess.Client.OracleDbType.Varchar2;
                 return true;
             }
 
             else if (type == typeof(DateTime))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.TimeStamp;
+                oracleDbType = Oracle.ManagedDataAccess.Client.OracleDbType.TimeStamp;
                 return true;
             }
             else if (type == typeof(Decimal))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Decimal;
+                oracleDbType = Oracle.ManagedDataAccess.Client.OracleDbType.Decimal;
                 return true;
             }
             else if (type == typeof(Double))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Double;
+                oracleDbType = Oracle.ManagedDataAccess.Client.OracleDbType.Double;
                 return true;
             }
             else if (type == typeof(Int16))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Int16;
+                oracleDbType = Oracle.ManagedDataAccess.Client.OracleDbType.Int16;
                 return true;
             }
             else if (type == typeof(Int32))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Int32;
+                oracleDbType = Oracle.ManagedDataAccess.Client.OracleDbType.Int32;
                 return true;
             }
             else if (type == typeof(Int64))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Int64;
+                oracleDbType = Oracle.ManagedDataAccess.Client.OracleDbType.Int64;
                 return true;
             }
             else if (type == typeof(Single))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Single;
+                oracleDbType = Oracle.ManagedDataAccess.Client.OracleDbType.Single;
                 return true;
             }
             else if (type == typeof(String))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Varchar2;
+                oracleDbType = Oracle.ManagedDataAccess.Client.OracleDbType.Varchar2;
                 return true;
             }
             //else if (type == typeof(TimeSpan))

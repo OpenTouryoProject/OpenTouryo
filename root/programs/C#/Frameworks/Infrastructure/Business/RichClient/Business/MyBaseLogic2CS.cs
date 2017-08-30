@@ -51,8 +51,23 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Business.RichClient.Business
 {
+    ///// <summary>テスト</summary>
+    //public class TestBaseLogic : MyBaseLogic2CS
+    //{
+    //    /// <summary>UOC_DoAction</summary>
+    //    /// <param name="parameterValue">BaseParameterValue</param>
+    //    /// <param name="returnValue">BaseReturnValue</param>
+    //    protected override void UOC_DoAction(BaseParameterValue parameterValue, ref BaseReturnValue returnValue)
+    //    {
+    //    }
+    //}
+
     /// <summary>業務コード親クラス２（2層C/S用）（テンプレート）</summary>
-    /// <remarks>（オーバーライドして）自由に利用できる。</remarks>
+    /// <remarks>
+    /// （オーバーライドして）自由に利用できる。
+    /// ※ 下位互換のために残してあります。
+    /// </remarks>
+    [Obsolete("MyBaseLogic2CS is deprecated, please use MyFcBaseLogic2CS instead.")]
     public abstract class MyBaseLogic2CS : BaseLogic2CS
     {
         /// <summary>性能測定</summary>
@@ -159,7 +174,7 @@ namespace Touryo.Infrastructure.Business.RichClient.Business
                     // Oracle / ODP.NET用のDamを生成
                     dam = new DamManagedOdp();
 
-                    // 接続文字列をロード（ODP2：Instant Client）
+                    // 接続文字列をロード（ODP2：Managed Driver or with the Instant Client）
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP2");
                 }
                 //else if (parameterValue.ActionType.Split('%')[0] == "DB2")

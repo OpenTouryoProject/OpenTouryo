@@ -225,9 +225,10 @@ namespace Touryo.Infrastructure.Framework.Util
             )
         {
             string defaultFileName = Path.GetFileName(defaultFilePath);
-            int temp = defaultFileName.Length - 4; // -4 は *.xxx の拡張子部分
-            //                                               ~~~~
-
+            int temp = Path.GetFileNameWithoutExtension(defaultFilePath).Length;
+            //int temp = defaultFileName.Length - 4; // -4 は *.xxx の拡張子部分
+            //                                                 ~~~~
+            
             // cultureWiseFile
             cultureWiseFileName = defaultFileName.Substring(0, temp) + "_" + cultureName + defaultFileName.Substring(temp);
             cultureWiseFilePath = defaultFilePath.Replace(defaultFileName, cultureWiseFileName);

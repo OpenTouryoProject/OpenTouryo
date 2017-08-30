@@ -47,8 +47,6 @@ namespace DPQuery_Tool
 {
     public partial class Form3 : Form
     {
-        #region インスタンス変数
-
         #region 画面テンプレート ファイル
 
         /// <summary>ConditionalSearchテンプレート ファイル名</summary>
@@ -231,6 +229,7 @@ namespace DPQuery_Tool
         #endregion
 
         #region  Added variables for Join table Select Query feature
+
         /// <summary>Lists of Primary Key columns of all Tables from DaoDefinition file</summary>
         public ArrayList PkList = null;
         /// <summary>Lists of Else Key columns of all Tables from DaoDefinition file</summary>
@@ -1880,6 +1879,6 @@ namespace DPQuery_Tool
         }
 
         #endregion
+
     }
 }
-        #endregion

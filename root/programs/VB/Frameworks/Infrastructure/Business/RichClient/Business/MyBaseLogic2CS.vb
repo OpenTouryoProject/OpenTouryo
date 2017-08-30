@@ -49,8 +49,23 @@ Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Util
 
 Namespace Touryo.Infrastructure.Business.RichClient.Business
+
+    '''' <summary>テスト</summary>
+    'Public Class TestBaseLogic
+    '    Inherits MyBaseLogic2CS
+    '    ''' <summary>UOC_DoAction</summary>
+    '    ''' <param name="parameterValue">BaseParameterValue</param>
+    '    ''' <param name="returnValue">BaseReturnValue</param>
+    '    Protected Overrides Sub UOC_DoAction(parameterValue As BaseParameterValue, ByRef returnValue As BaseReturnValue)
+    '    End Sub
+    'End Class
+
     ''' <summary>業務コード親クラス２（2層C/S用）（テンプレート）</summary>
-    ''' <remarks>（オーバーライドして）自由に利用できる。</remarks>
+    ''' <remarks>
+    ''' （オーバーライドして）自由に利用できる。
+    ''' ※ 下位互換のために残してあります。
+    ''' </remarks>
+    <Obsolete("MyBaseLogic2CS is deprecated, please use MyFcBaseLogic2CS instead.")>
     Public MustInherit Class MyBaseLogic2CS
         Inherits BaseLogic2CS
         ''' <summary>性能測定</summary>
@@ -112,11 +127,11 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
                 '#Region "データ プロバイダ選択"
 
                 If parameterValue.ActionType.Split("%"c)(0) = "SQL" Then
-                ' SQL Server / SQL Client用のDamを生成
-                dam = New DamSqlSvr()
+                    ' SQL Server / SQL Client用のDamを生成
+                    dam = New DamSqlSvr()
 
-                ' 接続文字列をロード
-                connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL")
+                    ' 接続文字列をロード
+                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL")
                 ElseIf parameterValue.ActionType.Split("%"c)(0) = "OLE" Then
                     ' OLEDB.NET用のDamを生成
                     dam = New DamOLEDB()
@@ -139,7 +154,7 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
                     ' Oracle / ODP.NET用のDamを生成
                     dam = New DamManagedOdp()
 
-                    ' 接続文字列をロード（ODP2：Instant Client）
+                    ' 接続文字列をロード（ODP2：Managed Driver or with the Instant Client）
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP2")
                     'ElseIf parameterValue.ActionType.Split("%"c)(0) = "DB2" Then
                     '    ' DB2.NET用のDamを生成
