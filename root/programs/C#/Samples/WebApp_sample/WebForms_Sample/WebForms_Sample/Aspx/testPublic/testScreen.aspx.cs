@@ -367,7 +367,7 @@ namespace WebForms_Sample.Aspx.TestPublic
 
             // ※ ActionTypeのフォーマット：Dap%Err%Stat%
 
-            MyBaseLogic testMTC;
+            MyFcBaseLogic testMTC;
 
             // B層を生成
             if (this.cbxCnnMode.Checked)

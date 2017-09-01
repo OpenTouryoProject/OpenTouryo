@@ -309,7 +309,7 @@ Namespace Aspx.TestPublic
 
             ' ※ ActionTypeのフォーマット：Dap%Err%Stat%
 
-            Dim testMTC As MyBaseLogic
+            Dim testMTC As MyFcBaseLogic
 
             ' B層を生成
             If Me.cbxCnnMode.Checked Then

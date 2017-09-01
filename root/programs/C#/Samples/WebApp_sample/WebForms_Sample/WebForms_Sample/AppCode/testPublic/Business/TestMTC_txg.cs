@@ -31,7 +31,7 @@ namespace WebForms_Sample
     /// <summary>
     /// TestMTC_mcn の概要の説明です
     /// </summary>
-    public class TestMTC_txg : MyBaseLogic
+    public class TestMTC_txg : MyFcBaseLogic
     {
         /// <summary>
         /// 業務処理を実装
@@ -83,13 +83,6 @@ namespace WebForms_Sample
                     BaseLogic.InitDam(transactionPatternID, tempDam);
                     this.SetDam(transactionPatternID, tempDam);
                 }
-                //else if (transactionPatternID.IndexOf("DB2") != -1)
-                //{
-                //    // DamDB2を初期化してセット
-                //    tempDam = new DamDB2();
-                //    BaseLogic.InitDam(transactionPatternID, tempDam);
-                //    this.SetDam(transactionPatternID, tempDam);
-                //}
                 else if (transactionPatternID.IndexOf("MCN") != -1)
                 {
                     // DamMySQLを初期化してセット

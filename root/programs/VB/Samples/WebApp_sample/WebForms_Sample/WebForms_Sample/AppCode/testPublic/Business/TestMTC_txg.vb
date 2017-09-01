@@ -28,7 +28,7 @@ Imports WebForms_Sample.MyType
 ''' TestMTC_mcn の概要の説明です
 ''' </summary>
 Public Class TestMTC_txg
-    Inherits MyBaseLogic
+    Inherits MyFcBaseLogic
     ''' <summary>
     ''' 業務処理を実装
     ''' </summary>
@@ -72,11 +72,6 @@ Public Class TestMTC_txg
                 tempDam = New DamManagedOdp()
                 BaseLogic.InitDam(transactionPatternID, tempDam)
                 Me.SetDam(transactionPatternID, tempDam)
-                'ElseIf transactionPatternID.IndexOf("DB2") <> -1 Then
-                '    ' DamDB2を初期化してセット
-                '    tempDam = New DamDB2()
-                '    BaseLogic.InitDam(transactionPatternID, tempDam)
-                '    Me.SetDam(transactionPatternID, tempDam)
             ElseIf transactionPatternID.IndexOf("MCN") <> -1 Then
                 ' DamMySQLを初期化してセット
                 tempDam = New DamMySQL()
