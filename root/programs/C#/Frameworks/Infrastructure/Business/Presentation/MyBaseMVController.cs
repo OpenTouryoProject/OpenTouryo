@@ -96,7 +96,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 
         /// <summary>ActionName</summary>
         protected string ActionName = "";
-
+        
         #region OnAction
 
         /// <summary>

@@ -73,7 +73,7 @@ namespace ASPNETWebService.Controllers
         methods: "*",
         // 
         SupportsCredentials = true)]
-    [MyBaseApiController()]
+    [MyBaseApiControllerAsync()]
     public class JsonController : ApiController
     {
         #region テスト用

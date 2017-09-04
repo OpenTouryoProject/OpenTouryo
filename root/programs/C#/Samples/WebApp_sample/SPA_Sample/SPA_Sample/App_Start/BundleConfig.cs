@@ -50,7 +50,8 @@ namespace SPA_Sample
 
             bundles.Add(new ScriptBundle("~/bundles/touryo").Include(
                         "~/Scripts/touryo/common.js",
-                        "~/Scripts/touryo/else.js"));
+                        "~/Scripts/touryo/else.js",
+                        "~/Scripts/touryo/oauthimplicit.js"));
 
             bundles.Add(new ScriptBundle(
                 "~/bundles/jquery",

@@ -53,12 +53,8 @@ namespace SPA_Sample.Controllers
                 if (Session["nonce"] == null)
                 {
                     Session["nonce"] = GetPassword.Base64UrlSecret(10);
-                    return (string)Session["nonce"];
                 }
-                else
-                {
-                    return (string)Session["nonce"];
-                }
+                return (string)Session["nonce"];
             }
         }
 
@@ -70,12 +66,8 @@ namespace SPA_Sample.Controllers
                 if (Session["state"] == null)
                 {
                     Session["state"] = GetPassword.Base64UrlSecret(10);
-                    return (string)Session["state"];
                 }
-                else
-                {
-                    return (string)Session["state"];
-                }
+                return (string)Session["state"];
             }
         }
 

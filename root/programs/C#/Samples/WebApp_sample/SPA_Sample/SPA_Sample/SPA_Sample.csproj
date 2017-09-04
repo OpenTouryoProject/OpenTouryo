@@ -218,6 +218,7 @@
     <Content Include="Scripts\angular-touch.min.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
+    <Content Include="Scripts\app\Sample1WithToken.viewmodel.js" />
     <Content Include="Scripts\app\Sample2.viewmodel.js" />
     <Content Include="Scripts\app\Site.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -994,6 +995,7 @@
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\touryo\common.js" />
     <Content Include="Scripts\touryo\else.js" />
+    <Content Include="Scripts\touryo\oauthimplicit.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -1015,6 +1017,7 @@
     <Content Include="Views\Error\Index.cshtml" />
     <Content Include="Scripts\version.json" />
     <Content Include="Views\Shared\_Layout2.cshtml" />
+    <Content Include="Views\Crud1\Implicit.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
