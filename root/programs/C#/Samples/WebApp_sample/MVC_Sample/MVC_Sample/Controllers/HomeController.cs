@@ -54,12 +54,8 @@ namespace MVC_Sample.Controllers
                 if (Session["nonce"] == null)
                 {
                     Session["nonce"] = GetPassword.Base64UrlSecret(10);
-                    return (string)Session["nonce"];
                 }
-                else
-                {
-                    return (string)Session["nonce"];
-                }
+                return (string)Session["nonce"];
             }
         }
 
@@ -71,15 +67,11 @@ namespace MVC_Sample.Controllers
                 if (Session["state"] == null)
                 {
                     Session["state"] = GetPassword.Base64UrlSecret(10);
-                    return (string)Session["state"];
                 }
-                else
-                {
-                    return (string)Session["state"];
-                }
+                return (string)Session["state"];
             }
         }
-        
+
         /// <summary>
         /// GET: Home
         /// </summary>
@@ -139,16 +131,15 @@ namespace MVC_Sample.Controllers
                     {
                         // ユーザー認証 失敗
                         this.ModelState.AddModelError(string.Empty, "指定されたユーザー名またはパスワードが正しくありません。");
-
-                        // Session消去
-                        this.FxSessionAbandon();
                     }
                 }
                 else
                 {
-                    // Session消去
-                    this.FxSessionAbandon();
+                    // LoginViewModelの検証に失敗
                 }
+
+                // Session消去
+                this.FxSessionAbandon();
 
                 // ポストバック的な
                 return this.View(model);
@@ -191,86 +182,100 @@ namespace MVC_Sample.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> OAuthAuthorizationCodeGrantClient(string code, string state)
         {
-            if (state == this.State) // CSRF(XSRF)対策のstateの検証は重要
+            try
             {
-                HttpClient httpClient = new HttpClient();
-
-                HttpRequestMessage httpRequestMessage = null;
-                HttpResponseMessage httpResponseMessage = null;
-
-                // HttpRequestMessage (Method & RequestUri)
-                httpRequestMessage = new HttpRequestMessage
+                if (state == this.State) // CSRF(XSRF)対策のstateの検証は重要
                 {
-                    Method = HttpMethod.Post,
-                    RequestUri = new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"),
-                };
+                    HttpClient httpClient = new HttpClient();
 
-                // HttpRequestMessage (Headers & Content)
-                httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                    "Basic",
-                    Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(
-                        string.Format("{0}:{1}",
-                            "f53469c17c5a432f86ce563b7805ab89",
-                            "cKdwJb6mRKVIJpGxEWjIC94zquQltw_ECfO-55p21YM"))));
+                    HttpRequestMessage httpRequestMessage = null;
+                    HttpResponseMessage httpResponseMessage = null;
 
-                httpRequestMessage.Content = new FormUrlEncodedContent(
-                    new Dictionary<string, string>
+                    // HttpRequestMessage (Method & RequestUri)
+                    httpRequestMessage = new HttpRequestMessage
                     {
-                        { "grant_type", "authorization_code" },
-                        { "code", code },
-                        { "redirect_uri", System.Web.HttpUtility.HtmlEncode("http://localhost:58496/MVC_Sample/Home/OAuthAuthorizationCodeGrantClient") },
-                    });
+                        Method = HttpMethod.Post,
+                        RequestUri = new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"),
+                    };
 
-                // HttpResponseMessage
-                httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-                string response = await httpResponseMessage.Content.ReadAsStringAsync();
+                    // HttpRequestMessage (Headers & Content)
+                    httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
+                        "Basic",
+                        Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(
+                            string.Format("{0}:{1}",
+                                "f53469c17c5a432f86ce563b7805ab89",
+                                "cKdwJb6mRKVIJpGxEWjIC94zquQltw_ECfO-55p21YM"))));
 
-                // 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
-                Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
-                Dictionary<string, string> dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
+                    httpRequestMessage.Content = new FormUrlEncodedContent(
+                        new Dictionary<string, string>
+                        {
+                            { "grant_type", "authorization_code" },
+                            { "code", code },
+                            { "redirect_uri", System.Web.HttpUtility.HtmlEncode("http://localhost:58496/MVC_Sample/Home/OAuthAuthorizationCodeGrantClient") },
+                        });
 
-                // id_tokenの検証コード
-                string id_token = dic["id_token"];
+                    // HttpResponseMessage
+                    httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+                    string response = await httpResponseMessage.Content.ReadAsStringAsync();
 
-                JWT_RS256 jwtRS256 = new JWT_RS256(
-                    @"C:\Git1\MultiPurposeAuthSite\root\programs\MultiPurposeAuthSite\CreateClientsIdentity\CreateClientsIdentity_RS256.cer", "test");
+                    // 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
+                    Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
+                    Dictionary<string, string> dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
 
-                if (jwtRS256.Verify(id_token))
-                {
-                    string jwtPayload = Encoding.UTF8.GetString(base64UrlEncoder.Decode(dic["id_token"].Split('.')[1]));
+                    // id_tokenの検証コード
+                    string id_token = dic["id_token"];
 
-                    // id_tokenライクなJWTなので、中からsubなどを取り出すことができる。
-                    JObject jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
+                    JWT_RS256 jwtRS256 = new JWT_RS256(
+                        @"C:\Git1\MultiPurposeAuthSite\root\programs\MultiPurposeAuthSite\CreateClientsIdentity\CreateClientsIdentity_RS256.cer", "test");
 
-                    string nonce = (string)jobj["nonce"];
-                    string iss = (string)jobj["iss"];
-                    string aud = (string)jobj["aud"];
-                    string iat = (string)jobj["iat"];
-                    string exp = (string)jobj["exp"];
-
-                    string sub = (string)jobj["sub"];
-
-                    if (nonce == this.Nonce &&
-                        iss == "http://jwtssoauth.opentouryo.com" &&
-                        aud == "f53469c17c5a432f86ce563b7805ab89" &&
-                        long.Parse(exp) >= DateTimeOffset.Now.ToUnixTimeSeconds())
+                    if (jwtRS256.Verify(id_token))
                     {
-                        // ログインに成功
-                        FormsAuthentication.RedirectFromLoginPage(sub, false);
-                        MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
-                        UserInfoHandle.SetUserInformation(ui);
-                        
-                        return new EmptyResult();
+                        string jwtPayload = Encoding.UTF8.GetString(base64UrlEncoder.Decode(dic["id_token"].Split('.')[1]));
+
+                        // id_tokenライクなJWTなので、中からsubなどを取り出すことができる。
+                        JObject jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
+
+                        string nonce = (string)jobj["nonce"];
+                        string iss = (string)jobj["iss"];
+                        string aud = (string)jobj["aud"];
+                        string iat = (string)jobj["iat"];
+                        string exp = (string)jobj["exp"];
+
+                        string sub = (string)jobj["sub"];
+
+                        if (nonce == this.Nonce &&
+                            iss == "http://jwtssoauth.opentouryo.com" &&
+                            aud == "f53469c17c5a432f86ce563b7805ab89" &&
+                            long.Parse(exp) >= DateTimeOffset.Now.ToUnixTimeSeconds())
+                        {
+                            // ログインに成功
+                            FormsAuthentication.RedirectFromLoginPage(sub, false);
+                            MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
+                            UserInfoHandle.SetUserInformation(ui);
+
+                            return new EmptyResult();
+                        }
+                        else
+                        { }
                     }
                     else
                     { }
                 }
-                else
-                { }
-            }
 
-            // ログインに失敗
-            return RedirectToAction("Login");
+                // ログインに失敗
+                return RedirectToAction("Login");
+            }
+            finally
+            {
+                this.ClearExLoginsParams();
+            }
+        }
+
+        /// <summary>ClearExLoginsParam</summary>
+        private void ClearExLoginsParams()
+        {
+            Session["nonce"] = null;
+            Session["state"] = null;
         }
     }
 }

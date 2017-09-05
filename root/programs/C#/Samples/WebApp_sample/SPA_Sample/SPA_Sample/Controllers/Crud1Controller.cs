@@ -17,28 +17,8 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-using SPA_Sample.Models.ViewModels;
-
-using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
-using System.Web.Security;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-
-using Microsoft.Owin.Security.DataHandler.Encoder;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
-using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Util;
-using Touryo.Infrastructure.Public.Util.JWT;
 
 namespace SPA_Sample.Controllers
 {
@@ -84,15 +64,6 @@ namespace SPA_Sample.Controllers
         }
 
         /// <summary>
-        /// GET: /Crud1/Implicit
-        /// </summary>
-        /// <returns>ActionResult</returns>
-        public ActionResult Implicit()
-        {
-            return View();
-        }
-
-        /// <summary>
         /// GET: /Crud1/GetAccessToken
         /// </summary>
         /// <returns>ActionResult</returns>
@@ -102,6 +73,23 @@ namespace SPA_Sample.Controllers
             return Redirect(string.Format(
                 "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize?client_id=f374a155909d486a9234693c34e94479&response_type=id_token%20token&scope=profile%20email%20phone%20address%20roles&state={0}&nonce={1}",
                 this.State, this.Nonce));
+        }
+
+        /// <summary>
+        /// GET: /Crud1/Implicit
+        /// </summary>
+        /// <returns>ActionResult</returns>
+        public ActionResult Implicit()
+        {
+            this.ClearExLoginsParams();
+            return View();
+        }
+
+        /// <summary>ClearExLoginsParam</summary>
+        private void ClearExLoginsParams()
+        {
+            Session["nonce"] = null;
+            Session["state"] = null;
         }
     }
 }
