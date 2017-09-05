@@ -100,7 +100,7 @@ namespace SPA_Sample.Controllers
         {
             // 外部ログイン
             return Redirect(string.Format(
-                "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize?client_id=f374a155909d486a9234693c34e94479&response_type=id_token%20token&scope=profile%20email%20phone%20address%20userid%20openid&state={0}&nonce={1}",
+                "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize?client_id=f374a155909d486a9234693c34e94479&response_type=id_token%20token&scope=profile%20email%20phone%20address%20roles&state={0}&nonce={1}",
                 this.State, this.Nonce));
         }
     }

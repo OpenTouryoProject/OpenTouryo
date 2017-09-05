@@ -33,12 +33,14 @@
 
 using System;
 using System.Data;
+using System.Linq;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 
@@ -109,15 +111,6 @@ namespace ASPNETWebService.Controllers
             public BaseReturnValue ReturnValue = null;
         }
 
-        #region コンストラクタ
-
-        /// <summary>constructor</summary>
-        public JsonController()
-        {
-        }
-
-        #endregion
-
         #region ASP.NET WebAPI JSON-RPCのWebメソッド
 
         #region 個別部
@@ -131,13 +124,17 @@ namespace ASPNETWebService.Controllers
         [Route("JsonController/SelectCount")]
         public async Task<HttpResponseMessage> SelectCount(WebApiParams param)
         {
+            // Claimを取得する。
+            string userName, roles, ipAddress;
+            this.GetClaims(out userName, out roles, out ipAddress);
+
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
                     "JsonController", "SelectCount", "SelectCount",
                     param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
-                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+                    new MyUserInfo(userName, ipAddress));
 
             // 非同期呼び出し
             AsyncRetVal asyncRetVal = await this.Call("testInProcess", testParameterValue);
@@ -183,13 +180,17 @@ namespace ASPNETWebService.Controllers
         [Route("JsonController/SelectAll_DT")]
         public async Task<HttpResponseMessage> SelectAll_DT(WebApiParams param)
         {
+            // Claimを取得する。
+            string userName, roles, ipAddress;
+            this.GetClaims(out userName, out roles, out ipAddress);
+
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
                     "JsonController", "SelectAll_DT", "SelectAll_DT",
                     param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
-                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+                    new MyUserInfo(userName, ipAddress));
 
             // 非同期呼び出し
             AsyncRetVal asyncRetVal = await this.Call("testInProcess", testParameterValue);
@@ -247,13 +248,17 @@ namespace ASPNETWebService.Controllers
         [Route("JsonController/SelectAll_DS")]
         public async Task<HttpResponseMessage> SelectAll_DS(WebApiParams param)
         {
+            // Claimを取得する。
+            string userName, roles, ipAddress;
+            this.GetClaims(out userName, out roles, out ipAddress);
+
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
                     "JsonController", "SelectAll_DS", "SelectAll_DS",
                     param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
-                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+                    new MyUserInfo(userName, ipAddress));
 
             // 非同期呼び出し
             AsyncRetVal asyncRetVal = await this.Call("testInProcess", testParameterValue);
@@ -311,13 +316,17 @@ namespace ASPNETWebService.Controllers
         [Route("JsonController/SelectAll_DR")]
         public async Task<HttpResponseMessage> SelectAll_DR(WebApiParams param)
         {
+            // Claimを取得する。
+            string userName, roles, ipAddress;
+            this.GetClaims(out userName, out roles, out ipAddress);
+
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
                     "JsonController", "SelectAll_DR", "SelectAll_DR",
                     param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
-                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+                    new MyUserInfo(userName, ipAddress));
 
             // 非同期呼び出し
             AsyncRetVal asyncRetVal = await this.Call("testInProcess", testParameterValue);
@@ -378,13 +387,17 @@ namespace ASPNETWebService.Controllers
         [Route("JsonController/SelectAll_DSQL")]
         public async Task<HttpResponseMessage> SelectAll_DSQL(WebApiParams param)
         {
+            // Claimを取得する。
+            string userName, roles, ipAddress;
+            this.GetClaims(out userName, out roles, out ipAddress);
+
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
                     "JsonController", "SelectAll_DSQL", "SelectAll_DSQL",
                     param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
-                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+                    new MyUserInfo(userName, ipAddress));
 
             testParameterValue.OrderColumn = param.OrderColumn;
             testParameterValue.OrderSequence = param.OrderSequence;
@@ -445,13 +458,18 @@ namespace ASPNETWebService.Controllers
         [Route("JsonController/Select")]
         public async Task<HttpResponseMessage> Select(WebApiParams param)
         {
+            // Claimを取得する。
+            string userName, roles, ipAddress;
+            this.GetClaims(out userName, out roles, out ipAddress);
+
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
                     "JsonController", "Select", "Select",
                     param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
-                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+                    new MyUserInfo(userName, ipAddress));
+
             testParameterValue.ShipperID = param.Shipper.ShipperID;
 
             // 非同期呼び出し
@@ -502,13 +520,17 @@ namespace ASPNETWebService.Controllers
         [Route("JsonController/Insert")]
         public async Task<HttpResponseMessage> Insert(WebApiParams param)
         {
+            // Claimを取得する。
+            string userName, roles, ipAddress;
+            this.GetClaims(out userName, out roles, out ipAddress);
+
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
                     "JsonController", "Insert", "Insert",
                     param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
-                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+                    new MyUserInfo(userName, ipAddress));
 
             testParameterValue.CompanyName = param.Shipper.CompanyName;
             testParameterValue.Phone = param.Shipper.Phone;
@@ -558,13 +580,17 @@ namespace ASPNETWebService.Controllers
         [Route("JsonController/Update")]
         public async Task<HttpResponseMessage> Update(WebApiParams param)
         {
+            // Claimを取得する。
+            string userName, roles, ipAddress;
+            this.GetClaims(out userName, out roles, out ipAddress);
+
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
                     "JsonController", "Update", "Update",
                     param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
-                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+                    new MyUserInfo(userName, ipAddress));
 
             testParameterValue.ShipperID = param.Shipper.ShipperID;
             testParameterValue.CompanyName = param.Shipper.CompanyName;
@@ -615,13 +641,18 @@ namespace ASPNETWebService.Controllers
         [Route("JsonController/Delete")]
         public async Task<HttpResponseMessage> Delete(WebApiParams param)
         {
+            // Claimを取得する。
+            string userName, roles, ipAddress;
+            this.GetClaims(out userName, out roles, out ipAddress);
+
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
             TestParameterValue testParameterValue
                 = new TestParameterValue(
                     "JsonController", "Delete", "Delete",
                     param.ddlDap + "%" + param.ddlMode1 + "%" + param.ddlMode2 + "%" + param.ddlExRollback,
-                    new MyUserInfo("", HttpContext.Current.Request.UserHostAddress));
+                    new MyUserInfo(userName, ipAddress));
+
             testParameterValue.ShipperID = param.Shipper.ShipperID;
 
             // 非同期呼び出し
@@ -880,6 +911,18 @@ namespace ASPNETWebService.Controllers
                         + errorToString + "\r\n");
                 }
             }
+        }
+
+        /// <summary>GetClaims</summary>
+        /// <param name="userName">string</param>
+        /// <param name="roles">string</param>
+        /// <param name="ipAddress">string</param>
+        private void GetClaims(out string userName, out string roles, out string ipAddress)
+        {   
+            IEnumerable<Claim> claims = ((ClaimsIdentity)HttpContext.Current.User.Identity).Claims;
+            userName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
+            roles = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
+            ipAddress = claims.FirstOrDefault(c => c.Type == "IpAddress").Value;
         }
 
         #endregion

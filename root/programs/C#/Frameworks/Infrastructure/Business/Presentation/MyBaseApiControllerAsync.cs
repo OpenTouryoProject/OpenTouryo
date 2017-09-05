@@ -31,11 +31,16 @@
 //**********************************************************************************
 
 using System;
+using System.Text;
+using System.Linq;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using System.Security.Principal;
+using System.Security.Authentication;
 
 using System.Web;
-//using System.Web.Mvc;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 
@@ -43,12 +48,17 @@ using System.Net;
 using System.Net.Http;
 
 using Microsoft.Owin;
+using Microsoft.Owin.Security.DataHandler.Encoder;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Util.JWT;
 
 namespace Touryo.Infrastructure.Business.Presentation
 {
@@ -60,8 +70,8 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <summary>性能測定</summary>
         private PerformanceRecorder perfRec;
 
-        /// <summary>UserInfo</summary>
-        protected MyUserInfo UserInfo;
+        ///// <summary>UserInfo</summary>
+        //protected MyUserInfo UserInfo;
 
         /// <summary>ControllerName</summary>
         protected string ControllerName = "";
@@ -72,24 +82,27 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <summary>
         /// プロセスが承認を要求したときに呼び出します。
         /// https://msdn.microsoft.com/ja-jp/library/dn314618.aspx
+        /// https://msdn.microsoft.com/ja-jp/magazine/dn781361.aspx
         /// </summary>
         /// <param name="authenticationContext">HttpAuthenticationContext</param>
         /// <param name="cancellationToken">CancellationToken</param>
         public async Task AuthenticateAsync(HttpAuthenticationContext authenticationContext, CancellationToken cancellationToken)
         {
-            // 認証ユーザ情報をメンバにロードする --------------------------
+            // 認証ユーザ情報をメンバにロードする
             await this.GetUserInfo(authenticationContext);
-            // -------------------------------------------------------------
         }
 
         /// <summary>
-        /// ・・・
+        /// ・・・ChallengeAsync・・・
         /// https://msdn.microsoft.com/ja-jp/library/dn573281.aspx
+        /// https://msdn.microsoft.com/ja-jp/magazine/dn781361.aspx
         /// </summary>
         /// <param name="authenticationChallengeContext">HttpAuthenticationChallengeContext</param>
         /// <param name="cancellationToken">CancellationToken</param>
         public async Task ChallengeAsync(HttpAuthenticationChallengeContext authenticationChallengeContext, CancellationToken cancellationToken)
         {
+            authenticationChallengeContext.Result = new ResultWithChallenge(authenticationChallengeContext.Result);
+            return;
         }
 
         #region OnAction
@@ -102,6 +115,10 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <param name="cancellationToken">CancellationToken</param>
 		public override async Task OnActionExecutingAsync(HttpActionContext actionContext, CancellationToken cancellationToken)
         {
+            // Claimを取得する。
+            string userName, roles, ipAddress;
+            this.GetClaims(out userName, out roles, out ipAddress);
+
             // 権限チェック ------------------------------------------------
             // ・・・
             // -------------------------------------------------------------
@@ -125,11 +142,12 @@ namespace Touryo.Infrastructure.Business.Presentation
             // 処理時間（実行時間）, 処理時間（CPU時間）
             // エラーメッセージID, エラーメッセージ等
             // ------------
+
             string strLogMessage =
-                "," + this.UserInfo.UserName + 
-                "," + this.UserInfo.IPAddress +
+                "," + userName + //this.UserInfo.UserName +
+                "," + ipAddress + //this.UserInfo.IPAddress +
                 "," + "----->" +
-                "," + this.ControllerName + 
+                "," + this.ControllerName +
                 "," + this.ActionName + "(OnActionExecuting)";
 
             LogIF.InfoLog("ACCESS", strLogMessage);
@@ -158,9 +176,14 @@ namespace Touryo.Infrastructure.Business.Presentation
             // 処理時間（実行時間）, 処理時間（CPU時間）
             // エラーメッセージID, エラーメッセージ等
             // ------------
+
+            // Claimを取得する。
+            string userName, roles, ipAddress;
+            this.GetClaims(out userName, out roles, out ipAddress);
+
             string strLogMessage =
-                "," + this.UserInfo.UserName +
-                "," + this.UserInfo.IPAddress +
+                "," + userName + //this.UserInfo.UserName +
+                "," + ipAddress + //this.UserInfo.IPAddress +
                 "," + "<-----" +
                 "," + this.ControllerName +
                 "," + this.ActionName + "(OnActionExecuted)" +
@@ -207,16 +230,20 @@ namespace Touryo.Infrastructure.Business.Presentation
             // エラーメッセージID, エラーメッセージ等
             // ------------
 
+            // Claimを取得する。
+            string userName, roles, ipAddress;
+            this.GetClaims(out userName, out roles, out ipAddress);
+
             string strLogMessage =
-                "," + (this.UserInfo != null ? this.UserInfo.UserName : "null") +
-                "," + (this.UserInfo != null ? this.UserInfo.IPAddress : "null") +
+                "," + userName + // (this.UserInfo != null ? this.UserInfo.UserName : "null") +
+                "," + ipAddress + //(this.UserInfo != null ? this.UserInfo.IPAddress : "null") +
                 "," + "----->>" +
                 "," + this.ControllerName +
-                "," + this.ActionName + "(OnException)" +
+                "," + this.ActionName + "(ExecuteExceptionFilterAsync)" +
                 "," + //this.perfRec.ExecTime +
                 "," + //this.perfRec.CpuTime + 
                 "," + GetExceptionMessageID(bottomException) +
-                "," + bottomException.Message + "\r\n"+
+                "," + bottomException.Message + "\r\n" +
                 "," + bottomException.StackTrace + "\r\n" +
                 "," + ex.ToString(); // Exception.ToString()はRootのExceptionに対して行なう。
 
@@ -260,23 +287,75 @@ namespace Touryo.Infrastructure.Business.Presentation
             // Authorization: Bearer ヘッダから
             // JWTアサーションを処理し、認証、UserInfoを生成するなど。
             // ・・・
-            System.Diagnostics.Debug.WriteLine(authenticationContext.Request.Headers.ToString());
+            //System.Diagnostics.Debug.WriteLine(authenticationContext.Request.Headers.Authorization.ToString());
             // -------------------------------------------------------------
-            
-                if (userName == null || userName == "")
+
+            List<Claim> claims = null;
+
+            if (authenticationContext.Request.Headers.Authorization.Scheme.ToLower() == "bearer")
+            {
+                string access_token = authenticationContext.Request.Headers.Authorization.Parameter;
+                JWT_RS256 jwtRS256 = new JWT_RS256(
+                    @"C:\Git1\MultiPurposeAuthSite\root\programs\MultiPurposeAuthSite\CreateClientsIdentity\CreateClientsIdentity_RS256.cer", "test");
+
+                if (jwtRS256.Verify(access_token))
                 {
-                    // 未認証状態
-                    this.UserInfo = new MyUserInfo("未認証", this.GetClientIpAddress(authenticationContext.Request));
+                    Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
+                    string jwtPayload = Encoding.UTF8.GetString(base64UrlEncoder.Decode(access_token.Split('.')[1]));
+
+                    // id_tokenライクなJWTなので、中からsubなどを取り出すことができる。
+                    JObject jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
+
+                    //string nonce = (string)jobj["nonce"];
+                    string iss = (string)jobj["iss"];
+                    string aud = (string)jobj["aud"];
+                    string iat = (string)jobj["iat"];
+                    string exp = (string)jobj["exp"];
+
+                    string sub = (string)jobj["sub"];
+                    List<string> roles = JsonConvert.DeserializeObject<List<string>>(jobj["roles"].ToString());
+                    
+                    if (iss == "http://jwtssoauth.opentouryo.com" &&
+                        aud == "f374a155909d486a9234693c34e94479" &&
+                        long.Parse(exp) >= DateTimeOffset.Now.ToUnixTimeSeconds())
+                    {
+                        // ログインに成功
+
+                        // ActionFilterAttributeとApiController間の情報共有はcontext.Principalを使用する。
+                        // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+                       claims = new List<Claim>()
+                        {
+                            new Claim(ClaimTypes.Name, sub),
+                            new Claim(ClaimTypes.Role, string.Join(",", roles)),
+                            new Claim("IpAddress", this.GetClientIpAddress(authenticationContext.Request))
+                        };
+
+                        // The request message contains valid credential
+                        authenticationContext.Principal = new ClaimsPrincipal(new List<ClaimsIdentity> { new ClaimsIdentity(claims, "Token") });
+                        return;
+                    }
+                    else
+                    { }
                 }
                 else
-                {
-                    // 認証状態
-                    this.UserInfo = new MyUserInfo(userName, this.GetClientIpAddress(authenticationContext.Request));
-                    // 必要に応じて認証チケットのユーザ名からユーザ情報を復元する。
-                }
-           
+                { }
+            }
+            else
+            { }
 
-            // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+            // 未認証状態
+            // The request message contains invalid credential
+            //context.ErrorResult = new UnauthorizedResult(new AuthenticationHeaderValue[0], context.Request);
+
+            claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Name, "未認証"),
+                new Claim(ClaimTypes.Role, ""),
+                new Claim("IpAddress", this.GetClientIpAddress(authenticationContext.Request))
+            };
+
+            authenticationContext.Principal = new ClaimsPrincipal(new List<ClaimsIdentity> { new ClaimsIdentity(claims, "Token") });
+            return;
         }
 
         /// <summary>GetClientIpAddress</summary>
@@ -284,15 +363,44 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <returns>IPAddress(文字列)</returns>
         private string GetClientIpAddress(HttpRequestMessage request)
         {
-            if (request.Properties.ContainsKey("MS_HttpContext"))
+            IEnumerable<string> headerValues = null;
+            string clientIp = "";
+
+            if (request.Headers.TryGetValues("X-Forwarded-For", out headerValues) == true)
             {
-                return IPAddress.Parse(((HttpContextBase)request.Properties["MS_HttpContext"]).Request.UserHostAddress).ToString();
+                string xForwardedFor = headerValues.FirstOrDefault();
+                clientIp = xForwardedFor.Split(',').GetValue(0).ToString().Trim();
             }
-            if (request.Properties.ContainsKey("MS_OwinContext"))
+            else
             {
-                return IPAddress.Parse(((OwinContext)request.Properties["MS_OwinContext"]).Request.RemoteIpAddress).ToString();
+                if (request.Properties.ContainsKey("MS_HttpContext"))
+                {
+                    clientIp = ((HttpContextWrapper)request.Properties["MS_HttpContext"]).Request.UserHostAddress;
+                }
             }
-            return String.Empty;
+
+            if (clientIp == "::1"/*localhost*/)
+            {
+                clientIp = "localhost";
+            }
+            else
+            {
+                clientIp = clientIp.Split(':').GetValue(0).ToString().Trim(); 
+            }
+
+            return clientIp;
+        }
+
+        /// <summary>GetClaims</summary>
+        /// <param name="userName">string</param>
+        /// <param name="roles">string</param>
+        /// <param name="ipAddress">string</param>
+        private void GetClaims(out string userName, out string roles, out string ipAddress)
+        {
+            IEnumerable<Claim> claims = ((ClaimsIdentity)HttpContext.Current.User.Identity).Claims;
+            userName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
+            roles = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
+            ipAddress = claims.FirstOrDefault(c => c.Type == "IpAddress").Value;
         }
 
         #endregion

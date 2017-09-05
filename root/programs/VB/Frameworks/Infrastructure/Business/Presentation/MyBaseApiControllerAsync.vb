@@ -31,11 +31,16 @@
 '**********************************************************************************
 
 Imports System
+Imports System.Text
+Imports System.Linq
+Imports System.Collections.Generic
 Imports System.Threading
 Imports System.Threading.Tasks
+Imports System.Security.Claims
+Imports System.Security.Principal
+Imports System.Security.Authentication
 
 Imports System.Web
-'using System.Web.Mvc;
 Imports System.Web.Http.Controllers
 Imports System.Web.Http.Filters
 
@@ -43,12 +48,17 @@ Imports System.Net
 Imports System.Net.Http
 
 Imports Microsoft.Owin
+Imports Microsoft.Owin.Security.DataHandler.Encoder
+
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Linq
 
 Imports Touryo.Infrastructure.Business.Util
 Imports Touryo.Infrastructure.Framework.Exceptions
 Imports Touryo.Infrastructure.Framework.Util
 Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Util
+Imports Touryo.Infrastructure.Public.Util.JWT
 
 Namespace Touryo.Infrastructure.Business.Presentation
     ''' <summary>非同期 ASP.NET WebAPI用 ベーククラス２</summary>
@@ -74,22 +84,25 @@ Namespace Touryo.Infrastructure.Business.Presentation
         ''' <summary>
         ''' プロセスが承認を要求したときに呼び出します。
         ''' https://msdn.microsoft.com/ja-jp/library/dn314618.aspx
+        ''' https://msdn.microsoft.com/ja-jp/magazine/dn781361.aspx
         ''' </summary>
         ''' <param name="authenticationContext">HttpAuthenticationContext</param>
         ''' <param name="cancellationToken">CancellationToken</param>
         Public Async Function AuthenticateAsync(authenticationContext As HttpAuthenticationContext, cancellationToken As CancellationToken) As Task Implements IAuthenticationFilter.AuthenticateAsync
-            ' 認証ユーザ情報をメンバにロードする --------------------------
+            ' 認証ユーザ情報をメンバにロードする
             Await Me.GetUserInfo(authenticationContext)
-            ' -------------------------------------------------------------
         End Function
 
         ''' <summary>
-        ''' ・・・
+        ''' ・・・ChallengeAsync・・・
         ''' https://msdn.microsoft.com/ja-jp/library/dn573281.aspx
+        ''' https://msdn.microsoft.com/ja-jp/magazine/dn781361.aspx
         ''' </summary>
         ''' <param name="authenticationChallengeContext">HttpAuthenticationChallengeContext</param>
         ''' <param name="cancellationToken">CancellationToken</param>
         Public Async Function ChallengeAsync(authenticationChallengeContext As HttpAuthenticationChallengeContext, cancellationToken As CancellationToken) As Task Implements IAuthenticationFilter.ChallengeAsync
+            authenticationChallengeContext.Result = New ResultWithChallenge(authenticationChallengeContext.Result)
+            Return
         End Function
 
 #Region "OnAction"
@@ -101,6 +114,10 @@ Namespace Touryo.Infrastructure.Business.Presentation
         ''' <param name="actionContext">HttpActionContext</param>
         ''' <param name="cancellationToken">CancellationToken</param>
         Public Overrides Async Function OnActionExecutingAsync(actionContext As HttpActionContext, cancellationToken As CancellationToken) As Task
+            ' Claimを取得する。
+            Dim userName As String = "", roles As String = "", ipAddress As String = ""
+            Me.GetClaims(userName, roles, ipAddress)
+
             ' 権限チェック ------------------------------------------------
             ' ・・・
             ' -------------------------------------------------------------
@@ -124,7 +141,15 @@ Namespace Touryo.Infrastructure.Business.Presentation
             ' 処理時間（実行時間）, 処理時間（CPU時間）
             ' エラーメッセージID, エラーメッセージ等
             ' ------------
-            Dim strLogMessage As String = "," & Convert.ToString(Me.UserInfo.UserName) & "," & Convert.ToString(Me.UserInfo.IPAddress) & "," & "----->" & "," & Me.ControllerName & "," & Me.ActionName & "(OnActionExecuting)"
+
+            'this.UserInfo.UserName +
+            'this.UserInfo.IPAddress +
+            Dim strLogMessage As String =
+                "," & userName &
+                "," & ipAddress &
+                "," & "----->" &
+                "," & Me.ControllerName &
+                "," & Me.ActionName & "(OnActionExecuting)"
 
             LogIF.InfoLog("ACCESS", strLogMessage)
 
@@ -151,7 +176,21 @@ Namespace Touryo.Infrastructure.Business.Presentation
             ' 処理時間（実行時間）, 処理時間（CPU時間）
             ' エラーメッセージID, エラーメッセージ等
             ' ------------
-            Dim strLogMessage As String = "," & Convert.ToString(Me.UserInfo.UserName) & "," & Convert.ToString(Me.UserInfo.IPAddress) & "," & "<-----" & "," & Me.ControllerName & "," & Me.ActionName & "(OnActionExecuted)" & "," & Convert.ToString(perfRec.ExecTime) & "," & Convert.ToString(perfRec.CpuTime)
+
+            ' Claimを取得する。
+            Dim userName As String = "", roles As String = "", ipAddress As String = ""
+            Me.GetClaims(userName, roles, ipAddress)
+
+            'this.UserInfo.UserName +
+            'this.UserInfo.IPAddress +
+            Dim strLogMessage As String =
+                "," & userName &
+                "," & ipAddress &
+                "," & "<-----" &
+                "," & Me.ControllerName &
+                "," & Me.ActionName & "(OnActionExecuted)" &
+                "," & Convert.ToString(perfRec.ExecTime) &
+                "," & Convert.ToString(perfRec.CpuTime)
 
             LogIF.InfoLog("ACCESS", strLogMessage)
         End Function
@@ -190,9 +229,25 @@ Namespace Touryo.Infrastructure.Business.Presentation
             ' エラーメッセージID, エラーメッセージ等
             ' ------------
 
+            ' Claimを取得する。
+            Dim userName As String = "", roles As String = "", ipAddress As String = ""
+            Me.GetClaims(userName, roles, ipAddress)
+
+            ' (this.UserInfo != null ? this.UserInfo.UserName : "null") +
+            '(this.UserInfo != null ? this.UserInfo.IPAddress : "null") +
             'this.perfRec.ExecTime +
             'this.perfRec.CpuTime + 
-            Dim strLogMessage As String = "," & Convert.ToString((If(Me.UserInfo IsNot Nothing, Me.UserInfo.UserName, "null"))) & "," & Convert.ToString((If(Me.UserInfo IsNot Nothing, Me.UserInfo.IPAddress, "null"))) & "," & "----->>" & "," & Me.ControllerName & "," & Me.ActionName & "(OnException)" & "," & "," & "," & GetExceptionMessageID(bottomException) & "," & bottomException.Message & vbCr & vbLf & "," & bottomException.StackTrace & vbCr & vbLf & "," & ex.ToString()
+            Dim strLogMessage As String =
+                "," & userName &
+                "," & ipAddress &
+                "," & "----->>" &
+                "," & Me.ControllerName &
+                "," & Me.ActionName & "(ExecuteExceptionFilterAsync)" &
+                "," & "," &
+                "," & GetExceptionMessageID(bottomException) &
+                "," & bottomException.Message & vbCr & vbLf &
+                "," & bottomException.StackTrace & vbCr & vbLf & "," & ex.ToString()
+
             ' Exception.ToString()はRootのExceptionに対して行なう。
             LogIF.ErrorLog("ACCESS", strLogMessage)
         End Function
@@ -227,41 +282,108 @@ Namespace Touryo.Infrastructure.Business.Presentation
             ' Authorization: Bearer ヘッダから
             ' JWTアサーションを処理し、認証、UserInfoを生成するなど。
             ' ・・・
-            System.Diagnostics.Debug.WriteLine(authenticationContext.Request.Headers.ToString())
+            'System.Diagnostics.Debug.WriteLine(authenticationContext.Request.Headers.Authorization.ToString());
             ' -------------------------------------------------------------
 
-            ' nullチェック
-            If Me.UserInfo Is Nothing Then
-                ' nullの場合、仮の値を生成 / 設定する。
-                Dim userName As String = System.Threading.Thread.CurrentPrincipal.Identity.Name
+            Dim claims As List(Of Claim) = Nothing
 
-                If userName Is Nothing OrElse userName = "" Then
-                    ' 未認証状態
-                    Me.UserInfo = New MyUserInfo("未認証", Me.GetClientIpAddress(authenticationContext.Request))
+            If authenticationContext.Request.Headers.Authorization.Scheme.ToLower() = "bearer" Then
+                Dim access_token As String = authenticationContext.Request.Headers.Authorization.Parameter
+                Dim jwtRS256 As New JWT_RS256("C:\Git1\MultiPurposeAuthSite\root\programs\MultiPurposeAuthSite\CreateClientsIdentity\CreateClientsIdentity_RS256.cer", "test")
+
+                If jwtRS256.Verify(access_token) Then
+                    Dim base64UrlEncoder As New Base64UrlTextEncoder()
+                    Dim jwtPayload As String = Encoding.UTF8.GetString(base64UrlEncoder.Decode(access_token.Split("."c)(1)))
+
+                    ' id_tokenライクなJWTなので、中からsubなどを取り出すことができる。
+                    Dim jobj As JObject = DirectCast(JsonConvert.DeserializeObject(jwtPayload), JObject)
+
+                    'string nonce = (string)jobj["nonce"];
+                    Dim iss As String = jobj("iss").ToString()
+                    Dim aud As String = jobj("aud").ToString()
+                    Dim iat As String = jobj("iat").ToString()
+                    Dim exp As String = jobj("exp").ToString()
+
+                    Dim [sub] As String = jobj("sub").ToString()
+                    Dim roles As List(Of String) = JsonConvert.DeserializeObject(Of List(Of String))(jobj("roles").ToString())
+
+                    If iss = "http://jwtssoauth.opentouryo.com" _
+                        AndAlso aud = "f374a155909d486a9234693c34e94479" _
+                        AndAlso Long.Parse(exp) >= DateTimeOffset.Now.ToUnixTimeSeconds() Then
+                        ' ログインに成功
+
+                        ' ActionFilterAttributeとApiController間の情報共有はcontext.Principalを使用する。
+                        ' ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+                        claims = New List(Of Claim)() From {
+                            New Claim(ClaimTypes.Name, [sub]),
+                            New Claim(ClaimTypes.Role, String.Join(",", roles)),
+                            New Claim("IpAddress", Me.GetClientIpAddress(authenticationContext.Request))
+                        }
+
+                        ' The request message contains valid credential
+                        authenticationContext.Principal = New ClaimsPrincipal(New List(Of ClaimsIdentity)() From {
+                            New ClaimsIdentity(claims, "Token")
+                        })
+                        Return
+                    Else
+                    End If
                 Else
-                    ' 認証状態
-                    ' 必要に応じて認証チケットのユーザ名からユーザ情報を復元する。
-                    Me.UserInfo = New MyUserInfo(userName, Me.GetClientIpAddress(authenticationContext.Request))
                 End If
-                ' nullで無い場合、取得した値を設定する。
             Else
             End If
 
-            ' ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+            ' 未認証状態
+            ' The request message contains invalid credential
+            'context.ErrorResult = new UnauthorizedResult(new AuthenticationHeaderValue[0], context.Request);
+
+            claims = New List(Of Claim)() From {
+                New Claim(ClaimTypes.Name, "未認証"),
+                New Claim(ClaimTypes.Role, ""),
+                New Claim("IpAddress", Me.GetClientIpAddress(authenticationContext.Request))
+            }
+
+            authenticationContext.Principal = New ClaimsPrincipal(New List(Of ClaimsIdentity)() From {
+                New ClaimsIdentity(claims, "Token")
+            })
+            Return
         End Function
 
         ''' <summary>GetClientIpAddress</summary>
         ''' <param name="request">HttpRequestMessage</param>
         ''' <returns>IPAddress(文字列)</returns>
         Private Function GetClientIpAddress(request As HttpRequestMessage) As String
-            If request.Properties.ContainsKey("MS_HttpContext") Then
-                Return IPAddress.Parse(DirectCast(request.Properties("MS_HttpContext"), HttpContextBase).Request.UserHostAddress).ToString()
+            Dim headerValues As IEnumerable(Of String) = Nothing
+            Dim clientIp As String = ""
+
+            If request.Headers.TryGetValues("X-Forwarded-For", headerValues) = True Then
+                Dim xForwardedFor As String = headerValues.FirstOrDefault()
+                clientIp = xForwardedFor.Split(","c).GetValue(0).ToString().Trim()
+            Else
+                If request.Properties.ContainsKey("MS_HttpContext") Then
+                    clientIp = DirectCast(request.Properties("MS_HttpContext"), HttpContextWrapper).Request.UserHostAddress
+                End If
             End If
-            If request.Properties.ContainsKey("MS_OwinContext") Then
-                Return IPAddress.Parse(DirectCast(request.Properties("MS_OwinContext"), OwinContext).Request.RemoteIpAddress).ToString()
+
+            If clientIp = "::1" Then
+                'localhost
+                clientIp = "localhost"
+            Else
+                clientIp = clientIp.Split(":"c).GetValue(0).ToString().Trim()
             End If
-            Return [String].Empty
+
+            Return clientIp
         End Function
+
+        ''' <summary>GetClaims</summary>
+        ''' <param name="userName">string</param>
+        ''' <param name="roles">string</param>
+        ''' <param name="ipAddress">string</param>
+        Private Sub GetClaims(ByRef userName As String, ByRef roles As String, ByRef ipAddress As String)
+            Dim claims As IEnumerable(Of Claim) = DirectCast(HttpContext.Current.User.Identity, ClaimsIdentity).Claims
+            userName = claims.FirstOrDefault(Function(c) c.Type = ClaimTypes.Name).Value
+            roles = claims.FirstOrDefault(Function(c) c.Type = ClaimTypes.Role).Value
+            ipAddress = claims.FirstOrDefault(Function(c) c.Type = "IpAddress").Value
+        End Sub
 
 #End Region
     End Class
