@@ -10,9 +10,4 @@
 
 <asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">
     <!-- Footer 部の ContentPlaceHolder -->
-    <script type="text/javascript">
-        (function () {
-            window.location.href = "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize?client_id=b6b393fe861b430eb4ee061006826b03&response_type=code&scope=profile%20email%20phone%20address%20userid%20auth%20openid&state=<%=this.State %>&nonce=<%=this.Nonce %>";
-        }());
-    </script>
 </asp:Content>

@@ -99,6 +99,7 @@
     </Compile>
     <Compile Include="Presentation\BaseMVController.cs" />
     <Compile Include="Presentation\FxEventArgs.cs" />
+    <Compile Include="Presentation\OAuth2Params.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\FrameworkExceptionMessageResource.Designer.cs">
       <AutoGen>True</AutoGen>

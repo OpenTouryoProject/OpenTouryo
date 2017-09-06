@@ -1,51 +1,46 @@
 ﻿//**********************************************************************************
-//* サンプル アプリ・コントローラ
+//* サンプル画面（認証）
 //**********************************************************************************
 
-// テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+// サンプル画面なので、必要に応じて流用 or 削除して下さい。
 
 //**********************************************************************************
-//* クラス名        ：HomeController
-//* クラス日本語名  ：認証用サンプル アプリ・コントローラ
+//* クラス名        ：OAuthAuthorizationCodeGrantClient
+//* クラス日本語名  ：OAuth2, OIDC認証画面
 //*
 //* 作成日時        ：－
-//* 作成者          ：生技
-//* 更新履歴        ：
+//* 作成者          ：－
+//* 更新履歴        ：－
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-using MVC_Sample.Models.ViewModels;
-
 using System;
 using System.Text;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using System.Web.Security;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
+using System.Web.Security;
 
 using Microsoft.Owin.Security.DataHandler.Encoder;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Presentation;
+using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Util.JWT;
 
-namespace MVC_Sample.Controllers
+using WebForms_Sample;
+
+namespace WebForms_Sample.Aspx.Auth
 {
-    /// <summary>HomeController</summary>
-    [Authorize]
-    public class HomeController : MyBaseMVController
+    /// <summary>認証画面</summary>
+    public partial class OAuthAuthorizationCodeGrantClient : System.Web.UI.Page
     {
         /// <summary>Nonce</summary>
         public string Nonce
@@ -56,7 +51,7 @@ namespace MVC_Sample.Controllers
                 {
                     Session["nonce"] = GetPassword.Base64UrlSecret(10);
                 }
-                return (string)Session["nonce"];
+                return (string)Session["nonce"]; 
             }
         }
 
@@ -73,121 +68,14 @@ namespace MVC_Sample.Controllers
             }
         }
 
-        /// <summary>
-        /// GET: Home
-        /// </summary>
-        /// <returns>ActionResult</returns>
-        [HttpGet]
-        [AllowAnonymous]
-        public ActionResult Index()
+        /// <summary></summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected async void Page_Load(object sender, EventArgs e)
         {
-            return View();
-        }
+            string code = Request.QueryString["code"];
+            string state = Request.QueryString["state"];
 
-        /// <summary>
-        /// GET: /Home/Login
-        /// </summary>
-        /// <returns>ActionResult</returns>
-        [HttpGet]
-        [AllowAnonymous]
-        public ActionResult Login()
-        {
-            // Session消去
-            this.FxSessionAbandon();
-
-            return this.View();
-        }
-
-        /// <summary>
-        /// POST: /Home/Login
-        /// </summary>
-        /// <param name="model">LoginViewModel</param>
-        /// <returns>ActionResult</returns>
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public ActionResult Login(LoginViewModel model)
-        {
-            if (!Request.Form.AllKeys.Any(x => x == "external"))
-            {
-                // 通常ログイン
-                if (ModelState.IsValid)
-                {
-                    if (!string.IsNullOrEmpty(model.UserName))
-                    {
-                        // 認証か完了した場合、認証チケットを生成し、元のページにRedirectする。
-                        // 第２引数は、「クライアントがCookieを永続化（ファイルとして保存）するかどうか。」
-                        // を設定する引数であるが、セキュリティを考慮して、falseの設定を勧める。
-                        FormsAuthentication.RedirectFromLoginPage(model.UserName, false);
-
-                        // 認証情報を保存する。
-                        MyUserInfo ui = new MyUserInfo(model.UserName, Request.UserHostAddress);
-                        UserInfoHandle.SetUserInformation(ui);
-
-                        //基盤に任せるのでリダイレクトしない。
-                        //return this.Redirect(ReturnUrl);
-                        return new EmptyResult();
-                    }
-                    else
-                    {
-                        // ユーザー認証 失敗
-                        this.ModelState.AddModelError(string.Empty, "指定されたユーザー名またはパスワードが正しくありません。");
-                    }
-                }
-                else
-                {
-                    // LoginViewModelの検証に失敗
-                }
-
-                // Session消去
-                this.FxSessionAbandon();
-
-                // ポストバック的な
-                return this.View(model);
-            }
-            else
-            {
-                // 外部ログイン
-                return Redirect(string.Format(
-                    "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize"
-                    + "?client_id=" + OAuth2Param.ClientID
-                    + "&response_type=code" 
-                    + "&scope=profile%20email%20phone%20address%20userid%20auth%20openid" 
-                    + "&state={0}" 
-                    + "&nonce={1}",
-                    this.State, this.Nonce));
-            }
-        }
-
-        /// <summary>
-        /// Get: /Home/Scroll
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public ActionResult Scroll()
-        {
-            return this.View();
-        }
-
-        /// <summary>
-        /// Get: /Home/Logout
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public ActionResult Logout()
-        {
-            FormsAuthentication.SignOut();
-            return this.Redirect(Url.Action("Index", "Home"));
-        }
-
-        /// <summary>OAuthAuthorizationCodeGrantClient</summary>
-        /// <param name="code">string</param>
-        /// <param name="state">string</param>
-        /// <returns>ActionResultを非同期的に返す</returns>
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<ActionResult> OAuthAuthorizationCodeGrantClient(string code, string state)
-        {
             try
             {
                 if (state == this.State) // CSRF(XSRF)対策のstateの検証は重要
@@ -203,19 +91,19 @@ namespace MVC_Sample.Controllers
                         Method = HttpMethod.Post,
                         RequestUri = new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"),
                     };
-
+                    
                     // HttpRequestMessage (Headers & Content)
                     httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
                         "Basic",
                         Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(
-                            string.Format("{0}:{1}", OAuth2Param.ClientID, OAuth2Param.ClientSecret))));
+                            string.Format("{0}:{1}", new string[] { OAuth2Param.ClientID, OAuth2Param.ClientSecret }))));
 
                     httpRequestMessage.Content = new FormUrlEncodedContent(
                         new Dictionary<string, string>
                         {
                             { "grant_type", "authorization_code" },
                             { "code", code },
-                            { "redirect_uri", System.Web.HttpUtility.HtmlEncode("http://localhost:58496/MVC_Sample/Home/OAuthAuthorizationCodeGrantClient") },
+                            { "redirect_uri", System.Web.HttpUtility.HtmlEncode("http://localhost:9999/WebForms_Sample/Aspx/Auth/OAuthAuthorizationCodeGrantClient.aspx") },
                         });
 
                     // HttpResponseMessage
@@ -228,7 +116,6 @@ namespace MVC_Sample.Controllers
 
                     // id_tokenの検証コード
                     string id_token = dic["id_token"];
-
                     JWT_RS256 jwtRS256 = new JWT_RS256(OAuth2Param.RS256Cer, "");
 
                     if (jwtRS256.Verify(id_token))
@@ -256,17 +143,17 @@ namespace MVC_Sample.Controllers
                             MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
                             UserInfoHandle.SetUserInformation(ui);
 
-                            return new EmptyResult();
+                            return;
                         }
                         else
                         { }
                     }
                     else
                     { }
-                }
 
-                // ログインに失敗
-                return RedirectToAction("Login");
+                    // ログインに失敗
+                    Response.Redirect("../Start/login.aspx");
+                }
             }
             finally
             {

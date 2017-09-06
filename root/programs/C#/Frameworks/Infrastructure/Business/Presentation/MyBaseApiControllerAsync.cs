@@ -37,25 +37,19 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Security.Claims;
-using System.Security.Principal;
-using System.Security.Authentication;
 
 using System.Web;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
-
-using System.Net;
 using System.Net.Http;
 
-using Microsoft.Owin;
 using Microsoft.Owin.Security.DataHandler.Encoder;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-using Touryo.Infrastructure.Business.Util;
+using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Util.JWT;
@@ -116,8 +110,8 @@ namespace Touryo.Infrastructure.Business.Presentation
 		public override async Task OnActionExecutingAsync(HttpActionContext actionContext, CancellationToken cancellationToken)
         {
             // Claimを取得する。
-            string userName, roles, ipAddress;
-            this.GetClaims(out userName, out roles, out ipAddress);
+            string userName, roles, scopes, ipAddress;
+            this.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 権限チェック ------------------------------------------------
             // ・・・
@@ -178,8 +172,8 @@ namespace Touryo.Infrastructure.Business.Presentation
             // ------------
 
             // Claimを取得する。
-            string userName, roles, ipAddress;
-            this.GetClaims(out userName, out roles, out ipAddress);
+            string userName, roles, scopes, ipAddress;
+            this.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             string strLogMessage =
                 "," + userName + //this.UserInfo.UserName +
@@ -231,8 +225,8 @@ namespace Touryo.Infrastructure.Business.Presentation
             // ------------
 
             // Claimを取得する。
-            string userName, roles, ipAddress;
-            this.GetClaims(out userName, out roles, out ipAddress);
+            string userName, roles, scopes, ipAddress;
+            this.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             string strLogMessage =
                 "," + userName + // (this.UserInfo != null ? this.UserInfo.UserName : "null") +
@@ -286,8 +280,6 @@ namespace Touryo.Infrastructure.Business.Presentation
             // カスタム認証処理 --------------------------------------------
             // Authorization: Bearer ヘッダから
             // JWTアサーションを処理し、認証、UserInfoを生成するなど。
-            // ・・・
-            //System.Diagnostics.Debug.WriteLine(authenticationContext.Request.Headers.Authorization.ToString());
             // -------------------------------------------------------------
 
             List<Claim> claims = null;
@@ -295,8 +287,7 @@ namespace Touryo.Infrastructure.Business.Presentation
             if (authenticationContext.Request.Headers.Authorization.Scheme.ToLower() == "bearer")
             {
                 string access_token = authenticationContext.Request.Headers.Authorization.Parameter;
-                JWT_RS256 jwtRS256 = new JWT_RS256(
-                    @"C:\Git1\MultiPurposeAuthSite\root\programs\MultiPurposeAuthSite\CreateClientsIdentity\CreateClientsIdentity_RS256.cer", "test");
+                JWT_RS256 jwtRS256 = new JWT_RS256(OAuth2Param.RS256Cer, "");
 
                 if (jwtRS256.Verify(access_token))
                 {
@@ -314,9 +305,10 @@ namespace Touryo.Infrastructure.Business.Presentation
 
                     string sub = (string)jobj["sub"];
                     List<string> roles = JsonConvert.DeserializeObject<List<string>>(jobj["roles"].ToString());
-                    
-                    if (iss == "http://jwtssoauth.opentouryo.com" &&
-                        aud == "f374a155909d486a9234693c34e94479" &&
+                    List<string> scopes = JsonConvert.DeserializeObject<List<string>>(jobj["scopes"].ToString());
+
+                    if (iss == OAuth2Param.Isser  &&
+                        OAuth2Param.ClientIDs.Any(x => x == aud) &&
                         long.Parse(exp) >= DateTimeOffset.Now.ToUnixTimeSeconds())
                     {
                         // ログインに成功
@@ -327,6 +319,7 @@ namespace Touryo.Infrastructure.Business.Presentation
                         {
                             new Claim(ClaimTypes.Name, sub),
                             new Claim(ClaimTypes.Role, string.Join(",", roles)),
+                            new Claim("Scopes", string.Join(",", scopes)),
                             new Claim("IpAddress", this.GetClientIpAddress(authenticationContext.Request))
                         };
 
@@ -351,6 +344,7 @@ namespace Touryo.Infrastructure.Business.Presentation
             {
                 new Claim(ClaimTypes.Name, "未認証"),
                 new Claim(ClaimTypes.Role, ""),
+                new Claim("Scopes", ""),
                 new Claim("IpAddress", this.GetClientIpAddress(authenticationContext.Request))
             };
 
@@ -394,15 +388,19 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <summary>GetClaims</summary>
         /// <param name="userName">string</param>
         /// <param name="roles">string</param>
+        /// <param name="scopes">string</param>
         /// <param name="ipAddress">string</param>
-        private void GetClaims(out string userName, out string roles, out string ipAddress)
+        private void GetClaims(out string userName, out string roles, out string scopes, out string ipAddress)
         {
             IEnumerable<Claim> claims = ((ClaimsIdentity)HttpContext.Current.User.Identity).Claims;
             userName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
             roles = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
+            scopes = claims.FirstOrDefault(c => c.Type == "Scopes").Value;
             ipAddress = claims.FirstOrDefault(c => c.Type == "IpAddress").Value;
         }
 
         #endregion
+
+        
     }
 }

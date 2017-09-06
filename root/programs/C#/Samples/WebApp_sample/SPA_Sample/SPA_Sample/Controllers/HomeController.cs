@@ -36,6 +36,7 @@ using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Util;
+using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Util.JWT;
@@ -142,7 +143,12 @@ namespace SPA_Sample.Controllers
             {
                 // 外部ログイン
                 return Redirect(string.Format(
-                    "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize?client_id=f374a155909d486a9234693c34e94479&response_type=code&scope=profile%20email%20phone%20address%20userid%20auth%20openid&state={0}&nonce={1}",
+                    "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize" 
+                    + "?client_id=" + OAuth2Param.ClientID
+                    + "&response_type=code" 
+                    + "&scope=profile%20email%20phone%20address%20userid%20auth%20openid"
+                    + "&state={0}"
+                    + "&nonce={1}",
                     this.State, this.Nonce));
             }
         }
@@ -206,9 +212,7 @@ namespace SPA_Sample.Controllers
                     httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
                         "Basic",
                         Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(
-                            string.Format("{0}:{1}",
-                                "f374a155909d486a9234693c34e94479",
-                                "z54lhkewWPl4hk3eF1WYwvdqt7Fz24jYamLPZFVnWpA"))));
+                            string.Format("{0}:{1}", OAuth2Param.ClientID, OAuth2Param.ClientSecret))));
 
                     httpRequestMessage.Content = new FormUrlEncodedContent(
                         new Dictionary<string, string>
@@ -228,9 +232,7 @@ namespace SPA_Sample.Controllers
 
                     // id_tokenの検証コード
                     string id_token = dic["id_token"];
-
-                    JWT_RS256 jwtRS256 = new JWT_RS256(
-                        @"C:\Git1\MultiPurposeAuthSite\root\programs\MultiPurposeAuthSite\CreateClientsIdentity\CreateClientsIdentity_RS256.cer", "test");
+                    JWT_RS256 jwtRS256 = new JWT_RS256(OAuth2Param.RS256Cer, "");
 
                     if (jwtRS256.Verify(id_token))
                     {
@@ -248,8 +250,8 @@ namespace SPA_Sample.Controllers
                         string sub = (string)jobj["sub"];
 
                         if (nonce == this.Nonce &&
-                            iss == "http://jwtssoauth.opentouryo.com" &&
-                            aud == "f374a155909d486a9234693c34e94479" &&
+                            iss == OAuth2Param.Isser &&
+                            aud == OAuth2Param.ClientID &&
                             long.Parse(exp) >= DateTimeOffset.Now.ToUnixTimeSeconds())
                         {
                             // ログインに成功

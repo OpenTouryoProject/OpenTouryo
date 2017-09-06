@@ -23,12 +23,39 @@ using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Util;
+using Touryo.Infrastructure.Public.Util;
 
 namespace WebForms_Sample.Aspx.Start
 {
     /// <summary>ログイン画面（Forms認証対応）</summary>
     public partial class login : MyBaseController
     {
+        /// <summary>Nonce</summary>
+        public string Nonce
+        {
+            get
+            {
+                if (Session["nonce"] == null)
+                {
+                    Session["nonce"] = GetPassword.Base64UrlSecret(10);
+                }
+                return (string)Session["nonce"];
+            }
+        }
+
+        /// <summary>State</summary>
+        public string State
+        {
+            get
+            {
+                if (Session["state"] == null)
+                {
+                    Session["state"] = GetPassword.Base64UrlSecret(10);
+                }
+                return (string)Session["state"];
+            }
+        }
+
         /// <summary>constructor</summary>
         public login()
         {
@@ -52,7 +79,6 @@ namespace WebForms_Sample.Aspx.Start
 
             // Session消去
             this.FxSessionAbandon();
-
         }
 
         /// <summary>
@@ -68,8 +94,9 @@ namespace WebForms_Sample.Aspx.Start
             // TODO:
             // ここでは何もしない
 
-            // btnButton1のイベントであれば、Session消去しない
-            if (Request.Form["ctl00$ContentPlaceHolder_A$btnButton1"] == null)
+            // btnButton1, 2のイベントであれば、Session消去しない
+            if (Request.Form["ctl00$ContentPlaceHolder_A$btnButton1"] == null 
+                && Request.Form["ctl00$ContentPlaceHolder_A$btnButton2"] == null)
             {
                 // Session消去
                 this.FxSessionAbandon();
@@ -116,7 +143,12 @@ namespace WebForms_Sample.Aspx.Start
         /// <returns>URL</returns>
         protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
         {
-            return "../Auth/OAuthAuthorizationCodeGrantClient.aspx";
+            return "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize"
+                + "?client_id=" + OAuth2Param.ClientID
+                + "&response_type=code"
+                + "&scope=profile%20email%20phone%20address%20userid%20auth%20openid"
+                + "&state=" + this.State
+                + "&nonce=" + this.Nonce;
         }
 
         #endregion
