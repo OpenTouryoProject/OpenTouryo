@@ -76,6 +76,8 @@ using System.Text;
 using System.Data;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Diagnostics;
 
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
@@ -1748,12 +1750,12 @@ namespace Touryo.Infrastructure.Public.Db
                 {
                     // LISTタグ内のパラメタに対応するパラメタが設定されている。
 
-                    // パラメタの型は「ArrayList」型であること。
-                    if (obj.GetType() == typeof(ArrayList))
+                    // パラメタの型は「ArrayListかList<T>」型であること。
+                    if (obj is ArrayList || this.IsList(obj))
                     {
-                        // LISTタグ内のパラメタに対応するパラメタが「ArrayList」型である。
+                        // LISTタグ内のパラメタに対応するパラメタが「ArrayListかList<T>」型である。
 
-                        ArrayList al = (ArrayList)obj;
+                        IList al = (IList)obj;
 
                         if (al.Count == 0)
                         {
@@ -1801,7 +1803,7 @@ namespace Touryo.Infrastructure.Public.Db
                     }
                     else
                     {
-                        // LISTタグ内のパラメタに対応するパラメタが「ArrayList」型でない。
+                        // LISTタグ内のパラメタに対応するパラメタが「ArrayListかList<T>」型でない。
 
                         // この場合はパラメタ数１と判断し、パラメタを展開しないでLISTタグを削除（InnerTextで置換する）する。
                         // 2008/10/16---タグ編集処理（半角スペースを追加）
@@ -2823,19 +2825,40 @@ namespace Touryo.Infrastructure.Public.Db
                     dr[1] = aryString[0].Trim();
 
                     ArrayList al = new ArrayList();
+                    List<object> list = new List<object>();
 
-                    // ArrayList or 配列
+                    // ( ArrayList or List<T> ) or 配列
                     if (aryString[1].Trim().IndexOf("[]") == -1)
                     {
-                        // ArrayListの場合
-
+                        // ArrayList or List<T>の場合
                         for (int i = 2; i < aryString.Length; i++)
                         {
                             al.Add(this.StringToObject(aryString[1].Trim(), aryString[i].Trim()));
+                            list.Add(this.StringToObject(aryString[1].Trim(), aryString[i].Trim()));
                         }
 
-                        // パラメタ値（ArrayList）
-                        dr[2] = al;
+                        #region ArrayList or List<T> の テストコード
+
+                        // パラメタ値（ArrayList or ）
+                        //Int32と同じサイズのバイト配列にランダムな値を設定する
+                        //byte[] bs = new byte[sizeof(int)];
+                        byte[] bs = new byte[4];
+                        RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+                        rng.GetBytes(bs);
+
+                        //Int32に変換する
+                        if (BitConverter.ToInt32(bs, 0) % 2 == 0)
+                        {
+                            dr[2] = al;
+                            Debug.WriteLine("Test case of ArrayList.");
+                        }
+                        else
+                        {
+                            dr[2] = list;
+                            Debug.WriteLine("Test case of List<T>.");
+                        }
+
+                        #endregion
                     }
                     else
                     {
