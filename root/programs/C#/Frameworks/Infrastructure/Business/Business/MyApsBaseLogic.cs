@@ -235,8 +235,8 @@ namespace Touryo.Infrastructure.Business.Business
                     damABT = new DamManagedOdp();
                     damAMT = new DamManagedOdp();
 
-                    // 接続文字列をロード（ODP2：Managed Driver or with the Instant Client）
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP2");
+                    // 接続文字列をロード
+                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP");
                 }
                 //else if (parameterValue.ActionType.Split('%')[0] == "DB2")
                 //{

@@ -345,7 +345,7 @@ namespace DaoGen_Tool
             if (this.rbnODP.Checked)
             {
                 this.Dap = "ODP";
-                this.txtConnString.Text = GetConfigParameter.GetConfigValue("ConnectionString_ODP2");
+                this.txtConnString.Text = GetConfigParameter.GetConfigValue("ConnectionString_ODP");
             }
 
             // コンボを初期化する。

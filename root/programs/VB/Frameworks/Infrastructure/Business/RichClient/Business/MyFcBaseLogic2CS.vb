@@ -175,8 +175,8 @@ Namespace Touryo.Infrastructure.Business.RichClient.Business
                     ' Oracle / ODP.NET用のDamを生成
                     dam = New DamManagedOdp()
 
-                    ' 接続文字列をロード（ODP2：Managed Driver or with the Instant Client）
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP2")
+                    ' 接続文字列をロード
+                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP")
                     'ElseIf parameterValue.ActionType.Split("%"c)(0) = "DB2" Then
                     '    ' DB2.NET用のDamを生成
                     '    dam = New DamDB2()
