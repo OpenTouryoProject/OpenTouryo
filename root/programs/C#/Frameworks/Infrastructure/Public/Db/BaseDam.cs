@@ -66,6 +66,7 @@
 //*                                by adding space after "AND" and "OR" in the method 'DeleteFirstLogicalOperatoronWhereClause'  
 //*  2015/07/05  Sai               Added virtual property of IDbCommand
 //*  2017/08/11  西野 大介         BaseDam.ClearText ---> StringConverter.FormattingForOneLineLog
+//*  2017/09/06  西野 大介         IN句展開、ArrayListに加えて、List<T>のサポートを追加
 //**********************************************************************************
 
 using System;
@@ -3260,5 +3261,17 @@ namespace Touryo.Infrastructure.Public.Db
         #endregion
 
         #endregion
+
+        /// <summary>List(T)かどうか判別</summary>
+        /// <param name="o">任意のオブジェクト</param>
+        /// <returns>
+        /// - List(T)である : true
+        /// - List(T)でない : false
+        /// </returns>
+        protected bool IsList(object o)
+        {
+            return (o.GetType().Name == "List`1"
+                && o.GetType().Namespace == "System.Collections.Generic"); // (o is List<object>)
+        }
     }
 }

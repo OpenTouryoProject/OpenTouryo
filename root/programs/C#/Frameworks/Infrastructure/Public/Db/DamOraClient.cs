@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2014/02/04  西野 大介         新規作成（.NET4.0以降、非推奨）
 //*  2015/07/05  Sai               Implemented virtual property of IDbCommand in DamOraClient class
+//*  2017/09/06  西野 大介         IN句展開、ArrayListに加えて、List<T>のサポートを追加
 //**********************************************************************************
 
 using System;
@@ -43,6 +44,7 @@ namespace Touryo.Infrastructure.Public.Db
 {
     /// <summary>データアクセス・プロバイダ＝OracleClientのデータアクセス制御クラス</summary>
     /// <remarks>必要なメソッド・プロパティを利用する</remarks>
+    [Obsolete("DamOraClient is deprecated, please use DamManagedOdp instead.")]
     public class DamOraClient : BaseDam
     {
         #region クラス変数
@@ -580,7 +582,6 @@ namespace Touryo.Infrastructure.Public.Db
                     if (this._parameter[paramName] == null) 
                     {
                         // パラメタがnullの場合
-                        // ※ 下記のtypeof(ArrayList).ToString()対策
 
                         // 既定値対策されているのでこのままで良い。
                         this.SetParameter(
@@ -590,10 +591,11 @@ namespace Touryo.Infrastructure.Public.Db
                             (int)this._parameterSize[paramName],
                             (ParameterDirection)this._parameterDirection[paramName]);
                     }
-                    else if (this._parameter[paramName] is ArrayList)
+                    else if (this._parameter[paramName] is ArrayList
+                        || this.IsList(this._parameter[paramName]))
                     {
-                        // パラメタがLISTの場合
-                        ArrayList al = (ArrayList)this._parameter[paramName];
+                        // パラメタがnullでなく、ArrayListかList<T>の場合(IList)
+                        IList al = (IList)this._parameter[paramName];
 
                         // パラメタを展開して設定。 
 
@@ -614,8 +616,7 @@ namespace Touryo.Infrastructure.Public.Db
                     }
                     else
                     {
-                        // パラメタがLISTでない場合、
-                        // パラメタをそのまま設定。
+                        // それ以外のパラメタは、そのまま設定。
 
                         // 既定値対策されているのでこのままで良い。
                         this.SetParameter(

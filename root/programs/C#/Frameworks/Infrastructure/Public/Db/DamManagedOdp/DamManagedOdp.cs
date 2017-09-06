@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/xx/xx  西野 大介         新規作成
+//*  2017/09/06  西野 大介         IN句展開、ArrayListに加えて、List<T>のサポートを追加
 //**********************************************************************************
 
 using System;
@@ -620,7 +621,6 @@ namespace Touryo.Infrastructure.Public.Db
                     if (this._parameter[paramName] == null)
                     {
                         // パラメタがnullの場合
-                        // ※ 下記のtypeof(ArrayList).ToString()対策
 
                         // 既定値対策されているのでこのままで良い。
                         this.SetParameter(
@@ -630,10 +630,11 @@ namespace Touryo.Infrastructure.Public.Db
                             (int)this._parameterSize[paramName],
                             (ParameterDirection)this._parameterDirection[paramName]);
                     }
-                    else if (this._parameter[paramName] is ArrayList)
+                    else if (this._parameter[paramName] is ArrayList
+                        || this.IsList(this._parameter[paramName]))
                     {
-                        // パラメタがLISTの場合
-                        ArrayList al = (ArrayList)this._parameter[paramName];
+                        // パラメタがnullでなく、ArrayListかList<T>の場合(IList)
+                        IList al = (IList)this._parameter[paramName];
 
                         // パラメタを展開して設定。 
 
@@ -654,8 +655,7 @@ namespace Touryo.Infrastructure.Public.Db
                     }
                     else
                     {
-                        // パラメタがLISTでない場合、
-                        // パラメタをそのまま設定。
+                        // それ以外のパラメタは、そのまま設定。
 
                         // 既定値対策されているのでこのままで良い。
                         this.SetParameter(
