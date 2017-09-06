@@ -33,6 +33,8 @@
 //*  2016/05/03      Shashikiran       Modified the code to replace space in column Names with underscore operator  
 //**********************************************************************************
 
+#pragma warning disable 0414
+
 using System;
 using System.IO;
 using System.Text;

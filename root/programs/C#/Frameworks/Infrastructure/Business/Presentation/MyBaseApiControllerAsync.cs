@@ -30,6 +30,8 @@
 //*  2017/08/11  西野 大介         新規作成
 //**********************************************************************************
 
+#pragma warning disable 1998
+
 using System;
 using System.Text;
 using System.Linq;

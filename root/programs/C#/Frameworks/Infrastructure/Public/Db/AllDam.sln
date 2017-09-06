@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Public", "..\Public.csproj"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamManagedOdp", "DamManagedOdp\DamManagedOdp.csproj", "{FE4533B3-53F0-4BE2-8390-9486FFF380A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamDB2", "DamDB2\DamDB2.csproj", "{F7B93ED0-8046-408E-A2BB-BAE8AF040E4A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,10 +39,6 @@ Global
 		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F7B93ED0-8046-408E-A2BB-BAE8AF040E4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F7B93ED0-8046-408E-A2BB-BAE8AF040E4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F7B93ED0-8046-408E-A2BB-BAE8AF040E4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F7B93ED0-8046-408E-A2BB-BAE8AF040E4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
