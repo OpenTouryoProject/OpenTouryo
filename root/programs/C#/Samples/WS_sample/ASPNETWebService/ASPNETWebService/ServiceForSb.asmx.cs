@@ -33,17 +33,24 @@
 //**********************************************************************************
 
 using System;
+using System.Collections.Generic;
 using System.Xml;
 using System.Reflection;
 using System.Web;
 using System.Web.Services;
 using System.EnterpriseServices;
+using System.Diagnostics;
+
+using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Business.Util;
+
+using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Framework.Transmission;
+
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
@@ -337,18 +344,28 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                 // ★
                 status = FxLiteral.SIF_STATUS_AUTHENTICATION;
 
-                // ★★　認証が通っているかどうか確認する。
-                if (!HttpContext.Current.Request.IsAuthenticated)
+                string access_token = (string)context;
+                if (!string.IsNullOrEmpty(access_token))
                 {
-                    throw new BusinessSystemException("Authentication", "認証されていません。");
-                }
+                    string sub = "";
+                    List<string> roles = null;
+                    List<string> scopes = null;
+                    JObject jobj = null;
 
-                // ★★　コンテキストの情報を使用するなどして
-                //       認証処理をＵＯＣする（必要に応じて）。
-                
-                // 持ち回るならCookieにするか、
-                // contextをrefにするなどとする。
-                context = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fff"); // 更新されたかのテストコード
+                    if (JwtToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
+                    {
+                        // 認証成功
+                        Debug.WriteLine("認証成功");
+                    }
+                    else
+                    {
+                        // 認証失敗（認証必須ならエラーにする。
+                    }
+                }
+                else
+                {
+                    // 認証失敗（認証必須ならエラーにする。
+                }
 
                 #endregion
 
