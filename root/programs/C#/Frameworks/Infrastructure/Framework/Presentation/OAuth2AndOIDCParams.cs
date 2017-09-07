@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：OAuth2Param
-//* クラス日本語名  ：OAuth2の各種パラメタ
+//* クラス名        ：OAuth2AndOIDCParams
+//* クラス日本語名  ：OAuth2とOIDCの各種パラメタ
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -33,21 +33,20 @@
 using System.Collections.Generic;
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Presentation
 {
-    /// <summary>OAuth2の各種パラメタ</summary>
-    public class OAuth2Param
+    /// <summary>OAuth2とOIDCの各種パラメタ</summary>
+    public class OAuth2AndOIDCParams
     {
         /// <summary>ClientID</summary>
         public static string ClientID
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("OAuth2ClientID");
+                return GetConfigParameter.GetConfigValue("OAuth2AndOidcClientID");
             }
         }
 
@@ -56,7 +55,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("OAuth2Secret");
+                return GetConfigParameter.GetConfigValue("OAuth2AndOidcSecret");
             }
         }
 
@@ -65,7 +64,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("OAuth2Isser");
+                return GetConfigParameter.GetConfigValue("OAuth2AndOidcIsser");
             }
         }
 
@@ -74,7 +73,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         {
             get
             {
-                return JsonConvert.DeserializeObject<List<string>>(GetConfigParameter.GetConfigValue("OAuth2ClientIDs"));
+                return JsonConvert.DeserializeObject<List<string>>(GetConfigParameter.GetConfigValue("OAuth2AndOidcClientIDs"));
             }
         }
 
@@ -83,7 +82,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("OAuth2RS256Cer");
+                return GetConfigParameter.GetConfigValue("OAuth2AndOidcRS256Cer");
             }
         }
     }

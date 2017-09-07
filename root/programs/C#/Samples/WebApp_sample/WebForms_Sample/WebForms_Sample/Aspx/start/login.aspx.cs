@@ -144,7 +144,7 @@ namespace WebForms_Sample.Aspx.Start
         protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
         {
             return "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize"
-                + "?client_id=" + OAuth2Param.ClientID
+                + "?client_id=" + OAuth2AndOIDCParams.ClientID
                 + "&response_type=code"
                 + "&scope=profile%20email%20phone%20address%20userid%20auth%20openid"
                 + "&state=" + this.State

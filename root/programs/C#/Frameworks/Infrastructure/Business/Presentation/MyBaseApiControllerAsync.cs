@@ -33,7 +33,6 @@
 #pragma warning disable 1998
 
 using System;
-using System.Text;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
@@ -45,8 +44,6 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using System.Net.Http;
 
-using Microsoft.Owin.Security.DataHandler.Encoder;
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -54,7 +51,6 @@ using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
-using Touryo.Infrastructure.Public.Util.JWT;
 
 namespace Touryo.Infrastructure.Business.Presentation
 {
@@ -283,41 +279,23 @@ namespace Touryo.Infrastructure.Business.Presentation
             // Authorization: Bearer ヘッダから
             // JWTアサーションを処理し、認証、UserInfoを生成するなど。
             // -------------------------------------------------------------
-
             List<Claim> claims = null;
 
             if (authenticationContext.Request.Headers.Authorization.Scheme.ToLower() == "bearer")
             {
                 string access_token = authenticationContext.Request.Headers.Authorization.Parameter;
-                JWT_RS256 jwtRS256 = new JWT_RS256(OAuth2Param.RS256Cer, "");
 
-                if (jwtRS256.Verify(access_token))
+                string sub = "";
+                List<string> roles = null;
+                List<string> scopes = null;
+                JObject jobj = null;
+
+                if (JwtToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
                 {
-                    Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
-                    string jwtPayload = Encoding.UTF8.GetString(base64UrlEncoder.Decode(access_token.Split('.')[1]));
 
-                    // id_tokenライクなJWTなので、中からsubなどを取り出すことができる。
-                    JObject jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
-
-                    //string nonce = (string)jobj["nonce"];
-                    string iss = (string)jobj["iss"];
-                    string aud = (string)jobj["aud"];
-                    string iat = (string)jobj["iat"];
-                    string exp = (string)jobj["exp"];
-
-                    string sub = (string)jobj["sub"];
-                    List<string> roles = JsonConvert.DeserializeObject<List<string>>(jobj["roles"].ToString());
-                    List<string> scopes = JsonConvert.DeserializeObject<List<string>>(jobj["scopes"].ToString());
-
-                    if (iss == OAuth2Param.Isser  &&
-                        OAuth2Param.ClientIDs.Any(x => x == aud) &&
-                        long.Parse(exp) >= DateTimeOffset.Now.ToUnixTimeSeconds())
-                    {
-                        // ログインに成功
-
-                        // ActionFilterAttributeとApiController間の情報共有はcontext.Principalを使用する。
-                        // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
-                       claims = new List<Claim>()
+                    // ActionFilterAttributeとApiController間の情報共有はcontext.Principalを使用する。
+                    // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+                    claims = new List<Claim>()
                         {
                             new Claim(ClaimTypes.Name, sub),
                             new Claim(ClaimTypes.Role, string.Join(",", roles)),
@@ -325,18 +303,19 @@ namespace Touryo.Infrastructure.Business.Presentation
                             new Claim("IpAddress", this.GetClientIpAddress(authenticationContext.Request))
                         };
 
-                        // The request message contains valid credential
-                        authenticationContext.Principal = new ClaimsPrincipal(new List<ClaimsIdentity> { new ClaimsIdentity(claims, "Token") });
-                        return;
-                    }
-                    else
-                    { }
+                    // The request message contains valid credential
+                    authenticationContext.Principal = new ClaimsPrincipal(new List<ClaimsIdentity> { new ClaimsIdentity(claims, "Token") });
+                    return;
                 }
                 else
-                { }
+                {
+                    // JWTの内容検証に失敗
+                }
             }
             else
-            { }
+            {
+                // Authorization: Bearer Headerが存在しない。
+            }
 
             // 未認証状態
             // The request message contains invalid credential
@@ -402,7 +381,5 @@ namespace Touryo.Infrastructure.Business.Presentation
         }
 
         #endregion
-
-        
     }
 }

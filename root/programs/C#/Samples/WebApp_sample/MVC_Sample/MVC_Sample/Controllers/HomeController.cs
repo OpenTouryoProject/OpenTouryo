@@ -150,7 +150,7 @@ namespace MVC_Sample.Controllers
                 // 外部ログイン
                 return Redirect(string.Format(
                     "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize"
-                    + "?client_id=" + OAuth2Param.ClientID
+                    + "?client_id=" + OAuth2AndOIDCParams.ClientID
                     + "&response_type=code" 
                     + "&scope=profile%20email%20phone%20address%20userid%20auth%20openid" 
                     + "&state={0}" 
@@ -208,7 +208,7 @@ namespace MVC_Sample.Controllers
                     httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
                         "Basic",
                         Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(
-                            string.Format("{0}:{1}", OAuth2Param.ClientID, OAuth2Param.ClientSecret))));
+                            string.Format("{0}:{1}", OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret))));
 
                     httpRequestMessage.Content = new FormUrlEncodedContent(
                         new Dictionary<string, string>
@@ -229,40 +229,20 @@ namespace MVC_Sample.Controllers
                     // id_tokenの検証コード
                     string id_token = dic["id_token"];
 
-                    JWT_RS256 jwtRS256 = new JWT_RS256(OAuth2Param.RS256Cer, "");
+                    string sub = "";
+                    List<string> roles = null;
+                    List<string> scopes = null;
+                    JObject jobj = null;
 
-                    if (jwtRS256.Verify(id_token))
+                    if (JwtToken.Verify(id_token, out sub, out roles, out scopes, out jobj))
                     {
-                        string jwtPayload = Encoding.UTF8.GetString(base64UrlEncoder.Decode(dic["id_token"].Split('.')[1]));
+                        // ログインに成功
+                        FormsAuthentication.RedirectFromLoginPage(sub, false);
+                        MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
+                        UserInfoHandle.SetUserInformation(ui);
 
-                        // id_tokenライクなJWTなので、中からsubなどを取り出すことができる。
-                        JObject jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
-
-                        string nonce = (string)jobj["nonce"];
-                        string iss = (string)jobj["iss"];
-                        string aud = (string)jobj["aud"];
-                        string iat = (string)jobj["iat"];
-                        string exp = (string)jobj["exp"];
-
-                        string sub = (string)jobj["sub"];
-
-                        if (nonce == this.Nonce &&
-                            iss == OAuth2Param.Isser &&
-                            aud == OAuth2Param.ClientID &&
-                            long.Parse(exp) >= DateTimeOffset.Now.ToUnixTimeSeconds())
-                        {
-                            // ログインに成功
-                            FormsAuthentication.RedirectFromLoginPage(sub, false);
-                            MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
-                            UserInfoHandle.SetUserInformation(ui);
-
-                            return new EmptyResult();
-                        }
-                        else
-                        { }
+                        return new EmptyResult();
                     }
-                    else
-                    { }
                 }
 
                 // ログインに失敗

@@ -96,7 +96,7 @@ namespace WebForms_Sample.Aspx.Auth
                     httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
                         "Basic",
                         Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(
-                            string.Format("{0}:{1}", new string[] { OAuth2Param.ClientID, OAuth2Param.ClientSecret }))));
+                            string.Format("{0}:{1}", new string[] { OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret }))));
 
                     httpRequestMessage.Content = new FormUrlEncodedContent(
                         new Dictionary<string, string>
@@ -116,44 +116,24 @@ namespace WebForms_Sample.Aspx.Auth
 
                     // id_tokenの検証コード
                     string id_token = dic["id_token"];
-                    JWT_RS256 jwtRS256 = new JWT_RS256(OAuth2Param.RS256Cer, "");
 
-                    if (jwtRS256.Verify(id_token))
+                    string sub = "";
+                    List<string> roles = null;
+                    List<string> scopes = null;
+                    JObject jobj = null;
+
+                    if (JwtToken.Verify(id_token, out sub, out roles, out scopes, out jobj))
                     {
-                        string jwtPayload = Encoding.UTF8.GetString(base64UrlEncoder.Decode(dic["id_token"].Split('.')[1]));
-
-                        // id_tokenライクなJWTなので、中からsubなどを取り出すことができる。
-                        JObject jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
-
-                        string nonce = (string)jobj["nonce"];
-                        string iss = (string)jobj["iss"];
-                        string aud = (string)jobj["aud"];
-                        string iat = (string)jobj["iat"];
-                        string exp = (string)jobj["exp"];
-
-                        string sub = (string)jobj["sub"];
-
-                        if (nonce == this.Nonce &&
-                            iss == OAuth2Param.Isser &&
-                            aud == OAuth2Param.ClientID &&
-                            long.Parse(exp) >= DateTimeOffset.Now.ToUnixTimeSeconds())
-                        {
-                            // ログインに成功
-                            FormsAuthentication.RedirectFromLoginPage(sub, false);
-                            MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
-                            UserInfoHandle.SetUserInformation(ui);
-
-                            return;
-                        }
-                        else
-                        { }
+                        // ログインに成功
+                        FormsAuthentication.RedirectFromLoginPage(sub, false);
+                        MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
+                        UserInfoHandle.SetUserInformation(ui);
+                        return;
                     }
-                    else
-                    { }
-
-                    // ログインに失敗
-                    Response.Redirect("../Start/login.aspx");
                 }
+
+                // ログインに失敗
+                Response.Redirect("../Start/login.aspx");
             }
             finally
             {
