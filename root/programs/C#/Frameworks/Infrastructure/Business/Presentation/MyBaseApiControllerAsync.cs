@@ -109,7 +109,7 @@ namespace Touryo.Infrastructure.Business.Presentation
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            this.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 権限チェック ------------------------------------------------
             // ・・・
@@ -171,7 +171,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            this.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             string strLogMessage =
                 "," + userName + //this.UserInfo.UserName +
@@ -224,7 +224,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            this.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             string strLogMessage =
                 "," + userName + // (this.UserInfo != null ? this.UserInfo.UserName : "null") +
@@ -300,7 +300,7 @@ namespace Touryo.Infrastructure.Business.Presentation
                             new Claim(ClaimTypes.Name, sub),
                             new Claim(ClaimTypes.Role, string.Join(",", roles)),
                             new Claim("Scopes", string.Join(",", scopes)),
-                            new Claim("IpAddress", this.GetClientIpAddress(authenticationContext.Request))
+                            new Claim("IpAddress", MyBaseApiControllerAsync.GetClientIpAddress(authenticationContext.Request))
                         };
 
                     // The request message contains valid credential
@@ -326,7 +326,7 @@ namespace Touryo.Infrastructure.Business.Presentation
                 new Claim(ClaimTypes.Name, "未認証"),
                 new Claim(ClaimTypes.Role, ""),
                 new Claim("Scopes", ""),
-                new Claim("IpAddress", this.GetClientIpAddress(authenticationContext.Request))
+                new Claim("IpAddress", MyBaseApiControllerAsync.GetClientIpAddress(authenticationContext.Request))
             };
 
             authenticationContext.Principal = new ClaimsPrincipal(new List<ClaimsIdentity> { new ClaimsIdentity(claims, "Token") });
@@ -336,7 +336,7 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <summary>GetClientIpAddress</summary>
         /// <param name="request">HttpRequestMessage</param>
         /// <returns>IPAddress(文字列)</returns>
-        private string GetClientIpAddress(HttpRequestMessage request)
+        public static string GetClientIpAddress(HttpRequestMessage request)
         {
             IEnumerable<string> headerValues = null;
             string clientIp = "";
@@ -371,7 +371,7 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <param name="roles">string</param>
         /// <param name="scopes">string</param>
         /// <param name="ipAddress">string</param>
-        private void GetClaims(out string userName, out string roles, out string scopes, out string ipAddress)
+        public static void GetClaims(out string userName, out string roles, out string scopes, out string ipAddress)
         {
             IEnumerable<Claim> claims = ((ClaimsIdentity)HttpContext.Current.User.Identity).Claims;
             userName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;

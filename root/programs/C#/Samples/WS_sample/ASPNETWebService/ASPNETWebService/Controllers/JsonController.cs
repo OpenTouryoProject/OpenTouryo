@@ -126,7 +126,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            this.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -182,7 +182,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            this.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -250,7 +250,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            this.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -318,7 +318,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            this.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -389,7 +389,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            this.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -460,7 +460,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            this.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -522,7 +522,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            this.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -582,7 +582,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            this.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -643,7 +643,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            this.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -911,20 +911,6 @@ namespace ASPNETWebService.Controllers
                         + errorToString + "\r\n");
                 }
             }
-        }
-
-        /// <summary>GetClaims</summary>
-        /// <param name="userName">string</param>
-        /// <param name="roles">string</param>
-        /// <param name="scopes">string</param>
-        /// <param name="ipAddress">string</param>
-        private void GetClaims(out string userName, out string roles, out string scopes, out string ipAddress)
-        {   
-            IEnumerable<Claim> claims = ((ClaimsIdentity)HttpContext.Current.User.Identity).Claims;
-            userName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
-            roles = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
-            scopes = claims.FirstOrDefault(c => c.Type == "Scopes").Value;
-            ipAddress = claims.FirstOrDefault(c => c.Type == "IpAddress").Value;
         }
 
         #endregion
