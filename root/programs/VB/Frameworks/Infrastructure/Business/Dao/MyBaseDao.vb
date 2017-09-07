@@ -115,9 +115,7 @@ Namespace Touryo.Infrastructure.Business.Dao
                 "," & Me.perfRec.CpuTime & "," & sql
 
             ' Log4Netへログ出力
-            Dim sqlTracelog As String = GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG)
-
-            If sqlTracelog Is Nothing OrElse sqlTracelog = "" Then
+            If String.IsNullOrEmpty(GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG)) Then
                 ' SQLトレースログ（OFF）
             ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.[ON] Then
                 LogIF.InfoLog("SQLTRACE", strLogMessage)
@@ -172,9 +170,7 @@ Namespace Touryo.Infrastructure.Business.Dao
                 "," & DirectCast(Me.GetDam().Obj, MyUserInfo).UserName & "," & sql
 
             ' Log4Netへログ出力
-            Dim sqlTracelog As String = GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG)
-
-            If sqlTracelog Is Nothing OrElse sqlTracelog = "" Then
+            If String.IsNullOrEmpty(GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG)) Then
                 ' SQLトレースログ（OFF）
             ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.[ON] Then
                 LogIF.ErrorLog("SQLTRACE", strLogMessage)
