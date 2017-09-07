@@ -20,7 +20,6 @@
 using MVC_Sample.Models.ViewModels;
 
 using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -39,7 +38,6 @@ using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Util;
-using Touryo.Infrastructure.Public.Util.JWT;
 
 namespace MVC_Sample.Controllers
 {
@@ -227,23 +225,30 @@ namespace MVC_Sample.Controllers
                     Dictionary<string, string> dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
 
                     // id_tokenの検証コード
-                    string id_token = dic["id_token"];
-
-                    string sub = "";
-                    List<string> roles = null;
-                    List<string> scopes = null;
-                    JObject jobj = null;
-
-                    if (JwtToken.Verify(id_token, out sub, out roles, out scopes, out jobj))
+                    if (dic.ContainsKey("id_token"))
                     {
-                        // ログインに成功
-                        FormsAuthentication.RedirectFromLoginPage(sub, false);
-                        MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
-                        UserInfoHandle.SetUserInformation(ui);
+                        string id_token = dic["id_token"];
 
-                        return new EmptyResult();
+                        string sub = "";
+                        List<string> roles = null;
+                        List<string> scopes = null;
+                        JObject jobj = null;
+
+                        if (JwtToken.Verify(id_token, out sub, out roles, out scopes, out jobj)
+                            && jobj["nonce"].ToString() == this.Nonce)
+                        {
+                            // ログインに成功
+                            FormsAuthentication.RedirectFromLoginPage(sub, false);
+                            MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
+                            UserInfoHandle.SetUserInformation(ui);
+
+                            return new EmptyResult();
+                        }
+
                     }
+                    else { }
                 }
+                else { }
 
                 // ログインに失敗
                 return RedirectToAction("Login");

@@ -127,7 +127,6 @@
       <DependentUpon>MyBusinessSystemExceptionMessageResource.resx</DependentUpon>
     </Compile>
     <Compile Include="Str\JISX0208_1983Checker.cs" />
-    <Compile Include="Transmission\WCFTCPSvcForFx.cs" />
     <Compile Include="Util\GMTMaster.cs" />
     <Compile Include="Util\MyCmnFunction.cs" />
     <Compile Include="Util\MyAttribute.cs" />

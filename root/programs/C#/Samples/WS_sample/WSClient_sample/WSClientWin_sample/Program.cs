@@ -28,6 +28,9 @@ namespace WSClientWin_sample
     /// <summary>アプリケーションのメイン エントリ ポイント</summary>
     static class Program
     {
+        /// <summary>AccessToken</summary>
+        public static string AccessToken = "";
+
         /// <summary>終了するかどうかを表すフラグ</summary>
         public static bool FlagEnd = true;
 

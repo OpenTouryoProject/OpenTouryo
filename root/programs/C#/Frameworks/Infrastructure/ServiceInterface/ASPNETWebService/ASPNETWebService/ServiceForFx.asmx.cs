@@ -47,10 +47,15 @@
 //**********************************************************************************
 
 using System;
+using System.Collections.Generic;
 using System.Web.Services;
 using System.EnterpriseServices;
 using System.Runtime.ExceptionServices;
+using System.Diagnostics;
 
+using Newtonsoft.Json.Linq;
+
+using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Util;
@@ -199,9 +204,30 @@ namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                 // ★
                 status = FxLiteral.SIF_STATUS_AUTHENTICATION;
 
-                // ★★　contextの情報を使用するなどして認証処理をＵＯＣする（必要に応じて）。
-                // 持ち回るならCookieにするか、contextをrefにするなどとする。
-                contextObject = BinarySerialize.ObjectToBytes(DateTime.Now); // 更新されたかのテストコード
+                string access_token = (string)context;
+                if (!string.IsNullOrEmpty(access_token))
+                {
+                    string sub = "";
+                    List<string> roles = null;
+                    List<string> scopes = null;
+                    JObject jobj = null;
+
+                    if (JwtToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
+                    {
+                        // 認証成功
+                        Debug.WriteLine("認証成功");
+                    }
+                    else
+                    {
+                        // 認証失敗（認証必須ならエラーにする。
+                    }
+                }
+                else
+                {
+                    // 認証失敗（認証必須ならエラーにする。
+                }
+
+                //contextObject = BinarySerialize.ObjectToBytes(hogehoge); // 更新可能だが...。
 
                 #endregion
 

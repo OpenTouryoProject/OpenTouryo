@@ -128,8 +128,8 @@ namespace WSClientWin_sample
             this.ddlOrderSequence.SelectedIndex = 0;
 
             // 呼出し制御部品
-            this.CallCtrl = new CallController("");
-
+            this.CallCtrl = new CallController(Program.AccessToken);
+            
             //// ↓カバレージ上げ
             //this.CallCtrl = new CallController(null);
             //this.CallCtrl.UserInfo = UserInfo;
@@ -237,7 +237,7 @@ namespace WSClientWin_sample
                 TestReturnValue testReturnValue;
 
                 // 呼出し制御部品（スレッドセーフでないため副スレッド内で作る）
-                CallController callCtrl = new CallController("");
+                CallController callCtrl = new CallController(Program.AccessToken);
 
                 // Invoke
                 testReturnValue = (TestReturnValue)callCtrl.Invoke(

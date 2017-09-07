@@ -31,6 +31,7 @@
             this.btnButton1 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
+            this.btnButton2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnButton1
@@ -57,11 +58,21 @@
             this.textBox2.TabIndex = 1;
             this.textBox2.UseSystemPasswordChar = true;
             // 
+            // btnButton2
+            // 
+            this.btnButton2.Location = new System.Drawing.Point(199, 12);
+            this.btnButton2.Name = "btnButton2";
+            this.btnButton2.Size = new System.Drawing.Size(75, 44);
+            this.btnButton2.TabIndex = 3;
+            this.btnButton2.Text = "外部ログイン";
+            this.btnButton2.UseVisualStyleBackColor = true;
+            // 
             // Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(202, 70);
+            this.ClientSize = new System.Drawing.Size(285, 78);
+            this.Controls.Add(this.btnButton2);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.btnButton1);
@@ -77,5 +88,6 @@
         private System.Windows.Forms.Button btnButton1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button btnButton2;
     }
 }
