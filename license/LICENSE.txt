@@ -213,12 +213,8 @@
      - angularjs
      - Respond
      - Modernizr
+     
      - Microsoft.AspNet.ScriptManager.WebForms
+       http://www.microsoft.com/web/webpi/eula/WebDeveloperTools_1_eula_ENU.htm
      - Microsoft.AspNet.ScriptManager.MSAjax
- 
-   - Notes : 
-     There is possibility that the library of OSS that not include
-     source code automatically acquired from the Internet by the
-     package manager like the NuGet. If so, must follow these licenses of the
-     oss when using / distributing this OSS. Incidentally, the OSS that will
-     be obtained by NuGet can be checked by referring to each package.cponfig.
+       http://www.microsoft.com/web/webpi/eula/aspnetcomponent_rtw_enu.htm

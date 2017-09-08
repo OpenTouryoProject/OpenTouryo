@@ -16,6 +16,14 @@ For the latest documentation see the Open Touryo web site at:
 - FrontPage - Open 棟梁 Wiki
   https://opentouryo.osscons.jp/
 
+Notes
+=============
+There is possibility that the library of OSS that not include
+source code automatically acquired from the Internet by the
+package manager like the NuGet. If so, must follow these licenses of the
+oss when using / distributing this OSS. Incidentally, the OSS that will
+be obtained by NuGet can be checked by referring to each package.cponfig.
+
 ==================================================
 
 プロジェクトの進捗状況 
@@ -35,3 +43,10 @@ Webサイト：http://www.osscons.jp/dotNetDevelopmentInfrastructure/
   https://github.com/OpenTouryoProject/OpenTouryoDocuments
 - FrontPage - Open 棟梁 Wiki
   https://opentouryo.osscons.jp/
+
+注記
+=============
+ソースコードを含まないOSSのライブラリは、NuGetのようなパッケージマネージャ
+によってインターネットから自動的に取得される可能性があります。 その場合は、
+このOSSを使用/配布する際には、これらのOSSのライセンスに従わなければなりません。
+ちなみに、NuGetが取得するOSSは、それぞれのpackage.cponfigを参照することで確認できます。
