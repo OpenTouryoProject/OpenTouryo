@@ -165,7 +165,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MyBusinessSystemExceptionMessageResource.resx</DependentUpon>
     </Compile>
-    <Compile Include="Transmission\WCFTCPSvcForFx.vb" />
     <Compile Include="Util\GMTMaster.vb" />
     <Compile Include="Str\JISX0208_1983Checker.vb" />
     <Compile Include="Util\MyAttribute.vb" />

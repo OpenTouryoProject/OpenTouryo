@@ -76,7 +76,7 @@
     <Import Include="System.Web.UI.HtmlControls" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Aspx\Auth\OAuthAuthorizationCodeGrantClient.aspx" />
+    <Content Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx" />
     <Content Include="Aspx\Common\ErrorScreen.aspx" />
     <Content Include="Aspx\Common\sampleControl.ascx" />
     <Content Include="Aspx\Framework\DialogFrame.htm" />
@@ -218,11 +218,11 @@
     <Compile Include="AppCode\testPublic\Business\TestMTC_txg.vb" />
     <Compile Include="App_Start\BundleConfig.vb" />
     <Compile Include="App_Start\RouteConfig.vb" />
-    <Compile Include="Aspx\Auth\OAuthAuthorizationCodeGrantClient.aspx.designer.vb">
-      <DependentUpon>OAuthAuthorizationCodeGrantClient.aspx</DependentUpon>
+    <Compile Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx.designer.vb">
+      <DependentUpon>OAuth2AuthorizationCodeGrantClient.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Auth\OAuthAuthorizationCodeGrantClient.aspx.vb">
-      <DependentUpon>OAuthAuthorizationCodeGrantClient.aspx</DependentUpon>
+    <Compile Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx.vb">
+      <DependentUpon>OAuth2AuthorizationCodeGrantClient.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\ErrorScreen.aspx.designer.vb">
@@ -698,8 +698,8 @@
       <HintPath>..\packages\Microsoft.Owin.3.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Owin.Security, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">

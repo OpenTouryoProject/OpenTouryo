@@ -5,7 +5,7 @@
 // サンプル画面なので、必要に応じて流用 or 削除して下さい。
 
 //**********************************************************************************
-//* クラス名        ：OAuthAuthorizationCodeGrantClient
+//* クラス名        ：OAuth2AuthorizationCodeGrantClient
 //* クラス日本語名  ：OAuth2, OIDC認証画面
 //*
 //* 作成日時        ：－
@@ -33,10 +33,10 @@ using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Util;
 
-namespace WebForms_Sample.Aspx.Auth
+namespace WebForms_Sample.Aspx.OAuth2
 {
     /// <summary>認証画面</summary>
-    public partial class OAuthAuthorizationCodeGrantClient : System.Web.UI.Page
+    public partial class OAuth2AuthorizationCodeGrantClient : System.Web.UI.Page
     {
         /// <summary>Nonce</summary>
         public string Nonce

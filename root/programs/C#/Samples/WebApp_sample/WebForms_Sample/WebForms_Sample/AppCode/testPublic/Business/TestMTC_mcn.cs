@@ -483,14 +483,6 @@ namespace WebForms_Sample
                 //this.GetDam("ODP2_SS").RollbackTransaction();
                 this.GetDam("ODP2_DF").RollbackTransaction();
 
-                this.GetDam("DB2_NT").RollbackTransaction();
-                this.GetDam("DB2_UC").RollbackTransaction();
-                this.GetDam("DB2_RC").RollbackTransaction();
-                this.GetDam("DB2_RR").RollbackTransaction();
-                this.GetDam("DB2_SZ").RollbackTransaction();
-                //this.GetDam("DB2_SS").RollbackTransaction();
-                this.GetDam("DB2_DF").RollbackTransaction();
-
                 this.GetDam("MCN_NT").RollbackTransaction();
                 this.GetDam("MCN_UC").RollbackTransaction();
                 this.GetDam("MCN_RC").RollbackTransaction();
@@ -527,14 +519,6 @@ namespace WebForms_Sample
                 //this.GetDam("ODP2_SS").RollbackTransaction();
                 this.GetDam("ODP2_DF").RollbackTransaction();
 
-                this.GetDam("DB2_NT").RollbackTransaction();
-                this.GetDam("DB2_UC").RollbackTransaction();
-                this.GetDam("DB2_RC").RollbackTransaction();
-                this.GetDam("DB2_RR").RollbackTransaction();
-                this.GetDam("DB2_SZ").RollbackTransaction();
-                //this.GetDam("DB2_SS").RollbackTransaction();
-                this.GetDam("DB2_DF").RollbackTransaction();
-
                 this.GetDam("MCN_NT").RollbackTransaction();
                 this.GetDam("MCN_UC").RollbackTransaction();
                 this.GetDam("MCN_RC").RollbackTransaction();
@@ -562,14 +546,6 @@ namespace WebForms_Sample
                 this.GetDam("ODP2_SZ").ConnectionClose();
                 //this.GetDam("ODP2_SS").ConnectionClose();
                 this.GetDam("ODP2_DF").ConnectionClose();
-
-                this.GetDam("DB2_NT").ConnectionClose();
-                this.GetDam("DB2_UC").ConnectionClose();
-                this.GetDam("DB2_RC").ConnectionClose();
-                this.GetDam("DB2_RR").ConnectionClose();
-                this.GetDam("DB2_SZ").ConnectionClose();
-                //this.GetDam("DB2_SS").ConnectionClose();
-                this.GetDam("DB2_DF").ConnectionClose();
 
                 this.GetDam("MCN_NT").ConnectionClose();
                 this.GetDam("MCN_UC").ConnectionClose();
@@ -607,14 +583,6 @@ namespace WebForms_Sample
                 //this.GetDam("ODP2_SS").RollbackTransaction();
                 this.GetDam("ODP2_DF").RollbackTransaction();
 
-                this.GetDam("DB2_NT").RollbackTransaction();
-                this.GetDam("DB2_UC").RollbackTransaction();
-                this.GetDam("DB2_RC").RollbackTransaction();
-                this.GetDam("DB2_RR").RollbackTransaction();
-                this.GetDam("DB2_SZ").RollbackTransaction();
-                //this.GetDam("DB2_SS").RollbackTransaction();
-                this.GetDam("DB2_DF").RollbackTransaction();
-
                 this.GetDam("MCN_NT").RollbackTransaction();
                 this.GetDam("MCN_UC").RollbackTransaction();
                 this.GetDam("MCN_RC").RollbackTransaction();
@@ -643,14 +611,6 @@ namespace WebForms_Sample
                 //this.GetDam("ODP2_SS").ConnectionClose();
                 this.GetDam("ODP2_DF").ConnectionClose();
 
-                this.GetDam("DB2_NT").ConnectionClose();
-                this.GetDam("DB2_UC").ConnectionClose();
-                this.GetDam("DB2_RC").ConnectionClose();
-                this.GetDam("DB2_RR").ConnectionClose();
-                this.GetDam("DB2_SZ").ConnectionClose();
-                //this.GetDam("DB2_SS").ConnectionClose();
-                this.GetDam("DB2_DF").ConnectionClose();
-
                 this.GetDam("MCN_NT").ConnectionClose();
                 this.GetDam("MCN_UC").ConnectionClose();
                 this.GetDam("MCN_RC").ConnectionClose();
@@ -678,14 +638,6 @@ namespace WebForms_Sample
                 this.SetDam("ODP2_SZ", null);
                 //this.SetDam("ODP2_SS",null);
                 this.SetDam("ODP2_DF", null);
-
-                this.SetDam("DB2_NT", null);
-                this.SetDam("DB2_UC", null);
-                this.SetDam("DB2_RC", null);
-                this.SetDam("DB2_RR", null);
-                this.SetDam("DB2_SZ", null);
-                //this.SetDam("DB2_SS",null);
-                this.SetDam("DB2_DF", null);
 
                 this.SetDam("MCN_NT", null);
                 this.SetDam("MCN_UC", null);

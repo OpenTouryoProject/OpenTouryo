@@ -34,9 +34,14 @@
 '**********************************************************************************
 
 Imports System
+Imports System.Collections.Generic
 Imports System.ServiceModel
 Imports System.Runtime.ExceptionServices
+Imports System.Diagnostics
 
+Imports Newtonsoft.Json.Linq
+
+Imports Touryo.Infrastructure.Framework.Presentation
 Imports Touryo.Infrastructure.Framework.Transmission
 Imports Touryo.Infrastructure.Framework.Exceptions
 Imports Touryo.Infrastructure.Framework.Common
@@ -156,10 +161,25 @@ Namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                 ' ★
                 status = FxLiteral.SIF_STATUS_AUTHENTICATION
 
-                ' ★★　contextの情報を使用するなどして認証処理をＵＯＣする（必要に応じて）。
-                ' 持ち回るならCookieにするか、contextをrefにするなどとする。
-                contextObject = BinarySerialize.ObjectToBytes(DateTime.Now)
-                ' 更新されたかのテストコード
+				Dim access_token As String = DirectCast(context, String)
+				If Not String.IsNullOrEmpty(access_token) Then
+					Dim [sub] As String = ""
+					Dim roles As List(Of String) = Nothing
+					Dim scopes As List(Of String) = Nothing
+					Dim jobj As JObject = Nothing
+
+					If JwtToken.Verify(access_token, [sub], roles, scopes, jobj) Then
+						' 認証成功
+						Debug.WriteLine("認証成功")
+							' 認証失敗（認証必須ならエラーにする。
+					Else
+					End If
+						' 認証失敗（認証必須ならエラーにする。
+				Else
+				End If
+
+				'contextObject = BinarySerialize.ObjectToBytes(hogehoge); // 更新可能だが...。
+
                 '#End Region
 
                 '#Region "Ｂ層・Ｄ層呼出し"

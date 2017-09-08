@@ -24,45 +24,55 @@ Partial Class Login
     'コード エディタを使って変更しないでください。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-
         Me.btnButton1 = New System.Windows.Forms.Button()
         Me.textBox1 = New System.Windows.Forms.TextBox()
         Me.textBox2 = New System.Windows.Forms.TextBox()
+        Me.btnButton2 = New System.Windows.Forms.Button()
         Me.SuspendLayout()
-        ' 
-        ' btnButton1
-        ' 
+        '
+        'btnButton1
+        '
         Me.btnButton1.Location = New System.Drawing.Point(118, 12)
         Me.btnButton1.Name = "btnButton1"
         Me.btnButton1.Size = New System.Drawing.Size(75, 44)
         Me.btnButton1.TabIndex = 0
         Me.btnButton1.Text = "ログイン"
         Me.btnButton1.UseVisualStyleBackColor = True
-        ' 
-        ' textBox1
-        ' 
+        '
+        'textBox1
+        '
         Me.textBox1.Location = New System.Drawing.Point(12, 12)
         Me.textBox1.Name = "textBox1"
         Me.textBox1.Size = New System.Drawing.Size(100, 19)
         Me.textBox1.TabIndex = 1
-        ' 
-        ' textBox2
-        ' 
+        '
+        'textBox2
+        '
         Me.textBox2.Location = New System.Drawing.Point(12, 37)
         Me.textBox2.Name = "textBox2"
         Me.textBox2.Size = New System.Drawing.Size(100, 19)
         Me.textBox2.TabIndex = 2
         Me.textBox2.UseSystemPasswordChar = True
-        ' 
-        ' login
-        ' 
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0F, 12.0F)
+        '
+        'btnButton2
+        '
+        Me.btnButton2.Location = New System.Drawing.Point(199, 12)
+        Me.btnButton2.Name = "btnButton2"
+        Me.btnButton2.Size = New System.Drawing.Size(75, 44)
+        Me.btnButton2.TabIndex = 3
+        Me.btnButton2.Text = "外部ログイン"
+        Me.btnButton2.UseVisualStyleBackColor = True
+        '
+        'Login
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(202, 70)
+        Me.ClientSize = New System.Drawing.Size(285, 78)
+        Me.Controls.Add(Me.btnButton2)
         Me.Controls.Add(Me.textBox2)
         Me.Controls.Add(Me.textBox1)
         Me.Controls.Add(Me.btnButton1)
-        Me.Name = "login"
+        Me.Name = "Login"
         Me.Text = "login"
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -72,4 +82,5 @@ Partial Class Login
     Private btnButton1 As System.Windows.Forms.Button
     Private textBox1 As System.Windows.Forms.TextBox
     Private textBox2 As System.Windows.Forms.TextBox
+    Private WithEvents btnButton2 As Button
 End Class

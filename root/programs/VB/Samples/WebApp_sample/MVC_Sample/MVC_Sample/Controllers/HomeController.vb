@@ -30,9 +30,9 @@ Imports Newtonsoft.Json.Linq
 
 Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Business.Util
+Imports Touryo.Infrastructure.Framework.Presentation
 Imports Touryo.Infrastructure.Framework.Util
 Imports Touryo.Infrastructure.Public.Util
-Imports Touryo.Infrastructure.Public.Util.JWT
 
 Namespace Controllers
     ''' <summary>HomeController</summary>
@@ -123,8 +123,11 @@ Namespace Controllers
             Else
                 ' 外部ログイン
                 Return Redirect(String.Format(
-                                "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize?client_id=f53469c17c5a432f86ce563b7805ab89&response_type=code&scope=profile%20email%20phone%20address%20userid%20auth%20openid&state={0}&nonce={1}",
-                                Me.State, Me.Nonce))
+                                "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize" _
+                                & "?client_id=" + OAuth2AndOIDCParams.ClientID _
+                                & "&response_type=code" _
+                                & "&scope=profile%20email%20phone%20address%20userid%20auth%20openid" _
+                                & "&state={0}" & "&nonce={1}", Me.State, Me.Nonce))
             End If
         End Function
 
@@ -169,9 +172,10 @@ Namespace Controllers
                     }
 
                     ' HttpRequestMessage (Headers & Content)
-                    httpRequestMessage.Headers.Authorization =
-                        New AuthenticationHeaderValue("Basic", Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(
-                            String.Format("{0}:{1}", "f53469c17c5a432f86ce563b7805ab89", "cKdwJb6mRKVIJpGxEWjIC94zquQltw_ECfO-55p21YM"))))
+                    httpRequestMessage.Headers.Authorization = New AuthenticationHeaderValue(
+                        "Basic",
+                        Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(
+                        String.Format("{0}:{1}", OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret))))
 
                     httpRequestMessage.Content = New FormUrlEncodedContent(New Dictionary(Of String, String)() From {
                         {"grant_type", "authorization_code"},
@@ -188,38 +192,26 @@ Namespace Controllers
                     Dim dic As Dictionary(Of String, String) = JsonConvert.DeserializeObject(Of Dictionary(Of String, String))(response)
 
                     ' id_tokenの検証コード
-                    Dim id_token As String = dic("id_token")
+                    If dic.ContainsKey("id_token") Then
+                        Dim id_token As String = dic("id_token")
 
-                    Dim jwtRS256 As New JWT_RS256("C:\Git1\MultiPurposeAuthSite\root\programs\MultiPurposeAuthSite\CreateClientsIdentity\CreateClientsIdentity_RS256.cer", "test")
+                        Dim [sub] As String = ""
+                        Dim roles As List(Of String) = Nothing
+                        Dim scopes As List(Of String) = Nothing
+                        Dim jobj As JObject = Nothing
 
-                    If jwtRS256.Verify(id_token) Then
-                        Dim jwtPayload As String = Encoding.UTF8.GetString(base64UrlEncoder.Decode(dic("id_token").Split("."c)(1)))
-
-                        ' id_tokenライクなJWTなので、中からsubなどを取り出すことができる。
-                        Dim jobj As JObject = DirectCast(JsonConvert.DeserializeObject(jwtPayload), JObject)
-
-                        Dim nonce As String = jobj("nonce").ToString()
-                        Dim iss As String = jobj("iss").ToString()
-                        Dim aud As String = jobj("aud").ToString()
-                        Dim iat As String = jobj("iat").ToString()
-                        Dim exp As String = jobj("exp").ToString()
-
-                        Dim [sub] As String = jobj("sub").ToString()
-
-                        If nonce = Me.Nonce _
-                            AndAlso iss = "http://jwtssoauth.opentouryo.com" _
-                            AndAlso aud = "f53469c17c5a432f86ce563b7805ab89" _
-                            AndAlso Long.Parse(exp) >= DateTimeOffset.Now.ToUnixTimeSeconds() Then
+                        If JwtToken.Verify(id_token, [sub], roles, scopes, jobj) AndAlso jobj("nonce").ToString() = Me.Nonce Then
                             ' ログインに成功
                             FormsAuthentication.RedirectFromLoginPage([sub], False)
                             Dim ui As New MyUserInfo([sub], Request.UserHostAddress)
                             UserInfoHandle.SetUserInformation(ui)
 
                             Return New EmptyResult()
-                        Else
+
                         End If
                     Else
                     End If
+                Else
                 End If
 
                 ' ログインに失敗

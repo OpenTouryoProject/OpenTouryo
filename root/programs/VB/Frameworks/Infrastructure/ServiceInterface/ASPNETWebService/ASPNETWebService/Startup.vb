@@ -23,8 +23,6 @@ Imports Microsoft.Owin
 
 Imports System.Web.Mvc
 Imports System.Web.Http
-Imports System.Web.Optimization
-Imports System.Web.Routing
 
 <Assembly: OwinStartup(GetType(ASPNETWebService.Startup))>
 
@@ -46,11 +44,11 @@ Namespace ASPNETWebService
             ' グローバルフィルタの登録
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters)
 
-            ' URLルーティングの登録
-            RouteConfig.RegisterRoutes(RouteTable.Routes)
+            '' URLルーティングの登録
+            'RouteConfig.RegisterRoutes(RouteTable.Routes)
 
-            ' バンドル＆ミニフィケーションの登録
-            BundleConfig.RegisterBundles(BundleTable.Bundles)
+            '' バンドル＆ミニフィケーションの登録
+            'BundleConfig.RegisterBundles(BundleTable.Bundles)
 
             '/ 認証に関するOWINミドルウェアの設定を行う。
             'StartupAuth.Configure(app);

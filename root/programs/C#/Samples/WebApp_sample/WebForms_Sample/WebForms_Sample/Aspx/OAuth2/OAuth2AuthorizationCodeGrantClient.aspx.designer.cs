@@ -7,9 +7,9 @@
 // </自動生成>
 //------------------------------------------------------------------------------
 
-namespace WebForms_Sample.Aspx.Auth {
+namespace WebForms_Sample.Aspx.OAuth2 {
     
     
-    public partial class OAuthAuthorizationCodeGrantClient {
+    public partial class OAuth2AuthorizationCodeGrantClient {
     }
 }

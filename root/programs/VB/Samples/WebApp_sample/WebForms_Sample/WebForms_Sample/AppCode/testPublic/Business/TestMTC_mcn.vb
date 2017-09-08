@@ -477,14 +477,6 @@ Public Class TestMTC_mcn
             'this.GetDam("ODP2_SS").RollbackTransaction();
             Me.GetDam("ODP2_DF").RollbackTransaction()
 
-            Me.GetDam("DB2_NT").RollbackTransaction()
-            Me.GetDam("DB2_UC").RollbackTransaction()
-            Me.GetDam("DB2_RC").RollbackTransaction()
-            Me.GetDam("DB2_RR").RollbackTransaction()
-            Me.GetDam("DB2_SZ").RollbackTransaction()
-            'this.GetDam("DB2_SS").RollbackTransaction();
-            Me.GetDam("DB2_DF").RollbackTransaction()
-
             Me.GetDam("MCN_NT").RollbackTransaction()
             Me.GetDam("MCN_UC").RollbackTransaction()
             Me.GetDam("MCN_RC").RollbackTransaction()
@@ -519,14 +511,6 @@ Public Class TestMTC_mcn
             'this.GetDam("ODP2_SS").RollbackTransaction();
             Me.GetDam("ODP2_DF").RollbackTransaction()
 
-            Me.GetDam("DB2_NT").RollbackTransaction()
-            Me.GetDam("DB2_UC").RollbackTransaction()
-            Me.GetDam("DB2_RC").RollbackTransaction()
-            Me.GetDam("DB2_RR").RollbackTransaction()
-            Me.GetDam("DB2_SZ").RollbackTransaction()
-            'this.GetDam("DB2_SS").RollbackTransaction();
-            Me.GetDam("DB2_DF").RollbackTransaction()
-
             Me.GetDam("MCN_NT").RollbackTransaction()
             Me.GetDam("MCN_UC").RollbackTransaction()
             Me.GetDam("MCN_RC").RollbackTransaction()
@@ -554,14 +538,6 @@ Public Class TestMTC_mcn
             Me.GetDam("ODP2_SZ").ConnectionClose()
             'this.GetDam("ODP2_SS").ConnectionClose();
             Me.GetDam("ODP2_DF").ConnectionClose()
-
-            Me.GetDam("DB2_NT").ConnectionClose()
-            Me.GetDam("DB2_UC").ConnectionClose()
-            Me.GetDam("DB2_RC").ConnectionClose()
-            Me.GetDam("DB2_RR").ConnectionClose()
-            Me.GetDam("DB2_SZ").ConnectionClose()
-            'this.GetDam("DB2_SS").ConnectionClose();
-            Me.GetDam("DB2_DF").ConnectionClose()
 
             Me.GetDam("MCN_NT").ConnectionClose()
             Me.GetDam("MCN_UC").ConnectionClose()
@@ -597,14 +573,6 @@ Public Class TestMTC_mcn
             'this.GetDam("ODP2_SS").RollbackTransaction();
             Me.GetDam("ODP2_DF").RollbackTransaction()
 
-            Me.GetDam("DB2_NT").RollbackTransaction()
-            Me.GetDam("DB2_UC").RollbackTransaction()
-            Me.GetDam("DB2_RC").RollbackTransaction()
-            Me.GetDam("DB2_RR").RollbackTransaction()
-            Me.GetDam("DB2_SZ").RollbackTransaction()
-            'this.GetDam("DB2_SS").RollbackTransaction();
-            Me.GetDam("DB2_DF").RollbackTransaction()
-
             Me.GetDam("MCN_NT").RollbackTransaction()
             Me.GetDam("MCN_UC").RollbackTransaction()
             Me.GetDam("MCN_RC").RollbackTransaction()
@@ -633,14 +601,6 @@ Public Class TestMTC_mcn
             'this.GetDam("ODP2_SS").ConnectionClose();
             Me.GetDam("ODP2_DF").ConnectionClose()
 
-            Me.GetDam("DB2_NT").ConnectionClose()
-            Me.GetDam("DB2_UC").ConnectionClose()
-            Me.GetDam("DB2_RC").ConnectionClose()
-            Me.GetDam("DB2_RR").ConnectionClose()
-            Me.GetDam("DB2_SZ").ConnectionClose()
-            'this.GetDam("DB2_SS").ConnectionClose();
-            Me.GetDam("DB2_DF").ConnectionClose()
-
             Me.GetDam("MCN_NT").ConnectionClose()
             Me.GetDam("MCN_UC").ConnectionClose()
             Me.GetDam("MCN_RC").ConnectionClose()
@@ -668,14 +628,6 @@ Public Class TestMTC_mcn
             Me.SetDam("ODP2_SZ", Nothing)
             'this.SetDam("ODP2_SS",null);
             Me.SetDam("ODP2_DF", Nothing)
-
-            Me.SetDam("DB2_NT", Nothing)
-            Me.SetDam("DB2_UC", Nothing)
-            Me.SetDam("DB2_RC", Nothing)
-            Me.SetDam("DB2_RR", Nothing)
-            Me.SetDam("DB2_SZ", Nothing)
-            'this.SetDam("DB2_SS",null);
-            Me.SetDam("DB2_DF", Nothing)
 
             Me.SetDam("MCN_NT", Nothing)
             Me.SetDam("MCN_UC", Nothing)

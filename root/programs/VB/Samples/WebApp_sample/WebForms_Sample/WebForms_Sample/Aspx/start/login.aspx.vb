@@ -17,15 +17,38 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
 
+Imports System.Web.Security
+
 Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Business.Util
 Imports Touryo.Infrastructure.Framework.Presentation
 Imports Touryo.Infrastructure.Framework.Util
+Imports Touryo.Infrastructure.Public.Util
 
 Namespace Aspx.Start
     ''' <summary>ログイン画面（Forms認証対応）</summary>
     Partial Public Class login
         Inherits MyBaseController
+
+        ''' <summary>Nonce</summary>
+        Public ReadOnly Property Nonce() As String
+            Get
+                If Session("nonce") Is Nothing Then
+                    Session("nonce") = GetPassword.Base64UrlSecret(10)
+                End If
+                Return DirectCast(Session("nonce"), String)
+            End Get
+        End Property
+
+        ''' <summary>State</summary>
+        Public ReadOnly Property State() As String
+            Get
+                If Session("state") Is Nothing Then
+                    Session("state") = GetPassword.Base64UrlSecret(10)
+                End If
+                Return DirectCast(Session("state"), String)
+            End Get
+        End Property
 
         ''' <summary>constructor</summary>
         Public Sub New()
@@ -48,7 +71,6 @@ Namespace Aspx.Start
 
             ' Session消去
             Me.FxSessionAbandon()
-
         End Sub
 
         ''' <summary>
@@ -63,8 +85,8 @@ Namespace Aspx.Start
             ' TODO:
             ' ここでは何もしない
 
-            ' btnButton1のイベントであれば、Session消去しない
-            If Request.Form("ctl00$ContentPlaceHolder_A$btnButton1") Is Nothing Then
+            ' btnButton1, 2のイベントであれば、Session消去しない
+            If Request.Form("ctl00$ContentPlaceHolder_A$btnButton1") Is Nothing AndAlso Request.Form("ctl00$ContentPlaceHolder_A$btnButton2") Is Nothing Then
                 ' Session消去
                 Me.FxSessionAbandon()
             End If
@@ -106,7 +128,11 @@ Namespace Aspx.Start
         ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnButton2_Click(fxEventArgs As FxEventArgs) As String
-            Return "../Auth/OAuthAuthorizationCodeGrantClient.aspx"
+            Return ("http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize" _
+                & "?client_id=") + OAuth2AndOIDCParams.ClientID _
+                & "&response_type=code" _
+                & "&scope=profile%20email%20phone%20address%20userid%20auth%20openid" _
+                & "&state=" & Me.State & "&nonce=" & Me.Nonce
         End Function
 
 #End Region

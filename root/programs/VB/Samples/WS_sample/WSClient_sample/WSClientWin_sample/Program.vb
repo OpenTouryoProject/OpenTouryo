@@ -25,6 +25,10 @@ Public Class Program
 
     Public Sub New()
     End Sub
+
+    ''' <summary>AccessToken</summary>
+    Public Shared AccessToken As String = ""
+
     ''' <summary>終了するかどうかを表すフラグ</summary>
     Public Shared FlagEnd As Boolean = True
 

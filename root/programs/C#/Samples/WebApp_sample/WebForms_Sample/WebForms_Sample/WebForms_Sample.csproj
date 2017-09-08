@@ -146,7 +146,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Aspx\OAuth2\OAuthAuthorizationCodeGrantClient.aspx" />
+    <Content Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx" />
     <Content Include="Aspx\Common\ErrorScreen.aspx" />
     <Content Include="Aspx\Common\sampleControl.ascx" />
     <Content Include="Aspx\Framework\DialogFrame.htm" />
@@ -280,12 +280,12 @@
     <Compile Include="AppCode\testPublic\Business\TestMTC_txg.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Aspx\OAuth2\OAuthAuthorizationCodeGrantClient.aspx.cs">
-      <DependentUpon>OAuthAuthorizationCodeGrantClient.aspx</DependentUpon>
+    <Compile Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx.cs">
+      <DependentUpon>OAuth2AuthorizationCodeGrantClient.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\OAuth2\OAuthAuthorizationCodeGrantClient.aspx.designer.cs">
-      <DependentUpon>OAuthAuthorizationCodeGrantClient.aspx</DependentUpon>
+    <Compile Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx.designer.cs">
+      <DependentUpon>OAuth2AuthorizationCodeGrantClient.aspx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\ErrorScreen.aspx.cs">
       <DependentUpon>ErrorScreen.aspx</DependentUpon>
