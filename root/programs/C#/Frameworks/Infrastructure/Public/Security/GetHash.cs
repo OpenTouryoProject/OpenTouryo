@@ -33,12 +33,13 @@
 //*  2017/01/10  西野 大介         ストレッチ回数を指定可能にし、新設したGetPasswordを利用するように変更。
 //*  2017/01/10  西野 大介         saltedPasswdのformat変更(salt+stretchCount+hashedPassword)。
 //*  2017/01/10  西野 大介         上記のformat変更に伴い、EqualSaltedPasswd側のI/F変更が発生。
+//*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //**********************************************************************************
 
 using System.Security.Cryptography;
 using Touryo.Infrastructure.Public.Str;
 
-namespace Touryo.Infrastructure.Public.Util
+namespace Touryo.Infrastructure.Public.Security
 {
     #region Enum
 

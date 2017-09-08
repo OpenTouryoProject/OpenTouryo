@@ -34,12 +34,13 @@
 //*  2017/01/10  西野 大介         HMAC(HMACMD5、HMACRIPEMD160、HMACSHA256、HMACSHA384、HMACSHA512)を追加
 //*  2017/01/10  西野 大介         全てHMACSHA1になる問題があったため、KeyedHashAlgorithm生成方法を変更。
 //*  2017/01/10  西野 大介         GetSaltedPasswordとEqualSaltedPasswordを追加。
+//*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //**********************************************************************************
 
 using System.Security.Cryptography;
 using Touryo.Infrastructure.Public.Str;
 
-namespace Touryo.Infrastructure.Public.Util
+namespace Touryo.Infrastructure.Public.Security
 {
     #region Enum
 

@@ -28,11 +28,12 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/01/10  西野 大介         新規作成
+//*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //**********************************************************************************
 
 using System;
 
-namespace Touryo.Infrastructure.Public.Util
+namespace Touryo.Infrastructure.Public.Security
 {
     #region Enum
 

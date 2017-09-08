@@ -28,13 +28,14 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/01/13  西野 大介         新規作成
+//*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //**********************************************************************************
 
 using System.Security.Cryptography;
 using Newtonsoft.Json;
 using Touryo.Infrastructure.Public.Str;
 
-namespace Touryo.Infrastructure.Public.Util.JWT
+namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>JWT_HS256</summary>
     public class JWT_HS256 : JWT

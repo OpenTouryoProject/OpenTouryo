@@ -31,6 +31,7 @@
 //*  2013/03/13  西野 大介         偽装ユーザでEXE起動するメソッドを追加。
 //*  2013/03/13  西野 大介         クラス名の誤りを修正した。
 //*  2013/03/13  西野 大介         CreateProcessAsImpersonationUser追加対応
+//*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //**********************************************************************************
 
 using System;
@@ -39,7 +40,7 @@ using System.Runtime.InteropServices;
 
 using Touryo.Infrastructure.Public.Win32;
 
-namespace Touryo.Infrastructure.Public.Util
+namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>偽装クラス</summary>
     /// <remarks>

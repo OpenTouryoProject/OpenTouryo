@@ -38,6 +38,7 @@ using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Security;
 using Touryo.Infrastructure.Public.Util;
 
 namespace WebForms_Sample.Aspx.TestPublic

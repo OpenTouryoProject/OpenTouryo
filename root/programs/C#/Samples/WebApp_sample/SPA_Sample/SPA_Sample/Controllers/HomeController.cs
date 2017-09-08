@@ -37,7 +37,7 @@ using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Security;
 
 namespace SPA_Sample.Controllers
 {

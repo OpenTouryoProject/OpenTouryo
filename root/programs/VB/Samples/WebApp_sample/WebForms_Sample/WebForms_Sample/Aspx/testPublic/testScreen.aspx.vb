@@ -32,7 +32,9 @@ Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Str
+Imports Touryo.Infrastructure.Public.Security
 Imports Touryo.Infrastructure.Public.Util
+
 
 Namespace Aspx.TestPublic
     ''' <summary>共通部品テスト画面</summary>

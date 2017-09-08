@@ -36,6 +36,7 @@
 //*  2014/03/13  西野 大介         devps(1725):暗号クラスの使用終了時にデータをクリアする。
 //*  2017/01/10  西野 大介         stretch回数の指定方法をPropertyからConstructorに変更した。
 //*  2017/01/10  西野 大介         AesCryptoServiceProviderを削除（.NET3.5から実装されたAesManagedを残す）
+//*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //**********************************************************************************
 
 using System;
@@ -44,7 +45,7 @@ using System.Security.Cryptography;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
-namespace Touryo.Infrastructure.Public.IO
+namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>
     /// 対称アルゴリズムによる

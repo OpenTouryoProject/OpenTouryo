@@ -28,9 +28,10 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/01/10  西野 大介         新規作成
+//*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //**********************************************************************************
 
-namespace Touryo.Infrastructure.Public.Util.JWT
+namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>JWT Header</summary>
     public class Header

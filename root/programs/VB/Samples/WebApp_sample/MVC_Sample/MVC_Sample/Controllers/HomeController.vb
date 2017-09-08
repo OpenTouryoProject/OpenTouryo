@@ -32,7 +32,7 @@ Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Business.Util
 Imports Touryo.Infrastructure.Framework.Presentation
 Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Public.Util
+Imports Touryo.Infrastructure.Public.Security
 
 Namespace Controllers
     ''' <summary>HomeController</summary>

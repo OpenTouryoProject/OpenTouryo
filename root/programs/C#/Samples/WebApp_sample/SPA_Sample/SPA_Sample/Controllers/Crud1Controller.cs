@@ -20,7 +20,7 @@
 using System.Web.Mvc;
 
 using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Security;
 
 namespace SPA_Sample.Controllers
 {

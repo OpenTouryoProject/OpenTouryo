@@ -40,8 +40,7 @@ using Microsoft.Owin.Security.DataHandler.Encoder;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-using Touryo.Infrastructure.Framework.Presentation;
-using Touryo.Infrastructure.Public.Util.JWT;
+using Touryo.Infrastructure.Public.Security;
 
 namespace Touryo.Infrastructure.Framework.Presentation
 {

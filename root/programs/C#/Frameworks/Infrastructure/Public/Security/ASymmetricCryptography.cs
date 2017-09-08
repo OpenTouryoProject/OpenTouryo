@@ -32,13 +32,14 @@
 //*  2013/02/18  西野 大介         CustomEncode使用に統一
 //*  2014/03/13  西野 大介         devps(1703):Createメソッドを使用してcryptoオブジェクトを作成します。
 //*  2014/03/13  西野 大介         devps(1725):暗号クラスの使用終了時にデータをクリアする。
+//*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //**********************************************************************************
 
 using System.Security.Cryptography;
 
 using Touryo.Infrastructure.Public.Str;
 
-namespace Touryo.Infrastructure.Public.IO
+namespace Touryo.Infrastructure.Public.Security
 {
     // 一種類しかないのでEnum不要
 

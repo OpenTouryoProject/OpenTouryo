@@ -38,10 +38,9 @@ using System;
 using System.Windows.Forms;
 using System.Security.Cryptography.X509Certificates;
 
-using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Security;
 using Touryo.Infrastructure.Public.Util;
-using Touryo.Infrastructure.Public.Util.JWT;
 
 namespace EncAndDecUtil
 {
