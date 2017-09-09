@@ -575,8 +575,8 @@ namespace Touryo.Infrastructure.Public.Db
                             (int)this._parameterSize[paramName],
                             (ParameterDirection)this._parameterDirection[paramName]);
                     }
-                    else if (this._parameter[paramName] is ArrayList
-                        || this.IsList(this._parameter[paramName]))
+                    else if (this._parameter[paramName] is IList
+                        && !(this._parameter[paramName] is System.Array))
                     {
                         // パラメタがnullでなく、ArrayListかList<T>の場合(IList)
                         IList al = (IList)this._parameter[paramName];

@@ -1751,7 +1751,7 @@ namespace Touryo.Infrastructure.Public.Db
                     // LISTタグ内のパラメタに対応するパラメタが設定されている。
 
                     // パラメタの型は「ArrayListかList<T>」型であること。
-                    if (obj is ArrayList || this.IsList(obj))
+                    if (obj is IList && !(obj is System.Array))
                     {
                         // LISTタグ内のパラメタに対応するパラメタが「ArrayListかList<T>」型である。
 
@@ -3285,16 +3285,16 @@ namespace Touryo.Infrastructure.Public.Db
 
         #endregion
 
-        /// <summary>List(T)かどうか判別</summary>
-        /// <param name="o">任意のオブジェクト</param>
-        /// <returns>
-        /// - List(T)である : true
-        /// - List(T)でない : false
-        /// </returns>
-        protected bool IsList(object o)
-        {
-            return (o.GetType().Name == "List`1"
-                && o.GetType().Namespace == "System.Collections.Generic"); // (o is List<object>)
-        }
+        ///// <summary>List(T)かどうか判別</summary>
+        ///// <param name="o">任意のオブジェクト</param>
+        ///// <returns>
+        ///// - List(T)である : true
+        ///// - List(T)でない : false
+        ///// </returns>
+        //protected bool IsList(object o)
+        //{
+        //    return (o.GetType().Name == "List`1"
+        //        && o.GetType().Namespace == "System.Collections.Generic"); // (o is List<object>)
+        //}
     }
 }
