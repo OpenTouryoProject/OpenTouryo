@@ -22,6 +22,7 @@ using System.Web.Security;
 using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Presentation;
+using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Security;
 
@@ -146,9 +147,10 @@ namespace WebForms_Sample.Aspx.Start
             return "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize"
                 + "?client_id=" + OAuth2AndOIDCParams.ClientID
                 + "&response_type=code"
-                + "&scope=profile%20email%20phone%20address%20userid%20auth%20openid"
+                + "&scope=profile%20email%20phone%20address%20openid"
                 + "&state=" + this.State
-                + "&nonce=" + this.Nonce;
+                + "&nonce=" + this.Nonce
+                + "&prompt=none";
         }
 
         #endregion

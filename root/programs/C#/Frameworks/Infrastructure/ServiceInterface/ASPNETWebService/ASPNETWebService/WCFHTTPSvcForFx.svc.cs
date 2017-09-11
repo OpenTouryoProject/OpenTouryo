@@ -41,8 +41,8 @@ using System.Diagnostics;
 
 using Newtonsoft.Json.Linq;
 
-using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Transmission;
+using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Util;

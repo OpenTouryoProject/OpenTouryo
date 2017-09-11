@@ -42,7 +42,7 @@ using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Public.Security;
 
-namespace Touryo.Infrastructure.Framework.Presentation
+namespace Touryo.Infrastructure.Framework.Authentication
 {
     /// <summary>
     /// OAuth2やOIDC関連のJwtToken処理

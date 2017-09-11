@@ -94,6 +94,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Authentication\OAuth2ProviderHelper.cs" />
     <Compile Include="Business\BaseLogic.cs" />
     <Compile Include="Business\TransactionControl.cs" />
     <Compile Include="Common\BaseParameterValue.cs" />
@@ -111,8 +112,8 @@
     </Compile>
     <Compile Include="Presentation\BaseMVController.cs" />
     <Compile Include="Presentation\FxEventArgs.cs" />
-    <Compile Include="Presentation\JwtToken.cs" />
-    <Compile Include="Presentation\OAuth2AndOIDCParams.cs" />
+    <Compile Include="Authentication\JwtToken.cs" />
+    <Compile Include="Authentication\OAuth2AndOIDCParams.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\FrameworkExceptionMessageResource.Designer.cs">
       <AutoGen>True</AutoGen>

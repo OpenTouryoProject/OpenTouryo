@@ -19,8 +19,9 @@
 
 using System;
 using System.Collections.Generic;
+
 using System.Net.Http;
-using System.Net.Http.Headers;
+using System.Web;
 using System.Web.Security;
 
 using Microsoft.Owin.Security.DataHandler.Encoder;
@@ -28,7 +29,7 @@ using Microsoft.Owin.Security.DataHandler.Encoder;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-using Touryo.Infrastructure.Framework.Presentation;
+using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Security;
@@ -64,9 +65,9 @@ namespace WebForms_Sample.Aspx.OAuth2
             }
         }
 
-        /// <summary></summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <summary>Page_Load</summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">EventArgs</param>
         protected async void Page_Load(object sender, EventArgs e)
         {
             string code = Request.QueryString["code"];
@@ -74,38 +75,16 @@ namespace WebForms_Sample.Aspx.OAuth2
 
             try
             {
+                OAuth2AndOIDCClient.HttpClient = new HttpClient();
+                string response = "";
+
                 if (state == this.State) // CSRF(XSRF)対策のstateの検証は重要
                 {
-                    HttpClient httpClient = new HttpClient();
-
-                    HttpRequestMessage httpRequestMessage = null;
-                    HttpResponseMessage httpResponseMessage = null;
-
-                    // HttpRequestMessage (Method & RequestUri)
-                    httpRequestMessage = new HttpRequestMessage
-                    {
-                        Method = HttpMethod.Post,
-                        RequestUri = new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"),
-                    };
+                    response = await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+                        new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"),
+                        OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
+                        HttpUtility.HtmlEncode("http://localhost:9999/WebForms_Sample/Aspx/Auth/OAuthAuthorizationCodeGrantClient.aspx"), code);
                     
-                    // HttpRequestMessage (Headers & Content)
-                    httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                        "Basic",
-                        Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(
-                            string.Format("{0}:{1}", new string[] { OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret }))));
-
-                    httpRequestMessage.Content = new FormUrlEncodedContent(
-                        new Dictionary<string, string>
-                        {
-                            { "grant_type", "authorization_code" },
-                            { "code", code },
-                            { "redirect_uri", System.Web.HttpUtility.HtmlEncode("http://localhost:9999/WebForms_Sample/Aspx/Auth/OAuthAuthorizationCodeGrantClient.aspx") },
-                        });
-
-                    // HttpResponseMessage
-                    httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-                    string response = await httpResponseMessage.Content.ReadAsStringAsync();
-
                     // 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
                     Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
                     Dictionary<string, string> dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
@@ -124,10 +103,16 @@ namespace WebForms_Sample.Aspx.OAuth2
                             && jobj["nonce"].ToString() == this.Nonce)
                         {
                             // ログインに成功
+
+                            // /userinfoエンドポイントにアクセスする場合
+                            response = await OAuth2AndOIDCClient.CallUserInfoEndpointAsync(
+                                new Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic["access_token"]);
+
                             FormsAuthentication.RedirectFromLoginPage(sub, false);
                             MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
                             UserInfoHandle.SetUserInformation(ui);
 
+                            
                             return;
                         }
 

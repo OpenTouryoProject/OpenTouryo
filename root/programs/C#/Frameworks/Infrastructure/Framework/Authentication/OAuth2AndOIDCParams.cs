@@ -36,7 +36,7 @@ using Newtonsoft.Json;
 
 using Touryo.Infrastructure.Public.Util;
 
-namespace Touryo.Infrastructure.Framework.Presentation
+namespace Touryo.Infrastructure.Framework.Authentication
 {
     /// <summary>OAuth2とOIDCの各種パラメタ</summary>
     public class OAuth2AndOIDCParams

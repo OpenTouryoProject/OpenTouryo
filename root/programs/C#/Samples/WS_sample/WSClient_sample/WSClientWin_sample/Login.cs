@@ -19,16 +19,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
+
+using System.Net.Http;
 
 using Microsoft.Owin.Security.DataHandler.Encoder;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-using Touryo.Infrastructure.Framework.Presentation;
+using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Business.RichClient.Presentation;
 using Touryo.Infrastructure.Framework.RichClient.Presentation;
 
@@ -83,37 +83,13 @@ namespace WSClientWin_sample
         /// <returns>access_token</returns>
         private async Task<string> ExLogin(string userId, string password)
         {
-            HttpClient httpClient = new HttpClient();
-            HttpRequestMessage httpRequestMessage = null;
-            HttpResponseMessage httpResponseMessage = null;
-
-            // HttpRequestMessage (Method & RequestUri)
-            httpRequestMessage = new HttpRequestMessage
-            {
-                Method = HttpMethod.Post,
-                RequestUri = new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"),
-            };
-
-            // HttpRequestMessage (Headers & Content)
-            httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                "Basic",
-                Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(
-                    string.Format("{0}:{1}", new string[] { OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret }))));
-
-            httpRequestMessage.Content = new FormUrlEncodedContent(
-                new Dictionary<string, string>
-                {
-                            { "grant_type", "password" },
-                            { "username", userId },
-                            { "password", password },
-                            { "scope", "profile email phone address roles" },
-                });
-
-            // HttpResponseMessage
-            httpResponseMessage = await httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
-            string response = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-            // 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
+            OAuth2AndOIDCClient.HttpClient = new HttpClient();
+            string response = await OAuth2AndOIDCClient.GetAccessTokenByROPAsync(
+                new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"),
+                OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
+                userId, password, "profile email phone address roles").ConfigureAwait(false);
+            
+            // access_tokenを取得し、検証
             Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
             Dictionary<string, string> dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
             

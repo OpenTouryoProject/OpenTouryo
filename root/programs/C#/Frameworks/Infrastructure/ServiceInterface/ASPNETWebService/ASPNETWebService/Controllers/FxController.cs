@@ -42,11 +42,11 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json.Linq;
 
-using Touryo.Infrastructure.Framework.Presentation;
+using Touryo.Infrastructure.Framework.Transmission;
+using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Framework.Transmission;
 
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
