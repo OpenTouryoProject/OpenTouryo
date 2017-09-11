@@ -22,11 +22,12 @@ using SPA_Sample.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
 
 using Microsoft.Owin.Security.DataHandler.Encoder;
 
@@ -35,7 +36,7 @@ using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Util;
-using Touryo.Infrastructure.Framework.Presentation;
+using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Security;
 
@@ -141,12 +142,13 @@ namespace SPA_Sample.Controllers
             {
                 // 外部ログイン
                 return Redirect(string.Format(
-                    "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize" 
+                    "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize"
                     + "?client_id=" + OAuth2AndOIDCParams.ClientID
-                    + "&response_type=code" 
-                    + "&scope=profile%20email%20phone%20address%20userid%20auth%20openid"
+                    + "&response_type=code"
+                    + "&scope=profile%20email%20phone%20address%20openid"
                     + "&state={0}"
-                    + "&nonce={1}",
+                    + "&nonce={1}"
+                    + "&prompt=none",
                     this.State, this.Nonce));
             }
         }
@@ -192,37 +194,15 @@ namespace SPA_Sample.Controllers
         {
             try
             {
+                OAuth2AndOIDCClient.HttpClient = new HttpClient();
+                string response = "";
+
                 if (state == this.State) // CSRF(XSRF)対策のstateの検証は重要
                 {
-                    HttpClient httpClient = new HttpClient();
-
-                    HttpRequestMessage httpRequestMessage = null;
-                    HttpResponseMessage httpResponseMessage = null;
-
-                    // HttpRequestMessage (Method & RequestUri)
-                    httpRequestMessage = new HttpRequestMessage
-                    {
-                        Method = HttpMethod.Post,
-                        RequestUri = new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"),
-                    };
-
-                    // HttpRequestMessage (Headers & Content)
-                    httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                        "Basic",
-                        Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(
-                            string.Format("{0}:{1}", OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret))));
-
-                    httpRequestMessage.Content = new FormUrlEncodedContent(
-                        new Dictionary<string, string>
-                        {
-                            { "grant_type", "authorization_code" },
-                            { "code", code },
-                            { "redirect_uri", System.Web.HttpUtility.HtmlEncode("http://localhost:63877/SPA_Sample/Home/OAuthAuthorizationCodeGrantClient") },
-                        });
-
-                    // HttpResponseMessage
-                    httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-                    string response = await httpResponseMessage.Content.ReadAsStringAsync();
+                    response = await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+                        new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"),
+                        OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
+                        HttpUtility.HtmlEncode("http://localhost:63877/SPA_Sample/Home/OAuthAuthorizationCodeGrantClient"), code);
 
                     // 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
                     Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
@@ -242,6 +222,11 @@ namespace SPA_Sample.Controllers
                             && jobj["nonce"].ToString() == this.Nonce)
                         {
                             // ログインに成功
+
+                            // /userinfoエンドポイントにアクセスする場合
+                            response = await OAuth2AndOIDCClient.CallUserInfoEndpointAsync(
+                                new Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic["access_token"]);
+
                             FormsAuthentication.RedirectFromLoginPage(sub, false);
                             MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
                             UserInfoHandle.SetUserInformation(ui);
@@ -253,7 +238,7 @@ namespace SPA_Sample.Controllers
                     else { }
                 }
                 else { }
-
+                
                 // ログインに失敗
                 return RedirectToAction("Login");
             }

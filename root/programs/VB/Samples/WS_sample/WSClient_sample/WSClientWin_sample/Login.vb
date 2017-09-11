@@ -26,7 +26,7 @@ Imports Microsoft.Owin.Security.DataHandler.Encoder
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 
-Imports Touryo.Infrastructure.Framework.Presentation
+Imports Touryo.Infrastructure.Framework.Authentication
 Imports Touryo.Infrastructure.Business.RichClient.Presentation
 Imports Touryo.Infrastructure.Framework.RichClient.Presentation
 
@@ -75,34 +75,10 @@ Partial Public Class Login
     ''' <param name="password">string</param>
     ''' <returns>access_token</returns>
     Private Async Function ExLogin(userId As String, password As String) As Task(Of String)
-        Dim httpClient As New HttpClient()
-        Dim httpRequestMessage As HttpRequestMessage = Nothing
-        Dim httpResponseMessage As HttpResponseMessage = Nothing
+        OAuth2AndOIDCClient.HttpClient = New HttpClient()
+        Dim response As String = Await OAuth2AndOIDCClient.GetAccessTokenByROPAsync(New Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"), OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret, userId, password, "profile email phone address roles").ConfigureAwait(False)
 
-        ' HttpRequestMessage (Method & RequestUri)
-        httpRequestMessage = New HttpRequestMessage() With {
-            .Method = HttpMethod.Post,
-            .RequestUri = New Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken")
-        }
-
-        ' HttpRequestMessage (Headers & Content)
-        httpRequestMessage.Headers.Authorization = New AuthenticationHeaderValue(
-            "Basic",
-            Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(
-            String.Format("{0}:{1}", New String() {OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret}))))
-
-        httpRequestMessage.Content = New FormUrlEncodedContent(New Dictionary(Of String, String)() From {
-            {"grant_type", "password"},
-            {"username", userId},
-            {"password", password},
-            {"scope", "profile email phone address roles"}
-        })
-
-        ' HttpResponseMessage
-        httpResponseMessage = Await httpClient.SendAsync(httpRequestMessage).ConfigureAwait(False)
-        Dim response As String = Await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(False)
-
-        ' 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
+        ' access_tokenを取得し、検証
         Dim base64UrlEncoder As New Base64UrlTextEncoder()
         Dim dic As Dictionary(Of String, String) = JsonConvert.DeserializeObject(Of Dictionary(Of String, String))(response)
 

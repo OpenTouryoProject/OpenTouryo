@@ -33,22 +33,16 @@
 
 using System;
 using System.Data;
-using System.Linq;
 using System.Collections.Generic;
-using System.Web;
+using System.Runtime.ExceptionServices;
+using System.Threading.Tasks;
+
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Net;
 using System.Net.Http;
-using System.Security.Claims;
-using System.Runtime.ExceptionServices;
-using System.Threading.Tasks;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Transmission;

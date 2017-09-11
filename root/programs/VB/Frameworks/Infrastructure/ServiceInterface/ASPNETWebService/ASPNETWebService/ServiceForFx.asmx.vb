@@ -46,20 +46,17 @@
 '*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れた。
 '**********************************************************************************
 
-Imports System
-Imports System.Collections.Generic
 Imports System.Web.Services
 Imports System.EnterpriseServices
 Imports System.Runtime.ExceptionServices
-Imports System.Diagnostics
 
 Imports Newtonsoft.Json.Linq
 
-Imports Touryo.Infrastructure.Framework.Presentation
+Imports Touryo.Infrastructure.Framework.Transmission
+Imports Touryo.Infrastructure.Framework.Authentication
 Imports Touryo.Infrastructure.Framework.Exceptions
 Imports Touryo.Infrastructure.Framework.Common
 Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Framework.Transmission
 
 Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.IO

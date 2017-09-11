@@ -20,7 +20,6 @@
 Imports MVC_Sample.Models.ViewModels
 
 Imports System.Net.Http
-Imports System.Net.Http.Headers
 Imports System.Threading.Tasks
 
 Imports Microsoft.Owin.Security.DataHandler.Encoder
@@ -30,7 +29,7 @@ Imports Newtonsoft.Json.Linq
 
 Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Business.Util
-Imports Touryo.Infrastructure.Framework.Presentation
+Imports Touryo.Infrastructure.Framework.Authentication
 Imports Touryo.Infrastructure.Framework.Util
 Imports Touryo.Infrastructure.Public.Security
 
@@ -124,10 +123,13 @@ Namespace Controllers
                 ' 外部ログイン
                 Return Redirect(String.Format(
                                 "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize" _
-                                & "?client_id=" + OAuth2AndOIDCParams.ClientID _
+                                & "?client_id=" & OAuth2AndOIDCParams.ClientID _
                                 & "&response_type=code" _
-                                & "&scope=profile%20email%20phone%20address%20userid%20auth%20openid" _
-                                & "&state={0}" & "&nonce={1}", Me.State, Me.Nonce))
+                                & "&scope=profile%20email%20phone%20address%20openid" _
+                                & "&state={0}" _
+                                & "&nonce={1}" _
+                                & "&prompt=none",
+                                Me.State, Me.Nonce))
             End If
         End Function
 
@@ -158,34 +160,15 @@ Namespace Controllers
         <AllowAnonymous>
         Public Async Function OAuthAuthorizationCodeGrantClient(code As String, state As String) As Task(Of ActionResult)
             Try
+                OAuth2AndOIDCClient.HttpClient = New HttpClient()
+                Dim response As String = ""
+
                 If state = Me.State Then
                     ' CSRF(XSRF)対策のstateの検証は重要
-                    Dim httpClient As New HttpClient()
-
-                    Dim httpRequestMessage As HttpRequestMessage = Nothing
-                    Dim httpResponseMessage As HttpResponseMessage = Nothing
-
-                    ' HttpRequestMessage (Method & RequestUri)
-                    httpRequestMessage = New HttpRequestMessage() With {
-                        .Method = HttpMethod.Post,
-                        .RequestUri = New Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken")
-                    }
-
-                    ' HttpRequestMessage (Headers & Content)
-                    httpRequestMessage.Headers.Authorization = New AuthenticationHeaderValue(
-                        "Basic",
-                        Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(
-                        String.Format("{0}:{1}", OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret))))
-
-                    httpRequestMessage.Content = New FormUrlEncodedContent(New Dictionary(Of String, String)() From {
-                        {"grant_type", "authorization_code"},
-                        {"code", code},
-                        {"redirect_uri", System.Web.HttpUtility.HtmlEncode("http://localhost:58496/MVC_Sample/Home/OAuthAuthorizationCodeGrantClient")}
-                    })
-
-                    ' HttpResponseMessage
-                    httpResponseMessage = Await httpClient.SendAsync(httpRequestMessage)
-                    Dim response As String = Await httpResponseMessage.Content.ReadAsStringAsync()
+                    response = Await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+                        New Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"),
+                        OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
+                        HttpUtility.HtmlEncode("http://localhost:58496/MVC_Sample/Home/OAuthAuthorizationCodeGrantClient"), code)
 
                     ' 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
                     Dim base64UrlEncoder As New Base64UrlTextEncoder()
@@ -202,6 +185,11 @@ Namespace Controllers
 
                         If JwtToken.Verify(id_token, [sub], roles, scopes, jobj) AndAlso jobj("nonce").ToString() = Me.Nonce Then
                             ' ログインに成功
+
+                            ' /userinfoエンドポイントにアクセスする場合
+                            response = Await OAuth2AndOIDCClient.CallUserInfoEndpointAsync(
+                                New Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic("access_token"))
+
                             FormsAuthentication.RedirectFromLoginPage([sub], False)
                             Dim ui As New MyUserInfo([sub], Request.UserHostAddress)
                             UserInfoHandle.SetUserInformation(ui)

@@ -32,21 +32,18 @@
 '*  2017/08/18  西野 大介         新規作成
 '**********************************************************************************
 
-Imports System
-Imports System.Collections.Generic
 Imports System.Web.Http
 Imports System.Web.Http.Cors
 Imports System.Runtime.ExceptionServices
-Imports System.Diagnostics
 Imports System.Threading.Tasks
 
 Imports Newtonsoft.Json.Linq
 
-Imports Touryo.Infrastructure.Framework.Presentation
+Imports Touryo.Infrastructure.Framework.Transmission
+Imports Touryo.Infrastructure.Framework.Authentication
 Imports Touryo.Infrastructure.Framework.Exceptions
 Imports Touryo.Infrastructure.Framework.Common
 Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Framework.Transmission
 
 Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.IO

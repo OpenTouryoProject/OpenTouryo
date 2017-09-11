@@ -20,6 +20,7 @@
 Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Business.Util
 Imports Touryo.Infrastructure.Framework.Presentation
+Imports Touryo.Infrastructure.Framework.Authentication
 Imports Touryo.Infrastructure.Framework.Util
 Imports Touryo.Infrastructure.Public.Security
 
@@ -126,11 +127,13 @@ Namespace Aspx.Start
         ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnButton2_Click(fxEventArgs As FxEventArgs) As String
-            Return ("http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize" _
-                & "?client_id=") + OAuth2AndOIDCParams.ClientID _
+            Return "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize" _
+                & "?client_id=" & OAuth2AndOIDCParams.ClientID _
                 & "&response_type=code" _
-                & "&scope=profile%20email%20phone%20address%20userid%20auth%20openid" _
-                & "&state=" & Me.State & "&nonce=" & Me.Nonce
+                & "&scope=profile%20email%20phone%20address%20openid" _
+                & "&state=" & Me.State _
+                & "&nonce=" & Me.Nonce _
+                & "&prompt=none"
         End Function
 
 #End Region

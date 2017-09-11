@@ -18,14 +18,13 @@
 '**********************************************************************************
 
 Imports System.Net.Http
-Imports System.Net.Http.Headers
 
 Imports Microsoft.Owin.Security.DataHandler.Encoder
 
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 
-Imports Touryo.Infrastructure.Framework.Presentation
+Imports Touryo.Infrastructure.Framework.Authentication
 Imports Touryo.Infrastructure.Business.Util
 Imports Touryo.Infrastructure.Framework.Util
 Imports Touryo.Infrastructure.Public.Security
@@ -63,34 +62,15 @@ Namespace Aspx.OAuth2
             Dim state As String = Request.QueryString("state")
 
             Try
+                OAuth2AndOIDCClient.HttpClient = New HttpClient()
+                Dim response__1 As String = ""
+
                 If state = Me.State Then
                     ' CSRF(XSRF)対策のstateの検証は重要
-                    Dim httpClient As New HttpClient()
-
-                    Dim httpRequestMessage As HttpRequestMessage = Nothing
-                    Dim httpResponseMessage As HttpResponseMessage = Nothing
-
-                    ' HttpRequestMessage (Method & RequestUri)
-                    httpRequestMessage = New HttpRequestMessage() With {
-                        .Method = HttpMethod.Post,
-                        .RequestUri = New Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken")
-                    }
-
-                    ' HttpRequestMessage (Headers & Content)
-                    httpRequestMessage.Headers.Authorization = New AuthenticationHeaderValue(
-                        "Basic",
-                        Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(
-                        String.Format("{0}:{1}", New String() {OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret}))))
-
-                    httpRequestMessage.Content = New FormUrlEncodedContent(New Dictionary(Of String, String)() From {
-                        {"grant_type", "authorization_code"},
-                        {"code", code},
-                        {"redirect_uri", System.Web.HttpUtility.HtmlEncode("http://localhost:9999/WebForms_Sample/Aspx/Auth/OAuthAuthorizationCodeGrantClient.aspx")}
-                    })
-
-                    ' HttpResponseMessage
-                    httpResponseMessage = Await httpClient.SendAsync(httpRequestMessage)
-                    Dim response__1 As String = Await httpResponseMessage.Content.ReadAsStringAsync()
+                    response__1 = Await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+                        New Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"),
+                        OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
+                        HttpUtility.HtmlEncode("http://localhost:9999/WebForms_Sample/Aspx/Auth/OAuthAuthorizationCodeGrantClient.aspx"), code)
 
                     ' 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
                     Dim base64UrlEncoder As New Base64UrlTextEncoder()
@@ -107,9 +87,15 @@ Namespace Aspx.OAuth2
 
                         If JwtToken.Verify(id_token, [sub], roles, scopes, jobj) AndAlso jobj("nonce").ToString() = Me.Nonce Then
                             ' ログインに成功
+
+                            ' /userinfoエンドポイントにアクセスする場合
+                            response__1 = Await OAuth2AndOIDCClient.CallUserInfoEndpointAsync(
+                                New Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic("access_token"))
+
                             FormsAuthentication.RedirectFromLoginPage([sub], False)
                             Dim ui As New MyUserInfo([sub], Request.UserHostAddress)
                             UserInfoHandle.SetUserInformation(ui)
+
 
                             Return
 
