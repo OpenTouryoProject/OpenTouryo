@@ -18,12 +18,15 @@
 //**********************************************************************************
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Diagnostics;
 using System.Windows.Forms;
 
 using Touryo.Infrastructure.Business.RichClient.Presentation;
+using Touryo.Infrastructure.Business.RichClient.Util;
 using Touryo.Infrastructure.Framework.RichClient.Presentation;
+using Touryo.Infrastructure.Framework.RichClient.Util;
 
 namespace WSClientWin2_sample
 {
@@ -50,6 +53,24 @@ namespace WSClientWin2_sample
             this.tsmiItem22ToolStripMenuItem.Click += new EventHandler(this.Item_Click);
             this.tsmiItem221ToolStripMenuItem.Click += new EventHandler(this.Item_Click);
             this.tsmiItem222ToolStripMenuItem.Click += new EventHandler(this.Item_Click);
+
+            // userControl32の動的ロード
+            UserControl3 userControl32 = new UserControl3();
+            userControl32.Location = new System.Drawing.Point(8, 23);
+            userControl32.Margin = new Padding(5);
+            userControl32.Name = "userControl32";
+            userControl32.Size = new System.Drawing.Size(283, 330);
+            userControl32.TabIndex = 0;
+            this.groupBox3.Controls.Add(userControl32);
+
+            // 動的ロード後のコントロール検索＆イベントハンドラ設定
+            this.LstUserControl.Add(userControl32);
+            RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(
+                userControl32, this.CreatePrefixAndEvtHndHt(), this.ControlHt);    // Base
+            RcMyCmnFunction.GetCtrlAndSetClickEventHandler2(
+                userControl32, this.MyCreatePrefixAndEvtHndHt(), this.ControlHt);  // MyBase
+
+
         }
 
         #region Ctrlイベント

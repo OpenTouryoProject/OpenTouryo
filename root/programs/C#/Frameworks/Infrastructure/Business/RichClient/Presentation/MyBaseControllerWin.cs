@@ -35,6 +35,7 @@
 //*  2014/03/03  西野 大介         ユーザ コントロールのインスタンスの区別。
 //*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
 //*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
+//*  2017/09/12  西野 大介         UserControlの動的配置対応のため、MyCreatePrefixAndEvtHndHtを新設。
 //**********************************************************************************
 
 using System;
@@ -114,7 +115,23 @@ namespace Touryo.Infrastructure.Business.RichClient.Presentation
             ////    this, GetConfigParameter.GetConfigValue("FxPrefixOfToolStripMenuItem"),
             ////    new System.EventHandler(this.Button_Click), this.ControlHt);
             #endregion
+           
+            // コントロール検索＆イベントハンドラ設定
+            RcMyCmnFunction.GetCtrlAndSetClickEventHandler2(this, this.MyCreatePrefixAndEvtHndHt(), this.ControlHt);
 
+            #endregion
+        }
+
+        /// <summary>
+        /// コントロールのプレフィックスと
+        /// イベント ハンドラのディクショナリを生成
+        /// </summary>
+        /// <returns>
+        /// プレフィックスと
+        /// イベント ハンドラのディクショナリ
+        /// </returns>
+        protected Dictionary<string, object> MyCreatePrefixAndEvtHndHt()
+        {
             // プレフィックス
             string prefix = "";
             // プレフィックスとイベント ハンドラのディクショナリを生成
@@ -127,10 +144,7 @@ namespace Touryo.Infrastructure.Business.RichClient.Presentation
                 prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.Check_CheckedChanged));
             }
 
-            // コントロール検索＆イベントハンドラ設定
-            RcMyCmnFunction.GetCtrlAndSetClickEventHandler2(this, prefixAndEvtHndHt, this.ControlHt);
-
-            #endregion
+            return prefixAndEvtHndHt;
         }
 
         #endregion

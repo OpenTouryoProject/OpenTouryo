@@ -48,6 +48,7 @@
 //*  2013/03/05  西野 大介         UOC_CMNAfterFormInit、UOC_CMNAfterFormEndの呼出処理を追加
 //*  2014/03/03  西野 大介         ユーザ コントロールのインスタンスの区別。
 //*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
+//*  2017/09/12  西野 大介         UserControlの動的配置対応のため、CreatePrefixAndEvtHndHtを新設。
 //**********************************************************************************
 
 using System;
@@ -335,48 +336,9 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                 //    new System.EventHandler(this.Check_CheckedChanged), this.ControlHt);
                 #endregion
 
-                // プレフィックス
-                string prefix = "";
-                // プレフィックスとイベント ハンドラのディクショナリを生成
-                Dictionary<string, object> prefixAndEvtHndHt = new Dictionary<string, object>();
-
-                // BUTTON
-                prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_BUTTON);
-                if (!string.IsNullOrEmpty(prefix))
-                {
-                    prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.Button_Click));
-                }
-
-                // PICTURE BOX
-                prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_PICTURE_BOX);
-                if (!string.IsNullOrEmpty(prefix))
-                {
-                    prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.Button_Click));
-                }
-
-                // COMBO BOX
-                prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_COMBO_BOX);
-                if (!string.IsNullOrEmpty(prefix))
-                {
-                    prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.List_SelectedIndexChanged));
-                }
-
-                // LIST BOX
-                prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_LIST_BOX);
-                if (!string.IsNullOrEmpty(prefix))
-                {
-                    prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.List_SelectedIndexChanged));
-                }
-
-                // RADIO BUTTON
-                prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_RADIO_BUTTON);
-                if (!string.IsNullOrEmpty(prefix))
-                {
-                    prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.Check_CheckedChanged));
-                }
-
                 // コントロール検索＆イベントハンドラ設定
-                RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(this, prefixAndEvtHndHt, this.ControlHt);
+                RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(
+                    this, this.CreatePrefixAndEvtHndHt(), this.ControlHt);
 
                 #endregion
 
@@ -426,6 +388,60 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                 this.UOC_Finally(new RcFxEventArgs(
                     FxLiteral.EVENT_FORM_LOAD, "", sender, e));
             }
+        }
+
+        /// <summary>
+        /// コントロールのプレフィックスと
+        /// イベント ハンドラのディクショナリを生成
+        /// </summary>
+        /// <returns>
+        /// プレフィックスと
+        /// イベント ハンドラのディクショナリ
+        /// </returns>
+        protected Dictionary<string, object> CreatePrefixAndEvtHndHt()
+        {
+            // プレフィックスとイベント ハンドラのディクショナリを生成
+            Dictionary<string, object> prefixAndEvtHndHt = new Dictionary<string, object>();
+
+            // プレフィックス
+            string prefix = "";
+
+            // BUTTON
+            prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_BUTTON);
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.Button_Click));
+            }
+
+            // PICTURE BOX
+            prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_PICTURE_BOX);
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.Button_Click));
+            }
+
+            // COMBO BOX
+            prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_COMBO_BOX);
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.List_SelectedIndexChanged));
+            }
+
+            // LIST BOX
+            prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_LIST_BOX);
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.List_SelectedIndexChanged));
+            }
+
+            // RADIO BUTTON
+            prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_RADIO_BUTTON);
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.Check_CheckedChanged));
+            }
+
+            return prefixAndEvtHndHt;
         }
 
         #endregion
@@ -917,7 +933,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
 
         /// <summary>ユーザ コントロールの情報を初期化する</summary>
         /// <param name="ctrl">コントロール</param>
-        private void GetUserControl(Control ctrl)
+        protected void GetUserControl(Control ctrl)
         {
             // 必要なら初期化する。
             if (this.LstUserControl == null)
