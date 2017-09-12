@@ -94,7 +94,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Authentication\OAuth2ProviderHelper.cs" />
+    <Compile Include="Authentication\OAuth2AndOIDCClient.cs" />
     <Compile Include="Business\BaseLogic.cs" />
     <Compile Include="Business\TransactionControl.cs" />
     <Compile Include="Common\BaseParameterValue.cs" />
