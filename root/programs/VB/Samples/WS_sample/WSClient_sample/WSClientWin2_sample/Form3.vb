@@ -17,13 +17,12 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
 
-Imports System
 Imports System.Threading
-Imports System.Diagnostics
-Imports System.Windows.Forms
 
 Imports Touryo.Infrastructure.Business.RichClient.Presentation
+Imports Touryo.Infrastructure.Business.RichClient.Util
 Imports Touryo.Infrastructure.Framework.RichClient.Presentation
+Imports Touryo.Infrastructure.Framework.RichClient.Util
 
 Partial Public Class Form3
     Inherits MyBaseControllerWin
@@ -46,6 +45,22 @@ Partial Public Class Form3
         AddHandler Me.tsmiItem22ToolStripMenuItem.Click, AddressOf Me.Item_Click
         AddHandler Me.tsmiItem221ToolStripMenuItem.Click, AddressOf Me.Item_Click
         AddHandler Me.tsmiItem222ToolStripMenuItem.Click, AddressOf Me.Item_Click
+
+        ' userControl32の動的ロード
+        Dim userControl32 As UserControl3 = New UserControl3()
+        userControl32.Location = New Point(8, 23)
+        userControl32.Margin = New Padding(5)
+        userControl32.Name = "userControl32"
+        userControl32.Size = New Size(283, 330)
+        userControl32.TabIndex = 0
+        Me.groupBox3.Controls.Add(userControl32)
+
+        ' 動的ロード後のコントロール検索＆イベントハンドラ設定
+        Me.LstUserControl.Add(userControl32)
+        RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(
+            userControl32, Me.CreatePrefixAndEvtHndHt(), Me.ControlHt)    ' Base
+        RcMyCmnFunction.GetCtrlAndSetClickEventHandler2(
+            userControl32, Me.MyCreatePrefixAndEvtHndHt(), Me.ControlHt)  ' MyBase
     End Sub
 
 #Region "Ctrlイベント"

@@ -29,6 +29,7 @@
 '*  ----------  ----------------  -------------------------------------------------
 '*  2010/11/21  西野  大介        新規作成
 '*  2012/06/14  西野  大介        コントロール検索の再帰処理性能の集約＆効率化。
+'*  2017/09/12  西野 大介         UserControlの動的配置対応のためアクセス修飾子を変更。
 '**********************************************************************************
 
 Imports System.Windows.Forms
@@ -40,49 +41,49 @@ Imports Touryo.Infrastructure.Public.Util
 Namespace Touryo.Infrastructure.Business.RichClient.Util
 	''' <summary>Business.RichClient層の共通クラス</summary>
 	Public Class RcMyCmnFunction
-		''' <summary>コントロール取得＆イベントハンドラ設定</summary>
-		''' <param name="ctrl">コントロール</param>
-		''' <param name="prefix">プレフィックス</param>
-		''' <param name="eventHandler">イベント ハンドラ</param>
-		''' <param name="ControlHt">ディクショナリ</param>
-		Friend Shared Sub GetCtrlAndSetClickEventHandler(ctrl As Control, prefix As String, eventHandler As Object, ControlHt As Dictionary(Of String, Control))
-			'#Region "チェック処理"
+        ''' <summary>コントロール取得＆イベントハンドラ設定</summary>
+        ''' <param name="ctrl">コントロール</param>
+        ''' <param name="prefix">プレフィックス</param>
+        ''' <param name="eventHandler">イベント ハンドラ</param>
+        ''' <param name="ControlHt">ディクショナリ</param>
+        Public Shared Sub GetCtrlAndSetClickEventHandler(ctrl As Control, prefix As String, eventHandler As Object, ControlHt As Dictionary(Of String, Control))
+            '#Region "チェック処理"
 
-			' コントロール指定が無い場合
-			If ctrl Is Nothing Then
-				' 何もしないで戻る。
-				Return
-			End If
+            ' コントロール指定が無い場合
+            If ctrl Is Nothing Then
+                ' 何もしないで戻る。
+                Return
+            End If
 
-			' プレフィックス指定が無い場合
-			If prefix Is Nothing OrElse prefix = "" Then
-				' 何もしないで戻る。
-				Return
-			End If
+            ' プレフィックス指定が無い場合
+            If prefix Is Nothing OrElse prefix = "" Then
+                ' 何もしないで戻る。
+                Return
+            End If
 
-			'#End Region
+            '#End Region
 
-			'#Region "コントロール取得＆イベントハンドラ設定"
+            '#Region "コントロール取得＆イベントハンドラ設定"
 
-			' コントロールのNameチェック
-					' コントロールName無し
-			If ctrl.Name Is Nothing Then
-			Else
-				' コントロールName有り
+            ' コントロールのNameチェック
+            ' コントロールName無し
+            If ctrl.Name Is Nothing Then
+            Else
+                ' コントロールName有り
 
-				' コントロールのName長確認
-				If prefix.Length <= ctrl.Name.Length Then
-					' 指定のプレフィックス
-					If prefix = ctrl.Name.Substring(0, prefix.Length) Then
-						' イベントハンドラを設定する。
-						If prefix = GetConfigParameter.GetConfigValue(MyLiteral.PREFIX_OF_CHECK_BOX) Then
-							' CHECK BOX
-							Dim checkBox As CheckBox = Nothing
+                ' コントロールのName長確認
+                If prefix.Length <= ctrl.Name.Length Then
+                    ' 指定のプレフィックス
+                    If prefix = ctrl.Name.Substring(0, prefix.Length) Then
+                        ' イベントハンドラを設定する。
+                        If prefix = GetConfigParameter.GetConfigValue(MyLiteral.PREFIX_OF_CHECK_BOX) Then
+                            ' CHECK BOX
+                            Dim checkBox As CheckBox = Nothing
 
-							Try
-								' キャストできる
-								checkBox = DirectCast(ctrl, CheckBox)
-							Catch ex As Exception
+                            Try
+                                ' キャストできる
+                                checkBox = DirectCast(ctrl, CheckBox)
+                            Catch ex As Exception
                                 ' キャストできない
                                 Throw New FrameworkException(
                                     FrameworkExceptionMessage.CONTROL_TYPE_ERROR(0), [String].Format(
@@ -91,36 +92,36 @@ Namespace Touryo.Infrastructure.Business.RichClient.Util
 
                             AddHandler checkBox.CheckedChanged, DirectCast(eventHandler, EventHandler)
 
-							' ディクショナリに格納
-							' ControlHt.Add(ctrl.Name, ctrl);
-								' 2009/08/10-この行
-							ControlHt(ctrl.Name) = ctrl
-						End If
-					End If
-				End If
-			End If
+                            ' ディクショナリに格納
+                            ' ControlHt.Add(ctrl.Name, ctrl);
+                            ' 2009/08/10-この行
+                            ControlHt(ctrl.Name) = ctrl
+                        End If
+                    End If
+                End If
+            End If
 
-			'#End Region
+            '#End Region
 
-			'#Region "再起"
+            '#Region "再起"
 
-			' 子コントロールがある場合、
-			If ctrl.Controls.Count <> 0 Then
-				' 子コントロール毎に
-				For Each childCtrl As Control In ctrl.Controls
-					' 再起する。
-					RcMyCmnFunction.GetCtrlAndSetClickEventHandler(childCtrl, prefix, eventHandler, ControlHt)
-				Next
-			End If
+            ' 子コントロールがある場合、
+            If ctrl.Controls.Count <> 0 Then
+                ' 子コントロール毎に
+                For Each childCtrl As Control In ctrl.Controls
+                    ' 再起する。
+                    RcMyCmnFunction.GetCtrlAndSetClickEventHandler(childCtrl, prefix, eventHandler, ControlHt)
+                Next
+            End If
 
-			'#End Region
-		End Sub
+            '#End Region
+        End Sub
 
         ''' <summary>コントロール取得＆イベントハンドラ設定</summary>
         ''' <param name="ctrl">コントロール</param>
         ''' <param name="prefixAndEvtHndHt">プレフィックスとイベント ハンドラのディクショナリ</param>
         ''' <param name="controlHt">コントロールのディクショナリ</param>
-        Friend Shared Sub GetCtrlAndSetClickEventHandler2(ctrl As Control, prefixAndEvtHndHt As Dictionary(Of String, Object), controlHt As Dictionary(Of String, Control))
+        Public Shared Sub GetCtrlAndSetClickEventHandler2(ctrl As Control, prefixAndEvtHndHt As Dictionary(Of String, Object), controlHt As Dictionary(Of String, Control))
             ' ループ
             For Each prefix As String In prefixAndEvtHndHt.Keys
                 Dim eventHandler As Object = prefixAndEvtHndHt(prefix)
