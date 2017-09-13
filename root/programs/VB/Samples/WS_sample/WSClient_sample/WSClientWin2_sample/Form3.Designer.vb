@@ -292,9 +292,9 @@ Partial Class Form3
         'groupBox3
         '
         Me.groupBox3.Location = New System.Drawing.Point(263, 33)
-        Me.groupBox3.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.groupBox3.Margin = New System.Windows.Forms.Padding(2)
         Me.groupBox3.Name = "groupBox3"
-        Me.groupBox3.Padding = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.groupBox3.Padding = New System.Windows.Forms.Padding(2)
         Me.groupBox3.Size = New System.Drawing.Size(226, 290)
         Me.groupBox3.TabIndex = 2
         Me.groupBox3.TabStop = False
@@ -304,9 +304,9 @@ Partial Class Form3
         '
         Me.groupBox2.Controls.Add(Me.userControl31)
         Me.groupBox2.Location = New System.Drawing.Point(19, 33)
-        Me.groupBox2.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.groupBox2.Margin = New System.Windows.Forms.Padding(2)
         Me.groupBox2.Name = "groupBox2"
-        Me.groupBox2.Padding = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.groupBox2.Padding = New System.Windows.Forms.Padding(2)
         Me.groupBox2.Size = New System.Drawing.Size(226, 290)
         Me.groupBox2.TabIndex = 1
         Me.groupBox2.TabStop = False
@@ -315,7 +315,7 @@ Partial Class Form3
         'userControl31
         '
         Me.userControl31.Location = New System.Drawing.Point(6, 18)
-        Me.userControl31.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.userControl31.Margin = New System.Windows.Forms.Padding(4)
         Me.userControl31.Name = "userControl31"
         Me.userControl31.Size = New System.Drawing.Size(212, 264)
         Me.userControl31.TabIndex = 0

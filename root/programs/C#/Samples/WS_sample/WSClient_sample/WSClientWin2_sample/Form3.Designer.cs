@@ -47,7 +47,6 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.userControl31 = new WSClientWin2_sample.UserControl3();
             this.label3 = new System.Windows.Forms.Label();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,6 +58,7 @@
             this.tsmiItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.btnElse1 = new System.Windows.Forms.Button();
             this.btnElse2 = new System.Windows.Forms.Button();
+            this.userControl31 = new WSClientWin2_sample.UserControl3();
             ((System.ComponentModel.ISupportInitialize)(this.pbxPictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbxPictureBox2)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -232,33 +232,27 @@
             // groupBox3
             // 
             this.groupBox3.Location = new System.Drawing.Point(263, 33);
-            this.groupBox3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(2);
             this.groupBox3.Size = new System.Drawing.Size(226, 290);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "userControl32";
+            this.groupBox3.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.groupBox3_ControlAdded);
+            this.groupBox3.ControlRemoved += new System.Windows.Forms.ControlEventHandler(this.groupBox3_ControlRemoved);
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.userControl31);
             this.groupBox2.Location = new System.Drawing.Point(19, 33);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(2);
             this.groupBox2.Size = new System.Drawing.Size(226, 290);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "userControl31";
-            // 
-            // userControl31
-            // 
-            this.userControl31.Location = new System.Drawing.Point(6, 18);
-            this.userControl31.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.userControl31.Name = "userControl31";
-            this.userControl31.Size = new System.Drawing.Size(212, 264);
-            this.userControl31.TabIndex = 0;
             // 
             // label3
             // 
@@ -343,6 +337,14 @@
             this.btnElse2.TabIndex = 18;
             this.btnElse2.Text = "いろいろテスト2";
             this.btnElse2.UseVisualStyleBackColor = true;
+            // 
+            // userControl31
+            // 
+            this.userControl31.Location = new System.Drawing.Point(6, 18);
+            this.userControl31.Margin = new System.Windows.Forms.Padding(4);
+            this.userControl31.Name = "userControl31";
+            this.userControl31.Size = new System.Drawing.Size(212, 264);
+            this.userControl31.TabIndex = 0;
             // 
             // Form3
             // 

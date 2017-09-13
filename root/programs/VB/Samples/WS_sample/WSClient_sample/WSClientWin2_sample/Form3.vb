@@ -54,66 +54,85 @@ Partial Public Class Form3
         userControl32.Size = New Size(283, 330)
         userControl32.TabIndex = 0
         Me.groupBox3.Controls.Add(userControl32)
-
-        ' 動的ロード後のコントロール検索＆イベントハンドラ設定
-        Me.LstUserControl.Add(userControl32)
-        RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(
-            userControl32, Me.CreatePrefixAndEvtHndHt(), Me.ControlHt)    ' Base
-        RcMyCmnFunction.GetCtrlAndSetClickEventHandler2(
-            userControl32, Me.MyCreatePrefixAndEvtHndHt(), Me.ControlHt)  ' MyBase
     End Sub
 
 #Region "Ctrlイベント"
 
-    Protected Sub UOC_btnButton1_Click(ByVal rcFxEventArgs As RcFxEventArgs)
+    ''' <summary>UOC_btnButton1_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_btnButton1_Click(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_btnButton1_Click")
     End Sub
 
-    Protected Sub UOC_pbxPictureBox1_Click(ByVal rcFxEventArgs As RcFxEventArgs)
+    ''' <summary>UOC_pbxPictureBox1_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_pbxPictureBox1_Click(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_pbxPictureBox1_Click")
     End Sub
 
-    Protected Sub UOC_rbnRadioButton1_CheckedChanged(ByVal rcFxEventArgs As RcFxEventArgs)
+    ''' <summary>UOC_rbnRadioButton1_CheckedChanged</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_rbnRadioButton1_CheckedChanged(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_rbnRadioButton1_CheckedChanged")
     End Sub
 
-    Protected Sub UOC_cbxCheckBox1_CheckedChanged(ByVal rcFxEventArgs As RcFxEventArgs)
+    ''' <summary>UOC_cbxCheckBox1_CheckedChanged</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_cbxCheckBox1_CheckedChanged(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_cbxCheckBox1_CheckedChanged")
     End Sub
 
-    Protected Sub UOC_cbbComboBox1_SelectedIndexChanged(ByVal rcFxEventArgs As RcFxEventArgs)
+    ''' <summary>UOC_cbbComboBox1_SelectedIndexChanged</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_cbbComboBox1_SelectedIndexChanged(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_cbbComboBox1_SelectedIndexChanged")
     End Sub
 
-    Protected Sub UOC_lbxListBox1_SelectedIndexChanged(ByVal rcFxEventArgs As RcFxEventArgs)
+    ''' <summary>UOC_lbxListBox1_SelectedIndexChanged</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_lbxListBox1_SelectedIndexChanged(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_lbxListBox1_SelectedIndexChanged")
     End Sub
 
-    Protected Sub UOC_tsmiItem1_Click(ByVal rcFxEventArgs As RcFxEventArgs)
+    ''' <summary>UOC_tsmiItem1_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_tsmiItem1_Click(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_tsmiItem1_Click")
     End Sub
 
-    Protected Sub UOC_tsmiItem2_Click(ByVal rcFxEventArgs As RcFxEventArgs)
+    ''' <summary>UOC_tsmiItem2_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_tsmiItem2_Click(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_tsmiItem2_Click")
     End Sub
 
-    Protected Sub UOC_tsmiItem21_Click(ByVal rcFxEventArgs As RcFxEventArgs)
+    ''' <summary>UOC_tsmiItem21_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_tsmiItem21_Click(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_tsmiItem21_Click")
     End Sub
 
-    Protected Sub UOC_tsmiItem22_Click(ByVal rcFxEventArgs As RcFxEventArgs)
+    ''' <summary>UOC_tsmiItem22_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_tsmiItem22_Click(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_tsmiItem22_Click")
     End Sub
 
-    Protected Sub UOC_tsmiItem221_Click(ByVal rcFxEventArgs As RcFxEventArgs)
+    ''' <summary>UOC_tsmiItem221_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_tsmiItem221_Click(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_tsmiItem221_Click")
     End Sub
 
-    Protected Sub UOC_tsmiItem222_Click(ByVal rcFxEventArgs As RcFxEventArgs)
+    ''' <summary>UOC_tsmiItem222_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_tsmiItem222_Click(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_tsmiItem222_Click")
     End Sub
 
-    Protected Sub UOC_tsmiItem3_Click(ByVal rcFxEventArgs As RcFxEventArgs)
+    ''' <summary>UOC_tsmiItem3_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_tsmiItem3_Click(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_tsmiItem3_Click")
     End Sub
 
@@ -153,7 +172,7 @@ Partial Public Class Form3
     '}
 
     ''' <summary>テスト１</summary>
-    Protected Sub UOC_btnElse1_Click(ByVal rcFxEventArgs As RcFxEventArgs)
+    Protected Sub UOC_btnElse1_Click(rcFxEventArgs As RcFxEventArgs)
         ' newだけした場合・・・ 
         Dim f As Form = New Form2()
 
@@ -161,13 +180,14 @@ Partial Public Class Form3
     End Sub
 
     ''' <summary>テスト２</summary>
-    Protected Sub UOC_btnElse2_Click(ByVal rcFxEventArgs As RcFxEventArgs)
+    Protected Sub UOC_btnElse2_Click(rcFxEventArgs As RcFxEventArgs)
         'throw new Exception("てすと");
 
         Dim th As New Thread(New ThreadStart(AddressOf Me.ThMe))
         th.Start()
     End Sub
 
+    ''' <summary>バックグラウンド・スレッド</summary>
     Private Sub ThMe()
         Throw New Exception("てすと")
     End Sub
@@ -177,49 +197,93 @@ Partial Public Class Form3
 #Region "Formイベント"
     ' プロジェクト独自
 
-    Protected Sub UOC_Form_Enter_KeyDown(ByVal rcFxEventArgs As RcFxEventArgs)
+    ''' <summary>UOC_Form_Enter_KeyDown</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_Form_Enter_KeyDown(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_Form_Enter_KeyDown")
     End Sub
-    Protected Sub UOC_Form_F1_KeyDown(ByVal rcFxEventArgs As RcFxEventArgs)
+
+    ''' <summary>UOC_Form_F1_KeyDown</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_Form_F1_KeyDown(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_Form_F1_KeyDown")
     End Sub
-    Protected Sub UOC_Form_F2_KeyDown(ByVal rcFxEventArgs As RcFxEventArgs)
+
+    ''' <summary>UOC_Form_F2_KeyDown</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_Form_F2_KeyDown(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_Form_F2_KeyDown")
     End Sub
-    Protected Sub UOC_Form_F3_KeyDown(ByVal rcFxEventArgs As RcFxEventArgs)
+
+    ''' <summary>UOC_Form_F3_KeyDown</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_Form_F3_KeyDown(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_Form_F3_KeyDown")
     End Sub
-    Protected Sub UOC_Form_F4_KeyDown(ByVal rcFxEventArgs As RcFxEventArgs)
+
+    ''' <summary>UOC_Form_F4_KeyDown</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_Form_F4_KeyDown(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_Form_F4_KeyDown")
     End Sub
-    Protected Sub UOC_Form_F5_KeyDown(ByVal rcFxEventArgs As RcFxEventArgs)
+
+    ''' <summary>UOC_Form_F5_KeyDown</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_Form_F5_KeyDown(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_Form_F5_KeyDown")
     End Sub
-    Protected Sub UOC_Form_F6_KeyDown(ByVal rcFxEventArgs As RcFxEventArgs)
+
+    ''' <summary>UOC_Form_F6_KeyDown</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_Form_F6_KeyDown(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_Form_F6_KeyDown")
     End Sub
-    Protected Sub UOC_Form_F7_KeyDown(ByVal rcFxEventArgs As RcFxEventArgs)
+
+    ''' <summary>UOC_Form_F7_KeyDown</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_Form_F7_KeyDown(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_Form_F7_KeyDown")
     End Sub
-    Protected Sub UOC_Form_F8_KeyDown(ByVal rcFxEventArgs As RcFxEventArgs)
+
+    ''' <summary>UOC_Form_F8_KeyDown</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_Form_F8_KeyDown(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_Form_F8_KeyDown")
     End Sub
-    Protected Sub UOC_Form_F9_KeyDown(ByVal rcFxEventArgs As RcFxEventArgs)
+
+    ''' <summary>UOC_Form_F9_KeyDown</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_Form_F9_KeyDown(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_Form_F9_KeyDown")
     End Sub
-    Protected Sub UOC_Form_F10_KeyDown(ByVal rcFxEventArgs As RcFxEventArgs)
+
+    ''' <summary>UOC_Form_F10_KeyDown</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_Form_F10_KeyDown(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_Form_F10_KeyDown")
     End Sub
-    Protected Sub UOC_Form_F11_KeyDown(ByVal rcFxEventArgs As RcFxEventArgs)
+
+    ''' <summary>UOC_Form_F11_KeyDown</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_Form_F11_KeyDown(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_Form_F11_KeyDown")
     End Sub
-    Protected Sub UOC_Form_F12_KeyDown(ByVal rcFxEventArgs As RcFxEventArgs)
+
+    ''' <summary>UOC_Form_F12_KeyDown</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_Form_F12_KeyDown(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_Form_F12_KeyDown")
     End Sub
-    Protected Sub UOC_Form_AltAndF4_KeyDown(ByVal rcFxEventArgs As RcFxEventArgs)
+
+    ''' <summary>UOC_Form_AltAndF4_KeyDown</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_Form_AltAndF4_KeyDown(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_Form_AltAndF4_KeyDown")
     End Sub
-    Protected Sub UOC_Form_Closing(ByVal rcFxEventArgs As RcFxEventArgs)
+
+    ''' <summary>UOC_Form_Closing</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_Form_Closing(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_Form_Closing")
     End Sub
 
@@ -245,57 +309,115 @@ Partial Public Class Form3
 
 #Region "UserControlイベント"
 
+#Region "userControl31"
+
+    ''' <summary>UOC_userControl31_btnUCButton1_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
     Protected Sub UOC_userControl31_btnUCButton1_Click(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_userControl31_btnUCButton1_Click")
     End Sub
 
+    ''' <summary>UOC_userControl31_pbxUCPictureBox1_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
     Protected Sub UOC_userControl31_pbxUCPictureBox1_Click(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_userControl31_pbxUCPictureBox1_Click")
     End Sub
 
+    ''' <summary>UOC_userControl31_rbnUCRadioButton1_CheckedChanged</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
     Protected Sub UOC_userControl31_rbnUCRadioButton1_CheckedChanged(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_userControl31_rbnUCRadioButton1_CheckedChanged")
     End Sub
 
+    ''' <summary>UOC_userControl31_cbxUCCheckBox1_CheckedChanged</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
     Protected Sub UOC_userControl31_cbxUCCheckBox1_CheckedChanged(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_userControl31_cbxUCCheckBox1_CheckedChanged")
     End Sub
 
+    ''' <summary>UOC_userControl31_cbbUCComboBox1_SelectedIndexChanged</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
     Protected Sub UOC_userControl31_cbbUCComboBox1_SelectedIndexChanged(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_userControl31_cbbUCComboBox1_SelectedIndexChanged")
     End Sub
 
+    ''' <summary>UOC_userControl31_lbxUCListBox1_SelectedIndexChanged</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
     Protected Sub UOC_userControl31_lbxUCListBox1_SelectedIndexChanged(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_userControl31_lbxUCListBox1_SelectedIndexChanged")
     End Sub
 
-    ' ---
+#End Region
 
+#Region "userControl32"
+
+    ''' <summary>UOC_userControl32_btnUCButton1_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
     Protected Sub UOC_userControl32_btnUCButton1_Click(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_userControl32_btnUCButton1_Click")
     End Sub
 
+    ''' <summary>UOC_userControl32_pbxUCPictureBox1_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
     Protected Sub UOC_userControl32_pbxUCPictureBox1_Click(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_userControl32_pbxUCPictureBox1_Click")
     End Sub
 
+    ''' <summary>UOC_userControl32_rbnUCRadioButton1_CheckedChanged</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
     Protected Sub UOC_userControl32_rbnUCRadioButton1_CheckedChanged(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_userControl32_rbnUCRadioButton1_CheckedChanged")
     End Sub
 
+    ''' <summary>UOC_userControl32_cbxUCCheckBox1_CheckedChanged</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
     Protected Sub UOC_userControl32_cbxUCCheckBox1_CheckedChanged(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_userControl32_cbxUCCheckBox1_CheckedChanged")
     End Sub
 
+    ''' <summary>UOC_userControl32_cbbUCComboBox1_SelectedIndexChanged</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
     Protected Sub UOC_userControl32_cbbUCComboBox1_SelectedIndexChanged(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_userControl32_cbbUCComboBox1_SelectedIndexChanged")
     End Sub
 
+    ''' <summary>UOC_userControl32_lbxUCListBox1_SelectedIndexChanged</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
     Protected Sub UOC_userControl32_lbxUCListBox1_SelectedIndexChanged(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_userControl32_lbxUCListBox1_SelectedIndexChanged")
+        Me.groupBox3.Controls.RemoveByKey("userControl32") ' ★★
     End Sub
 
 #End Region
+
+#End Region
+
+    ''' <summary>動的に追加したコントロールをLstUserControlに追加する</summary>
+    ''' <param name="sender">object</param>
+    ''' <param name="e">ControlEventArgs</param>
+    Private Sub groupBox3_ControlAdded(sender As Object, e As ControlEventArgs) Handles groupBox3.ControlAdded
+        ' UOC_イベントハンドラ内で追加すると例外が発生するのでココに書く。
+        If TypeOf e.Control Is UserControl Then
+            ' 動的ロード後のコントロール検索＆イベントハンドラ設定
+            Me.LstUserControl.Add(DirectCast(e.Control, UserControl))
+            RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(
+                DirectCast(e.Control, UserControl),
+                Me.CreatePrefixAndEvtHndHt(), Me.ControlHt)   ' Base
+            RcMyCmnFunction.GetCtrlAndSetClickEventHandler2(
+                DirectCast(e.Control, UserControl),
+                Me.MyCreatePrefixAndEvtHndHt(), Me.ControlHt) ' MyBase
+        End If
+    End Sub
+
+    ''' <summary>動的に追加したコントロールをLstUserControlから削除する</summary>
+    ''' <param name="sender">object</param>
+    ''' <param name="e">ControlEventArgs</param>
+    Private Sub groupBox3_ControlRemoved(sender As Object, e As ControlEventArgs) Handles groupBox3.ControlRemoved
+        ' UOC_イベントハンドラ内で削除すると例外が発生するのでココに書く。
+        If TypeOf e.Control Is UserControl Then
+            Me.LstUserControl.Remove(DirectCast(e.Control, UserControl))
+        End If
+    End Sub
 
 End Class
 

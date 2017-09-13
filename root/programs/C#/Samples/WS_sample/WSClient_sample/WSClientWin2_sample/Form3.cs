@@ -62,79 +62,96 @@ namespace WSClientWin2_sample
             userControl32.Size = new System.Drawing.Size(283, 330);
             userControl32.TabIndex = 0;
             this.groupBox3.Controls.Add(userControl32);
-
-            // 動的ロード後のコントロール検索＆イベントハンドラ設定
-            this.LstUserControl.Add(userControl32);
-            RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(
-                userControl32, this.CreatePrefixAndEvtHndHt(), this.ControlHt);    // Base
-            RcMyCmnFunction.GetCtrlAndSetClickEventHandler2(
-                userControl32, this.MyCreatePrefixAndEvtHndHt(), this.ControlHt);  // MyBase
-
-
         }
 
         #region Ctrlイベント
 
+        /// <summary>UOC_btnButton1_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_btnButton1_Click(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_btnButton1_Click");
         }
 
+        /// <summary>UOC_pbxPictureBox1_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_pbxPictureBox1_Click(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_pbxPictureBox1_Click");
         }
 
+        /// <summary>UOC_rbnRadioButton1_CheckedChanged</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_rbnRadioButton1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_rbnRadioButton1_CheckedChanged");
         }
 
+        /// <summary>UOC_cbxCheckBox1_CheckedChanged</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_cbxCheckBox1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_cbxCheckBox1_CheckedChanged");
         }
 
+        /// <summary>UOC_cbbComboBox1_SelectedIndexChanged</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_cbbComboBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_cbbComboBox1_SelectedIndexChanged");
         }
 
+        /// <summary>UOC_lbxListBox1_SelectedIndexChanged</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_lbxListBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_lbxListBox1_SelectedIndexChanged");
         }
 
+        /// <summary>UOC_tsmiItem1_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_tsmiItem1_Click(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_tsmiItem1_Click");
         }
 
+        /// <summary>UOC_tsmiItem2_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_tsmiItem2_Click(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_tsmiItem2_Click");
         }
 
+        /// <summary>UOC_tsmiItem21_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_tsmiItem21_Click(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_tsmiItem21_Click");
         }
 
+        /// <summary>UOC_tsmiItem22_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_tsmiItem22_Click(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_tsmiItem22_Click");
         }
 
+        /// <summary>UOC_tsmiItem221_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_tsmiItem221_Click(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_tsmiItem221_Click");
         }
 
+        /// <summary>UOC_tsmiItem222_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_tsmiItem222_Click(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_tsmiItem222_Click");
         }
 
+        /// <summary>UOC_tsmiItem3_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_tsmiItem3_Click(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_tsmiItem3_Click");
@@ -194,6 +211,7 @@ namespace WSClientWin2_sample
             th.Start();
         }
 
+        /// <summary>バックグラウンド・スレッド</summary>
         private void ThMe()
         {
             throw new Exception("てすと");
@@ -204,69 +222,113 @@ namespace WSClientWin2_sample
         #region Formイベント
         // プロジェクト独自
 
+        /// <summary>UOC_Form_Enter_KeyDown</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_Form_Enter_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_Form_Enter_KeyDown");
         }
+
+        /// <summary>UOC_Form_F1_KeyDown</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_Form_F1_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_Form_F1_KeyDown");
         }
+
+        /// <summary>UOC_Form_F2_KeyDown</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_Form_F2_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_Form_F2_KeyDown");
         }
+
+        /// <summary>UOC_Form_F3_KeyDown</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_Form_F3_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_Form_F3_KeyDown");
         }
+
+        /// <summary>UOC_Form_F4_KeyDown</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_Form_F4_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_Form_F4_KeyDown");
         }
+
+        /// <summary>UOC_Form_F5_KeyDown</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_Form_F5_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_Form_F5_KeyDown");
         }
+
+        /// <summary>UOC_Form_F6_KeyDown</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_Form_F6_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_Form_F6_KeyDown");
         }
+
+        /// <summary>UOC_Form_F7_KeyDown</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_Form_F7_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_Form_F7_KeyDown");
         }
+
+        /// <summary>UOC_Form_F8_KeyDown</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_Form_F8_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_Form_F8_KeyDown");
         }
+
+        /// <summary>UOC_Form_F9_KeyDown</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_Form_F9_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_Form_F9_KeyDown");
         }
+
+        /// <summary>UOC_Form_F10_KeyDown</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_Form_F10_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_Form_F10_KeyDown");
         }
+
+        /// <summary>UOC_Form_F11_KeyDown</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_Form_F11_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_Form_F11_KeyDown");
         }
+
+        /// <summary>UOC_Form_F12_KeyDown</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_Form_F12_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_Form_F12_KeyDown");
         }
+
+        /// <summary>UOC_Form_AltAndF4_KeyDown</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_Form_AltAndF4_KeyDown(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_Form_AltAndF4_KeyDown");
         }
+
+        /// <summary>UOC_Form_Closing</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_Form_Closing(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_Form_Closing");
         }
 
         #endregion
-        
+
         #region 未解放イベント
         // ログが出過ぎるので
 
@@ -287,68 +349,128 @@ namespace WSClientWin2_sample
 
         #region UserControlイベント
 
+        #region userControl31
+
+        /// <summary>UOC_userControl31_btnUCButton1_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_userControl31_btnUCButton1_Click(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_userControl31_btnUCButton1_Click");
         }
 
+        /// <summary>UOC_userControl31_pbxUCPictureBox1_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_userControl31_pbxUCPictureBox1_Click(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_userControl31_pbxUCPictureBox1_Click");
         }
 
+        /// <summary>UOC_userControl31_rbnUCRadioButton1_CheckedChanged</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_userControl31_rbnUCRadioButton1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_userControl31_rbnUCRadioButton1_CheckedChanged");
         }
 
+        /// <summary>UOC_userControl31_cbxUCCheckBox1_CheckedChanged</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_userControl31_cbxUCCheckBox1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_userControl31_cbxUCCheckBox1_CheckedChanged");
         }
 
+        /// <summary>UOC_userControl31_cbbUCComboBox1_SelectedIndexChanged</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_userControl31_cbbUCComboBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_userControl31_cbbUCComboBox1_SelectedIndexChanged");
         }
 
+        /// <summary>UOC_userControl31_lbxUCListBox1_SelectedIndexChanged</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_userControl31_lbxUCListBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_userControl31_lbxUCListBox1_SelectedIndexChanged");
         }
 
-        // ---
+        #endregion
 
+        #region userControl32
+
+        /// <summary>UOC_userControl32_btnUCButton1_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_userControl32_btnUCButton1_Click(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_userControl32_btnUCButton1_Click");
         }
 
+        /// <summary>UOC_userControl32_pbxUCPictureBox1_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_userControl32_pbxUCPictureBox1_Click(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_userControl32_pbxUCPictureBox1_Click");
         }
 
+        /// <summary>UOC_userControl32_rbnUCRadioButton1_CheckedChanged</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_userControl32_rbnUCRadioButton1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_userControl32_rbnUCRadioButton1_CheckedChanged");
         }
 
+        /// <summary>UOC_userControl32_cbxUCCheckBox1_CheckedChanged</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_userControl32_cbxUCCheckBox1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_userControl32_cbxUCCheckBox1_CheckedChanged");
         }
 
+        /// <summary>UOC_userControl32_cbbUCComboBox1_SelectedIndexChanged</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_userControl32_cbbUCComboBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_userControl32_cbbUCComboBox1_SelectedIndexChanged");
         }
 
+        /// <summary>UOC_userControl32_lbxUCListBox1_SelectedIndexChanged</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_userControl32_lbxUCListBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_userControl32_lbxUCListBox1_SelectedIndexChanged");
+            this.groupBox3.Controls.RemoveByKey("userControl32"); // ★★
         }
 
         #endregion
+
+        #endregion
+
+        /// <summary>動的に追加したコントロールをLstUserControlに追加する</summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">ControlEventArgs</param>
+        private void groupBox3_ControlAdded(object sender, ControlEventArgs e)
+        {
+            // UOC_イベントハンドラ内で追加すると例外が発生するのでココに書く。
+            if (e.Control is UserControl)
+            {
+                // 動的ロード後のコントロール検索＆イベントハンドラ設定
+                this.LstUserControl.Add((UserControl)e.Control);
+                RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(
+                    (UserControl)e.Control, this.CreatePrefixAndEvtHndHt(), this.ControlHt);   // Base
+                RcMyCmnFunction.GetCtrlAndSetClickEventHandler2(
+                    (UserControl)e.Control, this.MyCreatePrefixAndEvtHndHt(), this.ControlHt); // MyBase
+            }
+        }
+
+        /// <summary>動的に追加したコントロールをLstUserControlから削除する</summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">ControlEventArgs</param>
+        private void groupBox3_ControlRemoved(object sender, ControlEventArgs e)
+        {
+            // UOC_イベントハンドラ内で削除すると例外が発生するのでココに書く。
+            if (e.Control is UserControl)
+            {
+                this.LstUserControl.Remove((UserControl)e.Control);
+            }
+        }
     }
 }
