@@ -409,14 +409,23 @@ Partial Public Class Form3
         End If
     End Sub
 
+    ''' <summary>MethodInvoker</summary>
+    ''' <typeparam name="T">Type</typeparam>
+    ''' <param name="obj">T</param>
+    Delegate Sub MethodInvoker(Of T)(obj As T)
+
     ''' <summary>動的に追加したコントロールをLstUserControlから削除する</summary>
     ''' <param name="sender">object</param>
     ''' <param name="e">ControlEventArgs</param>
     Private Sub groupBox3_ControlRemoved(sender As Object, e As ControlEventArgs) Handles groupBox3.ControlRemoved
-        ' UOC_イベントハンドラ内で削除すると例外が発生するのでココに書く。
-        If TypeOf e.Control Is UserControl Then
-            Me.LstUserControl.Remove(DirectCast(e.Control, UserControl))
-        End If
+        Me.BeginInvoke(
+            (Sub(x)
+                 If TypeOf x Is UserControl Then
+                     ' 例外が発生するのでココで削除する。
+                     Me.LstUserControl.Remove(DirectCast(e.Control, UserControl))
+                 End If
+             End Sub),
+            New Object() {e.Control})
     End Sub
 
 End Class

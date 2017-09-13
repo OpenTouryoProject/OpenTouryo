@@ -464,43 +464,26 @@ namespace WSClientWin2_sample
             }
         }
 
+        /// <summary>MethodInvoker</summary>
+        /// <typeparam name="T">Type</typeparam>
+        /// <param name="obj">T</param>
+        delegate void MethodInvoker<T>(T obj);
+
         /// <summary>動的に追加したコントロールをLstUserControlから削除する</summary>
         /// <param name="sender">object</param>
         /// <param name="e">ControlEventArgs</param>
         private void groupBox3_ControlRemoved(object sender, ControlEventArgs e)
         {
-            // 非同期フレームワーク
-            MyBaseAsyncFunc af = new MyBaseAsyncFunc(this);
-
-            // 引数
-            af.Parameter = e.Control;
-
-            // 非同期処理本体・無名関数デレゲード
-            af.AsyncFunc = delegate (object param)
-            {
-                return param; // SetResultで使いたいので。
-            };
-
-            //// 進捗報告・無名関数デレゲード
-            //af.ChangeProgress = delegate (object param)
-            //{
-            //};
-
-            // 結果設定・無名関数デレゲード
-            af.SetResult = delegate (object retVal)
-            {
-                if (retVal is Exception)
+            this.BeginInvoke(
+                (MethodInvoker<object>) ((x) =>
                 {
-                }
-                else if (retVal is UserControl)
-                {
-                    // 例外が発生するのでココで削除する。
-                    this.LstUserControl.Remove((UserControl)retVal);
-                }
-            };
-
-            // 非同期処理を開始させる。
-            af.Start();
+                    if (x is UserControl)
+                    {
+                        // 例外が発生するのでココで削除する。
+                        this.LstUserControl.Remove((UserControl)x);
+                    }
+                }),
+                new object[] { e.Control });
         }
     }
 }
