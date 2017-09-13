@@ -18,7 +18,6 @@
 //**********************************************************************************
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -27,6 +26,10 @@ using Touryo.Infrastructure.Business.RichClient.Presentation;
 using Touryo.Infrastructure.Business.RichClient.Util;
 using Touryo.Infrastructure.Framework.RichClient.Presentation;
 using Touryo.Infrastructure.Framework.RichClient.Util;
+
+using Touryo.Infrastructure.Business.RichClient.Asynchronous;
+using Touryo.Infrastructure.Framework.RichClient.Asynchronous;
+
 
 namespace WSClientWin2_sample
 {
@@ -466,11 +469,38 @@ namespace WSClientWin2_sample
         /// <param name="e">ControlEventArgs</param>
         private void groupBox3_ControlRemoved(object sender, ControlEventArgs e)
         {
-            // UOC_イベントハンドラ内で削除すると例外が発生するのでココに書く。
-            if (e.Control is UserControl)
+            // 非同期フレームワーク
+            MyBaseAsyncFunc af = new MyBaseAsyncFunc(this);
+
+            // 引数
+            af.Parameter = e.Control;
+
+            // 非同期処理本体・無名関数デレゲード
+            af.AsyncFunc = delegate (object param)
             {
-                this.LstUserControl.Remove((UserControl)e.Control);
-            }
+                return param; // SetResultで使いたいので。
+            };
+
+            //// 進捗報告・無名関数デレゲード
+            //af.ChangeProgress = delegate (object param)
+            //{
+            //};
+
+            // 結果設定・無名関数デレゲード
+            af.SetResult = delegate (object retVal)
+            {
+                if (retVal is Exception)
+                {
+                }
+                else if (retVal is UserControl)
+                {
+                    // 例外が発生するのでココで削除する。
+                    this.LstUserControl.Remove((UserControl)retVal);
+                }
+            };
+
+            // 非同期処理を開始させる。
+            af.Start();
         }
     }
 }
