@@ -27,10 +27,6 @@ using Touryo.Infrastructure.Business.RichClient.Util;
 using Touryo.Infrastructure.Framework.RichClient.Presentation;
 using Touryo.Infrastructure.Framework.RichClient.Util;
 
-using Touryo.Infrastructure.Business.RichClient.Asynchronous;
-using Touryo.Infrastructure.Framework.RichClient.Asynchronous;
-
-
 namespace WSClientWin2_sample
 {
     public partial class Form3 : MyBaseControllerWin
@@ -56,15 +52,6 @@ namespace WSClientWin2_sample
             this.tsmiItem22ToolStripMenuItem.Click += new EventHandler(this.Item_Click);
             this.tsmiItem221ToolStripMenuItem.Click += new EventHandler(this.Item_Click);
             this.tsmiItem222ToolStripMenuItem.Click += new EventHandler(this.Item_Click);
-
-            // userControl32の動的ロード
-            UserControl3 userControl32 = new UserControl3();
-            userControl32.Location = new System.Drawing.Point(8, 23);
-            userControl32.Margin = new Padding(5);
-            userControl32.Name = "userControl32";
-            userControl32.Size = new System.Drawing.Size(283, 330);
-            userControl32.TabIndex = 0;
-            this.groupBox3.Controls.Add(userControl32);
         }
 
         #region Ctrlイベント
@@ -440,50 +427,137 @@ namespace WSClientWin2_sample
         protected void UOC_userControl32_lbxUCListBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
         {
             Debug.WriteLine("UOC_userControl32_lbxUCListBox1_SelectedIndexChanged");
-            this.groupBox3.Controls.RemoveByKey("userControl32"); // ★★
         }
 
         #endregion
 
-        #endregion
+        #region userControlChild
 
-        /// <summary>動的に追加したコントロールをLstUserControlに追加する</summary>
-        /// <param name="sender">object</param>
-        /// <param name="e">ControlEventArgs</param>
-        private void groupBox3_ControlAdded(object sender, ControlEventArgs e)
+        /// <summary>UOC_userControlChild_btnUCButton1_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
+        protected void UOC_userControlChild_btnUCButton1_Click(RcFxEventArgs rcFxEventArgs)
         {
-            // UOC_イベントハンドラ内で追加すると例外が発生するのでココに書く。
-            if (e.Control is UserControl)
-            {
-                // 動的ロード後のコントロール検索＆イベントハンドラ設定
-                this.LstUserControl.Add((UserControl)e.Control);
-                RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(
-                    (UserControl)e.Control, this.CreatePrefixAndEvtHndHt(), this.ControlHt);   // Base
-                RcMyCmnFunction.GetCtrlAndSetClickEventHandler2(
-                    (UserControl)e.Control, this.MyCreatePrefixAndEvtHndHt(), this.ControlHt); // MyBase
-            }
+            Debug.WriteLine("UOC_userControlChild_btnUCButton1_Click");
         }
 
+        #endregion
+
+        #endregion
+
+        #region UserControlの動的な追加/削除
+
+        /// <summary>UOC_btnUCAdd_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
+        protected void UOC_btnUCAdd_Click(RcFxEventArgs rcFxEventArgs)
+        {
+            // userControl32の動的ロード
+            UserControl3 userControl32 = new UserControl3();
+            userControl32.Location = new System.Drawing.Point(8, 23);
+            userControl32.Margin = new Padding(5);
+            userControl32.Name = "userControl32";
+            userControl32.Size = new System.Drawing.Size(283, 330);
+            userControl32.TabIndex = 0;
+            this.groupBox3.Controls.Add(userControl32);
+
+            // userControlParentの動的ロード
+            UserControlParent userControlParent = new UserControlParent();
+            userControlParent.Location = new System.Drawing.Point(5, 17);
+            userControlParent.Name = "userControlParent";
+            userControlParent.Size = new System.Drawing.Size(160, 40);
+            userControlParent.TabIndex = 3;
+            this.groupBox4.Controls.Add(userControlParent);
+        }
+
+        /// <summary>UOC_btnUCRemove_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
+        protected void UOC_btnUCRemove_Click(RcFxEventArgs rcFxEventArgs)
+        {
+            this.groupBox3.Controls.RemoveByKey("userControl32");
+            this.groupBox4.Controls.RemoveByKey("userControlParent");
+        }
+        
         /// <summary>MethodInvoker</summary>
         /// <typeparam name="T">Type</typeparam>
         /// <param name="obj">T</param>
         delegate void MethodInvoker<T>(T obj);
 
-        /// <summary>動的に追加したコントロールをLstUserControlから削除する</summary>
+        /// <summary>動的に追加したコントロールをLstUserControlに追加する</summary>
         /// <param name="sender">object</param>
         /// <param name="e">ControlEventArgs</param>
-        private void groupBox3_ControlRemoved(object sender, ControlEventArgs e)
+        private void groupBox_ControlAdded(object sender, ControlEventArgs e)
         {
+            // UOC_イベントハンドラ内で追加/削除すると例外が発生するのでBeginInvokeで書く。
             this.BeginInvoke(
-                (MethodInvoker<object>) ((x) =>
+                (MethodInvoker<Control>)((x) =>
                 {
+                    // UserControlの追加処理
                     if (x is UserControl)
                     {
-                        // 例外が発生するのでココで削除する。
-                        this.LstUserControl.Remove((UserControl)x);
+                        // コントロール検索＆イベントハンドラ設定（ルートから１回だけ行う）
+                        RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(
+                            x, this.CreatePrefixAndEvtHndHt(), this.ControlHt);   // Base
+                        RcMyCmnFunction.GetCtrlAndSetClickEventHandler2(
+                            x, this.MyCreatePrefixAndEvtHndHt(), this.ControlHt); // MyBase
+
+                        // UserControlのLstUserControlへの追加（は再帰的に行う）
+                        this.AddToLstUserControl(x);
                     }
                 }),
                 new object[] { e.Control });
         }
+
+        /// <summary>AddToLstUserControl</summary>
+        /// <param name="c">Control</param>
+        private void AddToLstUserControl(Control c)
+        {
+            // UserControlの追加
+            if (c is UserControl)
+            {
+                this.LstUserControl.Add((UserControl)c);
+            }
+
+            // 再帰検索
+            foreach (Control _c in c.Controls)
+            {
+                this.AddToLstUserControl(_c);
+            }
+        }
+
+        /// <summary>動的に追加したコントロールをLstUserControlから削除する</summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">ControlEventArgs</param>
+        private void groupBox_ControlRemoved(object sender, ControlEventArgs e)
+        {
+            // UOC_イベントハンドラ内で追加/削除すると例外が発生するのでBeginInvokeで書く。
+            this.BeginInvoke(
+                (MethodInvoker<Control>) ((x) =>
+                {
+                    // UserControlの削除処理
+                    if (x is UserControl)
+                    {
+                        this.RemoveFromLstUserControl(x);
+                    }
+                }),
+                new object[] { e.Control });
+        }
+
+        /// <summary>RemoveFromLstUserControl</summary>
+        /// <param name="c">Control</param>
+        private void RemoveFromLstUserControl(Control c)
+        {
+            // UserControlの削除
+            if (c is UserControl)
+            {
+                this.LstUserControl.Remove((UserControl)c);
+            }
+
+            // 再帰検索
+            foreach (Control _c in c.Controls)
+            {
+                this.RemoveFromLstUserControl(_c);
+            }
+        }
+
+        #endregion
     }
 }

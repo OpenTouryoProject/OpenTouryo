@@ -129,6 +129,18 @@
     <Compile Include="UserControl3.Designer.cs">
       <DependentUpon>UserControl3.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControlChild.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlChild.Designer.cs">
+      <DependentUpon>UserControlChild.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControlParent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlParent.Designer.cs">
+      <DependentUpon>UserControlParent.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Form0.resx">
@@ -142,6 +154,12 @@
     <EmbeddedResource Include="Form2.resx">
       <SubType>Designer</SubType>
       <DependentUpon>Form2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControlChild.resx">
+      <DependentUpon>UserControlChild.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControlParent.resx">
+      <DependentUpon>UserControlParent.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

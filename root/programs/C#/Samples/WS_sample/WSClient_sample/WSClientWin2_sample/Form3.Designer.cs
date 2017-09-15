@@ -45,8 +45,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.userControl31 = new WSClientWin2_sample.UserControl3();
             this.label3 = new System.Windows.Forms.Label();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,7 +60,8 @@
             this.tsmiItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.btnElse1 = new System.Windows.Forms.Button();
             this.btnElse2 = new System.Windows.Forms.Button();
-            this.userControl31 = new WSClientWin2_sample.UserControl3();
+            this.btnUCAdd = new System.Windows.Forms.Button();
+            this.btnUCRemove = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pbxPictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbxPictureBox2)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -220,14 +223,30 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnUCRemove);
+            this.groupBox1.Controls.Add(this.btnUCAdd);
+            this.groupBox1.Controls.Add(this.groupBox4);
             this.groupBox1.Controls.Add(this.groupBox3);
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Location = new System.Drawing.Point(264, 10);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(510, 342);
+            this.groupBox1.Size = new System.Drawing.Size(719, 342);
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "ここは、ユーザコントロール";
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Location = new System.Drawing.Point(502, 33);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox4.Size = new System.Drawing.Size(172, 175);
+            this.groupBox4.TabIndex = 3;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "userControlParent-Child";
+            this.groupBox4.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.groupBox_ControlAdded);
+            this.groupBox4.ControlRemoved += new System.Windows.Forms.ControlEventHandler(this.groupBox_ControlRemoved);
             // 
             // groupBox3
             // 
@@ -239,8 +258,8 @@
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "userControl32";
-            this.groupBox3.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.groupBox3_ControlAdded);
-            this.groupBox3.ControlRemoved += new System.Windows.Forms.ControlEventHandler(this.groupBox3_ControlRemoved);
+            this.groupBox3.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.groupBox_ControlAdded);
+            this.groupBox3.ControlRemoved += new System.Windows.Forms.ControlEventHandler(this.groupBox_ControlRemoved);
             // 
             // groupBox2
             // 
@@ -253,6 +272,14 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "userControl31";
+            // 
+            // userControl31
+            // 
+            this.userControl31.Location = new System.Drawing.Point(6, 18);
+            this.userControl31.Margin = new System.Windows.Forms.Padding(4);
+            this.userControl31.Name = "userControl31";
+            this.userControl31.Size = new System.Drawing.Size(212, 264);
+            this.userControl31.TabIndex = 0;
             // 
             // label3
             // 
@@ -338,19 +365,29 @@
             this.btnElse2.Text = "いろいろテスト2";
             this.btnElse2.UseVisualStyleBackColor = true;
             // 
-            // userControl31
+            // btnUCAdd
             // 
-            this.userControl31.Location = new System.Drawing.Point(6, 18);
-            this.userControl31.Margin = new System.Windows.Forms.Padding(4);
-            this.userControl31.Name = "userControl31";
-            this.userControl31.Size = new System.Drawing.Size(212, 264);
-            this.userControl31.TabIndex = 0;
+            this.btnUCAdd.Location = new System.Drawing.Point(502, 213);
+            this.btnUCAdd.Name = "btnUCAdd";
+            this.btnUCAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnUCAdd.TabIndex = 4;
+            this.btnUCAdd.Text = "btnUCAdd";
+            this.btnUCAdd.UseVisualStyleBackColor = true;
+            // 
+            // btnUCRemove
+            // 
+            this.btnUCRemove.Location = new System.Drawing.Point(583, 213);
+            this.btnUCRemove.Name = "btnUCRemove";
+            this.btnUCRemove.Size = new System.Drawing.Size(91, 23);
+            this.btnUCRemove.TabIndex = 5;
+            this.btnUCRemove.Text = "btnUCRemove";
+            this.btnUCRemove.UseVisualStyleBackColor = true;
             // 
             // Form3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(796, 377);
+            this.ClientSize = new System.Drawing.Size(1031, 377);
             this.Controls.Add(this.btnElse2);
             this.Controls.Add(this.btnElse1);
             this.Controls.Add(this.label1);
@@ -413,5 +450,8 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiItem222ToolStripMenuItem;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Button btnUCRemove;
+        private System.Windows.Forms.Button btnUCAdd;
     }
 }
