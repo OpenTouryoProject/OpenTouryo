@@ -45,15 +45,6 @@ Partial Public Class Form3
         AddHandler Me.tsmiItem22ToolStripMenuItem.Click, AddressOf Me.Item_Click
         AddHandler Me.tsmiItem221ToolStripMenuItem.Click, AddressOf Me.Item_Click
         AddHandler Me.tsmiItem222ToolStripMenuItem.Click, AddressOf Me.Item_Click
-
-        ' userControl32の動的ロード
-        Dim userControl32 As UserControl3 = New UserControl3()
-        userControl32.Location = New Point(8, 23)
-        userControl32.Margin = New Padding(5)
-        userControl32.Name = "userControl32"
-        userControl32.Size = New Size(283, 330)
-        userControl32.TabIndex = 0
-        Me.groupBox3.Controls.Add(userControl32)
     End Sub
 
 #Region "Ctrlイベント"
@@ -136,50 +127,19 @@ Partial Public Class Form3
         Debug.WriteLine("UOC_tsmiItem3_Click")
     End Sub
 
-    '---
-
-    ' UserControlよりFormに実装されたメソッドが優先される。
-    ' ※ ボタン名は一意である必要がある（イベントを識別できなくなる）。
-
-    'protected void UOC_userControl3_btnUCButton1_Click(RcFxEventArgs rcFxEventArgs)
-    '{
-    '    Debug.WriteLine("UOC_userControl3_btnUCButton1_Click");
-    '}
-
-    'protected void UOC_userControl3_pbxUCPictureBox1_Click(RcFxEventArgs rcFxEventArgs)
-    '{
-    '    Debug.WriteLine("UOC_userControl3_pbxUCPictureBox1_Click");
-    '}
-
-    'protected void UOC_userControl3_rbnUCRadioButton1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
-    '{
-    '    Debug.WriteLine("UOC_userControl3_rbnUCRadioButton1_CheckedChanged");
-    '}
-
-    'protected void UOC_userControl3_cbxUCCheckBox1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
-    '{
-    '    Debug.WriteLine("UOC_userControl3_cbxUCCheckBox1_CheckedChanged");
-    '}
-
-    'protected void UOC_userControl3_cbbUCComboBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
-    '{
-    '    Debug.WriteLine("UOC_userControl3_cbbUCComboBox1_SelectedIndexChanged");
-    '}
-
-    'protected void UOC_userControl3_lbxUCListBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
-    '{
-    '    Debug.WriteLine("UOC_userControl3_lbxUCListBox1_SelectedIndexChanged");
-    '}
-
-    ''' <summary>テスト１</summary>
+    ''' <summary>UOC_btnElse1_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
     Protected Sub UOC_btnElse1_Click(rcFxEventArgs As RcFxEventArgs)
         ' newだけした場合・・・ 
         Dim f As Form = New Form2()
 
-        MessageBox.Show("画面総数:" & BaseControllerWin.GetWindowsCount().ToString() & ", Form2総数:" & BaseControllerWin.GetWindowsCount(GetType(Form2)).ToString())
+        MessageBox.Show(
+            "画面総数:" & BaseControllerWin.GetWindowsCount().ToString() &
+            ", Form2総数:" & BaseControllerWin.GetWindowsCount(GetType(Form2)).ToString())
     End Sub
 
-    ''' <summary>テスト２</summary>
+    ''' <summary>UOC_btnElse2_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
     Protected Sub UOC_btnElse2_Click(rcFxEventArgs As RcFxEventArgs)
         'throw new Exception("てすと");
 
@@ -292,22 +252,68 @@ Partial Public Class Form3
 #Region "未解放イベント"
     ' ログが出過ぎるので
 
-    'protected void UOC_Form_KeyDown(RcFxEventArgs rcFxEventArgs)
-    '{
-    '    Debug.WriteLine("UOC_Form_KeyDown");
-    '}
-    'protected void UOC_Form_KeyPress(RcFxEventArgs rcFxEventArgs)
-    '{
-    '    Debug.WriteLine("UOC_Form_KeyPress");
-    '}
-    'protected void UOC_Form_KeyUp(RcFxEventArgs rcFxEventArgs)
-    '{
-    '    Debug.WriteLine("UOC_Form_KeyUp");
-    '}
+    '''' <summary>UOC_Form_KeyDown</summary>
+    '''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    'Protected Sub UOC_Form_KeyDown(rcFxEventArgs As RcFxEventArgs)
+    '    Debug.WriteLine("UOC_Form_KeyDown")
+    'End Sub
+    '''' <summary>UOC_Form_KeyPress</summary>
+    '''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    'Protected Sub UOC_Form_KeyPress(rcFxEventArgs As RcFxEventArgs)
+    '    Debug.WriteLine("UOC_Form_KeyPress")
+    'End Sub
+    '''' <summary>UOC_Form_KeyUp</summary>
+    '''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    'Protected Sub UOC_Form_KeyUp(rcFxEventArgs As RcFxEventArgs)
+    '    Debug.WriteLine("UOC_Form_KeyUp")
+    'End Sub
 
 #End Region
 
 #Region "UserControlイベント"
+
+#Region "userControl3"
+
+    ' UserControlよりFormに実装されたメソッドが優先される。
+    ' ※ ボタン名は一意である必要がある（イベントを識別できなくなる）。
+
+    '''' <summary>UOC_userControl3_btnUCButton1_Click</summary>
+    '''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    'Protected Sub UOC_userControl3_btnUCButton1_Click(rcFxEventArgs As RcFxEventArgs)
+    '    Debug.WriteLine("UOC_userControl3_btnUCButton1_Click")
+    'End Sub
+
+    '''' <summary>UOC_userControl3_pbxUCPictureBox1_Click</summary>
+    '''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    'Protected Sub UOC_userControl3_pbxUCPictureBox1_Click(rcFxEventArgs As RcFxEventArgs)
+    '    Debug.WriteLine("UOC_userControl3_pbxUCPictureBox1_Click")
+    'End Sub
+
+    '''' <summary>UOC_userControl3_rbnUCRadioButton1_CheckedChanged</summary>
+    '''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    'Protected Sub UOC_userControl3_rbnUCRadioButton1_CheckedChanged(rcFxEventArgs As RcFxEventArgs)
+    '    Debug.WriteLine("UOC_userControl3_rbnUCRadioButton1_CheckedChanged")
+    'End Sub
+
+    '''' <summary>UOC_userControl3_cbxUCCheckBox1_CheckedChanged</summary>
+    '''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    'Protected Sub UOC_userControl3_cbxUCCheckBox1_CheckedChanged(rcFxEventArgs As RcFxEventArgs)
+    '    Debug.WriteLine("UOC_userControl3_cbxUCCheckBox1_CheckedChanged")
+    'End Sub
+
+    '''' <summary>UOC_userControl3_cbbUCComboBox1_SelectedIndexChanged</summary>
+    '''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    'Protected Sub UOC_userControl3_cbbUCComboBox1_SelectedIndexChanged(rcFxEventArgs As RcFxEventArgs)
+    '    Debug.WriteLine("UOC_userControl3_cbbUCComboBox1_SelectedIndexChanged")
+    'End Sub
+
+    '''' <summary>UOC_userControl3_lbxUCListBox1_SelectedIndexChanged</summary>
+    '''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    'Protected Sub UOC_userControl3_lbxUCListBox1_SelectedIndexChanged(rcFxEventArgs As RcFxEventArgs)
+    '    Debug.WriteLine("UOC_userControl3_lbxUCListBox1_SelectedIndexChanged")
+    'End Sub
+
+#End Region
 
 #Region "userControl31"
 
@@ -385,28 +391,50 @@ Partial Public Class Form3
     ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
     Protected Sub UOC_userControl32_lbxUCListBox1_SelectedIndexChanged(rcFxEventArgs As RcFxEventArgs)
         Debug.WriteLine("UOC_userControl32_lbxUCListBox1_SelectedIndexChanged")
-        Me.groupBox3.Controls.RemoveByKey("userControl32") ' ★★
+    End Sub
+
+#End Region
+
+#Region "userControlChild"
+
+    ''' <summary>UOC_userControlChild_btnUCButton1_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_userControlChild_btnUCButton1_Click(rcFxEventArgs As RcFxEventArgs)
+        Debug.WriteLine("UOC_userControlChild_btnUCButton1_Click")
     End Sub
 
 #End Region
 
 #End Region
 
-    ''' <summary>動的に追加したコントロールをLstUserControlに追加する</summary>
-    ''' <param name="sender">object</param>
-    ''' <param name="e">ControlEventArgs</param>
-    Private Sub groupBox3_ControlAdded(sender As Object, e As ControlEventArgs) Handles groupBox3.ControlAdded
-        ' UOC_イベントハンドラ内で追加すると例外が発生するのでココに書く。
-        If TypeOf e.Control Is UserControl Then
-            ' 動的ロード後のコントロール検索＆イベントハンドラ設定
-            Me.LstUserControl.Add(DirectCast(e.Control, UserControl))
-            RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(
-                DirectCast(e.Control, UserControl),
-                Me.CreatePrefixAndEvtHndHt(), Me.ControlHt)   ' Base
-            RcMyCmnFunction.GetCtrlAndSetClickEventHandler2(
-                DirectCast(e.Control, UserControl),
-                Me.MyCreatePrefixAndEvtHndHt(), Me.ControlHt) ' MyBase
-        End If
+#Region "UserControlの動的な追加/削除"
+
+    ''' <summary>UOC_btnUCAdd_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_btnUCAdd_Click(rcFxEventArgs As RcFxEventArgs)
+        ' userControl32の動的ロード
+        Dim userControl32 As UserControl3 = New UserControl3()
+        userControl32.Location = New Point(8, 23)
+        userControl32.Margin = New Padding(5)
+        userControl32.Name = "userControl32"
+        userControl32.Size = New Size(283, 330)
+        userControl32.TabIndex = 0
+        Me.groupBox3.Controls.Add(userControl32)
+
+        ' userControlParentの動的ロード
+        Dim userControlParent As UserControlParent = New UserControlParent()
+        userControlParent.Location = New Point(5, 17)
+        userControlParent.Name = "userControlParent"
+        userControlParent.Size = New Size(160, 40)
+        userControlParent.TabIndex = 3
+        Me.groupBox4.Controls.Add(userControlParent)
+    End Sub
+
+    ''' <summary>UOC_btnUCRemove_Click</summary>
+    ''' <param name="rcFxEventArgs">RcFxEventArgs</param>
+    Protected Sub UOC_btnUCRemove_Click(rcFxEventArgs As RcFxEventArgs)
+        Me.groupBox3.Controls.RemoveByKey("userControl32")
+        Me.groupBox4.Controls.RemoveByKey("userControlParent")
     End Sub
 
     ''' <summary>MethodInvoker</summary>
@@ -414,19 +442,74 @@ Partial Public Class Form3
     ''' <param name="obj">T</param>
     Delegate Sub MethodInvoker(Of T)(obj As T)
 
-    ''' <summary>動的に追加したコントロールをLstUserControlから削除する</summary>
+    ''' <summary>動的に追加したコントロールをLstUserControlに追加する</summary>
     ''' <param name="sender">object</param>
     ''' <param name="e">ControlEventArgs</param>
-    Private Sub groupBox3_ControlRemoved(sender As Object, e As ControlEventArgs) Handles groupBox3.ControlRemoved
+    Private Sub groupBox_ControlAdded(sender As Object, e As ControlEventArgs) Handles groupBox3.ControlAdded, groupBox4.ControlAdded
+        ' UOC_イベントハンドラ内で追加/削除すると例外が発生するのでBeginInvokeで書く。
         Me.BeginInvoke(
             (Sub(x)
-                 If TypeOf x Is UserControl Then
-                     ' 例外が発生するのでココで削除する。
-                     Me.LstUserControl.Remove(DirectCast(e.Control, UserControl))
+                 ' UserControlの追加処理
+                 If TypeOf e.Control Is UserControl Then
+                     ' コントロール検索＆イベントハンドラ設定（ルートから１回だけ行う）
+                     RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(
+                         DirectCast(e.Control, UserControl),
+                         Me.CreatePrefixAndEvtHndHt(), Me.ControlHt)   ' Base
+                     RcMyCmnFunction.GetCtrlAndSetClickEventHandler2(
+                         DirectCast(e.Control, UserControl),
+                         Me.MyCreatePrefixAndEvtHndHt(), Me.ControlHt) ' MyBase
+
+                     ' UserControlのLstUserControlへの追加（は再帰的に行う）
+                     Me.AddToLstUserControl(x)
                  End If
              End Sub),
             New Object() {e.Control})
     End Sub
+
+    ''' <summary>AddToLstUserControl</summary>
+    ''' <param name="c">Control</param>
+    Private Sub AddToLstUserControl(c As Control)
+        ' UserControlの追加
+        If TypeOf c Is UserControl Then
+            Me.LstUserControl.Add(DirectCast(c, UserControl))
+        End If
+
+        ' 再帰検索
+        For Each _c As Control In c.Controls
+            Me.AddToLstUserControl(_c)
+        Next
+    End Sub
+
+    ''' <summary>動的に追加したコントロールをLstUserControlから削除する</summary>
+    ''' <param name="sender">object</param>
+    ''' <param name="e">ControlEventArgs</param>
+    Private Sub groupBox_ControlRemoved(sender As Object, e As ControlEventArgs) Handles groupBox3.ControlRemoved, groupBox4.ControlRemoved
+        ' UOC_イベントハンドラ内で追加/削除すると例外が発生するのでBeginInvokeで書く。
+        Me.BeginInvoke(
+            (Sub(x)
+                 ' UserControlの削除処理
+                 If TypeOf e.Control Is UserControl Then
+                     ' UserControlのLstUserControlからの削除（は再帰的に行う）
+                     Me.RemoveFromLstUserControl(x)
+                 End If
+             End Sub),
+            New Object() {e.Control})
+    End Sub
+
+    ''' <summary>RemoveFromLstUserControl</summary>
+    ''' <param name="c">Control</param>
+    Private Sub RemoveFromLstUserControl(c As Control)
+        ' UserControlの削除
+        If TypeOf c Is UserControl Then
+            Me.LstUserControl.Remove(DirectCast(c, UserControl))
+        End If
+
+        ' 再帰検索
+        For Each _c As Control In c.Controls
+            Me.RemoveFromLstUserControl(_c)
+        Next
+    End Sub
+#End Region
 
 End Class
 

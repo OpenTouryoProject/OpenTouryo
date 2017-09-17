@@ -57,6 +57,9 @@ Partial Class Form3
         Me.groupBox1 = New System.Windows.Forms.GroupBox()
         Me.groupBox3 = New System.Windows.Forms.GroupBox()
         Me.groupBox2 = New System.Windows.Forms.GroupBox()
+        Me.btnUCRemove = New System.Windows.Forms.Button()
+        Me.btnUCAdd = New System.Windows.Forms.Button()
+        Me.groupBox4 = New System.Windows.Forms.GroupBox()
         Me.userControl31 = New WSClientWin2_sample.UserControl3()
         CType(Me.pbxPictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pbxPictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -280,11 +283,14 @@ Partial Class Form3
         '
         'groupBox1
         '
+        Me.groupBox1.Controls.Add(Me.btnUCRemove)
         Me.groupBox1.Controls.Add(Me.groupBox3)
+        Me.groupBox1.Controls.Add(Me.btnUCAdd)
         Me.groupBox1.Controls.Add(Me.groupBox2)
+        Me.groupBox1.Controls.Add(Me.groupBox4)
         Me.groupBox1.Location = New System.Drawing.Point(264, 10)
         Me.groupBox1.Name = "groupBox1"
-        Me.groupBox1.Size = New System.Drawing.Size(510, 342)
+        Me.groupBox1.Size = New System.Drawing.Size(685, 342)
         Me.groupBox1.TabIndex = 19
         Me.groupBox1.TabStop = False
         Me.groupBox1.Text = "ここは、ユーザコントロール"
@@ -312,6 +318,35 @@ Partial Class Form3
         Me.groupBox2.TabStop = False
         Me.groupBox2.Text = "userControl31"
         '
+        'btnUCRemove
+        '
+        Me.btnUCRemove.Location = New System.Drawing.Point(581, 213)
+        Me.btnUCRemove.Name = "btnUCRemove"
+        Me.btnUCRemove.Size = New System.Drawing.Size(91, 23)
+        Me.btnUCRemove.TabIndex = 22
+        Me.btnUCRemove.Text = "btnUCRemove"
+        Me.btnUCRemove.UseVisualStyleBackColor = True
+        '
+        'btnUCAdd
+        '
+        Me.btnUCAdd.Location = New System.Drawing.Point(500, 213)
+        Me.btnUCAdd.Name = "btnUCAdd"
+        Me.btnUCAdd.Size = New System.Drawing.Size(75, 23)
+        Me.btnUCAdd.TabIndex = 21
+        Me.btnUCAdd.Text = "btnUCAdd"
+        Me.btnUCAdd.UseVisualStyleBackColor = True
+        '
+        'groupBox4
+        '
+        Me.groupBox4.Location = New System.Drawing.Point(500, 33)
+        Me.groupBox4.Margin = New System.Windows.Forms.Padding(2)
+        Me.groupBox4.Name = "groupBox4"
+        Me.groupBox4.Padding = New System.Windows.Forms.Padding(2)
+        Me.groupBox4.Size = New System.Drawing.Size(172, 175)
+        Me.groupBox4.TabIndex = 20
+        Me.groupBox4.TabStop = False
+        Me.groupBox4.Text = "userControlParent-Child"
+        '
         'userControl31
         '
         Me.userControl31.Location = New System.Drawing.Point(6, 18)
@@ -324,7 +359,7 @@ Partial Class Form3
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(796, 377)
+        Me.ClientSize = New System.Drawing.Size(959, 377)
         Me.Controls.Add(Me.groupBox1)
         Me.Controls.Add(Me.btnElse2)
         Me.Controls.Add(Me.btnElse1)
@@ -387,4 +422,7 @@ Partial Class Form3
     Private WithEvents groupBox3 As System.Windows.Forms.GroupBox
     Private WithEvents groupBox2 As System.Windows.Forms.GroupBox
     Private WithEvents userControl31 As WSClientWin2_sample.UserControl3
+    Private WithEvents btnUCRemove As Button
+    Private WithEvents btnUCAdd As Button
+    Private WithEvents groupBox4 As GroupBox
 End Class

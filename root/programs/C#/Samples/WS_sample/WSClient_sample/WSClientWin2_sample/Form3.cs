@@ -146,41 +146,6 @@ namespace WSClientWin2_sample
         {
             Debug.WriteLine("UOC_tsmiItem3_Click");
         }
-        
-        //---
-
-        // UserControlよりFormに実装されたメソッドが優先される。
-        // ※ ボタン名は一意である必要がある（イベントを識別できなくなる）。
-
-        //protected void UOC_userControl3_btnUCButton1_Click(RcFxEventArgs rcFxEventArgs)
-        //{
-        //    Debug.WriteLine("UOC_userControl3_btnUCButton1_Click");
-        //}
-
-        //protected void UOC_userControl3_pbxUCPictureBox1_Click(RcFxEventArgs rcFxEventArgs)
-        //{
-        //    Debug.WriteLine("UOC_userControl3_pbxUCPictureBox1_Click");
-        //}
-
-        //protected void UOC_userControl3_rbnUCRadioButton1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
-        //{
-        //    Debug.WriteLine("UOC_userControl3_rbnUCRadioButton1_CheckedChanged");
-        //}
-
-        //protected void UOC_userControl3_cbxUCCheckBox1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
-        //{
-        //    Debug.WriteLine("UOC_userControl3_cbxUCCheckBox1_CheckedChanged");
-        //}
-
-        //protected void UOC_userControl3_cbbUCComboBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
-        //{
-        //    Debug.WriteLine("UOC_userControl3_cbbUCComboBox1_SelectedIndexChanged");
-        //}
-
-        //protected void UOC_userControl3_lbxUCListBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
-        //{
-        //    Debug.WriteLine("UOC_userControl3_lbxUCListBox1_SelectedIndexChanged");
-        //}
 
         /// <summary>テスト１</summary>
         protected void UOC_btnElse1_Click(RcFxEventArgs rcFxEventArgs)
@@ -322,14 +287,22 @@ namespace WSClientWin2_sample
         #region 未解放イベント
         // ログが出過ぎるので
 
+        ///// <summary>UOC_Form_KeyDown</summary>
+        ///// <param name="rcFxEventArgs">RcFxEventArgs</param>
         //protected void UOC_Form_KeyDown(RcFxEventArgs rcFxEventArgs)
         //{
         //    Debug.WriteLine("UOC_Form_KeyDown");
         //}
+
+        ///// <summary>UOC_Form_KeyPress</summary>
+        ///// <param name="rcFxEventArgs">RcFxEventArgs</param>
         //protected void UOC_Form_KeyPress(RcFxEventArgs rcFxEventArgs)
         //{
         //    Debug.WriteLine("UOC_Form_KeyPress");
         //}
+
+        ///// <summary>UOC_Form_KeyUp</summary>
+        ///// <param name="rcFxEventArgs">RcFxEventArgs</param>
         //protected void UOC_Form_KeyUp(RcFxEventArgs rcFxEventArgs)
         //{
         //    Debug.WriteLine("UOC_Form_KeyUp");
@@ -338,6 +311,55 @@ namespace WSClientWin2_sample
         #endregion
 
         #region UserControlイベント
+
+        #region userControl3
+
+        // UserControlよりFormに実装されたメソッドが優先される。
+        // ※ ボタン名は一意である必要がある（イベントを識別できなくなる）。
+
+        ///// <summary>UOC_userControl31_btnUCButton1_Click</summary>
+        ///// <param name="rcFxEventArgs">RcFxEventArgs</param>
+        //protected void UOC_userControl3_btnUCButton1_Click(RcFxEventArgs rcFxEventArgs)
+        //{
+        //    Debug.WriteLine("UOC_userControl3_btnUCButton1_Click");
+        //}
+
+        ///// <summary>UOC_userControl31_btnUCButton1_Click</summary>
+        ///// <param name="rcFxEventArgs">RcFxEventArgs</param>
+        //protected void UOC_userControl3_pbxUCPictureBox1_Click(RcFxEventArgs rcFxEventArgs)
+        //{
+        //    Debug.WriteLine("UOC_userControl3_pbxUCPictureBox1_Click");
+        //}
+
+        ///// <summary>UOC_userControl31_btnUCButton1_Click</summary>
+        ///// <param name="rcFxEventArgs">RcFxEventArgs</param>
+        //protected void UOC_userControl3_rbnUCRadioButton1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
+        //{
+        //    Debug.WriteLine("UOC_userControl3_rbnUCRadioButton1_CheckedChanged");
+        //}
+
+        ///// <summary>UOC_userControl31_btnUCButton1_Click</summary>
+        ///// <param name="rcFxEventArgs">RcFxEventArgs</param>
+        //protected void UOC_userControl3_cbxUCCheckBox1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
+        //{
+        //    Debug.WriteLine("UOC_userControl3_cbxUCCheckBox1_CheckedChanged");
+        //}
+
+        ///// <summary>UOC_userControl31_btnUCButton1_Click</summary>
+        ///// <param name="rcFxEventArgs">RcFxEventArgs</param>
+        //protected void UOC_userControl3_cbbUCComboBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
+        //{
+        //    Debug.WriteLine("UOC_userControl3_cbbUCComboBox1_SelectedIndexChanged");
+        //}
+
+        ///// <summary>UOC_userControl31_btnUCButton1_Click</summary>
+        ///// <param name="rcFxEventArgs">RcFxEventArgs</param>
+        //protected void UOC_userControl3_lbxUCListBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
+        //{
+        //    Debug.WriteLine("UOC_userControl3_lbxUCListBox1_SelectedIndexChanged");
+        //}
+        
+        #endregion
 
         #region userControl31
 
@@ -532,7 +554,7 @@ namespace WSClientWin2_sample
             this.BeginInvoke(
                 (MethodInvoker<Control>) ((x) =>
                 {
-                    // UserControlの削除処理
+                    // UserControlのLstUserControlからの削除（は再帰的に行う）
                     if (x is UserControl)
                     {
                         this.RemoveFromLstUserControl(x);

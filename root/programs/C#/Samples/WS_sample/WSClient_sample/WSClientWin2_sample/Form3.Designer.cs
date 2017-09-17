@@ -45,6 +45,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnUCRemove = new System.Windows.Forms.Button();
+            this.btnUCAdd = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -60,8 +62,6 @@
             this.tsmiItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.btnElse1 = new System.Windows.Forms.Button();
             this.btnElse2 = new System.Windows.Forms.Button();
-            this.btnUCAdd = new System.Windows.Forms.Button();
-            this.btnUCRemove = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pbxPictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbxPictureBox2)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -230,14 +230,32 @@
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Location = new System.Drawing.Point(264, 10);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(719, 342);
+            this.groupBox1.Size = new System.Drawing.Size(685, 342);
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "ここは、ユーザコントロール";
             // 
+            // btnUCRemove
+            // 
+            this.btnUCRemove.Location = new System.Drawing.Point(581, 213);
+            this.btnUCRemove.Name = "btnUCRemove";
+            this.btnUCRemove.Size = new System.Drawing.Size(91, 23);
+            this.btnUCRemove.TabIndex = 5;
+            this.btnUCRemove.Text = "btnUCRemove";
+            this.btnUCRemove.UseVisualStyleBackColor = true;
+            // 
+            // btnUCAdd
+            // 
+            this.btnUCAdd.Location = new System.Drawing.Point(500, 213);
+            this.btnUCAdd.Name = "btnUCAdd";
+            this.btnUCAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnUCAdd.TabIndex = 4;
+            this.btnUCAdd.Text = "btnUCAdd";
+            this.btnUCAdd.UseVisualStyleBackColor = true;
+            // 
             // groupBox4
             // 
-            this.groupBox4.Location = new System.Drawing.Point(502, 33);
+            this.groupBox4.Location = new System.Drawing.Point(500, 33);
             this.groupBox4.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(2);
@@ -365,29 +383,11 @@
             this.btnElse2.Text = "いろいろテスト2";
             this.btnElse2.UseVisualStyleBackColor = true;
             // 
-            // btnUCAdd
-            // 
-            this.btnUCAdd.Location = new System.Drawing.Point(502, 213);
-            this.btnUCAdd.Name = "btnUCAdd";
-            this.btnUCAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnUCAdd.TabIndex = 4;
-            this.btnUCAdd.Text = "btnUCAdd";
-            this.btnUCAdd.UseVisualStyleBackColor = true;
-            // 
-            // btnUCRemove
-            // 
-            this.btnUCRemove.Location = new System.Drawing.Point(583, 213);
-            this.btnUCRemove.Name = "btnUCRemove";
-            this.btnUCRemove.Size = new System.Drawing.Size(91, 23);
-            this.btnUCRemove.TabIndex = 5;
-            this.btnUCRemove.Text = "btnUCRemove";
-            this.btnUCRemove.UseVisualStyleBackColor = true;
-            // 
             // Form3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1031, 377);
+            this.ClientSize = new System.Drawing.Size(959, 377);
             this.Controls.Add(this.btnElse2);
             this.Controls.Add(this.btnElse1);
             this.Controls.Add(this.label1);
