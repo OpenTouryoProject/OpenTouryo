@@ -64,11 +64,11 @@
     <Reference Include="Business">
       <HintPath>..\..\Build\Business.dll</HintPath>
     </Reference>
+    <Reference Include="DamManagedOdp">
+      <HintPath>..\..\Build\DamManagedOdp.dll</HintPath>
+    </Reference>
     <Reference Include="DamMySQL">
       <HintPath>..\..\Build\DamMySQL.dll</HintPath>
-    </Reference>
-    <Reference Include="DamOraOdp">
-      <HintPath>..\..\Build\DamOraOdp.dll</HintPath>
     </Reference>
     <Reference Include="DamPstGrS">
       <HintPath>..\..\Build\DamPstGrS.dll</HintPath>

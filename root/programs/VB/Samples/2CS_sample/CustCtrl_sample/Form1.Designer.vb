@@ -292,10 +292,10 @@ Partial Class Form1
         Me.tabPage1.Controls.Add(Me.lbl22)
         Me.tabPage1.Controls.Add(Me.winCustomTextBox8)
         Me.tabPage1.Controls.Add(Me.winCustomTextBox13)
-        Me.tabPage1.Location = New System.Drawing.Point(4, 21)
+        Me.tabPage1.Location = New System.Drawing.Point(4, 22)
         Me.tabPage1.Name = "tabPage1"
         Me.tabPage1.Padding = New System.Windows.Forms.Padding(3)
-        Me.tabPage1.Size = New System.Drawing.Size(417, 605)
+        Me.tabPage1.Size = New System.Drawing.Size(417, 604)
         Me.tabPage1.TabIndex = 0
         Me.tabPage1.Text = "TextBox"
         Me.tabPage1.UseVisualStyleBackColor = True
@@ -422,10 +422,10 @@ Partial Class Form1
         CheckType1.IsHankaku = False
         CheckType1.IsHanKatakana = False
         CheckType1.IsHiragana = False
-        CheckType1.Required = False
         CheckType1.IsKatakana = False
         CheckType1.IsNumeric = True
         CheckType1.IsZenkaku = True
+        CheckType1.Required = False
         Me.winCustomTextBox23.CheckType = CheckType1
         Me.winCustomTextBox23.CheckValidating = True
         EditDigitsAfterDP3.DigitsAfterDP = CType(3UI, UInteger)
@@ -447,10 +447,10 @@ Partial Class Form1
         CheckType2.IsHankaku = False
         CheckType2.IsHanKatakana = False
         CheckType2.IsHiragana = False
-        CheckType2.Required = False
         CheckType2.IsKatakana = False
         CheckType2.IsNumeric = True
         CheckType2.IsZenkaku = True
+        CheckType2.Required = False
         Me.winCustomTextBox22.CheckType = CheckType2
         Me.winCustomTextBox22.CheckValidating = True
         Me.winCustomTextBox22.EditAddFigure = Touryo.Infrastructure.CustomControl.RichClient.EditAddFigure.Af3
@@ -497,10 +497,10 @@ Partial Class Form1
         CheckType3.IsHankaku = False
         CheckType3.IsHanKatakana = False
         CheckType3.IsHiragana = False
-        CheckType3.Required = False
         CheckType3.IsKatakana = False
         CheckType3.IsNumeric = True
         CheckType3.IsZenkaku = True
+        CheckType3.Required = False
         Me.winCustomTextBox21.CheckType = CheckType3
         Me.winCustomTextBox21.CheckValidating = True
         EditPadding9.PadChar = Nothing
@@ -538,10 +538,10 @@ Partial Class Form1
         CheckType4.IsHankaku = True
         CheckType4.IsHanKatakana = False
         CheckType4.IsHiragana = False
-        CheckType4.Required = False
         CheckType4.IsKatakana = False
         CheckType4.IsNumeric = False
         CheckType4.IsZenkaku = False
+        CheckType4.Required = False
         Me.winCustomTextBox20.CheckType = CheckType4
         Me.winCustomTextBox20.CheckValidating = True
         EditPadding10.PadChar = Nothing
@@ -709,10 +709,10 @@ Partial Class Form1
         CheckType5.IsHankaku = False
         CheckType5.IsHanKatakana = False
         CheckType5.IsHiragana = False
-        CheckType5.Required = False
         CheckType5.IsKatakana = False
         CheckType5.IsNumeric = False
         CheckType5.IsZenkaku = False
+        CheckType5.Required = False
         Me.winCustomTextBox17.CheckType = CheckType5
         Me.winCustomTextBox17.CheckValidating = True
         EditPadding17.PadChar = Nothing
@@ -764,10 +764,10 @@ Partial Class Form1
         CheckType6.IsHankaku = False
         CheckType6.IsHanKatakana = False
         CheckType6.IsHiragana = True
-        CheckType6.Required = False
         CheckType6.IsKatakana = False
         CheckType6.IsNumeric = False
         CheckType6.IsZenkaku = False
+        CheckType6.Required = False
         Me.winCustomTextBox16.CheckType = CheckType6
         Me.winCustomTextBox16.CheckValidating = True
         EditPadding19.PadChar = Nothing
@@ -816,10 +816,10 @@ Partial Class Form1
         CheckType7.IsHankaku = False
         CheckType7.IsHanKatakana = True
         CheckType7.IsHiragana = False
-        CheckType7.Required = False
         CheckType7.IsKatakana = False
         CheckType7.IsNumeric = False
         CheckType7.IsZenkaku = False
+        CheckType7.Required = False
         Me.winCustomTextBox15.CheckType = CheckType7
         Me.winCustomTextBox15.CheckValidating = True
         EditPadding21.PadChar = Nothing
@@ -868,10 +868,10 @@ Partial Class Form1
         CheckType8.IsHankaku = False
         CheckType8.IsHanKatakana = False
         CheckType8.IsHiragana = False
-        CheckType8.Required = False
         CheckType8.IsKatakana = True
         CheckType8.IsNumeric = False
         CheckType8.IsZenkaku = False
+        CheckType8.Required = False
         Me.winCustomTextBox14.CheckType = CheckType8
         Me.winCustomTextBox14.CheckValidating = True
         EditPadding23.PadChar = Nothing
@@ -921,10 +921,10 @@ Partial Class Form1
         CheckType9.IsHankaku = False
         CheckType9.IsHanKatakana = False
         CheckType9.IsHiragana = False
-        CheckType9.Required = False
         CheckType9.IsKatakana = False
         CheckType9.IsNumeric = False
         CheckType9.IsZenkaku = True
+        CheckType9.Required = False
         Me.winCustomTextBox12.CheckType = CheckType9
         Me.winCustomTextBox12.CheckValidating = True
         EditPadding25.PadChar = Nothing
@@ -943,10 +943,10 @@ Partial Class Form1
         CheckType10.IsHankaku = False
         CheckType10.IsHanKatakana = False
         CheckType10.IsHiragana = False
-        CheckType10.Required = True
         CheckType10.IsKatakana = False
         CheckType10.IsNumeric = False
         CheckType10.IsZenkaku = False
+        CheckType10.Required = True
         Me.winCustomTextBox10.CheckType = CheckType10
         Me.winCustomTextBox10.CheckValidating = True
         EditPadding26.PadChar = Nothing
@@ -983,10 +983,10 @@ Partial Class Form1
         CheckType11.IsHankaku = True
         CheckType11.IsHanKatakana = False
         CheckType11.IsHiragana = False
-        CheckType11.Required = False
         CheckType11.IsKatakana = False
         CheckType11.IsNumeric = False
         CheckType11.IsZenkaku = False
+        CheckType11.Required = False
         Me.winCustomTextBox11.CheckType = CheckType11
         Me.winCustomTextBox11.CheckValidating = True
         EditPadding27.PadChar = Nothing
@@ -1043,10 +1043,10 @@ Partial Class Form1
         CheckType12.IsHankaku = False
         CheckType12.IsHanKatakana = False
         CheckType12.IsHiragana = False
-        CheckType12.Required = False
         CheckType12.IsKatakana = False
         CheckType12.IsNumeric = True
         CheckType12.IsZenkaku = False
+        CheckType12.Required = False
         Me.winCustomTextBox13.CheckType = CheckType12
         Me.winCustomTextBox13.CheckValidating = True
         EditPadding29.PadChar = Nothing
@@ -1100,10 +1100,10 @@ Partial Class Form1
         Me.tabPage2.Controls.Add(Me.winCustomMaskedTextBox3)
         Me.tabPage2.Controls.Add(Me.winCustomMaskedTextBox2)
         Me.tabPage2.Controls.Add(Me.winCustomMaskedTextBox1)
-        Me.tabPage2.Location = New System.Drawing.Point(4, 21)
+        Me.tabPage2.Location = New System.Drawing.Point(4, 22)
         Me.tabPage2.Name = "tabPage2"
         Me.tabPage2.Padding = New System.Windows.Forms.Padding(3)
-        Me.tabPage2.Size = New System.Drawing.Size(417, 605)
+        Me.tabPage2.Size = New System.Drawing.Size(417, 604)
         Me.tabPage2.TabIndex = 1
         Me.tabPage2.Text = "MaskedTextBox"
         Me.tabPage2.UseVisualStyleBackColor = True
@@ -1268,10 +1268,10 @@ Partial Class Form1
         CheckType13.IsHankaku = False
         CheckType13.IsHanKatakana = False
         CheckType13.IsHiragana = False
-        CheckType13.Required = False
         CheckType13.IsKatakana = False
         CheckType13.IsNumeric = True
         CheckType13.IsZenkaku = True
+        CheckType13.Required = False
         Me.winCustomMaskedTextBox14.CheckType = CheckType13
         Me.winCustomMaskedTextBox14.CheckValidating = True
         Me.winCustomMaskedTextBox14.Location = New System.Drawing.Point(21, 479)
@@ -1306,10 +1306,10 @@ Partial Class Form1
         CheckType14.IsHankaku = False
         CheckType14.IsHanKatakana = False
         CheckType14.IsHiragana = False
-        CheckType14.Required = False
         CheckType14.IsKatakana = False
         CheckType14.IsNumeric = False
         CheckType14.IsZenkaku = False
+        CheckType14.Required = False
         Me.winCustomMaskedTextBox9_2.CheckType = CheckType14
         Me.winCustomMaskedTextBox9_2.Location = New System.Drawing.Point(248, 214)
         Me.winCustomMaskedTextBox9_2.Mask = "0000/00/00"
@@ -1326,10 +1326,10 @@ Partial Class Form1
         CheckType15.IsHankaku = False
         CheckType15.IsHanKatakana = False
         CheckType15.IsHiragana = True
-        CheckType15.Required = False
         CheckType15.IsKatakana = False
         CheckType15.IsNumeric = False
         CheckType15.IsZenkaku = False
+        CheckType15.Required = False
         Me.winCustomMaskedTextBox8_2.CheckType = CheckType15
         Me.winCustomMaskedTextBox8_2.Location = New System.Drawing.Point(248, 189)
         Me.winCustomMaskedTextBox8_2.Mask = "CCCC"
@@ -1345,10 +1345,10 @@ Partial Class Form1
         CheckType16.IsHankaku = False
         CheckType16.IsHanKatakana = True
         CheckType16.IsHiragana = False
-        CheckType16.Required = False
         CheckType16.IsKatakana = False
         CheckType16.IsNumeric = False
         CheckType16.IsZenkaku = False
+        CheckType16.Required = False
         Me.winCustomMaskedTextBox7_2.CheckType = CheckType16
         Me.winCustomMaskedTextBox7_2.Location = New System.Drawing.Point(248, 164)
         Me.winCustomMaskedTextBox7_2.Mask = "CCCC"
@@ -1364,10 +1364,10 @@ Partial Class Form1
         CheckType17.IsHankaku = False
         CheckType17.IsHanKatakana = False
         CheckType17.IsHiragana = False
-        CheckType17.Required = False
         CheckType17.IsKatakana = True
         CheckType17.IsNumeric = False
         CheckType17.IsZenkaku = False
+        CheckType17.Required = False
         Me.winCustomMaskedTextBox6_2.CheckType = CheckType17
         Me.winCustomMaskedTextBox6_2.Location = New System.Drawing.Point(248, 139)
         Me.winCustomMaskedTextBox6_2.Mask = "CCCC"
@@ -1383,10 +1383,10 @@ Partial Class Form1
         CheckType18.IsHankaku = False
         CheckType18.IsHanKatakana = False
         CheckType18.IsHiragana = False
-        CheckType18.Required = False
         CheckType18.IsKatakana = False
         CheckType18.IsNumeric = True
         CheckType18.IsZenkaku = False
+        CheckType18.Required = False
         Me.winCustomMaskedTextBox5_2.CheckType = CheckType18
         Me.winCustomMaskedTextBox5_2.Location = New System.Drawing.Point(248, 114)
         Me.winCustomMaskedTextBox5_2.Mask_Editing = "CCCCCCCC"
@@ -1401,10 +1401,10 @@ Partial Class Form1
         CheckType19.IsHankaku = False
         CheckType19.IsHanKatakana = False
         CheckType19.IsHiragana = False
-        CheckType19.Required = False
         CheckType19.IsKatakana = False
         CheckType19.IsNumeric = False
         CheckType19.IsZenkaku = True
+        CheckType19.Required = False
         Me.winCustomMaskedTextBox4_2.CheckType = CheckType19
         Me.winCustomMaskedTextBox4_2.Location = New System.Drawing.Point(248, 89)
         Me.winCustomMaskedTextBox4_2.Mask_Editing = "CCCC"
@@ -1419,10 +1419,10 @@ Partial Class Form1
         CheckType20.IsHankaku = True
         CheckType20.IsHanKatakana = False
         CheckType20.IsHiragana = False
-        CheckType20.Required = False
         CheckType20.IsKatakana = False
         CheckType20.IsNumeric = False
         CheckType20.IsZenkaku = False
+        CheckType20.Required = False
         Me.winCustomMaskedTextBox3_2.CheckType = CheckType20
         Me.winCustomMaskedTextBox3_2.Location = New System.Drawing.Point(248, 64)
         Me.winCustomMaskedTextBox3_2.Mask_Editing = "CCCC"
@@ -1437,10 +1437,10 @@ Partial Class Form1
         CheckType21.IsHankaku = False
         CheckType21.IsHanKatakana = False
         CheckType21.IsHiragana = False
-        CheckType21.Required = True
         CheckType21.IsKatakana = False
         CheckType21.IsNumeric = False
         CheckType21.IsZenkaku = False
+        CheckType21.Required = True
         Me.winCustomMaskedTextBox2_2.CheckType = CheckType21
         Me.winCustomMaskedTextBox2_2.Location = New System.Drawing.Point(248, 39)
         Me.winCustomMaskedTextBox2_2.Mask = "00000000"
@@ -1456,10 +1456,10 @@ Partial Class Form1
         CheckType22.IsHankaku = True
         CheckType22.IsHanKatakana = False
         CheckType22.IsHiragana = False
-        CheckType22.Required = False
         CheckType22.IsKatakana = False
         CheckType22.IsNumeric = True
         CheckType22.IsZenkaku = False
+        CheckType22.Required = False
         Me.winCustomMaskedTextBox13.CheckType = CheckType22
         Me.winCustomMaskedTextBox13.CheckValidating = True
         Me.winCustomMaskedTextBox13.EditToHankaku = True
@@ -1477,10 +1477,10 @@ Partial Class Form1
         CheckType23.IsHankaku = True
         CheckType23.IsHanKatakana = False
         CheckType23.IsHiragana = False
-        CheckType23.Required = False
         CheckType23.IsKatakana = False
         CheckType23.IsNumeric = False
         CheckType23.IsZenkaku = False
+        CheckType23.Required = False
         Me.winCustomMaskedTextBox12.CheckType = CheckType23
         Me.winCustomMaskedTextBox12.CheckValidating = True
         Me.winCustomMaskedTextBox12.EditToHankaku = True
@@ -1518,10 +1518,10 @@ Partial Class Form1
         CheckType24.IsHankaku = False
         CheckType24.IsHanKatakana = False
         CheckType24.IsHiragana = False
-        CheckType24.Required = False
         CheckType24.IsKatakana = False
         CheckType24.IsNumeric = False
         CheckType24.IsZenkaku = False
+        CheckType24.Required = False
         Me.winCustomMaskedTextBox9.CheckType = CheckType24
         Me.winCustomMaskedTextBox9.CheckValidating = True
         Me.winCustomMaskedTextBox9.EditToHankaku = True
@@ -1532,6 +1532,7 @@ Partial Class Form1
         Me.winCustomMaskedTextBox9.Name = "winCustomMaskedTextBox9"
         Me.winCustomMaskedTextBox9.Size = New System.Drawing.Size(100, 19)
         Me.winCustomMaskedTextBox9.TabIndex = 8
+        Me.winCustomMaskedTextBox9.Text = "    /  /"
         '
         'winCustomMaskedTextBox8
         '
@@ -1540,10 +1541,10 @@ Partial Class Form1
         CheckType25.IsHankaku = False
         CheckType25.IsHanKatakana = False
         CheckType25.IsHiragana = True
-        CheckType25.Required = False
         CheckType25.IsKatakana = False
         CheckType25.IsNumeric = False
         CheckType25.IsZenkaku = False
+        CheckType25.Required = False
         Me.winCustomMaskedTextBox8.CheckType = CheckType25
         Me.winCustomMaskedTextBox8.CheckValidating = True
         Me.winCustomMaskedTextBox8.Location = New System.Drawing.Point(116, 189)
@@ -1560,10 +1561,10 @@ Partial Class Form1
         CheckType26.IsHankaku = False
         CheckType26.IsHanKatakana = True
         CheckType26.IsHiragana = False
-        CheckType26.Required = False
         CheckType26.IsKatakana = False
         CheckType26.IsNumeric = False
         CheckType26.IsZenkaku = False
+        CheckType26.Required = False
         Me.winCustomMaskedTextBox7.CheckType = CheckType26
         Me.winCustomMaskedTextBox7.CheckValidating = True
         Me.winCustomMaskedTextBox7.EditToHankaku = True
@@ -1581,10 +1582,10 @@ Partial Class Form1
         CheckType27.IsHankaku = False
         CheckType27.IsHanKatakana = False
         CheckType27.IsHiragana = False
-        CheckType27.Required = False
         CheckType27.IsKatakana = True
         CheckType27.IsNumeric = False
         CheckType27.IsZenkaku = False
+        CheckType27.Required = False
         Me.winCustomMaskedTextBox6.CheckType = CheckType27
         Me.winCustomMaskedTextBox6.CheckValidating = True
         Me.winCustomMaskedTextBox6.Location = New System.Drawing.Point(116, 139)
@@ -1601,10 +1602,10 @@ Partial Class Form1
         CheckType28.IsHankaku = False
         CheckType28.IsHanKatakana = False
         CheckType28.IsHiragana = False
-        CheckType28.Required = False
         CheckType28.IsKatakana = False
         CheckType28.IsNumeric = True
         CheckType28.IsZenkaku = False
+        CheckType28.Required = False
         Me.winCustomMaskedTextBox5.CheckType = CheckType28
         Me.winCustomMaskedTextBox5.CheckValidating = True
         Me.winCustomMaskedTextBox5.Location = New System.Drawing.Point(116, 114)
@@ -1620,10 +1621,10 @@ Partial Class Form1
         CheckType29.IsHankaku = False
         CheckType29.IsHanKatakana = False
         CheckType29.IsHiragana = False
-        CheckType29.Required = False
         CheckType29.IsKatakana = False
         CheckType29.IsNumeric = False
         CheckType29.IsZenkaku = True
+        CheckType29.Required = False
         Me.winCustomMaskedTextBox4.CheckType = CheckType29
         Me.winCustomMaskedTextBox4.CheckValidating = True
         Me.winCustomMaskedTextBox4.Location = New System.Drawing.Point(116, 89)
@@ -1639,10 +1640,10 @@ Partial Class Form1
         CheckType30.IsHankaku = True
         CheckType30.IsHanKatakana = False
         CheckType30.IsHiragana = False
-        CheckType30.Required = False
         CheckType30.IsKatakana = False
         CheckType30.IsNumeric = False
         CheckType30.IsZenkaku = False
+        CheckType30.Required = False
         Me.winCustomMaskedTextBox3.CheckType = CheckType30
         Me.winCustomMaskedTextBox3.CheckValidating = True
         Me.winCustomMaskedTextBox3.EditToHankaku = True
@@ -1659,10 +1660,10 @@ Partial Class Form1
         CheckType31.IsHankaku = False
         CheckType31.IsHanKatakana = False
         CheckType31.IsHiragana = False
-        CheckType31.Required = True
         CheckType31.IsKatakana = False
         CheckType31.IsNumeric = False
         CheckType31.IsZenkaku = False
+        CheckType31.Required = True
         Me.winCustomMaskedTextBox2.CheckType = CheckType31
         Me.winCustomMaskedTextBox2.CheckValidating = True
         Me.winCustomMaskedTextBox2.Location = New System.Drawing.Point(116, 39)

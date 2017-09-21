@@ -56,23 +56,23 @@ Partial Class Form3
         Me.btnElse2 = New System.Windows.Forms.Button()
         Me.groupBox1 = New System.Windows.Forms.GroupBox()
         Me.groupBox3 = New System.Windows.Forms.GroupBox()
-        Me.userControl32 = New WSClientWin2_sample.UserControl3()
         Me.groupBox2 = New System.Windows.Forms.GroupBox()
+        Me.btnUCRemove = New System.Windows.Forms.Button()
+        Me.btnUCAdd = New System.Windows.Forms.Button()
+        Me.groupBox4 = New System.Windows.Forms.GroupBox()
         Me.userControl31 = New WSClientWin2_sample.UserControl3()
         CType(Me.pbxPictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pbxPictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.contextMenuStrip1.SuspendLayout()
         Me.groupBox1.SuspendLayout()
-        Me.groupBox3.SuspendLayout()
         Me.groupBox2.SuspendLayout()
         Me.SuspendLayout()
         '
         'btnButton1
         '
-        Me.btnButton1.Location = New System.Drawing.Point(44, 84)
-        Me.btnButton1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnButton1.Location = New System.Drawing.Point(33, 67)
         Me.btnButton1.Name = "btnButton1"
-        Me.btnButton1.Size = New System.Drawing.Size(100, 29)
+        Me.btnButton1.Size = New System.Drawing.Size(75, 23)
         Me.btnButton1.TabIndex = 0
         Me.btnButton1.Text = "button1"
         Me.btnButton1.UseVisualStyleBackColor = True
@@ -80,10 +80,9 @@ Partial Class Form3
         'cbxCheckBox1
         '
         Me.cbxCheckBox1.AutoSize = True
-        Me.cbxCheckBox1.Location = New System.Drawing.Point(44, 220)
-        Me.cbxCheckBox1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbxCheckBox1.Location = New System.Drawing.Point(33, 176)
         Me.cbxCheckBox1.Name = "cbxCheckBox1"
-        Me.cbxCheckBox1.Size = New System.Drawing.Size(101, 19)
+        Me.cbxCheckBox1.Size = New System.Drawing.Size(80, 16)
         Me.cbxCheckBox1.TabIndex = 1
         Me.cbxCheckBox1.Text = "checkBox1"
         Me.cbxCheckBox1.UseVisualStyleBackColor = True
@@ -92,41 +91,37 @@ Partial Class Form3
         '
         Me.cbbComboBox1.FormattingEnabled = True
         Me.cbbComboBox1.Items.AddRange(New Object() {"あああ", "いいい", "ううう", "えええ"})
-        Me.cbbComboBox1.Location = New System.Drawing.Point(44, 248)
-        Me.cbbComboBox1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbbComboBox1.Location = New System.Drawing.Point(33, 198)
         Me.cbbComboBox1.Name = "cbbComboBox1"
-        Me.cbbComboBox1.Size = New System.Drawing.Size(105, 23)
+        Me.cbbComboBox1.Size = New System.Drawing.Size(80, 20)
         Me.cbbComboBox1.TabIndex = 2
         '
         'lbxListBox1
         '
         Me.lbxListBox1.FormattingEnabled = True
-        Me.lbxListBox1.ItemHeight = 15
+        Me.lbxListBox1.ItemHeight = 12
         Me.lbxListBox1.Items.AddRange(New Object() {"あああ", "いいい", "ううう", "えええ"})
-        Me.lbxListBox1.Location = New System.Drawing.Point(44, 280)
-        Me.lbxListBox1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.lbxListBox1.Location = New System.Drawing.Point(33, 224)
         Me.lbxListBox1.Name = "lbxListBox1"
-        Me.lbxListBox1.Size = New System.Drawing.Size(105, 49)
+        Me.lbxListBox1.Size = New System.Drawing.Size(80, 40)
         Me.lbxListBox1.TabIndex = 3
         '
         'pbxPictureBox1
         '
         Me.pbxPictureBox1.ErrorImage = Nothing
         Me.pbxPictureBox1.Image = CType(resources.GetObject("pbxPictureBox1.Image"), System.Drawing.Image)
-        Me.pbxPictureBox1.Location = New System.Drawing.Point(44, 129)
-        Me.pbxPictureBox1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.pbxPictureBox1.Location = New System.Drawing.Point(33, 103)
         Me.pbxPictureBox1.Name = "pbxPictureBox1"
-        Me.pbxPictureBox1.Size = New System.Drawing.Size(100, 56)
+        Me.pbxPictureBox1.Size = New System.Drawing.Size(75, 45)
         Me.pbxPictureBox1.TabIndex = 4
         Me.pbxPictureBox1.TabStop = False
         '
         'rbnRadioButton1
         '
         Me.rbnRadioButton1.AutoSize = True
-        Me.rbnRadioButton1.Location = New System.Drawing.Point(44, 192)
-        Me.rbnRadioButton1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.rbnRadioButton1.Location = New System.Drawing.Point(33, 154)
         Me.rbnRadioButton1.Name = "rbnRadioButton1"
-        Me.rbnRadioButton1.Size = New System.Drawing.Size(110, 19)
+        Me.rbnRadioButton1.Size = New System.Drawing.Size(88, 16)
         Me.rbnRadioButton1.TabIndex = 5
         Me.rbnRadioButton1.TabStop = True
         Me.rbnRadioButton1.Text = "radioButton1"
@@ -135,10 +130,9 @@ Partial Class Form3
         'rbnRadioButton2
         '
         Me.rbnRadioButton2.AutoSize = True
-        Me.rbnRadioButton2.Location = New System.Drawing.Point(175, 192)
-        Me.rbnRadioButton2.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.rbnRadioButton2.Location = New System.Drawing.Point(131, 154)
         Me.rbnRadioButton2.Name = "rbnRadioButton2"
-        Me.rbnRadioButton2.Size = New System.Drawing.Size(110, 19)
+        Me.rbnRadioButton2.Size = New System.Drawing.Size(88, 16)
         Me.rbnRadioButton2.TabIndex = 11
         Me.rbnRadioButton2.TabStop = True
         Me.rbnRadioButton2.Text = "radioButton2"
@@ -148,51 +142,46 @@ Partial Class Form3
         '
         Me.pbxPictureBox2.ErrorImage = Nothing
         Me.pbxPictureBox2.Image = CType(resources.GetObject("pbxPictureBox2.Image"), System.Drawing.Image)
-        Me.pbxPictureBox2.Location = New System.Drawing.Point(175, 129)
-        Me.pbxPictureBox2.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.pbxPictureBox2.Location = New System.Drawing.Point(131, 103)
         Me.pbxPictureBox2.Name = "pbxPictureBox2"
-        Me.pbxPictureBox2.Size = New System.Drawing.Size(100, 56)
+        Me.pbxPictureBox2.Size = New System.Drawing.Size(75, 45)
         Me.pbxPictureBox2.TabIndex = 10
         Me.pbxPictureBox2.TabStop = False
         '
         'lbxListBox2
         '
         Me.lbxListBox2.FormattingEnabled = True
-        Me.lbxListBox2.ItemHeight = 15
+        Me.lbxListBox2.ItemHeight = 12
         Me.lbxListBox2.Items.AddRange(New Object() {"あああ", "いいい", "ううう", "えええ"})
-        Me.lbxListBox2.Location = New System.Drawing.Point(175, 280)
-        Me.lbxListBox2.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.lbxListBox2.Location = New System.Drawing.Point(131, 224)
         Me.lbxListBox2.Name = "lbxListBox2"
-        Me.lbxListBox2.Size = New System.Drawing.Size(105, 49)
+        Me.lbxListBox2.Size = New System.Drawing.Size(80, 40)
         Me.lbxListBox2.TabIndex = 9
         '
         'cbbComboBox2
         '
         Me.cbbComboBox2.FormattingEnabled = True
         Me.cbbComboBox2.Items.AddRange(New Object() {"あああ", "いいい", "ううう", "えええ"})
-        Me.cbbComboBox2.Location = New System.Drawing.Point(175, 248)
-        Me.cbbComboBox2.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbbComboBox2.Location = New System.Drawing.Point(131, 198)
         Me.cbbComboBox2.Name = "cbbComboBox2"
-        Me.cbbComboBox2.Size = New System.Drawing.Size(105, 23)
+        Me.cbbComboBox2.Size = New System.Drawing.Size(80, 20)
         Me.cbbComboBox2.TabIndex = 8
         '
         'cbxCheckBox2
         '
         Me.cbxCheckBox2.AutoSize = True
-        Me.cbxCheckBox2.Location = New System.Drawing.Point(175, 220)
-        Me.cbxCheckBox2.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbxCheckBox2.Location = New System.Drawing.Point(131, 176)
         Me.cbxCheckBox2.Name = "cbxCheckBox2"
-        Me.cbxCheckBox2.Size = New System.Drawing.Size(101, 19)
+        Me.cbxCheckBox2.Size = New System.Drawing.Size(80, 16)
         Me.cbxCheckBox2.TabIndex = 7
         Me.cbxCheckBox2.Text = "checkBox2"
         Me.cbxCheckBox2.UseVisualStyleBackColor = True
         '
         'btnButton2
         '
-        Me.btnButton2.Location = New System.Drawing.Point(175, 84)
-        Me.btnButton2.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnButton2.Location = New System.Drawing.Point(131, 67)
         Me.btnButton2.Name = "btnButton2"
-        Me.btnButton2.Size = New System.Drawing.Size(100, 29)
+        Me.btnButton2.Size = New System.Drawing.Size(75, 23)
         Me.btnButton2.TabIndex = 6
         Me.btnButton2.Text = "button2"
         Me.btnButton2.UseVisualStyleBackColor = True
@@ -200,30 +189,27 @@ Partial Class Form3
         'label1
         '
         Me.label1.AutoSize = True
-        Me.label1.Location = New System.Drawing.Point(41, 45)
-        Me.label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.label1.Location = New System.Drawing.Point(31, 36)
         Me.label1.Name = "label1"
-        Me.label1.Size = New System.Drawing.Size(69, 15)
+        Me.label1.Size = New System.Drawing.Size(56, 12)
         Me.label1.TabIndex = 13
         Me.label1.Text = "メソッドあり"
         '
         'label2
         '
         Me.label2.AutoSize = True
-        Me.label2.Location = New System.Drawing.Point(172, 45)
-        Me.label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.label2.Location = New System.Drawing.Point(129, 36)
         Me.label2.Name = "label2"
-        Me.label2.Size = New System.Drawing.Size(72, 15)
+        Me.label2.Size = New System.Drawing.Size(57, 12)
         Me.label2.TabIndex = 14
         Me.label2.Text = "メソッドなし"
         '
         'label3
         '
         Me.label3.AutoSize = True
-        Me.label3.Location = New System.Drawing.Point(409, 445)
-        Me.label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.label3.Location = New System.Drawing.Point(307, 356)
         Me.label3.Name = "label3"
-        Me.label3.Size = New System.Drawing.Size(270, 15)
+        Me.label3.Size = New System.Drawing.Size(214, 12)
         Me.label3.TabIndex = 16
         Me.label3.Text = "このFormはKeyPreviewをTrueにしています。"
         '
@@ -231,126 +217,149 @@ Partial Class Form3
         '
         Me.contextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsmiItem1, Me.tsmiItem2, Me.tsmiItem3})
         Me.contextMenuStrip1.Name = "contextMenuStrip1"
-        Me.contextMenuStrip1.Size = New System.Drawing.Size(156, 88)
+        Me.contextMenuStrip1.Size = New System.Drawing.Size(139, 70)
         '
         'tsmiItem1
         '
         Me.tsmiItem1.Name = "tsmiItem1"
-        Me.tsmiItem1.Size = New System.Drawing.Size(155, 28)
+        Me.tsmiItem1.Size = New System.Drawing.Size(138, 22)
         Me.tsmiItem1.Text = "tsmiItem1"
         '
         'tsmiItem2
         '
         Me.tsmiItem2.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsmiItem21ToolStripMenuItem, Me.tsmiItem22ToolStripMenuItem})
         Me.tsmiItem2.Name = "tsmiItem2"
-        Me.tsmiItem2.Size = New System.Drawing.Size(155, 28)
+        Me.tsmiItem2.Size = New System.Drawing.Size(138, 22)
         Me.tsmiItem2.Text = "tsmiItem2"
         '
         'tsmiItem21ToolStripMenuItem
         '
         Me.tsmiItem21ToolStripMenuItem.Name = "tsmiItem21ToolStripMenuItem"
-        Me.tsmiItem21ToolStripMenuItem.Size = New System.Drawing.Size(164, 28)
+        Me.tsmiItem21ToolStripMenuItem.Size = New System.Drawing.Size(145, 22)
         Me.tsmiItem21ToolStripMenuItem.Text = "tsmiItem21"
         '
         'tsmiItem22ToolStripMenuItem
         '
         Me.tsmiItem22ToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsmiItem221ToolStripMenuItem, Me.tsmiItem222ToolStripMenuItem})
         Me.tsmiItem22ToolStripMenuItem.Name = "tsmiItem22ToolStripMenuItem"
-        Me.tsmiItem22ToolStripMenuItem.Size = New System.Drawing.Size(164, 28)
+        Me.tsmiItem22ToolStripMenuItem.Size = New System.Drawing.Size(145, 22)
         Me.tsmiItem22ToolStripMenuItem.Text = "tsmiItem22"
         '
         'tsmiItem221ToolStripMenuItem
         '
         Me.tsmiItem221ToolStripMenuItem.Name = "tsmiItem221ToolStripMenuItem"
-        Me.tsmiItem221ToolStripMenuItem.Size = New System.Drawing.Size(173, 28)
+        Me.tsmiItem221ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.tsmiItem221ToolStripMenuItem.Text = "tsmiItem221"
         '
         'tsmiItem222ToolStripMenuItem
         '
         Me.tsmiItem222ToolStripMenuItem.Name = "tsmiItem222ToolStripMenuItem"
-        Me.tsmiItem222ToolStripMenuItem.Size = New System.Drawing.Size(173, 28)
+        Me.tsmiItem222ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.tsmiItem222ToolStripMenuItem.Text = "tsmiItem222"
         '
         'tsmiItem3
         '
         Me.tsmiItem3.Name = "tsmiItem3"
-        Me.tsmiItem3.Size = New System.Drawing.Size(155, 28)
+        Me.tsmiItem3.Size = New System.Drawing.Size(138, 22)
         Me.tsmiItem3.Text = "tsmiItem3"
         '
         'btnElse1
         '
-        Me.btnElse1.Location = New System.Drawing.Point(16, 358)
-        Me.btnElse1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnElse1.Location = New System.Drawing.Point(12, 286)
         Me.btnElse1.Name = "btnElse1"
-        Me.btnElse1.Size = New System.Drawing.Size(315, 40)
+        Me.btnElse1.Size = New System.Drawing.Size(236, 32)
         Me.btnElse1.TabIndex = 17
         Me.btnElse1.Text = "いろいろテスト1"
         Me.btnElse1.UseVisualStyleBackColor = True
         '
         'btnElse2
         '
-        Me.btnElse2.Location = New System.Drawing.Point(16, 405)
-        Me.btnElse2.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnElse2.Location = New System.Drawing.Point(12, 324)
         Me.btnElse2.Name = "btnElse2"
-        Me.btnElse2.Size = New System.Drawing.Size(315, 40)
+        Me.btnElse2.Size = New System.Drawing.Size(236, 32)
         Me.btnElse2.TabIndex = 18
         Me.btnElse2.Text = "いろいろテスト2"
         Me.btnElse2.UseVisualStyleBackColor = True
         '
         'groupBox1
         '
+        Me.groupBox1.Controls.Add(Me.btnUCRemove)
         Me.groupBox1.Controls.Add(Me.groupBox3)
+        Me.groupBox1.Controls.Add(Me.btnUCAdd)
         Me.groupBox1.Controls.Add(Me.groupBox2)
-        Me.groupBox1.Location = New System.Drawing.Point(352, 13)
-        Me.groupBox1.Margin = New System.Windows.Forms.Padding(4)
+        Me.groupBox1.Controls.Add(Me.groupBox4)
+        Me.groupBox1.Location = New System.Drawing.Point(264, 10)
         Me.groupBox1.Name = "groupBox1"
-        Me.groupBox1.Padding = New System.Windows.Forms.Padding(4)
-        Me.groupBox1.Size = New System.Drawing.Size(680, 428)
+        Me.groupBox1.Size = New System.Drawing.Size(685, 342)
         Me.groupBox1.TabIndex = 19
         Me.groupBox1.TabStop = False
         Me.groupBox1.Text = "ここは、ユーザコントロール"
         '
         'groupBox3
         '
-        Me.groupBox3.Controls.Add(Me.userControl32)
-        Me.groupBox3.Location = New System.Drawing.Point(351, 41)
+        Me.groupBox3.Location = New System.Drawing.Point(263, 33)
+        Me.groupBox3.Margin = New System.Windows.Forms.Padding(2)
         Me.groupBox3.Name = "groupBox3"
-        Me.groupBox3.Size = New System.Drawing.Size(302, 363)
+        Me.groupBox3.Padding = New System.Windows.Forms.Padding(2)
+        Me.groupBox3.Size = New System.Drawing.Size(226, 290)
         Me.groupBox3.TabIndex = 2
         Me.groupBox3.TabStop = False
-        Me.groupBox3.Text = "userControl31"
-        '
-        'userControl32
-        '
-        Me.userControl32.Location = New System.Drawing.Point(8, 23)
-        Me.userControl32.Margin = New System.Windows.Forms.Padding(5)
-        Me.userControl32.Name = "userControl32"
-        Me.userControl32.Size = New System.Drawing.Size(283, 330)
-        Me.userControl32.TabIndex = 0
+        Me.groupBox3.Text = "userControl32"
         '
         'groupBox2
         '
         Me.groupBox2.Controls.Add(Me.userControl31)
-        Me.groupBox2.Location = New System.Drawing.Point(25, 41)
+        Me.groupBox2.Location = New System.Drawing.Point(19, 33)
+        Me.groupBox2.Margin = New System.Windows.Forms.Padding(2)
         Me.groupBox2.Name = "groupBox2"
-        Me.groupBox2.Size = New System.Drawing.Size(302, 363)
+        Me.groupBox2.Padding = New System.Windows.Forms.Padding(2)
+        Me.groupBox2.Size = New System.Drawing.Size(226, 290)
         Me.groupBox2.TabIndex = 1
         Me.groupBox2.TabStop = False
         Me.groupBox2.Text = "userControl31"
         '
+        'btnUCRemove
+        '
+        Me.btnUCRemove.Location = New System.Drawing.Point(581, 213)
+        Me.btnUCRemove.Name = "btnUCRemove"
+        Me.btnUCRemove.Size = New System.Drawing.Size(91, 23)
+        Me.btnUCRemove.TabIndex = 22
+        Me.btnUCRemove.Text = "btnUCRemove"
+        Me.btnUCRemove.UseVisualStyleBackColor = True
+        '
+        'btnUCAdd
+        '
+        Me.btnUCAdd.Location = New System.Drawing.Point(500, 213)
+        Me.btnUCAdd.Name = "btnUCAdd"
+        Me.btnUCAdd.Size = New System.Drawing.Size(75, 23)
+        Me.btnUCAdd.TabIndex = 21
+        Me.btnUCAdd.Text = "btnUCAdd"
+        Me.btnUCAdd.UseVisualStyleBackColor = True
+        '
+        'groupBox4
+        '
+        Me.groupBox4.Location = New System.Drawing.Point(500, 33)
+        Me.groupBox4.Margin = New System.Windows.Forms.Padding(2)
+        Me.groupBox4.Name = "groupBox4"
+        Me.groupBox4.Padding = New System.Windows.Forms.Padding(2)
+        Me.groupBox4.Size = New System.Drawing.Size(172, 175)
+        Me.groupBox4.TabIndex = 20
+        Me.groupBox4.TabStop = False
+        Me.groupBox4.Text = "userControlParent-Child"
+        '
         'userControl31
         '
-        Me.userControl31.Location = New System.Drawing.Point(8, 23)
-        Me.userControl31.Margin = New System.Windows.Forms.Padding(5)
+        Me.userControl31.Location = New System.Drawing.Point(6, 18)
+        Me.userControl31.Margin = New System.Windows.Forms.Padding(4)
         Me.userControl31.Name = "userControl31"
-        Me.userControl31.Size = New System.Drawing.Size(283, 330)
+        Me.userControl31.Size = New System.Drawing.Size(212, 264)
         Me.userControl31.TabIndex = 0
         '
         'Form3
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 15.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1061, 471)
+        Me.ClientSize = New System.Drawing.Size(959, 377)
         Me.Controls.Add(Me.groupBox1)
         Me.Controls.Add(Me.btnElse2)
         Me.Controls.Add(Me.btnElse1)
@@ -370,14 +379,12 @@ Partial Class Form3
         Me.Controls.Add(Me.cbbComboBox1)
         Me.Controls.Add(Me.cbxCheckBox1)
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Name = "Form3"
         Me.Text = "Form3"
         CType(Me.pbxPictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.pbxPictureBox2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.contextMenuStrip1.ResumeLayout(False)
         Me.groupBox1.ResumeLayout(False)
-        Me.groupBox3.ResumeLayout(False)
         Me.groupBox2.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -413,7 +420,9 @@ Partial Class Form3
     Private tsmiItem222ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Private WithEvents groupBox1 As System.Windows.Forms.GroupBox
     Private WithEvents groupBox3 As System.Windows.Forms.GroupBox
-    Private WithEvents userControl32 As WSClientWin2_sample.UserControl3
     Private WithEvents groupBox2 As System.Windows.Forms.GroupBox
     Private WithEvents userControl31 As WSClientWin2_sample.UserControl3
+    Private WithEvents btnUCRemove As Button
+    Private WithEvents btnUCAdd As Button
+    Private WithEvents groupBox4 As GroupBox
 End Class

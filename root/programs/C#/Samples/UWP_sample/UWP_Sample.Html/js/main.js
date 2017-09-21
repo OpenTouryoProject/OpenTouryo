@@ -23,7 +23,7 @@ $(function () {
     });
 
     // Web API のサーバーの URL
-    var baseUrl = 'http://localhost:63877/SPA_Sample/';
+    var rootUrl = 'http://localhost:8888/JsonController/';
 
     // 件数表示ボタンをクリックしたときの動き
     $('#btnGetCount').on('click', function () {
@@ -38,17 +38,22 @@ $(function () {
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/GetCount',
+            url: rootUrl + 'SelectCount',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
-                if (data.error) {
-                    // エラーメッセージ格納
-                    $('#result').text(data.error);
+
+                if (data.Message != undefined) {
+                    // 正常終了
+                    $('#result').text(data.Message);
                 }
-                else {
-                    // 結果格納
-                    $('#result').text(data.message);
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
+                    $('#result').text(JSON.stringify(data.ErrorMSG));
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    $('#result').text(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -71,28 +76,32 @@ $(function () {
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/SelectDT',
+            url: rootUrl + 'SelectAll_DR',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
-                if (data.error) {
-                    // エラーメッセージ格納
-                    $('#result').text(data.error);
-                }
-                else {
-                    // 結果格納
+                if (data.Message != undefined) {
+                    // 正常終了
                     $('#result').text('正常終了しました');
 
                     // 一旦、リストをクリアする
                     $('#lstTable tbody').empty();
 
                     // リストを表示する
-                    $.each(data, function (i, item) {
+                    $.each(data.Result, function (i, item) {
                         $('#lstTable tbody').append('<tr></tr>');
-                        $('#lstTable tbody tr:last').append('<td>' + item.shipperID + '</td>');
-                        $('#lstTable tbody tr:last').append('<td>' + item.companyName + '</td>');
-                        $('#lstTable tbody tr:last').append('<td>' + item.phone + '</td>');
+                        $('#lstTable tbody tr:last').append('<td>' + item.ShipperID + '</td>');
+                        $('#lstTable tbody tr:last').append('<td>' + item.CompanyName + '</td>');
+                        $('#lstTable tbody tr:last').append('<td>' + item.Phone + '</td>');
                     });
+                }
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
+                    $('#result').text(JSON.stringify(data.ErrorMSG));
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    $('#result').text(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -110,10 +119,14 @@ $(function () {
             ddlMode1: $('#ddlMode1').val(),
             ddlMode2: $('#ddlMode2').val(),
             ddlExRollback: $('#ddlExRollback').val(),
-            ShipperId: $('#txtShipperId').val()
+            Shipper: {
+                ShipperID: $('#txtShipperID').val(),
+                CompanyName: "",
+                Phone: "",
+            }
         };
 
-        if (param.ShipperId === "") {
+        if (param.Shipper.ShipperID === "") {
             $('#result').text('検索する Shipper Id が入力されていません。１件表示の Shipper Id テキストボックスに、検索する Shipper Id を入力してください。');
             return;
         }
@@ -121,20 +134,26 @@ $(function () {
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/Select',
-            data: param,
+            url: rootUrl + 'Select',
+            data: JSON.stringify(param),
             dataType: 'json',
+            contentType: 'application/json',
             success: function (data, dataType) {
-                if (data.error) {
-                    // エラーメッセージ格納
-                    $('#result').text(data.error);
-                }
-                else {
-                    // 結果格納
+
+                if (data.Message != undefined) {
+                    // 正常終了
                     $('#result').text('正常終了しました');
-                    $('#txtShipperId').val(data.shipperID);
-                    $('#txtCompanyName').val(data.companyName);
-                    $('#txtPhone').val(data.phone);
+                    $('#txtShipperID').val(data.Result.ShipperID);
+                    $('#txtCompanyName').val(data.Result.CompanyName);
+                    $('#txtPhone').val(data.Result.Phone);
+                }
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
+                    $('#result').text(JSON.stringify(data.ErrorMSG));
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    $('#result').text(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -152,11 +171,15 @@ $(function () {
             ddlMode1: $('#ddlMode1').val(),
             ddlMode2: $('#ddlMode2').val(),
             ddlExRollback: $('#ddlExRollback').val(),
-            CompanyName: $('#txtCompanyName').val(),
-            Phone: $('#txtPhone').val()
+            Shipper: {
+                ShipperID: "0",
+                CompanyName: $('#txtCompanyName').val(),
+                Phone: $('#txtPhone').val(),
+            }
         };
 
-        if (param.CompanyName === "" || param.Phone === "") {
+        if (param.Shipper.CompanyName === ""
+            || param.Shipper.Phone === "") {
             $('#result').text('Company Name, Phone のいずれかが入力されていません。１件表示の Compnay Name, Phone テキストボックスに、追加する値を入力してください。（Shipper Id は、自動採番されます）');
             return;
         }
@@ -164,17 +187,22 @@ $(function () {
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/Insert',
-            data: param,
+            url: rootUrl + 'Insert',
+            data: JSON.stringify(param),
             dataType: 'json',
+            contentType: 'application/json',
             success: function (data, dataType) {
-                if (data.error) {
-                    // エラーメッセージ格納
-                    $('#result').text(data.error);
+                if (data.Message != undefined) {
+                    // 正常終了
+                    $('#result').text(data.Message);
                 }
-                else {
-                    // 結果格納
-                    $('#result').text(data.message);
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
+                    $('#result').text(JSON.stringify(data.ErrorMSG));
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    $('#result').text(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -192,12 +220,16 @@ $(function () {
             ddlMode1: $('#ddlMode1').val(),
             ddlMode2: $('#ddlMode2').val(),
             ddlExRollback: $('#ddlExRollback').val(),
-            ShipperId: $('#txtShipperId').val(), 
-            CompanyName: $('#txtCompanyName').val(),
-            Phone: $('#txtPhone').val()
+            Shipper: {
+                ShipperID: $('#txtShipperID').val(), 
+                CompanyName: $('#txtCompanyName').val(),
+                Phone: $('#txtPhone').val(),
+            }
         };
 
-        if (param.ShipperId === "" || param.CompanyName === "" || param.Phone === "") {
+        if (param.Shipper.ShipperID === ""
+            || param.Shipper.CompanyName === ""
+            || param.Shipper.Phone === "") {
             $('#result').text('Shipper Id, Company Name, Phone のいずれかが入力されていません。１件表示の Shipper Id テキストボックスに更新対象の Shipper Id の値を、Compnay Name, Phone テキストボックスに、更新する値をそれぞれ入力してください。');
             return;
         }
@@ -205,17 +237,22 @@ $(function () {
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/Update',
-            data: param,
+            url: rootUrl + 'Update',
+            data: JSON.stringify(param),
             dataType: 'json',
+            contentType: 'application/json',
             success: function (data, dataType) {
-                if (data.error) {
-                    // エラーメッセージ格納
-                    $('#result').text(data.error);
+                if (data.Message != undefined) {
+                    // 正常終了
+                    $('#result').text(data.Message);
                 }
-                else {
-                    // 結果格納
-                    $('#result').text(data.message);
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
+                    $('#result').text(JSON.stringify(data.ErrorMSG));
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    $('#result').text(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -233,10 +270,14 @@ $(function () {
             ddlMode1: $('#ddlMode1').val(),
             ddlMode2: $('#ddlMode2').val(),
             ddlExRollback: $('#ddlExRollback').val(),
-            ShipperId: $('#txtShipperId').val()
+            Shipper: {
+                ShipperID: $('#txtShipperID').val(),
+                CompanyName: "",
+                Phone: "",
+            }
         };
 
-        if (param.ShipperId === "") {
+        if (param.ShipperID === "") {
             $('#result').text('削除する Shipper Id が入力されていません。１件表示の Shipper Id テキストボックスに削除対象の Shipper Id の値を入力してください。');
             return;
         }
@@ -244,17 +285,22 @@ $(function () {
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/Delete',
-            data: param,
+            url: rootUrl + 'Delete',
+            data: JSON.stringify(param),
             dataType: 'json',
+            contentType: 'application/json',
             success: function (data, dataType) {
-                if (data.error) {
-                    // エラーメッセージ格納
-                    $('#result').text(data.error);
+                if (data.Message != undefined) {
+                    // 正常終了
+                    $('#result').text(data.Message);
                 }
-                else {
-                    // 結果格納
-                    $('#result').text(data.message);
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
+                    $('#result').text(JSON.stringify(data.ErrorMSG));
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    $('#result').text(JSON.stringify(data.ExceptionMSG));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {

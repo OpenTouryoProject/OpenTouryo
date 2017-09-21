@@ -129,14 +129,18 @@
     <Compile Include="UserControl3.Designer.cs">
       <DependentUpon>UserControl3.cs</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="config\app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="config\MSGDefinition.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <Compile Include="UserControlChild.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlChild.Designer.cs">
+      <DependentUpon>UserControlChild.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControlParent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlParent.Designer.cs">
+      <DependentUpon>UserControlParent.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Form0.resx">
@@ -151,6 +155,12 @@
       <SubType>Designer</SubType>
       <DependentUpon>Form2.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UserControlChild.resx">
+      <DependentUpon>UserControlChild.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControlParent.resx">
+      <DependentUpon>UserControlParent.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ByReturn.resx">
@@ -161,18 +171,12 @@
       <DependentUpon>Login.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\SampleLogConf2CS.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="Splash.resx">
       <SubType>Designer</SubType>
       <DependentUpon>Splash.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="config\SPDefinition.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="Form3.resx">
       <SubType>Designer</SubType>
       <DependentUpon>Form3.cs</DependentUpon>
@@ -180,14 +184,6 @@
     <EmbeddedResource Include="UserControl3.resx">
       <SubType>Designer</SubType>
       <DependentUpon>UserControl3.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="config\TMInProcessDefinition.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\TMProtocolDefinition.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -208,9 +204,18 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="config\TMProtocolDefinition2.xml">
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MSGDefinition.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
+    <Content Include="SampleLogConf2CS.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SPDefinition.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

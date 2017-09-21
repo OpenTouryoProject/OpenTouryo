@@ -48,6 +48,8 @@
 //*  2013/03/05  西野 大介         UOC_CMNAfterFormInit、UOC_CMNAfterFormEndの呼出処理を追加
 //*  2014/03/03  西野 大介         ユーザ コントロールのインスタンスの区別。
 //*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
+//*  2017/09/12  西野 大介         UserControlの動的配置対応のため、CreatePrefixAndEvtHndHtを新設。
+//*  2017/09/15  西野 大介         UserControlのネスト対応のため、FindControlの内容をFindUCControlに変更。
 //**********************************************************************************
 
 using System;
@@ -335,48 +337,9 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                 //    new System.EventHandler(this.Check_CheckedChanged), this.ControlHt);
                 #endregion
 
-                // プレフィックス
-                string prefix = "";
-                // プレフィックスとイベント ハンドラのディクショナリを生成
-                Dictionary<string, object> prefixAndEvtHndHt = new Dictionary<string, object>();
-
-                // BUTTON
-                prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_BUTTON);
-                if (!string.IsNullOrEmpty(prefix))
-                {
-                    prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.Button_Click));
-                }
-
-                // PICTURE BOX
-                prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_PICTURE_BOX);
-                if (!string.IsNullOrEmpty(prefix))
-                {
-                    prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.Button_Click));
-                }
-
-                // COMBO BOX
-                prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_COMBO_BOX);
-                if (!string.IsNullOrEmpty(prefix))
-                {
-                    prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.List_SelectedIndexChanged));
-                }
-
-                // LIST BOX
-                prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_LIST_BOX);
-                if (!string.IsNullOrEmpty(prefix))
-                {
-                    prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.List_SelectedIndexChanged));
-                }
-
-                // RADIO BUTTON
-                prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_RADIO_BUTTON);
-                if (!string.IsNullOrEmpty(prefix))
-                {
-                    prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.Check_CheckedChanged));
-                }
-
                 // コントロール検索＆イベントハンドラ設定
-                RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(this, prefixAndEvtHndHt, this.ControlHt);
+                RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(
+                    this, this.CreatePrefixAndEvtHndHt(), this.ControlHt);
 
                 #endregion
 
@@ -426,6 +389,60 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                 this.UOC_Finally(new RcFxEventArgs(
                     FxLiteral.EVENT_FORM_LOAD, "", sender, e));
             }
+        }
+
+        /// <summary>
+        /// コントロールのプレフィックスと
+        /// イベント ハンドラのディクショナリを生成
+        /// </summary>
+        /// <returns>
+        /// プレフィックスと
+        /// イベント ハンドラのディクショナリ
+        /// </returns>
+        protected Dictionary<string, object> CreatePrefixAndEvtHndHt()
+        {
+            // プレフィックスとイベント ハンドラのディクショナリを生成
+            Dictionary<string, object> prefixAndEvtHndHt = new Dictionary<string, object>();
+
+            // プレフィックス
+            string prefix = "";
+
+            // BUTTON
+            prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_BUTTON);
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.Button_Click));
+            }
+
+            // PICTURE BOX
+            prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_PICTURE_BOX);
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.Button_Click));
+            }
+
+            // COMBO BOX
+            prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_COMBO_BOX);
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.List_SelectedIndexChanged));
+            }
+
+            // LIST BOX
+            prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_LIST_BOX);
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.List_SelectedIndexChanged));
+            }
+
+            // RADIO BUTTON
+            prefix = GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_RADIO_BUTTON);
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                prefixAndEvtHndHt.Add(prefix, new System.EventHandler(this.Check_CheckedChanged));
+            }
+
+            return prefixAndEvtHndHt;
         }
 
         #endregion
@@ -826,49 +843,8 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
         /// <param name="ctrl">検索を開始するルートのコントロール</param>
         /// <param name="ctrlName">コントロール名</param>
         /// <returns>コントロール</returns>
-        private Control FindControl(Control ctrl, string ctrlName)
-        {
-            if (ctrl.Name == ctrlName)
-            {
-                // 一致した。
-                return ctrl;
-            }
-            else
-            {
-                // 一致しなかった。
-
-                // 子が・・・
-                if (ctrl.HasChildren)
-                {
-                    // ある場合、再起検索する。
-                    foreach (Control child in ctrl.Controls)
-                    {
-                        // 再起
-                        Control ret = this.FindControl(child, ctrlName);
-
-                        // 有り
-                        if (ret != null)
-                        {
-                            return ret;
-                        }
-                    }
-                }
-                else
-                {
-                    // ない場合、何もしない。
-                }
-
-                // 何もない場合は、nullをリターンする。
-                return null;
-            }
-        }
-
-        /// <summary>コントロールを取得する</summary>
-        /// <param name="ctrl">検索を開始するルートのコントロール</param>
-        /// <param name="ctrlName">コントロール名</param>
-        /// <returns>コントロール</returns>
         /// <remarks>（ネストした）ユーザ コントロール以下を検索しない。</remarks>
-        private Control FindUCControl(Control ctrl, string ctrlName)
+        private Control FindControl(Control ctrl, string ctrlName)
         {
             if (ctrl.Name == ctrlName)
             {
@@ -888,11 +864,11 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                         // 子が・・・
                         if (child is UserControl)
                         {
-                            // ユーザコントロールの場合、検索しない。
+                            // ユーザコントロールの場合、再起検索しない。
                         }
                         else
                         {
-                            // ユーザコントロールの場合、再起検索する。
+                            // ユーザコントロール以外の場合、再起検索する。
                             Control ret = this.FindControl(child, ctrlName);
 
                             // 有り
@@ -916,8 +892,8 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
         #region ユーザ コントロールの情報を初期化する
 
         /// <summary>ユーザ コントロールの情報を初期化する</summary>
-        /// <param name="ctrl">コントロール</param>
-        private void GetUserControl(Control ctrl)
+        /// <param name="ctrl">コントロール（再起するため）</param>
+        protected void GetUserControl(Control ctrl)
         {
             // 必要なら初期化する。
             if (this.LstUserControl == null)
@@ -964,7 +940,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
             // 検索
             foreach (UserControl uc in this.LstUserControl)
             {
-                Control ctrl = this.FindUCControl(uc, controlName);
+                Control ctrl = this.FindControl(uc, controlName);
 
                 if (ctrl == null)
                 {

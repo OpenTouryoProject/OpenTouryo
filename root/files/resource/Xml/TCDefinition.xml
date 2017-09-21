@@ -26,8 +26,7 @@
 	<!-- トランザクション グループを定義 -->
 
 	<TransactionGroup id="SQL" value="SQL_NT,SQL_UC,SQL_RC,SQL_RR,SQL_SZ,SQL_SS,SQL_DF"/>
-	<TransactionGroup id="ODP1" value="ODP1_NT,ODP1_RC,ODP1_SZ,ODP1_DF"/>
-  <TransactionGroup id="ODP2" value="ODP2_NT,ODP2_RC,ODP2_SZ,ODP2_DF"/>
+	<TransactionGroup id="ODP" value="ODP_NT,ODP_RC,ODP_SZ,ODP_DF"/>
 	<TransactionGroup id="DB2" value="DB2_NT,DB2_UC,DB2_RC,DB2_RR,DB2_SZ,DB2_DF"/>
 	<TransactionGroup id="MCN" value="MCN_NT,MCN_UC,MCN_RC,MCN_RR,MCN_SZ,MCN_DF"/>
 
@@ -43,16 +42,10 @@
 	<TransactionPattern id="SQL_DF" connkey="ConnectionString_SQL" isolevel="df"/>
 
 	<!-- ODP.NETで、Oracleに接続する -->
-	<TransactionPattern id="ODP1_NT" connkey="ConnectionString_ODP1" isolevel="nt"/>
-	<TransactionPattern id="ODP1_RC" connkey="ConnectionString_ODP1" isolevel="rc"/>
-	<TransactionPattern id="ODP1_SZ" connkey="ConnectionString_ODP1" isolevel="sz"/>
-	<TransactionPattern id="ODP1_DF" connkey="ConnectionString_ODP1" isolevel="df"/>
-
-	<!-- ODP.NET（Instant）で、Oracleに接続する -->
-	<TransactionPattern id="ODP2_NT" connkey="ConnectionString_ODP2" isolevel="nt"/>
-	<TransactionPattern id="ODP2_RC" connkey="ConnectionString_ODP2" isolevel="rc"/>
-	<TransactionPattern id="ODP2_SZ" connkey="ConnectionString_ODP2" isolevel="sz"/>
-	<TransactionPattern id="ODP2_DF" connkey="ConnectionString_ODP2" isolevel="df"/>
+	<TransactionPattern id="ODP_NT" connkey="ConnectionString_ODP" isolevel="nt"/>
+	<TransactionPattern id="ODP_RC" connkey="ConnectionString_ODP" isolevel="rc"/>
+	<TransactionPattern id="ODP_SZ" connkey="ConnectionString_ODP" isolevel="sz"/>
+	<TransactionPattern id="ODP_DF" connkey="ConnectionString_ODP" isolevel="df"/>
 
 	<!-- DB2.NETで、DB2に接続する -->
 	<TransactionPattern id="DB2_NT" connkey="ConnectionString_DB2" isolevel="nt"/>

@@ -64,13 +64,15 @@
 // データプロバイダ
 // --------------------
 using System.Data.SqlClient;
-using Oracle.DataAccess.Client;
+//using System.Data.OracleClient; // 衝突するのでエイリアスを作成
+//using Oracle.DataAccess.Client; // Managedに移行
+//using Oracle.ManagedDataAccess.Client; // 衝突するのでエイリアスを作成
 using System.Data.OleDb;
 using System.Data.Odbc;
 using Npgsql;
 using MySql.Data.MySqlClient;
 using IBM.Data.DB2;
-using Hitachi.HiRDB;
+//using Hitachi.HiRDB;
 // --------------------
 
 using System;
@@ -87,6 +89,9 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace DPQuery_Tool
 {
+    using DntOraClient = System.Data.OracleClient;
+    using OdpOraClient = Oracle.ManagedDataAccess.Client;
+
     /// <summary>動的パラメタライズド・クエリ実行ツール（メイン画面）</summary>
     public partial class Form1 : Form
     {
@@ -632,7 +637,7 @@ namespace DPQuery_Tool
                     this._dam = new DamOraClient();
 
                     //接続文字列のサンプルを設定する（空の場合）。
-                    System.Data.OracleClient.OracleConnectionStringBuilder csb = new System.Data.OracleClient.OracleConnectionStringBuilder();
+                    DntOraClient.OracleConnectionStringBuilder csb = new DntOraClient.OracleConnectionStringBuilder();
 
                     csb.DataSource = this._ip + "/orcl";
                     csb.UserID = this._uid;
@@ -650,10 +655,10 @@ namespace DPQuery_Tool
                 else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ODP)
                 {
                     //ODP.NET
-                    this._dam = new DamOraOdp();
+                    this._dam = new DamManagedOdp();
 
                     //接続文字列のサンプルを設定する（空の場合）。
-                    Oracle.DataAccess.Client.OracleConnectionStringBuilder csb = new Oracle.DataAccess.Client.OracleConnectionStringBuilder();
+                    OdpOraClient.OracleConnectionStringBuilder csb = new OdpOraClient.OracleConnectionStringBuilder();
 
                     csb.DataSource = this._ip + "/orcl";
                     csb.UserID = this._uid;
@@ -732,21 +737,21 @@ namespace DPQuery_Tool
                     this._dam = new DamPstGrS();
 
                     //接続文字列のサンプルを設定する（空の場合）。
+
                     //NpgsqlConnectionStringBuilderは、冗長な接続文字列を返すので使わない。
+                    NpgsqlConnectionStringBuilder csb = new NpgsqlConnectionStringBuilder();
+                    csb.Host = this._ip;
+                    csb.Database = "postgres";
+                    csb.Username = this._uid;
+                    csb.Password = this._pwd;
 
-                    //NpgsqlConnectionStringBuilder csb = new NpgsqlConnectionStringBuilder();
-                    string csb = "";
+                    string cnnStr = "";
+                    cnnStr += "HOST=" + this._ip + ";";
+                    cnnStr += "DATABASE=postgres;";
+                    cnnStr += "UID=" + this._uid + ";";
+                    cnnStr += "PWD=" + this._pwd + ";";
 
-                    //csb.Host = this._ip;
-                    //csb.Database = "postgres";
-                    //csb.UserName = this._uid;
-                    //csb.Password = this._pwd;
-                    csb += "HOST=" + this._ip + ";";
-                    csb += "DATABASE=postgres;";
-                    csb += "UID=" + this._uid + ";";
-                    csb += "PWD=" + this._pwd + ";";
-
-                    this.txtCnnStr.Text = csb;
+                    this.txtCnnStr.Text = cnnStr;
 
                     // 状態
                     ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_PstgrS);
@@ -1288,9 +1293,8 @@ namespace DPQuery_Tool
                         {
                             // null以外の値を指定
 
-                            if ((this._dam.GetType() == typeof(DamOraOdp))
-                                & (0 < (int)this.nudNumOfBind.Value) // 2009/09/18-この行
-                                & (dr[2].GetType().ToString().IndexOf("[]") != -1)) // 2009/08/12-この行
+                            if ((this._dam.GetType() == typeof(DamManagedOdp))
+                                & (0 < (int)this.nudNumOfBind.Value) & (dr[2] is System.Array))
                             {
                                 // ODP.NETの配列バインドの場合
 
@@ -1299,7 +1303,7 @@ namespace DPQuery_Tool
                                 // ・パラメタに配列が指定されている。
 
                                 // ArrayBindCountプロパティを指定
-                                ((DamOraOdp)this._dam).ArrayBindCount = (int)this.nudNumOfBind.Value;
+                                ((DamManagedOdp)this._dam).ArrayBindCount = (int)this.nudNumOfBind.Value;
 
                                 // 型情報を取得（ODP.NETの配列バインドでは必須のため）
                                 object dbTypeInfo = null;
@@ -1311,8 +1315,7 @@ namespace DPQuery_Tool
                                 ((BaseDam)this._dam).SetParameter(dr[1].ToString(), dr[2], dbTypeInfo);
                             }
                             //else if ((this._dam.GetType() == typeof(DamHiRDB))
-                            //    & (0 < (int)this.nudNumOfBind.Value)
-                            //    & (dr[2].GetType().ToString().IndexOf("[]") != -1))
+                            //    & (0 < (int)this.nudNumOfBind.Value) & (dr[2] is System.Array))
                             //{
                             //    // HiRDBデータプロバイダの配列バインドの場合
 
@@ -1379,7 +1382,7 @@ namespace DPQuery_Tool
                                         this.InferORAType(dr[2].GetType(), out dbTypeInfo);
                                     }
 
-                                    else if (this._dam.GetType() == typeof(DamOraOdp))
+                                    else if (this._dam.GetType() == typeof(DamManagedOdp))
                                     {
                                         // ODP.NETの型情報を推論
                                         this.InferODPType(dr[2].GetType(), out dbTypeInfo);
@@ -2108,102 +2111,102 @@ namespace DPQuery_Tool
 
             if (type == typeof(Boolean))
             {
-                oracleType = System.Data.OracleClient.OracleType.Byte;
+                oracleType = DntOraClient.OracleType.Byte;
                 return true;
             }
             else if (type == typeof(Byte))
             {
-                oracleType = System.Data.OracleClient.OracleType.Byte;
+                oracleType = DntOraClient.OracleType.Byte;
                 return true;
             }
             else if (type == typeof(Byte[]))
             {
-                oracleType = System.Data.OracleClient.OracleType.Raw;
+                oracleType = DntOraClient.OracleType.Raw;
                 return true;
             }
             else if (type == typeof(Char))
             {
-                oracleType = System.Data.OracleClient.OracleType.Byte;
+                oracleType = DntOraClient.OracleType.Byte;
                 return true;
             }
             //else if (type == typeof(Char[]))
             //{
-            //    oracleType = System.Data.OracleClient.OracleType.;
+            //    oracleType = DntOraClient.OracleType.;
             //    return true;
             //}
             else if (type == typeof(DateTime))
             {
-                oracleType = System.Data.OracleClient.OracleType.DateTime;
+                oracleType = DntOraClient.OracleType.DateTime;
                 return true;
             }
             else if (type == typeof(DateTimeOffset))
             {
-                oracleType = System.Data.OracleClient.OracleType.DateTime;
+                oracleType = DntOraClient.OracleType.DateTime;
                 return true;
             }
             else if (type == typeof(Decimal))
             {
-                oracleType = System.Data.OracleClient.OracleType.Number;
+                oracleType = DntOraClient.OracleType.Number;
                 return true;
             }
             else if (type == typeof(Double))
             {
-                oracleType = System.Data.OracleClient.OracleType.Double;
+                oracleType = DntOraClient.OracleType.Double;
                 return true;
             }
             else if (type == typeof(Single))
             {
-                oracleType = System.Data.OracleClient.OracleType.Float;
+                oracleType = DntOraClient.OracleType.Float;
                 return true;
             }
             else if (type == typeof(Guid))
             {
-                oracleType = System.Data.OracleClient.OracleType.Raw;
+                oracleType = DntOraClient.OracleType.Raw;
                 return true;
             }
             else if (type == typeof(Int16))
             {
-                oracleType = System.Data.OracleClient.OracleType.Int16;
+                oracleType = DntOraClient.OracleType.Int16;
                 return true;
             }
             else if (type == typeof(Int32))
             {
-                oracleType = System.Data.OracleClient.OracleType.Int32;
+                oracleType = DntOraClient.OracleType.Int32;
                 return true;
             }
             else if (type == typeof(Int64))
             {
-                oracleType = System.Data.OracleClient.OracleType.Number;
+                oracleType = DntOraClient.OracleType.Number;
                 return true;
             }
             else if (type == typeof(Object))
             {
-                oracleType = System.Data.OracleClient.OracleType.Blob;
+                oracleType = DntOraClient.OracleType.Blob;
                 return true;
             }
             else if (type == typeof(String))
             {
-                oracleType = System.Data.OracleClient.OracleType.NVarChar;
+                oracleType = DntOraClient.OracleType.NVarChar;
                 return true;
             }
             else if (type == typeof(TimeSpan))
             {
-                oracleType = System.Data.OracleClient.OracleType.DateTime;
+                oracleType = DntOraClient.OracleType.DateTime;
                 return true;
             }
             else if (type == typeof(UInt16))
             {
-                oracleType = System.Data.OracleClient.OracleType.UInt16;
+                oracleType = DntOraClient.OracleType.UInt16;
                 return true;
             }
             else if (type == typeof(UInt32))
             {
-                oracleType = System.Data.OracleClient.OracleType.UInt32;
+                oracleType = DntOraClient.OracleType.UInt32;
                 return true;
             }
             else if (type == typeof(UInt64))
             {
-                oracleType = System.Data.OracleClient.OracleType.Number;
+                oracleType = DntOraClient.OracleType.Number;
                 return true;
             }
 
@@ -2229,68 +2232,68 @@ namespace DPQuery_Tool
 
             if (type == typeof(Byte))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Byte;
+                oracleDbType = OdpOraClient.OracleDbType.Byte;
                 return true;
             }
             else if (type == typeof(Byte[]))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Raw;
+                oracleDbType = OdpOraClient.OracleDbType.Raw;
                 return true;
             }
             else if (type == typeof(Char))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Varchar2;
+                oracleDbType = OdpOraClient.OracleDbType.Varchar2;
                 return true;
             }
             else if (type == typeof(Char[]))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Varchar2;
+                oracleDbType = OdpOraClient.OracleDbType.Varchar2;
                 return true;
             }
 
             else if (type == typeof(DateTime))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.TimeStamp;
+                oracleDbType = OdpOraClient.OracleDbType.TimeStamp;
                 return true;
             }
             else if (type == typeof(Decimal))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Decimal;
+                oracleDbType = OdpOraClient.OracleDbType.Decimal;
                 return true;
             }
             else if (type == typeof(Double))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Double;
+                oracleDbType = OdpOraClient.OracleDbType.Double;
                 return true;
             }
             else if (type == typeof(Int16))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Int16;
+                oracleDbType = OdpOraClient.OracleDbType.Int16;
                 return true;
             }
             else if (type == typeof(Int32))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Int32;
+                oracleDbType = OdpOraClient.OracleDbType.Int32;
                 return true;
             }
             else if (type == typeof(Int64))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Int64;
+                oracleDbType = OdpOraClient.OracleDbType.Int64;
                 return true;
             }
             else if (type == typeof(Single))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Single;
+                oracleDbType = OdpOraClient.OracleDbType.Single;
                 return true;
             }
             else if (type == typeof(String))
             {
-                oracleDbType = Oracle.DataAccess.Client.OracleDbType.Varchar2;
+                oracleDbType = OdpOraClient.OracleDbType.Varchar2;
                 return true;
             }
             //else if (type == typeof(TimeSpan))
             //{
-            //    oracleDbType = Oracle.DataAccess.Client.OracleDbType.IntervalDS;
+            //    oracleDbType = OdpOraClient.OracleDbType.IntervalDS;
             //    return true;
             //}
 

@@ -30,6 +30,7 @@
 //*  2010/11/21  西野 大介         新規作成
 //*  2012/06/14  西野 大介         コントロール検索の再帰処理性能の集約＆効率化。
 //*  2014/05/16  西野 大介         キャスト可否チェックのロジックを見直した。
+//*  2017/09/12  西野 大介         UserControlの動的配置対応のためアクセス修飾子を変更。
 //**********************************************************************************
 
 using System;
@@ -50,7 +51,7 @@ namespace Touryo.Infrastructure.Business.RichClient.Util
         /// <param name="prefix">プレフィックス</param>
         /// <param name="eventHandler">イベント ハンドラ</param>
         /// <param name="ControlHt">ディクショナリ</param>
-        internal static void GetCtrlAndSetClickEventHandler(Control ctrl, string prefix, object eventHandler, Dictionary<string, Control> ControlHt)
+        public static void GetCtrlAndSetClickEventHandler(Control ctrl, string prefix, object eventHandler, Dictionary<string, Control> ControlHt)
         {
             #region チェック処理
 
@@ -126,7 +127,7 @@ namespace Touryo.Infrastructure.Business.RichClient.Util
         /// <param name="ctrl">コントロール</param>
         /// <param name="prefixAndEvtHndHt">プレフィックスとイベント ハンドラのディクショナリ</param>
         /// <param name="controlHt">コントロールのディクショナリ</param>
-        internal static void GetCtrlAndSetClickEventHandler2(Control ctrl, Dictionary<string, object> prefixAndEvtHndHt, Dictionary<string, Control> controlHt)
+        public static void GetCtrlAndSetClickEventHandler2(Control ctrl, Dictionary<string, object> prefixAndEvtHndHt, Dictionary<string, Control> controlHt)
         {
             // ループ
             foreach (string prefix in prefixAndEvtHndHt.Keys)

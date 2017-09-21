@@ -38,8 +38,10 @@
 //*                                nullチェック方法、Contains → ContainsKeyなどに注意
 //*  2011/01/19  西野 大介         環境変数の組み込み処理に対応
 //*  2014/02/07  Rituparna Biswas  Changes Made In GetMessageDescription for Internationalization
-//*  2011/02/19  西野 大介         取り込み（細かな修正）
+//*  2014/02/19  西野 大介         取り込み（細かな修正）
+//*  2017/08/11  西野 大介         2014年のInternationalizationのrefactoringを実施
 //**********************************************************************************
+
 
 using System;
 using System.IO;
@@ -58,58 +60,44 @@ namespace Touryo.Infrastructure.Framework.Util
     public class GetMessage
     {
         /// <summary>Lock Object</summary>
-        private static Object thisLock = new Object();
+        private static Object _lock = new Object();
 
         /// <summary>
         /// 国毎のディクショナリ
         /// Dictionary of each country
         /// </summary>
-        private static Dictionary<string, Dictionary<string, string>> DicMSG = new Dictionary<string, Dictionary<string, string>>();
+        private static Dictionary<string, Dictionary<string, string>>
+            DicMSG = new Dictionary<string, Dictionary<string, string>>();
 
         /// <summary>
-        /// message IDに対応したメッセージ記述。<br/>
         /// Get message description from message ID
         /// </summary>
         /// <param name="messageID">
         /// messageID
         /// </param>
         /// <returns>
-        /// メッセージ記述<br/>
-        /// Get message description
+        /// message description
         /// </returns>
         public static string GetMessageDescription(string messageID)
         {
             // FxBusinessMessageCulture
             string fxBusinessMessageCulture = GetConfigParameter.GetConfigValue(FxLiteral.BUSINESSMESSAGECULTUER);
-
-            // Check FxBusinessMessageCulture
+            
             CultureInfo uiCulture = null;
 
             if (string.IsNullOrEmpty(fxBusinessMessageCulture))
             {
-                // Use CurrentUICulture
                 uiCulture = Thread.CurrentThread.CurrentUICulture;
             }
             else
             {
-                try
-                {
-                    // Use FxBusinessMessageCulture
-                    uiCulture = new CultureInfo(fxBusinessMessageCulture);
-                }
-                catch
-                {
-                    // Use CurrentUICulture
-                    uiCulture = Thread.CurrentThread.CurrentUICulture;
-                }
+                uiCulture = new CultureInfo(fxBusinessMessageCulture);
             }
 
-            // call overload.
             return GetMessage.GetMessageDescription(messageID, uiCulture);
         }
 
         /// <summary>
-        /// message IDに対応したメッセージ記述。<br/>
         /// Get message description from message ID
         /// </summary>
         /// <param name="messageID">
@@ -119,307 +107,180 @@ namespace Touryo.Infrastructure.Framework.Util
         /// uiCulture
         /// </param>
         /// <returns>
-        /// メッセージ記述<br/>
         /// Get message description
         /// </returns>
         public static string GetMessageDescription(string messageID, CultureInfo uiCulture)
         {
-            bool notExist = false;
+            // defaultFile
+            string defaultFilePath = GetConfigParameter.GetConfigValue(FxLiteral.XML_MSG_DEFINITION);
+            string defaultFileName = "";
 
-            while (true)
+            // culture
+            CultureInfo currentUICulture = null;
+            string uICultureName = "";
+
+            // cultureWiseFile
+            string cultureWiseFilePath = "";
+            string cultureWiseFileName = "";
+
+            string content = "";
+
+            lock (GetMessage._lock)
             {
-                if (uiCulture.Parent == null || uiCulture.Parent.Name == string.Empty)
+                do
                 {
-                    // parent is not exist.
-                    // and break this loop.
-                    return GetMessage.GetMessageDescription(messageID, uiCulture.Name, false, out notExist);
-                }
-                else
-                {
-                    // parent is exist.
-                    string temp = GetMessage.GetMessageDescription(messageID, uiCulture.Name, true, out notExist);
-
-                    if (notExist)
+                    if (currentUICulture == null)
                     {
-                        // not exist
-                        // next, use parent.
-                        uiCulture = uiCulture.Parent;
+                        // 初回
+                        currentUICulture = uiCulture;
                     }
                     else
                     {
-                        // exist
-                        return temp;
+                        // フォールバック
+                        currentUICulture = currentUICulture.Parent;
                     }
-                }
-            }
-        }
 
-        /// <summary>
-        /// Get message description from message ID
-        /// </summary>
-        /// <param name="messageID">
-        /// messageID
-        /// </param>
-        /// <param name="cultureName">
-        /// cultureName
-        /// </param>
-        /// <param name="useChildUICulture">
-        /// 子カルチャを使用している場合：true<br/>
-        /// use ChildUICulture : true
-        /// </param>        
-        /// <param name="notExist">
-        /// 子カルチャを使用している場合で、<br/>
-        /// ファイルを発見できなかった場合はtrueを返す。<br/>
-        /// if useChildUICulture == true<br/>
-        /// then If the file is not found, return true.
-        /// </param>
-        /// <returns>
-        /// メッセージ記述<br/>
-        /// Get message description
-        /// </returns>
-        private static string GetMessageDescription(
-            string messageID, string cultureName,
-            bool useChildUICulture, out bool notExist)
-        {
-            #region local
-            
-            //bool xmlfilenotExist = false;
-            notExist = false;
+                    // uICultureName
+                    uICultureName = currentUICulture.Name;
 
-            string tempXMLFileName = string.Empty;
-            string tempXMLFilePath = string.Empty;
+                    // リソース名の国際化
+                    defaultFileName = GetMessage.GetCultureWiseFile(
+                        uICultureName, defaultFilePath, out cultureWiseFilePath, out cultureWiseFileName);
 
-            string defaultXMLFileName = string.Empty;
-            string defaultXMLFilePath = string.Empty;
-            string cultureWiseXMLFileName = string.Empty;
-            string cultureWiseXMLFilePath = string.Empty;
-
-            string cultureWiseXMLParentFileName = string.Empty;
-            string cultureWiseXMLParentFilePath = string.Empty;
-
-            bool defaultXMLFilePath_ResourceLoaderExists = false;
-            bool defaultXMLFilePath_EmbeddedResourceLoaderExists = false;
-            bool cultureWiseXMLFilePath_ResourceLoaderExists = false;
-            bool cultureWiseXMLFilePath_EmbeddedResourceLoaderExists = false;
-
-            #endregion
-
-            defaultXMLFilePath = GetConfigParameter.GetConfigValue(FxLiteral.XML_MSG_DEFINITION);
-
-            GetMessage.GetCultureWiseXMLFileName(
-                cultureName, defaultXMLFilePath, out defaultXMLFileName, out cultureWiseXMLFilePath, out cultureWiseXMLFileName);
-
-            // This has been added for Threadsafe
-            lock (thisLock)
-            {
-                #region ContainsKey
-                
-                // Check that XML file is already loaded.
-                if (GetMessage.DicMSG.ContainsKey(cultureWiseXMLFileName))
-                {
-                    // culture wise XML file is already loaded.
-                    if (GetMessage.DicMSG[cultureWiseXMLFileName].ContainsKey(messageID))
+                    if (GetMessage.DicMSG.ContainsKey(cultureWiseFilePath))
                     {
-                        return GetMessage.DicMSG[cultureWiseXMLFileName][messageID];
-                    }
-                    else
-                    {
-                        return string.Empty;
-                    }
-                }
-                else
-                {
-                    // culture wise XML file isn't loaded.
-                }
-
-                if (GetMessage.DicMSG.ContainsKey(defaultXMLFileName))
-                {
-                    // default XML file is already loaded.
-
-                    if (useChildUICulture)
-                    {
-                        // next, try load.
-                    }
-                    else
-                    {
-                        // default XML
-                        if (DicMSG[defaultXMLFileName].ContainsKey(messageID))
+                        // ロード済み
+                        if (GetMessage.DicMSG[cultureWiseFilePath].ContainsKey(messageID))
                         {
-                            return GetMessage.DicMSG[defaultXMLFileName][messageID];
-                        }
-                        else
-                        {
-                            return string.Empty;
+                            content = GetMessage.DicMSG[cultureWiseFilePath][messageID];
                         }
                     }
-                }
-                else
-                {
-                    // default XML file isn't loaded.
-                }
-
-                #endregion
-
-                #region FillDictionary
-
-                // cultureWiseXMLFilePath
-                if (EmbeddedResourceLoader.Exists(cultureWiseXMLFilePath, false))
-                {
-                    // Exists cultureWiseXMLFile
-                    cultureWiseXMLFilePath_EmbeddedResourceLoaderExists = true;
-                }
-                else
-                {
-                    // not exists
-                    if (ResourceLoader.Exists(cultureWiseXMLFilePath, false))
-                    {
-                        // Exists cultureWiseXMLFile
-                        cultureWiseXMLFilePath_ResourceLoaderExists = true;
-                    }
                     else
                     {
-                        // not exists
-
-                        // defaultXMLFilePath
-                        if (EmbeddedResourceLoader.Exists(defaultXMLFilePath, false))
+                        // 未ロード
+                        if (GetMessage.LoadFromFile(cultureWiseFilePath))
                         {
-                            // Exists defaultXMLFilePath
-                            defaultXMLFilePath_EmbeddedResourceLoaderExists = true;
-                        }
-                        else
-                        {
-                            if (ResourceLoader.Exists(defaultXMLFilePath, false))
+                            // ロードできた。
+                            if (GetMessage.DicMSG[cultureWiseFilePath].ContainsKey(messageID))
                             {
-                                // Exists defaultXMLFilePath
-                                defaultXMLFilePath_ResourceLoaderExists = true;
+                                content = GetMessage.DicMSG[cultureWiseFilePath][messageID];
                             }
                         }
+                        else
+                        {
+                            // ロードできなかった。
+                            // フォールバック
+                        }
                     }
                 }
+                while (
+                    !string.IsNullOrEmpty(uICultureName)      // フォールバックが終わった。
+                    && string.IsNullOrEmpty(content)  // ファイルを読み取れなかった。
+                );
 
-                // select file path
-                if (cultureWiseXMLFilePath_ResourceLoaderExists
-                    || cultureWiseXMLFilePath_EmbeddedResourceLoaderExists)
+                if (string.IsNullOrEmpty(content)) // 既定（英語）
                 {
-                    // cultureWiseXMLFile
-                    tempXMLFileName = cultureWiseXMLFileName;
-                    tempXMLFilePath = cultureWiseXMLFilePath;
-                }
-                else
-                {
-                    // If the file is not found,
-                    if (useChildUICulture)
+                    if (GetMessage.DicMSG.ContainsKey(defaultFilePath))
                     {
-                        // Look for use the culture info of the parent.
-                        notExist = true;
-                        return string.Empty;
+                        // ロード済み
+                        if (GetMessage.DicMSG[defaultFilePath].ContainsKey(messageID))
+                        {
+                                content = GetMessage.DicMSG[defaultFilePath][messageID];
+                        }
                     }
                     else
                     {
-                        if (defaultXMLFilePath_ResourceLoaderExists
-                            || defaultXMLFilePath_EmbeddedResourceLoaderExists)
+                        // 未ロード
+                        if (GetMessage.LoadFromFile(defaultFilePath))
                         {
-                            // defaultXMLFilePath
-                            tempXMLFileName = defaultXMLFileName;
-                            tempXMLFilePath = defaultXMLFilePath;
+                            // ロードできた。
+                            if (GetMessage.DicMSG[defaultFilePath].ContainsKey(messageID))
+                            {
+                                    content = GetMessage.DicMSG[defaultFilePath][messageID];
+                            }
                         }
                         else
                         {
-                            // use empty XML.
+                            // ロードできなかった。
+                            // → 終了
                         }
                     }
                 }
+            }
 
-                // select load method.
+            return content;
+        }
+
+        /// <summary>Get culture wise file</summary>
+        /// <param name="cultureName">cultureName</param>
+        /// <param name="defaultFilePath">defaultFilePath</param>
+        /// <param name="cultureWiseFilePath">cultureWiseFilePath</param>
+        /// <param name="cultureWiseFileName">cultureWiseFileName</param>
+        /// <returns>defaultFileName</returns>
+        private static string GetCultureWiseFile(
+            string cultureName,
+            string defaultFilePath,
+            out string cultureWiseFilePath,
+            out string cultureWiseFileName
+            )
+        {
+            string defaultFileName = Path.GetFileName(defaultFilePath);
+            int temp = Path.GetFileNameWithoutExtension(defaultFilePath).Length;
+            //int temp = defaultFileName.Length - 4; // -4 は *.xxx の拡張子部分
+            //                                                 ~~~~
+            
+            // cultureWiseFile
+            cultureWiseFileName = defaultFileName.Substring(0, temp) + "_" + cultureName + defaultFileName.Substring(temp);
+            cultureWiseFilePath = defaultFilePath.Replace(defaultFileName, cultureWiseFileName);
+
+            // defaultFileName
+            return defaultFileName;
+        }
+
+        /// <summary>XmlDocumentをLoad</summary>
+        /// <param name="filePath">string</param>
+        /// <returns>
+        /// 真 : ロードできた
+        /// 偽 : ロードできなかった
+        /// </returns>
+        private static bool LoadFromFile(string filePath)
+        {
+            if (EmbeddedResourceLoader.Exists(filePath, false))
+            {
                 XmlDocument xMLMSG = new XmlDocument();
-                Dictionary<string, string> innerDictionary = new Dictionary<string, string>();
 
-                if (defaultXMLFilePath_EmbeddedResourceLoaderExists
-                    || cultureWiseXMLFilePath_EmbeddedResourceLoaderExists)
-                {
-                    // Use EmbeddedResourceLoader
-                    xMLMSG.LoadXml(EmbeddedResourceLoader.LoadXMLAsString(tempXMLFilePath));
+                // Load
+                xMLMSG.LoadXml(EmbeddedResourceLoader.LoadXMLAsString(filePath));
+                // Save
+                GetMessage.DicMSG[filePath] = GetMessage.FillDictionary(xMLMSG);
 
-                    //added by ritu
-                    GetMessage.FillDictionary(xMLMSG, innerDictionary);
+                return true;
+            }
+            else if (ResourceLoader.Exists(filePath, false))
+            {
+                XmlDocument xMLMSG = new XmlDocument();
+                
+                // Load
+                xMLMSG.Load(PubCmnFunction.BuiltStringIntoEnvironmentVariable(filePath));
+                // Save
+                GetMessage.DicMSG[filePath] = GetMessage.FillDictionary(xMLMSG);
 
-                    // and initialize DicMSG[tempXMLFileName]
-                    DicMSG[tempXMLFileName] = innerDictionary;
-                }
-                else if (defaultXMLFilePath_ResourceLoaderExists
-                    || cultureWiseXMLFilePath_ResourceLoaderExists)
-                {
-                    // Load normally.
-                    xMLMSG.Load(PubCmnFunction.BuiltStringIntoEnvironmentVariable(tempXMLFilePath));
-
-                    //added by ritu
-                    GetMessage.FillDictionary(xMLMSG, innerDictionary);
-                    // and initialize DicMSG[tempXMLFileName]
-                    DicMSG[tempXMLFileName] = innerDictionary;
-                }
-                else
-                {
-                    // If the file is not found, initialized as empty XML
-                    xMLMSG.LoadXml("<?xml version=\"1.0\" encoding=\"utf-8\" ?><MSGD></MSGD>");
-
-                    //added by ritu
-                    GetMessage.FillDictionary(xMLMSG, innerDictionary);
-
-                    // and initialize DicMSG[tempXMLFileName]
-                    DicMSG[tempXMLFileName] = innerDictionary;
-                    //xmlfilenotExist = true;
-                }
-
-                // and return GetMessageDescription.
-                if (DicMSG[tempXMLFileName].ContainsKey(messageID))
-                {
-                    return GetMessage.DicMSG[tempXMLFileName][messageID];
-                }
-                else
-                {
-                    return string.Empty;
-                }
-
-                #endregion
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
-        /// <summary>Get culture wise XML file name</summary>
-        /// <param name="cultureName">cultureName</param>
-        /// <param name="defaultXMLFilePath">defaultXMLFilePath</param>
-        /// <param name="defaultXMLFileName">defaultXMLFileName</param>
-        /// <param name="cultureWiseXMLFilePath">cultureWiseXMLFilePath</param>
-        /// <param name="cultureWiseXMLFileName">cultureWiseXMLFileName</param>
-        private static void GetCultureWiseXMLFileName(
-            string cultureName,
-            string defaultXMLFilePath,
-            out string defaultXMLFileName,
-            out string cultureWiseXMLFilePath,
-            out string cultureWiseXMLFileName
-            )
-        {
-            defaultXMLFileName = Path.GetFileName(defaultXMLFilePath);
-
-            // There is room for improvement here.
-            //cultureWiseXMLFileName = defaultXMLFileName.Split('.')[0] + "." + cultureName + "." + defaultXMLFileName.Split('.')[1];
-
-            //as mentioned for improvement the coding has been changed
-            cultureWiseXMLFileName = defaultXMLFileName.Substring(0, defaultXMLFileName.Length - 4) + "_" + cultureName + defaultXMLFileName.Substring(defaultXMLFileName.Length - 4);
-            cultureWiseXMLFilePath = defaultXMLFilePath.Replace(defaultXMLFileName, cultureWiseXMLFileName); // There is room for improvement here.
-        }
-
         /// <summary>
-        /// XMLからDictionaryに値を充填<br/>
-        /// Add values to innerDictionary
+        /// XmlDocumentからDictionary(string, string)に値を充填
         /// </summary>
-        /// <param name="xMLMSG">
-        /// XmlDocument(MSGDefinition.xml)
-        /// </param>
-        /// <param name="innerDictionary">
-        /// innerDictionar Value
-        /// </param>
-        private static void FillDictionary(XmlDocument xMLMSG, Dictionary<string, string> innerDictionary)
+        /// <param name="xMLMSG">XmlDocument of MSGDefinition.xml</param>
+        /// <returns>Dictionary(string, string)</returns>
+        private static Dictionary<string, string> FillDictionary(XmlDocument xMLMSG)
         {
+            Dictionary<string, string> innerDictionary = new Dictionary<string, string>();
             XmlNodeList xmlNodeList = xMLMSG.GetElementsByTagName(FxLiteral.XML_MSG_TAG_MESSAGE);
 
             foreach (XmlNode xmlNodeMSG in xmlNodeList)
@@ -450,6 +311,8 @@ namespace Touryo.Infrastructure.Framework.Util
 
                 innerDictionary.Add(xmlNodeId.Value, xmlNodeDsc.Value);
             }
+
+            return innerDictionary;
         }
     }
 }

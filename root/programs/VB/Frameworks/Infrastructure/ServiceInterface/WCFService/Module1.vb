@@ -32,21 +32,20 @@
 '**********************************************************************************
 
 Imports System.ServiceModel
-
 Imports Touryo.Infrastructure.Business.Transmission
 
-'Namespace WCFService
-Module Module1
+Namespace WCFService
+    Module Module1
 
-    Sub Main()
-        'Console.ReadKey();
+        Sub Main()
+            'Console.ReadKey();
 
-        Using host As New ServiceHost(GetType(WCFTCPSvcForFx))
-            host.Open()
-            Console.ReadKey()
-            host.Close()
-        End Using
-    End Sub
+            Using host As New ServiceHost(GetType(WCFTCPSvcForFx))
+                host.Open()
+                Console.ReadKey()
+                host.Close()
+            End Using
+        End Sub
 
-End Module
-'End Namespace
+    End Module
+End Namespace

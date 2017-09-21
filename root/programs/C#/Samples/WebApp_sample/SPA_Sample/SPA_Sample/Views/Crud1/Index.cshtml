@@ -54,9 +54,9 @@
                     </thead>
                     <tbody id="resultRecords" data-bind="foreach: dataLists">
                         <tr>
-                            <td data-bind="text: shipperID"></td>
-                            <td data-bind="text: companyName"></td>
-                            <td data-bind="text: phone"></td>
+                            <td data-bind="text: ShipperID"></td>
+                            <td data-bind="text: CompanyName"></td>
+                            <td data-bind="text: Phone"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -110,18 +110,8 @@
             </td>
         </tr>
         <tr style="height: 2%">
-            <td colspan="2">通信制御</td>
-        </tr>
-        <tr style="height: 2%">
-            <td colspan="2">
-                <select id="ddlTransmission" style="height: 100%; width: 100%" disabled="disabled" 
-                    data-bind="options: ddlTransmissionItems, optionsText: 'displayText', optionsValue: 'value', value: ddlTransmission">
-                </select>
-            </td>
-        </tr>
-        <tr style="height: 2%">
-            <td>ShipperId：</td>
-            <td><input type="text" id="textBox1" style="width: 100%; height: 100%" data-bind="value: ShipperId" /></td>
+            <td>ShipperID：</td>
+            <td><input type="text" id="textBox1" style="width: 100%; height: 100%" data-bind="value: ShipperID" /></td>
         </tr>
         <tr style="height: 2%">
             <td>CompanyName：</td>

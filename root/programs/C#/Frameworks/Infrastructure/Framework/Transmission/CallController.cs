@@ -55,18 +55,26 @@
 //*  2014/11/14	 Sandeep-san       Implemented WCF communication options(i.e, Client, proxy credentials and Certificate)
 //*  2017/02/14  西野 大介         Invokeの非同期バージョン（InvokeAsync）を追加
 //*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れた。
+//*  2017/08/18  西野 大介         ASP.NET WebAPI（JSON）対応
 //**********************************************************************************
 
 using System;
 using System.Text;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Runtime.ExceptionServices;
+using System.Security.Cryptography;
 
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.Security.Cryptography.X509Certificates;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Common;
@@ -167,14 +175,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
         private Reference WR;
 
         #region プロパティ直接公開
-
-        /// <summary>Web参照のTimeOut（ミリ秒）</summary>
-        public int TimeOut
-        {
-            set { this.WR.Timeout = value; }
-            get { return this.WR.Timeout; }
-        }
-
+        
         /// <summary>Web参照のCookieContainer</summary>
         public CookieContainer CookieContainer
         {
@@ -271,17 +272,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
             set { this._nwcProxy = value; }
         }
 
-
-        /// <summary>
-        /// Client credentails to communicate
-        /// </summary>
-        private NetworkCredential _clienCredentialsWcf;
-        public NetworkCredential ClientCredentialsWCF
-        {
-            set { this._clienCredentialsWcf = value; }
-            get { return _clienCredentialsWcf; }
-        }
-
         #endregion
 
         #endregion
@@ -299,7 +289,8 @@ namespace Touryo.Infrastructure.Framework.Transmission
         /// <remarks>自由に利用できる。</remarks>
         public object InvokeAsync(string serviceName, object parameterValue)
         {
-            return Task<object>.Factory.StartNew(() => {
+            return Task<object>.Factory.StartNew(() =>
+            {
                 return this.Invoke(serviceName, parameterValue);
             });
         }
@@ -366,25 +357,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     // Ｂ層→Ｄ層呼出し
                     return (BaseReturnValue)Latebind.InvokeMethod(
                             assemblyName, className, FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet);
-
-                    //// 2009/08/10-以下のコードブロック
-                    //DirectoryInfo dir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + "\\bin");
-
-                    //// 実行環境によって処理を変える。
-                    //if (dir.Exists)
-                    //{
-                    //    // binが存在する場合（通常、Webのケース）
-                    //    return (BaseReturnValue)Latebind.InvokeMethod(
-                    //        AppDomain.CurrentDomain.BaseDirectory + "\\bin\\" + assemblyName + ".dll",
-                    //        className, FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet);
-                    //}
-                    //else
-                    //{
-                    //    // binが存在しない場合（通常、Web以外のケース）
-                    //    return (BaseReturnValue)Latebind.InvokeMethod(
-                    //        AppDomain.CurrentDomain.BaseDirectory + "\\" + assemblyName + ".dll",
-                    //        className, FxLiteral.TRANSMISSION_INPROCESS_METHOD_NAME, paramSet);
-                    //}                    
                 }
                 catch (System.Reflection.TargetInvocationException rtEx)
                 {
@@ -448,8 +420,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     // 都度newしても接続はプールされているので、オーバーヘッドは少ない。
                     WR = new Reference();
 
-                    #region プロパティの設定
-
                     #region URL、タイムアウト
 
                     // URL
@@ -494,169 +464,23 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
                     #endregion
 
-                    #region その他（props）
-
-                    // #x-start
-
                     #region WASのクライアント認証のセキュリティ資格情報
 
-                    // WASのセキュリティ資格情報
-                    if (this._nwcWAS == null)
+                    NetworkCredential nwcWAS = this.CreateCredentials(props);
+                    if (nwcWAS != null)
                     {
-                        // ユーザ指定：なし
-
-                        if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME))// Dic化でnullチェック変更
-                        {
-                            // XML定義：キーが無い
-                        }
-                        else
-                        {
-                            if (props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME] == null
-                                || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME] == "")
-                            {
-                                // XML定義：null or 空文字列
-                            }
-                            else
-                            {
-                                // XML定義：あり
-
-                                // WASのセキュリティ資格情報を生成する。
-                                NetworkCredential nwcWAS = new NetworkCredential();
-                                nwcWAS.UserName = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME];
-                                nwcWAS.Password = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PASSWORD];
-
-                                // 省略可能に変更した。
-                                if (props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_DOMAIN))
-                                {
-                                    nwcWAS.Domain = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_DOMAIN];
-                                }
-
-                                // WASのセキュリティ資格情報を設定する（XML定義）。
-                                WR.Credentials = nwcWAS;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // ユーザ指定：あり
-
-                        // WASのセキュリティ資格情報を設定する（ユーザ指定）。
-                        WR.Credentials = this._nwcWAS;
+                        WR.Credentials = nwcWAS;
                     }
 
                     #endregion
 
                     #region プロキシ経由の要求を行うためのプロキシ情報
 
-                    // プロキシ
-                    WebProxy proxy = null;
-
-                    #region プロキシ生成
-
-                    if (this._proxyUrl == null || this._proxyUrl == "")
+                    WebProxy proxy = this.CreateProxy(props);
+                    if (proxy != null)
                     {
-                        // ユーザ指定：なし
-
-                        if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_URL))// Dic化でnullチェック変更
-                        {
-                            // XML定義：キーが無い
-                        }
-                        else
-                        {
-                            if (props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_URL] == null
-                                || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_URL] == "")
-                            {
-                                // XML定義：null or 空文字列
-                            }
-                            else
-                            {
-                                // XML定義：あり
-
-                                // プロキシを生成（XML定義）
-                                proxy = new WebProxy(new Uri((string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_URL]));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // ユーザ指定：あり
-
-                        // プロキシを生成（ユーザ指定）
-                        proxy = new WebProxy(new Uri(this._proxyUrl));
-                    }
-
-                    #endregion
-
-                    #region プロキシの有・無
-
-                    if (proxy == null)
-                    {
-                        // プロキシがない
-                    }
-                    else
-                    {
-                        // プロキシがある
-
-                        // ローカル プロキシをバイパスの有効・無効（Default：false）。 
-                        proxy.BypassProxyOnLocal = false; // 無効
-
-                        // 実行アカウントでのWindows認証の有効・無効（Default：false）。                    
-                        proxy.UseDefaultCredentials = true; // 有効
-
-                        #region Proxyのクライアント認証のセキュリティ資格情報
-
-                        // Proxyのセキュリティ資格情報
-                        if (this._nwcProxy == null)
-                        {
-                            // ユーザ指定：なし
-
-                            if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_USER_NAME))// Dic化でnullチェック変更
-                            {
-                                // XML定義：キーが無い
-                            }
-                            else
-                            {
-                                if (props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_USER_NAME] == null
-                                    || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_USER_NAME] == "")
-                                {
-                                    // XML定義：null or 空文字列
-                                }
-                                else
-                                {
-                                    // XML定義：あり
-
-                                    // Proxyのセキュリティ資格情報を生成する。
-                                    NetworkCredential nwcProxy = new NetworkCredential();
-
-                                    nwcProxy.UserName = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_USER_NAME];
-                                    nwcProxy.Password = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_PASSWORD];
-
-                                    // 省略可能に変更した。
-                                    if (props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_DOMAIN))
-                                    {
-                                        nwcProxy.Domain = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_DOMAIN];
-                                    }
-
-                                    // Proxyのセキュリティ資格情報を設定する（XML定義）。
-                                    proxy.Credentials = nwcProxy;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // ユーザ指定：あり
-
-                            // Proxyのセキュリティ資格情報を設定する（ユーザ指定）。
-                            proxy.Credentials = this._nwcProxy;
-                        }
-
-                        #endregion
-
-                        // プロキシ情報を設定する。
                         WR.Proxy = proxy;
                     }
-
-                    #endregion
 
                     #endregion
 
@@ -664,53 +488,10 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
                     #region クライアント証明書（#z-このregion）
 
-                    // http://support.microsoft.com/kb/895971/ja
-                    // http://msdn.microsoft.com/ja-jp/library/system.security.cryptography.x509certificates.x509certificate.x509certificate.aspx
-
-                    if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE))// Dic化でnullチェック変更
+                    X509Certificate2 x509 = this.CreateX509Certificate(props);
+                    if (x509 != null)
                     {
-                        // XML定義：キーが無い
-                    }
-                    else
-                    {
-                        if (props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE] == null
-                            || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE] == "")
-                        {
-                            // XML定義：null or 空文字列
-                        }
-                        else
-                        {
-                            if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD))// Dic化でnullチェック変更
-                            {
-                                // XML定義：キーが無い
-
-                                // クライアント証明書のファイルパス
-                                WR.ClientCertificates.Add(
-                                    new X509Certificate((string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]));
-                            }
-                            else
-                            {
-                                if (props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD] == null
-                                    || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD] == "")
-                                {
-                                    // XML定義：null or 空文字列
-
-                                    // クライアント証明書のファイルパス
-                                    WR.ClientCertificates.Add(
-                                        new X509Certificate((string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]));
-                                }
-                                else
-                                {
-                                    // XML定義：あり
-
-                                    // クライアント証明書のファイルパス ＋ クライアント証明書ＤＢのパスワード
-                                    WR.ClientCertificates.Add(
-                                        new X509Certificate(
-                                            (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE],
-                                            (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD]));
-                                }
-                            }
-                        }
+                        WR.ClientCertificates.Add(x509);
                     }
 
                     #endregion
@@ -723,8 +504,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     }
                     else
                     {
-                        if (props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION] == null
-                            || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION] == "")
+                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION]))
                         {
                             // XML定義：null or 空文字列
                         }
@@ -734,7 +514,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
                             bool temp;
 
-                            if (Boolean.TryParse((string)props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION], out temp))
+                            if (Boolean.TryParse(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION], out temp))
                             {
                                 // 書式正常
                                 WR.EnableDecompression = temp;
@@ -762,15 +542,14 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     }
                     else
                     {
-                        if (props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT] == null
-                            || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT] == "")
+                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT]))
                         {
                             // XML定義：null or 空文字列
                         }
                         else
                         {
                             // XML定義：あり
-                            WR.UserAgent = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT]; // #34-この行
+                            WR.UserAgent = props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT]; // #34-この行
                         }
                     }
 
@@ -784,23 +563,16 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     }
                     else
                     {
-                        if (props[FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME] == null
-                            || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME] == "")
+                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME]))
                         {
                             // XML定義：null or 空文字列
                         }
                         else
                         {
                             // XML定義：あり
-                            WR.ConnectionGroupName = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME];
+                            WR.ConnectionGroupName = props[FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME];
                         }
                     }
-
-                    #endregion
-
-                    #endregion
-
-                    // #x-end
 
                     #endregion
 
@@ -820,217 +592,33 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     // 都度newしても接続はプールされているので、オーバーヘッドは少ない（と思われる）。
                     this.WCF_HTTP = new WCFHTTPSvcForFxClient(this.WCF_HTTP_EndPointConfigName, url);
 
-                    #region Specifying WCF options: basicHTTPBinding、wsHTTPBinding
-
                     #region WASのクライアント認証のセキュリティ資格情報 for WCF
 
-                    // WASのセキュリティ資格情報
-                    if (this._clienCredentialsWcf == null)
+                    NetworkCredential nwcWAS = this.CreateCredentials(props);
+                    if (nwcWAS != null)
                     {
-                        // ユーザ指定：なし
-
-                        if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME))// Dic化でnullチェック変更
-                        {
-                            // XML定義：キーが無い
-                        }
-                        else
-                        {
-                            if (props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME] == null
-                                || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME] == "")
-                            {
-                                // XML定義：null or 空文字列
-                            }
-                            else
-                            {
-                                // XML定義：あり
-
-                                // WASのセキュリティ資格情報を生成する。
-                                this.WCF_HTTP.ClientCredentials.Windows.ClientCredential.UserName = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME];
-                                this.WCF_HTTP.ClientCredentials.Windows.ClientCredential.Password = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PASSWORD];
-
-                                // 省略可能に変更した。
-                                if (props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_DOMAIN))
-                                {
-                                    this.WCF_HTTP.ClientCredentials.Windows.ClientCredential.Domain = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_DOMAIN];
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // ユーザ指定：あり
-
-                        // WASのセキュリティ資格情報を設定する（ユーザ指定）。
-                        this.WCF_HTTP.ClientCredentials.Windows.ClientCredential = this._clienCredentialsWcf;
-                    }
-                    #endregion
-
-                    #region Set WebProxy by customizing static default proxy.
-
-                    // プロキシ
-                    WebProxy proxy = null;
-
-                    #region プロキシ生成
-
-                    if (this._proxyUrl == null || this._proxyUrl == "")
-                    {
-                        // ユーザ指定：なし
-
-                        if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_URL))// Dic化でnullチェック変更
-                        {
-                            // XML定義：キーが無い
-                        }
-                        else
-                        {
-                            if (props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_URL] == null
-                                || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_URL] == "")
-                            {
-                                // XML定義：null or 空文字列
-                            }
-                            else
-                            {
-                                // XML定義：あり
-
-                                // プロキシを生成（XML定義）
-                                proxy = new WebProxy(new Uri((string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_URL]));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // ユーザ指定：あり
-
-                        // プロキシを生成（ユーザ指定）
-                        proxy = new WebProxy(new Uri(this._proxyUrl));
+                        this.WCF_HTTP.ClientCredentials.Windows.ClientCredential = nwcWAS;
                     }
 
                     #endregion
 
-                    #region プロキシの有・無
+                    #region プロキシ経由の要求を行うためのプロキシ情報
 
-                    if (proxy == null)
+                    WebProxy proxy = this.CreateProxy(props);
+                    if (proxy != null)
                     {
-                        // プロキシがない
-                    }
-                    else
-                    {
-                        // プロキシがある
-
-                        // ローカル プロキシをバイパスの有効・無効（Default：false）。 
-                        proxy.BypassProxyOnLocal = false; // 無効
-
-                        // 実行アカウントでのWindows認証の有効・無効（Default：false）。                    
-                        proxy.UseDefaultCredentials = true; // 有効
-
-                        #region Proxyのクライアント認証のセキュリティ資格情報
-
-                        // Proxyのセキュリティ資格情報
-                        if (this._nwcProxy == null)
-                        {
-                            // ユーザ指定：なし
-
-                            if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_USER_NAME))// Dic化でnullチェック変更
-                            {
-                                // XML定義：キーが無い
-                            }
-                            else
-                            {
-                                if (props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_USER_NAME] == null
-                                    || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_USER_NAME] == "")
-                                {
-                                    // XML定義：null or 空文字列
-                                }
-                                else
-                                {
-                                    // XML定義：あり
-
-                                    // Proxyのセキュリティ資格情報を生成する。
-                                    NetworkCredential nwcProxy = new NetworkCredential();
-
-                                    nwcProxy.UserName = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_USER_NAME];
-                                    nwcProxy.Password = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_PASSWORD];
-
-                                    // 省略可能に変更した。
-                                    if (props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_DOMAIN))
-                                    {
-                                        nwcProxy.Domain = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_DOMAIN];
-                                    }
-
-                                    // Proxyのセキュリティ資格情報を設定する（XML定義）。
-                                    proxy.Credentials = nwcProxy;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // ユーザ指定：あり
-
-                            // Proxyのセキュリティ資格情報を設定する（ユーザ指定）。
-                            proxy.Credentials = this._nwcProxy;
-                        }
-
-                        #endregion
-
-                        // Set DefaultWebProxy
                         WebRequest.DefaultWebProxy = proxy;
                     }
 
                     #endregion
 
-                    #endregion
-
                     #region クライアント証明書 CERTIFICATE
 
-                    // http://support.microsoft.com/kb/895971/ja
-                    // http://msdn.microsoft.com/ja-jp/library/system.security.cryptography.x509certificates.x509certificate.x509certificate.aspx
-
-                    if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE))// Dic化でnullチェック変更
+                    X509Certificate2 x509 = this.CreateX509Certificate(props);
+                    if (x509 != null)
                     {
-                        // XML定義：キーが無い
+                        this.WCF_HTTP.ClientCredentials.ClientCertificate.Certificate = x509;
                     }
-                    else
-                    {
-                        if (props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE] == null
-                            || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE] == "")
-                        {
-                            // XML定義：null or 空文字列
-                        }
-                        else
-                        {
-                            if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD))// Dic化でnullチェック変更
-                            {
-                                // XML定義：キーが無い
-
-                                // クライアント証明書のファイルパス
-                                this.WCF_HTTP.ClientCredentials.ClientCertificate.Certificate =
-                                    new X509Certificate2((string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]);
-                            }
-                            else
-                            {
-                                if (props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD] == null
-                                    || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD] == "")
-                                {
-                                    // XML定義：null or 空文字列
-
-                                    // クライアント証明書のファイルパス
-                                    this.WCF_HTTP.ClientCredentials.ClientCertificate.Certificate =
-                                        new X509Certificate2((string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]);
-                                }
-                                else
-                                {
-                                    // XML定義：あり
-
-                                    // クライアント証明書のファイルパス ＋ クライアント証明書ＤＢのパスワード
-                                    this.WCF_HTTP.ClientCredentials.ClientCertificate.Certificate =
-                                        new X509Certificate2(
-                                            (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE],
-                                            (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD]);
-                                }
-                            }
-                        }
-                    }
-
-                    #endregion
 
                     #endregion
 
@@ -1054,96 +642,20 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
                         #region WASのクライアント認証のセキュリティ資格情報 for WCF
 
-                        // WASのセキュリティ資格情報
-                        if (this._clienCredentialsWcf == null)
+                        NetworkCredential nwcWAS = this.CreateCredentials(props);
+                        if (nwcWAS != null)
                         {
-                            // ユーザ指定：なし
-
-                            if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME))// Dic化でnullチェック変更
-                            {
-                                // XML定義：キーが無い
-                            }
-                            else
-                            {
-                                if (props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME] == null
-                                    || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME] == "")
-                                {
-                                    // XML定義：null or 空文字列
-                                }
-                                else
-                                {
-                                    // XML定義：あり
-
-                                    // WASのセキュリティ資格情報を生成する。
-                                    factory.Credentials.Windows.ClientCredential.UserName = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME];
-                                    factory.Credentials.Windows.ClientCredential.Password = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_PASSWORD];
-
-                                    // 省略可能に変更した。
-                                    if (props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_DOMAIN))
-                                    {
-                                        factory.Credentials.Windows.ClientCredential.Domain = (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_DOMAIN];
-                                    }
-                                }
-                            }
+                            factory.Credentials.Windows.ClientCredential = nwcWAS;
                         }
-                        else
-                        {
-                            // ユーザ指定：あり
 
-                            // WASのセキュリティ資格情報を設定する（ユーザ指定）。
-                            factory.Credentials.Windows.ClientCredential = this._clienCredentialsWcf;
-                        }
                         #endregion
 
                         #region クライアント証明書 CERTIFICATE
 
-                        // http://support.microsoft.com/kb/895971/ja
-                        // http://msdn.microsoft.com/ja-jp/library/system.security.cryptography.x509certificates.x509certificate.x509certificate.aspx
-
-                        if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE))// Dic化でnullチェック変更
+                        X509Certificate2 x509 = this.CreateX509Certificate(props);
+                        if (x509 != null)
                         {
-                            // XML定義：キーが無い
-                        }
-                        else
-                        {
-                            if (props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE] == null
-                                || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE] == "")
-                            {
-                                // XML定義：null or 空文字列
-                            }
-                            else
-                            {
-                                if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD))// Dic化でnullチェック変更
-                                {
-                                    // XML定義：キーが無い
-
-                                    // クライアント証明書のファイルパス
-                                    factory.Credentials.ClientCertificate.Certificate =
-                                        new X509Certificate2((string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]);
-                                }
-                                else
-                                {
-                                    if (props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD] == null
-                                        || (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD] == "")
-                                    {
-                                        // XML定義：null or 空文字列
-
-                                        // クライアント証明書のファイルパス
-                                        factory.Credentials.ClientCertificate.Certificate =
-                                            new X509Certificate2((string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]);
-                                    }
-                                    else
-                                    {
-                                        // XML定義：あり
-
-                                        // クライアント証明書のファイルパス ＋ クライアント証明書ＤＢのパスワード
-                                        factory.Credentials.ClientCertificate.Certificate =
-                                            new X509Certificate2(
-                                                (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE],
-                                                (string)props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD]);
-                                    }
-                                }
-                            }
+                            factory.Credentials.ClientCertificate.Certificate = x509;
                         }
 
                         #endregion
@@ -1172,6 +684,81 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
                     #endregion
                 }
+                else if (protocol == ((int)FxEnum.TmProtocol.AspNetWebAPI).ToString())
+                {
+                    #region ASP.NET WebAPI (JSON-RPC)
+
+                    // 通信用の変数
+                    WebRequestHandler handler = new WebRequestHandler();
+
+                    #region WASのクライアント認証のセキュリティ資格情報 for WCF
+
+                    NetworkCredential nwcWAS = this.CreateCredentials(props);
+                    if (nwcWAS != null)
+                    {
+                        handler.Credentials = nwcWAS;
+                    }
+
+                    #endregion
+
+                    #region プロキシ経由の要求を行うためのプロキシ情報
+
+                    WebProxy proxy = this.CreateProxy(props);
+                    if (proxy != null)
+                    {
+                        handler.Proxy = proxy;
+                    }
+
+                    #endregion
+
+                    #region クライアント証明書 CERTIFICATE
+
+                    X509Certificate2 x509 = this.CreateX509Certificate(props);
+                    if (x509 != null)
+                    {
+                        handler.ClientCertificates.Add(x509);
+                    }
+
+                    #endregion
+
+                    #region HttpClient
+
+                    HttpClient client = new HttpClient(handler);
+
+                    HttpRequestMessage httpRequestMessage = null;
+                    HttpResponseMessage httpResponseMessage = null;
+                    httpRequestMessage = new HttpRequestMessage
+                    {
+                        Method = HttpMethod.Post,
+                        RequestUri = new Uri(url),
+                        Content = new StringContent(JsonConvert.SerializeObject(
+                            new
+                            {
+                                ServiceName = serviceName,
+                                ContextObject = CustomEncode.ToBase64String(contextObject),
+                                ParameterValueObject = CustomEncode.ToBase64String(parameterValueObject)
+                            }),
+                            Encoding.UTF8, "application/json"),
+                    };
+
+                    // HttpRequestMessage (Headers)
+                    //httpRequestMessage.Headers.Add("Authorization", authHeader);
+                    //httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("OAuth", authHeader);
+                    //httpRequestMessage.Headers.ExpectContinue = false;
+
+                    #endregion
+
+                    // 同期呼び出しで実行
+                    httpResponseMessage = client.SendAsync(httpRequestMessage).Result;
+                    string temp = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                    JObject jObject = (JObject)JsonConvert.DeserializeObject(temp);
+
+                    ret = CustomEncode.FromBase64String((string)jObject["Return"]);
+                    contextObject = CustomEncode.FromBase64String((string)jObject["ContextObject"]);
+                    returnValueObject = CustomEncode.FromBase64String((string)jObject["ReturnValueObject"]);
+
+                    #endregion
+                }
                 else
                 {
                     // 定義が間違っている（エラー）。
@@ -1188,6 +775,10 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 #region エラー情報
 
                 if (ret == null)
+                {
+                    // 正常（例外発生：無し）
+                }
+                else if (Enumerable.SequenceEqual(ret, (BinarySerialize.ObjectToBytes(""))))
                 {
                     // 正常（例外発生：無し）
                 }
@@ -1253,7 +844,228 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
         #endregion
 
-        // インナークラス（プロキシ類）
+        #region ヘルパー
+
+        /// <summary>CreateProxy</summary>
+        /// <param name="props">Dictionary(string, string)</param>
+        /// <returns>WebProxy</returns>
+        private WebProxy CreateProxy(Dictionary<string, string> props)
+        {
+            WebProxy proxy = null;
+
+            #region プロキシ生成
+
+            if (string.IsNullOrEmpty(this._proxyUrl))
+            {
+                // ユーザ指定：なし
+
+                if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_URL))// Dic化でnullチェック変更
+                {
+                    // XML定義：キーが無い
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_URL]))
+                    {
+                        // XML定義：null or 空文字列
+                    }
+                    else
+                    {
+                        // XML定義：あり
+
+                        // プロキシを生成（XML定義）
+                        proxy = new WebProxy(new Uri(props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_URL]));
+                    }
+                }
+            }
+            else
+            {
+                // ユーザ指定：あり
+
+                // プロキシを生成（ユーザ指定）
+                proxy = new WebProxy(new Uri(this._proxyUrl));
+            }
+
+            #endregion
+
+            #region プロキシのオプション設定
+
+            if (proxy == null)
+            {
+                // プロキシがない
+            }
+            else
+            {
+                // プロキシがある
+
+                // ローカル プロキシをバイパスの有効・無効（Default：false）。 
+                proxy.BypassProxyOnLocal = false; // 無効
+
+                // 実行アカウントでのWindows認証の有効・無効（Default：false）。                    
+                proxy.UseDefaultCredentials = true; // 有効
+
+                #region Proxyのクライアント認証のセキュリティ資格情報
+
+                // Proxyのセキュリティ資格情報
+                if (this._nwcProxy == null)
+                {
+                    // ユーザ指定：なし
+
+                    if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_USER_NAME))// Dic化でnullチェック変更
+                    {
+                        // XML定義：キーが無い
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_USER_NAME]))
+                        {
+                            // XML定義：null or 空文字列
+                        }
+                        else
+                        {
+                            // XML定義：あり
+
+                            // Proxyのセキュリティ資格情報を生成する。
+                            NetworkCredential nwcProxy = new NetworkCredential();
+
+                            nwcProxy.UserName = props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_USER_NAME];
+                            nwcProxy.Password = props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_PASSWORD];
+
+                            // 省略可能に変更した。
+                            if (props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_DOMAIN))
+                            {
+                                nwcProxy.Domain = props[FxLiteral.TRANSMISSION_HTTP_PROP_PROXY_DOMAIN];
+                            }
+
+                            // Proxyのセキュリティ資格情報を設定する（XML定義）。
+                            proxy.Credentials = nwcProxy;
+                        }
+                    }
+                }
+                else
+                {
+                    // ユーザ指定：あり
+
+                    // Proxyのセキュリティ資格情報を設定する（ユーザ指定）。
+                    proxy.Credentials = this._nwcProxy;
+                }
+
+                #endregion
+            }
+
+            #endregion
+
+            return proxy;
+        }
+
+        /// <summary>CreateCredentials</summary>
+        /// <param name="props">Dictionary(string, string)</param>
+        /// <returns>NetworkCredential</returns>
+        private NetworkCredential CreateCredentials(Dictionary<string, string> props)
+        {
+            NetworkCredential nwcWAS = null;
+
+            // WASのセキュリティ資格情報
+            if (this._nwcWAS == null)
+            {
+                // ユーザ指定：なし
+
+                if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME))// Dic化でnullチェック変更
+                {
+                    // XML定義：キーが無い
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME]))
+                    {
+                        // XML定義：null or 空文字列
+                    }
+                    else
+                    {
+                        // XML定義：あり
+
+                        // WASのセキュリティ資格情報を生成する。
+                        nwcWAS = new NetworkCredential();
+                        nwcWAS.UserName = props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_NAME];
+                        nwcWAS.Password = props[FxLiteral.TRANSMISSION_HTTP_PROP_PASSWORD];
+
+                        // 省略可能に変更した。
+                        if (props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_DOMAIN))
+                        {
+                            nwcWAS.Domain = props[FxLiteral.TRANSMISSION_HTTP_PROP_DOMAIN];
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // ユーザ指定：あり
+
+                // WASのセキュリティ資格情報を設定する（ユーザ指定）。
+                nwcWAS = this._nwcWAS;
+            }
+
+            return nwcWAS;
+        }
+
+        /// <summary>CreateCredentials</summary>
+        /// <param name="props">Dictionary(string, string)</param>
+        /// <returns>X509Certificate</returns>
+        private X509Certificate2 CreateX509Certificate(Dictionary<string, string> props)
+        {
+            X509Certificate2 x509 = null;
+
+            // http://support.microsoft.com/kb/895971/ja
+            // http://msdn.microsoft.com/ja-jp/library/system.security.cryptography.x509certificates.x509certificate.x509certificate.aspx
+
+            if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE))// Dic化でnullチェック変更
+            {
+                // XML定義：キーが無い
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]))
+                {
+                    // XML定義：null or 空文字列
+                }
+                else
+                {
+                    if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD))// Dic化でnullチェック変更
+                    {
+                        // XML定義：キーが無い
+
+                        // クライアント証明書のファイルパス
+                        x509 = new X509Certificate2(props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]);
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD]))
+                        {
+                            // XML定義：null or 空文字列
+
+                            // クライアント証明書のファイルパス
+                            x509 = new X509Certificate2(props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]);
+                        }
+                        else
+                        {
+                            // XML定義：あり
+
+                            // クライアント証明書のファイルパス ＋ クライアント証明書ＤＢのパスワード
+                            x509 = new X509Certificate2(
+                                props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE],
+                                props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD]);
+                        }
+                    }
+                }
+            }
+
+            return x509;
+        }
+
+        #endregion
+
+        #region インナークラス（プロキシ類）
+
         #region WS-I Basic Profile v1.1、IIS ＋ ASP.NET（#y-このregion）
 
         //------------------------------------------------------------------------------
@@ -1591,6 +1403,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
         #endregion
 
+        #endregion
     }
 }
 

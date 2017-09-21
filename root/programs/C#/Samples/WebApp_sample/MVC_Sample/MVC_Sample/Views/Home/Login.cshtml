@@ -33,11 +33,11 @@
     <!-- Head 部の section -->
 }
 
-@Html.ValidationSummary()
-
 @using (@Html.BeginForm())
 {
+    @Html.ValidationSummary()
     @Html.AntiForgeryToken()
+    
     <table>
         <tr>
             <th>ユーザーID</th>
@@ -45,11 +45,16 @@
         </tr>
         <tr>
             <th>パスワード</th>
-            <td>@Html.PasswordFor(model => model.Passwowd)</td>
+            <td>@Html.PasswordFor(model => model.Password)</td>
         </tr>
         <tr>
             <td colspan="2" style="text-align:right;">
-                <input type="submit" value="ログイン" />
+                <input type="submit" name="normal" value="ログイン" style="width:150px" />
+            <td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:right;">
+                <input type="submit" name="external" value="外部ログイン" style="width:150px" />
             <td>
         </tr>
     </table>

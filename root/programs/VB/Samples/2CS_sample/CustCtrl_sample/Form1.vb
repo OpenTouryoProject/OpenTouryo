@@ -24,20 +24,23 @@ Imports Touryo.Infrastructure.CustomControl.RichClient
 ''' <summary>フォーム</summary>
 Partial Public Class Form1
     Inherits Form
+
     ''' <summary>コンストラクタ</summary>
     Public Sub New()
-        InitializeComponent()
 
         ' 異常な設定状態をテスト
 
-        '' 「HowToCut = null」では、数値と認識されないこと（例外も起きないこと）。
-        'Me.winCustomTextBox1.EditDigitsAfterDP = New EditDigitsAfterDP()
-        'Me.winCustomTextBox1.EditDigitsAfterDP.HowToCut = Nothing
-        'Me.winCustomTextBox1.EditDigitsAfterDP.DigitsAfterDP = 100
-
+        '/ 「HowToCut = null」では、数値と認識されないこと（例外も起きないこと）。
+        'this.winCustomTextBox1.EditDigitsAfterDP = new EditDigitsAfterDP();
+        'this.winCustomTextBox1.EditDigitsAfterDP.HowToCut = null;
+        'this.winCustomTextBox1.EditDigitsAfterDP.DigitsAfterDP = 100;
+        InitializeComponent()
     End Sub
 
+    ''' <summary>データ・バインディングのテスト用（DataTable）</summary>
     Private Dt As DataTable = Nothing
+
+    ''' <summary>データ・バインディングのテスト用（Bean）</summary>
     Private BindingSource1 As BindingSource = Nothing
 
     ''' <summary>ロード</summary>
@@ -45,11 +48,9 @@ Partial Public Class Form1
         ' ハンドラ
         AddHandler Me.winCustomTextBox8.ValueChanged, AddressOf winCustomTextBox8_ValueChanged
 
-        '/////////////////////////////////////////////////////////////////////////////////////////////////
-        ' コンボ初期化
-        '/////////////////////////////////////////////////////////////////////////////////////////////////
+        '#Region "コンボ初期化"
 
-        ' Webサービスでマスタをロード
+        ' Webサービスでマスタをロード（などする）
         Dim al As ArrayList = Nothing
         CmnMasterDatasForList.ClearMasterData()
 
@@ -71,107 +72,231 @@ Partial Public Class Form1
         al.Add(New ListItem("3", "う"))
         CmnMasterDatasForList.SetMasterData("Test3", al)
 
-        '/ InitItemsで初期化
+        '/ InitItemsで初期化する。
         'this.winCustomDropDownList1.InitItems();
         'this.winCustomDropDownList2.InitItems();
         'this.winCustomDropDownList3.InitItems();
 
-        ' InitDataSourceで初期化
+        ' InitDataSourceで初期化する。
         Me.winCustomDropDownList1.InitDataSource()
         Me.winCustomDropDownList2.InitDataSource()
         Me.winCustomDropDownList3.InitDataSource()
 
-        '/////////////////////////////////////////////////////////////////////////////////////////////////
-        ' データバインディングをテストする。
-        '/////////////////////////////////////////////////////////////////////////////////////////////////
+        '#End Region
+
+        '#Region "データバインディングをテストする。"
 
         ' DataBindingsのFormatString（桁区切り）はdecimalで無いと効かない。
         ' また、DataBindingsでは初期設定時のTextのReEditも効かない。
         ' 従って、DataBindings時の方式としてはdecimal＆FormatStringに寄せる必要がある。
 
-        '/////////////////////////////////////////////////////////////////////////////////////////////////
-        ' 単項目の入力コントロールとのデータバインディングをテストする。
-        '/////////////////////////////////////////////////////////////////////////////////////////////////
+        '#Region "Bindingsource"
 
         Dim dv As DataView = Nothing
         Me.Dt = Me.CreateDataTable()
 
-        ' FormatStringとは相性が悪いので併用NGとした。
-
-        ' 設定なし
-        dv = New DataView(Me.Dt, "id = 1", "", DataViewRowState.Unchanged)
-        Me.winCustomTextBox1.DataBindings.Add("Text", dv, "aaa", True, DataSourceUpdateMode.OnPropertyChanged, Nothing)
-        ', "#,##0.########");
-
-        ' 桁区切り3
-        dv = New DataView(Me.Dt, "id = 2", "", DataViewRowState.Unchanged)
-        Me.winCustomTextBox2.DataBindings.Add("Text", dv, "aaa", True, DataSourceUpdateMode.OnPropertyChanged, Nothing)
-        ', "#,##0.########");
-
-        ' 桁区切り4
-        dv = New DataView(Me.Dt, "id = 3", "", DataViewRowState.Unchanged)
-        Me.winCustomTextBox3.DataBindings.Add("Text", dv, "aaa", True, DataSourceUpdateMode.OnPropertyChanged, Nothing)
-        ', "#,##0.########");
-
-        ' 小数点以下2, 6
-        dv = New DataView(Me.Dt, "id = 4", "", DataViewRowState.Unchanged)
-        Me.winCustomTextBox4.DataBindings.Add("Text", dv, "aaa", True, DataSourceUpdateMode.OnPropertyChanged, Nothing)
-        ', "#,##0.########");
-
-        ' 小数点以下4, 8
-        dv = New DataView(Me.Dt, "id = 5", "", DataViewRowState.Unchanged)
-        Me.winCustomTextBox5.DataBindings.Add("Text", dv, "aaa", True, DataSourceUpdateMode.OnPropertyChanged, Nothing)
-        ', "#,##0.########");
-
-        ' パッド
-        dv = New DataView(Me.Dt, "id = 6", "", DataViewRowState.Unchanged)
-        Me.winCustomTextBox6.DataBindings.Add("Text", dv, "aaa", True, DataSourceUpdateMode.OnPropertyChanged, Nothing)
-        ', "#,##0.########");
-
-        ' パッド
-        dv = New DataView(Me.Dt, "id = 7", "", DataViewRowState.Unchanged)
-        Me.winCustomTextBox7.DataBindings.Add("Text", dv, "aaa", True, DataSourceUpdateMode.OnPropertyChanged, Nothing)
-        ', "#,##0.########");
-
-        '---
-
         Me.BindingSource1 = New BindingSource()
         Me.BindingSource1.DataSource = New Bean(88888888, DateTime.Now, "88888888")
 
-        ' 複合（桁区切り3＋小数点以下2、6＋単位変換100万→10^6乗）
-        'dv = New DataView(Me.Dt, "id = 8", "", DataViewRowState.Unchanged)
-        'Me.winCustomTextBox8.DataBindings.Add("Value", dv, "aaa", True, DataSourceUpdateMode.OnPropertyChanged, Nothing)
-        Me.winCustomTextBox8.DataBindings.Add("Value", Me.BindingSource1, "AAA", True, DataSourceUpdateMode.OnPropertyChanged, Nothing)
-        ', "#,##0.########");
+        '#End Region
 
-        ' Textはdatetime、Text2はstringとのバインディングもテスト（日付）
-        'dv = New DataView(Me.Dt, "id = 1", "", DataViewRowState.Unchanged)
-        'Me.winCustomMaskedTextBox9.DataBindings.Add("Text2", dv, "bbb", True, DataSourceUpdateMode.OnPropertyChanged, Nothing)
-        Me.winCustomMaskedTextBox9.DataBindings.Add("Text2", Me.BindingSource1, "BBB", True, DataSourceUpdateMode.OnPropertyChanged, Nothing)
-        ', "yyyy/MM/dd");
+        '#Region "単項目の入力コントロールとのデータバインディングをテストする。"
 
-        '/////////////////////////////////////////////////////////////////////////////////////////////////
-        ' データグリッドとのデータバインディングをテストする。
-        '/////////////////////////////////////////////////////////////////////////////////////////////////
+        ' FormatStringとは相性が悪いので併用NGとした。
 
-        '///////////////////////////////////////////////
-        ' WinCustomTextBoxの場合
-        '///////////////////////////////////////////////
+        '#Region "WinCustomTextBoxの場合"
+
+        ' データバインディングには、Valueプロパティを使用する。
+
+        ' - Text  : 通常のTextプロパティ（画面表示用）
+        ' - Text2 : ユーザ入力のTextを取得するプロパティ
+        ' - Text3 : 編集処理込のTextを取得するプロパティ
+        ' - Value : 単位変換に対応したプロパティ
+
+        '#Region "winCustomTextBox1-7"
+
+        '#Region ".TextプロパティとDataView"
+
+        ' バインド可能だが、単位変換に対応していない。
+
+        ' 設定なし
+        dv = New DataView(Me.Dt, "id = 1", "", DataViewRowState.Unchanged)
+        Me.winCustomTextBox1.DataBindings.Add("Text", dv, "aaa", True, DataSourceUpdateMode.OnPropertyChanged, "hogehoge") ', "#,##0.########");
+        ' 桁区切り3
+        dv = New DataView(Me.Dt, "id = 2", "", DataViewRowState.Unchanged)
+        Me.winCustomTextBox2.DataBindings.Add("Text", dv, "aaa", True, DataSourceUpdateMode.OnPropertyChanged, Nothing) ', "#,##0.########");
+        ' 桁区切り4
+        dv = New DataView(Me.Dt, "id = 3", "", DataViewRowState.Unchanged)
+        Me.winCustomTextBox3.DataBindings.Add("Text", dv, "aaa", True, DataSourceUpdateMode.OnPropertyChanged, Nothing) ', "#,##0.########");
+        ' 小数点以下2, 6
+        dv = New DataView(Me.Dt, "id = 4", "", DataViewRowState.Unchanged)
+        Me.winCustomTextBox4.DataBindings.Add("Text", dv, "aaa", True, DataSourceUpdateMode.OnPropertyChanged, Nothing) ', "#,##0.########");
+        ' 小数点以下4, 8
+        dv = New DataView(Me.Dt, "id = 5", "", DataViewRowState.Unchanged)
+        Me.winCustomTextBox5.DataBindings.Add("Text", dv, "aaa", True, DataSourceUpdateMode.OnPropertyChanged, Nothing) ', "#,##0.########");
+        ' パッド
+        dv = New DataView(Me.Dt, "id = 6", "", DataViewRowState.Unchanged)
+        Me.winCustomTextBox6.DataBindings.Add("Text", dv, "aaa", True, DataSourceUpdateMode.OnPropertyChanged, Nothing) ', "#,##0.########");
+        ' パッド
+        dv = New DataView(Me.Dt, "id = 7", "", DataViewRowState.Unchanged)
+        Me.winCustomTextBox7.DataBindings.Add("Text", dv, "aaa", True, DataSourceUpdateMode.OnPropertyChanged, Nothing) ', "#,##0.########");
+        '#End Region
+
+        '#Region ".Text2プロパティとDataView"
+
+        ' ココにバインドしてばダメ（編集処理が動作しない）。
+
+        '/ 設定なし
+        'dv = new DataView(this.Dt, "id = 1", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox1.DataBindings.Add("Text2", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, "hogehoge");//, "#,##0.########");
+
+        '/ 桁区切り3
+        'dv = new DataView(this.Dt, "id = 2", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox2.DataBindings.Add("Text2", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '/ 桁区切り4
+        'dv = new DataView(this.Dt, "id = 3", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox3.DataBindings.Add("Text2", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '/ 小数点以下2, 6
+        'dv = new DataView(this.Dt, "id = 4", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox4.DataBindings.Add("Text2", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '/ 小数点以下4, 8
+        'dv = new DataView(this.Dt, "id = 5", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox5.DataBindings.Add("Text2", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '/ パッド
+        'dv = new DataView(this.Dt, "id = 6", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox6.DataBindings.Add("Text2", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '/ パッド
+        'dv = new DataView(this.Dt, "id = 7", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox7.DataBindings.Add("Text2", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '#End Region
+
+        '#Region ".Text3プロパティとDataView"
+
+        ' バインド可能だが、単位変換に対応していない。
+
+        '/ 設定なし
+        'dv = new DataView(this.Dt, "id = 1", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox1.DataBindings.Add("Text3", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, "hogehoge");//, "#,##0.########");
+
+        '/ 桁区切り3
+        'dv = new DataView(this.Dt, "id = 2", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox2.DataBindings.Add("Text3", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '/ 桁区切り4
+        'dv = new DataView(this.Dt, "id = 3", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox3.DataBindings.Add("Text3", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '/ 小数点以下2, 6
+        'dv = new DataView(this.Dt, "id = 4", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox4.DataBindings.Add("Text3", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '/ 小数点以下4, 8
+        'dv = new DataView(this.Dt, "id = 5", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox5.DataBindings.Add("Text3", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '/ パッド
+        'dv = new DataView(this.Dt, "id = 6", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox6.DataBindings.Add("Text3", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '/ パッド
+        'dv = new DataView(this.Dt, "id = 7", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox7.DataBindings.Add("Text3", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '#End Region
+
+        '#Region ".ValueプロパティとDataView"
+
+        '/ 設定なし
+        'dv = new DataView(this.Dt, "id = 1", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox1.DataBindings.Add("Value", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, "hogehoge");//, "#,##0.########");
+
+        '/ 桁区切り3
+        'dv = new DataView(this.Dt, "id = 2", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox2.DataBindings.Add("Value", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '/ 桁区切り4
+        'dv = new DataView(this.Dt, "id = 3", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox3.DataBindings.Add("Value", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '/ 小数点以下2, 6
+        'dv = new DataView(this.Dt, "id = 4", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox4.DataBindings.Add("Value", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '/ 小数点以下4, 8
+        'dv = new DataView(this.Dt, "id = 5", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox5.DataBindings.Add("Value", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '/ パッド
+        'dv = new DataView(this.Dt, "id = 6", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox6.DataBindings.Add("Value", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '/ パッド
+        'dv = new DataView(this.Dt, "id = 7", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox7.DataBindings.Add("Value", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '#End Region
+
+        '#End Region
+
+        '#Region "winCustomTextBox8 複合（桁区切り3＋小数点以下2、6＋単位変換100万→10^6乗）"
+
+        'dv = new DataView(this.Dt, "id = 1", "", DataViewRowState.Unchanged);
+        '/// 単位変換があるのでValueを使用しないと動作しない。
+        '///this.winCustomTextBox8.DataBindings.Add("Text", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+        '///this.winCustomTextBox8.DataBindings.Add("Text2", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+        '///this.winCustomTextBox8.DataBindings.Add("Text3", dv, "aaa", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+        Me.winCustomTextBox8.DataBindings.Add("Value", dv, "aaa", True, DataSourceUpdateMode.OnPropertyChanged, Nothing) ', "#,##0.########");
+
+        '/// DateTimeとは単位変換できないので連結不可
+        'dv = new DataView(this.Dt, "id = 1", "", DataViewRowState.Unchanged);
+        'this.winCustomTextBox8.DataBindings.Add("Value", dv, "bbb", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+        'this.winCustomTextBox8.DataBindings.Add("Value", this.BindingSource1, "BBB", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "#,##0.########");
+
+        '#End Region
+
+        '#End Region
+
+        '#Region "WinCustomMaskedTextBoxの場合"
+
+        ' Text  : 通常のTextプロパティ（画面表示用）
+        ' Text2 : マスクを除いた値を設定・取得するプロパティ
+        ' Text3 : 表示時マスク適用時の値を取得するプロパティ
+
+        ' TextとBBB（DateTime）のバインドはOK。
+        Me.winCustomMaskedTextBox9.DataBindings.Add("Text", Me.BindingSource1, "BBB", True, DataSourceUpdateMode.OnPropertyChanged, Nothing) ', "yyyy/MM/dd");
+        '/ Text2とBBB（DateTime）をバインドするとロストフォーカスできなくなる。
+        'this.winCustomMaskedTextBox9.DataBindings.Add("Text2", this.BindingSource1, "BBB", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "yyyy/MM/dd");
+        '/ Text3とBBB（DateTime）もダメ（取得専用のため）。
+        'this.winCustomMaskedTextBox9.DataBindings.Add("Text3", this.BindingSource1, "BBB", true, DataSourceUpdateMode.OnPropertyChanged, null);//, "yyyy/MM/dd");
+        '#End Region
+
+        '#End Region
+
+        '#Region "データグリッドとのデータバインディングをテストする。"
+
+        '#Region "WinCustomTextBoxの場合"
+
         ' WinCustomTextBoxDgvColを作成
         Dim nomalColumn As New WinCustomTextBoxDgvCol()
 
-        nomalColumn.MaxLength = 15 '10 '20 '15
+        nomalColumn.MaxLength = 15
         nomalColumn.IsNumeric = True
 
         ' EditInitialValue
-        'nomalColumn.EditInitialValue = EditInitialValue.Zero
+        'nomalColumn.EditInitialValue = EditInitialValue.Zero;
 
         ' 編集中、小数点以下（Editingのみ実装）
         nomalColumn.EditDigitsAfterDP_Editing = New EditDigitsAfterDP(CutMethod.Ceiling, 6)
 
         ' パッド
-        'nomalColumn.EditPadding = New EditPadding(PadDirection.Right, "0C")
-        'nomalColumn.EditPadding = New EditPadding(PadDirection.Left, "9C")
+        'nomalColumn.EditPadding = new EditPadding(PadDirection.Right, '0');
+        'nomalColumn.EditPadding = new EditPadding(PadDirection.Left, '0');
 
         ' 桁区切り（FormatStringで対応）
         ' DisplayUnits（処理で対応）
@@ -184,9 +309,9 @@ Partial Public Class Form1
 
         Me.dataGridView1.Columns.Add(nomalColumn)
 
-        '///////////////////////////////////////////////
-        ' WinCustomMaskedTextBoxの場合
-        '///////////////////////////////////////////////
+        '#End Region
+
+        '#Region "WinCustomMaskedTextBoxの場合"
 
         ' WinCustomMaskedTextBoxDgvColを作成
         Dim maskedColumn As New WinCustomMaskedTextBoxDgvCol()
@@ -209,9 +334,9 @@ Partial Public Class Form1
 
         Me.dataGridView1.Columns.Add(maskedColumn)
 
-        '///////////////////////////////////////////////
-        ' WinCustomDropDownListの場合
-        '///////////////////////////////////////////////
+        '#End Region
+
+        '#Region "WinCustomDropDownListの場合"
 
         ' WinCustomDropDownListDgvColを作成
         Dim comboColumn As New DataGridViewComboBoxColumn()
@@ -232,7 +357,13 @@ Partial Public Class Form1
         ' 従って、DataBindings時の方式としてはdecimal＆FormatStringに寄せる必要がある。
         Me.dataGridView1.DataSource = Me.CreateDataTable()
         Me.dataGridView1.Columns("id").Visible = False
-        Me.dataGridView1.Columns("ddd").Visible = False ' 変更通知を発生させる用途の列。
+        Me.dataGridView1.Columns("ddd").Visible = False
+        ' 変更通知を発生させる用途の列。
+        '#End Region
+
+        '#End Region
+
+        '#End Region
     End Sub
 
     ''' <summary>DataTable生成</summary>
@@ -308,7 +439,6 @@ Partial Public Class Form1
         Return dt
     End Function
 
-
     ''' <summary>一括チェックのテスト</summary>
     Private Sub button1_Click(ByVal sender As Object, ByVal e As EventArgs) Handles button1.Click
         Dim ret As String = ""
@@ -366,19 +496,23 @@ Partial Public Class Form1
     Private Sub Button4_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles button4.Click
         Dim dt As DataTable = Me.Dt
         For Each row As DataRow In dt.Rows
-            row("ddd") = Me.textBox1.Text
+            row("aaa") = CDec(row("aaa")) + 1
+            row("bbb") = CType(row("bbb"), DateTime).AddYears(1)
+            row("ccc") = Me.textBox1.Text
         Next
         dt.AcceptChanges()
 
         dt = DirectCast(Me.dataGridView1.DataSource, DataTable)
         For Each row As DataRow In dt.Rows
-            row("ddd") = Me.textBox1.Text
+            row("aaa") = CDec(row("aaa")) + 1
+            row("bbb") = CType(row("bbb"), DateTime).AddYears(1)
+            row("ccc") = Me.textBox1.Text
         Next
         dt.AcceptChanges()
 
-        DirectCast(Me.BindingSource1.DataSource, Bean).AAA = 99999999
-        DirectCast(Me.BindingSource1.DataSource, Bean).BBB = DateTime.Now
-        DirectCast(Me.BindingSource1.DataSource, Bean).CCC = "99999999"
+        DirectCast(Me.BindingSource1.DataSource, Bean).AAA = (DirectCast(Me.BindingSource1.DataSource, Bean).AAA) + 1
+        DirectCast(Me.BindingSource1.DataSource, Bean).BBB = DirectCast(Me.BindingSource1.DataSource, Bean).BBB.AddYears(1)
+        DirectCast(Me.BindingSource1.DataSource, Bean).CCC = Me.textBox1.Text
         Me.BindingSource1.ResetBindings(False)
     End Sub
 
@@ -439,6 +573,7 @@ Partial Public Class Form1
         Return sb.ToString()
     End Function
 
+    ''' <summary>winCustomTextBox_TextChanged</summary>
     Private Sub winCustomTextBox_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles winCustomTextBox7.TextChanged, winCustomTextBox6.TextChanged, winCustomTextBox5.TextChanged, winCustomTextBox4.TextChanged, winCustomTextBox3.TextChanged, winCustomTextBox2.TextChanged
         Dim s As String = DirectCast(sender, TextBox).Name
 
@@ -447,6 +582,8 @@ Partial Public Class Form1
         End If
 
         Select Case s.Substring(s.Length - 1, 1)
+                ' Text2(ユーザ入力のTextをバインド)
+
             Case "2"
                 Me.winCustomTextBox2_2.Text = Me.winCustomTextBox2.Text2
                 Exit Select
@@ -470,6 +607,7 @@ Partial Public Class Form1
         End Select
     End Sub
 
+    ''' <summary>winCustomMaskedTextBox_TextChanged</summary>
     Private Sub winCustomMaskedTextBox_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles winCustomMaskedTextBox9.TextChanged, winCustomMaskedTextBox8.TextChanged, winCustomMaskedTextBox7.TextChanged, winCustomMaskedTextBox6.TextChanged, winCustomMaskedTextBox5.TextChanged, winCustomMaskedTextBox4.TextChanged, winCustomMaskedTextBox3.TextChanged, winCustomMaskedTextBox2.TextChanged, winCustomMaskedTextBox11.TextChanged, winCustomMaskedTextBox10.TextChanged
         Dim s As String = DirectCast(sender, MaskedTextBox).Name
 
@@ -478,6 +616,8 @@ Partial Public Class Form1
         End If
 
         Select Case s.Substring(s.Length - 1, 1)
+                ' Text2(ユーザ入力のTextをバインド)
+
             Case "2"
                 Me.winCustomMaskedTextBox2_2.Text = Me.winCustomMaskedTextBox2.Text2
                 Exit Select

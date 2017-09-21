@@ -62,11 +62,11 @@
     <Reference Include="Business">
       <HintPath>..\..\Build\Business.dll</HintPath>
     </Reference>
+    <Reference Include="DamManagedOdp">
+      <HintPath>..\..\Build\DamManagedOdp.dll</HintPath>
+    </Reference>
     <Reference Include="DamMySQL">
       <HintPath>..\..\Build\DamMySQL.dll</HintPath>
-    </Reference>
-    <Reference Include="DamOraOdp">
-      <HintPath>..\..\Build\DamOraOdp.dll</HintPath>
     </Reference>
     <Reference Include="DamPstGrS">
       <HintPath>..\..\Build\DamPstGrS.dll</HintPath>
@@ -76,6 +76,9 @@
     </Reference>
     <Reference Include="Framework.RichClient">
       <HintPath>..\..\..\..\..\C#\Frameworks\Infrastructure\Build\Framework.RichClient.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.ManagedDataAccess">
+      <HintPath>..\..\Build\Oracle.ManagedDataAccess.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -147,6 +150,9 @@
       <ProductName>Windows インストーラー 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\..\Build\DamManagedOdp.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

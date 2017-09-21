@@ -102,6 +102,13 @@ namespace WSClientWinCone_sample
             this.ddlExRollback.Items.Add(new ComboBoxItem("システム例外への振替", "Other-System"));
             this.ddlExRollback.SelectedIndex = 0;
 
+            // ddlTransmission
+            this.ddlTransmission.Items.Add(new ComboBoxItem("ASP.NET Webサービス呼出", "testWebService"));
+            this.ddlTransmission.Items.Add(new ComboBoxItem("WCF Webサービス呼出", "testWebService2"));
+            this.ddlTransmission.Items.Add(new ComboBoxItem("WCF TCPサービス呼出", "testWebService3"));
+            this.ddlTransmission.Items.Add(new ComboBoxItem("ASP.NET WebAPI呼出", "testWebService4"));
+            this.ddlTransmission.SelectedIndex = 0;
+
             // ddlOrderColumn
             this.ddlOrderColumn.Items.Add(new ComboBoxItem("c1", "c1"));
             this.ddlOrderColumn.Items.Add(new ComboBoxItem("c2", "c2"));
@@ -114,7 +121,7 @@ namespace WSClientWinCone_sample
             this.ddlOrderSequence.SelectedIndex = 0;
 
             // 呼出し制御部品
-            this.CallCtrl = new CallController("");
+            this.CallCtrl = new CallController(Program.AccessToken);
         }
 
         #region コンボボックス用
@@ -182,6 +189,7 @@ namespace WSClientWinCone_sample
             // 非同期処理クラスを生成
             // 匿名デリゲードの場合は、ベース２で良い。
             MyBaseAsyncFunc af = new MyBaseAsyncFunc(this);
+            string logicalName = ((ComboBoxItem)this.ddlTransmission.SelectedItem).Value;
 
             // 引数を纏める
             af.Parameter = (object)new TestParameterValue(
@@ -204,11 +212,11 @@ namespace WSClientWinCone_sample
                 TestReturnValue testReturnValue;
 
                 // 呼出し制御部品（スレッドセーフでないため副スレッド内で作る）
-                CallController callCtrl = new CallController("");
+                CallController callCtrl = new CallController(Program.AccessToken);
 
                 // Invoke
                 testReturnValue = (TestReturnValue)callCtrl.Invoke(
-                    "testWebService", testParameterValue);
+                    logicalName, testParameterValue);
 
                 //// 進捗表示のテスト
                 //af.ChangeProgress = delegate(object o)
@@ -291,7 +299,7 @@ namespace WSClientWinCone_sample
 
             // Invoke
             testReturnValue = (TestReturnValue)this.CallCtrl.Invoke(
-                "testWebService", testParameterValue);
+                ((ComboBoxItem)this.ddlTransmission.SelectedItem).Value, testParameterValue);
             
             // 結果表示するメッセージ エリア
             this.labelMessage.Text = "";
@@ -330,7 +338,7 @@ namespace WSClientWinCone_sample
 
             // Invoke
             testReturnValue = (TestReturnValue)this.CallCtrl.Invoke(
-                "testWebService", testParameterValue);
+                ((ComboBoxItem)this.ddlTransmission.SelectedItem).Value, testParameterValue);
 
             // 結果表示するメッセージ エリア
             this.labelMessage.Text = "";
@@ -369,7 +377,7 @@ namespace WSClientWinCone_sample
 
             // Invoke
             testReturnValue = (TestReturnValue)this.CallCtrl.Invoke(
-                "testWebService", testParameterValue);
+                ((ComboBoxItem)this.ddlTransmission.SelectedItem).Value, testParameterValue);
 
             // 結果表示するメッセージ エリア
             this.labelMessage.Text = "";
@@ -412,7 +420,7 @@ namespace WSClientWinCone_sample
 
             // Invoke
             testReturnValue = (TestReturnValue)this.CallCtrl.Invoke(
-                "testWebService", testParameterValue);
+                ((ComboBoxItem)this.ddlTransmission.SelectedItem).Value, testParameterValue);
 
             // 結果表示するメッセージ エリア
             this.labelMessage.Text = "";
@@ -441,6 +449,7 @@ namespace WSClientWinCone_sample
         {
             // 非同期処理クラスを生成
             AsyncFunc af = new AsyncFunc(this);
+            af.LogicalName = ((ComboBoxItem)this.ddlTransmission.SelectedItem).Value;
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -533,7 +542,7 @@ namespace WSClientWinCone_sample
 
             // Invoke
             testReturnValue = (TestReturnValue)this.CallCtrl.Invoke(
-                "testWebService", testParameterValue);
+                ((ComboBoxItem)this.ddlTransmission.SelectedItem).Value, testParameterValue);
 
             // 結果表示するメッセージ エリア
             this.labelMessage.Text = "";
@@ -577,7 +586,7 @@ namespace WSClientWinCone_sample
 
             // Invoke
             testReturnValue = (TestReturnValue)this.CallCtrl.Invoke(
-                "testWebService", testParameterValue);
+                ((ComboBoxItem)this.ddlTransmission.SelectedItem).Value, testParameterValue);
 
             // 結果表示するメッセージ エリア
             this.labelMessage.Text = "";
@@ -619,7 +628,7 @@ namespace WSClientWinCone_sample
 
             // Invoke
             testReturnValue = (TestReturnValue)this.CallCtrl.Invoke(
-                "testWebService", testParameterValue);
+                ((ComboBoxItem)this.ddlTransmission.SelectedItem).Value, testParameterValue);
 
             // 結果表示するメッセージ エリア
             this.labelMessage.Text = "";

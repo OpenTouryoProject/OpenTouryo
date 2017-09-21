@@ -111,7 +111,10 @@ Partial Public Class Form1
         Me.ddlExRollback.SelectedIndex = 0
 
         ' ddlTransmission
-        Me.ddlTransmission.Items.Add(New ComboBoxItem("Webサービス呼出", "testWebService"))
+        Me.ddlTransmission.Items.Add(New ComboBoxItem("ASP.NET Webサービス呼出", "testWebService"))
+        Me.ddlTransmission.Items.Add(New ComboBoxItem("WCF Webサービス呼出", "testWebService2"))
+        Me.ddlTransmission.Items.Add(New ComboBoxItem("WCF TCPサービス呼出", "testWebService3"))
+        Me.ddlTransmission.Items.Add(New ComboBoxItem("ASP.NET WebAPI呼出", "testWebService4"))
         Me.ddlTransmission.Items.Add(New ComboBoxItem("インプロセス呼出", "testInProcess"))
         Me.ddlTransmission.SelectedIndex = 0
 
@@ -127,7 +130,7 @@ Partial Public Class Form1
         Me.ddlOrderSequence.SelectedIndex = 0
 
         ' 呼出し制御部品
-        Me.CallCtrl = New CallController("")
+        Me.CallCtrl = New CallController(Program.AccessToken)
 
     End Sub
 
@@ -225,7 +228,7 @@ Partial Public Class Form1
         Dim testReturnValue As TestReturnValue
 
         ' 呼出し制御部品（スレッドセーフでないため副スレッド内で作る）
-        Dim callCtrl As New CallController("")
+        Dim callCtrl As New CallController(Program.AccessToken)
 
         ' Invoke
         testReturnValue = callCtrl.Invoke(Me.LogicalName, testParameterValue)

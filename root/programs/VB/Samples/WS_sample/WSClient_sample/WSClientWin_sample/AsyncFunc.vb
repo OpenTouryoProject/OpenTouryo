@@ -88,7 +88,7 @@ Public Class AsyncFunc
         Dim testReturnValue As TestReturnValue
 
         ' 呼出し制御部品（スレッドセーフでないため副スレッド内で作る）
-        Dim callCtrl As New CallController("")
+        Dim callCtrl As New CallController(Program.AccessToken)
 
         ' Invoke
         testReturnValue = DirectCast(callCtrl.Invoke(Me.LogicalName, testParameterValue), TestReturnValue)

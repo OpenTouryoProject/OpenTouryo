@@ -159,15 +159,15 @@
                         </Button>
                         <controls:DataGrid x:Name="lstRecords" ItemsSource="{Binding}">
                             <controls:DataGrid.Columns>
-                                <controls:DataGridTextColumn Header="Shipper ID" Width="150" CanSort="False" Binding="{Binding Path=[shipperID]}" />
-                                <controls:DataGridTextColumn Header="Company Name" Width="150" CanSort="False" Binding="{Binding Path=[companyName]}" />
-                                <controls:DataGridTextColumn Header="Phone" Width="150" CanSort="False" Binding="{Binding Path=[phone]}" />
+                                <controls:DataGridTextColumn Header="Shipper ID" Width="150" CanSort="False" Binding="{Binding Path=[ShipperID]}" />
+                                <controls:DataGridTextColumn Header="Company Name" Width="150" CanSort="False" Binding="{Binding Path=[CompanyName]}" />
+                                <controls:DataGridTextColumn Header="Phone" Width="150" CanSort="False" Binding="{Binding Path=[Phone]}" />
                             </controls:DataGrid.Columns>
                         </controls:DataGrid>
                     </StackPanel>
                 </StackPanel>
-                    
-                <Button x:Name="btnGetCount" Style="{StaticResource ResourceKey=CommandButton}" Grid.Row="1" Grid.Column="0" Click="btnGetCount_Click">
+
+                <Button x:Name="btnGetCount" Style="{StaticResource ResourceKey=CommandButton}" Grid.Row="1" Grid.Column="0" Click="btnSelectCount_Click">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE11A;" />

@@ -35,6 +35,7 @@
 '*  2014/03/03  西野 大介         ユーザ コントロールのインスタンスの区別。
 '*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
 '*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
+'*  2017/09/12  西野 大介         UserControlの動的配置対応のため、MyCreatePrefixAndEvtHndHtを新設。
 '**********************************************************************************
 
 Imports System.Windows.Forms
@@ -111,7 +112,21 @@ Namespace Touryo.Infrastructure.Business.RichClient.Presentation
             '/    new System.EventHandler(this.Button_Click), this.ControlHt);
             '#End Region
 
-            ' プレフィックス
+            ' コントロール検索＆イベントハンドラ設定
+            RcMyCmnFunction.GetCtrlAndSetClickEventHandler2(Me, Me.MyCreatePrefixAndEvtHndHt(), Me.ControlHt)
+
+            '#End Region
+        End Sub
+
+        ''' <summary>
+        ''' コントロールのプレフィックスと
+        ''' イベント ハンドラのディクショナリを生成
+        ''' </summary>
+        ''' <returns>
+        ''' プレフィックスと
+        ''' イベント ハンドラのディクショナリ
+        ''' </returns>
+        Protected Function MyCreatePrefixAndEvtHndHt() As Dictionary(Of String, Object)
             Dim prefix As String = ""
             ' プレフィックスとイベント ハンドラのディクショナリを生成
             Dim prefixAndEvtHndHt As New Dictionary(Of String, Object)()
@@ -122,11 +137,8 @@ Namespace Touryo.Infrastructure.Business.RichClient.Presentation
                 prefixAndEvtHndHt.Add(prefix, New System.EventHandler(AddressOf Me.Check_CheckedChanged))
             End If
 
-            ' コントロール検索＆イベントハンドラ設定
-            RcMyCmnFunction.GetCtrlAndSetClickEventHandler2(Me, prefixAndEvtHndHt, Me.ControlHt)
-
-            '#End Region
-        End Sub
+            Return prefixAndEvtHndHt
+        End Function
 
 #End Region
 

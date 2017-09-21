@@ -36,11 +36,11 @@
 
 using System;
 using System.Windows.Forms;
+using System.Security.Cryptography.X509Certificates;
 
-using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Security;
 using Touryo.Infrastructure.Public.Util;
-using Touryo.Infrastructure.Public.Util.JWT;
 
 namespace EncAndDecUtil
 {
@@ -471,9 +471,13 @@ namespace EncAndDecUtil
         // *.cer 証明証に証明書チェーンが無ければ、WindowsOSの証明書ストア（リポジトリ）である
         // 「信頼されたルート証明機関」にインストールする必要があります（実行アカウントにも注意が必要） 。
 
-        /// <summary>CertificateFilePath</summary>
-        private string CertificateFilePath_pfx = @"..\..\EncAndDecUtil_RS256.pfx";
-        private string CertificateFilePath_cer = @"..\..\EncAndDecUtil_RS256.cer";
+        /// <summary>CertificateFilePath_pfx</summary>
+        private string CertificateFilePath_pfx = GetConfigParameter.GetConfigValue("RS256Pfx");
+
+        /// <summary>CertificateFilePath_cer</summary>
+        private string CertificateFilePath_cer = GetConfigParameter.GetConfigValue("RS256Cer");
+
+        /// <summary>CertificateFilePassword</summary>
         private string CertificateFilePassword = "test";
 
         #endregion
@@ -514,8 +518,9 @@ namespace EncAndDecUtil
             }
             else
             {
-                // X509Cer
-                csX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text);
+                // X509
+                csX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text,
+                    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
 
                 sign = csX509.Sign(data);
                 //ret = csX509.Verify(data, sign);
@@ -546,9 +551,10 @@ namespace EncAndDecUtil
             }
             else
             {
-                // X509Cer
-                // *.pfxを使用して、検証することもできるが、
-                //csX509 = new CodeSigningX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text);
+                // X509
+                //// *.pfxを使用して、検証することもできるが、
+                //csX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text,
+                //    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
                 // 通常は、*.cerを使用して検証する。
                 csX509 = new DigitalSignX509(CertificateFilePath_cer, "", this.txtCCHash.Text);
 
@@ -596,8 +602,9 @@ namespace EncAndDecUtil
             }
             else
             {
-                // RS256 (X509Cer)
-                JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_pfx, this.CertificateFilePassword);
+                // RS256 (X509)
+                JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_pfx, this.CertificateFilePassword,
+                    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
 
                 // 生成
                 string jwt = jwtRS256.Create(this.txtJWTPayload.Text);
@@ -639,7 +646,7 @@ namespace EncAndDecUtil
             }
             else
             {
-                // RS256 (X509Cer)
+                // RS256 (X509)
                 
                 // 入力
                 string[] temp = this.txtJWTSign.Text.Split('.');
@@ -651,6 +658,8 @@ namespace EncAndDecUtil
                     + "." + temp[2];
 
                 // 検証
+                //JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_pfx, CertificateFilePassword,
+                //    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
                 JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_cer, "");
                 ret = jwtRS256.Verify(newJWT);
             }

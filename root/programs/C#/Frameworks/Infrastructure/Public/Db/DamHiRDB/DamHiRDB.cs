@@ -38,6 +38,7 @@
 //*  2013/07/07  西野  大介        ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
 //*  2013/07/09  西野  大介        静的SQLでもユーザパラメタを保存（操作ログで使用する用途）
 //*  2015/07/05  Sai              Implemented virtual property of IDbCommand in DamHiRDB class
+//*  2017/09/06  西野 大介         IN句展開、ArrayListに加えて、List<T>のサポートを追加
 //**********************************************************************************
 
 // データアクセスプロバイダ（HiRDB）
@@ -581,7 +582,6 @@ namespace Touryo.Infrastructure.Public.Db
                     if (this._parameter[paramName] == null)
                     {
                         // パラメタがnullの場合
-                        // ※ 下記のtypeof(ArrayList).ToString()対策
 
                         // 既定値対策されているのでこのままで良い。
                         this.SetParameter(
@@ -591,10 +591,11 @@ namespace Touryo.Infrastructure.Public.Db
                             (int)this._parameterSize[paramName],
                             (ParameterDirection)this._parameterDirection[paramName]);
                     }
-                    else if (this._parameter[paramName].GetType() == typeof(ArrayList))
+                    else if (this._parameter[paramName] is IList
+                        && !(this._parameter[paramName] is System.Array))
                     {
-                        // パラメタがLISTの場合
-                        ArrayList al = (ArrayList)this._parameter[paramName];
+                        // パラメタがnullでなく、ArrayListかList<T>の場合(IList)
+                        IList al = (IList)this._parameter[paramName];
 
                         // パラメタを展開して設定。 
 
@@ -615,8 +616,7 @@ namespace Touryo.Infrastructure.Public.Db
                     }
                     else
                     {
-                        // パラメタがLISTでない場合、
-                        // パラメタをそのまま設定。
+                        // それ以外のパラメタは、そのまま設定。
 
                         // 既定値対策されているのでこのままで良い。
                         this.SetParameter(
@@ -883,8 +883,7 @@ namespace Touryo.Infrastructure.Public.Db
         public override string GetCurrentQueryForLog()
         {
             // #16-start
-            if (GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG) == null
-                || GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG) == "")
+            if (string.IsNullOrEmpty(GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG)))
             {
                 // デフォルト値対策：設定なし（null）の場合の扱いを決定
                 // Log4Netへログ出力（OFF）

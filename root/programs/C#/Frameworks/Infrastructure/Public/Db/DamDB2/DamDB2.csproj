@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -18,7 +18,7 @@
     </SccAuxPath>
     <SccProvider>
     </SccProvider>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
@@ -49,6 +49,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -58,10 +59,16 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IBM.Data.DB2">
-      <HintPath>..\..\Dll\IBM.Data.DB2.dll</HintPath>
+    <Reference Include="IBM.Data.DB2, Version=9.7.4.4, Culture=neutral, PublicKeyToken=7c307b91aa13d208, processorArchitecture=AMD64">
+      <HintPath>..\packages\IBM.Data.DB2.10.0.5.5\lib\net451\IBM.Data.DB2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IBM.Data.DB2.Entity, Version=9.7.4.4, Culture=neutral, PublicKeyToken=7c307b91aa13d208, processorArchitecture=AMD64">
+      <HintPath>..\packages\IBM.Data.DB2.10.0.5.5\lib\net451\IBM.Data.DB2.Entity.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -90,9 +97,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Public.csproj">
-      <Project>{81CC573A-0DF9-49E5-AF10-A50F9B194DA5}</Project>
+      <Project>{81cc573a-0df9-49e5-af10-a50f9b194da5}</Project>
       <Name>Public</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

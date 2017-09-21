@@ -101,7 +101,10 @@ namespace WSClientWPF_sample
             this.ddlExRollback.SelectedIndex = 0;
 
             // ddlTransmission
-            this.ddlTransmission.Items.Add(new ComboBoxItem("Webサービス呼出", "testWebService"));
+            this.ddlTransmission.Items.Add(new ComboBoxItem("ASP.NET Webサービス呼出", "testWebService"));
+            this.ddlTransmission.Items.Add(new ComboBoxItem("WCF Webサービス呼出", "testWebService2"));
+            this.ddlTransmission.Items.Add(new ComboBoxItem("WCF TCPサービス呼出", "testWebService3"));
+            this.ddlTransmission.Items.Add(new ComboBoxItem("ASP.NET WebAPI呼出", "testWebService4"));
             this.ddlTransmission.Items.Add(new ComboBoxItem("インプロセス呼出", "testInProcess"));
             this.ddlTransmission.SelectedIndex = 0;
 

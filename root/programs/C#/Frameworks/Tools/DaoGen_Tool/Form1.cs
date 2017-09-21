@@ -48,13 +48,14 @@
 //*                                Added Method to get the strings from the resource files based on the keys values passed.
 //*                                and and replaced this method wherever hard coded values.
 //*  2014/08/19  西野 大介         カラム取得時のスキーマ考慮が無かったため追加（奥井さんからの提供）
+//*  2017/09/06  西野 大介         Oracle.ManagedDataAccess.Clientで主キーが取れなくなった対応
 //**********************************************************************************
 
 // --------------------
 // データプロバイダ
 // --------------------
 using System.Data.SqlClient;
-using Oracle.DataAccess.Client;
+using Oracle.ManagedDataAccess.Client;
 using System.Data.OleDb;
 using System.Data.Odbc;
 using Npgsql;
@@ -345,7 +346,7 @@ namespace DaoGen_Tool
             if (this.rbnODP.Checked)
             {
                 this.Dap = "ODP";
-                this.txtConnString.Text = GetConfigParameter.GetConfigValue("ConnectionString_ODP2");
+                this.txtConnString.Text = GetConfigParameter.GetConfigValue("ConnectionString_ODP");
             }
 
             // コンボを初期化する。
@@ -1818,40 +1819,42 @@ namespace DaoGen_Tool
                                 // 有効なテーブルのプライマリキー
                                 if (table.Name == row1["TABLE_NAME"].ToString())
                                 {
-                                    // 自分のもの以外は取らない。
-                                    if (row1["INDEX_OWNER"].ToString().ToUpper() == userId.ToUpper())
-                                    {
-                                        // 自分のもの以外
-                                        foreach (System.Data.DataRow row2 in dtSchmaIndexColumns.Rows)
-                                        {
-                                            // 有効なテーブルのプライマリキーのカラム
-                                            if (row1["INDEX_NAME"].ToString() == row2["INDEX_NAME"].ToString())
-                                            {
-                                                // 自分のもの以外は取らない。
-                                                if (row2["INDEX_OWNER"].ToString().ToUpper() == userId.ToUpper())
-                                                {
-                                                    // 自分のもの
-                                                    // 列のIsKeyフラグを立てる。
-                                                    CColumn column = (CColumn)table.HtColumns_Name[row2["COLUMN_NAME"].ToString()];
+                                    //// 自分のもの以外は取らない。
+                                    //if (row1["INDEX_OWNER"].ToString().ToUpper() == userId.ToUpper())
+                                    //{
 
-                                                    // nullの時があるようなので、この場合は処理しない。
-                                                    if (column == null) { }
-                                                    else
-                                                    {
-                                                        column.IsKey = true;
-                                                    }
-                                                }
+                                    // 自分のもの以外
+                                    foreach (System.Data.DataRow row2 in dtSchmaIndexColumns.Rows)
+                                    {
+                                        // 有効なテーブルのプライマリキーのカラム
+                                        if (row1["INDEX_NAME"].ToString() == row2["INDEX_NAME"].ToString())
+                                        {
+                                            // 自分のもの以外は取らない。
+                                            if (row2["INDEX_OWNER"].ToString().ToUpper() == userId.ToUpper())
+                                            {
+                                                // 自分のもの
+                                                // 列のIsKeyフラグを立てる。
+                                                CColumn column = (CColumn)table.HtColumns_Name[row2["COLUMN_NAME"].ToString()];
+
+                                                // nullの時があるようなので、この場合は処理しない。
+                                                if (column == null) { }
                                                 else
                                                 {
-                                                    // 自分のもの以外
+                                                    column.IsKey = true;
                                                 }
+                                            }
+                                            else
+                                            {
+                                                // 自分のもの以外
                                             }
                                         }
                                     }
-                                    else
-                                    {
-                                        // 自分のもの以外
-                                    }
+
+                                    //}
+                                    //else
+                                    //{
+                                    //    // 自分のもの以外
+                                    //}
                                 }
                             }
                         }

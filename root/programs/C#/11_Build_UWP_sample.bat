@@ -16,10 +16,18 @@ set CURRENT_DIR="%~dp0"
 call %CURRENT_DIR%z_Common2.bat
 
 rem --------------------------------------------------
-rem Batch build of UWP_sample.
+rem Batch build of UWP_sample_Xaml.
 rem --------------------------------------------------
-..\nuget.exe restore "Samples\UWP_sample\UWP_sample.sln"
-%BUILDFILEPATH% %COMMANDLINE% "Samples\UWP_sample\UWP_sample.sln"
+..\nuget.exe restore "Samples\UWP_sample\UWP_sample_Xaml.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Samples\UWP_sample\UWP_sample_Xaml.sln"
+
+pause
+
+rem --------------------------------------------------
+rem Batch build of UWP_sample_Html.
+rem --------------------------------------------------
+..\nuget.exe restore "Samples\UWP_sample\UWP_sample_Html.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Samples\UWP_sample\UWP_sample_Html.sln"
 
 pause
 

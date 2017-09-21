@@ -123,9 +123,7 @@ namespace Touryo.Infrastructure.Business.Dao
                 this.perfRec.ExecTime + "," + this.perfRec.CpuTime + "," + sql;
 
             // Log4Netへログ出力
-            string sqlTracelog = GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG);
-
-            if (sqlTracelog == null || sqlTracelog == "")
+            if (string.IsNullOrEmpty(GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG)))
             {
                 // SQLトレースログ（OFF）
             }
@@ -190,9 +188,7 @@ namespace Touryo.Infrastructure.Business.Dao
                 + sql;
 
             // Log4Netへログ出力
-            string sqlTracelog = GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG);
-
-            if (sqlTracelog == null || sqlTracelog == "")
+            if (string.IsNullOrEmpty(GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG)))
             {
                 // SQLトレースログ（OFF）
             }

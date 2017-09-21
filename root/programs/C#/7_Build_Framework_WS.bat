@@ -16,16 +16,9 @@ set CURRENT_DIR="%~dp0"
 call %CURRENT_DIR%z_Common.bat
 
 rem --------------------------------------------------
-rem Copy the Bin folder assembly.
-rem --------------------------------------------------
-
-md "Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\Bin"
-xcopy /E /Y "Samples\WS_sample\Build" "Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\Bin\"
-pause
-
-rem --------------------------------------------------
 rem Batch build of ServiceInterface(ASPNETWebService).
 rem --------------------------------------------------
+..\nuget.exe restore "Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\ASPNETWebService.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\ASPNETWebService.sln"
 
 pause

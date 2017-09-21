@@ -38,10 +38,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>45EC214193E5088CCA6F8B3AD1075B1627C28C7B</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>44953D376F646F634815EE63DBF5AD4A09A37776</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>EncAndDecUtil_TemporaryKey.pfx</ManifestKeyFile>
@@ -68,8 +68,6 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
-    <None Include="EncAndDecUtil_RS256.cer" />
-    <None Include="EncAndDecUtil_RS256.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

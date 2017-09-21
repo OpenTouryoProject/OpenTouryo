@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -7,7 +6,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.Web.Http;
 using Windows.Web.Http.Headers;
 
-// 空白ページのアイテム テンプレートについては、http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 を参照してください
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace UWP_Sample.Xaml
 {
@@ -16,87 +16,54 @@ namespace UWP_Sample.Xaml
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        public string rootUrl = "http://localhost:8888/JsonController/";
+
+        /// <summary>constructor</summary>
         public MainPage()
         {
             this.InitializeComponent();
         }
 
-        //private async void button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    string message = "";
+        #region チェック
 
-        //    using (HttpClient client = new HttpClient())
-        //    {
-        //        try
-        //        {
-        //            Uri uri = new Uri("http://localhost:63877/SPA_Sample/api/SelectDT");
-
-        //            client.DefaultRequestHeaders.Accept.Clear();
-        //            client.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
-        //            HttpFormUrlEncodedContent content = new HttpFormUrlEncodedContent(new Dictionary<string, string>
-        //        {
-        //            { "ddlDap", "SQL" },
-        //            { "ddlMode1", "individual" },
-        //            { "ddlMode2", "static" },
-        //            { "ddlExRollback", "-" }
-        //        });
-
-        //            HttpResponseMessage response = await client.PostAsync(uri, content);
-        //            if (response.IsSuccessStatusCode)
-        //            {
-        //                string result = await response.Content.ReadAsStringAsync();
-        //                //result = result.Replace(@"\r\n", System.Environment.NewLine);
-        //                result = result.Substring(1, result.Length - 1);
-        //                DTTables dtTables = new DTTables();
-        //                using (StringReader sr = new StringReader(result))
-        //                {
-        //                    dtTables.Load(sr);
-        //                    message = string.Format("{0}件見つかりました", dtTables[0].Rows.Count);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                message = "HTTP Error! Status Code: " + response.StatusCode;
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            message = ex.Message;
-        //        }
-        //        finally
-        //        {
-        //            this.textBlock.Text = message;
-        //        }
-        //    }
-        //}
-
+        /// <summary>toggleButton_Checked</summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">RoutedEventArgs</param>
         private void toggleButton_Checked(object sender, RoutedEventArgs e)
         {
             this.splitView.IsPaneOpen = true;
         }
 
+        /// <summary>toggleButton_Unchecked</summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">RoutedEventArgs</param>
         private void toggleButton_Unchecked(object sender, RoutedEventArgs e)
         {
             this.splitView.IsPaneOpen = false;
         }
 
-        private async void btnGetCount_Click(object sender, RoutedEventArgs e)
+        #endregion
+
+        #region ボタンイベント
+
+        /// <summary>btnSelectCount_Click</summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">RoutedEventArgs</param>
+        private async void btnSelectCount_Click(object sender, RoutedEventArgs e)
         {
             using (HttpClient client = new HttpClient())
             {
                 string message = string.Empty; // 結果メッセージ
 
-                try
-                {
-                    // Web API の URL
-                    Uri uri = new Uri("http://localhost:63877/SPA_Sample/api/GetCount");
+                // Web API の URL
+                Uri uri = new Uri(rootUrl + "SelectCount");
 
-                    // Request Header を定義する
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
+                // Request Header を定義する
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
 
-                    // Web API に送信するデータを構築する
-                    HttpFormUrlEncodedContent content = new HttpFormUrlEncodedContent(new Dictionary<string, string>
+                // Web API に送信するデータを構築する
+                HttpFormUrlEncodedContent content = new HttpFormUrlEncodedContent(new Dictionary<string, string>
                     {
                         { "ddlDap", ((ComboBoxItem)this.ddlDap.SelectedItem).Tag.ToString() },
                         { "ddlMode1", ((ComboBoxItem)this.ddlMode1.SelectedItem).Tag.ToString() },
@@ -104,49 +71,57 @@ namespace UWP_Sample.Xaml
                         { "ddlExRollback", ((ComboBoxItem)this.ddlExRollback.SelectedItem).Tag.ToString() }
                     });
 
-                    HttpResponseMessage response = await client.PostAsync(uri, content);
-                    if (response.IsSuccessStatusCode)
+                HttpResponseMessage response = await client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    string jsonResult = await response.Content.ReadAsStringAsync();
+                    JObject jObject = (JObject)JsonConvert.DeserializeObject(jsonResult);
+
+                    if (jObject["Message"] != null)
                     {
                         // 正常終了
-                        string jsonResult = await response.Content.ReadAsStringAsync();
-                        Dictionary<string, string> dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResult);
-                        message = dic["message"];
+                        message = jObject["Message"].ToString();
                     }
-                    else
+                    else if (jObject["ErrorMSG"] != null)
                     {
-                        // エラー終了
-                        message = "HTTP Error! Status Code: " + response.StatusCode;
+                        // 業務例外
+                        message = jObject["ErrorMSG"].ToString();
+                    }
+                    else if (jObject["ExceptionMSG"] != null)
+                    {
+                        // その他例外
+                        message = jObject["ExceptionMSG"].ToString();
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    message = ex.Message;
+                    // エラー終了
+                    message = "HTTP Error! Status Code: " + response.StatusCode;
                 }
-                finally
-                {
-                    // 結果を表示
-                    this.txtResult.Text = message;
-                }
+
+                // 結果を表示
+                this.txtResult.Text = message;
             }
         }
 
+        /// <summary>btnGetList_Click</summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">RoutedEventArgs</param>
         private async void btnGetList_Click(object sender, RoutedEventArgs e)
         {
             using (HttpClient client = new HttpClient())
             {
                 string message = string.Empty; // 結果メッセージ
 
-                try
-                {
-                    // Web API の URL
-                    Uri uri = new Uri("http://localhost:63877/SPA_Sample/api/SelectDT");
+                // Web API の URL
+                Uri uri = new Uri(rootUrl + "SelectAll_DT");
 
-                    // Request Header を定義する
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
+                // Request Header を定義する
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
 
-                    // Web API に送信するデータを構築する
-                    HttpFormUrlEncodedContent content = new HttpFormUrlEncodedContent(new Dictionary<string, string>
+                // Web API に送信するデータを構築する
+                HttpFormUrlEncodedContent content = new HttpFormUrlEncodedContent(new Dictionary<string, string>
                     {
                         { "ddlDap", ((ComboBoxItem)this.ddlDap.SelectedItem).Tag.ToString() },
                         { "ddlMode1", ((ComboBoxItem)this.ddlMode1.SelectedItem).Tag.ToString() },
@@ -154,272 +129,355 @@ namespace UWP_Sample.Xaml
                         { "ddlExRollback", ((ComboBoxItem)this.ddlExRollback.SelectedItem).Tag.ToString() }
                     });
 
-                    HttpResponseMessage response = await client.PostAsync(uri, content);
-                    if (response.IsSuccessStatusCode)
+                HttpResponseMessage response = await client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    // 正常終了
+                    string jsonResult = await response.Content.ReadAsStringAsync();
+                    var result = new { Message = "", Result = new List<Dictionary<string, string>>() };
+                    JObject jObject = (JObject)JsonConvert.DeserializeObject(jsonResult);
+
+                    if (jObject["Message"] != null)
                     {
                         // 正常終了
-                        string jsonResult = await response.Content.ReadAsStringAsync();
-                        List<Dictionary<string, string>> dic = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(jsonResult);
-                        this.lstRecords.ItemsSource = dic;
+                        List<Dictionary<string, string>> list =
+                            JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(jObject["Result"].ToString());
 
+                        this.lstRecords.ItemsSource = list;
                         message = "正常終了しました";
                     }
-                    else
+                    else if (jObject["ErrorMSG"] != null)
                     {
-                        // エラー終了
-                        message = "HTTP Error! Status Code: " + response.StatusCode;
+                        // 業務例外
+                        message = jObject["ErrorMSG"].ToString();
+                    }
+                    else if (jObject["ExceptionMSG"] != null)
+                    {
+                        // その他例外
+                        message = jObject["ExceptionMSG"].ToString();
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    message = ex.Message;
+                    // エラー終了
+                    message = "HTTP Error! Status Code: " + response.StatusCode;
                 }
-                finally
-                {
-                    // 結果を表示
-                    this.txtResult.Text = message;
-                }
+
+                // 結果を表示
+                this.txtResult.Text = message;
             }
         }
 
+        /// <summary>btnGetRecord_Click</summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">RoutedEventArgs</param>
         private async void btnGetRecord_Click(object sender, RoutedEventArgs e)
         {
             using (HttpClient client = new HttpClient())
             {
                 string message = string.Empty; // 結果メッセージ
 
-                try
+
+                if (string.IsNullOrEmpty(this.txtShipperID.Text))
                 {
-                    if (string.IsNullOrEmpty(this.txtShipperID.Text))
+                    message = "検索する Shipper Id が入力されていません。１件表示の Shipper Id テキストボックスに、検索する Shipper Id を入力してください。";
+                    return;
+                }
+
+                // Web API の URL
+                Uri uri = new Uri(rootUrl + "Select");
+
+                // Request Header を定義する
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
+
+                // Web API に送信するデータを構築する
+                HttpStringContent content = new HttpStringContent(JsonConvert.SerializeObject(
+                    new
                     {
-                        message = "検索する Shipper Id が入力されていません。１件表示の Shipper Id テキストボックスに、検索する Shipper Id を入力してください。";
-                        return;
-                    }
+                        ddlDap = ((ComboBoxItem)this.ddlDap.SelectedItem).Tag.ToString(),
+                        ddlMode1 = ((ComboBoxItem)this.ddlMode1.SelectedItem).Tag.ToString(),
+                        ddlMode2 = ((ComboBoxItem)this.ddlMode2.SelectedItem).Tag.ToString(),
+                        ddlExRollback = ((ComboBoxItem)this.ddlExRollback.SelectedItem).Tag.ToString(),
+                        Shipper = new
+                        {
+                            ShipperID = this.txtShipperID.Text
+                        },
+                    }),
+                    Windows.Storage.Streams.UnicodeEncoding.Utf8,
+                    "application/json"
+                );
 
-                    // Web API の URL
-                    Uri uri = new Uri("http://localhost:63877/SPA_Sample/api/Select");
+                HttpResponseMessage response = await client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    // 正常終了
+                    string jsonResult = await response.Content.ReadAsStringAsync();
+                    JObject jObject = (JObject)JsonConvert.DeserializeObject(jsonResult);
 
-                    // Request Header を定義する
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
-
-                    // Web API に送信するデータを構築する
-                    HttpFormUrlEncodedContent content = new HttpFormUrlEncodedContent(new Dictionary<string, string>
-                    {
-                        { "ddlDap", ((ComboBoxItem)this.ddlDap.SelectedItem).Tag.ToString() },
-                        { "ddlMode1", ((ComboBoxItem)this.ddlMode1.SelectedItem).Tag.ToString() },
-                        { "ddlMode2", ((ComboBoxItem)this.ddlMode2.SelectedItem).Tag.ToString() },
-                        { "ddlExRollback", ((ComboBoxItem)this.ddlExRollback.SelectedItem).Tag.ToString() }, 
-                        { "ShipperId", this.txtShipperID.Text }
-                    });
-
-                    HttpResponseMessage response = await client.PostAsync(uri, content);
-                    if (response.IsSuccessStatusCode)
+                    if (jObject["Message"] != null)
                     {
                         // 正常終了
-                        string jsonResult = await response.Content.ReadAsStringAsync();
-                        Dictionary<string, string> dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResult);
+                        Dictionary<string, string> dic =
+                            JsonConvert.DeserializeObject<Dictionary<string, string>>(jObject["Result"].ToString());
 
+                        this.txtCompanyName.Text = dic["CompanyName"];
+                        this.txtPhone.Text = dic["Phone"];
                         message = "正常終了しました";
-                        this.txtCompanyName.Text = dic["companyName"];
-                        this.txtPhone.Text = dic["phone"];
                     }
-                    else
+                    else if (jObject["ErrorMSG"] != null)
                     {
-                        // エラー終了
-                        message = "HTTP Error! Status Code: " + response.StatusCode;
+                        // 業務例外
+                        message = jObject["ErrorMSG"].ToString();
+                    }
+                    else if (jObject["ExceptionMSG"] != null)
+                    {
+                        // その他例外
+                        message = jObject["ExceptionMSG"].ToString();
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    message = ex.Message;
+                    // エラー終了
+                    message = "HTTP Error! Status Code: " + response.StatusCode;
                 }
-                finally
-                {
-                    // 結果を表示
-                    this.txtResult.Text = message;
-                }
+
+                // 結果を表示
+                this.txtResult.Text = message;
             }
         }
 
+        /// <summary>btnInsert_Click</summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">RoutedEventArgs</param>
         private async void btnInsert_Click(object sender, RoutedEventArgs e)
         {
             using (HttpClient client = new HttpClient())
             {
                 string message = string.Empty; // 結果メッセージ
 
-                try
+                if (string.IsNullOrEmpty(this.txtCompanyName.Text) || string.IsNullOrEmpty(this.txtPhone.Text))
                 {
-                    if (string.IsNullOrEmpty(this.txtCompanyName.Text) || string.IsNullOrEmpty(this.txtPhone.Text))
+                    message = "Company Name, Phone のいずれかが入力されていません。１件表示の Compnay Name, Phone テキストボックスに、追加する値を入力してください。（Shipper Id は、自動採番されます）";
+                    return;
+                }
+
+                // Web API の URL
+                Uri uri = new Uri(rootUrl + "Insert");
+
+                // Request Header を定義する
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
+
+                // Web API に送信するデータを構築する
+                HttpStringContent content = new HttpStringContent(JsonConvert.SerializeObject(
+                    new
                     {
-                        message = "Company Name, Phone のいずれかが入力されていません。１件表示の Compnay Name, Phone テキストボックスに、追加する値を入力してください。（Shipper Id は、自動採番されます）";
-                        return;
-                    }
+                        ddlDap = ((ComboBoxItem)this.ddlDap.SelectedItem).Tag.ToString(),
+                        ddlMode1 = ((ComboBoxItem)this.ddlMode1.SelectedItem).Tag.ToString(),
+                        ddlMode2 = ((ComboBoxItem)this.ddlMode2.SelectedItem).Tag.ToString(),
+                        ddlExRollback = ((ComboBoxItem)this.ddlExRollback.SelectedItem).Tag.ToString(),
+                        Shipper = new
+                        {
+                            CompanyName = this.txtCompanyName.Text,
+                            Phone = this.txtPhone.Text
+                        },
+                    }),
+                    Windows.Storage.Streams.UnicodeEncoding.Utf8,
+                    "application/json"
+                );
 
-                    // Web API の URL
-                    Uri uri = new Uri("http://localhost:63877/SPA_Sample/api/Insert");
+                HttpResponseMessage response = await client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    // 正常終了
+                    string jsonResult = await response.Content.ReadAsStringAsync();
+                    JObject jObject = (JObject)JsonConvert.DeserializeObject(jsonResult);
 
-                    // Request Header を定義する
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
-
-                    // Web API に送信するデータを構築する
-                    HttpFormUrlEncodedContent content = new HttpFormUrlEncodedContent(new Dictionary<string, string>
-                    {
-                        { "ddlDap", ((ComboBoxItem)this.ddlDap.SelectedItem).Tag.ToString() },
-                        { "ddlMode1", ((ComboBoxItem)this.ddlMode1.SelectedItem).Tag.ToString() },
-                        { "ddlMode2", ((ComboBoxItem)this.ddlMode2.SelectedItem).Tag.ToString() },
-                        { "ddlExRollback", ((ComboBoxItem)this.ddlExRollback.SelectedItem).Tag.ToString() },
-                        { "CompanyName", this.txtCompanyName.Text },
-                        { "Phone", this.txtPhone.Text }
-                    });
-
-                    HttpResponseMessage response = await client.PostAsync(uri, content);
-                    if (response.IsSuccessStatusCode)
+                    if (jObject["Message"] != null)
                     {
                         // 正常終了
-                        string jsonResult = await response.Content.ReadAsStringAsync();
-                        Dictionary<string, string> dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResult);
-                        message = dic["message"];
+                        message = jObject["Message"].ToString();
                     }
-                    else
+                    else if (jObject["ErrorMSG"] != null)
                     {
-                        // エラー終了
-                        message = "HTTP Error! Status Code: " + response.StatusCode;
+                        // 業務例外
+                        message = jObject["ErrorMSG"].ToString();
+                    }
+                    else if (jObject["ExceptionMSG"] != null)
+                    {
+                        // その他例外
+                        message = jObject["ExceptionMSG"].ToString();
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    message = ex.Message;
+                    // エラー終了
+                    message = "HTTP Error! Status Code: " + response.StatusCode;
                 }
-                finally
-                {
-                    // 結果を表示
-                    this.txtResult.Text = message;
-                }
+
+                // 結果を表示
+                this.txtResult.Text = message;
             }
         }
 
+        /// <summary>btnUpdate_Click</summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">RoutedEventArgs</param>
         private async void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
             using (HttpClient client = new HttpClient())
             {
                 string message = string.Empty; // 結果メッセージ
 
-                try
+                if (string.IsNullOrEmpty(this.txtShipperID.Text) || string.IsNullOrEmpty(this.txtCompanyName.Text) || string.IsNullOrEmpty(this.txtPhone.Text))
                 {
-                    if (string.IsNullOrEmpty(this.txtShipperID.Text) || string.IsNullOrEmpty(this.txtCompanyName.Text) || string.IsNullOrEmpty(this.txtPhone.Text))
+                    message = "Shipper Id, Company Name, Phone のいずれかが入力されていません。１件表示の Shipper Id テキストボックスに更新対象の Shipper Id の値を、Compnay Name, Phone テキストボックスに、更新する値をそれぞれ入力してください。";
+                    return;
+                }
+
+                // Web API の URL
+                Uri uri = new Uri(rootUrl + "Update");
+
+                // Request Header を定義する
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
+
+                // Web API に送信するデータを構築する
+                HttpStringContent content = new HttpStringContent(JsonConvert.SerializeObject(
+                    new
                     {
-                        message = "Shipper Id, Company Name, Phone のいずれかが入力されていません。１件表示の Shipper Id テキストボックスに更新対象の Shipper Id の値を、Compnay Name, Phone テキストボックスに、更新する値をそれぞれ入力してください。";
-                        return;
-                    }
+                        ddlDap = ((ComboBoxItem)this.ddlDap.SelectedItem).Tag.ToString(),
+                        ddlMode1 = ((ComboBoxItem)this.ddlMode1.SelectedItem).Tag.ToString(),
+                        ddlMode2 = ((ComboBoxItem)this.ddlMode2.SelectedItem).Tag.ToString(),
+                        ddlExRollback = ((ComboBoxItem)this.ddlExRollback.SelectedItem).Tag.ToString(),
+                        Shipper = new
+                        {
+                            ShipperId = this.txtShipperID.Text,
+                            CompanyName = this.txtCompanyName.Text,
+                            Phone = this.txtPhone.Text
+                        },
+                    }),
+                    Windows.Storage.Streams.UnicodeEncoding.Utf8,
+                    "application/json"
+                );
 
-                    // Web API の URL
-                    Uri uri = new Uri("http://localhost:63877/SPA_Sample/api/Update");
+                HttpResponseMessage response = await client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    // 正常終了
+                    string jsonResult = await response.Content.ReadAsStringAsync();
+                    JObject jObject = (JObject)JsonConvert.DeserializeObject(jsonResult);
 
-                    // Request Header を定義する
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
-
-                    // Web API に送信するデータを構築する
-                    HttpFormUrlEncodedContent content = new HttpFormUrlEncodedContent(new Dictionary<string, string>
-                    {
-                        { "ddlDap", ((ComboBoxItem)this.ddlDap.SelectedItem).Tag.ToString() },
-                        { "ddlMode1", ((ComboBoxItem)this.ddlMode1.SelectedItem).Tag.ToString() },
-                        { "ddlMode2", ((ComboBoxItem)this.ddlMode2.SelectedItem).Tag.ToString() },
-                        { "ddlExRollback", ((ComboBoxItem)this.ddlExRollback.SelectedItem).Tag.ToString() },
-                        { "ShipperId", this.txtShipperID.Text }, 
-                        { "CompanyName", this.txtCompanyName.Text },
-                        { "Phone", this.txtPhone.Text }
-                    });
-
-                    HttpResponseMessage response = await client.PostAsync(uri, content);
-                    if (response.IsSuccessStatusCode)
+                    if (jObject["Message"] != null)
                     {
                         // 正常終了
-                        string jsonResult = await response.Content.ReadAsStringAsync();
-                        Dictionary<string, string> dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResult);
-                        message = dic["message"];
+                        message = jObject["Message"].ToString();
                     }
-                    else
+                    else if (jObject["ErrorMSG"] != null)
                     {
-                        // エラー終了
-                        message = "HTTP Error! Status Code: " + response.StatusCode;
+                        // 業務例外
+                        message = jObject["ErrorMSG"].ToString();
+                    }
+                    else if (jObject["ExceptionMSG"] != null)
+                    {
+                        // その他例外
+                        message = jObject["ExceptionMSG"].ToString();
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    message = ex.Message;
+                    // エラー終了
+                    message = "HTTP Error! Status Code: " + response.StatusCode;
                 }
-                finally
-                {
-                    // 結果を表示
-                    this.txtResult.Text = message;
-                }
+
+                // 結果を表示
+                this.txtResult.Text = message;
             }
         }
 
+        /// <summary>btnDelete_Click</summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">RoutedEventArgs</param>
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
             using (HttpClient client = new HttpClient())
             {
                 string message = string.Empty; // 結果メッセージ
 
-                try
+                if (string.IsNullOrEmpty(this.txtShipperID.Text))
                 {
-                    if (string.IsNullOrEmpty(this.txtShipperID.Text))
+                    message = "削除する Shipper Id が入力されていません。１件表示の Shipper Id テキストボックスに削除対象の Shipper Id の値を入力してください。";
+                    return;
+                }
+
+                // Web API の URL
+                Uri uri = new Uri(rootUrl + "Delete");
+
+                // Request Header を定義する
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
+
+                // Web API に送信するデータを構築する
+                HttpStringContent content = new HttpStringContent(JsonConvert.SerializeObject(
+                    new
                     {
-                        message = "削除する Shipper Id が入力されていません。１件表示の Shipper Id テキストボックスに削除対象の Shipper Id の値を入力してください。";
-                        return;
-                    }
+                        ddlDap = ((ComboBoxItem)this.ddlDap.SelectedItem).Tag.ToString(),
+                        ddlMode1 = ((ComboBoxItem)this.ddlMode1.SelectedItem).Tag.ToString(),
+                        ddlMode2 = ((ComboBoxItem)this.ddlMode2.SelectedItem).Tag.ToString(),
+                        ddlExRollback = ((ComboBoxItem)this.ddlExRollback.SelectedItem).Tag.ToString(),
+                        Shipper = new
+                        {
+                            ShipperId = this.txtShipperID.Text
+                        },
+                    }),
+                    Windows.Storage.Streams.UnicodeEncoding.Utf8,
+                    "application/json"
+                );
 
-                    // Web API の URL
-                    Uri uri = new Uri("http://localhost:63877/SPA_Sample/api/Delete");
+                HttpResponseMessage response = await client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    // 正常終了
+                    string jsonResult = await response.Content.ReadAsStringAsync();
+                    JObject jObject = (JObject)JsonConvert.DeserializeObject(jsonResult);
 
-                    // Request Header を定義する
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
-
-                    // Web API に送信するデータを構築する
-                    HttpFormUrlEncodedContent content = new HttpFormUrlEncodedContent(new Dictionary<string, string>
-                    {
-                        { "ddlDap", ((ComboBoxItem)this.ddlDap.SelectedItem).Tag.ToString() },
-                        { "ddlMode1", ((ComboBoxItem)this.ddlMode1.SelectedItem).Tag.ToString() },
-                        { "ddlMode2", ((ComboBoxItem)this.ddlMode2.SelectedItem).Tag.ToString() },
-                        { "ddlExRollback", ((ComboBoxItem)this.ddlExRollback.SelectedItem).Tag.ToString() },
-                        { "ShipperId", this.txtShipperID.Text }
-                    });
-
-                    HttpResponseMessage response = await client.PostAsync(uri, content);
-                    if (response.IsSuccessStatusCode)
+                    if (jObject["Message"] != null)
                     {
                         // 正常終了
-                        string jsonResult = await response.Content.ReadAsStringAsync();
-                        Dictionary<string, string> dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResult);
-                        message = dic["message"];
+                        message = jObject["Message"].ToString();
                     }
-                    else
+                    else if (jObject["ErrorMSG"] != null)
                     {
-                        // エラー終了
-                        message = "HTTP Error! Status Code: " + response.StatusCode;
+                        // 業務例外
+                        message = jObject["ErrorMSG"].ToString();
+                    }
+                    else if (jObject["ExceptionMSG"] != null)
+                    {
+                        // その他例外
+                        message = jObject["ExceptionMSG"].ToString();
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    message = ex.Message;
+                    // エラー終了
+                    message = "HTTP Error! Status Code: " + response.StatusCode;
                 }
-                finally
-                {
-                    // 結果を表示
-                    this.txtResult.Text = message;
-                }
+
+                // 結果を表示
+                this.txtResult.Text = message;
             }
         }
 
+        /// <summary>btnClear_Click</summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">RoutedEventArgs</param>
         private void btnClear_Click(object sender, RoutedEventArgs e)
         {
             // リストの内容をクリアする
             this.lstRecords.ItemsSource = null;
         }
+
+        #endregion
     }
 }

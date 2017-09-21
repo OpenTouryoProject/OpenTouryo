@@ -41,15 +41,13 @@ namespace MVC_Sample.Models.ViewModels
         /// <summary>
         /// UserName
         /// </summary>
-        [Required(AllowEmptyStrings = false)]
         [Display(Name = "User name")]
         public string UserName { get; set; }
 
         /// <summary>
         /// PWDS
         /// </summary>
-        [Required(AllowEmptyStrings = false)]
-        [Display(Name = "passwowd")]
-        public string Passwowd { get; set; }
+        [Display(Name = "Password")]
+        public string Password { get; set; }
     }
 }

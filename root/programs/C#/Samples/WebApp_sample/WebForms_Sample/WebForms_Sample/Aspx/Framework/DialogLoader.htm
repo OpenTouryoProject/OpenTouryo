@@ -1,0 +1,17 @@
+﻿<!--Copyright (C) 2007,2016 Hitachi Solutions,Ltd.--> <!--Apache License, Version 2.0-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Dialog画面</title>
+        <script type="text/javascript">
+            function Document_OnLoad(){
+	            var args = window.dialogArguments;
+                if ( (args != null) && (args.length >= 1) ){
+		            top.frame1.location.href = args[0];
+		        }
+            }
+        </script>
+    </head>
+    <body onload="Document_OnLoad();" style="background-color: #cccccc;">
+    </body>
+</html>

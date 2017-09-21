@@ -35,6 +35,5 @@ namespace SPA_Sample.Controllers
         {
             return View();
         }
-
     }
 }

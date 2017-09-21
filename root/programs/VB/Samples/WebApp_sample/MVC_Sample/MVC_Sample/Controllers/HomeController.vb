@@ -19,15 +19,45 @@
 
 Imports MVC_Sample.Models.ViewModels
 
+Imports System.Net.Http
+Imports System.Threading.Tasks
+
+Imports Microsoft.Owin.Security.DataHandler.Encoder
+
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Linq
+
 Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Business.Util
+Imports Touryo.Infrastructure.Framework.Authentication
 Imports Touryo.Infrastructure.Framework.Util
+Imports Touryo.Infrastructure.Public.Security
 
 Namespace Controllers
     ''' <summary>HomeController</summary>
     <Authorize>
     Public Class HomeController
         Inherits MyBaseMVController
+        ''' <summary>Nonce</summary>
+        Public ReadOnly Property Nonce() As String
+            Get
+                If Session("nonce") Is Nothing Then
+                    Session("nonce") = GetPassword.Base64UrlSecret(10)
+                End If
+                Return DirectCast(Session("nonce"), String)
+            End Get
+        End Property
+
+        ''' <summary>State</summary>
+        Public ReadOnly Property State() As String
+            Get
+                If Session("state") Is Nothing Then
+                    Session("state") = GetPassword.Base64UrlSecret(10)
+                End If
+                Return DirectCast(Session("state"), String)
+            End Get
+        End Property
+
         ''' <summary>
         ''' GET: Home
         ''' </summary>
@@ -60,28 +90,46 @@ Namespace Controllers
         <AllowAnonymous>
         <ValidateAntiForgeryToken>
         Public Function Login(model As LoginViewModel) As ActionResult
-            If Not String.IsNullOrEmpty(model.UserName) Then
-                ' 認証か完了した場合、認証チケットを生成し、元のページにRedirectする。
-                ' 第２引数は、「クライアントがCookieを永続化（ファイルとして保存）するかどうか。」
-                ' を設定する引数であるが、セキュリティを考慮して、falseの設定を勧める。
-                FormsAuthentication.RedirectFromLoginPage(model.UserName, False)
+            If Not Request.Form.AllKeys.Any(Function(x) x = "external") Then
+                ' 通常ログイン
+                If ModelState.IsValid Then
+                    If Not String.IsNullOrEmpty(model.UserName) Then
+                        ' 認証か完了した場合、認証チケットを生成し、元のページにRedirectする。
+                        ' 第２引数は、「クライアントがCookieを永続化（ファイルとして保存）するかどうか。」
+                        ' を設定する引数であるが、セキュリティを考慮して、falseの設定を勧める。
+                        FormsAuthentication.RedirectFromLoginPage(model.UserName, False)
 
-                ' 認証情報を保存する。
-                Dim ui As New MyUserInfo(model.UserName, Request.UserHostAddress)
-                UserInfoHandle.SetUserInformation(ui)
+                        ' 認証情報を保存する。
+                        Dim ui As New MyUserInfo(model.UserName, Request.UserHostAddress)
+                        UserInfoHandle.SetUserInformation(ui)
 
-                '基盤に任せるのでリダイレクトしない。
-                'return this.Redirect(ReturnUrl);
-                Return New EmptyResult()
-            Else
-                ' ユーザー認証 失敗
-                Me.ModelState.AddModelError(String.Empty, "指定されたユーザー名またはパスワードが正しくありません。")
+                        '基盤に任せるのでリダイレクトしない。
+                        'return this.Redirect(ReturnUrl);
+                        Return New EmptyResult()
+                    Else
+                        ' ユーザー認証 失敗
+                        Me.ModelState.AddModelError(String.Empty, "指定されたユーザー名またはパスワードが正しくありません。")
+                    End If
+                    ' LoginViewModelの検証に失敗
+                Else
+                End If
 
                 ' Session消去
                 Me.FxSessionAbandon()
 
                 ' ポストバック的な
                 Return Me.View(model)
+            Else
+                ' 外部ログイン
+                Return Redirect(String.Format(
+                                "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize" _
+                                & "?client_id=" & OAuth2AndOIDCParams.ClientID _
+                                & "&response_type=code" _
+                                & "&scope=profile%20email%20phone%20address%20openid" _
+                                & "&state={0}" _
+                                & "&nonce={1}" _
+                                & "&prompt=none",
+                                Me.State, Me.Nonce))
             End If
         End Function
 
@@ -103,5 +151,68 @@ Namespace Controllers
             FormsAuthentication.SignOut()
             Return Me.Redirect(Url.Action("Index", "Home"))
         End Function
+
+        ''' <summary>OAuthAuthorizationCodeGrantClient</summary>
+        ''' <param name="code">string</param>
+        ''' <param name="state">string</param>
+        ''' <returns>ActionResultを非同期的に返す</returns>
+        <HttpGet>
+        <AllowAnonymous>
+        Public Async Function OAuthAuthorizationCodeGrantClient(code As String, state As String) As Task(Of ActionResult)
+            Try
+                OAuth2AndOIDCClient.HttpClient = New HttpClient()
+                Dim response As String = ""
+
+                If state = Me.State Then
+                    ' CSRF(XSRF)対策のstateの検証は重要
+                    response = Await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+                        New Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"),
+                        OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
+                        HttpUtility.HtmlEncode("http://localhost:58496/MVC_Sample/Home/OAuthAuthorizationCodeGrantClient"), code)
+
+                    ' 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
+                    Dim base64UrlEncoder As New Base64UrlTextEncoder()
+                    Dim dic As Dictionary(Of String, String) = JsonConvert.DeserializeObject(Of Dictionary(Of String, String))(response)
+
+                    ' id_tokenの検証コード
+                    If dic.ContainsKey("id_token") Then
+                        Dim id_token As String = dic("id_token")
+
+                        Dim [sub] As String = ""
+                        Dim roles As List(Of String) = Nothing
+                        Dim scopes As List(Of String) = Nothing
+                        Dim jobj As JObject = Nothing
+
+                        If JwtToken.Verify(id_token, [sub], roles, scopes, jobj) AndAlso jobj("nonce").ToString() = Me.Nonce Then
+                            ' ログインに成功
+
+                            ' /userinfoエンドポイントにアクセスする場合
+                            response = Await OAuth2AndOIDCClient.CallUserInfoEndpointAsync(
+                                New Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic("access_token"))
+
+                            FormsAuthentication.RedirectFromLoginPage([sub], False)
+                            Dim ui As New MyUserInfo([sub], Request.UserHostAddress)
+                            UserInfoHandle.SetUserInformation(ui)
+
+                            Return New EmptyResult()
+
+                        End If
+                    Else
+                    End If
+                Else
+                End If
+
+                ' ログインに失敗
+                Return RedirectToAction("Login")
+            Finally
+                Me.ClearExLoginsParams()
+            End Try
+        End Function
+
+        ''' <summary>ClearExLoginsParam</summary>
+        Private Sub ClearExLoginsParams()
+            Session("nonce") = Nothing
+            Session("state") = Nothing
+        End Sub
     End Class
 End Namespace

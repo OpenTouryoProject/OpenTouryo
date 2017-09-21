@@ -97,7 +97,10 @@ Partial Public Class Window1
         Me.ddlExRollback.SelectedIndex = 0
 
         ' ddlTransmission
-        Me.ddlTransmission.Items.Add(New ComboBoxItem("Webサービス呼出", "testWebService"))
+        Me.ddlTransmission.Items.Add(New ComboBoxItem("ASP.NET Webサービス呼出", "testWebService"))
+        Me.ddlTransmission.Items.Add(New ComboBoxItem("WCF Webサービス呼出", "testWebService2"))
+        Me.ddlTransmission.Items.Add(New ComboBoxItem("WCF TCPサービス呼出", "testWebService3"))
+        Me.ddlTransmission.Items.Add(New ComboBoxItem("ASP.NET WebAPI呼出", "testWebService4"))
         Me.ddlTransmission.Items.Add(New ComboBoxItem("インプロセス呼出", "testInProcess"))
         Me.ddlTransmission.SelectedIndex = 0
 

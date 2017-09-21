@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Touryo.Infrastructure.Public</id>
+    <title>OpenTouryo.Public</title>
+    <version>2.1.1</version>
+    <authors>OSS Consortium .net subcommittee</authors>
+    <owners>daisukenishino77</owners>
+    <licenseUrl>https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root/programs/C%23/Frameworks/Infrastructure/Public</projectUrl>
+    <iconUrl>https://opentouryo.osscons.jp/OpenTouryo.ico</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <summary>Common library of OpenTouryo.</summary>
+    <description>Common library of OpenTouryo. This package is used from template of OpenTouryo.</description>
+    <releaseNotes>https://github.com/OpenTouryoProject/OpenTouryo/releases</releaseNotes>
+    <copyright></copyright>
+    <tags>OpenTouryo Open棟梁</tags>
+    <dependencies>
+      <dependency id="DotNetZip" version="1.10.1" />
+      <dependency id="log4net" version="2.0.8" />
+      <dependency id="Newtonsoft.Json" version="10.0.3" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="in\net46\Public.dll" target="lib\net46" />
+    <file src="in\net46\Public.pdb" target="lib\net46" />
+    <file src="in\net46\Public.xml" target="lib\net46" />
+
+    <file src="in\net47\Public.dll" target="lib\net47" />
+    <file src="in\net47\Public.pdb" target="lib\net47" />
+    <file src="in\net47\Public.xml" target="lib\net47" />
+  </files>
+</package>

@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="VB" Debug="true" Service="WebForms_Sample.JSONService" CodeBehind="~/WebService/JSONService.svc.vb" %>

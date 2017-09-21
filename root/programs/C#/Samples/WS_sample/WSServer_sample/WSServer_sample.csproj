@@ -70,6 +70,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Business\LayerB.cs" />
+    <Compile Include="Common\Shipper.cs" />
+    <Compile Include="Common\WebApiParams.cs" />
     <Compile Include="Dao\DaoShippers.cs" />
     <Compile Include="Dao\LayerD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

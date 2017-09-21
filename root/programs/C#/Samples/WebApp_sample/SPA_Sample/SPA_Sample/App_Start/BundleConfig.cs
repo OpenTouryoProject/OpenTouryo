@@ -2,7 +2,7 @@
 //* テンプレート
 //**********************************************************************************
 
-// サンプル中のテンプレートなので、必要に応じて流用して下さい。
+// サンプル中のテンプレートなので、必要に応じて使用して下さい。
 
 //**********************************************************************************
 //* クラス名        ：BundleConfig
@@ -50,7 +50,8 @@ namespace SPA_Sample
 
             bundles.Add(new ScriptBundle("~/bundles/touryo").Include(
                         "~/Scripts/touryo/common.js",
-                        "~/Scripts/touryo/else.js"));
+                        "~/Scripts/touryo/else.js",
+                        "~/Scripts/touryo/oauthimplicit.js"));
 
             bundles.Add(new ScriptBundle(
                 "~/bundles/jquery",

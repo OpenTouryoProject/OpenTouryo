@@ -39,7 +39,6 @@ Namespace Models.ViewModels
         ''' <summary>
         ''' UserName
         ''' </summary>
-        <Required(AllowEmptyStrings:=False)>
         <Display(Name:="User name")>
         Public Property UserName() As String
             Get
@@ -54,16 +53,15 @@ Namespace Models.ViewModels
         ''' <summary>
         ''' PWDS
         ''' </summary>
-        <Required(AllowEmptyStrings:=False)>
-        <Display(Name:="passwowd")>
-        Public Property Passwowd() As String
+        <Display(Name:="Password")>
+        Public Property Password() As String
             Get
-                Return m_Passwowd
+                Return m_Password
             End Get
             Set
-                m_Passwowd = Value
+                m_Password = Value
             End Set
         End Property
-        Private m_Passwowd As String
+        Private m_Password As String
     End Class
 End Namespace

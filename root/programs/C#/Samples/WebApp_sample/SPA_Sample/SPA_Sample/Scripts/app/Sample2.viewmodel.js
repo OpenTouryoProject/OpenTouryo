@@ -1,4 +1,7 @@
-﻿angular.module('myapp', []).controller('Sample2ViewModel', ['$scope', function($scope) {
+﻿var rootUrl = 'http://localhost:8888/JsonController/';
+
+angular.module('myapp', []).controller('Sample2ViewModel', ['$scope', function ($scope) {
+
     // shippers テーブルのレコードリスト (JSON 形式)
     $scope.dataLists = [];
 
@@ -53,14 +56,7 @@
         { displayText: "システム例外への振替", value: "Other-System" }
     ];
     $scope.ddlExRollback = '-';
-
-    // 通信制御
-    $scope.ddlTransmissionItems = [
-        { displayText: "Webサービス呼出", value: "testWebService" },
-        { displayText: "インプロセス呼出", value: "testInProcess" }
-    ];
-    $scope.ddlTransmission = 'testWebService';
-
+    
     // Shipper テーブルの各項目
     $scope.ShipperId = '';
     $scope.CompanyName = '';
@@ -103,20 +99,26 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/GetCount',
+            url: rootUrl + 'SelectCount',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
-                if (data.error) {
+                if (data.Message != undefined) {
+                    // 正常終了
                     $scope.$apply(function () {
-                        // エラーメッセージ格納
-                        $scope.ErrorMessage = data.error;
+                        $scope.Result = data.Message;
                     });
                 }
-                else {
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
                     $scope.$apply(function () {
-                        // 結果格納
-                        $scope.Result = data.message;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
+                    });
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    $scope.$apply(function () {
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },
@@ -145,23 +147,27 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/SelectDT',
+            url: rootUrl + 'SelectAll_DT',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
-                if (data.error) {
+                if (data.Message != undefined) {
+                    // 正常終了
                     $scope.$apply(function () {
-                        // エラーメッセージ格納
-                        $scope.ErrorMessage = data.error;
+                        $scope.ClearList();
+                        $scope.dataLists = data.Result;
                     });
                 }
-                else {
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
                     $scope.$apply(function () {
-                        // 一旦レコードリストをクリアする
-                        $scope.ClearList();
-
-                        // 結果格納
-                        $scope.dataLists = data;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
+                    });
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    $scope.$apply(function () {
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },
@@ -189,23 +195,27 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/SelectDS',
+            url: rootUrl + 'SelectAll_DS',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
-                if (data.error) {
+                if (data.Message != undefined) {
+                    // 正常終了
                     $scope.$apply(function () {
-                        // エラーメッセージ格納
-                        $scope.ErrorMessage = data.error;
+                        $scope.ClearList();
+                        $scope.dataLists = data.Result;
                     });
                 }
-                else {
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
                     $scope.$apply(function () {
-                        // 一旦レコードリストをクリアする
-                        $scope.ClearList();
-
-                        // 結果格納
-                        $scope.dataLists = data;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
+                    });
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    $scope.$apply(function () {
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },
@@ -233,23 +243,27 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/SelectDR',
+            url: rootUrl + 'SelectAll_DR',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
-                if (data.error) {
+                if (data.Message != undefined) {
+                    // 正常終了
                     $scope.$apply(function () {
-                        // エラーメッセージ格納
-                        $scope.ErrorMessage = data.error;
+                        $scope.ClearList();
+                        $scope.dataLists = data.Result;
                     });
                 }
-                else {
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
                     $scope.$apply(function () {
-                        // 一旦レコードリストをクリアする
-                        $scope.ClearList();
-
-                        // 結果格納
-                        $scope.dataLists = data;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
+                    });
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    $scope.$apply(function () {
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },
@@ -279,23 +293,27 @@
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/SelectDSQL',
+            url: rootUrl + 'SelectAll_DSQL',
             data: param,
             dataType: 'json',
             success: function (data, dataType) {
-                if (data.error) {
+                if (data.Message != undefined) {
+                    // 正常終了
                     $scope.$apply(function () {
-                        // エラーメッセージ格納
-                        $scope.ErrorMessage = data.error;
+                        $scope.ClearList();
+                        $scope.dataLists = data.Result;
                     });
                 }
-                else {
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
                     $scope.$apply(function () {
-                        // 一旦レコードリストをクリアする
-                        $scope.ClearList();
-
-                        // 結果格納
-                        $scope.dataLists = data;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
+                    });
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    $scope.$apply(function () {
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },
@@ -318,28 +336,39 @@
             ddlMode1: $scope.ddlMode1,
             ddlMode2: $scope.ddlMode2,
             ddlExRollback: $scope.ddlExRollback,
-            ShipperId: $scope.ShipperId
+            Shipper: {
+                ShipperID: $scope.ShipperID,
+                CompanyName: "",
+                Phone: "",
+            }
         };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/Select',
-            data: param,
+            url: rootUrl + 'Select',
+            data: JSON.stringify(param),
             dataType: 'json',
+            contentType: 'application/json',
             success: function (data, dataType) {
-                if (data.error) {
+                if (data.Message != undefined) {
+                    // 正常終了
                     $scope.$apply(function () {
-                        // エラーメッセージ格納
-                        $scope.ErrorMessage = data.error;
+                        $scope.ShipperID = data.Result.ShipperID;
+                        $scope.CompanyName = data.Result.CompanyName;
+                        $scope.Phone = data.Result.Phone;
                     });
                 }
-                else {
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
                     $scope.$apply(function () {
-                        // 結果格納
-                        $scope.ShipperId = data.shipperID;
-                        $scope.CompanyName = data.companyName;
-                        $scope.Phone = data.phone;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
+                    });
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    $scope.$apply(function () {
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },
@@ -362,27 +391,37 @@
             ddlMode1: $scope.ddlMode1,
             ddlMode2: $scope.ddlMode2,
             ddlExRollback: $scope.ddlExRollback,
-            CompanyName: $scope.CompanyName,
-            Phone: $scope.Phone
+            Shipper: {
+                ShipperID: "0",
+                CompanyName: $scope.CompanyName,
+                Phone: $scope.Phone
+            }
         };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/Insert',
-            data: param,
+            url: rootUrl + 'Insert',
+            data: JSON.stringify(param),
             dataType: 'json',
+            contentType: 'application/json',
             success: function (data, dataType) {
-                if (data.error) {
+                if (data.Message != undefined) {
+                    // 正常終了
                     $scope.$apply(function () {
-                        // エラーメッセージ格納
-                        $scope.ErrorMessage = data.error;
+                        $scope.Result = data.Message;
                     });
                 }
-                else {
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
                     $scope.$apply(function () {
-                        // 結果格納
-                        $scope.Result = data.message;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
+                    });
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    $scope.$apply(function () {
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },
@@ -404,28 +443,37 @@
             ddlMode1: $scope.ddlMode1,
             ddlMode2: $scope.ddlMode2,
             ddlExRollback: $scope.ddlExRollback,
-            ShipperId: $scope.ShipperId,
-            CompanyName: $scope.CompanyName,
-            Phone: $scope.Phone
+            Shipper: {
+                ShipperID: $scope.ShipperID,
+                CompanyName: $scope.CompanyName,
+                Phone: $scope.Phone
+            }
         };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/Update',
-            data: param,
+            url: rootUrl + 'Update',
+            data: JSON.stringify(param),
             dataType: 'json',
+            contentType: 'application/json',
             success: function (data, dataType) {
-                if (data.error) {
+                if (data.Message != undefined) {
+                    // 正常終了
                     $scope.$apply(function () {
-                        // エラーメッセージ格納
-                        $scope.ErrorMessage = data.error;
+                        $scope.Result = data.Message;
                     });
                 }
-                else {
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
                     $scope.$apply(function () {
-                        // 結果格納
-                        $scope.Result = data.message;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
+                    });
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    $scope.$apply(function () {
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },
@@ -448,26 +496,37 @@
             ddlMode1: $scope.ddlMode1,
             ddlMode2: $scope.ddlMode2,
             ddlExRollback: $scope.ddlExRollback,
-            ShipperId: $scope.ShipperId
+            Shipper: {
+                ShipperID: $scope.ShipperID,
+                CompanyName: "",
+                Phone: "",
+            }
         };
 
         // Ajax でリクエストを送信
         $.ajax({
             type: 'POST',
-            url: baseUrl + 'api/Delete',
-            data: param,
+            url: rootUrl + 'Delete',
+            data: JSON.stringify(param),
             dataType: 'json',
+            contentType: 'application/json',
             success: function (data, dataType) {
-                if (data.error) {
+                if (data.Message != undefined) {
+                    // 正常終了
                     $scope.$apply(function () {
-                        // エラーメッセージ格納
-                        $scope.ErrorMessage = data.error;
+                        $scope.Result = data.Message;
                     });
                 }
-                else {
+                else if (data.ErrorMSG != undefined) {
+                    // 業務例外
                     $scope.$apply(function () {
-                        // 結果格納
-                        $scope.Result = data.message;
+                        $scope.ErrorMessage = JSON.stringify(data.ErrorMSG);
+                    });
+                }
+                else if (data.ExceptionMSG != undefined) {
+                    // その他例外
+                    $scope.$apply(function () {
+                        $scope.ErrorMessage = JSON.stringify(data.ExceptionMSG);
                     });
                 }
             },

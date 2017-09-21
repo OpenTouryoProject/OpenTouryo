@@ -65,6 +65,8 @@
 //*  2015/06/25  Sai               Fixed the bug of removing 'AND' and 'OR' if the column name contains at the begininng  
 //*                                by adding space after "AND" and "OR" in the method 'DeleteFirstLogicalOperatoronWhereClause'  
 //*  2015/07/05  Sai               Added virtual property of IDbCommand
+//*  2017/08/11  西野 大介         BaseDam.ClearText ---> StringConverter.FormattingForOneLineLog
+//*  2017/09/06  西野 大介         IN句展開、ArrayListに加えて、List<T>のサポートを追加
 //**********************************************************************************
 
 using System;
@@ -74,8 +76,11 @@ using System.Text;
 using System.Data;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Diagnostics;
 
 using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Db
@@ -1745,12 +1750,12 @@ namespace Touryo.Infrastructure.Public.Db
                 {
                     // LISTタグ内のパラメタに対応するパラメタが設定されている。
 
-                    // パラメタの型は「ArrayList」型であること。
-                    if (obj.GetType() == typeof(ArrayList))
+                    // パラメタの型は「ArrayListかList<T>」型であること。
+                    if (obj is IList && !(obj is System.Array))
                     {
-                        // LISTタグ内のパラメタに対応するパラメタが「ArrayList」型である。
+                        // LISTタグ内のパラメタに対応するパラメタが「ArrayListかList<T>」型である。
 
-                        ArrayList al = (ArrayList)obj;
+                        IList al = (IList)obj;
 
                         if (al.Count == 0)
                         {
@@ -1798,7 +1803,7 @@ namespace Touryo.Infrastructure.Public.Db
                     }
                     else
                     {
-                        // LISTタグ内のパラメタに対応するパラメタが「ArrayList」型でない。
+                        // LISTタグ内のパラメタに対応するパラメタが「ArrayListかList<T>」型でない。
 
                         // この場合はパラメタ数１と判断し、パラメタを展開しないでLISTタグを削除（InnerTextで置換する）する。
                         // 2008/10/16---タグ編集処理（半角スペースを追加）
@@ -2820,19 +2825,40 @@ namespace Touryo.Infrastructure.Public.Db
                     dr[1] = aryString[0].Trim();
 
                     ArrayList al = new ArrayList();
+                    List<object> list = new List<object>();
 
-                    // ArrayList or 配列
+                    // ( ArrayList or List<T> ) or 配列
                     if (aryString[1].Trim().IndexOf("[]") == -1)
                     {
-                        // ArrayListの場合
-
+                        // ArrayList or List<T>の場合
                         for (int i = 2; i < aryString.Length; i++)
                         {
                             al.Add(this.StringToObject(aryString[1].Trim(), aryString[i].Trim()));
+                            list.Add(this.StringToObject(aryString[1].Trim(), aryString[i].Trim()));
                         }
 
-                        // パラメタ値（ArrayList）
-                        dr[2] = al;
+                        #region ArrayList or List<T> の テストコード
+
+                        // パラメタ値（ArrayList or ）
+                        //Int32と同じサイズのバイト配列にランダムな値を設定する
+                        //byte[] bs = new byte[sizeof(int)];
+                        byte[] bs = new byte[4];
+                        RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+                        rng.GetBytes(bs);
+
+                        //Int32に変換する
+                        if (BitConverter.ToInt32(bs, 0) % 2 == 0)
+                        {
+                            dr[2] = al;
+                            Debug.WriteLine("Test case of ArrayList.");
+                        }
+                        else
+                        {
+                            dr[2] = list;
+                            Debug.WriteLine("Test case of List<T>.");
+                        }
+
+                        #endregion
                     }
                     else
                     {
@@ -3045,173 +3071,18 @@ namespace Touryo.Infrastructure.Public.Db
         #region テキストデータをキレイにする
 
         /// <summary>
-        /// テキストデータをキレイにする。
+        /// 1行ログ出力用整形
         /// 
-        /// （１）
-        /// 以下の文字を半角空白に変換する。
-        /// キャリッジリターン文字とラインフィード文字
-        /// '\r\n'
-        /// キャリッジリターン文字
-        /// '\r'
-        /// ラインフィード文字
-        /// '\n'
-        /// 
-        /// （２）
-        /// ２文字以上連続する
-        /// 半角スペース・タブ（\t）は削除する。
-        /// （ただし、文字列中は、詰めない。）
+        /// 仕様については下記を参照
+        /// StringConverter.FormattingForOneLineLog
         /// </summary>
         /// <param name="text">テキスト</param>
         /// <returns>処理後のテキスト</returns>
         /// <remarks>派生のDamXXXから利用する。</remarks>
         protected string ClearText(string text)
         {
-            // StringBuilderを使用して
-            // インナーテキストをキレイにする。
-            StringBuilder sb = new StringBuilder();
-
-            // キャリッジリターン文字とラインフィード文字
-            // '\r\n'
-            // キャリッジリターン文字
-            // '\r'
-            // ラインフィード文字
-            // '\n'
-            //// タブ文字
-            //// '\t'
-            // を取り除く
-            text = text.Replace("\r\n", " ");
-            text = text.Replace('\r', ' ');
-            text = text.Replace('\n', ' ');
-            //text = text.Replace('\t', ' ');
-
-            // & → &amp;置換
-            text = text.Replace("&", "&amp;");
-            // エスケープされているシングルクォートを置換
-            text = text.Replace("''", "&SingleQuote2;");
-
-            // 連続した空白は、詰める
-            bool isConsecutive = false;
-
-            // 文字列中は、詰めない
-            bool isString = false;
-
-            foreach (char ch in text)
-            {
-                if (ch == '\'')
-                {
-                    // 出たり入ったり（文字列）。
-                    isString = !isString;
-                }
-
-                if (ch == ' ')
-                {
-                    if (isConsecutive && !isString)
-                    {
-                        // 空白（半角スペース）が連続＆文字列外。
-                        // → アペンドしない。
-                    }
-                    else
-                    {
-                        // 空白（半角スペース）が初回 or 文字列中。
-                        // → アペンドする。
-                        sb.Append(ch);
-
-                        // 空白（半角スペース）が連続しているフラグを立てる。
-                        isConsecutive = true;
-                    }
-                }
-                else if (ch == '\t')
-                {
-                    if (isConsecutive && !isString)
-                    {
-                        // 空白（タブ文字）が連続＆文字列外。
-                        // → アペンドしない。
-                    }
-                    else
-                    {
-                        // 空白（タブ文字）が初回 or 文字列中。
-                        // → アペンドする。
-                        sb.Append(ch);
-
-                        // 空白（タブ文字）が連続しているフラグを立てる。
-                        isConsecutive = true;
-                    }
-                }
-                else
-                {
-                    // アペンドする。
-                    sb.Append(ch);
-
-                    // 連続した空白が途切れたので、フラグを倒す。
-                    isConsecutive = false;
-                }
-            }
-
-            // 戻し（エスケープされているシングルクォートを置換）。
-            text = sb.ToString().Replace("&SingleQuote2;", "''");
-
-            // 戻し（& → &amp;置換）
-            text = text.Replace("&amp;", "&");
-
-            // 結果を返す
-            return text;
+            return StringConverter.FormattingForOneLineLog(text);
         }
-
-        //↓旧メソッド
-
-        //protected string ClearText(string text)
-        //{
-        //    // StringBuilderを使用して
-        //    // インナーテキストをキレイにする。
-        //    StringBuilder sb = new StringBuilder();
-
-        //    // キャリッジリターン文字とラインフィード文字
-        //    // '\r\n'
-        //    // キャリッジリターン文字
-        //    // '\r'
-        //    // ラインフィード文字
-        //    // '\n'
-        //    // タブ文字
-        //    // '\t'
-        //    // を取り除く
-        //    text = text.Replace("\r\n", " ");
-        //    text = text.Replace('\r', ' ');
-        //    text = text.Replace('\n', ' ');
-        //    text = text.Replace('\t', ' ');
-
-        //    // 連続した空白は、詰める
-        //    bool IsConsecutive = false;
-
-        //    foreach (char ch in text)
-        //    {
-        //        if (ch == ' ')
-        //        {
-        //            if (IsConsecutive == true)
-        //            {
-        //                // 空白が連続しているのでアペンドしない。
-        //            }
-        //            else
-        //            {
-        //                // 空白が初回なのでアペンドする。
-        //                sb.Append(ch);
-
-        //                // 空白が連続しているフラグを立てる。
-        //                IsConsecutive = true;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            // アペンドする。
-        //            sb.Append(ch);
-
-        //            // 連続した空白が途切れたので、フラグを倒す。
-        //            IsConsecutive = false;
-        //        }
-        //    }
-
-        //    // 結果を返す。
-        //    return sb.ToString();
-        //}
 
         #endregion
 
@@ -3413,5 +3284,17 @@ namespace Touryo.Infrastructure.Public.Db
         #endregion
 
         #endregion
+
+        ///// <summary>List(T)かどうか判別</summary>
+        ///// <param name="o">任意のオブジェクト</param>
+        ///// <returns>
+        ///// - List(T)である : true
+        ///// - List(T)でない : false
+        ///// </returns>
+        //protected bool IsList(object o)
+        //{
+        //    return (o.GetType().Name == "List`1"
+        //        && o.GetType().Namespace == "System.Collections.Generic"); // (o is List<object>)
+        //}
     }
 }

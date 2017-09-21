@@ -10,20 +10,43 @@ Documentation
 =============
 
 For the latest documentation see the Open Touryo web site at:
-https://github.com/OpenTouryoProject/OpenTouryoDocuments
+
+- OpenTouryoProject/OpenTouryoDocuments
+  https://github.com/OpenTouryoProject/OpenTouryoDocuments
+- FrontPage - Open æ£Ÿæ¢ Wiki
+  https://opentouryo.osscons.jp/
+
+Notes
+=============
+There is possibility that the library of OSS that not include
+source code automatically acquired from the Internet by the
+package manager like the NuGet. If so, must follow these licenses of the
+oss when using / distributing this OSS. Incidentally, the OSS that will
+be obtained by NuGet can be checked by referring to each package.cponfig.
 
 ==================================================
 
-ƒvƒƒWƒFƒNƒg‚Ìi’»ó‹µ 
+ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®é€²æ—çŠ¶æ³ 
 ============== 
 
-Open“—À‚ÍAŠ”®‰ïĞ“ú—§ƒ\ƒŠƒ…[ƒVƒ‡ƒ“ƒYiHitachi Solutions, Ltd.j‚ÌĞ“àƒc[ƒ‹‚Å‚ ‚éB 
-Open“—À‚ÍA2014”N4Œ‚ÉƒI[ƒvƒ“ƒ\[ƒX‚Æ‚µ‚ÄŒöŠJ‚³‚ê‚½B
-‚»‚µ‚ÄAOpen“—ÀProject‚É‚æ‚Á‚ÄƒtƒH[ƒN‚³‚ê‚½B
-WebƒTƒCƒgFhttp://www.osscons.jp/dotNetDevelopmentInfrastructure/
+Openæ£Ÿæ¢ã¯ã€æ ªå¼ä¼šç¤¾æ—¥ç«‹ã‚½ãƒªãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³ã‚ºï¼ˆHitachi Solutions, Ltd.ï¼‰ã®ç¤¾å†…ãƒ„ãƒ¼ãƒ«ã¨ã—ã¦é–‹ç™ºã•ã‚ŒãŸã€‚ 
+Openæ£Ÿæ¢ã¯ã€2014å¹´4æœˆã«ã‚ªãƒ¼ãƒ—ãƒ³ã‚½ãƒ¼ã‚¹ã¨ã—ã¦å…¬é–‹ã•ã‚ŒãŸã€‚
+ãã—ã¦ã€Openæ£Ÿæ¢Projectã«ã‚ˆã£ã¦ãƒ•ã‚©ãƒ¼ã‚¯ã•ã‚ŒãŸã€‚
+Webã‚µã‚¤ãƒˆï¼šhttp://www.osscons.jp/dotNetDevelopmentInfrastructure/
 
-ƒhƒLƒ…ƒƒ“ƒe[ƒVƒ‡ƒ“ 
+ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ 
 ============= 
 
-ÅV‚Ìƒ}ƒjƒ…ƒAƒ‹‚ÍAOpen“—À‚ÌWebƒTƒCƒg‚ğQÆ‚µ‚Ä‚­‚¾‚³‚¢B 
-https://github.com/OpenTouryoProject/OpenTouryoDocuments
+æœ€æ–°ã®ãƒãƒ‹ãƒ¥ã‚¢ãƒ«ã¯ã€Openæ£Ÿæ¢ã®Webã‚µã‚¤ãƒˆã‚’å‚ç…§ã—ã¦ãã ã•ã„ã€‚ 
+
+- OpenTouryoProject/OpenTouryoDocuments
+  https://github.com/OpenTouryoProject/OpenTouryoDocuments
+- FrontPage - Open æ£Ÿæ¢ Wiki
+  https://opentouryo.osscons.jp/
+
+æ³¨è¨˜
+=============
+ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã‚’å«ã¾ãªã„OSSã®ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã¯ã€NuGetã®ã‚ˆã†ãªãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ãƒãƒãƒ¼ã‚¸ãƒ£
+ã«ã‚ˆã£ã¦ã‚¤ãƒ³ã‚¿ãƒ¼ãƒãƒƒãƒˆã‹ã‚‰è‡ªå‹•çš„ã«å–å¾—ã•ã‚Œã‚‹å¯èƒ½æ€§ãŒã‚ã‚Šã¾ã™ã€‚ ãã®å ´åˆã¯ã€
+ã“ã®OSSã‚’ä½¿ç”¨/é…å¸ƒã™ã‚‹éš›ã«ã¯ã€ã“ã‚Œã‚‰ã®OSSã®ãƒ©ã‚¤ã‚»ãƒ³ã‚¹ã«å¾“ã‚ãªã‘ã‚Œã°ãªã‚Šã¾ã›ã‚“ã€‚
+ã¡ãªã¿ã«ã€NuGetãŒå–å¾—ã™ã‚‹OSSã¯ã€ãã‚Œãã‚Œã®package.cponfigã‚’å‚ç…§ã™ã‚‹ã“ã¨ã§ç¢ºèªã§ãã¾ã™ã€‚

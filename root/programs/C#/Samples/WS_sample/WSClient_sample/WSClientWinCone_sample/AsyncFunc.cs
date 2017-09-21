@@ -26,6 +26,9 @@ namespace WSClientWinCone_sample
 {
     public class AsyncFunc : MyBaseAsyncFunc
     {
+        /// <summary>サービスの論理名称</summary>
+        public string LogicalName;
+
         /// <summary>コンストラクタ</summary>
         /// <param name="_this">WPFやWinFormの要素</param>
         public AsyncFunc(object _this) : base(_this) { }
@@ -47,11 +50,11 @@ namespace WSClientWinCone_sample
             TestReturnValue testReturnValue;
 
             // 呼出し制御部品（スレッドセーフでないため副スレッド内で作る）
-            CallController callCtrl = new CallController("");
+            CallController callCtrl = new CallController(Program.AccessToken);
 
             // Invoke
             testReturnValue = (TestReturnValue)callCtrl.Invoke(
-                "testWebService", testParameterValue);
+                this.LogicalName, testParameterValue);
 
             //// 進捗表示のテスト
             //this.ChangeProgress = delegate(object o)

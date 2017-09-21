@@ -72,6 +72,8 @@
             this.btnButton11 = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
             this.textBox4 = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.ddlTransmission = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -318,10 +320,24 @@
             resources.ApplyResources(this.textBox4, "textBox4");
             this.textBox4.Name = "textBox4";
             // 
+            // label12
+            // 
+            resources.ApplyResources(this.label12, "label12");
+            this.label12.Name = "label12";
+            // 
+            // ddlTransmission
+            // 
+            this.ddlTransmission.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ddlTransmission.FormattingEnabled = true;
+            resources.ApplyResources(this.ddlTransmission, "ddlTransmission");
+            this.ddlTransmission.Name = "ddlTransmission";
+            // 
             // Form1
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.ddlTransmission);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.textBox7);
             this.Controls.Add(this.btnButton12);
@@ -420,6 +436,8 @@
         private System.Windows.Forms.Button btnButton11;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.ComboBox ddlTransmission;
     }
 }
 

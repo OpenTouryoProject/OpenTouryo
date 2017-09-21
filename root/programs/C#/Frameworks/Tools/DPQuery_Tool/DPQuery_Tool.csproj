@@ -62,11 +62,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DamManagedOdp">
+      <HintPath>..\..\Infrastructure\Build\DamManagedOdp.dll</HintPath>
+    </Reference>
     <Reference Include="DamMySQL">
       <HintPath>..\..\Infrastructure\Build\DamMySQL.dll</HintPath>
-    </Reference>
-    <Reference Include="DamOraOdp">
-      <HintPath>..\..\Infrastructure\Build\DamOraOdp.dll</HintPath>
     </Reference>
     <Reference Include="DamPstGrS">
       <HintPath>..\..\Infrastructure\Build\DamPstGrS.dll</HintPath>
@@ -79,9 +79,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Infrastructure\Build\Npgsql.dll</HintPath>
     </Reference>
-    <Reference Include="Oracle.DataAccess, Version=4.112.3.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Infrastructure\Build\Oracle.DataAccess.dll</HintPath>
+    <Reference Include="Oracle.ManagedDataAccess">
+      <HintPath>..\..\Infrastructure\Build\Oracle.ManagedDataAccess.dll</HintPath>
     </Reference>
     <Reference Include="Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
