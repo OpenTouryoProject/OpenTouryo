@@ -83,7 +83,7 @@ namespace Touryo.Infrastructure.Business.Presentation
         public async Task AuthenticateAsync(HttpAuthenticationContext authenticationContext, CancellationToken cancellationToken)
         {
             // 認証ユーザ情報をメンバにロードする
-            await this.GetUserInfo(authenticationContext);
+            await this.GetUserInfoAsync(authenticationContext);
         }
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 
         /// <summary>ユーザ情報を取得する</summary>
         /// <param name="authenticationContext">HttpAuthenticationContext</param>
-        private async Task GetUserInfo(HttpAuthenticationContext authenticationContext)
+        private async Task GetUserInfoAsync(HttpAuthenticationContext authenticationContext)
         {
             // カスタム認証処理 --------------------------------------------
             // Authorization: Bearer ヘッダから

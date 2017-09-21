@@ -69,7 +69,7 @@ namespace ASPNETWebService.Controllers
         methods: "*",
         // 
         SupportsCredentials = true)]
-    [MyBaseApiControllerAsync()]
+    [MyBaseAsyncApiController()]
     public class JsonController : ApiController
     {
         #region テスト用
@@ -120,7 +120,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseAsyncApiController.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -176,7 +176,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseAsyncApiController.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -244,7 +244,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseAsyncApiController.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -312,7 +312,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseAsyncApiController.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -383,7 +383,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseAsyncApiController.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -454,7 +454,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseAsyncApiController.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -516,7 +516,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseAsyncApiController.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -576,7 +576,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseAsyncApiController.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -637,7 +637,7 @@ namespace ASPNETWebService.Controllers
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseAsyncApiController.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
