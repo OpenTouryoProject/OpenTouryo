@@ -29,7 +29,7 @@ be obtained by NuGet can be checked by referring to each package.cponfig.
 プロジェクトの進捗状況 
 ============== 
 
-Open棟梁は、株式会社日立ソリューションズ（Hitachi Solutions, Ltd.）の社内ツールである。 
+Open棟梁は、株式会社日立ソリューションズ（Hitachi Solutions, Ltd.）の社内ツールとして開発された。 
 Open棟梁は、2014年4月にオープンソースとして公開された。
 そして、Open棟梁Projectによってフォークされた。
 Webサイト：http://www.osscons.jp/dotNetDevelopmentInfrastructure/
