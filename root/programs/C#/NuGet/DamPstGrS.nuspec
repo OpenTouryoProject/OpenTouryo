@@ -3,7 +3,7 @@
   <metadata>
     <id>Touryo.Infrastructure.Public.Db.DamPstGrS</id>
     <title>Touryo.DamPstGrS</title>
-    <version>2.1.1</version>
+    <version>2.1.2</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
     <licenseUrl>https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LICENSE.txt</licenseUrl>
@@ -16,6 +16,7 @@
     <copyright></copyright>
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
+      <dependency id="Touryo.Infrastructure.Public" version="2.1.2" />
       <dependency id="Npgsql" version="3.2.5" />
     </dependencies>
   </metadata>

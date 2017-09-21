@@ -3,7 +3,7 @@
   <metadata>
     <id>Touryo.Infrastructure.Public</id>
     <title>OpenTouryo.Public</title>
-    <version>2.1.1</version>
+    <version>2.1.2</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
     <licenseUrl>https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LICENSE.txt</licenseUrl>
@@ -25,9 +25,11 @@
     <file src="in\net46\Public.dll" target="lib\net46" />
     <file src="in\net46\Public.pdb" target="lib\net46" />
     <file src="in\net46\Public.xml" target="lib\net46" />
+    <file src="in\net46\ja-JP\Public.resources.dll" target="lib\net46\ja-JP" />
 
     <file src="in\net47\Public.dll" target="lib\net47" />
     <file src="in\net47\Public.pdb" target="lib\net47" />
     <file src="in\net47\Public.xml" target="lib\net47" />
+    <file src="in\net47\ja-JP\Public.resources.dll" target="lib\net47\ja-JP" />
   </files>
 </package>
