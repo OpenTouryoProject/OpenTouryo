@@ -44,6 +44,8 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using System.Net.Http;
 
+using Microsoft.Owin;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -57,7 +59,7 @@ namespace Touryo.Infrastructure.Business.Presentation
     /// <summary>非同期 ASP.NET WebAPI用 ベーククラス２</summary>
     /// <remarks>（ActionFilterAttributeとして）自由に利用できる。</remarks>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-    public class MyBaseApiControllerAsync : ActionFilterAttribute, IAuthenticationFilter, IActionFilter, IExceptionFilter
+    public class MyBaseAsyncApiController : ActionFilterAttribute, IAuthenticationFilter, IActionFilter, IExceptionFilter
     {
         /// <summary>性能測定</summary>
         private PerformanceRecorder perfRec;
@@ -109,7 +111,7 @@ namespace Touryo.Infrastructure.Business.Presentation
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseAsyncApiController.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             // 権限チェック ------------------------------------------------
             // ・・・
@@ -171,7 +173,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseAsyncApiController.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             string strLogMessage =
                 "," + userName + //this.UserInfo.UserName +
@@ -224,7 +226,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
-            MyBaseApiControllerAsync.GetClaims(out userName, out roles, out scopes, out ipAddress);
+            MyBaseAsyncApiController.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
             string strLogMessage =
                 "," + userName + // (this.UserInfo != null ? this.UserInfo.UserName : "null") +
@@ -300,7 +302,7 @@ namespace Touryo.Infrastructure.Business.Presentation
                             new Claim(ClaimTypes.Name, sub),
                             new Claim(ClaimTypes.Role, string.Join(",", roles)),
                             new Claim("Scopes", string.Join(",", scopes)),
-                            new Claim("IpAddress", MyBaseApiControllerAsync.GetClientIpAddress(authenticationContext.Request))
+                            new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress(authenticationContext.Request))
                         };
 
                     // The request message contains valid credential
@@ -326,7 +328,7 @@ namespace Touryo.Infrastructure.Business.Presentation
                 new Claim(ClaimTypes.Name, "未認証"),
                 new Claim(ClaimTypes.Role, ""),
                 new Claim("Scopes", ""),
-                new Claim("IpAddress", MyBaseApiControllerAsync.GetClientIpAddress(authenticationContext.Request))
+                new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress(authenticationContext.Request))
             };
 
             authenticationContext.Principal = new ClaimsPrincipal(new List<ClaimsIdentity> { new ClaimsIdentity(claims, "Token") });
@@ -351,6 +353,14 @@ namespace Touryo.Infrastructure.Business.Presentation
                 if (request.Properties.ContainsKey("MS_HttpContext"))
                 {
                     clientIp = ((HttpContextWrapper)request.Properties["MS_HttpContext"]).Request.UserHostAddress;
+                }
+                else if (request.Properties.ContainsKey("MS_OwinContext"))
+                {
+                    OwinContext owinContext = request.Properties["MS_OwinContext"] as OwinContext;
+                    if (owinContext != null)
+                    {
+                        clientIp = owinContext.Request.RemoteIpAddress;
+                    }
                 }
             }
 
