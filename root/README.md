@@ -124,7 +124,7 @@ Legend:
       <td>3_Build_Framework.bat</td><td>Build the framework. (Base class 1 and base class 2)</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_NuGet_net47.bat</td><td>Build the framework to make NuGet package of net47. (Base class 1 )</td><td>△<span style="color: red"><sup>*4</sup></span></td><td></td>
+      <td>3_Build_NuGet_net47.bat</td><td>Build the framework (Base class 1) to make NuGet package that targets .NET Framework 4.7.</td><td>△<span style="color: red"><sup>*4</sup></span></td><td></td>
     </tr>
     <tr>
       <td>3_Build_PortableClassLibrary.bat</td><td>Build the portable class library.</td><td>△<span style="color: red"><sup>*1</sup></span></td><td></td>
