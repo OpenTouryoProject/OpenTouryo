@@ -212,105 +212,105 @@ namespace WebForms_Sample
 
             #region Oracle
 
-            #region ODP2_NT
+            #region ODP_NT
 
             // Damを生成
             damWork = new DamManagedOdp();
             // Damを初期化
-            BaseLogic.InitDam("ODP2_NT", damWork);
+            BaseLogic.InitDam("ODP_NT", damWork);
             // Damを設定
-            this.SetDam("ODP2_NT", damWork);
+            this.SetDam("ODP_NT", damWork);
 
             // インサート
             // Damを直接使用することもできるが、
             // 通常は、データアクセスにはDaoを使用する。        
-            cmnDao = new CmnDao(this.GetDam("ODP2_NT"));
-            cmnDao.SQLText = "INSERT INTO Shippers(ShipperID, CompanyName, Phone) VALUES(TS_ShipperID.NEXTVAL, 'ODP2_NT', 'ODP2_NT')";
+            cmnDao = new CmnDao(this.GetDam("ODP_NT"));
+            cmnDao.SQLText = "INSERT INTO Shippers(ShipperID, CompanyName, Phone) VALUES(TS_ShipperID.NEXTVAL, 'ODP_NT', 'ODP_NT')";
             obj = (object)cmnDao.ExecSelectScalar();
 
-            //this.GetDam("ODP2_NT").CommitTransaction();
-            //this.GetDam("ODP2_NT").ConnectionClose();
+            //this.GetDam("ODP_NT").CommitTransaction();
+            //this.GetDam("ODP_NT").ConnectionClose();
 
             #endregion
 
-            #region ODP2_UC
+            #region ODP_UC
 
             // ★ サポートされない分離レベル
 
             #endregion
 
-            #region ODP2_RC
+            #region ODP_RC
 
             // Damを生成
             damWork = new DamManagedOdp();
             // Damを初期化
-            BaseLogic.InitDam("ODP2_RC", damWork);
+            BaseLogic.InitDam("ODP_RC", damWork);
             // Damを設定
-            this.SetDam("ODP2_RC", damWork);
+            this.SetDam("ODP_RC", damWork);
 
             // インサート
             // Damを直接使用することもできるが、
             // 通常は、データアクセスにはDaoを使用する。        
-            cmnDao = new CmnDao(this.GetDam("ODP2_RC"));
-            cmnDao.SQLText = "INSERT INTO Shippers(ShipperID, CompanyName, Phone) VALUES(TS_ShipperID.NEXTVAL, 'ODP2_RC', 'ODP2_RC')";
+            cmnDao = new CmnDao(this.GetDam("ODP_RC"));
+            cmnDao.SQLText = "INSERT INTO Shippers(ShipperID, CompanyName, Phone) VALUES(TS_ShipperID.NEXTVAL, 'ODP_RC', 'ODP_RC')";
             obj = (object)cmnDao.ExecSelectScalar();
 
-            //this.GetDam("ODP2_RC").CommitTransaction();
-            //this.GetDam("ODP2_RC").ConnectionClose();
+            //this.GetDam("ODP_RC").CommitTransaction();
+            //this.GetDam("ODP_RC").ConnectionClose();
 
             #endregion
 
-            #region ODP2_RR
+            #region ODP_RR
 
             // ★ サポートされない分離レベル
 
             #endregion
 
-            #region ODP2_SZ
+            #region ODP_SZ
 
             // Damを生成
             damWork = new DamManagedOdp();
             // Damを初期化
-            BaseLogic.InitDam("ODP2_SZ", damWork);
+            BaseLogic.InitDam("ODP_SZ", damWork);
             // Damを設定
-            this.SetDam("ODP2_SZ", damWork);
+            this.SetDam("ODP_SZ", damWork);
 
             // インサート
             // Damを直接使用することもできるが、
             // 通常は、データアクセスにはDaoを使用する。        
-            cmnDao = new CmnDao(this.GetDam("ODP2_SZ"));
-            cmnDao.SQLText = "INSERT INTO Shippers(ShipperID, CompanyName, Phone) VALUES(TS_ShipperID.NEXTVAL, 'ODP2_SZ', 'ODP2_SZ')";
+            cmnDao = new CmnDao(this.GetDam("ODP_SZ"));
+            cmnDao.SQLText = "INSERT INTO Shippers(ShipperID, CompanyName, Phone) VALUES(TS_ShipperID.NEXTVAL, 'ODP_SZ', 'ODP_SZ')";
             obj = (object)cmnDao.ExecSelectScalar();
 
-            //this.GetDam("ODP2_SZ").CommitTransaction();
-            //this.GetDam("ODP2_SZ").ConnectionClose();
+            //this.GetDam("ODP_SZ").CommitTransaction();
+            //this.GetDam("ODP_SZ").ConnectionClose();
 
             #endregion
 
-            #region ODP2_SS
+            #region ODP_SS
 
             // ★ サポートされない分離レベル
 
             #endregion
 
-            #region ODP2_DF
+            #region ODP_DF
 
             // Damを生成
             damWork = new DamManagedOdp();
             // Damを初期化
-            BaseLogic.InitDam("ODP2_DF", damWork);
+            BaseLogic.InitDam("ODP_DF", damWork);
             // Damを設定
-            this.SetDam("ODP2_DF", damWork);
+            this.SetDam("ODP_DF", damWork);
 
             // インサート
             // Damを直接使用することもできるが、
             // 通常は、データアクセスにはDaoを使用する。        
-            cmnDao = new CmnDao(this.GetDam("ODP2_DF"));
-            cmnDao.SQLText = "INSERT INTO Shippers(ShipperID, CompanyName, Phone) VALUES(TS_ShipperID.NEXTVAL, 'ODP2_DF', 'ODP2_DF')";
+            cmnDao = new CmnDao(this.GetDam("ODP_DF"));
+            cmnDao.SQLText = "INSERT INTO Shippers(ShipperID, CompanyName, Phone) VALUES(TS_ShipperID.NEXTVAL, 'ODP_DF', 'ODP_DF')";
             obj = (object)cmnDao.ExecSelectScalar();
 
-            //this.GetDam("ODP2_DF").CommitTransaction();
-            //this.GetDam("ODP2_DF").ConnectionClose();
+            //this.GetDam("ODP_DF").CommitTransaction();
+            //this.GetDam("ODP_DF").ConnectionClose();
 
             #endregion
 
@@ -475,13 +475,13 @@ namespace WebForms_Sample
                 this.GetDam("SQL_SS").RollbackTransaction();
                 this.GetDam("SQL_DF").RollbackTransaction();
 
-                this.GetDam("ODP2_NT").RollbackTransaction();
-                //this.GetDam("ODP2_UC").RollbackTransaction();
-                this.GetDam("ODP2_RC").RollbackTransaction();
-                //this.GetDam("ODP2_RR").RollbackTransaction();
-                this.GetDam("ODP2_SZ").RollbackTransaction();
-                //this.GetDam("ODP2_SS").RollbackTransaction();
-                this.GetDam("ODP2_DF").RollbackTransaction();
+                this.GetDam("ODP_NT").RollbackTransaction();
+                //this.GetDam("ODP_UC").RollbackTransaction();
+                this.GetDam("ODP_RC").RollbackTransaction();
+                //this.GetDam("ODP_RR").RollbackTransaction();
+                this.GetDam("ODP_SZ").RollbackTransaction();
+                //this.GetDam("ODP_SS").RollbackTransaction();
+                this.GetDam("ODP_DF").RollbackTransaction();
 
                 this.GetDam("MCN_NT").RollbackTransaction();
                 this.GetDam("MCN_UC").RollbackTransaction();
@@ -511,13 +511,13 @@ namespace WebForms_Sample
                 this.GetDam("SQL_SS").RollbackTransaction();
                 this.GetDam("SQL_DF").RollbackTransaction();
 
-                this.GetDam("ODP2_NT").RollbackTransaction();
-                //this.GetDam("ODP2_UC").RollbackTransaction();
-                this.GetDam("ODP2_RC").RollbackTransaction();
-                //this.GetDam("ODP2_RR").RollbackTransaction();
-                this.GetDam("ODP2_SZ").RollbackTransaction();
-                //this.GetDam("ODP2_SS").RollbackTransaction();
-                this.GetDam("ODP2_DF").RollbackTransaction();
+                this.GetDam("ODP_NT").RollbackTransaction();
+                //this.GetDam("ODP_UC").RollbackTransaction();
+                this.GetDam("ODP_RC").RollbackTransaction();
+                //this.GetDam("ODP_RR").RollbackTransaction();
+                this.GetDam("ODP_SZ").RollbackTransaction();
+                //this.GetDam("ODP_SS").RollbackTransaction();
+                this.GetDam("ODP_DF").RollbackTransaction();
 
                 this.GetDam("MCN_NT").RollbackTransaction();
                 this.GetDam("MCN_UC").RollbackTransaction();
@@ -539,13 +539,13 @@ namespace WebForms_Sample
                 this.GetDam("SQL_SS").ConnectionClose();
                 this.GetDam("SQL_DF").ConnectionClose();
 
-                this.GetDam("ODP2_NT").ConnectionClose();
-                //this.GetDam("ODP2_UC").ConnectionClose();
-                this.GetDam("ODP2_RC").ConnectionClose();
-                //this.GetDam("ODP2_RR").ConnectionClose();
-                this.GetDam("ODP2_SZ").ConnectionClose();
-                //this.GetDam("ODP2_SS").ConnectionClose();
-                this.GetDam("ODP2_DF").ConnectionClose();
+                this.GetDam("ODP_NT").ConnectionClose();
+                //this.GetDam("ODP_UC").ConnectionClose();
+                this.GetDam("ODP_RC").ConnectionClose();
+                //this.GetDam("ODP_RR").ConnectionClose();
+                this.GetDam("ODP_SZ").ConnectionClose();
+                //this.GetDam("ODP_SS").ConnectionClose();
+                this.GetDam("ODP_DF").ConnectionClose();
 
                 this.GetDam("MCN_NT").ConnectionClose();
                 this.GetDam("MCN_UC").ConnectionClose();
@@ -575,13 +575,13 @@ namespace WebForms_Sample
                 this.GetDam("SQL_SS").RollbackTransaction();
                 this.GetDam("SQL_DF").RollbackTransaction();
 
-                this.GetDam("ODP2_NT").RollbackTransaction();
-                //this.GetDam("ODP2_UC").RollbackTransaction();
-                this.GetDam("ODP2_RC").RollbackTransaction();
-                //this.GetDam("ODP2_RR").RollbackTransaction();
-                this.GetDam("ODP2_SZ").RollbackTransaction();
-                //this.GetDam("ODP2_SS").RollbackTransaction();
-                this.GetDam("ODP2_DF").RollbackTransaction();
+                this.GetDam("ODP_NT").RollbackTransaction();
+                //this.GetDam("ODP_UC").RollbackTransaction();
+                this.GetDam("ODP_RC").RollbackTransaction();
+                //this.GetDam("ODP_RR").RollbackTransaction();
+                this.GetDam("ODP_SZ").RollbackTransaction();
+                //this.GetDam("ODP_SS").RollbackTransaction();
+                this.GetDam("ODP_DF").RollbackTransaction();
 
                 this.GetDam("MCN_NT").RollbackTransaction();
                 this.GetDam("MCN_UC").RollbackTransaction();
@@ -603,13 +603,13 @@ namespace WebForms_Sample
                 this.GetDam("SQL_SS").ConnectionClose();
                 this.GetDam("SQL_DF").ConnectionClose();
 
-                this.GetDam("ODP2_NT").ConnectionClose();
-                //this.GetDam("ODP2_UC").ConnectionClose();
-                this.GetDam("ODP2_RC").ConnectionClose();
-                //this.GetDam("ODP2_RR").ConnectionClose();
-                this.GetDam("ODP2_SZ").ConnectionClose();
-                //this.GetDam("ODP2_SS").ConnectionClose();
-                this.GetDam("ODP2_DF").ConnectionClose();
+                this.GetDam("ODP_NT").ConnectionClose();
+                //this.GetDam("ODP_UC").ConnectionClose();
+                this.GetDam("ODP_RC").ConnectionClose();
+                //this.GetDam("ODP_RR").ConnectionClose();
+                this.GetDam("ODP_SZ").ConnectionClose();
+                //this.GetDam("ODP_SS").ConnectionClose();
+                this.GetDam("ODP_DF").ConnectionClose();
 
                 this.GetDam("MCN_NT").ConnectionClose();
                 this.GetDam("MCN_UC").ConnectionClose();
@@ -631,13 +631,13 @@ namespace WebForms_Sample
                 this.SetDam("SQL_SS", null);
                 this.SetDam("SQL_DF", null);
 
-                this.SetDam("ODP2_NT", null);
-                //this.SetDam("ODP2_UC",null);
-                this.SetDam("ODP2_RC", null);
-                //this.SetDam("ODP2_RR",null);
-                this.SetDam("ODP2_SZ", null);
-                //this.SetDam("ODP2_SS",null);
-                this.SetDam("ODP2_DF", null);
+                this.SetDam("ODP_NT", null);
+                //this.SetDam("ODP_UC",null);
+                this.SetDam("ODP_RC", null);
+                //this.SetDam("ODP_RR",null);
+                this.SetDam("ODP_SZ", null);
+                //this.SetDam("ODP_SS",null);
+                this.SetDam("ODP_DF", null);
 
                 this.SetDam("MCN_NT", null);
                 this.SetDam("MCN_UC", null);

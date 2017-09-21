@@ -239,9 +239,9 @@ Public Class TestMTC
 
         '#End Region
 
-        '#Region "ODP2_NT"
+        '#Region "ODP_NT"
 
-        BaseLogic.InitDam("ODP2_NT", damWork)
+        BaseLogic.InitDam("ODP_NT", damWork)
         Me.SetDam(damWork)
 
         ' 行数
@@ -256,15 +256,15 @@ Public Class TestMTC
 
         '#End Region
 
-        '#Region "ODP2_UC"
+        '#Region "ODP_UC"
 
         ' ★ サポートされない分離レベル
 
         '#End Region
 
-        '#Region "ODP2_RC"
+        '#Region "ODP_RC"
 
-        BaseLogic.InitDam("ODP2_RC", damWork)
+        BaseLogic.InitDam("ODP_RC", damWork)
         Me.SetDam(damWork)
 
         ' 行数
@@ -291,15 +291,15 @@ Public Class TestMTC
 
         '#End Region
 
-        '#Region "ODP2_RR"
+        '#Region "ODP_RR"
 
         ' ★ サポートされない分離レベル
 
         '#End Region
 
-        '#Region "ODP2_SZ"
+        '#Region "ODP_SZ"
 
-        BaseLogic.InitDam("ODP2_SZ", damWork)
+        BaseLogic.InitDam("ODP_SZ", damWork)
         Me.SetDam(damWork)
 
         ' 行数
@@ -314,15 +314,15 @@ Public Class TestMTC
 
         '#End Region
 
-        '#Region "ODP2_SS"
+        '#Region "ODP_SS"
 
         ' ★ サポートされない分離レベル
 
         '#End Region
 
-        '#Region "ODP2_DF"
+        '#Region "ODP_DF"
 
-        BaseLogic.InitDam("ODP2_DF", damWork)
+        BaseLogic.InitDam("ODP_DF", damWork)
         Me.SetDam(damWork)
 
         ' 行数

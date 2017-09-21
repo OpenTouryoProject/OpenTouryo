@@ -151,8 +151,7 @@
                         トランザクショングループIDを設定<br />
                         <cc1:WebCustomDropDownList ID="ddlTxGpID" runat="server">
                             <asp:ListItem Value="SQL">SQL（SQLClient）</asp:ListItem>
-                            <asp:ListItem Value="ODP1">ODP1（ODP.NET1）</asp:ListItem>
-                            <asp:ListItem Value="ODP2">ODP2（ODP.NET2）</asp:ListItem>
+                            <asp:ListItem Value="ODP">ODP（ODP.NET）</asp:ListItem>
                             <asp:ListItem Value="DB2">DB2（DB2.NET）</asp:ListItem>
                             <asp:ListItem Value="MCN">MCN（MySQL Cnn/NET）</asp:ListItem>
                         </cc1:WebCustomDropDownList><br />

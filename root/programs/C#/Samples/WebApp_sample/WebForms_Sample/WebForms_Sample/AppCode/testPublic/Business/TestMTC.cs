@@ -243,9 +243,9 @@ namespace WebForms_Sample
 
             #endregion
 
-            #region ODP2_NT
+            #region ODP_NT
 
-            BaseLogic.InitDam("ODP2_NT", damWork);
+            BaseLogic.InitDam("ODP_NT", damWork);
             this.SetDam(damWork);
 
             // 行数
@@ -260,15 +260,15 @@ namespace WebForms_Sample
 
             #endregion
 
-            #region ODP2_UC
+            #region ODP_UC
 
             // ★ サポートされない分離レベル
 
             #endregion
 
-            #region ODP2_RC
+            #region ODP_RC
 
-            BaseLogic.InitDam("ODP2_RC", damWork);
+            BaseLogic.InitDam("ODP_RC", damWork);
             this.SetDam(damWork);
 
             // 行数
@@ -295,15 +295,15 @@ namespace WebForms_Sample
 
             #endregion
 
-            #region ODP2_RR
+            #region ODP_RR
 
             // ★ サポートされない分離レベル
 
             #endregion
 
-            #region ODP2_SZ
+            #region ODP_SZ
 
-            BaseLogic.InitDam("ODP2_SZ", damWork);
+            BaseLogic.InitDam("ODP_SZ", damWork);
             this.SetDam(damWork);
 
             // 行数
@@ -318,15 +318,15 @@ namespace WebForms_Sample
 
             #endregion
 
-            #region ODP2_SS
+            #region ODP_SS
 
             // ★ サポートされない分離レベル
 
             #endregion
 
-            #region ODP2_DF
+            #region ODP_DF
 
-            BaseLogic.InitDam("ODP2_DF", damWork);
+            BaseLogic.InitDam("ODP_DF", damWork);
             this.SetDam(damWork);
 
             // 行数

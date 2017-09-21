@@ -209,105 +209,105 @@ Public Class TestMTC_mcn
 
         '#Region "Oracle"
 
-        '#Region "ODP2_NT"
+        '#Region "ODP_NT"
 
         ' Damを生成
         damWork = New DamManagedOdp()
         ' Damを初期化
-        BaseLogic.InitDam("ODP2_NT", damWork)
+        BaseLogic.InitDam("ODP_NT", damWork)
         ' Damを設定
-        Me.SetDam("ODP2_NT", damWork)
+        Me.SetDam("ODP_NT", damWork)
 
         ' インサート
         ' Damを直接使用することもできるが、
         ' 通常は、データアクセスにはDaoを使用する。        
-        cmnDao = New CmnDao(Me.GetDam("ODP2_NT"))
-        cmnDao.SQLText = "INSERT INTO Shippers(ShipperID, CompanyName, Phone) VALUES(TS_ShipperID.NEXTVAL, 'ODP2_NT', 'ODP2_NT')"
+        cmnDao = New CmnDao(Me.GetDam("ODP_NT"))
+        cmnDao.SQLText = "INSERT INTO Shippers(ShipperID, CompanyName, Phone) VALUES(TS_ShipperID.NEXTVAL, 'ODP_NT', 'ODP_NT')"
         obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
 
-        'this.GetDam("ODP2_NT").CommitTransaction();
-        'this.GetDam("ODP2_NT").ConnectionClose();
+        'this.GetDam("ODP_NT").CommitTransaction();
+        'this.GetDam("ODP_NT").ConnectionClose();
 
         '#End Region
 
-        '#Region "ODP2_UC"
+        '#Region "ODP_UC"
 
         ' ★ サポートされない分離レベル
 
         '#End Region
 
-        '#Region "ODP2_RC"
+        '#Region "ODP_RC"
 
         ' Damを生成
         damWork = New DamManagedOdp()
         ' Damを初期化
-        BaseLogic.InitDam("ODP2_RC", damWork)
+        BaseLogic.InitDam("ODP_RC", damWork)
         ' Damを設定
-        Me.SetDam("ODP2_RC", damWork)
+        Me.SetDam("ODP_RC", damWork)
 
         ' インサート
         ' Damを直接使用することもできるが、
         ' 通常は、データアクセスにはDaoを使用する。        
-        cmnDao = New CmnDao(Me.GetDam("ODP2_RC"))
-        cmnDao.SQLText = "INSERT INTO Shippers(ShipperID, CompanyName, Phone) VALUES(TS_ShipperID.NEXTVAL, 'ODP2_RC', 'ODP2_RC')"
+        cmnDao = New CmnDao(Me.GetDam("ODP_RC"))
+        cmnDao.SQLText = "INSERT INTO Shippers(ShipperID, CompanyName, Phone) VALUES(TS_ShipperID.NEXTVAL, 'ODP_RC', 'ODP_RC')"
         obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
 
-        'this.GetDam("ODP2_RC").CommitTransaction();
-        'this.GetDam("ODP2_RC").ConnectionClose();
+        'this.GetDam("ODP_RC").CommitTransaction();
+        'this.GetDam("ODP_RC").ConnectionClose();
 
         '#End Region
 
-        '#Region "ODP2_RR"
+        '#Region "ODP_RR"
 
         ' ★ サポートされない分離レベル
 
         '#End Region
 
-        '#Region "ODP2_SZ"
+        '#Region "ODP_SZ"
 
         ' Damを生成
         damWork = New DamManagedOdp()
         ' Damを初期化
-        BaseLogic.InitDam("ODP2_SZ", damWork)
+        BaseLogic.InitDam("ODP_SZ", damWork)
         ' Damを設定
-        Me.SetDam("ODP2_SZ", damWork)
+        Me.SetDam("ODP_SZ", damWork)
 
         ' インサート
         ' Damを直接使用することもできるが、
         ' 通常は、データアクセスにはDaoを使用する。        
-        cmnDao = New CmnDao(Me.GetDam("ODP2_SZ"))
-        cmnDao.SQLText = "INSERT INTO Shippers(ShipperID, CompanyName, Phone) VALUES(TS_ShipperID.NEXTVAL, 'ODP2_SZ', 'ODP2_SZ')"
+        cmnDao = New CmnDao(Me.GetDam("ODP_SZ"))
+        cmnDao.SQLText = "INSERT INTO Shippers(ShipperID, CompanyName, Phone) VALUES(TS_ShipperID.NEXTVAL, 'ODP_SZ', 'ODP_SZ')"
         obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
 
-        'this.GetDam("ODP2_SZ").CommitTransaction();
-        'this.GetDam("ODP2_SZ").ConnectionClose();
+        'this.GetDam("ODP_SZ").CommitTransaction();
+        'this.GetDam("ODP_SZ").ConnectionClose();
 
         '#End Region
 
-        '#Region "ODP2_SS"
+        '#Region "ODP_SS"
 
         ' ★ サポートされない分離レベル
 
         '#End Region
 
-        '#Region "ODP2_DF"
+        '#Region "ODP_DF"
 
         ' Damを生成
         damWork = New DamManagedOdp()
         ' Damを初期化
-        BaseLogic.InitDam("ODP2_DF", damWork)
+        BaseLogic.InitDam("ODP_DF", damWork)
         ' Damを設定
-        Me.SetDam("ODP2_DF", damWork)
+        Me.SetDam("ODP_DF", damWork)
 
         ' インサート
         ' Damを直接使用することもできるが、
         ' 通常は、データアクセスにはDaoを使用する。        
-        cmnDao = New CmnDao(Me.GetDam("ODP2_DF"))
-        cmnDao.SQLText = "INSERT INTO Shippers(ShipperID, CompanyName, Phone) VALUES(TS_ShipperID.NEXTVAL, 'ODP2_DF', 'ODP2_DF')"
+        cmnDao = New CmnDao(Me.GetDam("ODP_DF"))
+        cmnDao.SQLText = "INSERT INTO Shippers(ShipperID, CompanyName, Phone) VALUES(TS_ShipperID.NEXTVAL, 'ODP_DF', 'ODP_DF')"
         obj = DirectCast(cmnDao.ExecSelectScalar(), Object)
 
-        'this.GetDam("ODP2_DF").CommitTransaction();
-        'this.GetDam("ODP2_DF").ConnectionClose();
+        'this.GetDam("ODP_DF").CommitTransaction();
+        'this.GetDam("ODP_DF").ConnectionClose();
 
         '#End Region
 
@@ -469,13 +469,13 @@ Public Class TestMTC_mcn
             Me.GetDam("SQL_SS").RollbackTransaction()
             Me.GetDam("SQL_DF").RollbackTransaction()
 
-            Me.GetDam("ODP2_NT").RollbackTransaction()
-            'this.GetDam("ODP2_UC").RollbackTransaction();
-            Me.GetDam("ODP2_RC").RollbackTransaction()
-            'this.GetDam("ODP2_RR").RollbackTransaction();
-            Me.GetDam("ODP2_SZ").RollbackTransaction()
-            'this.GetDam("ODP2_SS").RollbackTransaction();
-            Me.GetDam("ODP2_DF").RollbackTransaction()
+            Me.GetDam("ODP_NT").RollbackTransaction()
+            'this.GetDam("ODP_UC").RollbackTransaction();
+            Me.GetDam("ODP_RC").RollbackTransaction()
+            'this.GetDam("ODP_RR").RollbackTransaction();
+            Me.GetDam("ODP_SZ").RollbackTransaction()
+            'this.GetDam("ODP_SS").RollbackTransaction();
+            Me.GetDam("ODP_DF").RollbackTransaction()
 
             Me.GetDam("MCN_NT").RollbackTransaction()
             Me.GetDam("MCN_UC").RollbackTransaction()
@@ -503,13 +503,13 @@ Public Class TestMTC_mcn
             Me.GetDam("SQL_SS").RollbackTransaction()
             Me.GetDam("SQL_DF").RollbackTransaction()
 
-            Me.GetDam("ODP2_NT").RollbackTransaction()
-            'this.GetDam("ODP2_UC").RollbackTransaction();
-            Me.GetDam("ODP2_RC").RollbackTransaction()
-            'this.GetDam("ODP2_RR").RollbackTransaction();
-            Me.GetDam("ODP2_SZ").RollbackTransaction()
-            'this.GetDam("ODP2_SS").RollbackTransaction();
-            Me.GetDam("ODP2_DF").RollbackTransaction()
+            Me.GetDam("ODP_NT").RollbackTransaction()
+            'this.GetDam("ODP_UC").RollbackTransaction();
+            Me.GetDam("ODP_RC").RollbackTransaction()
+            'this.GetDam("ODP_RR").RollbackTransaction();
+            Me.GetDam("ODP_SZ").RollbackTransaction()
+            'this.GetDam("ODP_SS").RollbackTransaction();
+            Me.GetDam("ODP_DF").RollbackTransaction()
 
             Me.GetDam("MCN_NT").RollbackTransaction()
             Me.GetDam("MCN_UC").RollbackTransaction()
@@ -531,13 +531,13 @@ Public Class TestMTC_mcn
             Me.GetDam("SQL_SS").ConnectionClose()
             Me.GetDam("SQL_DF").ConnectionClose()
 
-            Me.GetDam("ODP2_NT").ConnectionClose()
-            'this.GetDam("ODP2_UC").ConnectionClose();
-            Me.GetDam("ODP2_RC").ConnectionClose()
-            'this.GetDam("ODP2_RR").ConnectionClose();
-            Me.GetDam("ODP2_SZ").ConnectionClose()
-            'this.GetDam("ODP2_SS").ConnectionClose();
-            Me.GetDam("ODP2_DF").ConnectionClose()
+            Me.GetDam("ODP_NT").ConnectionClose()
+            'this.GetDam("ODP_UC").ConnectionClose();
+            Me.GetDam("ODP_RC").ConnectionClose()
+            'this.GetDam("ODP_RR").ConnectionClose();
+            Me.GetDam("ODP_SZ").ConnectionClose()
+            'this.GetDam("ODP_SS").ConnectionClose();
+            Me.GetDam("ODP_DF").ConnectionClose()
 
             Me.GetDam("MCN_NT").ConnectionClose()
             Me.GetDam("MCN_UC").ConnectionClose()
@@ -565,13 +565,13 @@ Public Class TestMTC_mcn
             Me.GetDam("SQL_SS").RollbackTransaction()
             Me.GetDam("SQL_DF").RollbackTransaction()
 
-            Me.GetDam("ODP2_NT").RollbackTransaction()
-            'this.GetDam("ODP2_UC").RollbackTransaction();
-            Me.GetDam("ODP2_RC").RollbackTransaction()
-            'this.GetDam("ODP2_RR").RollbackTransaction();
-            Me.GetDam("ODP2_SZ").RollbackTransaction()
-            'this.GetDam("ODP2_SS").RollbackTransaction();
-            Me.GetDam("ODP2_DF").RollbackTransaction()
+            Me.GetDam("ODP_NT").RollbackTransaction()
+            'this.GetDam("ODP_UC").RollbackTransaction();
+            Me.GetDam("ODP_RC").RollbackTransaction()
+            'this.GetDam("ODP_RR").RollbackTransaction();
+            Me.GetDam("ODP_SZ").RollbackTransaction()
+            'this.GetDam("ODP_SS").RollbackTransaction();
+            Me.GetDam("ODP_DF").RollbackTransaction()
 
             Me.GetDam("MCN_NT").RollbackTransaction()
             Me.GetDam("MCN_UC").RollbackTransaction()
@@ -593,13 +593,13 @@ Public Class TestMTC_mcn
             Me.GetDam("SQL_SS").ConnectionClose()
             Me.GetDam("SQL_DF").ConnectionClose()
 
-            Me.GetDam("ODP2_NT").ConnectionClose()
-            'this.GetDam("ODP2_UC").ConnectionClose();
-            Me.GetDam("ODP2_RC").ConnectionClose()
-            'this.GetDam("ODP2_RR").ConnectionClose();
-            Me.GetDam("ODP2_SZ").ConnectionClose()
-            'this.GetDam("ODP2_SS").ConnectionClose();
-            Me.GetDam("ODP2_DF").ConnectionClose()
+            Me.GetDam("ODP_NT").ConnectionClose()
+            'this.GetDam("ODP_UC").ConnectionClose();
+            Me.GetDam("ODP_RC").ConnectionClose()
+            'this.GetDam("ODP_RR").ConnectionClose();
+            Me.GetDam("ODP_SZ").ConnectionClose()
+            'this.GetDam("ODP_SS").ConnectionClose();
+            Me.GetDam("ODP_DF").ConnectionClose()
 
             Me.GetDam("MCN_NT").ConnectionClose()
             Me.GetDam("MCN_UC").ConnectionClose()
@@ -621,13 +621,13 @@ Public Class TestMTC_mcn
             Me.SetDam("SQL_SS", Nothing)
             Me.SetDam("SQL_DF", Nothing)
 
-            Me.SetDam("ODP2_NT", Nothing)
-            'this.SetDam("ODP2_UC",null);
-            Me.SetDam("ODP2_RC", Nothing)
-            'this.SetDam("ODP2_RR",null);
-            Me.SetDam("ODP2_SZ", Nothing)
-            'this.SetDam("ODP2_SS",null);
-            Me.SetDam("ODP2_DF", Nothing)
+            Me.SetDam("ODP_NT", Nothing)
+            'this.SetDam("ODP_UC",null);
+            Me.SetDam("ODP_RC", Nothing)
+            'this.SetDam("ODP_RR",null);
+            Me.SetDam("ODP_SZ", Nothing)
+            'this.SetDam("ODP_SS",null);
+            Me.SetDam("ODP_DF", Nothing)
 
             Me.SetDam("MCN_NT", Nothing)
             Me.SetDam("MCN_UC", Nothing)
