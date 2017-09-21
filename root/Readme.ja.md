@@ -115,7 +115,7 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
       <td>3_Build_Framework.bat</td><td>フレームワーク部分 (ベースクラス１，２) をビルドする。</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_NuGet_net47.bat</td><td>net47 の NuGet package 作成のため、フレームワーク部分 (ベースクラス１) をビルドする。</td><td>△<span style="color: red"><sup>*4</sup></span></td><td>○</td>
+      <td>3_Build_NuGet_net47.bat</td><td>.NET Framework 4.7 をターゲットとする NuGet パッケージの作成用に、フレームワークをビルドする。</td><td>△<span style="color: red"><sup>*4</sup></span></td><td>○</td>
     </tr>
     <tr>
       <td>3_Build_PortableClassLibrary.bat</td><td>ポータブルクラスライブラリをビルドする。</td><td>△<span style="color: red"><sup>*1</sup></span></td><td></td>
