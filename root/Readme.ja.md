@@ -115,13 +115,10 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
       <td>3_Build_Framework.bat</td><td>フレームワーク部分 (ベースクラス１，２) をビルドする。</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_NuGet_net47.bat</td><td>.NET Framework 4.7 をターゲットとする NuGet パッケージの作成用に、フレームワークをビルドする。</td><td>△<span style="color: red"><sup>*4</sup></span></td><td>○</td>
+      <td>3_Build_NuGet_net47.bat</td><td>.NET Framework 4.7 をターゲットとする NuGet パッケージの作成用に、フレームワークをビルドする。</td><td>△<span style="color: red"><sup>*1</sup></span></td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_PortableClassLibrary.bat</td><td>ポータブルクラスライブラリをビルドする。</td><td>△<span style="color: red"><sup>*1</sup></span></td><td></td>
-    </tr>
-    <tr>
-      <td>3_Build_RichClientCustomControl.bat</td><td>リッチクライアント用カスタムコントロールをビルドする。</td><td>△<span style="color: red"><sup>*2</sup></span></td><td></td>
+      <td>3_Build_RichClient.bat</td><td>リッチクライアント用フレームワークをビルドする。</td><td>△<span style="color: red"><sup>*2</sup></span></td><td></td>
     </tr>
     <tr>
       <td>4_Build_Framework_Tool.bat</td><td>付属ツールをビルドする。</td><td>○</td><td>○</td>
@@ -195,10 +192,9 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
   </tbody>
 </table>
 <div style="font-size: small">
-  <span style="color: red;">*1</span>　Portable Class Libraryを作成する場合は必須<br />
+  <span style="color: red;">*1</span>　NuGetパッケージを作成を作成する場合は必須<br />
   <span style="color: red;">*2</span>　リッチクライアント アプリケーションを作成する場合は必須<br />
-  <span style="color: red;">*3</span>　実際のアプリケーションの形態に応じて選択してください<br />
-  <span style="color: red;">*4</span>　NuGetパッケージを作成を作成する場合は必須
+  <span style="color: red;">*3</span>　実際のアプリケーションの形態に応じて選択してください
 </div>
 
 上の表を参考に、ビルドバッチファイルを番号順に実行してプログラムをビルドしてください。  
