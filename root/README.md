@@ -127,7 +127,7 @@ Legend:
       <td>3_Build_NuGet_net47.bat</td><td>Build the framework (Base class 1) to make NuGet package that targets .NET Framework 4.7.</td><td>△<span style="color: red"><sup>*1</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>3_Build_RichClient.bat</td><td>Build the framework for rich client application.</td><td>△<span style="color: red"><sup>*2</sup></span></td><td></td>
+      <td>3_Build_RichClientFramework.bat</td><td>Build the framework for rich client application.</td><td>△<span style="color: red"><sup>*2</sup></span></td><td></td>
     </tr>
     <tr>
       <td>4_Build_Framework_Tool.bat</td><td>Build the tools bundled with Open Touryo.</td><td>○</td><td>○</td>
@@ -172,7 +172,7 @@ Legend:
       <td>3_Build_Framework.bat</td><td>Build the framework. (Base class 2)</td><td></td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_RichClient.bat</td><td>Build the framework for rich client application.</td><td></td><td>△<span style="color: red"><sup>*2</sup></span></td>
+      <td>3_Build_RichClientFramework.bat</td><td>Build the framework for rich client application.</td><td></td><td>△<span style="color: red"><sup>*2</sup></span></td>
     </tr>
     <tr>
       <td>5_Build_2CS_sample.bat</td><td>Build the sample application. (Two-tier client server application)</td><td></td><td rowspan="6" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td>
