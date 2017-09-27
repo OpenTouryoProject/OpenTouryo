@@ -124,13 +124,10 @@ Legend:
       <td>3_Build_Framework.bat</td><td>Build the framework. (Base class 1 and base class 2)</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_NuGet_net47.bat</td><td>Build the framework (Base class 1) to make NuGet package that targets .NET Framework 4.7.</td><td>△<span style="color: red"><sup>*4</sup></span></td><td></td>
+      <td>3_Build_NuGet_net47.bat</td><td>Build the framework (Base class 1) to make NuGet package that targets .NET Framework 4.7.</td><td>△<span style="color: red"><sup>*1</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>3_Build_PortableClassLibrary.bat</td><td>Build the portable class library.</td><td>△<span style="color: red"><sup>*1</sup></span></td><td></td>
-    </tr>
-    <tr>
-      <td>3_Build_RichClientCustomControl.bat</td><td>Build the custom controls for rich client application.</td><td>△<span style="color: red"><sup>*2</sup></span></td><td></td>
+      <td>3_Build_RichClientFramework.bat</td><td>Build the framework for rich client application.</td><td>△<span style="color: red"><sup>*2</sup></span></td><td></td>
     </tr>
     <tr>
       <td>4_Build_Framework_Tool.bat</td><td>Build the tools bundled with Open Touryo.</td><td>○</td><td>○</td>
@@ -175,7 +172,7 @@ Legend:
       <td>3_Build_Framework.bat</td><td>Build the framework. (Base class 2)</td><td></td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_RichClientCustomControl.bat</td><td>Build the custom controls for rich client application.</td><td></td><td>△<span style="color: red"><sup>*2</sup></span></td>
+      <td>3_Build_RichClientFramework.bat</td><td>Build the framework for rich client application.</td><td></td><td>△<span style="color: red"><sup>*2</sup></span></td>
     </tr>
     <tr>
       <td>5_Build_2CS_sample.bat</td><td>Build the sample application. (Two-tier client server application)</td><td></td><td rowspan="6" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td>
@@ -204,10 +201,9 @@ Legend:
   </tbody>
 </table>
 <div style="font-size: small">
-  <span style="color: red;">*1</span>　Need to run when using portable class library.<br />
+  <span style="color: red;">*1</span>　Need to run when making NuGet package.<br />
   <span style="color: red;">*2</span>　Need to run when creating rich client application.<br />
-  <span style="color: red;">*3</span>　Select according to the actual architecture.<br />
-  <span style="color: red;">*4</span>　Need to run when making NuGet package.
+  <span style="color: red;">*3</span>　Select according to the actual architecture.
 </div>
 
 Refer to the above table and build programs by running the batch files in numerical order.

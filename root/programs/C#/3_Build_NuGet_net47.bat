@@ -27,6 +27,9 @@ rem --------------------------------------------------
 ..\nuget.exe restore "Frameworks\Infrastructure\Nuget_net47.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\Nuget_net47.sln"
 
+..\nuget.exe restore "Frameworks\Infrastructure\Nuget_RichClient_net47.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\Nuget_RichClient_net47.sln"
+
 pause
 
 rem --------------------------------------------------

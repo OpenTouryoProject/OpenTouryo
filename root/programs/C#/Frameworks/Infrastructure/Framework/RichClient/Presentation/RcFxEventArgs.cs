@@ -58,8 +58,10 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
         #region コンストラクタ
 
         /// <summary>コンストラクタ</summary>
-        /// <param name="buttonID">コントロール名</param>
+        /// <param name="controlName">コントロール名</param>
         /// <param name="methodName">レイトバインドする際のメソッド名</param>
+        /// <param name="sender">object</param>
+        /// <param name="e">EventArgs</param>
         /// <remarks>自由に利用できる。</remarks>
         public RcFxEventArgs(string controlName, string methodName, object sender, EventArgs e)
         {
