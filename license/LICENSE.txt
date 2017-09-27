@@ -1,4 +1,4 @@
-﻿                                 Apache License
+                                 Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
 
@@ -202,19 +202,24 @@
 
 ====================================================================
 
-   - OpenTouryo SubComponent : 
-     The OSS included in the source code such as JavaScript / CSS
-     
-     - jQuery
-     - jQuery.Validation
-     - bootstrap
-     - FontAwesome
-     - knockoutjs
-     - angularjs
-     - Respond
-     - Modernizr
-     
-     - Microsoft.AspNet.ScriptManager.WebForms
-       http://www.microsoft.com/web/webpi/eula/WebDeveloperTools_1_eula_ENU.htm
-     - Microsoft.AspNet.ScriptManager.MSAjax
-       http://www.microsoft.com/web/webpi/eula/aspnetcomponent_rtw_enu.htm
+   - OpenTouryo SubComponent :
+   
+     - The OSS included in the source code such as JavaScript / CSS
+       - jQuery
+       - jQuery.Validation
+       - bootstrap
+       - FontAwesome
+       - knockoutjs
+       - angularjs
+       - Respond
+       - Modernizr
+       - Microsoft.AspNet.ScriptManager.WebForms
+         http://www.microsoft.com/web/webpi/eula/WebDeveloperTools_1_eula_ENU.htm
+       - Microsoft.AspNet.ScriptManager.MSAjax
+         http://www.microsoft.com/web/webpi/eula/aspnetcomponent_rtw_enu.htm
+         
+     - The following *.exe is bundled in order to run the build system.
+       - nuget.exe
+         https://github.com/NuGet/NuGet.Client/blob/dev/LICENSE.txt
+       - vswhere.exe
+         https://github.com/Microsoft/vswhere/blob/develop/LICENSE.txt
