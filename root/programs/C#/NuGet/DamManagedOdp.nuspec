@@ -21,9 +21,9 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="in\net46\DamManagedOdp.dll" target="lib\net45" />
-    <file src="in\net46\DamManagedOdp.pdb" target="lib\net45" />
-    <file src="in\net46\DamManagedOdp.xml" target="lib\net45" />
+    <file src="in\net452\DamManagedOdp.dll" target="lib\net452" />
+    <file src="in\net452\DamManagedOdp.pdb" target="lib\net452" />
+    <file src="in\net452\DamManagedOdp.xml" target="lib\net452" />
 
     <file src="in\net46\DamManagedOdp.dll" target="lib\net46" />
     <file src="in\net46\DamManagedOdp.pdb" target="lib\net46" />

@@ -22,10 +22,10 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="in\net46\Framework.dll" target="lib\net45" />
-    <file src="in\net46\Framework.pdb" target="lib\net45" />
-    <file src="in\net46\Framework.xml" target="lib\net45" />
-    <file src="in\net46\ja-JP\Framework.resources.dll" target="lib\net45\ja-JP" />
+    <file src="in\net452\Framework.dll" target="lib\net452" />
+    <file src="in\net452\Framework.pdb" target="lib\net452" />
+    <file src="in\net452\Framework.xml" target="lib\net452" />
+    <file src="in\net452\ja-JP\Framework.resources.dll" target="lib\net452\ja-JP" />
 
     <file src="in\net46\Framework.dll" target="lib\net46" />
     <file src="in\net46\Framework.pdb" target="lib\net46" />

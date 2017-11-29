@@ -21,9 +21,9 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="in\net46\DamPstGrS.dll" target="lib\net45" />
-    <file src="in\net46\DamPstGrS.pdb" target="lib\net45" />
-    <file src="in\net46\DamPstGrS.xml" target="lib\net45" />
+    <file src="in\net452\DamPstGrS.dll" target="lib\net452" />
+    <file src="in\net452\DamPstGrS.pdb" target="lib\net452" />
+    <file src="in\net452\DamPstGrS.xml" target="lib\net452" />
 
     <file src="in\net46\DamPstGrS.dll" target="lib\net46" />
     <file src="in\net46\DamPstGrS.pdb" target="lib\net46" />
