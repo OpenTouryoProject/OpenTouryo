@@ -94,9 +94,9 @@
             this.SUB1_TSMI = new System.Windows.Forms.ToolStripMenuItem();
             this.SUB2_TSMI = new System.Windows.Forms.ToolStripMenuItem();
             this.SELECT_CASE_TSMI = new System.Windows.Forms.ToolStripMenuItem();
-            this.DECMA_TSMI = new System.Windows.Forms.ToolStripMenuItem();
-            this.DECMA1_TSMI = new System.Windows.Forms.ToolStripMenuItem();
-            this.DECMA2_TSMI = new System.Windows.Forms.ToolStripMenuItem();
+            this.DELCMA_TSMI = new System.Windows.Forms.ToolStripMenuItem();
+            this.DELCMA1_TSMI = new System.Windows.Forms.ToolStripMenuItem();
+            this.DELCMA2_TSMI = new System.Windows.Forms.ToolStripMenuItem();
             this.VAL_TSMI = new System.Windows.Forms.ToolStripMenuItem();
             this.PARAM_TSMI = new System.Windows.Forms.ToolStripMenuItem();
             this.PARAM1_TSMI = new System.Windows.Forms.ToolStripMenuItem();
@@ -386,7 +386,7 @@
             this.JOIN_TSMI,
             this.SUB_TSMI,
             this.SELECT_CASE_TSMI,
-            this.DECMA_TSMI,
+            this.DELCMA_TSMI,
             this.VAL_TSMI,
             this.PARAM_TSMI,
             this.DIV_TSMI,
@@ -597,26 +597,26 @@
             this.SELECT_CASE_TSMI.Name = "SELECT_CASE_TSMI";
             this.SELECT_CASE_TSMI.Click += new System.EventHandler(this.TSMI_Click);
             // 
-            // DECMA_TSMI
+            // DELCMA_TSMI
             // 
-            resources.ApplyResources(this.DECMA_TSMI, "DECMA_TSMI");
-            this.DECMA_TSMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.DECMA1_TSMI,
-            this.DECMA2_TSMI});
-            this.DECMA_TSMI.Name = "DECMA_TSMI";
-            this.DECMA_TSMI.Click += new System.EventHandler(this.TSMI_Click);
+            resources.ApplyResources(this.DELCMA_TSMI, "DELCMA_TSMI");
+            this.DELCMA_TSMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.DELCMA1_TSMI,
+            this.DELCMA2_TSMI});
+            this.DELCMA_TSMI.Name = "DELCMA_TSMI";
+            this.DELCMA_TSMI.Click += new System.EventHandler(this.TSMI_Click);
             // 
-            // DECMA1_TSMI
+            // DELCMA1_TSMI
             // 
-            resources.ApplyResources(this.DECMA1_TSMI, "DECMA1_TSMI");
-            this.DECMA1_TSMI.Name = "DECMA1_TSMI";
-            this.DECMA1_TSMI.Click += new System.EventHandler(this.TSMI_Click);
+            resources.ApplyResources(this.DELCMA1_TSMI, "DELCMA1_TSMI");
+            this.DELCMA1_TSMI.Name = "DELCMA1_TSMI";
+            this.DELCMA1_TSMI.Click += new System.EventHandler(this.TSMI_Click);
             // 
-            // DECMA2_TSMI
+            // DELCMA2_TSMI
             // 
-            resources.ApplyResources(this.DECMA2_TSMI, "DECMA2_TSMI");
-            this.DECMA2_TSMI.Name = "DECMA2_TSMI";
-            this.DECMA2_TSMI.Click += new System.EventHandler(this.TSMI_Click);
+            resources.ApplyResources(this.DELCMA2_TSMI, "DELCMA2_TSMI");
+            this.DELCMA2_TSMI.Name = "DELCMA2_TSMI";
+            this.DELCMA2_TSMI.Click += new System.EventHandler(this.TSMI_Click);
             // 
             // VAL_TSMI
             // 
@@ -838,9 +838,9 @@
         private System.Windows.Forms.ToolStripMenuItem SUB1_TSMI;
         private System.Windows.Forms.ToolStripMenuItem SUB2_TSMI;
         private System.Windows.Forms.ToolStripMenuItem SELECT_CASE_TSMI;
-        private System.Windows.Forms.ToolStripMenuItem DECMA_TSMI;
-        private System.Windows.Forms.ToolStripMenuItem DECMA1_TSMI;
-        private System.Windows.Forms.ToolStripMenuItem DECMA2_TSMI;
+        private System.Windows.Forms.ToolStripMenuItem DELCMA_TSMI;
+        private System.Windows.Forms.ToolStripMenuItem DELCMA1_TSMI;
+        private System.Windows.Forms.ToolStripMenuItem DELCMA2_TSMI;
         private System.Windows.Forms.ToolStripMenuItem VAL_TSMI;
         private System.Windows.Forms.ToolStripMenuItem PARAM_TSMI;
         private System.Windows.Forms.ToolStripMenuItem PARAM1_TSMI;
