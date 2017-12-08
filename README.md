@@ -4,12 +4,18 @@
 Click [here](Readme.ja.md) for Japanese version of this file.
 
 ## Develop/Run-time environment
-The programs in this repository are developed in the following environments:
+The programs in this repository are developed in the following IDE/targetFramework:
 
-- Develop environment
+- IDE (Integrated Development Environment)
   - Visual Studio 2015
-- Run-time environment
-  - .NET Framework 4.6
+- targetFramework (Run-time environment)
+  - .NET Framework 4.5.2 (net452)
+  - .NET Framework 4.6 (net46)
+  - .NET Framework 4.7 (net47)
+
+The default project and solution is set to net46 targetFramework.
+For each other targetFramework, it is prepared correspond project and solution.
+In addition, the project and solution files that correspond net47 are named "{identifier}_net47.{ext}".
 
 The programs in this repository are for *open source developers*.
 The users who use Open Touryo in a system development project need to use [OpenTouryoTemplates repository](https://github.com/OpenTouryoProject/OpenTouryoTemplates).
