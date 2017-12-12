@@ -13,9 +13,9 @@
   - .NET Framework 4.6 (net46)
   - .NET Framework 4.7 (net47)
 
-既定のプロジェクト・ソリューションは、net46をtargetFrameworkにしています。
-これ以外のtargetFrameworkには、それぞれのプロジェクト・ソリューションを準備しています。
-また、net47を前提にしたプロジェクト・ソリューション ファイルは "{identifier}_net47.{ext}" と命名しています。
+プロジェクト・ソリューションの既定の targetFramework は net46(.NET Framework 4.6) です。
+その他の targetFramework 向けのプロジェクト・ソリューションには、それぞれ targetFramework がプロジェクト・ソリューション名に含まれます。
+たとえば、net47(.NET Framework 4.7) を対象としたプロジェクト・ソリューションは、"{identifier}_net47.{ext}" と命名しています。
 
 このリポジトリのプログラムは、OSS 開発者向けのものです。
 システム開発プロジェクトで Open 棟梁を使用される方は、[OpenTouryoTemplates リポジトリ](https://github.com/OpenTouryoProject/OpenTouryoTemplates)を使用してください。

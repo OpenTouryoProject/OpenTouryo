@@ -13,9 +13,9 @@ The programs in this repository are developed in the following IDE/targetFramewo
   - .NET Framework 4.6 (net46)
   - .NET Framework 4.7 (net47)
 
-The default project and solution is set to net46 targetFramework.
-For each other targetFramework, it is prepared correspond project and solution.
-In addition, the project and solution files that correspond net47 are named "{identifier}_net47.{ext}".
+The default targetFramework of projects and solutions is net46(.NET Framework 4.6).
+The name of projects and solutions for other targetFramework include the targetFramework.
+For example, the projects and solutions for net47(.NET Framework 4.7) are named {identifier}_net47.{ext}.
 
 The programs in this repository are for *open source developers*.
 The users who use Open Touryo in a system development project need to use [OpenTouryoTemplates repository](https://github.com/OpenTouryoProject/OpenTouryoTemplates).
