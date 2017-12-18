@@ -2581,7 +2581,9 @@ namespace DPQuery_Tool
 
         #endregion
 
-
+        /// <summary>RM_GetString</summary>
+        /// <param name="key">string</param>
+        /// <returns>RM string</returns>
         private string RM_GetString(string key)
         {
             //get the string value from resource file  by proper passing key.

@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/09/07  西野 大介         新規作成
+//*  2017/11/29  西野 大介         DateTimeOffset.ToUnixTimeSecondsの前方互換メソッドの使用
 //**********************************************************************************
 
 using System;
@@ -41,6 +42,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Public.Security;
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Authentication
 {
@@ -99,16 +101,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     scopes = JsonConvert.DeserializeObject<List<string>>(jobj["scopes"].ToString());
                 }
 
+                long unixTimeSeconds = 0;
+#if NET45
+                unixTimeSeconds = PubCmnFunction.ToUnixTime(DateTimeOffset.Now);
+#else
+                unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
+#endif
+
                 if (iss == OAuth2AndOIDCParams.Isser &&
                     aud　== OAuth2AndOIDCParams.ClientID &&
-                    long.Parse(exp) >= DateTimeOffset.Now.ToUnixTimeSeconds())
+                    long.Parse(exp) >= unixTimeSeconds)
                 {
                     // 認証に成功（OAuth2 Clientバージョンの実装）
                     return true;
                 }
                 else if (iss == OAuth2AndOIDCParams.Isser &&
                         OAuth2AndOIDCParams.ClientIDs.Any(x => x == aud) &&
-                        long.Parse(exp) >= DateTimeOffset.Now.ToUnixTimeSeconds())
+                        long.Parse(exp) >= unixTimeSeconds)
                 {
                     // 認証に成功（OAuth2 ResourcesServerバージョンの実装）
                     return true;

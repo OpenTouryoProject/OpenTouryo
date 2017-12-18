@@ -38,6 +38,7 @@
 //*  2013/02/12  西野 大介         ShortenByteArrayメソッドを追加（暗号化ツールで使用）
 //*  2013/12/23  西野 大介         ファイル・行数・メソッド・プロパティなどコード情報の取得メソッドを追加
 //*  2017/01/31  西野 大介         System.Webを使用しているCalculateSessionSizeメソッドをBusinessへ移動
+//*  2017/11/29  西野 大介         DateTimeOffset.ToUnixTimeSecondsの前方互換メソッドを追加
 //**********************************************************************************
 
 using System;
@@ -814,5 +815,26 @@ namespace Touryo.Infrastructure.Public.Util
         }
 
         #endregion
+
+        #region 互換性
+
+        /// <summary>UNIXエポック</summary>
+        private static DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+        /// <summary>DateTimeOffset.ToUnixTimeSeconds代替(net46未満で使用)</summary>
+        /// <param name="targetTime">DateTimeOffset</param>
+        /// <returns>UnixTimeSeconds</returns>
+        public static long ToUnixTime(DateTimeOffset targetTime)
+        {
+            // UTC時間に変換
+            targetTime = targetTime.ToUniversalTime();
+            // UNIXエポックからの経過時間を取得
+            TimeSpan elapsedTime = targetTime - UNIX_EPOCH;
+            // 経過秒数に変換して返す（UnixTime）
+            return (long)elapsedTime.TotalSeconds;
+        }
+
+        #endregion
+
     }
 }

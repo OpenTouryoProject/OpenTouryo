@@ -4,12 +4,18 @@
 このファイルの英語版は[こちら](README.md)から。
 
 ## 開発 / 動作環境
-このリポジトリのプログラムは、以下の開発／実行環境を使用して開発しています。
+このリポジトリのプログラムは、以下のIDE/targetFramework を前提に開発しています。
 
-- 開発環境
+- IDE（統合開発環境）
   - Visual Studio 2015
-- 実行環境
-  - .NET Framework 4.6
+- targetFramework（実行環境）
+  - .NET Framework 4.5.2 (net452)
+  - .NET Framework 4.6 (net46)
+  - .NET Framework 4.7 (net47)
+
+プロジェクト・ソリューションの既定の targetFramework は net46(.NET Framework 4.6) です。
+その他の targetFramework 向けのプロジェクト・ソリューションには、それぞれ targetFramework がプロジェクト・ソリューション名に含まれます。
+たとえば、net47(.NET Framework 4.7) を対象としたプロジェクト・ソリューションは、"{identifier}_net47.{ext}" と命名しています。
 
 このリポジトリのプログラムは、OSS 開発者向けのものです。
 システム開発プロジェクトで Open 棟梁を使用される方は、[OpenTouryoTemplates リポジトリ](https://github.com/OpenTouryoProject/OpenTouryoTemplates)を使用してください。

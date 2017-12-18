@@ -507,7 +507,7 @@
   <data name="$this.AutoSizeMode" type="System.Windows.Forms.AutoSizeMode, System.Windows.Forms">
     <value>GrowAndShrink</value>
   </data>
-  <data name="DECMA2_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="DELCMA2_TSMI.Size" type="System.Drawing.Size, System.Drawing">
     <value>121, 22</value>
   </data>
   <data name="XML_TSMI.Size" type="System.Drawing.Size, System.Drawing">
@@ -540,8 +540,8 @@
   <data name="txtCnnStr.Location" type="System.Drawing.Point, System.Drawing">
     <value>101, 76</value>
   </data>
-  <data name="&gt;&gt;DECMA_TSMI.Name" xml:space="preserve">
-    <value>DECMA_TSMI</value>
+  <data name="&gt;&gt;DELCMA_TSMI.Name" xml:space="preserve">
+    <value>DELCMA_TSMI</value>
   </data>
   <data name="LIST_TSMI.Text" xml:space="preserve">
     <value>LIST</value>
@@ -732,8 +732,8 @@
   <data name="label7.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="DECMA2_TSMI.Text" xml:space="preserve">
-    <value>DECMA2</value>
+  <data name="DELCMA2_TSMI.Text" xml:space="preserve">
+    <value>DELCMA2</value>
   </data>
   <data name="&gt;&gt;label7.Name" xml:space="preserve">
     <value>label7</value>
@@ -750,7 +750,7 @@
   <data name="ROOT2_TSMI.Text" xml:space="preserve">
     <value>ROOT2</value>
   </data>
-  <data name="&gt;&gt;DECMA1_TSMI.Type" xml:space="preserve">
+  <data name="&gt;&gt;DELCMA1_TSMI.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnCloseQueryFile.Name" xml:space="preserve">
@@ -867,7 +867,7 @@
   <data name="&gt;&gt;label9.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="DECMA_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="DELCMA_TSMI.Size" type="System.Drawing.Size, System.Drawing">
     <value>146, 22</value>
   </data>
   <data name="btnCnClose.Size" type="System.Drawing.Size, System.Drawing">
@@ -912,14 +912,14 @@
   <data name="&gt;&gt;btnOpenQueryFile.ZOrder" xml:space="preserve">
     <value>12</value>
   </data>
-  <data name="&gt;&gt;DECMA_TSMI.Type" xml:space="preserve">
+  <data name="&gt;&gt;DELCMA_TSMI.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DIV_TSMI.Size" type="System.Drawing.Size, System.Drawing">
     <value>146, 22</value>
   </data>
-  <data name="&gt;&gt;DECMA1_TSMI.Name" xml:space="preserve">
-    <value>DECMA1_TSMI</value>
+  <data name="&gt;&gt;DELCMA1_TSMI.Name" xml:space="preserve">
+    <value>DELCMA1_TSMI</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
     <value>Data provider</value>
@@ -1041,8 +1041,8 @@
   <data name="&gt;&gt;label2.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DECMA1_TSMI.Text" xml:space="preserve">
-    <value>DECMA1</value>
+  <data name="DELCMA1_TSMI.Text" xml:space="preserve">
+    <value>DELCMA1</value>
   </data>
   <data name="&gt;&gt;btnSaveConfig.Name" xml:space="preserve">
     <value>btnSaveConfig</value>
@@ -1230,8 +1230,8 @@
   <data name="JOIN2_TSMI.Text" xml:space="preserve">
     <value>JOIN2</value>
   </data>
-  <data name="&gt;&gt;DECMA2_TSMI.Name" xml:space="preserve">
-    <value>DECMA2_TSMI</value>
+  <data name="&gt;&gt;DELCMA2_TSMI.Name" xml:space="preserve">
+    <value>DELCMA2_TSMI</value>
   </data>
   <data name="&gt;&gt;btnCreateConfig.ZOrder" xml:space="preserve">
     <value>2</value>
@@ -1353,8 +1353,8 @@
   <data name="&gt;&gt;ELSE_TSMI.Name" xml:space="preserve">
     <value>ELSE_TSMI</value>
   </data>
-  <data name="DECMA_TSMI.Text" xml:space="preserve">
-    <value>DECMA</value>
+  <data name="DELCMA_TSMI.Text" xml:space="preserve">
+    <value>DELCMA</value>
   </data>
   <data name="WHERE2_TSMI.Text" xml:space="preserve">
     <value>WHERE2</value>
@@ -1527,7 +1527,7 @@
   <data name="&gt;&gt;openFileDialog.Type" xml:space="preserve">
     <value>System.Windows.Forms.OpenFileDialog, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;DECMA2_TSMI.Type" xml:space="preserve">
+  <data name="&gt;&gt;DELCMA2_TSMI.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;IF_TXT_TSMI.Type" xml:space="preserve">
@@ -1647,7 +1647,7 @@
   <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
     <value>147, 378</value>
   </data>
-  <data name="DECMA1_TSMI.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="DELCMA1_TSMI.Size" type="System.Drawing.Size, System.Drawing">
     <value>121, 22</value>
   </data>
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
