@@ -648,20 +648,9 @@ namespace EncAndDecUtil
             {
                 // RS256 (X509)
                 
-                // 入力
-                string[] temp = this.txtJWTSign.Text.Split('.');
-
-                // 改変可能なフィールドから入力
-                string newJWT =
-                    CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTHeader.Text, CustomEncode.UTF_8))
-                    + "." + CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTPayload.Text, CustomEncode.UTF_8))
-                    + "." + temp[2];
-
                 // 検証
-                //JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_pfx, CertificateFilePassword,
-                //    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
                 JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_cer, "");
-                ret = jwtRS256.Verify(newJWT);
+                ret = jwtRS256.Verify(this.txtJWTSign.Text);
             }
 
             if (ret)

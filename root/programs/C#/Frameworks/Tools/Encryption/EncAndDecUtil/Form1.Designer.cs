@@ -1386,7 +1386,6 @@
             // 
             this.txtJWTSign.Location = new System.Drawing.Point(48, 185);
             this.txtJWTSign.Name = "txtJWTSign";
-            this.txtJWTSign.ReadOnly = true;
             this.txtJWTSign.Size = new System.Drawing.Size(267, 19);
             this.txtJWTSign.TabIndex = 49;
             // 
