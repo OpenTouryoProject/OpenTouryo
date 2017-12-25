@@ -93,7 +93,7 @@ namespace Touryo.Infrastructure.Public.Util
 
         #endregion
 
-        #region ＤＢ部品
+        #region DB部品
 
         #region 動的パラメタライズドクエリ
 

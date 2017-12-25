@@ -19,17 +19,15 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：DigitalSignXML
-//* クラス日本語名  ：DigitalSignXMLクラス
+//* クラス名        ：DigitalSignParam
+//* クラス日本語名  ：DigitalSignParamクラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2017/01/10  西野 大介         新規作成
-//*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
-//*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
+//*  2017/12/25  西野 大介         新規作成
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -43,10 +41,8 @@ namespace Touryo.Infrastructure.Public.Security
     /// - DSACryptoServiceProvider:SHA1
     /// だけ、サポート。
     /// </summary>
-    public class DigitalSignXML : DigitalSign
+    public class DigitalSignParam : DigitalSign
     {
-        // デジタル署名の場合は、秘密鍵で署名して、公開鍵で検証。
-
         #region mem & prop & constructor
 
         /// <summary>AsymmetricAlgorithm</summary>
@@ -55,73 +51,18 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>HashAlgorithm</summary>
         public HashAlgorithm HashAlgorithm { get; protected set; }
 
-        /// <summary>
-        /// XMLPrivateKey
-        /// RFC 3275のXML秘密鍵
-        /// </summary>
-        public string XMLPrivateKey { get; protected set; }
-        
-        /// <summary>
-        /// XMLPublicKey
-        /// RFC 3275のXML公開鍵
-        /// </summary>
-        public string XMLPublicKey { get; protected set; }
-
         /// <summary>Constructor</summary>
-        /// <param name="eaa">EnumDigitalSignAlgorithm</param>
-        public DigitalSignXML(EnumDigitalSignAlgorithm eaa)
+        /// <param name="param">object</param>
+        /// <param name="ha">HashAlgorithm</param>
+        public DigitalSignParam(object param, HashAlgorithm ha)
         {
-            AsymmetricAlgorithm aa = null;
-            HashAlgorithm ha = null;
-
-            RsaAndDsaCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
-
-            this.AsymmetricAlgorithm = aa;
+            this.AsymmetricAlgorithm = RsaAndDsaCmnFunc.CreateAsymmetricAlgorithmFromParam(param, ha);
             this.HashAlgorithm = ha;
-
-            if (string.IsNullOrEmpty(this.XMLPrivateKey))
-            {
-                // 秘密鍵をXML形式で取得
-                this.XMLPrivateKey = this.AsymmetricAlgorithm.ToXmlString(true);
-                // 公開鍵をXML形式で取得
-                this.XMLPublicKey = this.AsymmetricAlgorithm.ToXmlString(false);
-            }
-        }
-
-        /// <summary>Constructor</summary>
-        /// <param name="eaa">EnumDigitalSignAlgorithm</param>
-        /// <param name="xmlPublicKey">string</param>
-        public DigitalSignXML(EnumDigitalSignAlgorithm eaa, string xmlPublicKey)
-        {
-            AsymmetricAlgorithm aa = null;
-            HashAlgorithm ha = null;
-            RsaAndDsaCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
-
-            if (aa is RSACryptoServiceProvider)
-            {
-                RSACryptoServiceProvider rsaCryptoServiceProvider = (RSACryptoServiceProvider)aa;
-                rsaCryptoServiceProvider.FromXmlString(xmlPublicKey);
-                this.AsymmetricAlgorithm = rsaCryptoServiceProvider;
-            }
-            if (aa is DSACryptoServiceProvider)
-            {
-                DSACryptoServiceProvider dsaCryptoServiceProvider = (DSACryptoServiceProvider)aa;
-                dsaCryptoServiceProvider.FromXmlString(xmlPublicKey);
-                this.AsymmetricAlgorithm = dsaCryptoServiceProvider;
-                this.HashAlgorithm = ha;
-            }
-            else
-            {
-                // 
-            }
-
-            this.HashAlgorithm = ha;
-            this.XMLPublicKey = xmlPublicKey;
         }
 
         #endregion
 
-        #region デジタル署名(XML)
+        #region デジタル署名(Parameters)
 
         /// <summary>デジタル署名を作成する</summary>
         /// <param name="data">デジタル署名を行なう対象データ</param>
@@ -138,8 +79,7 @@ namespace Touryo.Infrastructure.Public.Security
                 // RSAPKCS1SignatureFormatterオブジェクトを作成
                 RSAPKCS1SignatureFormatter rsaFormatter = new RSAPKCS1SignatureFormatter(this.AsymmetricAlgorithm);
 
-                rsaFormatter.SetHashAlgorithm(
-                    RsaAndDsaCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
+                rsaFormatter.SetHashAlgorithm(RsaAndDsaCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
                 signedByte = rsaFormatter.CreateSignature(hashedByte);
             }
             else if (this.AsymmetricAlgorithm is DSACryptoServiceProvider)
@@ -161,23 +101,21 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
         public override bool Verify(byte[] data, byte[] sign)
         {
-            //// XMLPublicKeyプロパティ・プロシージャ（set）に移動
-            //this.AsymmetricAlgorithm.FromXmlString(this.XMLPublicKey);
-
             if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
             {   
-                return ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).VerifyData(
-                    data, RsaAndDsaCmnFunc.GetHashAlgorithmName(this.HashAlgorithm), sign);
+                return ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).
+                    VerifyData(data, RsaAndDsaCmnFunc.GetHashAlgorithmName(this.HashAlgorithm), sign);
             }
             else
             {
-                return ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).VerifyData(data, sign);
+                return ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).
+                    VerifyData(data, sign);
             }
         }
 
         #endregion
                 
-        #region Dispose (派生の末端を呼ぶ)
+        #region MyDispose (派生の末端を呼ぶ)
 
         /// <summary>MyDispose (派生の末端を呼ぶ)</summary>
         /// <param name="isDisposing">isDisposing</param>
