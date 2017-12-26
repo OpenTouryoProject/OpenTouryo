@@ -58,7 +58,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="scopes">scopes</param>
         /// <param name="xmlPrivateKey">RS256用のXML秘密鍵</param>
         /// <returns>JwtAssertion</returns>
-        public string CreateJwtBearerTokenFlowAssertion(string iss, string aud, TimeSpan forExp, string scopes, string xmlPrivateKey)
+        public static string CreateJwtBearerTokenFlowAssertion(
+            string iss, string aud, TimeSpan forExp, string scopes, string xmlPrivateKey)
         {
             string json = "";
             string jwt = "";
@@ -116,11 +117,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="xmlPublicKey">RS256用のXML公開鍵</param>
         /// <returns>検証結果</returns>
         public static bool VerifyJwtBearerTokenFlowAssertion(string jwtAssertion,
-            out string iss, out string aud, out List<string> scopes, out JObject jobj, string xmlPublicKey)
+            out string iss, out string aud, out string scopes, out JObject jobj, string xmlPublicKey)
         {
             iss = "";
             aud = "";
-            scopes = new List<string>();
+            scopes = "";
             jobj = null;
 
             JWT_RS256_XML jwtRS256 = new JWT_RS256_XML(xmlPublicKey);
@@ -134,20 +135,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 iss = (string)jobj["iss"];
                 aud = (string)jobj["aud"];
                 //string iat = (string)jobj["iat"];
-                string exp = (string)jobj["exp"];
-
-                if (jobj["scopes"] != null)
-                {
-                    scopes = JsonConvert.DeserializeObject<List<string>>(jobj["scopes"].ToString());
-                }
-
+                scopes = (string)jobj["scope"];
+                
                 long unixTimeSeconds = 0;
 #if NET45
                 unixTimeSeconds = PubCmnFunction.ToUnixTime(DateTimeOffset.Now);
 #else
                 unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
 #endif
-
+                string exp = (string)jobj["exp"];
                 if (long.Parse(exp) >= unixTimeSeconds)
                 {
                     return true;

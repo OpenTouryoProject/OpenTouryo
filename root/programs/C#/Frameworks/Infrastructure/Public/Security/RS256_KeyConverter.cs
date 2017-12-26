@@ -81,10 +81,8 @@ namespace Touryo.Infrastructure.Public.Security
             if (jwk["alg"].ToString().ToLower() == "rs256")
             {
                 // RSAParameters
-                RSAParameters rsaParameters = new RSAParameters();
-
                 // FromBase64Stringだとエラーになる。
-                rsaParameters = new RSAParameters
+                RSAParameters rsaParameters = new RSAParameters()
                 {
                     Modulus = CustomEncode.FromBase64UrlString((string)jwk["n"]),
                     Exponent = CustomEncode.FromBase64UrlString((string)jwk["e"]),
