@@ -39,7 +39,7 @@ using Touryo.Infrastructure.Public.Str;
 namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>ParamによるJWT(JWS)RS256生成クラス</summary>
-    class JWT_RS256_Param : JWT
+    public class JWT_RS256_Param : JWT
     {
         #region mem & prop & constructor
         

@@ -68,8 +68,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="scopes">List(string)</param>
         /// <param name="jobj">JObject</param>
         /// <returns>検証結果</returns>
-        public static bool Verify(
-            string jwtAccessToken, out string sub, out List<string> roles, out List<string> scopes, out JObject jobj)
+        public static bool Verify(string jwtAccessToken,
+            out string sub, out List<string> roles, out List<string> scopes, out JObject jobj)
         {
             sub = "";
             roles =  new List<string>();
@@ -87,7 +87,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 //string nonce = (string)jobj["nonce"];
                 string iss = (string)jobj["iss"];
                 string aud = (string)jobj["aud"];
-                string iat = (string)jobj["iat"];
+                //string iat = (string)jobj["iat"];
                 string exp = (string)jobj["exp"];
 
                 sub = (string)jobj["sub"];

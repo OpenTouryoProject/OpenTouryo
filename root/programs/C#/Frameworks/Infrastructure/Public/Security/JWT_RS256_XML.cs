@@ -41,7 +41,7 @@ using Touryo.Infrastructure.Public.Util;
 namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>XMLによるJWT(JWS)RS256生成クラス</summary>
-    class JWT_RS256_XML : JWT
+    public class JWT_RS256_XML : JWT
     {
         #region mem & prop & constructor
 
@@ -61,15 +61,16 @@ namespace Touryo.Infrastructure.Public.Security
                 EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256);
 
             this.XMLPrivateKey = this._DigitalSignXML.XMLPrivateKey;
-            this.XMLPrivateKey = this._DigitalSignXML.XMLPublicKey;
+            this.XMLPublicKey = this._DigitalSignXML.XMLPublicKey;
         }
 
         /// <summary>Constructor</summary>
-        /// <param name="xmlPublicKey">string</param>
-        public JWT_RS256_XML(string xmlPublicKey)
+        /// <param name="xmlKey">string</param>
+        public JWT_RS256_XML(string xmlKey)
         {
             this._DigitalSignXML = new DigitalSignXML(
-                EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256, xmlPublicKey);
+                EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256, xmlKey);
+            this.XMLPrivateKey = this._DigitalSignXML.XMLPrivateKey;
             this.XMLPublicKey = this._DigitalSignXML.XMLPublicKey;
         }
 

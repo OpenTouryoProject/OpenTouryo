@@ -44,7 +44,7 @@ namespace Touryo.Infrastructure.Public.Security
     /// - DSACryptoServiceProvider:SHA1
     /// だけ、サポート。
     /// </summary>
-    class RsaAndDsaCmnFunc
+    public class RsaAndDsaCmnFunc
     {
         /// <summary>公開鍵・暗号化サービスプロバイダの生成(param)</summary>
         /// <param name="param">

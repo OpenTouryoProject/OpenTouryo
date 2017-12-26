@@ -79,19 +79,16 @@ namespace Touryo.Infrastructure.Public.Security
             this.AsymmetricAlgorithm = aa;
             this.HashAlgorithm = ha;
 
-            if (string.IsNullOrEmpty(this.XMLPrivateKey))
-            {
-                // 秘密鍵をXML形式で取得
-                this.XMLPrivateKey = this.AsymmetricAlgorithm.ToXmlString(true);
-                // 公開鍵をXML形式で取得
-                this.XMLPublicKey = this.AsymmetricAlgorithm.ToXmlString(false);
-            }
+            // 秘密鍵をXML形式で取得
+            this.XMLPrivateKey = this.AsymmetricAlgorithm.ToXmlString(true);
+            // 公開鍵をXML形式で取得
+            this.XMLPublicKey = this.AsymmetricAlgorithm.ToXmlString(false);
         }
 
         /// <summary>Constructor</summary>
         /// <param name="eaa">EnumDigitalSignAlgorithm</param>
-        /// <param name="xmlPublicKey">string</param>
-        public DigitalSignXML(EnumDigitalSignAlgorithm eaa, string xmlPublicKey)
+        /// <param name="xmlKey">string</param>
+        public DigitalSignXML(EnumDigitalSignAlgorithm eaa, string xmlKey)
         {
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
@@ -100,23 +97,26 @@ namespace Touryo.Infrastructure.Public.Security
             if (aa is RSACryptoServiceProvider)
             {
                 RSACryptoServiceProvider rsaCryptoServiceProvider = (RSACryptoServiceProvider)aa;
-                rsaCryptoServiceProvider.FromXmlString(xmlPublicKey);
+                rsaCryptoServiceProvider.FromXmlString(xmlKey);
                 this.AsymmetricAlgorithm = rsaCryptoServiceProvider;
             }
             if (aa is DSACryptoServiceProvider)
             {
                 DSACryptoServiceProvider dsaCryptoServiceProvider = (DSACryptoServiceProvider)aa;
-                dsaCryptoServiceProvider.FromXmlString(xmlPublicKey);
+                dsaCryptoServiceProvider.FromXmlString(xmlKey);
                 this.AsymmetricAlgorithm = dsaCryptoServiceProvider;
-                this.HashAlgorithm = ha;
             }
             else
             {
-                // 
+                // ・・・
             }
 
             this.HashAlgorithm = ha;
-            this.XMLPublicKey = xmlPublicKey;
+
+            // 秘密鍵をXML形式で取得
+            this.XMLPrivateKey = this.AsymmetricAlgorithm.ToXmlString(true);
+            // 公開鍵をXML形式で取得
+            this.XMLPublicKey = this.AsymmetricAlgorithm.ToXmlString(false);
         }
 
         #endregion
