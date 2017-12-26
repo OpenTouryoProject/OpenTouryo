@@ -37,6 +37,7 @@
 //**********************************************************************************
 
 using System.Security.Cryptography;
+
 using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security

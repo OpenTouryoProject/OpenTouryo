@@ -52,6 +52,19 @@ namespace Touryo.Infrastructure.Public.Security
         public HashAlgorithm HashAlgorithm { get; protected set; }
 
         /// <summary>Constructor</summary>
+        /// <param name="eaa">EnumDigitalSignAlgorithm</param>
+        public DigitalSignParam(EnumDigitalSignAlgorithm eaa)
+        {
+            AsymmetricAlgorithm aa = null;
+            HashAlgorithm ha = null;
+
+            RsaAndDsaCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+
+            this.AsymmetricAlgorithm = aa;
+            this.HashAlgorithm = ha;
+        }
+
+        /// <summary>Constructor</summary>
         /// <param name="param">object</param>
         /// <param name="ha">HashAlgorithm</param>
         public DigitalSignParam(object param, HashAlgorithm ha)

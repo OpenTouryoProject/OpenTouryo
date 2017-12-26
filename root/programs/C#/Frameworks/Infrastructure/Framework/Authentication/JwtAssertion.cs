@@ -69,8 +69,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
             
             jwtAssertionClaimSet.Add("iss", iss); // client_id
             jwtAssertionClaimSet.Add("aud", aud); // Token2 EndPointのuri。
+
+#if NET45
+            jwtAssertionClaimSet.Add("exp", PubCmnFunction.ToUnixTime(DateTimeOffset.Now.Add(forExp)).ToString());
+            jwtAssertionClaimSet.Add("iat", PubCmnFunction.ToUnixTime(DateTimeOffset.Now).ToString());
+#else
             jwtAssertionClaimSet.Add("exp", (DateTimeOffset.Now.Add(forExp)).ToUnixTimeSeconds().ToString());
             jwtAssertionClaimSet.Add("iat", DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
+#endif
+
             jwtAssertionClaimSet.Add("jti", Guid.NewGuid().ToString("N"));
             jwtAssertionClaimSet.Add("scope", scopes); // scopes
 

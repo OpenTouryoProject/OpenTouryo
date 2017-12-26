@@ -42,9 +42,33 @@ namespace Touryo.Infrastructure.Public.Security
     public class JWT_RS256_Param : JWT
     {
         #region mem & prop & constructor
-        
+
         /// <summary>DigitalSignParam</summary>
-        public DigitalSignParam DigitalSignParam { get; protected set; }
+        private DigitalSignParam DigitalSignParam { get; set; }
+
+        /// <summary>秘密鍵のRSAParameters</summary>
+        public RSAParameters RsaPrivateParameters
+        {
+            get
+            {
+                return ((RSACryptoServiceProvider)this.DigitalSignParam.AsymmetricAlgorithm).ExportParameters(true);
+            }
+        }
+
+        /// <summary>公開鍵のRSAParameters</summary>
+        public RSAParameters RsaPublicParameters
+        {
+            get
+            {
+                return ((RSACryptoServiceProvider)this.DigitalSignParam.AsymmetricAlgorithm).ExportParameters(false);
+            }
+        }
+
+        /// <summary>Constructor</summary>
+        public JWT_RS256_Param()
+        {
+            this.DigitalSignParam = new DigitalSignParam(EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256);
+        }
 
         /// <summary>Constructor</summary>
         /// <param name="param">object</param>

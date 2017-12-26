@@ -114,7 +114,16 @@ namespace Touryo.Infrastructure.Public.Security
             this.HashAlgorithm = ha;
 
             // 秘密鍵をXML形式で取得
-            this.XMLPrivateKey = this.AsymmetricAlgorithm.ToXmlString(true);
+            try
+            {
+                this.XMLPrivateKey = this.AsymmetricAlgorithm.ToXmlString(true);
+            }
+            catch (CryptographicException cex)
+            {
+                cex.GetType();
+                // 潰す（xmlKeyが公開鍵のケース）
+            }
+
             // 公開鍵をXML形式で取得
             this.XMLPublicKey = this.AsymmetricAlgorithm.ToXmlString(false);
         }
