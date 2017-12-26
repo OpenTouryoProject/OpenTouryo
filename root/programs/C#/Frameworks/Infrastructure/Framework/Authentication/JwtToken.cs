@@ -76,7 +76,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             scopes = new List<string>();
             jobj = null;
 
-            JWT_RS256 jwtRS256 = new JWT_RS256(OAuth2AndOIDCParams.RS256Cer, "");
+            JWT_RS256_X509 jwtRS256 = new JWT_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
 
             if (jwtRS256.Verify(jwtAccessToken))
             {

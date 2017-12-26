@@ -100,6 +100,7 @@
     <Compile Include="Security\JWT_RS256_Param.cs" />
     <Compile Include="Security\JWT_RS256_XML.cs" />
     <Compile Include="Security\JWT_RS256_X509.cs" />
+    <Compile Include="Security\RS256_KeyConverter.cs" />
     <Compile Include="Security\SymmetricCryptography.cs" />
     <Compile Include="IO\UnZipper.cs" />
     <Compile Include="IO\ZipBase.cs" />

@@ -58,7 +58,7 @@ namespace Touryo.Infrastructure.Public.Security
         string _hashAlgorithmName = "";
 
         /// <summary>X.509証明書</summary>
-        private X509Certificate2 _X509Certificate = null;
+        public X509Certificate2 X509Certificate { get; protected set; }
 
         /// <summary>X.509証明書の秘密鍵</summary>
         public string X509PrivateKey
@@ -74,7 +74,7 @@ namespace Touryo.Infrastructure.Public.Security
         {
             get
             {
-                return CustomEncode.ToBase64String(this._X509Certificate.GetPublicKey());
+                return CustomEncode.ToBase64String(this.X509Certificate.GetPublicKey());
             }
         }
 
@@ -108,7 +108,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="flag">X509KeyStorageFlags</param>
         public DigitalSignX509(string certificateFilePath, string password, string hashAlgorithmName, X509KeyStorageFlags flag)
         {
-            this._X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
+            this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
 
             this._hashAlgorithmName = hashAlgorithmName;
         }
@@ -123,7 +123,7 @@ namespace Touryo.Infrastructure.Public.Security
         public override byte[] Sign(byte[] data)
         {
             // アルゴリズム（RSA or DSA）は、ココで決まるもよう。
-            AsymmetricAlgorithm aa = this._X509Certificate.PrivateKey;
+            AsymmetricAlgorithm aa = this.X509Certificate.PrivateKey;
 
             // デジタル署名
             byte[] signedByte = null;
@@ -132,7 +132,7 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 // RSACryptoServiceProvider : ExportParametersして生成し直している。
                 RSAParameters rsaParam = ((RSACryptoServiceProvider)(aa)).ExportParameters(true);
-                RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(this._X509Certificate.PrivateKey.KeySize);
+                RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(this.X509Certificate.PrivateKey.KeySize);
                 rsa.ImportParameters(rsaParam);
                 signedByte = rsa.SignData(data, this._hashAlgorithmName);
 
@@ -141,7 +141,7 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 // DSACryptoServiceProvider : ExportParametersして生成し直している。
                 DSAParameters dsaParam = ((DSACryptoServiceProvider)(aa)).ExportParameters(true);
-                DSACryptoServiceProvider dsa = new DSACryptoServiceProvider(this._X509Certificate.PrivateKey.KeySize);
+                DSACryptoServiceProvider dsa = new DSACryptoServiceProvider(this.X509Certificate.PrivateKey.KeySize);
                 dsa.ImportParameters(dsaParam);
                 signedByte = dsa.SignData(data); // SHA-1 固定のため？
             }
@@ -161,10 +161,10 @@ namespace Touryo.Infrastructure.Public.Security
             bool flg = false;
 
             // アルゴリズム（RSA or DSA）は、ココで決まるもよう。
-            if (this._X509Certificate.PrivateKey == null)
+            if (this.X509Certificate.PrivateKey == null)
             {
                 // *.cer
-                aa = this._X509Certificate.PublicKey.Key;
+                aa = this.X509Certificate.PublicKey.Key;
                 if (aa is RSACryptoServiceProvider)
                 {
                     return ((RSACryptoServiceProvider)aa).VerifyData(data, this._hashAlgorithmName, sign);
@@ -177,12 +177,12 @@ namespace Touryo.Infrastructure.Public.Security
             else
             {
                 // *.pfx
-                aa = this._X509Certificate.PrivateKey;
+                aa = this.X509Certificate.PrivateKey;
                 if (aa is RSACryptoServiceProvider)
                 {
                     // RSACryptoServiceProvider : ExportParametersして生成し直している。
                     RSAParameters rsaParam = ((RSACryptoServiceProvider)(aa)).ExportParameters(true);
-                    RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(this._X509Certificate.PrivateKey.KeySize);
+                    RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(this.X509Certificate.PrivateKey.KeySize);
                     rsa.ImportParameters(rsaParam);
                     flg = rsa.VerifyData(data, this._hashAlgorithmName, sign);
                 }
@@ -190,7 +190,7 @@ namespace Touryo.Infrastructure.Public.Security
                 {
                     // DSACryptoServiceProvider : ExportParametersして生成し直している。
                     DSAParameters dsaParam = ((DSACryptoServiceProvider)(aa)).ExportParameters(true);
-                    DSACryptoServiceProvider dsa = new DSACryptoServiceProvider(this._X509Certificate.PrivateKey.KeySize);
+                    DSACryptoServiceProvider dsa = new DSACryptoServiceProvider(this.X509Certificate.PrivateKey.KeySize);
                     dsa.ImportParameters(dsaParam);
                     flg = dsa.VerifyData(data, sign); // SHA-1 固定のため？
                 }

@@ -32,7 +32,6 @@
 
 using System;
 using System.Text;
-using System.Linq;
 using System.Collections.Generic;
 
 using Microsoft.Owin.Security.DataHandler.Encoder;
