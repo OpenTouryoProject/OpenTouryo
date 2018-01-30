@@ -1,4 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.Sample._3Tier.ProductsSearchAndUpdate" Title="ProductsSearchAndUpdate" Codebehind="ProductsSearchAndUpdate.aspx.cs" %>
+<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/Master/testBlankScreen.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.Sample._3Tier.ProductsSearchAndUpdate" Title="ProductsSearchAndUpdate" Codebehind="ProductsSearchAndUpdate.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">

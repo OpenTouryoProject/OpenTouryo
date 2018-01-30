@@ -1,4 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.TestFxLayerP.Table.testListView" EnableEventValidation="false" Codebehind="testListView.aspx.cs" %>
+<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/Master/testBlankScreen.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.TestFxLayerP.Table.testListView" EnableEventValidation="false" Codebehind="testListView.aspx.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">

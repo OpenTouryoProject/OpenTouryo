@@ -1,4 +1,4 @@
-<%@ Master Language="C#" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.Common.testBlankScreen" Codebehind="testBlankScreen.master.cs" %>
+<%@ Master Language="C#" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.Common.Master.testBlankScreen" Codebehind="testBlankScreen.master.cs" %>
 
 <!DOCTYPE html>
 <html>

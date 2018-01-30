@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/Aspx/Common/TestNest/rootMasterPage.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.Common.TestNest.branchMasterPage1" Codebehind="branchMasterPage1.master.cs" %>
+﻿<%@ Master Language="C#" MasterPageFile="~/Aspx/Common/Master/TestNest/rootMasterPage.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.Common.Master.TestNest.branchMasterPage1" Codebehind="branchMasterPage1.master.cs" %>
 <%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
