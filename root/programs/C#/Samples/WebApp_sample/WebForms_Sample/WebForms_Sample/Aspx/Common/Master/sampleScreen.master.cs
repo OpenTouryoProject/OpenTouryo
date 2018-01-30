@@ -17,6 +17,9 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Util;
@@ -31,8 +34,9 @@ namespace WebForms_Sample.Aspx.Common.Master
         /// <returns>URL</returns>
         protected string UOC_btnMPButton_Click(FxEventArgs fxEventArgs)
         {
-            Response.Write("UOC_btnMPButton_Clickを実行できた。");
-
+            //Response.Write("UOC_btnMPButton_Clickを実行できた。");
+            ((Label)FxCmnFunction.SearchWebControl(this.Page.Controls, "lblResult")).Text = "UOC_btnMPButton_Clickを実行できた。";
+            
             return "";
         }
 

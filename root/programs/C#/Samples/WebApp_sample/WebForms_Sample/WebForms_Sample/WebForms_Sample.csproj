@@ -146,6 +146,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Aspx\Common\Wuc\sampleChildControl.ascx" />
     <Content Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx" />
     <Content Include="Aspx\Common\ErrorScreen.aspx" />
     <Content Include="Aspx\Common\Wuc\sampleControl.ascx" />
@@ -280,6 +281,13 @@
     <Compile Include="AppCode\testPublic\Business\TestMTC_txg.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Aspx\Common\Wuc\sampleChildControl.ascx.cs">
+      <DependentUpon>sampleChildControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Aspx\Common\Wuc\sampleChildControl.ascx.designer.cs">
+      <DependentUpon>sampleChildControl.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx.cs">
       <DependentUpon>OAuth2AuthorizationCodeGrantClient.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

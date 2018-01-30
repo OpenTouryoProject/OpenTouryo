@@ -64,7 +64,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 自動生成されたフィールド。
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
-        protected global::WebForms_Sample.Aspx.Common.Wuc.WebUserControl sampleControl1;
+        protected global::WebForms_Sample.Aspx.Common.Wuc.SampleControl sampleControl1;
         
         /// <summary>
         /// sampleControl2 コントロール。
@@ -73,7 +73,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 自動生成されたフィールド。
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
-        protected global::WebForms_Sample.Aspx.Common.Wuc.WebUserControl sampleControl2;
+        protected global::WebForms_Sample.Aspx.Common.Wuc.SampleControl sampleControl2;
         
         /// <summary>
         /// btnMButton101 コントロール。

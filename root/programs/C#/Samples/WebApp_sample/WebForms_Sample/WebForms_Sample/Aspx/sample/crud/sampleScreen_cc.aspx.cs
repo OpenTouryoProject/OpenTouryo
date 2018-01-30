@@ -28,6 +28,7 @@ using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Transmission;
 using Touryo.Infrastructure.Framework.Exceptions;
+using Touryo.Infrastructure.Framework.Util;
 
 namespace WebForms_Sample.Aspx.Sample.Crud
 {
@@ -587,37 +588,65 @@ namespace WebForms_Sample.Aspx.Sample.Crud
 
         #region Master Page、User Controlのイベント
 
-        /// <summary>Master PageにEvent Handlerを実装可能にしたのでそのテスト。</summary>
-        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
-        /// <returns>URL</returns>
-        protected string UOC_sampleScreen_btnMPButton_Click(FxEventArgs fxEventArgs)
-        {
-            this.lblResult.Text = "sampleScreen.masterのbtnMPButtonのClickイベントを、UOC_sampleScreen_btnMPButton_Clickで実行";
+        // ココをコメント・アウトすると、Master Page、User Control上のイベント・ハンドラが呼び出される。
 
-            return "";
-        }
+        //#region Master Page
 
-        /// <summary>User ControlにEvent Handlerを実装可能にしたのでそのテスト。</summary>
-        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
-        /// <returns>URL</returns>
-        protected string UOC_sampleControl1_btnUCButton_Click(FxEventArgs fxEventArgs)
-        {
-            this.lblResult.Text = "sampleControl.ascxのbtnUCButtonのClickイベントを、UOC_sampleControl1_btnUCButton_Clickで実行";
+        ///// <summary>Master PageにEvent Handlerを実装可能にしたのでそのテスト。</summary>
+        ///// <param name="fxEventArgs">Event Handlerの共通引数</param>
+        ///// <returns>URL</returns>
+        //protected string UOC_sampleScreen_btnMPButton_Click(FxEventArgs fxEventArgs)
+        //{
+        //    ((Label)FxCmnFunction.SearchWebControl(this.Page.Controls, "lblResult")).Text
+        //        = "sampleScreen.masterのbtnMPButtonのClickイベントを、UOC_sampleScreen_btnMPButton_Clickで実行";
 
-            return "";
-        }
+        //    return "";
+        //}
 
-        /// <summary>User ControlにEvent Handlerを実装可能にしたのでそのテスト。</summary>
-        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
-        /// <returns>URL</returns>
-        protected string UOC_sampleControl2_btnUCButton_Click(FxEventArgs fxEventArgs)
-        {
-            this.lblResult.Text = "sampleControl.ascxのbtnUCButtonのClickイベントを、UOC_sampleControl2_btnUCButton_Clickで実行";
+        //#endregion
 
-            return "";
-        }
+        //#region User Control
+
+        ///// <summary>User ControlにEvent Handlerを実装可能にしたのでそのテスト。</summary>
+        ///// <param name="fxEventArgs">Event Handlerの共通引数</param>
+        ///// <returns>URL</returns>
+        //protected string UOC_sampleControl1_btnUCButton_Click(FxEventArgs fxEventArgs)
+        //{
+        //    ((Label)FxCmnFunction.SearchWebControl(this.Page.Controls, "lblResult")).Text
+        //        = "sampleControl.ascxのbtnUCButtonのClickイベントを、UOC_sampleControl1_btnUCButton_Clickで実行";
+
+        //    return "";
+        //}
+
+        ///// <summary>User ControlにEvent Handlerを実装可能にしたのでそのテスト。</summary>
+        ///// <param name="fxEventArgs">Event Handlerの共通引数</param>
+        ///// <returns>URL</returns>
+        //protected string UOC_sampleControl2_btnUCButton_Click(FxEventArgs fxEventArgs)
+        //{
+        //    ((Label)FxCmnFunction.SearchWebControl(this.Page.Controls, "lblResult")).Text
+        //        = "sampleControl.ascxのbtnUCButtonのClickイベントを、UOC_sampleControl2_btnUCButton_Clickで実行";
+
+        //    return "";
+        //}
+
+        //#region Child
+
+        ///// <summary>User ControlにEvent Handlerを実装可能にしたのでそのテスト。</summary>
+        ///// <param name="fxEventArgs">Event Handlerの共通引数</param>
+        ///// <returns>URL</returns>
+        //protected string UOC_sampleChildControl_btnUCChildButton_Click(FxEventArgs fxEventArgs)
+        //{
+        //    // ネストされたUser Controlの場合、ココでは、Instanceの区別ができない。
+        //    ((Label)FxCmnFunction.SearchWebControl(this.Page.Controls, "lblResult")).Text
+        //        = "sampleChildControl.ascxのbtnUCChildButtonのClickイベントを、UOC_sampleChildControl_btnUCChildButton_Clickで実行";
+
+        //    return "";
+        //}
+
+        //#endregion
+
+        //#endregion
 
         #endregion
-
     }
 }

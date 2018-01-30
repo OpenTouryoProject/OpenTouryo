@@ -10,33 +10,24 @@
 namespace WebForms_Sample.Aspx.Common.Wuc {
     
     
-    public partial class SampleControl {
+    public partial class SampleChildControl {
         
         /// <summary>
-        /// btnUCButton コントロール。
+        /// btnUCChildButton コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnUCButton;
+        protected global::System.Web.UI.WebControls.Button btnUCChildButton;
         
         /// <summary>
-        /// lblUCResult コントロール。
+        /// lblUCChildResult コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblUCResult;
-        
-        /// <summary>
-        /// sampleChildControl コントロール。
-        /// </summary>
-        /// <remarks>
-        /// 自動生成されたフィールド。
-        /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
-        /// </remarks>
-        protected global::WebForms_Sample.Aspx.Common.Wuc.SampleChildControl sampleChildControl;
+        protected global::System.Web.UI.WebControls.Label lblUCChildResult;
     }
 }

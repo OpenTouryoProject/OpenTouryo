@@ -91,7 +91,7 @@
         
                     <!--SampleCode：Header（共通）-->
                     <asp:Label ID="lblResult" runat="server" Text=""></asp:Label><br />
-                    <asp:Button ID="btnMPButton" runat="server" Text="Master Page上の上のButton" />
+                    <asp:Button ID="btnMPButton" runat="server" Text="Master Page上の上のButton" /><br />
                     <!-- User Control上のButton -->
                     <uc1:sampleControl ID="sampleControl1" runat="server"/>
                     <uc1:sampleControl ID="sampleControl2" runat="server"/>
