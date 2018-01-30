@@ -7,7 +7,7 @@
 // </自動生成>
 //------------------------------------------------------------------------------
 
-namespace WebForms_Sample.Aspx.Common {
+namespace WebForms_Sample.Aspx.Common.Master {
     
     
     public partial class testAspNetAjaxExtension_Separate {

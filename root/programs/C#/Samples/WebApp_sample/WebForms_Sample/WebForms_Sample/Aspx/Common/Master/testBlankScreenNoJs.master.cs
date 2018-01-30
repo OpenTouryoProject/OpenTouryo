@@ -21,7 +21,7 @@ using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Util;
 
-namespace WebForms_Sample.Aspx.Common
+namespace WebForms_Sample.Aspx.Common.Master
 {
     /// <summary>ブランクのMaster Page</summary>
     public partial class testBlankScreenNoJs : BaseMasterController

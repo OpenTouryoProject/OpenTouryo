@@ -19,7 +19,7 @@
 
 using Touryo.Infrastructure.Framework.Presentation;
 
-namespace WebForms_Sample.Aspx.Common.TestNest
+namespace WebForms_Sample.Aspx.Common.Master.TestNest
 {
     /// <summary>testScreen2bmp1 class</summary>
     public partial class testScreen2bmp1 : BaseMasterController

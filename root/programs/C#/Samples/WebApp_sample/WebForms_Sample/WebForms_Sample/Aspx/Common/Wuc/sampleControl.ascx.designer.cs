@@ -7,7 +7,7 @@
 // </自動生成>
 //------------------------------------------------------------------------------
 
-namespace WebForms_Sample.Aspx.Common {
+namespace WebForms_Sample.Aspx.Common.Wuc {
     
     
     public partial class WebUserControl {

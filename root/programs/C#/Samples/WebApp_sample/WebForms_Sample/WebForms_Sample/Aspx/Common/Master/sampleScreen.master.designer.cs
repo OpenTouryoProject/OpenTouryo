@@ -7,7 +7,7 @@
 // </自動生成>
 //------------------------------------------------------------------------------
 
-namespace WebForms_Sample.Aspx.Common {
+namespace WebForms_Sample.Aspx.Common.Master {
     
     
     public partial class sampleScreen {
@@ -64,7 +64,7 @@ namespace WebForms_Sample.Aspx.Common {
         /// 自動生成されたフィールド。
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
-        protected global::WebForms_Sample.Aspx.Common.WebUserControl sampleControl1;
+        protected global::WebForms_Sample.Aspx.Common.Wuc.WebUserControl sampleControl1;
         
         /// <summary>
         /// sampleControl2 コントロール。
@@ -73,7 +73,7 @@ namespace WebForms_Sample.Aspx.Common {
         /// 自動生成されたフィールド。
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
-        protected global::WebForms_Sample.Aspx.Common.WebUserControl sampleControl2;
+        protected global::WebForms_Sample.Aspx.Common.Wuc.WebUserControl sampleControl2;
         
         /// <summary>
         /// btnMButton101 コントロール。

@@ -20,7 +20,7 @@
 using System;
 using Touryo.Infrastructure.Framework.Presentation;
 
-namespace WebForms_Sample.Aspx.Common
+namespace WebForms_Sample.Aspx.Common.Master
 {
     /// <summary>Ajaxテスト用のMaster Page（updateパネルを親・子で２つ別けて使用）</summary>
     public partial class testAspNetAjaxExtension_Separate : BaseMasterController

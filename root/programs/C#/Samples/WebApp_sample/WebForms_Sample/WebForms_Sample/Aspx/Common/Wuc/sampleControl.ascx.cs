@@ -17,12 +17,13 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+using System.Web.UI;
 using Touryo.Infrastructure.Framework.Presentation;
 
-namespace WebForms_Sample.Aspx.Common
+namespace WebForms_Sample.Aspx.Common.Wuc
 {
     /// <summary>WebUserControl class</summary>
-    public partial class WebUserControl : System.Web.UI.UserControl
+    public partial class WebUserControl : UserControl
     {
         /// <summary>User ControlにEvent Handlerを実装可能にしたのでそのテスト。</summary>
         /// <param name="fxEventArgs">Event Handlerの共通引数</param>

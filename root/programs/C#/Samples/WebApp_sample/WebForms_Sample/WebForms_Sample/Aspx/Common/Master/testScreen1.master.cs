@@ -19,7 +19,7 @@
 
 using Touryo.Infrastructure.Framework.Presentation;
 
-namespace WebForms_Sample.Aspx.Common
+namespace WebForms_Sample.Aspx.Common.Master
 {
     /// <summary>テスト画面１用のMaster Page</summary>
     public partial class testScreen1 : BaseMasterController

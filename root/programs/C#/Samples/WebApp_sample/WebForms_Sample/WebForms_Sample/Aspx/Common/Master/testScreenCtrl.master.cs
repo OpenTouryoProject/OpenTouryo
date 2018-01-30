@@ -19,7 +19,7 @@
 
 using Touryo.Infrastructure.Framework.Presentation;
 
-namespace WebForms_Sample.Aspx.Common
+namespace WebForms_Sample.Aspx.Common.Master
 {
     /// <summary>画面遷移制御機能テスト画面用のMaster Page</summary>
     public partial class testScreenCtrl : BaseMasterController

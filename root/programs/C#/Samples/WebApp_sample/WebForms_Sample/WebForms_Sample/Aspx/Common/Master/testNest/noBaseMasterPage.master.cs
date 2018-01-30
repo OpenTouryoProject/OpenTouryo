@@ -17,7 +17,7 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-namespace WebForms_Sample.Aspx.Common.TestNest
+namespace WebForms_Sample.Aspx.Common.Master.TestNest
 {
     /// <summary>noBaseMasterPage class</summary>
     public partial class noBaseMasterPage : System.Web.UI.MasterPage

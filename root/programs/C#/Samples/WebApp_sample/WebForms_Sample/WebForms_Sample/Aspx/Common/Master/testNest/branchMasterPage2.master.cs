@@ -19,7 +19,7 @@
 
 using Touryo.Infrastructure.Framework.Presentation;
 
-namespace WebForms_Sample.Aspx.Common.TestNest
+namespace WebForms_Sample.Aspx.Common.Master.TestNest
 {
     /// <summary>branchMasterPage2 class</summary>
     public partial class branchMasterPage2 : BaseMasterController

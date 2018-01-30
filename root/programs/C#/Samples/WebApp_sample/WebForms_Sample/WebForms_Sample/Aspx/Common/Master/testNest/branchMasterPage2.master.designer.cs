@@ -7,7 +7,7 @@
 // </自動生成>
 //------------------------------------------------------------------------------
 
-namespace WebForms_Sample.Aspx.Common.TestNest {
+namespace WebForms_Sample.Aspx.Common.Master.TestNest {
     
     
     public partial class branchMasterPage2 {

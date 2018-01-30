@@ -148,7 +148,7 @@
   <ItemGroup>
     <Content Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx" />
     <Content Include="Aspx\Common\ErrorScreen.aspx" />
-    <Content Include="Aspx\Common\sampleControl.ascx" />
+    <Content Include="Aspx\Common\Wuc\sampleControl.ascx" />
     <Content Include="Aspx\Framework\DialogFrame.htm" />
     <Content Include="Aspx\Framework\DialogLoader.htm" />
     <Content Include="Aspx\Framework\myOKMessageDialog.aspx" />
@@ -214,7 +214,7 @@
     <Content Include="Index.html" />
     <Content Include="Scripts\app\Site.js" />
     <Content Include="Bundle.config" />
-    <Content Include="Aspx\Common\testBlankScreenNoJs.master" />
+    <Content Include="Aspx\Common\Master\testBlankScreenNoJs.master" />
     <Content Include="fonts\FontAwesome.otf" />
     <Content Include="fonts\fontawesome-webfont.woff2" />
     <Content Include="fonts\fontawesome-webfont.woff" />
@@ -294,130 +294,130 @@
     <Compile Include="Aspx\Common\ErrorScreen.aspx.designer.cs">
       <DependentUpon>ErrorScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\sampleControl.ascx.cs">
+    <Compile Include="Aspx\Common\Wuc\sampleControl.ascx.cs">
       <DependentUpon>sampleControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\sampleControl.ascx.designer.cs">
+    <Compile Include="Aspx\Common\Wuc\sampleControl.ascx.designer.cs">
       <DependentUpon>sampleControl.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\sampleScreen.master.cs">
+    <Compile Include="Aspx\Common\Master\sampleScreen.master.cs">
       <DependentUpon>sampleScreen.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\sampleScreen.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\sampleScreen.master.designer.cs">
       <DependentUpon>sampleScreen.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\testAspNetAjaxExtension_Separate.master.cs">
+    <Compile Include="Aspx\Common\Master\testAspNetAjaxExtension_Separate.master.cs">
       <DependentUpon>testAspNetAjaxExtension_Separate.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\testAspNetAjaxExtension_Separate.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\testAspNetAjaxExtension_Separate.master.designer.cs">
       <DependentUpon>testAspNetAjaxExtension_Separate.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\testAspNetAjaxExtension_Single.master.cs">
+    <Compile Include="Aspx\Common\Master\testAspNetAjaxExtension_Single.master.cs">
       <DependentUpon>testAspNetAjaxExtension_Single.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\testAspNetAjaxExtension_Single.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\testAspNetAjaxExtension_Single.master.designer.cs">
       <DependentUpon>testAspNetAjaxExtension_Single.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\testBlankScreenNoJs.master.cs">
+    <Compile Include="Aspx\Common\Master\testBlankScreenNoJs.master.cs">
       <DependentUpon>testBlankScreenNoJs.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\testBlankScreenNoJs.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\testBlankScreenNoJs.master.designer.cs">
       <DependentUpon>testBlankScreenNoJs.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\testBlankScreen.master.cs">
+    <Compile Include="Aspx\Common\Master\testBlankScreen.master.cs">
       <DependentUpon>testBlankScreen.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\testBlankScreen.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\testBlankScreen.master.designer.cs">
       <DependentUpon>testBlankScreen.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\testClientCallback.master.cs">
+    <Compile Include="Aspx\Common\Master\testClientCallback.master.cs">
       <DependentUpon>testClientCallback.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\testClientCallback.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\testClientCallback.master.designer.cs">
       <DependentUpon>testClientCallback.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\TestNest\branchMasterPage1.master.cs">
+    <Compile Include="Aspx\Common\Master\TestNest\branchMasterPage1.master.cs">
       <DependentUpon>branchMasterPage1.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\TestNest\branchMasterPage1.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\TestNest\branchMasterPage1.master.designer.cs">
       <DependentUpon>branchMasterPage1.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\TestNest\branchMasterPage2.master.cs">
+    <Compile Include="Aspx\Common\Master\TestNest\branchMasterPage2.master.cs">
       <DependentUpon>branchMasterPage2.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\TestNest\branchMasterPage2.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\TestNest\branchMasterPage2.master.designer.cs">
       <DependentUpon>branchMasterPage2.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\TestNest\noBaseMasterPage.master.cs">
+    <Compile Include="Aspx\Common\Master\TestNest\noBaseMasterPage.master.cs">
       <DependentUpon>noBaseMasterPage.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\TestNest\noBaseMasterPage.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\TestNest\noBaseMasterPage.master.designer.cs">
       <DependentUpon>noBaseMasterPage.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\TestNest\rootMasterPage.master.cs">
+    <Compile Include="Aspx\Common\Master\TestNest\rootMasterPage.master.cs">
       <DependentUpon>rootMasterPage.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\TestNest\rootMasterPage.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\TestNest\rootMasterPage.master.designer.cs">
       <DependentUpon>rootMasterPage.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\TestNest\testScreen1bmp1.master.cs">
+    <Compile Include="Aspx\Common\Master\TestNest\testScreen1bmp1.master.cs">
       <DependentUpon>testScreen1bmp1.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\TestNest\testScreen1bmp1.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\TestNest\testScreen1bmp1.master.designer.cs">
       <DependentUpon>testScreen1bmp1.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\TestNest\testScreen1bmp2.master.cs">
+    <Compile Include="Aspx\Common\Master\TestNest\testScreen1bmp2.master.cs">
       <DependentUpon>testScreen1bmp2.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\TestNest\testScreen1bmp2.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\TestNest\testScreen1bmp2.master.designer.cs">
       <DependentUpon>testScreen1bmp2.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\TestNest\testScreen2bmp1.master.cs">
+    <Compile Include="Aspx\Common\Master\TestNest\testScreen2bmp1.master.cs">
       <DependentUpon>testScreen2bmp1.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\TestNest\testScreen2bmp1.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\TestNest\testScreen2bmp1.master.designer.cs">
       <DependentUpon>testScreen2bmp1.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\TestNest\testScreen2bmp2.master.cs">
+    <Compile Include="Aspx\Common\Master\TestNest\testScreen2bmp2.master.cs">
       <DependentUpon>testScreen2bmp2.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\TestNest\testScreen2bmp2.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\TestNest\testScreen2bmp2.master.designer.cs">
       <DependentUpon>testScreen2bmp2.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\testScreen1.master.cs">
+    <Compile Include="Aspx\Common\Master\testScreen1.master.cs">
       <DependentUpon>testScreen1.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\testScreen1.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\testScreen1.master.designer.cs">
       <DependentUpon>testScreen1.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\testScreen2.master.cs">
+    <Compile Include="Aspx\Common\Master\testScreen2.master.cs">
       <DependentUpon>testScreen2.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\testScreen2.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\testScreen2.master.designer.cs">
       <DependentUpon>testScreen2.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\testScreenCtrl.master.cs">
+    <Compile Include="Aspx\Common\Master\testScreenCtrl.master.cs">
       <DependentUpon>testScreenCtrl.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\testScreenCtrl.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\testScreenCtrl.master.designer.cs">
       <DependentUpon>testScreenCtrl.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Framework\myOKMessageDialog.aspx.cs">
@@ -707,22 +707,22 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.config" />
-    <Content Include="Aspx\Common\sampleScreen.master" />
-    <Content Include="Aspx\Common\testAspNetAjaxExtension_Separate.master" />
-    <Content Include="Aspx\Common\testAspNetAjaxExtension_Single.master" />
-    <Content Include="Aspx\Common\testBlankScreen.master" />
-    <Content Include="Aspx\Common\testClientCallback.master" />
-    <Content Include="Aspx\Common\TestNest\branchMasterPage1.master" />
-    <Content Include="Aspx\Common\TestNest\branchMasterPage2.master" />
-    <Content Include="Aspx\Common\TestNest\noBaseMasterPage.master" />
-    <Content Include="Aspx\Common\TestNest\rootMasterPage.master" />
-    <Content Include="Aspx\Common\TestNest\testScreen1bmp1.master" />
-    <Content Include="Aspx\Common\TestNest\testScreen1bmp2.master" />
-    <Content Include="Aspx\Common\TestNest\testScreen2bmp1.master" />
-    <Content Include="Aspx\Common\TestNest\testScreen2bmp2.master" />
-    <Content Include="Aspx\Common\testScreen1.master" />
-    <Content Include="Aspx\Common\testScreen2.master" />
-    <Content Include="Aspx\Common\testScreenCtrl.master" />
+    <Content Include="Aspx\Common\Master\sampleScreen.master" />
+    <Content Include="Aspx\Common\Master\testAspNetAjaxExtension_Separate.master" />
+    <Content Include="Aspx\Common\Master\testAspNetAjaxExtension_Single.master" />
+    <Content Include="Aspx\Common\Master\testBlankScreen.master" />
+    <Content Include="Aspx\Common\Master\testClientCallback.master" />
+    <Content Include="Aspx\Common\Master\TestNest\branchMasterPage1.master" />
+    <Content Include="Aspx\Common\Master\TestNest\branchMasterPage2.master" />
+    <Content Include="Aspx\Common\Master\TestNest\noBaseMasterPage.master" />
+    <Content Include="Aspx\Common\Master\TestNest\rootMasterPage.master" />
+    <Content Include="Aspx\Common\Master\TestNest\testScreen1bmp1.master" />
+    <Content Include="Aspx\Common\Master\TestNest\testScreen1bmp2.master" />
+    <Content Include="Aspx\Common\Master\TestNest\testScreen2bmp1.master" />
+    <Content Include="Aspx\Common\Master\TestNest\testScreen2bmp2.master" />
+    <Content Include="Aspx\Common\Master\testScreen1.master" />
+    <Content Include="Aspx\Common\Master\testScreen2.master" />
+    <Content Include="Aspx\Common\Master\testScreenCtrl.master" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
