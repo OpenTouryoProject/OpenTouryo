@@ -45,6 +45,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.btnUCRemove = new System.Windows.Forms.Button();
             this.btnUCAdd = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -223,6 +224,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.groupBox5);
             this.groupBox1.Controls.Add(this.btnUCRemove);
             this.groupBox1.Controls.Add(this.btnUCAdd);
             this.groupBox1.Controls.Add(this.groupBox4);
@@ -235,9 +237,22 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "ここは、ユーザコントロール";
             // 
+            // groupBox5
+            // 
+            this.groupBox5.Location = new System.Drawing.Point(500, 99);
+            this.groupBox5.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox5.Size = new System.Drawing.Size(172, 62);
+            this.groupBox5.TabIndex = 4;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "userControlParent-Child2";
+            this.groupBox5.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.groupBox_ControlAdded);
+            this.groupBox5.ControlRemoved += new System.Windows.Forms.ControlEventHandler(this.groupBox_ControlRemoved);
+            // 
             // btnUCRemove
             // 
-            this.btnUCRemove.Location = new System.Drawing.Point(581, 213);
+            this.btnUCRemove.Location = new System.Drawing.Point(575, 300);
             this.btnUCRemove.Name = "btnUCRemove";
             this.btnUCRemove.Size = new System.Drawing.Size(91, 23);
             this.btnUCRemove.TabIndex = 5;
@@ -246,7 +261,7 @@
             // 
             // btnUCAdd
             // 
-            this.btnUCAdd.Location = new System.Drawing.Point(500, 213);
+            this.btnUCAdd.Location = new System.Drawing.Point(494, 300);
             this.btnUCAdd.Name = "btnUCAdd";
             this.btnUCAdd.Size = new System.Drawing.Size(75, 23);
             this.btnUCAdd.TabIndex = 4;
@@ -259,10 +274,10 @@
             this.groupBox4.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox4.Size = new System.Drawing.Size(172, 175);
+            this.groupBox4.Size = new System.Drawing.Size(172, 62);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "userControlParent-Child";
+            this.groupBox4.Text = "userControlParent-Child1";
             this.groupBox4.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.groupBox_ControlAdded);
             this.groupBox4.ControlRemoved += new System.Windows.Forms.ControlEventHandler(this.groupBox_ControlRemoved);
             // 
@@ -315,12 +330,12 @@
             this.tsmiItem2,
             this.tsmiItem3});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(139, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(126, 70);
             // 
             // tsmiItem1
             // 
             this.tsmiItem1.Name = "tsmiItem1";
-            this.tsmiItem1.Size = new System.Drawing.Size(138, 22);
+            this.tsmiItem1.Size = new System.Drawing.Size(125, 22);
             this.tsmiItem1.Text = "tsmiItem1";
             // 
             // tsmiItem2
@@ -329,13 +344,13 @@
             this.tsmiItem21ToolStripMenuItem,
             this.tsmiItem22ToolStripMenuItem});
             this.tsmiItem2.Name = "tsmiItem2";
-            this.tsmiItem2.Size = new System.Drawing.Size(138, 22);
+            this.tsmiItem2.Size = new System.Drawing.Size(125, 22);
             this.tsmiItem2.Text = "tsmiItem2";
             // 
             // tsmiItem21ToolStripMenuItem
             // 
             this.tsmiItem21ToolStripMenuItem.Name = "tsmiItem21ToolStripMenuItem";
-            this.tsmiItem21ToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.tsmiItem21ToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.tsmiItem21ToolStripMenuItem.Text = "tsmiItem21";
             // 
             // tsmiItem22ToolStripMenuItem
@@ -344,25 +359,25 @@
             this.tsmiItem221ToolStripMenuItem,
             this.tsmiItem222ToolStripMenuItem});
             this.tsmiItem22ToolStripMenuItem.Name = "tsmiItem22ToolStripMenuItem";
-            this.tsmiItem22ToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.tsmiItem22ToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.tsmiItem22ToolStripMenuItem.Text = "tsmiItem22";
             // 
             // tsmiItem221ToolStripMenuItem
             // 
             this.tsmiItem221ToolStripMenuItem.Name = "tsmiItem221ToolStripMenuItem";
-            this.tsmiItem221ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tsmiItem221ToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.tsmiItem221ToolStripMenuItem.Text = "tsmiItem221";
             // 
             // tsmiItem222ToolStripMenuItem
             // 
             this.tsmiItem222ToolStripMenuItem.Name = "tsmiItem222ToolStripMenuItem";
-            this.tsmiItem222ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tsmiItem222ToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.tsmiItem222ToolStripMenuItem.Text = "tsmiItem222";
             // 
             // tsmiItem3
             // 
             this.tsmiItem3.Name = "tsmiItem3";
-            this.tsmiItem3.Size = new System.Drawing.Size(138, 22);
+            this.tsmiItem3.Size = new System.Drawing.Size(125, 22);
             this.tsmiItem3.Text = "tsmiItem3";
             // 
             // btnElse1
@@ -453,5 +468,6 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button btnUCRemove;
         private System.Windows.Forms.Button btnUCAdd;
+        private System.Windows.Forms.GroupBox groupBox5;
     }
 }

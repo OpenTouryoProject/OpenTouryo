@@ -36,7 +36,9 @@ namespace WSClientWin2_sample
         /// <param name="rcFxEventArgs">RcFxEventArgs</param>
         protected void UOC_btnUCButton1_Click(RcFxEventArgs rcFxEventArgs)
         {
-            Debug.WriteLine("UOC_btnUCButton1_Click");
+            Debug.WriteLine(
+                (((Control)rcFxEventArgs.Sender).Parent.Parent.Parent).Name
+                + " : UOC_btnUCButton1_Click");
         }
     }
 }
