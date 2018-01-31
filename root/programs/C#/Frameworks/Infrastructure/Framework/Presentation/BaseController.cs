@@ -92,6 +92,7 @@
 //*  2016/01/13  Sandeep           Implemented ResolveServerUrl method to resolve URL issue of screen   
 //*                                transition control, display window and error transition control components.
 //*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
+//*  2018/01/31  西野 大介         ネストしたユーザ コントロールに対応（senderで親UCを確認する）
 //**********************************************************************************
 
 using System;
@@ -1846,7 +1847,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                 FxLiteral.UOC_METHOD_FOOTER_CLICK));
 
             // イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs);
+            this.CMN_Event_Handler(fxEventArgs, null, sender);
         }
 
         /// <summary>
@@ -1862,7 +1863,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                 FxLiteral.UOC_METHOD_FOOTER_CLICK));
 
             // イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs);
+            this.CMN_Event_Handler(fxEventArgs, null, sender);
         }
 
         /// <summary>
@@ -1878,7 +1879,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                 FxLiteral.UOC_METHOD_FOOTER_CLICK));
 
             // イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs);
+            this.CMN_Event_Handler(fxEventArgs, null, sender);
         }
 
         #endregion
@@ -1955,7 +1956,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     FxLiteral.UOC_METHOD_FOOTER_SELECTED_INDEX_CHANGED));
 
             // クリック イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs);
+            this.CMN_Event_Handler(fxEventArgs, null, sender);
         }
 
         /// <summary>
@@ -2009,7 +2010,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     FxLiteral.UOC_METHOD_FOOTER_CHECKED_CHANGED));
 
             // クリック イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs);
+            this.CMN_Event_Handler(fxEventArgs, null, sender);
         }
 
         #region Text_TextChanged
@@ -2027,7 +2028,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     FxLiteral.UOC_METHOD_FOOTER_TEXT_CHANGED));
 
             // クリック イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs);            
+            this.CMN_Event_Handler(fxEventArgs, null, sender);            
         }
 
         #endregion
@@ -2048,7 +2049,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     FxLiteral.UOC_METHOD_FOOTER_ITEM_COMMAND));
 
             // クリック イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs);
+            this.CMN_Event_Handler(fxEventArgs, null, sender);
         }
 
         #region GRIDVIEW
@@ -2068,7 +2069,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     FxLiteral.UOC_METHOD_FOOTER_ROW_COMMAND));
 
             // クリック イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs);
+            this.CMN_Event_Handler(fxEventArgs, null, sender);
         }
 
         /// <summary>
@@ -2084,7 +2085,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     FxLiteral.UOC_METHOD_FOOTER_ROW_UPDATING));
 
             // クリック イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs, e);
+            this.CMN_Event_Handler(fxEventArgs, e, sender);
         }
 
         /// <summary>
@@ -2100,7 +2101,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     FxLiteral.UOC_METHOD_FOOTER_ROW_DELETING));
 
             // クリック イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs, e);
+            this.CMN_Event_Handler(fxEventArgs, e, sender);
         }
 
         /// <summary>
@@ -2116,7 +2117,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     FxLiteral.UOC_METHOD_FOOTER_PAGE_INDEX_CHANGING));
 
             // クリック イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs, e);
+            this.CMN_Event_Handler(fxEventArgs, e, sender);
         }
 
         /// <summary>
@@ -2133,7 +2134,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     FxLiteral.UOC_METHOD_FOOTER_SORTING));
 
             // クリック イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs, e);
+            this.CMN_Event_Handler(fxEventArgs, e, sender);
         }
 
         #endregion
@@ -2152,7 +2153,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     FxLiteral.UOC_METHOD_FOOTER_LISTVIEW_ROW_DELETING));
 
             // クリック イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs, e);
+            this.CMN_Event_Handler(fxEventArgs, e, sender);
         }
 
         #region ListView
@@ -2169,7 +2170,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     FxLiteral.UOC_METHOD_FOOTER_LISTVIEW_ROW_ITEMCOMMAND));
 
             // クリック イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs, e);
+            this.CMN_Event_Handler(fxEventArgs, e, sender);
         }
         /// <summary>
         /// Listview Paging  event handler method
@@ -2186,7 +2187,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     FxLiteral.UOC_METHOD_FOOTER_LISTVIEW_PAGE_PROPERTIES_CHANGED));
 
             // クリック イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs, e);
+            this.CMN_Event_Handler(fxEventArgs, e, sender);
         }
 
         /// <summary>
@@ -2204,7 +2205,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     FxLiteral.UOC_METHOD_FOOTER_LISTVIEW_ROW_UPDATING));
 
             // クリック イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs, e);
+            this.CMN_Event_Handler(fxEventArgs, e, sender);
         }
 
         /// <summary>
@@ -2222,7 +2223,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     FxLiteral.UOC_METHOD_FOOTER_LISTVIEW_ROW_SORTING));
 
             // クリック イベント処理の共通メソッド
-            this.CMN_Event_Handler(fxEventArgs, e);
+            this.CMN_Event_Handler(fxEventArgs, e, sender);
 
         }
 
@@ -2289,12 +2290,14 @@ namespace Touryo.Infrastructure.Framework.Presentation
 
         #region イベント処理の共通メソッド
 
+        #region 下位互換
+
         /// <summary>イベント処理の共通メソッド</summary>
         /// <param name="fxEventArgs">イベント ハンドラの共通引数</param>
         /// <remarks>派生の画面コード親クラス２から利用する。</remarks>
         protected void CMN_Event_Handler(FxEventArgs fxEventArgs)
         {
-            this.CMN_Event_Handler(fxEventArgs, null);
+            this.CMN_Event_Handler(fxEventArgs, null, null);
         }
 
         /// <summary>イベント処理の共通メソッド</summary>
@@ -2302,6 +2305,18 @@ namespace Touryo.Infrastructure.Framework.Presentation
         /// <param name="eventArgs">オリジナルのイベント引数</param>
         /// <remarks>派生の画面コード親クラス２から利用する。</remarks>
         protected void CMN_Event_Handler(FxEventArgs fxEventArgs, EventArgs eventArgs)
+        {
+            this.CMN_Event_Handler(fxEventArgs, eventArgs, null);
+        }
+
+        #endregion
+
+        /// <summary>イベント処理の共通メソッド</summary>
+        /// <param name="fxEventArgs">イベント ハンドラの共通引数</param>
+        /// <param name="eventArgs">オリジナルのイベント引数</param>
+        /// <param name="sender">sender object</param>
+        /// <remarks>派生の画面コード親クラス２から利用する。</remarks>
+        protected void CMN_Event_Handler(FxEventArgs fxEventArgs, EventArgs eventArgs, object sender)
         {
             // UOCメソッドの戻り値、urlを受ける。
             string url = "";
@@ -2330,7 +2345,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                 this.UOC_PreAction(fxEventArgs);
 
                 // ★ イベントのUOC処理
-                url = this.LateBind(fxEventArgs, eventArgs);
+                url = this.LateBind(fxEventArgs, eventArgs, sender);
 
                 // ★ イベントの終了後のUOC処理
                 this.UOC_AfterAction(fxEventArgs);
@@ -2392,8 +2407,9 @@ namespace Touryo.Infrastructure.Framework.Presentation
         /// <summary>レイトバインドするメソッド</summary>
         /// <param name="fxEventArgs">イベントハンドラの共通引数</param>
         /// <param name="eventArgs">オリジナルのイベント引数</param>
+        /// <param name="sender">sender object</param>
         /// <returns>画面遷移する場合のURL</returns>
-        private string LateBind(FxEventArgs fxEventArgs, EventArgs eventArgs)
+        private string LateBind(FxEventArgs fxEventArgs, EventArgs eventArgs, object sender)
         {
             // ワーク変数
             string strTemp;
@@ -2436,10 +2452,6 @@ namespace Touryo.Infrastructure.Framework.Presentation
                         foreach (MasterPage mp in this.StcMasterPage)
                         {
                             // マスタ ページ名を取得
-
-                            // ここは、他と同じロジック（this.StcMasterPageFileNoExの作成時）
-                            //aryTemp = mp.AppRelativeVirtualPath.Split('/');
-                            //strTemp = aryTemp[aryTemp.Length - 1].Split('.')[0];
                             strTemp = PubCmnFunction.GetFileNameNoEx(mp.AppRelativeVirtualPath, '/');
 
                             // 比較してイコールであること。
@@ -2465,24 +2477,27 @@ namespace Touryo.Infrastructure.Framework.Presentation
                         {
                             // ユーザ コントロール名を取得
 
-                            // ここは、他と同じロジック（this.StcMasterPageFileNoExの作成時）
-                            //aryTemp = uc.AppRelativeVirtualPath.Split('/');
-                            //strTemp = aryTemp[aryTemp.Length - 1].Split('.')[0];
-                            //strTemp = PubCmnFunction.GetFileNameNoEx(uc.AppRelativeVirtualPath, '/');
+                            // ネストしたユーザ コントロールの場合、
+                            // senderで親を確認する必要でてきた（#269）。
 
                             // 比較してイコールであること。
                             if (uc.ID == this.UserControlNameImplementingMethod)
                             {
                                 // メソッドを実装するユーザ コントロールの参照を取得できた場合、
+                                // 親ユーザ コントロールのインスタンスの一致を確認する。
+                                if (SearchParentUC(sender).GetHashCode() == uc.GetHashCode())
+                                {
+                                    // 親ユーザ コントロールのインスタンスが一致した場合、
 
-                                // メソッド名からユーザ コントロール名のプレフィックスを削除し、
-                                newMethodName = fxEventArgs.MethodName.
-                                    Replace(this.UserControlNameImplementingMethod + "_", "");
+                                    // メソッド名からユーザ コントロール名のプレフィックスを削除し、
+                                    newMethodName = fxEventArgs.MethodName.
+                                        Replace(this.UserControlNameImplementingMethod + "_", "");
 
-                                // マスタ ページに対してレイトバインド。
-                                url = (string)Latebind.InvokeMethod_NoErr(uc, newMethodName, parameter);
+                                    // ユーザ コントロールに対してレイトバインド。
+                                    url = (string)Latebind.InvokeMethod_NoErr(uc, newMethodName, parameter);
 
-                                // ・・・fxEventArgs.MethodNameと一致しないが、こういう仕様ということで。
+                                    // ・・・fxEventArgs.MethodNameと一致しないが、こういう仕様ということで。
+                                }
                             }
                         }
                     }
@@ -2495,6 +2510,38 @@ namespace Touryo.Infrastructure.Framework.Presentation
             }
 
             return url;
+        }
+
+        /// <summary>親UserControlを検索</summary>
+        /// <param name="sender">object</param>
+        /// <returns>親UserControl</returns>
+        private UserControl SearchParentUC(object sender)
+        {
+            if ((sender as Control) != null)
+            {
+                Control ctrl = sender as Control;
+
+                if ((ctrl as UserControl) != null)
+                {
+                    // UserControlを発見
+                    return (UserControl)ctrl;
+                }
+                else if (ctrl.Parent != null)
+                {
+                    // 再帰（親を辿る
+                    return this.SearchParentUC(ctrl.Parent);
+                }
+                else
+                {
+                    // ルートに到達
+                    return null;
+                }
+            }
+            else
+            {
+                // Controlでない。
+                return null;
+            }
         }
 
         #endregion
