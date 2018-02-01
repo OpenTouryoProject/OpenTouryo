@@ -52,6 +52,7 @@
 //*  2014/11/19  Sandeep           Removed Redundant Code "FxCmnFunction.AddControlToDic" in method GetCtrlAndSetClickEventHandler
 //*  2014/04/16  Supragyan         Added TextChanged event to TextBox control in method GetCtrlAndSetClickEventHandler.
 //*  2018/01/30  西野 大介         SearchWebControl、SearchWebControl2メソッドを追加
+//*  2018/01/31  西野 大介         ネストしたユーザ コントロールに対応（senderで親UCを確認する）
 //**********************************************************************************
 
 using System;
@@ -641,7 +642,6 @@ namespace Touryo.Infrastructure.Framework.Util
             #endregion
         }
 
-
         /// <summary>キャスト可否チェック</summary>
         /// <typeparam name="TResult">キャストする型</typeparam>
         /// <param name="target">Control</param>
@@ -667,10 +667,12 @@ namespace Touryo.Infrastructure.Framework.Util
             }
         }
 
-        /// <summary>SearchWebControl</summary>
+        #region コントロール取得 Util
+
+        /// <summary>子Controlを検索</summary>
         /// <param name="cc">ControlCollection</param>
         /// <param name="id">Id of Control</param>
-        /// <returns>Control</returns>
+        /// <returns>子Control</returns>
         public static Control SearchWebControl(ControlCollection cc, string id)
         {
             foreach (Control wc in cc)
@@ -687,7 +689,7 @@ namespace Touryo.Infrastructure.Framework.Util
                     {
                         // 再起検索
                         Control temp = null;
-                        temp = SearchWebControl(wc.Controls, id);
+                        temp = FxCmnFunction.SearchWebControl(wc.Controls, id);
 
                         if (temp != null)
                         {
@@ -714,11 +716,11 @@ namespace Touryo.Infrastructure.Framework.Util
             return null;
         }
 
-        /// <summary>SearchWebControl2</summary>
+        /// <summary>子Controlを検索２</summary>
         /// <param name="list">List(Control)</param>
         /// <param name="cc">ControlCollection</param>
         /// <param name="id">Id of Control</param>
-        /// <returns>Control</returns>
+        /// <returns>子ControlのList</returns>
         public static List<Control> SearchWebControl2(List<Control> list, ControlCollection cc, string id)
         {
             if (list == null) list = new List<Control>();
@@ -736,7 +738,7 @@ namespace Touryo.Infrastructure.Framework.Util
                     else
                     {
                         // 再起検索 
-                        list = SearchWebControl2(list, wc.Controls, id);
+                        list = FxCmnFunction.SearchWebControl2(list, wc.Controls, id);
                     }
                 }
                 else
@@ -752,6 +754,40 @@ namespace Touryo.Infrastructure.Framework.Util
 
             return list;
         }
+
+        /// <summary>親UserControlを検索</summary>
+        /// <param name="sender">object</param>
+        /// <returns>親UserControl</returns>
+        public static UserControl SearchParentWebUserControl(object sender)
+        {
+            if ((sender as Control) != null)
+            {
+                Control ctrl = sender as Control;
+
+                if ((ctrl as UserControl) != null)
+                {
+                    // UserControlを発見
+                    return (UserControl)ctrl;
+                }
+                else if (ctrl.Parent != null)
+                {
+                    // 再帰（親を辿る
+                    return FxCmnFunction.SearchParentWebUserControl(ctrl.Parent);
+                }
+                else
+                {
+                    // ルートに到達
+                    return null;
+                }
+            }
+            else
+            {
+                // Controlでない。
+                return null;
+            }
+        }
+
+        #endregion
 
         #region 旧処理
         /// <summary>コントロールの追加処理（下位互換）</summary>

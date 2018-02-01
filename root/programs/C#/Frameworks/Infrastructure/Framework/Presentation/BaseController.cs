@@ -1886,6 +1886,8 @@ namespace Touryo.Infrastructure.Framework.Presentation
 
         #region その他イベントに対応した集約イベント ハンドラ
 
+        #region Changed
+
         /// <summary>
         /// DropDownList、ListBox、GridView,RadioButtonList,CheckBoxList（など）の
         /// SelectedIndexChangedイベントに対応した集約イベント ハンドラ
@@ -2013,8 +2015,6 @@ namespace Touryo.Infrastructure.Framework.Presentation
             this.CMN_Event_Handler(fxEventArgs, null, sender);
         }
 
-        #region Text_TextChanged
-
         /// <summary>
         /// TextBox（など）のTextChangedイベントに対応した集約イベント ハンドラ
         /// </summary>
@@ -2052,7 +2052,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
             this.CMN_Event_Handler(fxEventArgs, null, sender);
         }
 
-        #region GRIDVIEW
+        #region GridView
 
         /// <summary>
         /// GridViewのRowCommandイベントに対応した集約イベント ハンドラ
@@ -2140,6 +2140,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         #endregion
 
         #region ListView
+
         /// <summary>
         /// ListViewのItemEditing event handler method
         /// </summary>
@@ -2156,7 +2157,6 @@ namespace Touryo.Infrastructure.Framework.Presentation
             this.CMN_Event_Handler(fxEventArgs, e, sender);
         }
 
-        #region ListView
         /// <summary>
         /// ListViewのItemCommand event handler method
         /// </summary>
@@ -2295,6 +2295,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         /// <summary>イベント処理の共通メソッド</summary>
         /// <param name="fxEventArgs">イベント ハンドラの共通引数</param>
         /// <remarks>派生の画面コード親クラス２から利用する。</remarks>
+        [Obsolete("This method is deprecated, please use another overload instead.")]
         protected void CMN_Event_Handler(FxEventArgs fxEventArgs)
         {
             this.CMN_Event_Handler(fxEventArgs, null, null);
@@ -2304,6 +2305,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         /// <param name="fxEventArgs">イベント ハンドラの共通引数</param>
         /// <param name="eventArgs">オリジナルのイベント引数</param>
         /// <remarks>派生の画面コード親クラス２から利用する。</remarks>
+        [Obsolete("This method is deprecated, please use another overload instead.")]
         protected void CMN_Event_Handler(FxEventArgs fxEventArgs, EventArgs eventArgs)
         {
             this.CMN_Event_Handler(fxEventArgs, eventArgs, null);
@@ -2485,7 +2487,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                             {
                                 // メソッドを実装するユーザ コントロールの参照を取得できた場合、
                                 // 親ユーザ コントロールのインスタンスの一致を確認する。
-                                if (SearchParentUC(sender).GetHashCode() == uc.GetHashCode())
+                                if (FxCmnFunction.SearchParentWebUserControl(sender).GetHashCode() == uc.GetHashCode())
                                 {
                                     // 親ユーザ コントロールのインスタンスが一致した場合、
 
@@ -2510,38 +2512,6 @@ namespace Touryo.Infrastructure.Framework.Presentation
             }
 
             return url;
-        }
-
-        /// <summary>親UserControlを検索</summary>
-        /// <param name="sender">object</param>
-        /// <returns>親UserControl</returns>
-        private UserControl SearchParentUC(object sender)
-        {
-            if ((sender as Control) != null)
-            {
-                Control ctrl = sender as Control;
-
-                if ((ctrl as UserControl) != null)
-                {
-                    // UserControlを発見
-                    return (UserControl)ctrl;
-                }
-                else if (ctrl.Parent != null)
-                {
-                    // 再帰（親を辿る
-                    return this.SearchParentUC(ctrl.Parent);
-                }
-                else
-                {
-                    // ルートに到達
-                    return null;
-                }
-            }
-            else
-            {
-                // Controlでない。
-                return null;
-            }
         }
 
         #endregion
@@ -4857,7 +4827,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
             // #1,10,14,15-end
         }
 
-        #endregion
+        
 
         #endregion
     }

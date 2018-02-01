@@ -637,6 +637,8 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
 
         #endregion
 
+        #region メソッド名生成
+
         /// <summary>ユーザ コントロール名を記憶しておくワーク</summary>
         private string UserControlImplementingMethod = "";
 
@@ -670,6 +672,8 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                     + "_" + controlID + "_" + eventName;
             }
         }
+
+        #endregion
 
         #region イベント処理の共通メソッド
 
@@ -790,7 +794,8 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                         {
                             // メソッドを実装するユーザ コントロールの参照を取得できた場合、
                             // 親ユーザ コントロールのインスタンスの一致を確認する。
-                            if (SearchParentUC(rcFxEventArgs.Sender).GetHashCode() == uc.GetHashCode())
+                            if (RcFxCmnFunction.SearchParentWinUserControl(
+                                rcFxEventArgs.Sender).GetHashCode() == uc.GetHashCode())
                             {
                                 // 親ユーザ コントロールのインスタンスが一致した場合、
 
@@ -814,38 +819,6 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
             }
 
             //return url;
-        }
-
-        /// <summary>親UserControlを検索</summary>
-        /// <param name="sender">object</param>
-        /// <returns>親UserControl</returns>
-        private UserControl SearchParentUC(object sender)
-        {
-            if ((sender as Control) != null)
-            {
-                Control ctrl = sender as Control;
-
-                if ((ctrl as UserControl) != null)
-                {
-                    // UserControlを発見
-                    return (UserControl)ctrl;
-                }
-                else if (ctrl.Parent != null)
-                {
-                    // 再帰（親を辿る
-                    return this.SearchParentUC(ctrl.Parent);
-                }
-                else
-                {
-                    // ルートに到達
-                    return null;
-                }
-            }
-            else
-            {
-                // Controlでない。
-                return null;
-            }
         }
 
         #endregion

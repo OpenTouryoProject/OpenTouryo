@@ -31,6 +31,7 @@
 //*  2012/06/14  西野 大介         コントロール検索の再帰処理性能の集約＆効率化。
 //*  2014/05/16  西野 大介         キャスト可否チェックのロジックを見直した。
 //*  2017/09/12  西野 大介         UserControlの動的配置対応のためアクセス修飾子を変更。
+//*  2018/01/31  西野 大介         ネストしたユーザ コントロールに対応（senderで親UCを確認する）
 //**********************************************************************************
 
 using System;
@@ -47,6 +48,8 @@ namespace Touryo.Infrastructure.Framework.RichClient.Util
     /// <summary>FrameWork.RichClient層の共通クラス</summary>
     public class RcFxCmnFunction
     {
+        #region コントロール取得＆イベントハンドラ設定
+
         /// <summary>コントロール取得＆イベントハンドラ設定（下位互換）</summary>
         /// <param name="ctrl">コントロール</param>
         /// <param name="prefix">プレフィックス</param>
@@ -326,6 +329,44 @@ namespace Touryo.Infrastructure.Framework.RichClient.Util
                 return result;
             }
         }
+
+        #region コントロール取得 Util
+
+        /// <summary>親UserControlを検索</summary>
+        /// <param name="sender">object</param>
+        /// <returns>親UserControl</returns>
+        public static UserControl SearchParentWinUserControl(object sender)
+        {
+            if ((sender as Control) != null)
+            {
+                Control ctrl = sender as Control;
+
+                if ((ctrl as UserControl) != null)
+                {
+                    // UserControlを発見
+                    return (UserControl)ctrl;
+                }
+                else if (ctrl.Parent != null)
+                {
+                    // 再帰（親を辿る
+                    return RcFxCmnFunction.SearchParentWinUserControl(ctrl.Parent);
+                }
+                else
+                {
+                    // ルートに到達
+                    return null;
+                }
+            }
+            else
+            {
+                // Controlでない。
+                return null;
+            }
+        }
+
+        #endregion
+
+        #endregion
 
         /// <summary>
         /// デザイン・モードであるかチェックする。
