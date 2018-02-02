@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Touryo.Infrastructure.Business</RootNamespace>
-    <AssemblyName>Business</AssemblyName>
+    <AssemblyName>OpenTouryo.Business</AssemblyName>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>
@@ -50,7 +50,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Business.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\OpenTouryo.Business.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

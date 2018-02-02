@@ -56,10 +56,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Business">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Business.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Business.dll</HintPath>
     </Reference>
     <Reference Include="Framework">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Framework.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Owin, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -83,7 +83,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Public">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Public.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

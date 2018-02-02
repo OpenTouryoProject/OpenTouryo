@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Touryo.Infrastructure.Public</RootNamespace>
-    <AssemblyName>Public</AssemblyName>
+    <AssemblyName>OpenTouryo.Public</AssemblyName>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>

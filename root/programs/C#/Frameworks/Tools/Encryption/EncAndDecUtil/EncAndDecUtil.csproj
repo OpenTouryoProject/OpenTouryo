@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EncAndDecUtil</RootNamespace>
-    <AssemblyName>EncAndDecUtil</AssemblyName>
+    <AssemblyName>OpenTouryo.EncAndDecUtil</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
@@ -49,7 +49,7 @@
   <ItemGroup>
     <Reference Include="Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Infrastructure\Build\Public.dll</HintPath>
+      <HintPath>..\..\..\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />

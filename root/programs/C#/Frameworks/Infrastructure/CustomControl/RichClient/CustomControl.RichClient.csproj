@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Touryo.Infrastructure.CustomControl.RichClient</RootNamespace>
-    <AssemblyName>CustomControl.RichClient</AssemblyName>
+    <AssemblyName>OpenTouryo.CustomControl.RichClient</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -62,10 +62,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Framework">
-      <HintPath>..\..\Build\Framework.dll</HintPath>
+      <HintPath>..\..\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="Public">
-      <HintPath>..\..\Build\Public.dll</HintPath>
+      <HintPath>..\..\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

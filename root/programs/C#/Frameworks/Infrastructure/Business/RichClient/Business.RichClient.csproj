@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Touryo.Infrastructure.Business.RichClient</RootNamespace>
-    <AssemblyName>Business.RichClient</AssemblyName>
+    <AssemblyName>OpenTouryo.Business.RichClient</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>
@@ -50,7 +50,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>bin\Debug\Business.RichClient.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\OpenTouryo.Business.RichClient.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -63,19 +63,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Business">
-      <HintPath>..\..\Build\Business.dll</HintPath>
+      <HintPath>..\..\Build\OpenTouryo.Business.dll</HintPath>
     </Reference>
     <Reference Include="DamManagedOdp">
-      <HintPath>..\..\Build\DamManagedOdp.dll</HintPath>
+      <HintPath>..\..\Build\OpenTouryo.DamManagedOdp.dll</HintPath>
     </Reference>
     <Reference Include="DamMySQL">
-      <HintPath>..\..\Build\DamMySQL.dll</HintPath>
+      <HintPath>..\..\Build\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>
     <Reference Include="DamPstGrS">
-      <HintPath>..\..\Build\DamPstGrS.dll</HintPath>
+      <HintPath>..\..\Build\OpenTouryo.DamPstGrS.dll</HintPath>
     </Reference>
     <Reference Include="Framework">
-      <HintPath>..\..\Build\Framework.dll</HintPath>
+      <HintPath>..\..\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -84,7 +84,7 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="Public">
-      <HintPath>..\..\Build\Public.dll</HintPath>
+      <HintPath>..\..\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />

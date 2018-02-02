@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Touryo.Infrastructure.Framework</RootNamespace>
-    <AssemblyName>Framework</AssemblyName>
+    <AssemblyName>OpenTouryo.Framework</AssemblyName>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>
@@ -47,10 +47,10 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Framework.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\OpenTouryo.Framework.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -159,12 +159,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Public\Public.csproj">
-      <Project>{81CC573A-0DF9-49E5-AF10-A50F9B194DA5}</Project>
-      <Name>Public</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\FrameworkExceptionMessageResource.ja-JP.resx" />
     <EmbeddedResource Include="Resources\FrameworkExceptionMessageResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -173,6 +167,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Public\Public.csproj">
+      <Project>{81CC573A-0DF9-49E5-AF10-A50F9B194DA5}</Project>
+      <Name>Public</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

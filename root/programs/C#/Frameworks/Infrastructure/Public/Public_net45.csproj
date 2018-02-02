@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Touryo.Infrastructure.Public</RootNamespace>
-    <AssemblyName>Public</AssemblyName>
+    <AssemblyName>OpenTouryo.Public</AssemblyName>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>
@@ -50,7 +50,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\Build_net45\Public.XML</DocumentationFile>
+    <DocumentationFile>..\Build_net45\OpenTouryo.Public.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -94,13 +94,13 @@
     <Compile Include="Dto\DTTables.cs" />
     <Compile Include="Dto\DTTableStatus.cs" />
     <Compile Include="Dto\DTType.cs" />
+    <Compile Include="Security\RsaAndDsaCmnFunc.cs" />
     <Compile Include="Security\ASymmetricCryptography.cs" />
     <Compile Include="Security\DigitalSignParam.cs" />
     <Compile Include="Security\JWT_RS256_Param.cs" />
-    <Compile Include="Security\JWT_RS256_X509.cs" />
     <Compile Include="Security\JWT_RS256_XML.cs" />
+    <Compile Include="Security\JWT_RS256_X509.cs" />
     <Compile Include="Security\RS256_KeyConverter.cs" />
-    <Compile Include="Security\RsaAndDsaCmnFunc.cs" />
     <Compile Include="Security\SymmetricCryptography.cs" />
     <Compile Include="IO\UnZipper.cs" />
     <Compile Include="IO\ZipBase.cs" />
@@ -183,7 +183,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages_net45.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

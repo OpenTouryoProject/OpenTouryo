@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DamPstGrS</RootNamespace>
-    <AssemblyName>DamPstGrS</AssemblyName>
+    <AssemblyName>OpenTouryo.DamPstGrS</AssemblyName>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>
@@ -51,7 +51,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>..\..\..\Build_net47\DamPstGrS.XML</DocumentationFile>
+    <DocumentationFile>..\..\..\Build_net47\OpenTouryo.DamPstGrS.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -98,7 +98,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages_net47.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Public_net47.csproj">

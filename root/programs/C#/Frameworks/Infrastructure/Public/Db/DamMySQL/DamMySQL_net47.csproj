@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DamMySQL</RootNamespace>
-    <AssemblyName>DamMySQL</AssemblyName>
+    <AssemblyName>OpenTouryo.DamMySQL</AssemblyName>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>
@@ -51,7 +51,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>..\..\..\Build_net47\DamMySQL.XML</DocumentationFile>
+    <DocumentationFile>..\..\..\Build_net47\OpenTouryo.DamMySQL.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -94,7 +94,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages_net47.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Public_net47.csproj">

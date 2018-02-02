@@ -37,13 +37,13 @@
   <ItemGroup>
     <Reference Include="Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Business\bin\Debug\Business.dll</HintPath>
+      <HintPath>..\..\Business\bin\Debug\OpenTouryo.Business.dll</HintPath>
     </Reference>
     <Reference Include="Framework">
-      <HintPath>..\..\Build\Framework.dll</HintPath>
+      <HintPath>..\..\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="Public">
-      <HintPath>..\..\Build\Public.dll</HintPath>
+      <HintPath>..\..\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />

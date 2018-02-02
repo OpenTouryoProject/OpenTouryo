@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Touryo.Infrastructure.Framework</RootNamespace>
-    <AssemblyName>Framework</AssemblyName>
+    <AssemblyName>OpenTouryo.Framework</AssemblyName>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>
@@ -50,7 +50,7 @@
     <DefineConstants>TRACE;DEBUG;NET45</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\Build_net45\Framework.xml</DocumentationFile>
+    <DocumentationFile>..\Build_net45\OpenTouryo.Framework.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -166,7 +166,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages_net45.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Public\Public_net45.csproj">
