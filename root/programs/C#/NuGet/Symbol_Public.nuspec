@@ -23,18 +23,20 @@
   </metadata>
   <files>
     <file src="in\net452\OpenTouryo.Public.dll" target="lib\net452" />
-    <file src="in\net452\OpenTouryo.Public.pdb" target="pdb\net452" />
+    <file src="in\net452\OpenTouryo.Public.pdb" target="lib\net452" />
     <file src="in\net452\OpenTouryo.Public.xml" target="lib\net452" />
     <file src="in\net452\ja-JP\OpenTouryo.Public.resources.dll" target="lib\net452\ja-JP" />
 
     <file src="in\net46\OpenTouryo.Public.dll" target="lib\net46" />
-    <file src="in\net46\OpenTouryo.Public.pdb" target="pdb\net46" />
+    <file src="in\net46\OpenTouryo.Public.pdb" target="lib\net46" />
     <file src="in\net46\OpenTouryo.Public.xml" target="lib\net46" />
     <file src="in\net46\ja-JP\OpenTouryo.Public.resources.dll" target="lib\net46\ja-JP" />
 
     <file src="in\net47\OpenTouryo.Public.dll" target="lib\net47" />
-    <file src="in\net47\OpenTouryo.Public.pdb" target="pdb\net47" />
+    <file src="in\net47\OpenTouryo.Public.pdb" target="lib\net47" />
     <file src="in\net47\OpenTouryo.Public.xml" target="lib\net47" />
     <file src="in\net47\ja-JP\OpenTouryo.Public.resources.dll" target="lib\net47\ja-JP" />
+    
+    <file src="..\Frameworks\Infrastructure\Public\**\*.cs" target="src" />
   </files>
 </package>

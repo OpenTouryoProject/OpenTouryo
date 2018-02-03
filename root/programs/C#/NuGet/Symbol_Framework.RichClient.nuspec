@@ -22,15 +22,17 @@
   </metadata>
   <files>
     <file src="in\net452\OpenTouryo.Framework.RichClient.dll" target="lib\net452" />
-    <file src="in\net452\OpenTouryo.Framework.RichClient.pdb" target="pdb\net452" />
+    <file src="in\net452\OpenTouryo.Framework.RichClient.pdb" target="lib\net452" />
     <file src="in\net452\OpenTouryo.Framework.RichClient.xml" target="lib\net452" />
 
     <file src="in\net46\OpenTouryo.Framework.RichClient.dll" target="lib\net46" />
-    <file src="in\net46\OpenTouryo.Framework.RichClient.pdb" target="pdb\net46" />
+    <file src="in\net46\OpenTouryo.Framework.RichClient.pdb" target="lib\net46" />
     <file src="in\net46\OpenTouryo.Framework.RichClient.xml" target="lib\net46" />
 
     <file src="in\net47\OpenTouryo.Framework.RichClient.dll" target="lib\net47" />
-    <file src="in\net47\OpenTouryo.Framework.RichClient.pdb" target="pdb\net47" />
+    <file src="in\net47\OpenTouryo.Framework.RichClient.pdb" target="lib\net47" />
     <file src="in\net47\OpenTouryo.Framework.RichClient.xml" target="lib\net47" />
+    
+    <file src="..\Frameworks\Infrastructure\Framework\RichClient\**\*.cs" target="src" />
   </files>
 </package>

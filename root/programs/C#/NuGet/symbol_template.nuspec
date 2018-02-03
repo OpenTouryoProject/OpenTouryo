@@ -21,7 +21,9 @@
   </metadata>
   <files>
     <file src="in\net46\OpenTouryo.xxxx.dll" target="lib\net46" />
-    <file src="in\net46\OpenTouryo.xxxx.pdb" target="pdb\net46" />
+    <file src="in\net46\OpenTouryo.xxxx.pdb" target="lib\net46" />
     <file src="in\net46\OpenTouryo.xxxx.xml" target="lib\net46" />
+    
+    <file src="..\Frameworks\Infrastructure\・・・\**\*.cs" target="src" />
   </files>
 </package>
