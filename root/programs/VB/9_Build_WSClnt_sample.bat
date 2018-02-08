@@ -16,16 +16,9 @@ set CURRENT_DIR="%~dp0"
 call %CURRENT_DIR%z_Common.bat
 
 rem --------------------------------------------------
-rem Batch build of WSClientWin_sample.
+rem Batch build of WSClientWPF_sample.
 rem --------------------------------------------------
-%BUILDFILEPATH% %COMMANDLINE% "Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln"
-
-pause
-
-rem --------------------------------------------------
-rem Batch build of WSClientWin2_sample.
-rem --------------------------------------------------
-%BUILDFILEPATH% %COMMANDLINE% "Samples\WS_sample\WSClient_sample\WSClientWin2_sample\WSClientWin2_sample.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln"
 
 pause
 
