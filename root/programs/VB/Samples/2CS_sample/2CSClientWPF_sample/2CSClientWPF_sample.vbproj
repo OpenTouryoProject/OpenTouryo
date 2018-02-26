@@ -60,19 +60,19 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Business">
+    <Reference Include="OpenTouryo.Business">
       <HintPath>..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Business.dll</HintPath>
     </Reference>
-    <Reference Include="Business.RichClient">
+    <Reference Include="OpenTouryo.Business.RichClient">
       <HintPath>..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Business.RichClient.dll</HintPath>
     </Reference>
-    <Reference Include="Framework">
+    <Reference Include="OpenTouryo.Framework">
       <HintPath>..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="Framework.RichClient">
+    <Reference Include="OpenTouryo.Framework.RichClient">
       <HintPath>..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
-    <Reference Include="Public">
+    <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System.Xaml" />

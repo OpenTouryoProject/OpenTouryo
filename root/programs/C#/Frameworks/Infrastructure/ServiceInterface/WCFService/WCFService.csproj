@@ -49,17 +49,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Business">
+    <Reference Include="OpenTouryo.Business">
       <HintPath>..\..\Build\OpenTouryo.Business.dll</HintPath>
     </Reference>
-    <Reference Include="Framework">
+    <Reference Include="OpenTouryo.Framework">
       <HintPath>..\..\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\..\..\Samples\WS_sample\WSClient_sample\WSClientWin_sample\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Public">
+    <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />

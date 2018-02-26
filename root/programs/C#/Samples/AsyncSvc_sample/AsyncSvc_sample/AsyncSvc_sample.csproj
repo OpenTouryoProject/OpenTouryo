@@ -38,19 +38,19 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Business">
+    <Reference Include="OpenTouryo.Business">
       <HintPath>..\..\..\Frameworks\Infrastructure\Business\bin\Debug\OpenTouryo.Business.dll</HintPath>
     </Reference>
-    <Reference Include="Business.RichClient">
+    <Reference Include="OpenTouryo.Business.RichClient">
       <HintPath>..\..\..\Frameworks\Infrastructure\Business\RichClient\bin\Debug\OpenTouryo.Business.RichClient.dll</HintPath>
     </Reference>
-    <Reference Include="Framework">
+    <Reference Include="OpenTouryo.Framework">
       <HintPath>..\..\..\Frameworks\Infrastructure\Framework\bin\Debug\OpenTouryo.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="Framework.RichClient">
+    <Reference Include="OpenTouryo.Framework.RichClient">
       <HintPath>..\..\..\Frameworks\Infrastructure\Framework\RichClient\bin\Debug\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
-    <Reference Include="Public">
+    <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\..\Frameworks\Infrastructure\Business\bin\Debug\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />

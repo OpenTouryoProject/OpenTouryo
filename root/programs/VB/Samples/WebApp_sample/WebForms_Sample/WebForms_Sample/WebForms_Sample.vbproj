@@ -668,22 +668,22 @@
       <HintPath>..\packages\AspNet.ScriptManager.jQuery.1.12.4\lib\net45\AspNet.ScriptManager.jQuery.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Business">
+    <Reference Include="OpenTouryo.Business">
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Business.dll</HintPath>
     </Reference>
-    <Reference Include="CustomControl">
+    <Reference Include="OpenTouryo.CustomControl">
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.CustomControl.dll</HintPath>
     </Reference>
-    <Reference Include="DamManagedOdp">
+    <Reference Include="OpenTouryo.DamManagedOdp">
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.DamManagedOdp.dll</HintPath>
     </Reference>
-    <Reference Include="DamMySQL">
+    <Reference Include="OpenTouryo.DamMySQL">
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>
-    <Reference Include="DamPstGrS">
+    <Reference Include="OpenTouryo.DamPstGrS">
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.DamPstGrS.dll</HintPath>
     </Reference>
-    <Reference Include="Framework">
+    <Reference Include="OpenTouryo.Framework">
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.FriendlyUrls, Version=1.0.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -735,7 +735,7 @@
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Public">
+    <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />

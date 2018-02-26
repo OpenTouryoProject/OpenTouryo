@@ -72,7 +72,7 @@
     <Reference Include="Oracle.ManagedDataAccess">
       <HintPath>..\..\Infrastructure\Build\Oracle.ManagedDataAccess.dll</HintPath>
     </Reference>
-    <Reference Include="Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTouryo.Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>

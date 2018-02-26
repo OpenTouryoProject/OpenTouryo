@@ -62,13 +62,13 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DamManagedOdp">
+    <Reference Include="OpenTouryo.DamManagedOdp">
       <HintPath>..\..\Infrastructure\Build\OpenTouryo.DamManagedOdp.dll</HintPath>
     </Reference>
-    <Reference Include="DamMySQL">
+    <Reference Include="OpenTouryo.DamMySQL">
       <HintPath>..\..\Infrastructure\Build\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>
-    <Reference Include="DamPstGrS">
+    <Reference Include="OpenTouryo.DamPstGrS">
       <HintPath>..\..\Infrastructure\Build\OpenTouryo.DamPstGrS.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
@@ -82,7 +82,7 @@
     <Reference Include="Oracle.ManagedDataAccess">
       <HintPath>..\..\Infrastructure\Build\Oracle.ManagedDataAccess.dll</HintPath>
     </Reference>
-    <Reference Include="Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTouryo.Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
