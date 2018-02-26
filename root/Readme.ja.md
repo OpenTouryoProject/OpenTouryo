@@ -106,7 +106,7 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
   </thead>
   <tbody>
     <tr>
-      <td rowspan="17" style="vertical-align: top">C:\root\programs\C#</td><td>1_DeleteDir.bat</td><td>ビルドによってできたフォルダを削除 (クリーン) する。</td><td>○</td><td>○</td>
+      <td rowspan="18" style="vertical-align: top">C:\root\programs\C#</td><td>1_DeleteDir.bat</td><td>ビルドによってできたフォルダを削除 (クリーン) する。</td><td>○</td><td>○</td>
     </tr>
     <tr>
       <td>2_DeleteFile.bat</td><td>一時ファイルなどを削除 (クリーン) する。</td><td>○</td><td>○</td>
@@ -116,6 +116,9 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
     </tr>
     <tr>
       <td>3_Build_NuGet_net45.bat</td><td>.NET Framework 4.5.2 をターゲットとする NuGet パッケージの作成用に、フレームワークをビルドする。</td><td>△<span style="color: red"><sup>*1</sup></span></td><td>○</td>
+    </tr>
+    <tr>
+      <td>3_Build_NuGet_net46.bat</td><td>.NET Framework 4.6 をターゲットとする NuGet パッケージの作成用に、フレームワークをビルドする。</td><td>△<span style="color: red"><sup>*1</sup></span></td><td>○</td>
     </tr>
     <tr>
       <td>3_Build_NuGet_net47.bat</td><td>.NET Framework 4.7 をターゲットとする NuGet パッケージの作成用に、フレームワークをビルドする。</td><td>△<span style="color: red"><sup>*1</sup></span></td><td>○</td>
