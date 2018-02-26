@@ -1032,7 +1032,7 @@ namespace TestEncAndDecProvider
 
                     this._alice = new Alice();
                     
-                    using (Aes aes = new AesCryptoServiceProvider())
+                    using (Aes aes = new AesManaged())
                     {
                         aes.Key = this._alice.PrivateKey;
                         this._alice.IV = aes.IV;
@@ -1123,7 +1123,7 @@ namespace TestEncAndDecProvider
                 {
                     ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)asymmetricAlgorithm;
                     
-                    using (Aes aes = new AesCryptoServiceProvider())
+                    using (Aes aes = new AesManaged())
                     {
                         // 秘密鍵
                         aes.Key = this._alice.Bob.PrivateKey;
@@ -1605,14 +1605,6 @@ namespace TestEncAndDecProvider
                         flg = ecdsa.VerifyData(sourceStringByte, Convert.FromBase64String(this.textBox55.Text));
                         ecdsa.Clear();
                     }
-                }
-                else if (asymmetricAlgorithm is ECDiffieHellmanCng)
-                {
-                    // キャスト
-                    ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)asymmetricAlgorithm;
-
-                    // 検証する
-                    throw new NotImplementedException("ECDiffieHellmanCngの署名・検証はサポートされていません。");
                 }
 
                 // 検証結果を表示
