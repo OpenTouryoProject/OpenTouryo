@@ -13,7 +13,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Table {
     public partial class testGridView {
         
         /// <summary>
-        /// lblResult Control。
+        /// lblResult コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -22,7 +22,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Table {
         protected global::System.Web.UI.WebControls.Label lblResult;
         
         /// <summary>
-        /// gvwGridView1 Control。
+        /// gvwGridView1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -31,7 +31,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Table {
         protected global::System.Web.UI.WebControls.GridView gvwGridView1;
         
         /// <summary>
-        /// btnButton1 Control。
+        /// btnButton1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

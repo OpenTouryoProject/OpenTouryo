@@ -1,5 +1,5 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/Aspx/Common/Master/TestNest/branchMasterPage1.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.Common.Master.TestNest.branchMasterPage2" Codebehind="branchMasterPage2.master.cs" %>
-<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
+<%@ Register Assembly="OpenTouryo.CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_AA" Runat="Server">
     <cc1:WebCustomLabel id="lblTestAA" runat="server">bmp2のC_AAのlblTestAA</cc1:WebCustomLabel><br/>

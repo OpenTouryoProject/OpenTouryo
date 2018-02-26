@@ -35,7 +35,7 @@ namespace WebForms_Sample.Aspx.Common.Master
         protected string UOC_btnMPButton_Click(FxEventArgs fxEventArgs)
         {
             //Response.Write("UOC_btnMPButton_Clickを実行できた。");
-            ((Label)FxCmnFunction.SearchWebControl(this.Page.Controls, "lblResult")).Text = "UOC_btnMPButton_Clickを実行できた。";
+            ((Label)FxCmnFunction.FindWebControl(this.Page.Controls, "lblResult")).Text = "UOC_btnMPButton_Clickを実行できた。";
             
             return "";
         }

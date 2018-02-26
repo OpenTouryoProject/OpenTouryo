@@ -13,7 +13,7 @@ namespace WebForms_Sample.Aspx.Common.Master.TestNest {
     public partial class testScreen1bmp1 {
         
         /// <summary>
-        /// lblCPF_A Control。
+        /// lblCPF_A コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -22,7 +22,7 @@ namespace WebForms_Sample.Aspx.Common.Master.TestNest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblCPF_A;
         
         /// <summary>
-        /// btnCPF_A Control。
+        /// btnCPF_A コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -31,7 +31,7 @@ namespace WebForms_Sample.Aspx.Common.Master.TestNest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnCPF_A;
         
         /// <summary>
-        /// ContentPlaceHolder_A1 Control。
+        /// ContentPlaceHolder_A1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -40,7 +40,7 @@ namespace WebForms_Sample.Aspx.Common.Master.TestNest {
         protected global::System.Web.UI.WebControls.ContentPlaceHolder ContentPlaceHolder_A1;
         
         /// <summary>
-        /// lblCPF_B Control。
+        /// lblCPF_B コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -49,7 +49,7 @@ namespace WebForms_Sample.Aspx.Common.Master.TestNest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblCPF_B;
         
         /// <summary>
-        /// btnCPF_B Control。
+        /// btnCPF_B コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -58,7 +58,7 @@ namespace WebForms_Sample.Aspx.Common.Master.TestNest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnCPF_B;
         
         /// <summary>
-        /// ContentPlaceHolder_B1 Control。
+        /// ContentPlaceHolder_B1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -67,7 +67,7 @@ namespace WebForms_Sample.Aspx.Common.Master.TestNest {
         protected global::System.Web.UI.WebControls.ContentPlaceHolder ContentPlaceHolder_B1;
         
         /// <summary>
-        /// lblCPF_C Control。
+        /// lblCPF_C コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -76,7 +76,7 @@ namespace WebForms_Sample.Aspx.Common.Master.TestNest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomLabel lblCPF_C;
         
         /// <summary>
-        /// btnCPF_C Control。
+        /// btnCPF_C コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -85,7 +85,7 @@ namespace WebForms_Sample.Aspx.Common.Master.TestNest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnCPF_C;
         
         /// <summary>
-        /// ContentPlaceHolder_C1 Control。
+        /// ContentPlaceHolder_C1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

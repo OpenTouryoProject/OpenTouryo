@@ -1,7 +1,6 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.Common.Master.sampleScreen" Codebehind="sampleScreen.master.cs" %>
-<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
-<%@ Register Src="~/Aspx/Common/Wuc/sampleControl.ascx" TagPrefix="uc1" TagName="sampleControl" %>
-
+<%@ Register Assembly="OpenTouryo.CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
+<%@ Register src="~/Aspx/Common/Wuc/sampleControl.ascx" tagname="sampleControl" tagprefix="uc1" %>
 
 <!DOCTYPE html>
 <html>
@@ -93,8 +92,8 @@
                     <asp:Label ID="lblResult" runat="server" Text=""></asp:Label><br />
                     <asp:Button ID="btnMPButton" runat="server" Text="Master Page上の上のButton" /><br />
                     <!-- User Control上のButton -->
-                    <uc1:sampleControl ID="sampleControl1" runat="server"/>
-                    <uc1:sampleControl ID="sampleControl2" runat="server"/>
+                    <uc1:samplecontrol ID="sampleControl1" runat="server"/>
+                    <uc1:samplecontrol ID="sampleControl2" runat="server"/>
                     
                     <br />
                     ＜共通イベント エリア＞<br />

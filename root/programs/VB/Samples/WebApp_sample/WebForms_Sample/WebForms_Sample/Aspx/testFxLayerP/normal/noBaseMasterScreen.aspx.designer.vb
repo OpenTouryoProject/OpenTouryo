@@ -15,7 +15,7 @@ Namespace Aspx.TestFxLayerP.Normal
     Partial Public Class noBaseMasterScreen
         
         '''<summary>
-        '''btnButton1 Control。
+        '''btnButton1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

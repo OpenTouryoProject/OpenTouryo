@@ -100,15 +100,11 @@ namespace Touryo.Infrastructure.Public.Security
                 rsaCryptoServiceProvider.FromXmlString(xmlKey);
                 this.AsymmetricAlgorithm = rsaCryptoServiceProvider;
             }
-            if (aa is DSACryptoServiceProvider)
+            else if(aa is DSACryptoServiceProvider)
             {
                 DSACryptoServiceProvider dsaCryptoServiceProvider = (DSACryptoServiceProvider)aa;
                 dsaCryptoServiceProvider.FromXmlString(xmlKey);
                 this.AsymmetricAlgorithm = dsaCryptoServiceProvider;
-            }
-            else
-            {
-                // ・・・
             }
 
             this.HashAlgorithm = ha;

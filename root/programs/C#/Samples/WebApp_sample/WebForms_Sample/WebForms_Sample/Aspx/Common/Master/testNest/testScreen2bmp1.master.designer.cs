@@ -13,7 +13,7 @@ namespace WebForms_Sample.Aspx.Common.Master.TestNest {
     public partial class testScreen2bmp1 {
         
         /// <summary>
-        /// ddlCPF_A Control。
+        /// ddlCPF_A コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -22,7 +22,7 @@ namespace WebForms_Sample.Aspx.Common.Master.TestNest {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomDropDownList ddlCPF_A;
         
         /// <summary>
-        /// ContentPlaceHolder_A1 Control。
+        /// ContentPlaceHolder_A1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

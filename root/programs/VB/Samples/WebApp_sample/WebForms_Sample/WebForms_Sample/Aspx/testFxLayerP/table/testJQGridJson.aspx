@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreenNoJs.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.TestFxLayerP.Table.testJQGridJson" EnableEventValidation="false" Codebehind="testJQGridJson.aspx.vb" %>
+﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/Master/testBlankScreenNoJs.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.TestFxLayerP.Table.testJQGridJson" EnableEventValidation="false" Codebehind="testJQGridJson.aspx.vb" %>
 
 <asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet" type="text/css" />

@@ -11,416 +11,416 @@ Option Strict On
 Option Explicit On
 
 Namespace Aspx.Sample._3Tier
-
+    
     Partial Public Class ProductsSearchAndUpdate
-
+        
         '''<summary>
-        '''ddlDap Control。
+        '''ddlDap コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents ddlDap As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
-
+        
         '''<summary>
-        '''txtProductID_And Control。
+        '''txtProductID_And コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtProductID_And As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtProductName_And Control。
+        '''txtProductName_And コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtProductName_And As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''ddlSupplierID_And Control。
+        '''ddlSupplierID_And コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents ddlSupplierID_And As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
-
+        
         '''<summary>
-        '''ddlCategoryID_And Control。
+        '''ddlCategoryID_And コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents ddlCategoryID_And As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
-
+        
         '''<summary>
-        '''txtQuantityPerUnit_And Control。
+        '''txtQuantityPerUnit_And コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtQuantityPerUnit_And As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtUnitPrice_And Control。
+        '''txtUnitPrice_And コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtUnitPrice_And As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtUnitsInStock_And Control。
+        '''txtUnitsInStock_And コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtUnitsInStock_And As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtUnitsOnOrder_And Control。
+        '''txtUnitsOnOrder_And コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtUnitsOnOrder_And As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtReorderLevel_And Control。
+        '''txtReorderLevel_And コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtReorderLevel_And As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtDiscontinued_And Control。
+        '''txtDiscontinued_And コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtDiscontinued_And As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtProductID_And_Like Control。
+        '''txtProductID_And_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtProductID_And_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtProductName_And_Like Control。
+        '''txtProductName_And_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtProductName_And_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtSupplierID_And_Like Control。
+        '''txtSupplierID_And_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtSupplierID_And_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtCategoryID_And_Like Control。
+        '''txtCategoryID_And_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtCategoryID_And_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtQuantityPerUnit_And_Like Control。
+        '''txtQuantityPerUnit_And_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtQuantityPerUnit_And_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtUnitPrice_And_Like Control。
+        '''txtUnitPrice_And_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtUnitPrice_And_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtUnitsInStock_And_Like Control。
+        '''txtUnitsInStock_And_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtUnitsInStock_And_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtUnitsOnOrder_And_Like Control。
+        '''txtUnitsOnOrder_And_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtUnitsOnOrder_And_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtReorderLevel_And_Like Control。
+        '''txtReorderLevel_And_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtReorderLevel_And_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtDiscontinued_And_Like Control。
+        '''txtDiscontinued_And_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtDiscontinued_And_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtProductID_OR Control。
+        '''txtProductID_OR コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtProductID_OR As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtProductName_OR Control。
+        '''txtProductName_OR コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtProductName_OR As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtSupplierID_OR Control。
+        '''txtSupplierID_OR コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtSupplierID_OR As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtCategoryID_OR Control。
+        '''txtCategoryID_OR コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtCategoryID_OR As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtQuantityPerUnit_OR Control。
+        '''txtQuantityPerUnit_OR コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtQuantityPerUnit_OR As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtUnitPrice_OR Control。
+        '''txtUnitPrice_OR コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtUnitPrice_OR As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtUnitsInStock_OR Control。
+        '''txtUnitsInStock_OR コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtUnitsInStock_OR As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtUnitsOnOrder_OR Control。
+        '''txtUnitsOnOrder_OR コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtUnitsOnOrder_OR As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtReorderLevel_OR Control。
+        '''txtReorderLevel_OR コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtReorderLevel_OR As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtDiscontinued_OR Control。
+        '''txtDiscontinued_OR コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtDiscontinued_OR As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtProductID_OR_Like Control。
+        '''txtProductID_OR_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtProductID_OR_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtProductName_OR_Like Control。
+        '''txtProductName_OR_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtProductName_OR_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtSupplierID_OR_Like Control。
+        '''txtSupplierID_OR_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtSupplierID_OR_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtCategoryID_OR_Like Control。
+        '''txtCategoryID_OR_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtCategoryID_OR_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtQuantityPerUnit_OR_Like Control。
+        '''txtQuantityPerUnit_OR_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtQuantityPerUnit_OR_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtUnitPrice_OR_Like Control。
+        '''txtUnitPrice_OR_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtUnitPrice_OR_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtUnitsInStock_OR_Like Control。
+        '''txtUnitsInStock_OR_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtUnitsInStock_OR_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtUnitsOnOrder_OR_Like Control。
+        '''txtUnitsOnOrder_OR_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtUnitsOnOrder_OR_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtReorderLevel_OR_Like Control。
+        '''txtReorderLevel_OR_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtReorderLevel_OR_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtDiscontinued_OR_Like Control。
+        '''txtDiscontinued_OR_Like コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtDiscontinued_OR_Like As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''btnSearch Control。
+        '''btnSearch コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents btnSearch As Global.System.Web.UI.WebControls.Button
-
+        
         '''<summary>
-        '''btnInsert Control。
+        '''btnInsert コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents btnInsert As Global.System.Web.UI.WebControls.Button
-
+        
         '''<summary>
-        '''btnBatUpd Control。
+        '''btnBatUpd コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents btnBatUpd As Global.System.Web.UI.WebControls.Button
-
+        
         '''<summary>
-        '''gvwGridView1 Control。
+        '''gvwGridView1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents gvwGridView1 As Global.System.Web.UI.WebControls.GridView
-
+        
         '''<summary>
-        '''ObjectDataSource1 Control。
+        '''ObjectDataSource1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

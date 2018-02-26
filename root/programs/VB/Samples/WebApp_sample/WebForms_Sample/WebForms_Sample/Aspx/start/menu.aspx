@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.Start.menu" Codebehind="menu.aspx.vb" %>
+﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/Master/testBlankScreen.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.Start.menu" Codebehind="menu.aspx.vb" %>
 
 <asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
     <!-- Head 部の ContentPlaceHolder -->

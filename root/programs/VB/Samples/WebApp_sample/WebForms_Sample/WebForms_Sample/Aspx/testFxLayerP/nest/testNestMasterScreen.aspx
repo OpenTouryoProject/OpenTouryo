@@ -1,5 +1,5 @@
-﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/TestNest/branchMasterPage2.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.TestFxLayerP.Nest.testNestMasterScreen" Codebehind="testNestMasterScreen.aspx.vb" %>
-<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
+﻿<%@ Page Language="VB" MasterPageFile="~/Aspx/Common/Master/TestNest/branchMasterPage2.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.TestFxLayerP.Nest.testNestMasterScreen" Codebehind="testNestMasterScreen.aspx.vb" %>
+<%@ Register Assembly="OpenTouryo.CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_AAA" Runat="Server">
     <cc1:WebCustomLabel id="lblTestAAA" runat="server">nmsのC_AAAのlblTestAAA</cc1:WebCustomLabel><br/>

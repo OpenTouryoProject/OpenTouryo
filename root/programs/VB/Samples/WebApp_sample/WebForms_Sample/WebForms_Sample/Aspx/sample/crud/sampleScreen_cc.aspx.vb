@@ -24,6 +24,7 @@ Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Framework.Presentation
 Imports Touryo.Infrastructure.Framework.Transmission
 Imports Touryo.Infrastructure.Framework.Exceptions
+Imports Touryo.Infrastructure.Framework.Util
 
 Namespace Aspx.Sample.Crud
     ''' <summary>サンプル アプリ画面</summary>
@@ -508,20 +509,31 @@ Namespace Aspx.Sample.Crud
 
 #Region "Master Page、User Controlのイベント"
 
+        ' #region Master Page、User Controlのイベント - #endregionを
+        ' コメント・アウトすると、Master Page、User Control上のイベント・ハンドラが呼び出される。
+
+#Region "Master Page"
+
         ''' <summary>Master PageにEvent Handlerを実装可能にしたのでそのテスト。</summary>
         ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_sampleScreen_btnMPButton_Click(fxEventArgs As FxEventArgs) As String
-            Me.lblResult.Text = "sampleScreen.masterのbtnMPButtonのClickイベントを、UOC_sampleScreen_btnMPButton_Clickで実行"
+            DirectCast(FxCmnFunction.FindWebControl(Me.Page.Controls, "lblResult"), Label).Text _
+                = "sampleScreen.masterのbtnMPButtonのClickイベントを、sampleScreen_cc.UOC_sampleScreen_btnMPButton_Clickで実行"
 
             Return ""
         End Function
+
+#End Region
+
+#Region "User Control"
 
         ''' <summary>User ControlにEvent Handlerを実装可能にしたのでそのテスト。</summary>
         ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_sampleControl1_btnUCButton_Click(fxEventArgs As FxEventArgs) As String
-            Me.lblResult.Text = "sampleControl.ascxのbtnUCButtonのClickイベントを、UOC_sampleControl1_btnUCButton_Clickで実行"
+            DirectCast(FxCmnFunction.FindWebControl(Me.Page.Controls, "lblResult"), Label).Text _
+                = "sampleControl.ascxのbtnUCButtonのClickイベントを、sampleScreen_cc.UOC_sampleControl1_btnUCButton_Clickで実行"
 
             Return ""
         End Function
@@ -530,12 +542,28 @@ Namespace Aspx.Sample.Crud
         ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_sampleControl2_btnUCButton_Click(fxEventArgs As FxEventArgs) As String
-            Me.lblResult.Text = "sampleControl.ascxのbtnUCButtonのClickイベントを、UOC_sampleControl2_btnUCButton_Clickで実行"
+            DirectCast(FxCmnFunction.FindWebControl(Me.Page.Controls, "lblResult"), Label).Text _
+                = "sampleControl.ascxのbtnUCButtonのClickイベントを、sampleScreen_cc.UOC_sampleControl2_btnUCButton_Clickで実行"
+
+            Return ""
+        End Function
+
+#Region "Child"
+
+        ''' <summary>User ControlにEvent Handlerを実装可能にしたのでそのテスト。</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
+        ''' <returns>URL</returns>
+        Protected Function UOC_sampleChildControl_btnUCChildButton_Click(fxEventArgs As FxEventArgs) As String
+            DirectCast(FxCmnFunction.FindWebControl(Me.Page.Controls, "lblResult"), Label).Text _
+                = "sampleChildControl.ascxのbtnUCChildButtonのClickイベントを、sampleScreen_cc.UOC_sampleChildControl_btnUCChildButton_Clickで実行"
 
             Return ""
         End Function
 
 #End Region
 
+#End Region
+
+#End Region
     End Class
 End Namespace

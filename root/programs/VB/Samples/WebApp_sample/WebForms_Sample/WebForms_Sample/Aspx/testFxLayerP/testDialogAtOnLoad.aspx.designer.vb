@@ -15,7 +15,7 @@ Namespace Aspx.TestFxLayerP
     Partial Public Class testDialogAtOnLoad
         
         '''<summary>
-        '''CheckBox1 Control。
+        '''CheckBox1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.TestFxLayerP
         Protected WithEvents CheckBox1 As Global.Touryo.Infrastructure.CustomControl.WebCustomCheckBox
         
         '''<summary>
-        '''WebCustomButton1 Control。
+        '''WebCustomButton1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -33,7 +33,7 @@ Namespace Aspx.TestFxLayerP
         Protected WithEvents WebCustomButton1 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton1 Control。
+        '''btnButton1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -42,7 +42,7 @@ Namespace Aspx.TestFxLayerP
         Protected WithEvents btnButton1 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton2 Control。
+        '''btnButton2 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -51,7 +51,7 @@ Namespace Aspx.TestFxLayerP
         Protected WithEvents btnButton2 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton3 Control。
+        '''btnButton3 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

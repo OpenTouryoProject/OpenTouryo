@@ -2487,7 +2487,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                             {
                                 // メソッドを実装するユーザ コントロールの参照を取得できた場合、
                                 // 親ユーザ コントロールのインスタンスの一致を確認する。
-                                if (FxCmnFunction.SearchParentWebUserControl(sender).GetHashCode() == uc.GetHashCode())
+                                if (FxCmnFunction.FindParentWebUserControl(sender).GetHashCode() == uc.GetHashCode())
                                 {
                                     // 親ユーザ コントロールのインスタンスが一致した場合、
 

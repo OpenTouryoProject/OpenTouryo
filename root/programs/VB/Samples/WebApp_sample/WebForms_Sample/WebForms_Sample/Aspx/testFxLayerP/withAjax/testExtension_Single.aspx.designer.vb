@@ -15,7 +15,7 @@ Namespace Aspx.TestFxLayerP.WithAjax
     Partial Public Class testExtension_Single
         
         '''<summary>
-        '''ContentsScriptManagerProxy Control。
+        '''ContentsScriptManagerProxy コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.TestFxLayerP.WithAjax
         Protected WithEvents ContentsScriptManagerProxy As Global.System.Web.UI.ScriptManagerProxy
         
         '''<summary>
-        '''TextBox1 Control。
+        '''TextBox1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -33,7 +33,7 @@ Namespace Aspx.TestFxLayerP.WithAjax
         Protected WithEvents TextBox1 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''btnButton1 Control。
+        '''btnButton1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -42,7 +42,7 @@ Namespace Aspx.TestFxLayerP.WithAjax
         Protected WithEvents btnButton1 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''TextBox2 Control。
+        '''TextBox2 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -51,7 +51,7 @@ Namespace Aspx.TestFxLayerP.WithAjax
         Protected WithEvents TextBox2 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''btnButton2 Control。
+        '''btnButton2 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -60,7 +60,7 @@ Namespace Aspx.TestFxLayerP.WithAjax
         Protected WithEvents btnButton2 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''ddlDropDownList1 Control。
+        '''ddlDropDownList1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -69,7 +69,7 @@ Namespace Aspx.TestFxLayerP.WithAjax
         Protected WithEvents ddlDropDownList1 As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
         
         '''<summary>
-        '''TextBox3 Control。
+        '''TextBox3 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -78,7 +78,7 @@ Namespace Aspx.TestFxLayerP.WithAjax
         Protected WithEvents TextBox3 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''ddlDropDownList2 Control。
+        '''ddlDropDownList2 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -87,7 +87,7 @@ Namespace Aspx.TestFxLayerP.WithAjax
         Protected WithEvents ddlDropDownList2 As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
         
         '''<summary>
-        '''TextBox4 Control。
+        '''TextBox4 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -96,7 +96,7 @@ Namespace Aspx.TestFxLayerP.WithAjax
         Protected WithEvents TextBox4 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''btnButton3 Control。
+        '''btnButton3 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
