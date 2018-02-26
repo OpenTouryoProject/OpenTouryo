@@ -151,10 +151,10 @@ Legend:
       <td>7_Build_Framework_WS.bat</td><td>Build the framework. (Service interface)</td><td></td>
     </tr>
     <tr>
-      <td>8_Build_WSClnt_sample.bat</td><td>Build the sample application. (Web service client (Windows forms))</td><td></td>
+      <td>8_Build_WSClntWin_sample.bat</td><td>Build the sample application. (Web service client (Windows forms))</td><td></td>
     </tr>
     <tr>
-      <td>9_Build_WSClnt_sample.bat</td><td>Build the sample application. (Web service client (WPF))</td><td></td>
+      <td>9_Build_WSClntWPF_sample.bat</td><td>Build the sample application. (Web service client (WPF))</td><td></td>
     </tr>
     <tr>
       <td>10_Build_WebApp_sample.bat</td><td>Build the sample application. (ASP.NET)</td><td></td>
@@ -181,7 +181,7 @@ Legend:
       <td>3_Build_RichClientFramework.bat</td><td>Build the framework for rich client application.</td><td></td><td>△<span style="color: red"><sup>*2</sup></span></td>
     </tr>
     <tr>
-      <td>5_Build_2CS_sample.bat</td><td>Build the sample application. (Two-tier client server application)</td><td></td><td rowspan="6" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td>
+      <td>5_Build_2CS_sample.bat</td><td>Build the sample application. (Two-tier client server application)</td><td></td><td rowspan="7" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td>
     </tr>
     <tr>
       <td>5_Build_Bat_sample.bat</td><td>Build the sample application. (Batch application)</td><td></td>
@@ -193,7 +193,10 @@ Legend:
       <td>7_Build_Framework_WS.bat</td><td>Build the framework. (Service interface)</td><td></td>
     </tr>
     <tr>
-      <td>8_Build_WSClnt_sample.bat</td><td>Build the sample application. (Web service client (Windows forms))</td><td></td>
+      <td>8_Build_WSClntWin_sample.bat</td><td>Build the sample application. (Web service client (Windows forms))</td><td></td>
+    </tr>
+    <tr>
+      <td>9_Build_WSClntWPF_sample.bat</td><td>Build the sample application. (Web service client (WPF))</td><td></td>
     </tr>
     <tr>
       <td>10_Build_WebApp_sample.bat</td><td>Build the sample application. (ASP.NET)</td><td></td>
