@@ -313,7 +313,11 @@ namespace WSClientWin2_sample
 
         #region UserControlイベント
 
-        // #region UserControlイベント ～ #endregionをコメント・アウトすると、User Control上のイベント・ハンドラが呼び出される。
+        // UserControlよりFormに実装されたメソッドが優先される。
+        // ※ ボタン名は一意である必要がある（イベントを識別できなくなる）。
+
+        // #region UserControlイベント ～ #endregionをコメント・アウトすると、
+        // User Control上のイベント・ハンドラが呼び出される。
 
         #region userControl3
 
