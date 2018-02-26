@@ -313,7 +313,7 @@ namespace WSClientWin2_sample
 
         #region UserControlイベント
 
-        // ココをコメント・アウトすると、User Control上のイベント・ハンドラが呼び出される。
+        // #region UserControlイベント ～ #endregionをコメント・アウトすると、User Control上のイベント・ハンドラが呼び出される。
 
         #region userControl3
 
