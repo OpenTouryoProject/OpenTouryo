@@ -49,9 +49,9 @@ Click [here](Contributing.ja.md) for Japanese version of this file.
  - 見えないチカラ A successful Git branching model を翻訳しました  
    http://keijinsonyaban.blogspot.jp/2010/10/successful-git-branching-model.html  
 
-###About the "pull request"
+### About the "pull request"
 
-####Size of the "pull request"
+#### Size of the "pull request"
  - Reduce the size of "commit" and "pull request" for review of "pull request".
 
  - If multiple tasks of bug or enhance are present in the one "pull request", one delay affects the other.
