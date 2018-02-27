@@ -22,7 +22,7 @@
 ## C#, VB
  VB版の提供は必須ではありません。必要であればこちらでSharpdeveloperを使用してVBに変換します。  
 
-##手順
+## 手順
 
 ### GitHub Flow
  「製品を毎日pushしコンスタントにテストしデプロイする。」  
@@ -39,7 +39,7 @@
  - master と develop ブランチを常設しています。  
  - その他のブランチは必要に応じて作成します。  
 
-####参考
+#### 参考
  - A successful Git branching model » nvie.com  
    http://nvie.com/posts/a-successful-git-branching-model/  
  - 見えないチカラ A successful Git branching model を翻訳しました  
