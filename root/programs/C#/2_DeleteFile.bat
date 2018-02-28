@@ -1,13 +1,15 @@
 @echo off
 
-@echo --------------------------------------------------
-@echo Delete the *.suo *.user *.tmp *.log *.bak *.skrold.
-@echo --------------------------------------------------
-
-del /f /s /a- *.suo *.user *.tmp *.log *.bak *.skrold
+SET EXTENTION=*.suo *.user *.tmp *.log *.bak *.skrold
 
 @echo --------------------------------------------------
-@echo Deleted the *.suo *.user *.tmp *.log *.bak *.skrold.
+@echo Delete the %EXTENTION%.
+@echo --------------------------------------------------
+
+del /f /s /a- %EXTENTION%
+
+@echo --------------------------------------------------
+@echo Deleted the %EXTENTION%.
 @echo --------------------------------------------------
 
 pause
