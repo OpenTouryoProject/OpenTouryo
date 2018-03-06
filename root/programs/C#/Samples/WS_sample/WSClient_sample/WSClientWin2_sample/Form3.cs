@@ -285,6 +285,7 @@ namespace WSClientWin2_sample
         #endregion
 
         #region 未解放イベント
+
         // ログが出過ぎるので
 
         ///// <summary>UOC_Form_KeyDown</summary>
@@ -312,53 +313,56 @@ namespace WSClientWin2_sample
 
         #region UserControlイベント
 
-        #region userControl3
-
         // UserControlよりFormに実装されたメソッドが優先される。
         // ※ ボタン名は一意である必要がある（イベントを識別できなくなる）。
 
-        ///// <summary>UOC_userControl31_btnUCButton1_Click</summary>
-        ///// <param name="rcFxEventArgs">RcFxEventArgs</param>
-        //protected void UOC_userControl3_btnUCButton1_Click(RcFxEventArgs rcFxEventArgs)
-        //{
-        //    Debug.WriteLine("UOC_userControl3_btnUCButton1_Click");
-        //}
+        // #region UserControlイベント ～ #endregionをコメント・アウトすると、
+        // User Control上のイベント・ハンドラが呼び出される。
 
-        ///// <summary>UOC_userControl31_btnUCButton1_Click</summary>
-        ///// <param name="rcFxEventArgs">RcFxEventArgs</param>
-        //protected void UOC_userControl3_pbxUCPictureBox1_Click(RcFxEventArgs rcFxEventArgs)
-        //{
-        //    Debug.WriteLine("UOC_userControl3_pbxUCPictureBox1_Click");
-        //}
+        #region userControl3
 
-        ///// <summary>UOC_userControl31_btnUCButton1_Click</summary>
-        ///// <param name="rcFxEventArgs">RcFxEventArgs</param>
-        //protected void UOC_userControl3_rbnUCRadioButton1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
-        //{
-        //    Debug.WriteLine("UOC_userControl3_rbnUCRadioButton1_CheckedChanged");
-        //}
+        /// <summary>UOC_userControl31_btnUCButton1_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
+        protected void UOC_userControl3_btnUCButton1_Click(RcFxEventArgs rcFxEventArgs)
+        {
+            Debug.WriteLine("UOC_userControl3_btnUCButton1_Click");
+        }
 
-        ///// <summary>UOC_userControl31_btnUCButton1_Click</summary>
-        ///// <param name="rcFxEventArgs">RcFxEventArgs</param>
-        //protected void UOC_userControl3_cbxUCCheckBox1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
-        //{
-        //    Debug.WriteLine("UOC_userControl3_cbxUCCheckBox1_CheckedChanged");
-        //}
+        /// <summary>UOC_userControl31_btnUCButton1_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
+        protected void UOC_userControl3_pbxUCPictureBox1_Click(RcFxEventArgs rcFxEventArgs)
+        {
+            Debug.WriteLine("UOC_userControl3_pbxUCPictureBox1_Click");
+        }
 
-        ///// <summary>UOC_userControl31_btnUCButton1_Click</summary>
-        ///// <param name="rcFxEventArgs">RcFxEventArgs</param>
-        //protected void UOC_userControl3_cbbUCComboBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
-        //{
-        //    Debug.WriteLine("UOC_userControl3_cbbUCComboBox1_SelectedIndexChanged");
-        //}
+        /// <summary>UOC_userControl31_btnUCButton1_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
+        protected void UOC_userControl3_rbnUCRadioButton1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
+        {
+            Debug.WriteLine("UOC_userControl3_rbnUCRadioButton1_CheckedChanged");
+        }
 
-        ///// <summary>UOC_userControl31_btnUCButton1_Click</summary>
-        ///// <param name="rcFxEventArgs">RcFxEventArgs</param>
-        //protected void UOC_userControl3_lbxUCListBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
-        //{
-        //    Debug.WriteLine("UOC_userControl3_lbxUCListBox1_SelectedIndexChanged");
-        //}
-        
+        /// <summary>UOC_userControl31_btnUCButton1_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
+        protected void UOC_userControl3_cbxUCCheckBox1_CheckedChanged(RcFxEventArgs rcFxEventArgs)
+        {
+            Debug.WriteLine("UOC_userControl3_cbxUCCheckBox1_CheckedChanged");
+        }
+
+        /// <summary>UOC_userControl31_btnUCButton1_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
+        protected void UOC_userControl3_cbbUCComboBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
+        {
+            Debug.WriteLine("UOC_userControl3_cbbUCComboBox1_SelectedIndexChanged");
+        }
+
+        /// <summary>UOC_userControl31_btnUCButton1_Click</summary>
+        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
+        protected void UOC_userControl3_lbxUCListBox1_SelectedIndexChanged(RcFxEventArgs rcFxEventArgs)
+        {
+            Debug.WriteLine("UOC_userControl3_lbxUCListBox1_SelectedIndexChanged");
+        }
+
         #endregion
 
         #region userControl31
@@ -455,12 +459,12 @@ namespace WSClientWin2_sample
 
         #region userControlChild
 
-        /// <summary>UOC_userControlChild_btnUCButton1_Click</summary>
-        /// <param name="rcFxEventArgs">RcFxEventArgs</param>
-        protected void UOC_userControlChild_btnUCButton1_Click(RcFxEventArgs rcFxEventArgs)
-        {
-            Debug.WriteLine("UOC_userControlChild_btnUCButton1_Click");
-        }
+        ///// <summary>UOC_userControlChild_btnUCButton1_Click</summary>
+        ///// <param name="rcFxEventArgs">RcFxEventArgs</param>
+        //protected void UOC_userControlChild_btnUCButton1_Click(RcFxEventArgs rcFxEventArgs)
+        //{
+        //    Debug.WriteLine("UOC_userControlChild_btnUCButton1_Click");
+        //}
 
         #endregion
 
@@ -481,13 +485,23 @@ namespace WSClientWin2_sample
             userControl32.TabIndex = 0;
             this.groupBox3.Controls.Add(userControl32);
 
+
             // userControlParentの動的ロード
-            UserControlParent userControlParent = new UserControlParent();
+            UserControlParent userControlParent = null;
+
+            userControlParent = new UserControlParent();
             userControlParent.Location = new System.Drawing.Point(5, 17);
-            userControlParent.Name = "userControlParent";
+            userControlParent.Name = "userControlParent1";
             userControlParent.Size = new System.Drawing.Size(160, 40);
-            userControlParent.TabIndex = 3;
+            userControlParent.TabIndex = 0;
             this.groupBox4.Controls.Add(userControlParent);
+
+            userControlParent = new UserControlParent();
+            userControlParent.Location = new System.Drawing.Point(5, 17);
+            userControlParent.Name = "userControlParent2";
+            userControlParent.Size = new System.Drawing.Size(160, 40);
+            userControlParent.TabIndex = 0;
+            this.groupBox5.Controls.Add(userControlParent);
         }
 
         /// <summary>UOC_btnUCRemove_Click</summary>
@@ -495,9 +509,10 @@ namespace WSClientWin2_sample
         protected void UOC_btnUCRemove_Click(RcFxEventArgs rcFxEventArgs)
         {
             this.groupBox3.Controls.RemoveByKey("userControl32");
-            this.groupBox4.Controls.RemoveByKey("userControlParent");
+            this.groupBox4.Controls.RemoveByKey("userControlParent1");
+            this.groupBox5.Controls.RemoveByKey("userControlParent2");
         }
-        
+
         /// <summary>MethodInvoker</summary>
         /// <typeparam name="T">Type</typeparam>
         /// <param name="obj">T</param>

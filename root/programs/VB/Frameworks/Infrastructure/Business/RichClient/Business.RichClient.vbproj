@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>
     </RootNamespace>
-    <AssemblyName>Business.RichClient</AssemblyName>
+    <AssemblyName>OpenTouryo.Business.RichClient</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
@@ -44,7 +44,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>Business.RichClient.xml</DocumentationFile>
+    <DocumentationFile>OpenTouryo.Business.RichClient.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -54,28 +54,28 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>Business.RichClient.xml</DocumentationFile>
+    <DocumentationFile>OpenTouryo.Business.RichClient.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Business">
-      <HintPath>..\..\Build\Business.dll</HintPath>
+    <Reference Include="OpenTouryo.Business">
+      <HintPath>..\..\Build\OpenTouryo.Business.dll</HintPath>
     </Reference>
-    <Reference Include="DamManagedOdp">
-      <HintPath>..\..\Build\DamManagedOdp.dll</HintPath>
+    <Reference Include="OpenTouryo.DamManagedOdp">
+      <HintPath>..\..\Build\OpenTouryo.DamManagedOdp.dll</HintPath>
     </Reference>
-    <Reference Include="DamMySQL">
-      <HintPath>..\..\Build\DamMySQL.dll</HintPath>
+    <Reference Include="OpenTouryo.DamMySQL">
+      <HintPath>..\..\Build\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>
-    <Reference Include="DamPstGrS">
-      <HintPath>..\..\Build\DamPstGrS.dll</HintPath>
+    <Reference Include="OpenTouryo.DamPstGrS">
+      <HintPath>..\..\Build\OpenTouryo.DamPstGrS.dll</HintPath>
     </Reference>
-    <Reference Include="Framework">
-      <HintPath>..\..\Build\Framework.dll</HintPath>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="Framework.RichClient">
-      <HintPath>..\..\..\..\..\C#\Frameworks\Infrastructure\Build\Framework.RichClient.dll</HintPath>
+    <Reference Include="OpenTouryo.Framework.RichClient">
+      <HintPath>..\..\..\..\..\C#\Frameworks\Infrastructure\Build\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="Oracle.ManagedDataAccess">
       <HintPath>..\..\Build\Oracle.ManagedDataAccess.dll</HintPath>
@@ -86,8 +86,8 @@
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="Public">
-      <HintPath>..\..\Build\Public.dll</HintPath>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -150,9 +150,6 @@
       <ProductName>Windows インストーラー 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\..\Build\DamManagedOdp.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

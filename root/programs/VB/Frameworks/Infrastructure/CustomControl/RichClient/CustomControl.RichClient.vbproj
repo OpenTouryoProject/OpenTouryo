@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>
     </RootNamespace>
-    <AssemblyName>CustomControl.RichClient</AssemblyName>
+    <AssemblyName>OpenTouryo.CustomControl.RichClient</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
@@ -44,7 +44,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>CustomControl.RichClient.xml</DocumentationFile>
+    <DocumentationFile>OpenTouryo.CustomControl.RichClient.xml</DocumentationFile>
     <NoWarn>42353,42354,42355</NoWarn>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
@@ -55,18 +55,18 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>CustomControl.RichClient.xml</DocumentationFile>
+    <DocumentationFile>OpenTouryo.CustomControl.RichClient.xml</DocumentationFile>
     <NoWarn>42353,42354,42355</NoWarn>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Framework.RichClient">
-      <HintPath>..\..\..\..\..\C#\Frameworks\Infrastructure\Build\Framework.RichClient.dll</HintPath>
+    <Reference Include="OpenTouryo.Framework.RichClient">
+      <HintPath>..\..\..\..\..\C#\Frameworks\Infrastructure\Build\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
-    <Reference Include="Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTouryo.Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Build\Public.dll</HintPath>
+      <HintPath>..\..\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

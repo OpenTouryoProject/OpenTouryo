@@ -15,7 +15,7 @@ Namespace Aspx.TestFxLayerP.Table
     Partial Public Class testListView
         
         '''<summary>
-        '''lblResult Control。
+        '''lblResult コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.TestFxLayerP.Table
         Protected WithEvents lblResult As Global.System.Web.UI.WebControls.Label
         
         '''<summary>
-        '''lvwListView1 Control。
+        '''lvwListView1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -33,7 +33,7 @@ Namespace Aspx.TestFxLayerP.Table
         Protected WithEvents lvwListView1 As Global.System.Web.UI.WebControls.ListView
         
         '''<summary>
-        '''DataPager1 Control。
+        '''DataPager1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -42,7 +42,7 @@ Namespace Aspx.TestFxLayerP.Table
         Protected WithEvents DataPager1 As Global.System.Web.UI.WebControls.DataPager
         
         '''<summary>
-        '''btnButton1 Control。
+        '''btnButton1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -51,7 +51,7 @@ Namespace Aspx.TestFxLayerP.Table
         Protected WithEvents btnButton1 As Global.System.Web.UI.WebControls.Button
         
         '''<summary>
-        '''lblResultOfItemCommand Control。
+        '''lblResultOfItemCommand コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

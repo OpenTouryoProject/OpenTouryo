@@ -15,7 +15,7 @@ Namespace Aspx.TestScreenCtrl
     Partial Public Class WebForm1
         
         '''<summary>
-        '''btnButton1 Control。
+        '''btnButton1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton1 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton2 Control。
+        '''btnButton2 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -33,7 +33,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton2 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton3 Control。
+        '''btnButton3 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -42,7 +42,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton3 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton4 Control。
+        '''btnButton4 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -51,7 +51,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton4 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton5 Control。
+        '''btnButton5 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -60,7 +60,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton5 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''CheckBox1 Control。
+        '''CheckBox1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -69,7 +69,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents CheckBox1 As Global.Touryo.Infrastructure.CustomControl.WebCustomCheckBox
         
         '''<summary>
-        '''btnButton6 Control。
+        '''btnButton6 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -78,7 +78,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton6 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton7 Control。
+        '''btnButton7 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -87,7 +87,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton7 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton8 Control。
+        '''btnButton8 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -96,7 +96,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton8 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton9 Control。
+        '''btnButton9 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -105,7 +105,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton9 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton10 Control。
+        '''btnButton10 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -114,7 +114,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton10 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton11 Control。
+        '''btnButton11 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -123,7 +123,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton11 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton12 Control。
+        '''btnButton12 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -132,7 +132,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton12 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton13 Control。
+        '''btnButton13 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -141,7 +141,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton13 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton14 Control。
+        '''btnButton14 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -150,7 +150,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton14 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton15 Control。
+        '''btnButton15 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -159,7 +159,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton15 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton16 Control。
+        '''btnButton16 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -168,7 +168,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton16 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton17 Control。
+        '''btnButton17 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -177,7 +177,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton17 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton18 Control。
+        '''btnButton18 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -186,7 +186,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton18 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton19 Control。
+        '''btnButton19 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -195,7 +195,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton19 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton20 Control。
+        '''btnButton20 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -204,7 +204,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton20 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton21 Control。
+        '''btnButton21 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -213,7 +213,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton21 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton22 Control。
+        '''btnButton22 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -222,7 +222,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton22 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton23 Control。
+        '''btnButton23 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -231,7 +231,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton23 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton24 Control。
+        '''btnButton24 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -240,7 +240,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton24 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton25 Control。
+        '''btnButton25 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -249,7 +249,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton25 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton26 Control。
+        '''btnButton26 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -258,7 +258,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton26 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''TextBox1 Control。
+        '''TextBox1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -267,7 +267,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents TextBox1 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''btnButton27 Control。
+        '''btnButton27 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -276,7 +276,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton27 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton28 Control。
+        '''btnButton28 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -285,7 +285,7 @@ Namespace Aspx.TestScreenCtrl
         Protected WithEvents btnButton28 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''Image1 Control。
+        '''Image1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

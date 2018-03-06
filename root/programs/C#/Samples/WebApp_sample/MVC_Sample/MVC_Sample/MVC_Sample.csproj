@@ -55,11 +55,11 @@
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Business">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Business.dll</HintPath>
+    <Reference Include="OpenTouryo.Business">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Business.dll</HintPath>
     </Reference>
-    <Reference Include="Framework">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Framework.dll</HintPath>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Owin, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -82,8 +82,8 @@
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Public">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Public.dll</HintPath>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

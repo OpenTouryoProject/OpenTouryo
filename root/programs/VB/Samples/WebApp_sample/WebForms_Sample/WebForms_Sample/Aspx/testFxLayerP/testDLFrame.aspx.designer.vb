@@ -15,7 +15,7 @@ Namespace Aspx.TestFxLayerP
     Partial Public Class testDLFrame
         
         '''<summary>
-        '''iframe1 Control。
+        '''iframe1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

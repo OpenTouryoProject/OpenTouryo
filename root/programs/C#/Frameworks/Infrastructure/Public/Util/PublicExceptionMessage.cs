@@ -242,7 +242,7 @@ namespace Touryo.Infrastructure.Public.Util
 
         #endregion
 
-        #region ＤＢ部品
+        #region DB部品
 
         #region 分離レベル
 
@@ -658,7 +658,7 @@ namespace Touryo.Infrastructure.Public.Util
         #region 汎用メッセージ
 
         /// <summary>引数不正</summary>
-        public static string ARGUMENT_INJUSTICE
+        public static string ARGUMENT_INCORRECT
         {
             get
             {

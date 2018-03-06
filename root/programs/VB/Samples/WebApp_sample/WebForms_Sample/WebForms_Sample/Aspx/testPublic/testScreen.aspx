@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.TestPublic.testScreen" ValidateRequest="false" Codebehind="testScreen.aspx.vb" %>
-<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
+<%@ Register Assembly="OpenTouryo.CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <!DOCTYPE html>
 <html>

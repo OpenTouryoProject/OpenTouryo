@@ -51,20 +51,20 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Business">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Business.dll</HintPath>
+    <Reference Include="OpenTouryo.Business">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Business.dll</HintPath>
     </Reference>
-    <Reference Include="Business.RichClient">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Business.RichClient.dll</HintPath>
+    <Reference Include="OpenTouryo.Business.RichClient">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Business.RichClient.dll</HintPath>
     </Reference>
-    <Reference Include="Framework">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Framework.dll</HintPath>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="Framework.RichClient">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Framework.RichClient.dll</HintPath>
+    <Reference Include="OpenTouryo.Framework.RichClient">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
-    <Reference Include="Public">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Public.dll</HintPath>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />

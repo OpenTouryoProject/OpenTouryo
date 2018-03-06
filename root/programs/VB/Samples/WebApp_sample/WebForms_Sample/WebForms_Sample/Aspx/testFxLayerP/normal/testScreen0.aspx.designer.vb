@@ -15,7 +15,7 @@ Namespace Aspx.TestFxLayerP.Normal
     Partial Public Class testScreen0
         
         '''<summary>
-        '''btnAppEx Control。
+        '''btnAppEx コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnAppEx As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnSysEx Control。
+        '''btnSysEx コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -33,7 +33,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnSysEx As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnElseEx Control。
+        '''btnElseEx コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -42,7 +42,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnElseEx As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''txtUserName Control。
+        '''txtUserName コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -51,7 +51,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents txtUserName As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''txtUserInfoKey Control。
+        '''txtUserInfoKey コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -60,7 +60,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents txtUserInfoKey As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''lblUserName Control。
+        '''lblUserName コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -69,7 +69,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents lblUserName As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnSetUserInfo Control。
+        '''btnSetUserInfo コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -78,7 +78,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnSetUserInfo As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnGetUserInfo Control。
+        '''btnGetUserInfo コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -87,7 +87,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnGetUserInfo As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnUpdUserInfo Control。
+        '''btnUpdUserInfo コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -96,7 +96,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnUpdUserInfo As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnDelUserInfo Control。
+        '''btnDelUserInfo コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -105,7 +105,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnDelUserInfo As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnSetUserInfos Control。
+        '''btnSetUserInfos コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -114,7 +114,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnSetUserInfos As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnGetUserInfos Control。
+        '''btnGetUserInfos コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -123,7 +123,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnGetUserInfos As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnDelUserInfos Control。
+        '''btnDelUserInfos コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -132,7 +132,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnDelUserInfos As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnGetAllKeys Control。
+        '''btnGetAllKeys コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -141,7 +141,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnGetAllKeys As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''txtSubSysID Control。
+        '''txtSubSysID コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -150,7 +150,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents txtSubSysID As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''txtSubSysInfoKey Control。
+        '''txtSubSysInfoKey コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -159,7 +159,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents txtSubSysInfoKey As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''txtSubSysInfo Control。
+        '''txtSubSysInfo コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -168,7 +168,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents txtSubSysInfo As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''lblSubSysInfo Control。
+        '''lblSubSysInfo コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -177,7 +177,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents lblSubSysInfo As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnSetSubSysInfo Control。
+        '''btnSetSubSysInfo コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -186,7 +186,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnSetSubSysInfo As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnGetSubSysInfo Control。
+        '''btnGetSubSysInfo コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -195,7 +195,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnGetSubSysInfo As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnDelSubSysInfo Control。
+        '''btnDelSubSysInfo コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -204,7 +204,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnDelSubSysInfo As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''TextBox1 Control。
+        '''TextBox1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -213,7 +213,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents TextBox1 As Global.System.Web.UI.WebControls.TextBox
         
         '''<summary>
-        '''btnIllegalOperationCheckON Control。
+        '''btnIllegalOperationCheckON コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -222,7 +222,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnIllegalOperationCheckON As Global.System.Web.UI.WebControls.Button
         
         '''<summary>
-        '''btnIllegalOperationCheckOFF Control。
+        '''btnIllegalOperationCheckOFF コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

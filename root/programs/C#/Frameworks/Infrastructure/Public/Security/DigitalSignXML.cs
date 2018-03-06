@@ -1,5 +1,5 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2017 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/01/10  西野 大介         新規作成
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
+//*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -49,37 +50,78 @@ namespace Touryo.Infrastructure.Public.Security
         #region mem & prop & constructor
 
         /// <summary>AsymmetricAlgorithm</summary>
-        private AsymmetricAlgorithm _aa = null;
+        public AsymmetricAlgorithm AsymmetricAlgorithm { get; protected set; }
+
         /// <summary>HashAlgorithm</summary>
-        private HashAlgorithm _ha = null;
+        public HashAlgorithm HashAlgorithm { get; protected set; }
 
         /// <summary>
         /// XMLPrivateKey
         /// RFC 3275のXML秘密鍵
         /// </summary>
-        public string XMLPrivateKey { get; set; }
-
+        public string XMLPrivateKey { get; protected set; }
+        
         /// <summary>
         /// XMLPublicKey
         /// RFC 3275のXML公開鍵
         /// </summary>
-        public string XMLPublicKey { get; set; }
+        public string XMLPublicKey { get; protected set; }
 
-        /// <summary>
-        /// Constructor
-        /// RFC 3275のXMLからキーペアを設定する。
-        /// </summary>
+        /// <summary>Constructor</summary>
+        /// <param name="eaa">EnumDigitalSignAlgorithm</param>
         public DigitalSignXML(EnumDigitalSignAlgorithm eaa)
         {
-            this.CreateAsymmetricAlgorithmServiceProvider(eaa, out this._aa, out this._ha);
+            AsymmetricAlgorithm aa = null;
+            HashAlgorithm ha = null;
 
-            if (string.IsNullOrEmpty(this.XMLPrivateKey))
+            RsaAndDsaCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+
+            this.AsymmetricAlgorithm = aa;
+            this.HashAlgorithm = ha;
+
+            // 秘密鍵をXML形式で取得
+            this.XMLPrivateKey = this.AsymmetricAlgorithm.ToXmlString(true);
+            // 公開鍵をXML形式で取得
+            this.XMLPublicKey = this.AsymmetricAlgorithm.ToXmlString(false);
+        }
+
+        /// <summary>Constructor</summary>
+        /// <param name="eaa">EnumDigitalSignAlgorithm</param>
+        /// <param name="xmlKey">string</param>
+        public DigitalSignXML(EnumDigitalSignAlgorithm eaa, string xmlKey)
+        {
+            AsymmetricAlgorithm aa = null;
+            HashAlgorithm ha = null;
+            RsaAndDsaCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+
+            if (aa is RSACryptoServiceProvider)
             {
-                // 秘密鍵をXML形式で取得
-                this.XMLPrivateKey = this._aa.ToXmlString(true);
-                // 公開鍵をXML形式で取得
-                this.XMLPublicKey = this._aa.ToXmlString(false);
+                RSACryptoServiceProvider rsaCryptoServiceProvider = (RSACryptoServiceProvider)aa;
+                rsaCryptoServiceProvider.FromXmlString(xmlKey);
+                this.AsymmetricAlgorithm = rsaCryptoServiceProvider;
             }
+            else if(aa is DSACryptoServiceProvider)
+            {
+                DSACryptoServiceProvider dsaCryptoServiceProvider = (DSACryptoServiceProvider)aa;
+                dsaCryptoServiceProvider.FromXmlString(xmlKey);
+                this.AsymmetricAlgorithm = dsaCryptoServiceProvider;
+            }
+
+            this.HashAlgorithm = ha;
+
+            // 秘密鍵をXML形式で取得
+            try
+            {
+                this.XMLPrivateKey = this.AsymmetricAlgorithm.ToXmlString(true);
+            }
+            catch (CryptographicException cex)
+            {
+                cex.GetType();
+                // 潰す（xmlKeyが公開鍵のケース）
+            }
+
+            // 公開鍵をXML形式で取得
+            this.XMLPublicKey = this.AsymmetricAlgorithm.ToXmlString(false);
         }
 
         #endregion
@@ -92,22 +134,23 @@ namespace Touryo.Infrastructure.Public.Security
         public override byte[] Sign(byte[] data)
         {
             // ハッシュ
-            byte[] hashedByte = this._ha.ComputeHash(data);
+            byte[] hashedByte = this.HashAlgorithm.ComputeHash(data);
             // デジタル署名
             byte[] signedByte = null;
 
-            if (this._aa is RSACryptoServiceProvider)
+            if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
             {
                 // RSAPKCS1SignatureFormatterオブジェクトを作成
-                RSAPKCS1SignatureFormatter rsaFormatter = new RSAPKCS1SignatureFormatter(this._aa);
+                RSAPKCS1SignatureFormatter rsaFormatter = new RSAPKCS1SignatureFormatter(this.AsymmetricAlgorithm);
 
-                rsaFormatter.SetHashAlgorithm(this.GetHashAlgorithmName(this._ha));
+                rsaFormatter.SetHashAlgorithm(
+                    RsaAndDsaCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
                 signedByte = rsaFormatter.CreateSignature(hashedByte);
             }
-            else if (this._aa is DSACryptoServiceProvider)
+            else if (this.AsymmetricAlgorithm is DSACryptoServiceProvider)
             {
                 // DSASignatureFormatterオブジェクトを作成
-                DSASignatureFormatter dsaFormatter = new DSASignatureFormatter(this._aa);
+                DSASignatureFormatter dsaFormatter = new DSASignatureFormatter(this.AsymmetricAlgorithm);
 
                 // デジタル署名を作成
                 dsaFormatter.SetHashAlgorithm("SHA1");
@@ -123,140 +166,23 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
         public override bool Verify(byte[] data, byte[] sign)
         {
-            // 以下でイケるらしい。
-            this._aa.FromXmlString(this.XMLPublicKey);
+            //// XMLPublicKeyプロパティ・プロシージャ（set）に移動
+            //this.AsymmetricAlgorithm.FromXmlString(this.XMLPublicKey);
 
-            if (this._aa is RSACryptoServiceProvider)
+            if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
             {   
-                return ((RSACryptoServiceProvider)this._aa).VerifyData(data, this.GetHashAlgorithmName(this._ha), sign);
+                return ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).VerifyData(
+                    data, RsaAndDsaCmnFunc.GetHashAlgorithmName(this.HashAlgorithm), sign);
             }
             else
             {
-                return ((DSACryptoServiceProvider)this._aa).VerifyData(data, sign);
+                return ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).VerifyData(data, sign);
             }
-
-            #region old
-            //// ハッシュ
-            //byte[] hashedByte = this._ha.ComputeHash(data);
-
-            //// 結果フラグ
-            //bool flg = false;
-
-            //if (this._aa is RSACryptoServiceProvider)
-            //{
-            //    // 公開鍵
-            //    this._aa.FromXmlString(this.XMLPublicKey);
-
-            //    // RSAPKCS1SignatureDeformatterオブジェクトを作成
-            //    RSAPKCS1SignatureDeformatter rsaDeformatter = new RSAPKCS1SignatureDeformatter(this._aa);
-            //    rsaDeformatter.SetHashAlgorithm(this.GetHashAlgorithmName(this._ha));
-
-            //    // 検証する
-            //    flg = rsaDeformatter.VerifySignature(hashedByte, sign);
-            //}
-            //else if (this._aa is DSACryptoServiceProvider)
-            //{
-            //    // 公開鍵
-            //    this._aa.FromXmlString(this.XMLPublicKey);
-
-            //    // DSASignatureFormatterオブジェクトを作成
-            //    DSASignatureDeformatter dsaSignatureDeformatter = new DSASignatureDeformatter(this._aa);
-            //    dsaSignatureDeformatter.SetHashAlgorithm("SHA1");
-
-            //    // 検証する
-            //    flg = dsaSignatureDeformatter.VerifySignature(hashedByte, sign);
-            //}
-
-            //return flg;
-            #endregion
         }
 
         #endregion
-
-        #region 内部関数
-
-        #region Provider系
-
-        /// <summary>公開鍵・暗号化サービスプロバイダの生成</summary>
-        /// <returns>公開鍵・暗号化サービスプロバイダ</returns>
-        private void CreateAsymmetricAlgorithmServiceProvider(EnumDigitalSignAlgorithm eaa, out AsymmetricAlgorithm aa, out HashAlgorithm ha)
-        {
-            aa = null;
-            ha = null;
-
-            // 公開鍵・暗号化サービスプロバイダ
-            if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_MD5)
-            {
-                // RSACryptoServiceProviderサービスプロバイダ
-                aa = new RSACryptoServiceProvider();
-                ha = MD5.Create();
-            }
-            else if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA1)
-            {
-                // RSACryptoServiceProviderサービスプロバイダ
-                aa = new RSACryptoServiceProvider();
-                ha = SHA1.Create();
-            }
-            else if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256)
-            {
-                // RSACryptoServiceProviderサービスプロバイダ
-                aa = new RSACryptoServiceProvider();
-                ha = SHA256.Create();
-            }
-            else if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA384)
-            {
-                // RSACryptoServiceProviderサービスプロバイダ
-                aa = new RSACryptoServiceProvider();
-                ha = SHA384.Create();
-            }
-            else if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA512)
-            {
-                // RSACryptoServiceProviderサービスプロバイダ
-                aa = new RSACryptoServiceProvider();
-                ha = SHA512.Create();
-            }
-            else if (eaa == EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
-            {
-                // DSACryptoServiceProvider
-                aa = new DSACryptoServiceProvider();
-                ha = SHA1.Create();
-            }
-        }
-
-        /// <summary>GetHashAlgorithmName</summary>
-        /// <param name="ha">HashAlgorithm</param>
-        /// <returns>HashAlgorithmName</returns>
-        private string GetHashAlgorithmName(HashAlgorithm ha)
-        {
-            string haName = "";
-
-            if (ha is MD5)
-            {
-                haName = "MD5";
-            }
-            else if (ha is SHA1)
-            {
-                haName = "SHA1";
-            }
-            else if (ha is SHA256)
-            {
-                haName = "SHA256";
-            }
-            else if (ha is SHA384)
-            {
-                haName = "SHA384";
-            }
-            else if (ha is SHA512)
-            {
-                haName = "SHA512";
-            }
-
-            return haName;
-        }
-
-        #endregion
-        
-        #region MyDispose (派生の末端を呼ぶ)
+                
+        #region Dispose (派生の末端を呼ぶ)
 
         /// <summary>MyDispose (派生の末端を呼ぶ)</summary>
         /// <param name="isDisposing">isDisposing</param>
@@ -273,19 +199,19 @@ namespace Touryo.Infrastructure.Public.Security
                 if (isDisposing)
                 {
                     // Dispose all owned managed objects
-                    if (this._aa is RSACryptoServiceProvider)
+                    if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
                     {
                         // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
                         // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
-                        ((RSACryptoServiceProvider)this._aa).PersistKeyInCsp = false;
-                        this._aa.Clear();
+                        ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).PersistKeyInCsp = false;
+                        this.AsymmetricAlgorithm.Clear();
                     }
                     else
                     {
                         // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
                         // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
-                        ((DSACryptoServiceProvider)this._aa).PersistKeyInCsp = false;
-                        this._aa.Clear();
+                        ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).PersistKeyInCsp = false;
+                        this.AsymmetricAlgorithm.Clear();
                     }
                 }
 
@@ -295,8 +221,6 @@ namespace Touryo.Infrastructure.Public.Security
                 this.IsDisposed = true;
             }
         }
-
-        #endregion
 
         #endregion
     }

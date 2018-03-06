@@ -59,11 +59,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Framework.RichClient">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Framework.RichClient.dll</HintPath>
+    <Reference Include="OpenTouryo.Framework.RichClient">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
-    <Reference Include="Public">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Public.dll</HintPath>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

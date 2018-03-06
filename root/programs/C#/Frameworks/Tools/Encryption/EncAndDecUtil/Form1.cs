@@ -32,10 +32,12 @@
 //*  2017/01/10  西野 大介         秘密鍵と公開鍵の画面表示が誤っていたため、これを修正
 //*  2017/01/13  西野 大介         上記修正への対応と、GetSaltedPasswordのI/F変更に対する修正対応
 //*  2017/01/13  西野 大介         追加のGetSaltedPasswordメソッド、CodeSigning、JWTクラスの検証画面
+//*  2017/12/**  西野 大介         メンテナンス、暗号化ライブラリ追加に伴うテストコード追加
 //**********************************************************************************
 
 using System;
 using System.Windows.Forms;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
 using Touryo.Infrastructure.Public.Str;
@@ -62,9 +64,15 @@ namespace EncAndDecUtil
             cbxSCPV.DataSource = Enum.GetValues(typeof(EnumSymmetricAlgorithm));
             cbxSPWDPV1.DataSource = Enum.GetValues(typeof(EnumHashAlgorithm));
             cbxSPWDPV2.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
-            cbxCCXMLPV.DataSource = Enum.GetValues(typeof(EnumDigitalSignAlgorithm));
+            cbxDSPV.DataSource = Enum.GetValues(typeof(EnumDigitalSignAlgorithm));
+
+            // HS    : Hash
+            // KHS   : KeyedHash
+            // SC    : SymmetricCryptography
+            // ASC   : ASymmetricCryptography
+            // DS    : DigitalSign
         }
-        
+
         #endregion
 
         #region ハッシュ
@@ -484,81 +492,125 @@ namespace EncAndDecUtil
 
         #region 署名
 
-        /// <summary>rbnCCXML_CheckedChanged</summary>
-        private void rbnCCXML_CheckedChanged(object sender, EventArgs e)
+        /// <summary>rbnDSXML_CheckedChanged</summary>
+        private void rbnDS_CheckedChanged(object sender, EventArgs e)
         {
-            this.cbxCCXMLPV.Enabled = this.rbnCCXML.Checked;
+            this.cbxDSPV.Enabled = (this.rbnDSXML.Checked || this.rbnDSParam.Checked);
         }
 
-        /// <summary>rbnCCX509_CheckedChanged</summary>
-        private void rbnCCX509_CheckedChanged(object sender, EventArgs e)
+        /// <summary>rbnDSX509_CheckedChanged</summary>
+        private void rbnDSX509_CheckedChanged(object sender, EventArgs e)
         {
-            this.txtCCHash.ReadOnly = !this.rbnCCX509.Checked;
+            //this.txtDSHash.ReadOnly = !this.rbnDSX509.Checked;
         }
 
         /// <summary>署名</summary>
-        private void btnCCSign_Click(object sender, EventArgs e)
+        private void btnDSSign_Click(object sender, EventArgs e)
         {
-            DigitalSignXML csXML = null;
-            DigitalSignX509 csX509 = null;
+            DigitalSignXML dsXML = null;
+            DigitalSignParam dsParam = null;
+            DigitalSignX509 dsX509 = null;
 
-            byte[] data = CustomEncode.StringToByte(this.txtCCData.Text, CustomEncode.UTF_8);
+            byte[] data = CustomEncode.StringToByte(this.txtDSData.Text, CustomEncode.UTF_8);
             byte[] sign = null;
-            //bool ret = false;
 
-            if (rbnCCXML.Checked)
+            if (rbnDSXML.Checked)
             {
                 // XMLKey
-                csXML = new DigitalSignXML((EnumDigitalSignAlgorithm)this.cbxCCXMLPV.SelectedValue);
-                sign = csXML.Sign(data);
-                //ret = csXML.Verify(data, sign);
+                dsXML = new DigitalSignXML((EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue);
+                sign = dsXML.Sign(data);
+                //bool ret = csXML.Verify(data, sign);
 
-                txtCCPrivateKey.Text = csXML.XMLPrivateKey;
-                txtCCPublicKey.Text = csXML.XMLPublicKey;
+                this.txtDSPrivateKey.Text = dsXML.XMLPrivateKey;
+                this.txtDSPublicKey.Text = dsXML.XMLPublicKey;
+            }
+            else if(rbnDSParam.Checked)
+            {
+                // XMLKey
+                dsXML = new DigitalSignXML((EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue);
+                
+                if (((EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue) ==
+                        EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
+                {
+                    DSAParameters dsaparam = ((DSACryptoServiceProvider)dsXML.AsymmetricAlgorithm).ExportParameters(true);
+                    dsParam = new DigitalSignParam(dsaparam, dsXML.HashAlgorithm);
+                }
+                else
+                {
+                    RSAParameters rsaparam = ((RSACryptoServiceProvider)dsXML.AsymmetricAlgorithm).ExportParameters(true);
+                    dsParam = new DigitalSignParam(rsaparam, dsXML.HashAlgorithm);
+                }
+
+                sign = dsParam.Sign(data);
+                //bool ret = dsParam.Verify(data, sign);
+
+                this.txtDSPrivateKey.Text = dsXML.XMLPrivateKey;
+                this.txtDSPublicKey.Text = dsXML.XMLPublicKey;
             }
             else
             {
                 // X509
-                csX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text,
+                dsX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtDSHash.Text,
                     X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
 
-                sign = csX509.Sign(data);
-                //ret = csX509.Verify(data, sign);
+                sign = dsX509.Sign(data);
+                //bool ret = dsX509.Verify(data, sign);
 
-                txtCCPrivateKey.Text = csX509.X509PrivateKey;
-                txtCCPublicKey.Text = csX509.X509PublicKey;
+                this.txtDSPrivateKey.Text = dsX509.X509PrivateKey;
+                this.txtDSPublicKey.Text = dsX509.X509PublicKey;
             }
 
-            txtCCSign.Text = CustomEncode.ToBase64String(sign);
+            txtDSSign.Text = CustomEncode.ToBase64String(sign);
         }
 
         /// <summary>検証</summary>
-        private void btnCCVerify_Click(object sender, EventArgs e)
+        private void btnDSVerify_Click(object sender, EventArgs e)
         {
-            DigitalSignXML csXML = null;
-            DigitalSignX509 csX509 = null;
+            DigitalSignXML dsXML = null;
+            DigitalSignParam dsParam = null;
+            DigitalSignX509 dsX509 = null;
 
-            byte[] data = CustomEncode.StringToByte(this.txtCCData.Text, CustomEncode.UTF_8);
-            byte[] sign = CustomEncode.FromBase64String(this.txtCCSign.Text);
+            byte[] data = CustomEncode.StringToByte(this.txtDSData.Text, CustomEncode.UTF_8);
+            byte[] sign = CustomEncode.FromBase64String(this.txtDSSign.Text);
             bool ret = false;
 
-            if (rbnCCXML.Checked)
+            if (rbnDSXML.Checked)
             {
                 // XMLKey
-                csXML = new DigitalSignXML((EnumDigitalSignAlgorithm)this.cbxCCXMLPV.SelectedValue);
-                csXML.XMLPublicKey = txtCCPublicKey.Text;
-                ret = csXML.Verify(data, sign);
+                dsXML = new DigitalSignXML(
+                    (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue, this.txtDSPublicKey.Text);
+                ret = dsXML.Verify(data, sign);
+            }
+            else if(rbnDSParam.Checked)
+            {
+                // XMLKey
+                dsXML = new DigitalSignXML(
+                    (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue, this.txtDSPublicKey.Text);
+
+                if (((EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue) ==
+                        EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
+                {
+                    DSAParameters dsaparam = ((DSACryptoServiceProvider)dsXML.AsymmetricAlgorithm).ExportParameters(false);
+                    dsParam = new DigitalSignParam(dsaparam, dsXML.HashAlgorithm);
+                }
+                else
+                {
+                    RSAParameters rsaparam = ((RSACryptoServiceProvider)dsXML.AsymmetricAlgorithm).ExportParameters(false);
+                    dsParam = new DigitalSignParam(rsaparam, dsXML.HashAlgorithm);
+                }
+
+                ret = dsXML.Verify(data, sign);
             }
             else
             {
                 // X509
                 //// *.pfxを使用して、検証することもできるが、
-                //csX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text,
+                //dsX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text,
                 //    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
                 // 通常は、*.cerを使用して検証する。
-                csX509 = new DigitalSignX509(CertificateFilePath_cer, "", this.txtCCHash.Text);
+                dsX509 = new DigitalSignX509(CertificateFilePath_cer, "", this.txtDSHash.Text);
 
-                ret = csX509.Verify(data, sign);
+                ret = dsX509.Verify(data, sign);
             }
 
             if (ret)
@@ -600,22 +652,74 @@ namespace EncAndDecUtil
                 this.txtJWTPayload.Text = CustomEncode.ByteToString(
                     CustomEncode.FromBase64UrlString(temp[1]), CustomEncode.UTF_8);
             }
+            else if (rbnJWTRS256_XML.Checked)
+            {
+                // RS256 (XML)
+                JWT_RS256_XML jwtRS256 = new JWT_RS256_XML();
+
+                // 生成
+                string jwt = jwtRS256.Create(this.txtJWTPayload.Text);
+
+                // 出力
+                this.txtJWTKey.Text = jwtRS256.XMLPublicKey;
+
+                this.txtJWTJWK.Text =
+                    RS256_KeyConverter.ParamToJwkPublicKey(
+                        RS256_KeyConverter.XmlToProvider(jwtRS256.XMLPublicKey).ExportParameters(false));
+
+                this.txtJWTSign.Text = jwt;
+
+                // 改竄可能なフィールドに出力
+                string[] temp = jwt.Split('.');
+                this.txtJWTHeader.Text = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8);
+                this.txtJWTPayload.Text = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(temp[1]), CustomEncode.UTF_8);
+            }
+            else if (rbnJWTRS256_Param.Checked)
+            {
+                // RS256 (Param)
+                JWT_RS256_Param jwtRS256 = new JWT_RS256_Param();
+
+                // 生成
+                string jwt = jwtRS256.Create(this.txtJWTPayload.Text);
+
+                // 出力
+                this.txtJWTKey.Text = RS256_KeyConverter.ParamToXmlPublicKey(jwtRS256.RsaPublicParameters);
+                this.txtJWTJWK.Text = RS256_KeyConverter.ParamToJwkPublicKey(jwtRS256.RsaPublicParameters);
+
+                this.txtJWTSign.Text = jwt;
+
+                // 改竄可能なフィールドに出力
+                string[] temp = jwt.Split('.');
+                this.txtJWTHeader.Text = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8);
+                this.txtJWTPayload.Text = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(temp[1]), CustomEncode.UTF_8);
+            }
             else
             {
                 // RS256 (X509)
-                JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_pfx, this.CertificateFilePassword,
+                JWT_RS256_X509 jwtRS256 = new JWT_RS256_X509(this.CertificateFilePath_pfx, this.CertificateFilePassword,
                     X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
 
                 // 生成
                 string jwt = jwtRS256.Create(this.txtJWTPayload.Text);
 
                 // 出力
+                this.txtJWTKey.Text = jwtRS256.DigitalSignX509.X509PublicKey;
+
+                this.txtJWTJWK.Text =
+                    RS256_KeyConverter.ParamToJwkPublicKey(
+                        RS256_KeyConverter.X509CerToProvider(
+                            this.CertificateFilePath_cer).ExportParameters(false));
+
                 this.txtJWTSign.Text = jwt;
 
                 // 改竄可能なフィールドに出力
                 string[] temp = jwt.Split('.');
-                this.txtJWTHeader.Text =  CustomEncode.ByteToString(
-                    CustomEncode.FromBase64UrlString(temp[0]),CustomEncode.UTF_8);
+                this.txtJWTHeader.Text = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8);
                 this.txtJWTPayload.Text = CustomEncode.ByteToString(
                     CustomEncode.FromBase64UrlString(temp[1]), CustomEncode.UTF_8);
             }
@@ -624,7 +728,6 @@ namespace EncAndDecUtil
         /// <summary>JWT検証</summary>
         private void btnJWTVerify_Click(object sender, EventArgs e)
         {
-
             bool ret = false;
 
             if (rbnJWTHS256.Checked)
@@ -641,13 +744,14 @@ namespace EncAndDecUtil
                     + "." + temp[2];
 
                 // 検証
-                JWT_HS256 jwtHS256 = new JWT_HS256(CustomEncode.StringToByte(this.txtJWTKey.Text, CustomEncode.UTF_8));
+                //JWT_HS256 jwtHS256 = new JWT_HS256(CustomEncode.StringToByte(this.txtJWTKey.Text, CustomEncode.UTF_8));
+                JWT_HS256 jwtHS256 = new JWT_HS256(this.txtJWTJWK.Text);
                 ret = jwtHS256.Verify(newJWT);
             }
-            else
+            else if (rbnJWTRS256_XML.Checked)
             {
-                // RS256 (X509)
-                
+                // RS256 (XML)
+
                 // 入力
                 string[] temp = this.txtJWTSign.Text.Split('.');
 
@@ -658,9 +762,44 @@ namespace EncAndDecUtil
                     + "." + temp[2];
 
                 // 検証
-                //JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_pfx, CertificateFilePassword,
-                //    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
-                JWT_RS256 jwtRS256 = new JWT_RS256(this.CertificateFilePath_cer, "");
+                JWT_RS256_XML jwtRS256 = new JWT_RS256_XML(this.txtJWTKey.Text);
+                ret = jwtRS256.Verify(newJWT);
+            }
+            else if (rbnJWTRS256_Param.Checked)
+            {
+                // RS256 (Param)
+
+                // 入力
+                string[] temp = this.txtJWTSign.Text.Split('.');
+
+                // 改変可能なフィールドから入力
+                string newJWT =
+                    CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTHeader.Text, CustomEncode.UTF_8))
+                    + "." + CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTPayload.Text, CustomEncode.UTF_8))
+                    + "." + temp[2];
+
+                // 検証
+                //JWT_RS256_Param jwtRS256 = new JWT_RS256_Param(
+                //    RS256_KeyConverter.XmlToProvider(this.txtJWTKey.Text).ExportParameters(false));
+                JWT_RS256_Param jwtRS256 = new JWT_RS256_Param(
+                    RS256_KeyConverter.JwkToProvider(this.txtJWTJWK.Text).ExportParameters(false));
+                ret = jwtRS256.Verify(newJWT);
+            }
+            else
+            {
+                // RS256 (X509)
+
+                // 入力
+                string[] temp = this.txtJWTSign.Text.Split('.');
+
+                // 改変可能なフィールドから入力
+                string newJWT =
+                    CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTHeader.Text, CustomEncode.UTF_8))
+                    + "." + CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTPayload.Text, CustomEncode.UTF_8))
+                    + "." + temp[2];
+
+                // 検証
+                JWT_RS256_X509 jwtRS256 = new JWT_RS256_X509(this.CertificateFilePath_cer, "");
                 ret = jwtRS256.Verify(newJWT);
             }
 

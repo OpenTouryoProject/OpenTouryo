@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Workflow_Tool</RootNamespace>
-    <AssemblyName>Workflow_Tool</AssemblyName>
+    <AssemblyName>OpenTouryo.Workflow_Tool</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -36,15 +36,15 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTouryo.Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Infrastructure\Build\Business.dll</HintPath>
+      <HintPath>..\..\Infrastructure\Build\OpenTouryo.Business.dll</HintPath>
     </Reference>
-    <Reference Include="Framework">
-      <HintPath>..\..\Infrastructure\Build\Framework.dll</HintPath>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\Infrastructure\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="Public">
-      <HintPath>..\..\Infrastructure\Build\Public.dll</HintPath>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

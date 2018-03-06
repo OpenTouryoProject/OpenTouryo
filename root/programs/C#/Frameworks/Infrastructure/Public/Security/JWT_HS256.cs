@@ -1,5 +1,5 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2017 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
@@ -29,11 +29,17 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/01/13  西野 大介         新規作成
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
+//*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
 //**********************************************************************************
 
+using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
+
 using Newtonsoft.Json;
+
 using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Security
 {
@@ -41,18 +47,60 @@ namespace Touryo.Infrastructure.Public.Security
     public class JWT_HS256 : JWT
     {
         #region mem & prop & constructor
-
+        
         /// <summary>キー</summary>
-        private byte[] _key = null;
+        public byte[] Key { get; protected set; }
 
         /// <summary>検証用JWK</summary>
-        public string JWK = "{'k': 'password'}";
+        /// <remarks>https://mkjwk.org</remarks>
+        public string JWK { get; protected set; }
 
         /// <summary>Constructor</summary>
+        /// <param name="key">byte[]</param>
         public JWT_HS256(byte[] key)
         {
-            this._key = key;
+            this.Key = key;
+
+            // mkjwk - JSON Web Key Generator
+            // https://mkjwk.org
+            // JWK - マイクロソフト系技術情報 Wiki > 詳細 > パラメタ(JWA) > Parameters for Symmetric Keys
+            // https://techinfoofmicrosofttech.osscons.jp/index.php?JWK#r5be7fb8
+
+            this.JWK = "{ 'kty': 'oct', 'use': 'sig', 'alg': 'HS256', 'k': 'password' }";
             this.JWK = this.JWK.Replace("password", CustomEncode.ToBase64UrlString(key));
+        }
+
+        /// <summary>Constructor</summary>
+        /// <param name="jwkString">string</param>
+        public JWT_HS256(string jwkString)
+        {
+            Dictionary<string, string> jwk = new Dictionary<string, string>();
+            jwk = JsonConvert.DeserializeObject<Dictionary<string, string>>(jwkString);
+
+            if(jwk.ContainsKey("kty")
+                && jwk.ContainsKey("use")
+                && jwk.ContainsKey("alg")
+                && jwk.ContainsKey("k"))
+            {
+                // 正しいキー
+                if (jwk["kty"] == "oct"
+                && jwk["use"] == "sig"
+                && jwk["alg"] == "HS256"
+                && !string.IsNullOrEmpty(jwk["k"]))
+                {
+                    // 正しい値
+                    this.JWK = jwkString;
+                    this.Key = CustomEncode.FromBase64UrlString(jwk["k"]);
+                    return; // 正常終了
+                }
+                else { }
+            }
+            else { }
+
+            // 異常終了
+            throw new ArgumentException(
+                PublicExceptionMessage.ARGUMENT_INCORRECT,
+                "The JWK of HS256 is incorrect.");
         }
 
         #endregion
@@ -76,7 +124,7 @@ namespace Touryo.Infrastructure.Public.Security
 
             // 署名
             byte[] data = CustomEncode.StringToByte(headerEncoded + "." + payloadEncoded, CustomEncode.UTF_8);
-            HMACSHA256 sa = new HMACSHA256(this._key);
+            HMACSHA256 sa = new HMACSHA256(this.Key);
             string signEncoded = CustomEncode.ToBase64UrlString(sa.ComputeHash(data));
 
             // return JWT by RS256
@@ -99,7 +147,7 @@ namespace Touryo.Infrastructure.Public.Security
                 byte[] data = CustomEncode.StringToByte(temp[0] + "." + temp[1], CustomEncode.UTF_8);
                 byte[] sign = CustomEncode.FromBase64UrlString(temp[2]);
 
-                HMACSHA256 sa = new HMACSHA256(this._key);
+                HMACSHA256 sa = new HMACSHA256(this.Key);
 
                 return (CustomEncode.ToBase64UrlString(sign) 
                     == CustomEncode.ToBase64UrlString(sa.ComputeHash(data)));

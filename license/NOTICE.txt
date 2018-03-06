@@ -1,6 +1,6 @@
    Open Touryo
    
-   Copyright 2007-2014 Hitachi Solutions, Ltd.
+   Copyright (C) 2007,2016 Hitachi Solutions, Ltd.
    This product includes software developed at Hitachi Solutions, Ltd.
    
    And it was forked by the Open Touryo project.

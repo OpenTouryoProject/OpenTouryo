@@ -1,13 +1,11 @@
-<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/sampleScreen.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.Sample.Crud.sampleScreen_cc" Codebehind="sampleScreen_cc.aspx.cs" %>
-<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
+<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/Master/sampleScreen.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.Sample.Crud.sampleScreen_cc" Codebehind="sampleScreen_cc.aspx.cs" %>
+<%@ Register Assembly="OpenTouryo.CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
     <!-- Head 部の ContentPlaceHolder -->
 </asp:Content>
 
 <asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
-    <asp:Label ID="lblResult" runat="server" Text=""></asp:Label><br />
-
     データアクセス制御クラス（データプロバイダ）を選択<br />
     <cc1:WebCustomDropDownList ID="ddlDap" runat="server">
         <asp:ListItem Value="SQL">SQL Server / SQL Client</asp:ListItem>

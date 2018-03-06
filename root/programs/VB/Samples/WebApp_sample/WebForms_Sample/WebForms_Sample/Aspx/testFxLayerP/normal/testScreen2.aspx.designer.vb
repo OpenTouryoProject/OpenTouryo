@@ -15,7 +15,7 @@ Namespace Aspx.TestFxLayerP.Normal
     Partial Public Class testScreen2
         
         '''<summary>
-        '''lblResult Control。
+        '''lblResult コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents lblResult As Global.System.Web.UI.WebControls.Label
         
         '''<summary>
-        '''ddlDropDownList1 Control。
+        '''ddlDropDownList1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -33,7 +33,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents ddlDropDownList1 As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
         
         '''<summary>
-        '''rbnRadioButton1 Control。
+        '''rbnRadioButton1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -42,7 +42,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents rbnRadioButton1 As Global.Touryo.Infrastructure.CustomControl.WebCustomRadioButton
         
         '''<summary>
-        '''rbnRadioButton2 Control。
+        '''rbnRadioButton2 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -51,7 +51,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents rbnRadioButton2 As Global.Touryo.Infrastructure.CustomControl.WebCustomRadioButton
         
         '''<summary>
-        '''cbxCheckBox1 Control。
+        '''cbxCheckBox1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -60,7 +60,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents cbxCheckBox1 As Global.Touryo.Infrastructure.CustomControl.WebCustomCheckBox
         
         '''<summary>
-        '''cbxCheckBox2 Control。
+        '''cbxCheckBox2 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -69,7 +69,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents cbxCheckBox2 As Global.Touryo.Infrastructure.CustomControl.WebCustomCheckBox
         
         '''<summary>
-        '''rblRadioButtonList1 Control。
+        '''rblRadioButtonList1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -78,7 +78,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents rblRadioButtonList1 As Global.Touryo.Infrastructure.CustomControl.WebCustomRadioButtonList
         
         '''<summary>
-        '''cblCheckBoxList1 Control。
+        '''cblCheckBoxList1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -87,7 +87,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents cblCheckBoxList1 As Global.Touryo.Infrastructure.CustomControl.WebCustomCheckBoxList
         
         '''<summary>
-        '''lbxListBox1 Control。
+        '''lbxListBox1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -96,7 +96,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents lbxListBox1 As Global.Touryo.Infrastructure.CustomControl.WebCustomListBox
         
         '''<summary>
-        '''btnButton1 Control。
+        '''btnButton1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -105,7 +105,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnButton1 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lbnLinkButton1 Control。
+        '''lbnLinkButton1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -114,7 +114,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents lbnLinkButton1 As Global.Touryo.Infrastructure.CustomControl.WebCustomLinkButton
         
         '''<summary>
-        '''ibnImageButton1 Control。
+        '''ibnImageButton1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -123,7 +123,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents ibnImageButton1 As Global.Touryo.Infrastructure.CustomControl.WebCustomImageButton
         
         '''<summary>
-        '''impImageMap1 Control。
+        '''impImageMap1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -132,7 +132,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents impImageMap1 As Global.Touryo.Infrastructure.CustomControl.WebCustomImageMap
         
         '''<summary>
-        '''btnButton2 Control。
+        '''btnButton2 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -141,7 +141,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnButton2 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton3 Control。
+        '''btnButton3 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -150,7 +150,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnButton3 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton4 Control。
+        '''btnButton4 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -159,7 +159,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnButton4 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton5 Control。
+        '''btnButton5 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -168,7 +168,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnButton5 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''TextBox1 Control。
+        '''TextBox1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -177,7 +177,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents TextBox1 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''btnButton6 Control。
+        '''btnButton6 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -186,7 +186,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnButton6 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton7 Control。
+        '''btnButton7 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -195,7 +195,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnButton7 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton8 Control。
+        '''btnButton8 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -204,7 +204,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnButton8 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''txtTextBox2 Control。
+        '''txtTextBox2 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -213,7 +213,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents txtTextBox2 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''btnButton9 Control。
+        '''btnButton9 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -222,7 +222,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnButton9 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton10 Control。
+        '''btnButton10 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -231,7 +231,7 @@ Namespace Aspx.TestFxLayerP.Normal
         Protected WithEvents btnButton10 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''btnButton11 Control。
+        '''btnButton11 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

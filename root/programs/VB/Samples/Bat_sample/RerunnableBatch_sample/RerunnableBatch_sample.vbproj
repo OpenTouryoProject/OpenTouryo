@@ -39,17 +39,17 @@
     <Import Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTouryo.Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Business.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Business.dll</HintPath>
     </Reference>
-    <Reference Include="Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTouryo.Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Framework.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTouryo.Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Public.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

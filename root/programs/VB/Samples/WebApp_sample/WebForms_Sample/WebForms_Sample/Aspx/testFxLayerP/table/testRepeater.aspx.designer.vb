@@ -15,7 +15,7 @@ Namespace Aspx.TestFxLayerP.Table
     Partial Public Class testRepeater
         
         '''<summary>
-        '''lblResult Control。
+        '''lblResult コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.TestFxLayerP.Table
         Protected WithEvents lblResult As Global.System.Web.UI.WebControls.Label
         
         '''<summary>
-        '''rptRepeater1 Control。
+        '''rptRepeater1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -33,7 +33,7 @@ Namespace Aspx.TestFxLayerP.Table
         Protected WithEvents rptRepeater1 As Global.System.Web.UI.WebControls.Repeater
         
         '''<summary>
-        '''btnButton1 Control。
+        '''btnButton1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -42,7 +42,7 @@ Namespace Aspx.TestFxLayerP.Table
         Protected WithEvents btnButton1 As Global.System.Web.UI.WebControls.Button
         
         '''<summary>
-        '''btnButton2 Control。
+        '''btnButton2 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

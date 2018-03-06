@@ -1,5 +1,5 @@
-<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/testAspNetAjaxExtension_Single.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.TestFxLayerP.WithAjax.testExtension_Single" Codebehind="testExtension_Single.aspx.cs" %>
-<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
+<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/Master/testAspNetAjaxExtension_Single.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.TestFxLayerP.WithAjax.testExtension_Single" Codebehind="testExtension_Single.aspx.cs" %>
+<%@ Register Assembly="OpenTouryo.CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 <%@ Register Assembly="System.Web.Extensions, Version=1.0.61025.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Namespace="System.Web.UI" TagPrefix="asp" %>
 
 <asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">

@@ -48,11 +48,11 @@
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Business">
-      <HintPath>..\..\..\Build\Business.dll</HintPath>
+    <Reference Include="OpenTouryo.Business">
+      <HintPath>..\..\..\Build\OpenTouryo.Business.dll</HintPath>
     </Reference>
-    <Reference Include="Framework">
-      <HintPath>..\..\..\Build\Framework.dll</HintPath>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
@@ -74,8 +74,8 @@
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Public">
-      <HintPath>..\..\..\Build\Public.dll</HintPath>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

@@ -50,6 +50,7 @@
 //*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
 //*  2017/09/12  西野 大介         UserControlの動的配置対応のため、CreatePrefixAndEvtHndHtを新設。
 //*  2017/09/15  西野 大介         UserControlのネスト対応のため、FindControlの内容をFindUCControlに変更。
+//*  2018/01/31  西野 大介         ネストしたユーザ コントロールに対応（senderで親UCを確認する）
 //**********************************************************************************
 
 using System;
@@ -636,6 +637,8 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
 
         #endregion
 
+        #region メソッド名生成
+
         /// <summary>ユーザ コントロール名を記憶しておくワーク</summary>
         private string UserControlImplementingMethod = "";
 
@@ -669,6 +672,8 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                     + "_" + controlID + "_" + eventName;
             }
         }
+
+        #endregion
 
         #region イベント処理の共通メソッド
 
@@ -788,15 +793,21 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                         if (uc.Name == this.UserControlImplementingMethod)
                         {
                             // メソッドを実装するユーザ コントロールの参照を取得できた場合、
+                            // 親ユーザ コントロールのインスタンスの一致を確認する。
+                            if (RcFxCmnFunction.FindParentWinUserControl(
+                                rcFxEventArgs.Sender).GetHashCode() == uc.GetHashCode())
+                            {
+                                // 親ユーザ コントロールのインスタンスが一致した場合、
 
-                            // メソッド名からユーザ コントロール名のプレフィックスを削除し、
-                            string newMethodName = rcFxEventArgs.MethodName.
-                                Replace(this.UserControlImplementingMethod + "_", "");
+                                // メソッド名からユーザ コントロール名のプレフィックスを削除し、
+                                string newMethodName = rcFxEventArgs.MethodName.
+                                    Replace(this.UserControlImplementingMethod + "_", "");
 
-                            // マスタ ページに対してレイトバインド。
-                            Latebind.InvokeMethod_NoErr(uc, newMethodName, parameter);
+                                // ユーザ コントロールに対してレイトバインド。
+                                Latebind.InvokeMethod_NoErr(uc, newMethodName, parameter);
 
-                            // ・・・fxEventArgs.MethodNameと一致しないが、こういう仕様ということで。
+                                // ・・・fxEventArgs.MethodNameと一致しないが、こういう仕様ということで。
+                            }
                         }
                     }
                 }

@@ -15,7 +15,7 @@ Namespace Aspx.TestFxLayerP.WithAjax
     Partial Public Class testClientCallback
         
         '''<summary>
-        '''TextBox1 Control。
+        '''TextBox1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.TestFxLayerP.WithAjax
         Protected WithEvents TextBox1 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''TextBox2 Control。
+        '''TextBox2 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -33,7 +33,7 @@ Namespace Aspx.TestFxLayerP.WithAjax
         Protected WithEvents TextBox2 As Global.Touryo.Infrastructure.CustomControl.WebCustomTextBox
         
         '''<summary>
-        '''btnButton1 Control。
+        '''btnButton1 コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

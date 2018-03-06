@@ -11,146 +11,146 @@ Option Strict On
 Option Explicit On
 
 Namespace Aspx.Sample._3Tier
-
+    
     Partial Public Class ProductsDetail
-
+        
         '''<summary>
-        '''ddlDap Control。
+        '''ddlDap コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents ddlDap As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
-
+        
         '''<summary>
-        '''txtProductID Control。
+        '''txtProductID コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtProductID As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtProductName Control。
+        '''txtProductName コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtProductName As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''ddlSupplierID Control。
+        '''ddlSupplierID コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents ddlSupplierID As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
-
+        
         '''<summary>
-        '''ddlCategoryID Control。
+        '''ddlCategoryID コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents ddlCategoryID As Global.Touryo.Infrastructure.CustomControl.WebCustomDropDownList
-
+        
         '''<summary>
-        '''txtQuantityPerUnit Control。
+        '''txtQuantityPerUnit コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtQuantityPerUnit As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtUnitPrice Control。
+        '''txtUnitPrice コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtUnitPrice As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtUnitsInStock Control。
+        '''txtUnitsInStock コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtUnitsInStock As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtUnitsOnOrder Control。
+        '''txtUnitsOnOrder コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtUnitsOnOrder As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtReorderLevel Control。
+        '''txtReorderLevel コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtReorderLevel As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''txtDiscontinued Control。
+        '''txtDiscontinued コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents txtDiscontinued As Global.System.Web.UI.WebControls.TextBox
-
+        
         '''<summary>
-        '''btnEdit Control。
+        '''btnEdit コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents btnEdit As Global.System.Web.UI.WebControls.Button
-
+        
         '''<summary>
-        '''btnUpdate Control。
+        '''btnUpdate コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents btnUpdate As Global.System.Web.UI.WebControls.Button
-
+        
         '''<summary>
-        '''btnDelete Control。
+        '''btnDelete コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents btnDelete As Global.System.Web.UI.WebControls.Button
-
+        
         '''<summary>
-        '''btnInsert Control。
+        '''btnInsert コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents btnInsert As Global.System.Web.UI.WebControls.Button
-
+        
         '''<summary>
-        '''lblResult Control。
+        '''lblResult コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

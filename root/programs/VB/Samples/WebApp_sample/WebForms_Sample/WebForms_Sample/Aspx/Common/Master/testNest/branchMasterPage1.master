@@ -1,0 +1,55 @@
+﻿<%@ Master Language="VB" MasterPageFile="~/Aspx/Common/Master/TestNest/rootMasterPage.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.Common.Master.TestNest.branchMasterPage1" Codebehind="branchMasterPage1.master.vb" %>
+<%@ Register Assembly="OpenTouryo.CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
+
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+    <cc1:WebCustomLabel id="lblTestA" runat="server">bmp1のC_AのlblTestA</cc1:WebCustomLabel><br/>
+    <cc1:WebCustomButton ID="btnButtonA" runat="server" Text="bmp1のC_AのbtnButtonA" Width="200px" /><br/>
+    <hr/>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_AA" runat="server">
+        This is Default Content -- Override on Page
+    </asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_AB" runat="server">
+        This is Default Content -- Override on Page
+    </asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_AC" runat="server">
+        This is Default Content -- Override on Page
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder_B" Runat="Server">
+    <cc1:WebCustomLabel id="lblTestB" runat="server">bmp1のC_BのlblTestB</cc1:WebCustomLabel><br/>
+    <cc1:WebCustomButton ID="btnButtonB" runat="server" Text="bmp1のC_BのbtnButtonB" Width="200px" /><br/>
+    <hr/>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_BA" runat="server">
+        This is Default Content -- Override on Page
+    </asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_BB" runat="server">
+        This is Default Content -- Override on Page
+    </asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_BC" runat="server">
+        This is Default Content -- Override on Page
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content ID="Content4" ContentPlaceHolderID="ContentPlaceHolder_C" Runat="Server">
+    <cc1:WebCustomLabel id="lblTestC" runat="server">bmp1のC_CのlblTestC</cc1:WebCustomLabel><br/>
+    <cc1:WebCustomButton ID="btnButtonC" runat="server" Text="bmp1のC_CのbtnButtonC" Width="200px" /><br/>
+    <hr/>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_CA" runat="server">
+        This is Default Content -- Override on Page
+    </asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_CB" runat="server">
+        This is Default Content -- Override on Page
+    </asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder id="ContentPlaceHolder_CC" runat="server">
+        This is Default Content -- Override on Page
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
+</asp:Content>

@@ -68,8 +68,8 @@
     <Reference Include="pddndpcore20">
       <HintPath>..\..\Dll\pddndpcore20.dll</HintPath>
     </Reference>
-    <Reference Include="Public">
-      <HintPath>..\..\..\Build\Public.dll</HintPath>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

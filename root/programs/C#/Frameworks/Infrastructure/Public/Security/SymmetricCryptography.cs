@@ -37,6 +37,7 @@
 //*  2017/01/10  西野 大介         stretch回数の指定方法をPropertyからConstructorに変更した。
 //*  2017/01/10  西野 大介         AesCryptoServiceProviderを削除（.NET3.5から実装されたAesManagedを残す）
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
+//*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
 //**********************************************************************************
 
 using System;
@@ -465,7 +466,7 @@ namespace Touryo.Infrastructure.Public.Security
             else
             {
                 throw new ArgumentException(
-                    PublicExceptionMessage.ARGUMENT_INJUSTICE, "EnumSymmetricAlgorithm esa");
+                    PublicExceptionMessage.ARGUMENT_INCORRECT, "EnumSymmetricAlgorithm esa");
             }
 
             return sa;

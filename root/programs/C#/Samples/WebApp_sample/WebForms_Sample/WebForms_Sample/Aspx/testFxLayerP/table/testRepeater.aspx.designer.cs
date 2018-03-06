@@ -13,7 +13,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Table {
     public partial class testRepeater {
         
         /// <summary>
-        /// lblResult Control。
+        /// lblResult コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -22,7 +22,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Table {
         protected global::System.Web.UI.WebControls.Label lblResult;
         
         /// <summary>
-        /// rptRepeater1 Control。
+        /// rptRepeater1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -31,7 +31,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Table {
         protected global::System.Web.UI.WebControls.Repeater rptRepeater1;
         
         /// <summary>
-        /// btnButton1 Control。
+        /// btnButton1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -40,7 +40,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Table {
         protected global::System.Web.UI.WebControls.Button btnButton1;
         
         /// <summary>
-        /// btnButton2 Control。
+        /// btnButton2 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

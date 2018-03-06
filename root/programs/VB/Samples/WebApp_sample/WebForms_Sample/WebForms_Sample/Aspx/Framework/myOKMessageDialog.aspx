@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.Framework.myOKMessageDialog" Codebehind="myOKMessageDialog.aspx.vb" %>
-<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
+<%@ Register Assembly="OpenTouryo.CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <%--Copyright (C) 2007,2016 Hitachi Solutions,Ltd.--%> <%-- Apache License, Version 2.0 --%>
 <!DOCTYPE html>
@@ -13,7 +13,7 @@
 
     <script type="text/javascript">
             // Resolve URL in the javascript
-            var baseUrl = "<%= this.ResolveUrl("~/") %>";
+            var baseUrl = "<%= Me.ResolveUrl("~/") %>";
         
         // 初期戻り値(-1)は、Dialog右上の[×]で閉じた場合に戻る値
         var dialogreturn = -1;

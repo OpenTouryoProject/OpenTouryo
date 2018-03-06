@@ -51,6 +51,8 @@
 //*  2014/10/03  Rituparna         Added code SelectedIndexChanged for RadiobuttonList and CheckBoxList.
 //*  2014/11/19  Sandeep           Removed Redundant Code "FxCmnFunction.AddControlToDic" in method GetCtrlAndSetClickEventHandler
 //*  2014/04/16  Supragyan         Added TextChanged event to TextBox control in method GetCtrlAndSetClickEventHandler.
+//*  2018/01/30  西野 大介         FindWebControl、FindWebControl2メソッドを追加
+//*  2018/01/31  西野 大介         ネストしたユーザ コントロールに対応（senderで親UCを確認する）
 //**********************************************************************************
 
 using System;
@@ -640,7 +642,6 @@ namespace Touryo.Infrastructure.Framework.Util
             #endregion
         }
 
-
         /// <summary>キャスト可否チェック</summary>
         /// <typeparam name="TResult">キャストする型</typeparam>
         /// <param name="target">Control</param>
@@ -666,6 +667,129 @@ namespace Touryo.Infrastructure.Framework.Util
             }
         }
 
+        #region コントロール取得 Util
+
+        /// <summary>子Controlを検索し、結果を返す。</summary>
+        /// <param name="cc">ControlCollection</param>
+        /// <param name="id">Id of Control</param>
+        /// <returns>子Control</returns>
+        public static Control FindWebControl(ControlCollection cc, string id)
+        {
+            foreach (Control wc in cc)
+            {
+                if (wc.Controls.Count != 0)
+                {
+                    // ノード
+                    if (wc.ID == id)
+                    {
+                        // ノード検索
+                        return wc;
+                    }
+                    else
+                    {
+                        // 再起検索
+                        Control temp = null;
+                        temp = FxCmnFunction.FindWebControl(wc.Controls, id);
+
+                        if (temp != null)
+                        {
+                            // 発見
+                            return temp;
+                        }
+                        else
+                        {
+                            // 続行
+                        }
+                    }
+                }
+                else
+                {
+                    // リーフ
+                    if (wc.ID == id)
+                    {
+                        // リーフ検索
+                        return wc;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>子Controlを検索し、結果をリストで返す。</summary>
+        /// <param name="list">List(Control)</param>
+        /// <param name="cc">ControlCollection</param>
+        /// <param name="id">Id of Control</param>
+        /// <returns>子ControlのList</returns>
+        public static List<Control> FindWebControl(List<Control> list, ControlCollection cc, string id)
+        {
+            if (list == null) list = new List<Control>();
+
+            foreach (Control wc in cc)
+            {
+                if (wc.Controls.Count != 0)
+                {
+                    // ノード
+                    if (wc.ID == id)
+                    {
+                        // ノード検索 
+                        list.Add(wc);
+                    }
+                    else
+                    {
+                        // 再起検索 
+                        list = FxCmnFunction.FindWebControl(list, wc.Controls, id);
+                    }
+                }
+                else
+                {
+                    // リーフ
+                    if (wc.ID == id)
+                    {
+                        // リーフ検索
+                        list.Add(wc);
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        /// <summary>親UserControlを検索</summary>
+        /// <param name="sender">object</param>
+        /// <returns>親UserControl</returns>
+        public static UserControl FindParentWebUserControl(object sender)
+        {
+            if (sender is Control)
+            {
+                // Controlの場合。
+                Control ctrl = sender as Control;
+
+                if (ctrl is UserControl)
+                {
+                    // UserControlを発見
+                    return (UserControl)ctrl;
+                }
+                else if (ctrl.Parent != null)
+                {
+                    // 再帰（親を辿る
+                    return FxCmnFunction.FindParentWebUserControl(ctrl.Parent);
+                }
+                else
+                {
+                    // ルートに到達
+                    return null;
+                }
+            }
+            else
+            {
+                // Controlでない場合。
+                return null;
+            }
+        }
+
+        #endregion
+
         #region 旧処理
         /// <summary>コントロールの追加処理（下位互換）</summary>
         /// <param name="ctrl">コントロール</param>
@@ -673,59 +797,7 @@ namespace Touryo.Infrastructure.Framework.Util
         public static void AddControlToDic(Control ctrl, Dictionary<string, Control> ControlDic)
         {
             ControlDic[ctrl.ID] = ctrl;
-
-            // ↓RepeaterのRepeaterItemにユーザ コントロールが入ってる場合など、やはり考慮できない。
-
-            // フレームワークの仕様としては、コントロール名から、バインドするだけ。
-            // コントロール名により、イベントハンドラ名が決まるので、重複したコントロール名
-            // により、予期せぬイベントハンドラが呼び出されることがあるので注意が必要である。
-
-            //if (ControlDic.ContainsKey(ctrl.ID))
-            //{
-            //    // 登録済みのコントロール
-
-            //    // BindingContainerの・・・
-            //    Control bindingContainer = ctrl.BindingContainer;
-
-            //    if (bindingContainer != null)
-            //    {
-            //        // BindingContainerのBindingContainerが
-            //        bindingContainer = bindingContainer.BindingContainer;
-
-            //        if (bindingContainer != null)
-            //        {
-            //            // 以下の一覧系のコントロール内にある場合
-            //            if (bindingContainer is Repeater ||
-            //            bindingContainer is DataGrid ||
-            //            bindingContainer is GridView ||
-            //            bindingContainer.GetType().ToString().IndexOf("ListView") != -1) // ListViewは3.5でサポート
-            //            {
-            //                // 繰り返しコントロール内にある場合は、上書きする。
-            //                ControlDic[ctrl.ID] = ctrl;
-            //                return;
-            //            }
-            //        }
-            //    }
-
-            //    // 重複エラー
-            //    FxCmnFunction.ThowRepetitionError(ctrl);
-            //}
-            //else
-            //{
-            //    // 未登録のコントロール
-            //    ControlDic.Add(ctrl.ID, ctrl);
-            //    return;
-            //}
         }
-
-        ///// <summary>コントロール重複例外を（下位互換）</summary>
-        ///// <param name="ctrl">コントロール</param>
-        //private static void ThowRepetitionError(Control ctrl)
-        //{
-        //    throw new FrameworkException(
-        //                FrameworkExceptionMessage.CONTROL_REPETITION_ERROR1[0],
-        //                String.Format(FrameworkExceptionMessage.CONTROL_REPETITION_ERROR1[1], ctrl.ID));
-        //}
         #endregion
 
         #endregion

@@ -1,0 +1,172 @@
+<%@ Master Language="VB" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.Common.Master.testAspNetAjaxExtension_Separate" Codebehind="testAspNetAjaxExtension_Separate.master.vb" %>
+<%@ Register Assembly="OpenTouryo.CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
+<%@ Register Assembly="System.Web.Extensions, Version=1.0.61025.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Namespace="System.Web.UI" TagPrefix="asp" %>
+
+<!DOCTYPE html>
+<html>
+<head id="Head1" runat="server">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>無題のページ</title>
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+    <webopt:bundlereference runat="server" path="~/bundles/css" />
+
+    <!-- Resolve URL in the javascript-->
+    <script type="text/javascript">
+        var baseUrl = "<%= Me.ResolveUrl("~/") %>";
+    </script>
+
+    <!-- IE8をIE7互換モードで動作させる -->
+    <!--meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /-->
+    
+    <asp:ContentPlaceHolder ID="cphHeaderScripts" runat="server">
+        This is header area for define the scripts. -- Override on Page.
+    </asp:ContentPlaceHolder>
+</head>
+
+<!--FxCode：add-js-event-->
+<body onload="Fx_Document_OnLoad();" onunload="Fx_Document_OnClose();">
+        
+    <!-- auto completeを指定 -->
+    <form id="form1" runat="server" autocomplete="on">
+
+        <asp:ScriptManager ID="MasterScriptManager" runat="server"
+            AsyncPostBackErrorMessage="サーバ側エラー（MasterScriptManagerに定義）"
+            AsyncPostBackTimeout="10">
+            <Scripts>
+                <%--ScriptManager のバンドル スクリプトの詳細については、http://go.microsoft.com/fwlink/?LinkID=301884 を参照してください --%>
+                <%--Framework スクリプト--%>
+                <asp:ScriptReference Name="MsAjaxBundle" />
+                <asp:ScriptReference Name="jquery" />
+                <asp:ScriptReference Name="bootstrap" />
+                <asp:ScriptReference Name="respond" />
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
+                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+                <asp:ScriptReference Name="WebFormsBundle" />
+                <%--サイト スクリプト--%>
+            </Scripts>
+        </asp:ScriptManager>
+
+        <!--SampleCode：add-start-->
+        
+        <a href="<%= Me.ResolveUrl("~/Aspx/start/menu.aspx") %>">メニュー画面</a>
+        <br />
+        この画面では、<br />
+        Master Pageを、MasterUpdatePanelで囲って設定し、<br />
+        Content Pageを、ContentUpdatePanelで囲って設定している。<br />
+        <br />
+        <asp:UpdatePanel ID="MasterUpdatePanel" runat="server">
+            <ContentTemplate>
+                ヘッダー（共通）　→　待ちません。<br />
+                <cc1:WebCustomTextBox ID="TextBox1" runat="server"></cc1:WebCustomTextBox>
+                <cc1:WebCustomButton ID="btnMButton1" runat="server"  Text="Ajax Button" Width="180px" /><br />
+                <cc1:WebCustomTextBox ID="TextBox2" runat="server"></cc1:WebCustomTextBox>
+                <cc1:WebCustomButton ID="btnMButton2" runat="server"  Text="通常 Button" Width="180px" /><br />
+                <br />
+                ※ AutoPostBack = True<br />
+                <cc1:WebCustomDropDownList ID="ddlMDropDownList1" runat="server" AutoPostBack="True">
+                    <asp:ListItem>あああ</asp:ListItem>
+                    <asp:ListItem>いいい</asp:ListItem>
+                    <asp:ListItem>ううう</asp:ListItem>
+                    <asp:ListItem>えええ</asp:ListItem>
+                    <asp:ListItem>おおお</asp:ListItem>
+                </cc1:WebCustomDropDownList>
+                <cc1:WebCustomTextBox ID="TextBox3" runat="server"></cc1:WebCustomTextBox><br />
+                <cc1:WebCustomDropDownList ID="ddlMDropDownList2" runat="server" AutoPostBack="True">
+                    <asp:ListItem>あああ</asp:ListItem>
+                    <asp:ListItem>いいい</asp:ListItem>
+                    <asp:ListItem>ううう</asp:ListItem>
+                    <asp:ListItem>えええ</asp:ListItem>
+                    <asp:ListItem>おおお</asp:ListItem>
+                </cc1:WebCustomDropDownList>
+                <cc1:WebCustomTextBox ID="TextBox4" runat="server"></cc1:WebCustomTextBox><br />
+                <br />
+                <cc1:WebCustomButton ID="btnMButton3" runat="server"  Text="例外 Button" Width="180px" /><br />
+                <br />
+                <hr />
+                <br />
+                ヘッダー（個別）　→　３秒待ちます。<br />
+                <cc1:WebCustomTextBox ID="TextBox5" runat="server"></cc1:WebCustomTextBox>
+                <cc1:WebCustomButton ID="btnMButton4" runat="server"  Text="Ajax Button" Width="180px" /><br />
+                <cc1:WebCustomTextBox ID="TextBox6" runat="server"></cc1:WebCustomTextBox>
+                <cc1:WebCustomButton ID="btnMButton5" runat="server"  Text="通常 Button" Width="180px" /><br />
+                <br />
+                ※ AutoPostBack = True<br />
+                <cc1:WebCustomDropDownList ID="ddlMDropDownList3" runat="server" AutoPostBack="True">
+                    <asp:ListItem>あああ</asp:ListItem>
+                    <asp:ListItem>いいい</asp:ListItem>
+                    <asp:ListItem>ううう</asp:ListItem>
+                    <asp:ListItem>えええ</asp:ListItem>
+                    <asp:ListItem>おおお</asp:ListItem>
+                </cc1:WebCustomDropDownList>
+                <cc1:WebCustomTextBox ID="TextBox7" runat="server"></cc1:WebCustomTextBox><br />
+                <cc1:WebCustomDropDownList ID="ddlMDropDownList4" runat="server" AutoPostBack="True">
+                    <asp:ListItem>あああ</asp:ListItem>
+                    <asp:ListItem>いいい</asp:ListItem>
+                    <asp:ListItem>ううう</asp:ListItem>
+                    <asp:ListItem>えええ</asp:ListItem>
+                    <asp:ListItem>おおお</asp:ListItem>
+                </cc1:WebCustomDropDownList>
+                <cc1:WebCustomTextBox ID="TextBox8" runat="server"></cc1:WebCustomTextBox><br />
+                <br />
+                <cc1:WebCustomButton ID="btnMButton6" runat="server"  Text="例外 Button" Width="180px" /><br />
+            </ContentTemplate>
+            <Triggers>
+                <asp:AsyncPostBackTrigger ControlID="btnMButton1" EventName="Click" />
+                <asp:PostBackTrigger ControlID="btnMButton2" />
+                <asp:AsyncPostBackTrigger ControlID="ddlMDropDownList1" EventName="SelectedIndexChanged" />
+                <asp:PostBackTrigger ControlID="ddlMDropDownList2" />
+                <asp:AsyncPostBackTrigger ControlID="btnMButton3" EventName="Click" />
+                
+                <asp:AsyncPostBackTrigger ControlID="btnMButton4" EventName="Click" />
+                <asp:PostBackTrigger ControlID="btnMButton5" />
+                <asp:AsyncPostBackTrigger ControlID="ddlMDropDownList3" EventName="SelectedIndexChanged" />
+                <asp:PostBackTrigger ControlID="ddlMDropDownList4" />
+                <asp:AsyncPostBackTrigger ControlID="btnMButton6" EventName="Click" />
+            </Triggers>
+        </asp:UpdatePanel>
+    
+        <br />
+        <hr />
+        <br />
+        
+        <!--SampleCode：Contents-->
+        <asp:contentplaceholder id="ContentPlaceHolder_A" runat="Server">
+            This is Default Content -- Override on Page
+        </asp:contentplaceholder>
+        <!--SampleCode：add-end-->
+
+        <!--FxCode：add-start-->
+        <asp:HiddenField ID="ChildScreenType" runat="server" Value="0" />
+        <asp:HiddenField ID="ChildScreenUrl" runat="server" Value="0" />
+        <asp:HiddenField ID="CloseFlag" runat="server" Value="0" />
+        <asp:HiddenField ID="SubmitFlag" runat="server" Value="0" />
+        <asp:HiddenField ID="ScreenGuid" runat="server" Value="0" />
+        <asp:HiddenField ID="FxDialogStyle" runat="server" Value="0" />
+        <asp:HiddenField ID="BusinessDialogStyle" runat="server" Value="0" />
+        <asp:HiddenField ID="NormalScreenStyle" runat="server" Value="0" />
+        <asp:HiddenField ID="NormalScreenTarget" runat="server" Value="0" />
+        <asp:HiddenField ID="DialogFrameUrl" runat="server" Value="0" />
+        <asp:HiddenField ID="WindowGuid" runat="server" Value="0" />
+        <asp:HiddenField ID="RequestTicketGuid" runat="server" Value="0" />
+        <!--FxCode：add-end-->
+        
+    </form>
+
+    <%: Scripts.Render("~/bundles/touryo") %>
+    <%: Scripts.Render("~/bundles/app") %>
+
+    <asp:ContentPlaceHolder ID="cphFooterScripts" runat="server">
+        This is footer area for define the scripts. -- Override on Page.
+    </asp:ContentPlaceHolder>
+
+</body>
+</html>

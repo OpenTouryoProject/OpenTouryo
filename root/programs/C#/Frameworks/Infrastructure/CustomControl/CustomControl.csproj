@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Touryo.Infrastructure.CustomControl</RootNamespace>
-    <AssemblyName>CustomControl</AssemblyName>
+    <AssemblyName>OpenTouryo.CustomControl</AssemblyName>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>
@@ -48,7 +48,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\CustomControl.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\OpenTouryo.CustomControl.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

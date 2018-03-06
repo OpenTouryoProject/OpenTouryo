@@ -1,5 +1,5 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/TestScreenCtrl.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.TestScreenCtrl.WebForm2" Codebehind="WebForm2.aspx.cs" %>
-<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Aspx/Common/Master/TestScreenCtrl.master" AutoEventWireup="true" Inherits="WebForms_Sample.Aspx.TestScreenCtrl.WebForm2" Codebehind="WebForm2.aspx.cs" %>
+<%@ Register Assembly="OpenTouryo.CustomControl" Namespace="Touryo.Infrastructure.CustomControl" TagPrefix="cc1" %>
 
 <asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
     <!-- Head 部の ContentPlaceHolder -->

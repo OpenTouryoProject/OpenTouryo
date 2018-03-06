@@ -13,7 +13,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Wcc {
     public partial class testWCTextBox {
         
         /// <summary>
-        /// WebCustomTextBox1 Control。
+        /// WebCustomTextBox1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -22,7 +22,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Wcc {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox WebCustomTextBox1;
         
         /// <summary>
-        /// WebCustomTextBox2 Control。
+        /// WebCustomTextBox2 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -31,7 +31,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Wcc {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox WebCustomTextBox2;
         
         /// <summary>
-        /// WebCustomTextBox3 Control。
+        /// WebCustomTextBox3 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -40,7 +40,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Wcc {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox WebCustomTextBox3;
         
         /// <summary>
-        /// WebCustomTextBox4 Control。
+        /// WebCustomTextBox4 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -49,7 +49,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Wcc {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox WebCustomTextBox4;
         
         /// <summary>
-        /// WebCustomTextBox5 Control。
+        /// WebCustomTextBox5 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -58,7 +58,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Wcc {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox WebCustomTextBox5;
         
         /// <summary>
-        /// WebCustomTextBox6 Control。
+        /// WebCustomTextBox6 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -67,7 +67,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Wcc {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox WebCustomTextBox6;
         
         /// <summary>
-        /// WebCustomTextBox7 Control。
+        /// WebCustomTextBox7 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -76,7 +76,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Wcc {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox WebCustomTextBox7;
         
         /// <summary>
-        /// WebCustomTextBox8 Control。
+        /// WebCustomTextBox8 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -85,7 +85,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Wcc {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox WebCustomTextBox8;
         
         /// <summary>
-        /// WebCustomTextBox9 Control。
+        /// WebCustomTextBox9 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -94,7 +94,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Wcc {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox WebCustomTextBox9;
         
         /// <summary>
-        /// WebCustomTextBox10 Control。
+        /// WebCustomTextBox10 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -103,7 +103,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Wcc {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox WebCustomTextBox10;
         
         /// <summary>
-        /// WebCustomTextBox11 Control。
+        /// WebCustomTextBox11 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -112,7 +112,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Wcc {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox WebCustomTextBox11;
         
         /// <summary>
-        /// WebCustomTextBox12 Control。
+        /// WebCustomTextBox12 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -121,7 +121,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Wcc {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox WebCustomTextBox12;
         
         /// <summary>
-        /// WebCustomTextBox13 Control。
+        /// WebCustomTextBox13 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -130,7 +130,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Wcc {
         protected global::Touryo.Infrastructure.CustomControl.WebCustomTextBox WebCustomTextBox13;
         
         /// <summary>
-        /// gvwGridView1 Control。
+        /// gvwGridView1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -139,7 +139,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Wcc {
         protected global::System.Web.UI.WebControls.GridView gvwGridView1;
         
         /// <summary>
-        /// btnCheckText Control。
+        /// btnCheckText コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。
@@ -148,7 +148,7 @@ namespace WebForms_Sample.Aspx.TestFxLayerP.Wcc {
         protected global::System.Web.UI.WebControls.Button btnCheckText;
         
         /// <summary>
-        /// TextBox1 Control。
+        /// TextBox1 コントロール。
         /// </summary>
         /// <remarks>
         /// 自動生成されたフィールド。

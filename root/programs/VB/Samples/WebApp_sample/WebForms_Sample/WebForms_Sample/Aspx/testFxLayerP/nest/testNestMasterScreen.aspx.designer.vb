@@ -15,7 +15,7 @@ Namespace Aspx.TestFxLayerP.Nest
     Partial Public Class testNestMasterScreen
         
         '''<summary>
-        '''lblTestAAA Control。
+        '''lblTestAAA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -24,7 +24,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestAAA As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonAAA Control。
+        '''btnButtonAAA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -33,7 +33,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonAAA As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestAAB Control。
+        '''lblTestAAB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -42,7 +42,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestAAB As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonAAB Control。
+        '''btnButtonAAB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -51,7 +51,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonAAB As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestAAC Control。
+        '''lblTestAAC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -60,7 +60,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestAAC As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonAAC Control。
+        '''btnButtonAAC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -69,7 +69,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonAAC As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestABA Control。
+        '''lblTestABA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -78,7 +78,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestABA As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonABA Control。
+        '''btnButtonABA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -87,7 +87,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonABA As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestABB Control。
+        '''lblTestABB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -96,7 +96,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestABB As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonABB Control。
+        '''btnButtonABB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -105,7 +105,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonABB As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestABC Control。
+        '''lblTestABC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -114,7 +114,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestABC As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonABC Control。
+        '''btnButtonABC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -123,7 +123,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonABC As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestACA Control。
+        '''lblTestACA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -132,7 +132,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestACA As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonACA Control。
+        '''btnButtonACA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -141,7 +141,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonACA As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestACB Control。
+        '''lblTestACB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -150,7 +150,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestACB As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonACB Control。
+        '''btnButtonACB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -159,7 +159,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonACB As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestACC Control。
+        '''lblTestACC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -168,7 +168,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestACC As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonACC Control。
+        '''btnButtonACC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -177,7 +177,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonACC As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestBAA Control。
+        '''lblTestBAA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -186,7 +186,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestBAA As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonBAA Control。
+        '''btnButtonBAA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -195,7 +195,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonBAA As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestBAB Control。
+        '''lblTestBAB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -204,7 +204,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestBAB As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonBAB Control。
+        '''btnButtonBAB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -213,7 +213,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonBAB As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestBAC Control。
+        '''lblTestBAC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -222,7 +222,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestBAC As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonBAC Control。
+        '''btnButtonBAC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -231,7 +231,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonBAC As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestBBA Control。
+        '''lblTestBBA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -240,7 +240,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestBBA As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonBBA Control。
+        '''btnButtonBBA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -249,7 +249,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonBBA As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestBBB Control。
+        '''lblTestBBB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -258,7 +258,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestBBB As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonBBB Control。
+        '''btnButtonBBB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -267,7 +267,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonBBB As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestBBC Control。
+        '''lblTestBBC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -276,7 +276,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestBBC As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonBBC Control。
+        '''btnButtonBBC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -285,7 +285,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonBBC As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestBCA Control。
+        '''lblTestBCA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -294,7 +294,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestBCA As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonBCA Control。
+        '''btnButtonBCA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -303,7 +303,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonBCA As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestBCB Control。
+        '''lblTestBCB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -312,7 +312,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestBCB As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonBCB Control。
+        '''btnButtonBCB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -321,7 +321,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonBCB As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestBCC Control。
+        '''lblTestBCC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -330,7 +330,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestBCC As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonBCC Control。
+        '''btnButtonBCC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -339,7 +339,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonBCC As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestCAA Control。
+        '''lblTestCAA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -348,7 +348,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestCAA As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonCAA Control。
+        '''btnButtonCAA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -357,7 +357,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonCAA As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestCAB Control。
+        '''lblTestCAB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -366,7 +366,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestCAB As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonCAB Control。
+        '''btnButtonCAB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -375,7 +375,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonCAB As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestCAC Control。
+        '''lblTestCAC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -384,7 +384,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestCAC As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonCAC Control。
+        '''btnButtonCAC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -393,7 +393,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonCAC As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestCBA Control。
+        '''lblTestCBA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -402,7 +402,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestCBA As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonCBA Control。
+        '''btnButtonCBA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -411,7 +411,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonCBA As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestCBB Control。
+        '''lblTestCBB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -420,7 +420,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestCBB As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonCBB Control。
+        '''btnButtonCBB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -429,7 +429,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonCBB As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestCBC Control。
+        '''lblTestCBC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -438,7 +438,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestCBC As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonCBC Control。
+        '''btnButtonCBC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -447,7 +447,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonCBC As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestCCA Control。
+        '''lblTestCCA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -456,7 +456,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestCCA As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonCCA Control。
+        '''btnButtonCCA コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -465,7 +465,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonCCA As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestCCB Control。
+        '''lblTestCCB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -474,7 +474,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestCCB As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonCCB Control。
+        '''btnButtonCCB コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -483,7 +483,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents btnButtonCCB As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
         
         '''<summary>
-        '''lblTestCCC Control。
+        '''lblTestCCC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。
@@ -492,7 +492,7 @@ Namespace Aspx.TestFxLayerP.Nest
         Protected WithEvents lblTestCCC As Global.Touryo.Infrastructure.CustomControl.WebCustomLabel
         
         '''<summary>
-        '''btnButtonCCC Control。
+        '''btnButtonCCC コントロール。
         '''</summary>
         '''<remarks>
         '''自動生成されたフィールド。

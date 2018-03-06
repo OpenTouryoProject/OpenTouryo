@@ -890,8 +890,10 @@ namespace TestEncAndDecProvider
                     this.textBox1.Text = "";
                     KeySizes[] kszs = null;
 
-                    this.textBox1.Text += "・SignatureAlgorithm:" + asymmetricAlgorithm.SignatureAlgorithm.ToString() + "\r\n";
-
+                    if (asymmetricAlgorithm.SignatureAlgorithm != null)
+                    {
+                        this.textBox1.Text += "・SignatureAlgorithm:" + asymmetricAlgorithm.SignatureAlgorithm.ToString() + "\r\n";
+                    }
                     if (asymmetricAlgorithm.KeyExchangeAlgorithm != null)
                     {
                         this.textBox1.Text += "・KeyExchangeAlgorithm:" + asymmetricAlgorithm.KeyExchangeAlgorithm.ToString() + "\r\n";
@@ -931,10 +933,29 @@ namespace TestEncAndDecProvider
                 // 公開鍵・暗号化サービスプロバイダ
                 AsymmetricAlgorithm asymmetricAlgorithm = this.CreateAsymmetricAlgorithmServiceProvider();
 
-                // 公開鍵をXML形式で取得
-                this.textBox41b.Text = asymmetricAlgorithm.ToXmlString(false);
-                // 秘密鍵をXML形式で取得
-                this.textBox41c.Text = asymmetricAlgorithm.ToXmlString(true);
+                if (asymmetricAlgorithm is RSACryptoServiceProvider)
+                {
+                    // 公開鍵をXML形式で取得
+                    this.textBox41b.Text = asymmetricAlgorithm.ToXmlString(false);
+                    // 秘密鍵をXML形式で取得
+                    this.textBox41c.Text = asymmetricAlgorithm.ToXmlString(true);
+                }
+                else if (asymmetricAlgorithm is ECDiffieHellmanCng)
+                {
+                    // 公開鍵を取得
+                    this.textBox41b.Text = " - cngKey (alice and bob) - ";
+                    //((ECDiffieHellmanCng)asymmetricAlgorithm).ToXmlString(ECKeyXmlFormat.Rfc4050);
+
+                    // 秘密鍵を取得
+                    this.textBox41c.Text = " - cngKey (alice and bob) - ";
+                }
+                else
+                {
+                    // 公開鍵をXML形式で取得
+                    this.textBox41b.Text = asymmetricAlgorithm.ToXmlString(false);
+                    // 秘密鍵をXML形式で取得
+                    this.textBox41c.Text = asymmetricAlgorithm.ToXmlString(true);
+                }
             }
             catch (Exception ex)
             {
@@ -946,39 +967,11 @@ namespace TestEncAndDecProvider
 
         #endregion
 
-        #region プロバイダ設定
-
-        /// <summary>公開鍵・暗号化サービスプロバイダの設定</summary>
-        /// <param name="asymmetricAlgorithm">公開鍵・暗号化サービスプロバイダ</param>
-        private void SetKeyAndInitializationVectorToAsymmetricAlgorithmServiceProvider(AsymmetricAlgorithm asymmetricAlgorithm)
-        {
-            if (asymmetricAlgorithm is RSACryptoServiceProvider)
-            {
-                RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)asymmetricAlgorithm;
-
-                // 設定する
-            }
-            else if(asymmetricAlgorithm is DSACryptoServiceProvider)
-            {
-                DSACryptoServiceProvider dsacsp = (DSACryptoServiceProvider)asymmetricAlgorithm;
-
-                // 設定する
-            }
-            else if (asymmetricAlgorithm is ECDsaCng)
-            {
-                ECDsaCng ecdsa = (ECDsaCng)asymmetricAlgorithm;
-
-                // 設定する
-            }
-            else if (asymmetricAlgorithm is ECDiffieHellmanCng)
-            {
-                ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)asymmetricAlgorithm;
-
-                // 設定する
-            }
-        }
-
-        #endregion
+        /// <summary>
+        /// ECDiffieHellmanCng用
+        /// Aliceインスタンス
+        /// </summary>
+        Alice _alice = null;
 
         #region 暗号化
 
@@ -1005,14 +998,13 @@ namespace TestEncAndDecProvider
 
                 // 公開鍵・暗号化サービスプロバイダ
                 AsymmetricAlgorithm asymmetricAlgorithm = this.CreateAsymmetricAlgorithmServiceProvider();
-                this.SetKeyAndInitializationVectorToAsymmetricAlgorithmServiceProvider(asymmetricAlgorithm);
-
-                // 公開鍵
-                asymmetricAlgorithm.FromXmlString(this.textBox41b.Text);
 
                 if (asymmetricAlgorithm is RSACryptoServiceProvider)
                 {
                     RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)asymmetricAlgorithm;
+
+                    // 公開鍵
+                    rsa.FromXmlString(this.textBox41b.Text);
 
                     // 暗号化する（XP以降の場合のみ2項目にTrueを指定し、OAEPパディングを使用できる）
                     encryptedStringByte = rsa.Encrypt(sourceStringByte, false);
@@ -1033,10 +1025,29 @@ namespace TestEncAndDecProvider
                 }
                 else if (asymmetricAlgorithm is ECDiffieHellmanCng)
                 {
-                    ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)asymmetricAlgorithm;
+                    // アリス（alice）がボブ（bob）にメッセージを送る。
 
-                    // 暗号化する
-                    throw new NotImplementedException("ECDiffieHellmanCngの共通鍵暗号化はサポートされていません。");
+                    // アリスとボブ - Wikipedia
+                    // https://ja.wikipedia.org/wiki/アリスとボブ
+
+                    this._alice = new Alice();
+                    
+                    using (Aes aes = new AesManaged())
+                    {
+                        aes.Key = this._alice.PrivateKey;
+                        this._alice.IV = aes.IV;
+
+                        // Encrypt the message
+                        using (MemoryStream memoryStream = new MemoryStream())
+                        {
+                            using (CryptoStream cs = new CryptoStream(memoryStream, aes.CreateEncryptor(), CryptoStreamMode.Write))
+                            {
+                                cs.Write(sourceStringByte, 0, sourceStringByte.Length);
+                                cs.Close(); // 必要
+                                encryptedStringByte = memoryStream.ToArray();
+                            }
+                        }
+                    }
                 }
 
                 // 結果を表示
@@ -1079,14 +1090,13 @@ namespace TestEncAndDecProvider
 
                 // 公開鍵・暗号化サービスプロバイダ
                 AsymmetricAlgorithm asymmetricAlgorithm = this.CreateAsymmetricAlgorithmServiceProvider();
-                this.SetKeyAndInitializationVectorToAsymmetricAlgorithmServiceProvider(asymmetricAlgorithm);
-
-                // 秘密鍵
-                asymmetricAlgorithm.FromXmlString(this.textBox41c.Text);
 
                 if (asymmetricAlgorithm is RSACryptoServiceProvider)
                 {
                     RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)asymmetricAlgorithm;
+
+                    // 秘密鍵
+                    rsa.FromXmlString(this.textBox41c.Text);
 
                     // 復号化（XP以降の場合のみ2項目にTrueを指定し、OAEPパディングを使用できる）
                     sourceStringByte = rsa.Decrypt(encryptedStringByte, false);
@@ -1095,6 +1105,8 @@ namespace TestEncAndDecProvider
                 {
                     DSACryptoServiceProvider dsacsp = (DSACryptoServiceProvider)asymmetricAlgorithm;
 
+                    // 秘密鍵
+
                     // 復号化する
                     throw new NotImplementedException("DSACryptoServiceProviderの共通鍵暗号化はサポートされていません。");
                 }
@@ -1102,15 +1114,32 @@ namespace TestEncAndDecProvider
                 {
                     ECDsaCng ecdsa = (ECDsaCng)asymmetricAlgorithm;
 
+                    // 秘密鍵
+
                     // 復号化する
                     throw new NotImplementedException("ECDsaCngの共通鍵暗号化はサポートされていません。");
                 }
                 else if (asymmetricAlgorithm is ECDiffieHellmanCng)
                 {
                     ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)asymmetricAlgorithm;
+                    
+                    using (Aes aes = new AesManaged())
+                    {
+                        // 秘密鍵
+                        aes.Key = this._alice.Bob.PrivateKey;
+                        aes.IV = this._alice.IV;
 
-                    // 復号化する
-                    throw new NotImplementedException("ECDiffieHellmanCngの共通鍵暗号化はサポートされていません。");
+                        // 復号化する
+                        using (MemoryStream memoryStream = new MemoryStream())
+                        {
+                            using (CryptoStream cs = new CryptoStream(memoryStream, aes.CreateDecryptor(), CryptoStreamMode.Write))
+                            {
+                                cs.Write(encryptedStringByte, 0, encryptedStringByte.Length);
+                                cs.Close(); // 必要
+                                sourceStringByte =memoryStream.ToArray();
+                            }
+                        }
+                    }
                 }
 
                 // 結果を表示
@@ -1167,7 +1196,7 @@ namespace TestEncAndDecProvider
                 // ECDiffieHellmanCngサービスプロバイダ
                 asymmetricAlgorithm = new ECDiffieHellmanCng();
             }
-            
+
             return asymmetricAlgorithm;
         }
 
@@ -1406,6 +1435,7 @@ namespace TestEncAndDecProvider
                     // 署名の作成に使用するハッシュアルゴリズムを指定し、ハッシュ値を計算
                     if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "MD5")
                     {
+                        // エラーになる
                         dsaFormatter.SetHashAlgorithm(this._signinHashAlgorithmOfAsymmetricAlgorithm);
                         hashedSourceStringByte = MD5.Create().ComputeHash(sourceStringByte);
                     }
@@ -1416,6 +1446,7 @@ namespace TestEncAndDecProvider
                     }
                     else if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "SHA256")
                     {
+                        // エラーになる
                         dsaFormatter.SetHashAlgorithm(this._signinHashAlgorithmOfAsymmetricAlgorithm);
                         hashedSourceStringByte = SHA256.Create().ComputeHash(sourceStringByte);
                     }
@@ -1428,10 +1459,9 @@ namespace TestEncAndDecProvider
                     // キャスト
                     ECDsaCng ecdsa = (ECDsaCng)asymmetricAlgorithm;
 
-                    // こんなんで、すいません。
+                    // 署名を作成
                     using (ecdsa = new ECDsaCng(this._cngKey))
                     {
-                        // 署名を作成
                         ab_sign = ecdsa.SignData(sourceStringByte);
                         ecdsa.Clear();
                     }
@@ -1441,17 +1471,8 @@ namespace TestEncAndDecProvider
                     // キャスト
                     ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)asymmetricAlgorithm;
 
-                    throw new NotImplementedException("ECDsaCng:未実装");
-
-                    // ・・・SignDataが無かった。
-
-                    //// こんなんで、すいません。
-                    //using (ecdhcng = new ECDiffieHellmanCng(this._cngKey))
-                    //{
-                    //    // 署名を作成
-                    //    ab_sign = ecdhcng.SignData(asb);
-                    //    ecdhcng.Clear();
-                    //}
+                    // 署名を作成
+                    throw new NotImplementedException("ECDiffieHellmanCngの署名・検証はサポートされていません。");
                 }
 
                 // 結果を表示
@@ -1574,10 +1595,7 @@ namespace TestEncAndDecProvider
                 {
                     // キャスト
                     ECDsaCng ecdsa = (ECDsaCng)asymmetricAlgorithm;
-
-                    // こんなんで、すいません。
-                    //using (ecdsa = new ECDsaCng(this._cngKey))
-
+                    
                     // 公開鍵
                     using (ecdsa = new ECDsaCng(CngKey.Import(
                         CustomEncode.FromBase64String(this.textBox51b.Text),
@@ -1587,14 +1605,6 @@ namespace TestEncAndDecProvider
                         flg = ecdsa.VerifyData(sourceStringByte, Convert.FromBase64String(this.textBox55.Text));
                         ecdsa.Clear();
                     }
-                }
-                else if (asymmetricAlgorithm is ECDiffieHellmanCng)
-                {
-                    // キャスト
-                    ECDiffieHellmanCng ecdhcng = (ECDiffieHellmanCng)asymmetricAlgorithm;
-
-                    // 検証する
-                    throw new NotImplementedException("ECDiffieHellmanCng:未実装");
                 }
 
                 // 検証結果を表示
@@ -1618,6 +1628,77 @@ namespace TestEncAndDecProvider
         #endregion
 
         #endregion
+
+        #endregion
+
+        #region ECDiffieHellmanCng用AliceとBob
+
+        /// <summary>
+        /// ECDiffieHellmanCng用
+        /// AliceとBobのAliceクラス
+        /// </summary>
+        private class Alice
+        {
+            /// <summary>PublicKey</summary>
+            public byte[] PublicKey;
+            /// <summary>PrivateKey</summary>
+            public byte[] PrivateKey;
+            /// <summary>初期ベクタ</summary>
+            public byte[] IV = null;
+            /// <summary>Bob</summary>
+            public Bob Bob = null;
+
+            /// <summary>constructor</summary>
+            public Alice()
+            {
+                using (ECDiffieHellmanCng alice = new ECDiffieHellmanCng())
+                {
+                    // Bob側と合わせる。
+                    // キー派生関数（Hash, Hmac, Tlsから選択）
+                    alice.KeyDerivationFunction = ECDiffieHellmanKeyDerivationFunction.Hash;
+                    // 秘密協定の処理に使用するハッシュ アルゴリズム
+                    alice.HashAlgorithm = CngAlgorithm.Sha256;
+
+                    // Bobと鍵交換
+                    this.PublicKey = alice.PublicKey.ToByteArray();
+                    this.Bob = new Bob(this.PublicKey);
+
+                    // キーマテリアルを派生
+                    this.PrivateKey = alice.DeriveKeyMaterial(CngKey.Import(this.Bob.PublicKey, CngKeyBlobFormat.EccPublicBlob));
+                }
+            }
+        }
+
+        /// <summary>
+        /// ECDiffieHellmanCng用
+        /// AliceとBobのBobクラス
+        /// </summary>
+        private class Bob
+        {
+            /// <summary>PublicKey</summary>
+            public byte[] PublicKey = null;
+            /// <summary>PrivateKey</summary>
+            public byte[] PrivateKey = null;
+            
+            /// <summary>constructor</summary>
+            /// <param name="alicePublicKey">Aliceの公開鍵</param>
+            public Bob(byte[] alicePublicKey)
+            {
+                using (ECDiffieHellmanCng bob = new ECDiffieHellmanCng())
+                {
+                    // Alice側と合わせる。
+                    // キー派生関数（Hash, Hmac, Tlsから選択）
+                    bob.KeyDerivationFunction = ECDiffieHellmanKeyDerivationFunction.Hash;
+                    // 秘密協定の処理に使用するハッシュ アルゴリズム
+                    bob.HashAlgorithm = CngAlgorithm.Sha256;
+
+                    // Aliceと鍵交換
+                    this.PublicKey = bob.PublicKey.ToByteArray();
+                    // キーマテリアルを派生
+                    this.PrivateKey = bob.DeriveKeyMaterial(CngKey.Import(alicePublicKey, CngKeyBlobFormat.EccPublicBlob));
+                }
+            }
+        }
 
         #endregion
     }

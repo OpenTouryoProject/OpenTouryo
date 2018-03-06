@@ -48,21 +48,21 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTouryo.Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Business.dll</HintPath>
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Business.dll</HintPath>
     </Reference>
-    <Reference Include="Business.RichClient">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Business.RichClient.dll</HintPath>
+    <Reference Include="OpenTouryo.Business.RichClient">
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Business.RichClient.dll</HintPath>
     </Reference>
-    <Reference Include="Framework">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Framework.dll</HintPath>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="Framework.RichClient">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Framework.RichClient.dll</HintPath>
+    <Reference Include="OpenTouryo.Framework.RichClient">
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
-    <Reference Include="Public">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\Public.dll</HintPath>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>

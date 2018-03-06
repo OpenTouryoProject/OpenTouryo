@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>
     </RootNamespace>
-    <AssemblyName>Business</AssemblyName>
+    <AssemblyName>OpenTouryo.Business</AssemblyName>
     <MyType>Windows</MyType>
     <OptionStrict>On</OptionStrict>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
@@ -42,7 +42,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>Business.xml</DocumentationFile>
+    <DocumentationFile>OpenTouryo.Business.xml</DocumentationFile>
     <NoWarn>42353,42354,42355</NoWarn>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
@@ -53,26 +53,26 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>Business.xml</DocumentationFile>
+    <DocumentationFile>OpenTouryo.Business.xml</DocumentationFile>
     <NoWarn>42353,42354,42355</NoWarn>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DamManagedOdp">
-      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\DamManagedOdp.dll</HintPath>
+    <Reference Include="OpenTouryo.DamManagedOdp">
+      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\OpenTouryo.DamManagedOdp.dll</HintPath>
     </Reference>
-    <Reference Include="DamMySQL">
-      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\DamMySQL.dll</HintPath>
+    <Reference Include="OpenTouryo.DamMySQL">
+      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>
-    <Reference Include="DamPstGrS">
-      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\DamPstGrS.dll</HintPath>
+    <Reference Include="OpenTouryo.DamPstGrS">
+      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\OpenTouryo.DamPstGrS.dll</HintPath>
     </Reference>
-    <Reference Include="Framework">
-      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\Framework.dll</HintPath>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="Public">
-      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\Public.dll</HintPath>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

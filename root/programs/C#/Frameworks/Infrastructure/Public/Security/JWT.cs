@@ -1,5 +1,5 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2017 Hitachi Solutions,Ltd.
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 #region Apache License
@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JWT
-//* クラス日本語名  ：JWT抽象クラス
+//* クラス名        ：JWT(JWS)
+//* クラス日本語名  ：JWT(JWS)抽象クラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -29,11 +29,12 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/01/10  西野 大介         新規作成
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
+//*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>JWT Header</summary>
+    /// <summary>JWT(JWS) Header</summary>
     public class Header
     {
         /// <summary>
@@ -50,7 +51,7 @@ namespace Touryo.Infrastructure.Public.Security
         public readonly string typ = "JWT";
     }
 
-    /// <summary>JWT</summary>
+    /// <summary>JWT(JWS)</summary>
     public abstract class JWT
     {
         /// <summary>JWT生成メソッド</summary>

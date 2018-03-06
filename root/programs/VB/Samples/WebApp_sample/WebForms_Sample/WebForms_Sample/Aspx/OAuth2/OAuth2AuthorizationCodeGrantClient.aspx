@@ -1,4 +1,4 @@
-﻿<%@ Page Async="true" Language="VB" MasterPageFile="~/Aspx/Common/testBlankScreen.master" AutoEventWireup="true" CodeBehind="OAuth2AuthorizationCodeGrantClient.aspx.vb" Inherits="WebForms_Sample.Aspx.OAuth2.OAuth2AuthorizationCodeGrantClient" %>
+﻿<%@ Page Async="true" Language="VB" MasterPageFile="~/Aspx/Common/Master/testBlankScreen.master" AutoEventWireup="true" CodeBehind="OAuth2AuthorizationCodeGrantClient.aspx.vb" Inherits="WebForms_Sample.Aspx.OAuth2.OAuth2AuthorizationCodeGrantClient" %>
 
 <asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
     <!-- Head 部の ContentPlaceHolder -->
