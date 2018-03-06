@@ -765,7 +765,7 @@ namespace Touryo.Infrastructure.Framework.Util
                 // Controlの場合。
                 Control ctrl = sender as Control;
 
-                if ((ctrl as UserControl) != null)
+                if (ctrl is UserControl)
                 {
                     // UserControlを発見
                     return (UserControl)ctrl;

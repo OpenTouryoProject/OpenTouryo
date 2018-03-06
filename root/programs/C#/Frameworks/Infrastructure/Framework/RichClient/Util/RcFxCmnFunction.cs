@@ -335,7 +335,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Util
         /// <summary>親UserControlを検索</summary>
         /// <param name="sender">object</param>
         /// <returns>親UserControl</returns>
-        public static UserControl SearchParentWinUserControl(object sender)
+        public static UserControl FindParentWinUserControl(object sender)
         {
             if ((sender as Control) != null)
             {
@@ -349,7 +349,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Util
                 else if (ctrl.Parent != null)
                 {
                     // 再帰（親を辿る
-                    return RcFxCmnFunction.SearchParentWinUserControl(ctrl.Parent);
+                    return RcFxCmnFunction.FindParentWinUserControl(ctrl.Parent);
                 }
                 else
                 {

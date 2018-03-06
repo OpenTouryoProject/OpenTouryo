@@ -794,7 +794,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                         {
                             // メソッドを実装するユーザ コントロールの参照を取得できた場合、
                             // 親ユーザ コントロールのインスタンスの一致を確認する。
-                            if (RcFxCmnFunction.SearchParentWinUserControl(
+                            if (RcFxCmnFunction.FindParentWinUserControl(
                                 rcFxEventArgs.Sender).GetHashCode() == uc.GetHashCode())
                             {
                                 // 親ユーザ コントロールのインスタンスが一致した場合、
