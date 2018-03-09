@@ -23,8 +23,6 @@ using System.Threading.Tasks;
 
 using System.Net.Http;
 
-using Microsoft.Owin.Security.DataHandler.Encoder;
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -90,7 +88,6 @@ namespace WSClientWin_sample
                 userId, password, "profile email phone address roles").ConfigureAwait(false);
             
             // access_tokenを取得し、検証
-            Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
             Dictionary<string, string> dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
             
             // access_tokenの検証コード

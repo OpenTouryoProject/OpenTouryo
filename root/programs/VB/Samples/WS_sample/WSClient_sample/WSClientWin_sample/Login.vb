@@ -18,10 +18,7 @@
 '**********************************************************************************
 
 Imports System.Net.Http
-Imports System.Net.Http.Headers
 Imports System.Threading.Tasks
-
-Imports Microsoft.Owin.Security.DataHandler.Encoder
 
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
@@ -79,7 +76,6 @@ Partial Public Class Login
         Dim response As String = Await OAuth2AndOIDCClient.GetAccessTokenByROPAsync(New Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"), OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret, userId, password, "profile email phone address roles").ConfigureAwait(False)
 
         ' access_tokenを取得し、検証
-        Dim base64UrlEncoder As New Base64UrlTextEncoder()
         Dim dic As Dictionary(Of String, String) = JsonConvert.DeserializeObject(Of Dictionary(Of String, String))(response)
 
         ' access_tokenの検証コード

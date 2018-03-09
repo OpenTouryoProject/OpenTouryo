@@ -283,21 +283,23 @@ namespace Touryo.Infrastructure.Business.Presentation
             // -------------------------------------------------------------
             List<Claim> claims = null;
 
-            if (authenticationContext.Request.Headers.Authorization.Scheme.ToLower() == "bearer")
+            if (authenticationContext.Request.Headers.Authorization != null)
             {
-                string access_token = authenticationContext.Request.Headers.Authorization.Parameter;
-
-                string sub = "";
-                List<string> roles = null;
-                List<string> scopes = null;
-                JObject jobj = null;
-
-                if (JwtToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
+                if (authenticationContext.Request.Headers.Authorization.Scheme.ToLower() == "bearer")
                 {
+                    string access_token = authenticationContext.Request.Headers.Authorization.Parameter;
 
-                    // ActionFilterAttributeとApiController間の情報共有はcontext.Principalを使用する。
-                    // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
-                    claims = new List<Claim>()
+                    string sub = "";
+                    List<string> roles = null;
+                    List<string> scopes = null;
+                    JObject jobj = null;
+
+                    if (JwtToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
+                    {
+
+                        // ActionFilterAttributeとApiController間の情報共有はcontext.Principalを使用する。
+                        // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+                        claims = new List<Claim>()
                         {
                             new Claim(ClaimTypes.Name, sub),
                             new Claim(ClaimTypes.Role, string.Join(",", roles)),
@@ -305,24 +307,32 @@ namespace Touryo.Infrastructure.Business.Presentation
                             new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress(authenticationContext.Request))
                         };
 
-                    // The request message contains valid credential
-                    authenticationContext.Principal = new ClaimsPrincipal(new List<ClaimsIdentity> { new ClaimsIdentity(claims, "Token") });
-                    return;
+                        // The request message contains valid credential
+                        authenticationContext.Principal = new ClaimsPrincipal(new List<ClaimsIdentity> { new ClaimsIdentity(claims, "Token") });
+
+                        return;
+                    }
+                    else
+                    {
+                        // JWTの内容検証に失敗
+                    }
                 }
                 else
                 {
-                    // JWTの内容検証に失敗
+                    // Authorization HeaderがBearerでない。
                 }
             }
             else
             {
-                // Authorization: Bearer Headerが存在しない。
+                // Authorization Headerが存在しない。
             }
 
-            // 未認証状態
+            #region 未認証状態の場合の扱い
+
             // The request message contains invalid credential
             //context.ErrorResult = new UnauthorizedResult(new AuthenticationHeaderValue[0], context.Request);
 
+            // 未認証状態のclaimsを作成格納
             claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Name, "未認証"),
@@ -332,7 +342,10 @@ namespace Touryo.Infrastructure.Business.Presentation
             };
 
             authenticationContext.Principal = new ClaimsPrincipal(new List<ClaimsIdentity> { new ClaimsIdentity(claims, "Token") });
+
             return;
+
+            #endregion
         }
 
         /// <summary>GetClientIpAddress</summary>
