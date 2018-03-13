@@ -18,6 +18,7 @@ call %CURRENT_DIR%z_Common.bat
 rem --------------------------------------------------
 rem Batch build of WSClientWin_sample.
 rem --------------------------------------------------
+..\nuget.exe restore "Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln"
 
 pause
@@ -32,6 +33,7 @@ pause
 rem --------------------------------------------------
 rem Batch build of WSClientWinCone_sample.
 rem --------------------------------------------------
+..\nuget.exe restore "Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSClientWinCone_sample.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSClientWinCone_sample.sln"
 
 pause
