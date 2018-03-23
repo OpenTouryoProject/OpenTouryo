@@ -76,7 +76,7 @@ exec sp_dboption 'Northwind','select into/bulkcopy','true'
 
 #### SQL Server 以外
 - 各 DBMS に、空のデータベースを作成してください。
-- C:\root\files\resource\Sql\[DBMS 名]\TestTable.txt を実行し、テスト用のテーブルを作成してください。
+- C:\root\files\resource\Sql\\[DBMS 名]\TestTable.txt を実行し、テスト用のテーブルを作成してください。
 
 ### プログラムのビルド
 Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBuild を使用したビルドバッチファイルを実行**して、プログラムをビルドします。  
