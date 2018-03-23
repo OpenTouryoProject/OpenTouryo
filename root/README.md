@@ -81,7 +81,7 @@ Execute command after confirming the path of folder in your environment.
 
 #### DBMSs except for SQL Server
 - Create an empty database in each DBMSs.
-- Create test table in the database by running C:\root\files\resource\Sql\[DBMS Name]\TestTable.txt.
+- Create test table in the database by running C:\root\files\resource\Sql\\[DBMS Name]\TestTable.txt.
 
 ### Build program
 When using Open Touryo, it is necessary to build programs **by running the batch files using MSBuild only at the first time**.  
