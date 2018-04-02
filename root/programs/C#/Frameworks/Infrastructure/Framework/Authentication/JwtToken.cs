@@ -39,6 +39,9 @@ using System.Collections.Generic;
 
 #if NETSTANDARD2_0
 using Microsoft.AspNetCore.WebUtilities;
+#elif NET45
+using Touryo.Infrastructure.Public.Util;
+using Microsoft.Owin.Security.DataHandler.Encoder;
 #else
 using Microsoft.Owin.Security.DataHandler.Encoder;
 #endif
