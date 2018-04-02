@@ -50,6 +50,12 @@ using log4net.Config;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Util;
 
+#if NETSTANDARD2_0
+using System.Reflection;
+using log4net.Repository;
+#else
+#endif
+
 namespace Touryo.Infrastructure.Public.Log
 {
     /// <summary>ロガー管理クラス</summary>
@@ -106,13 +112,20 @@ namespace Touryo.Infrastructure.Public.Log
 
                         // 空のロガーを返す（エラーにはならない）
 #if NETSTANDARD2_0
-                        return log4net.LogManager.GetLogger("", "");
+                        return log4net.LogManager.GetLogger(Assembly.GetEntryAssembly(), "");
 #else
                         return log4net.LogManager.GetLogger("");
 #endif
                     }
                     else
                     {
+#if NETSTANDARD2_0
+                        // Repositoryなる何か。
+                        ILoggerRepository logRep = log4net.LogManager.CreateRepository(
+                            Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
+#else
+#endif
+
                         // 埋め込まれたリソース ローダで存在チェック
                         if (EmbeddedResourceLoader.Exists(log4netConfFile, false))
                         {
@@ -132,9 +145,8 @@ namespace Touryo.Infrastructure.Public.Log
 
                             // log4net
 #if NETSTANDARD2_0
-                            XmlConfigurator.Configure(
-                                    log4net.LogManager.GetRepository(""),
-                                    (XmlElement)xmlDef["log4net"].ChildNodes[0]);
+                            XmlConfigurator.Configure(logRep,
+                                (XmlElement)xmlDef["log4net"].ChildNodes[0]);
 #else
                             XmlConfigurator.Configure(xmlDef["log4net"]);
 #endif
@@ -151,8 +163,7 @@ namespace Touryo.Infrastructure.Public.Log
 
                             // log4netのXML形式の設定ファイルを読み込む。
 #if NETSTANDARD2_0
-                            XmlConfigurator.Configure(
-                                log4net.LogManager.GetRepository(""), s);
+                            XmlConfigurator.Configure(logRep, s);
 #else
                             XmlConfigurator.Configure(s);
 #endif
@@ -162,7 +173,9 @@ namespace Touryo.Infrastructure.Public.Log
 
                         // log4net.ILogインスタンスを初期化する。
 #if NETSTANDARD2_0
-                        LogManager._logIfHt.Add(loggerName, log4net.LogManager.GetLogger("", loggerName));
+                        LogManager._logIfHt.Add(
+                            loggerName,
+                            log4net.LogManager.GetLogger(Assembly.GetEntryAssembly(), loggerName));
 #else
                         LogManager._logIfHt.Add(loggerName, log4net.LogManager.GetLogger(loggerName));
 #endif
