@@ -29,10 +29,16 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2007/xx/xx  西野 大介         新規作成
 //*  2010/10/26  西野 大介         場所移動（Win32置き場新設）
+//*  2018/03/28  西野 大介         .NET Standard対応で、高分解能PCからSystem.Diagnostics.Stopwatchへ。
 //**********************************************************************************
 
 using System;
+
+#if NETSTANDARD2_0
+using System.Diagnostics;
+#else
 using Touryo.Infrastructure.Public.Win32;
+#endif
 
 namespace Touryo.Infrastructure.Public.Util
 {
@@ -58,6 +64,12 @@ namespace Touryo.Infrastructure.Public.Util
     {
         #region 測定結果の保存用メンバ変数
 
+#if NETSTANDARD2_0
+        /// <summary>System.Diagnostics.Stopwatch</summary>
+        private Stopwatch _stopwatch = null;
+#else
+#endif
+
         /// <summary>
         /// 実行時間
         /// </summary>
@@ -80,6 +92,8 @@ namespace Touryo.Infrastructure.Public.Util
 
         #endregion
 
+#if NETSTANDARD2_0
+#else
         #region 測定値計算用定数宣言 セクション
 
         /// <summary>
@@ -120,6 +134,7 @@ namespace Touryo.Infrastructure.Public.Util
         private UInt64 U64UTS;
 
         #endregion
+#endif
 
         #region 測定開始メソッド
 
@@ -129,6 +144,10 @@ namespace Touryo.Infrastructure.Public.Util
         public bool StartsPerformanceRecord()
         {
 
+#if NETSTANDARD2_0
+            this._stopwatch = new Stopwatch();
+            this._stopwatch.Start();
+#else
             #region メンバ変数を初期化する
 
             // 実行時間
@@ -149,7 +168,7 @@ namespace Touryo.Infrastructure.Public.Util
 
             try
             {
-                #region 実行時間取得処理セクション
+            #region 実行時間取得処理セクション
 
                 // システム時刻(Start)
 
@@ -162,9 +181,9 @@ namespace Touryo.Infrastructure.Public.Util
                     U64ExTS = Convert.ToUInt64(DateTime.Now.Ticks);
                 }
 
-                #endregion
+            #endregion
 
-                #region CPU時間取得処理セクション
+            #region CPU時間取得処理セクション
 
                 // カレントスレッドのハンドルを返す（IDではないので注意）。
                 IntPtr iptHdr;
@@ -213,7 +232,7 @@ namespace Touryo.Infrastructure.Public.Util
                 // ユーザ時間(Start)
                 U64UTS = Convert.ToUInt64((u32UTH * U64HIBIT) + u32UTL);
 
-                #endregion
+            #endregion
             }
             catch
             {
@@ -224,6 +243,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
             }
 
+#endif
             return true;
 
         }
@@ -237,6 +257,17 @@ namespace Touryo.Infrastructure.Public.Util
         /// <remarks>自由に利用できる。</remarks>
         public string EndsPerformanceRecord()
         {
+#if NETSTANDARD2_0
+            this._stopwatch.Stop();
+
+            this._ExecTime = this._stopwatch.ElapsedMilliseconds.ToString();
+
+            return
+                    "ExT:" + this._ExecTime + "[msec]" +
+                    ", CT: - [msec]" +
+                    ", KT: - [msec]" +
+                    ", UT: - [msec]";
+#else
             try
             {
                 #region 実行時間取得処理セクション
@@ -372,6 +403,7 @@ namespace Touryo.Infrastructure.Public.Util
                 // ランタイムエラー。
                 return ex.Message;
             }
+#endif
         }
 
         #endregion

@@ -30,9 +30,15 @@
 //*  2007/xx/xx  西野 大介         新規作成
 //*  2009/03/13  西野 大介         ラベル名のみ変更
 //*  2009/04/13  西野 大介         削除メソッドを追加
+//*  2018/03/29  西野 大介         .NET Standard対応で、HttpSessionのポーティング
 //**********************************************************************************
 
+#if NETSTANDARD2_0
+using Touryo.Infrastructure.Framework.StdMigration;
+using Microsoft.AspNetCore.Http;
+#else
 using System.Web;
+#endif
 
 namespace Touryo.Infrastructure.Framework.Util
 {
@@ -48,7 +54,12 @@ namespace Touryo.Infrastructure.Framework.Util
         public static void SetUserInformation(UserInfo userInfo)
         {
             // Sessionに保存
+#if NETSTANDARD2_0
+            ISession session = MyHttpContext.Current.Session;
+            session.SetObjectAsJson(FxHttpSessionIndex.AUTHENTICATION_USER_INFORMATION, userInfo);
+#else
             HttpContext.Current.Session[FxHttpSessionIndex.AUTHENTICATION_USER_INFORMATION] = userInfo;
+#endif
         }
 
         /// <summary>ユーザ情報をSessionから取得する。</summary>
@@ -57,7 +68,12 @@ namespace Touryo.Infrastructure.Framework.Util
         public static UserInfo GetUserInformation()
         {
             // Sessionから取得
+#if NETSTANDARD2_0
+            ISession session = MyHttpContext.Current.Session;
+            return session.GetObjectFromJson<UserInfo>(FxHttpSessionIndex.AUTHENTICATION_USER_INFORMATION);
+#else
             return (UserInfo)HttpContext.Current.Session[FxHttpSessionIndex.AUTHENTICATION_USER_INFORMATION];
+#endif
         }
 
         /// <summary>ユーザ情報をSessionから削除する。</summary>
@@ -65,7 +81,12 @@ namespace Touryo.Infrastructure.Framework.Util
         public static void DeleteUserInformation()
         {
             // Sessionから削除
+#if NETSTANDARD2_0
+            ISession session = MyHttpContext.Current.Session;
+            session.Remove(FxHttpSessionIndex.AUTHENTICATION_USER_INFORMATION);
+#else
             HttpContext.Current.Session.Remove(FxHttpSessionIndex.AUTHENTICATION_USER_INFORMATION);
+#endif
         }
 
         #endregion

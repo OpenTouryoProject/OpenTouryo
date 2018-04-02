@@ -53,18 +53,26 @@
 //*  2014/04/16  Supragyan         Added TextChanged event to TextBox control in method GetCtrlAndSetClickEventHandler.
 //*  2018/01/30  西野 大介         FindWebControl、FindWebControl2メソッドを追加
 //*  2018/01/31  西野 大介         ネストしたユーザ コントロールに対応（senderで親UCを確認する）
+//*  2018/03/29  西野 大介         .NET Standard対応で、削除機能に関連するメソッドを削除
+//*  2018/03/29  西野 大介         .NET Standard対応で、HttpCookieのポーティング
 //**********************************************************************************
+
+using Touryo.Infrastructure.Framework.Exceptions;
+using Touryo.Infrastructure.Public.Util;
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
+#if NETSTANDARD2_0
+using Touryo.Infrastructure.Framework.StdMigration;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.PlatformAbstractions;
+#else
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
-using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Public.Util;
+#endif
 
 namespace Touryo.Infrastructure.Framework.Util
 {
@@ -107,6 +115,8 @@ namespace Touryo.Infrastructure.Framework.Util
 
         #endregion
 
+#if NETSTANDARD2_0
+#else
         #region コントロール取得＆イベントハンドラ設定
 
         /// <summary>コントロール取得＆イベントハンドラ設定（下位互換）</summary>
@@ -117,7 +127,7 @@ namespace Touryo.Infrastructure.Framework.Util
         internal static void GetCtrlAndSetClickEventHandler(
             Control ctrl, string prefix, object eventHandler, Dictionary<string, Control> controlHt)
         {
-            #region チェック処理
+        #region チェック処理
 
             // コントロール指定が無い場合
             if (ctrl == null)
@@ -133,9 +143,9 @@ namespace Touryo.Infrastructure.Framework.Util
                 return;
             }
 
-            #endregion
+        #endregion
 
-            #region コントロール取得＆イベントハンドラ設定
+        #region コントロール取得＆イベントハンドラ設定
 
             // コントロールのIDチェック
             if (ctrl.ID == null)
@@ -359,9 +369,9 @@ namespace Touryo.Infrastructure.Framework.Util
                 }
             }
 
-            #endregion
+        #endregion
 
-            #region 再帰
+        #region 再帰
 
             // 子コントロールがある場合、
             if (ctrl.HasControls())
@@ -374,7 +384,7 @@ namespace Touryo.Infrastructure.Framework.Util
                 }
             }
 
-            #endregion
+        #endregion
         }
 
         /// <summary>コントロール取得＆イベントハンドラ設定</summary>
@@ -389,7 +399,7 @@ namespace Touryo.Infrastructure.Framework.Util
             {
                 object eventHandler = prefixAndEvtHndHt[prefix];
 
-                #region チェック処理
+        #region チェック処理
 
                 // コントロール指定が無い場合
                 if (ctrl == null)
@@ -405,9 +415,9 @@ namespace Touryo.Infrastructure.Framework.Util
                     return;
                 }
 
-                #endregion
+        #endregion
 
-                #region コントロール取得＆イベントハンドラ設定
+        #region コントロール取得＆イベントハンドラ設定
 
                 // コントロールのIDチェック
                 if (ctrl.ID == null)
@@ -623,10 +633,10 @@ namespace Touryo.Infrastructure.Framework.Util
                     }
                 }
 
-                #endregion
+        #endregion
             }
 
-            #region 再帰
+        #region 再帰
 
             // 子コントロールがある場合、
             if (ctrl.HasControls())
@@ -639,7 +649,7 @@ namespace Touryo.Infrastructure.Framework.Util
                 }
             }
 
-            #endregion
+        #endregion
         }
 
         /// <summary>キャスト可否チェック</summary>
@@ -801,6 +811,7 @@ namespace Touryo.Infrastructure.Framework.Util
         #endregion
 
         #endregion
+#endif
 
         #region LRU的にキューを再構築
 
@@ -925,6 +936,72 @@ namespace Touryo.Infrastructure.Framework.Util
 
         #region セッションタイムアウト検出用クッキー
 
+#if NETSTANDARD2_0
+        /// <summary>セッションタイムアウト検出用Cookieを生成</summary>
+        /// <returns>セッションタイムアウト検出用Cookie（データ有）</returns>
+        public static void CreateCookieForSessionTimeoutDetection()
+        {
+            // Cookie生成（デバッグしやすいように都度、値を変更する）
+            IResponseCookies responseCookies = MyHttpContext.Current.Response.Cookies;
+            CookieOptions cookieOptions = new CookieOptions();
+
+            // Path属性を設定
+            string applicationPath = PlatformServices.Default.Application.ApplicationBasePath;
+            if (applicationPath == "/")
+            {
+                // 「//」になってしまうので、「/」になるよう修正
+                cookieOptions.Path = "/";
+            }
+            else
+            {
+                // 例えば「/ProjectX_sample」+「/」＝「/ProjectX_sample/」となる。
+                cookieOptions.Path = applicationPath + "/";
+            }
+
+            // ※ Request.ApplicationPathは、URLのホスト名以上のパス情報を含まず、
+            // アプリケーション・ディレクトリより下のパス情報を含まない。
+
+            // HttpOnly属性を設定
+            cookieOptions.HttpOnly = true;
+
+            // 設定
+            responseCookies.Set(
+                FxHttpCookieIndex.SESSION_TIMEOUT,
+                Environment.TickCount.ToString(),
+                cookieOptions);
+        }
+
+        /// <summary>セッションタイムアウト検出用Cookieを削除</summary>
+        /// <returns>セッションタイムアウト検出用Cookie（データ空）</returns>
+        public static void DeleteCookieForSessionTimeoutDetection()
+        {
+            // Cookie生成（削除時は、空の値を指定）
+            IResponseCookies responseCookies = MyHttpContext.Current.Response.Cookies;
+            CookieOptions cookieOptions = new CookieOptions();
+
+            // Path属性を設定
+            string applicationPath = PlatformServices.Default.Application.ApplicationBasePath;
+            if (applicationPath == "/")
+            {
+                // 「//」になってしまうので、「/」になるよう修正
+                cookieOptions.Path = "/";
+            }
+            else
+            {
+                // 例えば「/ProjectX_sample」+「/」＝「/ProjectX_sample/」となる。
+                cookieOptions.Path = applicationPath + "/";
+            }
+
+            // ※ Request.ApplicationPathは、URLのホスト名以上のパス情報を含まず、
+            // アプリケーション・ディレクトリより下のパス情報を含まない。
+
+            // HttpOnly属性を設定
+            cookieOptions.HttpOnly = true;
+
+            // 設定
+            responseCookies.Set(FxHttpCookieIndex.SESSION_TIMEOUT, "", cookieOptions);
+        }
+#else
         /// <summary>セッションタイムアウト検出用Cookieを生成</summary>
         /// <returns>セッションタイムアウト検出用Cookie（データ有）</returns>
         /// <remarks>
@@ -992,6 +1069,7 @@ namespace Touryo.Infrastructure.Framework.Util
             // セッションタイムアウト検出用Cookie（データ空）
             return newCookie;
         }
+#endif
 
         #endregion
     }

@@ -38,6 +38,7 @@
 //*  2014/05/19  Rituparna Biswas  Change in "AddZerosAfterDecimal" method for 100% Test Code coverage.
 //*  2014/06/12  Rituparna Biswas  Deleted the commented code in "AddZerosAfterDecimal" method
 //*  2017/01/13  西野 大介         ToUnixTime, FromUnixTimeメソッドを追加した。
+//*  2018/03/28  西野 大介         .NET Standard対応で、Microsoft.VisualBasicのサポート無し。
 //**********************************************************************************
 
 using System;
@@ -280,7 +281,13 @@ namespace Touryo.Infrastructure.Public.Str
                     else
                     {
                         // 0未満
+
+                        // 数値の整数部分を返す。
+#if NETSTANDARD2_0
+                        dcm = Math.Truncate(dcm);
+#else
                         dcm = Microsoft.VisualBasic.Conversion.Int(dcm);
+#endif
                     }
                 }
                 else

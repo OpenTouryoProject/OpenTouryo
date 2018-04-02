@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：UserInfo
-//* クラス日本語名  ：ユーザ情報クラス（必要なコンテキスト情報を定義）
+//* クラス名        ：MyHttpContext
+//* クラス日本語名  ：System.Web.HttpContextのポーティング用クラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -28,14 +28,33 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         新規作成
+//*  2018/03/29  西野 大介         .NET Standard対応で、HttpContextのポーティング
 //**********************************************************************************
 
-using System;
+using Microsoft.AspNetCore.Http;
 
-namespace Touryo.Infrastructure.Framework.Util
+namespace Touryo.Infrastructure.Framework.StdMigration
 {
-    /// <summary>ユーザ情報クラス（必要なコンテキスト情報を定義）</summary>
-    /// <remarks>自由に利用できる。</remarks>
-    [Serializable()]
-    public class UserInfo{ }
+    /// <summary>System.Web.HttpContextのポーティング用クラス</summary>
+    public static class MyHttpContext
+    {
+        /// <summary>IHttpContextAccessor</summary>
+        private static IHttpContextAccessor _contextAccessor;
+
+        /// <summary>Currentプロパティ</summary>
+        public static HttpContext Current
+        {
+            get
+            {
+                return MyHttpContext._contextAccessor.HttpContext;
+            }
+        }
+
+        /// <summary>初期設定用メソッド</summary>
+        /// <param name="contextAccessor">IHttpContextAccessor</param>
+        internal static void Configure(IHttpContextAccessor contextAccessor)
+        {
+            MyHttpContext._contextAccessor = contextAccessor;
+        }
+    }
 }

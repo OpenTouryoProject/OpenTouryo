@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Touryo.Infrastructure.Framework</RootNamespace>
+    <AssemblyName>OpenTouryo.Framework</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\Build_netstd20\</OutputPath>
+    <DocumentationFile>..\Build_netstd20\netstandard2.0\OpenTouryo.Framework.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="RichClient\**" />
+    <Compile Remove="Transmission\**" />
+    <EmbeddedResource Remove="RichClient\**" />
+    <EmbeddedResource Remove="Transmission\**" />
+    <None Remove="RichClient\**" />
+    <None Remove="Transmission\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Presentation\BaseController.cs" />
+    <Compile Remove="Presentation\BaseMasterController.cs" />
+    <Compile Remove="Presentation\BaseMVController.cs" />
+    <Compile Remove="Presentation\FxEventArgs.cs" />
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+    <Compile Remove="Util\FxEnum.cs" />
+    <Compile Remove="Util\FxHttpContextIndex.cs" />
+    <Compile Remove="Util\FxHttpQueryStringIndex.cs" />
+    <Compile Remove="Util\FxSessionUtil.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.0.2" />
+    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Public\Public_netstd20.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Presentation\" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+</Project>

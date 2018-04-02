@@ -32,16 +32,23 @@
 //*  2012/10/07  西野 大介         MやDが１桁の場合に、YYYYMMDDに変換（入力補完）
 //*  2015/09/30  Sai-san           Changed the parameter locale ID to 1041(Japanese) in StrConv method
 //*  2017/08/11  西野 大介         BaseDam.ClearText ---> StringConverter.FormattingForOneLineLog
+//*  2018/03/28  西野 大介         .NET Standard対応で、Microsoft.VisualBasicのサポート無し。
 //**********************************************************************************
 
 using System.Text;
+#if NETSTANDARD2_0
+#else
 using Microsoft.VisualBasic;
+#endif
+
 
 namespace Touryo.Infrastructure.Public.Str
 {
     /// <summary>文字列の変換処理クラス</summary>
     public class StringConverter
     {
+#if NETSTANDARD2_0
+#else
         #region 全角 / 半角 変換処理
 
         /// <summary>→ 全角変換</summary>
@@ -85,6 +92,7 @@ namespace Touryo.Infrastructure.Public.Str
         }
 
         #endregion
+#endif
 
         #region 入力補完 変換処理
 

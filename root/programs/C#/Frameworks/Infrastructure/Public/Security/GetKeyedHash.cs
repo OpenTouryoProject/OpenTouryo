@@ -35,6 +35,7 @@
 //*  2017/01/10  西野 大介         全てHMACSHA1になる問題があったため、KeyedHashAlgorithm生成方法を変更。
 //*  2017/01/10  西野 大介         GetSaltedPasswordとEqualSaltedPasswordを追加。
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
+//*  2018/03/28  西野 大介         .NET Standard対応で、HMACRIPEMD160, MACTripleDESのサポート無し。
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -59,8 +60,11 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>HMACMD5</summary>
         HMACMD5,
 
+#if NETSTANDARD2_0
+#else
         /// <summary>HMACRIPEMD160</summary>
         HMACRIPEMD160,
+#endif
 
         /// <summary>HMACSHA256</summary>
         HMACSHA256,
@@ -71,8 +75,11 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>HMACSHA512</summary>
         HMACSHA512,
 
+#if NETSTANDARD2_0
+#else
         /// <summary>MACTripleDES</summary>
         MACTripleDES
+#endif
     };
 
     #endregion
@@ -316,11 +323,15 @@ namespace Touryo.Infrastructure.Public.Security
                 // HMACMD5サービスプロバイダ
                 kha = new HMACMD5(key);
             }
+#if NETSTANDARD2_0
+#else
+
             else if (ekha == EnumKeyedHashAlgorithm.HMACRIPEMD160)
             {
                 // HMACRIPEMD160サービスプロバイダ
                 kha = new HMACRIPEMD160(key);
             }
+#endif
             else if (ekha == EnumKeyedHashAlgorithm.HMACSHA256)
             {
                 // HMACSHA256サービスプロバイダ
@@ -337,12 +348,15 @@ namespace Touryo.Infrastructure.Public.Security
                 kha = new HMACSHA512(key);
             }
             // -- ▲追加▲ --
+#if NETSTANDARD2_0
+#else
+
             else if (ekha == EnumKeyedHashAlgorithm.MACTripleDES)
             {
                 // MACTripleDESサービスプロバイダ
                 kha = new MACTripleDES(key); // devps(1703)
             }
-
+#endif
             return kha;
         }
 

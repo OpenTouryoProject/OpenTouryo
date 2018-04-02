@@ -28,9 +28,15 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2009/09/01  西野 大介         新規作成
+//*  2018/03/29  西野 大介         .NET Standard対応で、HttpSessionのポーティング
 //**********************************************************************************
 
+#if NETSTANDARD2_0
+using Touryo.Infrastructure.Framework.StdMigration;
+using Microsoft.AspNetCore.Http;
+#else
 using System.Web;
+#endif
 
 namespace Touryo.Infrastructure.Framework.Util
 {
@@ -44,7 +50,12 @@ namespace Touryo.Infrastructure.Framework.Util
         public static void SetSubsysInformation(SubsysInfo subsysInfo)
         {
             // Sessionに保存
+#if NETSTANDARD2_0
+            ISession session = MyHttpContext.Current.Session;
+            session.SetObjectAsJson(FxHttpSessionIndex.SUB_SYSTEM_INFORMATION, subsysInfo);
+#else
             HttpContext.Current.Session[FxHttpSessionIndex.SUB_SYSTEM_INFORMATION] = subsysInfo;
+#endif            
         }
 
         /// <summary>サブシステム情報をSessionから取得する。</summary>
@@ -53,7 +64,12 @@ namespace Touryo.Infrastructure.Framework.Util
         public static SubsysInfo GetSubsysInformation()
         {
             // Sessionから取得
+#if NETSTANDARD2_0
+            ISession session = MyHttpContext.Current.Session;
+            return session.GetObjectFromJson<SubsysInfo>(FxHttpSessionIndex.SUB_SYSTEM_INFORMATION);
+#else
             return (SubsysInfo)HttpContext.Current.Session[FxHttpSessionIndex.SUB_SYSTEM_INFORMATION];
+#endif            
         }
 
         /// <summary>サブシステム情報をSessionから削除する。</summary>
@@ -61,7 +77,12 @@ namespace Touryo.Infrastructure.Framework.Util
         public static void DeleteSubsysInformation()
         {
             // Sessionから削除
+#if NETSTANDARD2_0
+            ISession session = MyHttpContext.Current.Session;
+            session.Remove(FxHttpSessionIndex.SUB_SYSTEM_INFORMATION);
+#else
             HttpContext.Current.Session.Remove(FxHttpSessionIndex.SUB_SYSTEM_INFORMATION);
+#endif
         }
     }
 }

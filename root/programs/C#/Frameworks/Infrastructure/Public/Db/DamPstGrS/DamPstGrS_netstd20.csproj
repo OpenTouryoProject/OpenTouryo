@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>OpenTouryo.Public.DamPstGrS</AssemblyName>
+    <RootNamespace>Touryo.Infrastructure.Public.Db</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\..\Build_netstd20\</OutputPath>
+    <DocumentationFile>..\..\..\Build_netstd20\netstandard2.0\OpenTouryo.Public.DamPstGrS.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Npgsql" Version="3.2.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Public_netstd20.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+</Project>
