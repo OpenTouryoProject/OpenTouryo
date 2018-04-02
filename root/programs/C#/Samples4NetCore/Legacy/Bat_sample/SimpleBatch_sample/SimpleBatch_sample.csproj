@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="readme.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netstd20\netstandard2.0\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netstd20\netstandard2.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public.DamMySQL">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netstd20\netstandard2.0\OpenTouryo.Public.DamMySQL.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public.DamPstGrS">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netstd20\netstandard2.0\OpenTouryo.Public.DamPstGrS.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

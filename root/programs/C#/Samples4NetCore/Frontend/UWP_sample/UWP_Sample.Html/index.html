@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <title>UWP_Sample.Html</title>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/default.css" rel="stylesheet" />
+</head>
+<body>
+    <nav id="slide_menu">
+        <h2><span>設定</span></h2>
+        <div class="form-group">
+            <label>データプロバイダー</label>
+            <br />
+            <select id="ddlDap" class="form-control">
+                <option value="SQL">SQL Server / SQL Client</option>
+                <!-- 
+                    このサンプルでは、SQL Server のみ選択可能とする
+                <option value="OLE">Multi-DB / OLEDB.NET</option>
+                <option value="ODB">Multi-DB / ODBC.NET</option>
+                <option value="ODP">Oracle / ODP.NET</option>
+                <option value="DB2">DB2 / DB2.NET</option>
+                <option value="HIR">HiRDB / HiRDB-DP</option>
+                <option value="MCN">MySQL Cnn/NET</option>
+                <option value="NPS">PostgreSQL / Npgsql</option>
+                -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label>共通 Dao 選択時のクエリモード</label>
+            <br />
+            <select id="ddlMode1" class="form-control">
+                <option value="individual">個別 Dao</option>
+                <option value="common">共通 Dao</option>
+                <option value="generate">自動生成 Dao(更新のみ)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>静的／動的クエリモード</label>
+            <br />
+            <select id="ddlMode2" class="form-control">
+                <option value="static">静的クエリ</option>
+                <option value="dynamic">動的クエリ</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>正常／エラーの動作確認用</label>
+            <br />
+            <select id="ddlExRollback" class="form-control">
+                <option value="-">何もしない</option>
+                <option value="Business">業務例外を発生させる</option>
+                <option value="System">システム例外を発生させる</option>
+                <option value="Other">その他、一般的な例外を発生させる</option>
+                <option value="Other-Business">業務例外に振り替える</option>
+                <option value="Other-System">システム例外に振り替える</option>
+            </select>
+        </div>
+    </nav>
+
+    <div>
+        <button id="btnOpenSideMenu" class="btn btn-default" style="margin-bottom: 20px"><span class="glyphicon glyphicon-menu-hamburger"></span>&nbsp;<span id="buttontext">オプションを開く</span></button>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 panel panel-info" style="padding: 0px">
+                    <div class="panel-heading">明細表示</div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label>ShipperId</label>
+                            <input type="text" class="form-control" id="txtShipperID" placeholder="Shipper Id" />
+                        </div>
+                        <div class="form-group">
+                            <label>Company Name</label>
+                            <input type="text" class="form-control" id="txtCompanyName" placeholder="Company Name" />
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="text" class="form-control" id="txtPhone" placeholder="Phone" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-5 col-xs-offset-2 col-sm-5 col-sm-offset-2 col-md-5 col-md-offset-2 col-lg-5 col-lg-offset-2 panel panel-info" style="padding: 0px">
+                    <div class="panel-heading">リスト表示</div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-4 col-xs-offset-8 col-sm-4 col-sm-offset-8 col-md-4 col-md-offset-8 col-lg-4 col-lg-offset-8 text-right"><button id="btnClear" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;クリア</button></div>
+                        </div>
+                        <table id="lstTable" class="table">
+                            <thead>
+                                <tr>
+                                    <th>ShipperID</th>
+                                    <th>CompanyName</th>
+                                    <th>Phone</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><button id="btnGetCount" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span>&nbsp;件数表示</button></div>
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><button id="btnGetList" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span>&nbsp;一覧検索</button></div>
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><button id="btnGetRecord" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span>&nbsp;一件検索</button></div>
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><button id="btnInsert" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;追加</button></div>
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><button id="btnUpdate" class="btn btn-primary"><span class="glyphicon glyphicon-repeat"></span>&nbsp;更新</button></div>
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><button id="btnDelete" class="btn btn-primary"><span class="glyphicon glyphicon-remove"></span>&nbsp;削除</button></div>
+            </div>
+            <div>実行結果: <span id="result"></span></div>
+        </div>
+    </div>
+    <script src="Scripts/jquery-3.1.1.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
