@@ -16,7 +16,7 @@ set CURRENT_DIR="%~dp0"
 call %CURRENT_DIR%z_Common.bat
 
 rem --------------------------------------------------
-rem Build the batch Infrastructure(Nuget47)
+rem Build the batch Infrastructure(NuGet_netstd20)
 rem --------------------------------------------------
 dotnet restore "Frameworks\Infrastructure\NuGet_netstd20.sln"
 dotnet msbuild %COMMANDLINE% "Frameworks\Infrastructure\NuGet_netstd20.sln"
@@ -24,6 +24,14 @@ dotnet msbuild %COMMANDLINE% "Frameworks\Infrastructure\NuGet_netstd20.sln"
 echo [32m32 "Microsoft/msbuild Issue #2221"
 echo [32m32 "ResourceManager.GetString doesn't return embedded text file on linux."
 echo [32m32 "https://github.com/Microsoft/msbuild/issues/2221"
+
+pause
+
+rem --------------------------------------------------
+rem Build the batch Infrastructure(Nuget_netcore20)
+rem --------------------------------------------------
+dotnet restore "Frameworks\Infrastructure\Nuget_netcore20.sln"
+dotnet msbuild %COMMANDLINE% "Frameworks\Infrastructure\Nuget_netcore20.sln"
 
 pause
 

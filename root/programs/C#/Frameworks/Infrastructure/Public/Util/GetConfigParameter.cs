@@ -29,9 +29,15 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2007/xx/xx  西野 大介         新規作成
 //*  2010/11/22  西野 大介         NullReferenceException対応
+//*  2018/03/28  西野 大介         .NET Standard対応で、I/F変更あり。
 //**********************************************************************************
 
+#if NETSTANDARD2_0
+using System.IO;
+using Microsoft.Extensions.Configuration;
+#else
 using System.Configuration;
+#endif
 
 namespace Touryo.Infrastructure.Public.Util
 {
@@ -39,6 +45,24 @@ namespace Touryo.Infrastructure.Public.Util
     /// <remarks>自由に利用できる。</remarks>
     public static class GetConfigParameter
     {
+
+#if NETSTANDARD2_0
+
+        /// <summary>IConfiguration</summary>
+        private static IConfiguration _configuration = null;
+
+        /// <summary>IConfigurationの初期化</summary>
+        /// <param name="jsonFile">string</param>
+        public static void InitConfiguration(string jsonFile)
+        {
+            IConfigurationBuilder builder = new ConfigurationBuilder();
+            builder = builder.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(jsonFile);
+            GetConfigParameter._configuration = builder.Build();
+        }
+#else
+
+#endif
+
         /// <summary>
         /// 設定ファイルのappSettingsタグに定義されている値を取得する
         /// </summary>
@@ -48,9 +72,14 @@ namespace Touryo.Infrastructure.Public.Util
         public static string GetConfigValue(string key)
         {
             //設定ファイルの内容を返す
+#if NETSTANDARD2_0
+            return GetConfigParameter._configuration["appSettings:" + key];
+#else
             return ConfigurationManager.AppSettings[key];
+#endif
+
         }
-        
+
         /// <summary>
         /// 設定ファイルのconnectionStringsタグに定義
         /// されているデータベースへの接続文字列を取得する
@@ -60,6 +89,9 @@ namespace Touryo.Infrastructure.Public.Util
         /// <remarks>自由に利用できる。</remarks>
         public static string GetConnectionString(string key)
         {
+#if NETSTANDARD2_0
+            return GetConfigParameter._configuration["connectionStrings:" + key];
+#else
             //接続文字列の取得
             ConnectionStringSettings connString = ConfigurationManager.ConnectionStrings[key];
 
@@ -72,6 +104,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 return connString.ConnectionString;    
             }
+#endif
         }
     }
 }

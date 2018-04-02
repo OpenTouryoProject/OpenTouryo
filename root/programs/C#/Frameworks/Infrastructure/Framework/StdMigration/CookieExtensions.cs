@@ -40,6 +40,7 @@ namespace Touryo.Infrastructure.Framework.StdMigration
     public static class CookieExtensions
     {
         /// <summary>Get the cookie拡張メソッド</summary>
+        /// <param name="requestCookies">拡張</param>
         /// <param name="key">string</param>
         /// <returns>string value</returns>
         public static string Get(this IRequestCookieCollection requestCookies, string key)
@@ -48,6 +49,7 @@ namespace Touryo.Infrastructure.Framework.StdMigration
         }
 
         /// <summary>Set the cookie拡張メソッド</summary>
+        /// <param name="responseCookies">拡張</param>
         /// <param name="key">string</param>
         /// <param name="value">string</param>
         public static void Set(this IResponseCookies responseCookies, string key, string value)
@@ -56,6 +58,7 @@ namespace Touryo.Infrastructure.Framework.StdMigration
         }
 
         /// <summary>Set the cookie拡張メソッド</summary>
+        /// <param name="responseCookies">拡張</param>
         /// <param name="key">string</param>
         /// <param name="value">string</param>
         /// <param name="expireTime">int</param>
@@ -67,6 +70,7 @@ namespace Touryo.Infrastructure.Framework.StdMigration
         }
 
         /// <summary>Set the cookie拡張メソッド</summary>
+        /// <param name="responseCookies">拡張</param>
         /// <param name="key">string</param>
         /// <param name="value">string</param>
         /// <param name="option">CookieOptions</param>
@@ -76,6 +80,7 @@ namespace Touryo.Infrastructure.Framework.StdMigration
         }
 
         /// <summary>Delete the key拡張メソッド</summary>
+        /// <param name="responseCookies">拡張</param>
         /// <param name="key">string</param>
         public static void Remove(this IResponseCookies responseCookies, string key)
         {

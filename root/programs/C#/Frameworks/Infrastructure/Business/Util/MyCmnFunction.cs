@@ -38,18 +38,25 @@
 //*  2012/06/14  西野 大介         コントロール検索の再帰処理性能の集約＆効率化。
 //*  2014/05/16  西野 大介         キャスト可否チェックのロジックを見直した。
 //*  2017/01/31  西野 大介         System.Webを使用しているCalculateSessionSizeメソッドをPublicから移動
+//*  2018/03/29  西野 大介         .NET Standard対応で、削除機能に関連するメソッドを削除
+//*  2018/03/29  西野 大介         .NET Standard対応で、HttpSessionのポーティング
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
 
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Util;
+
+#if NETCOREAPP2_0
+using Touryo.Infrastructure.Framework.StdMigration;
+using Microsoft.AspNetCore.Http;
+#else
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+#endif
 
 namespace Touryo.Infrastructure.Business.Util
 {
@@ -85,12 +92,19 @@ namespace Touryo.Infrastructure.Business.Util
             long size = 0;
 
             // SessionのオブジェクトをBinarySerializeしてサイズを取得。
+#if NETCOREAPP2_0
+            foreach (string key in MyHttpContext.Current.Session.Keys)
+            {
+                // 当該キーのオブジェクト・サイズを足しこむ。
+                size += BinarySerialize.ObjectToBytes(MyHttpContext.Current.Session.GetString(key)).Length;
+            }
+#else
             foreach (string key in HttpContext.Current.Session.Keys)
             {
                 // 当該キーのオブジェクト・サイズを足しこむ。
                 size += BinarySerialize.ObjectToBytes(HttpContext.Current.Session[key]).Length;
             }
-
+#endif
             // Sessionサイズ（バイト）
             return size;
         }
@@ -101,6 +115,8 @@ namespace Touryo.Infrastructure.Business.Util
 
         #region コントロール取得＆イベントハンドラ設定
 
+#if NETCOREAPP2_0
+#else
         /// <summary>コントロール取得＆イベントハンドラ設定（下位互換）</summary>
         /// <param name="ctrl">コントロール</param>
         /// <param name="prefix">プレフィックス</param>
@@ -261,8 +277,8 @@ namespace Touryo.Infrastructure.Business.Util
             }
 
             #endregion
-        }
-
+        }    
+#endif
         #endregion
 
         // 2009/07/21-end

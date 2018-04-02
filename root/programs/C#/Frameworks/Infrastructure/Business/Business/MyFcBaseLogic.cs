@@ -38,6 +38,7 @@
 //*  2012/06/18  西野 大介         OriginalStackTrace（ログ出力）の品質向上
 //*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
 //*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
+//*  2018/03/29  西野 大介         .NET Standard対応で、削除機能に関連する処理を削除
 //**********************************************************************************
 
 using System;
@@ -173,6 +174,8 @@ namespace Touryo.Infrastructure.Business.Business
                 // 接続文字列をロード
                 connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL");
                 }
+#if NETCOREAPP2_0
+#else
                 else if (parameterValue.ActionType.Split('%')[0] == "OLE")
                 {
                     // OLEDB.NET用のDamを生成
@@ -181,6 +184,7 @@ namespace Touryo.Infrastructure.Business.Business
                     // 接続文字列をロード
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_OLE");
                 }
+#endif
                 else if (parameterValue.ActionType.Split('%')[0] == "ODB")
                 {
                     // ODBC.NET用のDamを生成
@@ -197,6 +201,8 @@ namespace Touryo.Infrastructure.Business.Business
                 //    // 接続文字列をロード
                 //    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ORA");
                 //}
+#if NETCOREAPP2_0
+#else
                 else if (parameterValue.ActionType.Split('%')[0] == "ODP")
                 {
                     // Oracle / ODP.NET用のDamを生成
@@ -205,6 +211,7 @@ namespace Touryo.Infrastructure.Business.Business
                     // 接続文字列をロード
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP");
                 }
+#endif
                 //else if (parameterValue.ActionType.Split('%')[0] == "DB2")
                 //{
                 //    // DB2.NET用のDamを生成

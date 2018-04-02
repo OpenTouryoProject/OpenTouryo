@@ -21,6 +21,7 @@ using SimpleBatch_sample.Business;
 using SimpleBatch_sample.Common;
 
 using System;
+using System.IO;
 using System.Collections.Generic;
 
 using Touryo.Infrastructure.Business.Util;
@@ -42,6 +43,11 @@ namespace SimpleBatch_sample
             // ・コミット・インターバル、リラン
             // 等の考慮が別途必要になることがあります。
             ////////////////////////////////////////////////////////////////////////
+
+            // configの初期化
+            System.Diagnostics.Debug.WriteLine(Directory.GetCurrentDirectory());
+
+            GetConfigParameter.InitConfiguration("appsettings.json");
 
             // コマンドラインをバラす関数がある。
             List<string> valsLst = null;
