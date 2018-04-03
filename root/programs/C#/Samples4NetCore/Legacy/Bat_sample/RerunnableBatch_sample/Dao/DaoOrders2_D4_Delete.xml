@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- DaoOrders2_D4_Delete
+  -- 2014/2/9 日立 太郎
+  DELETE FROM
+    [Orders2]
+  <WHERE>
+    WHERE
+      <IF>AND [OrderID] = @OrderID<ELSE>AND [OrderID] IS NULL</ELSE></IF>
+      <IF>AND [CustomerID] = @CustomerID<ELSE>AND [CustomerID] IS NULL</ELSE></IF>
+      <IF>AND [EmployeeID] = @EmployeeID<ELSE>AND [EmployeeID] IS NULL</ELSE></IF>
+      <IF>AND [OrderDate] = @OrderDate<ELSE>AND [OrderDate] IS NULL</ELSE></IF>
+      <IF>AND [RequiredDate] = @RequiredDate<ELSE>AND [RequiredDate] IS NULL</ELSE></IF>
+      <IF>AND [ShippedDate] = @ShippedDate<ELSE>AND [ShippedDate] IS NULL</ELSE></IF>
+      <IF>AND [ShipVia] = @ShipVia<ELSE>AND [ShipVia] IS NULL</ELSE></IF>
+      <IF>AND [Freight] = @Freight<ELSE>AND [Freight] IS NULL</ELSE></IF>
+      <IF>AND [ShipName] = @ShipName<ELSE>AND [ShipName] IS NULL</ELSE></IF>
+      <IF>AND [ShipAddress] = @ShipAddress<ELSE>AND [ShipAddress] IS NULL</ELSE></IF>
+      <IF>AND [ShipCity] = @ShipCity<ELSE>AND [ShipCity] IS NULL</ELSE></IF>
+      <IF>AND [ShipRegion] = @ShipRegion<ELSE>AND [ShipRegion] IS NULL</ELSE></IF>
+      <IF>AND [ShipPostalCode] = @ShipPostalCode<ELSE>AND [ShipPostalCode] IS NULL</ELSE></IF>
+      <IF>AND [ShipCountry] = @ShipCountry<ELSE>AND [ShipCountry] IS NULL</ELSE></IF>
+  </WHERE>
+</ROOT>
