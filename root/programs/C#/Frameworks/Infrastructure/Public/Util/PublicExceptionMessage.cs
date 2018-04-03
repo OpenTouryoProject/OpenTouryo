@@ -45,6 +45,7 @@
 //*  2014/01/22  Rituparna.Biswas  Changes from ConfigurationManager.AppSettings to GetConfigParameter.GetConfigValue in CmnFunc
 //*  2014/02/03  西野 大介         取り込み：リソースファイル名とスイッチ名の変更、#pragma warning disableの追加。
 //*  2016/05/30  Supragyan         Added a message in the case of NotSupportedException
+//*  2018/03/28  西野 大介         .NET Standard対応で、GetConfigParameterに例外処理を追加
 //**********************************************************************************
 
 using System;
@@ -657,6 +658,20 @@ namespace Touryo.Infrastructure.Public.Util
 
         #region 汎用メッセージ
 
+        /// <summary>未初期化</summary>
+        public static string NOT_INITIALIZED
+        {
+            get
+            {
+                // Get current property name.
+                //string key = PubCmnFunction.GetCurrentMethodName();
+                string key = PubCmnFunction.GetCurrentPropertyName();
+
+                // Returns the specified string resource for the specified culture or current UI culture.
+                return PublicExceptionMessage.CmnFunc(key);
+            }
+        }
+
         /// <summary>引数不正</summary>
         public static string ARGUMENT_INCORRECT
         {
@@ -750,6 +765,5 @@ namespace Touryo.Infrastructure.Public.Util
             }
         }
         #endregion
-
     }
 }

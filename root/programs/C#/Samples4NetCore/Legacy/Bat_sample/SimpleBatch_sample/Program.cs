@@ -45,8 +45,6 @@ namespace SimpleBatch_sample
             ////////////////////////////////////////////////////////////////////////
 
             // configの初期化
-            System.Diagnostics.Debug.WriteLine(Directory.GetCurrentDirectory());
-
             GetConfigParameter.InitConfiguration("appsettings.json");
 
             // コマンドラインをバラす関数がある。

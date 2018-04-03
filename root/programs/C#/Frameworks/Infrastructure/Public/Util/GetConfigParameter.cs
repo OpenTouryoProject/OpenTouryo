@@ -33,6 +33,7 @@
 //**********************************************************************************
 
 #if NETSTANDARD2_0
+using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 #else
@@ -52,13 +53,37 @@ namespace Touryo.Infrastructure.Public.Util
         private static IConfiguration _configuration = null;
 
         /// <summary>IConfigurationの初期化</summary>
-        /// <param name="jsonFile">string</param>
-        public static void InitConfiguration(string jsonFile)
+        /// <param name="jsonFileName">string</param>
+        public static void InitConfiguration(string jsonFileName)
         {
             IConfigurationBuilder builder = new ConfigurationBuilder();
-            builder = builder.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(jsonFile);
+            builder = builder.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(jsonFileName);
             GetConfigParameter._configuration = builder.Build();
         }
+
+        /// <summary>
+        /// 設定ファイルに定義されている任意の値を取得する
+        /// </summary>
+        /// <param name="key">設定ファイルに定義されているJSONキー</param>
+        /// <returns>設定ファイルに定義されている値</returns>
+        /// <remarks>自由に利用できる。</remarks>
+        public static string GetAnyConfigValue(string key)
+        {
+            // 設定ファイルの内容を返す
+            if (GetConfigParameter._configuration == null)
+            {
+                throw new ArgumentException(
+                    // Resource は NG（無限ループになる。
+                    //PublicExceptionMessage.NOT_INITIALIZED,
+                    "NOT_INITIALIZED",
+                    "InitConfiguration method is not called.");
+            }
+            else
+            {
+                return GetConfigParameter._configuration[key];
+            }
+        }
+
 #else
 
 #endif
@@ -71,9 +96,20 @@ namespace Touryo.Infrastructure.Public.Util
         /// <remarks>自由に利用できる。</remarks>
         public static string GetConfigValue(string key)
         {
-            //設定ファイルの内容を返す
+            // 設定ファイルの内容を返す
 #if NETSTANDARD2_0
-            return GetConfigParameter._configuration["appSettings:" + key];
+            if (GetConfigParameter._configuration == null)
+            {
+                throw new ArgumentException(
+                    // Resource は NG（無限ループになる。
+                    //PublicExceptionMessage.NOT_INITIALIZED,
+                    "NOT_INITIALIZED",
+                    "InitConfiguration method is not called.");
+            }
+            else
+            {
+                return GetConfigParameter._configuration["appSettings:" + key];
+            }
 #else
             return ConfigurationManager.AppSettings[key];
 #endif
@@ -89,10 +125,21 @@ namespace Touryo.Infrastructure.Public.Util
         /// <remarks>自由に利用できる。</remarks>
         public static string GetConnectionString(string key)
         {
+            // 接続文字列の取得
 #if NETSTANDARD2_0
-            return GetConfigParameter._configuration["connectionStrings:" + key];
+            if (GetConfigParameter._configuration == null)
+            {
+                throw new ArgumentException(
+                    // Resource は NG（無限ループになる。
+                    //PublicExceptionMessage.NOT_INITIALIZED,
+                    "NOT_INITIALIZED",
+                    "InitConfiguration method is not called.");
+            }
+            else
+            {
+                return GetConfigParameter._configuration["connectionStrings:" + key];
+            }            
 #else
-            //接続文字列の取得
             ConnectionStringSettings connString = ConfigurationManager.ConnectionStrings[key];
 
             // NullReferenceException対応
