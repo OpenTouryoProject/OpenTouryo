@@ -1,2 +1,0 @@
-SPA_Sample, UWP_sample, CordovaTemplate‚©‚çResource Server“I‚ÉQÆ‚³‚ê‚éB
-https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root/programs/C%23/Samples/WS_sample/ASPNETWebService

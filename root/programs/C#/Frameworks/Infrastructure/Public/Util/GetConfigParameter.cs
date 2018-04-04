@@ -32,7 +32,7 @@
 //*  2018/03/28  西野 大介         .NET Standard対応で、I/F変更あり。
 //**********************************************************************************
 
-#if NETSTANDARD2_0
+#if NETSTD
 using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
@@ -47,7 +47,7 @@ namespace Touryo.Infrastructure.Public.Util
     public static class GetConfigParameter
     {
 
-#if NETSTANDARD2_0
+#if NETSTD
 
         /// <summary>IConfiguration</summary>
         private static IConfiguration _configuration = null;
@@ -58,6 +58,13 @@ namespace Touryo.Infrastructure.Public.Util
         {
             IConfigurationBuilder builder = new ConfigurationBuilder();
             builder = builder.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(jsonFileName);
+            GetConfigParameter._configuration = builder.Build();
+        }
+
+        /// <summary>IConfigurationの初期化</summary>
+        /// <param name="builder">IConfigurationBuilder</param>
+        public static void InitConfiguration(IConfigurationBuilder builder)
+        {
             GetConfigParameter._configuration = builder.Build();
         }
 
@@ -97,7 +104,7 @@ namespace Touryo.Infrastructure.Public.Util
         public static string GetConfigValue(string key)
         {
             // 設定ファイルの内容を返す
-#if NETSTANDARD2_0
+#if NETSTD
             if (GetConfigParameter._configuration == null)
             {
                 throw new ArgumentException(
@@ -126,7 +133,7 @@ namespace Touryo.Infrastructure.Public.Util
         public static string GetConnectionString(string key)
         {
             // 接続文字列の取得
-#if NETSTANDARD2_0
+#if NETSTD
             if (GetConfigParameter._configuration == null)
             {
                 throw new ArgumentException(

@@ -50,7 +50,7 @@ using log4net.Config;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Util;
 
-#if NETSTANDARD2_0
+#if NETSTD
 using System.Reflection;
 using log4net.Repository;
 #else
@@ -111,7 +111,7 @@ namespace Touryo.Infrastructure.Public.Log
                         // 定義ファイルのパスが無い場合
 
                         // 空のロガーを返す（エラーにはならない）
-#if NETSTANDARD2_0
+#if NETSTD
                         return log4net.LogManager.GetLogger(Assembly.GetEntryAssembly(), "");
 #else
                         return log4net.LogManager.GetLogger("");
@@ -119,7 +119,7 @@ namespace Touryo.Infrastructure.Public.Log
                     }
                     else
                     {
-#if NETSTANDARD2_0
+#if NETSTD
                         // Repositoryなる何か。
                         ILoggerRepository logRep = log4net.LogManager.CreateRepository(
                             Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
@@ -144,7 +144,7 @@ namespace Touryo.Infrastructure.Public.Log
                             }
 
                             // log4net
-#if NETSTANDARD2_0
+#if NETSTD
                             XmlConfigurator.Configure(logRep,
                                 (XmlElement)xmlDef["log4net"].ChildNodes[0]);
 #else
@@ -162,7 +162,7 @@ namespace Touryo.Infrastructure.Public.Log
                                 FileMode.Open, FileAccess.Read, FileShare.Read);
 
                             // log4netのXML形式の設定ファイルを読み込む。
-#if NETSTANDARD2_0
+#if NETSTD
                             XmlConfigurator.Configure(logRep, s);
 #else
                             XmlConfigurator.Configure(s);
@@ -172,7 +172,7 @@ namespace Touryo.Infrastructure.Public.Log
                         }
 
                         // log4net.ILogインスタンスを初期化する。
-#if NETSTANDARD2_0
+#if NETSTD
                         LogManager._logIfHt.Add(
                             loggerName,
                             log4net.LogManager.GetLogger(Assembly.GetEntryAssembly(), loggerName));

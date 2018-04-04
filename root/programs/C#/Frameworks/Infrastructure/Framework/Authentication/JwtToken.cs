@@ -37,7 +37,7 @@ using System.Text;
 using System.Linq;
 using System.Collections.Generic;
 
-#if NETSTANDARD2_0
+#if NETSTD
 using Microsoft.AspNetCore.WebUtilities;
 #elif NET45
 using Touryo.Infrastructure.Public.Util;
@@ -87,7 +87,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             if (jwtRS256.Verify(jwtAccessToken))
             {
-#if NETSTANDARD2_0
+#if NETSTD
                 string jwtPayload = Encoding.UTF8.GetString(Base64UrlTextEncoder.Decode(jwtAccessToken.Split('.')[1]));
 #else
                 Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();

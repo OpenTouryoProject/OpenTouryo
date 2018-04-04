@@ -60,7 +60,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>HMACMD5</summary>
         HMACMD5,
 
-#if NETSTANDARD2_0
+#if NETSTD
 #else
         /// <summary>HMACRIPEMD160</summary>
         HMACRIPEMD160,
@@ -75,7 +75,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>HMACSHA512</summary>
         HMACSHA512,
 
-#if NETSTANDARD2_0
+#if NETSTD
 #else
         /// <summary>MACTripleDES</summary>
         MACTripleDES
@@ -323,7 +323,7 @@ namespace Touryo.Infrastructure.Public.Security
                 // HMACMD5サービスプロバイダ
                 kha = new HMACMD5(key);
             }
-#if NETSTANDARD2_0
+#if NETSTD
 #else
 
             else if (ekha == EnumKeyedHashAlgorithm.HMACRIPEMD160)
@@ -348,7 +348,7 @@ namespace Touryo.Infrastructure.Public.Security
                 kha = new HMACSHA512(key);
             }
             // -- ▲追加▲ --
-#if NETSTANDARD2_0
+#if NETSTD
 #else
 
             else if (ekha == EnumKeyedHashAlgorithm.MACTripleDES)

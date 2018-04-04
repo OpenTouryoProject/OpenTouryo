@@ -31,7 +31,7 @@
 //*  2018/03/29  西野 大介         .NET Standard対応で、HttpSessionのポーティング
 //**********************************************************************************
 
-#if NETSTANDARD2_0
+#if NETSTD
 using Touryo.Infrastructure.Framework.StdMigration;
 using Microsoft.AspNetCore.Http;
 #else
@@ -50,7 +50,7 @@ namespace Touryo.Infrastructure.Framework.Util
         public static void SetSubsysInformation(SubsysInfo subsysInfo)
         {
             // Sessionに保存
-#if NETSTANDARD2_0
+#if NETSTD
             ISession session = MyHttpContext.Current.Session;
             session.SetObjectAsJson(FxHttpSessionIndex.SUB_SYSTEM_INFORMATION, subsysInfo);
 #else
@@ -64,7 +64,7 @@ namespace Touryo.Infrastructure.Framework.Util
         public static SubsysInfo GetSubsysInformation()
         {
             // Sessionから取得
-#if NETSTANDARD2_0
+#if NETSTD
             ISession session = MyHttpContext.Current.Session;
             return session.GetObjectFromJson<SubsysInfo>(FxHttpSessionIndex.SUB_SYSTEM_INFORMATION);
 #else
@@ -77,7 +77,7 @@ namespace Touryo.Infrastructure.Framework.Util
         public static void DeleteSubsysInformation()
         {
             // Sessionから削除
-#if NETSTANDARD2_0
+#if NETSTD
             ISession session = MyHttpContext.Current.Session;
             session.Remove(FxHttpSessionIndex.SUB_SYSTEM_INFORMATION);
 #else

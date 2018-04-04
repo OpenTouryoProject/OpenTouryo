@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETSTD</DefineConstants>
     <OutputPath>..\Build_netstd20\</OutputPath>
     <DocumentationFile>..\Build_netstd20\netstandard2.0\OpenTouryo.Public.xml</DocumentationFile>
     <DebugType>full</DebugType>

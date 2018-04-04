@@ -36,7 +36,7 @@
 //**********************************************************************************
 
 using System.Text;
-#if NETSTANDARD2_0
+#if NETSTD
 #else
 using Microsoft.VisualBasic;
 #endif
@@ -47,7 +47,7 @@ namespace Touryo.Infrastructure.Public.Str
     /// <summary>文字列の変換処理クラス</summary>
     public class StringConverter
     {
-#if NETSTANDARD2_0
+#if NETSTD
 #else
         #region 全角 / 半角 変換処理
 

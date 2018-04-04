@@ -34,7 +34,7 @@
 
 using System;
 
-#if NETSTANDARD2_0
+#if NETSTD
 using System.Diagnostics;
 #else
 using Touryo.Infrastructure.Public.Win32;
@@ -64,7 +64,7 @@ namespace Touryo.Infrastructure.Public.Util
     {
         #region 測定結果の保存用メンバ変数
 
-#if NETSTANDARD2_0
+#if NETSTD
         /// <summary>System.Diagnostics.Stopwatch</summary>
         private Stopwatch _stopwatch = null;
 #else
@@ -92,7 +92,7 @@ namespace Touryo.Infrastructure.Public.Util
 
         #endregion
 
-#if NETSTANDARD2_0
+#if NETSTD
 #else
         #region 測定値計算用定数宣言 セクション
 
@@ -144,7 +144,7 @@ namespace Touryo.Infrastructure.Public.Util
         public bool StartsPerformanceRecord()
         {
 
-#if NETSTANDARD2_0
+#if NETSTD
             this._stopwatch = new Stopwatch();
             this._stopwatch.Start();
 #else
@@ -257,7 +257,7 @@ namespace Touryo.Infrastructure.Public.Util
         /// <remarks>自由に利用できる。</remarks>
         public string EndsPerformanceRecord()
         {
-#if NETSTANDARD2_0
+#if NETSTD
             this._stopwatch.Stop();
 
             this._ExecTime = this._stopwatch.ElapsedMilliseconds.ToString();
