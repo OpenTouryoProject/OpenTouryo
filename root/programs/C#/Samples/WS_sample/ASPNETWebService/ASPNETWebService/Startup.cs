@@ -2,8 +2,7 @@
 //* テンプレート
 //**********************************************************************************
 
-// 以下のLicenseに従い、このProjectをTemplateとして使用可能です。Release時にCopyright表示してSublicenseして下さい。
-// https://github.com/OpenTouryoProject/MultiPurposeAuthSite/blob/master/license/LicenseForTemplates.txt
+// サンプル中のテンプレートなので、必要に応じて使用して下さい。
 
 //**********************************************************************************
 //* クラス名        ：OwinStartup

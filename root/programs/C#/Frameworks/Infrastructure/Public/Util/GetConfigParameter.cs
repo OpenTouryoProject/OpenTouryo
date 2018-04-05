@@ -35,6 +35,7 @@
 #if NETSTD
 using System;
 using System.IO;
+using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 #else
 using System.Configuration;
@@ -52,13 +53,13 @@ namespace Touryo.Infrastructure.Public.Util
         /// <summary>IConfiguration</summary>
         private static IConfiguration _configuration = null;
 
+        #region 初期化
+
         /// <summary>IConfigurationの初期化</summary>
-        /// <param name="jsonFileName">string</param>
-        public static void InitConfiguration(string jsonFileName)
+        /// <param name="configuration">IConfiguration</param>
+        public static void InitConfiguration(IConfiguration configuration)
         {
-            IConfigurationBuilder builder = new ConfigurationBuilder();
-            builder = builder.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(jsonFileName);
-            GetConfigParameter._configuration = builder.Build();
+            GetConfigParameter._configuration = configuration;
         }
 
         /// <summary>IConfigurationの初期化</summary>
@@ -67,6 +68,57 @@ namespace Touryo.Infrastructure.Public.Util
         {
             GetConfigParameter._configuration = builder.Build();
         }
+
+        /// <summary>IConfigurationの初期化</summary>
+        /// <param name="jsonFileName">string</param>
+        public static void InitConfiguration(string jsonFileName)
+        {
+            IConfigurationBuilder builder = new ConfigurationBuilder();
+
+            // currentディレクトリのappsettings.jsonを読み込む。
+            builder = builder
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile(jsonFileName);
+
+            GetConfigParameter._configuration = builder.Build();
+        }
+
+        /// <summary>IConfigurationの初期化</summary>
+        public static void InitConfiguration()
+        {
+            IConfigurationBuilder builder = new ConfigurationBuilder();
+
+            // currentディレクトリのappsettings.jsonを読み込む。
+            builder = builder
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+
+            #region 参考：メモリ内プロバイダによる POCO クラスとのバインディング
+
+            //Dictionary dict = new Dictionary<string, string>() {
+            //    {"XXXX", "xxxx"},
+            //    {"YYYY", "yyyy"}
+            //};
+            //builder.AddInMemoryCollection(dict);
+
+            #endregion
+
+            GetConfigParameter._configuration = builder.Build();
+
+            #region 参考：既存のconfigに POCO クラスとのバインドを追加
+
+            //AppSettings appConfig = new AppSettings();
+            //GetConfigParameter._configuration.GetSection("App").Bind(appConfig);
+
+            #endregion
+
+            // その他、Entity FrameworkやCommand Lineのプロバイダも作成可能。
+
+            // ASP.NET Core の構成 | Microsoft Docs
+            // https://docs.microsoft.com/ja-jp/aspnet/core/fundamentals/configuration/index?tabs=basicconfiguration
+        }
+
+        #endregion
 
         /// <summary>
         /// 設定ファイルに定義されている任意の値を取得する

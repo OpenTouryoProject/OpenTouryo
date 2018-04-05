@@ -8,8 +8,8 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;NETCORE</DefineConstants>
-    <DocumentationFile>..\Build_netstd20\netcoreapp2.0\OpenTouryo.Business.xml</DocumentationFile>
-    <OutputPath>..\Build_netstd20\</OutputPath>
+    <OutputPath>..\Build_netcore20\</OutputPath>
+    <DocumentationFile>..\Build_netcore20\netcoreapp2.0\OpenTouryo.Business.xml</DocumentationFile>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
