@@ -39,8 +39,11 @@ using System.Runtime.ExceptionServices;
 
 using System.Net;
 using System.Net.Http;
+using System.Web.Http;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc.WebApiCompatShim;
 
 using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Util;
@@ -60,15 +63,7 @@ namespace ASPNETWebService.Controllers
     /// <summary>
     /// ASP.NET WebAPI JSON-RPCの個別Webメソッドを公開するサービス インターフェイス基盤。
     /// </summary>
-    [EnableCors(
-        // リソースへのアクセスを許可されている発生元
-        origins: "*",
-        // リソースによってサポートされているヘッダー
-        headers: "*",
-        // リソースによってサポートされているメソッド
-        methods: "*",
-        // 
-        SupportsCredentials = true)]
+    [EnableCors("AllowAllOrigins")]
     [MyBaseAsyncApiController()]
     public class JsonController : ApiController
     {

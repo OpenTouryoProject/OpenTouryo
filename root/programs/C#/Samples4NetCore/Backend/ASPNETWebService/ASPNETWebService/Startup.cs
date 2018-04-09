@@ -24,6 +24,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
+
 using Touryo.Infrastructure.Public.Util;
 
 
@@ -119,7 +122,7 @@ namespace ASPNETWebService
             }
             #endregion
 
-            # region パイプラインに追加
+            #region パイプラインに追加
 
             // MVCをパイプラインに追加（routesも設定）
             app.UseMvc(routes =>
@@ -129,13 +132,16 @@ namespace ASPNETWebService
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
+            // UseCorsでAllowAllOriginsを指定。
+            app.UseCors("AllowAllOrigins");
+
             // /wwwroot（既定の）の
             // 静的ファイルをパイプラインに追加
             // app.UseStaticFiles();
 
             // Identity
             //app.UseAuthentication();
-            
+
             #endregion
         }
 
@@ -177,13 +183,38 @@ namespace ASPNETWebService
             //services.AddTransient<ISmsSender, AuthMessageSender>();
 
             // MVC(WebAPIも含む)をサービス コンテナに追加
-            services.AddMvc();
+            // AddWebApiConventionsは、Web API 2 Controllerの移植を容易にする。
+            services.AddMvc().AddWebApiConventions();
 
             //services.AddMvc(options =>
             //{
-            //    // Filterをグローバルフィルタとして追加する場合
-            //    options.Filters.AddService(typeof(MyActionFilter)); 
+            //    // FilterをグローバルにすべてのControllerで有効にする場合
+            //    options.Filters.AddService(typeof(MyActionFilter));
+            //    // CROSをグローバルにすべてのControllerで有効にする場合
+            //    options.Filters.Add(new CorsAuthorizationFilterFactory("AllowSpecificOrigin"));
             //});
+
+            // CORSをサービス コンテナに追加
+            // https://docs.microsoft.com/ja-jp/aspnet/core/security/cors
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                    });
+
+                //options.AddPolicy("AllowSpecificOrigins",
+                //builder =>
+                //{
+                //    // URL は末尾にスラッシュを付けずに指定
+                //    builder.WithOrigins(
+                //        "http://example.com",
+                //        "http://www.contoso.com");
+                //});
+            });
 
             #endregion
         }
