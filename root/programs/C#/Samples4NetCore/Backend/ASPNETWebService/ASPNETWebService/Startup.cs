@@ -5,8 +5,8 @@
 // サンプル中のテンプレートなので、必要に応じて使用して下さい。
 
 //**********************************************************************************
-//* クラス名        ：OwinStartup
-//* クラス日本語名  ：OwinStartup
+//* クラス名        ：Startup
+//* クラス日本語名  ：Startup
 //*
 //* 作成日時        ：－
 //* 作成者          ：－
@@ -16,11 +16,6 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,7 +29,11 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace ASPNETWebService
 {
-    /// <summary>Startup</summary>
+    /// <summary>
+    /// Startup
+    /// ミドルウェア /サービス / フレームワークを
+    /// Startupクラスのメソッドで注入することにより、活用できるようになる。
+    /// </summary>
     public class Startup
     {
         #region mem & prop & constructor
@@ -50,10 +49,20 @@ namespace ASPNETWebService
         /// <param name="config">IConfiguration</param>
         public Startup(IHostingEnvironment env, IConfiguration config)
         {
+            //IConfigurationBuilder builder = new ConfigurationBuilder()
+            //    .SetBasePath(env.ContentRootPath)
+            //    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            //    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+            //    .AddEnvironmentVariables();
+            //config = builder.Build();
+
             // メンバに設定
             this.HostingEnvironment = env;
             this.Configuration = config;
+
             // ライブラリにも設定
+
+
             GetConfigParameter.InitConfiguration(config);
         }
 
@@ -132,13 +141,14 @@ namespace ASPNETWebService
 
         /// <summary>
         /// ConfigureServices
-        /// ・任意
-        /// ・Configure メソッドの前に、WebHostに呼び出される。
+        /// 必要に応じて、ミドルウェア /サービス / フレームワークを注入する。
+        /// ・実行は任意
+        /// ・Configure メソッドの前に、WebHostにより呼び出される。
         /// ・規約によって構成オプションを設定する。
         /// </summary>
         /// <param name="services">IServiceCollection</param>
         /// <remarks>
-        /// IServiceCollectionコンテナにサービスを追加すると、、
+        /// IServiceCollectionコンテナにサービスを追加すると、
         /// Configure メソッドと、アプリケーション内でサービスを利用できるようになる。
         /// サービスは、DI or IApplicationBuilder.ApplicationServices から解決される。
         /// </remarks>
@@ -166,9 +176,15 @@ namespace ASPNETWebService
             //services.AddTransient<IEmailSender, AuthMessageSender>();
             //services.AddTransient<ISmsSender, AuthMessageSender>();
 
-            // MVCをサービス コンテナに追加
+            // MVC(WebAPIも含む)をサービス コンテナに追加
             services.AddMvc();
-            
+
+            //services.AddMvc(options =>
+            //{
+            //    // Filterをグローバルフィルタとして追加する場合
+            //    options.Filters.AddService(typeof(MyActionFilter)); 
+            //});
+
             #endregion
         }
 

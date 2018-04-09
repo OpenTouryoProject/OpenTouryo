@@ -56,35 +56,45 @@
 //*  2017/02/14  西野 大介         Invokeの非同期バージョン（InvokeAsync）を追加
 //*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れた。
 //*  2017/08/18  西野 大介         ASP.NET WebAPI（JSON）対応
+//*  2018/03/29  西野 大介         .NET Standard対応：インプロセスのみ残す。
 //**********************************************************************************
 
 using System;
-using System.Text;
-using System.Linq;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Runtime.ExceptionServices;
-using System.Security.Cryptography;
-
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
-using System.Security.Cryptography.X509Certificates;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Util;
 
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
+#if NETSTD
+#else
+using System.Text;
+using System.Linq;
+using System.Collections.Generic;
+
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+
+using System.ServiceModel;
+using System.ServiceModel.Channels;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Public.Str;
+#endif
+
+#if NETSTD
+#else
 #region 自動生成されたReference.csのヘッダー部分
 
 //------------------------------------------------------------------------------
@@ -108,6 +118,7 @@ using System.Web.Services.Protocols;
 using System.Xml.Serialization;
 
 #endregion
+#endif
 
 #pragma warning disable 1591
 
@@ -152,9 +163,13 @@ namespace Touryo.Infrastructure.Framework.Transmission
         {
             // コンテキスト情報
             this._context = context;
+
+#if NETSTD
+#else
             // EndPointConfigName（の既定値
             this.WCF_HTTP_EndPointConfigName = FxLiteral.WCF_HTTP_ENDPOINT_CONFIGNAME;
             this.WCF_TCPIP_EndPointConfigName = FxLiteral.WCF_TCPIP_ENDPOINT_CONFIGNAME;
+#endif
         }
 
         /// <summary>コンテキスト情報</summary>
@@ -169,13 +184,17 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
         #region Web参照と関連プロパティ
 
+#if NETSTD
+#else
+
         #region ASP.NET WebサービスのWeb参照
 
         /// <summary>ASP.NET WebサービスのWeb参照</summary>
         private Reference WR;
 
         #region プロパティ直接公開
-        
+
+
         /// <summary>Web参照のCookieContainer</summary>
         public CookieContainer CookieContainer
         {
@@ -219,6 +238,8 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
         #region WCF TCP/IPサービス
 
+#if NETSTD
+#else
         /// <summary>WCF TCP/IPサービス</summary>
         private IWCFTCPSvcForFx WCF_TCPIP;
 
@@ -233,6 +254,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
         }
 
         #endregion
+#endif
 
         #endregion
 
@@ -273,6 +295,8 @@ namespace Touryo.Infrastructure.Framework.Transmission
         }
 
         #endregion
+
+#endif
 
         #endregion
 
@@ -315,6 +339,8 @@ namespace Touryo.Infrastructure.Framework.Transmission
             // クラス名
             string className = "";
 
+#if NETSTD
+#else
             // ＵＲＬ
             string url = "";
 
@@ -323,11 +349,14 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
             // プロパティ
             Dictionary<string, string> props;
+#endif
 
             #endregion
 
             #region 引数・戻り値関係の変数（WS時）
 
+#if NETSTD
+#else
             // .NETオブジェクトのバイト配列 // #y-↓３行
             byte[] contextObject = null;
             byte[] parameterValueObject = null;
@@ -335,6 +364,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
             // エラー情報のバイト配列 // #y-↓１行
             byte[] ret = null;
+#endif
 
             #endregion
 
@@ -374,6 +404,15 @@ namespace Touryo.Infrastructure.Framework.Transmission
             }
             else
             {
+#if NETSTD
+                // サービス呼び出しはサポートしない。
+                // コンテキスト・nullエラー
+                throw new FrameworkException(
+                    FrameworkExceptionMessage.PARAMETER_CHECK_ERROR[0],
+                    String.Format(FrameworkExceptionMessage.PARAMETER_CHECK_ERROR[1],
+                        String.Format(FrameworkExceptionMessage.PARAMETER_CHECK_ERROR_null, "serviceName")));
+
+#else
                 #region サービス呼び出し
 
                 // 名前解決（プロトコルＵＲＬ）
@@ -415,21 +454,21 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
                 if (protocol == ((int)FxEnum.TmProtocol.AspNetWs).ToString())
                 {
-                    #region WS-I Basic Profile v1.1、IIS ＋ ASP.NET
+                #region WS-I Basic Profile v1.1、IIS ＋ ASP.NET
 
                     // 都度newしても接続はプールされているので、オーバーヘッドは少ない。
                     WR = new Reference();
 
-                    #region URL、タイムアウト
+                #region URL、タイムアウト
 
                     // URL
                     WR.Url = url;
                     // タイムアウト
                     WR.Timeout = timeout * 1000;
 
-                    #endregion
+                #endregion
 
-                    #region その他（固定）
+                #region その他（固定）
 
                     // 実行アカウントでのWindows認証の有効・無効（Default：false）。
                     WR.UseDefaultCredentials = true; // 有効
@@ -462,9 +501,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     // ComponentのISite
                     // WR.Site // 変更しない;
 
-                    #endregion
+                #endregion
 
-                    #region WASのクライアント認証のセキュリティ資格情報
+                #region WASのクライアント認証のセキュリティ資格情報
 
                     NetworkCredential nwcWAS = this.CreateCredentials(props);
                     if (nwcWAS != null)
@@ -472,9 +511,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         WR.Credentials = nwcWAS;
                     }
 
-                    #endregion
+                #endregion
 
-                    #region プロキシ経由の要求を行うためのプロキシ情報
+                #region プロキシ経由の要求を行うためのプロキシ情報
 
                     WebProxy proxy = this.CreateProxy(props);
                     if (proxy != null)
@@ -482,11 +521,11 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         WR.Proxy = proxy;
                     }
 
-                    #endregion
+                #endregion
 
-                    #region クライアント証明書、HTTP圧縮、エージェント ヘッダ、接続グループ.etc
+                #region クライアント証明書、HTTP圧縮、エージェント ヘッダ、接続グループ.etc
 
-                    #region クライアント証明書（#z-このregion）
+                #region クライアント証明書（#z-このregion）
 
                     X509Certificate2 x509 = this.CreateX509Certificate(props);
                     if (x509 != null)
@@ -494,9 +533,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         WR.ClientCertificates.Add(x509);
                     }
 
-                    #endregion
+                #endregion
 
-                    #region HTTP圧縮の有効・無効（Default：false）
+                #region HTTP圧縮の有効・無効（Default：false）
 
                     if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION))// Dic化でnullチェック変更
                     {
@@ -531,9 +570,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         }
                     }
 
-                    #endregion
+                #endregion
 
-                    #region ユーザ エージェント ヘッダ値
+                #region ユーザ エージェント ヘッダ値
 
                     // （Default：MS Web Services Client Protocol number、numberは、CLRのver）
                     if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT))// Dic化でnullチェック変更
@@ -553,9 +592,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         }
                     }
 
-                    #endregion
+                #endregion
 
-                    #region 接続グループ（Default：Empty）
+                #region 接続グループ（Default：Empty）
 
                     if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME))// Dic化でnullチェック変更
                     {
@@ -574,25 +613,25 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         }
                     }
 
-                    #endregion
+                #endregion
 
-                    #endregion
+                #endregion
 
                     // 同期呼び出しで実行
                     ret = WR.DotNETOnlineWS(
                         serviceName, ref contextObject,
                         parameterValueObject, out returnValueObject); // #x-この行
 
-                    #endregion
+                #endregion
                 }
                 else if (protocol == ((int)FxEnum.TmProtocol.WCF_HTTP).ToString())
                 {
-                    #region WCF : basicHTTPBinding、wsHTTPBinding
+                #region WCF : basicHTTPBinding、wsHTTPBinding
 
                     // 都度newしても接続はプールされているので、オーバーヘッドは少ない（と思われる）。
                     this.WCF_HTTP = new WCFHTTPSvcForFxClient(this.WCF_HTTP_EndPointConfigName, url);
 
-                    #region WASのクライアント認証のセキュリティ資格情報 for WCF
+                #region WASのクライアント認証のセキュリティ資格情報 for WCF
 
                     NetworkCredential nwcWAS = this.CreateCredentials(props);
                     if (nwcWAS != null)
@@ -600,9 +639,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         this.WCF_HTTP.ClientCredentials.Windows.ClientCredential = nwcWAS;
                     }
 
-                    #endregion
+                #endregion
 
-                    #region プロキシ経由の要求を行うためのプロキシ情報
+                #region プロキシ経由の要求を行うためのプロキシ情報
 
                     WebProxy proxy = this.CreateProxy(props);
                     if (proxy != null)
@@ -610,9 +649,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         WebRequest.DefaultWebProxy = proxy;
                     }
 
-                    #endregion
+                #endregion
 
-                    #region クライアント証明書 CERTIFICATE
+                #region クライアント証明書 CERTIFICATE
 
                     X509Certificate2 x509 = this.CreateX509Certificate(props);
                     if (x509 != null)
@@ -620,17 +659,17 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         this.WCF_HTTP.ClientCredentials.ClientCertificate.Certificate = x509;
                     }
 
-                    #endregion
+                #endregion
 
                     ret = this.WCF_HTTP.DotNETOnlineWS(
                         serviceName, ref contextObject,
                         out returnValueObject, parameterValueObject);
 
-                    #endregion
+                #endregion
                 }
                 else if (protocol == ((int)FxEnum.TmProtocol.WCF_TCPIP).ToString())
                 {
-                    #region WCF : netTCPBinding
+                #region WCF : netTCPBinding
 
                     // 都度newしても接続はプールされているので、オーバーヘッドは少ない（と思われる）。
                     ChannelFactory<IWCFTCPSvcForFx> factory = new ChannelFactory<IWCFTCPSvcForFx>(
@@ -638,9 +677,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
                     try
                     {
-                        #region Specifying WCF options: netTCPBinding
+                #region Specifying WCF options: netTCPBinding
 
-                        #region WASのクライアント認証のセキュリティ資格情報 for WCF
+                #region WASのクライアント認証のセキュリティ資格情報 for WCF
 
                         NetworkCredential nwcWAS = this.CreateCredentials(props);
                         if (nwcWAS != null)
@@ -648,9 +687,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
                             factory.Credentials.Windows.ClientCredential = nwcWAS;
                         }
 
-                        #endregion
+                #endregion
 
-                        #region クライアント証明書 CERTIFICATE
+                #region クライアント証明書 CERTIFICATE
 
                         X509Certificate2 x509 = this.CreateX509Certificate(props);
                         if (x509 != null)
@@ -658,11 +697,11 @@ namespace Touryo.Infrastructure.Framework.Transmission
                             factory.Credentials.ClientCertificate.Certificate = x509;
                         }
 
-                        #endregion
+                #endregion
 
                         this.WCF_TCPIP = factory.CreateChannel();
 
-                        #endregion
+                #endregion
 
                         // 同期呼び出しで実行
                         ret = this.WCF_TCPIP.DotNETOnlineTCP(
@@ -682,16 +721,16 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         }
                     }
 
-                    #endregion
+                #endregion
                 }
                 else if (protocol == ((int)FxEnum.TmProtocol.AspNetWebAPI).ToString())
                 {
-                    #region ASP.NET WebAPI (JSON-RPC)
+                #region ASP.NET WebAPI (JSON-RPC)
 
                     // 通信用の変数
                     WebRequestHandler handler = new WebRequestHandler();
 
-                    #region WASのクライアント認証のセキュリティ資格情報 for WCF
+                #region WASのクライアント認証のセキュリティ資格情報 for WCF
 
                     NetworkCredential nwcWAS = this.CreateCredentials(props);
                     if (nwcWAS != null)
@@ -699,9 +738,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         handler.Credentials = nwcWAS;
                     }
 
-                    #endregion
+                #endregion
 
-                    #region プロキシ経由の要求を行うためのプロキシ情報
+                #region プロキシ経由の要求を行うためのプロキシ情報
 
                     WebProxy proxy = this.CreateProxy(props);
                     if (proxy != null)
@@ -709,9 +748,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         handler.Proxy = proxy;
                     }
 
-                    #endregion
+                #endregion
 
-                    #region クライアント証明書 CERTIFICATE
+                #region クライアント証明書 CERTIFICATE
 
                     X509Certificate2 x509 = this.CreateX509Certificate(props);
                     if (x509 != null)
@@ -719,9 +758,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         handler.ClientCertificates.Add(x509);
                     }
 
-                    #endregion
+                #endregion
 
-                    #region HttpClient
+                #region HttpClient
 
                     HttpClient client = new HttpClient(handler);
 
@@ -746,7 +785,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     //httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("OAuth", authHeader);
                     //httpRequestMessage.Headers.ExpectContinue = false;
 
-                    #endregion
+                #endregion
 
                     // 同期呼び出しで実行
                     httpResponseMessage = client.SendAsync(httpRequestMessage).Result;
@@ -757,7 +796,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     contextObject = CustomEncode.FromBase64String((string)jObject["ContextObject"]);
                     returnValueObject = CustomEncode.FromBase64String((string)jObject["ReturnValueObject"]);
 
-                    #endregion
+                #endregion
                 }
                 else
                 {
@@ -839,12 +878,16 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 #endregion
 
                 #endregion
+#endif
             }
         }
 
         #endregion
 
         #region ヘルパー
+
+#if NETSTD
+#else
 
         /// <summary>CreateProxy</summary>
         /// <param name="props">Dictionary(string, string)</param>
@@ -853,7 +896,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
         {
             WebProxy proxy = null;
 
-            #region プロキシ生成
+        #region プロキシ生成
 
             if (string.IsNullOrEmpty(this._proxyUrl))
             {
@@ -886,9 +929,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 proxy = new WebProxy(new Uri(this._proxyUrl));
             }
 
-            #endregion
+        #endregion
 
-            #region プロキシのオプション設定
+        #region プロキシのオプション設定
 
             if (proxy == null)
             {
@@ -904,7 +947,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 // 実行アカウントでのWindows認証の有効・無効（Default：false）。                    
                 proxy.UseDefaultCredentials = true; // 有効
 
-                #region Proxyのクライアント認証のセキュリティ資格情報
+        #region Proxyのクライアント認証のセキュリティ資格情報
 
                 // Proxyのセキュリティ資格情報
                 if (this._nwcProxy == null)
@@ -950,10 +993,10 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     proxy.Credentials = this._nwcProxy;
                 }
 
-                #endregion
+        #endregion
             }
 
-            #endregion
+        #endregion
 
             return proxy;
         }
@@ -1062,10 +1105,14 @@ namespace Touryo.Infrastructure.Framework.Transmission
             return x509;
         }
 
+#endif
+
         #endregion
 
         #region インナークラス（プロキシ類）
 
+#if NETSTD
+#else
         #region WS-I Basic Profile v1.1、IIS ＋ ASP.NET（#y-このregion）
 
         //------------------------------------------------------------------------------
@@ -1094,7 +1141,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
         [System.Web.Services.WebServiceBindingAttribute(Name = "ServiceForFxSoap", Namespace = FxLiteral.WS_NAME_SPACE)]
         public partial class Reference : System.Web.Services.Protocols.SoapHttpClientProtocol
         {
-            #region コンストラクタ・非同期関係の処理（コメントアウト）
+        #region コンストラクタ・非同期関係の処理（コメントアウト）
 
             //private System.Threading.SendOrPostCallback DotNETOnlineWSOperationCompleted;
             //private bool useDefaultCredentialsSetExplicitly;
@@ -1146,9 +1193,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
             //public event DotNETOnlineWSCompletedEventHandler DotNETOnlineWSCompleted;
 
-            #endregion
+        #endregion
 
-            #region Webメソッド：DotNETOnlineWS
+        #region Webメソッド：DotNETOnlineWS
 
             /// <summary>Webメソッド：DotNETOnlineWS</summary>
             /// <param name="serviceName">サービス名</param>
@@ -1178,9 +1225,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 return ((byte[])(results[0]));
             }
 
-            #endregion
+        #endregion
 
-            #region 非同期関係の処理（コメントアウト）
+        #region 非同期関係の処理（コメントアウト）
 
             ///// <remarks/>
             //public void DotNETOnlineWSAsync(string serviceName, byte[] contextObject, byte[] parameterValueObject)
@@ -1232,7 +1279,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
             //    return false;
             //}
 
-            #endregion
+        #endregion
         }
 
         #region 非同期関係の処理（コメントアウト）
@@ -1402,6 +1449,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
         }
 
         #endregion
+#endif
 
         #endregion
     }

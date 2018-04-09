@@ -34,6 +34,12 @@
     <Reference Include="OpenTouryo.Public.DamPstGrS">
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore20\netcoreapp2.0\OpenTouryo.Public.DamPstGrS.dll</HintPath>
     </Reference>
+    <Reference Include="WSIFType_sample">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore20\netcoreapp2.0\WSIFType_sample.dll</HintPath>
+    </Reference>
+    <Reference Include="WSServer_sample">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore20\netcoreapp2.0\WSServer_sample.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

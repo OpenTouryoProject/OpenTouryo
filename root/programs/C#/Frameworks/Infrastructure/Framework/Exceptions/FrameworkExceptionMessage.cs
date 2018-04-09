@@ -49,6 +49,7 @@
 //*  2014/01/18  Rituparna.Biswas  国際化対応の見直し。
 //*  2014/01/22  Rituparna.Biswas  Changes from ConfigurationManager.AppSettings to GetConfigParameter.GetConfigValue in CmnFunc
 //*  2014/02/03  西野 大介         取り込み：リソースファイル名とスイッチ名の変更、#pragma warning disableの追加。
+//*  2018/04/09  西野 大介         .NET Standard対応で、通信制御機能のメッセージを追加
 //**********************************************************************************
 
 using System;
@@ -944,6 +945,20 @@ namespace Touryo.Infrastructure.Framework.Exceptions
 
         /// <summary>パラメタのチェックエラー（メッセージ補足３）</summary>
         public static string PARAMETER_CHECK_ERROR_length
+        {
+            get
+            {
+                // Get current property name.
+                //string key = PubCmnFunction.GetCurrentMethodName();
+                string key = PubCmnFunction.GetCurrentPropertyName();
+
+                // Returns the specified string resource for the specified culture or current UI culture.
+                return FrameworkExceptionMessage.CmnFunc(key);
+            }
+        }
+
+        /// <summary>パラメタのチェックエラー（メッセージ補足４）</summary>
+        public static string PARAMETER_CHECK_ERROR_notsupported
         {
             get
             {

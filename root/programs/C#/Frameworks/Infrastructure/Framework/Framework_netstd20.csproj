@@ -16,11 +16,8 @@
 
   <ItemGroup>
     <Compile Remove="RichClient\**" />
-    <Compile Remove="Transmission\**" />
     <EmbeddedResource Remove="RichClient\**" />
-    <EmbeddedResource Remove="Transmission\**" />
     <None Remove="RichClient\**" />
-    <None Remove="Transmission\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,7 +26,7 @@
     <Compile Remove="Presentation\BaseMVController.cs" />
     <Compile Remove="Presentation\FxEventArgs.cs" />
     <Compile Remove="Properties\AssemblyInfo.cs" />
-    <Compile Remove="Util\FxEnum.cs" />
+    <Compile Remove="Transmission\IWCFTCPSvcForFx.cs" />
     <Compile Remove="Util\FxHttpContextIndex.cs" />
     <Compile Remove="Util\FxHttpQueryStringIndex.cs" />
     <Compile Remove="Util\FxSessionUtil.cs" />
