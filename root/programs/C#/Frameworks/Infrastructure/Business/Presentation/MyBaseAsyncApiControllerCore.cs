@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：MyBaseApiControllerAsync (ActionFilterAttribute)
-//* クラス日本語名  ：非同期 ASP.NET WebAPI用 ベーククラス２（テンプレート）
+//* クラス名        ：MyBaseAsyncApiController (Filters)
+//* クラス日本語名  ：非同期 ASP.NET WebAPI用 ベーククラス２相当（テンプレート）
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -33,21 +33,14 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Security.Claims;
 
-//using System.Net.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Primitives;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Framework.StdMigration;
-using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Framework.Exceptions;
+using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
 
@@ -262,7 +255,6 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             if (authorizationContext.HttpContext.Request.Headers != null)
             {
-                KeyValuePair<string, StringValues> kvp =authorizationContext.HttpContext.Request.Headers.FirstOrDefault();
                 //if (authorizationContext.HttpContext.Request.Headers.Authorization.Scheme.ToLower() == "bearer")
                 //{
                 //    string access_token = authorizationContext.Request.Headers.Authorization.Parameter;
@@ -282,7 +274,7 @@ namespace Touryo.Infrastructure.Business.Presentation
                 //            new Claim(ClaimTypes.Name, sub),
                 //            new Claim(ClaimTypes.Role, string.Join(",", roles)),
                 //            new Claim("Scopes", string.Join(",", scopes)),
-                //            new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress(authenticationContext.Request))
+                //            new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress())
                 //        };
 
                 //        // The request message contains valid credential
@@ -316,11 +308,11 @@ namespace Touryo.Infrastructure.Business.Presentation
                 new Claim(ClaimTypes.Name, "未認証"),
                 new Claim(ClaimTypes.Role, ""),
                 new Claim("Scopes", ""),
-                new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress(authorizationContext.HttpContext.Request))
+                new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress())
             };
-            
-            // ？
-            // authenticationContext.Principal = new ClaimsPrincipal(new List<ClaimsIdentity> { new ClaimsIdentity(claims, "Token") });
+
+            // The request message contains valid credential.
+            MyHttpContext.Current.User.AddIdentity(new ClaimsIdentity(claims, "Token"));
 
             return;
 
@@ -328,15 +320,10 @@ namespace Touryo.Infrastructure.Business.Presentation
         }
 
         /// <summary>GetClientIpAddress</summary>
-        /// <param name="request">HttpRequest</param>
         /// <returns>IPAddress(文字列)</returns>
-        public static string GetClientIpAddress(HttpRequest request)
+        private static string GetClientIpAddress()
         {
-            // X-Forwarded-For
-            // MS_HttpContext
-            // MS_OwinContext
-
-            return "";
+            return (new GetClientIpAddress()).GetAddress();
         }
 
         /// <summary>GetClaims</summary>
@@ -346,7 +333,10 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <param name="ipAddress">string</param>
         public static void GetClaims(out string userName, out string roles, out string scopes, out string ipAddress)
         {
-            IEnumerable<Claim> claims = ((ClaimsIdentity)MyHttpContext.Current.User.Identity).Claims;
+            // MyHttpContext.Current.User.Identity側ではなく、Identities側に入っている。
+            // Identityは認証ミドルウェアを使用する必要がある？（coreでjwtをどう処理するのか？）
+            IEnumerable<Claim> claims = 
+                MyHttpContext.Current.User.Identities.FirstOrDefault(c => c.AuthenticationType == "Token").Claims;
             userName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
             roles = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
             scopes = claims.FirstOrDefault(c => c.Type == "Scopes").Value;

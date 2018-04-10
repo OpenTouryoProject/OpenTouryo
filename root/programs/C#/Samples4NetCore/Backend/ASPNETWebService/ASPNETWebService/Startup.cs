@@ -27,6 +27,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc.Cors.Internal;
 
+using Touryo.Infrastructure.Framework.StdMigration;
 using Touryo.Infrastructure.Public.Util;
 
 
@@ -52,6 +53,7 @@ namespace ASPNETWebService
         /// <param name="config">IConfiguration</param>
         public Startup(IHostingEnvironment env, IConfiguration config)
         {
+            // 自前
             //IConfigurationBuilder builder = new ConfigurationBuilder()
             //    .SetBasePath(env.ContentRootPath)
             //    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -64,8 +66,6 @@ namespace ASPNETWebService
             this.Configuration = config;
 
             // ライブラリにも設定
-
-
             GetConfigParameter.InitConfiguration(config);
         }
 
@@ -86,9 +86,6 @@ namespace ASPNETWebService
         /// </remarks>
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
-            // エラー画面
-            app.UseExceptionHandler("/Home/Error");
-
             // Development、Staging、Productionの
             // 環境変数（ASPNETCORE_ENVIRONMENT）値を使用可能。
             //bool flg = this.HostingEnvironment.IsDevelopment();
@@ -123,6 +120,12 @@ namespace ASPNETWebService
             #endregion
 
             #region パイプラインに追加
+
+            // HttpContextのマイグレーション用
+            app.UseHttpContextAccessor();
+
+            // エラー画面
+            app.UseExceptionHandler("/Home/Error");
 
             // MVCをパイプラインに追加（routesも設定）
             app.UseMvc(routes =>
@@ -163,6 +166,9 @@ namespace ASPNETWebService
             // 構成情報から、AppConfiguration SectionをAppConfiguration Classへバインドするようなケース。
             //services.Configure<AppConfiguration>(Configuration.GetSection("AppConfiguration"));
 
+            // HttpContextのマイグレーション用
+            services.AddHttpContextAccessor();
+
             #region Add Frameworks
 
             // 一般的な Webアプリでは、
@@ -201,9 +207,7 @@ namespace ASPNETWebService
                 options.AddPolicy("AllowAllOrigins",
                     builder =>
                     {
-                        builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader();
+                        builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
                     });
 
                 //options.AddPolicy("AllowSpecificOrigins",

@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
+# Visual Studio 15
 VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "UWP_Sample.Html", "UWP_Sample.Html\UWP_Sample.Html.jsproj", "{BA1699F0-8AD5-4B10-B0CA-B9617BE72E76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASPNETWebService", "..\..\Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\ASPNETWebService\ASPNETWebService.csproj", "{C24BC2FA-D423-4F0F-B2B0-E647B621683D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASPNETWebService", "..\..\Backend\ASPNETWebService\ASPNETWebService\ASPNETWebService.csproj", "{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,24 +43,27 @@ Global
 		{BA1699F0-8AD5-4B10-B0CA-B9617BE72E76}.Release|x86.ActiveCfg = Release|x86
 		{BA1699F0-8AD5-4B10-B0CA-B9617BE72E76}.Release|x86.Build.0 = Release|x86
 		{BA1699F0-8AD5-4B10-B0CA-B9617BE72E76}.Release|x86.Deploy.0 = Release|x86
-		{C24BC2FA-D423-4F0F-B2B0-E647B621683D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C24BC2FA-D423-4F0F-B2B0-E647B621683D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C24BC2FA-D423-4F0F-B2B0-E647B621683D}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{C24BC2FA-D423-4F0F-B2B0-E647B621683D}.Debug|ARM.Build.0 = Debug|Any CPU
-		{C24BC2FA-D423-4F0F-B2B0-E647B621683D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{C24BC2FA-D423-4F0F-B2B0-E647B621683D}.Debug|x64.Build.0 = Debug|Any CPU
-		{C24BC2FA-D423-4F0F-B2B0-E647B621683D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C24BC2FA-D423-4F0F-B2B0-E647B621683D}.Debug|x86.Build.0 = Debug|Any CPU
-		{C24BC2FA-D423-4F0F-B2B0-E647B621683D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C24BC2FA-D423-4F0F-B2B0-E647B621683D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C24BC2FA-D423-4F0F-B2B0-E647B621683D}.Release|ARM.ActiveCfg = Release|Any CPU
-		{C24BC2FA-D423-4F0F-B2B0-E647B621683D}.Release|ARM.Build.0 = Release|Any CPU
-		{C24BC2FA-D423-4F0F-B2B0-E647B621683D}.Release|x64.ActiveCfg = Release|Any CPU
-		{C24BC2FA-D423-4F0F-B2B0-E647B621683D}.Release|x64.Build.0 = Release|Any CPU
-		{C24BC2FA-D423-4F0F-B2B0-E647B621683D}.Release|x86.ActiveCfg = Release|Any CPU
-		{C24BC2FA-D423-4F0F-B2B0-E647B621683D}.Release|x86.Build.0 = Release|Any CPU
+		{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}.Debug|ARM.Build.0 = Debug|Any CPU
+		{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}.Debug|x64.Build.0 = Debug|Any CPU
+		{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}.Debug|x86.Build.0 = Debug|Any CPU
+		{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}.Release|ARM.ActiveCfg = Release|Any CPU
+		{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}.Release|ARM.Build.0 = Release|Any CPU
+		{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}.Release|x64.ActiveCfg = Release|Any CPU
+		{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}.Release|x64.Build.0 = Release|Any CPU
+		{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}.Release|x86.ActiveCfg = Release|Any CPU
+		{6AC7473D-9DC7-495D-8AD4-5F248D5D241F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C073186A-4061-40B9-97F8-01C7544144DB}
 	EndGlobalSection
 EndGlobal

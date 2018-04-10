@@ -186,7 +186,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
 #if NETSTD
 #else
-
         #region ASP.NET WebサービスのWeb参照
 
         /// <summary>ASP.NET WebサービスのWeb参照</summary>
@@ -238,8 +237,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
         #region WCF TCP/IPサービス
 
-#if NETSTD
-#else
         /// <summary>WCF TCP/IPサービス</summary>
         private IWCFTCPSvcForFx WCF_TCPIP;
 
@@ -254,7 +251,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
         }
 
         #endregion
-#endif
 
         #endregion
 
@@ -295,7 +291,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
         }
 
         #endregion
-
 #endif
 
         #endregion
@@ -411,7 +406,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     FrameworkExceptionMessage.PARAMETER_CHECK_ERROR[0],
                     String.Format(FrameworkExceptionMessage.PARAMETER_CHECK_ERROR[1],
                         String.Format(FrameworkExceptionMessage.PARAMETER_CHECK_ERROR_null, "serviceName")));
-
 #else
                 #region サービス呼び出し
 
@@ -888,7 +882,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
 #if NETSTD
 #else
-
         /// <summary>CreateProxy</summary>
         /// <param name="props">Dictionary(string, string)</param>
         /// <returns>WebProxy</returns>
@@ -1104,7 +1097,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
             return x509;
         }
-
 #endif
 
         #endregion

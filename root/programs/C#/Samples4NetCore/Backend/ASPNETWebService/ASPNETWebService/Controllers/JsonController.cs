@@ -111,7 +111,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/SelectCount")]
-        public async Task<HttpResponseMessage> SelectCount(WebApiParams param)
+        public async Task<HttpResponseMessage> SelectCount([FromForm] WebApiParams param)
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
@@ -167,7 +167,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/SelectAll_DT")]
-        public async Task<HttpResponseMessage> SelectAll_DT(WebApiParams param)
+        public async Task<HttpResponseMessage> SelectAll_DT([FromForm] WebApiParams param)
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
@@ -235,7 +235,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/SelectAll_DS")]
-        public async Task<HttpResponseMessage> SelectAll_DS(WebApiParams param)
+        public async Task<HttpResponseMessage> SelectAll_DS([FromForm] WebApiParams param)
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
@@ -303,7 +303,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/SelectAll_DR")]
-        public async Task<HttpResponseMessage> SelectAll_DR(WebApiParams param)
+        public async Task<HttpResponseMessage> SelectAll_DR([FromForm] WebApiParams param)
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
@@ -374,7 +374,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/SelectAll_DSQL")]
-        public async Task<HttpResponseMessage> SelectAll_DSQL(WebApiParams param)
+        public async Task<HttpResponseMessage> SelectAll_DSQL([FromForm] WebApiParams param)
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
@@ -445,7 +445,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/Select")]
-        public async Task<HttpResponseMessage> Select(WebApiParams param)
+        public async Task<HttpResponseMessage> Select([FromForm] WebApiParams param)
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
@@ -507,7 +507,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/Insert")]
-        public async Task<HttpResponseMessage> Insert(WebApiParams param)
+        public async Task<HttpResponseMessage> Insert([FromForm] WebApiParams param)
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
@@ -567,7 +567,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/Update")]
-        public async Task<HttpResponseMessage> Update(WebApiParams param)
+        public async Task<HttpResponseMessage> Update([FromForm] WebApiParams param)
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
@@ -628,7 +628,7 @@ namespace ASPNETWebService.Controllers
         /// <returns>戻り値</returns>
         [HttpPost]
         [Route("JsonController/Delete")]
-        public async Task<HttpResponseMessage> Delete(WebApiParams param)
+        public async Task<HttpResponseMessage> Delete([FromForm] WebApiParams param)
         {
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;

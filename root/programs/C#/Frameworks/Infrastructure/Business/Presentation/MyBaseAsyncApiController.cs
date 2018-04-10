@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：MyBaseApiControllerAsync (ActionFilterAttribute)
-//* クラス日本語名  ：非同期 ASP.NET WebAPI用 ベーククラス２（テンプレート）
+//* クラス名        ：MyBaseAsyncApiController (Filters)
+//* クラス日本語名  ：非同期 ASP.NET WebAPI用 ベーククラス２相当（テンプレート）
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -311,7 +311,7 @@ namespace Touryo.Infrastructure.Business.Presentation
                             new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress(authenticationContext.Request))
                         };
 
-                        // The request message contains valid credential
+                        // The request message contains valid credential.
                         authenticationContext.Principal = new ClaimsPrincipal(new List<ClaimsIdentity> { new ClaimsIdentity(claims, "Token") });
 
                         return;
@@ -333,7 +333,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             #region 未認証状態の場合の扱い
 
-            // The request message contains invalid credential
+            // The request message contains invalid credential.
             //context.ErrorResult = new UnauthorizedResult(new AuthenticationHeaderValue[0], context.Request);
 
             // 未認証状態のclaimsを作成格納
