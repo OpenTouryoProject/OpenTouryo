@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "UWP_Sample.Html", "UWP_Sample.Html\UWP_Sample.Html.jsproj", "{BA1699F0-8AD5-4B10-B0CA-B9617BE72E76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASPNETWebService", "..\..\Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\ASPNETWebService\ASPNETWebService.csproj", "{C24BC2FA-D423-4F0F-B2B0-E647B621683D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASPNETWebService", "..\WS_sample\ASPNETWebService\ASPNETWebService\ASPNETWebService.csproj", "{C24BC2FA-D423-4F0F-B2B0-E647B621683D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
