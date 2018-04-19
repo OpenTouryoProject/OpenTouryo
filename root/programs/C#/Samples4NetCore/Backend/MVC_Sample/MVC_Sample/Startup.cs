@@ -17,14 +17,23 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+using System;
+using System.IO;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Caching.Memory;
 
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc.Cors.Internal;
 
 using Touryo.Infrastructure.Framework.StdMigration;
@@ -110,7 +119,6 @@ namespace MVC_Sample
                 // 開発環境と 1-n ブラウザの間の通信チャネルを作成
                 // https://blogs.msdn.microsoft.com/chack/2013/12/16/visual-studio-2013-1/
                 app.UseBrowserLink();
-
             }
             else
             {
@@ -120,6 +128,16 @@ namespace MVC_Sample
             #endregion
 
             #region パイプラインに追加
+
+            //// Cookieを使用する。
+            //app.UseCookiePolicy(new CookiePolicyOptions()
+            //{
+            //    HttpOnly = HttpOnlyPolicy.Always,
+            //    MinimumSameSitePolicy = SameSiteMode.Strict,
+            //});
+
+            // Sessionを使用する。
+            app.UseSession();
 
             // HttpContextのマイグレーション用
             app.UseHttpContextAccessor();
@@ -136,7 +154,7 @@ namespace MVC_Sample
             });
 
             // UseCorsでAllowAllOriginsを指定。
-            app.UseCors("AllowAllOrigins");
+            //app.UseCors("AllowAllOrigins");
 
             // /wwwroot（既定の）の
             // 静的ファイルをパイプラインに追加
@@ -144,6 +162,9 @@ namespace MVC_Sample
 
             // Identity
             //app.UseAuthentication();
+
+            // Identityではなく、CookieAuthentication
+            app.UseAuthentication();
 
             #endregion
         }
@@ -165,6 +186,12 @@ namespace MVC_Sample
         {
             // 構成情報から、AppConfiguration SectionをAppConfiguration Classへバインドするようなケース。
             //services.Configure<AppConfiguration>(Configuration.GetSection("AppConfiguration"));
+
+            // Sessionを使用する。
+            services.AddDistributedMemoryCache(); // 開発用
+            //services.AddDistributedSqlServerCache();
+            //services.AddDistributedRedisCache();
+            services.AddSession();
 
             // HttpContextのマイグレーション用
             services.AddHttpContextAccessor();
@@ -188,36 +215,25 @@ namespace MVC_Sample
             //services.AddTransient<IEmailSender, AuthMessageSender>();
             //services.AddTransient<ISmsSender, AuthMessageSender>();
 
-            // MVC(WebAPIも含む)をサービス コンテナに追加
-            // AddWebApiConventionsは、Web API 2 Controllerの移植を容易にする。
-            services.AddMvc().AddWebApiConventions();
+            services.AddMvc();
 
-            services.AddMvc(options =>
+            // Forms認証
+            services.AddAuthentication(options =>
             {
-                // FilterをグローバルにすべてのControllerで有効にする場合
-                //options.Filters.AddService(typeof(MyActionFilter));
-                // CROSをグローバルにすべてのControllerで有効にする場合
-                options.Filters.Add(new CorsAuthorizationFilterFactory("AllowSpecificOrigin"));
-            });
-
-            // CORSをサービス コンテナに追加
-            // https://docs.microsoft.com/ja-jp/aspnet/core/security/cors
-            services.AddCors(options =>
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
             {
-                options.AddPolicy("AllowAllOrigins",
-                    builder =>
-            {
-                        builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
-                    });
-
-                //options.AddPolicy("AllowSpecificOrigins",
-                //builder =>
-                //{
-                //    // URL は末尾にスラッシュを付けずに指定
-                //    builder.WithOrigins(
-                //        "http://example.com",
-                //        "http://www.contoso.com");
-                //});
+                options.LoginPath = new PathString("/Home/Login");
+                //options.LogoutPath = new PathString("/Home/Logout");
+                options.AccessDeniedPath = new PathString("/Home/Error");
+                options.ReturnUrlParameter = "ReturnUrl";
+                options.ExpireTimeSpan = TimeSpan.FromHours(1);
+                options.SlidingExpiration = true;
+                options.Cookie.HttpOnly = true;
+                //options.DataProtectionProvider = DataProtectionProvider.Create(new DirectoryInfo(@"C:\artifacts"));
             });
 
             #endregion

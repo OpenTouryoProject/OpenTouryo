@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：MyBaseAsyncApiController (Filters)
-//* クラス日本語名  ：非同期 ASP.NET WebAPI用 ベーククラス２相当（テンプレート）
+//* クラス名        ：MyBaseAsyncApiControllerCore (Filters)
+//* クラス日本語名  ：非同期 ASP.NET Core WebAPI用 ベーククラス２相当（テンプレート）
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
