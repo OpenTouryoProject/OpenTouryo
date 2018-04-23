@@ -33,6 +33,7 @@
 using System;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -130,7 +131,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             #region OnActionExecuting に相当する処理
 
-            //this.GetRouteData();
+            this.GetRouteData(context.RouteData);
 
             // カスタム認証処理 --------------------------------------------
             // ・・・
@@ -255,6 +256,16 @@ namespace Touryo.Infrastructure.Business.Presentation
             }
 
             // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+        }
+
+        /// <summary>ルーティング情報を取得する</summary>
+        /// <param name="routeData">RouteData</param>
+        private void GetRouteData(RouteData routeData)
+        {
+            string[] temp = null;
+            temp = routeData.Values["controller"].ToString().Split('.');
+            this.ControllerName = routeData.Values["controller"].ToString();
+            this.ActionName = routeData.Values["action"].ToString();
         }
 
         /// <summary>キャッシュ制御処理（スイッチ付き）</summary>

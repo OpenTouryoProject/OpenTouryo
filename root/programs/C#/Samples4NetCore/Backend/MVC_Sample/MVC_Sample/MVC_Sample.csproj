@@ -5,21 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Views\Crud2\**" />
     <Compile Remove="Views\Error\**" />
-    <Content Remove="Views\Crud2\**" />
     <Content Remove="Views\Error\**" />
-    <EmbeddedResource Remove="Views\Crud2\**" />
     <EmbeddedResource Remove="Views\Error\**" />
-    <None Remove="Views\Crud2\**" />
     <None Remove="Views\Error\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\Crud1Controller.cs" />
-    <Compile Remove="Controllers\Crud2Controller.cs" />
     <Compile Remove="Controllers\ErrorController.cs" />
-    <Compile Remove="Controllers\PingController.cs" />
   </ItemGroup>
 
   <ItemGroup>

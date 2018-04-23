@@ -19,9 +19,7 @@
 
 using MVC_Sample.Models.ViewModels;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Security.Claims;
@@ -37,10 +35,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
-using Touryo.Infrastructure.Framework.Authentication;
-using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Public.Security;
 
 namespace MVC_Sample.Controllers
 {
