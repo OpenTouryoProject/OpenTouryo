@@ -1,0 +1,21 @@
+{
+  "name": "mvc_sample",
+  "homepage": "https://github.com/OpenTouryoProject/OpenTouryo",
+  "authors": [
+    "OSS Consortium .net subcommittee"
+  ],
+  "description": "Sample of Core MVC",
+  "main": "",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "Font-Awesome": "^5.0.10"
+  }
+}
