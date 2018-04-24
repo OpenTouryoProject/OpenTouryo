@@ -31,6 +31,9 @@
 //**********************************************************************************
 
 using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Touryo.Infrastructure.Framework.StdMigration;
 using Microsoft.AspNetCore.Http;
@@ -47,117 +50,153 @@ namespace Touryo.Infrastructure.Framework.Presentation
     /// <remarks>（オーバーライドして）自由に利用できる。</remarks>
     public class BaseMVControllerCore : Controller
     {
+        /// <summary>ControllerName</summary>
+        protected string ControllerName = "";
+
+        /// <summary>ActionName</summary>
+        protected string ActionName = "";
+
+        ///// <summary>
+        ///// アクション メソッドの呼び出し前に呼び出されます。  
+        ///// Controller.OnActionExecuting メソッド (Microsoft.AspNetCore.Mvc)
+        ///// https://docs.microsoft.com/ja-jp/dotnet/api/microsoft.aspnetcore.mvc.controller.onactionexecuting
+        ///// </summary>
+        ///// <param name="filterContext">
+        ///// 型: Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext
+        ///// 現在の要求およびアクションに関する情報。
+        ///// </param>
+        //public override void OnActionExecuting(ActionExecutingContext filterContext)
+        //{
+        //    // OnActionExecutionAsyncに移行
+        //}
+
+        ///// <summary>
+        ///// アクション メソッドの呼び出し後に呼び出されます。  
+        ///// Controller.OnActionExecuted メソッド (Microsoft.AspNetCore.Mvc)
+        ///// https://docs.microsoft.com/ja-jp/dotnet/api/microsoft.aspnetcore.mvc.controller.onActionexecuted
+        ///// </summary>
+        ///// <param name="filterContext">
+        ///// 型: Microsoft.AspNetCore.Mvc.Filters.ActionExecutedContext
+        ///// 現在の要求およびアクションに関する情報。
+        ///// </param>
+        //public override void OnActionExecuted(ActionExecutedContext filterContext)
+        //{
+        //    // OnActionExecutionAsyncに移行
+        //}
+
         /// <summary>
-        /// アクション メソッドの呼び出し前に呼び出されます。  
-        /// Controller.OnActionExecuting メソッド (Microsoft.AspNetCore.Mvc)
-        /// https://docs.microsoft.com/ja-jp/dotnet/api/microsoft.aspnetcore.mvc.controller.onactionexecuting
+        /// Controller.OnActionExecutionAsync メソッド (Microsoft.AspNetCore.Mvc)
+        /// https://docs.microsoft.com/ja-jp/dotnet/api/microsoft.aspnetcore.mvc.controller.onactionexecutionasync
         /// </summary>
-        /// <param name="filterContext">
-        /// 型: Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext
-        /// 現在の要求およびアクションに関する情報。
-        /// </param>
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        /// <param name="context">Filters.ActionExecutedContext</param>
+        /// <param name="next">ActionExecutionDelegate</param>
+        /// <returns>Task</returns>
+        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            // Calling base class method.
-            base.OnActionExecuting(filterContext);
+            #region OnActionExecuted に相当する処理
 
-            #region セッションタイムアウト検出処理（IsNewSessionが無いので要検討）
+            // セッションタイムアウト検出処理
 
-            //// セッションタイムアウト検出処理の定義を取得
-            //string sessionTimeOutCheck =
-            //    GetConfigParameter.GetConfigValue(FxLiteral.SESSION_TIMEOUT_CHECK);
+            // セッションタイムアウト検出処理の定義を取得
+            string sessionTimeOutCheck =
+                GetConfigParameter.GetConfigValue(FxLiteral.SESSION_TIMEOUT_CHECK);
 
-            //// デフォルト値対策：設定なし（null）の場合の扱いを決定
-            //if (sessionTimeOutCheck == null)
-            //{
-            //    // OFF扱い
-            //    sessionTimeOutCheck = FxLiteral.OFF;
-            //}
+            // デフォルト値対策：設定なし（null）の場合の扱いを決定
+            if (sessionTimeOutCheck == null)
+            {
+                // OFF扱い
+                sessionTimeOutCheck = FxLiteral.OFF;
+            }
 
-            //// ON / OFF
-            //if (sessionTimeOutCheck.ToUpper() == FxLiteral.ON)
-            //{
-            //    // セッションタイムアウト検出処理（ON）
+            // ON / OFF
+            if (sessionTimeOutCheck.ToUpper() == FxLiteral.ON)
+            {
+                // セッションタイムアウト検出処理（ON）
 
-            //    // セッション状態の確認
-            //    if (Session.IsNewSession)
-            //    {
-            //        // 新しいセッションが開始された
+                // セッション状態の確認
+                if (MyHttpContext.Current.Session.IsAvailable &&
+                    (!MyHttpContext.Current.Session.Keys.Any(key => key == "IsNewSession")))
+                {
+                    IRequestCookieCollection requestCookies = MyHttpContext.Current.Request.Cookies;
+                    IResponseCookies responseCookies = MyHttpContext.Current.Response.Cookies;
 
-            //        // セッションタイムアウト検出用Cookieをチェック
-            //        HttpCookie cookie = Request.Cookies.Get(FxHttpCookieIndex.SESSION_TIMEOUT);
+                    // 新しいセッションが開始された
+                    MyHttpContext.Current.Session.SetInt32("IsNewSession", 0);
 
-            //        if (cookie == null)
-            //        {
-            //            // セッションタイムアウト検出用Cookie無し → 新規のアクセス
+                    // セッションタイムアウト検出用Cookieをチェック
+                    
+                    if (!requestCookies.Keys.Any(key => key == FxHttpCookieIndex.SESSION_TIMEOUT))
+                    {
+                        // セッションタイムアウト検出用Cookie無し → 新規のアクセス
 
-            //            // セッションタイムアウト検出用Cookieを新規作成（値は空文字以外、何でも良い）
+                        // セッションタイムアウト検出用Cookieを新規作成（値は空文字以外、何でも良い）
+                        FxCmnFunction.CreateCookieForSessionTimeoutDetection();
+                        MyHttpContext.Current.Session.SetString(FxHttpSessionIndex.DUMMY, "dummy");
+                    }
+                    else
+                    {
+                        // セッションタイムアウト検出用Cookie有り → セッションタイムアウトの可能性
 
-            //            // Set-Cookie HTTPヘッダをレスポンス
-            //            Response.Cookies.Set(FxCmnFunction.CreateCookieForSessionTimeoutDetection());
-            //            Session[FxHttpSessionIndex.DUMMY] = "dummy";
-            //        }
-            //        else
-            //        {
-            //            // セッションタイムアウト検出用Cookie有り
+                        if (string.IsNullOrEmpty(requestCookies.Get(FxHttpCookieIndex.SESSION_TIMEOUT)))
+                        {
+                            // セッションタイムアウト発生後の新規アクセス
 
-            //            if (cookie.Value == "")
-            //            {
-            //                // セッションタイムアウト発生後の新規アクセス
+                            // 値が消去されている（空文字に設定されている）場合は、
+                            // 一度エラー or セッションタイムアウトになった後の新規のアクセスである。
 
-            //                // だが、値が消去されている（空文字に設定されている）場合は、
-            //                // 一度エラー or セッションタイムアウトになった後の新規のアクセスである。
+                            // セッションタイムアウト検出用Cookieを再作成（値は空文字以外、何でも良い）
+                            FxCmnFunction.CreateCookieForSessionTimeoutDetection();
+                            MyHttpContext.Current.Session.SetString(FxHttpSessionIndex.DUMMY, "dummy");
+                        }
+                        else
+                        {
+                            // セッションタイムアウト発生
 
-            //                // セッションタイムアウト検出用Cookieを再作成（値は空文字以外、何でも良い）
+                            // セッションタイムアウト検出用Cookieを消去
+                            // ASP.NETCoreの開発者例外ページには例外処理を差し込めないのでココに実装。
+                            FxCmnFunction.DeleteCookieForSessionTimeoutDetection();
 
-            //                // Set-Cookie HTTPヘッダをレスポンス
-            //                Response.Cookies.Set(FxCmnFunction.CreateCookieForSessionTimeoutDetection());
-            //                Session[FxHttpSessionIndex.DUMMY] = "dummy";
-            //            }
-            //            else
-            //            {
-            //                // セッションタイムアウト発生
+                            // セッションタイムアウト例外を発生させる
+                            throw new FrameworkException(
+                                FrameworkExceptionMessage.SESSION_TIMEOUT[0],
+                                FrameworkExceptionMessage.SESSION_TIMEOUT[1]);
+                        }
+                    }
+                }
+                else
+                {
+                    // セッション継続中
+                }
+            }
+            else if (sessionTimeOutCheck.ToUpper() == FxLiteral.OFF)
+            {
+                // セッションタイムアウト検出処理（OFF）
+            }
+            else
+            {
+                // パラメータ・エラー（書式不正）
+                throw new FrameworkException(
+                    FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH1[0],
+                    String.Format(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH1[1],
+                        FxLiteral.SESSION_TIMEOUT_CHECK));
+            }
 
-            //                // エラー画面で以下の処理を実行する。
-            //                // ・セッションタイムアウト検出用Cookieを消去
-            //                // ・セッションを消去
+            #endregion
 
-            //                // セッションタイムアウト例外を発生させる
-            //                throw new FrameworkException(
-            //                    FrameworkExceptionMessage.SESSION_TIMEOUT[0],
-            //                    FrameworkExceptionMessage.SESSION_TIMEOUT[1]);
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        // セッション継続中
-            //    }
-            //}
-            //else if (sessionTimeOutCheck.ToUpper() == FxLiteral.OFF)
-            //{
-            //    // セッションタイムアウト検出処理（OFF）
-            //}
-            //else
-            //{
-            //    // パラメータ・エラー（書式不正）
-            //    throw new FrameworkException(
-            //        FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH1[0],
-            //        String.Format(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH1[1],
-            //            FxLiteral.SESSION_TIMEOUT_CHECK));
-            //}
+            await base.OnActionExecutionAsync(context, next);
 
+            #region OnActionExecuted に相当する処理
             #endregion
         }
 
-        ///// <summary>セッションを消去</summary>
-        ///// <remarks>併せてSessionタイムアウト検出用Cookieを消去</remarks>
-        //protected void FxSessionAbandon()
-        //{
-        //    // Set-Cookie HTTPヘッダをレスポンス
-        //    Response.Cookies.Set(FxCmnFunction.DeleteCookieForSessionTimeoutDetection());
-        //    // セッションを消去
-        //    Session.Abandon();
-        //}
+        /// <summary>セッションを消去</summary>
+        /// <remarks>併せてSessionタイムアウト検出用Cookieを消去</remarks>
+        protected void FxSessionAbandon()
+        {
+            // セッションタイムアウト検出用Cookieを消去
+            FxCmnFunction.DeleteCookieForSessionTimeoutDetection();
+            // セッションを消去
+            MyHttpContext.Current.Session.Clear();
+        }
     }
 }

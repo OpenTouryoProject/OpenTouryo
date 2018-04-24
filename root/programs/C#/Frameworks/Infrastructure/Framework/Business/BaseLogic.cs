@@ -164,12 +164,12 @@ namespace Touryo.Infrastructure.Framework.Business
 
         #endregion
 
-            /// <summary>
-            /// 業務コード呼び出しメソッド（業務ロジックの入り口）
-            /// </summary>
-            /// <param name="parameterValue">引数クラス</param>
-            /// <returns>戻り値クラス</returns>
-            /// <remarks>画面コード クラスから利用する。</remarks>
+        /// <summary>
+        /// 業務コード呼び出しメソッド（業務ロジックの入り口）
+        /// </summary>
+        /// <param name="parameterValue">引数クラス</param>
+        /// <returns>戻り値クラス</returns>
+        /// <remarks>画面コード クラスから利用する。</remarks>
         public BaseReturnValue DoBusinessLogic(BaseParameterValue parameterValue)
         {
             // IsolationLevelEnum.Userで呼び出す

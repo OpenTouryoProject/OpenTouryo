@@ -117,16 +117,6 @@ namespace MVC_Sample.Controllers
             return this.View(model);
         }
 
-        /// <summary>
-        /// Get: /Home/Error
-        /// </summary>
-        /// <returns>IActionResult</returns>
-        [HttpGet]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
         #endregion
 
         #region 認証必要

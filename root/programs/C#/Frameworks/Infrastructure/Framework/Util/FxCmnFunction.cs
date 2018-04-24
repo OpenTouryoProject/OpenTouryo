@@ -946,7 +946,7 @@ namespace Touryo.Infrastructure.Framework.Util
             CookieOptions cookieOptions = new CookieOptions();
 
             // Path属性を設定
-            string applicationPath = PlatformServices.Default.Application.ApplicationBasePath;
+            string applicationPath = MyHttpContext.Current.Request.PathBase;
             if (applicationPath == "/")
             {
                 // 「//」になってしまうので、「/」になるよう修正
@@ -954,7 +954,7 @@ namespace Touryo.Infrastructure.Framework.Util
             }
             else
             {
-                // 例えば「/ProjectX_sample」+「/」＝「/ProjectX_sample/」となる。
+                // 例えば「/WebForms_Sample」+「/」＝「/WebForms_Sample/」となる。
                 cookieOptions.Path = applicationPath + "/";
             }
 
@@ -980,7 +980,7 @@ namespace Touryo.Infrastructure.Framework.Util
             CookieOptions cookieOptions = new CookieOptions();
 
             // Path属性を設定
-            string applicationPath = PlatformServices.Default.Application.ApplicationBasePath;
+            string applicationPath = MyHttpContext.Current.Request.PathBase;
             if (applicationPath == "/")
             {
                 // 「//」になってしまうので、「/」になるよう修正
@@ -988,7 +988,7 @@ namespace Touryo.Infrastructure.Framework.Util
             }
             else
             {
-                // 例えば「/ProjectX_sample」+「/」＝「/ProjectX_sample/」となる。
+                // 例えば「/WebForms_Sample」+「/」＝「/WebForms_Sample/」となる。
                 cookieOptions.Path = applicationPath + "/";
             }
 
@@ -1022,7 +1022,7 @@ namespace Touryo.Infrastructure.Framework.Util
             }
             else
             {
-                // 例えば「/ProjectX_sample」+「/」＝「/ProjectX_sample/」となる。
+                // 例えば「/WebForms_Sample」+「/」＝「/WebForms_Sample/」となる。
                 newCookie.Path = HttpContext.Current.Request.ApplicationPath + "/";
             }
 
@@ -1056,7 +1056,7 @@ namespace Touryo.Infrastructure.Framework.Util
             }
             else
             {
-                // 例えば「/ProjectX_sample」+「/」＝「/ProjectX_sample/」となる。
+                // 例えば「/WebForms_Sample」+「/」＝「/WebForms_Sample/」となる。
                 newCookie.Path = HttpContext.Current.Request.ApplicationPath + "/";
             }
 

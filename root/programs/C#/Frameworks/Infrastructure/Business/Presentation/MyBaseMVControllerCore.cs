@@ -80,12 +80,6 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <summary>UserInfo</summary>
         protected MyUserInfo UserInfo;
 
-        /// <summary>ControllerName</summary>
-        protected string ControllerName = "";
-
-        /// <summary>ActionName</summary>
-        protected string ActionName = "";
-
         #region OnAction
 
         ///// <summary>
@@ -176,7 +170,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             #endregion
 
-            await next();
+            await base.OnActionExecutionAsync(context, next);
 
             #region OnActionExecuted に相当する処理
 

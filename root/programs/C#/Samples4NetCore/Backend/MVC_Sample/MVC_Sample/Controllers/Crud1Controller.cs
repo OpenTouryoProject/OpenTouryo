@@ -35,6 +35,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Business.Presentation;
+using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Public.Db;
 
 namespace MVC_Sample.Controllers
@@ -45,6 +46,10 @@ namespace MVC_Sample.Controllers
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class Crud1Controller : MyBaseMVControllerCore
     {
+        //string ControllerName = "Crud1Controller";
+        //string ActionName = "SelectCount";
+        //MyUserInfo UserInfo = new MyUserInfo("aaa", "bbb");
+
         /// <summary>
         /// 画面の初期表示
         /// GET: /Crud2/

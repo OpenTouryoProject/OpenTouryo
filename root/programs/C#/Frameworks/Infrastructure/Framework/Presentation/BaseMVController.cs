@@ -94,25 +94,21 @@ namespace Touryo.Infrastructure.Framework.Presentation
                         // セッションタイムアウト検出用Cookie無し → 新規のアクセス
 
                         // セッションタイムアウト検出用Cookieを新規作成（値は空文字以外、何でも良い）
-
-                        // Set-Cookie HTTPヘッダをレスポンス
                         Response.Cookies.Set(FxCmnFunction.CreateCookieForSessionTimeoutDetection());
                         Session[FxHttpSessionIndex.DUMMY] = "dummy";
                     }
                     else
                     {
-                        // セッションタイムアウト検出用Cookie有り
+                        // セッションタイムアウト検出用Cookie有り → セッションタイムアウトの可能性
 
                         if (cookie.Value == "")
                         {
                             // セッションタイムアウト発生後の新規アクセス
 
-                            // だが、値が消去されている（空文字に設定されている）場合は、
+                            // 値が消去されている（空文字に設定されている）場合は、
                             // 一度エラー or セッションタイムアウトになった後の新規のアクセスである。
 
                             // セッションタイムアウト検出用Cookieを再作成（値は空文字以外、何でも良い）
-
-                            // Set-Cookie HTTPヘッダをレスポンス
                             Response.Cookies.Set(FxCmnFunction.CreateCookieForSessionTimeoutDetection());
                             Session[FxHttpSessionIndex.DUMMY] = "dummy";
                         }
@@ -156,7 +152,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         /// <remarks>併せてSessionタイムアウト検出用Cookieを消去</remarks>
         protected void FxSessionAbandon()
         {
-            // Set-Cookie HTTPヘッダをレスポンス
+            // セッションタイムアウト検出用Cookieを消去
             Response.Cookies.Set(FxCmnFunction.DeleteCookieForSessionTimeoutDetection());
             // セッションを消去
             Session.Abandon();

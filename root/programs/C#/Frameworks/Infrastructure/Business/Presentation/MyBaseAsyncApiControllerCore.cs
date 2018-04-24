@@ -81,9 +81,9 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// アクション メソッドの呼び出し前に発生します(netcore)。
         /// https://docs.microsoft.com/ja-jp/dotnet/api/microsoft.aspnetcore.mvc.filters.actionfilterattribute.onactionexecutionasync
         /// </summary>
-        /// <param name="actionContext">HttpActionContext</param>
+        /// <param name="context">HttpActionContext</param>
         /// <param name="next">ActionExecutionDelegate</param>
-        public override async Task OnActionExecutionAsync(ActionExecutingContext actionContext, ActionExecutionDelegate next)
+        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             #region OnActionExecutingAsyncから移行
 
@@ -102,10 +102,7 @@ namespace Touryo.Infrastructure.Business.Presentation
             // 性能測定開始
             this.perfRec = new PerformanceRecorder();
             this.perfRec.StartsPerformanceRecord();
-
-            // Calling base class method.
-            await base.OnActionExecutionAsync(actionContext, next);
-
+            
             // ------------
             // メッセージ部
             // ------------
@@ -129,9 +126,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             #endregion
 
-            // do something before the action executes
-            var resultContext = await next();
-            // do something after the action executes; resultContext.Result will be set
+            await base.OnActionExecutionAsync(context, next);
 
             #region OnActionExecutedAsyncから移行
 

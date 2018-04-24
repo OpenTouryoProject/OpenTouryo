@@ -45,7 +45,7 @@ namespace Touryo.Infrastructure.Framework.StdMigration
         /// <returns>string value</returns>
         public static string Get(this IRequestCookieCollection requestCookies, string key)
         {
-            return requestCookies["Key"];
+            return requestCookies[key];
         }
 
         /// <summary>Set the cookie拡張メソッド</summary>
@@ -54,6 +54,7 @@ namespace Touryo.Infrastructure.Framework.StdMigration
         /// <param name="value">string</param>
         public static void Set(this IResponseCookies responseCookies, string key, string value)
         {
+            responseCookies.Delete(key);
             responseCookies.Append(key, value);
         }
 
@@ -66,6 +67,8 @@ namespace Touryo.Infrastructure.Framework.StdMigration
         {
             CookieOptions option = new CookieOptions();
             option.Expires = DateTime.Now.AddMinutes(expireTime);
+
+            responseCookies.Delete(key);
             responseCookies.Append(key, value, option);
         }
 
@@ -76,6 +79,7 @@ namespace Touryo.Infrastructure.Framework.StdMigration
         /// <param name="option">CookieOptions</param>
         public static void Set(this IResponseCookies responseCookies, string key, string value, CookieOptions option)
         {
+            responseCookies.Delete(key);
             responseCookies.Append(key, value, option);
         }
 

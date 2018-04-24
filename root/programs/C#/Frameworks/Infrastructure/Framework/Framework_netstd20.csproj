@@ -27,7 +27,6 @@
     <Compile Remove="Presentation\FxEventArgs.cs" />
     <Compile Remove="Properties\AssemblyInfo.cs" />
     <Compile Remove="Transmission\IWCFTCPSvcForFx.cs" />
-    <Compile Remove="Util\FxHttpContextIndex.cs" />
     <Compile Remove="Util\FxHttpQueryStringIndex.cs" />
     <Compile Remove="Util\FxSessionUtil.cs" />
   </ItemGroup>

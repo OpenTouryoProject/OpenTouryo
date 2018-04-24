@@ -108,9 +108,9 @@ namespace MVC_Sample
                 // Developmentモードの場合
 
                 // エラー画面
-                //app.UseDeveloperExceptionPage(); // 使用しない。
-                //app.UseDatabaseErrorPage(); // 使用しない。
-               
+                //app.UseDeveloperExceptionPage();
+                //app.UseDatabaseErrorPage();
+
                 // 簡易ログ出力
                 loggerFactory.AddConsole(Configuration.GetSection("Logging"));
                 loggerFactory.AddDebug();
@@ -123,8 +123,13 @@ namespace MVC_Sample
             else
             {
                 // Developmentモードでない場合
-                // ・・・
+
+                // カスタム例外処理ページ
+                //app.UseExceptionHandler(GetConfigParameter.GetConfigValue("FxErrorScreenPath"));
+                // ステータス コード ページ
+                //app.UseStatusCodePages();
             }
+
             #endregion
 
             #region パイプラインに追加
@@ -137,13 +142,23 @@ namespace MVC_Sample
             //});
 
             // Sessionを使用する。
-            app.UseSession();
+            app.UseSession(new SessionOptions()
+            {
+                IdleTimeout = TimeSpan.FromSeconds(20),
+                IOTimeout = TimeSpan.FromSeconds(10),
+                Cookie = new CookieBuilder()
+                {
+                    //Expiration = TimeSpan.FromSeconds(xx),
+                    HttpOnly = true,
+                    Name = "mvc_session",
+                    Path = "/",
+                    SameSite= SameSiteMode.Strict,
+                    SecurePolicy = CookieSecurePolicy.SameAsRequest
+                }
+            });
 
             // HttpContextのマイグレーション用
             app.UseHttpContextAccessor();
-
-            // エラー画面
-            app.UseExceptionHandler("/Home/Error");
 
             // MVCをパイプラインに追加（routesも設定）
             app.UseMvc(routes =>
@@ -187,10 +202,27 @@ namespace MVC_Sample
             // 構成情報から、AppConfiguration SectionをAppConfiguration Classへバインドするようなケース。
             //services.Configure<AppConfiguration>(Configuration.GetSection("AppConfiguration"));
 
+            #region Development or それ以外のモード
+
+            if (this.HostingEnvironment.IsDevelopment())
+            {
+                // Developmentモードの場合
+
+                // Sessionのモード
+                services.AddDistributedMemoryCache(); // 開発用
+            }
+            else
+            {
+                // Developmentモードでない場合
+
+                // Sessionのモード
+                //services.AddDistributedSqlServerCache();
+                //services.AddDistributedRedisCache();
+            }
+
+            #endregion
+
             // Sessionを使用する。
-            services.AddDistributedMemoryCache(); // 開発用
-            //services.AddDistributedSqlServerCache();
-            //services.AddDistributedRedisCache();
             services.AddSession();
 
             // HttpContextのマイグレーション用
@@ -228,7 +260,7 @@ namespace MVC_Sample
             {
                 options.LoginPath = new PathString("/Home/Login");
                 //options.LogoutPath = new PathString("/Home/Logout");
-                options.AccessDeniedPath = new PathString("/Home/Error");
+                options.AccessDeniedPath = new PathString(GetConfigParameter.GetConfigValue("FxErrorScreenPath"));
                 options.ReturnUrlParameter = "ReturnUrl";
                 options.ExpireTimeSpan = TimeSpan.FromHours(1);
                 options.SlidingExpiration = true;
