@@ -42,13 +42,12 @@ namespace MVC_Sample.Controllers
     public class ErrorController : MyBaseMVControllerCore
     {
         /// <summary>
-        /// GET: Home
+        /// GET: Error/Index
         /// </summary>
         /// <returns>IActionResult</returns>
         [HttpGet]
         [AllowAnonymous]
-        [RouteAttribute("Error/Index/{code?}")]
-        public IActionResult Index(int? code = null)
+        public IActionResult Index()
         {
             return View(new ErrorViewModel
             {
