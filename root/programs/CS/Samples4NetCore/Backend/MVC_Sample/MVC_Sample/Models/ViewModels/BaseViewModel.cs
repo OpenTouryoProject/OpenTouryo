@@ -31,7 +31,11 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 using Touryo.Infrastructure.Business.Util;
+using Touryo.Infrastructure.Framework.StdMigration;
 using Touryo.Infrastructure.Framework.Util;
 
 namespace MVC_Sample.Models.ViewModels
@@ -45,14 +49,23 @@ namespace MVC_Sample.Models.ViewModels
         {
             get
             {
-                MyUserInfo myUserInfo = (MyUserInfo)UserInfoHandle.GetUserInformation();
-                if (myUserInfo == null)
+                //MyUserInfo myUserInfo = (MyUserInfo)UserInfoHandle.GetUserInformation();
+
+                // ClaimsIdentityを使用できるようになったのでMyUserInfoは卒業。
+
+                AuthenticateResult authenticateInfo =
+                    AuthenticationHttpContextExtensions.AuthenticateAsync(
+                        MyHttpContext.Current, CookieAuthenticationDefaults.AuthenticationScheme).Result;
+                
+                string userName = authenticateInfo.Principal?.Identity?.Name; // null 条件演算子
+
+                if (string.IsNullOrEmpty(userName))
                 {
                     return "anonymous";
                 }
                 else
                 {
-                    return myUserInfo.UserName;
+                    return userName;
                 }
                 
             }

@@ -91,7 +91,7 @@ namespace MVC_Sample.Controllers
                     ClaimsIdentity userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     ClaimsPrincipal userPrincipal = new ClaimsPrincipal(userIdentity);
 
-                    //step3 : login
+                    // サイン アップする。
                     await AuthenticationHttpContextExtensions.SignInAsync(
                         this.HttpContext, CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal);
 
@@ -136,9 +136,12 @@ namespace MVC_Sample.Controllers
         /// </summary>
         /// <returns>IActionResult</returns>
         [HttpGet]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
             //FormsAuthentication.SignOut();
+            await AuthenticationHttpContextExtensions.SignOutAsync(
+                this.HttpContext, CookieAuthenticationDefaults.AuthenticationScheme);
+
             return this.Redirect(Url.Action("Index", "Home"));
         }
 
