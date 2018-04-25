@@ -39,7 +39,7 @@ Open 棟梁に同梱されるサンプルアプリケーションの実行手順
 ### データプロバイダの配置
 Open 棟梁がサポートするデータベースのデータプロバイダを入手し、以下のフォルダに配置します。
 ```txt
-C:\root\programs\C#\Frameworks\Infrastructure\Public\Dll
+C:\root\programs\CS\Frameworks\Infrastructure\Public\Dll
 ```
 
 Open 棟梁が現在サポートしているデータベースと、対応するデータプロバイダは以下のとおりです。
@@ -84,7 +84,7 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
 これらの一連のビルドプロセスをまとめたバッチファイルを実行します。
 
 ビルドバッチファイルは、以下のフォルダにあります。
-- C:\root\programs\C#  
+- C:\root\programs\CS  
 - C:\root\programs\VB
 
 実行するバッチファイルは、以下の表のとおりです。
@@ -106,7 +106,7 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
   </thead>
   <tbody>
     <tr>
-      <td rowspan="18" style="vertical-align: top">C:\root\programs\C#</td><td>1_DeleteDir.bat</td><td>ビルドによってできたフォルダを削除 (クリーン) する。</td><td>○</td><td>○</td>
+      <td rowspan="18" style="vertical-align: top">C:\root\programs\CS</td><td>1_DeleteDir.bat</td><td>ビルドによってできたフォルダを削除 (クリーン) する。</td><td>○</td><td>○</td>
     </tr>
     <tr>
       <td>2_DeleteFile.bat</td><td>一時ファイルなどを削除 (クリーン) する。</td><td>○</td><td>○</td>
@@ -211,13 +211,13 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
 - 必要であれば、環境に合わせて、z_Common.bat 内の BUILDFILEPATH を書き換えてください。  
 
 - Open 棟梁 が利用するライブラリは、NuGet 経由でダウンロードします。このため、プロキシ環境では、正常に NuGet ライブラリがダウンロードできないことがあります。プロキシ環境をお使いの場合は、以下のように http_proxy 環境変数を定義してください。
-    - C:\root\programs\C#\z_Common.bat および C:\root\programs\VB\z_Common.bat を、テキストエディタで開きます。
+    - C:\root\programs\CS\z_Common.bat および C:\root\programs\VB\z_Common.bat を、テキストエディタで開きます。
     - 既定では、http_proxy 環境変数の定義部分はコメントアウトされていますので、"@rem" を削除して、このコメントを解除します。
     - http_proxy 環境変数に、お使いのプロキシ情報を設定してください。
 
 - ビルド時に以下のエラーが発生した場合は、Windows 8 用の Windows SDK をインストールしてください。([Open 棟梁の issue](https://github.com/OpenTouryoProject/OpenTouryoTemplates/issues/48#issuecomment-241349223) が参考になります。)
 ```
-C:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(2863,5): error MSB3086: タスクは SdkToolsPath "" またはレジストリ キー "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v8.0A\WinSDK-NetFx40Tools-x86" を使用して "AL.exe"を見つけられませんでした。SdkToolsPath が設定されていること、SdkToolsPath の下の適切なプロセッサ固有の場所にツールが存在すること、および Microsoft Windows SDK がインストールされていることを確認してください。 [C:\root\programs\C#\Frameworks\Infrastructure\Public\Public.csproj]
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(2863,5): error MSB3086: タスクは SdkToolsPath "" またはレジストリ キー "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v8.0A\WinSDK-NetFx40Tools-x86" を使用して "AL.exe"を見つけられませんでした。SdkToolsPath が設定されていること、SdkToolsPath の下の適切なプロセッサ固有の場所にツールが存在すること、および Microsoft Windows SDK がインストールされていることを確認してください。 [C:\root\programs\CS\Frameworks\Infrastructure\Public\Public.csproj]
 ```
   
 ### ASP.NET 状態サービスの準備
@@ -235,34 +235,34 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(2863,5): 
    
 #### Web の場合：
 - ASP.NET Web Forms  
-  - C:\root\programs\C#\Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln
+  - C:\root\programs\CS\Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln
   - C:\root\programs\VB\Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln
 - ASP.NET MVC  
-  - C:\root\programs\C#\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
+  - C:\root\programs\CS\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
   - C:\root\programs\VB\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
 - ASP.NET Single Page Application  
-C:\root\programs\C#\Samples\WebApp_sample\SPA_Sample\SPA_Sample.sln
+C:\root\programs\CS\Samples\WebApp_sample\SPA_Sample\SPA_Sample.sln
  
 #### C/S 2階層の場合：
 - Windows Forms  
-  - C:\root\programs\C#\Samples\2CS_sample\2CSClientWin_sample\2CSClientWin_sample.sln
+  - C:\root\programs\CS\Samples\2CS_sample\2CSClientWin_sample\2CSClientWin_sample.sln
   - C:\root\programs\VB\Samples\2CS_sample\2CSClientWin_sample\2CSClientWin_sample.sln
 - WPF  
-  - C:\root\programs\C#\Samples\2CS_sample\2CSClientWPF_sample\2CSClientWPF_sample.sln
+  - C:\root\programs\CS\Samples\2CS_sample\2CSClientWPF_sample\2CSClientWPF_sample.sln
   - C:\root\programs\VB\Samples\2CS_sample\2CSClientWPF_sample\2CSClientWPF_sample.sln
 
 #### C/S 3階層の場合：
 - Windows Forms  
   - 通常の Windows フォームアプリケーション
-    - C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln
+    - C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln
     - C:\root\programs\VB\Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln
   - ClickOnce アプリケーション  
-C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSClientWinCone_sample.sln
+C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSClientWinCone_sample.sln
 - WPF
-  - C:\root\programs\C#\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
+  - C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
   - C:\root\programs\VB\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
 - UWP  
-C:\root\programs\C#\Samples\UWP_sample\UWP_sample.sln
+C:\root\programs\CS\Samples\UWP_sample\UWP_sample.sln
 
 ### 参考資料
 Open 棟梁をご利用いただくにあたり、OpenTouryoDocument リポジトリのドキュメントをご利用いただけます。
