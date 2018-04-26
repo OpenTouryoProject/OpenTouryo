@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="dotnet bundle" />
+    <Exec Command="npm run-script build" />
   </Target>
 
 </Project>

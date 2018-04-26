@@ -4,6 +4,6 @@
   "description": "Sample of Core MVC",
   "private": true,
   "scripts": {
-    "start": "echo hello > file.txt"
+    "build": "dotnet bundle"
   }
 }
