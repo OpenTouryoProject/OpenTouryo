@@ -35,7 +35,6 @@
 #if NETSTD
 using System;
 using System.IO;
-using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 #else
 using System.Configuration;
@@ -52,6 +51,15 @@ namespace Touryo.Infrastructure.Public.Util
 
         /// <summary>IConfiguration</summary>
         private static IConfiguration _configuration = null;
+
+        /// <summary>IConfiguration</summary>
+        public static IConfiguration Configuration
+        {
+            get
+            {
+                return GetConfigParameter._configuration;
+            }
+        }
 
         #region 初期化
 
@@ -140,6 +148,52 @@ namespace Touryo.Infrastructure.Public.Util
             else
             {
                 return GetConfigParameter._configuration[key];
+            }
+        }
+
+        /// <summary>
+        /// 設定ファイルに定義されている任意のセクションを取得する
+        /// </summary>
+        /// <param name="key">設定ファイルに定義されているキー名</param>
+        /// <returns>設定ファイルに定義されているセクション</returns>
+        /// <remarks>自由に利用できる。</remarks>
+        public static IConfigurationSection GetAnyConfigSection(string key)
+        {
+            // 設定ファイルの内容を返す
+            if (GetConfigParameter._configuration == null)
+            {
+                throw new ArgumentException(
+                    // Resource は NG（無限ループになる。
+                    //PublicExceptionMessage.NOT_INITIALIZED,
+                    "NOT_INITIALIZED",
+                    "InitConfiguration method is not called.");
+            }
+            else
+            {
+                return GetConfigParameter._configuration.GetSection(key);
+            }
+        }
+
+        /// <summary>
+        /// 設定ファイルのappSettingsタグに定義されているセクションを取得する
+        /// </summary>
+        /// <param name="key">設定ファイルに定義されているキー名</param>
+        /// <returns>設定ファイルに定義されているセクション</returns>
+        /// <remarks>自由に利用できる。</remarks>
+        public static IConfigurationSection GetConfigSection(string key)
+        {
+            // 設定ファイルの内容を返す
+            if (GetConfigParameter._configuration == null)
+            {
+                throw new ArgumentException(
+                    // Resource は NG（無限ループになる。
+                    //PublicExceptionMessage.NOT_INITIALIZED,
+                    "NOT_INITIALIZED",
+                    "InitConfiguration method is not called.");
+            }
+            else
+            {
+                return GetConfigParameter._configuration.GetSection("appSettings:" + key);
             }
         }
 

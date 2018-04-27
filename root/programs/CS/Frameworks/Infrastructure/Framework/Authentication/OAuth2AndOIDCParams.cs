@@ -32,7 +32,12 @@
 
 using System.Collections.Generic;
 
+#if NETSTD
+using Microsoft.Extensions.Configuration;
+#else
 using Newtonsoft.Json;
+#endif
+
 
 using Touryo.Infrastructure.Public.Util;
 
@@ -73,7 +78,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         {
             get
             {
+#if NETSTD
+                return GetConfigParameter.GetConfigSection("OAuth2AndOidcClientIDs").Get<List<string>>();
+#else
                 return JsonConvert.DeserializeObject<List<string>>(GetConfigParameter.GetConfigValue("OAuth2AndOidcClientIDs"));
+#endif
             }
         }
 

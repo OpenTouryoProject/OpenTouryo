@@ -169,6 +169,34 @@ namespace Touryo.Infrastructure.Public.Security
                 {
                     return ((RSACryptoServiceProvider)aa).VerifyData(data, this._hashAlgorithmName, sign);
                 }
+#if !NET45
+                else if (aa is RSACng)
+                {
+                    HashAlgorithmName hashAlgorithmName = HashAlgorithmName.MD5;
+                    if (this._hashAlgorithmName == "MD5")
+                    {
+                        hashAlgorithmName = HashAlgorithmName.MD5;
+                    }
+                    else if (this._hashAlgorithmName == "SHA1")
+                    {
+                        hashAlgorithmName = HashAlgorithmName.SHA1;
+                    }
+                    else if (this._hashAlgorithmName == "SHA256")
+                    {
+                        hashAlgorithmName = HashAlgorithmName.SHA256;
+                    }
+                    else if (this._hashAlgorithmName == "SHA384")
+                    {
+                        hashAlgorithmName = HashAlgorithmName.SHA384;
+                    }
+                    else if (this._hashAlgorithmName == "SHA512")
+                    {
+                        hashAlgorithmName = HashAlgorithmName.SHA512;
+                    }
+
+                    return ((RSACng)aa).VerifyData(data, sign, hashAlgorithmName, RSASignaturePadding.Pkcs1);
+                }
+#endif
                 else
                 {
                     return ((DSACryptoServiceProvider)aa).VerifyData(data, sign);
@@ -199,7 +227,7 @@ namespace Touryo.Infrastructure.Public.Security
             return flg;
         }
 
-        #endregion
+#endregion
 
         // こちらは、MyDispose (派生の末端を呼ぶ) の実装は不要。
     }

@@ -36,9 +36,16 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Security.Claims;
 
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Primitives;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Framework.StdMigration;
+using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Log;
@@ -250,42 +257,44 @@ namespace Touryo.Infrastructure.Business.Presentation
 
             if (authorizationContext.HttpContext.Request.Headers != null)
             {
-                //if (authorizationContext.HttpContext.Request.Headers.Authorization.Scheme.ToLower() == "bearer")
-                //{
-                //    string access_token = authorizationContext.Request.Headers.Authorization.Parameter;
+                StringValues authHeaders = "";
 
-                //    string sub = "";
-                //    List<string> roles = null;
-                //    List<string> scopes = null;
-                //    JObject jobj = null;
+                if (authorizationContext.HttpContext.Request.Headers.TryGetValue("Authorization", out authHeaders))
+                {
+                    string access_token = authHeaders[0].Split(' ')[1];
 
-                //    if (JwtToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
-                //    {
+                    string sub = "";
+                    List<string> roles = null;
+                    List<string> scopes = null;
+                    JObject jobj = null;
 
-                //        // ActionFilterAttributeとApiController間の情報共有はcontext.Principalを使用する。
-                //        // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
-                //        claims = new List<Claim>()
-                //        {
-                //            new Claim(ClaimTypes.Name, sub),
-                //            new Claim(ClaimTypes.Role, string.Join(",", roles)),
-                //            new Claim("Scopes", string.Join(",", scopes)),
-                //            new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress())
-                //        };
+                    if (JwtToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
+                    {
 
-                //        // The request message contains valid credential
-                //        authenticationContext.Principal = new ClaimsPrincipal(new List<ClaimsIdentity> { new ClaimsIdentity(claims, "Token") });
+                        // ActionFilterAttributeとApiController間の情報共有はcontext.Principalを使用する。
+                        // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+                        claims = new List<Claim>()
+                        {
+                            new Claim(ClaimTypes.Name, sub),
+                            new Claim(ClaimTypes.Role, string.Join(",", roles)),
+                            new Claim("Scopes", string.Join(",", scopes)),
+                            new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress())
+                        };
 
-                //        return;
-                //    }
-                //    else
-                //    {
-                //        // JWTの内容検証に失敗
-                //    }
-                //}
-                //else
-                //{
-                //    // Authorization HeaderがBearerでない。
-                //}
+                        // ClaimsPrincipalを設定
+                        MyHttpContext.Current.User = new ClaimsPrincipal(new ClaimsIdentity(claims, "Token"));
+
+                        return;
+                    }
+                    else
+                    {
+                        // JWTの内容検証に失敗
+                    }
+                }
+                else
+                {
+                    // Authorization HeaderがBearerでない。
+                }
             }
             else
             {
