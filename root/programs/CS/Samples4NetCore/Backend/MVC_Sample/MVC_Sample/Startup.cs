@@ -148,11 +148,11 @@ namespace MVC_Sample
             // Sessionを使用する。
             app.UseSession(new SessionOptions()
             {
-                IdleTimeout = TimeSpan.FromSeconds(5), // ここで調整
+                IdleTimeout = TimeSpan.FromMinutes(30), // ここで調整
                 IOTimeout = TimeSpan.FromSeconds(30),
                 Cookie = new CookieBuilder()
                 {
-                    Expiration = TimeSpan.FromSeconds(30), // 効かない
+                    Expiration = TimeSpan.FromDays(1), // 効かない
                     HttpOnly = true,
                     Name = "mvc_session",
                     Path = "/",
