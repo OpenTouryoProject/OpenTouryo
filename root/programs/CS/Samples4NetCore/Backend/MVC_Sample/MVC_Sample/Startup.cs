@@ -76,7 +76,9 @@ namespace MVC_Sample
 
             // ライブラリにも設定
             GetConfigParameter.InitConfiguration(config);
-        }
+            // Dockerで埋め込まれたリソースを使用する場合
+            //Touryo.Infrastructure.Business.Dao.MyBaseDao.UseEmbeddedResource = true;
+    }
 
         #endregion
 
@@ -135,21 +137,22 @@ namespace MVC_Sample
 
             #region パイプラインに追加
 
-            //// Cookieを使用する。
-            //app.UseCookiePolicy(new CookiePolicyOptions()
-            //{
-            //    HttpOnly = HttpOnlyPolicy.Always,
-            //    MinimumSameSitePolicy = SameSiteMode.Strict,
-            //});
+            // Cookieを使用する。
+            app.UseCookiePolicy(new CookiePolicyOptions()
+            {
+                HttpOnly = HttpOnlyPolicy.Always,
+                MinimumSameSitePolicy = SameSiteMode.Strict,
+                //Secure= CookieSecurePolicy.Always
+            });
 
             // Sessionを使用する。
             app.UseSession(new SessionOptions()
             {
-                IdleTimeout = TimeSpan.FromSeconds(20),
-                IOTimeout = TimeSpan.FromSeconds(10),
+                IdleTimeout = TimeSpan.FromSeconds(5), // ここで調整
+                IOTimeout = TimeSpan.FromSeconds(30),
                 Cookie = new CookieBuilder()
                 {
-                    //Expiration = TimeSpan.FromSeconds(xx),
+                    Expiration = TimeSpan.FromSeconds(30), // 効かない
                     HttpOnly = true,
                     Name = "mvc_session",
                     Path = "/",

@@ -10,7 +10,7 @@
     <DefineConstants>TRACE;DEBUG;NETCORE</DefineConstants>
     <OutputPath>..\Build_netcore20\</OutputPath>
     <DocumentationFile>..\Build_netcore20\netcoreapp2.0\OpenTouryo.Business.xml</DocumentationFile>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 

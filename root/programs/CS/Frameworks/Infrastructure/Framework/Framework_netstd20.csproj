@@ -10,7 +10,7 @@
     <DefineConstants>TRACE;DEBUG;NETSTD</DefineConstants>
     <OutputPath>..\Build_netstd20\</OutputPath>
     <DocumentationFile>..\Build_netstd20\netstandard2.0\OpenTouryo.Framework.xml</DocumentationFile>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
