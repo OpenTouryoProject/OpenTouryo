@@ -145,18 +145,8 @@ namespace Touryo.Infrastructure.Public.Log
 
                             // log4net
 #if NETSTD
-                            if (xmlDef["log4net"].ChildNodes[0] is XmlElement)
-                            {
-                                // Windows
-                                XmlConfigurator.Configure(logRep,
-                                (XmlElement)xmlDef["log4net"].ChildNodes[0]);
-                            }
-                            else
-                            {
-                                // Linux(ChildNodes[0]がXmlCommentになった)
-                                XmlConfigurator.Configure(logRep,
+                            XmlConfigurator.Configure(logRep,
                                 (XmlElement)xmlDef["log4net"]);
-                            }
 #else
                             XmlConfigurator.Configure(xmlDef["log4net"]);
 #endif
