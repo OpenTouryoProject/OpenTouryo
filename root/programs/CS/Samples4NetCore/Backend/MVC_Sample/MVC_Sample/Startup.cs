@@ -76,7 +76,9 @@ namespace MVC_Sample
 
             // ライブラリにも設定
             GetConfigParameter.InitConfiguration(config);
-            // Dockerで埋め込まれたリソースを使用する場合
+            // Dockerで埋め込まれたリソースを使用する場合、
+            // 以下のコメントアウトを解除し、appsettings.jsonのappSettings sectionに、
+            // "Azure": "既定の名前空間" を指定し、設定ファイルを埋め込まれたリソースに変更する。
             //Touryo.Infrastructure.Business.Dao.MyBaseDao.UseEmbeddedResource = true;
     }
 
