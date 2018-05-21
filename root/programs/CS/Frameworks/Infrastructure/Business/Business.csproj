@@ -96,7 +96,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Business\MyApsBaseLogic.cs" />
     <Compile Include="Business\MyBaseLogic.cs" />
     <Compile Include="Business\MyFcBaseLogic.cs" />
     <Compile Include="Business\_3TierEngine.cs" />
