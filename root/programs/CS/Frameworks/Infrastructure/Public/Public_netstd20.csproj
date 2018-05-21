@@ -1,0 +1,79 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>OpenTouryo.Public</AssemblyName>
+    <RootNamespace>Touryo.Infrastructure.Public</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETSTD</DefineConstants>
+    <OutputPath>..\Build_netstd20\</OutputPath>
+    <DocumentationFile>..\Build_netstd20\netstandard2.0\OpenTouryo.Public.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Db\DamDB2\**" />
+    <Compile Remove="Db\DamHiRDB\**" />
+    <Compile Remove="Db\DamManagedOdp\**" />
+    <Compile Remove="Db\DamMySQL\**" />
+    <Compile Remove="Db\DamOraOdp\**" />
+    <Compile Remove="Db\DamPstGrS\**" />
+    <Compile Remove="Db\DamSqlDbWithMultiShard\**" />
+    <Compile Remove="Db\packages\**" />
+    <Compile Remove="Win32\**" />
+    <Compile Remove="WinProc\**" />
+    <EmbeddedResource Remove="Db\DamDB2\**" />
+    <EmbeddedResource Remove="Db\DamHiRDB\**" />
+    <EmbeddedResource Remove="Db\DamManagedOdp\**" />
+    <EmbeddedResource Remove="Db\DamMySQL\**" />
+    <EmbeddedResource Remove="Db\DamOraOdp\**" />
+    <EmbeddedResource Remove="Db\DamPstGrS\**" />
+    <EmbeddedResource Remove="Db\DamSqlDbWithMultiShard\**" />
+    <EmbeddedResource Remove="Db\packages\**" />
+    <EmbeddedResource Remove="Win32\**" />
+    <EmbeddedResource Remove="WinProc\**" />
+    <None Remove="Db\DamDB2\**" />
+    <None Remove="Db\DamHiRDB\**" />
+    <None Remove="Db\DamManagedOdp\**" />
+    <None Remove="Db\DamMySQL\**" />
+    <None Remove="Db\DamOraOdp\**" />
+    <None Remove="Db\DamPstGrS\**" />
+    <None Remove="Db\DamSqlDbWithMultiShard\**" />
+    <None Remove="Db\packages\**" />
+    <None Remove="Win32\**" />
+    <None Remove="WinProc\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Db\DamOLEDB.cs" />
+    <Compile Remove="Db\DamOraClient.cs" />
+    <Compile Remove="IO\UnZipper.cs" />
+    <Compile Remove="IO\ZipBase.cs" />
+    <Compile Remove="IO\Zipper.cs" />
+    <Compile Remove="Log\CustomEventLog.cs" />
+    <Compile Remove="Log\SecurityEventLog.cs" />
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+    <Compile Remove="Security\IdentityImpersonation.cs" />
+    <Compile Remove="Util\SharedMemory.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="System.Data.Odbc" Version="4.5.0-preview1-26216-02" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.4.3" />
+    <PackageReference Include="System.Security.Cryptography.Cng" Version="4.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+</Project>

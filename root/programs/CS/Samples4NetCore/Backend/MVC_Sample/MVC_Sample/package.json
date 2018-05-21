@@ -1,0 +1,9 @@
+{
+  "name": "mvc_sample",
+  "version": "1.0.0",
+  "description": "Sample of Core MVC",
+  "private": true,
+  "scripts": {
+    "build": "dotnet bundle"
+  }
+}

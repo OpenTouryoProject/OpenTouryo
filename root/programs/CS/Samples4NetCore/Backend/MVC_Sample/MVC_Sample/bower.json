@@ -1,0 +1,22 @@
+{
+  "name": "mvc_sample",
+  "description": "Sample of Core MVC",
+  "main": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap" : "3.3.7",
+    "jquery" : "3.3.1",
+    "jquery-validation" : "1.14.0",
+    "jquery-validation-unobtrusive": "3.2.6",
+    "Font-Awesome": "^5.0.10",
+    "modernizr": "v2010.07.06dev",
+    "respond": "1.4.2"
+  }
+}

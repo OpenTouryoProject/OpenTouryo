@@ -60,19 +60,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTouryo.DamManagedOdp">
-      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\OpenTouryo.DamManagedOdp.dll</HintPath>
+      <HintPath>..\..\..\..\CS\Frameworks\Infrastructure\Build\OpenTouryo.DamManagedOdp.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamMySQL">
-      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\OpenTouryo.DamMySQL.dll</HintPath>
+      <HintPath>..\..\..\..\CS\Frameworks\Infrastructure\Build\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamPstGrS">
-      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\OpenTouryo.DamPstGrS.dll</HintPath>
+      <HintPath>..\..\..\..\CS\Frameworks\Infrastructure\Build\OpenTouryo.DamPstGrS.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\OpenTouryo.Framework.dll</HintPath>
+      <HintPath>..\..\..\..\CS\Frameworks\Infrastructure\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\..\..\C#\Frameworks\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\..\..\CS\Frameworks\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
