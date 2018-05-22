@@ -96,11 +96,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncProcessingService\AsyncProcessingServiceParameterValue.cs" />
-    <Compile Include="AsyncProcessingService\AsyncProcessingServiceReturnValue.cs" />
-    <Compile Include="AsyncProcessingService\LayerB.cs" />
-    <Compile Include="AsyncProcessingService\LayerD.cs" />
-    <Compile Include="Business\MyApsBaseLogic.cs" />
     <Compile Include="Business\MyBaseLogic.cs" />
     <Compile Include="Business\MyFcBaseLogic.cs" />
     <Compile Include="Business\_3TierEngine.cs" />
@@ -199,38 +194,6 @@
     <EmbeddedResource Include="Resources\MyBusinessSystemExceptionMessageResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MyBusinessSystemExceptionMessageResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\AsyncProcessingServiceInsert.sql">
-      <Link>AsyncProcessingService\AsyncProcessingServiceInsert.sql</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\SelectCommand.sql">
-      <Link>AsyncProcessingService\SelectCommand.sql</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\SelectTask.sql">
-      <Link>AsyncProcessingService\SelectTask.sql</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskCommand.sql">
-      <Link>AsyncProcessingService\UpdateTaskCommand.sql</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskFail.sql">
-      <Link>AsyncProcessingService\UpdateTaskFail.sql</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskProgress.sql">
-      <Link>AsyncProcessingService\UpdateTaskProgress.sql</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskRetry.sql">
-      <Link>AsyncProcessingService\UpdateTaskRetry.sql</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskStart.sql">
-      <Link>AsyncProcessingService\UpdateTaskStart.sql</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\UpdateTaskSuccess.sql">
-      <Link>AsyncProcessingService\UpdateTaskSuccess.sql</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\..\..\files\resource\Sql\sqlserver\AsyncProcessingService\StopAllTask.sql">
-      <Link>AsyncProcessingService\StopAllTask.sql</Link>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -15,19 +15,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="AsyncProcessingService\**" />
     <Compile Remove="Csp\**" />
     <Compile Remove="RichClient\**" />
-    <EmbeddedResource Remove="AsyncProcessingService\**" />
     <EmbeddedResource Remove="Csp\**" />
     <EmbeddedResource Remove="RichClient\**" />
-    <None Remove="AsyncProcessingService\**" />
     <None Remove="Csp\**" />
     <None Remove="RichClient\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Business\MyApsBaseLogic.cs" />
     <Compile Remove="Business\MyBaseLogic.cs" />
     <Compile Remove="Business\_3TierEngine.cs" />
     <Compile Remove="Common\_3TierParameterValue.cs" />
