@@ -130,7 +130,7 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
       <td>4_Build_Framework_Tool.bat</td><td>付属ツールをビルドする。</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>5_Build_2CS_sample.bat</td><td>サンプルアプリ (2 層 C/S) をビルドする。</td><td rowspan="8" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>5_Build_2CS_sample.bat</td><td>サンプルアプリ (2 層 C/S) をビルドする。</td><td rowspan="7" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
       <td>5_Build_Bat_sample.bat</td><td>サンプルアプリ (バッチ) をビルドする。</td><td></td>
@@ -149,9 +149,6 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
     </tr>
     <tr>
       <td>10_Build_WebApp_sample.bat</td><td>サンプルアプリ (ASP.NET) をビルドする。</td><td></td>
-    </tr>
-    <tr>
-      <td>11_Build_UWP_sample.bat</td><td>サンプルアプリ (UWP) をビルドする。</td><td></td>
     </tr>
     <tr>
       <td>z_Common.bat</td><td>共通設定 (MSBuild 用)</td><td></td><td></td>
@@ -240,8 +237,6 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(2863,5): 
 - ASP.NET MVC  
   - C:\root\programs\CS\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
   - C:\root\programs\VB\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
-- ASP.NET Single Page Application  
-C:\root\programs\CS\Samples\WebApp_sample\SPA_Sample\SPA_Sample.sln
  
 #### C/S 2階層の場合：
 - Windows Forms  
@@ -261,8 +256,6 @@ C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSC
 - WPF
   - C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
   - C:\root\programs\VB\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
-- UWP  
-C:\root\programs\CS\Samples\UWP_sample\UWP_sample.sln
 
 ### 参考資料
 Open 棟梁をご利用いただくにあたり、OpenTouryoDocument リポジトリのドキュメントをご利用いただけます。

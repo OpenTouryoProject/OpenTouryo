@@ -139,7 +139,7 @@ Legend:
       <td>4_Build_Framework_Tool.bat</td><td>Build the tools bundled with Open Touryo.</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>5_Build_2CS_sample.bat</td><td>Build the sample application. (Two-tier client server application)</td><td rowspan="8" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>5_Build_2CS_sample.bat</td><td>Build the sample application. (Two-tier client server application)</td><td rowspan="7" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
       <td>5_Build_Bat_sample.bat</td><td>Build the sample application. (Batch application)</td><td></td>
@@ -158,9 +158,6 @@ Legend:
     </tr>
     <tr>
       <td>10_Build_WebApp_sample.bat</td><td>Build the sample application. (ASP.NET)</td><td></td>
-    </tr>
-    <tr>
-      <td>11_Build_UWP_sample.bat</td><td>Build the sample application. (UWP)</td><td></td>
     </tr>
     <tr>
       <td>z_Common.bat</td><td>Set common settings to build using MSBuild.</td><td></td><td></td>
@@ -250,9 +247,7 @@ At the login screen, enter the arbitrary alphanumeric characters. (By default, t
 - ASP.NET MVC  
   - C:\root\programs\CS\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
   - C:\root\programs\VB\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
-- ASP.NET Single Page Application  
-C:\root\programs\CS\Samples\WebApp_sample\SPA_Sample\SPA_Sample.sln
- 
+
 #### Two-tier client server application:
 - Windows Forms  
   - C:\root\programs\CS\Samples\2CS_sample\2CSClientWin_sample\2CSClientWin_sample.sln
@@ -271,8 +266,6 @@ C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSC
 - WPF
   - C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
   - C:\root\programs\VB\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
-- UWP  
-C:\root\programs\CS\Samples\UWP_sample\UWP_sample.sln
 
 ### Reference
 The documents in *OpenTouryoDocument repository* are useful when using Open Touryo.  

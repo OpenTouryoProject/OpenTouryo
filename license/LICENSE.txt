@@ -209,8 +209,6 @@
        - jQuery.Validation
        - bootstrap
        - FontAwesome
-       - knockoutjs
-       - angularjs
        - Respond
        - Modernizr
        - Microsoft.AspNet.ScriptManager.WebForms

@@ -31,14 +31,5 @@ rem --------------------------------------------------
 
 pause
 
-rem --------------------------------------------------
-rem Batch build of SPA_Sample.
-rem --------------------------------------------------
-..\nuget.exe restore "Samples\WS_sample\ASPNETWebService\ASPNETWebService.sln"
-..\nuget.exe restore "Samples\WebApp_sample\SPA_Sample\SPA_Sample.sln"
-%BUILDFILEPATH% %COMMANDLINE% "Samples\WebApp_sample\SPA_Sample\SPA_Sample.sln"
-
-pause
-
 rem -------------------------------------------------------
 endlocal
