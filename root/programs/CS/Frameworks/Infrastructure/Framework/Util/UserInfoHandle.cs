@@ -62,19 +62,28 @@ namespace Touryo.Infrastructure.Framework.Util
 #endif
         }
 
+#if NETSTD
+
+        /// <summary>ユーザ情報をSessionから取得する。</summary>
+        /// <returns>ユーザ情報</returns>
+        /// <remarks>自由に利用できる。</remarks>
+        public static T GetUserInformation<T>() where T : UserInfo
+        {
+            // Sessionから取得
+            ISession session = MyHttpContext.Current.Session;
+            return session.GetObjectFromJson<T>(FxHttpSessionIndex.AUTHENTICATION_USER_INFORMATION);
+        }
+
+#else
         /// <summary>ユーザ情報をSessionから取得する。</summary>
         /// <returns>ユーザ情報</returns>
         /// <remarks>自由に利用できる。</remarks>
         public static UserInfo GetUserInformation()
         {
             // Sessionから取得
-#if NETSTD
-            ISession session = MyHttpContext.Current.Session;
-            return session.GetObjectFromJson<UserInfo>(FxHttpSessionIndex.AUTHENTICATION_USER_INFORMATION);
-#else
             return (UserInfo)HttpContext.Current.Session[FxHttpSessionIndex.AUTHENTICATION_USER_INFORMATION];
-#endif
         }
+#endif
 
         /// <summary>ユーザ情報をSessionから削除する。</summary>
         /// <remarks>自由に利用できる。</remarks>

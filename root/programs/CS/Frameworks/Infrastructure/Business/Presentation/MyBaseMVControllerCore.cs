@@ -215,7 +215,7 @@ namespace Touryo.Infrastructure.Business.Presentation
             else
             {
                 // 取得を試みる。
-                this.UserInfo = (MyUserInfo)UserInfoHandle.GetUserInformation();
+                this.UserInfo = UserInfoHandle.GetUserInformation<MyUserInfo>();
 
                 // nullチェック
                 if (this.UserInfo == null)

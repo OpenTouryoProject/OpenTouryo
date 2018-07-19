@@ -35,6 +35,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Business.Presentation;
+using Touryo.Infrastructure.Business.Util;
+using Touryo.Infrastructure.Framework.Util;
 
 namespace MVC_Sample.Controllers
 {
@@ -94,6 +96,10 @@ namespace MVC_Sample.Controllers
                     // サイン アップする。
                     await AuthenticationHttpContextExtensions.SignInAsync(
                         this.HttpContext, CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal);
+
+                    // 認証情報を保存する。
+                    MyUserInfo ui = new MyUserInfo(model.UserName, (new GetClientIpAddress()).GetAddress());
+                    UserInfoHandle.SetUserInformation(ui);
 
                     //基盤に任せるのでリダイレクトしない。
                     return View(model);
