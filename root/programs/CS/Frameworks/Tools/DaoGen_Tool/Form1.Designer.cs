@@ -430,7 +430,6 @@
             this.Controls.Add(this.txtConnString);
             this.Controls.Add(this.lblConnectionString);
             this.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
