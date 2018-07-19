@@ -61,7 +61,8 @@ namespace DPQuery_Tool
             this.dataGridView1.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
             this.richTextBox1.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
             this.richTextBox2.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
-            this.button1.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
+            this.btnCloseScreen.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
+            this.btnGenerateScreens.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
         }
 
         #region プロパティ
@@ -114,7 +115,7 @@ namespace DPQuery_Tool
         /// <summary>
         /// 閉じる。
         /// </summary>
-        private void button1_Click(object sender, EventArgs e)
+        private void btnCloseScreen_Click(object sender, EventArgs e)
         {
             this.Close();
         }

@@ -234,6 +234,6 @@
     <value>－ Dao・SQL、DTOファイルを生成する －1 </value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>結合SELECT文をするための画面を生成する</value>
+    <value>結合ステートメントによる検索画面の生成</value>
   </data>
 </root>
