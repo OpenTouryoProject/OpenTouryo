@@ -18,8 +18,10 @@
 //**********************************************************************************
 
 using MVC_Sample.Logic.Common;
+using MVC_Sample.Models.ViewModels;
 
 using System.Data;
+using System.Collections.Generic;
 
 using Touryo.Infrastructure.Business.Dao;
 using Touryo.Infrastructure.Public.Db;
@@ -223,37 +225,19 @@ namespace MVC_Sample.Logic.Dao
 
             //   -- 直接指定する場合。
             this.SetSqlByCommand(commandText);
-
-            // 戻り値 dt
-            DataTable dt = new DataTable();
-
-            // ３列生成
-            dt.Columns.Add("c1", typeof(string));
-            dt.Columns.Add("c2", typeof(string));
-            dt.Columns.Add("c3", typeof(string));
-
+            
             //   -- 一覧を返すSELECTクエリを実行する
             IDataReader idr = (IDataReader)this.ExecSelect_DR();
 
-            while (idr.Read())
-            {
-                // DRから読む
-                object[] objArray = new object[3];
-                idr.GetValues(objArray);
-
-                // DTに設定する。
-                DataRow dr = dt.NewRow();
-                dr.ItemArray = objArray;
-                dt.Rows.Add(dr);
-            }
-
+            // DataReaderToList
+            List<ShipperViweModel> list = DataToPoco.DataReaderToList<ShipperViweModel>(idr);
             // 終了したらクローズ
             idr.Close();
 
             // ↑DBアクセス-----------------------------------------------------
 
             // 戻り値を設定
-            testReturn.Obj = dt;
+            testReturn.Obj = list;
         }
 
         /// <summary>一覧を返すSELECTクエリを実行する</summary>

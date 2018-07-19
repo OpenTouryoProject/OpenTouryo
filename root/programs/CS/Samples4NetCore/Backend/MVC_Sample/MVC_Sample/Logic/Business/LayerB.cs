@@ -19,13 +19,16 @@
 
 using MVC_Sample.Logic.Dao;
 using MVC_Sample.Logic.Common;
+using MVC_Sample.Models.ViewModels;
 
 using System;
 using System.Data;
+using System.Collections.Generic;
 
 using Touryo.Infrastructure.Business.Business;
 using Touryo.Infrastructure.Business.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
+using Touryo.Infrastructure.Public.Db;
 
 namespace MVC_Sample.Logic.Business
 {
@@ -281,6 +284,7 @@ namespace MVC_Sample.Logic.Business
 
             // ↓業務処理-----------------------------------------------------
             DataTable dt = null;
+            List<ShipperViweModel> list = null;
 
             switch ((testParameter.ActionType.Split('%'))[1])
             {
@@ -302,34 +306,17 @@ namespace MVC_Sample.Logic.Business
                             break;
                     }
 
-                    // 戻り値 dt
-                    dt = new DataTable();
-
-                    // ３列生成
-                    dt.Columns.Add("c1", typeof(string));
-                    dt.Columns.Add("c2", typeof(string));
-                    dt.Columns.Add("c3", typeof(string));
-
                     // 共通Daoを実行
                     IDataReader idr = cmnDao.ExecSelect_DR();
 
-                    while (idr.Read())
-                    {
-                        // DRから読む
-                        object[] objArray = new object[3];
-                        idr.GetValues(objArray);
-
-                        // DTに設定する。
-                        DataRow dr = dt.NewRow();
-                        dr.ItemArray = objArray;
-                        dt.Rows.Add(dr);
-                    }
+                    // DataReaderToList
+                    list = DataToPoco.DataReaderToList<ShipperViweModel>(idr);
 
                     // 終了したらクローズ
                     idr.Close();
 
                     // 戻り値を設定
-                    testReturn.Obj = dt;
+                    testReturn.Obj = list;
 
                     break;
 
@@ -346,8 +333,11 @@ namespace MVC_Sample.Logic.Business
                     // 自動生成Daoを実行
                     genDao.D2_Select(dt);
 
+                    // DataTableToList
+                    list = DataToPoco.DataTableToList<ShipperViweModel>(dt);
+
                     // 戻り値を設定
-                    testReturn.Obj = (DataTable)dt;
+                    testReturn.Obj = list;
 
                     break;
 

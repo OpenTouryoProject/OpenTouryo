@@ -251,18 +251,7 @@ namespace MVC_Sample.Controllers
                 else
                 {
                     // 結果（正常系）
-                    model.Shippers = new List<ShipperViweModel>();
-                    DataTable dt = (DataTable)testReturnValue.Obj;
-
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        ShipperViweModel srow = new ShipperViweModel();
-                        srow.ShipperID = int.Parse(row[0].ToString());
-                        srow.CompanyName = row[1].ToString();
-                        srow.Phone = row[2].ToString();
-
-                        model.Shippers.Add(srow);
-                    }
+                    model.Shippers = (List<ShipperViweModel>)testReturnValue.Obj;
                 }
             }
 
