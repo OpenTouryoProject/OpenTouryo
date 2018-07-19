@@ -56,6 +56,7 @@
 //*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
 //*  2017/02/28  西野 大介         TransferErrorScreen2のErrorMessage生成処理の見直し。
 //*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
+//*  2018/07/19  西野 大介         復元後のユーザー情報をSessionに設定するコードを追加
 //**********************************************************************************
 
 using System;
@@ -293,33 +294,32 @@ namespace Touryo.Infrastructure.Business.Presentation
             {
                 // 取得を試みる。
                 userInfo = (MyUserInfo)UserInfoHandle.GetUserInformation();
-            }
 
-            // nullチェック
-            if (userInfo == null)
-            {
-                // nullの場合、仮の値を生成 / 設定する。
-                string userName = System.Threading.Thread.CurrentPrincipal.Identity.Name;
-
-                if (userName == null || userName == "")
+                // nullチェック
+                if (userInfo == null)
                 {
-                    // 未認証状態
-                    userInfo = new MyUserInfo("未認証", HttpContext.Current.Request.UserHostAddress);
-                }
-                else
-                {
-                    // 認証状態
-                    userInfo = new MyUserInfo(userName, HttpContext.Current.Request.UserHostAddress);
-                    // 必要に応じて認証チケットの
-                    // ユーザ名からユーザ情報を復元する。
-                }
-            }
-            else
-            {
-                // nullで無い場合、取得した値を設定する。
-            }
+                    // nullの場合、仮の値を生成 / 設定する。
+                    string userName = System.Threading.Thread.CurrentPrincipal.Identity.Name;
 
-            // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+                    if (userName == null || userName == "")
+                    {
+                        // 未認証状態
+                        userInfo = new MyUserInfo("未認証", HttpContext.Current.Request.UserHostAddress);
+                    }
+                    else
+                    {
+                        // 認証状態
+                        userInfo = new MyUserInfo(userName, HttpContext.Current.Request.UserHostAddress);
+
+                        // 必要に応じて認証チケットのユーザ名からユーザ情報を復元する。
+                        // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+                        // ・・・
+
+                        // 復元したユーザ情報をセット
+                        UserInfoHandle.SetUserInformation(userInfo);
+                    }
+                }
+            }
 
             // 値を戻す。
             return userInfo;
@@ -903,7 +903,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 
         #endregion
 
-        #region マスタ ページ上のフレームワーク対象コントロール
+        #region マスタ ページ上のフレームワーク対象コントロール（不要な場合は削除してく下さい）
 
         #region sampleScreen.masterマスタ ページ上のフレームワーク対象コントロールの、共通イベントのUOCメソッド
 

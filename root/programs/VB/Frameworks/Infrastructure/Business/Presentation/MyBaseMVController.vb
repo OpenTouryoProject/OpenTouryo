@@ -44,6 +44,7 @@
 '*  2017/02/28  西野 大介         OnExceptionのErrorMessage生成処理の見直し。
 '*  2017/02/28  西野 大介         TransferErrorScreenメソッドを追加した。
 '*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
+'*  2018/07/19  西野 大介         復元後のユーザー情報をSessionに設定するコードを追加
 '**********************************************************************************
 
 Imports System.Web
@@ -517,27 +518,29 @@ Namespace Touryo.Infrastructure.Business.Presentation
             Else
                 ' 取得を試みる。
                 Me.UserInfo = DirectCast(UserInfoHandle.GetUserInformation(), MyUserInfo)
-            End If
 
-            ' nullチェック
-            If Me.UserInfo Is Nothing Then
-                ' nullの場合、仮の値を生成 / 設定する。
-                Dim userName As String = System.Threading.Thread.CurrentPrincipal.Identity.Name
+                ' nullチェック
+                If Me.UserInfo Is Nothing Then
+                    ' nullの場合、仮の値を生成 / 設定する。
+                    Dim userName As String = System.Threading.Thread.CurrentPrincipal.Identity.Name
 
-                If userName Is Nothing OrElse userName = "" Then
-                    ' 未認証状態
-                    Me.UserInfo = New MyUserInfo("未認証", Me.HttpContext.Request.UserHostAddress)
-                Else
-                    ' 認証状態
-                    ' 必要に応じて認証チケットの
-                    ' ユーザ名からユーザ情報を復元する。
-                    Me.UserInfo = New MyUserInfo(userName, Me.HttpContext.Request.UserHostAddress)
+                    If userName Is Nothing OrElse userName = "" Then
+                        ' 未認証状態
+                        Me.UserInfo = New MyUserInfo("未認証", Me.HttpContext.Request.UserHostAddress)
+                    Else
+                        ' 認証状態
+                        Me.UserInfo = New MyUserInfo(userName, Me.HttpContext.Request.UserHostAddress)
+
+                        ' 必要に応じて認証チケットのユーザ名からユーザ情報を復元する。
+                        ' ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+                        ' ・・・
+
+                        ' 復元したユーザ情報をセット
+                        UserInfoHandle.SetUserInformation(Me.UserInfo)
+                    End If
                 End If
-                ' nullで無い場合、取得した値を設定する。
-            Else
             End If
 
-            ' ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
         End Sub
 
         ''' <summary>ルーティング情報を取得する</summary>

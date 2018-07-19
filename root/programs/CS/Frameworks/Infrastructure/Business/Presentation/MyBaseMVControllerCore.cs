@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/04/19  西野 大介         新規作成
+//*  2018/07/19  西野 大介         復元後のユーザー情報をSessionに設定するコードを追加
 //**********************************************************************************
 
 using System;
@@ -215,41 +216,40 @@ namespace Touryo.Infrastructure.Business.Presentation
             {
                 // 取得を試みる。
                 this.UserInfo = (MyUserInfo)UserInfoHandle.GetUserInformation();
-            }
 
-            // nullチェック
-            if (this.UserInfo == null)
-            {
-                AuthenticateResult authenticateInfo =
-                    await AuthenticationHttpContextExtensions.AuthenticateAsync(
-                        MyHttpContext.Current, CookieAuthenticationDefaults.AuthenticationScheme);
+                // nullチェック
+                if (this.UserInfo == null)
+                {
+                    AuthenticateResult authenticateInfo =
+                        await AuthenticationHttpContextExtensions.AuthenticateAsync(
+                            MyHttpContext.Current, CookieAuthenticationDefaults.AuthenticationScheme);
 
                     //await MyHttpContext.Current.Authentication.GetAuthenticateInfoAsync(
                     //    CookieAuthenticationDefaults.AuthenticationScheme); // 古い
 
                     //System.Threading.Thread.CurrentPrincipal.Identity.Name; // .NET Framework
 
-                string userName = authenticateInfo.Principal?.Identity?.Name; // null 条件演算子
+                    string userName = authenticateInfo.Principal?.Identity?.Name; // null 条件演算子
 
-                if (string.IsNullOrEmpty(userName))
-                {
-                    // 未認証状態
-                    this.UserInfo = new MyUserInfo("未認証", (new GetClientIpAddress()).GetAddress());
-                }
-                else
-                {
-                    // 認証状態
-                    this.UserInfo = new MyUserInfo(userName, (new GetClientIpAddress()).GetAddress());
-                    // 必要に応じて認証チケットの
-                    // ユーザ名からユーザ情報を復元する。
+                    if (string.IsNullOrEmpty(userName))
+                    {
+                        // 未認証状態
+                        this.UserInfo = new MyUserInfo("未認証", (new GetClientIpAddress()).GetAddress());
+                    }
+                    else
+                    {
+                        // 認証状態
+                        this.UserInfo = new MyUserInfo(userName, (new GetClientIpAddress()).GetAddress());
+
+                        // 必要に応じて認証チケットのユーザ名からユーザ情報を復元する。
+                        // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+                        // ・・・
+
+                        // 復元したユーザ情報をセット
+                        UserInfoHandle.SetUserInformation(this.UserInfo);
+                    }
                 }
             }
-            else
-            {
-                // nullで無い場合、取得した値を設定する。
-            }
-
-            // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
         }
 
         /// <summary>ルーティング情報を取得する</summary>

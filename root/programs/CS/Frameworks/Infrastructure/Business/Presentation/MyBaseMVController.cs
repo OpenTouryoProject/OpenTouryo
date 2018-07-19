@@ -44,6 +44,7 @@
 //*  2017/02/28  西野 大介         OnExceptionのErrorMessage生成処理の見直し。
 //*  2017/02/28  西野 大介         TransferErrorScreenメソッドを追加した。
 //*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
+//*  2018/07/19  西野 大介         復元後のユーザー情報をSessionに設定するコードを追加
 //**********************************************************************************
 
 using System;
@@ -542,33 +543,32 @@ namespace Touryo.Infrastructure.Business.Presentation
             {
                 // 取得を試みる。
                 this.UserInfo = (MyUserInfo)UserInfoHandle.GetUserInformation();
-            }
 
-            // nullチェック
-            if (this.UserInfo == null)
-            {
-                // nullの場合、仮の値を生成 / 設定する。
-                string userName = System.Threading.Thread.CurrentPrincipal.Identity.Name;
-
-                if (userName == null || userName == "")
+                // nullチェック
+                if (this.UserInfo == null)
                 {
-                    // 未認証状態
-                    this.UserInfo = new MyUserInfo("未認証", this.HttpContext.Request.UserHostAddress);
-                }
-                else
-                {
-                    // 認証状態
-                    this.UserInfo = new MyUserInfo(userName, this.HttpContext.Request.UserHostAddress);
-                    // 必要に応じて認証チケットの
-                    // ユーザ名からユーザ情報を復元する。
-                }
-            }
-            else
-            {
-                // nullで無い場合、取得した値を設定する。
-            }
+                    // nullの場合、仮の値を生成 / 設定する。
+                    string userName = System.Threading.Thread.CurrentPrincipal.Identity.Name;
 
-            // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+                    if (userName == null || userName == "")
+                    {
+                        // 未認証状態
+                        this.UserInfo = new MyUserInfo("未認証", this.HttpContext.Request.UserHostAddress);
+                    }
+                    else
+                    {
+                        // 認証状態
+                        this.UserInfo = new MyUserInfo(userName, this.HttpContext.Request.UserHostAddress);
+
+                        // 必要に応じて認証チケットのユーザ名からユーザ情報を復元する。
+                        // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+                        // ・・・
+
+                        // 復元したユーザ情報をセット
+                        UserInfoHandle.SetUserInformation(this.UserInfo);
+                    }
+                }
+            }            
         }
 
         /// <summary>ルーティング情報を取得する</summary>
