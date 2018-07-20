@@ -86,6 +86,7 @@
     <Compile Include="Db\DamOLEDB.cs" />
     <Compile Include="Db\SQLUtility.cs" />
     <Compile Include="Dto\DataRowState.cs" />
+    <Compile Include="Dto\PocoToPoco.cs" />
     <Compile Include="Dto\DTColumn.cs" />
     <Compile Include="Dto\DTColumns.cs" />
     <Compile Include="Dto\DTRow.cs" />
@@ -132,7 +133,7 @@
     <Compile Include="Security\JWT_HS256.cs" />
     <Compile Include="Security\JWT_RS256.cs" />
     <Compile Include="Security\JWT.cs" />
-    <Compile Include="Db\DataToPoco.cs" />
+    <Compile Include="Dto\DataToPoco.cs" />
     <Compile Include="Util\ObjectInspector.cs" />
     <Compile Include="Util\PubCmnFunction.cs" />
     <Compile Include="Util\PublicExceptionMessage.cs" />

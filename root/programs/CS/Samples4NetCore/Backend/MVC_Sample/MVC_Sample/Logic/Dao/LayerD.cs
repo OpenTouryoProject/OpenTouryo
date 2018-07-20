@@ -22,9 +22,12 @@ using MVC_Sample.Models.ViewModels;
 
 using System.Data;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using Touryo.Infrastructure.Business.Dao;
+using Touryo.Infrastructure.Public.Dto;
 using Touryo.Infrastructure.Public.Db;
+using Touryo.Infrastructure.Public.Util;
 
 namespace MVC_Sample.Logic.Dao
 {
@@ -158,10 +161,13 @@ namespace MVC_Sample.Logic.Dao
             //   -- 一覧を返すSELECTクエリを実行する
             this.ExecSelectFill_DT(dt);
 
+            // DataTableToList
+            List<ShipperViweModel> list = DataToPoco.DataTableToList<ShipperViweModel>(dt);
+
             // ↑DBアクセス-----------------------------------------------------
 
             // 戻り値を設定
-            testReturn.Obj = dt;
+            testReturn.Obj = list;
         }
 
         /// <summary>一覧を返すSELECTクエリを実行する（DS）</summary>
@@ -195,10 +201,13 @@ namespace MVC_Sample.Logic.Dao
             //   -- 一覧を返すSELECTクエリを実行する
             this.ExecSelectFill_DS(ds);
 
+            // DataTableToList
+            List<ShipperViweModel> list = DataToPoco.DataTableToList<ShipperViweModel>(ds.Tables[0]);
+
             // ↑DBアクセス-----------------------------------------------------
 
             // 戻り値を設定
-            testReturn.Obj = ds;
+            testReturn.Obj = list;
         }
 
         /// <summary>一覧を返すSELECTクエリを実行する（DR）</summary>
@@ -231,6 +240,7 @@ namespace MVC_Sample.Logic.Dao
 
             // DataReaderToList
             List<ShipperViweModel> list = DataToPoco.DataReaderToList<ShipperViweModel>(idr);
+
             // 終了したらクローズ
             idr.Close();
 
@@ -305,11 +315,13 @@ namespace MVC_Sample.Logic.Dao
 
             //   -- 一覧を返すSELECTクエリを実行する
             this.ExecSelectFill_DT(dt);
+            // DataTableToList
+            List<ShipperViweModel> list = DataToPoco.DataTableToList<ShipperViweModel>(dt);
 
             // ↑DBアクセス-----------------------------------------------------
 
             // 戻り値を設定
-            testReturn.Obj = dt;
+            testReturn.Obj = list;
         }
 
         #endregion
@@ -350,27 +362,23 @@ namespace MVC_Sample.Logic.Dao
 
             // ↑DBアクセス-----------------------------------------------------
 
-            //// 戻り値を設定 // 不要
-            //testReturn.Obj = dt;
+            // 一部、DataToPocoのテストコード
+            ShipperViweModel svm = DataToPoco.DataTableToPOCO<ShipperViweModel>(dt);
+            Debug.WriteLine("svm:" + ObjectInspector.Inspect(svm));
 
-            // キャストの対策コードを挿入
+            TestShipperViweModel tsvm = DataToPoco.DataTableToPOCO<TestShipperViweModel>(dt,
+                // mapの書き方は、Key-Valueでdst-srcのproperty field名を書く
+                new Dictionary<string, string>()
+                {
+                    { "_ShipperID", "ShipperID"},
+                    { "_CompanyName", "CompanyName"},
+                    { "_Phone", "Phone"}
+                });
 
-            // ・SQLの場合、ShipperIDのintがInt32型にマップされる。
-            // ・ODPの場合、ShipperIDのNUMBERがInt64型にマップされる。
-            // ・DB2の場合、ShipperIDのDECIMALがｘｘｘ型にマップされる。
-            if (dt.Rows[0].ItemArray.GetValue(0).GetType().ToString() == "System.Int32")
-            {
-                // Int32なのでキャスト
-                testReturn.ShipperID = (int)dt.Rows[0].ItemArray.GetValue(0);
-            }
-            else
-            {
-                // それ以外の場合、一度、文字列に変換してInt32.Parseする。
-                testReturn.ShipperID = int.Parse(dt.Rows[0].ItemArray.GetValue(0).ToString());
-            }
+            Debug.WriteLine("tsvm:" + ObjectInspector.Inspect(tsvm));
 
-            testReturn.CompanyName = (string)dt.Rows[0].ItemArray.GetValue(1);
-            testReturn.Phone = (string)dt.Rows[0].ItemArray.GetValue(2);
+            testReturn.Obj = svm;
+            testReturn.Obj2 = tsvm;
         }
 
         #endregion

@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using Touryo.Infrastructure.Business.Business;
 using Touryo.Infrastructure.Business.Dao;
 using Touryo.Infrastructure.Framework.Exceptions;
-using Touryo.Infrastructure.Public.Db;
+using Touryo.Infrastructure.Public.Dto;
 
 namespace MVC_Sample.Logic.Business
 {
@@ -137,6 +137,7 @@ namespace MVC_Sample.Logic.Business
 
             // ↓業務処理-----------------------------------------------------
             DataTable dt = null;
+            List<ShipperViweModel> list = null;
 
             switch ((testParameter.ActionType.Split('%'))[1])
             {
@@ -164,8 +165,11 @@ namespace MVC_Sample.Logic.Business
                     // 共通Daoを実行
                     cmnDao.ExecSelectFill_DT(dt);
 
+                    // DataTableToList
+                    list = DataToPoco.DataTableToList<ShipperViweModel>(dt);
+
                     // 戻り値を設定
-                    testReturn.Obj = dt;
+                    testReturn.Obj = list;
 
                     break;
 
@@ -180,8 +184,12 @@ namespace MVC_Sample.Logic.Business
                     // 自動生成Daoを実行
                     genDao.D2_Select(dt);
 
+                    // DataTableToList
+                    list = DataToPoco.DataTableToList<ShipperViweModel>(dt);
+
                     // 戻り値を設定
-                    testReturn.Obj = (DataTable)dt;
+                    testReturn.Obj = list;
+
                     break;
 
                 default: // 個別Daoを使用する。
@@ -210,6 +218,8 @@ namespace MVC_Sample.Logic.Business
 
             // ↓業務処理-----------------------------------------------------
             DataSet ds = null;
+            //DataTable dt = null;
+            List<ShipperViweModel> list = null;
 
             switch ((testParameter.ActionType.Split('%'))[1])
             {
@@ -237,8 +247,11 @@ namespace MVC_Sample.Logic.Business
                     // 共通Daoを実行
                     cmnDao.ExecSelectFill_DS(ds);
 
+                    // DataTableToList
+                    list = DataToPoco.DataTableToList<ShipperViweModel>(ds.Tables[0]);
+
                     // 戻り値を設定
-                    testReturn.Obj = ds;
+                    testReturn.Obj = list;
 
                     break;
 
@@ -254,8 +267,12 @@ namespace MVC_Sample.Logic.Business
                     // 自動生成Daoを実行
                     genDao.D2_Select(ds.Tables[0]);
 
+                    // DataTableToList
+                    list = DataToPoco.DataTableToList<ShipperViweModel>(ds.Tables[0]);
+
                     // 戻り値を設定
-                    testReturn.Obj = ds;
+                    testReturn.Obj = list;
+
                     break;
 
                 default: // 個別Daoを使用する。
@@ -366,6 +383,8 @@ namespace MVC_Sample.Logic.Business
             this.ReturnValue = testReturn;
 
             // ↓業務処理-----------------------------------------------------
+            DataTable dt = null;
+            List<ShipperViweModel> list = null;
 
             switch ((testParameter.ActionType.Split('%'))[1])
             {
@@ -425,13 +444,16 @@ namespace MVC_Sample.Logic.Business
                     cmnDao.SetUserParameter("SEQUENCE", " " + orderSequence + " ");
 
                     // 戻り値 dt
-                    DataTable dt = new DataTable();
+                    dt = new DataTable();
 
                     // 共通Daoを実行
                     cmnDao.ExecSelectFill_DT(dt);
 
+                    // DataTableToList
+                    list = DataToPoco.DataTableToList<ShipperViweModel>(dt);
+
                     // 自動生成Daoを実行
-                    testReturn.Obj = dt;
+                    testReturn.Obj = list;
 
                     break;
 
@@ -495,24 +517,8 @@ namespace MVC_Sample.Logic.Business
                     // 共通Daoを実行
                     cmnDao.ExecSelectFill_DT(dt);
 
-                    // キャストの対策コードを挿入
-
-                    // ・SQLの場合、ShipperIDのintがInt32型にマップされる。
-                    // ・ODPの場合、ShipperIDのNUMBERがInt64型にマップされる。
-                    // ・DB2の場合、ShipperIDのDECIMALがｘｘｘ型にマップされる。
-                    if (dt.Rows[0].ItemArray.GetValue(0).GetType().ToString() == "System.Int32")
-                    {
-                        // Int32なのでキャスト
-                        testReturn.ShipperID = (int)dt.Rows[0].ItemArray.GetValue(0);
-                    }
-                    else
-                    {
-                        // それ以外の場合、一度、文字列に変換してInt32.Parseする。
-                        testReturn.ShipperID = int.Parse(dt.Rows[0].ItemArray.GetValue(0).ToString());
-                    }
-
-                    testReturn.CompanyName = (string)dt.Rows[0].ItemArray.GetValue(1);
-                    testReturn.Phone = (string)dt.Rows[0].ItemArray.GetValue(2);
+                    // DataTableToPOCO
+                    testReturn.Obj = DataToPoco.DataTableToPOCO<ShipperViweModel>(dt);
 
                     break;
 
@@ -530,24 +536,8 @@ namespace MVC_Sample.Logic.Business
                     // 自動生成Daoを実行
                     genDao.S2_Select(dt);
 
-                    // キャストの対策コードを挿入
-
-                    // ・SQLの場合、ShipperIDのintがInt32型にマップされる。
-                    // ・ODPの場合、ShipperIDのNUMBERがInt64型にマップされる。
-                    // ・DB2の場合、ShipperIDのDECIMALがｘｘｘ型にマップされる。
-                    if (dt.Rows[0].ItemArray.GetValue(0).GetType().ToString() == "System.Int32")
-                    {
-                        // Int32なのでキャスト
-                        testReturn.ShipperID = (int)dt.Rows[0].ItemArray.GetValue(0);
-                    }
-                    else
-                    {
-                        // それ以外の場合、一度、文字列に変換してInt32.Parseする。
-                        testReturn.ShipperID = int.Parse(dt.Rows[0].ItemArray.GetValue(0).ToString());
-                    }
-
-                    testReturn.CompanyName = (string)dt.Rows[0].ItemArray.GetValue(1);
-                    testReturn.Phone = (string)dt.Rows[0].ItemArray.GetValue(2);
+                    // DataTableToPOCO
+                    testReturn.Obj = DataToPoco.DataTableToPOCO<ShipperViweModel>(dt);
 
                     break;
 

@@ -18,7 +18,7 @@
 //*
 //**********************************************************************************
 
-//System
+using System;
 
 namespace MVC_Sample.Models.ViewModels
 {
@@ -28,8 +28,8 @@ namespace MVC_Sample.Models.ViewModels
     public class ShipperViweModel
     {
         /// <summary>ShipperID</summary>
-        public int ShipperID { get; set; }
-        
+        public Int64 ShipperID { get; set; } // Oracle対応
+
         /// <summary>CompanyName</summary>
         public string CompanyName { get; set; }
         

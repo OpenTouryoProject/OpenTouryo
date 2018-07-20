@@ -18,15 +18,16 @@
 //*
 //**********************************************************************************
 
-//System
-using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MVC_Sample.Models.ViewModels
 {
     /// <summary>
     /// サンプル アプリ・モデル
     /// </summary>
+    [Serializable]
     public class CrudViweModel : BaseViewModel
     {
         /// <summary>shippersテーブル</summary>
@@ -36,7 +37,7 @@ namespace MVC_Sample.Models.ViewModels
         public string Message { get; set; }
 
         /// <summary>ShipperID</summary>
-        public string ShipperID { get; set; }
+        public Int64 ShipperID { get; set; }
         
         /// <summary>CompanyName</summary>
         public string CompanyName { get; set; }

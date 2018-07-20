@@ -31,6 +31,8 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+using System;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -41,6 +43,7 @@ using Touryo.Infrastructure.Framework.Util;
 namespace MVC_Sample.Models.ViewModels
 {
     /// <summary>BaseViewModel</summary>
+    [Serializable]
     public class BaseViewModel
     {
 

@@ -17,6 +17,7 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+using System;
 using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Business.Util;
 
@@ -28,7 +29,7 @@ namespace MVC_Sample.Logic.Common
         public object Obj;
 
         /// <summary>ShipperID</summary>
-        public int ShipperID;
+        public Int64 ShipperID;
 
         /// <summary>CompanyName</summary>
         public string CompanyName;
