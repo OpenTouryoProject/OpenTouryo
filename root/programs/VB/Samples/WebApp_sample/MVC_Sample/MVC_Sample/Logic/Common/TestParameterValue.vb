@@ -27,7 +27,7 @@ Namespace Logic.Common
         Public Obj As Object
 
         ''' <summary>ShipperID</summary>
-        Public ShipperID As Integer
+		Public ShipperID As Int64
 
         ''' <summary>CompanyName</summary>
         Public CompanyName As String

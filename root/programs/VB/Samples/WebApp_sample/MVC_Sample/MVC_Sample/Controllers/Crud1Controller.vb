@@ -21,13 +21,13 @@ Imports MVC_Sample.Logic.Business
 Imports MVC_Sample.Logic.Common
 Imports MVC_Sample.Models.ViewModels
 
-Imports System.Data
 Imports System.Threading.Tasks
 
-Imports System.Web.Mvc
-
 Imports Touryo.Infrastructure.Business.Presentation
+Imports Touryo.Infrastructure.Public.Util
+Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Db
+Imports Touryo.Infrastructure.Public.Dto
 
 Namespace Controllers
     ''' <summary>
@@ -122,17 +122,7 @@ Namespace Controllers
                     model.Message = message
                 Else
                     ' 結果（正常系）
-                    model.shippers = New DsNorthwind.ShippersDataTable()
-                    Dim dt As DataTable = DirectCast(testReturnValue.Obj, DataTable)
-
-                    For Each row As DataRow In dt.Rows
-                        Dim srow As DsNorthwind.ShippersRow = model.shippers.NewShippersRow()
-                        srow.ShipperID = Integer.Parse(row(0).ToString())
-                        srow.CompanyName = row(1).ToString()
-                        srow.Phone = row(2).ToString()
-
-                        model.shippers.Rows.Add(srow)
-                    Next
+                    model.shippers = testReturnValue.Obj
                 End If
             End If
 
@@ -174,17 +164,7 @@ Namespace Controllers
                     model.Message = message
                 Else
                     ' 結果（正常系）
-                    model.shippers = New DsNorthwind.ShippersDataTable()
-                    Dim ds As DataSet = DirectCast(testReturnValue.Obj, DataSet)
-
-                    For Each row As DataRow In ds.Tables(0).Rows
-                        Dim srow As DsNorthwind.ShippersRow = model.shippers.NewShippersRow()
-                        srow.ShipperID = Integer.Parse(row(0).ToString())
-                        srow.CompanyName = row(1).ToString()
-                        srow.Phone = row(2).ToString()
-
-                        model.shippers.Rows.Add(srow)
-                    Next
+                    model.shippers = testReturnValue.Obj
                 End If
             End If
 
@@ -226,17 +206,7 @@ Namespace Controllers
                     model.Message = message
                 Else
                     ' 結果（正常系）
-                    model.shippers = New DsNorthwind.ShippersDataTable()
-                    Dim dt As DataTable = DirectCast(testReturnValue.Obj, DataTable)
-
-                    For Each row As DataRow In dt.Rows
-                        Dim srow As DsNorthwind.ShippersRow = model.shippers.NewShippersRow()
-                        srow.ShipperID = Integer.Parse(row(0).ToString())
-                        srow.CompanyName = row(1).ToString()
-                        srow.Phone = row(2).ToString()
-
-                        model.shippers.Rows.Add(srow)
-                    Next
+                    model.shippers = testReturnValue.Obj
                 End If
             End If
 
@@ -282,17 +252,7 @@ Namespace Controllers
                     model.Message = message
                 Else
                     ' 結果（正常系）
-                    model.shippers = New DsNorthwind.ShippersDataTable()
-                    Dim dt As DataTable = DirectCast(testReturnValue.Obj, DataTable)
-
-                    For Each row As DataRow In dt.Rows
-                        Dim srow As DsNorthwind.ShippersRow = model.shippers.NewShippersRow()
-                        srow.ShipperID = Integer.Parse(row(0).ToString())
-                        srow.CompanyName = row(1).ToString()
-                        srow.Phone = row(2).ToString()
-
-                        model.shippers.Rows.Add(srow)
-                    Next
+                    model.shippers = testReturnValue.Obj
                 End If
             End If
 
@@ -337,11 +297,29 @@ Namespace Controllers
                     model.Message = message
                 Else
                     ' 結果（正常系）
-                    ModelState.Clear()
-                    ' ErrorのClearをしないと何故か設定できない。
-                    model.ShipperID = testReturnValue.ShipperID.ToString()
-                    model.CompanyName = testReturnValue.CompanyName
-                    model.Phone = testReturnValue.Phone
+                    ModelState.Clear() ' Clearをしないと何故か設定できない。
+
+                    ' 一部、PocoToPocoのテストコード
+                    Dim copyModel As CrudViweModel = Nothing
+
+                    ' テスト１
+                    copyModel = DirectCast(BinarySerialize.DeepClone(model), CrudViweModel)
+                    ' mapの書き方は、Key-Valueでdst-srcのproperty field名を書く
+                    PocoToPoco.Map(Of TestShipperViweModel, CrudViweModel)(
+                        DirectCast(testReturnValue.Obj2, TestShipperViweModel), copyModel,
+                        New Dictionary(Of String, String)() From {
+                            {"ShipperID", "_ShipperID"},
+                            {"CompanyName", "_CompanyName"},
+                            {"Phone", "_Phone"}
+                        })
+
+                    Debug.WriteLine("copyModel1:" & ObjectInspector.Inspect(copyModel))
+
+                    ' テスト２
+                    copyModel = PocoToPoco.Map(Of ShipperViweModel, CrudViweModel)(DirectCast(testReturnValue.Obj, ShipperViweModel))
+                    Debug.WriteLine("copyModel2:" & ObjectInspector.Inspect(copyModel))
+
+                    PocoToPoco.Map(Of ShipperViweModel, CrudViweModel)(DirectCast(testReturnValue.Obj, ShipperViweModel), model, Nothing)
                 End If
             End If
 

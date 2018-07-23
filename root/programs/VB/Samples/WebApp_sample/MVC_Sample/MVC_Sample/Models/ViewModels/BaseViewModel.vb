@@ -36,6 +36,7 @@ Imports Touryo.Infrastructure.Framework.Util
 
 Namespace Models.ViewModels
     ''' <summary>BaseViewModel</summary>
+	<Serializable> _
     Public Class BaseViewModel
 
         ''' <summary>UserName</summary>

@@ -19,11 +19,10 @@
     //**********************************************************************************
 *@
 
-@using MVC_Sample
 @using MVC_Sample.Models.ViewModels
 @model CrudViweModel
 
-@if (Model != null && Model.shippers != null)
+@if (Model != null && Model.Shippers != null)
 {
                 <table class="table">
                     <thead>
@@ -34,12 +33,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach (DsNorthwind.ShippersRow row in Model.shippers.Rows)
+                    @foreach (ShipperViweModel svm in Model.Shippers)
                     {
                         <tr>
-                            <td>@row.ShipperID</td>
-                            <td>@row.CompanyName</td>
-                            <td>@row.Phone</td>
+                            <td>@svm.ShipperID</td>
+                            <td>@svm.CompanyName</td>
+                            <td>@svm.Phone</td>
                         </tr>
                     }
                     </tbody>

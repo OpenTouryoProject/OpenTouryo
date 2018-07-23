@@ -22,18 +22,19 @@ Namespace Models.ViewModels
     ''' <summary>
     ''' サンプル アプリ・モデル
     ''' </summary>
+    <Serializable>
     Public Class CrudViweModel
         Inherits BaseViewModel
         ''' <summary>shippersテーブル</summary>
-        Public Property shippers() As DsNorthwind.ShippersDataTable
+        Public Property Shippers() As List(Of ShipperViweModel)
             Get
-                Return m_shippers
+                Return m_Shippers
             End Get
             Set
-                m_shippers = Value
+                m_Shippers = Value
             End Set
         End Property
-        Private m_shippers As DsNorthwind.ShippersDataTable
+        Private m_Shippers As List(Of ShipperViweModel)
 
         ''' <summary>メッセージ</summary>
         Public Property Message() As String
@@ -47,7 +48,7 @@ Namespace Models.ViewModels
         Private m_Message As String
 
         ''' <summary>ShipperID</summary>
-        Public Property ShipperID() As String
+        Public Property ShipperID() As Int64
             Get
                 Return m_ShipperID
             End Get
@@ -55,7 +56,7 @@ Namespace Models.ViewModels
                 m_ShipperID = Value
             End Set
         End Property
-        Private m_ShipperID As String
+        Private m_ShipperID As Int64
 
         ''' <summary>CompanyName</summary>
         Public Property CompanyName() As String
@@ -177,7 +178,7 @@ Namespace Models.ViewModels
                     },
                     New SelectListItem() With {
                         .Text = "Oracle / ODP.NET",
-                        .Value = "SQL"
+                        .Value = "ODP"
                     },
                     New SelectListItem() With {
                         .Text = "DB2 / DB2.NET",
