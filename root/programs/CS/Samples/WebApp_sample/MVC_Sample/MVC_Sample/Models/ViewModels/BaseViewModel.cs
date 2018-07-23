@@ -31,12 +31,15 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+using System;
+
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Util;
 
 namespace MVC_Sample.Models.ViewModels
 {
     /// <summary>BaseViewModel</summary>
+    [Serializable]
     public class BaseViewModel
     {
 

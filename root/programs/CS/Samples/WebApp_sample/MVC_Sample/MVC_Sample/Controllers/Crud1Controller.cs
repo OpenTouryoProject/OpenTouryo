@@ -20,15 +20,20 @@
 using MVC_Sample.Logic.Business;
 using MVC_Sample.Logic.Common;
 using MVC_Sample.Models.ViewModels;
-using MVC_Sample.Models.DataSets;
 
 using System.Data;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 using System.Web.Mvc;
 
 using Touryo.Infrastructure.Business.Presentation;
+using Touryo.Infrastructure.Business.Util;
+using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Db;
+using Touryo.Infrastructure.Public.Dto;
 
 namespace MVC_Sample.Controllers
 {
@@ -111,7 +116,8 @@ namespace MVC_Sample.Controllers
 
                 // Ｂ層呼出し＋都度コミット
                 LayerB layerB = new LayerB();
-                TestReturnValue testReturnValue = (TestReturnValue)await layerB.DoBusinessLogicAsync(testParameterValue, this.SelectIsolationLevel(model.DdlIso));
+                TestReturnValue testReturnValue = (TestReturnValue)await layerB.DoBusinessLogicAsync(
+                    testParameterValue, this.SelectIsolationLevel(model.DdlIso));
 
                 // 結果表示するメッセージ
                 string message = "";
@@ -129,18 +135,7 @@ namespace MVC_Sample.Controllers
                 else
                 {
                     // 結果（正常系）
-                    model.shippers = new DsNorthwind.ShippersDataTable();
-                    DataTable dt = (DataTable)testReturnValue.Obj;
-
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        DsNorthwind.ShippersRow srow = model.shippers.NewShippersRow();
-                        srow.ShipperID = int.Parse(row[0].ToString());
-                        srow.CompanyName = row[1].ToString();
-                        srow.Phone = row[2].ToString();
-
-                        model.shippers.Rows.Add(srow);
-                    }
+                    model.Shippers = (List<ShipperViweModel>)testReturnValue.Obj;
                 }
             }
 
@@ -166,7 +161,8 @@ namespace MVC_Sample.Controllers
 
                 // Ｂ層呼出し＋都度コミット
                 LayerB layerB = new LayerB();
-                TestReturnValue testReturnValue = (TestReturnValue)await layerB.DoBusinessLogicAsync(testParameterValue, this.SelectIsolationLevel(model.DdlIso));
+                TestReturnValue testReturnValue = (TestReturnValue)await layerB.DoBusinessLogicAsync(
+                    testParameterValue, this.SelectIsolationLevel(model.DdlIso));
 
                 // 結果表示するメッセージ
                 string message = "";
@@ -184,18 +180,7 @@ namespace MVC_Sample.Controllers
                 else
                 {
                     // 結果（正常系）
-                    model.shippers = new DsNorthwind.ShippersDataTable();
-                    DataSet ds = (DataSet)testReturnValue.Obj;
-
-                    foreach (DataRow row in ds.Tables[0].Rows)
-                    {
-                        DsNorthwind.ShippersRow srow = model.shippers.NewShippersRow();
-                        srow.ShipperID = int.Parse(row[0].ToString());
-                        srow.CompanyName = row[1].ToString();
-                        srow.Phone = row[2].ToString();
-
-                        model.shippers.Rows.Add(srow);
-                    }
+                    model.Shippers = (List<ShipperViweModel>)testReturnValue.Obj;
                 }
             }
 
@@ -221,7 +206,8 @@ namespace MVC_Sample.Controllers
 
                 // Ｂ層呼出し＋都度コミット
                 LayerB layerB = new LayerB();
-                TestReturnValue testReturnValue = (TestReturnValue)await layerB.DoBusinessLogicAsync(testParameterValue, this.SelectIsolationLevel(model.DdlIso));
+                TestReturnValue testReturnValue = (TestReturnValue)await layerB.DoBusinessLogicAsync(
+                    testParameterValue, this.SelectIsolationLevel(model.DdlIso));
 
                 // 結果表示するメッセージ
                 string message = "";
@@ -239,18 +225,7 @@ namespace MVC_Sample.Controllers
                 else
                 {
                     // 結果（正常系）
-                    model.shippers = new DsNorthwind.ShippersDataTable();
-                    DataTable dt = (DataTable)testReturnValue.Obj;
-
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        DsNorthwind.ShippersRow srow = model.shippers.NewShippersRow();
-                        srow.ShipperID = int.Parse(row[0].ToString());
-                        srow.CompanyName = row[1].ToString();
-                        srow.Phone = row[2].ToString();
-
-                        model.shippers.Rows.Add(srow);
-                    }
+                    model.Shippers = (List<ShipperViweModel>)testReturnValue.Obj;
                 }
             }
 
@@ -280,7 +255,8 @@ namespace MVC_Sample.Controllers
 
                 // Ｂ層呼出し＋都度コミット
                 LayerB layerB = new LayerB();
-                TestReturnValue testReturnValue = (TestReturnValue)await layerB.DoBusinessLogicAsync(testParameterValue, this.SelectIsolationLevel(model.DdlIso));
+                TestReturnValue testReturnValue = (TestReturnValue)await layerB.DoBusinessLogicAsync(
+                    testParameterValue, this.SelectIsolationLevel(model.DdlIso));
 
                 // 結果表示するメッセージ
                 string message = "";
@@ -298,18 +274,7 @@ namespace MVC_Sample.Controllers
                 else
                 {
                     // 結果（正常系）
-                    model.shippers = new DsNorthwind.ShippersDataTable();
-                    DataTable dt = (DataTable)testReturnValue.Obj;
-
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        DsNorthwind.ShippersRow srow = model.shippers.NewShippersRow();
-                        srow.ShipperID = int.Parse(row[0].ToString());
-                        srow.CompanyName = row[1].ToString();
-                        srow.Phone = row[2].ToString();
-
-                        model.shippers.Rows.Add(srow);
-                    }
+                    model.Shippers = (List<ShipperViweModel>)testReturnValue.Obj;
                 }
             }
 
@@ -334,11 +299,12 @@ namespace MVC_Sample.Controllers
                     model.DdlDap + "%" + model.DdlMode1 + "%" + model.DdlMode2 + "%" + model.DdlExRollback, this.UserInfo);
 
                 // 動的SQLの要素を設定
-                testParameterValue.ShipperID = int.Parse(model.ShipperID);
+                testParameterValue.ShipperID = model.ShipperID;
 
                 // Ｂ層呼出し＋都度コミット
                 LayerB layerB = new LayerB();
-                TestReturnValue testReturnValue = (TestReturnValue)await layerB.DoBusinessLogicAsync(testParameterValue, this.SelectIsolationLevel(model.DdlIso));
+                TestReturnValue testReturnValue = (TestReturnValue)await layerB.DoBusinessLogicAsync(
+                    testParameterValue, this.SelectIsolationLevel(model.DdlIso));
 
                 // 結果表示するメッセージ
                 string message = "";
@@ -357,9 +323,28 @@ namespace MVC_Sample.Controllers
                 {
                     // 結果（正常系）
                     ModelState.Clear(); // ErrorのClearをしないと何故か設定できない。
-                    model.ShipperID = testReturnValue.ShipperID.ToString();
-                    model.CompanyName = testReturnValue.CompanyName;
-                    model.Phone = testReturnValue.Phone;
+
+                    // 一部、PocoToPocoのテストコード
+                    CrudViweModel copyModel = null;
+
+                    // テスト１
+                    copyModel = (CrudViweModel)BinarySerialize.DeepClone(model);
+                    PocoToPoco.Map<TestShipperViweModel, CrudViweModel>((TestShipperViweModel)testReturnValue.Obj2, copyModel,
+                        // mapの書き方は、Key-Valueでdst-srcのproperty field名を書く
+                        new Dictionary<string, string>()
+                        {
+                            { "ShipperID", "_ShipperID"},
+                            { "CompanyName", "_CompanyName"},
+                            { "Phone", "_Phone"}
+                        });
+
+                    Debug.WriteLine("copyModel1:" + ObjectInspector.Inspect(copyModel));
+
+                    // テスト２
+                    copyModel = PocoToPoco.Map<ShipperViweModel, CrudViweModel>((ShipperViweModel)testReturnValue.Obj);
+                    Debug.WriteLine("copyModel2:" + ObjectInspector.Inspect(copyModel));
+
+                    PocoToPoco.Map<ShipperViweModel, CrudViweModel>((ShipperViweModel)testReturnValue.Obj, model, null);
                 }
             }
 
@@ -389,7 +374,8 @@ namespace MVC_Sample.Controllers
 
                 // Ｂ層呼出し＋都度コミット
                 LayerB layerB = new LayerB();
-                TestReturnValue testReturnValue = (TestReturnValue)await layerB.DoBusinessLogicAsync(testParameterValue, this.SelectIsolationLevel(model.DdlIso));
+                TestReturnValue testReturnValue = (TestReturnValue)await layerB.DoBusinessLogicAsync(
+                    testParameterValue, this.SelectIsolationLevel(model.DdlIso));
 
                 // 結果表示するメッセージ
                 string message = "";
@@ -432,13 +418,14 @@ namespace MVC_Sample.Controllers
                     model.DdlDap + "%" + model.DdlMode1 + "%" + model.DdlMode2 + "%" + model.DdlExRollback, this.UserInfo);
 
                 // 動的SQLの要素を設定
-                testParameterValue.ShipperID = int.Parse(model.ShipperID);
+                testParameterValue.ShipperID = model.ShipperID;
                 testParameterValue.CompanyName = model.CompanyName;
                 testParameterValue.Phone = model.Phone;
 
                 // Ｂ層呼出し＋都度コミット
                 LayerB layerB = new LayerB();
-                TestReturnValue testReturnValue = (TestReturnValue)await layerB.DoBusinessLogicAsync(testParameterValue, this.SelectIsolationLevel(model.DdlIso));
+                TestReturnValue testReturnValue = (TestReturnValue)await layerB.DoBusinessLogicAsync(
+                    testParameterValue, this.SelectIsolationLevel(model.DdlIso));
 
                 // 結果表示するメッセージ
                 string message = "";
@@ -481,11 +468,12 @@ namespace MVC_Sample.Controllers
                     model.DdlDap + "%" + model.DdlMode1 + "%" + model.DdlMode2 + "%" + model.DdlExRollback, this.UserInfo);
 
                 // 動的SQLの要素を設定
-                testParameterValue.ShipperID = int.Parse(model.ShipperID);
+                testParameterValue.ShipperID = model.ShipperID;
 
                 // Ｂ層呼出し＋都度コミット
                 LayerB layerB = new LayerB();
-                TestReturnValue testReturnValue = (TestReturnValue)await layerB.DoBusinessLogicAsync(testParameterValue, this.SelectIsolationLevel(model.DdlIso));
+                TestReturnValue testReturnValue = (TestReturnValue)await layerB.DoBusinessLogicAsync(
+                    testParameterValue, this.SelectIsolationLevel(model.DdlIso));
 
                 // 結果表示するメッセージ
                 string message = "";

@@ -78,7 +78,7 @@ namespace MVC_Sample.Models.ViewModels
                     new SelectListItem() { Text = "SQL Server / SQL Client", Value = "SQL", Selected = true }, 
                     new SelectListItem() { Text = "Multi-DB / OLEDB.NET", Value = "OLE" }, 
                     new SelectListItem() { Text = "Multi-DB / ODBC.NET", Value = "ODB" }, 
-                    new SelectListItem() { Text = "Oracle / ODP.NET", Value = "SQL" }, 
+                    new SelectListItem() { Text = "Oracle / ODP.NET", Value = "ODP" }, 
                     new SelectListItem() { Text = "DB2 / DB2.NET", Value = "DB2" }, 
                     new SelectListItem() { Text = "HiRDB / HiRDB-DP", Value = "HIR" }, 
                     new SelectListItem() { Text = "MySQL Cnn/NET", Value = "MCN" }, 

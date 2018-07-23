@@ -50,10 +50,6 @@ namespace MVC_Sample.Controllers
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class Crud1Controller : MyBaseMVControllerCore
     {
-        //string ControllerName = "Crud1Controller";
-        //string ActionName = "SelectCount";
-        //MyUserInfo UserInfo = new MyUserInfo("aaa", "bbb");
-
         /// <summary>
         /// 画面の初期表示
         /// GET: /Crud2/
