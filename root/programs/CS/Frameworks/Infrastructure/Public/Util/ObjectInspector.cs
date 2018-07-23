@@ -47,6 +47,9 @@ namespace Touryo.Infrastructure.Public.Util
         /// <summary>DateTimeのFormat</summary>
         public static string DateTimeFormat = "";
 
+        /// <summary>TimeSpanのFormat</summary>
+        public static string TimeSpanFormat = "";
+
         /// <summary>オブジェクトのプロパティ分析</summary>
         /// <param name="obj">分析対象オブジェクト</param>
         /// <returns>分析結果</returns>
@@ -168,7 +171,16 @@ namespace Touryo.Infrastructure.Public.Util
                 // TimeSpan
 
                 // リターン
-                ret = obj.ToString();
+                if (string.IsNullOrEmpty(ObjectInspector.TimeSpanFormat))
+                {
+                    // フォーマット指定なし
+                    ret = ((TimeSpan)obj).ToString();
+                }
+                else
+                {
+                    // フォーマット指定なし
+                    ret = ((TimeSpan)obj).ToString(ObjectInspector.TimeSpanFormat);
+                }
             }
             else if (type.IsEnum)
             {

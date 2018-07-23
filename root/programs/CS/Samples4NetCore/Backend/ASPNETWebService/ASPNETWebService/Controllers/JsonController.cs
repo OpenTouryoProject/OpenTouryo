@@ -35,6 +35,7 @@ using System;
 using System.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 
 using System.Net;
@@ -52,6 +53,7 @@ using Touryo.Infrastructure.Framework.Transmission;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Db;
+using Touryo.Infrastructure.Public.Dto;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
 
@@ -209,18 +211,26 @@ namespace ASPNETWebService.Controllers
                 {
                     // 結果（正常系）
                     DataTable dt = (DataTable)testReturnValue.Obj;
-                    List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
 
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        Dictionary<string, string> dic = new Dictionary<string, string>();
-                        dic.Add(dt.Columns[0].ColumnName, row[0].ToString());
-                        dic.Add(dt.Columns[1].ColumnName, row[1].ToString());
-                        dic.Add(dt.Columns[2].ColumnName, row[2].ToString());
+                    // 一部、DataToDictionaryのテストコード
+                    DataToDictionary d2d = null;
+                    List<Dictionary<string, string>> list = null;
 
-                        list.Add(dic);
-                    }
-                    
+                    d2d = new DataToDictionary(
+                        new Dictionary<string, string>()
+                        {
+                            { "ShipperID", "_ShipperID"},
+                            { "CompanyName", "_CompanyName"},
+                            { "Phone", "_Phone"}
+                        },
+                        null, null);
+                    list = d2d.DataTableToDictionaryList(dt);
+                    Debug.WriteLine(ObjectInspector.Inspect(list));
+
+                    d2d = new DataToDictionary(null, null, null);
+                    list = d2d.DataTableToDictionaryList(dt);
+                    Debug.WriteLine(ObjectInspector.Inspect(list));
+
                     ret = new { Message = "", Result = list };
                 }
             }
@@ -276,20 +286,9 @@ namespace ASPNETWebService.Controllers
                 else
                 {
                     // 結果（正常系）
-                    DataTable dt = ((DataSet)testReturnValue.Obj).Tables[0];
-                    List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
-
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        Dictionary<string, string> dic = new Dictionary<string, string>();
-                        dic.Add(dt.Columns[0].ColumnName, row[0].ToString());
-                        dic.Add(dt.Columns[1].ColumnName, row[1].ToString());
-                        dic.Add(dt.Columns[2].ColumnName, row[2].ToString());
-
-                        list.Add(dic);
-                    }
-
-                    ret = new { Message = "", Result = list };
+                    DataTable dt = ((DataSet)testReturnValue.Obj).Tables[0]; 
+                    DataToDictionary d2d = new DataToDictionary(null, null, null);
+                    ret = new { Message = "", Result = d2d.DataTableToDictionaryList(dt) };
                 }
             }
 
@@ -345,22 +344,8 @@ namespace ASPNETWebService.Controllers
                 {
                     // 結果（正常系）
                     DataTable dt = (DataTable)testReturnValue.Obj;
-                    List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
-
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        Dictionary<string, string> dic = new Dictionary<string, string>();
-                        //dic.Add(dt.Columns[0].ColumnName, row[0].ToString());
-                        //dic.Add(dt.Columns[1].ColumnName, row[1].ToString());
-                        //dic.Add(dt.Columns[2].ColumnName, row[2].ToString());
-                        dic.Add("ShipperID", row[0].ToString());
-                        dic.Add("CompanyName", row[1].ToString());
-                        dic.Add("Phone", row[2].ToString());
-
-                        list.Add(dic);
-                    }
-
-                    ret = new { Message = "", Result = list };
+                    DataToDictionary d2d = new DataToDictionary(null, null, null);
+                    ret = new { Message = "", Result = d2d.DataTableToDictionaryList(dt) };
                 }
             }
 
@@ -419,19 +404,8 @@ namespace ASPNETWebService.Controllers
                 {
                     // 結果（正常系）
                     DataTable dt = (DataTable)testReturnValue.Obj;
-                    List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
-
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        Dictionary<string, string> dic = new Dictionary<string, string>();
-                        dic.Add(dt.Columns[0].ColumnName, row[0].ToString());
-                        dic.Add(dt.Columns[1].ColumnName, row[1].ToString());
-                        dic.Add(dt.Columns[2].ColumnName, row[2].ToString());
-
-                        list.Add(dic);
-                    }
-
-                    ret = new { Message = "", Result = list };
+                    DataToDictionary d2d = new DataToDictionary(null, null, null);
+                    ret = new { Message = "", Result = d2d.DataTableToDictionaryList(dt) };
                 }
             }
 
@@ -488,11 +462,12 @@ namespace ASPNETWebService.Controllers
                 else
                 {
                     // 結果（正常系）
-                    Dictionary<string, string> dic = new Dictionary<string, string>();
-                    dic.Add("ShipperID", testReturnValue.ShipperID.ToString());
-                    dic.Add("CompanyName", testReturnValue.CompanyName);
-                    dic.Add("Phone", testReturnValue.Phone);
-
+                    Dictionary<string, string> dic = new Dictionary<string, string>()
+                    {
+                        { "ShipperID", testReturnValue.ShipperID.ToString()},
+                        { "CompanyName", testReturnValue.CompanyName},
+                        { "Phone", testReturnValue.Phone}
+                    };
                     ret = new { Message = "", Result = dic };
                 }
             }
