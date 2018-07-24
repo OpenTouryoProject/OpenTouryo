@@ -304,16 +304,19 @@ Namespace Controllers
 
                     ' テスト１
                     copyModel = DirectCast(BinarySerialize.DeepClone(model), CrudViweModel)
-                    ' mapの書き方は、Key-Valueでdst-srcのproperty field名を書く
-                    PocoToPoco.Map(Of TestShipperViweModel, CrudViweModel)(
-                        DirectCast(testReturnValue.Obj2, TestShipperViweModel), copyModel,
-                        New Dictionary(Of String, String)() From {
-                            {"ShipperID", "_ShipperID"},
-                            {"CompanyName", "_CompanyName"},
-                            {"Phone", "_Phone"}
-                        })
 
-                    Debug.WriteLine("copyModel1:" & ObjectInspector.Inspect(copyModel))
+                    If testReturnValue.Obj2 IsNot Nothing Then
+                        ' mapの書き方は、Key-Valueでdst-srcのproperty field名を書く
+                        PocoToPoco.Map(Of TestShipperViweModel, CrudViweModel)(
+                            DirectCast(testReturnValue.Obj2, TestShipperViweModel), copyModel,
+                            New Dictionary(Of String, String)() From {
+                                {"ShipperID", "_ShipperID"},
+                                {"CompanyName", "_CompanyName"},
+                                {"Phone", "_Phone"}
+                            })
+
+                        Debug.WriteLine("copyModel1:" & ObjectInspector.Inspect(copyModel))
+                    End If
 
                     ' テスト２
                     copyModel = PocoToPoco.Map(Of ShipperViweModel, CrudViweModel)(DirectCast(testReturnValue.Obj, ShipperViweModel))

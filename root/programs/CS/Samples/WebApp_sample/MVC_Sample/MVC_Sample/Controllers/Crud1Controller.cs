@@ -329,16 +329,20 @@ namespace MVC_Sample.Controllers
 
                     // テスト１
                     copyModel = (CrudViweModel)BinarySerialize.DeepClone(model);
-                    PocoToPoco.Map<TestShipperViweModel, CrudViweModel>((TestShipperViweModel)testReturnValue.Obj2, copyModel,
-                        // mapの書き方は、Key-Valueでdst-srcのproperty field名を書く
-                        new Dictionary<string, string>()
-                        {
-                            { "ShipperID", "_ShipperID"},
-                            { "CompanyName", "_CompanyName"},
-                            { "Phone", "_Phone"}
-                        });
 
-                    Debug.WriteLine("copyModel1:" + ObjectInspector.Inspect(copyModel));
+                    if (testReturnValue.Obj2 != null)
+                    {
+                        PocoToPoco.Map<TestShipperViweModel, CrudViweModel>((TestShipperViweModel)testReturnValue.Obj2, copyModel,
+                            // mapの書き方は、Key-Valueでdst-srcのproperty field名を書く
+                            new Dictionary<string, string>()
+                            {
+                                { "ShipperID", "_ShipperID"},
+                                { "CompanyName", "_CompanyName"},
+                                { "Phone", "_Phone"}
+                            });
+
+                        Debug.WriteLine("copyModel1:" + ObjectInspector.Inspect(copyModel));
+                    }
 
                     // テスト２
                     copyModel = PocoToPoco.Map<ShipperViweModel, CrudViweModel>((ShipperViweModel)testReturnValue.Obj);
