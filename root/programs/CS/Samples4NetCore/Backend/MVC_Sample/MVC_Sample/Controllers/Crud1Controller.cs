@@ -523,12 +523,13 @@ namespace MVC_Sample.Controllers
             int? temp = HttpContext.Session.GetInt32("cnt");
             if (temp.HasValue)
             {
-                HttpContext.Session.SetInt32("cnt", 1);
+                HttpContext.Session.SetInt32("cnt", temp.Value + 1); 
             }
             else
             {
-                HttpContext.Session.SetInt32("cnt", temp.Value + 1);
+                HttpContext.Session.SetInt32("cnt", 1);
             }
+            temp = HttpContext.Session.GetInt32("cnt");
 
             model.Message = "PreventDoubleSubmission:" + temp.Value.ToString();
 

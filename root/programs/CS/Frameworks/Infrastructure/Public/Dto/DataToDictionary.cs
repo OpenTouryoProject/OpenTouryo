@@ -40,13 +40,16 @@ namespace Touryo.Infrastructure.Public.Dto
     public class DataToDictionary
     {
         /// <summary>Dictionary(data field string, dictionary field string)</summary>
-        Dictionary<string, string> Mapping = null;
+        public Dictionary<string, string> Mapping = null;
 
         /// <summary>DateTimeのFormat</summary>
         public string DateTimeFormat = "";
 
         /// <summary>TimeSpanのFormat</summary>
         public string TimeSpanFormat = "";
+
+        /// <summary>constructor</summary>
+        public DataToDictionary() { }
 
         /// <summary>constructor</summary>
         /// <param name="mapping">Dictionary(data field string, dictionary field string)</param>
@@ -77,7 +80,6 @@ namespace Touryo.Infrastructure.Public.Dto
         
         /// <summary>DataTableからDictionaryに変換する。</summary>
         /// <param name="dt">IDataReader</param>
-        /// <param name="map">Dictionary(data field string, dictionary field string)</param>
         /// <returns>Dictionary(string, string)</returns>
         public Dictionary<string, string> DataTableToDictionary(DataTable dt)
         {
