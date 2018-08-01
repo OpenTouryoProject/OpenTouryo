@@ -17,7 +17,7 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
-using System;
+using MVC_Sample.Models.ViewModels;
 using Touryo.Infrastructure.Business.Common;
 using Touryo.Infrastructure.Business.Util;
 
@@ -25,17 +25,8 @@ namespace MVC_Sample.Logic.Common
 {
     public class TestParameterValue : MyParameterValue
     {
-        /// <summary>汎用エリア</summary>
-        public object Obj;
-
-        /// <summary>ShipperID</summary>
-        public Int64 ShipperID;
-
-        /// <summary>CompanyName</summary>
-        public string CompanyName;
-
-        /// <summary>Phone</summary>
-        public string Phone;
+        /// <summary>shipper</summary>
+        public ShipperViweModel Shipper { get; set; }
 
         /// <summary>OrderColumn</summary>
         public string OrderColumn;

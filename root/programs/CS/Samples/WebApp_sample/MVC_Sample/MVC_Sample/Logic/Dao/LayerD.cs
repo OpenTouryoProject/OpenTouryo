@@ -57,7 +57,7 @@ namespace MVC_Sample.Logic.Dao
             this.SetSqlByCommand("SQL文");
 
             // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-            this.SetParameter("P1", testParameter.ShipperID);
+            this.SetParameter("P1", testParameter.Shipper.ShipperID);
 
             object obj;
 
@@ -352,7 +352,7 @@ namespace MVC_Sample.Logic.Dao
             this.SetSqlByFile2(filename);
 
             // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-            this.SetParameter("P1", testParameter.ShipperID);
+            this.SetParameter("P1", testParameter.Shipper.ShipperID);
 
             // 戻り値 dt
             DataTable dt = new DataTable();
@@ -400,8 +400,8 @@ namespace MVC_Sample.Logic.Dao
             this.SetSqlByFile2("ShipperInsert.sql");
 
             // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-            this.SetParameter("P2", testParameter.CompanyName);
-            this.SetParameter("P3", testParameter.Phone);
+            this.SetParameter("P2", testParameter.Shipper.CompanyName);
+            this.SetParameter("P3", testParameter.Shipper.Phone);
 
             object obj;
 
@@ -443,9 +443,9 @@ namespace MVC_Sample.Logic.Dao
             this.SetSqlByFile2(filename);
 
             // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-            this.SetParameter("P1", testParameter.ShipperID);
-            this.SetParameter("P2", testParameter.CompanyName);
-            this.SetParameter("P3", testParameter.Phone);
+            this.SetParameter("P1", testParameter.Shipper.ShipperID);
+            this.SetParameter("P2", testParameter.Shipper.CompanyName);
+            this.SetParameter("P3", testParameter.Shipper.Phone);
 
             object obj;
 
@@ -486,7 +486,7 @@ namespace MVC_Sample.Logic.Dao
             this.SetSqlByFile2(filename);
 
             // パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-            this.SetParameter("P1", testParameter.ShipperID);
+            this.SetParameter("P1", testParameter.Shipper.ShipperID);
 
             object obj;
 

@@ -32,8 +32,11 @@
 
 using System;
 using System.Data;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Diagnostics;
+
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Dto
 {
@@ -195,12 +198,13 @@ namespace Touryo.Infrastructure.Public.Dto
                         }
                         else
                         {
-                            // DBNullで無い場合、指定する。
-                            prop.SetValue(obj, dr[srcPropName], null);
+                            // DBNullで無い場合、指定する（Nullable対応の型変換を追加）。
+                            prop.SetValue(obj, PubCmnFunction.ChangeType(dr[srcPropName], prop.PropertyType), null);
                         }
                     }
-                    catch{
-                        // ...
+                    catch (Exception ex)
+                    {
+                        Debug.Write(ex.ToString());
                     }
                 }
 
@@ -238,13 +242,13 @@ namespace Touryo.Infrastructure.Public.Dto
                         }
                         else
                         {
-                            // DBNullで無い場合、指定する。
-                            field.SetValue(obj, dr[srcFieldName]);
+                            // DBNullで無い場合、指定する（Nullable対応の型変換を追加）。
+                            field.SetValue(obj, PubCmnFunction.ChangeType(dr[srcFieldName], field.FieldType));
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        // ...
+                        Debug.Write(ex.ToString());
                     }
                 }
             }

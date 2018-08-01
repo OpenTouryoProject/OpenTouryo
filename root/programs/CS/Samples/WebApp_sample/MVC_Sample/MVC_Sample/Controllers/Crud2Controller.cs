@@ -21,19 +21,13 @@ using MVC_Sample.Logic.Business;
 using MVC_Sample.Logic.Common;
 using MVC_Sample.Models.ViewModels;
 
-using System.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Diagnostics;
 
 using System.Web.Mvc;
 
 using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
-using Touryo.Infrastructure.Public.Util;
-using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.Dto;
 
 namespace MVC_Sample.Controllers
 {
@@ -313,7 +307,7 @@ namespace MVC_Sample.Controllers
                         model.DdlDap + "%" + model.DdlMode1 + "%" + model.DdlMode2 + "%" + model.DdlExRollback, this.UserInfo);
 
                 // 動的SQLの要素を設定
-                testParameterValue.ShipperID = model.ShipperID;
+                testParameterValue.Shipper = model.Shipper;
 
                 // Ｂ層呼出し＋都度コミット
                 LayerB layerB = new LayerB();
@@ -346,7 +340,7 @@ namespace MVC_Sample.Controllers
                 // ＃ここではjQueryを使用している。
                 ShipperViweModel svm = (ShipperViweModel)testReturnValue.Obj;
                 scriptText = string.Format(
-                    "$('#ShipperID').val('{0}');$('#CompanyName').val('{1}');$('#Phone').val('{2}');",
+                    "$('#Shipper_ShipperID').val('{0}');$('#Shipper_CompanyName').val('{1}');$('#Shipper_Phone').val('{2}');",
                     svm.ShipperID, svm.CompanyName, svm.Phone);
             }
 
@@ -370,8 +364,7 @@ namespace MVC_Sample.Controllers
                     model.DdlDap + "%" + model.DdlMode1 + "%" + model.DdlMode2 + "%" + model.DdlExRollback, this.UserInfo);
 
                 // 動的SQLの要素を設定
-                testParameterValue.CompanyName = model.CompanyName;
-                testParameterValue.Phone = model.Phone;
+                testParameterValue.Shipper = model.Shipper;
 
                 // Ｂ層呼出し＋都度コミット
                 LayerB layerB = new LayerB();
@@ -418,9 +411,7 @@ namespace MVC_Sample.Controllers
                         model.DdlDap + "%" + model.DdlMode1 + "%" + model.DdlMode2 + "%" + model.DdlExRollback, this.UserInfo);
 
                 // 動的SQLの要素を設定
-                testParameterValue.ShipperID = model.ShipperID;
-                testParameterValue.CompanyName = model.CompanyName;
-                testParameterValue.Phone = model.Phone;
+                testParameterValue.Shipper = model.Shipper;
 
                 // Ｂ層呼出し＋都度コミット
                 LayerB layerB = new LayerB();
@@ -468,7 +459,7 @@ namespace MVC_Sample.Controllers
                         model.DdlDap + "%" + model.DdlMode1 + "%" + model.DdlMode2 + "%" + model.DdlExRollback, this.UserInfo);
 
                 // 動的SQLの要素を設定
-                testParameterValue.ShipperID = model.ShipperID;
+                testParameterValue.Shipper = model.Shipper;
 
                 // Ｂ層呼出し＋都度コミット
                 LayerB layerB = new LayerB();

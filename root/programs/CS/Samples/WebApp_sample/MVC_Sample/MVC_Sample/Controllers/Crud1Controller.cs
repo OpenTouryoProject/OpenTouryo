@@ -21,7 +21,6 @@ using MVC_Sample.Logic.Business;
 using MVC_Sample.Logic.Common;
 using MVC_Sample.Models.ViewModels;
 
-using System.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
@@ -29,7 +28,6 @@ using System.Diagnostics;
 using System.Web.Mvc;
 
 using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Db;
@@ -299,7 +297,7 @@ namespace MVC_Sample.Controllers
                     model.DdlDap + "%" + model.DdlMode1 + "%" + model.DdlMode2 + "%" + model.DdlExRollback, this.UserInfo);
 
                 // 動的SQLの要素を設定
-                testParameterValue.ShipperID = model.ShipperID;
+                testParameterValue.Shipper = model.Shipper;
 
                 // Ｂ層呼出し＋都度コミット
                 LayerB layerB = new LayerB();
@@ -324,7 +322,8 @@ namespace MVC_Sample.Controllers
                     // 結果（正常系）
                     ModelState.Clear(); // ErrorのClearをしないと何故か設定できない。
 
-                    // 一部、PocoToPocoのテストコード
+                    #region PocoToPocoのテストコード
+
                     CrudViweModel copyModel = null;
 
                     // テスト１
@@ -332,7 +331,8 @@ namespace MVC_Sample.Controllers
 
                     if (testReturnValue.Obj2 != null)
                     {
-                        PocoToPoco.Map<TestShipperViweModel, CrudViweModel>((TestShipperViweModel)testReturnValue.Obj2, copyModel,
+                        PocoToPoco.Map<TestShipperViweModel, ShipperViweModel>(
+                            (TestShipperViweModel)testReturnValue.Obj2, copyModel.Shipper,
                             // mapの書き方は、Key-Valueでdst-srcのproperty field名を書く
                             new Dictionary<string, string>()
                             {
@@ -341,14 +341,16 @@ namespace MVC_Sample.Controllers
                                 { "Phone", "_Phone"}
                             });
 
-                        Debug.WriteLine("copyModel1:" + ObjectInspector.Inspect(copyModel));
+                        Debug.WriteLine("1 copyModel.Shipper:" + ObjectInspector.Inspect(copyModel.Shipper));
                     }
 
                     // テスト２
-                    copyModel = PocoToPoco.Map<ShipperViweModel, CrudViweModel>((ShipperViweModel)testReturnValue.Obj);
-                    Debug.WriteLine("copyModel2:" + ObjectInspector.Inspect(copyModel));
+                    copyModel.Shipper = PocoToPoco.Map<ShipperViweModel, ShipperViweModel>((ShipperViweModel)testReturnValue.Obj);
+                    Debug.WriteLine("2 copyModel.Shipper:" + ObjectInspector.Inspect(copyModel.Shipper));
+                    
+                    #endregion
 
-                    PocoToPoco.Map<ShipperViweModel, CrudViweModel>((ShipperViweModel)testReturnValue.Obj, model, null);
+                    model.Shipper = (ShipperViweModel)testReturnValue.Obj;
                 }
             }
 
@@ -373,8 +375,7 @@ namespace MVC_Sample.Controllers
                     model.DdlDap + "%" + model.DdlMode1 + "%" + model.DdlMode2 + "%" + model.DdlExRollback, this.UserInfo);
 
                 // 動的SQLの要素を設定
-                testParameterValue.CompanyName = model.CompanyName;
-                testParameterValue.Phone = model.Phone;
+                testParameterValue.Shipper = model.Shipper;
 
                 // Ｂ層呼出し＋都度コミット
                 LayerB layerB = new LayerB();
@@ -422,9 +423,7 @@ namespace MVC_Sample.Controllers
                     model.DdlDap + "%" + model.DdlMode1 + "%" + model.DdlMode2 + "%" + model.DdlExRollback, this.UserInfo);
 
                 // 動的SQLの要素を設定
-                testParameterValue.ShipperID = model.ShipperID;
-                testParameterValue.CompanyName = model.CompanyName;
-                testParameterValue.Phone = model.Phone;
+                testParameterValue.Shipper = model.Shipper;
 
                 // Ｂ層呼出し＋都度コミット
                 LayerB layerB = new LayerB();
@@ -472,7 +471,7 @@ namespace MVC_Sample.Controllers
                     model.DdlDap + "%" + model.DdlMode1 + "%" + model.DdlMode2 + "%" + model.DdlExRollback, this.UserInfo);
 
                 // 動的SQLの要素を設定
-                testParameterValue.ShipperID = model.ShipperID;
+                testParameterValue.Shipper = model.Shipper;
 
                 // Ｂ層呼出し＋都度コミット
                 LayerB layerB = new LayerB();

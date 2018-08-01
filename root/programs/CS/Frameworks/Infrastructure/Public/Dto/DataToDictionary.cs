@@ -33,6 +33,7 @@
 using System;
 using System.Data;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Touryo.Infrastructure.Public.Dto
 {
@@ -200,9 +201,9 @@ namespace Touryo.Infrastructure.Public.Dto
                             obj.Add(dstPropName, o.ToString());
                         }   
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        // ...
+                        Debug.Write(ex.ToString());
                     }
                 }
             }
