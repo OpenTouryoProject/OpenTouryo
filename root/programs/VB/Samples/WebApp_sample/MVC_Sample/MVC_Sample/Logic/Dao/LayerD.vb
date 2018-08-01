@@ -53,7 +53,7 @@ Namespace Logic.Dao
             Me.SetSqlByCommand("SQL文")
 
             ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-            Me.SetParameter("P1", testParameter.ShipperID)
+            Me.SetParameter("P1", testParameter.Shipper.ShipperID)
 
             Dim obj As Object
 
@@ -313,7 +313,7 @@ Namespace Logic.Dao
             Me.SetSqlByFile2(filename)
 
             ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-            Me.SetParameter("P1", testParameter.ShipperID)
+            Me.SetParameter("P1", testParameter.Shipper.ShipperID)
 
             ' 戻り値 dt
             Dim dt As New DataTable()
@@ -358,8 +358,8 @@ Namespace Logic.Dao
             Me.SetSqlByFile2("ShipperInsert.sql")
 
             ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-            Me.SetParameter("P2", testParameter.CompanyName)
-            Me.SetParameter("P3", testParameter.Phone)
+            Me.SetParameter("P2", testParameter.Shipper.CompanyName)
+            Me.SetParameter("P3", testParameter.Shipper.Phone)
 
             Dim obj As Object
 
@@ -397,9 +397,9 @@ Namespace Logic.Dao
             Me.SetSqlByFile2(filename)
 
             ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-            Me.SetParameter("P1", testParameter.ShipperID)
-            Me.SetParameter("P2", testParameter.CompanyName)
-            Me.SetParameter("P3", testParameter.Phone)
+            Me.SetParameter("P1", testParameter.Shipper.ShipperID)
+            Me.SetParameter("P2", testParameter.Shipper.CompanyName)
+            Me.SetParameter("P3", testParameter.Shipper.Phone)
 
             Dim obj As Object
 
@@ -436,7 +436,7 @@ Namespace Logic.Dao
             Me.SetSqlByFile2(filename)
 
             ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-            Me.SetParameter("P1", testParameter.ShipperID)
+            Me.SetParameter("P1", testParameter.Shipper.ShipperID)
 
             Dim obj As Object
 

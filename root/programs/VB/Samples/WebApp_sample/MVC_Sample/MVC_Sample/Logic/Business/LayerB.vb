@@ -481,7 +481,7 @@ Namespace Logic.Business
                     End Select
 
                     ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-                    cmnDao.SetParameter("P1", testParameter.ShipperID)
+                    cmnDao.SetParameter("P1", testParameter.Shipper.ShipperID)
 
                     ' 戻り値 dt
                     dt = New DataTable()
@@ -500,7 +500,7 @@ Namespace Logic.Business
                     Dim genDao As New DaoShippers(Me.GetDam())
 
                     ' パラメタに対して、動的に値を設定する。
-                    genDao.PK_ShipperID = testParameter.ShipperID
+                    genDao.PK_ShipperID = testParameter.Shipper.ShipperID
 
                     ' 戻り値 dt
                     dt = New DataTable()
@@ -548,8 +548,8 @@ Namespace Logic.Business
                     cmnDao.SQLFileName = "ShipperInsert.sql"
 
                     ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-                    cmnDao.SetParameter("P2", testParameter.CompanyName)
-                    cmnDao.SetParameter("P3", testParameter.Phone)
+                    cmnDao.SetParameter("P2", testParameter.Shipper.CompanyName)
+                    cmnDao.SetParameter("P3", testParameter.Shipper.Phone)
 
                     ' 共通Daoを実行
                     ' 戻り値を設定
@@ -563,8 +563,8 @@ Namespace Logic.Business
                     Dim genDao As New DaoShippers(Me.GetDam())
 
                     ' パラメタに対して、動的に値を設定する。
-                    genDao.CompanyName = testParameter.CompanyName
-                    genDao.Phone = testParameter.Phone
+                    genDao.CompanyName = testParameter.Shipper.CompanyName
+                    genDao.Phone = testParameter.Shipper.Phone
 
                     ' 自動生成Daoを実行
                     ' 戻り値を設定
@@ -617,9 +617,9 @@ Namespace Logic.Business
                     End Select
 
                     ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-                    cmnDao.SetParameter("P1", testParameter.ShipperID)
-                    cmnDao.SetParameter("P2", testParameter.CompanyName)
-                    cmnDao.SetParameter("P3", testParameter.Phone)
+                    cmnDao.SetParameter("P1", testParameter.Shipper.ShipperID)
+                    cmnDao.SetParameter("P2", testParameter.Shipper.CompanyName)
+                    cmnDao.SetParameter("P3", testParameter.Shipper.Phone)
 
                     ' 共通Daoを実行
                     ' 戻り値を設定
@@ -633,9 +633,9 @@ Namespace Logic.Business
                     Dim genDao As New DaoShippers(Me.GetDam())
 
                     ' パラメタに対して、動的に値を設定する。
-                    genDao.PK_ShipperID = testParameter.ShipperID
-                    genDao.Set_CompanyName_forUPD = testParameter.CompanyName
-                    genDao.Set_Phone_forUPD = testParameter.Phone
+                    genDao.PK_ShipperID = testParameter.Shipper.ShipperID
+                    genDao.Set_CompanyName_forUPD = testParameter.Shipper.CompanyName
+                    genDao.Set_Phone_forUPD = testParameter.Shipper.Phone
 
                     ' 自動生成Daoを実行
                     ' 戻り値を設定
@@ -688,7 +688,7 @@ Namespace Logic.Business
                     End Select
 
                     ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-                    cmnDao.SetParameter("P1", testParameter.ShipperID)
+                    cmnDao.SetParameter("P1", testParameter.Shipper.ShipperID)
 
                     ' 共通Daoを実行
                     ' 戻り値を設定
@@ -702,7 +702,7 @@ Namespace Logic.Business
                     Dim genDao As New DaoShippers(Me.GetDam())
 
                     ' パラメタに対して、動的に値を設定する。
-                    genDao.PK_ShipperID = testParameter.ShipperID
+                    genDao.PK_ShipperID = testParameter.Shipper.ShipperID
 
                     ' 自動生成Daoを実行
                     ' 戻り値を設定

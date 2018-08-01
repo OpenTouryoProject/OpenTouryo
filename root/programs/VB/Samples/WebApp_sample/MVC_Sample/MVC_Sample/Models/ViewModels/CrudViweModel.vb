@@ -25,7 +25,19 @@ Namespace Models.ViewModels
     <Serializable>
     Public Class CrudViweModel
         Inherits BaseViewModel
-        ''' <summary>shippersテーブル</summary>
+
+        ''' <summary>shipper</summary>
+        Public Property Shipper() As ShipperViweModel
+            Get
+                Return m_Shipper
+            End Get
+            Set
+                m_Shipper = Value
+            End Set
+        End Property
+        Private m_Shipper As ShipperViweModel
+
+        ''' <summary>shippers</summary>
         Public Property Shippers() As List(Of ShipperViweModel)
             Get
                 Return m_Shippers
@@ -46,39 +58,6 @@ Namespace Models.ViewModels
             End Set
         End Property
         Private m_Message As String
-
-        ''' <summary>ShipperID</summary>
-        Public Property ShipperID() As Int64
-            Get
-                Return m_ShipperID
-            End Get
-            Set
-                m_ShipperID = Value
-            End Set
-        End Property
-        Private m_ShipperID As Int64
-
-        ''' <summary>CompanyName</summary>
-        Public Property CompanyName() As String
-            Get
-                Return m_CompanyName
-            End Get
-            Set
-                m_CompanyName = Value
-            End Set
-        End Property
-        Private m_CompanyName As String
-
-        ''' <summary>Phone</summary>
-        Public Property Phone() As String
-            Get
-                Return m_Phone
-            End Get
-            Set
-                m_Phone = Value
-            End Set
-        End Property
-        Private m_Phone As String
 
 #Region "ドロップダウンリストに表示するアイテム"
 

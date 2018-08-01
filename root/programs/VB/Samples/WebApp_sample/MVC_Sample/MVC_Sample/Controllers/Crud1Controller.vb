@@ -278,7 +278,7 @@ Namespace Controllers
                     Convert.ToString(model.DdlExRollback), Me.UserInfo)
 
                 ' 動的SQLの要素を設定
-                testParameterValue.ShipperID = Integer.Parse(model.ShipperID)
+                testParameterValue.Shipper = model.Shipper
 
                 ' Ｂ層呼出し＋都度コミット
                 Dim layerB As New LayerB()
@@ -298,31 +298,7 @@ Namespace Controllers
                 Else
                     ' 結果（正常系）
                     ModelState.Clear() ' Clearをしないと何故か設定できない。
-
-                    ' 一部、PocoToPocoのテストコード
-                    Dim copyModel As CrudViweModel = Nothing
-
-                    ' テスト１
-                    copyModel = DirectCast(BinarySerialize.DeepClone(model), CrudViweModel)
-
-                    If testReturnValue.Obj2 IsNot Nothing Then
-                        ' mapの書き方は、Key-Valueでdst-srcのproperty field名を書く
-                        PocoToPoco.Map(Of TestShipperViweModel, CrudViweModel)(
-                            DirectCast(testReturnValue.Obj2, TestShipperViweModel), copyModel,
-                            New Dictionary(Of String, String)() From {
-                                {"ShipperID", "_ShipperID"},
-                                {"CompanyName", "_CompanyName"},
-                                {"Phone", "_Phone"}
-                            })
-
-                        Debug.WriteLine("copyModel1:" & ObjectInspector.Inspect(copyModel))
-                    End If
-
-                    ' テスト２
-                    copyModel = PocoToPoco.Map(Of ShipperViweModel, CrudViweModel)(DirectCast(testReturnValue.Obj, ShipperViweModel))
-                    Debug.WriteLine("copyModel2:" & ObjectInspector.Inspect(copyModel))
-
-                    PocoToPoco.Map(Of ShipperViweModel, CrudViweModel)(DirectCast(testReturnValue.Obj, ShipperViweModel), model, Nothing)
+                    model.Shipper = testReturnValue.Obj
                 End If
             End If
 
@@ -348,8 +324,7 @@ Namespace Controllers
                     Convert.ToString(model.DdlExRollback), Me.UserInfo)
 
                 ' 動的SQLの要素を設定
-                testParameterValue.CompanyName = model.CompanyName
-                testParameterValue.Phone = model.Phone
+                testParameterValue.Shipper = model.Shipper
 
                 ' Ｂ層呼出し＋都度コミット
                 Dim layerB As New LayerB()
@@ -394,9 +369,7 @@ Namespace Controllers
                     Convert.ToString(model.DdlExRollback), Me.UserInfo)
 
                 ' 動的SQLの要素を設定
-                testParameterValue.ShipperID = Integer.Parse(model.ShipperID)
-                testParameterValue.CompanyName = model.CompanyName
-                testParameterValue.Phone = model.Phone
+                testParameterValue.Shipper = model.Shipper
 
                 ' Ｂ層呼出し＋都度コミット
                 Dim layerB As New LayerB()
@@ -441,7 +414,7 @@ Namespace Controllers
                     Convert.ToString(model.DdlExRollback), Me.UserInfo)
 
                 ' 動的SQLの要素を設定
-                testParameterValue.ShipperID = Integer.Parse(model.ShipperID)
+                testParameterValue.Shipper = model.Shipper
 
                 ' Ｂ層呼出し＋都度コミット
                 Dim layerB As New LayerB()

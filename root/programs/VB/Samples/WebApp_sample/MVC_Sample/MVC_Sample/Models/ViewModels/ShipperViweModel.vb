@@ -8,8 +8,8 @@
 '* クラス名        ：ShipperViweModel
 '* クラス日本語名  ：サンプル アプリ・モデル
 '*
-'* 作成日時        ：－
-'* 作成者          ：生技
+'* 作成日時        ：2018/8/1
+'* 作成者          ：棟梁 D層自動生成ツール（墨壺）, 日立 太郎
 '* 更新履歴        ：
 '*
 '*  日時        更新者            内容
@@ -22,38 +22,50 @@ Namespace Models.ViewModels
     ''' <summary>
     ''' サンプル アプリ・モデル
     ''' </summary>
+    <Serializable>
     Public Class ShipperViweModel
-        ''' <summary>ShipperID</summary>
-        Public Property ShipperID() As Int64
-            Get
-                Return m_ShipperID
-            End Get
-            Set
-                m_ShipperID = Value
-            End Set
-        End Property
-        Private m_ShipperID As Int64
-        ' Oracle対応
-        ''' <summary>CompanyName</summary>
-        Public Property CompanyName() As String
-            Get
-                Return m_CompanyName
-            End Get
-            Set
-                m_CompanyName = Value
-            End Set
-        End Property
-        Private m_CompanyName As String
 
-        ''' <summary>Phone</summary>
-        Public Property Phone() As String
+#Region "メンバ変数"
+
+        ''' <summary>メンバ変数：ShipperID</summary>
+        Private _PK_ShipperID As Nullable(Of System.Int64) ' Oracle対応 32 -> 64
+
+        ''' <summary>プロパティ：ShipperID</summary>
+        Public Property ShipperID() As Nullable(Of System.Int64) ' Oracle対応 32 -> 64
             Get
-                Return m_Phone
+                Return Me._PK_ShipperID
             End Get
             Set
-                m_Phone = Value
+                Me._PK_ShipperID = Value
             End Set
         End Property
-        Private m_Phone As String
+
+        ''' <summary>メンバ変数：CompanyName</summary>
+        Private _CompanyName As System.String
+
+        ''' <summary>プロパティ：CompanyName</summary>
+        Public Property CompanyName() As System.String
+            Get
+                Return Me._CompanyName
+            End Get
+            Set
+                Me._CompanyName = Value
+            End Set
+        End Property
+        ''' <summary>メンバ変数：Phone</summary>
+        Private _Phone As System.String
+
+        ''' <summary>プロパティ：Phone</summary>
+        Public Property Phone() As System.String
+            Get
+                Return Me._Phone
+            End Get
+            Set
+                Me._Phone = Value
+            End Set
+        End Property
+
+#End Region
+
     End Class
 End Namespace

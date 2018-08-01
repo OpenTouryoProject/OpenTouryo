@@ -30,20 +30,14 @@ namespace MVC_Sample.Models.ViewModels
     [Serializable]
     public class CrudViweModel : BaseViewModel
     {
-        /// <summary>shippersテーブル</summary>
+        /// <summary>shipper</summary>
+        public ShipperViweModel Shipper { get; set; }
+
+        /// <summary>shippers</summary>
         public List<ShipperViweModel> Shippers { get; set; }
         
         /// <summary>メッセージ</summary>
         public string Message { get; set; }
-
-        /// <summary>ShipperID</summary>
-        public Int64 ShipperID { get; set; }
-        
-        /// <summary>CompanyName</summary>
-        public string CompanyName { get; set; }
-        
-        /// <summary>Phone</summary>
-        public string Phone { get; set; }
         
         #region ドロップダウンリストに表示するアイテム
 

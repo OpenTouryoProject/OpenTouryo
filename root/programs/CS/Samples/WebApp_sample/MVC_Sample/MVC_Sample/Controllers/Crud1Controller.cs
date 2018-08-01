@@ -324,15 +324,16 @@ namespace MVC_Sample.Controllers
 
                     #region PocoToPocoのテストコード
 
-                    CrudViweModel copyModel = null;
+                    ShipperViweModel svm = null;
+                    TestShipperViweModel tsvm = null;
 
                     // テスト１
-                    copyModel = (CrudViweModel)BinarySerialize.DeepClone(model);
+                    svm = (ShipperViweModel)BinarySerialize.DeepClone(model.Shipper);
 
                     if (testReturnValue.Obj2 != null)
                     {
                         PocoToPoco.Map<TestShipperViweModel, ShipperViweModel>(
-                            (TestShipperViweModel)testReturnValue.Obj2, copyModel.Shipper,
+                            (TestShipperViweModel)testReturnValue.Obj2, svm,
                             // mapの書き方は、Key-Valueでdst-srcのproperty field名を書く
                             new Dictionary<string, string>()
                             {
@@ -341,12 +342,20 @@ namespace MVC_Sample.Controllers
                                 { "Phone", "_Phone"}
                             });
 
-                        Debug.WriteLine("1 copyModel.Shipper:" + ObjectInspector.Inspect(copyModel.Shipper));
+                        Debug.WriteLine("svm:" + ObjectInspector.Inspect(svm));
                     }
 
                     // テスト２
-                    copyModel.Shipper = PocoToPoco.Map<ShipperViweModel, ShipperViweModel>((ShipperViweModel)testReturnValue.Obj);
-                    Debug.WriteLine("2 copyModel.Shipper:" + ObjectInspector.Inspect(copyModel.Shipper));
+                    tsvm = PocoToPoco.Map<ShipperViweModel, TestShipperViweModel>(
+                        (ShipperViweModel)testReturnValue.Obj, null,
+                            // mapの書き方は、Key-Valueでdst-srcのproperty field名を書く
+                            new Dictionary<string, string>()
+                            {
+                                { "_ShipperID", "ShipperID"},
+                                { "_CompanyName", "CompanyName"},
+                                { "_Phone", "Phone"}
+                            });
+                    Debug.WriteLine("tsvm:" + ObjectInspector.Inspect(tsvm));
                     
                     #endregion
 

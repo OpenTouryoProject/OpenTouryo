@@ -289,7 +289,7 @@ Namespace Controllers
                     Convert.ToString(model.DdlExRollback), Me.UserInfo)
 
                 ' 動的SQLの要素を設定
-                testParameterValue.ShipperID = Integer.Parse(model.ShipperID)
+                testParameterValue.Shipper = model.Shipper
 
                 ' Ｂ層呼出し＋都度コミット
                 Dim layerB As New LayerB()
@@ -319,7 +319,7 @@ Namespace Controllers
                 ' ＃ここではjQueryを使用している。
                 Dim svm As ShipperViweModel = DirectCast(testReturnValue.Obj, ShipperViweModel)
                 scriptText = String.Format(
-                    "$('#ShipperID').val('{0}');$('#CompanyName').val('{1}');$('#Phone').val('{2}');",
+                    "$('#Shipper_ShipperID').val('{0}');$('#Shipper_CompanyName').val('{1}');$('#Shipper_Phone').val('{2}');",
                     svm.ShipperID, svm.CompanyName, svm.Phone)
             End If
 
@@ -344,8 +344,7 @@ Namespace Controllers
                     Convert.ToString(model.DdlExRollback), Me.UserInfo)
 
                 ' 動的SQLの要素を設定
-                testParameterValue.CompanyName = model.CompanyName
-                testParameterValue.Phone = model.Phone
+                testParameterValue.Shipper = model.Shipper
 
                 ' Ｂ層呼出し＋都度コミット
                 Dim layerB As New LayerB()
@@ -389,9 +388,7 @@ Namespace Controllers
                     Convert.ToString(model.DdlExRollback), Me.UserInfo)
 
                 ' 動的SQLの要素を設定
-                testParameterValue.ShipperID = Integer.Parse(model.ShipperID)
-                testParameterValue.CompanyName = model.CompanyName
-                testParameterValue.Phone = model.Phone
+                testParameterValue.Shipper = model.Shipper
 
                 ' Ｂ層呼出し＋都度コミット
                 Dim layerB As New LayerB()
@@ -436,7 +433,7 @@ Namespace Controllers
                     Convert.ToString(model.DdlExRollback), Me.UserInfo)
 
                 ' 動的SQLの要素を設定
-                testParameterValue.ShipperID = Integer.Parse(model.ShipperID)
+                testParameterValue.Shipper = model.Shipper
 
                 ' Ｂ層呼出し＋都度コミット
                 Dim layerB As New LayerB()
