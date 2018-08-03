@@ -36,5 +36,12 @@ rem --------------------------------------------------
 
 pause
 
+rem --------------------------------------------------
+rem Batch build of RerunnableBatch_sample3.
+rem --------------------------------------------------
+%BUILDFILEPATH% %COMMANDLINE% "Samples\Bat_sample\RerunnableBatch_sample3\RerunnableBatch_sample3.sln"
+
+pause
+
 rem -------------------------------------------------------
 endlocal

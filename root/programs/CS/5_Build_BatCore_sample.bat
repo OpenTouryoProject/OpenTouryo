@@ -39,5 +39,13 @@ dotnet msbuild %COMMANDLINE% "Samples4NetCore\Legacy\Bat_sample\RerunnableBatch_
 
 pause
 
+rem --------------------------------------------------
+rem Batch build of RerunnableBatch_sample2.
+rem --------------------------------------------------
+dotnet restore "Samples4NetCore\Legacy\Bat_sample\RerunnableBatch_sample3\RerunnableBatch_sample3.sln"
+dotnet msbuild %COMMANDLINE% "Samples4NetCore\Legacy\Bat_sample\RerunnableBatch_sample3\RerunnableBatch_sample3.sln"
+
+pause
+
 rem -------------------------------------------------------
 endlocal
