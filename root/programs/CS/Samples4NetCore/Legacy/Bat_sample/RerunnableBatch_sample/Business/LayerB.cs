@@ -133,6 +133,8 @@ namespace RerunnableBatch_sample.Business
 
                 // 共通Daoを実行
                 dao.S1_Insert();
+                // dao.D1_Insert(); // 性能比較用
+
                 // ↑DBアクセス-----------------------------------------------------
             }
             

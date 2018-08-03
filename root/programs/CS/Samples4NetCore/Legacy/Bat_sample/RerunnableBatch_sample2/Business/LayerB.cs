@@ -138,6 +138,7 @@ namespace RerunnableBatch_sample2.Business
                 // 自動生成Daoを実行
                 sb.Append(dao.ExecGenerateSQL(
                     "DaoOrders2_S1_Insert.sql", new SQLUtility(DbEnum.DBMSType.SQLServer)) + ";\r\n");
+                    // "DaoOrders2_D1_Insert.xml", new SQLUtility(DbEnum.DBMSType.SQLServer)) + ";\r\n"); // 性能比較用
 
                 // ↑DBアクセス-----------------------------------------------------
             }

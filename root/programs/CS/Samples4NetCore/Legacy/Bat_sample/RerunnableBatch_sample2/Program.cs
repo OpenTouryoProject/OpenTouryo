@@ -91,6 +91,11 @@ namespace RerunnableBatch_sample2
             int initialIndex = 0; // 処理開始インデックス ※ todo:リラン時に途中から再開する場合は初期値を変更する
             int transactionCount = Convert.ToInt32(Math.Ceiling(((double)(recordCount - initialIndex)) / INTERMEDIATE_COMMIT_COUNT));   // 更新B層実行回数
 
+            // 性能測定
+            // 性能測定 - 開始
+            PerformanceRecorder pr = new PerformanceRecorder();
+            pr.StartsPerformanceRecord();
+
             for (int transactionIndex = 0; transactionIndex < transactionCount; transactionIndex++)
             {
                 ArrayList subPkList;    // 主キー一覧(1トランザクション分)
@@ -136,6 +141,10 @@ namespace RerunnableBatch_sample2
 
                 // ↑B層実行：バッチ処理を実行(1トランザクション分)----------------------------------------------------
             }
+
+            // 性能測定 - 終了
+            Console.WriteLine(pr.EndsPerformanceRecord());
+            Console.ReadKey();
         }
     }
 }
