@@ -19,6 +19,7 @@
 
 using RerunnableBatch_sample3.Common;
 
+using System;
 using System.Data;
 using System.Text;
 using System.Collections;
@@ -105,42 +106,27 @@ namespace RerunnableBatch_sample3.Business
             cmnDao.ExecSelectFill_DT(dataTable);
             // ↑DBアクセス-----------------------------------------------------
 
-            
+
             //Orders2テーブルに複数件まとめて追加する。
+            string insertHeader = "INSERT INTO [Orders2] {0} VALUES {1}";
+            string columnList = "";
+
+            SQLUtility sQLUtility = new SQLUtility(DbEnum.DBMSType.SQLServer);
+            string[] insertSQLParts = sQLUtility.GetInsertSQLParts(dataTable);
+
             StringBuilder sb = new StringBuilder();
-
-            for (int index = 0; index < dataTable.Rows.Count; index++)
+            foreach (string insertSQLPart in insertSQLParts)
             {
-                DataRow row = dataTable.Rows[index];    //1件分のデータ
-
-                //todo：編集処理など
-
-                // ↓DBアクセス-----------------------------------------------------
-                // 自動生成Daoを生成
-                DaoOrders2 dao = new DaoOrders2(this.GetDam());
-
-                // パラメータを設定
-                dao.PK_OrderID = row["OrderID"];
-                dao.CustomerID = row["CustomerID"];
-                dao.EmployeeID = row["EmployeeID"];
-                dao.OrderDate = row["OrderDate"];
-                dao.RequiredDate = row["RequiredDate"];
-                dao.ShippedDate = row["ShippedDate"];
-                dao.ShipVia = row["ShipVia"];
-                dao.Freight = row["Freight"];
-                dao.ShipName = row["ShipName"];
-                dao.ShipAddress = row["ShipAddress"];
-                dao.ShipCity = row["ShipCity"];
-                dao.ShipRegion = row["ShipRegion"];
-                dao.ShipPostalCode = row["ShipPostalCode"];
-                dao.ShipCountry = row["ShipCountry"];
-
-                // 自動生成Daoを実行
-                sb.Append(dao.ExecGenerateSQL(
-                    "DaoOrders2_S1_Insert.sql", new SQLUtility(DbEnum.DBMSType.SQLServer)) + ";\r\n");
-                    // "DaoOrders2_D1_Insert.xml", new SQLUtility(DbEnum.DBMSType.SQLServer)) + ";\r\n");  // 性能比較用
-
-                // ↑DBアクセス-----------------------------------------------------
+                if (string.IsNullOrEmpty(columnList))
+                {
+                    // columnList
+                    columnList = insertSQLPart;
+                }
+                else
+                {
+                    // insertSQLPart
+                    sb.Append(string.Format(insertHeader, columnList, insertSQLPart) + Environment.NewLine);
+                }
             }
 
             // 共通Daoでバッチ更新
