@@ -33,10 +33,12 @@
 //*  2012/06/14  西野 大介         SetSqlByFile2を追加（SetSqlByFile強化版）
 //*                                ・sqlTextFilePathを自動連結
 //*                                ・EmbeddedResourceLoaderに対応
+//*  2018/08/07  西野 大介         CommandType.StoredProcedureを設定可能に。
 //**********************************************************************************
 
 using System;
 using System.IO;
+using System.Data;
 
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Dao;
@@ -57,19 +59,44 @@ namespace Touryo.Infrastructure.Business.Dao
         /// <param name="sQLFileName">ファイル名</param>
         public void SetSqlByFile2(string sQLFileName)
         {
+            this.SetSqlByFile2(sQLFileName, null);
+        }
+
+        /// <summary>SetSqlByFileの強化版メソッド</summary>
+        /// <param name="sQLFileName">ファイル名</param>
+        /// <param name="cmdType">CommandType</param>
+        public void SetSqlByFile2(string sQLFileName, CommandType? cmdType)
+        {
             // SQLを設定する。
             if (MyBaseDao.UseEmbeddedResource)
             {
                 // 埋め込まれたリソースファイル
-                this.SetSqlByFile(
+                if (cmdType.HasValue)
+                {
+                    this.SetSqlByFile(
+                        GetConfigParameter.GetConfigValue("sqlTextFilePath") + "." + sQLFileName, cmdType.Value);
+                }
+                else
+                {
+                    this.SetSqlByFile(
                         GetConfigParameter.GetConfigValue("sqlTextFilePath") + "." + sQLFileName);
+                }
             }
             else
             {
                 // 通常のファイル
-                this.SetSqlByFile(
-                    Path.Combine(
-                        GetConfigParameter.GetConfigValue("sqlTextFilePath"), sQLFileName));
+                if (cmdType.HasValue)
+                {
+                    this.SetSqlByFile(
+                        Path.Combine(
+                            GetConfigParameter.GetConfigValue("sqlTextFilePath"), sQLFileName), cmdType.Value);
+                }
+                else
+                {
+                    this.SetSqlByFile(
+                        Path.Combine(
+                            GetConfigParameter.GetConfigValue("sqlTextFilePath"), sQLFileName));
+                }   
             }
         }
 

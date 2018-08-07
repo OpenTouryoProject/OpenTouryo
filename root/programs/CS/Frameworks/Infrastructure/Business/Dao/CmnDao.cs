@@ -39,6 +39,7 @@
 //*  2013/07/07  西野 大介         ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
 //*  2014/11/20  Sandeep           Implemented CommandTimeout property and SetCommandTimeout method.
 //*  2014/11/20  Sai               removed IDbCommand property in SetCommandTimeout method.
+//*  2018/08/07  西野 大介         ストアド実行のためCommandType.StoredProcedureを設定可能に。
 //**********************************************************************************
 
 using System;
@@ -57,6 +58,9 @@ namespace Touryo.Infrastructure.Business.Dao
     {
         #region インスタンス変数
 
+        /// <summary>CommandType</summary>
+        private CommandType? _cmdType = null;
+
         #region パラメタ
 
         /// <summary>ユーザ パラメタ（文字列置換）用ディクショナリ</summary>
@@ -65,14 +69,16 @@ namespace Touryo.Infrastructure.Business.Dao
         /// <summary>パラメタ ライズド クエリのパラメタ用ディクショナリ</summary>
         private Dictionary<string, object> DicParameter = new Dictionary<string, object>();
 
+        #region 追加のDictionary
         /// <summary>パラメタ ライズド クエリの指定されたパラメータ（の型）を保持するディクショナリ</summary>
         private Dictionary<string, object> DicParameterType = new Dictionary<string, object>();
         /// <summary>パラメタ ライズド クエリの指定されたパラメータ（のサイズ）を保持するディクショナリ</summary>
         private Dictionary<string, int> DicParameterSize = new Dictionary<string, int>();
         /// <summary>パラメタ ライズド クエリの指定されたパラメータ（の方向）を保持するディクショナリ</summary>
         private Dictionary<string, ParameterDirection> DicParameterDirection = new Dictionary<string, ParameterDirection>();
+        #endregion
 
-        #endregion       
+        #endregion
 
         #region パラメタの制御
 
@@ -252,6 +258,13 @@ namespace Touryo.Infrastructure.Business.Dao
         /// <remarks>自由に利用できる。</remarks>
         public CmnDao(BaseDam dam) : base(dam) { }
 
+        /// <summary>コンストラクタ</summary>
+        /// <remarks>自由に利用できる。</remarks>
+        public CmnDao(BaseDam dam, CommandType cmdType) : base(dam)
+        {
+            this._cmdType = cmdType;
+        }
+
         #endregion
 
         #region クエリ メソッド
@@ -384,12 +397,27 @@ namespace Touryo.Infrastructure.Business.Dao
             if (this._sQLFileName != "")
             {
                 // ファイルから
-                this.SetSqlByFile2(this._sQLFileName);
+                if (this._cmdType.HasValue)
+                {
+                    this.SetSqlByFile2(this._sQLFileName, this._cmdType.Value); 
+                }
+                else
+                {
+                    this.SetSqlByFile2(this._sQLFileName);
+                }
             }
             else if (this._sQLText != "")
             {
                 // テキストから
-                this.SetSqlByCommand(this._sQLText);
+                if (this._cmdType.HasValue)
+                {
+                    this.SetSqlByCommand(this._sQLText, this._cmdType.Value);
+                }
+                else
+                {
+                    this.SetSqlByCommand(this._sQLText);
+                }
+                
             }
             else
             {
