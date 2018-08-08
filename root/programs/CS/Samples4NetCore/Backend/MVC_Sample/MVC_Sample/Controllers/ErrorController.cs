@@ -19,10 +19,10 @@
 
 using MVC_Sample.Models.ViewModels;
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Security.Claims;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
@@ -31,10 +31,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 using Microsoft.AspNetCore.Mvc;
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
 using Touryo.Infrastructure.Business.Presentation;
+using Touryo.Infrastructure.Framework.StdMigration;
+using Touryo.Infrastructure.Framework.Util;
 
 namespace MVC_Sample.Controllers
 {
@@ -49,6 +48,34 @@ namespace MVC_Sample.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
+            ISession session = MyHttpContext.Current.Session;
+            int? flg = session.GetInt32(FxHttpContextIndex.SESSION_ABANDON_FLAG);
+            if (flg.HasValue)
+            {
+                if (Convert.ToBoolean(flg.Value))
+                {
+                    // セッション タイムアウト検出用Cookieを消去
+                    // ※ Removeが正常に動作しないため、値を空文字に設定 ＝ 消去とする
+
+                    // Set-Cookie HTTPヘッダをレスポンス
+                    FxCmnFunction.DeleteCookieForSessionTimeoutDetection();
+
+                    try
+                    {
+                        // セッションを消去                       
+                        session.Clear();
+                    }
+                    catch (Exception ex)
+                    {
+                        // エラー発生時
+                        // このカバレージを通過する場合、
+                        // おそらく起動した画面のパスが間違っている。
+                        Console.WriteLine("このカバレージを通過する場合、おそらく起動した画面のパスが間違っている。");
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+            }
+
             return View(new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier

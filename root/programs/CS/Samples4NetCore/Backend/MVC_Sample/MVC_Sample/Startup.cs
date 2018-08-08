@@ -111,7 +111,7 @@ namespace MVC_Sample
             {
                 // Developmentモードの場合
 
-                // エラー画面
+                // 開発用エラー画面
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 
@@ -128,11 +128,8 @@ namespace MVC_Sample
             {
                 // Developmentモードでない場合
 
-                // カスタム例外処理ページ ※ そもそも動作していない。
-                //app.UseExceptionHandler(GetConfigParameter.GetConfigValue("FxErrorScreenPath"));
-                // ステータス コード ページ ※ OnActionExecutionAsyncで throw した場合に反応しない。
-                //app.UseStatusCodePages();
-                //app.UseStatusCodePagesWithReExecute(GetConfigParameter.GetConfigValue("FxErrorScreenPath"));
+                // カスタム例外処理ページ
+                // MyMVCCoreFilterAttribute.OnExceptionで処理。
             }
 
             #endregion

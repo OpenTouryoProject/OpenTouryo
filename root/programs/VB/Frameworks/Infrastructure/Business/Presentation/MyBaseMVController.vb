@@ -351,27 +351,27 @@ Namespace Touryo.Infrastructure.Business.Presentation
 #Region "OnException"
 
         ''' <summary>アクションでハンドルされない例外が発生したときに呼び出されます。</summary>
-        ''' <param name="filterContext">
+        ''' <param name="exceptionContext">
         ''' 型: System.Web.Mvc.ResultExecutingContext
         ''' 現在の要求およびアクション結果に関する情報。
         ''' </param>
         ''' <remarks>
         ''' web.config に customErrors mode="on" を追記（無い場合は、OnExceptionメソッドが動かない 
         ''' </remarks>
-        Protected Overrides Sub OnException(filterContext As ExceptionContext)
+        Protected Overrides Sub OnException(exceptionContext As ExceptionContext)
             ' Calling base class method.
-            MyBase.OnException(filterContext)
+            MyBase.OnException(exceptionContext)
             ' エラーログの出力
-            Me.OutputErrorLog(filterContext)
+            Me.OutputErrorLog(exceptionContext)
             ' エラー画面に画面遷移する
-            Me.TransferErrorScreen(filterContext)
+            Me.TransferErrorScreen(exceptionContext)
         End Sub
 
         ''' <summary>エラーログの出力</summary>
-        ''' <param name="filterContext">ExceptionContext</param>
-        Private Sub OutputErrorLog(filterContext As ExceptionContext)
+        ''' <param name="exceptionContext">ExceptionContext</param>
+        Private Sub OutputErrorLog(exceptionContext As ExceptionContext)
             ' 非同期ControllerのInnerException対策（底のExceptionを取得する）。
-            Dim ex As Exception = filterContext.Exception
+            Dim ex As Exception = exceptionContext.Exception
             Dim bottomException As Exception = ex
             While bottomException.InnerException IsNot Nothing
                 bottomException = bottomException.InnerException
@@ -395,7 +395,7 @@ Namespace Touryo.Infrastructure.Business.Presentation
             Dim strLogMessage As String =
                 "," & If(Me.UserInfo IsNot Nothing, Me.UserInfo.UserName, "null") &
                 "," & If(Me.UserInfo IsNot Nothing, Me.UserInfo.IPAddress, "null") &
-                "," & "----->>" & "," & Me.ControllerName & "," & Me.ActionName & "(OnException)" &
+                "," & "<-----" & "," & Me.ControllerName & "," & Me.ActionName & "(OnException)" &
                 "," &
                 "," &
                 "," & GetExceptionMessageID(bottomException) &
@@ -408,10 +408,10 @@ Namespace Touryo.Infrastructure.Business.Presentation
         End Sub
 
         ''' <summary>例外発生時に、エラー画面に画面遷移</summary>
-        ''' <param name="filterContext">ExceptionContext</param>
-        Private Sub TransferErrorScreen(filterContext As ExceptionContext)
+        ''' <param name="exceptionContext">ExceptionContext</param>
+        Private Sub TransferErrorScreen(exceptionContext As ExceptionContext)
             ' 非同期ControllerのInnerException対策（底のExceptionを取得する）。
-            Dim ex As Exception = filterContext.Exception
+            Dim ex As Exception = exceptionContext.Exception
             Dim bottomException As Exception = ex
             While bottomException.InnerException IsNot Nothing
                 bottomException = bottomException.InnerException
@@ -469,19 +469,19 @@ Namespace Touryo.Infrastructure.Business.Presentation
 
             '#Region "エラー画面へ画面遷移"
 
-            filterContext.ExceptionHandled = True
-            filterContext.HttpContext.Response.Clear()
+            exceptionContext.ExceptionHandled = True
+            exceptionContext.HttpContext.Response.Clear()
 
-            If filterContext.HttpContext.Request.IsAjaxRequest() Then
-                filterContext.Result = New JavaScriptResult() With {
+            If exceptionContext.HttpContext.Request.IsAjaxRequest() Then
+                exceptionContext.Result = New JavaScriptResult() With {
                     .Script = "location.href = '" & errorScreenPath & "'"
                 }
-            ElseIf filterContext.IsChildAction Then
-                filterContext.Result = New ContentResult() With {
+            ElseIf exceptionContext.IsChildAction Then
+                exceptionContext.Result = New ContentResult() With {
                     .Content = "<script>location.href = '" & errorScreenPath & "'</script>"
                 }
             Else
-                filterContext.Result = New RedirectResult(errorScreenPath)
+                exceptionContext.Result = New RedirectResult(errorScreenPath)
             End If
 
             '#End Region

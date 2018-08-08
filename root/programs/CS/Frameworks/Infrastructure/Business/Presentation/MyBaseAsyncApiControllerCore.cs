@@ -36,8 +36,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Security.Claims;
 
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Primitives;
 
@@ -203,7 +201,7 @@ namespace Touryo.Infrastructure.Business.Presentation
             string strLogMessage =
                 "," + userName + // (this.UserInfo != null ? this.UserInfo.UserName : "null") +
                 "," + ipAddress + //(this.UserInfo != null ? this.UserInfo.IPAddress : "null") +
-                "," + "----->>" +
+                "," + "<-----" +
                 "," + this.ControllerName +
                 "," + this.ActionName + "(ExecuteExceptionFilterAsync)" +
                 "," + //this.perfRec.ExecTime +

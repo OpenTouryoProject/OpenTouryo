@@ -235,7 +235,7 @@ namespace Touryo.Infrastructure.Business.Presentation
             string strLogMessage =
                 "," + userName + // (this.UserInfo != null ? this.UserInfo.UserName : "null") +
                 "," + ipAddress + //(this.UserInfo != null ? this.UserInfo.IPAddress : "null") +
-                "," + "----->>" +
+                "," + "<-----" +
                 "," + this.ControllerName +
                 "," + this.ActionName + "(ExecuteExceptionFilterAsync)" +
                 "," + //this.perfRec.ExecTime +

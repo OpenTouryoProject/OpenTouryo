@@ -21,10 +21,9 @@ using MVC_Sample.Logic.Business;
 using MVC_Sample.Logic.Common;
 using MVC_Sample.Models.ViewModels;
 
-using System.Data;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
@@ -36,7 +35,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Db;

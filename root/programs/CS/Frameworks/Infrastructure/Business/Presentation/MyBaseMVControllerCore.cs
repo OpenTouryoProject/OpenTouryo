@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/04/19  西野 大介         新規作成
 //*  2018/07/19  西野 大介         復元後のユーザー情報をSessionに設定するコードを追加
+//*  2018/08/08  西野 大介         MyMVCCoreFilterAttributeをFilterAttributeとして設定
 //**********************************************************************************
 
 using System;
@@ -72,6 +73,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 {
     /// <summary>画面コード親クラス２</summary>
     /// <remarks>（オーバーライドして）自由に利用できる。</remarks>
+    [MyMVCCoreFilter()]
     public class MyBaseMVControllerCore : BaseMVControllerCore
     {
         /// <summary>性能測定</summary>
