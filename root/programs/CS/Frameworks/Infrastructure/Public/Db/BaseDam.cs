@@ -67,6 +67,7 @@
 //*  2015/07/05  Sai               Added virtual property of IDbCommand
 //*  2017/08/11  西野 大介         BaseDam.ClearText ---> StringConverter.FormattingForOneLineLog
 //*  2017/09/06  西野 大介         IN句展開、ArrayListに加えて、List<T>のサポートを追加
+//*  2018/08/08  西野 大介         バッチでIN句展開の性能問題発生したため、StringBuilderにより高速化
 //**********************************************************************************
 
 using System;
@@ -1773,13 +1774,16 @@ namespace Touryo.Infrastructure.Public.Db
 
                             // 使用する変数
                             string oldString = paramSign + paramName;
-                            string newString = "";
+                            StringBuilder newString = new StringBuilder();
+                            //string newString = "";
+
                             int counter = 1;
 
+                            
                             foreach (object dum in al)
                             {
                                 // 展開パラメタ
-                                newString += oldString + "_" + counter.ToString();
+                                newString.Append(oldString + "_" + counter.ToString());
 
                                 if (counter == al.Count)
                                 {
@@ -1788,7 +1792,7 @@ namespace Touryo.Infrastructure.Public.Db
                                 else
                                 {
                                     // 中間（カンマ区切りを付与する）
-                                    newString += ", ";
+                                    newString.Append(", ");
                                 }
 
                                 // カウンタをインクリメント
@@ -1797,7 +1801,7 @@ namespace Touryo.Infrastructure.Public.Db
 
                             // 展開後のパラメタを設定し、LISTタグを削除（InnerTextで置換する）する。
                             // 2008/10/16---タグ編集処理（半角スペースを追加）
-                            XmlText xmlText = this._xml.CreateTextNode(" " + xmlNodeListTag.InnerText.Replace(oldString, newString) + " ");
+                            XmlText xmlText = this._xml.CreateTextNode(" " + xmlNodeListTag.InnerText.Replace(oldString, newString.ToString()) + " ");
                             xmlNodeListTag.ParentNode.ReplaceChild(xmlText, xmlNodeListTag);
                         }
                     }

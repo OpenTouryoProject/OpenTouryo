@@ -49,6 +49,7 @@
 //*  2013/07/09  西野 大介         静的SQLでもユーザパラメタを保存（操作ログで使用する用途）
 //*  2015/07/05  Sai               Implemented virtual property of IDbCommand in DamSqlSvr class
 //*  2017/09/06  西野 大介         IN句展開、ArrayListに加えて、List<T>のサポートを追加
+//*  2018/08/08  西野 大介         バッチで性能問題発生したためExecGenerateSQLの性能対策
 //**********************************************************************************
 
 using System;
@@ -824,10 +825,17 @@ namespace Touryo.Infrastructure.Public.Db
                 }
 
                 // 名前バインド パラメタをSQLに置換。
-                tmpCommandText
-                    = tmpCommandText.Substring(0, paramSignIndex)
-                    + sqlUtil.ConvertParameterToSQL(this._cmd.Parameters[paramName].Value)
-                    + tmpCommandText.Substring(paramSignIndex + paramName.Length + 1);   //+1はパラメタの先頭記号分
+
+                // Substring版
+                //tmpCommandText
+                //    = tmpCommandText.Substring(0, paramSignIndex)
+                //    + sqlUtil.ConvertParameterToSQL(this._cmd.Parameters[paramName].Value)
+                //    + tmpCommandText.Substring(paramSignIndex + paramName.Length + 1);   //+1はパラメタの先頭記号分
+
+                // Replace版
+                tmpCommandText = tmpCommandText.Replace(
+                    DamSqlSvr._paramSign + paramName, 
+                    sqlUtil.ConvertParameterToSQL(this._cmd.Parameters[paramName].Value));
             }
 
             // Command.CommandTextをクリア
