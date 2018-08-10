@@ -86,6 +86,9 @@
     <Compile Include="Db\DamOLEDB.cs" />
     <Compile Include="Db\SQLUtility.cs" />
     <Compile Include="Dto\DataRowState.cs" />
+    <Compile Include="Dto\DataToPoco.cs" />
+    <Compile Include="Dto\DataToDictionary.cs" />
+    <Compile Include="Dto\PocoToPoco.cs" />
     <Compile Include="Dto\DTColumn.cs" />
     <Compile Include="Dto\DTColumns.cs" />
     <Compile Include="Dto\DTRow.cs" />

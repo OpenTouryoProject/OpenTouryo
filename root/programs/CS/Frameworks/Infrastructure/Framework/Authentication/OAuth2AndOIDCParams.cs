@@ -38,7 +38,6 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 #endif
 
-
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Authentication
