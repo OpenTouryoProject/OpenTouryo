@@ -82,7 +82,7 @@ namespace WSClientWin_sample
         private async Task<string> ExLogin(string userId, string password)
         {
             OAuth2AndOIDCClient.HttpClient = new HttpClient();
-            string response = await OAuth2AndOIDCClient.GetAccessTokenByROPAsync(
+            string response = await OAuth2AndOIDCClient.ResourceOwnerPasswordCredentialsGrantAsync(
                 new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"),
                 OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
                 userId, password, "profile email phone address roles").ConfigureAwait(false);
