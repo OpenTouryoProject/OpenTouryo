@@ -41,7 +41,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public const string AuthorizationCodeGrantType = "authorization_code";
 
         /// <summary>Implicitグラント種別</summary>
-        public const string ImplicitGrantType = "-"; // Implicitには無い。
+        public const string ImplicitGrantType = "implicit"; // well-knownで利用。
 
         /// <summary>Resource Owner Password Credentialsグラント種別</summary>
         public const string ResourceOwnerPasswordCredentialsGrantType = "password";
@@ -145,8 +145,17 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>addressを要求するscope</summary>
         public const string Scope_Address = "address";
-        
+
         #endregion
-        
+
+        #region PKCE
+
+        /// <summary>PKCE plain</summary>
+        public const string PKCE_plain = "plain";
+
+        /// <summary>PKCE S256</summary>
+        public const string PKCE_S256 = "S256";
+
+        #endregion
     }
 }

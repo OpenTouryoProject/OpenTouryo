@@ -116,6 +116,7 @@
     <Compile Include="Presentation\FxEventArgs.cs" />
     <Compile Include="Authentication\JwtToken.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCParams.cs" />
+    <Compile Include="Presentation\JsonContent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\FrameworkExceptionMessageResource.Designer.cs">
       <AutoGen>True</AutoGen>
