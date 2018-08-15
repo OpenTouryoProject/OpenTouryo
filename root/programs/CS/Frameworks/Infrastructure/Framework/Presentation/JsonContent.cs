@@ -40,13 +40,27 @@ using System.Net.Http.Headers;
 
 using Newtonsoft.Json;
 
+using Touryo.Infrastructure.Public.Str;
+
 namespace Touryo.Infrastructure.Framework.Presentation
 {
     /// <summary>JsonContent</summary>
     public class JsonContent : HttpContent
     {
         /// <summary>MemoryStream</summary>
-        private readonly MemoryStream _Stream = new MemoryStream();
+        private readonly MemoryStream _Stream = null;
+
+        #region constructor
+
+        /// <summary>constructor</summary>
+        /// <param name="json">string</param>
+        public JsonContent(string json)
+        {
+            Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            this._Stream = new MemoryStream(CustomEncode.StringToByte(json, CustomEncode.UTF_8));
+            this._Stream.Position = 0;
+        }
 
         /// <summary>constructor</summary>
         /// <param name="obj">object</param>
@@ -54,12 +68,18 @@ namespace Touryo.Infrastructure.Framework.Presentation
         public JsonContent(object obj, JsonSerializerSettings settings)
         {
             Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            JsonTextWriter jsonTextWriter = new JsonTextWriter(new StreamWriter(_Stream));
+
+            this._Stream = new MemoryStream();
+            JsonTextWriter jsonTextWriter = new JsonTextWriter(new StreamWriter(this._Stream));
             JsonSerializer serializer = JsonSerializer.Create(settings);
             serializer.Serialize(jsonTextWriter, obj);
             jsonTextWriter.Flush();
-            _Stream.Position = 0;
+            this._Stream.Position = 0;
         }
+
+        #endregion
+
+        #region override
 
         /// <summary>SerializeToStreamAsync</summary>
         /// <param name="stream">Stream</param>
@@ -70,12 +90,14 @@ namespace Touryo.Infrastructure.Framework.Presentation
         }
 
         /// <summary>TryComputeLength</summary>
-        /// <param name="length">long</param>
+        /// <param name="length">out long</param>
         /// <returns>bool</returns>
         protected override bool TryComputeLength(out long length)
         {
             length = _Stream.Length;
             return true;
         }
+
+        #endregion
     }
 }

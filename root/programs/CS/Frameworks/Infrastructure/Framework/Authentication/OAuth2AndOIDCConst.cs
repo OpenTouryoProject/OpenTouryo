@@ -89,14 +89,19 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region 標準Claim
 
-        /// <summary>issuerクレームのurn</summary>
-        public static readonly string Claim_Issuer = Claim_Base + "iss";
+        #region 末端
 
-        /// <summary>audienceクレームのurn</summary>
-        public static readonly string Claim_Audience = Claim_Base + "aud";
+        /// <summary>scope</summary>
+        public const string scope = "scope";
+
+        #endregion
+
+        #region urn
 
         /// <summary>scopeクレームのurn</summary>
-        public static readonly string Claim_Scope = Claim_Base + "scope";
+        public static readonly string Claim_Scope = Claim_Base + scope;
+
+        #endregion
 
         #endregion
 
@@ -104,22 +109,83 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region JWT
 
+        #region 末端
+
+        /// <summary>iss</summary>
+        public const string iss = "iss";
+
+        /// <summary>aud</summary>
+        public const string aud = "aud";
+
+        /// <summary>sub</summary>
+        public const string sub = "sub";
+
+        /// <summary>exp</summary>
+        public const string exp = "exp";
+
+        /// <summary>nbf</summary>
+        public const string nbf = "nbf";
+
+        /// <summary>iat</summary>
+        public const string iat = "iat";
+
+        /// <summary>jti</summary>
+        public const string jti = "jti";
+
+        #endregion
+
+        #region urn
+
+        /// <summary>issuerクレームのurn</summary>
+        public static readonly string Claim_Issuer = Claim_Base + iss;
+
+        /// <summary>audienceクレームのurn</summary>
+        public static readonly string Claim_Audience = Claim_Base + aud;
+
+        /// <summary>subjectクレームのurn</summary>
+        public static readonly string Claim_Subject = Claim_Base + sub;
+
         /// <summary>expクレームのurn</summary>
-        public static readonly string Claim_ExpirationTime = Claim_Base + "exp";
+        public static readonly string Claim_ExpirationTime = Claim_Base + exp;
 
         /// <summary>nbfクレームのurn</summary>
-        public static readonly string Claim_NotBefore = Claim_Base + "nbf";
+        public static readonly string Claim_NotBefore = Claim_Base + nbf;
 
         /// <summary>iatクレームのurn</summary>
-        public static readonly string Claim_IssuedAt = Claim_Base + "iat";
+        public static readonly string Claim_IssuedAt = Claim_Base + iat;
 
         /// <summary>jtiクレームのurn</summary>
-        public static readonly string Claim_JwtId = Claim_Base + "jti";
+        public static readonly string Claim_JwtId = Claim_Base + jti;
+
+        #endregion
+
+        #endregion
 
         #region OIDC
 
+        #region 末端
+
+        /// <summary>nonce</summary>
+        public const string nonce = "nonce";
+
+        /// <summary>at_hash</summary>
+        public const string at_hash = "at_hash";
+
+        /// <summary>c_hash</summary>
+        public const string c_hash = "c_hash";
+
+        #endregion
+
+        #region urn
+
         /// <summary>nonceクレームのurn</summary>
-        public static readonly string Claim_Nonce = Claim_Base + "nonce";
+        public static readonly string Claim_Nonce = Claim_Base + nonce;
+
+        /// <summary>at_hashクレームのurn</summary>
+        public static readonly string Claim_AtHash = Claim_Base + at_hash;
+
+        /// <summary>c_hashクレームのurn</summary>
+        public static readonly string Claim_CHash = Claim_Base + c_hash;
 
         #endregion
 
@@ -129,10 +195,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
-        #region Scope（id_token用）
-        
-        /// <summary>id_tokenを要求するscope</summary>
-        public const string Scope_Openid = "openid";
+        #region Scope
+
+        #region 標準
 
         /// <summary>profileを要求するscope</summary>
         public const string Scope_Profile = "profile";
@@ -145,6 +210,28 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>addressを要求するscope</summary>
         public const string Scope_Address = "address";
+
+        #endregion
+
+        #region 拡張
+
+        /// <summary>authを要求するscope（認可画面を出さない）</summary>
+        public const string Scope_Auth = "auth";
+
+        /// <summary>useridを要求するscope</summary>
+        public const string Scope_UserID = "userid";
+
+        /// <summary>rolesを要求するscope</summary>
+        public const string Scope_Roles = "roles";
+
+        #endregion
+
+        #region id_token
+
+        /// <summary>id_tokenを要求するscope</summary>
+        public const string Scope_Openid = "openid";
+
+        #endregion
 
         #endregion
 

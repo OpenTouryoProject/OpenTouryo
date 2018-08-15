@@ -45,6 +45,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// <summary>OAuth2とOIDCの各種パラメタ</summary>
     public class OAuth2AndOIDCParams
     {
+        #region パラメタ関連
+
         /// <summary>ClientID</summary>
         public static string ClientID
         {
@@ -72,6 +74,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
+        /// <summary>Audience</summary>
+        public static string Audience
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("OAuth2AndOidcAudience");
+            }
+        }
+
         /// <summary>ClientIDs</summary>
         public static List<string> ClientIDs
         {
@@ -84,6 +95,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
 #endif
             }
         }
+
+        #endregion
+
+        #region 鍵関連
 
         /// <summary>RS256Cer</summary>
         public static string RS256Cer
@@ -102,5 +117,25 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 return GetConfigParameter.GetConfigValue("OAuth2JwtAssertionPrivatekey");
             }
         }
+
+        /// <summary>JwkSetFilePath</summary>
+        public static string JwkSetFilePath
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("JwkSetFilePath");
+            }
+        }
+
+        /// <summary>JwkSetUri</summary>
+        public static string JwkSetUri
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("JwkSetUri");
+            }
+        }
+
+        #endregion
     }
 }
