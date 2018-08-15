@@ -29,27 +29,21 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/12/25  西野 大介         新規作成
 //*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
+//*  2018/08/15  西野 大介         後方互換から、基底クラスに変更
+//*                                （汎用認証サイトでしか使っていないと思われるため）
 //**********************************************************************************
 
 using System.Security.Cryptography.X509Certificates;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>JWT(JWS)RS256生成クラス（X.509証明書による）</summary>
-    /// <remarks>後方互換維持のため</remarks>
-    public class JWT_RS256 : JWT_RS256_X509
+    /// <summary>JWT(RS256 JWS)生成クラス</summary>
+    public abstract class JWT_RS256 : JWT
     {
-        /// <summary>Constructor</summary>
-        /// <param name="certificateFilePath">DigitalSignX509に渡すcertificateFilePathパラメタ</param>
-        /// <param name="password">DigitalSignX509に渡すpasswordパラメタ</param>
-        public JWT_RS256(string certificateFilePath, string password)
-            : this(certificateFilePath, password, X509KeyStorageFlags.DefaultKeySet) { }
-
-        /// <summary>Constructor</summary>
-        /// <param name="certificateFilePath">DigitalSignX509に渡すcertificateFilePathパラメタ</param>
-        /// <param name="password">DigitalSignX509に渡すpasswordパラメタ</param>
-        /// <param name="flag">X509KeyStorageFlags</param>
-        public JWT_RS256(string certificateFilePath, string password, X509KeyStorageFlags flag)
-            : base(certificateFilePath, password, flag) { }
+        /// <summary>JWSHeader</summary>
+        public JWSHeader JWSHeader = new JWSHeader
+        {
+            alg = "RS256"
+        };
     }
 }

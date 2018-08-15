@@ -30,6 +30,7 @@
 //*  2017/01/13  西野 大介         新規作成
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
+//*  2018/08/15  西野 大介         jwks_uri & kid 対応
 //**********************************************************************************
 
 using System;
@@ -43,7 +44,7 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>JWT_HS256</summary>
+    /// <summary>JWT(HS256 JWS)生成クラス</summary>
     public class JWT_HS256 : JWT
     {
         #region mem & prop & constructor
@@ -113,14 +114,22 @@ namespace Touryo.Infrastructure.Public.Security
         public override string Create(string payloadJson)
         {
             // ヘッダー
-            var headerObject = new Header { alg = "HS256" };
-            string headerJson = JsonConvert.SerializeObject(headerObject, Formatting.None);
+            JWSHeader headerObject = new JWSHeader { alg = "HS256" };
+
+            string headerJson = JsonConvert.SerializeObject(
+                headerObject,
+                new JsonSerializerSettings()
+                {
+                    Formatting = Formatting.None,
+                    NullValueHandling = NullValueHandling.Ignore
+                });
+
             byte[] headerBytes = CustomEncode.StringToByte(headerJson, CustomEncode.UTF_8);
             string headerEncoded = CustomEncode.ToBase64UrlString(headerBytes);
 
             // ペイロード
-            var payloadBytes = CustomEncode.StringToByte(payloadJson, CustomEncode.UTF_8);
-            var payloadEncoded = CustomEncode.ToBase64UrlString(payloadBytes);
+            byte[] payloadBytes = CustomEncode.StringToByte(payloadJson, CustomEncode.UTF_8);
+            string payloadEncoded = CustomEncode.ToBase64UrlString(payloadBytes);
 
             // 署名
             byte[] data = CustomEncode.StringToByte(headerEncoded + "." + payloadEncoded, CustomEncode.UTF_8);
@@ -139,8 +148,8 @@ namespace Touryo.Infrastructure.Public.Security
             string[] temp = jwtString.Split('.');
 
             // 検証
-            Header headerObject = (Header)JsonConvert.DeserializeObject(
-                CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8), typeof(Header));
+            JWSHeader headerObject = (JWSHeader)JsonConvert.DeserializeObject(
+                CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8), typeof(JWSHeader));
 
             if (headerObject.alg == "HS256" && headerObject.typ == "JWT")
             {

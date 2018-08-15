@@ -30,12 +30,13 @@
 //*  2017/01/10  西野 大介         新規作成
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
+//*  2018/08/15  西野 大介         jwks_uri & kid 対応
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>JWT(JWS) Header</summary>
-    public class Header
+    /// <summary>JWT Header</summary>
+    public class JWTHeader
     {
         /// <summary>
         /// alg=HS256 or RS256
@@ -45,10 +46,30 @@ namespace Touryo.Infrastructure.Public.Security
         public string alg = "";
 
         /// <summary>
-        /// typ=JWT
+        /// jku=JWK Set URL
+        /// </summary>
+        public string jku = null;
+
+        /// <summary>
+        /// kid=Jwk鍵のID
+        /// </summary>
+        public string kid = null;
+
+        /// <summary>
+        /// typ=JWT(JWSもJWTらしい)
         /// アサーションのタイプを指定。JWT固定。
         /// </summary>
         public readonly string typ = "JWT";
+    }
+
+    /// <summary>JWT(JWS) Header</summary>
+    public class JWSHeader : JWTHeader
+    {
+    }
+
+    /// <summary>JWT(JWE) Header</summary>
+    public class JWEHeader : JWTHeader
+    {
     }
 
     /// <summary>JWT(JWS)</summary>

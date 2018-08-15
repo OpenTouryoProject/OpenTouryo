@@ -52,6 +52,8 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region X.509 鍵 →
 
+        #region *.cer
+
         /// <summary>
         /// X509CerToXmlPublicKey
         /// X.509鍵(*.cer)からXml公開鍵へ変換
@@ -87,6 +89,51 @@ namespace Touryo.Infrastructure.Public.Security
             return RS256_KeyConverter.ParamToJwkPublicKey(
                 RS256_KeyConverter.X509CerToProvider(certificateFilePath).ExportParameters(false), settings);
         }
+
+        #endregion
+
+        #region *.pfx
+
+        /// <summary>
+        /// X509CerToXmlPublicKey
+        /// X.509鍵(*.pfx)からXml公開鍵へ変換
+        /// </summary>
+        /// <param name="certificateFilePath">X.509鍵(*.pfx)</param>
+        /// <param name="password">string</param>
+        /// <returns>Xml公開鍵</returns>
+        public static string X509PfxToXmlPublicKey(string certificateFilePath, string password)
+        {
+            return RS256_KeyConverter.ParamToXmlPublicKey(
+                RS256_KeyConverter.X509PfxToProvider(certificateFilePath, password).ExportParameters(false));
+        }
+
+        /// <summary>
+        /// X509CerToJwkPublicKey
+        /// X.509鍵(*.pfx)からJwk公開鍵へ変換
+        /// </summary>
+        /// <param name="certificateFilePath">X.509鍵(*.pfx)</param>
+        /// <param name="password">string</param>
+        /// <returns>Jwk公開鍵</returns>
+        public static string X509PfxToJwkPublicKey(string certificateFilePath, string password)
+        {
+            return RS256_KeyConverter.X509PfxToJwkPublicKey(certificateFilePath, password, null);
+        }
+
+        /// <summary>
+        /// X509CerToJwkPublicKey
+        /// X.509鍵(*.pfx)からJwk公開鍵へ変換
+        /// </summary>
+        /// <param name="certificateFilePath">X.509鍵(*.pfx)</param>
+        /// <param name="password">string</param>
+        /// <param name="settings">JsonSerializerSettings</param>
+        /// <returns>Jwk公開鍵</returns>
+        public static string X509PfxToJwkPublicKey(string certificateFilePath, string password, JsonSerializerSettings settings)
+        {
+            return RS256_KeyConverter.ParamToJwkPublicKey(
+                RS256_KeyConverter.X509PfxToProvider(certificateFilePath, password).ExportParameters(false), settings);
+        }
+
+        #endregion
 
         #endregion
 
@@ -209,6 +256,28 @@ namespace Touryo.Infrastructure.Public.Security
                     return (RSACryptoServiceProvider)aa;
                 }
                 else { }
+            }
+            else { }
+
+            return null;
+        }
+
+        /// <summary>
+        /// X509CerToProvider
+        /// X.509鍵(*.pfx)からRsaProviderへ変換
+        /// </summary>
+        /// <param name="certificateFilePath">X.509鍵(*.pfx)</param>
+        /// <param name="password">string</param>
+        /// <returns>RSACryptoServiceProvider</returns>
+        public static RSACryptoServiceProvider X509PfxToProvider(string certificateFilePath, string password)
+        {
+            DigitalSignX509 dsX509 = new DigitalSignX509(
+                certificateFilePath, password, "SHA256", X509KeyStorageFlags.DefaultKeySet);
+
+            AsymmetricAlgorithm aa = dsX509.X509Certificate.PublicKey.Key; // Public
+            if (aa is RSACryptoServiceProvider)
+            {
+                return (RSACryptoServiceProvider)aa;
             }
             else { }
 
