@@ -127,7 +127,7 @@ Namespace Aspx.Start
         ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnButton2_Click(fxEventArgs As FxEventArgs) As String
-            Return "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize" _
+            Return "http://localhost:63359/MultiPurposeAuthSite/Account/OAuth2Authorize" _
                 & "?client_id=" & OAuth2AndOIDCParams.ClientID _
                 & "&response_type=code" _
                 & "&scope=profile%20email%20phone%20address%20openid" _
