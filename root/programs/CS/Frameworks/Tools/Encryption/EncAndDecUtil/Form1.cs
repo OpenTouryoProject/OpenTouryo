@@ -31,7 +31,7 @@
 //*  2017/01/10  西野 大介         引数指定の誤りと、HashのStretchCountを指定可能に修正
 //*  2017/01/10  西野 大介         秘密鍵と公開鍵の画面表示が誤っていたため、これを修正
 //*  2017/01/13  西野 大介         上記修正への対応と、GetSaltedPasswordのI/F変更に対する修正対応
-//*  2017/01/13  西野 大介         追加のGetSaltedPasswordメソッド、CodeSigning、JWTクラスの検証画面
+//*  2017/01/13  西野 大介         追加のGetSaltedPasswordメソッド、CodeSigning、JWSクラスの検証画面
 //*  2017/12/**  西野 大介         メンテナンス、暗号化ライブラリ追加に伴うテストコード追加
 //**********************************************************************************
 
@@ -626,181 +626,181 @@ namespace EncAndDecUtil
 
         #endregion
 
-        #region JWT
+        #region JWS
 
-        /// <summary>JWT生成</summary>
-        private void btnJWTSign_Click(object sender, EventArgs e)
+        /// <summary>JWS生成</summary>
+        private void btnJWSSign_Click(object sender, EventArgs e)
         {
-            if (rbnJWTHS256.Checked)
+            if (rbnJWSHS256.Checked)
             {
                 // HS256
                 string password = GetPassword.Generate(20, 10);
-                JWT_HS256 jwtHS256 = new JWT_HS256(CustomEncode.StringToByte(password, CustomEncode.UTF_8));
+                JWS_HS256 jwsHS256 = new JWS_HS256(CustomEncode.StringToByte(password, CustomEncode.UTF_8));
 
                 // 生成
-                string jwt = jwtHS256.Create(this.txtJWTPayload.Text);
+                string jws = jwsHS256.Create(this.txtJWSPayload.Text);
 
                 // 出力
-                this.txtJWTKey.Text = password;
-                this.txtJWTJWK.Text = jwtHS256.JWK;
-                this.txtJWTSign.Text = jwt;
+                this.txtJWSKey.Text = password;
+                this.txtJWSJWK.Text = jwsHS256.JWK;
+                this.txtJWSSign.Text = jws;
 
                 // 改竄可能なフィールドに出力
-                string[] temp = jwt.Split('.');
-                this.txtJWTHeader.Text = CustomEncode.ByteToString(
+                string[] temp = jws.Split('.');
+                this.txtJWSHeader.Text = CustomEncode.ByteToString(
                     CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8);
-                this.txtJWTPayload.Text = CustomEncode.ByteToString(
+                this.txtJWSPayload.Text = CustomEncode.ByteToString(
                     CustomEncode.FromBase64UrlString(temp[1]), CustomEncode.UTF_8);
             }
-            else if (rbnJWTRS256_XML.Checked)
+            else if (rbnJWSRS256_XML.Checked)
             {
                 // RS256 (XML)
-                JWT_RS256_XML jwtRS256 = new JWT_RS256_XML();
+                JWS_RS256_XML jwsRS256 = new JWS_RS256_XML();
 
                 // 生成
-                string jwt = jwtRS256.Create(this.txtJWTPayload.Text);
+                string jws = jwsRS256.Create(this.txtJWSPayload.Text);
 
                 // 出力
-                this.txtJWTKey.Text = jwtRS256.XMLPublicKey;
+                this.txtJWSKey.Text = jwsRS256.XMLPublicKey;
 
-                this.txtJWTJWK.Text =
+                this.txtJWSJWK.Text =
                     RS256_KeyConverter.ParamToJwkPublicKey(
-                        RS256_KeyConverter.XmlToProvider(jwtRS256.XMLPublicKey).ExportParameters(false));
+                        RS256_KeyConverter.XmlToProvider(jwsRS256.XMLPublicKey).ExportParameters(false));
 
-                this.txtJWTSign.Text = jwt;
+                this.txtJWSSign.Text = jws;
 
                 // 改竄可能なフィールドに出力
-                string[] temp = jwt.Split('.');
-                this.txtJWTHeader.Text = CustomEncode.ByteToString(
+                string[] temp = jws.Split('.');
+                this.txtJWSHeader.Text = CustomEncode.ByteToString(
                     CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8);
-                this.txtJWTPayload.Text = CustomEncode.ByteToString(
+                this.txtJWSPayload.Text = CustomEncode.ByteToString(
                     CustomEncode.FromBase64UrlString(temp[1]), CustomEncode.UTF_8);
             }
-            else if (rbnJWTRS256_Param.Checked)
+            else if (rbnJWSRS256_Param.Checked)
             {
                 // RS256 (Param)
-                JWT_RS256_Param jwtRS256 = new JWT_RS256_Param();
+                JWS_RS256_Param jwsRS256 = new JWS_RS256_Param();
 
                 // 生成
-                string jwt = jwtRS256.Create(this.txtJWTPayload.Text);
+                string jws = jwsRS256.Create(this.txtJWSPayload.Text);
 
                 // 出力
-                this.txtJWTKey.Text = RS256_KeyConverter.ParamToXmlPublicKey(jwtRS256.RsaPublicParameters);
-                this.txtJWTJWK.Text = RS256_KeyConverter.ParamToJwkPublicKey(jwtRS256.RsaPublicParameters);
+                this.txtJWSKey.Text = RS256_KeyConverter.ParamToXmlPublicKey(jwsRS256.RsaPublicParameters);
+                this.txtJWSJWK.Text = RS256_KeyConverter.ParamToJwkPublicKey(jwsRS256.RsaPublicParameters);
 
-                this.txtJWTSign.Text = jwt;
+                this.txtJWSSign.Text = jws;
 
                 // 改竄可能なフィールドに出力
-                string[] temp = jwt.Split('.');
-                this.txtJWTHeader.Text = CustomEncode.ByteToString(
+                string[] temp = jws.Split('.');
+                this.txtJWSHeader.Text = CustomEncode.ByteToString(
                     CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8);
-                this.txtJWTPayload.Text = CustomEncode.ByteToString(
+                this.txtJWSPayload.Text = CustomEncode.ByteToString(
                     CustomEncode.FromBase64UrlString(temp[1]), CustomEncode.UTF_8);
             }
             else
             {
                 // RS256 (X509)
-                JWT_RS256_X509 jwtRS256 = new JWT_RS256_X509(this.CertificateFilePath_pfx, this.CertificateFilePassword,
+                JWS_RS256_X509 jwsRS256 = new JWS_RS256_X509(this.CertificateFilePath_pfx, this.CertificateFilePassword,
                     X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
 
                 // 生成
-                string jwt = jwtRS256.Create(this.txtJWTPayload.Text);
+                string jws = jwsRS256.Create(this.txtJWSPayload.Text);
 
                 // 出力
-                this.txtJWTKey.Text = jwtRS256.DigitalSignX509.X509PublicKey;
+                this.txtJWSKey.Text = jwsRS256.DigitalSignX509.X509PublicKey;
 
-                this.txtJWTJWK.Text =
+                this.txtJWSJWK.Text =
                     RS256_KeyConverter.ParamToJwkPublicKey(
                         RS256_KeyConverter.X509CerToProvider(
                             this.CertificateFilePath_cer).ExportParameters(false));
 
-                this.txtJWTSign.Text = jwt;
+                this.txtJWSSign.Text = jws;
 
                 // 改竄可能なフィールドに出力
-                string[] temp = jwt.Split('.');
-                this.txtJWTHeader.Text = CustomEncode.ByteToString(
+                string[] temp = jws.Split('.');
+                this.txtJWSHeader.Text = CustomEncode.ByteToString(
                     CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8);
-                this.txtJWTPayload.Text = CustomEncode.ByteToString(
+                this.txtJWSPayload.Text = CustomEncode.ByteToString(
                     CustomEncode.FromBase64UrlString(temp[1]), CustomEncode.UTF_8);
             }
         }
 
-        /// <summary>JWT検証</summary>
-        private void btnJWTVerify_Click(object sender, EventArgs e)
+        /// <summary>JWS検証</summary>
+        private void btnJWSVerify_Click(object sender, EventArgs e)
         {
             bool ret = false;
 
-            if (rbnJWTHS256.Checked)
+            if (rbnJWSHS256.Checked)
             {
                 // HS256
                 
                 // 入力
-                string[] temp = this.txtJWTSign.Text.Split('.');
+                string[] temp = this.txtJWSSign.Text.Split('.');
 
                 // 改変可能なフィールドから入力
-                string newJWT =
-                    CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTHeader.Text, CustomEncode.UTF_8))
-                    + "." + CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTPayload.Text, CustomEncode.UTF_8))
+                string newJWS =
+                    CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWSHeader.Text, CustomEncode.UTF_8))
+                    + "." + CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWSPayload.Text, CustomEncode.UTF_8))
                     + "." + temp[2];
 
                 // 検証
-                //JWT_HS256 jwtHS256 = new JWT_HS256(CustomEncode.StringToByte(this.txtJWTKey.Text, CustomEncode.UTF_8));
-                JWT_HS256 jwtHS256 = new JWT_HS256(this.txtJWTJWK.Text);
-                ret = jwtHS256.Verify(newJWT);
+                //JWS_HS256 jwsHS256 = new JWS_HS256(CustomEncode.StringToByte(this.txtJWSKey.Text, CustomEncode.UTF_8));
+                JWS_HS256 jwsHS256 = new JWS_HS256(this.txtJWSJWK.Text);
+                ret = jwsHS256.Verify(newJWS);
             }
-            else if (rbnJWTRS256_XML.Checked)
+            else if (rbnJWSRS256_XML.Checked)
             {
                 // RS256 (XML)
 
                 // 入力
-                string[] temp = this.txtJWTSign.Text.Split('.');
+                string[] temp = this.txtJWSSign.Text.Split('.');
 
                 // 改変可能なフィールドから入力
-                string newJWT =
-                    CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTHeader.Text, CustomEncode.UTF_8))
-                    + "." + CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTPayload.Text, CustomEncode.UTF_8))
+                string newJWS =
+                    CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWSHeader.Text, CustomEncode.UTF_8))
+                    + "." + CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWSPayload.Text, CustomEncode.UTF_8))
                     + "." + temp[2];
 
                 // 検証
-                JWT_RS256_XML jwtRS256 = new JWT_RS256_XML(this.txtJWTKey.Text);
-                ret = jwtRS256.Verify(newJWT);
+                JWS_RS256_XML jwsRS256 = new JWS_RS256_XML(this.txtJWSKey.Text);
+                ret = jwsRS256.Verify(newJWS);
             }
-            else if (rbnJWTRS256_Param.Checked)
+            else if (rbnJWSRS256_Param.Checked)
             {
                 // RS256 (Param)
 
                 // 入力
-                string[] temp = this.txtJWTSign.Text.Split('.');
+                string[] temp = this.txtJWSSign.Text.Split('.');
 
                 // 改変可能なフィールドから入力
-                string newJWT =
-                    CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTHeader.Text, CustomEncode.UTF_8))
-                    + "." + CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTPayload.Text, CustomEncode.UTF_8))
+                string newJWS =
+                    CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWSHeader.Text, CustomEncode.UTF_8))
+                    + "." + CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWSPayload.Text, CustomEncode.UTF_8))
                     + "." + temp[2];
 
                 // 検証
-                //JWT_RS256_Param jwtRS256 = new JWT_RS256_Param(
-                //    RS256_KeyConverter.XmlToProvider(this.txtJWTKey.Text).ExportParameters(false));
-                JWT_RS256_Param jwtRS256 = new JWT_RS256_Param(
-                    RS256_KeyConverter.JwkToProvider(this.txtJWTJWK.Text).ExportParameters(false));
-                ret = jwtRS256.Verify(newJWT);
+                //JWS_RS256_Param jwsRS256 = new JWS_RS256_Param(
+                //    RS256_KeyConverter.XmlToProvider(this.txtJWSKey.Text).ExportParameters(false));
+                JWS_RS256_Param jwsRS256 = new JWS_RS256_Param(
+                    RS256_KeyConverter.JwkToProvider(this.txtJWSJWK.Text).ExportParameters(false));
+                ret = jwsRS256.Verify(newJWS);
             }
             else
             {
                 // RS256 (X509)
 
                 // 入力
-                string[] temp = this.txtJWTSign.Text.Split('.');
+                string[] temp = this.txtJWSSign.Text.Split('.');
 
                 // 改変可能なフィールドから入力
-                string newJWT =
-                    CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTHeader.Text, CustomEncode.UTF_8))
-                    + "." + CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWTPayload.Text, CustomEncode.UTF_8))
+                string newJWS =
+                    CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWSHeader.Text, CustomEncode.UTF_8))
+                    + "." + CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWSPayload.Text, CustomEncode.UTF_8))
                     + "." + temp[2];
 
                 // 検証
-                JWT_RS256_X509 jwtRS256 = new JWT_RS256_X509(this.CertificateFilePath_cer, "");
-                ret = jwtRS256.Verify(newJWT);
+                JWS_RS256_X509 jwsRS256 = new JWS_RS256_X509(this.CertificateFilePath_cer, "");
+                ret = jwsRS256.Verify(newJWS);
             }
 
             if (ret)

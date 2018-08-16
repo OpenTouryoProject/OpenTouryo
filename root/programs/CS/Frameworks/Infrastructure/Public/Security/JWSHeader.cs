@@ -19,28 +19,25 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JWT(JWS)
-//* クラス日本語名  ：JWT(JWS)抽象クラス
+//* クラス名        ：JWSHeader
+//* クラス日本語名  ：JWS Header
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2017/01/10  西野 大介         新規作成
-//*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
-//*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
-//*  2018/08/15  西野 大介         jwks_uri & kid 対応
+//*  2018/08/16  西野 大介         新規作成
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>JWT Header</summary>
-    public class JWTHeader
+    /// <summary>JWS Header</summary>
+    public class JWSHeader
     {
         /// <summary>
         /// alg=HS256 or RS256
-        /// JWTのデジタル署名アルゴリズムを指定する。
+        /// JWSのデジタル署名アルゴリズムを指定する。
         /// HS256 or RS256の署名アルゴリズムのみサポート。
         /// </summary>
         public string alg = "";
@@ -60,30 +57,5 @@ namespace Touryo.Infrastructure.Public.Security
         /// アサーションのタイプを指定。JWT固定。
         /// </summary>
         public readonly string typ = "JWT";
-    }
-
-    /// <summary>JWT(JWS) Header</summary>
-    public class JWSHeader : JWTHeader
-    {
-    }
-
-    /// <summary>JWT(JWE) Header</summary>
-    public class JWEHeader : JWTHeader
-    {
-    }
-
-    /// <summary>JWT(JWS)</summary>
-    public abstract class JWT
-    {
-        /// <summary>JWT生成メソッド</summary>
-        /// <param name="payloadJson">ペイロード部のJson文字列</param>
-        /// <returns>JWTの文字列表現</returns>
-        public abstract string Create(string payloadJson);
-
-        /// <summary>JWT検証メソッド</summary>
-        /// <param name="jwtString">JWTの文字列表現</param>
-        /// <returns>署名の検証結果</returns>
-        public abstract bool Verify(string jwtString);
-        
     }
 }

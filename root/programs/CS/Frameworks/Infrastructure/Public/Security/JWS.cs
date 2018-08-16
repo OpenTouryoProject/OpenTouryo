@@ -19,31 +19,33 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JWT_RS256
-//* クラス日本語名  ：JWT(JWS)RS256生成クラス
+//* クラス名        ：JWS
+//* クラス日本語名  ：JWS抽象クラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2017/12/25  西野 大介         新規作成
+//*  2017/01/10  西野 大介         新規作成
+//*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
-//*  2018/08/15  西野 大介         後方互換から、基底クラスに変更
-//*                                （汎用認証サイトでしか使っていないと思われるため）
+//*  2018/08/15  西野 大介         jwks_uri & kid 対応
 //**********************************************************************************
-
-using System.Security.Cryptography.X509Certificates;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>JWT(RS256 JWS)生成クラス</summary>
-    public abstract class JWT_RS256 : JWT
+    /// <summary>JWS</summary>
+    public abstract class JWS
     {
-        /// <summary>JWSHeader</summary>
-        public JWSHeader JWSHeader = new JWSHeader
-        {
-            alg = "RS256"
-        };
+        /// <summary>JWS生成メソッド</summary>
+        /// <param name="payloadJson">ペイロード部のJson文字列</param>
+        /// <returns>JWSの文字列表現</returns>
+        public abstract string Create(string payloadJson);
+
+        /// <summary>JWS検証メソッド</summary>
+        /// <param name="jwtString">JWSの文字列表現</param>
+        /// <returns>署名の検証結果</returns>
+        public abstract bool Verify(string jwtString);        
     }
 }

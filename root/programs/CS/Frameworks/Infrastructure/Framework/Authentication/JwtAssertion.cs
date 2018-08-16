@@ -95,14 +95,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             #region JWT化
 
-            JWT_RS256_XML jwtRS256 = null;
+            JWS_RS256_XML jwtRS256 = null;
 
             // 署名
-            jwtRS256 = new JWT_RS256_XML(xmlPrivateKey);
+            jwtRS256 = new JWS_RS256_XML(xmlPrivateKey);
             jwt = jwtRS256.Create(json);
 
             // 検証
-            jwtRS256 = new JWT_RS256_XML(xmlPrivateKey);
+            jwtRS256 = new JWS_RS256_XML(xmlPrivateKey);
             if (jwtRS256.Verify(jwt))
             {
                 return jwt; // 検証できた。
@@ -131,7 +131,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             scopes = "";
             jobj = null;
 
-            JWT_RS256_XML jwtRS256 = new JWT_RS256_XML(xmlPublicKey);
+            JWS_RS256_XML jwtRS256 = new JWS_RS256_XML(xmlPublicKey);
 
             if (jwtRS256.Verify(jwtAssertion))
             {

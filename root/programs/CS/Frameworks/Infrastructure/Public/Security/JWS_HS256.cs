@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JWT_HS256
-//* クラス日本語名  ：JWT_HS256クラス
+//* クラス名        ：JWS_HS256
+//* クラス日本語名  ：HS256 JWS生成
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -44,8 +44,8 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>JWT(HS256 JWS)生成クラス</summary>
-    public class JWT_HS256 : JWT
+    /// <summary>HS256 JWS生成クラス</summary>
+    public class JWS_HS256 : JWS
     {
         #region mem & prop & constructor
         
@@ -58,7 +58,7 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>Constructor</summary>
         /// <param name="key">byte[]</param>
-        public JWT_HS256(byte[] key)
+        public JWS_HS256(byte[] key)
         {
             this.Key = key;
 
@@ -73,7 +73,7 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>Constructor</summary>
         /// <param name="jwkString">string</param>
-        public JWT_HS256(string jwkString)
+        public JWS_HS256(string jwkString)
         {
             Dictionary<string, string> jwk = new Dictionary<string, string>();
             jwk = JsonConvert.DeserializeObject<Dictionary<string, string>>(jwkString);
@@ -108,9 +108,9 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region HS256署名・検証
 
-        /// <summary>HS256のJWT生成メソッド</summary>
+        /// <summary>HS256のJWS生成メソッド</summary>
         /// <param name="payloadJson">ペイロード部のJson文字列</param>
-        /// <returns>JWTの文字列表現</returns>
+        /// <returns>JWSの文字列表現</returns>
         public override string Create(string payloadJson)
         {
             // ヘッダー
@@ -136,12 +136,12 @@ namespace Touryo.Infrastructure.Public.Security
             HMACSHA256 sa = new HMACSHA256(this.Key);
             string signEncoded = CustomEncode.ToBase64UrlString(sa.ComputeHash(data));
 
-            // return JWT by RS256
+            // return JWS by RS256
             return headerEncoded + "." + payloadEncoded + "." + signEncoded;
         }
 
-        /// <summary>RS256のJWT検証メソッド</summary>
-        /// <param name="jwtString">JWTの文字列表現</param>
+        /// <summary>RS256のJWS検証メソッド</summary>
+        /// <param name="jwtString">JWSの文字列表現</param>
         /// <returns>署名の検証結果</returns>
         public override bool Verify(string jwtString)
         {

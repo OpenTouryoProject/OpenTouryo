@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JWT_RS256_XML
-//* クラス日本語名  ：ParamによるJWT(JWS)RS256生成クラス
+//* クラス名        ：JWS_RS256_XML
+//* クラス日本語名  ：XMLによるJWS RS256生成クラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -31,60 +31,53 @@
 //*  2018/08/15  西野 大介         jwks_uri & kid 対応
 //**********************************************************************************
 
-using System.Security.Cryptography;
-
 using Newtonsoft.Json;
 
 using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>ParamによるJWT(JWS)RS256生成クラス</summary>
-    public class JWT_RS256_Param : JWT_RS256
+    /// <summary>XMLによるJWS RS256生成クラス</summary>
+    public class JWS_RS256_XML : JWS_RS256
     {
         #region mem & prop & constructor
 
-        /// <summary>DigitalSignParam</summary>
-        private DigitalSignParam DigitalSignParam { get; set; }
+        /// <summary>公開鍵</summary>
+        public string XMLPublicKey { get; protected set; }
 
-        /// <summary>秘密鍵のRSAParameters</summary>
-        public RSAParameters RsaPrivateParameters
-        {
-            get
-            {
-                return ((RSACryptoServiceProvider)this.DigitalSignParam.AsymmetricAlgorithm).ExportParameters(true);
-            }
-        }
+        /// <summary>秘密鍵</summary>
+        public string XMLPrivateKey { get; protected set; }
 
-        /// <summary>公開鍵のRSAParameters</summary>
-        public RSAParameters RsaPublicParameters
+        /// <summary>DigitalSignXML</summary>
+        private DigitalSignXML _DigitalSignXML = null;
+
+        /// <summary>Constructor</summary>
+        public JWS_RS256_XML()
         {
-            get
-            {
-                return ((RSACryptoServiceProvider)this.DigitalSignParam.AsymmetricAlgorithm).ExportParameters(false);
-            }
+            this._DigitalSignXML = new DigitalSignXML(
+                EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256);
+
+            this.XMLPrivateKey = this._DigitalSignXML.XMLPrivateKey;
+            this.XMLPublicKey = this._DigitalSignXML.XMLPublicKey;
         }
 
         /// <summary>Constructor</summary>
-        public JWT_RS256_Param()
+        /// <param name="xmlKey">string</param>
+        public JWS_RS256_XML(string xmlKey)
         {
-            this.DigitalSignParam = new DigitalSignParam(EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256);
-        }
-
-        /// <summary>Constructor</summary>
-        /// <param name="param">object</param>
-        public JWT_RS256_Param(object param)
-        {
-            this.DigitalSignParam = new DigitalSignParam(param, SHA256.Create());
+            this._DigitalSignXML = new DigitalSignXML(
+                EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256, xmlKey);
+            this.XMLPrivateKey = this._DigitalSignXML.XMLPrivateKey;
+            this.XMLPublicKey = this._DigitalSignXML.XMLPublicKey;
         }
 
         #endregion
 
         #region RS256署名・検証
 
-        /// <summary>RS256のJWT生成メソッド</summary>
+        /// <summary>RS256のJWS生成メソッド</summary>
         /// <param name="payloadJson">ペイロード部のJson文字列</param>
-        /// <returns>JWTの文字列表現</returns>
+        /// <returns>JWSの文字列表現</returns>
         public override string Create(string payloadJson)
         {
             // ヘッダー
@@ -105,14 +98,14 @@ namespace Touryo.Infrastructure.Public.Security
 
             // 署名
             byte[] temp = CustomEncode.StringToByte(headerEncoded + "." + payloadEncoded, CustomEncode.UTF_8);
-            string signEncoded = CustomEncode.ToBase64UrlString(this.DigitalSignParam.Sign(temp));
+            string signEncoded = CustomEncode.ToBase64UrlString(this._DigitalSignXML.Sign(temp));
 
-            // return JWT by RS256
+            // return JWS by RS256
             return headerEncoded + "." + payloadEncoded + "." + signEncoded;
         }
 
-        /// <summary>RS256のJWT検証メソッド</summary>
-        /// <param name="jwtString">JWTの文字列表現</param>
+        /// <summary>RS256のJWS検証メソッド</summary>
+        /// <param name="jwtString">JWSの文字列表現</param>
         /// <returns>署名の検証結果</returns>
         public override bool Verify(string jwtString)
         {
@@ -126,7 +119,7 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 byte[] data = CustomEncode.StringToByte(temp[0] + "." + temp[1], CustomEncode.UTF_8);
                 byte[] sign = CustomEncode.FromBase64UrlString(temp[2]);
-                return this.DigitalSignParam.Verify(data, sign);
+                return this._DigitalSignXML.Verify(data, sign);
             }
             else
             {

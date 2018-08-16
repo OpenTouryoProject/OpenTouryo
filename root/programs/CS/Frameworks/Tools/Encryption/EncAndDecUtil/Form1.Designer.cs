@@ -140,24 +140,24 @@
             this.rbnDSX509 = new System.Windows.Forms.RadioButton();
             this.rbnDSXML = new System.Windows.Forms.RadioButton();
             this.btnDSSign = new System.Windows.Forms.Button();
-            this.tabJWT = new System.Windows.Forms.TabPage();
-            this.lblJWTJWK = new System.Windows.Forms.Label();
-            this.lblJWTKey = new System.Windows.Forms.Label();
-            this.lblJWTPayload = new System.Windows.Forms.Label();
-            this.txtJWTJWK = new System.Windows.Forms.TextBox();
-            this.txtJWTHeader = new System.Windows.Forms.TextBox();
-            this.txtJWTKey = new System.Windows.Forms.TextBox();
-            this.lblJWT3 = new System.Windows.Forms.Label();
-            this.txtJWTSign = new System.Windows.Forms.TextBox();
-            this.lblJWTHeader = new System.Windows.Forms.Label();
-            this.txtJWTPayload = new System.Windows.Forms.TextBox();
-            this.gbxJWT = new System.Windows.Forms.GroupBox();
-            this.rbnJWTRS256_XML = new System.Windows.Forms.RadioButton();
-            this.rbnJWTRS256_Param = new System.Windows.Forms.RadioButton();
-            this.rbnJWTRS256_X509 = new System.Windows.Forms.RadioButton();
-            this.rbnJWTHS256 = new System.Windows.Forms.RadioButton();
-            this.btnJWTVerify = new System.Windows.Forms.Button();
-            this.btnJWTSign = new System.Windows.Forms.Button();
+            this.tabJWS = new System.Windows.Forms.TabPage();
+            this.lblJWSJWK = new System.Windows.Forms.Label();
+            this.lblJWSKey = new System.Windows.Forms.Label();
+            this.lblJWSPayload = new System.Windows.Forms.Label();
+            this.txtJWSJWK = new System.Windows.Forms.TextBox();
+            this.txtJWSHeader = new System.Windows.Forms.TextBox();
+            this.txtJWSKey = new System.Windows.Forms.TextBox();
+            this.lblJWS3 = new System.Windows.Forms.Label();
+            this.txtJWSSign = new System.Windows.Forms.TextBox();
+            this.lblJWSHeader = new System.Windows.Forms.Label();
+            this.txtJWSPayload = new System.Windows.Forms.TextBox();
+            this.gbxJWS = new System.Windows.Forms.GroupBox();
+            this.rbnJWSRS256_XML = new System.Windows.Forms.RadioButton();
+            this.rbnJWSRS256_Param = new System.Windows.Forms.RadioButton();
+            this.rbnJWSRS256_X509 = new System.Windows.Forms.RadioButton();
+            this.rbnJWSHS256 = new System.Windows.Forms.RadioButton();
+            this.btnJWSVerify = new System.Windows.Forms.Button();
+            this.btnJWSSign = new System.Windows.Forms.Button();
             this.btnSPWDAuth2.SuspendLayout();
             this.tabHash.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHSStretching)).BeginInit();
@@ -178,8 +178,8 @@
             this.gbxASC.SuspendLayout();
             this.tabCodeSigning.SuspendLayout();
             this.gbxDS.SuspendLayout();
-            this.tabJWT.SuspendLayout();
-            this.gbxJWT.SuspendLayout();
+            this.tabJWS.SuspendLayout();
+            this.gbxJWS.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSPWDAuth2
@@ -191,7 +191,7 @@
             this.btnSPWDAuth2.Controls.Add(this.tabSC);
             this.btnSPWDAuth2.Controls.Add(this.tabASC);
             this.btnSPWDAuth2.Controls.Add(this.tabCodeSigning);
-            this.btnSPWDAuth2.Controls.Add(this.tabJWT);
+            this.btnSPWDAuth2.Controls.Add(this.tabJWS);
             this.btnSPWDAuth2.Location = new System.Drawing.Point(4, 4);
             this.btnSPWDAuth2.Multiline = true;
             this.btnSPWDAuth2.Name = "btnSPWDAuth2";
@@ -1367,192 +1367,192 @@
             this.btnDSSign.UseVisualStyleBackColor = true;
             this.btnDSSign.Click += new System.EventHandler(this.btnDSSign_Click);
             // 
-            // tabJWT
+            // tabJWS
             // 
-            this.tabJWT.Controls.Add(this.lblJWTJWK);
-            this.tabJWT.Controls.Add(this.lblJWTKey);
-            this.tabJWT.Controls.Add(this.lblJWTPayload);
-            this.tabJWT.Controls.Add(this.txtJWTJWK);
-            this.tabJWT.Controls.Add(this.txtJWTHeader);
-            this.tabJWT.Controls.Add(this.txtJWTKey);
-            this.tabJWT.Controls.Add(this.lblJWT3);
-            this.tabJWT.Controls.Add(this.txtJWTSign);
-            this.tabJWT.Controls.Add(this.lblJWTHeader);
-            this.tabJWT.Controls.Add(this.txtJWTPayload);
-            this.tabJWT.Controls.Add(this.gbxJWT);
-            this.tabJWT.Controls.Add(this.btnJWTVerify);
-            this.tabJWT.Controls.Add(this.btnJWTSign);
-            this.tabJWT.Location = new System.Drawing.Point(4, 40);
-            this.tabJWT.Name = "tabJWT";
-            this.tabJWT.Size = new System.Drawing.Size(384, 241);
-            this.tabJWT.TabIndex = 6;
-            this.tabJWT.Text = "JWT";
-            this.tabJWT.UseVisualStyleBackColor = true;
+            this.tabJWS.Controls.Add(this.lblJWSJWK);
+            this.tabJWS.Controls.Add(this.lblJWSKey);
+            this.tabJWS.Controls.Add(this.lblJWSPayload);
+            this.tabJWS.Controls.Add(this.txtJWSJWK);
+            this.tabJWS.Controls.Add(this.txtJWSHeader);
+            this.tabJWS.Controls.Add(this.txtJWSKey);
+            this.tabJWS.Controls.Add(this.lblJWS3);
+            this.tabJWS.Controls.Add(this.txtJWSSign);
+            this.tabJWS.Controls.Add(this.lblJWSHeader);
+            this.tabJWS.Controls.Add(this.txtJWSPayload);
+            this.tabJWS.Controls.Add(this.gbxJWS);
+            this.tabJWS.Controls.Add(this.btnJWSVerify);
+            this.tabJWS.Controls.Add(this.btnJWSSign);
+            this.tabJWS.Location = new System.Drawing.Point(4, 40);
+            this.tabJWS.Name = "tabJWS";
+            this.tabJWS.Size = new System.Drawing.Size(384, 241);
+            this.tabJWS.TabIndex = 6;
+            this.tabJWS.Text = "JWS";
+            this.tabJWS.UseVisualStyleBackColor = true;
             // 
-            // lblJWTJWK
+            // lblJWSJWK
             // 
-            this.lblJWTJWK.AutoSize = true;
-            this.lblJWTJWK.Location = new System.Drawing.Point(13, 85);
-            this.lblJWTJWK.Name = "lblJWTJWK";
-            this.lblJWTJWK.Size = new System.Drawing.Size(28, 12);
-            this.lblJWTJWK.TabIndex = 54;
-            this.lblJWTJWK.Text = "JWK";
+            this.lblJWSJWK.AutoSize = true;
+            this.lblJWSJWK.Location = new System.Drawing.Point(13, 85);
+            this.lblJWSJWK.Name = "lblJWSJWK";
+            this.lblJWSJWK.Size = new System.Drawing.Size(28, 12);
+            this.lblJWSJWK.TabIndex = 54;
+            this.lblJWSJWK.Text = "JWK";
             // 
-            // lblJWTKey
+            // lblJWSKey
             // 
-            this.lblJWTKey.AutoSize = true;
-            this.lblJWTKey.Location = new System.Drawing.Point(13, 60);
-            this.lblJWTKey.Name = "lblJWTKey";
-            this.lblJWTKey.Size = new System.Drawing.Size(24, 12);
-            this.lblJWTKey.TabIndex = 53;
-            this.lblJWTKey.Text = "Key";
+            this.lblJWSKey.AutoSize = true;
+            this.lblJWSKey.Location = new System.Drawing.Point(13, 60);
+            this.lblJWSKey.Name = "lblJWSKey";
+            this.lblJWSKey.Size = new System.Drawing.Size(24, 12);
+            this.lblJWSKey.TabIndex = 53;
+            this.lblJWSKey.Text = "Key";
             // 
-            // lblJWTPayload
+            // lblJWSPayload
             // 
-            this.lblJWTPayload.AutoSize = true;
-            this.lblJWTPayload.Location = new System.Drawing.Point(13, 149);
-            this.lblJWTPayload.Name = "lblJWTPayload";
-            this.lblJWTPayload.Size = new System.Drawing.Size(45, 12);
-            this.lblJWTPayload.TabIndex = 52;
-            this.lblJWTPayload.Text = "Payload";
+            this.lblJWSPayload.AutoSize = true;
+            this.lblJWSPayload.Location = new System.Drawing.Point(13, 149);
+            this.lblJWSPayload.Name = "lblJWSPayload";
+            this.lblJWSPayload.Size = new System.Drawing.Size(45, 12);
+            this.lblJWSPayload.TabIndex = 52;
+            this.lblJWSPayload.Text = "Payload";
             // 
-            // txtJWTJWK
+            // txtJWSJWK
             // 
-            this.txtJWTJWK.Location = new System.Drawing.Point(85, 82);
-            this.txtJWTJWK.Name = "txtJWTJWK";
-            this.txtJWTJWK.ReadOnly = true;
-            this.txtJWTJWK.Size = new System.Drawing.Size(285, 19);
-            this.txtJWTJWK.TabIndex = 3;
+            this.txtJWSJWK.Location = new System.Drawing.Point(85, 82);
+            this.txtJWSJWK.Name = "txtJWSJWK";
+            this.txtJWSJWK.ReadOnly = true;
+            this.txtJWSJWK.Size = new System.Drawing.Size(285, 19);
+            this.txtJWSJWK.TabIndex = 3;
             // 
-            // txtJWTHeader
+            // txtJWSHeader
             // 
-            this.txtJWTHeader.Location = new System.Drawing.Point(85, 107);
-            this.txtJWTHeader.Multiline = true;
-            this.txtJWTHeader.Name = "txtJWTHeader";
-            this.txtJWTHeader.Size = new System.Drawing.Size(285, 33);
-            this.txtJWTHeader.TabIndex = 51;
+            this.txtJWSHeader.Location = new System.Drawing.Point(85, 107);
+            this.txtJWSHeader.Multiline = true;
+            this.txtJWSHeader.Name = "txtJWSHeader";
+            this.txtJWSHeader.Size = new System.Drawing.Size(285, 33);
+            this.txtJWSHeader.TabIndex = 51;
             // 
-            // txtJWTKey
+            // txtJWSKey
             // 
-            this.txtJWTKey.Location = new System.Drawing.Point(85, 57);
-            this.txtJWTKey.Name = "txtJWTKey";
-            this.txtJWTKey.ReadOnly = true;
-            this.txtJWTKey.Size = new System.Drawing.Size(285, 19);
-            this.txtJWTKey.TabIndex = 2;
+            this.txtJWSKey.Location = new System.Drawing.Point(85, 57);
+            this.txtJWSKey.Name = "txtJWSKey";
+            this.txtJWSKey.ReadOnly = true;
+            this.txtJWSKey.Size = new System.Drawing.Size(285, 19);
+            this.txtJWSKey.TabIndex = 2;
             // 
-            // lblJWT3
+            // lblJWS3
             // 
-            this.lblJWT3.AutoSize = true;
-            this.lblJWT3.Location = new System.Drawing.Point(9, 188);
-            this.lblJWT3.Name = "lblJWT3";
-            this.lblJWT3.Size = new System.Drawing.Size(29, 12);
-            this.lblJWT3.TabIndex = 50;
-            this.lblJWT3.Text = "署名";
+            this.lblJWS3.AutoSize = true;
+            this.lblJWS3.Location = new System.Drawing.Point(9, 188);
+            this.lblJWS3.Name = "lblJWS3";
+            this.lblJWS3.Size = new System.Drawing.Size(29, 12);
+            this.lblJWS3.TabIndex = 50;
+            this.lblJWS3.Text = "署名";
             // 
-            // txtJWTSign
+            // txtJWSSign
             // 
-            this.txtJWTSign.Location = new System.Drawing.Point(85, 185);
-            this.txtJWTSign.Name = "txtJWTSign";
-            this.txtJWTSign.ReadOnly = true;
-            this.txtJWTSign.Size = new System.Drawing.Size(285, 19);
-            this.txtJWTSign.TabIndex = 49;
+            this.txtJWSSign.Location = new System.Drawing.Point(85, 185);
+            this.txtJWSSign.Name = "txtJWSSign";
+            this.txtJWSSign.ReadOnly = true;
+            this.txtJWSSign.Size = new System.Drawing.Size(285, 19);
+            this.txtJWSSign.TabIndex = 49;
             // 
-            // lblJWTHeader
+            // lblJWSHeader
             // 
-            this.lblJWTHeader.AutoSize = true;
-            this.lblJWTHeader.Location = new System.Drawing.Point(13, 110);
-            this.lblJWTHeader.Name = "lblJWTHeader";
-            this.lblJWTHeader.Size = new System.Drawing.Size(41, 12);
-            this.lblJWTHeader.TabIndex = 48;
-            this.lblJWTHeader.Text = "Header";
+            this.lblJWSHeader.AutoSize = true;
+            this.lblJWSHeader.Location = new System.Drawing.Point(13, 110);
+            this.lblJWSHeader.Name = "lblJWSHeader";
+            this.lblJWSHeader.Size = new System.Drawing.Size(41, 12);
+            this.lblJWSHeader.TabIndex = 48;
+            this.lblJWSHeader.Text = "Header";
             // 
-            // txtJWTPayload
+            // txtJWSPayload
             // 
-            this.txtJWTPayload.Location = new System.Drawing.Point(85, 146);
-            this.txtJWTPayload.Multiline = true;
-            this.txtJWTPayload.Name = "txtJWTPayload";
-            this.txtJWTPayload.Size = new System.Drawing.Size(285, 33);
-            this.txtJWTPayload.TabIndex = 47;
-            this.txtJWTPayload.Text = "{ \"aaa\": \"AAA\", \"bbb\": \"BBB\", \"ccc\": \"CCC\"}";
+            this.txtJWSPayload.Location = new System.Drawing.Point(85, 146);
+            this.txtJWSPayload.Multiline = true;
+            this.txtJWSPayload.Name = "txtJWSPayload";
+            this.txtJWSPayload.Size = new System.Drawing.Size(285, 33);
+            this.txtJWSPayload.TabIndex = 47;
+            this.txtJWSPayload.Text = "{ \"aaa\": \"AAA\", \"bbb\": \"BBB\", \"ccc\": \"CCC\"}";
             // 
-            // gbxJWT
+            // gbxJWS
             // 
-            this.gbxJWT.Controls.Add(this.rbnJWTRS256_XML);
-            this.gbxJWT.Controls.Add(this.rbnJWTRS256_Param);
-            this.gbxJWT.Controls.Add(this.rbnJWTRS256_X509);
-            this.gbxJWT.Controls.Add(this.rbnJWTHS256);
-            this.gbxJWT.Location = new System.Drawing.Point(9, 7);
-            this.gbxJWT.Name = "gbxJWT";
-            this.gbxJWT.Size = new System.Drawing.Size(361, 44);
-            this.gbxJWT.TabIndex = 46;
-            this.gbxJWT.TabStop = false;
-            this.gbxJWT.Text = "API選択";
+            this.gbxJWS.Controls.Add(this.rbnJWSRS256_XML);
+            this.gbxJWS.Controls.Add(this.rbnJWSRS256_Param);
+            this.gbxJWS.Controls.Add(this.rbnJWSRS256_X509);
+            this.gbxJWS.Controls.Add(this.rbnJWSHS256);
+            this.gbxJWS.Location = new System.Drawing.Point(9, 7);
+            this.gbxJWS.Name = "gbxJWS";
+            this.gbxJWS.Size = new System.Drawing.Size(361, 44);
+            this.gbxJWS.TabIndex = 46;
+            this.gbxJWS.TabStop = false;
+            this.gbxJWS.Text = "API選択";
             // 
-            // rbnJWTRS256_XML
+            // rbnJWSRS256_XML
             // 
-            this.rbnJWTRS256_XML.AutoSize = true;
-            this.rbnJWTRS256_XML.Checked = true;
-            this.rbnJWTRS256_XML.Location = new System.Drawing.Point(12, 18);
-            this.rbnJWTRS256_XML.Name = "rbnJWTRS256_XML";
-            this.rbnJWTRS256_XML.Size = new System.Drawing.Size(82, 16);
-            this.rbnJWTRS256_XML.TabIndex = 3;
-            this.rbnJWTRS256_XML.TabStop = true;
-            this.rbnJWTRS256_XML.Text = "RS256_XML";
-            this.rbnJWTRS256_XML.UseVisualStyleBackColor = true;
+            this.rbnJWSRS256_XML.AutoSize = true;
+            this.rbnJWSRS256_XML.Checked = true;
+            this.rbnJWSRS256_XML.Location = new System.Drawing.Point(12, 18);
+            this.rbnJWSRS256_XML.Name = "rbnJWSRS256_XML";
+            this.rbnJWSRS256_XML.Size = new System.Drawing.Size(82, 16);
+            this.rbnJWSRS256_XML.TabIndex = 3;
+            this.rbnJWSRS256_XML.TabStop = true;
+            this.rbnJWSRS256_XML.Text = "RS256_XML";
+            this.rbnJWSRS256_XML.UseVisualStyleBackColor = true;
             // 
-            // rbnJWTRS256_Param
+            // rbnJWSRS256_Param
             // 
-            this.rbnJWTRS256_Param.AutoSize = true;
-            this.rbnJWTRS256_Param.Checked = true;
-            this.rbnJWTRS256_Param.Location = new System.Drawing.Point(110, 18);
-            this.rbnJWTRS256_Param.Name = "rbnJWTRS256_Param";
-            this.rbnJWTRS256_Param.Size = new System.Drawing.Size(92, 16);
-            this.rbnJWTRS256_Param.TabIndex = 2;
-            this.rbnJWTRS256_Param.TabStop = true;
-            this.rbnJWTRS256_Param.Text = "RS256_Param";
-            this.rbnJWTRS256_Param.UseVisualStyleBackColor = true;
+            this.rbnJWSRS256_Param.AutoSize = true;
+            this.rbnJWSRS256_Param.Checked = true;
+            this.rbnJWSRS256_Param.Location = new System.Drawing.Point(110, 18);
+            this.rbnJWSRS256_Param.Name = "rbnJWSRS256_Param";
+            this.rbnJWSRS256_Param.Size = new System.Drawing.Size(92, 16);
+            this.rbnJWSRS256_Param.TabIndex = 2;
+            this.rbnJWSRS256_Param.TabStop = true;
+            this.rbnJWSRS256_Param.Text = "RS256_Param";
+            this.rbnJWSRS256_Param.UseVisualStyleBackColor = true;
             // 
-            // rbnJWTRS256_X509
+            // rbnJWSRS256_X509
             // 
-            this.rbnJWTRS256_X509.AutoSize = true;
-            this.rbnJWTRS256_X509.Checked = true;
-            this.rbnJWTRS256_X509.Location = new System.Drawing.Point(208, 18);
-            this.rbnJWTRS256_X509.Name = "rbnJWTRS256_X509";
-            this.rbnJWTRS256_X509.Size = new System.Drawing.Size(85, 16);
-            this.rbnJWTRS256_X509.TabIndex = 1;
-            this.rbnJWTRS256_X509.TabStop = true;
-            this.rbnJWTRS256_X509.Text = "RS256_X509";
-            this.rbnJWTRS256_X509.UseVisualStyleBackColor = true;
+            this.rbnJWSRS256_X509.AutoSize = true;
+            this.rbnJWSRS256_X509.Checked = true;
+            this.rbnJWSRS256_X509.Location = new System.Drawing.Point(208, 18);
+            this.rbnJWSRS256_X509.Name = "rbnJWSRS256_X509";
+            this.rbnJWSRS256_X509.Size = new System.Drawing.Size(85, 16);
+            this.rbnJWSRS256_X509.TabIndex = 1;
+            this.rbnJWSRS256_X509.TabStop = true;
+            this.rbnJWSRS256_X509.Text = "RS256_X509";
+            this.rbnJWSRS256_X509.UseVisualStyleBackColor = true;
             // 
-            // rbnJWTHS256
+            // rbnJWSHS256
             // 
-            this.rbnJWTHS256.AutoSize = true;
-            this.rbnJWTHS256.Location = new System.Drawing.Point(299, 18);
-            this.rbnJWTHS256.Name = "rbnJWTHS256";
-            this.rbnJWTHS256.Size = new System.Drawing.Size(56, 16);
-            this.rbnJWTHS256.TabIndex = 0;
-            this.rbnJWTHS256.Text = "HS256";
-            this.rbnJWTHS256.UseVisualStyleBackColor = true;
+            this.rbnJWSHS256.AutoSize = true;
+            this.rbnJWSHS256.Location = new System.Drawing.Point(299, 18);
+            this.rbnJWSHS256.Name = "rbnJWSHS256";
+            this.rbnJWSHS256.Size = new System.Drawing.Size(56, 16);
+            this.rbnJWSHS256.TabIndex = 0;
+            this.rbnJWSHS256.Text = "HS256";
+            this.rbnJWSHS256.UseVisualStyleBackColor = true;
             // 
-            // btnJWTVerify
+            // btnJWSVerify
             // 
-            this.btnJWTVerify.Location = new System.Drawing.Point(203, 210);
-            this.btnJWTVerify.Name = "btnJWTVerify";
-            this.btnJWTVerify.Size = new System.Drawing.Size(167, 23);
-            this.btnJWTVerify.TabIndex = 45;
-            this.btnJWTVerify.Text = "検証";
-            this.btnJWTVerify.UseVisualStyleBackColor = true;
-            this.btnJWTVerify.Click += new System.EventHandler(this.btnJWTVerify_Click);
+            this.btnJWSVerify.Location = new System.Drawing.Point(203, 210);
+            this.btnJWSVerify.Name = "btnJWSVerify";
+            this.btnJWSVerify.Size = new System.Drawing.Size(167, 23);
+            this.btnJWSVerify.TabIndex = 45;
+            this.btnJWSVerify.Text = "検証";
+            this.btnJWSVerify.UseVisualStyleBackColor = true;
+            this.btnJWSVerify.Click += new System.EventHandler(this.btnJWSVerify_Click);
             // 
-            // btnJWTSign
+            // btnJWSSign
             // 
-            this.btnJWTSign.Location = new System.Drawing.Point(11, 210);
-            this.btnJWTSign.Name = "btnJWTSign";
-            this.btnJWTSign.Size = new System.Drawing.Size(167, 23);
-            this.btnJWTSign.TabIndex = 44;
-            this.btnJWTSign.Text = "署名";
-            this.btnJWTSign.UseVisualStyleBackColor = true;
-            this.btnJWTSign.Click += new System.EventHandler(this.btnJWTSign_Click);
+            this.btnJWSSign.Location = new System.Drawing.Point(11, 210);
+            this.btnJWSSign.Name = "btnJWSSign";
+            this.btnJWSSign.Size = new System.Drawing.Size(167, 23);
+            this.btnJWSSign.TabIndex = 44;
+            this.btnJWSSign.Text = "署名";
+            this.btnJWSSign.UseVisualStyleBackColor = true;
+            this.btnJWSSign.Click += new System.EventHandler(this.btnJWSSign_Click);
             // 
             // Form1
             // 
@@ -1595,10 +1595,10 @@
             this.tabCodeSigning.PerformLayout();
             this.gbxDS.ResumeLayout(false);
             this.gbxDS.PerformLayout();
-            this.tabJWT.ResumeLayout(false);
-            this.tabJWT.PerformLayout();
-            this.gbxJWT.ResumeLayout(false);
-            this.gbxJWT.PerformLayout();
+            this.tabJWS.ResumeLayout(false);
+            this.tabJWS.PerformLayout();
+            this.gbxJWS.ResumeLayout(false);
+            this.gbxJWS.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1682,7 +1682,7 @@
         private System.Windows.Forms.NumericUpDown nudHSStretching;
         private System.Windows.Forms.Label lblHS3;
         private System.Windows.Forms.TabPage tabPwd2DB2;
-        private System.Windows.Forms.TabPage tabJWT;
+        private System.Windows.Forms.TabPage tabJWS;
         private System.Windows.Forms.TabPage tabCodeSigning;
         private System.Windows.Forms.NumericUpDown nudSPWDSaltLength2;
         private System.Windows.Forms.Label lblSPWD24;
@@ -1717,24 +1717,24 @@
         private System.Windows.Forms.Label lblCC4;
         private System.Windows.Forms.TextBox txtDSPrivateKey;
         private System.Windows.Forms.Button btnDSVerify;
-        private System.Windows.Forms.Button btnJWTVerify;
-        private System.Windows.Forms.Button btnJWTSign;
-        private System.Windows.Forms.Label lblJWT3;
-        private System.Windows.Forms.TextBox txtJWTSign;
-        private System.Windows.Forms.Label lblJWTHeader;
-        private System.Windows.Forms.TextBox txtJWTPayload;
-        private System.Windows.Forms.TextBox txtJWTHeader;
+        private System.Windows.Forms.Button btnJWSVerify;
+        private System.Windows.Forms.Button btnJWSSign;
+        private System.Windows.Forms.Label lblJWS3;
+        private System.Windows.Forms.TextBox txtJWSSign;
+        private System.Windows.Forms.Label lblJWSHeader;
+        private System.Windows.Forms.TextBox txtJWSPayload;
+        private System.Windows.Forms.TextBox txtJWSHeader;
         private System.Windows.Forms.RadioButton rbnDSParam;
-        private System.Windows.Forms.TextBox txtJWTJWK;
-        private System.Windows.Forms.TextBox txtJWTKey;
-        private System.Windows.Forms.GroupBox gbxJWT;
-        private System.Windows.Forms.RadioButton rbnJWTRS256_X509;
-        private System.Windows.Forms.RadioButton rbnJWTHS256;
-        private System.Windows.Forms.Label lblJWTPayload;
-        private System.Windows.Forms.Label lblJWTJWK;
-        private System.Windows.Forms.Label lblJWTKey;
-        private System.Windows.Forms.RadioButton rbnJWTRS256_Param;
-        private System.Windows.Forms.RadioButton rbnJWTRS256_XML;
+        private System.Windows.Forms.TextBox txtJWSJWK;
+        private System.Windows.Forms.TextBox txtJWSKey;
+        private System.Windows.Forms.GroupBox gbxJWS;
+        private System.Windows.Forms.RadioButton rbnJWSRS256_X509;
+        private System.Windows.Forms.RadioButton rbnJWSHS256;
+        private System.Windows.Forms.Label lblJWSPayload;
+        private System.Windows.Forms.Label lblJWSJWK;
+        private System.Windows.Forms.Label lblJWSKey;
+        private System.Windows.Forms.RadioButton rbnJWSRS256_Param;
+        private System.Windows.Forms.RadioButton rbnJWSRS256_XML;
     }
 }
 
