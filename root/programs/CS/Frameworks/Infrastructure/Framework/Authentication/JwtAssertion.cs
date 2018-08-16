@@ -75,19 +75,19 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             Dictionary<string, object> jwtAssertionClaimSet = new Dictionary<string, object>();
             
-            jwtAssertionClaimSet.Add("iss", iss); // client_id
-            jwtAssertionClaimSet.Add("aud", aud); // Token2 EndPointのuri。
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token2 EndPointのuri。
 
 #if NET45
-            jwtAssertionClaimSet.Add("exp", PubCmnFunction.ToUnixTime(DateTimeOffset.Now.Add(forExp)).ToString());
-            jwtAssertionClaimSet.Add("iat", PubCmnFunction.ToUnixTime(DateTimeOffset.Now).ToString());
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, PubCmnFunction.ToUnixTime(DateTimeOffset.Now.Add(forExp)).ToString());
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iat, PubCmnFunction.ToUnixTime(DateTimeOffset.Now).ToString());
 #else
-            jwtAssertionClaimSet.Add("exp", (DateTimeOffset.Now.Add(forExp)).ToUnixTimeSeconds().ToString());
-            jwtAssertionClaimSet.Add("iat", DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, (DateTimeOffset.Now.Add(forExp)).ToUnixTimeSeconds().ToString());
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iat, DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
 #endif
 
-            jwtAssertionClaimSet.Add("jti", Guid.NewGuid().ToString("N"));
-            jwtAssertionClaimSet.Add("scope", scopes); // scopes
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.jti, Guid.NewGuid().ToString("N"));
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.scope, scopes); // scopes
 
             json = JsonConvert.SerializeObject(jwtAssertionClaimSet);
 
@@ -143,10 +143,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
 #endif
                 jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
 
-                iss = (string)jobj["iss"];
-                aud = (string)jobj["aud"];
-                //string iat = (string)jobj["iat"];
-                scopes = (string)jobj["scope"];
+                iss = (string)jobj[OAuth2AndOIDCConst.iss];
+                aud = (string)jobj[OAuth2AndOIDCConst.aud];
+                //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
+                scopes = (string)jobj[OAuth2AndOIDCConst.scope];
                 
                 long unixTimeSeconds = 0;
 #if NET45
@@ -154,7 +154,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 #else
                 unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
 #endif
-                string exp = (string)jobj["exp"];
+                string exp = (string)jobj[OAuth2AndOIDCConst.exp];
                 if (long.Parse(exp) >= unixTimeSeconds)
                 {
                     return true;

@@ -97,7 +97,8 @@
     <Compile Include="Dto\DTTables.cs" />
     <Compile Include="Dto\DTTableStatus.cs" />
     <Compile Include="Dto\DTType.cs" />
-    <Compile Include="Security\JWSHeader.cs" />
+    <Compile Include="Security\JwkSet.cs" />
+    <Compile Include="Security\JWS_Header.cs" />
     <Compile Include="Security\RsaAndDsaCmnFunc.cs" />
     <Compile Include="Security\ASymmetricCryptography.cs" />
     <Compile Include="Security\DigitalSignParam.cs" />

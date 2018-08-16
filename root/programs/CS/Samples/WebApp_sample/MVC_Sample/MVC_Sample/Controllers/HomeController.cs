@@ -148,7 +148,7 @@ namespace MVC_Sample.Controllers
             {
                 // 外部ログイン
                 return Redirect(string.Format(
-                    "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize"
+                    "http://localhost:63359/MultiPurposeAuthSite/Account/OAuth2Authorize"
                     + "?client_id=" + OAuth2AndOIDCParams.ClientID
                     + "&response_type=code" 
                     + "&scope=profile%20email%20phone%20address%20openid" 
@@ -196,7 +196,7 @@ namespace MVC_Sample.Controllers
                 if (state == this.State) // CSRF(XSRF)対策のstateの検証は重要
                 {
                     response = await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
-                        new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"),
+                        new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuth2BearerToken"),
                         OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
                         HttpUtility.HtmlEncode("http://localhost:58496/MVC_Sample/Home/OAuthAuthorizationCodeGrantClient"), code);
                     
@@ -220,7 +220,7 @@ namespace MVC_Sample.Controllers
                             // ログインに成功
 
                             // /userinfoエンドポイントにアクセスする場合
-                            response = await OAuth2AndOIDCClient.CallUserInfoEndpointAsync(
+                            response = await OAuth2AndOIDCClient.GetUserInfoAsync(
                                 new Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic["access_token"]);
 
                             FormsAuthentication.RedirectFromLoginPage(sub, false);

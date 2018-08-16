@@ -49,6 +49,7 @@ using Microsoft.Owin.Security.DataHandler.Encoder;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Security;
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -83,9 +84,47 @@ namespace Touryo.Infrastructure.Framework.Authentication
             scopes = new List<string>();
             jobj = null;
 
-            JWS_RS256_X509 jwtRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
+            // 検証
+            JWS_RS256 jwsRS256 = null;
 
-            if (jwtRS256.Verify(jwtAccessToken))
+            // 証明書を使用するか、Jwkを使用するか判定
+            JWS_Header jwsHeader = JsonConvert.DeserializeObject<JWS_Header>(
+                CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(jwtAccessToken.Split('.')[0]), CustomEncode.UTF_8));
+
+            if (string.IsNullOrEmpty(jwsHeader.jku)
+                || string.IsNullOrEmpty(jwsHeader.kid))
+            {
+                // 証明書を使用
+                jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
+            }
+            else
+            {
+                // 読取
+                Dictionary<string, string> jwkObject = JwkSetStore.GetInstance().GetJwkObject(jwsHeader.kid);
+
+                // チェック
+                if (jwkObject == null)
+                {
+                    // 書込
+                    jwkObject = JwkSetStore.GetInstance().SetJwkSetObject(jwsHeader.jku, jwsHeader.kid);
+                }
+
+                // チェック
+                if (jwkObject == null)
+                {
+                    // 証明書を使用
+                    jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
+                }
+                else
+                {
+                    // Jwkを使用
+                    jwsRS256 = new JWS_RS256_Param(
+                        RS256_KeyConverter.JwkToProvider(
+                            JsonConvert.SerializeObject(jwkObject)).ExportParameters(false));
+                }
+            }
+
+            if (jwsRS256.Verify(jwtAccessToken))
             {
 #if NETSTD
                 string jwtPayload = Encoding.UTF8.GetString(Base64UrlTextEncoder.Decode(jwtAccessToken.Split('.')[1]));
@@ -95,21 +134,21 @@ namespace Touryo.Infrastructure.Framework.Authentication
 #endif
                 jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
 
-                //string nonce = (string)jobj["nonce"];
-                string iss = (string)jobj["iss"];
-                string aud = (string)jobj["aud"];
-                //string iat = (string)jobj["iat"];
-                string exp = (string)jobj["exp"];
+                //string nonce = (string)jobj[OAuth2AndOIDCConst.nonce];
+                string iss = (string)jobj[OAuth2AndOIDCConst.iss];
+                string aud = (string)jobj[OAuth2AndOIDCConst.aud];
+                //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
+                string exp = (string)jobj[OAuth2AndOIDCConst.exp];
 
-                sub = (string)jobj["sub"];
+                sub = (string)jobj[OAuth2AndOIDCConst.sub];
 
-                if (jobj["roles"] != null)
+                if (jobj[OAuth2AndOIDCConst.Scope_Roles] != null)
                 {
-                    roles = JsonConvert.DeserializeObject<List<string>>(jobj["roles"].ToString());
+                    roles = JsonConvert.DeserializeObject<List<string>>(jobj[OAuth2AndOIDCConst.Scope_Roles].ToString());
                 }
-                if (jobj["scopes"] != null)
+                if (jobj[OAuth2AndOIDCConst.scopes] != null)
                 {
-                    scopes = JsonConvert.DeserializeObject<List<string>>(jobj["scopes"].ToString());
+                    scopes = JsonConvert.DeserializeObject<List<string>>(jobj[OAuth2AndOIDCConst.scopes].ToString());
                 }
 
                 long unixTimeSeconds = 0;

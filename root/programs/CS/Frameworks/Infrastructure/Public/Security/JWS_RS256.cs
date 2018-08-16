@@ -41,13 +41,13 @@ namespace Touryo.Infrastructure.Public.Security
     public abstract class JWS_RS256 : JWS
     {
         /// <summary>_JWSHeader</summary>
-        private JWSHeader _JWSHeader = new JWSHeader
+        private JWS_Header _JWSHeader = new JWS_Header
         {
             alg = "RS256"
         };
 
         /// <summary>JWSHeader</summary>
-        public JWSHeader JWSHeader
+        public JWS_Header JWSHeader
         {
             protected set
             {

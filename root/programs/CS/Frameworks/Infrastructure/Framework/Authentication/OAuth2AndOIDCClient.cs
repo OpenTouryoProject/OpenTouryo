@@ -122,9 +122,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 httpRequestMessage.Content = new FormUrlEncodedContent(
                     new Dictionary<string, string>
                     {
-                    { "grant_type", OAuth2AndOIDCConst.AuthorizationCodeGrantType },
-                    { "code", code },
-                    { "redirect_uri", HttpUtility.HtmlEncode(redirect_uri) },
+                    { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.AuthorizationCodeGrantType },
+                    { OAuth2AndOIDCConst.code, code },
+                    { OAuth2AndOIDCConst.redirect_uri, HttpUtility.HtmlEncode(redirect_uri) },
                     });
             }
             else
@@ -133,10 +133,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 httpRequestMessage.Content = new FormUrlEncodedContent(
                     new Dictionary<string, string>
                     {
-                    { "grant_type", OAuth2AndOIDCConst.AuthorizationCodeGrantType },
-                    { "code", code },
-                    { "code_verifier", code_verifier },
-                    { "redirect_uri", HttpUtility.HtmlEncode(redirect_uri) },
+                    { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.AuthorizationCodeGrantType },
+                    { OAuth2AndOIDCConst.code, code },
+                    { OAuth2AndOIDCConst.code_verifier, code_verifier },
+                    { OAuth2AndOIDCConst.redirect_uri, HttpUtility.HtmlEncode(redirect_uri) },
                     });
             }
 
@@ -180,8 +180,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             httpRequestMessage.Content = new FormUrlEncodedContent(
                 new Dictionary<string, string>
                 {
-                    { "grant_type", OAuth2AndOIDCConst.ClientCredentialsGrantType },
-                    { "scope", scopes },
+                    { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.ClientCredentialsGrantType },
+                    { OAuth2AndOIDCConst.scope, scopes },
                 });
 
             // HttpResponseMessage
@@ -231,10 +231,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
             httpRequestMessage.Content = new FormUrlEncodedContent(
                 new Dictionary<string, string>
                 {
-                    { "grant_type", "password" },
+                    { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.ResourceOwnerPasswordCredentialsGrantType },
                     { "username", userId },
                     { "password", password },
-                    { "scope", scopes },
+                    { OAuth2AndOIDCConst.scope, scopes },
                 });
 
             // HttpResponseMessage
@@ -282,8 +282,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             httpRequestMessage.Content = new FormUrlEncodedContent(
                 new Dictionary<string, string>
                 {
-                    { "grant_type", OAuth2AndOIDCConst.RefreshTokenGrantType },
-                    { "refresh_token", refreshToken },
+                    { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.RefreshTokenGrantType },
+                    { OAuth2AndOIDCConst.RefreshToken, refreshToken },
                 });
 
             // HttpResponseMessage
@@ -296,10 +296,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #region UserInfo
 
         /// <summary>認可したユーザのClaim情報を取得するWebAPIを呼び出す</summary>
-        /// <param name="userInfoUri">Uri</param>
+        /// <param name="userInfoEndpointUri">Uri</param>
         /// <param name="accessToken">accessToken</param>
         /// <returns>結果のJSON文字列（認可したユーザのClaim情報）</returns>
-        public static async Task<string> CallUserInfoEndpointAsync(Uri userInfoUri, string accessToken)
+        public static async Task<string> GetUserInfoAsync(Uri userInfoEndpointUri, string accessToken)
         {
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;
@@ -309,7 +309,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             httpRequestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = userInfoUri,
+                RequestUri = userInfoEndpointUri,
             };
 
             // HttpRequestMessage (Headers)
@@ -455,7 +455,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             httpRequestMessage.Content = new FormUrlEncodedContent(
                 new Dictionary<string, string>
                 {
-                    { "grant_type", OAuth2AndOIDCConst.JwtBearerTokenFlowGrantType },
+                    { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.JwtBearerTokenFlowGrantType },
                     { "assertion", assertion },
                 });
 
@@ -467,6 +467,31 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #endregion
 
         #endregion
+
+        #endregion
+
+        #region OpenID Connect
+
+        /// <summary>JwkSetのWebAPIを呼び出す</summary>
+        /// <param name="jwkSetEndpointUri">Uri</param>
+        /// <returns>JwkSetのJSON文字列</returns>
+        public static async Task<string> GetJwkSetAsync(Uri jwkSetEndpointUri)
+        {
+            // 通信用の変数
+            HttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage httpResponseMessage = null;
+
+            // HttpRequestMessage (Method & RequestUri)
+            httpRequestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = jwkSetEndpointUri,
+            };
+
+            // HttpResponseMessage
+            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
 
         #endregion
     }

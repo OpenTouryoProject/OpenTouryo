@@ -136,6 +136,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
+        /// <summary>JwkSetUpdateIntervalInSeconds</summary>
+        public static int JwkSetUpdateIntervalInSeconds
+        {
+            get
+            {
+                string tmp = GetConfigParameter.GetConfigValue("JwkSetUpdateIntervalInSeconds");
+                if (string.IsNullOrEmpty(tmp))
+                {
+                    return 10;
+                }
+                else
+                {
+                    return int.Parse(tmp);
+                }
+            }
+        }
+
         #endregion
     }
 }

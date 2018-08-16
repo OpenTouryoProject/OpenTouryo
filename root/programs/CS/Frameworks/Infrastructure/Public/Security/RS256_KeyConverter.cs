@@ -44,7 +44,7 @@ namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>
     /// RSA関係のカギ変換処理を実装する。
-    /// X.509 or Xml 鍵 → RSAParameters（公開鍵）→ Xml or Jwk 公開鍵
+    /// X.509 or Xml 鍵 → RSAParameters（公開鍵）⇔ Xml or Jwk 公開鍵
     /// </summary>
     public class RS256_KeyConverter
     {
@@ -179,7 +179,7 @@ namespace Touryo.Infrastructure.Public.Security
 
         #endregion
 
-        #region ToProvider（X.509 or Xml 鍵 → RSAParameters（公開鍵）
+        #region X.509 or Xml 鍵 → RSAParameters（公開鍵）
 
         /// <summary>
         /// XmlToProvider
@@ -198,43 +198,6 @@ namespace Touryo.Infrastructure.Public.Security
                 EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256, dsXML.XMLPublicKey); 
 
             return (RSACryptoServiceProvider)dsXML.AsymmetricAlgorithm;
-        }
-
-        /// <summary>
-        /// JwkToProvider
-        /// Jwk鍵からRSAProvider（公開鍵）へ変換
-        /// </summary>
-        /// <param name="jwkKey">jwkKey</param>
-        /// <returns>
-        /// RSACryptoServiceProvider
-        ///   rsaCryptoServiceProvider.VerifyData(
-        ///     data, signatureBytes,
-        ///     HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-        /// </returns>
-        public static RSACryptoServiceProvider JwkToProvider(string jwkKey)
-        {
-            JObject jwk = JObject.Parse(jwkKey);
-
-            if (jwk["alg"].ToString().ToLower() == "rs256")
-            {
-                // RSAParameters
-                // FromBase64Stringだとエラーになる。
-                RSAParameters rsaParameters = new RSAParameters()
-                {
-                    // Public
-                    Modulus = CustomEncode.FromBase64UrlString((string)jwk["n"]),
-                    Exponent = CustomEncode.FromBase64UrlString((string)jwk["e"]),
-                };
-
-                RSACryptoServiceProvider rsaCryptoServiceProvider = new RSACryptoServiceProvider();
-                rsaCryptoServiceProvider.ImportParameters(rsaParameters);
-
-                return rsaCryptoServiceProvider;
-            }
-            else
-            {
-                return null;
-            }
         }
 
         /// <summary>
@@ -286,7 +249,7 @@ namespace Touryo.Infrastructure.Public.Security
 
         #endregion
 
-        #region ToPublicKey（RSAParameters → Xml or Jwk 公開鍵
+        #region RSAParameters ⇔ Xml or Jwk 公開鍵
 
         /// <summary>
         /// ParamToXmlPublicKey
@@ -365,7 +328,44 @@ namespace Touryo.Infrastructure.Public.Security
                 return JsonConvert.SerializeObject(dic, settings);
             }            
         }
-        
+
+        /// <summary>
+        /// JwkToProvider
+        /// Jwk鍵からRSAProvider（公開鍵）へ変換
+        /// </summary>
+        /// <param name="jwkKey">jwkKey</param>
+        /// <returns>
+        /// RSACryptoServiceProvider
+        ///   rsaCryptoServiceProvider.VerifyData(
+        ///     data, signatureBytes,
+        ///     HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+        /// </returns>
+        public static RSACryptoServiceProvider JwkToProvider(string jwkKey)
+        {
+            JObject jwk = JObject.Parse(jwkKey);
+
+            if (jwk["alg"].ToString().ToLower() == "rs256")
+            {
+                // RSAParameters
+                // FromBase64Stringだとエラーになる。
+                RSAParameters rsaParameters = new RSAParameters()
+                {
+                    // Public
+                    Modulus = CustomEncode.FromBase64UrlString((string)jwk["n"]),
+                    Exponent = CustomEncode.FromBase64UrlString((string)jwk["e"]),
+                };
+
+                RSACryptoServiceProvider rsaCryptoServiceProvider = new RSACryptoServiceProvider();
+                rsaCryptoServiceProvider.ImportParameters(rsaParameters);
+
+                return rsaCryptoServiceProvider;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         #endregion
     }
 }

@@ -94,6 +94,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Authentication\JwkSetStore.cs" />
     <Compile Include="Authentication\JwtAssertion.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCClient.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCConst.cs" />

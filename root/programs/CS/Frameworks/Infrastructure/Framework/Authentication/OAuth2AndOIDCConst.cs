@@ -35,6 +35,44 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// <summary>OAuth2とOIDCの各種定数</summary>
     public class OAuth2AndOIDCConst
     {
+        #region param
+
+        /// <summary>grant_type</summary>
+        public const string grant_type = "grant_type";
+
+        /// <summary>response_type</summary>
+        public const string response_type = "response_type";
+
+        /// <summary>redirect_uri</summary>
+        public const string redirect_uri = "redirect_uri";
+
+        /// <summary>scope</summary>
+        public const string scope = "scope";
+
+        /// <summary>state</summary>
+        public const string state = "state";
+
+        /// <summary>code</summary>
+        public const string code = "code";
+
+        /// <summary>token</summary>
+        public const string token = "token";
+
+        #endregion
+
+        #region token
+
+        /// <summary>AccessToken</summary>
+        public const string AccessToken = "access_token";
+
+        /// <summary>RefreshToken</summary>
+        public const string RefreshToken = "refresh_token";
+
+        /// <summary>IDToken</summary>
+        public const string IDToken = "id_token";
+
+        #endregion
+
         #region GrantType
 
         /// <summary>Authorization Codeグラント種別</summary>
@@ -50,7 +88,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public const string ClientCredentialsGrantType = "client_credentials";
 
         /// <summary>Refresh Tokenグラント種別</summary>
-        public const string RefreshTokenGrantType = "refresh_token";
+        public const string RefreshTokenGrantType = RefreshToken;
 
         /// <summary>JWT bearer token authorizationグラント種別</summary>
         public const string JwtBearerTokenFlowGrantType = "urn:ietf:params:oauth:grant-type:jwt-bearer";
@@ -60,52 +98,107 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #region ResponseType
 
         /// <summary>Authorization Codeグラント種別</summary>
-        public const string AuthorizationCodeResponseType = "code";
+        public const string AuthorizationCodeResponseType = code;
 
         /// <summary>Implicitグラント種別</summary>
-        public const string ImplicitResponseType = "token";
+        public const string ImplicitResponseType = token;
 
         /// <summary>OIDC - Implicit</summary>
-        public const string OidcImplicit1_ResponseType = "id_token";
+        public const string OidcImplicit1_ResponseType = IDToken;
 
         /// <summary>OIDC - Implicit2</summary>
-        public const string OidcImplicit2_ResponseType = "id_token token";
+        public const string OidcImplicit2_ResponseType = IDToken + " " + token;
 
         /// <summary>OIDC - Hybrid(IdToken)</summary>
-        public const string OidcHybrid2_IdToken_ResponseType = "code id_token";
+        public const string OidcHybrid2_IdToken_ResponseType = code + " " + IDToken;
 
         /// <summary>OIDC - Hybrid(Token)</summary>
-        public const string OidcHybrid2_Token_ResponseType = "code token";
+        public const string OidcHybrid2_Token_ResponseType = code + " " + token;
 
         /// <summary>OIDC - Hybrid(IdToken and Token)</summary>
-        public const string OidcHybrid3_ResponseType = "code id_token token";
+        public const string OidcHybrid3_ResponseType = code + " " + IDToken + " " + token;
 
         #endregion
 
-        #region Claimのurn
+        #region Scope
+
+        #region 標準
+
+        /// <summary>profileを要求するscope</summary>
+        public const string Scope_Profile = "profile";
+
+        /// <summary>emailを要求するscope</summary>
+        public const string Scope_Email = "email";
+
+        /// <summary>phoneを要求するscope</summary>
+        public const string Scope_Phone = "phone";
+
+        /// <summary>addressを要求するscope</summary>
+        public const string Scope_Address = "address";
+
+        #endregion
+
+        #region 拡張
+
+        /// <summary>authを要求するscope（認可画面を出さない）</summary>
+        public const string Scope_Auth = "auth";
+
+        /// <summary>useridを要求するscope</summary>
+        public const string Scope_UserID = "userid";
+
+        /// <summary>rolesを要求するscope</summary>
+        public const string Scope_Roles = "roles";
+
+        #endregion
+
+        #region id_token
+
+        /// <summary>id_tokenを要求するscope</summary>
+        public const string Scope_Openid = "openid";
+
+        #endregion
+
+        #endregion
+
+        #region Claim
+
+        // ★ Scopeと同じ文字列は定義しない。
 
         /// <summary>ベース部分</summary>
         public static readonly string Claim_Base = "urn:oauth:";
 
-        #region 標準Claim
+        #region 標準
 
         #region 末端
+        
+        /// <summary>email_verified</summary>
+        public const string email_verified = "email_verified";
 
-        /// <summary>scope</summary>
-        public const string scope = "scope";
+        /// <summary>phone_number</summary>
+        public const string phone_number = "phone_number";
+
+        /// <summary>phone_number_verified</summary>
+        public const string phone_number_verified = "phone_number_verified";
 
         #endregion
 
         #region urn
 
-        /// <summary>scopeクレームのurn</summary>
-        public static readonly string Claim_Scope = Claim_Base + scope;
+        /// <summary>emailクレームのurn</summary>
+        public static readonly string Claim_Email = Claim_Base + Scope_Email;
+
+        /// <summary>email_verifiedクレームのurn</summary>
+        public static readonly string Claim_EmailVerified = Claim_Base + email_verified;
+
+        /// <summary>phone_numberクレームのurn</summary>
+        public static readonly string Claim_PhoneNumber = Claim_Base + phone_number;
+
+        /// <summary>phone_number_verifiedクレームのurn</summary>
+        public static readonly string Claim_PhoneNumberVerified = Claim_Base + phone_number_verified;
 
         #endregion
 
         #endregion
-
-        #region 拡張Claim
 
         #region JWT
 
@@ -191,51 +284,36 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
-        #endregion
-
-        #endregion
-
-        #region Scope
-
-        #region 標準
-
-        /// <summary>profileを要求するscope</summary>
-        public const string Scope_Profile = "profile";
-
-        /// <summary>emailを要求するscope</summary>
-        public const string Scope_Email = "email";
-
-        /// <summary>phoneを要求するscope</summary>
-        public const string Scope_Phone = "phone";
-
-        /// <summary>addressを要求するscope</summary>
-        public const string Scope_Address = "address";
-
-        #endregion
-
         #region 拡張
 
-        /// <summary>authを要求するscope（認可画面を出さない）</summary>
-        public const string Scope_Auth = "auth";
+        #region 末端
 
-        /// <summary>useridを要求するscope</summary>
-        public const string Scope_UserID = "userid";
-
-        /// <summary>rolesを要求するscope</summary>
-        public const string Scope_Roles = "roles";
+        /// <summary>scopes</summary>
+        public const string scopes = "scopes";
 
         #endregion
 
-        #region id_token
+        #region urn
 
-        /// <summary>id_tokenを要求するscope</summary>
-        public const string Scope_Openid = "openid";
+        /// <summary>scopeクレームのurn</summary>
+        public static readonly string Claim_Scopes = Claim_Base + scopes;
+
+        #endregion
 
         #endregion
 
         #endregion
 
         #region PKCE
+
+        /// <summary>code_verifier</summary>
+        public const string code_verifier = "code_verifier";
+
+        /// <summary>code_challenge</summary>
+        public const string code_challenge = "code_challenge";
+
+        /// <summary>code_challenge_method</summary>
+        public const string code_challenge_method = "code_challenge_method"; 
 
         /// <summary>PKCE plain</summary>
         public const string PKCE_plain = "plain";

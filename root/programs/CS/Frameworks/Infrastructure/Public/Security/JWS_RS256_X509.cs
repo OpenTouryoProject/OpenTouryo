@@ -111,8 +111,8 @@ namespace Touryo.Infrastructure.Public.Security
             string[] temp = jwtString.Split('.');
 
             // 検証
-            JWSHeader headerObject = (JWSHeader)JsonConvert.DeserializeObject(
-                CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8), typeof(JWSHeader));
+            JWS_Header headerObject = (JWS_Header)JsonConvert.DeserializeObject(
+                CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8), typeof(JWS_Header));
 
             if (headerObject.alg == "RS256" && headerObject.typ == "JWT")
             {

@@ -19,7 +19,7 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JWSHeader
+//* クラス名        ：JWS_Header
 //* クラス日本語名  ：JWS Header
 //*
 //* 作成者          ：生技 西野
@@ -33,7 +33,7 @@
 namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>JWS Header</summary>
-    public class JWSHeader
+    public class JWS_Header
     {
         /// <summary>
         /// alg=HS256 or RS256
