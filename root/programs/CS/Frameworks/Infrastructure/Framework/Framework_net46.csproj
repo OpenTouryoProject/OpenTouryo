@@ -96,6 +96,7 @@
   <ItemGroup>
     <Compile Include="Authentication\JwkSetStore.cs" />
     <Compile Include="Authentication\JwtAssertion.cs" />
+    <Compile Include="Authentication\IdToken.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCClient.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCConst.cs" />
     <Compile Include="Business\BaseLogic.cs" />

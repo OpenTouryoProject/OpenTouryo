@@ -69,7 +69,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string iss, string aud, TimeSpan forExp, string scopes, string xmlPrivateKey)
         {
             string json = "";
-            string jwt = "";
+            //string jws = "";
 
             #region ClaimSetの生成
 
@@ -99,18 +99,18 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             // 署名
             jwtRS256 = new JWS_RS256_XML(xmlPrivateKey);
-            jwt = jwtRS256.Create(json);
+            return jwtRS256.Create(json);
 
-            // 検証
-            jwtRS256 = new JWS_RS256_XML(xmlPrivateKey);
-            if (jwtRS256.Verify(jwt))
-            {
-                return jwt; // 検証できた。
-            }
-            else
-            {
-                return ""; // 検証できなかった。
-            }
+            //// 検証
+            //jwtRS256 = new JWS_RS256_XML(xmlPrivateKey);
+            //if (jwtRS256.Verify(jws))
+            //{
+            //    return jws; // 検証できた。
+            //}
+            //else
+            //{
+            //    return ""; // 検証できなかった。
+            //}
 
             #endregion
         }

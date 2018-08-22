@@ -284,6 +284,24 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
+        #region FAPI
+
+        #region 末端
+        
+        /// <summary>s_hash</summary>
+        public const string s_hash = "s_hash";
+
+        #endregion
+
+        #region urn
+        
+        /// <summary>s_hashクレームのurn</summary>
+        public static readonly string Claim_SHash = Claim_Base + s_hash;
+
+        #endregion
+
+        #endregion
+
         #region 拡張
 
         #region 末端

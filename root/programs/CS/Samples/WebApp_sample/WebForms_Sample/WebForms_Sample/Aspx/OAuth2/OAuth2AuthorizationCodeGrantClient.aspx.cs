@@ -84,42 +84,40 @@ namespace WebForms_Sample.Aspx.OAuth2
                         new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuth2BearerToken"),
                         OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
                         HttpUtility.HtmlEncode("http://localhost:9999/WebForms_Sample/Aspx/Auth/OAuthAuthorizationCodeGrantClient.aspx"), code);
-                    
+
                     // 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
                     Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
                     Dictionary<string, string> dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
 
-                    // id_tokenの検証コード
-                    if (dic.ContainsKey("id_token"))
+                    string sub = "";
+                    string nonce = "";
+                    List<string> roles = null;
+                    List<string> scopes = null;
+                    JObject jobj = null;
+
+                    // access_tokenの検証
+                    if (JwtToken.Verify(dic["access_token"], out sub, out roles, out scopes, out jobj))
                     {
-                        string id_token = dic["id_token"];
-
-                        string sub = "";
-                        List<string> roles = null;
-                        List<string> scopes = null;
-                        JObject jobj = null;
-
-                        if (JwtToken.Verify(id_token, out sub, out roles, out scopes, out jobj)
-                            && jobj["nonce"].ToString() == this.Nonce)
+                        // id_tokenの検証
+                        if (IdToken.Verify(dic["id_token"], "", "", "", out sub, out nonce, out jobj) && nonce == this.Nonce)
                         {
                             // ログインに成功
-
                             // /userinfoエンドポイントにアクセスする場合
                             response = await OAuth2AndOIDCClient.GetUserInfoAsync(
-                                new Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic["access_token"]);
+                            new Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic["access_token"]);
 
                             FormsAuthentication.RedirectFromLoginPage(sub, false);
                             MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
                             UserInfoHandle.SetUserInformation(ui);
 
-                            
                             return;
                         }
-
+                        else { }
                     }
                     else { }
                 }
                 else { }
+
 
                 // ログインに失敗
                 Response.Redirect("../Start/login.aspx");

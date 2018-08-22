@@ -147,7 +147,7 @@ namespace WebForms_Sample.Aspx.Start
             return "http://localhost:63359/MultiPurposeAuthSite/Account/OAuth2Authorize"
                 + "?client_id=" + OAuth2AndOIDCParams.ClientID
                 + "&response_type=code"
-                + "&scope=profile%20email%20phone%20address%20openid"
+                + "&scope=profile%20email%20phone%20address%20roles%20openid"
                 + "&state=" + this.State
                 + "&nonce=" + this.Nonce
                 + "&prompt=none";
