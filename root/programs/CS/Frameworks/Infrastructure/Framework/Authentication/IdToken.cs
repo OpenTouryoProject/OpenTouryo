@@ -283,30 +283,32 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 string exp = (string)jobj[OAuth2AndOIDCConst.exp];
 
                 #region ハッシュ・クレーム検証
-
+                
+                // at_hash
                 string at_hash = (string)jobj[OAuth2AndOIDCConst.at_hash];
+                if (!string.IsNullOrEmpty(access_token) && !string.IsNullOrEmpty(at_hash))
+                {
+                    if (!IdToken.VerifyHash(access_token, at_hash))
+                    {
+                        return false;
+                    }
+                }
+
+                // c_hash
                 string c_hash = (string)jobj[OAuth2AndOIDCConst.c_hash];
+                if (!string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(c_hash))
+                {
+                    if (!IdToken.VerifyHash(code, c_hash))
+                    {
+                        return false;
+                    }
+                }
+
+                // s_hash
                 string s_hash = (string)jobj[OAuth2AndOIDCConst.s_hash];
-
-                if (!string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(at_hash))
+                if (!string.IsNullOrEmpty(state) && !string.IsNullOrEmpty(s_hash))
                 {
-                    if (!IdToken.VerifyHash(code, at_hash))
-                    {
-                        return false;
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(c_hash))
-                {
-                    if (!IdToken.VerifyHash(code, c_hash))
-                    {
-                        return false;
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(c_hash))
-                {
-                    if (!IdToken.VerifyHash(code, c_hash))
+                    if (!IdToken.VerifyHash(state, s_hash))
                     {
                         return false;
                     }
