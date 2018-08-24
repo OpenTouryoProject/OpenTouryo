@@ -124,6 +124,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 }
             }
 
+            // JWS検証
             if (jwsRS256.Verify(jwtAccessToken))
             {
 #if NETSTD
@@ -134,7 +135,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
 #endif
                 jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
 
-                //string nonce = (string)jobj[OAuth2AndOIDCConst.nonce];
+                #region クレーム検証
+
                 string iss = (string)jobj[OAuth2AndOIDCConst.iss];
                 string aud = (string)jobj[OAuth2AndOIDCConst.aud];
                 //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
@@ -159,23 +161,29 @@ namespace Touryo.Infrastructure.Framework.Authentication
 #endif
 
                 if (iss == OAuth2AndOIDCParams.Isser &&
-                    aud　== OAuth2AndOIDCParams.ClientID &&
                     long.Parse(exp) >= unixTimeSeconds)
                 {
-                    // 認証に成功（OAuth2 Clientバージョンの実装）
-                    return true;
-                }
-                else if (iss == OAuth2AndOIDCParams.Isser &&
-                        OAuth2AndOIDCParams.ClientIDs.Any(x => x == aud) &&
-                        long.Parse(exp) >= unixTimeSeconds)
-                {
-                    // 認証に成功（OAuth2 ResourcesServerバージョンの実装）
-                    return true;
+                    if (aud == OAuth2AndOIDCParams.ClientID)
+                    {
+                        // OAuth2 Clientバージョンの実装で成功
+                        return true;
+                    }
+                    else if (OAuth2AndOIDCParams.ClientIDs.Any(x => x == aud))
+                    {
+                        // OAuth2 ResourcesServerバージョンの実装で成功
+                        return true;
+                    }
+                    else
+                    {
+                        // JWTの内容検証に失敗
+                    }
                 }
                 else
                 {
                     // JWTの内容検証に失敗
                 }
+
+                #endregion
             }
             else
             {

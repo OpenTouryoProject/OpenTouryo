@@ -62,12 +62,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
-        #region 基本 4 フローのWebAPI
+        #region 基本 4 フロー + α のWebAPI
 
-        #region Authentication Code or Hybrid Flow or PKCE
+        #region Authentication Code
 
         /// <summary>
-        /// Authentication Code or Hybrid Flow : codeからAccess Tokenを取得する。
+        /// Authentication Code : codeからAccess Tokenを取得する。
         /// </summary>
         /// <param name="tokenEndpointUri">TokenエンドポイントのUri</param>
         /// <param name="client_id">client_id</param>
@@ -79,11 +79,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
             Uri tokenEndpointUri, string client_id, string client_secret, string redirect_uri, string code)
         {
             return await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
-                tokenEndpointUri, client_id, client_secret, redirect_uri, code, null);
+                tokenEndpointUri, client_id, client_secret, redirect_uri, code, null, null);
         }
 
         /// <summary>
-        /// PKCE : code, code_verifierからAccess Tokenを取得する。
+        ///PKCE : code, code_verifierからAccess Tokenを取得する。
         /// </summary>
         /// <param name="tokenEndpointUri">TokenエンドポイントのUri</param>
         /// <param name="client_id">client_id</param>
@@ -94,6 +94,40 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>結果のJSON文字列</returns>
         public static async Task<string> GetAccessTokenByCodeAsync(
             Uri tokenEndpointUri, string client_id, string client_secret, string redirect_uri, string code, string code_verifier)
+        {
+            return await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+                tokenEndpointUri, client_id, client_secret, redirect_uri, code, code_verifier, null);
+        }
+
+        /// <summary>
+        /// FAPI1 : code, assertionからAccess Tokenを取得する。
+        /// </summary>
+        /// <param name="tokenEndpointUri">TokenエンドポイントのUri</param>
+        /// <param name="redirect_uri">redirect_uri</param>
+        /// <param name="code">code</param>
+        /// <param name="assertion">assertion</param>
+        /// <returns>結果のJSON文字列</returns>
+        public static async Task<string> GetAccessTokenByCodeAsync(
+            Uri tokenEndpointUri, string redirect_uri, string code, string assertion)
+        {
+            return await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+                tokenEndpointUri, null, null, redirect_uri, code, null, assertion);
+        }
+
+        /// <summary>
+        /// code, etc. からAccess Tokenを取得する。
+        /// </summary>
+        /// <param name="tokenEndpointUri">TokenエンドポイントのUri</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret</param>
+        /// <param name="redirect_uri">redirect_uri</param>
+        /// <param name="code">code</param>
+        /// <param name="code_verifier">code_verifier</param>
+        /// <param name="assertion">assertion</param>
+        /// <returns>結果のJSON文字列</returns>
+        private static async Task<string> GetAccessTokenByCodeAsync(
+            Uri tokenEndpointUri, string client_id, string client_secret, string redirect_uri,
+            string code, string code_verifier, string assertion)
         {
             // 4.1.3.  アクセストークンリクエスト
             // http://openid-foundation-japan.github.io/rfc6749.ja.html#token-req
@@ -110,33 +144,47 @@ namespace Touryo.Infrastructure.Framework.Authentication
             };
 
             // HttpRequestMessage (Headers & Content)
-
-            httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                "Basic",
+            if (!string.IsNullOrEmpty(client_id) && !string.IsNullOrEmpty(client_secret))
+            {
+                httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
+                OAuth2AndOIDCConst.Basic,
                 CustomEncode.ToBase64String(CustomEncode.StringToByte(
                     string.Format("{0}:{1}", client_id, client_secret), CustomEncode.us_ascii)));
+            }
 
-            if (string.IsNullOrEmpty(code_verifier))
+            if (string.IsNullOrEmpty(code_verifier) && string.IsNullOrEmpty(assertion))
             {
                 // 通常のアクセストークン・リクエスト
                 httpRequestMessage.Content = new FormUrlEncodedContent(
                     new Dictionary<string, string>
                     {
-                    { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.AuthorizationCodeGrantType },
-                    { OAuth2AndOIDCConst.code, code },
-                    { OAuth2AndOIDCConst.redirect_uri, HttpUtility.HtmlEncode(redirect_uri) },
+                        { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.AuthorizationCodeGrantType },
+                        { OAuth2AndOIDCConst.code, code },
+                        { OAuth2AndOIDCConst.redirect_uri, HttpUtility.HtmlEncode(redirect_uri) },
                     });
             }
-            else
+            else if (!string.IsNullOrEmpty(code_verifier))
             {
                 // OAuth PKCEのアクセストークン・リクエスト
                 httpRequestMessage.Content = new FormUrlEncodedContent(
                     new Dictionary<string, string>
                     {
-                    { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.AuthorizationCodeGrantType },
-                    { OAuth2AndOIDCConst.code, code },
-                    { OAuth2AndOIDCConst.code_verifier, code_verifier },
-                    { OAuth2AndOIDCConst.redirect_uri, HttpUtility.HtmlEncode(redirect_uri) },
+                        { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.AuthorizationCodeGrantType },
+                        { OAuth2AndOIDCConst.code, code },
+                        { OAuth2AndOIDCConst.code_verifier, code_verifier },
+                        { OAuth2AndOIDCConst.redirect_uri, HttpUtility.HtmlEncode(redirect_uri) },
+                    });
+            }
+            else if (!string.IsNullOrEmpty(assertion))
+            {
+                // FAPI1のアクセストークン・リクエスト
+                httpRequestMessage.Content = new FormUrlEncodedContent(
+                    new Dictionary<string, string>
+                    {
+                        { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.AuthorizationCodeGrantType },
+                        { OAuth2AndOIDCConst.code, code },
+                        { OAuth2AndOIDCConst.assertion, assertion },
+                        { OAuth2AndOIDCConst.redirect_uri, HttpUtility.HtmlEncode(redirect_uri) },
                     });
             }
 
@@ -173,7 +221,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // HttpRequestMessage (Headers & Content)
 
             httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                "Basic",
+                OAuth2AndOIDCConst.Basic,
                 CustomEncode.ToBase64String(CustomEncode.StringToByte(
                     string.Format("{0}:{1}", client_id, client_secret), CustomEncode.us_ascii)));
 
@@ -223,7 +271,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // HttpRequestMessage (Headers & Content)
 
             httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                "Basic",
+                OAuth2AndOIDCConst.Basic,
                 Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(
                     string.Format("{0}:{1}",
                     client_id, client_secret))));
@@ -246,7 +294,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
-        #region その他の基本WebAPI
+        #region その他の 基本 WebAPI
 
         #region Refresh Token
 
@@ -275,7 +323,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             // HttpRequestMessage (Headers & Content)
             httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                "Basic",
+                OAuth2AndOIDCConst.Basic,
                 CustomEncode.ToBase64String(CustomEncode.StringToByte(
                     string.Format("{0}:{1}", client_id, client_secret), CustomEncode.us_ascii)));
 
@@ -313,7 +361,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             };
 
             // HttpRequestMessage (Headers)
-            httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(OAuth2AndOIDCConst.Bearer, accessToken);
 
             // HttpResponseMessage
             httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
@@ -369,15 +417,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // HttpRequestMessage (Headers & Content)
 
             httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                "Basic",
+                OAuth2AndOIDCConst.Basic,
                 CustomEncode.ToBase64String(CustomEncode.StringToByte(
                     string.Format("{0}:{1}", client_id, client_secret), CustomEncode.us_ascii)));
 
             httpRequestMessage.Content = new FormUrlEncodedContent(
                 new Dictionary<string, string>
                 {
-                    { "token", token },
-                    { "token_type_hint", token_type_hint },
+                    { OAuth2AndOIDCConst.token, token },
+                    { OAuth2AndOIDCConst.token_type_hint, token_type_hint },
                 });
 
             // HttpResponseMessage
@@ -409,15 +457,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // HttpRequestMessage (Headers & Content)
 
             httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                "Basic",
+                OAuth2AndOIDCConst.Basic,
                 CustomEncode.ToBase64String(CustomEncode.StringToByte(
                     string.Format("{0}:{1}", client_id, client_secret), CustomEncode.us_ascii)));
 
             httpRequestMessage.Content = new FormUrlEncodedContent(
                 new Dictionary<string, string>
                 {
-                    { "token", token },
-                    { "token_type_hint", token_type_hint },
+                    { OAuth2AndOIDCConst.token, token },
+                    { OAuth2AndOIDCConst.token_type_hint, token_type_hint },
                 });
 
             // HttpResponseMessage
@@ -456,7 +504,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 new Dictionary<string, string>
                 {
                     { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.JwtBearerTokenFlowGrantType },
-                    { "assertion", assertion },
+                    { OAuth2AndOIDCConst.assertion, assertion },
                 });
 
             // HttpResponseMessage

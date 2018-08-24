@@ -43,6 +43,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>response_type</summary>
         public const string response_type = "response_type";
 
+        /// <summary>response_mode</summary>
+        public const string response_mode = "response_mode";
+
         /// <summary>redirect_uri</summary>
         public const string redirect_uri = "redirect_uri";
 
@@ -55,8 +58,21 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>code</summary>
         public const string code = "code";
 
+        /// <summary>assertion</summary>
+        public const string assertion = "assertion";
+        
         /// <summary>token</summary>
         public const string token = "token";
+
+        #region WebAPI
+
+        /// <summary>token</summary>
+        public const string token_type = "token_type";
+
+        /// <summary>token_type_hint</summary>
+        public const string token_type_hint = "token_type_hint";
+
+        #endregion
 
         #endregion
 
@@ -117,6 +133,39 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>OIDC - Hybrid(IdToken and Token)</summary>
         public const string OidcHybrid3_ResponseType = code + " " + IDToken + " " + token;
+
+        #endregion
+
+        #region ResponseMode
+
+        /// <summary>query</summary>
+        public const string query = "query";
+
+        /// <summary>fragment</summary>
+        public const string fragment = "fragment";
+
+        /// <summary>form_post</summary>
+        public const string form_post = "form_post";
+
+        #endregion
+
+        #region HTTP Header
+
+        /// <summary>Location</summary>
+        public const string HttpHeader_Location = "Location";
+
+        #region Authorization
+
+        /// <summary>Authorization</summary>
+        public const string HttpHeader_Authorization = "Authorization";
+
+        /// <summary>Basic</summary>
+        public const string Basic = "Basic";
+
+        /// <summary>Bearer</summary>
+        public const string Bearer = "Bearer";
+
+        #endregion
 
         #endregion
 
@@ -279,6 +328,24 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>c_hashクレームのurn</summary>
         public static readonly string Claim_CHash = Claim_Base + c_hash;
+
+        #endregion
+
+        #endregion
+
+        #region FAPI
+
+        #region 末端
+        
+        /// <summary>s_hash</summary>
+        public const string s_hash = "s_hash";
+
+        #endregion
+
+        #region urn
+        
+        /// <summary>s_hashクレームのurn</summary>
+        public static readonly string Claim_SHash = Claim_Base + s_hash;
 
         #endregion
 
