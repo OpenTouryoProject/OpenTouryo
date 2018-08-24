@@ -94,6 +94,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncProcessingService\AsyncCommand.cs" />
+    <Compile Include="AsyncProcessingService\AsyncErrorMessageID.cs" />
+    <Compile Include="AsyncProcessingService\AsyncStatus.cs" />
+    <Compile Include="AsyncProcessingService\AsyncTaskUpdate.cs" />
     <Compile Include="Authentication\JwkSetStore.cs" />
     <Compile Include="Authentication\JwtAssertion.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCClient.cs" />
