@@ -3,19 +3,19 @@ Open 棟梁は、.NET Framework をベースとしたアプリケーション �
 Open 棟梁のプログラムは、以下のリポジトリで公開しています。
 - OpenTouryoTemplates リポジトリ
     - 概要  
-    Open 棟梁を使用したアプリケーションの**開発基盤 (テンプレート)** となるもの  
-    SQL Server を既定の DBMS とし、Visual Studio のバージョンごとにフォルダが分かれている
+    Open 棟梁を使用したアプリケーションの**開発基盤 (テンプレート)** となるもので、  
+    Visual Studio のバージョンごとにフォルダが分かれている
     - 想定利用者  
     Open 棟梁を使用してアプリケーションを開発する人
 - OpenTouryo リポジトリ (**現在のリポジトリ**)
     - 概要  
     OpenTouryoTemplates リポジトリの**母体**となるもの  
-    (Open 棟梁の各機能は、まず OpenTouryo リポジトリで開発され、その後 OpenTouryoTemplates リポジトリに取り込まれる)
+    (Open 棟梁の各機能は、まず OpenTouryo リポジトリで開発され、  
+    その後 OpenTouryoTemplates リポジトリに取り込まれる)
     - 想定利用者  
     OSS 開発者
 
-このため、システム開発プロジェクトで Open 棟梁を使用される方は、[OpenTouryoTemplates リポジトリ](https://github.com/OpenTouryoProject/OpenTouryoTemplates)を使用してください。  
-以下、**OSS 開発者向け**に、Open 棟梁の利用方法をご紹介します。  
+このため、システム開発プロジェクトで Open 棟梁を使用される方は、[OpenTouryoTemplates リポジトリ](https://github.com/OpenTouryoProject/OpenTouryoTemplates)を使用してください。以下、**OSS 開発者向け**に、Open 棟梁の利用方法をご紹介します。
 
 このファイルの英語版は[こちら](README.md)から。
 
@@ -23,34 +23,50 @@ Open 棟梁のプログラムは、以下のリポジトリで公開していま
 Open 棟梁に同梱されるサンプルアプリケーションの実行手順は以下のとおりです。
 
 ### 前提ツールのインストール
-あらかじめ、Visual Studio 2015 をインストールしておいてください。
+あらかじめ、Visual Studio 2015 をインストールしておいてください。  
+（.NET Standard、.NET Core開発を行う場合は、Visual Studio 2017 をインストールしておいてください。）
 
 また、Open 棟梁がサポートしている以下の DBMS へのデータアクセスクラスの開発・テストを行う場合は、使用する DBMS をインストールしてください。
 - SQL Server  
 (SQL Server のバージョンは任意です。また、エディションについては、Express Edition 以外もお使いいただけますが、サンプルアプリケーションに指定する接続文字列を修正する必要がありますので、ご注意ください)
 - Oracle Database (Express Edition を含みます)
-- IBM DB2
+- IBM DB2 ... optional
+- HiRDB ... optional
 - MySQL
 - PostgreSQL
 
 ### Open 棟梁の配置
-「root」フォルダを、C ドライブ直下にコピーしてください。  
+「root」フォルダを、C ドライブ直下にコピーしてください。C ドライブ直下以外に配置すると、プログラムのビルド時などで、Windows のファイルパスの最大文字長を超え、ビルドに失敗することがあります。このため、C ドライブ直下に配置するようにしてください。
 
-### データプロバイダの配置
-Open 棟梁がサポートするデータベースのデータプロバイダを入手し、以下のフォルダに配置します。
-```txt
-C:\root\programs\CS\Frameworks\Infrastructure\Public\Dll
-```
-
+### データプロバイダの取得と配置
 Open 棟梁が現在サポートしているデータベースと、対応するデータプロバイダは以下のとおりです。
-- Oracle (Oracle.DataAccess.dll)
-- DB2 (IBM.Data.DB2.dll)
+
+- Oracle
+  - Oracle.DataAccess.dll ... optional
+  - Oracle.ManagedDataAccess.dll
+- IBM DB2 (IBM.Data.DB2.dll) ... optional
+- HiRDB ... optional
+  - x86: pddndp40.dll, pddndpcore40.dll
+  - x64: pddndp40x.dll, pddndpcore40x.dll
 - MySQL (MySql.Data.dll)
 - PostgreSQL (Npgsql.dll)
 
-**注意:**  
-Open 棟梁は SQL Server もサポートしていますが、SQL Server のデータプロバイダである System.Data.SqlClient.dll は .NET Framework に同梱されていますので、上記フォルダに格納する必要はありません。  
-また、Open 棟梁のデータアクセス用のプロジェクト (DamXXX.csproj) から、各データプロバイダに参照設定をはりなおす必要がある場合があります。
+以下のデータプロバイダについては、NuGetから取得を行います。
+
+- Oracle
+  - Oracle.DataAccess.dll ... optional
+  - Oracle.ManagedDataAccess.dll
+- MySQL (MySql.Data.dll)
+- PostgreSQL (Npgsql.dll)
+
+上記以外のデータプロバイダは、手動で取得して配置する必要があります。
+
+#### 注意
+##### SQL Server
+Open 棟梁は SQL Server もサポートしていますが、SQL Server のデータプロバイダである System.Data.SqlClient.dll は .NET Framework に同梱されていますので、上記フォルダに格納する必要はありません。また、Open 棟梁のデータアクセス用のプロジェクト (DamXXX.csproj) から、各データプロバイダに参照設定をはりなおす必要がある場合があります。
+
+##### Optional表記
+optional表記のデータプロバイダや、それを使用したDBライブラリは、通常のビルドや、[Open 棟梁のNuGetパッケージ](https://www.nuget.org/packages?q=OpenTouryo)に含まれないので、必要に応じてビルドして利用して下さい。
 
 ### サンプルデータベースのセットアップ
 #### SQL Server  
@@ -106,13 +122,16 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
   </thead>
   <tbody>
     <tr>
-      <td rowspan="17" style="vertical-align: top">C:\root\programs\CS</td><td>1_DeleteDir.bat</td><td>ビルドによってできたフォルダを削除 (クリーン) する。</td><td>○</td><td>○</td>
+      <td rowspan="22" style="vertical-align: top">C:\root\programs\CS</td><td>1_DeleteDir.bat</td><td>ビルドによってできたフォルダを削除 (クリーン) する。</td><td>○</td><td>○</td>
     </tr>
     <tr>
       <td>2_DeleteFile.bat</td><td>一時ファイルなどを削除 (クリーン) する。</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_Framework.bat</td><td>フレームワーク部分 (ベースクラス１，２) をビルドする。</td><td>○</td><td>○</td>
+      <td>3_Build_Framework.bat</td><td>.NET Framework対応フレームワーク (ベースクラス１，２部分) をビルドする。</td><td>○</td><td>○</td>
+    </tr>
+    <tr>
+      <td>3_Build_NetCore.bat</td><td>.NET Standard, .NET Core対応フレームワーク (ベースクラス１，２部分) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*4</sup></span></td><td></td>
     </tr>
     <tr>
       <td>3_Build_NuGet_net45.bat</td><td>.NET Framework 4.5.2 をターゲットとする NuGet パッケージの作成用に、フレームワークをビルドする。</td><td rowspan="3" style="vertical-align: top">△<span style="color: red"><sup>*1</sup></span></td><td>○</td>
@@ -124,31 +143,43 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
       <td>3_Build_NuGet_net47.bat</td><td>.NET Framework 4.7 をターゲットとする NuGet パッケージの作成用に、フレームワークをビルドする。</td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_RichClientFramework.bat</td><td>リッチクライアント用フレームワークをビルドする。</td><td>△<span style="color: red"><sup>*2</sup></span></td><td></td>
+      <td>3_Build_NuGet_netstd20.bat</td><td>.NET Standard 2.0 をターゲットとする NuGet パッケージの作成用に、フレームワークをビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*1, *4</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>4_Build_Framework_Tool.bat</td><td>付属ツールをビルドする。</td><td>○</td><td>○</td>
+      <td>3_Build_RichClientFramework.bat</td><td>.NET Framework対応のリッチクライアント用フレームワークをビルドする。</td><td>△<span style="color: red"><sup>*2</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>5_Build_2CS_sample.bat</td><td>サンプルアプリ (2 層 C/S) をビルドする。</td><td rowspan="7" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>4_Build_Framework_Tool.bat</td><td>.NET Framework対応の付属ツールをビルドする。</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>5_Build_Bat_sample.bat</td><td>サンプルアプリ (バッチ) をビルドする。</td><td></td>
+      <td>5_Build_2CS_sample.bat</td><td>.NET Framework対応サンプルアプリ (2 層 C/S) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>6_Build_WSSrv_sample.bat</td><td>サンプルアプリ (Web サービス (サーバー側ロジック)) をビルドする。</td><td></td>
+      <td>5_Build_Bat_sample.bat</td><td>.NET Framework対応サンプルアプリ (バッチ) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>7_Build_Framework_WS.bat</td><td>フレームワーク (サービスインタフェース部分) をビルドする。</td><td></td>
+      <td>5_Build_BatCore_sample.bat</td><td>.NET Core対応サンプルアプリ (バッチ) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3, *4</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>8_Build_WSClntWin_sample.bat</td><td>サンプルアプリ (Web サービスクライアント (Windows フォーム)) をビルドする。</td><td></td>
+      <td>6_Build_WSSrv_sample.bat</td><td>.NET Framework対応サンプルアプリ (Web サービス (サーバー側ロジック)) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>9_Build_WSClntWPF_sample.bat</td><td>サンプルアプリ (Web サービスクライアント (WPF)) をビルドする。</td><td></td>
+      <td>6_Build_WSSrvCore_sample.bat</td><td>.NET Core対応サンプルアプリ (Web サービス (サーバー側ロジック)) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3, *4</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>10_Build_WebApp_sample.bat</td><td>サンプルアプリ (ASP.NET) をビルドする。</td><td></td>
+      <td>7_Build_Framework_WS.bat</td><td>.NET Framework対応フレームワーク (サービスインタフェース部分) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+    </tr>
+    <tr>
+      <td>8_Build_WSClntWin_sample.bat</td><td>.NET Framework対応サンプルアプリ (Web サービスクライアント (Windows フォーム)) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+    </tr>
+    <tr>
+      <td>9_Build_WSClntWPF_sample.bat</td><td>.NET Framework対応サンプルアプリ (Web サービスクライアント (WPF)) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+    </tr>
+    <tr>
+      <td>10_Build_WebApp_sample.bat</td><td>.NET Framework対応サンプルアプリ (ASP.NET) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+    </tr>
+    <tr>
+      <td>10_Build_WebAppCore_sample.bat</td><td>.NET Core対応サンプルアプリ (ASP.NET) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
       <td>z_Common.bat</td><td>共通設定 (MSBuild 用)</td><td></td><td></td>
@@ -163,31 +194,31 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
       <td>2_DeleteFile.bat</td><td>一時ファイルなどを削除 (クリーン) する。</td><td></td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_Framework.bat</td><td>フレームワーク (ベースクラス２) をビルドする。</td><td></td><td>○</td>
+      <td>3_Build_Framework.bat</td><td>.NET Framework対応フレームワーク (ベースクラス２部分) をビルドする。</td><td></td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_RichClientFramework.bat</td><td>リッチクライアント用フレームワークをビルドする。</td><td></td><td>△<span style="color: red"><sup>*2</sup></span></td>
+      <td>3_Build_RichClientFramework.bat</td><td>.NET Framework対応のリッチクライアント用フレームワークをビルドする。</td><td></td><td>△<span style="color: red"><sup>*2</sup></span></td>
     </tr>
     <tr>
-      <td>5_Build_2CS_sample.bat</td><td>サンプルアプリ (2 層 C/S) をビルドする。</td><td></td><td rowspan="7" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td>
+      <td>5_Build_2CS_sample.bat</td><td>.NET Framework対応サンプルアプリ (2 層 C/S) をビルドする。</td><td></td><td rowspan="7" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td>
     </tr>
     <tr>
-      <td>5_Build_Bat_sample.bat</td><td>サンプルアプリ (バッチ) をビルドする。</td><td></td>
+      <td>5_Build_Bat_sample.bat</td><td>.NET Framework対応サンプルアプリ (バッチ) をビルドする。</td><td></td>
     </tr>
     <tr>
-      <td>6_Build_WSSrv_sample.bat</td><td>サンプルアプリ (Web サービス (サーバー側ロジック)) をビルドする。</td><td></td>
+      <td>6_Build_WSSrv_sample.bat</td><td>.NET Framework対応サンプルアプリ (Web サービス (サーバー側ロジック)) をビルドする。</td><td></td>
     </tr>
     <tr>
-      <td>7_Build_Framework_WS.bat</td><td>フレームワーク (サービスインタフェース部分) をビルドする。</td><td></td>
+      <td>7_Build_Framework_WS.bat</td><td>.NET Framework対応フレームワーク (サービスインタフェース部分) をビルドする。</td><td></td>
     </tr>
     <tr>
-      <td>8_Build_WSClntWin_sample.bat</td><td>サンプルアプリ (Web サービスクライアント (Windows フォーム)) をビルドする。</td><td></td>
+      <td>8_Build_WSClntWin_sample.bat</td><td>.NET Framework対応サンプルアプリ (Web サービスクライアント (Windows フォーム)) をビルドする。</td><td></td>
     </tr>
     <tr>
-      <td>9_Build_WSClntWPF_sample.bat</td><td>サンプルアプリ (Web サービスクライアント (WPF)) をビルドする。</td><td></td>
+      <td>9_Build_WSClntWPF_sample.bat</td><td>.NET Framework対応サンプルアプリ (Web サービスクライアント (WPF)) をビルドする。</td><td></td>
     </tr>
     <tr>
-      <td>10_Build_WebApp_sample.bat</td><td>サンプルアプリ (ASP.NET) をビルドする。</td><td></td>
+      <td>10_Build_WebApp_sample.bat</td><td>.NET Framework対応サンプルアプリ (ASP.NET) をビルドする。</td><td></td>
     </tr>
     <tr>
       <td>z_Common.bat</td><td>共通設定 (MSBuild 用)</td><td></td><td></td>
@@ -200,7 +231,8 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
 <div style="font-size: small">
   <span style="color: red;">*1</span>　NuGetパッケージを作成を作成する場合は必須<br />
   <span style="color: red;">*2</span>　リッチクライアント アプリケーションを作成する場合は必須<br />
-  <span style="color: red;">*3</span>　実際のアプリケーションの形態に応じて選択してください
+  <span style="color: red;">*3</span>　実際のアプリケーションの形態に応じて選択してください<br />
+  <span style="color: red;">*4</span>　.NET Standard、.NET Core開発を行う場合に選択してください<br />
 </div>
 
 上の表を参考に、ビルドバッチファイルを番号順に実行してプログラムをビルドしてください。  
@@ -226,7 +258,8 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(2863,5): 
 
 ### サンプルの実行
 - 以下のファイルを開いてください。
-- web.config または app.config を開き、実際のデータベース環境に合わせて connectionString セクションの値を修正してください。
+- web.config または app.config (.NET Coreの場合は、appsettings.json) を開き、  
+実際のデータベース環境に合わせて connectionString セクションの値を修正してください。
 - サンプルアプリケーションを実行してください。  
 ログイン画面が出た場合は、任意の英数字を入力してください。(既定ではパスワード認証を行っていません)  
    
@@ -237,7 +270,10 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(2863,5): 
 - ASP.NET MVC  
   - C:\root\programs\CS\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
   - C:\root\programs\VB\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
- 
+- ASP.NET Core MVC  
+  - C:\root\programs\CS\Samples4NetCore\WebApp_sample\MVC_Sample\MVC_Sample.sln
+  - C:\root\programs\VB\Samples4NetCore\WebApp_sample\MVC_Sample\MVC_Sample.sln
+
 #### C/S 2階層の場合：
 - Windows Forms  
   - C:\root\programs\CS\Samples\2CS_sample\2CSClientWin_sample\2CSClientWin_sample.sln
