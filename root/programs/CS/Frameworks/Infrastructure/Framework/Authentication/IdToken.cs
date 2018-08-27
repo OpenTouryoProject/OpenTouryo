@@ -264,7 +264,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             if (jwsRS256.Verify(idToken))
             {
 #if NETSTD
-                string jwtPayload = Encoding.UTF8.GetString(Base64UrlTextEncoder.Decode(jwtAccessToken.Split('.')[1]));
+                string jwtPayload = Encoding.UTF8.GetString(Base64UrlTextEncoder.Decode(idToken.Split('.')[1]));
 #else
                 Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
                 string jwtPayload = Encoding.UTF8.GetString(base64UrlEncoder.Decode(idToken.Split('.')[1]));
