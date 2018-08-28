@@ -22,6 +22,9 @@ Open 棟梁のプログラムは、以下のリポジトリで公開していま
 ## サンプルの実行手順
 Open 棟梁に同梱されるサンプルアプリケーションの実行手順は以下のとおりです。
 
+**Optional表記:**  
+次のリスト中のoptional表記のある対象RDBMSのデータプロバイダとDBライブラリは、デフォルトのビルドスクリプトのビルドプロセス、または[Open 棟梁のNuGetパッケージ](https://www.nuget.org/packages?q=OpenTouryo)に含まれません。必要に応じてデータプロバイダを自分でダウンロードし、設定を変更し、これらのライブラリをビルドして利用して下さい。
+
 ### 前提ツールのインストール
 あらかじめ、Visual Studio 2015 をインストールしておいてください。  
 （.NET Standard、.NET Core開発を行う場合は、Visual Studio 2017 をインストールしておいてください。）
@@ -44,29 +47,30 @@ Open 棟梁が現在サポートしているデータベースと、対応する
 - Oracle
   - Oracle.DataAccess.dll ... optional
   - Oracle.ManagedDataAccess.dll
-- IBM DB2 (IBM.Data.DB2.dll) ... optional
-- HiRDB ... optional
-  - x86: pddndp40.dll, pddndpcore40.dll
-  - x64: pddndp40x.dll, pddndpcore40x.dll
-- MySQL (MySql.Data.dll)
-- PostgreSQL (Npgsql.dll)
+- IBM DB2
+  - IBM.Data.DB2.dll ... optional
+- HiRDB
+  - x86: pddndp40.dll, pddndpcore40.dll ... optional
+  - x64: pddndp40x.dll, pddndpcore40x.dll ... optional
+- MySQL
+  - MySql.Data.dll
+- PostgreSQL
+  - Npgsql.dll
 
 以下のデータプロバイダについては、NuGetから取得を行います。
 
 - Oracle
   - Oracle.DataAccess.dll ... optional
   - Oracle.ManagedDataAccess.dll
-- MySQL (MySql.Data.dll)
-- PostgreSQL (Npgsql.dll)
+- MySQL
+  - MySql.Data.dll
+- PostgreSQL
+  - Npgsql.dll
 
 上記以外のデータプロバイダは、手動で取得して配置する必要があります。
 
-#### 注意
-##### SQL Server
-Open 棟梁は SQL Server もサポートしていますが、SQL Server のデータプロバイダである System.Data.SqlClient.dll は .NET Framework に同梱されていますので、上記フォルダに格納する必要はありません。また、Open 棟梁のデータアクセス用のプロジェクト (DamXXX.csproj) から、各データプロバイダに参照設定をはりなおす必要がある場合があります。
-
-##### Optional表記
-optional表記のあるデータプロバイダや、それを使用したDBライブラリは、通常のビルドや、[Open 棟梁のNuGetパッケージ](https://www.nuget.org/packages?q=OpenTouryo)に含まれないので、必要に応じて構成を変更してビルドして利用して下さい。
+**注意:**  
+Open 棟梁は SQL Server もサポートしていますが、SQL Server のデータプロバイダである System.Data.SqlClient.dll は .NET Framework に同梱されていますので、上記フォルダに格納する必要はありません。また、Open 棟梁のデータアクセス用のプロジェクト (DamXXX.csproj) から、各データプロバイダに参照設定を張り直す必要がある場合があります。
 
 ### サンプルデータベースのセットアップ
 #### SQL Server  
@@ -128,10 +132,10 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
       <td>2_DeleteFile.bat</td><td>一時ファイルなどを削除 (クリーン) する。</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_Framework.bat</td><td>.NET Framework対応フレームワーク (ベースクラス１, ２, ライブラリ部分) をビルドする。</td><td>○</td><td>○</td>
+      <td>3_Build_Framework.bat</td><td>.NET Frameworkベースのフレームワーク (ベースクラス１, ２, ライブラリ部分) をビルドする。</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_NetCore.bat</td><td>.NET Standard, .NET Core対応フレームワーク (ベースクラス１, ２, ライブラリ部分) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*4</sup></span></td><td></td>
+      <td>3_Build_NetCore.bat</td><td>.NET Standard, .NET Coreベースのフレームワーク (ベースクラス１, ２, ライブラリ部分) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*4</sup></span></td><td></td>
     </tr>
     <tr>
       <td>3_Build_NuGet_net45.bat</td><td>.NET Framework 4.5.2 をターゲットとする NuGet パッケージの作成用に、フレームワーク (ベースクラス１, ライブラリ部分) をビルドする。</td><td rowspan="3" style="vertical-align: top">△<span style="color: red"><sup>*1</sup></span></td><td>○</td>
@@ -146,34 +150,34 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
       <td>3_Build_NuGet_netstd20.bat</td><td>.NET Standard 2.0 をターゲットとする NuGet パッケージの作成用に、フレームワーク (ベースクラス１, ライブラリ部分) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*1, *4</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>3_Build_RichClientFramework.bat</td><td>.NET Framework対応のリッチクライアント用フレームワークをビルドする。</td><td>△<span style="color: red"><sup>*2</sup></span></td><td></td>
+      <td>3_Build_RichClientFramework.bat</td><td>.NET Frameworkベースのリッチクライアント用フレームワークをビルドする。</td><td>△<span style="color: red"><sup>*2</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>4_Build_Framework_Tool.bat</td><td>.NET Framework対応の付属ツールをビルドする。</td><td>○</td><td>○</td>
+      <td>4_Build_Framework_Tool.bat</td><td>.NET Frameworkベースの付属ツールをビルドする。</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>5_Build_2CS_sample.bat</td><td>.NET Framework対応サンプルアプリ (2 層 C/S) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>5_Build_2CS_sample.bat</td><td>.NET Frameworkベースのサンプルアプリ (2 層 C/S) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>5_Build_Bat_sample.bat</td><td>.NET Framework対応サンプルアプリ (バッチ) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>5_Build_Bat_sample.bat</td><td>.NET Frameworkベースのサンプルアプリ (バッチ) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>5_Build_BatCore_sample.bat</td><td>.NET Core対応サンプルアプリ (バッチ) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3, *4</sup></span></td><td></td>
+      <td>5_Build_BatCore_sample.bat</td><td>.NET Coreベースのサンプルアプリ (バッチ) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3, *4</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>6_Build_WSSrv_sample.bat</td><td>.NET Framework対応サンプルアプリ (Web サービス (サーバー側ロジック)) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>6_Build_WSSrv_sample.bat</td><td>.NET Frameworkベースのサンプルアプリ (Web サービス (サーバー側ロジック)) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>6_Build_WSSrvCore_sample.bat</td><td>.NET Core対応サンプルアプリ (Web サービス (サーバー側ロジック)) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3, *4</sup></span></td><td></td>
+      <td>6_Build_WSSrvCore_sample.bat</td><td>.NET Coreベースのサンプルアプリ (Web サービス (サーバー側ロジック)) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3, *4</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>7_Build_Framework_WS.bat</td><td>.NET Framework対応フレームワーク (サービスインタフェース部分) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>7_Build_Framework_WS.bat</td><td>.NET Frameworkベースのフレームワーク (サービスインタフェース部分) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>8_Build_WSClntWin_sample.bat</td><td>.NET Framework対応サンプルアプリ (Web サービスクライアント (Windows フォーム)) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>8_Build_WSClntWin_sample.bat</td><td>.NET Frameworkベースのサンプルアプリ (Web サービスクライアント (Windows フォーム)) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>9_Build_WSClntWPF_sample.bat</td><td>.NET Framework対応サンプルアプリ (Web サービスクライアント (WPF)) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>9_Build_WSClntWPF_sample.bat</td><td>.NET Frameworkベースのサンプルアプリ (Web サービスクライアント (WPF)) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
       <td>10_Build_WebApp_sample.bat</td><td>サンプルWebアプリ (ASP.NET) をビルドする。</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
@@ -194,31 +198,31 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
       <td>2_DeleteFile.bat</td><td>一時ファイルなどを削除 (クリーン) する。</td><td></td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_Framework.bat</td><td>.NET Framework対応フレームワーク (ベースクラス２部分) をビルドする。</td><td></td><td>○</td>
+      <td>3_Build_Framework.bat</td><td>.NET Frameworkベースのフレームワーク (ベースクラス２部分) をビルドする。</td><td></td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_RichClientFramework.bat</td><td>.NET Framework対応のリッチクライアント用フレームワークをビルドする。</td><td></td><td>△<span style="color: red"><sup>*2</sup></span></td>
+      <td>3_Build_RichClientFramework.bat</td><td>.NET Frameworkベースのリッチクライアント用フレームワークをビルドする。</td><td></td><td>△<span style="color: red"><sup>*2</sup></span></td>
     </tr>
     <tr>
-      <td>5_Build_2CS_sample.bat</td><td>.NET Framework対応サンプルアプリ (2 層 C/S) をビルドする。</td><td></td><td rowspan="7" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td>
+      <td>5_Build_2CS_sample.bat</td><td>.NET Frameworkベースのサンプルアプリ (2 層 C/S) をビルドする。</td><td></td><td rowspan="7" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td>
     </tr>
     <tr>
-      <td>5_Build_Bat_sample.bat</td><td>.NET Framework対応サンプルアプリ (バッチ) をビルドする。</td><td></td>
+      <td>5_Build_Bat_sample.bat</td><td>.NET Frameworkベースのサンプルアプリ (バッチ) をビルドする。</td><td></td>
     </tr>
     <tr>
-      <td>6_Build_WSSrv_sample.bat</td><td>.NET Framework対応サンプルアプリ (Web サービス (サーバー側ロジック)) をビルドする。</td><td></td>
+      <td>6_Build_WSSrv_sample.bat</td><td>.NET Frameworkベースのサンプルアプリ (Web サービス (サーバー側ロジック)) をビルドする。</td><td></td>
     </tr>
     <tr>
-      <td>7_Build_Framework_WS.bat</td><td>.NET Framework対応フレームワーク (サービスインタフェース部分) をビルドする。</td><td></td>
+      <td>7_Build_Framework_WS.bat</td><td>.NET Frameworkベースのフレームワーク (サービスインタフェース部分) をビルドする。</td><td></td>
     </tr>
     <tr>
-      <td>8_Build_WSClntWin_sample.bat</td><td>.NET Framework対応サンプルアプリ (Web サービスクライアント (Windows フォーム)) をビルドする。</td><td></td>
+      <td>8_Build_WSClntWin_sample.bat</td><td>.NET Frameworkベースのサンプルアプリ (Web サービスクライアント (Windows フォーム)) をビルドする。</td><td></td>
     </tr>
     <tr>
-      <td>9_Build_WSClntWPF_sample.bat</td><td>.NET Framework対応サンプルアプリ (Web サービスクライアント (WPF)) をビルドする。</td><td></td>
+      <td>9_Build_WSClntWPF_sample.bat</td><td>.NET Frameworkベースのサンプルアプリ (Web サービスクライアント (WPF)) をビルドする。</td><td></td>
     </tr>
     <tr>
-      <td>10_Build_WebApp_sample.bat</td><td>.NET Framework対応サンプルアプリ (ASP.NET) をビルドする。</td><td></td>
+      <td>10_Build_WebApp_sample.bat</td><td>.NET Frameworkベースのサンプルアプリ (ASP.NET) をビルドする。</td><td></td>
     </tr>
     <tr>
       <td>z_Common.bat</td><td>共通設定 (MSBuild 用)</td><td></td><td></td>
@@ -232,7 +236,7 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
   <span style="color: red;">*1</span>　NuGetパッケージを作成を作成する場合は必須<br />
   <span style="color: red;">*2</span>　リッチクライアント アプリケーションを作成する場合は必須<br />
   <span style="color: red;">*3</span>　実際のアプリケーションの形態に応じて選択してください<br />
-  <span style="color: red;">*4</span>　.NET Standard、.NET Core開発を行う場合に選択してください
+  <span style="color: red;">*4</span>　.NET Standard、.NET Core ベースのアプリケーションを開発する場合は必須
 </div>
 
 上の表を参考に、ビルドバッチファイルを番号順に実行してプログラムをビルドしてください。  
