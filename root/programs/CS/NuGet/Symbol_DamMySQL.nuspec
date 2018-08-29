@@ -33,6 +33,10 @@
     <file src="in\net47\OpenTouryo.DamMySQL.pdb" target="lib\net47" />
     <file src="in\net47\OpenTouryo.DamMySQL.xml" target="lib\net47" />
 
+    <file src="in\netstandard2.0\OpenTouryo.DamMySQL.dll" target="lib\netstandard2.0" />
+    <file src="in\netstandard2.0\OpenTouryo.DamMySQL.pdb" target="lib\netstandard2.0" />
+    <file src="in\netstandard2.0\OpenTouryo.DamMySQL.xml" target="lib\netstandard2.0" />
+
     <file src="..\Frameworks\Infrastructure\Public\Db\DamMySQL\**\*.cs" target="src" />
   </files>
 </package>

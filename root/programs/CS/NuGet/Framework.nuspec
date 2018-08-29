@@ -44,7 +44,5 @@
     <file src="in\netstandard2.0\OpenTouryo.Framework.pdb" target="pdb\netstandard2.0" />
     <file src="in\netstandard2.0\OpenTouryo.Framework.xml" target="lib\netstandard2.0" />
     <file src="in\netstandard2.0\ja-JP\OpenTouryo.Framework.resources.dll" target="lib\netstandard2.0\ja-JP" />
-
-    <file src="..\Frameworks\Infrastructure\Framework\**\*.cs" target="src" />
   </files>
 </package>

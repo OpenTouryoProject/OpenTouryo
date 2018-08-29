@@ -32,7 +32,5 @@
     <file src="in\net47\OpenTouryo.Framework.RichClient.dll" target="lib\net47" />
     <file src="in\net47\OpenTouryo.Framework.RichClient.pdb" target="pdb\net47" />
     <file src="in\net47\OpenTouryo.Framework.RichClient.xml" target="lib\net47" />
-    
-    <file src="..\Frameworks\Infrastructure\Framework\RichClient\**\*.cs" target="src" />
   </files>
 </package>

@@ -41,7 +41,5 @@
     <file src="in\netstandard2.0\OpenTouryo.Public.pdb" target="pdb\netstandard2.0" />
     <file src="in\netstandard2.0\OpenTouryo.Public.xml" target="lib\netstandard2.0" />
     <file src="in\netstandard2.0\ja-JP\OpenTouryo.Public.resources.dll" target="lib\netstandard2.0\ja-JP" />
-
-    <file src="..\Frameworks\Infrastructure\Public\**\*.cs" target="src" />
   </files>
 </package>
