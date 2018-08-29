@@ -24,7 +24,10 @@ You can run the sample application bundled with Open Touryo according to the fol
 
 ### Install prerequisites
 Install Visual Studio 2015 beforehand.  
-If you develop for .NET Standard or .NET Core, please install Visual Studio 2017 beforehand.
+If you develop for .NET Standard or .NET Core, install Visual Studio 2017 beforehand.
+
+**Signaged "optional":**  
+Signaged "optional" in following list is meaned that the data providers and DB libraries of the target RDBMS are not included in the build process of default build script or [NuGet package of the Open Touryo](https://www.nuget.org/packages?q=OpenTouryo). so download data providers yourself, and change the configuration, and build the these libraries as necessary.
 
 Further, when implementing or testing the *data access class*, install the DBMS(s) to be used.  
 Open Touryo supports the following DBMSs:
@@ -37,7 +40,7 @@ Open Touryo supports the following DBMSs:
 - PostgreSQL
 
 ### Deploy Open Touryo
-Copy root folder to C drive. If it is copied just under the C drive, it may exceed the maximum character length of Windows file paths at the time of program build, etc., and the build may fail. Therefore, please copy it directly under C drive.
+Copy root folder to C drive. If it is copied other than just under the C drive, it may exceed the maximum character length of Windows file paths at the time of program build, etc., and the build may fail. Therefore, please copy it directly under C drive.
 
 ### Obtain and deploy data providers
 The correspondence between the DBMSs and the data providers is as follows.
@@ -45,30 +48,31 @@ The correspondence between the DBMSs and the data providers is as follows.
 - Oracle
   - Oracle.DataAccess.dll ... optional
   - Oracle.ManagedDataAccess.dll
-- IBM DB2 (IBM.Data.DB2.dll) ... optional
-- HiRDB ... optional
-  - x86: pddndp40.dll, pddndpcore40.dll
-  - x64: pddndp40x.dll, pddndpcore40x.dll
-- MySQL (MySql.Data.dll)
-- PostgreSQL (Npgsql.dll)
+- IBM DB2
+  - IBM.Data.DB2.dll ... optional
+- HiRDB
+  - x86: pddndp40.dll, pddndpcore40.dll ... optional
+  - x64: pddndp40x.dll, pddndpcore40x.dll ... optional
+- MySQL
+  - MySql.Data.dll
+- PostgreSQL
+  - Npgsql.dll
 
 The following data providers are obtained from NuGet.
 
 - Oracle
   - Oracle.DataAccess.dll ... optional
   - Oracle.ManagedDataAccess.dll
-- MySQL (MySql.Data.dll)
-- PostgreSQL (Npgsql.dll)
+- MySQL
+  - MySql.Data.dll
+- PostgreSQL
+  - Npgsql.dll
 
 Data providers other than the above must be obtained and deployed manually.
 
-#### Note
-##### SQL Server
+**Note:**  
 Open Touryo supports SQL Server, but it is not necessary to deploy System.Data.SqlClient.dll, which is the data provider of SQL Server, to the above folder because System.Data.SqlClient.dll is contained in .NET Framework.  
 And, it might be necessary to re-add the reference of each data provider to DamXXX.csproj, that is, the Visual Studio project for data access in Open Touryo.
-
-##### Signaged "optional"
-Signaged "optional" in above list that are listed data providers and DB libraries are not included in the normal build process or [NuGet package of the Open Touryo](https://www.nuget.org/packages?q=OpenTouryo), so please build after change the configuration as necessary.
 
 ### Set up sample database
 #### SQL Server  
@@ -138,10 +142,10 @@ Legend:
       <td>2_DeleteFile.bat</td><td>Delete (Clean) the temporary files.</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_Framework.bat</td><td>Build the framework supported .NET Framework. (Base class 1 and base class 2 and library part)</td><td>○</td><td>○</td>
+      <td>3_Build_Framework.bat</td><td>Build the framework of .NET Framework-based. (Base class 1 and base class 2 and library part)</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_NetCore.bat</td><td>Build the framework supported .NET Core. (Base class 1 and base class 2 and library part)</td><td style="vertical-align: top">△<span style="color: red"><sup>*4</sup></span></td><td></td>
+      <td>3_Build_NetCore.bat</td><td>Build the framework of .NET Core-based. (Base class 1 and base class 2 and library part)</td><td style="vertical-align: top">△<span style="color: red"><sup>*4</sup></span></td><td></td>
     </tr>
     <tr>
       <td>3_Build_NuGet_net45.bat</td><td>Build the framework (Base class 1 and library part) to make NuGet package that targets .NET Framework 4.5.2.</td><td rowspan="3" style="vertical-align: top">△<span style="color: red"><sup>*1</sup></span></td><td></td>
@@ -156,34 +160,34 @@ Legend:
       <td>3_Build_NuGet_netstd20.bat</td><td>Build the framework (Base class 1 and library part) to make NuGet package that targets .NET Core 2.0.</td><td style="vertical-align: top">△<span style="color: red"><sup>*1, *4</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>3_Build_RichClientFramework.bat</td><td>Build the framework supported .NET Framework for rich client application.</td><td>△<span style="color: red"><sup>*2</sup></span></td><td></td>
+      <td>3_Build_RichClientFramework.bat</td><td>Build the framework of .NET Framework-based for rich client application.</td><td>△<span style="color: red"><sup>*2</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>4_Build_Framework_Tool.bat</td><td>Build the tools supported .NET Framework bundled with Open Touryo.</td><td>○</td><td>○</td>
+      <td>4_Build_Framework_Tool.bat</td><td>Build the tools of .NET Framework-based bundled with Open Touryo.</td><td>○</td><td>○</td>
     </tr>
     <tr>
-      <td>5_Build_2CS_sample.bat</td><td>Build the sample application supported .NET Framework. (Two-tier client server application)</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>5_Build_2CS_sample.bat</td><td>Build the sample application of .NET Framework-based. (Two-tier client server application)</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>5_Build_Bat_sample.bat</td><td>Build the sample application supported .NET Framework. (Batch application)</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>5_Build_Bat_sample.bat</td><td>Build the sample application of .NET Framework-based. (Batch application)</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>5_Build_BatCore_sample.bat</td><td>Build the sample application supported .NET Core. (Batch application)</td><td style="vertical-align: top">△<span style="color: red"><sup>*3, *4</sup></span></td><td></td>
+      <td>5_Build_BatCore_sample.bat</td><td>Build the sample application of .NET Core-based. (Batch application)</td><td style="vertical-align: top">△<span style="color: red"><sup>*3, *4</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>6_Build_WSSrv_sample.bat</td><td>Build the sample application supported .NET Framework. (Web services (Server-side logic))</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>6_Build_WSSrv_sample.bat</td><td>Build the sample application of .NET Framework-based. (Web services (Server-side logic))</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>6_Build_WSSrvCore_sample.bat</td><td>Build the sample application supported .NET Core. (Web services (Server-side logic))</td><td style="vertical-align: top">△<span style="color: red"><sup>*3, *4</sup></span></td><td></td>
+      <td>6_Build_WSSrvCore_sample.bat</td><td>Build the sample application of .NET Core-based. (Web services (Server-side logic))</td><td style="vertical-align: top">△<span style="color: red"><sup>*3, *4</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>7_Build_Framework_WS.bat</td><td>Build the framework supported .NET Framework. (Service interface)</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>7_Build_Framework_WS.bat</td><td>Build the framework of .NET Framework-based. (Service interface)</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>8_Build_WSClntWin_sample.bat</td><td>Build the sample application supported .NET Framework. (Web service client (Windows forms))</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>8_Build_WSClntWin_sample.bat</td><td>Build the sample application of .NET Framework-based. (Web service client (Windows forms))</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>9_Build_WSClntWPF_sample.bat</td><td>Build the sample application supported .NET Framework. (Web service client (WPF))</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>9_Build_WSClntWPF_sample.bat</td><td>Build the sample application of .NET Framework-based. (Web service client (WPF))</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
       <td>10_Build_WebApp_sample.bat</td><td>Build the sample web application. (ASP.NET)</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
@@ -204,28 +208,28 @@ Legend:
       <td>2_DeleteFile.bat</td><td>Delete (Clean) the temporary files.</td><td></td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_Framework.bat</td><td>Build the framework supported .NET Framework. (Base class 2 part)</td><td></td><td>○</td>
+      <td>3_Build_Framework.bat</td><td>Build the framework of .NET Framework-based. (Base class 2 part)</td><td></td><td>○</td>
     </tr>
     <tr>
-      <td>3_Build_RichClientFramework.bat</td><td>Build the framework supported .NET Framework for rich client application.</td><td></td><td>△<span style="color: red"><sup>*2</sup></span></td>
+      <td>3_Build_RichClientFramework.bat</td><td>Build the framework of .NET Framework-based for rich client application.</td><td></td><td>△<span style="color: red"><sup>*2</sup></span></td>
     </tr>
     <tr>
-      <td>5_Build_2CS_sample.bat</td><td>Build the sample application supported .NET Framework. (Two-tier client server application)</td><td></td><td rowspan="7" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td>
+      <td>5_Build_2CS_sample.bat</td><td>Build the sample application of .NET Framework-based. (Two-tier client server application)</td><td></td><td rowspan="7" style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td>
     </tr>
     <tr>
-      <td>5_Build_Bat_sample.bat</td><td>Build the sample application supported .NET Framework. (Batch application)</td><td></td>
+      <td>5_Build_Bat_sample.bat</td><td>Build the sample application of .NET Framework-based. (Batch application)</td><td></td>
     </tr>
     <tr>
-      <td>6_Build_WSSrv_sample.bat</td><td>Build the sample application supported .NET Framework. (Web services (Server-side logic))</td><td></td>
+      <td>6_Build_WSSrv_sample.bat</td><td>Build the sample application of .NET Framework-based. (Web services (Server-side logic))</td><td></td>
     </tr>
     <tr>
-      <td>7_Build_Framework_WS.bat</td><td>Build the framework supported .NET Framework. (Service interface)</td><td></td>
+      <td>7_Build_Framework_WS.bat</td><td>Build the framework of .NET Framework-based. (Service interface)</td><td></td>
     </tr>
     <tr>
-      <td>8_Build_WSClntWin_sample.bat</td><td>Build the sample application supported .NET Framework. (Web service client (Windows forms))</td><td></td>
+      <td>8_Build_WSClntWin_sample.bat</td><td>Build the sample application of .NET Framework-based. (Web service client (Windows forms))</td><td></td>
     </tr>
     <tr>
-      <td>9_Build_WSClntWPF_sample.bat</td><td>Build the sample application supported .NET Framework. (Web service client (WPF))</td><td></td>
+      <td>9_Build_WSClntWPF_sample.bat</td><td>Build the sample application of .NET Framework-based. (Web service client (WPF))</td><td></td>
     </tr>
     <tr>
       <td>10_Build_WebApp_sample.bat</td><td>Build the sample web application. (ASP.NET)</td><td></td>
@@ -242,7 +246,7 @@ Legend:
   <span style="color: red;">*1</span>　Need to run when making NuGet package.<br />
   <span style="color: red;">*2</span>　Need to run when creating rich client application.<br />
   <span style="color: red;">*3</span>　Select according to the actual architecture.<br />
-  <span style="color: red;">*4</span>　Select if develop for .NET Standard or .NET Core.
+  <span style="color: red;">*4</span>　Need to run when developing application that targets .NET Standard or .NET Core.
 </div>
 
 Refer to the above table and build programs by running the batch files in numerical order.
@@ -280,7 +284,7 @@ At the login screen, enter the arbitrary alphanumeric characters. (By default, t
 - ASP.NET MVC  
   - C:\root\programs\CS\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
   - C:\root\programs\VB\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
-- ASP.NET MVC  
+- ASP.NET Core MVC  
   - C:\root\programs\CS\Samples4NetCore\WebApp_sample\MVC_Sample\MVC_Sample.sln
 
 #### Two-tier client server application:
