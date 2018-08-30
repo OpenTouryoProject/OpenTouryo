@@ -85,7 +85,7 @@ namespace Touryo.Infrastructure.Public.Security
         {
             foreach (Dictionary<string, string> key in jwkSetObject.keys)
             {
-                if (key["kid"] == kid)
+                if (key[JwtConst.kid] == kid)
                 {
                     return key;
                 }
@@ -104,7 +104,7 @@ namespace Touryo.Infrastructure.Public.Security
             bool exist = false;
             foreach (Dictionary<string, string> key in jwkSetObject.keys)
             {
-                if (key["kid"] == jwkObject["kid"])
+                if (key[JwtConst.kid] == jwkObject[JwtConst.kid])
                 {
                     exist = true;
                 }

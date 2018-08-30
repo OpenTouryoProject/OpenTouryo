@@ -19,43 +19,39 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JWS_Header
-//* クラス日本語名  ：JWS Header
+//* クラス名        ：CryptoConst
+//* クラス日本語名  ：CryptoConst
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2018/08/16  西野 大介         新規作成
+//*  2018/08/30  西野 大介         新規作成
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>JWS Header</summary>
-    public class JWS_Header
+    /// <summary>暗号系定数</summary>
+    public class CryptoConst
     {
-        /// <summary>
-        /// alg=HS256 or RS256
-        /// JWSのデジタル署名アルゴリズムを指定する。
-        /// HS256 or RS256の署名アルゴリズムのみサポート。
-        /// </summary>
-        public string alg = "";
+        #region ハッシュ
 
-        /// <summary>
-        /// jku=JWK Set URL
-        /// </summary>
-        public string jku = null;
+        /// <summary>MD5</summary>
+        public const string MD5 = "MD5";
 
-        /// <summary>
-        /// kid=Jwk鍵のID
-        /// </summary>
-        public string kid = null;
+        /// <summary>SHA1</summary>
+        public const string SHA1 = "SHA1";
 
-        /// <summary>
-        /// typ=JWT(JWSもJWTらしい)
-        /// アサーションのタイプを指定。JWT固定。
-        /// </summary>
-        public readonly string typ = JwtConst.JWT;
+        /// <summary>SHA256</summary>
+        public const string SHA256 = "SHA256";
+
+        /// <summary>SHA384</summary>
+        public const string SHA384 = "SHA384";
+
+        /// <summary>SHA512</summary>
+        public const string SHA512 = "SHA512";
+        
+        #endregion
     }
 }

@@ -209,7 +209,7 @@ namespace Touryo.Infrastructure.Public.Security
         public static RSACryptoServiceProvider X509CerToProvider(string certificateFilePath)
         {
             DigitalSignX509 dsX509 = new DigitalSignX509(
-                certificateFilePath, "", "SHA256", X509KeyStorageFlags.DefaultKeySet);
+                certificateFilePath, "", CryptoConst.SHA256, X509KeyStorageFlags.DefaultKeySet);
 
             if (dsX509.X509Certificate.PrivateKey == null)
             {
@@ -235,7 +235,7 @@ namespace Touryo.Infrastructure.Public.Security
         public static RSACryptoServiceProvider X509PfxToProvider(string certificateFilePath, string password)
         {
             DigitalSignX509 dsX509 = new DigitalSignX509(
-                certificateFilePath, password, "SHA256", X509KeyStorageFlags.DefaultKeySet);
+                certificateFilePath, password, CryptoConst.SHA256, X509KeyStorageFlags.DefaultKeySet);
 
             AsymmetricAlgorithm aa = dsX509.X509Certificate.PublicKey.Key; // Public
             if (aa is RSACryptoServiceProvider)
@@ -297,22 +297,22 @@ namespace Touryo.Infrastructure.Public.Security
 
             Dictionary<string, string> dic = new Dictionary<string, string>();
 
-            dic["kty"] = "RSA"; // 必須
-            dic["alg"] = "RS256";
+            dic[JwtConst.kty] = "RSA"; // 必須
+            dic[JwtConst.alg] = JwtConst.RS256;
 
             // Public
-            dic["n"] = CustomEncode.ToBase64UrlString(param.Modulus);
-            dic["e"] = CustomEncode.ToBase64UrlString(param.Exponent); //"AQAB";
+            dic[JwtConst.n] = CustomEncode.ToBase64UrlString(param.Modulus);
+            dic[JwtConst.e] = CustomEncode.ToBase64UrlString(param.Exponent); //"AQAB";
 
             // kid : https://openid-foundation-japan.github.io/rfc7638.ja.html#Example
-            dic["kid"] = CustomEncode.ToBase64UrlString(
+            dic[JwtConst.kid] = CustomEncode.ToBase64UrlString(
                 GetHash.GetHashBytes(
                     CustomEncode.StringToByte(
                         JsonConvert.SerializeObject(new
                         {
-                            e = dic["e"],
-                            kty = dic["kty"],
-                            n = dic["n"]
+                            kty = dic[JwtConst.kty],
+                            e = dic[JwtConst.e],
+                            n = dic[JwtConst.n]
                         }),
                         CustomEncode.UTF_8),
                     EnumHashAlgorithm.SHA256Managed));
@@ -344,15 +344,15 @@ namespace Touryo.Infrastructure.Public.Security
         {
             JObject jwk = JObject.Parse(jwkKey);
 
-            if (jwk["alg"].ToString().ToLower() == "rs256")
+            if (jwk[JwtConst.alg].ToString().ToUpper() == JwtConst.RS256)
             {
                 // RSAParameters
                 // FromBase64Stringだとエラーになる。
                 RSAParameters rsaParameters = new RSAParameters()
                 {
                     // Public
-                    Modulus = CustomEncode.FromBase64UrlString((string)jwk["n"]),
-                    Exponent = CustomEncode.FromBase64UrlString((string)jwk["e"]),
+                    Modulus = CustomEncode.FromBase64UrlString((string)jwk[JwtConst.n]),
+                    Exponent = CustomEncode.FromBase64UrlString((string)jwk[JwtConst.e]),
                 };
 
                 RSACryptoServiceProvider rsaCryptoServiceProvider = new RSACryptoServiceProvider();

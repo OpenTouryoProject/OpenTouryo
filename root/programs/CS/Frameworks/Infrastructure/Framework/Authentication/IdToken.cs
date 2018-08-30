@@ -235,28 +235,50 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
             else
             {
-                // 読取
-                Dictionary<string, string> jwkObject = JwkSetStore.GetInstance().GetJwkObject(jwsHeader.kid);
-
-                // チェック
-                if (jwkObject == null)
+                // Jwkを使用？
+                if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
                 {
-                    // 書込
-                    jwkObject = JwkSetStore.GetInstance().SetJwkSetObject(jwsHeader.jku, jwsHeader.kid);
-                }
+                    // Client側
+                    Dictionary<string, string> jwkObject = JwkSetStore.GetInstance().GetJwkObject(jwsHeader.kid);
 
-                // チェック
-                if (jwkObject == null)
-                {
-                    // 証明書を使用
-                    jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
+                    // チェック
+                    if (jwkObject == null)
+                    {
+                        // 書込
+                        jwkObject = JwkSetStore.GetInstance().SetJwkSetObject(jwsHeader.jku, jwsHeader.kid);
+                    }
+
+                    // チェック
+                    if (jwkObject == null)
+                    {
+                        // 証明書を使用
+                        jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
+                    }
+                    else
+                    {
+                        // Jwkを使用
+                        jwsRS256 = new JWS_RS256_Param(
+                            RS256_KeyConverter.JwkToProvider(
+                                JsonConvert.SerializeObject(jwkObject)).ExportParameters(false));
+                    }
                 }
                 else
                 {
-                    // Jwkを使用
-                    jwsRS256 = new JWS_RS256_Param(
-                        RS256_KeyConverter.JwkToProvider(
-                            JsonConvert.SerializeObject(jwkObject)).ExportParameters(false));
+                    // AuthZ側（検証用カバレッジ
+                    JwkSet jwkSet = JwkSet.LoadJwkSet(OAuth2AndOIDCParams.JwkSetFilePath);
+                    Dictionary<string, string> JwkObject = JwkSet.GetJwkObject(jwkSet, jwsHeader.kid);
+                    
+                    if (JwkObject == null)
+                    {
+                        // 証明書を使用
+                        jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
+                    }
+                    else
+                    {
+                        // Jwkを使用
+                        jwsRS256 = new JWS_RS256_Param(
+                            RS256_KeyConverter.JwkToProvider(JwkObject[JwtConst.n]).ExportParameters(false));
+                    }
                 }
             }
 
@@ -326,19 +348,29 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 if (iss == OAuth2AndOIDCParams.Isser &&
                     long.Parse(exp) >= unixTimeSeconds)
                 {
-                    if (aud == OAuth2AndOIDCParams.ClientID)
+                    if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
                     {
-                        // OAuth2 Clientバージョンの実装で成功
-                        return true;
-                    }
-                    else if (OAuth2AndOIDCParams.ClientIDs.Any(x => x == aud))
-                    {
-                        // OAuth2 ResourcesServerバージョンの実装で成功
-                        return true;
+                        // Client側
+                        if (aud == OAuth2AndOIDCParams.ClientID)
+                        {
+                            // OAuth2 Clientバージョンの実装で成功
+                            return true;
+                        }
+                        else if (OAuth2AndOIDCParams.ClientIDs.Any(x => x == aud))
+                        {
+                            // OAuth2 ResourcesServerバージョンの実装で成功
+                            return true;
+                        }
+                        else
+                        {
+                            // JWTの内容検証に失敗
+                        }
                     }
                     else
                     {
-                        // JWTの内容検証に失敗
+                        // AuthZ側（検証用カバレッジ
+                        // OAuth2 AuthZバージョンの実装で成功
+                        return true;
                     }
                 }
                 else
@@ -361,7 +393,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>
         /// at_hash, c_hash, s_hashを作成
-        /// （SHA256→RS256，ES256対応可能）
+        /// （SHA256→HS256，RS256，ES256対応可能）
         /// </summary>
         /// <param name="input">string</param>
         /// <returns>hash</returns>
@@ -381,7 +413,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>
         /// at_hash, c_hash, s_hashの検証
-        /// （SHA256→RS256，ES256対応可能）
+        /// （SHA256→HS256，RS256，ES256対応可能）
         /// </summary>
         /// <param name="input">string</param>
         /// <param name="hash">string</param>

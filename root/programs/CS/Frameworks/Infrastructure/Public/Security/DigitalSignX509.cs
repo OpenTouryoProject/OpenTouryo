@@ -173,23 +173,23 @@ namespace Touryo.Infrastructure.Public.Security
                 else if (aa is RSACng)
                 {
                     HashAlgorithmName hashAlgorithmName = HashAlgorithmName.MD5;
-                    if (this._hashAlgorithmName == "MD5")
+                    if (this._hashAlgorithmName == CryptoConst.MD5)
                     {
                         hashAlgorithmName = HashAlgorithmName.MD5;
                     }
-                    else if (this._hashAlgorithmName == "SHA1")
+                    else if (this._hashAlgorithmName == CryptoConst.SHA1)
                     {
                         hashAlgorithmName = HashAlgorithmName.SHA1;
                     }
-                    else if (this._hashAlgorithmName == "SHA256")
+                    else if (this._hashAlgorithmName == CryptoConst.SHA256)
                     {
                         hashAlgorithmName = HashAlgorithmName.SHA256;
                     }
-                    else if (this._hashAlgorithmName == "SHA384")
+                    else if (this._hashAlgorithmName == CryptoConst.SHA384)
                     {
                         hashAlgorithmName = HashAlgorithmName.SHA384;
                     }
-                    else if (this._hashAlgorithmName == "SHA512")
+                    else if (this._hashAlgorithmName == CryptoConst.SHA512)
                     {
                         hashAlgorithmName = HashAlgorithmName.SHA512;
                     }

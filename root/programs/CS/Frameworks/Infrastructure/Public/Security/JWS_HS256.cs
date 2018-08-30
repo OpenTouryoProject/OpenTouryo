@@ -78,20 +78,20 @@ namespace Touryo.Infrastructure.Public.Security
             Dictionary<string, string> jwk = new Dictionary<string, string>();
             jwk = JsonConvert.DeserializeObject<Dictionary<string, string>>(jwkString);
 
-            if(jwk.ContainsKey("kty")
-                && jwk.ContainsKey("use")
-                && jwk.ContainsKey("alg")
-                && jwk.ContainsKey("k"))
+            if(jwk.ContainsKey(JwtConst.kty)
+                && jwk.ContainsKey(JwtConst.use)
+                && jwk.ContainsKey(JwtConst.alg)
+                && jwk.ContainsKey(JwtConst.k))
             {
                 // 正しいキー
-                if (jwk["kty"] == "oct"
-                && jwk["use"] == "sig"
-                && jwk["alg"] == "HS256"
-                && !string.IsNullOrEmpty(jwk["k"]))
+                if (jwk[JwtConst.kty].ToLower() == "oct"
+                && jwk[JwtConst.use].ToLower() == "sig"
+                && jwk[JwtConst.alg].ToUpper() == JwtConst.HS256
+                && !string.IsNullOrEmpty(jwk[JwtConst.k]))
                 {
                     // 正しい値
                     this.JWK = jwkString;
-                    this.Key = CustomEncode.FromBase64UrlString(jwk["k"]);
+                    this.Key = CustomEncode.FromBase64UrlString(jwk[JwtConst.k]);
                     return; // 正常終了
                 }
                 else { }
@@ -114,7 +114,7 @@ namespace Touryo.Infrastructure.Public.Security
         public override string Create(string payloadJson)
         {
             // ヘッダー
-            JWS_Header headerObject = new JWS_Header { alg = "HS256" };
+            JWS_Header headerObject = new JWS_Header { alg = JwtConst.HS256 };
 
             string headerJson = JsonConvert.SerializeObject(
                 headerObject,
@@ -151,7 +151,7 @@ namespace Touryo.Infrastructure.Public.Security
             JWS_Header headerObject = (JWS_Header)JsonConvert.DeserializeObject(
                 CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8), typeof(JWS_Header));
 
-            if (headerObject.alg == "HS256" && headerObject.typ == "JWT")
+            if (headerObject.alg.ToUpper() == JwtConst.HS256 && headerObject.typ.ToUpper() == JwtConst.JWT)
             {
                 byte[] data = CustomEncode.StringToByte(temp[0] + "." + temp[1], CustomEncode.UTF_8);
                 byte[] sign = CustomEncode.FromBase64UrlString(temp[2]);

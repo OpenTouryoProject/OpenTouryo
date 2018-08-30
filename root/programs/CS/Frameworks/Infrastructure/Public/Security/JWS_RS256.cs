@@ -43,7 +43,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>_JWSHeader</summary>
         private JWS_Header _JWSHeader = new JWS_Header
         {
-            alg = "RS256"
+            alg = JwtConst.RS256
         };
 
         /// <summary>JWSHeader</summary>

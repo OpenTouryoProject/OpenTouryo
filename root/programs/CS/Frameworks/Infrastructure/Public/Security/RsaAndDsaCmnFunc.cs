@@ -86,7 +86,7 @@ namespace Touryo.Infrastructure.Public.Security
                 
                 // HashAlgorithm
                 string temp = RsaAndDsaCmnFunc.GetHashAlgorithmName(ha);
-                if (temp == "SHA1")
+                if (temp == CryptoConst.SHA1)
                 {
                     return dsaCryptoServiceProvider;
                 }
@@ -175,23 +175,23 @@ namespace Touryo.Infrastructure.Public.Security
 
             if (ha is MD5)
             {
-                haName = "MD5";
+                haName = CryptoConst.MD5;
             }
             else if (ha is SHA1)
             {
-                haName = "SHA1";
+                haName = CryptoConst.SHA1;
             }
             else if (ha is SHA256)
             {
-                haName = "SHA256";
+                haName = CryptoConst.SHA256;
             }
             else if (ha is SHA384)
             {
-                haName = "SHA384";
+                haName = CryptoConst.SHA384;
             }
             else if (ha is SHA512)
             {
-                haName = "SHA512";
+                haName = CryptoConst.SHA512;
             }
             else
             {

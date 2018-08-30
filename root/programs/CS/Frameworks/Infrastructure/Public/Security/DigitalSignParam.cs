@@ -101,7 +101,7 @@ namespace Touryo.Infrastructure.Public.Security
                 DSASignatureFormatter dsaFormatter = new DSASignatureFormatter(this.AsymmetricAlgorithm);
 
                 // デジタル署名を作成
-                dsaFormatter.SetHashAlgorithm("SHA1");
+                dsaFormatter.SetHashAlgorithm(CryptoConst.SHA1);
                 signedByte = dsaFormatter.CreateSignature(hashedByte);
             }
 
