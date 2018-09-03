@@ -27,7 +27,7 @@ Install Visual Studio 2015 beforehand.
 If you develop for .NET Standard or .NET Core, install Visual Studio 2017 beforehand.
 
 **Signaged "optional":**  
-Signaged "optional" in following is meaned that the data providers and DB libraries of the target RDBMS are not included in <a href="#Build program">the build process of default build script</a> or [NuGet package of the Open Touryo](https://www.nuget.org/packages?q=OpenTouryo). so download data providers yourself, and change the settings of reference manager, and build the these libraries as necessary.
+Signaged "optional" in following is meaned that the data providers and DB libraries of the target RDBMS are not included in <a href="#build-program">the build process of default build script</a> or [NuGet package of the Open Touryo](https://www.nuget.org/packages?q=OpenTouryo). so download data providers yourself, and change the settings of reference manager, and build the these libraries as necessary.
 
 Further, when implementing or testing the *data access class*, install the DBMS(s) to be used.  
 Open Touryo supports the following DBMSs:
@@ -219,7 +219,7 @@ Legend:
       <td>5_Build_Bat_sample.bat</td><td>Build the .NET Framework-based sample application. (Batch application)</td><td></td>
     </tr>
     <tr>
-      <td>6_Build_WSSrv_sample.bat</td><td>Build the .NET Framework-based sample application of. (Web services (Server-side logic))</td><td></td>
+      <td>6_Build_WSSrv_sample.bat</td><td>Build the .NET Framework-based sample application. (Web services (Server-side logic))</td><td></td>
     </tr>
     <tr>
       <td>7_Build_Framework_WS.bat</td><td>Build the .NET Framework-based framework. (Service interface)</td><td></td>
