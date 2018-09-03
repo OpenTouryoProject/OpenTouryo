@@ -23,7 +23,7 @@ Open 棟梁のプログラムは、以下のリポジトリで公開していま
 Open 棟梁に同梱されるサンプルアプリケーションの実行手順は以下のとおりです。
 
 **Optional表記:**  
-次のリスト中のoptional表記のある対象RDBMSのデータプロバイダとDBライブラリは、デフォルトのビルドスクリプトのビルドプロセス、または[Open 棟梁のNuGetパッケージ](https://www.nuget.org/packages?q=OpenTouryo)に含まれません。必要に応じてデータプロバイダを自分でダウンロードし、設定を変更し、これらのライブラリをビルドして利用して下さい。
+以下のoptional表記のある対象RDBMSのデータプロバイダとDBライブラリは、<a href="#プログラムのビルド">デフォルトのビルドスクリプトのビルドプロセス</a>、または[Open 棟梁のNuGetパッケージ](https://www.nuget.org/packages?q=OpenTouryo)に含まれません。必要に応じてデータプロバイダを自分でダウンロードし、参照設定を変更し、これらのライブラリをビルドして利用して下さい。
 
 ### 前提ツールのインストール
 あらかじめ、Visual Studio 2015 をインストールしておいてください。  
@@ -60,7 +60,6 @@ Open 棟梁が現在サポートしているデータベースと、対応する
 以下のデータプロバイダについては、NuGetから取得を行います。
 
 - Oracle
-  - Oracle.DataAccess.dll ... optional
   - Oracle.ManagedDataAccess.dll
 - MySQL
   - MySql.Data.dll
