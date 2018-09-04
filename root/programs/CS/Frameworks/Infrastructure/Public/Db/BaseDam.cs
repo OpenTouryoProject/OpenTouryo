@@ -3181,7 +3181,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <summary>パラメタライズドクエリにパラメタを設定する。</summary>
         /// <param name="parameterName">パラメタライズドクエリのパラメタ名</param>
         /// <param name="obj">パラメタの値</param>
-        /// <param name="dbTypeInfo">パラメタの型（HiRDBType）</param>
+        /// <param name="dbTypeInfo">パラメタの型（データプロバイダ固有）</param>
         /// <param name="size">パラメタのサイズ</param>
         /// <remarks>派生のDamXXXでオーバーライドする。</remarks>
         public abstract void SetParameter(string parameterName, object obj, object dbTypeInfo, int size);
@@ -3189,7 +3189,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <summary>パラメタライズドクエリにパラメタを設定する。</summary>
         /// <param name="parameterName">パラメタライズドクエリのパラメタ名</param>
         /// <param name="obj">パラメタの値</param>
-        /// <param name="dbTypeInfo">パラメタの型（HiRDBType）</param>
+        /// <param name="dbTypeInfo">パラメタの型（データプロバイダ固有）</param>
         /// <param name="size">パラメタのサイズ</param>
         /// <param name="paramDirection">パラメタの方向</param>
         /// <remarks>派生のDamXXXでオーバーライドする。</remarks>
