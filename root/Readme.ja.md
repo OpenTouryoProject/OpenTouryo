@@ -23,11 +23,12 @@ Open 棟梁のプログラムは、以下のリポジトリで公開していま
 Open 棟梁に同梱されるサンプルアプリケーションの実行手順は以下のとおりです。
 
 **Optional表記:**  
-以下のoptional表記のある対象RDBMSのデータプロバイダとDBライブラリは、<a href="#プログラムのビルド">デフォルトのビルドスクリプトのビルドプロセス</a>、または[Open 棟梁のNuGetパッケージ](https://www.nuget.org/packages?q=OpenTouryo)に含まれません。必要に応じてデータプロバイダを自分でダウンロードし、参照設定を変更し、これらのライブラリをビルドして利用して下さい。
+以下のoptional表記のある対象RDBMSのデータプロバイダとDBライブラリは、<a href="#プログラムのビルド">デフォルトのビルドスクリプトのビルドプロセス</a>、または[Open 棟梁のNuGetパッケージ](https://www.nuget.org/packages?q=OpenTouryo)に含まれません。必要に応じてデータプロバイダを自分でダウンロードし、Open 棟梁のデータアクセス用のプロジェクト (DamXXX.csproj) から、各データプロバイダに参照設定を張り直し、これらのライブラリをビルドして利用して下さい。
 
 ### 前提ツールのインストール
 あらかじめ、Visual Studio 2015 をインストールしておいてください。  
-（.NET Standard、.NET Core開発を行う場合は、Visual Studio 2017 をインストールしておいてください。）
+.NET Standard、.NET Core開発を行う場合は、Visual Studio 2017 をインストールしておいてください。  
+参考: https://docs.microsoft.com/ja-jp/dotnet/core/windows-prerequisites
 
 また、Open 棟梁がサポートしている以下の DBMS へのデータアクセスクラスの開発・テストを行う場合は、使用する DBMS をインストールしてください。
 - SQL Server  
@@ -39,7 +40,7 @@ Open 棟梁に同梱されるサンプルアプリケーションの実行手順
 - PostgreSQL
 
 ### Open 棟梁の配置
-「root」フォルダを、C ドライブ直下にコピーしてください。C ドライブ直下以外に配置すると、プログラムのビルド時などで、Windows のファイルパスの最大文字長を超え、ビルドに失敗することがあります。このため、C ドライブ直下に配置するようにしてください。
+「root」フォルダを、C ドライブ直下にコピーしてください。そうでない場合は、Windows のファイルパスの最大文字長を超え、ビルドに失敗することがあります。
 
 ### データプロバイダの取得と配置
 Open 棟梁が現在サポートしているデータベースと、対応するデータプロバイダは以下のとおりです。
@@ -56,20 +57,6 @@ Open 棟梁が現在サポートしているデータベースと、対応する
   - MySql.Data.dll
 - PostgreSQL
   - Npgsql.dll
-
-以下のデータプロバイダについては、NuGetから取得を行います。
-
-- Oracle
-  - Oracle.ManagedDataAccess.dll
-- MySQL
-  - MySql.Data.dll
-- PostgreSQL
-  - Npgsql.dll
-
-上記以外のデータプロバイダは、手動で取得して配置する必要があります。
-
-**注意:**  
-Open 棟梁は SQL Server もサポートしていますが、SQL Server のデータプロバイダである System.Data.SqlClient.dll は .NET Framework に同梱されていますので、上記フォルダに格納する必要はありません。また、Open 棟梁のデータアクセス用のプロジェクト (DamXXX.csproj) から、各データプロバイダに参照設定を張り直す必要がある場合があります。
 
 ### サンプルデータベースのセットアップ
 #### SQL Server  
