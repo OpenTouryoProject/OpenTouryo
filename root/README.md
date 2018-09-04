@@ -22,12 +22,13 @@ Click [here](Readme.ja.md) for Japanese version of this file.
 ## Running sample application tasks
 You can run the sample application bundled with Open Touryo according to the following steps.
 
+**Signaged "optional":**  
+Signaged "optional" in following is meaned that the data providers and DB libraries of the target RDBMS are not included in <a href="#build-program">the build process of default build script</a> or [NuGet package of the Open Touryo](https://www.nuget.org/packages?q=OpenTouryo). so download data providers yourself, and it might be necessary to re-add the reference of each data provider to DamXXX.csproj, that is, the Visual Studio project for data access in Open Touryo, and build the these libraries as necessary.
+
 ### Install prerequisites
 Install Visual Studio 2015 beforehand.  
-If you develop for .NET Standard or .NET Core, install Visual Studio 2017 beforehand.
-
-**Signaged "optional":**  
-Signaged "optional" in following is meaned that the data providers and DB libraries of the target RDBMS are not included in <a href="#build-program">the build process of default build script</a> or [NuGet package of the Open Touryo](https://www.nuget.org/packages?q=OpenTouryo). so download data providers yourself, and change the settings of reference manager, and build the these libraries as necessary.
+If you develop for .NET Standard or .NET Core, install Visual Studio 2017 beforehand.  
+see: https://docs.microsoft.com/ja-jp/dotnet/core/windows-prerequisites
 
 Further, when implementing or testing the *data access class*, install the DBMS(s) to be used.  
 Open Touryo supports the following DBMSs:
@@ -57,21 +58,6 @@ The correspondence between the DBMSs and the data providers is as follows.
   - MySql.Data.dll
 - PostgreSQL
   - Npgsql.dll
-
-The following data providers are obtained from NuGet.
-
-- Oracle
-  - Oracle.ManagedDataAccess.dll
-- MySQL
-  - MySql.Data.dll
-- PostgreSQL
-  - Npgsql.dll
-
-Data providers other than the above must be obtained and deployed manually.
-
-**Note:**  
-Open Touryo supports SQL Server, but it is not necessary to deploy System.Data.SqlClient.dll, which is the data provider of SQL Server, to the above folder because System.Data.SqlClient.dll is contained in .NET Framework.  
-And, it might be necessary to re-add the reference of each data provider to DamXXX.csproj, that is, the Visual Studio project for data access in Open Touryo.
 
 ### Set up sample database
 #### SQL Server  
@@ -168,7 +154,7 @@ Legend:
       <td>5_Build_2CS_sample.bat</td><td>Build the .NET Framework-based sample application. (Two-tier client server application)</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
-      <td>5_Build_Bat_sample.bat</td><td>Build the sample application of .NET Framework-based. (Batch application)</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
+      <td>5_Build_Bat_sample.bat</td><td>Build the .NET Framework-based sample application. (Batch application)</td><td style="vertical-align: top">△<span style="color: red"><sup>*3</sup></span></td><td></td>
     </tr>
     <tr>
       <td>5_Build_BatCore_sample.bat</td><td>Build the .NET Core-based sample application. (Batch application)</td><td style="vertical-align: top">△<span style="color: red"><sup>*3, *4</sup></span></td><td></td>
