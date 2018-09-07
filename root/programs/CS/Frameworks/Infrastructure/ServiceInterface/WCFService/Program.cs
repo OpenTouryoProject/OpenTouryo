@@ -32,9 +32,11 @@
 //**********************************************************************************
 
 using System;
+using System.Net.Http;
 using System.ServiceModel;
 
 using Touryo.Infrastructure.Business.Transmission;
+using Touryo.Infrastructure.Framework.Authentication;
 
 namespace WCFService
 {
@@ -43,7 +45,7 @@ namespace WCFService
         static void Main(string[] args)
         {
             //Console.ReadKey();
-
+            OAuth2AndOIDCClient.HttpClient = new HttpClient(); // JwkSet取得用
             using (ServiceHost host = new ServiceHost(typeof(WCFTCPSvcForFx)))
             {
                 host.Open();

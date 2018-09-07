@@ -31,15 +31,18 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         新規作成
 '**********************************************************************************
 
+Imports System.Net.Http
 Imports System.ServiceModel
+
 Imports Touryo.Infrastructure.Business.Transmission
+Imports Touryo.Infrastructure.Framework.Authentication
 
 Namespace WCFService
     Module Module1
 
         Sub Main()
             'Console.ReadKey();
-
+            OAuth2AndOIDCClient.HttpClient = New HttpClient() ' JwkSet取得用
             Using host As New ServiceHost(GetType(WCFTCPSvcForFx))
                 host.Open()
                 Console.ReadKey()

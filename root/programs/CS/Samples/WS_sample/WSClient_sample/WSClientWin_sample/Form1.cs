@@ -128,11 +128,14 @@ namespace WSClientWin_sample
             this.ddlOrderSequence.SelectedIndex = 0;
 
             // 呼出し制御部品
-            this.CallCtrl = new CallController(Program.AccessToken);
-            
-            //// ↓カバレージ上げ
-            //this.CallCtrl = new CallController(null);
-            //this.CallCtrl.UserInfo = UserInfo;
+            if (string.IsNullOrEmpty(Program.AccessToken))
+            {
+                this.CallCtrl = new CallController(MyBaseControllerWin.UserInfo);
+            }
+            else
+            {
+                this.CallCtrl = new CallController(Program.AccessToken);
+            }
         }
 
         #region コンボボックス用
@@ -237,7 +240,15 @@ namespace WSClientWin_sample
                 TestReturnValue testReturnValue;
 
                 // 呼出し制御部品（スレッドセーフでないため副スレッド内で作る）
-                CallController callCtrl = new CallController(Program.AccessToken);
+                CallController callCtrl = null;
+                if (string.IsNullOrEmpty(Program.AccessToken))
+                {
+                    callCtrl = new CallController(MyBaseControllerWin.UserInfo);
+                }
+                else
+                {
+                    callCtrl = new CallController(Program.AccessToken);
+                }
 
                 // Invoke
                 testReturnValue = (TestReturnValue)callCtrl.Invoke(

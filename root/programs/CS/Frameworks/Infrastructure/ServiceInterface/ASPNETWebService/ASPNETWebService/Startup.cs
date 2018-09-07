@@ -17,13 +17,14 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+using System.Web.Mvc;
+using System.Web.Http;
+using System.Net.Http;
+
 using Owin;
 using Microsoft.Owin;
 
-using System.Web.Mvc;
-using System.Web.Http;
-using System.Web.Optimization;
-using System.Web.Routing;
+using Touryo.Infrastructure.Framework.Authentication;
 
 [assembly: OwinStartup(typeof(ASPNETWebService.Startup))]
 
@@ -56,6 +57,7 @@ namespace ASPNETWebService
 
             //// 認証に関するOWINミドルウェアの設定を行う。
             //StartupAuth.Configure(app);
+            OAuth2AndOIDCClient.HttpClient = new HttpClient(); // JwkSet取得用
 
             GlobalConfiguration.Configuration.Initializer(GlobalConfiguration.Configuration);
         }

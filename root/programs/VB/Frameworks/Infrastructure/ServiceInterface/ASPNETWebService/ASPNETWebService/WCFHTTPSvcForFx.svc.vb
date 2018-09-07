@@ -158,24 +158,29 @@ Namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                 ' ★
                 status = FxLiteral.SIF_STATUS_AUTHENTICATION
 
-				Dim access_token As String = DirectCast(context, String)
-				If Not String.IsNullOrEmpty(access_token) Then
-					Dim [sub] As String = ""
-					Dim roles As List(Of String) = Nothing
-					Dim scopes As List(Of String) = Nothing
-					Dim jobj As JObject = Nothing
+                If TypeOf context Is String Then
+                    ' System.Stringの場合
+                    Dim access_token As String = DirectCast(context, String)
+                    If Not String.IsNullOrEmpty(access_token) Then
+                        Dim [sub] As String = ""
+                        Dim roles As List(Of String) = Nothing
+                        Dim scopes As List(Of String) = Nothing
+                        Dim jobj As JObject = Nothing
 
-					If JwtToken.Verify(access_token, [sub], roles, scopes, jobj) Then
-						' 認証成功
-						Debug.WriteLine("認証成功")
-							' 認証失敗（認証必須ならエラーにする。
-					Else
-					End If
-						' 認証失敗（認証必須ならエラーにする。
-				Else
-				End If
+                        If JwtToken.Verify(access_token, [sub], roles, scopes, jobj) Then
+                            ' 認証成功
+                            Debug.WriteLine("認証成功")
+                            ' 認証失敗（認証必須ならエラーにする。
+                        Else
+                        End If
+                        ' 認証失敗（認証必須ならエラーにする。
+                    Else
+                    End If
+                Else
+                    ' MyUserInfoの場合
+                End If
 
-				'contextObject = BinarySerialize.ObjectToBytes(hogehoge); // 更新可能だが...。
+                'contextObject = BinarySerialize.ObjectToBytes(hogehoge); // 更新可能だが...。
 
                 '#End Region
 

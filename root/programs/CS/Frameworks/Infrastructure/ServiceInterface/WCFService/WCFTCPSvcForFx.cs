@@ -162,18 +162,26 @@ namespace Touryo.Infrastructure.Business.Transmission
                 // ★
                 status = FxLiteral.SIF_STATUS_AUTHENTICATION;
 
-                string access_token = (string)context;
-                if (!string.IsNullOrEmpty(access_token))
+                if (context is string)
                 {
-                    string sub = "";
-                    List<string> roles = null;
-                    List<string> scopes = null;
-                    JObject jobj = null;
-
-                    if (JwtToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
+                    // System.Stringの場合
+                    string access_token = (string)context;
+                    if (!string.IsNullOrEmpty(access_token))
                     {
-                        // 認証成功
-                        Debug.WriteLine("認証成功");
+                        string sub = "";
+                        List<string> roles = null;
+                        List<string> scopes = null;
+                        JObject jobj = null;
+
+                        if (JwtToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
+                        {
+                            // 認証成功
+                            Debug.WriteLine("認証成功");
+                        }
+                        else
+                        {
+                            // 認証失敗（認証必須ならエラーにする。
+                        }
                     }
                     else
                     {
@@ -182,7 +190,7 @@ namespace Touryo.Infrastructure.Business.Transmission
                 }
                 else
                 {
-                    // 認証失敗（認証必須ならエラーにする。
+                    // MyUserInfoの場合
                 }
 
                 //contextObject = BinarySerialize.ObjectToBytes(hogehoge); // 更新可能だが...。
