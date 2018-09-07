@@ -67,6 +67,7 @@ namespace ASPNETWebService.Controllers
     /// </summary>
     [EnableCors("AllowAllOrigins")]
     [MyBaseAsyncApiController()]
+    [Route("api/[controller]")]
     public class JsonController : ApiController
     {
         #region テスト用
@@ -74,6 +75,7 @@ namespace ASPNETWebService.Controllers
         /// <summary>test</summary>
         /// <returns>string</returns>
         [HttpGet]
+        [Route("test")]
         public string test()
         {
             return "test";
@@ -112,7 +114,7 @@ namespace ASPNETWebService.Controllers
         /// <param name="param">引数</param>
         /// <returns>戻り値</returns>
         [HttpPost]
-        [Route("JsonController/SelectCount")]
+        [Route("[action]")]
         public async Task<HttpResponseMessage> SelectCount([FromForm] WebApiParams param)
         {
             // Claimを取得する。
@@ -168,7 +170,7 @@ namespace ASPNETWebService.Controllers
         /// <param name="param">引数</param>
         /// <returns>戻り値</returns>
         [HttpPost]
-        [Route("JsonController/SelectAll_DT")]
+        [Route("[action]")]
         public async Task<HttpResponseMessage> SelectAll_DT([FromForm] WebApiParams param)
         {
             // Claimを取得する。
@@ -244,7 +246,7 @@ namespace ASPNETWebService.Controllers
         /// <param name="param">引数</param>
         /// <returns>戻り値</returns>
         [HttpPost]
-        [Route("JsonController/SelectAll_DS")]
+        [Route("[action]")]
         public async Task<HttpResponseMessage> SelectAll_DS([FromForm] WebApiParams param)
         {
             // Claimを取得する。
@@ -301,7 +303,7 @@ namespace ASPNETWebService.Controllers
         /// <param name="param">引数</param>
         /// <returns>戻り値</returns>
         [HttpPost]
-        [Route("JsonController/SelectAll_DR")]
+        [Route("[action]")]
         public async Task<HttpResponseMessage> SelectAll_DR([FromForm] WebApiParams param)
         {
             // Claimを取得する。
@@ -358,7 +360,7 @@ namespace ASPNETWebService.Controllers
         /// <param name="param">引数</param>
         /// <returns>戻り値</returns>
         [HttpPost]
-        [Route("JsonController/SelectAll_DSQL")]
+        [Route("[action]")]
         public async Task<HttpResponseMessage> SelectAll_DSQL([FromForm] WebApiParams param)
         {
             // Claimを取得する。
@@ -418,7 +420,7 @@ namespace ASPNETWebService.Controllers
         /// <param name="param">引数</param>
         /// <returns>戻り値</returns>
         [HttpPost]
-        [Route("JsonController/Select")]
+        [Route("[action]")]
         public async Task<HttpResponseMessage> Select(WebApiParams param)
         {
             // Claimを取得する。
@@ -481,7 +483,7 @@ namespace ASPNETWebService.Controllers
         /// <param name="param">引数</param>
         /// <returns>戻り値</returns>
         [HttpPost]
-        [Route("JsonController/Insert")]
+        [Route("[action]")]
         public async Task<HttpResponseMessage> Insert(WebApiParams param)
         {
             // Claimを取得する。
@@ -541,7 +543,7 @@ namespace ASPNETWebService.Controllers
         /// <param name="param">引数</param>
         /// <returns>戻り値</returns>
         [HttpPost]
-        [Route("JsonController/Update")]
+        [Route("[action]")]
         public async Task<HttpResponseMessage> Update(WebApiParams param)
         {
             // Claimを取得する。
@@ -602,7 +604,7 @@ namespace ASPNETWebService.Controllers
         /// <param name="param">引数</param>
         /// <returns>戻り値</returns>
         [HttpPost]
-        [Route("JsonController/Delete")]
+        [Route("[action]")]
         public async Task<HttpResponseMessage> Delete(WebApiParams param)
         {
             // Claimを取得する。

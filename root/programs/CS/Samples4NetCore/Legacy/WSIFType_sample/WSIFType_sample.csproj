@@ -14,12 +14,6 @@
     <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\..\Frameworks\Infrastructure\Build_netcore20\netcoreapp2.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTouryo.Public.DamMySQL">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build_netcore20\netcoreapp2.0\OpenTouryo.Public.DamMySQL.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTouryo.Public.DamPstGrS">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build_netcore20\netcoreapp2.0\OpenTouryo.Public.DamPstGrS.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
