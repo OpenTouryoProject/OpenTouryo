@@ -17,11 +17,14 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+using System.Net.Http;
+using System.Web.Optimization;
+using System.Web.Routing;
+
 using Owin;
 using Microsoft.Owin;
 
-using System.Web.Optimization;
-using System.Web.Routing;
+using Touryo.Infrastructure.Framework.Authentication;
 
 [assembly: OwinStartup(typeof(WebForms_Sample.Startup))]
 
@@ -39,6 +42,9 @@ namespace WebForms_Sample
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             // バンドル＆ミニフィケーションの登録
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            // JwkSet取得用
+            OAuth2AndOIDCClient.HttpClient = new HttpClient();
         }
     }
 }

@@ -180,13 +180,13 @@ namespace MVC_Sample.Controllers
             return this.Redirect(Url.Action("Index", "Home"));
         }
 
-        /// <summary>OAuthAuthorizationCodeGrantClient</summary>
+        /// <summary>OAuth2AuthorizationCodeGrantClient</summary>
         /// <param name="code">string</param>
         /// <param name="state">string</param>
         /// <returns>ActionResultを非同期的に返す</returns>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult> OAuthAuthorizationCodeGrantClient(string code, string state)
+        public async Task<ActionResult> OAuth2AuthorizationCodeGrantClient(string code, string state)
         {
             try
             {
@@ -198,7 +198,7 @@ namespace MVC_Sample.Controllers
                     response = await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
                         new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuth2BearerToken"),
                         OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
-                        HttpUtility.HtmlEncode("http://localhost:58496/MVC_Sample/Home/OAuthAuthorizationCodeGrantClient"), code);
+                        HttpUtility.HtmlEncode("http://localhost:58496/MVC_Sample/Home/OAuth2AuthorizationCodeGrantClient"), code);
                     
                     // 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
                     Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
@@ -209,13 +209,12 @@ namespace MVC_Sample.Controllers
                     {
                         string id_token = dic["id_token"];
 
-                        string sub = "";
-                        List<string> roles = null;
-                        List<string> scopes = null;
+                        string out_sub = "";
+                        string out_nonce = "";
                         JObject jobj = null;
 
-                        if (JwtToken.Verify(id_token, out sub, out roles, out scopes, out jobj)
-                            && jobj["nonce"].ToString() == this.Nonce)
+                        if (IdToken.Verify(id_token, dic["access_token"], code, state, out out_sub, out out_nonce, out jobj)
+                            && out_nonce == this.Nonce)
                         {
                             // ログインに成功
 
@@ -223,8 +222,8 @@ namespace MVC_Sample.Controllers
                             response = await OAuth2AndOIDCClient.GetUserInfoAsync(
                                 new Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic["access_token"]);
 
-                            FormsAuthentication.RedirectFromLoginPage(sub, false);
-                            MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
+                            FormsAuthentication.RedirectFromLoginPage(out_sub, false);
+                            MyUserInfo ui = new MyUserInfo(out_sub, Request.UserHostAddress);
                             UserInfoHandle.SetUserInformation(ui);
 
                             return new EmptyResult();

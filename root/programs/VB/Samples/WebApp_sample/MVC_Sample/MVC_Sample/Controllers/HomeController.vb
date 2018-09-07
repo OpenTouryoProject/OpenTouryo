@@ -152,13 +152,13 @@ Namespace Controllers
             Return Me.Redirect(Url.Action("Index", "Home"))
         End Function
 
-        ''' <summary>OAuthAuthorizationCodeGrantClient</summary>
+        ''' <summary>OAuth2AuthorizationCodeGrantClient</summary>
         ''' <param name="code">string</param>
         ''' <param name="state">string</param>
         ''' <returns>ActionResultを非同期的に返す</returns>
         <HttpGet>
         <AllowAnonymous>
-        Public Async Function OAuthAuthorizationCodeGrantClient(code As String, state As String) As Task(Of ActionResult)
+        Public Async Function OAuth2AuthorizationCodeGrantClient(code As String, state As String) As Task(Of ActionResult)
             Try
                 OAuth2AndOIDCClient.HttpClient = New HttpClient()
                 Dim response As String = ""
@@ -168,7 +168,7 @@ Namespace Controllers
                     response = Await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
                         New Uri("http://localhost:63359/MultiPurposeAuthSite/OAuth2BearerToken"),
                         OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
-                        HttpUtility.HtmlEncode("http://localhost:58496/MVC_Sample/Home/OAuthAuthorizationCodeGrantClient"), code)
+                        HttpUtility.HtmlEncode("http://localhost:58496/MVC_Sample/Home/OAuth2AuthorizationCodeGrantClient"), code)
 
                     ' 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
                     Dim base64UrlEncoder As New Base64UrlTextEncoder()
@@ -178,20 +178,20 @@ Namespace Controllers
                     If dic.ContainsKey("id_token") Then
                         Dim id_token As String = dic("id_token")
 
-                        Dim [sub] As String = ""
-                        Dim roles As List(Of String) = Nothing
-                        Dim scopes As List(Of String) = Nothing
+                        Dim out_sub As String = ""
+                        Dim out_nonce As String = ""
                         Dim jobj As JObject = Nothing
 
-                        If JwtToken.Verify(id_token, [sub], roles, scopes, jobj) AndAlso jobj("nonce").ToString() = Me.Nonce Then
+                        If IdToken.Verify(id_token, dic("access_token"), code, state, out_sub, out_nonce,
+                            jobj) AndAlso out_nonce = Me.Nonce Then
                             ' ログインに成功
 
                             ' /userinfoエンドポイントにアクセスする場合
                             response = Await OAuth2AndOIDCClient.GetUserInfoAsync(
                                 New Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic("access_token"))
 
-                            FormsAuthentication.RedirectFromLoginPage([sub], False)
-                            Dim ui As New MyUserInfo([sub], Request.UserHostAddress)
+                            FormsAuthentication.RedirectFromLoginPage(out_sub, False)
+                            Dim ui As New MyUserInfo(out_sub, Request.UserHostAddress)
                             UserInfoHandle.SetUserInformation(ui)
 
                             Return New EmptyResult()

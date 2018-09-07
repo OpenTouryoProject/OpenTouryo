@@ -17,11 +17,14 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
 
+Imports System.Net.Http
+Imports System.Web.Optimization
+Imports System.Web.Http
+
 Imports Owin
 Imports Microsoft.Owin
 
-Imports System.Web.Optimization
-Imports System.Web.Http
+Imports Touryo.Infrastructure.Framework.Authentication
 
 <Assembly: OwinStartup(GetType(Startup))>
 
@@ -48,5 +51,8 @@ Public Class Startup
 
         ' バンドル＆ミニフィケーションの登録
         BundleConfig.RegisterBundles(BundleTable.Bundles)
+
+        ' JwkSet取得用
+        OAuth2AndOIDCClient.HttpClient = New HttpClient()
     End Sub
 End Class
