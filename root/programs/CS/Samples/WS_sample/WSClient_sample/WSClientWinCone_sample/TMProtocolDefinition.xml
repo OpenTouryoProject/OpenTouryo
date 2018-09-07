@@ -20,7 +20,7 @@
     <Url id="url_a" value="http://localhost/ASPNETWebService/ServiceForFx.asmx"/>
     <Url id="url_b" value="http://localhost/ASPNETWebService/WCFHTTPSvcForFx.svc"/>
     <Url id="url_c" value="net.tcp://localhost:7777/WCFService/WCFTCPSvcForFx/"/>
-    <Url id="url_d" value="http://localhost/ASPNETWebService/DotNETOnlineWebAPI"/>
+    <Url id="url_d" value="http://localhost/ASPNETWebService/WebAPIControllerForFx"/>
 
     <!-- 接続オプション（必要に応じて） -->
     <Prop id="prop_a" value="aaa=AAA;bbb=BBB;ccc=CCC;"/>
@@ -34,7 +34,7 @@
     <Transmission id="testWebService" protocol="2" url="http://localhost/ASPNETWebService/ServiceForFx.asmx" timeout="60" />
     <Transmission id="testWebService2" protocol="3" url="http://localhost/ASPNETWebService/WCFHTTPSvcForFx.svc" />
     <Transmission id="testWebService3" protocol="4" url="net.tcp://localhost:7777/WCFService/WCFTCPSvcForFx/" />
-    <Transmission id="testWebService4" protocol="5" url="http://localhost/ASPNETWebService/DotNETOnlineWebAPI" />
+    <Transmission id="testWebService4" protocol="5" url="http://localhost/ASPNETWebService/WebAPIControllerForFx" />
     
     <!-- サービス（マスタ データを活用）-->
     <Transmission id="_testWebService" protocol="2" url_ref="url_a" timeout="60" prop_ref="prop_a" />

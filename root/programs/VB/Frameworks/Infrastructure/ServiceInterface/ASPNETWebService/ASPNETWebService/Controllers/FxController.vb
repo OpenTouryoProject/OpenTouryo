@@ -112,7 +112,7 @@ Namespace ASPNETWebService.Controllers
         ''' ・ReturnValueObject
         ''' </returns>
         <HttpPost>
-        <Route("DotNETOnlineWebAPI")>
+        <Route("WebAPIControllerForFx")>
         Public Async Function DotNETOnlineWebAPI(paramDic As Dictionary(Of String, String)) As Task(Of Dictionary(Of String, String))
             ' 引数
             Dim serviceName As String = paramDic("ServiceName")

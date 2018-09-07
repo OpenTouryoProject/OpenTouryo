@@ -119,7 +119,7 @@ namespace ASPNETWebService.Controllers
         /// ・ReturnValueObject
         /// </returns>
         [HttpPost]
-        [Route("DotNETOnlineWebAPI")]
+        [Route("WebAPIControllerForFx")]
         public async Task<Dictionary<string, string>> DotNETOnlineWebAPI(Dictionary<string, string> paramDic)
         {
             // 引数
