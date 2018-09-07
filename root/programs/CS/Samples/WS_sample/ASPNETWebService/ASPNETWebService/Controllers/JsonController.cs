@@ -352,7 +352,13 @@ namespace ASPNETWebService.Controllers
                 {
                     // 結果（正常系）
                     DataTable dt = (DataTable)testReturnValue.Obj;
-                    DataToDictionary d2d = new DataToDictionary(null, null, null);
+                    DataToDictionary d2d = new DataToDictionary(
+                        new Dictionary<string, string>
+                        {
+                            { "c1", "ShipperID" },
+                            { "c2", "CompanyName" },
+                            { "c3", "Phone" }
+                        }, "", "");
                     ret = new { Message = "", Result = d2d.DataTableToDictionaryList(dt) };
                 }
             }
