@@ -35,10 +35,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Net.Http;
-using System.Net.Http.Headers;
+using System.Diagnostics;
 
 using System.Web;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Security;
@@ -537,8 +538,28 @@ namespace Touryo.Infrastructure.Framework.Authentication
             };
 
             // HttpResponseMessage
-            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
-            return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+            
+            // ピーキーな jwks_uri 実装に例外処理を追加
+            if (OAuth2AndOIDCClient._HttpClient == null)
+            {
+                // HttpClientが無い。
+                Debug.WriteLine("HttpClient is not set in OAuth2AndOIDCClient.GetJwkSetAsync method.");
+            }
+            else
+            {
+                try
+                {
+                    httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+                    return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    // HttpClientで失敗。
+                    Debug.WriteLine("Exception was catched in OAuth2AndOIDCClient.GetJwkSetAsync method: " + ex.ToString());
+                }
+            }
+
+            return ""; // 空
         }
 
         #endregion

@@ -62,7 +62,6 @@ Namespace Aspx.OAuth2
             Dim state As String = Request.QueryString("state")
 
             Try
-                OAuth2AndOIDCClient.HttpClient = New HttpClient()
                 Dim response__1 As String = ""
 
                 If state = Me.State Then

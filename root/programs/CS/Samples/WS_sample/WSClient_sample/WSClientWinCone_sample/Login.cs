@@ -83,7 +83,7 @@ namespace WSClientWinCone_sample
         {
             OAuth2AndOIDCClient.HttpClient = new HttpClient();
             string response = await OAuth2AndOIDCClient.ResourceOwnerPasswordCredentialsGrantAsync(
-                new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"),
+                new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuth2BearerToken"),
                 OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
                 userId, password, "profile email phone address roles").ConfigureAwait(false);
 

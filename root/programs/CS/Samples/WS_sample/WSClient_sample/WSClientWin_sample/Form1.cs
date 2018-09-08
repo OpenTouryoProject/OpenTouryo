@@ -26,6 +26,7 @@ using System.Windows.Forms;
 using Touryo.Infrastructure.Business.RichClient.Presentation;
 using Touryo.Infrastructure.Business.RichClient.Asynchronous;
 using Touryo.Infrastructure.Business.RichClient.Util;
+
 using Touryo.Infrastructure.Framework.RichClient.Presentation;
 using Touryo.Infrastructure.Framework.RichClient.Asynchronous;
 using Touryo.Infrastructure.Framework.Transmission;
@@ -34,14 +35,6 @@ using Touryo.Infrastructure.Framework.Util;
 namespace WSClientWin_sample
 {
     /// <summary>サンプル アプリ画面</summary>
-    /// <remarks>
-    /// [ファイル内にデザインできるクラスがないため、このファイルのデザイナを表示できませんでした。]
-    /// というエラーメッセージが出力される場合は、プログラム一式のフォルダの検索ンデックスをOFFにします。
-    /// 
-    /// 1.プログラム一式が格納されているフォルダを選択して右クリック
-    /// 2.詳細設定で「検索を早くするために」のチェックをOFFにする。
-    /// （サブフォルダ、ファイルにも適用すること。）
-    /// </remarks>
     public partial class Form1 : MyBaseControllerWin
     {
         /// <summary>呼出し制御部品</summary>
@@ -265,9 +258,9 @@ namespace WSClientWin_sample
                 //// 非同期メッセージボックス表示のテスト
                 //DialogResult dr = af.ShowAsyncMessageBoxWin(
                 //    "メッセージ", "タイトル", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-                ////// 非同期メッセージボックス表示のテスト（エラー）
-                ////System.Windows.MessageBoxResult mr = af.ShowAsyncMessageBoxWPF("メッセージ", "タイトル",
-                ////    System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Information);
+                //// 非同期メッセージボックス表示のテスト（エラー）
+                //System.Windows.MessageBoxResult mr = af.ShowAsyncMessageBoxWPF("メッセージ", "タイトル",
+                //    System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Information);
 
                 // 結果表示
                 return testReturnValue;
@@ -343,9 +336,9 @@ namespace WSClientWin_sample
             if (testReturnValue.ErrorFlag == true)
             {
                 // 結果（業務続行可能なエラー）
-                labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID + "\r\n";
-                labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage + "\r\n";
-                labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo + "\r\n";
+                this.labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID + "\r\n";
+                this.labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage + "\r\n";
+                this.labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo + "\r\n";
             }
             else
             {
@@ -382,9 +375,9 @@ namespace WSClientWin_sample
             if (testReturnValue.ErrorFlag == true)
             {
                 // 結果（業務続行可能なエラー）
-                labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID + "\r\n";
-                labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage + "\r\n";
-                labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo + "\r\n";
+                this.labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID + "\r\n";
+                this.labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage + "\r\n";
+                this.labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo + "\r\n";
             }
             else
             {
@@ -421,9 +414,9 @@ namespace WSClientWin_sample
             if (testReturnValue.ErrorFlag == true)
             {
                 // 結果（業務続行可能なエラー）
-                labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID + "\r\n";
-                labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage + "\r\n";
-                labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo + "\r\n";
+                this.labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID + "\r\n";
+                this.labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage + "\r\n";
+                this.labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo + "\r\n";
             }
             else
             {
@@ -464,9 +457,9 @@ namespace WSClientWin_sample
             if (testReturnValue.ErrorFlag == true)
             {
                 // 結果（業務続行可能なエラー）
-                labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID + "\r\n";
-                labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage + "\r\n";
-                labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo + "\r\n";
+                this.labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID + "\r\n";
+                this.labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage + "\r\n";
+                this.labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo + "\r\n";
             }
             else
             {
@@ -588,14 +581,14 @@ namespace WSClientWin_sample
             if (testReturnValue.ErrorFlag == true)
             {
                 // 結果（業務続行可能なエラー）
-                labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID + "\r\n";
-                labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage + "\r\n";
-                labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo + "\r\n";
+                this.labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID + "\r\n";
+                this.labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage + "\r\n";
+                this.labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo + "\r\n";
             }
             else
             {
                 // 結果（正常系）
-                labelMessage.Text = testReturnValue.Obj.ToString() + "件追加";
+                this.labelMessage.Text = testReturnValue.Obj.ToString() + "件追加";
             }
         }
 
@@ -632,14 +625,14 @@ namespace WSClientWin_sample
             if (testReturnValue.ErrorFlag == true)
             {
                 // 結果（業務続行可能なエラー）
-                labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID + "\r\n";
-                labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage + "\r\n";
-                labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo + "\r\n";
+                this.labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID + "\r\n";
+                this.labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage + "\r\n";
+                this.labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo + "\r\n";
             }
             else
             {
                 // 結果（正常系）
-                labelMessage.Text = testReturnValue.Obj.ToString() + "件更新";
+                this.labelMessage.Text = testReturnValue.Obj.ToString() + "件更新";
             }
         }
 
@@ -674,14 +667,14 @@ namespace WSClientWin_sample
             if (testReturnValue.ErrorFlag == true)
             {
                 // 結果（業務続行可能なエラー）
-                labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID + "\r\n";
-                labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage + "\r\n";
-                labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo + "\r\n";
+                this.labelMessage.Text = "ErrorMessageID:" + testReturnValue.ErrorMessageID + "\r\n";
+                this.labelMessage.Text += "ErrorMessage:" + testReturnValue.ErrorMessage + "\r\n";
+                this.labelMessage.Text += "ErrorInfo:" + testReturnValue.ErrorInfo + "\r\n";
             }
             else
             {
                 // 結果（正常系）
-                labelMessage.Text = testReturnValue.Obj.ToString() + "件削除";
+                this.labelMessage.Text = testReturnValue.Obj.ToString() + "件削除";
             }
         }
 

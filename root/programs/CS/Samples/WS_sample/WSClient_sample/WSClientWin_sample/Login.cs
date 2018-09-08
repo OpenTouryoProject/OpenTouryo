@@ -5,7 +5,7 @@
 // テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
 
 //**********************************************************************************
-//* クラス名        ：login
+//* クラス名        ：Login
 //* クラス日本語名  ：ログイン画面
 //*
 //* 作成日時        ：－
@@ -32,7 +32,7 @@ using Touryo.Infrastructure.Framework.RichClient.Presentation;
 
 namespace WSClientWin_sample
 {
-    /// <summary>login</summary>
+    /// <summary>Login</summary>
     public partial class Login : MyBaseControllerWin
     {
         /// <summary>コンストラクタ</summary>

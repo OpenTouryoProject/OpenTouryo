@@ -121,7 +121,14 @@ namespace WSClientWinCone_sample
             this.ddlOrderSequence.SelectedIndex = 0;
 
             // 呼出し制御部品
-            this.CallCtrl = new CallController(Program.AccessToken);
+            if (string.IsNullOrEmpty(Program.AccessToken))
+            {
+                this.CallCtrl = new CallController(MyBaseControllerWin.UserInfo);
+            }
+            else
+            {
+                this.CallCtrl = new CallController(Program.AccessToken);
+            }
         }
 
         #region コンボボックス用
@@ -189,7 +196,6 @@ namespace WSClientWinCone_sample
             // 非同期処理クラスを生成
             // 匿名デリゲードの場合は、ベース２で良い。
             MyBaseAsyncFunc af = new MyBaseAsyncFunc(this);
-            string logicalName = ((ComboBoxItem)this.ddlTransmission.SelectedItem).Value;
 
             // 引数を纏める
             af.Parameter = (object)new TestParameterValue(
@@ -199,6 +205,10 @@ namespace WSClientWinCone_sample
                 + ((ComboBoxItem)this.ddlMode2.SelectedItem).Value + "%"
                 + ((ComboBoxItem)this.ddlExRollback.SelectedItem).Value,
                 MyBaseControllerWin.UserInfo);
+
+            // 画面上のデータは退避する
+            //（オブジェクトであれば、クローンする。）
+            string logicalName = ((ComboBoxItem)this.ddlTransmission.SelectedItem).Value;
 
             // 非同期実行するメソッドを指定（匿名デリゲード）
             // ここは副スレッドから実行されるので注意
@@ -212,7 +222,15 @@ namespace WSClientWinCone_sample
                 TestReturnValue testReturnValue;
 
                 // 呼出し制御部品（スレッドセーフでないため副スレッド内で作る）
-                CallController callCtrl = new CallController(Program.AccessToken);
+                CallController callCtrl = null;
+                if (string.IsNullOrEmpty(Program.AccessToken))
+                {
+                    callCtrl = new CallController(MyBaseControllerWin.UserInfo);
+                }
+                else
+                {
+                    callCtrl = new CallController(Program.AccessToken);
+                }
 
                 // Invoke
                 testReturnValue = (TestReturnValue)callCtrl.Invoke(
@@ -449,7 +467,6 @@ namespace WSClientWinCone_sample
         {
             // 非同期処理クラスを生成
             AsyncFunc af = new AsyncFunc(this);
-            af.LogicalName = ((ComboBoxItem)this.ddlTransmission.SelectedItem).Value;
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する
@@ -467,6 +484,9 @@ namespace WSClientWinCone_sample
 
             // 引数を非同期処理クラスに設定
             af.Parameter = testParameterValue;
+
+            // 画面上のデータは退避する（オブジェクトであれば、クローンする。）
+            af.LogicalName = ((ComboBoxItem)this.ddlTransmission.SelectedItem).Value;
 
             // 非同期実行するメソッドを指定
             // ここは副スレッドから実行されるので注意。

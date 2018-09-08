@@ -75,7 +75,6 @@ namespace WebForms_Sample.Aspx.OAuth2
 
             try
             {
-                OAuth2AndOIDCClient.HttpClient = new HttpClient();
                 string response = "";
 
                 if (state == this.State) // CSRF(XSRF)対策のstateの検証は重要

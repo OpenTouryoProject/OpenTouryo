@@ -32,12 +32,10 @@
 
 using System;
 using System.Collections.Generic;
-
 using System.Threading;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Public.Security;
 
@@ -147,14 +145,32 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     // JwkSetUri
                     string jwkSetString = OAuth2AndOIDCClient.GetJwkSetAsync(new Uri(jku)).Result;
 
-                    // _jwkSet 更新
-                    this._jwkSet = JsonConvert.DeserializeObject<JwkSet>(jwkSetString);
-                    // _dateTime 更新
-                    this._dateTime = DateTime.Now;
-                }
+                    // ピーキーな jwks_uri 実装に例外処理を追加
+                    if (string.IsNullOrEmpty(jwkSetString))
+                    {
+                        // jwkSetStringが空文字列
+                        Debug.WriteLine("jwkSetString is null or empty in JwkSetStore.SetJwkSetObject method.");
+                    }
+                    else
+                    {
+                        try
+                        {
+                            JwkSet jwkSet = JsonConvert.DeserializeObject<JwkSet>(jwkSetString);
 
-                // jwkを返す。
-                return JwkSet.GetJwkObject(this._jwkSet, kid);
+                            // _jwkSet 更新
+                            this._jwkSet = jwkSet;
+                            // _dateTime 更新
+                            this._dateTime = DateTime.Now;
+
+                            Debug.WriteLine("JwkSet was updated in JwkSetStore.SetJwkSetObject method.");
+                        }
+                        catch (Exception ex)
+                        {
+                            // jwkSetStringのDeserializeObjectに失敗。
+                            Debug.WriteLine("Exception was catched in OAuth2AndOIDCClient.GetJwkSetAsync method: " + ex.ToString());
+                        }
+                    }
+                }
 
                 #endregion
             }
@@ -163,6 +179,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 // ライターロックを解放
                 this._rwLock.ReleaseWriterLock();
             }
+
+            // JwkSetからJwkを返す。
+            return JwkSet.GetJwkObject(this._jwkSet, kid);
         }
     }
 }

@@ -160,7 +160,6 @@ Namespace Controllers
         <AllowAnonymous>
         Public Async Function OAuth2AuthorizationCodeGrantClient(code As String, state As String) As Task(Of ActionResult)
             Try
-                OAuth2AndOIDCClient.HttpClient = New HttpClient()
                 Dim response As String = ""
 
                 If state = Me.State Then
