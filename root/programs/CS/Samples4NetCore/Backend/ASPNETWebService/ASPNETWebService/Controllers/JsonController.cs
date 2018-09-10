@@ -70,9 +70,12 @@ namespace ASPNETWebService.Controllers
     [Route("api/[controller]")]
     public class JsonController : ApiController
     {
-        #region テスト用
+        #region 疎通テスト用
 
-        /// <summary>test</summary>
+        /// <summary>
+        /// 疎通テスト用
+        /// http(s)://hostName:portNum/api/json/testで疎通テスト可能。
+        /// </summary>
         /// <returns>string</returns>
         [HttpGet]
         [Route("test")]

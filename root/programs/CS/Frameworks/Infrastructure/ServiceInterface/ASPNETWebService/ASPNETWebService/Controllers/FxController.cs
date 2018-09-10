@@ -71,9 +71,12 @@ namespace ASPNETWebService.Controllers
         SupportsCredentials = true)]
     public class FxController : ApiController
     {
-        #region テスト用
+        #region 疎通テスト用
 
-        /// <summary>test</summary>
+        /// <summary>
+        /// 疎通テスト用
+        /// http(s)://hostName:portNum/testで疎通テスト可能。
+        /// </summary>
         /// <returns>Dictionary(string, string)</returns>
         [HttpGet]
         [Route("test")]
