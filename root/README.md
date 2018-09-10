@@ -22,8 +22,8 @@ Click [here](Readme.ja.md) for Japanese version of this file.
 ## Running sample application tasks
 You can run the sample application bundled with Open Touryo according to the following steps.
 
-**Signaged "optional":**  
-Signaged "optional" in following is meaned that the data providers and DB libraries of the target RDBMS are not included in <a href="#build-program">the build process of default build script</a> or [NuGet package of the Open Touryo](https://www.nuget.org/packages?q=OpenTouryo). so download data providers yourself, and it might be necessary to re-add the reference of each data provider to DamXXX.csproj, that is, the Visual Studio project for data access in Open Touryo, and build the these libraries as necessary.
+Notation *Optional*: 
+Open Touryo supports the following DBMSs and data providers. But the data providers, having the notation *optional*, are not included in the programs of Open Touryo. When using the DBMSs and data providers having the notation *optional*, download the data provider manually, and modify [the data access project of Open Touryo, that is DamXXX.csproj](https://github.com/OpenTouryoProject/OpenTouryo/tree/develop/root/programs/CS/Frameworks/Infrastructure/Public/Db), to refer the data provider.
 
 ### Install prerequisites
 Install Visual Studio 2015 beforehand.  
