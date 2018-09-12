@@ -36,6 +36,7 @@ using System.Threading;
 using System.Diagnostics;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Public.Security;
 
@@ -97,7 +98,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>GetJwkObject</summary>
         /// <param name="kid">string</param>
         /// <returns>JwkObject</returns>
-        public Dictionary<string, string> GetJwkObject(string kid)
+        public JObject GetJwkObject(string kid)
         {
             try
             {
@@ -122,7 +123,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="jku">string</param>
         /// <param name="kid">string</param>
         /// <returns>JwkObject</returns>
-        public Dictionary<string, string> SetJwkSetObject(string jku, string kid)
+        public JObject SetJwkSetObject(string jku, string kid)
         {
             try
             {

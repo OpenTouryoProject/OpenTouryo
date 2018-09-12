@@ -35,6 +35,7 @@ using System.Text;
 using System.Collections.Generic;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 using Touryo.Infrastructure.Public.IO;
@@ -46,7 +47,7 @@ namespace Touryo.Infrastructure.Public.Security
     public class JwkSet
     {
         /// <summary>keys</summary>
-        public List<Dictionary<string, string>> keys = new List<Dictionary<string, string>>();
+        public List<JObject> keys = new List<JObject>();
 
         /// <summary>LoadJwkSet</summary>
         /// <param name="jwkSetFilePath">string</param>
@@ -80,12 +81,12 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>GetJwkObject</summary>
         /// <param name="jwkSetObject">JwkSet</param>
         /// <param name="kid">string</param>
-        /// <returns>Dictionary(string, string)</returns>
-        public static Dictionary<string, string> GetJwkObject(JwkSet jwkSetObject, string kid)
+        /// <returns>JObject</returns>
+        public static JObject GetJwkObject(JwkSet jwkSetObject, string kid)
         {
-            foreach (Dictionary<string, string> key in jwkSetObject.keys)
+            foreach (JObject key in jwkSetObject.keys)
             {
-                if (key[JwtConst.kid] == kid)
+                if ((string)key[JwtConst.kid] == kid)
                 {
                     return key;
                 }
@@ -96,13 +97,13 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>AddJwkToJwkSet</summary>
         /// <param name="jwkSetObject">JwkSet</param>
-        /// <param name="jwkObject">Dictionary(string, string)</param>
+        /// <param name="jwkObject">JObject</param>
         /// <returns>jwkSetObject</returns>
-        public static JwkSet AddJwkToJwkSet(JwkSet jwkSetObject, Dictionary<string, string> jwkObject)
+        public static JwkSet AddJwkToJwkSet(JwkSet jwkSetObject, JObject jwkObject)
         {
             // kidの重複確認
             bool exist = false;
-            foreach (Dictionary<string, string> key in jwkSetObject.keys)
+            foreach (JObject key in jwkSetObject.keys)
             {
                 if (key[JwtConst.kid] == jwkObject[JwtConst.kid])
                 {

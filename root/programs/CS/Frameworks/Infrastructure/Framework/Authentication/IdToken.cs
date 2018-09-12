@@ -239,7 +239,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
                 {
                     // Client側
-                    Dictionary<string, string> jwkObject = JwkSetStore.GetInstance().GetJwkObject(jwsHeader.kid);
+                    JObject jwkObject = JwkSetStore.GetInstance().GetJwkObject(jwsHeader.kid);
 
                     // チェック
                     if (jwkObject == null)
@@ -258,15 +258,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     {
                         // Jwkを使用
                         jwsRS256 = new JWS_RS256_Param(
-                            RS256_KeyConverter.JwkToProvider(
-                                JsonConvert.SerializeObject(jwkObject)).ExportParameters(false));
+                            RS256_KeyConverter.JwkToProvider(jwkObject).ExportParameters(false));
                     }
                 }
                 else
                 {
                     // AuthZ側（検証用カバレッジ
                     JwkSet jwkSet = JwkSet.LoadJwkSet(OAuth2AndOIDCParams.JwkSetFilePath);
-                    Dictionary<string, string> JwkObject = JwkSet.GetJwkObject(jwkSet, jwsHeader.kid);
+                    JObject JwkObject = JwkSet.GetJwkObject(jwkSet, jwsHeader.kid);
                     
                     if (JwkObject == null)
                     {
@@ -277,7 +276,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     {
                         // Jwkを使用
                         jwsRS256 = new JWS_RS256_Param(
-                            RS256_KeyConverter.JwkToProvider(JwkObject[JwtConst.n]).ExportParameters(false));
+                            RS256_KeyConverter.JwkToProvider(JwkObject).ExportParameters(false));
                     }
                 }
             }

@@ -331,28 +331,43 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>
         /// JwkToProvider
-        /// Jwk鍵からRSAProvider（公開鍵）へ変換
+        /// JwkからRSAProvider（公開鍵）へ変換
         /// </summary>
-        /// <param name="jwkKey">jwkKey</param>
+        /// <param name="jwkString">string</param>
         /// <returns>
         /// RSACryptoServiceProvider
         ///   rsaCryptoServiceProvider.VerifyData(
         ///     data, signatureBytes,
         ///     HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
         /// </returns>
-        public static RSACryptoServiceProvider JwkToProvider(string jwkKey)
+        public static RSACryptoServiceProvider JwkToProvider(string jwkString)
         {
-            JObject jwk = JObject.Parse(jwkKey);
+            return RS256_KeyConverter.JwkToProvider(
+                JsonConvert.DeserializeObject<JObject>(jwkString));
+        }
 
-            if (jwk[JwtConst.alg].ToString().ToUpper() == JwtConst.RS256)
+        /// <summary>
+        /// JwkToProvider
+        /// JwkからRSAProvider（公開鍵）へ変換
+        /// </summary>
+        /// <param name="jwkObject">JObject</param>
+        /// <returns>
+        /// RSACryptoServiceProvider
+        ///   rsaCryptoServiceProvider.VerifyData(
+        ///     data, signatureBytes,
+        ///     HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+        /// </returns>
+        public static RSACryptoServiceProvider JwkToProvider(JObject jwkObject)
+        {
+            if (jwkObject[JwtConst.alg].ToString().ToUpper() == JwtConst.RS256)
             {
                 // RSAParameters
                 // FromBase64Stringだとエラーになる。
                 RSAParameters rsaParameters = new RSAParameters()
                 {
                     // Public
-                    Modulus = CustomEncode.FromBase64UrlString((string)jwk[JwtConst.n]),
-                    Exponent = CustomEncode.FromBase64UrlString((string)jwk[JwtConst.e]),
+                    Modulus = CustomEncode.FromBase64UrlString((string)jwkObject[JwtConst.n]),
+                    Exponent = CustomEncode.FromBase64UrlString((string)jwkObject[JwtConst.e]),
                 };
 
                 RSACryptoServiceProvider rsaCryptoServiceProvider = new RSACryptoServiceProvider();
