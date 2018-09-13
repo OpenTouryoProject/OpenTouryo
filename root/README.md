@@ -1,4 +1,6 @@
-﻿# Open Touryo
+# Open Touryo
+
+## Outline
 *Open Touryo* is an application framework based on .NET Framework and .NET Core.  
 The programs of Open Touryo are available in the following repositories:
 - OpenTouryoTemplates repository
@@ -291,14 +293,7 @@ C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSC
   - C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
   - C:\root\programs\VB\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
 
-### Reference
-The documents in *OpenTouryoDocument repository* are useful when using Open Touryo.  
-- [Introduction](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents/0_Introduction)  
-You can see the introduction materials, such as PowerPoint slides.
-- [User Guide](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents/1_User_Guide)  
-You can confirm the structure of Open Touryo and the specification of each feature.
-- [Tutorial](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents/2_Tutorial)  
-You can see the *first step guide* of Open Touryo.
+## Other end matter
 
 ### Copyright and license
 Refer to [License](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/license) directory.
@@ -307,5 +302,16 @@ Refer to [License](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/l
 If you find the bug while you are using Open Touryo, create an new [issue](https://github.com/OpenTouryoProject/OpenTouryo/issues).  
 Open Touryo community confirms the issue and takes appropriate actions.  
 
+### [How to create NuGet packages](https://github.com/OpenTouryoProject/OpenTouryo/wiki/HowToCreateOpenTouryoNuGetPackages)
+
 ### Obtaining data provider, Exporting prodedures, Attaching to license
 Obtain and export the data provider, which Open Touryo supports, on your own.
+
+### Reference
+The documents in *OpenTouryoDocument repository* are useful when using Open Touryo.  
+- [Introduction](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents/0_Introduction)  
+You can see the introduction materials, such as PowerPoint slides.
+- [User Guide](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents/1_User_Guide)  
+You can confirm the structure of Open Touryo and the specification of each feature.
+- [Tutorial](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents/2_Tutorial)  
+You can see the *first step guide* of Open Touryo.
