@@ -1,4 +1,6 @@
-﻿# Open 棟梁
+# Open 棟梁
+ 
+## 概要 
 Open 棟梁は、.NET Framework と .NET Core をベースとしたアプリケーション フレームワークです。  
 Open 棟梁のプログラムは、以下のリポジトリで公開しています。
 - OpenTouryoTemplates リポジトリ
@@ -282,15 +284,8 @@ C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSC
   - C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
   - C:\root\programs\VB\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
 
-### 参考資料
-Open 棟梁をご利用いただくにあたり、OpenTouryoDocument リポジトリのドキュメントをご利用いただけます。
-- [紹介資料](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents/0_Introduction)  
-Open 棟梁の概要資料 (PowerPoint のスライドなど) をご覧いただけます。
-- [利用ガイド](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents/1_User_Guide)  
-Open 棟梁の仕組みや、各機能の仕様などをご覧いただけます。
-- [チュートリアル](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents/2_Tutorial)  
-Open 棟梁のファーストステップガイドです。     
-   
+## その他
+
 ### 著作権、ライセンス
 [License](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/license)ディレクトリをご確認ください。
 
@@ -298,6 +293,17 @@ Open 棟梁のファーストステップガイドです。
 ご利用いただく中で、バグを発見されましたら、[issue](https://github.com/OpenTouryoProject/OpenTouryo/issues) としてご連絡ください。  
 コミュニティで内容を確認し、適切に対応いたします。
 
+### [NuGetパッケージの作成方法](https://github.com/OpenTouryoProject/OpenTouryo/wiki/HowToCreateOpenTouryoNuGetPackages.ja)
+
 ### データプロバイダの入手、輸出手続き、使用許諾への添付について
 Open 棟梁はいろいろなデータプロバイダをサポートしていますが、
 各データプロバイダの入手・輸出手続きに関しては、各自でご対応ください。
+
+### 参考資料
+Open 棟梁をご利用いただくにあたり、OpenTouryoDocument リポジトリのドキュメントをご利用いただけます。
+- [紹介資料](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents/0_Introduction)  
+Open 棟梁の概要資料 (PowerPoint のスライドなど) をご覧いただけます。
+- [利用ガイド](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents/1_User_Guide)  
+Open 棟梁の仕組みや、各機能の仕様などをご覧いただけます。
+- [チュートリアル](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents/2_Tutorial)  
+Open 棟梁のファーストステップガイドです。
