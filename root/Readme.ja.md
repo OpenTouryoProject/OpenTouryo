@@ -295,9 +295,9 @@ C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSC
 
 ### [NuGetパッケージの作成方法](https://github.com/OpenTouryoProject/OpenTouryo/wiki/HowToCreateOpenTouryoNuGetPackages.ja)
 
-### データプロバイダの入手、輸出手続き、使用許諾への添付について
-Open 棟梁はいろいろなデータプロバイダをサポートしていますが、
-各データプロバイダの入手・輸出手続きに関しては、各自でご対応ください。
+### ライブラリの入手、輸出手続き、使用許諾への添付について
+- パッケージ・マネージャーから取得できるライブラリは、同梱の必要がないため、輸出管理の対象外にできます。
+- 同梱して輸出されるライブラリについては、輸出管理手続やライセンスへの添付が必要です。
 
 ### 参考資料
 Open 棟梁をご利用いただくにあたり、OpenTouryoDocument リポジトリのドキュメントをご利用いただけます。
