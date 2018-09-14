@@ -305,7 +305,7 @@ Open Touryo community confirms the issue and takes appropriate actions.
 ### How to create NuGet packages
 For the method of creating Open Touryo NuGet packages, see [this article](https://github.com/OpenTouryoProject/OpenTouryo/wiki/HowToCreateOpenTouryoNuGetPackages).
 
-### Obtaining libraries, Exporting control prodedures, Attaching to license
+### Obtaining libraries, exporting control prodedures, attaching to license
 - Since libraries that can be obtaining from Package Manager do not need to be bundled, they can be excluded from export control.
 - For libraries that are bundled and exported, it is necessary to the exporting control procedure and attaching to license.
 
