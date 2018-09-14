@@ -293,7 +293,8 @@ C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSC
 ご利用いただく中で、バグを発見されましたら、[issue](https://github.com/OpenTouryoProject/OpenTouryo/issues) としてご連絡ください。  
 コミュニティで内容を確認し、適切に対応いたします。
 
-### [NuGetパッケージの作成方法](https://github.com/OpenTouryoProject/OpenTouryo/wiki/HowToCreateOpenTouryoNuGetPackages.ja)
+### NuGetパッケージの作成方法
+Open 棟梁の NuGetパッケージを作成する方法については、[こちらの記事](https://github.com/OpenTouryoProject/OpenTouryo/wiki/HowToCreateOpenTouryoNuGetPackages.ja)をご参照ください。
 
 ### ライブラリの入手、輸出手続き、使用許諾への添付について
 - パッケージ・マネージャーから取得できるライブラリは、同梱の必要がないため、輸出管理の対象外にできます。
