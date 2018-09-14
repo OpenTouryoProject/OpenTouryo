@@ -302,7 +302,8 @@ Refer to [License](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/l
 If you find the bug while you are using Open Touryo, create an new [issue](https://github.com/OpenTouryoProject/OpenTouryo/issues).  
 Open Touryo community confirms the issue and takes appropriate actions.  
 
-### [How to create NuGet packages](https://github.com/OpenTouryoProject/OpenTouryo/wiki/HowToCreateOpenTouryoNuGetPackages)
+### How to create NuGet packages
+For the method of creating Open Touryo NuGet packages, see [this article](https://github.com/OpenTouryoProject/OpenTouryo/wiki/HowToCreateOpenTouryoNuGetPackages).
 
 ### Obtaining libraries, Exporting control prodedures, Attaching to license
 - Since libraries that can be obtaining from Package Manager do not need to be bundled, they can be excluded from export control.
