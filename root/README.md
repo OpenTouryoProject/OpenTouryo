@@ -304,8 +304,9 @@ Open Touryo community confirms the issue and takes appropriate actions.
 
 ### [How to create NuGet packages](https://github.com/OpenTouryoProject/OpenTouryo/wiki/HowToCreateOpenTouryoNuGetPackages)
 
-### Obtaining data provider, Exporting prodedures, Attaching to license
-Obtain and export the data provider, which Open Touryo supports, on your own.
+### Obtaining libraries, Exporting control prodedures, Attaching to license
+- Since libraries that can be obtaining from Package Manager do not need to be bundled, they can be excluded from export control.
+- As for the library to be exported, it is necessary to the exporting control procedure and attaching to license.
 
 ### Reference
 The documents in *OpenTouryoDocument repository* are useful when using Open Touryo.  
