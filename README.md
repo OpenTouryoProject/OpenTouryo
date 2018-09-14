@@ -8,10 +8,13 @@ The programs in this repository are developed in the following IDE/targetFramewo
 
 - IDE (Integrated Development Environment)
   - Visual Studio 2015
+  - Visual Studio 2017
 - targetFramework (Run-time environment)
   - .NET Framework 4.5.2 (net452)
   - .NET Framework 4.6 (net46)
   - .NET Framework 4.7 (net47)
+  - .NET Core 2.0 (netcoreapp2.0)
+  - .NET Standard 2.0 (netstandard2.0)
 
 The default targetFramework of projects and solutions is net46(.NET Framework 4.6).
 The name of projects and solutions for other targetFramework include the targetFramework.

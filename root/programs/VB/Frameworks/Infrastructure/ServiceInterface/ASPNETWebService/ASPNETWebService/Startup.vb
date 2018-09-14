@@ -2,8 +2,7 @@
 '* テンプレート
 '**********************************************************************************
 
-' 以下のLicenseに従い、このProjectをTemplateとして使用可能です。Release時にCopyright表示してSublicenseして下さい。
-' https://github.com/OpenTouryoProject/MultiPurposeAuthSite/blob/master/license/LicenseForTemplates.txt
+' サンプル中のテンプレートなので、必要に応じて使用して下さい。
 
 '**********************************************************************************
 '* クラス名        ：OwinStartup
@@ -18,11 +17,14 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
 
+Imports System.Web.Mvc
+Imports System.Web.Http
+Imports System.Net.Http
+
 Imports Owin
 Imports Microsoft.Owin
 
-Imports System.Web.Mvc
-Imports System.Web.Http
+Imports Touryo.Infrastructure.Framework.Authentication
 
 <Assembly: OwinStartup(GetType(ASPNETWebService.Startup))>
 
@@ -52,6 +54,7 @@ Namespace ASPNETWebService
 
             '/ 認証に関するOWINミドルウェアの設定を行う。
             'StartupAuth.Configure(app);
+            OAuth2AndOIDCClient.HttpClient = New HttpClient() ' JwkSet取得用
 
             GlobalConfiguration.Configuration.EnsureInitialized()
             'GlobalConfiguration.Configuration.Initializer(GlobalConfiguration.Configuration) ??

@@ -90,14 +90,11 @@
     <Compile Include="Logic\Common\TestReturnValue.vb" />
     <Compile Include="Logic\Dao\DaoShippers.vb" />
     <Compile Include="Logic\Dao\LayerD.vb" />
-    <Compile Include="Models\DataSets\DsNorthwind.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DsNorthwind.xsd</DependentUpon>
-    </Compile>
     <Compile Include="Models\ViewModels\BaseViewModel.vb" />
     <Compile Include="Models\ViewModels\CrudViweModel.vb" />
     <Compile Include="Models\ViewModels\LoginViewModel.vb" />
+    <Compile Include="Models\ViewModels\ShipperViweModel.vb" />
+    <Compile Include="Models\ViewModels\TestShipperViweModel.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="Startup.vb" />
   </ItemGroup>
@@ -133,17 +130,6 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="app.config" />
-    <Content Include="Models\DataSets\DsNorthwind.xsc">
-      <DependentUpon>DsNorthwind.xsd</DependentUpon>
-    </Content>
-    <None Include="Models\DataSets\DsNorthwind.xsd">
-      <SubType>Designer</SubType>
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>DsNorthwind.Designer.vb</LastGenOutput>
-    </None>
-    <Content Include="Models\DataSets\DsNorthwind.xss">
-      <DependentUpon>DsNorthwind.xsd</DependentUpon>
-    </Content>
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
@@ -329,7 +315,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>0</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:58496/MVC_Sample/</IISUrl>
+          <IISUrl>http://localhost:58496/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

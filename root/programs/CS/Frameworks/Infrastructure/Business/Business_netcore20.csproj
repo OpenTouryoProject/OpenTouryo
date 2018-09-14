@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <RootNamespace>Touryo.Infrastructure.Business</RootNamespace>
+    <AssemblyName>OpenTouryo.Business</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETCORE</DefineConstants>
+    <OutputPath>..\Build_netcore20\</OutputPath>
+    <DocumentationFile>..\Build_netcore20\netcoreapp2.0\OpenTouryo.Business.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Csp\**" />
+    <Compile Remove="RichClient\**" />
+    <EmbeddedResource Remove="Csp\**" />
+    <EmbeddedResource Remove="RichClient\**" />
+    <None Remove="Csp\**" />
+    <None Remove="RichClient\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Business\MyBaseLogic.cs" />
+    <Compile Remove="Business\_3TierEngine.cs" />
+    <Compile Remove="Common\_3TierParameterValue.cs" />
+    <Compile Remove="Common\_3TierReturnValue.cs" />
+    <Compile Remove="Presentation\CmnTableAdapter.cs" />
+    <Compile Remove="Presentation\MyBaseAsyncApiController.cs" />
+    <Compile Remove="Presentation\MyBaseController.cs" />
+    <Compile Remove="Presentation\MyBaseMVController.cs" />
+    <Compile Remove="Presentation\ResultWithChallenge.cs" />
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Framework\Framework_netstd20.csproj" />
+    <ProjectReference Include="..\Public\Db\DamMySQL\DamMySQL_netstd20.csproj" />
+    <ProjectReference Include="..\Public\Db\DamPstGrS\DamPstGrS_netstd20.csproj" />
+    <ProjectReference Include="..\Public\Public_netstd20.csproj" />
+  </ItemGroup>
+
+</Project>

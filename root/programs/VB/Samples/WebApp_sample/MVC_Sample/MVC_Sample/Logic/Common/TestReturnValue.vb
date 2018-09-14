@@ -25,13 +25,7 @@ Namespace Logic.Common
         ''' <summary>汎用エリア</summary>
         Public Obj As Object
 
-        ''' <summary>ShipperID</summary>
-        Public ShipperID As Integer
-
-        ''' <summary>CompanyName</summary>
-        Public CompanyName As String
-
-        ''' <summary>Phone</summary>
-        Public Phone As String
+		''' <summary>テスト用エリア</summary>
+		Public Obj2 As Object
     End Class
 End Namespace

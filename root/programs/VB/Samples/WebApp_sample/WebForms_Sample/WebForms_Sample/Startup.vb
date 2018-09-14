@@ -17,11 +17,14 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
 
+Imports System.Net.Http
+Imports System.Web.Optimization
+Imports System.Web.Routing
+
 Imports Owin
 Imports Microsoft.Owin
 
-Imports System.Web.Optimization
-Imports System.Web.Routing
+Imports Touryo.Infrastructure.Framework.Authentication
 
 <Assembly: OwinStartup(GetType(WebForms_Sample.Startup))>
 
@@ -36,6 +39,9 @@ Namespace WebForms_Sample
             RouteConfig.RegisterRoutes(RouteTable.Routes)
             ' バンドル＆ミニフィケーションの登録
             BundleConfig.RegisterBundles(BundleTable.Bundles)
+
+            ' JwkSet取得用
+            OAuth2AndOIDCClient.HttpClient = New HttpClient()
         End Sub
     End Class
 End Namespace

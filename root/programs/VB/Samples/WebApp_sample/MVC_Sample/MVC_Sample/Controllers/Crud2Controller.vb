@@ -122,17 +122,7 @@ Namespace Controllers
                     Return JavaScript(scriptText)
                 Else
                     ' 結果（正常系）
-                    model.shippers = New DsNorthwind.ShippersDataTable()
-                    Dim dt As DataTable = DirectCast(testReturnValue.Obj, DataTable)
-
-                    For Each row As DataRow In dt.Rows
-                        Dim srow As DsNorthwind.ShippersRow = model.shippers.NewShippersRow()
-                        srow.ShipperID = Integer.Parse(row(0).ToString())
-                        srow.CompanyName = row(1).ToString()
-                        srow.Phone = row(2).ToString()
-
-                        model.shippers.Rows.Add(srow)
-                    Next
+                    model.Shippers = testReturnValue.Obj
                 End If
             End If
 
@@ -177,17 +167,7 @@ Namespace Controllers
                     Return JavaScript(scriptText)
                 Else
                     ' 結果（正常系）
-                    model.shippers = New DsNorthwind.ShippersDataTable()
-                    Dim ds As DataSet = DirectCast(testReturnValue.Obj, DataSet)
-
-                    For Each row As DataRow In ds.Tables(0).Rows
-                        Dim srow As DsNorthwind.ShippersRow = model.shippers.NewShippersRow()
-                        srow.ShipperID = Integer.Parse(row(0).ToString())
-                        srow.CompanyName = row(1).ToString()
-                        srow.Phone = row(2).ToString()
-
-                        model.shippers.Rows.Add(srow)
-                    Next
+                    model.Shippers = testReturnValue.Obj
                 End If
             End If
 
@@ -232,17 +212,7 @@ Namespace Controllers
                     Return JavaScript(scriptText)
                 Else
                     ' 結果（正常系）
-                    model.shippers = New DsNorthwind.ShippersDataTable()
-                    Dim dt As DataTable = DirectCast(testReturnValue.Obj, DataTable)
-
-                    For Each row As DataRow In dt.Rows
-                        Dim srow As DsNorthwind.ShippersRow = model.shippers.NewShippersRow()
-                        srow.ShipperID = Integer.Parse(row(0).ToString())
-                        srow.CompanyName = row(1).ToString()
-                        srow.Phone = row(2).ToString()
-
-                        model.shippers.Rows.Add(srow)
-                    Next
+                    model.Shippers = testReturnValue.Obj
                 End If
             End If
             ' Ajax.BeginFormでは、以下のように記述することで部分更新が可能。
@@ -291,17 +261,7 @@ Namespace Controllers
                     Return JavaScript(scriptText)
                 Else
                     ' 結果（正常系）
-                    model.shippers = New DsNorthwind.ShippersDataTable()
-                    Dim dt As DataTable = DirectCast(testReturnValue.Obj, DataTable)
-
-                    For Each row As DataRow In dt.Rows
-                        Dim srow As DsNorthwind.ShippersRow = model.shippers.NewShippersRow()
-                        srow.ShipperID = Integer.Parse(row(0).ToString())
-                        srow.CompanyName = row(1).ToString()
-                        srow.Phone = row(2).ToString()
-
-                        model.shippers.Rows.Add(srow)
-                    Next
+                    model.Shippers = testReturnValue.Obj
                 End If
             End If
             ' Ajax.BeginFormでは、以下のように記述することで部分更新が可能。
@@ -329,7 +289,7 @@ Namespace Controllers
                     Convert.ToString(model.DdlExRollback), Me.UserInfo)
 
                 ' 動的SQLの要素を設定
-                testParameterValue.ShipperID = Integer.Parse(model.ShipperID)
+                testParameterValue.Shipper = model.Shipper
 
                 ' Ｂ層呼出し＋都度コミット
                 Dim layerB As New LayerB()
@@ -349,16 +309,18 @@ Namespace Controllers
 
                     ' Ajax.BeginFormでは、以下のように記述することで部分更新が可能。
                     Return PartialView("_MessageView", model)
-                    ' 結果（正常系）
+
                 Else
+                    ' 結果（正常系）
                 End If
 
                 ' Ajax.BeginFormでは、UpdateTargetIdで指定した
                 ' ターゲット以外を更新する場合、JavaScriptでの対応が必要。
                 ' ＃ここではjQueryを使用している。
+                Dim svm As ShipperViweModel = DirectCast(testReturnValue.Obj, ShipperViweModel)
                 scriptText = String.Format(
-                    "$('#ShipperID').val('{0}');$('#CompanyName').val('{1}');$('#Phone').val('{2}');",
-                    testReturnValue.ShipperID, testReturnValue.CompanyName, testReturnValue.Phone)
+                    "$('#Shipper_ShipperID').val('{0}');$('#Shipper_CompanyName').val('{1}');$('#Shipper_Phone').val('{2}');",
+                    svm.ShipperID, svm.CompanyName, svm.Phone)
             End If
 
             Return JavaScript(scriptText)
@@ -382,8 +344,7 @@ Namespace Controllers
                     Convert.ToString(model.DdlExRollback), Me.UserInfo)
 
                 ' 動的SQLの要素を設定
-                testParameterValue.CompanyName = model.CompanyName
-                testParameterValue.Phone = model.Phone
+                testParameterValue.Shipper = model.Shipper
 
                 ' Ｂ層呼出し＋都度コミット
                 Dim layerB As New LayerB()
@@ -427,9 +388,7 @@ Namespace Controllers
                     Convert.ToString(model.DdlExRollback), Me.UserInfo)
 
                 ' 動的SQLの要素を設定
-                testParameterValue.ShipperID = Integer.Parse(model.ShipperID)
-                testParameterValue.CompanyName = model.CompanyName
-                testParameterValue.Phone = model.Phone
+                testParameterValue.Shipper = model.Shipper
 
                 ' Ｂ層呼出し＋都度コミット
                 Dim layerB As New LayerB()
@@ -474,7 +433,7 @@ Namespace Controllers
                     Convert.ToString(model.DdlExRollback), Me.UserInfo)
 
                 ' 動的SQLの要素を設定
-                testParameterValue.ShipperID = Integer.Parse(model.ShipperID)
+                testParameterValue.Shipper = model.Shipper
 
                 ' Ｂ層呼出し＋都度コミット
                 Dim layerB As New LayerB()

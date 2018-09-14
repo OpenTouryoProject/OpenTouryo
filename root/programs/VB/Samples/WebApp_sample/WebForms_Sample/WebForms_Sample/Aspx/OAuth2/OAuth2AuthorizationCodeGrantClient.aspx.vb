@@ -62,13 +62,12 @@ Namespace Aspx.OAuth2
             Dim state As String = Request.QueryString("state")
 
             Try
-                OAuth2AndOIDCClient.HttpClient = New HttpClient()
                 Dim response__1 As String = ""
 
                 If state = Me.State Then
                     ' CSRF(XSRF)対策のstateの検証は重要
                     response__1 = Await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
-                        New Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"),
+                        New Uri("http://localhost:63359/MultiPurposeAuthSite/OAuth2BearerToken"),
                         OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
                         HttpUtility.HtmlEncode("http://localhost:9999/WebForms_Sample/Aspx/Auth/OAuthAuthorizationCodeGrantClient.aspx"), code)
 
@@ -76,29 +75,28 @@ Namespace Aspx.OAuth2
                     Dim base64UrlEncoder As New Base64UrlTextEncoder()
                     Dim dic As Dictionary(Of String, String) = JsonConvert.DeserializeObject(Of Dictionary(Of String, String))(response__1)
 
-                    ' id_tokenの検証コード
-                    If dic.ContainsKey("id_token") Then
-                        Dim id_token As String = dic("id_token")
+                    Dim [sub] As String = ""
+                    Dim nonce As String = ""
+                    Dim roles As List(Of String) = Nothing
+                    Dim scopes As List(Of String) = Nothing
+                    Dim jobj As JObject = Nothing
 
-                        Dim [sub] As String = ""
-                        Dim roles As List(Of String) = Nothing
-                        Dim scopes As List(Of String) = Nothing
-                        Dim jobj As JObject = Nothing
-
-                        If JwtToken.Verify(id_token, [sub], roles, scopes, jobj) AndAlso jobj("nonce").ToString() = Me.Nonce Then
+                    ' access_tokenの検証
+                    If JwtToken.Verify(dic("access_token"), [sub], roles, scopes, jobj) Then
+                        ' id_tokenの検証
+                        If IdToken.Verify(dic("id_token"), "", "", "", [sub], nonce,
+                            jobj) AndAlso nonce = Me.Nonce Then
                             ' ログインに成功
-
                             ' /userinfoエンドポイントにアクセスする場合
-                            response__1 = Await OAuth2AndOIDCClient.CallUserInfoEndpointAsync(
+                            response__1 = Await OAuth2AndOIDCClient.GetUserInfoAsync(
                                 New Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic("access_token"))
 
                             FormsAuthentication.RedirectFromLoginPage([sub], False)
                             Dim ui As New MyUserInfo([sub], Request.UserHostAddress)
                             UserInfoHandle.SetUserInformation(ui)
 
-
                             Return
-
+                        Else
                         End If
                     Else
                     End If

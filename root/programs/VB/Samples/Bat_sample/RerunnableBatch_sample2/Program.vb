@@ -85,23 +85,28 @@ Class Program
 
         Dim recordCount As Integer = pkList.Count   ' 全レコード数
         Dim initialIndex As Integer = 0 ' 処理開始インデックス ※ todo:リラン時に途中から再開する場合は初期値を変更する
-        Dim transactionCount As Integer = Convert.ToInt32(Math.Ceiling(CDbl(recordCount - initialIndex) / INTERMEDIATE_COMMIT_COUNT))   ' 更新B層実行回数
+        Dim transactionCount As Integer = Convert.ToInt32(Math.Ceiling(CDbl(recordCount - initialIndex) / INTERMEDIATE_COMMIT_COUNT)) ' 更新B層実行回数
 
-		For transactionIndex As Integer = 0 To transactionCount - 1
+        ' 性能測定
+        ' 性能測定 - 開始
+        Dim pr As New PerformanceRecorder()
+        pr.StartsPerformanceRecord()
+
+        For transactionIndex As Integer = 0 To transactionCount - 1
             Dim subPkList As ArrayList      ' 主キー一覧(1トランザクション分)
             Dim subPkStartIndex As Integer  ' 主キー(1トランザクション分)の開始位置
             Dim subPkCount As Integer       ' 主キー数(1トランザクション分)
             ' 取り出す主キーの開始、数を取得
-			subPkStartIndex = initialIndex + (transactionIndex * INTERMEDIATE_COMMIT_COUNT)
-			If subPkStartIndex + INTERMEDIATE_COMMIT_COUNT - 1 > recordCount - 1 Then
-				subPkCount = (recordCount - initialIndex) Mod INTERMEDIATE_COMMIT_COUNT
-			Else
-				subPkCount = INTERMEDIATE_COMMIT_COUNT
-			End If
+            subPkStartIndex = initialIndex + (transactionIndex * INTERMEDIATE_COMMIT_COUNT)
+            If subPkStartIndex + INTERMEDIATE_COMMIT_COUNT - 1 > recordCount - 1 Then
+                subPkCount = (recordCount - initialIndex) Mod INTERMEDIATE_COMMIT_COUNT
+            Else
+                subPkCount = INTERMEDIATE_COMMIT_COUNT
+            End If
 
             ' 主キー一覧(1トランザクション分)を取り出す
-			subPkList = New ArrayList()
-			subPkList.AddRange(pkList.GetRange(subPkStartIndex, subPkCount))
+            subPkList = New ArrayList()
+            subPkList.AddRange(pkList.GetRange(subPkStartIndex, subPkCount))
 
             ' ↓B層実行：バッチ処理を実行(1トランザクション分)----------------------------------------------------
 
@@ -117,16 +122,20 @@ Class Program
             ' 実行結果確認
             If selectPkReturnValue.ErrorFlag = True Then
                 ' 結果（業務続行可能なエラー）
-				Dim [error] As String = "ErrorMessageID:" & selectPkReturnValue.ErrorMessageID & vbCr & vbLf
-				[error] += "ErrorMessage:" & selectPkReturnValue.ErrorMessage & vbCr & vbLf
-				[error] += "ErrorInfo:" & selectPkReturnValue.ErrorInfo & vbCr & vbLf
+                Dim [error] As String = "ErrorMessageID:" & selectPkReturnValue.ErrorMessageID & vbCr & vbLf
+                [error] += "ErrorMessage:" & selectPkReturnValue.ErrorMessage & vbCr & vbLf
+                [error] += "ErrorInfo:" & selectPkReturnValue.ErrorInfo & vbCr & vbLf
 
-				Console.WriteLine([error])
+                Console.WriteLine([error])
                 Console.ReadKey()   'バッチ処理終了
-				Return
+                Return
             End If
 
             '↑B層実行：バッチ処理を実行(1トランザクション分)----------------------------------------------------
-		Next
-	End Sub
+        Next
+
+        ' 性能測定 - 終了
+        Console.WriteLine(pr.EndsPerformanceRecord())
+        Console.ReadKey()
+    End Sub
 End Class

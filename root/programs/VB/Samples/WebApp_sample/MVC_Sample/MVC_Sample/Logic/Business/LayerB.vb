@@ -19,10 +19,12 @@
 
 Imports MVC_Sample.Logic.Dao
 Imports MVC_Sample.Logic.Common
+Imports MVC_Sample.Models.ViewModels
 
 Imports Touryo.Infrastructure.Business.Business
 Imports Touryo.Infrastructure.Business.Dao
 Imports Touryo.Infrastructure.Framework.Exceptions
+Imports Touryo.Infrastructure.Public.Dto
 
 Namespace Logic.Business
     Public Class LayerB
@@ -126,6 +128,7 @@ Namespace Logic.Business
 
             ' ↓業務処理-----------------------------------------------------
             Dim dt As DataTable = Nothing
+            Dim list As List(Of ShipperViweModel) = Nothing
 
             Select Case (testParameter.ActionType.Split("%"c))(1)
                 Case "common"
@@ -151,8 +154,11 @@ Namespace Logic.Business
                     ' 共通Daoを実行
                     cmnDao.ExecSelectFill_DT(dt)
 
+                    ' DataTableToList
+                    list = DataToPoco.DataTableToList(Of ShipperViweModel)(dt)
+
                     ' 戻り値を設定
-                    testReturn.Obj = dt
+                    testReturn.Obj = list
 
                     Exit Select
 
@@ -167,8 +173,12 @@ Namespace Logic.Business
                     ' 自動生成Daoを実行
                     genDao.D2_Select(dt)
 
+                    ' DataTableToList
+                    list = DataToPoco.DataTableToList(Of ShipperViweModel)(dt)
+
                     ' 戻り値を設定
-                    testReturn.Obj = DirectCast(dt, DataTable)
+                    testReturn.Obj = list
+
                     Exit Select
                 Case Else
 
@@ -197,6 +207,7 @@ Namespace Logic.Business
 
             ' ↓業務処理-----------------------------------------------------
             Dim ds As DataSet = Nothing
+            Dim list As List(Of ShipperViweModel) = Nothing
 
             Select Case (testParameter.ActionType.Split("%"c))(1)
                 Case "common"
@@ -222,8 +233,11 @@ Namespace Logic.Business
                     ' 共通Daoを実行
                     cmnDao.ExecSelectFill_DS(ds)
 
+                    ' DataTableToList
+                    list = DataToPoco.DataTableToList(Of ShipperViweModel)(ds.Tables(0))
+
                     ' 戻り値を設定
-                    testReturn.Obj = ds
+                    testReturn.Obj = list
 
                     Exit Select
 
@@ -239,8 +253,12 @@ Namespace Logic.Business
                     ' 自動生成Daoを実行
                     genDao.D2_Select(ds.Tables(0))
 
+                    ' DataTableToList
+                    list = DataToPoco.DataTableToList(Of ShipperViweModel)(ds.Tables(0))
+
                     ' 戻り値を設定
-                    testReturn.Obj = ds
+                    testReturn.Obj = list
+
                     Exit Select
                 Case Else
 
@@ -269,6 +287,7 @@ Namespace Logic.Business
 
             ' ↓業務処理-----------------------------------------------------
             Dim dt As DataTable = Nothing
+            Dim list As List(Of ShipperViweModel) = Nothing
 
             Select Case (testParameter.ActionType.Split("%"c))(1)
                 Case "common"
@@ -288,33 +307,17 @@ Namespace Logic.Business
                             Exit Select
                     End Select
 
-                    ' 戻り値 dt
-                    dt = New DataTable()
-
-                    ' ３列生成
-                    dt.Columns.Add("c1", GetType(String))
-                    dt.Columns.Add("c2", GetType(String))
-                    dt.Columns.Add("c3", GetType(String))
-
                     ' 共通Daoを実行
                     Dim idr As IDataReader = cmnDao.ExecSelect_DR()
 
-                    While idr.Read()
-                        ' DRから読む
-                        Dim objArray As Object() = New Object(2) {}
-                        idr.GetValues(objArray)
-
-                        ' DTに設定する。
-                        Dim dr As DataRow = dt.NewRow()
-                        dr.ItemArray = objArray
-                        dt.Rows.Add(dr)
-                    End While
+                    ' DataReaderToList
+                    list = DataToPoco.DataReaderToList(Of ShipperViweModel)(idr)
 
                     ' 終了したらクローズ
                     idr.Close()
 
                     ' 戻り値を設定
-                    testReturn.Obj = dt
+                    testReturn.Obj = list
 
                     Exit Select
 
@@ -331,8 +334,11 @@ Namespace Logic.Business
                     ' 自動生成Daoを実行
                     genDao.D2_Select(dt)
 
+                    ' DataTableToList
+                    list = DataToPoco.DataTableToList(Of ShipperViweModel)(dt)
+
                     ' 戻り値を設定
-                    testReturn.Obj = DirectCast(dt, DataTable)
+                    testReturn.Obj = list
 
                     Exit Select
                 Case Else
@@ -361,6 +367,8 @@ Namespace Logic.Business
             Me.ReturnValue = testReturn
 
             ' ↓業務処理-----------------------------------------------------
+            Dim dt As DataTable = Nothing
+            Dim list As List(Of ShipperViweModel) = Nothing
 
             Select Case (testParameter.ActionType.Split("%"c))(1)
                 Case "common"
@@ -410,13 +418,16 @@ Namespace Logic.Business
                     cmnDao.SetUserParameter("SEQUENCE", " " & orderSequence & " ")
 
                     ' 戻り値 dt
-                    Dim dt As New DataTable()
+                    dt = New DataTable()
 
                     ' 共通Daoを実行
                     cmnDao.ExecSelectFill_DT(dt)
 
+                    ' DataTableToList
+                    list = DataToPoco.DataTableToList(Of ShipperViweModel)(dt)
+
                     ' 自動生成Daoを実行
-                    testReturn.Obj = dt
+                    testReturn.Obj = list
 
                     Exit Select
                 Case Else
@@ -470,7 +481,7 @@ Namespace Logic.Business
                     End Select
 
                     ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-                    cmnDao.SetParameter("P1", testParameter.ShipperID)
+                    cmnDao.SetParameter("P1", testParameter.Shipper.ShipperID)
 
                     ' 戻り値 dt
                     dt = New DataTable()
@@ -478,21 +489,8 @@ Namespace Logic.Business
                     ' 共通Daoを実行
                     cmnDao.ExecSelectFill_DT(dt)
 
-                    ' キャストの対策コードを挿入
-
-                    ' ・SQLの場合、ShipperIDのintがInt32型にマップされる。
-                    ' ・ODPの場合、ShipperIDのNUMBERがInt64型にマップされる。
-                    ' ・DB2の場合、ShipperIDのDECIMALがｘｘｘ型にマップされる。
-                    If dt.Rows(0).ItemArray.GetValue(0).[GetType]().ToString() = "System.Int32" Then
-                        ' Int32なのでキャスト
-                        testReturn.ShipperID = CInt(dt.Rows(0).ItemArray.GetValue(0))
-                    Else
-                        ' それ以外の場合、一度、文字列に変換してInt32.Parseする。
-                        testReturn.ShipperID = Integer.Parse(dt.Rows(0).ItemArray.GetValue(0).ToString())
-                    End If
-
-                    testReturn.CompanyName = DirectCast(dt.Rows(0).ItemArray.GetValue(1), String)
-                    testReturn.Phone = DirectCast(dt.Rows(0).ItemArray.GetValue(2), String)
+                    ' DataTableToPOCO
+                    testReturn.Obj = DataToPoco.DataTableToPOCO(Of ShipperViweModel)(dt)
 
                     Exit Select
 
@@ -502,7 +500,7 @@ Namespace Logic.Business
                     Dim genDao As New DaoShippers(Me.GetDam())
 
                     ' パラメタに対して、動的に値を設定する。
-                    genDao.PK_ShipperID = testParameter.ShipperID
+                    genDao.PK_ShipperID = testParameter.Shipper.ShipperID
 
                     ' 戻り値 dt
                     dt = New DataTable()
@@ -510,21 +508,8 @@ Namespace Logic.Business
                     ' 自動生成Daoを実行
                     genDao.S2_Select(dt)
 
-                    ' キャストの対策コードを挿入
-
-                    ' ・SQLの場合、ShipperIDのintがInt32型にマップされる。
-                    ' ・ODPの場合、ShipperIDのNUMBERがInt64型にマップされる。
-                    ' ・DB2の場合、ShipperIDのDECIMALがｘｘｘ型にマップされる。
-                    If dt.Rows(0).ItemArray.GetValue(0).[GetType]().ToString() = "System.Int32" Then
-                        ' Int32なのでキャスト
-                        testReturn.ShipperID = CInt(dt.Rows(0).ItemArray.GetValue(0))
-                    Else
-                        ' それ以外の場合、一度、文字列に変換してInt32.Parseする。
-                        testReturn.ShipperID = Integer.Parse(dt.Rows(0).ItemArray.GetValue(0).ToString())
-                    End If
-
-                    testReturn.CompanyName = DirectCast(dt.Rows(0).ItemArray.GetValue(1), String)
-                    testReturn.Phone = DirectCast(dt.Rows(0).ItemArray.GetValue(2), String)
+                    ' DataTableToPOCO
+                    testReturn.Obj = DataToPoco.DataTableToPOCO(Of ShipperViweModel)(dt)
 
                     Exit Select
                 Case Else
@@ -563,8 +548,8 @@ Namespace Logic.Business
                     cmnDao.SQLFileName = "ShipperInsert.sql"
 
                     ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-                    cmnDao.SetParameter("P2", testParameter.CompanyName)
-                    cmnDao.SetParameter("P3", testParameter.Phone)
+                    cmnDao.SetParameter("P2", testParameter.Shipper.CompanyName)
+                    cmnDao.SetParameter("P3", testParameter.Shipper.Phone)
 
                     ' 共通Daoを実行
                     ' 戻り値を設定
@@ -578,8 +563,8 @@ Namespace Logic.Business
                     Dim genDao As New DaoShippers(Me.GetDam())
 
                     ' パラメタに対して、動的に値を設定する。
-                    genDao.CompanyName = testParameter.CompanyName
-                    genDao.Phone = testParameter.Phone
+                    genDao.CompanyName = testParameter.Shipper.CompanyName
+                    genDao.Phone = testParameter.Shipper.Phone
 
                     ' 自動生成Daoを実行
                     ' 戻り値を設定
@@ -632,9 +617,9 @@ Namespace Logic.Business
                     End Select
 
                     ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-                    cmnDao.SetParameter("P1", testParameter.ShipperID)
-                    cmnDao.SetParameter("P2", testParameter.CompanyName)
-                    cmnDao.SetParameter("P3", testParameter.Phone)
+                    cmnDao.SetParameter("P1", testParameter.Shipper.ShipperID)
+                    cmnDao.SetParameter("P2", testParameter.Shipper.CompanyName)
+                    cmnDao.SetParameter("P3", testParameter.Shipper.Phone)
 
                     ' 共通Daoを実行
                     ' 戻り値を設定
@@ -648,9 +633,9 @@ Namespace Logic.Business
                     Dim genDao As New DaoShippers(Me.GetDam())
 
                     ' パラメタに対して、動的に値を設定する。
-                    genDao.PK_ShipperID = testParameter.ShipperID
-                    genDao.Set_CompanyName_forUPD = testParameter.CompanyName
-                    genDao.Set_Phone_forUPD = testParameter.Phone
+                    genDao.PK_ShipperID = testParameter.Shipper.ShipperID
+                    genDao.Set_CompanyName_forUPD = testParameter.Shipper.CompanyName
+                    genDao.Set_Phone_forUPD = testParameter.Shipper.Phone
 
                     ' 自動生成Daoを実行
                     ' 戻り値を設定
@@ -703,7 +688,7 @@ Namespace Logic.Business
                     End Select
 
                     ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-                    cmnDao.SetParameter("P1", testParameter.ShipperID)
+                    cmnDao.SetParameter("P1", testParameter.Shipper.ShipperID)
 
                     ' 共通Daoを実行
                     ' 戻り値を設定
@@ -717,7 +702,7 @@ Namespace Logic.Business
                     Dim genDao As New DaoShippers(Me.GetDam())
 
                     ' パラメタに対して、動的に値を設定する。
-                    genDao.PK_ShipperID = testParameter.ShipperID
+                    genDao.PK_ShipperID = testParameter.Shipper.ShipperID
 
                     ' 自動生成Daoを実行
                     ' 戻り値を設定

@@ -65,9 +65,12 @@ Namespace ASPNETWebService.Controllers
     <EnableCors("*", "*", "*", SupportsCredentials:=True)>
     Public Class FxController
         Inherits ApiController
-#Region "テスト用"
+#Region "疎通テスト用"
 
-        ''' <summary>test</summary>
+        ''' <summary>
+        ''' 疎通テスト用
+        ''' http(s)://hostName:portNum/testで疎通テスト可能。
+        ''' </summary>
         ''' <returns>Dictionary(string, string)</returns>
         <HttpGet>
         <Route("test")>
@@ -112,7 +115,7 @@ Namespace ASPNETWebService.Controllers
         ''' ・ReturnValueObject
         ''' </returns>
         <HttpPost>
-        <Route("DotNETOnlineWebAPI")>
+        <Route("WebAPIControllerForFx")>
         Public Async Function DotNETOnlineWebAPI(paramDic As Dictionary(Of String, String)) As Task(Of Dictionary(Of String, String))
             ' 引数
             Dim serviceName As String = paramDic("ServiceName")
@@ -197,24 +200,29 @@ Namespace ASPNETWebService.Controllers
                 ' ★
                 status = FxLiteral.SIF_STATUS_AUTHENTICATION
 
-				Dim access_token As String = DirectCast(context, String)
-				If Not String.IsNullOrEmpty(access_token) Then
-					Dim [sub] As String = ""
-					Dim roles As List(Of String) = Nothing
-					Dim scopes As List(Of String) = Nothing
-					Dim jobj As JObject = Nothing
+                If TypeOf context Is String Then
+                    ' System.Stringの場合
+                    Dim access_token As String = DirectCast(context, String)
+                    If Not String.IsNullOrEmpty(access_token) Then
+                        Dim [sub] As String = ""
+                        Dim roles As List(Of String) = Nothing
+                        Dim scopes As List(Of String) = Nothing
+                        Dim jobj As JObject = Nothing
 
-					If JwtToken.Verify(access_token, [sub], roles, scopes, jobj) Then
-						' 認証成功
-						Debug.WriteLine("認証成功")
-							' 認証失敗（認証必須ならエラーにする。
-					Else
-					End If
-						' 認証失敗（認証必須ならエラーにする。
-				Else
-				End If
+                        If JwtToken.Verify(access_token, [sub], roles, scopes, jobj) Then
+                            ' 認証成功
+                            Debug.WriteLine("認証成功")
+                            ' 認証失敗（認証必須ならエラーにする。
+                        Else
+                        End If
+                        ' 認証失敗（認証必須ならエラーにする。
+                    Else
+                    End If
+                Else
+                    ' MyUserInfoの場合
+                End If
 
-				'contextObject = BinarySerialize.ObjectToBytes(hogehoge); // 更新可能だが...。
+                'contextObject = BinarySerialize.ObjectToBytes(hogehoge); // 更新可能だが...。
 
                 '#End Region
 

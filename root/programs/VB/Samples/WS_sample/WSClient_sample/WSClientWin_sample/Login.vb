@@ -73,7 +73,9 @@ Partial Public Class Login
     ''' <returns>access_token</returns>
     Private Async Function ExLogin(userId As String, password As String) As Task(Of String)
         OAuth2AndOIDCClient.HttpClient = New HttpClient()
-        Dim response As String = Await OAuth2AndOIDCClient.GetAccessTokenByROPAsync(New Uri("http://localhost:63359/MultiPurposeAuthSite/OAuthBearerToken"), OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret, userId, password, "profile email phone address roles").ConfigureAwait(False)
+        Dim response As String = Await OAuth2AndOIDCClient.ResourceOwnerPasswordCredentialsGrantAsync(
+            New Uri("http://localhost:63359/MultiPurposeAuthSite/OAuth2BearerToken"),
+            OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret, userId, password, "profile email phone address roles").ConfigureAwait(False)
 
         ' access_tokenを取得し、検証
         Dim dic As Dictionary(Of String, String) = JsonConvert.DeserializeObject(Of Dictionary(Of String, String))(response)

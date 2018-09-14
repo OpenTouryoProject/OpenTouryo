@@ -1,0 +1,48 @@
+﻿@*
+    //**********************************************************************************
+    //* サンプル アプリ・ビュー
+    //**********************************************************************************
+
+    // テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+
+    //**********************************************************************************
+    //* クラス名        ：Menu
+    //* クラス日本語名  ：Menu
+    //*
+    //* 作成日時        ：－
+    //* 作成者          ：－
+    //* 更新履歴        ：－
+    //*
+    //*  日時        更新者            内容
+    //*  ----------  ----------------  -------------------------------------------------
+    //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+    //**********************************************************************************
+*@
+
+@{
+    ViewBag.Title = "Menu";
+}
+
+@* スクリプト・セクション（RenderSection("HeaderScriptsSection", required: true)に出力されます） *@
+@section HeaderScriptsSection{
+    <!-- Head 部の section -->
+}
+
+<h2>@ViewBag.Title</h2>
+
+<ul>
+    <li>
+        サンプル
+        <ul>
+            <li>@Html.ActionLink("メニュー", "Index", "Home")</li>
+            <li>@Html.ActionLink("スクロールのテスト", "Scroll", "Home")</li>
+            <li>@Html.ActionLink("Crudテスト（Html.BeginForm）", "Index", "Crud1")</li>
+            <li><s>Crudテスト（Ajax.BeginForm）</s></li>
+        </ul>
+    </li>
+</ul>
+
+@* スクリプト・セクション（RenderSection("FooterScriptsSection", required: true)に出力されます） *@
+@section FooterScriptsSection{
+       <!-- Footer 部の section -->
+}

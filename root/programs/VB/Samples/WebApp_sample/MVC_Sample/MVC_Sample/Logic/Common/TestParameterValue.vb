@@ -17,23 +17,16 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '**********************************************************************************
 
+Imports MVC_Sample.Models.ViewModels
+
 Imports Touryo.Infrastructure.Business.Common
 Imports Touryo.Infrastructure.Business.Util
 
 Namespace Logic.Common
     Public Class TestParameterValue
         Inherits MyParameterValue
-        ''' <summary>汎用エリア</summary>
-        Public Obj As Object
-
-        ''' <summary>ShipperID</summary>
-        Public ShipperID As Integer
-
-        ''' <summary>CompanyName</summary>
-        Public CompanyName As String
-
-        ''' <summary>Phone</summary>
-        Public Phone As String
+        ''' <summary>shipper</summary>
+        Public Shipper As ShipperViweModel
 
         ''' <summary>OrderColumn</summary>
         Public OrderColumn As String

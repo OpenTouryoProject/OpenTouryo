@@ -50,8 +50,13 @@
 '*  2012/06/18  西野 大介         OriginalStackTrace（ログ出力）の品質向上
 '*  2013/01/18  西野 大介         public static TransferErrorScreen2追加（他から呼出可能に）
 '*  2013/01/18  西野 大介         public static GetUserInfo2追加（他から呼出可能に）
-'*  2016/03/03  Supragyan         Resolved the URL issue of error screen transition path
-'*  2016/03/03  Supragyan         Modified default relative path of the sample application screens
+'*  2017/02/14  西野 大介         キャッシュ無効化処理にスイッチを追加した。
+'*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
+'*  2017/02/28  西野 大介         TransferErrorScreen2のErrorMessage生成処理の見直し。
+'*  2016/03/03  Supragyan         Resolved the URL issue of error screen transition path (merge)
+'*  2016/03/03  Supragyan         Modified default relative path of the sample application screens (merge)
+'*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
+'*  2018/07/19  西野 大介         復元後のユーザー情報をSessionに設定するコードを追加
 '**********************************************************************************
 
 Imports System.Web
@@ -268,27 +273,27 @@ Namespace Touryo.Infrastructure.Business.Presentation
             Else
                 ' 取得を試みる。
                 userInfo = DirectCast(UserInfoHandle.GetUserInformation(), MyUserInfo)
-            End If
+                ' nullチェック
+                If userInfo Is Nothing Then
+                    ' nullの場合、仮の値を生成 / 設定する。
+                    Dim userName As String = System.Threading.Thread.CurrentPrincipal.Identity.Name
 
-            ' nullチェック
-            If userInfo Is Nothing Then
-                ' nullの場合、仮の値を生成 / 設定する。
-                Dim userName As String = System.Threading.Thread.CurrentPrincipal.Identity.Name
+                    If userName Is Nothing OrElse userName = "" Then
+                        ' 未認証状態
+                        userInfo = New MyUserInfo("未認証", HttpContext.Current.Request.UserHostAddress)
+                    Else
+                        ' 認証状態
+                        userInfo = New MyUserInfo(userName, HttpContext.Current.Request.UserHostAddress)
 
-                If userName Is Nothing OrElse userName = "" Then
-                    ' 未認証状態
-                    userInfo = New MyUserInfo("未認証", HttpContext.Current.Request.UserHostAddress)
-                Else
-                    ' 認証状態
-                    ' 必要に応じて認証チケットの
-                    ' ユーザ名からユーザ情報を復元する。
-                    userInfo = New MyUserInfo(userName, HttpContext.Current.Request.UserHostAddress)
+                        ' 必要に応じて認証チケットのユーザ名からユーザ情報を復元する。
+                        ' ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+                        ' ・・・
+
+                        ' 復元したユーザ情報をセット
+                        UserInfoHandle.SetUserInformation(userInfo)
+                    End If
                 End If
-            Else
-                ' nullで無い場合、取得した値を設定する。
             End If
-
-            ' ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
 
             ' 値を戻す。
             Return userInfo
@@ -809,7 +814,7 @@ Namespace Touryo.Infrastructure.Business.Presentation
 
 #End Region
 
-#Region "マスタ ページ上のフレームワーク対象コントロール"
+#Region "マスタ ページ上のフレームワーク対象コントロール（不要な場合は削除してく下さい）"
 
 #Region "sampleScreen.masterマスタ ページ上のフレームワーク対象コントロールの、共通イベントのUOCメソッド"
 

@@ -130,7 +130,11 @@ Partial Public Class Form1
         Me.ddlOrderSequence.SelectedIndex = 0
 
         ' 呼出し制御部品
-        Me.CallCtrl = New CallController(Program.AccessToken)
+        If String.IsNullOrEmpty(Program.AccessToken) Then
+            Me.CallCtrl = New CallController(MyBaseControllerWin.UserInfo)
+        Else
+            Me.CallCtrl = New CallController(Program.AccessToken)
+        End If
 
     End Sub
 
@@ -228,7 +232,13 @@ Partial Public Class Form1
         Dim testReturnValue As TestReturnValue
 
         ' 呼出し制御部品（スレッドセーフでないため副スレッド内で作る）
-        Dim callCtrl As New CallController(Program.AccessToken)
+        Dim callCtrl As CallController = Nothing
+
+        If String.IsNullOrEmpty(Program.AccessToken) Then
+            callCtrl = New CallController(MyBaseControllerWin.UserInfo)
+        Else
+            callCtrl = New CallController(Program.AccessToken)
+        End If
 
         ' Invoke
         testReturnValue = callCtrl.Invoke(Me.LogicalName, testParameterValue)

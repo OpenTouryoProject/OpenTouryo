@@ -134,7 +134,9 @@ Namespace Business
                 ' 自動生成Daoを実行
 
                 ' ↑DBアクセス-----------------------------------------------------
-                sb.Append(dao.ExecGenerateSQL("DaoOrders2_S1_Insert.sql", New SQLUtility(DbEnum.DBMSType.SQLServer)) & ";" & vbCr & vbLf)
+                sb.Append(dao.ExecGenerateSQL(
+                          "DaoOrders2_S1_Insert.sql", New SQLUtility(DbEnum.DBMSType.SQLServer)) & ";" & vbCr & vbLf)
+                          '"DaoOrders2_D1_Insert.xml", New SQLUtility(DbEnum.DBMSType.SQLServer)) & ";" & vbCr & vbLf) ' 性能比較用
             Next
 
             ' 共通Daoでバッチ更新

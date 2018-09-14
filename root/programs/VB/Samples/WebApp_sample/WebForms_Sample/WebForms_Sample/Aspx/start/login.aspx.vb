@@ -85,7 +85,8 @@ Namespace Aspx.Start
             ' ここでは何もしない
 
             ' btnButton1, 2のイベントであれば、Session消去しない
-            If Request.Form("ctl00$ContentPlaceHolder_A$btnButton1") Is Nothing AndAlso Request.Form("ctl00$ContentPlaceHolder_A$btnButton2") Is Nothing Then
+            If Request.Form("ctl00$ContentPlaceHolder_A$btnButton1") Is Nothing _
+                AndAlso Request.Form("ctl00$ContentPlaceHolder_A$btnButton2") Is Nothing Then
                 ' Session消去
                 Me.FxSessionAbandon()
             End If
@@ -127,10 +128,10 @@ Namespace Aspx.Start
         ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnButton2_Click(fxEventArgs As FxEventArgs) As String
-            Return "http://localhost:63359/MultiPurposeAuthSite/Account/OAuthAuthorize" _
+            Return "http://localhost:63359/MultiPurposeAuthSite/Account/OAuth2Authorize" _
                 & "?client_id=" & OAuth2AndOIDCParams.ClientID _
                 & "&response_type=code" _
-                & "&scope=profile%20email%20phone%20address%20openid" _
+                & "&scope=profile%20email%20phone%20address%20roles%20openid" _
                 & "&state=" & Me.State _
                 & "&nonce=" & Me.Nonce _
                 & "&prompt=none"

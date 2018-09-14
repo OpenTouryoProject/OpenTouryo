@@ -18,9 +18,12 @@
 '**********************************************************************************
 
 Imports MVC_Sample.Logic.Common
+Imports MVC_Sample.Models.ViewModels
 
 Imports Touryo.Infrastructure.Business.Dao
+Imports Touryo.Infrastructure.Public.Dto
 Imports Touryo.Infrastructure.Public.Db
+Imports Touryo.Infrastructure.Public.Util
 
 Namespace Logic.Dao
     Public Class LayerD
@@ -50,7 +53,7 @@ Namespace Logic.Dao
             Me.SetSqlByCommand("SQL文")
 
             ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-            Me.SetParameter("P1", testParameter.ShipperID)
+            Me.SetParameter("P1", testParameter.Shipper.ShipperID)
 
             Dim obj As Object
 
@@ -145,10 +148,13 @@ Namespace Logic.Dao
             '   -- 一覧を返すSELECTクエリを実行する
             Me.ExecSelectFill_DT(dt)
 
+			' DataTableToList
+			Dim list As List(Of ShipperViweModel) = DataToPoco.DataTableToList(Of ShipperViweModel)(dt)
+
             ' ↑DBアクセス-----------------------------------------------------
 
             ' 戻り値を設定
-            testReturn.Obj = dt
+			testReturn.Obj = list
         End Sub
 
         ''' <summary>一覧を返すSELECTクエリを実行する（DS）</summary>
@@ -177,10 +183,13 @@ Namespace Logic.Dao
             '   -- 一覧を返すSELECTクエリを実行する
             Me.ExecSelectFill_DS(ds)
 
+			' DataTableToList
+			Dim list As List(Of ShipperViweModel) = DataToPoco.DataTableToList(Of ShipperViweModel)(ds.Tables(0))
+
             ' ↑DBアクセス-----------------------------------------------------
 
             ' 戻り値を設定
-            testReturn.Obj = ds
+			testReturn.Obj = list
         End Sub
 
         ''' <summary>一覧を返すSELECTクエリを実行する（DR）</summary>
@@ -203,27 +212,11 @@ Namespace Logic.Dao
             '   -- 直接指定する場合。
             Me.SetSqlByCommand(commandText)
 
-            ' 戻り値 dt
-            Dim dt As New DataTable()
-
-            ' ３列生成
-            dt.Columns.Add("c1", GetType(String))
-            dt.Columns.Add("c2", GetType(String))
-            dt.Columns.Add("c3", GetType(String))
-
             '   -- 一覧を返すSELECTクエリを実行する
             Dim idr As IDataReader = DirectCast(Me.ExecSelect_DR(), IDataReader)
 
-            While idr.Read()
-                ' DRから読む
-                Dim objArray As Object() = New Object(2) {}
-                idr.GetValues(objArray)
-
-                ' DTに設定する。
-                Dim dr As DataRow = dt.NewRow()
-                dr.ItemArray = objArray
-                dt.Rows.Add(dr)
-            End While
+			' DataReaderToList
+			Dim list As List(Of ShipperViweModel) = DataToPoco.DataReaderToList(Of ShipperViweModel)(idr)
 
             ' 終了したらクローズ
             idr.Close()
@@ -231,7 +224,7 @@ Namespace Logic.Dao
             ' ↑DBアクセス-----------------------------------------------------
 
             ' 戻り値を設定
-            testReturn.Obj = dt
+			testReturn.Obj = list
         End Sub
 
         ''' <summary>一覧を返すSELECTクエリを実行する</summary>
@@ -287,11 +280,13 @@ Namespace Logic.Dao
 
             '   -- 一覧を返すSELECTクエリを実行する
             Me.ExecSelectFill_DT(dt)
+			' DataTableToList
+			Dim list As List(Of ShipperViweModel) = DataToPoco.DataTableToList(Of ShipperViweModel)(dt)
 
             ' ↑DBアクセス-----------------------------------------------------
 
             ' 戻り値を設定
-            testReturn.Obj = dt
+			testReturn.Obj = list
         End Sub
 
 #End Region
@@ -318,7 +313,7 @@ Namespace Logic.Dao
             Me.SetSqlByFile2(filename)
 
             ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-            Me.SetParameter("P1", testParameter.ShipperID)
+            Me.SetParameter("P1", testParameter.Shipper.ShipperID)
 
             ' 戻り値 dt
             Dim dt As New DataTable()
@@ -328,24 +323,21 @@ Namespace Logic.Dao
 
             ' ↑DBアクセス-----------------------------------------------------
 
-            '/ 戻り値を設定 // 不要
-            'testReturn.Obj = dt;
+			' 一部、DataToPocoのテストコード
+			Dim svm As ShipperViweModel = DataToPoco.DataTableToPOCO(Of ShipperViweModel)(dt)
+			Debug.WriteLine("svm:" & ObjectInspector.Inspect(svm))
 
-            ' キャストの対策コードを挿入
+			' mapの書き方は、Key-Valueでdst-srcのproperty field名を書く
+			Dim tsvm As TestShipperViweModel = DataToPoco.DataTableToPOCO(Of TestShipperViweModel)(dt, New Dictionary(Of String, String)() From { _
+				{"_ShipperID", "ShipperID"}, _
+				{"_CompanyName", "CompanyName"}, _
+				{"_Phone", "Phone"} _
+			})
 
-            ' ・SQLの場合、ShipperIDのintがInt32型にマップされる。
-            ' ・ODPの場合、ShipperIDのNUMBERがInt64型にマップされる。
-            ' ・DB2の場合、ShipperIDのDECIMALがｘｘｘ型にマップされる。
-            If dt.Rows(0).ItemArray.GetValue(0).[GetType]().ToString() = "System.Int32" Then
-                ' Int32なのでキャスト
-                testReturn.ShipperID = CInt(dt.Rows(0).ItemArray.GetValue(0))
-            Else
-                ' それ以外の場合、一度、文字列に変換してInt32.Parseする。
-                testReturn.ShipperID = Integer.Parse(dt.Rows(0).ItemArray.GetValue(0).ToString())
-            End If
+			Debug.WriteLine("tsvm:" & ObjectInspector.Inspect(tsvm))
 
-            testReturn.CompanyName = DirectCast(dt.Rows(0).ItemArray.GetValue(1), String)
-            testReturn.Phone = DirectCast(dt.Rows(0).ItemArray.GetValue(2), String)
+			testReturn.Obj = svm
+			testReturn.Obj2 = tsvm
         End Sub
 
 #End Region
@@ -366,8 +358,8 @@ Namespace Logic.Dao
             Me.SetSqlByFile2("ShipperInsert.sql")
 
             ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-            Me.SetParameter("P2", testParameter.CompanyName)
-            Me.SetParameter("P3", testParameter.Phone)
+            Me.SetParameter("P2", testParameter.Shipper.CompanyName)
+            Me.SetParameter("P3", testParameter.Shipper.Phone)
 
             Dim obj As Object
 
@@ -405,9 +397,9 @@ Namespace Logic.Dao
             Me.SetSqlByFile2(filename)
 
             ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-            Me.SetParameter("P1", testParameter.ShipperID)
-            Me.SetParameter("P2", testParameter.CompanyName)
-            Me.SetParameter("P3", testParameter.Phone)
+            Me.SetParameter("P1", testParameter.Shipper.ShipperID)
+            Me.SetParameter("P2", testParameter.Shipper.CompanyName)
+            Me.SetParameter("P3", testParameter.Shipper.Phone)
 
             Dim obj As Object
 
@@ -444,7 +436,7 @@ Namespace Logic.Dao
             Me.SetSqlByFile2(filename)
 
             ' パラメタ ライズド クエリのパラメタに対して、動的に値を設定する。
-            Me.SetParameter("P1", testParameter.ShipperID)
+            Me.SetParameter("P1", testParameter.Shipper.ShipperID)
 
             Dim obj As Object
 

@@ -44,6 +44,7 @@
 '*  2017/02/28  西野 大介         OnExceptionのErrorMessage生成処理の見直し。
 '*  2017/02/28  西野 大介         TransferErrorScreenメソッドを追加した。
 '*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
+'*  2018/07/19  西野 大介         復元後のユーザー情報をSessionに設定するコードを追加
 '**********************************************************************************
 
 Imports System.Web
@@ -350,27 +351,27 @@ Namespace Touryo.Infrastructure.Business.Presentation
 #Region "OnException"
 
         ''' <summary>アクションでハンドルされない例外が発生したときに呼び出されます。</summary>
-        ''' <param name="filterContext">
+        ''' <param name="exceptionContext">
         ''' 型: System.Web.Mvc.ResultExecutingContext
         ''' 現在の要求およびアクション結果に関する情報。
         ''' </param>
         ''' <remarks>
         ''' web.config に customErrors mode="on" を追記（無い場合は、OnExceptionメソッドが動かない 
         ''' </remarks>
-        Protected Overrides Sub OnException(filterContext As ExceptionContext)
+        Protected Overrides Sub OnException(exceptionContext As ExceptionContext)
             ' Calling base class method.
-            MyBase.OnException(filterContext)
+            MyBase.OnException(exceptionContext)
             ' エラーログの出力
-            Me.OutputErrorLog(filterContext)
+            Me.OutputErrorLog(exceptionContext)
             ' エラー画面に画面遷移する
-            Me.TransferErrorScreen(filterContext)
+            Me.TransferErrorScreen(exceptionContext)
         End Sub
 
         ''' <summary>エラーログの出力</summary>
-        ''' <param name="filterContext">ExceptionContext</param>
-        Private Sub OutputErrorLog(filterContext As ExceptionContext)
+        ''' <param name="exceptionContext">ExceptionContext</param>
+        Private Sub OutputErrorLog(exceptionContext As ExceptionContext)
             ' 非同期ControllerのInnerException対策（底のExceptionを取得する）。
-            Dim ex As Exception = filterContext.Exception
+            Dim ex As Exception = exceptionContext.Exception
             Dim bottomException As Exception = ex
             While bottomException.InnerException IsNot Nothing
                 bottomException = bottomException.InnerException
@@ -394,7 +395,7 @@ Namespace Touryo.Infrastructure.Business.Presentation
             Dim strLogMessage As String =
                 "," & If(Me.UserInfo IsNot Nothing, Me.UserInfo.UserName, "null") &
                 "," & If(Me.UserInfo IsNot Nothing, Me.UserInfo.IPAddress, "null") &
-                "," & "----->>" & "," & Me.ControllerName & "," & Me.ActionName & "(OnException)" &
+                "," & "<-----" & "," & Me.ControllerName & "," & Me.ActionName & "(OnException)" &
                 "," &
                 "," &
                 "," & GetExceptionMessageID(bottomException) &
@@ -407,10 +408,10 @@ Namespace Touryo.Infrastructure.Business.Presentation
         End Sub
 
         ''' <summary>例外発生時に、エラー画面に画面遷移</summary>
-        ''' <param name="filterContext">ExceptionContext</param>
-        Private Sub TransferErrorScreen(filterContext As ExceptionContext)
+        ''' <param name="exceptionContext">ExceptionContext</param>
+        Private Sub TransferErrorScreen(exceptionContext As ExceptionContext)
             ' 非同期ControllerのInnerException対策（底のExceptionを取得する）。
-            Dim ex As Exception = filterContext.Exception
+            Dim ex As Exception = exceptionContext.Exception
             Dim bottomException As Exception = ex
             While bottomException.InnerException IsNot Nothing
                 bottomException = bottomException.InnerException
@@ -468,19 +469,19 @@ Namespace Touryo.Infrastructure.Business.Presentation
 
             '#Region "エラー画面へ画面遷移"
 
-            filterContext.ExceptionHandled = True
-            filterContext.HttpContext.Response.Clear()
+            exceptionContext.ExceptionHandled = True
+            exceptionContext.HttpContext.Response.Clear()
 
-            If filterContext.HttpContext.Request.IsAjaxRequest() Then
-                filterContext.Result = New JavaScriptResult() With {
+            If exceptionContext.HttpContext.Request.IsAjaxRequest() Then
+                exceptionContext.Result = New JavaScriptResult() With {
                     .Script = "location.href = '" & errorScreenPath & "'"
                 }
-            ElseIf filterContext.IsChildAction Then
-                filterContext.Result = New ContentResult() With {
+            ElseIf exceptionContext.IsChildAction Then
+                exceptionContext.Result = New ContentResult() With {
                     .Content = "<script>location.href = '" & errorScreenPath & "'</script>"
                 }
             Else
-                filterContext.Result = New RedirectResult(errorScreenPath)
+                exceptionContext.Result = New RedirectResult(errorScreenPath)
             End If
 
             '#End Region
@@ -517,27 +518,29 @@ Namespace Touryo.Infrastructure.Business.Presentation
             Else
                 ' 取得を試みる。
                 Me.UserInfo = DirectCast(UserInfoHandle.GetUserInformation(), MyUserInfo)
-            End If
 
-            ' nullチェック
-            If Me.UserInfo Is Nothing Then
-                ' nullの場合、仮の値を生成 / 設定する。
-                Dim userName As String = System.Threading.Thread.CurrentPrincipal.Identity.Name
+                ' nullチェック
+                If Me.UserInfo Is Nothing Then
+                    ' nullの場合、仮の値を生成 / 設定する。
+                    Dim userName As String = System.Threading.Thread.CurrentPrincipal.Identity.Name
 
-                If userName Is Nothing OrElse userName = "" Then
-                    ' 未認証状態
-                    Me.UserInfo = New MyUserInfo("未認証", Me.HttpContext.Request.UserHostAddress)
-                Else
-                    ' 認証状態
-                    ' 必要に応じて認証チケットの
-                    ' ユーザ名からユーザ情報を復元する。
-                    Me.UserInfo = New MyUserInfo(userName, Me.HttpContext.Request.UserHostAddress)
+                    If userName Is Nothing OrElse userName = "" Then
+                        ' 未認証状態
+                        Me.UserInfo = New MyUserInfo("未認証", Me.HttpContext.Request.UserHostAddress)
+                    Else
+                        ' 認証状態
+                        Me.UserInfo = New MyUserInfo(userName, Me.HttpContext.Request.UserHostAddress)
+
+                        ' 必要に応じて認証チケットのユーザ名からユーザ情報を復元する。
+                        ' ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+                        ' ・・・
+
+                        ' 復元したユーザ情報をセット
+                        UserInfoHandle.SetUserInformation(Me.UserInfo)
+                    End If
                 End If
-                ' nullで無い場合、取得した値を設定する。
-            Else
             End If
 
-            ' ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
         End Sub
 
         ''' <summary>ルーティング情報を取得する</summary>
