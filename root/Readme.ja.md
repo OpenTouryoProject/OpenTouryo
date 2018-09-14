@@ -297,8 +297,12 @@ C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSC
 Open 棟梁の NuGetパッケージを作成する方法については、[こちらの記事](https://github.com/OpenTouryoProject/OpenTouryo/wiki/HowToCreateOpenTouryoNuGetPackages.ja)をご参照ください。
 
 ### ライブラリの入手、輸出手続き、使用許諾への添付について
-- パッケージ・マネージャーから取得できるライブラリは、同梱の必要がないため、輸出管理の対象外にできます。
-- 同梱して輸出されるライブラリについては、輸出管理手続や使用許諾への添付が必要です。
+- NuGetまたはnpmなどのパッケージ・マネージャーから取得できるライブラリは、Open 棟梁に同梱されないため、輸出管理する必要はありません。
+- これ以外のライブラリ、つまりパッケージ・マネージャーから入手できないライブラリは、必要に応じて自身で入手・同梱して輸出する必要があります。  
+この場合、Open棟梁のライセンスに、使用するライブラリのライセンスを添付する必要があります。
+
+
+ Open Touryoのライセンスには、ライブラリのライセンスを添付する必要があります。
 
 ### 参考資料
 Open 棟梁をご利用いただくにあたり、OpenTouryoDocument リポジトリのドキュメントをご利用いただけます。
