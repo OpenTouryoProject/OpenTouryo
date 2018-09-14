@@ -293,7 +293,7 @@ C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSC
   - C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
   - C:\root\programs\VB\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
 
-## Other end matter
+## Other items of note
 
 ### Copyright and license
 Refer to [License](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/license) directory.
