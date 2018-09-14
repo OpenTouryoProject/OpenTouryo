@@ -306,8 +306,8 @@ Open Touryo community confirms the issue and takes appropriate actions.
 For the method of creating Open Touryo NuGet packages, see [this article](https://github.com/OpenTouryoProject/OpenTouryo/wiki/HowToCreateOpenTouryoNuGetPackages).
 
 ### Obtaining libraries, exporting control prodedures, attaching to license
-- Since libraries that can be obtaining from Package Manager do not need to be bundled, they can be excluded from export control.
-- For libraries that are bundled and exported, it is necessary to the exporting control procedure and attaching to license.
+- The libraries that can be obtained from package manager, that is NuGet or npm, are not bundled in Open Touryo. So, you don't have to export the libraries.
+- You have to obtain and export the other libraries, that is the libraries that can not be obtained from package manager, on your own. And you have to attach the license of libraries to the license of Open Touryo.
 
 ### Reference
 The documents in *OpenTouryoDocument repository* are useful when using Open Touryo.  
