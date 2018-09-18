@@ -33,9 +33,12 @@
 '*  2012/06/14  西野 大介         SetSqlByFile2を追加（SetSqlByFile強化版）
 '*                                ・sqlTextFilePathを自動連結
 '*                                ・EmbeddedResourceLoaderに対応
+'*  2018/08/07  西野 大介         CommandType.StoredProcedureを設定可能に。
 '**********************************************************************************
 
+Imports System
 Imports System.IO
+Imports System.Data
 
 Imports Touryo.Infrastructure.Business.Util
 Imports Touryo.Infrastructure.Framework.Dao
@@ -54,13 +57,28 @@ Namespace Touryo.Infrastructure.Business.Dao
 		''' <summary>SetSqlByFileの強化版メソッド</summary>
 		''' <param name="sQLFileName">ファイル名</param>
 		Public Sub SetSqlByFile2(sQLFileName As String)
+			Me.SetSqlByFile2(sQLFileName, Nothing)
+		End Sub
+
+		''' <summary>SetSqlByFileの強化版メソッド</summary>
+		''' <param name="sQLFileName">ファイル名</param>
+		''' <param name="cmdType">CommandType</param>
+		Public Sub SetSqlByFile2(sQLFileName As String, cmdType As System.Nullable(Of CommandType))
 			' SQLを設定する。
 			If MyBaseDao.UseEmbeddedResource Then
 				' 埋め込まれたリソースファイル
-				Me.SetSqlByFile(GetConfigParameter.GetConfigValue("sqlTextFilePath") & "." & sQLFileName)
+				If cmdType.HasValue Then
+					Me.SetSqlByFile(GetConfigParameter.GetConfigValue("sqlTextFilePath") & "." & sQLFileName, cmdType.Value)
+				Else
+					Me.SetSqlByFile(GetConfigParameter.GetConfigValue("sqlTextFilePath") & "." & sQLFileName)
+				End If
 			Else
 				' 通常のファイル
-				Me.SetSqlByFile(Path.Combine(GetConfigParameter.GetConfigValue("sqlTextFilePath"), sQLFileName))
+				If cmdType.HasValue Then
+					Me.SetSqlByFile(Path.Combine(GetConfigParameter.GetConfigValue("sqlTextFilePath"), sQLFileName), cmdType.Value)
+				Else
+					Me.SetSqlByFile(Path.Combine(GetConfigParameter.GetConfigValue("sqlTextFilePath"), sQLFileName))
+				End If
 			End If
 		End Sub
 
@@ -103,50 +121,48 @@ Namespace Touryo.Infrastructure.Business.Dao
 			' 性能測定終了
 			Me.perfRec.EndsPerformanceRecord()
 
-            ' SQLトレースログ出力
+			' SQLトレースログ出力
 
-            ' ------------
-            ' メッセージ部
-            ' ------------
-            ' 処理時間（実行時間）, 処理時間（CPU時間）, 実行したSQLの情報
-            ' ------------
-            Dim strLogMessage As String =
-                Me.perfRec.ExecTime &
-                "," & Me.perfRec.CpuTime & "," & sql
+			' ------------
+			' メッセージ部
+			' ------------
+			' 処理時間（実行時間）, 処理時間（CPU時間）, 実行したSQLの情報
+			' ------------
+			Dim strLogMessage As String = Convert.ToString(Me.perfRec.ExecTime) & "," & Convert.ToString(Me.perfRec.CpuTime) & "," & sql
 
-            ' Log4Netへログ出力
-            If String.IsNullOrEmpty(GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG)) Then
-                ' SQLトレースログ（OFF）
-            ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.[ON] Then
-                LogIF.InfoLog("SQLTRACE", strLogMessage)
-            ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.OFF Then
-                ' SQLトレースログ（OFF）
-            Else
-                ' パラメータ・エラー（書式不正）
-                Throw New ArgumentException([String].Format(PublicExceptionMessage.SWITCH_ERROR, PubLiteral.SQL_TRACELOG))
-            End If
+			' Log4Netへログ出力
+					' SQLトレースログ（OFF）
+			If String.IsNullOrEmpty(GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG)) Then
+			ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.[ON] Then
+				LogIF.InfoLog("SQLTRACE", strLogMessage)
+					' SQLトレースログ（OFF）
+			ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.OFF Then
+			Else
+				' パラメータ・エラー（書式不正）
+				Throw New ArgumentException([String].Format(PublicExceptionMessage.SWITCH_ERROR, PubLiteral.SQL_TRACELOG))
+			End If
 
-            ' ---
+			' ---
 
-            ' 以下も、ログ出力で使用可能
-            Dim obj As Object = Nothing
+			' 以下も、ログ出力で使用可能
+			Dim obj As Object = Nothing
 
-            ' UOC_Connection等で情報を設定しておく。
-            ' UserInfoなどの情報を想定している。
-            obj = Me.GetDam().Obj
+			' UOC_Connection等で情報を設定しておく。
+			' UserInfoなどの情報を想定している。
+			obj = Me.GetDam().Obj
 
-            ' SQL実行時に情報が自動設定される。
-            ' ・ExecSelectFill_DT
-            '   DataTable
-            ' ・ExecSelectFill_DS
-            '   DataSet
-            ' ・ExecSelect_DR
-            '   IDataReader
-            ' ・ExecSelectScalar
-            '   object
-            ' ・ExecInsUpDel_NonQuery
-            '   int
-            obj = Me.LogInfo
+			' SQL実行時に情報が自動設定される。
+			' ・ExecSelectFill_DT
+			'   DataTable
+			' ・ExecSelectFill_DS
+			'   DataSet
+			' ・ExecSelect_DR
+			'   IDataReader
+			' ・ExecSelectScalar
+			'   object
+			' ・ExecInsUpDel_NonQuery
+			'   int
+			obj = Me.LogInfo
 		End Sub
 
 		''' <summary>SQL実行終了処理を実装する共通UOCメソッド（異常時）</summary>
@@ -157,51 +173,48 @@ Namespace Touryo.Infrastructure.Business.Dao
 			' 性能測定終了
 			Me.perfRec.EndsPerformanceRecord()
 
-            ' SQLトレースログ出力
+			' SQLトレースログ出力
 
-            ' ------------
-            ' メッセージ部
-            ' ------------
-            ' 処理時間（実行時間）, 処理時間（CPU時間）, ユーザ名, 実行したSQLの情報
-            ' ------------
-            Dim strLogMessage As String =
-                Me.perfRec.ExecTime &
-                "," & Me.perfRec.CpuTime &
-                "," & DirectCast(Me.GetDam().Obj, MyUserInfo).UserName & "," & sql
+			' ------------
+			' メッセージ部
+			' ------------
+			' 処理時間（実行時間）, 処理時間（CPU時間）, ユーザ名, 実行したSQLの情報
+			' ------------
+			Dim strLogMessage As String = (Convert.ToString(Me.perfRec.ExecTime) & "," & Convert.ToString(Me.perfRec.CpuTime) & ",") + DirectCast(Me.GetDam().Obj, MyUserInfo).UserName & "," & sql
 
-            ' Log4Netへログ出力
-            If String.IsNullOrEmpty(GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG)) Then
-                ' SQLトレースログ（OFF）
-            ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.[ON] Then
-                LogIF.ErrorLog("SQLTRACE", strLogMessage)
-            ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.OFF Then
-                ' SQLトレースログ（OFF）
-            Else
-                ' パラメータ・エラー（書式不正）
-                Throw New ArgumentException([String].Format(PublicExceptionMessage.SWITCH_ERROR, PubLiteral.SQL_TRACELOG))
-            End If
+			' Log4Netへログ出力
+					' SQLトレースログ（OFF）
+			If String.IsNullOrEmpty(GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG)) Then
+			ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.[ON] Then
+				LogIF.ErrorLog("SQLTRACE", strLogMessage)
+					' SQLトレースログ（OFF）
+			ElseIf GetConfigParameter.GetConfigValue(PubLiteral.SQL_TRACELOG).ToUpper() = PubLiteral.OFF Then
+			Else
+				' パラメータ・エラー（書式不正）
+				Throw New ArgumentException([String].Format(PublicExceptionMessage.SWITCH_ERROR, PubLiteral.SQL_TRACELOG))
+			End If
 
-            ' ---
+			' ---
 
-            ' 以下も、ログ出力で使用可能
-            Dim obj As Object = Nothing
+			' 以下も、ログ出力で使用可能
+			Dim obj As Object = Nothing
 
-            ' UOC_Connection等で情報を設定しておく。
-            ' UserInfoなどの情報を想定している。
-            obj = Me.GetDam().Obj
+			' UOC_Connection等で情報を設定しておく。
+			' UserInfoなどの情報を想定している。
+			obj = Me.GetDam().Obj
 
-            ' SQL実行時に情報が自動設定される。
-            ' ・ExecSelectFill_DT
-            '   DataTable
-            ' ・ExecSelectFill_DS
-            '   DataSet
-            ' ・ExecSelect_DR
-            '   IDataReader
-            ' ・ExecSelectScalar
-            '   object
-            ' ・ExecInsUpDel_NonQuery
-            '   int
-            obj = Me.LogInfo
+			' SQL実行時に情報が自動設定される。
+			' ・ExecSelectFill_DT
+			'   DataTable
+			' ・ExecSelectFill_DS
+			'   DataSet
+			' ・ExecSelect_DR
+			'   IDataReader
+			' ・ExecSelectScalar
+			'   object
+			' ・ExecInsUpDel_NonQuery
+			'   int
+			obj = Me.LogInfo
 		End Sub
 
 		#End Region

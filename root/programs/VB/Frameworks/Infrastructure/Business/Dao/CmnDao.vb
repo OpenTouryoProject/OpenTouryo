@@ -39,7 +39,12 @@
 '*  2013/07/07  西野 大介         ExecGenerateSQL（SQL生成）メソッド（実行しない）を追加
 '*  2014/11/20  Sandeep           Implemented CommandTimeout property and SetCommandTimeout method.
 '*  2014/11/20  Sai               removed IDbCommand property in SetCommandTimeout method.
+'*  2018/08/07  西野 大介         ストアド実行のためCommandType.StoredProcedureを設定可能に。
 '**********************************************************************************
+
+Imports System
+Imports System.Data
+Imports System.Collections.Generic
 
 Imports Touryo.Infrastructure.Business.Exceptions
 Imports Touryo.Infrastructure.Framework.Exceptions
@@ -52,6 +57,9 @@ Namespace Touryo.Infrastructure.Business.Dao
 		Inherits MyBaseDao
 		#Region "インスタンス変数"
 
+		''' <summary>CommandType</summary>
+		Private _cmdType As System.Nullable(Of CommandType) = Nothing
+
 		#Region "パラメタ"
 
 		''' <summary>ユーザ パラメタ（文字列置換）用ディクショナリ</summary>
@@ -60,12 +68,14 @@ Namespace Touryo.Infrastructure.Business.Dao
 		''' <summary>パラメタ ライズド クエリのパラメタ用ディクショナリ</summary>
 		Private DicParameter As New Dictionary(Of String, Object)()
 
+		#Region "追加のDictionary"
 		''' <summary>パラメタ ライズド クエリの指定されたパラメータ（の型）を保持するディクショナリ</summary>
 		Private DicParameterType As New Dictionary(Of String, Object)()
 		''' <summary>パラメタ ライズド クエリの指定されたパラメータ（のサイズ）を保持するディクショナリ</summary>
 		Private DicParameterSize As New Dictionary(Of String, Integer)()
 		''' <summary>パラメタ ライズド クエリの指定されたパラメータ（の方向）を保持するディクショナリ</summary>
 		Private DicParameterDirection As New Dictionary(Of String, ParameterDirection)()
+		#End Region
 
 		#End Region
 
@@ -216,7 +226,7 @@ Namespace Touryo.Infrastructure.Business.Dao
 		''' <summary>CommandTimeout</summary>
 		''' <remarks>自由に（拡張して）利用できる。</remarks>
 		Public WriteOnly Property CommandTimeout() As Integer
-			Set(value As Integer)
+			Set
 				Me._commandTimeout = value
 			End Set
 		End Property
@@ -235,6 +245,13 @@ Namespace Touryo.Infrastructure.Business.Dao
 			MyBase.New(dam)
 		End Sub
 
+		''' <summary>コンストラクタ</summary>
+		''' <remarks>自由に利用できる。</remarks>
+		Public Sub New(dam As BaseDam, cmdType As CommandType)
+			MyBase.New(dam)
+			Me._cmdType = cmdType
+		End Sub
+
 		#End Region
 
 		#Region "クエリ メソッド"
@@ -246,10 +263,10 @@ Namespace Touryo.Infrastructure.Business.Dao
 		''' <remarks>自由に（拡張して）利用できる。</remarks>
 		Public Shadows Function ExecSelectScalar() As Object
 			' SQLの設定
-            Me.SetSQL()
+			Me.SetSQL()
 
-            ' To Set CommandTimeout
-            Me.SetCommandTimeout()
+			' Set CommandTimeout
+			Me.SetCommandTimeout()
 
 			' パラメタの一括設定
 			Me.SetParameters()
@@ -264,10 +281,10 @@ Namespace Touryo.Infrastructure.Business.Dao
 		''' <remarks>自由に（拡張して）利用できる。</remarks>
 		Public Shadows Sub ExecSelectFill_DT(dt As DataTable)
 			' SQLの設定
-            Me.SetSQL()
+			Me.SetSQL()
 
-            ' To Set CommandTimeout
-            Me.SetCommandTimeout()
+			' Set CommandTimeout
+			Me.SetCommandTimeout()
 
 			' パラメタの一括設定
 			Me.SetParameters()
@@ -282,10 +299,10 @@ Namespace Touryo.Infrastructure.Business.Dao
 		''' <remarks>自由に（拡張して）利用できる。</remarks>
 		Public Shadows Sub ExecSelectFill_DS(ds As DataSet)
 			' SQLの設定
-            Me.SetSQL()
+			Me.SetSQL()
 
-            ' To Set CommandTimeout
-            Me.SetCommandTimeout()
+			' Set CommandTimeout
+			Me.SetCommandTimeout()
 
 			' パラメタの一括設定
 			Me.SetParameters()
@@ -300,10 +317,10 @@ Namespace Touryo.Infrastructure.Business.Dao
 		''' <remarks>自由に（拡張して）利用できる。</remarks>        
 		Public Shadows Function ExecSelect_DR() As IDataReader
 			' SQLの設定
-            Me.SetSQL()
+			Me.SetSQL()
 
-            ' To Set CommandTimeout
-            Me.SetCommandTimeout()
+			' Set CommandTimeout
+			Me.SetCommandTimeout()
 
 			' パラメタの一括設定
 			Me.SetParameters()
@@ -318,10 +335,10 @@ Namespace Touryo.Infrastructure.Business.Dao
 		''' <remarks>自由に（拡張して）利用できる。</remarks>        
 		Public Shadows Function ExecInsUpDel_NonQuery() As Integer
 			' SQLの設定
-            Me.SetSQL()
+			Me.SetSQL()
 
-            ' To Set CommandTimeout
-            Me.SetCommandTimeout()
+			' Set CommandTimeout
+			Me.SetCommandTimeout()
 
 			' パラメタの一括設定
 			Me.SetParameters()
@@ -337,10 +354,10 @@ Namespace Touryo.Infrastructure.Business.Dao
 		''' <remarks>自由に（拡張して）利用できる。</remarks>
 		Public Shadows Function ExecGenerateSQL(sqlUtil As SQLUtility) As String
 			' SQLの設定
-            Me.SetSQL()
+			Me.SetSQL()
 
-            ' To Set CommandTimeout
-            Me.SetCommandTimeout()
+			' Set CommandTimeout
+			Me.SetCommandTimeout()
 
 			' パラメタの一括設定
 			Me.SetParameters()
@@ -359,24 +376,33 @@ Namespace Touryo.Infrastructure.Business.Dao
 			' SQL指定
 			If Me._sQLFileName <> "" Then
 				' ファイルから
-				Me.SetSqlByFile2(Me._sQLFileName)
+				If Me._cmdType.HasValue Then
+					Me.SetSqlByFile2(Me._sQLFileName, Me._cmdType.Value)
+				Else
+					Me.SetSqlByFile2(Me._sQLFileName)
+				End If
 			ElseIf Me._sQLText <> "" Then
 				' テキストから
-				Me.SetSqlByCommand(Me._sQLText)
+				If Me._cmdType.HasValue Then
+					Me.SetSqlByCommand(Me._sQLText, Me._cmdType.Value)
+				Else
+					Me.SetSqlByCommand(Me._sQLText)
+
+				End If
 			Else
 				' SQLエラー
 				Throw New BusinessSystemException(MyBusinessSystemExceptionMessage.CMN_DAO_ERROR(0), [String].Format(MyBusinessSystemExceptionMessage.CMN_DAO_ERROR(1), MyBusinessSystemExceptionMessage.CMN_DAO_ERROR_SQL))
 			End If
-        End Sub
+		End Sub
 
-        ''' <summary>To Set CommandTimeout</summary>
-        Private Sub SetCommandTimeout()
-            ' If CommandTimeout is >= 0 then set CommandTimeout.
-            ' Else skip, automatically it will set default CommandTimeout.
-            If Me._commandTimeout >= 0 Then
-                Me.GetDam().DamIDbCommand.CommandTimeout = Me._commandTimeout
-            End If
-        End Sub
+		''' <summary>To Set CommandTimeout</summary>
+		Private Sub SetCommandTimeout()
+			' If CommandTimeout is >= 0 then set CommandTimeout.
+			' Else skip, automatically it will set default CommandTimeout.
+			If Me._commandTimeout >= 0 Then
+				Me.GetDam().DamIDbCommand.CommandTimeout = Me._commandTimeout
+			End If
+		End Sub
 
 		''' <summary>パラメタの一括設定（内部用）</summary>
 		Private Sub SetParameters()
