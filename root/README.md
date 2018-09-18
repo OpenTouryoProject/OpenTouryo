@@ -81,7 +81,7 @@ exec sp_dboption 'Northwind','select into/bulkcopy','true'
 
 Execute the following command at a command prompt.  
 **Note**:  
-In the following command, the path of the folder that contains *SQLCMD.EXE*changes according to the version of SQL Server. Execute command after confirming the path of folder in your environment. 
+In the following command, the path of the folder that contains *SQLCMD.EXE* changes according to the version of SQL Server. Execute command after confirming the path of folder in your environment. 
 ```bat
 "C:\Program Files\Microsoft SQL Server\100\Tools\Binn\SQLCMD.EXE" -S localhost\SQLExpress -E -i "C:\SQL Server 2000 Sample Databases\instnwnd.sql"
 ```
