@@ -259,7 +259,7 @@ Open a command prompt as an administrator and execute the following commands.
 ```
 
 ### Run the sample application
-- Open the following file.
+Open the following file.
 - Open web.config or app.config (for .NET Core, appsettings.json) and revise the values in *connectionStrings* section according to the actual database environment.
 - Run the sample application.  
 At the login screen, enter the arbitrary alphanumeric characters. (By default, the password authentication is not executed.)
