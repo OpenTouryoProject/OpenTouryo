@@ -24,7 +24,7 @@ Open 棟梁のプログラムは、以下のリポジトリで公開していま
 ## サンプルの実行手順
 Open 棟梁に同梱されるサンプルアプリケーションの実行手順は以下のとおりです。
 
-**Optional 表記:**
+**Optional 表記:**  
 以下、optional 表記のある DBMS とデータプロバイダは、Open 棟梁でサポートされていますが、Open 棟梁のプログラムには含まれていません。そのため、optional 表記のある DBMS とデータプロバイダを使う場合、必要に応じてデータプロバイダを手動でダウンロードし、[Open 棟梁のデータアクセス用のプロジェクト (DamXXX.csproj)](https://github.com/OpenTouryoProject/OpenTouryo/tree/develop/root/programs/CS/Frameworks/Infrastructure/Public/Db) から、当該データプロバイダに参照設定を張り直してください。
 
 ### 前提ツールのインストール
