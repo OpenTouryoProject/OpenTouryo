@@ -34,11 +34,5 @@ xcopy /E /Y "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%" "Frameworks\Infrastr
 
 pause
 
-rem --------------------------------------------------
-rem Delete the System.Web.MVC.dll after the bulk copy
-rem --------------------------------------------------
-del "Frameworks\Infrastructure\Build\System.Web.MVC.*"
-del "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%\System.Web.MVC.*"
-
 rem -------------------------------------------------------
 endlocal

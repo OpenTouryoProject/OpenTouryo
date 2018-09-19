@@ -17,8 +17,12 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+using System.Net.Http;
+
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+
+using Touryo.Infrastructure.Framework.Authentication;
 
 namespace MVC_Sample
 {
@@ -30,6 +34,9 @@ namespace MVC_Sample
         /// <param name="args">コマンドライン引数</param>
         public static void Main(string[] args)
         {
+            // OpenID用
+            OAuth2AndOIDCClient.HttpClient = new HttpClient();
+
             // BuildWebHostが返すIWebHostをRunする。
             // 呼び出し元スレッドは終了までブロックされる。
             Program.BuildWebHost(args).Run();

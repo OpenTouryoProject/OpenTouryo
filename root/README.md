@@ -24,7 +24,7 @@ Click [here](Readme.ja.md) for Japanese version of this file.
 ## Running sample application tasks
 You can run the sample application bundled with Open Touryo according to the following steps.
 
-Notation *Optional*: 
+Notation *Optional*:  
 Open Touryo supports the following DBMSs and data providers. But the data providers, having the notation *optional*, are not included in the programs of Open Touryo. When using the DBMSs and data providers having the notation *optional*, download the data provider manually, and modify [the data access project of Open Touryo, that is DamXXX.csproj](https://github.com/OpenTouryoProject/OpenTouryo/tree/develop/root/programs/CS/Frameworks/Infrastructure/Public/Db), to refer the data provider.
 
 ### Install prerequisites
@@ -81,8 +81,7 @@ exec sp_dboption 'Northwind','select into/bulkcopy','true'
 
 Execute the following command at a command prompt.  
 **Note**:  
-In the following command, the path of the folder that contains *SQLCMD.EXE* changes according to the version of SQL Server.  
-Execute command after confirming the path of folder in your environment. 
+In the following command, the path of the folder that contains *SQLCMD.EXE* changes according to the version of SQL Server. Execute command after confirming the path of folder in your environment. 
 ```bat
 "C:\Program Files\Microsoft SQL Server\100\Tools\Binn\SQLCMD.EXE" -S localhost\SQLExpress -E -i "C:\SQL Server 2000 Sample Databases\instnwnd.sql"
 ```
@@ -259,15 +258,15 @@ Open a command prompt as an administrator and execute the following commands.
 ```
 
 ### Run the sample application
-- Open the following file.
+Open the following file.
 - Open web.config or app.config (for .NET Core, appsettings.json) and revise the values in *connectionStrings* section according to the actual database environment.
 - Run the sample application.  
 At the login screen, enter the arbitrary alphanumeric characters. (By default, the password authentication is not executed.)
    
 #### Web application:
 - ASP.NET Web Forms  
-  - C:\root\programs\CS\Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln
-  - C:\root\programs\VB\Samples\WebApp_sample\ProjectX_sample\ProjectX_sample.sln
+  - C:\root\programs\CS\Samples\WebApp_sample\WebForms_Sample\WebForms_Sample.sln
+  - C:\root\programs\VB\Samples\WebApp_sample\WebForms_Sample\WebForms_Sample.sln
 - ASP.NET MVC  
   - C:\root\programs\CS\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
   - C:\root\programs\VB\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
