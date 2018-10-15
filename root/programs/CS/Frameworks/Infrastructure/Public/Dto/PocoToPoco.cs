@@ -28,11 +28,14 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/07/20  西野 大介         新規作成
+//*  2018/10/03  西野 大介         性能対策
 //**********************************************************************************
 
 using System;
 using System.Reflection;
 using System.Collections.Generic;
+
+using Touryo.Infrastructure.Public.FastReflection;
 
 namespace Touryo.Infrastructure.Public.Dto
 {
@@ -46,7 +49,7 @@ namespace Touryo.Infrastructure.Public.Dto
         /// <returns>TDestination型のPOCO</returns>
         public static TDestination Map<TSource, TDestination>(TSource src)
         {
-            return PocoToPoco.Map<TSource, TDestination>(src, Activator.CreateInstance<TDestination>(), null);
+            return PocoToPoco.Map<TSource, TDestination>(src, InstanceCreator<TDestination>.Factory(), null);
         }
 
         /// <summary>POCO型を、POCO型にマップ</summary>
@@ -68,7 +71,7 @@ namespace Touryo.Infrastructure.Public.Dto
         /// <returns>TDestination型のPOCO</returns>
         public static TDestination Map<TSource, TDestination>(TSource src, Dictionary<string, string> map)
         {
-            return PocoToPoco.Map<TSource, TDestination>(src, Activator.CreateInstance<TDestination>(), map);
+            return PocoToPoco.Map<TSource, TDestination>(src, InstanceCreator<TDestination>.Factory(), map);
         }
 
         /// <summary>POCO型を、POCO型にマップ</summary>
@@ -83,13 +86,17 @@ namespace Touryo.Infrastructure.Public.Dto
             // POCOのnew()
             if (dst == null)
             {
-                dst = Activator.CreateInstance<TDestination>();
+                dst = InstanceCreator<TDestination>.Factory();
             }
 
-            // Propertiesで回す。
-            foreach (PropertyInfo dstProp in dst.GetType().GetProperties())
+            AccessorCacher.CacheAccessor(dst); // dstの型
+            AccessorCacher.CacheAccessor(src); // srcの型
+
+            // dst
+            foreach (AccessorInfo dst_ai in AccessorCacher.CncDic[dst.GetType()])
             {
-                string dstPropName = dstProp.Name;
+                string dstName = dst_ai.Name;
+                string srcName = "";
 
                 // マップの有無
                 if (map == null)
@@ -100,72 +107,24 @@ namespace Touryo.Infrastructure.Public.Dto
                 {
                     // マップ有
 
-                    if (map.ContainsKey(dstPropName))
+                    if (map.ContainsKey(dstName))
                     {
                         // 値あり
-                        dstPropName = map[dstPropName];
+                        srcName = map[dstName];
                     }
                     else
                     {
                         // 値なし
+                        srcName = dstName;
                     }
                 }
-                // Propertyから
-                foreach (PropertyInfo srcProp in src.GetType().GetProperties())
-                {
-                    if (dstPropName == srcProp.Name)
-                    {
-                        dstProp.SetValue(dst, srcProp.GetValue(src, null));
-                    }
-                }
-                // Fieldから
-                foreach (FieldInfo srcField in src.GetType().GetFields())
-                {
-                    if (dstPropName == srcField.Name)
-                    {
-                        dstProp.SetValue(dst, srcField.GetValue(src));
-                    }
-                }
-            }
 
-            // Fieldsで回す。
-            foreach (FieldInfo dstField in dst.GetType().GetFields())
-            {
-                string dstFieldName = dstField.Name;
-
-                // マップの有無
-                if (map == null)
+                // src
+                foreach (AccessorInfo src_ai in AccessorCacher.CncDic[src.GetType()])
                 {
-                    // マップ無
-                }
-                else
-                {
-                    // マップ有
-
-                    if (map.ContainsKey(dstFieldName))
+                    if (srcName == src_ai.Name)
                     {
-                        // 値あり
-                        dstFieldName = map[dstFieldName];
-                    }
-                    else
-                    {
-                        // 値なし
-                    }
-                }
-                // Propertyから
-                foreach (PropertyInfo srcProp in src.GetType().GetProperties())
-                {
-                    if (dstFieldName == srcProp.Name)
-                    {
-                        dstField.SetValue(dst, srcProp.GetValue(src, null));
-                    }
-                }
-                // Fieldから
-                foreach (FieldInfo srcField in src.GetType().GetFields())
-                {
-                    if (dstFieldName == srcField.Name)
-                    {
-                        dstField.SetValue(dst, srcField.GetValue(src));
+                        dst_ai.SetDelegate(dst, src_ai.GetDelegate(src));
                     }
                 }
             }

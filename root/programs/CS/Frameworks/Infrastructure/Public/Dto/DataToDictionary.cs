@@ -28,12 +28,14 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/07/23  西野 大介         新規作成
+//*  2018/10/03  西野 大介         性能対策
 //**********************************************************************************
 
 using System;
 using System.Data;
 using System.Collections.Generic;
-using System.Diagnostics;
+
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Dto
 {
@@ -94,23 +96,94 @@ namespace Touryo.Infrastructure.Public.Dto
         #region DataReader
 
         #region List
-        
+
         /// <summary>DataReaderからDictionary配列に変換する。</summary>
         /// <param name="dr">IDataReader</param>
         /// <returns>List(Dictionary(string, string))</returns>
         public List<Dictionary<string, string>> DataReaderToDictionaryList(IDataReader dr)
         {
+            // https://stackoverflow.com/questions/373230/check-for-column-name-in-a-sqldatareader-object
+            HashSet<string> hs = PubCmnFunction.GetDataReaderColumnInfo(dr);
+
             Dictionary<string, string> obj = null;
             List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
-            
-            do
+
+            // IDataReader の既定の位置は、先頭のレコードの前
+            while (dr.Read())
             {
-                obj = this.DataReaderToDictionary(dr);
+                // Dictionary
+                obj = new Dictionary<string, string>();
+
+                // dr.FieldCountで回す。
+                for (int i = 0; i < dr.FieldCount; i++)
+                {
+                    string srcPropName = dr.GetName(i);
+                    string dstPropName = srcPropName;
+
+                    // マップの有無
+                    if (this.Mapping == null)
+                    {
+                        // マップ無
+                    }
+                    else
+                    {
+                        // マップ有
+                        if (this.Mapping.ContainsKey(srcPropName))
+                        {
+                            // 値あり
+                            dstPropName = this.Mapping[srcPropName];
+                        }
+                        else
+                        {
+                            // 値なし
+                        }
+                    }
+
+                    if (hs.Contains(srcPropName))
+                    {
+                        object o = dr[srcPropName];
+
+                        // TimeSpan型の書式指定をする方法と注意点(C#)
+                        // https://ict119.com/timespan_format/#DateTimeTimeSpan
+                        //   2.1 DateTime型とTimeSpan型の書式指定子の違い
+
+                        if (o.GetType() == typeof(DateTime))
+                        {
+                            if (string.IsNullOrEmpty(this.DateTimeFormat))
+                            {
+                                // 精度を保つための仕様
+                                obj.Add(dstPropName, ((DateTime)o).Ticks.ToString());
+                            }
+                            else
+                            {
+                                // dateTimeFormatでフォーマット
+                                obj.Add(dstPropName, ((DateTime)o).ToString(this.DateTimeFormat));
+                            }
+                        }
+                        else if (o.GetType() == typeof(TimeSpan))
+                        {
+                            if (string.IsNullOrEmpty(this.TimeSpanFormat))
+                            {
+                                // 精度を保つための仕様
+                                obj.Add(dstPropName, ((TimeSpan)o).Ticks.ToString());
+                            }
+                            else
+                            {
+                                // dateTimeFormatでフォーマット
+                                obj.Add(dstPropName, ((TimeSpan)o).ToString(this.TimeSpanFormat));
+                            }
+                        }
+                        else
+                        {
+                            // 通常時
+                            obj.Add(dstPropName, o.ToString());
+                        }
+                    }
+                }
 
                 // List(Dictionary(string, string))に追加。
                 if (obj != null) list.Add(obj);
             }
-            while (obj != null);
 
             // List(Dictionary(string, string))を返す。
             return list;
@@ -127,6 +200,9 @@ namespace Touryo.Infrastructure.Public.Dto
         {
             // drのDataTableスキーマ情報 .net coreで動かない。
             //DataTable dt = dr.GetSchemaTable();
+
+            // https://stackoverflow.com/questions/373230/check-for-column-name-in-a-sqldatareader-object
+            HashSet<string> hs = PubCmnFunction.GetDataReaderColumnInfo(dr);
 
             Dictionary<string, string> obj = null;
 
@@ -161,9 +237,9 @@ namespace Touryo.Infrastructure.Public.Dto
                         }
                     }
 
-                    try
+                    if (hs.Contains(srcPropName))
                     {
-                        object o = dr[srcPropName]; // 検証
+                        object o = dr[srcPropName];
 
                         // TimeSpan型の書式指定をする方法と注意点(C#)
                         // https://ict119.com/timespan_format/#DateTimeTimeSpan
@@ -182,7 +258,7 @@ namespace Touryo.Infrastructure.Public.Dto
                                 obj.Add(dstPropName, ((DateTime)o).ToString(this.DateTimeFormat));
                             }
                         }
-                        else if(o.GetType() == typeof(TimeSpan))
+                        else if (o.GetType() == typeof(TimeSpan))
                         {
                             if (string.IsNullOrEmpty(this.TimeSpanFormat))
                             {
@@ -199,11 +275,7 @@ namespace Touryo.Infrastructure.Public.Dto
                         {
                             // 通常時
                             obj.Add(dstPropName, o.ToString());
-                        }   
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.Write(ex.ToString());
+                        }
                     }
                 }
             }

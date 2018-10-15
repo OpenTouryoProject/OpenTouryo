@@ -40,10 +40,12 @@
 //*  2017/01/31  西野 大介         System.Webを使用しているCalculateSessionSizeメソッドをBusinessへ移動
 //*  2017/11/29  西野 大介         DateTimeOffset.ToUnixTimeSecondsの前方互換メソッドを追加
 //*  2018/08/01  西野 大介         Nullable対応の型変換メソッドを追加
+//*  2018/10/03  西野 大介         GetDataReaderColumnInfoメソッドを追加。
 //**********************************************************************************
 
 using System;
 using System.Text;
+using System.Data;
 using System.Diagnostics;
 using System.Collections.Generic;
 
@@ -722,33 +724,55 @@ namespace Touryo.Infrastructure.Public.Util
         #region 型変換
 
         /// <summary>Nullable対応の型変換メソッド</summary>
-        /// <param name="value">変換前の値</param>
-        /// <param name="conversion">変換後の型</param>
+        /// <param name="srcValue">変換前の値</param>
+        /// <param name="dstType">変換後の型</param>
         /// <returns>変換後の値</returns>
-        public static object ChangeType(object value, Type conversion)
+        public static object ChangeType(object srcValue, Type dstType)
         {
-            Type t = conversion;
+            Type t = dstType;
 
             if (t.IsGenericType
                 && t.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
             {
-                // Nullableの場合
+                // dstTypeがNullableの場合
 
-                // TypeのNullable化
-                if (value == null)
+                if (srcValue == null)
                 {
+                    // srcValueがnullの場合、変換不要。
                     return null;
                 }
-
-                t = Nullable.GetUnderlyingType(t);
+                else
+                {
+                    // srcValueがnullで無い場合、非Nullable化
+                    t = Nullable.GetUnderlyingType(t);
+                }
             }
             else
             {
-                // Nullableでない場合
+                // dstTypeがNullableで無い場合、型情報はそのまま。
             }
 
-            // Convertする。
-            return Convert.ChangeType(value, t);
+            // 上記の t を使用してConvertする。
+            // Convert.ChangeType() doesn't handle nullables -> use UnderlyingType.
+            return Convert.ChangeType(srcValue, t);
+        }
+
+        /// <summary>Nullable対応メソッド</summary>
+        /// <param name="t">型</param>
+        /// <returns>tがNullableの場合、Nullableでない元の型を返す。</returns>
+        public static Type GetUnderlyingType(Type t)
+        {
+            if (t.IsGenericType
+                && t.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+            {
+                // tがNullableの場合、非Nullable化
+                return Nullable.GetUnderlyingType(t);
+            }
+            else
+            {
+                // tがNullableで無い場合、null。
+                return null;
+            }
         }
 
         #endregion
@@ -869,7 +893,20 @@ namespace Touryo.Infrastructure.Public.Util
             return rtnCode;
         }
 
-        #endregion
+        /// <summary>IDataReaderの列情報を格納したHashSet(string)を返す。</summary>
+        /// <param name="dr">IDataReader</param>
+        /// <returns>HashSet(string)</returns>
+        public static HashSet<string> GetDataReaderColumnInfo(IDataReader dr)
+        {
+            HashSet<string> hs = new HashSet<string>();
+            for (int i = 0; i < dr.FieldCount; i++)
+            {
+                hs.Add(dr.GetName(i));
+            }
 
+            return hs;
+        }
+
+        #endregion
     }
 }
