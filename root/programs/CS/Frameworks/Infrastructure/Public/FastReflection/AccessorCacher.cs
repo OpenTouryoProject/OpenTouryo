@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/04  西野 大介         新規作成
+//*  2018/10/23  西野 大介         微調整
 //**********************************************************************************
 
 using System;
@@ -75,8 +76,8 @@ namespace Touryo.Infrastructure.Public.FastReflection
                     // PropertyInfoは、GetGetMethod, GetSetMethodでチェック
                     ai = new AccessorInfo()
                     {
-                        Name = prop.Name,
-                        Type = prop.PropertyType,
+                        AccessorName = prop.Name,
+                        AccessorType = prop.PropertyType,
                         UnderlyingType = PubCmnFunction.GetUnderlyingType(prop.PropertyType),
                         GetDelegate = prop.GetGetMethod() == null ? null 
                             : CompiledExpressionCreater.CreateGetterOfPropertyOrField(t, prop.Name),
@@ -91,8 +92,8 @@ namespace Touryo.Infrastructure.Public.FastReflection
                 {
                     ai = new AccessorInfo()
                     {
-                        Name = field.Name,
-                        Type = field.FieldType,
+                        AccessorName = field.Name,
+                        AccessorType = field.FieldType,
                         UnderlyingType = PubCmnFunction.GetUnderlyingType(field.FieldType),
                         GetDelegate = CompiledExpressionCreater.CreateGetterOfPropertyOrField(t, field.Name),
                         SetDelegate = CompiledExpressionCreater.CreateSetterOfPropertyOrField(t, field.Name)

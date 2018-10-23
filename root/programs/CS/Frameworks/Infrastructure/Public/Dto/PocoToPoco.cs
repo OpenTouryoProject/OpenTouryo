@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/07/20  西野 大介         新規作成
 //*  2018/10/03  西野 大介         性能対策
+//*  2018/10/23  西野 大介         微調整
 //**********************************************************************************
 
 using System;
@@ -95,7 +96,7 @@ namespace Touryo.Infrastructure.Public.Dto
             // dst
             foreach (AccessorInfo dst_ai in AccessorCacher.CncDic[dst.GetType()])
             {
-                string dstName = dst_ai.Name;
+                string dstName = dst_ai.AccessorName;
                 string srcName = "";
 
                 // マップの有無
@@ -122,7 +123,7 @@ namespace Touryo.Infrastructure.Public.Dto
                 // src
                 foreach (AccessorInfo src_ai in AccessorCacher.CncDic[src.GetType()])
                 {
-                    if (srcName == src_ai.Name)
+                    if (srcName == src_ai.AccessorName)
                     {
                         dst_ai.SetDelegate(dst, src_ai.GetDelegate(src));
                     }

@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/07/23  西野 大介         新規作成
 //*  2018/10/03  西野 大介         性能対策
+//*  2018/10/23  西野 大介         微調整
 //**********************************************************************************
 
 using System;
@@ -147,7 +148,7 @@ namespace Touryo.Infrastructure.Public.Dto
                         // https://ict119.com/timespan_format/#DateTimeTimeSpan
                         //   2.1 DateTime型とTimeSpan型の書式指定子の違い
 
-                        if (o.GetType() == typeof(DateTime))
+                        if (o is DateTime)
                         {
                             if (string.IsNullOrEmpty(this.DateTimeFormat))
                             {
@@ -160,7 +161,7 @@ namespace Touryo.Infrastructure.Public.Dto
                                 obj.Add(dstPropName, ((DateTime)o).ToString(this.DateTimeFormat));
                             }
                         }
-                        else if (o.GetType() == typeof(TimeSpan))
+                        else if (o is TimeSpan)
                         {
                             if (string.IsNullOrEmpty(this.TimeSpanFormat))
                             {
@@ -245,7 +246,7 @@ namespace Touryo.Infrastructure.Public.Dto
                         // https://ict119.com/timespan_format/#DateTimeTimeSpan
                         //   2.1 DateTime型とTimeSpan型の書式指定子の違い
 
-                        if (o.GetType() == typeof(DateTime))
+                        if (o is DateTime)
                         {
                             if (string.IsNullOrEmpty(this.DateTimeFormat))
                             {
@@ -258,7 +259,7 @@ namespace Touryo.Infrastructure.Public.Dto
                                 obj.Add(dstPropName, ((DateTime)o).ToString(this.DateTimeFormat));
                             }
                         }
-                        else if (o.GetType() == typeof(TimeSpan))
+                        else if (o is TimeSpan)
                         {
                             if (string.IsNullOrEmpty(this.TimeSpanFormat))
                             {

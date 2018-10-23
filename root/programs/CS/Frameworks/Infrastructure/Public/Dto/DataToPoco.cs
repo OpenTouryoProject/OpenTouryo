@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/07/19  西野 大介         新規作成
 //*  2018/10/03  西野 大介         性能対策
+//*  2018/10/23  西野 大介         微調整
 //**********************************************************************************
 
 using System;
@@ -146,7 +147,7 @@ namespace Touryo.Infrastructure.Public.Dto
 
                 foreach (AccessorInfo ai_dst in AccessorCacher.CncDic[obj.GetType()])
                 {
-                    string srcName = ai_dst.Name;
+                    string srcName = ai_dst.AccessorName;
 
                     // マップの有無
                     if (map == null)
@@ -186,20 +187,20 @@ namespace Touryo.Infrastructure.Public.Dto
                             if (ai_dst.UnderlyingType == null)
                             {
                                 // Nullableではない
-                                if (srcType == ai_dst.Type)
+                                if (srcType == ai_dst.AccessorType)
                                 {
                                     // 型一致の場合は変換不要
                                     dstValue = srcValue;
                                 }
                                 else
                                 {
-                                    dstValue = Convert.ChangeType(srcValue, ai_dst.Type);
+                                    dstValue = Convert.ChangeType(srcValue, ai_dst.AccessorType);
                                 }
                             }
                             else
                             {
                                 // Nullableである
-                                if (srcType == ai_dst.Type)
+                                if (srcType == ai_dst.AccessorType)
                                 {
                                     // 型一致の場合は変換不要
                                     dstValue = srcValue;
@@ -266,17 +267,18 @@ namespace Touryo.Infrastructure.Public.Dto
             {
                 // POCOのnew()
 
+                // InstanceCreator<T>.Factory()の性能測定の名残
                 //PerformanceRecorder pr = new PerformanceRecorder();
                 //pr.StartsPerformanceRecord();
-                for (int i = 0; i < 1000; i++)
-                {
-                    obj = InstanceCreator<T>.Factory();
-                }
+                //for (int i = 0; i < 1000; i++)
+                //{
+                obj = InstanceCreator<T>.Factory();
+                //}
                 //Debug.WriteLine(pr.EndsPerformanceRecord());
 
                 foreach (AccessorInfo ai_dst in AccessorCacher.CncDic[obj.GetType()])
                 {
-                    string srcName = ai_dst.Name;
+                    string srcName = ai_dst.AccessorName;
 
                     // マップの有無
                     if (map == null)
@@ -316,37 +318,39 @@ namespace Touryo.Infrastructure.Public.Dto
                             if (ai_dst.UnderlyingType == null)
                             {
                                 // Nullableではない
-                                if (srcType == ai_dst.Type)
+                                if (srcType == ai_dst.AccessorType)
                                 {
                                     // 型一致の場合は変換不要
                                     dstValue = srcValue;
                                 }
                                 else
                                 {
-                                    dstValue = Convert.ChangeType(srcValue, ai_dst.Type);
+                                    dstValue = Convert.ChangeType(srcValue, ai_dst.AccessorType);
                                 }
                             }
                             else
                             {
                                 // Nullableである
-                                if (srcType == ai_dst.Type)
+                                if (srcType == ai_dst.AccessorType)
                                 {
                                     // 型一致の場合は変換不要
                                     dstValue = srcValue;
                                 }
                                 else
                                 {
+                                    // Convert.ChangeTypeの性能測定の名残
                                     //PerformanceRecorder pr = new PerformanceRecorder();
                                     //pr.StartsPerformanceRecord();
-                                    for (int i = 0; i < 1000; i++)
-                                    {
-                                        // Convert.ChangeType() doesn't handle nullables -> use UnderlyingType.
-                                        dstValue = (srcValue == null ? null : Convert.ChangeType(srcValue, ai_dst.UnderlyingType));
-                                    }
+                                    //for (int i = 0; i < 1000; i++)
+                                    //{
+                                    // Convert.ChangeType() doesn't handle nullables -> use UnderlyingType.
+                                    dstValue = (srcValue == null ? null : Convert.ChangeType(srcValue, ai_dst.UnderlyingType));
+                                    //}
                                     //Debug.WriteLine(pr.EndsPerformanceRecord());
                                 }
                             }
 
+                            // AccessorInfo.SetDelegateの性能測定の名残
                             //PerformanceRecorder pr = new PerformanceRecorder();
                             //pr.StartsPerformanceRecord();
                             //for (int i = 0; i < 1000; i++)

@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/04  西野 大介         新規作成
+//*  2018/10/23  西野 大介         微調整
 //**********************************************************************************
 
 using System;
@@ -40,12 +41,12 @@ namespace Touryo.Infrastructure.Public.FastReflection
         /// <summary>
         /// Accessor の name
         /// </summary>
-        public string Name = "";
+        public string AccessorName = "";
 
         /// <summary>
         /// Accessor の type
         /// </summary>
-        public Type Type = null;
+        public Type AccessorType = null;
 
         /// <summary>
         /// Accessor の UnderlyingType
