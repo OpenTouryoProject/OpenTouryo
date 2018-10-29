@@ -141,12 +141,14 @@ namespace Touryo.Infrastructure.Business.Business
 
                 if (parameterValue.ActionType.Split('%')[0] == "SQL")
                 {
-                // SQL Server / SQL Client用のDamを生成
-                dam = new DamSqlSvr();
+                    // SQL Server / SQL Client用のDamを生成
+                    dam = new DamSqlSvr();
 
-                // 接続文字列をロード
-                connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL");
+                    // 接続文字列をロード
+                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL");
                 }
+#if NETCOREAPP2_0
+#else
                 else if (parameterValue.ActionType.Split('%')[0] == "OLE")
                 {
                     // OLEDB.NET用のDamを生成
@@ -155,6 +157,7 @@ namespace Touryo.Infrastructure.Business.Business
                     // 接続文字列をロード
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_OLE");
                 }
+#endif
                 else if (parameterValue.ActionType.Split('%')[0] == "ODB")
                 {
                     // ODBC.NET用のDamを生成
@@ -171,6 +174,8 @@ namespace Touryo.Infrastructure.Business.Business
                 //    // 接続文字列をロード
                 //    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ORA");
                 //}
+#if NETCOREAPP2_0
+#else
                 else if (parameterValue.ActionType.Split('%')[0] == "ODP")
                 {
                     // Oracle / ODP.NET用のDamを生成
@@ -179,6 +184,7 @@ namespace Touryo.Infrastructure.Business.Business
                     // 接続文字列をロード
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP");
                 }
+#endif
                 //else if (parameterValue.ActionType.Split('%')[0] == "DB2")
                 //{
                 //    // DB2.NET用のDamを生成
@@ -213,7 +219,11 @@ namespace Touryo.Infrastructure.Business.Business
                 }
                 else
                 {
-                    // ここは通らない
+                    // SQL Server / SQL Client用のDamを生成
+                    dam = new DamSqlSvr();
+
+                    // 接続文字列をロード
+                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL");
                 }
 
                 #endregion

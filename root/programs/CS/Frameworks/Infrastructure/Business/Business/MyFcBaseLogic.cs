@@ -168,11 +168,11 @@ namespace Touryo.Infrastructure.Business.Business
 
                 if (parameterValue.ActionType.Split('%')[0] == "SQL")
                 {
-                // SQL Server / SQL Client用のDamを生成
-                dam = new DamSqlSvr();
+                    // SQL Server / SQL Client用のDamを生成
+                    dam = new DamSqlSvr();
 
-                // 接続文字列をロード
-                connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL");
+                    // 接続文字列をロード
+                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL");
                 }
 #if NETCOREAPP2_0
 #else
@@ -246,7 +246,11 @@ namespace Touryo.Infrastructure.Business.Business
                 }
                 else
                 {
-                    // ここは通らない
+                    // SQL Server / SQL Client用のDamを生成
+                    dam = new DamSqlSvr();
+
+                    // 接続文字列をロード
+                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL");
                 }
 
                 #endregion

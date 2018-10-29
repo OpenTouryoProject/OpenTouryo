@@ -134,7 +134,7 @@ namespace Touryo.Infrastructure.Business.Presentation
             // -------------------------------------------------------------
 
             // 認証ユーザ情報をメンバにロードする --------------------------
-            await this.GetUserInfo();
+            await this.GetUserInfoAsync();
             // -------------------------------------------------------------
 
             // 権限チェック ------------------------------------------------
@@ -206,7 +206,7 @@ namespace Touryo.Infrastructure.Business.Presentation
         #region 情報取得用
 
         /// <summary>ユーザ情報を取得する</summary>
-        private async Task GetUserInfo()
+        private async Task GetUserInfoAsync()
         {
             // セッションステートレス対応
             if (MyHttpContext.Current.Session == null)
