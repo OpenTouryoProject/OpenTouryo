@@ -38,8 +38,7 @@ namespace Touryo.Infrastructure.Public.Security
     public enum EnumKeyedHashAlgorithm
     {
         // 基本的に、CSP (CryptoServiceProvider)
-        // mscorlib.dll, netstandard.dll, System.Security.Cryptography.Csp.dll
-        // HMACRIPEMD160, MACTripleDESだけ、Managed (mscorlib.dll)
+        // HMACRIPEMD160, MACTripleDESだけ、Managedで、CNGは無し。
 
         /// <summary>Default</summary>
         Default,
@@ -47,11 +46,8 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>HMACMD5</summary>
         HMACMD5,
 
-#if NETSTD
-#else
         /// <summary>HMACRIPEMD160</summary>
         HMACRIPEMD160,
-#endif
 
         /// <summary>HMACSHA1</summary>
         HMACSHA1,
@@ -65,10 +61,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>HMACSHA512</summary>
         HMACSHA512,
 
-#if NETSTD
-#else
         /// <summary>MACTripleDES</summary>
         MACTripleDES,
-#endif
     }
 }

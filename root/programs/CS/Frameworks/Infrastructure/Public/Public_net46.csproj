@@ -47,7 +47,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\Build_net46\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET46</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\Build_net46\OpenTouryo.Public.XML</DocumentationFile>
@@ -103,6 +103,7 @@
     <Compile Include="Security\CryptoConst.cs" />
     <Compile Include="Security\EnumKeyedHashAlgorithm.cs" />
     <Compile Include="Security\EnumHashAlgorithm.cs" />
+    <Compile Include="Security\EnumSymmetricAlgorithm.cs" />
     <Compile Include="Security\JwkSet.cs" />
     <Compile Include="Security\JWS_Header.cs" />
     <Compile Include="Security\JwtConst.cs" />

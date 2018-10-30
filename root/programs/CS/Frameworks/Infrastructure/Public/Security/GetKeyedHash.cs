@@ -38,9 +38,11 @@
 //*  2018/03/28  西野 大介         .NET Standard対応で、HMACRIPEMD160, MACTripleDESのサポート無し。
 //**********************************************************************************
 
+using System;
 using System.Security.Cryptography;
 
 using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Security
 {
@@ -270,6 +272,7 @@ namespace Touryo.Infrastructure.Public.Security
                 // 既定の暗号化サービスプロバイダ
                 kha = new HMACSHA1(key); // devps(1703)
             }
+
             else if (ekha == EnumKeyedHashAlgorithm.HMACSHA1)
             {
                 // HMACSHA1サービスプロバイダ
@@ -290,6 +293,7 @@ namespace Touryo.Infrastructure.Public.Security
                 kha = new HMACRIPEMD160(key);
             }
 #endif
+
             else if (ekha == EnumKeyedHashAlgorithm.HMACSHA256)
             {
                 // HMACSHA256サービスプロバイダ
@@ -315,6 +319,12 @@ namespace Touryo.Infrastructure.Public.Security
                 kha = new MACTripleDES(key); // devps(1703)
             }
 #endif
+
+            else
+            {
+                throw new ArgumentException(
+                    PublicExceptionMessage.ARGUMENT_INCORRECT, "EnumKeyedHashAlgorithm ekha");
+            }
 
             return kha;
         }

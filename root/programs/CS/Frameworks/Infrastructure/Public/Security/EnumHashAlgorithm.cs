@@ -41,9 +41,7 @@ namespace Touryo.Infrastructure.Public.Security
         Default,
 
         #region CSP (CryptoServiceProvider)
-
-        // mscorlib.dll, netstandard.dll, System.Security.Cryptography.Csp.dll
-
+        
         /// <summary>MD5CryptoServiceProvider</summary>
         MD5CryptoServiceProvider,
 
@@ -62,9 +60,7 @@ namespace Touryo.Infrastructure.Public.Security
         #endregion
 
         #region CNG (CryptographyNextGeneration)
-
-        // System.Core.dll
-
+        
         /// <summary>MD5CryptographyNextGeneration</summary>
         MD5CryptographyNextGeneration,
 
@@ -83,9 +79,7 @@ namespace Touryo.Infrastructure.Public.Security
         #endregion
 
         #region Managed
-
-        // mscorlib.dll
-
+        
         /// <summary>RIPEMD160Managed</summary>
         RIPEMD160Managed,
 
@@ -102,6 +96,5 @@ namespace Touryo.Infrastructure.Public.Security
         SHA512Managed,
 
         #endregion
-
     };
 }

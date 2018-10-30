@@ -103,6 +103,7 @@
     <Compile Include="Security\CryptoConst.cs" />
     <Compile Include="Security\EnumKeyedHashAlgorithm.cs" />
     <Compile Include="Security\EnumHashAlgorithm.cs" />
+    <Compile Include="Security\EnumSymmetricAlgorithm.cs" />
     <Compile Include="Security\JwkSet.cs" />
     <Compile Include="Security\JWS_Header.cs" />
     <Compile Include="Security\JwtConst.cs" />

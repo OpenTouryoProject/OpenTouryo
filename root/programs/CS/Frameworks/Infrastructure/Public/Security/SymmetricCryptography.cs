@@ -48,36 +48,6 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>
-    /// 対称アルゴリズムによる
-    /// 暗号化サービスプロバイダの種類
-    /// </summary>
-    public enum EnumSymmetricAlgorithm
-    {
-        // AesCryptoServiceProvider, AesManagedは.NET Framework 3.5からの提供。
-        // 暗号化プロバイダ選択の優先順は、高い順に、Managed → CAPI(CSP) → CNG。
-        // Aesは、ManagedがあるのでCAPI(CSP)のAesCryptoServiceProviderを削除。
-        // サポート範囲の変更により、今後、CAPI(CSP)とCNGの優先順位の反転を検討。
-
-        ///// <summary>AesCryptoServiceProvider</summary>
-        //AesCryptoServiceProvider,
-
-        /// <summary>AesManaged</summary>
-        AesManaged,
-
-        /// <summary>DESCryptoServiceProvider</summary>
-        DESCryptoServiceProvider,
-
-        /// <summary>RC2CryptoServiceProvider</summary>
-        RC2CryptoServiceProvider,
-
-        /// <summary>RijndaelManaged</summary>
-        RijndaelManaged,
-
-        /// <summary>TripleDESCryptoServiceProvider</summary>
-        TripleDESCryptoServiceProvider
-    };
-
     /// <summary>対称アルゴリズムによる暗号化・復号化クラス</summary>
     /// <remarks>
     /// 自由に利用できる。
@@ -427,42 +397,56 @@ namespace Touryo.Infrastructure.Public.Security
         {
             SymmetricAlgorithm sa = null;
 
-            // AesCryptoServiceProvider, AesManagedは.NET Framework 3.5からの提供。
-            // 暗号化プロバイダ選択の優先順は、高い順に、Managed → CAPI(CSP) → CNG。
-            // Aesは、ManagedがあるのでCAPI(CSP)のAesCryptoServiceProviderを削除。
-            // サポート範囲の変更により、今後、CAPI(CSP)とCNGの優先順位の反転を検討。
-
-            //if (esa == EnumSymmetricAlgorithm.AesCryptoServiceProvider)
-            //{
-            //    // AesCryptoServiceProviderサービスプロバイダ
-            //    sa = AesCryptoServiceProvider.Create(); // devps(1703)
-            //}
-            //else
-            if (esa == EnumSymmetricAlgorithm.AesManaged)
+            #region Aes
+            if (esa == EnumSymmetricAlgorithm.AesCryptoServiceProvider)
+            {
+                // AesCryptoServiceProviderサービスプロバイダ
+                sa = AesCryptoServiceProvider.Create(); // devps(1703)
+            }
+            else if (esa == EnumSymmetricAlgorithm.AesManaged)
             {
                 // AesManagedサービスプロバイダ
                 sa = AesManaged.Create(); // devps(1703)
             }
+            #endregion
+
             else if (esa == EnumSymmetricAlgorithm.DESCryptoServiceProvider)
             {
                 // DESCryptoServiceProviderサービスプロバイダ
                 sa = DESCryptoServiceProvider.Create(); // devps(1703)
             }
+
             else if (esa == EnumSymmetricAlgorithm.RC2CryptoServiceProvider)
             {
                 // RC2CryptoServiceProviderサービスプロバイダ
                 sa = RC2CryptoServiceProvider.Create(); // devps(1703)
             }
+
             else if (esa == EnumSymmetricAlgorithm.RijndaelManaged)
             {
                 // RijndaelManagedサービスプロバイダ
                 sa = RijndaelManaged.Create(); // devps(1703)
             }
+
+            #region TripleDES
             else if (esa == EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider)
             {
                 // TripleDESCryptoServiceProviderサービスプロバイダ
                 sa = TripleDESCryptoServiceProvider.Create(); // devps(1703)
             }
+
+#if NET45
+#elif NET46
+#else
+            else if (esa == EnumSymmetricAlgorithm.TripleDESCryptographyNextGeneration)
+            {
+                // TripleDESCngサービスプロバイダ
+                sa = TripleDESCng.Create(); // devps(1703)
+            }
+#endif
+
+            #endregion
+
             else
             {
                 throw new ArgumentException(
