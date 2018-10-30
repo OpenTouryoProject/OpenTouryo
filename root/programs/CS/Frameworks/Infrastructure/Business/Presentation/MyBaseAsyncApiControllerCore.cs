@@ -20,7 +20,7 @@
 
 //**********************************************************************************
 //* クラス名        ：MyBaseAsyncApiControllerCore (Filters)
-//* クラス日本語名  ：非同期 ASP.NET Core WebAPI用 ベーククラス２相当（テンプレート）
+//* クラス日本語名  ：非同期 ASP.NET Core WebAPI用 ベースクラス２相当（テンプレート）
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -51,7 +51,7 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Business.Presentation
 {
-    /// <summary>非同期 ASP.NET WebAPI用 ベーククラス２</summary>
+    /// <summary>非同期 ASP.NET WebAPI用 ベースクラス２</summary>
     /// <remarks>（ActionFilterAttributeとして）自由に利用できる。</remarks>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public class MyBaseAsyncApiController : ActionFilterAttribute, IAsyncAuthorizationFilter, IAsyncActionFilter, IExceptionFilter
@@ -245,6 +245,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 
         /// <summary>ユーザ情報を取得する</summary>
         /// <param name="authorizationContext">AuthorizationFilterContext</param>
+        /// <remarks>awaitするメソッドを追加して呼ぶ可能性も高いのでasyncを付与</remarks>
         private async Task GetUserInfoAsync(AuthorizationFilterContext authorizationContext)
         {
             // カスタム認証処理 --------------------------------------------
