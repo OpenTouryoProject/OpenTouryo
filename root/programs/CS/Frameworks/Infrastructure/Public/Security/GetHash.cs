@@ -34,6 +34,7 @@
 //*  2017/01/10  西野 大介         saltedPasswdのformat変更(salt+stretchCount+hashedPassword)。
 //*  2017/01/10  西野 大介         上記のformat変更に伴い、EqualSaltedPasswd側のI/F変更が発生。
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
+//*  2018/10/30  西野 大介         各種プロバイダのサポートの追加
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -42,39 +43,6 @@ using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    #region Enum
-
-    /// <summary>
-    /// ハッシュアルゴリズムのサービスプロバイダの種類
-    /// </summary>
-    public enum EnumHashAlgorithm
-    {
-        /// <summary>Default</summary>
-        Default,
-
-        /// <summary>MD5CryptoServiceProvider</summary>
-        MD5CryptoServiceProvider,
-
-        /// <summary>SHA1CryptoServiceProvider</summary>
-        SHA1CryptoServiceProvider,
-
-        /// <summary>SHA1Managed</summary>
-        SHA1Managed,
-
-        /// <summary>SHA256Managed</summary>
-        SHA256Managed,
-
-        /// <summary>SHA384Managed</summary>
-        SHA384Managed,
-
-        /// <summary>SHA512Managed</summary>
-        SHA512Managed,
-    };
-
-    #endregion
-
-    #region GetHash
-
     /// <summary>ハッシュを取得するクラス</summary>
     public class GetHash
     {
@@ -229,35 +197,134 @@ namespace Touryo.Infrastructure.Public.Security
                 // 既定の暗号化サービスプロバイダ
                 ha = HashAlgorithm.Create(); // devps(1703)
             }
+
+            #region MD5
             else if (eha == EnumHashAlgorithm.MD5CryptoServiceProvider)
             {
                 // MD5CryptoServiceProviderサービスプロバイダ
                 ha = MD5CryptoServiceProvider.Create(); // devps(1703)
             }
+
+#if NETSTD
+#else
+            else if (eha == EnumHashAlgorithm.MD5CryptographyNextGeneration)
+            {
+                // MD5Cngサービスプロバイダ
+                ha = MD5Cng.Create(); // devps(1703)
+            }
+#endif
+
+            #endregion
+
+            #region RIPEMD160
+
+#if NETSTD
+#else
+            else if (eha == EnumHashAlgorithm.RIPEMD160Managed)
+            {
+                // RIPEMD160Managedサービスプロバイダ
+                ha = RIPEMD160Managed.Create(); // devps(1703)
+            }
+#endif
+
+            #endregion
+
+            #region SHA1
             else if (eha == EnumHashAlgorithm.SHA1CryptoServiceProvider)
             {
                 // SHA1CryptoServiceProviderサービスプロバイダ
                 ha = SHA1CryptoServiceProvider.Create(); // devps(1703)
             }
+
+#if NETSTD
+#else
+            else if (eha == EnumHashAlgorithm.SHA1CryptographyNextGeneration)
+            {
+                // SHA1Cngサービスプロバイダ
+                ha = SHA1Cng.Create(); // devps(1703)
+            }
+#endif
+
             else if (eha == EnumHashAlgorithm.SHA1Managed)
             {
                 // SHA1Managedサービスプロバイダ
                 ha = SHA1Managed.Create(); // devps(1703)
             }
+            #endregion
+
+            #region SHA256
+            else if (eha == EnumHashAlgorithm.SHA256CryptoServiceProvider)
+            {
+                // SHA256CryptoServiceProviderサービスプロバイダ
+                ha = SHA256CryptoServiceProvider.Create(); // devps(1703)
+            }
+
+#if NETSTD
+#else
+            else if (eha == EnumHashAlgorithm.SHA256CryptographyNextGeneration)
+            {
+                // SHA256Cngサービスプロバイダ
+                ha = SHA256Cng.Create(); // devps(1703)
+            }
+#endif
+
             else if (eha == EnumHashAlgorithm.SHA256Managed)
             {
                 // SHA256Managedサービスプロバイダ
                 ha = SHA256Managed.Create(); // devps(1703)
             }
+            #endregion
+
+            #region SHA384
+            else if (eha == EnumHashAlgorithm.SHA384CryptographyNextGeneration)
+            {
+                // SHA384CryptoServiceProviderサービスプロバイダ
+                ha = SHA384CryptoServiceProvider.Create(); // devps(1703)
+            }
+
+#if NETSTD
+#else
+            else if (eha == EnumHashAlgorithm.SHA384CryptographyNextGeneration)
+            {
+                // SHA384Cngサービスプロバイダ
+                ha = SHA384Cng.Create(); // devps(1703)
+            }
+#endif
+
             else if (eha == EnumHashAlgorithm.SHA384Managed)
             {
                 // SHA384Managedサービスプロバイダ
                 ha = SHA384Managed.Create(); // devps(1703)
             }
+            #endregion
+
+            #region SHA512
+            else if (eha == EnumHashAlgorithm.SHA512CryptoServiceProvider)
+            {
+                // SHA512CryptoServiceProviderサービスプロバイダ
+                ha = SHA512CryptoServiceProvider.Create(); // devps(1703)
+            }
+
+#if NETSTD
+#else
+            else if (eha == EnumHashAlgorithm.SHA512CryptographyNextGeneration)
+            {
+                // SHA512Cngサービスプロバイダ
+                ha = SHA512Cng.Create(); // devps(1703)
+            }
+#endif
+
             else if (eha == EnumHashAlgorithm.SHA512Managed)
             {
                 // SHA512Managedサービスプロバイダ
                 ha = SHA512Managed.Create(); // devps(1703)
+            }
+            #endregion
+
+            else
+            {
+                // 既定の暗号化サービスプロバイダ
+                ha = HashAlgorithm.Create(); // devps(1703)
             }
 
             return ha;
@@ -265,6 +332,4 @@ namespace Touryo.Infrastructure.Public.Security
 
         #endregion
     }
-
-    #endregion
 }
