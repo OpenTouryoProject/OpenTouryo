@@ -33,12 +33,14 @@
 //*  2017/01/10  西野 大介         公開鍵、署名・検証のECDsaCngプロバイダの検証処理を追加した。
 //*  2017/01/10  西野 大介         公開鍵、署名・検証の各プロバイダのHashアルゴリズムを追加した。
 //*  2017/01/10  西野 大介         内部文書化（変数名の見直し）を行った。
+//*  2018/10/30  西野 大介         ECDiffieHellmanのコードの修正
 //**********************************************************************************
 
 using System;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using System.Diagnostics;
 using System.Security.Cryptography;
 
 using Touryo.Infrastructure.Public.Str;
@@ -942,12 +944,12 @@ namespace TestEncAndDecProvider
                 }
                 else if (asymmetricAlgorithm is ECDiffieHellmanCng)
                 {
-                    // 公開鍵を取得
-                    this.textBox41b.Text = " - cngKey (alice and bob) - ";
-                    //((ECDiffieHellmanCng)asymmetricAlgorithm).ToXmlString(ECKeyXmlFormat.Rfc4050);
+                    this._alice = new Alice();
 
-                    // 秘密鍵を取得
-                    this.textBox41c.Text = " - cngKey (alice and bob) - ";
+                    // Alice鍵を取得
+                    this.textBox41b.Text = CustomEncode.ToBase64UrlString(this._alice.PublicKey);
+                    // Bob鍵を取得
+                    this.textBox41c.Text = CustomEncode.ToBase64UrlString(this._alice.Bob.PublicKey);
                 }
                 else
                 {
@@ -1026,12 +1028,6 @@ namespace TestEncAndDecProvider
                 else if (asymmetricAlgorithm is ECDiffieHellmanCng)
                 {
                     // アリス（alice）がボブ（bob）にメッセージを送る。
-
-                    // アリスとボブ - Wikipedia
-                    // https://ja.wikipedia.org/wiki/アリスとボブ
-
-                    this._alice = new Alice();
-                    
                     using (Aes aes = new AesManaged())
                     {
                         aes.Key = this._alice.PrivateKey;
@@ -1125,7 +1121,13 @@ namespace TestEncAndDecProvider
                     
                     using (Aes aes = new AesManaged())
                     {
-                        // 秘密鍵
+                        // 共有鍵の確認
+                        if (CustomEncode.ToBase64String(this._alice.PrivateKey) 
+                            == CustomEncode.ToBase64String(this._alice.Bob.PrivateKey))
+                        {
+                            Debug.WriteLine("鍵共有成功");
+                        }
+
                         aes.Key = this._alice.Bob.PrivateKey;
                         aes.IV = this._alice.IV;
 
@@ -1632,6 +1634,13 @@ namespace TestEncAndDecProvider
         #endregion
 
         #region ECDiffieHellmanCng用AliceとBob
+
+        // Elliptic Curve Diffie-Hellman – .NET Security Blog
+        // https://blogs.msdn.microsoft.com/shawnfa/2007/01/22/elliptic-curve-diffie-hellman/
+        // 楕円曲線ディフィー・ヘルマン鍵共有 - Wikipedia
+        // https://ja.wikipedia.org/wiki/楕円曲線ディフィー・ヘルマン鍵共有
+        // アリスとボブ - Wikipedia
+        // https://ja.wikipedia.org/wiki/アリスとボブ
 
         /// <summary>
         /// ECDiffieHellmanCng用

@@ -158,6 +158,7 @@
             this.rbnJWSHS256 = new System.Windows.Forms.RadioButton();
             this.btnJWSVerify = new System.Windows.Forms.Button();
             this.btnJWSSign = new System.Windows.Forms.Button();
+            this.cbxASCPV = new System.Windows.Forms.ComboBox();
             this.btnSPWDAuth2.SuspendLayout();
             this.tabHash.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHSStretching)).BeginInit();
@@ -1011,6 +1012,7 @@
             // 
             // tabASC
             // 
+            this.tabASC.Controls.Add(this.cbxASCPV);
             this.tabASC.Controls.Add(this.btnASCGetKey);
             this.tabASC.Controls.Add(this.lblASC4);
             this.tabASC.Controls.Add(this.txtASCCode);
@@ -1161,9 +1163,9 @@
             this.lblASC1.AutoSize = true;
             this.lblASC1.Location = new System.Drawing.Point(9, 63);
             this.lblASC1.Name = "lblASC1";
-            this.lblASC1.Size = new System.Drawing.Size(218, 12);
+            this.lblASC1.Size = new System.Drawing.Size(75, 12);
             this.lblASC1.TabIndex = 28;
-            this.lblASC1.Text = "暗号プロバイダ：RSACryptoServiceProvider";
+            this.lblASC1.Text = "暗号プロバイダ";
             // 
             // txtASCString
             // 
@@ -1554,6 +1556,14 @@
             this.btnJWSSign.UseVisualStyleBackColor = true;
             this.btnJWSSign.Click += new System.EventHandler(this.btnJWSSign_Click);
             // 
+            // cbxASCPV
+            // 
+            this.cbxASCPV.FormattingEnabled = true;
+            this.cbxASCPV.Location = new System.Drawing.Point(103, 60);
+            this.cbxASCPV.Name = "cbxASCPV";
+            this.cbxASCPV.Size = new System.Drawing.Size(212, 20);
+            this.cbxASCPV.TabIndex = 40;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1735,6 +1745,7 @@
         private System.Windows.Forms.Label lblJWSKey;
         private System.Windows.Forms.RadioButton rbnJWSRS256_Param;
         private System.Windows.Forms.RadioButton rbnJWSRS256_XML;
+        private System.Windows.Forms.ComboBox cbxASCPV;
     }
 }
 

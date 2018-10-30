@@ -33,6 +33,7 @@
 //*  2017/01/13  西野 大介         上記修正への対応と、GetSaltedPasswordのI/F変更に対する修正対応
 //*  2017/01/13  西野 大介         追加のGetSaltedPasswordメソッド、CodeSigning、JWSクラスの検証画面
 //*  2017/12/**  西野 大介         メンテナンス、暗号化ライブラリ追加に伴うテストコード追加
+//*  2018/10/30  西野 大介         EnumASymmetricAlgorithmのプロバイダ追加に対応
 //**********************************************************************************
 
 using System;
@@ -62,6 +63,7 @@ namespace EncAndDecUtil
             cbxHSPV.DataSource = Enum.GetValues(typeof(EnumHashAlgorithm));
             cbxKHSPV.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
             cbxSCPV.DataSource = Enum.GetValues(typeof(EnumSymmetricAlgorithm));
+            cbxASCPV.DataSource = Enum.GetValues(typeof(EnumASymmetricAlgorithm));
             cbxSPWDPV1.DataSource = Enum.GetValues(typeof(EnumHashAlgorithm));
             cbxSPWDPV2.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
             cbxDSPV.DataSource = Enum.GetValues(typeof(EnumDigitalSignAlgorithm));
@@ -416,20 +418,21 @@ namespace EncAndDecUtil
 
         #endregion
 
-        #region 共通鍵
+        #region 公開鍵
 
-        /// <summary>鍵取得</summary>
+        /// <summary>キーペア取得</summary>
         private void button3_Click(object sender, EventArgs e)
         {
             string publicKey = "";
             string privateKey = "";
+            ASymmetricCryptography.ASymmetricAlgorithm = (EnumASymmetricAlgorithm)cbxASCPV.SelectedValue;
             ASymmetricCryptography.GetKeys(out publicKey, out privateKey);
 
             this.txtASCPublic.Text = publicKey;
             this.txtASCPrivate.Text = privateKey;
         }
 
-        /// <summary>共通鍵・暗号化</summary>
+        /// <summary>公開鍵で暗号化</summary>
         private void button4_Click(object sender, EventArgs e)
         {
             if (this.rbnASCString.Checked)
@@ -448,7 +451,7 @@ namespace EncAndDecUtil
             }
         }
 
-        /// <summary>共通鍵・復号化</summary>
+        /// <summary>秘密鍵で復号化</summary>
         private void button5_Click(object sender, EventArgs e)
         {
             if (this.rbnASCString.Checked)

@@ -58,6 +58,8 @@
     <Compile Remove="Log\CustomEventLog.cs" />
     <Compile Remove="Log\SecurityEventLog.cs" />
     <Compile Remove="Properties\AssemblyInfo.cs" />
+    <Compile Remove="Security\EcdhAlice.cs" />
+    <Compile Remove="Security\EcdhBob.cs" />
     <Compile Remove="Security\IdentityImpersonation.cs" />
     <Compile Remove="Util\SharedMemory.cs" />
   </ItemGroup>
@@ -71,7 +73,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="System.Data.Odbc" Version="4.5.0-preview1-26216-02" />
     <PackageReference Include="System.Data.SqlClient" Version="4.4.3" />
-    <PackageReference Include="System.Security.Cryptography.Cng" Version="4.4.0" />
+    <PackageReference Include="System.Security.Cryptography.Cng" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>

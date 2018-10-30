@@ -101,8 +101,11 @@
     <Compile Include="FastReflection\AccessorInfo.cs" />
     <Compile Include="FastReflection\InstanceCreator.cs" />
     <Compile Include="Security\CryptoConst.cs" />
+    <Compile Include="Security\EcdhBob.cs" />
+    <Compile Include="Security\EcdhAlice.cs" />
     <Compile Include="Security\EnumKeyedHashAlgorithm.cs" />
     <Compile Include="Security\EnumHashAlgorithm.cs" />
+    <Compile Include="Security\EnumASymmetricAlgorithm.cs" />
     <Compile Include="Security\EnumSymmetricAlgorithm.cs" />
     <Compile Include="Security\JwkSet.cs" />
     <Compile Include="Security\JWS_Header.cs" />
