@@ -38,6 +38,7 @@
 //*  2017/01/10  西野 大介         AesCryptoServiceProviderを削除（.NET3.5から実装されたAesManagedを残す）
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
+//*  2018/10/30  西野 大介         CipherMode, PaddingMode指定の追加（CipherModeによってはIVを無視する）。
 //**********************************************************************************
 
 using System;
@@ -395,6 +396,25 @@ namespace Touryo.Infrastructure.Public.Security
         /// </returns>
         private static SymmetricAlgorithm CreateSymmetricAlgorithm(EnumSymmetricAlgorithm esa)
         {
+            return CreateSymmetricAlgorithm(esa, 0, 0);
+        }
+
+        /// <summary>
+        /// 対称アルゴリズムによる
+        /// 暗号化サービスプロバイダを生成
+        /// </summary>
+        /// <param name="esa">
+        /// 対称アルゴリズムによる
+        /// 暗号化サービスプロバイダの種類
+        /// </param>
+        /// <param name="cm">CipherMode</param>
+        /// <param name="pm">PaddingMode</param>
+        /// <returns>
+        /// 対称アルゴリズムによる
+        /// 暗号化サービスプロバイダ
+        /// </returns>
+        private static SymmetricAlgorithm CreateSymmetricAlgorithm(EnumSymmetricAlgorithm esa, CipherMode cm, PaddingMode pm)
+        {
             SymmetricAlgorithm sa = null;
 
             #region Aes
@@ -451,6 +471,17 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 throw new ArgumentException(
                     PublicExceptionMessage.ARGUMENT_INCORRECT, "EnumSymmetricAlgorithm esa");
+            }
+
+            // cmが設定されている場合。
+            if (cm != 0)
+            {
+                sa.Mode = cm;
+            }
+            // pmが設定されている場合。
+            if (pm != 0)
+            {
+                sa.Padding = pm;
             }
 
             return sa;
