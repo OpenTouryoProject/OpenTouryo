@@ -44,48 +44,6 @@ using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    #region Enum
-
-    /// <summary>
-    /// ハッシュ（キー付き）アルゴリズムのサービスプロバイダの種類
-    /// </summary>
-    public enum EnumKeyedHashAlgorithm
-    {
-        /// <summary>Default</summary>
-        Default,
-
-        /// <summary>HMACSHA1</summary>
-        HMACSHA1,
-
-        /// <summary>HMACMD5</summary>
-        HMACMD5,
-
-#if NETSTD
-#else
-        /// <summary>HMACRIPEMD160</summary>
-        HMACRIPEMD160,
-#endif
-
-        /// <summary>HMACSHA256</summary>
-        HMACSHA256,
-
-        /// <summary>HMACSHA384</summary>
-        HMACSHA384,
-
-        /// <summary>HMACSHA512</summary>
-        HMACSHA512,
-
-#if NETSTD
-#else
-        /// <summary>MACTripleDES</summary>
-        MACTripleDES
-#endif
-    };
-
-    #endregion
-
-    #region GetKeyedHash
-
     /// <summary>ハッシュ（キー付き）を取得するクラス</summary>
     public class GetKeyedHash
     {
@@ -323,9 +281,9 @@ namespace Touryo.Infrastructure.Public.Security
                 // HMACMD5サービスプロバイダ
                 kha = new HMACMD5(key);
             }
+
 #if NETSTD
 #else
-
             else if (ekha == EnumKeyedHashAlgorithm.HMACRIPEMD160)
             {
                 // HMACRIPEMD160サービスプロバイダ
@@ -348,20 +306,19 @@ namespace Touryo.Infrastructure.Public.Security
                 kha = new HMACSHA512(key);
             }
             // -- ▲追加▲ --
+
 #if NETSTD
 #else
-
             else if (ekha == EnumKeyedHashAlgorithm.MACTripleDES)
             {
                 // MACTripleDESサービスプロバイダ
                 kha = new MACTripleDES(key); // devps(1703)
             }
 #endif
+
             return kha;
         }
 
         #endregion
     }
-
-    #endregion
 }

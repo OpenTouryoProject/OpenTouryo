@@ -34,7 +34,7 @@
 //*  2017/01/10  西野 大介         saltedPasswdのformat変更(salt+stretchCount+hashedPassword)。
 //*  2017/01/10  西野 大介         上記のformat変更に伴い、EqualSaltedPasswd側のI/F変更が発生。
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
-//*  2018/10/30  西野 大介         各種プロバイダのサポートの追加
+//*  2018/10/30  西野 大介         各種プロバイダのサポートを追加
 //**********************************************************************************
 
 using System.Security.Cryptography;
