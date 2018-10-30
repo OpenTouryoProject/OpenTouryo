@@ -28,15 +28,19 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/07/19  西野 大介         新規作成
+//*  2018/10/03  西野 大介         性能対策
+//*  2018/10/23  西野 大介         微調整
 //**********************************************************************************
 
 using System;
 using System.Data;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Diagnostics;
 
 using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.FastReflection;
 
 namespace Touryo.Infrastructure.Public.Dto
 {
@@ -113,21 +117,112 @@ namespace Touryo.Infrastructure.Public.Dto
         /// <returns>List(T)</returns>
         public static List<T> DataReaderToList<T>(IDataReader dr, Dictionary<string, string> map)
         {
+            // drのDataTableスキーマ情報 .net coreで動かない。
+            //DataTable dt = dr.GetSchemaTable();
+
+            // https://stackoverflow.com/questions/373230/check-for-column-name-in-a-sqldatareader-object
+            HashSet<string> hs = PubCmnFunction.GetDataReaderColumnInfo(dr);
+
             // List<POCO>の生成
             List<T> list = new List<T>();
 
+            //PerformanceRecorder pr = new PerformanceRecorder();
+            //pr.StartsPerformanceRecord();
+
             // POCOの型
             T obj = default(T);
+            //obj = Activator.CreateInstance<T>();
+            obj = InstanceCreator<T>.Factory();
+            AccessorCacher.CacheAccessor(obj);
 
-            do
+            int counter = 0;
+
+            // IDataReader の既定の位置は、先頭のレコードの前
+            while (dr.Read())
             {
-                obj = DataToPoco.DataReaderToPOCO<T>(dr, map);
+                counter++;
+
+                // POCOのnew()
+                obj = InstanceCreator<T>.Factory();
+
+                foreach (AccessorInfo ai_dst in AccessorCacher.CncDic[obj.GetType()])
+                {
+                    string srcName = ai_dst.AccessorName;
+
+                    // マップの有無
+                    if (map == null)
+                    {
+                        // マップ無
+                    }
+                    else
+                    {
+                        // マップ有
+                        if (map.ContainsKey(srcName))
+                        {
+                            // 値あり
+                            srcName = map[srcName];
+                        }
+                        else
+                        {
+                            // 値なし
+                        }
+                    }
+
+                    if (hs.Contains(srcName))
+                    {
+                        if (object.Equals(dr[srcName], DBNull.Value))
+                        {
+                            // DBNullの場合、指定しない。
+                        }
+                        else
+                        {
+                            // DBNullで無い場合、指定する（Nullable対応の型変換を追加）。
+                            //prop.SetValue(obj, PubCmnFunction.ChangeType(dr[srcPropName], prop.PropertyType), null);
+                            //ai.Delegate(obj, PubCmnFunction.ChangeType(dr[srcName], ai.Type));
+
+                            object srcValue = dr[srcName];
+                            object dstValue = null;
+                            Type srcType = srcValue.GetType();
+
+                            if (ai_dst.UnderlyingType == null)
+                            {
+                                // Nullableではない
+                                if (srcType == ai_dst.AccessorType)
+                                {
+                                    // 型一致の場合は変換不要
+                                    dstValue = srcValue;
+                                }
+                                else
+                                {
+                                    dstValue = Convert.ChangeType(srcValue, ai_dst.AccessorType);
+                                }
+                            }
+                            else
+                            {
+                                // Nullableである
+                                if (srcType == ai_dst.AccessorType)
+                                {
+                                    // 型一致の場合は変換不要
+                                    dstValue = srcValue;
+                                }
+                                else
+                                {
+                                    // Convert.ChangeType() doesn't handle nullables -> use UnderlyingType.
+                                    dstValue = (srcValue == null ? null : Convert.ChangeType(srcValue, ai_dst.UnderlyingType));
+                                }
+                            }
+
+                            ai_dst.SetDelegate(obj, dstValue);
+                        }
+                    }
+                }
 
                 // List<POCO>に追加。
-                if(obj != null) list.Add(obj);
+                if (obj != null) list.Add(obj);
             }
-            while (obj != null);
-            
+
+            //Debug.WriteLine(counter + " 回: " + pr.EndsPerformanceRecord());
+
             // List<POCO>を返す。
             return list;
         }
@@ -155,19 +250,35 @@ namespace Touryo.Infrastructure.Public.Dto
             // drのDataTableスキーマ情報 .net coreで動かない。
             //DataTable dt = dr.GetSchemaTable();
 
+            // https://stackoverflow.com/questions/373230/check-for-column-name-in-a-sqldatareader-object
+            HashSet<string> hs = PubCmnFunction.GetDataReaderColumnInfo(dr);
+
+            //PerformanceRecorder pr = new PerformanceRecorder();
+            //pr.StartsPerformanceRecord();
+
             // POCOの型
             T obj = default(T);
-
+            //obj = Activator.CreateInstance<T>();
+            obj = InstanceCreator<T>.Factory();
+            AccessorCacher.CacheAccessor(obj);
+            
             // IDataReader の既定の位置は、先頭のレコードの前
             if (dr.Read())
             {
                 // POCOのnew()
-                obj = Activator.CreateInstance<T>();
 
-                // Propertiesで回す。
-                foreach (PropertyInfo prop in obj.GetType().GetProperties())
+                // InstanceCreator<T>.Factory()の性能測定の名残
+                //PerformanceRecorder pr = new PerformanceRecorder();
+                //pr.StartsPerformanceRecord();
+                //for (int i = 0; i < 1000; i++)
+                //{
+                obj = InstanceCreator<T>.Factory();
+                //}
+                //Debug.WriteLine(pr.EndsPerformanceRecord());
+
+                foreach (AccessorInfo ai_dst in AccessorCacher.CncDic[obj.GetType()])
                 {
-                    string srcPropName = prop.Name;
+                    string srcName = ai_dst.AccessorName;
 
                     // マップの有無
                     if (map == null)
@@ -177,10 +288,10 @@ namespace Touryo.Infrastructure.Public.Dto
                     else
                     {
                         // マップ有
-                        if (map.ContainsKey(srcPropName))
+                        if (map.ContainsKey(srcName))
                         {
                             // 値あり
-                            srcPropName = map[srcPropName];
+                            srcName = map[srcName];
                         }
                         else
                         {
@@ -188,70 +299,71 @@ namespace Touryo.Infrastructure.Public.Dto
                         }
                     }
 
-                    try
+                    if (hs.Contains(srcName))
                     {
-                        object o = dr[srcPropName]; // 検証
-
-                        if (object.Equals(dr[srcPropName], DBNull.Value))
+                        if (object.Equals(dr[srcName], DBNull.Value))
                         {
                             // DBNullの場合、指定しない。
                         }
                         else
                         {
                             // DBNullで無い場合、指定する（Nullable対応の型変換を追加）。
-                            prop.SetValue(obj, PubCmnFunction.ChangeType(dr[srcPropName], prop.PropertyType), null);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.Write(ex.ToString());
-                    }
-                }
+                            //prop.SetValue(obj, PubCmnFunction.ChangeType(dr[srcPropName], prop.PropertyType), null);
+                            //ai.Delegate(obj, PubCmnFunction.ChangeType(dr[srcName], ai.Type));
 
-                // Fieldsで回す。
-                foreach (FieldInfo field in obj.GetType().GetFields())
-                {
-                    string srcFieldName = field.Name;
+                            object srcValue = dr[srcName];
+                            object dstValue = null;
+                            Type srcType = srcValue.GetType();
 
-                    // マップの有無
-                    if (map == null)
-                    {
-                        // マップ無
-                    }
-                    else
-                    {
-                        // マップ有
-                        if (map.ContainsKey(srcFieldName))
-                        {
-                            // 値あり
-                            srcFieldName = map[srcFieldName];
-                        }
-                        else
-                        {
-                            // 値なし
-                        }
-                    }
+                            if (ai_dst.UnderlyingType == null)
+                            {
+                                // Nullableではない
+                                if (srcType == ai_dst.AccessorType)
+                                {
+                                    // 型一致の場合は変換不要
+                                    dstValue = srcValue;
+                                }
+                                else
+                                {
+                                    dstValue = Convert.ChangeType(srcValue, ai_dst.AccessorType);
+                                }
+                            }
+                            else
+                            {
+                                // Nullableである
+                                if (srcType == ai_dst.AccessorType)
+                                {
+                                    // 型一致の場合は変換不要
+                                    dstValue = srcValue;
+                                }
+                                else
+                                {
+                                    // Convert.ChangeTypeの性能測定の名残
+                                    //PerformanceRecorder pr = new PerformanceRecorder();
+                                    //pr.StartsPerformanceRecord();
+                                    //for (int i = 0; i < 1000; i++)
+                                    //{
+                                    // Convert.ChangeType() doesn't handle nullables -> use UnderlyingType.
+                                    dstValue = (srcValue == null ? null : Convert.ChangeType(srcValue, ai_dst.UnderlyingType));
+                                    //}
+                                    //Debug.WriteLine(pr.EndsPerformanceRecord());
+                                }
+                            }
 
-                    try
-                    {
-                        object o = dr[srcFieldName]; // 検証
-
-                        if (object.Equals(dr[srcFieldName], DBNull.Value))
-                        {
-                            // DBNullの場合、指定しない。
+                            // AccessorInfo.SetDelegateの性能測定の名残
+                            //PerformanceRecorder pr = new PerformanceRecorder();
+                            //pr.StartsPerformanceRecord();
+                            //for (int i = 0; i < 1000; i++)
+                            //{
+                            ai_dst.SetDelegate(obj, dstValue);
+                            //}
+                            //Debug.WriteLine(pr.EndsPerformanceRecord());
                         }
-                        else
-                        {
-                            // DBNullで無い場合、指定する（Nullable対応の型変換を追加）。
-                            field.SetValue(obj, PubCmnFunction.ChangeType(dr[srcFieldName], field.FieldType));
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.Write(ex.ToString());
                     }
                 }
             }
+
+            //Debug.WriteLine(pr.EndsPerformanceRecord());
 
             return obj;
         }
