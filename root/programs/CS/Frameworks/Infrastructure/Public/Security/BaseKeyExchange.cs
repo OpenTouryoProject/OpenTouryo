@@ -34,22 +34,22 @@ using System.Security.Cryptography;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>ECDHのキー交換基本クラス</summary>
+    /// <summary>キー交換抽象クラス</summary>
     public abstract class BaseKeyExchange
     {
         /// <summary>AsymmetricAlgorithm</summary>
         protected AsymmetricAlgorithm _asa = null;
 
-        // 相方と交換する公開鍵
+        // 相方と交換する交換鍵
 
-        /// <summary>_publicKey</summary>
-        protected byte[] _publicKey;
-        /// <summary>PublicKey</summary>
-        public byte[] PublicKey
+        /// <summary>_exchangeKey</summary>
+        protected byte[] _exchangeKey;
+        /// <summary>ExchangeKey</summary>
+        public byte[] ExchangeKey
         {
             get
             {
-                return this._publicKey;
+                return this._exchangeKey;
             }
         }
     }

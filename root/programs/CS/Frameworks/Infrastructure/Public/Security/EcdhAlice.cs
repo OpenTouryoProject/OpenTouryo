@@ -89,9 +89,8 @@ namespace Touryo.Infrastructure.Public.Security
                 ecdh.Seed = secretAppendOrSeed;
             }
 
-            // Bobと鍵交換する公開鍵
-            this._publicKey = ecdh.PublicKey.ToByteArray();
-            //this.Bob = new Bob(this.PublicKey); // 外で生成
+            // Bobと鍵交換する交換鍵
+            this._exchangeKey = ecdh.PublicKey.ToByteArray();
         }
     }
 }

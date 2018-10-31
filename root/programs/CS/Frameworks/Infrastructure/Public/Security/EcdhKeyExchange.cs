@@ -41,7 +41,7 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>_privateKey</summary>
         protected byte[] _privateKey;
-        /// <summary>PublicKey</summary>
+        /// <summary>PrivateKey</summary>
         public byte[] PrivateKey
         {
             get
@@ -51,13 +51,13 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         /// <summary>キー・マテリアルを派生</summary>
-        /// <param name="publicKeyOfPartner">相方の公開鍵</param>
+        /// <param name="exchangeKeyOfPartner">相方の交換鍵</param>
         /// <param name="ckbf">CngKeyBlobFormat</param>
-        public void DeriveKeyMaterial(byte[] publicKeyOfPartner, CngKeyBlobFormat ckbf)
+        public void DeriveKeyMaterial(byte[] exchangeKeyOfPartner, CngKeyBlobFormat ckbf)
         {
-            // 暗号化に使用する秘密鍵を生成
+            // 交換鍵から、暗号化に使用する秘密鍵を生成
             this._privateKey = ((ECDiffieHellmanCng)this._asa).
-                DeriveKeyMaterial(CngKey.Import(publicKeyOfPartner, ckbf));
+                DeriveKeyMaterial(CngKey.Import(exchangeKeyOfPartner, ckbf));
         }
     }
 }

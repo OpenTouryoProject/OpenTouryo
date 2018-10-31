@@ -30,53 +30,31 @@
 //*  2018/10/31  西野 大介         新規作成
 //**********************************************************************************
 
-using System.IO;
 using System.Security.Cryptography;
-
-using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>RSA-OAEPの「Aliceクラス」</summary>
-    public class RsaOaepAlice : RsaPkcs1KeyExchange
+    public class RsaOaepAlice : RsaAlice
     {
         /// <summary>constructor</summary>
-        /// <param name="publicKeyOfBob">Bobの公開鍵</param>
-        public RsaOaepAlice(byte[] publicKeyOfBob)
+        /// <param name="exchangeKeyOfBob">Bobの交換鍵</param>
+        public RsaOaepAlice(byte[] exchangeKeyOfBob) : base(exchangeKeyOfBob) { }
+
+        /// <summary>constructor</summary>
+        /// <param name="rsaParams">Bobの交換鍵</param>
+        public RsaOaepAlice(RSAParameters rsaParams) : base(rsaParams) { }
+
+        /// <summary>
+        /// Bobの交換鍵から、
+        /// 「暗号化に使用する秘密鍵」と「Bobと交換するAliceの交換鍵」を生成
+        /// </summary>
+        protected override void CreateKeys()
         {
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
-            this._asa = rsa;
-
-            // BobのRSAキー情報
-            rsa.ImportCspBlob(publicKeyOfBob);
-
-            // 「暗号化に使用する秘密鍵」と「Bobと鍵交換する公開鍵」を生成
+            RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)this._asa;
             this._aes = new AesCryptoServiceProvider(); // 秘密鍵
             RSAOAEPKeyExchangeFormatter keyExchangeFormatter = new RSAOAEPKeyExchangeFormatter(rsa);
-            this._publicKey = keyExchangeFormatter.CreateKeyExchange(this._aes.Key, typeof(Aes)); // 公開鍵
-        }
-
-        /// <summary>暗号化</summary>
-        /// <param name="msg">暗号化するメッセージ</param>
-        /// <returns>暗号化したメッセージ</returns>
-        public string Encrypt(string msg)
-        {
-            return CustomEncode.ByteToString(
-                this.Encrypt(CustomEncode.StringToByte(msg, CustomEncode.UTF_8)),
-                CustomEncode.UTF_8);
-        }
-
-        /// <summary>暗号化</summary>
-        /// <param name="msg">暗号化するメッセージ</param>
-        /// <returns>暗号化したメッセージ</returns>
-        public byte[] Encrypt(byte[] msg)
-        {
-            using (MemoryStream ciphertext = new MemoryStream())
-            using (CryptoStream cs = new CryptoStream(ciphertext, this._aes.CreateEncryptor(), CryptoStreamMode.Write))
-            {
-                cs.Write(msg, 0, msg.Length);
-                return ciphertext.ToArray();
-            }
+            this._exchangeKey = keyExchangeFormatter.CreateKeyExchange(this._aes.Key, typeof(Aes)); // 交換鍵
         }
     }
 }

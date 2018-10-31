@@ -103,9 +103,11 @@
     <Compile Include="Security\BaseKeyExchange.cs" />
     <Compile Include="Security\CryptoConst.cs" />
     <Compile Include="Security\EcdhKeyExchange.cs" />
+    <Compile Include="Security\RsaAlice.cs" />
     <Compile Include="Security\RsaOaepAlice.cs" />
+    <Compile Include="Security\RsaBob.cs" />
     <Compile Include="Security\RsaOaepBob.cs" />
-    <Compile Include="Security\RsaPkcs1KeyExchange.cs" />
+    <Compile Include="Security\RsaKeyExchange.cs" />
     <Compile Include="Security\RsaPkcs1Alice.cs" />
     <Compile Include="Security\RsaPkcs1Bob.cs" />
     <Compile Include="Security\EcdhBob.cs" />

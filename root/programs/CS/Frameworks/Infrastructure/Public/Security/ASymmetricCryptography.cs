@@ -392,8 +392,7 @@ namespace Touryo.Infrastructure.Public.Security
                 rsa.Clear(); // devps(1725)
             }
 
-#if NET45
-#else
+#if !NET45
             else if (ASymmetricCryptography._easa == EnumASymmetricAlgorithm.RSACryptographyNextGeneration)
             {
                 RSACng rsa = (RSACng)ASymmetricCryptography.CreateASymmetricAlgorithm();
@@ -435,8 +434,7 @@ namespace Touryo.Infrastructure.Public.Security
                 asa = RSACryptoServiceProvider.Create(); // devps(1703)
             }
 
-#if NET45
-#else
+#if !NET45
             else if (ASymmetricCryptography._easa == EnumASymmetricAlgorithm.RSACryptographyNextGeneration)
             {
                 // RSACngサービスプロバイダ

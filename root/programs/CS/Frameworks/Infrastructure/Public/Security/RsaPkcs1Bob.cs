@@ -30,57 +30,23 @@
 //*  2018/10/31  西野 大介         新規作成
 //**********************************************************************************
 
-using System.IO;
 using System.Security.Cryptography;
-
-using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>RSA1_5の「Bobクラス」</summary>
-    public class RsaPkcs1Bob : RsaPkcs1KeyExchange
+    public class RsaPkcs1Bob : RsaBob
     {
-        /// <summary>constructor</summary>
-        public RsaPkcs1Bob()
-        {
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
-            this._asa = rsa;
-            this._publicKey = rsa.ExportCspBlob(false);
-        }
-
         /// <summary>秘密鍵生成</summary>
-        /// <param name="publicKeyOfAlice">Aliceの公開鍵</param>
+        /// <param name="exchangeKeyOfAlice">Aliceの交換鍵</param>
         /// <param name="iv">初期化ベクター</param>
-        public void GeneratePrivateKey(byte[] publicKeyOfAlice, byte[] iv)
+        public void GeneratePrivateKey(byte[] exchangeKeyOfAlice, byte[] iv)
         {
             this._aes = new AesCryptoServiceProvider();
             RSAPKCS1KeyExchangeDeformatter keyExchangeDeformatter = new RSAPKCS1KeyExchangeDeformatter(this._asa);
 
             this._aes.IV = iv;
-            this._aes.Key = keyExchangeDeformatter.DecryptKeyExchange(publicKeyOfAlice);
-        }
-
-        /// <summary>復号化</summary>
-        /// <param name="msg">復号化するメッセージ</param>
-        /// <returns>復号化したメッセージ</returns>
-        public string Decrypt(string msg)
-        {
-            return CustomEncode.ByteToString(
-                this.Decrypt(CustomEncode.StringToByte(msg, CustomEncode.UTF_8)),
-                CustomEncode.UTF_8);
-        }
-
-        /// <summary>暗号化</summary>
-        /// <param name="msg">暗号化するメッセージ</param>
-        /// <returns>暗号化したメッセージ</returns>
-        public byte[] Decrypt(byte[] msg)
-        {
-            using (MemoryStream ciphertext = new MemoryStream())
-            using (CryptoStream cs = new CryptoStream(ciphertext, this._aes.CreateDecryptor(), CryptoStreamMode.Write))
-            {
-                cs.Write(msg, 0, msg.Length);
-                return ciphertext.ToArray();
-            }
+            this._aes.Key = keyExchangeDeformatter.DecryptKeyExchange(exchangeKeyOfAlice);
         }
     }
 }

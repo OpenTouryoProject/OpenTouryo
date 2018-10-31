@@ -19,7 +19,7 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：RsaPkcs1KeyExchange
+//* クラス名        ：RsaKeyExchange
 //* クラス日本語名  ：RSAのキー交換抽象クラス
 //*
 //* 作成者          ：生技 西野
@@ -35,8 +35,21 @@ using System.Security.Cryptography;
 namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>RSAのキー交換基本クラス</summary>
-    public abstract class RsaPkcs1KeyExchange : BaseKeyExchange
+    public abstract class RsaKeyExchange : BaseKeyExchange
     {
+        // 相方と交換する鍵
+
+        /// <summary>_exchangeKey</summary>
+        protected RSAParameters _exchangeKey2;
+        /// <summary>ExchangeKey</summary>
+        public RSAParameters ExchangeKey2
+        {
+            get
+            {
+                return this._exchangeKey2;
+            }
+        }
+
         // 暗号化・復号化に使用する秘密鍵
 
         /// <summary>AesCryptoServiceProvider</summary>

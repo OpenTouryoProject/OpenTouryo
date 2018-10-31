@@ -89,8 +89,8 @@ namespace Touryo.Infrastructure.Public.Security
                 ecdh.Seed = secretAppendOrSeed;
             }
 
-            // Aliceと鍵交換する公開鍵
-            this._publicKey = ecdh.PublicKey.ToByteArray();
+            // Aliceと鍵交換する交換鍵
+            this._exchangeKey = ecdh.PublicKey.ToByteArray();
         }
     }
 }
