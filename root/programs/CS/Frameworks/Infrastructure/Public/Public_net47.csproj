@@ -102,7 +102,9 @@
     <Compile Include="FastReflection\InstanceCreator.cs" />
     <Compile Include="Security\BaseKeyExchange.cs" />
     <Compile Include="Security\CryptoConst.cs" />
+    <Compile Include="Security\DigitalSignECDsa.cs" />
     <Compile Include="Security\EcdhKeyExchange.cs" />
+    <Compile Include="Security\EnumDigitalSignAlgorithm.cs" />
     <Compile Include="Security\RsaAlice.cs" />
     <Compile Include="Security\RsaOaepAlice.cs" />
     <Compile Include="Security\RsaBob.cs" />

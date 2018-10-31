@@ -156,7 +156,15 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 // DSACryptoServiceProvider
                 aa = new DSACryptoServiceProvider();
-                ha = SHA1.Create();
+            }
+            else if (
+                eaa == EnumDigitalSignAlgorithm.ECDsaCng_P256
+                || eaa == EnumDigitalSignAlgorithm.ECDsaCng_P384
+                || eaa == EnumDigitalSignAlgorithm.ECDsaCng_P521)
+            {
+                // ECDsaCng
+                aa = new ECDsaCng();
+                ha = null; // ハッシュ無し
             }
             else
             {
@@ -201,6 +209,14 @@ namespace Touryo.Infrastructure.Public.Security
             }
 
             return haName;
+        }
+
+        /// <summary>GetHashAlgorithmFromName</summary>
+        /// <param name="hashAlgorithmName">string</param>
+        /// <returns>HashAlgorithm</returns>
+        public static HashAlgorithm GetHashAlgorithmFromName(string hashAlgorithmName)
+        {
+            return HashAlgorithm.Create(hashAlgorithmName);
         }
     }
 }

@@ -1312,11 +1312,11 @@ namespace TestEncAndDecProvider
                         }
                         else if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "P384")
                         {
-                            this.CreateCngKey(CngAlgorithm.ECDsaP256, out this._cngKey, out publicKey);//, out privateKey);
+                            this.CreateCngKey(CngAlgorithm.ECDsaP384, out this._cngKey, out publicKey);//, out privateKey);
                         }
                         else if (this._signinHashAlgorithmOfAsymmetricAlgorithm == "P521")
                         {
-                            this.CreateCngKey(CngAlgorithm.ECDsaP256, out this._cngKey, out publicKey);//, out privateKey);
+                            this.CreateCngKey(CngAlgorithm.ECDsaP521, out this._cngKey, out publicKey);//, out privateKey);
                         }
                     }
                     else if (asymmetricAlgorithm is ECDiffieHellmanCng)
@@ -1512,7 +1512,7 @@ namespace TestEncAndDecProvider
         }
 
         /// <summary>CreateCngKey</summary>
-        /// <param name="ca">CngAlgorithm</param>
+        /// <param name="cngAlgorithm">CngAlgorithm</param>
         /// <param name="cngKey">CngKey</param>
         /// <param name="publicKey">publicKey</param>
         private void CreateCngKey(CngAlgorithm cngAlgorithm, out CngKey cngKey, out byte[] publicKey)//, out byte[] privateKey)

@@ -19,17 +19,15 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：DigitalSignParam
-//* クラス日本語名  ：DigitalSignParamクラス
+//* クラス名        ：DigitalSignECDsa
+//* クラス日本語名  ：DigitalSignECDsaクラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2017/12/25  西野 大介         新規作成
-//*  2018/10/31  西野 大介         アルゴリズム判定コードの見直し。
-//*  2018/10/31  西野 大介         AsymmetricSignatureFormatter, Deformatterに揃えた。
+//*  2018/10/31  西野 大介         新規作成
 //**********************************************************************************
 
 using System;
@@ -39,14 +37,8 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>
-    /// DigitalSignXMLクラス
-    /// - RSACryptoServiceProvider:
-    ///   MD5, SHA1, SHA256, SHA384, SHA512
-    /// - DSACryptoServiceProvider:SHA1
-    /// だけ、サポート。
-    /// </summary>
-    public class DigitalSignParam : DigitalSign
+    /// <summary>DigitalSignECDsaクラス</summary>
+    public class DigitalSignECDsa : DigitalSign
     {
         // デジタル署名の場合は、秘密鍵で署名して、公開鍵で検証。
 
@@ -54,13 +46,16 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>AsymmetricAlgorithm</summary>
         public AsymmetricAlgorithm AsymmetricAlgorithm { get; protected set; }
+        
+        /// <summary>PrivateKey</summary>
+        public CngKey PrivateKey { get; protected set; }
 
-        /// <summary>HashAlgorithm</summary>
-        public HashAlgorithm HashAlgorithm { get; protected set; }
+        /// <summary>PublicKey</summary>
+        public byte[] PublicKey { get; protected set; }
 
         /// <summary>Constructor</summary>
         /// <param name="eaa">EnumDigitalSignAlgorithm</param>
-        public DigitalSignParam(EnumDigitalSignAlgorithm eaa)
+        public DigitalSignECDsa(EnumDigitalSignAlgorithm eaa)
         {
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
@@ -68,52 +63,59 @@ namespace Touryo.Infrastructure.Public.Security
             RsaAndDsaCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
 
             this.AsymmetricAlgorithm = aa;
-            this.HashAlgorithm = ha;
+
+            if (eaa == EnumDigitalSignAlgorithm.ECDsaCng_P256)
+            {
+                this.CreateCngKey(CngAlgorithm.ECDsaP256);
+            }
+            else if (eaa == EnumDigitalSignAlgorithm.ECDsaCng_P384)
+            {
+                this.CreateCngKey(CngAlgorithm.ECDsaP384);
+            }
+            else if (eaa == EnumDigitalSignAlgorithm.ECDsaCng_P521)
+            {
+                this.CreateCngKey(CngAlgorithm.ECDsaP521);
+            }
+            else
+            {
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+            }
         }
 
         /// <summary>Constructor</summary>
-        /// <param name="param">object</param>
-        /// <param name="ha">HashAlgorithm</param>
-        public DigitalSignParam(object param, HashAlgorithm ha)
+        /// <param name="privateKey">秘密鍵</param>
+        public DigitalSignECDsa(CngKey privateKey)
         {
-            this.AsymmetricAlgorithm = RsaAndDsaCmnFunc.CreateAsymmetricAlgorithmFromParam(param, ha);
-            this.HashAlgorithm = ha;
+            this.AsymmetricAlgorithm = new ECDsaCng(privateKey);
+        }
+
+        /// <summary>Constructor</summary>
+        /// <param name="publicKey">公開鍵</param>
+        public DigitalSignECDsa(byte[] publicKey)
+        {
+            this.AsymmetricAlgorithm = new ECDsaCng(CngKey.Import(publicKey, CngKeyBlobFormat.GenericPublicBlob));
+        }
+
+        /// <summary>CreateCngKey</summary>
+        /// <param name="cngAlgorithm">CngAlgorithm</param>
+        private void CreateCngKey(CngAlgorithm cngAlgorithm)
+        {
+            this.PrivateKey = CngKey.Create(cngAlgorithm);
+            this.PublicKey = this.PrivateKey.Export(CngKeyBlobFormat.GenericPublicBlob);
+            // ↓サポートされない操作であるらしい。
+            //privateKey = cngKey.Export(CngKeyBlobFormat.GenericPrivateBlob);
         }
 
         #endregion
 
-        #region デジタル署名(Parameters)
+        #region デジタル署名(ECDsa)
 
         /// <summary>デジタル署名を作成する</summary>
         /// <param name="data">デジタル署名を行なう対象データ</param>
         /// <returns>対象データに対してデジタル署名したデジタル署名部分のデータ</returns>
         public override byte[] Sign(byte[] data)
         {
-            // ハッシュ
-            byte[] hashedByte = this.HashAlgorithm.ComputeHash(data);
-            // デジタル署名
-            byte[] signedByte = null;
-
-            if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
-            {
-                // RSAPKCS1SignatureFormatterオブジェクトを作成
-                RSAPKCS1SignatureFormatter rsaSignatureFormatter = new RSAPKCS1SignatureFormatter(this.AsymmetricAlgorithm);
-                rsaSignatureFormatter.SetHashAlgorithm(RsaAndDsaCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
-                signedByte = rsaSignatureFormatter.CreateSignature(hashedByte);
-            }
-            else if (this.AsymmetricAlgorithm is DSACryptoServiceProvider)
-            {
-                // DSASignatureFormatterオブジェクトを作成
-                DSASignatureFormatter dsaSignatureFormatter = new DSASignatureFormatter(this.AsymmetricAlgorithm);
-                dsaSignatureFormatter.SetHashAlgorithm(CryptoConst.SHA1); // DSAはSHA1固定
-                signedByte = dsaSignatureFormatter.CreateSignature(hashedByte);
-            }
-            else
-            {
-                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
-            }
-
-            return signedByte;
+            return ((ECDsaCng)this.AsymmetricAlgorithm).SignData(data);
         }
 
         /// <summary>デジタル署名を検証する</summary>
@@ -122,30 +124,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
         public override bool Verify(byte[] data, byte[] sign)
         {
-            if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
-            {
-                //return ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).
-                //    VerifyData(data, RsaAndDsaCmnFunc.GetHashAlgorithmName(this.HashAlgorithm), sign);
-
-                // RSAPKCS1SignatureDeformatterオブジェクトを作成
-                RSAPKCS1SignatureDeformatter rsaSignatureDeformatter = new RSAPKCS1SignatureDeformatter(this.AsymmetricAlgorithm);
-                rsaSignatureDeformatter.SetHashAlgorithm(RsaAndDsaCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
-                return rsaSignatureDeformatter.VerifySignature(data, sign);
-            }
-            else if (this.AsymmetricAlgorithm is DSACryptoServiceProvider)
-            {
-                //return ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).
-                //    VerifyData(data, sign);
-
-                // DSASignatureDeformatterオブジェクトを作成
-                DSASignatureDeformatter dsaSignatureDeformatter = new DSASignatureDeformatter(this.AsymmetricAlgorithm);
-                dsaSignatureDeformatter.SetHashAlgorithm(CryptoConst.SHA1);
-                return dsaSignatureDeformatter.VerifySignature(data, sign);
-            }
-            else
-            {
-                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
-            }
+            return ((ECDsaCng)this.AsymmetricAlgorithm).VerifyData(data, sign);
         }
 
         #endregion
