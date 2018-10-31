@@ -60,6 +60,7 @@
     <Compile Remove="Properties\AssemblyInfo.cs" />
     <Compile Remove="Security\EcdhAlice.cs" />
     <Compile Remove="Security\EcdhBob.cs" />
+    <Compile Remove="Security\EcdhKeyExchange.cs" />
     <Compile Remove="Security\IdentityImpersonation.cs" />
     <Compile Remove="Util\SharedMemory.cs" />
   </ItemGroup>
