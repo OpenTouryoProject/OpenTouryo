@@ -100,11 +100,16 @@
     <Compile Include="FastReflection\AccessorCacher.cs" />
     <Compile Include="FastReflection\AccessorInfo.cs" />
     <Compile Include="FastReflection\InstanceCreator.cs" />
+    <Compile Include="Security\AsymmetricAlgorithmCmnFunc.cs" />
     <Compile Include="Security\BaseKeyExchange.cs" />
     <Compile Include="Security\CryptoConst.cs" />
     <Compile Include="Security\DigitalSignECDsa.cs" />
     <Compile Include="Security\EcdhKeyExchange.cs" />
     <Compile Include="Security\EnumDigitalSignAlgorithm.cs" />
+    <Compile Include="Security\GetPasswordHashV2.cs" />
+    <Compile Include="Security\GetPasswordHashV1.cs" />
+    <Compile Include="Security\HashCmnFunc.cs" />
+    <Compile Include="Security\MsgAuthCode.cs" />
     <Compile Include="Security\RsaAlice.cs" />
     <Compile Include="Security\RsaOaepAlice.cs" />
     <Compile Include="Security\RsaBob.cs" />
@@ -121,7 +126,6 @@
     <Compile Include="Security\JwkSet.cs" />
     <Compile Include="Security\JWS_Header.cs" />
     <Compile Include="Security\JwtConst.cs" />
-    <Compile Include="Security\RsaAndDsaCmnFunc.cs" />
     <Compile Include="Security\ASymmetricCryptography.cs" />
     <Compile Include="Security\DigitalSignParam.cs" />
     <Compile Include="Security\JWS_RS256_Param.cs" />

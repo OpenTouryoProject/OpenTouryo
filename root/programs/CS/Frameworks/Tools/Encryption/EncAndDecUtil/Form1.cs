@@ -66,16 +66,20 @@ namespace EncAndDecUtil
             cbxASCPV.DataSource = Enum.GetValues(typeof(EnumASymmetricAlgorithm));
             cbxSPWDPV1.DataSource = Enum.GetValues(typeof(EnumHashAlgorithm));
             cbxSPWDPV2.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
+            cbxMACPV.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
             cbxDSPV.DataSource = Enum.GetValues(typeof(EnumDigitalSignAlgorithm));
 
             // HS    : Hash
             // KHS   : KeyedHash
             // SC    : SymmetricCryptography
             // ASC   : ASymmetricCryptography
+            // MAC   : MessageAuthenticationCode
             // DS    : DigitalSign
         }
 
         #endregion
+
+        #region ハッシュ
 
         #region ハッシュ
 
@@ -102,84 +106,24 @@ namespace EncAndDecUtil
         /// <summary>キー付きハッシュ</summary>
         private void btnGetKeyedHash_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtKHSSalt.Text))
+            if (this.rbnKHSString.Checked)
             {
-                // ソルト無し
-                if (this.rbnKHSString.Checked)
-                {
-                    // String
-                    this.txtKHSCode.Text =
-                        GetKeyedHash.GetKeyedHashString(
-                            this.txtKHSString.Text,
-                            (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue,
-                            this.txtKHSPassword.Text);
-                }
-                else
-                {
-                    // Bytes
-                    this.txtKHSCode.Text =
-                        CustomEncode.ToHexString(
-                            GetKeyedHash.GetKeyedHashBytes(
-                                CustomEncode.StringToByte(txtKHSString.Text, CustomEncode.UTF_8),
-                                (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue,
-                                this.txtKHSPassword.Text));
-                }
+                // String
+                this.txtKHSCode.Text =
+                    GetKeyedHash.GetKeyedHashString(
+                        (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue,
+                        this.txtKHSString.Text,
+                        this.txtKHSPassword.Text);
             }
             else
             {
-                // ソルト有り
-                if (this.nudKHSStretching.Value == 0)
-                {
-                    // ストレッチング無し
-                    if (this.rbnKHSString.Checked)
-                    {
-                        // String
-                        this.txtKHSCode.Text =
-                            GetKeyedHash.GetKeyedHashString(
-                                this.txtKHSString.Text,
-                                (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue,
-                                this.txtKHSPassword.Text,
-                                CustomEncode.StringToByte(this.txtKHSSalt.Text, CustomEncode.UTF_8));
-                    }
-                    else
-                    {
-                        // Bytes
-                        this.txtKHSCode.Text =
-                            CustomEncode.ToHexString(
-                                GetKeyedHash.GetKeyedHashBytes(
-                                    CustomEncode.StringToByte(txtKHSString.Text, CustomEncode.UTF_8),
-                                    (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue,
-                                    this.txtKHSPassword.Text,
-                                    CustomEncode.StringToByte(this.txtKHSSalt.Text, CustomEncode.UTF_8)));
-                    }
-                }
-                else
-                {
-                    // ストレッチング有り
-                    if (this.rbnKHSString.Checked)
-                    {
-                        // String
-                        this.txtKHSCode.Text =
-                            GetKeyedHash.GetKeyedHashString(
-                                this.txtKHSString.Text,
-                                (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue,
-                                this.txtKHSPassword.Text,
-                                CustomEncode.StringToByte(this.txtKHSSalt.Text, CustomEncode.UTF_8),
-                                (int)nudKHSStretching.Value);
-                    }
-                    else
-                    {
-                        // Bytes
-                        this.txtKHSCode.Text =
-                            CustomEncode.ToHexString(
-                                GetKeyedHash.GetKeyedHashBytes(
-                                    CustomEncode.StringToByte(txtKHSString.Text, CustomEncode.UTF_8),
-                                    (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue,
-                                    this.txtKHSPassword.Text,
-                                    CustomEncode.StringToByte(this.txtKHSSalt.Text, CustomEncode.UTF_8),
-                                    (int)nudKHSStretching.Value));
-                    }
-                }
+                // Bytes
+                this.txtKHSCode.Text =
+                    CustomEncode.ToHexString(
+                        GetKeyedHash.GetKeyedHashBytes(
+                            (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue,
+                            CustomEncode.StringToByte(txtKHSString.Text, CustomEncode.UTF_8),
+                            CustomEncode.StringToByte(this.txtKHSPassword.Text, CustomEncode.UTF_8)));
             }
         }
 
@@ -187,19 +131,19 @@ namespace EncAndDecUtil
 
         #region 塩味パスワード生成（ハッシュ）
 
-        /// <summary>塩味パスワード生成</summary>
+        /// <summary>塩味パスワード生成（ハッシュ）</summary>
         private void btnSPWDGen1_Click(object sender, EventArgs e)
         {
-            this.txtSPWDSaltedPassword1.Text = GetHash.GetSaltedPassword(
+            this.txtSPWDSaltedPassword1.Text = GetPasswordHashV2.GetSaltedPassword(
                 this.txtSPWDRawPassword1.Text, (EnumHashAlgorithm)this.cbxSPWDPV1.SelectedValue,
                 (int)this.nudSPWDSaltLength1.Value, (int)this.nudSPWDStretchCount1.Value);
         }
 
-        /// <summary>生パスワードと塩味パスワードを比較認証</summary>
+        /// <summary>生パスワード（ハッシュ）と塩味パスワードを比較認証</summary>
         private void btnSPWDAuth1_Click(object sender, EventArgs e)
         {
             // パラメタ系は渡さないで検証可能
-            if (GetHash.EqualSaltedPassword(
+            if (GetPasswordHashV2.EqualSaltedPassword(
                 this.txtSPWDRawPassword1.Text,
                 this.txtSPWDSaltedPassword1.Text,
                 (EnumHashAlgorithm)this.cbxSPWDPV1.SelectedValue))
@@ -217,20 +161,25 @@ namespace EncAndDecUtil
 
         #region 塩味パスワード生成（キー付きハッシュ）
 
+        /// <summary>塩味パスワード（キー付きハッシュ）生成</summary>
         private void btnSPWDGen2_Click(object sender, EventArgs e)
         {
-            this.txtSPWDSaltedPassword2.Text = GetKeyedHash.GetSaltedPassword(
-                this.txtSPWDRawPassword2.Text, (EnumKeyedHashAlgorithm)this.cbxSPWDPV2.SelectedValue,
-                this.txtSPWDKey2.Text, (int)this.nudSPWDSaltLength2.Value, (int)this.nudSPWDStretchCount2.Value);
+            this.txtSPWDSaltedPassword2.Text = GetPasswordHashV2.GetSaltedPassword(
+                (EnumKeyedHashAlgorithm)this.cbxSPWDPV2.SelectedValue,
+                this.txtSPWDRawPassword2.Text,
+                this.txtSPWDKey2.Text,
+                (int)this.nudSPWDSaltLength2.Value,
+                (int)this.nudSPWDStretchCount2.Value);
         }
 
+        /// <summary>生パスワード（キー付きハッシュ）と塩味パスワードを比較認証</summary>
         private void btnSPWDAuth2_Click(object sender, EventArgs e)
         {
             // パラメタ系は渡さないで検証可能
-            if (GetKeyedHash.EqualSaltedPassword(
+            if (GetPasswordHashV2.EqualSaltedPassword(
+                (EnumKeyedHashAlgorithm)this.cbxSPWDPV2.SelectedValue,
                 this.txtSPWDRawPassword2.Text,
-                this.txtSPWDSaltedPassword2.Text,
-                (EnumKeyedHashAlgorithm)this.cbxSPWDPV2.SelectedValue))
+                this.txtSPWDSaltedPassword2.Text))
             {
                 MessageBox.Show("認証成功");
             }
@@ -240,6 +189,8 @@ namespace EncAndDecUtil
 
             }
         }
+
+        #endregion
 
         #endregion
 
@@ -495,16 +446,11 @@ namespace EncAndDecUtil
 
         #region 署名
 
-        /// <summary>rbnDSXML_CheckedChanged</summary>
+        /// <summary>rbnDS_CheckedChanged</summary>
         private void rbnDS_CheckedChanged(object sender, EventArgs e)
         {
             this.cbxDSPV.Enabled = (this.rbnDSXML.Checked || this.rbnDSParam.Checked);
-        }
-
-        /// <summary>rbnDSX509_CheckedChanged</summary>
-        private void rbnDSX509_CheckedChanged(object sender, EventArgs e)
-        {
-            //this.txtDSHash.ReadOnly = !this.rbnDSX509.Checked;
+            this.txtDSHash.Enabled = this.rbnDSX509.Checked;
         }
 
         /// <summary>署名</summary>
@@ -517,50 +463,71 @@ namespace EncAndDecUtil
             byte[] data = CustomEncode.StringToByte(this.txtDSData.Text, CustomEncode.UTF_8);
             byte[] sign = null;
 
-            if (rbnDSXML.Checked)
-            {
-                // XMLKey
-                dsXML = new DigitalSignXML((EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue);
-                sign = dsXML.Sign(data);
-                //bool ret = csXML.Verify(data, sign);
+            EnumDigitalSignAlgorithm edsa = (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue;
 
-                this.txtDSPrivateKey.Text = dsXML.XMLPrivateKey;
-                this.txtDSPublicKey.Text = dsXML.XMLPublicKey;
-            }
-            else if(rbnDSParam.Checked)
+            if (edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_MD5
+                || edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA1
+                || edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256
+                || edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA384
+                || edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA512
+                || edsa == EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
             {
-                // XMLKey
-                dsXML = new DigitalSignXML((EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue);
-                
-                if (((EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue) ==
-                        EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
+                if (rbnDSXML.Checked)
                 {
-                    DSAParameters dsaparam = ((DSACryptoServiceProvider)dsXML.AsymmetricAlgorithm).ExportParameters(true);
-                    dsParam = new DigitalSignParam(dsaparam, dsXML.HashAlgorithm);
+                    // XMLKey
+                    dsXML = new DigitalSignXML(edsa);
+                    sign = dsXML.Sign(data);
+                    //bool ret = csXML.Verify(data, sign);
+
+                    this.txtDSPrivateKey.Text = dsXML.XMLPrivateKey;
+                    this.txtDSPublicKey.Text = dsXML.XMLPublicKey;
+                }
+                else if (rbnDSParam.Checked)
+                {
+                    // XMLKey
+                    dsXML = new DigitalSignXML(edsa);
+
+                    if (((EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue) ==
+                            EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
+                    {
+                        DSAParameters dsaparam = ((DSACryptoServiceProvider)dsXML.AsymmetricAlgorithm).ExportParameters(true);
+                        dsParam = new DigitalSignParam(dsaparam, dsXML.HashAlgorithm);
+                    }
+                    else
+                    {
+                        RSAParameters rsaparam = ((RSACryptoServiceProvider)dsXML.AsymmetricAlgorithm).ExportParameters(true);
+                        dsParam = new DigitalSignParam(rsaparam, dsXML.HashAlgorithm);
+                    }
+
+                    sign = dsParam.Sign(data);
+                    //bool ret = dsParam.Verify(data, sign);
+
+                    this.txtDSPrivateKey.Text = dsXML.XMLPrivateKey;
+                    this.txtDSPublicKey.Text = dsXML.XMLPublicKey;
                 }
                 else
                 {
-                    RSAParameters rsaparam = ((RSACryptoServiceProvider)dsXML.AsymmetricAlgorithm).ExportParameters(true);
-                    dsParam = new DigitalSignParam(rsaparam, dsXML.HashAlgorithm);
+                    // X509
+                    dsX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtDSHash.Text,
+                        X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+
+                    sign = dsX509.Sign(data);
+                    bool ret = dsX509.Verify(data, sign);
+
+                    this.txtDSPrivateKey.Text = dsX509.X509PrivateKey;
+                    this.txtDSPublicKey.Text = dsX509.X509PublicKey;
                 }
-
-                sign = dsParam.Sign(data);
-                //bool ret = dsParam.Verify(data, sign);
-
-                this.txtDSPrivateKey.Text = dsXML.XMLPrivateKey;
-                this.txtDSPublicKey.Text = dsXML.XMLPublicKey;
             }
             else
             {
-                // X509
-                dsX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtDSHash.Text,
-                    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+                // ECDsa
+                DigitalSignECDsa dsECDsa = new DigitalSignECDsa(edsa);
 
-                sign = dsX509.Sign(data);
-                //bool ret = dsX509.Verify(data, sign);
+                sign = dsECDsa.Sign(data);
+                bool ret = dsECDsa.Verify(data, sign);
 
-                this.txtDSPrivateKey.Text = dsX509.X509PrivateKey;
-                this.txtDSPublicKey.Text = dsX509.X509PublicKey;
+                this.txtDSPrivateKey.Text = "";
+                this.txtDSPublicKey.Text = CustomEncode.ToBase64String(dsECDsa.PublicKey);
             }
 
             txtDSSign.Text = CustomEncode.ToBase64String(sign);
@@ -577,43 +544,60 @@ namespace EncAndDecUtil
             byte[] sign = CustomEncode.FromBase64String(this.txtDSSign.Text);
             bool ret = false;
 
-            if (rbnDSXML.Checked)
-            {
-                // XMLKey
-                dsXML = new DigitalSignXML(
-                    (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue, this.txtDSPublicKey.Text);
-                ret = dsXML.Verify(data, sign);
-            }
-            else if(rbnDSParam.Checked)
-            {
-                // XMLKey
-                dsXML = new DigitalSignXML(
-                    (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue, this.txtDSPublicKey.Text);
+            EnumDigitalSignAlgorithm edsa = (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue;
 
-                if (((EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue) ==
-                        EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
+            if (edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_MD5
+                || edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA1
+                || edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256
+                || edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA384
+                || edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA512
+                || edsa == EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
+            {
+                if (rbnDSXML.Checked)
                 {
-                    DSAParameters dsaparam = ((DSACryptoServiceProvider)dsXML.AsymmetricAlgorithm).ExportParameters(false);
-                    dsParam = new DigitalSignParam(dsaparam, dsXML.HashAlgorithm);
+                    // XMLKey
+                    dsXML = new DigitalSignXML(
+                        (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue, this.txtDSPublicKey.Text);
+                    ret = dsXML.Verify(data, sign);
+                }
+                else if (rbnDSParam.Checked)
+                {
+                    // XMLKey
+                    dsXML = new DigitalSignXML(
+                        (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue, this.txtDSPublicKey.Text);
+
+                    if (((EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue) ==
+                            EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
+                    {
+                        DSAParameters dsaparam = ((DSACryptoServiceProvider)dsXML.AsymmetricAlgorithm).ExportParameters(false);
+                        dsParam = new DigitalSignParam(dsaparam, dsXML.HashAlgorithm);
+                    }
+                    else
+                    {
+                        RSAParameters rsaparam = ((RSACryptoServiceProvider)dsXML.AsymmetricAlgorithm).ExportParameters(false);
+                        dsParam = new DigitalSignParam(rsaparam, dsXML.HashAlgorithm);
+                    }
+
+                    ret = dsXML.Verify(data, sign);
                 }
                 else
                 {
-                    RSAParameters rsaparam = ((RSACryptoServiceProvider)dsXML.AsymmetricAlgorithm).ExportParameters(false);
-                    dsParam = new DigitalSignParam(rsaparam, dsXML.HashAlgorithm);
-                }
+                    // X509
+                    //// *.pfxを使用して、検証することもできるが、
+                    //dsX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text,
+                    //    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+                    // 通常は、*.cerを使用して検証する。
+                    dsX509 = new DigitalSignX509(CertificateFilePath_cer, "", this.txtDSHash.Text);
 
-                ret = dsXML.Verify(data, sign);
+                    ret = dsX509.Verify(data, sign);
+                }
             }
             else
             {
-                // X509
-                //// *.pfxを使用して、検証することもできるが、
-                //dsX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text,
-                //    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
-                // 通常は、*.cerを使用して検証する。
-                dsX509 = new DigitalSignX509(CertificateFilePath_cer, "", this.txtDSHash.Text);
+                DigitalSignECDsa dsECDsa = new DigitalSignECDsa(
+                    CustomEncode.FromBase64String(this.txtDSPublicKey.Text));
 
-                ret = dsX509.Verify(data, sign);
+                ret = dsECDsa.Verify(data, sign);
             }
 
             if (ret)
@@ -627,6 +611,38 @@ namespace EncAndDecUtil
 
         }
 
+        #endregion
+
+        #region MAC
+
+        /// <summary>btnGetMAC_Click</summary>
+        private void btnGetMAC_Click(object sender, EventArgs e)
+        {
+            this.txtMACValue.Text = MsgAuthCode.GetMAC(
+                (EnumKeyedHashAlgorithm)this.cbxMACPV.SelectedValue,
+                this.txtMACString.Text, this.txtMACPassword.Text);
+        }
+
+        /// <summary>btnVerifyMAC_Click</summary>
+        private void btnVerifyMAC_Click(object sender, EventArgs e)
+        {
+            bool ret = MsgAuthCode.VerifyMAC(
+                (EnumKeyedHashAlgorithm)this.cbxMACPV.SelectedValue,
+                this.txtMACString.Text, this.txtMACPassword.Text, this.txtMACValue.Text);
+
+            if (ret)
+            {
+                MessageBox.Show("検証成功");
+            }
+            else
+            {
+                MessageBox.Show("検証失敗");
+            }
+        }
+
+        #endregion
+
+        #region AEAD 
         #endregion
 
         #region JWS
@@ -816,6 +832,10 @@ namespace EncAndDecUtil
             }
         }
 
+        #endregion        
+
+        #region JWE
         #endregion
+
     }
 }

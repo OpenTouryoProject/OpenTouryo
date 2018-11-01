@@ -30,8 +30,6 @@
 //*  2017/01/10  西野 大介         新規作成
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
-//*  2018/10/31  西野 大介         アルゴリズム判定コードの見直し。
-//*  2018/10/31  西野 大介         AsymmetricSignatureFormatter, Deformatterに揃えた。
 //**********************************************************************************
 
 using System;
@@ -79,7 +77,7 @@ namespace Touryo.Infrastructure.Public.Security
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
 
-            RsaAndDsaCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+            AsymmetricAlgorithmCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
 
             this.AsymmetricAlgorithm = aa;
             this.HashAlgorithm = ha;
@@ -97,7 +95,11 @@ namespace Touryo.Infrastructure.Public.Security
         {
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
-            RsaAndDsaCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+
+            AsymmetricAlgorithmCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+
+            this.AsymmetricAlgorithm = aa;
+            this.HashAlgorithm = ha;
 
             if (aa is RSACryptoServiceProvider)
             {
@@ -105,14 +107,16 @@ namespace Touryo.Infrastructure.Public.Security
                 rsaCryptoServiceProvider.FromXmlString(xmlKey);
                 this.AsymmetricAlgorithm = rsaCryptoServiceProvider;
             }
-            else if(aa is DSACryptoServiceProvider)
+            else if (aa is DSACryptoServiceProvider)
             {
                 DSACryptoServiceProvider dsaCryptoServiceProvider = (DSACryptoServiceProvider)aa;
                 dsaCryptoServiceProvider.FromXmlString(xmlKey);
                 this.AsymmetricAlgorithm = dsaCryptoServiceProvider;
             }
-
-            this.HashAlgorithm = ha;
+            else
+            {
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+            }
 
             // 秘密鍵をXML形式で取得
             try
@@ -146,16 +150,16 @@ namespace Touryo.Infrastructure.Public.Security
             if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
             {
                 // RSAPKCS1SignatureFormatterオブジェクトを作成
-                RSAPKCS1SignatureFormatter rsaSignatureFormatter = new RSAPKCS1SignatureFormatter(this.AsymmetricAlgorithm);
-                rsaSignatureFormatter.SetHashAlgorithm(RsaAndDsaCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
-                signedByte = rsaSignatureFormatter.CreateSignature(hashedByte);
+                RSAPKCS1SignatureFormatter rsaFormatter = new RSAPKCS1SignatureFormatter(this.AsymmetricAlgorithm);
+                rsaFormatter.SetHashAlgorithm(HashCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
+                signedByte = rsaFormatter.CreateSignature(hashedByte);
             }
             else if (this.AsymmetricAlgorithm is DSACryptoServiceProvider)
             {
                 // DSASignatureFormatterオブジェクトを作成
-                DSASignatureFormatter dsaSignatureFormatter = new DSASignatureFormatter(this.AsymmetricAlgorithm);
-                dsaSignatureFormatter.SetHashAlgorithm(CryptoConst.SHA1); // DSAはSHA1固定
-                signedByte = dsaSignatureFormatter.CreateSignature(hashedByte);
+                DSASignatureFormatter dsaFormatter = new DSASignatureFormatter(this.AsymmetricAlgorithm);
+                dsaFormatter.SetHashAlgorithm(CryptoConst.SHA1);
+                signedByte = dsaFormatter.CreateSignature(hashedByte);
             }
             else
             {
@@ -173,23 +177,12 @@ namespace Touryo.Infrastructure.Public.Security
         {
             if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
             {
-                //return ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).
-                //    VerifyData(data, RsaAndDsaCmnFunc.GetHashAlgorithmName(this.HashAlgorithm), sign);
-
-                // RSAPKCS1SignatureDeformatterオブジェクトを作成
-                RSAPKCS1SignatureDeformatter rsaSignatureDeformatter = new RSAPKCS1SignatureDeformatter(this.AsymmetricAlgorithm);
-                rsaSignatureDeformatter.SetHashAlgorithm(RsaAndDsaCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
-                return rsaSignatureDeformatter.VerifySignature(data, sign);
+                return ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).VerifyData(
+                    data, HashCmnFunc.GetHashAlgorithmName(this.HashAlgorithm), sign);
             }
             else if (this.AsymmetricAlgorithm is DSACryptoServiceProvider)
             {
-                //return ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).
-                //    VerifyData(data, sign);
-
-                // DSASignatureDeformatterオブジェクトを作成
-                DSASignatureDeformatter dsaSignatureDeformatter = new DSASignatureDeformatter(this.AsymmetricAlgorithm);
-                dsaSignatureDeformatter.SetHashAlgorithm(CryptoConst.SHA1);
-                return dsaSignatureDeformatter.VerifySignature(data, sign);
+                return ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).VerifyData(data, sign);
             }
             else
             {

@@ -1595,11 +1595,8 @@ namespace TestEncAndDecProvider
                 }
                 else if (asymmetricAlgorithm is ECDsaCng)
                 {
-                    // キャスト
-                    ECDsaCng ecdsa = (ECDsaCng)asymmetricAlgorithm;
-                    
                     // 公開鍵
-                    using (ecdsa = new ECDsaCng(CngKey.Import(
+                    using (ECDsaCng ecdsa = new ECDsaCng(CngKey.Import(
                         CustomEncode.FromBase64String(this.textBox51b.Text),
                         CngKeyBlobFormat.GenericPublicBlob)))
                     {

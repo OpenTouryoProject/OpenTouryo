@@ -44,14 +44,35 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region mem & prop & constructor
 
-        /// <summary>AsymmetricAlgorithm</summary>
-        public AsymmetricAlgorithm AsymmetricAlgorithm { get; protected set; }
-        
+        /// <summary>_privateKey</summary>
+        private CngKey _privateKey = null;
         /// <summary>PrivateKey</summary>
-        public CngKey PrivateKey { get; protected set; }
+        public CngKey PrivateKey
+        {
+            get
+            {
+                return this._privateKey;
+            }
+            protected set
+            {
+                this._privateKey = value;
+            }
+        }
 
+        /// <summary>_publicKey</summary>
+        private byte[] _publicKey = null;
         /// <summary>PublicKey</summary>
-        public byte[] PublicKey { get; protected set; }
+        public byte[] PublicKey
+        {
+            get
+            {
+                return this._publicKey;
+            }
+            protected set
+            {
+                this._publicKey = value;
+            }
+        }
 
         /// <summary>Constructor</summary>
         /// <param name="eaa">EnumDigitalSignAlgorithm</param>
@@ -60,50 +81,25 @@ namespace Touryo.Infrastructure.Public.Security
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
 
-            RsaAndDsaCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
-
-            this.AsymmetricAlgorithm = aa;
-
-            if (eaa == EnumDigitalSignAlgorithm.ECDsaCng_P256)
-            {
-                this.CreateCngKey(CngAlgorithm.ECDsaP256);
-            }
-            else if (eaa == EnumDigitalSignAlgorithm.ECDsaCng_P384)
-            {
-                this.CreateCngKey(CngAlgorithm.ECDsaP384);
-            }
-            else if (eaa == EnumDigitalSignAlgorithm.ECDsaCng_P521)
-            {
-                this.CreateCngKey(CngAlgorithm.ECDsaP521);
-            }
-            else
-            {
-                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
-            }
-        }
-
-        /// <summary>Constructor</summary>
-        /// <param name="privateKey">秘密鍵</param>
-        public DigitalSignECDsa(CngKey privateKey)
-        {
-            this.AsymmetricAlgorithm = new ECDsaCng(privateKey);
+            AsymmetricAlgorithmCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+            this._privateKey = ((ECDsaCng)aa).Key;
+            this._publicKey = this._privateKey.Export(CngKeyBlobFormat.GenericPublicBlob);
         }
 
         /// <summary>Constructor</summary>
         /// <param name="publicKey">公開鍵</param>
         public DigitalSignECDsa(byte[] publicKey)
         {
-            this.AsymmetricAlgorithm = new ECDsaCng(CngKey.Import(publicKey, CngKeyBlobFormat.GenericPublicBlob));
+            this._privateKey = null;
+            this._publicKey = publicKey;
         }
 
-        /// <summary>CreateCngKey</summary>
-        /// <param name="cngAlgorithm">CngAlgorithm</param>
-        private void CreateCngKey(CngAlgorithm cngAlgorithm)
+        /// <summary>Constructor</summary>
+        /// <param name="privateKey">秘密鍵</param>
+        public DigitalSignECDsa(CngKey privateKey)
         {
-            this.PrivateKey = CngKey.Create(cngAlgorithm);
-            this.PublicKey = this.PrivateKey.Export(CngKeyBlobFormat.GenericPublicBlob);
-            // ↓サポートされない操作であるらしい。
-            //privateKey = cngKey.Export(CngKeyBlobFormat.GenericPrivateBlob);
+            this._privateKey = privateKey;
+            this._publicKey = this._privateKey.Export(CngKeyBlobFormat.GenericPublicBlob);
         }
 
         #endregion
@@ -115,7 +111,8 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>対象データに対してデジタル署名したデジタル署名部分のデータ</returns>
         public override byte[] Sign(byte[] data)
         {
-            return ((ECDsaCng)this.AsymmetricAlgorithm).SignData(data);
+            ECDsaCng aa = new ECDsaCng(this._privateKey);
+            return aa.SignData(data);
         }
 
         /// <summary>デジタル署名を検証する</summary>
@@ -124,51 +121,13 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
         public override bool Verify(byte[] data, byte[] sign)
         {
-            return ((ECDsaCng)this.AsymmetricAlgorithm).VerifyData(data, sign);
+            ECDsaCng aa = new ECDsaCng(CngKey.Import(
+                this._publicKey, CngKeyBlobFormat.GenericPublicBlob));
+            return aa.VerifyData(data, sign);
         }
 
         #endregion
-                
-        #region MyDispose (派生の末端を呼ぶ)
 
-        /// <summary>MyDispose (派生の末端を呼ぶ)</summary>
-        /// <param name="isDisposing">isDisposing</param>
-        protected override void MyDispose(bool isDisposing)
-        {
-            if (this.IsDisposed)
-            {
-                // 後処理済み。
-                // 何もしない。
-            }
-            else
-            {
-                // 後処理。
-                if (isDisposing)
-                {
-                    // Dispose all owned managed objects
-                    if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
-                    {
-                        // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
-                        // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
-                        ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).PersistKeyInCsp = false;
-                        this.AsymmetricAlgorithm.Clear();
-                    }
-                    else
-                    {
-                        // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
-                        // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
-                        ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).PersistKeyInCsp = false;
-                        this.AsymmetricAlgorithm.Clear();
-                    }
-                }
-
-                // Release unmanaged resources
-                // 無し
-
-                this.IsDisposed = true;
-            }
-        }
-
-        #endregion
+        // こちらは、MyDispose (派生の末端を呼ぶ) の実装は不要。
     }
 }

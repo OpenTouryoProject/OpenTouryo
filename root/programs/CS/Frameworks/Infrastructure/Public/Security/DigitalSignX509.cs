@@ -29,8 +29,6 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/01/10  西野 大介         新規作成
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
-//*  2018/10/31  西野 大介         アルゴリズム判定コードの見直し。
-//*  2018/10/31  西野 大介         AsymmetricSignatureFormatter, Deformatterに揃えた。
 //**********************************************************************************
 
 using System;
@@ -129,36 +127,27 @@ namespace Touryo.Infrastructure.Public.Security
             // アルゴリズム（RSA or DSA）は、ココで決まるもよう。
             AsymmetricAlgorithm aa = this.X509Certificate.PrivateKey;
 
-            // ハッシュ
-            byte[] hashedByte = RsaAndDsaCmnFunc.GetHashAlgorithmFromName(this._hashAlgorithmName).ComputeHash(data);
             // デジタル署名
             byte[] signedByte = null;
 
             if (aa is RSACryptoServiceProvider)
             {
-                /*// RSACryptoServiceProvider : ExportParametersして生成し直している。
-                RSAParameters rsaParam = ((RSACryptoServiceProvider)(aa)).ExportParameters(true);
+                // RSACryptoServiceProvider
+                // *.pfxの場合、ExportParameters(true)して生成し直している。
                 RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(this.X509Certificate.PrivateKey.KeySize);
-                rsa.ImportParameters(rsaParam);*/
-                //signedByte = ((RSACryptoServiceProvider)aa).SignData(data, this._hashAlgorithmName);
+                rsa.ImportParameters(((RSACryptoServiceProvider)(aa)).ExportParameters(true));
+                
+                signedByte = rsa.SignData(data, this._hashAlgorithmName);
 
-                // RSAPKCS1SignatureFormatterオブジェクトを作成
-                RSAPKCS1SignatureFormatter rsaSignatureFormatter = new RSAPKCS1SignatureFormatter(aa);
-                rsaSignatureFormatter.SetHashAlgorithm(this._hashAlgorithmName);
-                signedByte = rsaSignatureFormatter.CreateSignature(hashedByte);
             }
             else if (aa is DSACryptoServiceProvider)
             {
-                /*// DSACryptoServiceProvider : ExportParametersして生成し直している。
-                DSAParameters dsaParam = ((DSACryptoServiceProvider)(aa)).ExportParameters(true);
+                // DSACryptoServiceProvider
+                // *.pfxの場合、ExportParameters(true)して生成し直している。
                 DSACryptoServiceProvider dsa = new DSACryptoServiceProvider(this.X509Certificate.PrivateKey.KeySize);
-                dsa.ImportParameters(dsaParam);*/
-                //signedByte = ((DSACryptoServiceProvider)aa).SignData(data); // SHA-1 固定のため？
+                dsa.ImportParameters(((DSACryptoServiceProvider)(aa)).ExportParameters(true));
 
-                // DSASignatureFormatterオブジェクトを作成
-                DSASignatureFormatter dsaSignatureFormatter = new DSASignatureFormatter(aa);
-                dsaSignatureFormatter.SetHashAlgorithm(CryptoConst.SHA1); // DSAはSHA1固定
-                signedByte = dsaSignatureFormatter.CreateSignature(hashedByte);
+                signedByte = dsa.SignData(data);
             }
             else
             {
@@ -184,78 +173,44 @@ namespace Touryo.Infrastructure.Public.Security
                 // *.cer
                 // アルゴリズム（RSA or DSA）は、ココで決まるもよう。
                 aa = this.X509Certificate.PublicKey.Key;
+                if (aa is RSACryptoServiceProvider)
+                {
+                    return ((RSACryptoServiceProvider)aa).VerifyData(data, this._hashAlgorithmName, sign);
+                }
+                else if (aa is DSACryptoServiceProvider)
+                {
+                    return ((DSACryptoServiceProvider)aa).VerifyData(data, sign);
+                }
+                else
+                {
+                    throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+                }
             }
             else
             {
                 // *.pfx
                 // アルゴリズム（RSA or DSA）は、ココで決まるもよう。
                 aa = this.X509Certificate.PrivateKey;
-            }
-
-            if (aa is RSACryptoServiceProvider)
-            {
-                /*// RSACryptoServiceProvider : ExportParametersして生成し直している。
-                RSAParameters rsaParam = ((RSACryptoServiceProvider)(aa)).ExportParameters(true); // 検証ならfalseでイイ
-                RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(this.X509Certificate.PrivateKey.KeySize);
-                rsa.ImportParameters(rsaParam);*/
-                //flg = ((RSACryptoServiceProvider)aa).VerifyData(data, this._hashAlgorithmName, sign);
-
-                // RSAPKCS1SignatureDeformatterオブジェクトを作成
-                RSAPKCS1SignatureDeformatter rsaSignatureDeformatter = new RSAPKCS1SignatureDeformatter(aa);
-                rsaSignatureDeformatter.SetHashAlgorithm(this._hashAlgorithmName);
-                flg = rsaSignatureDeformatter.VerifySignature(data, sign);
-            }
-            else if (aa is DSACryptoServiceProvider)
-            {
-                /*// DSACryptoServiceProvider : ExportParametersして生成し直している。
-                DSAParameters dsaParam = ((DSACryptoServiceProvider)(aa)).ExportParameters(true); // 検証ならfalseでイイ
-                DSACryptoServiceProvider dsa = new DSACryptoServiceProvider(this.X509Certificate.PrivateKey.KeySize);
-                dsa.ImportParameters(dsaParam);*/
-                //flg = ((DSACryptoServiceProvider)aa).VerifyData(data, sign); // SHA-1 固定のため？
-
-                // DSASignatureDeformatterオブジェクトを作成
-                DSASignatureDeformatter dsaSignatureDeformatter = new DSASignatureDeformatter(aa);
-                dsaSignatureDeformatter.SetHashAlgorithm(CryptoConst.SHA1);
-                flg = dsaSignatureDeformatter.VerifySignature(data, sign);
-            }
-            else
-            {
-                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
-
-                // Signで使ってないRSACngをVerifyで実装する意味がない。
-                // こちらは、HashAlgorithmName, RSASignaturePadding が指定できるが、
-                // 今のところ、AsymmetricSignatureFormatter, Deformatterで問題ない。
-                /*
-#if !NET45
-                else if (aa is RSACng)
+                if (aa is RSACryptoServiceProvider)
                 {
-                    HashAlgorithmName hashAlgorithmName = HashAlgorithmName.MD5;
-                    if (this._hashAlgorithmName == CryptoConst.MD5)
-                    {
-                        hashAlgorithmName = HashAlgorithmName.MD5;
-                    }
-                    else if (this._hashAlgorithmName == CryptoConst.SHA1)
-                    {
-                        hashAlgorithmName = HashAlgorithmName.SHA1;
-                    }
-                    else if (this._hashAlgorithmName == CryptoConst.SHA256)
-                    {
-                        hashAlgorithmName = HashAlgorithmName.SHA256;
-                    }
-                    else if (this._hashAlgorithmName == CryptoConst.SHA384)
-                    {
-                        hashAlgorithmName = HashAlgorithmName.SHA384;
-                    }
-                    else if (this._hashAlgorithmName == CryptoConst.SHA512)
-                    {
-                        hashAlgorithmName = HashAlgorithmName.SHA512;
-                    }
-
-                    // 
-                    return ((RSACng)aa).VerifyData(data, sign, hashAlgorithmName, RSASignaturePadding.Pkcs1);
+                    // RSACryptoServiceProvider
+                    // *.pfxの場合、ExportParameters(true)して生成し直している。
+                    RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(this.X509Certificate.PrivateKey.KeySize);
+                    rsa.ImportParameters(((RSACryptoServiceProvider)(aa)).ExportParameters(true));
+                    flg = rsa.VerifyData(data, this._hashAlgorithmName, sign);
                 }
-#endif
-                 */
+                else if(aa is DSACryptoServiceProvider)
+                {
+                    // DSACryptoServiceProvider
+                    // *.pfxの場合、ExportParameters(true)して生成し直している。
+                    DSACryptoServiceProvider dsa = new DSACryptoServiceProvider(this.X509Certificate.PrivateKey.KeySize);
+                    dsa.ImportParameters(((DSACryptoServiceProvider)(aa)).ExportParameters(true));
+                    flg = dsa.VerifyData(data, sign);
+                }
+                else
+                {
+                    throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+                }
             }
 
             return flg;
