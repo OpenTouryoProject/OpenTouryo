@@ -19,7 +19,7 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：HashCmnFunc
+//* クラス名        ：HashAlgorithmCmnFunc
 //* クラス日本語名  ：HashCmnFuncクラス
 //*
 //* 作成者          ：生技 西野
@@ -37,8 +37,8 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>HashCmnFuncクラス</summary>
-    public class HashCmnFunc
+    /// <summary>HashAlgorithmCmnFuncクラス</summary>
+    public class HashAlgorithmCmnFunc
     {
         #region Algorithm <---> AlgorithmName
 

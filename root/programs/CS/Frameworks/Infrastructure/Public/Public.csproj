@@ -108,7 +108,7 @@
     <Compile Include="Security\EnumDigitalSignAlgorithm.cs" />
     <Compile Include="Security\GetPasswordHashV2.cs" />
     <Compile Include="Security\GetPasswordHashV1.cs" />
-    <Compile Include="Security\HashCmnFunc.cs" />
+    <Compile Include="Security\HashAlgorithmCmnFunc.cs" />
     <Compile Include="Security\MsgAuthCode.cs" />
     <Compile Include="Security\RsaAlice.cs" />
     <Compile Include="Security\RsaOaepAlice.cs" />

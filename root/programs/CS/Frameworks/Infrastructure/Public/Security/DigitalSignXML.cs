@@ -151,7 +151,7 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 // RSAPKCS1SignatureFormatterオブジェクトを作成
                 RSAPKCS1SignatureFormatter rsaFormatter = new RSAPKCS1SignatureFormatter(this.AsymmetricAlgorithm);
-                rsaFormatter.SetHashAlgorithm(HashCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
+                rsaFormatter.SetHashAlgorithm(HashAlgorithmCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
                 signedByte = rsaFormatter.CreateSignature(hashedByte);
             }
             else if (this.AsymmetricAlgorithm is DSACryptoServiceProvider)
@@ -178,7 +178,7 @@ namespace Touryo.Infrastructure.Public.Security
             if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
             {
                 return ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).VerifyData(
-                    data, HashCmnFunc.GetHashAlgorithmName(this.HashAlgorithm), sign);
+                    data, HashAlgorithmCmnFunc.GetHashAlgorithmName(this.HashAlgorithm), sign);
             }
             else if (this.AsymmetricAlgorithm is DSACryptoServiceProvider)
             {

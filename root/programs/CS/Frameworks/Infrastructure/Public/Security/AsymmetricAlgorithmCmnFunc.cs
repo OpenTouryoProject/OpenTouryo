@@ -66,7 +66,7 @@ namespace Touryo.Infrastructure.Public.Security
                 rsaCryptoServiceProvider.ImportParameters((RSAParameters)param);
                 
                 // HashAlgorithm
-                string temp = HashCmnFunc.GetHashAlgorithmName(ha);
+                string temp = HashAlgorithmCmnFunc.GetHashAlgorithmName(ha);
                 if ("MD5, SHA1, SHA256, SHA384, SHA512".IndexOf(temp) != -1)
                 {
                     return rsaCryptoServiceProvider;
@@ -85,7 +85,7 @@ namespace Touryo.Infrastructure.Public.Security
                 dsaCryptoServiceProvider.ImportParameters((DSAParameters)param);
                 
                 // HashAlgorithm
-                string temp = HashCmnFunc.GetHashAlgorithmName(ha);
+                string temp = HashAlgorithmCmnFunc.GetHashAlgorithmName(ha);
                 if (temp == CryptoConst.SHA1)
                 {
                     return dsaCryptoServiceProvider;

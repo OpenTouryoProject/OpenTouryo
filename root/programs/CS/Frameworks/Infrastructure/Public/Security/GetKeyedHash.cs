@@ -85,7 +85,7 @@ namespace Touryo.Infrastructure.Public.Security
             }
 
             // ハッシュ（キー付き）サービスプロバイダを生成
-            KeyedHashAlgorithm kha = HashCmnFunc.
+            KeyedHashAlgorithm kha = HashAlgorithmCmnFunc.
                 CreateKeyedHashAlgorithmServiceProvider(ekha, key);
 
             // ハッシュ（キー付き）を生成して返す。
