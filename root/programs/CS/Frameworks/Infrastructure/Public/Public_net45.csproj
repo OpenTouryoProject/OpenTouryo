@@ -63,6 +63,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.NetCore.1.8.3\lib\net20\BouncyCastle.Crypto.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="DotNetZip, Version=1.10.1.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetZip.1.10.1\lib\net20\DotNetZip.dll</HintPath>
       <Private>True</Private>
@@ -80,6 +84,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Db\DamODBC.cs" />
@@ -100,9 +105,12 @@
     <Compile Include="FastReflection\AccessorCacher.cs" />
     <Compile Include="FastReflection\AccessorInfo.cs" />
     <Compile Include="FastReflection\InstanceCreator.cs" />
+    <Compile Include="Security\AeadA128CbcHs256.cs" />
+    <Compile Include="Security\AeadA256Gcm.cs" />
     <Compile Include="Security\AsymmetricAlgorithmCmnFunc.cs" />
     <Compile Include="Security\BaseKeyExchange.cs" />
     <Compile Include="Security\CryptoConst.cs" />
+    <Compile Include="Security\AuthEncrypt.cs" />
     <Compile Include="Security\DigitalSignECDsa.cs" />
     <Compile Include="Security\EcdhKeyExchange.cs" />
     <Compile Include="Security\EnumDigitalSignAlgorithm.cs" />
@@ -215,6 +223,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

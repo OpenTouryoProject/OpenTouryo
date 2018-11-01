@@ -41,6 +41,7 @@
 //*  2017/11/29  西野 大介         DateTimeOffset.ToUnixTimeSecondsの前方互換メソッドを追加
 //*  2018/08/01  西野 大介         Nullable対応の型変換メソッドを追加
 //*  2018/10/03  西野 大介         GetDataReaderColumnInfoメソッドを追加。
+//*  2018/10/03  西野 大介         CombineByteArrayメソッドを追加。
 //**********************************************************************************
 
 using System;
@@ -48,6 +49,7 @@ using System.Text;
 using System.Data;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Touryo.Infrastructure.Public.Util
 {
@@ -777,55 +779,25 @@ namespace Touryo.Infrastructure.Public.Util
 
         #endregion
 
-        #region 互換性
+        #region バッファ操作
 
-        /// <summary>UNIXエポック</summary>
-        private static DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-
-        /// <summary>DateTimeOffset.ToUnixTimeSeconds代替(net46未満で使用)</summary>
-        /// <param name="targetTime">DateTimeOffset</param>
-        /// <returns>UnixTimeSeconds</returns>
-        public static long ToUnixTime(DateTimeOffset targetTime)
+        /// <summary>バイト配列の結合</summary>
+        /// <param name="buffer1">バイト配列１</param>
+        /// <param name="buffer2">バイト配列２</param>
+        /// <returns>結合されたバイト配列</returns>
+        public static byte[] CombineByteArray(byte[] buffer1, byte[] buffer2)
         {
-            // UTC時間に変換
-            targetTime = targetTime.ToUniversalTime();
-            // UNIXエポックからの経過時間を取得
-            TimeSpan elapsedTime = targetTime - UNIX_EPOCH;
-            // 経過秒数に変換して返す（UnixTime）
-            return (long)elapsedTime.TotalSeconds;
-        }
+            // 入れ物の生成
+            byte[] mergedBuffer = new byte[buffer1.Length + buffer2.Length];
 
-        #endregion
+            // 型のサイズを取得する
+            int typeSize = Marshal.SizeOf(buffer1.GetType().GetElementType());
 
-        #region その他
+            // Buffer.BlockCopyでコピーする
+            Buffer.BlockCopy(buffer1, 0, mergedBuffer, 0, buffer1.Length * typeSize);
+            Buffer.BlockCopy(buffer2, 0, mergedBuffer, buffer1.Length * typeSize, buffer2.Length * typeSize);
 
-        /// <summary>拡張子無しのファイル名を取得する</summary>
-        /// <param name="str">ファイル名を含むパス</param>
-        /// <param name="divChar">パスの分割文字</param>
-        /// <returns>拡張子無しのファイル名</returns>
-        public static string GetFileNameNoEx(string str, char divChar)
-        {
-            // ワーク変数
-            string ret = "";
-            string[] aryTemp;
-
-            // 分解して組み立て
-            aryTemp = str.Split(divChar);
-            aryTemp = aryTemp[aryTemp.Length - 1].Split('.');
-
-            for (int i = 0; i < aryTemp.Length - 1; i++)
-            {
-                if (ret == "")
-                {
-                    ret = aryTemp[i];
-                }
-                else
-                {
-                    ret += '.' + aryTemp[i];
-                }
-            }
-
-            return ret;
+            return mergedBuffer;
         }
 
         /// <summary>バイト配列の切り詰め</summary>
@@ -891,6 +863,59 @@ namespace Touryo.Infrastructure.Public.Util
 
             // 戻す
             return rtnCode;
+        }
+
+        #endregion
+
+        #region 互換性
+
+        /// <summary>UNIXエポック</summary>
+        private static DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+        /// <summary>DateTimeOffset.ToUnixTimeSeconds代替(net46未満で使用)</summary>
+        /// <param name="targetTime">DateTimeOffset</param>
+        /// <returns>UnixTimeSeconds</returns>
+        public static long ToUnixTime(DateTimeOffset targetTime)
+        {
+            // UTC時間に変換
+            targetTime = targetTime.ToUniversalTime();
+            // UNIXエポックからの経過時間を取得
+            TimeSpan elapsedTime = targetTime - UNIX_EPOCH;
+            // 経過秒数に変換して返す（UnixTime）
+            return (long)elapsedTime.TotalSeconds;
+        }
+
+        #endregion
+
+        #region その他
+
+        /// <summary>拡張子無しのファイル名を取得する</summary>
+        /// <param name="str">ファイル名を含むパス</param>
+        /// <param name="divChar">パスの分割文字</param>
+        /// <returns>拡張子無しのファイル名</returns>
+        public static string GetFileNameNoEx(string str, char divChar)
+        {
+            // ワーク変数
+            string ret = "";
+            string[] aryTemp;
+
+            // 分解して組み立て
+            aryTemp = str.Split(divChar);
+            aryTemp = aryTemp[aryTemp.Length - 1].Split('.');
+
+            for (int i = 0; i < aryTemp.Length - 1; i++)
+            {
+                if (ret == "")
+                {
+                    ret = aryTemp[i];
+                }
+                else
+                {
+                    ret += '.' + aryTemp[i];
+                }
+            }
+
+            return ret;
         }
 
         /// <summary>IDataReaderの列情報を格納したHashSet(string)を返す。</summary>
