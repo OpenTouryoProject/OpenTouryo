@@ -30,7 +30,10 @@
 //*  2018/10/31  西野 大介         新規作成
 //**********************************************************************************
 
+using System.IO;
 using System.Security.Cryptography;
+
+using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security
 {
@@ -48,6 +51,68 @@ namespace Touryo.Infrastructure.Public.Security
             get
             {
                 return this._exchangeKey;
+            }
+        }
+
+        /// <summary>暗号化・復号化に使用する秘密鍵</summary>
+        protected Aes _aes = null;
+
+        /// <summary>初期化ベクター</summary>
+        public byte[] IV
+        {
+            get
+            {
+                return this._aes.IV;
+            }
+        }
+
+        /// <summary>復号化</summary>
+        /// <param name="msg">復号化するメッセージ</param>
+        /// <returns>復号化したメッセージ</returns>
+        public string Decrypt(string msg)
+        {
+            return CustomEncode.ByteToString(
+                this.Decrypt(CustomEncode.StringToByte(msg, CustomEncode.UTF_8)),
+                CustomEncode.UTF_8);
+        }
+
+        /// <summary>暗号化</summary>
+        /// <param name="msg">暗号化するメッセージ</param>
+        /// <returns>暗号化したメッセージ</returns>
+        public byte[] Decrypt(byte[] msg)
+        {
+            using (MemoryStream plaintext = new MemoryStream())
+            using (CryptoStream cs = new CryptoStream(plaintext, this._aes.CreateDecryptor(), CryptoStreamMode.Write))
+            {
+                cs.Write(msg, 0, msg.Length);
+
+                cs.Close(); // これが無いとエラーになる（「パディングは無効なので、削除できません。」）。
+
+                return plaintext.ToArray();
+            }
+        }
+
+        /// <summary>暗号化</summary>
+        /// <param name="msg">暗号化するメッセージ</param>
+        /// <returns>暗号化したメッセージ</returns>
+        public string Encrypt(string msg)
+        {
+            return CustomEncode.ByteToString(
+                this.Encrypt(CustomEncode.StringToByte(msg, CustomEncode.UTF_8)),
+                CustomEncode.UTF_8);
+        }
+
+        /// <summary>暗号化</summary>
+        /// <param name="msg">暗号化するメッセージ</param>
+        /// <returns>暗号化したメッセージ</returns>
+        public byte[] Encrypt(byte[] msg)
+        {
+            using (MemoryStream ciphertext = new MemoryStream())
+            using (CryptoStream cs = new CryptoStream(ciphertext, this._aes.CreateEncryptor(), CryptoStreamMode.Write))
+            {
+                cs.Write(msg, 0, msg.Length);
+                cs.Close();
+                return ciphertext.ToArray();
             }
         }
     }

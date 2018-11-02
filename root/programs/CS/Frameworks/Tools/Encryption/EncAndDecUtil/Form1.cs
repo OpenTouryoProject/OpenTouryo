@@ -33,7 +33,7 @@
 //*  2017/01/13  西野 大介         上記修正への対応と、GetSaltedPasswordのI/F変更に対する修正対応
 //*  2017/01/13  西野 大介         追加のGetSaltedPasswordメソッド、CodeSigning、JWSクラスの検証画面
 //*  2017/12/**  西野 大介         メンテナンス、暗号化ライブラリ追加に伴うテストコード追加
-//*  2018/10/30  西野 大介         EnumASymmetricAlgorithmのプロバイダ追加に対応
+//*  2018/10/30  西野 大介         メンテナンス、テスト・コードの追加（MAC, AEAD, KeyExchange, etc.
 //**********************************************************************************
 
 using System;
@@ -86,6 +86,7 @@ namespace EncAndDecUtil
             // AEAD  : AuthenticatedEncryptionWithAssociatedData
             // DS    : DigitalSign
             // RKEX  : RsaKeyExchange
+            // EKEX  : EcdhKeyExchange
         }
 
         #endregion
@@ -622,6 +623,143 @@ namespace EncAndDecUtil
 
         #endregion
 
+        #region 鍵交換
+
+        #region RSA鍵交換
+
+        /// <summary>RSAのアリス</summary>
+        RsaAlice _rsaAlice = null;
+
+        /// <summary>RSAのボブ</summary>
+        RsaBob _rsaBob = null;
+
+        /// <summary>鍵交換</summary>
+        private void btnRKEXEC_Click(object sender, EventArgs e)
+        {
+            EnumKeyExchange ekex = (EnumKeyExchange)this.cbxRKEXPV.SelectedValue;
+
+            // キー交換、秘密鍵生成 & 暗号化プロバイダ生成
+            if (ekex == EnumKeyExchange.RSAPKCS1KeyExchange)
+            {
+                this._rsaBob = new RsaPkcs1Bob();
+                this._rsaAlice = new RsaPkcs1Alice(this._rsaBob.ExchangeKey);
+                ((RsaPkcs1Bob)this._rsaBob).GeneratePrivateKey(this._rsaAlice.ExchangeKey, this._rsaAlice.IV);
+            }
+            else if (ekex == EnumKeyExchange.RSAOAEPKeyExchange)
+            {
+                this._rsaBob = new RsaOaepBob();
+                this._rsaAlice = new RsaOaepAlice(this._rsaBob.ExchangeKey);
+                ((RsaOaepBob)this._rsaBob).GeneratePrivateKey(this._rsaAlice.ExchangeKey, this._rsaAlice.IV);
+            }
+            else
+            {
+                this.TabControl1.SelectedIndex = 8;
+                return;
+            }
+
+            this.txtRKEXKeyInfo.Text = "";
+            this.txtRKEXKeyInfo.Text += "bob.ExchangeKey:\n";
+            this.txtRKEXKeyInfo.Text += CustomEncode.ToBase64String(this._rsaBob.ExchangeKey);
+            this.txtRKEXKeyInfo.Text += "\n";
+            this.txtRKEXKeyInfo.Text += "alice.ExchangeKey:\n";
+            this.txtRKEXKeyInfo.Text += CustomEncode.ToBase64String(this._rsaAlice.ExchangeKey);
+            this.txtRKEXKeyInfo.Text += "\n";
+            this.txtRKEXKeyInfo.Text += "IV of alice and bob:\n";
+            this.txtRKEXKeyInfo.Text += CustomEncode.ToBase64String(this._rsaAlice.IV);
+        }
+
+        /// <summary>送受信</summary>
+        private void btnRKEXSR_Click(object sender, EventArgs e)
+        {
+            EnumKeyExchange ekex = (EnumKeyExchange)this.cbxRKEXPV.SelectedValue;
+
+            if (ekex == EnumKeyExchange.RSAPKCS1KeyExchange
+                || ekex == EnumKeyExchange.RSAOAEPKeyExchange)
+            {
+                this.txtRKEXBobString.Text =
+                    CustomEncode.ByteToString(
+                        this._rsaBob.Decrypt(
+                            this._rsaAlice.Encrypt(
+                                CustomEncode.StringToByte(
+                                    this.txtRKEXAliceString.Text, CustomEncode.UTF_8))), CustomEncode.UTF_8);
+
+            }
+            else
+            {
+                this.TabControl1.SelectedIndex = 8;
+                return;
+            }
+        }
+
+        #endregion
+
+        #region ECDH鍵交換
+
+        /// <summary>ECDHのアリス</summary>
+        EcdhAlice _ecdhAlice = null;
+
+        /// <summary>ECDHのボブ</summary>
+        EcdhBob _ecdhBob = null;
+
+        /// <summary>鍵交換</summary>
+        private void btnEKEXEC_Click(object sender, EventArgs e)
+        {
+            this._ecdhBob = new EcdhBob();
+
+            // 以下を一致させる
+            if (((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).KeyDerivationFunction == ECDiffieHellmanKeyDerivationFunction.Tls)
+            {
+                this._ecdhAlice = new EcdhAlice();
+                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).KeyDerivationFunction,
+                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).HashAlgorithm,
+                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).HmacKey,
+                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).Label,
+                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).Seed);
+            }
+            else
+            {
+                this._ecdhAlice = new EcdhAlice();
+                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).KeyDerivationFunction,
+                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).HashAlgorithm,
+                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).HmacKey,
+                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).SecretPrepend,
+                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).SecretAppend);
+            }
+
+            // キー交換、秘密鍵生成
+            this._ecdhAlice.DeriveKeyMaterial(this._ecdhBob.ExchangeKey);
+            this._ecdhBob.DeriveKeyMaterial(this._ecdhAlice.ExchangeKey);
+
+            // 暗号化プロバイダ生成
+            this._ecdhAlice.CreateAesSP();
+            this._ecdhBob.CreateAesSP(this._ecdhAlice.IV);
+
+            this.txtEKEXKeyInfo.Text = "";
+            this.txtEKEXKeyInfo.Text += "bob.ExchangeKey:\n";
+            this.txtEKEXKeyInfo.Text += CustomEncode.ToBase64String(this._ecdhBob.ExchangeKey);
+            this.txtEKEXKeyInfo.Text += "\n";
+            this.txtEKEXKeyInfo.Text += "alice.ExchangeKey:\n";
+            this.txtEKEXKeyInfo.Text += CustomEncode.ToBase64String(this._ecdhAlice.ExchangeKey);
+            this.txtEKEXKeyInfo.Text += "\n";
+            this.txtEKEXKeyInfo.Text += "IV of alice and bob:\n";
+            this.txtEKEXKeyInfo.Text += CustomEncode.ToBase64String(this._ecdhAlice.IV);
+        }
+
+        /// <summary>送受信</summary>
+        private void btnEKEXSR_Click(object sender, EventArgs e)
+        {
+            this.txtEKEXBobString.Text =
+                    CustomEncode.ByteToString(
+                        this._ecdhBob.Decrypt(
+                            this._ecdhAlice.Encrypt(
+                                CustomEncode.StringToByte(
+                                    this.txtEKEXAliceString.Text, CustomEncode.UTF_8))), CustomEncode.UTF_8);
+        }
+
+        #endregion
+
+        #endregion
+
         #region MAC
 
         /// <summary>btnGetMAC_Click</summary>
@@ -847,56 +985,6 @@ namespace EncAndDecUtil
         #endregion
 
         #region JWE
-        #endregion
-
-        #region RSA鍵交換
-
-        /// <summary>RSAのアリス</summary>
-        RsaAlice alice = null;
-
-        /// <summary>RSAのボブ</summary>
-        RsaBob bob = null;
-
-        private void btnRKEXEC_Click(object sender, EventArgs e)
-        {
-            EnumKeyExchange ekex = (EnumKeyExchange)this.cbxRKEXPV.SelectedValue;
-
-            if (ekex == EnumKeyExchange.RSAPKCS1KeyExchange)
-            {
-                bob = new RsaPkcs1Bob();
-                alice = new RsaPkcs1Alice(bob.ExchangeKey);
-                ((RsaPkcs1Bob)bob).GeneratePrivateKey(alice.ExchangeKey, GetPassword.RandomByte(120));
-            }
-            else if (ekex == EnumKeyExchange.RSAOAEPKeyExchange)
-            {
-            }
-            else
-            {
-                this.tabEKEX.Select();
-            }   
-        }
-
-        private void btnRKEXSR_Click(object sender, EventArgs e)
-        {
-            EnumKeyExchange ekex = (EnumKeyExchange)this.cbxRKEXPV.SelectedValue;
-
-            if (ekex == EnumKeyExchange.RSAPKCS1KeyExchange)
-            {
-                CustomEncode.ByteToString(
-                    ((RsaPkcs1Bob)bob).Decrypt(
-                        ((RsaPkcs1Alice)alice).Encrypt(
-                            CustomEncode.StringToByte(
-                                this.txtRKEXAliceString.Text, CustomEncode.UTF_8))), CustomEncode.UTF_8);
-
-            }
-            else if (ekex == EnumKeyExchange.RSAOAEPKeyExchange)
-            {
-            }
-            else
-            {
-                this.tabEKEX.Select();
-            }
-        }
         #endregion
     }
 }

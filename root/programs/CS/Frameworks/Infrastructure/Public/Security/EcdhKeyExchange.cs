@@ -37,6 +37,15 @@ namespace Touryo.Infrastructure.Public.Security
     /// <summary>ECDHのキー交換基本クラス</summary>
     public abstract class EcdhKeyExchange : BaseKeyExchange
     {
+        /// <summary>ECDiffieHellmanプロバイダ情報の取得用</summary>
+        public ECDiffieHellman ECDiffieHellman
+        {
+            get
+            {
+                return (ECDiffieHellman)this._asa;
+            }
+        }
+        
         // 暗号化・復号化に使用する秘密鍵
 
         /// <summary>暗号化・復号化に使用する秘密鍵</summary>
@@ -48,6 +57,13 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 return this._privateKey;
             }
+        }
+
+        /// <summary>キー・マテリアルを派生</summary>
+        /// <param name="exchangeKeyOfPartner">相方の交換鍵</param>
+        public void DeriveKeyMaterial(byte[] exchangeKeyOfPartner)
+        {
+            this.DeriveKeyMaterial(exchangeKeyOfPartner, CngKeyBlobFormat.EccPublicBlob);
         }
 
         /// <summary>キー・マテリアルを派生</summary>

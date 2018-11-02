@@ -47,17 +47,5 @@ namespace Touryo.Infrastructure.Public.Security
                 return this._exchangeKey2;
             }
         }
-
-        /// <summary>暗号化・復号化に使用する秘密鍵</summary>
-        protected Aes _aes = null;
-
-        /// <summary>初期化ベクター</summary>
-        public byte[] IV
-        {
-            get
-            {
-                return this._aes.IV;
-            }
-        }
     }
 }

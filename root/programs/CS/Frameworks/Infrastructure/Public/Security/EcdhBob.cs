@@ -39,6 +39,7 @@ namespace Touryo.Infrastructure.Public.Security
     /// <summary>ECDHの「Bobクラス」</summary>
     public class EcdhBob : EcdhKeyExchange
     {
+        #region constructor
         /// <summary>constructor</summary>
         public EcdhBob()
             : this(ECDiffieHellmanKeyDerivationFunction.Hash, CngAlgorithm.Sha256, null, null, null) { }
@@ -91,6 +92,15 @@ namespace Touryo.Infrastructure.Public.Security
 
             // Aliceと鍵交換する交換鍵
             this._exchangeKey = ecdh.PublicKey.ToByteArray();
+        }
+        #endregion
+
+        /// <summary>AesCryptoServiceProviderを生成する。</summary>
+        public void CreateAesSP(byte[] iv)
+        {
+            this._aes = new AesCryptoServiceProvider();
+            this._aes.Key = this._privateKey;
+            this._aes.IV = iv;
         }
     }
 }
