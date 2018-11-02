@@ -779,28 +779,52 @@ namespace Touryo.Infrastructure.Public.Util
 
         #endregion
 
-        #region バッファ操作
+        #region 配列操作
 
-        /// <summary>バイト配列の結合</summary>
-        /// <param name="buffer1">バイト配列１</param>
-        /// <param name="buffer2">バイト配列２</param>
-        /// <returns>結合されたバイト配列</returns>
-        public static byte[] CombineByteArray(byte[] buffer1, byte[] buffer2)
-        {
-            // 入れ物の生成
-            byte[] mergedBuffer = new byte[buffer1.Length + buffer2.Length];
-
-            // 型のサイズを取得する
-            int typeSize = Marshal.SizeOf(buffer1.GetType().GetElementType());
-
-            // Buffer.BlockCopyでコピーする
-            Buffer.BlockCopy(buffer1, 0, mergedBuffer, 0, buffer1.Length * typeSize);
-            Buffer.BlockCopy(buffer2, 0, mergedBuffer, buffer1.Length * typeSize, buffer2.Length * typeSize);
-
-            return mergedBuffer;
+        /// <summary>配列のコピー</summary>
+        /// <param name="srcArray">コピー元配列</param>
+        /// <param name="dstArraySize">コピー先配列の長さ</param>
+        /// <returns>コピー後の配列</returns>
+        public static T[] CopyArray<T>(T[] srcArray, int dstArraySize)
+        {   
+            return CopyArray<T>(srcArray, dstArraySize, 0, 0);
         }
 
-        /// <summary>バイト配列の切り詰め</summary>
+        /// <summary>配列のコピー</summary>
+        /// <param name="srcArray">コピー元配列</param>
+        /// <param name="dstArraySize">コピー先配列の長さ</param>
+        /// <param name="srcStartIndex">読取開始位置</param>
+        /// <param name="dstStartIndex">書込開始位置</param>
+        /// <returns>コピー後の配列</returns>
+        public static T[] CopyArray<T>(T[] srcArray, int dstArraySize, int srcStartIndex, int dstStartIndex)
+        {
+            T[] dstArray = new T[dstArraySize];
+            Array.Copy(srcArray, srcStartIndex, dstArray, dstStartIndex, dstArraySize);
+            return dstArray;
+        }
+
+        /// <summary>配列の結合</summary>
+        /// <param name="array1">配列１</param>
+        /// <param name="array2">配列２</param>
+        /// <returns>結合された配列</returns>
+        public static T[] CombineArray<T>(T[] array1, T[] array2)
+        {
+            T[] combinedArray = new T[array1.Length + array2.Length];
+            int typeSize = Marshal.SizeOf(array1.GetType().GetElementType());
+            Buffer.BlockCopy(array1, 0, combinedArray, 0, array1.Length * typeSize);
+            Buffer.BlockCopy(array2, 0, combinedArray, array1.Length * typeSize, array2.Length * typeSize);
+
+            return combinedArray;
+        }
+
+        #endregion 
+
+        #region バイト操作
+
+        /// <summary>
+        /// バイト配列を排他的論理和で切り詰め
+        /// 単純に切り詰めるなら、sliceを使用する。
+        /// </summary>
         /// <param name="bytes">バイト配列</param>
         /// <param name="newSize">バイト配列のサイズ</param>
         /// <returns>指定のサイズに切り詰められたバイト配列</returns>

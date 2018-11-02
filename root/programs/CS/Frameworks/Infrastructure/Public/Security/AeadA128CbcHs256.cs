@@ -61,8 +61,9 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         /// <summary>復号化</summary>
+        /// <param name="result">AeadResult</param>
         /// <returns>平文（plaintext）</returns>
-        public override byte[] Decrypt()
+        public override byte[] Decrypt(AeadResult result)
         {
             throw new NotImplementedException();
         }

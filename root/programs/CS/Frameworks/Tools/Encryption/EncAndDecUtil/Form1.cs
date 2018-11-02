@@ -38,6 +38,8 @@
 
 using System;
 using System.Windows.Forms;
+using System.Diagnostics;
+
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
@@ -792,7 +794,114 @@ namespace EncAndDecUtil
 
         #endregion
 
-        #region AEAD 
+        #region AEAD
+
+        /// <summary>秘密鍵・暗号化</summary>
+        private void btnAEADEncrypt_Click(object sender, EventArgs e)
+        {
+            #region テスト
+
+            #region データ
+            // A.1
+            var plaint = new byte[]
+            {
+                84, 104, 101, 32, 116, 114, 117, 101, 32, 115, 105, 103, 110, 32,
+                111, 102, 32, 105, 110, 116, 101, 108, 108, 105, 103, 101, 110, 99,
+                101, 32, 105, 115, 32, 110, 111, 116, 32, 107, 110, 111, 119, 108,
+                101, 100, 103, 101, 32, 98, 117, 116, 32, 105, 109, 97, 103, 105,
+                110, 97, 116, 105, 111, 110, 46
+            };
+
+            // A.1.2  CEK
+            var cek = new byte[]
+            {
+                177, 161, 244, 128, 84, 143, 225, 115, 63, 180, 3, 255, 107, 154,
+                212, 246, 138, 7, 110, 91, 112, 46, 34, 105, 47, 130, 203, 46, 122,
+                234, 64, 252
+            };
+
+            // A.1.4 IV
+            var iv = new byte[]
+            {
+                227, 197, 117, 252, 2, 219, 233, 68, 180, 225, 77, 219
+            };
+
+            // A.1.5 AAD
+            var aad = new byte[]
+            {
+                101, 121, 74, 104, 98, 71, 99, 105,
+                79, 105, 74, 83, 85, 48, 69,
+                116, 84, 48, 70, 70, 85, 67, 73,
+                115, 73, 109, 86, 117, 89, 121, 73,
+                54, 73, 107, 69, 121, 78, 84, 90,
+                72, 81, 48, 48, 105, 102, 81
+            };
+
+            // A.1.6 CipherText
+
+            var ciphert = new byte[]{
+            229, 236, 166, 241, 53, 191, 115,
+            196, 174, 43, 73, 109, 39, 122,
+            233, 96, 140, 206, 120, 52, 51, 237,
+            48, 11, 190, 219, 186, 80, 111,
+            104, 50, 142, 47, 167, 59, 61, 181,
+            127, 196, 21, 40, 82, 242, 32,
+            123, 143, 168, 226, 73, 216, 176,
+            144, 138, 247, 106, 60, 16, 205,
+            160, 109, 64, 63, 192};
+
+            // Tag
+            var tag = new byte[]
+            {
+                92, 80, 104, 49, 133, 25, 161,
+                215, 173, 101, 219, 211, 136, 91,
+                210, 145
+            };
+
+            #endregion
+
+            #region コード
+
+            AeadA256Gcm aesGcm = null;
+            AeadResult aesRet = null;
+
+            aesGcm = new AeadA256Gcm(cek, iv, aad);
+            aesGcm.Encrypt(plaint);
+            aesRet = aesGcm.Result;
+
+            if (CustomEncode.ToBase64String(tag) == CustomEncode.ToBase64String(aesRet.Tag))
+            {
+                Debug.WriteLine("tag is ok!");
+            }
+
+            if (CustomEncode.ToBase64String(ciphert) == CustomEncode.ToBase64String(aesRet.Ciphert))
+            {
+                Debug.WriteLine("ciphert is ok!");
+            }
+
+            //// Aeadをnullクリアすると、
+            //// ciphert + tag からAeadを計算する（ただの結合）。
+            //aesRet.Aead = null;
+
+            // 再初期化する・しない（しなくてもイイ、使いまわし可能）。
+            aesGcm = new AeadA256Gcm(cek, iv, aad);
+
+            if (CustomEncode.ToBase64String(plaint) == CustomEncode.ToBase64String(aesGcm.Decrypt(aesRet)))
+            {
+                Debug.WriteLine("plaint is ok!");
+            }
+
+            #endregion
+
+            #endregion
+        }
+
+        /// <summary>秘密鍵・復号化</summary>
+        private void btnAEADDecrypt_Click(object sender, EventArgs e)
+        {
+
+        }
+
         #endregion
 
         #region JWS

@@ -64,7 +64,8 @@ namespace Touryo.Infrastructure.Public.Security
         public abstract void Encrypt(byte[] plaint);
 
         /// <summary>復号化</summary>
+        /// <param name="result">AeadResult</param>
         /// <returns>平文（plaintext）</returns>
-        public abstract byte[] Decrypt();
+        public abstract byte[] Decrypt(AeadResult result);
     }
 }

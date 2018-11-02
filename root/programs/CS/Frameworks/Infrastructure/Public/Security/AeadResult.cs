@@ -40,6 +40,9 @@ namespace Touryo.Infrastructure.Public.Security
     /// <summary>AeadResult</summary>
     public class AeadResult
     {
+        /// <summary>認証付き暗号</summary>
+        public byte[] Aead = null;
+
         /// <summary>暗号文</summary>
         public byte[] Ciphert = null;
 
@@ -50,7 +53,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>ciphert + tag</returns>
         public byte[] CombineByteArrayForDecrypt()
         {
-            return PubCmnFunction.CombineByteArray(this.Ciphert, this.Tag);
+            return PubCmnFunction.CombineArray<byte>(this.Ciphert, this.Tag);
         }
     }
 }

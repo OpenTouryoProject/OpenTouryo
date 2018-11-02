@@ -190,6 +190,18 @@
             this.txtEKEXAliceString = new System.Windows.Forms.TextBox();
             this.btnEKEXSR = new System.Windows.Forms.Button();
             this.btnEKEXEC = new System.Windows.Forms.Button();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.lblAEAD5 = new System.Windows.Forms.Label();
+            this.lblAEAD4 = new System.Windows.Forms.Label();
+            this.btnAEADDecrypt = new System.Windows.Forms.Button();
+            this.btnAEADEncrypt = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.lblAEAD3 = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.lblAEAD2 = new System.Windows.Forms.Label();
+            this.lblAEAD1 = new System.Windows.Forms.Label();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.textBox4 = new System.Windows.Forms.TextBox();
             this.TabControl1.SuspendLayout();
             this.tabHash.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHSStretching)).BeginInit();
@@ -212,8 +224,10 @@
             this.tabRKEX.SuspendLayout();
             this.tabEKEX.SuspendLayout();
             this.tabMAC.SuspendLayout();
+            this.tabAEAD.SuspendLayout();
             this.tabJWS.SuspendLayout();
             this.gbxJWS.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
             // TabControl1
@@ -1622,6 +1636,18 @@
             // 
             // tabAEAD
             // 
+            this.tabAEAD.Controls.Add(this.numericUpDown1);
+            this.tabAEAD.Controls.Add(this.lblAEAD5);
+            this.tabAEAD.Controls.Add(this.lblAEAD4);
+            this.tabAEAD.Controls.Add(this.btnAEADDecrypt);
+            this.tabAEAD.Controls.Add(this.btnAEADEncrypt);
+            this.tabAEAD.Controls.Add(this.textBox1);
+            this.tabAEAD.Controls.Add(this.lblAEAD3);
+            this.tabAEAD.Controls.Add(this.textBox2);
+            this.tabAEAD.Controls.Add(this.lblAEAD2);
+            this.tabAEAD.Controls.Add(this.lblAEAD1);
+            this.tabAEAD.Controls.Add(this.textBox3);
+            this.tabAEAD.Controls.Add(this.textBox4);
             this.tabAEAD.Location = new System.Drawing.Point(4, 40);
             this.tabAEAD.Name = "tabAEAD";
             this.tabAEAD.Size = new System.Drawing.Size(560, 304);
@@ -1896,6 +1922,112 @@
             this.btnEKEXEC.UseVisualStyleBackColor = true;
             this.btnEKEXEC.Click += new System.EventHandler(this.btnEKEXEC_Click);
             // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(117, 96);
+            this.numericUpDown1.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(358, 19);
+            this.numericUpDown1.TabIndex = 36;
+            // 
+            // lblAEAD5
+            // 
+            this.lblAEAD5.AutoSize = true;
+            this.lblAEAD5.Location = new System.Drawing.Point(23, 124);
+            this.lblAEAD5.Name = "lblAEAD5";
+            this.lblAEAD5.Size = new System.Drawing.Size(65, 12);
+            this.lblAEAD5.TabIndex = 35;
+            this.lblAEAD5.Text = "暗号文字列";
+            // 
+            // lblAEAD4
+            // 
+            this.lblAEAD4.AutoSize = true;
+            this.lblAEAD4.Location = new System.Drawing.Point(23, 98);
+            this.lblAEAD4.Name = "lblAEAD4";
+            this.lblAEAD4.Size = new System.Drawing.Size(65, 12);
+            this.lblAEAD4.TabIndex = 34;
+            this.lblAEAD4.Text = "ストレッチング";
+            // 
+            // btnAEADDecrypt
+            // 
+            this.btnAEADDecrypt.Location = new System.Drawing.Point(308, 146);
+            this.btnAEADDecrypt.Name = "btnAEADDecrypt";
+            this.btnAEADDecrypt.Size = new System.Drawing.Size(167, 23);
+            this.btnAEADDecrypt.TabIndex = 33;
+            this.btnAEADDecrypt.Text = "復号化";
+            this.btnAEADDecrypt.UseVisualStyleBackColor = true;
+            this.btnAEADDecrypt.Click += new System.EventHandler(this.btnAEADDecrypt_Click);
+            // 
+            // btnAEADEncrypt
+            // 
+            this.btnAEADEncrypt.Location = new System.Drawing.Point(117, 146);
+            this.btnAEADEncrypt.Name = "btnAEADEncrypt";
+            this.btnAEADEncrypt.Size = new System.Drawing.Size(167, 23);
+            this.btnAEADEncrypt.TabIndex = 32;
+            this.btnAEADEncrypt.Text = "暗号化";
+            this.btnAEADEncrypt.UseVisualStyleBackColor = true;
+            this.btnAEADEncrypt.Click += new System.EventHandler(this.btnAEADEncrypt_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(117, 121);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(358, 19);
+            this.textBox1.TabIndex = 31;
+            // 
+            // lblAEAD3
+            // 
+            this.lblAEAD3.AutoSize = true;
+            this.lblAEAD3.Location = new System.Drawing.Point(25, 74);
+            this.lblAEAD3.Name = "lblAEAD3";
+            this.lblAEAD3.Size = new System.Drawing.Size(32, 12);
+            this.lblAEAD3.TabIndex = 30;
+            this.lblAEAD3.Text = "ソルト";
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(117, 71);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(358, 19);
+            this.textBox2.TabIndex = 29;
+            // 
+            // lblAEAD2
+            // 
+            this.lblAEAD2.AutoSize = true;
+            this.lblAEAD2.Location = new System.Drawing.Point(23, 49);
+            this.lblAEAD2.Name = "lblAEAD2";
+            this.lblAEAD2.Size = new System.Drawing.Size(52, 12);
+            this.lblAEAD2.TabIndex = 28;
+            this.lblAEAD2.Text = "パスワード";
+            // 
+            // lblAEAD1
+            // 
+            this.lblAEAD1.AutoSize = true;
+            this.lblAEAD1.Location = new System.Drawing.Point(23, 24);
+            this.lblAEAD1.Name = "lblAEAD1";
+            this.lblAEAD1.Size = new System.Drawing.Size(41, 12);
+            this.lblAEAD1.TabIndex = 27;
+            this.lblAEAD1.Text = "文字列";
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(117, 46);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(358, 19);
+            this.textBox3.TabIndex = 26;
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(117, 21);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(358, 19);
+            this.textBox4.TabIndex = 25;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1942,10 +2074,13 @@
             this.tabEKEX.PerformLayout();
             this.tabMAC.ResumeLayout(false);
             this.tabMAC.PerformLayout();
+            this.tabAEAD.ResumeLayout(false);
+            this.tabAEAD.PerformLayout();
             this.tabJWS.ResumeLayout(false);
             this.tabJWS.PerformLayout();
             this.gbxJWS.ResumeLayout(false);
             this.gbxJWS.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -2114,6 +2249,18 @@
         private System.Windows.Forms.TextBox txtEKEXAliceString;
         private System.Windows.Forms.Button btnEKEXSR;
         private System.Windows.Forms.Button btnEKEXEC;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.Label lblAEAD5;
+        private System.Windows.Forms.Label lblAEAD4;
+        private System.Windows.Forms.Button btnAEADDecrypt;
+        private System.Windows.Forms.Button btnAEADEncrypt;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label lblAEAD3;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Label lblAEAD2;
+        private System.Windows.Forms.Label lblAEAD1;
+        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox textBox4;
     }
 }
 
