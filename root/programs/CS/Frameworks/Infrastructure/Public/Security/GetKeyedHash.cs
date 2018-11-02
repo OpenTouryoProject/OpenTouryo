@@ -42,23 +42,23 @@ namespace Touryo.Infrastructure.Public.Security
     public class GetKeyedHash
     {
         /// <summary>文字列のハッシュ値を計算して返す。</summary>
-        /// <param name="ekha">ハッシュ（キー付き）アルゴリズム列挙型</param>
         /// <param name="data">データ（文字列）</param>
+        /// <param name="ekha">ハッシュ（キー付き）アルゴリズム列挙型</param>
         /// <param name="key">キー（文字列）</param>
         /// <returns>ハッシュ値（base64文字列）</returns>
-        public static string GetKeyedHashString(EnumKeyedHashAlgorithm ekha, string data, string key)
+        public static string GetKeyedHashString(string data, EnumKeyedHashAlgorithm ekha, string key)
         {
-            return CustomEncode.ToBase64String(GetKeyedHashBytes(ekha,
+            return CustomEncode.ToBase64String(GetKeyedHashBytes(
                 CustomEncode.StringToByte(data, CustomEncode.UTF_8),
-                CustomEncode.StringToByte(key, CustomEncode.UTF_8)));
+                ekha, CustomEncode.StringToByte(key, CustomEncode.UTF_8)));
         }
 
         /// <summary>バイト配列のハッシュ値を計算して返す。</summary>
-        /// <param name="ekha">ハッシュ（キー付き）アルゴリズム列挙型</param>
         /// <param name="data">データ（バイト配列）</param>
+        /// <param name="ekha">ハッシュ（キー付き）アルゴリズム列挙型</param>
         /// <param name="key">キー（バイト配列）</param>
         /// <returns>ハッシュ値（バイト配列）</returns>
-        public static byte[] GetKeyedHashBytes(EnumKeyedHashAlgorithm ekha, byte[] data, byte[] key)
+        public static byte[] GetKeyedHashBytes(byte[] data, EnumKeyedHashAlgorithm ekha, byte[] key)
         {
             // HMACMD5      ：どのサイズのキーでも受け入れる ◯
             // HMACRIPEMD160：どのサイズのキーでも受け入れる ◯

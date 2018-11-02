@@ -39,52 +39,52 @@ namespace Touryo.Infrastructure.Public.Security
     public class MsgAuthCode : GetKeyedHash
     {
         /// <summary>MAC値を返す。</summary>
-        /// <param name="ekha">MACアルゴリズム列挙型</param>
         /// <param name="msg">メッセージ（文字列）</param>
+        /// <param name="ekha">MACアルゴリズム列挙型</param>
         /// <param name="key">キー（文字列）</param>
         /// <returns>MAC値（base64文字列）</returns>
-        public static string GetMAC(EnumKeyedHashAlgorithm ekha, string msg, string key)
+        public static string GetMAC(string msg, EnumKeyedHashAlgorithm ekha, string key)
         {
-            return CustomEncode.ToBase64String(MsgAuthCode.GetMAC(ekha,
+            return CustomEncode.ToBase64String(MsgAuthCode.GetMAC(
                 CustomEncode.StringToByte(msg, CustomEncode.UTF_8),
-                CustomEncode.StringToByte(key, CustomEncode.UTF_8)));
+                ekha, CustomEncode.StringToByte(key, CustomEncode.UTF_8)));
         }
 
         /// <summary>MAC値を返す。</summary>
-        /// <param name="ekha">MACアルゴリズム列挙型</param>
         /// <param name="msg">メッセージ（バイト配列）</param>
+        /// <param name="ekha">MACアルゴリズム列挙型</param>
         /// <param name="key">キー（バイト配列）</param>
         /// <returns>MAC値（バイト配列）</returns>
-        public static byte[] GetMAC(EnumKeyedHashAlgorithm ekha, byte[] msg, byte[] key)
+        public static byte[] GetMAC(byte[] msg, EnumKeyedHashAlgorithm ekha, byte[] key)
         {   
-            return MsgAuthCode.GetKeyedHashBytes(ekha, msg, key);
+            return MsgAuthCode.GetKeyedHashBytes(msg, ekha, key);
         }
 
         /// <summary>MAC値を検証</summary>
-        /// <param name="ekha">MACアルゴリズム列挙型</param>
         /// <param name="msg">メッセージ（文字列）</param>
+        /// <param name="ekha">MACアルゴリズム列挙型</param>
         /// <param name="key">キー（文字列）</param>
         /// <param name="mac">MAC値（base64文字列）</param>
         /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
-        public static bool VerifyMAC(EnumKeyedHashAlgorithm ekha, string msg, string key, string mac)
+        public static bool VerifyMAC(string msg, EnumKeyedHashAlgorithm ekha, string key, string mac)
         {
-            return MsgAuthCode.VerifyMAC(ekha,
+            return MsgAuthCode.VerifyMAC(
                 CustomEncode.StringToByte(msg, CustomEncode.UTF_8),
-                CustomEncode.StringToByte(key, CustomEncode.UTF_8),
+                ekha, CustomEncode.StringToByte(key, CustomEncode.UTF_8),
                 CustomEncode.FromBase64String(mac));
         }
 
         /// <summary>MAC値を検証</summary>
-        /// <param name="ekha">MACアルゴリズム列挙型</param>
         /// <param name="msg">メッセージ（バイト配列）</param>
+        /// <param name="ekha">MACアルゴリズム列挙型</param>
         /// <param name="key">キー（バイト配列）</param>
         /// <param name="mac">MAC値（バイト配列）</param>
         /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
-        public static bool VerifyMAC(EnumKeyedHashAlgorithm ekha, byte[] msg, byte[] key, byte[] mac)
+        public static bool VerifyMAC(byte[] msg, EnumKeyedHashAlgorithm ekha, byte[] key, byte[] mac)
         {
             // 文字列にしてから計算
             string paramMac = CustomEncode.ToBase64String(mac);
-            string calcMac = CustomEncode.ToBase64String(MsgAuthCode.GetMAC(ekha, msg, key));
+            string calcMac = CustomEncode.ToBase64String(MsgAuthCode.GetMAC(msg, ekha, key));
 
             return (paramMac == calcMac);
         }

@@ -60,21 +60,32 @@ namespace EncAndDecUtil
         /// <summary>Form_Load</summary>
         private void Form1_Load(object sender, EventArgs e)
         {
+            
             cbxHSPV.DataSource = Enum.GetValues(typeof(EnumHashAlgorithm));
             cbxKHSPV.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
-            cbxSCPV.DataSource = Enum.GetValues(typeof(EnumSymmetricAlgorithm));
+
+            cbxSCPV1.DataSource = Enum.GetValues(typeof(EnumSymmetricAlgorithm));
+            cbxSCPV2.DataSource = Enum.GetValues(typeof(EnumSymmetricAlgorithm));
+            cbxSCPV3.DataSource = Enum.GetValues(typeof(EnumSymmetricAlgorithm));
+
             cbxASCPV.DataSource = Enum.GetValues(typeof(EnumASymmetricAlgorithm));
+
             cbxSPWDPV1.DataSource = Enum.GetValues(typeof(EnumHashAlgorithm));
             cbxSPWDPV2.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
+
             cbxMACPV.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
+
             cbxDSPV.DataSource = Enum.GetValues(typeof(EnumDigitalSignAlgorithm));
+            cbxRKEXPV.DataSource = Enum.GetValues(typeof(EnumKeyExchange));
 
             // HS    : Hash
             // KHS   : KeyedHash
             // SC    : SymmetricCryptography
             // ASC   : ASymmetricCryptography
             // MAC   : MessageAuthenticationCode
+            // AEAD  : AuthenticatedEncryptionWithAssociatedData
             // DS    : DigitalSign
+            // RKEX  : RsaKeyExchange
         }
 
         #endregion
@@ -111,8 +122,8 @@ namespace EncAndDecUtil
                 // String
                 this.txtKHSCode.Text =
                     GetKeyedHash.GetKeyedHashString(
-                        (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue,
                         this.txtKHSString.Text,
+                        (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue, 
                         this.txtKHSPassword.Text);
             }
             else
@@ -121,8 +132,8 @@ namespace EncAndDecUtil
                 this.txtKHSCode.Text =
                     CustomEncode.ToHexString(
                         GetKeyedHash.GetKeyedHashBytes(
-                            (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue,
                             CustomEncode.StringToByte(txtKHSString.Text, CustomEncode.UTF_8),
+                            (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue,
                             CustomEncode.StringToByte(this.txtKHSPassword.Text, CustomEncode.UTF_8)));
             }
         }
@@ -165,8 +176,8 @@ namespace EncAndDecUtil
         private void btnSPWDGen2_Click(object sender, EventArgs e)
         {
             this.txtSPWDSaltedPassword2.Text = GetPasswordHashV2.GetSaltedPassword(
-                (EnumKeyedHashAlgorithm)this.cbxSPWDPV2.SelectedValue,
                 this.txtSPWDRawPassword2.Text,
+                (EnumKeyedHashAlgorithm)this.cbxSPWDPV2.SelectedValue,
                 this.txtSPWDKey2.Text,
                 (int)this.nudSPWDSaltLength2.Value,
                 (int)this.nudSPWDStretchCount2.Value);
@@ -177,8 +188,8 @@ namespace EncAndDecUtil
         {
             // パラメタ系は渡さないで検証可能
             if (GetPasswordHashV2.EqualSaltedPassword(
-                (EnumKeyedHashAlgorithm)this.cbxSPWDPV2.SelectedValue,
                 this.txtSPWDRawPassword2.Text,
+                (EnumKeyedHashAlgorithm)this.cbxSPWDPV2.SelectedValue,
                 this.txtSPWDSaltedPassword2.Text))
             {
                 MessageBox.Show("認証成功");
@@ -199,6 +210,11 @@ namespace EncAndDecUtil
         /// <summary>秘密鍵・暗号化</summary>
         private void button1_Click(object sender, EventArgs e)
         {
+            EnumSymmetricAlgorithm esa =
+                (EnumSymmetricAlgorithm)cbxSCPV1.SelectedValue
+                | (EnumSymmetricAlgorithm)cbxSCPV2.SelectedValue
+                | (EnumSymmetricAlgorithm)cbxSCPV3.SelectedValue;
+
             if (string.IsNullOrEmpty(txtSCSalt.Text))
             {
                 // ソルト無し
@@ -208,8 +224,7 @@ namespace EncAndDecUtil
                     this.txtSCCode.Text =
                         SymmetricCryptography.EncryptString(
                             this.txtSCString.Text,
-                            this.txtSCPassword.Text,
-                            (EnumSymmetricAlgorithm)cbxSCPV.SelectedValue);
+                            this.txtSCPassword.Text, esa);
                 }
                 else
                 {
@@ -218,8 +233,7 @@ namespace EncAndDecUtil
                         CustomEncode.ToHexString(
                             SymmetricCryptography.EncryptBytes(
                                 CustomEncode.StringToByte(txtSCString.Text, CustomEncode.UTF_8),
-                                this.txtSCPassword.Text,
-                                (EnumSymmetricAlgorithm)cbxSCPV.SelectedValue));
+                                this.txtSCPassword.Text, esa));
                 }
             }
             else
@@ -235,8 +249,7 @@ namespace EncAndDecUtil
                             SymmetricCryptography.EncryptString(
                                 this.txtSCString.Text,
                                 this.txtSCPassword.Text,
-                                (EnumSymmetricAlgorithm)cbxSCPV.SelectedValue,
-                                CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8));
+                                esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8));
                     }
                     else
                     {
@@ -246,8 +259,7 @@ namespace EncAndDecUtil
                                 SymmetricCryptography.EncryptBytes(
                                     CustomEncode.StringToByte(txtSCString.Text, CustomEncode.UTF_8),
                                     this.txtSCPassword.Text,
-                                    (EnumSymmetricAlgorithm)cbxSCPV.SelectedValue,
-                                    CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8)));
+                                    esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8)));
                     }
                 }
                 else
@@ -260,8 +272,7 @@ namespace EncAndDecUtil
                             = SymmetricCryptography.EncryptString(
                                 this.txtSCString.Text,
                                 this.txtSCPassword.Text,
-                                (EnumSymmetricAlgorithm)cbxSCPV.SelectedValue,
-                                CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8),
+                                esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8),
                                 (int)this.nudSCStretching.Value);
                     }
                     else
@@ -272,8 +283,7 @@ namespace EncAndDecUtil
                                 SymmetricCryptography.EncryptBytes(
                                     CustomEncode.StringToByte(txtSCString.Text, CustomEncode.UTF_8),
                                     this.txtSCPassword.Text,
-                                    (EnumSymmetricAlgorithm)cbxSCPV.SelectedValue,
-                                    CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8),
+                                    esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8),
                                     (int)this.nudSCStretching.Value));
                     }
                 }
@@ -283,6 +293,11 @@ namespace EncAndDecUtil
         /// <summary>秘密鍵・復号化</summary>
         private void button2_Click(object sender, EventArgs e)
         {
+            EnumSymmetricAlgorithm esa =
+                (EnumSymmetricAlgorithm)cbxSCPV1.SelectedValue
+                | (EnumSymmetricAlgorithm)cbxSCPV2.SelectedValue
+                | (EnumSymmetricAlgorithm)cbxSCPV3.SelectedValue;
+
             if (string.IsNullOrEmpty(txtSCSalt.Text))
             {
                 // ソルト無し
@@ -292,8 +307,7 @@ namespace EncAndDecUtil
                     this.txtSCString.Text =
                         SymmetricCryptography.DecryptString(
                             this.txtSCCode.Text,
-                            this.txtSCPassword.Text,
-                            (EnumSymmetricAlgorithm)cbxSCPV.SelectedValue);
+                            this.txtSCPassword.Text, esa);
                 }
                 else
                 {
@@ -302,8 +316,7 @@ namespace EncAndDecUtil
                          CustomEncode.ByteToString(
                             SymmetricCryptography.DecryptBytes(
                                 CustomEncode.FormHexString(this.txtSCCode.Text),
-                                this.txtSCPassword.Text,
-                                (EnumSymmetricAlgorithm)cbxSCPV.SelectedValue),
+                                this.txtSCPassword.Text, esa),
                             CustomEncode.UTF_8);
                 }
             }
@@ -320,8 +333,7 @@ namespace EncAndDecUtil
                             = SymmetricCryptography.DecryptString(
                                 this.txtSCCode.Text,
                                 this.txtSCPassword.Text,
-                                (EnumSymmetricAlgorithm)cbxSCPV.SelectedValue,
-                                CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8));
+                                esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8));
                     }
                     else
                     {
@@ -331,8 +343,7 @@ namespace EncAndDecUtil
                             SymmetricCryptography.DecryptBytes(
                                 CustomEncode.FormHexString(this.txtSCCode.Text),
                                 this.txtSCPassword.Text,
-                                (EnumSymmetricAlgorithm)cbxSCPV.SelectedValue,
-                                CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8)),
+                                esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8)),
                             CustomEncode.UTF_8);
                     }
                 }
@@ -346,8 +357,7 @@ namespace EncAndDecUtil
                             = SymmetricCryptography.DecryptString(
                                 this.txtSCCode.Text,
                                 this.txtSCPassword.Text,
-                                (EnumSymmetricAlgorithm)cbxSCPV.SelectedValue,
-                                CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8),
+                                esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8),
                                 (int)this.nudSCStretching.Value);
                     }
                     else
@@ -358,8 +368,7 @@ namespace EncAndDecUtil
                             SymmetricCryptography.DecryptBytes(
                                 CustomEncode.FormHexString(this.txtSCCode.Text),
                                 this.txtSCPassword.Text,
-                                (EnumSymmetricAlgorithm)cbxSCPV.SelectedValue,
-                                CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8),
+                                esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8),
                                 (int)this.nudSCStretching.Value),
                             CustomEncode.UTF_8);
                     }
@@ -619,16 +628,19 @@ namespace EncAndDecUtil
         private void btnGetMAC_Click(object sender, EventArgs e)
         {
             this.txtMACValue.Text = MsgAuthCode.GetMAC(
+                this.txtMACString.Text,
                 (EnumKeyedHashAlgorithm)this.cbxMACPV.SelectedValue,
-                this.txtMACString.Text, this.txtMACPassword.Text);
+                this.txtMACPassword.Text);
         }
 
         /// <summary>btnVerifyMAC_Click</summary>
         private void btnVerifyMAC_Click(object sender, EventArgs e)
         {
             bool ret = MsgAuthCode.VerifyMAC(
+                this.txtMACString.Text,
                 (EnumKeyedHashAlgorithm)this.cbxMACPV.SelectedValue,
-                this.txtMACString.Text, this.txtMACPassword.Text, this.txtMACValue.Text);
+                this.txtMACPassword.Text,
+                this.txtMACValue.Text);
 
             if (ret)
             {
@@ -832,10 +844,59 @@ namespace EncAndDecUtil
             }
         }
 
-        #endregion        
+        #endregion
 
         #region JWE
         #endregion
 
+        #region RSA鍵交換
+
+        /// <summary>RSAのアリス</summary>
+        RsaAlice alice = null;
+
+        /// <summary>RSAのボブ</summary>
+        RsaBob bob = null;
+
+        private void btnRKEXEC_Click(object sender, EventArgs e)
+        {
+            EnumKeyExchange ekex = (EnumKeyExchange)this.cbxRKEXPV.SelectedValue;
+
+            if (ekex == EnumKeyExchange.RSAPKCS1KeyExchange)
+            {
+                bob = new RsaPkcs1Bob();
+                alice = new RsaPkcs1Alice(bob.ExchangeKey);
+                ((RsaPkcs1Bob)bob).GeneratePrivateKey(alice.ExchangeKey, GetPassword.RandomByte(120));
+            }
+            else if (ekex == EnumKeyExchange.RSAOAEPKeyExchange)
+            {
+            }
+            else
+            {
+                this.tabEKEX.Select();
+            }   
+        }
+
+        private void btnRKEXSR_Click(object sender, EventArgs e)
+        {
+            EnumKeyExchange ekex = (EnumKeyExchange)this.cbxRKEXPV.SelectedValue;
+
+            if (ekex == EnumKeyExchange.RSAPKCS1KeyExchange)
+            {
+                CustomEncode.ByteToString(
+                    ((RsaPkcs1Bob)bob).Decrypt(
+                        ((RsaPkcs1Alice)alice).Encrypt(
+                            CustomEncode.StringToByte(
+                                this.txtRKEXAliceString.Text, CustomEncode.UTF_8))), CustomEncode.UTF_8);
+
+            }
+            else if (ekex == EnumKeyExchange.RSAOAEPKeyExchange)
+            {
+            }
+            else
+            {
+                this.tabEKEX.Select();
+            }
+        }
+        #endregion
     }
 }

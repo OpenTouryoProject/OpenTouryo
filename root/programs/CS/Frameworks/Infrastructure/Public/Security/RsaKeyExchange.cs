@@ -37,11 +37,9 @@ namespace Touryo.Infrastructure.Public.Security
     /// <summary>RSAのキー交換基本クラス</summary>
     public abstract class RsaKeyExchange : BaseKeyExchange
     {
-        // 相方と交換する鍵
-
-        /// <summary>_exchangeKey</summary>
+        /// <summary>相方と交換する鍵（RSAParameters）</summary>
         protected RSAParameters _exchangeKey2;
-        /// <summary>ExchangeKey</summary>
+        /// <summary>相方と交換する鍵（RSAParameters）</summary>
         public RSAParameters ExchangeKey2
         {
             get
@@ -50,9 +48,7 @@ namespace Touryo.Infrastructure.Public.Security
             }
         }
 
-        // 暗号化・復号化に使用する秘密鍵
-
-        /// <summary>AesCryptoServiceProvider</summary>
+        /// <summary>暗号化・復号化に使用する秘密鍵</summary>
         protected Aes _aes = null;
 
         /// <summary>初期化ベクター</summary>

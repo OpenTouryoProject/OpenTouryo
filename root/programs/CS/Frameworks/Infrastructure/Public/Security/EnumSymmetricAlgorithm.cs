@@ -29,57 +29,75 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/30  西野 大介         新規作成（分離）
 //**********************************************************************************
+
+using System;
+
 namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>
     /// 対称アルゴリズムによる暗号化の列挙型
     /// </summary>
+    [Flags]
     public enum EnumSymmetricAlgorithm
     {
-        #region 古い方針
-        // AesCryptoServiceProvider, AesManagedは.NET Framework 3.5からの提供。
-        // 暗号化プロバイダ選択の優先順は、高い順に、Managed → CAPI(CSP) → CNG。
-        // Aesは、ManagedがあるのでCAPI(CSP)のAesCryptoServiceProviderを削除。
-        // サポート範囲の変更により、今後、CAPI(CSP)とCNGの優先順位の反転を検討。
-        #endregion
-
-        // Defaultは無し。
-        ///// <summary>Default</summary>
-        //Default,
-
         #region CSP (CryptoServiceProvider)
 
         /// <summary>AesCryptoServiceProvider</summary>
-        AesCryptoServiceProvider,
-
+        AesCryptoServiceProvider = 1,
         /// <summary>DESCryptoServiceProvider</summary>
-        DESCryptoServiceProvider,
-
+        DESCryptoServiceProvider = 1 << 1,
         /// <summary>RC2CryptoServiceProvider</summary>
-        RC2CryptoServiceProvider,
-
+        RC2CryptoServiceProvider = 1 << 2,
         /// <summary>TripleDESCryptoServiceProvider</summary>
-        TripleDESCryptoServiceProvider,
+        TripleDESCryptoServiceProvider = 1 << 3,
 
         #endregion
 
         #region CNG (CryptographyNextGeneration)
-        
-        /// <summary>AesCryptographyNextGeneration</summary>
-        AesCryptographyNextGeneration,
 
+        /// <summary>AesCryptographyNextGeneration</summary>
+        AesCryptographyNextGeneration = 1 << 4,
         /// <summary>TripleDESCryptographyNextGeneration</summary>
-        TripleDESCryptographyNextGeneration,
+        TripleDESCryptographyNextGeneration = 1 << 5,
 
         #endregion
 
         #region Managed
-        
+
         /// <summary>AesManaged</summary>
-        AesManaged,
-        
+        AesManaged = 1 << 6,
         /// <summary>RijndaelManaged</summary>
-        RijndaelManaged,
+        RijndaelManaged = 1 << 7,
+
+        #endregion
+
+        #region CipherMode, PaddingMode指定
+
+        #region CipherMode
+        /// <summary>CipherMode.CBC</summary>
+        CipherMode_CBC = 1 << 8,
+        /// <summary>CipherMode.CFB</summary>
+        CipherMode_CFB = 1 << 9,
+        /// <summary>CipherMode.CTS</summary>
+        CipherMode_CTS = 1 << 10,
+        /// <summary>CipherMode.ECB</summary>
+        CipherMode_ECB = 1 << 11,
+        /// <summary>CipherMode.OFB</summary>
+        CipherMode_OFB = 1 << 12,
+        #endregion
+
+        #region PaddingMode
+        /// <summary>PaddingMode.None</summary>
+        PaddingMode_None = 1 << 13,
+        /// <summary>PaddingMode.Zeros</summary>
+        PaddingMode_Zeros = 1 << 14,
+        /// <summary>PaddingMode.ANSIX923</summary>
+        PaddingMode_ANSIX923 = 1 << 15,
+        /// <summary>PaddingMode.ISO10126</summary>
+        PaddingMode_ISO10126 = 1 << 16,
+        /// <summary>PaddingMode.PKCS7</summary>
+        PaddingMode_PKCS7 = 1 << 17
+        #endregion
 
         #endregion
     }

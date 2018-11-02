@@ -39,12 +39,10 @@ namespace Touryo.Infrastructure.Public.Security
     {
         /// <summary>AsymmetricAlgorithm</summary>
         protected AsymmetricAlgorithm _asa = null;
-
-        // 相方と交換する交換鍵
-
-        /// <summary>_exchangeKey</summary>
+        
+        /// <summary>相方と交換する交換鍵</summary>
         protected byte[] _exchangeKey;
-        /// <summary>ExchangeKey</summary>
+        /// <summary>相方と交換する交換鍵</summary>
         public byte[] ExchangeKey
         {
             get

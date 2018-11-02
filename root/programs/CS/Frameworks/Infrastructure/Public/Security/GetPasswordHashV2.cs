@@ -119,8 +119,8 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="saltLength">ソルトの文字列長</param>
         /// <param name="stretchCount">ストレッチ回数</param>
         /// <returns>Salted and hashed password.</returns>
-        public static string GetSaltedPassword(EnumKeyedHashAlgorithm ekha, 
-            string rawPassword, string key, int saltLength, int stretchCount)
+        public static string GetSaltedPassword(string rawPassword,
+            EnumKeyedHashAlgorithm ekha, string key, int saltLength, int stretchCount)
         {
             // ランダム・ソルト文字列を生成（区切り記号は含まなくても良い）
             string salt = GetPassword.Generate(saltLength, 0); //Membership.GeneratePassword(saltLength, 0);
@@ -143,20 +143,20 @@ namespace Touryo.Infrastructure.Public.Security
 
                 // Salted and hashed password
                 + "." + CustomEncode.ToBase64String(
-                    GetPasswordHashV2.GetKeyedHashBytes(ekha,
+                    GetPasswordHashV2.GetKeyedHashBytes(
                         CustomEncode.StringToByte(salt + rawPassword, CustomEncode.UTF_8),
-                        passwordKey.GetBytes(24)));
+                        ekha, passwordKey.GetBytes(24)));
         }
 
         /// <summary>パスワードを比較して認証する。</summary>
-        /// <param name="ekha">ハッシュ・アルゴリズム列挙型</param>
         /// <param name="rawPassword">Password entered by the user.</param>
+        /// <param name="ekha">ハッシュ・アルゴリズム列挙型</param>
         /// <param name="saltedPassword">Salted and hashed password.</param>
         /// <returns>
         /// true：パスワードは一致した。
         /// false：パスワードは一致しない。
         /// </returns>
-        public static bool EqualSaltedPassword(EnumKeyedHashAlgorithm ekha, string rawPassword, string saltedPassword)
+        public static bool EqualSaltedPassword(string rawPassword, EnumKeyedHashAlgorithm ekha, string saltedPassword)
         {
             // ソルト部分を取得
             string[] temp = saltedPassword.Split('.');
@@ -181,9 +181,9 @@ namespace Touryo.Infrastructure.Public.Security
 
             // 引数のsaltedPasswordと、rawPasswordから自作したsaltedPasswordを比較
             string compare = CustomEncode.ToBase64String(
-                GetPasswordHashV2.GetKeyedHashBytes(ekha,
+                GetPasswordHashV2.GetKeyedHashBytes(
                     CustomEncode.StringToByte(salt + rawPassword, CustomEncode.UTF_8),
-                    passwordKey.GetBytes(24)));
+                    ekha, passwordKey.GetBytes(24)));
 
             if (hashedPassword == compare)
             {

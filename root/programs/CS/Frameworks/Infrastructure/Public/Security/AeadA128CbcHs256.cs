@@ -32,6 +32,8 @@
 
 // https://github.com/cose-wg/cose-implementations/blob/master/csharp/JOSE/EncryptMessage.cs
 
+using System;
+
 namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>
@@ -41,5 +43,28 @@ namespace Touryo.Infrastructure.Public.Security
     /// </summary>
     public class AeadA128CbcHs256 : AuthEncrypt
     {
+        /// <summary>constructor</summary>
+        /// <param name="cek">コンテンツ暗号化キー（CEK）</param>
+        /// <param name="iv">初期化ベクトル</param>
+        /// <param name="aad">追加認証データ（AAD）</param>
+        public AeadA128CbcHs256(byte[] cek, byte[] iv, byte[] aad) : base(cek, iv, aad)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>暗号化</summary>
+        /// <param name="plaint">平文（plaintext）</param>
+        /// <returns>AEAD実行結果オブジェクト</returns>
+        public override void Encrypt(byte[] plaint)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>復号化</summary>
+        /// <returns>平文（plaintext）</returns>
+        public override byte[] Decrypt()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

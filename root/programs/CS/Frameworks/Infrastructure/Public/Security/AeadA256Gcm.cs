@@ -55,61 +55,54 @@ namespace Touryo.Infrastructure.Public.Security
         ///  The requested size of the Authentication Tag output MUST be 128 bits, regardless of the key size.
         /// </summary>
         public const int GCM_TAG_LEN = 16;
+        
+        /// <summary>Aesをエンジンに指定してGcmBlockCipherを生成</summary>
+        private GcmBlockCipher _gcm = new GcmBlockCipher(new AesEngine());        
 
-        /// <summary>暗号化</summary>
+        /// <summary>constructor</summary>
         /// <param name="cek">コンテンツ暗号化キー（CEK）</param>
         /// <param name="iv">初期化ベクトル</param>
-        /// <param name="plaint">平文（plaintext）</param>
         /// <param name="aad">追加認証データ（AAD）</param>
-        /// <returns>AEAD実行結果オブジェクト</returns>
-        public static AeadResult Encrypt(byte[] cek, byte[] iv, byte[] plaint, byte[] aad)
-        {
-            // Aesをエンジンに指定してGcmBlockCipherを生成
-            GcmBlockCipher gcm = new GcmBlockCipher(new AesEngine());
+        public AeadA256Gcm(byte[] cek, byte[] iv, byte[] aad) : base(cek, iv, aad)
+        {   
             // GCM実装を初期化
-            gcm.Init(true, new AeadParameters(new KeyParameter(cek), 8 * GCM_TAG_LEN, iv, aad));
+            this._gcm.Init(true, new AeadParameters(new KeyParameter(cek), 8 * AeadA256Gcm.GCM_TAG_LEN, iv, aad));
+        }
+
+        /// <summary>暗号化</summary>
+        /// <param name="plaint">平文（plaintext）</param>
+        /// <returns>AEAD実行結果オブジェクト</returns>
+        public override void Encrypt(byte[] plaint)
+        {   
             // 出力バッファの準備
-            byte[] ciphert = new byte[gcm.GetOutputSize(plaint.Length)];
+            byte[] ciphert = new byte[this._gcm.GetOutputSize(plaint.Length)];
             // GCM操作の実行
-            int len = gcm.ProcessBytes(plaint, 0, plaint.Length, ciphert, 0);
+            int len = this._gcm.ProcessBytes(plaint, 0, plaint.Length, ciphert, 0);
             // GCM操作を終了
-            len += gcm.DoFinal(ciphert, len);
+            len += this._gcm.DoFinal(ciphert, len);
             // GetMacで認証タグ（MAC）を取得委
-            byte[] tag = gcm.GetMac();
+            byte[] tag = this._gcm.GetMac();
 
             // 結果を返す
-            return new AeadResult()
+            this._result = new AeadResult()
             {
                 Ciphert = PubCmnFunction.ShortenByteArray(ciphert, plaint.Length),
                 Tag = tag,
             };
-
         }
 
         /// <summary>復号化</summary>
-        /// <param name="cek">コンテンツ暗号化キー（CEK）</param>
-        /// <param name="iv">初期化ベクトル</param>
-        /// <param name="aad">追加認証データ（AAD）</param>
-        /// <param name="aeadRet">
-        /// AeadResult
-        /// ・暗号文
-        /// ・認証タグ（MAC）
-        /// </param>
         /// <returns>平文（plaintext）</returns>
-        public static byte[] Decrypt(byte[] cek, byte[] iv, byte[] aad, AeadResult aeadRet)
+        public override byte[] Decrypt()
         {
-            // Aesをエンジンに指定してGcmBlockCipherを生成
-            GcmBlockCipher gcm = new GcmBlockCipher(new AesEngine());
-            // GCM実装を初期化
-            gcm.Init(false, new AeadParameters(new KeyParameter(cek), 8 * GCM_TAG_LEN, iv, aad));
             // Decrypt ( ciphert + tag )
-            byte[] marged = aeadRet.CombineByteArrayForDecrypt();
+            byte[] marged = this._result.CombineByteArrayForDecrypt();
             // 出力バッファの準備
-            byte[] plaint = new byte[gcm.GetOutputSize(marged.Length)];
+            byte[] plaint = new byte[this._gcm.GetOutputSize(marged.Length)];
             // GCM操作の実行
-            int len = gcm.ProcessBytes(marged, 0, marged.Length, plaint, 0);
+            int len = this._gcm.ProcessBytes(marged, 0, marged.Length, plaint, 0);
             // GCM操作を終了
-            len += gcm.DoFinal(plaint, len);
+            len += this._gcm.DoFinal(plaint, len);
 
             // 平文を返す。
             return plaint;

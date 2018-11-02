@@ -55,7 +55,7 @@
             this.lblKHS1 = new System.Windows.Forms.Label();
             this.txtKHSPassword = new System.Windows.Forms.TextBox();
             this.txtKHSString = new System.Windows.Forms.TextBox();
-            this.tabPwd2DB1 = new System.Windows.Forms.TabPage();
+            this.tabPwdDB1 = new System.Windows.Forms.TabPage();
             this.nudSPWDStretchCount1 = new System.Windows.Forms.NumericUpDown();
             this.lblSPWD14 = new System.Windows.Forms.Label();
             this.nudSPWDSaltLength1 = new System.Windows.Forms.NumericUpDown();
@@ -68,7 +68,7 @@
             this.cbxSPWDPV1 = new System.Windows.Forms.ComboBox();
             this.lblSPWD11 = new System.Windows.Forms.Label();
             this.btnSPWDGen1 = new System.Windows.Forms.Button();
-            this.tabPwd2DB2 = new System.Windows.Forms.TabPage();
+            this.tabPwdDB2 = new System.Windows.Forms.TabPage();
             this.nudSPWDStretchCount2 = new System.Windows.Forms.NumericUpDown();
             this.lblSPWD25 = new System.Windows.Forms.Label();
             this.lblSPWD23 = new System.Windows.Forms.Label();
@@ -90,7 +90,7 @@
             this.nudSCStretching = new System.Windows.Forms.NumericUpDown();
             this.lblSC6 = new System.Windows.Forms.Label();
             this.lblSC5 = new System.Windows.Forms.Label();
-            this.cbxSCPV = new System.Windows.Forms.ComboBox();
+            this.cbxSCPV1 = new System.Windows.Forms.ComboBox();
             this.btnSCDecrypt = new System.Windows.Forms.Button();
             this.btnSCEncrypt = new System.Windows.Forms.Button();
             this.txtSCCode = new System.Windows.Forms.TextBox();
@@ -118,25 +118,37 @@
             this.lblASC2 = new System.Windows.Forms.Label();
             this.lblASC1 = new System.Windows.Forms.Label();
             this.txtASCString = new System.Windows.Forms.TextBox();
-            this.tabCodeSigning = new System.Windows.Forms.TabPage();
+            this.tabDS = new System.Windows.Forms.TabPage();
             this.btnDSVerify = new System.Windows.Forms.Button();
-            this.lblCC6 = new System.Windows.Forms.Label();
+            this.lblDS6 = new System.Windows.Forms.Label();
             this.txtDSSign = new System.Windows.Forms.TextBox();
-            this.lblCC5 = new System.Windows.Forms.Label();
+            this.lblDS5 = new System.Windows.Forms.Label();
             this.txtDSPublicKey = new System.Windows.Forms.TextBox();
-            this.lblCC4 = new System.Windows.Forms.Label();
+            this.lblDS4 = new System.Windows.Forms.Label();
             this.txtDSPrivateKey = new System.Windows.Forms.TextBox();
-            this.lblCC3 = new System.Windows.Forms.Label();
-            this.lblCC2 = new System.Windows.Forms.Label();
+            this.lblDS3 = new System.Windows.Forms.Label();
+            this.lblDS2 = new System.Windows.Forms.Label();
             this.txtDSData = new System.Windows.Forms.TextBox();
             this.txtDSHash = new System.Windows.Forms.TextBox();
             this.cbxDSPV = new System.Windows.Forms.ComboBox();
-            this.lblCC1 = new System.Windows.Forms.Label();
+            this.lblDS1 = new System.Windows.Forms.Label();
             this.gbxDS = new System.Windows.Forms.GroupBox();
             this.rbnDSParam = new System.Windows.Forms.RadioButton();
             this.rbnDSX509 = new System.Windows.Forms.RadioButton();
             this.rbnDSXML = new System.Windows.Forms.RadioButton();
             this.btnDSSign = new System.Windows.Forms.Button();
+            this.tabMAC = new System.Windows.Forms.TabPage();
+            this.btnVerifyMAC = new System.Windows.Forms.Button();
+            this.lblMAC4 = new System.Windows.Forms.Label();
+            this.cbxMACPV = new System.Windows.Forms.ComboBox();
+            this.btnGetMAC = new System.Windows.Forms.Button();
+            this.txtMACValue = new System.Windows.Forms.TextBox();
+            this.lblMAC3 = new System.Windows.Forms.Label();
+            this.lblMAC2 = new System.Windows.Forms.Label();
+            this.lblMAC1 = new System.Windows.Forms.Label();
+            this.txtMACPassword = new System.Windows.Forms.TextBox();
+            this.txtMACString = new System.Windows.Forms.TextBox();
+            this.tabAEAD = new System.Windows.Forms.TabPage();
             this.tabJWS = new System.Windows.Forms.TabPage();
             this.lblJWSJWK = new System.Windows.Forms.Label();
             this.lblJWSKey = new System.Windows.Forms.Label();
@@ -155,29 +167,31 @@
             this.rbnJWSHS256 = new System.Windows.Forms.RadioButton();
             this.btnJWSVerify = new System.Windows.Forms.Button();
             this.btnJWSSign = new System.Windows.Forms.Button();
-            this.tabMAC = new System.Windows.Forms.TabPage();
-            this.lblMAC4 = new System.Windows.Forms.Label();
-            this.cbxMACPV = new System.Windows.Forms.ComboBox();
-            this.btnGetMAC = new System.Windows.Forms.Button();
-            this.txtMACValue = new System.Windows.Forms.TextBox();
-            this.lblMAC2 = new System.Windows.Forms.Label();
-            this.lblMAC1 = new System.Windows.Forms.Label();
-            this.txtMACString = new System.Windows.Forms.TextBox();
-            this.txtMACPassword = new System.Windows.Forms.TextBox();
-            this.lblMAC3 = new System.Windows.Forms.Label();
-            this.btnVerifyMAC = new System.Windows.Forms.Button();
-            this.tabAEAD = new System.Windows.Forms.TabPage();
             this.tabJWE = new System.Windows.Forms.TabPage();
+            this.tabRKEX = new System.Windows.Forms.TabPage();
+            this.tabEKEX = new System.Windows.Forms.TabPage();
+            this.btnRKEXEC = new System.Windows.Forms.Button();
+            this.btnRKEXSR = new System.Windows.Forms.Button();
+            this.cbxRKEXPV = new System.Windows.Forms.ComboBox();
+            this.txtRKEXAliceString = new System.Windows.Forms.TextBox();
+            this.txtRKEXBobString = new System.Windows.Forms.TextBox();
+            this.lblRKEX1 = new System.Windows.Forms.Label();
+            this.lblRKEX2 = new System.Windows.Forms.Label();
+            this.txtRKEXKeyInfo = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.cbxSCPV2 = new System.Windows.Forms.ComboBox();
+            this.cbxSCPV3 = new System.Windows.Forms.ComboBox();
             this.btnSPWDAuth2.SuspendLayout();
             this.tabHash.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHSStretching)).BeginInit();
             this.gbxHS.SuspendLayout();
             this.tabKeyedHash.SuspendLayout();
             this.gbxKHS.SuspendLayout();
-            this.tabPwd2DB1.SuspendLayout();
+            this.tabPwdDB1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSPWDStretchCount1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSPWDSaltLength1)).BeginInit();
-            this.tabPwd2DB2.SuspendLayout();
+            this.tabPwdDB2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSPWDStretchCount2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSPWDSaltLength2)).BeginInit();
             this.tabSC.SuspendLayout();
@@ -185,22 +199,25 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudSCStretching)).BeginInit();
             this.tabASC.SuspendLayout();
             this.gbxASC.SuspendLayout();
-            this.tabCodeSigning.SuspendLayout();
+            this.tabDS.SuspendLayout();
             this.gbxDS.SuspendLayout();
+            this.tabMAC.SuspendLayout();
             this.tabJWS.SuspendLayout();
             this.gbxJWS.SuspendLayout();
-            this.tabMAC.SuspendLayout();
+            this.tabRKEX.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSPWDAuth2
             // 
             this.btnSPWDAuth2.Controls.Add(this.tabHash);
             this.btnSPWDAuth2.Controls.Add(this.tabKeyedHash);
-            this.btnSPWDAuth2.Controls.Add(this.tabPwd2DB1);
-            this.btnSPWDAuth2.Controls.Add(this.tabPwd2DB2);
+            this.btnSPWDAuth2.Controls.Add(this.tabPwdDB1);
+            this.btnSPWDAuth2.Controls.Add(this.tabPwdDB2);
             this.btnSPWDAuth2.Controls.Add(this.tabSC);
             this.btnSPWDAuth2.Controls.Add(this.tabASC);
-            this.btnSPWDAuth2.Controls.Add(this.tabCodeSigning);
+            this.btnSPWDAuth2.Controls.Add(this.tabDS);
+            this.btnSPWDAuth2.Controls.Add(this.tabRKEX);
+            this.btnSPWDAuth2.Controls.Add(this.tabEKEX);
             this.btnSPWDAuth2.Controls.Add(this.tabMAC);
             this.btnSPWDAuth2.Controls.Add(this.tabAEAD);
             this.btnSPWDAuth2.Controls.Add(this.tabJWS);
@@ -402,7 +419,7 @@
             // lblKHS6
             // 
             this.lblKHS6.AutoSize = true;
-            this.lblKHS6.Location = new System.Drawing.Point(9, 188);
+            this.lblKHS6.Location = new System.Drawing.Point(9, 138);
             this.lblKHS6.Name = "lblKHS6";
             this.lblKHS6.Size = new System.Drawing.Size(76, 12);
             this.lblKHS6.TabIndex = 39;
@@ -418,7 +435,7 @@
             // 
             // btnGetKeyedHash
             // 
-            this.btnGetKeyedHash.Location = new System.Drawing.Point(103, 210);
+            this.btnGetKeyedHash.Location = new System.Drawing.Point(103, 160);
             this.btnGetKeyedHash.Name = "btnGetKeyedHash";
             this.btnGetKeyedHash.Size = new System.Drawing.Size(212, 23);
             this.btnGetKeyedHash.TabIndex = 35;
@@ -428,7 +445,7 @@
             // 
             // txtKHSCode
             // 
-            this.txtKHSCode.Location = new System.Drawing.Point(103, 185);
+            this.txtKHSCode.Location = new System.Drawing.Point(103, 135);
             this.txtKHSCode.Name = "txtKHSCode";
             this.txtKHSCode.ReadOnly = true;
             this.txtKHSCode.Size = new System.Drawing.Size(212, 19);
@@ -475,26 +492,26 @@
             this.txtKHSString.Size = new System.Drawing.Size(212, 19);
             this.txtKHSString.TabIndex = 27;
             // 
-            // tabPwd2DB1
+            // tabPwdDB1
             // 
-            this.tabPwd2DB1.Controls.Add(this.nudSPWDStretchCount1);
-            this.tabPwd2DB1.Controls.Add(this.lblSPWD14);
-            this.tabPwd2DB1.Controls.Add(this.nudSPWDSaltLength1);
-            this.tabPwd2DB1.Controls.Add(this.lblSPWD13);
-            this.tabPwd2DB1.Controls.Add(this.btnSPWDAuth1);
-            this.tabPwd2DB1.Controls.Add(this.lblSPWD15);
-            this.tabPwd2DB1.Controls.Add(this.txtSPWDSaltedPassword1);
-            this.tabPwd2DB1.Controls.Add(this.lblSPWD12);
-            this.tabPwd2DB1.Controls.Add(this.txtSPWDRawPassword1);
-            this.tabPwd2DB1.Controls.Add(this.cbxSPWDPV1);
-            this.tabPwd2DB1.Controls.Add(this.lblSPWD11);
-            this.tabPwd2DB1.Controls.Add(this.btnSPWDGen1);
-            this.tabPwd2DB1.Location = new System.Drawing.Point(4, 40);
-            this.tabPwd2DB1.Name = "tabPwd2DB1";
-            this.tabPwd2DB1.Size = new System.Drawing.Size(560, 304);
-            this.tabPwd2DB1.TabIndex = 4;
-            this.tabPwd2DB1.Text = "パスワードDB保存 1";
-            this.tabPwd2DB1.UseVisualStyleBackColor = true;
+            this.tabPwdDB1.Controls.Add(this.nudSPWDStretchCount1);
+            this.tabPwdDB1.Controls.Add(this.lblSPWD14);
+            this.tabPwdDB1.Controls.Add(this.nudSPWDSaltLength1);
+            this.tabPwdDB1.Controls.Add(this.lblSPWD13);
+            this.tabPwdDB1.Controls.Add(this.btnSPWDAuth1);
+            this.tabPwdDB1.Controls.Add(this.lblSPWD15);
+            this.tabPwdDB1.Controls.Add(this.txtSPWDSaltedPassword1);
+            this.tabPwdDB1.Controls.Add(this.lblSPWD12);
+            this.tabPwdDB1.Controls.Add(this.txtSPWDRawPassword1);
+            this.tabPwdDB1.Controls.Add(this.cbxSPWDPV1);
+            this.tabPwdDB1.Controls.Add(this.lblSPWD11);
+            this.tabPwdDB1.Controls.Add(this.btnSPWDGen1);
+            this.tabPwdDB1.Location = new System.Drawing.Point(4, 40);
+            this.tabPwdDB1.Name = "tabPwdDB1";
+            this.tabPwdDB1.Size = new System.Drawing.Size(560, 304);
+            this.tabPwdDB1.TabIndex = 4;
+            this.tabPwdDB1.Text = "パスワードDB保存 1";
+            this.tabPwdDB1.UseVisualStyleBackColor = true;
             // 
             // nudSPWDStretchCount1
             // 
@@ -560,7 +577,7 @@
             // 
             // btnSPWDAuth1
             // 
-            this.btnSPWDAuth1.Location = new System.Drawing.Point(113, 164);
+            this.btnSPWDAuth1.Location = new System.Drawing.Point(113, 190);
             this.btnSPWDAuth1.Name = "btnSPWDAuth1";
             this.btnSPWDAuth1.Size = new System.Drawing.Size(213, 23);
             this.btnSPWDAuth1.TabIndex = 41;
@@ -620,7 +637,7 @@
             // 
             // btnSPWDGen1
             // 
-            this.btnSPWDGen1.Location = new System.Drawing.Point(113, 135);
+            this.btnSPWDGen1.Location = new System.Drawing.Point(113, 161);
             this.btnSPWDGen1.Name = "btnSPWDGen1";
             this.btnSPWDGen1.Size = new System.Drawing.Size(213, 23);
             this.btnSPWDGen1.TabIndex = 34;
@@ -628,28 +645,28 @@
             this.btnSPWDGen1.UseVisualStyleBackColor = true;
             this.btnSPWDGen1.Click += new System.EventHandler(this.btnSPWDGen1_Click);
             // 
-            // tabPwd2DB2
+            // tabPwdDB2
             // 
-            this.tabPwd2DB2.Controls.Add(this.nudSPWDStretchCount2);
-            this.tabPwd2DB2.Controls.Add(this.lblSPWD25);
-            this.tabPwd2DB2.Controls.Add(this.lblSPWD23);
-            this.tabPwd2DB2.Controls.Add(this.txtSPWDKey2);
-            this.tabPwd2DB2.Controls.Add(this.nudSPWDSaltLength2);
-            this.tabPwd2DB2.Controls.Add(this.lblSPWD24);
-            this.tabPwd2DB2.Controls.Add(this.button1);
-            this.tabPwd2DB2.Controls.Add(this.lblSPWD26);
-            this.tabPwd2DB2.Controls.Add(this.txtSPWDSaltedPassword2);
-            this.tabPwd2DB2.Controls.Add(this.lblSPWD22);
-            this.tabPwd2DB2.Controls.Add(this.txtSPWDRawPassword2);
-            this.tabPwd2DB2.Controls.Add(this.cbxSPWDPV2);
-            this.tabPwd2DB2.Controls.Add(this.lblSPWD21);
-            this.tabPwd2DB2.Controls.Add(this.btnSPWDGen2);
-            this.tabPwd2DB2.Location = new System.Drawing.Point(4, 40);
-            this.tabPwd2DB2.Name = "tabPwd2DB2";
-            this.tabPwd2DB2.Size = new System.Drawing.Size(560, 304);
-            this.tabPwd2DB2.TabIndex = 5;
-            this.tabPwd2DB2.Text = "パスワードDB保存 2";
-            this.tabPwd2DB2.UseVisualStyleBackColor = true;
+            this.tabPwdDB2.Controls.Add(this.nudSPWDStretchCount2);
+            this.tabPwdDB2.Controls.Add(this.lblSPWD25);
+            this.tabPwdDB2.Controls.Add(this.lblSPWD23);
+            this.tabPwdDB2.Controls.Add(this.txtSPWDKey2);
+            this.tabPwdDB2.Controls.Add(this.nudSPWDSaltLength2);
+            this.tabPwdDB2.Controls.Add(this.lblSPWD24);
+            this.tabPwdDB2.Controls.Add(this.button1);
+            this.tabPwdDB2.Controls.Add(this.lblSPWD26);
+            this.tabPwdDB2.Controls.Add(this.txtSPWDSaltedPassword2);
+            this.tabPwdDB2.Controls.Add(this.lblSPWD22);
+            this.tabPwdDB2.Controls.Add(this.txtSPWDRawPassword2);
+            this.tabPwdDB2.Controls.Add(this.cbxSPWDPV2);
+            this.tabPwdDB2.Controls.Add(this.lblSPWD21);
+            this.tabPwdDB2.Controls.Add(this.btnSPWDGen2);
+            this.tabPwdDB2.Location = new System.Drawing.Point(4, 40);
+            this.tabPwdDB2.Name = "tabPwdDB2";
+            this.tabPwdDB2.Size = new System.Drawing.Size(560, 304);
+            this.tabPwdDB2.TabIndex = 5;
+            this.tabPwdDB2.Text = "パスワードDB保存 2";
+            this.tabPwdDB2.UseVisualStyleBackColor = true;
             // 
             // nudSPWDStretchCount2
             // 
@@ -801,11 +818,13 @@
             // 
             // tabSC
             // 
+            this.tabSC.Controls.Add(this.cbxSCPV3);
+            this.tabSC.Controls.Add(this.cbxSCPV2);
             this.tabSC.Controls.Add(this.gbxSC);
             this.tabSC.Controls.Add(this.nudSCStretching);
             this.tabSC.Controls.Add(this.lblSC6);
             this.tabSC.Controls.Add(this.lblSC5);
-            this.tabSC.Controls.Add(this.cbxSCPV);
+            this.tabSC.Controls.Add(this.cbxSCPV1);
             this.tabSC.Controls.Add(this.btnSCDecrypt);
             this.tabSC.Controls.Add(this.btnSCEncrypt);
             this.tabSC.Controls.Add(this.txtSCCode);
@@ -830,7 +849,7 @@
             this.gbxSC.Controls.Add(this.rbnSCString);
             this.gbxSC.Location = new System.Drawing.Point(9, 7);
             this.gbxSC.Name = "gbxSC";
-            this.gbxSC.Size = new System.Drawing.Size(306, 46);
+            this.gbxSC.Size = new System.Drawing.Size(452, 46);
             this.gbxSC.TabIndex = 26;
             this.gbxSC.TabStop = false;
             this.gbxSC.Text = "API選択";
@@ -867,7 +886,7 @@
             0,
             0});
             this.nudSCStretching.Name = "nudSCStretching";
-            this.nudSCStretching.Size = new System.Drawing.Size(212, 19);
+            this.nudSCStretching.Size = new System.Drawing.Size(358, 19);
             this.nudSCStretching.TabIndex = 24;
             // 
             // lblSC6
@@ -888,19 +907,19 @@
             this.lblSC5.TabIndex = 21;
             this.lblSC5.Text = "ストレッチング";
             // 
-            // cbxSCPV
+            // cbxSCPV1
             // 
-            this.cbxSCPV.FormattingEnabled = true;
-            this.cbxSCPV.Location = new System.Drawing.Point(103, 59);
-            this.cbxSCPV.Name = "cbxSCPV";
-            this.cbxSCPV.Size = new System.Drawing.Size(212, 20);
-            this.cbxSCPV.TabIndex = 20;
+            this.cbxSCPV1.FormattingEnabled = true;
+            this.cbxSCPV1.Location = new System.Drawing.Point(103, 59);
+            this.cbxSCPV1.Name = "cbxSCPV1";
+            this.cbxSCPV1.Size = new System.Drawing.Size(156, 20);
+            this.cbxSCPV1.TabIndex = 20;
             // 
             // btnSCDecrypt
             // 
-            this.btnSCDecrypt.Location = new System.Drawing.Point(217, 210);
+            this.btnSCDecrypt.Location = new System.Drawing.Point(294, 210);
             this.btnSCDecrypt.Name = "btnSCDecrypt";
-            this.btnSCDecrypt.Size = new System.Drawing.Size(98, 23);
+            this.btnSCDecrypt.Size = new System.Drawing.Size(167, 23);
             this.btnSCDecrypt.TabIndex = 19;
             this.btnSCDecrypt.Text = "復号化";
             this.btnSCDecrypt.UseVisualStyleBackColor = true;
@@ -910,7 +929,7 @@
             // 
             this.btnSCEncrypt.Location = new System.Drawing.Point(103, 210);
             this.btnSCEncrypt.Name = "btnSCEncrypt";
-            this.btnSCEncrypt.Size = new System.Drawing.Size(98, 23);
+            this.btnSCEncrypt.Size = new System.Drawing.Size(167, 23);
             this.btnSCEncrypt.TabIndex = 18;
             this.btnSCEncrypt.Text = "暗号化";
             this.btnSCEncrypt.UseVisualStyleBackColor = true;
@@ -921,7 +940,7 @@
             this.txtSCCode.Location = new System.Drawing.Point(103, 185);
             this.txtSCCode.Name = "txtSCCode";
             this.txtSCCode.ReadOnly = true;
-            this.txtSCCode.Size = new System.Drawing.Size(212, 19);
+            this.txtSCCode.Size = new System.Drawing.Size(358, 19);
             this.txtSCCode.TabIndex = 17;
             // 
             // lblSC4
@@ -937,7 +956,7 @@
             // 
             this.txtSCSalt.Location = new System.Drawing.Point(103, 135);
             this.txtSCSalt.Name = "txtSCSalt";
-            this.txtSCSalt.Size = new System.Drawing.Size(212, 19);
+            this.txtSCSalt.Size = new System.Drawing.Size(358, 19);
             this.txtSCSalt.TabIndex = 15;
             // 
             // lblSC3
@@ -971,14 +990,14 @@
             // 
             this.txtSCPassword.Location = new System.Drawing.Point(103, 110);
             this.txtSCPassword.Name = "txtSCPassword";
-            this.txtSCPassword.Size = new System.Drawing.Size(212, 19);
+            this.txtSCPassword.Size = new System.Drawing.Size(358, 19);
             this.txtSCPassword.TabIndex = 11;
             // 
             // txtSCString
             // 
             this.txtSCString.Location = new System.Drawing.Point(103, 85);
             this.txtSCString.Name = "txtSCString";
-            this.txtSCString.Size = new System.Drawing.Size(212, 19);
+            this.txtSCString.Size = new System.Drawing.Size(358, 19);
             this.txtSCString.TabIndex = 10;
             // 
             // tabASC
@@ -1153,29 +1172,29 @@
             this.txtASCString.Size = new System.Drawing.Size(212, 19);
             this.txtASCString.TabIndex = 27;
             // 
-            // tabCodeSigning
+            // tabDS
             // 
-            this.tabCodeSigning.Controls.Add(this.btnDSVerify);
-            this.tabCodeSigning.Controls.Add(this.lblCC6);
-            this.tabCodeSigning.Controls.Add(this.txtDSSign);
-            this.tabCodeSigning.Controls.Add(this.lblCC5);
-            this.tabCodeSigning.Controls.Add(this.txtDSPublicKey);
-            this.tabCodeSigning.Controls.Add(this.lblCC4);
-            this.tabCodeSigning.Controls.Add(this.txtDSPrivateKey);
-            this.tabCodeSigning.Controls.Add(this.lblCC3);
-            this.tabCodeSigning.Controls.Add(this.lblCC2);
-            this.tabCodeSigning.Controls.Add(this.txtDSData);
-            this.tabCodeSigning.Controls.Add(this.txtDSHash);
-            this.tabCodeSigning.Controls.Add(this.cbxDSPV);
-            this.tabCodeSigning.Controls.Add(this.lblCC1);
-            this.tabCodeSigning.Controls.Add(this.gbxDS);
-            this.tabCodeSigning.Controls.Add(this.btnDSSign);
-            this.tabCodeSigning.Location = new System.Drawing.Point(4, 40);
-            this.tabCodeSigning.Name = "tabCodeSigning";
-            this.tabCodeSigning.Size = new System.Drawing.Size(560, 304);
-            this.tabCodeSigning.TabIndex = 7;
-            this.tabCodeSigning.Text = "署名";
-            this.tabCodeSigning.UseVisualStyleBackColor = true;
+            this.tabDS.Controls.Add(this.btnDSVerify);
+            this.tabDS.Controls.Add(this.lblDS6);
+            this.tabDS.Controls.Add(this.txtDSSign);
+            this.tabDS.Controls.Add(this.lblDS5);
+            this.tabDS.Controls.Add(this.txtDSPublicKey);
+            this.tabDS.Controls.Add(this.lblDS4);
+            this.tabDS.Controls.Add(this.txtDSPrivateKey);
+            this.tabDS.Controls.Add(this.lblDS3);
+            this.tabDS.Controls.Add(this.lblDS2);
+            this.tabDS.Controls.Add(this.txtDSData);
+            this.tabDS.Controls.Add(this.txtDSHash);
+            this.tabDS.Controls.Add(this.cbxDSPV);
+            this.tabDS.Controls.Add(this.lblDS1);
+            this.tabDS.Controls.Add(this.gbxDS);
+            this.tabDS.Controls.Add(this.btnDSSign);
+            this.tabDS.Location = new System.Drawing.Point(4, 40);
+            this.tabDS.Name = "tabDS";
+            this.tabDS.Size = new System.Drawing.Size(560, 304);
+            this.tabDS.TabIndex = 7;
+            this.tabDS.Text = "署名";
+            this.tabDS.UseVisualStyleBackColor = true;
             // 
             // btnDSVerify
             // 
@@ -1187,14 +1206,14 @@
             this.btnDSVerify.UseVisualStyleBackColor = true;
             this.btnDSVerify.Click += new System.EventHandler(this.btnDSVerify_Click);
             // 
-            // lblCC6
+            // lblDS6
             // 
-            this.lblCC6.AutoSize = true;
-            this.lblCC6.Location = new System.Drawing.Point(9, 188);
-            this.lblCC6.Name = "lblCC6";
-            this.lblCC6.Size = new System.Drawing.Size(29, 12);
-            this.lblCC6.TabIndex = 42;
-            this.lblCC6.Text = "署名";
+            this.lblDS6.AutoSize = true;
+            this.lblDS6.Location = new System.Drawing.Point(9, 188);
+            this.lblDS6.Name = "lblDS6";
+            this.lblDS6.Size = new System.Drawing.Size(29, 12);
+            this.lblDS6.TabIndex = 42;
+            this.lblDS6.Text = "署名";
             // 
             // txtDSSign
             // 
@@ -1204,14 +1223,14 @@
             this.txtDSSign.Size = new System.Drawing.Size(212, 19);
             this.txtDSSign.TabIndex = 41;
             // 
-            // lblCC5
+            // lblDS5
             // 
-            this.lblCC5.AutoSize = true;
-            this.lblCC5.Location = new System.Drawing.Point(9, 163);
-            this.lblCC5.Name = "lblCC5";
-            this.lblCC5.Size = new System.Drawing.Size(41, 12);
-            this.lblCC5.TabIndex = 40;
-            this.lblCC5.Text = "公開鍵";
+            this.lblDS5.AutoSize = true;
+            this.lblDS5.Location = new System.Drawing.Point(9, 163);
+            this.lblDS5.Name = "lblDS5";
+            this.lblDS5.Size = new System.Drawing.Size(41, 12);
+            this.lblDS5.TabIndex = 40;
+            this.lblDS5.Text = "公開鍵";
             // 
             // txtDSPublicKey
             // 
@@ -1220,14 +1239,14 @@
             this.txtDSPublicKey.Size = new System.Drawing.Size(212, 19);
             this.txtDSPublicKey.TabIndex = 39;
             // 
-            // lblCC4
+            // lblDS4
             // 
-            this.lblCC4.AutoSize = true;
-            this.lblCC4.Location = new System.Drawing.Point(9, 138);
-            this.lblCC4.Name = "lblCC4";
-            this.lblCC4.Size = new System.Drawing.Size(41, 12);
-            this.lblCC4.TabIndex = 38;
-            this.lblCC4.Text = "秘密鍵";
+            this.lblDS4.AutoSize = true;
+            this.lblDS4.Location = new System.Drawing.Point(9, 138);
+            this.lblDS4.Name = "lblDS4";
+            this.lblDS4.Size = new System.Drawing.Size(41, 12);
+            this.lblDS4.TabIndex = 38;
+            this.lblDS4.Text = "秘密鍵";
             // 
             // txtDSPrivateKey
             // 
@@ -1237,23 +1256,23 @@
             this.txtDSPrivateKey.Size = new System.Drawing.Size(212, 19);
             this.txtDSPrivateKey.TabIndex = 37;
             // 
-            // lblCC3
+            // lblDS3
             // 
-            this.lblCC3.AutoSize = true;
-            this.lblCC3.Location = new System.Drawing.Point(9, 113);
-            this.lblCC3.Name = "lblCC3";
-            this.lblCC3.Size = new System.Drawing.Size(33, 12);
-            this.lblCC3.TabIndex = 36;
-            this.lblCC3.Text = "データ";
+            this.lblDS3.AutoSize = true;
+            this.lblDS3.Location = new System.Drawing.Point(9, 113);
+            this.lblDS3.Name = "lblDS3";
+            this.lblDS3.Size = new System.Drawing.Size(33, 12);
+            this.lblDS3.TabIndex = 36;
+            this.lblDS3.Text = "データ";
             // 
-            // lblCC2
+            // lblDS2
             // 
-            this.lblCC2.AutoSize = true;
-            this.lblCC2.Location = new System.Drawing.Point(9, 88);
-            this.lblCC2.Name = "lblCC2";
-            this.lblCC2.Size = new System.Drawing.Size(77, 12);
-            this.lblCC2.TabIndex = 35;
-            this.lblCC2.Text = "ハッシュ (X509)";
+            this.lblDS2.AutoSize = true;
+            this.lblDS2.Location = new System.Drawing.Point(9, 88);
+            this.lblDS2.Name = "lblDS2";
+            this.lblDS2.Size = new System.Drawing.Size(77, 12);
+            this.lblDS2.TabIndex = 35;
+            this.lblDS2.Text = "ハッシュ (X509)";
             // 
             // txtDSData
             // 
@@ -1279,14 +1298,14 @@
             this.cbxDSPV.Size = new System.Drawing.Size(212, 20);
             this.cbxDSPV.TabIndex = 32;
             // 
-            // lblCC1
+            // lblDS1
             // 
-            this.lblCC1.AutoSize = true;
-            this.lblCC1.Location = new System.Drawing.Point(9, 63);
-            this.lblCC1.Name = "lblCC1";
-            this.lblCC1.Size = new System.Drawing.Size(135, 12);
-            this.lblCC1.TabIndex = 31;
-            this.lblCC1.Text = "プロバイダ (XML or Param)";
+            this.lblDS1.AutoSize = true;
+            this.lblDS1.Location = new System.Drawing.Point(9, 63);
+            this.lblDS1.Name = "lblDS1";
+            this.lblDS1.Size = new System.Drawing.Size(135, 12);
+            this.lblDS1.TabIndex = 31;
+            this.lblDS1.Text = "プロバイダ (XML or Param)";
             // 
             // gbxDS
             // 
@@ -1346,6 +1365,120 @@
             this.btnDSSign.Text = "署名";
             this.btnDSSign.UseVisualStyleBackColor = true;
             this.btnDSSign.Click += new System.EventHandler(this.btnDSSign_Click);
+            // 
+            // tabMAC
+            // 
+            this.tabMAC.Controls.Add(this.btnVerifyMAC);
+            this.tabMAC.Controls.Add(this.lblMAC4);
+            this.tabMAC.Controls.Add(this.cbxMACPV);
+            this.tabMAC.Controls.Add(this.btnGetMAC);
+            this.tabMAC.Controls.Add(this.txtMACValue);
+            this.tabMAC.Controls.Add(this.lblMAC3);
+            this.tabMAC.Controls.Add(this.lblMAC2);
+            this.tabMAC.Controls.Add(this.lblMAC1);
+            this.tabMAC.Controls.Add(this.txtMACPassword);
+            this.tabMAC.Controls.Add(this.txtMACString);
+            this.tabMAC.Location = new System.Drawing.Point(4, 40);
+            this.tabMAC.Name = "tabMAC";
+            this.tabMAC.Size = new System.Drawing.Size(560, 304);
+            this.tabMAC.TabIndex = 8;
+            this.tabMAC.Text = "MAC";
+            this.tabMAC.UseVisualStyleBackColor = true;
+            // 
+            // btnVerifyMAC
+            // 
+            this.btnVerifyMAC.Location = new System.Drawing.Point(108, 142);
+            this.btnVerifyMAC.Name = "btnVerifyMAC";
+            this.btnVerifyMAC.Size = new System.Drawing.Size(212, 23);
+            this.btnVerifyMAC.TabIndex = 49;
+            this.btnVerifyMAC.Text = "VerifyMAC";
+            this.btnVerifyMAC.UseVisualStyleBackColor = true;
+            this.btnVerifyMAC.Click += new System.EventHandler(this.btnVerifyMAC_Click);
+            // 
+            // lblMAC4
+            // 
+            this.lblMAC4.AutoSize = true;
+            this.lblMAC4.Location = new System.Drawing.Point(14, 91);
+            this.lblMAC4.Name = "lblMAC4";
+            this.lblMAC4.Size = new System.Drawing.Size(42, 12);
+            this.lblMAC4.TabIndex = 48;
+            this.lblMAC4.Text = "MAC値";
+            // 
+            // cbxMACPV
+            // 
+            this.cbxMACPV.FormattingEnabled = true;
+            this.cbxMACPV.Location = new System.Drawing.Point(108, 12);
+            this.cbxMACPV.Name = "cbxMACPV";
+            this.cbxMACPV.Size = new System.Drawing.Size(212, 20);
+            this.cbxMACPV.TabIndex = 47;
+            // 
+            // btnGetMAC
+            // 
+            this.btnGetMAC.Location = new System.Drawing.Point(108, 113);
+            this.btnGetMAC.Name = "btnGetMAC";
+            this.btnGetMAC.Size = new System.Drawing.Size(212, 23);
+            this.btnGetMAC.TabIndex = 46;
+            this.btnGetMAC.Text = "GetMAC";
+            this.btnGetMAC.UseVisualStyleBackColor = true;
+            this.btnGetMAC.Click += new System.EventHandler(this.btnGetMAC_Click);
+            // 
+            // txtMACValue
+            // 
+            this.txtMACValue.Location = new System.Drawing.Point(108, 88);
+            this.txtMACValue.Name = "txtMACValue";
+            this.txtMACValue.ReadOnly = true;
+            this.txtMACValue.Size = new System.Drawing.Size(212, 19);
+            this.txtMACValue.TabIndex = 45;
+            // 
+            // lblMAC3
+            // 
+            this.lblMAC3.AutoSize = true;
+            this.lblMAC3.Location = new System.Drawing.Point(14, 66);
+            this.lblMAC3.Name = "lblMAC3";
+            this.lblMAC3.Size = new System.Drawing.Size(52, 12);
+            this.lblMAC3.TabIndex = 44;
+            this.lblMAC3.Text = "パスワード";
+            // 
+            // lblMAC2
+            // 
+            this.lblMAC2.AutoSize = true;
+            this.lblMAC2.Location = new System.Drawing.Point(14, 41);
+            this.lblMAC2.Name = "lblMAC2";
+            this.lblMAC2.Size = new System.Drawing.Size(41, 12);
+            this.lblMAC2.TabIndex = 43;
+            this.lblMAC2.Text = "文字列";
+            // 
+            // lblMAC1
+            // 
+            this.lblMAC1.AutoSize = true;
+            this.lblMAC1.Location = new System.Drawing.Point(14, 16);
+            this.lblMAC1.Name = "lblMAC1";
+            this.lblMAC1.Size = new System.Drawing.Size(75, 12);
+            this.lblMAC1.TabIndex = 42;
+            this.lblMAC1.Text = "暗号プロバイダ";
+            // 
+            // txtMACPassword
+            // 
+            this.txtMACPassword.Location = new System.Drawing.Point(108, 63);
+            this.txtMACPassword.Name = "txtMACPassword";
+            this.txtMACPassword.Size = new System.Drawing.Size(212, 19);
+            this.txtMACPassword.TabIndex = 41;
+            // 
+            // txtMACString
+            // 
+            this.txtMACString.Location = new System.Drawing.Point(108, 38);
+            this.txtMACString.Name = "txtMACString";
+            this.txtMACString.Size = new System.Drawing.Size(212, 19);
+            this.txtMACString.TabIndex = 40;
+            // 
+            // tabAEAD
+            // 
+            this.tabAEAD.Location = new System.Drawing.Point(4, 40);
+            this.tabAEAD.Name = "tabAEAD";
+            this.tabAEAD.Size = new System.Drawing.Size(560, 304);
+            this.tabAEAD.TabIndex = 9;
+            this.tabAEAD.Text = "AEAD";
+            this.tabAEAD.UseVisualStyleBackColor = true;
             // 
             // tabJWS
             // 
@@ -1534,120 +1667,6 @@
             this.btnJWSSign.UseVisualStyleBackColor = true;
             this.btnJWSSign.Click += new System.EventHandler(this.btnJWSSign_Click);
             // 
-            // tabMAC
-            // 
-            this.tabMAC.Controls.Add(this.btnVerifyMAC);
-            this.tabMAC.Controls.Add(this.lblMAC4);
-            this.tabMAC.Controls.Add(this.cbxMACPV);
-            this.tabMAC.Controls.Add(this.btnGetMAC);
-            this.tabMAC.Controls.Add(this.txtMACValue);
-            this.tabMAC.Controls.Add(this.lblMAC3);
-            this.tabMAC.Controls.Add(this.lblMAC2);
-            this.tabMAC.Controls.Add(this.lblMAC1);
-            this.tabMAC.Controls.Add(this.txtMACPassword);
-            this.tabMAC.Controls.Add(this.txtMACString);
-            this.tabMAC.Location = new System.Drawing.Point(4, 40);
-            this.tabMAC.Name = "tabMAC";
-            this.tabMAC.Size = new System.Drawing.Size(560, 304);
-            this.tabMAC.TabIndex = 8;
-            this.tabMAC.Text = "MAC";
-            this.tabMAC.UseVisualStyleBackColor = true;
-            // 
-            // lblMAC4
-            // 
-            this.lblMAC4.AutoSize = true;
-            this.lblMAC4.Location = new System.Drawing.Point(14, 91);
-            this.lblMAC4.Name = "lblMAC4";
-            this.lblMAC4.Size = new System.Drawing.Size(42, 12);
-            this.lblMAC4.TabIndex = 48;
-            this.lblMAC4.Text = "MAC値";
-            // 
-            // cbxMACPV
-            // 
-            this.cbxMACPV.FormattingEnabled = true;
-            this.cbxMACPV.Location = new System.Drawing.Point(108, 12);
-            this.cbxMACPV.Name = "cbxMACPV";
-            this.cbxMACPV.Size = new System.Drawing.Size(212, 20);
-            this.cbxMACPV.TabIndex = 47;
-            // 
-            // btnGetMAC
-            // 
-            this.btnGetMAC.Location = new System.Drawing.Point(108, 113);
-            this.btnGetMAC.Name = "btnGetMAC";
-            this.btnGetMAC.Size = new System.Drawing.Size(212, 23);
-            this.btnGetMAC.TabIndex = 46;
-            this.btnGetMAC.Text = "GetMAC";
-            this.btnGetMAC.UseVisualStyleBackColor = true;
-            this.btnGetMAC.Click += new System.EventHandler(this.btnGetMAC_Click);
-            // 
-            // txtMACValue
-            // 
-            this.txtMACValue.Location = new System.Drawing.Point(108, 88);
-            this.txtMACValue.Name = "txtMACValue";
-            this.txtMACValue.ReadOnly = true;
-            this.txtMACValue.Size = new System.Drawing.Size(212, 19);
-            this.txtMACValue.TabIndex = 45;
-            // 
-            // lblMAC2
-            // 
-            this.lblMAC2.AutoSize = true;
-            this.lblMAC2.Location = new System.Drawing.Point(14, 41);
-            this.lblMAC2.Name = "lblMAC2";
-            this.lblMAC2.Size = new System.Drawing.Size(41, 12);
-            this.lblMAC2.TabIndex = 43;
-            this.lblMAC2.Text = "文字列";
-            // 
-            // lblMAC1
-            // 
-            this.lblMAC1.AutoSize = true;
-            this.lblMAC1.Location = new System.Drawing.Point(14, 16);
-            this.lblMAC1.Name = "lblMAC1";
-            this.lblMAC1.Size = new System.Drawing.Size(75, 12);
-            this.lblMAC1.TabIndex = 42;
-            this.lblMAC1.Text = "暗号プロバイダ";
-            // 
-            // txtMACString
-            // 
-            this.txtMACString.Location = new System.Drawing.Point(108, 38);
-            this.txtMACString.Name = "txtMACString";
-            this.txtMACString.Size = new System.Drawing.Size(212, 19);
-            this.txtMACString.TabIndex = 40;
-            // 
-            // txtMACPassword
-            // 
-            this.txtMACPassword.Location = new System.Drawing.Point(108, 63);
-            this.txtMACPassword.Name = "txtMACPassword";
-            this.txtMACPassword.Size = new System.Drawing.Size(212, 19);
-            this.txtMACPassword.TabIndex = 41;
-            // 
-            // lblMAC3
-            // 
-            this.lblMAC3.AutoSize = true;
-            this.lblMAC3.Location = new System.Drawing.Point(14, 66);
-            this.lblMAC3.Name = "lblMAC3";
-            this.lblMAC3.Size = new System.Drawing.Size(52, 12);
-            this.lblMAC3.TabIndex = 44;
-            this.lblMAC3.Text = "パスワード";
-            // 
-            // btnVerifyMAC
-            // 
-            this.btnVerifyMAC.Location = new System.Drawing.Point(108, 142);
-            this.btnVerifyMAC.Name = "btnVerifyMAC";
-            this.btnVerifyMAC.Size = new System.Drawing.Size(212, 23);
-            this.btnVerifyMAC.TabIndex = 49;
-            this.btnVerifyMAC.Text = "VerifyMAC";
-            this.btnVerifyMAC.UseVisualStyleBackColor = true;
-            this.btnVerifyMAC.Click += new System.EventHandler(this.btnVerifyMAC_Click);
-            // 
-            // tabAEAD
-            // 
-            this.tabAEAD.Location = new System.Drawing.Point(4, 40);
-            this.tabAEAD.Name = "tabAEAD";
-            this.tabAEAD.Size = new System.Drawing.Size(560, 304);
-            this.tabAEAD.TabIndex = 9;
-            this.tabAEAD.Text = "AEAD";
-            this.tabAEAD.UseVisualStyleBackColor = true;
-            // 
             // tabJWE
             // 
             this.tabJWE.Location = new System.Drawing.Point(4, 40);
@@ -1656,6 +1675,138 @@
             this.tabJWE.TabIndex = 10;
             this.tabJWE.Text = "JWE";
             this.tabJWE.UseVisualStyleBackColor = true;
+            // 
+            // tabRKEX
+            // 
+            this.tabRKEX.Controls.Add(this.label2);
+            this.tabRKEX.Controls.Add(this.label1);
+            this.tabRKEX.Controls.Add(this.txtRKEXKeyInfo);
+            this.tabRKEX.Controls.Add(this.lblRKEX2);
+            this.tabRKEX.Controls.Add(this.lblRKEX1);
+            this.tabRKEX.Controls.Add(this.txtRKEXBobString);
+            this.tabRKEX.Controls.Add(this.txtRKEXAliceString);
+            this.tabRKEX.Controls.Add(this.cbxRKEXPV);
+            this.tabRKEX.Controls.Add(this.btnRKEXSR);
+            this.tabRKEX.Controls.Add(this.btnRKEXEC);
+            this.tabRKEX.Location = new System.Drawing.Point(4, 40);
+            this.tabRKEX.Name = "tabRKEX";
+            this.tabRKEX.Size = new System.Drawing.Size(560, 304);
+            this.tabRKEX.TabIndex = 11;
+            this.tabRKEX.Text = "RSA鍵交換";
+            this.tabRKEX.UseVisualStyleBackColor = true;
+            // 
+            // tabEKEX
+            // 
+            this.tabEKEX.Location = new System.Drawing.Point(4, 40);
+            this.tabEKEX.Name = "tabEKEX";
+            this.tabEKEX.Size = new System.Drawing.Size(560, 304);
+            this.tabEKEX.TabIndex = 12;
+            this.tabEKEX.Text = "ECDH鍵交換";
+            this.tabEKEX.UseVisualStyleBackColor = true;
+            // 
+            // btnRKEXEC
+            // 
+            this.btnRKEXEC.Location = new System.Drawing.Point(32, 187);
+            this.btnRKEXEC.Name = "btnRKEXEC";
+            this.btnRKEXEC.Size = new System.Drawing.Size(174, 23);
+            this.btnRKEXEC.TabIndex = 1;
+            this.btnRKEXEC.Text = "キー交換";
+            this.btnRKEXEC.UseVisualStyleBackColor = true;
+            this.btnRKEXEC.Click += new System.EventHandler(this.btnRKEXEC_Click);
+            // 
+            // btnRKEXSR
+            // 
+            this.btnRKEXSR.Location = new System.Drawing.Point(212, 187);
+            this.btnRKEXSR.Name = "btnRKEXSR";
+            this.btnRKEXSR.Size = new System.Drawing.Size(174, 23);
+            this.btnRKEXSR.TabIndex = 2;
+            this.btnRKEXSR.Text = "送受信";
+            this.btnRKEXSR.UseVisualStyleBackColor = true;
+            this.btnRKEXSR.Click += new System.EventHandler(this.btnRKEXSR_Click);
+            // 
+            // cbxRKEXPV
+            // 
+            this.cbxRKEXPV.FormattingEnabled = true;
+            this.cbxRKEXPV.Location = new System.Drawing.Point(96, 14);
+            this.cbxRKEXPV.Name = "cbxRKEXPV";
+            this.cbxRKEXPV.Size = new System.Drawing.Size(290, 20);
+            this.cbxRKEXPV.TabIndex = 33;
+            // 
+            // txtRKEXAliceString
+            // 
+            this.txtRKEXAliceString.Location = new System.Drawing.Point(96, 137);
+            this.txtRKEXAliceString.Name = "txtRKEXAliceString";
+            this.txtRKEXAliceString.Size = new System.Drawing.Size(290, 19);
+            this.txtRKEXAliceString.TabIndex = 35;
+            // 
+            // txtRKEXBobString
+            // 
+            this.txtRKEXBobString.Location = new System.Drawing.Point(96, 162);
+            this.txtRKEXBobString.Name = "txtRKEXBobString";
+            this.txtRKEXBobString.ReadOnly = true;
+            this.txtRKEXBobString.Size = new System.Drawing.Size(290, 19);
+            this.txtRKEXBobString.TabIndex = 36;
+            // 
+            // lblRKEX1
+            // 
+            this.lblRKEX1.AutoSize = true;
+            this.lblRKEX1.Location = new System.Drawing.Point(30, 17);
+            this.lblRKEX1.Name = "lblRKEX1";
+            this.lblRKEX1.Size = new System.Drawing.Size(51, 12);
+            this.lblRKEX1.TabIndex = 37;
+            this.lblRKEX1.Text = "プロバイダ";
+            // 
+            // lblRKEX2
+            // 
+            this.lblRKEX2.AutoSize = true;
+            this.lblRKEX2.Location = new System.Drawing.Point(30, 54);
+            this.lblRKEX2.Name = "lblRKEX2";
+            this.lblRKEX2.Size = new System.Drawing.Size(41, 12);
+            this.lblRKEX2.TabIndex = 38;
+            this.lblRKEX2.Text = "鍵情報";
+            // 
+            // txtRKEXKeyInfo
+            // 
+            this.txtRKEXKeyInfo.Location = new System.Drawing.Point(96, 51);
+            this.txtRKEXKeyInfo.Multiline = true;
+            this.txtRKEXKeyInfo.Name = "txtRKEXKeyInfo";
+            this.txtRKEXKeyInfo.ReadOnly = true;
+            this.txtRKEXKeyInfo.Size = new System.Drawing.Size(290, 80);
+            this.txtRKEXKeyInfo.TabIndex = 39;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(30, 140);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(30, 12);
+            this.label1.TabIndex = 40;
+            this.label1.Text = "アリス";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(30, 165);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(24, 12);
+            this.label2.TabIndex = 41;
+            this.label2.Text = "ボブ";
+            // 
+            // cbxSCPV2
+            // 
+            this.cbxSCPV2.FormattingEnabled = true;
+            this.cbxSCPV2.Location = new System.Drawing.Point(265, 59);
+            this.cbxSCPV2.Name = "cbxSCPV2";
+            this.cbxSCPV2.Size = new System.Drawing.Size(95, 20);
+            this.cbxSCPV2.TabIndex = 27;
+            // 
+            // cbxSCPV3
+            // 
+            this.cbxSCPV3.FormattingEnabled = true;
+            this.cbxSCPV3.Location = new System.Drawing.Point(366, 59);
+            this.cbxSCPV3.Name = "cbxSCPV3";
+            this.cbxSCPV3.Size = new System.Drawing.Size(95, 20);
+            this.cbxSCPV3.TabIndex = 28;
             // 
             // Form1
             // 
@@ -1676,12 +1827,12 @@
             this.tabKeyedHash.PerformLayout();
             this.gbxKHS.ResumeLayout(false);
             this.gbxKHS.PerformLayout();
-            this.tabPwd2DB1.ResumeLayout(false);
-            this.tabPwd2DB1.PerformLayout();
+            this.tabPwdDB1.ResumeLayout(false);
+            this.tabPwdDB1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSPWDStretchCount1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSPWDSaltLength1)).EndInit();
-            this.tabPwd2DB2.ResumeLayout(false);
-            this.tabPwd2DB2.PerformLayout();
+            this.tabPwdDB2.ResumeLayout(false);
+            this.tabPwdDB2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSPWDStretchCount2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSPWDSaltLength2)).EndInit();
             this.tabSC.ResumeLayout(false);
@@ -1693,16 +1844,18 @@
             this.tabASC.PerformLayout();
             this.gbxASC.ResumeLayout(false);
             this.gbxASC.PerformLayout();
-            this.tabCodeSigning.ResumeLayout(false);
-            this.tabCodeSigning.PerformLayout();
+            this.tabDS.ResumeLayout(false);
+            this.tabDS.PerformLayout();
             this.gbxDS.ResumeLayout(false);
             this.gbxDS.PerformLayout();
+            this.tabMAC.ResumeLayout(false);
+            this.tabMAC.PerformLayout();
             this.tabJWS.ResumeLayout(false);
             this.tabJWS.PerformLayout();
             this.gbxJWS.ResumeLayout(false);
             this.gbxJWS.PerformLayout();
-            this.tabMAC.ResumeLayout(false);
-            this.tabMAC.PerformLayout();
+            this.tabRKEX.ResumeLayout(false);
+            this.tabRKEX.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1711,7 +1864,7 @@
 
         private System.Windows.Forms.TabControl btnSPWDAuth2;
         private System.Windows.Forms.TabPage tabSC;
-        private System.Windows.Forms.ComboBox cbxSCPV;
+        private System.Windows.Forms.ComboBox cbxSCPV1;
         private System.Windows.Forms.Button btnSCDecrypt;
         private System.Windows.Forms.Button btnSCEncrypt;
         private System.Windows.Forms.TextBox txtSCCode;
@@ -1768,7 +1921,7 @@
         private System.Windows.Forms.Label lblKHS1;
         private System.Windows.Forms.TextBox txtKHSPassword;
         private System.Windows.Forms.TextBox txtKHSString;
-        private System.Windows.Forms.TabPage tabPwd2DB1;
+        private System.Windows.Forms.TabPage tabPwdDB1;
         private System.Windows.Forms.Label lblSPWD15;
         private System.Windows.Forms.TextBox txtSPWDSaltedPassword1;
         private System.Windows.Forms.Label lblSPWD12;
@@ -1781,9 +1934,9 @@
         private System.Windows.Forms.Label lblSPWD13;
         private System.Windows.Forms.NumericUpDown nudHSStretching;
         private System.Windows.Forms.Label lblHS3;
-        private System.Windows.Forms.TabPage tabPwd2DB2;
+        private System.Windows.Forms.TabPage tabPwdDB2;
         private System.Windows.Forms.TabPage tabJWS;
-        private System.Windows.Forms.TabPage tabCodeSigning;
+        private System.Windows.Forms.TabPage tabDS;
         private System.Windows.Forms.NumericUpDown nudSPWDSaltLength2;
         private System.Windows.Forms.Label lblSPWD24;
         private System.Windows.Forms.Button button1;
@@ -1805,16 +1958,16 @@
         private System.Windows.Forms.RadioButton rbnDSX509;
         private System.Windows.Forms.RadioButton rbnDSXML;
         private System.Windows.Forms.ComboBox cbxDSPV;
-        private System.Windows.Forms.Label lblCC1;
-        private System.Windows.Forms.Label lblCC3;
-        private System.Windows.Forms.Label lblCC2;
+        private System.Windows.Forms.Label lblDS1;
+        private System.Windows.Forms.Label lblDS3;
+        private System.Windows.Forms.Label lblDS2;
         private System.Windows.Forms.TextBox txtDSData;
         private System.Windows.Forms.TextBox txtDSHash;
-        private System.Windows.Forms.Label lblCC6;
+        private System.Windows.Forms.Label lblDS6;
         private System.Windows.Forms.TextBox txtDSSign;
-        private System.Windows.Forms.Label lblCC5;
+        private System.Windows.Forms.Label lblDS5;
         private System.Windows.Forms.TextBox txtDSPublicKey;
-        private System.Windows.Forms.Label lblCC4;
+        private System.Windows.Forms.Label lblDS4;
         private System.Windows.Forms.TextBox txtDSPrivateKey;
         private System.Windows.Forms.Button btnDSVerify;
         private System.Windows.Forms.Button btnJWSVerify;
@@ -1849,6 +2002,20 @@
         private System.Windows.Forms.TextBox txtMACString;
         private System.Windows.Forms.TabPage tabAEAD;
         private System.Windows.Forms.TabPage tabJWE;
+        private System.Windows.Forms.TabPage tabRKEX;
+        private System.Windows.Forms.TabPage tabEKEX;
+        private System.Windows.Forms.Button btnRKEXSR;
+        private System.Windows.Forms.Button btnRKEXEC;
+        private System.Windows.Forms.ComboBox cbxRKEXPV;
+        private System.Windows.Forms.Label lblRKEX1;
+        private System.Windows.Forms.TextBox txtRKEXBobString;
+        private System.Windows.Forms.TextBox txtRKEXAliceString;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox txtRKEXKeyInfo;
+        private System.Windows.Forms.Label lblRKEX2;
+        private System.Windows.Forms.ComboBox cbxSCPV3;
+        private System.Windows.Forms.ComboBox cbxSCPV2;
     }
 }
 

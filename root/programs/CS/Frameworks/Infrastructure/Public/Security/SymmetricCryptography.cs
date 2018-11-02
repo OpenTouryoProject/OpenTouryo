@@ -60,11 +60,11 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>固定ソルト</summary>
         /// <remarks>以前のVerからデフォルト値を修正しているので、</remarks>
         private static byte[] Salt = CustomEncode.StringToByte(
-            "Touryo.Infrastructure.Public.IO.SymmetricCryptography.Salt", CustomEncode.UTF_8);
+            "Touryo.Infrastructure.Public.Security.SymmetricCryptography.Salt", CustomEncode.UTF_8);
 
         /// <summary>固定ストレッチング</summary>
         private static int Stretching = 1000;
-
+        
         #region Encrypt
 
         #region EncryptString
@@ -373,11 +373,7 @@ namespace Touryo.Infrastructure.Public.Security
 
             //.NET Framework 1.1以下の時は、PasswordDeriveBytesを使用する
             //PasswordDeriveBytes deriveBytes = new PasswordDeriveBytes(password, salt);
-
-            // コンストラクタで指定するように変更した。
-            ////反復処理回数を指定する
-            //deriveBytes.IterationCount = stretching;
-
+            
             //共有キーと初期化ベクタを生成する
             key = deriveBytes.GetBytes(keySize / 8);
             iv = deriveBytes.GetBytes(blockSize / 8);
@@ -397,7 +393,59 @@ namespace Touryo.Infrastructure.Public.Security
         /// </returns>
         private static SymmetricAlgorithm CreateSymmetricAlgorithm(EnumSymmetricAlgorithm esa)
         {
-            return CreateSymmetricAlgorithm(esa, 0, 0);
+            //esa = EnumSymmetricAlgorithm.AesManaged
+            //    | EnumSymmetricAlgorithm.CipherMode_CBC
+            //    | EnumSymmetricAlgorithm.PaddingMode_PKCS7;
+
+            // CipherMode, PaddingMode指定の追加
+            CipherMode cm = 0;
+            PaddingMode pm = 0;
+
+            // CipherMode
+            if (esa.HasFlag(EnumSymmetricAlgorithm.CipherMode_CBC))
+            {
+                cm = CipherMode.CBC;
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.CipherMode_CFB))
+            {
+                cm = CipherMode.CFB;
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.CipherMode_CTS))
+            {
+                cm = CipherMode.CTS;
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.CipherMode_ECB))
+            {
+                cm = CipherMode.ECB;
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.CipherMode_OFB))
+            {
+                cm = CipherMode.OFB;
+            }
+
+            // PaddingMode
+            if (esa.HasFlag(EnumSymmetricAlgorithm.PaddingMode_None))
+            {
+                pm = PaddingMode.None;
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.PaddingMode_Zeros))
+            {
+                pm = PaddingMode.Zeros;
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.PaddingMode_ANSIX923))
+            {
+                pm = PaddingMode.ANSIX923;
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.PaddingMode_ISO10126))
+            {
+                pm = PaddingMode.ISO10126;
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.PaddingMode_PKCS7))
+            {
+                pm = PaddingMode.PKCS7;
+            }
+
+            return CreateSymmetricAlgorithm(esa, cm, pm);
         }
 
         /// <summary>
@@ -419,38 +467,38 @@ namespace Touryo.Infrastructure.Public.Security
             SymmetricAlgorithm sa = null;
 
             #region Aes
-            if (esa == EnumSymmetricAlgorithm.AesCryptoServiceProvider)
+            if (esa.HasFlag(EnumSymmetricAlgorithm.AesCryptoServiceProvider))
             {
                 // AesCryptoServiceProviderサービスプロバイダ
                 sa = AesCryptoServiceProvider.Create(); // devps(1703)
             }
-            else if (esa == EnumSymmetricAlgorithm.AesManaged)
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.AesManaged))
             {
                 // AesManagedサービスプロバイダ
                 sa = AesManaged.Create(); // devps(1703)
             }
             #endregion
 
-            else if (esa == EnumSymmetricAlgorithm.DESCryptoServiceProvider)
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.DESCryptoServiceProvider))
             {
                 // DESCryptoServiceProviderサービスプロバイダ
                 sa = DESCryptoServiceProvider.Create(); // devps(1703)
             }
 
-            else if (esa == EnumSymmetricAlgorithm.RC2CryptoServiceProvider)
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.RC2CryptoServiceProvider))
             {
                 // RC2CryptoServiceProviderサービスプロバイダ
                 sa = RC2CryptoServiceProvider.Create(); // devps(1703)
             }
 
-            else if (esa == EnumSymmetricAlgorithm.RijndaelManaged)
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.RijndaelManaged))
             {
                 // RijndaelManagedサービスプロバイダ
                 sa = RijndaelManaged.Create(); // devps(1703)
             }
 
             #region TripleDES
-            else if (esa == EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider)
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider))
             {
                 // TripleDESCryptoServiceProviderサービスプロバイダ
                 sa = TripleDESCryptoServiceProvider.Create(); // devps(1703)
@@ -459,7 +507,7 @@ namespace Touryo.Infrastructure.Public.Security
 #if NET45
 #elif NET46
 #else
-            else if (esa == EnumSymmetricAlgorithm.TripleDESCryptographyNextGeneration)
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.TripleDESCryptographyNextGeneration))
             {
                 // TripleDESCngサービスプロバイダ
                 sa = TripleDESCng.Create(); // devps(1703)
@@ -479,6 +527,7 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 sa.Mode = cm;
             }
+
             // pmが設定されている場合。
             if (pm != 0)
             {

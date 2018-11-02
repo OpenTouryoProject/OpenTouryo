@@ -107,12 +107,14 @@
     <Compile Include="FastReflection\InstanceCreator.cs" />
     <Compile Include="Security\AeadA128CbcHs256.cs" />
     <Compile Include="Security\AeadA256Gcm.cs" />
+    <Compile Include="Security\AeadResult.cs" />
     <Compile Include="Security\AsymmetricAlgorithmCmnFunc.cs" />
     <Compile Include="Security\BaseKeyExchange.cs" />
     <Compile Include="Security\CryptoConst.cs" />
     <Compile Include="Security\AuthEncrypt.cs" />
     <Compile Include="Security\DigitalSignECDsa.cs" />
     <Compile Include="Security\EcdhKeyExchange.cs" />
+    <Compile Include="Security\EnumKeyExchange.cs" />
     <Compile Include="Security\EnumDigitalSignAlgorithm.cs" />
     <Compile Include="Security\GetPasswordHashV2.cs" />
     <Compile Include="Security\GetPasswordHashV1.cs" />

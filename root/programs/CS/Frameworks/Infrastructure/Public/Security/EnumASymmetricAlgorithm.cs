@@ -45,10 +45,9 @@ namespace Touryo.Infrastructure.Public.Security
     /// 非対称アルゴリズムによる暗号化の列挙型
     /// </summary>
     /// <remarks>
-    /// ECDHは、非対称アルゴリズムだが、共有鍵交換のアルゴリズムなので、
-    /// 単純な、公開鍵・暗号化としては利用できないので、以下からコメントアウトした。
-    /// また、OpenSsl系は、.NET Platform Extensions 2.1でサポートの事で、
-    /// これも、詳細不明のため、以下からコメントアウトした。
+    /// ECDHは、EnumKeyExchangeへ移動。
+    /// OpenSsl系は、.NET Platform Extensions 2.1でサポートの事で、
+    /// 現時点では、詳細不明のため、以下からコメントアウトした。
     /// </remarks>
     public enum EnumASymmetricAlgorithm
     {

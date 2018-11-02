@@ -39,9 +39,9 @@ namespace Touryo.Infrastructure.Public.Security
     {
         // 暗号化・復号化に使用する秘密鍵
 
-        /// <summary>_privateKey</summary>
+        /// <summary>暗号化・復号化に使用する秘密鍵</summary>
         protected byte[] _privateKey;
-        /// <summary>PrivateKey</summary>
+        /// <summary>暗号化・復号化に使用する秘密鍵</summary>
         public byte[] PrivateKey
         {
             get
