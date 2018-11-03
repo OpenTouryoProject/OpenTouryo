@@ -643,7 +643,17 @@ namespace EncAndDecUtil
             // キー交換、秘密鍵生成 & 暗号化プロバイダ生成
             if (ekex == EnumKeyExchange.RSAPKCS1KeyExchange)
             {
-                this._rsaBob = new RsaPkcs1Bob();
+                if (((Button)sender).Name == "btnRKEXEC1")
+                {
+                    this._rsaBob = new RsaPkcs1Bob();
+                }
+                else
+                {
+                    this._rsaBob = new RsaPkcs1Bob(
+                        this.CertificateFilePath_pfx, this.CertificateFilePassword, 
+                        X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+                }
+                
                 this._rsaAlice = new RsaPkcs1Alice(this._rsaBob.ExchangeKey);
                 ((RsaPkcs1Bob)this._rsaBob).GeneratePrivateKey(this._rsaAlice.ExchangeKey, this._rsaAlice.IV);
             }
@@ -796,11 +806,44 @@ namespace EncAndDecUtil
 
         #region AEAD
 
-        /// <summary>秘密鍵・暗号化</summary>
+        /// <summary>AEAD暗号化</summary>
         private void btnAEADEncrypt_Click(object sender, EventArgs e)
         {
-            #region テスト
+            //this.TestA256GCM();
 
+            AeadA256Gcm aesGcm = new AeadA256Gcm(
+                CustomEncode.StringToByte(this.txtAEADCek.Text, CustomEncode.UTF_8),
+                CustomEncode.StringToByte(this.txtAEADIv.Text, CustomEncode.UTF_8),
+                CustomEncode.StringToByte(this.txtAEADAad.Text, CustomEncode.UTF_8));
+
+            aesGcm.Encrypt(CustomEncode.StringToByte(this.txtAEADPlaint.Text, CustomEncode.UTF_8));
+            this.txtAEADCiphert.Text = CustomEncode.ToBase64String(aesGcm.Result.Ciphert);
+            this.txtAEADTag.Text = CustomEncode.ToBase64String(aesGcm.Result.Tag);
+        }
+
+        /// <summary>AEAD復号化</summary>
+        private void btnAEADDecrypt_Click(object sender, EventArgs e)
+        {
+            AeadA256Gcm aesGcm = new AeadA256Gcm(
+                CustomEncode.StringToByte(this.txtAEADCek.Text, CustomEncode.UTF_8),
+                CustomEncode.StringToByte(this.txtAEADIv.Text, CustomEncode.UTF_8),
+                CustomEncode.StringToByte(this.txtAEADAad.Text, CustomEncode.UTF_8));
+
+            this.txtAEADPlaint.Text = CustomEncode.ByteToString(
+                aesGcm.Decrypt(new AeadResult()
+                {
+                    Ciphert = CustomEncode.FromBase64String(this.txtAEADCiphert.Text),
+                    Tag = CustomEncode.FromBase64String(this.txtAEADTag.Text)
+                }),
+                CustomEncode.UTF_8);
+        }
+
+        /// <summary>
+        /// RFC7516 > Appendix A.  JWE Examples > A.1.  Example JWE using RSAES OAEP and AES GCM
+        /// https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-23#appendix-A.1
+        /// </summary>
+        private void TestA256GCMByRFC7516()
+        {
             #region データ
             // A.1
             var plaint = new byte[]
@@ -839,16 +882,18 @@ namespace EncAndDecUtil
 
             // A.1.6 CipherText
 
-            var ciphert = new byte[]{
-            229, 236, 166, 241, 53, 191, 115,
-            196, 174, 43, 73, 109, 39, 122,
-            233, 96, 140, 206, 120, 52, 51, 237,
-            48, 11, 190, 219, 186, 80, 111,
-            104, 50, 142, 47, 167, 59, 61, 181,
-            127, 196, 21, 40, 82, 242, 32,
-            123, 143, 168, 226, 73, 216, 176,
-            144, 138, 247, 106, 60, 16, 205,
-            160, 109, 64, 63, 192};
+            var ciphert = new byte[]
+            {
+                229, 236, 166, 241, 53, 191, 115,
+                196, 174, 43, 73, 109, 39, 122,
+                233, 96, 140, 206, 120, 52, 51, 237,
+                48, 11, 190, 219, 186, 80, 111,
+                104, 50, 142, 47, 167, 59, 61, 181,
+                127, 196, 21, 40, 82, 242, 32,
+                123, 143, 168, 226, 73, 216, 176,
+                144, 138, 247, 106, 60, 16, 205,
+                160, 109, 64, 63, 192
+            };
 
             // Tag
             var tag = new byte[]
@@ -892,14 +937,6 @@ namespace EncAndDecUtil
             }
 
             #endregion
-
-            #endregion
-        }
-
-        /// <summary>秘密鍵・復号化</summary>
-        private void btnAEADDecrypt_Click(object sender, EventArgs e)
-        {
-
         }
 
         #endregion

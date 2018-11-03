@@ -30,10 +30,7 @@
 //*  2018/10/31  西野 大介         新規作成
 //**********************************************************************************
 
-using System.Diagnostics;
 using System.Security.Cryptography;
-
-using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security
 {
@@ -58,10 +55,6 @@ namespace Touryo.Infrastructure.Public.Security
             this._aes = new AesCryptoServiceProvider(); // 秘密鍵
             RSAOAEPKeyExchangeFormatter keyExchangeFormatter = new RSAOAEPKeyExchangeFormatter(rsa);
             this._exchangeKey = keyExchangeFormatter.CreateKeyExchange(this._aes.Key, typeof(Aes)); // 交換鍵
-
-            //Debug.WriteLine("Alice:Key" + CustomEncode.ToBase64String(this._aes.Key));
-            //Debug.WriteLine("Alice:IV" + CustomEncode.ToBase64String(this._aes.IV));
-            //Debug.WriteLine("Alice:Padding" + this._aes.Padding.ToString());
         }
     }
 }

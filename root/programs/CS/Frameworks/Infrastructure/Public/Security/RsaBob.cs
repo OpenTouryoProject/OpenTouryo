@@ -48,13 +48,24 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         /// <summary>constructor</summary>
-        /// <param name="rsaPfxFilePath">RSAのPFX証明書のパス</param>
-        /// <param name="password">PFX証明書のパスワード</param>
+        /// <param name="rsaPfxFilePath">RSAのX.509証明書(*.pfx)へのパス</param>
+        /// <param name="password">パスワード</param>
+        protected RsaBob(string rsaPfxFilePath, string password) :
+            this(rsaPfxFilePath, password, X509KeyStorageFlags.DefaultKeySet) { }
+
+        /// <summary>constructor</summary>
+        /// <param name="rsaPfxFilePath">RSAのX.509証明書(*.pfx)へのパス</param>
+        /// <param name="password">パスワード</param>
         /// <param name="flag">X509KeyStorageFlags</param>
         protected RsaBob(string rsaPfxFilePath, string password, X509KeyStorageFlags flag)
         {
             X509Certificate2 x509Certificate = new X509Certificate2(rsaPfxFilePath, password, flag);
-            RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)x509Certificate.PrivateKey;
+            
+            // RSACryptoServiceProvider
+            // *.pfxの場合、ExportParameters(true)して生成し直している。
+            AsymmetricAlgorithm aa = x509Certificate.PrivateKey;
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(x509Certificate.PrivateKey.KeySize);
+            rsa.ImportParameters(((RSACryptoServiceProvider)(aa)).ExportParameters(true));
 
             this._asa = rsa;
             this._exchangeKey = rsa.ExportCspBlob(false); // 交換鍵

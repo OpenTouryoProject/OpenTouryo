@@ -30,16 +30,31 @@
 //*  2018/10/31  西野 大介         新規作成
 //**********************************************************************************
 
-using System.Diagnostics;
 using System.Security.Cryptography;
-
-using Touryo.Infrastructure.Public.Str;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>RSA-OAEPの「Bobクラス」</summary>
     public class RsaOaepBob : RsaBob
     {
+        /// <summary>constructor</summary>
+        public RsaOaepBob() : base()
+        { }
+
+        /// <summary>constructor</summary>
+        /// <param name="rsaPfxFilePath">RSAのX.509証明書(*.pfx)へのパス</param>
+        /// <param name="password">パスワード</param>
+        public RsaOaepBob(string rsaPfxFilePath, string password) :
+            base(rsaPfxFilePath, password, X509KeyStorageFlags.DefaultKeySet) { }
+
+        /// <summary>constructor</summary>
+        /// <param name="rsaPfxFilePath">RSAのX.509証明書(*.pfx)へのパス</param>
+        /// <param name="password">パスワード</param>
+        /// <param name="flag">X509KeyStorageFlags</param>
+        public RsaOaepBob(string rsaPfxFilePath, string password, X509KeyStorageFlags flag) :
+            base(rsaPfxFilePath, password, flag) { }
+
         /// <summary>秘密鍵生成</summary>
         /// <param name="exchangeKeyOfAlice">Aliceの交換鍵</param>
         /// <param name="iv">初期化ベクター</param>
@@ -50,10 +65,6 @@ namespace Touryo.Infrastructure.Public.Security
 
             this._aes.Key = keyExchangeDeformatter.DecryptKeyExchange(exchangeKeyOfAlice);
             this._aes.IV = iv;
-
-            //Debug.WriteLine("Bob:Key" + CustomEncode.ToBase64String(this._aes.Key));
-            //Debug.WriteLine("Bob:IV" + CustomEncode.ToBase64String(this._aes.IV));
-            //Debug.WriteLine("Bob:Padding" + this._aes.Padding.ToString());
         }
     }
 }
