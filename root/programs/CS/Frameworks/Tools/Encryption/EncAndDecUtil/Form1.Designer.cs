@@ -251,7 +251,7 @@
             this.TabControl1.Multiline = true;
             this.TabControl1.Name = "TabControl1";
             this.TabControl1.SelectedIndex = 0;
-            this.TabControl1.Size = new System.Drawing.Size(568, 348);
+            this.TabControl1.Size = new System.Drawing.Size(547, 311);
             this.TabControl1.TabIndex = 10;
             // 
             // tabHash
@@ -268,7 +268,7 @@
             this.tabHash.Controls.Add(this.btnGetHash);
             this.tabHash.Location = new System.Drawing.Point(4, 40);
             this.tabHash.Name = "tabHash";
-            this.tabHash.Size = new System.Drawing.Size(560, 304);
+            this.tabHash.Size = new System.Drawing.Size(539, 267);
             this.tabHash.TabIndex = 2;
             this.tabHash.Text = "ハッシュ";
             this.tabHash.UseVisualStyleBackColor = true;
@@ -400,9 +400,9 @@
             this.tabKeyedHash.Controls.Add(this.lblKHS1);
             this.tabKeyedHash.Controls.Add(this.txtKHSPassword);
             this.tabKeyedHash.Controls.Add(this.txtKHSString);
-            this.tabKeyedHash.Location = new System.Drawing.Point(4, 22);
+            this.tabKeyedHash.Location = new System.Drawing.Point(4, 40);
             this.tabKeyedHash.Name = "tabKeyedHash";
-            this.tabKeyedHash.Size = new System.Drawing.Size(560, 322);
+            this.tabKeyedHash.Size = new System.Drawing.Size(539, 267);
             this.tabKeyedHash.TabIndex = 3;
             this.tabKeyedHash.Text = "キー付きハッシュ";
             this.tabKeyedHash.UseVisualStyleBackColor = true;
@@ -531,9 +531,9 @@
             this.tabPwdDB1.Controls.Add(this.cbxSPWDPV1);
             this.tabPwdDB1.Controls.Add(this.lblSPWD11);
             this.tabPwdDB1.Controls.Add(this.btnSPWDGen1);
-            this.tabPwdDB1.Location = new System.Drawing.Point(4, 22);
+            this.tabPwdDB1.Location = new System.Drawing.Point(4, 40);
             this.tabPwdDB1.Name = "tabPwdDB1";
-            this.tabPwdDB1.Size = new System.Drawing.Size(560, 322);
+            this.tabPwdDB1.Size = new System.Drawing.Size(539, 267);
             this.tabPwdDB1.TabIndex = 4;
             this.tabPwdDB1.Text = "パスワードDB保存 1";
             this.tabPwdDB1.UseVisualStyleBackColor = true;
@@ -686,9 +686,9 @@
             this.tabPwdDB2.Controls.Add(this.cbxSPWDPV2);
             this.tabPwdDB2.Controls.Add(this.lblSPWD21);
             this.tabPwdDB2.Controls.Add(this.btnSPWDGen2);
-            this.tabPwdDB2.Location = new System.Drawing.Point(4, 22);
+            this.tabPwdDB2.Location = new System.Drawing.Point(4, 40);
             this.tabPwdDB2.Name = "tabPwdDB2";
-            this.tabPwdDB2.Size = new System.Drawing.Size(560, 322);
+            this.tabPwdDB2.Size = new System.Drawing.Size(539, 267);
             this.tabPwdDB2.TabIndex = 5;
             this.tabPwdDB2.Text = "パスワードDB保存 2";
             this.tabPwdDB2.UseVisualStyleBackColor = true;
@@ -863,7 +863,7 @@
             this.tabSC.Location = new System.Drawing.Point(4, 40);
             this.tabSC.Name = "tabSC";
             this.tabSC.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSC.Size = new System.Drawing.Size(560, 304);
+            this.tabSC.Size = new System.Drawing.Size(539, 267);
             this.tabSC.TabIndex = 0;
             this.tabSC.Text = "秘密鍵・暗号化";
             this.tabSC.UseVisualStyleBackColor = true;
@@ -1057,10 +1057,10 @@
             this.tabASC.Controls.Add(this.lblASC2);
             this.tabASC.Controls.Add(this.lblASC1);
             this.tabASC.Controls.Add(this.txtASCString);
-            this.tabASC.Location = new System.Drawing.Point(4, 22);
+            this.tabASC.Location = new System.Drawing.Point(4, 40);
             this.tabASC.Name = "tabASC";
             this.tabASC.Padding = new System.Windows.Forms.Padding(3);
-            this.tabASC.Size = new System.Drawing.Size(560, 322);
+            this.tabASC.Size = new System.Drawing.Size(539, 267);
             this.tabASC.TabIndex = 1;
             this.tabASC.Text = "共通鍵・暗号化";
             this.tabASC.UseVisualStyleBackColor = true;
@@ -1232,7 +1232,7 @@
             this.tabDS.Controls.Add(this.btnDSSign);
             this.tabDS.Location = new System.Drawing.Point(4, 40);
             this.tabDS.Name = "tabDS";
-            this.tabDS.Size = new System.Drawing.Size(560, 304);
+            this.tabDS.Size = new System.Drawing.Size(539, 267);
             this.tabDS.TabIndex = 7;
             this.tabDS.Text = "デジタル署名";
             this.tabDS.UseVisualStyleBackColor = true;
@@ -1422,7 +1422,7 @@
             this.tabRKEX.Controls.Add(this.btnRKEXEC1);
             this.tabRKEX.Location = new System.Drawing.Point(4, 40);
             this.tabRKEX.Name = "tabRKEX";
-            this.tabRKEX.Size = new System.Drawing.Size(560, 304);
+            this.tabRKEX.Size = new System.Drawing.Size(539, 267);
             this.tabRKEX.TabIndex = 11;
             this.tabRKEX.Text = "RSA鍵交換";
             this.tabRKEX.UseVisualStyleBackColor = true;
@@ -1527,7 +1527,7 @@
             this.tabEKEX.Controls.Add(this.btnEKEXEC);
             this.tabEKEX.Location = new System.Drawing.Point(4, 40);
             this.tabEKEX.Name = "tabEKEX";
-            this.tabEKEX.Size = new System.Drawing.Size(560, 304);
+            this.tabEKEX.Size = new System.Drawing.Size(539, 267);
             this.tabEKEX.TabIndex = 12;
             this.tabEKEX.Text = "ECDH鍵交換";
             this.tabEKEX.UseVisualStyleBackColor = true;
@@ -1617,7 +1617,7 @@
             this.tabMAC.Controls.Add(this.txtMACString);
             this.tabMAC.Location = new System.Drawing.Point(4, 40);
             this.tabMAC.Name = "tabMAC";
-            this.tabMAC.Size = new System.Drawing.Size(560, 304);
+            this.tabMAC.Size = new System.Drawing.Size(539, 267);
             this.tabMAC.TabIndex = 8;
             this.tabMAC.Text = "MAC";
             this.tabMAC.UseVisualStyleBackColor = true;
@@ -1726,7 +1726,7 @@
             this.tabAEAD.Controls.Add(this.txtAEADPlaint);
             this.tabAEAD.Location = new System.Drawing.Point(4, 40);
             this.tabAEAD.Name = "tabAEAD";
-            this.tabAEAD.Size = new System.Drawing.Size(560, 304);
+            this.tabAEAD.Size = new System.Drawing.Size(539, 267);
             this.tabAEAD.TabIndex = 9;
             this.tabAEAD.Text = "AEAD";
             this.tabAEAD.UseVisualStyleBackColor = true;
@@ -1734,7 +1734,7 @@
             // lblAEAD5
             // 
             this.lblAEAD5.AutoSize = true;
-            this.lblAEAD5.Location = new System.Drawing.Point(23, 123);
+            this.lblAEAD5.Location = new System.Drawing.Point(25, 123);
             this.lblAEAD5.Name = "lblAEAD5";
             this.lblAEAD5.Size = new System.Drawing.Size(83, 12);
             this.lblAEAD5.TabIndex = 35;
@@ -1743,7 +1743,7 @@
             // lblAEAD4
             // 
             this.lblAEAD4.AutoSize = true;
-            this.lblAEAD4.Location = new System.Drawing.Point(23, 98);
+            this.lblAEAD4.Location = new System.Drawing.Point(25, 98);
             this.lblAEAD4.Name = "lblAEAD4";
             this.lblAEAD4.Size = new System.Drawing.Size(117, 12);
             this.lblAEAD4.TabIndex = 34;
@@ -1788,7 +1788,7 @@
             // lblAEAD2
             // 
             this.lblAEAD2.AutoSize = true;
-            this.lblAEAD2.Location = new System.Drawing.Point(23, 49);
+            this.lblAEAD2.Location = new System.Drawing.Point(25, 49);
             this.lblAEAD2.Name = "lblAEAD2";
             this.lblAEAD2.Size = new System.Drawing.Size(139, 12);
             this.lblAEAD2.TabIndex = 28;
@@ -1797,7 +1797,7 @@
             // lblAEAD1
             // 
             this.lblAEAD1.AutoSize = true;
-            this.lblAEAD1.Location = new System.Drawing.Point(23, 24);
+            this.lblAEAD1.Location = new System.Drawing.Point(25, 24);
             this.lblAEAD1.Name = "lblAEAD1";
             this.lblAEAD1.Size = new System.Drawing.Size(29, 12);
             this.lblAEAD1.TabIndex = 27;
@@ -2033,7 +2033,7 @@
             // lblAEAD6
             // 
             this.lblAEAD6.AutoSize = true;
-            this.lblAEAD6.Location = new System.Drawing.Point(23, 154);
+            this.lblAEAD6.Location = new System.Drawing.Point(25, 148);
             this.lblAEAD6.Name = "lblAEAD6";
             this.lblAEAD6.Size = new System.Drawing.Size(41, 12);
             this.lblAEAD6.TabIndex = 37;
