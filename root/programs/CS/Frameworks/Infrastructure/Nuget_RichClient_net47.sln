@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2016
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.RichClient", "Framework\RichClient\Framework.RichClient_net47.csproj", "{3468B633-2CFE-4A1E-870F-396961E49A9E}"
 EndProject
@@ -18,5 +18,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2A997ABF-7E68-4788-8BDC-7E659821806A}
 	EndGlobalSection
 EndGlobal

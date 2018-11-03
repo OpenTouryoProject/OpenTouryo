@@ -38,6 +38,8 @@
 //*  2017/01/10  西野 大介         AesCryptoServiceProviderを削除（.NET3.5から実装されたAesManagedを残す）
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
+//*  2018/10/30  西野 大介         各種プロバイダのサポートを追加
+//*  2018/10/30  西野 大介         CipherMode, PaddingMode指定の追加（CipherModeによってはIVを無視する）。
 //**********************************************************************************
 
 using System;
@@ -48,36 +50,6 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>
-    /// 対称アルゴリズムによる
-    /// 暗号化サービスプロバイダの種類
-    /// </summary>
-    public enum EnumSymmetricAlgorithm
-    {
-        // AesCryptoServiceProvider, AesManagedは.NET Framework 3.5からの提供。
-        // 暗号化プロバイダ選択の優先順は、高い順に、Managed → CAPI(CSP) → CNG。
-        // Aesは、ManagedがあるのでCAPI(CSP)のAesCryptoServiceProviderを削除。
-        // サポート範囲の変更により、今後、CAPI(CSP)とCNGの優先順位の反転を検討。
-
-        ///// <summary>AesCryptoServiceProvider</summary>
-        //AesCryptoServiceProvider,
-
-        /// <summary>AesManaged</summary>
-        AesManaged,
-
-        /// <summary>DESCryptoServiceProvider</summary>
-        DESCryptoServiceProvider,
-
-        /// <summary>RC2CryptoServiceProvider</summary>
-        RC2CryptoServiceProvider,
-
-        /// <summary>RijndaelManaged</summary>
-        RijndaelManaged,
-
-        /// <summary>TripleDESCryptoServiceProvider</summary>
-        TripleDESCryptoServiceProvider
-    };
-
     /// <summary>対称アルゴリズムによる暗号化・復号化クラス</summary>
     /// <remarks>
     /// 自由に利用できる。
@@ -88,11 +60,11 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>固定ソルト</summary>
         /// <remarks>以前のVerからデフォルト値を修正しているので、</remarks>
         private static byte[] Salt = CustomEncode.StringToByte(
-            "Touryo.Infrastructure.Public.IO.SymmetricCryptography.Salt", CustomEncode.UTF_8);
+            "Touryo.Infrastructure.Public.Security.SymmetricCryptography.Salt", CustomEncode.UTF_8);
 
         /// <summary>固定ストレッチング</summary>
         private static int Stretching = 1000;
-
+        
         #region Encrypt
 
         #region EncryptString
@@ -401,11 +373,7 @@ namespace Touryo.Infrastructure.Public.Security
 
             //.NET Framework 1.1以下の時は、PasswordDeriveBytesを使用する
             //PasswordDeriveBytes deriveBytes = new PasswordDeriveBytes(password, salt);
-
-            // コンストラクタで指定するように変更した。
-            ////反復処理回数を指定する
-            //deriveBytes.IterationCount = stretching;
-
+            
             //共有キーと初期化ベクタを生成する
             key = deriveBytes.GetBytes(keySize / 8);
             iv = deriveBytes.GetBytes(blockSize / 8);
@@ -425,48 +393,145 @@ namespace Touryo.Infrastructure.Public.Security
         /// </returns>
         private static SymmetricAlgorithm CreateSymmetricAlgorithm(EnumSymmetricAlgorithm esa)
         {
+            //esa = EnumSymmetricAlgorithm.AesManaged
+            //    | EnumSymmetricAlgorithm.CipherMode_CBC
+            //    | EnumSymmetricAlgorithm.PaddingMode_PKCS7;
+
+            // CipherMode, PaddingMode指定の追加
+            CipherMode cm = 0;
+            PaddingMode pm = 0;
+
+            // CipherMode
+            if (esa.HasFlag(EnumSymmetricAlgorithm.CipherMode_CBC))
+            {
+                cm = CipherMode.CBC;
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.CipherMode_CFB))
+            {
+                cm = CipherMode.CFB;
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.CipherMode_CTS))
+            {
+                cm = CipherMode.CTS;
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.CipherMode_ECB))
+            {
+                cm = CipherMode.ECB;
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.CipherMode_OFB))
+            {
+                cm = CipherMode.OFB;
+            }
+
+            // PaddingMode
+            if (esa.HasFlag(EnumSymmetricAlgorithm.PaddingMode_None))
+            {
+                pm = PaddingMode.None;
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.PaddingMode_Zeros))
+            {
+                pm = PaddingMode.Zeros;
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.PaddingMode_ANSIX923))
+            {
+                pm = PaddingMode.ANSIX923;
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.PaddingMode_ISO10126))
+            {
+                pm = PaddingMode.ISO10126;
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.PaddingMode_PKCS7))
+            {
+                pm = PaddingMode.PKCS7;
+            }
+
+            return CreateSymmetricAlgorithm(esa, cm, pm);
+        }
+
+        /// <summary>
+        /// 対称アルゴリズムによる
+        /// 暗号化サービスプロバイダを生成
+        /// </summary>
+        /// <param name="esa">
+        /// 対称アルゴリズムによる
+        /// 暗号化サービスプロバイダの種類
+        /// </param>
+        /// <param name="cm">CipherMode</param>
+        /// <param name="pm">PaddingMode</param>
+        /// <returns>
+        /// 対称アルゴリズムによる
+        /// 暗号化サービスプロバイダ
+        /// </returns>
+        private static SymmetricAlgorithm CreateSymmetricAlgorithm(EnumSymmetricAlgorithm esa, CipherMode cm, PaddingMode pm)
+        {
             SymmetricAlgorithm sa = null;
 
-            // AesCryptoServiceProvider, AesManagedは.NET Framework 3.5からの提供。
-            // 暗号化プロバイダ選択の優先順は、高い順に、Managed → CAPI(CSP) → CNG。
-            // Aesは、ManagedがあるのでCAPI(CSP)のAesCryptoServiceProviderを削除。
-            // サポート範囲の変更により、今後、CAPI(CSP)とCNGの優先順位の反転を検討。
-
-            //if (esa == EnumSymmetricAlgorithm.AesCryptoServiceProvider)
-            //{
-            //    // AesCryptoServiceProviderサービスプロバイダ
-            //    sa = AesCryptoServiceProvider.Create(); // devps(1703)
-            //}
-            //else
-            if (esa == EnumSymmetricAlgorithm.AesManaged)
+            #region Aes
+            if (esa.HasFlag(EnumSymmetricAlgorithm.AesCryptoServiceProvider))
+            {
+                // AesCryptoServiceProviderサービスプロバイダ
+                sa = AesCryptoServiceProvider.Create(); // devps(1703)
+            }
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.AesManaged))
             {
                 // AesManagedサービスプロバイダ
                 sa = AesManaged.Create(); // devps(1703)
             }
-            else if (esa == EnumSymmetricAlgorithm.DESCryptoServiceProvider)
+            #endregion
+
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.DESCryptoServiceProvider))
             {
                 // DESCryptoServiceProviderサービスプロバイダ
                 sa = DESCryptoServiceProvider.Create(); // devps(1703)
             }
-            else if (esa == EnumSymmetricAlgorithm.RC2CryptoServiceProvider)
+
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.RC2CryptoServiceProvider))
             {
                 // RC2CryptoServiceProviderサービスプロバイダ
                 sa = RC2CryptoServiceProvider.Create(); // devps(1703)
             }
-            else if (esa == EnumSymmetricAlgorithm.RijndaelManaged)
+
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.RijndaelManaged))
             {
                 // RijndaelManagedサービスプロバイダ
                 sa = RijndaelManaged.Create(); // devps(1703)
             }
-            else if (esa == EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider)
+
+            #region TripleDES
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider))
             {
                 // TripleDESCryptoServiceProviderサービスプロバイダ
                 sa = TripleDESCryptoServiceProvider.Create(); // devps(1703)
             }
+
+#if NET45
+#elif NET46
+#else
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.TripleDESCryptographyNextGeneration))
+            {
+                // TripleDESCngサービスプロバイダ
+                sa = TripleDESCng.Create(); // devps(1703)
+            }
+#endif
+
+            #endregion
+
             else
             {
                 throw new ArgumentException(
                     PublicExceptionMessage.ARGUMENT_INCORRECT, "EnumSymmetricAlgorithm esa");
+            }
+
+            // cmが設定されている場合。
+            if (cm != 0)
+            {
+                sa.Mode = cm;
+            }
+
+            // pmが設定されている場合。
+            if (pm != 0)
+            {
+                sa.Padding = pm;
             }
 
             return sa;

@@ -32,7 +32,10 @@
 //*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
 //**********************************************************************************
 
+using System;
 using System.Security.Cryptography;
+
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Security
 {
@@ -74,7 +77,7 @@ namespace Touryo.Infrastructure.Public.Security
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
 
-            RsaAndDsaCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+            AsymmetricAlgorithmCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
 
             this.AsymmetricAlgorithm = aa;
             this.HashAlgorithm = ha;
@@ -92,7 +95,11 @@ namespace Touryo.Infrastructure.Public.Security
         {
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
-            RsaAndDsaCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+
+            AsymmetricAlgorithmCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+
+            this.AsymmetricAlgorithm = aa;
+            this.HashAlgorithm = ha;
 
             if (aa is RSACryptoServiceProvider)
             {
@@ -100,14 +107,16 @@ namespace Touryo.Infrastructure.Public.Security
                 rsaCryptoServiceProvider.FromXmlString(xmlKey);
                 this.AsymmetricAlgorithm = rsaCryptoServiceProvider;
             }
-            else if(aa is DSACryptoServiceProvider)
+            else if (aa is DSACryptoServiceProvider)
             {
                 DSACryptoServiceProvider dsaCryptoServiceProvider = (DSACryptoServiceProvider)aa;
                 dsaCryptoServiceProvider.FromXmlString(xmlKey);
                 this.AsymmetricAlgorithm = dsaCryptoServiceProvider;
             }
-
-            this.HashAlgorithm = ha;
+            else
+            {
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+            }
 
             // 秘密鍵をXML形式で取得
             try
@@ -142,19 +151,19 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 // RSAPKCS1SignatureFormatterオブジェクトを作成
                 RSAPKCS1SignatureFormatter rsaFormatter = new RSAPKCS1SignatureFormatter(this.AsymmetricAlgorithm);
-
-                rsaFormatter.SetHashAlgorithm(
-                    RsaAndDsaCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
+                rsaFormatter.SetHashAlgorithm(HashAlgorithmCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
                 signedByte = rsaFormatter.CreateSignature(hashedByte);
             }
             else if (this.AsymmetricAlgorithm is DSACryptoServiceProvider)
             {
                 // DSASignatureFormatterオブジェクトを作成
                 DSASignatureFormatter dsaFormatter = new DSASignatureFormatter(this.AsymmetricAlgorithm);
-
-                // デジタル署名を作成
                 dsaFormatter.SetHashAlgorithm(CryptoConst.SHA1);
                 signedByte = dsaFormatter.CreateSignature(hashedByte);
+            }
+            else
+            {
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
             }
 
             return signedByte;
@@ -166,23 +175,24 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
         public override bool Verify(byte[] data, byte[] sign)
         {
-            //// XMLPublicKeyプロパティ・プロシージャ（set）に移動
-            //this.AsymmetricAlgorithm.FromXmlString(this.XMLPublicKey);
-
             if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
-            {   
+            {
                 return ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).VerifyData(
-                    data, RsaAndDsaCmnFunc.GetHashAlgorithmName(this.HashAlgorithm), sign);
+                    data, HashAlgorithmCmnFunc.GetHashAlgorithmName(this.HashAlgorithm), sign);
+            }
+            else if (this.AsymmetricAlgorithm is DSACryptoServiceProvider)
+            {
+                return ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).VerifyData(data, sign);
             }
             else
             {
-                return ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).VerifyData(data, sign);
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
             }
         }
 
         #endregion
                 
-        #region Dispose (派生の末端を呼ぶ)
+        #region MyDispose (派生の末端を呼ぶ)
 
         /// <summary>MyDispose (派生の末端を呼ぶ)</summary>
         /// <param name="isDisposing">isDisposing</param>

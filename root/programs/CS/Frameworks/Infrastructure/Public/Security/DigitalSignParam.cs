@@ -30,7 +30,10 @@
 //*  2017/12/25  西野 大介         新規作成
 //**********************************************************************************
 
+using System;
 using System.Security.Cryptography;
+
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Security
 {
@@ -43,6 +46,8 @@ namespace Touryo.Infrastructure.Public.Security
     /// </summary>
     public class DigitalSignParam : DigitalSign
     {
+        // デジタル署名の場合は、秘密鍵で署名して、公開鍵で検証。
+
         #region mem & prop & constructor
 
         /// <summary>AsymmetricAlgorithm</summary>
@@ -58,7 +63,7 @@ namespace Touryo.Infrastructure.Public.Security
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
 
-            RsaAndDsaCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+            AsymmetricAlgorithmCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
 
             this.AsymmetricAlgorithm = aa;
             this.HashAlgorithm = ha;
@@ -69,7 +74,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="ha">HashAlgorithm</param>
         public DigitalSignParam(object param, HashAlgorithm ha)
         {
-            this.AsymmetricAlgorithm = RsaAndDsaCmnFunc.CreateAsymmetricAlgorithmFromParam(param, ha);
+            this.AsymmetricAlgorithm = AsymmetricAlgorithmCmnFunc.CreateAsymmetricAlgorithmFromParam(param, ha);
             this.HashAlgorithm = ha;
         }
 
@@ -91,18 +96,19 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 // RSAPKCS1SignatureFormatterオブジェクトを作成
                 RSAPKCS1SignatureFormatter rsaFormatter = new RSAPKCS1SignatureFormatter(this.AsymmetricAlgorithm);
-
-                rsaFormatter.SetHashAlgorithm(RsaAndDsaCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
+                rsaFormatter.SetHashAlgorithm(HashAlgorithmCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
                 signedByte = rsaFormatter.CreateSignature(hashedByte);
             }
             else if (this.AsymmetricAlgorithm is DSACryptoServiceProvider)
             {
                 // DSASignatureFormatterオブジェクトを作成
                 DSASignatureFormatter dsaFormatter = new DSASignatureFormatter(this.AsymmetricAlgorithm);
-
-                // デジタル署名を作成
                 dsaFormatter.SetHashAlgorithm(CryptoConst.SHA1);
                 signedByte = dsaFormatter.CreateSignature(hashedByte);
+            }
+            else
+            {
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
             }
 
             return signedByte;
@@ -115,14 +121,17 @@ namespace Touryo.Infrastructure.Public.Security
         public override bool Verify(byte[] data, byte[] sign)
         {
             if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
-            {   
-                return ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).
-                    VerifyData(data, RsaAndDsaCmnFunc.GetHashAlgorithmName(this.HashAlgorithm), sign);
+            {
+                return ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).VerifyData(
+                    data, HashAlgorithmCmnFunc.GetHashAlgorithmName(this.HashAlgorithm), sign);
+            }
+            else if (this.AsymmetricAlgorithm is DSACryptoServiceProvider)
+            {
+                return ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).VerifyData(data, sign);
             }
             else
             {
-                return ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).
-                    VerifyData(data, sign);
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
             }
         }
 

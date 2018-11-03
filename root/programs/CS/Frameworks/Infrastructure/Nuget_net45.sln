@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2016
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Public", "Public\Public_net45.csproj", "{81CC573A-0DF9-49E5-AF10-A50F9B194DA5}"
 EndProject
@@ -42,6 +42,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2C06AA77-8F92-46FD-88CC-7446B5C7F545}
 	EndGlobalSection
 	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
 		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}

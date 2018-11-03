@@ -20,7 +20,7 @@
 
 //**********************************************************************************
 //* クラス名        ：DigitalSign
-//* クラス日本語名  ：DigitalSign抽象クラス
+//* クラス日本語名  ：デジタル署名抽象クラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -35,36 +35,8 @@ using System;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    #region Enum
-
     /// <summary>
-    /// アルゴリズムのサービスプロバイダの種類
-    /// </summary>
-    public enum EnumDigitalSignAlgorithm
-    {
-        /// <summary>RSACryptoServiceProvider:MD5</summary>
-        RSACryptoServiceProvider_MD5,
-
-        /// <summary>RSACryptoServiceProvider:SHA1</summary>
-        RSACryptoServiceProvider_SHA1,
-
-        /// <summary>RSACryptoServiceProvider:SHA256</summary>
-        RSACryptoServiceProvider_SHA256,
-
-        /// <summary>RSACryptoServiceProvider:SHA384</summary>
-        RSACryptoServiceProvider_SHA384,
-
-        /// <summary>RSACryptoServiceProvider:SHA512</summary>
-        RSACryptoServiceProvider_SHA512,
-
-        /// <summary>DSACryptoServiceProvider:SHA1</summary>
-        DSACryptoServiceProvider_SHA1
-    };
-
-    #endregion
-
-    /// <summary>
-    /// DigitalSignクラス抽象クラス
+    /// デジタル署名抽象クラス
     /// </summary>
     public abstract class DigitalSign : IDisposable
     {   

@@ -34,121 +34,17 @@
 //*  2017/01/10  西野 大介         saltedPasswdのformat変更(salt+stretchCount+hashedPassword)。
 //*  2017/01/10  西野 大介         上記のformat変更に伴い、EqualSaltedPasswd側のI/F変更が発生。
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
+//*  2018/10/30  西野 大介         各種プロバイダのサポートを追加
 //**********************************************************************************
 
 using System.Security.Cryptography;
-
 using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    #region Enum
-
-    /// <summary>
-    /// ハッシュアルゴリズムのサービスプロバイダの種類
-    /// </summary>
-    public enum EnumHashAlgorithm
-    {
-        /// <summary>Default</summary>
-        Default,
-
-        /// <summary>MD5CryptoServiceProvider</summary>
-        MD5CryptoServiceProvider,
-
-        /// <summary>SHA1CryptoServiceProvider</summary>
-        SHA1CryptoServiceProvider,
-
-        /// <summary>SHA1Managed</summary>
-        SHA1Managed,
-
-        /// <summary>SHA256Managed</summary>
-        SHA256Managed,
-
-        /// <summary>SHA384Managed</summary>
-        SHA384Managed,
-
-        /// <summary>SHA512Managed</summary>
-        SHA512Managed,
-    };
-
-    #endregion
-
-    #region GetHash
-
     /// <summary>ハッシュを取得するクラス</summary>
     public class GetHash
     {
-        #region GetSaltedPassword
-
-        /// <summary>
-        /// Password entered by the userをDB保存する際、
-        /// Salted and hashed passwordとして保存する必要がある。
-        /// </summary>
-        /// <param name="rawPassword">>Password entered by the user.</param>
-        /// <param name="eha">ハッシュ・アルゴリズム列挙型</param>
-        /// <param name="saltLength">ソルトの文字列長</param>
-        /// <returns>Salted and hashed password.</returns>
-        /// <see ref="http://www.atmarkit.co.jp/ait/articles/1110/06/news154_2.html"/>
-        public static string GetSaltedPassword(string rawPassword, EnumHashAlgorithm eha, int saltLength)
-        {
-            // overloadへ
-            return GetHash.GetSaltedPassword(rawPassword, eha, saltLength, 1);
-        }
-
-        /// <summary>
-        /// Password entered by the userをDB保存する際、
-        /// Salted and hashed passwordとして保存する必要がある。
-        /// </summary>
-        /// <param name="rawPassword">>Password entered by the user.</param>
-        /// <param name="eha">ハッシュ・アルゴリズム列挙型</param>
-        /// <param name="saltLength">ソルトの文字列長</param>
-        /// <param name="stretchCount">ストレッチ回数</param>
-        /// <returns>Salted and hashed password.</returns>
-        public static string GetSaltedPassword(string rawPassword, EnumHashAlgorithm eha, int saltLength, int stretchCount)
-        {
-            // ランダム・ソルト文字列を生成（区切り記号は含まなくても良い）
-            string salt = GetPassword.Generate(saltLength, 0); //Membership.GeneratePassword(saltLength, 0);
-
-            // Salted and hashed password（文字列）を生成して返す。
-            return
-                CustomEncode.ToBase64String(CustomEncode.StringToByte(salt, CustomEncode.UTF_8))
-                + "." + CustomEncode.ToBase64String(CustomEncode.StringToByte(stretchCount.ToString(), CustomEncode.UTF_8))
-                + "." + CustomEncode.ToBase64String(CustomEncode.StringToByte(GetHash.GetHashString(salt + rawPassword, eha, stretchCount), CustomEncode.UTF_8));
-        }
-
-        /// <summary>パスワードを比較して認証する。</summary>
-        /// <param name="rawPassword">Password entered by the user.</param>
-        /// <param name="saltedPassword">Salted and hashed password.</param>
-        /// <param name="eha">ハッシュ・アルゴリズム列挙型</param>
-        /// <returns>
-        /// true：パスワードは一致した。
-        /// false：パスワードは一致しない。
-        /// </returns>
-        public static bool EqualSaltedPassword(string rawPassword, string saltedPassword, EnumHashAlgorithm eha)
-        {
-            // ソルト部分を取得
-            string[] temp = saltedPassword.Split('.');
-            string salt = CustomEncode.ByteToString(CustomEncode.FromBase64String(temp[0]), CustomEncode.UTF_8);
-            int stretchCount = int.Parse(CustomEncode.ByteToString(CustomEncode.FromBase64String(temp[1]), CustomEncode.UTF_8));
-            string hashedPassword = CustomEncode.ByteToString(CustomEncode.FromBase64String(temp[2]), CustomEncode.UTF_8);
-
-            // 引数のsaltedPasswordと、rawPasswordから自作したsaltedPasswordを比較
-            if (hashedPassword == GetHash.GetHashString(salt + rawPassword, eha, stretchCount))
-            {
-                // 一致した。
-                return true;
-            }
-            else
-            {
-                // 一致しなかった。
-                return false;
-            }
-        }
-
-        #endregion
-
-        #region GetHash
-
         #region String
 
         /// <summary>文字列のハッシュ値を計算して返す。</summary>
@@ -195,7 +91,7 @@ namespace Touryo.Infrastructure.Public.Security
         public static byte[] GetHashBytes(byte[] asb, EnumHashAlgorithm eha, int stretchCount)
         {
             // ハッシュ（キー無し）サービスプロバイダを生成
-            HashAlgorithm ha = GetHash.CreateHashAlgorithmServiceProvider(eha);
+            HashAlgorithm ha = HashAlgorithmCmnFunc.CreateHashAlgorithmServiceProvider(eha);
 
             // ハッシュ値を計算して返す。
             byte[] temp = ha.ComputeHash(asb);
@@ -211,60 +107,5 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         #endregion
-
-        #endregion
-
-        #region 内部関数
-
-        /// <summary>ハッシュ（キー無し）サービスプロバイダの生成</summary>
-        /// <param name="eha">ハッシュ（キー無し）サービスプロバイダの列挙型</param>
-        /// <returns>ハッシュ（キー無し）サービスプロバイダ</returns>
-        private static HashAlgorithm CreateHashAlgorithmServiceProvider(EnumHashAlgorithm eha)
-        {
-            // ハッシュ（キー無し）サービスプロバイダ
-            HashAlgorithm ha = null;
-
-            if (eha == EnumHashAlgorithm.Default)
-            {
-                // 既定の暗号化サービスプロバイダ
-                ha = HashAlgorithm.Create(); // devps(1703)
-            }
-            else if (eha == EnumHashAlgorithm.MD5CryptoServiceProvider)
-            {
-                // MD5CryptoServiceProviderサービスプロバイダ
-                ha = MD5CryptoServiceProvider.Create(); // devps(1703)
-            }
-            else if (eha == EnumHashAlgorithm.SHA1CryptoServiceProvider)
-            {
-                // SHA1CryptoServiceProviderサービスプロバイダ
-                ha = SHA1CryptoServiceProvider.Create(); // devps(1703)
-            }
-            else if (eha == EnumHashAlgorithm.SHA1Managed)
-            {
-                // SHA1Managedサービスプロバイダ
-                ha = SHA1Managed.Create(); // devps(1703)
-            }
-            else if (eha == EnumHashAlgorithm.SHA256Managed)
-            {
-                // SHA256Managedサービスプロバイダ
-                ha = SHA256Managed.Create(); // devps(1703)
-            }
-            else if (eha == EnumHashAlgorithm.SHA384Managed)
-            {
-                // SHA384Managedサービスプロバイダ
-                ha = SHA384Managed.Create(); // devps(1703)
-            }
-            else if (eha == EnumHashAlgorithm.SHA512Managed)
-            {
-                // SHA512Managedサービスプロバイダ
-                ha = SHA512Managed.Create(); // devps(1703)
-            }
-
-            return ha;
-        }
-
-        #endregion
     }
-
-    #endregion
 }

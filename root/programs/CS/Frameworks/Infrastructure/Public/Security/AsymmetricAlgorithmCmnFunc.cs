@@ -38,13 +38,13 @@ using Touryo.Infrastructure.Public.Util;
 namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>
-    /// RsaAndDsaCmnFuncクラス
+    /// AsymmetricAlgorithmCmnFuncクラス
     /// - RSACryptoServiceProvider:
     ///   MD5, SHA1, SHA256, SHA384, SHA512
     /// - DSACryptoServiceProvider:SHA1
     /// だけ、サポート。
     /// </summary>
-    public class RsaAndDsaCmnFunc
+    public class AsymmetricAlgorithmCmnFunc
     {
         /// <summary>公開鍵・暗号化サービスプロバイダの生成(param)</summary>
         /// <param name="param">
@@ -66,7 +66,7 @@ namespace Touryo.Infrastructure.Public.Security
                 rsaCryptoServiceProvider.ImportParameters((RSAParameters)param);
                 
                 // HashAlgorithm
-                string temp = RsaAndDsaCmnFunc.GetHashAlgorithmName(ha);
+                string temp = HashAlgorithmCmnFunc.GetHashAlgorithmName(ha);
                 if ("MD5, SHA1, SHA256, SHA384, SHA512".IndexOf(temp) != -1)
                 {
                     return rsaCryptoServiceProvider;
@@ -85,7 +85,7 @@ namespace Touryo.Infrastructure.Public.Security
                 dsaCryptoServiceProvider.ImportParameters((DSAParameters)param);
                 
                 // HashAlgorithm
-                string temp = RsaAndDsaCmnFunc.GetHashAlgorithmName(ha);
+                string temp = HashAlgorithmCmnFunc.GetHashAlgorithmName(ha);
                 if (temp == CryptoConst.SHA1)
                 {
                     return dsaCryptoServiceProvider;
@@ -156,7 +156,34 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 // DSACryptoServiceProvider
                 aa = new DSACryptoServiceProvider();
-                ha = SHA1.Create();
+            }
+            else if (
+                eaa == EnumDigitalSignAlgorithm.ECDsaCng_P256
+                || eaa == EnumDigitalSignAlgorithm.ECDsaCng_P384
+                || eaa == EnumDigitalSignAlgorithm.ECDsaCng_P521)
+            {
+                // ECDsaCngはCngKeyが土台で、
+                // ECDsaCng生成後にオプションとして設定するのではなく
+                // CngKeyの生成時にCngAlgorithmの指定が必要であるもよう。
+                CngAlgorithm cngAlgorithm = null;
+                if (eaa == EnumDigitalSignAlgorithm.ECDsaCng_P256)
+                {
+                    cngAlgorithm = CngAlgorithm.ECDsaP256;
+                }
+                else if (eaa == EnumDigitalSignAlgorithm.ECDsaCng_P384)
+                {
+                    cngAlgorithm = CngAlgorithm.ECDsaP384;
+                }
+                else if (eaa == EnumDigitalSignAlgorithm.ECDsaCng_P521)
+                {
+                    cngAlgorithm = CngAlgorithm.ECDsaP521;
+                }
+                else
+                {
+                    throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+                }
+                aa = new ECDsaCng(CngKey.Create(cngAlgorithm));
+                ha = null; // ハッシュ無し
             }
             else
             {
@@ -164,43 +191,6 @@ namespace Touryo.Infrastructure.Public.Security
                     PublicExceptionMessage.ARGUMENT_INCORRECT,
                     "EnumDigitalSignAlgorithm parameter is incorrect.");
             }
-        }
-
-        /// <summary>GetHashAlgorithmName</summary>
-        /// <param name="ha">HashAlgorithm</param>
-        /// <returns>HashAlgorithmName</returns>
-        public static string GetHashAlgorithmName(HashAlgorithm ha)
-        {
-            string haName = "";
-
-            if (ha is MD5)
-            {
-                haName = CryptoConst.MD5;
-            }
-            else if (ha is SHA1)
-            {
-                haName = CryptoConst.SHA1;
-            }
-            else if (ha is SHA256)
-            {
-                haName = CryptoConst.SHA256;
-            }
-            else if (ha is SHA384)
-            {
-                haName = CryptoConst.SHA384;
-            }
-            else if (ha is SHA512)
-            {
-                haName = CryptoConst.SHA512;
-            }
-            else
-            {
-                throw new ArgumentException(
-                    PublicExceptionMessage.ARGUMENT_INCORRECT,
-                    "HashAlgorithm parameter is incorrect.");
-            }
-
-            return haName;
         }
     }
 }

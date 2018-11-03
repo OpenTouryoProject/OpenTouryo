@@ -41,6 +41,7 @@
 //*  2017/11/29  西野 大介         DateTimeOffset.ToUnixTimeSecondsの前方互換メソッドを追加
 //*  2018/08/01  西野 大介         Nullable対応の型変換メソッドを追加
 //*  2018/10/03  西野 大介         GetDataReaderColumnInfoメソッドを追加。
+//*  2018/10/03  西野 大介         CombineByteArrayメソッドを追加。
 //**********************************************************************************
 
 using System;
@@ -48,6 +49,7 @@ using System.Text;
 using System.Data;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Touryo.Infrastructure.Public.Util
 {
@@ -777,58 +779,52 @@ namespace Touryo.Infrastructure.Public.Util
 
         #endregion
 
-        #region 互換性
+        #region 配列操作
 
-        /// <summary>UNIXエポック</summary>
-        private static DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-
-        /// <summary>DateTimeOffset.ToUnixTimeSeconds代替(net46未満で使用)</summary>
-        /// <param name="targetTime">DateTimeOffset</param>
-        /// <returns>UnixTimeSeconds</returns>
-        public static long ToUnixTime(DateTimeOffset targetTime)
-        {
-            // UTC時間に変換
-            targetTime = targetTime.ToUniversalTime();
-            // UNIXエポックからの経過時間を取得
-            TimeSpan elapsedTime = targetTime - UNIX_EPOCH;
-            // 経過秒数に変換して返す（UnixTime）
-            return (long)elapsedTime.TotalSeconds;
+        /// <summary>配列のコピー</summary>
+        /// <param name="srcArray">コピー元配列</param>
+        /// <param name="dstArraySize">コピー先配列の長さ</param>
+        /// <returns>コピー後の配列</returns>
+        public static T[] CopyArray<T>(T[] srcArray, int dstArraySize)
+        {   
+            return CopyArray<T>(srcArray, dstArraySize, 0, 0);
         }
 
-        #endregion
-
-        #region その他
-
-        /// <summary>拡張子無しのファイル名を取得する</summary>
-        /// <param name="str">ファイル名を含むパス</param>
-        /// <param name="divChar">パスの分割文字</param>
-        /// <returns>拡張子無しのファイル名</returns>
-        public static string GetFileNameNoEx(string str, char divChar)
+        /// <summary>配列のコピー</summary>
+        /// <param name="srcArray">コピー元配列</param>
+        /// <param name="dstArraySize">コピー先配列の長さ</param>
+        /// <param name="srcStartIndex">読取開始位置</param>
+        /// <param name="dstStartIndex">書込開始位置</param>
+        /// <returns>コピー後の配列</returns>
+        public static T[] CopyArray<T>(T[] srcArray, int dstArraySize, int srcStartIndex, int dstStartIndex)
         {
-            // ワーク変数
-            string ret = "";
-            string[] aryTemp;
-
-            // 分解して組み立て
-            aryTemp = str.Split(divChar);
-            aryTemp = aryTemp[aryTemp.Length - 1].Split('.');
-
-            for (int i = 0; i < aryTemp.Length - 1; i++)
-            {
-                if (ret == "")
-                {
-                    ret = aryTemp[i];
-                }
-                else
-                {
-                    ret += '.' + aryTemp[i];
-                }
-            }
-
-            return ret;
+            T[] dstArray = new T[dstArraySize];
+            Array.Copy(srcArray, srcStartIndex, dstArray, dstStartIndex, dstArraySize);
+            return dstArray;
         }
 
-        /// <summary>バイト配列の切り詰め</summary>
+        /// <summary>配列の結合</summary>
+        /// <param name="array1">配列１</param>
+        /// <param name="array2">配列２</param>
+        /// <returns>結合された配列</returns>
+        public static T[] CombineArray<T>(T[] array1, T[] array2)
+        {
+            T[] combinedArray = new T[array1.Length + array2.Length];
+            int typeSize = Marshal.SizeOf(array1.GetType().GetElementType());
+            Buffer.BlockCopy(array1, 0, combinedArray, 0, array1.Length * typeSize);
+            Buffer.BlockCopy(array2, 0, combinedArray, array1.Length * typeSize, array2.Length * typeSize);
+
+            return combinedArray;
+        }
+
+        #endregion 
+
+        #region バイト操作
+
+        /// <summary>
+        /// バイト配列を排他的論理和で切り詰め
+        /// 単純に切り詰めるなら、sliceを使用する。
+        /// </summary>
         /// <param name="bytes">バイト配列</param>
         /// <param name="newSize">バイト配列のサイズ</param>
         /// <returns>指定のサイズに切り詰められたバイト配列</returns>
@@ -891,6 +887,59 @@ namespace Touryo.Infrastructure.Public.Util
 
             // 戻す
             return rtnCode;
+        }
+
+        #endregion
+
+        #region 互換性
+
+        /// <summary>UNIXエポック</summary>
+        private static DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+        /// <summary>DateTimeOffset.ToUnixTimeSeconds代替(net46未満で使用)</summary>
+        /// <param name="targetTime">DateTimeOffset</param>
+        /// <returns>UnixTimeSeconds</returns>
+        public static long ToUnixTime(DateTimeOffset targetTime)
+        {
+            // UTC時間に変換
+            targetTime = targetTime.ToUniversalTime();
+            // UNIXエポックからの経過時間を取得
+            TimeSpan elapsedTime = targetTime - UNIX_EPOCH;
+            // 経過秒数に変換して返す（UnixTime）
+            return (long)elapsedTime.TotalSeconds;
+        }
+
+        #endregion
+
+        #region その他
+
+        /// <summary>拡張子無しのファイル名を取得する</summary>
+        /// <param name="str">ファイル名を含むパス</param>
+        /// <param name="divChar">パスの分割文字</param>
+        /// <returns>拡張子無しのファイル名</returns>
+        public static string GetFileNameNoEx(string str, char divChar)
+        {
+            // ワーク変数
+            string ret = "";
+            string[] aryTemp;
+
+            // 分解して組み立て
+            aryTemp = str.Split(divChar);
+            aryTemp = aryTemp[aryTemp.Length - 1].Split('.');
+
+            for (int i = 0; i < aryTemp.Length - 1; i++)
+            {
+                if (ret == "")
+                {
+                    ret = aryTemp[i];
+                }
+                else
+                {
+                    ret += '.' + aryTemp[i];
+                }
+            }
+
+            return ret;
         }
 
         /// <summary>IDataReaderの列情報を格納したHashSet(string)を返す。</summary>
