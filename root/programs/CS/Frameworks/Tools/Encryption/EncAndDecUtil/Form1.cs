@@ -461,8 +461,18 @@ namespace EncAndDecUtil
         /// <summary>rbnDS_CheckedChanged</summary>
         private void rbnDS_CheckedChanged(object sender, EventArgs e)
         {
-            this.cbxDSPV.Enabled = (this.rbnDSXML.Checked || this.rbnDSParam.Checked);
-            this.txtDSHash.Enabled = this.rbnDSX509.Checked;
+            if (this.rbnDSXML.Checked || this.rbnDSParam.Checked)
+            {
+                this.cbxDSPV.Enabled = true;
+                this.txtDSHash.Text="";
+                this.txtDSHash.ReadOnly = true;
+            }
+            else if (this.rbnDSX509.Checked)
+            {
+                this.cbxDSPV.Enabled = false;
+                this.txtDSHash.Text = "SHA256";
+                this.txtDSHash.ReadOnly = false;
+            }
         }
 
         /// <summary>署名</summary>
