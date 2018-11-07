@@ -135,11 +135,13 @@
             this.cbxDSPV = new System.Windows.Forms.ComboBox();
             this.lblDS1 = new System.Windows.Forms.Label();
             this.gbxDS = new System.Windows.Forms.GroupBox();
+            this.rbnDSX509D = new System.Windows.Forms.RadioButton();
             this.rbnDSParam = new System.Windows.Forms.RadioButton();
-            this.rbnDSX509 = new System.Windows.Forms.RadioButton();
+            this.rbnDSX509R = new System.Windows.Forms.RadioButton();
             this.rbnDSXML = new System.Windows.Forms.RadioButton();
             this.btnDSSign = new System.Windows.Forms.Button();
             this.tabRKEX = new System.Windows.Forms.TabPage();
+            this.btnRKEXEC2 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.txtRKEXKeyInfo = new System.Windows.Forms.TextBox();
@@ -171,6 +173,10 @@
             this.txtMACPassword = new System.Windows.Forms.TextBox();
             this.txtMACString = new System.Windows.Forms.TextBox();
             this.tabAEAD = new System.Windows.Forms.TabPage();
+            this.txtAEADCiphert = new System.Windows.Forms.TextBox();
+            this.txtAEADTag = new System.Windows.Forms.TextBox();
+            this.lblAEAD6 = new System.Windows.Forms.Label();
+            this.txtAEADAad = new System.Windows.Forms.TextBox();
             this.lblAEAD5 = new System.Windows.Forms.Label();
             this.lblAEAD4 = new System.Windows.Forms.Label();
             this.btnAEADDecrypt = new System.Windows.Forms.Button();
@@ -200,11 +206,7 @@
             this.btnJWSVerify = new System.Windows.Forms.Button();
             this.btnJWSSign = new System.Windows.Forms.Button();
             this.tabJWE = new System.Windows.Forms.TabPage();
-            this.btnRKEXEC2 = new System.Windows.Forms.Button();
-            this.txtAEADAad = new System.Windows.Forms.TextBox();
-            this.lblAEAD6 = new System.Windows.Forms.Label();
-            this.txtAEADTag = new System.Windows.Forms.TextBox();
-            this.txtAEADCiphert = new System.Windows.Forms.TextBox();
+            this.tabDSE = new System.Windows.Forms.TabPage();
             this.TabControl1.SuspendLayout();
             this.tabHash.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHSStretching)).BeginInit();
@@ -241,6 +243,7 @@
             this.TabControl1.Controls.Add(this.tabSC);
             this.TabControl1.Controls.Add(this.tabASC);
             this.TabControl1.Controls.Add(this.tabDS);
+            this.TabControl1.Controls.Add(this.tabDSE);
             this.TabControl1.Controls.Add(this.tabRKEX);
             this.TabControl1.Controls.Add(this.tabEKEX);
             this.TabControl1.Controls.Add(this.tabMAC);
@@ -400,9 +403,9 @@
             this.tabKeyedHash.Controls.Add(this.lblKHS1);
             this.tabKeyedHash.Controls.Add(this.txtKHSPassword);
             this.tabKeyedHash.Controls.Add(this.txtKHSString);
-            this.tabKeyedHash.Location = new System.Drawing.Point(4, 40);
+            this.tabKeyedHash.Location = new System.Drawing.Point(4, 22);
             this.tabKeyedHash.Name = "tabKeyedHash";
-            this.tabKeyedHash.Size = new System.Drawing.Size(539, 267);
+            this.tabKeyedHash.Size = new System.Drawing.Size(539, 285);
             this.tabKeyedHash.TabIndex = 3;
             this.tabKeyedHash.Text = "キー付きハッシュ";
             this.tabKeyedHash.UseVisualStyleBackColor = true;
@@ -531,9 +534,9 @@
             this.tabPwdDB1.Controls.Add(this.cbxSPWDPV1);
             this.tabPwdDB1.Controls.Add(this.lblSPWD11);
             this.tabPwdDB1.Controls.Add(this.btnSPWDGen1);
-            this.tabPwdDB1.Location = new System.Drawing.Point(4, 40);
+            this.tabPwdDB1.Location = new System.Drawing.Point(4, 22);
             this.tabPwdDB1.Name = "tabPwdDB1";
-            this.tabPwdDB1.Size = new System.Drawing.Size(539, 267);
+            this.tabPwdDB1.Size = new System.Drawing.Size(539, 285);
             this.tabPwdDB1.TabIndex = 4;
             this.tabPwdDB1.Text = "パスワードDB保存 1";
             this.tabPwdDB1.UseVisualStyleBackColor = true;
@@ -686,9 +689,9 @@
             this.tabPwdDB2.Controls.Add(this.cbxSPWDPV2);
             this.tabPwdDB2.Controls.Add(this.lblSPWD21);
             this.tabPwdDB2.Controls.Add(this.btnSPWDGen2);
-            this.tabPwdDB2.Location = new System.Drawing.Point(4, 40);
+            this.tabPwdDB2.Location = new System.Drawing.Point(4, 22);
             this.tabPwdDB2.Name = "tabPwdDB2";
-            this.tabPwdDB2.Size = new System.Drawing.Size(539, 267);
+            this.tabPwdDB2.Size = new System.Drawing.Size(539, 285);
             this.tabPwdDB2.TabIndex = 5;
             this.tabPwdDB2.Text = "パスワードDB保存 2";
             this.tabPwdDB2.UseVisualStyleBackColor = true;
@@ -860,10 +863,10 @@
             this.tabSC.Controls.Add(this.lblSC1);
             this.tabSC.Controls.Add(this.txtSCPassword);
             this.tabSC.Controls.Add(this.txtSCString);
-            this.tabSC.Location = new System.Drawing.Point(4, 40);
+            this.tabSC.Location = new System.Drawing.Point(4, 22);
             this.tabSC.Name = "tabSC";
             this.tabSC.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSC.Size = new System.Drawing.Size(539, 267);
+            this.tabSC.Size = new System.Drawing.Size(539, 285);
             this.tabSC.TabIndex = 0;
             this.tabSC.Text = "秘密鍵・暗号化";
             this.tabSC.UseVisualStyleBackColor = true;
@@ -1057,10 +1060,10 @@
             this.tabASC.Controls.Add(this.lblASC2);
             this.tabASC.Controls.Add(this.lblASC1);
             this.tabASC.Controls.Add(this.txtASCString);
-            this.tabASC.Location = new System.Drawing.Point(4, 40);
+            this.tabASC.Location = new System.Drawing.Point(4, 22);
             this.tabASC.Name = "tabASC";
             this.tabASC.Padding = new System.Windows.Forms.Padding(3);
-            this.tabASC.Size = new System.Drawing.Size(539, 267);
+            this.tabASC.Size = new System.Drawing.Size(539, 285);
             this.tabASC.TabIndex = 1;
             this.tabASC.Text = "共通鍵・暗号化";
             this.tabASC.UseVisualStyleBackColor = true;
@@ -1239,7 +1242,7 @@
             // 
             // btnDSVerify
             // 
-            this.btnDSVerify.Location = new System.Drawing.Point(195, 210);
+            this.btnDSVerify.Location = new System.Drawing.Point(237, 210);
             this.btnDSVerify.Name = "btnDSVerify";
             this.btnDSVerify.Size = new System.Drawing.Size(174, 23);
             this.btnDSVerify.TabIndex = 43;
@@ -1261,7 +1264,7 @@
             this.txtDSSign.Location = new System.Drawing.Point(157, 185);
             this.txtDSSign.Name = "txtDSSign";
             this.txtDSSign.ReadOnly = true;
-            this.txtDSSign.Size = new System.Drawing.Size(212, 19);
+            this.txtDSSign.Size = new System.Drawing.Size(254, 19);
             this.txtDSSign.TabIndex = 41;
             // 
             // lblDS5
@@ -1277,7 +1280,7 @@
             // 
             this.txtDSPublicKey.Location = new System.Drawing.Point(157, 160);
             this.txtDSPublicKey.Name = "txtDSPublicKey";
-            this.txtDSPublicKey.Size = new System.Drawing.Size(212, 19);
+            this.txtDSPublicKey.Size = new System.Drawing.Size(254, 19);
             this.txtDSPublicKey.TabIndex = 39;
             // 
             // lblDS4
@@ -1294,7 +1297,7 @@
             this.txtDSPrivateKey.Location = new System.Drawing.Point(157, 135);
             this.txtDSPrivateKey.Name = "txtDSPrivateKey";
             this.txtDSPrivateKey.ReadOnly = true;
-            this.txtDSPrivateKey.Size = new System.Drawing.Size(212, 19);
+            this.txtDSPrivateKey.Size = new System.Drawing.Size(254, 19);
             this.txtDSPrivateKey.TabIndex = 37;
             // 
             // lblDS3
@@ -1319,7 +1322,7 @@
             // 
             this.txtDSData.Location = new System.Drawing.Point(157, 110);
             this.txtDSData.Name = "txtDSData";
-            this.txtDSData.Size = new System.Drawing.Size(212, 19);
+            this.txtDSData.Size = new System.Drawing.Size(254, 19);
             this.txtDSData.TabIndex = 34;
             // 
             // txtDSHash
@@ -1327,7 +1330,7 @@
             this.txtDSHash.Location = new System.Drawing.Point(157, 85);
             this.txtDSHash.Name = "txtDSHash";
             this.txtDSHash.ReadOnly = true;
-            this.txtDSHash.Size = new System.Drawing.Size(212, 19);
+            this.txtDSHash.Size = new System.Drawing.Size(254, 19);
             this.txtDSHash.TabIndex = 33;
             this.txtDSHash.Text = "SHA1";
             // 
@@ -1336,7 +1339,7 @@
             this.cbxDSPV.FormattingEnabled = true;
             this.cbxDSPV.Location = new System.Drawing.Point(157, 59);
             this.cbxDSPV.Name = "cbxDSPV";
-            this.cbxDSPV.Size = new System.Drawing.Size(212, 20);
+            this.cbxDSPV.Size = new System.Drawing.Size(254, 20);
             this.cbxDSPV.TabIndex = 32;
             // 
             // lblDS1
@@ -1350,39 +1353,53 @@
             // 
             // gbxDS
             // 
+            this.gbxDS.Controls.Add(this.rbnDSX509D);
             this.gbxDS.Controls.Add(this.rbnDSParam);
-            this.gbxDS.Controls.Add(this.rbnDSX509);
+            this.gbxDS.Controls.Add(this.rbnDSX509R);
             this.gbxDS.Controls.Add(this.rbnDSXML);
             this.gbxDS.Location = new System.Drawing.Point(9, 7);
             this.gbxDS.Name = "gbxDS";
-            this.gbxDS.Size = new System.Drawing.Size(360, 46);
+            this.gbxDS.Size = new System.Drawing.Size(402, 46);
             this.gbxDS.TabIndex = 30;
             this.gbxDS.TabStop = false;
             this.gbxDS.Text = "API選択";
             // 
+            // rbnDSX509D
+            // 
+            this.rbnDSX509D.AutoSize = true;
+            this.rbnDSX509D.Enabled = false;
+            this.rbnDSX509D.Location = new System.Drawing.Point(319, 18);
+            this.rbnDSX509D.Name = "rbnDSX509D";
+            this.rbnDSX509D.Size = new System.Drawing.Size(77, 16);
+            this.rbnDSX509D.TabIndex = 3;
+            this.rbnDSX509D.TabStop = true;
+            this.rbnDSX509D.Text = "X.509 DSA";
+            this.rbnDSX509D.UseVisualStyleBackColor = true;
+            this.rbnDSX509D.CheckedChanged += new System.EventHandler(this.rbnDS_CheckedChanged);
+            // 
             // rbnDSParam
             // 
             this.rbnDSParam.AutoSize = true;
-            this.rbnDSParam.Location = new System.Drawing.Point(90, 18);
+            this.rbnDSParam.Location = new System.Drawing.Point(102, 18);
             this.rbnDSParam.Name = "rbnDSParam";
-            this.rbnDSParam.Size = new System.Drawing.Size(55, 16);
+            this.rbnDSParam.Size = new System.Drawing.Size(86, 16);
             this.rbnDSParam.TabIndex = 2;
             this.rbnDSParam.TabStop = true;
-            this.rbnDSParam.Text = "Param";
+            this.rbnDSParam.Text = "Param(RSA)";
             this.rbnDSParam.UseVisualStyleBackColor = true;
             this.rbnDSParam.CheckedChanged += new System.EventHandler(this.rbnDS_CheckedChanged);
             // 
-            // rbnDSX509
+            // rbnDSX509R
             // 
-            this.rbnDSX509.AutoSize = true;
-            this.rbnDSX509.Location = new System.Drawing.Point(165, 18);
-            this.rbnDSX509.Name = "rbnDSX509";
-            this.rbnDSX509.Size = new System.Drawing.Size(50, 16);
-            this.rbnDSX509.TabIndex = 1;
-            this.rbnDSX509.TabStop = true;
-            this.rbnDSX509.Text = "X.509";
-            this.rbnDSX509.UseVisualStyleBackColor = true;
-            this.rbnDSX509.CheckedChanged += new System.EventHandler(this.rbnDS_CheckedChanged);
+            this.rbnDSX509R.AutoSize = true;
+            this.rbnDSX509R.Location = new System.Drawing.Point(236, 18);
+            this.rbnDSX509R.Name = "rbnDSX509R";
+            this.rbnDSX509R.Size = new System.Drawing.Size(77, 16);
+            this.rbnDSX509R.TabIndex = 1;
+            this.rbnDSX509R.TabStop = true;
+            this.rbnDSX509R.Text = "X.509 RSA";
+            this.rbnDSX509R.UseVisualStyleBackColor = true;
+            this.rbnDSX509R.CheckedChanged += new System.EventHandler(this.rbnDS_CheckedChanged);
             // 
             // rbnDSXML
             // 
@@ -1390,10 +1407,10 @@
             this.rbnDSXML.Checked = true;
             this.rbnDSXML.Location = new System.Drawing.Point(20, 18);
             this.rbnDSXML.Name = "rbnDSXML";
-            this.rbnDSXML.Size = new System.Drawing.Size(45, 16);
+            this.rbnDSXML.Size = new System.Drawing.Size(76, 16);
             this.rbnDSXML.TabIndex = 0;
             this.rbnDSXML.TabStop = true;
-            this.rbnDSXML.Text = "XML";
+            this.rbnDSXML.Text = "XML(RSA)";
             this.rbnDSXML.UseVisualStyleBackColor = true;
             this.rbnDSXML.CheckedChanged += new System.EventHandler(this.rbnDS_CheckedChanged);
             // 
@@ -1426,6 +1443,16 @@
             this.tabRKEX.TabIndex = 11;
             this.tabRKEX.Text = "RSA鍵交換";
             this.tabRKEX.UseVisualStyleBackColor = true;
+            // 
+            // btnRKEXEC2
+            // 
+            this.btnRKEXEC2.Location = new System.Drawing.Point(32, 216);
+            this.btnRKEXEC2.Name = "btnRKEXEC2";
+            this.btnRKEXEC2.Size = new System.Drawing.Size(174, 23);
+            this.btnRKEXEC2.TabIndex = 42;
+            this.btnRKEXEC2.Text = "キー交換（pfx）";
+            this.btnRKEXEC2.UseVisualStyleBackColor = true;
+            this.btnRKEXEC2.Click += new System.EventHandler(this.btnRKEXEC_Click);
             // 
             // label2
             // 
@@ -1731,6 +1758,38 @@
             this.tabAEAD.Text = "AEAD";
             this.tabAEAD.UseVisualStyleBackColor = true;
             // 
+            // txtAEADCiphert
+            // 
+            this.txtAEADCiphert.Location = new System.Drawing.Point(183, 145);
+            this.txtAEADCiphert.Name = "txtAEADCiphert";
+            this.txtAEADCiphert.ReadOnly = true;
+            this.txtAEADCiphert.Size = new System.Drawing.Size(292, 19);
+            this.txtAEADCiphert.TabIndex = 39;
+            // 
+            // txtAEADTag
+            // 
+            this.txtAEADTag.Location = new System.Drawing.Point(183, 120);
+            this.txtAEADTag.Name = "txtAEADTag";
+            this.txtAEADTag.ReadOnly = true;
+            this.txtAEADTag.Size = new System.Drawing.Size(292, 19);
+            this.txtAEADTag.TabIndex = 38;
+            // 
+            // lblAEAD6
+            // 
+            this.lblAEAD6.AutoSize = true;
+            this.lblAEAD6.Location = new System.Drawing.Point(25, 148);
+            this.lblAEAD6.Name = "lblAEAD6";
+            this.lblAEAD6.Size = new System.Drawing.Size(41, 12);
+            this.lblAEAD6.TabIndex = 37;
+            this.lblAEAD6.Text = "暗号文";
+            // 
+            // txtAEADAad
+            // 
+            this.txtAEADAad.Location = new System.Drawing.Point(183, 95);
+            this.txtAEADAad.Name = "txtAEADAad";
+            this.txtAEADAad.Size = new System.Drawing.Size(292, 19);
+            this.txtAEADAad.TabIndex = 36;
+            // 
             // lblAEAD5
             // 
             this.lblAEAD5.AutoSize = true;
@@ -1834,7 +1893,7 @@
             this.tabJWS.Controls.Add(this.btnJWSSign);
             this.tabJWS.Location = new System.Drawing.Point(4, 40);
             this.tabJWS.Name = "tabJWS";
-            this.tabJWS.Size = new System.Drawing.Size(560, 304);
+            this.tabJWS.Size = new System.Drawing.Size(539, 267);
             this.tabJWS.TabIndex = 6;
             this.tabJWS.Text = "JWS";
             this.tabJWS.UseVisualStyleBackColor = true;
@@ -2008,52 +2067,19 @@
             // 
             this.tabJWE.Location = new System.Drawing.Point(4, 40);
             this.tabJWE.Name = "tabJWE";
-            this.tabJWE.Size = new System.Drawing.Size(560, 304);
+            this.tabJWE.Size = new System.Drawing.Size(539, 267);
             this.tabJWE.TabIndex = 10;
             this.tabJWE.Text = "JWE";
             this.tabJWE.UseVisualStyleBackColor = true;
             // 
-            // btnRKEXEC2
+            // tabDSE
             // 
-            this.btnRKEXEC2.Location = new System.Drawing.Point(32, 216);
-            this.btnRKEXEC2.Name = "btnRKEXEC2";
-            this.btnRKEXEC2.Size = new System.Drawing.Size(174, 23);
-            this.btnRKEXEC2.TabIndex = 42;
-            this.btnRKEXEC2.Text = "キー交換（pfx）";
-            this.btnRKEXEC2.UseVisualStyleBackColor = true;
-            this.btnRKEXEC2.Click += new System.EventHandler(this.btnRKEXEC_Click);
-            // 
-            // txtAEADAad
-            // 
-            this.txtAEADAad.Location = new System.Drawing.Point(183, 95);
-            this.txtAEADAad.Name = "txtAEADAad";
-            this.txtAEADAad.Size = new System.Drawing.Size(292, 19);
-            this.txtAEADAad.TabIndex = 36;
-            // 
-            // lblAEAD6
-            // 
-            this.lblAEAD6.AutoSize = true;
-            this.lblAEAD6.Location = new System.Drawing.Point(25, 148);
-            this.lblAEAD6.Name = "lblAEAD6";
-            this.lblAEAD6.Size = new System.Drawing.Size(41, 12);
-            this.lblAEAD6.TabIndex = 37;
-            this.lblAEAD6.Text = "暗号文";
-            // 
-            // txtAEADTag
-            // 
-            this.txtAEADTag.Location = new System.Drawing.Point(183, 120);
-            this.txtAEADTag.Name = "txtAEADTag";
-            this.txtAEADTag.ReadOnly = true;
-            this.txtAEADTag.Size = new System.Drawing.Size(292, 19);
-            this.txtAEADTag.TabIndex = 38;
-            // 
-            // txtAEADCiphert
-            // 
-            this.txtAEADCiphert.Location = new System.Drawing.Point(183, 145);
-            this.txtAEADCiphert.Name = "txtAEADCiphert";
-            this.txtAEADCiphert.ReadOnly = true;
-            this.txtAEADCiphert.Size = new System.Drawing.Size(292, 19);
-            this.txtAEADCiphert.TabIndex = 39;
+            this.tabDSE.Location = new System.Drawing.Point(4, 40);
+            this.tabDSE.Name = "tabDSE";
+            this.tabDSE.Size = new System.Drawing.Size(539, 267);
+            this.tabDSE.TabIndex = 13;
+            this.tabDSE.Text = "デジタル署名(ECDsa)";
+            this.tabDSE.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -2206,7 +2232,7 @@
         private System.Windows.Forms.Label lblSPWD14;
         private System.Windows.Forms.Button btnDSSign;
         private System.Windows.Forms.GroupBox gbxDS;
-        private System.Windows.Forms.RadioButton rbnDSX509;
+        private System.Windows.Forms.RadioButton rbnDSX509R;
         private System.Windows.Forms.RadioButton rbnDSXML;
         private System.Windows.Forms.ComboBox cbxDSPV;
         private System.Windows.Forms.Label lblDS1;
@@ -2290,6 +2316,8 @@
         private System.Windows.Forms.TextBox txtAEADAad;
         private System.Windows.Forms.TextBox txtAEADCiphert;
         private System.Windows.Forms.TextBox txtAEADTag;
+        private System.Windows.Forms.RadioButton rbnDSX509D;
+        private System.Windows.Forms.TabPage tabDSE;
     }
 }
 

@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/01/10  西野 大介         新規作成
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
+//*  2018/11/07  西野 大介         DSA証明書のサポートを追加（4.7以上）
 //**********************************************************************************
 
 using System;
@@ -124,8 +125,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>対象データに対してデジタル署名したデジタル署名部分のデータ</returns>
         public override byte[] Sign(byte[] data)
         {
-            // アルゴリズム（RSA or DSA）は、ココで決まるもよう。
-            AsymmetricAlgorithm aa = this.X509Certificate.PrivateKey;
+            AsymmetricAlgorithm aa = this.GetPrivateKey();
 
             // デジタル署名
             byte[] signedByte = null;
@@ -171,15 +171,21 @@ namespace Touryo.Infrastructure.Public.Security
             if (this.X509Certificate.PrivateKey == null)
             {
                 // *.cer
-                // アルゴリズム（RSA or DSA）は、ココで決まるもよう。
-                aa = this.X509Certificate.PublicKey.Key;
+                aa = this.GetPublicKey();
                 if (aa is RSACryptoServiceProvider)
                 {
+                    // RSACryptoServiceProvider
                     return ((RSACryptoServiceProvider)aa).VerifyData(data, this._hashAlgorithmName, sign);
                 }
                 else if (aa is DSACryptoServiceProvider)
                 {
+                    // DSACryptoServiceProvider
                     return ((DSACryptoServiceProvider)aa).VerifyData(data, sign);
+                }
+                else if (aa is ECDsaCng)
+                {
+                    // ECDsaCng (不明)
+                    throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
                 }
                 else
                 {
@@ -189,8 +195,7 @@ namespace Touryo.Infrastructure.Public.Security
             else
             {
                 // *.pfx
-                // アルゴリズム（RSA or DSA）は、ココで決まるもよう。
-                aa = this.X509Certificate.PrivateKey;
+                aa = this.GetPrivateKey();
                 if (aa is RSACryptoServiceProvider)
                 {
                     // RSACryptoServiceProvider
@@ -207,6 +212,11 @@ namespace Touryo.Infrastructure.Public.Security
                     dsa.ImportParameters(((DSACryptoServiceProvider)(aa)).ExportParameters(true));
                     flg = dsa.VerifyData(data, sign);
                 }
+                else if (aa is ECDsaCng)
+                {
+                    // ECDsaCng (不明)
+                    throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+                }
                 else
                 {
                     throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
@@ -216,7 +226,57 @@ namespace Touryo.Infrastructure.Public.Security
             return flg;
         }
 
-#endregion
+        #endregion
+
+        #region GetKey(RSA、DSAを選択的に)
+
+        /// <summary>GetPrivateKey</summary>
+        /// <returns>AsymmetricAlgorithm</returns>
+        private AsymmetricAlgorithm GetPrivateKey()
+        {
+            AsymmetricAlgorithm aa = null;
+
+#if NET45 || NET46 || NETSTD
+            aa = this.X509Certificate.PrivateKey;
+#else
+            if (this.X509Certificate.PublicKey.Oid.FriendlyName.ToUpper() == "DSA")
+            {
+                // DSA
+                aa = this.X509Certificate.GetDSAPrivateKey();
+            }
+            else
+            {
+                // RSA
+                aa = this.X509Certificate.PrivateKey;
+            }
+#endif
+            return aa;
+        }
+
+        /// <summary>GetPublicKey</summary>
+        /// <returns>AsymmetricAlgorithm</returns>
+        private AsymmetricAlgorithm GetPublicKey()
+        {
+            AsymmetricAlgorithm aa = null;
+
+#if NET45 || NET46 || NETSTD
+            aa = this.X509Certificate.PublicKey.Key;
+#else
+            if (this.X509Certificate.PublicKey.Oid.FriendlyName.ToUpper() == "DSA")
+            {
+                // DSA
+                aa = this.X509Certificate.GetDSAPublicKey();
+            }
+            else
+            {
+                // RSA
+                aa = this.X509Certificate.PublicKey.Key;
+            }
+#endif
+            return aa;
+        }
+
+        #endregion
 
         // こちらは、MyDispose (派生の末端を呼ぶ) の実装は不要。
     }

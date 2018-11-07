@@ -34,6 +34,7 @@
 //*  2017/01/13  西野 大介         追加のGetSaltedPasswordメソッド、CodeSigning、JWSクラスの検証画面
 //*  2017/12/**  西野 大介         メンテナンス、暗号化ライブラリ追加に伴うテストコード追加
 //*  2018/10/30  西野 大介         メンテナンス、テスト・コードの追加（MAC, AEAD, KeyExchange, etc.
+//*  2018/11/07  西野 大介         メンテナンス、テスト・コードの追加（DSA、ECDSA証明書
 //**********************************************************************************
 
 using System;
@@ -445,11 +446,14 @@ namespace EncAndDecUtil
         // *.cer 証明証に証明書チェーンが無ければ、WindowsOSの証明書ストア（リポジトリ）である
         // 「信頼されたルート証明機関」にインストールする必要があります（実行アカウントにも注意が必要） 。
 
-        /// <summary>CertificateFilePath_pfx</summary>
-        private string CertificateFilePath_pfx = GetConfigParameter.GetConfigValue("RS256Pfx");
-
-        /// <summary>CertificateFilePath_cer</summary>
-        private string CertificateFilePath_cer = GetConfigParameter.GetConfigValue("RS256Cer");
+        /// <summary>SHA256RSA_pfx</summary>
+        private string SHA256RSA_pfx = GetConfigParameter.GetConfigValue("SHA256RSA_pfx");
+        /// <summary>SHA256RSA_cer</summary>
+        private string SHA256RSA_cer = GetConfigParameter.GetConfigValue("SHA256RSA_cer");
+        /// <summary>SHA256DSA_pfx</summary>
+        private string SHA256DSA_pfx = GetConfigParameter.GetConfigValue("SHA256DSA_pfx");
+        /// <summary>SHA256DSA_cer</summary>
+        private string SHA256DSA_cer = GetConfigParameter.GetConfigValue("SHA256DSA_cer");
 
         /// <summary>CertificateFilePassword</summary>
         private string CertificateFilePassword = "test";
@@ -467,7 +471,7 @@ namespace EncAndDecUtil
                 this.txtDSHash.Text="";
                 this.txtDSHash.ReadOnly = true;
             }
-            else if (this.rbnDSX509.Checked)
+            else if (this.rbnDSX509R.Checked || this.rbnDSX509D.Checked)
             {
                 this.cbxDSPV.Enabled = false;
                 this.txtDSHash.Text = "SHA256";
@@ -530,8 +534,16 @@ namespace EncAndDecUtil
                 else
                 {
                     // X509
-                    dsX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtDSHash.Text,
-                        X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+                    if (this.rbnDSX509R.Checked)
+                    {
+                        dsX509 = new DigitalSignX509(this.SHA256RSA_pfx, this.CertificateFilePassword, this.txtDSHash.Text,
+                            X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+                    }
+                    else if (this.rbnDSX509D.Checked)
+                    {
+                        dsX509 = new DigitalSignX509(this.SHA256DSA_pfx, this.CertificateFilePassword, this.txtDSHash.Text,
+                            X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+                    }
 
                     sign = dsX509.Sign(data);
                     bool ret = dsX509.Verify(data, sign);
@@ -609,7 +621,14 @@ namespace EncAndDecUtil
                     //dsX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text,
                     //    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
                     // 通常は、*.cerを使用して検証する。
-                    dsX509 = new DigitalSignX509(CertificateFilePath_cer, "", this.txtDSHash.Text);
+                    if (this.rbnDSX509R.Checked)
+                    {
+                        dsX509 = new DigitalSignX509(SHA256RSA_cer, "", this.txtDSHash.Text);
+                    }
+                    else if (this.rbnDSX509D.Checked)
+                    {
+                        dsX509 = new DigitalSignX509(SHA256DSA_cer, "", this.txtDSHash.Text);
+                    }
 
                     ret = dsX509.Verify(data, sign);
                 }
@@ -660,7 +679,7 @@ namespace EncAndDecUtil
                 else
                 {
                     this._rsaBob = new RsaPkcs1Bob(
-                        this.CertificateFilePath_pfx, this.CertificateFilePassword, 
+                        this.SHA256RSA_pfx, this.CertificateFilePassword, 
                         X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
                 }
                 
@@ -1025,7 +1044,7 @@ namespace EncAndDecUtil
             else
             {
                 // RS256 (X509)
-                JWS_RS256_X509 jwsRS256 = new JWS_RS256_X509(this.CertificateFilePath_pfx, this.CertificateFilePassword,
+                JWS_RS256_X509 jwsRS256 = new JWS_RS256_X509(this.SHA256RSA_pfx, this.CertificateFilePassword,
                     X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
 
                 // 生成
@@ -1037,7 +1056,7 @@ namespace EncAndDecUtil
                 this.txtJWSJWK.Text =
                     RS256_KeyConverter.ParamToJwkPublicKey(
                         RS256_KeyConverter.X509CerToProvider(
-                            this.CertificateFilePath_cer).ExportParameters(false));
+                            this.SHA256RSA_cer).ExportParameters(false));
 
                 this.txtJWSSign.Text = jws;
 
@@ -1124,7 +1143,7 @@ namespace EncAndDecUtil
                     + "." + temp[2];
 
                 // 検証
-                JWS_RS256_X509 jwsRS256 = new JWS_RS256_X509(this.CertificateFilePath_cer, "");
+                JWS_RS256_X509 jwsRS256 = new JWS_RS256_X509(this.SHA256RSA_cer, "");
                 ret = jwsRS256.Verify(newJWS);
             }
 

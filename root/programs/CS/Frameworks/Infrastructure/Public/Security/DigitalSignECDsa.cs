@@ -28,10 +28,12 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/31  西野 大介         新規作成
+//*  2018/11/07  西野 大介         ECDSA証明書のサポートを追加（4.7以上）
 //**********************************************************************************
 
 using System;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
 using Touryo.Infrastructure.Public.Util;
 
@@ -43,6 +45,17 @@ namespace Touryo.Infrastructure.Public.Security
         // デジタル署名の場合は、秘密鍵で署名して、公開鍵で検証。
 
         #region mem & prop & constructor
+
+        #region mem & prop
+
+#if NET45 || NET46
+#else
+        /// <summary>HashAlgorithmName</summary>
+        HashAlgorithmName? _hashAlgorithmName = null;
+#endif
+
+        /// <summary>X.509証明書</summary>
+        public X509Certificate2 X509Certificate { get; protected set; }
 
         /// <summary>_privateKey</summary>
         private CngKey _privateKey = null;
@@ -74,6 +87,9 @@ namespace Touryo.Infrastructure.Public.Security
             }
         }
 
+        #endregion
+
+        #region constructor
         /// <summary>Constructor</summary>
         /// <param name="eaa">EnumDigitalSignAlgorithm</param>
         public DigitalSignECDsa(EnumDigitalSignAlgorithm eaa)
@@ -102,6 +118,39 @@ namespace Touryo.Infrastructure.Public.Security
             this._publicKey = this._privateKey.Export(CngKeyBlobFormat.GenericPublicBlob);
         }
 
+#if NET45 || NET46
+#else
+        /// <summary>
+        /// Constructor
+        /// X.509証明書(*.pfx, *.cer)からキーを設定する。
+        /// *.cer証明書の場合は、証明書チェーンが繋がっている必要がある。
+        /// 自己証明書の場合「信頼されたルート証明機関」にInstallするなどする。
+        /// </summary>
+        /// <param name="certificateFilePath">X.509証明書(*.pfx, *.cer)へのパス</param>
+        /// <param name="password">パスワード</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        public DigitalSignECDsa(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName) :
+            this(certificateFilePath, password, hashAlgorithmName, X509KeyStorageFlags.DefaultKeySet) { }
+
+        /// <summary>
+        /// Constructor
+        /// X.509証明書(*.pfx, *.cer)からキーを設定する。
+        /// *.cer証明書の場合は、証明書チェーンが繋がっている必要がある。
+        /// 自己証明書の場合「信頼されたルート証明機関」にInstallするなどする。
+        /// </summary>
+        /// <param name="certificateFilePath">X.509証明書(*.pfx, *.cer)へのパス</param>
+        /// <param name="password">パスワード</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <param name="flag">X509KeyStorageFlags</param>
+        public DigitalSignECDsa(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName, X509KeyStorageFlags flag)
+        {
+            this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
+            this._hashAlgorithmName = hashAlgorithmName;
+        }
+#endif
+
+        #endregion
+
         #endregion
 
         #region デジタル署名(ECDsa)
@@ -111,8 +160,18 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>対象データに対してデジタル署名したデジタル署名部分のデータ</returns>
         public override byte[] Sign(byte[] data)
         {
-            ECDsaCng aa = new ECDsaCng(this._privateKey);
-            return aa.SignData(data);
+            if (this.X509Certificate == null)
+            {
+                ECDsaCng  aa = new ECDsaCng(this._privateKey);
+                return aa.SignData(data);
+            }
+
+#if NET45 || NET46
+            throw new NotImplementedException();
+#else
+            ECDsa aa2 = this.X509Certificate.GetECDsaPrivateKey();
+            return aa2.SignData(data, this._hashAlgorithmName.Value);
+#endif
         }
 
         /// <summary>デジタル署名を検証する</summary>
@@ -121,9 +180,19 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
         public override bool Verify(byte[] data, byte[] sign)
         {
-            ECDsaCng aa = new ECDsaCng(CngKey.Import(
+            if (this.X509Certificate == null)
+            {
+                ECDsaCng aa = new ECDsaCng(CngKey.Import(
                 this._publicKey, CngKeyBlobFormat.GenericPublicBlob));
-            return aa.VerifyData(data, sign);
+                return aa.VerifyData(data, sign);
+            }
+
+#if NET45 || NET46
+            throw new NotImplementedException();
+#else
+            ECDsa aa2 = this.X509Certificate.GetECDsaPublicKey();
+            return aa2.VerifyData(data, sign, this._hashAlgorithmName.Value);
+#endif
         }
 
         #endregion
