@@ -50,12 +50,6 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region mem & prop & constructor
 
-        /// <summary>AsymmetricAlgorithm</summary>
-        public AsymmetricAlgorithm AsymmetricAlgorithm { get; protected set; }
-
-        /// <summary>HashAlgorithm</summary>
-        public HashAlgorithm HashAlgorithm { get; protected set; }
-
         /// <summary>Constructor</summary>
         /// <param name="eaa">EnumDigitalSignAlgorithm</param>
         public DigitalSignParam(EnumDigitalSignAlgorithm eaa)

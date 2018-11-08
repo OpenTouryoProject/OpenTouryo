@@ -48,12 +48,6 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region mem & prop
 
-#if NET45 || NET46
-#else
-        /// <summary>HashAlgorithmName</summary>
-        HashAlgorithmName? _hashAlgorithmName = null;
-#endif
-
         /// <summary>X.509証明書</summary>
         public X509Certificate2 X509Certificate { get; protected set; }
 
@@ -90,6 +84,7 @@ namespace Touryo.Infrastructure.Public.Security
         #endregion
 
         #region constructor
+        
         /// <summary>Constructor</summary>
         /// <param name="eaa">EnumDigitalSignAlgorithm</param>
         public DigitalSignECDsa(EnumDigitalSignAlgorithm eaa)
@@ -98,8 +93,12 @@ namespace Touryo.Infrastructure.Public.Security
             HashAlgorithm ha = null;
 
             AsymmetricAlgorithmCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+
             this._privateKey = ((ECDsaCng)aa).Key;
             this._publicKey = this._privateKey.Export(CngKeyBlobFormat.GenericPublicBlob);
+
+            this.AsymmetricAlgorithm = aa;
+            this.HashAlgorithm = ha;
         }
 
         /// <summary>Constructor</summary>

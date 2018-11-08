@@ -32,6 +32,7 @@
 //**********************************************************************************
 
 using System;
+using System.Security.Cryptography;
 
 namespace Touryo.Infrastructure.Public.Security
 {
@@ -39,7 +40,24 @@ namespace Touryo.Infrastructure.Public.Security
     /// デジタル署名抽象クラス
     /// </summary>
     public abstract class DigitalSign : IDisposable
-    {   
+    {
+        #region mem & prop
+
+        /// <summary>AsymmetricAlgorithm</summary>
+        public AsymmetricAlgorithm AsymmetricAlgorithm { get; protected set; }
+
+        /// <summary>HashAlgorithm</summary>
+        public HashAlgorithm HashAlgorithm { get; protected set; }
+
+#if NET45
+#else
+        /// <summary>HashAlgorithmName</summary>
+        public HashAlgorithmName? HashAlgorithmName { get; protected set; }
+#endif
+        #endregion
+
+        #region インターフェイス
+
         /// <summary>Sign</summary>
         /// <param name="data">data</param>
         /// <returns>署名</returns>
@@ -50,6 +68,10 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="sign">署名</param>
         /// <returns>検証結果</returns>
         public abstract bool Verify(byte[] data, byte[] sign);
+
+        #endregion
+
+        #region IDisposable
 
         /// <summary>IsDisposed</summary>
         protected bool IsDisposed = false;
@@ -77,5 +99,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>MyDispose (派生の末端を呼ぶ)</summary>
         /// <param name="disposing">disposing</param>
         protected virtual void MyDispose(bool disposing) { }
+
+        #endregion
     }
 }

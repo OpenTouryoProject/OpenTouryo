@@ -52,12 +52,6 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region mem & prop & constructor
 
-        /// <summary>AsymmetricAlgorithm</summary>
-        public AsymmetricAlgorithm AsymmetricAlgorithm { get; protected set; }
-
-        /// <summary>HashAlgorithm</summary>
-        public HashAlgorithm HashAlgorithm { get; protected set; }
-
         /// <summary>
         /// XMLPrivateKey
         /// RFC 3275のXML秘密鍵
