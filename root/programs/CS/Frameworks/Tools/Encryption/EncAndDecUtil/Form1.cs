@@ -707,8 +707,8 @@ namespace EncAndDecUtil
                 sign = dsECDsa.Sign(data);
                 bool ret = dsECDsa.Verify(data, sign);
 
-                this.txtDSEPrivateKey.Text = "HashCode: " + dsECDsa.PrivateKey.GetHashCode().ToString();
-                this.txtDSEPublicKey.Text = CustomEncode.ToBase64String(dsECDsa.PublicKey);
+                this.txtDSEPrivateKey.Text = "x.509";
+                this.txtDSEPublicKey.Text = "x.509";
 #endif
             }
 
