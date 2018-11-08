@@ -189,6 +189,7 @@
     <Compile Include="Util\PerformanceRecorder.cs" />
     <Compile Include="Util\PubLiteral.cs" />
     <Compile Include="Win32\CmnWin32.cs" />
+    <Compile Include="Util\EnvInfo.cs" />
     <Compile Include="Win32\EUDCWin32.cs" />
     <Compile Include="Win32\EventLogWin32.cs" />
     <Compile Include="Win32\MMapFileWin32.cs" />

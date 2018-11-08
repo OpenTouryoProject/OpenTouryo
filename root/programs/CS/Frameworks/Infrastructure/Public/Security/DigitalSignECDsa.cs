@@ -144,7 +144,7 @@ namespace Touryo.Infrastructure.Public.Security
         public DigitalSignECDsa(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName, X509KeyStorageFlags flag)
         {
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
-            this._hashAlgorithmName = hashAlgorithmName;
+            this.HashAlgorithmName = hashAlgorithmName;
         }
 #endif
 
@@ -169,7 +169,7 @@ namespace Touryo.Infrastructure.Public.Security
             throw new NotImplementedException();
 #else
             ECDsa aa2 = this.X509Certificate.GetECDsaPrivateKey();
-            return aa2.SignData(data, this._hashAlgorithmName.Value);
+            return aa2.SignData(data, this.HashAlgorithmName.Value);
 #endif
         }
 
@@ -190,7 +190,7 @@ namespace Touryo.Infrastructure.Public.Security
             throw new NotImplementedException();
 #else
             ECDsa aa2 = this.X509Certificate.GetECDsaPublicKey();
-            return aa2.VerifyData(data, sign, this._hashAlgorithmName.Value);
+            return aa2.VerifyData(data, sign, this.HashAlgorithmName.Value);
 #endif
         }
 

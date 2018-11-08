@@ -140,6 +140,7 @@
             this.rbnDSX509R = new System.Windows.Forms.RadioButton();
             this.rbnDSXML = new System.Windows.Forms.RadioButton();
             this.btnDSSign = new System.Windows.Forms.Button();
+            this.tabDSE = new System.Windows.Forms.TabPage();
             this.tabRKEX = new System.Windows.Forms.TabPage();
             this.btnRKEXEC2 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -206,7 +207,23 @@
             this.btnJWSVerify = new System.Windows.Forms.Button();
             this.btnJWSSign = new System.Windows.Forms.Button();
             this.tabJWE = new System.Windows.Forms.TabPage();
-            this.tabDSE = new System.Windows.Forms.TabPage();
+            this.btnDSEVerify = new System.Windows.Forms.Button();
+            this.lblDSE6 = new System.Windows.Forms.Label();
+            this.txtDSESign = new System.Windows.Forms.TextBox();
+            this.lblDSE5 = new System.Windows.Forms.Label();
+            this.txtDSEPublicKey = new System.Windows.Forms.TextBox();
+            this.lblDSE4 = new System.Windows.Forms.Label();
+            this.txtDSEPrivateKey = new System.Windows.Forms.TextBox();
+            this.lblDSE3 = new System.Windows.Forms.Label();
+            this.lblDSE2 = new System.Windows.Forms.Label();
+            this.txtDSEData = new System.Windows.Forms.TextBox();
+            this.txtDSEHash = new System.Windows.Forms.TextBox();
+            this.gbxDSE = new System.Windows.Forms.GroupBox();
+            this.rbnDSEX509 = new System.Windows.Forms.RadioButton();
+            this.rbnDSECng = new System.Windows.Forms.RadioButton();
+            this.btnDSESign = new System.Windows.Forms.Button();
+            this.cbxDSEPV = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.TabControl1.SuspendLayout();
             this.tabHash.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHSStretching)).BeginInit();
@@ -226,12 +243,14 @@
             this.gbxASC.SuspendLayout();
             this.tabDS.SuspendLayout();
             this.gbxDS.SuspendLayout();
+            this.tabDSE.SuspendLayout();
             this.tabRKEX.SuspendLayout();
             this.tabEKEX.SuspendLayout();
             this.tabMAC.SuspendLayout();
             this.tabAEAD.SuspendLayout();
             this.tabJWS.SuspendLayout();
             this.gbxJWS.SuspendLayout();
+            this.gbxDSE.SuspendLayout();
             this.SuspendLayout();
             // 
             // TabControl1
@@ -403,9 +422,9 @@
             this.tabKeyedHash.Controls.Add(this.lblKHS1);
             this.tabKeyedHash.Controls.Add(this.txtKHSPassword);
             this.tabKeyedHash.Controls.Add(this.txtKHSString);
-            this.tabKeyedHash.Location = new System.Drawing.Point(4, 22);
+            this.tabKeyedHash.Location = new System.Drawing.Point(4, 40);
             this.tabKeyedHash.Name = "tabKeyedHash";
-            this.tabKeyedHash.Size = new System.Drawing.Size(539, 285);
+            this.tabKeyedHash.Size = new System.Drawing.Size(539, 267);
             this.tabKeyedHash.TabIndex = 3;
             this.tabKeyedHash.Text = "キー付きハッシュ";
             this.tabKeyedHash.UseVisualStyleBackColor = true;
@@ -534,9 +553,9 @@
             this.tabPwdDB1.Controls.Add(this.cbxSPWDPV1);
             this.tabPwdDB1.Controls.Add(this.lblSPWD11);
             this.tabPwdDB1.Controls.Add(this.btnSPWDGen1);
-            this.tabPwdDB1.Location = new System.Drawing.Point(4, 22);
+            this.tabPwdDB1.Location = new System.Drawing.Point(4, 40);
             this.tabPwdDB1.Name = "tabPwdDB1";
-            this.tabPwdDB1.Size = new System.Drawing.Size(539, 285);
+            this.tabPwdDB1.Size = new System.Drawing.Size(539, 267);
             this.tabPwdDB1.TabIndex = 4;
             this.tabPwdDB1.Text = "パスワードDB保存 1";
             this.tabPwdDB1.UseVisualStyleBackColor = true;
@@ -689,9 +708,9 @@
             this.tabPwdDB2.Controls.Add(this.cbxSPWDPV2);
             this.tabPwdDB2.Controls.Add(this.lblSPWD21);
             this.tabPwdDB2.Controls.Add(this.btnSPWDGen2);
-            this.tabPwdDB2.Location = new System.Drawing.Point(4, 22);
+            this.tabPwdDB2.Location = new System.Drawing.Point(4, 40);
             this.tabPwdDB2.Name = "tabPwdDB2";
-            this.tabPwdDB2.Size = new System.Drawing.Size(539, 285);
+            this.tabPwdDB2.Size = new System.Drawing.Size(539, 267);
             this.tabPwdDB2.TabIndex = 5;
             this.tabPwdDB2.Text = "パスワードDB保存 2";
             this.tabPwdDB2.UseVisualStyleBackColor = true;
@@ -863,10 +882,10 @@
             this.tabSC.Controls.Add(this.lblSC1);
             this.tabSC.Controls.Add(this.txtSCPassword);
             this.tabSC.Controls.Add(this.txtSCString);
-            this.tabSC.Location = new System.Drawing.Point(4, 22);
+            this.tabSC.Location = new System.Drawing.Point(4, 40);
             this.tabSC.Name = "tabSC";
             this.tabSC.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSC.Size = new System.Drawing.Size(539, 285);
+            this.tabSC.Size = new System.Drawing.Size(539, 267);
             this.tabSC.TabIndex = 0;
             this.tabSC.Text = "秘密鍵・暗号化";
             this.tabSC.UseVisualStyleBackColor = true;
@@ -1060,10 +1079,10 @@
             this.tabASC.Controls.Add(this.lblASC2);
             this.tabASC.Controls.Add(this.lblASC1);
             this.tabASC.Controls.Add(this.txtASCString);
-            this.tabASC.Location = new System.Drawing.Point(4, 22);
+            this.tabASC.Location = new System.Drawing.Point(4, 40);
             this.tabASC.Name = "tabASC";
             this.tabASC.Padding = new System.Windows.Forms.Padding(3);
-            this.tabASC.Size = new System.Drawing.Size(539, 285);
+            this.tabASC.Size = new System.Drawing.Size(539, 267);
             this.tabASC.TabIndex = 1;
             this.tabASC.Text = "共通鍵・暗号化";
             this.tabASC.UseVisualStyleBackColor = true;
@@ -1367,7 +1386,6 @@
             // rbnDSX509D
             // 
             this.rbnDSX509D.AutoSize = true;
-            this.rbnDSX509D.Enabled = false;
             this.rbnDSX509D.Location = new System.Drawing.Point(319, 18);
             this.rbnDSX509D.Name = "rbnDSX509D";
             this.rbnDSX509D.Size = new System.Drawing.Size(77, 16);
@@ -1423,6 +1441,30 @@
             this.btnDSSign.Text = "署名";
             this.btnDSSign.UseVisualStyleBackColor = true;
             this.btnDSSign.Click += new System.EventHandler(this.btnDSSign_Click);
+            // 
+            // tabDSE
+            // 
+            this.tabDSE.Controls.Add(this.cbxDSEPV);
+            this.tabDSE.Controls.Add(this.label3);
+            this.tabDSE.Controls.Add(this.btnDSEVerify);
+            this.tabDSE.Controls.Add(this.lblDSE6);
+            this.tabDSE.Controls.Add(this.txtDSESign);
+            this.tabDSE.Controls.Add(this.lblDSE5);
+            this.tabDSE.Controls.Add(this.txtDSEPublicKey);
+            this.tabDSE.Controls.Add(this.lblDSE4);
+            this.tabDSE.Controls.Add(this.txtDSEPrivateKey);
+            this.tabDSE.Controls.Add(this.lblDSE3);
+            this.tabDSE.Controls.Add(this.lblDSE2);
+            this.tabDSE.Controls.Add(this.txtDSEData);
+            this.tabDSE.Controls.Add(this.txtDSEHash);
+            this.tabDSE.Controls.Add(this.gbxDSE);
+            this.tabDSE.Controls.Add(this.btnDSESign);
+            this.tabDSE.Location = new System.Drawing.Point(4, 40);
+            this.tabDSE.Name = "tabDSE";
+            this.tabDSE.Size = new System.Drawing.Size(539, 267);
+            this.tabDSE.TabIndex = 13;
+            this.tabDSE.Text = "デジタル署名(ECDsa)";
+            this.tabDSE.UseVisualStyleBackColor = true;
             // 
             // tabRKEX
             // 
@@ -2072,14 +2114,160 @@
             this.tabJWE.Text = "JWE";
             this.tabJWE.UseVisualStyleBackColor = true;
             // 
-            // tabDSE
+            // btnDSEVerify
             // 
-            this.tabDSE.Location = new System.Drawing.Point(4, 40);
-            this.tabDSE.Name = "tabDSE";
-            this.tabDSE.Size = new System.Drawing.Size(539, 267);
-            this.tabDSE.TabIndex = 13;
-            this.tabDSE.Text = "デジタル署名(ECDsa)";
-            this.tabDSE.UseVisualStyleBackColor = true;
+            this.btnDSEVerify.Location = new System.Drawing.Point(237, 210);
+            this.btnDSEVerify.Name = "btnDSEVerify";
+            this.btnDSEVerify.Size = new System.Drawing.Size(174, 23);
+            this.btnDSEVerify.TabIndex = 58;
+            this.btnDSEVerify.Text = "検証";
+            this.btnDSEVerify.UseVisualStyleBackColor = true;
+            this.btnDSEVerify.Click += new System.EventHandler(this.btnDSEVerify_Click);
+            // 
+            // lblDSE6
+            // 
+            this.lblDSE6.AutoSize = true;
+            this.lblDSE6.Location = new System.Drawing.Point(9, 188);
+            this.lblDSE6.Name = "lblDSE6";
+            this.lblDSE6.Size = new System.Drawing.Size(29, 12);
+            this.lblDSE6.TabIndex = 57;
+            this.lblDSE6.Text = "署名";
+            // 
+            // txtDSESign
+            // 
+            this.txtDSESign.Location = new System.Drawing.Point(157, 185);
+            this.txtDSESign.Name = "txtDSESign";
+            this.txtDSESign.ReadOnly = true;
+            this.txtDSESign.Size = new System.Drawing.Size(254, 19);
+            this.txtDSESign.TabIndex = 56;
+            // 
+            // lblDSE5
+            // 
+            this.lblDSE5.AutoSize = true;
+            this.lblDSE5.Location = new System.Drawing.Point(9, 163);
+            this.lblDSE5.Name = "lblDSE5";
+            this.lblDSE5.Size = new System.Drawing.Size(41, 12);
+            this.lblDSE5.TabIndex = 55;
+            this.lblDSE5.Text = "公開鍵";
+            // 
+            // txtDSEPublicKey
+            // 
+            this.txtDSEPublicKey.Location = new System.Drawing.Point(157, 160);
+            this.txtDSEPublicKey.Name = "txtDSEPublicKey";
+            this.txtDSEPublicKey.Size = new System.Drawing.Size(254, 19);
+            this.txtDSEPublicKey.TabIndex = 54;
+            // 
+            // lblDSE4
+            // 
+            this.lblDSE4.AutoSize = true;
+            this.lblDSE4.Location = new System.Drawing.Point(9, 138);
+            this.lblDSE4.Name = "lblDSE4";
+            this.lblDSE4.Size = new System.Drawing.Size(41, 12);
+            this.lblDSE4.TabIndex = 53;
+            this.lblDSE4.Text = "秘密鍵";
+            // 
+            // txtDSEPrivateKey
+            // 
+            this.txtDSEPrivateKey.Location = new System.Drawing.Point(157, 135);
+            this.txtDSEPrivateKey.Name = "txtDSEPrivateKey";
+            this.txtDSEPrivateKey.ReadOnly = true;
+            this.txtDSEPrivateKey.Size = new System.Drawing.Size(254, 19);
+            this.txtDSEPrivateKey.TabIndex = 52;
+            // 
+            // lblDSE3
+            // 
+            this.lblDSE3.AutoSize = true;
+            this.lblDSE3.Location = new System.Drawing.Point(9, 113);
+            this.lblDSE3.Name = "lblDSE3";
+            this.lblDSE3.Size = new System.Drawing.Size(33, 12);
+            this.lblDSE3.TabIndex = 51;
+            this.lblDSE3.Text = "データ";
+            // 
+            // lblDSE2
+            // 
+            this.lblDSE2.AutoSize = true;
+            this.lblDSE2.Location = new System.Drawing.Point(9, 88);
+            this.lblDSE2.Name = "lblDSE2";
+            this.lblDSE2.Size = new System.Drawing.Size(77, 12);
+            this.lblDSE2.TabIndex = 50;
+            this.lblDSE2.Text = "ハッシュ (X509)";
+            // 
+            // txtDSEData
+            // 
+            this.txtDSEData.Location = new System.Drawing.Point(157, 110);
+            this.txtDSEData.Name = "txtDSEData";
+            this.txtDSEData.Size = new System.Drawing.Size(254, 19);
+            this.txtDSEData.TabIndex = 49;
+            // 
+            // txtDSEHash
+            // 
+            this.txtDSEHash.Location = new System.Drawing.Point(157, 85);
+            this.txtDSEHash.Name = "txtDSEHash";
+            this.txtDSEHash.ReadOnly = true;
+            this.txtDSEHash.Size = new System.Drawing.Size(254, 19);
+            this.txtDSEHash.TabIndex = 48;
+            this.txtDSEHash.Text = "SHA1";
+            // 
+            // gbxDSE
+            // 
+            this.gbxDSE.Controls.Add(this.rbnDSEX509);
+            this.gbxDSE.Controls.Add(this.rbnDSECng);
+            this.gbxDSE.Location = new System.Drawing.Point(9, 7);
+            this.gbxDSE.Name = "gbxDSE";
+            this.gbxDSE.Size = new System.Drawing.Size(402, 46);
+            this.gbxDSE.TabIndex = 45;
+            this.gbxDSE.TabStop = false;
+            this.gbxDSE.Text = "API選択";
+            // 
+            // rbnDSEX509
+            // 
+            this.rbnDSEX509.AutoSize = true;
+            this.rbnDSEX509.Location = new System.Drawing.Point(102, 18);
+            this.rbnDSEX509.Name = "rbnDSEX509";
+            this.rbnDSEX509.Size = new System.Drawing.Size(50, 16);
+            this.rbnDSEX509.TabIndex = 2;
+            this.rbnDSEX509.TabStop = true;
+            this.rbnDSEX509.Text = "X.509";
+            this.rbnDSEX509.UseVisualStyleBackColor = true;
+            // 
+            // rbnDSECng
+            // 
+            this.rbnDSECng.AutoSize = true;
+            this.rbnDSECng.Checked = true;
+            this.rbnDSECng.Location = new System.Drawing.Point(20, 18);
+            this.rbnDSECng.Name = "rbnDSECng";
+            this.rbnDSECng.Size = new System.Drawing.Size(62, 16);
+            this.rbnDSECng.TabIndex = 0;
+            this.rbnDSECng.TabStop = true;
+            this.rbnDSECng.Text = "CngKey";
+            this.rbnDSECng.UseVisualStyleBackColor = true;
+            // 
+            // btnDSESign
+            // 
+            this.btnDSESign.Location = new System.Drawing.Point(11, 210);
+            this.btnDSESign.Name = "btnDSESign";
+            this.btnDSESign.Size = new System.Drawing.Size(174, 23);
+            this.btnDSESign.TabIndex = 44;
+            this.btnDSESign.Text = "署名";
+            this.btnDSESign.UseVisualStyleBackColor = true;
+            this.btnDSESign.Click += new System.EventHandler(this.btnDSESign_Click);
+            // 
+            // cbxDSEPV
+            // 
+            this.cbxDSEPV.FormattingEnabled = true;
+            this.cbxDSEPV.Location = new System.Drawing.Point(157, 59);
+            this.cbxDSEPV.Name = "cbxDSEPV";
+            this.cbxDSEPV.Size = new System.Drawing.Size(254, 20);
+            this.cbxDSEPV.TabIndex = 60;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(9, 63);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(102, 12);
+            this.label3.TabIndex = 59;
+            this.label3.Text = "プロバイダ (CngKey)";
             // 
             // Form1
             // 
@@ -2121,6 +2309,8 @@
             this.tabDS.PerformLayout();
             this.gbxDS.ResumeLayout(false);
             this.gbxDS.PerformLayout();
+            this.tabDSE.ResumeLayout(false);
+            this.tabDSE.PerformLayout();
             this.tabRKEX.ResumeLayout(false);
             this.tabRKEX.PerformLayout();
             this.tabEKEX.ResumeLayout(false);
@@ -2133,6 +2323,8 @@
             this.tabJWS.PerformLayout();
             this.gbxJWS.ResumeLayout(false);
             this.gbxJWS.PerformLayout();
+            this.gbxDSE.ResumeLayout(false);
+            this.gbxDSE.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -2318,6 +2510,23 @@
         private System.Windows.Forms.TextBox txtAEADTag;
         private System.Windows.Forms.RadioButton rbnDSX509D;
         private System.Windows.Forms.TabPage tabDSE;
+        private System.Windows.Forms.Button btnDSEVerify;
+        private System.Windows.Forms.Label lblDSE6;
+        private System.Windows.Forms.TextBox txtDSESign;
+        private System.Windows.Forms.Label lblDSE5;
+        private System.Windows.Forms.TextBox txtDSEPublicKey;
+        private System.Windows.Forms.Label lblDSE4;
+        private System.Windows.Forms.TextBox txtDSEPrivateKey;
+        private System.Windows.Forms.Label lblDSE3;
+        private System.Windows.Forms.Label lblDSE2;
+        private System.Windows.Forms.TextBox txtDSEData;
+        private System.Windows.Forms.TextBox txtDSEHash;
+        private System.Windows.Forms.GroupBox gbxDSE;
+        private System.Windows.Forms.RadioButton rbnDSEX509;
+        private System.Windows.Forms.RadioButton rbnDSECng;
+        private System.Windows.Forms.Button btnDSESign;
+        private System.Windows.Forms.ComboBox cbxDSEPV;
+        private System.Windows.Forms.Label label3;
     }
 }
 

@@ -40,6 +40,7 @@
 using System;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -63,7 +64,19 @@ namespace EncAndDecUtil
         /// <summary>Form_Load</summary>
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+            // HS    : Hash
+            // KHS   : KeyedHash
+            // SC    : SymmetricCryptography
+            // ASC   : ASymmetricCryptography
+            // MAC   : MessageAuthenticationCode
+            // AEAD  : AuthenticatedEncryptionWithAssociatedData
+            // DS    : DigitalSign(RSA, DSA)
+            // DSE   : DigitalSign(ECDSA)
+            // RKEX  : RsaKeyExchange
+            // EKEX  : EcdhKeyExchange
+
+            #region Cbx
+
             cbxHSPV.DataSource = Enum.GetValues(typeof(EnumHashAlgorithm));
             cbxKHSPV.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
 
@@ -79,17 +92,22 @@ namespace EncAndDecUtil
             cbxMACPV.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
 
             cbxDSPV.DataSource = Enum.GetValues(typeof(EnumDigitalSignAlgorithm));
+            cbxDSEPV.DataSource = Enum.GetValues(typeof(EnumDigitalSignAlgorithm));
+
             cbxRKEXPV.DataSource = Enum.GetValues(typeof(EnumKeyExchange));
 
-            // HS    : Hash
-            // KHS   : KeyedHash
-            // SC    : SymmetricCryptography
-            // ASC   : ASymmetricCryptography
-            // MAC   : MessageAuthenticationCode
-            // AEAD  : AuthenticatedEncryptionWithAssociatedData
-            // DS    : DigitalSign
-            // RKEX  : RsaKeyExchange
-            // EKEX  : EcdhKeyExchange
+            #endregion
+
+            #region Version
+
+            // n.n の表記ならコレでイケる。
+            if (float.Parse(EnvInfo.RegistryFrameworkVersion.Substring(0, 3)) < 4.7F)
+            {
+                rbnDSEX509.Enabled = false;
+                rbnDSX509D.Enabled = false;
+            }
+
+            #endregion
         }
 
         #endregion
@@ -450,17 +468,25 @@ namespace EncAndDecUtil
         private string SHA256RSA_pfx = GetConfigParameter.GetConfigValue("SHA256RSA_pfx");
         /// <summary>SHA256RSA_cer</summary>
         private string SHA256RSA_cer = GetConfigParameter.GetConfigValue("SHA256RSA_cer");
+
         /// <summary>SHA256DSA_pfx</summary>
         private string SHA256DSA_pfx = GetConfigParameter.GetConfigValue("SHA256DSA_pfx");
         /// <summary>SHA256DSA_cer</summary>
         private string SHA256DSA_cer = GetConfigParameter.GetConfigValue("SHA256DSA_cer");
 
+        /// <summary>SHA256ECDSA_pfx</summary>
+        private string SHA256ECDSA_pfx = GetConfigParameter.GetConfigValue("SHA256ECDSA_pfx");
+        /// <summary>SHA256ECDSA_cer</summary>
+        private string SHA256ECDSA_cer = GetConfigParameter.GetConfigValue("SHA256ECDSA_cer");
+        
         /// <summary>CertificateFilePassword</summary>
         private string CertificateFilePassword = "test";
 
         #endregion
 
         #region 署名
+
+        #region RSA, DSA
 
         /// <summary>rbnDS_CheckedChanged</summary>
         private void rbnDS_CheckedChanged(object sender, EventArgs e)
@@ -541,6 +567,7 @@ namespace EncAndDecUtil
                     }
                     else if (this.rbnDSX509D.Checked)
                     {
+                        // NET46.1以降に、I/Fは存在する。Windows上で動作しない可能性あり。
                         dsX509 = new DigitalSignX509(this.SHA256DSA_pfx, this.CertificateFilePassword, this.txtDSHash.Text,
                             X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
                     }
@@ -554,14 +581,8 @@ namespace EncAndDecUtil
             }
             else
             {
-                // ECDsa
-                DigitalSignECDsa dsECDsa = new DigitalSignECDsa(edsa);
-
-                sign = dsECDsa.Sign(data);
-                bool ret = dsECDsa.Verify(data, sign);
-
-                this.txtDSPrivateKey.Text = "";
-                this.txtDSPublicKey.Text = CustomEncode.ToBase64String(dsECDsa.PublicKey);
+                this.TabControl1.SelectedIndex = 7;
+                return;
             }
 
             txtDSSign.Text = CustomEncode.ToBase64String(sign);
@@ -617,10 +638,6 @@ namespace EncAndDecUtil
                 else
                 {
                     // X509
-                    //// *.pfxを使用して、検証することもできるが、
-                    //dsX509 = new DigitalSignX509(this.CertificateFilePath_pfx, this.CertificateFilePassword, this.txtCCHash.Text,
-                    //    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
-                    // 通常は、*.cerを使用して検証する。
                     if (this.rbnDSX509R.Checked)
                     {
                         dsX509 = new DigitalSignX509(SHA256RSA_cer, "", this.txtDSHash.Text);
@@ -635,10 +652,8 @@ namespace EncAndDecUtil
             }
             else
             {
-                DigitalSignECDsa dsECDsa = new DigitalSignECDsa(
-                    CustomEncode.FromBase64String(this.txtDSPublicKey.Text));
-
-                ret = dsECDsa.Verify(data, sign);
+                this.TabControl1.SelectedIndex = 7;
+                return;
             }
 
             if (ret)
@@ -649,8 +664,103 @@ namespace EncAndDecUtil
             {
                 MessageBox.Show("検証失敗");
             }
-
         }
+
+        #endregion
+
+        #region ECDsa
+
+        /// <summary>署名</summary>
+        private void btnDSESign_Click(object sender, EventArgs e)
+        {
+            byte[] data = CustomEncode.StringToByte(this.txtDSData.Text, CustomEncode.UTF_8);
+            byte[] sign = null;
+
+            DigitalSignECDsa dsECDsa = null;
+
+            EnumDigitalSignAlgorithm edsa = (EnumDigitalSignAlgorithm)this.cbxDSEPV.SelectedValue;
+
+            if (rbnDSECng.Checked)
+            {
+                if (edsa == EnumDigitalSignAlgorithm.ECDsaCng_P256
+                    || edsa == EnumDigitalSignAlgorithm.ECDsaCng_P384
+                    || edsa == EnumDigitalSignAlgorithm.ECDsaCng_P521)
+                {
+                    dsECDsa = new DigitalSignECDsa(edsa);
+                    sign = dsECDsa.Sign(data);
+                    bool ret = dsECDsa.Verify(data, sign);
+
+                    this.txtDSEPrivateKey.Text = "HashCode: " + dsECDsa.PrivateKey.GetHashCode().ToString();
+                    this.txtDSEPublicKey.Text = CustomEncode.ToBase64String(dsECDsa.PublicKey);
+                }
+                else
+                {
+                    this.TabControl1.SelectedIndex = 6;
+                    return;
+                }
+            }
+            else
+            {
+#if HOGE
+                // NET47以降に、I/Fは存在する。しかし、Linuxでないと動作しない。
+                dsECDsa = new DigitalSignECDsa(this.SHA256ECDSA_pfx, this.CertificateFilePassword, new HashAlgorithmName(this.txtDSEHash.Text));
+                sign = dsECDsa.Sign(data);
+                bool ret = dsECDsa.Verify(data, sign);
+
+                this.txtDSEPrivateKey.Text = "HashCode: " + dsECDsa.PrivateKey.GetHashCode().ToString();
+                this.txtDSEPublicKey.Text = CustomEncode.ToBase64String(dsECDsa.PublicKey);
+#endif
+            }
+
+            txtDSESign.Text = CustomEncode.ToBase64String(sign);
+        }
+
+        /// <summary>検証<</summary>
+        private void btnDSEVerify_Click(object sender, EventArgs e)
+        {
+            byte[] data = CustomEncode.StringToByte(this.txtDSEData.Text, CustomEncode.UTF_8);
+            byte[] sign = CustomEncode.FromBase64String(this.txtDSESign.Text);
+            bool ret = false;
+
+            DigitalSignECDsa dsECDsa = null;
+
+            EnumDigitalSignAlgorithm edsa = (EnumDigitalSignAlgorithm)this.cbxDSEPV.SelectedValue;
+
+            if (rbnDSECng.Checked)
+            {
+                if (edsa == EnumDigitalSignAlgorithm.ECDsaCng_P256
+                    || edsa == EnumDigitalSignAlgorithm.ECDsaCng_P384
+                    || edsa == EnumDigitalSignAlgorithm.ECDsaCng_P521)
+                {
+                    dsECDsa = new DigitalSignECDsa(CustomEncode.FromBase64String(this.txtDSEPublicKey.Text));
+                }
+                else
+                {
+                    this.TabControl1.SelectedIndex = 6;
+                    return;
+                }
+            }
+            else
+            {
+#if HOGE
+                // NET47以降に、I/Fは存在する。しかし、Linuxでないと動作しない。
+                dsECDsa = new DigitalSignECDsa(this.SHA256ECDSA_cer, "", new HashAlgorithmName(this.txtDSEHash.Text));
+#endif
+            }
+
+            ret = dsECDsa.Verify(data, sign);
+
+            if (ret)
+            {
+                MessageBox.Show("検証成功");
+            }
+            else
+            {
+                MessageBox.Show("検証失敗");
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -694,7 +804,7 @@ namespace EncAndDecUtil
             }
             else
             {
-                this.TabControl1.SelectedIndex = 8;
+                this.TabControl1.SelectedIndex = 9;
                 return;
             }
 
@@ -727,7 +837,7 @@ namespace EncAndDecUtil
             }
             else
             {
-                this.TabControl1.SelectedIndex = 8;
+                this.TabControl1.SelectedIndex = 9;
                 return;
             }
         }
