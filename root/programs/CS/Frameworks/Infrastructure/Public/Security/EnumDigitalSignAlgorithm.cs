@@ -80,6 +80,9 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>RSAOpenSsl:SHA512</summary>
         RSAOpenSsl_SHA512,
+
+        /// <summary>DSAOpenSsl:SHA1</summary>
+        DSAOpenSsl_SHA1,
 #endif
 
     };

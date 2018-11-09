@@ -128,6 +128,14 @@ namespace Touryo.Infrastructure.Public.Security
                 aa = new DSACryptoServiceProvider();
                 ha = SHA1.Create();
             }
+#if NETSTD
+            else if (eaa == EnumDigitalSignAlgorithm.DSAOpenSsl_SHA1)
+            {
+                // DSAOpenSslサービスプロバイダ
+                aa = new DSAOpenSsl();
+                ha = SHA1.Create();
+            }
+#endif
             else if (
                 eaa == EnumDigitalSignAlgorithm.ECDsaCng_P256
                 || eaa == EnumDigitalSignAlgorithm.ECDsaCng_P384
