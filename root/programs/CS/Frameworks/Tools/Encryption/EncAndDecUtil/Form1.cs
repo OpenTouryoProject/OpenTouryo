@@ -676,7 +676,7 @@ namespace EncAndDecUtil
             byte[] data = CustomEncode.StringToByte(this.txtDSData.Text, CustomEncode.UTF_8);
             byte[] sign = null;
 
-            DigitalSignECDsa dsECDsa = null;
+            DigitalSign dsECDsa = null;
 
             EnumDigitalSignAlgorithm edsa = (EnumDigitalSignAlgorithm)this.cbxDSEPV.SelectedValue;
 
@@ -686,12 +686,12 @@ namespace EncAndDecUtil
                     || edsa == EnumDigitalSignAlgorithm.ECDsaCng_P384
                     || edsa == EnumDigitalSignAlgorithm.ECDsaCng_P521)
                 {
-                    dsECDsa = new DigitalSignECDsa(edsa);
+                    dsECDsa = new DigitalSignECDsaCng(edsa);
                     sign = dsECDsa.Sign(data);
                     bool ret = dsECDsa.Verify(data, sign);
 
-                    this.txtDSEPrivateKey.Text = "HashCode: " + dsECDsa.PrivateKey.GetHashCode().ToString();
-                    this.txtDSEPublicKey.Text = CustomEncode.ToBase64String(dsECDsa.PublicKey);
+                    this.txtDSEPrivateKey.Text = ((DigitalSignECDsaCng)dsECDsa).PrivateKey.GetType().ToString();
+                    this.txtDSEPublicKey.Text = CustomEncode.ToBase64String(((DigitalSignECDsaCng)dsECDsa).PublicKey);
                 }
                 else
                 {
@@ -703,12 +703,12 @@ namespace EncAndDecUtil
             {
 #if HOGE
                 // NET47以降に、I/Fは存在する。しかし、Linuxでないと動作しない。
-                dsECDsa = new DigitalSignECDsa(this.SHA256ECDSA_pfx, this.CertificateFilePassword, new HashAlgorithmName(this.txtDSEHash.Text));
+                dsECDsa = new DigitalSignECDsaX509(this.SHA256ECDSA_pfx, this.CertificateFilePassword, new HashAlgorithmName(this.txtDSEHash.Text));
                 sign = dsECDsa.Sign(data);
                 bool ret = dsECDsa.Verify(data, sign);
 
-                this.txtDSEPrivateKey.Text = "x.509";
-                this.txtDSEPublicKey.Text = "x.509";
+                this.txtDSEPrivateKey.Text = ((DigitalSignECDsaX509)dsECDsa).PrivateKey.GetType().ToString();
+                this.txtDSEPublicKey.Text = ((DigitalSignECDsaX509)dsECDsa).PublicKey.GetType().ToString();
 #endif
             }
 
@@ -722,7 +722,7 @@ namespace EncAndDecUtil
             byte[] sign = CustomEncode.FromBase64String(this.txtDSESign.Text);
             bool ret = false;
 
-            DigitalSignECDsa dsECDsa = null;
+            DigitalSign dsECDsa = null;
 
             EnumDigitalSignAlgorithm edsa = (EnumDigitalSignAlgorithm)this.cbxDSEPV.SelectedValue;
 
@@ -732,7 +732,7 @@ namespace EncAndDecUtil
                     || edsa == EnumDigitalSignAlgorithm.ECDsaCng_P384
                     || edsa == EnumDigitalSignAlgorithm.ECDsaCng_P521)
                 {
-                    dsECDsa = new DigitalSignECDsa(CustomEncode.FromBase64String(this.txtDSEPublicKey.Text));
+                    dsECDsa = new DigitalSignECDsaCng(CustomEncode.FromBase64String(this.txtDSEPublicKey.Text));
                 }
                 else
                 {
@@ -744,7 +744,7 @@ namespace EncAndDecUtil
             {
 #if HOGE
                 // NET47以降に、I/Fは存在する。しかし、Linuxでないと動作しない。
-                dsECDsa = new DigitalSignECDsa(this.SHA256ECDSA_cer, "", new HashAlgorithmName(this.txtDSEHash.Text));
+                dsECDsa = new DigitalSignECDsaX509(this.SHA256ECDSA_cer, "", new HashAlgorithmName(this.txtDSEHash.Text));
 #endif
             }
 

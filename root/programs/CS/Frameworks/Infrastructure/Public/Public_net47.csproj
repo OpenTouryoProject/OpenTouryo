@@ -112,7 +112,8 @@
     <Compile Include="Security\BaseKeyExchange.cs" />
     <Compile Include="Security\CryptoConst.cs" />
     <Compile Include="Security\AuthEncrypt.cs" />
-    <Compile Include="Security\DigitalSignECDsa.cs" />
+    <Compile Include="Security\DigitalSignECDsaX509.cs" />
+    <Compile Include="Security\DigitalSignECDsaCng.cs" />
     <Compile Include="Security\EcdhKeyExchange.cs" />
     <Compile Include="Security\EnumKeyExchange.cs" />
     <Compile Include="Security\EnumDigitalSignAlgorithm.cs" />
