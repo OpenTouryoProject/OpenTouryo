@@ -34,7 +34,7 @@
 //*  2017/01/13  西野 大介         追加のGetSaltedPasswordメソッド、CodeSigning、JWSクラスの検証画面
 //*  2017/12/**  西野 大介         メンテナンス、暗号化ライブラリ追加に伴うテストコード追加
 //*  2018/10/30  西野 大介         メンテナンス、テスト・コードの追加（MAC, AEAD, KeyExchange, etc.
-//*  2018/11/07  西野 大介         メンテナンス、テスト・コードの追加（DSA、ECDSA証明書
+//*  2018/11/07  西野 大介         メンテナンス、テスト・コードの追加（DSA、ECDSA証明書, etc.
 //**********************************************************************************
 
 using System;
@@ -103,8 +103,8 @@ namespace EncAndDecUtil
             // n.n の表記ならコレでイケる。
             if (float.Parse(EnvInfo.RegistryFrameworkVersion.Substring(0, 3)) < 4.7F)
             {
-                rbnDSEX509.Enabled = false;
-                rbnDSX509D.Enabled = false;
+                rbnDSX509D.Enabled = false; // DSA
+                rbnDSEX509.Enabled = false; // ECDsa
             }
 
             #endregion
@@ -491,13 +491,13 @@ namespace EncAndDecUtil
         /// <summary>rbnDS_CheckedChanged</summary>
         private void rbnDS_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.rbnDSXML.Checked || this.rbnDSParam.Checked)
+            if (this.rbnDSXML.Checked || this.rbnDSParam.Checked || this.rbnDSX509D.Checked)
             {
                 this.cbxDSPV.Enabled = true;
                 this.txtDSHash.Text="";
                 this.txtDSHash.ReadOnly = true;
             }
-            else if (this.rbnDSX509R.Checked || this.rbnDSX509D.Checked)
+            else if (this.rbnDSX509R.Checked)
             {
                 this.cbxDSPV.Enabled = false;
                 this.txtDSHash.Text = "SHA256";
@@ -575,8 +575,8 @@ namespace EncAndDecUtil
                     sign = dsX509.Sign(data);
                     bool ret = dsX509.Verify(data, sign);
 
-                    this.txtDSPrivateKey.Text = dsX509.X509PrivateKey;
-                    this.txtDSPublicKey.Text = dsX509.X509PublicKey;
+                    this.txtDSPrivateKey.Text = dsX509.X509PrivateKey.GetType().ToString();
+                    this.txtDSPublicKey.Text = dsX509.X509PublicKey.GetType().ToString();
                 }
             }
             else
@@ -670,6 +670,23 @@ namespace EncAndDecUtil
 
         #region ECDsa
 
+        /// <summary>rbnDSE_CheckedChanged</summary>
+        private void rbnDSE_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.rbnDSECng.Checked)
+            {
+                this.cbxDSEPV.Enabled = true;
+                this.txtDSEHash.Text = "";
+                this.txtDSEHash.ReadOnly = true;
+            }
+            else if (this.rbnDSEX509.Checked)
+            {
+                this.cbxDSEPV.Enabled = false;
+                this.txtDSEHash.Text = "SHA256";
+                this.txtDSEHash.ReadOnly = false;
+            }
+        }
+
         /// <summary>署名</summary>
         private void btnDSESign_Click(object sender, EventArgs e)
         {
@@ -702,13 +719,16 @@ namespace EncAndDecUtil
             else
             {
 #if HOGE
-                // NET47以降に、I/Fは存在する。しかし、Linuxでないと動作しない。
+                // NET47以降に、I/Fは存在する。
                 dsECDsa = new DigitalSignECDsaX509(this.SHA256ECDSA_pfx, this.CertificateFilePassword, new HashAlgorithmName(this.txtDSEHash.Text));
                 sign = dsECDsa.Sign(data);
                 bool ret = dsECDsa.Verify(data, sign);
 
                 this.txtDSEPrivateKey.Text = ((DigitalSignECDsaX509)dsECDsa).PrivateKey.GetType().ToString();
                 this.txtDSEPublicKey.Text = ((DigitalSignECDsaX509)dsECDsa).PublicKey.GetType().ToString();
+#else
+                MessageBox.Show("NET47以上でサポート");
+                return;
 #endif
             }
 
@@ -745,6 +765,9 @@ namespace EncAndDecUtil
 #if HOGE
                 // NET47以降に、I/Fは存在する。しかし、Linuxでないと動作しない。
                 dsECDsa = new DigitalSignECDsaX509(this.SHA256ECDSA_cer, "", new HashAlgorithmName(this.txtDSEHash.Text));
+#else
+                MessageBox.Show("NET47以上でサポート");
+                return;
 #endif
             }
 
@@ -1161,7 +1184,7 @@ namespace EncAndDecUtil
                 string jws = jwsRS256.Create(this.txtJWSPayload.Text);
 
                 // 出力
-                this.txtJWSKey.Text = jwsRS256.DigitalSignX509.X509PublicKey;
+                this.txtJWSKey.Text = jwsRS256.DigitalSignX509.X509PublicKey.GetType().ToString();
 
                 this.txtJWSJWK.Text =
                     RS256_KeyConverter.ParamToJwkPublicKey(

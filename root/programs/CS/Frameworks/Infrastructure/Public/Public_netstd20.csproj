@@ -66,6 +66,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="app.config" />
+    <None Remove="packages.config" />
+    <None Remove="packages_net45.config" />
+    <None Remove="packages_net46.config" />
+    <None Remove="packages_net47.config" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BouncyCastle.NetCore" Version="1.8.3" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.1" />
@@ -76,6 +84,7 @@
     <PackageReference Include="System.Data.Odbc" Version="4.5.0-preview1-26216-02" />
     <PackageReference Include="System.Data.SqlClient" Version="4.4.3" />
     <PackageReference Include="System.Security.Cryptography.Cng" Version="4.5.0" />
+    <PackageReference Include="System.Security.Cryptography.OpenSsl" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>

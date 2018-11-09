@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/12/25  西野 大介         新規作成
+//*  2018/11/09  西野 大介         RSAOpenSsl & HashAlgorithmName対応
 //**********************************************************************************
 
 using System;
@@ -122,36 +123,64 @@ namespace Touryo.Infrastructure.Public.Security
             ha = null;
 
             // 公開鍵・暗号化サービスプロバイダ
-            if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_MD5)
+            if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_MD5
+                || eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA1
+                || eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256
+                || eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA384
+                || eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA512)
             {
                 // RSACryptoServiceProviderサービスプロバイダ
                 aa = new RSACryptoServiceProvider();
-                ha = MD5.Create();
+
+                switch (eaa)
+                {
+                    case EnumDigitalSignAlgorithm.RSACryptoServiceProvider_MD5:
+                        ha = MD5.Create();
+                        break;
+                    case EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA1:
+                        ha = SHA1.Create();
+                        break;
+                    case EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256:
+                        ha = SHA256.Create();
+                        break;
+                    case EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA384:
+                        ha = SHA384.Create();
+                        break;
+                    case EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA512:
+                        ha = SHA512.Create();
+                        break;
+                }
             }
-            else if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA1)
+#if NETSTD
+            else if (eaa == EnumDigitalSignAlgorithm.RSAOpenSsl_MD5
+                || eaa == EnumDigitalSignAlgorithm.RSAOpenSsl_SHA1
+                || eaa == EnumDigitalSignAlgorithm.RSAOpenSsl_SHA256
+                || eaa == EnumDigitalSignAlgorithm.RSAOpenSsl_SHA384
+                || eaa == EnumDigitalSignAlgorithm.RSAOpenSsl_SHA512)
             {
-                // RSACryptoServiceProviderサービスプロバイダ
-                aa = new RSACryptoServiceProvider();
-                ha = SHA1.Create();
+                // RSAOpenSslサービスプロバイダ
+                aa = new RSAOpenSsl();
+
+                switch (eaa)
+                {
+                    case EnumDigitalSignAlgorithm.RSAOpenSsl_MD5:
+                        ha = MD5.Create();
+                        break;
+                    case EnumDigitalSignAlgorithm.RSAOpenSsl_SHA1:
+                        ha = SHA1.Create();
+                        break;
+                    case EnumDigitalSignAlgorithm.RSAOpenSsl_SHA256:
+                        ha = SHA256.Create();
+                        break;
+                    case EnumDigitalSignAlgorithm.RSAOpenSsl_SHA384:
+                        ha = SHA384.Create();
+                        break;
+                    case EnumDigitalSignAlgorithm.RSAOpenSsl_SHA512:
+                        ha = SHA512.Create();
+                        break;
+                }
             }
-            else if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256)
-            {
-                // RSACryptoServiceProviderサービスプロバイダ
-                aa = new RSACryptoServiceProvider();
-                ha = SHA256.Create();
-            }
-            else if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA384)
-            {
-                // RSACryptoServiceProviderサービスプロバイダ
-                aa = new RSACryptoServiceProvider();
-                ha = SHA384.Create();
-            }
-            else if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA512)
-            {
-                // RSACryptoServiceProviderサービスプロバイダ
-                aa = new RSACryptoServiceProvider();
-                ha = SHA512.Create();
-            }
+#endif
             else if (eaa == EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
             {
                 // DSACryptoServiceProvider
@@ -166,21 +195,17 @@ namespace Touryo.Infrastructure.Public.Security
                 // ECDsaCng生成後にオプションとして設定するのではなく
                 // CngKeyの生成時にCngAlgorithmの指定が必要であるもよう。
                 CngAlgorithm cngAlgorithm = null;
-                if (eaa == EnumDigitalSignAlgorithm.ECDsaCng_P256)
+                switch (eaa)
                 {
-                    cngAlgorithm = CngAlgorithm.ECDsaP256;
-                }
-                else if (eaa == EnumDigitalSignAlgorithm.ECDsaCng_P384)
-                {
-                    cngAlgorithm = CngAlgorithm.ECDsaP384;
-                }
-                else if (eaa == EnumDigitalSignAlgorithm.ECDsaCng_P521)
-                {
-                    cngAlgorithm = CngAlgorithm.ECDsaP521;
-                }
-                else
-                {
-                    throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+                    case EnumDigitalSignAlgorithm.ECDsaCng_P256:
+                        cngAlgorithm = CngAlgorithm.ECDsaP256;
+                        break;
+                    case EnumDigitalSignAlgorithm.ECDsaCng_P384:
+                        cngAlgorithm = CngAlgorithm.ECDsaP384;
+                        break;
+                    case EnumDigitalSignAlgorithm.ECDsaCng_P521:
+                        cngAlgorithm = CngAlgorithm.ECDsaP521;
+                        break;
                 }
                 aa = new ECDsaCng(CngKey.Create(cngAlgorithm));
                 ha = null; // ハッシュ無し

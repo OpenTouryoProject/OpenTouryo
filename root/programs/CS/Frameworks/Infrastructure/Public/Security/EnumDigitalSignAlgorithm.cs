@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/31  西野 大介         新規作成（分離）
 //*  2018/10/31  西野 大介         ECDsaCngアルゴリズムの追加
+//*  2018/11/09  西野 大介         RSAOpenSsl & HashAlgorithmName対応
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Public.Security
@@ -62,6 +63,24 @@ namespace Touryo.Infrastructure.Public.Security
         ECDsaCng_P384,
 
         /// <summary>ECDsaCng:P521</summary>
-        ECDsaCng_P521
+        ECDsaCng_P521,
+
+#if NETSTD
+        /// <summary>RSAOpenSsl:MD5</summary>
+        RSAOpenSsl_MD5,
+
+        /// <summary>RSAOpenSsl:SHA1</summary>
+        RSAOpenSsl_SHA1,
+
+        /// <summary>RSAOpenSsl:SHA256</summary>
+        RSAOpenSsl_SHA256,
+
+        /// <summary>RSAOpenSsl:SHA384</summary>
+        RSAOpenSsl_SHA384,
+
+        /// <summary>RSAOpenSsl:SHA512</summary>
+        RSAOpenSsl_SHA512,
+#endif
+
     };
 }

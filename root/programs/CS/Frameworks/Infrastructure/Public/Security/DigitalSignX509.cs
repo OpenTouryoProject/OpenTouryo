@@ -30,6 +30,7 @@
 //*  2017/01/10  西野 大介         新規作成
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //*  2018/11/07  西野 大介         DSA証明書のサポートを追加（4.7以上）
+//*  2018/11/09  西野 大介         RSAOpenSsl & HashAlgorithmName対応
 //**********************************************************************************
 
 using System;
@@ -54,32 +55,44 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region mem & prop & constructor
 
+        #region mem & prop
+
         /// <summary>
         /// RSAの場合、以下からHashAlgorithm名を指定する。
         /// MD5, SHA1, SHA256, SHA384, SHA512
         /// </summary>
-        string _hashAlgorithmName = "";
+#if NET45
+         private string _hashAlgorithmName = "";
+#else
+        private HashAlgorithmName _hashAlgorithmName = new HashAlgorithmName("SHA256");
 
+        /// <summary>RSASignaturePadding</summary>
+        public RSASignaturePadding Padding = RSASignaturePadding.Pkcs1;
+#endif
         /// <summary>X.509証明書</summary>
         public X509Certificate2 X509Certificate { get; protected set; }
 
         /// <summary>X.509証明書の秘密鍵</summary>
-        public string X509PrivateKey
+        public AsymmetricAlgorithm X509PrivateKey
         {
             get
             {
-                return "- hidden -";
+                return this.X509Certificate.PrivateKey;
             }
         }
 
         /// <summary>X.509証明書の公開鍵</summary>
-        public string X509PublicKey
+        public AsymmetricAlgorithm X509PublicKey
         {
             get
             {
-                return CustomEncode.ToBase64String(this.X509Certificate.GetPublicKey());
+                return this.X509Certificate.PublicKey.Key;
             }
         }
+
+        #endregion
+
+        #region constructor
 
         /// <summary>
         /// Constructor
@@ -112,9 +125,45 @@ namespace Touryo.Infrastructure.Public.Security
         public DigitalSignX509(string certificateFilePath, string password, string hashAlgorithmName, X509KeyStorageFlags flag)
         {
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
+#if NET45
+            this._hashAlgorithmName = hashAlgorithmName;
+#else
+            this._hashAlgorithmName = new HashAlgorithmName(hashAlgorithmName);
+#endif
+        }
 
+#if NET45
+#else
+        /// <summary>
+        /// Constructor
+        /// X.509証明書(*.pfx, *.cer)からキーを設定する。
+        /// *.cer証明書の場合は、証明書チェーンが繋がっている必要がある。
+        /// 自己証明書の場合「信頼されたルート証明機関」にInstallするなどする。
+        /// </summary>
+        /// <param name="certificateFilePath">X.509証明書(*.pfx, *.cer)へのパス</param>
+        /// <param name="password">パスワード</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        public DigitalSignX509(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName) :
+            this(certificateFilePath, password, hashAlgorithmName, X509KeyStorageFlags.DefaultKeySet) { }
+
+        /// <summary>
+        /// Constructor
+        /// X.509証明書(*.pfx, *.cer)からキーを設定する。
+        /// *.cer証明書の場合は、証明書チェーンが繋がっている必要がある。
+        /// 自己証明書の場合「信頼されたルート証明機関」にInstallするなどする。
+        /// </summary>
+        /// <param name="certificateFilePath">X.509証明書(*.pfx, *.cer)へのパス</param>
+        /// <param name="password">パスワード</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <param name="flag">X509KeyStorageFlags</param>
+        public DigitalSignX509(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName, X509KeyStorageFlags flag)
+        {
+            this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
             this._hashAlgorithmName = hashAlgorithmName;
         }
+#endif
+
+        #endregion
 
         #endregion
 
@@ -136,10 +185,24 @@ namespace Touryo.Infrastructure.Public.Security
                 // *.pfxの場合、ExportParameters(true)して生成し直している。
                 RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(this.X509Certificate.PrivateKey.KeySize);
                 rsa.ImportParameters(((RSACryptoServiceProvider)(aa)).ExportParameters(true));
-                
-                signedByte = rsa.SignData(data, this._hashAlgorithmName);
 
+#if NET45
+                signedByte = rsa.SignData(data, this._hashAlgorithmName);
+#else
+                signedByte = rsa.SignData(data, this._hashAlgorithmName, this.Padding); 
+#endif
             }
+#if NETSTD
+            else if (aa is RSAOpenSsl)
+            {
+                // RSAOpenSsl
+                // *.pfxの場合、ExportParameters(true)して生成し直している。
+                RSAOpenSsl rsa = new RSAOpenSsl(this.X509Certificate.PrivateKey.KeySize);
+                rsa.ImportParameters(((RSAOpenSsl)(aa)).ExportParameters(true));
+
+                signedByte = rsa.SignData(data, this._hashAlgorithmName, this.Padding);
+            }
+#endif
             else if (aa is DSACryptoServiceProvider)
             {
                 // DSACryptoServiceProvider
@@ -175,8 +238,19 @@ namespace Touryo.Infrastructure.Public.Security
                 if (aa is RSACryptoServiceProvider)
                 {
                     // RSACryptoServiceProvider
+#if NET45
                     return ((RSACryptoServiceProvider)aa).VerifyData(data, this._hashAlgorithmName, sign);
+#else
+                    return ((RSACryptoServiceProvider)aa).VerifyData(data, sign, this._hashAlgorithmName, this.Padding);
+#endif
                 }
+#if NETSTD
+                else if (aa is RSAOpenSsl)
+                {
+                    // RSAOpenSsl
+                    return ((RSAOpenSsl)aa).VerifyData(data, sign, this._hashAlgorithmName, this.Padding);
+                }
+#endif
                 else if (aa is DSACryptoServiceProvider)
                 {
                     // DSACryptoServiceProvider
@@ -202,9 +276,25 @@ namespace Touryo.Infrastructure.Public.Security
                     // *.pfxの場合、ExportParameters(true)して生成し直している。
                     RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(this.X509Certificate.PrivateKey.KeySize);
                     rsa.ImportParameters(((RSACryptoServiceProvider)(aa)).ExportParameters(true));
+
+#if NET45
                     flg = rsa.VerifyData(data, this._hashAlgorithmName, sign);
+#else
+                    flg = rsa.VerifyData(data, sign, this._hashAlgorithmName, this.Padding);
+#endif
                 }
-                else if(aa is DSACryptoServiceProvider)
+#if NETSTD
+                else if (aa is RSAOpenSsl)
+                {
+                    // RSAOpenSsl
+                    // *.pfxの場合、ExportParameters(true)して生成し直している。
+                    RSAOpenSsl rsa = new RSAOpenSsl(this.X509Certificate.PrivateKey.KeySize);
+                    rsa.ImportParameters(((RSAOpenSsl)(aa)).ExportParameters(true));
+
+                    flg = rsa.VerifyData(data, sign, this._hashAlgorithmName, this.Padding);
+                }
+#endif
+                else if (aa is DSACryptoServiceProvider)
                 {
                     // DSACryptoServiceProvider
                     // *.pfxの場合、ExportParameters(true)して生成し直している。
