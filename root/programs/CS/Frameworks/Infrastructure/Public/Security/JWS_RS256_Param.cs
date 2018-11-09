@@ -68,14 +68,16 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>Constructor</summary>
         public JWS_RS256_Param()
         {
-            this.DigitalSignParam = new DigitalSignParam(EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256);
+            this.DigitalSignParam = new DigitalSignParam(
+                EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256);
         }
 
         /// <summary>Constructor</summary>
         /// <param name="param">object</param>
-        public JWS_RS256_Param(object param)
+        public JWS_RS256_Param(RSAParameters param)
         {
-            this.DigitalSignParam = new DigitalSignParam(param, SHA256.Create());
+            this.DigitalSignParam = new DigitalSignParam(param,
+                EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256);
         }
 
         #endregion

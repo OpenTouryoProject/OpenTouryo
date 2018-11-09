@@ -57,8 +57,8 @@ namespace Touryo.Infrastructure.Public.Security
             this._DigitalSignXML = new DigitalSignXML(
                 EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256);
 
-            this.XMLPrivateKey = this._DigitalSignXML.XMLPrivateKey;
-            this.XMLPublicKey = this._DigitalSignXML.XMLPublicKey;
+            this.XMLPrivateKey = this._DigitalSignXML.PrivateKey;
+            this.XMLPublicKey = this._DigitalSignXML.PublicKey;
         }
 
         /// <summary>Constructor</summary>
@@ -67,8 +67,8 @@ namespace Touryo.Infrastructure.Public.Security
         {
             this._DigitalSignXML = new DigitalSignXML(
                 EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256, xmlKey);
-            this.XMLPrivateKey = this._DigitalSignXML.XMLPrivateKey;
-            this.XMLPublicKey = this._DigitalSignXML.XMLPublicKey;
+            this.XMLPrivateKey = this._DigitalSignXML.PrivateKey;
+            this.XMLPublicKey = this._DigitalSignXML.PublicKey;
         }
 
         #endregion

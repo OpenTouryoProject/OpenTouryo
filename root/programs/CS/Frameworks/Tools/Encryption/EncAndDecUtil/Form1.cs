@@ -45,6 +45,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
+using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Security;
 using Touryo.Infrastructure.Public.Util;
@@ -529,33 +530,19 @@ namespace EncAndDecUtil
                     // XMLKey
                     dsXML = new DigitalSignXML(edsa);
                     sign = dsXML.Sign(data);
-                    //bool ret = csXML.Verify(data, sign);
+                    bool ret = dsXML.Verify(data, sign);
 
-                    this.txtDSPrivateKey.Text = dsXML.XMLPrivateKey;
-                    this.txtDSPublicKey.Text = dsXML.XMLPublicKey;
+                    this.txtDSPrivateKey.Text = dsXML.PrivateKey;
+                    this.txtDSPublicKey.Text = dsXML.PublicKey;
                 }
                 else if (rbnDSParam.Checked)
                 {
-                    // XMLKey
-                    dsXML = new DigitalSignXML(edsa);
-
-                    if (((EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue) ==
-                            EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
-                    {
-                        DSAParameters dsaparam = ((DSACryptoServiceProvider)dsXML.AsymmetricAlgorithm).ExportParameters(true);
-                        dsParam = new DigitalSignParam(dsaparam, dsXML.HashAlgorithm);
-                    }
-                    else
-                    {
-                        RSAParameters rsaparam = ((RSACryptoServiceProvider)dsXML.AsymmetricAlgorithm).ExportParameters(true);
-                        dsParam = new DigitalSignParam(rsaparam, dsXML.HashAlgorithm);
-                    }
-
+                    // ParamKey
+                    dsParam = new DigitalSignParam(edsa);
                     sign = dsParam.Sign(data);
-                    //bool ret = dsParam.Verify(data, sign);
-
-                    this.txtDSPrivateKey.Text = dsXML.XMLPrivateKey;
-                    this.txtDSPublicKey.Text = dsXML.XMLPublicKey;
+                    bool ret = dsParam.Verify(data, sign);
+                    this.txtDSPrivateKey.Text = CustomEncode.ToBase64String(BinarySerialize.ObjectToBytes(dsParam.PrivateKey));
+                    this.txtDSPublicKey.Text = CustomEncode.ToBase64String(BinarySerialize.ObjectToBytes(dsParam.PublicKey));
                 }
                 else
                 {
@@ -617,23 +604,22 @@ namespace EncAndDecUtil
                 }
                 else if (rbnDSParam.Checked)
                 {
-                    // XMLKey
-                    dsXML = new DigitalSignXML(
-                        (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue, this.txtDSPublicKey.Text);
-
+                    // ParamKey
                     if (((EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue) ==
                             EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
                     {
-                        DSAParameters dsaparam = ((DSACryptoServiceProvider)dsXML.AsymmetricAlgorithm).ExportParameters(false);
-                        dsParam = new DigitalSignParam(dsaparam, dsXML.HashAlgorithm);
+                        dsParam = new DigitalSignParam(
+                            (DSAParameters)BinarySerialize.BytesToObject(CustomEncode.FromBase64String(this.txtDSPublicKey.Text)),
+                            (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue);
                     }
                     else
                     {
-                        RSAParameters rsaparam = ((RSACryptoServiceProvider)dsXML.AsymmetricAlgorithm).ExportParameters(false);
-                        dsParam = new DigitalSignParam(rsaparam, dsXML.HashAlgorithm);
+                        dsParam = new DigitalSignParam(
+                            (RSAParameters)BinarySerialize.BytesToObject(CustomEncode.FromBase64String(this.txtDSPublicKey.Text)),
+                            (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue);
                     }
 
-                    ret = dsXML.Verify(data, sign);
+                    ret = dsParam.Verify(data, sign);
                 }
                 else
                 {

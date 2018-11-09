@@ -47,65 +47,6 @@ namespace Touryo.Infrastructure.Public.Security
     /// </summary>
     public class AsymmetricAlgorithmCmnFunc
     {
-        /// <summary>公開鍵・暗号化サービスプロバイダの生成(param)</summary>
-        /// <param name="param">
-        /// - RSAParameters
-        /// - DSAParameters
-        /// </param>
-        /// <param name="ha">HashAlgorithm(使用可能かチェック)</param>
-        /// <returns>
-        /// AsymmetricAlgorithm
-        /// - RSACryptoServiceProvider
-        /// - DSACryptoServiceProvider
-        /// </returns>
-        public static AsymmetricAlgorithm CreateAsymmetricAlgorithmFromParam(object param, HashAlgorithm ha)
-        {
-            if (param is RSAParameters)
-            {
-                // RSACryptoServiceProvider
-                RSACryptoServiceProvider rsaCryptoServiceProvider = new RSACryptoServiceProvider();
-                rsaCryptoServiceProvider.ImportParameters((RSAParameters)param);
-                
-                // HashAlgorithm
-                string temp = HashAlgorithmCmnFunc.GetHashAlgorithmName(ha);
-                if ("MD5, SHA1, SHA256, SHA384, SHA512".IndexOf(temp) != -1)
-                {
-                    return rsaCryptoServiceProvider;
-                }
-                else
-                {
-                    throw new ArgumentException(
-                        PublicExceptionMessage.ARGUMENT_INCORRECT,
-                        "The hash algorithm parameter of rsa is incorrect.");
-                }
-            }
-            else if (param is DSAParameters)
-            {
-                // DSACryptoServiceProvider
-                DSACryptoServiceProvider dsaCryptoServiceProvider = new DSACryptoServiceProvider();
-                dsaCryptoServiceProvider.ImportParameters((DSAParameters)param);
-                
-                // HashAlgorithm
-                string temp = HashAlgorithmCmnFunc.GetHashAlgorithmName(ha);
-                if (temp == CryptoConst.SHA1)
-                {
-                    return dsaCryptoServiceProvider;
-                }
-                else
-                {
-                    throw new ArgumentException(
-                        PublicExceptionMessage.ARGUMENT_INCORRECT,
-                        "The hash algorithm parameter of dsa is incorrect.");
-                }
-            }
-            else
-            {
-                throw new ArgumentException(
-                    PublicExceptionMessage.ARGUMENT_INCORRECT,
-                    "The algorithm parameters is incorrect.");
-            }
-        }
-
         /// <summary>署名・検証サービスプロバイダの生成(EnumDigitalSignAlgorithm)</summary>
         /// <param name="eaa">EnumDigitalSignAlgorithm</param>
         /// <param name="aa">
@@ -185,6 +126,7 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 // DSACryptoServiceProvider
                 aa = new DSACryptoServiceProvider();
+                ha = SHA1.Create();
             }
             else if (
                 eaa == EnumDigitalSignAlgorithm.ECDsaCng_P256

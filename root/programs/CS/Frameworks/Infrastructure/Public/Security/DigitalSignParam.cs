@@ -30,6 +30,11 @@
 //*  2017/12/25  西野 大介         新規作成
 //**********************************************************************************
 
+// 参考（少しでもミスると動かないので、結構難しい
+// https://docs.microsoft.com/ja-jp/dotnet/standard/security/cryptographic-signatures
+// https://docs.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.rsapkcs1signatureformatter
+// https://docs.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.rsapkcs1signaturedeformatter
+
 using System;
 using System.Security.Cryptography;
 
@@ -50,6 +55,40 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region mem & prop & constructor
 
+        /// <summary>PrivateKey</summary>
+        public object PrivateKey
+        {
+            get
+            {
+                if (this.AsymmetricAlgorithm is RSA)
+                {
+                    return ((RSA)this.AsymmetricAlgorithm).ExportParameters(true);
+                }
+                else if (this.AsymmetricAlgorithm is DSA)
+                {
+                    return ((DSA)this.AsymmetricAlgorithm).ExportParameters(true);
+                }
+                return null;
+            }
+        }
+
+        /// <summary>PublicKey</summary>
+        public object PublicKey
+        {
+            get
+            {
+                if (this.AsymmetricAlgorithm is RSA)
+                {
+                    return ((RSA)this.AsymmetricAlgorithm).ExportParameters(false);
+                }
+                else if (this.AsymmetricAlgorithm is DSA)
+                {
+                    return ((DSA)this.AsymmetricAlgorithm).ExportParameters(false);
+                }
+                return null;
+            }
+        }
+
         /// <summary>Constructor</summary>
         /// <param name="eaa">EnumDigitalSignAlgorithm</param>
         public DigitalSignParam(EnumDigitalSignAlgorithm eaa)
@@ -64,11 +103,53 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         /// <summary>Constructor</summary>
-        /// <param name="param">object</param>
-        /// <param name="ha">HashAlgorithm</param>
-        public DigitalSignParam(object param, HashAlgorithm ha)
+        /// <param name="rsaPublicParam">RSAParameters</param>
+        /// <param name="eaa">EnumDigitalSignAlgorithm</param>
+        public DigitalSignParam(RSAParameters rsaPublicParam, EnumDigitalSignAlgorithm eaa)
         {
-            this.AsymmetricAlgorithm = AsymmetricAlgorithmCmnFunc.CreateAsymmetricAlgorithmFromParam(param, ha);
+            AsymmetricAlgorithm aa = null;
+            HashAlgorithm ha = null;
+
+            AsymmetricAlgorithmCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+
+            if (aa is RSA)
+            {
+                RSAParameters rsaParams = new RSAParameters()
+                {
+                    Modulus = rsaPublicParam.Modulus,
+                    Exponent = rsaPublicParam.Exponent,
+                };
+                ((RSA)aa).ImportParameters(rsaParams);
+            }
+            else
+            {
+                throw new ArgumentException("unmatched");
+            }
+
+            this.AsymmetricAlgorithm = aa;
+            this.HashAlgorithm = ha;
+        }
+
+        /// <summary>Constructor</summary>
+        /// <param name="dsaParameters">DSAParameters</param>
+        /// <param name="eaa">EnumDigitalSignAlgorithm</param>
+        public DigitalSignParam(DSAParameters dsaParameters, EnumDigitalSignAlgorithm eaa)
+        {
+            AsymmetricAlgorithm aa = null;
+            HashAlgorithm ha = null;
+
+            AsymmetricAlgorithmCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+
+            if (aa is DSA)
+            {
+                ((DSA)aa).ImportParameters(dsaParameters);
+            }
+            else
+            {
+                throw new ArgumentException("unmatched");
+            }
+
+            this.AsymmetricAlgorithm = aa;
             this.HashAlgorithm = ha;
         }
 
@@ -82,23 +163,24 @@ namespace Touryo.Infrastructure.Public.Security
         public override byte[] Sign(byte[] data)
         {
             // ハッシュ
-            byte[] hashedByte = this.HashAlgorithm.ComputeHash(data);
+            byte[] hash = this.HashAlgorithm.ComputeHash(data);
+
             // デジタル署名
             byte[] signedByte = null;
 
-            if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
+            if (this.AsymmetricAlgorithm is RSA)
             {
                 // RSAPKCS1SignatureFormatterオブジェクトを作成
                 RSAPKCS1SignatureFormatter rsaFormatter = new RSAPKCS1SignatureFormatter(this.AsymmetricAlgorithm);
                 rsaFormatter.SetHashAlgorithm(HashAlgorithmCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
-                signedByte = rsaFormatter.CreateSignature(hashedByte);
+                signedByte = rsaFormatter.CreateSignature(hash);
             }
-            else if (this.AsymmetricAlgorithm is DSACryptoServiceProvider)
+            else if (this.AsymmetricAlgorithm is DSA)
             {
                 // DSASignatureFormatterオブジェクトを作成
                 DSASignatureFormatter dsaFormatter = new DSASignatureFormatter(this.AsymmetricAlgorithm);
                 dsaFormatter.SetHashAlgorithm(CryptoConst.SHA1);
-                signedByte = dsaFormatter.CreateSignature(hashedByte);
+                signedByte = dsaFormatter.CreateSignature(hash);
             }
             else
             {
@@ -114,14 +196,22 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
         public override bool Verify(byte[] data, byte[] sign)
         {
-            if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
+            // ハッシュ
+            byte[] hash = this.HashAlgorithm.ComputeHash(data);
+
+            if (this.AsymmetricAlgorithm is RSA)
             {
-                return ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).VerifyData(
-                    data, HashAlgorithmCmnFunc.GetHashAlgorithmName(this.HashAlgorithm), sign);
+                // RSAPKCS1SignatureDeformatterオブジェクトを作成
+                RSAPKCS1SignatureDeformatter rsaDeformatter = new RSAPKCS1SignatureDeformatter(this.AsymmetricAlgorithm);
+                rsaDeformatter.SetHashAlgorithm(HashAlgorithmCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
+                return rsaDeformatter.VerifySignature(hash, sign);
             }
-            else if (this.AsymmetricAlgorithm is DSACryptoServiceProvider)
+            else if (this.AsymmetricAlgorithm is DSA)
             {
-                return ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).VerifyData(data, sign);
+                // DSASignatureDeformatterオブジェクトを作成
+                DSASignatureDeformatter dsaDeformatter = new DSASignatureDeformatter(this.AsymmetricAlgorithm);
+                dsaDeformatter.SetHashAlgorithm(HashAlgorithmCmnFunc.GetHashAlgorithmName(this.HashAlgorithm));
+                return dsaDeformatter.VerifySignature(hash, sign);
             }
             else
             {

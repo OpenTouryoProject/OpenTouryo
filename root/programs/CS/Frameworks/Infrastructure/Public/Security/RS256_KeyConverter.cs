@@ -195,7 +195,7 @@ namespace Touryo.Infrastructure.Public.Security
             dsXML = new DigitalSignXML(
                 EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256, xmlKey);
             dsXML = new DigitalSignXML(
-                EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256, dsXML.XMLPublicKey); 
+                EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256, dsXML.PublicKey); 
 
             return (RSACryptoServiceProvider)dsXML.AsymmetricAlgorithm;
         }
