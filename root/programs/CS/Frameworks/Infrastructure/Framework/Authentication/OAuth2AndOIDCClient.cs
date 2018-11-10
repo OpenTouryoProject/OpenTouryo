@@ -387,7 +387,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return CustomEncode.ToBase64UrlString(
                 GetHash.GetHashBytes(
                     CustomEncode.StringToByte(code_verifier, CustomEncode.us_ascii),
-                    EnumHashAlgorithm.SHA256Managed));
+                    EnumHashAlgorithm.SHA256_M));
         }
 
         #endregion

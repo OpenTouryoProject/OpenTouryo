@@ -28,8 +28,12 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/31  西野 大介         新規作成
-//*  2018/11/07  西野 大介         ECDSA証明書のサポートを追加（4.7以上）
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
+
+// ECDsaCng Class (System.Security.Cryptography) | Microsoft Docs
+// https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.ecdsacng
+//   CngKeyBlobFormat.EccPublicBlobでインポート・エクスポートする。
 
 using System.Security.Cryptography;
 
@@ -85,17 +89,11 @@ namespace Touryo.Infrastructure.Public.Security
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
 
-            AsymmetricAlgorithmCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+            AsymmetricAlgorithmCmnFunc.CreateDigitalSignSP(eaa, out aa, out ha);
 
-            if (aa is ECDsaCng)
-            {
-                this._privateKey = ((ECDsaCng)aa).Key;
-                this._publicKey = this._privateKey.Export(CngKeyBlobFormat.GenericPublicBlob);
-            }
-            else if(aa is ECDsa)
-            {
-                // ECDsaOpenSsl などが該当（.NET Platform Extensions 2.1）
-            }
+            ECDsaCng ecdsa = (ECDsaCng)aa;
+            this._privateKey = ecdsa.Key;
+            this._publicKey = this._privateKey.Export(CngKeyBlobFormat.EccPublicBlob);
 
             this.AsymmetricAlgorithm = aa;
             this.HashAlgorithm = ha;
@@ -139,7 +137,8 @@ namespace Touryo.Infrastructure.Public.Security
         public override bool Verify(byte[] data, byte[] sign)
         {
             ECDsaCng aa = new ECDsaCng(CngKey.Import(
-            this._publicKey, CngKeyBlobFormat.GenericPublicBlob));
+                this._publicKey, CngKeyBlobFormat.EccPublicBlob));
+
             return aa.VerifyData(data, sign);
         }
 

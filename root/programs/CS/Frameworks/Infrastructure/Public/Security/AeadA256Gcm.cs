@@ -30,11 +30,13 @@
 //*  2018/11/01  西野 大介         新規作成
 //**********************************************************************************
 
-using Touryo.Infrastructure.Public.Util;
+using System;
 
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
+
+using Touryo.Infrastructure.Public.Util;
 
 // https://qiita.com/hidelafoglia/items/d12550c8ffe6eca993c8
 // https://github.com/cose-wg/cose-implementations/blob/master/csharp/JOSE/EncryptMessage.cs
@@ -74,8 +76,28 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="aad">追加認証データ（AAD）</param>
         public AeadA256Gcm(byte[] cek, byte[] iv, byte[] aad) : base(cek, iv, aad)
         {
-            // 再利用不可らしい
+            // GcmBlockCipherは、再利用不可らしい。
+
+            // Key length is 128 / 192 / 256 bits.
+            // = 16 / 24 / 32 bytes
+            if (cek.Length < 16)
+            {
+                throw new ArgumentException("Length not 128 / 192 / 256 bits.", "cek");
+            }
+            else if (cek.Length < 24)
+            {
+                cek = PubCmnFunction.CopyArray(cek, 16);
+            }
+            else if (cek.Length < 32)
+            {
+                cek = PubCmnFunction.CopyArray(cek, 24);
+            }
+            else
+            {
+                cek = PubCmnFunction.CopyArray(cek, 32);
+            }
             this._cek = cek;
+
             this._iv = iv;
             this._aad = aad;
         }

@@ -30,7 +30,7 @@
 //*  2017/01/10  西野 大介         新規作成
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //*  2018/11/07  西野 大介         DSA証明書のサポートを追加（4.7以上）
-//*  2018/11/09  西野 大介         RSAOpenSsl & HashAlgorithmName対応
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
 using System;
@@ -179,38 +179,31 @@ namespace Touryo.Infrastructure.Public.Security
             // デジタル署名
             byte[] signedByte = null;
 
-            if (aa is RSACryptoServiceProvider)
+            if (aa is RSA)
             {
-                // RSACryptoServiceProvider
+                // RSA
                 // *.pfxの場合、ExportParameters(true)して生成し直している。
-                RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(this.X509Certificate.PrivateKey.KeySize);
-                rsa.ImportParameters(((RSACryptoServiceProvider)(aa)).ExportParameters(true));
+                RSA rsa = AsymmetricAlgorithmCmnFunc.RsaFactory(this.X509Certificate.PrivateKey.KeySize);
+                rsa.ImportParameters(((RSA)(aa)).ExportParameters(true));
 
 #if NET45
-                signedByte = rsa.SignData(data, this._hashAlgorithmName);
+                if (rsa is RSACryptoServiceProvider)
+                {
+                    signedByte = ((RSACryptoServiceProvider)rsa).SignData(data, this._hashAlgorithmName);
+                }
+                // NET45にRSACng、RSAOpenSsl等は無し。
 #else
                 signedByte = rsa.SignData(data, this._hashAlgorithmName, this.Padding); 
 #endif
             }
-#if NETSTD
-            else if (aa is RSAOpenSsl)
+            else if (aa is DSA)
             {
-                // RSAOpenSsl
+                // DSA
                 // *.pfxの場合、ExportParameters(true)して生成し直している。
-                RSAOpenSsl rsa = new RSAOpenSsl(this.X509Certificate.PrivateKey.KeySize);
-                rsa.ImportParameters(((RSAOpenSsl)(aa)).ExportParameters(true));
+                DSA dsa = AsymmetricAlgorithmCmnFunc.DsaFactory(this.X509Certificate.PrivateKey.KeySize);
+                dsa.ImportParameters(((DSA)(aa)).ExportParameters(true));
 
-                signedByte = rsa.SignData(data, this._hashAlgorithmName, this.Padding);
-            }
-#endif
-            else if (aa is DSACryptoServiceProvider)
-            {
-                // DSACryptoServiceProvider
-                // *.pfxの場合、ExportParameters(true)して生成し直している。
-                DSACryptoServiceProvider dsa = new DSACryptoServiceProvider(this.X509Certificate.PrivateKey.KeySize);
-                dsa.ImportParameters(((DSACryptoServiceProvider)(aa)).ExportParameters(true));
-
-                signedByte = dsa.SignData(data);
+                signedByte = dsa.CreateSignature(data);
             }
             else
             {
@@ -235,26 +228,23 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 // *.cer
                 aa = this.GetPublicKey();
-                if (aa is RSACryptoServiceProvider)
+                if (aa is RSA)
                 {
-                    // RSACryptoServiceProvider
+                    // RSA
 #if NET45
-                    return ((RSACryptoServiceProvider)aa).VerifyData(data, this._hashAlgorithmName, sign);
+                    if (aa is RSACryptoServiceProvider)
+                    {
+                        return ((RSACryptoServiceProvider)aa).VerifyData(data, this._hashAlgorithmName, sign);
+                    }
+                    // NET45にRSACng、RSAOpenSsl等は無し。
 #else
-                    return ((RSACryptoServiceProvider)aa).VerifyData(data, sign, this._hashAlgorithmName, this.Padding);
+                    return ((RSA)aa).VerifyData(data, sign, this._hashAlgorithmName, this.Padding);
 #endif
                 }
-#if NETSTD
-                else if (aa is RSAOpenSsl)
+                else if (aa is DSA)
                 {
-                    // RSAOpenSsl
-                    return ((RSAOpenSsl)aa).VerifyData(data, sign, this._hashAlgorithmName, this.Padding);
-                }
-#endif
-                else if (aa is DSACryptoServiceProvider)
-                {
-                    // DSACryptoServiceProvider
-                    return ((DSACryptoServiceProvider)aa).VerifyData(data, sign);
+                    // DSA
+                    return ((DSA)aa).VerifySignature(data, sign);
                 }
                 else if (aa is ECDsaCng)
                 {
@@ -270,37 +260,30 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 // *.pfx
                 aa = this.GetPrivateKey();
-                if (aa is RSACryptoServiceProvider)
+                if (aa is RSA)
                 {
-                    // RSACryptoServiceProvider
+                    // RSA
                     // *.pfxの場合、ExportParameters(true)して生成し直している。
-                    RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(this.X509Certificate.PrivateKey.KeySize);
-                    rsa.ImportParameters(((RSACryptoServiceProvider)(aa)).ExportParameters(true));
+                    RSA rsa = AsymmetricAlgorithmCmnFunc.RsaFactory(this.X509Certificate.PrivateKey.KeySize);
+                    rsa.ImportParameters(((RSA)(aa)).ExportParameters(true));
 
 #if NET45
-                    flg = rsa.VerifyData(data, this._hashAlgorithmName, sign);
+                    if (rsa is RSACryptoServiceProvider)
+                    {
+                        flg = ((RSACryptoServiceProvider)rsa).VerifyData(data, this._hashAlgorithmName, sign);
+                    }
+                    // NET45にRSACng、RSAOpenSsl等は無し。
 #else
                     flg = rsa.VerifyData(data, sign, this._hashAlgorithmName, this.Padding);
 #endif
                 }
-#if NETSTD
-                else if (aa is RSAOpenSsl)
+                else if (aa is DSA)
                 {
-                    // RSAOpenSsl
+                    // DSA
                     // *.pfxの場合、ExportParameters(true)して生成し直している。
-                    RSAOpenSsl rsa = new RSAOpenSsl(this.X509Certificate.PrivateKey.KeySize);
-                    rsa.ImportParameters(((RSAOpenSsl)(aa)).ExportParameters(true));
-
-                    flg = rsa.VerifyData(data, sign, this._hashAlgorithmName, this.Padding);
-                }
-#endif
-                else if (aa is DSACryptoServiceProvider)
-                {
-                    // DSACryptoServiceProvider
-                    // *.pfxの場合、ExportParameters(true)して生成し直している。
-                    DSACryptoServiceProvider dsa = new DSACryptoServiceProvider(this.X509Certificate.PrivateKey.KeySize);
-                    dsa.ImportParameters(((DSACryptoServiceProvider)(aa)).ExportParameters(true));
-                    flg = dsa.VerifyData(data, sign);
+                    DSA dsa = AsymmetricAlgorithmCmnFunc.DsaFactory(this.X509Certificate.PrivateKey.KeySize);
+                    dsa.ImportParameters(((DSA)(aa)).ExportParameters(true));
+                    flg = dsa.VerifySignature(data, sign);
                 }
                 else if (aa is ECDsaCng)
                 {

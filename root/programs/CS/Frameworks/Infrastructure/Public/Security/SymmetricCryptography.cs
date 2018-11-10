@@ -40,6 +40,7 @@
 //*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
 //*  2018/10/30  西野 大介         各種プロバイダのサポートを追加
 //*  2018/10/30  西野 大介         CipherMode, PaddingMode指定の追加（CipherModeによってはIVを無視する）。
+//*  2018/11/09  西野 大介         インスタンス・メソッド化
 //**********************************************************************************
 
 using System;
@@ -57,144 +58,80 @@ namespace Touryo.Infrastructure.Public.Security
     /// </remarks>
     public class SymmetricCryptography
     {
-        /// <summary>固定ソルト</summary>
-        /// <remarks>以前のVerからデフォルト値を修正しているので、</remarks>
-        private static byte[] Salt = CustomEncode.StringToByte(
-            "Touryo.Infrastructure.Public.Security.SymmetricCryptography.Salt", CustomEncode.UTF_8);
+        #region mem & prop & constructor
 
-        /// <summary>固定ストレッチング</summary>
-        private static int Stretching = 1000;
-        
-        #region Encrypt
+        /// <summary>ソルト（既定値）</summary>
+        public static byte[] DefaultSalt = 
+            CustomEncode.StringToByte("OpenTouryo", CustomEncode.UTF_8); // 最低8バイト
 
-        #region EncryptString
+        /// <summary>ストレッチング（既定値）</summary>
+        public static int DefaultStretching = 1; // 1以上の値（正の整数、自然数）
 
-        /// <summary>文字列を暗号化する</summary>
-        /// <param name="sourceString">暗号化する文字列</param>
-        /// <param name="password">暗号化に使用するパスワード</param>
-        /// <param name="esa">
-        /// 対称アルゴリズムによる
-        /// 暗号化サービスプロバイダの種類
-        /// </param>
-        /// <returns>
-        /// 対称アルゴリズムで
-        /// 暗号化された文字列
-        /// </returns>
-        public static string EncryptString(
-            string sourceString, string password, EnumSymmetricAlgorithm esa)
-        {
-            return SymmetricCryptography.EncryptString(
-                sourceString, password, esa, SymmetricCryptography.Salt, SymmetricCryptography.Stretching);
-        }
+        /// <summary>EnumSymmetricAlgorithm</summary>
+        private EnumSymmetricAlgorithm Algorithm = 0;
 
-        /// <summary>文字列を暗号化する</summary>
-        /// <param name="sourceString">暗号化する文字列</param>
-        /// <param name="password">暗号化に使用するパスワード</param>
-        /// <param name="esa">
-        /// 対称アルゴリズムによる
-        /// 暗号化サービスプロバイダの種類
-        /// </param>
+        /// <summary>ソルト</summary>
+        private byte[] Salt = null;
+
+        /// <summary>ストレッチング</summary>
+        private int Stretching = 0;
+
+        /// <summary>Constructor</summary>
+        public SymmetricCryptography() :
+            this(EnumSymmetricAlgorithm.AES_M) {　}
+
+        /// <summary>Constructor</summary>
+        /// <param name="algorithm">対称アルゴリズム</param>
+        public SymmetricCryptography(EnumSymmetricAlgorithm algorithm) :
+            this(algorithm, SymmetricCryptography.DefaultSalt) { }
+        /// <summary>Constructor</summary>
+        /// <param name="algorithm">対称アルゴリズム</param>
         /// <param name="salt">ソルト</param>
-        /// <returns>
-        /// 対称アルゴリズムで
-        /// 暗号化された文字列
-        /// </returns>
-        public static string EncryptString(
-            string sourceString, string password, EnumSymmetricAlgorithm esa, byte[] salt)
-        {
-            return SymmetricCryptography.EncryptString(
-                sourceString, password, esa, salt, SymmetricCryptography.Stretching);
-        }
+        public SymmetricCryptography(EnumSymmetricAlgorithm algorithm, byte[] salt) :
+            this(algorithm, salt, SymmetricCryptography.DefaultStretching) { }
 
-        /// <summary>文字列を暗号化する</summary>
-        /// <param name="sourceString">暗号化する文字列</param>
-        /// <param name="password">暗号化に使用するパスワード</param>
-        /// <param name="esa">
-        /// 対称アルゴリズムによる
-        /// 暗号化サービスプロバイダの種類
-        /// </param>
+        /// <summary>Constructor</summary>
+        /// <param name="algorithm">対称アルゴリズム</param>
         /// <param name="salt">ソルト</param>
         /// <param name="stretching">ストレッチング</param>
-        /// <returns>
-        /// 対称アルゴリズムで
-        /// 暗号化された文字列
-        /// </returns>
-        public static string EncryptString(
-            string sourceString, string password, EnumSymmetricAlgorithm esa, byte[] salt, int stretching)
+        public SymmetricCryptography(EnumSymmetricAlgorithm algorithm, byte[] salt, int stretching)
+        {
+            this.Algorithm = algorithm;
+            this.Salt = salt;
+            this.Stretching = stretching;
+        }
+
+        #endregion
+
+        #region Encrypt
+
+        /// <summary>文字列を暗号化する</summary>
+        /// <param name="sourceString">暗号化する文字列</param>
+        /// <param name="password">暗号化に使用するパスワード</param>
+        /// <returns>暗号化された文字列</returns>
+        public string EncryptString(string sourceString, string password)
         {
             // 元文字列をbyte型配列に変換する（UTF-8 Enc）
             byte[] source = CustomEncode.StringToByte(sourceString, CustomEncode.UTF_8);
 
             // 暗号化（Base64）
-            return CustomEncode.ToBase64String(
-                SymmetricCryptography.EncryptBytes(source, password, esa, salt, stretching));
-        }
-
-        #endregion
-
-        #region EncryptBytes
-
-        /// <summary>バイト配列を暗号化する</summary>
-        /// <param name="source">暗号化するバイト配列</param>
-        /// <param name="password">暗号化に使用するパスワード</param>
-        /// <param name="esa">
-        /// 対称アルゴリズムによる
-        /// 暗号化サービスプロバイダの種類
-        /// </param>
-        /// <returns>
-        /// 対称アルゴリズムで
-        /// 暗号化されたバイト配列
-        /// </returns>
-        public static byte[] EncryptBytes(
-            byte[] source, string password, EnumSymmetricAlgorithm esa)
-        {
-            return SymmetricCryptography.EncryptBytes(
-                source, password, esa, SymmetricCryptography.Salt, SymmetricCryptography.Stretching);
+            return CustomEncode.ToBase64String(this.EncryptBytes(source, password));
         }
 
         /// <summary>バイト配列を暗号化する</summary>
         /// <param name="source">暗号化するバイト配列</param>
         /// <param name="password">暗号化に使用するパスワード</param>
-        /// <param name="esa">
-        /// 対称アルゴリズムによる
-        /// 暗号化サービスプロバイダの種類
-        /// </param>
-        /// <param name="salt">ソルト</param>
-        /// <returns>
-        /// 対称アルゴリズムで
-        /// 暗号化されたバイト配列
-        /// </returns>
-        public static byte[] EncryptBytes(
-            byte[] source, string password, EnumSymmetricAlgorithm esa, byte[] salt)
-        {
-            return SymmetricCryptography.EncryptBytes(
-                source, password, esa, salt, SymmetricCryptography.Stretching);
-        }
-
-        /// <summary>バイト配列を暗号化する</summary>
-        /// <param name="source">暗号化するバイト配列</param>
-        /// <param name="password">暗号化に使用するパスワード</param>
-        /// <param name="esa">
-        /// 対称アルゴリズムによる
-        /// 暗号化サービスプロバイダの種類
-        /// </param>
-        /// <param name="salt">ソルト</param>
-        /// <param name="stretching">ストレッチング</param>
-        /// <returns>
-        /// 対称アルゴリズムで
-        /// 暗号化されたバイト配列
-        /// </returns>
-        public static byte[] EncryptBytes(
-            byte[] source, string password, EnumSymmetricAlgorithm esa, byte[] salt, int stretching)
+        /// <returns>暗号化されたバイト配列</returns>
+        public byte[] EncryptBytes(byte[] source, string password)
         {
             // 暗号化サービスプロバイダを生成
-            SymmetricAlgorithm sa = SymmetricCryptography.CreateSymmetricAlgorithm(esa);
+            SymmetricAlgorithm sa = this.CreateSymmetricAlgorithm(this.Algorithm);
 
             // パスワードから共有キーと初期化ベクタを作成
             byte[] key, iv;
 
-            SymmetricCryptography.GenerateKeyFromPassword(
-                password, sa.KeySize, out key, sa.BlockSize, out iv, salt, stretching);
+            this.GenerateKeyFromPassword(
+                password, sa.KeySize, out key, sa.BlockSize, out iv, this.Salt, this.Stretching);
 
             sa.Key = key;
             sa.IV = iv;
@@ -207,138 +144,36 @@ namespace Touryo.Infrastructure.Public.Security
 
         #endregion
 
-        #endregion
-
         #region Decrypt
 
-        #region DecryptString
-
         /// <summary>暗号化された文字列を復号化する</summary>
         /// <param name="sourceString">暗号化された文字列</param>
         /// <param name="password">暗号化に使用したパスワード</param>
-        /// <param name="esa">
-        /// 対称アルゴリズムによる
-        /// 暗号化サービスプロバイダの種類
-        /// </param>
-        /// <returns>
-        /// 対称アルゴリズムで
-        /// 復号化された文字列
-        /// </returns>
-        public static string DecryptString(
-            string sourceString, string password, EnumSymmetricAlgorithm esa)
-        {
-            return SymmetricCryptography.DecryptString(
-                sourceString, password, esa, SymmetricCryptography.Salt, SymmetricCryptography.Stretching);
-        }
-
-        /// <summary>暗号化された文字列を復号化する</summary>
-        /// <param name="sourceString">暗号化された文字列</param>
-        /// <param name="password">暗号化に使用したパスワード</param>
-        /// <param name="esa">
-        /// 対称アルゴリズムによる
-        /// 暗号化サービスプロバイダの種類
-        /// </param>
-        /// <param name="salt">ソルト</param>
-        /// <returns>
-        /// 対称アルゴリズムで
-        /// 復号化された文字列
-        /// </returns>
-        public static string DecryptString(
-            string sourceString, string password, EnumSymmetricAlgorithm esa, byte[] salt)
-        {
-            return SymmetricCryptography.DecryptString(
-                sourceString, password, esa, salt, SymmetricCryptography.Stretching);
-        }
-
-        /// <summary>暗号化された文字列を復号化する</summary>
-        /// <param name="sourceString">暗号化された文字列</param>
-        /// <param name="password">暗号化に使用したパスワード</param>
-        /// <param name="esa">
-        /// 対称アルゴリズムによる
-        /// 暗号化サービスプロバイダの種類
-        /// </param>
-        /// <param name="salt">ソルト</param>
-        /// <param name="stretching">ストレッチング</param>
-        /// <returns>
-        /// 対称アルゴリズムで
-        /// 復号化された文字列
-        /// </returns>
-        public static string DecryptString(
-            string sourceString, string password, EnumSymmetricAlgorithm esa, byte[] salt, int stretching)
+        /// <returns>復号化された文字列</returns>
+        public string DecryptString(
+            string sourceString, string password)
         {
             // 暗号化文字列をbyte型配列に変換する（Base64）
             byte[] source = CustomEncode.FromBase64String(sourceString);
 
             // 復号化（UTF-8 Enc）
-            return CustomEncode.ByteToString(
-                SymmetricCryptography.DecryptBytes(source, password, esa, salt, stretching), CustomEncode.UTF_8);
-        }
-
-        #endregion
-
-        #region DecryptBytes
-
-        /// <summary>暗号化されたバイト配列を復号化する</summary>
-        /// <param name="source">暗号化されたバイト配列</param>
-        /// <param name="password">暗号化に使用したパスワード</param>
-        /// <param name="esa">
-        /// 対称アルゴリズムによる
-        /// 暗号化サービスプロバイダの種類
-        /// </param>
-        /// <returns>
-        /// 対称アルゴリズムで
-        /// 復号化されたバイト配列
-        /// </returns>
-        public static byte[] DecryptBytes(
-            byte[] source, string password, EnumSymmetricAlgorithm esa)
-        {
-            return SymmetricCryptography.DecryptBytes(
-                source, password, esa, SymmetricCryptography.Salt, SymmetricCryptography.Stretching);
+            return CustomEncode.ByteToString(this.DecryptBytes(source, password), CustomEncode.UTF_8);
         }
 
         /// <summary>暗号化されたバイト配列を復号化する</summary>
         /// <param name="source">暗号化されたバイト配列</param>
         /// <param name="password">暗号化に使用したパスワード</param>
-        /// <param name="esa">
-        /// 対称アルゴリズムによる
-        /// 暗号化サービスプロバイダの種類
-        /// </param>
-        /// <param name="salt">ソルト</param>
-        /// <returns>
-        /// 対称アルゴリズムで
-        /// 復号化されたバイト配列
-        /// </returns>
-        public static byte[] DecryptBytes(
-            byte[] source, string password, EnumSymmetricAlgorithm esa, byte[] salt)
-        {
-            return SymmetricCryptography.DecryptBytes(
-                source, password, esa, salt, SymmetricCryptography.Stretching);
-        }
-
-        /// <summary>暗号化されたバイト配列を復号化する</summary>
-        /// <param name="source">暗号化されたバイト配列</param>
-        /// <param name="password">暗号化に使用したパスワード</param>
-        /// <param name="esa">
-        /// 対称アルゴリズムによる
-        /// 暗号化サービスプロバイダの種類
-        /// </param>
-        /// <param name="salt">ソルト</param>
-        /// <param name="stretching">ストレッチング</param>
-        /// <returns>
-        /// 対称アルゴリズムで
-        /// 復号化されたバイト配列
-        /// </returns>
-        public static byte[] DecryptBytes(
-            byte[] source, string password, EnumSymmetricAlgorithm esa, byte[] salt, int stretching)
+        /// <returns>復号化されたバイト配列</returns>
+        public byte[] DecryptBytes(byte[] source, string password)
         {
             // 暗号化サービスプロバイダを生成
-            SymmetricAlgorithm sa = SymmetricCryptography.CreateSymmetricAlgorithm(esa);
+            SymmetricAlgorithm sa = this.CreateSymmetricAlgorithm(this.Algorithm);
 
             // パスワードから共有キーと初期化ベクタを作成
             byte[] key, iv;
 
-            SymmetricCryptography.GenerateKeyFromPassword(
-                password, sa.KeySize, out key, sa.BlockSize, out iv, salt, stretching);
+            this.GenerateKeyFromPassword(
+                password, sa.KeySize, out key, sa.BlockSize, out iv, this.Salt, this.Stretching);
 
             sa.Key = key;
             sa.IV = iv;
@@ -348,8 +183,6 @@ namespace Touryo.Infrastructure.Public.Security
             sa.Clear(); // devps(1725)
             return temp;
         }
-
-        #endregion
 
         #endregion
 
@@ -363,7 +196,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="iv">作成された初期化ベクタ</param>
         /// <param name="salt">ソルト</param>
         /// <param name="stretching">ストレッチング</param>
-        private static void GenerateKeyFromPassword(string password,
+        private void GenerateKeyFromPassword(string password,
             int keySize, out byte[] key, int blockSize, out byte[] iv, byte[] salt, int stretching)
         {
             //パスワードから共有キーと初期化ベクタを作成する
@@ -391,7 +224,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// 対称アルゴリズムによる
         /// 暗号化サービスプロバイダ
         /// </returns>
-        private static SymmetricAlgorithm CreateSymmetricAlgorithm(EnumSymmetricAlgorithm esa)
+        private SymmetricAlgorithm CreateSymmetricAlgorithm(EnumSymmetricAlgorithm esa)
         {
             //esa = EnumSymmetricAlgorithm.AesManaged
             //    | EnumSymmetricAlgorithm.CipherMode_CBC
@@ -448,72 +281,72 @@ namespace Touryo.Infrastructure.Public.Security
             return CreateSymmetricAlgorithm(esa, cm, pm);
         }
 
-        /// <summary>
-        /// 対称アルゴリズムによる
-        /// 暗号化サービスプロバイダを生成
-        /// </summary>
-        /// <param name="esa">
-        /// 対称アルゴリズムによる
-        /// 暗号化サービスプロバイダの種類
-        /// </param>
+        /// <summary>対称アルゴリズム暗号化サービスプロバイダ生成</summary>
+        /// <param name="esa">EnumSymmetricAlgorithm</param>
         /// <param name="cm">CipherMode</param>
         /// <param name="pm">PaddingMode</param>
-        /// <returns>
-        /// 対称アルゴリズムによる
-        /// 暗号化サービスプロバイダ
-        /// </returns>
-        private static SymmetricAlgorithm CreateSymmetricAlgorithm(EnumSymmetricAlgorithm esa, CipherMode cm, PaddingMode pm)
+        /// <returns>SymmetricAlgorithm</returns>
+        private SymmetricAlgorithm CreateSymmetricAlgorithm(EnumSymmetricAlgorithm esa, CipherMode cm, PaddingMode pm)
         {
+            #region Constructor
             SymmetricAlgorithm sa = null;
 
             #region Aes
-            if (esa.HasFlag(EnumSymmetricAlgorithm.AesCryptoServiceProvider))
+            if (esa.HasFlag(EnumSymmetricAlgorithm.AES_CSP))
             {
                 // AesCryptoServiceProviderサービスプロバイダ
                 sa = AesCryptoServiceProvider.Create(); // devps(1703)
             }
-            else if (esa.HasFlag(EnumSymmetricAlgorithm.AesManaged))
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.AES_M))
             {
                 // AesManagedサービスプロバイダ
                 sa = AesManaged.Create(); // devps(1703)
             }
+#if NET45 || NET46
+#else
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.AES_CNG))
+            {
+                // AesCngサービスプロバイダ
+                sa = AesCng.Create(); // devps(1703)
+            }
+#endif
             #endregion
 
-            else if (esa.HasFlag(EnumSymmetricAlgorithm.DESCryptoServiceProvider))
-            {
-                // DESCryptoServiceProviderサービスプロバイダ
-                sa = DESCryptoServiceProvider.Create(); // devps(1703)
-            }
-
-            else if (esa.HasFlag(EnumSymmetricAlgorithm.RC2CryptoServiceProvider))
-            {
-                // RC2CryptoServiceProviderサービスプロバイダ
-                sa = RC2CryptoServiceProvider.Create(); // devps(1703)
-            }
-
-            else if (esa.HasFlag(EnumSymmetricAlgorithm.RijndaelManaged))
-            {
-                // RijndaelManagedサービスプロバイダ
-                sa = RijndaelManaged.Create(); // devps(1703)
-            }
-
             #region TripleDES
-            else if (esa.HasFlag(EnumSymmetricAlgorithm.TripleDESCryptoServiceProvider))
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.TDES_CSP))
             {
                 // TripleDESCryptoServiceProviderサービスプロバイダ
                 sa = TripleDESCryptoServiceProvider.Create(); // devps(1703)
             }
 
-#if NET45
-#elif NET46
+#if NET45 || NET46
 #else
-            else if (esa.HasFlag(EnumSymmetricAlgorithm.TripleDESCryptographyNextGeneration))
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.TDES_CNG))
             {
                 // TripleDESCngサービスプロバイダ
                 sa = TripleDESCng.Create(); // devps(1703)
             }
 #endif
+            #endregion
 
+            #region Others
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.DES_CSP))
+            {
+                // DESCryptoServiceProviderサービスプロバイダ
+                sa = DESCryptoServiceProvider.Create(); // devps(1703)
+            }
+
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.RC2_CSP))
+            {
+                // RC2CryptoServiceProviderサービスプロバイダ
+                sa = RC2CryptoServiceProvider.Create(); // devps(1703)
+            }
+
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.Rijndael_M))
+            {
+                // RijndaelManagedサービスプロバイダ
+                sa = RijndaelManaged.Create(); // devps(1703)
+            }
             #endregion
 
             else
@@ -521,7 +354,9 @@ namespace Touryo.Infrastructure.Public.Security
                 throw new ArgumentException(
                     PublicExceptionMessage.ARGUMENT_INCORRECT, "EnumSymmetricAlgorithm esa");
             }
+            #endregion
 
+            #region Options
             // cmが設定されている場合。
             if (cm != 0)
             {
@@ -533,6 +368,7 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 sa.Padding = pm;
             }
+            #endregion
 
             return sa;
         }

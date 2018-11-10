@@ -403,7 +403,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // input(access_token や code) のASCII オクテット列からハッシュ値を求め、
             byte[] bytes = GetHash.GetHashBytes(
                 CustomEncode.StringToByte(input, CustomEncode.us_ascii),
-                EnumHashAlgorithm.SHA256Managed);
+                EnumHashAlgorithm.SHA256_M);
 
             // 左半分を base64url エンコードした値。
             return CustomEncode.ToBase64UrlString(

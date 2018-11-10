@@ -28,7 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/12/25  西野 大介         新規作成
-//*  2018/11/09  西野 大介         RSAOpenSsl & HashAlgorithmName対応
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
 using System;
@@ -47,7 +47,118 @@ namespace Touryo.Infrastructure.Public.Security
     /// </summary>
     public class AsymmetricAlgorithmCmnFunc
     {
-        /// <summary>署名・検証サービスプロバイダの生成(EnumDigitalSignAlgorithm)</summary>
+        #region Simple
+        /// <summary>RsaFactory</summary>
+        /// <returns>RSA</returns>
+        public static RSA RsaFactory()
+        {
+#if NETSTD
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                return new RSACryptoServiceProvider();
+            }
+            else
+            {
+                return new RSAOpenSsl();
+            }
+#else
+            return new RSACryptoServiceProvider();
+#endif
+        }
+
+        /// <summary>RsaFactory</summary>
+        /// <param name="size">int</param>
+        /// <returns>RSA</returns>
+        public static RSA RsaFactory(int size)
+        {
+#if NETSTD
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                return new RSACryptoServiceProvider(size);
+            }
+            else
+            {
+                return new RSAOpenSsl(size);
+            }
+#else
+            return new RSACryptoServiceProvider(size);
+#endif
+        }
+
+        /// <summary>DsaFactory</summary>
+        /// <returns>DSA</returns>
+        public static DSA DsaFactory()
+        {
+#if NETSTD
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                return new DSACryptoServiceProvider();
+            }
+            else
+            {
+                return new DSAOpenSsl();
+            }
+#else
+            return new DSACryptoServiceProvider();
+#endif
+        }
+
+        /// <summary>DsaFactory</summary>
+        /// <param name="size">int</param>
+        /// <returns>DSA</returns>
+        public static DSA DsaFactory(int size)
+        {
+#if NETSTD
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                return new DSACryptoServiceProvider(size);
+            }
+            else
+            {
+                return new DSAOpenSsl(size);
+            }
+#else
+            return new DSACryptoServiceProvider(size);
+#endif
+        }
+        #endregion
+
+        #region CreateASymmetricAlgorithm
+
+        /// <summary>対称アルゴリズム暗号化サービスプロバイダ生成</summary>
+        /// <param name="easa">EnumASymmetricAlgorithm</param>
+        /// <returns>AsymmetricAlgorithm</returns>
+        public static AsymmetricAlgorithm CreateCryptographySP(EnumASymmetricAlgorithm easa)
+        {
+            AsymmetricAlgorithm asa = null;
+
+            if (easa == EnumASymmetricAlgorithm.RsaCsp)
+            {
+                // RSACryptoServiceProviderサービスプロバイダ
+                asa = RSACryptoServiceProvider.Create(); // devps(1703)
+            }
+
+#if !NET45
+            else if (easa == EnumASymmetricAlgorithm.RsaCng)
+            {
+                // RSACngサービスプロバイダ
+                asa = RSACng.Create(); // devps(1703)
+            }
+#endif
+#if NETSTD
+            else if (easa == EnumASymmetricAlgorithm.RsaOpenSsl)
+            {
+                // RSAOpenSslサービスプロバイダ
+                asa = RSAOpenSsl.Create(); // devps(1703)
+            }
+#endif
+            return asa;
+        }
+
+        #endregion
+
+        #region EnumDigitalSignAlgorithm
+        /// <summary>署名・検証サービスプロバイダの生成</summary>
         /// <param name="eaa">EnumDigitalSignAlgorithm</param>
         /// <param name="aa">
         /// AsymmetricAlgorithm
@@ -57,79 +168,79 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="ha">
         /// HashAlgorithm
         /// </param>
-        public static void CreateDigitalSignServiceProvider(
+        public static void CreateDigitalSignSP(
             EnumDigitalSignAlgorithm eaa, out AsymmetricAlgorithm aa, out HashAlgorithm ha)
         {
             aa = null;
             ha = null;
 
             // 公開鍵・暗号化サービスプロバイダ
-            if (eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_MD5
-                || eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA1
-                || eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256
-                || eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA384
-                || eaa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA512)
+            if (eaa == EnumDigitalSignAlgorithm.RsaCSP_MD5
+                || eaa == EnumDigitalSignAlgorithm.RsaCSP_SHA1
+                || eaa == EnumDigitalSignAlgorithm.RsaCSP_SHA256
+                || eaa == EnumDigitalSignAlgorithm.RsaCSP_SHA384
+                || eaa == EnumDigitalSignAlgorithm.RsaCSP_SHA512)
             {
                 // RSACryptoServiceProviderサービスプロバイダ
                 aa = new RSACryptoServiceProvider();
 
                 switch (eaa)
                 {
-                    case EnumDigitalSignAlgorithm.RSACryptoServiceProvider_MD5:
+                    case EnumDigitalSignAlgorithm.RsaCSP_MD5:
                         ha = MD5.Create();
                         break;
-                    case EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA1:
+                    case EnumDigitalSignAlgorithm.RsaCSP_SHA1:
                         ha = SHA1.Create();
                         break;
-                    case EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256:
+                    case EnumDigitalSignAlgorithm.RsaCSP_SHA256:
                         ha = SHA256.Create();
                         break;
-                    case EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA384:
+                    case EnumDigitalSignAlgorithm.RsaCSP_SHA384:
                         ha = SHA384.Create();
                         break;
-                    case EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA512:
+                    case EnumDigitalSignAlgorithm.RsaCSP_SHA512:
                         ha = SHA512.Create();
                         break;
                 }
             }
 #if NETSTD
-            else if (eaa == EnumDigitalSignAlgorithm.RSAOpenSsl_MD5
-                || eaa == EnumDigitalSignAlgorithm.RSAOpenSsl_SHA1
-                || eaa == EnumDigitalSignAlgorithm.RSAOpenSsl_SHA256
-                || eaa == EnumDigitalSignAlgorithm.RSAOpenSsl_SHA384
-                || eaa == EnumDigitalSignAlgorithm.RSAOpenSsl_SHA512)
+            else if (eaa == EnumDigitalSignAlgorithm.RsaOpenSsl_MD5
+                || eaa == EnumDigitalSignAlgorithm.RsaOpenSsl_SHA1
+                || eaa == EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256
+                || eaa == EnumDigitalSignAlgorithm.RsaOpenSsl_SHA384
+                || eaa == EnumDigitalSignAlgorithm.RsaOpenSsl_SHA512)
             {
                 // RSAOpenSslサービスプロバイダ
                 aa = new RSAOpenSsl();
 
                 switch (eaa)
                 {
-                    case EnumDigitalSignAlgorithm.RSAOpenSsl_MD5:
+                    case EnumDigitalSignAlgorithm.RsaOpenSsl_MD5:
                         ha = MD5.Create();
                         break;
-                    case EnumDigitalSignAlgorithm.RSAOpenSsl_SHA1:
+                    case EnumDigitalSignAlgorithm.RsaOpenSsl_SHA1:
                         ha = SHA1.Create();
                         break;
-                    case EnumDigitalSignAlgorithm.RSAOpenSsl_SHA256:
+                    case EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256:
                         ha = SHA256.Create();
                         break;
-                    case EnumDigitalSignAlgorithm.RSAOpenSsl_SHA384:
+                    case EnumDigitalSignAlgorithm.RsaOpenSsl_SHA384:
                         ha = SHA384.Create();
                         break;
-                    case EnumDigitalSignAlgorithm.RSAOpenSsl_SHA512:
+                    case EnumDigitalSignAlgorithm.RsaOpenSsl_SHA512:
                         ha = SHA512.Create();
                         break;
                 }
             }
 #endif
-            else if (eaa == EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
+            else if (eaa == EnumDigitalSignAlgorithm.DsaCSP_SHA1)
             {
                 // DSACryptoServiceProvider
                 aa = new DSACryptoServiceProvider();
                 ha = SHA1.Create();
             }
 #if NETSTD
-            else if (eaa == EnumDigitalSignAlgorithm.DSAOpenSsl_SHA1)
+            else if (eaa == EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1)
             {
                 // DSAOpenSslサービスプロバイダ
                 aa = new DSAOpenSsl();
@@ -167,5 +278,6 @@ namespace Touryo.Infrastructure.Public.Security
                     "EnumDigitalSignAlgorithm parameter is incorrect.");
             }
         }
+        #endregion
     }
 }

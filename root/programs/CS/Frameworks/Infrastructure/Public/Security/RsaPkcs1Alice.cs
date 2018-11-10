@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/31  西野 大介         新規作成
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -51,7 +52,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// </summary>
         protected override void CreateKeys()
         {
-            RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)this._asa;
+            RSA rsa = (RSA)this._asa;
             this._aes = new AesCryptoServiceProvider(); // 秘密鍵
             RSAPKCS1KeyExchangeFormatter keyExchangeFormatter = new RSAPKCS1KeyExchangeFormatter(rsa);
             this._exchangeKey = keyExchangeFormatter.CreateKeyExchange(this._aes.Key, typeof(Aes)); // 交換鍵

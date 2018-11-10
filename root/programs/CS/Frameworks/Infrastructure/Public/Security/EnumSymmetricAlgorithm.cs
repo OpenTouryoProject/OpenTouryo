@@ -43,31 +43,31 @@ namespace Touryo.Infrastructure.Public.Security
         #region CSP (CryptoServiceProvider)
 
         /// <summary>AesCryptoServiceProvider</summary>
-        AesCryptoServiceProvider = 1,
+        AES_CSP = 1,
         /// <summary>DESCryptoServiceProvider</summary>
-        DESCryptoServiceProvider = 1 << 1,
+        DES_CSP = 1 << 1,
         /// <summary>RC2CryptoServiceProvider</summary>
-        RC2CryptoServiceProvider = 1 << 2,
+        RC2_CSP = 1 << 2,
         /// <summary>TripleDESCryptoServiceProvider</summary>
-        TripleDESCryptoServiceProvider = 1 << 3,
+        TDES_CSP = 1 << 3,
 
         #endregion
 
         #region CNG (CryptographyNextGeneration)
 
         /// <summary>AesCryptographyNextGeneration</summary>
-        AesCryptographyNextGeneration = 1 << 4,
+        AES_CNG = 1 << 4,
         /// <summary>TripleDESCryptographyNextGeneration</summary>
-        TripleDESCryptographyNextGeneration = 1 << 5,
+        TDES_CNG = 1 << 5,
 
         #endregion
 
         #region Managed
 
         /// <summary>AesManaged</summary>
-        AesManaged = 1 << 6,
+        AES_M = 1 << 6,
         /// <summary>RijndaelManaged</summary>
-        RijndaelManaged = 1 << 7,
+        Rijndael_M = 1 << 7,
 
         #endregion
 

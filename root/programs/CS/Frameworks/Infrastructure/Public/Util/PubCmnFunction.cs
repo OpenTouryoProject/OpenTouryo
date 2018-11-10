@@ -823,7 +823,7 @@ namespace Touryo.Infrastructure.Public.Util
 
         /// <summary>
         /// バイト配列を排他的論理和で切り詰め
-        /// 単純に切り詰めるなら、sliceを使用する。
+        /// 単純に切り詰めるなら、CopyArrayを使用する。
         /// </summary>
         /// <param name="bytes">バイト配列</param>
         /// <param name="newSize">バイト配列のサイズ</param>

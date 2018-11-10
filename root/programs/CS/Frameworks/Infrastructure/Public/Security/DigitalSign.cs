@@ -31,6 +31,19 @@
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //**********************************************************************************
 
+// 参考（少しでもミスると動かないので、結構難しい
+// Microsoft Docs
+// - 暗号署名
+//   https://docs.microsoft.com/ja-jp/dotnet/standard/security/cryptographic-signatures
+// - RSAPKCS1SignatureFormatter Class (System.Security.Cryptography)
+//   https://docs.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.rsapkcs1signatureformatter
+// - RSAPKCS1SignatureDeformatter Class (System.Security.Cryptography)
+//   https://docs.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.rsapkcs1signaturedeformatter
+// - DSASignatureFormatter Class (System.Security.Cryptography)
+//   https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.dsasignatureformatter
+// - DSASignatureDeformatter Class (System.Security.Cryptography)
+//   https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.dsasignaturedeformatter
+
 using System;
 using System.Security.Cryptography;
 

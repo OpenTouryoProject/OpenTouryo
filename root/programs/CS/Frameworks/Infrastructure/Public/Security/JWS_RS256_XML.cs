@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/12/25  西野 大介         新規作成
 //*  2018/08/15  西野 大介         jwks_uri & kid 対応
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
 using Newtonsoft.Json;
@@ -54,8 +55,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>Constructor</summary>
         public JWS_RS256_XML()
         {
-            this._DigitalSignXML = new DigitalSignXML(
-                EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256);
+            this._DigitalSignXML = new DigitalSignXML(JWS_RS256.DigitalSignAlgorithm);
 
             this.XMLPrivateKey = this._DigitalSignXML.PrivateKey;
             this.XMLPublicKey = this._DigitalSignXML.PublicKey;
@@ -65,8 +65,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="xmlKey">string</param>
         public JWS_RS256_XML(string xmlKey)
         {
-            this._DigitalSignXML = new DigitalSignXML(
-                EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256, xmlKey);
+            this._DigitalSignXML = new DigitalSignXML(xmlKey, JWS_RS256.DigitalSignAlgorithm);
             this.XMLPrivateKey = this._DigitalSignXML.PrivateKey;
             this.XMLPublicKey = this._DigitalSignXML.PublicKey;
         }

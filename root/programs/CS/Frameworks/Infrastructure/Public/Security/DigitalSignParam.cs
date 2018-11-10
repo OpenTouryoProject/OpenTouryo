@@ -28,12 +28,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/12/25  西野 大介         新規作成
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
-
-// 参考（少しでもミスると動かないので、結構難しい
-// https://docs.microsoft.com/ja-jp/dotnet/standard/security/cryptographic-signatures
-// https://docs.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.rsapkcs1signatureformatter
-// https://docs.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.rsapkcs1signaturedeformatter
 
 using System;
 using System.Security.Cryptography;
@@ -96,7 +92,7 @@ namespace Touryo.Infrastructure.Public.Security
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
 
-            AsymmetricAlgorithmCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+            AsymmetricAlgorithmCmnFunc.CreateDigitalSignSP(eaa, out aa, out ha);
 
             this.AsymmetricAlgorithm = aa;
             this.HashAlgorithm = ha;
@@ -110,7 +106,7 @@ namespace Touryo.Infrastructure.Public.Security
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
 
-            AsymmetricAlgorithmCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+            AsymmetricAlgorithmCmnFunc.CreateDigitalSignSP(eaa, out aa, out ha);
 
             if (aa is RSA)
             {
@@ -138,7 +134,7 @@ namespace Touryo.Infrastructure.Public.Security
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
 
-            AsymmetricAlgorithmCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+            AsymmetricAlgorithmCmnFunc.CreateDigitalSignSP(eaa, out aa, out ha);
 
             if (aa is DSA)
             {
@@ -238,18 +234,20 @@ namespace Touryo.Infrastructure.Public.Security
                 if (isDisposing)
                 {
                     // Dispose all owned managed objects
-                    if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
+                    if (this.AsymmetricAlgorithm is RSA)
                     {
-                        // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
-                        // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
-                        ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).PersistKeyInCsp = false;
+                        if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
+                        {
+                            ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).PersistKeyInCsp = false;
+                        }
                         this.AsymmetricAlgorithm.Clear();
                     }
                     else
                     {
-                        // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
-                        // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
-                        ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).PersistKeyInCsp = false;
+                        if (this.AsymmetricAlgorithm is DSACryptoServiceProvider)
+                        {
+                            ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).PersistKeyInCsp = false;
+                        }
                         this.AsymmetricAlgorithm.Clear();
                     }
                 }

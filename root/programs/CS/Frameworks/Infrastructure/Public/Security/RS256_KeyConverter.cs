@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/12/26  西野 大介         新規作成
 //*  2018/08/15  西野 大介         エンハンス
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
 using System.Collections.Generic;
@@ -186,18 +187,16 @@ namespace Touryo.Infrastructure.Public.Security
         /// Xml鍵からRsaProvider（公開鍵）へ変換
         /// </summary>
         /// <param name="xmlKey">Xml鍵</param>
-        /// <returns>RSACryptoServiceProvider</returns>
-        public static RSACryptoServiceProvider XmlToProvider(string xmlKey)
+        /// <returns>RSA</returns>
+        public static RSA XmlToProvider(string xmlKey)
         {
             DigitalSignXML dsXML = null;
 
             // Public
-            dsXML = new DigitalSignXML(
-                EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256, xmlKey);
-            dsXML = new DigitalSignXML(
-                EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256, dsXML.PublicKey); 
+            dsXML = new DigitalSignXML(xmlKey, JWS_RS256.DigitalSignAlgorithm);
+            dsXML = new DigitalSignXML(dsXML.PublicKey, JWS_RS256.DigitalSignAlgorithm); 
 
-            return (RSACryptoServiceProvider)dsXML.AsymmetricAlgorithm;
+            return (RSA)dsXML.AsymmetricAlgorithm;
         }
 
         /// <summary>
@@ -205,8 +204,8 @@ namespace Touryo.Infrastructure.Public.Security
         /// X.509鍵(*.cer)からRsaProviderへ変換
         /// </summary>
         /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
-        /// <returns>RSACryptoServiceProvider</returns>
-        public static RSACryptoServiceProvider X509CerToProvider(string certificateFilePath)
+        /// <returns>RSA</returns>
+        public static RSA X509CerToProvider(string certificateFilePath)
         {
             DigitalSignX509 dsX509 = new DigitalSignX509(
                 certificateFilePath, "", CryptoConst.SHA256, X509KeyStorageFlags.DefaultKeySet);
@@ -214,9 +213,9 @@ namespace Touryo.Infrastructure.Public.Security
             if (dsX509.X509Certificate.PrivateKey == null)
             {
                 AsymmetricAlgorithm aa = dsX509.X509Certificate.PublicKey.Key; // Public
-                if (aa is RSACryptoServiceProvider)
+                if (aa is RSA)
                 {
-                    return (RSACryptoServiceProvider)aa;
+                    return (RSA)aa;
                 }
                 else { }
             }
@@ -231,16 +230,16 @@ namespace Touryo.Infrastructure.Public.Security
         /// </summary>
         /// <param name="certificateFilePath">X.509鍵(*.pfx)</param>
         /// <param name="password">string</param>
-        /// <returns>RSACryptoServiceProvider</returns>
-        public static RSACryptoServiceProvider X509PfxToProvider(string certificateFilePath, string password)
+        /// <returns>RSA</returns>
+        public static RSA X509PfxToProvider(string certificateFilePath, string password)
         {
             DigitalSignX509 dsX509 = new DigitalSignX509(
                 certificateFilePath, password, CryptoConst.SHA256, X509KeyStorageFlags.DefaultKeySet);
 
             AsymmetricAlgorithm aa = dsX509.X509Certificate.PublicKey.Key; // Public
-            if (aa is RSACryptoServiceProvider)
+            if (aa is RSA)
             {
-                return (RSACryptoServiceProvider)aa;
+                return (RSA)aa;
             }
             else { }
 
@@ -259,9 +258,9 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>XmlPublicKey</returns>
         public static string ParamToXmlPublicKey(RSAParameters param)
         {
-            RSACryptoServiceProvider rsaCryptoServiceProvider = new RSACryptoServiceProvider();
-            rsaCryptoServiceProvider.ImportParameters(param);
-            return rsaCryptoServiceProvider.ToXmlString(false); // Public
+            RSA rsa = AsymmetricAlgorithmCmnFunc.RsaFactory();
+            rsa.ImportParameters(param);
+            return rsa.ToXmlString(false); // Public
         }
 
         /// <summary>
@@ -315,7 +314,7 @@ namespace Touryo.Infrastructure.Public.Security
                             n = dic[JwtConst.n]
                         }),
                         CustomEncode.UTF_8),
-                    EnumHashAlgorithm.SHA256Managed));
+                    EnumHashAlgorithm.SHA256_M));
 
             //dic["ext"] = "false"; // 定義をRFC上に発見できない。
 
@@ -334,13 +333,8 @@ namespace Touryo.Infrastructure.Public.Security
         /// JwkからRSAProvider（公開鍵）へ変換
         /// </summary>
         /// <param name="jwkString">string</param>
-        /// <returns>
-        /// RSACryptoServiceProvider
-        ///   rsaCryptoServiceProvider.VerifyData(
-        ///     data, signatureBytes,
-        ///     HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-        /// </returns>
-        public static RSACryptoServiceProvider JwkToProvider(string jwkString)
+        /// <returns>RSA</returns>
+        public static RSA JwkToProvider(string jwkString)
         {
             return RS256_KeyConverter.JwkToProvider(
                 JsonConvert.DeserializeObject<JObject>(jwkString));
@@ -351,13 +345,8 @@ namespace Touryo.Infrastructure.Public.Security
         /// JwkからRSAProvider（公開鍵）へ変換
         /// </summary>
         /// <param name="jwkObject">JObject</param>
-        /// <returns>
-        /// RSACryptoServiceProvider
-        ///   rsaCryptoServiceProvider.VerifyData(
-        ///     data, signatureBytes,
-        ///     HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-        /// </returns>
-        public static RSACryptoServiceProvider JwkToProvider(JObject jwkObject)
+        /// <returns>RSA</returns>
+        public static RSA JwkToProvider(JObject jwkObject)
         {
             if (jwkObject[JwtConst.alg].ToString().ToUpper() == JwtConst.RS256)
             {
@@ -370,10 +359,10 @@ namespace Touryo.Infrastructure.Public.Security
                     Exponent = CustomEncode.FromBase64UrlString((string)jwkObject[JwtConst.e]),
                 };
 
-                RSACryptoServiceProvider rsaCryptoServiceProvider = new RSACryptoServiceProvider();
-                rsaCryptoServiceProvider.ImportParameters(rsaParameters);
+                RSA rsa = AsymmetricAlgorithmCmnFunc.RsaFactory();
+                rsa.ImportParameters(rsaParameters);
 
-                return rsaCryptoServiceProvider;
+                return rsa;
             }
             else
             {

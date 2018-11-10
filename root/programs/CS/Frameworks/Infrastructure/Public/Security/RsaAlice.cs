@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/31  西野 大介         新規作成
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -41,11 +42,14 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="exchangeKeyOfBob">Bobの交換鍵</param>
         protected RsaAlice(byte[] exchangeKeyOfBob)
         {
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+            RSA rsa = AsymmetricAlgorithmCmnFunc.RsaFactory();
             this._asa = rsa;
 
             // Bobの交換鍵を（RSAの公開鍵）インポート
-            rsa.ImportCspBlob(exchangeKeyOfBob);
+            if (rsa is RSACryptoServiceProvider)
+            {
+                ((RSACryptoServiceProvider)rsa).ImportCspBlob(exchangeKeyOfBob);
+            }
 
             // 秘密鍵と交換鍵を生成
             this.CreateKeys();
@@ -55,7 +59,8 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="exchangeKeyOfBob">Bobの交換鍵</param>
         protected RsaAlice(RSAParameters exchangeKeyOfBob)
         {
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+            // RSACng、RSAOpenSslはこっち（しかない）
+            RSA rsa = AsymmetricAlgorithmCmnFunc.RsaFactory();
             this._asa = rsa;
 
             // Bobの交換鍵を（RSAの公開鍵）インポート

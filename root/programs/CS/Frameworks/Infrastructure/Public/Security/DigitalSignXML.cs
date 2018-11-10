@@ -30,6 +30,7 @@
 //*  2017/01/10  西野 大介         新規作成
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
 using System;
@@ -58,15 +59,22 @@ namespace Touryo.Infrastructure.Public.Security
         {
             get
             {
-                if (this.AsymmetricAlgorithm is RSA)
+                try
                 {
-                    return ((RSA)this.AsymmetricAlgorithm).ToXmlString(true);
+                    if (this.AsymmetricAlgorithm is RSA)
+                    {
+                        return ((RSA)this.AsymmetricAlgorithm).ToXmlString(true);
+                    }
+                    else if (this.AsymmetricAlgorithm is DSA)
+                    {
+                        return ((DSA)this.AsymmetricAlgorithm).ToXmlString(true);
+                    }
+                    return "";
                 }
-                else if (this.AsymmetricAlgorithm is DSA)
+                catch
                 {
-                    return ((DSA)this.AsymmetricAlgorithm).ToXmlString(true);
+                    return "";
                 }
-                return null;
             }
         }
 
@@ -94,21 +102,21 @@ namespace Touryo.Infrastructure.Public.Security
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
 
-            AsymmetricAlgorithmCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+            AsymmetricAlgorithmCmnFunc.CreateDigitalSignSP(eaa, out aa, out ha);
 
             this.AsymmetricAlgorithm = aa;
             this.HashAlgorithm = ha;
         }
 
         /// <summary>Constructor</summary>
-        /// <param name="eaa">EnumDigitalSignAlgorithm</param>
         /// <param name="xmlKey">string</param>
-        public DigitalSignXML(EnumDigitalSignAlgorithm eaa, string xmlKey)
+        /// <param name="eaa">EnumDigitalSignAlgorithm</param>
+        public DigitalSignXML(string xmlKey, EnumDigitalSignAlgorithm eaa)
         {
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
 
-            AsymmetricAlgorithmCmnFunc.CreateDigitalSignServiceProvider(eaa, out aa, out ha);
+            AsymmetricAlgorithmCmnFunc.CreateDigitalSignSP(eaa, out aa, out ha);
 
             this.AsymmetricAlgorithm = aa;
             this.HashAlgorithm = ha;
@@ -121,7 +129,7 @@ namespace Touryo.Infrastructure.Public.Security
             }
             else if (aa is DSA)
             {
-                DSA dsa = (DSACryptoServiceProvider)aa;
+                DSA dsa = (DSA)aa;
                 dsa.FromXmlString(xmlKey);
                 this.AsymmetricAlgorithm = dsa;
             }
@@ -216,18 +224,20 @@ namespace Touryo.Infrastructure.Public.Security
                 if (isDisposing)
                 {
                     // Dispose all owned managed objects
-                    if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
+                    if (this.AsymmetricAlgorithm is RSA)
                     {
-                        // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
-                        // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
-                        ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).PersistKeyInCsp = false;
+                        if (this.AsymmetricAlgorithm is RSACryptoServiceProvider)
+                        {
+                            ((RSACryptoServiceProvider)this.AsymmetricAlgorithm).PersistKeyInCsp = false;
+                        }
                         this.AsymmetricAlgorithm.Clear();
                     }
                     else
                     {
-                        // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
-                        // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
-                        ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).PersistKeyInCsp = false;
+                        if (this.AsymmetricAlgorithm is DSACryptoServiceProvider)
+                        {
+                            ((DSACryptoServiceProvider)this.AsymmetricAlgorithm).PersistKeyInCsp = false;
+                        }
                         this.AsymmetricAlgorithm.Clear();
                     }
                 }

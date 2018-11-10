@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/12/25  西野 大介         新規作成
 //*  2018/08/15  西野 大介         jwks_uri & kid 対応
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -52,7 +53,7 @@ namespace Touryo.Infrastructure.Public.Security
         {
             get
             {
-                return ((RSACryptoServiceProvider)this.DigitalSignParam.AsymmetricAlgorithm).ExportParameters(true);
+                return ((RSA)this.DigitalSignParam.AsymmetricAlgorithm).ExportParameters(true);
             }
         }
 
@@ -61,23 +62,21 @@ namespace Touryo.Infrastructure.Public.Security
         {
             get
             {
-                return ((RSACryptoServiceProvider)this.DigitalSignParam.AsymmetricAlgorithm).ExportParameters(false);
+                return ((RSA)this.DigitalSignParam.AsymmetricAlgorithm).ExportParameters(false);
             }
         }
 
         /// <summary>Constructor</summary>
         public JWS_RS256_Param()
         {
-            this.DigitalSignParam = new DigitalSignParam(
-                EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256);
+            this.DigitalSignParam = new DigitalSignParam(JWS_RS256.DigitalSignAlgorithm);
         }
 
         /// <summary>Constructor</summary>
         /// <param name="param">object</param>
         public JWS_RS256_Param(RSAParameters param)
         {
-            this.DigitalSignParam = new DigitalSignParam(param,
-                EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256);
+            this.DigitalSignParam = new DigitalSignParam(param, JWS_RS256.DigitalSignAlgorithm);
         }
 
         #endregion

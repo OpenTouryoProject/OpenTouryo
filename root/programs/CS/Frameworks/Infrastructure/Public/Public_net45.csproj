@@ -128,8 +128,8 @@
     <Compile Include="Security\RsaKeyExchange.cs" />
     <Compile Include="Security\RsaPkcs1Alice.cs" />
     <Compile Include="Security\RsaPkcs1Bob.cs" />
-    <Compile Include="Security\EcdhBob.cs" />
-    <Compile Include="Security\EcdhAlice.cs" />
+    <Compile Include="Security\EcdhCngBob.cs" />
+    <Compile Include="Security\EcdhCngAlice.cs" />
     <Compile Include="Security\EnumKeyedHashAlgorithm.cs" />
     <Compile Include="Security\EnumHashAlgorithm.cs" />
     <Compile Include="Security\EnumASymmetricAlgorithm.cs" />

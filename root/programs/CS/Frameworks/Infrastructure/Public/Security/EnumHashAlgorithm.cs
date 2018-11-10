@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/30  西野 大介         新規作成（分離）
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Public.Security
@@ -43,57 +44,57 @@ namespace Touryo.Infrastructure.Public.Security
         #region CSP (CryptoServiceProvider)
         
         /// <summary>MD5CryptoServiceProvider</summary>
-        MD5CryptoServiceProvider,
+        MD5_CSP,
 
         /// <summary>SHA1CryptoServiceProvider</summary>
-        SHA1CryptoServiceProvider,
+        SHA1_CSP,
 
         /// <summary>SHA256CryptoServiceProvider</summary>
-        SHA256CryptoServiceProvider,
+        SHA256_CSP,
 
         /// <summary>SHA384CryptoServiceProvider</summary>
-        SHA384CryptoServiceProvider,
+        SHA384_CSP,
 
         /// <summary>SHA512CryptoServiceProvider</summary>
-        SHA512CryptoServiceProvider,
+        SHA512_CSP,
 
         #endregion
 
         #region CNG (CryptographyNextGeneration)
-        
+
         /// <summary>MD5CryptographyNextGeneration</summary>
-        MD5CryptographyNextGeneration,
+        MD5_CNG,
 
         /// <summary>SHA1CryptographyNextGeneration</summary>
-        SHA1CryptographyNextGeneration,
+        SHA1_CNG,
 
         /// <summary>SHA256CryptographyNextGeneration</summary>
-        SHA256CryptographyNextGeneration,
+        SHA256_CNG,
 
         /// <summary>SHA384CryptographyNextGeneration</summary>
-        SHA384CryptographyNextGeneration,
+        SHA384_CNG,
 
         /// <summary>SHA512Managed</summary>
-        SHA512CryptographyNextGeneration,
+        SHA512_CNG,
 
         #endregion
 
         #region Managed
         
         /// <summary>RIPEMD160Managed</summary>
-        RIPEMD160Managed,
+        RIPEMD160_M,
 
         /// <summary>SHA1Managed</summary>
-        SHA1Managed,
+        SHA1_M,
 
         /// <summary>SHA256Managed</summary>
-        SHA256Managed,
+        SHA256_M,
 
         /// <summary>SHA384Managed</summary>
-        SHA384Managed,
+        SHA384_M,
 
         /// <summary>SHA512Managed</summary>
-        SHA512Managed,
+        SHA512_M,
 
         #endregion
     };

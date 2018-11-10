@@ -31,9 +31,10 @@
 //*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
 //*  2018/08/15  西野 大介         後方互換から、基底クラスに変更
 //*                                （汎用認証サイトでしか使っていないと思われるため）
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
-using System.Security.Cryptography.X509Certificates;
+using System;
 
 namespace Touryo.Infrastructure.Public.Security
 {
@@ -57,6 +58,26 @@ namespace Touryo.Infrastructure.Public.Security
             get
             {
                 return this._JWSHeader;
+            }
+        }
+
+        /// <summary>EnumDigitalSignAlgorithm</summary>
+        public static EnumDigitalSignAlgorithm DigitalSignAlgorithm
+        {
+            get
+            {
+#if NETSTD
+                if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+                {
+                    return EnumDigitalSignAlgorithm.RsaCSP_SHA256;
+                }
+                else
+                {
+                    return EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256;
+                }
+#else
+                return EnumDigitalSignAlgorithm.RsaCSP_SHA256;
+#endif
             }
         }
     }

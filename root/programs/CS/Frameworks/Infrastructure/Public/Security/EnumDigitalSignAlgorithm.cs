@@ -29,7 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/31  西野 大介         新規作成（分離）
 //*  2018/10/31  西野 大介         ECDsaCngアルゴリズムの追加
-//*  2018/11/09  西野 大介         RSAOpenSsl & HashAlgorithmName対応
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Public.Security
@@ -39,22 +39,22 @@ namespace Touryo.Infrastructure.Public.Security
     public enum EnumDigitalSignAlgorithm
     {
         /// <summary>RSACryptoServiceProvider:MD5</summary>
-        RSACryptoServiceProvider_MD5,
+        RsaCSP_MD5,
 
         /// <summary>RSACryptoServiceProvider:SHA1</summary>
-        RSACryptoServiceProvider_SHA1,
+        RsaCSP_SHA1,
 
         /// <summary>RSACryptoServiceProvider:SHA256</summary>
-        RSACryptoServiceProvider_SHA256,
+        RsaCSP_SHA256,
 
         /// <summary>RSACryptoServiceProvider:SHA384</summary>
-        RSACryptoServiceProvider_SHA384,
+        RsaCSP_SHA384,
 
         /// <summary>RSACryptoServiceProvider:SHA512</summary>
-        RSACryptoServiceProvider_SHA512,
+        RsaCSP_SHA512,
 
         /// <summary>DSACryptoServiceProvider:SHA1</summary>
-        DSACryptoServiceProvider_SHA1,
+        DsaCSP_SHA1,
 
         /// <summary>ECDsaCng:P256</summary>
         ECDsaCng_P256,
@@ -67,22 +67,22 @@ namespace Touryo.Infrastructure.Public.Security
 
 #if NETSTD
         /// <summary>RSAOpenSsl:MD5</summary>
-        RSAOpenSsl_MD5,
+        RsaOpenSsl_MD5,
 
         /// <summary>RSAOpenSsl:SHA1</summary>
-        RSAOpenSsl_SHA1,
+        RsaOpenSsl_SHA1,
 
         /// <summary>RSAOpenSsl:SHA256</summary>
-        RSAOpenSsl_SHA256,
+        RsaOpenSsl_SHA256,
 
         /// <summary>RSAOpenSsl:SHA384</summary>
-        RSAOpenSsl_SHA384,
+        RsaOpenSsl_SHA384,
 
         /// <summary>RSAOpenSsl:SHA512</summary>
-        RSAOpenSsl_SHA512,
+        RsaOpenSsl_SHA512,
 
         /// <summary>DSAOpenSsl:SHA1</summary>
-        DSAOpenSsl_SHA1,
+        DsaOpenSsl_SHA1,
 #endif
 
     };

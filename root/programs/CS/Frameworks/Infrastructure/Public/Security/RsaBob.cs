@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/31  西野 大介         新規作成
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -41,9 +42,13 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>constructor</summary>
         protected RsaBob()
         {
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+            RSA rsa = AsymmetricAlgorithmCmnFunc.RsaFactory();
             this._asa = rsa;
-            this._exchangeKey = rsa.ExportCspBlob(false); // 交換鍵
+            if(rsa is RSACryptoServiceProvider)
+            {
+                this._exchangeKey = ((RSACryptoServiceProvider)rsa).ExportCspBlob(false); // 交換鍵
+            }
+            // RSACng、RSAOpenSslはこっち（しかない）
             this._exchangeKey2 = rsa.ExportParameters(false); // 交換鍵（JWK対応
         }
 
@@ -61,14 +66,18 @@ namespace Touryo.Infrastructure.Public.Security
         {
             X509Certificate2 x509Certificate = new X509Certificate2(rsaPfxFilePath, password, flag);
             
-            // RSACryptoServiceProvider
+            // RSA
             // *.pfxの場合、ExportParameters(true)して生成し直している。
             AsymmetricAlgorithm aa = x509Certificate.PrivateKey;
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(x509Certificate.PrivateKey.KeySize);
-            rsa.ImportParameters(((RSACryptoServiceProvider)(aa)).ExportParameters(true));
+            RSA rsa = AsymmetricAlgorithmCmnFunc.RsaFactory(x509Certificate.PrivateKey.KeySize);
+            rsa.ImportParameters(((RSA)(aa)).ExportParameters(true));
 
             this._asa = rsa;
-            this._exchangeKey = rsa.ExportCspBlob(false); // 交換鍵
+            if (rsa is RSACryptoServiceProvider)
+            {
+                this._exchangeKey = ((RSACryptoServiceProvider)rsa).ExportCspBlob(false); // 交換鍵
+            }
+            // RSACng、RSAOpenSslはこっち（しかない）
             this._exchangeKey2 = rsa.ExportParameters(false); // 交換鍵（JWK対応
         }
     }

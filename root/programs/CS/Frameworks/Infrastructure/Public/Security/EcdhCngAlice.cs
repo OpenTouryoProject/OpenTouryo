@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：EcdhAlice
-//* クラス日本語名  ：ECDHの「Bobクラス」
+//* クラス名        ：EcdhCngAlice
+//* クラス日本語名  ：EcdhCngの「Aliceクラス」
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -28,33 +28,32 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/30  西野 大介         新規作成
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
 using System.Security.Cryptography;
 
-using Touryo.Infrastructure.Public.Str;
-
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>ECDHの「Bobクラス」</summary>
-    public class EcdhBob : EcdhKeyExchange
+    /// <summary>EcdhCngの「Aliceクラス」</summary>
+    public class EcdhCngAlice : EcdhKeyExchange
     {
         #region constructor
         /// <summary>constructor</summary>
-        public EcdhBob()
+        public EcdhCngAlice()
             : this(ECDiffieHellmanKeyDerivationFunction.Hash, CngAlgorithm.Sha256, null, null, null) { }
 
         /// <summary>constructor</summary>
         /// <param name="func">キー派生関数（Bob側と合わせる）。</param>
         /// <param name="hash">秘密協定の処理に使用するハッシュ アルゴリズム（Bob側と合わせる）</param>
-        public EcdhBob(ECDiffieHellmanKeyDerivationFunction func, CngAlgorithm hash)
+        public EcdhCngAlice(ECDiffieHellmanKeyDerivationFunction func, CngAlgorithm hash)
             : this(func, hash, null, null, null) { }
 
         /// <summary>constructor</summary>
         /// <param name="func">キー派生関数（Bob側と合わせる）。</param>
         /// <param name="hash">秘密協定の処理に使用するハッシュ アルゴリズム（Bob側と合わせる）</param>
         /// <param name="hmacKey">HMACキー</param>
-        public EcdhBob(ECDiffieHellmanKeyDerivationFunction func, CngAlgorithm hash, byte[] hmacKey)
+        public EcdhCngAlice(ECDiffieHellmanKeyDerivationFunction func, CngAlgorithm hash, byte[] hmacKey)
             : this(func, hash, hmacKey, null, null) { }
 
         /// <summary>constructor</summary>
@@ -63,13 +62,14 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="hmacKey">HMACキー</param>
         /// <param name="secretPrependOrLabel">SecretPrepend or Label</param>
         /// <param name="secretAppendOrSeed">SecretAppend or Seed</param>
-        public EcdhBob(ECDiffieHellmanKeyDerivationFunction func, CngAlgorithm hash,
+        public EcdhCngAlice(ECDiffieHellmanKeyDerivationFunction func, CngAlgorithm hash,
             byte[] hmacKey, byte[] secretPrependOrLabel, byte[] secretAppendOrSeed)
         {
-            ECDiffieHellmanCng ecdh = new ECDiffieHellmanCng();
-            this._asa = ecdh;
 
-            // Alice側と合わせる。
+            ECDiffieHellmanCng ecdh = new ECDiffieHellmanCng();
+            this._asa = ecdh; // 保持
+
+            // Bob側と合わせる。
             ecdh.KeyDerivationFunction = func;
             if (func == ECDiffieHellmanKeyDerivationFunction.Hash)
             {
@@ -90,17 +90,16 @@ namespace Touryo.Infrastructure.Public.Security
                 ecdh.Seed = secretAppendOrSeed;
             }
 
-            // Aliceと鍵交換する交換鍵
+            // Bobと鍵交換する交換鍵
             this._exchangeKey = ecdh.PublicKey.ToByteArray();
         }
         #endregion
 
         /// <summary>AesCryptoServiceProviderを生成する。</summary>
-        public void CreateAesSP(byte[] iv)
+        public void CreateAesSP()
         {
             this._aes = new AesCryptoServiceProvider();
             this._aes.Key = this._privateKey;
-            this._aes.IV = iv;
         }
     }
 }

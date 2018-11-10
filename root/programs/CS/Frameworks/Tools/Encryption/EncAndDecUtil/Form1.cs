@@ -35,6 +35,8 @@
 //*  2017/12/**  西野 大介         メンテナンス、暗号化ライブラリ追加に伴うテストコード追加
 //*  2018/10/30  西野 大介         メンテナンス、テスト・コードの追加（MAC, AEAD, KeyExchange, etc.
 //*  2018/11/07  西野 大介         メンテナンス、テスト・コードの追加（DSA、ECDSA証明書, etc.
+//*  2018/11/09  西野 大介         インスタンス・メソッド化対応
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
 using System;
@@ -233,6 +235,8 @@ namespace EncAndDecUtil
         /// <summary>秘密鍵・暗号化</summary>
         private void button1_Click(object sender, EventArgs e)
         {
+            SymmetricCryptography sc = null;
+
             EnumSymmetricAlgorithm esa =
                 (EnumSymmetricAlgorithm)cbxSCPV1.SelectedValue
                 | (EnumSymmetricAlgorithm)cbxSCPV2.SelectedValue
@@ -241,22 +245,21 @@ namespace EncAndDecUtil
             if (string.IsNullOrEmpty(txtSCSalt.Text))
             {
                 // ソルト無し
+                sc = new SymmetricCryptography(esa);
+
                 if (this.rbnSCString.Checked)
                 {
                     // String
-                    this.txtSCCode.Text =
-                        SymmetricCryptography.EncryptString(
-                            this.txtSCString.Text,
-                            this.txtSCPassword.Text, esa);
+                    this.txtSCCode.Text = sc.EncryptString(
+                        this.txtSCString.Text,
+                        this.txtSCPassword.Text);
                 }
                 else
                 {
                     // Bytes
-                    this.txtSCCode.Text =
-                        CustomEncode.ToHexString(
-                            SymmetricCryptography.EncryptBytes(
-                                CustomEncode.StringToByte(txtSCString.Text, CustomEncode.UTF_8),
-                                this.txtSCPassword.Text, esa));
+                    this.txtSCCode.Text = CustomEncode.ToHexString(sc.EncryptBytes(
+                        CustomEncode.StringToByte(txtSCString.Text, CustomEncode.UTF_8),
+                        this.txtSCPassword.Text));
                 }
             }
             else
@@ -265,49 +268,39 @@ namespace EncAndDecUtil
                 if (this.nudSCStretching.Value == 0)
                 {
                     // ストレッチング無し
+                    sc = new SymmetricCryptography(esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8));
+
                     if (this.rbnSCString.Checked)
                     {
                         // String
-                        this.txtSCCode.Text =
-                            SymmetricCryptography.EncryptString(
-                                this.txtSCString.Text,
-                                this.txtSCPassword.Text,
-                                esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8));
+                        this.txtSCCode.Text = sc.EncryptString(this.txtSCString.Text, this.txtSCPassword.Text);
                     }
                     else
                     {
                         // Bytes
                         this.txtSCCode.Text =
-                            CustomEncode.ToHexString(
-                                SymmetricCryptography.EncryptBytes(
-                                    CustomEncode.StringToByte(txtSCString.Text, CustomEncode.UTF_8),
-                                    this.txtSCPassword.Text,
-                                    esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8)));
+                            CustomEncode.ToHexString(sc.EncryptBytes(CustomEncode.StringToByte(
+                                txtSCString.Text, CustomEncode.UTF_8), this.txtSCPassword.Text));
                     }
                 }
                 else
                 {
                     // ストレッチング有り
+                    sc = new SymmetricCryptography(esa, 
+                        CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8),
+                        (int)this.nudSCStretching.Value);
+
                     if (this.rbnSCString.Checked)
                     {
                         // String
-                        this.txtSCCode.Text
-                            = SymmetricCryptography.EncryptString(
-                                this.txtSCString.Text,
-                                this.txtSCPassword.Text,
-                                esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8),
-                                (int)this.nudSCStretching.Value);
+                        this.txtSCCode.Text = sc.EncryptString(this.txtSCString.Text, this.txtSCPassword.Text);
                     }
                     else
                     {
                         // Bytes
                         this.txtSCCode.Text =
-                            CustomEncode.ToHexString(
-                                SymmetricCryptography.EncryptBytes(
-                                    CustomEncode.StringToByte(txtSCString.Text, CustomEncode.UTF_8),
-                                    this.txtSCPassword.Text,
-                                    esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8),
-                                    (int)this.nudSCStretching.Value));
+                            CustomEncode.ToHexString(sc.EncryptBytes(CustomEncode.StringToByte(
+                                txtSCString.Text, CustomEncode.UTF_8), this.txtSCPassword.Text));
                     }
                 }
             }
@@ -316,6 +309,8 @@ namespace EncAndDecUtil
         /// <summary>秘密鍵・復号化</summary>
         private void button2_Click(object sender, EventArgs e)
         {
+            SymmetricCryptography sc = null;
+
             EnumSymmetricAlgorithm esa =
                 (EnumSymmetricAlgorithm)cbxSCPV1.SelectedValue
                 | (EnumSymmetricAlgorithm)cbxSCPV2.SelectedValue
@@ -324,23 +319,19 @@ namespace EncAndDecUtil
             if (string.IsNullOrEmpty(txtSCSalt.Text))
             {
                 // ソルト無し
+                sc = new SymmetricCryptography(esa);
+
                 if (this.rbnSCString.Checked)
                 {
                     // String
-                    this.txtSCString.Text =
-                        SymmetricCryptography.DecryptString(
-                            this.txtSCCode.Text,
-                            this.txtSCPassword.Text, esa);
+                    this.txtSCString.Text = sc.DecryptString(this.txtSCCode.Text, this.txtSCPassword.Text);
                 }
                 else
                 {
                     // Bytes
                     this.txtSCString.Text =
-                         CustomEncode.ByteToString(
-                            SymmetricCryptography.DecryptBytes(
-                                CustomEncode.FormHexString(this.txtSCCode.Text),
-                                this.txtSCPassword.Text, esa),
-                            CustomEncode.UTF_8);
+                        CustomEncode.ByteToString(sc.DecryptBytes(CustomEncode.FormHexString(
+                            this.txtSCCode.Text), this.txtSCPassword.Text), CustomEncode.UTF_8);
                 }
             }
             else
@@ -349,51 +340,39 @@ namespace EncAndDecUtil
                 if (this.nudSCStretching.Value == 0)
                 {
                     // ストレッチング無し
+                    sc = new SymmetricCryptography(esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8));
+
                     if (this.rbnSCString.Checked)
                     {
                         // String
-                        this.txtSCString.Text
-                            = SymmetricCryptography.DecryptString(
-                                this.txtSCCode.Text,
-                                this.txtSCPassword.Text,
-                                esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8));
+                        this.txtSCString.Text = sc.DecryptString(this.txtSCCode.Text, this.txtSCPassword.Text);
                     }
                     else
                     {
                         // Bytes
                         this.txtSCString.Text =
-                         CustomEncode.ByteToString(
-                            SymmetricCryptography.DecryptBytes(
-                                CustomEncode.FormHexString(this.txtSCCode.Text),
-                                this.txtSCPassword.Text,
-                                esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8)),
-                            CustomEncode.UTF_8);
+                            CustomEncode.ByteToString(sc.DecryptBytes(CustomEncode.FormHexString(
+                                this.txtSCCode.Text), this.txtSCPassword.Text), CustomEncode.UTF_8);
                     }
                 }
                 else
                 {
                     // ストレッチング有り
+                    sc = new SymmetricCryptography(esa,
+                        CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8),
+                        (int)this.nudSCStretching.Value);
+
                     if (this.rbnSCString.Checked)
                     {
                         // String
-                        this.txtSCString.Text
-                            = SymmetricCryptography.DecryptString(
-                                this.txtSCCode.Text,
-                                this.txtSCPassword.Text,
-                                esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8),
-                                (int)this.nudSCStretching.Value);
+                        this.txtSCString.Text = sc.DecryptString(this.txtSCCode.Text, this.txtSCPassword.Text);
                     }
                     else
                     {
                         // Bytes
                         this.txtSCString.Text =
-                         CustomEncode.ByteToString(
-                            SymmetricCryptography.DecryptBytes(
-                                CustomEncode.FormHexString(this.txtSCCode.Text),
-                                this.txtSCPassword.Text,
-                                esa, CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8),
-                                (int)this.nudSCStretching.Value),
-                            CustomEncode.UTF_8);
+                         CustomEncode.ByteToString(sc.DecryptBytes(CustomEncode.FormHexString(
+                             this.txtSCCode.Text), this.txtSCPassword.Text), CustomEncode.UTF_8);
                     }
                 }
             }
@@ -406,11 +385,11 @@ namespace EncAndDecUtil
         /// <summary>キーペア取得</summary>
         private void button3_Click(object sender, EventArgs e)
         {
+            ASymmetricCryptography asc = new ASymmetricCryptography((EnumASymmetricAlgorithm)cbxASCPV.SelectedValue);
+
             string publicKey = "";
             string privateKey = "";
-            ASymmetricCryptography.ASymmetricAlgorithm = (EnumASymmetricAlgorithm)cbxASCPV.SelectedValue;
-            ASymmetricCryptography.GetKeys(out publicKey, out privateKey);
-
+            asc.GetKeys(out publicKey, out privateKey);
             this.txtASCPublic.Text = publicKey;
             this.txtASCPrivate.Text = privateKey;
         }
@@ -418,39 +397,44 @@ namespace EncAndDecUtil
         /// <summary>公開鍵で暗号化</summary>
         private void button4_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(this.txtASCPrivate.Text)) { return; }
+            
+            ASymmetricCryptography asc = new ASymmetricCryptography((EnumASymmetricAlgorithm)cbxASCPV.SelectedValue);
+
             if (this.rbnASCString.Checked)
             {
                 // String
-                this.txtASCCode.Text =
-                    ASymmetricCryptography.EncryptString(this.txtASCString.Text, this.txtASCPublic.Text);
+                this.txtASCCode.Text = asc.EncryptString(this.txtASCString.Text, this.txtASCPublic.Text);
             }
             else
             {
                 // Bytes
                 this.txtASCCode.Text =
                     CustomEncode.ToHexString(
-                        ASymmetricCryptography.EncryptBytes(
-                            CustomEncode.StringToByte(this.txtASCString.Text, CustomEncode.UTF_8), this.txtASCPublic.Text));
+                        asc.EncryptBytes(CustomEncode.StringToByte(
+                            this.txtASCString.Text, CustomEncode.UTF_8), this.txtASCPublic.Text));
             }
         }
 
         /// <summary>秘密鍵で復号化</summary>
         private void button5_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(this.txtASCPublic.Text)) { return; }
+
+            ASymmetricCryptography asc = new ASymmetricCryptography((EnumASymmetricAlgorithm)cbxASCPV.SelectedValue);
+
             if (this.rbnASCString.Checked)
             {
                 // String
-                this.txtASCString.Text =
-                    ASymmetricCryptography.DecryptString(this.txtASCCode.Text, this.txtASCPrivate.Text);
+                this.txtASCString.Text = asc.DecryptString(this.txtASCCode.Text, this.txtASCPrivate.Text);
             }
             else
             {
                 // Bytes
                 this.txtASCString.Text =
                     CustomEncode.ByteToString(
-                        ASymmetricCryptography.DecryptBytes(
-                            CustomEncode.FormHexString(this.txtASCCode.Text), this.txtASCPrivate.Text),
-                        CustomEncode.UTF_8);
+                        asc.DecryptBytes(CustomEncode.FormHexString(
+                            this.txtASCCode.Text), this.txtASCPrivate.Text), CustomEncode.UTF_8);
             }
         }
 
@@ -518,12 +502,12 @@ namespace EncAndDecUtil
 
             EnumDigitalSignAlgorithm edsa = (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue;
 
-            if (edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_MD5
-                || edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA1
-                || edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256
-                || edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA384
-                || edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA512
-                || edsa == EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
+            if (edsa == EnumDigitalSignAlgorithm.RsaCSP_MD5
+                || edsa == EnumDigitalSignAlgorithm.RsaCSP_SHA1
+                || edsa == EnumDigitalSignAlgorithm.RsaCSP_SHA256
+                || edsa == EnumDigitalSignAlgorithm.RsaCSP_SHA384
+                || edsa == EnumDigitalSignAlgorithm.RsaCSP_SHA512
+                || edsa == EnumDigitalSignAlgorithm.DsaCSP_SHA1)
             {
                 if (rbnDSXML.Checked)
                 {
@@ -588,25 +572,25 @@ namespace EncAndDecUtil
 
             EnumDigitalSignAlgorithm edsa = (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue;
 
-            if (edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_MD5
-                || edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA1
-                || edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA256
-                || edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA384
-                || edsa == EnumDigitalSignAlgorithm.RSACryptoServiceProvider_SHA512
-                || edsa == EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
+            if (edsa == EnumDigitalSignAlgorithm.RsaCSP_MD5
+                || edsa == EnumDigitalSignAlgorithm.RsaCSP_SHA1
+                || edsa == EnumDigitalSignAlgorithm.RsaCSP_SHA256
+                || edsa == EnumDigitalSignAlgorithm.RsaCSP_SHA384
+                || edsa == EnumDigitalSignAlgorithm.RsaCSP_SHA512
+                || edsa == EnumDigitalSignAlgorithm.DsaCSP_SHA1)
             {
                 if (rbnDSXML.Checked)
                 {
                     // XMLKey
-                    dsXML = new DigitalSignXML(
-                        (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue, this.txtDSPublicKey.Text);
+                    dsXML = new DigitalSignXML(this.txtDSPublicKey.Text,
+                        (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue);
                     ret = dsXML.Verify(data, sign);
                 }
                 else if (rbnDSParam.Checked)
                 {
                     // ParamKey
                     if (((EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue) ==
-                            EnumDigitalSignAlgorithm.DSACryptoServiceProvider_SHA1)
+                            EnumDigitalSignAlgorithm.DsaCSP_SHA1)
                     {
                         dsParam = new DigitalSignParam(
                             (DSAParameters)BinarySerialize.BytesToObject(CustomEncode.FromBase64String(this.txtDSPublicKey.Text)),
@@ -676,15 +660,15 @@ namespace EncAndDecUtil
         /// <summary>署名</summary>
         private void btnDSESign_Click(object sender, EventArgs e)
         {
-            byte[] data = CustomEncode.StringToByte(this.txtDSData.Text, CustomEncode.UTF_8);
+            byte[] data = CustomEncode.StringToByte(this.txtDSEData.Text, CustomEncode.UTF_8);
             byte[] sign = null;
-
-            DigitalSign dsECDsa = null;
-
+            
             EnumDigitalSignAlgorithm edsa = (EnumDigitalSignAlgorithm)this.cbxDSEPV.SelectedValue;
 
             if (rbnDSECng.Checked)
             {
+                DigitalSignECDsaCng dsECDsa = null;
+
                 if (edsa == EnumDigitalSignAlgorithm.ECDsaCng_P256
                     || edsa == EnumDigitalSignAlgorithm.ECDsaCng_P384
                     || edsa == EnumDigitalSignAlgorithm.ECDsaCng_P521)
@@ -693,8 +677,8 @@ namespace EncAndDecUtil
                     sign = dsECDsa.Sign(data);
                     bool ret = dsECDsa.Verify(data, sign);
 
-                    this.txtDSEPrivateKey.Text = ((DigitalSignECDsaCng)dsECDsa).PrivateKey.GetType().ToString();
-                    this.txtDSEPublicKey.Text = CustomEncode.ToBase64String(((DigitalSignECDsaCng)dsECDsa).PublicKey);
+                    this.txtDSEPrivateKey.Text = dsECDsa.PrivateKey.GetType().ToString();
+                    this.txtDSEPublicKey.Text = CustomEncode.ToBase64String(dsECDsa.PublicKey);
                 }
                 else
                 {
@@ -705,6 +689,8 @@ namespace EncAndDecUtil
             else
             {
 #if HOGE
+                DigitalSignECDsaX509 dsECDsa = null;
+
                 // NET47以降に、I/Fは存在する。
                 dsECDsa = new DigitalSignECDsaX509(this.SHA256ECDSA_pfx, this.CertificateFilePassword, new HashAlgorithmName(this.txtDSEHash.Text));
                 sign = dsECDsa.Sign(data);
@@ -855,54 +841,71 @@ namespace EncAndDecUtil
 
         #region ECDH鍵交換
 
-        /// <summary>ECDHのアリス</summary>
-        EcdhAlice _ecdhAlice = null;
+        /// <summary>ECDHCngのアリス</summary>
+        EcdhCngAlice _ecdhCngAlice = null;
 
-        /// <summary>ECDHのボブ</summary>
-        EcdhBob _ecdhBob = null;
+        /// <summary>ECDHCngのボブ</summary>
+        EcdhCngBob _ecdhCngBob = null;
 
         /// <summary>鍵交換</summary>
         private void btnEKEXEC_Click(object sender, EventArgs e)
         {
-            this._ecdhBob = new EcdhBob();
+            this._ecdhCngBob = new EcdhCngBob();
+            ECDiffieHellmanCng ecdhCng = (ECDiffieHellmanCng)this._ecdhCngBob.ECDiffieHellman;
+            ECDiffieHellmanKeyDerivationFunction fnc = ecdhCng.KeyDerivationFunction;
+            CngAlgorithm cngAlg = ecdhCng.HashAlgorithm;
+            byte[] hmacKey = ecdhCng.HmacKey;
+            byte[] label = ecdhCng.Label;
+            byte[] seed = ecdhCng.Seed;
+            byte[] secretPrepend = ecdhCng.SecretPrepend;
+            byte[] secretAppend = ecdhCng.SecretAppend;
 
             // 以下を一致させる
-            if (((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).KeyDerivationFunction == ECDiffieHellmanKeyDerivationFunction.Tls)
+            if (fnc == ECDiffieHellmanKeyDerivationFunction.Hash)
             {
-                this._ecdhAlice = new EcdhAlice();
-                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).KeyDerivationFunction,
-                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).HashAlgorithm,
-                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).HmacKey,
-                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).Label,
-                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).Seed);
+                this._ecdhCngAlice = new EcdhCngAlice(
+                    fnc, cngAlg, hmacKey, secretPrepend, secretAppend);
+                //ecdh.KeyDerivationFunction = func;
+                //ecdh.HashAlgorithm = hash;
+                //ecdh.SecretPrepend = secretPrependOrLabel;
+                //ecdh.SecretAppend = secretAppendOrSeed;
             }
-            else
+            else if (fnc == ECDiffieHellmanKeyDerivationFunction.Hmac)
             {
-                this._ecdhAlice = new EcdhAlice();
-                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).KeyDerivationFunction,
-                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).HashAlgorithm,
-                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).HmacKey,
-                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).SecretPrepend,
-                //((ECDiffieHellmanCng)this._ecdhBob.ECDiffieHellman).SecretAppend);
+                this._ecdhCngAlice = new EcdhCngAlice(
+                    fnc, cngAlg, hmacKey, secretPrepend, secretAppend);
+                //ecdh.KeyDerivationFunction = func;
+                //ecdh.HashAlgorithm = hash;
+                //ecdh.HmacKey = hmacKey;
+                //ecdh.SecretPrepend = secretPrependOrLabel;
+                //ecdh.SecretAppend = secretAppendOrSeed;
+            }
+            else if (fnc == ECDiffieHellmanKeyDerivationFunction.Tls)
+            {
+                this._ecdhCngAlice = new EcdhCngAlice(
+                    fnc, cngAlg, hmacKey, label, seed);
+                //ecdh.KeyDerivationFunction = func;
+                //ecdh.Label = secretPrependOrLabel;
+                //ecdh.Seed = secretAppendOrSeed;
             }
 
             // キー交換、秘密鍵生成
-            this._ecdhAlice.DeriveKeyMaterial(this._ecdhBob.ExchangeKey);
-            this._ecdhBob.DeriveKeyMaterial(this._ecdhAlice.ExchangeKey);
+            this._ecdhCngAlice.DeriveKeyMaterial(this._ecdhCngBob.ExchangeKey);
+            this._ecdhCngBob.DeriveKeyMaterial(this._ecdhCngAlice.ExchangeKey);
 
             // 暗号化プロバイダ生成
-            this._ecdhAlice.CreateAesSP();
-            this._ecdhBob.CreateAesSP(this._ecdhAlice.IV);
+            this._ecdhCngAlice.CreateAesSP();
+            this._ecdhCngBob.CreateAesSP(this._ecdhCngAlice.IV);
 
             this.txtEKEXKeyInfo.Text = "";
             this.txtEKEXKeyInfo.Text += "bob.ExchangeKey:\n";
-            this.txtEKEXKeyInfo.Text += CustomEncode.ToBase64String(this._ecdhBob.ExchangeKey);
+            this.txtEKEXKeyInfo.Text += CustomEncode.ToBase64String(this._ecdhCngBob.ExchangeKey);
             this.txtEKEXKeyInfo.Text += "\n";
             this.txtEKEXKeyInfo.Text += "alice.ExchangeKey:\n";
-            this.txtEKEXKeyInfo.Text += CustomEncode.ToBase64String(this._ecdhAlice.ExchangeKey);
+            this.txtEKEXKeyInfo.Text += CustomEncode.ToBase64String(this._ecdhCngAlice.ExchangeKey);
             this.txtEKEXKeyInfo.Text += "\n";
             this.txtEKEXKeyInfo.Text += "IV of alice and bob:\n";
-            this.txtEKEXKeyInfo.Text += CustomEncode.ToBase64String(this._ecdhAlice.IV);
+            this.txtEKEXKeyInfo.Text += CustomEncode.ToBase64String(this._ecdhCngAlice.IV);
         }
 
         /// <summary>送受信</summary>
@@ -910,8 +913,8 @@ namespace EncAndDecUtil
         {
             this.txtEKEXBobString.Text =
                     CustomEncode.ByteToString(
-                        this._ecdhBob.Decrypt(
-                            this._ecdhAlice.Encrypt(
+                        this._ecdhCngBob.Decrypt(
+                            this._ecdhCngAlice.Encrypt(
                                 CustomEncode.StringToByte(
                                     this.txtEKEXAliceString.Text, CustomEncode.UTF_8))), CustomEncode.UTF_8);
         }

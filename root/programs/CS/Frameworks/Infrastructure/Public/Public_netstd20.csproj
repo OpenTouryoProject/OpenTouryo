@@ -58,8 +58,8 @@
     <Compile Remove="Log\CustomEventLog.cs" />
     <Compile Remove="Log\SecurityEventLog.cs" />
     <Compile Remove="Properties\AssemblyInfo.cs" />
-    <Compile Remove="Security\EcdhAlice.cs" />
-    <Compile Remove="Security\EcdhBob.cs" />
+    <Compile Remove="Security\EcdhCngAlice.cs" />
+    <Compile Remove="Security\EcdhCngBob.cs" />
     <Compile Remove="Security\EcdhKeyExchange.cs" />
     <Compile Remove="Security\IdentityImpersonation.cs" />
     <Compile Remove="Util\SharedMemory.cs" />

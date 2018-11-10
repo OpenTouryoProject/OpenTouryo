@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/30  西野 大介         新規作成（分離）
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
 #region ECDH
@@ -44,38 +45,33 @@ namespace Touryo.Infrastructure.Public.Security
     /// <summary>
     /// 非対称アルゴリズムによる暗号化の列挙型
     /// </summary>
-    /// <remarks>
-    /// ECDHは、EnumKeyExchangeへ移動。
-    /// OpenSsl系は、.NET Platform Extensions 2.1でサポートの事で、
-    /// 現時点では、詳細不明のため、以下からコメントアウトした。
-    /// </remarks>
     public enum EnumASymmetricAlgorithm
     {
         #region CSP (CryptoServiceProvider)
 
         /// <summary>RSACryptoServiceProvider</summary>
-        RSACryptoServiceProvider,
+        RsaCsp,
 
         #endregion
 
         #region CNG (CryptographyNextGeneration)
 
         /// <summary>RSACryptographyNextGeneration</summary>
-        RSACryptographyNextGeneration,
+        RsaCng,
 
         ///// <summary>ECDiffieHellmanCryptographyNextGeneration</summary>
-        //ECDiffieHellmanCryptographyNextGeneration,
+        //EcdhCng, // 暗号化用ではない
 
         #endregion
 
         #region OpenSsl
-
-        ///// <summary>RSAOpenSsl</summary>
-        //RSAOpenSsl,
+#if NETSTD
+        /// <summary>RSAOpenSsl</summary>
+        RsaOpenSsl,
 
         ///// <summary>ECDiffieHellmanOpenSsl</summary>
-        //ECDiffieHellmanOpenSsl,
-
+        //EcdhOpenSsl, // 暗号化用ではない
+#endif
         #endregion
     }
 }

@@ -1351,7 +1351,6 @@
             this.txtDSHash.ReadOnly = true;
             this.txtDSHash.Size = new System.Drawing.Size(254, 19);
             this.txtDSHash.TabIndex = 33;
-            this.txtDSHash.Text = "SHA1";
             // 
             // cbxDSPV
             // 
@@ -1575,7 +1574,6 @@
             this.txtDSEHash.ReadOnly = true;
             this.txtDSEHash.Size = new System.Drawing.Size(254, 19);
             this.txtDSEHash.TabIndex = 48;
-            this.txtDSEHash.Text = "SHA1";
             // 
             // gbxDSE
             // 
