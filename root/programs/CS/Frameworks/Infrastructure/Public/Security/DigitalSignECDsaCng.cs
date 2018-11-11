@@ -35,7 +35,10 @@
 // https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.ecdsacng
 //   CngKeyBlobFormat.EccPublicBlobでインポート・エクスポートする。
 
+using System;
 using System.Security.Cryptography;
+
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Security
 {
@@ -140,6 +143,23 @@ namespace Touryo.Infrastructure.Public.Security
                 this._publicKey, CngKeyBlobFormat.EccPublicBlob));
 
             return aa.VerifyData(data, sign);
+        }
+
+        /// <summary>デジタル署名を作成する</summary>
+        /// <param name="data">デジタル署名を行なう対象データ</param>
+        /// <returns>対象データに対してデジタル署名したデジタル署名部分のデータ</returns>
+        public override byte[] SignByFormatter(byte[] data)
+        {
+            throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+        }
+
+        /// <summary>デジタル署名を検証する</summary>
+        /// <param name="data">デジタル署名を行なった対象データ</param>
+        /// <param name="sign">対象データに対してデジタル署名したデジタル署名部分のデータ</param>
+        /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
+        public override bool VerifyByDeformatter(byte[] data, byte[] sign)
+        {
+            throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
         }
 
         #endregion

@@ -69,7 +69,7 @@ namespace Touryo.Infrastructure.Public.Security
             // RSA
             // *.pfxの場合、ExportParameters(true)して生成し直している。
             AsymmetricAlgorithm aa = x509Certificate.PrivateKey;
-            RSA rsa = AsymmetricAlgorithmCmnFunc.RsaFactory(x509Certificate.PrivateKey.KeySize);
+            RSA rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(aa);
             rsa.ImportParameters(((RSA)(aa)).ExportParameters(true));
 
             this._asa = rsa;

@@ -80,12 +80,27 @@ namespace Touryo.Infrastructure.Public.Security
             return haName;
         }
 
-        /// <summary>GetHashAlgorithmFromName</summary>
+        /// <summary>GetHashAlgorithmFromNameString</summary>
+        /// <returns>HashAlgorithm</returns>
+        public static HashAlgorithm GetHashAlgorithmFromNameString()
+        {
+            // 既定は何なのか？という話
+            // https://github.com/dotnet/corefx/issues/22626#issuecomment-319141782
+            //   HashAlgorithm.CreateはSHA1の実装を作成します。
+            //   これは、最近の進歩のために推奨されていません。
+            return HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString("SHA256");
+        }
+
+        /// <summary>GetHashAlgorithmFromNameString</summary>
         /// <param name="hashAlgorithmName">string</param>
         /// <returns>HashAlgorithm</returns>
-        public static HashAlgorithm GetHashAlgorithmFromName(string hashAlgorithmName)
+        public static HashAlgorithm GetHashAlgorithmFromNameString(string hashAlgorithmName)
         {
+#if NETSTD
+            return (HashAlgorithm)CryptoConfig.CreateFromName(hashAlgorithmName);
+#else
             return HashAlgorithm.Create(hashAlgorithmName);
+#endif
         }
 
         #endregion
@@ -103,7 +118,7 @@ namespace Touryo.Infrastructure.Public.Security
             if (eha == EnumHashAlgorithm.Default)
             {
                 // 既定の暗号化サービスプロバイダ
-                ha = HashAlgorithm.Create(); // devps(1703)
+                ha = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(); // devps(1703)
             }
 
             #region MD5
@@ -232,7 +247,7 @@ namespace Touryo.Infrastructure.Public.Security
             else
             {
                 // 既定の暗号化サービスプロバイダ
-                ha = HashAlgorithm.Create(); // devps(1703)
+                ha = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(); // devps(1703)
             }
 
             return ha;

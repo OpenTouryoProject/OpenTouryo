@@ -112,18 +112,21 @@ namespace EncAndDecUtil4NetCore
                 sign = dsX1.Sign(new byte[] { });
                 Program.MyWriteLine("DigitalSignXML.Verify(RS256): " + dsX1.Verify(new byte[] { }, sign).ToString());
 
+                // DSAはFormatterバージョンしか動かない。
                 DigitalSignParam dsP2 = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaCSP_SHA1);
-                sign = dsP2.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignParam.Verify(DS1): " + dsP2.Verify(new byte[] { }, sign).ToString());
+                sign = dsP2.SignByFormatter(new byte[] { });
+                Program.MyWriteLine("DigitalSignParam.Verify(DS1): " + dsP2.VerifyByDeformatter(new byte[] { }, sign).ToString());
 
                 DigitalSignXML dsX2 = new DigitalSignXML(EnumDigitalSignAlgorithm.DsaCSP_SHA1);
-                sign = dsX2.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignXML.Verify(DS1): " + dsX2.Verify(new byte[] { }, sign).ToString());
+                sign = dsX2.SignByFormatter(new byte[] { });
+                Program.MyWriteLine("DigitalSignXML.Verify(DS1): " + dsX2.VerifyByDeformatter(new byte[] { }, sign).ToString());
 
-                // RSACngになるので対策が必要
-                //DigitalSignX509 ds5 = new DigitalSignX509(@"SHA256RSA.pfx", "test", "SHA256");
-                //sign = ds5.Sign(new byte[] { });
-                //Program.MyWriteLine("DigitalSignX509.Verify: " + ds5.Verify(new byte[] { }, sign).ToString());
+                // https://github.com/dotnet/corefx/issues/29404#issuecomment-385287947
+                //   *.pfxから証明書を開く場合、X509KeyStorageFlags.Exportableの指定が必要な場合がある。
+                //   Linuxのキーは常にエクスポート可能だが、WindowsやMacOSでは必ずしもそうではない。
+                DigitalSignX509 ds5 = new DigitalSignX509(@"SHA256RSA.pfx", "test", "SHA256", X509KeyStorageFlags.Exportable);
+                sign = ds5.Sign(new byte[] { });
+                Program.MyWriteLine("DigitalSignX509.Verify: " + ds5.Verify(new byte[] { }, sign).ToString());
             }
             else if (os.Platform == PlatformID.Unix)
             {

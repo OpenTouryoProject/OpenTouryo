@@ -31,8 +31,11 @@
 //*  2018/11/07  西野 大介         ECDSA証明書のサポートを追加（4.7以上）
 //**********************************************************************************
 
+using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+
+using Touryo.Infrastructure.Public.Util;
 
 #if NET45 || NET46
 #else
@@ -97,7 +100,7 @@ namespace Touryo.Infrastructure.Public.Security
         public DigitalSignECDsaX509(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName, X509KeyStorageFlags flag)
         {
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
-            this.HashAlgorithmName = hashAlgorithmName;
+            this.HashAlgorithm = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(hashAlgorithmName.Name);
         }
 
         #endregion
@@ -112,7 +115,7 @@ namespace Touryo.Infrastructure.Public.Security
         public override byte[] Sign(byte[] data)
         {
             ECDsa aa2 = this.X509Certificate.GetECDsaPrivateKey();
-            return aa2.SignData(data, this.HashAlgorithmName.Value);
+            return aa2.SignData(data, this.HashAlgorithmName);
         }
 
         /// <summary>デジタル署名を検証する</summary>
@@ -122,7 +125,24 @@ namespace Touryo.Infrastructure.Public.Security
         public override bool Verify(byte[] data, byte[] sign)
         {
             ECDsa aa2 = this.X509Certificate.GetECDsaPublicKey();
-            return aa2.VerifyData(data, sign, this.HashAlgorithmName.Value);
+            return aa2.VerifyData(data, sign, this.HashAlgorithmName);
+        }
+
+        /// <summary>デジタル署名を作成する</summary>
+        /// <param name="data">デジタル署名を行なう対象データ</param>
+        /// <returns>対象データに対してデジタル署名したデジタル署名部分のデータ</returns>
+        public override byte[] SignByFormatter(byte[] data)
+        {
+            throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+        }
+
+        /// <summary>デジタル署名を検証する</summary>
+        /// <param name="data">デジタル署名を行なった対象データ</param>
+        /// <param name="sign">対象データに対してデジタル署名したデジタル署名部分のデータ</param>
+        /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
+        public override bool VerifyByDeformatter(byte[] data, byte[] sign)
+        {
+            throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
         }
 
         #endregion

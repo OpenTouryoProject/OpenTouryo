@@ -47,83 +47,36 @@ namespace Touryo.Infrastructure.Public.Security
     /// </summary>
     public class AsymmetricAlgorithmCmnFunc
     {
-        #region Simple
+        #region Simple factories
         /// <summary>RsaFactory</summary>
         /// <returns>RSA</returns>
         public static RSA RsaFactory()
         {
-#if NETSTD
-            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-            {
-                return new RSACryptoServiceProvider();
-            }
-            else
-            {
-                return new RSAOpenSsl();
-            }
-#else
-            return new RSACryptoServiceProvider();
-#endif
-        }
-
-        /// <summary>RsaFactory</summary>
-        /// <param name="size">int</param>
-        /// <returns>RSA</returns>
-        public static RSA RsaFactory(int size)
-        {
-#if NETSTD
-            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-            {
-                return new RSACryptoServiceProvider(size);
-            }
-            else
-            {
-                return new RSAOpenSsl(size);
-            }
-#else
-            return new RSACryptoServiceProvider(size);
-#endif
+            // ハンドリングをRSA（ベースの型に）に変更したので行けるハズ
+            return RSA.Create();
         }
 
         /// <summary>DsaFactory</summary>
         /// <returns>DSA</returns>
         public static DSA DsaFactory()
         {
-#if NETSTD
-            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-            {
-                return new DSACryptoServiceProvider();
-            }
-            else
-            {
-                return new DSAOpenSsl();
-            }
-#else
-            return new DSACryptoServiceProvider();
-#endif
+            // ハンドリングをDSA（ベースの型に）に変更したので行けるハズ
+            return DSA.Create();
         }
 
-        /// <summary>DsaFactory</summary>
-        /// <param name="size">int</param>
-        /// <returns>DSA</returns>
-        public static DSA DsaFactory(int size)
+        /// <summary>CreateSameKeySizeSP</summary>
+        /// <param name="aa1">AsymmetricAlgorithm</param>
+        /// <returns>AsymmetricAlgorithm(RSA or DSA)</returns>
+        public static AsymmetricAlgorithm CreateSameKeySizeSP(AsymmetricAlgorithm aa1)
         {
-#if NETSTD
-            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-            {
-                return new DSACryptoServiceProvider(size);
-            }
-            else
-            {
-                return new DSAOpenSsl(size);
-            }
-#else
-            return new DSACryptoServiceProvider(size);
-#endif
+            AsymmetricAlgorithm aa2 = (AsymmetricAlgorithm)Activator.CreateInstance(aa1.GetType());
+            aa2.KeySize = aa1.KeySize;
+            return aa2;
         }
+
         #endregion
 
-        #region CreateASymmetricAlgorithm
+        #region CreateCryptographySP
 
         /// <summary>対称アルゴリズム暗号化サービスプロバイダ生成</summary>
         /// <param name="easa">EnumASymmetricAlgorithm</param>
@@ -157,7 +110,7 @@ namespace Touryo.Infrastructure.Public.Security
 
         #endregion
 
-        #region EnumDigitalSignAlgorithm
+        #region CreateDigitalSignSP
         /// <summary>署名・検証サービスプロバイダの生成</summary>
         /// <param name="eaa">EnumDigitalSignAlgorithm</param>
         /// <param name="aa">

@@ -148,7 +148,7 @@ namespace EncAndDecUtil
                 this.txtKHSCode.Text =
                     GetKeyedHash.GetKeyedHashString(
                         this.txtKHSString.Text,
-                        (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue, 
+                        (EnumKeyedHashAlgorithm)cbxKHSPV.SelectedValue,
                         this.txtKHSPassword.Text);
             }
             else
@@ -286,7 +286,7 @@ namespace EncAndDecUtil
                 else
                 {
                     // ストレッチング有り
-                    sc = new SymmetricCryptography(esa, 
+                    sc = new SymmetricCryptography(esa,
                         CustomEncode.StringToByte(txtSCSalt.Text, CustomEncode.UTF_8),
                         (int)this.nudSCStretching.Value);
 
@@ -398,7 +398,7 @@ namespace EncAndDecUtil
         private void button4_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(this.txtASCPrivate.Text)) { return; }
-            
+
             ASymmetricCryptography asc = new ASymmetricCryptography((EnumASymmetricAlgorithm)cbxASCPV.SelectedValue);
 
             if (this.rbnASCString.Checked)
@@ -463,7 +463,7 @@ namespace EncAndDecUtil
         private string SHA256ECDSA_pfx = GetConfigParameter.GetConfigValue("SHA256ECDSA_pfx");
         /// <summary>SHA256ECDSA_cer</summary>
         private string SHA256ECDSA_cer = GetConfigParameter.GetConfigValue("SHA256ECDSA_cer");
-        
+
         /// <summary>CertificateFilePassword</summary>
         private string CertificateFilePassword = "test";
 
@@ -479,7 +479,7 @@ namespace EncAndDecUtil
             if (this.rbnDSXML.Checked || this.rbnDSParam.Checked || this.rbnDSX509D.Checked)
             {
                 this.cbxDSPV.Enabled = true;
-                this.txtDSHash.Text="";
+                this.txtDSHash.Text = "";
                 this.txtDSHash.ReadOnly = true;
             }
             else if (this.rbnDSX509R.Checked)
@@ -499,6 +499,7 @@ namespace EncAndDecUtil
 
             byte[] data = CustomEncode.StringToByte(this.txtDSData.Text, CustomEncode.UTF_8);
             byte[] sign = null;
+            bool ret = false;
 
             EnumDigitalSignAlgorithm edsa = (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue;
 
@@ -513,8 +514,17 @@ namespace EncAndDecUtil
                 {
                     // XMLKey
                     dsXML = new DigitalSignXML(edsa);
-                    sign = dsXML.Sign(data);
-                    bool ret = dsXML.Verify(data, sign);
+
+                    if (this.chkDSUF.Checked)
+                    {
+                        sign = dsXML.SignByFormatter(data);
+                        ret= dsXML.VerifyByDeformatter(data, sign);
+                    }
+                    else
+                    {
+                        sign = dsXML.Sign(data);
+                        ret = dsXML.Verify(data, sign);
+                    }
 
                     this.txtDSPrivateKey.Text = dsXML.PrivateKey;
                     this.txtDSPublicKey.Text = dsXML.PublicKey;
@@ -523,8 +533,18 @@ namespace EncAndDecUtil
                 {
                     // ParamKey
                     dsParam = new DigitalSignParam(edsa);
-                    sign = dsParam.Sign(data);
-                    bool ret = dsParam.Verify(data, sign);
+
+                    if (this.chkDSUF.Checked)
+                    {
+                        sign = dsParam.SignByFormatter(data);
+                        ret = dsParam.VerifyByDeformatter(data, sign);
+                    }
+                    else
+                    {
+                        sign = dsParam.Sign(data);
+                        ret = dsParam.Verify(data, sign);
+                    }
+                    
                     this.txtDSPrivateKey.Text = CustomEncode.ToBase64String(BinarySerialize.ObjectToBytes(dsParam.PrivateKey));
                     this.txtDSPublicKey.Text = CustomEncode.ToBase64String(BinarySerialize.ObjectToBytes(dsParam.PublicKey));
                 }
@@ -543,8 +563,16 @@ namespace EncAndDecUtil
                             X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
                     }
 
-                    sign = dsX509.Sign(data);
-                    bool ret = dsX509.Verify(data, sign);
+                    if (this.chkDSUF.Checked)
+                    {
+                        sign = dsX509.SignByFormatter(data);
+                        ret = dsX509.VerifyByDeformatter(data, sign);
+                    }
+                    else
+                    {
+                        sign = dsX509.Sign(data);
+                        ret = dsX509.Verify(data, sign);
+                    }
 
                     this.txtDSPrivateKey.Text = dsX509.X509PrivateKey.GetType().ToString();
                     this.txtDSPublicKey.Text = dsX509.X509PublicKey.GetType().ToString();
@@ -584,7 +612,15 @@ namespace EncAndDecUtil
                     // XMLKey
                     dsXML = new DigitalSignXML(this.txtDSPublicKey.Text,
                         (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue);
-                    ret = dsXML.Verify(data, sign);
+
+                    if (this.chkDSUF.Checked)
+                    {
+                        ret = dsXML.VerifyByDeformatter(data, sign);
+                    }
+                    else
+                    {
+                        ret = dsXML.Verify(data, sign);
+                    }
                 }
                 else if (rbnDSParam.Checked)
                 {
@@ -603,7 +639,14 @@ namespace EncAndDecUtil
                             (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue);
                     }
 
-                    ret = dsParam.Verify(data, sign);
+                    if (this.chkDSUF.Checked)
+                    {
+                        ret = dsParam.VerifyByDeformatter(data, sign);
+                    }
+                    else
+                    {
+                        ret = dsParam.Verify(data, sign);
+                    }
                 }
                 else
                 {
@@ -617,7 +660,14 @@ namespace EncAndDecUtil
                         dsX509 = new DigitalSignX509(SHA256DSA_cer, "", this.txtDSHash.Text);
                     }
 
-                    ret = dsX509.Verify(data, sign);
+                    if (this.chkDSUF.Checked)
+                    {
+                        ret = dsX509.VerifyByDeformatter(data, sign);
+                    }
+                    else
+                    {
+                        ret = dsX509.Verify(data, sign);
+                    }
                 }
             }
             else
@@ -662,7 +712,7 @@ namespace EncAndDecUtil
         {
             byte[] data = CustomEncode.StringToByte(this.txtDSEData.Text, CustomEncode.UTF_8);
             byte[] sign = null;
-            
+
             EnumDigitalSignAlgorithm edsa = (EnumDigitalSignAlgorithm)this.cbxDSEPV.SelectedValue;
 
             if (rbnDSECng.Checked)
@@ -784,10 +834,10 @@ namespace EncAndDecUtil
                 else
                 {
                     this._rsaBob = new RsaPkcs1Bob(
-                        this.SHA256RSA_pfx, this.CertificateFilePassword, 
+                        this.SHA256RSA_pfx, this.CertificateFilePassword,
                         X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
                 }
-                
+
                 this._rsaAlice = new RsaPkcs1Alice(this._rsaBob.ExchangeKey);
                 ((RsaPkcs1Bob)this._rsaBob).GeneratePrivateKey(this._rsaAlice.ExchangeKey, this._rsaAlice.IV);
             }
@@ -1199,7 +1249,7 @@ namespace EncAndDecUtil
             if (rbnJWSHS256.Checked)
             {
                 // HS256
-                
+
                 // 入力
                 string[] temp = this.txtJWSSign.Text.Split('.');
 

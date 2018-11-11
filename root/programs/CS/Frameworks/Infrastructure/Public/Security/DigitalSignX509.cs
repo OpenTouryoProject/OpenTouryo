@@ -57,18 +57,6 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region mem & prop
 
-        /// <summary>
-        /// RSAの場合、以下からHashAlgorithm名を指定する。
-        /// MD5, SHA1, SHA256, SHA384, SHA512
-        /// </summary>
-#if NET45
-         private string _hashAlgorithmName = "";
-#else
-        private HashAlgorithmName _hashAlgorithmName = new HashAlgorithmName("SHA256");
-
-        /// <summary>RSASignaturePadding</summary>
-        public RSASignaturePadding Padding = RSASignaturePadding.Pkcs1;
-#endif
         /// <summary>X.509証明書</summary>
         public X509Certificate2 X509Certificate { get; protected set; }
 
@@ -125,11 +113,7 @@ namespace Touryo.Infrastructure.Public.Security
         public DigitalSignX509(string certificateFilePath, string password, string hashAlgorithmName, X509KeyStorageFlags flag)
         {
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
-#if NET45
-            this._hashAlgorithmName = hashAlgorithmName;
-#else
-            this._hashAlgorithmName = new HashAlgorithmName(hashAlgorithmName);
-#endif
+            this.HashAlgorithm = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(hashAlgorithmName);
         }
 
 #if NET45
@@ -159,7 +143,7 @@ namespace Touryo.Infrastructure.Public.Security
         public DigitalSignX509(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName, X509KeyStorageFlags flag)
         {
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
-            this._hashAlgorithmName = hashAlgorithmName;
+            this.HashAlgorithm = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(hashAlgorithmName.Name);
         }
 #endif
 
@@ -167,50 +151,15 @@ namespace Touryo.Infrastructure.Public.Security
 
         #endregion
 
-        #region デジタル署名(X509Certificate)
+        #region デジタル署名
 
         /// <summary>デジタル署名を作成する</summary>
         /// <param name="data">デジタル署名を行なう対象データ</param>
         /// <returns>対象データに対してデジタル署名したデジタル署名部分のデータ</returns>
         public override byte[] Sign(byte[] data)
         {
-            AsymmetricAlgorithm aa = this.GetPrivateKey();
-
-            // デジタル署名
-            byte[] signedByte = null;
-
-            if (aa is RSA)
-            {
-                // RSA
-                // *.pfxの場合、ExportParameters(true)して生成し直している。
-                RSA rsa = AsymmetricAlgorithmCmnFunc.RsaFactory(this.X509Certificate.PrivateKey.KeySize);
-                rsa.ImportParameters(((RSA)(aa)).ExportParameters(true));
-
-#if NET45
-                if (rsa is RSACryptoServiceProvider)
-                {
-                    signedByte = ((RSACryptoServiceProvider)rsa).SignData(data, this._hashAlgorithmName);
-                }
-                // NET45にRSACng、RSAOpenSsl等は無し。
-#else
-                signedByte = rsa.SignData(data, this._hashAlgorithmName, this.Padding); 
-#endif
-            }
-            else if (aa is DSA)
-            {
-                // DSA
-                // *.pfxの場合、ExportParameters(true)して生成し直している。
-                DSA dsa = AsymmetricAlgorithmCmnFunc.DsaFactory(this.X509Certificate.PrivateKey.KeySize);
-                dsa.ImportParameters(((DSA)(aa)).ExportParameters(true));
-
-                signedByte = dsa.CreateSignature(data);
-            }
-            else
-            {
-                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
-            }
-
-            return signedByte;
+            this.PrepareSign();
+            return base.Sign(data);
         }
 
         /// <summary>デジタル署名を検証する</summary>
@@ -219,42 +168,75 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
         public override bool Verify(byte[] data, byte[] sign)
         {
+            this.PrepareVerify();
+            return base.Verify(data, sign);
+        }
+
+        /// <summary>デジタル署名を作成する</summary>
+        /// <param name="data">デジタル署名を行なう対象データ</param>
+        /// <returns>対象データに対してデジタル署名したデジタル署名部分のデータ</returns>
+        public override byte[] SignByFormatter(byte[] data)
+        {
+            this.PrepareSign();
+            return base.SignByFormatter(data);
+        }
+
+        /// <summary>デジタル署名を検証する</summary>
+        /// <param name="data">デジタル署名を行なった対象データ</param>
+        /// <param name="sign">対象データに対してデジタル署名したデジタル署名部分のデータ</param>
+        /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
+        public override bool VerifyByDeformatter(byte[] data, byte[] sign)
+        {
+            this.PrepareVerify();
+            return base.VerifyByDeformatter(data, sign);
+        }
+
+        #endregion
+
+        #region 内部関数
+
+        #region 準備
+
+        /// <summary>署名準備</summary>
+        private void PrepareSign()
+        {
+            AsymmetricAlgorithm aa = this.GetPrivateKey();
+
+            if (aa is RSA)
+            {
+                // RSA
+                // *.pfxの場合、ExportParameters(true)して生成し直している。
+                RSA rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(aa);
+                rsa.ImportParameters(((RSA)(aa)).ExportParameters(true));
+                aa = rsa;
+            }
+            else if (aa is DSA)
+            {
+                // DSA
+                // *.pfxの場合、ExportParameters(true)して生成し直している。
+                DSA dsa = (DSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(aa);
+                dsa.ImportParameters(((DSA)(aa)).ExportParameters(true));
+                aa = dsa;
+            }
+            else
+            {
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+            }
+
+            // AsymmetricAlgorithmを設定
+            this.AsymmetricAlgorithm = aa;
+        }
+
+
+        /// <summary>検証準備</summary>
+        private void PrepareVerify()
+        {
             AsymmetricAlgorithm aa = null;
-
-            // 検証結果フラグ ( true:検証成功, false:検証失敗 )
-            bool flg = false;
-
+            
             if (this.X509Certificate.PrivateKey == null)
             {
                 // *.cer
                 aa = this.GetPublicKey();
-                if (aa is RSA)
-                {
-                    // RSA
-#if NET45
-                    if (aa is RSACryptoServiceProvider)
-                    {
-                        return ((RSACryptoServiceProvider)aa).VerifyData(data, this._hashAlgorithmName, sign);
-                    }
-                    // NET45にRSACng、RSAOpenSsl等は無し。
-#else
-                    return ((RSA)aa).VerifyData(data, sign, this._hashAlgorithmName, this.Padding);
-#endif
-                }
-                else if (aa is DSA)
-                {
-                    // DSA
-                    return ((DSA)aa).VerifySignature(data, sign);
-                }
-                else if (aa is ECDsaCng)
-                {
-                    // ECDsaCng (不明)
-                    throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
-                }
-                else
-                {
-                    throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
-                }
             }
             else
             {
@@ -264,31 +246,17 @@ namespace Touryo.Infrastructure.Public.Security
                 {
                     // RSA
                     // *.pfxの場合、ExportParameters(true)して生成し直している。
-                    RSA rsa = AsymmetricAlgorithmCmnFunc.RsaFactory(this.X509Certificate.PrivateKey.KeySize);
+                    RSA rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(aa);
                     rsa.ImportParameters(((RSA)(aa)).ExportParameters(true));
-
-#if NET45
-                    if (rsa is RSACryptoServiceProvider)
-                    {
-                        flg = ((RSACryptoServiceProvider)rsa).VerifyData(data, this._hashAlgorithmName, sign);
-                    }
-                    // NET45にRSACng、RSAOpenSsl等は無し。
-#else
-                    flg = rsa.VerifyData(data, sign, this._hashAlgorithmName, this.Padding);
-#endif
+                    aa = rsa;
                 }
                 else if (aa is DSA)
                 {
                     // DSA
                     // *.pfxの場合、ExportParameters(true)して生成し直している。
-                    DSA dsa = AsymmetricAlgorithmCmnFunc.DsaFactory(this.X509Certificate.PrivateKey.KeySize);
+                    DSA dsa = (DSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(aa);
                     dsa.ImportParameters(((DSA)(aa)).ExportParameters(true));
-                    flg = dsa.VerifySignature(data, sign);
-                }
-                else if (aa is ECDsaCng)
-                {
-                    // ECDsaCng (不明)
-                    throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+                    aa = dsa;
                 }
                 else
                 {
@@ -296,12 +264,13 @@ namespace Touryo.Infrastructure.Public.Security
                 }
             }
 
-            return flg;
+            // AsymmetricAlgorithmを設定
+            this.AsymmetricAlgorithm = aa;
         }
 
         #endregion
 
-        #region GetKey(RSA、DSAを選択的に)
+        #region GetKey
 
         /// <summary>GetPrivateKey</summary>
         /// <returns>AsymmetricAlgorithm</returns>
@@ -348,6 +317,8 @@ namespace Touryo.Infrastructure.Public.Security
 #endif
             return aa;
         }
+
+        #endregion
 
         #endregion
 

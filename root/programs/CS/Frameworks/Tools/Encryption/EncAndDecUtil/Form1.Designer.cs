@@ -224,6 +224,7 @@
             this.btnJWSVerify = new System.Windows.Forms.Button();
             this.btnJWSSign = new System.Windows.Forms.Button();
             this.tabJWE = new System.Windows.Forms.TabPage();
+            this.chkDSUF = new System.Windows.Forms.CheckBox();
             this.TabControl1.SuspendLayout();
             this.tabHash.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHSStretching)).BeginInit();
@@ -1237,6 +1238,7 @@
             // 
             // tabDS
             // 
+            this.tabDS.Controls.Add(this.chkDSUF);
             this.tabDS.Controls.Add(this.btnDSVerify);
             this.tabDS.Controls.Add(this.lblDS6);
             this.tabDS.Controls.Add(this.txtDSSign);
@@ -2269,6 +2271,16 @@
             this.tabJWE.Text = "JWE";
             this.tabJWE.UseVisualStyleBackColor = true;
             // 
+            // chkDSUF
+            // 
+            this.chkDSUF.AutoSize = true;
+            this.chkDSUF.Location = new System.Drawing.Point(428, 25);
+            this.chkDSUF.Name = "chkDSUF";
+            this.chkDSUF.Size = new System.Drawing.Size(74, 16);
+            this.chkDSUF.TabIndex = 44;
+            this.chkDSUF.Text = "Formatter";
+            this.chkDSUF.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -2527,6 +2539,7 @@
         private System.Windows.Forms.Button btnDSESign;
         private System.Windows.Forms.ComboBox cbxDSEPV;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox chkDSUF;
     }
 }
 
