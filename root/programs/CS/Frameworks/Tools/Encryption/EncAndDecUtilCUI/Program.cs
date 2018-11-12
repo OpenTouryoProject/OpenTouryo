@@ -147,6 +147,10 @@ namespace EncAndDecUtilCUI
                 dsX509 = new DigitalSignX509(@"SHA256RSA.pfx", "test", "SHA256", x509KSF);
                 sign = dsX509.Sign(new byte[] { });
                 Program.MyWriteLine("DigitalSignX509.Verify(RSA): " + dsX509.Verify(new byte[] { }, sign).ToString());
+
+                //dsX509 = new DigitalSignX509(@"SHA256DSA.pfx", "test", "SHA256", x509KSF);
+                //sign = dsX509.Sign(new byte[] { });
+                //Program.MyWriteLine("DigitalSignX509.Verify(DSA): " + dsX509.Verify(new byte[] { }, sign).ToString());
             }
             else //if (os.Platform == PlatformID.Unix)
             {
