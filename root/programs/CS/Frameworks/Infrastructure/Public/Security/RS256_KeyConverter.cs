@@ -50,9 +50,10 @@ namespace Touryo.Infrastructure.Public.Security
     /// </summary>
     public class RsaPublicKeyConverter
     {
+        // 保存鍵間のフォーマット変換
         #region X.509 or Xml 鍵 → Xml or Jwk 公開鍵
 
-        #region X.509 鍵 → Xml or Jwk 公開鍵
+        #region X.509 鍵
 
         #region *.cer
 
@@ -100,6 +101,7 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region *.pfx
 
+        #region Xml
         /// <summary>
         /// X509CerToXmlPublicKey
         /// X.509鍵(*.pfx)からXml公開鍵へ変換
@@ -112,7 +114,9 @@ namespace Touryo.Infrastructure.Public.Security
             return RsaPublicKeyConverter.ParamToXml( // *.cer is PublicKey -> ExportParameters(false)
                 RsaPublicKeyConverter.X509PfxToProvider(certificateFilePath, password).ExportParameters(false));
         }
+        #endregion
 
+        #region Jwk
         /// <summary>
         /// X509CerToJwk
         /// X.509鍵(*.pfx)からJwk公開鍵へ変換
@@ -138,12 +142,13 @@ namespace Touryo.Infrastructure.Public.Security
             return RsaPublicKeyConverter.ParamToJwk( // *.cer is PublicKey -> ExportParameters(false)
                 RsaPublicKeyConverter.X509PfxToProvider(certificateFilePath, password).ExportParameters(false), settings);
         }
-
         #endregion
 
         #endregion
 
-        #region Xml 鍵 → Xml or Jwk 公開鍵
+        #endregion
+
+        #region Xml 鍵
 
         /// <summary>
         /// XmlToXml
@@ -185,11 +190,24 @@ namespace Touryo.Infrastructure.Public.Security
 
         #endregion
 
-        #region X.509 or Xml 鍵 → RSA（公開鍵）
+        // 実用鍵への変換
+        #region X.509 or Xml 鍵 → RSAProvider(RSAParameters)（公開鍵）
+
+        #region Xml
+        /// <summary>
+        /// XmlToParameters
+        /// Xml鍵からRSAParameters（公開鍵）へ変換
+        /// </summary>
+        /// <param name="xmlKey">Xml鍵</param>
+        /// <returns>RSAParameters</returns>
+        public static RSAParameters XmlToParameters(string xmlKey)
+        {
+            return RsaPublicKeyConverter.XmlToProvider(xmlKey).ExportParameters(false);
+        }
 
         /// <summary>
         /// XmlToProvider
-        /// Xml鍵からRsaProvider（公開鍵）へ変換
+        /// Xml鍵からRSAProvider（公開鍵）へ変換
         /// </summary>
         /// <param name="xmlKey">Xml鍵</param>
         /// <returns>RSA</returns>
@@ -203,10 +221,25 @@ namespace Touryo.Infrastructure.Public.Security
 
             return (RSA)dsXML.AsymmetricAlgorithm;
         }
+        #endregion
+
+        #region X.509
+
+        #region *.cer
+        /// <summary>
+        /// X509CerToParameters
+        /// X.509鍵(*.cer)からRSAParameters（公開鍵）へ変換
+        /// </summary>
+        /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
+        /// <returns>RSAParameters</returns>
+        public static RSAParameters X509CerToParameters(string certificateFilePath)
+        {
+            return RsaPublicKeyConverter.X509CerToProvider(certificateFilePath).ExportParameters(false);
+        }
 
         /// <summary>
         /// X509CerToProvider
-        /// X.509鍵(*.cer)からRsaProviderへ変換
+        /// X.509鍵(*.cer)からRSAProviderへ変換
         /// </summary>
         /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
         /// <returns>RSA</returns>
@@ -231,10 +264,24 @@ namespace Touryo.Infrastructure.Public.Security
 
             return null;
         }
+        #endregion
+
+        #region *.pfx
+        /// <summary>
+        /// X509CerToParameters
+        /// X.509鍵(*.pfx)からRSAParameters（公開鍵）へ変換
+        /// </summary>
+        /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
+        /// <param name="password">string</param>
+        /// <returns>RSAParameters</returns>
+        public static RSAParameters X509PfxToParameters(string certificateFilePath, string password)
+        {
+            return RsaPublicKeyConverter.X509PfxToProvider(certificateFilePath, password).ExportParameters(false);
+        }
 
         /// <summary>
         /// X509CerToProvider
-        /// X.509鍵(*.pfx)からRsaProviderへ変換
+        /// X.509鍵(*.pfx)からRSAProviderへ変換
         /// </summary>
         /// <param name="certificateFilePath">X.509鍵(*.pfx)</param>
         /// <param name="password">string</param>
@@ -256,10 +303,14 @@ namespace Touryo.Infrastructure.Public.Security
 
             return null;
         }
+        #endregion
 
         #endregion
 
-        #region RSA(RSAParameters) ⇔ Xml or Jwk 公開鍵
+        #endregion
+
+        // 実用鍵からの変換
+        #region RSAProvider(RSAParameters) ⇔ Xml or Jwk 公開鍵
 
         #region Xml
         /// <summary>
@@ -274,6 +325,31 @@ namespace Touryo.Infrastructure.Public.Security
             rsa.ImportParameters(param);
             return rsa.ToXmlString(false); // Public
         }
+
+        /// <summary>
+        /// XmlToParam
+        /// Xml公開鍵からRSAProvider（公開鍵）へ変換
+        /// </summary>
+        /// <param name="param">RSAParameters</param>
+        /// <returns>XmlPublicKey</returns>
+        public static string XmlToParam(RSAParameters param)
+        {
+            return RsaPublicKeyConverter.XmlToProvider(param).ToXmlString(false);
+        }
+
+        /// <summary>
+        /// XmlToProvider
+        /// Xml公開鍵からRSAProvider（公開鍵）へ変換
+        /// </summary>
+        /// <param name="param">RSAParameters</param>
+        /// <returns>RSA</returns>
+        public static RSA XmlToProvider(RSAParameters param)
+        {
+            RSA rsa = AsymmetricAlgorithmCmnFunc.RsaFactory();
+            rsa.ImportParameters(param);
+            return rsa;
+        }
+
         #endregion
 
         #region Jwk
@@ -346,7 +422,33 @@ namespace Touryo.Infrastructure.Public.Security
 
         #endregion
 
-        #region JwkToProvider
+        #region JwkToParam(Provider)
+
+        #region Parameters
+        /// <summary>
+        /// JwkToParam
+        /// JwkからRSAParameters（公開鍵）へ変換
+        /// </summary>
+        /// <param name="jwkString">string</param>
+        /// <returns>RSAParameters</returns>
+        public static RSAParameters JwkToParam(string jwkString)
+        {
+            return RsaPublicKeyConverter.JwkToProvider(jwkString).ExportParameters(false);
+        }
+
+        /// <summary>
+        /// JwkToParam
+        /// JwkからRSAParameters（公開鍵）へ変換
+        /// </summary>
+        /// <param name="jwkObject">JObject</param>
+        /// <returns>RSAParameters</returns>
+        public static RSAParameters JwkToParam(JObject jwkObject)
+        {
+            return RsaPublicKeyConverter.JwkToProvider(jwkObject).ExportParameters(false);
+        }
+        #endregion
+
+        #region Provider
         /// <summary>
         /// JwkToProvider
         /// JwkからRSAProvider（公開鍵）へ変換
@@ -388,6 +490,8 @@ namespace Touryo.Infrastructure.Public.Security
                 return null;
             }
         }
+        #endregion
+
         #endregion
 
         #endregion
