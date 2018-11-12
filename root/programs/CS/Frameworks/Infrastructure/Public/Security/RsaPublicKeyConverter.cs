@@ -32,6 +32,7 @@
 //*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -149,19 +150,7 @@ namespace Touryo.Infrastructure.Public.Security
         #endregion
 
         #region Xml 鍵
-
-        /// <summary>
-        /// XmlToXml
-        /// Xml鍵からXml公開鍵へ変換
-        /// </summary>
-        /// <param name="xmlKey">Xml鍵</param>
-        /// <returns>Xml公開鍵</returns>
-        public static string XmlToXml(string xmlKey)
-        {
-            return RsaPublicKeyConverter.ParamToXml( // PublicKey -> ExportParameters(false)
-                RsaPublicKeyConverter.XmlToProvider(xmlKey).ExportParameters(false));
-        }
-
+        
         /// <summary>
         /// XmlToJwk
         /// Xml鍵からJwk公開鍵へ変換
@@ -195,12 +184,12 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region Xml
         /// <summary>
-        /// XmlToParameters
+        /// XmlToParam
         /// Xml鍵からRSAParameters（公開鍵）へ変換
         /// </summary>
         /// <param name="xmlKey">Xml鍵</param>
         /// <returns>RSAParameters</returns>
-        public static RSAParameters XmlToParameters(string xmlKey)
+        public static RSAParameters XmlToParam(string xmlKey)
         {
             return RsaPublicKeyConverter.XmlToProvider(xmlKey).ExportParameters(false);
         }
@@ -227,12 +216,12 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region *.cer
         /// <summary>
-        /// X509CerToParameters
+        /// X509CerToParam
         /// X.509鍵(*.cer)からRSAParameters（公開鍵）へ変換
         /// </summary>
         /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
         /// <returns>RSAParameters</returns>
-        public static RSAParameters X509CerToParameters(string certificateFilePath)
+        public static RSAParameters X509CerToParam(string certificateFilePath)
         {
             return RsaPublicKeyConverter.X509CerToProvider(certificateFilePath).ExportParameters(false);
         }
@@ -268,13 +257,13 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region *.pfx
         /// <summary>
-        /// X509CerToParameters
+        /// X509PfxToParam
         /// X.509鍵(*.pfx)からRSAParameters（公開鍵）へ変換
         /// </summary>
         /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
         /// <param name="password">string</param>
         /// <returns>RSAParameters</returns>
-        public static RSAParameters X509PfxToParameters(string certificateFilePath, string password)
+        public static RSAParameters X509PfxToParam(string certificateFilePath, string password)
         {
             return RsaPublicKeyConverter.X509PfxToProvider(certificateFilePath, password).ExportParameters(false);
         }
@@ -313,6 +302,7 @@ namespace Touryo.Infrastructure.Public.Security
         #region RSAProvider(RSAParameters) ⇔ Xml or Jwk 公開鍵
 
         #region Xml
+
         /// <summary>
         /// ParamToXml
         /// RSAParametersからXml公開鍵へ変換
@@ -327,22 +317,11 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         /// <summary>
-        /// XmlToParam
-        /// Xml公開鍵からRSAProvider（公開鍵）へ変換
-        /// </summary>
-        /// <param name="param">RSAParameters</param>
-        /// <returns>XmlPublicKey</returns>
-        public static string XmlToParam(RSAParameters param)
-        {
-            return RsaPublicKeyConverter.XmlToProvider(param).ToXmlString(false);
-        }
-
-        /// <summary>
         /// XmlToProvider
-        /// Xml公開鍵からRSAProvider（公開鍵）へ変換
+        /// XmlからRSAProvider（公開鍵）へ変換
         /// </summary>
         /// <param name="param">RSAParameters</param>
-        /// <returns>RSA</returns>
+        /// <returns>RSAProvider（公開鍵）</returns>
         public static RSA XmlToProvider(RSAParameters param)
         {
             RSA rsa = AsymmetricAlgorithmCmnFunc.RsaFactory();
@@ -354,13 +333,48 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region Jwk
 
+        // <参考>
+        // JSON Web Key (JWK)
+        // https://openid-foundation-japan.github.io/rfc7517.ja.html
+        //   を、"kty":"RSA"で検索するとイイ。
+        //
+        // A.1.  Example Public Keys
+        // https://openid-foundation-japan.github.io/rfc7517.ja.html#PublicExample
+        // A.2.  Example Private Keys
+        // https://openid-foundation-japan.github.io/rfc7517.ja.html#PrivateExample
+        // C.1.  Plaintext RSA Private Key
+        // https://openid-foundation-japan.github.io/rfc7517.ja.html#example-privkey-plaintext
+
+        // https://github.com/dvsekhvalnov/jose-jwt/issues/105
+        // RSAParameters ⇔ Jwk
+        // https://github.com/psteniusubi/jose-jwt/blob/master/jose-jwt/jwk/JwkRsa.cs
+        // <Param to jwk>                             // <Jwk to param>
+        //header.Set("kty", "RSA");                   //RSAParameters parameters = new RSAParameters();
+        //header.Set("n", parameters.Modulus);        //parameters.Modulus = header.GetBytes("n");
+        //header.Set("e", parameters.Exponent);       //parameters.Exponent = header.GetBytes("e");
+        //
+        // ココから下は秘密鍵の領域                   // ココから下は秘密鍵の領域
+        //if (includePrivateParameters)               //if (header.ContainsKey("d"))
+        //{                                           //{
+        //    header.Set("d", parameters.D);          //    parameters.D = header.GetBytes("d");
+        //    header.Set("p", parameters.P);          //    parameters.P = header.GetBytes("p");
+        //    header.Set("q", parameters.Q);          //    parameters.Q = header.GetBytes("q");
+        //    header.Set("dp", parameters.DP);        //    parameters.DP = header.GetBytes("dp");
+        //    header.Set("dq", parameters.DQ);        //    parameters.DQ = header.GetBytes("dq");
+        //    header.Set("qi", parameters.InverseQ);  //    parameters.InverseQ = header.GetBytes("qi");
+        //}                                           //}
+        //                                            // ↓↓↓
+        //                                            //RSA rsa = RSA.Create();
+        //                                            //rsa.ImportParameters(parameters);
+        //                                            //return rsa;
+
         #region ParamToJwk
         /// <summary>
         /// ParamToJwk
-        /// RSAParametersからJwk公開鍵へ変換
+        /// RSAParametersからJwk（公開鍵）へ変換
         /// </summary>
         /// <param name="param">RSAParameters</param>
-        /// <returns>JwkPublicKey</returns>
+        /// <returns>Jwk（公開鍵）</returns>
         public static string ParamToJwk(RSAParameters param)
         {
             return RsaPublicKeyConverter.ParamToJwk(param, null);
@@ -368,24 +382,13 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>
         /// ParamToJwk
-        /// RSAParametersからJwk公開鍵へ変換
+        /// RSAParametersからJwk（公開鍵）へ変換
         /// </summary>
         /// <param name="param">RSAParameters</param>
         /// <param name="settings">JsonSerializerSettings</param>
-        /// <returns>JwkPublicKey</returns>
+        /// <returns>Jwk（公開鍵）</returns>
         public static string ParamToJwk(RSAParameters param, JsonSerializerSettings settings)
         {
-            /*
-             * FIDO2.0 の Web Authentication API が生成する公開鍵の例
-              {
-                "alg": "RS256",
-                "e": "AQAB",
-                "ext": false,
-                "kty": "RSA",
-                "n": "・・・"
-              }
-            */
-
             Dictionary<string, string> dic = new Dictionary<string, string>();
 
             dic[JwtConst.kty] = "RSA"; // 必須
@@ -395,14 +398,20 @@ namespace Touryo.Infrastructure.Public.Security
             dic[JwtConst.n] = CustomEncode.ToBase64UrlString(param.Modulus);
             dic[JwtConst.e] = CustomEncode.ToBase64UrlString(param.Exponent); //"AQAB";
 
+            // JSON Web Key (JWK) Thumbprint
+            // https://openid-foundation-japan.github.io/rfc7638.ja.html
             // kid : https://openid-foundation-japan.github.io/rfc7638.ja.html#Example
+            //       https://openid-foundation-japan.github.io/rfc7638.ja.html#MembersUsed
+            //       kidには、JWK の JWK Thumbprint 値などが用いられるらしい。
+            //       ★ RSA 公開鍵の必須メンバを辞書順に並べると、e, kty, n となる。
+
             dic[JwtConst.kid] = CustomEncode.ToBase64UrlString(
                 GetHash.GetHashBytes(
                     CustomEncode.StringToByte(
                         JsonConvert.SerializeObject(new
                         {
-                            kty = dic[JwtConst.kty],
                             e = dic[JwtConst.e],
+                            kty = dic[JwtConst.kty],
                             n = dic[JwtConst.n]
                         }),
                         CustomEncode.UTF_8),
@@ -417,36 +426,12 @@ namespace Touryo.Infrastructure.Public.Security
             else
             {
                 return JsonConvert.SerializeObject(dic, settings);
-            }            
+            }
         }
 
         #endregion
 
         #region JwkToParam(Provider)
-
-        #region Parameters
-        /// <summary>
-        /// JwkToParam
-        /// JwkからRSAParameters（公開鍵）へ変換
-        /// </summary>
-        /// <param name="jwkString">string</param>
-        /// <returns>RSAParameters</returns>
-        public static RSAParameters JwkToParam(string jwkString)
-        {
-            return RsaPublicKeyConverter.JwkToProvider(jwkString).ExportParameters(false);
-        }
-
-        /// <summary>
-        /// JwkToParam
-        /// JwkからRSAParameters（公開鍵）へ変換
-        /// </summary>
-        /// <param name="jwkObject">JObject</param>
-        /// <returns>RSAParameters</returns>
-        public static RSAParameters JwkToParam(JObject jwkObject)
-        {
-            return RsaPublicKeyConverter.JwkToProvider(jwkObject).ExportParameters(false);
-        }
-        #endregion
 
         #region Provider
         /// <summary>
@@ -454,11 +439,13 @@ namespace Touryo.Infrastructure.Public.Security
         /// JwkからRSAProvider（公開鍵）へ変換
         /// </summary>
         /// <param name="jwkString">string</param>
-        /// <returns>RSA</returns>
+        /// <returns>RSAProvider（公開鍵）</returns>
         public static RSA JwkToProvider(string jwkString)
         {
-            return RsaPublicKeyConverter.JwkToProvider(
-                JsonConvert.DeserializeObject<JObject>(jwkString));
+            RSAParameters rsaParameters = RsaPublicKeyConverter.JwkToParam(jwkString);
+            RSA rsa = AsymmetricAlgorithmCmnFunc.RsaFactory();
+            rsa.ImportParameters(rsaParameters);
+            return rsa;
         }
 
         /// <summary>
@@ -466,10 +453,38 @@ namespace Touryo.Infrastructure.Public.Security
         /// JwkからRSAProvider（公開鍵）へ変換
         /// </summary>
         /// <param name="jwkObject">JObject</param>
-        /// <returns>RSA</returns>
+        /// <returns>RSAProvider（公開鍵）</returns>
         public static RSA JwkToProvider(JObject jwkObject)
         {
-            if (jwkObject[JwtConst.alg].ToString().ToUpper() == JwtConst.RS256)
+            RSAParameters rsaParameters = RsaPublicKeyConverter.JwkToParam(jwkObject);
+            RSA rsa = AsymmetricAlgorithmCmnFunc.RsaFactory();
+            rsa.ImportParameters(rsaParameters);
+            return rsa;
+        }
+        #endregion
+
+        #region Param
+        /// <summary>
+        /// JwkToParam
+        /// JwkからRSAParameters（公開鍵）へ変換
+        /// </summary>
+        /// <param name="jwkString">string</param>
+        /// <returns>RSAParameters（公開鍵）</returns>
+        public static RSAParameters JwkToParam(string jwkString)
+        {
+            return RsaPublicKeyConverter.JwkToParam(
+                JsonConvert.DeserializeObject<JObject>(jwkString));
+        }
+
+        /// <summary>
+        /// JwkToParam
+        /// JwkからRSAParameters（公開鍵）へ変換
+        /// </summary>
+        /// <param name="jwkObject">JObject</param>
+        /// <returns>RSAParameters（公開鍵）</returns>
+        public static RSAParameters JwkToParam(JObject jwkObject)
+        {
+            if (jwkObject[JwtConst.kty].ToString().ToUpper() == JwtConst.RSA)
             {
                 // RSAParameters
                 // FromBase64Stringだとエラーになる。
@@ -480,15 +495,10 @@ namespace Touryo.Infrastructure.Public.Security
                     Exponent = CustomEncode.FromBase64UrlString((string)jwkObject[JwtConst.e]),
                 };
 
-                RSA rsa = AsymmetricAlgorithmCmnFunc.RsaFactory();
-                rsa.ImportParameters(rsaParameters);
+                return rsaParameters;
+            }
 
-                return rsa;
-            }
-            else
-            {
-                return null;
-            }
+            throw new ArgumentOutOfRangeException("jwkObject", jwkObject, "Invalid");
         }
         #endregion
 

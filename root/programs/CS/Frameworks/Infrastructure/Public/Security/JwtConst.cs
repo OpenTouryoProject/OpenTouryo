@@ -85,6 +85,9 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region RSA Keys
 
+        /// <summary>kty : RSA</summary>
+        public const string RSA = "RSA";
+
         #region RSA Public Keys
 
         /// <summary>RSA Public Keys: n</summary>
@@ -127,6 +130,29 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>RSA Public Keys: t(oth) </summary>
         public const string oth_t = "t";
 
+        #endregion
+
+        #endregion
+
+        #region ECC  Keys
+
+        /// <summary>kty : EC</summary>
+        public const string EC = "EC";
+
+        /// <summary>crv : Curveパラメタ</summary>
+        public const string crv = "crv";
+
+        #region ECC Public Keys
+        /// <summary>x : X Coordinateパラメタ</summary>
+        public const string x = "x";
+
+        /// <summary>y : Y Coordinateパラメタ</summary>
+        public const string y = "y";
+        #endregion
+
+        #region ECC Private Keys
+        ///// <summary>d : ECC Private Keyパラメタ</summary>
+        //public const string d = "d";　// RSAと重複
         #endregion
 
         #endregion
