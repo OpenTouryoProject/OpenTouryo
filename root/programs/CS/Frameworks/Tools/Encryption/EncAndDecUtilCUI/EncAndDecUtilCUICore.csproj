@@ -10,11 +10,6 @@
     <DefineConstants>TRACE;NETCORE</DefineConstants>
   </PropertyGroup>
 
-  <!-- Workaround for https://github.com/Microsoft/msbuild/issues/3350 -->
-  <ItemGroup>
-    <CoreCompileCache Include="$(DefineConstants)" />
-  </ItemGroup>
-    
   <ItemGroup>
     <Compile Remove="packages\**" />
     <EmbeddedResource Remove="packages\**" />
