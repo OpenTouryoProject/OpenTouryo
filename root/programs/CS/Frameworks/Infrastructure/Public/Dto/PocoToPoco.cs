@@ -32,8 +32,6 @@
 //*  2018/10/23  西野 大介         微調整
 //**********************************************************************************
 
-using System;
-using System.Reflection;
 using System.Collections.Generic;
 
 using Touryo.Infrastructure.Public.FastReflection;

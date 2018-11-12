@@ -87,6 +87,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dbg\WriteLine.cs" />
     <Compile Include="Db\DamODBC.cs" />
     <Compile Include="Db\DamOLEDB.cs" />
     <Compile Include="Db\SQLUtility.cs" />
@@ -175,7 +176,7 @@
     <Compile Include="Security\JWS_RS256.cs" />
     <Compile Include="Security\JWS.cs" />
     <Compile Include="FastReflection\CompiledExpressionCreater.cs" />
-    <Compile Include="Util\ObjectInspector.cs" />
+    <Compile Include="Dbg\ObjectInspector.cs" />
     <Compile Include="Util\PubCmnFunction.cs" />
     <Compile Include="Util\PublicExceptionMessage.cs" />
     <Compile Include="IO\BinarySerialize.cs" />

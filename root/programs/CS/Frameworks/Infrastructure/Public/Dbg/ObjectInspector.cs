@@ -29,6 +29,9 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2012/03/16  西野 大介         新規作成
 //*  2012/03/23  西野 大介         DateTime、TimeSpanの対応（最小化）
+//*  2018/11/12  西野 大介         Util名前空間からDbg名前空間へ移動した。
+//*  2018/11/12  西野 大介         FastReflection適用はIndexerや再帰に対応できないのでダメだった
+//*                                PocoToPocoは再起しないのでObject Copyにはならない仕様になる。
 //**********************************************************************************
 
 using System;
@@ -36,7 +39,7 @@ using System.Text;
 using System.Collections;
 using System.Reflection;
 
-namespace Touryo.Infrastructure.Public.Util
+namespace Touryo.Infrastructure.Public.Dbg
 {
     /// <summary>オブジェクトのプロパティ分析クラス</summary>
     public class ObjectInspector

@@ -9,8 +9,8 @@ using Jose;
 // https://github.com/dvsekhvalnov/jose-jwt/tree/master/jose-jwt/Security/Cryptography
 using Security.Cryptography;
 
+using Touryo.Infrastructure.Public.Dbg;
 using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Security;
 
 namespace EncAndDecUtilCUI
@@ -79,8 +79,8 @@ namespace EncAndDecUtilCUI
             publicX509Path = @"SHA256RSA.cer";
             privateX509Key = new X509Certificate2(privateX509Path, "test", x509KSF);
             publicX509Key = new X509Certificate2(publicX509Path, "", x509KSF);
-            Program.PrivateX509KeyInspector("RSA", privateX509Key);
-            Program.PublicX509KeyInspector("RSA", publicX509Key);
+            WriteLine.PrivateX509KeyInspector("RSA", privateX509Key);
+            WriteLine.PublicX509KeyInspector("RSA", publicX509Key);
             #endregion
 
 #if NETCORE || NET47
@@ -90,10 +90,10 @@ namespace EncAndDecUtilCUI
             publicX509Path = @"SHA256DSA.cer";
             privateX509Key = new X509Certificate2(privateX509Path, "test");
             publicX509Key = new X509Certificate2(publicX509Path, "");
-            Program.PrivateX509KeyInspector("DSA", privateX509Key);
-            Program.PublicX509KeyInspector("DSA", publicX509Key);
+            WriteLine.PrivateX509KeyInspector("DSA", privateX509Key);
+            WriteLine.PublicX509KeyInspector("DSA", publicX509Key);
             DSA privateDSA = privateX509Key.GetDSAPrivateKey();
-            Program.MyWriteLine("privateDSA: " + (privateDSA == null ? "is null" : "is not null"));
+            WriteLine.OutPutDebugAndConsole("privateDSA", (privateDSA == null ? "is null" : "is not null"));
             DSA publicDSA = null; // publicX509Key.GetDSAPublicKey(); // Internal.Cryptography.CryptoThrowHelper.WindowsCryptographicException
             #endregion
 
@@ -103,18 +103,18 @@ namespace EncAndDecUtilCUI
             publicX509Path = @"SHA256ECDSA.cer";
             privateX509Key = new X509Certificate2(privateX509Path, "test");
             publicX509Key = new X509Certificate2(publicX509Path, "");
-            Program.PrivateX509KeyInspector("ECDsa", privateX509Key);
-            Program.PublicX509KeyInspector("ECDsa", publicX509Key);
+            WriteLine.PrivateX509KeyInspector("ECDsa", privateX509Key);
+            WriteLine.PublicX509KeyInspector("ECDsa", publicX509Key);
             ECDsa privateECDsa = privateX509Key.GetECDsaPrivateKey();
-            Program.MyWriteLine("privateECDsa: " + (privateECDsa == null ? "is null" : "is not null"));
+            WriteLine.OutPutDebugAndConsole("privateECDsa", (privateECDsa == null ? "is null" : "is not null"));
             ECDsa publicECDsa = publicX509Key.GetECDsaPublicKey();
-            Program.MyWriteLine("publicECDsa: " + (publicECDsa == null ? "is null" : "is not null"));
+            WriteLine.OutPutDebugAndConsole("publicECDsa", (publicECDsa == null ? "is null" : "is not null"));
             #endregion
 #endif
 
             #endregion
 
-            Program.MyWriteLine("----------------------------------------------------------------------------------------------------");
+            WriteLine.OutPutDebugAndConsole("----------------------------------------------------------------------------------------------------");
 
             #region Test of the OpenTouryo.Public.Security.
 
@@ -128,61 +128,73 @@ namespace EncAndDecUtilCUI
             {
                 dsParam = new DigitalSignParam(EnumDigitalSignAlgorithm.RsaCSP_SHA256);
                 sign = dsParam.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignParam.Verify(RS256): " + dsParam.Verify(new byte[] { }, sign).ToString());
+                WriteLine.OutPutDebugAndConsole("DigitalSignParam.Verify(RS256)", 
+                    dsParam.Verify(new byte[] { }, sign).ToString());
 
                 dsXML = new DigitalSignXML(EnumDigitalSignAlgorithm.RsaCSP_SHA256);
                 sign = dsXML.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignXML.Verify(RS256): " + dsXML.Verify(new byte[] { }, sign).ToString());
+                WriteLine.OutPutDebugAndConsole("DigitalSignXML.Verify(RS256)",
+                    dsXML.Verify(new byte[] { }, sign).ToString());
 
                 // DSAはFormatterバージョンしか動かない。
                 dsParam = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaCSP_SHA1);
                 sign = dsParam.SignByFormatter(new byte[] { });
-                Program.MyWriteLine("DigitalSignParam.Verify(DS1): " + dsParam.VerifyByDeformatter(new byte[] { }, sign).ToString());
+                WriteLine.OutPutDebugAndConsole("DigitalSignParam.Verify(DS1)",
+                    dsParam.VerifyByDeformatter(new byte[] { }, sign).ToString());
 
                 DigitalSignXML dsX2 = new DigitalSignXML(EnumDigitalSignAlgorithm.DsaCSP_SHA1);
                 sign = dsX2.SignByFormatter(new byte[] { });
-                Program.MyWriteLine("DigitalSignXML.Verify(DS1): " + dsX2.VerifyByDeformatter(new byte[] { }, sign).ToString());
+                WriteLine.OutPutDebugAndConsole("DigitalSignXML.Verify(DS1)",
+                    dsX2.VerifyByDeformatter(new byte[] { }, sign).ToString());
 
 
                 dsX509 = new DigitalSignX509(@"SHA256RSA.pfx", "test", "SHA256", x509KSF);
                 sign = dsX509.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignX509.Verify(RSA): " + dsX509.Verify(new byte[] { }, sign).ToString());
+                WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(RSA)",
+                    dsX509.Verify(new byte[] { }, sign).ToString());
 
                 //dsX509 = new DigitalSignX509(@"SHA256DSA.pfx", "test", "SHA256", x509KSF);
                 //sign = dsX509.Sign(new byte[] { });
-                //Program.MyWriteLine("DigitalSignX509.Verify(DSA): " + dsX509.Verify(new byte[] { }, sign).ToString());
+                //WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(DSA)",
+                //    dsX509.Verify(new byte[] { }, sign).ToString());
             }
             else //if (os.Platform == PlatformID.Unix)
             {
 #if NETCORE
                 dsParam = new DigitalSignParam(EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256);
                 sign = dsParam.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignParam.Verify(RS256): " + dsParam.Verify(new byte[] { }, sign).ToString());
+                WriteLine.OutPutDebugAndConsole("DigitalSignParam.Verify(RS256)",
+                    dsParam.Verify(new byte[] { }, sign).ToString());
 
                 dsXML = new DigitalSignXML(EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256);
                 sign = dsXML.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignXML.Verify(RS256): " + dsXML.Verify(new byte[] { }, sign).ToString());
+                WriteLine.OutPutDebugAndConsole("DigitalSignXML.Verify(RS256)", 
+                    dsXML.Verify(new byte[] { }, sign).ToString());
 
                 dsParam = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1);
                 sign = dsParam.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignParam.Verify(DS1): " + dsParam.Verify(new byte[] { }, sign).ToString());
+                WriteLine.OutPutDebugAndConsole("DigitalSignParam.Verify(DS1)", 
+                    dsParam.Verify(new byte[] { }, sign).ToString());
 
                 DigitalSignXML dsX2 = new DigitalSignXML(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1);
                 sign = dsX2.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignXML.Verify(DS1): " + dsX2.Verify(new byte[] { }, sign).ToString());
+                WriteLine.OutPutDebugAndConsole("DigitalSignXML.Verify(DS1)", 
+                    dsX2.Verify(new byte[] { }, sign).ToString());
 
                 dsX509 = new DigitalSignX509(@"SHA256RSA.pfx", "test", "SHA256");
                 sign = dsX509.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignX509.Verify(RSA): " + dsX509.Verify(new byte[] { }, sign).ToString());
+                WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(RSA)",
+                    dsX509.Verify(new byte[] { }, sign).ToString());
 
                 dsX509 = new DigitalSignX509(@"SHA256DSA.pfx", "test", "SHA256");
                 sign = dsX509.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignX509.Verify(DSA): " + dsX509.Verify(new byte[] { }, sign).ToString());
+                WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(DSA)",
+                    dsX509.Verify(new byte[] { }, sign).ToString());
 #endif
             }
             #endregion
 
-            Program.MyWriteLine("----------------------------------------------------------------------------------------------------");
+            WriteLine.OutPutDebugAndConsole("----------------------------------------------------------------------------------------------------");
 
             #region Test of the jose-jwt
 
@@ -193,7 +205,7 @@ namespace EncAndDecUtilCUI
             // https://github.com/dvsekhvalnov/jose-jwt#creating-plaintext-unprotected-tokens
             token = "";
             token = JWT.Encode(payload, null, JwsAlgorithm.none);
-            Program.MyWriteLine("JwsAlgorithm.none: " + token);
+            WriteLine.OutPutDebugAndConsole("JwsAlgorithm.none", token);
             #endregion
 
             #region JWS (Creating signed Tokens)
@@ -205,7 +217,7 @@ namespace EncAndDecUtilCUI
             secretKey = new byte[] { 164, 60, 194, 0, 161, 189, 41, 38, 130, 89, 141, 164, 45, 170, 159, 209, 69, 137, 243, 216, 191, 131, 47, 250, 32, 107, 231, 117, 37, 158, 225, 234 };
             token = "";
             token = JWT.Encode(payload, secretKey, JwsAlgorithm.HS256);
-            Program.VerifyResult("JwsAlgorithm.HS256: ", token, secretKey);
+            Program.VerifyResult("JwsAlgorithm.HS256", token, secretKey);
             #endregion
 
             #region RS-* and PS-* family
@@ -228,7 +240,7 @@ namespace EncAndDecUtilCUI
             rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(privateX509Key.PrivateKey);
 #endif
             token = JWT.Encode(payload, rsa, JwsAlgorithm.RS256);
-            Program.VerifyResult("JwsAlgorithm.RS256: ", token, rsa);
+            Program.VerifyResult("JwsAlgorithm.RS256", token, rsa);
 
             #endregion
 
@@ -248,7 +260,7 @@ namespace EncAndDecUtilCUI
 
                 token = "";
                 token = JWT.Encode(payload, privateKeyOfCng, JwsAlgorithm.ES256);
-                Program.VerifyResult("JwsAlgorithm.ES256: ", token, publicKeyOfCng);
+                Program.VerifyResult("JwsAlgorithm.ES256", token, publicKeyOfCng);
             }
             else //if (os.Platform == PlatformID.Unix)
             {
@@ -262,7 +274,7 @@ namespace EncAndDecUtilCUI
 
                 //token = "";
                 //token = JWT.Encode(payload, new ECDsaOpenSsl(eCCurve), JwsAlgorithm.ES256);
-                //Program.VerifyResult("JwsAlgorithm.ES256: ", token, new ECDsaOpenSsl(eCCurve));
+                //Program.VerifyResult("JwsAlgorithm.ES256", token, new ECDsaOpenSsl(eCCurve));
             }
 
 #if NETCORE || NET47
@@ -281,16 +293,16 @@ namespace EncAndDecUtilCUI
                 {
                     // ECCurveを分析してみる。
                     ECCurve eCCurve = ((ECDsaOpenSsl)privateX509Key.GetECDsaPrivateKey()).ExportExplicitParameters(true).Curve;
-                    Program.MyWriteLine("Inspect ECCurve: " + ObjectInspector.Inspect(eCCurve));
+                    WriteLine.OutPutDebugAndConsole("Inspect ECCurve", ObjectInspector.Inspect(eCCurve));
                 }
 #endif
                 token = "";
                 token = JWT.Encode(payload, privateX509Key.GetECDsaPrivateKey(), JwsAlgorithm.ES256);
-                Program.VerifyResult("JwsAlgorithm.ES256: ", token, publicX509Key.GetECDsaPublicKey());
+                Program.VerifyResult("JwsAlgorithm.ES256", token, publicX509Key.GetECDsaPublicKey());
             }
             catch (Exception ex)
             {
-                Program.MyWriteLine("JwsAlgorithm.ES256: " + ex.GetType().ToString() + ", " + ex.Message);
+                WriteLine.OutPutDebugAndConsole("JwsAlgorithm.ES256", ex.GetType().ToString() + ", " + ex.Message);
             }
 #endif
 
@@ -313,19 +325,19 @@ namespace EncAndDecUtilCUI
             // RSAES-PKCS1-v1_5 and AES_128_CBC_HMAC_SHA_256
             token = "";
             token = JWT.Encode(payload, publicX509Key.PublicKey.Key, JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256);
-            Program.VerifyResult("JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256: ", token, privateX509Key.PrivateKey);
+            Program.VerifyResult("JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256", token, privateX509Key.PrivateKey);
 
             // RSAES-OAEP and AES GCM
             try
             {
                 token = "";
                 token = JWT.Encode(payload, publicX509Key.PublicKey.Key, JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM);
-                Program.VerifyResult("JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM: ", token, privateX509Key.PrivateKey);
+                Program.VerifyResult("JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM", token, privateX509Key.PrivateKey);
             }
             catch (Exception ex)
             {
                 // Unhandled Exception: System.DllNotFoundException: Unable to load DLL 'bcrypt.dll' at ubunntu
-                Program.MyWriteLine("JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM: " + ex.GetType().ToString() + ", " + ex.Message);
+                WriteLine.OutPutDebugAndConsole("JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM", ex.GetType().ToString() + ", " + ex.Message);
             }
             #endregion
 
@@ -337,7 +349,7 @@ namespace EncAndDecUtilCUI
             // https://github.com/dvsekhvalnov/jose-jwt#dir-direct-pre-shared-symmetric-key-family-of-algorithms
             token = "";
             token = JWT.Encode(payload, secretKey, JweAlgorithm.DIR, JweEncryption.A128CBC_HS256);
-            Program.VerifyResult("JweAlgorithm.DIR, JweEncryption.A128CBC_HS256: ", token, secretKey);
+            Program.VerifyResult("JweAlgorithm.DIR, JweEncryption.A128CBC_HS256", token, secretKey);
             #endregion
 
             #region AES Key Wrap key management family of algorithms
@@ -345,7 +357,7 @@ namespace EncAndDecUtilCUI
             // https://github.com/dvsekhvalnov/jose-jwt#aes-key-wrap-key-management-family-of-algorithms
             token = "";
             token = JWT.Encode(payload, secretKey, JweAlgorithm.A256KW, JweEncryption.A256CBC_HS512);
-            Program.VerifyResult("JweAlgorithm.A256KW, JweEncryption.A256CBC_HS512: ", token, secretKey);
+            Program.VerifyResult("JweAlgorithm.A256KW, JweEncryption.A256CBC_HS512", token, secretKey);
             #endregion
 
             #region AES GCM Key Wrap key management family of algorithms
@@ -355,12 +367,12 @@ namespace EncAndDecUtilCUI
             {
                 token = "";
                 token = JWT.Encode(payload, secretKey, JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512);
-                Program.VerifyResult("JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512: ", token, secretKey);
+                Program.VerifyResult("JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512", token, secretKey);
             }
             catch (Exception ex)
             {
                 // Unhandled Exception: System.DllNotFoundException: Unable to load DLL 'bcrypt.dll' at ubunntu
-                Program.MyWriteLine("JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512: " + ex.GetType().ToString() + ", " + ex.Message);
+                WriteLine.OutPutDebugAndConsole("JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512", ex.GetType().ToString() + ", " + ex.Message);
             }
             #endregion
 
@@ -374,19 +386,19 @@ namespace EncAndDecUtilCUI
                 publicKeyOfCng = EccKey.New(x, y, usage: CngKeyUsages.KeyAgreement);
                 token = "";
                 token = JWT.Encode(payload, publicKeyOfCng, JweAlgorithm.ECDH_ES, JweEncryption.A256GCM);
-                Program.VerifyResult("JweAlgorithm.ECDH_ES, JweEncryption.A256GCM: ", token, publicKeyOfCng);
+                Program.VerifyResult("JweAlgorithm.ECDH_ES, JweEncryption.A256GCM", token, publicKeyOfCng);
             }
             catch (Exception ex)
             {
                 // System.NotImplementedException: 'not yet'
-                Program.MyWriteLine("JweAlgorithm.ECDH_ES, JweEncryption.A256GCM: " + ex.GetType().ToString() + ", " + ex.Message);
+                WriteLine.OutPutDebugAndConsole("JweAlgorithm.ECDH_ES, JweEncryption.A256GCM", ex.GetType().ToString() + ", " + ex.Message);
             }
             #endregion
 
             #region PBES2 using HMAC SHA with AES Key Wrap key management family of algorithms
             token = "";
             token = JWT.Encode(payload, "top secret", JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
-            Program.VerifyResult("JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512: ", token, "top secret");
+            Program.VerifyResult("JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512", token, "top secret");
             #endregion
 
             #endregion
@@ -395,7 +407,7 @@ namespace EncAndDecUtilCUI
 
             #endregion
 
-            Program.MyWriteLine("----------------------------------------------------------------------------------------------------");
+            WriteLine.OutPutDebugAndConsole("----------------------------------------------------------------------------------------------------");
 
             #region ELSE
 
@@ -426,13 +438,13 @@ namespace EncAndDecUtilCUI
 
             token = "";
             token = JWT.Encode(payload, rsa, JwsAlgorithm.RS256, extraHeaders: headers);
-            Program.VerifyResult("Adding extra headers to RS256: ", token, rsa);
+            Program.VerifyResult("Adding extra headers to RS256", token, rsa);
             #endregion
 
             #region Strict validation
             // https://github.com/dvsekhvalnov/jose-jwt#strict-validation
             // 厳密な検証では、Algorithmを指定可能
-            Program.MyWriteLine("Strict validation(RS256): " + JWT.Decode(token, rsa, JwsAlgorithm.RS256));
+            WriteLine.OutPutDebugAndConsole("Strict validation(RS256)", JWT.Decode(token, rsa, JwsAlgorithm.RS256));
             #endregion
 
             #region Two-phase validation
@@ -506,111 +518,19 @@ namespace EncAndDecUtilCUI
 
         #region Inspector and Verifier
 
-        /// <summary>PrivateX509KeyInspector</summary>
-        /// <param name="lbl">string</param>
-        /// <param name="privateX509Key">X509Certificate2</param>
-        private static void PrivateX509KeyInspector(string lbl, X509Certificate2 privateX509Key)
-        {
-            Program.MyWriteLine(lbl + " privateX509Key: " + (privateX509Key == null ? "is null" : "is not null"));
-            if (privateX509Key == null)
-            {
-                return;
-            }
-
-            try
-            {
-                Program.MyWriteLine(lbl + " privateSignatureAlgorithm: " + privateX509Key.SignatureAlgorithm.FriendlyName);
-            }
-            catch (Exception ex)
-            {
-                Program.MyWriteLine(lbl + " privateSignatureAlgorithm: " + ex.GetType().ToString() + ", " + ex.Message);
-            }
-
-            try
-            {
-                if (privateX509Key.HasPrivateKey)
-                {
-                    Program.MyWriteLine(lbl + " privateX509Key.PrivateKey: " + (
-                        privateX509Key.PrivateKey == null ? "is null" : "is " + privateX509Key.PrivateKey.ToString()));
-                }
-            }
-            catch (Exception ex)
-            {
-                Program.MyWriteLine(lbl + " privateX509Key.PrivateKey: " + ex.GetType().ToString() + ", " + ex.Message);
-            }
-        }
-
-        /// <summary>PublicX509KeyInspector</summary>
-        /// <param name="lbl">string</param>
-        /// <param name="publicX509Key">X509Certificate2</param>
-        private static void PublicX509KeyInspector(string lbl, X509Certificate2 publicX509Key)
-        {
-            Program.MyWriteLine(lbl + " publicX509Key: " + (publicX509Key == null ? "is null" : "is not null"));
-            if (publicX509Key == null)
-            {
-                return;
-            }
-
-            try
-            {
-                Program.MyWriteLine(lbl + " publicSignatureAlgorithm: " + publicX509Key.SignatureAlgorithm.FriendlyName);
-            }
-            catch (Exception ex)
-            {
-                Program.MyWriteLine(lbl + " publicSignatureAlgorithm: " + ex.GetType().ToString() + ", " + ex.Message);
-            }
-
-            if (publicX509Key.PublicKey != null)
-            {
-                Program.MyWriteLine(lbl + " publicX509Key: " + (
-                    publicX509Key.PublicKey == null ? "is null" : "is " + publicX509Key.PublicKey.ToString()));
-
-                try
-                {
-                    if (publicX509Key.PublicKey.Key != null)
-                    {
-                        Program.MyWriteLine(lbl + " publicX509Key.Key: " + (
-                            publicX509Key.PublicKey.Key == null ? "is null" : "is " + publicX509Key.PublicKey.Key.ToString()));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Program.MyWriteLine(lbl + " publicX509Key.Key: " + ex.GetType().ToString() + ", " + ex.Message);
-                }
-            }
-        }
         /// <summary>VerifyResult</summary>
-        /// <param name="testId">string</param>
-        /// <param name="token">string</param>
+        /// <param name="testLabel">string</param>
+        /// <param name="jwt">string</param>
         /// <param name="key">object</param>
-        private static void VerifyResult(string testId, string token, object key)
+        private static void VerifyResult(string testLabel, string jwt, object key)
         {
-            Program.MyWriteLine(testId + token);
+            WriteLine.OutPutDebugAndConsole(testLabel, "Original:" + jwt);
 
-            string[] aryStr = token.Split('.');
+            WriteLine.JwtInspector(testLabel, jwt);
 
-            Program.MyWriteLine("JWT Header: " + CustomEncode.ByteToString(
-                CustomEncode.FromBase64UrlString(aryStr[0]), CustomEncode.UTF_8));
-
-            if (3 < aryStr.Length)
-            {
-                // JWE
-                Program.MyWriteLine("- JWE Encrypted Key: " + aryStr[1]);
-                Program.MyWriteLine("- JWE Initialization Vector: " + aryStr[2]);
-                Program.MyWriteLine("- JWE Ciphertext: " + aryStr[3]);
-                Program.MyWriteLine("- JWE Authentication Tag: " + aryStr[4]);
-            }
-
-            Program.MyWriteLine("Decoded: " + JWT.Decode(token, key));
+            WriteLine.OutPutDebugAndConsole(testLabel, "Decoded:" + JWT.Decode(jwt, key));
         }
-
-        /// <summary>MyWriteLine</summary>
-        /// <param name="s">string</param>
-        private static void MyWriteLine(string s)
-        {
-            Console.WriteLine(s);
-            Debug.WriteLine(s);
-        }
+        
         #endregion
     }
 }
