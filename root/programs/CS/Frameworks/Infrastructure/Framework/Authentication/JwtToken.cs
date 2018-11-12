@@ -122,7 +122,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     {
                         // Jwkを使用
                         jwsRS256 = new JWS_RS256_Param(
-                            RS256_KeyConverter.JwkToProvider(jwkObject).ExportParameters(false));
+                            RsaPublicKeyConverter.JwkToProvider(jwkObject).ExportParameters(false));
                     }
                 }
                 else
@@ -140,7 +140,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     {
                         // Jwkを使用
                         jwsRS256 = new JWS_RS256_Param(
-                            RS256_KeyConverter.JwkToProvider(JwkObject).ExportParameters(false));
+                            RsaPublicKeyConverter.JwkToProvider(JwkObject).ExportParameters(false));
                     }
                 }
             }
