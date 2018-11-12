@@ -13,7 +13,7 @@ using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Security;
 
-namespace EncAndDecUtil4NetCore
+namespace EncAndDecUtilCUI
 {
     /// <summary>
     /// - jose-jwt - マイクロソフト系技術情報 Wiki
@@ -67,6 +67,7 @@ namespace EncAndDecUtil4NetCore
             Program.PublicX509KeyInspector("RSA", publicX509Key);
             #endregion
 
+#if NETCORE || NET47
             #region DSA
             // https://github.com/dotnet/corefx/issues/18733#issuecomment-296723615
             privateX509Path = @"SHA256DSA.pfx";
@@ -93,6 +94,7 @@ namespace EncAndDecUtil4NetCore
             ECDsa publicECDsa = publicX509Key.GetECDsaPublicKey();
             Program.MyWriteLine("publicECDsa: " + (publicECDsa == null ? "is null" : "is not null"));
             #endregion
+#endif
 
             #endregion
 
@@ -130,6 +132,7 @@ namespace EncAndDecUtil4NetCore
             }
             else if (os.Platform == PlatformID.Unix)
             {
+#if NETCORE
                 DigitalSignParam dsP1 = new DigitalSignParam(EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256);
                 sign = dsP1.Sign(new byte[] { });
                 Program.MyWriteLine("DigitalSignParam.Verify(RS256): " + dsP1.Verify(new byte[] { }, sign).ToString());
@@ -149,6 +152,7 @@ namespace EncAndDecUtil4NetCore
                 DigitalSignX509 ds5 = new DigitalSignX509(@"SHA256RSA.pfx", "test", "SHA256");
                 sign = ds5.Sign(new byte[] { });
                 Program.MyWriteLine("DigitalSignX509.Verify: " + ds5.Verify(new byte[] { }, sign).ToString());
+#endif
             }
             #endregion
 
@@ -226,6 +230,7 @@ namespace EncAndDecUtil4NetCore
                 //Program.VerifyResult("JwsAlgorithm.ES256: ", token, new ECDsaOpenSsl(eCCurve));
             }
 
+#if NETCORE || NET47
             privateX509Path = @"SHA256ECDSA.pfx";
             publicX509Path = @"SHA256ECDSA.cer";
             privateX509Key = new X509Certificate2(privateX509Path, "test");
@@ -239,8 +244,7 @@ namespace EncAndDecUtil4NetCore
                     ECCurve eCCurve = ((ECDsaOpenSsl)privateX509Key.GetECDsaPrivateKey()).ExportExplicitParameters(true).Curve;
                     Program.MyWriteLine("Inspect ECCurve: " + ObjectInspector.Inspect(eCCurve));
                 }
-
-                token = "";
+            token = "";
                 token = JWT.Encode(payload, privateX509Key.GetECDsaPrivateKey(), JwsAlgorithm.ES256);
                 Program.VerifyResult("JwsAlgorithm.ES256: ", token, publicX509Key.GetECDsaPublicKey());
             }
@@ -248,6 +252,7 @@ namespace EncAndDecUtil4NetCore
             {
                 Program.MyWriteLine("JwsAlgorithm.ES256: " + ex.GetType().ToString() + ", " + ex.Message);
             }
+#endif
 
             #endregion
 
