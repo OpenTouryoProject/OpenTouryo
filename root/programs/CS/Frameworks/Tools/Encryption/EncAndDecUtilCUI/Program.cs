@@ -37,7 +37,7 @@ namespace EncAndDecUtilCUI
             {
                 x509KSF = X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable;
             }
-            else // == PlatformID.Unix
+            else //if (os.Platform == PlatformID.Unix)
             {
                 x509KSF = X509KeyStorageFlags.DefaultKeySet;
             }
@@ -120,52 +120,60 @@ namespace EncAndDecUtilCUI
 
             byte[] sign = null;
 
+            DigitalSignParam dsParam = null;
+            DigitalSignXML dsXML = null;
+            DigitalSignX509 dsX509 = null;
+
             if (os.Platform == PlatformID.Win32NT)
             {
-                DigitalSignParam dsP1 = new DigitalSignParam(EnumDigitalSignAlgorithm.RsaCSP_SHA256);
-                sign = dsP1.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignParam.Verify(RS256): " + dsP1.Verify(new byte[] { }, sign).ToString());
+                dsParam = new DigitalSignParam(EnumDigitalSignAlgorithm.RsaCSP_SHA256);
+                sign = dsParam.Sign(new byte[] { });
+                Program.MyWriteLine("DigitalSignParam.Verify(RS256): " + dsParam.Verify(new byte[] { }, sign).ToString());
 
-                DigitalSignXML dsX1 = new DigitalSignXML(EnumDigitalSignAlgorithm.RsaCSP_SHA256);
-                sign = dsX1.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignXML.Verify(RS256): " + dsX1.Verify(new byte[] { }, sign).ToString());
+                dsXML = new DigitalSignXML(EnumDigitalSignAlgorithm.RsaCSP_SHA256);
+                sign = dsXML.Sign(new byte[] { });
+                Program.MyWriteLine("DigitalSignXML.Verify(RS256): " + dsXML.Verify(new byte[] { }, sign).ToString());
 
                 // DSAはFormatterバージョンしか動かない。
-                DigitalSignParam dsP2 = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaCSP_SHA1);
-                sign = dsP2.SignByFormatter(new byte[] { });
-                Program.MyWriteLine("DigitalSignParam.Verify(DS1): " + dsP2.VerifyByDeformatter(new byte[] { }, sign).ToString());
+                dsParam = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaCSP_SHA1);
+                sign = dsParam.SignByFormatter(new byte[] { });
+                Program.MyWriteLine("DigitalSignParam.Verify(DS1): " + dsParam.VerifyByDeformatter(new byte[] { }, sign).ToString());
 
                 DigitalSignXML dsX2 = new DigitalSignXML(EnumDigitalSignAlgorithm.DsaCSP_SHA1);
                 sign = dsX2.SignByFormatter(new byte[] { });
                 Program.MyWriteLine("DigitalSignXML.Verify(DS1): " + dsX2.VerifyByDeformatter(new byte[] { }, sign).ToString());
 
 
-                DigitalSignX509 ds5 = new DigitalSignX509(@"SHA256RSA.pfx", "test", "SHA256", x509KSF);
-                sign = ds5.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignX509.Verify: " + ds5.Verify(new byte[] { }, sign).ToString());
+                dsX509 = new DigitalSignX509(@"SHA256RSA.pfx", "test", "SHA256", x509KSF);
+                sign = dsX509.Sign(new byte[] { });
+                Program.MyWriteLine("DigitalSignX509.Verify(RSA): " + dsX509.Verify(new byte[] { }, sign).ToString());
             }
-            else if (os.Platform == PlatformID.Unix)
+            else //if (os.Platform == PlatformID.Unix)
             {
 #if NETCORE
-                DigitalSignParam dsP1 = new DigitalSignParam(EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256);
-                sign = dsP1.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignParam.Verify(RS256): " + dsP1.Verify(new byte[] { }, sign).ToString());
+                dsParam = new DigitalSignParam(EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256);
+                sign = dsParam.Sign(new byte[] { });
+                Program.MyWriteLine("DigitalSignParam.Verify(RS256): " + dsParam.Verify(new byte[] { }, sign).ToString());
 
-                DigitalSignXML dsX1 = new DigitalSignXML(EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256);
-                sign = dsX1.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignXML.Verify(RS256): " + dsX1.Verify(new byte[] { }, sign).ToString());
+                dsXML = new DigitalSignXML(EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256);
+                sign = dsXML.Sign(new byte[] { });
+                Program.MyWriteLine("DigitalSignXML.Verify(RS256): " + dsXML.Verify(new byte[] { }, sign).ToString());
 
-                DigitalSignParam dsP2 = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1);
-                sign = dsP2.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignParam.Verify(DS1): " + dsP2.Verify(new byte[] { }, sign).ToString());
+                dsParam = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1);
+                sign = dsParam.Sign(new byte[] { });
+                Program.MyWriteLine("DigitalSignParam.Verify(DS1): " + dsParam.Verify(new byte[] { }, sign).ToString());
 
                 DigitalSignXML dsX2 = new DigitalSignXML(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1);
                 sign = dsX2.Sign(new byte[] { });
                 Program.MyWriteLine("DigitalSignXML.Verify(DS1): " + dsX2.Verify(new byte[] { }, sign).ToString());
 
-                DigitalSignX509 ds5 = new DigitalSignX509(@"SHA256RSA.pfx", "test", "SHA256");
-                sign = ds5.Sign(new byte[] { });
-                Program.MyWriteLine("DigitalSignX509.Verify: " + ds5.Verify(new byte[] { }, sign).ToString());
+                dsX509 = new DigitalSignX509(@"SHA256RSA.pfx", "test", "SHA256");
+                sign = dsX509.Sign(new byte[] { });
+                Program.MyWriteLine("DigitalSignX509.Verify(RSA): " + dsX509.Verify(new byte[] { }, sign).ToString());
+
+                dsX509 = new DigitalSignX509(@"SHA256DSA.pfx", "test", "SHA256");
+                sign = dsX509.Sign(new byte[] { });
+                Program.MyWriteLine("DigitalSignX509.Verify(DSA): " + dsX509.Verify(new byte[] { }, sign).ToString());
 #endif
             }
             #endregion
@@ -209,8 +217,8 @@ namespace EncAndDecUtilCUI
             token = "";
 
 
-#if NETSTD
-            rsa = privateX509Key.PrivateKey;
+#if NETCORE
+            rsa = (RSA)privateX509Key.PrivateKey;
 #else
             // .net frameworkでは、何故かコレが必要。
             rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(privateX509Key.PrivateKey);
@@ -238,7 +246,7 @@ namespace EncAndDecUtilCUI
                 token = JWT.Encode(payload, privateKeyOfCng, JwsAlgorithm.ES256);
                 Program.VerifyResult("JwsAlgorithm.ES256: ", token, publicKeyOfCng);
             }
-            else // == PlatformID.Unix
+            else //if (os.Platform == PlatformID.Unix)
             {
                 // (x, y, d)を使用して、ECCurveからECDsaOpenSslを生成できれば...。
 
@@ -262,7 +270,10 @@ namespace EncAndDecUtilCUI
             try
             {
 #if NETCORE
-                if (os.Platform == PlatformID.Unix)
+                if (os.Platform == PlatformID.Win32NT)
+                {
+                }
+                else //if (os.Platform == PlatformID.Unix)
                 {
                     // ECCurveを分析してみる。
                     ECCurve eCCurve = ((ECDsaOpenSsl)privateX509Key.GetECDsaPrivateKey()).ExportExplicitParameters(true).Curve;
@@ -402,8 +413,8 @@ namespace EncAndDecUtilCUI
             privateX509Key = new X509Certificate2(privateX509Path, "test", x509KSF);
             publicX509Key = new X509Certificate2(publicX509Path, "", x509KSF);
 
-#if NETSTD
-            rsa = privateX509Key.PrivateKey;
+#if NETCORE
+            rsa = (RSA)privateX509Key.PrivateKey;
 #else
             // .net frameworkでは、何故かコレが必要。
             rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(privateX509Key.PrivateKey);
