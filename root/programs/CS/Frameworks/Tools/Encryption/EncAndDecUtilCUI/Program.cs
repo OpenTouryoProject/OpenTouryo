@@ -28,7 +28,19 @@ namespace EncAndDecUtilCUI
             #region Variables
 
             OperatingSystem os = Environment.OSVersion;
-            X509KeyStorageFlags x509KS = X509KeyStorageFlags.DefaultKeySet;
+
+            // https://github.com/dotnet/corefx/issues/29404#issuecomment-385287947
+            //   *.pfxから証明書を開く場合、X509KeyStorageFlags.Exportableの指定が必要な場合がある。
+            //   Linuxのキーは常にエクスポート可能だが、WindowsやMacOSでは必ずしもそうではない。
+            X509KeyStorageFlags x509KSF = 0;
+            if (os.Platform == PlatformID.Win32NT)
+            {
+                x509KSF = X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable;
+            }
+            else // == PlatformID.Unix
+            {
+                x509KSF = X509KeyStorageFlags.DefaultKeySet;
+            }
 
             string token = "";
             IDictionary<string, object> headers = null;
@@ -50,8 +62,12 @@ namespace EncAndDecUtilCUI
             X509Certificate2 publicX509Key = null;
             X509Certificate2 privateX509Key = null;
 
+            RSA rsa = null;
+            DSA dsa = null;
+
             CngKey publicKeyOfCng = null;
             CngKey privateKeyOfCng = null;
+
             #endregion
 
             #endregion
@@ -61,8 +77,8 @@ namespace EncAndDecUtilCUI
             #region RSA
             privateX509Path = @"SHA256RSA.pfx";
             publicX509Path = @"SHA256RSA.cer";
-            privateX509Key = new X509Certificate2(privateX509Path, "test", x509KS);
-            publicX509Key = new X509Certificate2(publicX509Path, "", x509KS);
+            privateX509Key = new X509Certificate2(privateX509Path, "test", x509KSF);
+            publicX509Key = new X509Certificate2(publicX509Path, "", x509KSF);
             Program.PrivateX509KeyInspector("RSA", privateX509Key);
             Program.PublicX509KeyInspector("RSA", publicX509Key);
             #endregion
@@ -123,10 +139,8 @@ namespace EncAndDecUtilCUI
                 sign = dsX2.SignByFormatter(new byte[] { });
                 Program.MyWriteLine("DigitalSignXML.Verify(DS1): " + dsX2.VerifyByDeformatter(new byte[] { }, sign).ToString());
 
-                // https://github.com/dotnet/corefx/issues/29404#issuecomment-385287947
-                //   *.pfxから証明書を開く場合、X509KeyStorageFlags.Exportableの指定が必要な場合がある。
-                //   Linuxのキーは常にエクスポート可能だが、WindowsやMacOSでは必ずしもそうではない。
-                DigitalSignX509 ds5 = new DigitalSignX509(@"SHA256RSA.pfx", "test", "SHA256", X509KeyStorageFlags.Exportable);
+
+                DigitalSignX509 ds5 = new DigitalSignX509(@"SHA256RSA.pfx", "test", "SHA256", x509KSF);
                 sign = ds5.Sign(new byte[] { });
                 Program.MyWriteLine("DigitalSignX509.Verify: " + ds5.Verify(new byte[] { }, sign).ToString());
             }
@@ -189,12 +203,21 @@ namespace EncAndDecUtilCUI
 
             privateX509Path = @"SHA256RSA.pfx";
             publicX509Path = @"SHA256RSA.cer";
-            privateX509Key = new X509Certificate2(privateX509Path, "test", x509KS);
-            publicX509Key = new X509Certificate2(publicX509Path, "", x509KS);
+            privateX509Key = new X509Certificate2(privateX509Path, "test", x509KSF);
+            publicX509Key = new X509Certificate2(publicX509Path, "", x509KSF);
 
             token = "";
-            token = JWT.Encode(payload, privateX509Key.PrivateKey, JwsAlgorithm.RS256);
-            Program.VerifyResult("JwsAlgorithm.RS256: ", token, publicX509Key.PublicKey.Key);
+
+
+#if NETSTD
+            rsa = privateX509Key.PrivateKey;
+#else
+            // .net frameworkでは、何故かコレが必要。
+            rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(privateX509Key.PrivateKey);
+#endif
+            token = JWT.Encode(payload, rsa, JwsAlgorithm.RS256);
+            Program.VerifyResult("JwsAlgorithm.RS256: ", token, rsa);
+
             #endregion
 
             #region ES- * family
@@ -238,13 +261,15 @@ namespace EncAndDecUtilCUI
 
             try
             {
+#if NETCORE
                 if (os.Platform == PlatformID.Unix)
                 {
                     // ECCurveを分析してみる。
                     ECCurve eCCurve = ((ECDsaOpenSsl)privateX509Key.GetECDsaPrivateKey()).ExportExplicitParameters(true).Curve;
                     Program.MyWriteLine("Inspect ECCurve: " + ObjectInspector.Inspect(eCCurve));
                 }
-            token = "";
+#endif
+                token = "";
                 token = JWT.Encode(payload, privateX509Key.GetECDsaPrivateKey(), JwsAlgorithm.ES256);
                 Program.VerifyResult("JwsAlgorithm.ES256: ", token, publicX509Key.GetECDsaPublicKey());
             }
@@ -267,8 +292,8 @@ namespace EncAndDecUtilCUI
 
             privateX509Path = @"SHA256RSA.pfx";
             publicX509Path = @"SHA256RSA.cer";
-            privateX509Key = new X509Certificate2(privateX509Path, "test", x509KS);
-            publicX509Key = new X509Certificate2(publicX509Path, "", x509KS);
+            privateX509Key = new X509Certificate2(privateX509Path, "test", x509KSF);
+            publicX509Key = new X509Certificate2(publicX509Path, "", x509KSF);
 
             // RSAES-PKCS1-v1_5 and AES_128_CBC_HMAC_SHA_256
             token = "";
@@ -374,18 +399,25 @@ namespace EncAndDecUtilCUI
 
             privateX509Path = @"SHA256RSA.pfx";
             publicX509Path = @"SHA256RSA.cer";
-            privateX509Key = new X509Certificate2(privateX509Path, "test", x509KS);
-            publicX509Key = new X509Certificate2(publicX509Path, "", x509KS);
+            privateX509Key = new X509Certificate2(privateX509Path, "test", x509KSF);
+            publicX509Key = new X509Certificate2(publicX509Path, "", x509KSF);
+
+#if NETSTD
+            rsa = privateX509Key.PrivateKey;
+#else
+            // .net frameworkでは、何故かコレが必要。
+            rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(privateX509Key.PrivateKey);
+#endif
 
             token = "";
-            token = JWT.Encode(payload, privateX509Key.PrivateKey, JwsAlgorithm.RS256, extraHeaders: headers);
-            Program.VerifyResult("Adding extra headers to RS256: ", token, privateX509Key.PrivateKey);
+            token = JWT.Encode(payload, rsa, JwsAlgorithm.RS256, extraHeaders: headers);
+            Program.VerifyResult("Adding extra headers to RS256: ", token, rsa);
             #endregion
 
             #region Strict validation
             // https://github.com/dvsekhvalnov/jose-jwt#strict-validation
             // 厳密な検証では、Algorithmを指定可能
-            Program.MyWriteLine("Strict validation(RS256): " + JWT.Decode(token, privateX509Key.PrivateKey, JwsAlgorithm.RS256));
+            Program.MyWriteLine("Strict validation(RS256): " + JWT.Decode(token, rsa, JwsAlgorithm.RS256));
             #endregion
 
             #region Two-phase validation
