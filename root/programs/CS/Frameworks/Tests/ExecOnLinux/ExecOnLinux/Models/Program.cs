@@ -183,13 +183,12 @@ namespace EncAndDecUtilCUI
                 jwk = EccPublicKeyConverter.ParamToJwk(
                     ((ECDsa)ecDsX509.AsymmetricAlgorithm).ExportParameters(false));
 
-                WriteLine.OutPutDebugAndConsole("ECDsa JWK", jwk);
+                    WriteLine.OutPutDebugAndConsole("ECDSA JWK", jwk);
 
                 DigitalSignECDsaOpenSsl ecDsParam = new DigitalSignECDsaOpenSsl(
                     EccPublicKeyConverter.JwkToParam(jwk),
                     HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(HashNameConst.SHA256));
-
-                WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(ECDsa JWK)",
+                    WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(ECDSA JWK)",
                    ecDsParam.Verify(data, sign).ToString());
                 #endregion
 
