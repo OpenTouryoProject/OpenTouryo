@@ -100,34 +100,38 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region RSA Private Keys
 
-        /// <summary>RSA Public Keys: d</summary>
+        /// <summary>
+        /// d :
+        /// - RSA Public Keys
+        /// - ECC Private Keyパラメタ
+        /// </summary>
         public const string d = "d";
 
-        /// <summary>RSA Public Keys: p</summary>
+        /// <summary>p : RSA Public Keys</summary>
         public const string p = "p";
 
-        /// <summary>RSA Public Keys: q</summary>
+        /// <summary>q : RSA Public Keys</summary>
         public const string q = "q";
 
-        /// <summary>RSA Public Keys: dp</summary>
+        /// <summary>dp : RSA Public Keys</summary>
         public const string dp = "dp";
 
-        /// <summary>RSA Public Keys: dq </summary>
+        /// <summary>dq : RSA Public Keys</summary>
         public const string dq = "dq";
 
-        /// <summary>RSA Public Keys: qi</summary>
+        /// <summary>qi : RSA Public Keys</summary>
         public const string qi = "qi";
 
-        /// <summary>RSA Public Keys: oth </summary>
+        /// <summary>oth : RSA Public Keys</summary>
         public const string oth = "oth";
 
-        /// <summary>RSA Public Keys: r(oth) </summary>
+        /// <summary>r(oth) : RSA Public Keys</summary>
         public const string oth_r = "r";
 
-        /// <summary>RSA Public Keys: d(oth) </summary>
+        /// <summary>d(oth) : RSA Public Keys</summary>
         public const string oth_d = "d";
 
-        /// <summary>RSA Public Keys: t(oth) </summary>
+        /// <summary>t(oth) : RSA Public Keys</summary>
         public const string oth_t = "t";
 
         #endregion

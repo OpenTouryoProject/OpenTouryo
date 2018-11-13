@@ -178,7 +178,7 @@ namespace Touryo.Infrastructure.Public.Security
             // PublicKey を取り出すため Exportableは不要
             // ASP.NET（サーバ）からの実行を想定しないため、MachineKeySetは不要
             DigitalSignX509 dsX509 = new DigitalSignX509(
-                certificateFilePath, "", CryptoConst.SHA256, X509KeyStorageFlags.DefaultKeySet);
+                certificateFilePath, "", HashNameConst.SHA256, X509KeyStorageFlags.DefaultKeySet);
 
             AsymmetricAlgorithm aa = dsX509.PublicKey; // Public
             if (aa is RSA)
@@ -210,7 +210,7 @@ namespace Touryo.Infrastructure.Public.Security
             // PublicKey を取り出すため Exportableは不要
             // ASP.NET（サーバ）からの実行を想定しないため、MachineKeySetは不要
             DigitalSignX509 dsX509 = new DigitalSignX509(
-                certificateFilePath, password, CryptoConst.SHA256, X509KeyStorageFlags.DefaultKeySet);
+                certificateFilePath, password, HashNameConst.SHA256, X509KeyStorageFlags.DefaultKeySet);
 
             AsymmetricAlgorithm aa = dsX509.PublicKey; // Public
             if (aa is RSA)

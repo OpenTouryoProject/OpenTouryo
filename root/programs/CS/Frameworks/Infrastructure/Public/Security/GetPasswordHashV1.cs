@@ -301,7 +301,7 @@ namespace Touryo.Infrastructure.Public.Security
             // MACTripleDES ：長さが 16 または 24 バイトのキーを受け入れる
 
             // ハッシュ（キー付き）サービスプロバイダを生成
-            KeyedHashAlgorithm kha = HashAlgorithmCmnFunc.CreateKeyedHashAlgorithmServiceProvider(
+            KeyedHashAlgorithm kha = HashAlgorithmCmnFunc.CreateKeyedHashAlgorithmSP(
                     ekha,
                     passwordKey.GetBytes(24) // 上記より、24 決め打ちとする。
                 );

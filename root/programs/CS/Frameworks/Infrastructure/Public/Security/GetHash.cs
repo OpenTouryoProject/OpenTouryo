@@ -91,7 +91,7 @@ namespace Touryo.Infrastructure.Public.Security
         public static byte[] GetHashBytes(byte[] asb, EnumHashAlgorithm eha, int stretchCount)
         {
             // ハッシュ（キー無し）サービスプロバイダを生成
-            HashAlgorithm ha = HashAlgorithmCmnFunc.CreateHashAlgorithmServiceProvider(eha);
+            HashAlgorithm ha = HashAlgorithmCmnFunc.CreateHashAlgorithmSP(eha);
 
             // ハッシュ値を計算して返す。
             byte[] temp = ha.ComputeHash(asb);

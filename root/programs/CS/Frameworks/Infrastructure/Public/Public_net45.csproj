@@ -116,7 +116,7 @@
     <Compile Include="Security\AeadResult.cs" />
     <Compile Include="Security\AsymmetricAlgorithmCmnFunc.cs" />
     <Compile Include="Security\BaseKeyExchange.cs" />
-    <Compile Include="Security\CryptoConst.cs" />
+    <Compile Include="Security\HashNameConst.cs" />
     <Compile Include="Security\AuthEncrypt.cs" />
     <Compile Include="Security\DigitalSignECDsaX509.cs" />
     <Compile Include="Security\DigitalSignECDsaCng.cs" />

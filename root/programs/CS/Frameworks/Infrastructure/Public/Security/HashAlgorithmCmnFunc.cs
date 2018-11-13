@@ -52,23 +52,23 @@ namespace Touryo.Infrastructure.Public.Security
 
             if (ha is MD5)
             {
-                haName = CryptoConst.MD5;
+                haName = HashNameConst.MD5;
             }
             else if (ha is SHA1)
             {
-                haName = CryptoConst.SHA1;
+                haName = HashNameConst.SHA1;
             }
             else if (ha is SHA256)
             {
-                haName = CryptoConst.SHA256;
+                haName = HashNameConst.SHA256;
             }
             else if (ha is SHA384)
             {
-                haName = CryptoConst.SHA384;
+                haName = HashNameConst.SHA384;
             }
             else if (ha is SHA512)
             {
-                haName = CryptoConst.SHA512;
+                haName = HashNameConst.SHA512;
             }
             else
             {
@@ -105,12 +105,12 @@ namespace Touryo.Infrastructure.Public.Security
 
         #endregion
 
-        #region CreateAlgorithmServiceProvider
+        #region CreateAlgorithmSP
 
         /// <summary>ハッシュ（キー無し）サービスプロバイダの生成</summary>
         /// <param name="eha">ハッシュ（キー無し）サービスプロバイダの列挙型</param>
         /// <returns>ハッシュ（キー無し）サービスプロバイダ</returns>
-        public static HashAlgorithm CreateHashAlgorithmServiceProvider(EnumHashAlgorithm eha)
+        public static HashAlgorithm CreateHashAlgorithmSP(EnumHashAlgorithm eha)
         {
             // ハッシュ（キー無し）サービスプロバイダ
             HashAlgorithm ha = null;
@@ -257,7 +257,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="ekha">ハッシュ（キー付き）サービスプロバイダの列挙型</param>
         /// <param name="key">キー</param>
         /// <returns>ハッシュ（キー付き）サービスプロバイダ</returns>
-        public static KeyedHashAlgorithm CreateKeyedHashAlgorithmServiceProvider(EnumKeyedHashAlgorithm ekha, byte[] key)
+        public static KeyedHashAlgorithm CreateKeyedHashAlgorithmSP(EnumKeyedHashAlgorithm ekha, byte[] key)
         {
             // ハッシュ（キー付き）サービスプロバイダ
             KeyedHashAlgorithm kha = null;

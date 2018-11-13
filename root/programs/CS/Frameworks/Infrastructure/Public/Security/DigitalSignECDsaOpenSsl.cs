@@ -19,30 +19,30 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：DigitalSignECDsaX509
-//* クラス日本語名  ：DigitalSignECDsaX509クラス
+//* クラス名        ：DigitalSignECDsaOpenSsl
+//* クラス日本語名  ：DigitalSignECDsaOpenSslクラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2018/11/09  西野 大介         新規作成（分割）
-//*  2018/11/07  西野 大介         ECDSA証明書のサポートを追加（4.7以上）
+//*  2018/11/13  西野 大介         新規作成
 //**********************************************************************************
+
+// ECDsaOpenSsl Class (System.Security.Cryptography) | Microsoft Docs
+// https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.ecdsaopenssl
+//   ExportParameters(bool includePrivateParameters)でインポート・エクスポートする。
 
 using System;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 
 using Touryo.Infrastructure.Public.Util;
 
-#if NET45 || NET46
-#else
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>DigitalSignECDsaX509クラス</summary>
-    public class DigitalSignECDsaX509 : DigitalSign
+    /// <summary>DigitalSignECDsaOpenSslクラス</summary>
+    public class DigitalSignECDsaOpenSsl : DigitalSign
     {
         // デジタル署名の場合は、秘密鍵で署名して、公開鍵で検証。
 
@@ -50,24 +50,33 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region mem & prop
 
-        /// <summary>X.509証明書</summary>
-        public X509Certificate2 X509Certificate { get; protected set; }
-
-        /// <summary>ECDsa PrivateKey</summary>
-        public ECDsa PrivateKey
+        /// <summary>_privateKey</summary>
+        private ECParameters? _privateKey = null;
+        /// <summary>PrivateKey</summary>
+        public ECParameters? PrivateKey
         {
             get
             {
-                return (ECDsa)this.X509Certificate.GetECDsaPrivateKey();
+                return this._privateKey;
+            }
+            protected set
+            {
+                this._privateKey = value;
             }
         }
 
-        /// <summary>ECDsa PublicKey</summary>
-        public ECDsa PublicKey
+        /// <summary>_publicKey</summary>
+        private ECParameters? _publicKey = null;
+        /// <summary>PublicKey</summary>
+        public ECParameters? PublicKey
         {
             get
             {
-                return (ECDsa)this.X509Certificate.GetECDsaPublicKey();
+                return this._publicKey;
+            }
+            protected set
+            {
+                this._publicKey = value;
             }
         }
 
@@ -75,42 +84,40 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region constructor
 
-        /// <summary>
-        /// Constructor
-        /// X.509証明書(*.pfx, *.cer)からキーを設定する。
-        /// *.cer証明書の場合は、証明書チェーンが繋がっている必要がある。
-        /// 自己証明書の場合「信頼されたルート証明機関」にInstallするなどする。
-        /// </summary>
-        /// <param name="certificateFilePath">X.509証明書(*.pfx, *.cer)へのパス</param>
-        /// <param name="password">パスワード</param>
-        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
-        public DigitalSignECDsaX509(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName) :
-            this(certificateFilePath, password, hashAlgorithmName, X509KeyStorageFlags.DefaultKeySet) { }
-
-        /// <summary>
-        /// Constructor
-        /// X.509証明書(*.pfx, *.cer)からキーを設定する。
-        /// *.cer証明書の場合は、証明書チェーンが繋がっている必要がある。
-        /// 自己証明書の場合「信頼されたルート証明機関」にInstallするなどする。
-        /// </summary>
-        /// <param name="certificateFilePath">X.509証明書(*.pfx, *.cer)へのパス</param>
-        /// <param name="password">パスワード</param>
-        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
-        /// <param name="flag">X509KeyStorageFlags</param>
-        public DigitalSignECDsaX509(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName, X509KeyStorageFlags flag)
+        /// <summary>Constructor</summary>
+        /// <param name="eaa">EnumDigitalSignAlgorithm</param>
+        public DigitalSignECDsaOpenSsl(EnumDigitalSignAlgorithm eaa)
         {
-            this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
+            AsymmetricAlgorithm aa = null;
+            HashAlgorithm ha = null;
 
-            if (this.X509Certificate.HasPrivateKey)
-            {
-                this.AsymmetricAlgorithm = this.PrivateKey;
-            }
-            else
-            {
-                this.AsymmetricAlgorithm = this.PublicKey;
-            }
+            AsymmetricAlgorithmCmnFunc.CreateDigitalSignSP(eaa, out aa, out ha);
 
-            this.HashAlgorithm = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(hashAlgorithmName.Name);
+            ECDsaOpenSsl ecdsa = (ECDsaOpenSsl)aa;
+            this._privateKey = ecdsa.ExportParameters(true);
+            this._publicKey = ecdsa.ExportParameters(false);
+
+            this.AsymmetricAlgorithm = aa;
+            this.HashAlgorithm = ha;
+        }
+
+        /// <summary>Constructor</summary>
+        /// <param name="eCParameters">ECParameters（任意）</param>
+        /// <param name="hashAlgorithm">HashAlgorithm</param>
+        public DigitalSignECDsaOpenSsl(ECParameters eCParameters, HashAlgorithm hashAlgorithm)
+        {
+            ECDsaOpenSsl ecdsa = new ECDsaOpenSsl(eCParameters.Curve);
+            ecdsa.ImportParameters(eCParameters);
+            if (eCParameters.D != null)
+            {
+                this._privateKey = ecdsa.ExportParameters(true);
+            }
+            this._publicKey = ecdsa.ExportParameters(false);
+
+            this.AsymmetricAlgorithm = ecdsa;
+
+            this.AsymmetricAlgorithm = ecdsa;
+            this.HashAlgorithm = hashAlgorithm;
         }
 
         #endregion
@@ -124,8 +131,8 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>対象データに対してデジタル署名したデジタル署名部分のデータ</returns>
         public override byte[] Sign(byte[] data)
         {
-            ECDsa aa2 = this.X509Certificate.GetECDsaPrivateKey();
-            return aa2.SignData(data, this.HashAlgorithmName);
+            return ((ECDsaOpenSsl)this.AsymmetricAlgorithm).
+                SignData(data, this.HashAlgorithmName);
         }
 
         /// <summary>デジタル署名を検証する</summary>
@@ -134,8 +141,8 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
         public override bool Verify(byte[] data, byte[] sign)
         {
-            ECDsa aa2 = this.X509Certificate.GetECDsaPublicKey();
-            return aa2.VerifyData(data, sign, this.HashAlgorithmName);
+            return ((ECDsaOpenSsl)this.AsymmetricAlgorithm).
+                VerifyData(data, sign, this.HashAlgorithmName);
         }
 
         /// <summary>デジタル署名を作成する</summary>
@@ -160,4 +167,3 @@ namespace Touryo.Infrastructure.Public.Security
         // こちらは、MyDispose (派生の末端を呼ぶ) の実装は不要。
     }
 }
-#endif

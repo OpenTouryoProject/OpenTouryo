@@ -67,7 +67,7 @@ namespace Touryo.Infrastructure.Public.Security
         {
             this.CertificateFilePath = certificateFilePath;
             this.CertificatePassword = password;
-            this.DigitalSignX509 = new DigitalSignX509(certificateFilePath, password, CryptoConst.SHA256, flag);
+            this.DigitalSignX509 = new DigitalSignX509(certificateFilePath, password, HashNameConst.SHA256, flag);
         }
 
         #endregion

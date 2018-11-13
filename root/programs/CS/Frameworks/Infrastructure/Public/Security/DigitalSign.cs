@@ -70,8 +70,11 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region Hash
 
-        // ... 面倒なので以下のように一方通行にした。
+        // ... 面倒なので以下のように一方通行にした。また、逆方向の設定も可能にした。。
         // HashAlgorithm(class) ---> HashAlgorithmString(string) ---> HashAlgorithmName(struct)
+        //   ↑  ↑                              │                          │
+        //   │  └───────────────┘                          │
+        //   └───────────────────────────────┘
 
         /// <summary>HashAlgorithm</summary>
         public HashAlgorithm HashAlgorithm { get; protected set; }
@@ -83,6 +86,10 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 return HashAlgorithmCmnFunc.GetHashAlgorithmName(this.HashAlgorithm);
             }
+            protected set
+            {
+                this.HashAlgorithm = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(value);
+            }
         }
 
 #if NET45
@@ -93,6 +100,10 @@ namespace Touryo.Infrastructure.Public.Security
             get
             {   
                 return new HashAlgorithmName(this.HashAlgorithmString);
+            }
+            protected set
+            {
+                this.HashAlgorithm = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(value.Name);
             }
         }
 #endif
@@ -203,7 +214,7 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 // DSASignatureFormatterオブジェクトを作成
                 DSASignatureFormatter dsaFormatter = new DSASignatureFormatter(this.AsymmetricAlgorithm);
-                dsaFormatter.SetHashAlgorithm(CryptoConst.SHA1);
+                dsaFormatter.SetHashAlgorithm(HashNameConst.SHA1);
                 signedByte = dsaFormatter.CreateSignature(hash);
             }
             else
