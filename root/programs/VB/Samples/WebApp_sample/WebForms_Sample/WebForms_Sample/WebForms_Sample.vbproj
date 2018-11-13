@@ -113,7 +113,6 @@
     <Content Include="Aspx\TestFxLayerP\withAjax\testClientCallback.aspx" />
     <Content Include="Aspx\TestFxLayerP\withAjax\testExtension_Separate.aspx" />
     <Content Include="Aspx\TestFxLayerP\withAjax\testExtension_Single.aspx" />
-    <Content Include="Aspx\testPublic\testScreen.aspx" />
     <Content Include="Aspx\testScreenCtrl\Google.PNG" />
     <Content Include="Aspx\testScreenCtrl\sc1.PNG" />
     <Content Include="Aspx\testScreenCtrl\sc2.PNG" />
@@ -581,13 +580,6 @@
     </Compile>
     <Compile Include="Aspx\TestFxLayerP\withAjax\testExtension_Single.aspx.vb">
       <DependentUpon>testExtension_Single.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Aspx\testPublic\testScreen.aspx.designer.vb">
-      <DependentUpon>testScreen.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Aspx\testPublic\testScreen.aspx.vb">
-      <DependentUpon>testScreen.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\testScreenCtrl\WebForm0.aspx.designer.vb">

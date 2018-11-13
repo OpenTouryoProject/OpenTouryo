@@ -55,6 +55,7 @@ using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.Dto;
 using Touryo.Infrastructure.Public.Log;
+using Touryo.Infrastructure.Public.Dbg;
 using Touryo.Infrastructure.Public.Util;
 
 using WSIFType_sample;
