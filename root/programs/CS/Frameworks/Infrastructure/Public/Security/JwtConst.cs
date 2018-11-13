@@ -136,11 +136,20 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region ECC  Keys
 
-        /// <summary>kty : EC</summary>
+        /// <summary>ktyパラメタ値 : EC</summary>
         public const string EC = "EC";
 
         /// <summary>crv : Curveパラメタ</summary>
         public const string crv = "crv";
+
+        /// <summary>Curveパラメタ値 : P-256</summary>
+        public const string P256 = "P-256";
+
+        /// <summary>Curveパラメタ値 : P-384</summary>
+        public const string P384 = "P-384";
+
+        /// <summary>Curveパラメタ値 : P-521</summary>
+        public const string P521 = "P-521";
 
         #region ECC Public Keys
         /// <summary>x : X Coordinateパラメタ</summary>

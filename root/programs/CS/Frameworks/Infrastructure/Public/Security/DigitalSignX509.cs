@@ -61,7 +61,7 @@ namespace Touryo.Infrastructure.Public.Security
         public X509Certificate2 X509Certificate { get; protected set; }
 
         /// <summary>X.509証明書の秘密鍵</summary>
-        public AsymmetricAlgorithm X509PrivateKey
+        public AsymmetricAlgorithm PrivateKey
         {
             get
             {
@@ -70,7 +70,7 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         /// <summary>X.509証明書の公開鍵</summary>
-        public AsymmetricAlgorithm X509PublicKey
+        public AsymmetricAlgorithm PublicKey
         {
             get
             {

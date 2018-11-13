@@ -38,6 +38,9 @@ using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using Jose;
+using Security.Cryptography;
+
 using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security
@@ -45,10 +48,139 @@ namespace Touryo.Infrastructure.Public.Security
     /// <summary>
     /// ECC関係のカギ変換処理を実装する。
     /// 基本的に変換先は公開鍵。変換元は秘密鍵も扱える。
-    /// X.509 → Cngkey, ECParameters（公開鍵）⇔ Jwk 公開鍵
+    /// X.509 → ECDsa（Cngkey, ECParameters）（公開鍵）⇔ Jwk 公開鍵
     /// </summary>
     public class EccPublicKeyConverter
     {
+        // X.509からの変換
+        #region X.509 鍵 → ECDsaProvider(ECParameters) → Jwk
+
+        // X.509 は、NET47以降
+#if NET45 || NET46
+#else
+        #region *.cer
+
+        #region Jwk
+        /// <summary>X509CerToJwk</summary>
+        /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <returns>Jwk公開鍵</returns>
+        public static string X509CerToJwk(string certificateFilePath, HashAlgorithmName hashAlgorithmName)
+        {
+            return EccPublicKeyConverter.X509CerToJwk(certificateFilePath, hashAlgorithmName, null);
+        }
+
+        /// <summary>X509CerToJwk</summary>
+        /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <param name="settings">JsonSerializerSettings</param>
+        /// <returns>Jwk公開鍵</returns>
+        public static string X509CerToJwk(string certificateFilePath, HashAlgorithmName hashAlgorithmName, JsonSerializerSettings settings)
+        {
+            return EccPublicKeyConverter.ParamToJwk( // *.cer is PublicKey -> ExportParameters(false)
+                EccPublicKeyConverter.X509CerToProvider(certificateFilePath, hashAlgorithmName).ExportParameters(false), settings);
+        }
+        #endregion
+
+        #region ECDsaProvider(ECParameters)
+        /// <summary>X509CerToParam</summary>
+        /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <returns>ECParameters（公開鍵）</returns>
+        public static ECParameters X509CerToParam(string certificateFilePath, HashAlgorithmName hashAlgorithmName)
+        {
+            return EccPublicKeyConverter.X509CerToProvider(certificateFilePath, hashAlgorithmName).ExportParameters(false);
+        }
+
+        /// <summary>X509CerToProvider</summary>
+        /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <returns>ECDsa</returns>
+        public static ECDsa X509CerToProvider(string certificateFilePath, HashAlgorithmName hashAlgorithmName)
+        {
+            // X509KeyStorageFlagsについて
+            // PublicKey を取り出すため Exportableは不要
+            // ASP.NET（サーバ）からの実行を想定しないため、MachineKeySetは不要
+            DigitalSignECDsaX509 dsX509 = new DigitalSignECDsaX509(
+                certificateFilePath, "", hashAlgorithmName, X509KeyStorageFlags.DefaultKeySet);
+
+            AsymmetricAlgorithm aa = dsX509.PublicKey;
+            if (aa is ECDsa)
+            {
+                return (ECDsa)aa;
+            }
+
+            return null;
+        }
+        #endregion
+
+        #endregion
+
+        #region *.pfx
+
+        #region Jwk
+        /// <summary>X509CerToJwk</summary>
+        /// <param name="certificateFilePath">X.509鍵(*.pfx)</param>
+        /// <param name="password">string</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <returns>Jwk公開鍵</returns>
+        public static string X509PfxToJwk(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName)
+        {
+            return EccPublicKeyConverter.X509PfxToJwk(certificateFilePath, password, hashAlgorithmName, null);
+        }
+
+        /// <summary>X509CerToJwk</summary>
+        /// <param name="certificateFilePath">X.509鍵(*.pfx)</param>
+        /// <param name="password">string</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <param name="settings">JsonSerializerSettings</param>
+        /// <returns>Jwk公開鍵</returns>
+        public static string X509PfxToJwk(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName, JsonSerializerSettings settings)
+        {
+            return EccPublicKeyConverter.ParamToJwk( // *.cer is PublicKey -> ExportParameters(false)
+                EccPublicKeyConverter.X509PfxToProvider(certificateFilePath, password, hashAlgorithmName).ExportParameters(false), settings);
+        }
+        #endregion
+
+        #region ECDsaProvider(ECParameters)
+        /// <summary>X509PfxToParam</summary>
+        /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
+        /// <param name="password">string</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <returns>ECParameters（公開鍵）</returns>
+        public static ECParameters X509PfxToParam(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName)
+        {
+            return EccPublicKeyConverter.X509PfxToProvider(certificateFilePath, password, hashAlgorithmName).ExportParameters(false);
+        }
+
+        /// <summary>X509CerToProvider</summary>
+        /// <param name="certificateFilePath">X.509鍵(*.pfx)</param>
+        /// <param name="password">string</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <returns>ECDsa（公開鍵）</returns>
+        public static ECDsa X509PfxToProvider(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName)
+        {
+            // X509KeyStorageFlagsについて
+            // PublicKey を取り出すため Exportableは不要
+            // ASP.NET（サーバ）からの実行を想定しないため、MachineKeySetは不要
+            DigitalSignECDsaX509 dsX509 = new DigitalSignECDsaX509(
+                certificateFilePath, password, hashAlgorithmName, X509KeyStorageFlags.DefaultKeySet);
+
+            AsymmetricAlgorithm aa = dsX509.PublicKey; // Public
+            if (aa is ECDsa)
+            {
+                return (ECDsa)aa;
+            }
+
+            return null;
+        }
+        #endregion
+
+        #endregion
+#endif
+
+        #endregion
+
         // 実用鍵からの変換
         #region ECDsa(Cngkey, ECParameters) ⇔ Jwk 公開鍵
 
@@ -61,30 +193,115 @@ namespace Touryo.Infrastructure.Public.Security
         // https://openid-foundation-japan.github.io/rfc7517.ja.html#PublicExample
         // A.2.  Example Private Keys
         // https://openid-foundation-japan.github.io/rfc7517.ja.html#PrivateExample
-        // C.1.  Plaintext RSA Private Key
-        // https://openid-foundation-japan.github.io/rfc7517.ja.html#example-privkey-plaintext
 
+        // ECCurve support of EccKey.
         // https://github.com/dvsekhvalnov/jose-jwt/issues/105
-        
-        // CngKey to Jwt
+        // CngKey ⇔ Jwt
         // https://github.com/dvsekhvalnov/jose-jwt/blob/master/jose-jwt/Security/Cryptography/EccKey.cs
+        
+        #region 共通
+
+        #region GetCrvStringFromXCoordinate
+        /// <summary>GetCrvString</summary>
+        /// <param name="x">byte[]</param>
+        /// <returns>CrvString</returns>
+        private static string GetCrvStringFromXCoordinate(byte[] x)
+        {
+            int partSize = x.Length;
+
+            if (partSize == 32)
+            {
+                return JwtConst.P256;
+            }
+            else if (partSize == 48)
+            {
+                return JwtConst.P384;
+            }
+            else if (partSize == 66)
+            {
+                return JwtConst.P521;
+            }
+            else
+            {
+                throw new ArgumentException("Size of X must equal to 32, 48 or 66 bytes");
+            }
+        }
+        #endregion
+
+        #region CreateJwkFromDictionary
+        /// <summary>CreateJwkFromDictionary</summary>
+        /// <param name="dic">Dictionary</param>
+        /// <param name="settings">JsonSerializerSettings</param>
+        /// <returns>JwkString</returns>
+        private static string CreateJwkFromDictionary(
+            Dictionary<string, string> dic, JsonSerializerSettings settings)
+        {
+            // JSON Web Key (JWK) Thumbprint
+            // https://openid-foundation-japan.github.io/rfc7638.ja.html
+            // kid : https://openid-foundation-japan.github.io/rfc7638.ja.html#Example
+            //       https://openid-foundation-japan.github.io/rfc7638.ja.html#MembersUsed
+            //       kidには、JWK の JWK Thumbprint 値などが用いられるらしい。
+            //       ★ EC 公開鍵の必須メンバを辞書順に並べると、crv, kty, x, y となる。
+            dic[JwtConst.kid] = CustomEncode.ToBase64UrlString(
+                GetHash.GetHashBytes(
+                    CustomEncode.StringToByte(
+                        JsonConvert.SerializeObject(new
+                        {
+                            crv = dic[JwtConst.crv],
+                            kty = dic[JwtConst.kty],
+                            x = dic[JwtConst.x],
+                            y = dic[JwtConst.y]
+                        }),
+                        CustomEncode.UTF_8),
+                    EnumHashAlgorithm.SHA256_M));
+
+            //dic["ext"] = "false"; // 定義をRFC上に発見できない。
+
+            if (settings == null)
+            {
+                return JsonConvert.SerializeObject(dic);
+            }
+            else
+            {
+                return JsonConvert.SerializeObject(dic, settings);
+            }
+        }
+        #endregion
+
+        #endregion
 
         #region CngToJwk
         /// <summary>CngKeyToJwk</summary>
         /// <param name="cngkey">CngKey</param>
-        /// <returns>Jwk（公開鍵）</returns>
+        /// <returns>Jwk公開鍵</returns>
         public static string CngToJwk(CngKey cngkey)
         {
+            EccPublicKeyConverter.CngToJwk(cngkey, null);
             return "";
         }
 
         /// <summary>CngToJwk</summary>
         /// <param name="cngkey">CngKey</param>
         /// <param name="settings">JsonSerializerSettings</param>
-        /// <returns>Jwk（公開鍵）</returns>
+        /// <returns>Jwk公開鍵</returns>
         public static string CngToJwk(CngKey cngkey, JsonSerializerSettings settings)
         {
-            return "";
+            EccKey eccKey = EccKey.Export(cngkey);
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+
+            dic[JwtConst.kty] = JwtConst.EC; // 必須
+            dic[JwtConst.alg] = JwtConst.ES256;
+
+            // 楕円曲線
+            dic[JwtConst.crv] = EccPublicKeyConverter.GetCrvStringFromXCoordinate(eccKey.X);
+            // 公開鍵の部分
+            dic[JwtConst.x] = CustomEncode.ToBase64UrlString(eccKey.X);
+            dic[JwtConst.y] = CustomEncode.ToBase64UrlString(eccKey.Y);
+            //if (eccKey.D != null) // 秘密鍵の部分は処理しない
+            //{
+            //    dic[JwtConst.d] = CustomEncode.ToBase64UrlString(eccKey.D);
+            //}
+            return EccPublicKeyConverter.CreateJwkFromDictionary(dic, settings);
         }
         #endregion
 
@@ -94,7 +311,8 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>CngKey（公開鍵）</returns>
         public static CngKey JwkToCng(string jwkString)
         {
-            return CngKey.Create(CngAlgorithm.ECDsaP256);
+            return EccPublicKeyConverter.JwkToCng(
+                JsonConvert.DeserializeObject<Dictionary<string, string>>(jwkString));
         }
 
         /// <summary>JwkToCng</summary>
@@ -102,10 +320,18 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>CngKey（公開鍵）</returns>
         public static CngKey JwkToCng(Dictionary<string, string> jwk)
         {
-            return CngKey.Create(CngAlgorithm.ECDsaP256);
+            // 楕円曲線
+            // 不要
+            // 公開鍵の部分
+            CngKey cngKey = EccKey.New(
+                CustomEncode.FromBase64UrlString((string)jwk[JwtConst.x]),
+                CustomEncode.FromBase64UrlString((string)jwk[JwtConst.y]),
+                null, // 秘密鍵の部分は処理しない
+                CngKeyUsages.Signing);
+
+            return cngKey;
         }
         #endregion
-
 
 #if NET45 || NET46
 #else
@@ -116,9 +342,9 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>ECCurveDic</summary>
         private static Dictionary<string, ECCurve> ECCurveDic = new Dictionary<string, ECCurve>()
         {
-            { "P-256" , ECCurve.NamedCurves.nistP256 },
-            { "P-384" , ECCurve.NamedCurves.nistP384 },
-            { "P-521" , ECCurve.NamedCurves.nistP521 },
+            { JwtConst.P256 , ECCurve.NamedCurves.nistP256 },
+            { JwtConst.P384 , ECCurve.NamedCurves.nistP384 },
+            { JwtConst.P521 , ECCurve.NamedCurves.nistP521 },
         };
 
         /// <summary>GetECCurveFromCrvString</summary>
@@ -167,7 +393,7 @@ namespace Touryo.Infrastructure.Public.Security
         #region ParamToJwk
         /// <summary>ParamToJwk</summary>
         /// <param name="ecParams">ECParameters</param>
-        /// <returns>Jwk（公開鍵）</returns>
+        /// <returns>Jwk公開鍵</returns>
         public static string ParamToJwk(ECParameters ecParams)
         {
             return EccPublicKeyConverter.ParamToJwk(ecParams, null);
@@ -176,12 +402,12 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>ParamToJwk</summary>
         /// <param name="ecParams">ECParameters</param>
         /// <param name="settings">JsonSerializerSettings</param>
-        /// <returns>Jwk（公開鍵）</returns>
+        /// <returns>Jwk公開鍵</returns>
         public static string ParamToJwk(ECParameters ecParams, JsonSerializerSettings settings)
         {
             Dictionary<string, string> dic = new Dictionary<string, string>();
 
-            dic[JwtConst.kty] = "EC"; // 必須
+            dic[JwtConst.kty] = JwtConst.EC; // 必須
             dic[JwtConst.alg] = JwtConst.ES256;
 
             // 楕円曲線
@@ -189,42 +415,11 @@ namespace Touryo.Infrastructure.Public.Security
             // 公開鍵の部分
             dic[JwtConst.x] = CustomEncode.ToBase64UrlString(ecParams.Q.X);
             dic[JwtConst.y] = CustomEncode.ToBase64UrlString(ecParams.Q.Y);
-
             //if (ecParams.D != null) // 秘密鍵の部分は処理しない
             //{
             //    dic[JwtConst.d] = CustomEncode.ToBase64UrlString(ecParams.D);
             //}
-
-            // JSON Web Key (JWK) Thumbprint
-            // https://openid-foundation-japan.github.io/rfc7638.ja.html
-            // kid : https://openid-foundation-japan.github.io/rfc7638.ja.html#Example
-            //       https://openid-foundation-japan.github.io/rfc7638.ja.html#MembersUsed
-            //       kidには、JWK の JWK Thumbprint 値などが用いられるらしい。
-            //       ★ EC 公開鍵の必須メンバを辞書順に並べると、crv, kty, x, y となる。
-
-            dic[JwtConst.kid] = CustomEncode.ToBase64UrlString(
-                GetHash.GetHashBytes(
-                    CustomEncode.StringToByte(
-                        JsonConvert.SerializeObject(new
-                        {
-                            crv = dic[JwtConst.crv],
-                            kty = dic[JwtConst.kty],
-                            x = dic[JwtConst.x],
-                            y = dic[JwtConst.y]
-                        }),
-                        CustomEncode.UTF_8),
-                    EnumHashAlgorithm.SHA256_M));
-
-            //dic["ext"] = "false"; // 定義をRFC上に発見できない。
-
-            if (settings == null)
-            {
-                return JsonConvert.SerializeObject(dic);
-            }
-            else
-            {
-                return JsonConvert.SerializeObject(dic, settings);
-            }
+            return EccPublicKeyConverter.CreateJwkFromDictionary(dic, settings);
         }
         #endregion
 
