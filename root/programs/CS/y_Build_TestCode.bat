@@ -18,17 +18,42 @@ call %CURRENT_DIR%z_Common.bat
 rem --------------------------------------------------
 rem Build the batch Infrastructure
 rem --------------------------------------------------
-..\nuget.exe restore "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx.sln"
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx.sln"
+set CURRENTDIR=%cd%
+cd "Frameworks\Tests\EncAndDecUtilCUI"
+call copy_cert.bat
+cd %CURRENTDIR%
 
 ..\nuget.exe restore "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx45.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx45.sln"
+
+..\nuget.exe restore "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx46.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx46.sln"
 
 ..\nuget.exe restore "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx47.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx47.sln"
 
 dotnet restore "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUICore.sln"
 dotnet msbuild %COMMANDLINE% "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUICore.sln"
+
+set CURRENTDIR=%cd%
+cd "Frameworks\Tests\EncAndDecUtilCUI\bin45\Debug"
+"EncAndDecUtilCUIFx.exe" > Result45.txt
+cd %CURRENTDIR%
+
+set CURRENTDIR=%cd%
+cd "Frameworks\Tests\EncAndDecUtilCUI\bin46\Debug"
+"EncAndDecUtilCUIFx.exe" > Result46.txt
+cd %CURRENTDIR%
+
+set CURRENTDIR=%cd%
+cd "Frameworks\Tests\EncAndDecUtilCUI\bin47\Debug"
+"EncAndDecUtilCUIFx.exe" > Result47.txt
+cd %CURRENTDIR%
+
+set CURRENTDIR=%cd%
+cd "Frameworks\Tests\EncAndDecUtilCUI\bin\Debug\netcoreapp2.0"
+dotnet "EncAndDecUtilCUICore.dll" > ResultCore.txt
+cd %CURRENTDIR%
 
 pause
 

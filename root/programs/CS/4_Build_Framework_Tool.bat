@@ -40,15 +40,9 @@ pause
 rem --------------------------------------------------
 rem Batch build of EncAndDecUtil.
 rem --------------------------------------------------
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\EncAndDecUtil\EncAndDecUtil47.sln"
-del /Q "Frameworks\Tools\EncAndDecUtil\bin"
-del /Q "Frameworks\Tools\EncAndDecUtil\obj"
-
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\EncAndDecUtil\EncAndDecUtil45.sln"
-del /Q "Frameworks\Tools\EncAndDecUtil\bin"
-del /Q "Frameworks\Tools\EncAndDecUtil\obj"
-
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\EncAndDecUtil\EncAndDecUtil.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\EncAndDecUtil\EncAndDecUtil46.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\EncAndDecUtil\EncAndDecUtil47.sln"
 
 pause
 

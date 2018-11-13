@@ -11,8 +11,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="bin45\**" />
+    <Compile Remove="bin46\**" />
+    <Compile Remove="bin47\**" />
     <Compile Remove="packages\**" />
+    <EmbeddedResource Remove="bin45\**" />
+    <EmbeddedResource Remove="bin46\**" />
+    <EmbeddedResource Remove="bin47\**" />
     <EmbeddedResource Remove="packages\**" />
+    <None Remove="bin45\**" />
+    <None Remove="bin46\**" />
+    <None Remove="bin47\**" />
     <None Remove="packages\**" />
   </ItemGroup>
 
