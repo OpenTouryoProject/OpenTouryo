@@ -13,5 +13,11 @@ namespace OnDocker.Controllers
         {
             return View();
         }
+
+        public IActionResult Test()
+        {
+            EncAndDecUtilCUI.Program.hogehoge(null);
+            return View();
+        }
     }
 }
