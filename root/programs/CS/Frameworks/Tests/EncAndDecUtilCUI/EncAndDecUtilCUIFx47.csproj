@@ -40,7 +40,7 @@
     </Reference>
     <Reference Include="OpenTouryo.Public, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Infrastructure\Build_net47\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\Infrastructure\Build_net47\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

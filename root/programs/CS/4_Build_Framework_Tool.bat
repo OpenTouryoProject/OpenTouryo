@@ -38,16 +38,17 @@ rem --------------------------------------------------
 pause
 
 rem --------------------------------------------------
-rem Batch build of TestEncAndDecProvider.
-rem --------------------------------------------------
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\Encryption\TestEncAndDecProvider\TestEncAndDecProvider.sln"
-
-pause
-
-rem --------------------------------------------------
 rem Batch build of EncAndDecUtil.
 rem --------------------------------------------------
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\Encryption\EncAndDecUtil\EncAndDecUtil.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\EncAndDecUtil\EncAndDecUtil47.sln"
+del /Q "Frameworks\Tools\EncAndDecUtil\bin"
+del /Q "Frameworks\Tools\EncAndDecUtil\obj"
+
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\EncAndDecUtil\EncAndDecUtil45.sln"
+del /Q "Frameworks\Tools\EncAndDecUtil\bin"
+del /Q "Frameworks\Tools\EncAndDecUtil\obj"
+
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\EncAndDecUtil\EncAndDecUtil.sln"
 
 pause
 

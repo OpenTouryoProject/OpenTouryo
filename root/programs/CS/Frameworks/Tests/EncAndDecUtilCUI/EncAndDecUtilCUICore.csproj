@@ -32,7 +32,7 @@
 
   <ItemGroup>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\..\Infrastructure\Build_netstd20\netstandard2.0\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\Infrastructure\Build_netstd20\netstandard2.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
   </ItemGroup>
 
