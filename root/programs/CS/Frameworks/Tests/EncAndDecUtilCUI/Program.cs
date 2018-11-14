@@ -193,6 +193,7 @@ namespace EncAndDecUtilCUI
                         "DigitalSignXML.Verify(DS1)",
                         dsXML.VerifyByDeformatter(data, sign).ToString());
 
+                    // WinでDSAが処理できない。
                     //dsX509 = new DigitalSignX509(@"SHA256DSA.pfx", "test", "SHA256", x509KSF);
                     //sign = dsX509.Sign(data);
                     //WriteLine.OutPutDebugAndConsole(
@@ -207,20 +208,26 @@ namespace EncAndDecUtilCUI
                     // NETFXではCngを処理可能。
                     DigitalSignECDsaCng dsECDsaCng = new DigitalSignECDsaCng(EnumDigitalSignAlgorithm.ECDsaCng_P256);
                     sign = dsECDsaCng.Sign(data);
-                    WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(ECDSA)",
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignX509.Verify(ECDSA)",
                         dsECDsaCng.Verify(data, sign).ToString());
 
-                    //// 鍵の相互変換 EccKeyでエラーになる。
-                    //jwk = EccPublicKeyConverter.CngToJwk(dsECDsaCng.PrivateKey);
+                    token = "";
+                    token = JWT.Encode(payload, ((ECDsa)dsECDsaCng.AsymmetricAlgorithm), JwsAlgorithm.ES256);
 
-                    //WriteLine.OutPutDebugAndConsole("ECDSA JWK", jwk);
+                    // 鍵の相互変換
+                    jwk = EccPublicKeyConverter.CngToJwk(dsECDsaCng.PrivateKey);
 
-                    //DigitalSignECDsaCng ecDsCng = new DigitalSignECDsaCng(
-                    //    EccPublicKeyConverter.JwkToCng(jwk), false);
+                    WriteLine.OutPutDebugAndConsole("ECDSA JWK", jwk);
+
+                    DigitalSignECDsaCng ecDsCng = new DigitalSignECDsaCng(
+                        EccPublicKeyConverter.JwkToCng(jwk), false);
 
                     //WriteLine.OutPutDebugAndConsole(
                     //    "DigitalSignX509.Verify(ECDSA JWK)",
                     //    ecDsCng.Verify(data, sign).ToString());
+
+                    //Program.VerifyResult("JwsAlgorithm.ES256", token, ecDsCng.AsymmetricAlgorithm);
 #endif
                     #endregion
                 }
@@ -230,17 +237,20 @@ namespace EncAndDecUtilCUI
                     #region RSA
                     dsParam = new DigitalSignParam(EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256);
                     sign = dsParam.Sign(data);
-                    WriteLine.OutPutDebugAndConsole("DigitalSignParam.Verify(RS256)",
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignParam.Verify(RS256)",
                         dsParam.Verify(data, sign).ToString());
 
                     dsXML = new DigitalSignXML(EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256);
                     sign = dsXML.Sign(data);
-                    WriteLine.OutPutDebugAndConsole("DigitalSignXML.Verify(RS256)",
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignXML.Verify(RS256)",
                         dsXML.Verify(data, sign).ToString());
 
                     dsX509 = new DigitalSignX509(@"SHA256RSA.pfx", "test", "SHA256");
                     sign = dsX509.Sign(data);
-                    WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(RSA)",
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignX509.Verify(RSA)",
                         dsX509.Verify(data, sign).ToString());
 
                     // 鍵の相互変換
@@ -253,8 +263,9 @@ namespace EncAndDecUtilCUI
                         RsaPublicKeyConverter.JwkToParam(jwk),
                         EnumDigitalSignAlgorithm.RsaCSP_SHA256);
 
-                    WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(RSA JWK)",
-                       dsParam.Verify(data, sign).ToString());
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignX509.Verify(RSA JWK)",
+                        dsParam.Verify(data, sign).ToString());
                     #endregion
 
                     #region DSA
@@ -374,7 +385,9 @@ namespace EncAndDecUtilCUI
                     // https://github.com/dvsekhvalnov/jose-jwt/blob/master/jose-jwt/Security/Cryptography/EccKey.cs
                     privateKeyOfCng = EccKey.New(x, y, d);
                     publicKeyOfCng = EccKey.New(x, y);
-
+                    //EccKey temp = EccKey.Generate(privateKeyOfCng);
+                    //publicKeyOfCng = EccKey.New(temp.X, temp.Y);
+                    
                     token = "";
                     token = JWT.Encode(payload, privateKeyOfCng, JwsAlgorithm.ES256);
                     Program.VerifyResult("JwsAlgorithm.ES256", token, publicKeyOfCng);
@@ -418,7 +431,9 @@ namespace EncAndDecUtilCUI
                     {
                         // ECCurveを分析してみる。
                         ECCurve eCCurve = ((ECDsaOpenSsl)privateX509Key.GetECDsaPrivateKey()).ExportExplicitParameters(true).Curve;
-                        WriteLine.OutPutDebugAndConsole("Inspect ECCurve", ObjectInspector.Inspect(eCCurve));
+                        WriteLine.OutPutDebugAndConsole(
+                            "Inspect ECCurve",
+                            ObjectInspector.Inspect(eCCurve));
                     }
 #endif
                     token = "";
@@ -427,7 +442,9 @@ namespace EncAndDecUtilCUI
                 }
                 catch (Exception ex)
                 {
-                    WriteLine.OutPutDebugAndConsole("JwsAlgorithm.ES256", ex.GetType().ToString() + ", " + ex.Message);
+                    WriteLine.OutPutDebugAndConsole(
+                        "JwsAlgorithm.ES256",
+                        ex.GetType().ToString() + ", " + ex.Message);
                 }
 #endif
 
@@ -450,19 +467,25 @@ namespace EncAndDecUtilCUI
                 // RSAES-PKCS1-v1_5 and AES_128_CBC_HMAC_SHA_256
                 token = "";
                 token = JWT.Encode(payload, publicX509Key.PublicKey.Key, JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256);
-                Program.VerifyResult("JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256", token, privateX509Key.PrivateKey);
+                Program.VerifyResult(
+                    "JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256",
+                    token, privateX509Key.PrivateKey);
 
                 // RSAES-OAEP and AES GCM
                 try
                 {
                     token = "";
                     token = JWT.Encode(payload, publicX509Key.PublicKey.Key, JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM);
-                    Program.VerifyResult("JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM", token, privateX509Key.PrivateKey);
+                    Program.VerifyResult(
+                        "JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM",
+                        token, privateX509Key.PrivateKey);
                 }
                 catch (Exception ex)
                 {
                     // Unhandled Exception: System.DllNotFoundException: Unable to load DLL 'bcrypt.dll' at ubunntu
-                    WriteLine.OutPutDebugAndConsole("JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM", ex.GetType().ToString() + ", " + ex.Message);
+                    WriteLine.OutPutDebugAndConsole(
+                        "JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM",
+                        ex.GetType().ToString() + ", " + ex.Message);
                 }
                 #endregion
 
@@ -497,7 +520,9 @@ namespace EncAndDecUtilCUI
                 catch (Exception ex)
                 {
                     // Unhandled Exception: System.DllNotFoundException: Unable to load DLL 'bcrypt.dll' at ubunntu
-                    WriteLine.OutPutDebugAndConsole("JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512", ex.GetType().ToString() + ", " + ex.Message);
+                    WriteLine.OutPutDebugAndConsole(
+                        "JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512",
+                        ex.GetType().ToString() + ", " + ex.Message);
                 }
                 #endregion
 
@@ -516,7 +541,9 @@ namespace EncAndDecUtilCUI
                 catch (Exception ex)
                 {
                     // System.NotImplementedException: 'not yet'
-                    WriteLine.OutPutDebugAndConsole("JweAlgorithm.ECDH_ES, JweEncryption.A256GCM", ex.GetType().ToString() + ", " + ex.Message);
+                    WriteLine.OutPutDebugAndConsole(
+                        "JweAlgorithm.ECDH_ES, JweEncryption.A256GCM",
+                        ex.GetType().ToString() + ", " + ex.Message);
                 }
                 #endregion
 
@@ -569,7 +596,9 @@ namespace EncAndDecUtilCUI
                 #region Strict validation
                 // https://github.com/dvsekhvalnov/jose-jwt#strict-validation
                 // 厳密な検証では、Algorithmを指定可能
-                WriteLine.OutPutDebugAndConsole("Strict validation(RS256)", JWT.Decode(token, rsa, JwsAlgorithm.RS256));
+                WriteLine.OutPutDebugAndConsole(
+                    "Strict validation(RS256)",
+                    JWT.Decode(token, rsa, JwsAlgorithm.RS256));
                 #endregion
 
                 #region Two-phase validation

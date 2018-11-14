@@ -287,8 +287,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>Jwk公開鍵</returns>
         public static string CngToJwk(CngKey cngkey)
         {
-            EccPublicKeyConverter.CngToJwk(cngkey, null);
-            return "";
+            return EccPublicKeyConverter.CngToJwk(cngkey, null);
         }
 
         /// <summary>CngToJwk</summary>
@@ -297,7 +296,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>Jwk公開鍵</returns>
         public static string CngToJwk(CngKey cngkey, JsonSerializerSettings settings)
         {
-            EccKey eccKey = EccKey.Export(cngkey);
+            EccKey eccKey = EccKey.Generate(cngkey);
             Dictionary<string, string> dic = new Dictionary<string, string>();
 
             dic[JwtConst.kty] = JwtConst.EC; // 必須
@@ -334,13 +333,9 @@ namespace Touryo.Infrastructure.Public.Security
             // 楕円曲線
             // 不要
             // 公開鍵の部分
-            CngKey cngKey = EccKey.New(
+            return EccKey.New(
                 CustomEncode.FromBase64UrlString((string)jwk[JwtConst.x]),
-                CustomEncode.FromBase64UrlString((string)jwk[JwtConst.y]),
-                null, // 秘密鍵の部分は処理しない
-                CngKeyUsages.Signing);
-
-            return cngKey;
+                CustomEncode.FromBase64UrlString((string)jwk[JwtConst.y]));
         }
         #endregion
 
