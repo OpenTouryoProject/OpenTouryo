@@ -51,10 +51,10 @@ namespace EncAndDecUtilCUI
                 IDictionary<string, object> headers = null;
                 IDictionary<string, object> payload = null;
                 payload = new Dictionary<string, object>()
-            {
-                { "sub", "mr.x@contoso.com" },
-                { "exp", 1300819380 }
-            };
+                {
+                    { "sub", "mr.x@contoso.com" },
+                    { "exp", 1300819380 }
+                };
                 #endregion
 
                 #region Keys
@@ -105,7 +105,8 @@ namespace EncAndDecUtilCUI
                 WriteLine.PrivateX509KeyInspector("DSA", privateX509Key);
                 WriteLine.PublicX509KeyInspector("DSA", publicX509Key);
                 DSA privateDSA = privateX509Key.GetDSAPrivateKey();
-                WriteLine.OutPutDebugAndConsole("privateDSA", (privateDSA == null ? "is null" : "is not null"));
+                WriteLine.OutPutDebugAndConsole("privateDSA",
+                    (privateDSA == null ? "is null" : "is not null"));
                 DSA publicDSA = null; // publicX509Key.GetDSAPublicKey(); // Internal.Cryptography.CryptoThrowHelper.WindowsCryptographicException
                 #endregion
 
@@ -118,9 +119,11 @@ namespace EncAndDecUtilCUI
                 WriteLine.PrivateX509KeyInspector("ECDsa", privateX509Key);
                 WriteLine.PublicX509KeyInspector("ECDsa", publicX509Key);
                 ECDsa privateECDsa = privateX509Key.GetECDsaPrivateKey();
-                WriteLine.OutPutDebugAndConsole("privateECDsa", (privateECDsa == null ? "is null" : "is not null"));
+                WriteLine.OutPutDebugAndConsole("privateECDsa",
+                    (privateECDsa == null ? "is null" : "is not null"));
                 ECDsa publicECDsa = publicX509Key.GetECDsaPublicKey();
-                WriteLine.OutPutDebugAndConsole("publicECDsa", (publicECDsa == null ? "is null" : "is not null"));
+                WriteLine.OutPutDebugAndConsole("publicECDsa",
+                    (publicECDsa == null ? "is null" : "is not null"));
                 #endregion
 #endif
 
@@ -140,17 +143,20 @@ namespace EncAndDecUtilCUI
                     #region RSA
                     dsParam = new DigitalSignParam(EnumDigitalSignAlgorithm.RsaCSP_SHA256);
                     sign = dsParam.Sign(data);
-                    WriteLine.OutPutDebugAndConsole("DigitalSignParam.Verify(RS256)",
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignParam.Verify(RS256)",
                         dsParam.Verify(data, sign).ToString());
 
                     dsXML = new DigitalSignXML(EnumDigitalSignAlgorithm.RsaCSP_SHA256);
                     sign = dsXML.Sign(data);
-                    WriteLine.OutPutDebugAndConsole("DigitalSignXML.Verify(RS256)",
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignXML.Verify(RS256)",
                         dsXML.Verify(data, sign).ToString());
 
                     dsX509 = new DigitalSignX509(@"SHA256RSA.pfx", "test", "SHA256", x509KSF);
                     sign = dsX509.Sign(data);
-                    WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(RSA)",
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignX509.Verify(RSA)",
                         dsX509.Verify(data, sign).ToString());
 
                     // 鍵の相互変換
@@ -163,8 +169,9 @@ namespace EncAndDecUtilCUI
                         RsaPublicKeyConverter.JwkToParam(jwk),
                         EnumDigitalSignAlgorithm.RsaCSP_SHA256);
 
-                    WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(RSA JWK)",
-                       dsParam.Verify(data, sign).ToString());
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignX509.Verify(RSA JWK)",
+                        dsParam.Verify(data, sign).ToString());
 
                     #endregion
 
@@ -172,17 +179,20 @@ namespace EncAndDecUtilCUI
                     // DSAはFormatterバージョンしか動かない。
                     dsParam = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaCSP_SHA1);
                     sign = dsParam.SignByFormatter(data);
-                    WriteLine.OutPutDebugAndConsole("DigitalSignParam.Verify(DS1)",
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignParam.Verify(DS1)",
                         dsParam.VerifyByDeformatter(data, sign).ToString());
 
                     dsXML = new DigitalSignXML(EnumDigitalSignAlgorithm.DsaCSP_SHA1);
                     sign = dsXML.SignByFormatter(data);
-                    WriteLine.OutPutDebugAndConsole("DigitalSignXML.Verify(DS1)",
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignXML.Verify(DS1)",
                         dsXML.VerifyByDeformatter(data, sign).ToString());
 
                     //dsX509 = new DigitalSignX509(@"SHA256DSA.pfx", "test", "SHA256", x509KSF);
                     //sign = dsX509.Sign(data);
-                    //WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(DSA)",
+                    //WriteLine.OutPutDebugAndConsole(
+                    //    "DigitalSignX509.Verify(DSA)",
                     //    dsX509.Verify(data, sign).ToString());
                     #endregion
 
@@ -190,11 +200,23 @@ namespace EncAndDecUtilCUI
 #if NETCORE
                     // NETCOREだと動かない。
 #else
-                // NETFXではCngを処理可能。
-                DigitalSignECDsaCng dsECDsaCng = new DigitalSignECDsaCng(EnumDigitalSignAlgorithm.ECDsaCng_P256);
-                sign = dsECDsaCng.Sign(data);
-                WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(ECDSA)",
-                    dsECDsaCng.Verify(data, sign).ToString());
+                    // NETFXではCngを処理可能。
+                    DigitalSignECDsaCng dsECDsaCng = new DigitalSignECDsaCng(EnumDigitalSignAlgorithm.ECDsaCng_P256);
+                    sign = dsECDsaCng.Sign(data);
+                    WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(ECDSA)",
+                        dsECDsaCng.Verify(data, sign).ToString());
+
+                    //// 鍵の相互変換 EccKeyでエラーになる。
+                    //jwk = EccPublicKeyConverter.CngToJwk(dsECDsaCng.PrivateKey);
+
+                    //WriteLine.OutPutDebugAndConsole("ECDSA JWK", jwk);
+
+                    //DigitalSignECDsaCng ecDsCng = new DigitalSignECDsaCng(
+                    //    EccPublicKeyConverter.JwkToCng(jwk), false);
+
+                    //WriteLine.OutPutDebugAndConsole(
+                    //    "DigitalSignX509.Verify(ECDSA JWK)",
+                    //    ecDsCng.Verify(data, sign).ToString());
 #endif
                     #endregion
                 }
@@ -234,25 +256,31 @@ namespace EncAndDecUtilCUI
                     #region DSA
                     dsParam = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1);
                     sign = dsParam.Sign(data);
-                    WriteLine.OutPutDebugAndConsole("DigitalSignParam.Verify(DS1)",
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignParam.Verify(DS1)",
                         dsParam.Verify(data, sign).ToString());
 
                     dsXML = new DigitalSignXML(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1);
                     sign = dsXML.Sign(data);
-                    WriteLine.OutPutDebugAndConsole("DigitalSignXML.Verify(DS1)",
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignXML.Verify(DS1)",
                         dsXML.Verify(data, sign).ToString());
 
                     dsX509 = new DigitalSignX509(@"SHA256DSA.pfx", "test", "SHA256");
                     sign = dsX509.Sign(data);
-                    WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(DSA)",
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignX509.Verify(DSA)",
                         dsX509.Verify(data, sign).ToString());
                     #endregion
 
                     #region ECDSA
                     // .NET Core on Linux
-                    DigitalSignECDsaX509 ecDsX509 = new DigitalSignECDsaX509(@"SHA256ECDSA.pfx", "test", HashAlgorithmName.SHA256);
+                    DigitalSignECDsaX509 ecDsX509 = new DigitalSignECDsaX509(
+                        @"SHA256ECDSA.pfx", "test", HashAlgorithmName.SHA256);
+
                     sign = ecDsX509.Sign(data);
-                    WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(ECDSA)",
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignX509.Verify(ECDSA)",
                         ecDsX509.Verify(data, sign).ToString());
 
                     // 鍵の相互変換
@@ -261,11 +289,17 @@ namespace EncAndDecUtilCUI
 
                     WriteLine.OutPutDebugAndConsole("ECDSA JWK", jwk);
 
+                    ECParameters eCParameters = EccPublicKeyConverter.JwkToParam(jwk);
+                    x = eCParameters.Q.X;
+                    y = eCParameters.Q.Y;
+                    d = eCParameters.D;
+
                     DigitalSignECDsaOpenSsl ecDsParam = new DigitalSignECDsaOpenSsl(
                         EccPublicKeyConverter.JwkToParam(jwk),
                         HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(HashNameConst.SHA256));
-                    WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(ECDSA JWK)",
-                       ecDsParam.Verify(data, sign).ToString());
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignX509.Verify(ECDSA JWK)",
+                        ecDsParam.Verify(data, sign).ToString());
                     #endregion
 #endif
                 }
@@ -313,8 +347,8 @@ namespace EncAndDecUtilCUI
 #if NETCORE
                 rsa = (RSA)privateX509Key.PrivateKey;
 #else
-            // .net frameworkでは、何故かコレが必要。
-            rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(privateX509Key.PrivateKey);
+                // .net frameworkでは、何故かコレが必要。
+                rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(privateX509Key.PrivateKey);
 #endif
                 token = JWT.Encode(payload, rsa, JwsAlgorithm.RS256);
                 Program.VerifyResult("JwsAlgorithm.RS256", token, rsa);
@@ -325,12 +359,12 @@ namespace EncAndDecUtilCUI
                 // ES256, ES384, ES512 ECDSA signatures
                 // https://github.com/dvsekhvalnov/jose-jwt#es---family
 
-                x = new byte[] { 4, 114, 29, 223, 58, 3, 191, 170, 67, 128, 229, 33, 242, 178, 157, 150, 133, 25, 209, 139, 166, 69, 55, 26, 84, 48, 169, 165, 67, 232, 98, 9 };
-                y = new byte[] { 131, 116, 8, 14, 22, 150, 18, 75, 24, 181, 159, 78, 90, 51, 71, 159, 214, 186, 250, 47, 207, 246, 142, 127, 54, 183, 72, 72, 253, 21, 88, 53 };
-                d = new byte[] { 42, 148, 231, 48, 225, 196, 166, 201, 23, 190, 229, 199, 20, 39, 226, 70, 209, 148, 29, 70, 125, 14, 174, 66, 9, 198, 80, 251, 95, 107, 98, 206 };
-
                 if (os.Platform == PlatformID.Win32NT)
                 {
+                    x = new byte[] { 4, 114, 29, 223, 58, 3, 191, 170, 67, 128, 229, 33, 242, 178, 157, 150, 133, 25, 209, 139, 166, 69, 55, 26, 84, 48, 169, 165, 67, 232, 98, 9 };
+                    y = new byte[] { 131, 116, 8, 14, 22, 150, 18, 75, 24, 181, 159, 78, 90, 51, 71, 159, 214, 186, 250, 47, 207, 246, 142, 127, 54, 183, 72, 72, 253, 21, 88, 53 };
+                    d = new byte[] { 42, 148, 231, 48, 225, 196, 166, 201, 23, 190, 229, 199, 20, 39, 226, 70, 209, 148, 29, 70, 125, 14, 174, 66, 9, 198, 80, 251, 95, 107, 98, 206 };
+
                     // https://github.com/dvsekhvalnov/jose-jwt/blob/master/jose-jwt/Security/Cryptography/EccKey.cs
                     privateKeyOfCng = EccKey.New(x, y, d);
                     publicKeyOfCng = EccKey.New(x, y);
@@ -341,17 +375,25 @@ namespace EncAndDecUtilCUI
                 }
                 else //if (os.Platform == PlatformID.Unix)
                 {
-                    // (x, y, d)を使用して、ECCurveからECDsaOpenSslを生成できれば...。
+#if NETCORE
+                    ECParameters eCParameters = new ECParameters();
 
-                    //ECCurve eCCurve = new ECCurve();
-                    ////eCCurve.A = x;
-                    ////eCCurve.B = y;
-                    ////ECDsaOpenSsl ecd = new ECDsaOpenSsl(eCCurve);
-                    ////eCCurve = ecd.ExportExplicitParameters(true).Curve;
+                    // Curve
+                    eCParameters.Curve = 
+                        EccPublicKeyConverter.GetECCurveFromCrvString(
+                            EccPublicKeyConverter.GetCrvStringFromXCoordinate(x));
 
-                    //token = "";
-                    //token = JWT.Encode(payload, new ECDsaOpenSsl(eCCurve), JwsAlgorithm.ES256);
-                    //Program.VerifyResult("JwsAlgorithm.ES256", token, new ECDsaOpenSsl(eCCurve));
+                    // x, y, d
+                    eCParameters.Q.X = x;
+                    eCParameters.Q.X = y;
+                    eCParameters.D = d;
+                    ECDsaOpenSsl eCDsaOpenSsl = new ECDsaOpenSsl();
+                    eCDsaOpenSsl.ImportParameters(eCParameters);
+
+                    token = "";
+                    token = JWT.Encode(payload, eCDsaOpenSsl, JwsAlgorithm.ES256);
+                    Program.VerifyResult("JwsAlgorithm.ES256", token, eCDsaOpenSsl);
+#endif
                 }
 
 #if NETCORE || NET47
@@ -495,11 +537,11 @@ namespace EncAndDecUtilCUI
                 // https://github.com/dvsekhvalnov/jose-jwt#adding-extra-headers
 
                 headers = new Dictionary<string, object>()
-            {
-                { "typ", "JWT" },
-                { "cty", "JWT" },
-                { "keyid", "111-222-333"}
-            };
+                {
+                    { "typ", "JWT" },
+                    { "cty", "JWT" },
+                    { "keyid", "111-222-333"}
+                };
 
                 privateX509Path = @"SHA256RSA.pfx";
                 publicX509Path = @"SHA256RSA.cer";
@@ -509,8 +551,8 @@ namespace EncAndDecUtilCUI
 #if NETCORE
                 rsa = (RSA)privateX509Key.PrivateKey;
 #else
-            // .net frameworkでは、何故かコレが必要。
-            rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(privateX509Key.PrivateKey);
+                // .net frameworkでは、何故かコレが必要。
+                rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(privateX509Key.PrivateKey);
 #endif
 
                 token = "";
@@ -593,7 +635,7 @@ namespace EncAndDecUtilCUI
             }
             catch (Exception ex)
             {
-                WriteLine.OutPutDebugAndConsole(ex.ToString()); 
+                WriteLine.OutPutDebugAndConsole(ex.ToString());
             }
 
             Console.ReadKey();

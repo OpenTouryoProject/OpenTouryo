@@ -111,11 +111,16 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         /// <summary>Constructor</summary>
-        /// <param name="privateKey">秘密鍵</param>
-        public DigitalSignECDsaCng(CngKey privateKey)
+        /// <param name="cngKey">任意鍵</param>
+        /// <param name="isPrivate">秘密鍵か否か</param>
+        public DigitalSignECDsaCng(CngKey cngKey, bool isPrivate)
         {
-            this._privateKey = privateKey;
-            this._publicKey = this._privateKey.Export(CngKeyBlobFormat.GenericPublicBlob);
+            this._publicKey = cngKey.Export(CngKeyBlobFormat.GenericPublicBlob);
+
+            if (isPrivate)
+            {
+                this._privateKey = cngKey;
+            }
         }
 
         #endregion

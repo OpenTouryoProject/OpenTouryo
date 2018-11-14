@@ -36,22 +36,22 @@ dotnet restore "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUICore.sln"
 dotnet msbuild %COMMANDLINE% "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUICore.sln"
 
 set CURRENTDIR=%cd%
-cd "Frameworks\Tests\EncAndDecUtilCUI\bin45\Debug"
+cd "Frameworks\Tests\EncAndDecUtilCUI\net45\bin\Debug"
 "EncAndDecUtilCUIFx.exe" > Result45.txt
 cd %CURRENTDIR%
 
 set CURRENTDIR=%cd%
-cd "Frameworks\Tests\EncAndDecUtilCUI\bin46\Debug"
+cd "Frameworks\Tests\EncAndDecUtilCUI\net46\bin\Debug"
 "EncAndDecUtilCUIFx.exe" > Result46.txt
 cd %CURRENTDIR%
 
 set CURRENTDIR=%cd%
-cd "Frameworks\Tests\EncAndDecUtilCUI\bin47\Debug"
+cd "Frameworks\Tests\EncAndDecUtilCUI\net47\bin\Debug"
 "EncAndDecUtilCUIFx.exe" > Result47.txt
 cd %CURRENTDIR%
 
 set CURRENTDIR=%cd%
-cd "Frameworks\Tests\EncAndDecUtilCUI\bin\Debug\netcoreapp2.0"
+cd "Frameworks\Tests\EncAndDecUtilCUI\core20\bin\Debug\netcoreapp2.0"
 dotnet "EncAndDecUtilCUICore.dll" > ResultCore.txt
 cd %CURRENTDIR%
 

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncAndDecUtilCUIFx", "EncAndDecUtilCUIFx46.csproj", "{7DAC4701-A800-4C8A-B70F-2A71C78F7B2F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncAndDecUtilCUIFx", "net46\EncAndDecUtilCUIFx46.csproj", "{7DAC4701-A800-4C8A-B70F-2A71C78F7B2F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

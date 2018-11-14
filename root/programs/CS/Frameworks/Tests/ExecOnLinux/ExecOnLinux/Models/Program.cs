@@ -21,7 +21,7 @@ namespace EncAndDecUtilCUI
     /// - Certificates
     ///   https://github.com/OpenTouryoProject/OpenTouryo/tree/develop/root/files/resource/X509
     /// </summary>
-    public class Program
+    class Program
     {
         public static void hogehoge(string[] args)
         {
@@ -43,10 +43,10 @@ namespace EncAndDecUtilCUI
                 IDictionary<string, object> headers = null;
                 IDictionary<string, object> payload = null;
                 payload = new Dictionary<string, object>()
-            {
-                { "sub", "mr.x@contoso.com" },
-                { "exp", 1300819380 }
-            };
+                {
+                    { "sub", "mr.x@contoso.com" },
+                    { "exp", 1300819380 }
+                };
                 #endregion
 
                 #region Keys
@@ -63,10 +63,11 @@ namespace EncAndDecUtilCUI
                 X509Certificate2 privateX509Key = null;
 
                 RSA rsa = null;
-                DSA dsa = null;
+                //DSA dsa = null;
 
                 CngKey publicKeyOfCng = null;
-                CngKey privateKeyOfCng = null;
+                //CngKey privateKeyOfCng = null;
+                ECParameters eCParameters = new ECParameters();
                 #endregion
 
                 #region DigitalSign
@@ -96,8 +97,9 @@ namespace EncAndDecUtilCUI
                 WriteLine.PrivateX509KeyInspector("DSA", privateX509Key);
                 WriteLine.PublicX509KeyInspector("DSA", publicX509Key);
                 DSA privateDSA = privateX509Key.GetDSAPrivateKey();
-                WriteLine.OutPutDebugAndConsole("privateDSA", (privateDSA == null ? "is null" : "is not null"));
-                DSA publicDSA = null; // publicX509Key.GetDSAPublicKey(); // Internal.Cryptography.CryptoThrowHelper.WindowsCryptographicException
+                WriteLine.OutPutDebugAndConsole("privateDSA",
+                    (privateDSA == null ? "is null" : "is not null"));
+                //DSA publicDSA = null; // publicX509Key.GetDSAPublicKey(); // Internal.Cryptography.CryptoThrowHelper.WindowsCryptographicException
                 #endregion
 
                 #region ECDsa
@@ -108,10 +110,14 @@ namespace EncAndDecUtilCUI
                 publicX509Key = new X509Certificate2(publicX509Path, "");
                 WriteLine.PrivateX509KeyInspector("ECDsa", privateX509Key);
                 WriteLine.PublicX509KeyInspector("ECDsa", publicX509Key);
+
                 ECDsa privateECDsa = privateX509Key.GetECDsaPrivateKey();
-                WriteLine.OutPutDebugAndConsole("privateECDsa", (privateECDsa == null ? "is null" : "is not null"));
+                WriteLine.OutPutDebugAndConsole("privateECDsa",
+                    (privateECDsa == null ? "is null" : "is not null"));
+
                 ECDsa publicECDsa = publicX509Key.GetECDsaPublicKey();
-                WriteLine.OutPutDebugAndConsole("publicECDsa", (publicECDsa == null ? "is null" : "is not null"));
+                WriteLine.OutPutDebugAndConsole("publicECDsa",
+                    (publicECDsa == null ? "is null" : "is not null"));
                 #endregion
 
                 #endregion
@@ -119,7 +125,6 @@ namespace EncAndDecUtilCUI
                 WriteLine.OutPutDebugAndConsole("----------------------------------------------------------------------------------------------------");
 
                 #region Test of the OpenTouryo.Public.Security.
-
 
                 DigitalSignParam dsParam = null;
                 DigitalSignXML dsXML = null;
@@ -158,38 +163,58 @@ namespace EncAndDecUtilCUI
                 #region DSA
                 dsParam = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1);
                 sign = dsParam.Sign(data);
-                WriteLine.OutPutDebugAndConsole("DigitalSignParam.Verify(DS1)",
-                    dsParam.Verify(data, sign).ToString());
+                WriteLine.OutPutDebugAndConsole(
+                    "DigitalSignParam.Verify(DS1)",
+                dsParam.Verify(data, sign).ToString());
 
                 dsXML = new DigitalSignXML(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1);
                 sign = dsXML.Sign(data);
-                WriteLine.OutPutDebugAndConsole("DigitalSignXML.Verify(DS1)",
-                    dsXML.Verify(data, sign).ToString());
+                WriteLine.OutPutDebugAndConsole(
+                    "DigitalSignXML.Verify(DS1)",
+                dsXML.Verify(data, sign).ToString());
 
                 dsX509 = new DigitalSignX509(@"SHA256DSA.pfx", "test", "SHA256");
                 sign = dsX509.Sign(data);
-                WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(DSA)",
-                    dsX509.Verify(data, sign).ToString());
+                WriteLine.OutPutDebugAndConsole(
+                    "DigitalSignX509.Verify(DSA)",
+                dsX509.Verify(data, sign).ToString());
                 #endregion
 
                 #region ECDSA
                 // .NET Core on Linux
-                DigitalSignECDsaX509 ecDsX509 = new DigitalSignECDsaX509(@"SHA256ECDSA.pfx", "test", HashAlgorithmName.SHA256);
+                DigitalSignECDsaX509 ecDsX509 = new DigitalSignECDsaX509(
+                    @"SHA256ECDSA.pfx", "test", HashAlgorithmName.SHA256);
+
                 sign = ecDsX509.Sign(data);
-                WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(ECDSA)",
-                    ecDsX509.Verify(data, sign).ToString());
+                WriteLine.OutPutDebugAndConsole(
+                    "DigitalSignX509.Verify(ECDSA)",
+                ecDsX509.Verify(data, sign).ToString());
+
+                token = "";
+                token = JWT.Encode(payload, ((ECDsa)ecDsX509.AsymmetricAlgorithm), JwsAlgorithm.ES256);
 
                 // 鍵の相互変換
                 jwk = EccPublicKeyConverter.ParamToJwk(
                     ((ECDsa)ecDsX509.AsymmetricAlgorithm).ExportParameters(false));
 
-                    WriteLine.OutPutDebugAndConsole("ECDSA JWK", jwk);
+                WriteLine.OutPutDebugAndConsole("ECDSA JWK", jwk);
 
-                DigitalSignECDsaOpenSsl ecDsParam = new DigitalSignECDsaOpenSsl(
-                    EccPublicKeyConverter.JwkToParam(jwk),
-                    HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(HashNameConst.SHA256));
-                    WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(ECDSA JWK)",
-                   ecDsParam.Verify(data, sign).ToString());
+                eCParameters = EccPublicKeyConverter.JwkToParam(jwk);
+                x = eCParameters.Q.X;
+                y = eCParameters.Q.Y;
+                d = eCParameters.D;
+
+                DigitalSignECDsaOpenSsl ecDsParam = 
+                    new DigitalSignECDsaOpenSsl(
+                        eCParameters,
+                        HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(HashNameConst.SHA256));
+
+                WriteLine.OutPutDebugAndConsole(
+                    "DigitalSignX509.Verify(ECDSA JWK)",
+                    ecDsParam.Verify(data, sign).ToString());
+               
+                Program.VerifyResult("JwsAlgorithm.ES256", token, ecDsParam.AsymmetricAlgorithm);
+
                 #endregion
 
                 #endregion
@@ -246,13 +271,31 @@ namespace EncAndDecUtilCUI
                 y = new byte[] { 131, 116, 8, 14, 22, 150, 18, 75, 24, 181, 159, 78, 90, 51, 71, 159, 214, 186, 250, 47, 207, 246, 142, 127, 54, 183, 72, 72, 253, 21, 88, 53 };
                 d = new byte[] { 42, 148, 231, 48, 225, 196, 166, 201, 23, 190, 229, 199, 20, 39, 226, 70, 209, 148, 29, 70, 125, 14, 174, 66, 9, 198, 80, 251, 95, 107, 98, 206 };
 
-                privateX509Path = @"SHA256ECDSA.pfx";
-                publicX509Path = @"SHA256ECDSA.cer";
-                privateX509Key = new X509Certificate2(privateX509Path, "test");
-                publicX509Key = new X509Certificate2(publicX509Path, "");
+                eCParameters = new ECParameters();
+
+                // Curve
+                eCParameters.Curve =
+                    EccPublicKeyConverter.GetECCurveFromCrvString(
+                        EccPublicKeyConverter.GetCrvStringFromXCoordinate(x));
+
+                // x, y, d
+                eCParameters.Q.X = x;
+                eCParameters.Q.Y = y;
+                eCParameters.D = d;
+                ECDsaOpenSsl eCDsaOpenSsl = new ECDsaOpenSsl(eCParameters.Curve);
+                eCDsaOpenSsl.ImportParameters(eCParameters);
+
+                token = "";
+                token = JWT.Encode(payload, eCDsaOpenSsl, JwsAlgorithm.ES256);
+                Program.VerifyResult("JwsAlgorithm.ES256", token, eCDsaOpenSsl);
 
                 try
                 {
+                    privateX509Path = @"SHA256ECDSA.pfx";
+                    publicX509Path = @"SHA256ECDSA.cer";
+                    privateX509Key = new X509Certificate2(privateX509Path, "test");
+                    publicX509Key = new X509Certificate2(publicX509Path, "");
+
                     // ECCurveを分析してみる。
                     ECCurve eCCurve = ((ECDsaOpenSsl)privateX509Key.GetECDsaPrivateKey()).ExportExplicitParameters(true).Curve;
                     WriteLine.OutPutDebugAndConsole("Inspect ECCurve", ObjectInspector.Inspect(eCCurve));
@@ -367,107 +410,7 @@ namespace EncAndDecUtilCUI
 
                 #endregion
 
-                WriteLine.OutPutDebugAndConsole("----------------------------------------------------------------------------------------------------");
-
-                #region ELSE
-
-                #region Additional utilities
-                // https://github.com/dvsekhvalnov/jose-jwt#additional-utilities
-
-                #region Adding extra headers
-                // https://github.com/dvsekhvalnov/jose-jwt#adding-extra-headers
-
-                headers = new Dictionary<string, object>()
-            {
-                { "typ", "JWT" },
-                { "cty", "JWT" },
-                { "keyid", "111-222-333"}
-            };
-
-                privateX509Path = @"SHA256RSA.pfx";
-                publicX509Path = @"SHA256RSA.cer";
-                privateX509Key = new X509Certificate2(privateX509Path, "test", x509KSF);
-                publicX509Key = new X509Certificate2(publicX509Path, "", x509KSF);
-
-                rsa = (RSA)privateX509Key.PrivateKey;
-
-                token = "";
-                token = JWT.Encode(payload, rsa, JwsAlgorithm.RS256, extraHeaders: headers);
-                Program.VerifyResult("Adding extra headers to RS256", token, rsa);
                 #endregion
-
-                #region Strict validation
-                // https://github.com/dvsekhvalnov/jose-jwt#strict-validation
-                // 厳密な検証では、Algorithmを指定可能
-                WriteLine.OutPutDebugAndConsole("Strict validation(RS256)", JWT.Decode(token, rsa, JwsAlgorithm.RS256));
-                #endregion
-
-                #region Two-phase validation
-                // https://github.com/dvsekhvalnov/jose-jwt#two-phase-validation
-                // ヘッダのkeyidクレームからキーを取り出して復号化する方法。
-                //headers = JWT.Headers(token);
-                // ・・・
-                //string hoge = JWT.Decode(token, "key");
-                #endregion
-
-                #region Working with binary payload
-                // https://github.com/dvsekhvalnov/jose-jwt#working-with-binary-payload
-                #endregion
-
-                #endregion
-
-                #region Settings
-                // https://github.com/dvsekhvalnov/jose-jwt#settings
-                // グローバル設定
-
-                #region Example of JWTSettings
-                // https://github.com/dvsekhvalnov/jose-jwt#example-of-jwtsettings
-
-                #endregion
-
-                #region Customizing json <-> object parsing & mapping
-                // https://github.com/dvsekhvalnov/jose-jwt#customizing-json---object-parsing--mapping
-                // マッピング
-                // https://github.com/dvsekhvalnov/jose-jwt#example-of-newtonsoftjson-mapper
-                // https://github.com/dvsekhvalnov/jose-jwt#example-of-servicestack-mapper
-
-                #endregion
-
-                #region Customizing algorithm implementations
-                // https://github.com/dvsekhvalnov/jose-jwt#customizing-algorithm-implementations
-                // https://github.com/dvsekhvalnov/jose-jwt#example-of-custom-algorithm-implementation
-                #endregion
-
-                #region Providing aliases
-                // https://github.com/dvsekhvalnov/jose-jwt#providing-aliases
-                #endregion
-
-                #endregion
-
-                #region Dealing with keys
-                // https://github.com/dvsekhvalnov/jose-jwt#dealing-with-keys
-                // https://github.com/dvsekhvalnov/jose-jwt#rsacryptoserviceprovider
-                // - http://stackoverflow.com/questions/7444586/how-can-i-sign-a-file-using-rsa-and-sha256-with-net
-                // - http://hintdesk.com/c-how-to-fix-invalid-algorithm-specified-when-signing-with-sha256/
-                // https://github.com/dvsekhvalnov/jose-jwt#if-you-have-only-rsa-private-key
-                // - http://www.donaldsbaconbytes.com/2016/08/create-jwt-with-a-private-rsa-key/
-                #endregion
-
-                #region Strong-Named assembly
-                // https://github.com/dvsekhvalnov/jose-jwt#strong-named-assembly
-                // - https://github.com/dvsekhvalnov/jose-jwt/issues/5
-                // - https://github.com/brutaldev/StrongNameSigner
-                #endregion
-
-                #region More examples
-                // https://github.com/dvsekhvalnov/jose-jwt#more-examples
-                // https://github.com/dvsekhvalnov/jose-jwt/blob/master/UnitTests/TestSuite.cs
-                #endregion
-
-                #endregion
-
-                #endregion
-
             }
             catch (Exception ex)
             {

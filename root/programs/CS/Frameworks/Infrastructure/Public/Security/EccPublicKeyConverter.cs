@@ -53,7 +53,7 @@ namespace Touryo.Infrastructure.Public.Security
     public class EccPublicKeyConverter
     {
         // X.509からの変換
-        #region X.509 鍵 → ECDsaProvider(ECParameters) → Jwk
+        #region X.509 鍵 → ECDsaProvider(Cngkey, ECParameters) → Jwk
 
         // X.509 は、NET47以降
 #if NET45 || NET46
@@ -82,20 +82,31 @@ namespace Touryo.Infrastructure.Public.Security
         }
         #endregion
 
-        #region ECDsaProvider(ECParameters)
-        /// <summary>X509CerToParam</summary>
+        #region ECDsaProvider(Cngkey, ECParameters)
+        /// <summary>X509CerToCngkey</summary>
+        /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <returns>CngKey（公開鍵）</returns>
+        public static CngKey X509CerToCngkey(string certificateFilePath, HashAlgorithmName hashAlgorithmName)
+        {
+            return ((ECDsaCng)EccPublicKeyConverter.X509CerToProvider(
+                certificateFilePath, hashAlgorithmName)).Key;
+        }
+
+        /// <summary>X509CerToECParam</summary>
         /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
         /// <param name="hashAlgorithmName">HashAlgorithmName</param>
         /// <returns>ECParameters（公開鍵）</returns>
-        public static ECParameters X509CerToParam(string certificateFilePath, HashAlgorithmName hashAlgorithmName)
+        public static ECParameters X509CerToECParam(string certificateFilePath, HashAlgorithmName hashAlgorithmName)
         {
-            return EccPublicKeyConverter.X509CerToProvider(certificateFilePath, hashAlgorithmName).ExportParameters(false);
+            return EccPublicKeyConverter.X509CerToProvider(
+                certificateFilePath, hashAlgorithmName).ExportParameters(false);
         }
 
         /// <summary>X509CerToProvider</summary>
         /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
         /// <param name="hashAlgorithmName">HashAlgorithmName</param>
-        /// <returns>ECDsa</returns>
+        /// <returns>ECDsa（公開鍵）</returns>
         public static ECDsa X509CerToProvider(string certificateFilePath, HashAlgorithmName hashAlgorithmName)
         {
             // X509KeyStorageFlagsについて
@@ -205,7 +216,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>GetCrvString</summary>
         /// <param name="x">byte[]</param>
         /// <returns>CrvString</returns>
-        private static string GetCrvStringFromXCoordinate(byte[] x)
+        public static string GetCrvStringFromXCoordinate(byte[] x)
         {
             int partSize = x.Length;
 
@@ -350,7 +361,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>GetECCurveFromCrvString</summary>
         /// <param name="crvString">string</param>
         /// <returns>ECCurve</returns>
-        private static ECCurve GetECCurveFromCrvString(string crvString)
+        public static ECCurve GetECCurveFromCrvString(string crvString)
         {
             return EccPublicKeyConverter.ECCurveDic[crvString];
         }
