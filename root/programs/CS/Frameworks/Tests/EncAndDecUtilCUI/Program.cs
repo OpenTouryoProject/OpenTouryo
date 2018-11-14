@@ -75,6 +75,10 @@ namespace EncAndDecUtilCUI
 
                 CngKey publicKeyOfCng = null;
                 CngKey privateKeyOfCng = null;
+#if NET45 || NET46
+                ECParameters eCParameters = new ECParameters();
+#else
+#endif
                 #endregion
 
                 #region DigitalSign
@@ -283,23 +287,25 @@ namespace EncAndDecUtilCUI
                         "DigitalSignX509.Verify(ECDSA)",
                         ecDsX509.Verify(data, sign).ToString());
 
+                    token = "";
+                    token = JWT.Encode(payload, ((ECDsa)ecDsX509.AsymmetricAlgorithm), JwsAlgorithm.ES256);
+
                     // 鍵の相互変換
                     jwk = EccPublicKeyConverter.ParamToJwk(
                         ((ECDsa)ecDsX509.AsymmetricAlgorithm).ExportParameters(false));
 
                     WriteLine.OutPutDebugAndConsole("ECDSA JWK", jwk);
-
-                    ECParameters eCParameters = EccPublicKeyConverter.JwkToParam(jwk);
-                    x = eCParameters.Q.X;
-                    y = eCParameters.Q.Y;
-                    d = eCParameters.D;
-
-                    DigitalSignECDsaOpenSsl ecDsParam = new DigitalSignECDsaOpenSsl(
-                        EccPublicKeyConverter.JwkToParam(jwk),
-                        HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(HashNameConst.SHA256));
+                    
+                    DigitalSignECDsaOpenSsl ecDsParam = 
+                        new DigitalSignECDsaOpenSsl(
+                            EccPublicKeyConverter.JwkToParam(jwk),
+                            HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(HashNameConst.SHA256));
                     WriteLine.OutPutDebugAndConsole(
                         "DigitalSignX509.Verify(ECDSA JWK)",
                         ecDsParam.Verify(data, sign).ToString());
+               
+                    Program.VerifyResult("JwsAlgorithm.ES256", token, ecDsParam.AsymmetricAlgorithm);
+
                     #endregion
 #endif
                 }
@@ -359,12 +365,12 @@ namespace EncAndDecUtilCUI
                 // ES256, ES384, ES512 ECDSA signatures
                 // https://github.com/dvsekhvalnov/jose-jwt#es---family
 
+                x = new byte[] { 4, 114, 29, 223, 58, 3, 191, 170, 67, 128, 229, 33, 242, 178, 157, 150, 133, 25, 209, 139, 166, 69, 55, 26, 84, 48, 169, 165, 67, 232, 98, 9 };
+                y = new byte[] { 131, 116, 8, 14, 22, 150, 18, 75, 24, 181, 159, 78, 90, 51, 71, 159, 214, 186, 250, 47, 207, 246, 142, 127, 54, 183, 72, 72, 253, 21, 88, 53 };
+                d = new byte[] { 42, 148, 231, 48, 225, 196, 166, 201, 23, 190, 229, 199, 20, 39, 226, 70, 209, 148, 29, 70, 125, 14, 174, 66, 9, 198, 80, 251, 95, 107, 98, 206 };
+
                 if (os.Platform == PlatformID.Win32NT)
                 {
-                    x = new byte[] { 4, 114, 29, 223, 58, 3, 191, 170, 67, 128, 229, 33, 242, 178, 157, 150, 133, 25, 209, 139, 166, 69, 55, 26, 84, 48, 169, 165, 67, 232, 98, 9 };
-                    y = new byte[] { 131, 116, 8, 14, 22, 150, 18, 75, 24, 181, 159, 78, 90, 51, 71, 159, 214, 186, 250, 47, 207, 246, 142, 127, 54, 183, 72, 72, 253, 21, 88, 53 };
-                    d = new byte[] { 42, 148, 231, 48, 225, 196, 166, 201, 23, 190, 229, 199, 20, 39, 226, 70, 209, 148, 29, 70, 125, 14, 174, 66, 9, 198, 80, 251, 95, 107, 98, 206 };
-
                     // https://github.com/dvsekhvalnov/jose-jwt/blob/master/jose-jwt/Security/Cryptography/EccKey.cs
                     privateKeyOfCng = EccKey.New(x, y, d);
                     publicKeyOfCng = EccKey.New(x, y);
@@ -385,9 +391,9 @@ namespace EncAndDecUtilCUI
 
                     // x, y, d
                     eCParameters.Q.X = x;
-                    eCParameters.Q.X = y;
+                    eCParameters.Q.Y = y;
                     eCParameters.D = d;
-                    ECDsaOpenSsl eCDsaOpenSsl = new ECDsaOpenSsl();
+                    ECDsaOpenSsl eCDsaOpenSsl = new ECDsaOpenSsl(eCParameters.Curve);
                     eCDsaOpenSsl.ImportParameters(eCParameters);
 
                     token = "";

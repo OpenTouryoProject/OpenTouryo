@@ -37,22 +37,22 @@ dotnet msbuild %COMMANDLINE% "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUI
 
 set CURRENTDIR=%cd%
 cd "Frameworks\Tests\EncAndDecUtilCUI\net45\bin\Debug"
-"EncAndDecUtilCUIFx.exe" > Result45.txt
+"EncAndDecUtilCUIFx.exe" > ..\..\..\Result45.txt
 cd %CURRENTDIR%
 
 set CURRENTDIR=%cd%
 cd "Frameworks\Tests\EncAndDecUtilCUI\net46\bin\Debug"
-"EncAndDecUtilCUIFx.exe" > Result46.txt
+"EncAndDecUtilCUIFx.exe" > ..\..\..\Result46.txt
 cd %CURRENTDIR%
 
 set CURRENTDIR=%cd%
 cd "Frameworks\Tests\EncAndDecUtilCUI\net47\bin\Debug"
-"EncAndDecUtilCUIFx.exe" > Result47.txt
+"EncAndDecUtilCUIFx.exe" > ..\..\..\Result47.txt
 cd %CURRENTDIR%
 
 set CURRENTDIR=%cd%
 cd "Frameworks\Tests\EncAndDecUtilCUI\core20\bin\Debug\netcoreapp2.0"
-dotnet "EncAndDecUtilCUICore.dll" > ResultCore.txt
+dotnet "EncAndDecUtilCUICore.dll" > ..\..\..\..\ResultCore.txt
 cd %CURRENTDIR%
 
 pause
