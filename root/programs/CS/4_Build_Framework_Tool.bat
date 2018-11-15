@@ -38,15 +38,6 @@ rem --------------------------------------------------
 pause
 
 rem --------------------------------------------------
-rem Batch build of EncAndDecUtil.
-rem --------------------------------------------------
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\EncAndDecUtil\EncAndDecUtil45.sln"
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\EncAndDecUtil\EncAndDecUtil46.sln"
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\EncAndDecUtil\EncAndDecUtil47.sln"
-
-pause
-
-rem --------------------------------------------------
 rem Batch build of Workflow.
 rem --------------------------------------------------
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\Workflow_Tool\Workflow_Tool.sln"
