@@ -233,6 +233,7 @@ namespace EncAndDecUtilCUI
                     x = eccPrivateKey.X;
                     y = eccPrivateKey.Y;
                     d = eccPrivateKey.D;
+                    WriteLine.OutPutDebugAndConsole("x", CustomEncode.ToBase64UrlString(x));
 
                     //DigitalSignECDsaCng dsECDsaCng = new DigitalSignECDsaCng(
                     //    //EccKey.New(x, y), false);
@@ -242,9 +243,9 @@ namespace EncAndDecUtilCUI
                     //    "DigitalSignX509.Verify(ECDSA JWK)",
                     //    dsECDsaCng.Verify(data, sign).ToString());
 
-                    Program.VerifyResult("JwsAlgorithm.ES256", token,
-                        EccKey.New(x, y));
-                        //dsECDsaCng.AsymmetricAlgorithm);
+                    //Program.VerifyResult("JwsAlgorithm.ES256", token,
+                    //    EccKey.New(x, y));
+                    //    //dsECDsaCng.AsymmetricAlgorithm);
 #endif
                     #endregion
                 }
