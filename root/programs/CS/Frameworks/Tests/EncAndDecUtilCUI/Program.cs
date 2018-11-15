@@ -129,22 +129,6 @@ namespace EncAndDecUtilCUI
                 WriteLine.OutPutDebugAndConsole("publicECDsa",
                     (publicECDsa == null ? "is null" : "is not null"));
 
-#if NETCORE
-                if (privateECDsa is ECDsaOpenSsl)
-                {
-                    // ・・・
-                }
-#endif
-
-#if NET47
-                if (privateECDsa is ECDsaCng)
-                {
-                    EccKey eccKey = EccKey.Generate(((ECDsaCng)privateECDsa).Key);
-                    x = eccKey.X;
-                    y = eccKey.Y;
-                    d = eccKey.D;
-                }
-#endif
                 #endregion
 #endif
 
@@ -219,10 +203,7 @@ namespace EncAndDecUtilCUI
                     #endregion
 
                     #region ECDSA
-#if NETCORE
-                    // NETCOREだと動かない。
-#else
-#if NET47
+#if NETCORE || NET47
                     DigitalSignECDsaX509 dsECDsaX509 = null;
                     privateX509Path = @"SHA256ECDSA.pfx";
                     dsECDsaX509 = new DigitalSignECDsaX509(
@@ -245,24 +226,27 @@ namespace EncAndDecUtilCUI
                     // 上手く動かない、EccKeyは正しく動いている。
                     // CngKeyのexportが上手く動いていない感じ。
                     //jwk = EccPublicKeyConverter.CngToJwk(((ECDsaCng)dsECDsaX509.PublicKey).Key);
+                    ECDsaCng hoge = (ECDsaCng)(new X509Certificate2(publicX509Path, "")).GetECDsaPublicKey();
+                    jwk = EccPublicKeyConverter.CngToJwk(hoge.Key);
 
-                    //WriteLine.OutPutDebugAndConsole("ECDSA JWK", jwk);
+                    WriteLine.OutPutDebugAndConsole("ECDSA JWK", jwk);
 
-                    //EccKey eccPrivateKey = EccKey.Generate(((ECDsaCng)dsECDsaX509.PublicKey).Key);
-                    //x = eccPrivateKey.X;
-                    //y = eccPrivateKey.Y;
-                    ////d = eccPrivateKey.D;
+                    ////EccKey eccPrivateKey = EccKey.Generate(((ECDsaCng)dsECDsaX509.PublicKey).Key);
+                    ////x = eccPrivateKey.X;
+                    ////y = eccPrivateKey.Y;
+                    //////d = eccPrivateKey.D;
 
-                    //DigitalSignECDsaCng dsECDsaCng = new DigitalSignECDsaCng(EccKey.New(x, y), false);
-                    ////EccPublicKeyConverter.JwkToCng(jwk), false);
+                    //DigitalSignECDsaCng dsECDsaCng = new DigitalSignECDsaCng(
+                    //    //EccKey.New(x, y), false);
+                    //    EccPublicKeyConverter.JwkToCng(jwk), false);
 
                     //WriteLine.OutPutDebugAndConsole(
                     //    "DigitalSignX509.Verify(ECDSA JWK)",
                     //    dsECDsaCng.Verify(data, sign).ToString());
 
-                    //Program.VerifyResult("JwsAlgorithm.ES256", token, EccKey.New(x, y));
-                    ////dsECDsaCng.AsymmetricAlgorithm);
-#endif
+                    //Program.VerifyResult("JwsAlgorithm.ES256", token,
+                    //    //EccKey.New(x, y));
+                    //    dsECDsaCng.AsymmetricAlgorithm);
 #endif
                     #endregion
                 }
