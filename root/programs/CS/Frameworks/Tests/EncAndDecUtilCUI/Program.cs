@@ -225,16 +225,14 @@ namespace EncAndDecUtilCUI
                     // 鍵の相互変換
                     // 上手く動かない、EccKeyは正しく動いている。
                     // CngKeyのexportが上手く動いていない感じ。
-                    //jwk = EccPublicKeyConverter.CngToJwk(((ECDsaCng)dsECDsaX509.PublicKey).Key);
-                    ECDsaCng hoge = (ECDsaCng)(new X509Certificate2(publicX509Path, "")).GetECDsaPublicKey();
-                    jwk = EccPublicKeyConverter.CngToJwk(hoge.Key);
-
+                    jwk = EccPublicKeyConverter.CngToJwk(((ECDsaCng)dsECDsaX509.PublicKey).Key);
                     WriteLine.OutPutDebugAndConsole("ECDSA JWK", jwk);
 
-                    ////EccKey eccPrivateKey = EccKey.Generate(((ECDsaCng)dsECDsaX509.PublicKey).Key);
-                    ////x = eccPrivateKey.X;
-                    ////y = eccPrivateKey.Y;
-                    //////d = eccPrivateKey.D;
+                    ECDsaCng hoge = (ECDsaCng)(new X509Certificate2(privateX509Path, "test")).GetECDsaPrivateKey();
+                    EccKey eccPrivateKey = EccKey.Generate(hoge.Key);
+                    x = eccPrivateKey.X;
+                    y = eccPrivateKey.Y;
+                    d = eccPrivateKey.D;
 
                     //DigitalSignECDsaCng dsECDsaCng = new DigitalSignECDsaCng(
                     //    //EccKey.New(x, y), false);
@@ -244,9 +242,9 @@ namespace EncAndDecUtilCUI
                     //    "DigitalSignX509.Verify(ECDSA JWK)",
                     //    dsECDsaCng.Verify(data, sign).ToString());
 
-                    //Program.VerifyResult("JwsAlgorithm.ES256", token,
-                    //    //EccKey.New(x, y));
-                    //    dsECDsaCng.AsymmetricAlgorithm);
+                    Program.VerifyResult("JwsAlgorithm.ES256", token,
+                        EccKey.New(x, y));
+                        //dsECDsaCng.AsymmetricAlgorithm);
 #endif
                     #endregion
                 }
