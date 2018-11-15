@@ -128,6 +128,23 @@ namespace EncAndDecUtilCUI
                 ECDsa publicECDsa = publicX509Key.GetECDsaPublicKey();
                 WriteLine.OutPutDebugAndConsole("publicECDsa",
                     (publicECDsa == null ? "is null" : "is not null"));
+
+#if NETCORE
+                if (privateECDsa is ECDsaOpenSsl)
+                {
+                    // ・・・
+                }
+#endif
+
+#if NET47
+                if (privateECDsa is ECDsaCng)
+                {
+                    EccKey eccKey = EccKey.Generate(((ECDsaCng)privateECDsa).Key);
+                    x = eccKey.X;
+                    y = eccKey.Y;
+                    d = eccKey.D;
+                }
+#endif
                 #endregion
 #endif
 
@@ -174,7 +191,7 @@ namespace EncAndDecUtilCUI
                         EnumDigitalSignAlgorithm.RsaCSP_SHA256);
 
                     WriteLine.OutPutDebugAndConsole(
-                        "DigitalSignX509.Verify(RSA JWK)",
+                        "DigitalSignParam.Verify(RSA JWK)",
                         dsParam.Verify(data, sign).ToString());
 
                     #endregion
@@ -205,29 +222,47 @@ namespace EncAndDecUtilCUI
 #if NETCORE
                     // NETCOREだと動かない。
 #else
-                    // NETFXではCngを処理可能。
-                    DigitalSignECDsaCng dsECDsaCng = new DigitalSignECDsaCng(EnumDigitalSignAlgorithm.ECDsaCng_P256);
-                    sign = dsECDsaCng.Sign(data);
-                    WriteLine.OutPutDebugAndConsole(
-                        "DigitalSignX509.Verify(ECDSA)",
-                        dsECDsaCng.Verify(data, sign).ToString());
+#if NET47
+                    DigitalSignECDsaX509 dsECDsaX509 = null;
+                    privateX509Path = @"SHA256ECDSA.pfx";
+                    dsECDsaX509 = new DigitalSignECDsaX509(
+                        privateX509Path, "test", HashAlgorithmName.SHA256);
+                    sign = dsECDsaX509.Sign(data);
 
                     token = "";
-                    token = JWT.Encode(payload, ((ECDsa)dsECDsaCng.AsymmetricAlgorithm), JwsAlgorithm.ES256);
+                    token = JWT.Encode(payload, ((ECDsa)dsECDsaX509.AsymmetricAlgorithm), JwsAlgorithm.ES256);
+
+                    publicX509Path = @"SHA256ECDSA.cer";
+                    dsECDsaX509 = new DigitalSignECDsaX509(
+                        publicX509Path, "", HashAlgorithmName.SHA256);
+                    WriteLine.OutPutDebugAndConsole(
+                        "DigitalSignECDsaX509.Verify(ECDSA)",
+                        dsECDsaX509.Verify(data, sign).ToString());
+
+                    Program.VerifyResult("JwsAlgorithm.ES256", token, ((ECDsa)dsECDsaX509.AsymmetricAlgorithm));
 
                     // 鍵の相互変換
-                    jwk = EccPublicKeyConverter.CngToJwk(dsECDsaCng.PrivateKey);
+                    // 上手く動かない、EccKeyは正しく動いている。
+                    // CngKeyのexportが上手く動いていない感じ。
+                    //jwk = EccPublicKeyConverter.CngToJwk(((ECDsaCng)dsECDsaX509.PublicKey).Key);
 
-                    WriteLine.OutPutDebugAndConsole("ECDSA JWK", jwk);
+                    //WriteLine.OutPutDebugAndConsole("ECDSA JWK", jwk);
 
-                    DigitalSignECDsaCng ecDsCng = new DigitalSignECDsaCng(
-                        EccPublicKeyConverter.JwkToCng(jwk), false);
+                    //EccKey eccPrivateKey = EccKey.Generate(((ECDsaCng)dsECDsaX509.PublicKey).Key);
+                    //x = eccPrivateKey.X;
+                    //y = eccPrivateKey.Y;
+                    ////d = eccPrivateKey.D;
+
+                    //DigitalSignECDsaCng dsECDsaCng = new DigitalSignECDsaCng(EccKey.New(x, y), false);
+                    ////EccPublicKeyConverter.JwkToCng(jwk), false);
 
                     //WriteLine.OutPutDebugAndConsole(
                     //    "DigitalSignX509.Verify(ECDSA JWK)",
-                    //    ecDsCng.Verify(data, sign).ToString());
+                    //    dsECDsaCng.Verify(data, sign).ToString());
 
-                    //Program.VerifyResult("JwsAlgorithm.ES256", token, ecDsCng.AsymmetricAlgorithm);
+                    //Program.VerifyResult("JwsAlgorithm.ES256", token, EccKey.New(x, y));
+                    ////dsECDsaCng.AsymmetricAlgorithm);
+#endif
 #endif
                     #endregion
                 }
@@ -264,7 +299,7 @@ namespace EncAndDecUtilCUI
                         EnumDigitalSignAlgorithm.RsaCSP_SHA256);
 
                     WriteLine.OutPutDebugAndConsole(
-                        "DigitalSignX509.Verify(RSA JWK)",
+                        "DigitalSignParam.Verify(RSA JWK)",
                         dsParam.Verify(data, sign).ToString());
                     #endregion
 
@@ -295,7 +330,7 @@ namespace EncAndDecUtilCUI
 
                     sign = ecDsX509.Sign(data);
                     WriteLine.OutPutDebugAndConsole(
-                        "DigitalSignX509.Verify(ECDSA)",
+                        "DigitalSignECDsaX509.Verify(ECDSA)",
                         ecDsX509.Verify(data, sign).ToString());
 
                     token = "";
@@ -312,7 +347,7 @@ namespace EncAndDecUtilCUI
                             EccPublicKeyConverter.JwkToParam(jwk),
                             HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(HashNameConst.SHA256));
                     WriteLine.OutPutDebugAndConsole(
-                        "DigitalSignX509.Verify(ECDSA JWK)",
+                        "DigitalSignECDsaOpenSsl.Verify(ECDSA JWK)",
                         ecDsParam.Verify(data, sign).ToString());
                
                     Program.VerifyResult("JwsAlgorithm.ES256", token, ecDsParam.AsymmetricAlgorithm);
@@ -385,9 +420,7 @@ namespace EncAndDecUtilCUI
                     // https://github.com/dvsekhvalnov/jose-jwt/blob/master/jose-jwt/Security/Cryptography/EccKey.cs
                     privateKeyOfCng = EccKey.New(x, y, d);
                     publicKeyOfCng = EccKey.New(x, y);
-                    //EccKey temp = EccKey.Generate(privateKeyOfCng);
-                    //publicKeyOfCng = EccKey.New(temp.X, temp.Y);
-                    
+
                     token = "";
                     token = JWT.Encode(payload, privateKeyOfCng, JwsAlgorithm.ES256);
                     Program.VerifyResult("JwsAlgorithm.ES256", token, publicKeyOfCng);
