@@ -69,6 +69,7 @@
     </Reference>
     <Reference Include="DotNetZip, Version=1.12.0.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetZip.1.12.0\lib\net20\DotNetZip.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="jose-jwt, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\jose-jwt.2.4.0\lib\net461\jose-jwt.dll</HintPath>
@@ -81,6 +82,7 @@
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -125,6 +127,7 @@
     <Compile Include="Security\GetPasswordHashV1.cs" />
     <Compile Include="Security\HashAlgorithmCmnFunc.cs" />
     <Compile Include="Security\MsgAuthCode.cs" />
+    <Compile Include="Security\PrivateKeyConverter.cs" />
     <Compile Include="Security\RsaAlice.cs" />
     <Compile Include="Security\RsaOaepAlice.cs" />
     <Compile Include="Security\RsaBob.cs" />

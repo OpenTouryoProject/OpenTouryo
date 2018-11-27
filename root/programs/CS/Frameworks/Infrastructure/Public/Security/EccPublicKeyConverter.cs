@@ -209,14 +209,14 @@ namespace Touryo.Infrastructure.Public.Security
         // https://github.com/dvsekhvalnov/jose-jwt/issues/105
         // CngKey ⇔ Jwt
         // https://github.com/dvsekhvalnov/jose-jwt/blob/master/jose-jwt/Security/Cryptography/EccKey.cs
-        
+
         #region 共通
 
         #region GetCrvStringFromXCoordinate
         /// <summary>GetCrvString</summary>
         /// <param name="x">byte[]</param>
         /// <returns>CrvString</returns>
-        public static string GetCrvStringFromXCoordinate(byte[] x)
+        internal static string GetCrvStringFromXCoordinate(byte[] x)
         {
             int partSize = x.Length;
 
@@ -244,7 +244,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="dic">Dictionary</param>
         /// <param name="settings">JsonSerializerSettings</param>
         /// <returns>JwkString</returns>
-        private static string CreateJwkFromDictionary(
+        internal static string CreateJwkFromDictionary(
             Dictionary<string, string> dic, JsonSerializerSettings settings)
         {
             // JSON Web Key (JWK) Thumbprint
@@ -281,7 +281,10 @@ namespace Touryo.Infrastructure.Public.Security
 
         #endregion
 
+        #region Cng
+
         #region CngToJwk
+        /*
         /// <summary>CngKeyToJwk</summary>
         /// <param name="cngkey">CngKey</param>
         /// <returns>Jwk公開鍵</returns>
@@ -296,7 +299,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>Jwk公開鍵</returns>
         public static string CngToJwk(CngKey cngkey, JsonSerializerSettings settings)
         {
-            EccKey eccKey = EccKey.Generate(cngkey);
+            EccKey eccKey = EccKey.Generate(cngkey); // ★★ この使い方が誤りらしい。
             Dictionary<string, string> dic = new Dictionary<string, string>();
 
             dic[JwtConst.kty] = JwtConst.EC; // 必須
@@ -313,6 +316,7 @@ namespace Touryo.Infrastructure.Public.Security
             //}
             return EccPublicKeyConverter.CreateJwkFromDictionary(dic, settings);
         }
+        */
         #endregion
 
         #region JwkToCng
@@ -339,14 +343,17 @@ namespace Touryo.Infrastructure.Public.Security
         }
         #endregion
 
+        #endregion
+
+        #region ECParameters
 #if NET45 || NET46
 #else
         // ECCurve and ECParameters to Jwt
         // https://github.com/psteniusubi/jose-jwt/blob/master/jose-jwt/jwk/JwkEc.cs
 
-        #region ECCurve
+        #region 共通
         /// <summary>ECCurveDic</summary>
-        private static Dictionary<string, ECCurve> ECCurveDic = new Dictionary<string, ECCurve>()
+        internal static Dictionary<string, ECCurve> ECCurveDic = new Dictionary<string, ECCurve>()
         {
             { JwtConst.P256 , ECCurve.NamedCurves.nistP256 },
             { JwtConst.P384 , ECCurve.NamedCurves.nistP384 },
@@ -356,7 +363,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>GetECCurveFromCrvString</summary>
         /// <param name="crvString">string</param>
         /// <returns>ECCurve</returns>
-        public static ECCurve GetECCurveFromCrvString(string crvString)
+        internal static ECCurve GetECCurveFromCrvString(string crvString)
         {
             return EccPublicKeyConverter.ECCurveDic[crvString];
         }
@@ -364,7 +371,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>GetCrvStrFromECCurve</summary>
         /// <param name="ecc">ECCurve</param>
         /// <returns>crvの文字列値（P-nnn）</returns>
-        private static string GetCrvStringFromECCurve(ECCurve ecc)
+        internal static string GetCrvStringFromECCurve(ECCurve ecc)
         {
             foreach (string key in EccPublicKeyConverter.ECCurveDic.Keys)
             {
@@ -461,6 +468,8 @@ namespace Touryo.Infrastructure.Public.Security
         }
         #endregion
 #endif
+        #endregion
+
         #endregion
     }
 }

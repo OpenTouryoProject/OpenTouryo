@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/12/25  西野 大介         新規作成
 //*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
+//*  2018/11/27  西野 大介         コンストラクタをRSA秘密鍵にも対応させた。
 //**********************************************************************************
 
 using System;
@@ -97,9 +98,9 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         /// <summary>Constructor</summary>
-        /// <param name="rsaPublicParam">RSAParameters</param>
+        /// <param name="rsaParameters">RSAParameters</param>
         /// <param name="eaa">EnumDigitalSignAlgorithm</param>
-        public DigitalSignParam(RSAParameters rsaPublicParam, EnumDigitalSignAlgorithm eaa)
+        public DigitalSignParam(RSAParameters rsaParameters, EnumDigitalSignAlgorithm eaa)
         {
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
@@ -108,12 +109,26 @@ namespace Touryo.Infrastructure.Public.Security
 
             if (aa is RSA)
             {
-                RSAParameters rsaParams = new RSAParameters()
+                RSAParameters temp = new RSAParameters()
                 {
-                    Modulus = rsaPublicParam.Modulus,
-                    Exponent = rsaPublicParam.Exponent,
+                    // Public
+                    Modulus = rsaParameters.Modulus,
+                    Exponent = rsaParameters.Exponent,
                 };
-                ((RSA)aa).ImportParameters(rsaParams);
+
+                if (rsaParameters.D != null
+                    && rsaParameters.D.Length != 0)
+                {
+                    // Private
+                    temp.D = rsaParameters.D;
+                    temp.P = rsaParameters.P;
+                    temp.Q = rsaParameters.Q;
+                    temp.DP = rsaParameters.DP;
+                    temp.DQ = rsaParameters.DQ;
+                    temp.InverseQ = rsaParameters.InverseQ;
+                }
+
+                ((RSA)aa).ImportParameters(temp);
             }
             else
             {

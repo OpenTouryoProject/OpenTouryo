@@ -127,6 +127,7 @@
     <Compile Include="Security\GetPasswordHashV1.cs" />
     <Compile Include="Security\HashAlgorithmCmnFunc.cs" />
     <Compile Include="Security\MsgAuthCode.cs" />
+    <Compile Include="Security\PrivateKeyConverter.cs" />
     <Compile Include="Security\RsaAlice.cs" />
     <Compile Include="Security\RsaOaepAlice.cs" />
     <Compile Include="Security\RsaBob.cs" />

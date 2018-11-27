@@ -90,10 +90,10 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region RSA Public Keys
 
-        /// <summary>RSA Public Keys: n</summary>
+        /// <summary>RSA Public Key: n</summary>
         public const string n = "n";
 
-        /// <summary>RSA Public Keys: e</summary>
+        /// <summary>RSA Public Key: e</summary>
         public const string e = "e";
 
         #endregion
@@ -102,36 +102,36 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>
         /// d :
-        /// - RSA Public Keys
-        /// - ECC Private Keyパラメタ
+        /// - RSA Private Key
+        /// - ECC Private Key
         /// </summary>
         public const string d = "d";
 
-        /// <summary>p : RSA Public Keys</summary>
+        /// <summary>p : RSA Private Key</summary>
         public const string p = "p";
 
-        /// <summary>q : RSA Public Keys</summary>
+        /// <summary>q : RSA Private Key</summary>
         public const string q = "q";
 
-        /// <summary>dp : RSA Public Keys</summary>
+        /// <summary>dp : RSA Private Key</summary>
         public const string dp = "dp";
 
-        /// <summary>dq : RSA Public Keys</summary>
+        /// <summary>dq : RSA Private Key</summary>
         public const string dq = "dq";
 
-        /// <summary>qi : RSA Public Keys</summary>
+        /// <summary>qi : RSA Private Key</summary>
         public const string qi = "qi";
 
-        /// <summary>oth : RSA Public Keys</summary>
+        /// <summary>oth : RSA Private Key</summary>
         public const string oth = "oth";
 
-        /// <summary>r(oth) : RSA Public Keys</summary>
+        /// <summary>r(oth) : RSA Private Key</summary>
         public const string oth_r = "r";
 
-        /// <summary>d(oth) : RSA Public Keys</summary>
+        /// <summary>d(oth) : RSA Private Key</summary>
         public const string oth_d = "d";
 
-        /// <summary>t(oth) : RSA Public Keys</summary>
+        /// <summary>t(oth) : RSA Private Key</summary>
         public const string oth_t = "t";
 
         #endregion
