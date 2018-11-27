@@ -21,7 +21,7 @@ set VisualStudioVersion=14.0
 @echo --------------------------------------------------
 @echo Creating a build command.
 @echo --------------------------------------------------
-set COMMANDLINE=/p:Configuration=%BUILD_CONFIG%
+set COMMANDLINE=/p:Configuration=%BUILD_CONFIG% -v:d
 
 @echo --------------------------------------------------
 @echo Set the proxy settings of Nuget.

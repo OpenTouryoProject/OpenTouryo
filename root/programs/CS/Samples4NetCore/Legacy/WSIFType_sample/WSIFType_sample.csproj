@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="OpenTouryo.Business">
       <HintPath>..\..\..\Frameworks\Infrastructure\Build_netcore20\netcoreapp2.0\OpenTouryo.Business.dll</HintPath>
     </Reference>
