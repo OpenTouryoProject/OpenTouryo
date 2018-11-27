@@ -10,6 +10,7 @@ set BUILDFILEPATH="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
 set BUILDFILEPATH2.0="C:\Windows\Microsoft.NET\Framework\v2.0.50727\MSBuild.exe"
 set BUILDFILEPATH3.5="C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe"
 set BUILDFILEPATH4.0="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
+set BUILDFILEPATH15="C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe"
 
 @echo --------------------------------------------------
 @echo The choice of build configuration (Debug / Release).
@@ -20,7 +21,7 @@ set VisualStudioVersion=14.0
 @echo --------------------------------------------------
 @echo Creating a build command.
 @echo --------------------------------------------------
-set COMMANDLINE=/p:Configuration=%BUILD_CONFIG%
+set COMMANDLINE=/p:Configuration=%BUILD_CONFIG% -v:d
 
 @echo --------------------------------------------------
 @echo Set the proxy settings of Nuget.
