@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/08/11  西野 大介         新規作成
+//*  2018/11/28  西野 大介         jkuチェック対応の追加
 //**********************************************************************************
 
 #pragma warning disable 1998
@@ -298,9 +299,8 @@ namespace Touryo.Infrastructure.Business.Presentation
                     List<string> scopes = null;
                     JObject jobj = null;
 
-                    if (JwtToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
+                    if (AccessToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
                     {
-
                         // ActionFilterAttributeとApiController間の情報共有はcontext.Principalを使用する。
                         // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
                         claims = new List<Claim>()

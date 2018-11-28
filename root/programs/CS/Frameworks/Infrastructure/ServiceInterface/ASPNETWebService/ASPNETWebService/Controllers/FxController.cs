@@ -219,7 +219,7 @@ namespace ASPNETWebService.Controllers
                         List<string> scopes = null;
                         JObject jobj = null;
 
-                        if (JwtToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
+                        if (AccessToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
                         {
                             // 認証成功
                             Debug.WriteLine("認証成功");

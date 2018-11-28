@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JwtToken
-//* クラス日本語名  ：JwtToken
+//* クラス名        ：AccessToken
+//* クラス日本語名  ：AccessToken
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -30,6 +30,8 @@
 //*  2017/09/07  西野 大介         新規作成
 //*  2017/11/29  西野 大介         DateTimeOffset.ToUnixTimeSecondsの前方互換メソッドの使用
 //*  2018/03/28  西野 大介         .NET Standard対応で、幾らか、I/F変更あり。
+//*  2018/11/28  西野 大介         証明書 & Jwk対応 + jkuチェック対応の追加
+//*  2018/11/28  西野 大介         リネーム（JwtToken -> AccessToken）
 //**********************************************************************************
 
 using System;
@@ -49,19 +51,16 @@ using Microsoft.Owin.Security.DataHandler.Encoder;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Security;
-
 namespace Touryo.Infrastructure.Framework.Authentication
 {
     /// <summary>
-    /// OAuth2やOIDC関連のJwtToken処理
+    /// OAuth2やOIDC関連のAccessToken処理
     /// </summary>
-    public class JwtToken
+    public class AccessToken
     {
-        /// <summary>汎用認証サイトの発行したJWT形式のTokenを検証する。</summary>
+        /// <summary>汎用認証サイトの発行したAccessTokenを検証する。</summary>
         /// <param name="jwtAccessToken">
-        /// JWT形式のTokenで以下の項目が必要
+        /// AccessTokenで以下の項目が必要
         ///  - iss
         ///  - aud
         ///  - iat
@@ -84,69 +83,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             scopes = new List<string>();
             jobj = null;
 
-            // 検証
-            JWS_RS256 jwsRS256 = null;
-
-            // 証明書を使用するか、Jwkを使用するか判定
-            JWS_Header jwsHeader = JsonConvert.DeserializeObject<JWS_Header>(
-                CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(jwtAccessToken.Split('.')[0]), CustomEncode.UTF_8));
-
-            if (string.IsNullOrEmpty(jwsHeader.jku)
-                || string.IsNullOrEmpty(jwsHeader.kid))
-            {
-                // 証明書を使用
-                jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
-            }
-            else
-            {
-                // Jwkを使用？
-                if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
-                {
-                    // Client側
-                    JObject jwkObject = JwkSetStore.GetInstance().GetJwkObject(jwsHeader.kid);
-
-                    // チェック
-                    if (jwkObject == null)
-                    {
-                        // 書込
-                        jwkObject = JwkSetStore.GetInstance().SetJwkSetObject(jwsHeader.jku, jwsHeader.kid);
-                    }
-
-                    // チェック
-                    if (jwkObject == null)
-                    {
-                        // 証明書を使用
-                        jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
-                    }
-                    else
-                    {
-                        // Jwkを使用
-                        jwsRS256 = new JWS_RS256_Param(
-                            RsaPublicKeyConverter.JwkToParam(jwkObject));
-                    }
-                }
-                else
-                {
-                    // AuthZ側（検証用カバレッジ
-                    JwkSet jwkSet = JwkSet.LoadJwkSet(OAuth2AndOIDCParams.JwkSetFilePath);
-                    JObject jwkObject = JwkSet.GetJwkObject(jwkSet, jwsHeader.kid);
-
-                    if (jwkObject == null)
-                    {
-                        // 証明書を使用
-                        jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
-                    }
-                    else
-                    {
-                        // Jwkを使用
-                        jwsRS256 = new JWS_RS256_Param(
-                            RsaPublicKeyConverter.JwkToParam(jwkObject));
-                    }
-                }
-            }
-
             // JWS検証
-            if (jwsRS256.Verify(jwtAccessToken))
+            if (CmnJwtToken.Verify(jwtAccessToken))
             {
 #if NETSTD
                 string jwtPayload = Encoding.UTF8.GetString(Base64UrlTextEncoder.Decode(jwtAccessToken.Split('.')[1]));

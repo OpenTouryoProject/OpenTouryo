@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/08/22  西野 大介         新規作成
+//*  2018/11/28  西野 大介         証明書 & Jwk対応 + jkuチェック対応の追加
 //**********************************************************************************
 
 using System;
@@ -220,69 +221,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             nonce = "";
             jobj = null;
 
-            // 検証
-            JWS_RS256 jwsRS256 = null;
-
-            // 証明書を使用するか、Jwkを使用するか判定
-            JWS_Header jwsHeader = JsonConvert.DeserializeObject<JWS_Header>(
-                CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(idToken.Split('.')[0]), CustomEncode.UTF_8));
-
-            if (string.IsNullOrEmpty(jwsHeader.jku)
-                || string.IsNullOrEmpty(jwsHeader.kid))
-            {
-                // 証明書を使用
-                jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
-            }
-            else
-            {
-                // Jwkを使用？
-                if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
-                {
-                    // Client側
-                    JObject jwkObject = JwkSetStore.GetInstance().GetJwkObject(jwsHeader.kid);
-
-                    // チェック
-                    if (jwkObject == null)
-                    {
-                        // 書込
-                        jwkObject = JwkSetStore.GetInstance().SetJwkSetObject(jwsHeader.jku, jwsHeader.kid);
-                    }
-
-                    // チェック
-                    if (jwkObject == null)
-                    {
-                        // 証明書を使用
-                        jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
-                    }
-                    else
-                    {
-                        // Jwkを使用
-                        jwsRS256 = new JWS_RS256_Param(
-                            RsaPublicKeyConverter.JwkToParam(jwkObject));
-                    }
-                }
-                else
-                {
-                    // AuthZ側（検証用カバレッジ
-                    JwkSet jwkSet = JwkSet.LoadJwkSet(OAuth2AndOIDCParams.JwkSetFilePath);
-                    JObject jwkObject = JwkSet.GetJwkObject(jwkSet, jwsHeader.kid);
-                    
-                    if (jwkObject == null)
-                    {
-                        // 証明書を使用
-                        jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
-                    }
-                    else
-                    {
-                        // Jwkを使用
-                        jwsRS256 = new JWS_RS256_Param(
-                            RsaPublicKeyConverter.JwkToParam(jwkObject));
-                    }
-                }
-            }
-
             // JWS検証
-            if (jwsRS256.Verify(idToken))
+            if (CmnJwtToken.Verify(idToken))
             {
 #if NETSTD
                 string jwtPayload = Encoding.UTF8.GetString(Base64UrlTextEncoder.Decode(idToken.Split('.')[1]));

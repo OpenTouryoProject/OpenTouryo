@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/08/16  西野 大介         新規作成
+//*  2018/11/28  西野 大介         kid不一致問題の解消
 //**********************************************************************************
 
 using System.IO;
@@ -105,7 +106,9 @@ namespace Touryo.Infrastructure.Public.Security
             bool exist = false;
             foreach (JObject key in jwkSetObject.keys)
             {
-                if (key[JwtConst.kid] == jwkObject[JwtConst.kid])
+                // JObject値、.ToString()しないと一致しない。
+                if (key[JwtConst.kid].ToString()
+                    == jwkObject[JwtConst.kid].ToString())
                 {
                     exist = true;
                 }

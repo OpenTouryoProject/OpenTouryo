@@ -218,14 +218,12 @@ namespace MVC_Sample.Controllers
                     // id_tokenの検証コード
                     if (dic.ContainsKey("id_token"))
                     {
-                        string id_token = dic["id_token"];
-
-                        string out_sub = "";
-                        string out_nonce = "";
+                        string sub = "";
+                        string nonce = "";
                         JObject jobj = null;
 
-                        if (IdToken.Verify(id_token, dic["access_token"], code, state, out out_sub, out out_nonce, out jobj)
-                            && out_nonce == this.Nonce)
+                        if (IdToken.Verify(dic["id_token"], dic["access_token"],
+                            code, state, out sub, out nonce, out jobj) && nonce == this.Nonce)
                         {
                             // ログインに成功
 
@@ -235,7 +233,7 @@ namespace MVC_Sample.Controllers
 
                             // 認証情報を作成する。
                             List<Claim> claims = new List<Claim>();
-                            claims.Add(new Claim(ClaimTypes.Name, out_sub));
+                            claims.Add(new Claim(ClaimTypes.Name, sub));
 
                             // 認証情報を保存する。
                             ClaimsIdentity userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -246,7 +244,7 @@ namespace MVC_Sample.Controllers
                                 this.HttpContext, CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal);
 
                             // 認証情報を保存する。
-                            MyUserInfo ui = new MyUserInfo(out_sub, (new GetClientIpAddress()).GetAddress());
+                            MyUserInfo ui = new MyUserInfo(sub, (new GetClientIpAddress()).GetAddress());
                             UserInfoHandle.SetUserInformation(ui);
 
                             return this.Redirect(Url.Action("Index", "Home"));

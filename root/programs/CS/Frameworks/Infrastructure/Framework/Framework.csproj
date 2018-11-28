@@ -122,6 +122,7 @@
     <Compile Include="AsyncProcessingService\AsyncErrorMessageID.cs" />
     <Compile Include="AsyncProcessingService\AsyncStatus.cs" />
     <Compile Include="AsyncProcessingService\AsyncTaskUpdate.cs" />
+    <Compile Include="Authentication\CmnJwtToken.cs" />
     <Compile Include="Authentication\JwkSetStore.cs" />
     <Compile Include="Authentication\JwtAssertion.cs" />
     <Compile Include="Authentication\IdToken.cs" />
@@ -144,7 +145,7 @@
     </Compile>
     <Compile Include="Presentation\BaseMVController.cs" />
     <Compile Include="Presentation\FxEventArgs.cs" />
-    <Compile Include="Authentication\JwtToken.cs" />
+    <Compile Include="Authentication\AccessToken.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCParams.cs" />
     <Compile Include="Presentation\JsonContent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -198,7 +199,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

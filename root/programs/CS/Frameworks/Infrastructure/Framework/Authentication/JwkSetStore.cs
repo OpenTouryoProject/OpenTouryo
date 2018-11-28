@@ -28,10 +28,10 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/08/16  西野 大介         新規作成
+//*  2018/11/28  西野 大介         jkuチェック対応の追加
 //**********************************************************************************
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Diagnostics;
 
@@ -79,6 +79,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
                 // _dateTime 更新
                 this._dateTime = DateTime.Now;
+
+                if (this._jwkSet.keys.Count == 0)
+                {
+                    Debug.WriteLine("JwkSet was abnormally initarized with an empty state in JwkSetStore constructor.");
+                }
+                else
+                {
+                    Debug.WriteLine("JwkSet was initarized normally in JwkSetStore constructor.");
+                }
             }
         }
 
@@ -125,6 +134,24 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>JwkObject</returns>
         public JObject SetJwkSetObject(string jku, string kid)
         {
+            if (jku != OAuth2AndOIDCParams.JwkSetUri)
+            {
+                // 一致しなかった場合、以下の処理を施しリトライ。
+                if (jku.EndsWith("/"))
+                {
+                    jku = jku.Substring(0, jku.Length - 1);
+                }
+                else
+                {
+                    jku = jku + "/";
+                }
+
+                if (jku != OAuth2AndOIDCParams.JwkSetUri)
+                {
+                    return null; // 上位で証明書利用へ遷移
+                }
+            }
+
             try
             {
                 // ライターロックを取得
@@ -146,34 +173,29 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     // JwkSetUri
                     string jwkSetString = OAuth2AndOIDCClient.GetJwkSetAsync(new Uri(jku)).Result;
 
-                    // ピーキーな jwks_uri 実装に例外処理を追加
                     if (string.IsNullOrEmpty(jwkSetString))
                     {
                         // jwkSetStringが空文字列
-                        Debug.WriteLine("jwkSetString is null or empty in JwkSetStore.SetJwkSetObject method.");
+                        Debug.WriteLine("JwkSet was not updated, because jwkSetString is null or empty in JwkSetStore.SetJwkSetObject method.");
                     }
                     else
                     {
-                        try
-                        {
-                            JwkSet jwkSet = JsonConvert.DeserializeObject<JwkSet>(jwkSetString);
+                        JwkSet jwkSet = JsonConvert.DeserializeObject<JwkSet>(jwkSetString);
 
-                            // _jwkSet 更新
-                            this._jwkSet = jwkSet;
-                            // _dateTime 更新
-                            this._dateTime = DateTime.Now;
+                        // _jwkSet 更新
+                        this._jwkSet = jwkSet;
+                        // _dateTime 更新
+                        this._dateTime = DateTime.Now;
 
-                            Debug.WriteLine("JwkSet was updated in JwkSetStore.SetJwkSetObject method.");
-                        }
-                        catch (Exception ex)
-                        {
-                            // jwkSetStringのDeserializeObjectに失敗。
-                            Debug.WriteLine("Exception was catched in OAuth2AndOIDCClient.GetJwkSetAsync method: " + ex.ToString());
-                        }
+                        Debug.WriteLine("JwkSet was updated normally in JwkSetStore.SetJwkSetObject method.");
                     }
                 }
 
                 #endregion
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception was catched in JwkSetStore.SetJwkSetObject method: " + ex.ToString());
             }
             finally
             {

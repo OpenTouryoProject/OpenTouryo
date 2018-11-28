@@ -205,14 +205,12 @@ namespace MVC_Sample.Controllers
                     // id_tokenの検証コード
                     if (dic.ContainsKey("id_token"))
                     {
-                        string id_token = dic["id_token"];
-
-                        string out_sub = "";
-                        string out_nonce = "";
+                        string sub = "";
+                        string nonce = "";
                         JObject jobj = null;
 
-                        if (IdToken.Verify(id_token, dic["access_token"], code, state, out out_sub, out out_nonce, out jobj)
-                            && out_nonce == this.Nonce)
+                        if (IdToken.Verify(dic["id_token"], dic["access_token"],
+                            code, state, out sub, out nonce, out jobj) && nonce == this.Nonce)
                         {
                             // ログインに成功
 
@@ -220,8 +218,8 @@ namespace MVC_Sample.Controllers
                             response = await OAuth2AndOIDCClient.GetUserInfoAsync(
                                 new Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic["access_token"]);
 
-                            FormsAuthentication.RedirectFromLoginPage(out_sub, false);
-                            MyUserInfo ui = new MyUserInfo(out_sub, Request.UserHostAddress);
+                            FormsAuthentication.RedirectFromLoginPage(sub, false);
+                            MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
                             UserInfoHandle.SetUserInformation(ui);
 
                             return new EmptyResult();

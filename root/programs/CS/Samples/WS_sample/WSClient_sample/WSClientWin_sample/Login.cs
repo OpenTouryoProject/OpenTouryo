@@ -100,7 +100,7 @@ namespace WSClientWin_sample
                 List<string> scopes = null;
                 JObject jobj = null;
 
-                if (JwtToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
+                if (AccessToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
                 {
                     // ログインに成功
                     return access_token;
