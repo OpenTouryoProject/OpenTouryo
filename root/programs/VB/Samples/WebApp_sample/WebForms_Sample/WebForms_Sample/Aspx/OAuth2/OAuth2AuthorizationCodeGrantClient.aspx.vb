@@ -81,23 +81,19 @@ Namespace Aspx.OAuth2
                     Dim scopes As List(Of String) = Nothing
                     Dim jobj As JObject = Nothing
 
-                    ' access_tokenの検証
-                    If JwtToken.Verify(dic("access_token"), [sub], roles, scopes, jobj) Then
-                        ' id_tokenの検証
-                        If IdToken.Verify(dic("id_token"), "", "", "", [sub], nonce,
-                            jobj) AndAlso nonce = Me.Nonce Then
-                            ' ログインに成功
-                            ' /userinfoエンドポイントにアクセスする場合
-                            response__1 = Await OAuth2AndOIDCClient.GetUserInfoAsync(
-                                New Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic("access_token"))
+                    ' id_tokenの検証
+                    If IdToken.Verify(dic("id_token"), dic("access_token"),
+                                      code, state, [sub], nonce, jobj) AndAlso nonce = Me.Nonce Then
+                        ' ログインに成功
+                        ' /userinfoエンドポイントにアクセスする場合
+                        response__1 = Await OAuth2AndOIDCClient.GetUserInfoAsync(
+                            New Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic("access_token"))
 
-                            FormsAuthentication.RedirectFromLoginPage([sub], False)
-                            Dim ui As New MyUserInfo([sub], Request.UserHostAddress)
-                            UserInfoHandle.SetUserInformation(ui)
+                        FormsAuthentication.RedirectFromLoginPage([sub], False)
+                        Dim ui As New MyUserInfo([sub], Request.UserHostAddress)
+                        UserInfoHandle.SetUserInformation(ui)
 
-                            Return
-                        Else
-                        End If
+                        Return
                     Else
                     End If
                 Else

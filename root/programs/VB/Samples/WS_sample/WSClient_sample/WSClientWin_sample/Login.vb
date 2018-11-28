@@ -89,7 +89,7 @@ Partial Public Class Login
             Dim scopes As List(Of String) = Nothing
             Dim jobj As JObject = Nothing
 
-            If JwtToken.Verify(access_token, [sub], roles, scopes, jobj) Then
+            If AccessToken.Verify(access_token, [sub], roles, scopes, jobj) Then
                 ' ログインに成功
                 Return access_token
             Else

@@ -175,22 +175,21 @@ Namespace Controllers
 
                     ' id_tokenの検証コード
                     If dic.ContainsKey("id_token") Then
-                        Dim id_token As String = dic("id_token")
-
-                        Dim out_sub As String = ""
-                        Dim out_nonce As String = ""
+                        Dim [sub] As String = ""
+                        Dim nonce As String = ""
                         Dim jobj As JObject = Nothing
 
-                        If IdToken.Verify(id_token, dic("access_token"), code, state, out_sub, out_nonce,
-                            jobj) AndAlso out_nonce = Me.Nonce Then
+                        If IdToken.Verify(dic("id_token"), dic("access_token"),
+                                          code, state, [sub], nonce, jobj) AndAlso nonce = Me.Nonce Then
+
                             ' ログインに成功
 
                             ' /userinfoエンドポイントにアクセスする場合
                             response = Await OAuth2AndOIDCClient.GetUserInfoAsync(
                                 New Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic("access_token"))
 
-                            FormsAuthentication.RedirectFromLoginPage(out_sub, False)
-                            Dim ui As New MyUserInfo(out_sub, Request.UserHostAddress)
+                            FormsAuthentication.RedirectFromLoginPage([sub], False)
+                            Dim ui As New MyUserInfo([sub], Request.UserHostAddress)
                             UserInfoHandle.SetUserInformation(ui)
 
                             Return New EmptyResult()

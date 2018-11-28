@@ -199,7 +199,7 @@ Namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
                         Dim scopes As List(Of String) = Nothing
                         Dim jobj As JObject = Nothing
 
-                        If JwtToken.Verify(access_token, [sub], roles, scopes, jobj) Then
+                        If AccessToken.Verify(access_token, [sub], roles, scopes, jobj) Then
                             ' 認証成功
                             Debug.WriteLine("認証成功")
                             ' 認証失敗（認証必須ならエラーにする。
