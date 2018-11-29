@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/11/12  西野 大介         新規作成（X PlatformのDebugで利用拡大？
+//*  2018/11/29  西野 大介         ASP.NET Coreの出力で2つ出力されるので...
 //**********************************************************************************
 
 using System;
@@ -220,12 +221,17 @@ namespace Touryo.Infrastructure.Public.Dbg
             OutPutDebugAndConsole(testLabel + " > " + s);
         }
 
+        /// <summary>EnableOutPutToConsole</summary>
+        public static bool EnableOutPutToConsole = true;
+        /// <summary>EnableOutPutToDebug</summary>
+        public static bool EnableOutPutToDebug = true;
+
         /// <summary>OutPutDebugAndConsole</summary>
         /// <param name="s">string</param>
         public static void OutPutDebugAndConsole(string s)
         {
-            Console.WriteLine(s);
-            Debug.WriteLine(s);
+            if (EnableOutPutToConsole) Console.WriteLine(s);
+            if (EnableOutPutToDebug) Debug.WriteLine(s);
         }
         #endregion
     }
