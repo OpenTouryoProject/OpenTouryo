@@ -149,6 +149,22 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
+        #region AuthMethods
+
+        /// <summary>client_secret_basic</summary>
+        public const string ClientSecretBasic = "client_secret_basic";
+
+        /// <summary>client_secret_post</summary>
+        public const string ClientSecretPost = "client_secret_post";
+
+        /// <summary>client_secret_jwt</summary>
+        public const string ClientSecretJwt = "client_secret_jwt";
+
+        /// <summary>private_key_jwt</summary>
+        public const string PrivateKeyJwt = "private_key_jwt";
+
+        #endregion
+
         #region HTTP Header
 
         /// <summary>Location</summary>
