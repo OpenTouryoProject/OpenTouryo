@@ -222,11 +222,12 @@ namespace EncAndDecUtilCUI
 
                     Program.VerifyResult("JwsAlgorithm.ES256", token, ((ECDsa)dsECDsaX509.AsymmetricAlgorithm));
 
-                    // 鍵の相互変換
-                    // 上手く動かない、EccKeyは正しく動いている。
-                    // CngKeyのexportが上手く動いていない感じ。
-                    jwk = EccPublicKeyConverter.CngToJwk(((ECDsaCng)dsECDsaX509.PublicKey).Key);
-                    WriteLine.OutPutDebugAndConsole("ECDSA JWK", jwk);
+                    //// 鍵の相互変換
+                    //// 上手く動かない、EccKeyは正しく動いている。
+                    //// CngKeyのexportが上手く動いていない感じ。
+                    //// https://github.com/dvsekhvalnov/jose-jwt/issues/105
+                    //jwk = EccPublicKeyConverter.CngToJwk(((ECDsaCng)dsECDsaX509.PublicKey).Key);
+                    //WriteLine.OutPutDebugAndConsole("ECDSA JWK", jwk);
 
                     ECDsaCng hoge = (ECDsaCng)(new X509Certificate2(privateX509Path, "test")).GetECDsaPrivateKey();
                     EccKey eccPrivateKey = EccKey.Generate(hoge.Key);

@@ -216,7 +216,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>GetCrvString</summary>
         /// <param name="x">byte[]</param>
         /// <returns>CrvString</returns>
-        internal static string GetCrvStringFromXCoordinate(byte[] x)
+        public static string GetCrvStringFromXCoordinate(byte[] x)
         {
             int partSize = x.Length;
 
@@ -363,7 +363,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>GetECCurveFromCrvString</summary>
         /// <param name="crvString">string</param>
         /// <returns>ECCurve</returns>
-        internal static ECCurve GetECCurveFromCrvString(string crvString)
+        public static ECCurve GetECCurveFromCrvString(string crvString)
         {
             return EccPublicKeyConverter.ECCurveDic[crvString];
         }
@@ -371,7 +371,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>GetCrvStrFromECCurve</summary>
         /// <param name="ecc">ECCurve</param>
         /// <returns>crvの文字列値（P-nnn）</returns>
-        internal static string GetCrvStringFromECCurve(ECCurve ecc)
+        public static string GetCrvStringFromECCurve(ECCurve ecc)
         {
             foreach (string key in EccPublicKeyConverter.ECCurveDic.Keys)
             {

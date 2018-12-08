@@ -42,7 +42,7 @@ namespace Touryo.Infrastructure.Public.Security
         Default,
 
         #region CSP (CryptoServiceProvider)
-        
+
         /// <summary>MD5CryptoServiceProvider</summary>
         MD5_CSP,
 
@@ -62,6 +62,8 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region CNG (CryptographyNextGeneration)
 
+#if NETSTD
+#else
         /// <summary>MD5CryptographyNextGeneration</summary>
         MD5_CNG,
 
@@ -76,13 +78,17 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>SHA512Managed</summary>
         SHA512_CNG,
+#endif
 
         #endregion
 
         #region Managed
-        
+
+#if NETSTD
+#else
         /// <summary>RIPEMD160Managed</summary>
         RIPEMD160_M,
+#endif
 
         /// <summary>SHA1Managed</summary>
         SHA1_M,

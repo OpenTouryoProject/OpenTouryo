@@ -66,6 +66,8 @@ namespace Touryo.Infrastructure.Public.Security
             // HMACSHA256   ：どのサイズのキーでも受け入れる ◯
             // HMACSHA384   ：どのサイズのキーでも受け入れる ◯
             // HMACSHA512   ：どのサイズのキーでも受け入れる ◯
+#if NETSTD
+#else
             // MACTripleDES ：長さが 16 または 24 バイトのキーを受け入れる
             if (ekha == EnumKeyedHashAlgorithm.MACTripleDES)
             {
@@ -83,6 +85,7 @@ namespace Touryo.Infrastructure.Public.Security
                         PublicExceptionMessage.ARGUMENT_INCORRECT, "byte[] key");
                 }
             }
+#endif
 
             // ハッシュ（キー付き）サービスプロバイダを生成
             KeyedHashAlgorithm kha = HashAlgorithmCmnFunc.
