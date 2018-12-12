@@ -28,7 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/08/11  西野 大介         新規作成
-//*  2018/11/28  西野 大介         jkuチェック対応の追加
+//*  2018/12/12  西野 大介         インターフェイスの拡張
 //**********************************************************************************
 
 #pragma warning disable 1998
@@ -307,7 +307,8 @@ namespace Touryo.Infrastructure.Business.Presentation
                         {
                             new Claim(ClaimTypes.Name, sub),
                             new Claim(ClaimTypes.Role, string.Join(",", roles)),
-                            new Claim("Scopes", string.Join(",", scopes)),
+                            new Claim(OAuth2AndOIDCConst.Claim_Scopes, string.Join(",", scopes)),
+                            new Claim(OAuth2AndOIDCConst.Claim_Audience, (string)jobj[OAuth2AndOIDCConst.aud]),
                             new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress(authenticationContext.Request))
                         };
 
@@ -341,7 +342,8 @@ namespace Touryo.Infrastructure.Business.Presentation
             {
                 new Claim(ClaimTypes.Name, "未認証"),
                 new Claim(ClaimTypes.Role, ""),
-                new Claim("Scopes", ""),
+                new Claim(OAuth2AndOIDCConst.Claim_Scopes, ""),
+                new Claim(OAuth2AndOIDCConst.Claim_Audience, ""),
                 new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress(authenticationContext.Request))
             };
 
@@ -393,6 +395,20 @@ namespace Touryo.Infrastructure.Business.Presentation
             return clientIp;
         }
 
+        /// <summary>GetClaimsIdentity</summary>
+        /// <returns>ClaimsIdentity</returns>
+        public static ClaimsIdentity GetClaimsIdentity()
+        {
+            return ((ClaimsIdentity)HttpContext.Current.User.Identity);
+        }
+
+        /// <summary>GetRawClaims</summary>
+        /// <returns>IEnumerable(Claim)</returns>
+        public static IEnumerable<Claim> GetRawClaims()
+        {
+            return MyBaseAsyncApiController.GetClaimsIdentity().Claims;
+        }
+
         /// <summary>GetClaims</summary>
         /// <param name="userName">string</param>
         /// <param name="roles">string</param>
@@ -400,10 +416,10 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <param name="ipAddress">string</param>
         public static void GetClaims(out string userName, out string roles, out string scopes, out string ipAddress)
         {
-            IEnumerable<Claim> claims = ((ClaimsIdentity)HttpContext.Current.User.Identity).Claims;
+            IEnumerable<Claim> claims = MyBaseAsyncApiController.GetRawClaims();
             userName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
             roles = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
-            scopes = claims.FirstOrDefault(c => c.Type == "Scopes").Value;
+            scopes = claims.FirstOrDefault(c => c.Type == OAuth2AndOIDCConst.Claim_Scopes).Value;
             ipAddress = claims.FirstOrDefault(c => c.Type == "IpAddress").Value;
         }
 
