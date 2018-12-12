@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <DotNetCliToolReference Include="BundlerMinifier.Core" Version="2.6.375" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="OpenTouryo.Business">
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore20\netcoreapp2.0\OpenTouryo.Business.dll</HintPath>
     </Reference>
@@ -41,9 +37,4 @@
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore20\netcoreapp2.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
   </ItemGroup>
-
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="npm run-script build" />
-  </Target>
-
 </Project>
