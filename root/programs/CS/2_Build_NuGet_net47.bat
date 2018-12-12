@@ -24,21 +24,16 @@ md "Frameworks\Infrastructure\Build"
 rem --------------------------------------------------
 rem Change the packages.config.
 rem --------------------------------------------------
-copy /Y "Frameworks\Infrastructure\Public\packages_net46.config" "Frameworks\Infrastructure\Public\packages.config"
-copy /Y "Frameworks\Infrastructure\Public\Db\DamManagedOdp\packages_net46.config" "Frameworks\Infrastructure\Public\Db\DamManagedOdp\packages.config"
-copy /Y "Frameworks\Infrastructure\Public\Db\DamPstGrS\packages_net46.config" "Frameworks\Infrastructure\Public\Db\DamPstGrS\packages.config"
-copy /Y "Frameworks\Infrastructure\Public\Db\DamMySQL\packages_net46.config" "Frameworks\Infrastructure\Public\Db\DamMySQL\packages.config"
-
-copy /Y "Frameworks\Infrastructure\Framework\packages_net46.config" "Frameworks\Infrastructure\Framework\packages.config"
+call %CURRENT_DIR%z_ChangePackages_net47.bat
 
 rem --------------------------------------------------
-rem Build the batch Infrastructure(Nuget46)
+rem Build the batch Infrastructure(Nuget47)
 rem --------------------------------------------------
-..\nuget.exe restore "Frameworks\Infrastructure\Nuget_net46.sln"
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\Nuget_net46.sln"
+..\nuget.exe restore "Frameworks\Infrastructure\Nuget_net47.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\Nuget_net47.sln"
 
-..\nuget.exe restore "Frameworks\Infrastructure\Nuget_RichClient_net46.sln"
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\Nuget_RichClient_net46.sln"
+..\nuget.exe restore "Frameworks\Infrastructure\Nuget_RichClient_net47.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\Nuget_RichClient_net47.sln"
 
 pause
 

@@ -77,6 +77,9 @@
     <Reference Include="OpenTouryo.Framework">
       <HintPath>..\..\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTouryo.Framework.RichClient">
+      <HintPath>..\..\Build_net46\OpenTouryo.Framework.RichClient.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -104,12 +107,6 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\RcMyCmnFunction.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\FrameWork\RichClient\FrameWork.RichClient.csproj">
-      <Project>{3468B633-2CFE-4A1E-870F-396961E49A9E}</Project>
-      <Name>FrameWork.RichClient</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

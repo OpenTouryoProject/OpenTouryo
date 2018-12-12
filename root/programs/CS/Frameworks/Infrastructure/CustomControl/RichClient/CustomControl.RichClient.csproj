@@ -64,6 +64,9 @@
     <Reference Include="OpenTouryo.Framework">
       <HintPath>..\..\Build\OpenTouryo.Framework.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTouryo.Framework.RichClient">
+      <HintPath>..\..\Build_net46\OpenTouryo.Framework.RichClient.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
@@ -150,12 +153,6 @@
     <EmbeddedResource Include="Control\WinCustomTextBox.resx">
       <DependentUpon>WinCustomTextBox.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Framework\RichClient\Framework.RichClient.csproj">
-      <Project>{3468b633-2cfe-4a1e-870f-396961e49a9e}</Project>
-      <Name>Framework.RichClient</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

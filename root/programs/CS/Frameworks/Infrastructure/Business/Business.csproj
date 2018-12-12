@@ -75,6 +75,26 @@
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="OpenTouryo.DamManagedOdp, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build_net46\OpenTouryo.DamManagedOdp.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.DamMySQL, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build_net46\OpenTouryo.DamMySQL.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.DamPstGrS, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build_net46\OpenTouryo.DamPstGrS.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Framework, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build_net46\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build_net46\OpenTouryo.Public.dll</HintPath>
+    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
@@ -166,28 +186,6 @@
     <Compile Include="Workflow\DaoT_Workflow.cs" />
     <Compile Include="Workflow\DaoT_WorkflowHistory.cs" />
     <Compile Include="Workflow\Workflow.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Framework\Framework.csproj">
-      <Project>{33133F7E-FCF4-4438-8241-FE5CDF6E52FD}</Project>
-      <Name>Framework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Public\Db\DamManagedOdp\DamManagedOdp.csproj">
-      <Project>{fe4533b3-53f0-4be2-8390-9486fff380a3}</Project>
-      <Name>DamManagedOdp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Public\Db\DamMySQL\DamMySQL.csproj">
-      <Project>{18345e81-5ecb-4b2f-8304-0e94f8763216}</Project>
-      <Name>DamMySQL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Public\Db\DamPstGrS\DamPstGrS.csproj">
-      <Project>{1a3b3376-716c-4ab2-9fb5-427227d8037f}</Project>
-      <Name>DamPstGrS</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Public\Public.csproj">
-      <Project>{81CC573A-0DF9-49E5-AF10-A50F9B194DA5}</Project>
-      <Name>Public</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

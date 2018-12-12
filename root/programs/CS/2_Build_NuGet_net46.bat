@@ -22,17 +22,26 @@ md "Frameworks\Infrastructure\Temp"
 md "Frameworks\Infrastructure\Build"
 
 rem --------------------------------------------------
-rem Output xcopy after you build the batch Infrastructure(RichClientComponent)
+rem Change the packages.config.
 rem --------------------------------------------------
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\RichClientComponent.sln"
+call %CURRENT_DIR%z_ChangePackages_net46.bat
 
-xcopy /E /Y "Frameworks\Infrastructure\Framework\RichClient\bin\%BUILD_CONFIG%" "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%\"
-xcopy /E /Y "Frameworks\Infrastructure\Business\RichClient\bin\%BUILD_CONFIG%" "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%\"
-xcopy /E /Y "Frameworks\Infrastructure\CustomControl\RichClient\bin\%BUILD_CONFIG%" "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%\"
+rem --------------------------------------------------
+rem Build the batch Infrastructure(Nuget46)
+rem --------------------------------------------------
+..\nuget.exe restore "Frameworks\Infrastructure\Nuget_net46.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\Nuget_net46.sln"
 
-xcopy /E /Y "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%" "Frameworks\Infrastructure\Build\"
+..\nuget.exe restore "Frameworks\Infrastructure\Nuget_RichClient_net46.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\Nuget_RichClient_net46.sln"
 
 pause
+
+rem --------------------------------------------------
+rem Delete the System.Web.MVC.dll after the bulk copy
+rem --------------------------------------------------
+del "Frameworks\Infrastructure\Build\System.Web.MVC.*"
+del "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%\System.Web.MVC.*"
 
 rem -------------------------------------------------------
 endlocal

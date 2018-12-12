@@ -39,6 +39,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="app.config" />
+    <None Remove="packages.config" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
 
@@ -52,10 +57,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Framework\Framework_netstd20.csproj" />
-    <ProjectReference Include="..\Public\Db\DamMySQL\DamMySQL_netstd20.csproj" />
-    <ProjectReference Include="..\Public\Db\DamPstGrS\DamPstGrS_netstd20.csproj" />
-    <ProjectReference Include="..\Public\Public_netstd20.csproj" />
+    <Reference Include="OpenTouryo.DamMySQL">
+      <HintPath>..\Build_netstd20\netstandard2.0\OpenTouryo.DamMySQL.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.DamPstGrS">
+      <HintPath>..\Build_netstd20\netstandard2.0\OpenTouryo.DamPstGrS.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\Build_netstd20\netstandard2.0\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\Build_netstd20\netstandard2.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
