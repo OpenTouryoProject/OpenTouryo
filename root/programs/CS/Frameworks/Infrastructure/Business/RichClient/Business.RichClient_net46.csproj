@@ -45,12 +45,12 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Build_net46\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>bin\Debug\OpenTouryo.Business.RichClient.XML</DocumentationFile>
+    <DocumentationFile>..\..\Build_net46\OpenTouryo.Business.RichClient.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -63,19 +63,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTouryo.Business">
-      <HintPath>..\..\Build\OpenTouryo.Business.dll</HintPath>
+      <HintPath>..\..\Build_net46\OpenTouryo.Business.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamManagedOdp">
-      <HintPath>..\..\Build\OpenTouryo.DamManagedOdp.dll</HintPath>
+      <HintPath>..\..\Build_net46\OpenTouryo.DamManagedOdp.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamMySQL">
-      <HintPath>..\..\Build\OpenTouryo.DamMySQL.dll</HintPath>
+      <HintPath>..\..\Build_net46\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamPstGrS">
-      <HintPath>..\..\Build\OpenTouryo.DamPstGrS.dll</HintPath>
+      <HintPath>..\..\Build_net46\OpenTouryo.DamPstGrS.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\Build\OpenTouryo.Framework.dll</HintPath>
+      <HintPath>..\..\Build_net46\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework.RichClient">
       <HintPath>..\..\Build_net46\OpenTouryo.Framework.RichClient.dll</HintPath>

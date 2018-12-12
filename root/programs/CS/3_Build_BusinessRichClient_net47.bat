@@ -16,10 +16,15 @@ set CURRENT_DIR="%~dp0"
 call %CURRENT_DIR%z_Common.bat
 
 rem --------------------------------------------------
-rem Build the batch Infrastructure
+rem Make the Directory.
 rem --------------------------------------------------
-dotnet restore "Frameworks\Infrastructure\BusinessCore.sln"
-dotnet msbuild %COMMANDLINE% "Frameworks\Infrastructure\BusinessCore.sln"
+md "Frameworks\Infrastructure\Temp"
+md "Frameworks\Infrastructure\Build"
+
+rem --------------------------------------------------
+rem Output xcopy after you build the batch Infrastructure
+rem --------------------------------------------------
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\BusinessRichClient_net47.sln"
 
 pause
 
