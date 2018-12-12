@@ -16,12 +16,6 @@ set CURRENT_DIR="%~dp0"
 call %CURRENT_DIR%z_Common.bat
 
 rem --------------------------------------------------
-rem Make the Directory.
-rem --------------------------------------------------
-md "Frameworks\Infrastructure\Temp"
-md "Frameworks\Infrastructure\Build"
-
-rem --------------------------------------------------
 rem Change the packages.config.
 rem --------------------------------------------------
 call %CURRENT_DIR%z_ChangePackages_net45.bat

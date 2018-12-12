@@ -16,22 +16,16 @@ set CURRENT_DIR="%~dp0"
 call %CURRENT_DIR%z_Common.bat
 
 rem --------------------------------------------------
-rem Make the Directory.
+rem Change the packages.config.
 rem --------------------------------------------------
-md "Frameworks\Infrastructure\Temp"
-md "Frameworks\Infrastructure\Build"
+call %CURRENT_DIR%z_ChangePackages_net47.bat
 
 rem --------------------------------------------------
 rem Output xcopy after you build the batch Infrastructure
 rem --------------------------------------------------
 
-..\nuget.exe restore "Frameworks\Infrastructure\Business.sln"
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\Business.sln"
-
-xcopy /E /Y "Frameworks\Infrastructure\Business\bin\%BUILD_CONFIG%" "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%\"
-xcopy /E /Y "Frameworks\Infrastructure\CustomControl\bin\%BUILD_CONFIG%" "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%\"
-
-xcopy /E /Y "Frameworks\Infrastructure\Temp\%BUILD_CONFIG%" "Frameworks\Infrastructure\Build\"
+..\nuget.exe restore "Frameworks\Infrastructure\Business_net47.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\Business_net47.sln"
 
 pause
 
