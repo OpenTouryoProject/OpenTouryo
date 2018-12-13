@@ -42,7 +42,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>..\Build_net46\</OutputPath>
-    <DocumentationFile>..\Build_net46\OpenTouryo.CustomControl.xml</DocumentationFile>
+    <DocumentationFile>..\Build_net46\OpenTouryo.Business.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
     <DefineConstants>NET46</DefineConstants>
   </PropertyGroup>
@@ -52,7 +52,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>..\Build_net46r\</OutputPath>
-    <DocumentationFile>..\Build_net46r\OpenTouryo.CustomControl.xml</DocumentationFile>
+    <DocumentationFile>..\Build_net46r\OpenTouryo.Business.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
     <DefineConstants>NET46</DefineConstants>
   </PropertyGroup>
