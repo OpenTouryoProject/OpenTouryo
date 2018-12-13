@@ -19,7 +19,7 @@ for %%a in ( %w2% ) do (
 
 pause
 
-set DIRECTORIES=Build
+set DIRECTORIES=Build, Build_net45, Build_net46, Build_net47, Build_netstd20, Build_netcore20
 @echo --------------------------------------------------
 @echo Delete the %DIRECTORIES% folders.
 @echo --------------------------------------------------

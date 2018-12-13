@@ -16,10 +16,16 @@ set CURRENT_DIR="%~dp0"
 call %CURRENT_DIR%z_Common.bat
 
 rem --------------------------------------------------
-rem Build the batch Infrastructure
+rem Change the packages.config.
 rem --------------------------------------------------
-call dotnet restore "Frameworks\Infrastructure\Nuget_netstd20.sln"
-call dotnet msbuild %COMMANDLINE% "Frameworks\Infrastructure\Nuget_netstd20.sln"
+call %CURRENT_DIR%z_ChangePackages_net45.bat
+
+rem --------------------------------------------------
+rem Output xcopy after you build the batch Infrastructure
+rem --------------------------------------------------
+
+..\nuget.exe restore "Frameworks\Infrastructure\Business_net45.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\Business_net45.sln"
 
 pause
 

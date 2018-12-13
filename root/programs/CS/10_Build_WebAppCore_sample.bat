@@ -22,7 +22,8 @@ rem --------------------------------------------------
 set CURRENTDIR=%cd%
 cd "Samples4NetCore\Backend\MVC_Sample\MVC_Sample"
 if exist "node_modules" rd /s /q "node_modules"
-call npm install
+call RestoreLib1.bat
+call RestoreLib2.bat
 cd %CURRENTDIR%
 
 dotnet restore "Samples4NetCore\Backend\MVC_Sample\MVC_Sample.sln"
