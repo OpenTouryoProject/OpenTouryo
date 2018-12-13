@@ -21,7 +21,7 @@ rem --------------------------------------------------
 call %CURRENT_DIR%z_ChangePackages_net47.bat
 
 rem --------------------------------------------------
-rem Output xcopy after you build the batch Infrastructure
+rem Build the Infrastructures
 rem --------------------------------------------------
 
 ..\nuget.exe restore "Frameworks\Infrastructure\Business_net47.sln"
