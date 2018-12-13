@@ -21,7 +21,13 @@ rem --------------------------------------------------
 call %CURRENT_DIR%z_ChangePackages_net45.bat
 
 rem --------------------------------------------------
-rem Output xcopy after you build the batch Infrastructure
+rem Get libraries from C# folder.
+rem --------------------------------------------------
+xcopy /E /Y "..\CSFrameworks\Infrastructure\Build_net45" "Frameworks\Infrastructure\Build_net45\"
+del "Frameworks\Infrastructure\Build_net45\" /f /s /a- *Business*
+
+rem --------------------------------------------------
+rem Build the Infrastructures
 rem --------------------------------------------------
 
 ..\nuget.exe restore "Frameworks\Infrastructure\Business_net45.sln"
