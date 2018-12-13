@@ -8,7 +8,7 @@ setlocal
 @rem ZIPファイル名
 set zipfilename=Temp.zip
 
-@rem GitHubパス
+@rem GitHubのZIPパス
 set srcUrl=https://github.com/OpenTouryoProject/OpenTouryo/archive/develop.zip
 
 @rem 解凍ディレクトリ
@@ -18,23 +18,25 @@ set extDir=%CD%
 set tmpDir=Temp
 
 :Download
-@rem ダウンロードされたデータがあるなら展開へ
+@rem ダウンロードされたZIPファイルがあるなら解凍
 if exist %extDir%\%zipfilename% GOTO Extract
 
+@rem ZIPファイルのダウンロード
 @powershell -NoProfile -ExecutionPolicy Bypass -Command "$d=new-object System.Net.WebClient; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; $d.Proxy.Credentials=[System.Net.CredentialCache]::DefaultNetWorkCredentials; $d.DownloadFile('%srcUrl%','%extDir%/%zipfilename%')"
 
 :Extract
 @rem 一時ディレクトリがあるならビルドへ
 if exist %extDir%\%tmpDir% GOTO Build
 
+@rem ZIPファイルを一時ディレクトリに解凍
 @powershell -NoProfile -ExecutionPolicy Bypass -Command "expand-archive %zipfilename%"
 
 :Build
 @rem ビルドがあるならコピーへ
 if exist "Temp\OpenTouryo-develop\root\programs\CS\Frameworks\Infrastructure\Build_netcore20" GOTO Xcopy
 
+@rem batファイルを使用してビルド
 cd "Temp\OpenTouryo-develop\root\programs\CS\"
-
 call 2_Build_NuGet_net45.bat
 call 2_Build_NuGet_net46.bat
 call 2_Build_NuGet_net47.bat
@@ -45,6 +47,7 @@ call 3_Build_Business_net47.bat
 call 3_Build_Business_netcore20.bat
 
 :Xcopy
+@rem ビルド出力をコピー
 cd extDir
 xcopy /E /Y "Temp\OpenTouryo-develop\root\programs\CS\Frameworks\Infrastructure\Build_net45" "OpenTouryoAssemblies\Build_net45\"
 xcopy /E /Y "Temp\OpenTouryo-develop\root\programs\CS\Frameworks\Infrastructure\Build_net46" "OpenTouryoAssemblies\Build_net46\"
