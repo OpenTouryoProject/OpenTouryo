@@ -14,4 +14,5 @@ xcopy /E /Y "Frameworks\Infrastructure\Build_net46" "Frameworks\Infrastructure\B
 xcopy /E /Y "Frameworks\Infrastructure\Build_net45" "C:\OpenTouryoAssemblies\Build_net45\"
 xcopy /E /Y "Frameworks\Infrastructure\Build_net46" "C:\OpenTouryoAssemblies\Build_net46\"
 xcopy /E /Y "Frameworks\Infrastructure\Build_net47" "C:\OpenTouryoAssemblies\Build_net47\"
+xcopy /E /Y "Frameworks\Infrastructure\Build_netstandard20" "C:\OpenTouryoAssemblies\Build_netstandard20\"
 xcopy /E /Y "Frameworks\Infrastructure\Build_netcore20" "C:\OpenTouryoAssemblies\Build_netcore20\"

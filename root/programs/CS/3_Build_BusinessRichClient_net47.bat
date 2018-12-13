@@ -16,12 +16,6 @@ set CURRENT_DIR="%~dp0"
 call %CURRENT_DIR%z_Common.bat
 
 rem --------------------------------------------------
-rem Make the Directory.
-rem --------------------------------------------------
-md "Frameworks\Infrastructure\Temp"
-md "Frameworks\Infrastructure\Build"
-
-rem --------------------------------------------------
 rem Output xcopy after you build the batch Infrastructure
 rem --------------------------------------------------
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\BusinessRichClient_net47.sln"
