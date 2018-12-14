@@ -37,14 +37,14 @@ if exist "Temp\OpenTouryo-develop\root\programs\CS\Frameworks\Infrastructure\Bui
 
 @rem batファイルを使用してビルド
 cd "Temp\OpenTouryo-develop\root\programs\CS\"
-call 2_Build_NuGet_net45.bat
-call 2_Build_NuGet_net46.bat
-call 2_Build_NuGet_net47.bat
-call 2_Build_NuGet_netstd20.bat
-call 3_Build_Business_net45.bat
-call 3_Build_Business_net46.bat
-call 3_Build_Business_net47.bat
-call 3_Build_Business_netcore20.bat
+echo | call 2_Build_NuGet_net45.bat
+echo | call 2_Build_NuGet_net46.bat
+echo | call 2_Build_NuGet_net47.bat
+echo | call 2_Build_NuGet_netstd20.bat
+echo | call 3_Build_Business_net45.bat
+echo | call 3_Build_Business_net46.bat
+echo | call 3_Build_Business_net47.bat
+echo | call 3_Build_Business_netcore20.bat
 
 :Xcopy
 @rem ビルド出力をコピー
