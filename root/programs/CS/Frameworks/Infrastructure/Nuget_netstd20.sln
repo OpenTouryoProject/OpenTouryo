@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DamPstGrS_netstd20", "Publi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Framework_netstd20", "Framework\Framework_netstd20.csproj", "{7500D33E-1FB1-4F81-B2A0-054AE089DC75}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DamManagedOdp_netstd20", "Public\Db\DamManagedOdp\DamManagedOdp_netstd20.csproj", "{66FA8CBA-C8A4-4865-9F18-BCBC48E3A331}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{7500D33E-1FB1-4F81-B2A0-054AE089DC75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7500D33E-1FB1-4F81-B2A0-054AE089DC75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7500D33E-1FB1-4F81-B2A0-054AE089DC75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66FA8CBA-C8A4-4865-9F18-BCBC48E3A331}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66FA8CBA-C8A4-4865-9F18-BCBC48E3A331}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66FA8CBA-C8A4-4865-9F18-BCBC48E3A331}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66FA8CBA-C8A4-4865-9F18-BCBC48E3A331}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

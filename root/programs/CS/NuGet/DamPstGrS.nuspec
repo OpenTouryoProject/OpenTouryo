@@ -7,7 +7,7 @@
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
     <licenseUrl>https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LICENSE.txt</licenseUrl>
-    <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root/programs/CS/Frameworks/Infrastructure/Public/Db/DamManagedOdp</projectUrl>
+    <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root/programs/CS/Frameworks/Infrastructure/Public/Db/DamPstGrS</projectUrl>
     <iconUrl>https://opentouryo.osscons.jp/OpenTouryo.ico</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <summary>DataAccess library of Npgsql in OpenTouryo.</summary>
@@ -21,6 +21,8 @@
         <dependency id="Npgsql" version="4.0.3" />
       </group>
       <group targetFramework="netstandard2.0">
+        <dependency id="Touryo.Infrastructure.Public" version="2.4.0" />
+        <dependency id="Npgsql" version="4.0.3" />
       </group>
     </dependencies>
   </metadata>

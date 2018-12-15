@@ -7,7 +7,7 @@
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
     <licenseUrl>https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LICENSE.txt</licenseUrl>
-    <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root/programs/CS/Frameworks/Infrastructure/Public/Db/DamManagedOdp</projectUrl>
+    <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root/programs/CS/Frameworks/Infrastructure/Framework</projectUrl>
     <iconUrl>https://opentouryo.osscons.jp/OpenTouryo.ico</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <summary>Framework of OpenTouryo.</summary>

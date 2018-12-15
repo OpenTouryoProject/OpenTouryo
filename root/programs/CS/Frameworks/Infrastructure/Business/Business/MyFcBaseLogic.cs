@@ -201,8 +201,6 @@ namespace Touryo.Infrastructure.Business.Business
                 //    // 接続文字列をロード
                 //    connstring = GetConfigParameter.GetConnectionString("ConnectionString_ORA");
                 //}
-#if NETCOREAPP2_0
-#else
                 else if (parameterValue.ActionType.Split('%')[0] == "ODP")
                 {
                     // Oracle / ODP.NET用のDamを生成
@@ -211,7 +209,6 @@ namespace Touryo.Infrastructure.Business.Business
                     // 接続文字列をロード
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_ODP");
                 }
-#endif
                 //else if (parameterValue.ActionType.Split('%')[0] == "DB2")
                 //{
                 //    // DB2.NET用のDamを生成

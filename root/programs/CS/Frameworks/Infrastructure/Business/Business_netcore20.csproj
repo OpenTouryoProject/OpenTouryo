@@ -63,6 +63,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="OpenTouryo.DamManagedOdp">
+      <HintPath>..\Build_netstd20\netstandard2.0\OpenTouryo.DamManagedOdp.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTouryo.DamMySQL">
       <HintPath>..\Build_netstd20\netstandard2.0\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>

@@ -21,6 +21,8 @@
         <dependency id="Oracle.ManagedDataAccess" version="18.3.0" />
       </group>
       <group targetFramework="netstandard2.0">
+        <dependency id="Touryo.Infrastructure.Public" version="2.4.0" />
+        <dependency id="Oracle.ManagedDataAccess.Core" version="2.18.3" />
       </group>
     </dependencies>
   </metadata>
@@ -36,5 +38,9 @@
     <file src="in\net47\OpenTouryo.DamManagedOdp.dll" target="lib\net47" />
     <file src="in\net47\OpenTouryo.DamManagedOdp.pdb" target="pdb\net47" />
     <file src="in\net47\OpenTouryo.DamManagedOdp.xml" target="lib\net47" />
+    
+    <file src="in\netstandard2.0\OpenTouryo.DamManagedOdp.dll" target="lib\netstandard2.0" />
+    <file src="in\netstandard2.0\OpenTouryo.DamManagedOdp.pdb" target="pdb\netstandard2.0" />
+    <file src="in\netstandard2.0\OpenTouryo.DamManagedOdp.xml" target="lib\netstandard2.0" />
   </files>
 </package>
