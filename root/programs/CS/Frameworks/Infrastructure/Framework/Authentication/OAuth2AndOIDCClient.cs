@@ -39,7 +39,6 @@ using System.Diagnostics;
 
 using System.Web;
 using System.Net.Http;
-using System.Net.Http.Headers;
 
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Security;
@@ -145,13 +144,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             };
 
             // HttpRequestMessage (Headers & Content)
-            if (!string.IsNullOrEmpty(client_id) && !string.IsNullOrEmpty(client_secret))
-            {
-                httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                OAuth2AndOIDCConst.Basic,
-                CustomEncode.ToBase64String(CustomEncode.StringToByte(
-                    string.Format("{0}:{1}", client_id, client_secret), CustomEncode.us_ascii)));
-            }
+            httpRequestMessage.Headers.Authorization = 
+                AuthenticationHeader.CreateBasicAuthenticationHeaderValue(client_id, client_secret);
 
             if (string.IsNullOrEmpty(code_verifier) && string.IsNullOrEmpty(assertion))
             {
@@ -220,11 +214,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             };
 
             // HttpRequestMessage (Headers & Content)
-
-            httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                OAuth2AndOIDCConst.Basic,
-                CustomEncode.ToBase64String(CustomEncode.StringToByte(
-                    string.Format("{0}:{1}", client_id, client_secret), CustomEncode.us_ascii)));
+            httpRequestMessage.Headers.Authorization = 
+                AuthenticationHeader.CreateBasicAuthenticationHeaderValue(client_id, client_secret);
 
             httpRequestMessage.Content = new FormUrlEncodedContent(
                 new Dictionary<string, string>
@@ -270,12 +261,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             };
 
             // HttpRequestMessage (Headers & Content)
-
-            httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                OAuth2AndOIDCConst.Basic,
-                Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(
-                    string.Format("{0}:{1}",
-                    client_id, client_secret))));
+            httpRequestMessage.Headers.Authorization = 
+                AuthenticationHeader.CreateBasicAuthenticationHeaderValue(client_id, client_secret);
 
             httpRequestMessage.Content = new FormUrlEncodedContent(
                 new Dictionary<string, string>
@@ -323,10 +310,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             };
 
             // HttpRequestMessage (Headers & Content)
-            httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                OAuth2AndOIDCConst.Basic,
-                CustomEncode.ToBase64String(CustomEncode.StringToByte(
-                    string.Format("{0}:{1}", client_id, client_secret), CustomEncode.us_ascii)));
+            httpRequestMessage.Headers.Authorization = 
+                AuthenticationHeader.CreateBasicAuthenticationHeaderValue(client_id, client_secret);
 
             httpRequestMessage.Content = new FormUrlEncodedContent(
                 new Dictionary<string, string>
@@ -362,7 +347,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             };
 
             // HttpRequestMessage (Headers)
-            httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(OAuth2AndOIDCConst.Bearer, accessToken);
+            httpRequestMessage.Headers.Authorization = AuthenticationHeader.CreateBearerAuthenticationHeaderValue(accessToken);
 
             // HttpResponseMessage
             httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
@@ -416,11 +401,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             };
 
             // HttpRequestMessage (Headers & Content)
-
-            httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                OAuth2AndOIDCConst.Basic,
-                CustomEncode.ToBase64String(CustomEncode.StringToByte(
-                    string.Format("{0}:{1}", client_id, client_secret), CustomEncode.us_ascii)));
+            httpRequestMessage.Headers.Authorization =
+                AuthenticationHeader.CreateBasicAuthenticationHeaderValue(client_id, client_secret);
 
             httpRequestMessage.Content = new FormUrlEncodedContent(
                 new Dictionary<string, string>
@@ -456,11 +438,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             };
 
             // HttpRequestMessage (Headers & Content)
-
-            httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                OAuth2AndOIDCConst.Basic,
-                CustomEncode.ToBase64String(CustomEncode.StringToByte(
-                    string.Format("{0}:{1}", client_id, client_secret), CustomEncode.us_ascii)));
+            httpRequestMessage.Headers.Authorization =
+                AuthenticationHeader.CreateBasicAuthenticationHeaderValue(client_id, client_secret);
 
             httpRequestMessage.Content = new FormUrlEncodedContent(
                 new Dictionary<string, string>
@@ -500,6 +479,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             };
 
             // HttpRequestMessage (Headers & Content)
+
+            // httpRequestMessage.Headers.Authorization = // ヘッダを使わない。
 
             httpRequestMessage.Content = new FormUrlEncodedContent(
                 new Dictionary<string, string>
