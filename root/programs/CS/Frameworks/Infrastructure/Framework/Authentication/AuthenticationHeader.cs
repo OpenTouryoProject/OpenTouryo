@@ -44,26 +44,27 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>AuthenticationScheme</returns>
         public static string GetCredentials(string authHeader, out string[] credentials)
         {
-            string[] temp = authHeader.Split(' ');
-
-            if (temp[0] == OAuth2AndOIDCConst.Basic)
+            if (!string.IsNullOrEmpty(authHeader))
             {
-                credentials = CustomEncode.ByteToString(
-                    CustomEncode.FromBase64String(temp[1]), CustomEncode.us_ascii).Split(':');
+                string[] temp = authHeader.Split(' ');
 
-                return OAuth2AndOIDCConst.Basic;
-            }
-            else if (temp[0] == OAuth2AndOIDCConst.Bearer)
-            {
-                credentials = new string[] { temp[1] };
+                if (temp[0] == OAuth2AndOIDCConst.Basic)
+                {
+                    credentials = CustomEncode.ByteToString(
+                        CustomEncode.FromBase64String(temp[1]), CustomEncode.us_ascii).Split(':');
 
-                return OAuth2AndOIDCConst.Bearer;
+                    return OAuth2AndOIDCConst.Basic;
+                }
+                else if (temp[0] == OAuth2AndOIDCConst.Bearer)
+                {
+                    credentials = new string[] { temp[1] };
+
+                    return OAuth2AndOIDCConst.Bearer;
+                }
             }
-            else
-            {
-                credentials = null;
-                return null;
-            }
+
+            credentials = new string[] { };
+            return "";
         }
 
         /// <summary>CreateBasicAuthenticationHeaderValue</summary>
