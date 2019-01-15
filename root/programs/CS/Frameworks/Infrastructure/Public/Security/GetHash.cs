@@ -38,6 +38,10 @@
 //**********************************************************************************
 
 using System.Security.Cryptography;
+
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Digests;
+
 using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security
@@ -90,11 +94,29 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>ハッシュ値（バイト配列）</returns>
         public static byte[] GetHashBytes(byte[] asb, EnumHashAlgorithm eha, int stretchCount)
         {
+            byte[] temp = null;
+
+#if NETSTD
+            // NETSTDの場合の実装
+            if (eha == EnumHashAlgorithm.RIPEMD160_M)
+            {
+                // ハッシュ値を計算して返す。
+                temp = GetHash.GetDigestBytesByBC(asb, new RipeMD160Digest());
+
+                for (int i = 0; i < stretchCount; i++)
+                {
+                    // stretchCountが1以上なら繰り返す。
+                    temp = GetHash.GetDigestBytesByBC(temp, new RipeMD160Digest());
+                }
+
+                return temp;
+            }
+#endif
             // ハッシュ（キー無し）サービスプロバイダを生成
             HashAlgorithm ha = HashAlgorithmCmnFunc.CreateHashAlgorithmSP(eha);
 
             // ハッシュ値を計算して返す。
-            byte[] temp = ha.ComputeHash(asb);
+            temp = ha.ComputeHash(asb);
 
             for (int i = 0; i < stretchCount; i++)
             {
@@ -106,6 +128,19 @@ namespace Touryo.Infrastructure.Public.Security
             return temp;
         }
 
+#if NETSTD
+        /// <summary>BouncyCastleで、各種IDigestのハッシュ値を計算して返す。</summary>
+        /// <param name="data">データ（バイト配列）</param>
+        /// <param name="digest">IDigest</param>
+        /// <returns>ハッシュ値（バイト配列）</returns>
+        public static byte[] GetDigestBytesByBC(byte[] data, IDigest digest)
+        {
+            digest.BlockUpdate(data, 0, data.Length);
+            byte[] rtnVal = new byte[digest.GetDigestSize()];
+            digest.DoFinal(rtnVal, 0);
+            return rtnVal;
+        }
+#endif
         #endregion
     }
 }

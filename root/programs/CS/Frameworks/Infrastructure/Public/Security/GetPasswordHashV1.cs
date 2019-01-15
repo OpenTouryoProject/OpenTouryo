@@ -40,6 +40,11 @@
 //**********************************************************************************
 
 using System.Security.Cryptography;
+
+using Org.BouncyCastle.Crypto.Macs;
+using Org.BouncyCastle.Crypto.Digests;
+using Org.BouncyCastle.Crypto.Engines;
+
 using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security
@@ -301,6 +306,21 @@ namespace Touryo.Infrastructure.Public.Security
             // MACTripleDES ：長さが 16 または 24 バイトのキーを受け入れる
 
             // ハッシュ（キー付き）サービスプロバイダを生成
+
+#if NETSTD
+            // NETSTDの場合の実装
+            if (ekha == EnumKeyedHashAlgorithm.HMACRIPEMD160)
+            {
+                return GetKeyedHash.GetMacBytesByBC(
+                    asb, passwordKey.GetBytes(24), new HMac(new RipeMD160Digest()));
+            }
+            else if (ekha == EnumKeyedHashAlgorithm.MACTripleDES)
+            {
+                return GetKeyedHash.GetMacBytesByBC(
+                    asb, passwordKey.GetBytes(24), new CbcBlockCipherMac(new DesEdeEngine()));
+            }
+#endif
+
             KeyedHashAlgorithm kha = HashAlgorithmCmnFunc.CreateKeyedHashAlgorithmSP(
                     ekha,
                     passwordKey.GetBytes(24) // 上記より、24 決め打ちとする。

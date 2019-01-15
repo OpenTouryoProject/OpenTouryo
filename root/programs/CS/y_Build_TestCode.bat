@@ -27,9 +27,9 @@ rem --------------------------------------------------
 
 pause
 
-rem --------------------------------------------------
-rem Build the batch Infrastructure
-rem --------------------------------------------------
+@rem --------------------------------------------------
+@rem Build the batch Infrastructure
+@rem --------------------------------------------------
 set CURRENTDIR=%cd%
 cd "Frameworks\Tests\EncAndDecUtilCUI"
 call copy_cert.bat
@@ -47,21 +47,33 @@ cd %CURRENTDIR%
 dotnet restore "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUICore.sln"
 dotnet msbuild %COMMANDLINE% "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUICore.sln"
 
+@echo --------------------------------------------------
+@echo Test the EncAndDecUtilCUIFx(45).
+@echo --------------------------------------------------
 set CURRENTDIR=%cd%
 cd "Frameworks\Tests\EncAndDecUtilCUI\net45\bin\Debug"
 "EncAndDecUtilCUIFx.exe" > ..\..\..\Result45.txt
 cd %CURRENTDIR%
 
+@echo --------------------------------------------------
+@echo Test the EncAndDecUtilCUIFx(46).
+@echo --------------------------------------------------
 set CURRENTDIR=%cd%
 cd "Frameworks\Tests\EncAndDecUtilCUI\net46\bin\Debug"
 "EncAndDecUtilCUIFx.exe" > ..\..\..\Result46.txt
 cd %CURRENTDIR%
 
+@echo --------------------------------------------------
+@echo Test the EncAndDecUtilCUIFx(47).
+@echo --------------------------------------------------
 set CURRENTDIR=%cd%
 cd "Frameworks\Tests\EncAndDecUtilCUI\net47\bin\Debug"
 "EncAndDecUtilCUIFx.exe" > ..\..\..\Result47.txt
 cd %CURRENTDIR%
 
+@echo --------------------------------------------------
+@echo Test the EncAndDecUtilCUICore.
+@echo --------------------------------------------------
 set CURRENTDIR=%cd%
 cd "Frameworks\Tests\EncAndDecUtilCUI\core20\bin\Debug\netcoreapp2.0"
 dotnet "EncAndDecUtilCUICore.dll" > ..\..\..\..\ResultCore.txt

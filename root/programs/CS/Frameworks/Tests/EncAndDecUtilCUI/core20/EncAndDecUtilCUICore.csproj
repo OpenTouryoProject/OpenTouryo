@@ -39,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.3" />
     <PackageReference Include="jose-jwt" Version="2.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="System.Security.Cryptography.Cng" Version="4.5.0" />

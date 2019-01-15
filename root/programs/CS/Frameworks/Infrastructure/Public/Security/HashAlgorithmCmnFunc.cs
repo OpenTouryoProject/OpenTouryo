@@ -127,7 +127,6 @@ namespace Touryo.Infrastructure.Public.Security
                 // MD5CryptoServiceProviderサービスプロバイダ
                 ha = MD5CryptoServiceProvider.Create(); // devps(1703)
             }
-
 #if NETSTD
 #else
             else if (eha == EnumHashAlgorithm.MD5_CNG)
@@ -136,20 +135,18 @@ namespace Touryo.Infrastructure.Public.Security
                 ha = MD5Cng.Create(); // devps(1703)
             }
 #endif
-
             #endregion
 
             #region RIPEMD160
-
-#if NETSTD
-#else
             else if (eha == EnumHashAlgorithm.RIPEMD160_M)
             {
+#if NETSTD
+                ha = null; // BouncyCastleを使用する。
+#else            
                 // RIPEMD160Managedサービスプロバイダ
-                ha = RIPEMD160Managed.Create(); // devps(1703)
-            }
+                ha = RIPEMD160Managed.Create(); // devps(1703)            
 #endif
-
+            }
             #endregion
 
             #region SHA1
@@ -158,7 +155,6 @@ namespace Touryo.Infrastructure.Public.Security
                 // SHA1CryptoServiceProviderサービスプロバイダ
                 ha = SHA1CryptoServiceProvider.Create(); // devps(1703)
             }
-
 #if NETSTD
 #else
             else if (eha == EnumHashAlgorithm.SHA1_CNG)
@@ -167,7 +163,6 @@ namespace Touryo.Infrastructure.Public.Security
                 ha = SHA1Cng.Create(); // devps(1703)
             }
 #endif
-
             else if (eha == EnumHashAlgorithm.SHA1_M)
             {
                 // SHA1Managedサービスプロバイダ
@@ -181,7 +176,6 @@ namespace Touryo.Infrastructure.Public.Security
                 // SHA256CryptoServiceProviderサービスプロバイダ
                 ha = SHA256CryptoServiceProvider.Create(); // devps(1703)
             }
-
 #if NETSTD
 #else
             else if (eha == EnumHashAlgorithm.SHA256_CNG)
@@ -190,7 +184,6 @@ namespace Touryo.Infrastructure.Public.Security
                 ha = SHA256Cng.Create(); // devps(1703)
             }
 #endif
-
             else if (eha == EnumHashAlgorithm.SHA256_M)
             {
                 // SHA256Managedサービスプロバイダ
@@ -204,7 +197,6 @@ namespace Touryo.Infrastructure.Public.Security
                 // SHA384CryptoServiceProviderサービスプロバイダ
                 ha = SHA384CryptoServiceProvider.Create(); // devps(1703)
             }
-
 #if NETSTD
 #else
             else if (eha == EnumHashAlgorithm.SHA384_CNG)
@@ -213,7 +205,6 @@ namespace Touryo.Infrastructure.Public.Security
                 ha = SHA384Cng.Create(); // devps(1703)
             }
 #endif
-
             else if (eha == EnumHashAlgorithm.SHA384_M)
             {
                 // SHA384Managedサービスプロバイダ
@@ -227,7 +218,6 @@ namespace Touryo.Infrastructure.Public.Security
                 // SHA512CryptoServiceProviderサービスプロバイダ
                 ha = SHA512CryptoServiceProvider.Create(); // devps(1703)
             }
-
 #if NETSTD
 #else
             else if (eha == EnumHashAlgorithm.SHA512_CNG)
@@ -236,7 +226,6 @@ namespace Touryo.Infrastructure.Public.Security
                 ha = SHA512Cng.Create(); // devps(1703)
             }
 #endif
-
             else if (eha == EnumHashAlgorithm.SHA512_M)
             {
                 // SHA512Managedサービスプロバイダ
@@ -282,16 +271,15 @@ namespace Touryo.Infrastructure.Public.Security
                 // HMACMD5サービスプロバイダ
                 kha = new HMACMD5(key);
             }
-
-#if NETSTD
-#else
             else if (ekha == EnumKeyedHashAlgorithm.HMACRIPEMD160)
             {
+#if NETSTD
+                kha = null; // BouncyCastleを使用する。
+#else       
                 // HMACRIPEMD160サービスプロバイダ
-                kha = new HMACRIPEMD160(key);
-            }
+                kha = new HMACRIPEMD160(key);            
 #endif
-
+            }
             else if (ekha == EnumKeyedHashAlgorithm.HMACSHA256)
             {
                 // HMACSHA256サービスプロバイダ
@@ -308,16 +296,15 @@ namespace Touryo.Infrastructure.Public.Security
                 kha = new HMACSHA512(key);
             }
             // -- ▲追加▲ --
-
-#if NETSTD
-#else
             else if (ekha == EnumKeyedHashAlgorithm.MACTripleDES)
             {
+#if NETSTD
+                kha = null; // BouncyCastleを使用する。
+#else       
                 // MACTripleDESサービスプロバイダ
-                kha = new MACTripleDES(key); // devps(1703)
-            }
+                kha = new MACTripleDES(key); // devps(1703)            
 #endif
-
+            }
             else
             {
                 throw new ArgumentException(

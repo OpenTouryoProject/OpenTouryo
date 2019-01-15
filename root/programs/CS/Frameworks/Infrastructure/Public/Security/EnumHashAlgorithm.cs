@@ -84,11 +84,8 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region Managed
 
-#if NETSTD
-#else
         /// <summary>RIPEMD160Managed</summary>
         RIPEMD160_M,
-#endif
 
         /// <summary>SHA1Managed</summary>
         SHA1_M,

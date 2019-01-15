@@ -33,6 +33,12 @@
 using System;
 using System.Security.Cryptography;
 
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Macs;
+using Org.BouncyCastle.Crypto.Digests;
+using Org.BouncyCastle.Crypto.Engines;
+
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
@@ -41,6 +47,8 @@ namespace Touryo.Infrastructure.Public.Security
     /// <summary>ハッシュ（キー付き）を取得するクラス</summary>
     public class GetKeyedHash
     {
+        #region String
+
         /// <summary>文字列のハッシュ値を計算して返す。</summary>
         /// <param name="data">データ（文字列）</param>
         /// <param name="ekha">ハッシュ（キー付き）アルゴリズム列挙型</param>
@@ -52,6 +60,10 @@ namespace Touryo.Infrastructure.Public.Security
                 CustomEncode.StringToByte(data, CustomEncode.UTF_8),
                 ekha, CustomEncode.StringToByte(key, CustomEncode.UTF_8)));
         }
+
+        #endregion
+
+        #region Bytes
 
         /// <summary>バイト配列のハッシュ値を計算して返す。</summary>
         /// <param name="data">データ（バイト配列）</param>
@@ -66,8 +78,6 @@ namespace Touryo.Infrastructure.Public.Security
             // HMACSHA256   ：どのサイズのキーでも受け入れる ◯
             // HMACSHA384   ：どのサイズのキーでも受け入れる ◯
             // HMACSHA512   ：どのサイズのキーでも受け入れる ◯
-#if NETSTD
-#else
             // MACTripleDES ：長さが 16 または 24 バイトのキーを受け入れる
             if (ekha == EnumKeyedHashAlgorithm.MACTripleDES)
             {
@@ -85,6 +95,19 @@ namespace Touryo.Infrastructure.Public.Security
                         PublicExceptionMessage.ARGUMENT_INCORRECT, "byte[] key");
                 }
             }
+
+#if NETSTD
+            // NETSTDの場合の実装
+            if (ekha == EnumKeyedHashAlgorithm.HMACRIPEMD160)
+            {
+                return GetKeyedHash.GetMacBytesByBC(
+                    data, key, new HMac(new RipeMD160Digest()));
+            }
+            else if (ekha == EnumKeyedHashAlgorithm.MACTripleDES)
+            {
+                return GetKeyedHash.GetMacBytesByBC(
+                    data, key, new CbcBlockCipherMac(new DesEdeEngine(), 64));
+            }
 #endif
 
             // ハッシュ（キー付き）サービスプロバイダを生成
@@ -98,5 +121,40 @@ namespace Touryo.Infrastructure.Public.Security
 
             return temp;
         }
+
+#if NETSTD
+        /// <summary>BouncyCastleでMacのハッシュ値を計算して返す。</summary>
+        /// <param name="data">データ（バイト配列）</param>
+        /// <param name="key">キー（バイト配列）</param>
+        /// <param name="mac">IMac</param>
+        /// <returns>ハッシュ値（バイト配列）</returns>
+        public static byte[] GetMacBytesByBC(byte[] data, byte[] key, IMac mac)
+        {
+            mac.Init(new KeyParameter(key));
+            mac.BlockUpdate(data, 0, data.Length);
+
+            byte[] rtnVal = new byte[mac.GetMacSize()];
+            mac.DoFinal(rtnVal, 0);
+
+            if (mac.AlgorithmName == "DESede/CBC"
+                && 8 < rtnVal.Length)
+            {
+                rtnVal = PubCmnFunction.CopyArray<byte>(rtnVal, 8);
+            }
+
+            return rtnVal;
+
+            // <HMAC>
+            // mac = new HMac(new RipeMD160Digest());
+
+            // <MACTripleDES>
+            // mac = new CbcBlockCipherMac(new DesEdeEngine(), 64));
+            // https://www.go4expert.com/articles/bouncy-castle-net-implementation-triple-t24829/
+            //   ECBモードのDESEDEと、CBCモードのTriple DESがある。
+            // https://stackoverflow.com/questions/34660907/how-to-encrypt-decrypt-string-using-mactripledes
+            //   MACTripleDESはCBC-MACを使用します。 CBC-MACは、メッセージにゼロを埋め込んだ後にCBCモードを使用します。
+        }
+#endif
+        #endregion
     }
 }
