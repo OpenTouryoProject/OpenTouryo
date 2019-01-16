@@ -38,7 +38,7 @@ namespace Touryo.Infrastructure.Public.Security
     /// <summary>Passwordハッシュを取得するクラス（v2</summary>
     public class GetPasswordHashV2 : GetKeyedHash
     {
-        #region GetHash
+        #region Hash
 
         /// <summary>
         /// Password entered by the userをDB保存する際、
@@ -52,7 +52,7 @@ namespace Touryo.Infrastructure.Public.Security
         public static string GetSaltedPassword(string rawPassword, EnumHashAlgorithm eha, int saltLength)
         {
             // overloadへ
-            return GetPasswordHashV1.GetSaltedPassword(rawPassword, eha, saltLength, 1);
+            return GetPasswordHashV2.GetSaltedPassword(rawPassword, eha, saltLength, 1);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Touryo.Infrastructure.Public.Security
 
         #endregion
 
-        #region GetKeyedHash
+        #region KeyedHash
         
         /// <summary>
         /// Password entered by the userをDB保存する際、
@@ -150,13 +150,13 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>パスワードを比較して認証する。</summary>
         /// <param name="rawPassword">Password entered by the user.</param>
-        /// <param name="ekha">ハッシュ・アルゴリズム列挙型</param>
         /// <param name="saltedPassword">Salted and hashed password.</param>
+        /// <param name="ekha">ハッシュ・アルゴリズム列挙型</param>
         /// <returns>
         /// true：パスワードは一致した。
         /// false：パスワードは一致しない。
         /// </returns>
-        public static bool EqualSaltedPassword(string rawPassword, EnumKeyedHashAlgorithm ekha, string saltedPassword)
+        public static bool EqualSaltedPassword(string rawPassword, string saltedPassword, EnumKeyedHashAlgorithm ekha)
         {
             // ソルト部分を取得
             string[] temp = saltedPassword.Split('.');

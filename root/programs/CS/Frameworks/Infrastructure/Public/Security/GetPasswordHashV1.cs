@@ -39,6 +39,7 @@
 //*  2018/10/31  西野 大介         クラスの再編（GetKeyedHash -> GetKeyedHash, GetPasswordHashVn, MsgAuthCode）
 //**********************************************************************************
 
+using System;
 using System.Security.Cryptography;
 
 using Org.BouncyCastle.Crypto.Macs;
@@ -50,6 +51,7 @@ using Touryo.Infrastructure.Public.Str;
 namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>Passwordハッシュを取得するクラス（v1</summary>
+    [Obsolete("GetPasswordHashV1 is deprecated, please use GetPasswordHashV2 instead.")]
     public class GetPasswordHashV1
     {
         #region mem & prop

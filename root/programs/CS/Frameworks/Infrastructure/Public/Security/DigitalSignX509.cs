@@ -114,6 +114,7 @@ namespace Touryo.Infrastructure.Public.Security
         {
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
             this.HashAlgorithm = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(hashAlgorithmName);
+            this.Prepare();
         }
 
 #if NET45
@@ -144,6 +145,7 @@ namespace Touryo.Infrastructure.Public.Security
         {
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
             this.HashAlgorithm = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(hashAlgorithmName.Name);
+            this.Prepare();
         }
 #endif
 
@@ -158,7 +160,6 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>対象データに対してデジタル署名したデジタル署名部分のデータ</returns>
         public override byte[] Sign(byte[] data)
         {
-            this.PrepareSign();
             return base.Sign(data);
         }
 
@@ -168,7 +169,6 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
         public override bool Verify(byte[] data, byte[] sign)
         {
-            this.PrepareVerify();
             return base.Verify(data, sign);
         }
 
@@ -177,7 +177,6 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>対象データに対してデジタル署名したデジタル署名部分のデータ</returns>
         public override byte[] SignByFormatter(byte[] data)
         {
-            this.PrepareSign();
             return base.SignByFormatter(data);
         }
 
@@ -187,7 +186,6 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
         public override bool VerifyByDeformatter(byte[] data, byte[] sign)
         {
-            this.PrepareVerify();
             return base.VerifyByDeformatter(data, sign);
         }
 
@@ -195,41 +193,8 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region 内部関数
 
-        #region 準備
-
-        /// <summary>署名準備</summary>
-        private void PrepareSign()
-        {
-            AsymmetricAlgorithm aa = this.GetPrivateKey();
-
-            if (aa is RSA)
-            {
-                // RSA
-                // *.pfxの場合、ExportParameters(true)して生成し直している。
-                RSA rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(aa);
-                rsa.ImportParameters(((RSA)(aa)).ExportParameters(true));
-                aa = rsa;
-            }
-            else if (aa is DSA)
-            {
-                // DSA
-                // *.pfxの場合、ExportParameters(true)して生成し直している。
-                DSA dsa = (DSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(aa);
-                dsa.ImportParameters(((DSA)(aa)).ExportParameters(true));
-                aa = dsa;
-            }
-            else
-            {
-                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
-            }
-
-            // AsymmetricAlgorithmを設定
-            this.AsymmetricAlgorithm = aa;
-        }
-
-
-        /// <summary>検証準備</summary>
-        private void PrepareVerify()
+        /// <summary>準備</summary>
+        private void Prepare()
         {
             AsymmetricAlgorithm aa = null;
             
@@ -242,10 +207,11 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 // *.pfx
                 aa = this.GetPrivateKey();
+
+                // *.pfxの場合、ExportParameters(true)して生成し直す必要がある。
                 if (aa is RSA)
                 {
                     // RSA
-                    // *.pfxの場合、ExportParameters(true)して生成し直している。
                     RSA rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(aa);
                     rsa.ImportParameters(((RSA)(aa)).ExportParameters(true));
                     aa = rsa;
@@ -253,7 +219,6 @@ namespace Touryo.Infrastructure.Public.Security
                 else if (aa is DSA)
                 {
                     // DSA
-                    // *.pfxの場合、ExportParameters(true)して生成し直している。
                     DSA dsa = (DSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(aa);
                     dsa.ImportParameters(((DSA)(aa)).ExportParameters(true));
                     aa = dsa;
@@ -267,8 +232,6 @@ namespace Touryo.Infrastructure.Public.Security
             // AsymmetricAlgorithmを設定
             this.AsymmetricAlgorithm = aa;
         }
-
-        #endregion
 
         #region GetKey
 

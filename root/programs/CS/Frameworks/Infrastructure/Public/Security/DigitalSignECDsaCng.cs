@@ -50,7 +50,7 @@ namespace Touryo.Infrastructure.Public.Security
         #region mem & prop & constructor
 
         #region mem & prop
-
+        
         /// <summary>_privateKey</summary>
         private CngKey _privateKey = null;
         /// <summary>PrivateKey</summary>
@@ -122,6 +122,26 @@ namespace Touryo.Infrastructure.Public.Security
                 this._privateKey = cngKey;
             }
         }
+
+#if NET45 || NET46
+#else
+        /// <summary>Constructor</summary>
+        /// <param name="ecp">任意鍵</param>
+        /// <param name="isPrivate">秘密鍵か否か</param>
+        public DigitalSignECDsaCng(ECParameters ecp, bool isPrivate)
+        {
+            ECDsaCng ecDsaCng = new ECDsaCng();
+            ecDsaCng.ImportParameters(ecp);
+            CngKey cngKey = ecDsaCng.Key;
+
+            this._publicKey = cngKey.Export(CngKeyBlobFormat.GenericPublicBlob);
+
+            if (isPrivate)
+            {
+                this._privateKey = cngKey;
+            }
+        }
+#endif
 
         #endregion
 
