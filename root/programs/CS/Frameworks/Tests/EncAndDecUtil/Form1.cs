@@ -214,8 +214,8 @@ namespace EncAndDecUtil
             // パラメタ系は渡さないで検証可能
             if (GetPasswordHashV2.EqualSaltedPassword(
                 this.txtSPWDRawPassword2.Text,
-                (EnumKeyedHashAlgorithm)this.cbxSPWDPV2.SelectedValue,
-                this.txtSPWDSaltedPassword2.Text))
+                this.txtSPWDSaltedPassword2.Text,
+                (EnumKeyedHashAlgorithm)this.cbxSPWDPV2.SelectedValue))
             {
                 MessageBox.Show("認証成功");
             }
