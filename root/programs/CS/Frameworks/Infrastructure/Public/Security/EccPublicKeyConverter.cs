@@ -28,6 +28,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/11/12  西野 大介         新規作成
+//*  2019/01/16  西野 大介         X509KeyStorageFlagsのオプション・名前付き引数対応
+//*                                下位がExportableである必要性があった、また、ASP.NET上で実行する可能性もある。
 //**********************************************************************************
 
 using System;
@@ -64,18 +66,11 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>X509CerToJwk</summary>
         /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
         /// <param name="hashAlgorithmName">HashAlgorithmName</param>
-        /// <returns>Jwk公開鍵</returns>
-        public static string X509CerToJwk(string certificateFilePath, HashAlgorithmName hashAlgorithmName)
-        {
-            return EccPublicKeyConverter.X509CerToJwk(certificateFilePath, hashAlgorithmName, null);
-        }
-
-        /// <summary>X509CerToJwk</summary>
-        /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
-        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
         /// <param name="settings">JsonSerializerSettings</param>
         /// <returns>Jwk公開鍵</returns>
-        public static string X509CerToJwk(string certificateFilePath, HashAlgorithmName hashAlgorithmName, JsonSerializerSettings settings)
+        public static string X509CerToJwk(
+            string certificateFilePath, HashAlgorithmName hashAlgorithmName,
+            JsonSerializerSettings settings = null)
         {
             return EccPublicKeyConverter.ParamToJwk( // *.cer is PublicKey -> ExportParameters(false)
                 EccPublicKeyConverter.X509CerToProvider(certificateFilePath, hashAlgorithmName).ExportParameters(false), settings);
@@ -106,14 +101,17 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>X509CerToProvider</summary>
         /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
         /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <param name="flg">X509KeyStorageFlags</param>
         /// <returns>ECDsa（公開鍵）</returns>
-        public static ECDsa X509CerToProvider(string certificateFilePath, HashAlgorithmName hashAlgorithmName)
+        public static ECDsa X509CerToProvider(
+            string certificateFilePath, HashAlgorithmName hashAlgorithmName,
+            X509KeyStorageFlags flg = X509KeyStorageFlags.DefaultKeySet)
         {
             // X509KeyStorageFlagsについて
             // PublicKey を取り出すため Exportableは不要
             // ASP.NET（サーバ）からの実行を想定しないため、MachineKeySetは不要
             DigitalSignECDsaX509 dsX509 = new DigitalSignECDsaX509(
-                certificateFilePath, "", hashAlgorithmName, X509KeyStorageFlags.DefaultKeySet);
+                certificateFilePath, "", hashAlgorithmName, flg);
 
             AsymmetricAlgorithm aa = dsX509.PublicKey;
             if (aa is ECDsa)
@@ -134,19 +132,12 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="certificateFilePath">X.509鍵(*.pfx)</param>
         /// <param name="password">string</param>
         /// <param name="hashAlgorithmName">HashAlgorithmName</param>
-        /// <returns>Jwk公開鍵</returns>
-        public static string X509PfxToJwk(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName)
-        {
-            return EccPublicKeyConverter.X509PfxToJwk(certificateFilePath, password, hashAlgorithmName, null);
-        }
-
-        /// <summary>X509CerToJwk</summary>
-        /// <param name="certificateFilePath">X.509鍵(*.pfx)</param>
-        /// <param name="password">string</param>
-        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
         /// <param name="settings">JsonSerializerSettings</param>
         /// <returns>Jwk公開鍵</returns>
-        public static string X509PfxToJwk(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName, JsonSerializerSettings settings)
+        public static string X509PfxToJwk(
+            string certificateFilePath, string password,
+            HashAlgorithmName hashAlgorithmName,
+            JsonSerializerSettings settings = null)
         {
             return EccPublicKeyConverter.ParamToJwk( // *.cer is PublicKey -> ExportParameters(false)
                 EccPublicKeyConverter.X509PfxToProvider(certificateFilePath, password, hashAlgorithmName).ExportParameters(false), settings);
@@ -168,14 +159,18 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="certificateFilePath">X.509鍵(*.pfx)</param>
         /// <param name="password">string</param>
         /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <param name="flg">X509KeyStorageFlags</param>
         /// <returns>ECDsa（公開鍵）</returns>
-        public static ECDsa X509PfxToProvider(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName)
+        public static ECDsa X509PfxToProvider(
+            string certificateFilePath, string password,
+            HashAlgorithmName hashAlgorithmName,
+            X509KeyStorageFlags flg = X509KeyStorageFlags.DefaultKeySet)
         {
             // X509KeyStorageFlagsについて
             // PublicKey を取り出すため Exportableは不要
             // ASP.NET（サーバ）からの実行を想定しないため、MachineKeySetは不要
             DigitalSignECDsaX509 dsX509 = new DigitalSignECDsaX509(
-                certificateFilePath, password, hashAlgorithmName, X509KeyStorageFlags.DefaultKeySet);
+                certificateFilePath, password, hashAlgorithmName, flg);
 
             AsymmetricAlgorithm aa = dsX509.PublicKey; // Public
             if (aa is ECDsa)
@@ -245,7 +240,8 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="settings">JsonSerializerSettings</param>
         /// <returns>JwkString</returns>
         internal static string CreateJwkFromDictionary(
-            Dictionary<string, string> dic, JsonSerializerSettings settings)
+            Dictionary<string, string> dic,
+            JsonSerializerSettings settings = null)
         {
             // JSON Web Key (JWK) Thumbprint
             // https://openid-foundation-japan.github.io/rfc7638.ja.html
@@ -285,19 +281,13 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region CngToJwk
         /*
-        /// <summary>CngKeyToJwk</summary>
-        /// <param name="cngkey">CngKey</param>
-        /// <returns>Jwk公開鍵</returns>
-        public static string CngToJwk(CngKey cngkey)
-        {
-            return EccPublicKeyConverter.CngToJwk(cngkey, null);
-        }
-
         /// <summary>CngToJwk</summary>
         /// <param name="cngkey">CngKey</param>
         /// <param name="settings">JsonSerializerSettings</param>
         /// <returns>Jwk公開鍵</returns>
-        public static string CngToJwk(CngKey cngkey, JsonSerializerSettings settings)
+        public static string CngToJwk(
+            CngKey cngkey,
+            JsonSerializerSettings settings = null)
         {
             EccKey eccKey = EccKey.Generate(cngkey); // ★★ この使い方が誤りらしい。
             Dictionary<string, string> dic = new Dictionary<string, string>();
@@ -406,17 +396,11 @@ namespace Touryo.Infrastructure.Public.Security
         #region ParamToJwk
         /// <summary>ParamToJwk</summary>
         /// <param name="ecParams">ECParameters</param>
-        /// <returns>Jwk公開鍵</returns>
-        public static string ParamToJwk(ECParameters ecParams)
-        {
-            return EccPublicKeyConverter.ParamToJwk(ecParams, null);
-        }
-
-        /// <summary>ParamToJwk</summary>
-        /// <param name="ecParams">ECParameters</param>
         /// <param name="settings">JsonSerializerSettings</param>
         /// <returns>Jwk公開鍵</returns>
-        public static string ParamToJwk(ECParameters ecParams, JsonSerializerSettings settings)
+        public static string ParamToJwk(
+            ECParameters ecParams,
+            JsonSerializerSettings settings = null)
         {
             Dictionary<string, string> dic = new Dictionary<string, string>();
 

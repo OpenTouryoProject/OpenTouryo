@@ -112,6 +112,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="flag">X509KeyStorageFlags</param>
         public DigitalSignX509(string certificateFilePath, string password, string hashAlgorithmName, X509KeyStorageFlags flag)
         {
+            flag = flag | X509KeyStorageFlags.Exportable; // PrepareでExportParametersするので足す。
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
             this.HashAlgorithm = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(hashAlgorithmName);
             this.Prepare();
@@ -143,6 +144,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="flag">X509KeyStorageFlags</param>
         public DigitalSignX509(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName, X509KeyStorageFlags flag)
         {
+            flag = flag | X509KeyStorageFlags.Exportable; // PrepareでExportParametersするので足す。
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
             this.HashAlgorithm = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(hashAlgorithmName.Name);
             this.Prepare();
