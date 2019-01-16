@@ -19,7 +19,7 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：GetPasswordHashV1（旧 GetKeyedHashクラスの実装）
+//* クラス名        ：GetPasswordHashV1（旧 GetKeyedHashクラスの実装を内包）
 //* クラス日本語名  ：Passwordハッシュを取得するクラス（v1
 //*
 //* 作成者          ：生技 西野
@@ -319,7 +319,7 @@ namespace Touryo.Infrastructure.Public.Security
             else if (ekha == EnumKeyedHashAlgorithm.MACTripleDES)
             {
                 return GetKeyedHash.GetMacBytesByBC(
-                    asb, passwordKey.GetBytes(24), new CbcBlockCipherMac(new DesEdeEngine()));
+                    asb, passwordKey.GetBytes(24), new CbcBlockCipherMac(new DesEdeEngine(), 64));
             }
 #endif
 

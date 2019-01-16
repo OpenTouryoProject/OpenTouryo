@@ -496,9 +496,13 @@ namespace EncAndDecUtilCUI
                     new DigitalSignECDsaCng(
                         EccPublicKeyConverter.JwkToParam(jwk), false);
 
+#if NET47
+                // 何故かCoreだとエラーになる。
                 WriteLine.OutPutDebugAndConsole(
                     "DigitalSignECDsaCng.Verify(ECDSA JWK)",
                     ecDsCng.Verify(data, sign).ToString());
+#endif
+
 #endif
                 #endregion
             }
