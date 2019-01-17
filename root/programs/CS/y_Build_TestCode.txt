@@ -1,4 +1,4 @@
-ˆÈ‰º‚ğWSL(Windows Subsystem for Linux)‚©‚çÀs.
+ä»¥ä¸‹ã‚’WSL(Windows Subsystem for Linux)ã‹ã‚‰å®Ÿè¡Œ.
 
 <EncAndDecUtilCUI>
 cd /mnt/c/Git1/OpenTouryo/root/programs/CS/Frameworks/Tests/EncAndDecUtilCUI/core20
