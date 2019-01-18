@@ -16,6 +16,7 @@ echo | call 3_Build_Business_net45.bat
 echo | call 3_Build_Business_net46.bat
 echo | call 3_Build_Business_net47.bat
 echo | call 3_Build_Business_netcore20.bat
+echo | call 3_Build_Business_netcore30.bat
 echo | call 3_Build_BusinessRichClient_net45.bat
 echo | call 3_Build_BusinessRichClient_net46.bat
 echo | call 3_Build_BusinessRichClient_net47.bat
