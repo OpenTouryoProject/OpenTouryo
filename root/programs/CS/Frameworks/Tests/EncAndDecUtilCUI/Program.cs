@@ -493,25 +493,18 @@ namespace EncAndDecUtilCUI
                 WriteLine.OutPutDebugAndConsole("ECDSA JWK", jwk);
 
 
-#if NET47
-                // Core on WinでVerifyがエラーになる。
+#if NET47 || NETCOREAPP3_0
+                // Core2.0-2.2 on WinでVerifyがエラーになる。
+                // DigitalSignECDsaOpenSslを試してみるが生成できない、
+                // Core on Win に OpenSSLベースのプロバイダは無いため）
                 DigitalSignECDsaCng ecDsCng = new DigitalSignECDsaCng(
                     EccPublicKeyConverter.JwkToCng(jwk), false);
 
                 WriteLine.OutPutDebugAndConsole(
                     "DigitalSignECDsaCng.Verify(ECDSA JWK)",
                     ecDsCng.Verify(data, sign).ToString());
-#elif NETCORE
-                //// DigitalSignECDsaOpenSslを試してみるが生成できない、
-                //// （Core on Win に OpenSSLベースのプロバイダは無いため）
-                //DigitalSignECDsaOpenSsl ecDsOpenSSL =
-                //    new DigitalSignECDsaOpenSsl(
-                //        EccPublicKeyConverter.JwkToParam(jwk),
-                //        HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(HashNameConst.SHA256));
-
-                //WriteLine.OutPutDebugAndConsole(
-                //    "DigitalSignECDsaOpenSsl.Verify(ECDSA JWK)",
-                //    ecDsOpenSSL.Verify(data, sign).ToString());
+#elif NETCOREAPP2_0
+                // Core2.0-2.2 on Winで ECDsaCngは動作しない。
 #endif
 
 #endif
