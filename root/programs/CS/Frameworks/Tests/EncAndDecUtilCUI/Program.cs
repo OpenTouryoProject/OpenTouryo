@@ -256,6 +256,7 @@ namespace EncAndDecUtilCUI
             WriteLine.PublicX509KeyInspector("RSA", publicX509Key);
             #endregion
 
+#if NETCORE || NET47
             #region DSA
             // https://github.com/dotnet/corefx/issues/18733#issuecomment-296723615
 
@@ -269,7 +270,6 @@ namespace EncAndDecUtilCUI
             //DSA publicDSA = null; // publicX509Key.GetDSAPublicKey(); // Internal.Cryptography.CryptoThrowHelper.WindowsCryptographicException
             #endregion
 
-#if NETCORE || NET47
             #region ECDsa
             // https://github.com/dotnet/corefx/issues/18733#issuecomment-296723615
             privateX509Key = new X509Certificate2(Program.PrivateECDsaX509Path, Program.PfxPassword);
@@ -293,13 +293,16 @@ namespace EncAndDecUtilCUI
             DigitalSignX509 dsX509 = null;
             DigitalSignParam dsParam = null;
             DigitalSignXML dsXML = null;
-            
+
             // ECDsa
+#if NETCORE || NET47
             DigitalSignECDsaX509 dsECDsaX509 = null;
             DigitalSignECDsaCng dsECDsaCng = null;
+#endif
 #if NETCORE
             DigitalSignECDsaOpenSsl dsECDsaOpenSsl = null;
 #endif
+
 
             if (os.Platform == PlatformID.Win32NT)
             {
@@ -364,12 +367,14 @@ namespace EncAndDecUtilCUI
                 dsECDsaX509 = new DigitalSignECDsaX509(Program.PublicECDsaX509Path, "", HashAlgorithmName.SHA256);
                 WriteLine.OutPutDebugAndConsole("DigitalSignECDsaX509.Verify(ECDSA-SHA256)", dsECDsaX509.Verify(data, sign).ToString());
 
+#if NET47 || NETCOREAPP3_0
                 // Param
                 dsECDsaCng = new DigitalSignECDsaCng(EnumDigitalSignAlgorithm.ECDsaCng_P256);
                 sign = dsECDsaCng.Sign(data);
 
                 dsECDsaCng = new DigitalSignECDsaCng(dsECDsaCng.PublicKey);
                 WriteLine.OutPutDebugAndConsole("DigitalSignParam.Verify(ECDSA-P256)", dsECDsaCng.Verify(data, sign).ToString());
+#endif
                 #endregion
 #endif
             }
@@ -497,15 +502,19 @@ namespace EncAndDecUtilCUI
             byte[] sign = null;
             #endregion
 
-            #endregion
-
+            #region JWS
             // RS256
             JWS_RS256_X509 jWS_RS256_X509 = null;
             JWS_RS256_Param jWS_RS256_Param = null;
-            
+
             // ES256
+#if NETCORE || NET47
             JWS_ES256_X509 jWS_ES256_X509 = null;
             JWS_ES256_Param jWS_ES256_Param = null;
+#endif
+            #endregion
+
+            #endregion
 
             if (os.Platform == PlatformID.Win32NT)
             {
