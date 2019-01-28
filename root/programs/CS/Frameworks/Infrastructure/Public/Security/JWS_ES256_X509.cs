@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JWS_RS256_Param
-//* クラス日本語名  ：ParamによるJWS RS256生成クラス
+//* クラス名        ：JWS_ES256_X509
+//* クラス日本語名  ：X.509証明書によるJWS ES256生成クラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -28,11 +28,9 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/12/25  西野 大介         新規作成
-//*  2018/08/15  西野 大介         jwks_uri & kid 対応
-//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
-using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
 using Newtonsoft.Json;
 
@@ -40,43 +38,35 @@ using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>ParamによるJWS RS256生成クラス</summary>
-    public class JWS_RS256_Param : JWS_RS256
+    /// <summary>X.509証明書によるJWS ES256生成クラス</summary>
+    public class JWS_ES256_X509 : JWS_ES256
     {
         #region mem & prop & constructor
 
-        /// <summary>DigitalSignParam</summary>
-        private DigitalSignParam DigitalSignParam { get; set; }
+        /// <summary>CertificateFilePath</summary>
+        public string CertificateFilePath { get; protected set; }
 
-        /// <summary>秘密鍵のRSAParameters</summary>
-        public RSAParameters RsaPrivateParameters
-        {
-            get
-            {
-                return ((RSA)this.DigitalSignParam.AsymmetricAlgorithm).ExportParameters(true);
-            }
-        }
+        /// <summary>CertificatePassword</summary>
+        public string CertificatePassword { get; protected set; }
 
-        /// <summary>公開鍵のRSAParameters</summary>
-        public RSAParameters RsaPublicParameters
-        {
-            get
-            {
-                return ((RSA)this.DigitalSignParam.AsymmetricAlgorithm).ExportParameters(false);
-            }
-        }
+        /// <summary>DigitalSignX509</summary>
+        public DigitalSignX509 DigitalSignX509 { get; protected set; }
 
         /// <summary>Constructor</summary>
-        public JWS_RS256_Param()
-        {
-            this.DigitalSignParam = new DigitalSignParam(JWS_RS256.DigitalSignAlgorithm);
-        }
+        /// <param name="certificateFilePath">DigitalSignX509に渡すcertificateFilePathパラメタ</param>
+        /// <param name="password">DigitalSignX509に渡すpasswordパラメタ</param>
+        public JWS_ES256_X509(string certificateFilePath, string password)
+            : this(certificateFilePath, password, X509KeyStorageFlags.DefaultKeySet) { }
 
         /// <summary>Constructor</summary>
-        /// <param name="param">object</param>
-        public JWS_RS256_Param(RSAParameters param)
+        /// <param name="certificateFilePath">DigitalSignX509に渡すcertificateFilePathパラメタ</param>
+        /// <param name="password">DigitalSignX509に渡すpasswordパラメタ</param>
+        /// <param name="flag">X509KeyStorageFlags</param>
+        public JWS_ES256_X509(string certificateFilePath, string password, X509KeyStorageFlags flag)
         {
-            this.DigitalSignParam = new DigitalSignParam(param, JWS_RS256.DigitalSignAlgorithm);
+            this.CertificateFilePath = certificateFilePath;
+            this.CertificatePassword = password;
+            this.DigitalSignX509 = new DigitalSignX509(certificateFilePath, password, HashNameConst.SHA256, flag);
         }
 
         #endregion
@@ -106,7 +96,7 @@ namespace Touryo.Infrastructure.Public.Security
 
             // 署名
             byte[] temp = CustomEncode.StringToByte(headerEncoded + "." + payloadEncoded, CustomEncode.UTF_8);
-            string signEncoded = CustomEncode.ToBase64UrlString(this.DigitalSignParam.Sign(temp));
+            string signEncoded = CustomEncode.ToBase64UrlString(this.DigitalSignX509.Sign(temp));
 
             // return JWS by RS256
             return headerEncoded + "." + payloadEncoded + "." + signEncoded;
@@ -127,7 +117,7 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 byte[] data = CustomEncode.StringToByte(temp[0] + "." + temp[1], CustomEncode.UTF_8);
                 byte[] sign = CustomEncode.FromBase64UrlString(temp[2]);
-                return this.DigitalSignParam.Verify(data, sign);
+                return this.DigitalSignX509.Verify(data, sign);
             }
             else
             {
@@ -136,5 +126,6 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         #endregion
+
     }
 }

@@ -28,8 +28,6 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/12/25  西野 大介         新規作成
-//*  2018/08/15  西野 大介         jwks_uri & kid 対応
-//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -40,8 +38,8 @@ using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>ParamによるJWS RS256生成クラス</summary>
-    public class JWS_RS256_Param : JWS_RS256
+    /// <summary>ParamによるJWS ES256生成クラス</summary>
+    public class JWS_ES256_Param : JWS_ES256
     {
         #region mem & prop & constructor
 
@@ -67,14 +65,14 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         /// <summary>Constructor</summary>
-        public JWS_RS256_Param()
+        public JWS_ES256_Param()
         {
             this.DigitalSignParam = new DigitalSignParam(JWS_RS256.DigitalSignAlgorithm);
         }
 
         /// <summary>Constructor</summary>
         /// <param name="param">object</param>
-        public JWS_RS256_Param(RSAParameters param)
+        public JWS_ES256_Param(RSAParameters param)
         {
             this.DigitalSignParam = new DigitalSignParam(param, JWS_RS256.DigitalSignAlgorithm);
         }
