@@ -37,8 +37,6 @@ using System.Security.Cryptography.X509Certificates;
 
 using Touryo.Infrastructure.Public.Util;
 
-#if NET45 || NET46
-#else
 namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>DigitalSignECDsaX509クラス</summary>
@@ -160,4 +158,3 @@ namespace Touryo.Infrastructure.Public.Security
         // こちらは、MyDispose (派生の末端を呼ぶ) の実装は不要。
     }
 }
-#endif

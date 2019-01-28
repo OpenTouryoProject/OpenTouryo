@@ -58,6 +58,7 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         /// <summary>EnumDigitalSignAlgorithm</summary>
+        /// <remarks>Constructorで使うのでstaticとなった</remarks>
         public static EnumDigitalSignAlgorithm DigitalSignAlgorithm
         {
             get
@@ -65,14 +66,14 @@ namespace Touryo.Infrastructure.Public.Security
 #if NETSTD
                 if (Environment.OSVersion.Platform == PlatformID.Win32NT)
                 {
-                    return EnumDigitalSignAlgorithm.RsaCSP_SHA256;
+                    return EnumDigitalSignAlgorithm.ECDsaCng_P256;
                 }
                 else
                 {
                     return EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256;
                 }
 #else
-                return EnumDigitalSignAlgorithm.RsaCSP_SHA256;
+                return EnumDigitalSignAlgorithm.ECDsaCng_P256;
 #endif
             }
         }

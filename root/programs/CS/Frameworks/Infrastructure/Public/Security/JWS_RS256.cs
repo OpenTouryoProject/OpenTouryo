@@ -62,6 +62,7 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         /// <summary>EnumDigitalSignAlgorithm</summary>
+        /// <remarks>Constructorで使うのでstaticとなった</remarks>
         public static EnumDigitalSignAlgorithm DigitalSignAlgorithm
         {
             get

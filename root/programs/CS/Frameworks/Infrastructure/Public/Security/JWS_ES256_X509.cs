@@ -27,9 +27,10 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2017/12/25  西野 大介         新規作成
+//*  2019/01/28  西野 大介         新規作成
 //**********************************************************************************
 
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
 using Newtonsoft.Json;
@@ -49,31 +50,31 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>CertificatePassword</summary>
         public string CertificatePassword { get; protected set; }
 
-        /// <summary>DigitalSignX509</summary>
-        public DigitalSignX509 DigitalSignX509 { get; protected set; }
+        /// <summary>DigitalSignECDsaX509</summary>
+        public DigitalSignECDsaX509 DigitalSignECDsaX509 { get; protected set; }
 
         /// <summary>Constructor</summary>
-        /// <param name="certificateFilePath">DigitalSignX509に渡すcertificateFilePathパラメタ</param>
-        /// <param name="password">DigitalSignX509に渡すpasswordパラメタ</param>
+        /// <param name="certificateFilePath">DigitalSignECDsaX509に渡すcertificateFilePathパラメタ</param>
+        /// <param name="password">DigitalSignECDsaX509に渡すpasswordパラメタ</param>
         public JWS_ES256_X509(string certificateFilePath, string password)
             : this(certificateFilePath, password, X509KeyStorageFlags.DefaultKeySet) { }
 
         /// <summary>Constructor</summary>
-        /// <param name="certificateFilePath">DigitalSignX509に渡すcertificateFilePathパラメタ</param>
-        /// <param name="password">DigitalSignX509に渡すpasswordパラメタ</param>
+        /// <param name="certificateFilePath">DigitalSignECDsaX509に渡すcertificateFilePathパラメタ</param>
+        /// <param name="password">DigitalSignECDsaX509に渡すpasswordパラメタ</param>
         /// <param name="flag">X509KeyStorageFlags</param>
         public JWS_ES256_X509(string certificateFilePath, string password, X509KeyStorageFlags flag)
         {
             this.CertificateFilePath = certificateFilePath;
             this.CertificatePassword = password;
-            this.DigitalSignX509 = new DigitalSignX509(certificateFilePath, password, HashNameConst.SHA256, flag);
+            this.DigitalSignECDsaX509 = new DigitalSignECDsaX509(certificateFilePath, password, HashAlgorithmName.SHA256, flag);
         }
 
         #endregion
 
-        #region RS256署名・検証
+        #region ES256署名・検証
 
-        /// <summary>RS256のJWS生成メソッド</summary>
+        /// <summary>ES256のJWS生成メソッド</summary>
         /// <param name="payloadJson">ペイロード部のJson文字列</param>
         /// <returns>JWSの文字列表現</returns>
         public override string Create(string payloadJson)
@@ -96,13 +97,13 @@ namespace Touryo.Infrastructure.Public.Security
 
             // 署名
             byte[] temp = CustomEncode.StringToByte(headerEncoded + "." + payloadEncoded, CustomEncode.UTF_8);
-            string signEncoded = CustomEncode.ToBase64UrlString(this.DigitalSignX509.Sign(temp));
+            string signEncoded = CustomEncode.ToBase64UrlString(this.DigitalSignECDsaX509.Sign(temp));
 
-            // return JWS by RS256
+            // return JWS by ES256
             return headerEncoded + "." + payloadEncoded + "." + signEncoded;
         }
 
-        /// <summary>RS256のJWS検証メソッド</summary>
+        /// <summary>ES256のJWS検証メソッド</summary>
         /// <param name="jwtString">JWSの文字列表現</param>
         /// <returns>署名の検証結果</returns>
         public override bool Verify(string jwtString)
@@ -117,7 +118,7 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 byte[] data = CustomEncode.StringToByte(temp[0] + "." + temp[1], CustomEncode.UTF_8);
                 byte[] sign = CustomEncode.FromBase64UrlString(temp[2]);
-                return this.DigitalSignX509.Verify(data, sign);
+                return this.DigitalSignECDsaX509.Verify(data, sign);
             }
             else
             {
@@ -126,6 +127,5 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         #endregion
-
     }
 }

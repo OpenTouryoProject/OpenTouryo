@@ -19,22 +19,25 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JWS_RS256_Param
-//* クラス日本語名  ：ParamによるJWS RS256生成クラス
+//* クラス名        ：JWS_ES256_Param
+//* クラス日本語名  ：ParamによるJWS ES256生成クラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2017/12/25  西野 大介         新規作成
+//*  2019/01/28  西野 大介         新規作成
 //**********************************************************************************
 
+using System;
+using System.Diagnostics;
 using System.Security.Cryptography;
 
 using Newtonsoft.Json;
 
 using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Security
 {
@@ -43,45 +46,101 @@ namespace Touryo.Infrastructure.Public.Security
     {
         #region mem & prop & constructor
 
-        /// <summary>DigitalSignParam</summary>
-        private DigitalSignParam DigitalSignParam { get; set; }
+        /// <summary>DigitalSignECDsaCng</summary>
+        private DigitalSignECDsaCng DigitalSignECDsaCng { get; set; }
 
-        /// <summary>秘密鍵のRSAParameters</summary>
-        public RSAParameters RsaPrivateParameters
+#if NETSTD
+        /// <summary>DigitalSignECDsaOpenSsl</summary>
+        private DigitalSignECDsaOpenSsl DigitalSignECDsaOpenSsl { get; set; }
+#endif
+
+        private OperatingSystem os = Environment.OSVersion;
+        /// <summary>秘密鍵のECParameters</summary>
+        public ECParameters ECDsaPrivateParameters
         {
             get
             {
-                return ((RSA)this.DigitalSignParam.AsymmetricAlgorithm).ExportParameters(true);
+                // Cng or OpenSsl
+                if (os.Platform == PlatformID.Win32NT)
+                {
+                    return ((ECDsa)this.DigitalSignECDsaCng.AsymmetricAlgorithm).ExportParameters(true);
+                }
+                else
+                {
+#if NETSTD
+                    return ((ECDsa)this.DigitalSignECDsaOpenSsl.AsymmetricAlgorithm).ExportParameters(true);
+#else
+                    throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+#endif
+                }
             }
         }
 
-        /// <summary>公開鍵のRSAParameters</summary>
-        public RSAParameters RsaPublicParameters
+        /// <summary>公開鍵のECParameters</summary>
+        public ECParameters ECDsaPublicParameters
         {
             get
             {
-                return ((RSA)this.DigitalSignParam.AsymmetricAlgorithm).ExportParameters(false);
+                // Cng or OpenSsl
+                if (os.Platform == PlatformID.Win32NT)
+                {
+                    return ((ECDsa)this.DigitalSignECDsaCng.AsymmetricAlgorithm).ExportParameters(false);
+                }
+                else
+                {
+#if NETSTD
+                    return ((ECDsa)this.DigitalSignECDsaOpenSsl.AsymmetricAlgorithm).ExportParameters(false);
+#else
+                    throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+#endif
+                }
             }
         }
 
         /// <summary>Constructor</summary>
         public JWS_ES256_Param()
         {
-            this.DigitalSignParam = new DigitalSignParam(JWS_RS256.DigitalSignAlgorithm);
+            // Cng or OpenSsl
+            if (os.Platform == PlatformID.Win32NT)
+            {
+                this.DigitalSignECDsaCng = new DigitalSignECDsaCng(JWS_ES256.DigitalSignAlgorithm);
+            }
+            else
+            {
+#if NETSTD
+                this.DigitalSignECDsaOpenSsl = new DigitalSignECDsaOpenSsl(JWS_ES256.DigitalSignAlgorithm);
+#else
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+#endif
+            }
         }
 
         /// <summary>Constructor</summary>
-        /// <param name="param">object</param>
-        public JWS_ES256_Param(RSAParameters param)
+        /// <param name="param">ECParameters</param>
+        /// <param name="isPrivate">bool</param>
+        public JWS_ES256_Param(ECParameters param, bool isPrivate)
         {
-            this.DigitalSignParam = new DigitalSignParam(param, JWS_RS256.DigitalSignAlgorithm);
+            // Cng or OpenSsl
+            if (os.Platform == PlatformID.Win32NT)
+            {
+                this.DigitalSignECDsaCng = new DigitalSignECDsaCng(param, isPrivate);
+            }
+            else
+            {
+#if NETSTD
+                this.DigitalSignECDsaOpenSsl = new DigitalSignECDsaOpenSsl(param,
+                    HashAlgorithmCmnFunc.CreateHashAlgorithmSP(EnumHashAlgorithm.SHA256_M));
+#else
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+#endif
+            }
         }
 
         #endregion
 
-        #region RS256署名・検証
+        #region ES256署名・検証
 
-        /// <summary>RS256のJWS生成メソッド</summary>
+        /// <summary>ES256のJWS生成メソッド</summary>
         /// <param name="payloadJson">ペイロード部のJson文字列</param>
         /// <returns>JWSの文字列表現</returns>
         public override string Create(string payloadJson)
@@ -104,7 +163,21 @@ namespace Touryo.Infrastructure.Public.Security
 
             // 署名
             byte[] temp = CustomEncode.StringToByte(headerEncoded + "." + payloadEncoded, CustomEncode.UTF_8);
-            string signEncoded = CustomEncode.ToBase64UrlString(this.DigitalSignParam.Sign(temp));
+
+            // Cng or OpenSsl
+            string signEncoded = "";
+            if (os.Platform == PlatformID.Win32NT)
+            {
+                signEncoded = CustomEncode.ToBase64UrlString(this.DigitalSignECDsaCng.Sign(temp));
+            }
+            else
+            {
+#if NETSTD
+                signEncoded = CustomEncode.ToBase64UrlString(this.DigitalSignECDsaOpenSsl.Sign(temp));
+#else
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+#endif
+            }
 
             // return JWS by RS256
             return headerEncoded + "." + payloadEncoded + "." + signEncoded;
@@ -125,7 +198,21 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 byte[] data = CustomEncode.StringToByte(temp[0] + "." + temp[1], CustomEncode.UTF_8);
                 byte[] sign = CustomEncode.FromBase64UrlString(temp[2]);
-                return this.DigitalSignParam.Verify(data, sign);
+
+                // Cng or OpenSsl
+                if (os.Platform == PlatformID.Win32NT)
+                {
+                    return this.DigitalSignECDsaCng.Verify(data, sign);
+                }
+                else
+                {
+#if NETSTD
+                    return this.DigitalSignECDsaOpenSsl.Verify(data, sign);
+#else
+                    throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+#endif
+                }
+                
             }
             else
             {

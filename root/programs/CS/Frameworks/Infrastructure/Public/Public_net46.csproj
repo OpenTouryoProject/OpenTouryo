@@ -119,17 +119,12 @@
     <Compile Include="Security\BaseKeyExchange.cs" />
     <Compile Include="Security\HashNameConst.cs" />
     <Compile Include="Security\AuthEncrypt.cs" />
-    <Compile Include="Security\DigitalSignECDsaX509.cs" />
-    <Compile Include="Security\DigitalSignECDsaCng.cs" />
     <Compile Include="Security\EcdhKeyExchange.cs" />
     <Compile Include="Security\EnumKeyExchange.cs" />
     <Compile Include="Security\EnumDigitalSignAlgorithm.cs" />
     <Compile Include="Security\GetPasswordHashV2.cs" />
     <Compile Include="Security\GetPasswordHashV1.cs" />
     <Compile Include="Security\HashAlgorithmCmnFunc.cs" />
-    <Compile Include="Security\JWS_ES256.cs" />
-    <Compile Include="Security\JWS_ES256_Param.cs" />
-    <Compile Include="Security\JWS_ES256_X509.cs" />
     <Compile Include="Security\MsgAuthCode.cs" />
     <Compile Include="Security\PrivateKeyConverter.cs" />
     <Compile Include="Security\RsaAlice.cs" />

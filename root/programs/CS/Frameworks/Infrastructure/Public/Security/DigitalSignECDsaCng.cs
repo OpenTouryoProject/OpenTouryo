@@ -123,8 +123,6 @@ namespace Touryo.Infrastructure.Public.Security
             }
         }
 
-#if NET45 || NET46
-#else
         /// <summary>Constructor</summary>
         /// <param name="ecp">任意鍵</param>
         /// <param name="isPrivate">秘密鍵か否か</param>
@@ -141,7 +139,6 @@ namespace Touryo.Infrastructure.Public.Security
                 this._privateKey = cngKey;
             }
         }
-#endif
 
         #endregion
 

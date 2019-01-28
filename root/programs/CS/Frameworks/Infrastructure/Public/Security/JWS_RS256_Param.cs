@@ -73,7 +73,7 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         /// <summary>Constructor</summary>
-        /// <param name="param">object</param>
+        /// <param name="param">RSAParameters</param>
         public JWS_RS256_Param(RSAParameters param)
         {
             this.DigitalSignParam = new DigitalSignParam(param, JWS_RS256.DigitalSignAlgorithm);

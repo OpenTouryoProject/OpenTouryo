@@ -710,6 +710,11 @@ namespace EncAndDecUtil
         /// <summary>署名</summary>
         private void btnDSESign_Click(object sender, EventArgs e)
         {
+            
+#if NET45 || NET46
+            MessageBox.Show("NET47以上でサポート");
+#else
+
             byte[] data = CustomEncode.StringToByte(this.txtDSEData.Text, CustomEncode.UTF_8);
             byte[] sign = null;
 
@@ -738,7 +743,6 @@ namespace EncAndDecUtil
             }
             else
             {
-#if HOGE
                 DigitalSignECDsaX509 dsECDsa = null;
 
                 // NET47以降に、I/Fは存在する。
@@ -748,18 +752,20 @@ namespace EncAndDecUtil
 
                 this.txtDSEPrivateKey.Text = ((DigitalSignECDsaX509)dsECDsa).PrivateKey.GetType().ToString();
                 this.txtDSEPublicKey.Text = ((DigitalSignECDsaX509)dsECDsa).PublicKey.GetType().ToString();
-#else
-                MessageBox.Show("NET47以上でサポート");
-                return;
-#endif
             }
 
             txtDSESign.Text = CustomEncode.ToBase64String(sign);
+#endif
         }
 
         /// <summary>検証<</summary>
         private void btnDSEVerify_Click(object sender, EventArgs e)
-        {
+        {   
+            
+#if NET45 || NET46
+            MessageBox.Show("NET47以上でサポート");
+#else
+
             byte[] data = CustomEncode.StringToByte(this.txtDSEData.Text, CustomEncode.UTF_8);
             byte[] sign = CustomEncode.FromBase64String(this.txtDSESign.Text);
             bool ret = false;
@@ -784,13 +790,7 @@ namespace EncAndDecUtil
             }
             else
             {
-#if HOGE
-                // NET47以降に、I/Fは存在する。しかし、Linuxでないと動作しない。
                 dsECDsa = new DigitalSignECDsaX509(this.SHA256ECDSA_cer, "", new HashAlgorithmName(this.txtDSEHash.Text));
-#else
-                MessageBox.Show("NET47以上でサポート");
-                return;
-#endif
             }
 
             ret = dsECDsa.Verify(data, sign);
@@ -803,6 +803,7 @@ namespace EncAndDecUtil
             {
                 MessageBox.Show("検証失敗");
             }
+#endif
         }
 
         #endregion
