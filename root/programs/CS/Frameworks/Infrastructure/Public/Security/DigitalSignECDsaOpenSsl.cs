@@ -86,7 +86,8 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>Constructor</summary>
         /// <param name="eaa">EnumDigitalSignAlgorithm</param>
-        public DigitalSignECDsaOpenSsl(EnumDigitalSignAlgorithm eaa)
+        /// <param name="hashAlgorithm">HashAlgorithm</param>
+        public DigitalSignECDsaOpenSsl(EnumDigitalSignAlgorithm eaa, HashAlgorithm hashAlgorithm)
         {
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
@@ -98,7 +99,7 @@ namespace Touryo.Infrastructure.Public.Security
             this._publicKey = ecdsa.ExportParameters(false);
 
             this.AsymmetricAlgorithm = aa;
-            this.HashAlgorithm = ha;
+            this.HashAlgorithm = hashAlgorithm;
         }
 
         /// <summary>Constructor</summary>

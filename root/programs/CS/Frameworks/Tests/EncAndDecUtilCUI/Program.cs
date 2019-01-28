@@ -12,6 +12,7 @@ using Jose;
 // https://github.com/dvsekhvalnov/jose-jwt/tree/master/jose-jwt/Security/Cryptography
 using Security.Cryptography;
 
+using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Dbg;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Security;
@@ -43,6 +44,9 @@ namespace EncAndDecUtilCUI
 
         public static void Main(string[] args)
         {
+            // configの初期化(無くても動くようにせねば。)
+            //GetConfigParameter.InitConfiguration("appsettings.json");
+
             try
             {
                 // Hash
@@ -386,7 +390,7 @@ namespace EncAndDecUtilCUI
                 dsX509 = new DigitalSignX509(Program.PrivateRsaX509Path, Program.PfxPassword, "SHA256");
                 sign = dsX509.Sign(data);
 
-                dsX509 = new DigitalSignX509(Program.PrivateRsaX509Path, "", "SHA256");
+                dsX509 = new DigitalSignX509(Program.PublicRsaX509Path, "", "SHA256");
                 WriteLine.OutPutDebugAndConsole("DigitalSignX509.Verify(RS256)", dsX509.Verify(data, sign).ToString());
 
                 // Param
@@ -400,7 +404,7 @@ namespace EncAndDecUtilCUI
                 dsXML = new DigitalSignXML(EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256);
                 sign = dsXML.Sign(data);
 
-                dsXML = new DigitalSignXML(dsXML.PublicKey, EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256);
+                //dsXML = new DigitalSignXML(dsXML.PublicKey, EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256); // 動かない
                 WriteLine.OutPutDebugAndConsole("DigitalSignXML.Verify(RS256)", dsXML.Verify(data, sign).ToString());
                 #endregion
 
@@ -423,7 +427,7 @@ namespace EncAndDecUtilCUI
                 dsXML = new DigitalSignXML(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1);
                 sign = dsXML.Sign(data);
 
-                dsXML = new DigitalSignXML(dsXML.PublicKey, EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1);
+                //dsXML = new DigitalSignXML(dsXML.PublicKey, EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1); // 動かない
                 WriteLine.OutPutDebugAndConsole("DigitalSignXML.Verify(DSA-SHA1)", dsXML.Verify(data, sign).ToString());
                 #endregion
 
@@ -436,7 +440,8 @@ namespace EncAndDecUtilCUI
                 WriteLine.OutPutDebugAndConsole("DigitalSignECDsaX509.Verify(ECDSA)", dsECDsaX509.Verify(data, sign).ToString());
 
                 // Param
-                dsECDsaOpenSsl = new DigitalSignECDsaOpenSsl(EnumDigitalSignAlgorithm.ECDsaOpenSsl_P256);
+                dsECDsaOpenSsl = new DigitalSignECDsaOpenSsl(EnumDigitalSignAlgorithm.ECDsaOpenSsl_P256,
+                    HashAlgorithmCmnFunc.CreateHashAlgorithmSP(EnumHashAlgorithm.SHA256_M));
                 sign = dsECDsaOpenSsl.Sign(data);
 
                 dsECDsaOpenSsl = new DigitalSignECDsaOpenSsl(dsECDsaOpenSsl.PublicKey.Value,
@@ -480,7 +485,6 @@ namespace EncAndDecUtilCUI
 
             #region Token
             string token = "";
-            IDictionary<string, object> headers = null;
             IDictionary<string, object> payload = null;
             payload = new Dictionary<string, object>()
                 {
@@ -495,11 +499,6 @@ namespace EncAndDecUtilCUI
                 ECParameters eCParameters = new ECParameters();
 #else
 #endif
-            #endregion
-
-            #region DigitalSign
-            byte[] data = CustomEncode.StringToByte("hogehoge", CustomEncode.UTF_8);
-            byte[] sign = null;
             #endregion
 
             #region JWS
@@ -556,8 +555,6 @@ namespace EncAndDecUtilCUI
                 //// Core on Win に OpenSSLベースのプロバイダは無いため）
                 //DigitalSignECDsaCng ecDsCng = new DigitalSignECDsaCng(EccPublicKeyConverter.JwkToCng(jwk), false);
                 //WriteLine.OutPutDebugAndConsole("DigitalSignECDsaCng.Verify(ECDSA JWK)", ecDsCng.Verify(data, sign).ToString());
-
-
 #elif NETCOREAPP2_0
                 // Core2.0-2.2 on Winで ECDsaCngは動作しない。
 #endif

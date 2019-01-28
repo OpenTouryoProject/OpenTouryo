@@ -110,6 +110,11 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>ハッシュ（キー無し）サービスプロバイダの生成</summary>
         /// <param name="eha">ハッシュ（キー無し）サービスプロバイダの列挙型</param>
         /// <returns>ハッシュ（キー無し）サービスプロバイダ</returns>
+        /// <remarks>
+        /// HashAlgorithm.Create(HashNameConst.SHA256) は .NET Core 2 で動作せず。
+        /// KeyedHashAlgorithm.Create("HMACSHA1") throw PNSE (on .NET Core 2
+        /// https://github.com/dotnet/standard/issues/530#issuecomment-375043416
+        /// </remarks>
         public static HashAlgorithm CreateHashAlgorithmSP(EnumHashAlgorithm eha)
         {
             // ハッシュ（キー無し）サービスプロバイダ

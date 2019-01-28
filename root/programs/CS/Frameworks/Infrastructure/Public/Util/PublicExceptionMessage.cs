@@ -46,6 +46,7 @@
 //*  2014/02/03  西野 大介         取り込み：リソースファイル名とスイッチ名の変更、#pragma warning disableの追加。
 //*  2016/05/30  Supragyan         Added a message in the case of NotSupportedException
 //*  2018/03/28  西野 大介         .NET Standard対応で、GetConfigParameterに例外処理を追加
+//*  2019/01/28  西野 大介         .NET Standard対応で、CmnFuncに例外処理を追加
 //**********************************************************************************
 
 using System;
@@ -738,10 +739,21 @@ namespace Touryo.Infrastructure.Public.Util
             // We acquire ResourceManager.
             ResourceManager rm = PublicExceptionMessageResource.ResourceManager;
 
+#pragma warning disable
             // We acquire a value from App.Config.
-            string FxUICulture = GetConfigParameter.GetConfigValue(PubLiteral.EXCEPTIONMESSAGECULTUER); 
+            string fxUICulture = "";
 
-            if (string.IsNullOrEmpty(FxUICulture))
+            try
+            {
+                fxUICulture = GetConfigParameter.GetConfigValue(PubLiteral.EXCEPTIONMESSAGECULTUER);
+            }
+            catch (Exception ex)
+            {
+                // .net standard で GetConfigParameter.InitConfigurationで初期化されていないケース。
+                fxUICulture = null;
+            }
+
+            if (string.IsNullOrEmpty(fxUICulture))
             {
                 // When the key is not set to App.Config, we use a default culture. 
                 return rm.GetString(key);
@@ -751,18 +763,17 @@ namespace Touryo.Infrastructure.Public.Util
                 // When the key is set to App.Config, we use the specified culture.
                 try
                 {
-                   CultureInfo culture = new CultureInfo(FxUICulture);
+                    CultureInfo culture = new CultureInfo(fxUICulture);
 
                     return rm.GetString(key, culture);
                 }
-#pragma warning disable
                 catch (Exception ex) // There is not CultureNotFoundException in .NET3.5.
                 {
-#pragma warning restore
                     // When the specified culture is not an effective name, we use a default culture.
                     return rm.GetString(key);
                 }
             }
+#pragma warning restore
         }
         #endregion
     }

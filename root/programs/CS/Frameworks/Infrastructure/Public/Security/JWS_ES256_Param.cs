@@ -108,7 +108,9 @@ namespace Touryo.Infrastructure.Public.Security
             else
             {
 #if NETSTD
-                this.DigitalSignECDsaOpenSsl = new DigitalSignECDsaOpenSsl(JWS_ES256.DigitalSignAlgorithm);
+                this.DigitalSignECDsaOpenSsl = new DigitalSignECDsaOpenSsl(
+                    JWS_ES256.DigitalSignAlgorithm,
+                    HashAlgorithmCmnFunc.CreateHashAlgorithmSP(EnumHashAlgorithm.SHA256_M));
 #else
                 throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
 #endif

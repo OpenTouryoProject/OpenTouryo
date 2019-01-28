@@ -230,20 +230,35 @@ namespace Touryo.Infrastructure.Public.Security
                 || eaa == EnumDigitalSignAlgorithm.ECDsaOpenSsl_P384
                 || eaa == EnumDigitalSignAlgorithm.ECDsaOpenSsl_P521)
             {
-                ECCurve curve = ECCurve.NamedCurves.nistP256;
+                ECCurve eCCurve = ECCurve.NamedCurves.nistP256;
+                ECParameters eCParameters;
+                ECDsa eCDsa = null;
+                ECDsaOpenSsl eCDsaOpenSsl = null;
+
                 switch (eaa)
                 {
-                    case EnumDigitalSignAlgorithm.ECDsaCng_P256:
-                        curve = ECCurve.NamedCurves.nistP256;
+                    case EnumDigitalSignAlgorithm.ECDsaOpenSsl_P256:
+                        eCCurve = ECCurve.NamedCurves.nistP256;
                         break;
-                    case EnumDigitalSignAlgorithm.ECDsaCng_P384:
-                        curve = ECCurve.NamedCurves.nistP384;
+                    case EnumDigitalSignAlgorithm.ECDsaOpenSsl_P384:
+                        eCCurve = ECCurve.NamedCurves.nistP384;
                         break;
-                    case EnumDigitalSignAlgorithm.ECDsaCng_P521:
-                        curve = ECCurve.NamedCurves.nistP521;
+                    case EnumDigitalSignAlgorithm.ECDsaOpenSsl_P521:
+                        eCCurve = ECCurve.NamedCurves.nistP521;
                         break;
                 }
-                aa = new ECDsaOpenSsl(curve);
+
+                // https://qiita.com/yoship1639/items/6dd0cc8623d7f3969d78
+                if (Environment.OSVersion.Platform == PlatformID.Unix)
+                {
+                    eCDsa = ECDsa.Create(); // ECDsaOpenSslと思われる。
+                    eCDsa.GenerateKey(eCCurve);
+                    eCParameters = eCDsa.ExportParameters(true);
+                    eCDsaOpenSsl = new ECDsaOpenSsl(eCParameters.Curve);
+                    eCDsaOpenSsl.ImportParameters(eCParameters);
+                }
+
+                aa = eCDsaOpenSsl;
                 ha = null; // ハッシュ無し
             }
 #endif
