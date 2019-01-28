@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 // https://www.nuget.org/packages/jose-jwt/
 using Jose;
 // https://github.com/dvsekhvalnov/jose-jwt/tree/master/jose-jwt/Security/Cryptography
@@ -23,7 +26,20 @@ namespace EncAndDecUtilCUI
     /// </summary>
     public class Program
     {
+        /// <summary>PfxPassword</summary>
         private static string PfxPassword = "test";
+        /// <summary>RsaのX509証明書のパス（*.pfx）</summary>
+        private static string PrivateRsaX509Path = @"SHA256RSA.pfx";
+        /// <summary>RsaのX509証明書のパス（*.cer）</summary>
+        private static string PublicRsaX509Path = @"SHA256RSA.cer";
+        /// <summary>DsaのX509証明書のパス（*.pfx）</summary>
+        private static string PrivateDsaX509Path = @"SHA256DSA.pfx";
+        /// <summary>DsaのX509証明書のパス（*.cer）</summary>
+        private static string PublicDsaX509Path = @"SHA256DSA.cer";
+        /// <summary>ECDsaのX509証明書のパス（*.pfx）</summary>
+        private static string PrivateECDsaX509Path = @"SHA256ECDSA.pfx";
+        /// <summary>ECDsaのX509証明書のパス（*.cer）</summary>
+        private static string PublicECDsaX509Path = @"SHA256ECDSA.cer";
 
         public static void Main(string[] args)
         {
@@ -42,9 +58,12 @@ namespace EncAndDecUtilCUI
 
                 WriteLine.OutPutDebugAndConsole("----------------------------------------------------------------------------------------------------");
 
-                // Other
+                // Jwt(Jws, Jwe)
                 Program.MyJwt();
                 Program.JoseJwt();
+
+                // Others
+
             }
             catch (Exception ex)
             {
@@ -63,6 +82,7 @@ namespace EncAndDecUtilCUI
         {
             string data = "ynyKeiR9FXWPkNQHvUPZkAlfUmouExBv";
 
+            #region Managed or CSP
             WriteLine.OutPutDebugAndConsole("HashAlgorithm.Default", GetHash.GetHashString(data, EnumHashAlgorithm.Default));
 
             WriteLine.OutPutDebugAndConsole("HashAlgorithm.MD5_CSP", GetHash.GetHashString(data, EnumHashAlgorithm.MD5_CSP));
@@ -80,14 +100,17 @@ namespace EncAndDecUtilCUI
 
             WriteLine.OutPutDebugAndConsole("HashAlgorithm.SHA512_CSP", GetHash.GetHashString(data, EnumHashAlgorithm.SHA512_CSP));
             WriteLine.OutPutDebugAndConsole("HashAlgorithm.SHA512_M", GetHash.GetHashString(data, EnumHashAlgorithm.SHA512_M));
+            #endregion
 
 #if NETCORE
 #else
+            #region CNG
             WriteLine.OutPutDebugAndConsole("HashAlgorithm.MD5_CNG", GetHash.GetHashString(data, EnumHashAlgorithm.MD5_CNG));
             WriteLine.OutPutDebugAndConsole("HashAlgorithm.SHA1_CNG", GetHash.GetHashString(data, EnumHashAlgorithm.SHA1_CNG));
             WriteLine.OutPutDebugAndConsole("HashAlgorithm.SHA256_CNG", GetHash.GetHashString(data, EnumHashAlgorithm.SHA256_CNG));
             WriteLine.OutPutDebugAndConsole("HashAlgorithm.SHA384_CNG", GetHash.GetHashString(data, EnumHashAlgorithm.SHA384_CNG));
             WriteLine.OutPutDebugAndConsole("HashAlgorithm.SHA512_CNG", GetHash.GetHashString(data, EnumHashAlgorithm.SHA512_CNG));
+            #endregion
 #endif
         }
 
@@ -110,12 +133,17 @@ namespace EncAndDecUtilCUI
         /// <summary>PasswordHash</summary>
         private static void PasswordHash()
         {
-            string providedPassword = "Bx@A]p7u";
-            string hashedPassword = "$1$.JU5JJFZXQVIqWQ==.Rkg3YW5WVWt4YQ==.MTAwMA==.ODU0MXJPRWJmVzA9";
-            string key = "%NI$VWAR*Y";
             bool ret = false;
+            string providedPassword = "";
+            string hashedPassword = "";
+            string key = "";
 
-            // 旧版との互換性を確認
+            #region 旧版との互換性を確認
+            // 旧版の情報
+            providedPassword = "Bx@A]p7u";
+            hashedPassword = "$1$.JU5JJFZXQVIqWQ==.Rkg3YW5WVWt4YQ==.MTAwMA==.ODU0MXJPRWJmVzA9";
+            key = "%NI$VWAR*Y";
+
             ret = GetPasswordHashV1.EqualSaltedPassword(
                 providedPassword,
                 hashedPassword.Substring(4),
@@ -127,9 +155,9 @@ namespace EncAndDecUtilCUI
                 hashedPassword.Substring(4),
                 EnumKeyedHashAlgorithm.MACTripleDES);
             WriteLine.OutPutDebugAndConsole("GetPasswordHashV2.EqualSaltedPassword (old)", ret.ToString());
+            #endregion
 
-            // 可逆性確認
-
+            #region 可逆性確認
             // MACTripleDES
             hashedPassword = GetPasswordHashV2.GetSaltedPassword(
                     providedPassword,                    // password
@@ -161,6 +189,7 @@ namespace EncAndDecUtilCUI
                 EnumKeyedHashAlgorithm.HMACSHA512);
 
             WriteLine.OutPutDebugAndConsole("GetPasswordHashV2.EqualSaltedPassword (new)", ret.ToString());
+            #endregion
         }
 
         #endregion
@@ -201,8 +230,6 @@ namespace EncAndDecUtilCUI
             #endregion
             
             #region Keys
-            string privateX509Path = "";
-            string publicX509Path = "";
             X509Certificate2 publicX509Key = null;
             X509Certificate2 privateX509Key = null;
             
@@ -222,21 +249,17 @@ namespace EncAndDecUtilCUI
             #region Test of the X.509 Certificates
 
             #region RSA
-            privateX509Path = @"SHA256RSA.pfx";
-            publicX509Path = @"SHA256RSA.cer";
-            privateX509Key = new X509Certificate2(privateX509Path, Program.PfxPassword , x509KSF);
-            publicX509Key = new X509Certificate2(publicX509Path, "", x509KSF);
+            privateX509Key = new X509Certificate2(Program.PrivateRsaX509Path, Program.PfxPassword , x509KSF);
+            publicX509Key = new X509Certificate2(Program.PublicRsaX509Path, "", x509KSF);
             WriteLine.PrivateX509KeyInspector("RSA", privateX509Key);
             WriteLine.PublicX509KeyInspector("RSA", publicX509Key);
             #endregion
 
-#if NETCORE || NET47
             #region DSA
             // https://github.com/dotnet/corefx/issues/18733#issuecomment-296723615
-            privateX509Path = @"SHA256DSA.pfx";
-            publicX509Path = @"SHA256DSA.cer";
-            privateX509Key = new X509Certificate2(privateX509Path, Program.PfxPassword );
-            publicX509Key = new X509Certificate2(publicX509Path, "");
+            
+            privateX509Key = new X509Certificate2(Program.PrivateDsaX509Path, Program.PfxPassword);
+            publicX509Key = new X509Certificate2(Program.PublicDsaX509Path, "");
             WriteLine.PrivateX509KeyInspector("DSA", privateX509Key);
             WriteLine.PublicX509KeyInspector("DSA", publicX509Key);
 
@@ -246,12 +269,11 @@ namespace EncAndDecUtilCUI
             //DSA publicDSA = null; // publicX509Key.GetDSAPublicKey(); // Internal.Cryptography.CryptoThrowHelper.WindowsCryptographicException
             #endregion
 
+#if NETCORE || NET47
             #region ECDsa
             // https://github.com/dotnet/corefx/issues/18733#issuecomment-296723615
-            privateX509Path = @"SHA256ECDSA.pfx";
-            publicX509Path = @"SHA256ECDSA.cer";
-            privateX509Key = new X509Certificate2(privateX509Path, Program.PfxPassword );
-            publicX509Key = new X509Certificate2(publicX509Path, "");
+            privateX509Key = new X509Certificate2(Program.PrivateECDsaX509Path, Program.PfxPassword );
+            publicX509Key = new X509Certificate2(Program.PublicECDsaX509Path, "");
             WriteLine.PrivateX509KeyInspector("ECDsa", privateX509Key);
             WriteLine.PublicX509KeyInspector("ECDsa", publicX509Key);
 
@@ -288,7 +310,7 @@ namespace EncAndDecUtilCUI
                     "DigitalSignXML.Verify(RS256)",
                     dsXML.Verify(data, sign).ToString());
 
-                dsX509 = new DigitalSignX509(@"SHA256RSA.pfx", Program.PfxPassword , "SHA256", x509KSF);
+                dsX509 = new DigitalSignX509(Program.PrivateRsaX509Path, Program.PfxPassword , "SHA256", x509KSF);
                 sign = dsX509.Sign(data);
                 WriteLine.OutPutDebugAndConsole(
                     "DigitalSignX509.Verify(RS256)",
@@ -310,31 +332,27 @@ namespace EncAndDecUtilCUI
                     dsXML.VerifyByDeformatter(data, sign).ToString());
 
                 // WinでDSAのX509が処理できない。
-                //dsX509 = new DigitalSignX509(@"SHA256DSA.pfx", Program.PfxPassword , "SHA256", x509KSF);
+                //dsX509 = new DigitalSignX509(Program.PrivateDsaX509Path, Program.PfxPassword , "SHA256", x509KSF);
                 //sign = dsX509.Sign(data);
                 //WriteLine.OutPutDebugAndConsole(
                 //    "DigitalSignX509.Verify(DSA-SHA256)",
                 //    dsX509.Verify(data, sign).ToString());
                 #endregion
 
-                #region ECDSA
 #if NETCORE || NET47
+                #region ECDsa
                 DigitalSignECDsaX509 dsECDsaX509 = null;
 
-                privateX509Path = @"SHA256ECDSA.pfx";
-                dsECDsaX509 = new DigitalSignECDsaX509(
-                    privateX509Path, Program.PfxPassword , HashAlgorithmName.SHA256);
+                dsECDsaX509 = new DigitalSignECDsaX509(Program.PrivateECDsaX509Path, Program.PfxPassword , HashAlgorithmName.SHA256);
                 sign = dsECDsaX509.Sign(data);
 
-                publicX509Path = @"SHA256ECDSA.cer";
-                dsECDsaX509 = new DigitalSignECDsaX509(
-                    publicX509Path, "", HashAlgorithmName.SHA256);
+                dsECDsaX509 = new DigitalSignECDsaX509(Program.PublicECDsaX509Path, "", HashAlgorithmName.SHA256);
 
                 WriteLine.OutPutDebugAndConsole(
                     "DigitalSignECDsaX509.Verify(ECDSA)",
                     dsECDsaX509.Verify(data, sign).ToString());
-#endif
                 #endregion
+#endif
             }
             else //if (os.Platform == PlatformID.Unix)
             {
@@ -352,7 +370,7 @@ namespace EncAndDecUtilCUI
                     "DigitalSignXML.Verify(RS256)",
                     dsXML.Verify(data, sign).ToString());
 
-                dsX509 = new DigitalSignX509(@"SHA256RSA.pfx", Program.PfxPassword , "SHA256");
+                dsX509 = new DigitalSignX509(Program.PrivateRsaX509Path, Program.PfxPassword , "SHA256");
                 sign = dsX509.Sign(data);
                 WriteLine.OutPutDebugAndConsole(
                     "DigitalSignX509.Verify(RS256)",
@@ -372,17 +390,17 @@ namespace EncAndDecUtilCUI
                     "DigitalSignXML.Verify(DSA-SHA1)",
                     dsXML.Verify(data, sign).ToString());
 
-                dsX509 = new DigitalSignX509(@"SHA256DSA.pfx", Program.PfxPassword , "SHA256");
+                dsX509 = new DigitalSignX509(Program.PrivateDsaX509Path, Program.PfxPassword , "SHA256");
                 sign = dsX509.Sign(data);
                 WriteLine.OutPutDebugAndConsole(
                     "DigitalSignX509.Verify(DSA-SHA256)",
                     dsX509.Verify(data, sign).ToString());
                 #endregion
 
-                #region ECDSA
+                #region ECDsa
                 // .NET Core on Linux
                 DigitalSignECDsaX509 ecDsX509 = new DigitalSignECDsaX509(
-                    @"SHA256ECDSA.pfx", Program.PfxPassword , HashAlgorithmName.SHA256);
+                    Program.PrivateECDsaX509Path, Program.PfxPassword , HashAlgorithmName.SHA256);
 
                 sign = ecDsX509.Sign(data);
                 WriteLine.OutPutDebugAndConsole(
@@ -399,6 +417,8 @@ namespace EncAndDecUtilCUI
         #endregion
 
         #region Jwt
+
+        #region MyJwt
 
         /// <summary>MyJwt</summary>
         private static void MyJwt()
@@ -435,9 +455,6 @@ namespace EncAndDecUtilCUI
 
             #region Keys
             string jwk = "";
-            string privateX509Path = "";
-            string publicX509Path = "";
-
 #if NET45 || NET46
                 ECParameters eCParameters = new ECParameters();
 #else
@@ -450,40 +467,36 @@ namespace EncAndDecUtilCUI
             #endregion
 
             #endregion
-            
-            DigitalSignParam dsParam = null;
-            DigitalSignX509 dsX509 = null;
+
+            JWS_RS256_X509 jWS_RS256_X509 = null;
+            JWS_RS256_Param jWS_RS256_Param = null;
 
             if (os.Platform == PlatformID.Win32NT)
             {
-                #region RSA
-                dsX509 = new DigitalSignX509(@"SHA256RSA.pfx", Program.PfxPassword , "SHA256", x509KSF);
-                sign = dsX509.Sign(data);
-
+                #region RSA(RS256)
+                // 署名（X509）
+                jWS_RS256_X509 = new JWS_RS256_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
+                token = jWS_RS256_X509.Create(JsonConvert.SerializeObject(payload));
+                
                 // 鍵の相互変換
-                jwk = RsaPublicKeyConverter.ParamToJwk(
-                    ((RSA)dsX509.AsymmetricAlgorithm).ExportParameters(false));
-
+                jwk = RsaPublicKeyConverter.ParamToJwk(((RSA)jWS_RS256_X509.DigitalSignX509.AsymmetricAlgorithm).ExportParameters(false));
                 WriteLine.OutPutDebugAndConsole("RSA JWK", jwk);
 
-                dsParam = new DigitalSignParam(
-                    RsaPublicKeyConverter.JwkToParam(jwk),
-                    EnumDigitalSignAlgorithm.RsaCSP_SHA256);
+                // 検証（X509）
+                jWS_RS256_X509 = new JWS_RS256_X509(Program.PublicRsaX509Path, "", x509KSF);
+                WriteLine.OutPutDebugAndConsole("DigitalSignParam.Verify(RSA X509)", jWS_RS256_X509.Verify(token).ToString());
 
-                WriteLine.OutPutDebugAndConsole(
-                    "DigitalSignParam.Verify(RSA JWK)",
-                    dsParam.Verify(data, sign).ToString());
+                // 検証（Param）
+                jWS_RS256_Param = new JWS_RS256_Param(RsaPublicKeyConverter.JwkToParam(jwk));
+                WriteLine.OutPutDebugAndConsole("DigitalSignParam.Verify(RSA JWK)", jWS_RS256_Param.Verify(token).ToString());
                 #endregion
 
                 // DSA
 
-                #region ECDSA
 #if NETCORE || NET47
-                privateX509Path = @"SHA256ECDSA.pfx";
-                publicX509Path = @"SHA256ECDSA.cer";
-
+                #region ECDsa(ES256)
                 DigitalSignECDsaX509 ecDsX509 = new DigitalSignECDsaX509(
-                    privateX509Path, Program.PfxPassword, HashAlgorithmName.SHA256);
+                    Program.PrivateECDsaX509Path, Program.PfxPassword, HashAlgorithmName.SHA256);
                 sign = ecDsX509.Sign(data);
 
                 // 鍵の相互変換
@@ -506,40 +519,35 @@ namespace EncAndDecUtilCUI
 #elif NETCOREAPP2_0
                 // Core2.0-2.2 on Winで ECDsaCngは動作しない。
 #endif
-
-#endif
                 #endregion
+#endif
             }
             else //if (os.Platform == PlatformID.Unix)
             {
 #if NETCORE
-                #region RSA
-                dsX509 = new DigitalSignX509(@"SHA256RSA.pfx", Program.PfxPassword , "SHA256");
-                sign = dsX509.Sign(data);
+                #region RSA(RS256)
+                // 署名（X509）
+                jWS_RS256_X509 = new JWS_RS256_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
+                token = jWS_RS256_X509.Create(JsonConvert.SerializeObject(payload));
 
                 // 鍵の相互変換
-                jwk = RsaPublicKeyConverter.ParamToJwk(
-                    ((RSA)dsX509.AsymmetricAlgorithm).ExportParameters(false));
-
+                jwk = RsaPublicKeyConverter.ParamToJwk(((RSA)jWS_RS256_X509.DigitalSignX509.AsymmetricAlgorithm).ExportParameters(false));
                 WriteLine.OutPutDebugAndConsole("RSA JWK", jwk);
 
-                dsParam = new DigitalSignParam(
-                    RsaPublicKeyConverter.JwkToParam(jwk),
-                    EnumDigitalSignAlgorithm.RsaCSP_SHA256);
+                // 検証（X509）
+                jWS_RS256_X509 = new JWS_RS256_X509(Program.PublicRsaX509Path, "", x509KSF);
+                WriteLine.OutPutDebugAndConsole("DigitalSignParam.Verify(RSA X509)", jWS_RS256_X509.Verify(token).ToString());
 
-                WriteLine.OutPutDebugAndConsole(
-                    "DigitalSignParam.Verify(RSA JWK)",
-                    dsParam.Verify(data, sign).ToString());
+                // 検証（Param）
+                jWS_RS256_Param = new JWS_RS256_Param(RsaPublicKeyConverter.JwkToParam(jwk));
+                WriteLine.OutPutDebugAndConsole("DigitalSignParam.Verify(RSA JWK)", jWS_RS256_Param.Verify(token).ToString());
                 #endregion
 
                 // DSA
 
-                #region ECDSA
-                privateX509Path = @"SHA256ECDSA.pfx";
-                publicX509Path = @"SHA256ECDSA.cer";
-
+                #region ECDsa(ES256)
                 DigitalSignECDsaX509 ecDsX509 = new DigitalSignECDsaX509(
-                    privateX509Path, Program.PfxPassword , HashAlgorithmName.SHA256);
+                    Program.PrivateECDsaX509Path, Program.PfxPassword , HashAlgorithmName.SHA256);
                 sign = ecDsX509.Sign(data);
 
                 // 鍵の相互変換
@@ -561,6 +569,10 @@ namespace EncAndDecUtilCUI
 #endif
             }
         }
+
+        #endregion
+
+        #region JoseJwt
 
         /// <summary>JoseJwt</summary>
         private static void JoseJwt()
@@ -602,8 +614,6 @@ namespace EncAndDecUtilCUI
             byte[] y = null;
             byte[] d = null;
 
-            string privateX509Path = "";
-            string publicX509Path = "";
             X509Certificate2 publicX509Key = null;
             X509Certificate2 privateX509Key = null;
 
@@ -646,11 +656,8 @@ namespace EncAndDecUtilCUI
             // RS256, RS384, RS512 and PS256, PS384, PS512
             // https://github.com/dvsekhvalnov/jose-jwt#rs--and-ps--family
             // X509Certificate2 x509Certificate2 = new X509Certificate2();
-
-            privateX509Path = @"SHA256RSA.pfx";
-            publicX509Path = @"SHA256RSA.cer";
-            privateX509Key = new X509Certificate2(privateX509Path, Program.PfxPassword , x509KSF);
-            publicX509Key = new X509Certificate2(publicX509Path, "", x509KSF);
+            privateX509Key = new X509Certificate2(Program.PrivateRsaX509Path, Program.PfxPassword , x509KSF);
+            publicX509Key = new X509Certificate2(Program.PublicRsaX509Path, "", x509KSF);
 
             token = "";
 
@@ -708,10 +715,8 @@ namespace EncAndDecUtilCUI
             }
 
 #if NETCORE || NET47
-            privateX509Path = @"SHA256ECDSA.pfx";
-            publicX509Path = @"SHA256ECDSA.cer";
-            privateX509Key = new X509Certificate2(privateX509Path, Program.PfxPassword );
-            publicX509Key = new X509Certificate2(publicX509Path, "");
+            privateX509Key = new X509Certificate2(Program.PrivateECDsaX509Path, Program.PfxPassword );
+            publicX509Key = new X509Certificate2(Program.PublicECDsaX509Path, "");
 
             try
             {
@@ -750,11 +755,8 @@ namespace EncAndDecUtilCUI
             #region RSA-* key management family of algorithms
             // RSA-OAEP-256, RSA-OAEP and RSA1_5 key
             // https://github.com/dvsekhvalnov/jose-jwt#rsa--key-management-family-of-algorithms
-
-            privateX509Path = @"SHA256RSA.pfx";
-            publicX509Path = @"SHA256RSA.cer";
-            privateX509Key = new X509Certificate2(privateX509Path, Program.PfxPassword , x509KSF);
-            publicX509Key = new X509Certificate2(publicX509Path, "", x509KSF);
+            privateX509Key = new X509Certificate2(Program.PrivateRsaX509Path, Program.PfxPassword , x509KSF);
+            publicX509Key = new X509Certificate2(Program.PublicRsaX509Path, "", x509KSF);
 
             // RSAES-PKCS1-v1_5 and AES_128_CBC_HMAC_SHA_256
             token = "";
@@ -866,10 +868,8 @@ namespace EncAndDecUtilCUI
                     { "keyid", "111-222-333"}
                 };
 
-            privateX509Path = @"SHA256RSA.pfx";
-            publicX509Path = @"SHA256RSA.cer";
-            privateX509Key = new X509Certificate2(privateX509Path, Program.PfxPassword , x509KSF);
-            publicX509Key = new X509Certificate2(publicX509Path, "", x509KSF);
+            privateX509Key = new X509Certificate2(Program.PrivateRsaX509Path, Program.PfxPassword , x509KSF);
+            publicX509Key = new X509Certificate2(Program.PublicRsaX509Path, "", x509KSF);
 
 #if NETCORE
             rsa = (RSA)privateX509Key.PrivateKey;
@@ -955,6 +955,8 @@ namespace EncAndDecUtilCUI
 
             #endregion
         }
+
+        #endregion
 
         #endregion
 
