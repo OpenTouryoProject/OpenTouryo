@@ -224,6 +224,29 @@ namespace Touryo.Infrastructure.Public.Security
                 aa = new ECDsaCng(CngKey.Create(cngAlgorithm));
                 ha = null; // ハッシュ無し
             }
+#if NETSTD
+            else if (
+                eaa == EnumDigitalSignAlgorithm.ECDsaOpenSsl_P256
+                || eaa == EnumDigitalSignAlgorithm.ECDsaOpenSsl_P384
+                || eaa == EnumDigitalSignAlgorithm.ECDsaOpenSsl_P521)
+            {
+                ECCurve curve = ECCurve.NamedCurves.nistP256;
+                switch (eaa)
+                {
+                    case EnumDigitalSignAlgorithm.ECDsaCng_P256:
+                        curve = ECCurve.NamedCurves.nistP256;
+                        break;
+                    case EnumDigitalSignAlgorithm.ECDsaCng_P384:
+                        curve = ECCurve.NamedCurves.nistP384;
+                        break;
+                    case EnumDigitalSignAlgorithm.ECDsaCng_P521:
+                        curve = ECCurve.NamedCurves.nistP521;
+                        break;
+                }
+                aa = new ECDsaOpenSsl(curve);
+                ha = null; // ハッシュ無し
+            }
+#endif
             else
             {
                 throw new ArgumentException(

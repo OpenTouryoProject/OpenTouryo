@@ -97,6 +97,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="flag">X509KeyStorageFlags</param>
         public DigitalSignECDsaX509(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName, X509KeyStorageFlags flag)
         {
+            flag = flag | X509KeyStorageFlags.Exportable; // PrepareでGetECDsaPrivateKeyする可能性があるので足す。
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
 
             if (this.X509Certificate.HasPrivateKey)

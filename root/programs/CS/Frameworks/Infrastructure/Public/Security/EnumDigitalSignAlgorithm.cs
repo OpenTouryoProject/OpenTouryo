@@ -83,6 +83,15 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>DSAOpenSsl:SHA1</summary>
         DsaOpenSsl_SHA1,
+
+        /// <summary>ECDsaOpenSsl:P256</summary>
+        ECDsaOpenSsl_P256,
+
+        /// <summary>ECDsaOpenSsl:P384</summary>
+        ECDsaOpenSsl_P384,
+
+        /// <summary>ECDsaOpenSsl:P521</summary>
+        ECDsaOpenSsl_P521
 #endif
 
     };
