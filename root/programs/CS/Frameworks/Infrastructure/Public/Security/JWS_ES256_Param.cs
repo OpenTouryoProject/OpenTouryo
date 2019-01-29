@@ -109,8 +109,8 @@ namespace Touryo.Infrastructure.Public.Security
             {
 #if NETSTD
                 this.DigitalSignECDsaOpenSsl = new DigitalSignECDsaOpenSsl(
-                    JWS_ES256.DigitalSignAlgorithm,
-                    HashAlgorithmCmnFunc.CreateHashAlgorithmSP(EnumHashAlgorithm.SHA256_M));
+                    JWS_ES256.DigitalSignAlgorithm, SHA256CryptoServiceProvider.Create());
+                //HashAlgorithmCmnFunc.CreateHashAlgorithmSP(EnumHashAlgorithm.SHA256_M));
 #else
                 throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
 #endif
@@ -130,8 +130,9 @@ namespace Touryo.Infrastructure.Public.Security
             else
             {
 #if NETSTD
-                this.DigitalSignECDsaOpenSsl = new DigitalSignECDsaOpenSsl(param,
-                    HashAlgorithmCmnFunc.CreateHashAlgorithmSP(EnumHashAlgorithm.SHA256_M));
+                this.DigitalSignECDsaOpenSsl = new DigitalSignECDsaOpenSsl(
+                    param, SHA256CryptoServiceProvider.Create());
+                //HashAlgorithmCmnFunc.CreateHashAlgorithmSP(EnumHashAlgorithm.SHA256_M));
 #else
                 throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
 #endif
@@ -196,7 +197,7 @@ namespace Touryo.Infrastructure.Public.Security
             JWS_Header headerObject = (JWS_Header)JsonConvert.DeserializeObject(
                 CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8), typeof(JWS_Header));
 
-            if (headerObject.alg.ToUpper() == JwtConst.RS256 && headerObject.typ.ToUpper() == JwtConst.JWT)
+            if (headerObject.alg.ToUpper() == JwtConst.ES256 && headerObject.typ.ToUpper() == JwtConst.JWT)
             {
                 byte[] data = CustomEncode.StringToByte(temp[0] + "." + temp[1], CustomEncode.UTF_8);
                 byte[] sign = CustomEncode.FromBase64UrlString(temp[2]);

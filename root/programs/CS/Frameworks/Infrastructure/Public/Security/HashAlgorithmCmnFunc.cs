@@ -85,10 +85,11 @@ namespace Touryo.Infrastructure.Public.Security
         public static HashAlgorithm GetHashAlgorithmFromNameString()
         {
             // 既定は何なのか？という話
-            // https://github.com/dotnet/corefx/issues/22626#issuecomment-319141782
-            //   HashAlgorithm.CreateはSHA1の実装を作成します。
-            //   これは、最近の進歩のために推奨されていません。
-            return HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString("SHA256");
+            // - HashAlgorithm.Create throws PNSE on .NET Core 2
+            //   https://github.com/dotnet/corefx/issues/22626#issuecomment-319141782
+            //     HashAlgorithm.CreateはSHA1の実装を作成します。
+            //     これは、最近の進歩のために推奨されていません。
+            return HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(HashNameConst.SHA256);
         }
 
         /// <summary>GetHashAlgorithmFromNameString</summary>
@@ -111,9 +112,10 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="eha">ハッシュ（キー無し）サービスプロバイダの列挙型</param>
         /// <returns>ハッシュ（キー無し）サービスプロバイダ</returns>
         /// <remarks>
+        /// EnumHashAlgorithmから、HashAlgorithmを生成するために追加。
         /// HashAlgorithm.Create(HashNameConst.SHA256) は .NET Core 2 で動作せず。
-        /// KeyedHashAlgorithm.Create("HMACSHA1") throw PNSE (on .NET Core 2
-        /// https://github.com/dotnet/standard/issues/530#issuecomment-375043416
+        /// - KeyedHashAlgorithm.Create("HMACSHA1") throw PNSE (on .NET Core 2
+        ///   https://github.com/dotnet/standard/issues/530#issuecomment-375043416
         /// </remarks>
         public static HashAlgorithm CreateHashAlgorithmSP(EnumHashAlgorithm eha)
         {

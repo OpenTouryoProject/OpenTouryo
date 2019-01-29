@@ -34,7 +34,10 @@ using System;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>JWS ES256生成クラス</summary>
+    /// <summary>
+    /// JWS ES256生成クラス
+    /// ES256(ECDSA using P-256 and SHA-256)
+    /// </summary>
     public abstract class JWS_ES256 : JWS
     {
         /// <summary>_JWSHeader</summary>
@@ -70,7 +73,7 @@ namespace Touryo.Infrastructure.Public.Security
                 }
                 else
                 {
-                    return EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256;
+                    return EnumDigitalSignAlgorithm.ECDsaOpenSsl_P256;
                 }
 #else
                 return EnumDigitalSignAlgorithm.ECDsaCng_P256;
