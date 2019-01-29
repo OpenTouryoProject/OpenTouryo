@@ -73,5 +73,8 @@ namespace Touryo.Infrastructure.Public.Security
         //EcdhOpenSsl, // 暗号化用ではない
 #endif
         #endregion
+
+        /// <summary>X509（自動）</summary>
+        X509
     }
 }

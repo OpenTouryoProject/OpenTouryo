@@ -29,10 +29,12 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/12/25  西野 大介         新規作成
 //*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
+//*  2019/01/29  西野 大介         X.509対応（JWE（RSAES-OAEP and AES GCM）対応
 //**********************************************************************************
 
 using System;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
 using Touryo.Infrastructure.Public.Util;
 
@@ -80,31 +82,53 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>対称アルゴリズム暗号化サービスプロバイダ生成</summary>
         /// <param name="easa">EnumASymmetricAlgorithm</param>
+        /// <param name="certificateFilePath">X.509証明書(*.pfx, *.cer)へのパス</param>
+        /// <param name="password">パスワード</param>
+        /// <param name="flag">X509KeyStorageFlags</param>
         /// <returns>AsymmetricAlgorithm</returns>
-        public static AsymmetricAlgorithm CreateCryptographySP(EnumASymmetricAlgorithm easa)
+        public static AsymmetricAlgorithm CreateCryptographySP(EnumASymmetricAlgorithm easa,
+            string certificateFilePath = "", string password = "",
+            X509KeyStorageFlags flag = X509KeyStorageFlags.DefaultKeySet)
         {
             AsymmetricAlgorithm asa = null;
 
-            if (easa == EnumASymmetricAlgorithm.RsaCsp)
+            if (easa == EnumASymmetricAlgorithm.X509)
             {
-                // RSACryptoServiceProviderサービスプロバイダ
-                asa = RSACryptoServiceProvider.Create(); // devps(1703)
+                // X.509対応
+                X509Certificate2 x509Key = new X509Certificate2(certificateFilePath, password, flag);
+
+                if (string.IsNullOrEmpty(password))
+                {
+                    asa = x509Key.PublicKey.Key;
+                }
+                else
+                {
+                    asa = x509Key.PrivateKey; 
+                }                
             }
+            else
+            {
+                if (easa == EnumASymmetricAlgorithm.RsaCsp)
+                {
+                    // RSACryptoServiceProviderサービスプロバイダ
+                    asa = RSACryptoServiceProvider.Create(); // devps(1703)
+                }
 
 #if !NET45
-            else if (easa == EnumASymmetricAlgorithm.RsaCng)
-            {
-                // RSACngサービスプロバイダ
-                asa = RSACng.Create(); // devps(1703)
-            }
+                else if (easa == EnumASymmetricAlgorithm.RsaCng)
+                {
+                    // RSACngサービスプロバイダ
+                    asa = RSACng.Create(); // devps(1703)
+                }
 #endif
 #if NETSTD
-            else if (easa == EnumASymmetricAlgorithm.RsaOpenSsl)
-            {
-                // RSAOpenSslサービスプロバイダ
-                asa = RSAOpenSsl.Create(); // devps(1703)
-            }
+                else if (easa == EnumASymmetricAlgorithm.RsaOpenSsl)
+                {
+                    // RSAOpenSslサービスプロバイダ
+                    asa = RSAOpenSsl.Create(); // devps(1703)
+                }
 #endif
+            }
             return asa;
         }
 

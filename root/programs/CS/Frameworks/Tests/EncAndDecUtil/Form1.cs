@@ -56,6 +56,35 @@ namespace EncAndDecUtil
 {
     public partial class Form1 : Form
     {
+        #region 証明書
+
+        // ココの署名・検証処理を実行するには、ClickOnce署名機能などを使用し予め、
+        // *.pfx 証明書を、password = "test" などとして、生成しておく必要があります。
+        // 検証プロセスでは、*.pfx 証明書を使用することも出来ますが、通常は、秘密鍵無しで、
+        // エクスポートした *.cer 証明証を使用します。この場合、パスワードは不要になります。
+        // *.cer 証明証に証明書チェーンが無ければ、WindowsOSの証明書ストア（リポジトリ）である
+        // 「信頼されたルート証明機関」にインストールする必要があります（実行アカウントにも注意が必要） 。
+
+        /// <summary>SHA256RSA_pfx</summary>
+        private string SHA256RSA_pfx = GetConfigParameter.GetConfigValue("SHA256RSA_pfx");
+        /// <summary>SHA256RSA_cer</summary>
+        private string SHA256RSA_cer = GetConfigParameter.GetConfigValue("SHA256RSA_cer");
+
+        /// <summary>SHA256DSA_pfx</summary>
+        private string SHA256DSA_pfx = GetConfigParameter.GetConfigValue("SHA256DSA_pfx");
+        /// <summary>SHA256DSA_cer</summary>
+        private string SHA256DSA_cer = GetConfigParameter.GetConfigValue("SHA256DSA_cer");
+
+        /// <summary>SHA256ECDSA_pfx</summary>
+        private string SHA256ECDSA_pfx = GetConfigParameter.GetConfigValue("SHA256ECDSA_pfx");
+        /// <summary>SHA256ECDSA_cer</summary>
+        private string SHA256ECDSA_cer = GetConfigParameter.GetConfigValue("SHA256ECDSA_cer");
+
+        /// <summary>CertificateFilePassword</summary>
+        private string CertificateFilePassword = "test";
+
+        #endregion
+
         #region 初期処理
 
         /// <summary>コンストラクタ</summary>
@@ -114,6 +143,8 @@ namespace EncAndDecUtil
         }
 
         #endregion
+
+        #region 暗号処理
 
         #region ハッシュ
 
@@ -385,13 +416,27 @@ namespace EncAndDecUtil
         /// <summary>キーペア取得</summary>
         private void button3_Click(object sender, EventArgs e)
         {
-            ASymmetricCryptography asc = new ASymmetricCryptography((EnumASymmetricAlgorithm)cbxASCPV.SelectedValue);
+            ASymmetricCryptography asc = null;
+            if (((EnumASymmetricAlgorithm)cbxASCPV.SelectedValue) == EnumASymmetricAlgorithm.X509)
+            {
+                asc = new ASymmetricCryptography(
+                    EnumASymmetricAlgorithm.X509, this.SHA256RSA_pfx, this.CertificateFilePassword,
+                    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+                this.txtASCPublic.Text = "- x509 -";
+                this.txtASCPrivate.Text = "- x509 -";
+            }
+            else
+            {
+                asc = new ASymmetricCryptography((EnumASymmetricAlgorithm)cbxASCPV.SelectedValue);
+                this.txtASCPublic.Text = asc.PublicXmlKey;
+                this.txtASCPrivate.Text = asc.PrivateXmlKey;
+            }
 
-            string publicKey = "";
-            string privateKey = "";
-            asc.GetKeys(out publicKey, out privateKey);
-            this.txtASCPublic.Text = publicKey;
-            this.txtASCPrivate.Text = privateKey;
+            string date = "hogehoge";
+            if (!(asc.DecryptString(asc.EncryptString(date)) == date))
+            {
+                throw new Exception("問題あり");
+            }
         }
 
         /// <summary>公開鍵で暗号化</summary>
@@ -399,20 +444,45 @@ namespace EncAndDecUtil
         {
             if (string.IsNullOrEmpty(this.txtASCPrivate.Text)) { return; }
 
-            ASymmetricCryptography asc = new ASymmetricCryptography((EnumASymmetricAlgorithm)cbxASCPV.SelectedValue);
+            ASymmetricCryptography asc = null;
 
-            if (this.rbnASCString.Checked)
+            if (((EnumASymmetricAlgorithm)cbxASCPV.SelectedValue) == EnumASymmetricAlgorithm.X509)
             {
-                // String
-                this.txtASCCode.Text = asc.EncryptString(this.txtASCString.Text, this.txtASCPublic.Text);
+                asc = new ASymmetricCryptography(
+                    EnumASymmetricAlgorithm.X509, this.SHA256RSA_cer, "",
+                    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+
+                if (this.rbnASCString.Checked)
+                {
+                    // String
+                    this.txtASCCode.Text = asc.EncryptString(this.txtASCString.Text);
+                }
+                else
+                {
+                    // Bytes
+                    this.txtASCCode.Text =
+                        CustomEncode.ToHexString(
+                            asc.EncryptBytes(CustomEncode.StringToByte(
+                                this.txtASCString.Text, CustomEncode.UTF_8)));
+                }
             }
             else
             {
-                // Bytes
-                this.txtASCCode.Text =
-                    CustomEncode.ToHexString(
-                        asc.EncryptBytes(CustomEncode.StringToByte(
-                            this.txtASCString.Text, CustomEncode.UTF_8), this.txtASCPublic.Text));
+                asc = new ASymmetricCryptography((EnumASymmetricAlgorithm)cbxASCPV.SelectedValue);
+
+                if (this.rbnASCString.Checked)
+                {
+                    // String
+                    this.txtASCCode.Text = asc.EncryptString(this.txtASCString.Text, this.txtASCPublic.Text);
+                }
+                else
+                {
+                    // Bytes
+                    this.txtASCCode.Text =
+                        CustomEncode.ToHexString(
+                            asc.EncryptBytes(CustomEncode.StringToByte(
+                                this.txtASCString.Text, CustomEncode.UTF_8), this.txtASCPublic.Text));
+                }
             }
         }
 
@@ -421,51 +491,47 @@ namespace EncAndDecUtil
         {
             if (string.IsNullOrEmpty(this.txtASCPublic.Text)) { return; }
 
-            ASymmetricCryptography asc = new ASymmetricCryptography((EnumASymmetricAlgorithm)cbxASCPV.SelectedValue);
+            ASymmetricCryptography asc = null;
 
-            if (this.rbnASCString.Checked)
+            if (((EnumASymmetricAlgorithm)cbxASCPV.SelectedValue) == EnumASymmetricAlgorithm.X509)
             {
-                // String
-                this.txtASCString.Text = asc.DecryptString(this.txtASCCode.Text, this.txtASCPrivate.Text);
+                asc = new ASymmetricCryptography(
+                   EnumASymmetricAlgorithm.X509, this.SHA256RSA_pfx, this.CertificateFilePassword,
+                   X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+
+                if (this.rbnASCString.Checked)
+                {
+                    // String
+                    this.txtASCString.Text = asc.DecryptString(this.txtASCCode.Text);
+                }
+                else
+                {
+                    // Bytes
+                    this.txtASCString.Text =
+                        CustomEncode.ByteToString(
+                            asc.DecryptBytes(CustomEncode.FormHexString(
+                                this.txtASCCode.Text)), CustomEncode.UTF_8);
+                }
             }
             else
             {
-                // Bytes
-                this.txtASCString.Text =
-                    CustomEncode.ByteToString(
-                        asc.DecryptBytes(CustomEncode.FormHexString(
-                            this.txtASCCode.Text), this.txtASCPrivate.Text), CustomEncode.UTF_8);
+                asc = new ASymmetricCryptography((EnumASymmetricAlgorithm)cbxASCPV.SelectedValue);
+
+                if (this.rbnASCString.Checked)
+                {
+                    // String
+                    this.txtASCString.Text = asc.DecryptString(this.txtASCCode.Text, this.txtASCPrivate.Text);
+                }
+                else
+                {
+                    // Bytes
+                    this.txtASCString.Text =
+                        CustomEncode.ByteToString(
+                            asc.DecryptBytes(CustomEncode.FormHexString(
+                                this.txtASCCode.Text), this.txtASCPrivate.Text), CustomEncode.UTF_8);
+                }
             }
         }
-
-        #endregion
-
-        #region 証明書
-
-        // ココの署名・検証処理を実行するには、ClickOnce署名機能などを使用し予め、
-        // *.pfx 証明書を、password = "test" などとして、生成しておく必要があります。
-        // 検証プロセスでは、*.pfx 証明書を使用することも出来ますが、通常は、秘密鍵無しで、
-        // エクスポートした *.cer 証明証を使用します。この場合、パスワードは不要になります。
-        // *.cer 証明証に証明書チェーンが無ければ、WindowsOSの証明書ストア（リポジトリ）である
-        // 「信頼されたルート証明機関」にインストールする必要があります（実行アカウントにも注意が必要） 。
-
-        /// <summary>SHA256RSA_pfx</summary>
-        private string SHA256RSA_pfx = GetConfigParameter.GetConfigValue("SHA256RSA_pfx");
-        /// <summary>SHA256RSA_cer</summary>
-        private string SHA256RSA_cer = GetConfigParameter.GetConfigValue("SHA256RSA_cer");
-
-        /// <summary>SHA256DSA_pfx</summary>
-        private string SHA256DSA_pfx = GetConfigParameter.GetConfigValue("SHA256DSA_pfx");
-        /// <summary>SHA256DSA_cer</summary>
-        private string SHA256DSA_cer = GetConfigParameter.GetConfigValue("SHA256DSA_cer");
-
-        /// <summary>SHA256ECDSA_pfx</summary>
-        private string SHA256ECDSA_pfx = GetConfigParameter.GetConfigValue("SHA256ECDSA_pfx");
-        /// <summary>SHA256ECDSA_cer</summary>
-        private string SHA256ECDSA_cer = GetConfigParameter.GetConfigValue("SHA256ECDSA_cer");
-
-        /// <summary>CertificateFilePassword</summary>
-        private string CertificateFilePassword = "test";
 
         #endregion
 
@@ -843,8 +909,18 @@ namespace EncAndDecUtil
                 ((RsaPkcs1Bob)this._rsaBob).GeneratePrivateKey(this._rsaAlice.ExchangeKey, this._rsaAlice.IV);
             }
             else if (ekex == EnumKeyExchange.RSAOAEPKeyExchange)
-            {
-                this._rsaBob = new RsaOaepBob();
+            {   
+                if (((Button)sender).Name == "btnRKEXEC1")
+                {
+                    this._rsaBob = new RsaOaepBob();
+                }
+                else
+                {
+                    this._rsaBob = new RsaOaepBob(
+                        this.SHA256RSA_pfx, this.CertificateFilePassword,
+                        X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+                }
+
                 this._rsaAlice = new RsaOaepAlice(this._rsaBob.ExchangeKey);
                 ((RsaOaepBob)this._rsaBob).GeneratePrivateKey(this._rsaAlice.ExchangeKey, this._rsaAlice.IV);
             }
@@ -1333,6 +1409,8 @@ namespace EncAndDecUtil
         #endregion
 
         #region JWE
+        #endregion
+
         #endregion
     }
 }
