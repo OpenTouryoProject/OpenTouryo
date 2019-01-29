@@ -30,11 +30,8 @@
 //*  2018/01/29  西野 大介         新規作成
 //**********************************************************************************
 
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-
-using Newtonsoft.Json;
-
-using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security
 {
@@ -72,69 +69,24 @@ namespace Touryo.Infrastructure.Public.Security
 
         #endregion
 
-        #region JWE RSAES-OAEP and AES GCM 暗号化・復号化
-
-        /// <summary>RSAES-OAEP and AES GCMのJWE生成メソッド</summary>
-        /// <param name="payloadJson">ペイロード部のJson文字列</param>
-        /// <returns>JWEの文字列表現</returns>
-        public override string Create(string payloadJson)
+        /// <summary>CreateKey</summary>
+        /// <param name="data">byte[]</param>
+        /// <returns>byte[]</returns>
+        protected override byte[] CreateKey(byte[] data)
         {
-            // ヘッダー
-            string headerJson = JsonConvert.SerializeObject(
-                this.JWEHeader,
-                new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.None,
-                    NullValueHandling = NullValueHandling.Ignore
-                });
-
-            byte[] headerBytes = CustomEncode.StringToByte(headerJson, CustomEncode.UTF_8);
-            string headerEncoded = CustomEncode.ToBase64UrlString(headerBytes);
-
-            // コンテンツ暗号化キー（CEK）
-            byte[] encryptedKeyBytes = null; // Generate a 256-bit random CEK.
-            string encryptedKeyEncoded = CustomEncode.ToBase64UrlString(encryptedKeyBytes);
-
-            // 初期化ベクトル
-
-            // ペイロード（認証付き暗号（AEAD）による暗号化）
-            byte[] payloadBytes = CustomEncode.StringToByte(payloadJson, CustomEncode.UTF_8);
-            string payloadEncoded = CustomEncode.ToBase64UrlString(payloadBytes);
-
-            // 認証タグ（MAC）
-
-            // JWE Compact Serializationでは、
-            // 追加認証データ（AAD）を付与しない。
-
-            // return JWE by RSAES-OAEP and AES GCM
-            return headerEncoded + "." + encryptedKeyEncoded + "." + payloadEncoded + ".";
+            // RSA-OAEP = RSAES OAEP using default parameters は、
+            // SHA-1ハッシュ関数とSHA-1マスク生成機能付きMGF1
+            return this.ASymmetricCryptography.EncryptBytes(
+                data, padding: RSAEncryptionPadding.OaepSHA1);
         }
 
-        /// <summary>RSAES-OAEP and AES GCMのJWE復号化メソッド</summary>
-        /// <param name="jwtString">JWEの文字列表現</param>
-        /// <returns>復号化の結果</returns>
-        public override bool Verify(string jwtString)
+        /// <summary>DecryptKey</summary>
+        /// <param name="data">byte[]</param>
+        /// <returns>byte[] </returns>
+        protected override byte[] DecryptKey(byte[] data)
         {
-            string[] temp = jwtString.Split('.');
-
-            // 検証
-            JWS_Header headerObject = (JWS_Header)JsonConvert.DeserializeObject(
-                CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8), typeof(JWS_Header));
-
-            if (headerObject.alg.ToUpper() == JwtConst.RS256 && headerObject.typ.ToUpper() == JwtConst.JWT)
-            {
-                //byte[] data = CustomEncode.StringToByte(temp[0] + "." + temp[1], CustomEncode.UTF_8);
-                //byte[] sign = CustomEncode.FromBase64UrlString(temp[2]);
-                //return this.DigitalSignX509.Verify(data, sign);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return this.ASymmetricCryptography.DecryptBytes(
+                data, padding: RSAEncryptionPadding.OaepSHA1);
         }
-
-        #endregion
-
     }
 }

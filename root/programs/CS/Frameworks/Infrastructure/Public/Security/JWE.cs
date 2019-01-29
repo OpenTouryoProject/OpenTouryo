@@ -40,9 +40,10 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>JWEの文字列表現</returns>
         public abstract string Create(string payloadJson);
 
-        /// <summary>JWE検証メソッド</summary>
+        /// <summary>JWE復号メソッド</summary>
         /// <param name="jwtString">JWEの文字列表現</param>
-        /// <returns>署名の検証結果</returns>
-        public abstract bool Verify(string jwtString);        
+        /// <param name="payloadJson">ペイロード部のJson文字列</param>
+        /// <returns>復号の結果</returns>
+        public abstract bool Decrypt(string jwtString, out string payloadJson);
     }
 }

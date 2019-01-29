@@ -26,6 +26,10 @@
 //*                  > A.1.  Example JWE using RSAES-OAEP and AES GCM
 //*                  https://tools.ietf.org/html/rfc7516#appendix-A.1.1 
 //*
+//*                  RFC 7518 - JSON Web Algorithms (JWA)
+//*                  > 4.3.  Key Encryption with RSAES OAEP
+//*                  https://tools.ietf.org/html/rfc7518#section-4.3
+//*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //*
@@ -34,13 +38,17 @@
 //*  2019/01/29  西野 大介         新規作成
 //**********************************************************************************
 
-using System;
+using Newtonsoft.Json;
+
+using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>JWE RSAES-OAEP and AES GCM生成クラス</summary>
     public abstract class JWE_RsaOaepAesGcm : JWE
     {
+        #region mem & prop & constructor
+
         /// <summary>_JWEHeader</summary>
         private JWE_Header _JWEHeader = new JWE_Header
         {
@@ -61,5 +69,125 @@ namespace Touryo.Infrastructure.Public.Security
                 return this._JWEHeader;
             }
         }
+
+        #endregion
+
+        #region JWE RSAES-OAEP and AES GCM 暗号化・復号化
+
+        /// <summary>RSAES-OAEP and AES GCMのJWE生成メソッド</summary>
+        /// <param name="payloadJson">ペイロード部のJson文字列</param>
+        /// <returns>JWEの文字列表現</returns>
+        public override string Create(string payloadJson)
+        {
+            // ヘッダー
+            string headerJson = JsonConvert.SerializeObject(
+                this.JWEHeader,
+                new JsonSerializerSettings()
+                {
+                    Formatting = Formatting.None,
+                    NullValueHandling = NullValueHandling.Ignore
+                });
+
+            byte[] headerBytes = CustomEncode.StringToByte(headerJson, CustomEncode.UTF_8);
+            string headerEncoded = CustomEncode.ToBase64UrlString(headerBytes);
+
+            // コンテンツ暗号化キー（CEK）
+            byte[] cekBytes = GetPassword.RandomByte(256 / 8); // Generate a 256-bit random CEK.
+            byte[] encryptedCekBytes = this.CreateKey(cekBytes); // 派生を呼ぶ
+            string encryptedCekEncoded = CustomEncode.ToBase64UrlString(encryptedCekBytes);
+
+            // 初期化ベクトル
+            byte[] ivBytes = GetPassword.RandomByte(96 / 8); // Generate a random 96-bit JWE Initialization Vector.
+            string ivEncoded = CustomEncode.ToBase64UrlString(ivBytes);
+
+            // 追加認証データ（AAD）
+            byte[] aadBytes = CustomEncode.StringToByte(headerEncoded, CustomEncode.us_ascii);
+
+            // ペイロード（認証付き暗号（AEAD）による暗号化）
+            byte[] payloadBytes = CustomEncode.StringToByte(payloadJson, CustomEncode.UTF_8);
+            AeadA256Gcm aesGcm = new AeadA256Gcm(cekBytes, ivBytes, aadBytes);
+            aesGcm.Encrypt(payloadBytes);
+            byte[] encryptedPayloadBytes = aesGcm.Result.Ciphert;
+            string encryptedPayloadEncoded = CustomEncode.ToBase64UrlString(encryptedPayloadBytes);
+
+            // 認証タグ（MAC）
+            byte[] macBytes = aesGcm.Result.Tag;
+            string macEncoded = CustomEncode.ToBase64UrlString(macBytes);
+
+            // return JWE by RSAES-OAEP and AES GCM
+            return headerEncoded + "." + 
+                encryptedCekEncoded + "." + ivEncoded + "." + 
+                encryptedPayloadEncoded + "." + macEncoded;
+        }
+
+        /// <summary>RSAES-OAEP and AES GCMのJWE復号メソッド</summary>
+        /// <param name="jwtString">JWEの文字列表現</param>
+        /// <param name="payloadJson">ペイロード部のJson文字列</param>
+        /// <returns>復号の結果</returns>
+        public override bool Decrypt(string jwtString, out string payloadJson)
+        {
+            try
+            {
+                string[] temp = jwtString.Split('.');
+
+                // 検証
+                JWE_Header headerObject = (JWE_Header)JsonConvert.DeserializeObject(
+                    CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8), typeof(JWE_Header));
+
+                if (headerObject.alg.ToUpper() == JwtConst.RSA_OAEP &&
+                    headerObject.enc.ToUpper() == JwtConst.A256GCM &&
+                    headerObject.typ.ToUpper() == JwtConst.JWT)
+                {
+                    // コンテンツ暗号化キー（CEK）
+                    byte[] encryptedCekBytes = CustomEncode.FromBase64UrlString(temp[1]);
+                    byte[] cekBytes = this.DecryptKey(encryptedCekBytes); // 派生を呼ぶ
+
+                    // 初期化ベクトル
+                    byte[] ivBytes = CustomEncode.FromBase64UrlString(temp[2]);
+
+                    // 追加認証データ（AAD）
+                    byte[] aadBytes = CustomEncode.StringToByte(temp[0], CustomEncode.us_ascii);
+
+                    // ペイロード（認証付き暗号（AEAD）による暗号化）
+                    byte[] encryptedPayloadBytes = CustomEncode.FromBase64UrlString(temp[3]);
+
+                    // 認証タグ（MAC）
+                    byte[] macBytes = CustomEncode.FromBase64UrlString(temp[4]);
+
+                    // 復号化
+                    AeadA256Gcm aesGcm = new AeadA256Gcm(cekBytes, ivBytes, aadBytes);
+                    byte[] payloadBytes = aesGcm.Decrypt(new AeadResult()
+                    {
+                        Ciphert = encryptedPayloadBytes,
+                        Tag = macBytes
+                    });
+
+                    payloadJson = CustomEncode.ByteToString(payloadBytes, CustomEncode.UTF_8);
+                    return true;
+                }
+                else
+                {
+                    payloadJson = "";
+                    return false;
+                }
+            }
+            catch
+            {
+                payloadJson = "";
+                return false;
+            }
+        }
+
+        /// <summary>CreateKey</summary>
+        /// <param name="data">byte[]</param>
+        /// <returns>byte[]</returns>
+        protected abstract byte[] CreateKey(byte[] data);
+
+        /// <summary>DecryptKey</summary>
+        /// <param name="data">byte[]</param>
+        /// <returns>byte[] </returns>
+        protected abstract byte[] DecryptKey(byte[] data);
+
+        #endregion
     }
 }

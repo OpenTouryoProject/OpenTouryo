@@ -28,15 +28,12 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/01/28  西野 大介         新規作成
+//*  2019/01/29  西野 大介         リファクタリング（プロバイダ処理を末端に）
 //**********************************************************************************
 
 using System;
-using System.Diagnostics;
 using System.Security.Cryptography;
 
-using Newtonsoft.Json;
-
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Security
@@ -143,83 +140,43 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region ES256署名・検証
 
-        /// <summary>ES256のJWS生成メソッド</summary>
-        /// <param name="payloadJson">ペイロード部のJson文字列</param>
-        /// <returns>JWSの文字列表現</returns>
-        public override string Create(string payloadJson)
+        /// <summary>Create2</summary>
+        /// <param name="data">byte[]</param>
+        /// <returns>byte[]</returns>
+        protected override byte[] Create2(byte[] data)
         {
-            // ヘッダー
-            string headerJson = JsonConvert.SerializeObject(
-                this.JWSHeader,
-                new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.None,
-                    NullValueHandling = NullValueHandling.Ignore
-                });
-
-            byte[] headerBytes = CustomEncode.StringToByte(headerJson, CustomEncode.UTF_8);
-            string headerEncoded = CustomEncode.ToBase64UrlString(headerBytes);
-
-            // ペイロード
-            byte[] payloadBytes = CustomEncode.StringToByte(payloadJson, CustomEncode.UTF_8);
-            string payloadEncoded = CustomEncode.ToBase64UrlString(payloadBytes);
-
-            // 署名
-            byte[] temp = CustomEncode.StringToByte(headerEncoded + "." + payloadEncoded, CustomEncode.UTF_8);
-
-            // Cng or OpenSsl
-            string signEncoded = "";
             if (os.Platform == PlatformID.Win32NT)
             {
-                signEncoded = CustomEncode.ToBase64UrlString(this.DigitalSignECDsaCng.Sign(temp));
+                return this.DigitalSignECDsaCng.Sign(data);
             }
             else
             {
 #if NETSTD
-                signEncoded = CustomEncode.ToBase64UrlString(this.DigitalSignECDsaOpenSsl.Sign(temp));
+                return this.DigitalSignECDsaOpenSsl.Sign(data);
 #else
                 throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
 #endif
             }
-
-            // return JWS by RS256
-            return headerEncoded + "." + payloadEncoded + "." + signEncoded;
         }
 
-        /// <summary>RS256のJWS検証メソッド</summary>
-        /// <param name="jwtString">JWSの文字列表現</param>
-        /// <returns>署名の検証結果</returns>
-        public override bool Verify(string jwtString)
+        /// <summary>Verify2</summary>
+        /// <param name="data">byte[]</param>
+        /// <param name="sign">byte[]</param>
+        /// <returns>bool</returns>
+        protected override bool Verify2(byte[] data, byte[] sign)
         {
-            string[] temp = jwtString.Split('.');
-
-            // 検証
-            JWS_Header headerObject = (JWS_Header)JsonConvert.DeserializeObject(
-                CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8), typeof(JWS_Header));
-
-            if (headerObject.alg.ToUpper() == JwtConst.ES256 && headerObject.typ.ToUpper() == JwtConst.JWT)
+            // Cng or OpenSsl
+            if (os.Platform == PlatformID.Win32NT)
             {
-                byte[] data = CustomEncode.StringToByte(temp[0] + "." + temp[1], CustomEncode.UTF_8);
-                byte[] sign = CustomEncode.FromBase64UrlString(temp[2]);
-
-                // Cng or OpenSsl
-                if (os.Platform == PlatformID.Win32NT)
-                {
-                    return this.DigitalSignECDsaCng.Verify(data, sign);
-                }
-                else
-                {
-#if NETSTD
-                    return this.DigitalSignECDsaOpenSsl.Verify(data, sign);
-#else
-                    throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
-#endif
-                }
-                
+                return this.DigitalSignECDsaCng.Verify(data, sign);
             }
             else
             {
-                return false;
+#if NETSTD
+                return this.DigitalSignECDsaOpenSsl.Verify(data, sign);
+#else
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+#endif
             }
         }
 
