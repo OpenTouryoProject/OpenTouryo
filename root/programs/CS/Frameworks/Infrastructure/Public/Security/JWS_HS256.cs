@@ -22,6 +22,10 @@
 //* クラス名        ：JWS_HS256
 //* クラス日本語名  ：HS256 JWS生成
 //*
+//*                  RFC 7515 - JSON Web Signature (JWS)
+//*                  > A.1.  Example JWS Using HMAC SHA-256
+//*                  https://tools.ietf.org/html/rfc7515#appendix-A.1
+//*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //*

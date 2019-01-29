@@ -53,6 +53,22 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region JWE
 
+        #region RSAES-OAEP and AES GCM
+        /// <summary>alg:RSA-OAEP</summary>
+        public const string RSA_OAEP = "RSA-OAEP";
+
+        /// <summary>enc:A256GCM</summary>
+        public const string A256GCM = "A256GCM";
+        #endregion
+
+        #region RSAES-PKCS1-v1_5 and AES_128_CBC_HMAC_SHA_256
+        /// <summary>alg:RSA1_5</summary>
+        public const string RSA1_5 = "RSA1_5";
+
+        /// <summary>enc:A128CBC-HS256</summary>
+        public const string A128CBC_HS256 = "A128CBC-HS256";
+        #endregion
+
         #endregion
 
         #region JWK

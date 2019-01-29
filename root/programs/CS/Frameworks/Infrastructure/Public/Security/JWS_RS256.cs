@@ -22,6 +22,10 @@
 //* クラス名        ：JWS_RS256
 //* クラス日本語名  ：JWS RS256生成クラス
 //*
+//*                  RFC 7515 - JSON Web Signature (JWS)
+//*                  > A.2.  Example JWS Using RSASSA-PKCS1-v1_5 SHA-256
+//*                  https://tools.ietf.org/html/rfc7515#appendix-A.2
+//*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //*

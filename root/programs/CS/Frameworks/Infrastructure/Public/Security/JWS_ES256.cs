@@ -22,6 +22,10 @@
 //* クラス名        ：JWS_ES256
 //* クラス日本語名  ：JWS ES256生成クラス
 //*
+//*                  RFC 7515 - JSON Web Signature (JWS)
+//*                  > A.3.  Example JWS Using ECDSA P-256 SHA-256
+//*                  https://tools.ietf.org/html/rfc7515#appendix-A.3
+//*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //*

@@ -245,7 +245,8 @@ namespace EncAndDecUtilCUI
             #endregion
 
             #region DigitalSign
-            byte[] data = CustomEncode.StringToByte("hogehoge", CustomEncode.UTF_8);
+            string moji = "hogehoge";
+            byte[] data = CustomEncode.StringToByte(moji, CustomEncode.UTF_8);
             byte[] sign = null;
             #endregion
 
@@ -291,7 +292,23 @@ namespace EncAndDecUtilCUI
 
             #endregion
 
-            #region Test of the OpenTouryo.Public.Security.
+            #region Test of the OpenTouryo.Public.Security.ASymCrypt
+
+            ASymmetricCryptography ascPublic = new ASymmetricCryptography(
+                EnumASymmetricAlgorithm.X509, Program.PublicRsaX509Path, "", x509KSF);
+
+            string temp = ascPublic.EncryptString(moji);
+
+            ASymmetricCryptography ascPrivate = new ASymmetricCryptography(
+                EnumASymmetricAlgorithm.X509, Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
+
+            temp = ascPrivate.DecryptString(temp);
+
+            WriteLine.OutPutDebugAndConsole("ASymCrypt(X509).Enc&Dec", (temp == moji).ToString());
+
+            #endregion
+
+            #region Test of the OpenTouryo.Public.Security.DigitalSign
 
             // RSA, DSA
             DigitalSignX509 dsX509 = null;
@@ -306,7 +323,6 @@ namespace EncAndDecUtilCUI
 #if NETCORE
             DigitalSignECDsaOpenSsl dsECDsaOpenSsl = null;
 #endif
-
 
             if (os.Platform == PlatformID.Win32NT)
             {
@@ -561,10 +577,13 @@ namespace EncAndDecUtilCUI
                 //// DigitalSignECDsaOpenSslを試してみるが生成できない、
                 //// Core on Win に OpenSSLベースのプロバイダは無いため）
                 jWS_ES256_Param = new JWS_ES256_Param(EccPublicKeyConverter.JwkToParam(jwk), false);
-                WriteLine.OutPutDebugAndConsole("JWS_ES256_Param.Verify", jWS_ES256_X509.Verify(token).ToString());
+                WriteLine.OutPutDebugAndConsole("JWS_ES256_Param.Verify", jWS_ES256_Param.Verify(token).ToString());
 #elif NETCOREAPP2_0
                 // Core2.0-2.2 on Winで ECDsaCngは動作しない。
 #endif
+                // ★ xLibTest
+                Program.VerifyResult("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
+
                 #endregion
 #endif
             }
@@ -611,6 +630,9 @@ namespace EncAndDecUtilCUI
                 // 検証（Param）
                 jWS_ES256_Param = new JWS_ES256_Param(EccPublicKeyConverter.JwkToParam(jwk), false);
                 WriteLine.OutPutDebugAndConsole("JWS_ES256_Param.Verify", jWS_ES256_X509.Verify(token).ToString());
+
+                // ★ xLibTest
+                Program.VerifyResult("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
                 #endregion
 #endif
             }
@@ -774,9 +796,7 @@ namespace EncAndDecUtilCUI
                 {
                     // ECCurveを分析してみる。
                     ECCurve eCCurve = ((ECDsaOpenSsl)privateX509Key.GetECDsaPrivateKey()).ExportExplicitParameters(true).Curve;
-                    WriteLine.OutPutDebugAndConsole(
-                        "Inspect ECCurve",
-                        ObjectInspector.Inspect(eCCurve));
+                    WriteLine.OutPutDebugAndConsole("Inspect ECCurve", ObjectInspector.Inspect(eCCurve));
                 }
 #endif
                 token = "";
@@ -785,9 +805,7 @@ namespace EncAndDecUtilCUI
             }
             catch (Exception ex)
             {
-                WriteLine.OutPutDebugAndConsole(
-                    "JwsAlgorithm.ES256",
-                    ex.GetType().ToString() + ", " + ex.Message);
+                WriteLine.OutPutDebugAndConsole("JwsAlgorithm.ES256", ex.GetType().ToString() + ", " + ex.Message);
             }
 #endif
 
@@ -807,25 +825,19 @@ namespace EncAndDecUtilCUI
             // RSAES-PKCS1-v1_5 and AES_128_CBC_HMAC_SHA_256
             token = "";
             token = JWT.Encode(payload, publicX509Key.PublicKey.Key, JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256);
-            Program.VerifyResult(
-                "JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256",
-                token, privateX509Key.PrivateKey);
+            Program.VerifyResult("JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256", token, privateX509Key.PrivateKey);
 
             // RSAES-OAEP and AES GCM
             try
             {
                 token = "";
                 token = JWT.Encode(payload, publicX509Key.PublicKey.Key, JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM);
-                Program.VerifyResult(
-                    "JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM",
-                    token, privateX509Key.PrivateKey);
+                Program.VerifyResult("JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM", token, privateX509Key.PrivateKey);
             }
             catch (Exception ex)
             {
                 // Unhandled Exception: System.DllNotFoundException: Unable to load DLL 'bcrypt.dll' at ubunntu
-                WriteLine.OutPutDebugAndConsole(
-                    "JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM",
-                    ex.GetType().ToString() + ", " + ex.Message);
+                WriteLine.OutPutDebugAndConsole("JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM", ex.GetType().ToString() + ", " + ex.Message);
             }
             #endregion
 
@@ -860,9 +872,7 @@ namespace EncAndDecUtilCUI
             catch (Exception ex)
             {
                 // Unhandled Exception: System.DllNotFoundException: Unable to load DLL 'bcrypt.dll' at ubunntu
-                WriteLine.OutPutDebugAndConsole(
-                    "JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512",
-                    ex.GetType().ToString() + ", " + ex.Message);
+                WriteLine.OutPutDebugAndConsole("JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512", ex.GetType().ToString() + ", " + ex.Message);
             }
             #endregion
 
@@ -881,9 +891,7 @@ namespace EncAndDecUtilCUI
             catch (Exception ex)
             {
                 // System.NotImplementedException: 'not yet'
-                WriteLine.OutPutDebugAndConsole(
-                    "JweAlgorithm.ECDH_ES, JweEncryption.A256GCM",
-                    ex.GetType().ToString() + ", " + ex.Message);
+                WriteLine.OutPutDebugAndConsole("JweAlgorithm.ECDH_ES, JweEncryption.A256GCM", ex.GetType().ToString() + ", " + ex.Message);
             }
             #endregion
 
@@ -932,9 +940,7 @@ namespace EncAndDecUtilCUI
             #region Strict validation
             // https://github.com/dvsekhvalnov/jose-jwt#strict-validation
             // 厳密な検証では、Algorithmを指定可能
-            WriteLine.OutPutDebugAndConsole(
-                "Strict validation(RS256)",
-                JWT.Decode(token, rsa, JwsAlgorithm.RS256));
+            WriteLine.OutPutDebugAndConsole("Strict validation(RS256)", JWT.Decode(token, rsa, JwsAlgorithm.RS256));
             #endregion
 
             #region Two-phase validation
@@ -1014,13 +1020,21 @@ namespace EncAndDecUtilCUI
         /// <param name="testLabel">string</param>
         /// <param name="jwt">string</param>
         /// <param name="key">object</param>
-        private static void VerifyResult(string testLabel, string jwt, object key)
+        /// <param name="alg">JwsAlgorithm?</param>
+        private static void VerifyResult(string testLabel, string jwt, object key, JwsAlgorithm? alg = null)
         {
             WriteLine.OutPutDebugAndConsole(testLabel, "Original:" + jwt);
 
             WriteLine.JwtInspector(testLabel, jwt);
 
-            WriteLine.OutPutDebugAndConsole(testLabel, "Decoded:" + JWT.Decode(jwt, key));
+            if (alg.HasValue)
+            {
+                WriteLine.OutPutDebugAndConsole(testLabel, "Decoded:" + JWT.Decode(jwt, key, alg.Value)); 
+            }
+            else
+            {
+                WriteLine.OutPutDebugAndConsole(testLabel, "Decoded:" + JWT.Decode(jwt, key));
+            }
         }
 
         #endregion

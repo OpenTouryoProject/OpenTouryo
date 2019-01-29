@@ -127,9 +127,13 @@
     <Compile Include="Security\GetPasswordHashV2.cs" />
     <Compile Include="Security\GetPasswordHashV1.cs" />
     <Compile Include="Security\HashAlgorithmCmnFunc.cs" />
+    <Compile Include="Security\JWE.cs" />
     <Compile Include="Security\JWS_ES256.cs" />
     <Compile Include="Security\JWS_ES256_Param.cs" />
     <Compile Include="Security\JWS_ES256_X509.cs" />
+    <Compile Include="Security\JWE_Header.cs" />
+    <Compile Include="Security\JWS_RS256.cs" />
+    <Compile Include="Security\JWE_RsaOaepAesGcm_X509.cs" />
     <Compile Include="Security\MsgAuthCode.cs" />
     <Compile Include="Security\PrivateKeyConverter.cs" />
     <Compile Include="Security\RsaAlice.cs" />
@@ -184,7 +188,7 @@
     <Compile Include="Security\GetPassword.cs" />
     <Compile Include="Security\IdentityImpersonation.cs" />
     <Compile Include="Security\JWS_HS256.cs" />
-    <Compile Include="Security\JWS_RS256.cs" />
+    <Compile Include="Security\JWE_RsaOaepAesGcm.cs" />
     <Compile Include="Security\JWS.cs" />
     <Compile Include="FastReflection\CompiledExpressionCreater.cs" />
     <Compile Include="Dbg\ObjectInspector.cs" />
