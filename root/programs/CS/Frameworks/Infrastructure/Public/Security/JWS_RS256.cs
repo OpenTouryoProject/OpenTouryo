@@ -39,6 +39,8 @@
 //*  2019/01/29  西野 大介         リファクタリング（プロバイダ処理を末端に）
 //**********************************************************************************
 
+using System;
+
 using Newtonsoft.Json;
 
 using Touryo.Infrastructure.Public.Str;
