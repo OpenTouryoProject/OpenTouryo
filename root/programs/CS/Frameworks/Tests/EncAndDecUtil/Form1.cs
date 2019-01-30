@@ -586,7 +586,7 @@ namespace EncAndDecUtil
                     if (this.chkDSUF.Checked)
                     {
                         sign = dsXML.SignByFormatter(data);
-                        ret= dsXML.VerifyByDeformatter(data, sign);
+                        ret = dsXML.VerifyByDeformatter(data, sign);
                     }
                     else
                     {
@@ -612,7 +612,7 @@ namespace EncAndDecUtil
                         sign = dsParam.Sign(data);
                         ret = dsParam.Verify(data, sign);
                     }
-                    
+
                     this.txtDSPrivateKey.Text = CustomEncode.ToBase64String(BinarySerialize.ObjectToBytes(dsParam.PrivateKey));
                     this.txtDSPublicKey.Text = CustomEncode.ToBase64String(BinarySerialize.ObjectToBytes(dsParam.PublicKey));
                 }
@@ -778,7 +778,7 @@ namespace EncAndDecUtil
         /// <summary>署名</summary>
         private void btnDSESign_Click(object sender, EventArgs e)
         {
-            
+
 #if NET45 || NET46
             MessageBox.Show("NET47以上でサポート");
 #else
@@ -828,8 +828,8 @@ namespace EncAndDecUtil
 
         /// <summary>検証<</summary>
         private void btnDSEVerify_Click(object sender, EventArgs e)
-        {   
-            
+        {
+
 #if NET45 || NET46
             MessageBox.Show("NET47以上でサポート");
 #else
@@ -911,7 +911,7 @@ namespace EncAndDecUtil
                 ((RsaPkcs1Bob)this._rsaBob).GeneratePrivateKey(this._rsaAlice.ExchangeKey, this._rsaAlice.IV);
             }
             else if (ekex == EnumKeyExchange.RSAOAEPKeyExchange)
-            {   
+            {
                 if (((Button)sender).Name == "btnRKEXEC1")
                 {
                     this._rsaBob = new RsaOaepBob();
@@ -1238,6 +1238,7 @@ namespace EncAndDecUtil
                 // 出力
                 this.txtJWSKey.Text = password;
                 this.txtJWSJWK.Text = jwsHS256.JWK;
+
                 this.txtJWSSigned.Text = jws;
 
                 // 改竄可能なフィールドに出力
@@ -1257,9 +1258,7 @@ namespace EncAndDecUtil
 
                 // 出力
                 this.txtJWSKey.Text = jwsRS256.XMLPublicKey;
-
-                this.txtJWSJWK.Text =
-                    RsaPublicKeyConverter.ParamToJwk(
+                this.txtJWSJWK.Text = RsaPublicKeyConverter.ParamToJwk(
                         RsaPublicKeyConverter.XmlToProvider(jwsRS256.XMLPublicKey).ExportParameters(false));
 
                 this.txtJWSSigned.Text = jws;
@@ -1302,12 +1301,9 @@ namespace EncAndDecUtil
                 string jws = jwsRS256.Create(this.txtJWSPayload.Text);
 
                 // 出力
-                this.txtJWSKey.Text = jwsRS256.DigitalSignX509.PublicKey.GetType().ToString();
-
-                this.txtJWSJWK.Text =
-                    RsaPublicKeyConverter.ParamToJwk(
-                        RsaPublicKeyConverter.X509CerToProvider(
-                            this.SHA256RSA_cer).ExportParameters(false));
+                this.txtJWSKey.Text = jwsRS256.DigitalSignX509.PublicKey.ToXmlString(false);
+                this.txtJWSJWK.Text = RsaPublicKeyConverter.ParamToJwk(
+                        RsaPublicKeyConverter.X509CerToProvider(this.SHA256RSA_cer).ExportParameters(false));
 
                 this.txtJWSSigned.Text = jws;
 
@@ -1318,6 +1314,8 @@ namespace EncAndDecUtil
                 this.txtJWSPayload.Text = CustomEncode.ByteToString(
                     CustomEncode.FromBase64UrlString(temp[1]), CustomEncode.UTF_8);
             }
+#if NET45 || NET46
+#else
             else if (rbnJWSES256_Param.Checked)
             {
                 // ES256 (Param)
@@ -1328,9 +1326,7 @@ namespace EncAndDecUtil
 
                 // 出力
                 this.txtJWSKey.Text = jwsES256.ECDsaPublicParameters.GetType().ToString();
-
-                this.txtJWSJWK.Text =
-                    EccPublicKeyConverter.ParamToJwk(jwsES256.ECDsaPublicParameters);
+                this.txtJWSJWK.Text = EccPublicKeyConverter.ParamToJwk(jwsES256.ECDsaPublicParameters);
 
                 this.txtJWSSigned.Text = jws;
 
@@ -1351,10 +1347,7 @@ namespace EncAndDecUtil
 
                 // 出力
                 this.txtJWSKey.Text = jwsES256.DigitalSignECDsaX509.PublicKey.GetType().ToString();
-
-                this.txtJWSJWK.Text =
-                    EccPublicKeyConverter.ParamToJwk(
-                        jwsES256.DigitalSignECDsaX509.PublicKey.ExportParameters(false));
+                this.txtJWSJWK.Text = EccPublicKeyConverter.ParamToJwk(jwsES256.DigitalSignECDsaX509.PublicKey.ExportParameters(false));
 
                 this.txtJWSSigned.Text = jws;
 
@@ -1365,6 +1358,7 @@ namespace EncAndDecUtil
                 this.txtJWSPayload.Text = CustomEncode.ByteToString(
                     CustomEncode.FromBase64UrlString(temp[1]), CustomEncode.UTF_8);
             }
+#endif
         }
 
         /// <summary>JWS検証</summary>
@@ -1444,6 +1438,8 @@ namespace EncAndDecUtil
                 JWS_RS256_X509 jwsRS256 = new JWS_RS256_X509(this.SHA256RSA_cer, "");
                 ret = jwsRS256.Verify(newJWS);
             }
+#if NET45 || NET46
+#else
             else if (rbnJWSES256_Param.Checked)
             {
                 // ES256 (Param)
@@ -1478,6 +1474,7 @@ namespace EncAndDecUtil
                 JWS_ES256_X509 jwsES256 = new JWS_ES256_X509(this.SHA256ECDSA_cer, "");
                 ret = jwsES256.Verify(newJWS);
             }
+#endif
 
             if (ret)
             {
@@ -1496,9 +1493,19 @@ namespace EncAndDecUtil
         /// <summary>JWE生成</summary>
         private void btnJWEEncrypt_Click(object sender, EventArgs e)
         {
+            string jwe = "";
+
             if (rbnJWEOAEP_Param.Checked)
             {
                 // RSAES-OAEP and AES GCM (Param)
+                JWE_RsaOaepAesGcm_Param jweRsaOaepAesGcm = new JWE_RsaOaepAesGcm_Param(EnumASymmetricAlgorithm.RsaCsp);
+
+                // 生成
+                jwe = jweRsaOaepAesGcm.Create(this.txtJWEPayload.Text);
+                this.txtJWEEncrypted.Text = jwe;
+
+                // JWK
+                this.txtJWEXMLKey.Text = jweRsaOaepAesGcm.ASymmetricCryptography.PrivateXmlKey;
             }
             else if (rbnJWEOAEP_X509.Checked)
             {
@@ -1506,37 +1513,46 @@ namespace EncAndDecUtil
                 JWE_RsaOaepAesGcm_X509 jweRsaOaepAesGcm = new JWE_RsaOaepAesGcm_X509(this.SHA256RSA_cer, "");
 
                 // 生成
-                string jwe = jweRsaOaepAesGcm.Create(this.txtJWEPayload.Text);
-
+                jwe = jweRsaOaepAesGcm.Create(this.txtJWEPayload.Text);
                 this.txtJWEEncrypted.Text = jwe;
 
-                // フィールドに出力
-                // headerEncoded + "." + encryptedCekEncoded + "." + ivEncoded + "." + encryptedPayloadEncoded + "." + macEncoded;
-                string[] temp = jwe.Split('.');
-                // ヘッダー
-                this.txtJWEHeader.Text = CustomEncode.ByteToString(
-                    CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8);
-                // コンテンツ暗号化キー（CEK）
-                this.txtJWECek.Text = temp[1]; // 元々ByteなのでBase64Urlのまま出す。
-                // 初期化ベクトル
-                this.txtJWEIV.Text = temp[2];  // 元々ByteなのでBase64Urlのまま出す。
-                // 追加認証データ（AAD）
-                this.txtJWEAAD.Text = temp[0]; // ≒ヘッダー（をASCIIバイト化しBase64Url）
-                // ペイロード
-                this.txtJWEAAD.Text = temp[3]; // 認証付き暗号（AEAD）による暗号化
-                // 認証タグ（MAC）
-                this.txtJWEMAC.Text = temp[4];  // 元々ByteなのでBase64Urlのまま出す。
+                // JWK
+                this.txtJWEXMLKey.Text = jweRsaOaepAesGcm.ASymmetricCryptography.PublicXmlKey;
             }
+
+            // フィールドに出力
+            string[] temp = jwe.Split('.');
+            // ヘッダー
+            this.txtJWEHeader.Text = CustomEncode.ByteToString(
+                CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8);
+            // コンテンツ暗号化キー（CEK）
+            this.txtJWECek.Text = temp[1]; // 元々ByteなのでBase64Urlのまま出す。
+                                           // 初期化ベクトル
+            this.txtJWEIV.Text = temp[2];  // 元々ByteなのでBase64Urlのまま出す。
+                                           // 追加認証データ（AAD）
+            this.txtJWEAAD.Text = temp[0]; // ≒ヘッダー（をASCIIバイト化しBase64Url）
+                                           // ペイロード
+            this.txtJWEAAD.Text = temp[3]; // 認証付き暗号（AEAD）による暗号化
+                                           // 認証タグ（MAC）
+            this.txtJWEMAC.Text = temp[4];  // 元々ByteなのでBase64Urlのまま出す。
         }
 
         /// <summary>JWE復号</summary>
         private void btnJWEDecrypt_Click(object sender, EventArgs e)
         {
             bool ret = false;
+            string payload = "";
 
             if (rbnJWEOAEP_Param.Checked)
             {
                 // RSAES-OAEP and AES GCM (Param)
+                RSA rsa = RSA.Create();
+                rsa.FromXmlString(this.txtJWEXMLKey.Text);
+                JWE_RsaOaepAesGcm_Param jweRsaOaepAesGcm = new JWE_RsaOaepAesGcm_Param(
+                    EnumASymmetricAlgorithm.RsaCsp, rsa.ExportParameters(true));
+
+                // 復号
+                ret = jweRsaOaepAesGcm.Decrypt(this.txtJWEEncrypted.Text, out payload);
             }
             else if (rbnJWEOAEP_X509.Checked)
             {
@@ -1544,10 +1560,10 @@ namespace EncAndDecUtil
                 JWE_RsaOaepAesGcm_X509 jweRsaOaepAesGcm = new JWE_RsaOaepAesGcm_X509(this.SHA256RSA_pfx, this.CertificateFilePassword);
 
                 // 復号
-                string payload = "";
                 ret = jweRsaOaepAesGcm.Decrypt(this.txtJWEEncrypted.Text, out payload);
-                this.txtJWEPayload.Text = payload;
             }
+
+            this.txtJWEPayload.Text = payload;
 
             if (ret)
             {
@@ -1562,7 +1578,5 @@ namespace EncAndDecUtil
         #endregion
 
         #endregion
-
-
     }
 }

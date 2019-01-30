@@ -38,6 +38,8 @@
 //*  2019/01/29  西野 大介         新規作成
 //**********************************************************************************
 
+using System.Security.Cryptography;
+
 using Newtonsoft.Json;
 
 using Touryo.Infrastructure.Public.Str;
@@ -69,6 +71,9 @@ namespace Touryo.Infrastructure.Public.Security
                 return this._JWEHeader;
             }
         }
+
+        /// <summary>ASymmetricCryptography</summary>
+        public ASymmetricCryptography ASymmetricCryptography { get; protected set; }
 
         #endregion
 
@@ -178,15 +183,48 @@ namespace Touryo.Infrastructure.Public.Security
             }
         }
 
+        #region CEK 暗号化・復号化
+
+#if NET45
         /// <summary>CreateKey</summary>
         /// <param name="data">byte[]</param>
         /// <returns>byte[]</returns>
-        protected abstract byte[] CreateKey(byte[] data);
+        protected virtual byte[] CreateKey(byte[] data)
+        {
+            // RSA-OAEP = RSAES OAEP using default parameters は、
+            // SHA-1ハッシュ関数とSHA-1マスク生成機能付きMGF1
+            return this.ASymmetricCryptography.EncryptBytes(data, fOAEP: true);
+        }
 
         /// <summary>DecryptKey</summary>
         /// <param name="data">byte[]</param>
         /// <returns>byte[] </returns>
-        protected abstract byte[] DecryptKey(byte[] data);
+        protected virtual byte[] DecryptKey(byte[] data)
+        {
+            return this.ASymmetricCryptography.DecryptBytes(data, fOAEP: true);
+        }
+#else
+        /// <summary>CreateKey</summary>
+        /// <param name="data">byte[]</param>
+        /// <returns>byte[]</returns>
+        protected virtual byte[] CreateKey(byte[] data)
+        {
+            // RSA-OAEP = RSAES OAEP using default parameters は、
+            // SHA-1ハッシュ関数とSHA-1マスク生成機能付きMGF1
+            return this.ASymmetricCryptography.EncryptBytes(
+                data, padding: RSAEncryptionPadding.OaepSHA1);
+        }
+
+        /// <summary>DecryptKey</summary>
+        /// <param name="data">byte[]</param>
+        /// <returns>byte[] </returns>
+        protected virtual byte[] DecryptKey(byte[] data)
+        {
+            return this.ASymmetricCryptography.DecryptBytes(
+                data, padding: RSAEncryptionPadding.OaepSHA1);
+        }
+#endif
+        #endregion
 
         #endregion
     }

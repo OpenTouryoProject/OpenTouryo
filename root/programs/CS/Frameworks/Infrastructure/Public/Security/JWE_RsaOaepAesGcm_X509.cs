@@ -46,9 +46,6 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>CertificatePassword</summary>
         public string CertificatePassword { get; protected set; }
 
-        /// <summary>ASymmetricCryptography</summary>
-        public ASymmetricCryptography ASymmetricCryptography { get; protected set; }
-
         /// <summary>Constructor</summary>
         /// <param name="certificateFilePath">ASymmetricCryptographyに渡すcertificateFilePathパラメタ</param>
         /// <param name="password">ASymmetricCryptographyに渡すpasswordパラメタ</param>
@@ -68,25 +65,5 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         #endregion
-
-        /// <summary>CreateKey</summary>
-        /// <param name="data">byte[]</param>
-        /// <returns>byte[]</returns>
-        protected override byte[] CreateKey(byte[] data)
-        {
-            // RSA-OAEP = RSAES OAEP using default parameters は、
-            // SHA-1ハッシュ関数とSHA-1マスク生成機能付きMGF1
-            return this.ASymmetricCryptography.EncryptBytes(
-                data, padding: RSAEncryptionPadding.OaepSHA1);
-        }
-
-        /// <summary>DecryptKey</summary>
-        /// <param name="data">byte[]</param>
-        /// <returns>byte[] </returns>
-        protected override byte[] DecryptKey(byte[] data)
-        {
-            return this.ASymmetricCryptography.DecryptBytes(
-                data, padding: RSAEncryptionPadding.OaepSHA1);
-        }
     }
 }
