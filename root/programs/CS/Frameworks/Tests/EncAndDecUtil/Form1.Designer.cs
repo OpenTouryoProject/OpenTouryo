@@ -213,8 +213,8 @@
             this.txtJWSJWK = new System.Windows.Forms.TextBox();
             this.txtJWSHeader = new System.Windows.Forms.TextBox();
             this.txtJWSKey = new System.Windows.Forms.TextBox();
-            this.lblJWSString = new System.Windows.Forms.Label();
-            this.txtJWSSign = new System.Windows.Forms.TextBox();
+            this.lblJWSSigned = new System.Windows.Forms.Label();
+            this.txtJWSSigned = new System.Windows.Forms.TextBox();
             this.lblJWSHeader = new System.Windows.Forms.Label();
             this.txtJWSPayload = new System.Windows.Forms.TextBox();
             this.gbxJWS = new System.Windows.Forms.GroupBox();
@@ -247,8 +247,8 @@
             this.txtJWEAAD = new System.Windows.Forms.TextBox();
             this.lblJWEMAC = new System.Windows.Forms.Label();
             this.txtJWEMAC = new System.Windows.Forms.TextBox();
-            this.lblJWE = new System.Windows.Forms.Label();
-            this.txtJWE = new System.Windows.Forms.TextBox();
+            this.lblJWEEncrypted = new System.Windows.Forms.Label();
+            this.txtJWEEncrypted = new System.Windows.Forms.TextBox();
             this.TabControl1.SuspendLayout();
             this.tabHash.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHSStretching)).BeginInit();
@@ -2119,8 +2119,8 @@
             this.tabJWS.Controls.Add(this.txtJWSJWK);
             this.tabJWS.Controls.Add(this.txtJWSHeader);
             this.tabJWS.Controls.Add(this.txtJWSKey);
-            this.tabJWS.Controls.Add(this.lblJWSString);
-            this.tabJWS.Controls.Add(this.txtJWSSign);
+            this.tabJWS.Controls.Add(this.lblJWSSigned);
+            this.tabJWS.Controls.Add(this.txtJWSSigned);
             this.tabJWS.Controls.Add(this.lblJWSHeader);
             this.tabJWS.Controls.Add(this.txtJWSPayload);
             this.tabJWS.Controls.Add(this.gbxJWS);
@@ -2136,7 +2136,7 @@
             // lblJWSJWK
             // 
             this.lblJWSJWK.AutoSize = true;
-            this.lblJWSJWK.Location = new System.Drawing.Point(13, 134);
+            this.lblJWSJWK.Location = new System.Drawing.Point(13, 112);
             this.lblJWSJWK.Name = "lblJWSJWK";
             this.lblJWSJWK.Size = new System.Drawing.Size(28, 12);
             this.lblJWSJWK.TabIndex = 54;
@@ -2145,7 +2145,7 @@
             // lblJWSKey
             // 
             this.lblJWSKey.AutoSize = true;
-            this.lblJWSKey.Location = new System.Drawing.Point(13, 109);
+            this.lblJWSKey.Location = new System.Drawing.Point(13, 87);
             this.lblJWSKey.Name = "lblJWSKey";
             this.lblJWSKey.Size = new System.Drawing.Size(24, 12);
             this.lblJWSKey.TabIndex = 53;
@@ -2154,7 +2154,7 @@
             // lblJWSPayload
             // 
             this.lblJWSPayload.AutoSize = true;
-            this.lblJWSPayload.Location = new System.Drawing.Point(13, 198);
+            this.lblJWSPayload.Location = new System.Drawing.Point(13, 176);
             this.lblJWSPayload.Name = "lblJWSPayload";
             this.lblJWSPayload.Size = new System.Drawing.Size(45, 12);
             this.lblJWSPayload.TabIndex = 52;
@@ -2162,7 +2162,7 @@
             // 
             // txtJWSJWK
             // 
-            this.txtJWSJWK.Location = new System.Drawing.Point(85, 131);
+            this.txtJWSJWK.Location = new System.Drawing.Point(85, 109);
             this.txtJWSJWK.Name = "txtJWSJWK";
             this.txtJWSJWK.ReadOnly = true;
             this.txtJWSJWK.Size = new System.Drawing.Size(285, 19);
@@ -2170,7 +2170,7 @@
             // 
             // txtJWSHeader
             // 
-            this.txtJWSHeader.Location = new System.Drawing.Point(85, 156);
+            this.txtJWSHeader.Location = new System.Drawing.Point(85, 134);
             this.txtJWSHeader.Multiline = true;
             this.txtJWSHeader.Name = "txtJWSHeader";
             this.txtJWSHeader.Size = new System.Drawing.Size(285, 33);
@@ -2178,33 +2178,33 @@
             // 
             // txtJWSKey
             // 
-            this.txtJWSKey.Location = new System.Drawing.Point(85, 106);
+            this.txtJWSKey.Location = new System.Drawing.Point(85, 84);
             this.txtJWSKey.Name = "txtJWSKey";
             this.txtJWSKey.ReadOnly = true;
             this.txtJWSKey.Size = new System.Drawing.Size(285, 19);
             this.txtJWSKey.TabIndex = 2;
             // 
-            // lblJWSString
+            // lblJWSSigned
             // 
-            this.lblJWSString.AutoSize = true;
-            this.lblJWSString.Location = new System.Drawing.Point(13, 237);
-            this.lblJWSString.Name = "lblJWSString";
-            this.lblJWSString.Size = new System.Drawing.Size(28, 12);
-            this.lblJWSString.TabIndex = 50;
-            this.lblJWSString.Text = "JWS";
+            this.lblJWSSigned.AutoSize = true;
+            this.lblJWSSigned.Location = new System.Drawing.Point(13, 215);
+            this.lblJWSSigned.Name = "lblJWSSigned";
+            this.lblJWSSigned.Size = new System.Drawing.Size(28, 12);
+            this.lblJWSSigned.TabIndex = 50;
+            this.lblJWSSigned.Text = "JWS";
             // 
-            // txtJWSSign
+            // txtJWSSigned
             // 
-            this.txtJWSSign.Location = new System.Drawing.Point(85, 234);
-            this.txtJWSSign.Name = "txtJWSSign";
-            this.txtJWSSign.ReadOnly = true;
-            this.txtJWSSign.Size = new System.Drawing.Size(285, 19);
-            this.txtJWSSign.TabIndex = 49;
+            this.txtJWSSigned.Location = new System.Drawing.Point(85, 212);
+            this.txtJWSSigned.Name = "txtJWSSigned";
+            this.txtJWSSigned.ReadOnly = true;
+            this.txtJWSSigned.Size = new System.Drawing.Size(285, 19);
+            this.txtJWSSigned.TabIndex = 49;
             // 
             // lblJWSHeader
             // 
             this.lblJWSHeader.AutoSize = true;
-            this.lblJWSHeader.Location = new System.Drawing.Point(13, 159);
+            this.lblJWSHeader.Location = new System.Drawing.Point(13, 137);
             this.lblJWSHeader.Name = "lblJWSHeader";
             this.lblJWSHeader.Size = new System.Drawing.Size(41, 12);
             this.lblJWSHeader.TabIndex = 48;
@@ -2212,7 +2212,7 @@
             // 
             // txtJWSPayload
             // 
-            this.txtJWSPayload.Location = new System.Drawing.Point(85, 195);
+            this.txtJWSPayload.Location = new System.Drawing.Point(85, 173);
             this.txtJWSPayload.Multiline = true;
             this.txtJWSPayload.Name = "txtJWSPayload";
             this.txtJWSPayload.Size = new System.Drawing.Size(285, 33);
@@ -2229,7 +2229,7 @@
             this.gbxJWS.Controls.Add(this.rbnJWSHS256);
             this.gbxJWS.Location = new System.Drawing.Point(9, 7);
             this.gbxJWS.Name = "gbxJWS";
-            this.gbxJWS.Size = new System.Drawing.Size(361, 83);
+            this.gbxJWS.Size = new System.Drawing.Size(361, 67);
             this.gbxJWS.TabIndex = 46;
             this.gbxJWS.TabStop = false;
             this.gbxJWS.Text = "API選択";
@@ -2238,7 +2238,7 @@
             // 
             this.rbnJWSRS256_XML.AutoSize = true;
             this.rbnJWSRS256_XML.Checked = true;
-            this.rbnJWSRS256_XML.Location = new System.Drawing.Point(12, 18);
+            this.rbnJWSRS256_XML.Location = new System.Drawing.Point(23, 18);
             this.rbnJWSRS256_XML.Name = "rbnJWSRS256_XML";
             this.rbnJWSRS256_XML.Size = new System.Drawing.Size(82, 16);
             this.rbnJWSRS256_XML.TabIndex = 3;
@@ -2250,7 +2250,7 @@
             // 
             this.rbnJWSRS256_Param.AutoSize = true;
             this.rbnJWSRS256_Param.Checked = true;
-            this.rbnJWSRS256_Param.Location = new System.Drawing.Point(110, 18);
+            this.rbnJWSRS256_Param.Location = new System.Drawing.Point(121, 18);
             this.rbnJWSRS256_Param.Name = "rbnJWSRS256_Param";
             this.rbnJWSRS256_Param.Size = new System.Drawing.Size(92, 16);
             this.rbnJWSRS256_Param.TabIndex = 2;
@@ -2262,7 +2262,7 @@
             // 
             this.rbnJWSRS256_X509.AutoSize = true;
             this.rbnJWSRS256_X509.Checked = true;
-            this.rbnJWSRS256_X509.Location = new System.Drawing.Point(208, 18);
+            this.rbnJWSRS256_X509.Location = new System.Drawing.Point(219, 18);
             this.rbnJWSRS256_X509.Name = "rbnJWSRS256_X509";
             this.rbnJWSRS256_X509.Size = new System.Drawing.Size(85, 16);
             this.rbnJWSRS256_X509.TabIndex = 1;
@@ -2273,7 +2273,7 @@
             // rbnJWSHS256
             // 
             this.rbnJWSHS256.AutoSize = true;
-            this.rbnJWSHS256.Location = new System.Drawing.Point(12, 49);
+            this.rbnJWSHS256.Location = new System.Drawing.Point(23, 41);
             this.rbnJWSHS256.Name = "rbnJWSHS256";
             this.rbnJWSHS256.Size = new System.Drawing.Size(56, 16);
             this.rbnJWSHS256.TabIndex = 0;
@@ -2282,7 +2282,7 @@
             // 
             // btnJWSVerify
             // 
-            this.btnJWSVerify.Location = new System.Drawing.Point(203, 259);
+            this.btnJWSVerify.Location = new System.Drawing.Point(203, 278);
             this.btnJWSVerify.Name = "btnJWSVerify";
             this.btnJWSVerify.Size = new System.Drawing.Size(167, 23);
             this.btnJWSVerify.TabIndex = 45;
@@ -2292,7 +2292,7 @@
             // 
             // btnJWSSign
             // 
-            this.btnJWSSign.Location = new System.Drawing.Point(11, 259);
+            this.btnJWSSign.Location = new System.Drawing.Point(11, 278);
             this.btnJWSSign.Name = "btnJWSSign";
             this.btnJWSSign.Size = new System.Drawing.Size(167, 23);
             this.btnJWSSign.TabIndex = 44;
@@ -2304,8 +2304,8 @@
             // 
             this.tabJWE.Controls.Add(this.lblJWEMAC);
             this.tabJWE.Controls.Add(this.txtJWEMAC);
-            this.tabJWE.Controls.Add(this.lblJWE);
-            this.tabJWE.Controls.Add(this.txtJWE);
+            this.tabJWE.Controls.Add(this.lblJWEEncrypted);
+            this.tabJWE.Controls.Add(this.txtJWEEncrypted);
             this.tabJWE.Controls.Add(this.lblJWEAAD);
             this.tabJWE.Controls.Add(this.txtJWEAAD);
             this.tabJWE.Controls.Add(this.lblJWEIV);
@@ -2332,7 +2332,7 @@
             // 
             this.rbnJWSES256_Param.AutoSize = true;
             this.rbnJWSES256_Param.Checked = true;
-            this.rbnJWSES256_Param.Location = new System.Drawing.Point(110, 49);
+            this.rbnJWSES256_Param.Location = new System.Drawing.Point(121, 41);
             this.rbnJWSES256_Param.Name = "rbnJWSES256_Param";
             this.rbnJWSES256_Param.Size = new System.Drawing.Size(91, 16);
             this.rbnJWSES256_Param.TabIndex = 5;
@@ -2344,7 +2344,7 @@
             // 
             this.rbnJWSES256_X509.AutoSize = true;
             this.rbnJWSES256_X509.Checked = true;
-            this.rbnJWSES256_X509.Location = new System.Drawing.Point(208, 49);
+            this.rbnJWSES256_X509.Location = new System.Drawing.Point(219, 41);
             this.rbnJWSES256_X509.Name = "rbnJWSES256_X509";
             this.rbnJWSES256_X509.Size = new System.Drawing.Size(84, 16);
             this.rbnJWSES256_X509.TabIndex = 4;
@@ -2355,7 +2355,7 @@
             // lblJWEJWK
             // 
             this.lblJWEJWK.AutoSize = true;
-            this.lblJWEJWK.Location = new System.Drawing.Point(23, 79);
+            this.lblJWEJWK.Location = new System.Drawing.Point(13, 81);
             this.lblJWEJWK.Name = "lblJWEJWK";
             this.lblJWEJWK.Size = new System.Drawing.Size(28, 12);
             this.lblJWEJWK.TabIndex = 67;
@@ -2364,7 +2364,7 @@
             // lblJWEPayload
             // 
             this.lblJWEPayload.AutoSize = true;
-            this.lblJWEPayload.Location = new System.Drawing.Point(23, 129);
+            this.lblJWEPayload.Location = new System.Drawing.Point(13, 131);
             this.lblJWEPayload.Name = "lblJWEPayload";
             this.lblJWEPayload.Size = new System.Drawing.Size(45, 12);
             this.lblJWEPayload.TabIndex = 65;
@@ -2372,7 +2372,7 @@
             // 
             // txtJWEJWK
             // 
-            this.txtJWEJWK.Location = new System.Drawing.Point(115, 76);
+            this.txtJWEJWK.Location = new System.Drawing.Point(105, 78);
             this.txtJWEJWK.Name = "txtJWEJWK";
             this.txtJWEJWK.ReadOnly = true;
             this.txtJWEJWK.Size = new System.Drawing.Size(265, 19);
@@ -2380,15 +2380,16 @@
             // 
             // txtJWEHeader
             // 
-            this.txtJWEHeader.Location = new System.Drawing.Point(115, 101);
+            this.txtJWEHeader.Location = new System.Drawing.Point(105, 103);
             this.txtJWEHeader.Name = "txtJWEHeader";
+            this.txtJWEHeader.ReadOnly = true;
             this.txtJWEHeader.Size = new System.Drawing.Size(265, 19);
             this.txtJWEHeader.TabIndex = 64;
             // 
             // lblJWEHeader
             // 
             this.lblJWEHeader.AutoSize = true;
-            this.lblJWEHeader.Location = new System.Drawing.Point(23, 104);
+            this.lblJWEHeader.Location = new System.Drawing.Point(13, 106);
             this.lblJWEHeader.Name = "lblJWEHeader";
             this.lblJWEHeader.Size = new System.Drawing.Size(41, 12);
             this.lblJWEHeader.TabIndex = 61;
@@ -2396,7 +2397,7 @@
             // 
             // txtJWEPayload
             // 
-            this.txtJWEPayload.Location = new System.Drawing.Point(115, 126);
+            this.txtJWEPayload.Location = new System.Drawing.Point(105, 128);
             this.txtJWEPayload.Name = "txtJWEPayload";
             this.txtJWEPayload.Size = new System.Drawing.Size(265, 19);
             this.txtJWEPayload.TabIndex = 60;
@@ -2407,7 +2408,7 @@
             this.gbxJWE.Controls.Add(this.lblJweOaep);
             this.gbxJWE.Controls.Add(this.rbnJWEOAEP_Param);
             this.gbxJWE.Controls.Add(this.rbnJWEOAEP_X509);
-            this.gbxJWE.Location = new System.Drawing.Point(19, 5);
+            this.gbxJWE.Location = new System.Drawing.Point(9, 7);
             this.gbxJWE.Name = "gbxJWE";
             this.gbxJWE.Size = new System.Drawing.Size(361, 67);
             this.gbxJWE.TabIndex = 59;
@@ -2440,21 +2441,23 @@
             // 
             // btnJWEDecrypt
             // 
-            this.btnJWEDecrypt.Location = new System.Drawing.Point(213, 276);
+            this.btnJWEDecrypt.Location = new System.Drawing.Point(203, 278);
             this.btnJWEDecrypt.Name = "btnJWEDecrypt";
             this.btnJWEDecrypt.Size = new System.Drawing.Size(167, 23);
             this.btnJWEDecrypt.TabIndex = 58;
             this.btnJWEDecrypt.Text = "復号化";
             this.btnJWEDecrypt.UseVisualStyleBackColor = true;
+            this.btnJWEDecrypt.Click += new System.EventHandler(this.btnJWEDecrypt_Click);
             // 
             // btnJWEEncrypt
             // 
-            this.btnJWEEncrypt.Location = new System.Drawing.Point(25, 276);
+            this.btnJWEEncrypt.Location = new System.Drawing.Point(15, 278);
             this.btnJWEEncrypt.Name = "btnJWEEncrypt";
             this.btnJWEEncrypt.Size = new System.Drawing.Size(167, 23);
             this.btnJWEEncrypt.TabIndex = 57;
             this.btnJWEEncrypt.Text = "暗号化";
             this.btnJWEEncrypt.UseVisualStyleBackColor = true;
+            this.btnJWEEncrypt.Click += new System.EventHandler(this.btnJWEEncrypt_Click);
             // 
             // lblJweOaep
             // 
@@ -2468,7 +2471,7 @@
             // lblJWECek
             // 
             this.lblJWECek.AutoSize = true;
-            this.lblJWECek.Location = new System.Drawing.Point(23, 154);
+            this.lblJWECek.Location = new System.Drawing.Point(13, 156);
             this.lblJWECek.Name = "lblJWECek";
             this.lblJWECek.Size = new System.Drawing.Size(25, 12);
             this.lblJWECek.TabIndex = 69;
@@ -2476,7 +2479,7 @@
             // 
             // txtJWECek
             // 
-            this.txtJWECek.Location = new System.Drawing.Point(115, 151);
+            this.txtJWECek.Location = new System.Drawing.Point(105, 153);
             this.txtJWECek.Name = "txtJWECek";
             this.txtJWECek.ReadOnly = true;
             this.txtJWECek.Size = new System.Drawing.Size(265, 19);
@@ -2485,7 +2488,7 @@
             // lblJWEIV
             // 
             this.lblJWEIV.AutoSize = true;
-            this.lblJWEIV.Location = new System.Drawing.Point(23, 179);
+            this.lblJWEIV.Location = new System.Drawing.Point(11, 181);
             this.lblJWEIV.Name = "lblJWEIV";
             this.lblJWEIV.Size = new System.Drawing.Size(16, 12);
             this.lblJWEIV.TabIndex = 71;
@@ -2493,7 +2496,7 @@
             // 
             // txtJWEIV
             // 
-            this.txtJWEIV.Location = new System.Drawing.Point(115, 176);
+            this.txtJWEIV.Location = new System.Drawing.Point(105, 178);
             this.txtJWEIV.Name = "txtJWEIV";
             this.txtJWEIV.ReadOnly = true;
             this.txtJWEIV.Size = new System.Drawing.Size(265, 19);
@@ -2502,7 +2505,7 @@
             // lblJWEAAD
             // 
             this.lblJWEAAD.AutoSize = true;
-            this.lblJWEAAD.Location = new System.Drawing.Point(23, 204);
+            this.lblJWEAAD.Location = new System.Drawing.Point(13, 206);
             this.lblJWEAAD.Name = "lblJWEAAD";
             this.lblJWEAAD.Size = new System.Drawing.Size(29, 12);
             this.lblJWEAAD.TabIndex = 73;
@@ -2510,7 +2513,7 @@
             // 
             // txtJWEAAD
             // 
-            this.txtJWEAAD.Location = new System.Drawing.Point(115, 201);
+            this.txtJWEAAD.Location = new System.Drawing.Point(105, 203);
             this.txtJWEAAD.Name = "txtJWEAAD";
             this.txtJWEAAD.ReadOnly = true;
             this.txtJWEAAD.Size = new System.Drawing.Size(265, 19);
@@ -2519,7 +2522,7 @@
             // lblJWEMAC
             // 
             this.lblJWEMAC.AutoSize = true;
-            this.lblJWEMAC.Location = new System.Drawing.Point(23, 229);
+            this.lblJWEMAC.Location = new System.Drawing.Point(13, 231);
             this.lblJWEMAC.Name = "lblJWEMAC";
             this.lblJWEMAC.Size = new System.Drawing.Size(30, 12);
             this.lblJWEMAC.TabIndex = 77;
@@ -2527,28 +2530,28 @@
             // 
             // txtJWEMAC
             // 
-            this.txtJWEMAC.Location = new System.Drawing.Point(115, 226);
+            this.txtJWEMAC.Location = new System.Drawing.Point(105, 228);
             this.txtJWEMAC.Name = "txtJWEMAC";
             this.txtJWEMAC.ReadOnly = true;
             this.txtJWEMAC.Size = new System.Drawing.Size(265, 19);
             this.txtJWEMAC.TabIndex = 76;
             // 
-            // lblJWE
+            // lblJWEEncrypted
             // 
-            this.lblJWE.AutoSize = true;
-            this.lblJWE.Location = new System.Drawing.Point(23, 254);
-            this.lblJWE.Name = "lblJWE";
-            this.lblJWE.Size = new System.Drawing.Size(28, 12);
-            this.lblJWE.TabIndex = 75;
-            this.lblJWE.Text = "JWE";
+            this.lblJWEEncrypted.AutoSize = true;
+            this.lblJWEEncrypted.Location = new System.Drawing.Point(13, 256);
+            this.lblJWEEncrypted.Name = "lblJWEEncrypted";
+            this.lblJWEEncrypted.Size = new System.Drawing.Size(28, 12);
+            this.lblJWEEncrypted.TabIndex = 75;
+            this.lblJWEEncrypted.Text = "JWE";
             // 
-            // txtJWE
+            // txtJWEEncrypted
             // 
-            this.txtJWE.Location = new System.Drawing.Point(115, 251);
-            this.txtJWE.Name = "txtJWE";
-            this.txtJWE.ReadOnly = true;
-            this.txtJWE.Size = new System.Drawing.Size(265, 19);
-            this.txtJWE.TabIndex = 74;
+            this.txtJWEEncrypted.Location = new System.Drawing.Point(105, 253);
+            this.txtJWEEncrypted.Name = "txtJWEEncrypted";
+            this.txtJWEEncrypted.ReadOnly = true;
+            this.txtJWEEncrypted.Size = new System.Drawing.Size(265, 19);
+            this.txtJWEEncrypted.TabIndex = 74;
             // 
             // Form1
             // 
@@ -2726,8 +2729,8 @@
         private System.Windows.Forms.Button btnDSVerify;
         private System.Windows.Forms.Button btnJWSVerify;
         private System.Windows.Forms.Button btnJWSSign;
-        private System.Windows.Forms.Label lblJWSString;
-        private System.Windows.Forms.TextBox txtJWSSign;
+        private System.Windows.Forms.Label lblJWSSigned;
+        private System.Windows.Forms.TextBox txtJWSSigned;
         private System.Windows.Forms.Label lblJWSHeader;
         private System.Windows.Forms.TextBox txtJWSPayload;
         private System.Windows.Forms.TextBox txtJWSHeader;
@@ -2835,8 +2838,8 @@
         private System.Windows.Forms.TextBox txtJWECek;
         private System.Windows.Forms.Label lblJWEMAC;
         private System.Windows.Forms.TextBox txtJWEMAC;
-        private System.Windows.Forms.Label lblJWE;
-        private System.Windows.Forms.TextBox txtJWE;
+        private System.Windows.Forms.Label lblJWEEncrypted;
+        private System.Windows.Forms.TextBox txtJWEEncrypted;
     }
 }
 

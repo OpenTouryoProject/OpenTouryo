@@ -1238,7 +1238,7 @@ namespace EncAndDecUtil
                 // 出力
                 this.txtJWSKey.Text = password;
                 this.txtJWSJWK.Text = jwsHS256.JWK;
-                this.txtJWSSign.Text = jws;
+                this.txtJWSSigned.Text = jws;
 
                 // 改竄可能なフィールドに出力
                 string[] temp = jws.Split('.');
@@ -1262,7 +1262,7 @@ namespace EncAndDecUtil
                     RsaPublicKeyConverter.ParamToJwk(
                         RsaPublicKeyConverter.XmlToProvider(jwsRS256.XMLPublicKey).ExportParameters(false));
 
-                this.txtJWSSign.Text = jws;
+                this.txtJWSSigned.Text = jws;
 
                 // 改竄可能なフィールドに出力
                 string[] temp = jws.Split('.');
@@ -1283,7 +1283,7 @@ namespace EncAndDecUtil
                 this.txtJWSKey.Text = RsaPublicKeyConverter.ParamToXml(jwsRS256.RsaPublicParameters);
                 this.txtJWSJWK.Text = RsaPublicKeyConverter.ParamToJwk(jwsRS256.RsaPublicParameters);
 
-                this.txtJWSSign.Text = jws;
+                this.txtJWSSigned.Text = jws;
 
                 // 改竄可能なフィールドに出力
                 string[] temp = jws.Split('.');
@@ -1309,7 +1309,7 @@ namespace EncAndDecUtil
                         RsaPublicKeyConverter.X509CerToProvider(
                             this.SHA256RSA_cer).ExportParameters(false));
 
-                this.txtJWSSign.Text = jws;
+                this.txtJWSSigned.Text = jws;
 
                 // 改竄可能なフィールドに出力
                 string[] temp = jws.Split('.');
@@ -1332,7 +1332,7 @@ namespace EncAndDecUtil
                 this.txtJWSJWK.Text =
                     EccPublicKeyConverter.ParamToJwk(jwsES256.ECDsaPublicParameters);
 
-                this.txtJWSSign.Text = jws;
+                this.txtJWSSigned.Text = jws;
 
                 // 改竄可能なフィールドに出力
                 string[] temp = jws.Split('.');
@@ -1356,7 +1356,7 @@ namespace EncAndDecUtil
                     EccPublicKeyConverter.ParamToJwk(
                         jwsES256.DigitalSignECDsaX509.PublicKey.ExportParameters(false));
 
-                this.txtJWSSign.Text = jws;
+                this.txtJWSSigned.Text = jws;
 
                 // 改竄可能なフィールドに出力
                 string[] temp = jws.Split('.');
@@ -1377,7 +1377,7 @@ namespace EncAndDecUtil
                 // HS256
 
                 // 入力
-                string[] temp = this.txtJWSSign.Text.Split('.');
+                string[] temp = this.txtJWSSigned.Text.Split('.');
 
                 // 改変可能なフィールドから入力
                 string newJWS =
@@ -1395,7 +1395,7 @@ namespace EncAndDecUtil
                 // RS256 (XML)
 
                 // 入力
-                string[] temp = this.txtJWSSign.Text.Split('.');
+                string[] temp = this.txtJWSSigned.Text.Split('.');
 
                 // 改変可能なフィールドから入力
                 string newJWS =
@@ -1412,7 +1412,7 @@ namespace EncAndDecUtil
                 // RS256 (Param)
 
                 // 入力
-                string[] temp = this.txtJWSSign.Text.Split('.');
+                string[] temp = this.txtJWSSigned.Text.Split('.');
 
                 // 改変可能なフィールドから入力
                 string newJWS =
@@ -1432,7 +1432,7 @@ namespace EncAndDecUtil
                 // RS256 (X509)
 
                 // 入力
-                string[] temp = this.txtJWSSign.Text.Split('.');
+                string[] temp = this.txtJWSSigned.Text.Split('.');
 
                 // 改変可能なフィールドから入力
                 string newJWS =
@@ -1449,7 +1449,7 @@ namespace EncAndDecUtil
                 // ES256 (Param)
 
                 // 入力
-                string[] temp = this.txtJWSSign.Text.Split('.');
+                string[] temp = this.txtJWSSigned.Text.Split('.');
 
                 // 改変可能なフィールドから入力
                 string newJWS =
@@ -1466,7 +1466,7 @@ namespace EncAndDecUtil
                 // ES256 (X509)
 
                 // 入力
-                string[] temp = this.txtJWSSign.Text.Split('.');
+                string[] temp = this.txtJWSSigned.Text.Split('.');
 
                 // 改変可能なフィールドから入力
                 string newJWS =
@@ -1492,8 +1492,77 @@ namespace EncAndDecUtil
         #endregion
 
         #region JWE
+
+        /// <summary>JWE生成</summary>
+        private void btnJWEEncrypt_Click(object sender, EventArgs e)
+        {
+            if (rbnJWEOAEP_Param.Checked)
+            {
+                // RSAES-OAEP and AES GCM (Param)
+            }
+            else if (rbnJWEOAEP_X509.Checked)
+            {
+                // RSAES-OAEP and AES GCM (X509)
+                JWE_RsaOaepAesGcm_X509 jweRsaOaepAesGcm = new JWE_RsaOaepAesGcm_X509(this.SHA256RSA_cer, "");
+
+                // 生成
+                string jwe = jweRsaOaepAesGcm.Create(this.txtJWEPayload.Text);
+
+                this.txtJWEEncrypted.Text = jwe;
+
+                // フィールドに出力
+                // headerEncoded + "." + encryptedCekEncoded + "." + ivEncoded + "." + encryptedPayloadEncoded + "." + macEncoded;
+                string[] temp = jwe.Split('.');
+                // ヘッダー
+                this.txtJWEHeader.Text = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8);
+                // コンテンツ暗号化キー（CEK）
+                this.txtJWECek.Text = temp[1]; // 元々ByteなのでBase64Urlのまま出す。
+                // 初期化ベクトル
+                this.txtJWEIV.Text = temp[2];  // 元々ByteなのでBase64Urlのまま出す。
+                // 追加認証データ（AAD）
+                this.txtJWEAAD.Text = temp[0]; // ≒ヘッダー（をASCIIバイト化しBase64Url）
+                // ペイロード
+                this.txtJWEAAD.Text = temp[3]; // 認証付き暗号（AEAD）による暗号化
+                // 認証タグ（MAC）
+                this.txtJWEMAC.Text = temp[4];  // 元々ByteなのでBase64Urlのまま出す。
+            }
+        }
+
+        /// <summary>JWE復号</summary>
+        private void btnJWEDecrypt_Click(object sender, EventArgs e)
+        {
+            bool ret = false;
+
+            if (rbnJWEOAEP_Param.Checked)
+            {
+                // RSAES-OAEP and AES GCM (Param)
+            }
+            else if (rbnJWEOAEP_X509.Checked)
+            {
+                // RSAES-OAEP and AES GCM (X509)
+                JWE_RsaOaepAesGcm_X509 jweRsaOaepAesGcm = new JWE_RsaOaepAesGcm_X509(this.SHA256RSA_pfx, this.CertificateFilePassword);
+
+                // 復号
+                string payload = "";
+                ret = jweRsaOaepAesGcm.Decrypt(this.txtJWEEncrypted.Text, out payload);
+                this.txtJWEPayload.Text = payload;
+            }
+
+            if (ret)
+            {
+                MessageBox.Show("復号成功");
+            }
+            else
+            {
+                MessageBox.Show("復号失敗");
+            }
+        }
+
         #endregion
 
         #endregion
+
+
     }
 }
