@@ -109,24 +109,24 @@ namespace EncAndDecUtil
 
             #region Cbx
 
-            cbxHSPV.DataSource = Enum.GetValues(typeof(EnumHashAlgorithm));
-            cbxKHSPV.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
+            this.cbxHSPV.DataSource = Enum.GetValues(typeof(EnumHashAlgorithm));
+            this.cbxKHSPV.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
 
-            cbxSCPV1.DataSource = Enum.GetValues(typeof(EnumSymmetricAlgorithm));
-            cbxSCPV2.DataSource = Enum.GetValues(typeof(EnumSymmetricAlgorithm));
-            cbxSCPV3.DataSource = Enum.GetValues(typeof(EnumSymmetricAlgorithm));
+            this.cbxSCPV1.DataSource = Enum.GetValues(typeof(EnumSymmetricAlgorithm));
+            this.cbxSCPV2.DataSource = Enum.GetValues(typeof(EnumSymmetricAlgorithm));
+            this.cbxSCPV3.DataSource = Enum.GetValues(typeof(EnumSymmetricAlgorithm));
 
-            cbxASCPV.DataSource = Enum.GetValues(typeof(EnumASymmetricAlgorithm));
+            this.cbxASCPV.DataSource = Enum.GetValues(typeof(EnumASymmetricAlgorithm));
 
-            cbxSPWDPV1.DataSource = Enum.GetValues(typeof(EnumHashAlgorithm));
-            cbxSPWDPV2.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
+            this.cbxSPWDPV1.DataSource = Enum.GetValues(typeof(EnumHashAlgorithm));
+            this.cbxSPWDPV2.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
 
-            cbxMACPV.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
+            this.cbxMACPV.DataSource = Enum.GetValues(typeof(EnumKeyedHashAlgorithm));
 
-            cbxDSPV.DataSource = Enum.GetValues(typeof(EnumDigitalSignAlgorithm));
-            cbxDSEPV.DataSource = Enum.GetValues(typeof(EnumDigitalSignAlgorithm));
+            this.cbxDSPV.DataSource = Enum.GetValues(typeof(EnumDigitalSignAlgorithm));
+            this.cbxDSEPV.DataSource = Enum.GetValues(typeof(EnumDigitalSignAlgorithm));
 
-            cbxRKEXPV.DataSource = Enum.GetValues(typeof(EnumKeyExchange));
+            this.cbxRKEXPV.DataSource = Enum.GetValues(typeof(EnumKeyExchange));
 
             #endregion
 
@@ -135,8 +135,10 @@ namespace EncAndDecUtil
             // n.n の表記ならコレでイケる。
             if (float.Parse(EnvInfo.RegistryFrameworkVersion.Substring(0, 3)) < 4.7F)
             {
-                rbnDSX509D.Enabled = false; // DSA
-                rbnDSEX509.Enabled = false; // ECDsa
+                this.rbnDSX509D.Enabled = false;            // DSA
+                this.rbnDSEX509.Enabled = false;            // ECDsa
+                this.rbnJWSES256_Param.Enabled = false;     // ECDsa
+                this.rbnJWSES256_X509.Enabled = false;      // ECDsa
             }
 
             #endregion
@@ -1290,7 +1292,7 @@ namespace EncAndDecUtil
                 this.txtJWSPayload.Text = CustomEncode.ByteToString(
                     CustomEncode.FromBase64UrlString(temp[1]), CustomEncode.UTF_8);
             }
-            else
+            else if (rbnJWSRS256_X509.Checked)
             {
                 // RS256 (X509)
                 JWS_RS256_X509 jwsRS256 = new JWS_RS256_X509(this.SHA256RSA_pfx, this.CertificateFilePassword,
@@ -1306,6 +1308,53 @@ namespace EncAndDecUtil
                     RsaPublicKeyConverter.ParamToJwk(
                         RsaPublicKeyConverter.X509CerToProvider(
                             this.SHA256RSA_cer).ExportParameters(false));
+
+                this.txtJWSSign.Text = jws;
+
+                // 改竄可能なフィールドに出力
+                string[] temp = jws.Split('.');
+                this.txtJWSHeader.Text = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8);
+                this.txtJWSPayload.Text = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(temp[1]), CustomEncode.UTF_8);
+            }
+            else if (rbnJWSES256_Param.Checked)
+            {
+                // ES256 (Param)
+                JWS_ES256_Param jwsES256 = new JWS_ES256_Param();
+
+                // 生成
+                string jws = jwsES256.Create(this.txtJWSPayload.Text);
+
+                // 出力
+                this.txtJWSKey.Text = jwsES256.ECDsaPublicParameters.GetType().ToString();
+
+                this.txtJWSJWK.Text =
+                    EccPublicKeyConverter.ParamToJwk(jwsES256.ECDsaPublicParameters);
+
+                this.txtJWSSign.Text = jws;
+
+                // 改竄可能なフィールドに出力
+                string[] temp = jws.Split('.');
+                this.txtJWSHeader.Text = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8);
+                this.txtJWSPayload.Text = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(temp[1]), CustomEncode.UTF_8);
+            }
+            else if (rbnJWSES256_X509.Checked)
+            {
+                // ES256 (X509)
+                JWS_ES256_X509 jwsES256 = new JWS_ES256_X509(this.SHA256ECDSA_pfx, this.CertificateFilePassword);
+
+                // 生成
+                string jws = jwsES256.Create(this.txtJWSPayload.Text);
+
+                // 出力
+                this.txtJWSKey.Text = jwsES256.DigitalSignECDsaX509.PublicKey.GetType().ToString();
+
+                this.txtJWSJWK.Text =
+                    EccPublicKeyConverter.ParamToJwk(
+                        jwsES256.DigitalSignECDsaX509.PublicKey.ExportParameters(false));
 
                 this.txtJWSSign.Text = jws;
 
@@ -1378,7 +1427,7 @@ namespace EncAndDecUtil
                     RsaPublicKeyConverter.JwkToProvider(this.txtJWSJWK.Text).ExportParameters(false));
                 ret = jwsRS256.Verify(newJWS);
             }
-            else
+            else if (rbnJWSRS256_X509.Checked)
             {
                 // RS256 (X509)
 
@@ -1394,6 +1443,40 @@ namespace EncAndDecUtil
                 // 検証
                 JWS_RS256_X509 jwsRS256 = new JWS_RS256_X509(this.SHA256RSA_cer, "");
                 ret = jwsRS256.Verify(newJWS);
+            }
+            else if (rbnJWSES256_Param.Checked)
+            {
+                // ES256 (Param)
+
+                // 入力
+                string[] temp = this.txtJWSSign.Text.Split('.');
+
+                // 改変可能なフィールドから入力
+                string newJWS =
+                    CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWSHeader.Text, CustomEncode.UTF_8))
+                    + "." + CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWSPayload.Text, CustomEncode.UTF_8))
+                    + "." + temp[2];
+
+                // 検証
+                JWS_ES256_Param jwsES256 = new JWS_ES256_Param(EccPublicKeyConverter.JwkToParam(this.txtJWSJWK.Text), false);
+                ret = jwsES256.Verify(newJWS);
+            }
+            else if (rbnJWSES256_X509.Checked)
+            {
+                // ES256 (X509)
+
+                // 入力
+                string[] temp = this.txtJWSSign.Text.Split('.');
+
+                // 改変可能なフィールドから入力
+                string newJWS =
+                    CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWSHeader.Text, CustomEncode.UTF_8))
+                    + "." + CustomEncode.ToBase64UrlString(CustomEncode.StringToByte(this.txtJWSPayload.Text, CustomEncode.UTF_8))
+                    + "." + temp[2];
+
+                // 検証
+                JWS_ES256_X509 jwsES256 = new JWS_ES256_X509(this.SHA256ECDSA_cer, "");
+                ret = jwsES256.Verify(newJWS);
             }
 
             if (ret)
