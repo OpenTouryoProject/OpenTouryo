@@ -42,7 +42,6 @@
 using System;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -1511,47 +1510,72 @@ namespace EncAndDecUtil
         /// <summary>JWE生成</summary>
         private void btnJWEEncrypt_Click(object sender, EventArgs e)
         {
-            string jwe = "";
+            string jweString = "";
+            JWE jwe = null;
 
             if (rbnJWEOAEP_Param.Checked)
             {
                 // RSAES-OAEP and AES GCM (Param)
-                JWE_RsaOaepAesGcm_Param jweRsaOaepAesGcm = new JWE_RsaOaepAesGcm_Param(EnumASymmetricAlgorithm.RsaCsp);
+                jwe = new JWE_RsaOaepAesGcm_Param(EnumASymmetricAlgorithm.RsaCsp);
 
                 // 生成
-                jwe = jweRsaOaepAesGcm.Create(this.txtJWEPayload.Text);
-                this.txtJWEEncrypted.Text = jwe;
+                jweString = jwe.Create(this.txtJWEPayload.Text);
+                this.txtJWEEncrypted.Text = jweString;
 
                 // JWK
-                this.txtJWEXMLKey.Text = jweRsaOaepAesGcm.ASymmetricCryptography.PrivateXmlKey;
+                this.txtJWEXMLKey.Text = jwe.ASymmetricCryptography.PrivateXmlKey;
             }
             else if (rbnJWEOAEP_X509.Checked)
             {
                 // RSAES-OAEP and AES GCM (X509)
-                JWE_RsaOaepAesGcm_X509 jweRsaOaepAesGcm = new JWE_RsaOaepAesGcm_X509(this.SHA256RSA_cer, "");
+                jwe = new JWE_RsaOaepAesGcm_X509(this.SHA256RSA_cer, "");
 
                 // 生成
-                jwe = jweRsaOaepAesGcm.Create(this.txtJWEPayload.Text);
-                this.txtJWEEncrypted.Text = jwe;
+                jweString = jwe.Create(this.txtJWEPayload.Text);
+                this.txtJWEEncrypted.Text = jweString;
 
                 // JWK
-                this.txtJWEXMLKey.Text = jweRsaOaepAesGcm.ASymmetricCryptography.PublicXmlKey;
+                this.txtJWEXMLKey.Text = jwe.ASymmetricCryptography.PublicXmlKey;
+            }
+            else if (rbnJWERSA15_Param.Checked)
+            {
+                // RSA1_5 and A128CBC-HS256 (Param)
+                jwe = new JWE_Rsa15A128CbcHS256_Param(EnumASymmetricAlgorithm.RsaCsp);
+
+                // 生成
+                jweString = jwe.Create(this.txtJWEPayload.Text);
+                this.txtJWEEncrypted.Text = jweString;
+
+                // JWK
+                this.txtJWEXMLKey.Text = jwe.ASymmetricCryptography.PrivateXmlKey;
+            }
+            else if (rbnJWERSA15_X509.Checked)
+            {
+                // RSA1_5 and A128CBC-HS256 (X509)
+                jwe = new JWE_Rsa15A128CbcHS256_X509(this.SHA256RSA_cer, "");
+
+                // 生成
+                jweString = jwe.Create(this.txtJWEPayload.Text);
+                this.txtJWEEncrypted.Text = jweString;
+
+                // JWK
+                this.txtJWEXMLKey.Text = jwe.ASymmetricCryptography.PublicXmlKey;
             }
 
             // フィールドに出力
-            string[] temp = jwe.Split('.');
+            string[] temp = jweString.Split('.');
             // ヘッダー
             this.txtJWEHeader.Text = CustomEncode.ByteToString(
                 CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8);
             // コンテンツ暗号化キー（CEK）
             this.txtJWECek.Text = temp[1]; // 元々ByteなのでBase64Urlのまま出す。
-                                           // 初期化ベクトル
+            // 初期化ベクトル
             this.txtJWEIV.Text = temp[2];  // 元々ByteなのでBase64Urlのまま出す。
-                                           // 追加認証データ（AAD）
+            // 追加認証データ（AAD）
             this.txtJWEAAD.Text = temp[0]; // ≒ヘッダー（をASCIIバイト化しBase64Url）
-                                           // ペイロード
+            // ペイロード
             this.txtJWEAAD.Text = temp[3]; // 認証付き暗号（AEAD）による暗号化
-                                           // 認証タグ（MAC）
+            // 認証タグ（MAC）
             this.txtJWEMAC.Text = temp[4];  // 元々ByteなのでBase64Urlのまま出す。
         }
 
@@ -1560,25 +1584,43 @@ namespace EncAndDecUtil
         {
             bool ret = false;
             string payload = "";
+            JWE jwe = null;
 
             if (rbnJWEOAEP_Param.Checked)
             {
                 // RSAES-OAEP and AES GCM (Param)
                 RSA rsa = RSA.Create();
                 rsa.FromXmlString(this.txtJWEXMLKey.Text);
-                JWE_RsaOaepAesGcm_Param jweRsaOaepAesGcm = new JWE_RsaOaepAesGcm_Param(
-                    EnumASymmetricAlgorithm.RsaCsp, rsa.ExportParameters(true));
+                jwe = new JWE_RsaOaepAesGcm_Param(EnumASymmetricAlgorithm.RsaCsp, rsa.ExportParameters(true));
 
                 // 復号
-                ret = jweRsaOaepAesGcm.Decrypt(this.txtJWEEncrypted.Text, out payload);
+                ret = jwe.Decrypt(this.txtJWEEncrypted.Text, out payload);
             }
             else if (rbnJWEOAEP_X509.Checked)
             {
                 // RSAES-OAEP and AES GCM (X509)
-                JWE_RsaOaepAesGcm_X509 jweRsaOaepAesGcm = new JWE_RsaOaepAesGcm_X509(this.SHA256RSA_pfx, this.CertificateFilePassword);
+                jwe = new JWE_RsaOaepAesGcm_X509(this.SHA256RSA_pfx, this.CertificateFilePassword);
 
                 // 復号
-                ret = jweRsaOaepAesGcm.Decrypt(this.txtJWEEncrypted.Text, out payload);
+                ret = jwe.Decrypt(this.txtJWEEncrypted.Text, out payload);
+            }
+            else if (rbnJWERSA15_Param.Checked)
+            {
+                // RSA1_5 and A128CBC-HS256 (Param)
+                RSA rsa = RSA.Create();
+                rsa.FromXmlString(this.txtJWEXMLKey.Text);
+                jwe = new JWE_Rsa15A128CbcHS256_Param(EnumASymmetricAlgorithm.RsaCsp, rsa.ExportParameters(true));
+
+                // 復号
+                ret = jwe.Decrypt(this.txtJWEEncrypted.Text, out payload);
+            }
+            else if (rbnJWERSA15_X509.Checked)
+            {
+                // RSA1_5 and A128CBC-HS256 (X509)
+                jwe = new JWE_Rsa15A128CbcHS256_X509(this.SHA256RSA_pfx, this.CertificateFilePassword);
+
+                // 復号
+                ret = jwe.Decrypt(this.txtJWEEncrypted.Text, out payload);
             }
 
             this.txtJWEPayload.Text = payload;

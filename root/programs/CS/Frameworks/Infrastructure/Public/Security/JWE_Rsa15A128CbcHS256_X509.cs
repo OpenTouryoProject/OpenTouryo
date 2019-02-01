@@ -19,23 +19,23 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JWE_RsaOaepAesGcm_X509
-//* クラス日本語名  ：X.509証明書によるJWE RSAES-OAEP and AES GCM生成クラス
+//* クラス名        ：JWE_Rsa15A128CbcHS256_X509
+//* クラス日本語名  ：X.509証明書によるRSAES-PKCS1-v1_5 and AES_128_CBC_HMAC_SHA_256生成クラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2018/01/29  西野 大介         新規作成
+//*  2019/02/01  西野 大介         新規作成
 //**********************************************************************************
 
 using System.Security.Cryptography.X509Certificates;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>X.509証明書によるJWE RSAES-OAEP and AES GCM生成クラス</summary>
-    public class JWE_RsaOaepAesGcm_X509 : JWE_RsaOaepAesGcm
+    /// <summary>X.509証明書によるJWE RSAES-PKCS1-v1_5 and AES_128_CBC_HMAC_SHA_256生成クラス</summary>
+    public class JWE_Rsa15A128CbcHS256_X509 : JWE_Rsa15A128CbcHS256
     {
         #region mem & prop & constructor
 
@@ -48,14 +48,14 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>Constructor</summary>
         /// <param name="certificateFilePath">ASymmetricCryptographyに渡すcertificateFilePathパラメタ</param>
         /// <param name="password">ASymmetricCryptographyに渡すpasswordパラメタ</param>
-        public JWE_RsaOaepAesGcm_X509(string certificateFilePath, string password)
+        public JWE_Rsa15A128CbcHS256_X509(string certificateFilePath, string password)
             : this(certificateFilePath, password, X509KeyStorageFlags.DefaultKeySet) { }
 
         /// <summary>Constructor</summary>
         /// <param name="certificateFilePath">ASymmetricCryptographyに渡すcertificateFilePathパラメタ</param>
         /// <param name="password">ASymmetricCryptographyに渡すpasswordパラメタ</param>
         /// <param name="flag">X509KeyStorageFlags</param>
-        public JWE_RsaOaepAesGcm_X509(string certificateFilePath, string password, X509KeyStorageFlags flag)
+        public JWE_Rsa15A128CbcHS256_X509(string certificateFilePath, string password, X509KeyStorageFlags flag)
         {
             this.CertificateFilePath = certificateFilePath;
             this.CertificatePassword = password;

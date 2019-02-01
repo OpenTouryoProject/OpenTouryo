@@ -19,45 +19,45 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JWE_RsaOaepAesGcm
-//* クラス日本語名  ：JWE RSAES-OAEP and AES GCM生成クラス
+//* クラス名        ：JWE_Rsa15A128CbcHS256
+//* クラス日本語名  ：JWE RSAES-PKCS1-v1_5 and AES_128_CBC_HMAC_SHA_256生成クラス
 //*
 //*                  RFC 7516 - JSON Web Encryption (JWE)
-//*                  > A.1.  Example JWE using RSAES-OAEP and AES GCM
-//*                  https://tools.ietf.org/html/rfc7516#appendix-A.1
+//*                  > A.2.  Example JWE using RSAES-PKCS1-v1_5 and AES_128_CBC_HMAC_SHA_256
+//*                  https://tools.ietf.org/html/rfc7516#appendix-A.2 
 //*
 //*                  RFC 7518 - JSON Web Algorithms (JWA)
-//*                  > 4.3.  Key Encryption with RSAES OAEP
-//*                  https://tools.ietf.org/html/rfc7518#section-4.3
+//*                  > 4.2.  Key Encryption with RSAES-PKCS1-v1_5
+//*                  https://tools.ietf.org/html/rfc7518#section-4.2
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2019/01/29  西野 大介         新規作成
+//*  2019/02/01  西野 大介         新規作成
 //**********************************************************************************
 
 using System.Security.Cryptography;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    /// <summary>JWE RSAES-OAEP and AES GCM生成クラス</summary>
-    public abstract class JWE_RsaOaepAesGcm : JWE
+    /// <summary>JWE RSAES-PKCS1-v1_5 and AES_128_CBC_HMAC_SHA_256生成クラス</summary>
+    public abstract class JWE_Rsa15A128CbcHS256 : JWE
     {
         /// <summary>Constructor</summary>
-        public JWE_RsaOaepAesGcm()
+        public JWE_Rsa15A128CbcHS256()
         {
             this.JWEHeader = new JWE_Header
             {
-                alg = JwtConst.RSA_OAEP,
-                enc = JwtConst.A256GCM
+                alg = JwtConst.RSA1_5,
+                enc = JwtConst.A128CBC_HS256
             };
 
             // Generate a 256-bit random CEK.
             this.CekByteLength = (256 / 8);
-            // Generate a random 96-bit JWE Initialization Vector.
-            this.IvByteLength = (96 / 8);
+            // Generate a random 128-bit JWE Initialization Vector.
+            this.IvByteLength = (128 / 8);
         }
 
         #region 暗号化・復号化
@@ -70,9 +70,8 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>byte[]</returns>
         protected override byte[] CreateKey(byte[] data)
         {
-            // RSA-OAEP = RSAES OAEP using default parameters は、
-            // SHA-1ハッシュ関数とSHA-1マスク生成機能付きMGF1
-            return this.ASymmetricCryptography.EncryptBytes(data, fOAEP: true);
+            // RSAES-PKCS1-v1_5 は、fOAEP: false
+            return this.ASymmetricCryptography.EncryptBytes(data, fOAEP: false);
         }
 
         /// <summary>CEK 復号化</summary>
@@ -80,7 +79,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>byte[] </returns>
         protected override byte[] DecryptKey(byte[] data)
         {
-            return this.ASymmetricCryptography.DecryptBytes(data, fOAEP: true);
+            return this.ASymmetricCryptography.DecryptBytes(data, fOAEP: false);
         }
 #else
         /// <summary>CEK 暗号化</summary>
@@ -88,10 +87,9 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>byte[]</returns>
         protected override byte[] CreateKey(byte[] data)
         {
-            // RSA-OAEP = RSAES OAEP using default parameters は、
-            // SHA-1ハッシュ関数とSHA-1マスク生成機能付きMGF1
+            // RSAES-PKCS1-v1_5 は、padding: RSAEncryptionPadding.Pkcs1
             return this.ASymmetricCryptography.EncryptBytes(
-                data, padding: RSAEncryptionPadding.OaepSHA1);
+                data, padding: RSAEncryptionPadding.Pkcs1);
         }
 
         /// <summary>CEK 復号化</summary>
@@ -100,7 +98,7 @@ namespace Touryo.Infrastructure.Public.Security
         protected override byte[] DecryptKey(byte[] data)
         {
             return this.ASymmetricCryptography.DecryptBytes(
-                data, padding: RSAEncryptionPadding.OaepSHA1);
+                data, padding: RSAEncryptionPadding.Pkcs1);
         }
 #endif
         #endregion
@@ -115,9 +113,9 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>AeadResult</returns>
         protected override AeadResult CreateBody(byte[] cekBytes, byte[] ivBytes, byte[] aadBytes, byte[] payloadBytes)
         {
-            AeadA256Gcm aesGcm = new AeadA256Gcm(cekBytes, ivBytes, aadBytes);
-            aesGcm.Encrypt(payloadBytes);
-            return aesGcm.Result;
+            AeadA128CbcHS256 aesA128CbcHs256 = new AeadA128CbcHS256(cekBytes, ivBytes, aadBytes);
+            aesA128CbcHs256.Encrypt(payloadBytes);
+            return aesA128CbcHs256.Result;
         }
 
         /// <summary>認証付き暗号（AEAD）による本文 復号化</summary>
@@ -128,8 +126,8 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>byte[] </returns>
         protected override byte[] DecryptBody(byte[] cekBytes, byte[] ivBytes, byte[] aadBytes, AeadResult aeadResult)
         {
-            AeadA256Gcm aesGcm = new AeadA256Gcm(cekBytes, ivBytes, aadBytes);
-            return aesGcm.Decrypt(aeadResult);
+            AeadA128CbcHS256 aesA128CbcHs256 = new AeadA128CbcHS256(cekBytes, ivBytes, aadBytes);
+            return aesA128CbcHs256.Decrypt(aeadResult);
         }
 
         #endregion

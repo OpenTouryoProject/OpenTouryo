@@ -127,6 +127,9 @@
     <Compile Include="Security\GetPasswordHashV2.cs" />
     <Compile Include="Security\GetPasswordHashV1.cs" />
     <Compile Include="Security\HashAlgorithmCmnFunc.cs" />
+    <Compile Include="Security\JWE_Rsa15A128CbcHS256.cs" />
+    <Compile Include="Security\JWE_Rsa15A128CbcHS256_Param.cs" />
+    <Compile Include="Security\JWE_Rsa15A128CbcHS256_X509.cs" />
     <Compile Include="Security\JWS.cs" />
     <Compile Include="Security\JWS_Header.cs" />
     <Compile Include="Security\JWS_HS256.cs" />
