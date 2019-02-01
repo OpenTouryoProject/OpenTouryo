@@ -77,7 +77,7 @@ namespace EncAndDecUtilCUI
             Console.ReadKey();
         }
 
-        #region Test
+        #region Test (Hash, Cryptography, Jwt)
 
         #region Hash
 
@@ -201,7 +201,7 @@ namespace EncAndDecUtilCUI
 
         #region Cryptography
 
-        #region 秘密鍵
+        #region PrivateKey
 
         /// <summary>PrivateKeyCryptography</summary>
         private static void PrivateKeyCryptography()
@@ -210,7 +210,7 @@ namespace EncAndDecUtilCUI
 
         #endregion
 
-        #region 公開鍵
+        #region PublicKey
 
         /// <summary>PublicKeyCryptography</summary>
         private static void PublicKeyCryptography()
@@ -482,6 +482,9 @@ namespace EncAndDecUtilCUI
         {
             #region Variables
 
+            string temp = "";
+            bool ret = false;
+
             #region Env
             OperatingSystem os = Environment.OSVersion;
 
@@ -501,12 +504,15 @@ namespace EncAndDecUtilCUI
 
             #region Token
             string token = "";
+
             IDictionary<string, object> payload = null;
             payload = new Dictionary<string, object>()
                 {
                     { "sub", "mr.x@contoso.com" },
                     { "exp", 1300819380 }
                 };
+
+            string payloadString = JsonConvert.SerializeObject(payload);
             #endregion
 
             #region Keys
@@ -529,14 +535,19 @@ namespace EncAndDecUtilCUI
 #endif
             #endregion
 
+            #region JWE
+            JWE jwe = null;
             #endregion
 
+            #endregion
+
+            #region Jws
             if (os.Platform == PlatformID.Win32NT)
             {
                 #region RSA(RS256)
                 // 署名（X509）
                 jWS_RS256_X509 = new JWS_RS256_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
-                token = jWS_RS256_X509.Create(JsonConvert.SerializeObject(payload));
+                token = jWS_RS256_X509.Create(payloadString);
                 WriteLine.JwtInspector("JWS_RS256_X509.Create", token);
 
                 // 鍵の相互変換
@@ -558,7 +569,7 @@ namespace EncAndDecUtilCUI
                 #region ECDsa(ES256)
                 // 署名（X509）
                 jWS_ES256_X509 = new JWS_ES256_X509(Program.PrivateECDsaX509Path, Program.PfxPassword);
-                token = jWS_ES256_X509.Create(JsonConvert.SerializeObject(payload));
+                token = jWS_ES256_X509.Create(payloadString);
                 WriteLine.JwtInspector("JWS_ES256_X509.Create", token);
 
                 // 鍵の相互変換
@@ -593,7 +604,7 @@ namespace EncAndDecUtilCUI
                 #region RSA(RS256)
                 // 署名（X509）
                 jWS_RS256_X509 = new JWS_RS256_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
-                token = jWS_RS256_X509.Create(JsonConvert.SerializeObject(payload));
+                token = jWS_RS256_X509.Create(payloadString);
                 WriteLine.JwtInspector("JWS_RS256_X509.Create", token);
 
                 // 鍵の相互変換
@@ -614,7 +625,7 @@ namespace EncAndDecUtilCUI
                 #region ECDsa(ES256)
                 // 署名（X509）
                 jWS_ES256_X509 = new JWS_ES256_X509(Program.PrivateECDsaX509Path, Program.PfxPassword);
-                token = jWS_ES256_X509.Create(JsonConvert.SerializeObject(payload));
+                token = jWS_ES256_X509.Create(payloadString);
                 WriteLine.JwtInspector("JWS_ES256_X509.Create", token);
 
                 // 鍵の相互変換
@@ -636,6 +647,42 @@ namespace EncAndDecUtilCUI
                 #endregion
 #endif
             }
+            #endregion
+
+            #region Jwe
+
+            #region RsaOaepAesGcm
+            // 暗号化
+            jwe = new JWE_RsaOaepAesGcm_X509(Program.PublicRsaX509Path, "", x509KSF);
+            token = jwe.Create(payloadString);
+
+            // 復号化
+            jwe = new JWE_RsaOaepAesGcm_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
+            ret = jwe.Decrypt(token, out temp);
+            WriteLine.OutPutDebugAndConsole("JWE_RsaOaepAesGcm_X509.Decrypt", ret.ToString() + " : " + temp);
+
+            // ★ xLibTest
+            Program.VerifyResult("JweAlgorithm.xLibTest",  token,
+                jwe.ASymmetricCryptography.AsymmetricAlgorithm, JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM);
+            #endregion
+
+            #region Rsa15A128CbcHS256
+            // 暗号化
+            jwe = new JWE_Rsa15A128CbcHS256_X509(Program.PublicRsaX509Path, "", x509KSF);
+            token = jwe.Create(payloadString);
+
+            // 復号化
+            jwe = new JWE_Rsa15A128CbcHS256_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
+            ret = jwe.Decrypt(token, out temp);
+            WriteLine.OutPutDebugAndConsole("JWE_Rsa15A128CbcHS256_X509.Decrypt", ret.ToString() + " : " + temp);
+
+            // ★ xLibTest
+            Program.VerifyResult("JweAlgorithm.xLibTest", token,
+                jwe.ASymmetricCryptography.AsymmetricAlgorithm, JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256);
+            #endregion
+
+            #endregion
+
         }
 
         #endregion
@@ -1035,6 +1082,21 @@ namespace EncAndDecUtilCUI
             {
                 WriteLine.OutPutDebugAndConsole(testLabel, "Decoded:" + JWT.Decode(jwt, key));
             }
+        }
+
+        /// <summary>VerifyResult</summary>
+        /// <param name="testLabel">string</param>
+        /// <param name="jwt">string</param>
+        /// <param name="key">object</param>
+        /// <param name="alg">JweAlgorithm</param>
+        /// <param name="enc">JweEncryption</param>
+        private static void VerifyResult(string testLabel, string jwt, object key, JweAlgorithm alg, JweEncryption enc)
+        {
+            WriteLine.OutPutDebugAndConsole(testLabel, "Original:" + jwt);
+
+            WriteLine.JwtInspector(testLabel, jwt);
+
+            WriteLine.OutPutDebugAndConsole(testLabel, "Decoded:" + JWT.Decode(jwt, key, alg, enc));
         }
 
         #endregion

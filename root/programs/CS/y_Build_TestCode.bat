@@ -28,7 +28,7 @@ rem --------------------------------------------------
 pause
 
 @rem --------------------------------------------------
-@rem Build the batch Infrastructure
+@rem Batch build of EncAndDecUtilCUI.
 @rem --------------------------------------------------
 set CURRENTDIR=%cd%
 cd "Frameworks\Tests\EncAndDecUtilCUI"
