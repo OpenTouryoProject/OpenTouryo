@@ -1089,28 +1089,46 @@ namespace EncAndDecUtil
         /// <summary>AEAD暗号化</summary>
         private void btnAEADEncrypt_Click(object sender, EventArgs e)
         {
-            //this.TestA256GCM();
+            byte[] aeadCek = CustomEncode.StringToByte(this.txtAEADCek.Text, CustomEncode.UTF_8);
+            byte[] aeadIv = CustomEncode.StringToByte(this.txtAEADIv.Text, CustomEncode.UTF_8);
+            byte[] aeadAad = CustomEncode.StringToByte(this.txtAEADAad.Text, CustomEncode.UTF_8);
 
-            AeadA256Gcm aesGcm = new AeadA256Gcm(
-                CustomEncode.StringToByte(this.txtAEADCek.Text, CustomEncode.UTF_8),
-                CustomEncode.StringToByte(this.txtAEADIv.Text, CustomEncode.UTF_8),
-                CustomEncode.StringToByte(this.txtAEADAad.Text, CustomEncode.UTF_8));
+            AuthEncrypt aead = null;
 
-            aesGcm.Encrypt(CustomEncode.StringToByte(this.txtAEADPlaint.Text, CustomEncode.UTF_8));
-            this.txtAEADCiphert.Text = CustomEncode.ToBase64String(aesGcm.Result.Ciphert);
-            this.txtAEADTag.Text = CustomEncode.ToBase64String(aesGcm.Result.Tag);
+            if (this.rbnAeadA256GCM.Checked)
+            {
+                aead = new AeadA256Gcm(aeadCek, aeadIv, aeadAad);
+            }
+            else
+            {
+                aead = new AeadA128CbcHS256(aeadCek, aeadIv, aeadAad);
+            }            
+
+            aead.Encrypt(CustomEncode.StringToByte(this.txtAEADPlaint.Text, CustomEncode.UTF_8));
+            this.txtAEADCiphert.Text = CustomEncode.ToBase64String(aead.Result.Ciphert);
+            this.txtAEADTag.Text = CustomEncode.ToBase64String(aead.Result.Tag);
         }
 
         /// <summary>AEAD復号化</summary>
         private void btnAEADDecrypt_Click(object sender, EventArgs e)
         {
-            AeadA256Gcm aesGcm = new AeadA256Gcm(
-                CustomEncode.StringToByte(this.txtAEADCek.Text, CustomEncode.UTF_8),
-                CustomEncode.StringToByte(this.txtAEADIv.Text, CustomEncode.UTF_8),
-                CustomEncode.StringToByte(this.txtAEADAad.Text, CustomEncode.UTF_8));
+            byte[] aeadCek = CustomEncode.StringToByte(this.txtAEADCek.Text, CustomEncode.UTF_8);
+            byte[] aeadIv = CustomEncode.StringToByte(this.txtAEADIv.Text, CustomEncode.UTF_8);
+            byte[] aeadAad = CustomEncode.StringToByte(this.txtAEADAad.Text, CustomEncode.UTF_8);
+
+            AuthEncrypt aead = null;
+
+            if (this.rbnAeadA256GCM.Checked)
+            {
+                aead = new AeadA256Gcm(aeadCek, aeadIv, aeadAad);
+            }
+            else
+            {
+                aead = new AeadA128CbcHS256(aeadCek, aeadIv, aeadAad);
+            }
 
             this.txtAEADPlaint.Text = CustomEncode.ByteToString(
-                aesGcm.Decrypt(new AeadResult()
+                aead.Decrypt(new AeadResult()
                 {
                     Ciphert = CustomEncode.FromBase64String(this.txtAEADCiphert.Text),
                     Tag = CustomEncode.FromBase64String(this.txtAEADTag.Text)

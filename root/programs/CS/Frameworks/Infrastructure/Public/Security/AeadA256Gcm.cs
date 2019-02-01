@@ -78,11 +78,10 @@ namespace Touryo.Infrastructure.Public.Security
         {
             // GcmBlockCipherは、再利用不可らしい。
 
-            // Key length is 128 / 192 / 256 bits.
-            // = 16 / 24 / 32 bytes
+            // Key length is 128 / 192 / 256 bits = 16 / 24 / 32 bytes
             if (cek.Length < 16)
             {
-                throw new ArgumentException("Length not 128 / 192 / 256 bits.", "cek");
+                throw new ArgumentException("Length is less than 128 bits.", "cek");
             }
             else if (cek.Length < 24)
             {

@@ -112,7 +112,7 @@
     <Compile Include="FastReflection\AccessorCacher.cs" />
     <Compile Include="FastReflection\AccessorInfo.cs" />
     <Compile Include="FastReflection\InstanceCreator.cs" />
-    <Compile Include="Security\AeadA128CbcHs256.cs" />
+    <Compile Include="Security\AeadA128CbcHS256.cs" />
     <Compile Include="Security\AeadA256Gcm.cs" />
     <Compile Include="Security\AeadResult.cs" />
     <Compile Include="Security\AsymmetricAlgorithmCmnFunc.cs" />
