@@ -46,20 +46,20 @@ namespace Touryo.Infrastructure.Public.Security
 
     /// <summary>
     /// AeadA256Gcm
-    /// 認証付き暗号（A128CBC-HS256）クラス
+    /// 認証付き暗号（AES256GCM）クラス
     /// A256GCM(AES-GCM)
     /// </summary>
     public class AeadA256Gcm : AuthEncrypt
     {
         /// <summary>
-        /// GCMで計算されるTagサイズは 128ビット:
+        /// GCMで計算されるTagサイズは 128ビット = 16バイト:
         /// https://tools.ietf.org/html/rfc7518#section-4.7
         ///  The requested size of the Authentication Tag output MUST be 128 bits, regardless of the key size.
         /// </summary>
-        public const int GCM_TAG_LEN = 16;
+        public const int TAG_LEN = 16;
 
         /// <summary>GcmBlockCipher</summary>
-        private GcmBlockCipher _aesGcm = null;
+        private GcmBlockCipher _aes256Gcm = null;
 
         /// <summary>コンテンツ暗号化キー（CEK）</summary>
         private byte[] _cek = null;
@@ -107,11 +107,11 @@ namespace Touryo.Infrastructure.Public.Security
         private void InitAesGcm(bool forEncrypt)
         {
             // Aesをエンジンに指定してGcmBlockCipherを生成
-            this._aesGcm = new GcmBlockCipher(new AesEngine());
+            this._aes256Gcm = new GcmBlockCipher(new AesEngine());
 
             // >AesGcm実装を初期化
-            this._aesGcm.Init(forEncrypt, new AeadParameters(new KeyParameter(
-                this._cek), 8 * AeadA256Gcm.GCM_TAG_LEN, this._iv, this._aad));
+            this._aes256Gcm.Init(forEncrypt, new AeadParameters(new KeyParameter(
+                this._cek), 8 * AeadA256Gcm.TAG_LEN, this._iv, this._aad));
         }
 
         /// <summary>暗号化</summary>
@@ -122,50 +122,48 @@ namespace Touryo.Infrastructure.Public.Security
             // AesGcm実装を初期化
             this.InitAesGcm(true);
 
-            // 出力バッファの準備
-            byte[] ciphert = new byte[this._aesGcm.GetOutputSize(plaint.Length)];
             // GCM操作の実行
-            int len = this._aesGcm.ProcessBytes(plaint, 0, plaint.Length, ciphert, 0);
-            // GCM操作を終了
-            len += this._aesGcm.DoFinal(ciphert, len);
-            // GetMacで認証タグ（MAC）を取得委
-            byte[] tag = this._aesGcm.GetMac();
+            byte[] aead = new byte[this._aes256Gcm.GetOutputSize(plaint.Length)];
+            int len = this._aes256Gcm.ProcessBytes(plaint, 0, plaint.Length, aead, 0);
+            len += this._aes256Gcm.DoFinal(aead, len);
+
+            // GetMacで認証タグ（MAC）を取得
+            byte[] tag = this._aes256Gcm.GetMac();
 
             // 結果を返す
             this._result = new AeadResult()
             {
-                Aead = ciphert,
-                Ciphert = PubCmnFunction.CopyArray<byte>(ciphert, plaint.Length),
+                Aead = aead, // aead = ciphert + tag
+                // <ciphertの抽出>
+                // plaint.Lengthと、ciphert.Length - tag.Length を使う方法がある。
+                Ciphert = PubCmnFunction.CopyArray<byte>(aead, plaint.Length),
                 Tag = tag,
             };
         }
 
         /// <summary>復号化</summary>
-        /// <param name="result">AeadResult</param>
+        /// <param name="input">AeadResult</param>
         /// <returns>平文（plaintext）</returns>
-        public override byte[] Decrypt(AeadResult result)
+        public override byte[] Decrypt(AeadResult input)
         {
             // AesGcm実装を初期化
             this.InitAesGcm(false);
 
-            // Decrypt ( ciphert + tag )
-            byte[] marged = null;
-
-            if (result.Aead == null)
+            // aead = ciphert + tag
+            byte[] aead = null;
+            if (input.Aead == null)
             {
-                marged = result.CombineByteArrayForDecrypt();
+                aead = input.CombineByteArrayForDecrypt();
             }
             else
             {
-                marged = result.Aead;
+                aead = input.Aead;
             }
 
-            // 出力バッファの準備
-            byte[] plaint = new byte[this._aesGcm.GetOutputSize(marged.Length)];
-            // GCM操作の実行
-            int len = this._aesGcm.ProcessBytes(marged, 0, marged.Length, plaint, 0);
-            // GCM操作を終了
-            len += this._aesGcm.DoFinal(plaint, len);
+            // GCM操作の実行(marged)
+            byte[] plaint = new byte[this._aes256Gcm.GetOutputSize(aead.Length)];
+            int len = this._aes256Gcm.ProcessBytes(aead, 0, aead.Length, plaint, 0);
+            len += this._aes256Gcm.DoFinal(plaint, len);
 
             // 平文を返す。
             return plaint;
