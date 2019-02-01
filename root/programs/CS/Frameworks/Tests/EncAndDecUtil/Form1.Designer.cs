@@ -247,14 +247,15 @@
             this.lblJWEHeader = new System.Windows.Forms.Label();
             this.txtJWEPayload = new System.Windows.Forms.TextBox();
             this.gbxJWE = new System.Windows.Forms.GroupBox();
+            this.lblJweRSA15 = new System.Windows.Forms.Label();
+            this.rbnJWERSA15_Param = new System.Windows.Forms.RadioButton();
+            this.rbnJWERSA15_X509 = new System.Windows.Forms.RadioButton();
             this.lblJweOaep = new System.Windows.Forms.Label();
             this.rbnJWEOAEP_Param = new System.Windows.Forms.RadioButton();
             this.rbnJWEOAEP_X509 = new System.Windows.Forms.RadioButton();
             this.btnJWEDecrypt = new System.Windows.Forms.Button();
             this.btnJWEEncrypt = new System.Windows.Forms.Button();
-            this.lblJweRSA15 = new System.Windows.Forms.Label();
-            this.rbnJWERSA15_Param = new System.Windows.Forms.RadioButton();
-            this.rbnJWERSA15_X509 = new System.Windows.Forms.RadioButton();
+            this.btnAEADRfc = new System.Windows.Forms.Button();
             this.TabControl1.SuspendLayout();
             this.tabHash.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHSStretching)).BeginInit();
@@ -1979,6 +1980,7 @@
             // 
             // tabAEAD
             // 
+            this.tabAEAD.Controls.Add(this.btnAEADRfc);
             this.tabAEAD.Controls.Add(this.gbxAEAD);
             this.tabAEAD.Controls.Add(this.txtAEADCiphert);
             this.tabAEAD.Controls.Add(this.txtAEADTag);
@@ -2545,6 +2547,39 @@
             this.gbxJWE.TabStop = false;
             this.gbxJWE.Text = "API選択";
             // 
+            // lblJweRSA15
+            // 
+            this.lblJweRSA15.AutoSize = true;
+            this.lblJweRSA15.Location = new System.Drawing.Point(14, 43);
+            this.lblJweRSA15.Name = "lblJweRSA15";
+            this.lblJweRSA15.Size = new System.Drawing.Size(159, 12);
+            this.lblJweRSA15.TabIndex = 57;
+            this.lblJweRSA15.Text = "RSA1_5 and A128CBC-HS256";
+            // 
+            // rbnJWERSA15_Param
+            // 
+            this.rbnJWERSA15_Param.AutoSize = true;
+            this.rbnJWERSA15_Param.Checked = true;
+            this.rbnJWERSA15_Param.Location = new System.Drawing.Point(194, 41);
+            this.rbnJWERSA15_Param.Name = "rbnJWERSA15_Param";
+            this.rbnJWERSA15_Param.Size = new System.Drawing.Size(55, 16);
+            this.rbnJWERSA15_Param.TabIndex = 56;
+            this.rbnJWERSA15_Param.TabStop = true;
+            this.rbnJWERSA15_Param.Text = "Param";
+            this.rbnJWERSA15_Param.UseVisualStyleBackColor = true;
+            // 
+            // rbnJWERSA15_X509
+            // 
+            this.rbnJWERSA15_X509.AutoSize = true;
+            this.rbnJWERSA15_X509.Checked = true;
+            this.rbnJWERSA15_X509.Location = new System.Drawing.Point(264, 41);
+            this.rbnJWERSA15_X509.Name = "rbnJWERSA15_X509";
+            this.rbnJWERSA15_X509.Size = new System.Drawing.Size(48, 16);
+            this.rbnJWERSA15_X509.TabIndex = 55;
+            this.rbnJWERSA15_X509.TabStop = true;
+            this.rbnJWERSA15_X509.Text = "X509";
+            this.rbnJWERSA15_X509.UseVisualStyleBackColor = true;
+            // 
             // lblJweOaep
             // 
             this.lblJweOaep.AutoSize = true;
@@ -2598,38 +2633,15 @@
             this.btnJWEEncrypt.UseVisualStyleBackColor = true;
             this.btnJWEEncrypt.Click += new System.EventHandler(this.btnJWEEncrypt_Click);
             // 
-            // lblJweRSA15
+            // btnAEADRfc
             // 
-            this.lblJweRSA15.AutoSize = true;
-            this.lblJweRSA15.Location = new System.Drawing.Point(14, 43);
-            this.lblJweRSA15.Name = "lblJweRSA15";
-            this.lblJweRSA15.Size = new System.Drawing.Size(159, 12);
-            this.lblJweRSA15.TabIndex = 57;
-            this.lblJweRSA15.Text = "RSA1_5 and A128CBC-HS256";
-            // 
-            // rbnJWERSA15_Param
-            // 
-            this.rbnJWERSA15_Param.AutoSize = true;
-            this.rbnJWERSA15_Param.Checked = true;
-            this.rbnJWERSA15_Param.Location = new System.Drawing.Point(194, 41);
-            this.rbnJWERSA15_Param.Name = "rbnJWERSA15_Param";
-            this.rbnJWERSA15_Param.Size = new System.Drawing.Size(55, 16);
-            this.rbnJWERSA15_Param.TabIndex = 56;
-            this.rbnJWERSA15_Param.TabStop = true;
-            this.rbnJWERSA15_Param.Text = "Param";
-            this.rbnJWERSA15_Param.UseVisualStyleBackColor = true;
-            // 
-            // rbnJWERSA15_X509
-            // 
-            this.rbnJWERSA15_X509.AutoSize = true;
-            this.rbnJWERSA15_X509.Checked = true;
-            this.rbnJWERSA15_X509.Location = new System.Drawing.Point(264, 41);
-            this.rbnJWERSA15_X509.Name = "rbnJWERSA15_X509";
-            this.rbnJWERSA15_X509.Size = new System.Drawing.Size(48, 16);
-            this.rbnJWERSA15_X509.TabIndex = 55;
-            this.rbnJWERSA15_X509.TabStop = true;
-            this.rbnJWERSA15_X509.Text = "X509";
-            this.rbnJWERSA15_X509.UseVisualStyleBackColor = true;
+            this.btnAEADRfc.Location = new System.Drawing.Point(120, 244);
+            this.btnAEADRfc.Name = "btnAEADRfc";
+            this.btnAEADRfc.Size = new System.Drawing.Size(357, 23);
+            this.btnAEADRfc.TabIndex = 79;
+            this.btnAEADRfc.Text = "TestOfRfc";
+            this.btnAEADRfc.UseVisualStyleBackColor = true;
+            this.btnAEADRfc.Click += new System.EventHandler(this.btnAEADRfc_Click);
             // 
             // Form1
             // 
@@ -2926,6 +2938,7 @@
         private System.Windows.Forms.Label lblJweRSA15;
         private System.Windows.Forms.RadioButton rbnJWERSA15_Param;
         private System.Windows.Forms.RadioButton rbnJWERSA15_X509;
+        private System.Windows.Forms.Button btnAEADRfc;
     }
 }
 

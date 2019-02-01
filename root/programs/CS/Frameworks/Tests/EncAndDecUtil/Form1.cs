@@ -1135,14 +1135,22 @@ namespace EncAndDecUtil
                 CustomEncode.UTF_8);
         }
 
+        /// <summary>Test AEAD of Rfc</summary>
+        private void btnAEADRfc_Click(object sender, EventArgs e)
+        {
+            this.TestA256GCMByRFC7516();
+            this.TestA128CBC_HS256ByRFC7516();
+        }
+
         /// <summary>
-        /// RFC7516 > Appendix A.  JWE Examples > A.1.  Example JWE using RSAES OAEP and AES GCM
-        /// https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-23#appendix-A.1
+        /// RFC 7516 - JSON Web Encryption (JWE)
+        /// > Appendix A. JWE Examples > A.1. Example JWE using RSAES-OAEP and AES GCM
+        /// https://tools.ietf.org/html/rfc7516#appendix-A.1
         /// </summary>
         private void TestA256GCMByRFC7516()
         {
             #region データ
-            // A.1
+            // A.1 Plaintext 
             var plaint = new byte[]
             {
                 84, 104, 101, 32, 116, 114, 117, 101, 32, 115, 105, 103, 110, 32,
@@ -1169,47 +1177,37 @@ namespace EncAndDecUtil
             // A.1.5 AAD
             var aad = new byte[]
             {
-                101, 121, 74, 104, 98, 71, 99, 105,
-                79, 105, 74, 83, 85, 48, 69,
-                116, 84, 48, 70, 70, 85, 67, 73,
-                115, 73, 109, 86, 117, 89, 121, 73,
-                54, 73, 107, 69, 121, 78, 84, 90,
-                72, 81, 48, 48, 105, 102, 81
+                101, 121, 74, 104, 98, 71, 99, 105, 79, 105, 74, 83, 85, 48, 69,
+                116, 84, 48, 70, 70, 85, 67, 73, 115, 73, 109, 86, 117, 89, 121, 73,
+                54, 73, 107, 69, 121, 78, 84, 90, 72, 81, 48, 48, 105, 102, 81
             };
 
             // A.1.6 CipherText
-
             var ciphert = new byte[]
             {
-                229, 236, 166, 241, 53, 191, 115,
-                196, 174, 43, 73, 109, 39, 122,
-                233, 96, 140, 206, 120, 52, 51, 237,
-                48, 11, 190, 219, 186, 80, 111,
-                104, 50, 142, 47, 167, 59, 61, 181,
-                127, 196, 21, 40, 82, 242, 32,
-                123, 143, 168, 226, 73, 216, 176,
-                144, 138, 247, 106, 60, 16, 205,
+                229, 236, 166, 241, 53, 191, 115, 196, 174, 43, 73, 109, 39, 122,
+                233, 96, 140, 206, 120, 52, 51, 237, 48, 11, 190, 219, 186, 80, 111,
+                104, 50, 142, 47, 167, 59, 61, 181, 127, 196, 21, 40, 82, 242, 32,
+                123, 143, 168, 226, 73, 216, 176, 144, 138, 247, 106, 60, 16, 205,
                 160, 109, 64, 63, 192
             };
 
             // Tag
             var tag = new byte[]
             {
-                92, 80, 104, 49, 133, 25, 161,
-                215, 173, 101, 219, 211, 136, 91,
-                210, 145
+                92, 80, 104, 49, 133, 25, 161, 215, 173, 101, 219, 211, 136, 91, 210, 145
             };
 
             #endregion
 
             #region コード
 
-            AeadA256Gcm aesGcm = null;
+            AuthEncrypt aead = null;
             AeadResult aesRet = null;
 
-            aesGcm = new AeadA256Gcm(cek, iv, aad);
-            aesGcm.Encrypt(plaint);
-            aesRet = aesGcm.Result;
+            aead = new AeadA256Gcm(cek, iv, aad);
+            aead.Encrypt(plaint);
+            aesRet = aead.Result;
 
             if (CustomEncode.ToBase64String(tag) == CustomEncode.ToBase64String(aesRet.Tag))
             {
@@ -1221,14 +1219,101 @@ namespace EncAndDecUtil
                 Debug.WriteLine("ciphert is ok!");
             }
 
-            //// Aeadをnullクリアすると、
-            //// ciphert + tag からAeadを計算する（ただの結合）。
+            //// Aeadをnullクリアすると ciphert + tag からAeadを計算する（ただの結合）。
             //aesRet.Aead = null;
 
             // 再初期化する・しない（しなくてもイイ、使いまわし可能）。
-            aesGcm = new AeadA256Gcm(cek, iv, aad);
+            //aead = new AeadA256Gcm(cek, iv, aad);
 
-            if (CustomEncode.ToBase64String(plaint) == CustomEncode.ToBase64String(aesGcm.Decrypt(aesRet)))
+            if (CustomEncode.ToBase64String(plaint) == CustomEncode.ToBase64String(aead.Decrypt(aesRet)))
+            {
+                Debug.WriteLine("plaint is ok!");
+            }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// RFC 7516 - JSON Web Encryption (JWE)
+        /// > Appendix A. JWE Examples > A.2. Example JWE using RSAES-PKCS1-v1_5 and AES_128_CBC_HMAC_SHA_256
+        /// https://tools.ietf.org/html/rfc7516#appendix-A.2
+        /// </summary>
+        private void TestA128CBC_HS256ByRFC7516()
+        {
+            #region データ
+            // A.2 Plaintext 
+            var plaint = new byte[]
+            {
+                76, 105, 118, 101, 32, 108, 111, 110,103, 32, 97,
+                110, 100, 32, 112, 114, 111, 115, 112, 101, 114, 46
+            };
+
+            // A.2.2.  CEK
+            var cek = new byte[]
+            {
+                4, 211, 31, 197, 84, 157, 252, 254, 11, 100, 157, 250, 63,
+                170, 106, 206, 107, 124, 212, 45, 111, 107, 9, 219, 200,
+                177, 0, 240, 143, 156, 44, 207
+            };
+
+            // A.2.4. Initialization Vector
+            var iv = new byte[]
+            {
+                3, 22, 60, 12, 43, 67, 104, 105, 108, 108, 105, 99, 111, 116, 104, 101
+            };
+
+            // A.2.5. Additional Authenticated Data
+            var aad = new byte[]
+            {
+                101, 121, 74, 104, 98, 71, 99, 105, 79, 105, 74, 83, 85, 48, 69,
+                120, 88, 122, 85, 105, 76, 67, 74, 108, 98, 109, 77, 105, 79, 105,
+                74, 66, 77, 84, 73, 52, 81, 48, 74, 68, 76, 85, 104, 84, 77, 106, 85,
+                50, 73, 110, 48
+            };
+
+            // A.2.6. Content Encryption
+            var ciphert = new byte[]
+            {
+                40, 57, 83, 181, 119, 33, 133, 148, 198, 185, 243, 24, 152, 230, 6,
+                75, 129, 223, 127, 19, 210, 82, 183, 230, 168, 33, 215, 104, 143, 112, 56, 102
+            };
+
+            // Tag
+            var tag = new byte[]
+            {
+                246, 17, 244, 190, 4, 95, 98, 3, 231, 0, 115, 157, 242, 203, 100, 191
+            };
+
+            #endregion
+
+            #region コード
+
+            AuthEncrypt aead = null;
+            AeadResult aesRet = null;
+
+            aead = new AeadA128CbcHS256(cek, iv, aad);
+            aead.Encrypt(plaint);
+            aesRet = aead.Result;
+
+            if (CustomEncode.ToBase64String(tag) == CustomEncode.ToBase64String(aesRet.Tag))
+            {
+                Debug.WriteLine("tag is ok!");
+            }
+
+            if (CustomEncode.ToBase64String(ciphert) == CustomEncode.ToBase64String(aesRet.Ciphert))
+            {
+                Debug.WriteLine("ciphert is ok!");
+            }
+
+            //// Aeadをnullクリアすると ciphert + tag からAeadを計算する（ただの結合）。
+            //aesRet.Aead = null;
+
+            // 再初期化する・しない（しなくてもイイ、使いまわし可能）。
+            //aead = new AeadA128CbcHS256(cek, iv, aad);
+
+            string aaa = CustomEncode.ToBase64String(plaint);
+            string bbb = CustomEncode.ToBase64String(aead.Decrypt(aesRet));
+            if (CustomEncode.ToBase64String(plaint) == CustomEncode.ToBase64String(aead.Decrypt(aesRet)))
             {
                 Debug.WriteLine("plaint is ok!");
             }

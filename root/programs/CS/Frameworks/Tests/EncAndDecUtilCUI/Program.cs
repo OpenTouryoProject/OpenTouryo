@@ -679,6 +679,7 @@ namespace EncAndDecUtilCUI
             // ★ xLibTest
             Program.VerifyResult("JweAlgorithm.xLibTest", token,
                 jwe.ASymmetricCryptography.AsymmetricAlgorithm, JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256);
+
             #endregion
 
             #endregion
