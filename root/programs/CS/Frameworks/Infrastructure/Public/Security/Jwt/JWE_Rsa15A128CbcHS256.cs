@@ -42,6 +42,9 @@ using System.Security.Cryptography;
 
 using Touryo.Infrastructure.Public.Security.Aead;
 
+// https://tools.ietf.org/html/rfc7516#appendix-B
+// https://paonejp.github.io/2014/12/21/encrypted_jwt_parsing_trial.html
+
 namespace Touryo.Infrastructure.Public.Security.Jwt
 {
     /// <summary>JWE RSAES-PKCS1-v1_5 and AES_128_CBC_HMAC_SHA_256生成クラス</summary>

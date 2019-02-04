@@ -108,8 +108,14 @@
     <Compile Include="IdentityImpersonation.cs" />
     <Compile Include="Aead\AeadResult.cs" />
     <Compile Include="Aead\AuthEncrypt.cs" />
-    <Compile Include="Aead\AeadA128CbcHS256.cs" />
+    <Compile Include="Aead\AeadAesGcm.cs" />
+    <Compile Include="Aead\AeadA128Gcm.cs" />
+    <Compile Include="Aead\AeadA192Gcm.cs" />
     <Compile Include="Aead\AeadA256Gcm.cs" />
+    <Compile Include="Aead\AeadAesCbc.cs" />
+    <Compile Include="Aead\AeadA128CbcHS256.cs" />
+    <Compile Include="Aead\AeadA192CbcHS384.cs" />
+    <Compile Include="Aead\AeadA256CbcHS512.cs" />
     <Compile Include="Jwt\JwtConst.cs" />
     <Compile Include="Jwt\JWE.cs" />
     <Compile Include="Jwt\JWE_Header.cs" />

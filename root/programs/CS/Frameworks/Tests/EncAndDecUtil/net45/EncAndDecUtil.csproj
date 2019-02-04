@@ -48,6 +48,9 @@
     <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\..\Infrastructure\Build_net45\OpenTouryo.Public.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTouryo.Public.Security">
+      <HintPath>..\..\..\Infrastructure\Build_net45\OpenTouryo.Public.Security.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />

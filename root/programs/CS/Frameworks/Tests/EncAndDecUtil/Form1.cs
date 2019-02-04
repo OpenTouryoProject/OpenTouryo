@@ -48,8 +48,12 @@ using System.Security.Cryptography.X509Certificates;
 
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Security;
 using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Security;
+using Touryo.Infrastructure.Public.Security.Aead;
+using Touryo.Infrastructure.Public.Security.Jwt;
+using Touryo.Infrastructure.Public.Security.KeyExg;
+using Touryo.Infrastructure.Public.Security.Pwd;
 
 namespace EncAndDecUtil
 {
@@ -1088,22 +1092,19 @@ namespace EncAndDecUtil
         /// <summary>AEAD暗号化</summary>
         private void btnAEADEncrypt_Click(object sender, EventArgs e)
         {
-            byte[] aeadCek = CustomEncode.StringToByte(this.txtAEADCek.Text, CustomEncode.UTF_8);
-            byte[] aeadIv = CustomEncode.StringToByte(this.txtAEADIv.Text, CustomEncode.UTF_8);
-            byte[] aeadAad = CustomEncode.StringToByte(this.txtAEADAad.Text, CustomEncode.UTF_8);
+            AuthEncrypt aead = this.CreateAeadProvider();
 
-            AuthEncrypt aead = null;
+            aead.Encrypt(CustomEncode.StringToByte(this.txtAEADPlaint.Text, CustomEncode.UTF_8));
 
-            if (this.rbnAeadA256GCM.Checked)
+            if (aead as AeadAesGcm == null)
             {
-                aead = new AeadA256Gcm(aeadCek, aeadIv, aeadAad);
+                this.txtAEADIv.Text = CustomEncode.ByteToString(((AeadAesCbc)aead).IV, CustomEncode.UTF_8);
             }
             else
             {
-                aead = new AeadA128CbcHS256(aeadCek, aeadIv, aeadAad);
-            }            
+                this.txtAEADCek.Text = CustomEncode.ByteToString(((AeadAesGcm)aead).Cek, CustomEncode.UTF_8); 
+            }
 
-            aead.Encrypt(CustomEncode.StringToByte(this.txtAEADPlaint.Text, CustomEncode.UTF_8));
             this.txtAEADCiphert.Text = CustomEncode.ToBase64String(aead.Result.Ciphert);
             this.txtAEADTag.Text = CustomEncode.ToBase64String(aead.Result.Tag);
         }
@@ -1111,20 +1112,7 @@ namespace EncAndDecUtil
         /// <summary>AEAD復号化</summary>
         private void btnAEADDecrypt_Click(object sender, EventArgs e)
         {
-            byte[] aeadCek = CustomEncode.StringToByte(this.txtAEADCek.Text, CustomEncode.UTF_8);
-            byte[] aeadIv = CustomEncode.StringToByte(this.txtAEADIv.Text, CustomEncode.UTF_8);
-            byte[] aeadAad = CustomEncode.StringToByte(this.txtAEADAad.Text, CustomEncode.UTF_8);
-
-            AuthEncrypt aead = null;
-
-            if (this.rbnAeadA256GCM.Checked)
-            {
-                aead = new AeadA256Gcm(aeadCek, aeadIv, aeadAad);
-            }
-            else
-            {
-                aead = new AeadA128CbcHS256(aeadCek, aeadIv, aeadAad);
-            }
+            AuthEncrypt aead = this.CreateAeadProvider();
 
             this.txtAEADPlaint.Text = CustomEncode.ByteToString(
                 aead.Decrypt(new AeadResult()
@@ -1135,6 +1123,46 @@ namespace EncAndDecUtil
                 CustomEncode.UTF_8);
         }
 
+        /// <summary>CreateAeadProvider</summary>
+        /// <returns>AuthEncrypt</returns>
+        private AuthEncrypt CreateAeadProvider()
+        {
+            byte[] aeadCek = CustomEncode.StringToByte(this.txtAEADCek.Text, CustomEncode.UTF_8);
+            byte[] aeadIv = CustomEncode.StringToByte(this.txtAEADIv.Text, CustomEncode.UTF_8);
+            byte[] aeadAad = CustomEncode.StringToByte(this.txtAEADAad.Text, CustomEncode.UTF_8);
+
+            AuthEncrypt aead = null;
+
+            // AeadAesGcmはCekを詰めることがある。
+            // AeadAesCbcはIVを詰めることがある。
+
+            if (this.rbnAeadA128GCM.Checked)
+            {
+                aead = new AeadA128Gcm(aeadCek, aeadIv, aeadAad);
+            }
+            else if (this.rbnAeadA192GCM.Checked)
+            {
+                aead = new AeadA192Gcm(aeadCek, aeadIv, aeadAad);
+            }
+            else if (this.rbnAeadA256GCM.Checked)
+            {
+                aead = new AeadA256Gcm(aeadCek, aeadIv, aeadAad);
+            }
+            else if (this.rbnAeadA128CbcHS256.Checked)
+            {
+                aead = new AeadA128CbcHS256(aeadCek, aeadIv, aeadAad);
+            }
+            else if (this.rbnAeadA192CbcHS384.Checked)
+            {
+                aead = new AeadA192CbcHS384(aeadCek, aeadIv, aeadAad);
+            }
+            else if (this.rbnAeadA256CbcHS512.Checked)
+            {
+                aead = new AeadA256CbcHS512(aeadCek, aeadIv, aeadAad);
+            }
+
+            return aead;
+        }
         /// <summary>Test AEAD of Rfc</summary>
         private void btnAEADRfc_Click(object sender, EventArgs e)
         {
@@ -1213,21 +1241,30 @@ namespace EncAndDecUtil
             {
                 Debug.WriteLine("tag is ok!");
             }
+            else
+            {
+                Debug.WriteLine("tag is ng!");
+            }
 
             if (CustomEncode.ToBase64String(ciphert) == CustomEncode.ToBase64String(aesRet.Ciphert))
             {
                 Debug.WriteLine("ciphert is ok!");
             }
+            else
+            {
+                Debug.WriteLine("ciphert is ng!");
+            }
 
             //// Aeadをnullクリアすると ciphert + tag からAeadを計算する（ただの結合）。
             //aesRet.Aead = null;
 
-            // 再初期化する・しない（しなくてもイイ、使いまわし可能）。
-            //aead = new AeadA256Gcm(cek, iv, aad);
-
             if (CustomEncode.ToBase64String(plaint) == CustomEncode.ToBase64String(aead.Decrypt(aesRet)))
             {
                 Debug.WriteLine("plaint is ok!");
+            }
+            else
+            {
+                Debug.WriteLine("plaint is ng!");
             }
 
             #endregion
@@ -1299,23 +1336,32 @@ namespace EncAndDecUtil
             {
                 Debug.WriteLine("tag is ok!");
             }
+            else
+            {
+                Debug.WriteLine("tag is ng!");
+            }
 
             if (CustomEncode.ToBase64String(ciphert) == CustomEncode.ToBase64String(aesRet.Ciphert))
             {
                 Debug.WriteLine("ciphert is ok!");
             }
+            else
+            {
+                Debug.WriteLine("ciphert is ng!");
+            }
 
             //// Aeadをnullクリアすると ciphert + tag からAeadを計算する（ただの結合）。
             //aesRet.Aead = null;
-
-            // 再初期化する・しない（しなくてもイイ、使いまわし可能）。
-            //aead = new AeadA128CbcHS256(cek, iv, aad);
 
             string aaa = CustomEncode.ToBase64String(plaint);
             string bbb = CustomEncode.ToBase64String(aead.Decrypt(aesRet));
             if (CustomEncode.ToBase64String(plaint) == CustomEncode.ToBase64String(aead.Decrypt(aesRet)))
             {
                 Debug.WriteLine("plaint is ok!");
+            }
+            else
+            {
+                Debug.WriteLine("plaint is ng!");
             }
 
             #endregion

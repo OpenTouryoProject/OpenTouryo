@@ -192,6 +192,7 @@
             this.txtMACPassword = new System.Windows.Forms.TextBox();
             this.txtMACString = new System.Windows.Forms.TextBox();
             this.tabAEAD = new System.Windows.Forms.TabPage();
+            this.btnAEADRfc = new System.Windows.Forms.Button();
             this.gbxAEAD = new System.Windows.Forms.GroupBox();
             this.rbnAeadA128CbcHS256 = new System.Windows.Forms.RadioButton();
             this.rbnAeadA256GCM = new System.Windows.Forms.RadioButton();
@@ -255,7 +256,12 @@
             this.rbnJWEOAEP_X509 = new System.Windows.Forms.RadioButton();
             this.btnJWEDecrypt = new System.Windows.Forms.Button();
             this.btnJWEEncrypt = new System.Windows.Forms.Button();
-            this.btnAEADRfc = new System.Windows.Forms.Button();
+            this.rbnAeadA128GCM = new System.Windows.Forms.RadioButton();
+            this.rbnAeadA192GCM = new System.Windows.Forms.RadioButton();
+            this.lblAEADAesGcm = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.rbnAeadA192CbcHS384 = new System.Windows.Forms.RadioButton();
+            this.rbnAeadA256CbcHS512 = new System.Windows.Forms.RadioButton();
             this.TabControl1.SuspendLayout();
             this.tabHash.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHSStretching)).BeginInit();
@@ -2003,13 +2009,29 @@
             this.tabAEAD.Text = "AEAD";
             this.tabAEAD.UseVisualStyleBackColor = true;
             // 
+            // btnAEADRfc
+            // 
+            this.btnAEADRfc.Location = new System.Drawing.Point(127, 265);
+            this.btnAEADRfc.Name = "btnAEADRfc";
+            this.btnAEADRfc.Size = new System.Drawing.Size(357, 23);
+            this.btnAEADRfc.TabIndex = 79;
+            this.btnAEADRfc.Text = "TestOfRfc";
+            this.btnAEADRfc.UseVisualStyleBackColor = true;
+            this.btnAEADRfc.Click += new System.EventHandler(this.btnAEADRfc_Click);
+            // 
             // gbxAEAD
             // 
+            this.gbxAEAD.Controls.Add(this.rbnAeadA256CbcHS512);
+            this.gbxAEAD.Controls.Add(this.rbnAeadA192CbcHS384);
+            this.gbxAEAD.Controls.Add(this.label4);
+            this.gbxAEAD.Controls.Add(this.lblAEADAesGcm);
+            this.gbxAEAD.Controls.Add(this.rbnAeadA192GCM);
+            this.gbxAEAD.Controls.Add(this.rbnAeadA128GCM);
             this.gbxAEAD.Controls.Add(this.rbnAeadA128CbcHS256);
             this.gbxAEAD.Controls.Add(this.rbnAeadA256GCM);
             this.gbxAEAD.Location = new System.Drawing.Point(29, 9);
             this.gbxAEAD.Name = "gbxAEAD";
-            this.gbxAEAD.Size = new System.Drawing.Size(402, 46);
+            this.gbxAEAD.Size = new System.Drawing.Size(501, 72);
             this.gbxAEAD.TabIndex = 46;
             this.gbxAEAD.TabStop = false;
             this.gbxAEAD.Text = "API選択";
@@ -2017,19 +2039,19 @@
             // rbnAeadA128CbcHS256
             // 
             this.rbnAeadA128CbcHS256.AutoSize = true;
-            this.rbnAeadA128CbcHS256.Location = new System.Drawing.Point(116, 18);
+            this.rbnAeadA128CbcHS256.Location = new System.Drawing.Point(111, 37);
             this.rbnAeadA128CbcHS256.Name = "rbnAeadA128CbcHS256";
-            this.rbnAeadA128CbcHS256.Size = new System.Drawing.Size(114, 16);
+            this.rbnAeadA128CbcHS256.Size = new System.Drawing.Size(110, 16);
             this.rbnAeadA128CbcHS256.TabIndex = 2;
             this.rbnAeadA128CbcHS256.TabStop = true;
-            this.rbnAeadA128CbcHS256.Text = "A128_CBC_HS256";
+            this.rbnAeadA128CbcHS256.Text = "A128CBC_HS256";
             this.rbnAeadA128CbcHS256.UseVisualStyleBackColor = true;
             // 
             // rbnAeadA256GCM
             // 
             this.rbnAeadA256GCM.AutoSize = true;
             this.rbnAeadA256GCM.Checked = true;
-            this.rbnAeadA256GCM.Location = new System.Drawing.Point(20, 18);
+            this.rbnAeadA256GCM.Location = new System.Drawing.Point(343, 16);
             this.rbnAeadA256GCM.Name = "rbnAeadA256GCM";
             this.rbnAeadA256GCM.Size = new System.Drawing.Size(74, 16);
             this.rbnAeadA256GCM.TabIndex = 0;
@@ -2039,7 +2061,7 @@
             // 
             // txtAEADCiphert
             // 
-            this.txtAEADCiphert.Location = new System.Drawing.Point(185, 190);
+            this.txtAEADCiphert.Location = new System.Drawing.Point(192, 211);
             this.txtAEADCiphert.Name = "txtAEADCiphert";
             this.txtAEADCiphert.ReadOnly = true;
             this.txtAEADCiphert.Size = new System.Drawing.Size(292, 19);
@@ -2047,7 +2069,7 @@
             // 
             // txtAEADTag
             // 
-            this.txtAEADTag.Location = new System.Drawing.Point(185, 165);
+            this.txtAEADTag.Location = new System.Drawing.Point(192, 186);
             this.txtAEADTag.Name = "txtAEADTag";
             this.txtAEADTag.ReadOnly = true;
             this.txtAEADTag.Size = new System.Drawing.Size(292, 19);
@@ -2056,7 +2078,7 @@
             // lblAEAD6
             // 
             this.lblAEAD6.AutoSize = true;
-            this.lblAEAD6.Location = new System.Drawing.Point(27, 193);
+            this.lblAEAD6.Location = new System.Drawing.Point(34, 214);
             this.lblAEAD6.Name = "lblAEAD6";
             this.lblAEAD6.Size = new System.Drawing.Size(41, 12);
             this.lblAEAD6.TabIndex = 37;
@@ -2064,7 +2086,7 @@
             // 
             // txtAEADAad
             // 
-            this.txtAEADAad.Location = new System.Drawing.Point(185, 140);
+            this.txtAEADAad.Location = new System.Drawing.Point(192, 161);
             this.txtAEADAad.Name = "txtAEADAad";
             this.txtAEADAad.Size = new System.Drawing.Size(292, 19);
             this.txtAEADAad.TabIndex = 36;
@@ -2072,7 +2094,7 @@
             // lblAEAD5
             // 
             this.lblAEAD5.AutoSize = true;
-            this.lblAEAD5.Location = new System.Drawing.Point(27, 168);
+            this.lblAEAD5.Location = new System.Drawing.Point(34, 189);
             this.lblAEAD5.Name = "lblAEAD5";
             this.lblAEAD5.Size = new System.Drawing.Size(83, 12);
             this.lblAEAD5.TabIndex = 35;
@@ -2081,7 +2103,7 @@
             // lblAEAD4
             // 
             this.lblAEAD4.AutoSize = true;
-            this.lblAEAD4.Location = new System.Drawing.Point(27, 143);
+            this.lblAEAD4.Location = new System.Drawing.Point(34, 164);
             this.lblAEAD4.Name = "lblAEAD4";
             this.lblAEAD4.Size = new System.Drawing.Size(117, 12);
             this.lblAEAD4.TabIndex = 34;
@@ -2089,7 +2111,7 @@
             // 
             // btnAEADDecrypt
             // 
-            this.btnAEADDecrypt.Location = new System.Drawing.Point(311, 215);
+            this.btnAEADDecrypt.Location = new System.Drawing.Point(318, 236);
             this.btnAEADDecrypt.Name = "btnAEADDecrypt";
             this.btnAEADDecrypt.Size = new System.Drawing.Size(167, 23);
             this.btnAEADDecrypt.TabIndex = 33;
@@ -2099,7 +2121,7 @@
             // 
             // btnAEADEncrypt
             // 
-            this.btnAEADEncrypt.Location = new System.Drawing.Point(120, 215);
+            this.btnAEADEncrypt.Location = new System.Drawing.Point(127, 236);
             this.btnAEADEncrypt.Name = "btnAEADEncrypt";
             this.btnAEADEncrypt.Size = new System.Drawing.Size(167, 23);
             this.btnAEADEncrypt.TabIndex = 32;
@@ -2110,7 +2132,7 @@
             // lblAEAD3
             // 
             this.lblAEAD3.AutoSize = true;
-            this.lblAEAD3.Location = new System.Drawing.Point(27, 119);
+            this.lblAEAD3.Location = new System.Drawing.Point(34, 140);
             this.lblAEAD3.Name = "lblAEAD3";
             this.lblAEAD3.Size = new System.Drawing.Size(77, 12);
             this.lblAEAD3.TabIndex = 30;
@@ -2118,7 +2140,7 @@
             // 
             // txtAEADIv
             // 
-            this.txtAEADIv.Location = new System.Drawing.Point(185, 116);
+            this.txtAEADIv.Location = new System.Drawing.Point(192, 137);
             this.txtAEADIv.Name = "txtAEADIv";
             this.txtAEADIv.Size = new System.Drawing.Size(292, 19);
             this.txtAEADIv.TabIndex = 29;
@@ -2126,7 +2148,7 @@
             // lblAEAD2
             // 
             this.lblAEAD2.AutoSize = true;
-            this.lblAEAD2.Location = new System.Drawing.Point(27, 94);
+            this.lblAEAD2.Location = new System.Drawing.Point(34, 115);
             this.lblAEAD2.Name = "lblAEAD2";
             this.lblAEAD2.Size = new System.Drawing.Size(139, 12);
             this.lblAEAD2.TabIndex = 28;
@@ -2135,7 +2157,7 @@
             // lblAEAD1
             // 
             this.lblAEAD1.AutoSize = true;
-            this.lblAEAD1.Location = new System.Drawing.Point(27, 69);
+            this.lblAEAD1.Location = new System.Drawing.Point(34, 90);
             this.lblAEAD1.Name = "lblAEAD1";
             this.lblAEAD1.Size = new System.Drawing.Size(29, 12);
             this.lblAEAD1.TabIndex = 27;
@@ -2143,14 +2165,14 @@
             // 
             // txtAEADCek
             // 
-            this.txtAEADCek.Location = new System.Drawing.Point(185, 91);
+            this.txtAEADCek.Location = new System.Drawing.Point(192, 112);
             this.txtAEADCek.Name = "txtAEADCek";
             this.txtAEADCek.Size = new System.Drawing.Size(292, 19);
             this.txtAEADCek.TabIndex = 26;
             // 
             // txtAEADPlaint
             // 
-            this.txtAEADPlaint.Location = new System.Drawing.Point(185, 66);
+            this.txtAEADPlaint.Location = new System.Drawing.Point(192, 87);
             this.txtAEADPlaint.Name = "txtAEADPlaint";
             this.txtAEADPlaint.Size = new System.Drawing.Size(292, 19);
             this.txtAEADPlaint.TabIndex = 25;
@@ -2633,15 +2655,69 @@
             this.btnJWEEncrypt.UseVisualStyleBackColor = true;
             this.btnJWEEncrypt.Click += new System.EventHandler(this.btnJWEEncrypt_Click);
             // 
-            // btnAEADRfc
+            // rbnAeadA128GCM
             // 
-            this.btnAEADRfc.Location = new System.Drawing.Point(120, 244);
-            this.btnAEADRfc.Name = "btnAEADRfc";
-            this.btnAEADRfc.Size = new System.Drawing.Size(357, 23);
-            this.btnAEADRfc.TabIndex = 79;
-            this.btnAEADRfc.Text = "TestOfRfc";
-            this.btnAEADRfc.UseVisualStyleBackColor = true;
-            this.btnAEADRfc.Click += new System.EventHandler(this.btnAEADRfc_Click);
+            this.rbnAeadA128GCM.AutoSize = true;
+            this.rbnAeadA128GCM.Checked = true;
+            this.rbnAeadA128GCM.Location = new System.Drawing.Point(111, 16);
+            this.rbnAeadA128GCM.Name = "rbnAeadA128GCM";
+            this.rbnAeadA128GCM.Size = new System.Drawing.Size(74, 16);
+            this.rbnAeadA128GCM.TabIndex = 3;
+            this.rbnAeadA128GCM.TabStop = true;
+            this.rbnAeadA128GCM.Text = "A128GCM";
+            this.rbnAeadA128GCM.UseVisualStyleBackColor = true;
+            // 
+            // rbnAeadA192GCM
+            // 
+            this.rbnAeadA192GCM.AutoSize = true;
+            this.rbnAeadA192GCM.Checked = true;
+            this.rbnAeadA192GCM.Location = new System.Drawing.Point(227, 16);
+            this.rbnAeadA192GCM.Name = "rbnAeadA192GCM";
+            this.rbnAeadA192GCM.Size = new System.Drawing.Size(74, 16);
+            this.rbnAeadA192GCM.TabIndex = 4;
+            this.rbnAeadA192GCM.TabStop = true;
+            this.rbnAeadA192GCM.Text = "A192GCM";
+            this.rbnAeadA192GCM.UseVisualStyleBackColor = true;
+            // 
+            // lblAEADAesGcm
+            // 
+            this.lblAEADAesGcm.AutoSize = true;
+            this.lblAEADAesGcm.Location = new System.Drawing.Point(17, 18);
+            this.lblAEADAesGcm.Name = "lblAEADAesGcm";
+            this.lblAEADAesGcm.Size = new System.Drawing.Size(48, 12);
+            this.lblAEADAesGcm.TabIndex = 28;
+            this.lblAEADAesGcm.Text = "AesGcm";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(17, 39);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(60, 12);
+            this.label4.TabIndex = 29;
+            this.label4.Text = "AesCbcHS";
+            // 
+            // rbnAeadA192CbcHS384
+            // 
+            this.rbnAeadA192CbcHS384.AutoSize = true;
+            this.rbnAeadA192CbcHS384.Location = new System.Drawing.Point(227, 37);
+            this.rbnAeadA192CbcHS384.Name = "rbnAeadA192CbcHS384";
+            this.rbnAeadA192CbcHS384.Size = new System.Drawing.Size(110, 16);
+            this.rbnAeadA192CbcHS384.TabIndex = 30;
+            this.rbnAeadA192CbcHS384.TabStop = true;
+            this.rbnAeadA192CbcHS384.Text = "A192CBC_HS384";
+            this.rbnAeadA192CbcHS384.UseVisualStyleBackColor = true;
+            // 
+            // rbnAeadA256CbcHS512
+            // 
+            this.rbnAeadA256CbcHS512.AutoSize = true;
+            this.rbnAeadA256CbcHS512.Location = new System.Drawing.Point(343, 37);
+            this.rbnAeadA256CbcHS512.Name = "rbnAeadA256CbcHS512";
+            this.rbnAeadA256CbcHS512.Size = new System.Drawing.Size(110, 16);
+            this.rbnAeadA256CbcHS512.TabIndex = 31;
+            this.rbnAeadA256CbcHS512.TabStop = true;
+            this.rbnAeadA256CbcHS512.Text = "A256CBC_HS512";
+            this.rbnAeadA256CbcHS512.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -2939,6 +3015,12 @@
         private System.Windows.Forms.RadioButton rbnJWERSA15_Param;
         private System.Windows.Forms.RadioButton rbnJWERSA15_X509;
         private System.Windows.Forms.Button btnAEADRfc;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblAEADAesGcm;
+        private System.Windows.Forms.RadioButton rbnAeadA192GCM;
+        private System.Windows.Forms.RadioButton rbnAeadA128GCM;
+        private System.Windows.Forms.RadioButton rbnAeadA256CbcHS512;
+        private System.Windows.Forms.RadioButton rbnAeadA192CbcHS384;
     }
 }
 
