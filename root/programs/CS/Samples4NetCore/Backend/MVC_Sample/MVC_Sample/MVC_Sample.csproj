@@ -36,5 +36,8 @@
     <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore20\netcoreapp2.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTouryo.Public.Security">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore20\netcoreapp2.0\OpenTouryo.Public.Security.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

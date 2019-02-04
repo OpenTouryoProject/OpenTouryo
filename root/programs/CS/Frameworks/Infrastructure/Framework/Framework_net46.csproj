@@ -211,6 +211,10 @@
       <Project>{81CC573A-0DF9-49E5-AF10-A50F9B194DA5}</Project>
       <Name>Public_net46</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Public\Security\Public.Security_net46.csproj">
+      <Project>{f18bd7a1-2e57-4c6b-afea-5dff6b6d3290}</Project>
+      <Name>Public.Security_net46</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -18,8 +18,8 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;NETCORE</DefineConstants>
-    <DocumentationFile>..\Build_netstd20r\netstandard2.0\OpenTouryo.Business.xml</DocumentationFile>
-    <OutputPath>..\Build_netstd20r\</OutputPath>
+    <DocumentationFile>..\Build_netcore20r\netstandard2.0\OpenTouryo.Business.xml</DocumentationFile>
+    <OutputPath>..\Build_netcore20r\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

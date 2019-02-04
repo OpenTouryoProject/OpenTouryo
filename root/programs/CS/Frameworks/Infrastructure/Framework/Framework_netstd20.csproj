@@ -58,6 +58,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Public\Public_netstd20.csproj" />
+    <ProjectReference Include="..\Public\Security\Public.Security_netstd20.csproj" />
   </ItemGroup>
 
   <ItemGroup>

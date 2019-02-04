@@ -24,7 +24,7 @@ using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Public.Security;
+using Touryo.Infrastructure.Public.Security.Pwd;
 
 namespace WebForms_Sample.Aspx.Start
 {

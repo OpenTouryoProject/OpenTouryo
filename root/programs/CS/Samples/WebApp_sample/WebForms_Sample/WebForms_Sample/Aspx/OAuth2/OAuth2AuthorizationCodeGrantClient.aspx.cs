@@ -32,7 +32,7 @@ using Newtonsoft.Json.Linq;
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Public.Security;
+using Touryo.Infrastructure.Public.Security.Pwd;
 
 namespace WebForms_Sample.Aspx.OAuth2
 {

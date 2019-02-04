@@ -31,6 +31,7 @@
     <Compile Remove="Db\DamPstGrS\**" />
     <Compile Remove="Db\DamSqlDbWithMultiShard\**" />
     <Compile Remove="Db\packages\**" />
+    <Compile Remove="Security\**" />
     <Compile Remove="Win32\**" />
     <Compile Remove="WinProc\**" />
     <EmbeddedResource Remove="Db\DamDB2\**" />
@@ -41,6 +42,7 @@
     <EmbeddedResource Remove="Db\DamPstGrS\**" />
     <EmbeddedResource Remove="Db\DamSqlDbWithMultiShard\**" />
     <EmbeddedResource Remove="Db\packages\**" />
+    <EmbeddedResource Remove="Security\**" />
     <EmbeddedResource Remove="Win32\**" />
     <EmbeddedResource Remove="WinProc\**" />
     <None Remove="Db\DamDB2\**" />
@@ -51,6 +53,7 @@
     <None Remove="Db\DamPstGrS\**" />
     <None Remove="Db\DamSqlDbWithMultiShard\**" />
     <None Remove="Db\packages\**" />
+    <None Remove="Security\**" />
     <None Remove="Win32\**" />
     <None Remove="WinProc\**" />
   </ItemGroup>

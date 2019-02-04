@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Framework_netstd20", "Frame
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DamManagedOdp_netstd20", "Public\Db\DamManagedOdp\DamManagedOdp_netstd20.csproj", "{66FA8CBA-C8A4-4865-9F18-BCBC48E3A331}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Public.Security_netstd20", "Public\Security\Public.Security_netstd20.csproj", "{4949FA56-95A7-405B-A819-BE3B3B361DE4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{66FA8CBA-C8A4-4865-9F18-BCBC48E3A331}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66FA8CBA-C8A4-4865-9F18-BCBC48E3A331}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66FA8CBA-C8A4-4865-9F18-BCBC48E3A331}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4949FA56-95A7-405B-A819-BE3B3B361DE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4949FA56-95A7-405B-A819-BE3B3B361DE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4949FA56-95A7-405B-A819-BE3B3B361DE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4949FA56-95A7-405B-A819-BE3B3B361DE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

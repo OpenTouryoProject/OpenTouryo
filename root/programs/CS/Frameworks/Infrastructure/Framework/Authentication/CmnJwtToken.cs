@@ -35,7 +35,7 @@ using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Security;
+using Touryo.Infrastructure.Public.Security.Jwt;
 
 namespace Touryo.Infrastructure.Framework.Authentication
 {
