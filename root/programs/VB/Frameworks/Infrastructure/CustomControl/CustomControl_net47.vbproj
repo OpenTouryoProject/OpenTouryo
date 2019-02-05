@@ -42,7 +42,7 @@
     <OutputPath>..\Build_net47\</OutputPath>
     <DocumentationFile>..\Build_net47\OpenTouryo.CustomControl.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
-    <DefineConstants>NET47</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NET47</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -52,7 +52,7 @@
     <OutputPath>..\Build_net47r\</OutputPath>
     <DocumentationFile>..\Build_net47r\OpenTouryo.CustomControl.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
-    <DefineConstants>NET47</DefineConstants>
+    <DefineConstants>TRACE;NET47</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTouryo.Public, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
