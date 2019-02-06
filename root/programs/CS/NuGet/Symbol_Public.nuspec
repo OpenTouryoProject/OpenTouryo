@@ -30,6 +30,8 @@
         <dependency id="Newtonsoft.Json" version="11.0.2" />
         <dependency id="System.Data.Odbc" version="4.5.0" />
         <dependency id="System.Data.SqlClient" version="4.5.1" />
+        <dependency id="System.Reflection.Emit.ILGeneration" version="4.3.0" />
+        <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
       </group>
     </dependencies>
   </metadata>

@@ -125,6 +125,7 @@
     <Compile Include="AsyncProcessingService\AsyncTaskUpdate.cs" />
     <Compile Include="Authentication\AuthenticationHeader.cs" />
     <Compile Include="Authentication\CmnJwtToken.cs" />
+    <Compile Include="Authentication\OAuth2AndOIDCEnum.cs" />
     <Compile Include="Authentication\JwkSetStore.cs" />
     <Compile Include="Authentication\JwtAssertion.cs" />
     <Compile Include="Authentication\IdToken.cs" />

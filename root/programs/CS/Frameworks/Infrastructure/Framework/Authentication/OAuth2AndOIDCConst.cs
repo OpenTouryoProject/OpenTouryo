@@ -135,36 +135,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public const string OidcHybrid3_ResponseType = code + " " + IDToken + " " + token;
 
         #endregion
-
-        #region ResponseMode
-
-        /// <summary>query</summary>
-        public const string query = "query";
-
-        /// <summary>fragment</summary>
-        public const string fragment = "fragment";
-
-        /// <summary>form_post</summary>
-        public const string form_post = "form_post";
-
-        #endregion
-
-        #region AuthMethods
-
-        /// <summary>client_secret_basic</summary>
-        public const string ClientSecretBasic = "client_secret_basic";
-
-        /// <summary>client_secret_post</summary>
-        public const string ClientSecretPost = "client_secret_post";
-
-        /// <summary>client_secret_jwt</summary>
-        public const string ClientSecretJwt = "client_secret_jwt";
-
-        /// <summary>private_key_jwt</summary>
-        public const string PrivateKeyJwt = "private_key_jwt";
-
-        #endregion
-
+        
         #region HTTP Header
 
         /// <summary>Location</summary>
