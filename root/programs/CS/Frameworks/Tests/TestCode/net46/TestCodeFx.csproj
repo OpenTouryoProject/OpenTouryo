@@ -7,8 +7,8 @@
     <ProjectGuid>{7DAC4701-A800-4C8A-B70F-2A71C78F7B2F}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EncAndDecUtilCUIFx</RootNamespace>
-    <AssemblyName>EncAndDecUtilCUIFx</AssemblyName>
+    <RootNamespace>TestCodeFx</RootNamespace>
+    <AssemblyName>TestCodeFx</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -34,19 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="jose-jwt, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\jose-jwt.2.4.0\lib\net40\jose-jwt.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\..\Infrastructure\Build_net46\OpenTouryo.Public.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTouryo.Public.Security">
-      <HintPath>..\..\..\Infrastructure\Build_net46\OpenTouryo.Public.Security.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -61,30 +50,6 @@
   <ItemGroup>
     <None Include="..\App.config">
       <Link>App.config</Link>
-    </None>
-    <None Include="..\SHA256DSA.cer">
-      <Link>SHA256DSA.cer</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\SHA256DSA.pfx">
-      <Link>SHA256DSA.pfx</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\SHA256ECDSA.cer">
-      <Link>SHA256ECDSA.cer</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\SHA256ECDSA.pfx">
-      <Link>SHA256ECDSA.pfx</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\SHA256RSA.cer">
-      <Link>SHA256RSA.cer</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\SHA256RSA.pfx">
-      <Link>SHA256RSA.pfx</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
   </ItemGroup>

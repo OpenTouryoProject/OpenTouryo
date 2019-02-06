@@ -72,13 +72,17 @@ namespace EncAndDecUtilCUI
 
                 // Others
 
+                // echoすると例外
+                try
+                {
+                    Console.ReadKey();
+                }
+                catch { }
             }
             catch (Exception ex)
             {
                 WriteLine.OutPutDebugAndConsole(ex.ToString());
             }
-
-            Console.ReadKey();
         }
 
         #region Test (Hash, Cryptography, Jwt)
