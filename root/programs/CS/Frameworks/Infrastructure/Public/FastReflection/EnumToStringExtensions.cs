@@ -56,7 +56,7 @@ namespace Touryo.Infrastructure.Public.FastReflection
         private static ConcurrentDictionary<Type, MulticastDelegate>
             ToStringFromEnumMethods = new ConcurrentDictionary<Type, MulticastDelegate>();
 
-#region public
+        #region public
 
         /// <summary>ToStringOrNullFromEnum</summary>
         /// <typeparam name="T">struct(Enum Field)</typeparam>
@@ -132,9 +132,9 @@ namespace Touryo.Infrastructure.Public.FastReflection
             }
         }
 
-#endregion
+        #endregion
 
-#region private
+        #region private
 
         /// <summary>MulticastDelegateの生成</summary>
         /// <typeparam name="T">struct(Enum)</typeparam>
@@ -269,6 +269,6 @@ namespace Touryo.Infrastructure.Public.FastReflection
             return (Func<T, string>)dm.CreateDelegate(gf);
         }
 
-#endregion
+        #endregion
     }
 }

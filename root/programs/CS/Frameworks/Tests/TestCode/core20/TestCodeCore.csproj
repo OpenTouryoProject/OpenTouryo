@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Compile Include="..\Program.cs" Link="Program.cs" />
+    <Compile Include="..\TestEnumToStringExtensions.cs" Link="TestEnumToStringExtensions.cs" />
   </ItemGroup>
 
   <ItemGroup>

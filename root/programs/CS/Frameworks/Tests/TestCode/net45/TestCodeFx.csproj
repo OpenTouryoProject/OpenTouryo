@@ -62,6 +62,9 @@
     <Compile Include="..\Program.cs">
       <Link>Program.cs</Link>
     </Compile>
+    <Compile Include="..\TestEnumToStringExtensions.cs">
+      <Link>TestEnumToStringExtensions.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
