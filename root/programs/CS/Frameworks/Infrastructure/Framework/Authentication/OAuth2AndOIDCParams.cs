@@ -109,6 +109,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
+        /// <summary>ES256Cer</summary>
+        public static string ES256Cer
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("OAuth2AndOidcES256Cer");
+            }
+        }
+
         /// <summary>OAuth2JwtAssertionPrivatekey</summary>
         public static string OAuth2JwtAssertionPrivatekey
         {

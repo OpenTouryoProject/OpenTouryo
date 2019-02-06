@@ -40,7 +40,7 @@ using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-using Jose;
+//using Jose;
 using Security.Cryptography;
 
 using Touryo.Infrastructure.Public.Str;
@@ -65,53 +65,48 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         #region Jwk
         /// <summary>X509CerToJwk</summary>
         /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
-        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
         /// <param name="settings">JsonSerializerSettings</param>
         /// <returns>Jwk公開鍵</returns>
         public static string X509CerToJwk(
-            string certificateFilePath, HashAlgorithmName hashAlgorithmName,
+            string certificateFilePath,
             JsonSerializerSettings settings = null)
         {
             return EccPublicKeyConverter.ParamToJwk( // *.cer is PublicKey -> ExportParameters(false)
-                EccPublicKeyConverter.X509CerToProvider(certificateFilePath, hashAlgorithmName).ExportParameters(false), settings);
+                EccPublicKeyConverter.X509CerToProvider(certificateFilePath).ExportParameters(false), settings);
         }
         #endregion
 
         #region ECDsaProvider(Cngkey, ECParameters)
         /// <summary>X509CerToCngkey</summary>
         /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
-        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
         /// <returns>CngKey（公開鍵）</returns>
-        public static CngKey X509CerToCngkey(string certificateFilePath, HashAlgorithmName hashAlgorithmName)
+        public static CngKey X509CerToCngkey(string certificateFilePath)
         {
-            return ((ECDsaCng)EccPublicKeyConverter.X509CerToProvider(
-                certificateFilePath, hashAlgorithmName)).Key;
+            return ((ECDsaCng)EccPublicKeyConverter.X509CerToProvider(certificateFilePath)).Key;
         }
 
         /// <summary>X509CerToECParam</summary>
         /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
-        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
         /// <returns>ECParameters（公開鍵）</returns>
-        public static ECParameters X509CerToECParam(string certificateFilePath, HashAlgorithmName hashAlgorithmName)
+        public static ECParameters X509CerToECParam(string certificateFilePath)
         {
             return EccPublicKeyConverter.X509CerToProvider(
-                certificateFilePath, hashAlgorithmName).ExportParameters(false);
+                certificateFilePath).ExportParameters(false);
         }
 
         /// <summary>X509CerToProvider</summary>
         /// <param name="certificateFilePath">X.509鍵(*.cer)</param>
-        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
         /// <param name="flg">X509KeyStorageFlags</param>
         /// <returns>ECDsa（公開鍵）</returns>
         public static ECDsa X509CerToProvider(
-            string certificateFilePath, HashAlgorithmName hashAlgorithmName,
+            string certificateFilePath, 
             X509KeyStorageFlags flg = X509KeyStorageFlags.DefaultKeySet)
         {
             // X509KeyStorageFlagsについて
             // PublicKey を取り出すため Exportableは不要
             // ASP.NET（サーバ）からの実行を想定しないため、MachineKeySetは不要
             DigitalSignECDsaX509 dsX509 = new DigitalSignECDsaX509(
-                certificateFilePath, "", hashAlgorithmName, flg);
+                certificateFilePath, "", HashAlgorithmName.SHA256, flg);
 
             AsymmetricAlgorithm aa = dsX509.PublicKey;
             if (aa is ECDsa)

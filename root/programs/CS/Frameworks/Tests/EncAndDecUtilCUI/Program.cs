@@ -242,10 +242,6 @@ namespace EncAndDecUtilCUI
             X509Certificate2 publicX509Key = null;
             X509Certificate2 privateX509Key = null;
 
-#if NET45 || NET46
-                ECParameters eCParameters = new ECParameters();
-#else
-#endif
             #endregion
 
             #region DigitalSign
@@ -521,10 +517,7 @@ namespace EncAndDecUtilCUI
 
             #region Keys
             string jwk = "";
-#if NET45 || NET46
-                ECParameters eCParameters = new ECParameters();
-#else
-#endif
+
             #endregion
 
             #region JWS
@@ -742,10 +735,7 @@ namespace EncAndDecUtilCUI
 
             CngKey publicKeyOfCng = null;
             CngKey privateKeyOfCng = null;
-#if NET45 || NET46
-                ECParameters eCParameters = new ECParameters();
-#else
-#endif
+
             #endregion
 
             #endregion
