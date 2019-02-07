@@ -69,23 +69,23 @@
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OpenTouryo.DamManagedOdp, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTouryo.DamManagedOdp, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Build_net46\OpenTouryo.DamManagedOdp.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTouryo.DamMySQL, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTouryo.DamMySQL, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Build_net46\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTouryo.DamPstGrS, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTouryo.DamPstGrS, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Build_net46\OpenTouryo.DamPstGrS.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTouryo.Framework, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTouryo.Framework, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Build_net46\OpenTouryo.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTouryo.Public, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTouryo.Public, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Build_net46\OpenTouryo.Public.dll</HintPath>
     </Reference>

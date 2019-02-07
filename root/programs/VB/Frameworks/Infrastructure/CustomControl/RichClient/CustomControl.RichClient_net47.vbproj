@@ -43,7 +43,7 @@
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>..\Build_net47\</OutputPath>
+    <OutputPath>..\..\Build_net47\</OutputPath>
     <DocumentationFile>..\..\Build_net47\OpenTouryo.CustomControl.RichClient.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
     <DefineConstants>DEBUG,TRACE,NET47</DefineConstants>

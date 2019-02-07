@@ -55,7 +55,7 @@
     <DefineConstants>TRACE,NET45</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTouryo.Public, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTouryo.Public, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Build_net45\OpenTouryo.Public.dll</HintPath>
     </Reference>
