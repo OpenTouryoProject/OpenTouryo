@@ -31,7 +31,7 @@ Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Business.Util
 Imports Touryo.Infrastructure.Framework.Authentication
 Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Public.Security
+Imports Touryo.Infrastructure.Public.Security.Pwd
 
 Namespace Controllers
     ''' <summary>HomeController</summary>
