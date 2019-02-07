@@ -109,11 +109,10 @@
     <Compile Include="Dto\DTTables.cs" />
     <Compile Include="Dto\DTTableStatus.cs" />
     <Compile Include="Dto\DTType.cs" />
-    <Compile Include="FastReflection\EnumToString2Extensions.cs" />
-    <Compile Include="FastReflection\EnumToString1Extensions.cs" />
     <Compile Include="FastReflection\AccessorCacher.cs" />
     <Compile Include="FastReflection\AccessorInfo.cs" />
     <Compile Include="FastReflection\InstanceCreator.cs" />
+    <Compile Include="FastReflection\EnumToString1Extensions.cs" />
     <Compile Include="IO\UnZipper.cs" />
     <Compile Include="IO\ZipBase.cs" />
     <Compile Include="IO\Zipper.cs" />

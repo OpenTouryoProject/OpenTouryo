@@ -31,23 +31,17 @@
 //**********************************************************************************
 
 using System;
-using System.Linq;
-using System.Collections.Generic;
+using System.Text;
 using System.Collections.Concurrent;
-#if NETSTD
-using System.Reflection.Emit;
-#else
-using System.Reflection.Emit;
-#endif
+
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Touryo.Infrastructure.Public.FastReflection
 {
-    // 前者を採用
-    // - EnumオブジェクトのToStringメソッドはswitch文の100倍以上遅いので
-    //   ILGeneratorで動的にswitch文を生成＆コンパイルして高速化する方法 - Qiita
-    //   https://qiita.com/higty/items/513296536d3b26fbd033
-    // - EnumのToStringが遅いらしいので式木の力を借りた - Qiita
-    //   https://qiita.com/Temarin/items/70fc1565c16feeda7303
+    // 詳しくは、EnumToString1Extensions側を参照。
+    // net側でMSBuildでビルドできないのでnetstandard側のみ提供。
 
     /// <summary>EnumToString2Extensions</summary>
     public static class EnumToString2Extensions
@@ -58,7 +52,7 @@ namespace Touryo.Infrastructure.Public.FastReflection
 
         #region public
 
-        /// <summary>ToString2（Emit版）</summary>
+        /// <summary>ToString2（式木版）</summary>
         /// <typeparam name="T">struct(Enum Field)</typeparam>
         /// <param name="value">値</param>
         /// <returns>列挙型を文字列化</returns>
@@ -74,7 +68,7 @@ namespace Touryo.Infrastructure.Public.FastReflection
             }
         }
 
-        /// <summary>ToString2（Emit版）</summary>
+        /// <summary>ToString2（式木版）</summary>
         /// <typeparam name="T">struct(Enum Field)</typeparam>
         /// <param name="value">値</param>
         /// <returns>列挙型を文字列化</returns>
@@ -94,25 +88,14 @@ namespace Touryo.Infrastructure.Public.FastReflection
                 // MulticastDelegateのロード
                 if (!EnumToString2Extensions.ToStringMethods.TryGetValue(type, out multicastDelegate))
                 {
-                    if (type.GetCustomAttributes(typeof(FlagsAttribute), false).Length == 0)
-                    {
-                        // FlagsAttributeが無い場合、
-                        // MulticastDelegateを生成し、
-                        multicastDelegate = CreateToStringFromEnumFunc<T>();
-                        // MulticastDelegateをキャッシュ
-                        EnumToString2Extensions.ToStringMethods[type] = multicastDelegate;
-                    }
-                    else
-                    {
-                        // FlagsAttributeが有る場合、
-                        // MulticastDelegateを生成できないので、
-                        // 単なるToString()。// コレが遅いらしい。
-                        return value.ToString().Replace(" ", "");
-                    }
+                    // こちらは、FlagsAttributeを処理可能。
+                    multicastDelegate = EnumToString2Extensions.CreateToString<T>();
+                    // MulticastDelegateをキャッシュ
+                    EnumToString2Extensions.ToStringMethods[type] = multicastDelegate;
                 }
 
                 // MulticastDelegateでFastReflection
-                Func<T, String> f = (Func<T, String>)multicastDelegate;
+                Func<T, string> f = (Func<T, string>)multicastDelegate;
                 return f(value);
             }
         }
@@ -124,134 +107,88 @@ namespace Touryo.Infrastructure.Public.FastReflection
         /// <summary>MulticastDelegateの生成</summary>
         /// <typeparam name="T">struct(Enum)</typeparam>
         /// <returns>MulticastDelegate</returns>
-        private static Func<T, String> CreateToStringFromEnumFunc<T>()
+        private static Func<T, string> CreateToString<T>() where T : struct
         {
-            // [C#][.NET] メタプログラミング入門 - 応用編
-            // オブジェクトの文字列変換のメタプログラミング
-            // (Reflection.Emit 編) (プログラミング C# - 翔ソフトウェア (Sho's))
-            // http://blog.shos.info/archives/2013/11/csharp_metaprogrammingpraxisemit.html
-            // 実装したコードを、ILSpyを参照して、
+            // C# によるプログラミング入門 | ++C++; // 未確認飛行 C
+            // 式木（Expression Trees） > 式木 4.0（構文木）
+            // https://ufcpp.net/study/csharp/sp3_expression.html#ast
 
-            Type type = typeof(T);
+            // StringBuilderを用いて、AppendとToStringのMethodInfoを取得
+            MethodInfo append = typeof(StringBuilder).GetMethod(nameof(StringBuilder.Append), new[] { typeof(string) });
+            MethodInfo toString = typeof(StringBuilder).GetMethod(nameof(StringBuilder.ToString), Type.EmptyTypes);
 
-            // メソッドの生成
-            DynamicMethod dm = new DynamicMethod(
-                "ToStringFromEnum", // メソッド名
-                typeof(string),     // 戻値
-                new[] { type });    // 引数
+            // パラメタ
+            ParameterExpression valueOfField = Expression.Parameter(typeof(T));
+            // 変数
+            ParameterExpression valueLong = Expression.Variable(typeof(int));
+            ParameterExpression sbBuffer = Expression.Variable(typeof(StringBuilder));
 
-            // メソッドのILGenerator
-            ILGenerator il = dm.GetILGenerator();
+            // 列挙型のFlagsAttributeの有無
+            bool hasFlgAttr = typeof(T).GetTypeInfo().IsDefined(typeof(FlagsAttribute));
 
-            // Enumをフィールド値（List<long>）を取得
-            List<long> values = ((T[])Enum.GetValues(type))
-                .Select(el => Convert.ToInt64(el)).ToList();
+            // IFステートメント
+            // 0 < sbBuffer.Lengthの場合、.Append(", ")する。
+            ConditionalExpression separator =
+                Expression.IfThen(
+                    Expression.LessThan( // ＜
+                        Expression.Constant((int)0, typeof(int)),                     // left
+                        Expression.Property(sbBuffer, nameof(StringBuilder.Length))), // right
+                    Expression.Call(sbBuffer, append, Expression.Constant(", ", typeof(string))));
 
-            // Enumのフィールド名（string[]）を取得
-            string[] names = Enum.GetNames(type);
+            // IFステートメント 2
 
-            // Have any value different from index number
-            if (values.Where((el, i) => el != i).Any())
+            // 匿名型の 'a 配列 = Enumのフィールド値の配列に対応
+            var members = ((T[])Enum.GetValues(typeof(T))).Distinct().Select(x =>
             {
-                // インデックス番号と異なるフィールド値を持つ
+                // フィールドの数値
+                int value = Convert.ToInt32(x);
+                // フィールドの数値
+                ConstantExpression flagValue = Expression.Constant(value);
+                // フィールドの文字列値
+                ConstantExpression label = Expression.Constant(x.ToString(), typeof(string));
 
-                // 終了ラベル
-                Label returnLabel = il.DefineLabel();
-                // 戻値定義
-                LocalBuilder result = il.DeclareLocal(typeof(string));
-
-                for (int i = 0; i < values.Count; i++)
+                // Select引数のλの戻り（ ≒ 匿名型の 'a）
+                return new
                 {
-                    // 命令を命令ストリームに書き込む
+                    Value = value,                  // フィールドの数値
+                    Expression = (value == 0) ?     // Expression
+                        (Expression)label :         // == 0 ならフィールドの文字列値
+                        Expression.IfThen(          // != 0 なら、if(){}で FlagsAttributeの処理
+                            Expression.Equal(       // 以下を比較
+                                flagValue,          // - フィールドの数値
+                                                    // - FlagsAttributeがある場合で異なる
+                                                    //   - ある場合 : valueLong
+                                                    //   - ない場合 : flagValue && valueLong
+                                hasFlgAttr ? (Expression)Expression.And(flagValue, valueLong) : valueLong),
+                            Expression.Block( // ビット演算の処理
+                                separator, // 前述のIFステートメントで、   // .Append(", ")する。
+                                Expression.Call(sbBuffer, append, label))) // .Append(label)する。
+                };
+            }).ToArray();
 
-                    // 中間ラベル
-                    Label tempLabel = il.DefineLabel();
-
-                    il.Emit(OpCodes.Ldarg_0);
-                    il.Emit(OpCodes.Conv_I8);
-                    il.Emit(OpCodes.Ldc_I8, values[i]);
-                    il.Emit(OpCodes.Ceq);                // 比較
-                    // ↓一致しない
-                    il.Emit(OpCodes.Brfalse, tempLabel); // 中間ラベルへ
-                    // ↓一致した
-                    il.Emit(OpCodes.Ldstr, names[i]);    // 戻値設定1
-                    il.Emit(OpCodes.Stloc, result);      // 戻値設定2
-                    il.Emit(OpCodes.Br, returnLabel);    // 終了ラベルへ
-
-                    // 中間ラベルの設定
-                    il.MarkLabel(tempLabel);
-                }
-
-                // ここまで流れてしまったら、InvalidOperationException
-                il.ThrowException(typeof(InvalidOperationException));
-
-                // 終了ラベルの設定
-                il.MarkLabel(returnLabel);
-
-                // 戻値設定
-                il.Emit(OpCodes.Ldloc, result);
-                // 戻る
-                il.Emit(OpCodes.Ret);
-            }
-            else
-            {
-                // インデックス番号と同じフィールド値を持つ
-
-                // 終了ラベル
-                Label returnLabel = il.DefineLabel();
-
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Conv_I8);
-                il.Emit(OpCodes.Ldc_I4, 0);
-                il.Emit(OpCodes.Conv_I8);
-                il.Emit(OpCodes.Clt);
-                il.Emit(OpCodes.Brtrue, returnLabel);    // 終了ラベルへ
-
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Conv_I8);
-                il.Emit(OpCodes.Ldc_I4, names.Length - 1);
-                il.Emit(OpCodes.Conv_I8);
-                il.Emit(OpCodes.Cgt);
-                il.Emit(OpCodes.Brtrue, returnLabel);    // 終了ラベルへ
-
-                il.Emit(OpCodes.Ldarg_0);
-
-                // switch-caseラベル
-                Label[] caseLabels = new Label[names.Length + 1];
-                for (int i = 0; i < names.Length; i++)
-                {
-                    caseLabels[i] = il.DefineLabel();
-                }
-
-                // switch-defaultラベル
-                Label defaultCase = il.DefineLabel();
-                caseLabels[names.Length] = defaultCase;
-
-                // switchの実装
-                il.Emit(OpCodes.Switch, caseLabels);
-                for (int i = 0; i < names.Length; i++)
-                {
-                    // switch-caseラベルの設定
-                    il.MarkLabel(caseLabels[i]);
-                    il.Emit(OpCodes.Ldstr, names[i]); // 戻る
-                    il.Emit(OpCodes.Ret);             // 戻る
-                }
-
-                // ここまで流れてしまったら、InvalidOperationException
-
-                // switch-defaultラベルの設定
-                il.MarkLabel(defaultCase);
-                il.ThrowException(typeof(InvalidOperationException));
-
-                // 終了ラベルの設定
-                il.MarkLabel(returnLabel);
-                il.ThrowException(typeof(InvalidOperationException));
-            }
-
-            // 上記の処理をFunc<T, string>として返す。
-            Type f = typeof(Func<,>);
-            Type gf = f.MakeGenericType(type, typeof(string));
-            return (Func<T, string>)dm.CreateDelegate(gf);
+            // MulticastDelegateの組立とコンパイル
+            return Expression.Lambda<Func<T, string>>(
+                // Body
+                Expression.Block(
+                    new[] { sbBuffer, valueLong },
+                    // 変数宣言
+                    Expression.Assign(sbBuffer, Expression.New(typeof(StringBuilder))),
+                    Expression.Assign(valueLong, Expression.Convert(valueOfField, typeof(int))),
+                    // if(valueLong == 0){} else{}
+                    Expression.IfThenElse(
+                        Expression.Equal(valueLong, Expression.Constant(0, typeof(int))),
+                        // if(){ sbBuffer.Append(Value == 0 の Expression); }
+                        Expression.Call(sbBuffer, append, // 以下の何れかの値
+                            (members.FirstOrDefault(x => x.Value == 0)?.Expression)   // label
+                            ?? (Expression)Expression.Constant("0", typeof(string))), // "0"
+                        // else{ sbBuffer.Append(Value != 0 の Expression); }
+                        Expression.Block(members.Where(x => x.Value != 0).Select(x => x.Expression))
+                        ),
+                    // sbBuffer.ToString();
+                    Expression.Call(sbBuffer, toString)),
+                // Parameter
+                valueOfField
+                ).Compile();
         }
 
         #endregion

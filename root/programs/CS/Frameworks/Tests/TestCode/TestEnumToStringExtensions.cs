@@ -73,12 +73,14 @@ namespace TestCode
             WriteLine.OutPutDebugAndConsole("Saturday", DayOfWeek.Saturday.ToString1());
             WriteLine.OutPutDebugAndConsole("Friday", ((DayOfWeek)(5)).ToString1());
             WriteLine.OutPutDebugAndConsole("Saturday", ((DayOfWeek)(6)).ToString1());
+#if NETCORE
             WriteLine.OutPutDebugAndConsole("-------------------------");
             WriteLine.OutPutDebugAndConsole("Friday", DayOfWeek.Friday.ToString2());
             WriteLine.OutPutDebugAndConsole("Wednesday", DayOfWeek.Wednesday.ToString2());
             WriteLine.OutPutDebugAndConsole("Saturday", DayOfWeek.Saturday.ToString2());
             WriteLine.OutPutDebugAndConsole("Friday", ((DayOfWeek)(5)).ToString2());
             WriteLine.OutPutDebugAndConsole("Saturday", ((DayOfWeek)(6)).ToString2());
+#endif
         }
         /// <summary>BaseIsNotZeroEnumTest</summary>
         private static void BaseIsNotZeroEnumTest()
@@ -86,10 +88,12 @@ namespace TestCode
             WriteLine.OutPutDebugAndConsole("V2", BaseIsNotZeroEnum.V2.ToString1());
             WriteLine.OutPutDebugAndConsole("V3", BaseIsNotZeroEnum.V3.ToString1());
             WriteLine.OutPutDebugAndConsole("V4", BaseIsNotZeroEnum.V4.ToString1());
+#if NETCORE
             WriteLine.OutPutDebugAndConsole("-------------------------");
             WriteLine.OutPutDebugAndConsole("V2", BaseIsNotZeroEnum.V2.ToString2());
             WriteLine.OutPutDebugAndConsole("V3", BaseIsNotZeroEnum.V3.ToString2());
             WriteLine.OutPutDebugAndConsole("V4", BaseIsNotZeroEnum.V4.ToString2());
+#endif
         }
         ///// <summary>EmptyValueTest</summary>
         //private static void EmptyValueTest() //-> InvalidOperationException
@@ -98,10 +102,12 @@ namespace TestCode
         //    s = ((DayOfWeek)(-1)).ToString1();
         //    s = ((DayOfWeek)(7)).ToString1();
         //    //s = ((HttpStatusCode)(3)).ToString1();
+#if NETCORE
         //    WriteLine.OutPutDebugAndConsole("-------------------------");
         //    s = ((DayOfWeek)(-1)).ToString2();
         //    s = ((DayOfWeek)(7)).ToString2();
         //    //s = ((HttpStatusCode)(3)).ToString2();
+#endif
         //}
         /// <summary>ByteEnumTest</summary>
         private static void ByteEnumTest()
@@ -109,10 +115,12 @@ namespace TestCode
             WriteLine.OutPutDebugAndConsole("V0", ByteEnum.V0.ToString1());
             WriteLine.OutPutDebugAndConsole("V2", ByteEnum.V2.ToString1());
             WriteLine.OutPutDebugAndConsole("V4", ByteEnum.V4.ToString1());
+#if NETCORE
             WriteLine.OutPutDebugAndConsole("-------------------------");
             WriteLine.OutPutDebugAndConsole("V0", ByteEnum.V0.ToString2());
             WriteLine.OutPutDebugAndConsole("V2", ByteEnum.V2.ToString2());
             WriteLine.OutPutDebugAndConsole("V4", ByteEnum.V4.ToString2());
+#endif
         }
         /// <summary>LongEnumTest</summary>
         private static void LongEnumTest()
@@ -121,11 +129,13 @@ namespace TestCode
             WriteLine.OutPutDebugAndConsole("V2", LongEnum.V2.ToString1());
             WriteLine.OutPutDebugAndConsole("V1620100", LongEnum.V1620100.ToString1());
             WriteLine.OutPutDebugAndConsole("V23372036854775807", LongEnum.V23372036854775807.ToString1());
+#if NETCORE
             WriteLine.OutPutDebugAndConsole("-------------------------");
             WriteLine.OutPutDebugAndConsole("V0", LongEnum.V0.ToString2());
             WriteLine.OutPutDebugAndConsole("V2", LongEnum.V2.ToString2());
             WriteLine.OutPutDebugAndConsole("V1620100", LongEnum.V1620100.ToString2());
             WriteLine.OutPutDebugAndConsole("V23372036854775807", LongEnum.V23372036854775807.ToString2());
+#endif
         }
         /// <summary>FlagEnumTest</summary>
         private static void FlagEnumTest()
@@ -134,14 +144,16 @@ namespace TestCode
             WriteLine.OutPutDebugAndConsole("One,Two", (FlagsEnum.One | FlagsEnum.Two).ToString1()); // 既定では無理
             WriteLine.OutPutDebugAndConsole("Three", FlagsEnum.Three.ToString1());
             WriteLine.OutPutDebugAndConsole("Four", FlagsEnum.Four.ToString1());
+#if NETCORE
             WriteLine.OutPutDebugAndConsole("-------------------------");
             WriteLine.OutPutDebugAndConsole("One", FlagsEnum.One.ToString2());
             WriteLine.OutPutDebugAndConsole("One,Two", (FlagsEnum.One | FlagsEnum.Two).ToString2()); // ここ凄い。
             WriteLine.OutPutDebugAndConsole("Three", FlagsEnum.Three.ToString2());
             WriteLine.OutPutDebugAndConsole("Four", FlagsEnum.Four.ToString2());
+#endif
         }
-        #endregion
+#endregion
 
-        #endregion
+#endregion
     }
 }
