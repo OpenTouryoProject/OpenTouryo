@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：EnumToStringExtensions
-//* クラス日本語名  ：EnumToStringExtensions
+//* クラス名        ：EnumToString2Extensions
+//* クラス日本語名  ：EnumToString2Extensions
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -49,40 +49,24 @@ namespace Touryo.Infrastructure.Public.FastReflection
     // - EnumのToStringが遅いらしいので式木の力を借りた - Qiita
     //   https://qiita.com/Temarin/items/70fc1565c16feeda7303
 
-    /// <summary>EnumToStringExtensions</summary>
-    public static class EnumToStringExtensions
+    /// <summary>EnumToString2Extensions</summary>
+    public static class EnumToString2Extensions
     {
         /// <summary>スレッドセーフ</summary>
         private static ConcurrentDictionary<Type, MulticastDelegate>
-            ToStringFromEnumMethods = new ConcurrentDictionary<Type, MulticastDelegate>();
+            ToStringMethods = new ConcurrentDictionary<Type, MulticastDelegate>();
 
         #region public
 
-        /// <summary>ToStringOrNullFromEnum</summary>
+        /// <summary>ToString2（Emit版）</summary>
         /// <typeparam name="T">struct(Enum Field)</typeparam>
         /// <param name="value">値</param>
         /// <returns>列挙型を文字列化</returns>
-        public static string ToStringOrNullFromEnum<T>(this Nullable<T> value) where T : struct
+        public static string ToString2<T>(this Nullable<T> value) where T : struct
         {
             if (value.HasValue == true)
             {
-                return EnumToStringExtensions.ToStringFromEnum(value.Value);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>ToStringOrNullFromEnum</summary>
-        /// <typeparam name="T">struct(Enum Field)</typeparam>
-        /// <param name="value">値</param>
-        /// <returns>列挙型を文字列化</returns>
-        public static string ToStringFromEnum<T>(this Nullable<T> value) where T : struct
-        {
-            if (value.HasValue == true)
-            {
-                return EnumToStringExtensions.ToStringFromEnum(value.Value);
+                return EnumToString2Extensions.ToString2(value.Value);
             }
             else
             {
@@ -90,11 +74,11 @@ namespace Touryo.Infrastructure.Public.FastReflection
             }
         }
 
-        /// <summary>ToStringOrNullFromEnum</summary>
+        /// <summary>ToString2（Emit版）</summary>
         /// <typeparam name="T">struct(Enum Field)</typeparam>
         /// <param name="value">値</param>
         /// <returns>列挙型を文字列化</returns>
-        public static string ToStringFromEnum<T>(this T value) where T : struct
+        public static string ToString2<T>(this T value) where T : struct
         {
             // Enum Field
             Type type = typeof(T);
@@ -108,7 +92,7 @@ namespace Touryo.Infrastructure.Public.FastReflection
                 MulticastDelegate multicastDelegate = null;
 
                 // MulticastDelegateのロード
-                if (!EnumToStringExtensions.ToStringFromEnumMethods.TryGetValue(type, out multicastDelegate))
+                if (!EnumToString2Extensions.ToStringMethods.TryGetValue(type, out multicastDelegate))
                 {
                     if (type.GetCustomAttributes(typeof(FlagsAttribute), false).Length == 0)
                     {
@@ -116,12 +100,13 @@ namespace Touryo.Infrastructure.Public.FastReflection
                         // MulticastDelegateを生成し、
                         multicastDelegate = CreateToStringFromEnumFunc<T>();
                         // MulticastDelegateをキャッシュ
-                        EnumToStringExtensions.ToStringFromEnumMethods[type] = multicastDelegate;
+                        EnumToString2Extensions.ToStringMethods[type] = multicastDelegate;
                     }
                     else
                     {
                         // FlagsAttributeが有る場合、
-                        // MulticastDelegateを生成できないので、単なるToString()。
+                        // MulticastDelegateを生成できないので、
+                        // 単なるToString()。// コレが遅いらしい。
                         return value.ToString().Replace(" ", "");
                     }
                 }

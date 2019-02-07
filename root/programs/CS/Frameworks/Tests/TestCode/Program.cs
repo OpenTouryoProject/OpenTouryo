@@ -17,10 +17,11 @@ namespace TestCode
             
             try
             {
-            	TestEnumToStringExtensions testEnumToString = new TestEnumToStringExtensions();
-            	testEnumToString.Test();
-            	
-            	// echoすると例外
+                WriteLine.OutPutDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestEnumToStringExtensions.Root();
+                WriteLine.OutPutDebugAndConsole("----------------------------------------------------------------------------------------------------");
+
+                // echoすると例外
                 try
                 {
                     Console.ReadKey();
