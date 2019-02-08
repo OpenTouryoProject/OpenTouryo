@@ -119,12 +119,17 @@ namespace Touryo.Infrastructure.Public.FastReflection
 
             // パラメタ
             ParameterExpression valueOfField = Expression.Parameter(typeof(T));
+
             // 変数
-            ParameterExpression valueLong = Expression.Variable(typeof(int));
+            // - StringBuilder
             ParameterExpression sbBuffer = Expression.Variable(typeof(StringBuilder));
+            // - valueOfField値
+            ParameterExpression valueLong = Expression.Variable(typeof(int));
 
             // 列挙型のFlagsAttributeの有無
             bool hasFlgAttr = typeof(T).GetTypeInfo().IsDefined(typeof(FlagsAttribute));
+
+            #region パーツ
 
             // IFステートメント
             // 0 < sbBuffer.Lengthの場合、.Append(", ")する。
@@ -135,16 +140,14 @@ namespace Touryo.Infrastructure.Public.FastReflection
                         Expression.Property(sbBuffer, nameof(StringBuilder.Length))), // right
                     Expression.Call(sbBuffer, append, Expression.Constant(", ", typeof(string))));
 
-            // IFステートメント 2
-
-            // 匿名型の 'a 配列 = Enumのフィールド値の配列に対応
+            // 匿名型の 'a 配列 = EnumのField値の配列に対応
             var members = ((T[])Enum.GetValues(typeof(T))).Distinct().Select(x =>
             {
-                // フィールドの数値
+                // EnumのFieldの数値
                 int value = Convert.ToInt32(x);
-                // フィールドの数値
+                // EnumのFieldの数値
                 ConstantExpression flagValue = Expression.Constant(value);
-                // フィールドの文字列値
+                // EnumのFieldの文字列値
                 ConstantExpression label = Expression.Constant(x.ToString(), typeof(string));
 
                 // Select引数のλの戻り（ ≒ 匿名型の 'a）
@@ -152,13 +155,13 @@ namespace Touryo.Infrastructure.Public.FastReflection
                 {
                     Value = value,                  // フィールドの数値
                     Expression = (value == 0) ?     // Expression
-                        (Expression)label :         // == 0 ならフィールドの文字列値
-                        Expression.IfThen(          // != 0 なら、if(){}で FlagsAttributeの処理
+                        (Expression)label :         // value == 0 ならフィールドの文字列値
+                        Expression.IfThen(          // value != 0 なら、if(){}で FlagsAttributeの処理
                             Expression.Equal(       // 以下を比較
-                                flagValue,          // - フィールドの数値
-                                                    // - FlagsAttributeがある場合で異なる
-                                                    //   - ある場合 : valueLong
-                                                    //   - ない場合 : flagValue && valueLong
+                                flagValue,          // - EnumのFieldの数値
+                                                    // - （FlagsAttributeがある場合で異なる）値
+                                                    //   - ある場合 : flagValue && valueLong
+                                                    //   - ない場合 : valueLong
                                 hasFlgAttr ? (Expression)Expression.And(flagValue, valueLong) : valueLong),
                             Expression.Block( // ビット演算の処理
                                 separator, // 前述のIFステートメントで、   // .Append(", ")する。
@@ -166,22 +169,29 @@ namespace Touryo.Infrastructure.Public.FastReflection
                 };
             }).ToArray();
 
+            #endregion
+
+            #region 本体
+
             // MulticastDelegateの組立とコンパイル
             return Expression.Lambda<Func<T, string>>(
                 // Body
                 Expression.Block(
                     new[] { sbBuffer, valueLong },
                     // 変数宣言
+                    // StringBuilder
                     Expression.Assign(sbBuffer, Expression.New(typeof(StringBuilder))),
+                    // valueOfField値
                     Expression.Assign(valueLong, Expression.Convert(valueOfField, typeof(int))),
                     // if(valueLong == 0){} else{}
                     Expression.IfThenElse(
                         Expression.Equal(valueLong, Expression.Constant(0, typeof(int))),
-                        // if(){ sbBuffer.Append(Value == 0 の Expression); }
+                        // if(valueLong == 0){ sbBuffer.Append(flagValue == 0 の Expression); }
                         Expression.Call(sbBuffer, append, // 以下の何れかの値
                             (members.FirstOrDefault(x => x.Value == 0)?.Expression)   // label
                             ?? (Expression)Expression.Constant("0", typeof(string))), // "0"
-                        // else{ sbBuffer.Append(Value != 0 の Expression); }
+                        // else{ sbBuffer.Append(flagValue != 0 の Expression); }
+                        // members.Expression内で、valueLongを使用してビット演算などを行う。
                         Expression.Block(members.Where(x => x.Value != 0).Select(x => x.Expression))
                         ),
                     // sbBuffer.ToString();
@@ -189,6 +199,8 @@ namespace Touryo.Infrastructure.Public.FastReflection
                 // Parameter
                 valueOfField
                 ).Compile();
+
+            #endregion
         }
 
         #endregion
