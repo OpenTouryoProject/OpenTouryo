@@ -29,7 +29,9 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/11/12  西野 大介         新規作成
 //*  2019/01/16  西野 大介         X509KeyStorageFlagsのオプション・名前付き引数対応
-//*                                下位がExportableである必要性があった、また、ASP.NET上で実行する可能性もある。
+//*                                下位がExportableである必要性があった、
+//*                                また、ASP.NET上で実行する可能性もある。
+//*  2019/02/12  西野 大介         kidの追加処理を追加実装
 //**********************************************************************************
 
 using System;
@@ -411,6 +413,26 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             //{
             //    dic[JwtConst.d] = CustomEncode.ToBase64UrlString(ecParams.D);
             //}
+
+            // JSON Web Key (JWK) Thumbprint
+            // https://openid-foundation-japan.github.io/rfc7638.ja.html
+            // kid : https://openid-foundation-japan.github.io/rfc7638.ja.html#Example
+            //       https://openid-foundation-japan.github.io/rfc7638.ja.html#MembersUsed
+            //       kidには、JWK の JWK Thumbprint 値などが用いられるらしい。
+            //       ★ EC 公開鍵の必須メンバを辞書順に並べると、crv, kty, x, y となる。
+            dic[JwtConst.kid] = CustomEncode.ToBase64UrlString(
+                GetHash.GetHashBytes(
+                    CustomEncode.StringToByte(
+                        JsonConvert.SerializeObject(new
+                        {
+                            e = dic[JwtConst.crv],
+                            kty = dic[JwtConst.kty],
+                            x = dic[JwtConst.x],
+                            y = dic[JwtConst.y]
+                        }),
+                        CustomEncode.UTF_8),
+                    EnumHashAlgorithm.SHA256_M));
+
             return EccPublicKeyConverter.CreateJwkFromDictionary(dic, settings);
         }
         #endregion
