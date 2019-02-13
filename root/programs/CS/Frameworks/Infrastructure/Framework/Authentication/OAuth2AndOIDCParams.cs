@@ -118,12 +118,21 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
-        /// <summary>OAuth2JwtAssertionPrivatekey</summary>
-        public static string OAuth2JwtAssertionPrivatekey
+        /// <summary>OAuth2AndOidcRS256Pwd</summary>
+        public static string OAuth2AndOidcRS256Pwd
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("OAuth2JwtAssertionPrivatekey");
+                return GetConfigParameter.GetConfigValue("OAuth2AndOidcRS256Pwd");
+            }
+        }
+
+        /// <summary>OAuth2AndOidcRS256Pfx</summary>
+        public static string OAuth2AndOidcRS256Pfx
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("OAuth2AndOidcRS256Pfx");
             }
         }
 

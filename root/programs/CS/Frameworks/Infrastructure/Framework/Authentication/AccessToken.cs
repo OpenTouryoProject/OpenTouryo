@@ -39,17 +39,10 @@ using System.Text;
 using System.Linq;
 using System.Collections.Generic;
 
-#if NETSTD
-using Microsoft.AspNetCore.WebUtilities;
-#elif NET45
-using Touryo.Infrastructure.Public.Util;
-using Microsoft.Owin.Security.DataHandler.Encoder;
-#else
-using Microsoft.Owin.Security.DataHandler.Encoder;
-#endif
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Authentication
 {
@@ -59,7 +52,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
     public class AccessToken
     {
         /// <summary>汎用認証サイトの発行したAccessTokenを検証する。</summary>
-        /// <param name="jwtAccessToken">
+        /// <param name="access_token">
         /// AccessTokenで以下の項目が必要
         ///  - iss
         ///  - aud
@@ -75,7 +68,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="scopes">List(string)</param>
         /// <param name="jobj">JObject</param>
         /// <returns>検証結果</returns>
-        public static bool Verify(string jwtAccessToken,
+        public static bool Verify(string access_token,
             out string sub, out List<string> roles, out List<string> scopes, out JObject jobj)
         {
             sub = "";
@@ -84,14 +77,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
             jobj = null;
 
             // JWS検証
-            if (CmnJwtToken.Verify(jwtAccessToken))
+            string jwtPayload = "";
+            if (CmnJwtToken.Verify(access_token, out jwtPayload))
             {
-#if NETSTD
-                string jwtPayload = Encoding.UTF8.GetString(Base64UrlTextEncoder.Decode(jwtAccessToken.Split('.')[1]));
-#else
-                Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
-                string jwtPayload = Encoding.UTF8.GetString(base64UrlEncoder.Decode(jwtAccessToken.Split('.')[1]));
-#endif
                 jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
 
                 #region クレーム検証

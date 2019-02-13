@@ -30,6 +30,9 @@
 //*  2018/11/28  西野 大介         新規作成（分割）
 //**********************************************************************************
 
+using System;
+using System.Text;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -56,22 +59,79 @@ namespace Touryo.Infrastructure.Framework.Authentication
         ///  - scopes (option)
         ///  - その他 (option)
         /// </param>
+        /// <param name="jwtPayload">
+        /// JWS, JWS + JEWの場合があるのでペイロードを返す。
+        /// </param>
         /// <returns>検証結果</returns>
-        public static bool Verify(string jwtToken)
+        public static bool Verify(string jwtToken, out string jwtPayload)
         {
-            // 検証
-            JWS_RS256 jwsRS256 = null;
+            jwtPayload = "";
 
-            // 証明書を使用するか、Jwkを使用するか判定
+            JWE jwe = null;
+            JWS jws = null;
+
+            // 復号化
+            bool isFAPI2 = false;
+            if (3 < jwtToken.Split('.').Length)
+            {
+                isFAPI2 = true;
+
+                // ヘッダ
+                JWE_Header jweHeader = JsonConvert.DeserializeObject<JWE_Header>(
+                CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(jwtToken.Split('.')[0]), CustomEncode.UTF_8));
+
+                if (jweHeader.alg == JwtConst.RSA_OAEP)
+                {
+                    jwe = new JWE_RsaOaepAesGcm_X509(
+                        OAuth2AndOIDCParams.OAuth2AndOidcRS256Pfx,
+                        OAuth2AndOIDCParams.OAuth2AndOidcRS256Pwd);
+                }
+                else if (jweHeader.alg == JwtConst.RSA1_5)
+                {
+                    jwe = new JWE_Rsa15A128CbcHS256_X509(
+                        OAuth2AndOIDCParams.OAuth2AndOidcRS256Pfx,
+                        OAuth2AndOIDCParams.OAuth2AndOidcRS256Pwd);
+                }
+                else
+                {
+                    throw new NotSupportedException(string.Format(
+                        "This jwe alg of {0} is not supported.", jweHeader.alg));
+                }
+
+                jwe.Decrypt(jwtToken, out jwtToken);
+            }
+            else
+            {
+                isFAPI2 = false;
+            }
+
+            // 検証
+            // ヘッダ
             JWS_Header jwsHeader = JsonConvert.DeserializeObject<JWS_Header>(
                 CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(jwtToken.Split('.')[0]), CustomEncode.UTF_8));
 
+            if (jwsHeader.alg == JwtConst.ES256 && isFAPI2) { } // 正常
+            else if (jwsHeader.alg == JwtConst.RS256 && !isFAPI2) { } // 正常
+            else { throw new NotSupportedException("Unexpected combination of JWS and JWE."); }
+
+            // 証明書を使用するか、Jwkを使用するか判定
             if (string.IsNullOrEmpty(jwsHeader.jku)
                 || string.IsNullOrEmpty(jwsHeader.kid))
             {
                 // 旧バージョン
                 // 証明書を使用
-                jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
+                if (isFAPI2)
+                {
+#if NET45 || NET46
+                    throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
+#else
+                    jws = new JWS_ES256_X509(OAuth2AndOIDCParams.ES256Cer, "");
+#endif
+                }
+                else
+                {
+                    jws = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
+                }
             }
             else
             {
@@ -94,13 +154,34 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     if (jwkObject == null)
                     {
                         // 証明書を使用
-                        jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
+                        if (isFAPI2)
+                        {
+#if NET45 || NET46
+                            throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
+#else
+                            jws = new JWS_ES256_X509(OAuth2AndOIDCParams.ES256Cer, "");
+#endif
+                        }
+                        else
+                        {
+                            jws = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
+                        }
                     }
                     else
                     {
                         // Jwkを使用
-                        jwsRS256 = new JWS_RS256_Param(
-                            RsaPublicKeyConverter.JwkToParam(jwkObject));
+                        if (isFAPI2)
+                        {
+#if NET45 || NET46
+                            throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
+#else
+                            jws = new JWS_ES256_Param(EccPublicKeyConverter.JwkToParam(jwkObject), false);
+#endif
+                        }
+                        else
+                        {
+                            jws = new JWS_RS256_Param(RsaPublicKeyConverter.JwkToParam(jwkObject));
+                        }
                     }
                 }
                 else
@@ -118,19 +199,47 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     if (jwkObject == null)
                     {
                         // 証明書を使用
-                        jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
+                        if (isFAPI2)
+                        {
+#if NET45 || NET46
+                            throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
+#else
+                            jws = new JWS_ES256_X509(OAuth2AndOIDCParams.ES256Cer, "");
+#endif
+                        }
+                        else
+                        {
+                            jws = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
+                        }
                     }
                     else
                     {
                         // Jwkを使用
-                        jwsRS256 = new JWS_RS256_Param(
-                            RsaPublicKeyConverter.JwkToParam(jwkObject));
+                        if (isFAPI2)
+                        {
+#if NET45 || NET46
+                            throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
+#else
+                            jws = new JWS_ES256_Param(EccPublicKeyConverter.JwkToParam(jwkObject), false);
+#endif
+                        }
+                        else
+                        {
+                            jws = new JWS_RS256_Param(RsaPublicKeyConverter.JwkToParam(jwkObject));
+                        }
                     }
                 }
             }
 
-            // JWS検証
-            return jwsRS256.Verify(jwtToken);
+            bool ret = jws.Verify(jwtToken);
+
+            if (ret)
+            {
+                jwtPayload = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(jwtToken.Split('.')[1]), CustomEncode.us_ascii);
+            }
+
+            return ret;
         }
     }
 }

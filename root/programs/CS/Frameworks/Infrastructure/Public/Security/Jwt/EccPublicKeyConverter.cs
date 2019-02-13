@@ -28,10 +28,9 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/11/12  西野 大介         新規作成
-//*  2019/01/16  西野 大介         X509KeyStorageFlagsのオプション・名前付き引数対応
+//*  2019/01/16  西野 大介         X509KeyStorageFlags・名前付き引数対応
 //*                                下位がExportableである必要性があった、
 //*                                また、ASP.NET上で実行する可能性もある。
-//*  2019/02/12  西野 大介         kidの追加処理を追加実装
 //**********************************************************************************
 
 using System;
@@ -414,25 +413,6 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             //    dic[JwtConst.d] = CustomEncode.ToBase64UrlString(ecParams.D);
             //}
 
-            // JSON Web Key (JWK) Thumbprint
-            // https://openid-foundation-japan.github.io/rfc7638.ja.html
-            // kid : https://openid-foundation-japan.github.io/rfc7638.ja.html#Example
-            //       https://openid-foundation-japan.github.io/rfc7638.ja.html#MembersUsed
-            //       kidには、JWK の JWK Thumbprint 値などが用いられるらしい。
-            //       ★ EC 公開鍵の必須メンバを辞書順に並べると、crv, kty, x, y となる。
-            dic[JwtConst.kid] = CustomEncode.ToBase64UrlString(
-                GetHash.GetHashBytes(
-                    CustomEncode.StringToByte(
-                        JsonConvert.SerializeObject(new
-                        {
-                            e = dic[JwtConst.crv],
-                            kty = dic[JwtConst.kty],
-                            x = dic[JwtConst.x],
-                            y = dic[JwtConst.y]
-                        }),
-                        CustomEncode.UTF_8),
-                    EnumHashAlgorithm.SHA256_M));
-
             return EccPublicKeyConverter.CreateJwkFromDictionary(dic, settings);
         }
         #endregion
@@ -444,22 +424,22 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         public static ECParameters JwkToParam(string jwkString)
         {
             return EccPublicKeyConverter.JwkToParam(
-                JsonConvert.DeserializeObject<Dictionary<string, string>>(jwkString));
+                JsonConvert.DeserializeObject<JObject>(jwkString));
         }
 
         /// <summary>JwkToParam</summary>
-        /// <param name="jwk">JObject</param>
+        /// <param name="jwkObject">JObject</param>
         /// <returns>ECParameters（公開鍵）</returns>
-        public static ECParameters JwkToParam(Dictionary<string, string> jwk)
+        public static ECParameters JwkToParam(JObject jwkObject)
         {            
             ECParameters ecParams = new ECParameters();
 
             // 楕円曲線
-            ecParams.Curve = EccPublicKeyConverter.ECCurveDic[(string)jwk[JwtConst.crv]]; 
+            ecParams.Curve = EccPublicKeyConverter.ECCurveDic[(string)jwkObject[JwtConst.crv]]; 
 
             // 公開鍵の部分
-            ecParams.Q.X = CustomEncode.FromBase64UrlString((string)jwk[JwtConst.x]);
-            ecParams.Q.Y = CustomEncode.FromBase64UrlString((string)jwk[JwtConst.y]);
+            ecParams.Q.X = CustomEncode.FromBase64UrlString((string)jwkObject[JwtConst.x]);
+            ecParams.Q.Y = CustomEncode.FromBase64UrlString((string)jwkObject[JwtConst.y]);
             //if (jwk.ContainsKey(JwtConst.d)) // 秘密鍵の部分は処理しない
             //{
             //    ecParams.D = CustomEncode.FromBase64UrlString((string)jwk[JwtConst.d]);

@@ -36,9 +36,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
     public class JWS_Header
     {
         /// <summary>
-        /// alg=HS256 or RS256
-        /// JWSのデジタル署名アルゴリズムを指定する。
-        /// HS256 or RS256の署名アルゴリズムのみサポート。
+        /// alg=HS256 or RS256 or ES256
         /// </summary>
         public string alg = "";
 

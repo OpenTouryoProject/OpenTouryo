@@ -38,18 +38,11 @@ using System.Text;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 
-#if NETSTD
-using Microsoft.AspNetCore.WebUtilities;
-#elif NET45
-using Touryo.Infrastructure.Public.Util;
-using Microsoft.Owin.Security.DataHandler.Encoder;
-#else
-using Microsoft.Owin.Security.DataHandler.Encoder;
-#endif
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Security;
 using Touryo.Infrastructure.Public.Security.Jwt;
 
@@ -158,12 +151,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             if (jwtRS256.Verify(jwtAssertion))
             {
-#if NETSTD
-                string jwtPayload = Encoding.UTF8.GetString(Base64UrlTextEncoder.Decode(jwtAssertion.Split('.')[1]));
-#else
-                Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
-                string jwtPayload = Encoding.UTF8.GetString(base64UrlEncoder.Decode(jwtAssertion.Split('.')[1]));
-#endif
+                string jwtPayload = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(jwtAssertion.Split('.')[1]), CustomEncode.UTF_8);
+
                 jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
 
                 iss = (string)jobj[OAuth2AndOIDCConst.iss];

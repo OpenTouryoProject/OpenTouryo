@@ -32,14 +32,7 @@
 //**********************************************************************************
 
 using System;
-using System.Text;
 using System.Linq;
-
-#if NETSTD
-using Microsoft.AspNetCore.WebUtilities;
-#else
-using Microsoft.Owin.Security.DataHandler.Encoder;
-#endif
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -86,6 +79,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// </summary>
     public class IdToken
     {
+        #region Create
+        // AuthZに移動
+        #endregion
+
+        #region Verify
+
         /// <summary>汎用認証サイトの発行したIdTokenを検証する。</summary>
         /// <param name="id_token">string</param>
         /// <param name="access_token">string</param>
@@ -104,14 +103,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
             jobj = null;
 
             // JWS検証
-            if (CmnJwtToken.Verify(id_token))
+            string jwtPayload = "";
+            if (CmnJwtToken.Verify(id_token, out jwtPayload))
             {
-#if NETSTD
-                string jwtPayload = Encoding.UTF8.GetString(Base64UrlTextEncoder.Decode(id_token.Split('.')[1]));
-#else
-                Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
-                string jwtPayload = Encoding.UTF8.GetString(base64UrlEncoder.Decode(id_token.Split('.')[1]));
-#endif
                 jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
 
                 #region クレーム検証
@@ -210,6 +204,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // 認証に失敗
             return false;
         }
+
+        #endregion
 
         #region at_hash, c_hash, s_hash
 
