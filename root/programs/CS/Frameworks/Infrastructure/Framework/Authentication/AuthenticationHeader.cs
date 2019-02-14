@@ -30,6 +30,7 @@
 //*  2018/12/26  西野 大介         新規作成
 //**********************************************************************************
 
+using System;
 using System.Net.Http.Headers;
 using Touryo.Infrastructure.Public.Str;
 
@@ -38,6 +39,57 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// <summary>AuthenticationHeader</summary>
     public class AuthenticationHeader
     {
+        /// <summary>GetCredentials(Basic)</summary>
+        /// <param name="authHeader">string</param>
+        /// <param name="client_id">string</param>
+        /// <param name="client_secret">string</param>
+        /// <returns>bool</returns>
+        public static bool GetCredentials(string authHeader, out string client_id, out string client_secret)
+        {
+            client_id = "";
+            client_secret = "";
+            string[] credentials = null;
+
+            if (AuthenticationHeader.GetCredentials(authHeader, out credentials) == OAuth2AndOIDCConst.Basic)
+            {
+                // Length == 1 の ケースもサポート
+                if (credentials.Length == 1)
+                {
+                    client_id = credentials[0];
+                    return true;
+                }
+                else if (credentials.Length == 2)
+                {
+                    client_id = credentials[0];
+                    client_secret = credentials[1];
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>GetCredentials(Bearer)</summary>
+        /// <param name="authHeader">string</param>
+        /// <param name="bearerToken">string</param>
+        /// <returns>bool</returns>
+        public static bool GetCredentials(string authHeader, out string bearerToken)
+        {
+            bearerToken = "";
+            string[] credentials = null;
+
+            if (AuthenticationHeader.GetCredentials(authHeader, out credentials) == OAuth2AndOIDCConst.Bearer)
+            {
+                if (credentials.Length == 1)
+                {
+                    bearerToken = credentials[0];
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>GetCredentials</summary>
         /// <param name="authHeader">string</param>
         /// <param name="credentials">string[]</param>
@@ -73,7 +125,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>AuthenticationHeaderValue</returns>
         public static AuthenticationHeaderValue CreateBasicAuthenticationHeaderValue(string id, string secret)
         {
-            if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(secret))
+            // id + x509 のパターンをサポート
+            if (!string.IsNullOrEmpty(id)) // && !string.IsNullOrEmpty(secret))
             {
                 return new AuthenticationHeaderValue(
                     OAuth2AndOIDCConst.Basic,
