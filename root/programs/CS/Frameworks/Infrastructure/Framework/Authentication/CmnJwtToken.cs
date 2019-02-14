@@ -83,14 +83,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 if (jweHeader.alg == JwtConst.RSA_OAEP)
                 {
                     jwe = new JWE_RsaOaepAesGcm_X509(
-                        OAuth2AndOIDCParams.OAuth2AndOidcRS256Pfx,
-                        OAuth2AndOIDCParams.OAuth2AndOidcRS256Pwd);
+                        OAuth2AndOIDCParams.RS256Pfx,
+                        OAuth2AndOIDCParams.RS256Pwd);
                 }
                 else if (jweHeader.alg == JwtConst.RSA1_5)
                 {
                     jwe = new JWE_Rsa15A128CbcHS256_X509(
-                        OAuth2AndOIDCParams.OAuth2AndOidcRS256Pfx,
-                        OAuth2AndOIDCParams.OAuth2AndOidcRS256Pwd);
+                        OAuth2AndOIDCParams.RS256Pfx,
+                        OAuth2AndOIDCParams.RS256Pwd);
                 }
                 else
                 {

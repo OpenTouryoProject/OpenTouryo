@@ -118,8 +118,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
-        /// <summary>OAuth2AndOidcRS256Pwd</summary>
-        public static string OAuth2AndOidcRS256Pwd
+        /// <summary>RS256Pwd</summary>
+        public static string RS256Pwd
         {
             get
             {
@@ -127,12 +127,30 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
-        /// <summary>OAuth2AndOidcRS256Pfx</summary>
-        public static string OAuth2AndOidcRS256Pfx
+        /// <summary>RS256Pfx</summary>
+        public static string RS256Pfx
         {
             get
             {
                 return GetConfigParameter.GetConfigValue("OAuth2AndOidcRS256Pfx");
+            }
+        }
+
+        /// <summary>ClientCertPwd</summary>
+        public static string ClientCertPwd
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("OAuth2AndOidcClientCertPwd");
+            }
+        }
+
+        /// <summary>ClientCertPfx</summary>
+        public static string ClientCertPfx
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("OAuth2AndOidcClientCertPfx");
             }
         }
 
