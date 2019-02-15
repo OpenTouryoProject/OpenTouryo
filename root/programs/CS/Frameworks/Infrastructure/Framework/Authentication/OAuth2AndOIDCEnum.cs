@@ -67,7 +67,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
             client_secret_jwt,
 
             /// <summary>private_key_jwt</summary>
-            private_key_jwt
+            private_key_jwt,
+
+            /// <summary>tls_client_auth</summary>
+            tls_client_auth
         }
 
         #endregion

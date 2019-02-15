@@ -352,13 +352,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public static readonly string Claim_SHash = Claim_Base + s_hash;
 
         /// <summary>cnfクレームのurn</summary>
-        public static readonly string Claim_Cnf = Claim_Base + cnf + ":";
+        public static readonly string Claim_Cnf = Claim_Base + cnf;
 
         /// <summary>x5tクレームのurn</summary>
-        public static readonly string Claim_CnfX5t = Claim_Cnf + x5t;
+        public static readonly string Claim_CnfX5t = Claim_Cnf + ":" + x5t;
 
         /// <summary>x5uクレームのurn</summary>
-        public static readonly string Claim_CnfX5u = Claim_Cnf + x5u;
+        public static readonly string Claim_CnfX5u = Claim_Cnf + ":" + x5u;
 
         // 独自
 
