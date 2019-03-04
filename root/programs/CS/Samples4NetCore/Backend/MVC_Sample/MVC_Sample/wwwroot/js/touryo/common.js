@@ -39,6 +39,9 @@
 //*  2016/07/05  Sandeep           Added cache property in the Ajax ping request to prevent the session timeout.
 //*  2017/04/20  西野 大介         showModalDialogのないモダン・ブラウザをサポートするための実装。
 //*  2017/05/11  西野 大介         擬似dialog系のstyleについて色々調整を行った（css化やsize計算方法の変更）。
+//*  2019/03/04  西野 大介         リネーム（ResolveServerUrl -> Fx_ResolveServerUrl）
+//*  2019/03/04  西野 大介         二重送信防止のブラウザ判定処理を修正
+//*  2019/03/04  西野 大介         WebForms版とMVC版のDiffを取り易く修正。
 //**********************************************************************************
 
 // ---------------------------------------------------------------
@@ -62,11 +65,12 @@ var Form_IsSubmitted = false;
 // 戻り値  －
 // ---------------------------------------------------------------
 function Fx_Document_OnLoad2() {
+
     window.returnValue = "";
 
-	// Cross-browser detection(先頭に移動)
+    // Cross-browser detection(先頭に移動)
     Fx_WhichBrowser();
-    
+
     // Dialogの初期化
     Fx_InitDialogMask();      // Dialog Maskの初期化
     Fx_InitProgressDialog();  // Progress Dialogの初期化
@@ -86,7 +90,7 @@ function Fx_Document_OnLoad2() {
 function HttpPing() {
     $.ajax({
         type: 'GET',
-        url: ResolveServerUrl('~/Ping'),
+        url: Fx_ResolveServerUrl('~/Ping'),
         contentType: "application/json; charset=utf-8",
         data: {},
         cache:false,
@@ -95,6 +99,8 @@ function HttpPing() {
         error: function () {}
     });
 }
+
+// for diff
 
 // ---------------------------------------------------------------
 // このDialogを閉じた時に呼ばれる（ダミー）
@@ -271,8 +277,24 @@ function Fx_OnSubmit() {
         }
     }
     else {
-        // その他のブラウザ
-        // ・・・
+
+        // Other browsers
+
+        if (Form_IsSubmitted) {
+
+            // A postback or an Ajax request is processing
+            // Prevent other transmissions
+            return false;
+        }
+        else {
+
+            // 送信許可
+            Fx_SetProgressDialog();
+
+            // Set double submission prevention flag
+            Form_IsSubmitted = true;
+            return true;
+        }
     }
 }
 
@@ -381,7 +403,7 @@ function Fx_InitProgressDialog() {
     
     // imgを生成
     var _img = document.createElement("img");
-    _img.src = ResolveServerUrl("~/images/touryo/loading.gif");
+    _img.src = Fx_ResolveServerUrl("~/images/touryo/loading.gif");
     _img.style.width = "50px";
     _img.style.height = "50px";
     _img.alt = "処理中画像";
@@ -440,10 +462,9 @@ function Fx_DisplayProgressDialog() {
 
 
 //**********************************************************************************
-
-// ---------------------------------------------------------------
 //  フレームワーク機能（Ajax）
-// ---------------------------------------------------------------
+//**********************************************************************************
+
 // Ajax：処理中かどうか
 var Ajax_IsProgressed = false;
 // Flag variable for enable/disable "Prevent Double Submit functionality" for Ajax.BeginForm.
@@ -523,16 +544,20 @@ function Fx_ClearPreventDoubleSubmissionSettings()
 {
     // はじめにタイマをクリアする。
     clearTimeout(Fx_ProgressDialogTimer);
-    // プログレス ダイアログを非表示にする。
+
+    // Progress Dialogを非表示にする。
     try {
+
         Fx_DialogMaskOff();
         document.body.removeChild(Fx_AjaxProgressDialog);
+
     } catch (e) {
         //alert( e );//エラー内容
     }
 
     // 二重送信フラグの設定
     Ajax_IsProgressed = false;
+
     // Reset the form submission flag.
     Form_IsSubmitted = false;
     //Disables Prevent Double Submit finctionality by setting flag to flase.
@@ -723,7 +748,8 @@ function Fx_WhichBrowser() {
     Browser_IsFirefox = typeof InstallTrigger !== 'undefined';
 
     // Value will true, when the client browser is Chrome 1+
-    Browser_IsChrome = !!window.chrome && !!window.chrome.webstore;
+    //Browser_IsChrome = !!window.chrome && !!window.chrome.webstore;
+    Browser_IsChrome = !!window.chrome;
 
     // Value will true, when the client browser is Opera 8.0+
     Browser_IsOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
@@ -745,7 +771,7 @@ function Fx_WhichBrowser() {
 // Parameter     － Relative url
 // Return value  － Resolved relative url
 // ---------------------------------------------------------------
-function ResolveServerUrl(url) {
+function Fx_ResolveServerUrl(url) {
     if (url.indexOf("~/") === 0) {
         url = baseUrl + url.substring(2);
     }

@@ -32,6 +32,9 @@
 //*  2016/07/05  Sandeep           Added cache property in the Ajax ping request to prevent the session timeout.
 //*  2017/04/20  西野 大介         showModalDialogのないモダン・ブラウザをサポートするための実装。
 //*  2017/05/11  西野 大介         擬似dialog系のstyleについて色々調整を行った（css化やsize計算方法の変更）。
+//*  2019/03/04  西野 大介         リネーム（ResolveServerUrl -> Fx_ResolveServerUrl）
+//*  2019/03/04  西野 大介         二重送信防止のブラウザ判定処理を修正
+//*  2019/03/04  西野 大介         WebForms版とMVC版のDiffを取り易く修正。
 //**********************************************************************************
 
 // ---------------------------------------------------------------
@@ -79,22 +82,24 @@ function Fx_Document_OnLoad2() {
     // Sessionタイムアウト防止機能 - Open 棟梁 Wiki
     // https://opentouryo.osscons.jp/index.php?Session%E3%82%BF%E3%82%A4%E3%83%A0%E3%82%A2%E3%82%A6%E3%83%88%E9%98%B2%E6%AD%A2%E6%A9%9F%E8%83%BD
     // Webサーバへ一定時間ごとにpingを行う
-    //window.setInterval(HttpPing, 5 * 60 * 1000);    
+    //window.setInterval(HttpPing, 5 * 60 * 1000);
 }
 
-//// ---------------------------------------------------------------
-//// セッションタイムアウトを防ぐため、Webサーバへ一定期間ごとにPINGを行う
-//// ---------------------------------------------------------------
-//// 引数    －
-//// 戻り値  －
-//// ---------------------------------------------------------------
+// ---------------------------------------------------------------
+// セッションタイムアウトを防ぐため、Webサーバへ一定期間ごとにPINGを行う
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
 //function HttpPing() {
 //    $.ajax({
 //        type: 'GET',
-//        url: ResolveServerUrl("~/Aspx/Framework/ping.aspx"),
+//        url: Fx_ResolveServerUrl("~/Aspx/Framework/ping.aspx"),
 //        cache:false
 //    });
 //}
+
+// for diff
 
 // ---------------------------------------------------------------
 // 画面のスタイルなどを調整
@@ -315,8 +320,24 @@ function Fx_OnSubmit() {
         }
     }
     else {
-        // その他のブラウザ
-        // ・・・
+
+        // Other browsers
+
+        if (Form_IsSubmitted) {
+
+            // A postback or an Ajax request is processing
+            // Prevent other transmissions
+            return false;
+        }
+        else {
+
+            // 送信許可
+            Fx_SetProgressDialog();
+
+            // Set double submission prevention flag
+            Form_IsSubmitted = true;
+            return true;
+        }
     }
 }
 
@@ -361,7 +382,7 @@ window.addEventListener('resize', function (event) {
     }
 
     Fx_AjaxDialogMaskResizeTimer = setTimeout(function () {
-        
+
         // マスクのサイズの再計算
         Fx_AjaxDialogMask.style.height = Math.max.apply(null, [Fx_getBrowserHeight(), Fx_getContentsHeight()]) + "px";
         Fx_AjaxDialogMask.style.width = Math.max.apply(null, [Fx_getBrowserWidth(), Fx_getContentsWidth()]) + "px";
@@ -425,7 +446,7 @@ function Fx_InitProgressDialog() {
     
     // imgを生成
     var _img = document.createElement("img");
-    _img.src = ResolveServerUrl("~/images/touryo/loading.gif");
+    _img.src = Fx_ResolveServerUrl("~/images/touryo/loading.gif");
     _img.style.width = "50px";
     _img.style.height = "50px";
     _img.alt = "処理中画像";
@@ -1390,7 +1411,6 @@ function Fx_getContentsHeight() {
             document.documentElement.clientHeight]);
 }
 
-
 // ---------------------------------------------------------------
 // Cross-browser関連の関数
 // ---------------------------------------------------------------
@@ -1423,7 +1443,8 @@ function Fx_WhichBrowser() {
     Browser_IsFirefox = typeof InstallTrigger !== 'undefined';
 
     // Value will true, when the client browser is Chrome 1+
-    Browser_IsChrome = !!window.chrome && !!window.chrome.webstore;
+    //Browser_IsChrome = !!window.chrome && !!window.chrome.webstore;
+    Browser_IsChrome = !!window.chrome;
 
     // Value will true, when the client browser is Opera 8.0+
     Browser_IsOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
@@ -1434,7 +1455,6 @@ function Fx_WhichBrowser() {
     // Value will true, when the client browser having Blink engine
     //Browser_IsBlink = (Browser_IsChrome || Browser_IsOpera) && !!window.CSS;
 }
-
 
 // ---------------------------------------------------------------
 // その他
@@ -1466,7 +1486,7 @@ function Fx_GetFormObject() {
 // Parameter     － Relative url
 // Return value  － Resolved relative url
 // ---------------------------------------------------------------
-function ResolveServerUrl(url) {
+function Fx_ResolveServerUrl(url) {
     if (url.indexOf("~/") === 0) {
         url = baseUrl + url.substring(2);
     }
