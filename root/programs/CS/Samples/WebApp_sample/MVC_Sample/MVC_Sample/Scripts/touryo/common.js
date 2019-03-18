@@ -803,3 +803,17 @@ function Fx_GetRandomString(len) {
     }
     return result;
 }
+
+// ---------------------------------------------------------------
+// Debug出力
+// ---------------------------------------------------------------
+// 引数    testLabel: ラベル, object: オブジェクト
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_DebugOutput(testLabel, object) {
+    console.log(testLabel);
+    if (object) {
+        console.log(object);
+        console.log(JSON.stringify(object));
+    }
+}
