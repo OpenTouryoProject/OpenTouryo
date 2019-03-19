@@ -173,6 +173,7 @@ namespace MVC_Sample.Controllers
         /// </summary>
         /// <returns>IActionResult</returns>
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Scroll()
         {
             return View();

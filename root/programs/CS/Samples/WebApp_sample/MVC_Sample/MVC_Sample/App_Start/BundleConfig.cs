@@ -38,7 +38,7 @@ namespace MVC_Sample
         {
             // see : https://www.asp.net/ajax/cdn
 
-            string jqueryVersion = "3.1.1";
+            string jqueryVersion = "3.3.1";
 
             BundleTable.EnableOptimizations = true;
             BundleTable.Bundles.UseCdn = true; // same as: bundles.UseCdn = true;

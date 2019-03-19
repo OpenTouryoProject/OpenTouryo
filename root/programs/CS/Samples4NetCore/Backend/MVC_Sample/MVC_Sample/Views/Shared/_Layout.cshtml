@@ -26,34 +26,45 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
 
     @* ScriptTagHelperの属性を指定可能。*@
-    <link rel="stylesheet" href="~/css/css.min.css">
-    <script src="~/js/header.min.js"></script>
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/app/site.css" />
+        <link rel="stylesheet" href="~/css/touryo/Style.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/font-awesome.css" />
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/css.min.css" asp-append-version="true" />
+        <script src="~/js/header.min.js" asp-append-version="true"></script>
+    </environment>
 
     @RenderSection("HeaderScriptsSection", required: true)
 
     <script type="text/javascript">
         // Resolve URL in the javascript
-        var baseUrl = '@Url.Content("~/")'
+        var baseUrl = '@Url.Content("~/")';
     </script>
 
 </head>
 <body onload="Fx_Document_OnLoad();Fx_AdjustStyle();">
     <div class="page-header row" style="margin:0px;">
-        <div class="col-xs-10" style="padding: 0">
+        <div class="col-10" style="padding: 0">
             <div id="header-logo"><a href="@Url.Action("Index", "Home")"><img alt="logo" src="~/images/touryo/logo.png" /></a></div>
             <div id="header-title">
                 <span>You has signed-in as "@BaseViewModel.UserName".</span>
                 <span class="test">scroll value</span>
             </div>
         </div>
-        <div id="header-button" class="col-xs-2">
+        <div id="header-button" class="col-2">
             @if (User.Identity.IsAuthenticated)
             {
                 @* サインアウトボタンは、ユーザーが認証されている時だけ表示する *@
-                <button type="button" class="btn btn-info pull-right" onclick="window.location.href = '@Url.Action("Logout", "Home")';">Sign-out</button>
+                <button type="button" class="btn btn-info float-right" onclick="window.location.href = '@Url.Action("Logout", "Home")';">Sign-out</button>
             }
         </div>
     </div>
@@ -91,12 +102,25 @@
         </div>
     </footer>
 
-    <script src="~/js/footer.min.js"></script>
-    <script src="~/js/touryo.min.js"></script>
-    <script src="~/js/app.min.js"></script>
+    <environment include="Development">
+        <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+        <script src="~/js/app/site.js" asp-append-version="true"></script>
+        <script src="~/js/touryo/common.js" asp-append-version="true"></script>
+        <script src="~/js/touryo/else.js" asp-append-version="true"></script>
+        <script src="~/js/multiauthsite/qrcode.js" asp-append-version="true"></script>
+        <script src="~/js/multiauthsite/oauthimplicit.js" asp-append-version="true"></script>
+        <script src="~/js/multiauthsite/arrayBufferUtil.js" asp-append-version="true"></script>
+        <script src="~/js/multiauthsite/msWebauthn.js" asp-append-version="true"></script>
+        <script src="~/js/multiauthsite/ffWebauthn.js" asp-append-version="true"></script>        
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/footer.min.js" asp-append-version="true"></script>
+        <script src="~/js/app.min.js" asp-append-version="true"></script>
+        <script src="~/js/touryo.min.js" asp-append-version="true"></script>
+        <script src="~/js/multiauthsite.min.js" asp-append-version="true"></script>
+    </environment>
 
     @RenderSection("FooterScriptsSection", required: true)
-    
 </body>
 </html>
-
