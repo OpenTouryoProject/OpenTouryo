@@ -122,7 +122,7 @@ Namespace Controllers
             Else
                 ' 外部ログイン
                 Return Redirect(String.Format(
-                                "http://localhost:63359/MultiPurposeAuthSite/Account/OAuth2Authorize" _
+                                "https://localhost:44300/MultiPurposeAuthSite/Account/OAuth2Authorize" _
                                 & "?client_id=" & OAuth2AndOIDCParams.ClientID _
                                 & "&response_type=code" _
                                 & "&scope=profile%20email%20phone%20address%20openid" _
@@ -165,7 +165,7 @@ Namespace Controllers
                 If state = Me.State Then
                     ' CSRF(XSRF)対策のstateの検証は重要
                     response = Await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
-                        New Uri("http://localhost:63359/MultiPurposeAuthSite/OAuth2BearerToken"),
+                        New Uri("https://localhost:44300/MultiPurposeAuthSite/token"),
                         OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
                         HttpUtility.HtmlEncode("http://localhost:58496/MVC_Sample/Home/OAuth2AuthorizationCodeGrantClient"), code)
 
@@ -186,7 +186,7 @@ Namespace Controllers
 
                             ' /userinfoエンドポイントにアクセスする場合
                             response = Await OAuth2AndOIDCClient.GetUserInfoAsync(
-                                New Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic("access_token"))
+                                New Uri("https://localhost:44300/MultiPurposeAuthSite/userinfo"), dic("access_token"))
 
                             FormsAuthentication.RedirectFromLoginPage([sub], False)
                             Dim ui As New MyUserInfo([sub], Request.UserHostAddress)

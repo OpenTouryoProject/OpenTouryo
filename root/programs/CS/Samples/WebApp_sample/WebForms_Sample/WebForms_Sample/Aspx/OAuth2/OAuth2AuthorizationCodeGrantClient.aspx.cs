@@ -80,7 +80,7 @@ namespace WebForms_Sample.Aspx.OAuth2
                 if (state == this.State) // CSRF(XSRF)対策のstateの検証は重要
                 {
                     response = await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
-                        new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuth2BearerToken"),
+                        new Uri("https://localhost:44300/MultiPurposeAuthSite/token"),
                         OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
                         HttpUtility.HtmlEncode("http://localhost:9999/WebForms_Sample/Aspx/Auth/OAuthAuthorizationCodeGrantClient.aspx"), code);
 
@@ -99,7 +99,7 @@ namespace WebForms_Sample.Aspx.OAuth2
                         // ログインに成功
                         // /userinfoエンドポイントにアクセスする場合
                         response = await OAuth2AndOIDCClient.GetUserInfoAsync(
-                        new Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic["access_token"]);
+                        new Uri("https://localhost:44300/MultiPurposeAuthSite/userinfo"), dic["access_token"]);
 
                         FormsAuthentication.RedirectFromLoginPage(sub, false);
                         MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);

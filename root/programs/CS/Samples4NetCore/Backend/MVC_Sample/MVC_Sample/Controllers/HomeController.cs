@@ -157,7 +157,7 @@ namespace MVC_Sample.Controllers
             {
                 // 外部ログイン
                 return Redirect(string.Format(
-                    "http://localhost:63359/MultiPurposeAuthSite/Account/OAuth2Authorize"
+                    "https://localhost:44300/MultiPurposeAuthSite/Account/OAuth2Authorize"
                     + "?client_id=" + OAuth2AndOIDCParams.ClientID
                     + "&response_type=code"
                     + "&scope=profile%20email%20phone%20address%20openid"
@@ -208,7 +208,7 @@ namespace MVC_Sample.Controllers
                 if (state == this.State) // CSRF(XSRF)対策のstateの検証は重要
                 {
                     response = await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
-                        new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuth2BearerToken"),
+                        new Uri("https://localhost:44300/MultiPurposeAuthSite/token"),
                         OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
                         HttpUtility.HtmlEncode("http://localhost:58496/Home/OAuth2AuthorizationCodeGrantClient"), code);
 
@@ -230,7 +230,7 @@ namespace MVC_Sample.Controllers
 
                             // /userinfoエンドポイントにアクセスする場合
                             response = await OAuth2AndOIDCClient.GetUserInfoAsync(
-                                new Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic["access_token"]);
+                                new Uri("https://localhost:44300/MultiPurposeAuthSite/userinfo"), dic["access_token"]);
 
                             // 認証情報を作成する。
                             List<Claim> claims = new List<Claim>();
