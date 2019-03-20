@@ -27,7 +27,7 @@ Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.Dto
-Imports Touryo.Infrastructure.Public.Dbg
+Imports Touryo.Infrastructure.Public.Diagnostics
 
 Namespace Controllers
     ''' <summary>
