@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：EnumToString2Extensions
-//* クラス日本語名  ：EnumToString2Extensions
+//* クラス名        ：EnumToStringByExpressionTreeExtensions
+//* クラス日本語名  ：EnumToStringByExpressionTreeExtensions
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -43,8 +43,8 @@ namespace Touryo.Infrastructure.Public.FastReflection
     // 詳しくは、EnumToString1Extensions側を参照。
     // net側でMSBuildでビルドできないのでnetstandard側のみ提供。
 
-    /// <summary>EnumToString2Extensions</summary>
-    public static class EnumToString2Extensions
+    /// <summary>EnumToStringByExpressionTreeExtensions</summary>
+    public static class EnumToStringByExpressionTreeExtensions
     {
         /// <summary>スレッドセーフ</summary>
         private static ConcurrentDictionary<Type, MulticastDelegate>
@@ -52,15 +52,15 @@ namespace Touryo.Infrastructure.Public.FastReflection
 
         #region public
 
-        /// <summary>ToString2（式木版）</summary>
+        /// <summary>ToStringByExpTree（式木版）</summary>
         /// <typeparam name="T">struct(Enum Field)</typeparam>
         /// <param name="value">値</param>
         /// <returns>列挙型を文字列化</returns>
-        public static string ToString2<T>(this Nullable<T> value) where T : struct
+        public static string ToStringByExpTree<T>(this Nullable<T> value) where T : struct
         {
             if (value.HasValue == true)
             {
-                return EnumToString2Extensions.ToString2(value.Value);
+                return EnumToStringByExpressionTreeExtensions.ToStringByExpTree(value.Value);
             }
             else
             {
@@ -68,11 +68,11 @@ namespace Touryo.Infrastructure.Public.FastReflection
             }
         }
 
-        /// <summary>ToString2（式木版）</summary>
+        /// <summary>GetString（式木版）</summary>
         /// <typeparam name="T">struct(Enum Field)</typeparam>
         /// <param name="value">値</param>
         /// <returns>列挙型を文字列化</returns>
-        public static string ToString2<T>(this T value) where T : struct
+        public static string ToStringByExpTree<T>(this T value) where T : struct
         {
             // Enum Field
             Type type = typeof(T);
@@ -86,12 +86,12 @@ namespace Touryo.Infrastructure.Public.FastReflection
                 MulticastDelegate multicastDelegate = null;
 
                 // MulticastDelegateのロード
-                if (!EnumToString2Extensions.ToStringMethods.TryGetValue(type, out multicastDelegate))
+                if (!EnumToStringByExpressionTreeExtensions.ToStringMethods.TryGetValue(type, out multicastDelegate))
                 {
                     // こちらは、FlagsAttributeを処理可能。
-                    multicastDelegate = EnumToString2Extensions.CreateToString<T>();
+                    multicastDelegate = EnumToStringByExpressionTreeExtensions.CreateToString<T>();
                     // MulticastDelegateをキャッシュ
-                    EnumToString2Extensions.ToStringMethods[type] = multicastDelegate;
+                    EnumToStringByExpressionTreeExtensions.ToStringMethods[type] = multicastDelegate;
                 }
 
                 // MulticastDelegateでFastReflection

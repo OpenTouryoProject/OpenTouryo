@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：WriteLine
-//* クラス日本語名  ：WriteLineクラス
+//* クラス名        ：MyDebug
+//* クラス日本語名  ：MyDebugクラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/11/12  西野 大介         新規作成（X PlatformのDebugで利用拡大？
 //*  2018/11/29  西野 大介         ASP.NET Coreの出力で2つ出力されるので...
+//*  2019/03/20  西野 大介         リネーム（名前空間、クラス名、メソッド名）
 //**********************************************************************************
 
 using System;
@@ -37,65 +38,65 @@ using System.Security.Cryptography.X509Certificates;
 
 using Touryo.Infrastructure.Public.Str;
 
-namespace Touryo.Infrastructure.Public.Dbg
+namespace Touryo.Infrastructure.Public.Diagnostics
 {
-    /// <summary>WriteLineクラス</summary>
-    public class WriteLine
+    /// <summary>MyDebugクラス</summary>
+    public class MyDebug
     {
         #region Security
 
         #region JWT
 
-        /// <summary>JwtInspector</summary>
+        /// <summary>InspectJwt</summary>
         /// <param name="testLabel">string</param>
         /// <param name="jwt">string</param>
-        public static void JwtInspector(string testLabel, string jwt)
+        public static void InspectJwt(string testLabel, string jwt)
         {
             string[] aryStr = jwt.Split('.');
 
             if (aryStr.Length == 3)
             {
-                WriteLine.JwsInspector(testLabel, aryStr);
+                MyDebug.InspectJws(testLabel, aryStr);
             }
             else if (aryStr.Length == 5)
             {
-                WriteLine.JweInspector(testLabel, aryStr);
+                MyDebug.InspectJwe(testLabel, aryStr);
             }
             else { }
         }
 
         #region JWS
 
-        /// <summary>JwsInspector</summary>
+        /// <summary>InspectJws</summary>
         /// <param name="testLabel">string</param>
         /// <param name="jws">string[]</param>
-        public static void JwsInspector(string testLabel, string[] jws)
+        public static void InspectJws(string testLabel, string[] jws)
         {
-            WriteLine.OutPutDebugAndConsole(testLabel, "JWS Header: " + 
+            MyDebug.OutputDebugAndConsole(testLabel, "JWS Header: " + 
                 CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(jws[0]), CustomEncode.UTF_8));
 
-            WriteLine.OutPutDebugAndConsole(testLabel, "JWS Payload: " +
+            MyDebug.OutputDebugAndConsole(testLabel, "JWS Payload: " +
                 CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(jws[1]), CustomEncode.UTF_8));
 
-            WriteLine.OutPutDebugAndConsole(testLabel, "JWS Signature: " + jws[2]);
+            MyDebug.OutputDebugAndConsole(testLabel, "JWS Signature: " + jws[2]);
         }
 
         #endregion
 
         #region JWE
 
-        /// <summary>JweInspector</summary>
+        /// <summary>InspectJwe</summary>
         /// <param name="testLabel">string</param>
         /// <param name="jwe">string[]</param>
-        public static void JweInspector(string testLabel, string[] jwe)
+        public static void InspectJwe(string testLabel, string[] jwe)
         {
-            WriteLine.OutPutDebugAndConsole(testLabel, "JWE Header: " +
+            MyDebug.OutputDebugAndConsole(testLabel, "JWE Header: " +
                 CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(jwe[0]), CustomEncode.UTF_8));
 
-            WriteLine.OutPutDebugAndConsole(testLabel, "JWE Encrypted Key: " + jwe[1]);
-            WriteLine.OutPutDebugAndConsole(testLabel, "JWE Initialization Vector: " + jwe[2]);
-            WriteLine.OutPutDebugAndConsole(testLabel, "JWE Ciphertext: " + jwe[3]);
-            WriteLine.OutPutDebugAndConsole(testLabel, "JWE Authentication Tag: " + jwe[4]);
+            MyDebug.OutputDebugAndConsole(testLabel, "JWE Encrypted Key: " + jwe[1]);
+            MyDebug.OutputDebugAndConsole(testLabel, "JWE Initialization Vector: " + jwe[2]);
+            MyDebug.OutputDebugAndConsole(testLabel, "JWE Ciphertext: " + jwe[3]);
+            MyDebug.OutputDebugAndConsole(testLabel, "JWE Authentication Tag: " + jwe[4]);
         }
 
         #endregion
@@ -110,7 +111,7 @@ namespace Touryo.Infrastructure.Public.Dbg
         public static void PrivateX509KeyInspector(string testLabel, X509Certificate2 privateX509Key)
         {
             // X509Certificate2.PrivateKey
-            WriteLine.OutPutDebugAndConsole(
+            MyDebug.OutputDebugAndConsole(
                 testLabel, "X509Certificate2.PrivateKey: "
                 + (privateX509Key == null ? "is null" : "is not null"));
 
@@ -122,13 +123,13 @@ namespace Touryo.Infrastructure.Public.Dbg
             // SignatureAlgorithm.FriendlyName
             try
             {
-                WriteLine.OutPutDebugAndConsole(
+                MyDebug.OutputDebugAndConsole(
                     testLabel, "SignatureAlgorithm.FriendlyName: "
                     + privateX509Key.SignatureAlgorithm.FriendlyName);
             }
             catch (Exception ex)
             {
-                WriteLine.OutPutDebugAndConsole(
+                MyDebug.OutputDebugAndConsole(
                     testLabel, "SignatureAlgorithm.FriendlyName: "
                     + ex.GetType().ToString() + ", " + ex.Message);
             }
@@ -138,7 +139,7 @@ namespace Touryo.Infrastructure.Public.Dbg
             {
                 if (privateX509Key.HasPrivateKey)
                 {
-                    WriteLine.OutPutDebugAndConsole(
+                    MyDebug.OutputDebugAndConsole(
                         testLabel, "PrivateKey.ToString(): "
                         + (privateX509Key.PrivateKey == null ? "is null" : "is "
                         + privateX509Key.PrivateKey.ToString()));
@@ -146,7 +147,7 @@ namespace Touryo.Infrastructure.Public.Dbg
             }
             catch (Exception ex)
             {
-                WriteLine.OutPutDebugAndConsole(
+                MyDebug.OutputDebugAndConsole(
                     testLabel, "PrivateKey.ToString(): " 
                     + ex.GetType().ToString() + ", " + ex.Message);
             }
@@ -158,7 +159,7 @@ namespace Touryo.Infrastructure.Public.Dbg
         public static void PublicX509KeyInspector(string testLabel, X509Certificate2 publicX509Key)
         {
             // X509Certificate2.PublicKey
-            WriteLine.OutPutDebugAndConsole(
+            MyDebug.OutputDebugAndConsole(
                 testLabel, "publicX509Key: " 
                 + (publicX509Key == null ? "is null" : "is not null"));
             if (publicX509Key == null)
@@ -169,13 +170,13 @@ namespace Touryo.Infrastructure.Public.Dbg
             // SignatureAlgorithm.FriendlyName
             try
             {
-                WriteLine.OutPutDebugAndConsole(
+                MyDebug.OutputDebugAndConsole(
                     testLabel, "SignatureAlgorithm.FriendlyName: "
                     + publicX509Key.SignatureAlgorithm.FriendlyName);
             }
             catch (Exception ex)
             {
-                WriteLine.OutPutDebugAndConsole(
+                MyDebug.OutputDebugAndConsole(
                     testLabel, "SignatureAlgorithm.FriendlyName: "
                     + ex.GetType().ToString() + ", " + ex.Message);
             }
@@ -183,7 +184,7 @@ namespace Touryo.Infrastructure.Public.Dbg
             // PublicKey.ToString()
             if (publicX509Key.PublicKey != null)
             {
-                WriteLine.OutPutDebugAndConsole(
+                MyDebug.OutputDebugAndConsole(
                     testLabel, "PublicKey.ToString(): " 
                     + (publicX509Key.PublicKey == null ? "is null" : "is " 
                     + publicX509Key.PublicKey.ToString()));
@@ -193,7 +194,7 @@ namespace Touryo.Infrastructure.Public.Dbg
                 {
                     if (publicX509Key.PublicKey.Key != null)
                     {
-                        WriteLine.OutPutDebugAndConsole(
+                        MyDebug.OutputDebugAndConsole(
                             testLabel, "PublicKey.Key.ToString(): " 
                             + (publicX509Key.PublicKey.Key == null ? "is null" : "is " 
                             + publicX509Key.PublicKey.Key.ToString()));
@@ -201,7 +202,7 @@ namespace Touryo.Infrastructure.Public.Dbg
                 }
                 catch (Exception ex)
                 {
-                    WriteLine.OutPutDebugAndConsole(
+                    MyDebug.OutputDebugAndConsole(
                         testLabel, "PublicKey.Key.ToString(): " 
                         + ex.GetType().ToString() + ", " + ex.Message);
                 }
@@ -212,26 +213,27 @@ namespace Touryo.Infrastructure.Public.Dbg
 
         #endregion
 
-        #region OutPutDebugAndConsole
-        /// <summary>OutPutDebugAndConsole</summary>
+        #region OutputDebugAndConsole
+        /// <summary>OutputDebugAndConsole</summary>
         /// <param name="testLabel">string</param>
         /// <param name="s">string</param>
-        public static void OutPutDebugAndConsole(string testLabel, string s)
+        public static void OutputDebugAndConsole(string testLabel, string s)
         {
-            OutPutDebugAndConsole(testLabel + " > " + s);
+            OutputDebugAndConsole(testLabel + " > " + s);
         }
 
-        /// <summary>EnableOutPutToConsole</summary>
-        public static bool EnableOutPutToConsole = true;
-        /// <summary>EnableOutPutToDebug</summary>
-        public static bool EnableOutPutToDebug = true;
+        /// <summary>CanOutputToConsole</summary>
+        public static bool CanOutputToConsole = true;
 
-        /// <summary>OutPutDebugAndConsole</summary>
+        /// <summary>CanOutputToDebug</summary>
+        public static bool CanOutputToDebug = true;
+
+        /// <summary>OutputDebugAndConsole</summary>
         /// <param name="s">string</param>
-        public static void OutPutDebugAndConsole(string s)
+        public static void OutputDebugAndConsole(string s)
         {
-            if (EnableOutPutToConsole) Console.WriteLine(s);
-            if (EnableOutPutToDebug) Debug.WriteLine(s);
+            if (MyDebug.CanOutputToConsole) Console.WriteLine(s);
+            if (MyDebug.CanOutputToDebug) Debug.WriteLine(s);
         }
         #endregion
     }

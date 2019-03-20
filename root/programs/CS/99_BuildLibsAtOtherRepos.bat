@@ -1,5 +1,6 @@
 ﻿@echo off
 
+@rem 本バッチファイルの作成にあたり、以下のサイトを参考にしました。
 @rem 【Bat】【vim】香り屋Vimをダウンロードしてインストールまでするbatファイル - Qiita
 @rem https://qiita.com/koryuohproject/items/beed1a28ad6a1f60256d
 

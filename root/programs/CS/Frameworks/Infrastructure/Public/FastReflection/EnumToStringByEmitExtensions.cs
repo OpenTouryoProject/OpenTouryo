@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：EnumToString1Extensions
-//* クラス日本語名  ：EnumToString1Extensions
+//* クラス名        ：EnumToStringByEmitExtensions
+//* クラス日本語名  ：EnumToStringByEmitExtensions
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -49,8 +49,8 @@ namespace Touryo.Infrastructure.Public.FastReflection
     // 因みに単なるcache実装をしてみたが、Indexが列挙型と値の2段になるので、
     // ConcurrentDictionaryで上手くスレッドセーフに実装できない。
 
-    /// <summary>EnumToString1Extensions</summary>
-    public static class EnumToString1Extensions
+    /// <summary>EnumToStringByEmitExtensions</summary>
+    public static class EnumToStringByEmitExtensions
     {
         /// <summary>スレッドセーフ</summary>
         private static ConcurrentDictionary<Type, MulticastDelegate>
@@ -58,15 +58,15 @@ namespace Touryo.Infrastructure.Public.FastReflection
 
         #region public
 
-        /// <summary>ToString1（Emit版）</summary>
+        /// <summary>GetString（Emit版）</summary>
         /// <typeparam name="T">struct(Enum Field)</typeparam>
         /// <param name="value">値</param>
         /// <returns>列挙型を文字列化</returns>
-        public static string ToString1<T>(this Nullable<T> value) where T : struct
+        public static string ToStringByEmit<T>(this Nullable<T> value) where T : struct
         {
             if (value.HasValue == true)
             {
-                return EnumToString1Extensions.ToString1(value.Value);
+                return EnumToStringByEmitExtensions.ToStringByEmit(value.Value);
             }
             else
             {
@@ -74,11 +74,11 @@ namespace Touryo.Infrastructure.Public.FastReflection
             }
         }
 
-        /// <summary>ToString1（Emit版）</summary>
+        /// <summary>GetString（Emit版）</summary>
         /// <typeparam name="T">struct(Enum Field)</typeparam>
         /// <param name="value">値</param>
         /// <returns>列挙型を文字列化</returns>
-        public static string ToString1<T>(this T value) where T : struct
+        public static string ToStringByEmit<T>(this T value) where T : struct
         {
             // Enum Field
             Type type = typeof(T);
@@ -92,15 +92,15 @@ namespace Touryo.Infrastructure.Public.FastReflection
                 MulticastDelegate multicastDelegate = null;
 
                 // MulticastDelegateのロード
-                if (!EnumToString1Extensions.ToStringMethods.TryGetValue(type, out multicastDelegate))
+                if (!EnumToStringByEmitExtensions.ToStringMethods.TryGetValue(type, out multicastDelegate))
                 {
                     if (type.GetCustomAttributes(typeof(FlagsAttribute), false).Length == 0)
                     {
                         // FlagsAttributeが無い場合、
                         // MulticastDelegateを生成し、
-                        multicastDelegate = EnumToString1Extensions.CreateToString<T>();
+                        multicastDelegate = EnumToStringByEmitExtensions.CreateToString<T>();
                         // MulticastDelegateをキャッシュ
-                        EnumToString1Extensions.ToStringMethods[type] = multicastDelegate;
+                        EnumToStringByEmitExtensions.ToStringMethods[type] = multicastDelegate;
                     }
                     else
                     {

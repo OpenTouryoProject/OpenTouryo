@@ -32,6 +32,7 @@
 //*  2018/11/12  西野 大介         Util名前空間からDbg名前空間へ移動した。
 //*  2018/11/12  西野 大介         FastReflection適用はIndexerや再帰に対応できないのでダメだった
 //*                                PocoToPocoは再起しないのでObject Copyにはならない仕様になる。
+//*  2019/03/20  西野 大介         リネーム（名前空間）
 //**********************************************************************************
 
 using System;
@@ -39,7 +40,7 @@ using System.Text;
 using System.Collections;
 using System.Reflection;
 
-namespace Touryo.Infrastructure.Public.Dbg
+namespace Touryo.Infrastructure.Public.Diagnostics
 {
     /// <summary>オブジェクトのプロパティ分析クラス</summary>
     public class ObjectInspector

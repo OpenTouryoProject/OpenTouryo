@@ -1,7 +1,7 @@
 ﻿using System;
 
-using Touryo.Infrastructure.Public.Dbg;
 using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Diagnostics;
 
 namespace TestCode
 {
@@ -17,9 +17,9 @@ namespace TestCode
             
             try
             {
-                WriteLine.OutPutDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestEnumToStringExtensions.Root();
-                WriteLine.OutPutDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
 
                 // echoすると例外
                 try
@@ -30,7 +30,7 @@ namespace TestCode
             }
             catch (Exception ex)
             {
-                WriteLine.OutPutDebugAndConsole(ex.ToString());
+                MyDebug.OutputDebugAndConsole(ex.ToString());
             }
         }
     }

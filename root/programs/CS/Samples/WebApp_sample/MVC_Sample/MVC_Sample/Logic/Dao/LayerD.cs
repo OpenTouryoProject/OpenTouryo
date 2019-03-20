@@ -27,7 +27,7 @@ using System.Diagnostics;
 using Touryo.Infrastructure.Business.Dao;
 using Touryo.Infrastructure.Public.Dto;
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.Dbg;
+using Touryo.Infrastructure.Public.Diagnostics;
 
 namespace MVC_Sample.Logic.Dao
 {

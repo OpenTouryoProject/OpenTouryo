@@ -31,7 +31,7 @@ using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.Dto;
-using Touryo.Infrastructure.Public.Dbg;
+using Touryo.Infrastructure.Public.Diagnostics;
 
 namespace MVC_Sample.Controllers
 {

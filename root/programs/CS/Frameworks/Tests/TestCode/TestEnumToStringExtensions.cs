@@ -1,6 +1,6 @@
 ﻿using System;
 
-using Touryo.Infrastructure.Public.Dbg;
+using Touryo.Infrastructure.Public.Diagnostics;
 using Touryo.Infrastructure.Public.FastReflection;
 
 namespace TestCode
@@ -13,13 +13,13 @@ namespace TestCode
         public static void Root()
         {
             TestEnumToStringExtensions.BasicEnumTest();
-            WriteLine.OutPutDebugAndConsole("--------------------------------------------------");
+            MyDebug.OutputDebugAndConsole("--------------------------------------------------");
             TestEnumToStringExtensions.BaseIsNotZeroEnumTest();
-            WriteLine.OutPutDebugAndConsole("--------------------------------------------------");
+            MyDebug.OutputDebugAndConsole("--------------------------------------------------");
             //TestEnumToStringExtensions.EmptyValueTest();
-            //WriteLine.OutPutDebugAndConsole("--------------------------------------------------");
+            //MyDebug.OutputDebugAndConsole("--------------------------------------------------");
             TestEnumToStringExtensions.ByteEnumTest();
-            WriteLine.OutPutDebugAndConsole("--------------------------------------------------");
+            MyDebug.OutputDebugAndConsole("--------------------------------------------------");
             TestEnumToStringExtensions.FlagEnumTest();
         }
         #endregion
@@ -68,88 +68,88 @@ namespace TestCode
         /// <summary>BasicEnumTest</summary>
         private static void BasicEnumTest()
         {
-            WriteLine.OutPutDebugAndConsole("Friday", DayOfWeek.Friday.ToString1());
-            WriteLine.OutPutDebugAndConsole("Wednesday", DayOfWeek.Wednesday.ToString1());
-            WriteLine.OutPutDebugAndConsole("Saturday", DayOfWeek.Saturday.ToString1());
-            WriteLine.OutPutDebugAndConsole("Friday", ((DayOfWeek)(5)).ToString1());
-            WriteLine.OutPutDebugAndConsole("Saturday", ((DayOfWeek)(6)).ToString1());
+            MyDebug.OutputDebugAndConsole("Friday", DayOfWeek.Friday.ToStringByEmit());
+            MyDebug.OutputDebugAndConsole("Wednesday", DayOfWeek.Wednesday.ToStringByEmit());
+            MyDebug.OutputDebugAndConsole("Saturday", DayOfWeek.Saturday.ToStringByEmit());
+            MyDebug.OutputDebugAndConsole("Friday", ((DayOfWeek)(5)).ToStringByEmit());
+            MyDebug.OutputDebugAndConsole("Saturday", ((DayOfWeek)(6)).ToStringByEmit());
 #if NETCORE
-            WriteLine.OutPutDebugAndConsole("-------------------------");
-            WriteLine.OutPutDebugAndConsole("Friday", DayOfWeek.Friday.ToString2());
-            WriteLine.OutPutDebugAndConsole("Wednesday", DayOfWeek.Wednesday.ToString2());
-            WriteLine.OutPutDebugAndConsole("Saturday", DayOfWeek.Saturday.ToString2());
-            WriteLine.OutPutDebugAndConsole("Friday", ((DayOfWeek)(5)).ToString2());
-            WriteLine.OutPutDebugAndConsole("Saturday", ((DayOfWeek)(6)).ToString2());
+            MyDebug.OutputDebugAndConsole("-------------------------");
+            MyDebug.OutputDebugAndConsole("Friday", DayOfWeek.Friday.ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("Wednesday", DayOfWeek.Wednesday.ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("Saturday", DayOfWeek.Saturday.ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("Friday", ((DayOfWeek)(5)).ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("Saturday", ((DayOfWeek)(6)).ToStringByExpTree());
 #endif
         }
         /// <summary>BaseIsNotZeroEnumTest</summary>
         private static void BaseIsNotZeroEnumTest()
         {
-            WriteLine.OutPutDebugAndConsole("V2", BaseIsNotZeroEnum.V2.ToString1());
-            WriteLine.OutPutDebugAndConsole("V3", BaseIsNotZeroEnum.V3.ToString1());
-            WriteLine.OutPutDebugAndConsole("V4", BaseIsNotZeroEnum.V4.ToString1());
+            MyDebug.OutputDebugAndConsole("V2", BaseIsNotZeroEnum.V2.ToStringByEmit());
+            MyDebug.OutputDebugAndConsole("V3", BaseIsNotZeroEnum.V3.ToStringByEmit());
+            MyDebug.OutputDebugAndConsole("V4", BaseIsNotZeroEnum.V4.ToStringByEmit());
 #if NETCORE
-            WriteLine.OutPutDebugAndConsole("-------------------------");
-            WriteLine.OutPutDebugAndConsole("V2", BaseIsNotZeroEnum.V2.ToString2());
-            WriteLine.OutPutDebugAndConsole("V3", BaseIsNotZeroEnum.V3.ToString2());
-            WriteLine.OutPutDebugAndConsole("V4", BaseIsNotZeroEnum.V4.ToString2());
+            MyDebug.OutputDebugAndConsole("-------------------------");
+            MyDebug.OutputDebugAndConsole("V2", BaseIsNotZeroEnum.V2.ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("V3", BaseIsNotZeroEnum.V3.ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("V4", BaseIsNotZeroEnum.V4.ToStringByExpTree());
 #endif
         }
         ///// <summary>EmptyValueTest</summary>
         //private static void EmptyValueTest() //-> InvalidOperationException
         //{
         //    string s = "";
-        //    s = ((DayOfWeek)(-1)).ToString1();
-        //    s = ((DayOfWeek)(7)).ToString1();
-        //    //s = ((HttpStatusCode)(3)).ToString1();
+        //    s = ((DayOfWeek)(-1)).ToStringByEmit();
+        //    s = ((DayOfWeek)(7)).ToStringByEmit();
+        //    //s = ((HttpStatusCode)(3)).ToStringByEmit();
 #if NETCORE
-        //    WriteLine.OutPutDebugAndConsole("-------------------------");
-        //    s = ((DayOfWeek)(-1)).ToString2();
-        //    s = ((DayOfWeek)(7)).ToString2();
-        //    //s = ((HttpStatusCode)(3)).ToString2();
+        //    MyDebug.OutputDebugAndConsole("-------------------------");
+        //    s = ((DayOfWeek)(-1)).ToStringByExpTree();
+        //    s = ((DayOfWeek)(7)).ToStringByExpTree();
+        //    //s = ((HttpStatusCode)(3)).ToStringByExpTree();
 #endif
         //}
         /// <summary>ByteEnumTest</summary>
         private static void ByteEnumTest()
         {
-            WriteLine.OutPutDebugAndConsole("V0", ByteEnum.V0.ToString1());
-            WriteLine.OutPutDebugAndConsole("V2", ByteEnum.V2.ToString1());
-            WriteLine.OutPutDebugAndConsole("V4", ByteEnum.V4.ToString1());
+            MyDebug.OutputDebugAndConsole("V0", ByteEnum.V0.ToStringByEmit());
+            MyDebug.OutputDebugAndConsole("V2", ByteEnum.V2.ToStringByEmit());
+            MyDebug.OutputDebugAndConsole("V4", ByteEnum.V4.ToStringByEmit());
 #if NETCORE
-            WriteLine.OutPutDebugAndConsole("-------------------------");
-            WriteLine.OutPutDebugAndConsole("V0", ByteEnum.V0.ToString2());
-            WriteLine.OutPutDebugAndConsole("V2", ByteEnum.V2.ToString2());
-            WriteLine.OutPutDebugAndConsole("V4", ByteEnum.V4.ToString2());
+            MyDebug.OutputDebugAndConsole("-------------------------");
+            MyDebug.OutputDebugAndConsole("V0", ByteEnum.V0.ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("V2", ByteEnum.V2.ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("V4", ByteEnum.V4.ToStringByExpTree());
 #endif
         }
         /// <summary>LongEnumTest</summary>
         private static void LongEnumTest()
         {
-            WriteLine.OutPutDebugAndConsole("V0", LongEnum.V0.ToString1());
-            WriteLine.OutPutDebugAndConsole("V2", LongEnum.V2.ToString1());
-            WriteLine.OutPutDebugAndConsole("V1620100", LongEnum.V1620100.ToString1());
-            WriteLine.OutPutDebugAndConsole("V23372036854775807", LongEnum.V23372036854775807.ToString1());
+            MyDebug.OutputDebugAndConsole("V0", LongEnum.V0.ToStringByEmit());
+            MyDebug.OutputDebugAndConsole("V2", LongEnum.V2.ToStringByEmit());
+            MyDebug.OutputDebugAndConsole("V1620100", LongEnum.V1620100.ToStringByEmit());
+            MyDebug.OutputDebugAndConsole("V23372036854775807", LongEnum.V23372036854775807.ToStringByEmit());
 #if NETCORE
-            WriteLine.OutPutDebugAndConsole("-------------------------");
-            WriteLine.OutPutDebugAndConsole("V0", LongEnum.V0.ToString2());
-            WriteLine.OutPutDebugAndConsole("V2", LongEnum.V2.ToString2());
-            WriteLine.OutPutDebugAndConsole("V1620100", LongEnum.V1620100.ToString2());
-            WriteLine.OutPutDebugAndConsole("V23372036854775807", LongEnum.V23372036854775807.ToString2());
+            MyDebug.OutputDebugAndConsole("-------------------------");
+            MyDebug.OutputDebugAndConsole("V0", LongEnum.V0.ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("V2", LongEnum.V2.ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("V1620100", LongEnum.V1620100.ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("V23372036854775807", LongEnum.V23372036854775807.ToStringByExpTree());
 #endif
         }
         /// <summary>FlagEnumTest</summary>
         private static void FlagEnumTest()
         {
-            WriteLine.OutPutDebugAndConsole("One", FlagsEnum.One.ToString1());
-            WriteLine.OutPutDebugAndConsole("One,Two", (FlagsEnum.One | FlagsEnum.Two).ToString1()); // 既定では無理
-            WriteLine.OutPutDebugAndConsole("Three", FlagsEnum.Three.ToString1());
-            WriteLine.OutPutDebugAndConsole("Four", FlagsEnum.Four.ToString1());
+            MyDebug.OutputDebugAndConsole("One", FlagsEnum.One.ToStringByEmit());
+            MyDebug.OutputDebugAndConsole("One,Two", (FlagsEnum.One | FlagsEnum.Two).ToStringByEmit()); // 既定では無理
+            MyDebug.OutputDebugAndConsole("Three", FlagsEnum.Three.ToStringByEmit());
+            MyDebug.OutputDebugAndConsole("Four", FlagsEnum.Four.ToStringByEmit());
 #if NETCORE
-            WriteLine.OutPutDebugAndConsole("-------------------------");
-            WriteLine.OutPutDebugAndConsole("One", FlagsEnum.One.ToString2());
-            WriteLine.OutPutDebugAndConsole("One,Two", (FlagsEnum.One | FlagsEnum.Two).ToString2()); // ここ凄い。
-            WriteLine.OutPutDebugAndConsole("Three", FlagsEnum.Three.ToString2());
-            WriteLine.OutPutDebugAndConsole("Four", FlagsEnum.Four.ToString2());
+            MyDebug.OutputDebugAndConsole("-------------------------");
+            MyDebug.OutputDebugAndConsole("One", FlagsEnum.One.ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("One,Two", (FlagsEnum.One | FlagsEnum.Two).ToStringByExpTree()); // ここ凄い。
+            MyDebug.OutputDebugAndConsole("Three", FlagsEnum.Three.ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("Four", FlagsEnum.Four.ToStringByExpTree());
 #endif
         }
 #endregion
