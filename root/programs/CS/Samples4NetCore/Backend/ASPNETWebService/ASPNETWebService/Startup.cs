@@ -126,7 +126,7 @@ namespace ASPNETWebService
             #region パイプラインに追加
 
             // HttpContextのマイグレーション用
-            app.UseHttpContextAccessor();
+            app._UseHttpContextAccessor();
 
             // エラー画面
             app.UseExceptionHandler("/Home/Error");
@@ -171,7 +171,7 @@ namespace ASPNETWebService
             //services.Configure<AppConfiguration>(Configuration.GetSection("AppConfiguration"));
 
             // HttpContextのマイグレーション用
-            services.AddHttpContextAccessor();
+            services._AddHttpContextAccessor();
 
             #region Add Frameworks
 

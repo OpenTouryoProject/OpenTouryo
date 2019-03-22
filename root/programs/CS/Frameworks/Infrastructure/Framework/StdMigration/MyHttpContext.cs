@@ -35,7 +35,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace Touryo.Infrastructure.Framework.StdMigration
 {
-    /// <summary>System.Web.HttpContextのポーティング用クラス</summary>
+    /// <summary>
+    /// System.Web.HttpContextのポーティング用クラス
+    /// HttpContextExtensionsを使用して初期化（ASP.NET Core 2.0以前）。
+    /// </summary>
     public static class MyHttpContext
     {
         /// <summary>IHttpContextAccessor</summary>

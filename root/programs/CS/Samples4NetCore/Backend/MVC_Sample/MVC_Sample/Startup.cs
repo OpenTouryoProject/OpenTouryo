@@ -161,7 +161,7 @@ namespace MVC_Sample
             });
 
             // HttpContextのマイグレーション用
-            app.UseHttpContextAccessor();
+            app._UseHttpContextAccessor();
 
             // MVCをパイプラインに追加（routesも設定）
             app.UseMvc(routes =>
@@ -229,7 +229,7 @@ namespace MVC_Sample
             services.AddSession();
 
             // HttpContextのマイグレーション用
-            services.AddHttpContextAccessor();
+            services._AddHttpContextAccessor();
 
             #region Add Frameworks
 
