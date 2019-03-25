@@ -261,8 +261,8 @@ namespace EncAndDecUtilCUI
             #region RSA
             privateX509Key = new X509Certificate2(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
             publicX509Key = new X509Certificate2(Program.PublicRsaX509Path, "", x509KSF);
-            MyDebug.PrivateX509KeyInspector("RSA", privateX509Key);
-            MyDebug.PublicX509KeyInspector("RSA", publicX509Key);
+            MyDebug.InspectPrivateX509Key("RSA", privateX509Key);
+            MyDebug.InspectPublicX509Key("RSA", publicX509Key);
             #endregion
 
 #if NETCORE || NET47
@@ -271,8 +271,8 @@ namespace EncAndDecUtilCUI
 
             privateX509Key = new X509Certificate2(Program.PrivateDsaX509Path, Program.PfxPassword);
             publicX509Key = new X509Certificate2(Program.PublicDsaX509Path, "");
-            MyDebug.PrivateX509KeyInspector("DSA", privateX509Key);
-            MyDebug.PublicX509KeyInspector("DSA", publicX509Key);
+            MyDebug.InspectPrivateX509Key("DSA", privateX509Key);
+            MyDebug.InspectPublicX509Key("DSA", publicX509Key);
 
             DSA privateDSA = privateX509Key.GetDSAPrivateKey();
             MyDebug.OutputDebugAndConsole("privateDSA", (privateDSA == null ? "is null" : "is not null"));
@@ -283,8 +283,8 @@ namespace EncAndDecUtilCUI
             // https://github.com/dotnet/corefx/issues/18733#issuecomment-296723615
             privateX509Key = new X509Certificate2(Program.PrivateECDsaX509Path, Program.PfxPassword);
             publicX509Key = new X509Certificate2(Program.PublicECDsaX509Path, "");
-            MyDebug.PrivateX509KeyInspector("ECDsa", privateX509Key);
-            MyDebug.PublicX509KeyInspector("ECDsa", publicX509Key);
+            MyDebug.InspectPrivateX509Key("ECDsa", privateX509Key);
+            MyDebug.InspectPublicX509Key("ECDsa", publicX509Key);
 
             ECDsa privateECDsa = privateX509Key.GetECDsaPrivateKey();
             MyDebug.OutputDebugAndConsole("privateECDsa", (privateECDsa == null ? "is null" : "is not null"));

@@ -84,8 +84,8 @@ namespace EncAndDecUtilCUI
                 publicX509Path = @"SHA256RSA.cer";
                 privateX509Key = new X509Certificate2(privateX509Path, "test", x509KSF);
                 publicX509Key = new X509Certificate2(publicX509Path, "", x509KSF);
-                WriteLine.PrivateX509KeyInspector("RSA", privateX509Key);
-                WriteLine.PublicX509KeyInspector("RSA", publicX509Key);
+                WriteLine.InspectPrivateX509Key("RSA", privateX509Key);
+                WriteLine.InspectPublicX509Key("RSA", publicX509Key);
                 #endregion
 
                 #region DSA
@@ -94,8 +94,8 @@ namespace EncAndDecUtilCUI
                 publicX509Path = @"SHA256DSA.cer";
                 privateX509Key = new X509Certificate2(privateX509Path, "test");
                 publicX509Key = new X509Certificate2(publicX509Path, "");
-                WriteLine.PrivateX509KeyInspector("DSA", privateX509Key);
-                WriteLine.PublicX509KeyInspector("DSA", publicX509Key);
+                WriteLine.InspectPrivateX509Key("DSA", privateX509Key);
+                WriteLine.InspectPublicX509Key("DSA", publicX509Key);
                 DSA privateDSA = privateX509Key.GetDSAPrivateKey();
                 WriteLine.OutPutDebugAndConsole("privateDSA",
                     (privateDSA == null ? "is null" : "is not null"));
@@ -108,8 +108,8 @@ namespace EncAndDecUtilCUI
                 publicX509Path = @"SHA256ECDSA.cer";
                 privateX509Key = new X509Certificate2(privateX509Path, "test");
                 publicX509Key = new X509Certificate2(publicX509Path, "");
-                WriteLine.PrivateX509KeyInspector("ECDsa", privateX509Key);
-                WriteLine.PublicX509KeyInspector("ECDsa", publicX509Key);
+                WriteLine.InspectPrivateX509Key("ECDsa", privateX509Key);
+                WriteLine.InspectPublicX509Key("ECDsa", publicX509Key);
 
                 ECDsa privateECDsa = privateX509Key.GetECDsaPrivateKey();
                 WriteLine.OutPutDebugAndConsole("privateECDsa",

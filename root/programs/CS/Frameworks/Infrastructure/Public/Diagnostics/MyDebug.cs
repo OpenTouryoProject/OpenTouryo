@@ -105,10 +105,10 @@ namespace Touryo.Infrastructure.Public.Diagnostics
 
         #region X.509
 
-        /// <summary>PrivateX509KeyInspector</summary>
+        /// <summary>InspectPrivateX509Key</summary>
         /// <param name="testLabel">string</param>
         /// <param name="privateX509Key">X509Certificate2</param>
-        public static void PrivateX509KeyInspector(string testLabel, X509Certificate2 privateX509Key)
+        public static void InspectPrivateX509Key(string testLabel, X509Certificate2 privateX509Key)
         {
             // X509Certificate2.PrivateKey
             MyDebug.OutputDebugAndConsole(
@@ -153,10 +153,10 @@ namespace Touryo.Infrastructure.Public.Diagnostics
             }
         }
 
-        /// <summary>PublicX509KeyInspector</summary>
+        /// <summary>InspectPublicX509Key</summary>
         /// <param name="testLabel">string</param>
         /// <param name="publicX509Key">X509Certificate2</param>
-        public static void PublicX509KeyInspector(string testLabel, X509Certificate2 publicX509Key)
+        public static void InspectPublicX509Key(string testLabel, X509Certificate2 publicX509Key)
         {
             // X509Certificate2.PublicKey
             MyDebug.OutputDebugAndConsole(
