@@ -75,11 +75,11 @@ namespace TestCode
             MyDebug.OutputDebugAndConsole("Saturday", ((DayOfWeek)(6)).ToStringByEmit());
 #if NETCORE
             MyDebug.OutputDebugAndConsole("-------------------------");
-            MyDebug.OutputDebugAndConsole("Friday", DayOfWeek.Friday.ToStringByExpTree());
-            MyDebug.OutputDebugAndConsole("Wednesday", DayOfWeek.Wednesday.ToStringByExpTree());
-            MyDebug.OutputDebugAndConsole("Saturday", DayOfWeek.Saturday.ToStringByExpTree());
-            MyDebug.OutputDebugAndConsole("Friday", ((DayOfWeek)(5)).ToStringByExpTree());
-            MyDebug.OutputDebugAndConsole("Saturday", ((DayOfWeek)(6)).ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("Friday", DayOfWeek.Friday.ToStringByExpressionTree());
+            MyDebug.OutputDebugAndConsole("Wednesday", DayOfWeek.Wednesday.ToStringByExpressionTree());
+            MyDebug.OutputDebugAndConsole("Saturday", DayOfWeek.Saturday.ToStringByExpressionTree());
+            MyDebug.OutputDebugAndConsole("Friday", ((DayOfWeek)(5)).ToStringByExpressionTree());
+            MyDebug.OutputDebugAndConsole("Saturday", ((DayOfWeek)(6)).ToStringByExpressionTree());
 #endif
         }
         /// <summary>BaseIsNotZeroEnumTest</summary>
@@ -90,9 +90,9 @@ namespace TestCode
             MyDebug.OutputDebugAndConsole("V4", BaseIsNotZeroEnum.V4.ToStringByEmit());
 #if NETCORE
             MyDebug.OutputDebugAndConsole("-------------------------");
-            MyDebug.OutputDebugAndConsole("V2", BaseIsNotZeroEnum.V2.ToStringByExpTree());
-            MyDebug.OutputDebugAndConsole("V3", BaseIsNotZeroEnum.V3.ToStringByExpTree());
-            MyDebug.OutputDebugAndConsole("V4", BaseIsNotZeroEnum.V4.ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("V2", BaseIsNotZeroEnum.V2.ToStringByExpressionTree());
+            MyDebug.OutputDebugAndConsole("V3", BaseIsNotZeroEnum.V3.ToStringByExpressionTree());
+            MyDebug.OutputDebugAndConsole("V4", BaseIsNotZeroEnum.V4.ToStringByExpressionTree());
 #endif
         }
         ///// <summary>EmptyValueTest</summary>
@@ -104,9 +104,9 @@ namespace TestCode
         //    //s = ((HttpStatusCode)(3)).ToStringByEmit();
 #if NETCORE
         //    MyDebug.OutputDebugAndConsole("-------------------------");
-        //    s = ((DayOfWeek)(-1)).ToStringByExpTree();
-        //    s = ((DayOfWeek)(7)).ToStringByExpTree();
-        //    //s = ((HttpStatusCode)(3)).ToStringByExpTree();
+        //    s = ((DayOfWeek)(-1)).ToStringByExpressionTree();
+        //    s = ((DayOfWeek)(7)).ToStringByExpressionTree();
+        //    //s = ((HttpStatusCode)(3)).ToStringByExpressionTree();
 #endif
         //}
         /// <summary>ByteEnumTest</summary>
@@ -117,9 +117,9 @@ namespace TestCode
             MyDebug.OutputDebugAndConsole("V4", ByteEnum.V4.ToStringByEmit());
 #if NETCORE
             MyDebug.OutputDebugAndConsole("-------------------------");
-            MyDebug.OutputDebugAndConsole("V0", ByteEnum.V0.ToStringByExpTree());
-            MyDebug.OutputDebugAndConsole("V2", ByteEnum.V2.ToStringByExpTree());
-            MyDebug.OutputDebugAndConsole("V4", ByteEnum.V4.ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("V0", ByteEnum.V0.ToStringByExpressionTree());
+            MyDebug.OutputDebugAndConsole("V2", ByteEnum.V2.ToStringByExpressionTree());
+            MyDebug.OutputDebugAndConsole("V4", ByteEnum.V4.ToStringByExpressionTree());
 #endif
         }
         /// <summary>LongEnumTest</summary>
@@ -131,10 +131,10 @@ namespace TestCode
             MyDebug.OutputDebugAndConsole("V23372036854775807", LongEnum.V23372036854775807.ToStringByEmit());
 #if NETCORE
             MyDebug.OutputDebugAndConsole("-------------------------");
-            MyDebug.OutputDebugAndConsole("V0", LongEnum.V0.ToStringByExpTree());
-            MyDebug.OutputDebugAndConsole("V2", LongEnum.V2.ToStringByExpTree());
-            MyDebug.OutputDebugAndConsole("V1620100", LongEnum.V1620100.ToStringByExpTree());
-            MyDebug.OutputDebugAndConsole("V23372036854775807", LongEnum.V23372036854775807.ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("V0", LongEnum.V0.ToStringByExpressionTree());
+            MyDebug.OutputDebugAndConsole("V2", LongEnum.V2.ToStringByExpressionTree());
+            MyDebug.OutputDebugAndConsole("V1620100", LongEnum.V1620100.ToStringByExpressionTree());
+            MyDebug.OutputDebugAndConsole("V23372036854775807", LongEnum.V23372036854775807.ToStringByExpressionTree());
 #endif
         }
         /// <summary>FlagEnumTest</summary>
@@ -146,10 +146,10 @@ namespace TestCode
             MyDebug.OutputDebugAndConsole("Four", FlagsEnum.Four.ToStringByEmit());
 #if NETCORE
             MyDebug.OutputDebugAndConsole("-------------------------");
-            MyDebug.OutputDebugAndConsole("One", FlagsEnum.One.ToStringByExpTree());
-            MyDebug.OutputDebugAndConsole("One,Two", (FlagsEnum.One | FlagsEnum.Two).ToStringByExpTree()); // ここ凄い。
-            MyDebug.OutputDebugAndConsole("Three", FlagsEnum.Three.ToStringByExpTree());
-            MyDebug.OutputDebugAndConsole("Four", FlagsEnum.Four.ToStringByExpTree());
+            MyDebug.OutputDebugAndConsole("One", FlagsEnum.One.ToStringByExpressionTree());
+            MyDebug.OutputDebugAndConsole("One,Two", (FlagsEnum.One | FlagsEnum.Two).ToStringByExpressionTree()); // ここ凄い。
+            MyDebug.OutputDebugAndConsole("Three", FlagsEnum.Three.ToStringByExpressionTree());
+            MyDebug.OutputDebugAndConsole("Four", FlagsEnum.Four.ToStringByExpressionTree());
 #endif
         }
 #endregion

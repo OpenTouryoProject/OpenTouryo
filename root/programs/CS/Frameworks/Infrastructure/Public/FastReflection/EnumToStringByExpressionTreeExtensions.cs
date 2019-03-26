@@ -52,15 +52,15 @@ namespace Touryo.Infrastructure.Public.FastReflection
 
         #region public
 
-        /// <summary>ToStringByExpTree（式木版）</summary>
+        /// <summary>ToStringByExpressionTree（式木版）</summary>
         /// <typeparam name="T">struct(Enum Field)</typeparam>
         /// <param name="value">値</param>
         /// <returns>列挙型を文字列化</returns>
-        public static string ToStringByExpTree<T>(this Nullable<T> value) where T : struct
+        public static string ToStringByExpressionTree<T>(this Nullable<T> value) where T : struct
         {
             if (value.HasValue == true)
             {
-                return EnumToStringByExpressionTreeExtensions.ToStringByExpTree(value.Value);
+                return EnumToStringByExpressionTreeExtensions.ToStringByExpressionTree(value.Value);
             }
             else
             {
@@ -72,7 +72,7 @@ namespace Touryo.Infrastructure.Public.FastReflection
         /// <typeparam name="T">struct(Enum Field)</typeparam>
         /// <param name="value">値</param>
         /// <returns>列挙型を文字列化</returns>
-        public static string ToStringByExpTree<T>(this T value) where T : struct
+        public static string ToStringByExpressionTree<T>(this T value) where T : struct
         {
             // Enum Field
             Type type = typeof(T);
