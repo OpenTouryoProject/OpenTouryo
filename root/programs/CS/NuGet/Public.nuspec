@@ -6,7 +6,7 @@
     <version>2.4.0</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
-    <licenseUrl>https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LICENSE.txt</licenseUrl>
+    <license type="expression">Apache-2.0</license>
     <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root/programs/CS/Frameworks/Infrastructure/Public</projectUrl>
     <iconUrl>https://opentouryo.osscons.jp/OpenTouryo.ico</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
@@ -30,6 +30,8 @@
         <dependency id="Newtonsoft.Json" version="11.0.2" />
         <dependency id="System.Data.Odbc" version="4.5.0" />
         <dependency id="System.Data.SqlClient" version="4.5.1" />
+        <dependency id="System.Reflection.Emit.ILGeneration" version="4.3.0" />
+        <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
       </group>
     </dependencies>
   </metadata>

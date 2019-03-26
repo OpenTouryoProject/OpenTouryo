@@ -6,7 +6,7 @@
     <version>2.4.0</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
-    <licenseUrl>https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LICENSE.txt</licenseUrl>
+    <license type="expression">Apache-2.0</license>
     <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root/programs/CS/Frameworks/Infrastructure/Public</projectUrl>
     <iconUrl>https://opentouryo.osscons.jp/OpenTouryo.ico</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
@@ -17,11 +17,13 @@
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
       <group>
+        <dependency id="Touryo.Infrastructure.Public" version="2.4.0" />
         <dependency id="BouncyCastle.NetCore" version="1.8.3" />
         <dependency id="jose-jwt" version="2.4.0" />
         <dependency id="Newtonsoft.Json" version="11.0.2" />
       </group>
       <group targetFramework="netstandard2.0">
+        <dependency id="Touryo.Infrastructure.Public" version="2.4.0" />
         <dependency id="BouncyCastle.NetCore" version="1.8.3" />
         <dependency id="jose-jwt" version="2.4.0" />
         <dependency id="Newtonsoft.Json" version="11.0.2" />
@@ -34,15 +36,15 @@
     <file src="in\net452\OpenTouryo.Public.Security.dll" target="lib\net452" />
     <file src="in\net452\OpenTouryo.Public.Security.pdb" target="pdb\net452" />
     <file src="in\net452\OpenTouryo.Public.Security.xml" target="lib\net452" />
-    
+
     <file src="in\net46\OpenTouryo.Public.Security.dll" target="lib\net46" />
     <file src="in\net46\OpenTouryo.Public.Security.pdb" target="pdb\net46" />
     <file src="in\net46\OpenTouryo.Public.Security.xml" target="lib\net46" />
-    
+
     <file src="in\net47\OpenTouryo.Public.Security.dll" target="lib\net47" />
     <file src="in\net47\OpenTouryo.Public.Security.pdb" target="pdb\net47" />
     <file src="in\net47\OpenTouryo.Public.Security.xml" target="lib\net47" />
-    
+
     <file src="in\netstandard2.0\OpenTouryo.Public.Security.dll" target="lib\netstandard2.0" />
     <file src="in\netstandard2.0\OpenTouryo.Public.Security.pdb" target="pdb\netstandard2.0" />
     <file src="in\netstandard2.0\OpenTouryo.Public.Security.xml" target="lib\netstandard2.0" />

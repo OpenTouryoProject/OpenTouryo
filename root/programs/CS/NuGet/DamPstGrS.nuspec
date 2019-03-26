@@ -6,7 +6,7 @@
     <version>2.4.0</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
-    <licenseUrl>https://github.com/OpenTouryoProject/OpenTouryo/blob/master/license/LICENSE.txt</licenseUrl>
+    <license type="expression">Apache-2.0</license>
     <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root/programs/CS/Frameworks/Infrastructure/Public/Db/DamPstGrS</projectUrl>
     <iconUrl>https://opentouryo.osscons.jp/OpenTouryo.ico</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
@@ -19,6 +19,9 @@
       <group>
         <dependency id="Touryo.Infrastructure.Public" version="2.4.0" />
         <dependency id="Npgsql" version="4.0.3" />
+        <dependency id="System.Runtime.CompilerServices.Unsafe" version="4.5.2" />
+        <dependency id="System.Threading.Tasks.Extensions" version="4.5.1" />
+        <dependency id="System.ValueTuple" version="4.5.0" />
       </group>
       <group targetFramework="netstandard2.0">
         <dependency id="Touryo.Infrastructure.Public" version="2.4.0" />
