@@ -95,13 +95,7 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
 - C:\root\programs\CS  
 - C:\root\programs\VB
 
-実行するバッチファイルは、以下の表のとおりです。
-なお、以下の表で
-- ○: 必ず実行する
-- △: アプリケーションの形態によっては、実行する必要がある
-- 空白: 実行する必要はない
-
-を表します。
+`0_ExecAllBat.bat` を実行すると、必要なバッチファイルをまとめて実行することができます。下の表を参考に、実行する必要のあるバッチファイルをご確認いただき、必要に応じて `0_ExecAllBat.bat` をカスタマイズした上で実行してください。
 
 <table Border="1">
 <tr>
@@ -262,13 +256,13 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
 <Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
 </tr>
 <tr>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">99_BuildLibsByBatsAtOtherRepos.bat</td>
+<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">99_BuildLibsAtOtherRepos.bat</td>
 <Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">当該リポジトリのBusiness名前空間を他のリポジトリで利用する際のバッチ（OpenTouryoTemplates&nbsp;-&nbsp;master&nbsp;ブランチ用）</td>
 <Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
 <Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
 </tr>
 <tr>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">99_BuildLibsByBatsAtOtherReposInTimeOfDev.bat</td>
+<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">99_BuildLibsAtOtherReposInTimeOfDev.bat</td>
 <Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">当該リポジトリのBusiness名前空間を他のリポジトリで利用する際のバッチ（OpenTouryo&nbsp;-&nbsp;develop&nbsp;ブランチ用）</td>
 <Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
 <Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
@@ -341,8 +335,6 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
   <span style="color: red;">*3</span>　.NET Standard、.NET Core ベースのアプリケーションを開発する場合は必須<br />
   <span style="color: red;">*4</span>　実際のアプリケーションの形態に応じて選択してください
 </div>
-
-上の表を参考に、ビルドバッチファイルを番号順に実行してプログラムをビルドしてください。  
 
 - 必要であれば、環境に合わせて、z_Common.bat 内の BUILDFILEPATH を書き換えてください。  
 
