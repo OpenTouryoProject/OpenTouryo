@@ -3,7 +3,7 @@
   <metadata>
     <id>Touryo.Infrastructure.Public.Db.DamPstGrS</id>
     <title>OpenTouryo.DamPstGrS</title>
-    <version>2.4.1</version>
+    <version>2.4.2</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
     <license type="expression">Apache-2.0</license>
@@ -17,14 +17,14 @@
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
       <group>
-        <dependency id="Touryo.Infrastructure.Public" version="2.4.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="2.4.2" />
         <dependency id="Npgsql" version="4.0.3" />
         <dependency id="System.Runtime.CompilerServices.Unsafe" version="4.5.2" />
         <dependency id="System.Threading.Tasks.Extensions" version="4.5.1" />
         <dependency id="System.ValueTuple" version="4.5.0" />
       </group>
       <group targetFramework="netstandard2.0">
-        <dependency id="Touryo.Infrastructure.Public" version="2.4.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="2.4.2" />
         <dependency id="Npgsql" version="4.0.3" />
       </group>
     </dependencies>
