@@ -41,18 +41,18 @@
 </head>
 <body onload="Fx_Document_OnLoad();Fx_AdjustStyle();">
     <div class="page-header row">
-        <div class="col-xs-10" style="padding: 0">
+        <div class="col-10" style="padding: 0">
             <div id="header-logo"><a href="@Url.Action("Index", "Home")"><img alt="logo" src="~/images/touryo/logo.png" /></a></div>
             <div id="header-title">
                 <span>You has signed-in as "@BaseViewModel.UserName".</span>
                 <span class="test">scroll value</span>
             </div>
         </div>
-        <div id="header-button" class="col-xs-2">
+        <div id="header-button" class="col-2">
 @if (User.Identity.IsAuthenticated)
 {
             @* サインアウトボタンは、ユーザーが認証されている時だけ表示する *@
-            <button type="button" class="btn btn-info pull-right" onclick="window.location.href = '@Url.Action("Logout", "Home")';">Sign-out</button>
+            <button type="button" class="btn btn-info float-right" onclick="window.location.href = '@Url.Action("Logout", "Home")';">Sign-out</button>
 }
         </div>
     </div>

@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{67BFC0BB-23EA-4AFF-9BB7-E0F67D01D5EF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Touryo.Infrastructure.Public.Security</RootNamespace>
+    <AssemblyName>OpenTouryo.Public.Security</AssemblyName>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Build_net45\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET45</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Build_net45\OpenTouryo.Public.Security.XML</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Build_net45r\</OutputPath>
+    <DefineConstants>TRACE;NET45</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Build_net45r\OpenTouryo.Public.Security.XML</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\BouncyCastle.NetCore.1.8.3\lib\net20\BouncyCastle.Crypto.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="jose-jwt, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\jose-jwt.2.4.0\lib\net40\jose-jwt.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="HashNameConst.cs" />
+    <Compile Include="EnumHashAlgorithm.cs" />
+    <Compile Include="EnumKeyedHashAlgorithm.cs" />
+    <Compile Include="EnumSymmetricAlgorithm.cs" />
+    <Compile Include="EnumASymmetricAlgorithm.cs" />
+    <Compile Include="EnumDigitalSignAlgorithm.cs" />
+    <Compile Include="GetHash.cs" />
+    <Compile Include="GetKeyedHash.cs" />
+    <Compile Include="SymmetricCryptography.cs" />
+    <Compile Include="ASymmetricCryptography.cs" />
+    <Compile Include="HashAlgorithmCmnFunc.cs" />
+    <Compile Include="AsymmetricAlgorithmCmnFunc.cs" />
+    <Compile Include="DigitalSign.cs" />
+    <Compile Include="DigitalSignParam.cs" />
+    <Compile Include="DigitalSignXML.cs" />
+    <Compile Include="DigitalSignX509.cs" />
+    <Compile Include="MsgAuthCode.cs" />
+    <Compile Include="IdentityImpersonation.cs" />
+    <Compile Include="Aead\AeadResult.cs" />
+    <Compile Include="Aead\AuthEncrypt.cs" />
+    <Compile Include="Aead\AeadAesGcm.cs" />
+    <Compile Include="Aead\AeadA128Gcm.cs" />
+    <Compile Include="Aead\AeadA192Gcm.cs" />
+    <Compile Include="Aead\AeadA256Gcm.cs" />
+    <Compile Include="Aead\AeadAesCbc.cs" />
+    <Compile Include="Aead\AeadA128CbcHS256.cs" />
+    <Compile Include="Aead\AeadA192CbcHS384.cs" />
+    <Compile Include="Aead\AeadA256CbcHS512.cs" />
+    <Compile Include="Jwt\JwtConst.cs" />
+    <Compile Include="Jwt\JWE.cs" />
+    <Compile Include="Jwt\JWE_Header.cs" />
+    <Compile Include="Jwt\JWE_Rsa15A128CbcHS256.cs" />
+    <Compile Include="Jwt\JWE_Rsa15A128CbcHS256_Param.cs" />
+    <Compile Include="Jwt\JWE_Rsa15A128CbcHS256_X509.cs" />
+    <Compile Include="Jwt\JWE_RsaOaepAesGcm.cs" />
+    <Compile Include="Jwt\JWE_RsaOaepAesGcm_Param.cs" />
+    <Compile Include="Jwt\JWE_RsaOaepAesGcm_X509.cs" />
+    <Compile Include="Jwt\JWS.cs" />
+    <Compile Include="Jwt\JWS_Header.cs" />
+    <Compile Include="Jwt\JWS_HS256.cs" />
+    <Compile Include="Jwt\JWS_RS256.cs" />
+    <Compile Include="Jwt\JWS_RS256_Param.cs" />
+    <Compile Include="Jwt\JWS_RS256_X509.cs" />
+    <Compile Include="Jwt\JWS_RS256_XML.cs" />
+    <Compile Include="Jwt\JwkSet.cs" />
+    <Compile Include="Jwt\PrivateKeyConverter.cs" />
+    <Compile Include="Jwt\RsaPublicKeyConverter.cs" />
+    <Compile Include="Jwt\EccPublicKeyConverter.cs" />
+    <Compile Include="KeyExg\BaseKeyExchange.cs" />
+    <Compile Include="KeyExg\EcdhCngAlice.cs" />
+    <Compile Include="KeyExg\EcdhCngBob.cs" />
+    <Compile Include="KeyExg\EcdhKeyExchange.cs" />
+    <Compile Include="KeyExg\EnumKeyExchange.cs" />
+    <Compile Include="KeyExg\RsaAlice.cs" />
+    <Compile Include="KeyExg\RsaBob.cs" />
+    <Compile Include="KeyExg\RsaKeyExchange.cs" />
+    <Compile Include="KeyExg\RsaOaepAlice.cs" />
+    <Compile Include="KeyExg\RsaOaepBob.cs" />
+    <Compile Include="KeyExg\RsaPkcs1Alice.cs" />
+    <Compile Include="KeyExg\RsaPkcs1Bob.cs" />
+    <Compile Include="Pwd\GetPassword.cs" />
+    <Compile Include="Pwd\GetPasswordHashV1.cs" />
+    <Compile Include="Pwd\GetPasswordHashV2.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows インストーラー 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Public_net45.csproj">
+      <Project>{81cc573a-0df9-49e5-af10-a50f9b194da5}</Project>
+      <Name>Public_net45</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

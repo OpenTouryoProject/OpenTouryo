@@ -33,28 +33,25 @@
 //*  2014/03/13  西野 大介         devps(1703):Createメソッドを使用してcryptoオブジェクトを作成します。
 //*  2014/03/13  西野 大介         devps(1725):暗号クラスの使用終了時にデータをクリアする。
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
+//*  2018/10/30  西野 大介         各種プロバイダのサポートを追加
+//*  2018/10/30  西野 大介         RSAEncryptionPadding指定の追加。
+//*  2018/11/09  西野 大介         インスタンス・メソッド化
+//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
+//*  2019/01/29  西野 大介         X.509対応（JWE（RSAES-OAEP and AES GCM）対応
 //**********************************************************************************
 
+// 方法 : キー コンテナーに非対称キーを格納する | Microsoft Docs
+// https://docs.microsoft.com/ja-jp/dotnet/standard/security/how-to-store-asymmetric-keys-in-a-key-container
+
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
 using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security
 {
-    // 一種類しかないのでEnum不要
-
-    ///// <summary>
-    ///// 対称アルゴリズムによる
-    ///// 暗号化サービスプロバイダの種類
-    ///// </summary>
-    //public enum EnumASymmetricAlgorithm
-    //{
-    //    /// <summary>RSACryptoServiceProvider</summary>
-    //    RSACryptoServiceProvider
-    //};
-
-    /// <summary>下位互換のため</summary>
-    public class UnSymmetricCryptography : ASymmetricCryptography { }
+    ///// <summary>下位互換のため</summary>
+    //public class UnSymmetricCryptography : ASymmetricCryptography { }
 
     /// <summary>非対称アルゴリズムによる暗号化・復号化クラス</summary>
     /// <remarks>
@@ -62,111 +59,246 @@ namespace Touryo.Infrastructure.Public.Security
     /// </remarks>
     public class ASymmetricCryptography
     {
-        #region Encrypt(publicKey)
+        #region mem & prop & constructor
 
+        #region 鍵
+        /// <summary>_asa</summary>
+        private AsymmetricAlgorithm _asa = null;
+
+        /// <summary>AsymmetricAlgorithm</summary>
+        public AsymmetricAlgorithm AsymmetricAlgorithm
+        {
+            get
+            {
+                return this._asa;
+            }
+        }
+
+        /// <summary>PublicXmlKey</summary>
+        public string PublicXmlKey
+        {
+            get
+            {
+                RSA rsa = (RSA)this._asa;
+                return rsa.ToXmlString(false);
+            }
+        }
+
+        /// <summary>PrivateXmlKey</summary>
+        public string PrivateXmlKey
+        {
+            get
+            {
+                RSA rsa = (RSA)this._asa;
+                return rsa.ToXmlString(true);
+            }
+        }
+        #endregion
+
+        #region Constructor
+
+        /// <summary>Constructor</summary>
+        /// <param name="algorithm">EnumASymmetricAlgorithm</param>
+        /// <param name="certificateFilePath">X.509証明書(*.pfx, *.cer)へのパス</param>
+        /// <param name="password">パスワード</param>
+        /// <param name="flag">X509KeyStorageFlags</param>
+        public ASymmetricCryptography(EnumASymmetricAlgorithm algorithm,
+            string certificateFilePath = "", string password = "",
+            X509KeyStorageFlags flag = X509KeyStorageFlags.DefaultKeySet)
+        {
+            this._asa = AsymmetricAlgorithmCmnFunc.CreateCryptographySP(
+                algorithm, certificateFilePath, password, flag);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Encrypt(publicXmlKey)
+#if NET45
         /// <summary>文字列を暗号化する</summary>
         /// <param name="sourceString">暗号化する文字列</param>
-        /// <param name="publicKey">暗号化に使用する公開鍵</param>
+        /// <param name="publicXmlKey">暗号化に使用する公開鍵</param>
+        /// <param name="fOAEP">
+        /// ・true  : OAEPパディング（XP以降）
+        /// ・false : PKCS#1 v1.5パディング
+        /// </param>
         /// <returns>非対称アルゴリズムで暗号化された文字列</returns>
-        public static string EncryptString(string sourceString, string publicKey)
+        public string EncryptString(string sourceString, string publicXmlKey = "", bool fOAEP = false)
         {
             // 元文字列をbyte型配列に変換する（UTF-8 Enc）
             byte[] source = CustomEncode.StringToByte(sourceString, CustomEncode.UTF_8);
 
             // 暗号化（Base64）
             return CustomEncode.ToBase64String(
-                ASymmetricCryptography.EncryptBytes(source, publicKey));
+                this.EncryptBytes(source, publicXmlKey, fOAEP));
         }
 
         /// <summary>バイト配列を暗号化する</summary>
         /// <param name="source">暗号化するバイト配列</param>
-        /// <param name="publicKey">暗号化に使用する公開鍵</param>
+        /// <param name="publicXmlKey">暗号化に使用する公開鍵</param>
+        /// <param name="fOAEP">
+        /// ・true  : OAEPパディング（XP以降）
+        /// ・false : PKCS#1 v1.5パディング
+        /// </param>
         /// <returns>非対称アルゴリズムで暗号化されたバイト配列</returns>
-        public static byte[] EncryptBytes(byte[] source, string publicKey)
+        public byte[] EncryptBytes(byte[] source, string publicXmlKey = "", bool fOAEP = false)
         {
-            // RSACryptoServiceProviderオブジェクトの作成
-            RSACryptoServiceProvider rsa
-                = (RSACryptoServiceProvider)RSACryptoServiceProvider.Create(); // devps(1703)
+            // NET45はCSPのみ。
+            RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)this._asa;
 
             // 公開鍵
-            rsa.FromXmlString(publicKey);
+            if (string.IsNullOrEmpty(publicXmlKey))
+            {
+                //rsa.FromXmlString(this.PublicXmlKey);
+            }
+            else
+            {
+                rsa.FromXmlString(publicXmlKey);
+            }
 
-            // 暗号化する（XP以降の場合のみ2項目にTrueを指定し、OAEPパディングを使用できる）
-            byte[] temp = rsa.Encrypt(source, false);
-
-            // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
-            // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
-            rsa.PersistKeyInCsp = false;
-
-            rsa.Clear(); // devps(1725)
-
-            return temp;
+            // 暗号化
+            return rsa.Encrypt(source, fOAEP);
         }
+#else
+        /// <summary>文字列を暗号化する</summary>
+        /// <param name="sourceString">暗号化する文字列</param>
+        /// <param name="publicXmlKey">暗号化に使用する公開鍵</param>
+        /// <param name="padding">RSAEncryptionPadding</param>
+        /// <returns>非対称アルゴリズムで暗号化された文字列</returns>
+        public string EncryptString(string sourceString, string publicXmlKey = "", RSAEncryptionPadding padding = null)
+        {
+            // 元文字列をbyte型配列に変換する（UTF-8 Enc）
+            byte[] source = CustomEncode.StringToByte(sourceString, CustomEncode.UTF_8);
+
+            // 暗号化（Base64）
+            return CustomEncode.ToBase64String(
+                this.EncryptBytes(source, publicXmlKey, padding));
+        }
+
+        /// <summary>バイト配列を暗号化する</summary>
+        /// <param name="source">暗号化するバイト配列</param>
+        /// <param name="publicXmlKey">暗号化に使用する公開鍵</param>
+        /// <param name="padding">RSAEncryptionPadding</param>
+        /// <returns>非対称アルゴリズムで暗号化されたバイト配列</returns>
+        public byte[] EncryptBytes(byte[] source, string publicXmlKey = "", RSAEncryptionPadding padding = null)
+        {
+            RSA rsa = (RSA)this._asa;
+
+            // 公開鍵
+            if (string.IsNullOrEmpty(publicXmlKey))
+            {
+                //rsa.FromXmlString(this.PublicXmlKey);
+            }
+            else
+            {
+                rsa.FromXmlString(publicXmlKey);
+            }
+
+            // 暗号化
+            if (padding == null)
+            {
+                padding = RSAEncryptionPadding.Pkcs1;
+            }
+            
+            return rsa.Encrypt(source, padding);
+        }
+#endif
 
         #endregion
 
-        #region Decrypt(privateKey)
+        #region Decrypt(privateXmlKey)
 
+#if NET45
         /// <summary>暗号化された文字列を復号化する</summary>
         /// <param name="sourceString">暗号化された文字列</param>
-        /// <param name="privateKey">復号化に使用する秘密鍵</param>
+        /// <param name="privateXmlKey">復号化に使用する秘密鍵</param>
+        /// <param name="fOAEP">
+        /// ・true  : OAEPパディング（XP以降）
+        /// ・false : PKCS#1 v1.5パディング
+        /// </param>
         /// <returns>非対称アルゴリズムで復号化された文字列</returns>
-        public static string DecryptString(string sourceString, string privateKey)
+        public string DecryptString(string sourceString, string privateXmlKey = "", bool fOAEP = false)
         {
             // 暗号化文字列をbyte型配列に変換する（Base64）
             byte[] source = CustomEncode.FromBase64String(sourceString);
 
             // 復号化（UTF-8 Enc）
             return CustomEncode.ByteToString(
-                ASymmetricCryptography.DecryptBytes(source, privateKey), CustomEncode.UTF_8);
+                this.DecryptBytes(source, privateXmlKey, fOAEP), CustomEncode.UTF_8);
         }
 
         /// <summary>暗号化されたバイト配列を復号化する</summary>
         /// <param name="source">暗号化されたバイト配列</param>
-        /// <param name="privateKey">復号化に使用する秘密鍵</param>
+        /// <param name="privateXmlKey">復号化に使用する秘密鍵</param>
+        /// <param name="fOAEP">
+        /// ・true  : OAEPパディング（XP以降）
+        /// ・false : PKCS#1 v1.5パディング
+        /// </param>
         /// <returns>非対称アルゴリズムで復号化されたバイト配列</returns>
-        public static byte[] DecryptBytes(byte[] source, string privateKey)
+        public byte[] DecryptBytes(byte[] source, string privateXmlKey = "", bool fOAEP = false)
         {
-            // RSACryptoServiceProviderオブジェクトの作成
-            RSACryptoServiceProvider rsa
-                = (RSACryptoServiceProvider)RSACryptoServiceProvider.Create(); // devps(1703)
+            // NET45はCSPのみ。
+            RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)this._asa;
 
             // 秘密鍵
-            rsa.FromXmlString(privateKey);
+            if (string.IsNullOrEmpty(privateXmlKey))
+            {
+                //rsa.FromXmlString(this.PrivateXmlKey);
+            }
+            else
+            {
+                rsa.FromXmlString(privateXmlKey);
+            }
 
-            // 復号化（XP以降の場合のみ2項目にTrueを指定し、OAEPパディングを使用できる）
-            byte[] temp = rsa.Decrypt(source, false);
-
-            // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
-            // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
-            rsa.PersistKeyInCsp = false;
-
-            rsa.Clear(); // devps(1725)
-
-            return temp;
+            // 復号化
+            return rsa.Decrypt(source, fOAEP);
         }
+#else
+        /// <summary>暗号化された文字列を復号化する</summary>
+        /// <param name="sourceString">暗号化された文字列</param>
+        /// <param name="privateXmlKey">復号化に使用する秘密鍵</param>
+        /// <param name="padding">RSAEncryptionPadding</param>
+        /// <returns>非対称アルゴリズムで復号化された文字列</returns>
+        public string DecryptString(string sourceString, string privateXmlKey = "", RSAEncryptionPadding padding = null)
+        {
+            // 暗号化文字列をbyte型配列に変換する（Base64）
+            byte[] source = CustomEncode.FromBase64String(sourceString);
+
+            // 復号化（UTF-8 Enc）
+            return CustomEncode.ByteToString(
+                this.DecryptBytes(source, privateXmlKey, padding), CustomEncode.UTF_8);
+        }
+
+        /// <summary>暗号化されたバイト配列を復号化する</summary>
+        /// <param name="source">暗号化されたバイト配列</param>
+        /// <param name="privateXmlKey">復号化に使用する秘密鍵</param>
+        /// <param name="padding">RSAEncryptionPadding</param>
+        /// <returns>非対称アルゴリズムで復号化されたバイト配列</returns>
+        public byte[] DecryptBytes(byte[] source, string privateXmlKey = "", RSAEncryptionPadding padding = null)
+        {
+            RSA rsa = (RSA)this._asa;
+
+            // 秘密鍵
+            if (string.IsNullOrEmpty(privateXmlKey))
+            {
+                //rsa.FromXmlString(this.PrivateXmlKey);
+            }
+            else
+            {
+                rsa.FromXmlString(privateXmlKey);
+            }
+
+            // 復号化
+            if (padding == null)
+            {
+                padding = RSAEncryptionPadding.Pkcs1;
+            }
+
+            return rsa.Decrypt(source, padding);
+        }
+#endif
 
         #endregion
-
-        /// <summary>秘密鍵と公開鍵を取得する。</summary>
-        /// <param name="publicKey">公開鍵</param>
-        /// <param name="privateKey">秘密鍵</param>
-        public static void GetKeys(out string publicKey, out string privateKey)
-        {
-            // RSACryptoServiceProviderオブジェクトの作成
-            RSACryptoServiceProvider rsa =
-                (RSACryptoServiceProvider)RSACryptoServiceProvider.Create();
-
-            // 公開鍵をXML形式で取得
-            publicKey = rsa.ToXmlString(false);
-            // 秘密鍵をXML形式で取得
-            privateKey = rsa.ToXmlString(true);
-
-            // https://msdn.microsoft.com/en-us/library/tswxhw92.aspx
-            // https://msdn.microsoft.com/ja-jp/library/tswxhw92.aspx
-            rsa.PersistKeyInCsp = false;
-
-            rsa.Clear(); // devps(1725)
-        }
     }
 }

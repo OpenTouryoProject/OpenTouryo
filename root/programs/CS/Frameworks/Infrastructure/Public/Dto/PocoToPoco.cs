@@ -30,10 +30,9 @@
 //*  2018/07/20  西野 大介         新規作成
 //*  2018/10/03  西野 大介         性能対策
 //*  2018/10/23  西野 大介         微調整
+//*  2018/12/11  西野 大介         バグ修正（マップ無し時の動作
 //**********************************************************************************
 
-using System;
-using System.Reflection;
 using System.Collections.Generic;
 
 using Touryo.Infrastructure.Public.FastReflection;
@@ -103,6 +102,7 @@ namespace Touryo.Infrastructure.Public.Dto
                 if (map == null)
                 {
                     // マップ無
+                    srcName = dstName;
                 }
                 else
                 {

@@ -1,0 +1,94 @@
+HashAlgorithm.Default > XptEn4IjdI/wfcYTje0ySPKxxLrf91ljtBvpJUiPH2I=
+HashAlgorithm.MD5_CSP > FQ2+bMMhF8fDG0fkIOd9fA==
+HashAlgorithm.RIPEMD160_M > +2KFDwtYWpBfxsGkJU4SR/6NA8E=
+HashAlgorithm.SHA1_CSP > wFTHz2IcQbeEekZ1o41FXOoYqHs=
+HashAlgorithm.SHA1_M > wFTHz2IcQbeEekZ1o41FXOoYqHs=
+HashAlgorithm.SHA256_CSP > XptEn4IjdI/wfcYTje0ySPKxxLrf91ljtBvpJUiPH2I=
+HashAlgorithm.SHA256_M > XptEn4IjdI/wfcYTje0ySPKxxLrf91ljtBvpJUiPH2I=
+HashAlgorithm.SHA384_CSP > KPANYikTelxukuuiMCaekdQoh5xIm6+Zx4sWY6u/OgAt/cQcWJ1KH89BnggsBm7V
+HashAlgorithm.SHA384_M > KPANYikTelxukuuiMCaekdQoh5xIm6+Zx4sWY6u/OgAt/cQcWJ1KH89BnggsBm7V
+HashAlgorithm.SHA512_CSP > s4KE0QPxsjBiUmkgWFeU3A5w4dF5mvncmWqzYSDvB7CejMOiHBMLaw2220Rmz4NYAf/ReBlafi4jY9UeEkWyZA==
+HashAlgorithm.SHA512_M > s4KE0QPxsjBiUmkgWFeU3A5w4dF5mvncmWqzYSDvB7CejMOiHBMLaw2220Rmz4NYAf/ReBlafi4jY9UeEkWyZA==
+KeyedHashAlgorithm.Default > DArKUX/IUh3hLfSP6dRQtpDjO4A=
+KeyedHashAlgorithm.HMACMD5 > WTofHEUdHAHKlRuNv8hM5Q==
+KeyedHashAlgorithm.HMACRIPEMD160 > fw9Meric/I6VKV1kw4V3wm8rEUQ=
+KeyedHashAlgorithm.HMACSHA1 > DArKUX/IUh3hLfSP6dRQtpDjO4A=
+KeyedHashAlgorithm.HMACSHA256 > jVnqM8tz+EWQt+S7bminuPgaJgzQLiQ93RNAzoOb2p4=
+KeyedHashAlgorithm.HMACSHA384 > H1vjmH2lEK0M3UiCaz/WSL/erNMW7HORXAMLZNwwWK7xjINYQpYYP+9tMYQrb3ms
+KeyedHashAlgorithm.HMACSHA512 > VDs+QpNqiBwTS3Zl3HsU2iBWcD+r+voy7BcgF2qCEb5Fn2WolqhNUbz+dJuV8syNT/rC/E/hi9p9Kgz8EbynDg==
+KeyedHashAlgorithm.MACTripleDES > yzgJeEuu4fs=
+GetPasswordHashV1.EqualSaltedPassword (old) > True
+GetPasswordHashV2.EqualSaltedPassword (old) > False
+GetPasswordHashV2.EqualSaltedPassword (new) > True
+GetPasswordHashV2.EqualSaltedPassword (new) > True
+----------------------------------------------------------------------------------------------------
+RSA > X509Certificate2.PrivateKey: is not null
+RSA > SignatureAlgorithm.FriendlyName: sha256RSA
+RSA > PrivateKey.ToString(): is System.Security.Cryptography.RSAOpenSsl
+RSA > publicX509Key: is not null
+RSA > SignatureAlgorithm.FriendlyName: sha256RSA
+RSA > PublicKey.ToString(): is System.Security.Cryptography.X509Certificates.PublicKey
+RSA > PublicKey.Key.ToString(): is System.Security.Cryptography.RSAOpenSsl
+DSA > X509Certificate2.PrivateKey: is not null
+DSA > SignatureAlgorithm.FriendlyName: dsa_with_SHA256
+DSA > PrivateKey.ToString(): is System.Security.Cryptography.DSAOpenSsl
+DSA > publicX509Key: is not null
+DSA > SignatureAlgorithm.FriendlyName: dsa_with_SHA256
+DSA > PublicKey.ToString(): is System.Security.Cryptography.X509Certificates.PublicKey
+DSA > PublicKey.Key.ToString(): is System.Security.Cryptography.DSAOpenSsl
+privateDSA > is not null
+ECDsa > X509Certificate2.PrivateKey: is not null
+ECDsa > SignatureAlgorithm.FriendlyName: sha256ECDSA
+ECDsa > PrivateKey.ToString(): System.NotSupportedException, The certificate key algorithm is not supported.
+ECDsa > publicX509Key: is not null
+ECDsa > SignatureAlgorithm.FriendlyName: sha256ECDSA
+ECDsa > PublicKey.ToString(): is System.Security.Cryptography.X509Certificates.PublicKey
+ECDsa > PublicKey.Key.ToString(): System.NotSupportedException, The certificate key algorithm is not supported.
+privateECDsa > is not null
+publicECDsa > is not null
+ASymCrypt(X509).Enc&Dec > True
+DigitalSignX509.Verify(RS256) > True
+DigitalSignParam.Verify(RS256) > True
+DigitalSignXML.Verify(RS256) > True
+DigitalSignX509.Verify(DSA-SHA256) > True
+DigitalSignParam.Verify(DSA-SHA1) > True
+DigitalSignXML.Verify(DSA-SHA1) > True
+DigitalSignECDsaX509.Verify(ECDSA) > True
+DigitalSignParam.Verify(ECDSA-P256) > False
+----------------------------------------------------------------------------------------------------
+JWS_RS256_X509.Create > JWS Header: {"alg":"RS256","typ":"JWT"}
+JWS_RS256_X509.Create > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JWS_RS256_X509.Create > JWS Signature: jMJbrOaZ_p0xouAFfetm_orlTuwPbJK65-rEto5lIGgCR_oCG_ApQWeCXc5xikto_IcN2nNsHWMOMJMII6WlhVmn9pFTuuj-fZH_aB-aasDSguyXd59BA43a4glZbPCITOwZFfeNMpXGrKG_YNvexP5mtiJYYCDXMgq2zBHS9lQYcGXy4YyGPD_jNu6ziLRNDdKCkRqTppTE2SexZAwaSJRGGuY-fHA3jVPBV90Cty7yBC3ybKmiE4imVQs8CUw7ic61HSytgItIlreol4PMMP8fXB6O1e_K8QJFfRIf9oC07y9Mo5OWl4CCOxvKAo9nos0GTWUUNUH-sugJhUV14A
+RSA JWK > {"kty":"RSA","alg":"RS256","n":"nOSgXEBwV-maKTcGlGAFL6KPyTQB7Z0G0Z4ewZi5rhFhEDsZRLV5p3_AqWQQlZFVrIJ_6wdrBY5sCAle6av654jqnI8AqxVV-OL-COmrhVMhrikRXxhxATAzo0Gf_hjW0yux8Ns2HT72PVscjBk9SKeedcorMjWWJPfr1zwsByLaSz8pQApBccRk_bUc-oBHRpDanPFz23v4ts3RXso05G8UZmcaqDqjMsVZfI3Cd3jqaWdb6NeeUw0DZDtMJObOJExJN43LO7rvtWmYXlEgLp-rCTI6CQ0Cmo4WuLU8Rv03fXQXGX0jDNeqfck8EEj7NwJWCvtf_AYaZ6hGcw2PMw","e":"AQAB","kid":"J-sRdCQK90U__njN5HmPtEwsziIkg92TV9xziNIJXEQ"}
+JWS_RS256_X509.Verify > True
+JWS_RS256_Param.Verify > True
+JWS_ES256_X509.Create > JWS Header: {"alg":"ES256","typ":"JWT"}
+JWS_ES256_X509.Create > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JWS_ES256_X509.Create > JWS Signature: X2zzOBTg__QM0iIWOasyTgxwb-YI8lTAA7wz7KvFlsTnc_6s7EdDz7J8xuO8TWG6tFenpdev0Jc0U6YjQrKqwQ
+ECDSA JWK > {"kty":"EC","alg":"ES256","crv":"P-256","x":"qdS3bsts3UXi5p0G71GofUB9ls1fJz_z0dRQw9RZ99A","y":"hX6HISTIiDLt90VDEqGmsMj2kSlGLOcXgXSqz75EhV4","kid":"mdAGx-nGwwhNScer459MfN0GvMKD_N3IY5efKmQVLTE"}
+JWS_ES256_X509.Verify > True
+JWS_ES256_Param.Verify > True
+JwsAlgorithm.xLibTest > Original:eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtci54QGNvbnRvc28uY29tIiwiZXhwIjoxMzAwODE5MzgwfQ.X2zzOBTg__QM0iIWOasyTgxwb-YI8lTAA7wz7KvFlsTnc_6s7EdDz7J8xuO8TWG6tFenpdev0Jc0U6YjQrKqwQ
+JwsAlgorithm.xLibTest > JWS Header: {"alg":"ES256","typ":"JWT"}
+JwsAlgorithm.xLibTest > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JwsAlgorithm.xLibTest > JWS Signature: X2zzOBTg__QM0iIWOasyTgxwb-YI8lTAA7wz7KvFlsTnc_6s7EdDz7J8xuO8TWG6tFenpdev0Jc0U6YjQrKqwQ
+JwsAlgorithm.xLibTest > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+JWE_RsaOaepAesGcm_X509.Decrypt > True : {"sub":"mr.x@contoso.com","exp":1300819380}
+JweAlgorithm.xLibTest > Original:eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00iLCJ0eXAiOiJKV1QifQ.Es3c54U4paNHAmwI_sgp2PFI1P_sHf3tpfS_XRDs1DJPV9a8ZljSjBX4dqAOdllDW3FS5hA_PzLx78laUqp1Bd55ABOHlQScsvWwCesMufw4mWIfygK42nsZJq3t1hoCT6ZJ78HYPuhBTCmTndHNpPPZCXJUynrvQv0nKITvTqEvWNhrFeGeA0PC1gMa8qKut01UnFKzpE6zu1CViEWCkiJO-AFZ9cLbjSzFsstlnr-Q-kHH0wE-vDlwrAiuroj7VW-pY9NwftjtDHY9uatBuuK8_4Ce_vmVAeCSGuJql__9l5Jb5aLn_DaVVGpcuUZ_sa4eWWjJ6dH-Bb97gwMM4A.5Rx7kOaRVC5uFg7r.3lQsP4jYHEEaNIfiF1GzxsXYzzAkGY63MRP_qAHcI4PAW6GEQz7lZ2qfDg.KTOkAFOxyRJ_jSeNeJ6gcg
+JweAlgorithm.xLibTest > JWE Header: {"alg":"RSA-OAEP","enc":"A256GCM","typ":"JWT"}
+JweAlgorithm.xLibTest > JWE Encrypted Key: Es3c54U4paNHAmwI_sgp2PFI1P_sHf3tpfS_XRDs1DJPV9a8ZljSjBX4dqAOdllDW3FS5hA_PzLx78laUqp1Bd55ABOHlQScsvWwCesMufw4mWIfygK42nsZJq3t1hoCT6ZJ78HYPuhBTCmTndHNpPPZCXJUynrvQv0nKITvTqEvWNhrFeGeA0PC1gMa8qKut01UnFKzpE6zu1CViEWCkiJO-AFZ9cLbjSzFsstlnr-Q-kHH0wE-vDlwrAiuroj7VW-pY9NwftjtDHY9uatBuuK8_4Ce_vmVAeCSGuJql__9l5Jb5aLn_DaVVGpcuUZ_sa4eWWjJ6dH-Bb97gwMM4A
+JweAlgorithm.xLibTest > JWE Initialization Vector: 5Rx7kOaRVC5uFg7r
+JweAlgorithm.xLibTest > JWE Ciphertext: 3lQsP4jYHEEaNIfiF1GzxsXYzzAkGY63MRP_qAHcI4PAW6GEQz7lZ2qfDg
+JweAlgorithm.xLibTest > JWE Authentication Tag: KTOkAFOxyRJ_jSeNeJ6gcg
+System.DllNotFoundException: Unable to load DLL 'bcrypt.dll': The specified module or one of its dependencies could not be found.
+ (Exception from HRESULT: 0x8007007E)
+   at Jose.native.BCrypt.BCryptOpenAlgorithmProvider(IntPtr& phAlgorithm, String pszAlgId, String pszImplementation, UInt32 dwFlags)
+   at Jose.AesGcm.OpenAlgorithmProvider(String alg, String provider, String chainingMode)
+   at Jose.AesGcm.Decrypt(Byte[] key, Byte[] iv, Byte[] aad, Byte[] cipherText, Byte[] authTag)
+   at Jose.AesGcmEncryption.Decrypt(Byte[] aad, Byte[] cek, Byte[] iv, Byte[] cipherText, Byte[] authTag)
+   at Jose.JWT.DecryptBytes(Byte[][] parts, Object key, Nullable`1 jweAlg, Nullable`1 jweEnc, JwtSettings settings)
+   at Jose.JWT.DecodeBytes(String token, Object key, Nullable`1 expectedJwsAlg, Nullable`1 expectedJweAlg, Nullable`1 expectedJweEnc, JwtSettings settings)
+   at Jose.JWT.Decode(String token, Object key, JweAlgorithm alg, JweEncryption enc, JwtSettings settings)
+   at EncAndDecUtilCUI.Program.VerifyResult(String testLabel, String jwt, Object key, JweAlgorithm alg, JweEncryption enc) in /mnt/c/Git1/OpenTouryo/root/programs/CS/Frameworks/Tests/EncAndDecUtilCUI/Program.cs:line 1096
+   at EncAndDecUtilCUI.Program.MyJwt() in /mnt/c/Git1/OpenTouryo/root/programs/CS/Frameworks/Tests/EncAndDecUtilCUI/Program.cs:line 672
+   at EncAndDecUtilCUI.Program.Main(String[] args) in /mnt/c/Git1/OpenTouryo/root/programs/CS/Frameworks/Tests/EncAndDecUtilCUI/Program.cs:line 71

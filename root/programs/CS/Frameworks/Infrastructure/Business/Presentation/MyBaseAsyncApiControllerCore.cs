@@ -20,7 +20,7 @@
 
 //**********************************************************************************
 //* クラス名        ：MyBaseAsyncApiControllerCore (Filters)
-//* クラス日本語名  ：非同期 ASP.NET Core WebAPI用 ベーククラス２相当（テンプレート）
+//* クラス日本語名  ：非同期 ASP.NET Core WebAPI用 ベースクラス２相当（テンプレート）
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/04/09  西野 大介         新規作成
+//*  2018/12/12  西野 大介         インターフェイスの拡張
 //**********************************************************************************
 
 using System;
@@ -51,7 +52,7 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Business.Presentation
 {
-    /// <summary>非同期 ASP.NET WebAPI用 ベーククラス２</summary>
+    /// <summary>非同期 ASP.NET WebAPI用 ベースクラス２</summary>
     /// <remarks>（ActionFilterAttributeとして）自由に利用できる。</remarks>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public class MyBaseAsyncApiController : ActionFilterAttribute, IAsyncAuthorizationFilter, IAsyncActionFilter, IExceptionFilter
@@ -245,6 +246,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 
         /// <summary>ユーザ情報を取得する</summary>
         /// <param name="authorizationContext">AuthorizationFilterContext</param>
+        /// <remarks>awaitするメソッドを追加して呼ぶ可能性も高いのでasyncを付与</remarks>
         private async Task GetUserInfoAsync(AuthorizationFilterContext authorizationContext)
         {
             // カスタム認証処理 --------------------------------------------
@@ -266,16 +268,16 @@ namespace Touryo.Infrastructure.Business.Presentation
                     List<string> scopes = null;
                     JObject jobj = null;
 
-                    if (JwtToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
+                    if (AccessToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
                     {
-
                         // ActionFilterAttributeとApiController間の情報共有はcontext.Principalを使用する。
                         // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
                         claims = new List<Claim>()
                         {
                             new Claim(ClaimTypes.Name, sub),
                             new Claim(ClaimTypes.Role, string.Join(",", roles)),
-                            new Claim("Scopes", string.Join(",", scopes)),
+                            new Claim(OAuth2AndOIDCConst.Claim_Scopes, string.Join(",", scopes)),
+                            new Claim(OAuth2AndOIDCConst.Claim_Audience, (string)jobj[OAuth2AndOIDCConst.aud]),
                             new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress())
                         };
 
@@ -309,7 +311,8 @@ namespace Touryo.Infrastructure.Business.Presentation
             {
                 new Claim(ClaimTypes.Name, "未認証"),
                 new Claim(ClaimTypes.Role, ""),
-                new Claim("Scopes", ""),
+                new Claim(OAuth2AndOIDCConst.Claim_Scopes, ""),
+                new Claim(OAuth2AndOIDCConst.Claim_Audience, ""),
                 new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress())
             };
 
@@ -328,6 +331,20 @@ namespace Touryo.Infrastructure.Business.Presentation
             return (new GetClientIpAddress()).GetAddress();
         }
 
+        /// <summary>GetClaimsIdentity</summary>
+        /// <returns>ClaimsIdentity</returns>
+        public static ClaimsIdentity GetClaimsIdentity()
+        {
+            return MyHttpContext.Current.User.Identities.FirstOrDefault(c => c.AuthenticationType == "Token");
+        }
+
+        /// <summary>GetRawClaims</summary>
+        /// <returns>IEnumerable(Claim)</returns>
+        public static IEnumerable<Claim> GetRawClaims()
+        {
+            return MyBaseAsyncApiController.GetClaimsIdentity().Claims;
+        }
+
         /// <summary>GetClaims</summary>
         /// <param name="userName">string</param>
         /// <param name="roles">string</param>
@@ -337,11 +354,10 @@ namespace Touryo.Infrastructure.Business.Presentation
         {
             // MyHttpContext.Current.User.Identity側ではなく、Identities側に入っている。
             // Identityは認証ミドルウェアを使用する必要がある？（coreでjwtをどう処理するのか？）
-            IEnumerable<Claim> claims = 
-                MyHttpContext.Current.User.Identities.FirstOrDefault(c => c.AuthenticationType == "Token").Claims;
+            IEnumerable<Claim>  claims = MyBaseAsyncApiController.GetRawClaims();
             userName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
             roles = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
-            scopes = claims.FirstOrDefault(c => c.Type == "Scopes").Value;
+            scopes = claims.FirstOrDefault(c => c.Type == OAuth2AndOIDCConst.Claim_Scopes).Value;
             ipAddress = claims.FirstOrDefault(c => c.Type == "IpAddress").Value;
         }
 

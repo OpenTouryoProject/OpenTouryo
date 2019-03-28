@@ -53,7 +53,7 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Business.Presentation
 {
-    /// <summary>非同期 ASP.NET WebAPI用 ベーククラス２</summary>
+    /// <summary>ASP.NET MVC Core用 画面コード親クラス２相当（テンプレート）</summary>
     /// <remarks>（ActionFilterAttributeとして）自由に利用できる。</remarks>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public class MyMVCCoreFilterAttribute : ActionFilterAttribute, IExceptionFilter
@@ -89,7 +89,9 @@ namespace Touryo.Infrastructure.Business.Presentation
         private void OutputErrorLog(ExceptionContext exceptionContext)
         {
             this.GetRouteData(exceptionContext.RouteData);
-            this.GetUserInfo(); // 同期実行（待機
+
+            // 内部で await するが、呼出し元は同期なので、結果として同期実行になる。
+            this.GetUserInfoAsync();
 
             // 非同期ControllerのInnerException対策（底のExceptionを取得する）。
             Exception ex = exceptionContext.Exception;
@@ -136,7 +138,7 @@ namespace Touryo.Infrastructure.Business.Presentation
             {
                 // Production
             }
-            if (tmp.ToUpper() != "Development".ToUpper())
+            else if(tmp.ToUpper() != "Development".ToUpper())
             {
                 // Staging or Production
             }
@@ -220,7 +222,7 @@ namespace Touryo.Infrastructure.Business.Presentation
         #region 情報取得用
 
         /// <summary>ユーザ情報を取得する</summary>
-        private async Task GetUserInfo()
+        private async Task GetUserInfoAsync()
         {
             // セッションステートレス対応
             if (MyHttpContext.Current.Session == null)

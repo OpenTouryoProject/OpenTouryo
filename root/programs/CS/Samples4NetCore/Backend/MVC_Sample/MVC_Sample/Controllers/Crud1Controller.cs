@@ -35,10 +35,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Business.Presentation;
-using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.Dto;
+using Touryo.Infrastructure.Public.Diagnostics;
 
 namespace MVC_Sample.Controllers
 {

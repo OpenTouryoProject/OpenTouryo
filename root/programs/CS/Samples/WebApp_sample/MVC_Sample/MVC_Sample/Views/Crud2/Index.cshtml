@@ -40,7 +40,7 @@
     @Html.AntiForgeryToken()
 
     <div class="row">
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="col-4 col-sm-4 col-md-4 col-lg-4">
             <div class="form-group">
                 <label>データアクセス制御クラス（データプロバイダ）を選択</label>
                 @Html.DropDownListFor(model => model.DdlDap, Model.DdlDapItems, new { @class = "form-control" })
@@ -62,7 +62,7 @@
                 @Html.DropDownListFor(model => model.DdlExRollback, Model.DdlExRollbackItems, new { @class = "form-control" })
             </div>
         </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="col-4 col-sm-4 col-md-4 col-lg-4">
             <div class="form-group">
                 <label>ShipperID：</label>
                 @Html.TextBoxFor(model => model.Shipper.ShipperID, new { @class = "form-control" })
@@ -86,28 +86,28 @@
             <span>処理結果：</span>
             <div id="messageResult">@Html.Partial("_MessageView")</div>
         </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="col-4 col-sm-4 col-md-4 col-lg-4">
             <div id="chartResult" style="width: 100%; height: 100%;">@Html.Partial("_ChartView")</div>
-            <button id="button10" class="btn btn-default">クリア</button>
+            <button id="button10" class="btn btn-primary">クリア</button>
         </div>
     </div>
     <div>
-        <button id="button1" class="btn btn-default">件数取得</button>
-        <button id="button2" class="btn btn-default">一覧取得（dt）</button>
-        <button id="button3" class="btn btn-default">一覧取得（ds）</button>
-        <button id="button4" class="btn btn-default">一覧取得（dr）</button>
-        <button id="button5" class="btn btn-default">一覧取得（動的SQL）</button>
+        <button id="button1" class="btn btn-primary">件数取得</button>
+        <button id="button2" class="btn btn-primary">一覧取得（dt）</button>
+        <button id="button3" class="btn btn-primary">一覧取得（ds）</button>
+        <button id="button4" class="btn btn-primary">一覧取得（dr）</button>
+        <button id="button5" class="btn btn-primary">一覧取得（動的SQL）</button>
     </div>
     <div>
-        <button id="button6" class="btn btn-default">一件参照</button>
-        <button id="button7" class="btn btn-default">追加</button>
-        <button id="button8" class="btn btn-default">更新</button>
-        <button id="button9" class="btn btn-default">削除</button>
+        <button id="button6" class="btn btn-primary">一件参照</button>
+        <button id="button7" class="btn btn-primary">追加</button>
+        <button id="button8" class="btn btn-primary">更新</button>
+        <button id="button9" class="btn btn-primary">削除</button>
     </div>
     <div>
         <label id="lblErrorMessage"></label>
-        <button id="button21" class="btn btn-default">二重送信防止</button>
-        <button id="button22" class="btn btn-default">画面遷移（ポストバック後リダイレクト）</button>
+        <button id="button21" class="btn btn-primary">二重送信防止</button>
+        <button id="button22" class="btn btn-primary">画面遷移（ポストバック後リダイレクト）</button>
     </div>
 }
 

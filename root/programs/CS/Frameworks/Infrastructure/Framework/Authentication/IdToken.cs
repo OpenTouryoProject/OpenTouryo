@@ -28,19 +28,11 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/08/22  西野 大介         新規作成
+//*  2018/11/28  西野 大介         証明書 & Jwk対応 + jkuチェック対応の追加
 //**********************************************************************************
 
 using System;
-using System.Text;
 using System.Linq;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-
-#if NETSTD
-using Microsoft.AspNetCore.WebUtilities;
-#else
-using Microsoft.Owin.Security.DataHandler.Encoder;
-#endif
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -48,6 +40,7 @@ using Newtonsoft.Json.Linq;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Security;
+using Touryo.Infrastructure.Public.Security.Jwt;
 
 namespace Touryo.Infrastructure.Framework.Authentication
 {
@@ -62,7 +55,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
     {
         /// <summary>HashClaim無し</summary>
         None = 0x000,
-        
+
         /// <summary>
         /// at_hashを付与(OIDC Hybrid)
         /// id_token token
@@ -86,125 +79,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// </summary>
     public class IdToken
     {
-        /// <summary>
-        /// ChangeToIdTokenFromAccessToken
-        ///   OIDC対応（AccessTokenからIdTokenを生成）
-        /// </summary>
-        /// <param name="access_token">string</param>
-        /// <param name="code">string</param>
-        /// <param name="state">string</param>
-        /// <param name="hct">HashClaimType</param>
-        /// <param name="pfxFilePath">string</param>
-        /// <param name="pfxPassword">string</param>
-        /// <returns>IdToken</returns>
-        /// <remarks>
-        /// OIDC対応
-        /// </remarks>
+        #region Create
+        // AuthZに移動
+        #endregion
 
-        public static string ChangeToIdTokenFromAccessToken(
-            string access_token, string code, string state, HashClaimType hct, string pfxFilePath, string pfxPassword)
-        {
-            if (access_token.Contains("."))
-            {
-                string[] temp = access_token.Split('.');
-                string json = CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[1]), CustomEncode.UTF_8);
-                Dictionary<string, object> authTokenClaimSet = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-
-                // ・access_tokenがJWTで、payloadに"nonce" and "scope=openidクレームが存在する場合、
-                if (authTokenClaimSet.ContainsKey(OAuth2AndOIDCConst.nonce)
-                    && authTokenClaimSet.ContainsKey(OAuth2AndOIDCConst.scopes))
-                {
-                    JArray scopes = (JArray)authTokenClaimSet[OAuth2AndOIDCConst.scopes];
-
-                    // ・OpenID Connect : response_type=codeに対応する。
-                    if (scopes.Any(x => x.ToString() == OAuth2AndOIDCConst.Scope_Openid))
-                    {
-                        //・payloadからscopeを削除する。
-                        authTokenClaimSet.Remove(OAuth2AndOIDCConst.scopes);
-
-                        //・payloadにat_hash, c_hash, s_hashを追加する。
-
-                        if (hct.HasFlag(HashClaimType.AtHash))
-                        {
-                            // at_hash
-                            authTokenClaimSet.Add(
-                                OAuth2AndOIDCConst.at_hash,
-                                IdToken.CreateHash(access_token));
-                        }
-
-                        if (hct.HasFlag(HashClaimType.CHash))
-                        {
-                            // c_hash
-                            authTokenClaimSet.Add(
-                                OAuth2AndOIDCConst.c_hash,
-                                IdToken.CreateHash(code));
-                        }
-
-                        if (hct.HasFlag(HashClaimType.SHash))
-                        {
-                            // s_hash
-                            authTokenClaimSet.Add(
-                                OAuth2AndOIDCConst.s_hash,
-                                IdToken.CreateHash(state));
-                        }
-
-
-                        //・編集したpayloadを再度JWTとして署名する。
-                        string newPayload = JsonConvert.SerializeObject(authTokenClaimSet);
-                        JWS_RS256_X509 jwsRS256 = null;
-
-                        // 署名
-                        jwsRS256 = new JWS_RS256_X509(pfxFilePath, pfxPassword,
-                            X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
-
-                        // ヘッダ
-                        JWS_Header jwsHeader =
-                            JsonConvert.DeserializeObject<JWS_Header>(
-                                CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8));
-
-                        if (!string.IsNullOrEmpty(jwsHeader.jku)
-                            && !string.IsNullOrEmpty(jwsHeader.kid))
-                        {
-                            jwsRS256.JWSHeader.jku = jwsHeader.jku;
-                            jwsRS256.JWSHeader.kid = jwsHeader.kid;
-                        }
-
-                        return jwsRS256.Create(newPayload);
-
-                        //// 検証
-                        //jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, pfxPassword,
-                        //    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
-
-                        //if (jwsRS256.Verify(id_token))
-                        //{
-                        //    // 検証できた。
-                        //    return id_token;
-                        //}
-                        //else
-                        //{
-                        //    // 検証できなかった。
-                        //}
-                    }
-                    else
-                    {
-                        // OIDCでない。
-                    }
-                }
-                else
-                {
-                    // OIDCでない。
-                }
-            }
-            else
-            {
-                // JWTでない。
-            }
-
-            return "";
-        }
+        #region Verify
 
         /// <summary>汎用認証サイトの発行したIdTokenを検証する。</summary>
-        /// <param name="idToken">string</param>
+        /// <param name="id_token">string</param>
         /// <param name="access_token">string</param>
         /// <param name="code">string</param>
         /// <param name="state">string</param>
@@ -212,7 +94,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="nonce">string</param>
         /// <param name="jobj">JObject</param>
         /// <returns>検証結果</returns>
-        public static bool Verify(string idToken,
+        public static bool Verify(string id_token,
             string access_token, string code, string state,
             out string sub, out string nonce, out JObject jobj)
         {
@@ -220,76 +102,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
             nonce = "";
             jobj = null;
 
-            // 検証
-            JWS_RS256 jwsRS256 = null;
-
-            // 証明書を使用するか、Jwkを使用するか判定
-            JWS_Header jwsHeader = JsonConvert.DeserializeObject<JWS_Header>(
-                CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(idToken.Split('.')[0]), CustomEncode.UTF_8));
-
-            if (string.IsNullOrEmpty(jwsHeader.jku)
-                || string.IsNullOrEmpty(jwsHeader.kid))
-            {
-                // 証明書を使用
-                jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
-            }
-            else
-            {
-                // Jwkを使用？
-                if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
-                {
-                    // Client側
-                    JObject jwkObject = JwkSetStore.GetInstance().GetJwkObject(jwsHeader.kid);
-
-                    // チェック
-                    if (jwkObject == null)
-                    {
-                        // 書込
-                        jwkObject = JwkSetStore.GetInstance().SetJwkSetObject(jwsHeader.jku, jwsHeader.kid);
-                    }
-
-                    // チェック
-                    if (jwkObject == null)
-                    {
-                        // 証明書を使用
-                        jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
-                    }
-                    else
-                    {
-                        // Jwkを使用
-                        jwsRS256 = new JWS_RS256_Param(
-                            RS256_KeyConverter.JwkToProvider(jwkObject).ExportParameters(false));
-                    }
-                }
-                else
-                {
-                    // AuthZ側（検証用カバレッジ
-                    JwkSet jwkSet = JwkSet.LoadJwkSet(OAuth2AndOIDCParams.JwkSetFilePath);
-                    JObject JwkObject = JwkSet.GetJwkObject(jwkSet, jwsHeader.kid);
-                    
-                    if (JwkObject == null)
-                    {
-                        // 証明書を使用
-                        jwsRS256 = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
-                    }
-                    else
-                    {
-                        // Jwkを使用
-                        jwsRS256 = new JWS_RS256_Param(
-                            RS256_KeyConverter.JwkToProvider(JwkObject).ExportParameters(false));
-                    }
-                }
-            }
-
             // JWS検証
-            if (jwsRS256.Verify(idToken))
+            string jwtPayload = "";
+            if (CmnJwtToken.Verify(id_token, out jwtPayload))
             {
-#if NETSTD
-                string jwtPayload = Encoding.UTF8.GetString(Base64UrlTextEncoder.Decode(idToken.Split('.')[1]));
-#else
-                Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
-                string jwtPayload = Encoding.UTF8.GetString(base64UrlEncoder.Decode(idToken.Split('.')[1]));
-#endif
                 jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
 
                 #region クレーム検証
@@ -304,7 +120,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 string exp = (string)jobj[OAuth2AndOIDCConst.exp];
 
                 #region ハッシュ・クレーム検証
-                
+
                 // at_hash
                 string at_hash = (string)jobj[OAuth2AndOIDCConst.at_hash];
                 if (!string.IsNullOrEmpty(access_token) && !string.IsNullOrEmpty(at_hash))
@@ -338,6 +154,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 #endregion
 
                 long unixTimeSeconds = 0;
+
 #if NET45
                 unixTimeSeconds = PubCmnFunction.ToUnixTime(DateTimeOffset.Now);
 #else
@@ -388,6 +205,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return false;
         }
 
+        #endregion
+
         #region at_hash, c_hash, s_hash
 
         /// <summary>
@@ -403,7 +222,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // input(access_token や code) のASCII オクテット列からハッシュ値を求め、
             byte[] bytes = GetHash.GetHashBytes(
                 CustomEncode.StringToByte(input, CustomEncode.us_ascii),
-                EnumHashAlgorithm.SHA256Managed);
+                EnumHashAlgorithm.SHA256_M);
 
             // 左半分を base64url エンコードした値。
             return CustomEncode.ToBase64UrlString(

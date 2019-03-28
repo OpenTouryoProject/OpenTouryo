@@ -3,6 +3,11 @@
 
 <asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
     <!-- Head 部の ContentPlaceHolder -->
+    <style type="text/css">
+        .ButtonField{
+            white-space:nowrap;
+        }
+    </style>
 </asp:Content>
 
 <asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
@@ -222,8 +227,8 @@
         <EditRowStyle BackColor="LightYellow" />
         	    
         <Columns>
-            <asp:ButtonField CommandName="Delete" Text="削除"/>
-            <asp:ButtonField CommandName="Update" Text="更新"/>
+            <asp:ButtonField CommandName="Delete" Text="削除" ControlStyle-CssClass="ButtonField"/>
+            <asp:ButtonField CommandName="Update" Text="更新" ControlStyle-CssClass="ButtonField"/>
             
             <asp:TemplateField SortExpression="ProductID">
                 <ItemTemplate>

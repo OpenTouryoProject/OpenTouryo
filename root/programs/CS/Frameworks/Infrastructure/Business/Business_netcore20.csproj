@@ -16,6 +16,12 @@
     <NoWarn>1701;1702;NU1701</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;NETCORE</DefineConstants>
+    <DocumentationFile>..\Build_netcore20r\netstandard2.0\OpenTouryo.Business.xml</DocumentationFile>
+    <OutputPath>..\Build_netcore20r\</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Csp\**" />
     <Compile Remove="RichClient\**" />
@@ -39,6 +45,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="app.config" />
+    <None Remove="packages.config" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
 
@@ -52,10 +63,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Framework\Framework_netstd20.csproj" />
-    <ProjectReference Include="..\Public\Db\DamMySQL\DamMySQL_netstd20.csproj" />
-    <ProjectReference Include="..\Public\Db\DamPstGrS\DamPstGrS_netstd20.csproj" />
-    <ProjectReference Include="..\Public\Public_netstd20.csproj" />
+    <Reference Include="OpenTouryo.DamManagedOdp">
+      <HintPath>..\Build_netstd20\netstandard2.0\OpenTouryo.DamManagedOdp.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.DamMySQL">
+      <HintPath>..\Build_netstd20\netstandard2.0\OpenTouryo.DamMySQL.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.DamPstGrS">
+      <HintPath>..\Build_netstd20\netstandard2.0\OpenTouryo.DamPstGrS.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\Build_netstd20\netstandard2.0\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\Build_netstd20\netstandard2.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

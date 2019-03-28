@@ -9,7 +9,7 @@
     "old_build": "dotnet bundle"
   },
   "dependencies": {
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^4.3.1",
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
     "jquery-validation": "^1.14.0",
@@ -20,6 +20,6 @@
     "grunt-cli": "^1.2.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-cssmin": "^2.2.1",
-    "grunt-contrib-uglify": "^3.4.0"
+    "grunt-contrib-uglify-es": "^3.3.0"
   }
 }

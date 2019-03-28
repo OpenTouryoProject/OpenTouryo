@@ -24,10 +24,10 @@ Imports MVC_Sample.Models.ViewModels
 Imports System.Threading.Tasks
 
 Imports Touryo.Infrastructure.Business.Presentation
-Imports Touryo.Infrastructure.Public.Util
 Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.Dto
+Imports Touryo.Infrastructure.Public.Diagnostics
 
 Namespace Controllers
     ''' <summary>
@@ -298,7 +298,37 @@ Namespace Controllers
                 Else
                     ' 結果（正常系）
                     ModelState.Clear() ' Clearをしないと何故か設定できない。
-                    model.Shipper = testReturnValue.Obj
+                    '#Region "PocoToPocoのテストコード"
+
+                    Dim svm As ShipperViweModel = Nothing
+                    Dim tsvm As TestShipperViweModel = Nothing
+
+                    ' テスト１
+                    svm = DirectCast(BinarySerialize.DeepClone(model.Shipper), ShipperViweModel)
+
+                    If testReturnValue.Obj2 IsNot Nothing Then
+                        ' mapの書き方は、Key-Valueでdst-srcのproperty field名を書く
+                        PocoToPoco.Map(Of TestShipperViweModel, ShipperViweModel)(DirectCast(testReturnValue.Obj2, TestShipperViweModel), svm, New Dictionary(Of String, String)() From { _
+                            {"ShipperID", "_ShipperID"}, _
+                            {"CompanyName", "_CompanyName"}, _
+                            {"Phone", "_Phone"} _
+                        })
+
+                        Debug.WriteLine("svm:" & ObjectInspector.Inspect(svm))
+                    End If
+
+                    ' テスト２
+                    ' mapの書き方は、Key-Valueでdst-srcのproperty field名を書く
+                    tsvm = PocoToPoco.Map(Of ShipperViweModel, TestShipperViweModel)(DirectCast(testReturnValue.Obj, ShipperViweModel), Nothing, New Dictionary(Of String, String)() From { _
+                        {"_ShipperID", "ShipperID"}, _
+                        {"_CompanyName", "CompanyName"}, _
+                        {"_Phone", "Phone"} _
+                    })
+                    Debug.WriteLine("tsvm:" & ObjectInspector.Inspect(tsvm))
+
+                    '#End Region
+
+                    model.Shipper = DirectCast(testReturnValue.Obj, ShipperViweModel)
                 End If
             End If
 

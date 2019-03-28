@@ -56,15 +56,24 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Build_net45r\</OutputPath>
     <DefineConstants>TRACE;NET45</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\Build_net45r\OpenTouryo.Public.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DotNetZip, Version=1.10.1.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNetZip.1.10.1\lib\net20\DotNetZip.dll</HintPath>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.NetCore.1.8.3\lib\net20\BouncyCastle.Crypto.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DotNetZip, Version=1.12.0.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetZip.1.12.0\lib\net20\DotNetZip.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="jose-jwt, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\jose-jwt.2.4.0\lib\net40\jose-jwt.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
@@ -72,19 +81,23 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Db\DamODBC.cs" />
     <Compile Include="Db\DamOLEDB.cs" />
     <Compile Include="Db\SQLUtility.cs" />
+    <Compile Include="Diagnostics\MyDebug.cs" />
+    <Compile Include="Diagnostics\ObjectInspector.cs" />
     <Compile Include="Dto\DataRowState.cs" />
     <Compile Include="Dto\DataToPoco.cs" />
     <Compile Include="Dto\DataToDictionary.cs" />
@@ -99,19 +112,8 @@
     <Compile Include="Dto\DTType.cs" />
     <Compile Include="FastReflection\AccessorCacher.cs" />
     <Compile Include="FastReflection\AccessorInfo.cs" />
+    <Compile Include="FastReflection\EnumToStringByEmitExtensions.cs" />
     <Compile Include="FastReflection\InstanceCreator.cs" />
-    <Compile Include="Security\CryptoConst.cs" />
-    <Compile Include="Security\JwkSet.cs" />
-    <Compile Include="Security\JWS_Header.cs" />
-    <Compile Include="Security\JwtConst.cs" />
-    <Compile Include="Security\RsaAndDsaCmnFunc.cs" />
-    <Compile Include="Security\ASymmetricCryptography.cs" />
-    <Compile Include="Security\DigitalSignParam.cs" />
-    <Compile Include="Security\JWS_RS256_Param.cs" />
-    <Compile Include="Security\JWS_RS256_XML.cs" />
-    <Compile Include="Security\JWS_RS256_X509.cs" />
-    <Compile Include="Security\RS256_KeyConverter.cs" />
-    <Compile Include="Security\SymmetricCryptography.cs" />
     <Compile Include="IO\UnZipper.cs" />
     <Compile Include="IO\ZipBase.cs" />
     <Compile Include="IO\Zipper.cs" />
@@ -131,19 +133,8 @@
     <Compile Include="Db\BaseDam.cs" />
     <Compile Include="Db\DamSqlSvr.cs" />
     <Compile Include="Db\DbEnum.cs" />
-    <Compile Include="Security\DigitalSignX509.cs" />
-    <Compile Include="Security\DigitalSignXML.cs" />
-    <Compile Include="Security\DigitalSign.cs" />
     <Compile Include="Util\CustomMarshaler.cs" />
-    <Compile Include="Security\GetHash.cs" />
-    <Compile Include="Security\GetKeyedHash.cs" />
-    <Compile Include="Security\GetPassword.cs" />
-    <Compile Include="Security\IdentityImpersonation.cs" />
-    <Compile Include="Security\JWS_HS256.cs" />
-    <Compile Include="Security\JWS_RS256.cs" />
-    <Compile Include="Security\JWS.cs" />
     <Compile Include="FastReflection\CompiledExpressionCreater.cs" />
-    <Compile Include="Util\ObjectInspector.cs" />
     <Compile Include="Util\PubCmnFunction.cs" />
     <Compile Include="Util\PublicExceptionMessage.cs" />
     <Compile Include="IO\BinarySerialize.cs" />
@@ -157,7 +148,9 @@
     <Compile Include="Util\Latebind.cs" />
     <Compile Include="Util\PerformanceRecorder.cs" />
     <Compile Include="Util\PubLiteral.cs" />
+    <Compile Include="Util\RandomValueGenerator.cs" />
     <Compile Include="Win32\CmnWin32.cs" />
+    <Compile Include="Util\EnvInfo.cs" />
     <Compile Include="Win32\EUDCWin32.cs" />
     <Compile Include="Win32\EventLogWin32.cs" />
     <Compile Include="Win32\MMapFileWin32.cs" />
@@ -194,6 +187,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

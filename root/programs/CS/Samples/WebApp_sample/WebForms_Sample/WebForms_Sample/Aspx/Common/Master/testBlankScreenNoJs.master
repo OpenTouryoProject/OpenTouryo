@@ -28,15 +28,15 @@
 <body onload="Fx_Document_OnLoad();Fx_AdjustStyle();" onunload="Fx_Document_OnClose();">
 
     <div class="page-header row">
-        <div class="col-xs-10" style="padding: 0">
+        <div class="col-10" style="padding: 0">
             <div id="header-logo"><a href="<%= this.ResolveClientUrl("~/Aspx/Start/menu.aspx") %>"><img alt="logo" src="<%= this.ResolveClientUrl("~/images/touryo/logo.png") %>" /></a></div>
             <div id="header-title">
                 <span>You has signed-in as "<%= this.UserName %>".</span>
                 <span class="test">scroll value</span>
             </div>
         </div>
-        <div id="header-button" class="col-xs-2">
-            <button type="button" class="btn btn-info pull-right" onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/logout.aspx") %>';">Sign-out</button>
+        <div id="header-button" class="col-2">
+            <button type="button" class="btn btn-info float-right" onclick="window.location.href = '<%= this.ResolveClientUrl("~/Aspx/Start/logout.aspx") %>';">Sign-out</button>
         </div>
     </div>
 

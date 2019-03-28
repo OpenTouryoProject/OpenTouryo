@@ -38,20 +38,6 @@ rem --------------------------------------------------
 pause
 
 rem --------------------------------------------------
-rem Batch build of TestEncAndDecProvider.
-rem --------------------------------------------------
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\Encryption\TestEncAndDecProvider\TestEncAndDecProvider.sln"
-
-pause
-
-rem --------------------------------------------------
-rem Batch build of EncAndDecUtil.
-rem --------------------------------------------------
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\Encryption\EncAndDecUtil\EncAndDecUtil.sln"
-
-pause
-
-rem --------------------------------------------------
 rem Batch build of Workflow.
 rem --------------------------------------------------
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\Workflow_Tool\Workflow_Tool.sln"

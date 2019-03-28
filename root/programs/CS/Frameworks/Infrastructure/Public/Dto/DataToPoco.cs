@@ -35,9 +35,6 @@
 using System;
 using System.Data;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Reflection;
-using System.Diagnostics;
 
 using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.FastReflection;

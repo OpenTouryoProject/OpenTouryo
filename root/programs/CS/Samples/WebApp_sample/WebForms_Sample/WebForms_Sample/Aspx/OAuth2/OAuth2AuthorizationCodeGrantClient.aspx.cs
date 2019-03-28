@@ -32,7 +32,7 @@ using Newtonsoft.Json.Linq;
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Public.Security;
+using Touryo.Infrastructure.Public.Security.Pwd;
 
 namespace WebForms_Sample.Aspx.OAuth2
 {
@@ -80,7 +80,7 @@ namespace WebForms_Sample.Aspx.OAuth2
                 if (state == this.State) // CSRF(XSRF)対策のstateの検証は重要
                 {
                     response = await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
-                        new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuth2BearerToken"),
+                        new Uri("https://localhost:44300/MultiPurposeAuthSite/token"),
                         OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
                         HttpUtility.HtmlEncode("http://localhost:9999/WebForms_Sample/Aspx/Auth/OAuthAuthorizationCodeGrantClient.aspx"), code);
 
@@ -90,28 +90,22 @@ namespace WebForms_Sample.Aspx.OAuth2
 
                     string sub = "";
                     string nonce = "";
-                    List<string> roles = null;
-                    List<string> scopes = null;
                     JObject jobj = null;
 
-                    // access_tokenの検証
-                    if (JwtToken.Verify(dic["access_token"], out sub, out roles, out scopes, out jobj))
+                    // id_tokenの検証
+                    if (IdToken.Verify(dic["id_token"], dic["access_token"],
+                        code, state, out sub, out nonce, out jobj) && nonce == this.Nonce)
                     {
-                        // id_tokenの検証
-                        if (IdToken.Verify(dic["id_token"], "", "", "", out sub, out nonce, out jobj) && nonce == this.Nonce)
-                        {
-                            // ログインに成功
-                            // /userinfoエンドポイントにアクセスする場合
-                            response = await OAuth2AndOIDCClient.GetUserInfoAsync(
-                            new Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic["access_token"]);
+                        // ログインに成功
+                        // /userinfoエンドポイントにアクセスする場合
+                        response = await OAuth2AndOIDCClient.GetUserInfoAsync(
+                        new Uri("https://localhost:44300/MultiPurposeAuthSite/userinfo"), dic["access_token"]);
 
-                            FormsAuthentication.RedirectFromLoginPage(sub, false);
-                            MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
-                            UserInfoHandle.SetUserInformation(ui);
+                        FormsAuthentication.RedirectFromLoginPage(sub, false);
+                        MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
+                        UserInfoHandle.SetUserInformation(ui);
 
-                            return;
-                        }
-                        else { }
+                        return;
                     }
                     else { }
                 }

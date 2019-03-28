@@ -40,7 +40,7 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
     [DefaultProperty("Items")]
     public class WinCustomDropDownList : ComboBox, IMasterData
     {
-        //// <summary>マスタデータ名</summary>
+        /// <summary>マスタデータ名</summary>
         public string _masterDataName = "";
 
         /// <summary>マスタデータ名</summary>
@@ -114,12 +114,11 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
             }
         }
 
-        /// <summary>初期処理（Items）</summary>
-        /// <remarks>
-        /// コンストラクタのInitializeComponent前に実行する必要があるので、NG
-        /// （コンストラクタでWS呼び出しを実装すると、デザイナが上手く表示できない。）
-        /// </remarks>
-        
+        //// <summary>初期処理（Items）</summary>
+        //// <remarks>
+        //// コンストラクタのInitializeComponent前に実行する必要があるので、NG
+        //// （コンストラクタでWS呼び出しを実装すると、デザイナが上手く表示できない。）
+        //// </remarks>
         //protected override void InitLayout()
         //{
         //    base.InitLayout();

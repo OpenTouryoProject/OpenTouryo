@@ -31,7 +31,7 @@ Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Business.Util
 Imports Touryo.Infrastructure.Framework.Authentication
 Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Public.Security
+Imports Touryo.Infrastructure.Public.Security.Pwd
 
 Namespace Controllers
     ''' <summary>HomeController</summary>
@@ -122,7 +122,7 @@ Namespace Controllers
             Else
                 ' 外部ログイン
                 Return Redirect(String.Format(
-                                "http://localhost:63359/MultiPurposeAuthSite/Account/OAuth2Authorize" _
+                                "https://localhost:44300/MultiPurposeAuthSite/Account/OAuth2Authorize" _
                                 & "?client_id=" & OAuth2AndOIDCParams.ClientID _
                                 & "&response_type=code" _
                                 & "&scope=profile%20email%20phone%20address%20openid" _
@@ -165,7 +165,7 @@ Namespace Controllers
                 If state = Me.State Then
                     ' CSRF(XSRF)対策のstateの検証は重要
                     response = Await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
-                        New Uri("http://localhost:63359/MultiPurposeAuthSite/OAuth2BearerToken"),
+                        New Uri("https://localhost:44300/MultiPurposeAuthSite/token"),
                         OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
                         HttpUtility.HtmlEncode("http://localhost:58496/MVC_Sample/Home/OAuth2AuthorizationCodeGrantClient"), code)
 
@@ -175,22 +175,21 @@ Namespace Controllers
 
                     ' id_tokenの検証コード
                     If dic.ContainsKey("id_token") Then
-                        Dim id_token As String = dic("id_token")
-
-                        Dim out_sub As String = ""
-                        Dim out_nonce As String = ""
+                        Dim [sub] As String = ""
+                        Dim nonce As String = ""
                         Dim jobj As JObject = Nothing
 
-                        If IdToken.Verify(id_token, dic("access_token"), code, state, out_sub, out_nonce,
-                            jobj) AndAlso out_nonce = Me.Nonce Then
+                        If IdToken.Verify(dic("id_token"), dic("access_token"),
+                                          code, state, [sub], nonce, jobj) AndAlso nonce = Me.Nonce Then
+
                             ' ログインに成功
 
                             ' /userinfoエンドポイントにアクセスする場合
                             response = Await OAuth2AndOIDCClient.GetUserInfoAsync(
-                                New Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic("access_token"))
+                                New Uri("https://localhost:44300/MultiPurposeAuthSite/userinfo"), dic("access_token"))
 
-                            FormsAuthentication.RedirectFromLoginPage(out_sub, False)
-                            Dim ui As New MyUserInfo(out_sub, Request.UserHostAddress)
+                            FormsAuthentication.RedirectFromLoginPage([sub], False)
+                            Dim ui As New MyUserInfo([sub], Request.UserHostAddress)
                             UserInfoHandle.SetUserInformation(ui)
 
                             Return New EmptyResult()

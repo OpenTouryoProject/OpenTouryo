@@ -41,7 +41,7 @@ using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Public.Security;
+using Touryo.Infrastructure.Public.Security.Pwd;
 
 namespace MVC_Sample.Controllers
 {
@@ -157,7 +157,7 @@ namespace MVC_Sample.Controllers
             {
                 // 外部ログイン
                 return Redirect(string.Format(
-                    "http://localhost:63359/MultiPurposeAuthSite/Account/OAuth2Authorize"
+                    "https://localhost:44300/MultiPurposeAuthSite/Account/OAuth2Authorize"
                     + "?client_id=" + OAuth2AndOIDCParams.ClientID
                     + "&response_type=code"
                     + "&scope=profile%20email%20phone%20address%20openid"
@@ -173,6 +173,7 @@ namespace MVC_Sample.Controllers
         /// </summary>
         /// <returns>IActionResult</returns>
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Scroll()
         {
             return View();
@@ -207,7 +208,7 @@ namespace MVC_Sample.Controllers
                 if (state == this.State) // CSRF(XSRF)対策のstateの検証は重要
                 {
                     response = await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
-                        new Uri("http://localhost:63359/MultiPurposeAuthSite/OAuth2BearerToken"),
+                        new Uri("https://localhost:44300/MultiPurposeAuthSite/token"),
                         OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
                         HttpUtility.HtmlEncode("http://localhost:58496/Home/OAuth2AuthorizationCodeGrantClient"), code);
 
@@ -218,24 +219,22 @@ namespace MVC_Sample.Controllers
                     // id_tokenの検証コード
                     if (dic.ContainsKey("id_token"))
                     {
-                        string id_token = dic["id_token"];
-
-                        string out_sub = "";
-                        string out_nonce = "";
+                        string sub = "";
+                        string nonce = "";
                         JObject jobj = null;
 
-                        if (IdToken.Verify(id_token, dic["access_token"], code, state, out out_sub, out out_nonce, out jobj)
-                            && out_nonce == this.Nonce)
+                        if (IdToken.Verify(dic["id_token"], dic["access_token"],
+                            code, state, out sub, out nonce, out jobj) && nonce == this.Nonce)
                         {
                             // ログインに成功
 
                             // /userinfoエンドポイントにアクセスする場合
                             response = await OAuth2AndOIDCClient.GetUserInfoAsync(
-                                new Uri("http://localhost:63359/MultiPurposeAuthSite/userinfo"), dic["access_token"]);
+                                new Uri("https://localhost:44300/MultiPurposeAuthSite/userinfo"), dic["access_token"]);
 
                             // 認証情報を作成する。
                             List<Claim> claims = new List<Claim>();
-                            claims.Add(new Claim(ClaimTypes.Name, out_sub));
+                            claims.Add(new Claim(ClaimTypes.Name, sub));
 
                             // 認証情報を保存する。
                             ClaimsIdentity userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -246,7 +245,7 @@ namespace MVC_Sample.Controllers
                                 this.HttpContext, CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal);
 
                             // 認証情報を保存する。
-                            MyUserInfo ui = new MyUserInfo(out_sub, (new GetClientIpAddress()).GetAddress());
+                            MyUserInfo ui = new MyUserInfo(sub, (new GetClientIpAddress()).GetAddress());
                             UserInfoHandle.SetUserInformation(ui);
 
                             return this.Redirect(Url.Action("Index", "Home"));

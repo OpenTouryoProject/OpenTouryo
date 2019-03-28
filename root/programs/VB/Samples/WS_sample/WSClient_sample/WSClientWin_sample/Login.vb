@@ -74,7 +74,7 @@ Partial Public Class Login
     Private Async Function ExLogin(userId As String, password As String) As Task(Of String)
         OAuth2AndOIDCClient.HttpClient = New HttpClient()
         Dim response As String = Await OAuth2AndOIDCClient.ResourceOwnerPasswordCredentialsGrantAsync(
-            New Uri("http://localhost:63359/MultiPurposeAuthSite/OAuth2BearerToken"),
+            New Uri("https://localhost:44300/MultiPurposeAuthSite/token"),
             OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret, userId, password, "profile email phone address roles").ConfigureAwait(False)
 
         ' access_tokenを取得し、検証
@@ -89,7 +89,7 @@ Partial Public Class Login
             Dim scopes As List(Of String) = Nothing
             Dim jobj As JObject = Nothing
 
-            If JwtToken.Verify(access_token, [sub], roles, scopes, jobj) Then
+            If AccessToken.Verify(access_token, [sub], roles, scopes, jobj) Then
                 ' ログインに成功
                 Return access_token
             Else

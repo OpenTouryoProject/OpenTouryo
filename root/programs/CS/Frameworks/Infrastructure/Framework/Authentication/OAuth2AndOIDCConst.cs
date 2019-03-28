@@ -30,6 +30,9 @@
 //*  2018/08/10  西野 大介         新規作成（汎用認証サイトからのコード移行）
 //**********************************************************************************
 
+// urnはClaimのurnで、
+// ASP.NETとClaimとJwtのMember間のインターフェイスを形成する。
+
 namespace Touryo.Infrastructure.Framework.Authentication
 {
     /// <summary>OAuth2とOIDCの各種定数</summary>
@@ -135,20 +138,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public const string OidcHybrid3_ResponseType = code + " " + IDToken + " " + token;
 
         #endregion
-
-        #region ResponseMode
-
-        /// <summary>query</summary>
-        public const string query = "query";
-
-        /// <summary>fragment</summary>
-        public const string fragment = "fragment";
-
-        /// <summary>form_post</summary>
-        public const string form_post = "form_post";
-
-        #endregion
-
+        
         #region HTTP Header
 
         /// <summary>Location</summary>
@@ -209,47 +199,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
-        #region Claim
+        #region Claims
 
         // ★ Scopeと同じ文字列は定義しない。
 
         /// <summary>ベース部分</summary>
         public static readonly string Claim_Base = "urn:oauth:";
 
-        #region 標準
-
-        #region 末端
-        
-        /// <summary>email_verified</summary>
-        public const string email_verified = "email_verified";
-
-        /// <summary>phone_number</summary>
-        public const string phone_number = "phone_number";
-
-        /// <summary>phone_number_verified</summary>
-        public const string phone_number_verified = "phone_number_verified";
-
-        #endregion
-
-        #region urn
-
-        /// <summary>emailクレームのurn</summary>
-        public static readonly string Claim_Email = Claim_Base + Scope_Email;
-
-        /// <summary>email_verifiedクレームのurn</summary>
-        public static readonly string Claim_EmailVerified = Claim_Base + email_verified;
-
-        /// <summary>phone_numberクレームのurn</summary>
-        public static readonly string Claim_PhoneNumber = Claim_Base + phone_number;
-
-        /// <summary>phone_number_verifiedクレームのurn</summary>
-        public static readonly string Claim_PhoneNumberVerified = Claim_Base + phone_number_verified;
-
-        #endregion
-
-        #endregion
-
-        #region JWT
+        #region 予約
 
         #region 末端
 
@@ -303,6 +260,39 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
+        #region 標準
+
+        #region 末端
+
+        /// <summary>email_verified</summary>
+        public const string email_verified = "email_verified";
+
+        /// <summary>phone_number</summary>
+        public const string phone_number = "phone_number";
+
+        /// <summary>phone_number_verified</summary>
+        public const string phone_number_verified = "phone_number_verified";
+
+        #endregion
+
+        #region urn
+
+        /// <summary>emailクレームのurn</summary>
+        public static readonly string Claim_Email = Claim_Base + Scope_Email;
+
+        /// <summary>email_verifiedクレームのurn</summary>
+        public static readonly string Claim_EmailVerified = Claim_Base + email_verified;
+
+        /// <summary>phone_numberクレームのurn</summary>
+        public static readonly string Claim_PhoneNumber = Claim_Base + phone_number;
+
+        /// <summary>phone_number_verifiedクレームのurn</summary>
+        public static readonly string Claim_PhoneNumberVerified = Claim_Base + phone_number_verified;
+
+        #endregion
+
+        #endregion
+
         #region OIDC
 
         #region 末端
@@ -340,12 +330,40 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>s_hash</summary>
         public const string s_hash = "s_hash";
 
+        /// <summary>cnf</summary>
+        public const string cnf = "cnf";
+
+        /// <summary>x5t</summary>
+        public const string x5t = "x5t";
+
+        /// <summary>x5u</summary>
+        public const string x5u = "x5u";
+
+        // 独自
+
+        /// <summary>fapi</summary>
+        public const string fapi = "fapi";
+
         #endregion
 
         #region urn
-        
+
         /// <summary>s_hashクレームのurn</summary>
         public static readonly string Claim_SHash = Claim_Base + s_hash;
+
+        /// <summary>cnfクレームのurn</summary>
+        public static readonly string Claim_Cnf = Claim_Base + cnf;
+
+        /// <summary>x5tクレームのurn</summary>
+        public static readonly string Claim_CnfX5t = Claim_Cnf + ":" + x5t;
+
+        /// <summary>x5uクレームのurn</summary>
+        public static readonly string Claim_CnfX5u = Claim_Cnf + ":" + x5u;
+
+        // 独自
+
+        /// <summary>fapiクレームのurn</summary>
+        public static readonly string Claim_FApi = Claim_Base + fapi;
 
         #endregion
 

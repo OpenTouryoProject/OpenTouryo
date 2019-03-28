@@ -29,25 +29,22 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/12/26  西野 大介         新規作成
 //*  2018/03/28  西野 大介         .NET Standard対応で、幾らか、I/F変更あり。
+//*  2018/11/27  西野 大介         XML(Base64) ---> Jwk(Base64Url)に変更。
+//*  2018/11/27  西野 大介         秘密鍵 <---> JWKサポート追加
 //**********************************************************************************
 
 using System;
 using System.Text;
 using System.Collections.Generic;
-
-#if NETSTD
-using Microsoft.AspNetCore.WebUtilities;
-#elif NET45
-using Touryo.Infrastructure.Public.Util;
-using Microsoft.Owin.Security.DataHandler.Encoder;
-#else
-using Microsoft.Owin.Security.DataHandler.Encoder;
-#endif
+using System.Security.Cryptography;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Security;
+using Touryo.Infrastructure.Public.Security.Jwt;
 
 namespace Touryo.Infrastructure.Framework.Authentication
 {
@@ -58,15 +55,30 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// </summary>
     public class JwtAssertion
     {
+        #region CreateJwtBearerTokenFlowAssertion
+        /// <summary>CreateJwtBearerTokenFlowAssertionJWK</summary>
+        /// <param name="iss">client_id</param>
+        /// <param name="aud">Token2 EndPointのuri</param>
+        /// <param name="forExp">DateTimeOffset</param>
+        /// <param name="scopes">scopes</param>
+        /// <param name="jwkPrivateKey">RS256用のJWK秘密鍵</param>
+        /// <returns>JwtAssertion</returns>
+        public static string CreateJwtBearerTokenFlowAssertionJWK(
+            string iss, string aud, TimeSpan forExp, string scopes, string jwkPrivateKey)
+        {
+            return JwtAssertion.CreateJwtBearerTokenFlowAssertion(iss, aud, forExp, scopes,
+                PrivateKeyConverter.JwkToRsaParam(jwkPrivateKey));
+        }
+
         /// <summary>CreateJwtBearerTokenFlowAssertion</summary>
         /// <param name="iss">client_id</param>
         /// <param name="aud">Token2 EndPointのuri</param>
         /// <param name="forExp">DateTimeOffset</param>
         /// <param name="scopes">scopes</param>
-        /// <param name="xmlPrivateKey">RS256用のXML秘密鍵</param>
+        /// <param name="rsaPrivateKey">RS256用のRSAParameters秘密鍵</param>
         /// <returns>JwtAssertion</returns>
         public static string CreateJwtBearerTokenFlowAssertion(
-            string iss, string aud, TimeSpan forExp, string scopes, string xmlPrivateKey)
+            string iss, string aud, TimeSpan forExp, string scopes, RSAParameters rsaPrivateKey)
         {
             string json = "";
             //string jws = "";
@@ -95,24 +107,28 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             #region JWT化
 
-            JWS_RS256_XML jwtRS256 = null;
-
-            // 署名
-            jwtRS256 = new JWS_RS256_XML(xmlPrivateKey);
+            JWS_RS256_Param jwtRS256 = new JWS_RS256_Param(rsaPrivateKey);
             return jwtRS256.Create(json);
 
-            //// 検証
-            //jwtRS256 = new JWS_RS256_XML(xmlPrivateKey);
-            //if (jwtRS256.Verify(jws))
-            //{
-            //    return jws; // 検証できた。
-            //}
-            //else
-            //{
-            //    return ""; // 検証できなかった。
-            //}
-
             #endregion
+        }
+        #endregion
+
+        #region VerifyJwtBearerTokenFlowAssertion
+        /// <summary>VerifyJwtBearerTokenFlowAssertion</summary>
+        /// <param name="jwtAssertion">string</param>
+        /// <param name="iss">client_id</param>
+        /// <param name="aud">Token2 EndPointのuri</param>
+        /// <param name="scopes">scopes</param>
+        /// <param name="jobj">JObject</param>
+        /// <param name="jwkPublicKey">RS256用のJWK公開鍵</param>
+        /// <returns>検証結果</returns>
+        public static bool VerifyJwtBearerTokenFlowAssertionJWK(string jwtAssertion,
+            out string iss, out string aud, out string scopes, out JObject jobj, string jwkPublicKey)
+        {
+            return JwtAssertion.VerifyJwtBearerTokenFlowAssertion(
+                jwtAssertion, out iss, out aud, out scopes, out jobj,
+                RsaPublicKeyConverter.JwkToParam(jwkPublicKey));
         }
 
         /// <summary>VerifyJwtBearerTokenFlowAssertion</summary>
@@ -121,26 +137,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="aud">Token2 EndPointのuri</param>
         /// <param name="scopes">scopes</param>
         /// <param name="jobj">JObject</param>
-        /// <param name="xmlPublicKey">RS256用のXML公開鍵</param>
+        /// <param name="rsaPublicKey">RS256用のRSAParameters公開鍵</param>
         /// <returns>検証結果</returns>
         public static bool VerifyJwtBearerTokenFlowAssertion(string jwtAssertion,
-            out string iss, out string aud, out string scopes, out JObject jobj, string xmlPublicKey)
+            out string iss, out string aud, out string scopes, out JObject jobj, RSAParameters rsaPublicKey)
         {
             iss = "";
             aud = "";
             scopes = "";
             jobj = null;
 
-            JWS_RS256_XML jwtRS256 = new JWS_RS256_XML(xmlPublicKey);
+            JWS_RS256_Param jwtRS256 = new JWS_RS256_Param(rsaPublicKey);
 
             if (jwtRS256.Verify(jwtAssertion))
             {
-#if NETSTD
-                string jwtPayload = Encoding.UTF8.GetString(Base64UrlTextEncoder.Decode(jwtAssertion.Split('.')[1]));
-#else
-                Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
-                string jwtPayload = Encoding.UTF8.GetString(base64UrlEncoder.Decode(jwtAssertion.Split('.')[1]));
-#endif
+                string jwtPayload = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(jwtAssertion.Split('.')[1]), CustomEncode.UTF_8);
+
                 jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
 
                 iss = (string)jobj[OAuth2AndOIDCConst.iss];
@@ -172,5 +185,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // 認証に失敗
             return false;
         }
+        #endregion
     }
 }

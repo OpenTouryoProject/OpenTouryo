@@ -997,7 +997,7 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
 
         #region フィルタ処理（KeyPress）
 
-        /// <summary>フィルタ処理</summary>
+        //// <summary>フィルタ処理</summary>
         //private void WinCustomTextBox_KeyPress(object sender, KeyPressEventArgs e)
         //{
         //    ・・・

@@ -23,7 +23,7 @@ Imports MVC_Sample.Models.ViewModels
 Imports Touryo.Infrastructure.Business.Dao
 Imports Touryo.Infrastructure.Public.Dto
 Imports Touryo.Infrastructure.Public.Db
-Imports Touryo.Infrastructure.Public.Util
+Imports Touryo.Infrastructure.Public.Diagnostics
 
 Namespace Logic.Dao
     Public Class LayerD

@@ -29,16 +29,22 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         新規作成
 //*  2018/03/29  西野 大介         .NET Standard対応で、HttpSessionのポーティング
+//*  2018/12/05  西野 大介         インデクサを追加...できない（拡張メソッドでは
+//*                                BinarySerializeを使用したメソッドを追加
 //**********************************************************************************
 
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+
+using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Framework.StdMigration
 {
     /// <summary>System.Web.SessionState.HttpSessionStateのポーティング用クラス</summary>
     public static class SessionExtensions
     {
+        #region Json
         /// <summary>SetObjectAsJson拡張メソッド</summary>
         /// <param name="session">ISession</param>
         /// <param name="key">string</param>
@@ -55,9 +61,34 @@ namespace Touryo.Infrastructure.Framework.StdMigration
         /// <returns>typed object</returns>
         public static T GetObjectFromJson<T>(this ISession session, string key)
         {
-            var value = session.GetString(key);
+            string value = session.GetString(key);
 
             return value == null ? default(T) : JsonConvert.DeserializeObject<T>(value);
         }
+        #endregion
+
+        #region Binary
+        /// <summary>SetObjectAsBinary拡張メソッド</summary>
+        /// <param name="session">ISession</param>
+        /// <param name="key">string</param>
+        /// <param name="value">object</param>
+        public static void SetObjectAsBinary(this ISession session, string key, object value)
+        {
+            session.SetString(key, 
+                CustomEncode.ToBase64String(
+                    BinarySerialize.ObjectToBytes(value)));
+        }
+
+        /// <summary>GetObjectFromBinary拡張メソッド</summary>
+        /// <param name="session">ISession</param>
+        /// <param name="key">string</param>
+        /// <returns>object</returns>
+        public static object GetObjectFromBinary(this ISession session, string key)
+        {
+            return BinarySerialize.BytesToObject(
+                CustomEncode.FromBase64String(
+                    session.GetString(key)));
+        }
+        #endregion
     }
 }

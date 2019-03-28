@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{76C5D665-A592-4A35-85D9-B75590E026AA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>
+    </RootNamespace>
+    <AssemblyName>OpenTouryo.CustomControl.RichClient</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>Windows</MyType>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionCompare>Binary</OptionCompare>
+    <OptionStrict>On</OptionStrict>
+    <OptionInfer>On</OptionInfer>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+    <PublishUrl>http://localhost/CustomControl.RichClient/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>..\..\Build_net47\</OutputPath>
+    <DocumentationFile>..\..\Build_net47\OpenTouryo.CustomControl.RichClient.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>DEBUG,TRACE,NET47</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Build_net47r\</OutputPath>
+    <DocumentationFile>..\..\Build_net47r\OpenTouryo.CustomControl.RichClient.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>TRACE,NET47</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="OpenTouryo.Framework.RichClient">
+      <HintPath>..\..\Build_net47\OpenTouryo.Framework.RichClient.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Build_net47\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Control\WinCustomDropDownList.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Control\WinCustomMaskedTextBox.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Control\WinCustomMaskedTextBoxDgvCell.vb" />
+    <Compile Include="Control\WinCustomMaskedTextBoxDgvCol.vb" />
+    <Compile Include="Control\WinCustomMaskedTextBoxDgvHost.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Control\WinCustomTextBox.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Control\WinCustomTextBoxDgvCell.vb" />
+    <Compile Include="Control\WinCustomTextBoxDgvCol.vb" />
+    <Compile Include="Control\WinCustomTextBoxDgvHost.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Function\CheckResult.vb" />
+    <Compile Include="Function\CmnCheckFunction.vb" />
+    <Compile Include="Function\CmnMasterDatasForList.vb" />
+    <Compile Include="Function\ListItem.vb" />
+    <Compile Include="Interface\ICheck.vb" />
+    <Compile Include="Interface\IEdit.vb" />
+    <Compile Include="Interface\IGetValue.vb" />
+    <Compile Include="Interface\IMasterData.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyGrid\CheckType.vb" />
+    <Compile Include="PropertyGrid\CheckTypeConverter.vb" />
+    <Compile Include="PropertyGrid\EditAddFigure.vb" />
+    <Compile Include="PropertyGrid\EditDigitsAfterDP.vb" />
+    <Compile Include="PropertyGrid\EditDigitsAfterDPConverter.vb" />
+    <Compile Include="PropertyGrid\EditInitialValue.vb" />
+    <Compile Include="PropertyGrid\EditPadding.vb" />
+    <Compile Include="PropertyGrid\EditPaddingConverter.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Control\WinCustomDropDownList.resx">
+      <DependentUpon>WinCustomDropDownList.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Control\WinCustomMaskedTextBox.resx">
+      <DependentUpon>WinCustomMaskedTextBox.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Control\WinCustomTextBox.resx">
+      <DependentUpon>WinCustomTextBox.vb</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows インストーラー 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>
