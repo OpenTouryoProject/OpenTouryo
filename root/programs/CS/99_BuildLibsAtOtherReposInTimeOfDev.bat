@@ -50,12 +50,14 @@ echo | call 3_Build_Business_netcore30.bat
 
 :Xcopy
 @rem ビルド出力をコピー
-cd extDir
-xcopy /E /Y "Temp\OpenTouryo-develop\root\programs\CS\Frameworks\Infrastructure\Build_net45" "OpenTouryoAssemblies\Build_net45\"
-xcopy /E /Y "Temp\OpenTouryo-develop\root\programs\CS\Frameworks\Infrastructure\Build_net46" "OpenTouryoAssemblies\Build_net46\"
-xcopy /E /Y "Temp\OpenTouryo-develop\root\programs\CS\Frameworks\Infrastructure\Build_net47" "OpenTouryoAssemblies\Build_net47\"
-xcopy /E /Y "Temp\OpenTouryo-develop\root\programs\CS\Frameworks\Infrastructure\Build_netcore20" "OpenTouryoAssemblies\Build_netcore20\"
-xcopy /E /Y "Temp\OpenTouryo-develop\root\programs\CS\Frameworks\Infrastructure\Build_netcore30" "OpenTouryoAssemblies\Build_netcore30\"
+cd %extDir%
+xcopy /Y /E "Temp\OpenTouryo-develop\root\programs\CS\Frameworks\Infrastructure\Build_net45" "OpenTouryoAssemblies\Build_net45\"
+xcopy /Y /E "Temp\OpenTouryo-develop\root\programs\CS\Frameworks\Infrastructure\Build_net46" "OpenTouryoAssemblies\Build_net46\"
+xcopy /Y /E "Temp\OpenTouryo-develop\root\programs\CS\Frameworks\Infrastructure\Build_net47" "OpenTouryoAssemblies\Build_net47\"
+xcopy /Y /E "Temp\OpenTouryo-develop\root\programs\CS\Frameworks\Infrastructure\Build_netcore20" "OpenTouryoAssemblies\Build_netcore20\"
+xcopy /Y /E "Temp\OpenTouryo-develop\root\programs\CS\Frameworks\Infrastructure\Build_netcore30" "OpenTouryoAssemblies\Build_netcore30\"
+
+pause
 
 :EOF
 endlocal
