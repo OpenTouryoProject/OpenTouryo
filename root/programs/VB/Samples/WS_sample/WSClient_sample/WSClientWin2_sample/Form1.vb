@@ -91,6 +91,14 @@ Partial Public Class Form1
         Else
             Dim f As New Form2()
             f.Show()
+
+            '' イベント二重登録対策のテスト
+            'f.ShowDialog()
+            'f.Hide()
+            'f.ShowDialog()
+            '' ココで、Form2のイベントが2回実行される。
+            'f.Hide()
+
         End If
     End Sub
 
