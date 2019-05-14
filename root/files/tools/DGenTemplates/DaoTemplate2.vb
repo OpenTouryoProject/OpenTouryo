@@ -11,8 +11,9 @@
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 '*  2012/06/14  西野  大介        ResourceLoaderに加え、EmbeddedResourceLoaderに対応
 '*  2013/09/09  西野  大介        ExecGenerateSQLメソッドを追加した（バッチ更新用）。
-'*	2014/11/20  Sandeep           Implemented CommandTimeout property and SetCommandTimeout method.
-'*	2015/06/04	Sai				  Replaced SqlCommand property with IDbCommand property in SetCommandTimeout method. 
+'*  2014/11/20  Sandeep           Implemented CommandTimeout property and SetCommandTimeout method.
+'*  2015/06/04  Sai               Replaced SqlCommand property with IDbCommand property in SetCommandTimeout method.
+'*  2019/05/14  西野  大介        クエリ再利用の性能向上対策コードの追加
 '**********************************************************************************
 
 #Region "using"
@@ -22,6 +23,7 @@ Imports System
 Imports System.IO
 Imports System.Data
 Imports System.Collections
+Imports System.Collections.Concurrent
 
 ' フレームワーク
 Imports Touryo.Infrastructure.Framework.Dao
@@ -39,53 +41,70 @@ Imports Touryo.Infrastructure.Business.Dao
 ''' <summary>自動生成Ｄａｏクラス</summary>
 Public Class _DaoClassName_
 	Inherits MyBaseDao
+	''' <summary>クエリのキャッシュ</summary>
+	Protected Shared CDicQueryCache As New ConcurrentDictionary(Of String, String)()
+
 	#Region "インスタンス変数"
 
-	#Region "CommandTimeout"
+	''' <summary>キャッシュID</summary>
+	Private CacheId As String = ""
 
-    ''' <summary>CommandTimeout</summary>
-    Private _commandTimeout As Integer = -1
-
-	#Region "プロパティ プロシージャ"
-
-    ''' <summary>CommandTimeout</summary>
-    ''' <remarks>自由に（拡張して）利用できる。</remarks>
-    Public WriteOnly Property CommandTimeout() As Integer
-        Set(value As Integer)
-            Me._commandTimeout = value
-        End Set
-    End Property
-
-	#End Region
-
-	#End Region
-
+	#Region "パラメタ"
 	''' <summary>ユーザ パラメタ（文字列置換）用ハッシュ テーブル</summary>
 	Protected HtUserParameter As New Hashtable()
 	''' <summary>パラメタ ライズド クエリのパラメタ用ハッシュ テーブル</summary>
 	Protected HtParameter As New Hashtable()
+	#End Region
+
+	#Region "CommandTimeout"
+
+	''' <summary>CommandTimeout</summary>
+	Private _commandTimeout As Integer = -1
+
+	#Region "プロパティ プロシージャ"
+
+	''' <summary>CommandTimeout</summary>
+	''' <remarks>自由に（拡張して）利用できる。</remarks>
+	Public WriteOnly Property CommandTimeout() As Integer
+		Set
+			Me._commandTimeout = value
+		End Set
+	End Property
+
+	#End Region
+
+	#End Region
 
 	#End Region
 
 	#Region "コンストラクタ"
 
 	''' <summary>コンストラクタ</summary>
+	''' <param name="dam">BaseDam</param>
 	Public Sub New(dam As BaseDam)
 		MyBase.New(dam)
+	End Sub
+
+	''' <summary>コンストラクタ</summary>
+	''' <param name="dam">BaseDam</param>
+	''' <param name="cacheId">キャッシュ用ID</param>
+	Public Sub New(dam As BaseDam, cacheId As String)
+		MyBase.New(dam)
+		Me.CacheId = cacheId
 	End Sub
 
 	#End Region
 
 	#Region "共通関数（パラメタの制御）"
-	
+
 	''' <summary>To Set CommandTimeout</summary>
-    Private Sub SetCommandTimeout()
-        ' If CommandTimeout is >= 0 then set CommandTimeout.
-        ' Else skip, automatically it will set default CommandTimeout.
-        If Me._commandTimeout >= 0 Then
+	Private Sub SetCommandTimeout()
+		' If CommandTimeout is >= 0 then set CommandTimeout.
+		' Else skip, automatically it will set default CommandTimeout.
+		If Me._commandTimeout >= 0 Then
 			Me.GetDam().DamIDbCommand.CommandTimeout = Me._commandTimeout
-        End If
-    End Sub
+		End If
+	End Sub
 
 	''' <summary>ユーザ パラメタ（文字列置換）をハッシュ テーブルに設定する。</summary>
 	''' <param name="userParamName">ユーザ パラメタ名</param>
@@ -195,39 +214,82 @@ Public Class _DaoClassName_
 
 	#Region "クエリ メソッド"
 
+	#Region "クエリのキャッシュ処理"
+
+	''' <summary>ファイル or キャッシュからSetSqlByFile2する。</summary>
+	''' <param name="sqlFileName">string</param>
+	Protected Sub SetSqlFromFileOrCache(sqlFileName As String)
+		If String.IsNullOrEmpty(Me.CacheId) Then
+			' キャッシュ設定なし
+			' ファイルからSQL（Insert）を設定する。
+			Me.SetSqlByFile2(sqlFileName)
+		Else
+			' キャッシュ設定あり
+			Dim temp As String = Me.CacheId & sqlFileName
+			If DaoShippers.CDicQueryCache.ContainsKey(temp) Then
+				' キャッシュからSQL（Insert）を設定する。
+				Me.SetSqlByCommand(DaoShippers.CDicQueryCache(temp))
+			Else
+				' ファイルからSQL（Insert）を設定する。
+				Me.SetSqlByFile2(sqlFileName)
+			End If
+		End If
+	End Sub
+
+	''' <summary>クエリをキャッシュする。</summary>
+	''' <param name="sqlFileName">string</param>
+	Protected Sub SetSqlToCache(sqlFileName As String)
+		Dim temp As String = Me.CacheId & sqlFileName
+
+		If Not String.IsNullOrEmpty(Me.CacheId) AndAlso Not DaoShippers.CDicQueryCache.ContainsKey(temp) Then
+			' クエリをキャッシュ
+			DaoShippers.CDicQueryCache(temp) = Me.GetDam().DamIDbCommand.CommandText
+		End If
+	End Sub
+
+	#End Region
+
 	#Region "Insert"
 
 	''' <summary>１レコード挿入する。</summary>
 	''' <returns>挿入された行の数</returns>
 	Public Function _InsertMethodName_() As Integer
-		' ファイルからSQL（Insert）を設定する。
-        Me.SetSqlByFile2("_InsertFileName_")
+		Dim sqlFileName As String = "_InsertFileName_"
 
-        ' Set CommandTimeout
-        Me.SetCommandTimeout()
+		' SQL（Insert）を設定する。
+		Me.SetSqlFromFileOrCache(sqlFileName)
+
+		' Set CommandTimeout
+		Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
 
 		' SQL（Insert）を実行し、戻り値を戻す。
-		Return Me.ExecInsUpDel_NonQuery()
+		Dim i As Integer = Me.ExecInsUpDel_NonQuery()
+		Me.SetSqlToCache(sqlFileName)
+		Return i
 	End Function
 
 	''' <summary>１レコード挿入する。</summary>
 	''' <returns>挿入された行の数</returns>
 	''' <remarks>パラメタで指定した列のみ挿入値が有効になる。</remarks>
 	Public Function _DynInsMethodName_() As Integer
-		' ファイルからSQL（DynIns）を設定する。
-        Me.SetSqlByFile2("_DynInsFileName_")
+		Dim sqlFileName As String = "_DynInsFileName_"
 
-        ' Set CommandTimeout
-        Me.SetCommandTimeout()
+		' ファイルからSQL（DynIns）を設定する。
+		Me.SetSqlFromFileOrCache(sqlFileName)
+
+		' Set CommandTimeout
+		Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
 
 		' SQL（DynIns）を実行し、戻り値を戻す。
-		Return Me.ExecInsUpDel_NonQuery()
+		Dim i As Integer = Me.ExecInsUpDel_NonQuery()
+		Me.SetSqlToCache(sqlFileName)
+		Return i
 	End Function
 
 	#End Region
@@ -237,33 +299,39 @@ Public Class _DaoClassName_
 	''' <summary>主キーを指定し、１レコード参照する。</summary>
 	''' <param name="dt">結果を格納するDataTable</param>
 	Public Sub _SelectMethodName_(dt As DataTable)
-		' ファイルからSQL（Select）を設定する。
-        Me.SetSqlByFile2("_SelectFileName_")
+		Dim sqlFileName As String = "_SelectFileName_"
 
-        ' Set CommandTimeout
-        Me.SetCommandTimeout()
+		' ファイルからSQL（Select）を設定する。
+		Me.SetSqlFromFileOrCache(sqlFileName)
+
+		' Set CommandTimeout
+		Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
 
 		' SQL（Select）を実行し、戻り値を戻す。
 		Me.ExecSelectFill_DT(dt)
+		Me.SetSqlToCache(sqlFileName)
 	End Sub
 
 	''' <summary>検索条件を指定し、結果セットを参照する。</summary>
 	''' <param name="dt">結果を格納するDataTable</param>
 	Public Sub _DynSelMethodName_(dt As DataTable)
-		' ファイルからSQL（DynSel）を設定する。
-        Me.SetSqlByFile2("_DynSelFileName_")
+		Dim sqlFileName As String = "_DynSelFileName_"
 
-        ' Set CommandTimeout
-        Me.SetCommandTimeout()
+		' ファイルからSQL（DynSel）を設定する。
+		Me.SetSqlFromFileOrCache(sqlFileName)
+
+		' Set CommandTimeout
+		Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
 
 		' SQL（DynSel）を実行し、戻り値を戻す。
 		Me.ExecSelectFill_DT(dt)
+		Me.SetSqlToCache(sqlFileName)
 	End Sub
 
 	#End Region
@@ -274,34 +342,42 @@ Public Class _DaoClassName_
 	''' <returns>更新された行の数</returns>
 	''' <remarks>パラメタで指定した列のみ更新値が有効になる。</remarks>
 	Public Function _UpdateMethodName_() As Integer
-		' ファイルからSQL（Update）を設定する。
-        Me.SetSqlByFile2("_UpdateFileName_")
+		Dim sqlFileName As String = "_UpdateFileName_"
 
-        ' Set CommandTimeout
-        Me.SetCommandTimeout()
+		' ファイルからSQL（Update）を設定する。
+		Me.SetSqlFromFileOrCache(sqlFileName)
+
+		' Set CommandTimeout
+		Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
 
 		' SQL（Update）を実行し、戻り値を戻す。
-		Return Me.ExecInsUpDel_NonQuery()
+		Dim i As Integer = Me.ExecInsUpDel_NonQuery()
+		Me.SetSqlToCache(sqlFileName)
+		Return i
 	End Function
 
 	''' <summary>任意の検索条件でデータを更新する。</summary>
 	''' <returns>更新された行の数</returns>
 	''' <remarks>パラメタで指定した列のみ更新値が有効になる。</remarks>
 	Public Function _DynUpdMethodName_() As Integer
-		' ファイルからSQL（DynUpd）を設定する。
-        Me.SetSqlByFile2("_DynUpdFileName_")
+		Dim sqlFileName As String = "_DynUpdFileName_"
 
-        ' Set CommandTimeout
-        Me.SetCommandTimeout()
+		' ファイルからSQL（DynUpd）を設定する。
+		Me.SetSqlFromFileOrCache(sqlFileName)
+
+		' Set CommandTimeout
+		Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
 
 		' SQL（DynUpd）を実行し、戻り値を戻す。
-		Return Me.ExecInsUpDel_NonQuery()
+		Dim i As Integer = Me.ExecInsUpDel_NonQuery()
+		Me.SetSqlToCache(sqlFileName)
+		Return i
 	End Function
 
 	#End Region
@@ -311,33 +387,41 @@ Public Class _DaoClassName_
 	''' <summary>主キーを指定し、１レコード削除する。</summary>
 	''' <returns>削除された行の数</returns>
 	Public Function _DeleteMethodName_() As Integer
-		' ファイルからSQL（Delete）を設定する。
-        Me.SetSqlByFile2("_DeleteFileName_")
+		Dim sqlFileName As String = "_DeleteFileName_"
 
-        ' Set CommandTimeout
-        Me.SetCommandTimeout()
+		' ファイルからSQL（Delete）を設定する。
+		Me.SetSqlFromFileOrCache(sqlFileName)
+
+		' Set CommandTimeout
+		Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
 
 		' SQL（Delete）を実行し、戻り値を戻す。
-		Return Me.ExecInsUpDel_NonQuery()
+		Dim i As Integer = Me.ExecInsUpDel_NonQuery()
+		Me.SetSqlToCache(sqlFileName)
+		Return i
 	End Function
 
 	''' <summary>任意の検索条件でデータを削除する。</summary>
 	''' <returns>削除された行の数</returns>
 	Public Function _DynDelMethodName_() As Integer
-		' ファイルからSQL（DynDel）を設定する。
-        Me.SetSqlByFile2("_DynDelFileName_")
+		Dim sqlFileName As String = "_DynDelFileName_"
 
-        ' Set CommandTimeout
-        Me.SetCommandTimeout()
+		' ファイルからSQL（DynDel）を設定する。
+		Me.SetSqlFromFileOrCache(sqlFileName)
+
+		' Set CommandTimeout
+		Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
 
 		' SQL（DynDel）を実行し、戻り値を戻す。
-		Return Me.ExecInsUpDel_NonQuery()
+		Dim i As Integer = Me.ExecInsUpDel_NonQuery()
+		Me.SetSqlToCache(sqlFileName)
+		Return i
 	End Function
 
 	#End Region
@@ -347,17 +431,21 @@ Public Class _DaoClassName_
 	''' <summary>テーブルのレコード件数を取得する</summary>
 	''' <returns>テーブルのレコード件数</returns>
 	Public Function _DynSelCntMethodName_() As Object
-		' ファイルからSQL（DynSelCnt）を設定する。
-        Me.SetSqlByFile2("_DynSelCntFileName_")
+		Dim sqlFileName As String = "_DynSelCntFileName_"
 
-        ' Set CommandTimeout
-        Me.SetCommandTimeout()
+		' ファイルからSQL（DynSelCnt）を設定する。
+		Me.SetSqlFromFileOrCache(sqlFileName)
+
+		' Set CommandTimeout
+		Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
 
 		' SQL（SELECT COUNT）を実行し、戻り値を戻す。
-		Return Me.ExecSelectScalar()
+		Dim o As Object = Me.ExecSelectScalar()
+		Me.SetSqlToCache(sqlFileName)
+		Return o
 	End Function
 
 	''' <summary>静的SQLを生成する。</summary>
@@ -366,10 +454,10 @@ Public Class _DaoClassName_
 	''' <returns>生成した静的SQL</returns>
 	Public Overloads Function ExecGenerateSQL(fileName As String, sqlUtil As SQLUtility) As String
 		' ファイルからSQLを設定する。
-        Me.SetSqlByFile2(fileName)
+		Me.SetSqlByFile2(fileName)
 
-        ' Set CommandTimeout
-        Me.SetCommandTimeout()
+		' Set CommandTimeout
+		Me.SetCommandTimeout()
 
 		' パラメタの設定
 		Me.SetParametersFromHt()
