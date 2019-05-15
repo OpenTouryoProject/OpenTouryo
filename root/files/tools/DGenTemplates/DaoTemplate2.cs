@@ -47,7 +47,7 @@ public class _DaoClassName_ : MyBaseDao
     #region インスタンス変数
 
     /// <summary>キャッシュID</summary>
-    string CacheId = "";
+    protected string CacheId = "";
     
     #region パラメタ
     /// <summary>ユーザ パラメタ（文字列置換）用ハッシュ テーブル</summary>
@@ -297,9 +297,9 @@ public class _DaoClassName_ : MyBaseDao
         this.SetParametersFromHt();
 
         // SQL（Insert）を実行し、戻り値を戻す。
-        int i = this.ExecInsUpDel_NonQuery();
+        int rtn = this.ExecInsUpDel_NonQuery();
         this.SetSqlToCache(sqlFileName);
-        return i;
+        return rtn;
     }
 
     /// <summary>１レコード挿入する。</summary>
@@ -319,9 +319,9 @@ public class _DaoClassName_ : MyBaseDao
         this.SetParametersFromHt();
 
         // SQL（DynIns）を実行し、戻り値を戻す。
-        int i = this.ExecInsUpDel_NonQuery();
+        int rtn = this.ExecInsUpDel_NonQuery();
         this.SetSqlToCache(sqlFileName);
-        return i;
+        return rtn;
     }
 
     #endregion
@@ -389,9 +389,9 @@ public class _DaoClassName_ : MyBaseDao
         this.SetParametersFromHt();
 
         // SQL（Update）を実行し、戻り値を戻す。
-        int i = this.ExecInsUpDel_NonQuery();
+        int rtn = this.ExecInsUpDel_NonQuery();
         this.SetSqlToCache(sqlFileName);
-        return i;
+        return rtn;
     }
 
     /// <summary>任意の検索条件でデータを更新する。</summary>
@@ -411,9 +411,9 @@ public class _DaoClassName_ : MyBaseDao
         this.SetParametersFromHt();
 
         // SQL（DynUpd）を実行し、戻り値を戻す。
-        int i = this.ExecInsUpDel_NonQuery();
+        int rtn = this.ExecInsUpDel_NonQuery();
         this.SetSqlToCache(sqlFileName);
-        return i;
+        return rtn;
     }
     
     #endregion
@@ -436,9 +436,9 @@ public class _DaoClassName_ : MyBaseDao
         this.SetParametersFromHt();
 
         // SQL（Delete）を実行し、戻り値を戻す。
-        int i = this.ExecInsUpDel_NonQuery();
+        int rtn = this.ExecInsUpDel_NonQuery();
         this.SetSqlToCache(sqlFileName);
-        return i;
+        return rtn;
     }
 
     /// <summary>任意の検索条件でデータを削除する。</summary>
@@ -457,9 +457,9 @@ public class _DaoClassName_ : MyBaseDao
         this.SetParametersFromHt();
 
         // SQL（DynDel）を実行し、戻り値を戻す。
-        int i = this.ExecInsUpDel_NonQuery();
+        int rtn = this.ExecInsUpDel_NonQuery();
         this.SetSqlToCache(sqlFileName);
-        return i;
+        return rtn;
     }
 
     #endregion
@@ -482,9 +482,9 @@ public class _DaoClassName_ : MyBaseDao
         this.SetParametersFromHt();
 
         // SQL（SELECT COUNT）を実行し、戻り値を戻す。
-        object o = this.ExecSelectScalar();
+        object rtn = this.ExecSelectScalar();
         this.SetSqlToCache(sqlFileName);
-        return o;
+        return rtn;
     }
     
     /// <summary>静的SQLを生成する。</summary>
