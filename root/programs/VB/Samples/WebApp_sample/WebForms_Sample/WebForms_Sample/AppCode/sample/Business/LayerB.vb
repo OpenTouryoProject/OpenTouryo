@@ -498,7 +498,7 @@ Public Class LayerB
             Case "generate"
                 ' 自動生成Daoを使用する。
                 ' 自動生成Daoを生成
-                Dim genDao As New DaoShippers(Me.GetDam())
+                Dim genDao As New DaoShippers(Me.GetDam(), "f54d4d7bd5c8441187ec6939c4da7303")
 
                 ' パラメタに対して、動的に値を設定する。
                 genDao.PK_ShipperID = testParameter.ShipperID

@@ -266,9 +266,9 @@ Public Class _DaoClassName_
         Me.SetParametersFromHt()
 
         ' SQL（Insert）を実行し、戻り値を戻す。
-        Dim rtn As Integer = Me.ExecInsUpDel_NonQuery()
+        Dim rowCount As Integer = Me.ExecInsUpDel_NonQuery()
         Me.SetSqlToCache(sqlFileName)
-        Return rtn
+        Return rowCount
     End Function
 
     ''' <summary>１レコード挿入する。</summary>
@@ -287,9 +287,9 @@ Public Class _DaoClassName_
         Me.SetParametersFromHt()
 
         ' SQL（DynIns）を実行し、戻り値を戻す。
-        Dim rtn As Integer = Me.ExecInsUpDel_NonQuery()
+        Dim rowCount As Integer = Me.ExecInsUpDel_NonQuery()
         Me.SetSqlToCache(sqlFileName)
-        Return rtn
+        Return rowCount
     End Function
 
     #End Region
@@ -354,9 +354,9 @@ Public Class _DaoClassName_
         Me.SetParametersFromHt()
 
         ' SQL（Update）を実行し、戻り値を戻す。
-        Dim rtn As Integer = Me.ExecInsUpDel_NonQuery()
+        Dim rowCount As Integer = Me.ExecInsUpDel_NonQuery()
         Me.SetSqlToCache(sqlFileName)
-        Return rtn
+        Return rowCount
     End Function
 
     ''' <summary>任意の検索条件でデータを更新する。</summary>
@@ -375,9 +375,9 @@ Public Class _DaoClassName_
         Me.SetParametersFromHt()
 
         ' SQL（DynUpd）を実行し、戻り値を戻す。
-        Dim rtn As Integer = Me.ExecInsUpDel_NonQuery()
+        Dim rowCount As Integer = Me.ExecInsUpDel_NonQuery()
         Me.SetSqlToCache(sqlFileName)
-        Return rtn
+        Return rowCount
     End Function
 
     #End Region
@@ -399,9 +399,9 @@ Public Class _DaoClassName_
         Me.SetParametersFromHt()
 
         ' SQL（Delete）を実行し、戻り値を戻す。
-        Dim rtn As Integer = Me.ExecInsUpDel_NonQuery()
+        Dim rowCount As Integer = Me.ExecInsUpDel_NonQuery()
         Me.SetSqlToCache(sqlFileName)
-        Return rtn
+        Return rowCount
     End Function
 
     ''' <summary>任意の検索条件でデータを削除する。</summary>
@@ -419,9 +419,9 @@ Public Class _DaoClassName_
         Me.SetParametersFromHt()
 
         ' SQL（DynDel）を実行し、戻り値を戻す。
-        Dim rtn As Integer = Me.ExecInsUpDel_NonQuery()
+        Dim rowCount As Integer = Me.ExecInsUpDel_NonQuery()
         Me.SetSqlToCache(sqlFileName)
-        Return rtn
+        Return rowCount
     End Function
 
     #End Region
@@ -443,9 +443,9 @@ Public Class _DaoClassName_
         Me.SetParametersFromHt()
 
         ' SQL（SELECT COUNT）を実行し、戻り値を戻す。
-        Dim rtn As Object = Me.ExecSelectScalar()
+        Dim scalar As Object = Me.ExecSelectScalar()
         Me.SetSqlToCache(sqlFileName)
-        Return rtn
+        Return scalar
     End Function
 
     ''' <summary>静的SQLを生成する。</summary>

@@ -371,9 +371,9 @@ namespace WebForms_Sample
             this.SetParametersFromHt();
 
             // SQL（Insert）を実行し、戻り値を戻す。
-            int rtn = this.ExecInsUpDel_NonQuery();
+            int rowCount = this.ExecInsUpDel_NonQuery();
             this.SetSqlToCache(sqlFileName);
-            return rtn;
+            return rowCount;
         }
 
         /// <summary>１レコード挿入する。</summary>
@@ -393,9 +393,9 @@ namespace WebForms_Sample
             this.SetParametersFromHt();
 
             // SQL（DynIns）を実行し、戻り値を戻す。
-            int rtn = this.ExecInsUpDel_NonQuery();
+            int rowCount = this.ExecInsUpDel_NonQuery();
             this.SetSqlToCache(sqlFileName);
-            return rtn;
+            return rowCount;
         }
 
         #endregion
@@ -463,9 +463,9 @@ namespace WebForms_Sample
             this.SetParametersFromHt();
 
             // SQL（Update）を実行し、戻り値を戻す。
-            int rtn = this.ExecInsUpDel_NonQuery();
+            int rowCount = this.ExecInsUpDel_NonQuery();
             this.SetSqlToCache(sqlFileName);
-            return rtn;
+            return rowCount;
         }
 
         /// <summary>任意の検索条件でデータを更新する。</summary>
@@ -485,9 +485,9 @@ namespace WebForms_Sample
             this.SetParametersFromHt();
 
             // SQL（DynUpd）を実行し、戻り値を戻す。
-            int rtn = this.ExecInsUpDel_NonQuery();
+            int rowCount = this.ExecInsUpDel_NonQuery();
             this.SetSqlToCache(sqlFileName);
-            return rtn;
+            return rowCount;
         }
 
         #endregion
@@ -510,9 +510,9 @@ namespace WebForms_Sample
             this.SetParametersFromHt();
 
             // SQL（Delete）を実行し、戻り値を戻す。
-            int rtn = this.ExecInsUpDel_NonQuery();
+            int rowCount = this.ExecInsUpDel_NonQuery();
             this.SetSqlToCache(sqlFileName);
-            return rtn;
+            return rowCount;
         }
 
         /// <summary>任意の検索条件でデータを削除する。</summary>
@@ -531,9 +531,9 @@ namespace WebForms_Sample
             this.SetParametersFromHt();
 
             // SQL（DynDel）を実行し、戻り値を戻す。
-            int rtn = this.ExecInsUpDel_NonQuery();
+            int rowCount = this.ExecInsUpDel_NonQuery();
             this.SetSqlToCache(sqlFileName);
-            return rtn;
+            return rowCount;
         }
 
         #endregion
@@ -556,9 +556,9 @@ namespace WebForms_Sample
             this.SetParametersFromHt();
 
             // SQL（SELECT COUNT）を実行し、戻り値を戻す。
-            object rtn = this.ExecSelectScalar();
+            object scalar = this.ExecSelectScalar();
             this.SetSqlToCache(sqlFileName);
-            return rtn;
+            return scalar;
         }
 
         /// <summary>静的SQLを生成する。</summary>
