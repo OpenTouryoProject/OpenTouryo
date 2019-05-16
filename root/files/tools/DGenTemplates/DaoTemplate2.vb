@@ -1,15 +1,9 @@
 ﻿'**********************************************************************************
-'* Ｄ層 自動生成・テストクラス
-'**********************************************************************************
-
-' テスト用クラスなので、必要に応じて流用 or 削除して下さい。
-
-'**********************************************************************************
-'* クラス名        ：DaoShippers
+'* クラス名        ：_DaoClassName_
 '* クラス日本語名  ：自動生成Ｄａｏクラス
 '*
-'* 作成日時        ：2014/2/9
-'* 作成者          ：棟梁 D層自動生成ツール（墨壺）, 日立 太郎
+'* 作成日時        ：_TimeStamp_
+'* 作成者          ：棟梁 D層自動生成ツール（墨壺）, _UserName_
 '* 更新履歴        ：
 '*
 '*  日時        更新者            内容
@@ -45,45 +39,45 @@ Imports Touryo.Infrastructure.Business.Dao
 #End Region
 
 ''' <summary>自動生成Ｄａｏクラス</summary>
-Public Class DaoShippers
+Public Class _DaoClassName_
     Inherits MyBaseDao
     ''' <summary>クエリのキャッシュ</summary>
     Protected Shared CDicQueryCache As New ConcurrentDictionary(Of String, String)()
 
-#Region "インスタンス変数"
+    #Region "インスタンス変数"
 
     ''' <summary>キャッシュID</summary>
     Protected CacheId As String = ""
 
-#Region "パラメタ"
+    #Region "パラメタ"
     ''' <summary>ユーザ パラメタ（文字列置換）用ハッシュ テーブル</summary>
     Protected HtUserParameter As New Hashtable()
     ''' <summary>パラメタ ライズド クエリのパラメタ用ハッシュ テーブル</summary>
     Protected HtParameter As New Hashtable()
-#End Region
+    #End Region
 
-#Region "CommandTimeout"
+    #Region "CommandTimeout"
 
     ''' <summary>CommandTimeout</summary>
     Private _commandTimeout As Integer = -1
 
-#Region "プロパティ プロシージャ"
+    #Region "プロパティ プロシージャ"
 
     ''' <summary>CommandTimeout</summary>
     ''' <remarks>自由に（拡張して）利用できる。</remarks>
     Public WriteOnly Property CommandTimeout() As Integer
         Set
-            Me._commandTimeout = Value
+            Me._commandTimeout = value
         End Set
     End Property
 
-#End Region
+    #End Region
 
-#End Region
+    #End Region
 
-#End Region
+    #End Region
 
-#Region "コンストラクタ"
+    #Region "コンストラクタ"
 
     ''' <summary>コンストラクタ</summary>
     ''' <param name="dam">BaseDam</param>
@@ -99,9 +93,9 @@ Public Class DaoShippers
         Me.CacheId = cacheId
     End Sub
 
-#End Region
+    #End Region
 
-#Region "共通関数（パラメタの制御）"
+    #Region "共通関数（パラメタの制御）"
 
     ''' <summary>To Set CommandTimeout</summary>
     Private Sub SetCommandTimeout()
@@ -153,125 +147,74 @@ Public Class DaoShippers
         Next
     End Sub
 
-#End Region
+    #End Region
 
-#Region "プロパティ プロシージャ（setter、getter）"
+    #Region "プロパティ プロシージャ（setter、getter）"
 
+    ' ControlComment:LoopStart-PKColumn
 
-    ''' <summary>ShipperID列（主キー列）に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    ''' <summary>_ColumnName_列（主キー列）に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     ''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
-    Public Property PK_ShipperID() As Object
+    Public Property PK__ColumnName_() As Object
         Get
-            Return Me.HtParameter("ShipperID")
+            Return Me.HtParameter("_ColumnName_")
         End Get
         Set
-            Me.HtParameter("ShipperID") = Value
+            Me.HtParameter("_ColumnName_") = value
         End Set
     End Property
 
+    ' ControlComment:LoopEnd-PKColumn
 
+    ' ControlComment:LoopStart-ElseColumn
 
-    ''' <summary>CompanyName列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    ''' <summary>_ColumnName_列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     ''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
-    Public Property CompanyName() As Object
+    Public Property _ColumnName_() As Object
         Get
-            Return Me.HtParameter("CompanyName")
+            Return Me.HtParameter("_ColumnName_")
         End Get
         Set
-            Me.HtParameter("CompanyName") = Value
+            Me.HtParameter("_ColumnName_") = value
         End Set
     End Property
+    ' ControlComment:LoopEnd-ElseColumn
 
-    ''' <summary>Phone列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
-    ''' <remarks>更新処理時のSET句で使用するパラメタを除く</remarks>
-    Public Property Phone() As Object
-        Get
-            Return Me.HtParameter("Phone")
-        End Get
-        Set
-            Me.HtParameter("Phone") = Value
-        End Set
-    End Property
+    ' ControlComment:LoopStart-PPUpdSet
 
-
-    ''' <summary>Set_ShipperID_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    ''' <summary>_ColumnName_列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     ''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
-    Public Property Set_ShipperID_forUPD() As Object
+    Public Property _ColumnName_() As Object
         Get
-            Return Me.HtParameter("Set_ShipperID_forUPD")
+            Return Me.HtParameter("_ColumnName_")
         End Get
         Set
-            Me.HtParameter("Set_ShipperID_forUPD") = Value
+            Me.HtParameter("_ColumnName_") = value
         End Set
     End Property
 
+    ' ControlComment:LoopEnd-PPUpdSet
 
-    ''' <summary>Set_CompanyName_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
-    ''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
-    Public Property Set_CompanyName_forUPD() As Object
-        Get
-            Return Me.HtParameter("Set_CompanyName_forUPD")
-        End Get
-        Set
-            Me.HtParameter("Set_CompanyName_forUPD") = Value
-        End Set
-    End Property
+    ' ControlComment:LoopStart-PPLike
 
-
-    ''' <summary>Set_Phone_forUPD列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
-    ''' <remarks>更新処理時のSET句で使用するパラメタ専用</remarks>
-    Public Property Set_Phone_forUPD() As Object
-        Get
-            Return Me.HtParameter("Set_Phone_forUPD")
-        End Get
-        Set
-            Me.HtParameter("Set_Phone_forUPD") = Value
-        End Set
-    End Property
-
-
-
-    ''' <summary>ShipperID_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
+    ''' <summary>_ColumnName_列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
     ''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
-    Public Property ShipperID_Like() As Object
+    Public Property _ColumnName_() As Object
         Get
-            Return Me.HtParameter("ShipperID_Like")
+            Return Me.HtParameter("_ColumnName_")
         End Get
         Set
-            Me.HtParameter("ShipperID_Like") = Value
+            Me.HtParameter("_ColumnName_") = value
         End Set
     End Property
 
+    ' ControlComment:LoopEnd-PPLike
 
-    ''' <summary>CompanyName_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
-    ''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
-    Public Property CompanyName_Like() As Object
-        Get
-            Return Me.HtParameter("CompanyName_Like")
-        End Get
-        Set
-            Me.HtParameter("CompanyName_Like") = Value
-        End Set
-    End Property
+    #End Region
 
+    #Region "クエリ メソッド"
 
-    ''' <summary>Phone_Like列に対するパラメタ ライズド クエリのパラメタを設定する。</summary>
-    ''' <remarks>動的参照処理時のLIKE検索で使用するパラメタ専用</remarks>
-    Public Property Phone_Like() As Object
-        Get
-            Return Me.HtParameter("Phone_Like")
-        End Get
-        Set
-            Me.HtParameter("Phone_Like") = Value
-        End Set
-    End Property
-
-
-#End Region
-
-#Region "クエリ メソッド"
-
-#Region "クエリのキャッシュ処理"
+    #Region "クエリのキャッシュ処理"
 
     ''' <summary>ファイル or キャッシュからSetSqlByFile2する。</summary>
     ''' <param name="sqlFileName">string</param>
@@ -304,14 +247,14 @@ Public Class DaoShippers
         End If
     End Sub
 
-#End Region
+    #End Region
 
-#Region "Insert"
+    #Region "Insert"
 
     ''' <summary>１レコード挿入する。</summary>
     ''' <returns>挿入された行の数</returns>
-    Public Function S1_Insert() As Integer
-        Dim sqlFileName As String = "DaoShippers_S1_Insert.sql"
+    Public Function _InsertMethodName_() As Integer
+        Dim sqlFileName As String = "_InsertFileName_"
 
         ' SQL（Insert）を設定する。
         Me.SetSqlFromFileOrCache(sqlFileName)
@@ -331,8 +274,8 @@ Public Class DaoShippers
     ''' <summary>１レコード挿入する。</summary>
     ''' <returns>挿入された行の数</returns>
     ''' <remarks>パラメタで指定した列のみ挿入値が有効になる。</remarks>
-    Public Function D1_Insert() As Integer
-        Dim sqlFileName As String = "DaoShippers_D1_Insert.xml"
+    Public Function _DynInsMethodName_() As Integer
+        Dim sqlFileName As String = "_DynInsFileName_"
 
         ' ファイルからSQL（DynIns）を設定する。
         Me.SetSqlFromFileOrCache(sqlFileName)
@@ -349,14 +292,14 @@ Public Class DaoShippers
         Return rowCount
     End Function
 
-#End Region
+    #End Region
 
-#Region "Select"
+    #Region "Select"
 
     ''' <summary>主キーを指定し、１レコード参照する。</summary>
     ''' <param name="dt">結果を格納するDataTable</param>
-    Public Sub S2_Select(dt As DataTable)
-        Dim sqlFileName As String = "DaoShippers_S2_Select.xml"
+    Public Sub _SelectMethodName_(dt As DataTable)
+        Dim sqlFileName As String = "_SelectFileName_"
 
         ' ファイルからSQL（Select）を設定する。
         Me.SetSqlFromFileOrCache(sqlFileName)
@@ -374,8 +317,8 @@ Public Class DaoShippers
 
     ''' <summary>検索条件を指定し、結果セットを参照する。</summary>
     ''' <param name="dt">結果を格納するDataTable</param>
-    Public Sub D2_Select(dt As DataTable)
-        Dim sqlFileName As String = "DaoShippers_D2_Select.xml"
+    Public Sub _DynSelMethodName_(dt As DataTable)
+        Dim sqlFileName As String = "_DynSelFileName_"
 
         ' ファイルからSQL（DynSel）を設定する。
         Me.SetSqlFromFileOrCache(sqlFileName)
@@ -391,15 +334,15 @@ Public Class DaoShippers
         Me.SetSqlToCache(sqlFileName)
     End Sub
 
-#End Region
+    #End Region
 
-#Region "Update"
+    #Region "Update"
 
     ''' <summary>主キーを指定し、１レコード更新する。</summary>
     ''' <returns>更新された行の数</returns>
     ''' <remarks>パラメタで指定した列のみ更新値が有効になる。</remarks>
-    Public Function S3_Update() As Integer
-        Dim sqlFileName As String = "DaoShippers_S3_Update.xml"
+    Public Function _UpdateMethodName_() As Integer
+        Dim sqlFileName As String = "_UpdateFileName_"
 
         ' ファイルからSQL（Update）を設定する。
         Me.SetSqlFromFileOrCache(sqlFileName)
@@ -419,8 +362,8 @@ Public Class DaoShippers
     ''' <summary>任意の検索条件でデータを更新する。</summary>
     ''' <returns>更新された行の数</returns>
     ''' <remarks>パラメタで指定した列のみ更新値が有効になる。</remarks>
-    Public Function D3_Update() As Integer
-        Dim sqlFileName As String = "DaoShippers_D3_Update.xml"
+    Public Function _DynUpdMethodName_() As Integer
+        Dim sqlFileName As String = "_DynUpdFileName_"
 
         ' ファイルからSQL（DynUpd）を設定する。
         Me.SetSqlFromFileOrCache(sqlFileName)
@@ -437,14 +380,14 @@ Public Class DaoShippers
         Return rowCount
     End Function
 
-#End Region
+    #End Region
 
-#Region "Delete"
+    #Region "Delete"
 
     ''' <summary>主キーを指定し、１レコード削除する。</summary>
     ''' <returns>削除された行の数</returns>
-    Public Function S4_Delete() As Integer
-        Dim sqlFileName As String = "DaoShippers_S4_Delete.xml"
+    Public Function _DeleteMethodName_() As Integer
+        Dim sqlFileName As String = "_DeleteFileName_"
 
         ' ファイルからSQL（Delete）を設定する。
         Me.SetSqlFromFileOrCache(sqlFileName)
@@ -463,8 +406,8 @@ Public Class DaoShippers
 
     ''' <summary>任意の検索条件でデータを削除する。</summary>
     ''' <returns>削除された行の数</returns>
-    Public Function D4_Delete() As Integer
-        Dim sqlFileName As String = "DaoShippers_D4_Delete.xml"
+    Public Function _DynDelMethodName_() As Integer
+        Dim sqlFileName As String = "_DynDelFileName_"
 
         ' ファイルからSQL（DynDel）を設定する。
         Me.SetSqlFromFileOrCache(sqlFileName)
@@ -481,14 +424,14 @@ Public Class DaoShippers
         Return rowCount
     End Function
 
-#End Region
+    #End Region
 
-#Region "拡張メソッド"
+    #Region "拡張メソッド"
 
     ''' <summary>テーブルのレコード件数を取得する</summary>
     ''' <returns>テーブルのレコード件数</returns>
-    Public Function D5_SelCnt() As Object
-        Dim sqlFileName As String = "DaoShippers_D5_SelCnt.xml"
+    Public Function _DynSelCntMethodName_() As Object
+        Dim sqlFileName As String = "_DynSelCntFileName_"
 
         ' ファイルからSQL（DynSelCnt）を設定する。
         Me.SetSqlFromFileOrCache(sqlFileName)
@@ -509,7 +452,7 @@ Public Class DaoShippers
     ''' <param name="fileName">ファイル名</param>
     ''' <param name="sqlUtil">SQLユーティリティ</param>
     ''' <returns>生成した静的SQL</returns>
-    Public Function ExecGenerateSQL(fileName As String, sqlUtil As SQLUtility) As String
+	Public Overloads Function ExecGenerateSQL(fileName As String, sqlUtil As SQLUtility) As String
         ' ファイルからSQLを設定する。
         Me.SetSqlByFile2(fileName)
 
@@ -522,7 +465,7 @@ Public Class DaoShippers
         Return MyBase.ExecGenerateSQL(sqlUtil)
     End Function
 
-#End Region
+    #End Region
 
-#End Region
+    #End Region
 End Class
