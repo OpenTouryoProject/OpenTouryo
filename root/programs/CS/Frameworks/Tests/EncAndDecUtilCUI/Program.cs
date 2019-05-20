@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Xml;
+using System.Text;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -19,6 +20,7 @@ using Touryo.Infrastructure.Public.Security.Aead;
 using Touryo.Infrastructure.Public.Security.Jwt;
 using Touryo.Infrastructure.Public.Security.KeyExg;
 using Touryo.Infrastructure.Public.Security.Pwd;
+using Touryo.Infrastructure.Public.Security.Xml;
 using Touryo.Infrastructure.Public.Diagnostics;
 
 namespace EncAndDecUtilCUI
@@ -50,7 +52,7 @@ namespace EncAndDecUtilCUI
         {
             // configの初期化(無くても動くようにせねば。)
             //GetConfigParameter.InitConfiguration("appsettings.json");
-            
+
             try
             {
                 // Hash
@@ -69,6 +71,9 @@ namespace EncAndDecUtilCUI
                 // Jwt(Jws, Jwe)
                 Program.MyJwt();
                 Program.JoseJwt();
+
+                // SignedXml 
+                Program.SignedXml();
 
                 // Others
 
@@ -594,7 +599,7 @@ namespace EncAndDecUtilCUI
                 // Core2.0-2.2 on Winで ECDsaCngは動作しない。
 #endif
                 // ★ xLibTest
-                Program.VerifyResult("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
+                Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
 
                 #endregion
 #endif
@@ -644,7 +649,7 @@ namespace EncAndDecUtilCUI
                 MyDebug.OutputDebugAndConsole("JWS_ES256_Param.Verify", jWS_ES256_X509.Verify(token).ToString());
 
                 // ★ xLibTest
-                Program.VerifyResult("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
+                Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
                 #endregion
 #endif
             }
@@ -663,7 +668,7 @@ namespace EncAndDecUtilCUI
             MyDebug.OutputDebugAndConsole("JWE_RsaOaepAesGcm_X509.Decrypt", ret.ToString() + " : " + temp);
 
             // ★ xLibTest
-            Program.VerifyResult("JweAlgorithm.xLibTest",  token,
+            Program.VerifyResultJwt("JweAlgorithm.xLibTest", token,
                 jwe.ASymmetricCryptography.AsymmetricAlgorithm, JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM);
             #endregion
 
@@ -678,7 +683,7 @@ namespace EncAndDecUtilCUI
             MyDebug.OutputDebugAndConsole("JWE_Rsa15A128CbcHS256_X509.Decrypt", ret.ToString() + " : " + temp);
 
             // ★ xLibTest
-            Program.VerifyResult("JweAlgorithm.xLibTest", token,
+            Program.VerifyResultJwt("JweAlgorithm.xLibTest", token,
                 jwe.ASymmetricCryptography.AsymmetricAlgorithm, JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256);
 
             #endregion
@@ -763,7 +768,7 @@ namespace EncAndDecUtilCUI
             secretKey = new byte[] { 164, 60, 194, 0, 161, 189, 41, 38, 130, 89, 141, 164, 45, 170, 159, 209, 69, 137, 243, 216, 191, 131, 47, 250, 32, 107, 231, 117, 37, 158, 225, 234 };
             token = "";
             token = JWT.Encode(payload, secretKey, JwsAlgorithm.HS256);
-            Program.VerifyResult("JwsAlgorithm.HS256", token, secretKey);
+            Program.VerifyResultJwt("JwsAlgorithm.HS256", token, secretKey);
             #endregion
 
             #region RS-* and PS-* family
@@ -783,7 +788,7 @@ namespace EncAndDecUtilCUI
             rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(privateX509Key.PrivateKey);
 #endif
             token = JWT.Encode(payload, rsa, JwsAlgorithm.RS256);
-            Program.VerifyResult("JwsAlgorithm.RS256", token, rsa);
+            Program.VerifyResultJwt("JwsAlgorithm.RS256", token, rsa);
 
             #endregion
 
@@ -803,7 +808,7 @@ namespace EncAndDecUtilCUI
 
                 token = "";
                 token = JWT.Encode(payload, privateKeyOfCng, JwsAlgorithm.ES256);
-                Program.VerifyResult("JwsAlgorithm.ES256", token, publicKeyOfCng);
+                Program.VerifyResultJwt("JwsAlgorithm.ES256", token, publicKeyOfCng);
             }
             else //if (os.Platform == PlatformID.Unix)
             {
@@ -824,7 +829,7 @@ namespace EncAndDecUtilCUI
 
                 token = "";
                 token = JWT.Encode(payload, eCDsaOpenSsl, JwsAlgorithm.ES256);
-                Program.VerifyResult("JwsAlgorithm.ES256", token, eCDsaOpenSsl);
+                Program.VerifyResultJwt("JwsAlgorithm.ES256", token, eCDsaOpenSsl);
 #endif
             }
 
@@ -847,7 +852,7 @@ namespace EncAndDecUtilCUI
 #endif
                 token = "";
                 token = JWT.Encode(payload, privateX509Key.GetECDsaPrivateKey(), JwsAlgorithm.ES256);
-                Program.VerifyResult("JwsAlgorithm.ES256", token, publicX509Key.GetECDsaPublicKey());
+                Program.VerifyResultJwt("JwsAlgorithm.ES256", token, publicX509Key.GetECDsaPublicKey());
             }
             catch (Exception ex)
             {
@@ -871,14 +876,14 @@ namespace EncAndDecUtilCUI
             // RSAES-PKCS1-v1_5 and AES_128_CBC_HMAC_SHA_256
             token = "";
             token = JWT.Encode(payload, publicX509Key.PublicKey.Key, JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256);
-            Program.VerifyResult("JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256", token, privateX509Key.PrivateKey);
+            Program.VerifyResultJwt("JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256", token, privateX509Key.PrivateKey);
 
             // RSAES-OAEP and AES GCM
             try
             {
                 token = "";
                 token = JWT.Encode(payload, publicX509Key.PublicKey.Key, JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM);
-                Program.VerifyResult("JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM", token, privateX509Key.PrivateKey);
+                Program.VerifyResultJwt("JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM", token, privateX509Key.PrivateKey);
             }
             catch (Exception ex)
             {
@@ -895,7 +900,7 @@ namespace EncAndDecUtilCUI
             // https://github.com/dvsekhvalnov/jose-jwt#dir-direct-pre-shared-symmetric-key-family-of-algorithms
             token = "";
             token = JWT.Encode(payload, secretKey, JweAlgorithm.DIR, JweEncryption.A128CBC_HS256);
-            Program.VerifyResult("JweAlgorithm.DIR, JweEncryption.A128CBC_HS256", token, secretKey);
+            Program.VerifyResultJwt("JweAlgorithm.DIR, JweEncryption.A128CBC_HS256", token, secretKey);
             #endregion
 
             #region AES Key Wrap key management family of algorithms
@@ -903,7 +908,7 @@ namespace EncAndDecUtilCUI
             // https://github.com/dvsekhvalnov/jose-jwt#aes-key-wrap-key-management-family-of-algorithms
             token = "";
             token = JWT.Encode(payload, secretKey, JweAlgorithm.A256KW, JweEncryption.A256CBC_HS512);
-            Program.VerifyResult("JweAlgorithm.A256KW, JweEncryption.A256CBC_HS512", token, secretKey);
+            Program.VerifyResultJwt("JweAlgorithm.A256KW, JweEncryption.A256CBC_HS512", token, secretKey);
             #endregion
 
             #region AES GCM Key Wrap key management family of algorithms
@@ -913,7 +918,7 @@ namespace EncAndDecUtilCUI
             {
                 token = "";
                 token = JWT.Encode(payload, secretKey, JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512);
-                Program.VerifyResult("JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512", token, secretKey);
+                Program.VerifyResultJwt("JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512", token, secretKey);
             }
             catch (Exception ex)
             {
@@ -932,7 +937,7 @@ namespace EncAndDecUtilCUI
                 publicKeyOfCng = EccKey.New(x, y, usage: CngKeyUsages.KeyAgreement);
                 token = "";
                 token = JWT.Encode(payload, publicKeyOfCng, JweAlgorithm.ECDH_ES, JweEncryption.A256GCM);
-                Program.VerifyResult("JweAlgorithm.ECDH_ES, JweEncryption.A256GCM", token, publicKeyOfCng);
+                Program.VerifyResultJwt("JweAlgorithm.ECDH_ES, JweEncryption.A256GCM", token, publicKeyOfCng);
             }
             catch (Exception ex)
             {
@@ -944,7 +949,7 @@ namespace EncAndDecUtilCUI
             #region PBES2 using HMAC SHA with AES Key Wrap key management family of algorithms
             token = "";
             token = JWT.Encode(payload, "top secret", JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
-            Program.VerifyResult("JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512", token, "top secret");
+            Program.VerifyResultJwt("JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512", token, "top secret");
             #endregion
 
             #endregion
@@ -980,7 +985,7 @@ namespace EncAndDecUtilCUI
 
             token = "";
             token = JWT.Encode(payload, rsa, JwsAlgorithm.RS256, extraHeaders: headers);
-            Program.VerifyResult("Adding extra headers to RS256", token, rsa);
+            Program.VerifyResultJwt("Adding extra headers to RS256", token, rsa);
             #endregion
 
             #region Strict validation
@@ -1058,16 +1063,57 @@ namespace EncAndDecUtilCUI
 
         #endregion
 
+        #region SignedXml
+
+        /// <summary>SignedXml</summary>
+        private static void SignedXml()
+        {
+            string xml = ""
+                + "<xml>"
+                + "  <a ID=\"a\">"
+                + "    <b ID=\"b\">"
+                + "      <c/>"
+                + "    </b>"
+                + "  </a>"
+                + "</xml>";
+
+            // SignedXml2
+            SignedXml2 signedXml = new SignedXml2(new RSACryptoServiceProvider());
+
+            // XmlWriterSettings
+            XmlWriterSettings xmlWriterSettings = new XmlWriterSettings()
+            {
+                Encoding = Encoding.UTF8,
+                Indent = false
+            };
+
+            // ネスト
+            XmlDocument xmlDoc = null;
+            xmlDoc = signedXml.Create(xml, "b");
+            xml = xmlDoc.XmlToString(xmlWriterSettings);
+            xmlDoc = signedXml.Create(xml, "a");
+            xml = xmlDoc.XmlToString(xmlWriterSettings);
+
+            // 内側 (b
+            bool ret = signedXml.Verify(xml, "b");
+            // 外側 (a
+            ret = signedXml.Verify(xml, "a");
+
+            MyDebug.OutputDebugAndConsole("Verify nested signedXml", ret.ToString() + " : " + xml);
+        }
+
+        #endregion
+
         #endregion
 
         #region Inspector and Verifier
 
-        /// <summary>VerifyResult</summary>
+        /// <summary>VerifyResultJwt</summary>
         /// <param name="testLabel">string</param>
         /// <param name="jwt">string</param>
         /// <param name="key">object</param>
         /// <param name="alg">JwsAlgorithm?</param>
-        private static void VerifyResult(string testLabel, string jwt, object key, JwsAlgorithm? alg = null)
+        private static void VerifyResultJwt(string testLabel, string jwt, object key, JwsAlgorithm? alg = null)
         {
             MyDebug.OutputDebugAndConsole(testLabel, "Original:" + jwt);
 
@@ -1075,7 +1121,7 @@ namespace EncAndDecUtilCUI
 
             if (alg.HasValue)
             {
-                MyDebug.OutputDebugAndConsole(testLabel, "Decoded:" + JWT.Decode(jwt, key, alg.Value)); 
+                MyDebug.OutputDebugAndConsole(testLabel, "Decoded:" + JWT.Decode(jwt, key, alg.Value));
             }
             else
             {
@@ -1083,13 +1129,13 @@ namespace EncAndDecUtilCUI
             }
         }
 
-        /// <summary>VerifyResult</summary>
+        /// <summary>VerifyResultJwt</summary>
         /// <param name="testLabel">string</param>
         /// <param name="jwt">string</param>
         /// <param name="key">object</param>
         /// <param name="alg">JweAlgorithm</param>
         /// <param name="enc">JweEncryption</param>
-        private static void VerifyResult(string testLabel, string jwt, object key, JweAlgorithm alg, JweEncryption enc)
+        private static void VerifyResultJwt(string testLabel, string jwt, object key, JweAlgorithm alg, JweEncryption enc)
         {
             MyDebug.OutputDebugAndConsole(testLabel, "Original:" + jwt);
 

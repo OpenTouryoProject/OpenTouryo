@@ -114,6 +114,7 @@
     <Compile Include="FastReflection\AccessorInfo.cs" />
     <Compile Include="FastReflection\EnumToStringByEmitExtensions.cs" />
     <Compile Include="FastReflection\InstanceCreator.cs" />
+    <Compile Include="IO\Deflate.cs" />
     <Compile Include="IO\UnZipper.cs" />
     <Compile Include="IO\ZipBase.cs" />
     <Compile Include="IO\Zipper.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Db\BaseDam.cs" />
     <Compile Include="Db\DamSqlSvr.cs" />
     <Compile Include="Db\DbEnum.cs" />
+    <Compile Include="Str\ToStringExtension.cs" />
     <Compile Include="Util\CustomMarshaler.cs" />
     <Compile Include="FastReflection\CompiledExpressionCreater.cs" />
     <Compile Include="Util\PubCmnFunction.cs" />
