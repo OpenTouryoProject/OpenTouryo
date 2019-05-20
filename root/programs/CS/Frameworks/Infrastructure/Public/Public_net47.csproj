@@ -114,7 +114,7 @@
     <Compile Include="FastReflection\AccessorInfo.cs" />
     <Compile Include="FastReflection\EnumToStringByEmitExtensions.cs" />
     <Compile Include="FastReflection\InstanceCreator.cs" />
-    <Compile Include="IO\Deflate.cs" />
+    <Compile Include="IO\DeflateCompression.cs" />
     <Compile Include="IO\UnZipper.cs" />
     <Compile Include="IO\ZipBase.cs" />
     <Compile Include="IO\Zipper.cs" />
