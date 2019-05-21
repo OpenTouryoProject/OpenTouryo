@@ -63,12 +63,21 @@ namespace Touryo.Infrastructure.Public.Security.Xml
         /// <returns>Signed XmlDocument</returns>
         public XmlDocument Create(string xmlString, string referenceId, bool preserveWhitespace = false)
         {
-            // 初期処理
             // - XmlDocument
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xmlString);
             xmlDoc.PreserveWhitespace = preserveWhitespace;
 
+            return this.Create(xmlDoc, referenceId, preserveWhitespace);
+        }
+
+        /// <summary>SignedXml生成メソッド</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="referenceId">署名対象ノードのID値（「#」は含まない）</param>
+        /// <param name="preserveWhitespace">SignedXmlの空白・改行を保持する()・しない(false)</param>
+        /// <returns>Signed XmlDocument</returns>
+        public XmlDocument Create(XmlDocument xmlDoc, string referenceId, bool preserveWhitespace = false)
+        {
             // - SignedXml
             SignedXml signedXml = new SignedXml(xmlDoc);
             signedXml.SigningKey = this._rsa;

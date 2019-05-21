@@ -35,5 +35,131 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// <summary>SAML2の各種定数</summary>
     public class SAML2Const
     {
+        #region Template
+        
+        /// <summary>RequestTemplate</summary>
+        /// <remarks>
+        /// 以下はオプションで追加
+        /// ProtocolBinding属性
+        /// AssertionConsumerServiceURL属性
+        /// </remarks>
+        public const string RequestTemplate = ""
+            + "<samlp:AuthnRequest"
+            + "  ID=\"{ID}\" IssueInstant=\"{IssueInstant}\""
+            + "  Version=\"2.0\" xmlns:samlp=\"{UrnProtocol}\">"
+            + "  <saml:Issuer"
+            + "    xmlns:saml=\"{UrnAssertion}\">"
+            + "    {Issuer}"
+            + "  </saml:Issuer>"
+            + "  <samlp:NameIDPolicy"
+            + "    Format=\"{UrnNameIDFormat}\" />"
+            + "</samlp:AuthnRequest>";
+
+        /// <summary>AssertionTemplate</summary>
+        public const string AssertionTemplate = ""
+            + "<saml:Assertion"
+            + "  ID=\"{ID}\" IssueInstant=\"{IssueInstant}\""
+            + "  Version=\"2.0\" xmlns:saml=\"{UrnAssertion}\">"
+            + "  <saml:Issuer>{Issuer}</saml:Issuer>"
+            + "  <saml:Subject>"
+            + "    <saml:NameID"
+            + "      Format=\"{UrnNameIDFormat}\">"
+            + "      {NameID}"
+            + "    </saml:NameID>"
+            + "    <saml:SubjectConfirmation"
+            + "      Method=\"{UrnMethod}\">"
+            + "      <saml:SubjectConfirmationData"
+            + "        InResponseTo=\"{InResponseTo}\""
+            + "        NotOnOrAfter=\"{NotOnOrAfter}\""
+            + "        Recipient=\"{Recipient}\" />"
+            + "    </saml:SubjectConfirmation>"
+            + "  </saml:Subject>"
+            + "  <saml:Conditions"
+            + "    NotBefore=\"{NotBefore}\""
+            + "    NotOnOrAfter=\"{NotOnOrAfter}\">"
+            + "    <saml:AudienceRestriction>"
+            + "      <saml:Audience>{Audience}<saml:Audience>"
+            + "    </saml:AudienceRestriction>"
+            + "  </saml:Conditions>"
+            + "  <saml:AuthnStatement"
+            + "    AuthnInstant=\"{AuthnInstant}\">"
+            + "    <saml:AuthnContext>"
+            + "      <saml:AuthnContextClassRef>"
+            + "        {UrnAuthnContextClassRef}"
+            + "      </saml:AuthnContextClassRef>"
+            + "    </saml:AuthnContext>"
+            + "  </saml:AuthnStatement>"
+            + "</saml:Assertion>";
+
+        /// <summary>ResponseTemplate</summary>
+        public const string ResponseTemplate = ""
+            + "<samlp:Response"
+            + "  ID=\"{ID}\""
+            + "  IssueInstant=\"{IssueInstant}\""
+            + "  InResponseTo=\"{InResponseTo}\""
+            + "  Destination=\"{Destination}\""
+            + "  Version=\"2.0\" xmlns:samlp=\"{UrnProtocol}\"> "
+            + "  <Issuer xmlns=\"{UrnAssertion}\">"
+            + "    {Issuer}"
+            + "  </Issuer>"
+            + "  <samlp:Status>"
+            + "    <samlp:StatusCode"
+            + "      Value=\"{UrnStatusCode}\" />"
+            + "  </samlp:Status>"
+            + "  <Assertion>{Assertion}</Assertion>"
+            + "</samlp:Response>";
+        
+        #endregion
+        
+        #region urn
+        /// <summary>SAML1.1系のurnヘッダ</summary>
+        public const string UrnHeader11 = "urn:oasis:names:tc:SAML:1.1:";
+
+        /// <summary>SAML2.0系のurnヘッダ</summary>
+        public const string UrnHeader20 = "urn:oasis:names:tc:SAML:2.0:";
+
+        /// <summary>プロトコルを意味する名前空間</summary>
+        public const string UrnProtocol = UrnHeader20 + "protocol";
+
+        /// <summary>アサーションを意味する名前空間</summary>
+        public const string UrnAssertion = UrnHeader20 + "assertion";
+
+        /// <summary>メソッド：持参人切符</summary>
+        public const string UrnMethodBearer = UrnHeader20 + "cm:bearer";
+
+        /// <summary>メソッド：記名式切符</summary>
+        public const string UrnMethod = UrnHeader20 + "cm:holder-of-key";
+
+        /// <summary>レスポンスのBindingをPOSTに指定する。</summary>
+        public const string UrnBindingsPost = UrnHeader20 + "bindings:HTTP-POST";
+        
+        /// <summary>レスポンスのBindingをRedirectに指定する。</summary>
+        public const string UrnBindingsRedirect = UrnHeader20 + "bindings:HTTP-Redirect";
+
+        /// <summary>NameIDPolicy要素のFormat属性をunspecifiedに指定する。</summary>
+        public const string UrnNameIDFormatUnspecified = UrnHeader11 + "nameid-format:unspecified";
+
+        /// <summary>NameIDPolicy要素のFormat属性を永続的仮名に指定する。</summary>
+        public const string UrnNameIDFormatPersistent = UrnHeader20 + "nameid-format:persistent";
+
+        /// <summary>NameIDPolicy要素のFormat属性を一時仮名に指定する。</summary>
+        public const string UrnNameIDFormatTransient = UrnHeader20 + "nameid-format:transient";
+
+        /// <summary>AuthnContextClassRefをunspecified（不特定の方法で認証）に指定する。</summary>
+        public const string UrnAuthnContextClassRefUnspecified = UrnHeader20 + "ac:classes:unspecified";
+
+        /// <summary>AuthnContextClassRefをPassword（HTTP + パスワードを提示して認証）に指定する。</summary>
+        public const string UrnAuthnContextClassRefPassword = UrnHeader20 + "ac:classes:Password";
+        
+        /// <summary>AuthnContextClassRefをPasswordProtectedTransport（HTTPS + パスワードを提示して認証）に指定する。</summary>
+        public const string UrnAuthnContextClassRefPasswordProtectedTransport = UrnHeader20 + "ac:classes:PasswordProtectedTransport";
+
+        /// <summary>AuthnContextClassRefをX509（デジタル署名により認証）に指定する。</summary>
+        public const string UrnAuthnContextClassRefX509 = UrnHeader20 + "ac:classes:X509";
+
+        /// <summary>StatusのStatusCodeをSuccessに指定する。</summary>
+        public const string UrnStatusCodeSuccess = UrnHeader20 + "status:Success";
+        
+        #endregion
     }
 }
