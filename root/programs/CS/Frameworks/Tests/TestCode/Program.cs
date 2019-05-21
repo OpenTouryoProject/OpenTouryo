@@ -1,8 +1,4 @@
 ﻿using System;
-
-using Touryo.Infrastructure.Public.IO;
-using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Diagnostics;
 
 namespace TestCode
@@ -20,26 +16,9 @@ namespace TestCode
             try
             {
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
-
-                // DeflateCompression
-                string hoge = "hogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehoge";
-                byte[] input = CustomEncode.StringToByte("", CustomEncode.UTF_8);
-                byte[] compressed = DeflateCompression.Compress(input);
-                byte[] decompressed = DeflateCompression.Decompress(compressed);
-                if (hoge == CustomEncode.ByteToString(decompressed, CustomEncode.UTF_8))
-                {
-                    MyDebug.OutputDebugAndConsole("DeflateCompression", "is working properly.");
-                }
-                else
-                {
-                    MyDebug.OutputDebugAndConsole("DeflateCompression", "is not working properly.");
-                }
-
+                TestDeflateCompression.Root();
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
-
-                // TestEnumToStringExtensions
                 TestEnumToStringExtensions.Root();
-
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
 
                 // echoすると例外

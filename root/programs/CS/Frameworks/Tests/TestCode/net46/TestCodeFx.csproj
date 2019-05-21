@@ -62,6 +62,9 @@
     <Compile Include="..\Program.cs">
       <Link>Program.cs</Link>
     </Compile>
+    <Compile Include="..\TestDeflateCompression.cs">
+      <Link>TestDeflateCompression.cs</Link>
+    </Compile>
     <Compile Include="..\TestEnumToStringExtensions.cs">
       <Link>TestEnumToStringExtensions.cs</Link>
     </Compile>

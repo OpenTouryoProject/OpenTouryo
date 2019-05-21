@@ -44,6 +44,105 @@ namespace Touryo.Infrastructure.Public.IO
     /// </summary>
     public static class DeflateCompression
     {
+        #region FileStream
+        /// <summary>Deflate圧縮</summary>
+        /// <param name="inFilePath">入力ファイルパス</param>
+        /// <param name="ext">圧縮ファイル拡張子</param>
+        /// <param name="outFilePath">圧縮ファイルパス</param>
+        /// <returns>圧縮ファイルパス</returns>
+        public static string Compress(string inFilePath, string ext = "cmp", string outFilePath = "")
+        {
+            // 圧縮ファイルパス
+            if (string.IsNullOrEmpty(outFilePath))
+            {
+                // inFilePathと同じ位置・ファイル名に、指定の拡張子で
+                outFilePath = 
+                    Path.GetDirectoryName(inFilePath) + "\\" +
+                    Path.GetFileNameWithoutExtension(inFilePath) + "." + ext;
+            }
+            else
+            {
+                // outFilePathを使用（拡張子が無い場合は足す。
+                if (string.IsNullOrEmpty(Path.GetExtension(outFilePath)))
+                {
+                    outFilePath += "." + ext;
+                }
+            }
+
+            byte[] buffer = new byte[1024]; // 1K bytesずつ処理
+
+            using (FileStream fsSrc = new FileStream(inFilePath, FileMode.Open, FileAccess.Read))
+            {
+                using (FileStream fsDst = new FileStream(outFilePath, FileMode.Create))
+                {
+                    using (DeflateStream deflateStream = new DeflateStream(fsDst, CompressionMode.Compress))
+                    {
+                        //ds.Write(input, 0, input.Length); // 書き方を合わせた。
+
+                        int bytesRead;
+
+                        // msSrc.Read -> deflateStream.Writeで圧縮なのだと。
+                        while ((bytesRead = fsSrc.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            deflateStream.Write(buffer, 0, bytesRead);
+                        }
+
+                    } // ただし、StreamがCloseされた際に、実際の圧縮を行うらしい。
+                }
+            }
+
+            return outFilePath;
+        }
+
+        /// <summary>Deflate解凍</summary>
+        /// <param name="inFilePath">入力ファイルパス</param>
+        /// <param name="ext">解凍ファイル拡張子</param>
+        /// <param name="outFilePath">解凍ファイルパス</param>
+        /// <returns>解凍ファイルパス</returns>
+        public static string Decompress(string inFilePath, string ext = "dcmp", string outFilePath = "")
+        {
+            // 解凍ファイルパス
+            if (string.IsNullOrEmpty(outFilePath))
+            {
+                // inFilePathと同じ位置・ファイル名に、指定の拡張子で
+                outFilePath =
+                    Path.GetDirectoryName(inFilePath) + "\\" +
+                    Path.GetFileNameWithoutExtension(inFilePath) + "." + ext;
+            }
+            else
+            {
+                // outFilePathを使用（拡張子が無い場合は足す。
+                if (string.IsNullOrEmpty(Path.GetExtension(outFilePath)))
+                {
+                    outFilePath += "." + ext;
+                }
+            }
+
+            byte[] buffer = new byte[1024]; // 1K bytesずつ処理
+
+            // Compressと実装が対にならないのが気持ち悪いが、
+            using (FileStream fsSrc = new FileStream(inFilePath, FileMode.Open, FileAccess.Read))
+            {
+                using (FileStream fsDst = new FileStream(outFilePath, FileMode.Create))
+                {
+                    using (DeflateStream deflateStream = new DeflateStream(fsSrc, CompressionMode.Decompress))
+                    {
+                        int bytesRead;
+
+                        // deflateStream.Read -> msDst.Writeで解凍なのだと。
+                        while ((bytesRead = deflateStream.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            fsDst.Write(buffer, 0, bytesRead);
+                        }
+                    } // 圧縮と違い、Closeで解凍と言う訳では無さそう（恐らく、msDst.Writeで解凍）。
+                }
+            }
+
+            return outFilePath;
+        }
+        #endregion
+
+        #region MemoryStream
         /// <summary>Deflate圧縮</summary>
         /// <param name="input">入力 byte[]</param>
         /// <returns>圧縮 byte[]</returns>
@@ -105,5 +204,6 @@ namespace Touryo.Infrastructure.Public.IO
                 }
             }
         }
+        #endregion
     }
 }
