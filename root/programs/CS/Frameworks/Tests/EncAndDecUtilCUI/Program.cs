@@ -90,7 +90,7 @@ namespace EncAndDecUtilCUI
             }
         }
 
-        #region Test (Hash, Cryptography, Jwt)
+        #region Test (Hash, Cryptography, Jwt, Xml)
 
         #region Hash
 

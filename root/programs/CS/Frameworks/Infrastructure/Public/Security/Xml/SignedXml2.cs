@@ -98,7 +98,7 @@ namespace Touryo.Infrastructure.Public.Security.Xml
             // - 署名対象ノードのXML署名を
             XmlNode signatureNode = xmlDoc.ImportNode(signedXml.GetXml(), true);
             // - 署名対象ノード直下に追加
-            xmlDoc.SelectSingleNode("//" + referenceId).AppendChild(signatureNode);
+            this.GetTargetXmlNode(xmlDoc, referenceId).AppendChild(signatureNode); 
 
             // Signed XmlDocumentを返す。
             return xmlDoc;
@@ -118,14 +118,49 @@ namespace Touryo.Infrastructure.Public.Security.Xml
             xmlDoc.PreserveWhitespace = preserveWhitespace;
 
             // 子ノード のXML検証
-            XmlNode xmlNode = xmlDoc.SelectSingleNode("//" + referenceId);
+            XmlNode targetNode = this.GetTargetXmlNode(xmlDoc, referenceId);
 
             // 署名ノードの直下のSignatureを取り出して、signedXml.LoadXmlする。
-            SignedXml signedXml = new SignedXml(xmlNode.OwnerDocument);
-            signedXml.LoadXml(xmlNode["Signature"] as XmlElement);
+            SignedXml signedXml = new SignedXml(targetNode.OwnerDocument);
+            signedXml.LoadXml(targetNode["Signature"] as XmlElement);
 
             // XML検証
             return signedXml.CheckSignature(this._rsa);
+        }
+
+        /// <summary>GetTargetXmlNode</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="referenceId">string</param>
+        /// <remarks>
+        /// xmlDoc.GetElementById(referenceId).AppendChild(signatureNode); // DTD問題で使えない。
+        /// ...と言う事で、SelectSingleNode(XPath)を使用するが、対象ノードがルートかルート以下でXPathが異なる。
+        /// 処理対象を必ず、ルートノードに追加するとすれば問題ないのだが、それは利用者にとって不便。
+        /// </remarks>
+        public XmlNode GetTargetXmlNode(XmlDocument xmlDoc, string referenceId)
+        {
+            // ルート以下を検索
+            XmlNode targetNode = xmlDoc.SelectSingleNode("//" + referenceId);
+
+            if (targetNode == null)
+            {
+                // ルートを検索（XML宣言 + ルートノード）
+                foreach (XmlNode tempNode in xmlDoc.ChildNodes)
+                {
+                    if (tempNode.Attributes == null) continue; // XML宣言対策
+                    foreach (XmlAttribute tempAttr in tempNode.Attributes)
+                    {
+                        if (tempAttr.Name.ToLower() == "id")
+                        {
+                            if (tempAttr.Value == referenceId)
+                            {
+                                targetNode = tempNode;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return targetNode;
         }
     }
 }

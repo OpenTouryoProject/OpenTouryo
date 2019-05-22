@@ -33,7 +33,7 @@
 namespace Touryo.Infrastructure.Framework.Authentication
 {
     /// <summary>OAuth2 / OIDCで使用する列挙型クラス</summary>
-    public static class OAuth2AndOIDCEnum
+    public class OAuth2AndOIDCEnum
     {
         #region ResponseMode
 

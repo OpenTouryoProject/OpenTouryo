@@ -43,7 +43,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// ProtocolBinding属性
         /// AssertionConsumerServiceURL属性
         /// </remarks>
-        public const string RequestTemplate = ""
+        public const string RequestTemplate
+            = "<?xml version=\"1.0\" ?>"
             + "<samlp:AuthnRequest"
             + "  ID=\"{ID}\" IssueInstant=\"{IssueInstant}\""
             + "  Version=\"2.0\" xmlns:samlp=\"{UrnProtocol}\">"
@@ -56,7 +57,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             + "</samlp:AuthnRequest>";
 
         /// <summary>AssertionTemplate</summary>
-        public const string AssertionTemplate = ""
+        public const string AssertionTemplate
+            = "<?xml version=\"1.0\" ?>"
             + "<saml:Assertion"
             + "  ID=\"{ID}\" IssueInstant=\"{IssueInstant}\""
             + "  Version=\"2.0\" xmlns:saml=\"{UrnAssertion}\">"
@@ -92,7 +94,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             + "</saml:Assertion>";
 
         /// <summary>ResponseTemplate</summary>
-        public const string ResponseTemplate = ""
+        public const string ResponseTemplate
+            = "<?xml version=\"1.0\" ?>"
             + "<samlp:Response"
             + "  ID=\"{ID}\""
             + "  IssueInstant=\"{IssueInstant}\""

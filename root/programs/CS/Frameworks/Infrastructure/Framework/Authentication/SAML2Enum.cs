@@ -33,7 +33,7 @@
 namespace Touryo.Infrastructure.Framework.Authentication
 {
     /// <summary>SAML2で使用する列挙型クラス</summary>
-    public static class SAML2Enum
+    public class SAML2Enum
     {
     }
 }

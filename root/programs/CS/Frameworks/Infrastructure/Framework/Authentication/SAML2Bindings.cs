@@ -33,6 +33,9 @@
 
 using System;
 using System.Xml;
+using System.Security.Cryptography;
+
+using Touryo.Infrastructure.Public.Security.Xml;
 
 namespace Touryo.Infrastructure.Framework.Authentication
 {
@@ -44,16 +47,19 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="urnNameIDFormat">string</param>
         /// <param name="protocolBinding">string</param>
         /// <param name="assertionConsumerServiceURL">string</param>
+        /// <param name="rsa">RSA</param>
         /// <returns>SAMLRequest</returns>
-        public XmlDocument CreateSAMLRequest(
+        public static XmlDocument CreateRequest(
             string issuer, string urnNameIDFormat,
-            string protocolBinding, string assertionConsumerServiceURL)
+            string protocolBinding, string assertionConsumerServiceURL, RSA rsa = null)
         {
+            // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
+            string id = "s2" + Guid.NewGuid().ToString("N");
             string xmlString = SAML2Const.RequestTemplate;
 
             #region Replace
             // 共通
-            xmlString = xmlString.Replace("{ID}", Guid.NewGuid().ToString());
+            xmlString = xmlString.Replace("{ID}", id);
             xmlString = xmlString.Replace("{Issuer}", issuer);
             xmlString = xmlString.Replace("{IssueInstant}", DateTime.UtcNow.ToString("s") + "Z");
 
@@ -63,24 +69,26 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // 固定値
             xmlString = xmlString.Replace("{UrnProtocol}", SAML2Const.UrnProtocol);
             xmlString = xmlString.Replace("{UrnAssertion}", SAML2Const.UrnAssertion);
+
+            // XmlDocument化
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(xmlString);
+            xmlDoc.PreserveWhitespace = false;
             #endregion
 
             #region Append
             // 以下はオプション属性
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(xmlString);
-            xmlDoc.PreserveWhitespace = false;
             XmlNode node = xmlDoc.GetElementsByTagName("samlp:AuthnRequest")[0];
             XmlAttribute attr = null;
             // - ProtocolBinding属性
-            if (string.IsNullOrEmpty(protocolBinding))
+            if (!string.IsNullOrEmpty(protocolBinding))
             {
                 attr = xmlDoc.CreateAttribute("ProtocolBinding");
                 attr.Value = protocolBinding;
                 node.Attributes.Append(attr);
             }
             // - AssertionConsumerServiceURL属性
-            if (string.IsNullOrEmpty(protocolBinding))
+            if (!string.IsNullOrEmpty(protocolBinding))
             {
                 attr = xmlDoc.CreateAttribute("AssertionConsumerServiceURL");
                 attr.Value = assertionConsumerServiceURL;
@@ -88,10 +96,18 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
             #endregion
 
+            #region Sign
+            if (!(rsa == null))
+            {
+                SignedXml2 signedXml2 = new SignedXml2(rsa);
+                xmlDoc = signedXml2.Create(xmlDoc, id);
+            }
+            #endregion
+
             return xmlDoc;
         }
 
-        /// <summary>CreateSAMLAssertion</summary>
+        /// <summary>CreateAssertion</summary>
         /// <param name="inResponseTo">string</param>
         /// <param name="issuer">string</param>
         /// <param name="nameID">string</param>
@@ -99,18 +115,21 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="urnAuthnContextClassRef">string</param>
         /// <param name="expiresFromSecond">double</param>
         /// <param name="recipient">string</param>
+        /// <param name="rsa">RSA</param>
         /// <returns>SAMLAssertion</returns>
-        public XmlDocument CreateSAMLAssertion(
+        public static XmlDocument CreateAssertion(
             string inResponseTo, string issuer,
             string nameID, string urnNameIDFormat,
             string urnAuthnContextClassRef,
-            double expiresFromSecond, string recipient)
+            double expiresFromSecond, string recipient, RSA rsa = null)
         {
+            // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
+            string id = "s2" + Guid.NewGuid().ToString("N");
             string xmlString = SAML2Const.AssertionTemplate;
 
             #region Replace
             // ID
-            xmlString = xmlString.Replace("{ID}", Guid.NewGuid().ToString());
+            xmlString = xmlString.Replace("{ID}", id);
             xmlString = xmlString.Replace("{InResponseTo}", inResponseTo);
             xmlString = xmlString.Replace("{Issuer}", issuer);
 
@@ -135,29 +154,42 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // 固定値
             xmlString = xmlString.Replace("{UrnAssertion}", SAML2Const.UrnAssertion);
             xmlString = xmlString.Replace("{UrnMethod}", SAML2Const.UrnMethodBearer);
-            #endregion
 
+            // XmlDocument化
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xmlString);
             xmlDoc.PreserveWhitespace = false;
-            
+            #endregion
+
+            #region Sign
+            if (!(rsa == null))
+            {
+                SignedXml2 signedXml2 = new SignedXml2(rsa);
+                xmlDoc = signedXml2.Create(xmlDoc, id);
+            }
+            #endregion
+
             return xmlDoc;
         }
 
-        /// <summary>CreateSAMLResponse</summary>
+        /// <summary>CreateResponse</summary>
         /// <param name="issuer">string</param>
         /// <param name="destination">string</param>
         /// <param name="urnStatusCode">string</param>
         /// <param name="assertion">string</param>
+        /// <param name="rsa">RSA</param>
         /// <returns>SAMLResponse</returns>
-        public XmlDocument CreateSAMLResponse(
-            string issuer, string destination, string urnStatusCode, string assertion)
+        public static XmlDocument CreateResponse(
+            string issuer, string destination,
+            string urnStatusCode, string assertion, RSA rsa = null)
         {
+            // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
+            string id = "s2" + Guid.NewGuid().ToString("N");
             string xmlString = SAML2Const.ResponseTemplate;
 
             #region Replace
             // 共通
-            xmlString = xmlString.Replace("{ID}", Guid.NewGuid().ToString());
+            xmlString = xmlString.Replace("{ID}", id);
             xmlString = xmlString.Replace("{IssueInstant}", DateTime.UtcNow.ToString("s") + "Z");
             xmlString = xmlString.Replace("{Issuer}", issuer);
 
@@ -169,12 +201,21 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // 固定値
             xmlString = xmlString.Replace("{UrnProtocol}", SAML2Const.UrnProtocol);
             xmlString = xmlString.Replace("{UrnAssertion}", SAML2Const.UrnAssertion);
-            #endregion
 
+            // XmlDocument化
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xmlString);
             xmlDoc.PreserveWhitespace = false;
-            
+            #endregion
+
+            #region Sign
+            if (!(rsa == null))
+            {
+                SignedXml2 signedXml2 = new SignedXml2(rsa);
+                xmlDoc = signedXml2.Create(xmlDoc, id);
+            }
+            #endregion
+
             return xmlDoc;
         }
     }
