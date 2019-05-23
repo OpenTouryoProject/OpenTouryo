@@ -45,5 +45,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// <summary>SAML2Params</summary>
     public class SAML2の各種パラメタ
     {
+        // AuthZ、Client共用のパラメタが無い   
     }
 }

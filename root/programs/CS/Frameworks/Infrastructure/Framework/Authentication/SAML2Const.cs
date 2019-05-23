@@ -133,12 +133,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>メソッド：記名式切符</summary>
         public const string UrnMethod = UrnHeader20 + "cm:holder-of-key";
 
+        #region bindings
         /// <summary>レスポンスのBindingをPOSTに指定する。</summary>
         public const string UrnBindingsPost = UrnHeader20 + "bindings:HTTP-POST";
         
         /// <summary>レスポンスのBindingをRedirectに指定する。</summary>
         public const string UrnBindingsRedirect = UrnHeader20 + "bindings:HTTP-Redirect";
+        #endregion
 
+        #region nameid-format
         /// <summary>NameIDPolicy要素のFormat属性をunspecifiedに指定する。</summary>
         public const string UrnNameIDFormatUnspecified = UrnHeader11 + "nameid-format:unspecified";
 
@@ -147,7 +150,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>NameIDPolicy要素のFormat属性を一時仮名に指定する。</summary>
         public const string UrnNameIDFormatTransient = UrnHeader20 + "nameid-format:transient";
+        #endregion
 
+        #region classes
         /// <summary>AuthnContextClassRefをunspecified（不特定の方法で認証）に指定する。</summary>
         public const string UrnAuthnContextClassRefUnspecified = UrnHeader20 + "ac:classes:unspecified";
 
@@ -159,10 +164,36 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>AuthnContextClassRefをX509（デジタル署名により認証）に指定する。</summary>
         public const string UrnAuthnContextClassRefX509 = UrnHeader20 + "ac:classes:X509";
+        #endregion
 
+        #region status
         /// <summary>StatusのStatusCodeをSuccessに指定する。</summary>
         public const string UrnStatusCodeSuccess = UrnHeader20 + "status:Success";
-        
+
+        /// <summary>StatusのStatusCodeをRequesterに指定する。</summary>
+        public const string UrnStatusCodeRequester = UrnHeader20 + "status:Requester";
+
+        /// <summary>StatusのStatusCodeをResponderに指定する。</summary>
+        public const string UrnStatusCodeResponder = UrnHeader20 + "status:Responder";
+
+        /// <summary>StatusのStatusCodeをAuthnFailedに指定する。</summary>
+        public const string UrnStatusCodeAuthnFailed = UrnHeader20 + "status:AuthnFailed";
+
+        /// <summary>StatusのStatusCodeをUnknownPrincipalに指定する。</summary>
+        public const string UrnStatusCodeUnknownPrincipal = UrnHeader20 + "status:UnknownPrincipal";
+
+        /// <summary>StatusのStatusCodeをVersionMismatchに指定する。</summary>
+        public const string UrnStatusCodeVersionMismatch = UrnHeader20 + "status:VersionMismatch";
+        #endregion
+
+        #endregion
+
+        #region url
+        /// <summary>RSAwithSHA1</summary>
+        public const string RSAwithSHA1 = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
+
+        /// <summary>DSAwithSHA1</summary>
+        public const string DSAwithSHA1 = "http://www.w3.org/2000/09/xmldsig#dsa-sha1";
         #endregion
     }
 }

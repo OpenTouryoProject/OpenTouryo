@@ -35,5 +35,65 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// <summary>SAML2で使用する列挙型クラス</summary>
     public class SAML2Enum
     {
+        /// <summary>NameIDFormat</summary>
+        public enum NameIDFormat : int
+        {
+            /// <summary>unspecified</summary>
+            unspecified,
+
+            /// <summary>persistent</summary>
+            persistent,
+
+            /// <summary>transient</summary>
+            transient
+        }
+
+        /// <summary>ProtocolBinding</summary>
+        public enum ProtocolBinding : int
+        {
+            /// <summary>HttpPost</summary>
+            HttpPost,
+
+            /// <summary>HttpRedirect</summary>
+            HttpRedirect
+        }
+
+        /// <summary>AuthnContextClassRef</summary>
+        public enum AuthnContextClassRef : int
+        {
+            /// <summary>unspecified</summary>
+            unspecified,
+
+            /// <summary>Password</summary>
+            Password,
+
+            /// <summary>PasswordProtectedTransport</summary>
+            PasswordProtectedTransport,
+
+            /// <summary>X509</summary>
+            X509
+        }
+
+        /// <summary>StatusCode</summary>
+        public enum StatusCode : int
+        {
+            /// <summary>Success</summary>
+            Success,
+            
+            /// <summary>Requester</summary>
+            Requester,
+
+            /// <summary>Responder</summary>
+            Responder,
+
+            /// <summary>AuthnFailed</summary>
+            AuthnFailed,
+
+            /// <summary>UnknownPrincipal</summary>
+            UnknownPrincipal,
+
+            /// <summary>VersionMismatch</summary>
+            VersionMismatch
+        }
     }
 }
