@@ -3955,7 +3955,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     {
                         // 画面遷移定義（XmlDocument）のロード
                         this.XMLSCD.Load(
-                            PubCmnFunction.BuiltStringIntoEnvironmentVariable(
+                            StringVariableOperator.BuiltStringIntoEnvironmentVariable(
                                 GetConfigParameter.GetConfigValue(FxLiteral.XML_SC_DEFINITION)));
                     }
                     else

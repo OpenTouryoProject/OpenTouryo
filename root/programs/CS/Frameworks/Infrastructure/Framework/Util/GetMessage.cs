@@ -261,7 +261,7 @@ namespace Touryo.Infrastructure.Framework.Util
                 XmlDocument xMLMSG = new XmlDocument();
                 
                 // Load
-                xMLMSG.Load(PubCmnFunction.BuiltStringIntoEnvironmentVariable(filePath));
+                xMLMSG.Load(StringVariableOperator.BuiltStringIntoEnvironmentVariable(filePath));
                 // Save
                 GetMessage.DicMSG[filePath] = GetMessage.FillDictionary(xMLMSG);
 

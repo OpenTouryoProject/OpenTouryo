@@ -91,7 +91,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
             {
                 // インプロセス呼び出しの名前解決定義（XmlDocument）を[リソース]で初期化
                 this.XMLTMD_InProcess.Load(
-                    PubCmnFunction.BuiltStringIntoEnvironmentVariable(
+                    StringVariableOperator.BuiltStringIntoEnvironmentVariable(
                         GetConfigParameter.GetConfigValue(FxLiteral.XML_TM_INPROCESS_DEFINITION)));
 
                 // 戻す

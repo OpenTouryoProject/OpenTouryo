@@ -129,7 +129,7 @@ namespace Touryo.Infrastructure.Framework.Util
                     {
                         // 共有情報定義（XmlDocument）を[リソース]で初期化
                         xMLSP.Load(
-                            PubCmnFunction.BuiltStringIntoEnvironmentVariable(
+                            StringVariableOperator.BuiltStringIntoEnvironmentVariable(
                                 GetConfigParameter.GetConfigValue(FxLiteral.XML_SP_DEFINITION)));
 
                         //// 戻す

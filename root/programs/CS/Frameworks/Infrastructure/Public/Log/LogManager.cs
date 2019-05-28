@@ -158,7 +158,7 @@ namespace Touryo.Infrastructure.Public.Log
 
                             // ログ定義 [リソース ファイル] → ストリームを開く
                             FileStream s = new FileStream(
-                                PubCmnFunction.BuiltStringIntoEnvironmentVariable(log4netConfFile),
+                                StringVariableOperator.BuiltStringIntoEnvironmentVariable(log4netConfFile),
                                 FileMode.Open, FileAccess.Read, FileShare.Read);
 
                             // log4netのXML形式の設定ファイルを読み込む。

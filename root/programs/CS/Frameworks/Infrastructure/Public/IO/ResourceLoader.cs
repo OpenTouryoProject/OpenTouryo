@@ -55,7 +55,7 @@ namespace Touryo.Infrastructure.Public.IO
         public static bool Exists(string loadfilepath, bool throwException)
         {
             // 環境変数の組み込み処理に対応
-            loadfilepath = PubCmnFunction.BuiltStringIntoEnvironmentVariable(loadfilepath);
+            loadfilepath = StringVariableOperator.BuiltStringIntoEnvironmentVariable(loadfilepath);
 
             // 存在チェック
             if (File.Exists(loadfilepath))
@@ -90,7 +90,7 @@ namespace Touryo.Infrastructure.Public.IO
             string loadfilepath = Path.Combine(filePath, fileName);
 
             // 環境変数の組み込み処理に対応
-            loadfilepath = PubCmnFunction.BuiltStringIntoEnvironmentVariable(loadfilepath);
+            loadfilepath = StringVariableOperator.BuiltStringIntoEnvironmentVariable(loadfilepath);
 
             // 存在チェック
             if (File.Exists(loadfilepath))
@@ -125,7 +125,7 @@ namespace Touryo.Infrastructure.Public.IO
         public static string LoadAsString(string loadfilepath, Encoding enc)
         {
             // 環境変数の組み込み処理に対応
-            loadfilepath = PubCmnFunction.BuiltStringIntoEnvironmentVariable(loadfilepath);
+            loadfilepath = StringVariableOperator.BuiltStringIntoEnvironmentVariable(loadfilepath);
 
             StreamReader sr = null;
 
@@ -176,7 +176,7 @@ namespace Touryo.Infrastructure.Public.IO
             string loadfilepath = Path.Combine(filePath, fileName);
 
             // 環境変数の組み込み処理に対応
-            loadfilepath = PubCmnFunction.BuiltStringIntoEnvironmentVariable(loadfilepath);
+            loadfilepath = StringVariableOperator.BuiltStringIntoEnvironmentVariable(loadfilepath);
 
             StreamReader sr  = null;
 

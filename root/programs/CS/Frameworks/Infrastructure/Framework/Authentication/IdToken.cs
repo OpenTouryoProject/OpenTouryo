@@ -226,7 +226,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             // 左半分を base64url エンコードした値。
             return CustomEncode.ToBase64UrlString(
-                PubCmnFunction.ShortenByteArray(bytes, (bytes.Length / 2)));
+                ArrayOperator.ShortenByteArray(bytes, (bytes.Length / 2)));
         }
 
         /// <summary>

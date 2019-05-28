@@ -135,8 +135,11 @@
     <Compile Include="Db\DamSqlSvr.cs" />
     <Compile Include="Db\DbEnum.cs" />
     <Compile Include="Str\ToStringExtension.cs" />
+    <Compile Include="Util\StackFrameOperator.cs" />
+    <Compile Include="Util\StringVariableOperator.cs" />
     <Compile Include="Util\CustomMarshaler.cs" />
     <Compile Include="FastReflection\CompiledExpressionCreater.cs" />
+    <Compile Include="Util\ArrayOperator.cs" />
     <Compile Include="Util\PubCmnFunction.cs" />
     <Compile Include="Util\PublicExceptionMessage.cs" />
     <Compile Include="IO\BinarySerialize.cs" />

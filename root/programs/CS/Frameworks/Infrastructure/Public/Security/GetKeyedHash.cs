@@ -83,11 +83,11 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 if (24 <= key.Length)
                 {
-                    key = PubCmnFunction.ShortenByteArray(key, 24);
+                    key = ArrayOperator.ShortenByteArray(key, 24);
                 }
                 else if (16 <= key.Length)
                 {
-                    key = PubCmnFunction.ShortenByteArray(key, 16);
+                    key = ArrayOperator.ShortenByteArray(key, 16);
                 }
                 else
                 {

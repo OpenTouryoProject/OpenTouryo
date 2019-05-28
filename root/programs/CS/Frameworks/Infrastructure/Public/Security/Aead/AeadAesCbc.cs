@@ -96,8 +96,8 @@ namespace Touryo.Infrastructure.Public.Security.Aead
                 throw new ArgumentException(string.Format("Length is less than {0} bytes.", this.CEK_LEN), "cek");
             }
 
-            this.MacKey = PubCmnFunction.CopyArray<byte>(cek, MAC_KEY_LEN);
-            this.EncKey = PubCmnFunction.CopyArray<byte>(cek, ENC_KEY_LEN, ENC_KEY_LEN, 0);
+            this.MacKey = ArrayOperator.CopyArray<byte>(cek, MAC_KEY_LEN);
+            this.EncKey = ArrayOperator.CopyArray<byte>(cek, ENC_KEY_LEN, ENC_KEY_LEN, 0);
 
             // Initialization Vector.
             this.IV = iv;
@@ -122,7 +122,7 @@ namespace Touryo.Infrastructure.Public.Security.Aead
 
             // Initialization Vector.
             // IV must be the same length as block size
-            this.IV = PubCmnFunction.CopyArray<byte>(this.IV, this._aesCBC.GetBlockSize());
+            this.IV = ArrayOperator.CopyArray<byte>(this.IV, this._aesCBC.GetBlockSize());
 
             // 初期化
 
@@ -169,16 +169,16 @@ namespace Touryo.Infrastructure.Public.Security.Aead
 
             // 認証タグ（MAC）を取得
             // Concatenate the [AAD], the [IV], the [ciphertext], and the [AL value].
-            byte[] temp = PubCmnFunction.CombineArray(this.AAD, this.IV);
-            temp = PubCmnFunction.CombineArray(temp, ciphert);
-            temp = PubCmnFunction.CombineArray(temp, this.AL);
+            byte[] temp = ArrayOperator.CombineArray(this.AAD, this.IV);
+            temp = ArrayOperator.CombineArray(temp, ciphert);
+            temp = ArrayOperator.CombineArray(temp, this.AL);
             byte[] tag = this._hmac.ComputeHash(temp);
             Array.Resize(ref tag, TAG_LEN);
 
             // 結果を返す
             this._result = new AeadResult()
             {
-                Aead = PubCmnFunction.CombineArray(ciphert, tag),
+                Aead = ArrayOperator.CombineArray(ciphert, tag),
                 Ciphert = ciphert,
                 Tag = tag,
             };
@@ -194,9 +194,9 @@ namespace Touryo.Infrastructure.Public.Security.Aead
 
             //認証タグ（MAC）を取得
             // Concatenate the [AAD], the [Initialization Vector], the [ciphertext], and the [AL value].
-            byte[] temp = PubCmnFunction.CombineArray(this.AAD, this.IV);
-            temp = PubCmnFunction.CombineArray(temp, input.Ciphert);
-            temp = PubCmnFunction.CombineArray(temp, this.AL);
+            byte[] temp = ArrayOperator.CombineArray(this.AAD, this.IV);
+            temp = ArrayOperator.CombineArray(temp, input.Ciphert);
+            temp = ArrayOperator.CombineArray(temp, this.AL);
             byte[] tag = this._hmac.ComputeHash(temp);
             Array.Resize(ref tag, TAG_LEN);
 

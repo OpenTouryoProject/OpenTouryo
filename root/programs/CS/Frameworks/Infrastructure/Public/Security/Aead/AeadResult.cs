@@ -53,7 +53,7 @@ namespace Touryo.Infrastructure.Public.Security.Aead
         /// <returns>ciphert + tag</returns>
         public byte[] CombineByteArrayForDecrypt()
         {
-            return PubCmnFunction.CombineArray<byte>(this.Ciphert, this.Tag);
+            return ArrayOperator.CombineArray<byte>(this.Ciphert, this.Tag);
         }
     }
 }
