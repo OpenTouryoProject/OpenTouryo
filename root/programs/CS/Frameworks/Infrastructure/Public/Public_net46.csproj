@@ -130,6 +130,7 @@
     <Compile Include="Str\FormatConverter.cs" />
     <Compile Include="Str\JIS2k4Checker.cs" />
     <Compile Include="Str\StringChecker.cs" />
+    <Compile Include="Str\StringExtractor.cs" />
     <Compile Include="Str\StringConverter.cs" />
     <Compile Include="Db\BaseDam.cs" />
     <Compile Include="Db\DamSqlSvr.cs" />

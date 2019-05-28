@@ -321,27 +321,29 @@ namespace Touryo.Infrastructure.Framework.Authentication
         }
         #endregion
 
-        #region Encode
+        #region Encode / Decode 
 
+        #region Encode
         /// <summary>EncodeRedirect</summary>
         /// <param name="type">SAML2Enum.RequestOrResponse</param>
         /// <param name="saml">string</param>
         /// <param name="relayState">string</param>
-        /// <param name="dsRSAwithSHA1">DigitalSignX509</param>
+        /// <param name="dsRSAwithSHA1">DigitalSign</param>
         /// <returns>RedirectBinding用クエリ文字列</returns>
         public static string EncodeRedirect(
             SAML2Enum.RequestOrResponse type,
             string saml, string relayState,
-            DigitalSignX509 dsRSAwithSHA1 = null)
+            DigitalSign dsRSAwithSHA1 = null)
         {
             // --------------------------------------------------
             // - XML → XML宣言のエンコーディング → DEFLATE圧縮
-            // -   → Base64エンコード → URLエンコード →  クエリ文字列のテンプレートへ組込
-            // -      → コレをASCIIエンコード → 署名 → Base64エンコード → URLエンコード →  Signatureパラメタ追加。
+            // -   → Base64エンコード → URLエンコード →  クエリ文字列テンプレへ組込
+            // -      → コレをASCIIエンコード → 署名 → Base64エンコード
+            // -         → URLエンコード →  Signatureパラメタ追加。
             // --------------------------------------------------
             // ・ヘッダも必要
             //   "<?xml version="1.0" encoding="UTF-8"?>"
-            // ・テンプレート
+            // ・クエリ文字列テンプレート
             //   ・SAMLRequest=value&RelayState=value&SigAlg=value
             //   ・SAMLResponse=value&RelayState=value&SigAlg=value
             // ・クエリ文字列署名
@@ -351,7 +353,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string queryString = "";
             string queryStringTemplate = "";
 
-            #region テンプレート生成
+            #region クエリ文字列テンプレート生成
             if (string.IsNullOrEmpty(saml))
             {
                 return "";
@@ -388,7 +390,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 else
                 {
                     // 第3 QSパラメタ
-                    queryStringTemplate += "&SigAlg=" + SAML2Const.RSAwithSHA1;
+                    queryStringTemplate += "&SigAlg=" + CustomEncode.UrlEncode(SAML2Const.RSAwithSHA1);
                 }                
             }
             #endregion
@@ -396,9 +398,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
             #region エンコーディング
 
             // エンコーディング オブジェクトの取得
-            Encoding enc = PubCmnFunction.GetEncodingFromXmlDeclaration(saml);
+            Encoding enc = StringExtractor.GetEncodingFromXmlDeclaration(saml);
 
-            // XML → UTF-8エンコーディング → DEFLATE圧縮 → Base64エンコード → URLエンコード
+            // XML → XML宣言のエンコーディング → DEFLATE圧縮 → Base64エンコード → URLエンコード
             saml = CustomEncode.UrlEncode(CustomEncode.ToBase64String(
                 DeflateCompression.Compress(CustomEncode.StringToByte(saml, enc.CodePage))));
             #endregion
@@ -414,8 +416,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // - RelayStateパラメタ
             if (!string.IsNullOrEmpty(relayState))
             {
-                queryString = queryString.Replace(
-                    "{RelayState}", CustomEncode.UrlEncode(relayState));
+                queryString = queryString.Replace("{RelayState}", CustomEncode.UrlEncode(relayState));
             }
 
             // - Signatureパラメタ
@@ -440,7 +441,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public static string EncodePost(string saml, string referenceId = "", RSA rsa = null)
         {
             // エンコーディング オブジェクトの取得
-            Encoding enc = PubCmnFunction.GetEncodingFromXmlDeclaration(saml);
+            Encoding enc = StringExtractor.GetEncodingFromXmlDeclaration(saml);
 
             if (rsa == null)
             {
@@ -456,6 +457,116 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // XML → XML宣言のエンコーディング → Base64エンコード
             return CustomEncode.ToBase64String(CustomEncode.StringToByte(saml, enc.CodePage));
         }
+        #endregion
+
+        #region Decode
+
+        /// <summary>DecodeRedirect</summary>
+        /// <param name="queryString">string</param>
+        /// <param name="dsRSAwithSHA1">DigitalSign</param>
+        /// <returns>デコードされたsaml</returns>
+        public static string DecodeRedirect(string queryString, DigitalSign dsRSAwithSHA1 = null)
+        {
+            // EcodeRedirectの逆
+
+            // - Signatureパラメタ
+            if (dsRSAwithSHA1 != null)
+            {
+                // Signatureの抽出
+                string signature = StringExtractor.GetParameterFromQueryString("Signature", queryString);
+                // Signatureの削除
+                queryString = queryString.Replace("&Signature=" + signature, "");
+
+                // queryString : ASCIIデコード
+                // signature   : パラメタ → URLデコード →  Base64デコード
+                if (dsRSAwithSHA1.Verify(
+                    CustomEncode.StringToByte(queryString, CustomEncode.us_ascii),
+                    CustomEncode.FromBase64String(CustomEncode.UrlDecode(signature))))
+                {
+                    // 署名検証 OK
+                }
+                else
+                {
+                    // 署名検証 NG
+                    return "";
+                }
+            }
+
+            // --------------------------------------------------
+            // Saml → URLデコード → Base64デコード
+            //   → DEFLATE解凍 → XML宣言のエンコーディング → XML
+            // --------------------------------------------------
+            // Samlの抽出
+            string saml = "";
+            if (queryString.IndexOf("SAMLRequest") != -1)
+            {
+                saml = StringExtractor.GetParameterFromQueryString("SAMLRequest", queryString);
+            }
+            else if (queryString.IndexOf("SAMLResponse") != -1)
+            {
+                saml = StringExtractor.GetParameterFromQueryString("SAMLResponse", queryString);
+            }
+            else
+            {
+                return "";
+            }
+
+            byte[] tempByte = DeflateCompression.Decompress(
+                CustomEncode.FromBase64String(CustomEncode.UrlDecode(saml)));
+
+            // XML宣言部分を取得するために、us_asciiでデコード
+            string tempString = CustomEncode.ByteToString(tempByte, CustomEncode.us_ascii);
+
+            // エンコーディング オブジェクトの取得
+            Encoding enc = StringExtractor.GetEncodingFromXmlDeclaration(tempString);
+
+            return CustomEncode.ByteToString(tempByte, enc.CodePage);
+        }
+
+        /// <summary>DecodePost</summary>
+        /// <param name="saml">エンコードされたsaml</param>
+        /// <param name="referenceId">string</param>
+        /// <param name="rsa">RSA</param>
+        /// <returns>デコードされたsaml</returns>
+        public static string DecodePost(string saml, string referenceId, RSA rsa = null)
+        {
+            // EncodePostの逆
+
+            // Base64エンコード → XML宣言のエンコーディング → XML
+
+            byte[] tempByte = CustomEncode.FromBase64String(saml);
+
+            // XML宣言部分を取得するために、us_asciiでデコード
+            string tempString = CustomEncode.ByteToString(tempByte, CustomEncode.us_ascii);
+
+            // エンコーディング オブジェクトの取得
+            Encoding enc = StringExtractor.GetEncodingFromXmlDeclaration(tempString);
+
+            saml = CustomEncode.ByteToString(tempByte, enc.CodePage);
+
+            if (rsa == null)
+            {
+                // 検証しない
+            }
+            else
+            {
+                // 検証する
+                SignedXml2 signedXml2 = new SignedXml2(rsa);
+                if (signedXml2.Verify(saml, referenceId))
+                {
+                    // 検証できた。
+                }
+                else
+                {
+                    // 検証できなかった。
+                    saml = "";
+                }
+            }
+
+            return saml;
+        }
+
+        #endregion
 
         #endregion
     }

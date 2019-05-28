@@ -139,7 +139,7 @@ namespace Touryo.Infrastructure.Public.Security
             if (mac.AlgorithmName == "DESede/CBC"
                 && 8 < rtnVal.Length)
             {
-                rtnVal = PubCmnFunction.CopyArray<byte>(rtnVal, 8);
+                rtnVal = ArrayOperator.CopyArray<byte>(rtnVal, 8);
             }
 
             return rtnVal;

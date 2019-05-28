@@ -133,29 +133,6 @@ namespace Touryo.Infrastructure.Public.Util
 
         #region その他
 
-        /// <summary>XML宣言のエンコーディングを返す</summary>
-        /// <param name="xmlDeclaration">string</param>
-        /// <returns>Encoding</returns>
-        public static Encoding GetEncodingFromXmlDeclaration(string xmlDeclaration)
-        {
-            try
-            {
-                // エンコーディング文字列を取得し、
-                string searchString = "encoding=\"";
-                int start = xmlDeclaration.IndexOf(searchString, 0) + searchString.Length;
-                int end = xmlDeclaration.IndexOf('\"', start);
-
-                // エンコーディング オブジェクトに変換
-                return Encoding.GetEncoding(xmlDeclaration.Substring(start, end - start));
-            }
-            catch (Exception)
-            {
-                // ここでエラーとなった場合、
-                throw new ArgumentException(String.Format(
-                    PublicExceptionMessage.XML_DECLARATION_ERROR, xmlDeclaration));
-            }
-        }
-
         /// <summary>拡張子無しのファイル名を取得する</summary>
         /// <param name="str">ファイル名を含むパス</param>
         /// <param name="divChar">パスの分割文字</param>
