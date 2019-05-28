@@ -322,25 +322,8 @@ namespace Touryo.Infrastructure.Public.IO
                 sr.Close();
 
                 // エンコーディング オブジェクトの取得
-                Encoding enc;
-
-                try
-                {
-                    // エンコーディング文字列を取得し、
-                    string searchString = "encoding=\"";
-                    int start = xmlDeclaration.IndexOf(searchString, 0) + searchString.Length;
-                    int end = xmlDeclaration.IndexOf('\"', start);
-
-                    // エンコーディング オブジェクトに変換
-                    enc = Encoding.GetEncoding(xmlDeclaration.Substring(start, end - start));
-                }
-                catch(Exception)
-                {
-                    // ここでエラーとなった場合、
-                    throw new ArgumentException(String.Format(
-                        PublicExceptionMessage.XML_DECLARATION_ERROR, xmlDeclaration));
-                }
-
+                Encoding enc = PubCmnFunction.GetEncodingFromXmlDeclaration(xmlDeclaration);
+                
                 // 指定のエンコーディングで再ロード
                 sr = new StreamReader(thisAssembly.GetManifestResourceStream(loadfileName), enc);
 
