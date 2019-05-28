@@ -58,6 +58,16 @@ namespace Touryo.Infrastructure.Framework.Authentication
             HttpRedirect
         }
 
+        /// <summary>RequestOrResponse</summary>
+        public enum RequestOrResponse : int
+        {
+            /// <summary>Request</summary>
+            Request,
+
+            /// <summary>Response</summary>
+            Response
+        }
+
         /// <summary>AuthnContextClassRef</summary>
         public enum AuthnContextClassRef : int
         {
@@ -69,6 +79,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             /// <summary>PasswordProtectedTransport</summary>
             PasswordProtectedTransport,
+
+            /// <summary>PreviousSession</summary>
+            PreviousSession,
 
             /// <summary>X509</summary>
             X509

@@ -44,7 +44,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// AssertionConsumerServiceURL属性
         /// </remarks>
         public const string RequestTemplate
-            = "<?xml version=\"1.0\" ?>"
+            = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
             + "<samlp:AuthnRequest"
             + "  ID=\"{ID}\" IssueInstant=\"{IssueInstant}\""
             + "  Version=\"2.0\" xmlns:samlp=\"{UrnProtocol}\">"
@@ -58,7 +58,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>AssertionTemplate</summary>
         public const string AssertionTemplate
-            = "<?xml version=\"1.0\" ?>"
+            = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
             + "<saml:Assertion"
             + "  ID=\"{ID}\" IssueInstant=\"{IssueInstant}\""
             + "  Version=\"2.0\" xmlns:saml=\"{UrnAssertion}\">"
@@ -95,7 +95,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>ResponseTemplate</summary>
         public const string ResponseTemplate
-            = "<?xml version=\"1.0\" ?>"
+            = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
             + "<samlp:Response"
             + "  ID=\"{ID}\""
             + "  IssueInstant=\"{IssueInstant}\""
@@ -111,27 +111,34 @@ namespace Touryo.Infrastructure.Framework.Authentication
             + "  </samlp:Status>"
             + "  <Assertion>{Assertion}</Assertion>"
             + "</samlp:Response>";
-        
+
         #endregion
-        
+
         #region urn
+
+        #region header
         /// <summary>SAML1.1系のurnヘッダ</summary>
         public const string UrnHeader11 = "urn:oasis:names:tc:SAML:1.1:";
 
         /// <summary>SAML2.0系のurnヘッダ</summary>
         public const string UrnHeader20 = "urn:oasis:names:tc:SAML:2.0:";
+        #endregion
 
+        #region method
+        /// <summary>メソッド：持参人切符</summary>
+        public const string UrnMethodBearer = UrnHeader20 + "cm:bearer";
+
+        /// <summary>メソッド：記名式切符</summary>
+        public const string UrnMethodPoP = UrnHeader20 + "cm:holder-of-key";
+        #endregion
+
+        #region fixed
         /// <summary>プロトコルを意味する名前空間</summary>
         public const string UrnProtocol = UrnHeader20 + "protocol";
 
         /// <summary>アサーションを意味する名前空間</summary>
         public const string UrnAssertion = UrnHeader20 + "assertion";
-
-        /// <summary>メソッド：持参人切符</summary>
-        public const string UrnMethodBearer = UrnHeader20 + "cm:bearer";
-
-        /// <summary>メソッド：記名式切符</summary>
-        public const string UrnMethod = UrnHeader20 + "cm:holder-of-key";
+        #endregion
 
         #region bindings
         /// <summary>レスポンスのBindingをPOSTに指定する。</summary>
@@ -162,6 +169,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>AuthnContextClassRefをPasswordProtectedTransport（HTTPS + パスワードを提示して認証）に指定する。</summary>
         public const string UrnAuthnContextClassRefPasswordProtectedTransport = UrnHeader20 + "ac:classes:PasswordProtectedTransport";
 
+        /// <summary>AuthnContextClassRefをPreviousSession（認証済みセッション）に指定する。</summary>
+        public const string UrnAuthnContextClassRefPreviousSession = UrnHeader20 + "ac:classes:PreviousSession";
+        
         /// <summary>AuthnContextClassRefをX509（デジタル署名により認証）に指定する。</summary>
         public const string UrnAuthnContextClassRefX509 = UrnHeader20 + "ac:classes:X509";
         #endregion
