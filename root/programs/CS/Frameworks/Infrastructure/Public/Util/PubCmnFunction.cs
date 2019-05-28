@@ -243,6 +243,7 @@ namespace Touryo.Infrastructure.Public.Util
 
         /// <summary>カンレントMethod名を取得する。</summary>
         /// <returns>カンレントMethod名</returns>
+        [Obsolete("Please substitute by StackFrameOperator.GetCurrentMethodName().")]
         public static string GetCurrentMethodName()
         {
             return StackFrameOperator.GetCurrentMethodName();
@@ -250,6 +251,7 @@ namespace Touryo.Infrastructure.Public.Util
 
         /// <summary>カンレントProperty名を取得する。</summary>
         /// <returns>カンレントProperty名</returns>
+        [Obsolete("Please substitute by StackFrameOperator.GetCurrentPropertyName().")]
         public static string GetCurrentPropertyName()
         {
             return StackFrameOperator.GetCurrentPropertyName();
@@ -259,6 +261,7 @@ namespace Touryo.Infrastructure.Public.Util
         /// <param name="filePath">ファイル・パス</param>
         /// <param name="fileLineNumber">ファイル行数</param>
         /// <param name="methodSignature">メソッド・シグネチャ</param>
+        [Obsolete("Please substitute by StackFrameOperator.GetCurrentCodeInfo().")]
         public static void GetCurrentCodeInfo(out string filePath, out string fileLineNumber, out string methodSignature)
         {
             StackFrameOperator.GetCurrentCodeInfo(out filePath, out fileLineNumber, out methodSignature);
