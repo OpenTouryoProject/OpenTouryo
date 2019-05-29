@@ -29,11 +29,16 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/05/21  西野 大介         新規作成
+//*  2019/05/29  西野 大介         CreateRequest, Responseでは署名しない。
+//*                                CreateAssertion, EncodeRedirect, Postで署名する。
 //**********************************************************************************
 
 using System;
-using System.Xml;
+using System.IO;
+using System.Reflection;
 using System.Text;
+using System.Xml;
+using System.Xml.Schema;
 using System.Security.Cryptography;
 
 using Touryo.Infrastructure.Public.IO;
@@ -54,13 +59,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="urnNameIDFormat">SAML2Enum.NameIDFormat</param>
         /// <param name="assertionConsumerServiceURL">string</param>
         /// <param name="id">string</param>
-        /// <param name="rsa">RSA</param>
         /// <returns>SAMLRequest</returns>
         public static XmlDocument CreateRequest(string issuer,
             SAML2Enum.ProtocolBinding protocolBinding,
             SAML2Enum.NameIDFormat urnNameIDFormat,
-            string assertionConsumerServiceURL,
-            out string id, RSA rsa = null)
+            string assertionConsumerServiceURL, out string id)
         {
             // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
             id = "s2" + Guid.NewGuid().ToString("N");
@@ -129,14 +132,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 attr = xmlDoc.CreateAttribute("AssertionConsumerServiceURL");
                 attr.Value = assertionConsumerServiceURL;
                 node.Attributes.Append(attr);
-            }
-            #endregion
-
-            #region Sign
-            if (!(rsa == null))
-            {
-                SignedXml2 signedXml2 = new SignedXml2(rsa);
-                xmlDoc = signedXml2.Create(xmlDoc, id);
             }
             #endregion
 
@@ -252,12 +247,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="assertion">string</param>
         /// <param name="urnStatusCode">SAML2Enum.StatusCode</param>
         /// <param name="id">string</param>
-        /// <param name="rsa">RSA</param>
         /// <returns>SAMLResponse</returns>
         public static XmlDocument CreateResponse(
             string issuer, string destination,
-            string assertion, SAML2Enum.StatusCode urnStatusCode,
-            out string id, RSA rsa = null)
+            string assertion, SAML2Enum.StatusCode urnStatusCode, out string id)
         {
             // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
             id = "s2" + Guid.NewGuid().ToString("N");
@@ -307,14 +300,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xmlString);
             xmlDoc.PreserveWhitespace = false;
-            #endregion
-
-            #region Sign
-            if (!(rsa == null))
-            {
-                SignedXml2 signedXml2 = new SignedXml2(rsa);
-                xmlDoc = signedXml2.Create(xmlDoc, id);
-            }
             #endregion
 
             return xmlDoc;
@@ -567,6 +552,75 @@ namespace Touryo.Infrastructure.Framework.Authentication
         }
 
         #endregion
+
+        #endregion
+
+        #region VerifySamlByXmlSchema
+        /// <summary>Verify</summary>
+        /// <param name="saml">string</param>
+        /// <param name="schema">SAML2Enum.SamlSchema</param>
+        /// <returns>bool</returns>
+        public static bool VerifySamlByXmlSchema(string saml, SAML2Enum.SamlSchema schema)
+        {
+            string embeddedXsdFileName = "";
+            string targetNamespace = "";
+
+            switch (schema)
+            {
+                case SAML2Enum.SamlSchema.Request:
+                    embeddedXsdFileName = "Touryo.Infrastructure.Framework.Authentication.SamlSchemaProtocol2.xsd";
+                    targetNamespace = "urn:oasis:names:tc:SAML:2.0:protocol";
+                    break;
+                case SAML2Enum.SamlSchema.Assertion:
+                    embeddedXsdFileName = "Touryo.Infrastructure.Framework.Authentication.SamlSchemaAssertion2.xsd";
+                    targetNamespace = "urn:oasis:names:tc:SAML:2.0:assertion";
+                    break;
+                case SAML2Enum.SamlSchema.Response:
+                    embeddedXsdFileName = "Touryo.Infrastructure.Framework.Authentication.SamlSchemaProtocol2.xsd";
+                    targetNamespace = "urn:oasis:names:tc:SAML:2.0:protocol";
+                    break;
+            }
+
+            #region samlSchemaSet
+            Stream stream = EmbeddedResourceLoader.LoadAsStream(
+                "OpenTouryo.Framework", embeddedXsdFileName);
+            stream.Position = 0; // ...コレがいるらしい。
+            XmlReader schemaDocument = XmlReader.Create(new StreamReader(stream));
+            schemaDocument.Read(); // None対策
+            XmlSchemaSet samlSchemaSet = new XmlSchemaSet();
+
+            // 非常に遅くなる（恐らくWeb Access
+            // XmlResolverをnullクリア
+            samlSchemaSet.XmlResolver = null;
+            samlSchemaSet.Add(targetNamespace, schemaDocument);
+            #endregion
+
+            #region samlDocument
+            XmlReaderSettings xmlReaderSettings = new XmlReaderSettings();
+            xmlReaderSettings.ValidationType = ValidationType.Schema;
+            xmlReaderSettings.Schemas = samlSchemaSet;
+
+            XmlReader samlDocument = XmlReader.Create(
+                new StringReader(saml), xmlReaderSettings); // ココでエラー
+            // System.Xml.Schema.XmlSchemaValidationException: 型
+            // 'urn:oasis:names:tc:SAML:2.0:assertion:EncryptedElementType' は宣言されていません。
+
+            #endregion
+
+            try
+            {
+                while (samlDocument.Read())
+                {
+                }
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
 
         #endregion
     }

@@ -187,7 +187,7 @@ namespace Touryo.Infrastructure.Public.Util
         /// <summary>プロパティ文字列からプロパティ名・値の組を取得</summary>
         /// <param name="propString">プロパティ文字列</param>
         /// <returns>プロパティ名・値（ディクショナリ）</returns>
-        [Obsolete("Please substitute by StringVariableOperator.GetPropsFromPropString().")]
+        [Obsolete("This method is deprecated, please use StringVariableOperator.GetPropsFromPropString() instead.")]
         public static Dictionary<string, string> GetPropsFromPropString(string propString)
         {
             return StringVariableOperator.GetPropsFromPropString(propString);
@@ -210,7 +210,7 @@ namespace Touryo.Infrastructure.Public.Util
         /// <param name="valsLst">
         /// コマンドライン引数の値
         /// </param>
-        [Obsolete("Please substitute by StringVariableOperator.GetCommandArgs().")]
+        [Obsolete("This method is deprecated, please use StringVariableOperator.GetCommandArgs() instead.")]
         public static void GetCommandArgs(char prefixChar, out Dictionary<string, string> argsDic, out List<string> valsLst)
         {
             StringVariableOperator.GetCommandArgs(prefixChar, out argsDic, out valsLst);
@@ -225,7 +225,7 @@ namespace Touryo.Infrastructure.Public.Util
         /// <param name="builtString">環境変数名入り文字列</param>
         /// <returns>環境変数値を組み込んだ文字列</returns>
         /// <remarks>環境変数名は、環境変数名入り文字列中に、%環境変数名%と指定する。</remarks>
-        [Obsolete("Please substitute by StringVariableOperator.BuiltStringIntoEnvironmentVariable().")]
+        [Obsolete("This method is deprecated, please use StringVariableOperator.BuiltStringIntoEnvironmentVariable() instead.")]
         public static string BuiltStringIntoEnvironmentVariable(string builtString)
         {
             return StringVariableOperator.BuiltStringIntoEnvironmentVariable(builtString);
@@ -241,7 +241,7 @@ namespace Touryo.Infrastructure.Public.Util
 
         /// <summary>カンレントMethod名を取得する。</summary>
         /// <returns>カンレントMethod名</returns>
-        [Obsolete("Please substitute by StackFrameOperator.GetCurrentMethodName().")]
+        [Obsolete("This method is deprecated, please use StackFrameOperator.GetCurrentMethodName() instead.")]
         public static string GetCurrentMethodName()
         {
             return StackFrameOperator.GetCurrentMethodName();
@@ -249,7 +249,7 @@ namespace Touryo.Infrastructure.Public.Util
 
         /// <summary>カンレントProperty名を取得する。</summary>
         /// <returns>カンレントProperty名</returns>
-        [Obsolete("Please substitute by StackFrameOperator.GetCurrentPropertyName().")]
+        [Obsolete("This method is deprecated, please use StackFrameOperator.GetCurrentPropertyName() instead.")]
         public static string GetCurrentPropertyName()
         {
             return StackFrameOperator.GetCurrentPropertyName();
@@ -259,7 +259,7 @@ namespace Touryo.Infrastructure.Public.Util
         /// <param name="filePath">ファイル・パス</param>
         /// <param name="fileLineNumber">ファイル行数</param>
         /// <param name="methodSignature">メソッド・シグネチャ</param>
-        [Obsolete("Please substitute by StackFrameOperator.GetCurrentCodeInfo().")]
+        [Obsolete("This method is deprecated, please use StackFrameOperator.GetCurrentCodeInfo() instead.")]
         public static void GetCurrentCodeInfo(out string filePath, out string fileLineNumber, out string methodSignature)
         {
             StackFrameOperator.GetCurrentCodeInfo(out filePath, out fileLineNumber, out methodSignature);
@@ -278,7 +278,7 @@ namespace Touryo.Infrastructure.Public.Util
         /// <param name="srcArray">コピー元配列</param>
         /// <param name="dstArraySize">コピー先配列の長さ</param>
         /// <returns>コピー後の配列</returns>
-        [Obsolete("Please substitute by ArrayOperator.CopyArray().")]
+        [Obsolete("This method is deprecated, please use ArrayOperator.CopyArray() instead.")]
         public static T[] CopyArray<T>(T[] srcArray, int dstArraySize)
         {
             return ArrayOperator.CopyArray<T>(srcArray, dstArraySize, 0, 0);
@@ -290,7 +290,7 @@ namespace Touryo.Infrastructure.Public.Util
         /// <param name="srcStartIndex">読取開始位置</param>
         /// <param name="dstStartIndex">書込開始位置</param>
         /// <returns>コピー後の配列</returns>
-        [Obsolete("Please substitute by ArrayOperator.CopyArray().")]
+        [Obsolete("This method is deprecated, please use ArrayOperator.CopyArray() instead.")]
         public static T[] CopyArray<T>(T[] srcArray, int dstArraySize, int srcStartIndex, int dstStartIndex)
         {
             return ArrayOperator.CopyArray<T>(srcArray, dstArraySize, srcStartIndex, dstStartIndex); ;
@@ -300,7 +300,7 @@ namespace Touryo.Infrastructure.Public.Util
         /// <param name="array1">配列１</param>
         /// <param name="array2">配列２</param>
         /// <returns>結合された配列</returns>
-        [Obsolete("Please substitute by ArrayOperator.CombineArray().")]
+        [Obsolete("This method is deprecated, please use ArrayOperator.CombineArray() instead.")]
         public static T[] CombineArray<T>(T[] array1, T[] array2)
         {
             return ArrayOperator.CombineArray<T>(array1, array2);
@@ -318,7 +318,7 @@ namespace Touryo.Infrastructure.Public.Util
         /// <param name="newSize">バイト配列のサイズ</param>
         /// <returns>指定のサイズに切り詰められたバイト配列</returns>
         /// <remarks>暗号化のキー作成等で使用</remarks>
-        [Obsolete("Please substitute by ArrayOperator.ShortenByteArray().")]
+        [Obsolete("This method is deprecated, please use ArrayOperator.ShortenByteArray() instead.")]
         public static byte[] ShortenByteArray(byte[] bytes, int newSize)
         {
             return ArrayOperator.ShortenByteArray(bytes, newSize);
@@ -327,7 +327,7 @@ namespace Touryo.Infrastructure.Public.Util
         /// <summary>バイトデータを数値（Int64）データに変換</summary>
         /// <param name="bytes">バイトデータ（byte[]（8 byte以内））</param>
         /// <returns>数値（Int64）データ</returns>
-        [Obsolete("Please substitute by ArrayOperator.GetLongFromByte().")]
+        [Obsolete("This method is deprecated, please use ArrayOperator.GetLongFromByte() instead.")]
         public static long GetLongFromByte(byte[] bytes)
         {
             return ArrayOperator.GetLongFromByte(bytes);

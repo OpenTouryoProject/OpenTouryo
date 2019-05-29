@@ -120,6 +120,7 @@
     <Compile Include="IO\Zipper.cs" />
     <Compile Include="Log\CustomEventLog.cs" />
     <Compile Include="Log\SecurityEventLog.cs" />
+    <Compile Include="Reflection\MyAssemblies.cs" />
     <Compile Include="Resources\PublicExceptionMessageResource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

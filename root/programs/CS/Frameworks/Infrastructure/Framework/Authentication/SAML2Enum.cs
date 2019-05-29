@@ -35,6 +35,29 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// <summary>SAML2で使用する列挙型クラス</summary>
     public class SAML2Enum
     {
+        /// <summary>RequestOrResponse</summary>
+        public enum RequestOrResponse : int
+        {
+            /// <summary>Request</summary>
+            Request,
+
+            /// <summary>Response</summary>
+            Response
+        }
+
+        /// <summary>SamlSchema</summary>
+        public enum SamlSchema : int
+        {
+            /// <summary>Request</summary>
+            Request,
+
+            /// <summary>Assertion</summary>
+            Assertion,
+
+            /// <summary>Response</summary>
+            Response
+        }
+
         /// <summary>NameIDFormat</summary>
         public enum NameIDFormat : int
         {
@@ -56,16 +79,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             /// <summary>HttpRedirect</summary>
             HttpRedirect
-        }
-
-        /// <summary>RequestOrResponse</summary>
-        public enum RequestOrResponse : int
-        {
-            /// <summary>Request</summary>
-            Request,
-
-            /// <summary>Response</summary>
-            Response
         }
 
         /// <summary>AuthnContextClassRef</summary>

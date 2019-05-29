@@ -34,6 +34,7 @@
 //*  2011/05/18  西野 大介         Azure対応（アセンブリの取得方法の変更）
 //*  2012/07/20  西野 大介         Azureで動作しない状態になっていたので修正
 //*  2012/10/23  西野 大介         Azureで別のアセンブリからロード可能に修正
+//*  2019/05/29  西野 大介         LoadAsStreamメソッドを追加、GetEntryAssemblyをObsolete
 //**********************************************************************************
 
 using System;
@@ -43,6 +44,7 @@ using System.Text;
 using System.Reflection;
 
 using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Reflection;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.IO
@@ -53,47 +55,14 @@ namespace Touryo.Infrastructure.Public.IO
     {
         /// <summary>[埋め込まれたリソース ファイル]を含むアセンブリを取得する</summary>
         /// <param name="assemblyString">
-        /// アセンブリ名
-        /// http://msdn.microsoft.com/ja-jp/library/k8xx4k69.aspx
+        /// アセンブリ名（"既定の名前空間"とは異なる）
         /// </param>
         /// <returns>Assembly</returns>
+        [Obsolete("This method is deprecated, please use MyAssemblies.GetAssembly() instead.")]
         private static Assembly GetEntryAssembly(string assemblyString)
         {
-            // Azureスイッチ
-            string azure = GetConfigParameter.GetConfigValue("Azure");
-
-            if (string.IsNullOrEmpty(azure))
-            {
-                // 通常時
-                if (string.IsNullOrEmpty(assemblyString))
-                {
-                    // assemblyString 指定なし
-                    return Assembly.GetEntryAssembly();
-                }
-                else
-                {
-                    // assemblyString 指定あり
-                    return Assembly.Load(assemblyString);
-                }
-            }
-            else
-            {
-                // Azureスイッチ・オンの場合
-                if (string.IsNullOrEmpty(assemblyString))
-                {
-                    // assemblyString 指定なし
-                    return Assembly.Load(azure);
-                }
-                else
-                {
-                    // assemblyString 指定あり
-                    return Assembly.Load(assemblyString);
-                }
-
-            }
+            return MyAssemblies.GetAssembly(assemblyString);
         }
-
-        // #4-start
 
         #region 存在チェック
 
@@ -110,8 +79,7 @@ namespace Touryo.Infrastructure.Public.IO
 
         /// <summary>存在チェックのみのメソッド</summary>
         /// <param name="assemblyString">
-        /// アセンブリ名
-        /// http://msdn.microsoft.com/ja-jp/library/k8xx4k69.aspx
+        /// アセンブリ名（"既定の名前空間"とは異なる）
         /// </param>
         /// <param name="loadfileName">[埋め込まれたリソース ファイル]の名前（名前空間付き）</param>
         /// <param name="throwException">存在しない場合例外をスローするかどうかを指定</param>
@@ -126,7 +94,7 @@ namespace Touryo.Infrastructure.Public.IO
             // 例外処理
             try
             {
-                thisAssembly = EmbeddedResourceLoader.GetEntryAssembly(assemblyString);
+                thisAssembly = MyAssemblies.GetAssembly(assemblyString);
                 manifestResourceInfo = thisAssembly.GetManifestResourceInfo(loadfileName);
             }
             catch (Exception)
@@ -159,6 +127,33 @@ namespace Touryo.Infrastructure.Public.IO
 
         #endregion
 
+        #region [埋め込まれたリソース ファイル]からStreamを読込
+
+        /// <summary>[埋め込まれたリソース ファイル]からStreamを読込</summary>
+        /// <param name="loadfileName">string</param>
+        /// <returns>[埋め込まれたリソース ファイル]から読込んだStream</returns>
+        /// <remarks>自由に利用できる。</remarks>
+        public static Stream LoadAsStream(string loadfileName)
+        {
+            // オーバーロードを[assemblyString = string.Empty]で呼ぶ。
+            return EmbeddedResourceLoader.LoadAsStream(string.Empty, loadfileName);
+        }
+
+        /// <summary>[埋め込まれたリソース ファイル]からStreamを読込</summary>
+        /// <param name="assemblyString">
+        /// アセンブリ名（"既定の名前空間"とは異なる）
+        /// </param>
+        /// <param name="loadfileName">string</param>
+        /// <returns>[埋め込まれたリソース ファイル]から読込んだStream</returns>
+        /// <remarks>自由に利用できる。</remarks>
+        public static Stream LoadAsStream(string assemblyString, string loadfileName)
+        {
+            Assembly assembly = MyAssemblies.GetAssembly(assemblyString);
+            return assembly.GetManifestResourceStream(loadfileName);
+        }
+
+        #endregion
+
         #region [埋め込まれたリソース ファイル]から文字列を読込
 
         /// <summary>[埋め込まれたリソース ファイル]から文字列を読み込む。</summary>
@@ -174,8 +169,7 @@ namespace Touryo.Infrastructure.Public.IO
 
         /// <summary>[埋め込まれたリソース ファイル]から文字列を読み込む。</summary>
         /// <param name="assemblyString">
-        /// アセンブリ名
-        /// http://msdn.microsoft.com/ja-jp/library/k8xx4k69.aspx
+        /// アセンブリ名（"既定の名前空間"とは異なる）
         /// </param>
         /// <param name="loadfileName">[埋め込まれたリソース ファイル]の名前（名前空間付き）</param>
         /// <param name="enc">エンコード</param>
@@ -193,7 +187,7 @@ namespace Touryo.Infrastructure.Public.IO
             // 例外処理
             try
             {
-                thisAssembly = EmbeddedResourceLoader.GetEntryAssembly(assemblyString);
+                thisAssembly = MyAssemblies.GetAssembly(assemblyString);
                 manifestResourceInfo = thisAssembly.GetManifestResourceInfo(loadfileName);
             }
             catch (Exception)
@@ -262,8 +256,7 @@ namespace Touryo.Infrastructure.Public.IO
 
         /// <summary>[埋め込まれたリソースXMLファイル]から文字列を読み込む。</summary>
         /// <param name="assemblyString">
-        /// アセンブリ名
-        /// http://msdn.microsoft.com/ja-jp/library/k8xx4k69.aspx
+        /// アセンブリ名（"既定の名前空間"とは異なる）
         /// </param>
         /// <param name="loadfileName">[埋め込まれたリソースXMLファイル]の名前（名前空間付き）</param>
         /// <returns>[埋め込まれたリソースXMLファイル]から読み込んだ文字列</returns>
@@ -282,7 +275,7 @@ namespace Touryo.Infrastructure.Public.IO
             // 例外処理
             try
             {
-                thisAssembly = EmbeddedResourceLoader.GetEntryAssembly(assemblyString);
+                thisAssembly = MyAssemblies.GetAssembly(assemblyString);
                 manifestResourceInfo = thisAssembly.GetManifestResourceInfo(loadfileName);
             }
             catch (Exception)
