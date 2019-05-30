@@ -168,6 +168,7 @@
     <Compile Include="Win32\WindowsAPIErrorException.cs" />
     <Compile Include="Win32\WinProcWin32.cs" />
     <Compile Include="WinProc\PeekMessage.cs" />
+    <Compile Include="Xml\XmlLib.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -196,6 +197,10 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Xml\TestXml.xml" />
+    <EmbeddedResource Include="Xml\TestXsd.xsd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

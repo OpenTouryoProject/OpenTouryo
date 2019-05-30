@@ -34,16 +34,13 @@
 //**********************************************************************************
 
 using System;
-using System.IO;
-using System.Reflection;
-using System.Text;
 using System.Xml;
-using System.Xml.Schema;
+using System.Text;
 using System.Security.Cryptography;
 
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
-using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Xml;
 using Touryo.Infrastructure.Public.Security;
 using Touryo.Infrastructure.Public.Security.Xml;
 
@@ -111,8 +108,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             // XmlDocument化
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(xmlString);
             xmlDoc.PreserveWhitespace = false;
+            xmlDoc.LoadXml(xmlString);
+            
             #endregion
 
             #region Append
@@ -226,8 +224,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             // XmlDocument化
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(xmlString);
             xmlDoc.PreserveWhitespace = false;
+            xmlDoc.LoadXml(xmlString);
             #endregion
 
             #region Sign
@@ -298,8 +296,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             // XmlDocument化
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(xmlString);
             xmlDoc.PreserveWhitespace = false;
+            xmlDoc.LoadXml(xmlString);
             #endregion
 
             return xmlDoc;
@@ -581,46 +579,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     break;
             }
 
-            #region samlSchemaSet
-            Stream stream = EmbeddedResourceLoader.LoadAsStream(
-                "OpenTouryo.Framework", embeddedXsdFileName);
-            stream.Position = 0; // ...コレがいるらしい。
-            XmlReader schemaDocument = XmlReader.Create(new StreamReader(stream));
-            schemaDocument.Read(); // None対策
-            XmlSchemaSet samlSchemaSet = new XmlSchemaSet();
-
-            // 非常に遅くなる（恐らくWeb Access
-            // XmlResolverをnullクリア
-            samlSchemaSet.XmlResolver = null;
-            samlSchemaSet.Add(targetNamespace, schemaDocument);
-            #endregion
-
-            #region samlDocument
-            XmlReaderSettings xmlReaderSettings = new XmlReaderSettings();
-            xmlReaderSettings.ValidationType = ValidationType.Schema;
-            xmlReaderSettings.Schemas = samlSchemaSet;
-
-            XmlReader samlDocument = XmlReader.Create(
-                new StringReader(saml), xmlReaderSettings); // ココでエラー
-            // System.Xml.Schema.XmlSchemaValidationException: 型
-            // 'urn:oasis:names:tc:SAML:2.0:assertion:EncryptedElementType' は宣言されていません。
-
-            #endregion
-
-            try
-            {
-                while (samlDocument.Read())
-                {
-                }
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-
-            return true;
+            return XmlLib.ValidateByEmbeddedXsd(
+                "OpenTouryo.Framework", saml, embeddedXsdFileName, targetNamespace);
         }
-
 
         #endregion
     }

@@ -1,7 +1,7 @@
 ﻿using System;
 
-using Touryo.Infrastructure.Public.Diagnostics;
 using Touryo.Infrastructure.Public.FastReflection;
+using Touryo.Infrastructure.Public.Diagnostics;
 
 namespace TestCode
 {
