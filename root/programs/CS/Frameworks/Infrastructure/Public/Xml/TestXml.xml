@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<bookstore xmlns="urn:bookstore-schema">
+  <book genre="novel">
+    <title>The 7 Habits</title>
+    <author>
+      <first-name>Keith</first-name>
+      <last-name>Oyama</last-name>
+    </author>
+    <price>10.00</price>
+  </book>
+</bookstore>

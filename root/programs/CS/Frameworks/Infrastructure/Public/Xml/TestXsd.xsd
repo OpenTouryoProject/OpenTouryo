@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+  id="TestXsd"
+  targetNamespace="urn:bookstore-schema"
+  elementFormDefault="qualified"
+  xmlns="urn:bookstore-schema"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="bookstore" type="bookstoreType"/>
+  <xs:complexType name="bookstoreType">
+    <xs:sequence maxOccurs="unbounded">
+      <xs:element name="book" type="bookType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="bookType">
+    <xs:sequence>
+      <xs:element name="title" type="xs:string"/>
+      <xs:element name="author" type="authorType"/>
+      <xs:element name="price" type="xs:decimal" minOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="genre" type="xs:string"/>
+  </xs:complexType>
+  <xs:complexType name="authorType">
+    <xs:sequence>
+      <xs:element name="first-name" type="xs:string"/>
+      <xs:element name="last-name" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

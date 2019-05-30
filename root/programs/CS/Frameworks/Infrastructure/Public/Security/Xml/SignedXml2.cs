@@ -98,7 +98,7 @@ namespace Touryo.Infrastructure.Public.Security.Xml
             // - 署名対象ノードのXML署名を
             XmlNode signatureNode = xmlDoc.ImportNode(signedXml.GetXml(), true);
             // - 署名対象ノード直下に追加
-            XmlLib.GetTargetXmlNode(xmlDoc, referenceId).AppendChild(signatureNode); 
+            XmlLib.GetXmlNodeById(xmlDoc, referenceId).AppendChild(signatureNode); 
 
             // Signed XmlDocumentを返す。
             return xmlDoc;
@@ -118,7 +118,7 @@ namespace Touryo.Infrastructure.Public.Security.Xml
             xmlDoc.LoadXml(signedXmlString);
 
             // 子ノード のXML検証
-            XmlNode targetNode = XmlLib.GetTargetXmlNode(xmlDoc, referenceId);
+            XmlNode targetNode = XmlLib.GetXmlNodeById(xmlDoc, referenceId);
 
             // 署名ノードの直下のSignatureを取り出して、signedXml.LoadXmlする。
             SignedXml signedXml = new SignedXml(targetNode.OwnerDocument);
