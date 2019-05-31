@@ -381,7 +381,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             #region エンコーディング
 
             // エンコーディング オブジェクトの取得
-            Encoding enc = StringExtractor.GetEncodingFromXmlDeclaration(saml);
+            Encoding enc = XmlLib.GetEncodingFromXmlDeclaration(saml);
 
             // XML → XML宣言のエンコーディング → DEFLATE圧縮 → Base64エンコード → URLエンコード
             saml = CustomEncode.UrlEncode(CustomEncode.ToBase64String(
@@ -424,7 +424,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public static string EncodeAndSignPost(string saml, string referenceId = "", RSA rsa = null)
         {
             // エンコーディング オブジェクトの取得
-            Encoding enc = StringExtractor.GetEncodingFromXmlDeclaration(saml);
+            Encoding enc = XmlLib.GetEncodingFromXmlDeclaration(saml);
 
             if (rsa == null)
             {
@@ -477,7 +477,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string tempString = CustomEncode.ByteToString(tempByte, CustomEncode.us_ascii);
 
             // エンコーディング オブジェクトの取得
-            Encoding enc = StringExtractor.GetEncodingFromXmlDeclaration(tempString);
+            Encoding enc = XmlLib.GetEncodingFromXmlDeclaration(tempString);
 
             return CustomEncode.ByteToString(tempByte, enc.CodePage);
         }
@@ -527,7 +527,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string tempString = CustomEncode.ByteToString(tempByte, CustomEncode.us_ascii);
 
             // エンコーディング オブジェクトの取得
-            Encoding enc = StringExtractor.GetEncodingFromXmlDeclaration(tempString);
+            Encoding enc = XmlLib.GetEncodingFromXmlDeclaration(tempString);
 
             return CustomEncode.ByteToString(tempByte, enc.CodePage);
         }
@@ -548,15 +548,85 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
-        #region VerifySamlByXmlSchema
-        /// <summary>Verify</summary>
+        #region Verify Schema
+
+        #region VerifySamlByXPath
+        /// <summary>VerifySamlByXPath</summary>
+        /// <param name="saml">string</param>
+        /// <param name="schema">SAML2Enum.SamlSchema</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>bool</returns>
+        public static bool VerifySamlByXPath(
+            XmlDocument saml, SAML2Enum.SamlSchema schema, XmlNamespaceManager samlNsMgr)
+        {
+            bool result = false;
+            XmlNodeList xmlNodeList = null;
+
+            switch (schema)
+            {
+                case SAML2Enum.SamlSchema.Request:
+                    xmlNodeList = saml.SelectNodes(
+                        SAML2Const.XPathSamlRequest, samlNsMgr);
+                    if (xmlNodeList != null && xmlNodeList.Count == 1)
+                    {
+                        xmlNodeList = saml.SelectNodes(
+                            SAML2Const.XPathIssuerInSamlRequest, samlNsMgr);
+                        if (xmlNodeList != null && xmlNodeList.Count == 1)
+                        {
+                            result = true;
+                        }
+                    }
+
+                    break;
+
+                case SAML2Enum.SamlSchema.Assertion:
+                    //...
+
+                    break;
+
+                case SAML2Enum.SamlSchema.Response:
+                    xmlNodeList = saml.SelectNodes(
+                        SAML2Const.XPathSamlResponse, samlNsMgr);
+                    if (xmlNodeList != null && xmlNodeList.Count == 1)
+                    {
+                        xmlNodeList = saml.SelectNodes(
+                            SAML2Const.XPathIssuerInSamlResponse, samlNsMgr);
+                        if (xmlNodeList != null && xmlNodeList.Count == 1)
+                        {
+                            xmlNodeList = saml.SelectNodes(
+                                SAML2Const.XPathStatusCodeInSamlResponse, samlNsMgr);
+                            if (xmlNodeList != null && xmlNodeList.Count == 1)
+                            {
+                                xmlNodeList = saml.SelectNodes(
+                                    SAML2Const.XPathAssertionInSamlResponse, samlNsMgr);
+                                if (xmlNodeList != null && xmlNodeList.Count == 1)
+                                {
+                                    result = true;
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region VerifySamlByXsd
+        /// <summary>VerifySamlByXsd</summary>
         /// <param name="saml">string</param>
         /// <param name="schema">SAML2Enum.SamlSchema</param>
         /// <returns>bool</returns>
-        public static bool VerifySamlByXmlSchema(string saml, SAML2Enum.SamlSchema schema)
+        private static bool VerifySamlByXsd(string saml, SAML2Enum.SamlSchema schema)
         {
             string embeddedXsdFileName = "";
             string targetNamespace = "";
+
+            // どうも、OASISのXSDではダメで、
+            // - https://docs.oasis-open.org/security/saml/v2.0/saml-schema-protocol-2.0.xsd
+            // - https://docs.oasis-open.org/security/saml/v2.0/saml-schema-assertion-2.0.xsd
+            // 個別にXSDを作成しないとダメっぽい。
 
             switch (schema)
             {
@@ -574,50 +644,231 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     break;
             }
 
+            // 以下の関数は適切に動作するが、XSDに問題がある。
             return XmlLib.ValidateByEmbeddedXsd(
                 "OpenTouryo.Framework", saml, embeddedXsdFileName, targetNamespace);
         }
 
         #endregion
 
-        #region 各種操作
-        /// <summary>GetIssuer</summary>
-        /// <param name="xmlDoc">XmlDocument</param>
-        /// <returns>Issuer</returns>
-        public static string GetIssuer(XmlDocument xmlDoc)
-        {
-            XmlNodeList Issuers = xmlDoc.GetElementsByTagName("saml:Issuer");
+        #endregion
 
-            if (Issuers.Count != 0)
+        #region 各種操作
+
+        #region 値の取得用
+
+        #region SamlRequest
+        /// <summary>GetIssuerInSamlRequest</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>Issuer</returns>
+        public static string GetIssuerInSamlRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        {
+            XmlNodeList issuers = xmlDoc.SelectNodes(
+                SAML2Const.XPathIssuerInSamlRequest, samlNsMgr);
+
+            if (issuers.Count != 0)
             {
-                return Issuers[0].InnerText.Trim();
+                return issuers[0].InnerText.Trim();
             }
 
             return "";
         }
 
+        /// <summary>GetNameIDPolicyFormatInSamlRequest</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>NameIDPolicyFormat</returns>
+        public static string GetNameIDPolicyFormatInSamlRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        {
+            return XmlLib.GetAttributeByXPath(
+                xmlDoc, SAML2Const.XPathNameIDPolicyInSamlRequest, "Format", samlNsMgr);
+        }
+
+        /// <summary>GetProtocolBindingInAuthnRequest</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>ProtocolBinding</returns>
+        public static string GetProtocolBindingInSamlRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        {
+            return XmlLib.GetAttributeByXPath(
+                xmlDoc, SAML2Const.XPathSamlRequest, "ProtocolBinding", samlNsMgr);
+        }
+
+        /// <summary>GetAssertionConsumerServiceURLInSamlRequest</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>AssertionConsumerServiceURL</returns>
+        public static string GetAssertionConsumerServiceURLInSamlRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        {
+            return XmlLib.GetAttributeByXPath(
+                xmlDoc, SAML2Const.XPathSamlRequest, "AssertionConsumerServiceURL", samlNsMgr);
+        }
+        #endregion
+
+        #region SamlAssertion
+        /// <summary>GetIssuerInSamlAssertion</summary>
+        /// <param name="xmlNode">XmlNode</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>Issuer</returns>
+        public static string GetIssuerInSamlAssertion(XmlNode xmlNode, XmlNamespaceManager samlNsMgr)
+        {
+            XmlNodeList issuers = xmlNode.SelectNodes(
+                SAML2Const.XPathIssuerInSamlAssertion, samlNsMgr);
+
+            if (issuers.Count != 0)
+            {
+                return issuers[0].InnerText.Trim();
+            }
+
+            return "";
+        }
+
+        /// <summary>GetSubjectInSamlAssertion</summary>
+        /// <param name="xmlNode">XmlNode</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>Subject</returns>
+        public static XmlNode GetSubjectInSamlAssertion(XmlNode xmlNode, XmlNamespaceManager samlNsMgr)
+        {
+            XmlNodeList subject = xmlNode.SelectNodes(
+                SAML2Const.XPathSubjectInSamlAssertion, samlNsMgr);
+
+            if (subject.Count != 0)
+            {
+                return subject[0];
+            }
+
+            return null;
+        }
+
+        /// <summary>GetConditionsInSamlAssertion</summary>
+        /// <param name="xmlNode">XmlNode</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>Conditions</returns>
+        public static XmlNode GetConditionsInSamlAssertion(XmlNode xmlNode, XmlNamespaceManager samlNsMgr)
+        {
+            XmlNodeList conditions = xmlNode.SelectNodes(
+                SAML2Const.XPathConditionsInSamlAssertion, samlNsMgr);
+
+            if (conditions.Count != 0)
+            {
+                return conditions[0];
+            }
+
+            return null;
+        }
+
+        /// <summary>GetAuthnStatementInSamlAssertion</summary>
+        /// <param name="xmlNode">XmlNode</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>AuthnStatement</returns>
+        public static XmlNode GetAuthnStatementInSamlAssertion(XmlNode xmlNode, XmlNamespaceManager samlNsMgr)
+        {
+            XmlNodeList authnStatement = xmlNode.SelectNodes(
+                SAML2Const.XPathAuthnStatementInSamlAssertion, samlNsMgr);
+
+            if (authnStatement.Count != 0)
+            {
+                return authnStatement[0];
+            }
+
+            return null;
+        }
+        #endregion
+
+        #region SamlResponse
+        /// <summary>GetIssuerInResponse</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>Issuer</returns>
+        public static string GetIssuerInSamlResponse(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        {
+            XmlNodeList issuers = xmlDoc.SelectNodes(
+                SAML2Const.XPathIssuerInSamlResponse, samlNsMgr);
+
+            if (issuers.Count != 0)
+            {
+                return issuers[0].InnerText.Trim();
+            }
+
+            return "";
+        }
+
+        /// <summary>GetStatusCodeInSamlResponse</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>StatusCode</returns>
+        public static string GetStatusCodeInSamlResponse(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        {
+            return XmlLib.GetAttributeByXPath(
+                xmlDoc, SAML2Const.XPathStatusCodeInSamlResponse, "Value", samlNsMgr);
+        }
+
+        /// <summary>GetAssertionInSamlResponse</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>Assertion</returns>
+        public static XmlNode GetAssertionInSamlResponse(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        {
+            XmlNodeList assertion = xmlDoc.SelectNodes(
+                SAML2Const.XPathAssertionInSamlResponse, samlNsMgr);
+
+            if (assertion.Count != 0)
+            {
+                return assertion[0];
+            }
+
+            return null;
+        }
+        #endregion
+
+        #endregion
+
+        #region ID取得用
         /// <summary>GetIdInRequest</summary>
         /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Id</returns>
-        public static string GetIdInRequest(XmlDocument xmlDoc)
+        public static string GetIdInRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
-            return XmlLib.GetAttributeFromTag(xmlDoc, "samlp:AuthnRequest", "ID");
+            return XmlLib.GetAttributeByXPath(
+                xmlDoc, @"/samlp:AuthnRequest", "ID", samlNsMgr);
         }
 
         /// <summary>GetIdInAssertion</summary>
         /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Id</returns>
-        public static string GetIdInAssertion(XmlDocument xmlDoc)
+        public static string GetIdInAssertion(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
-            return XmlLib.GetAttributeFromTag(xmlDoc, "saml:Assertion", "ID");
+            return XmlLib.GetAttributeByXPath(
+                xmlDoc, @"/saml:Assertion", "ID", samlNsMgr);
         }
 
         /// <summary>GetIdInResponse</summary>
         /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Id</returns>
-        public static string GetIdInResponse(XmlDocument xmlDoc)
+        public static string GetIdInResponse(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
-            return XmlLib.GetAttributeFromTag(xmlDoc, "samlp:Response", "ID");
+            return XmlLib.GetAttributeByXPath(
+                xmlDoc, @"/samlp:Response", "ID", samlNsMgr);
+        }
+        #endregion
+
+        #endregion
+
+        #region Create Saml NamespaceManager
+        /// <summary>CreateSamlNamespaceManager</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <returns>XmlNamespaceManager</returns>
+        public static XmlNamespaceManager CreateSamlNamespaceManager(XmlDocument xmlDoc)
+        {
+            XmlNamespaceManager xmlnsManager = new XmlNamespaceManager(xmlDoc.NameTable);
+            xmlnsManager.AddNamespace("saml", "urn:oasis:names:tc:SAML:2.0:assertion");
+            xmlnsManager.AddNamespace("samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
+
+            return xmlnsManager;
         }
         #endregion 
     }

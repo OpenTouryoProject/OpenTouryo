@@ -34,8 +34,11 @@ using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Schema;
+using System.Text;
 
 using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Xml
 {
@@ -45,13 +48,40 @@ namespace Touryo.Infrastructure.Public.Xml
     {
         #region その他
 
-        /// <summary>GetAttributeFromTag</summary>
+        /// <summary>GetAttributeByXPath</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="xPath">string</param>
+        /// <param name="attrName">string</param>
+        /// <param name="xmlnsManager">XmlNamespaceManager</param>
+        /// <param name="index">string</param>
+        /// <returns>attr string</returns>
+        public static string GetAttributeByXPath(
+            XmlDocument xmlDoc, string xPath, string attrName,
+            XmlNamespaceManager xmlnsManager = null, int index = 0)
+        {
+            XmlNodeList xmlNodeList = xmlDoc.SelectNodes(xPath, xmlnsManager);
+
+            if (xmlNodeList.Count != 0)
+            {
+                if (xmlNodeList[0].Attributes != null)
+                {
+                    if (xmlNodeList[0].Attributes[attrName] != null)
+                    {
+                        return xmlNodeList[0].Attributes[attrName].Value;
+                    }
+                }
+            }
+
+            return "";
+        }
+
+        /// <summary>GetAttributeByTagName</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="tagName">string</param>
         /// <param name="attrName">string</param>
         /// <param name="index">string</param>
         /// <returns>attr string</returns>
-        public static string GetAttributeFromTag(XmlDocument xmlDoc, string tagName, string attrName, int index =0)
+        public static string GetAttributeByTagName(XmlDocument xmlDoc, string tagName, string attrName, int index = 0)
         {
             XmlNodeList xmlNodeList = xmlDoc.GetElementsByTagName(tagName);
 
@@ -103,6 +133,26 @@ namespace Touryo.Infrastructure.Public.Xml
 
             return targetNode;
         }
+
+        /// <summary>XML宣言のエンコーディングを返す</summary>
+        /// <param name="xmlDeclaration">string</param>
+        /// <returns>Encoding</returns>
+        public static Encoding GetEncodingFromXmlDeclaration(string xmlDeclaration)
+        {
+            try
+            {
+                // エンコーディング オブジェクトに変換
+                return Encoding.GetEncoding(
+                    StringExtractor.GetAttributeFromXml(xmlDeclaration, "encoding"));
+            }
+            catch (Exception)
+            {
+                // ここでエラーとなった場合、
+                throw new ArgumentException(String.Format(
+                    PublicExceptionMessage.XML_DECLARATION_ERROR, xmlDeclaration));
+            }
+        }
+
         #endregion
 
         #region XmlSchema

@@ -36,7 +36,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
     public class SAML2Const
     {
         #region Template
-        
+
+        // InnerTextに空白が混じる問題があり、
+        // 以下の様に要素内の改行は無くした。
+
         /// <summary>RequestTemplate</summary>
         /// <remarks>
         /// 以下はオプションで追加
@@ -48,12 +51,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             + "<samlp:AuthnRequest"
             + "  ID=\"{ID}\" IssueInstant=\"{IssueInstant}\""
             + "  Version=\"2.0\" xmlns:samlp=\"{UrnProtocol}\">"
-            + "  <saml:Issuer"
-            + "    xmlns:saml=\"{UrnAssertion}\">"
-            + "    {Issuer}"
-            + "  </saml:Issuer>"
-            + "  <samlp:NameIDPolicy"
-            + "    Format=\"{UrnNameIDFormat}\" />"
+            + "  <saml:Issuer xmlns:saml=\"{UrnAssertion}\">{Issuer}</saml:Issuer>"
+            + "  <samlp:NameIDPolicy Format=\"{UrnNameIDFormat}\" />"
             + "</samlp:AuthnRequest>";
 
         /// <summary>AssertionTemplate</summary>
@@ -64,12 +63,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             + "  Version=\"2.0\" xmlns:saml=\"{UrnAssertion}\">"
             + "  <saml:Issuer>{Issuer}</saml:Issuer>"
             + "  <saml:Subject>"
-            + "    <saml:NameID"
-            + "      Format=\"{UrnNameIDFormat}\">"
-            + "      {NameID}"
-            + "    </saml:NameID>"
-            + "    <saml:SubjectConfirmation"
-            + "      Method=\"{UrnMethod}\">"
+            + "    <saml:NameID Format=\"{UrnNameIDFormat}\">{NameID}</saml:NameID>"
+            + "    <saml:SubjectConfirmation Method=\"{UrnMethod}\">"
             + "      <saml:SubjectConfirmationData"
             + "        InResponseTo=\"{InResponseTo}\""
             + "        NotOnOrAfter=\"{NotOnOrAfter}\""
@@ -86,9 +81,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             + "  <saml:AuthnStatement"
             + "    AuthnInstant=\"{AuthnInstant}\">"
             + "    <saml:AuthnContext>"
-            + "      <saml:AuthnContextClassRef>"
-            + "        {UrnAuthnContextClassRef}"
-            + "      </saml:AuthnContextClassRef>"
+            + "      <saml:AuthnContextClassRef>{UrnAuthnContextClassRef}</saml:AuthnContextClassRef>"
             + "    </saml:AuthnContext>"
             + "  </saml:AuthnStatement>"
             + "</saml:Assertion>";
@@ -102,16 +95,58 @@ namespace Touryo.Infrastructure.Framework.Authentication
             + "  InResponseTo=\"{InResponseTo}\""
             + "  Destination=\"{Destination}\""
             + "  Version=\"2.0\" xmlns:samlp=\"{UrnProtocol}\"> "
-            + "  <saml:Issuer"
-            + "    xmlns=\"{UrnAssertion}\">"
-            + "    {Issuer}"
-            + "  </saml:Issuer>"
+            + "  <saml:Issuer xmlns=\"{UrnAssertion}\">{Issuer}</saml:Issuer>"
             + "  <samlp:Status>"
-            + "    <samlp:StatusCode"
-            + "      Value=\"{UrnStatusCode}\" />"
+            + "    <samlp:StatusCode Value=\"{UrnStatusCode}\" />"
             + "  </samlp:Status>"
-            + "  <Assertion>{Assertion}</Assertion>"
+            + "  <saml:Assertion>{Assertion}</saml:Assertion>"
             + "</samlp:Response>";
+
+        #endregion
+
+        #region XPath
+
+        #region SamlRequest
+        /// <summary>XPathSamlRequest</summary>
+        public const string XPathSamlRequest = @"/samlp:AuthnRequest";
+
+        /// <summary>XPathIssuerInSamlRequest</summary>
+        public const string XPathIssuerInSamlRequest = XPathSamlRequest + @"/saml:Issuer";
+
+        /// <summary>XPathNameIDPolicyInSamlRequest</summary>
+        public const string XPathNameIDPolicyInSamlRequest = XPathSamlRequest + @"/samlp:NameIDPolicy";
+        #endregion
+
+        #region SamlAssertion
+        /// <summary>XPathSamlAssertion</summary>
+        public const string XPathSamlAssertion = @"/saml:Assertion";
+
+        /// <summary>XPathIssuerInSamlAssertion</summary>
+        public const string XPathIssuerInSamlAssertion = XPathSamlAssertion + @"/saml:Issuer";
+
+        /// <summary>XPathSubjectInSamlAssertion</summary>
+        public const string XPathSubjectInSamlAssertion = XPathSamlAssertion + @"/saml:Subject";
+
+        /// <summary>XPathConditionsInSamlAssertion</summary>
+        public const string XPathConditionsInSamlAssertion = XPathSamlAssertion + @"/saml:Conditions";
+
+        /// <summary>XPathAuthnStatementInSamlAssertion</summary>
+        public const string XPathAuthnStatementInSamlAssertion = XPathSamlAssertion + @"/saml:AuthnStatement";
+        #endregion
+
+        #region SamlResponse
+        /// <summary>XPathSamlResponse</summary>
+        public const string XPathSamlResponse = @"/samlp:Response";
+
+        /// <summary>XPathIssuerInSamlResponse</summary>
+        public const string XPathIssuerInSamlResponse = XPathSamlResponse + @"/saml:Issuer";
+
+        /// <summary>XPathStatusCodeInSamlResponse</summary>
+        public const string XPathStatusCodeInSamlResponse = XPathSamlResponse + @"/samlp:Status/samlp:StatusCode";
+
+        /// <summary>XPathAssertionInSamlResponse</summary>
+        public const string XPathAssertionInSamlResponse = XPathSamlResponse + @"/saml:Assertion";
+        #endregion
 
         #endregion
 

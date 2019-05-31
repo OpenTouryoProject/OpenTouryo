@@ -44,6 +44,7 @@ using System.Text;
 using System.Reflection;
 
 using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Xml;
 using Touryo.Infrastructure.Public.Reflection;
 using Touryo.Infrastructure.Public.Util;
 
@@ -316,7 +317,7 @@ namespace Touryo.Infrastructure.Public.IO
                 sr.Close();
 
                 // エンコーディング オブジェクトの取得
-                Encoding enc = StringExtractor.GetEncodingFromXmlDeclaration(xmlDeclaration);
+                Encoding enc = XmlLib.GetEncodingFromXmlDeclaration(xmlDeclaration);
                 
                 // 指定のエンコーディングで再ロード
                 sr = new StreamReader(thisAssembly.GetManifestResourceStream(loadfileName), enc);

@@ -69,27 +69,16 @@ namespace Touryo.Infrastructure.Public.Str
             return retVal;
         }
 
-        /// <summary>XML宣言のエンコーディングを返す</summary>
-        /// <param name="xmlDeclaration">string</param>
+        /// <summary>XML文字列から最初に現れた任意の属性の属性値を返す</summary>
+        /// <param name="xml">string</param>
+        /// <param name="attrName">string</param>
         /// <returns>Encoding</returns>
-        public static Encoding GetEncodingFromXmlDeclaration(string xmlDeclaration)
+        public static string GetAttributeFromXml(string xml, string attrName)
         {
-            try
-            {
-                // エンコーディング文字列を取得し、
-                string searchString = "encoding=\"";
-                int start = xmlDeclaration.IndexOf(searchString, 0) + searchString.Length;
-                int end = xmlDeclaration.IndexOf('\"', start);
-
-                // エンコーディング オブジェクトに変換
-                return Encoding.GetEncoding(xmlDeclaration.Substring(start, end - start));
-            }
-            catch (Exception)
-            {
-                // ここでエラーとなった場合、
-                throw new ArgumentException(String.Format(
-                    PublicExceptionMessage.XML_DECLARATION_ERROR, xmlDeclaration));
-            }
+            string searchString = attrName + "=\"";
+            int start = xml.IndexOf(searchString, 0) + searchString.Length;
+            int end = xml.IndexOf('\"', start);
+            return xml.Substring(start, end - start);
         }
     }
 }
