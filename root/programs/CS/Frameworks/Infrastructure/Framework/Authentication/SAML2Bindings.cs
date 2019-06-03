@@ -136,6 +136,69 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return xmlDoc;
         }
 
+        /// <summary>CreateResponse</summary>
+        /// <param name="issuer">string</param>
+        /// <param name="destination">string</param>
+        /// <param name="urnStatusCode">SAML2Enum.StatusCode</param>
+        /// <param name="id">string</param>
+        /// <returns>SAMLResponse</returns>
+        public static XmlDocument CreateResponse(
+            string issuer, string destination,
+            SAML2Enum.StatusCode urnStatusCode, out string id)
+        {
+            // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
+            id = "s2" + Guid.NewGuid().ToString("N");
+            string xmlString = SAML2Const.ResponseTemplate;
+
+            #region enum 2 string
+            string urnStatusCodeString = "";
+            switch (urnStatusCode)
+            {
+                case SAML2Enum.StatusCode.Success:
+                    urnStatusCodeString = SAML2Const.UrnStatusCodeSuccess;
+                    break;
+                case SAML2Enum.StatusCode.Requester:
+                    urnStatusCodeString = SAML2Const.UrnStatusCodeRequester;
+                    break;
+                case SAML2Enum.StatusCode.Responder:
+                    urnStatusCodeString = SAML2Const.UrnStatusCodeResponder;
+                    break;
+                case SAML2Enum.StatusCode.AuthnFailed:
+                    urnStatusCodeString = SAML2Const.UrnStatusCodeAuthnFailed;
+                    break;
+                case SAML2Enum.StatusCode.UnknownPrincipal:
+                    urnStatusCodeString = SAML2Const.UrnStatusCodeUnknownPrincipal;
+                    break;
+                case SAML2Enum.StatusCode.VersionMismatch:
+                    urnStatusCodeString = SAML2Const.UrnStatusCodeVersionMismatch;
+                    break;
+            }
+            #endregion
+
+            #region Replace
+            // 共通
+            xmlString = xmlString.Replace("{ID}", id);
+            xmlString = xmlString.Replace("{IssueInstant}", DateTime.UtcNow.ToString("s") + "Z");
+            xmlString = xmlString.Replace("{Issuer}", issuer);
+
+            // Response固有
+            xmlString = xmlString.Replace("{Destination}", destination);
+            xmlString = xmlString.Replace("{UrnStatusCode}", urnStatusCodeString);
+            //xmlString = xmlString.Replace("{Assertion}", assertion);// inResponseToのタメ
+
+            // 固定値
+            xmlString = xmlString.Replace("{UrnProtocol}", SAML2Const.UrnProtocol);
+            xmlString = xmlString.Replace("{UrnAssertion}", SAML2Const.UrnAssertion);
+
+            // XmlDocument化
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.PreserveWhitespace = false;
+            xmlDoc.LoadXml(xmlString);
+            #endregion
+
+            return xmlDoc;
+        }
+
         /// <summary>CreateAssertion</summary>
         /// <param name="inResponseTo">string</param>
         /// <param name="issuer">string</param>
@@ -219,6 +282,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             xmlString = xmlString.Replace("{Audience}", recipient); // recipientのFQDNまでらしい
 
             // 固定値
+            xmlString = xmlString.Replace("{UrnProtocol}", SAML2Const.UrnProtocol);
             xmlString = xmlString.Replace("{UrnAssertion}", SAML2Const.UrnAssertion);
             xmlString = xmlString.Replace("{UrnMethod}", SAML2Const.UrnMethodBearer);
 
@@ -234,70 +298,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 SignedXml2 signedXml2 = new SignedXml2(rsa);
                 xmlDoc = signedXml2.Create(xmlDoc, id);
             }
-            #endregion
-
-            return xmlDoc;
-        }
-
-        /// <summary>CreateResponse</summary>
-        /// <param name="issuer">string</param>
-        /// <param name="destination">string</param>
-        /// <param name="assertion">string</param>
-        /// <param name="urnStatusCode">SAML2Enum.StatusCode</param>
-        /// <param name="id">string</param>
-        /// <returns>SAMLResponse</returns>
-        public static XmlDocument CreateResponse(
-            string issuer, string destination,
-            string assertion, SAML2Enum.StatusCode urnStatusCode, out string id)
-        {
-            // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
-            id = "s2" + Guid.NewGuid().ToString("N");
-            string xmlString = SAML2Const.ResponseTemplate;
-
-            #region enum 2 string
-            string urnStatusCodeString = "";
-            switch (urnStatusCode)
-            {
-                case SAML2Enum.StatusCode.Success:
-                    urnStatusCodeString = SAML2Const.UrnStatusCodeSuccess;
-                    break;
-                case SAML2Enum.StatusCode.Requester:
-                    urnStatusCodeString = SAML2Const.UrnStatusCodeRequester;
-                    break;
-                case SAML2Enum.StatusCode.Responder:
-                    urnStatusCodeString = SAML2Const.UrnStatusCodeResponder;
-                    break;
-                case SAML2Enum.StatusCode.AuthnFailed:
-                    urnStatusCodeString = SAML2Const.UrnStatusCodeAuthnFailed;
-                    break;
-                case SAML2Enum.StatusCode.UnknownPrincipal:
-                    urnStatusCodeString = SAML2Const.UrnStatusCodeUnknownPrincipal;
-                    break;
-                case SAML2Enum.StatusCode.VersionMismatch:
-                    urnStatusCodeString = SAML2Const.UrnStatusCodeVersionMismatch;
-                    break;
-            }
-            #endregion
-
-            #region Replace
-            // 共通
-            xmlString = xmlString.Replace("{ID}", id);
-            xmlString = xmlString.Replace("{IssueInstant}", DateTime.UtcNow.ToString("s") + "Z");
-            xmlString = xmlString.Replace("{Issuer}", issuer);
-
-            // Response固有
-            xmlString = xmlString.Replace("{Destination}", destination);
-            xmlString = xmlString.Replace("{UrnStatusCode}", urnStatusCodeString);
-            xmlString = xmlString.Replace("{Assertion}", assertion);
-
-            // 固定値
-            xmlString = xmlString.Replace("{UrnProtocol}", SAML2Const.UrnProtocol);
-            xmlString = xmlString.Replace("{UrnAssertion}", SAML2Const.UrnAssertion);
-
-            // XmlDocument化
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.PreserveWhitespace = false;
-            xmlDoc.LoadXml(xmlString);
             #endregion
 
             return xmlDoc;
@@ -550,13 +550,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region Verify Schema
 
-        #region VerifySamlByXPath
-        /// <summary>VerifySamlByXPath</summary>
+        #region VerifyByXPath
+        /// <summary>VerifyByXPath</summary>
         /// <param name="saml">string</param>
         /// <param name="schema">SAML2Enum.SamlSchema</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>bool</returns>
-        public static bool VerifySamlByXPath(
+        public static bool VerifyByXPath(
             XmlDocument saml, SAML2Enum.SamlSchema schema, XmlNamespaceManager samlNsMgr)
         {
             bool result = false;
@@ -566,11 +566,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
             {
                 case SAML2Enum.SamlSchema.Request:
                     xmlNodeList = saml.SelectNodes(
-                        SAML2Const.XPathSamlRequest, samlNsMgr);
+                        SAML2Const.XPathRequest, samlNsMgr);
                     if (xmlNodeList != null && xmlNodeList.Count == 1)
                     {
                         xmlNodeList = saml.SelectNodes(
-                            SAML2Const.XPathIssuerInSamlRequest, samlNsMgr);
+                            SAML2Const.XPathIssuerInRequest, samlNsMgr);
                         if (xmlNodeList != null && xmlNodeList.Count == 1)
                         {
                             result = true;
@@ -579,26 +579,21 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
                     break;
 
-                case SAML2Enum.SamlSchema.Assertion:
-                    //...
-
-                    break;
-
                 case SAML2Enum.SamlSchema.Response:
                     xmlNodeList = saml.SelectNodes(
-                        SAML2Const.XPathSamlResponse, samlNsMgr);
+                        SAML2Const.XPathResponse, samlNsMgr);
                     if (xmlNodeList != null && xmlNodeList.Count == 1)
                     {
                         xmlNodeList = saml.SelectNodes(
-                            SAML2Const.XPathIssuerInSamlResponse, samlNsMgr);
+                            SAML2Const.XPathIssuerInResponse, samlNsMgr);
                         if (xmlNodeList != null && xmlNodeList.Count == 1)
                         {
                             xmlNodeList = saml.SelectNodes(
-                                SAML2Const.XPathStatusCodeInSamlResponse, samlNsMgr);
+                                SAML2Const.XPathStatusCodeInResponse, samlNsMgr);
                             if (xmlNodeList != null && xmlNodeList.Count == 1)
                             {
                                 xmlNodeList = saml.SelectNodes(
-                                    SAML2Const.XPathAssertionInSamlResponse, samlNsMgr);
+                                    SAML2Const.XPathAssertionInResponse, samlNsMgr);
                                 if (xmlNodeList != null && xmlNodeList.Count == 1)
                                 {
                                     result = true;
@@ -607,18 +602,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
                         }
                     }
                     break;
+
+                case SAML2Enum.SamlSchema.Assertion:
+                    //...
+
+                    break;
             }
 
             return result;
         }
         #endregion
 
-        #region VerifySamlByXsd
-        /// <summary>VerifySamlByXsd</summary>
+        #region VerifyByXsd
+        /// <summary>VerifyByXsd</summary>
         /// <param name="saml">string</param>
         /// <param name="schema">SAML2Enum.SamlSchema</param>
         /// <returns>bool</returns>
-        private static bool VerifySamlByXsd(string saml, SAML2Enum.SamlSchema schema)
+        private static bool VerifyByXsd(string saml, SAML2Enum.SamlSchema schema)
         {
             string embeddedXsdFileName = "";
             string targetNamespace = "";
@@ -657,15 +657,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region 値の取得用
 
-        #region SamlRequest
-        /// <summary>GetIssuerInSamlRequest</summary>
+        #region Request
+        /// <summary>GetIssuerInRequest</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Issuer</returns>
-        public static string GetIssuerInSamlRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetIssuerInRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             XmlNodeList issuers = xmlDoc.SelectNodes(
-                SAML2Const.XPathIssuerInSamlRequest, samlNsMgr);
+                SAML2Const.XPathIssuerInRequest, samlNsMgr);
 
             if (issuers.Count != 0)
             {
@@ -675,46 +675,46 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return "";
         }
 
-        /// <summary>GetNameIDPolicyFormatInSamlRequest</summary>
+        /// <summary>GetNameIDPolicyFormatInRequest</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>NameIDPolicyFormat</returns>
-        public static string GetNameIDPolicyFormatInSamlRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetNameIDPolicyFormatInRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
-                xmlDoc, SAML2Const.XPathNameIDPolicyInSamlRequest, "Format", samlNsMgr);
+                xmlDoc, SAML2Const.XPathNameIDPolicyInRequest, "Format", samlNsMgr);
         }
 
-        /// <summary>GetProtocolBindingInAuthnRequest</summary>
+        /// <summary>GetProtocolBindingInRequest</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>ProtocolBinding</returns>
-        public static string GetProtocolBindingInSamlRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetProtocolBindingInRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
-                xmlDoc, SAML2Const.XPathSamlRequest, "ProtocolBinding", samlNsMgr);
+                xmlDoc, SAML2Const.XPathRequest, "ProtocolBinding", samlNsMgr);
         }
 
-        /// <summary>GetAssertionConsumerServiceURLInSamlRequest</summary>
+        /// <summary>GetAssertionConsumerServiceURLInRequest</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>AssertionConsumerServiceURL</returns>
-        public static string GetAssertionConsumerServiceURLInSamlRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetAssertionConsumerServiceURLInRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
-                xmlDoc, SAML2Const.XPathSamlRequest, "AssertionConsumerServiceURL", samlNsMgr);
+                xmlDoc, SAML2Const.XPathRequest, "AssertionConsumerServiceURL", samlNsMgr);
         }
         #endregion
 
         #region SamlAssertion
-        /// <summary>GetIssuerInSamlAssertion</summary>
+        /// <summary>GetIssuerInAssertion</summary>
         /// <param name="xmlNode">XmlNode</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Issuer</returns>
         public static string GetIssuerInSamlAssertion(XmlNode xmlNode, XmlNamespaceManager samlNsMgr)
         {
             XmlNodeList issuers = xmlNode.SelectNodes(
-                SAML2Const.XPathIssuerInSamlAssertion, samlNsMgr);
+                SAML2Const.XPathIssuerInAssertion, samlNsMgr);
 
             if (issuers.Count != 0)
             {
@@ -724,14 +724,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return "";
         }
 
-        /// <summary>GetSubjectInSamlAssertion</summary>
+        /// <summary>GetSubjectInAssertion</summary>
         /// <param name="xmlNode">XmlNode</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Subject</returns>
-        public static XmlNode GetSubjectInSamlAssertion(XmlNode xmlNode, XmlNamespaceManager samlNsMgr)
+        public static XmlNode GetSubjectInAssertion(XmlNode xmlNode, XmlNamespaceManager samlNsMgr)
         {
             XmlNodeList subject = xmlNode.SelectNodes(
-                SAML2Const.XPathSubjectInSamlAssertion, samlNsMgr);
+                SAML2Const.XPathSubjectInAssertion, samlNsMgr);
 
             if (subject.Count != 0)
             {
@@ -741,11 +741,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return null;
         }
 
-        /// <summary>GetConditionsInSamlAssertion</summary>
+        /// <summary>GetConditionsInAssertion</summary>
         /// <param name="xmlNode">XmlNode</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Conditions</returns>
-        public static XmlNode GetConditionsInSamlAssertion(XmlNode xmlNode, XmlNamespaceManager samlNsMgr)
+        public static XmlNode GetConditionsInAssertion(XmlNode xmlNode, XmlNamespaceManager samlNsMgr)
         {
             XmlNodeList conditions = xmlNode.SelectNodes(
                 SAML2Const.XPathConditionsInSamlAssertion, samlNsMgr);
@@ -758,14 +758,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return null;
         }
 
-        /// <summary>GetAuthnStatementInSamlAssertion</summary>
+        /// <summary>GetAuthnStatementInAssertion</summary>
         /// <param name="xmlNode">XmlNode</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>AuthnStatement</returns>
-        public static XmlNode GetAuthnStatementInSamlAssertion(XmlNode xmlNode, XmlNamespaceManager samlNsMgr)
+        public static XmlNode GetAuthnStatementInAssertion(XmlNode xmlNode, XmlNamespaceManager samlNsMgr)
         {
             XmlNodeList authnStatement = xmlNode.SelectNodes(
-                SAML2Const.XPathAuthnStatementInSamlAssertion, samlNsMgr);
+                SAML2Const.XPathAuthnStatementInAssertion, samlNsMgr);
 
             if (authnStatement.Count != 0)
             {
@@ -781,10 +781,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Issuer</returns>
-        public static string GetIssuerInSamlResponse(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetIssuerInResponse(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             XmlNodeList issuers = xmlDoc.SelectNodes(
-                SAML2Const.XPathIssuerInSamlResponse, samlNsMgr);
+                SAML2Const.XPathIssuerInResponse, samlNsMgr);
 
             if (issuers.Count != 0)
             {
@@ -794,24 +794,24 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return "";
         }
 
-        /// <summary>GetStatusCodeInSamlResponse</summary>
+        /// <summary>GetStatusCodeInResponse</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>StatusCode</returns>
-        public static string GetStatusCodeInSamlResponse(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetStatusCodeInResponse(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
-                xmlDoc, SAML2Const.XPathStatusCodeInSamlResponse, "Value", samlNsMgr);
+                xmlDoc, SAML2Const.XPathStatusCodeInResponse, "Value", samlNsMgr);
         }
 
-        /// <summary>GetAssertionInSamlResponse</summary>
+        /// <summary>GetAssertionInResponse</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Assertion</returns>
-        public static XmlNode GetAssertionInSamlResponse(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static XmlNode GetAssertionInResponse(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             XmlNodeList assertion = xmlDoc.SelectNodes(
-                SAML2Const.XPathAssertionInSamlResponse, samlNsMgr);
+                SAML2Const.XPathAssertionInResponse, samlNsMgr);
 
             if (assertion.Count != 0)
             {
@@ -856,13 +856,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         }
         #endregion
 
-        #endregion
-
-        #region Create Saml NamespaceManager
-        /// <summary>CreateSamlNamespaceManager</summary>
+        #region Create NamespaceManager
+        /// <summary>CreateNamespaceManager</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <returns>XmlNamespaceManager</returns>
-        public static XmlNamespaceManager CreateSamlNamespaceManager(XmlDocument xmlDoc)
+        public static XmlNamespaceManager CreateNamespaceManager(XmlDocument xmlDoc)
         {
             XmlNamespaceManager xmlnsManager = new XmlNamespaceManager(xmlDoc.NameTable);
             xmlnsManager.AddNamespace("saml", "urn:oasis:names:tc:SAML:2.0:assertion");
@@ -871,5 +869,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return xmlnsManager;
         }
         #endregion 
+
+        #endregion
     }
 }
