@@ -53,13 +53,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>CreateRequest</summary>
         /// <param name="issuer">string</param>
         /// <param name="protocolBinding">SAML2Enum.ProtocolBinding</param>
-        /// <param name="urnNameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
         /// <param name="assertionConsumerServiceURL">string</param>
         /// <param name="id">string</param>
         /// <returns>SAMLRequest</returns>
         public static XmlDocument CreateRequest(string issuer,
             SAML2Enum.ProtocolBinding protocolBinding,
-            SAML2Enum.NameIDFormat urnNameIDFormat,
+            SAML2Enum.NameIDFormat nameIDFormat,
             string assertionConsumerServiceURL, out string id)
         {
             // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
@@ -67,30 +67,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string xmlString = SAML2Const.RequestTemplate;
 
             #region enum 2 string
-            string protocolBindingString = "";
-            switch (protocolBinding)
-            {
-                case SAML2Enum.ProtocolBinding.HttpPost:
-                    protocolBindingString = SAML2Const.UrnBindingsPost;
-                    break;
-                case SAML2Enum.ProtocolBinding.HttpRedirect:
-                    protocolBindingString = SAML2Const.UrnBindingsRedirect;
-                    break;
-            }
-
-            string urnNameIDFormatString = "";
-            switch (urnNameIDFormat)
-            {
-                case SAML2Enum.NameIDFormat.unspecified:
-                    urnNameIDFormatString = SAML2Const.UrnNameIDFormatUnspecified;
-                    break;
-                case SAML2Enum.NameIDFormat.persistent:
-                    urnNameIDFormatString = SAML2Const.UrnNameIDFormatPersistent;
-                    break;
-                case SAML2Enum.NameIDFormat.transient:
-                    urnNameIDFormatString = SAML2Const.UrnNameIDFormatTransient;
-                    break;
-            }
+            string urnNameIDFormatString = SAML2Enum.EnumToString(nameIDFormat);
+            string protocolBindingString = SAML2Enum.EnumToString(protocolBinding);
             #endregion
 
             #region Replace
@@ -139,40 +117,19 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>CreateResponse</summary>
         /// <param name="issuer">string</param>
         /// <param name="destination">string</param>
-        /// <param name="urnStatusCode">SAML2Enum.StatusCode</param>
+        /// <param name="statusCode">SAML2Enum.StatusCode</param>
         /// <param name="id">string</param>
         /// <returns>SAMLResponse</returns>
         public static XmlDocument CreateResponse(
             string issuer, string destination,
-            SAML2Enum.StatusCode urnStatusCode, out string id)
+            SAML2Enum.StatusCode statusCode, out string id)
         {
             // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
             id = "s2" + Guid.NewGuid().ToString("N");
             string xmlString = SAML2Const.ResponseTemplate;
 
             #region enum 2 string
-            string urnStatusCodeString = "";
-            switch (urnStatusCode)
-            {
-                case SAML2Enum.StatusCode.Success:
-                    urnStatusCodeString = SAML2Const.UrnStatusCodeSuccess;
-                    break;
-                case SAML2Enum.StatusCode.Requester:
-                    urnStatusCodeString = SAML2Const.UrnStatusCodeRequester;
-                    break;
-                case SAML2Enum.StatusCode.Responder:
-                    urnStatusCodeString = SAML2Const.UrnStatusCodeResponder;
-                    break;
-                case SAML2Enum.StatusCode.AuthnFailed:
-                    urnStatusCodeString = SAML2Const.UrnStatusCodeAuthnFailed;
-                    break;
-                case SAML2Enum.StatusCode.UnknownPrincipal:
-                    urnStatusCodeString = SAML2Const.UrnStatusCodeUnknownPrincipal;
-                    break;
-                case SAML2Enum.StatusCode.VersionMismatch:
-                    urnStatusCodeString = SAML2Const.UrnStatusCodeVersionMismatch;
-                    break;
-            }
+            string urnStatusCodeString = SAML2Enum.EnumToString(statusCode);
             #endregion
 
             #region Replace
@@ -203,8 +160,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="inResponseTo">string</param>
         /// <param name="issuer">string</param>
         /// <param name="nameID">string</param>
-        /// <param name="urnNameIDFormat">SAML2Enum.NameIDFormat</param>
-        /// <param name="urnAuthnContextClassRef">SAML2Enum.AuthnContextClassRef</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="authnContextClassRef">SAML2Enum.AuthnContextClassRef</param>
         /// <param name="expiresFromSecond">double</param>
         /// <param name="recipient">string</param>
         /// <param name="id">string</param>
@@ -212,8 +169,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>SAMLAssertion</returns>
         public static XmlDocument CreateAssertion(
             string inResponseTo, string issuer, string nameID,
-            SAML2Enum.NameIDFormat urnNameIDFormat,
-            SAML2Enum.AuthnContextClassRef urnAuthnContextClassRef,
+            SAML2Enum.NameIDFormat nameIDFormat,
+            SAML2Enum.AuthnContextClassRef authnContextClassRef,
             double expiresFromSecond, string recipient,
             out string id, RSA rsa = null)
         {
@@ -222,39 +179,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string xmlString = SAML2Const.AssertionTemplate;
 
             #region enum 2 string
-            string urnNameIDFormatString = "";
-            switch (urnNameIDFormat)
-            {
-                case SAML2Enum.NameIDFormat.unspecified:
-                    urnNameIDFormatString = SAML2Const.UrnNameIDFormatUnspecified;
-                    break;
-                case SAML2Enum.NameIDFormat.persistent:
-                    urnNameIDFormatString = SAML2Const.UrnNameIDFormatPersistent;
-                    break;
-                case SAML2Enum.NameIDFormat.transient:
-                    urnNameIDFormatString = SAML2Const.UrnNameIDFormatTransient;
-                    break;
-            }
-
-            string urnAuthnContextClassRefString = "";
-            switch (urnAuthnContextClassRef)
-            {
-                case SAML2Enum.AuthnContextClassRef.unspecified:
-                    urnAuthnContextClassRefString = SAML2Const.UrnAuthnContextClassRefUnspecified;
-                    break;
-                case SAML2Enum.AuthnContextClassRef.Password:
-                    urnAuthnContextClassRefString = SAML2Const.UrnAuthnContextClassRefPassword;
-                    break;
-                case SAML2Enum.AuthnContextClassRef.PasswordProtectedTransport:
-                    urnAuthnContextClassRefString = SAML2Const.UrnAuthnContextClassRefPasswordProtectedTransport;
-                    break;
-                case SAML2Enum.AuthnContextClassRef.PreviousSession:
-                    urnAuthnContextClassRefString = SAML2Const.UrnAuthnContextClassRefPreviousSession;
-                    break;
-                case SAML2Enum.AuthnContextClassRef.X509:
-                    urnAuthnContextClassRefString = SAML2Const.UrnAuthnContextClassRefX509;
-                    break;
-            }
+            string urnNameIDFormatString = SAML2Enum.EnumToString(nameIDFormat);
+            string urnAuthnContextClassRefString = SAML2Enum.EnumToString(authnContextClassRef);
             #endregion
 
             #region Replace
@@ -631,16 +557,16 @@ namespace Touryo.Infrastructure.Framework.Authentication
             switch (schema)
             {
                 case SAML2Enum.SamlSchema.Request:
-                    embeddedXsdFileName = "Touryo.Infrastructure.Framework.Authentication.SamlSchemaProtocol2.xsd";
-                    targetNamespace = "urn:oasis:names:tc:SAML:2.0:protocol";
+                    embeddedXsdFileName = "XXXX.xsd";
+                    targetNamespace = "urn:oasis:names:tc:SAML:2.0:...";
                     break;
                 case SAML2Enum.SamlSchema.Assertion:
-                    embeddedXsdFileName = "Touryo.Infrastructure.Framework.Authentication.SamlSchemaAssertion2.xsd";
-                    targetNamespace = "urn:oasis:names:tc:SAML:2.0:assertion";
+                    embeddedXsdFileName = "XXXX.xsd";
+                    targetNamespace = "urn:oasis:names:tc:SAML:2.0:...";
                     break;
                 case SAML2Enum.SamlSchema.Response:
-                    embeddedXsdFileName = "Touryo.Infrastructure.Framework.Authentication.SamlSchemaProtocol2.xsd";
-                    targetNamespace = "urn:oasis:names:tc:SAML:2.0:protocol";
+                    embeddedXsdFileName = "XXXX.xsd";
+                    targetNamespace = "urn:oasis:names:tc:SAML:2.0:...";
                     break;
             }
 
