@@ -39,6 +39,7 @@
 //*  2014/06/12  Rituparna Biswas  Deleted the commented code in "AddZerosAfterDecimal" method
 //*  2017/01/13  西野 大介         ToUnixTime, FromUnixTimeメソッドを追加した。
 //*  2018/03/28  西野 大介         .NET Standard対応で、Microsoft.VisualBasicのサポート無し。
+//*  2019/06/04  西野 大介         To, FromSamlTimestampメソッドの追加
 //**********************************************************************************
 
 using System;
@@ -516,10 +517,34 @@ namespace Touryo.Infrastructure.Public.Str
 
         #region 時間
 
-        /// <summary>unix epochをDateTimeで表した定数</summary>
-        private readonly static DateTime _unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        // W3Cの日時フォーマット
+        // https://www.kanzaki.com/docs/html/dtf.html
+        // W3C-DTF（W3CDTF）には、次の6通りのフォーマットがある。
+        // (1) 年のみ
+        // YYYY（例：2001）
+        // (2) 年月
+        // YYYY-MM（例：2001-08）
+        // (3) 年月日
+        // YYYY-MM-DD（例：2001-08-02）
+        // (4) 年月日および時分
+        // YYYY-MM-DDThh:mmTZD（例：2001-08-02T10:45+09:00）
+        // (5) 年月日および時分秒
+        // YYYY-MM-DDThh:mm:ssTZD（例：2001-08-02T10:45:23+09:00）
+        // (6) 年月日および時分秒および小数部分
+        // YYYY-MM-DDThh:mm:ss.sTZD（例：2001-08-02T10:45:23.5+09:00）
+        // ＜解説＞
+        // - YMDがそれぞれ年月日、hmsがそれぞれ時分秒
+        // - 小数点以下の秒を表記する場合、桁数に制限はない。
+        // - TZDはタイムゾーンを示す部分
+        //   - 年月日と時分秒はアルファベットの T で区切りる。
+        //   - UTC（協定世界時＝グリニッジ標準時）
+        //     - UTCで表記している場合、Z を記述
+        //     - UTCとの時差を+09:00などと示す。
 
         #region UNIX時間
+
+        /// <summary>unix epochをDateTimeで表した定数</summary>
+        private readonly static DateTime _unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         /// <summary>DateTimeをUNIX時間に変換するメソッド</summary>
         /// <param name="dateTime">DateTime</param>
@@ -540,6 +565,27 @@ namespace Touryo.Infrastructure.Public.Str
         {
             // unix epochからunixTime秒だけ経過した時刻を求める
             return _unixEpoch.AddSeconds(unixTime);
+        }
+
+        #endregion
+
+        #region SAML時間
+
+        /// <summary>Saml Timestampに変換するメソッド</summary>
+        /// <param name="utc">DateTime</param>
+        /// <returns>Saml Timestamp</returns>
+        public static string ToSamlTimestamp(DateTime utc)
+        {
+            return utc.ToString("s") + "Z";
+        }
+
+        /// <summary>Saml Timestampから変換するメソッド</summary>
+        /// <param name="samlTimestamp">string</param>
+        /// <returns>DateTime</returns>
+        public static DateTime FromSamlTime(string samlTimestamp)
+        {
+            return DateTime.ParseExact(
+                samlTimestamp.Substring(0, samlTimestamp.Length - 1), "s", null);
         }
 
         #endregion

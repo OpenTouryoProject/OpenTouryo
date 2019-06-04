@@ -46,7 +46,7 @@ namespace Touryo.Infrastructure.Public.Xml
     /// <remarks>自由に利用できる。</remarks>
     public static class XmlLib
     {
-        #region その他
+        #region 検索
 
         /// <summary>GetAttributeByXPath</summary>
         /// <param name="xmlDoc">XmlDocument</param>
@@ -59,20 +59,8 @@ namespace Touryo.Infrastructure.Public.Xml
             XmlDocument xmlDoc, string xPath, string attrName,
             XmlNamespaceManager xmlnsManager = null, int index = 0)
         {
-            XmlNode xmlNode = xmlDoc.SelectSingleNode(xPath, xmlnsManager);
-
-            if (xmlNode != null)
-            {
-                if (xmlNode.Attributes != null)
-                {
-                    if (xmlNode.Attributes[attrName] != null)
-                    {
-                        return xmlNode.Attributes[attrName].Value;
-                    }
-                }
-            }
-
-            return "";
+            return XmlLib.GetAttributeFromXmlNode(
+                xmlDoc.SelectSingleNode(xPath, xmlnsManager), attrName, index);
         }
 
         /// <summary>GetAttributeByTagName</summary>
@@ -132,6 +120,30 @@ namespace Touryo.Infrastructure.Public.Xml
             }
 
             return targetNode;
+        }
+        #endregion
+
+        #region　値取得
+        /// <summary>GetAttributeFromXmlNode</summary>
+        /// <param name="xmlNode">XmlNode</param>
+        /// <param name="attrName">string</param>
+        /// <param name="index">int</param>
+        /// <returns>attrValue</returns>
+        public static string GetAttributeFromXmlNode(
+            XmlNode xmlNode, string attrName, int index = 0)
+        {
+            if (xmlNode != null)
+            {
+                if (xmlNode.Attributes != null)
+                {
+                    if (xmlNode.Attributes[attrName] != null)
+                    {
+                        return xmlNode.Attributes[attrName].Value;
+                    }
+                }
+            }
+
+            return "";
         }
 
         /// <summary>XML宣言のエンコーディングを返す</summary>

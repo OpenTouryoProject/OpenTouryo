@@ -31,10 +31,12 @@
 //*  2019/06/04  西野 大介         新規作成
 //**********************************************************************************
 
+using System;
 using System.Xml;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Security;
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -105,14 +107,42 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region VerifyResponse
 
-        public static bool VerifySamlResponse(
-            string queryString, string samlResponse, out string iss)
+        /// <summary>VerifyResponse</summary>
+        /// <param name="queryString">string</param>
+        /// <param name="samlResponse">string</param>
+        /// <param name="nameId">out string</param>
+        /// <param name="iss">out string</param>
+        /// <param name="aud">out string</param>
+        /// <param name="inResponseTo">out string</param>
+        /// <param name="recipient">out string</param>
+        /// <param name="notOnOrAfter">out DateTime</param>
+        /// <param name="statusCode">SAML2Enum.StatusCode</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="authnContextClassRef">SAML2Enum.AuthnContextClassRef</param>
+        /// <returns>bool</returns>
+        public static bool VerifyResponse(
+            string queryString, string samlResponse,
+            out string nameId, out string iss, out string aud,
+            out string inResponseTo, out string recipient, out DateTime? notOnOrAfter,
+            out SAML2Enum.StatusCode? statusCode, out SAML2Enum.NameIDFormat? nameIDFormat, 
+            out SAML2Enum.AuthnContextClassRef? authnContextClassRef)
         {
             bool verified = false;
 
-            string id = "";
+            nameId = "";
             iss = "";
+            aud = "";
 
+            inResponseTo = "";
+            recipient = "";
+            notOnOrAfter = null;
+
+            statusCode = null;
+            nameIDFormat = null;
+            authnContextClassRef = null;
+
+            #region 準備
+            // Decode
             string decodeSaml = "";
             if (!string.IsNullOrEmpty(queryString))
             {
@@ -134,11 +164,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             // XmlNamespaceManager
             XmlNamespaceManager samlNsMgr = SAML2Bindings.CreateNamespaceManager(samlResponse2);
+            #endregion
 
-            id = SAML2Bindings.GetIdInResponse(samlResponse2, samlNsMgr);
-            iss = SAML2Bindings.GetIssuerInResponse(samlResponse2, samlNsMgr);
-            
-
+            #region 検証
             // Metadata利用を検討
             DigitalSignX509 dsX509 = new DigitalSignX509(
                     OAuth2AndOIDCParams.RS256Cer, "", HashAlgorithmName.SHA1,
@@ -149,34 +177,151 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 // VerifyRedirect
                 if (SAML2Bindings.VerifyRedirect(queryString, dsX509))
                 {
-                    // XSDスキーマによる検証
-                    // https://developers.onelogin.com/saml/online-tools/validate/xml-against-xsd-schema
-                    // The XML is valid.
-
                     // XPathによる検証
                     verified = SAML2Bindings.VerifyByXPath(
                         samlResponse2, SAML2Enum.SamlSchema.Response, samlNsMgr);
-
-                    // 
-                    iss = SAML2Bindings.GetIssuerInAssertion(samlResponse2, samlNsMgr);
                 }
             }
             else
             {
                 // VerifyPost
+                string id = SAML2Bindings.GetIdInResponse(samlResponse2, samlNsMgr);
                 if (SAML2Bindings.VerifyPost(
                     decodeSaml, id, dsX509.X509Certificate.GetRSAPublicKey()))
                 {
-                    // XSDスキーマによる検証
-                    // https://developers.onelogin.com/saml/online-tools/validate/xml-against-xsd-schema
-                    // The XML is valid. (ただし、Signature要素は外す。
-
                     // XPathによる検証
                     verified = SAML2Bindings.VerifyByXPath(
                         samlResponse2, SAML2Enum.SamlSchema.Response, samlNsMgr);
+                }
+            }
+            #endregion
 
-                    // 
-                    iss = SAML2Bindings.GetIssuerInAssertion(samlResponse2, samlNsMgr);
+            // 値のチェック
+            if (verified)
+            {
+                string temp1 = "";
+                string temp2 = "";
+
+                // StatusCode
+                SAML2Enum.StringToEnum(
+                    SAML2Bindings.GetStatusCodeInResponse(
+                        samlResponse2, samlNsMgr), out statusCode);
+
+                if (statusCode == SAML2Enum.StatusCode.Success)
+                {
+                    // iss
+                    temp1 = SAML2Bindings.GetIssuerInResponse(samlResponse2, samlNsMgr);
+                    temp2 = SAML2Bindings.GetIssuerInAssertion(samlResponse2, samlNsMgr);
+
+                    if (temp1 == temp2)
+                    {
+                        iss = temp1;
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(temp1))
+                        {
+                            // temp2のみ値がある
+                            if (!string.IsNullOrEmpty(temp2)) iss = temp2;
+                        }
+                        else if (string.IsNullOrEmpty(temp2))
+                        {
+                            // temp1のみ値がある
+                            if (!string.IsNullOrEmpty(temp1)) iss = temp1;
+                        }
+                        else
+                        {
+                            // Assertionは使用できない。
+                            return false;
+                        } 
+                    }
+
+                    // NameID
+                    string format = "";
+                    SAML2Bindings.GetNameIDInAssertion(
+                        samlResponse2, samlNsMgr, out format, out nameId);
+                    SAML2Enum.StringToEnum(format, out nameIDFormat);
+
+                    // SubjectConfirmationData
+                    string _inResponseTo = "";
+                    string _notOnOrAfter = "";
+                    XmlNode subjectConfirmationData = 
+                        SAML2Bindings.GetSubjectConfirmationDataInAssertion(
+                            samlResponse2, samlNsMgr, out _inResponseTo, out _notOnOrAfter, out recipient);
+
+                    temp1 = _inResponseTo;
+                    temp2 = SAML2Bindings.GetInResponseToInResponse(samlResponse2, samlNsMgr);
+
+                    if (temp1 == temp2)
+                    {
+                        inResponseTo = temp1;
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(temp1))
+                        {
+                            // temp2のみ値がある
+                            if (!string.IsNullOrEmpty(temp2)) inResponseTo = temp2;
+                        }
+                        else if (string.IsNullOrEmpty(temp2))
+                        {
+                            // temp1のみ値がある
+                            if (!string.IsNullOrEmpty(temp1)) inResponseTo = temp1;
+                        }
+                        else
+                        {
+                            // Assertionは使用できない。
+                            return false;
+                        }
+                    }
+
+                    // Conditions
+
+                    // - aud
+                    aud = SAML2Bindings.GetAudienceInAssertion(samlResponse2, samlNsMgr);
+
+                    // - notOnOrAfter
+                    temp1 = _notOnOrAfter;
+                    temp2 = SAML2Bindings.GetConditionsNotOnOrAfterInAssertion(samlResponse2, samlNsMgr);
+                    DateTime time1 = DateTime.MinValue;
+                    DateTime time2 = DateTime.MinValue;
+
+                    if (temp1 == temp2)
+                    {
+                        // 等しい場合
+                        notOnOrAfter = FormatConverter.FromSamlTime(temp1);
+                    }
+                    else
+                    {
+                        // 等しくない場合
+                        time1 = FormatConverter.FromSamlTime(temp1);
+                        time2 = FormatConverter.FromSamlTime(temp2);
+
+                        // 短い値を使用
+                        if (time1.Ticks <= time2.Ticks)
+                        {
+                            notOnOrAfter = time1;
+                        }
+                        else
+                        {
+                            notOnOrAfter = time2;
+                        }
+                    }
+
+                    // 現在時刻と比較
+                    if (!(DateTime.UtcNow.Ticks <= notOnOrAfter.Value.Ticks))
+                    {
+                        return false; // Assertionは使用できない。
+                    }
+
+                    // AuthnContextClassRef
+                    SAML2Enum.StringToEnum(
+                        SAML2Bindings.GetAuthnContextClassRefInAssertion(
+                        samlResponse2, samlNsMgr), out authnContextClassRef);
+                }
+                else
+                {
+                    return false; // Assertionは使用できない。
                 }
             }
 

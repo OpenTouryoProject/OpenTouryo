@@ -76,7 +76,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // 共通
             xmlString = xmlString.Replace("{ID}", id);
             xmlString = xmlString.Replace("{Issuer}", issuer);
-            xmlString = xmlString.Replace("{IssueInstant}", DateTime.UtcNow.ToString("s") + "Z");
+            xmlString = xmlString.Replace("{IssueInstant}", FormatConverter.ToSamlTimestamp(DateTime.UtcNow));
 
             // ...
             xmlString = xmlString.Replace("{UrnNameIDFormat}", urnNameIDFormatString);
@@ -137,7 +137,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             #region Replace
             // 共通
             xmlString = xmlString.Replace("{ID}", id);
-            xmlString = xmlString.Replace("{IssueInstant}", DateTime.UtcNow.ToString("s") + "Z");
+            xmlString = xmlString.Replace("{IssueInstant}", FormatConverter.ToSamlTimestamp(DateTime.UtcNow));
             xmlString = xmlString.Replace("{Issuer}", issuer);
 
             // Response固有
@@ -198,12 +198,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
             xmlString = xmlString.Replace("{UrnAuthnContextClassRef}", urnAuthnContextClassRefString);
 
             // 時間関連
-            string utcNow = DateTime.UtcNow.ToString("s") + "Z";
+            string utcNow = FormatConverter.ToSamlTimestamp(DateTime.UtcNow);
             xmlString = xmlString.Replace("{IssueInstant}", utcNow);
             xmlString = xmlString.Replace("{AuthnInstant}", utcNow);
             xmlString = xmlString.Replace("{NotBefore}", utcNow);
 
-            string utcExpires = DateTime.UtcNow.AddSeconds(expiresFromSecond).ToString("s") + "Z";
+            string utcExpires = FormatConverter.ToSamlTimestamp(DateTime.UtcNow.AddSeconds(expiresFromSecond));
             xmlString = xmlString.Replace("{NotOnOrAfter}", utcExpires);
 
             // SP関連
@@ -587,8 +587,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
                 //case SAML2Enum.SamlSchema.Assertion:
                 //    //...
-
-                    break;
+                //    break;
             }
 
             return result;
@@ -646,7 +645,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Issuer</returns>
-        public static string GetIssuerInRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetIssuerInRequest(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             XmlNode iss = xmlDoc.SelectSingleNode(
                 SAML2Const.XPathIssuerInRequest, samlNsMgr);
@@ -665,7 +665,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>NameIDPolicy - Format</returns>
-        public static string GetNameIDPolicyFormatInRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetNameIDPolicyFormatInRequest(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
                 xmlDoc, SAML2Const.XPathNameIDPolicyInRequest, "Format", samlNsMgr);
@@ -675,7 +676,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>ProtocolBinding</returns>
-        public static string GetProtocolBindingInRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetProtocolBindingInRequest(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
                 xmlDoc, SAML2Const.XPathRequest, "ProtocolBinding", samlNsMgr);
@@ -685,7 +687,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>AssertionConsumerServiceURL</returns>
-        public static string GetAssertionConsumerServiceURLInRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetAssertionConsumerServiceURLInRequest(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
                 xmlDoc, SAML2Const.XPathRequest, "AssertionConsumerServiceURL", samlNsMgr);
@@ -693,11 +696,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #endregion
 
         #region Response
+        /// <summary>GetInResponseToInResponse</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>InResponseTo</returns>
+        public static string GetInResponseToInResponse(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        {
+            return XmlLib.GetAttributeFromXmlNode(
+                xmlDoc.SelectSingleNode(SAML2Const.XPathResponse, samlNsMgr), "InResponseTo");
+        }
+
         /// <summary>GetIssuerInResponse</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Issuer</returns>
-        public static string GetIssuerInResponse(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetIssuerInResponse(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             XmlNode iss = xmlDoc.SelectSingleNode(
                 SAML2Const.XPathIssuerInResponse, samlNsMgr);
@@ -716,7 +731,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>StatusCode</returns>
-        public static string GetStatusCodeInResponse(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetStatusCodeInResponse(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
                 xmlDoc, SAML2Const.XPathStatusCodeInResponse, "Value", samlNsMgr);
@@ -728,7 +744,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Issuer</returns>
-        public static string GetIssuerInAssertion(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetIssuerInAssertion(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             XmlNode iss = xmlDoc.SelectSingleNode(
                 SAML2Const.XPathIssuerInAssertion, samlNsMgr);
@@ -744,34 +761,50 @@ namespace Touryo.Infrastructure.Framework.Authentication
         }
 
         #region Subject
-        /// <summary>GetNameIDFormatInAssertion</summary>
+        /// <summary>GetNameIDInAssertion</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
-        /// <returns>NameID - Format</returns>
-        public static string GetNameIDFormatInAssertion(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        /// <param name="format">out string</param>
+        /// <param name="innerText">out string</param>
+        /// <returns>NameID</returns>
+        public static XmlNode GetNameIDInAssertion(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr,
+            out string format, out string innerText)
         {
-            return XmlLib.GetAttributeByXPath(
-                xmlDoc, SAML2Const.XPathNameIDInAssertion, "Format", samlNsMgr);
+            format = "";
+            innerText = "";
+
+            XmlNode nameID = xmlDoc.SelectSingleNode(
+                SAML2Const.XPathNameIDInAssertion, samlNsMgr);
+
+            if (nameID != null)
+            {
+                format = XmlLib.GetAttributeFromXmlNode(nameID, "Format");
+                innerText = nameID.InnerText;
+            }
+
+            return nameID;
         }
 
         /// <summary>GetSubjectConfirmationMethodInAssertion</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>SubjectConfirmation - Method</returns>
-        public static string GetSubjectConfirmationMethodInAssertion(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetSubjectConfirmationMethodInAssertion(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
                 xmlDoc, SAML2Const.XPathSubjectConfirmationInAssertion, "Method", samlNsMgr);
         }
 
-        /// <summary>GetSubjectConfirmationDataAttrInAssertion</summary>
+        /// <summary>GetSubjectConfirmationDataInAssertion</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <param name="inResponseTo">out string</param>
         /// <param name="notOnOrAfter">out string</param>
         /// <param name="recipient">out string</param>
         /// <returns>SubjectConfirmationData</returns>
-        public static XmlNode GetSubjectConfirmationDataAttrInAssertion(
+        public static XmlNode GetSubjectConfirmationDataInAssertion(
             XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr,
             out string inResponseTo, out string notOnOrAfter, out string recipient)
         {
@@ -794,9 +827,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     notOnOrAfter = subjectConfirmationData.Attributes["NotOnOrAfter"].Value;
                 }
 
-                if (subjectConfirmationData.Attributes["recipient"] != null)
+                if (subjectConfirmationData.Attributes["Recipient"] != null)
                 {
-                    recipient = subjectConfirmationData.Attributes["recipient"].Value;
+                    recipient = subjectConfirmationData.Attributes["Recipient"].Value;
                 }
             }
 
@@ -809,17 +842,19 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Conditions - NotOnOrAfter</returns>
-        public static string GetConditionsNotOnOrAfterInAssertion(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetConditionsNotOnOrAfterInAssertion(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
                 xmlDoc, SAML2Const.XPathConditionsInAssertion, "NotOnOrAfter", samlNsMgr);
         }
 
-        /// <summary>GetAudienceInSamlAssertion</summary>
+        /// <summary>GetAudienceInAssertion</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Audience</returns>
-        public static string GetAudienceInSamlAssertion(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetAudienceInAssertion(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             XmlNode aud = xmlDoc.SelectSingleNode(
                 SAML2Const.XPathAudienceInAssertion, samlNsMgr);
@@ -836,14 +871,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #endregion
 
         #region AuthnStatement
-        /// <summary>GetAuthnContextClassRefInSamlAssertion</summary>
+        /// <summary>GetAuthnContextClassRefInAssertion</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>AuthnContextClassRef</returns>
-        public static string GetAuthnContextClassRefInSamlAssertion(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetAuthnContextClassRefInAssertion(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             XmlNode accr = xmlDoc.SelectSingleNode(
-                SAML2Const.XPathAudienceInAssertion, samlNsMgr);
+                SAML2Const.XPathAuthnContextClassRefInAssertion, samlNsMgr);
 
             if (accr == null)
             {
@@ -865,7 +901,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Id</returns>
-        public static string GetIdInRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetIdInRequest(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
                 xmlDoc, @"/samlp:AuthnRequest", "ID", samlNsMgr);
@@ -875,7 +912,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Id</returns>
-        public static string GetIdInAssertion(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetIdInAssertion(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
                 xmlDoc, @"/saml:Assertion", "ID", samlNsMgr);
@@ -885,7 +923,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Id</returns>
-        public static string GetIdInResponse(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        public static string GetIdInResponse(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
                 xmlDoc, @"/samlp:Response", "ID", samlNsMgr);
