@@ -59,15 +59,15 @@ namespace Touryo.Infrastructure.Public.Xml
             XmlDocument xmlDoc, string xPath, string attrName,
             XmlNamespaceManager xmlnsManager = null, int index = 0)
         {
-            XmlNodeList xmlNodeList = xmlDoc.SelectNodes(xPath, xmlnsManager);
+            XmlNode xmlNode = xmlDoc.SelectSingleNode(xPath, xmlnsManager);
 
-            if (xmlNodeList.Count != 0)
+            if (xmlNode != null)
             {
-                if (xmlNodeList[0].Attributes != null)
+                if (xmlNode.Attributes != null)
                 {
-                    if (xmlNodeList[0].Attributes[attrName] != null)
+                    if (xmlNode.Attributes[attrName] != null)
                     {
-                        return xmlNodeList[0].Attributes[attrName].Value;
+                        return xmlNode.Attributes[attrName].Value;
                     }
                 }
             }
@@ -112,9 +112,9 @@ namespace Touryo.Infrastructure.Public.Xml
             // ルート以下を検索
             XmlNode targetNode = xmlDoc.SelectSingleNode("//" + referenceId);
 
+            // ルートを検索（XML宣言 + ルートノード）
             if (targetNode == null)
-            {
-                // ルートを検索（XML宣言 + ルートノード）
+            {   
                 foreach (XmlNode tempNode in xmlDoc.ChildNodes)
                 {
                     if (tempNode.Attributes == null) continue; // XML宣言対策

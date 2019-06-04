@@ -71,7 +71,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             + "  <samlp:Status>"
             + "    <samlp:StatusCode Value=\"{UrnStatusCode}\" />"
             + "  </samlp:Status>"
-            + "  <saml:Assertion>{Assertion}</saml:Assertion>"
+            //+ "  <saml:Assertion>{Assertion}</saml:Assertion>"
             + "</samlp:Response>";
 
         /// <summary>AssertionTemplate</summary>
@@ -111,7 +111,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region XPath
 
-        #region SamlRequest
+        #region Request
         /// <summary>XPathRequest</summary>
         public const string XPathRequest = @"/samlp:AuthnRequest";
 
@@ -122,23 +122,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public const string XPathNameIDPolicyInRequest = XPathRequest + @"/samlp:NameIDPolicy";
         #endregion
 
-        #region Assertion
-        /// <summary>XPathAssertion</summary>
-        public const string XPathAssertion = @"/saml:Assertion";
-
-        /// <summary>XPathIssuerInAssertion</summary>
-        public const string XPathIssuerInAssertion = XPathAssertion + @"/saml:Issuer";
-
-        /// <summary>XPathSubjectInAssertion</summary>
-        public const string XPathSubjectInAssertion = XPathAssertion + @"/saml:Subject";
-
-        /// <summary>XPathConditionsInAssertion</summary>
-        public const string XPathConditionsInSamlAssertion = XPathAssertion + @"/saml:Conditions";
-
-        /// <summary>XPathAuthnStatementInAssertion</summary>
-        public const string XPathAuthnStatementInAssertion = XPathAssertion + @"/saml:AuthnStatement";
-        #endregion
-
         #region Response
         /// <summary>XPathResponse</summary>
         public const string XPathResponse = @"/samlp:Response";
@@ -146,11 +129,47 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>XPathIssuerInResponse</summary>
         public const string XPathIssuerInResponse = XPathResponse + @"/saml:Issuer";
 
-        /// <summary>XPathStatusCodeInSamlResponse</summary>
+        /// <summary>XPathStatusCodeInResponse</summary>
         public const string XPathStatusCodeInResponse = XPathResponse + @"/samlp:Status/samlp:StatusCode";
 
         /// <summary>XPathAssertionInResponse</summary>
         public const string XPathAssertionInResponse = XPathResponse + @"/saml:Assertion";
+        #endregion
+
+        #region Assertion
+        
+        /// <summary>XPathIssuerInAssertion</summary>
+        public const string XPathIssuerInAssertion = XPathAssertionInResponse + @"/saml:Issuer";
+
+        #region Subject
+        /// <summary>XPathSubjectInAssertion</summary>
+        public const string XPathSubjectInAssertion = XPathAssertionInResponse + @"/saml:Subject";
+
+        /// <summary>XPathNameIDInAssertion</summary>
+        public const string XPathNameIDInAssertion = XPathSubjectInAssertion + @"/saml:NameID";
+
+        /// <summary>XPathSubjectConfirmationInAssertion</summary>
+        public const string XPathSubjectConfirmationInAssertion = XPathSubjectInAssertion + @"/saml:SubjectConfirmation";
+
+        /// <summary>XPathSubjectConfirmationDataInAssertion</summary>
+        public const string XPathSubjectConfirmationDataInAssertion = XPathSubjectConfirmationInAssertion + @"/saml:SubjectConfirmationData";
+        #endregion
+
+        #region Conditions
+        /// <summary>XPathConditionsInAssertion</summary>
+        public const string XPathConditionsInAssertion = XPathAssertionInResponse + @"/saml:Conditions";
+
+        /// <summary>XPathAudienceInAssertion</summary>
+        public const string XPathAudienceInAssertion =
+            XPathConditionsInAssertion + @"/saml:AudienceRestriction/saml:Audience";
+        #endregion
+
+        #region AuthnStatement
+        /// <summary>XPathAuthnContextClassRefInAssertion</summary>
+        public const string XPathAuthnContextClassRefInAssertion = 
+            XPathAssertionInResponse + @"/saml:AuthnStatement/saml:AuthnContext/saml:AuthnContextClassRef";
+        #endregion
+
         #endregion
 
         #endregion

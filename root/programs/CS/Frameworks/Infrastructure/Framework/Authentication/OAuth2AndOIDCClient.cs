@@ -200,7 +200,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="client_secret">string</param>
         /// <param name="scopes">string</param>
         /// <returns>結果のJSON文字列</returns>
-        public static async Task<string> ClientCredentialsGrantAsync(Uri tokenEndpointUri, string client_id, string client_secret, string scopes)
+        public static async Task<string> ClientCredentialsGrantAsync(
+            Uri tokenEndpointUri, string client_id, string client_secret, string scopes)
         {
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;

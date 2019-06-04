@@ -29,8 +29,9 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/05/21  西野 大介         新規作成
-//*  2019/05/29  西野 大介         CreateRequest, Responseでは署名しない。
-//*                                CreateAssertion, EncodeRedirect, Postで署名する。
+//*  2019/05/29  西野 大介         Create XMLでは署名しない。
+//*                                 Encode And Sign / Decode, Verifyで署名・検証する。
+//*  2019/06/04  西野 大介         スキーマ検証と属性抽出にはXPathを使用。
 //**********************************************************************************
 
 using System;
@@ -117,11 +118,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>CreateResponse</summary>
         /// <param name="issuer">string</param>
         /// <param name="destination">string</param>
+        /// <param name="inResponseTo">string</param>
         /// <param name="statusCode">SAML2Enum.StatusCode</param>
         /// <param name="id">string</param>
         /// <returns>SAMLResponse</returns>
         public static XmlDocument CreateResponse(
-            string issuer, string destination,
+            string issuer, string destination, string inResponseTo,
             SAML2Enum.StatusCode statusCode, out string id)
         {
             // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
@@ -140,8 +142,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             // Response固有
             xmlString = xmlString.Replace("{Destination}", destination);
+            xmlString = xmlString.Replace("{InResponseTo}", inResponseTo);
             xmlString = xmlString.Replace("{UrnStatusCode}", urnStatusCodeString);
-            //xmlString = xmlString.Replace("{Assertion}", assertion);// inResponseToのタメ
+
 
             // 固定値
             xmlString = xmlString.Replace("{UrnProtocol}", SAML2Const.UrnProtocol);
@@ -488,49 +491,102 @@ namespace Touryo.Infrastructure.Framework.Authentication
             bool result = false;
             XmlNodeList xmlNodeList = null;
 
+            // Nodeの全体構造を検証（属性はチェックしない）。
+            // ※ なお、要素・属性取得時も、XPathで構造を指定している。
             switch (schema)
             {
                 case SAML2Enum.SamlSchema.Request:
+
+                    // Request
                     xmlNodeList = saml.SelectNodes(
                         SAML2Const.XPathRequest, samlNsMgr);
                     if (xmlNodeList != null && xmlNodeList.Count == 1)
                     {
+                        // Issuer
                         xmlNodeList = saml.SelectNodes(
                             SAML2Const.XPathIssuerInRequest, samlNsMgr);
                         if (xmlNodeList != null && xmlNodeList.Count == 1)
                         {
-                            result = true;
+                            // NameIDPolicy
+                            xmlNodeList = saml.SelectNodes(
+                                SAML2Const.XPathNameIDPolicyInRequest, samlNsMgr);
+                            if (xmlNodeList != null && xmlNodeList.Count == 1)
+                            {
+                                result = true;
+                            }
                         }
                     }
 
                     break;
 
                 case SAML2Enum.SamlSchema.Response:
+
+                    bool interimReport = false;
+                    // Response
                     xmlNodeList = saml.SelectNodes(
                         SAML2Const.XPathResponse, samlNsMgr);
                     if (xmlNodeList != null && xmlNodeList.Count == 1)
                     {
+                        // Issuer
                         xmlNodeList = saml.SelectNodes(
                             SAML2Const.XPathIssuerInResponse, samlNsMgr);
                         if (xmlNodeList != null && xmlNodeList.Count == 1)
                         {
+                            // Status
                             xmlNodeList = saml.SelectNodes(
                                 SAML2Const.XPathStatusCodeInResponse, samlNsMgr);
                             if (xmlNodeList != null && xmlNodeList.Count == 1)
                             {
+                                // Assertion
                                 xmlNodeList = saml.SelectNodes(
                                     SAML2Const.XPathAssertionInResponse, samlNsMgr);
                                 if (xmlNodeList != null && xmlNodeList.Count == 1)
                                 {
-                                    result = true;
+                                    interimReport = true;
+                                }
+                            }
+                        }
+                    }
+
+                    // Assertion
+                    if (interimReport)
+                    {
+                        // Issuer
+                        xmlNodeList = saml.SelectNodes(
+                            SAML2Const.XPathIssuerInAssertion, samlNsMgr);
+                        if (xmlNodeList != null && xmlNodeList.Count == 1)
+                        {
+                            // NameID
+                            xmlNodeList = saml.SelectNodes(
+                            SAML2Const.XPathNameIDInAssertion, samlNsMgr);
+                            if (xmlNodeList != null && xmlNodeList.Count == 1)
+                            {
+                                // SubjectConfirmationData
+                                xmlNodeList = saml.SelectNodes(
+                                    SAML2Const.XPathSubjectConfirmationDataInAssertion, samlNsMgr);
+                                if (xmlNodeList != null && xmlNodeList.Count == 1)
+                                {
+                                    // Audience
+                                    xmlNodeList = saml.SelectNodes(
+                                        SAML2Const.XPathAudienceInAssertion, samlNsMgr);
+                                    if (xmlNodeList != null && xmlNodeList.Count == 1)
+                                    {
+                                        // AuthnContextClassRef
+                                        xmlNodeList = saml.SelectNodes(
+                                        SAML2Const.XPathAuthnContextClassRefInAssertion, samlNsMgr);
+                                        if (xmlNodeList != null && xmlNodeList.Count == 1)
+                                        {
+                                            result = true;
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                     break;
 
-                case SAML2Enum.SamlSchema.Assertion:
-                    //...
+                //case SAML2Enum.SamlSchema.Assertion:
+                //    //...
 
                     break;
             }
@@ -560,17 +616,19 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     embeddedXsdFileName = "XXXX.xsd";
                     targetNamespace = "urn:oasis:names:tc:SAML:2.0:...";
                     break;
-                case SAML2Enum.SamlSchema.Assertion:
-                    embeddedXsdFileName = "XXXX.xsd";
-                    targetNamespace = "urn:oasis:names:tc:SAML:2.0:...";
-                    break;
+
                 case SAML2Enum.SamlSchema.Response:
                     embeddedXsdFileName = "XXXX.xsd";
                     targetNamespace = "urn:oasis:names:tc:SAML:2.0:...";
                     break;
+
+                //case SAML2Enum.SamlSchema.Assertion:
+                    //    embeddedXsdFileName = "XXXX.xsd";
+                    //    targetNamespace = "urn:oasis:names:tc:SAML:2.0:...";
+                    //    break;
             }
 
-            // 以下の関数は適切に動作するが、XSDに問題がある。
+            // 以下の関数は適切に動作するが、XSDに問題があるため動作しない。
             return XmlLib.ValidateByEmbeddedXsd(
                 "OpenTouryo.Framework", saml, embeddedXsdFileName, targetNamespace);
         }
@@ -590,21 +648,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>Issuer</returns>
         public static string GetIssuerInRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
-            XmlNodeList issuers = xmlDoc.SelectNodes(
+            XmlNode iss = xmlDoc.SelectSingleNode(
                 SAML2Const.XPathIssuerInRequest, samlNsMgr);
 
-            if (issuers.Count != 0)
+            if (iss == null)
             {
-                return issuers[0].InnerText.Trim();
+                return "";
             }
-
-            return "";
+            else
+            {
+                return iss.InnerText.Trim();
+            }
         }
 
         /// <summary>GetNameIDPolicyFormatInRequest</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
-        /// <returns>NameIDPolicyFormat</returns>
+        /// <returns>NameIDPolicy - Format</returns>
         public static string GetNameIDPolicyFormatInRequest(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
@@ -632,92 +692,24 @@ namespace Touryo.Infrastructure.Framework.Authentication
         }
         #endregion
 
-        #region SamlAssertion
-        /// <summary>GetIssuerInAssertion</summary>
-        /// <param name="xmlNode">XmlNode</param>
-        /// <param name="samlNsMgr">XmlNamespaceManager</param>
-        /// <returns>Issuer</returns>
-        public static string GetIssuerInSamlAssertion(XmlNode xmlNode, XmlNamespaceManager samlNsMgr)
-        {
-            XmlNodeList issuers = xmlNode.SelectNodes(
-                SAML2Const.XPathIssuerInAssertion, samlNsMgr);
-
-            if (issuers.Count != 0)
-            {
-                return issuers[0].InnerText.Trim();
-            }
-
-            return "";
-        }
-
-        /// <summary>GetSubjectInAssertion</summary>
-        /// <param name="xmlNode">XmlNode</param>
-        /// <param name="samlNsMgr">XmlNamespaceManager</param>
-        /// <returns>Subject</returns>
-        public static XmlNode GetSubjectInAssertion(XmlNode xmlNode, XmlNamespaceManager samlNsMgr)
-        {
-            XmlNodeList subject = xmlNode.SelectNodes(
-                SAML2Const.XPathSubjectInAssertion, samlNsMgr);
-
-            if (subject.Count != 0)
-            {
-                return subject[0];
-            }
-
-            return null;
-        }
-
-        /// <summary>GetConditionsInAssertion</summary>
-        /// <param name="xmlNode">XmlNode</param>
-        /// <param name="samlNsMgr">XmlNamespaceManager</param>
-        /// <returns>Conditions</returns>
-        public static XmlNode GetConditionsInAssertion(XmlNode xmlNode, XmlNamespaceManager samlNsMgr)
-        {
-            XmlNodeList conditions = xmlNode.SelectNodes(
-                SAML2Const.XPathConditionsInSamlAssertion, samlNsMgr);
-
-            if (conditions.Count != 0)
-            {
-                return conditions[0];
-            }
-
-            return null;
-        }
-
-        /// <summary>GetAuthnStatementInAssertion</summary>
-        /// <param name="xmlNode">XmlNode</param>
-        /// <param name="samlNsMgr">XmlNamespaceManager</param>
-        /// <returns>AuthnStatement</returns>
-        public static XmlNode GetAuthnStatementInAssertion(XmlNode xmlNode, XmlNamespaceManager samlNsMgr)
-        {
-            XmlNodeList authnStatement = xmlNode.SelectNodes(
-                SAML2Const.XPathAuthnStatementInAssertion, samlNsMgr);
-
-            if (authnStatement.Count != 0)
-            {
-                return authnStatement[0];
-            }
-
-            return null;
-        }
-        #endregion
-
-        #region SamlResponse
+        #region Response
         /// <summary>GetIssuerInResponse</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>Issuer</returns>
         public static string GetIssuerInResponse(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
-            XmlNodeList issuers = xmlDoc.SelectNodes(
+            XmlNode iss = xmlDoc.SelectSingleNode(
                 SAML2Const.XPathIssuerInResponse, samlNsMgr);
 
-            if (issuers.Count != 0)
+            if (iss == null)
             {
-                return issuers[0].InnerText.Trim();
+                return ""; 
             }
-
-            return "";
+            else
+            {
+                return iss.InnerText.Trim();
+            }
         }
 
         /// <summary>GetStatusCodeInResponse</summary>
@@ -729,23 +721,141 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return XmlLib.GetAttributeByXPath(
                 xmlDoc, SAML2Const.XPathStatusCodeInResponse, "Value", samlNsMgr);
         }
+        #endregion
 
-        /// <summary>GetAssertionInResponse</summary>
+        #region Assertion
+        /// <summary>GetIssuerInAssertion</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
-        /// <returns>Assertion</returns>
-        public static XmlNode GetAssertionInResponse(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        /// <returns>Issuer</returns>
+        public static string GetIssuerInAssertion(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
-            XmlNodeList assertion = xmlDoc.SelectNodes(
-                SAML2Const.XPathAssertionInResponse, samlNsMgr);
+            XmlNode iss = xmlDoc.SelectSingleNode(
+                SAML2Const.XPathIssuerInAssertion, samlNsMgr);
 
-            if (assertion.Count != 0)
+            if (iss == null)
             {
-                return assertion[0];
+                return "";
+            }
+            else
+            {
+                return iss.InnerText.Trim();
+            }
+        }
+
+        #region Subject
+        /// <summary>GetNameIDFormatInAssertion</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>NameID - Format</returns>
+        public static string GetNameIDFormatInAssertion(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        {
+            return XmlLib.GetAttributeByXPath(
+                xmlDoc, SAML2Const.XPathNameIDInAssertion, "Format", samlNsMgr);
+        }
+
+        /// <summary>GetSubjectConfirmationMethodInAssertion</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>SubjectConfirmation - Method</returns>
+        public static string GetSubjectConfirmationMethodInAssertion(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        {
+            return XmlLib.GetAttributeByXPath(
+                xmlDoc, SAML2Const.XPathSubjectConfirmationInAssertion, "Method", samlNsMgr);
+        }
+
+        /// <summary>GetSubjectConfirmationDataAttrInAssertion</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <param name="inResponseTo">out string</param>
+        /// <param name="notOnOrAfter">out string</param>
+        /// <param name="recipient">out string</param>
+        /// <returns>SubjectConfirmationData</returns>
+        public static XmlNode GetSubjectConfirmationDataAttrInAssertion(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr,
+            out string inResponseTo, out string notOnOrAfter, out string recipient)
+        {
+            XmlNode subjectConfirmationData  = xmlDoc.SelectSingleNode(
+                SAML2Const.XPathSubjectConfirmationDataInAssertion, samlNsMgr);
+
+            inResponseTo = "";
+            notOnOrAfter = "";
+            recipient = "";
+
+            if (subjectConfirmationData.Attributes != null)
+            {
+                if (subjectConfirmationData.Attributes["InResponseTo"] != null)
+                {
+                    inResponseTo = subjectConfirmationData.Attributes["InResponseTo"].Value;
+                }
+
+                if (subjectConfirmationData.Attributes["NotOnOrAfter"] != null)
+                {
+                    notOnOrAfter = subjectConfirmationData.Attributes["NotOnOrAfter"].Value;
+                }
+
+                if (subjectConfirmationData.Attributes["recipient"] != null)
+                {
+                    recipient = subjectConfirmationData.Attributes["recipient"].Value;
+                }
             }
 
-            return null;
+            return subjectConfirmationData;
         }
+        #endregion
+
+        #region Conditions
+        /// <summary>GetConditionsNotOnOrAfterInAssertion</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>Conditions - NotOnOrAfter</returns>
+        public static string GetConditionsNotOnOrAfterInAssertion(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        {
+            return XmlLib.GetAttributeByXPath(
+                xmlDoc, SAML2Const.XPathConditionsInAssertion, "NotOnOrAfter", samlNsMgr);
+        }
+
+        /// <summary>GetAudienceInSamlAssertion</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>Audience</returns>
+        public static string GetAudienceInSamlAssertion(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        {
+            XmlNode aud = xmlDoc.SelectSingleNode(
+                SAML2Const.XPathAudienceInAssertion, samlNsMgr);
+
+            if (aud == null)
+            {
+                return "";
+            }
+            else
+            {
+                return aud.InnerText.Trim();
+            }
+        }
+        #endregion
+
+        #region AuthnStatement
+        /// <summary>GetAuthnContextClassRefInSamlAssertion</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>AuthnContextClassRef</returns>
+        public static string GetAuthnContextClassRefInSamlAssertion(XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        {
+            XmlNode accr = xmlDoc.SelectSingleNode(
+                SAML2Const.XPathAudienceInAssertion, samlNsMgr);
+
+            if (accr == null)
+            {
+                return "";
+            }
+            else
+            {
+                return accr.InnerText.Trim();
+            }
+        }
+        #endregion
+
         #endregion
 
         #endregion

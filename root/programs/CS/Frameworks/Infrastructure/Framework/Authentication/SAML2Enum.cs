@@ -54,8 +54,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             /// <summary>Request</summary>
             Request,
 
-            /// <summary>Assertion</summary>
-            Assertion,
+            ///// <summary>Assertion</summary>
+            //Assertion,
 
             /// <summary>Response</summary>
             Response
