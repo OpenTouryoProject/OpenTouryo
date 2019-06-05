@@ -316,7 +316,7 @@ namespace DeployZipPackWithHTTP
                 Dictionary<string, string> argsDic;
 
                 // コマンドライン引数を取得する。
-                PubCmnFunction.GetCommandArgs('/', out argsDic, out valsLst);
+                StringVariableOperator.GetCommandArgs('/', out argsDic, out valsLst);
 
                 // ヘルプ
                 if (argsDic.ContainsKey("/HELP"))
@@ -828,7 +828,7 @@ namespace DeployZipPackWithHTTP
                         if (line.Substring(0, 3) == "ins")
                         {
                             // エントリに追加
-                            entry.InstallDir = PubCmnFunction.
+                            entry.InstallDir = StringVariableOperator.
                                 BuiltStringIntoEnvironmentVariable(line.Substring(4));
                         }
                         else
@@ -1943,7 +1943,7 @@ namespace DeployZipPackWithHTTP
             Program.DeleteZipContents(zipFile, history);
 
             // 環境変数に対応
-            string InsDir = PubCmnFunction.
+            string InsDir = StringVariableOperator.
                 BuiltStringIntoEnvironmentVariable(entry.InstallDir);
 
             // 解凍
@@ -1967,7 +1967,7 @@ namespace DeployZipPackWithHTTP
             // 解凍（１）デリゲートでフィルタ
             uz.ExtractFileFromZip(
                 Program.OrgCurrentDirectory + Program.TempZipFileName,
-                PubCmnFunction.BuiltStringIntoEnvironmentVariable(entry.InstallDir),
+                StringVariableOperator.BuiltStringIntoEnvironmentVariable(entry.InstallDir),
                 scd, exts, ExtractExistingFileAction.OverwriteSilently,
                 Encoding.GetEncoding(encStr), "");
 

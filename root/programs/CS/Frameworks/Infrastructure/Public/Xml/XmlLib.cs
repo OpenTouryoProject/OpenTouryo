@@ -207,7 +207,7 @@ namespace Touryo.Infrastructure.Public.Xml
                 {
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }

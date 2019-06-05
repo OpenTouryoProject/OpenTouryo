@@ -62,7 +62,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
         {   
             // DigitalSignX509
             DigitalSignX509 dsX509 = new DigitalSignX509(
-                OAuth2AndOIDCParams.RS256Pfx, OAuth2AndOIDCParams.RS256Pwd, HashAlgorithmName.SHA1,
+                OAuth2AndOIDCParams.RS256Pfx, OAuth2AndOIDCParams.RS256Pwd,
+#if NET45
+                HashNameConst.SHA1,
+#else
+                HashAlgorithmName.SHA1,
+#endif
                 X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
 
             // SamlRequestの生成
@@ -100,8 +105,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 assertionConsumerService, out id).OuterXml;
 
             // SamlRequestのエンコと署名
-            return SAML2Bindings.EncodeAndSignPost(
-                samlRequest, id, x509.GetRSAPrivateKey());
+            return SAML2Bindings.EncodeAndSignPost(samlRequest, id,
+#if NET45
+                (RSA)x509.PrivateKey);
+#else
+                x509.GetRSAPrivateKey());
+# endif
         }
         #endregion
 
@@ -119,29 +128,39 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="statusCode">SAML2Enum.StatusCode</param>
         /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
         /// <param name="authnContextClassRef">SAML2Enum.AuthnContextClassRef</param>
+        /// <param name="samlResponse2">XmlDocument</param>
         /// <returns>bool</returns>
         public static bool VerifyResponse(
             string queryString, string samlResponse,
             out string nameId, out string iss, out string aud,
             out string inResponseTo, out string recipient, out DateTime? notOnOrAfter,
-            out SAML2Enum.StatusCode? statusCode, out SAML2Enum.NameIDFormat? nameIDFormat, 
-            out SAML2Enum.AuthnContextClassRef? authnContextClassRef)
+            out SAML2Enum.StatusCode? statusCode,
+            out SAML2Enum.NameIDFormat? nameIDFormat, 
+            out SAML2Enum.AuthnContextClassRef? authnContextClassRef,
+            out XmlDocument samlResponse2)
         {
             bool verified = false;
 
+            // out string
             nameId = "";
             iss = "";
             aud = "";
 
             inResponseTo = "";
             recipient = "";
+
+            // out DateTime?
             notOnOrAfter = null;
 
+            // out SAML2Enum
             statusCode = null;
             nameIDFormat = null;
             authnContextClassRef = null;
 
-            #region 準備
+            // out XmlDocument
+            samlResponse2 = null;
+
+#region 準備
             // Decode
             string decodeSaml = "";
             if (!string.IsNullOrEmpty(queryString))
@@ -158,18 +177,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
 
             // XmlDocument
-            XmlDocument samlResponse2 = new XmlDocument();
+            samlResponse2 = new XmlDocument();
             samlResponse2.PreserveWhitespace = false;
             samlResponse2.LoadXml(decodeSaml);
 
             // XmlNamespaceManager
             XmlNamespaceManager samlNsMgr = SAML2Bindings.CreateNamespaceManager(samlResponse2);
-            #endregion
+#endregion
 
-            #region 検証
+#region 検証
             // Metadata利用を検討
             DigitalSignX509 dsX509 = new DigitalSignX509(
-                    OAuth2AndOIDCParams.RS256Cer, "", HashAlgorithmName.SHA1,
+                    OAuth2AndOIDCParams.RS256Cer, "",
+#if NET45
+                HashNameConst.SHA1,
+#else
+                HashAlgorithmName.SHA1,
+#endif
                     X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
 
             if (!string.IsNullOrEmpty(queryString))
@@ -186,15 +210,19 @@ namespace Touryo.Infrastructure.Framework.Authentication
             {
                 // VerifyPost
                 string id = SAML2Bindings.GetIdInResponse(samlResponse2, samlNsMgr);
-                if (SAML2Bindings.VerifyPost(
-                    decodeSaml, id, dsX509.X509Certificate.GetRSAPublicKey()))
+                if (SAML2Bindings.VerifyPost(decodeSaml, id,
+#if NET45
+                (RSA)dsX509.PublicKey))
+#else
+                dsX509.X509Certificate.GetRSAPublicKey()))
+#endif
                 {
                     // XPathによる検証
                     verified = SAML2Bindings.VerifyByXPath(
                         samlResponse2, SAML2Enum.SamlSchema.Response, samlNsMgr);
                 }
             }
-            #endregion
+#endregion
 
             // 値のチェック
             if (verified)
@@ -327,6 +355,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             return verified;
         }
-        #endregion
+#endregion
     }
 }
