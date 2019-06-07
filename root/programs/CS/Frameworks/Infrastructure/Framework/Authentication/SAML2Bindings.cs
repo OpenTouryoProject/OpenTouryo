@@ -285,8 +285,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
             XmlNode rootNode = xmlDoc.GetElementsByTagName("md:IDPSSODescriptor")[0];
             // NameIDFormat
             foreach (string text in urnNameIDFormatsString)
-            {   
-                xmlDoc.CreateNode(XmlNodeType.Element, "md:NameIDFormat", "");
+            {
+                newNode = xmlDoc.CreateNode(
+                    XmlNodeType.Element,
+                    "md", "NameIDFormat",
+                    SAML2Const.UrnMetadata);
+                // 空のxmlns属性 出力問題の抑止
+
                 newNode.InnerText = text;
                 rootNode.AppendChild(newNode);
             }

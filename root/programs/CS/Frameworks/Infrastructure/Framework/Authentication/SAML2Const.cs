@@ -126,10 +126,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
             //+ "    <md:NameIDFormat>{NameIDFormat}</md:NameIDFormat>"
             + "    <md:SingleSignOnService"
             + "      Binding=\"{SingleSignOnServiceRedirect}\""
-            + "      Location=\"{SingleSignOnServiceRedirectLocation}\">"
+            + "      Location=\"{SingleSignOnServiceRedirectLocation}\" />"
             + "    <md:SingleSignOnService"
             + "      Binding=\"{SingleSignOnServicePost}\""
-            + "      Location=\"{SingleSignOnServicePostLocation}\">"
+            + "      Location=\"{SingleSignOnServicePostLocation}\" />"
             + "  </md:IDPSSODescriptor>"
             + "</md:EntityDescriptor>";
         #endregion

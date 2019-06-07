@@ -52,7 +52,10 @@ namespace Touryo.Infrastructure.Public.Str
         {
             // MemoryStreamに書く
             MemoryStream memoryStream = new MemoryStream();
-            XmlWriter xmlWriter = XmlWriter.Create(memoryStream, xmlWriterSettings);
+
+            XmlWriter xmlWriter =
+                XmlWriter.Create(memoryStream, xmlWriterSettings);
+
             xmlDoc.Save(xmlWriter);
 
             // MemoryStreamから読む

@@ -135,9 +135,6 @@ namespace Touryo.Infrastructure.Public.Security
             /// <summary>Diffie-Hellmanのパラメタ</summary>
             DhParameters
         }
-        #endregion
-
-        #region method
 
         /// <summary>EnumToString</summary>
         public static string EnumToString(RFC7468Label label)
@@ -235,8 +232,11 @@ namespace Touryo.Infrastructure.Public.Security
 
             return _label;
         }
+        #endregion
 
-        /// <summary>GetX509FromPEM</summary>
+        #region method
+
+        /// <summary>GetX509FromPemFilePath</summary>
         /// <param name="pemFilePath">string</param>
         /// <param name="label">RFC7468Label</param>
         /// <returns>X509Certificate2</returns>
@@ -246,17 +246,33 @@ namespace Touryo.Infrastructure.Public.Security
 
             return new X509Certificate2(
                 PrivacyEnhancedMail.GetBytesFromPemString(
-                    pemFilePath, PrivacyEnhancedMail.EnumToString(label)));
+                    pemString, PrivacyEnhancedMail.EnumToString(label)));
         }
 
-        /// <summary>GetX509FromPEM</summary>
+        /// <summary>GetBase64StringFromPemFilePath</summary>
+        /// <param name="pemFilePath">string</param>
+        /// <param name="label">RFC7468Label</param>
+        /// <returns>Base64String</returns>
+        public static string GetBase64StringFromPemFilePath(string pemFilePath, RFC7468Label label)
+        {
+            string pemString = File.ReadAllText(pemFilePath);
+
+            return CustomEncode.ToBase64String(
+                PrivacyEnhancedMail.GetBytesFromPemString(
+                    pemString, PrivacyEnhancedMail.EnumToString(label)));
+        }
+
+        /// <summary>GetBytesFromPemString</summary>
         /// <param name="pemString">string</param>
         /// <param name="label">string</param>
-        /// <returns>X509Certificate2</returns>
+        /// <returns>Byte[]</returns>
         public static Byte[] GetBytesFromPemString(string pemString, string label)
         {
             string header = String.Format("-----BEGIN {0}-----", label);
             string footer = String.Format("-----END {0}-----", label);
+
+            if(string.IsNullOrEmpty(header)) return null;
+            if (string.IsNullOrEmpty(footer)) return null;
 
             int start = pemString.IndexOf(header, StringComparison.Ordinal);
             if (start < 0) return null;
