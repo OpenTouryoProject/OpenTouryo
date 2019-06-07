@@ -37,6 +37,7 @@
 using System;
 using System.Xml;
 using System.Text;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 
 using Touryo.Infrastructure.Public.IO;
@@ -73,23 +74,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
             #endregion
 
             #region Replace
-            // 共通
+            // 固定値
+            xmlString = xmlString.Replace("{UrnProtocol}", SAML2Const.UrnProtocol);
+            xmlString = xmlString.Replace("{UrnAssertion}", SAML2Const.UrnAssertion);
+
+            // 可変値
+            // - 共通
             xmlString = xmlString.Replace("{ID}", id);
             xmlString = xmlString.Replace("{Issuer}", issuer);
             xmlString = xmlString.Replace("{IssueInstant}", FormatConverter.ToSamlTimestamp(DateTime.UtcNow));
 
-            // ...
-            xmlString = xmlString.Replace("{UrnNameIDFormat}", urnNameIDFormatString);
-
-            // 固定値
-            xmlString = xmlString.Replace("{UrnProtocol}", SAML2Const.UrnProtocol);
-            xmlString = xmlString.Replace("{UrnAssertion}", SAML2Const.UrnAssertion);
+            // - ...
+            xmlString = xmlString.Replace("{UrnNameIDFormat}", urnNameIDFormatString);            
 
             // XmlDocument化
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.PreserveWhitespace = false;
             xmlDoc.LoadXml(xmlString);
-            
             #endregion
 
             #region Append
@@ -135,20 +136,20 @@ namespace Touryo.Infrastructure.Framework.Authentication
             #endregion
 
             #region Replace
-            // 共通
+            // 固定値
+            xmlString = xmlString.Replace("{UrnProtocol}", SAML2Const.UrnProtocol);
+            xmlString = xmlString.Replace("{UrnAssertion}", SAML2Const.UrnAssertion);
+
+            // 可変値
+            // - 共通
             xmlString = xmlString.Replace("{ID}", id);
             xmlString = xmlString.Replace("{IssueInstant}", FormatConverter.ToSamlTimestamp(DateTime.UtcNow));
             xmlString = xmlString.Replace("{Issuer}", issuer);
 
-            // Response固有
+            // - Response固有
             xmlString = xmlString.Replace("{Destination}", destination);
             xmlString = xmlString.Replace("{InResponseTo}", inResponseTo);
             xmlString = xmlString.Replace("{UrnStatusCode}", urnStatusCodeString);
-
-
-            // 固定値
-            xmlString = xmlString.Replace("{UrnProtocol}", SAML2Const.UrnProtocol);
-            xmlString = xmlString.Replace("{UrnAssertion}", SAML2Const.UrnAssertion);
 
             // XmlDocument化
             XmlDocument xmlDoc = new XmlDocument();
@@ -187,17 +188,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
             #endregion
 
             #region Replace
-            // ID
+            // 固定値
+            xmlString = xmlString.Replace("{UrnProtocol}", SAML2Const.UrnProtocol);
+            xmlString = xmlString.Replace("{UrnAssertion}", SAML2Const.UrnAssertion);
+            xmlString = xmlString.Replace("{UrnMethod}", SAML2Const.UrnMethodBearer);
+
+            // 可変値
+            // - ID
             xmlString = xmlString.Replace("{ID}", id);
             xmlString = xmlString.Replace("{InResponseTo}", inResponseTo);
             xmlString = xmlString.Replace("{Issuer}", issuer);
 
-            // 認証関連
+            // - 認証関連
             xmlString = xmlString.Replace("{NameID}", nameID);
             xmlString = xmlString.Replace("{UrnNameIDFormat}", urnNameIDFormatString);
             xmlString = xmlString.Replace("{UrnAuthnContextClassRef}", urnAuthnContextClassRefString);
 
-            // 時間関連
+            // - 時間関連
             string utcNow = FormatConverter.ToSamlTimestamp(DateTime.UtcNow);
             xmlString = xmlString.Replace("{IssueInstant}", utcNow);
             xmlString = xmlString.Replace("{AuthnInstant}", utcNow);
@@ -206,14 +213,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string utcExpires = FormatConverter.ToSamlTimestamp(DateTime.UtcNow.AddSeconds(expiresFromSecond));
             xmlString = xmlString.Replace("{NotOnOrAfter}", utcExpires);
 
-            // SP関連
+            // - SP関連
             xmlString = xmlString.Replace("{Recipient}", recipient);
             xmlString = xmlString.Replace("{Audience}", recipient); // recipientのFQDNまでらしい
-
-            // 固定値
-            xmlString = xmlString.Replace("{UrnProtocol}", SAML2Const.UrnProtocol);
-            xmlString = xmlString.Replace("{UrnAssertion}", SAML2Const.UrnAssertion);
-            xmlString = xmlString.Replace("{UrnMethod}", SAML2Const.UrnMethodBearer);
 
             // XmlDocument化
             XmlDocument xmlDoc = new XmlDocument();
@@ -226,6 +228,68 @@ namespace Touryo.Infrastructure.Framework.Authentication
             {
                 SignedXml2 signedXml2 = new SignedXml2(rsa);
                 xmlDoc = signedXml2.Create(xmlDoc, id);
+            }
+            #endregion
+
+            return xmlDoc;
+        }
+
+        /// <summary>CreateMetadata</summary>
+        /// <param name="entityID">string</param>
+        /// <param name="pemString">string</param>
+        /// <param name="nameIDFormats">SAML2Enum.NameIDFormat[]</param>
+        /// <param name="assertionConsumerServiceURL_Redirect">string</param>
+        /// <param name="assertionConsumerServiceURL_Post">string</param>
+        /// <returns>SAMLMetadata</returns>
+        public static XmlDocument CreateMetadata(
+            string entityID, string pemString,
+            SAML2Enum.NameIDFormat[] nameIDFormats,
+            string assertionConsumerServiceURL_Redirect,
+            string assertionConsumerServiceURL_Post)
+        {
+            // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
+            string xmlString = SAML2Const.MetadataTemplate;
+
+            #region enum 2 string
+            List<string> urnNameIDFormatsString = new List<string>();
+            foreach (SAML2Enum.NameIDFormat nameIDFormat in nameIDFormats)
+            {
+                urnNameIDFormatsString.Add(SAML2Enum.EnumToString(nameIDFormat));
+            }
+            #endregion
+
+            #region Replace
+            // 固定値
+            xmlString = xmlString.Replace("{UrnMetadata}", SAML2Const.UrnMetadata);
+            xmlString = xmlString.Replace("{UrnProtocolSupportEnumeration}", SAML2Const.UrnProtocol);
+            xmlString = xmlString.Replace("{SingleSignOnServiceRedirect}", SAML2Const.UrnBindingsRedirect);
+            xmlString = xmlString.Replace("{SingleSignOnServicePost}", SAML2Const.UrnBindingsPost);
+
+            // 可変値
+            xmlString = xmlString.Replace("{EntityID}", entityID);
+            xmlString = xmlString.Replace("{WantAuthnRequestsSigned}", "true");
+            xmlString = xmlString.Replace("{X509CertificatePemString}", pemString);
+            //xmlString = xmlString.Replace("{UrnNameIDFormat}", urnNameIDFormatString);
+            xmlString = xmlString.Replace("{SingleSignOnServiceRedirectLocation}", assertionConsumerServiceURL_Redirect);
+            xmlString = xmlString.Replace("{SingleSignOnServicePostLocation}", assertionConsumerServiceURL_Post);
+
+            // XmlDocument化
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.PreserveWhitespace = false;
+            xmlDoc.LoadXml(xmlString);
+
+            #endregion
+
+            #region Append
+            // 以下は可変要素
+            XmlNode newNode = null;
+            XmlNode rootNode = xmlDoc.GetElementsByTagName("md:IDPSSODescriptor")[0];
+            // NameIDFormat
+            foreach (string text in urnNameIDFormatsString)
+            {   
+                xmlDoc.CreateNode(XmlNodeType.Element, "md:NameIDFormat", "");
+                newNode.InnerText = text;
+                rootNode.AppendChild(newNode);
             }
             #endregion
 

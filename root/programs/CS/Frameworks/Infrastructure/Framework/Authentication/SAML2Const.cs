@@ -107,6 +107,31 @@ namespace Touryo.Infrastructure.Framework.Authentication
             + "  </saml:AuthnStatement>"
             + "</saml:Assertion>";
 
+        /// <summary>MetadataTemplate</summary>
+        public const string MetadataTemplate
+            = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            + "<md:EntityDescriptor"
+            + "  xmlns:md=\"{UrnMetadata}\""
+            + "  entityID=\"{EntityID}\">"
+            + "  <md:IDPSSODescriptor"
+            + "    WantAuthnRequestsSigned=\"{WantAuthnRequestsSigned}\""
+            + "    protocolSupportEnumeration=\"{UrnProtocolSupportEnumeration}\">"
+            + "    <md:KeyDescriptor use=\"signing\">"
+            + "      <ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">"
+            + "        <ds:X509Data>"
+            + "          <ds:X509Certificate>{X509CertificatePemString}</ds:X509Certificate>"
+            + "        </ds:X509Data>"
+            + "      </ds:KeyInfo>"
+            + "    </md:KeyDescriptor>"
+            //+ "    <md:NameIDFormat>{NameIDFormat}</md:NameIDFormat>"
+            + "    <md:SingleSignOnService"
+            + "      Binding=\"{SingleSignOnServiceRedirect}\""
+            + "      Location=\"{SingleSignOnServiceRedirectLocation}\">"
+            + "    <md:SingleSignOnService"
+            + "      Binding=\"{SingleSignOnServicePost}\""
+            + "      Location=\"{SingleSignOnServicePostLocation}\">"
+            + "  </md:IDPSSODescriptor>"
+            + "</md:EntityDescriptor>";
         #endregion
 
         #region XPath
@@ -198,6 +223,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>アサーションを意味する名前空間</summary>
         public const string UrnAssertion = UrnHeader20 + "assertion";
+
+        /// <summary>メタデータを意味する名前空間</summary>
+        public const string UrnMetadata = UrnHeader20 + "metadata";
+
         #endregion
 
         #region bindings
