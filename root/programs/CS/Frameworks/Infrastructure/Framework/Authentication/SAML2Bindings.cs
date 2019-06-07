@@ -238,16 +238,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="entityID">string</param>
         /// <param name="pemString">string</param>
         /// <param name="nameIDFormats">SAML2Enum.NameIDFormat[]</param>
-        /// <param name="assertionConsumerServiceURL_Redirect">string</param>
-        /// <param name="assertionConsumerServiceURL_Post">string</param>
+        /// <param name="saml2RequestEndpoint_Redirect">string</param>
+        /// <param name="saml2RequestEndpoint_Post">string</param>
         /// <returns>SAMLMetadata</returns>
         public static XmlDocument CreateMetadata(
             string entityID, string pemString,
             SAML2Enum.NameIDFormat[] nameIDFormats,
-            string assertionConsumerServiceURL_Redirect,
-            string assertionConsumerServiceURL_Post)
+            string saml2RequestEndpoint_Redirect,
+            string saml2RequestEndpoint_Post)
         {
-            // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
             string xmlString = SAML2Const.MetadataTemplate;
 
             #region enum 2 string
@@ -270,8 +269,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             xmlString = xmlString.Replace("{WantAuthnRequestsSigned}", "true");
             xmlString = xmlString.Replace("{X509CertificatePemString}", pemString);
             //xmlString = xmlString.Replace("{UrnNameIDFormat}", urnNameIDFormatString);
-            xmlString = xmlString.Replace("{SingleSignOnServiceRedirectLocation}", assertionConsumerServiceURL_Redirect);
-            xmlString = xmlString.Replace("{SingleSignOnServicePostLocation}", assertionConsumerServiceURL_Post);
+            xmlString = xmlString.Replace("{SingleSignOnServiceRedirectLocation}", saml2RequestEndpoint_Redirect);
+            xmlString = xmlString.Replace("{SingleSignOnServicePostLocation}", saml2RequestEndpoint_Post);
 
             // XmlDocument化
             XmlDocument xmlDoc = new XmlDocument();
