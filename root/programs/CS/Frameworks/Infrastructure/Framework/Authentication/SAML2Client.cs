@@ -62,7 +62,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         {   
             // DigitalSignX509
             DigitalSignX509 dsX509 = new DigitalSignX509(
-                OAuth2AndOIDCParams.RS256Pfx, OAuth2AndOIDCParams.RS256Pwd,
+                CmnClientParams.RsaPfx, CmnClientParams.RsaPwd,
 #if NET45
                 HashNameConst.SHA1,
 #else
@@ -96,8 +96,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         {
             // RSA
             X509Certificate2 x509 = new X509Certificate2(
-                OAuth2AndOIDCParams.RS256Pfx,
-                OAuth2AndOIDCParams.RS256Pwd);
+                CmnClientParams.RsaPfx, CmnClientParams.RsaPwd);
 
             // SamlRequestの生成
             string samlRequest = SAML2Bindings.CreateRequest(
@@ -188,13 +187,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
 #region 検証
             // Metadata利用を検討
             DigitalSignX509 dsX509 = new DigitalSignX509(
-                    OAuth2AndOIDCParams.RS256Cer, "",
+                CmnClientParams.RsaCer, "",
 #if NET45
                 HashNameConst.SHA1,
 #else
                 HashAlgorithmName.SHA1,
 #endif
-                    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+                X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
 
             if (!string.IsNullOrEmpty(queryString))
             {

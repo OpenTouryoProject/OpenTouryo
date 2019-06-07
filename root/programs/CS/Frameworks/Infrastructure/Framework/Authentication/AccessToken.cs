@@ -107,7 +107,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
 #endif
 
-                if (iss == OAuth2AndOIDCParams.Isser &&
+                if (iss == CmnClientParams.Isser &&
                     long.Parse(exp) >= unixTimeSeconds)
                 {
                     if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
