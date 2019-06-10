@@ -65,13 +65,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public enum NameIDFormat : int
         {
             /// <summary>unspecified</summary>
-            unspecified,
+            Unspecified,
 
             /// <summary>persistent</summary>
-            persistent,
+            Persistent,
 
             /// <summary>transient</summary>
-            transient
+            Transient
         }
 
         /// <summary>ProtocolBinding</summary>
@@ -88,7 +88,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public enum AuthnContextClassRef : int
         {
             /// <summary>unspecified</summary>
-            unspecified,
+            Unspecified,
 
             /// <summary>Password</summary>
             Password,
@@ -137,13 +137,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string ret = "";
             switch (nameIDFormat)
             {
-                case SAML2Enum.NameIDFormat.unspecified:
+                case SAML2Enum.NameIDFormat.Unspecified:
                     ret = SAML2Const.UrnNameIDFormatUnspecified;
                     break;
-                case SAML2Enum.NameIDFormat.persistent:
+                case SAML2Enum.NameIDFormat.Persistent:
                     ret = SAML2Const.UrnNameIDFormatPersistent;
                     break;
-                case SAML2Enum.NameIDFormat.transient:
+                case SAML2Enum.NameIDFormat.Transient:
                     ret = SAML2Const.UrnNameIDFormatTransient;
                     break;
             }
@@ -178,7 +178,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string ret = "";
             switch (authnContextClassRef)
             {
-                case SAML2Enum.AuthnContextClassRef.unspecified:
+                case SAML2Enum.AuthnContextClassRef.Unspecified:
                     ret = SAML2Const.UrnAuthnContextClassRefUnspecified;
                     break;
                 case SAML2Enum.AuthnContextClassRef.Password:
@@ -238,15 +238,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
         {
             if (str == SAML2Const.UrnNameIDFormatUnspecified)
             {
-                nameIDFormat = NameIDFormat.unspecified;
+                nameIDFormat = NameIDFormat.Unspecified;
             }
             else if (str == SAML2Const.UrnNameIDFormatPersistent)
             {
-                nameIDFormat = NameIDFormat.persistent;
+                nameIDFormat = NameIDFormat.Persistent;
             }
             else if (str == SAML2Const.UrnNameIDFormatTransient)
             {
-                nameIDFormat = NameIDFormat.transient;
+                nameIDFormat = NameIDFormat.Transient;
             }
             else
             {
@@ -280,7 +280,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         {
             if (str == SAML2Const.UrnAuthnContextClassRefUnspecified)
             {
-                authnContextClassRef = AuthnContextClassRef.unspecified;
+                authnContextClassRef = AuthnContextClassRef.Unspecified;
             }
             else if (str == SAML2Const.UrnAuthnContextClassRefPassword)
             {

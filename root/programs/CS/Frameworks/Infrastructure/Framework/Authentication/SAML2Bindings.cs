@@ -224,7 +224,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             #endregion
 
             #region Sign
-            if (!(rsa == null))
+            if (rsa != null)
             {
                 SignedXml2 signedXml2 = new SignedXml2(rsa);
                 xmlDoc = signedXml2.Create(xmlDoc, id);
@@ -377,12 +377,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             #region エンコーディング
 
-            // エンコーディング オブジェクトの取得
-            Encoding enc = XmlLib.GetEncodingFromXmlDeclaration(saml);
+            //// エンコーディング オブジェクトの取得
+            //Encoding enc = XmlLib.GetEncodingFromXmlDeclaration(saml);
 
-            // XML → XML宣言のエンコーディング → DEFLATE圧縮 → Base64エンコード → URLエンコード
+            // XML (→ XML宣言のエンコーディングではなく、asciiエンコーディングに変更)
+            // → DEFLATE圧縮 → Base64エンコード → URLエンコード
             saml = CustomEncode.UrlEncode(CustomEncode.ToBase64String(
-                DeflateCompression.Compress(CustomEncode.StringToByte(saml, enc.CodePage))));
+                DeflateCompression.Compress(CustomEncode.StringToByte(saml, CustomEncode.us_ascii))));
             #endregion
 
             #region 組込 & 署名
@@ -404,7 +405,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             {
                 // ASCIIエンコード → 署名 → Base64エンコード → URLエンコード →  Signatureパラメタ追加。
                 string signature = CustomEncode.UrlEncode(CustomEncode.ToBase64String(
-                    dsRSAwithSHA1.Sign(CustomEncode.StringToByte(queryString, CustomEncode.us_ascii))));
+                    dsRSAwithSHA1.Sign(CustomEncode.StringToByte(
+                    	queryString, CustomEncode.us_ascii)))); // enc.CodePage))));
 
                 queryString = queryString + "&Signature=" + signature;
             }
@@ -420,8 +422,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>RedirectPost用SAML文字列</returns>
         public static string EncodeAndSignPost(string saml, string referenceId = "", RSA rsa = null)
         {
-            // エンコーディング オブジェクトの取得
-            Encoding enc = XmlLib.GetEncodingFromXmlDeclaration(saml);
+            //// エンコーディング オブジェクトの取得
+            //Encoding enc = XmlLib.GetEncodingFromXmlDeclaration(saml);
 
             if (rsa == null)
             {
@@ -434,8 +436,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 saml = signedXml2.Create(saml, referenceId).OuterXml;
             }
 
-            // XML → XML宣言のエンコーディング → Base64エンコード
-            return CustomEncode.ToBase64String(CustomEncode.StringToByte(saml, enc.CodePage));
+            // XML (→ XML宣言のエンコーディングではなく、asciiエンコーディングに変更) → Base64エンコード
+            return CustomEncode.ToBase64String(CustomEncode.StringToByte(
+                saml, CustomEncode.us_ascii)); //enc.CodePage));
         }
         #endregion
 
@@ -470,13 +473,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
             byte[] tempByte = DeflateCompression.Decompress(
                 CustomEncode.FromBase64String(CustomEncode.UrlDecode(saml)));
 
-            // XML宣言部分を取得するために、us_asciiでデコード
-            string tempString = CustomEncode.ByteToString(tempByte, CustomEncode.us_ascii);
+            //// XML宣言部分を取得するために、us_asciiでデコード
+            //string tempString = CustomEncode.ByteToString(tempByte, CustomEncode.us_ascii);
 
-            // エンコーディング オブジェクトの取得
-            Encoding enc = XmlLib.GetEncodingFromXmlDeclaration(tempString);
+            //// エンコーディング オブジェクトの取得
+            //Encoding enc = XmlLib.GetEncodingFromXmlDeclaration(tempString);
 
-            return CustomEncode.ByteToString(tempByte, enc.CodePage);
+            return CustomEncode.ByteToString(tempByte, CustomEncode.us_ascii); // enc.CodePage);
         }
 
         /// <summary>VerifyRedirect</summary>
@@ -520,13 +523,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // Base64エンコード → XML宣言のエンコーディング → XML
             byte[] tempByte = CustomEncode.FromBase64String(saml);
 
-            // XML宣言部分を取得するために、us_asciiでデコード
-            string tempString = CustomEncode.ByteToString(tempByte, CustomEncode.us_ascii);
+            //// XML宣言部分を取得するために、us_asciiでデコード
+            //string tempString = CustomEncode.ByteToString(tempByte, CustomEncode.us_ascii);
 
-            // エンコーディング オブジェクトの取得
-            Encoding enc = XmlLib.GetEncodingFromXmlDeclaration(tempString);
+            //// エンコーディング オブジェクトの取得
+            //Encoding enc = XmlLib.GetEncodingFromXmlDeclaration(tempString);
 
-            return CustomEncode.ByteToString(tempByte, enc.CodePage);
+            return CustomEncode.ByteToString(tempByte, CustomEncode.us_ascii); // enc.CodePage);
         }
 
         /// <summary>DecodePost</summary>

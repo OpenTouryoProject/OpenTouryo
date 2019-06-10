@@ -83,14 +83,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 if (jweHeader.alg == JwtConst.RSA_OAEP)
                 {
                     jwe = new JWE_RsaOaepAesGcm_X509(
-                        CmnClientParams.RsaPfx,
-                        CmnClientParams.RsaPwd);
+                        CmnClientParams.RsaPfxFilePath,
+                        CmnClientParams.RsaPfxPassword);
                 }
                 else if (jweHeader.alg == JwtConst.RSA1_5)
                 {
                     jwe = new JWE_Rsa15A128CbcHS256_X509(
-                        CmnClientParams.RsaPfx,
-                        CmnClientParams.RsaPwd);
+                        CmnClientParams.RsaPfxFilePath,
+                        CmnClientParams.RsaPfxPassword);
                 }
                 else
                 {
@@ -125,12 +125,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
 #if NET45 || NET46
                     throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
 #else
-                    jws = new JWS_ES256_X509(CmnClientParams.EcdsaCer, "");
+                    jws = new JWS_ES256_X509(CmnClientParams.EcdsaCerFilePath, "");
 #endif
                 }
                 else
                 {
-                    jws = new JWS_RS256_X509(CmnClientParams.RsaCer, "");
+                    jws = new JWS_RS256_X509(CmnClientParams.RsaCerFilePath, "");
                 }
             }
             else
@@ -159,12 +159,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
 #if NET45 || NET46
                             throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
 #else
-                            jws = new JWS_ES256_X509(CmnClientParams.EcdsaCer, "");
+                            jws = new JWS_ES256_X509(CmnClientParams.EcdsaCerFilePath, "");
 #endif
                         }
                         else
                         {
-                            jws = new JWS_RS256_X509(CmnClientParams.RsaCer, "");
+                            jws = new JWS_RS256_X509(CmnClientParams.RsaCerFilePath, "");
                         }
                     }
                     else
@@ -204,12 +204,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
 #if NET45 || NET46
                             throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
 #else
-                            jws = new JWS_ES256_X509(CmnClientParams.EcdsaCer, "");
+                            jws = new JWS_ES256_X509(CmnClientParams.EcdsaCerFilePath, "");
 #endif
                         }
                         else
                         {
-                            jws = new JWS_RS256_X509(CmnClientParams.RsaCer, "");
+                            jws = new JWS_RS256_X509(CmnClientParams.RsaCerFilePath, "");
                         }
                     }
                     else

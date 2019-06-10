@@ -40,6 +40,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         // InnerTextに空白が混じる問題があり、
         // 以下の様に要素内の改行は無くした。
 
+        /// <summary>XML宣言(はMetadata以外には付与しないらしい</summary>
+        private const string XmlDeclaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+
         /// <summary>RequestTemplate</summary>
         /// <remarks>
         /// 以下はオプションで追加
@@ -47,8 +50,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// AssertionConsumerServiceURL属性
         /// </remarks>
         public const string RequestTemplate
-            = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-            + "<samlp:AuthnRequest"
+            //= SAML2Const.XmlDeclaration
+            = "<samlp:AuthnRequest"
             + "  Version=\"2.0\" ID=\"{ID}\""
             + "  IssueInstant=\"{IssueInstant}\""
             + "  xmlns:saml=\"{UrnAssertion}\""
@@ -59,8 +62,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>ResponseTemplate</summary>
         public const string ResponseTemplate
-            = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-            + "<samlp:Response"
+            //= SAML2Const.XmlDeclaration
+            = "<samlp:Response"
             + "  Version=\"2.0\" ID=\"{ID}\""
             + "  IssueInstant=\"{IssueInstant}\""
             + "  InResponseTo=\"{InResponseTo}\""
@@ -76,8 +79,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>AssertionTemplate</summary>
         public const string AssertionTemplate
-            = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-            + "<saml:Assertion"
+            //= SAML2Const.XmlDeclaration
+            = "<saml:Assertion"
             + "  Version=\"2.0\" ID=\"{ID}\""
             + "  IssueInstant=\"{IssueInstant}\""
             + "  xmlns:saml=\"{UrnAssertion}\""
@@ -109,7 +112,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>MetadataTemplate</summary>
         public const string MetadataTemplate
-            = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            = SAML2Const.XmlDeclaration
             + "<md:EntityDescriptor"
             + "  xmlns:md=\"{UrnMetadata}\""
             + "  entityID=\"{EntityID}\">"

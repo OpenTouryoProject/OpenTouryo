@@ -60,39 +60,39 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region 鍵関連
 
-        /// <summary>RsaCer</summary>
-        public static string RsaCer
+        /// <summary>RsaCerFilePath</summary>
+        public static string RsaCerFilePath
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("SpRp_RsaCer");
+                return GetConfigParameter.GetConfigValue("SpRp_RsaCerFilePath");
             }
         }
 
-        /// <summary>EcdsaCer</summary>
-        public static string EcdsaCer
+        /// <summary>EcdsaCerFilePath</summary>
+        public static string EcdsaCerFilePath
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("SpRp_EcdsaCer");
+                return GetConfigParameter.GetConfigValue("SpRp_EcdsaCerFilePath");
             }
         }
 
-        /// <summary>RsaPwd</summary>
-        public static string RsaPwd
+        /// <summary>RsaPfxPassword</summary>
+        public static string RsaPfxPassword
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("SpRp_RsaPwd");
+                return GetConfigParameter.GetConfigValue("SpRp_RsaPfxPassword");
             }
         }
 
-        /// <summary>RsaPfx</summary>
-        public static string RsaPfx
+        /// <summary>RsaPfxFilePath</summary>
+        public static string RsaPfxFilePath
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("SpRp_RsaPfx");
+                return GetConfigParameter.GetConfigValue("SpRp_RsaPfxFilePath");
             }
         }
 
