@@ -96,21 +96,21 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
-        /// <summary>ClientCertPwd</summary>
-        public static string ClientCertPwd
+        /// <summary>ClientCertPfxPassword</summary>
+        public static string ClientCertPfxPassword
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("SpRp_ClientCertPwd");
+                return GetConfigParameter.GetConfigValue("SpRp_ClientCertPfxPassword");
             }
         }
 
-        /// <summary>ClientCertPfx</summary>
-        public static string ClientCertPfx
+        /// <summary>ClientCertPfxFilePath</summary>
+        public static string ClientCertPfxFilePath
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("SpRp_ClientCertPfx");
+                return GetConfigParameter.GetConfigValue("SpRp_ClientCertPfxFilePath");
             }
         }
 
