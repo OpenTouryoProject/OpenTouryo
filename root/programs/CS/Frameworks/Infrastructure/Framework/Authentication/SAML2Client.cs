@@ -66,9 +66,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 #if NET45
                 HashNameConst.SHA1,
 #else
-                HashAlgorithmName.SHA1,
+                HashAlgorithmName.SHA1
 #endif
-                X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+                );
 
             // SamlRequestの生成
             
@@ -191,9 +191,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 #if NET45
                 HashNameConst.SHA1,
 #else
-                HashAlgorithmName.SHA1,
+                HashAlgorithmName.SHA1
 #endif
-                X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+                );
 
             if (!string.IsNullOrEmpty(queryString))
             {

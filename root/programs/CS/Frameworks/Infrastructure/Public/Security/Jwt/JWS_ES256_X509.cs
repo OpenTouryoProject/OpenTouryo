@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/01/28  西野 大介         新規作成
 //*  2019/01/29  西野 大介         リファクタリング（プロバイダ処理を末端に）
+//*  2019/06/12  西野 大介         constructorのX509KeyStorageFlagsの既定値を変更
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -53,14 +54,9 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <summary>Constructor</summary>
         /// <param name="certificateFilePath">DigitalSignECDsaX509に渡すcertificateFilePathパラメタ</param>
         /// <param name="password">DigitalSignECDsaX509に渡すpasswordパラメタ</param>
-        public JWS_ES256_X509(string certificateFilePath, string password)
-            : this(certificateFilePath, password, X509KeyStorageFlags.DefaultKeySet) { }
-
-        /// <summary>Constructor</summary>
-        /// <param name="certificateFilePath">DigitalSignECDsaX509に渡すcertificateFilePathパラメタ</param>
-        /// <param name="password">DigitalSignECDsaX509に渡すpasswordパラメタ</param>
         /// <param name="flag">X509KeyStorageFlags</param>
-        public JWS_ES256_X509(string certificateFilePath, string password, X509KeyStorageFlags flag)
+        public JWS_ES256_X509(string certificateFilePath, string password,
+            X509KeyStorageFlags flag = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet)
         {
             this.CertificateFilePath = certificateFilePath;
             this.CertificatePassword = password;

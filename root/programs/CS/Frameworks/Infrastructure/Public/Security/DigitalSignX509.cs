@@ -31,6 +31,7 @@
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //*  2018/11/07  西野 大介         DSA証明書のサポートを追加（4.7以上）
 //*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
+//*  2019/06/12  西野 大介         constructorのX509KeyStorageFlagsの既定値を変更
 //**********************************************************************************
 
 using System;
@@ -94,23 +95,10 @@ namespace Touryo.Infrastructure.Public.Security
         /// RSAの場合、以下からHashAlgorithm名を指定する。
         /// MD5, SHA1, SHA256, SHA384, SHA512
         /// </param>
-        public DigitalSignX509(string certificateFilePath, string password, string hashAlgorithmName) :
-            this(certificateFilePath, password, hashAlgorithmName, X509KeyStorageFlags.DefaultKeySet) { }
-
-        /// <summary>
-        /// Constructor
-        /// X.509証明書(*.pfx, *.cer)からキーを設定する。
-        /// *.cer証明書の場合は、証明書チェーンが繋がっている必要がある。
-        /// 自己証明書の場合「信頼されたルート証明機関」にInstallするなどする。
-        /// </summary>
-        /// <param name="certificateFilePath">X.509証明書(*.pfx, *.cer)へのパス</param>
-        /// <param name="password">パスワード</param>
-        /// <param name="hashAlgorithmName">
-        /// RSAの場合、以下からHashAlgorithm名を指定する。
-        /// MD5, SHA1, SHA256, SHA384, SHA512
-        /// </param>
         /// <param name="flag">X509KeyStorageFlags</param>
-        public DigitalSignX509(string certificateFilePath, string password, string hashAlgorithmName, X509KeyStorageFlags flag)
+        public DigitalSignX509(
+            string certificateFilePath, string password, string hashAlgorithmName,
+            X509KeyStorageFlags flag = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet)
         {
             flag = flag | X509KeyStorageFlags.Exportable; // PrepareでExportParametersする可能性があるので足す。
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
@@ -129,20 +117,10 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="certificateFilePath">X.509証明書(*.pfx, *.cer)へのパス</param>
         /// <param name="password">パスワード</param>
         /// <param name="hashAlgorithmName">HashAlgorithmName</param>
-        public DigitalSignX509(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName) :
-            this(certificateFilePath, password, hashAlgorithmName, X509KeyStorageFlags.DefaultKeySet) { }
-
-        /// <summary>
-        /// Constructor
-        /// X.509証明書(*.pfx, *.cer)からキーを設定する。
-        /// *.cer証明書の場合は、証明書チェーンが繋がっている必要がある。
-        /// 自己証明書の場合「信頼されたルート証明機関」にInstallするなどする。
-        /// </summary>
-        /// <param name="certificateFilePath">X.509証明書(*.pfx, *.cer)へのパス</param>
-        /// <param name="password">パスワード</param>
-        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
         /// <param name="flag">X509KeyStorageFlags</param>
-        public DigitalSignX509(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName, X509KeyStorageFlags flag)
+        public DigitalSignX509(
+            string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName,
+            X509KeyStorageFlags flag = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet)
         {
             flag = flag | X509KeyStorageFlags.Exportable; // PrepareでExportParametersする可能性があるので足す。
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);

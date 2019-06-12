@@ -30,6 +30,7 @@
 //*  2017/12/25  西野 大介         新規作成
 //*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //*  2019/01/29  西野 大介         X.509対応（JWE（RSAES-OAEP and AES GCM）対応
+//*  2019/06/12  西野 大介         constructorのX509KeyStorageFlagsの既定値を変更
 //**********************************************************************************
 
 using System;
@@ -86,9 +87,9 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="password">パスワード</param>
         /// <param name="flag">X509KeyStorageFlags</param>
         /// <returns>AsymmetricAlgorithm</returns>
-        public static AsymmetricAlgorithm CreateCryptographySP(EnumASymmetricAlgorithm easa,
-            string certificateFilePath = "", string password = "",
-            X509KeyStorageFlags flag = X509KeyStorageFlags.DefaultKeySet)
+        public static AsymmetricAlgorithm CreateCryptographySP(
+            EnumASymmetricAlgorithm easa, string certificateFilePath = "", string password = "",
+            X509KeyStorageFlags flag = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet)
         {
             AsymmetricAlgorithm asa = null;
 
