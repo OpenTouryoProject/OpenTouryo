@@ -54,13 +54,25 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <summary>Constructor</summary>
         /// <param name="certificateFilePath">DigitalSignECDsaX509に渡すcertificateFilePathパラメタ</param>
         /// <param name="password">DigitalSignECDsaX509に渡すpasswordパラメタ</param>
-        /// <param name="flag">X509KeyStorageFlags</param>
-        public JWS_ES256_X509(string certificateFilePath, string password,
-            X509KeyStorageFlags flag = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet)
+        public JWS_ES256_X509(string certificateFilePath, string password)
         {
             this.CertificateFilePath = certificateFilePath;
             this.CertificatePassword = password;
-            this.DigitalSignECDsaX509 = new DigitalSignECDsaX509(certificateFilePath, password, HashAlgorithmName.SHA256, flag);
+            this.DigitalSignECDsaX509 = new DigitalSignECDsaX509(
+                certificateFilePath, password, HashAlgorithmName.SHA256);
+            // X509KeyStorageFlagsは、DigitalSignECDsaX509の既定値を使用
+        }
+
+        /// <summary>Constructor</summary>
+        /// <param name="certificateFilePath">DigitalSignECDsaX509に渡すcertificateFilePathパラメタ</param>
+        /// <param name="password">DigitalSignECDsaX509に渡すpasswordパラメタ</param>
+        /// <param name="flag">X509KeyStorageFlags</param>
+        public JWS_ES256_X509(string certificateFilePath, string password, X509KeyStorageFlags flag)
+        {
+            this.CertificateFilePath = certificateFilePath;
+            this.CertificatePassword = password;
+            this.DigitalSignECDsaX509 = new DigitalSignECDsaX509(
+                certificateFilePath, password, HashAlgorithmName.SHA256, flag);
         }
 
         #endregion

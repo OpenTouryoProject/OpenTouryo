@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/11/09  西野 大介         新規作成（分割）
 //*  2018/11/07  西野 大介         ECDSA証明書のサポートを追加（4.7以上）
+//*  2019/06/12  西野 大介         constructorのX509KeyStorageFlagsの既定値を変更
 //**********************************************************************************
 
 using System;
@@ -82,22 +83,13 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="certificateFilePath">X.509証明書(*.pfx, *.cer)へのパス</param>
         /// <param name="password">パスワード</param>
         /// <param name="hashAlgorithmName">HashAlgorithmName</param>
-        public DigitalSignECDsaX509(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName) :
-            this(certificateFilePath, password, hashAlgorithmName, X509KeyStorageFlags.DefaultKeySet) { }
-
-        /// <summary>
-        /// Constructor
-        /// X.509証明書(*.pfx, *.cer)からキーを設定する。
-        /// *.cer証明書の場合は、証明書チェーンが繋がっている必要がある。
-        /// 自己証明書の場合「信頼されたルート証明機関」にInstallするなどする。
-        /// </summary>
-        /// <param name="certificateFilePath">X.509証明書(*.pfx, *.cer)へのパス</param>
-        /// <param name="password">パスワード</param>
-        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
         /// <param name="flag">X509KeyStorageFlags</param>
-        public DigitalSignECDsaX509(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName, X509KeyStorageFlags flag)
+        public DigitalSignECDsaX509(string certificateFilePath, string password, HashAlgorithmName hashAlgorithmName,
+            X509KeyStorageFlags flag = X509KeyStorageFlags.Exportable)
         {
-            flag = flag | X509KeyStorageFlags.Exportable; // PrepareでGetECDsaPrivateKeyする可能性があるので足す。
+            // X509KeyStorageFlags
+            // - MachineKeySet : ECDsaは、インストールできない模様。
+            // - Exportable : PrepareでGetECDsaPrivateKeyするので。
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
 
             if (this.X509Certificate.HasPrivateKey)

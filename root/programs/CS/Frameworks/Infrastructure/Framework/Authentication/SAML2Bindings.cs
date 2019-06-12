@@ -670,6 +670,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="saml">string</param>
         /// <param name="schema">SAML2Enum.SamlSchema</param>
         /// <returns>bool</returns>
+        /// <remarks>
+        /// XDSが作成できていないため書きかけ。
+        /// 現時点でXPath検証を使用する。
+        /// XSD検証の方が明らかに良い場合は移行を検討。
+        /// </remarks>
         private static bool VerifyByXsd(string saml, SAML2Enum.SamlSchema schema)
         {
             string embeddedXsdFileName = "";
@@ -683,12 +688,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
             switch (schema)
             {
                 case SAML2Enum.SamlSchema.Request:
-                    embeddedXsdFileName = "XXXX.xsd";
+                    embeddedXsdFileName = "XXXX.xsd"; // RequestのSAML用のXSD
                     targetNamespace = "urn:oasis:names:tc:SAML:2.0:...";
                     break;
 
                 case SAML2Enum.SamlSchema.Response:
-                    embeddedXsdFileName = "XXXX.xsd";
+                    embeddedXsdFileName = "XXXX.xsd"; // ResponseのSAML用のXSD
                     targetNamespace = "urn:oasis:names:tc:SAML:2.0:...";
                     break;
 
