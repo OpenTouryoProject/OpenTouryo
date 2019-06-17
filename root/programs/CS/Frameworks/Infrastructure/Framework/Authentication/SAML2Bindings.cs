@@ -671,9 +671,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="schema">SAML2Enum.SamlSchema</param>
         /// <returns>bool</returns>
         /// <remarks>
-        /// XDSが作成できていないため書きかけ。
-        /// 現時点でXPath検証を使用する。
-        /// XSD検証の方が明らかに良い場合は移行を検討。
+        /// SAMLのXSDが作成できていないため書きかけ。
+        /// - 現時点では、VerifyByXPath メソッドを使って XPath により検証しています。
+        /// - XSD検証の方が明らかに良い場合は移行を検討します。
         /// </remarks>
         private static bool VerifyByXsd(string saml, SAML2Enum.SamlSchema schema)
         {

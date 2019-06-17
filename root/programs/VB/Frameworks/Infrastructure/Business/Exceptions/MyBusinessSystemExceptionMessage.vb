@@ -55,11 +55,11 @@ Namespace Touryo.Infrastructure.Business.Exceptions
 		Public Shared ReadOnly Property SAMPLE_ERROR() As String()
 			Get
 				Dim temp As String = ""
-				' Get current property name.
-				Dim key As String = PubCmnFunction.GetCurrentPropertyName()
+                ' Get current property name.
+                Dim key As String = StackFrameOperator.GetCurrentPropertyName()
 
-				' Returns the specified string resource for the specified culture or current UI culture.
-				temp = MyBusinessSystemExceptionMessage.CmnFunc(key)
+                ' Returns the specified string resource for the specified culture or current UI culture.
+                temp = MyBusinessSystemExceptionMessage.CmnFunc(key)
 				Return New String() {"MessageID_SampleError", temp}
 			End Get
 		End Property
@@ -72,11 +72,11 @@ Namespace Touryo.Infrastructure.Business.Exceptions
 		Public Shared ReadOnly Property CMN_DAO_ERROR() As String()
 			Get
 				Dim temp As String = ""
-				' Get current property name.
-				Dim key As String = PubCmnFunction.GetCurrentPropertyName()
+                ' Get current property name.
+                Dim key As String = StackFrameOperator.GetCurrentPropertyName()
 
-				' Returns the specified string resource for the specified culture or current UI culture.
-				temp = MyBusinessSystemExceptionMessage.CmnFunc(key)
+                ' Returns the specified string resource for the specified culture or current UI culture.
+                temp = MyBusinessSystemExceptionMessage.CmnFunc(key)
 				Return New String() {"CommonDaoError", temp}
 			End Get
 		End Property
@@ -86,11 +86,11 @@ Namespace Touryo.Infrastructure.Business.Exceptions
 		''' <summary>メッセージ定義ファイルの不正（メッセージ補足）</summary>
 		Public Shared ReadOnly Property CMN_DAO_ERROR_SQL() As String
 			Get
-				' Get current property name.
-				Dim key As String = PubCmnFunction.GetCurrentPropertyName()
+                ' Get current property name.
+                Dim key As String = StackFrameOperator.GetCurrentPropertyName()
 
-				' Returns the specified string resource for the specified culture or current UI culture.
-				Return MyBusinessSystemExceptionMessage.CmnFunc(key)
+                ' Returns the specified string resource for the specified culture or current UI culture.
+                Return MyBusinessSystemExceptionMessage.CmnFunc(key)
 			End Get
 		End Property
 
@@ -104,11 +104,11 @@ Namespace Touryo.Infrastructure.Business.Exceptions
 		Public Shared ReadOnly Property WORKFLOW_ERROR() As String()
 			Get
 				Dim temp As String = ""
-				' Get current property name.
-				Dim key As String = PubCmnFunction.GetCurrentPropertyName()
+                ' Get current property name.
+                Dim key As String = StackFrameOperator.GetCurrentPropertyName()
 
-				' Returns the specified string resource for the specified culture or current UI culture.
-				temp = MyBusinessSystemExceptionMessage.CmnFunc(key)
+                ' Returns the specified string resource for the specified culture or current UI culture.
+                temp = MyBusinessSystemExceptionMessage.CmnFunc(key)
 				Return New String() {"WorkflowError", temp}
 			End Get
 		End Property
@@ -118,22 +118,22 @@ Namespace Touryo.Infrastructure.Business.Exceptions
 		''' <summary>メッセージ定義ファイルの不正（メッセージ補足）</summary>
 		Public Shared ReadOnly Property WORKFLOW_ERROR_CHECK_EMPTY() As String
 			Get
-				' Get current property name.
-				Dim key As String = PubCmnFunction.GetCurrentPropertyName()
+                ' Get current property name.
+                Dim key As String = StackFrameOperator.GetCurrentPropertyName()
 
-				' Returns the specified string resource for the specified culture or current UI culture.
-				Return MyBusinessSystemExceptionMessage.CmnFunc(key)
+                ' Returns the specified string resource for the specified culture or current UI culture.
+                Return MyBusinessSystemExceptionMessage.CmnFunc(key)
 			End Get
 		End Property
 
 		''' <summary>メッセージ定義ファイルの不正（メッセージ補足）</summary>
 		Public Shared ReadOnly Property WORKFLOW_ERROR_CHECK_FIELD_ISNT_CONTAINED() As String
 			Get
-				' Get current property name.
-				Dim key As String = PubCmnFunction.GetCurrentPropertyName()
+                ' Get current property name.
+                Dim key As String = StackFrameOperator.GetCurrentPropertyName()
 
-				' Returns the specified string resource for the specified culture or current UI culture.
-				Return MyBusinessSystemExceptionMessage.CmnFunc(key)
+                ' Returns the specified string resource for the specified culture or current UI culture.
+                Return MyBusinessSystemExceptionMessage.CmnFunc(key)
 			End Get
 		End Property
 

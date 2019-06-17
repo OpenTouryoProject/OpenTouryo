@@ -53,11 +53,11 @@ Namespace Touryo.Infrastructure.Business.Exceptions
 		Public Shared ReadOnly Property SAMPLE_ERROR() As String()
 			Get
 				Dim temp As String = ""
-				' Get current property name.
-				Dim key As String = PubCmnFunction.GetCurrentPropertyName()
+                ' Get current property name.
+                Dim key As String = StackFrameOperator.GetCurrentPropertyName()
 
-				' Returns the specified string resource for the specified culture or current UI culture.
-				temp = MyBusinessApplicationExceptionMessage.CmnFunc(key)
+                ' Returns the specified string resource for the specified culture or current UI culture.
+                temp = MyBusinessApplicationExceptionMessage.CmnFunc(key)
 				Return New String() {"MessageID_SampleError", temp}
 			End Get
 		End Property

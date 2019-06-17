@@ -45,7 +45,7 @@ Class Program
         ' コマンドラインをバラす関数がある。
         Dim valsLst As List(Of String) = Nothing
         Dim argsDic As Dictionary(Of String, String) = Nothing
-        PubCmnFunction.GetCommandArgs("/"c, argsDic, valsLst)
+        StringVariableOperator.GetCommandArgs("/"c, argsDic, valsLst)
 
         ' 引数クラス値（B層実行用）
 		Dim screenId As String = System.Reflection.Assembly.GetExecutingAssembly().Location

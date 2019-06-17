@@ -64,7 +64,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             DigitalSignX509 dsX509 = new DigitalSignX509(
                 CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword,
 #if NET45
-                HashNameConst.SHA1,
+                HashNameConst.SHA1
 #else
                 HashAlgorithmName.SHA1
 #endif
@@ -189,7 +189,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             DigitalSignX509 dsX509 = new DigitalSignX509(
                 CmnClientParams.RsaCerFilePath, "",
 #if NET45
-                HashNameConst.SHA1,
+                HashNameConst.SHA1
 #else
                 HashAlgorithmName.SHA1
 #endif
