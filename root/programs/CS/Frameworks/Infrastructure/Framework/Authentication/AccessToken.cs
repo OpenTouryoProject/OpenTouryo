@@ -51,6 +51,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// </summary>
     public class AccessToken
     {
+        #region Create
+        // AuthZに実装
+        #endregion
+
+        #region Verify
         /// <summary>汎用認証サイトの発行したAccessTokenを検証する。</summary>
         /// <param name="access_token">
         /// AccessTokenで以下の項目が必要
@@ -150,5 +155,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // 認証に失敗
             return false;
         }
+        #endregion
     }
 }

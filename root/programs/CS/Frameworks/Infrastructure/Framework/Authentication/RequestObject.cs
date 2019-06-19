@@ -19,18 +19,15 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JwtAssertion
-//* クラス日本語名  ：JwtAssertion
+//* クラス名        ：RequestObject
+//* クラス日本語名  ：RequestObject
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2017/12/26  西野 大介         新規作成
-//*  2018/03/28  西野 大介         .NET Standard対応で、幾らか、I/F変更あり。
-//*  2018/11/27  西野 大介         XML(Base64) ---> Jwk(Base64Url)に変更。
-//*  2018/11/27  西野 大介         秘密鍵 <---> JWKサポート追加
+//*  2019/06/19  西野 大介         新規作成
 //**********************************************************************************
 
 using System;
@@ -49,10 +46,11 @@ using Touryo.Infrastructure.Public.Security.Jwt;
 namespace Touryo.Infrastructure.Framework.Authentication
 {
     /// <summary>
-    /// JWT bearer token authorizationグラント種別
+    /// OpenID Connect > RequestObject
     /// </summary>
-    public class JwtAssertion
+    public class RequestObject
     {
+
         #region Create
         /// <summary>Create</summary>
         /// <param name="iss">client_id</param>
@@ -60,11 +58,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="forExp">DateTimeOffset</param>
         /// <param name="scopes">scopes</param>
         /// <param name="jwkPrivateKey">RS256用のJWK秘密鍵</param>
-        /// <returns>JwtAssertion</returns>
+        /// <returns>RequestObject</returns>
         public static string Create(
             string iss, string aud, TimeSpan forExp, string scopes, string jwkPrivateKey)
         {
-            return JwtAssertion.Create(iss, aud, forExp, scopes,
+            return RequestObject.Create(iss, aud, forExp, scopes,
                 PrivateKeyConverter.JwkToRsaParam(jwkPrivateKey));
         }
 
@@ -74,7 +72,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="forExp">DateTimeOffset</param>
         /// <param name="scopes">scopes</param>
         /// <param name="rsaPrivateKey">RS256用のRSAParameters秘密鍵</param>
-        /// <returns>JwtAssertion</returns>
+        /// <returns>RequestObject</returns>
         public static string Create(
             string iss, string aud, TimeSpan forExp, string scopes, RSAParameters rsaPrivateKey)
         {
@@ -83,23 +81,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             #region ClaimSetの生成
 
-            Dictionary<string, object> jwtAssertionClaimSet = new Dictionary<string, object>();
+            Dictionary<string, object> requestObjectClaimSet = new Dictionary<string, object>();
 
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token2 EndPointのuri。
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token2 EndPointのuri。
 
 #if NET45
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, PubCmnFunction.ToUnixTime(DateTimeOffset.Now.Add(forExp)).ToString());
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iat, PubCmnFunction.ToUnixTime(DateTimeOffset.Now).ToString());
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.exp, PubCmnFunction.ToUnixTime(DateTimeOffset.Now.Add(forExp)).ToString());
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.iat, PubCmnFunction.ToUnixTime(DateTimeOffset.Now).ToString());
 #else
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, (DateTimeOffset.Now.Add(forExp)).ToUnixTimeSeconds().ToString());
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iat, DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.exp, (DateTimeOffset.Now.Add(forExp)).ToUnixTimeSeconds().ToString());
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.iat, DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
 #endif
 
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.jti, Guid.NewGuid().ToString("N"));
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.scope, scopes); // scopes
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.jti, Guid.NewGuid().ToString("N"));
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.scope, scopes); // scopes
 
-            json = JsonConvert.SerializeObject(jwtAssertionClaimSet);
+            json = JsonConvert.SerializeObject(requestObjectClaimSet);
 
             #endregion
 
@@ -112,32 +110,35 @@ namespace Touryo.Infrastructure.Framework.Authentication
         }
         #endregion
 
+        // c# - Convert JObject into Dictionary<string, object>. Is it possible? - Stack Overflow
+        // https://stackoverflow.com/questions/14886800/convert-jobject-into-dictionarystring-object-is-it-possible
+
         #region Verify
         /// <summary>Verify</summary>
-        /// <param name="jwtAssertion">string</param>
+        /// <param name="requestObject">string</param>
         /// <param name="iss">client_id</param>
         /// <param name="aud">Token2 EndPointのuri</param>
         /// <param name="scopes">scopes</param>
         /// <param name="jobj">JObject</param>
         /// <param name="jwkPublicKey">RS256用のJWK公開鍵</param>
         /// <returns>検証結果</returns>
-        public static bool Verify(string jwtAssertion,
+        public static bool Verify(string requestObject,
             out string iss, out string aud, out string scopes, out JObject jobj, string jwkPublicKey)
         {
-            return JwtAssertion.Verify(
-                jwtAssertion, out iss, out aud, out scopes, out jobj,
+            return RequestObject.Verify(
+                requestObject, out iss, out aud, out scopes, out jobj,
                 RsaPublicKeyConverter.JwkToParam(jwkPublicKey));
         }
 
         /// <summary>Verify</summary>
-        /// <param name="jwtAssertion">string</param>
+        /// <param name="requestObject">string</param>
         /// <param name="iss">client_id</param>
         /// <param name="aud">Token2 EndPointのuri</param>
         /// <param name="scopes">scopes</param>
         /// <param name="jobj">JObject</param>
         /// <param name="rsaPublicKey">RS256用のRSAParameters公開鍵</param>
         /// <returns>検証結果</returns>
-        public static bool Verify(string jwtAssertion,
+        public static bool Verify(string requestObject,
             out string iss, out string aud, out string scopes, out JObject jobj, RSAParameters rsaPublicKey)
         {
             iss = "";
@@ -147,10 +148,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             JWS_RS256_Param jwtRS256 = new JWS_RS256_Param(rsaPublicKey);
 
-            if (jwtRS256.Verify(jwtAssertion))
+            if (jwtRS256.Verify(requestObject))
             {
                 string jwtPayload = CustomEncode.ByteToString(
-                    CustomEncode.FromBase64UrlString(jwtAssertion.Split('.')[1]), CustomEncode.UTF_8);
+                    CustomEncode.FromBase64UrlString(requestObject.Split('.')[1]), CustomEncode.UTF_8);
 
                 jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
 
