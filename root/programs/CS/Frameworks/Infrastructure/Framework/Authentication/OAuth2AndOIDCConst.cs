@@ -39,6 +39,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
     public class OAuth2AndOIDCConst
     {
         #region param
+        /// <summary>client_id</summary>
+        public const string client_id = "client_id";
+
+        /// <summary>client_secret</summary>
+        public const string client_secret = "client_secret";
 
         /// <summary>grant_type</summary>
         public const string grant_type = "grant_type";
@@ -55,17 +60,57 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>scope</summary>
         public const string scope = "scope";
 
+        #region RequestObject
+        /// <summary>request</summary>
+        public const string request = "request";
+
+        /// <summary>request_uri</summary>
+        public const string request_uri = "request_uri";
+
+        /// <summary>claims</summary>
+        public const string claims = "claims";
+
+        /// <summary>claims_userinfo</summary>
+        public const string claims_userinfo = "userinfo";
+
+        /// <summary>claims_id_token</summary>
+        public const string claims_id_token = "id_token";
+
+        /// <summary>claims_essential</summary>
+        public const string claims_essential = "essential";
+
+        /// <summary>claims_value</summary>
+        public const string claims_value = "value";
+
+        /// <summary>claims_values</summary>
+        public const string claims_values = "values";
+        #endregion
+
+        #region Option
+
+        /// <summary>prompt</summary>
+        public const string prompt = "prompt";
+
+        /// <summary>login_hint</summary>
+        public const string login_hint = "login_hint";
+        #endregion
+
+        #region 暗号的
         /// <summary>state</summary>
         public const string state = "state";
 
+        /// <summary>nonce</summary>
+        public const string nonce = "nonce";
+
         /// <summary>code</summary>
         public const string code = "code";
-
-        /// <summary>assertion</summary>
-        public const string assertion = "assertion";
         
         /// <summary>token</summary>
         public const string token = "token";
+
+        /// <summary>assertion</summary>
+        public const string assertion = "assertion";
+        #endregion
 
         #region WebAPI
 
@@ -203,7 +248,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         // ★ Scopeと同じ文字列は定義しない。
 
-        /// <summary>ベース部分</summary>
+        /// <summary>Claimのurnのベース部分</summary>
         public static readonly string Claim_Base = "urn:oauth:";
 
         #region 予約
@@ -297,19 +342,30 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region 末端
 
-        /// <summary>nonce</summary>
-        public const string nonce = "nonce";
-
         /// <summary>at_hash</summary>
         public const string at_hash = "at_hash";
 
         /// <summary>c_hash</summary>
         public const string c_hash = "c_hash";
 
+        /// <summary>
+        /// acr（Authentication Context Class Reference
+        /// </summary>
+        public const string acr = "acr";
+
+        /// <summary>
+        /// amr（仕様の範囲外で、利用者が規則を決めて運用
+        /// </summary>
+        public const string amr = "amr";
+
+        /// <summary>
+        /// azp（aud ≠ client_idのケース
+        /// </summary>
+        public const string azp = "azp";
+
         #endregion
 
         #region urn
-
         /// <summary>nonceクレームのurn</summary>
         public static readonly string Claim_Nonce = Claim_Base + nonce;
 
@@ -319,6 +375,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>c_hashクレームのurn</summary>
         public static readonly string Claim_CHash = Claim_Base + c_hash;
 
+        /// <summary>acrクレームのurn</summary>
+        public static readonly string Claim_Acr = Claim_Base + acr;
+
+        /// <summary>amrクレームのurn</summary>
+        public static readonly string Claim_Amr = Claim_Base + amr;
+
+        /// <summary>azpクレームのurn</summary>
+        public static readonly string Claim_Azp = Claim_Base + azp;
         #endregion
 
         #endregion
@@ -326,7 +390,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #region FAPI
 
         #region 末端
-        
+
         /// <summary>s_hash</summary>
         public const string s_hash = "s_hash";
 
@@ -360,10 +424,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>x5uクレームのurn</summary>
         public static readonly string Claim_CnfX5u = Claim_Cnf + ":" + x5u;
 
-        // 独自
+        //// 独自
 
-        /// <summary>fapiクレームのurn</summary>
-        public static readonly string Claim_FApi = Claim_Base + fapi;
+        ///// <summary>fapiクレームのurn</summary>
+        //public static readonly string Claim_FApi = Claim_Base + fapi;
 
         #endregion
 
@@ -405,6 +469,21 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>PKCE S256</summary>
         public const string PKCE_S256 = "S256";
+
+        #endregion
+
+        #region LoA(acr)
+
+        #region urn
+        /// <summary>LoAのurnのベース部分</summary>
+        public static readonly string LoA_Base = "urn:mace:incommon:iap:";
+        
+        /// <summary>LoA1のurn</summary>
+        public static readonly string LoA1 = LoA_Base + "bronze";
+
+        /// <summary>LoA2のurn</summary>
+        public static readonly string LoA2 = LoA_Base + "silver";
+        #endregion
 
         #endregion
     }

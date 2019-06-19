@@ -86,7 +86,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             Dictionary<string, object> jwtAssertionClaimSet = new Dictionary<string, object>();
 
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token2 EndPointのuri。
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token EndPointのuri。
 
 #if NET45
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, PubCmnFunction.ToUnixTime(DateTimeOffset.Now.Add(forExp)).ToString());

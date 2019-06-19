@@ -119,6 +119,7 @@
     <Compile Include="AsyncProcessingService\AsyncErrorMessageID.cs" />
     <Compile Include="AsyncProcessingService\AsyncStatus.cs" />
     <Compile Include="AsyncProcessingService\AsyncTaskUpdate.cs" />
+    <Compile Include="Authentication\ClaimsInRO.cs" />
     <Compile Include="Authentication\AuthenticationHeader.cs" />
     <Compile Include="Authentication\JwkSetStore.cs" />
     <Compile Include="Authentication\CmnJwtToken.cs" />

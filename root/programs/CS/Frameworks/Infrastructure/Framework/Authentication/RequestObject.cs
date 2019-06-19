@@ -50,31 +50,72 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// </summary>
     public class RequestObject
     {
+        // https://openid.net/specs/openid-connect-core-1_0.html#RequestObject
+        //  {
+        //   "iss": "s6BhdRkqt3",
+        //   "aud": "https://server.example.com",
+        //   "response_type": "code id_token",
+        //   "client_id": "s6BhdRkqt3",
+        //   "redirect_uri": "https://client.example.org/cb",
+        //   "scope": "openid",
+        //   "state": "af0ifjsldkj",
+        //   "nonce": "n-0S6_WzA2Mj",
+        //   "max_age": 86400,
+        //   "claims": ... see : ClaimsInRO.cs
+        //  }
+
+        // 以下はI/F上に含めない。
+        // - display ... promptの形式
+        // - ui_locales ... UICulture的な
+        // - max_age ... 最大認証期間
+        // - id_token_hint ... 以前のid_token（再認証）
+        // acr_values(これは、claimsでサポート)
 
         #region Create
         /// <summary>Create</summary>
-        /// <param name="iss">client_id</param>
-        /// <param name="aud">Token2 EndPointのuri</param>
-        /// <param name="forExp">DateTimeOffset</param>
-        /// <param name="scopes">scopes</param>
-        /// <param name="jwkPrivateKey">RS256用のJWK秘密鍵</param>
+        /// <param name="iss">string</param>
+        /// <param name="aud">string</param>
+        /// <param name="response_type">string</param>
+        /// <param name="response_mode">string</param>
+        /// <param name="redirect_uri">string</param>
+        /// <param name="scopes">string</param>
+        /// <param name="state">string</param>
+        /// <param name="nonce">string</param>
+        /// <param name="prompt">string</param>
+        /// <param name="login_hint">string</param>
+        /// <param name="claims">ClaimsInRO</param>
+        /// <param name="jwkPrivateKey">string</param>
         /// <returns>RequestObject</returns>
         public static string Create(
-            string iss, string aud, TimeSpan forExp, string scopes, string jwkPrivateKey)
+            string iss, string aud, string response_type, string response_mode,
+            string redirect_uri, string scopes, string state, string nonce,
+            string prompt, string login_hint, ClaimsInRO claims, string jwkPrivateKey)
         {
-            return RequestObject.Create(iss, aud, forExp, scopes,
+            return RequestObject.Create(
+                iss, aud, response_type, response_mode,
+                redirect_uri, scopes, state, nonce,
+                prompt, login_hint, claims,
                 PrivateKeyConverter.JwkToRsaParam(jwkPrivateKey));
         }
 
         /// <summary>Create</summary>
-        /// <param name="iss">client_id</param>
-        /// <param name="aud">Token2 EndPointのuri</param>
-        /// <param name="forExp">DateTimeOffset</param>
-        /// <param name="scopes">scopes</param>
+        /// <param name="iss">string</param>
+        /// <param name="aud">string</param>
+        /// <param name="response_type">string</param>
+        /// <param name="response_mode">string</param>
+        /// <param name="redirect_uri">string</param>
+        /// <param name="scopes">string</param>
+        /// <param name="state">string</param>
+        /// <param name="nonce">string</param>
+        /// <param name="prompt">string</param>
+        /// <param name="login_hint">string</param>
+        /// <param name="claims">ClaimsInRO</param>
         /// <param name="rsaPrivateKey">RS256用のRSAParameters秘密鍵</param>
         /// <returns>RequestObject</returns>
         public static string Create(
-            string iss, string aud, TimeSpan forExp, string scopes, RSAParameters rsaPrivateKey)
+            string iss, string aud, string response_type, string response_mode,
+            string redirect_uri, string scopes, string state, string nonce,
+            string prompt, string login_hint, ClaimsInRO claims, RSAParameters rsaPrivateKey)
         {
             string json = "";
             //string jws = "";
@@ -84,18 +125,27 @@ namespace Touryo.Infrastructure.Framework.Authentication
             Dictionary<string, object> requestObjectClaimSet = new Dictionary<string, object>();
 
             requestObjectClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
-            requestObjectClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token2 EndPointのuri。
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // ROS EndPointのuri。
 
-#if NET45
-            requestObjectClaimSet.Add(OAuth2AndOIDCConst.exp, PubCmnFunction.ToUnixTime(DateTimeOffset.Now.Add(forExp)).ToString());
-            requestObjectClaimSet.Add(OAuth2AndOIDCConst.iat, PubCmnFunction.ToUnixTime(DateTimeOffset.Now).ToString());
-#else
-            requestObjectClaimSet.Add(OAuth2AndOIDCConst.exp, (DateTimeOffset.Now.Add(forExp)).ToUnixTimeSeconds().ToString());
-            requestObjectClaimSet.Add(OAuth2AndOIDCConst.iat, DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
-#endif
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.response_type, response_type);
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.client_id, iss);
 
-            requestObjectClaimSet.Add(OAuth2AndOIDCConst.jti, Guid.NewGuid().ToString("N"));
-            requestObjectClaimSet.Add(OAuth2AndOIDCConst.scope, scopes); // scopes
+            if (!string.IsNullOrEmpty(response_mode))
+                requestObjectClaimSet.Add(OAuth2AndOIDCConst.response_mode, response_mode);
+            if (!string.IsNullOrEmpty(redirect_uri))
+                requestObjectClaimSet.Add(OAuth2AndOIDCConst.redirect_uri, redirect_uri);
+
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.scope, scopes);
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.state, state);
+
+            if (!string.IsNullOrEmpty(nonce))
+                requestObjectClaimSet.Add(OAuth2AndOIDCConst.nonce, nonce);
+            if (!string.IsNullOrEmpty(prompt))
+                requestObjectClaimSet.Add(OAuth2AndOIDCConst.prompt, prompt);
+            if (!string.IsNullOrEmpty(login_hint))
+                requestObjectClaimSet.Add(OAuth2AndOIDCConst.login_hint, login_hint);
+
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.claims, claims.Claims);
 
             json = JsonConvert.SerializeObject(requestObjectClaimSet);
 
@@ -116,35 +166,61 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #region Verify
         /// <summary>Verify</summary>
         /// <param name="requestObject">string</param>
-        /// <param name="iss">client_id</param>
-        /// <param name="aud">Token2 EndPointのuri</param>
-        /// <param name="scopes">scopes</param>
-        /// <param name="jobj">JObject</param>
+        /// <param name="iss">string</param>
+        /// <param name="aud">string</param>
+        /// <param name="response_type">string</param>
+        /// <param name="response_mode">string</param>
+        /// <param name="redirect_uri">string</param>
+        /// <param name="scopes">string</param>
+        /// <param name="state">string</param>
+        /// <param name="nonce">string</param>
+        /// <param name="prompt">string</param>
+        /// <param name="login_hint">string</param>
+        /// <param name="claims">JObject</param>
         /// <param name="jwkPublicKey">RS256用のJWK公開鍵</param>
         /// <returns>検証結果</returns>
         public static bool Verify(string requestObject,
-            out string iss, out string aud, out string scopes, out JObject jobj, string jwkPublicKey)
+            out string iss, out string aud, out string response_type, out string response_mode,
+            out string redirect_uri, out string scopes, out string state, out string nonce,
+            out string prompt, out string login_hint, out JObject claims, string jwkPublicKey)
         {
-            return RequestObject.Verify(
-                requestObject, out iss, out aud, out scopes, out jobj,
-                RsaPublicKeyConverter.JwkToParam(jwkPublicKey));
+            return RequestObject.Verify(requestObject,
+                out iss, out aud, out response_type, out response_mode,
+                out redirect_uri, out scopes, out state, out nonce,
+                out prompt, out login_hint, out claims, RsaPublicKeyConverter.JwkToParam(jwkPublicKey));
         }
 
         /// <summary>Verify</summary>
         /// <param name="requestObject">string</param>
-        /// <param name="iss">client_id</param>
-        /// <param name="aud">Token2 EndPointのuri</param>
-        /// <param name="scopes">scopes</param>
-        /// <param name="jobj">JObject</param>
+        /// <param name="iss">string</param>
+        /// <param name="aud">string</param>
+        /// <param name="response_type">string</param>
+        /// <param name="response_mode">string</param>
+        /// <param name="redirect_uri">string</param>
+        /// <param name="scopes">string</param>
+        /// <param name="state">string</param>
+        /// <param name="nonce">string</param>
+        /// <param name="prompt">string</param>
+        /// <param name="login_hint">string</param>
+        /// <param name="claims">JObject</param>
         /// <param name="rsaPublicKey">RS256用のRSAParameters公開鍵</param>
         /// <returns>検証結果</returns>
         public static bool Verify(string requestObject,
-            out string iss, out string aud, out string scopes, out JObject jobj, RSAParameters rsaPublicKey)
+            out string iss, out string aud, out string response_type, out string response_mode,
+            out string redirect_uri, out string scopes, out string state, out string nonce,
+            out string prompt, out string login_hint, out JObject claims, RSAParameters rsaPublicKey)
         {
             iss = "";
             aud = "";
+            response_type = "";
+            response_mode = "";
+            redirect_uri = "";
             scopes = "";
-            jobj = null;
+            state = "";
+            nonce = "";
+            prompt = "";
+            login_hint = "";
+            claims = null;
 
             JWS_RS256_Param jwtRS256 = new JWS_RS256_Param(rsaPublicKey);
 
@@ -153,28 +229,31 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 string jwtPayload = CustomEncode.ByteToString(
                     CustomEncode.FromBase64UrlString(requestObject.Split('.')[1]), CustomEncode.UTF_8);
 
-                jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
+                JObject jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
 
                 iss = (string)jobj[OAuth2AndOIDCConst.iss];
                 aud = (string)jobj[OAuth2AndOIDCConst.aud];
-                //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
-                scopes = (string)jobj[OAuth2AndOIDCConst.scope];
+                response_type = (string)jobj[OAuth2AndOIDCConst.response_type];
 
-                long unixTimeSeconds = 0;
-#if NET45
-                unixTimeSeconds = PubCmnFunction.ToUnixTime(DateTimeOffset.Now);
-#else
-                unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
-#endif
-                string exp = (string)jobj[OAuth2AndOIDCConst.exp];
-                if (long.Parse(exp) >= unixTimeSeconds)
-                {
-                    return true;
-                }
-                else
-                {
-                    // JWTの内容検証に失敗
-                }
+                if(jobj.ContainsKey(OAuth2AndOIDCConst.response_mode))
+                    response_mode = (string)jobj[OAuth2AndOIDCConst.response_mode];
+                if (jobj.ContainsKey(OAuth2AndOIDCConst.redirect_uri))
+                    redirect_uri = (string)jobj[OAuth2AndOIDCConst.redirect_uri];
+
+                scopes = (string)jobj[OAuth2AndOIDCConst.scope];
+                state = (string)jobj[OAuth2AndOIDCConst.state];
+
+                if (jobj.ContainsKey(OAuth2AndOIDCConst.nonce))
+                    nonce = (string)jobj[OAuth2AndOIDCConst.nonce];
+                if (jobj.ContainsKey(OAuth2AndOIDCConst.prompt))
+                    prompt = (string)jobj[OAuth2AndOIDCConst.prompt];
+                if (jobj.ContainsKey(OAuth2AndOIDCConst.login_hint))
+                    login_hint = (string)jobj[OAuth2AndOIDCConst.login_hint];
+
+                if (jobj.ContainsKey(OAuth2AndOIDCConst.claims))
+                    claims = (JObject)jobj[OAuth2AndOIDCConst.claims];
+
+                return true; 
             }
             else
             {
