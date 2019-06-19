@@ -87,45 +87,53 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// objectは、以下をメンバに持つ匿名型
         /// essential(bool), value(string), values(string[])
         /// </param>
-        /// <param name="acr">
+        /// <param name="id_tokenAcr">
         /// id_tokenのarc
         /// objectは、以下をメンバに持つ匿名型
         /// essential(bool), value(string), values(string[])
         /// </param>
         public ClaimsInRO(
             Dictionary<string, object> userinfoClaims,
-            Dictionary<string, object> id_tokenClaims, object acr)
+            Dictionary<string, object> id_tokenClaims, object id_tokenAcr)
         {
             // OpenID Connect - ユーザー属性クレーム関連 - マイクロソフト系技術情報 Wiki
             //  > 格納要求 > claimsパラメタによる詳細な格納要求 > 個別のクレーム値
             // https://techinfoofmicrosofttech.osscons.jp/index.php?OpenID%20Connect%20-%20%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E5%B1%9E%E6%80%A7%E3%82%AF%E3%83%AC%E3%83%BC%E3%83%A0%E9%96%A2%E9%80%A3#q9d112d2
 
-            // claims_userinfo
-            Dictionary<string, object> claims_userinfo = new Dictionary<string, object>();
-            foreach (string key in userinfoClaims.Keys)
+            #region userinfo
+            if (userinfoClaims != null)
             {
-                claims_userinfo.Add(key, userinfoClaims[key]);
+                Dictionary<string, object> claims_userinfo = new Dictionary<string, object>();
+                foreach (string key in userinfoClaims.Keys)
+                {
+                    claims_userinfo.Add(key, userinfoClaims[key]);
+                }
+
+                this._claims.Add(OAuth2AndOIDCConst.claims_userinfo, claims_userinfo);
             }
+            #endregion
 
-            this._claims.Add(OAuth2AndOIDCConst.claims_userinfo, claims_userinfo);
-
-            // claims_userinfo
-
-            // - claims_id_token
-            Dictionary<string, object> claims_id_token = new Dictionary<string, object>();
-            foreach (string key in id_tokenClaims.Keys)
+            #region id_token
+            if (id_tokenClaims != null || id_tokenAcr != null)
             {
-                claims_id_token.Add(key, id_tokenClaims[key]);
-            }
+                Dictionary<string, object> claims_id_token = new Dictionary<string, object>();
+                if (id_tokenClaims != null)
+                {
+                    foreach (string key in id_tokenClaims.Keys)
+                    {
+                        claims_id_token.Add(key, id_tokenClaims[key]);
+                    }
+                }
 
-            // - acr
-            if (acr != null)
-            {
-                claims_id_token.Add(OAuth2AndOIDCConst.acr, acr);
-            }
+                // - acr
+                if (id_tokenAcr != null)
+                {
+                    claims_id_token.Add(OAuth2AndOIDCConst.acr, id_tokenAcr);
+                }
 
-            // claimsの完成
-            this._claims.Add(OAuth2AndOIDCConst.claims_id_token, claims_id_token);
+                this._claims.Add(OAuth2AndOIDCConst.claims_id_token, claims_id_token);
+            }
+            #endregion
         }
     }
 }
