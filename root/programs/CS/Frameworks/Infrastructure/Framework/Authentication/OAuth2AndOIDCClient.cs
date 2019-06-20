@@ -545,11 +545,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #region FAPI (Financial-grade API) 
 
         /// <summary>RequestObjectを登録する</summary>
-        /// <param name="requestObject">string</param>
         /// <param name="requestObjectRegUri">Uri</param>
+        /// <param name="requestObject">string</param>
         /// <returns>RequestObjectの登録結果</returns>
         public static async Task<string> RegisterRequestObjectAsync(
-            string requestObject, Uri requestObjectRegUri)
+            Uri requestObjectRegUri, string requestObject)
         {
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;
