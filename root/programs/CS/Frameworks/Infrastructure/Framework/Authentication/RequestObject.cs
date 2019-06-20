@@ -165,69 +165,40 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region Verify
         /// <summary>Verify</summary>
-        /// <param name="requestObject">string</param>
+        /// <param name="ro">string</param>
         /// <param name="iss">string</param>
-        /// <param name="aud">string</param>
-        /// <param name="response_type">string</param>
-        /// <param name="response_mode">string</param>
-        /// <param name="redirect_uri">string</param>
-        /// <param name="scopes">string</param>
-        /// <param name="state">string</param>
-        /// <param name="nonce">string</param>
-        /// <param name="prompt">string</param>
-        /// <param name="login_hint">string</param>
-        /// <param name="claims">JObject</param>
         /// <param name="jwkPublicKey">RS256用のJWK公開鍵</param>
         /// <returns>検証結果</returns>
-        public static bool Verify(string requestObject,
-            out string iss, out string aud, out string response_type, out string response_mode,
-            out string redirect_uri, out string scopes, out string state, out string nonce,
-            out string prompt, out string login_hint, out JObject claims, string jwkPublicKey)
+        public static bool Verify(string ro, out string iss, string jwkPublicKey)
         {
-            return RequestObject.Verify(requestObject,
-                out iss, out aud, out response_type, out response_mode,
-                out redirect_uri, out scopes, out state, out nonce,
-                out prompt, out login_hint, out claims, RsaPublicKeyConverter.JwkToParam(jwkPublicKey));
+            return RequestObject.Verify(ro, out iss, RsaPublicKeyConverter.JwkToParam(jwkPublicKey));
         }
 
         /// <summary>Verify</summary>
-        /// <param name="requestObject">string</param>
+        /// <param name="ro">string</param>
         /// <param name="iss">string</param>
-        /// <param name="aud">string</param>
-        /// <param name="response_type">string</param>
-        /// <param name="response_mode">string</param>
-        /// <param name="redirect_uri">string</param>
-        /// <param name="scopes">string</param>
-        /// <param name="state">string</param>
-        /// <param name="nonce">string</param>
-        /// <param name="prompt">string</param>
-        /// <param name="login_hint">string</param>
-        /// <param name="claims">JObject</param>
         /// <param name="rsaPublicKey">RS256用のRSAParameters公開鍵</param>
         /// <returns>検証結果</returns>
-        public static bool Verify(string requestObject,
-            out string iss, out string aud, out string response_type, out string response_mode,
-            out string redirect_uri, out string scopes, out string state, out string nonce,
-            out string prompt, out string login_hint, out JObject claims, RSAParameters rsaPublicKey)
+        public static bool Verify(string ro, out string iss, RSAParameters rsaPublicKey)
         {
             iss = "";
-            aud = "";
-            response_type = "";
-            response_mode = "";
-            redirect_uri = "";
-            scopes = "";
-            state = "";
-            nonce = "";
-            prompt = "";
-            login_hint = "";
-            claims = null;
+            string aud = "";
+            string response_type = "";
+            //string response_mode = "";
+            //string redirect_uri = "";
+            string scopes = "";
+            string state = "";
+            string nonce = "";
+            //string prompt = "";
+            //string login_hint = "";
+            //JObject claims = null;
 
             JWS_RS256_Param jwtRS256 = new JWS_RS256_Param(rsaPublicKey);
 
-            if (jwtRS256.Verify(requestObject))
+            if (jwtRS256.Verify(ro))
             {
                 string jwtPayload = CustomEncode.ByteToString(
-                    CustomEncode.FromBase64UrlString(requestObject.Split('.')[1]), CustomEncode.UTF_8);
+                    CustomEncode.FromBase64UrlString(ro.Split('.')[1]), CustomEncode.UTF_8);
 
                 JObject jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
 
@@ -235,33 +206,44 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 aud = (string)jobj[OAuth2AndOIDCConst.aud];
                 response_type = (string)jobj[OAuth2AndOIDCConst.response_type];
 
-                if(jobj.ContainsKey(OAuth2AndOIDCConst.response_mode))
-                    response_mode = (string)jobj[OAuth2AndOIDCConst.response_mode];
-                if (jobj.ContainsKey(OAuth2AndOIDCConst.redirect_uri))
-                    redirect_uri = (string)jobj[OAuth2AndOIDCConst.redirect_uri];
+                //if(jobj.ContainsKey(OAuth2AndOIDCConst.response_mode))
+                //    response_mode = (string)jobj[OAuth2AndOIDCConst.response_mode];
+                //if (jobj.ContainsKey(OAuth2AndOIDCConst.redirect_uri))
+                //    redirect_uri = (string)jobj[OAuth2AndOIDCConst.redirect_uri];
 
                 scopes = (string)jobj[OAuth2AndOIDCConst.scope];
                 state = (string)jobj[OAuth2AndOIDCConst.state];
+                nonce = (string)jobj[OAuth2AndOIDCConst.nonce];
 
-                if (jobj.ContainsKey(OAuth2AndOIDCConst.nonce))
-                    nonce = (string)jobj[OAuth2AndOIDCConst.nonce];
-                if (jobj.ContainsKey(OAuth2AndOIDCConst.prompt))
-                    prompt = (string)jobj[OAuth2AndOIDCConst.prompt];
-                if (jobj.ContainsKey(OAuth2AndOIDCConst.login_hint))
-                    login_hint = (string)jobj[OAuth2AndOIDCConst.login_hint];
+                //if (jobj.ContainsKey(OAuth2AndOIDCConst.prompt))
+                //    prompt = (string)jobj[OAuth2AndOIDCConst.prompt];
+                //if (jobj.ContainsKey(OAuth2AndOIDCConst.login_hint))
+                //    login_hint = (string)jobj[OAuth2AndOIDCConst.login_hint];
 
-                if (jobj.ContainsKey(OAuth2AndOIDCConst.claims))
-                    claims = (JObject)jobj[OAuth2AndOIDCConst.claims];
+                //if (jobj.ContainsKey(OAuth2AndOIDCConst.claims))
+                //    claims = (JObject)jobj[OAuth2AndOIDCConst.claims];
 
-                return true; 
+                if (!string.IsNullOrEmpty(iss) &&
+                    !string.IsNullOrEmpty(aud) &&
+                    !string.IsNullOrEmpty(response_type) &&
+                    !string.IsNullOrEmpty(scopes) &&
+                    !string.IsNullOrEmpty(state) &&
+                    !string.IsNullOrEmpty(nonce))
+                {
+                    // OK
+                    return true;
+                }
+                else
+                {
+                    // 必須項目の不足
+                    return true;
+                }
             }
             else
             {
                 // JWTの署名検証に失敗
+                return false;
             }
-
-            // 認証に失敗
-            return false;
         }
         #endregion
     }

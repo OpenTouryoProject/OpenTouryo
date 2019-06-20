@@ -132,11 +132,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>
         /// FAPI2のRequestObject登録エンドポイント 
         /// </summary>
-        public static string RequestObjectUri
+        public static string RequestObjectRegUri
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("RequestObjectUri");
+                return GetConfigParameter.GetConfigValue("RequestObjectRegUri");
             }
         }
         #endregion

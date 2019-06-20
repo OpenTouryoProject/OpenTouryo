@@ -62,7 +62,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
-        #region 基本 4 フロー + α のWebAPI
+        #region 基本 4 フローのWebAPI
 
         #region Authentication Code
 
@@ -456,8 +456,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
-        #region 追加のClient認証
-
         #region JWT Bearer Token Flow
 
         /// <summary>
@@ -494,8 +492,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
             httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
-
-        #endregion
 
         #endregion
 
@@ -542,6 +538,35 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
 
             return ""; // 空
+        }
+
+        #endregion
+
+        #region FAPI (Financial-grade API) 
+
+        /// <summary>RequestObjectを登録する</summary>
+        /// <param name="requestObject">string</param>
+        /// <param name="requestObjectRegUri">Uri</param>
+        /// <returns>RequestObjectの登録結果</returns>
+        public static async Task<string> RegisterRequestObjectAsync(
+            string requestObject, Uri requestObjectRegUri)
+        {
+            // 通信用の変数
+            HttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage httpResponseMessage = null;
+
+            // HttpRequestMessage (Method & RequestUri)
+            httpRequestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = requestObjectRegUri,
+            };
+
+            httpRequestMessage.Content = new StringContent(requestObject);
+
+            // HttpResponseMessage
+            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
         #endregion
