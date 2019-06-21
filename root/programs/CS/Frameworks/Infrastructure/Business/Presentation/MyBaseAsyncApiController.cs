@@ -307,8 +307,8 @@ namespace Touryo.Infrastructure.Business.Presentation
                         {
                             new Claim(ClaimTypes.Name, sub),
                             new Claim(ClaimTypes.Role, string.Join(",", roles)),
-                            new Claim(OAuth2AndOIDCConst.Claim_Scopes, string.Join(",", scopes)),
-                            new Claim(OAuth2AndOIDCConst.Claim_Audience, (string)jobj[OAuth2AndOIDCConst.aud]),
+                            new Claim(OAuth2AndOIDCConst.UrnScopesClaim, string.Join(",", scopes)),
+                            new Claim(OAuth2AndOIDCConst.UrnAudienceClaim, (string)jobj[OAuth2AndOIDCConst.aud]),
                             new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress(authenticationContext.Request))
                         };
 
@@ -342,8 +342,8 @@ namespace Touryo.Infrastructure.Business.Presentation
             {
                 new Claim(ClaimTypes.Name, "未認証"),
                 new Claim(ClaimTypes.Role, ""),
-                new Claim(OAuth2AndOIDCConst.Claim_Scopes, ""),
-                new Claim(OAuth2AndOIDCConst.Claim_Audience, ""),
+                new Claim(OAuth2AndOIDCConst.UrnScopesClaim, ""),
+                new Claim(OAuth2AndOIDCConst.UrnAudienceClaim, ""),
                 new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress(authenticationContext.Request))
             };
 
@@ -419,7 +419,7 @@ namespace Touryo.Infrastructure.Business.Presentation
             IEnumerable<Claim> claims = MyBaseAsyncApiController.GetRawClaims();
             userName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
             roles = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
-            scopes = claims.FirstOrDefault(c => c.Type == OAuth2AndOIDCConst.Claim_Scopes).Value;
+            scopes = claims.FirstOrDefault(c => c.Type == OAuth2AndOIDCConst.UrnScopesClaim).Value;
             ipAddress = claims.FirstOrDefault(c => c.Type == "IpAddress").Value;
         }
 

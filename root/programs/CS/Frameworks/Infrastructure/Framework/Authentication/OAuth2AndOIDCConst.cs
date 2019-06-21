@@ -38,6 +38,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// <summary>OAuth2とOIDCの各種定数</summary>
     public class OAuth2AndOIDCConst
     {
+        /// <summary>urnのベース部分</summary>
+        public static readonly string UrnBase = "urn:oauth:";
+
         #region param
         /// <summary>client_id</summary>
         public const string client_id = "client_id";
@@ -67,6 +70,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>request_uri</summary>
         public const string request_uri = "request_uri";
 
+        /// <summary>request_uriのurn</summary>
+        public static readonly string UrnRequestUriBase = UrnBase + request + ":";
+
+        #region claims
         /// <summary>claims</summary>
         public const string claims = "claims";
 
@@ -84,6 +91,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>claims_values</summary>
         public const string claims_values = "values";
+        #endregion
+        
         #endregion
 
         #region Option
@@ -231,7 +240,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public const string Scope_UserID = "userid";
 
         /// <summary>rolesを要求するscope</summary>
-        public const string Scope_Roles = "roles";
+        public const string Scope_Roles = roles;
 
         #endregion
 
@@ -249,7 +258,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         // ★ Scopeと同じ文字列は定義しない。
 
         /// <summary>Claimのurnのベース部分</summary>
-        public static readonly string Claim_Base = "urn:oauth:";
+        public static readonly string UrnClaimBase = UrnBase + "claim:";
 
         #region 予約
 
@@ -281,25 +290,25 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #region urn
 
         /// <summary>issuerクレームのurn</summary>
-        public static readonly string Claim_Issuer = Claim_Base + iss;
+        public static readonly string UrnIssuerClaim = UrnClaimBase + iss;
 
         /// <summary>audienceクレームのurn</summary>
-        public static readonly string Claim_Audience = Claim_Base + aud;
+        public static readonly string UrnAudienceClaim = UrnClaimBase + aud;
 
         /// <summary>subjectクレームのurn</summary>
-        public static readonly string Claim_Subject = Claim_Base + sub;
+        public static readonly string UrnSubjectClaim = UrnClaimBase + sub;
 
         /// <summary>expクレームのurn</summary>
-        public static readonly string Claim_ExpirationTime = Claim_Base + exp;
+        public static readonly string UrnExpirationTimeClaim = UrnClaimBase + exp;
 
         /// <summary>nbfクレームのurn</summary>
-        public static readonly string Claim_NotBefore = Claim_Base + nbf;
+        public static readonly string UrnNotBeforeClaim = UrnClaimBase + nbf;
 
         /// <summary>iatクレームのurn</summary>
-        public static readonly string Claim_IssuedAt = Claim_Base + iat;
+        public static readonly string UrnIssuedAtClaim = UrnClaimBase + iat;
 
         /// <summary>jtiクレームのurn</summary>
-        public static readonly string Claim_JwtId = Claim_Base + jti;
+        public static readonly string UrnJwtIdClaim = UrnClaimBase + jti;
 
         #endregion
 
@@ -323,16 +332,16 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #region urn
 
         /// <summary>emailクレームのurn</summary>
-        public static readonly string Claim_Email = Claim_Base + Scope_Email;
+        public static readonly string UrnEmailClaim = UrnClaimBase + Scope_Email;
 
         /// <summary>email_verifiedクレームのurn</summary>
-        public static readonly string Claim_EmailVerified = Claim_Base + email_verified;
+        public static readonly string UrnEmailVerifiedUrn = UrnClaimBase + email_verified;
 
         /// <summary>phone_numberクレームのurn</summary>
-        public static readonly string Claim_PhoneNumber = Claim_Base + phone_number;
+        public static readonly string UrnPhoneNumberClaim = UrnClaimBase + phone_number;
 
         /// <summary>phone_number_verifiedクレームのurn</summary>
-        public static readonly string Claim_PhoneNumberVerified = Claim_Base + phone_number_verified;
+        public static readonly string UrnPhoneNumberVerifiedClaim = UrnClaimBase + phone_number_verified;
 
         #endregion
 
@@ -367,22 +376,22 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region urn
         /// <summary>nonceクレームのurn</summary>
-        public static readonly string Claim_Nonce = Claim_Base + nonce;
+        public static readonly string UrnNonceClaim = UrnClaimBase + nonce;
 
         /// <summary>at_hashクレームのurn</summary>
-        public static readonly string Claim_AtHash = Claim_Base + at_hash;
+        public static readonly string UrnAtHashClaim = UrnClaimBase + at_hash;
 
         /// <summary>c_hashクレームのurn</summary>
-        public static readonly string Claim_CHash = Claim_Base + c_hash;
+        public static readonly string UrnCHashClaim = UrnClaimBase + c_hash;
 
         /// <summary>acrクレームのurn</summary>
-        public static readonly string Claim_Acr = Claim_Base + acr;
+        public static readonly string UrnAcrClaim = UrnClaimBase + acr;
 
         /// <summary>amrクレームのurn</summary>
-        public static readonly string Claim_Amr = Claim_Base + amr;
+        public static readonly string UrnAmrClaim = UrnClaimBase + amr;
 
         /// <summary>azpクレームのurn</summary>
-        public static readonly string Claim_Azp = Claim_Base + azp;
+        public static readonly string UrnAzpClaim = UrnClaimBase + azp;
         #endregion
 
         #endregion
@@ -406,28 +415,28 @@ namespace Touryo.Infrastructure.Framework.Authentication
         // 独自
 
         /// <summary>fapi</summary>
-        public const string fapi = "fapi";
+        public const string fapi = "fapi"; // 使用中
 
         #endregion
 
         #region urn
 
         /// <summary>s_hashクレームのurn</summary>
-        public static readonly string Claim_SHash = Claim_Base + s_hash;
+        public static readonly string UrnSHashClaim = UrnClaimBase + s_hash;
 
         /// <summary>cnfクレームのurn</summary>
-        public static readonly string Claim_Cnf = Claim_Base + cnf;
+        public static readonly string UrnCnfClaim = UrnClaimBase + cnf;
 
         /// <summary>x5tクレームのurn</summary>
-        public static readonly string Claim_CnfX5t = Claim_Cnf + ":" + x5t;
+        public static readonly string UrnCnfX5tClaim = UrnCnfClaim + ":" + x5t;
 
         /// <summary>x5uクレームのurn</summary>
-        public static readonly string Claim_CnfX5u = Claim_Cnf + ":" + x5u;
+        public static readonly string UrnCnfX5uClaim = UrnCnfClaim + ":" + x5u;
 
         //// 独自
 
         ///// <summary>fapiクレームのurn</summary>
-        //public static readonly string Claim_FApi = Claim_Base + fapi;
+        //public static readonly string UrnFApiClaim = UrnClaimBase + fapi;
 
         #endregion
 
@@ -440,12 +449,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>scopes</summary>
         public const string scopes = "scopes";
 
+        /// <summary>roles</summary>
+        public const string roles = "roles";
+
         #endregion
 
         #region urn
 
-        /// <summary>scopeクレームのurn</summary>
-        public static readonly string Claim_Scopes = Claim_Base + scopes;
+        // AccessTokenに格納する
+
+        /// <summary>scopesクレームのurn</summary>
+        public static readonly string UrnScopesClaim = UrnClaimBase + scopes;
+
+        /// <summary>claimsクレームのurn</summary>
+        public static readonly string UrnClaimsClaim = UrnClaimBase + claims;
+
+        /// <summary>rolesクレームのurn</summary>
+        public static readonly string UrnRolesClaim = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
 
         #endregion
 
@@ -476,13 +496,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region urn
         /// <summary>LoAのurnのベース部分</summary>
-        public static readonly string LoA_Base = "urn:mace:incommon:iap:";
+        public static readonly string UrnLoABase = "urn:mace:incommon:iap:";
         
         /// <summary>LoA1のurn</summary>
-        public static readonly string LoA1 = LoA_Base + "bronze";
+        public static readonly string UrnLoA1 = UrnLoABase + "bronze";
 
         /// <summary>LoA2のurn</summary>
-        public static readonly string LoA2 = LoA_Base + "silver";
+        public static readonly string UrnLoA2 = UrnLoABase + "silver";
         #endregion
 
         #endregion
