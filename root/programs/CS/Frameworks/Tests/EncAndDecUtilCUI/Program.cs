@@ -655,7 +655,9 @@ namespace EncAndDecUtilCUI
                 // DSA
 
 #if NETCORE || NET47
-                #region ECDsa(ES256)
+                #region ECDsa(ES)
+
+                #region 256
                 // 署名（X509）
                 jWS_ES256_X509 = new JWS_ES256_X509(Program.PrivateECDsaX509Path, Program.PfxPassword);
                 token = jWS_ES256_X509.Create(payloadString);
@@ -683,6 +685,7 @@ namespace EncAndDecUtilCUI
 #endif
                 // ★ xLibTest
                 Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
+                #endregion
 
                 #endregion
 #endif

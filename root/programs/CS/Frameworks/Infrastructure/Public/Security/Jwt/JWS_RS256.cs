@@ -46,15 +46,11 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
     /// <summary>JWS RS256生成クラス</summary>
     public abstract class JWS_RS256 : JWS_RSA
     {
-        #region mem & prop & constructor
-
         /// <summary>constructor</summary>
         public JWS_RS256()
         {
             this.Init(JwtConst.RS256);
         }
-
-        #endregion
 
         /// <summary>EnumDigitalSignAlgorithm</summary>
         /// <remarks>Constructorで使うのでstaticとなった</remarks>

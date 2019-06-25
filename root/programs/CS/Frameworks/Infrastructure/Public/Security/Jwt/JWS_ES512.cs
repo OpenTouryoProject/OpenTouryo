@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JWS_RS384
-//* クラス日本語名  ：JWS RS384生成クラス
+//* クラス名        ：JWS_ES512
+//* クラス日本語名  ：JWS ES512生成クラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -38,13 +38,16 @@ using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security.Jwt
 {
-    /// <summary>JWS RS384生成クラス</summary>
-    public abstract class JWS_RS384 : JWS_RSA
+    /// <summary>
+    /// JWS ES512生成クラス
+    /// ES512(ECDSA using P-512 and SHA-512)
+    /// </summary>
+    public abstract class JWS_ES512 : JWS_ECDSA
     {
         /// <summary>constructor</summary>
-        public JWS_RS384()
+        public JWS_ES512()
         {
-            this.Init(JwtConst.RS384);
+            this.Init(JwtConst.ES512);
         }
 
         /// <summary>EnumDigitalSignAlgorithm</summary>
@@ -56,14 +59,14 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
 #if NETSTD
                 if (Environment.OSVersion.Platform == PlatformID.Win32NT)
                 {
-                    return EnumDigitalSignAlgorithm.RsaCSP_SHA384;
+                    return EnumDigitalSignAlgorithm.ECDsaCng_P521;
                 }
                 else
                 {
-                    return EnumDigitalSignAlgorithm.RsaOpenSsl_SHA384;
+                    return EnumDigitalSignAlgorithm.ECDsaOpenSsl_P521;
                 }
 #else
-                return EnumDigitalSignAlgorithm.RsaCSP_SHA384;
+                return EnumDigitalSignAlgorithm.ECDsaCng_P521;
 #endif
             }
         }

@@ -41,15 +41,11 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
     /// <summary>JWS RS512生成クラス</summary>
     public abstract class JWS_RS512 : JWS_RSA
     {
-        #region mem & prop & constructor
-
         /// <summary>constructor</summary>
         public JWS_RS512()
         {
             this.Init(JwtConst.RS512);
         }
-
-        #endregion
 
         /// <summary>EnumDigitalSignAlgorithm</summary>
         /// <remarks>Constructorで使うのでstaticとなった</remarks>
