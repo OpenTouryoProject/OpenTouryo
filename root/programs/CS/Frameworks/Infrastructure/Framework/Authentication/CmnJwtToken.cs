@@ -180,7 +180,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
                         }
                         else
                         {
-                            jws = new JWS_RS256_Param(RsaPublicKeyConverter.JwkToParam(jwkObject));
+                            RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
+                            jws = new JWS_RS256_Param(rpkc.JwkToParam(jwkObject));
                         }
                     }
                 }
@@ -225,7 +226,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
                         }
                         else
                         {
-                            jws = new JWS_RS256_Param(RsaPublicKeyConverter.JwkToParam(jwkObject));
+                            RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
+                            jws = new JWS_RS256_Param(rpkc.JwkToParam(jwkObject));
                         }
                     }
                 }

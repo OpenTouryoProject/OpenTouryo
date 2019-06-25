@@ -124,9 +124,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public static bool Verify(string jwtAssertion,
             out string iss, out string aud, out string scopes, out JObject jobj, string jwkPublicKey)
         {
-            return JwtAssertion.Verify(
-                jwtAssertion, out iss, out aud, out scopes, out jobj,
-                RsaPublicKeyConverter.JwkToParam(jwkPublicKey));
+            RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
+            return JwtAssertion.Verify(jwtAssertion,
+                out iss, out aud, out scopes, out jobj,
+                rpkc.JwkToParam(jwkPublicKey));
         }
 
         /// <summary>Verify</summary>

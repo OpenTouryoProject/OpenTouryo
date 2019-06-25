@@ -20,7 +20,7 @@
 
 //**********************************************************************************
 //* クラス名        ：JWS_HMACSHA
-//* クラス日本語名  ：HSXXX JWS生成クラス
+//* クラス日本語名  ：RSnnn JWS生成クラス
 //*
 //*                  RFC 7515 - JSON Web Signature (JWS)
 //*                  > A.1.  Example JWS Using HMAC SHA-256
@@ -45,11 +45,24 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.Security.Jwt
 {
-    /// <summary>HSXXX JWS生成クラス</summary>
+    /// <summary>RSnnn JWS生成クラス</summary>
     public abstract class JWS_HMACSHA : JWS
     {
+        /// <summary>RS</summary>
+        public enum RS : int
+        {
+            /// <summary>256</summary>
+            _256,
+
+            /// <summary>384</summary>
+            _384,
+
+            /// <summary>512</summary>
+            _512
+        }
+
         #region mem & prop & constructor
-        
+
         /// <summary>キー</summary>
         public byte[] Key { get; protected set; }
 

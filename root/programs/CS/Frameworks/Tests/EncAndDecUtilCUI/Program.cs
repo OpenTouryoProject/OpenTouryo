@@ -525,7 +525,9 @@ namespace EncAndDecUtilCUI
             #endregion
 
             #region Keys
+            byte[] key = null;
             string jwk = "";
+            RsaPublicKeyConverter rpkc = null;
 
             #endregion
 
@@ -533,6 +535,14 @@ namespace EncAndDecUtilCUI
             // RS256
             JWS_RS256_X509 jWS_RS256_X509 = null;
             JWS_RS256_Param jWS_RS256_Param = null;
+
+            // RS384
+            JWS_RS384_XML jWS_RS384_XML = null;
+            JWS_RS384_Param jWS_RS384_Param = null;
+
+            // RS512
+            JWS_RS512_X509 jWS_RS512_X509 = null;
+            JWS_RS512_Param jWS_RS512_Param = null;
 
             // ES256
 #if NETCORE || NET47
@@ -551,7 +561,7 @@ namespace EncAndDecUtilCUI
             if (os.Platform == PlatformID.Win32NT)
             {
                 #region HMACSHA(HS)
-                byte[] key = CustomEncode.StringToByte("てすとてすとてすとてすと", CustomEncode.UTF_8);
+                key = CustomEncode.StringToByte("てすとてすとてすとてすと", CustomEncode.UTF_8);
 
                 // HS256 署名・検証
                 JWS_HS256 jWS_HS256 = new JWS_HS256(key);
@@ -578,14 +588,17 @@ namespace EncAndDecUtilCUI
                 MyDebug.OutputDebugAndConsole("JWS_HS512.Verify with JWK", jWS_HS512.Verify(token).ToString());
                 #endregion
 
-                #region RSA(RS256)
+                #region RSA(RS)
+
+                #region 256
                 // 署名（X509）
                 jWS_RS256_X509 = new JWS_RS256_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
                 token = jWS_RS256_X509.Create(payloadString);
                 MyDebug.InspectJwt("JWS_RS256_X509.Create", token);
 
                 // 鍵の相互変換
-                jwk = RsaPublicKeyConverter.ParamToJwk(((RSA)jWS_RS256_X509.DigitalSignX509.AsymmetricAlgorithm).ExportParameters(false));
+                rpkc = new RsaPublicKeyConverter(JWS_HMACSHA.RS._256);
+                jwk = rpkc.ParamToJwk(((RSA)jWS_RS256_X509.DigitalSignX509.AsymmetricAlgorithm).ExportParameters(false));
                 MyDebug.OutputDebugAndConsole("RSA JWK", jwk);
 
                 // 検証（X509）
@@ -593,8 +606,50 @@ namespace EncAndDecUtilCUI
                 MyDebug.OutputDebugAndConsole("JWS_RS256_X509.Verify", jWS_RS256_X509.Verify(token).ToString());
 
                 // 検証（Param）
-                jWS_RS256_Param = new JWS_RS256_Param(RsaPublicKeyConverter.JwkToParam(jwk));
+                jWS_RS256_Param = new JWS_RS256_Param(rpkc.JwkToParam(jwk));
                 MyDebug.OutputDebugAndConsole("JWS_RS256_Param.Verify", jWS_RS256_Param.Verify(token).ToString());
+                #endregion
+
+                #region 384
+                // 署名（XML）
+                jWS_RS384_XML = new JWS_RS384_XML();
+                token = jWS_RS384_XML.Create(payloadString);
+                MyDebug.InspectJwt("jWS_RS384_XML.Create", token);
+
+                // 鍵の相互変換
+                rpkc = new RsaPublicKeyConverter(JWS_HMACSHA.RS._384);
+                jwk = rpkc.XmlToJwk(jWS_RS384_XML.XMLPrivateKey);
+                MyDebug.OutputDebugAndConsole("RSA JWK", jwk);
+
+                // 検証（XML）
+                //jWS_RS384_XML = new JWS_RS384_XML(jWS_RS384_XML.XMLPrivateKey);
+                MyDebug.OutputDebugAndConsole("JWS_RS384_XML.Verify", jWS_RS384_XML.Verify(token).ToString());
+
+                // 検証（Param）
+                jWS_RS384_Param = new JWS_RS384_Param(rpkc.JwkToParam(jwk));
+                MyDebug.OutputDebugAndConsole("JWS_RS384_Param.Verify", jWS_RS384_Param.Verify(token).ToString());
+                #endregion
+
+                #region 512
+                // 署名（X509）
+                jWS_RS512_X509 = new JWS_RS512_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
+                token = jWS_RS512_X509.Create(payloadString);
+                MyDebug.InspectJwt("JWS_RS512_X509.Create", token);
+
+                // 鍵の相互変換
+                rpkc = new RsaPublicKeyConverter(JWS_HMACSHA.RS._512);
+                jwk = rpkc.ParamToJwk(((RSA)jWS_RS512_X509.DigitalSignX509.AsymmetricAlgorithm).ExportParameters(false));
+                MyDebug.OutputDebugAndConsole("RSA JWK", jwk);
+
+                // 検証（X509）
+                jWS_RS512_X509 = new JWS_RS512_X509(Program.PublicRsaX509Path, "", x509KSF);
+                MyDebug.OutputDebugAndConsole("JWS_RS512_X509.Verify", jWS_RS512_X509.Verify(token).ToString());
+
+                // 検証（Param）
+                jWS_RS512_Param = new JWS_RS512_Param(rpkc.JwkToParam(jwk));
+                MyDebug.OutputDebugAndConsole("JWS_RS512_Param.Verify", jWS_RS512_Param.Verify(token).ToString());
+                #endregion
+
                 #endregion
 
                 // DSA

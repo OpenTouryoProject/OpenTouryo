@@ -44,29 +44,17 @@ using Touryo.Infrastructure.Public.Str;
 namespace Touryo.Infrastructure.Public.Security.Jwt
 {
     /// <summary>JWS RS256生成クラス</summary>
-    public abstract class JWS_RS256 : JWS
+    public abstract class JWS_RS256 : JWS_RSA
     {
         #region mem & prop & constructor
 
-        /// <summary>_JWSHeader</summary>
-        private JWS_Header _JWSHeader = new JWS_Header
+        /// <summary>constructor</summary>
+        public JWS_RS256()
         {
-            alg = JwtConst.RS256
-        };
-
-        /// <summary>JWSHeader</summary>
-        public JWS_Header JWSHeader
-        {
-            protected set
-            {
-                this._JWSHeader = value;
-            }
-
-            get
-            {
-                return this._JWSHeader;
-            }
+            this.Init(JwtConst.RS256);
         }
+
+        #endregion
 
         /// <summary>EnumDigitalSignAlgorithm</summary>
         /// <remarks>Constructorで使うのでstaticとなった</remarks>
@@ -88,75 +76,5 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
 #endif
             }
         }
-
-        #endregion
-
-        #region RS256署名・検証
-
-        /// <summary>RS256のJWS生成メソッド</summary>
-        /// <param name="payloadJson">ペイロード部のJson文字列</param>
-        /// <returns>JWSの文字列表現</returns>
-        public override string Create(string payloadJson)
-        {
-            // ヘッダー
-            string headerJson = JsonConvert.SerializeObject(
-                this.JWSHeader,
-                new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.None,
-                    NullValueHandling = NullValueHandling.Ignore
-                });
-
-            byte[] headerBytes = CustomEncode.StringToByte(headerJson, CustomEncode.UTF_8);
-            string headerEncoded = CustomEncode.ToBase64UrlString(headerBytes);
-
-            // ペイロード
-            byte[] payloadBytes = CustomEncode.StringToByte(payloadJson, CustomEncode.UTF_8);
-            string payloadEncoded = CustomEncode.ToBase64UrlString(payloadBytes);
-
-            // 署名
-            byte[] temp = CustomEncode.StringToByte(headerEncoded + "." + payloadEncoded, CustomEncode.UTF_8);
-            string signEncoded = CustomEncode.ToBase64UrlString(this.Create2(temp)); // 派生を呼ぶ
-
-            // return JWS by RS256
-            return headerEncoded + "." + payloadEncoded + "." + signEncoded;
-        }
-
-        /// <summary>RS256のJWS検証メソッド</summary>
-        /// <param name="jwtString">JWSの文字列表現</param>
-        /// <returns>署名の検証結果</returns>
-        public override bool Verify(string jwtString)
-        {
-            string[] temp = jwtString.Split('.');
-
-            // 検証
-            JWS_Header headerObject = (JWS_Header)JsonConvert.DeserializeObject(
-                CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8), typeof(JWS_Header));
-
-            if (headerObject.alg.ToUpper() == JwtConst.RS256
-                && headerObject.typ.ToUpper() == JwtConst.JWT)
-            {
-                byte[] data = CustomEncode.StringToByte(temp[0] + "." + temp[1], CustomEncode.UTF_8);
-                byte[] sign = CustomEncode.FromBase64UrlString(temp[2]);
-                return this.Verify2(data, sign); // 派生を呼ぶ
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <summary>Create2</summary>
-        /// <param name="data">byte[]</param>
-        /// <returns>byte[]</returns>
-        protected abstract byte[] Create2(byte[] data);
-
-        /// <summary>Verify2</summary>
-        /// <param name="data">byte[]</param>
-        /// <param name="sign">byte[]</param>
-        /// <returns>bool</returns>
-        protected abstract bool Verify2(byte[] data, byte[] sign);
-
-        #endregion
     }
 }

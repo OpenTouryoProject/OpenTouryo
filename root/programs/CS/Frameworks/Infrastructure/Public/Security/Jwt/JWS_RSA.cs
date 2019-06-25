@@ -47,11 +47,11 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
     {
         #region mem & prop & constructor
 
+        /// <summary>JwtConst.RSnnn</summary>
+        protected string JwtConstRSnnn = "";
+
         /// <summary>_JWSHeader</summary>
-        private JWS_Header _JWSHeader = new JWS_Header
-        {
-            alg = JwtConst.RS256
-        };
+        private JWS_Header _JWSHeader = null;
 
         /// <summary>JWSHeader</summary>
         public JWS_Header JWSHeader
@@ -67,32 +67,19 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             }
         }
 
-        /// <summary>EnumDigitalSignAlgorithm</summary>
-        /// <remarks>Constructorで使うのでstaticとなった</remarks>
-        public static EnumDigitalSignAlgorithm DigitalSignAlgorithm
+        /// <summary>Init</summary>
+        /// <param name="jwtConstRSnnn">string</param>
+        public void Init(string jwtConstRSnnn)
         {
-            get
-            {
-#if NETSTD
-                if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-                {
-                    return EnumDigitalSignAlgorithm.RsaCSP_SHA256;
-                }
-                else
-                {
-                    return EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256;
-                }
-#else
-                return EnumDigitalSignAlgorithm.RsaCSP_SHA256;
-#endif
-            }
+            this.JwtConstRSnnn = jwtConstRSnnn;
+            this._JWSHeader = new JWS_Header() { alg = jwtConstRSnnn };
         }
 
         #endregion
 
-        #region RS256署名・検証
+        #region RSnnn署名・検証
 
-        /// <summary>RS256のJWS生成メソッド</summary>
+        /// <summary>RSnnnのJWS生成メソッド</summary>
         /// <param name="payloadJson">ペイロード部のJson文字列</param>
         /// <returns>JWSの文字列表現</returns>
         public override string Create(string payloadJson)
@@ -117,11 +104,10 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             byte[] temp = CustomEncode.StringToByte(headerEncoded + "." + payloadEncoded, CustomEncode.UTF_8);
             string signEncoded = CustomEncode.ToBase64UrlString(this.Create2(temp)); // 派生を呼ぶ
 
-            // return JWS by RS256
             return headerEncoded + "." + payloadEncoded + "." + signEncoded;
         }
 
-        /// <summary>RS256のJWS検証メソッド</summary>
+        /// <summary>RSnnnのJWS検証メソッド</summary>
         /// <param name="jwtString">JWSの文字列表現</param>
         /// <returns>署名の検証結果</returns>
         public override bool Verify(string jwtString)
@@ -132,7 +118,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             JWS_Header headerObject = (JWS_Header)JsonConvert.DeserializeObject(
                 CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8), typeof(JWS_Header));
 
-            if (headerObject.alg.ToUpper() == JwtConst.RS256
+            if (headerObject.alg.ToUpper() == this.JwtConstRSnnn
                 && headerObject.typ.ToUpper() == JwtConst.JWT)
             {
                 byte[] data = CustomEncode.StringToByte(temp[0] + "." + temp[1], CustomEncode.UTF_8);

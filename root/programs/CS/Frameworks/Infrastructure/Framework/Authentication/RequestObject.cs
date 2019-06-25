@@ -171,7 +171,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>検証結果</returns>
         public static bool Verify(string ro, out string iss, string jwkPublicKey)
         {
-            return RequestObject.Verify(ro, out iss, RsaPublicKeyConverter.JwkToParam(jwkPublicKey));
+            RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
+            return RequestObject.Verify(ro, out iss,
+                rpkc.JwkToParam(jwkPublicKey));
         }
 
         /// <summary>Verify</summary>
