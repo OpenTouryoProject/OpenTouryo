@@ -19,20 +19,19 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JWS_RS256
-//* クラス日本語名  ：JWS RS256生成クラス
+//* クラス名        ：JWS_RSnnn
+//* クラス日本語名  ：JWS RSnnn生成クラス
+//*
+//*                  RFC 7515 - JSON Web Signature (JWS)
+//*                  > A.2.  Example JWS Using RSASSA-PKCS1-v1_5 SHA-256
+//*                  https://tools.ietf.org/html/rfc7515#appendix-A.2
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2017/12/25  西野 大介         新規作成
-//*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
-//*  2018/08/15  西野 大介         後方互換から、基底クラスに変更
-//*                                （汎用認証サイトでしか使っていないと思われるため）
-//*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
-//*  2019/01/29  西野 大介         リファクタリング（プロバイダ処理を末端に）
+//*  2019/06/25  西野 大介         新規作成（分割
 //**********************************************************************************
 
 using System;
@@ -43,8 +42,8 @@ using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security.Jwt
 {
-    /// <summary>JWS RS256生成クラス</summary>
-    public abstract class JWS_RS256 : JWS
+    /// <summary>JWS RSnnn生成クラス</summary>
+    public abstract class JWS_RSA : JWS
     {
         #region mem & prop & constructor
 
