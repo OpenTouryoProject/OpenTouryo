@@ -91,11 +91,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string redirect_uri, string scopes, string state, string nonce,
             string prompt, string login_hint, ClaimsInRO claims, string jwkPrivateKey)
         {
+            RsaPrivateKeyConverter rpkc = new RsaPrivateKeyConverter();
             return RequestObject.Create(
                 iss, aud, response_type, response_mode,
                 redirect_uri, scopes, state, nonce,
                 prompt, login_hint, claims,
-                PrivateKeyConverter.JwkToRsaParam(jwkPrivateKey));
+                rpkc.JwkToParam(jwkPrivateKey));
         }
 
         /// <summary>Create</summary>

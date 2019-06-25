@@ -50,6 +50,19 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
     /// </summary>
     public abstract class JWS_RSA : JWS
     {
+        /// <summary>RS</summary>
+        public enum RS : int
+        {
+            /// <summary>256</summary>
+            _256,
+
+            /// <summary>384</summary>
+            _384,
+
+            /// <summary>512</summary>
+            _512
+        }
+
         #region mem & prop & constructor
 
         /// <summary>JwtConst.RSnnn</summary>

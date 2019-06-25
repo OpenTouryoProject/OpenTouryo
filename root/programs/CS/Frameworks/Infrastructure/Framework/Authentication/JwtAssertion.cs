@@ -64,8 +64,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public static string Create(
             string iss, string aud, TimeSpan forExp, string scopes, string jwkPrivateKey)
         {
+            RsaPrivateKeyConverter rpkc = new RsaPrivateKeyConverter(JWS_RSA.RS._256);
             return JwtAssertion.Create(iss, aud, forExp, scopes,
-                PrivateKeyConverter.JwkToRsaParam(jwkPrivateKey));
+                rpkc.JwkToParam(jwkPrivateKey));
         }
 
         /// <summary>Create</summary>

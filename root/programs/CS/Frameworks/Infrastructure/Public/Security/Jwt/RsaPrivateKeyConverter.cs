@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：PrivateKeyConverter
-//* クラス日本語名  ：PrivateKeyConverterクラス
+//* クラス名        ：RsaPrivateKeyConverter
+//* クラス日本語名  ：RsaPrivateKeyConverterクラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/11/27  西野 大介         新規作成（秘密鍵 <---> JWKサポート追加
+//*  2019/06/25  西野 大介         新規作成（分割
 //**********************************************************************************
 
 using System;
@@ -42,33 +43,37 @@ using Touryo.Infrastructure.Public.Str;
 namespace Touryo.Infrastructure.Public.Security.Jwt
 {
     /// <summary>
-    /// PrivateKeyConverterクラス
+    /// RSA関係のカギ変換処理を実装する。
     /// 秘密鍵用のミニマム実装
     /// </summary>
-    public class PrivateKeyConverter
+    public class RsaPrivateKeyConverter : RsaKeyConverter
     {
-        #region RSA
-        // 詳しくは、RsaPublicKeyConverterクラスのコメントを参照。
+        #region constructor
+        /// <summary>constructor</summary>
+        /// <param name="rsNNN">JWS_RSA.RS</param>
+        public RsaPrivateKeyConverter(JWS_RSA.RS rsNNN = JWS_RSA.RS._256) : base(rsNNN) { }
+        #endregion
 
+        #region method
         #region ParamToJwk
-        /// <summary>RsaParamToJwk</summary>
+        /// <summary>ParamToJwk</summary>
         /// <param name="rsaParameters">RSAParameters</param>
         /// <returns>Jwk公開鍵</returns>
-        public static string RsaParamToJwk(RSAParameters rsaParameters)
+        public string ParamToJwk(RSAParameters rsaParameters)
         {
-            return PrivateKeyConverter.RsaParamToJwk(rsaParameters, null);
+            return this.ParamToJwk(rsaParameters, null);
         }
 
-        /// <summary>RsaParamToJwk</summary>
+        /// <summary>ParamToJwk</summary>
         /// <param name="rsaParameters">RSAParameters</param>
         /// <param name="settings">JsonSerializerSettings</param>
         /// <returns>Jwk公開鍵</returns>
-        public static string RsaParamToJwk(RSAParameters rsaParameters, JsonSerializerSettings settings)
+        public string ParamToJwk(RSAParameters rsaParameters, JsonSerializerSettings settings)
         {
             Dictionary<string, string> dic = new Dictionary<string, string>();
 
             dic[JwtConst.kty] = JwtConst.RSA; // 必須
-            dic[JwtConst.alg] = JwtConst.RS256;
+            dic[JwtConst.alg] = this.JwtConstRSnnn;
 
             // Public
             dic[JwtConst.n] = CustomEncode.ToBase64UrlString(rsaParameters.Modulus);
@@ -102,19 +107,19 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         #endregion
 
         #region JwkToParam
-        /// <summary>JwkToRsaParam</summary>
+        /// <summary>JwkToParam</summary>
         /// <param name="jwkString">string</param>
         /// <returns>RSAParameters（公開鍵）</returns>
-        public static RSAParameters JwkToRsaParam(string jwkString)
+        public RSAParameters JwkToParam(string jwkString)
         {
-            return PrivateKeyConverter.JwkToRsaParam(
+            return this.JwkToParam(
                 JsonConvert.DeserializeObject<JObject>(jwkString));
         }
 
-        /// <summary>JwkToRsaParam</summary>
+        /// <summary>JwkToParam</summary>
         /// <param name="jwkObject">JObject</param>
         /// <returns>RSAParameters（公開鍵）</returns>
-        public static RSAParameters JwkToRsaParam(JObject jwkObject)
+        public RSAParameters JwkToParam(JObject jwkObject)
         {
             if (jwkObject[JwtConst.kty].ToString().ToUpper() == JwtConst.RSA)
             {
@@ -141,79 +146,6 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             throw new ArgumentOutOfRangeException("jwkObject", jwkObject, "Invalid");
         }
         #endregion
-
-        #endregion
-
-        #region ECDSA
-        // 詳しくは、EccPublicKeyConverterクラスのコメントを参照。
-
-#if NET45 || NET46
-#else
-        #region ParamToJwk
-        /// <summary>EcParamToJwk</summary>
-        /// <param name="ecParams">ECParameters</param>
-        /// <returns>Jwk公開鍵</returns>
-        public static string EcParamToJwk(ECParameters ecParams)
-        {
-            return PrivateKeyConverter.EcParamToJwk(ecParams, null);
-        }
-
-        /// <summary>EcParamToJwk</summary>
-        /// <param name="ecParams">ECParameters</param>
-        /// <param name="settings">JsonSerializerSettings</param>
-        /// <returns>Jwk公開鍵</returns>
-        public static string EcParamToJwk(ECParameters ecParams, JsonSerializerSettings settings)
-        {
-            Dictionary<string, string> dic = new Dictionary<string, string>();
-
-            dic[JwtConst.kty] = JwtConst.EC; // 必須
-            dic[JwtConst.alg] = JwtConst.ES256;
-
-            // 楕円曲線
-            dic[JwtConst.crv] = EccPublicKeyConverter.GetCrvStringFromECCurve(ecParams.Curve);
-            
-            // Public
-            dic[JwtConst.x] = CustomEncode.ToBase64UrlString(ecParams.Q.X);
-            dic[JwtConst.y] = CustomEncode.ToBase64UrlString(ecParams.Q.Y);
-            
-            // Private
-            dic[JwtConst.d] = CustomEncode.ToBase64UrlString(ecParams.D);
-            
-            return EccPublicKeyConverter.CreateJwkFromDictionary(dic, settings);
-        }
-        #endregion
-
-        #region JwkToParam
-        /// <summary>JwkToEccParam</summary>
-        /// <param name="jwkString">string</param>
-        /// <returns>ECParameters（公開鍵）</returns>
-        public static ECParameters JwkToEccParam(string jwkString)
-        {
-            return PrivateKeyConverter.JwkToEccParam(
-                JsonConvert.DeserializeObject<Dictionary<string, string>>(jwkString));
-        }
-
-        /// <summary>JwkToEccParam</summary>
-        /// <param name="jwk">JObject</param>
-        /// <returns>ECParameters（公開鍵）</returns>
-        public static ECParameters JwkToEccParam(Dictionary<string, string> jwk)
-        {
-            ECParameters ecParams = new ECParameters();
-
-            // 楕円曲線
-            ecParams.Curve = EccPublicKeyConverter.ECCurveDic[(string)jwk[JwtConst.crv]];
-
-            // Public
-            ecParams.Q.X = CustomEncode.FromBase64UrlString((string)jwk[JwtConst.x]);
-            ecParams.Q.Y = CustomEncode.FromBase64UrlString((string)jwk[JwtConst.y]);
-            // Private
-            ecParams.D = CustomEncode.FromBase64UrlString((string)jwk[JwtConst.d]);
-
-            return ecParams;
-        }
-        #endregion
-#endif
-
         #endregion
     }
 }

@@ -158,8 +158,11 @@
     <Compile Include="Jwt\JWS_ES384_X509.cs" />
     <Compile Include="Jwt\JWS_ES256_X509.cs" />
     <Compile Include="Jwt\JwkSet.cs" />
-    <Compile Include="Jwt\PrivateKeyConverter.cs" />
+    <Compile Include="Jwt\RsaKeyConverter.cs" />
+    <Compile Include="Jwt\RsaPrivateKeyConverter.cs" />
     <Compile Include="Jwt\RsaPublicKeyConverter.cs" />
+    <Compile Include="Jwt\EccKeyConverter.cs" />
+    <Compile Include="Jwt\EccPrivateKeyConverter.cs" />
     <Compile Include="Jwt\EccPublicKeyConverter.cs" />
     <Compile Include="KeyExg\BaseKeyExchange.cs" />
     <Compile Include="KeyExg\EcdhCngAlice.cs" />

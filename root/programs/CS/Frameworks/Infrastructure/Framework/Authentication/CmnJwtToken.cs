@@ -175,7 +175,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
 #if NET45 || NET46
                             throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
 #else
-                            jws = new JWS_ES256_Param(EccPublicKeyConverter.JwkToParam(jwkObject), false);
+                            EccPublicKeyConverter epkc = new EccPublicKeyConverter();
+                            jws = new JWS_ES256_Param(epkc.JwkToParam(jwkObject), false);
 #endif
                         }
                         else
@@ -221,7 +222,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
 #if NET45 || NET46
                             throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
 #else
-                            jws = new JWS_ES256_Param(EccPublicKeyConverter.JwkToParam(jwkObject), false);
+                            EccPublicKeyConverter epkc = new EccPublicKeyConverter();
+                            jws = new JWS_ES256_Param(epkc.JwkToParam(jwkObject), false);
 #endif
                         }
                         else

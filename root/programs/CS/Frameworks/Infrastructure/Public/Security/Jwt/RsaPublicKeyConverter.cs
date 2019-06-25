@@ -52,42 +52,15 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
     /// 基本的に変換先は公開鍵。変換元は秘密鍵も扱える。
     /// X.509 or Xml 鍵 → RSAProvider(RSAParameters)（公開鍵）⇔ Xml or Jwk 公開鍵
     /// </summary>
-    public class RsaPublicKeyConverter
+    public class RsaPublicKeyConverter : RsaKeyConverter
     {
         #region constructor
-        /// <summary>アルゴリズム</summary>
-        private JWS_HMACSHA.RS RSnnn = JWS_HMACSHA.RS._256;
-        /// <summary>アルゴリズム</summary>
-        private string HashName = HashNameConst.SHA256;
-        /// <summary>アルゴリズム</summary>
-        private EnumHashAlgorithm HashAlgorithm = EnumHashAlgorithm.SHA256_M;
-
         /// <summary>constructor</summary>
-        /// <param name="rsNNN">(JWS_HMACSHA.RS</param>
-        public RsaPublicKeyConverter(JWS_HMACSHA.RS rsNNN = JWS_HMACSHA.RS._256)
-        {
-            this.RSnnn = rsNNN;
-
-            switch (this.RSnnn)
-            {
-                case JWS_HMACSHA.RS._256:
-                    this.HashName = HashNameConst.SHA256;
-                    this.HashAlgorithm = EnumHashAlgorithm.SHA256_M;
-                    break;
-
-                case JWS_HMACSHA.RS._384:
-                    this.HashName = HashNameConst.SHA384;
-                    this.HashAlgorithm = EnumHashAlgorithm.SHA384_M;
-                    break;
-
-                case JWS_HMACSHA.RS._512:
-                    this.HashName = HashNameConst.SHA384;
-                    this.HashAlgorithm = EnumHashAlgorithm.SHA384_M;
-                    break;
-            }
-        }
+        /// <param name="rsNNN">JWS_RSA.RS</param>
+        public RsaPublicKeyConverter(JWS_RSA.RS rsNNN = JWS_RSA.RS._256) : base(rsNNN) { }
         #endregion
 
+        #region method
         // 保存鍵間のフォーマット変換
         #region X.509 or Xml 鍵 → Xml or Jwk 公開鍵
 
@@ -276,17 +249,17 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             // Public
             switch (this.RSnnn)
             {
-                case JWS_HMACSHA.RS._256:
+                case JWS_RSA.RS._256:
                     dsXML = new DigitalSignXML(xmlKey, JWS_RS256.DigitalSignAlgorithm);
                     dsXML = new DigitalSignXML(dsXML.PublicKey, JWS_RS256.DigitalSignAlgorithm);
                     break;
 
-                case JWS_HMACSHA.RS._384:
+                case JWS_RSA.RS._384:
                     dsXML = new DigitalSignXML(xmlKey, JWS_RS384.DigitalSignAlgorithm);
                     dsXML = new DigitalSignXML(dsXML.PublicKey, JWS_RS384.DigitalSignAlgorithm);
                     break;
 
-                case JWS_HMACSHA.RS._512:
+                case JWS_RSA.RS._512:
                     dsXML = new DigitalSignXML(xmlKey, JWS_RS512.DigitalSignAlgorithm);
                     dsXML = new DigitalSignXML(dsXML.PublicKey, JWS_RS512.DigitalSignAlgorithm);
                     break;
@@ -377,21 +350,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             Dictionary<string, string> dic = new Dictionary<string, string>();
 
             dic[JwtConst.kty] = JwtConst.RSA; // 必須
-
-            switch (this.RSnnn)
-            {
-                case JWS_HMACSHA.RS._256:
-                    dic[JwtConst.alg] = JwtConst.RS256;
-                    break;
-
-                case JWS_HMACSHA.RS._384:
-                    dic[JwtConst.alg] = JwtConst.RS384;
-                    break;
-
-                case JWS_HMACSHA.RS._512:
-                    dic[JwtConst.alg] = JwtConst.RS512;
-                    break;
-            }
+            dic[JwtConst.alg] = this.JwtConstRSnnn;
 
             // Public
             dic[JwtConst.n] = CustomEncode.ToBase64UrlString(param.Modulus);
@@ -493,6 +452,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
 
         #endregion
 
+        #endregion
         #endregion
     }
 }

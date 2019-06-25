@@ -51,7 +51,9 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         private DigitalSignECDsaOpenSsl DigitalSignECDsaOpenSsl { get; set; }
 #endif
 
+        /// <summary>OperatingSystem</summary>
         private OperatingSystem os = Environment.OSVersion;
+
         /// <summary>秘密鍵のECParameters</summary>
         public ECParameters ECDsaPrivateParameters
         {
