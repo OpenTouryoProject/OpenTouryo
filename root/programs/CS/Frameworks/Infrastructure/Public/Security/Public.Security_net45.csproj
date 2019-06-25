@@ -128,7 +128,10 @@
     <Compile Include="Jwt\JWE_RsaOaepAesGcm_X509.cs" />
     <Compile Include="Jwt\JWS.cs" />
     <Compile Include="Jwt\JWS_Header.cs" />
+    <Compile Include="Jwt\JWS_HMACSHA.cs" />
     <Compile Include="Jwt\JWS_HS256.cs" />
+    <Compile Include="Jwt\JWS_HS384.cs" />
+    <Compile Include="Jwt\JWS_HS512.cs" />
     <Compile Include="Jwt\JWS_RS256.cs" />
     <Compile Include="Jwt\JWS_RS256_Param.cs" />
     <Compile Include="Jwt\JWS_RS256_X509.cs" />

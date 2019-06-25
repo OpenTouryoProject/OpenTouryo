@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JWS_HS256
-//* クラス日本語名  ：HS256 JWS生成
+//* クラス名        ：JWS_HS512
+//* クラス日本語名  ：HS512 JWS生成
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -28,46 +28,43 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/01/13  西野 大介         新規作成
-//*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
-//*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
-//*  2018/08/15  西野 大介         jwks_uri & kid 対応
 //**********************************************************************************
 
 using System.Security.Cryptography;
 
 namespace Touryo.Infrastructure.Public.Security.Jwt
 {
-    /// <summary>HS256 JWS生成クラス</summary>
-    public class JWS_HS256 : JWS_HMACSHA
+    /// <summary>HS512 JWS生成クラス</summary>
+    public class JWS_HS512 : JWS_HMACSHA
     {
         #region mem & prop & constructor
         
         /// <summary>Constructor</summary>
         /// <param name="key">byte[]</param>
-        public JWS_HS256(byte[] key)
+        public JWS_HS512(byte[] key)
         {
-            this.JwtConstHSnnn = JwtConst.HS256;
+            this.JwtConstHSnnn = JwtConst.HS512;
             base.Init(key);
         }
 
         /// <summary>Constructor</summary>
         /// <param name="jwkString">string</param>
-        public JWS_HS256(string jwkString)
+        public JWS_HS512(string jwkString)
         {
-            this.JwtConstHSnnn = JwtConst.HS256;
+            this.JwtConstHSnnn = JwtConst.HS512;
             base.Init(jwkString);
         }
 
         #endregion
 
-        #region HS256署名・検証
+        #region HS512署名・検証
 
-        /// <summary>HMACSHA256生成</summary>
+        /// <summary>HMACSHA512生成</summary>
         /// <param name="key">byte[]</param>
-        /// <returns>HMACSHA256</returns>
+        /// <returns>HMACSHA512</returns>
         public override HMAC CreateHMACSHA(byte[] key)
         {
-            return new HMACSHA256(key);
+            return new HMACSHA512(key);
         }
 
         #endregion

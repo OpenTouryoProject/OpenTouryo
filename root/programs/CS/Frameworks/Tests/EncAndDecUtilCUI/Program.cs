@@ -550,6 +550,34 @@ namespace EncAndDecUtilCUI
             #region Jws
             if (os.Platform == PlatformID.Win32NT)
             {
+                #region HMACSHA(HS)
+                byte[] key = CustomEncode.StringToByte("てすとてすとてすとてすと", CustomEncode.UTF_8);
+
+                // HS256 署名・検証
+                JWS_HS256 jWS_HS256 = new JWS_HS256(key);
+                token = jWS_HS256.Create(payloadString);
+                MyDebug.InspectJwt("JWS_HS256.Create", token);
+                MyDebug.OutputDebugAndConsole("JWS_HS256.Verify", jWS_HS256.Verify(token).ToString());
+
+                // HS384 署名・検証
+                JWS_HS384 jWS_HS384 = new JWS_HS384(key);
+                token = jWS_HS384.Create(payloadString);
+                MyDebug.InspectJwt("JWS_HS384.Create", token);
+                MyDebug.OutputDebugAndConsole("JWS_HS384.Verify", jWS_HS384.Verify(token).ToString());
+
+                // HS512 署名・検証
+                JWS_HS512 jWS_HS512 = new JWS_HS512(key);
+                token = jWS_HS512.Create(payloadString);
+                MyDebug.InspectJwt("JWS_HS512.Create", token);
+                MyDebug.OutputDebugAndConsole("JWS_HS512.Verify", jWS_HS512.Verify(token).ToString());
+
+                // JWKを使用
+                jWS_HS512 = new JWS_HS512(jWS_HS512.JWK);
+                token = jWS_HS512.Create(payloadString);
+                MyDebug.InspectJwt("JWS_HS512.Create with JWK", token);
+                MyDebug.OutputDebugAndConsole("JWS_HS512.Verify with JWK", jWS_HS512.Verify(token).ToString());
+                #endregion
+
                 #region RSA(RS256)
                 // 署名（X509）
                 jWS_RS256_X509 = new JWS_RS256_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);

@@ -19,8 +19,8 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：JWS_HS256
-//* クラス日本語名  ：HS256 JWS生成
+//* クラス名        ：JWS_HS384
+//* クラス日本語名  ：HS384 JWS生成
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -37,37 +37,37 @@ using System.Security.Cryptography;
 
 namespace Touryo.Infrastructure.Public.Security.Jwt
 {
-    /// <summary>HS256 JWS生成クラス</summary>
-    public class JWS_HS256 : JWS_HMACSHA
+    /// <summary>HS384 JWS生成クラス</summary>
+    public class JWS_HS384 : JWS_HMACSHA
     {
         #region mem & prop & constructor
         
         /// <summary>Constructor</summary>
         /// <param name="key">byte[]</param>
-        public JWS_HS256(byte[] key)
+        public JWS_HS384(byte[] key)
         {
-            this.JwtConstHSnnn = JwtConst.HS256;
+            this.JwtConstHSnnn = JwtConst.HS384;
             base.Init(key);
         }
 
         /// <summary>Constructor</summary>
         /// <param name="jwkString">string</param>
-        public JWS_HS256(string jwkString)
+        public JWS_HS384(string jwkString)
         {
-            this.JwtConstHSnnn = JwtConst.HS256;
+            this.JwtConstHSnnn = JwtConst.HS384;
             base.Init(jwkString);
         }
 
         #endregion
 
-        #region HS256署名・検証
+        #region HS384署名・検証
 
-        /// <summary>HMACSHA256生成</summary>
+        /// <summary>HMACSHA384生成</summary>
         /// <param name="key">byte[]</param>
-        /// <returns>HMACSHA256</returns>
+        /// <returns>HMACSHA384</returns>
         public override HMAC CreateHMACSHA(byte[] key)
         {
-            return new HMACSHA256(key);
+            return new HMACSHA384(key);
         }
 
         #endregion
