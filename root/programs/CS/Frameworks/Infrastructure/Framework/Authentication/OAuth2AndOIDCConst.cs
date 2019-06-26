@@ -123,14 +123,17 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>IDToken</summary>
         public const string IDToken = "id_token";
 
+        /// <summary>token_type</summary>
+        public const string token_type = "token_type";
+
+        /// <summary>expires_in</summary>
+        public const string expires_in = "expires_in";
+
         /// <summary>assertion</summary>
         public const string assertion = "assertion";
         #endregion
 
         #region WebAPI
-
-        /// <summary>token</summary>
-        public const string token_type = "token_type";
 
         /// <summary>token_type_hint</summary>
         public const string token_type_hint = "token_type_hint";

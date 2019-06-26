@@ -59,7 +59,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="response">string</param>
         /// <param name="jobj">out JObject</param>
         /// <returns>検証結果</returns>
-        public static bool Verify(string response, JObject jobj)
+        public static bool Verify(string response, out JObject jobj)
         {
             // JWS検証
             string jwtPayload = "";
@@ -119,6 +119,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             else
             {
                 // JWTの署名検証に失敗
+                jobj = null;
             }
 
             // 認証に失敗

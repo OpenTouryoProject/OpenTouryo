@@ -48,17 +48,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
     public class CmnJwtToken
     {
         /// <summary>汎用認証サイトの発行したJWT形式のTokenを検証する。</summary>
-        /// <param name="jwtToken">
-        /// JWT形式のTokenで以下の項目が必要
-        ///  - iss
-        ///  - aud
-        ///  - iat
-        ///  - exp
-        ///  - sub
-        ///  - roles  (option)
-        ///  - scopes (option)
-        ///  - その他 (option)
-        /// </param>
+        /// <param name="jwtToken">JWT形式のToken</param>
         /// <param name="jwtPayload">
         /// JWS, JWS + JEWの場合があるのでペイロードを返す。
         /// </param>
