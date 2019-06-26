@@ -126,6 +126,7 @@
     <Compile Include="Authentication\AccessToken.cs" />
     <Compile Include="Authentication\IdToken.cs" />
     <Compile Include="Authentication\RequestObject.cs" />
+    <Compile Include="Authentication\ResponseObject.cs" />
     <Compile Include="Authentication\JwtAssertion.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCClient.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCConst.cs" />

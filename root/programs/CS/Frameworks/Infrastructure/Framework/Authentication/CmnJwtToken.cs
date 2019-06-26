@@ -70,11 +70,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
             JWE jwe = null;
             JWS jws = null;
 
-            // 復号化
-            bool isFAPI2 = false;
+            // 復号化（JWEの場合）
+            bool isJWE_FAPI2 = false;
             if (3 < jwtToken.Split('.').Length)
             {
-                isFAPI2 = true;
+                isJWE_FAPI2 = true;
 
                 // ヘッダ
                 JWE_Header jweHeader = JsonConvert.DeserializeObject<JWE_Header>(
@@ -102,7 +102,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
             else
             {
-                isFAPI2 = false;
+                isJWE_FAPI2 = false;
             }
 
             // 検証
@@ -110,17 +110,16 @@ namespace Touryo.Infrastructure.Framework.Authentication
             JWS_Header jwsHeader = JsonConvert.DeserializeObject<JWS_Header>(
                 CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(jwtToken.Split('.')[0]), CustomEncode.UTF_8));
 
-            if (jwsHeader.alg == JwtConst.ES256 && isFAPI2) { } // 正常
-            else if (jwsHeader.alg == JwtConst.RS256 && !isFAPI2) { } // 正常
+            if (jwsHeader.alg == JwtConst.ES256 && isJWE_FAPI2) { } // 正常
+            else if (jwsHeader.alg == JwtConst.RS256 && !isJWE_FAPI2) { } // 正常
             else { throw new NotSupportedException("Unexpected combination of JWS and JWE."); }
 
             // 証明書を使用するか、Jwkを使用するか判定
             if (string.IsNullOrEmpty(jwsHeader.jku)
                 || string.IsNullOrEmpty(jwsHeader.kid))
             {
-                // 旧バージョン
-                // 証明書を使用
-                if (isFAPI2)
+                // 旧バージョン（証明書を使用
+                if (isJWE_FAPI2)
                 {
 #if NET45 || NET46
                     throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
@@ -135,11 +134,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
             else
             {
-                // 新バージョン
-
-                // Client or AuthZ(検証用
+                // 新バージョン（Jwkを使用
                 if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
                 {
+                    // jku(jwks_uri)使用のカバレッジ
+
                     // Client側
                     JObject jwkObject = JwkSetStore.GetInstance().GetJwkObject(jwsHeader.kid);
 
@@ -154,7 +153,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     if (jwkObject == null)
                     {
                         // 証明書を使用
-                        if (isFAPI2)
+                        if (isJWE_FAPI2)
                         {
 #if NET45 || NET46
                             throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
@@ -170,7 +169,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     else
                     {
                         // Jwkを使用
-                        if (isFAPI2)
+                        if (isJWE_FAPI2)
                         {
 #if NET45 || NET46
                             throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
@@ -188,8 +187,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 }
                 else
                 {
-                    // AuthZ側(検証用カバレッジ
-                    // ※ AuthZ側でClient側テストを行うためのカバレージ
+                    // JwkSet使用のカバレッジ
+                    // AuthZ側でClient側テストを行うためのカバレージ
                     JObject jwkObject = null;
 
                     if (ResourceLoader.Exists(OAuth2AndOIDCParams.JwkSetFilePath, false))
@@ -201,7 +200,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     if (jwkObject == null)
                     {
                         // 証明書を使用
-                        if (isFAPI2)
+                        if (isJWE_FAPI2)
                         {
 #if NET45 || NET46
                             throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
@@ -217,7 +216,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     else
                     {
                         // Jwkを使用
-                        if (isFAPI2)
+                        if (isJWE_FAPI2)
                         {
 #if NET45 || NET46
                             throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");

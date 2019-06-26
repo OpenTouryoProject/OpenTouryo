@@ -1,4 +1,5 @@
-﻿//**********************************************************************************
+﻿
+//**********************************************************************************
 //* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
@@ -19,19 +20,15 @@
 #endregion
 
 //**********************************************************************************
-//* クラス名        ：AccessToken
-//* クラス日本語名  ：AccessToken
+//* クラス名        ：ResponseObject
+//* クラス日本語名  ：ResponseObject
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
 //* 
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2017/09/07  西野 大介         新規作成
-//*  2017/11/29  西野 大介         DateTimeOffset.ToUnixTimeSecondsの前方互換メソッドの使用
-//*  2018/03/28  西野 大介         .NET Standard対応で、幾らか、I/F変更あり。
-//*  2018/11/28  西野 大介         証明書 & Jwk対応 + jkuチェック対応の追加
-//*  2018/11/28  西野 大介         リネーム（JwtToken -> AccessToken）
+//*  2019/06/26  西野 大介         新規作成
 //**********************************************************************************
 
 using System;
@@ -47,43 +44,26 @@ using Touryo.Infrastructure.Public.Util;
 namespace Touryo.Infrastructure.Framework.Authentication
 {
     /// <summary>
-    /// OAuth2やOIDC関連のAccessToken処理
+    /// OAuth2やOIDC(FAPI2)関連のResponseObject処理
+    /// 正確には、JWT Secured Authorization Response Mode for OAuth 2.0 (JARM)
+
     /// </summary>
-    public class AccessToken
+    public class ResponseObject
     {
         #region Create
         // AuthZに実装（パラメタ体系が違うため）
         #endregion
 
         #region Verify
-        /// <summary>汎用認証サイトの発行したAccessTokenを検証する。</summary>
-        /// <param name="access_token">
-        /// AccessTokenで以下の項目が必要
-        ///  - iss
-        ///  - aud
-        ///  - iat
-        ///  - exp
-        ///  - sub
-        ///  - roles  (option)
-        ///  - scopes (option)
-        ///  - その他 (option)
-        /// </param>
-        /// <param name="sub">out string</param>
-        /// <param name="roles">out List(string)</param>
-        /// <param name="scopes">out List(string)</param>
+        /// <summary>汎用認証サイトの発行したResponseObjectを検証する。</summary>
+        /// <param name="response">string</param>
         /// <param name="jobj">out JObject</param>
         /// <returns>検証結果</returns>
-        public static bool Verify(string access_token,
-            out string sub, out List<string> roles, out List<string> scopes, out JObject jobj)
+        public static bool Verify(string response, JObject jobj)
         {
-            sub = "";
-            roles = new List<string>();
-            scopes = new List<string>();
-            jobj = null;
-
             // JWS検証
             string jwtPayload = "";
-            if (CmnJwtToken.Verify(access_token, out jwtPayload))
+            if (CmnJwtToken.Verify(response, out jwtPayload))
             {
                 jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
 
@@ -93,17 +73,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 string aud = (string)jobj[OAuth2AndOIDCConst.aud];
                 //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
                 string exp = (string)jobj[OAuth2AndOIDCConst.exp];
-
-                sub = (string)jobj[OAuth2AndOIDCConst.sub];
-
-                if (jobj[OAuth2AndOIDCConst.Scope_Roles] != null)
-                {
-                    roles = JsonConvert.DeserializeObject<List<string>>(jobj[OAuth2AndOIDCConst.Scope_Roles].ToString());
-                }
-                if (jobj[OAuth2AndOIDCConst.scopes] != null)
-                {
-                    scopes = JsonConvert.DeserializeObject<List<string>>(jobj[OAuth2AndOIDCConst.scopes].ToString());
-                }
 
                 long unixTimeSeconds = 0;
 #if NET45

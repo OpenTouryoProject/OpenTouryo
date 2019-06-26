@@ -80,7 +80,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
     public class IdToken
     {
         #region Create
-        // AuthZに移動
+        // AuthZに実装（パラメタ体系が違うため）
         #endregion
 
         #region Verify
@@ -90,9 +90,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="access_token">string</param>
         /// <param name="code">string</param>
         /// <param name="state">string</param>
-        /// <param name="sub">string</param>
-        /// <param name="nonce">string</param>
-        /// <param name="jobj">JObject</param>
+        /// <param name="sub">out string</param>
+        /// <param name="nonce">out string</param>
+        /// <param name="jobj">out JObject</param>
         /// <returns>検証結果</returns>
         public static bool Verify(string id_token,
             string access_token, string code, string state,

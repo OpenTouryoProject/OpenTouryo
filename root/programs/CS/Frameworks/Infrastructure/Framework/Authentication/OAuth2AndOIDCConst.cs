@@ -63,9 +63,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>scope</summary>
         public const string scope = "scope";
 
-        #region RequestObject
+        #region RequestObject & JARM
         /// <summary>request</summary>
         public const string request = "request";
+
+        /// <summary>request</summary>
+        public const string response = "response";
 
         /// <summary>request_uri</summary>
         public const string request_uri = "request_uri";
@@ -117,6 +120,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>token</summary>
         public const string token = "token";
 
+        /// <summary>IDToken</summary>
+        public const string IDToken = "id_token";
+
         /// <summary>assertion</summary>
         public const string assertion = "assertion";
         #endregion
@@ -141,8 +147,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>RefreshToken</summary>
         public const string RefreshToken = "refresh_token";
 
-        /// <summary>IDToken</summary>
-        public const string IDToken = "id_token";
+        ///// <summary>IDToken</summary> // 移動
+        //public const string IDToken = "id_token";
 
         #endregion
 

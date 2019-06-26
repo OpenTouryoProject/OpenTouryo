@@ -47,7 +47,19 @@ namespace Touryo.Infrastructure.Framework.Authentication
             fragment,
 
             /// <summary>form_post</summary>
-            form_post
+            form_post,
+
+            /// <summary>jwt</summary>
+            jwt,
+
+            /// <summary>query.jwt</summary>
+            query_jwt,
+
+            /// <summary>fragment.jwt</summary>
+            fragment_jwt,
+
+            /// <summary>form_post.jwt</summary>
+            form_post_jwt
         }
 
         #endregion

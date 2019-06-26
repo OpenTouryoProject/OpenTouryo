@@ -161,9 +161,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
         }
         #endregion
 
-        // c# - Convert JObject into Dictionary<string, object>. Is it possible? - Stack Overflow
-        // https://stackoverflow.com/questions/14886800/convert-jobject-into-dictionarystring-object-is-it-possible
-
         #region Verify
         /// <summary>Verify</summary>
         /// <param name="ro">string</param>
