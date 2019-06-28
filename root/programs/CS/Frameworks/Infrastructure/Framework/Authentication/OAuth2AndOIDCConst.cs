@@ -515,5 +515,52 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #endregion
 
         #endregion
+
+        #region Error
+
+        /// <summary>error</summary>
+        public const string error = "error";
+
+        #region error値
+        /// <summary>invalid_request</summary>
+        public const string invalid_request = "invalid_request";
+
+        /// <summary>invalid_client</summary>
+        public const string invalid_client = "invalid_client";
+
+        /// <summary>unauthorized_client</summary>
+        public const string unauthorized_client = "unauthorized_client";
+
+        /// <summary>invalid_grant</summary>
+        public const string invalid_grant = "invalid_grant";
+
+        /// <summary>unsupported_grant_type</summary>
+        public const string unsupported_grant_type = "unsupported_grant_type";
+
+        /// <summary>access_denied</summary>
+        public const string access_denied = "access_denied";
+
+        /// <summary>unsupported_response_type</summary>
+        public const string unsupported_response_type = "unsupported_response_type";
+
+        /// <summary>invalid_scope</summary>
+        public const string invalid_scope = "invalid_scope";
+
+        /// <summary>server_error</summary>
+        public const string server_error = "server_error";
+
+        /// <summary>temporarily_unavailable</summary>
+        public const string temporarily_unavailable = "temporarily_unavailable";
+        #endregion
+
+        /// <summary>error_description</summary>
+        public const string error_description = "error_description";
+
+        /// <summary>error_uri</summary>
+        public const string error_uri = "error_uri";
+
+        // urnは無し。
+
+        #endregion
     }
 }

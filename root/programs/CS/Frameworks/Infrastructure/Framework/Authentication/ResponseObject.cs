@@ -69,49 +69,59 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
                 #region クレーム検証
 
-                string iss = (string)jobj[OAuth2AndOIDCConst.iss];
-                string aud = (string)jobj[OAuth2AndOIDCConst.aud];
-                //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
-                string exp = (string)jobj[OAuth2AndOIDCConst.exp];
+                if (jobj.ContainsKey(OAuth2AndOIDCConst.error))
+                {
+                    // errorの場合
+                    return true;
+                }
+                else
+                {
+                    // errorでない場合
 
-                long unixTimeSeconds = 0;
+                    string iss = (string)jobj[OAuth2AndOIDCConst.iss];
+                    string aud = (string)jobj[OAuth2AndOIDCConst.aud];
+                    //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
+                    string exp = (string)jobj[OAuth2AndOIDCConst.exp];
+
+                    long unixTimeSeconds = 0;
 #if NET45
-                unixTimeSeconds = PubCmnFunction.ToUnixTime(DateTimeOffset.Now);
+                    unixTimeSeconds = PubCmnFunction.ToUnixTime(DateTimeOffset.Now);
 #else
-                unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
+                    unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
 #endif
 
-                if (iss == CmnClientParams.Isser &&
-                    long.Parse(exp) >= unixTimeSeconds)
-                {
-                    if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
+                    if (iss == CmnClientParams.Isser &&
+                        long.Parse(exp) >= unixTimeSeconds)
                     {
-                        // Client側
-                        if (aud == OAuth2AndOIDCParams.ClientID)
+                        if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
                         {
-                            // OAuth2 Clientバージョンの実装で成功
-                            return true;
-                        }
-                        else if (OAuth2AndOIDCParams.ClientIDs.Any(x => x == aud))
-                        {
-                            // OAuth2 ResourcesServerバージョンの実装で成功
-                            return true;
+                            // Client側
+                            if (aud == OAuth2AndOIDCParams.ClientID)
+                            {
+                                // OAuth2 Clientバージョンの実装で成功
+                                return true;
+                            }
+                            else if (OAuth2AndOIDCParams.ClientIDs.Any(x => x == aud))
+                            {
+                                // OAuth2 ResourcesServerバージョンの実装で成功
+                                return true;
+                            }
+                            else
+                            {
+                                // JWTの内容検証に失敗
+                            }
                         }
                         else
                         {
-                            // JWTの内容検証に失敗
+                            // AuthZ側（検証用カバレッジ
+                            // OAuth2 AuthZバージョンの実装で成功
+                            return true;
                         }
                     }
                     else
                     {
-                        // AuthZ側（検証用カバレッジ
-                        // OAuth2 AuthZバージョンの実装で成功
-                        return true;
+                        // JWTの内容検証に失敗
                     }
-                }
-                else
-                {
-                    // JWTの内容検証に失敗
                 }
 
                 #endregion
