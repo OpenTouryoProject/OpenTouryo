@@ -82,7 +82,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // - 共通
             xmlString = xmlString.Replace("{ID}", id);
             xmlString = xmlString.Replace("{Issuer}", issuer);
-            xmlString = xmlString.Replace("{IssueInstant}", FormatConverter.ToSamlTimestamp(DateTime.UtcNow));
+            xmlString = xmlString.Replace("{IssueInstant}", FormatConverter.ToW3cTimestamp(DateTime.UtcNow));
 
             // - ...
             xmlString = xmlString.Replace("{UrnNameIDFormat}", urnNameIDFormatString);            
@@ -143,7 +143,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // 可変値
             // - 共通
             xmlString = xmlString.Replace("{ID}", id);
-            xmlString = xmlString.Replace("{IssueInstant}", FormatConverter.ToSamlTimestamp(DateTime.UtcNow));
+            xmlString = xmlString.Replace("{IssueInstant}", FormatConverter.ToW3cTimestamp(DateTime.UtcNow));
             xmlString = xmlString.Replace("{Issuer}", issuer);
 
             // - Response固有
@@ -205,12 +205,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
             xmlString = xmlString.Replace("{UrnAuthnContextClassRef}", urnAuthnContextClassRefString);
 
             // - 時間関連
-            string utcNow = FormatConverter.ToSamlTimestamp(DateTime.UtcNow);
+            string utcNow = FormatConverter.ToW3cTimestamp(DateTime.UtcNow);
             xmlString = xmlString.Replace("{IssueInstant}", utcNow);
             xmlString = xmlString.Replace("{AuthnInstant}", utcNow);
             xmlString = xmlString.Replace("{NotBefore}", utcNow);
 
-            string utcExpires = FormatConverter.ToSamlTimestamp(DateTime.UtcNow.AddSeconds(expiresFromSecond));
+            string utcExpires = FormatConverter.ToW3cTimestamp(DateTime.UtcNow.AddSeconds(expiresFromSecond));
             xmlString = xmlString.Replace("{NotOnOrAfter}", utcExpires);
 
             // - SP関連

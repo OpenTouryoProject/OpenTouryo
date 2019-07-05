@@ -63,7 +63,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>scope</summary>
         public const string scope = "scope";
 
-        #region RequestObject & JARM
+        #region RequestObject & ResponseObject(JARM)
         /// <summary>request</summary>
         public const string request = "request";
 
@@ -95,10 +95,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>claims_values</summary>
         public const string claims_values = "values";
         #endregion
-        
+
         #endregion
 
         #region Option
+
+        /// <summary>max_age</summary>
+        public const string max_age = "max_age";
 
         /// <summary>prompt</summary>
         public const string prompt = "prompt";
@@ -381,6 +384,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// </summary>
         public const string azp = "azp";
 
+        /// <summary>
+        /// auth_time（max_age が含まれていた場合は必須
+        /// </summary>
+        public const string auth_time = "auth_time";
+
         #endregion
 
         #region urn
@@ -401,6 +409,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>azpクレームのurn</summary>
         public static readonly string UrnAzpClaim = UrnClaimBase + azp;
+
+        /// <summary>auth_timeクレームのurn</summary>
+        public static readonly string UrnAuthTimeClaim = UrnClaimBase + auth_time;
         #endregion
 
         #endregion

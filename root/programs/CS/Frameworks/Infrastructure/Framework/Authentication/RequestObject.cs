@@ -67,9 +67,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         // 以下はI/F上に含めない。
         // - display ... promptの形式
         // - ui_locales ... UICulture的な
-        // - max_age ... 最大認証期間
         // - id_token_hint ... 以前のid_token（再認証）
-        // acr_values(これは、claimsでサポート)
 
         #region Create
         /// <summary>Create</summary>
@@ -81,6 +79,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="scopes">string</param>
         /// <param name="state">string</param>
         /// <param name="nonce">string</param>
+        /// <param name="max_age">string</param>
         /// <param name="prompt">string</param>
         /// <param name="login_hint">string</param>
         /// <param name="claims">ClaimsInRO</param>
@@ -89,13 +88,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public static string Create(
             string iss, string aud, string response_type, string response_mode,
             string redirect_uri, string scopes, string state, string nonce,
-            string prompt, string login_hint, ClaimsInRO claims, string jwkPrivateKey)
+            string max_age, string prompt, string login_hint, ClaimsInRO claims, string jwkPrivateKey)
         {
             RsaPrivateKeyConverter rpkc = new RsaPrivateKeyConverter();
             return RequestObject.Create(
                 iss, aud, response_type, response_mode,
                 redirect_uri, scopes, state, nonce,
-                prompt, login_hint, claims,
+                max_age, prompt, login_hint, claims,
                 rpkc.JwkToParam(jwkPrivateKey));
         }
 
@@ -108,6 +107,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="scopes">string</param>
         /// <param name="state">string</param>
         /// <param name="nonce">string</param>
+        /// <param name="max_age">string</param>
         /// <param name="prompt">string</param>
         /// <param name="login_hint">string</param>
         /// <param name="claims">ClaimsInRO</param>
@@ -116,7 +116,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public static string Create(
             string iss, string aud, string response_type, string response_mode,
             string redirect_uri, string scopes, string state, string nonce,
-            string prompt, string login_hint, ClaimsInRO claims, RSAParameters rsaPrivateKey)
+            string max_age, string prompt, string login_hint, ClaimsInRO claims, RSAParameters rsaPrivateKey)
         {
             string json = "";
             //string jws = "";
@@ -141,6 +141,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             if (!string.IsNullOrEmpty(nonce))
                 requestObjectClaimSet.Add(OAuth2AndOIDCConst.nonce, nonce);
+            if (!string.IsNullOrEmpty(max_age))
+                requestObjectClaimSet.Add(OAuth2AndOIDCConst.max_age, max_age);
             if (!string.IsNullOrEmpty(prompt))
                 requestObjectClaimSet.Add(OAuth2AndOIDCConst.prompt, prompt);
             if (!string.IsNullOrEmpty(login_hint))

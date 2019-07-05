@@ -535,11 +535,10 @@ namespace Touryo.Infrastructure.Public.Str
         // ＜解説＞
         // - YMDがそれぞれ年月日、hmsがそれぞれ時分秒
         // - 小数点以下の秒を表記する場合、桁数に制限はない。
+        // - 年月日と時分秒はアルファベットの T で区切りる。
         // - TZDはタイムゾーンを示す部分
-        //   - 年月日と時分秒はアルファベットの T で区切りる。
-        //   - UTC（協定世界時＝グリニッジ標準時）
-        //     - UTCで表記している場合、Z を記述
-        //     - UTCとの時差を+09:00などと示す。
+        //   - UTC（協定世界時＝グリニッジ標準時）で表記している場合、Z を記述
+        //   - UTCでない場合、UTCとの時差を+hh:mm or -hh:mm（、例えば、+09:00）と記述
 
         #region UNIX時間
 
@@ -569,23 +568,26 @@ namespace Touryo.Infrastructure.Public.Str
 
         #endregion
 
-        #region SAML時間
+        #region W3C時間
 
-        /// <summary>Saml Timestampに変換するメソッド</summary>
+        /// <summary>W3C Timestampに変換するメソッド</summary>
         /// <param name="utc">DateTime</param>
-        /// <returns>Saml Timestamp</returns>
-        public static string ToSamlTimestamp(DateTime utc)
+        /// <param name="format">string</param>
+        /// <returns>W3C Timestamp</returns>
+        public static string ToW3cTimestamp(DateTime utc, string format = "yyyy-MM-ddTHH:mm:ssZ")
         {
-            return utc.ToString("s") + "Z";
+            // https://adamprescott.net/2012/12/05/net-datetime-to-w3c-format/
+            return DateTime.SpecifyKind(utc, DateTimeKind.Utc).ToString(format);
         }
 
-        /// <summary>Saml Timestampから変換するメソッド</summary>
-        /// <param name="samlTimestamp">string</param>
+        /// <summary>W3C Timestampから変換するメソッド</summary>
+        /// <param name="w3cTimestamp">string</param>
         /// <returns>DateTime</returns>
-        public static DateTime FromSamlTime(string samlTimestamp)
+        public static DateTime FromW3cTimestamp(string w3cTimestamp)
         {
-            return DateTime.ParseExact(
-                samlTimestamp.Substring(0, samlTimestamp.Length - 1), "s", null);
+            // https://smdn.jp/programming/netfx/datetime/1_kind_offset_timezone/
+            // 文字列に指定されているタイムゾーン部分を判別して適当なDateTimeKindが設定される。
+            return DateTime.Parse(w3cTimestamp.Substring(0, w3cTimestamp.Length - 1));
         }
 
         #endregion

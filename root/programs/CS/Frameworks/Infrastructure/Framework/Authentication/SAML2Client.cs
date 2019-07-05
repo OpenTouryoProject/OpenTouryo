@@ -316,13 +316,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     if (temp1 == temp2)
                     {
                         // 等しい場合
-                        notOnOrAfter = FormatConverter.FromSamlTime(temp1);
+                        notOnOrAfter = FormatConverter.FromW3cTimestamp(temp1);
                     }
                     else
                     {
                         // 等しくない場合
-                        time1 = FormatConverter.FromSamlTime(temp1);
-                        time2 = FormatConverter.FromSamlTime(temp2);
+                        time1 = FormatConverter.FromW3cTimestamp(temp1);
+                        time2 = FormatConverter.FromW3cTimestamp(temp2);
 
                         // 短い値を使用
                         if (time1.Ticks <= time2.Ticks)
