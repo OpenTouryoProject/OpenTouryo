@@ -156,6 +156,9 @@
   <data name="DPQ_TAG_INNER_PARAM_NOT_EXIST" xml:space="preserve">
     <value>{0}タグにタグ内パラメタが設定されていません。</value>
   </data>
+  <data name="DPQ_TAG_MAX_COUNT_ERROR" xml:space="preserve">
+    <value>{0}タグの数が最大数を超えています。</value>
+  </data>
   <data name="DPQ_TAG_NAME_ATTR_NOT_EXIST" xml:space="preserve">
     <value>{0}タグにname属性が設定されていません（null）。</value>
   </data>
