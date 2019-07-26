@@ -70,7 +70,7 @@
 //*  2018/08/08  西野 大介         バッチでIN句展開の性能問題発生したため、StringBuilderにより高速化
 //*  2019/07/17  西野 大介         SQLの cache対応 で stackoverflow対応 が顕在化したため、
 //*                                自動生成でタグ数が多くなり過ぎるケースの対応を行う。
-//*                                ProcessIFTag, ProcessINSCOLTag, ProcessDELCMATag
+//*                                ProcessIFTag, ProcessINSCOLTag
 //**********************************************************************************
 
 using System;
@@ -2219,11 +2219,6 @@ namespace Touryo.Infrastructure.Public.Db
         /// <summary>DELCMAタグを処理する。</summary>
         private void ProcessDELCMATag()
         {
-            for (int i = 0; i <= BaseDam.MaxLoopCount; i++)
-            {
-                if (BaseDam.MaxLoopCount <= i) // = の時引っ掛かる
-                    throw new Exception(string.Format(PublicExceptionMessage.DPQ_TAG_MAX_COUNT_ERROR, "DELCMA"));
-
                 // すべてのDELCMAタグを取得、大文字・小文字は区別する。
                 XmlNodeList xmlNodeList = this._xml.GetElementsByTagName(PubLiteral.DPQ_TAG_DELCMA);
 
@@ -2280,19 +2275,12 @@ namespace Touryo.Infrastructure.Public.Db
                     XmlText xmlText = this._xml.CreateTextNode(" " + indent + temp + " ");
                     xmlNodeDelCma.ParentNode.ReplaceChild(xmlText, xmlNodeDelCma);
 
-                    //// 次のDELCMAタグを探すため再帰する。
-                    //this.ProcessDELCMATag();
-
-                    // 再帰からループへ。
-                    continue; // for
+                // 次のDELCMAタグを探すため再帰する。
+                this.ProcessDELCMATag();
                 }
                 else
                 {
                     // DELCMAタグの置換が完了した
-
-                    // IFタグの処理が完了した。
-                    break; // for
-                }
             }
         }
 
