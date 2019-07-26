@@ -114,6 +114,9 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <param name="cancellationToken">CancellationToken</param>
 		public override async Task OnActionExecutingAsync(HttpActionContext actionContext, CancellationToken cancellationToken)
         {
+            // Controller・Action名を取得する。
+            this.GetControllerAndActionName(actionContext);
+
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
             MyBaseAsyncApiController.GetClaims(out userName, out roles, out scopes, out ipAddress);
@@ -277,6 +280,34 @@ namespace Touryo.Infrastructure.Business.Presentation
         #endregion
 
         #region 情報取得用
+
+        /// <summary>GetControllerAndActionName</summary>
+        /// <param name="actionContext">HttpActionContext</param>
+        private void GetControllerAndActionName(HttpActionContext actionContext)
+        {
+            // MSBuild で ビルド不可。
+            //this.ControllerName = actionContext?.ControllerContext?.ControllerDescriptor?.ControllerName;
+            //this.ActionName = actionContext?.ActionDescriptor?.ActionName;
+
+            if (actionContext != null)
+            {
+                HttpControllerContext controllerContext = actionContext.ControllerContext;
+                if (controllerContext != null)
+                {
+                    HttpControllerDescriptor controllerDescriptor = controllerContext.ControllerDescriptor;
+                    if (controllerDescriptor != null)
+                    {
+                        this.ControllerName = controllerDescriptor.ControllerName;
+                    }
+                }
+
+                HttpActionDescriptor actionDescriptor = actionContext.ActionDescriptor;
+                if (actionDescriptor != null)
+                {
+                    this.ActionName = actionDescriptor.ActionName;
+                }
+            }
+        }
 
         /// <summary>ユーザ情報を取得する</summary>
         /// <param name="authenticationContext">HttpAuthenticationContext</param>

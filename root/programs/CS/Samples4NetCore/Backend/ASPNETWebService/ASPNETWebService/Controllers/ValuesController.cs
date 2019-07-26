@@ -36,6 +36,8 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 
+using Touryo.Infrastructure.Business.Presentation;
+
 namespace ASPNETWebService.Controllers
 {
     [EnableCors("AllowAllOrigins")]
@@ -49,6 +51,7 @@ namespace ASPNETWebService.Controllers
         /// IEnumerable(string)
         /// </returns>
         [HttpGet]
+        [MyBaseAsyncApiController()]
         [Route("[action]")]
         public IEnumerable<string> get()
         {

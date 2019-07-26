@@ -37,6 +37,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Security.Claims;
 
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Primitives;
 
@@ -92,6 +95,9 @@ namespace Touryo.Infrastructure.Business.Presentation
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             #region OnActionExecutingAsyncから移行
+
+            // Controller・Action名を取得する。
+            this.GetControllerAndActionName(context);
 
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
@@ -243,6 +249,37 @@ namespace Touryo.Infrastructure.Business.Presentation
         #endregion
 
         #region 情報取得用
+
+        /// <summary>GetControllerAndActionName</summary>
+        /// <param name="context">ActionExecutingContext</param>
+        private void GetControllerAndActionName(ActionExecutingContext context)
+        {
+            // MSBuild で ビルド不可。
+            //this.ControllerName = actionContext?.ControllerContext?.ControllerDescriptor?.ControllerName;
+            //this.ActionName = actionContext?.ActionDescriptor?.ActionName;
+            if (context != null)
+            {
+                ControllerBase controller = (ControllerBase)context.Controller;
+                if (controller != null)
+                {
+                    ControllerContext controllerContext = controller.ControllerContext;
+                    if (controllerContext != null)
+                    {
+                        ControllerActionDescriptor controllerActionDescriptor = controllerContext.ActionDescriptor;
+                        if (controllerActionDescriptor != null)
+                        {
+                            this.ControllerName = controllerActionDescriptor.ControllerName;
+                        }
+                    }
+                }
+
+                ControllerActionDescriptor actionDescriptor = (ControllerActionDescriptor)context.ActionDescriptor;
+                if (actionDescriptor != null)
+                {
+                    this.ActionName = actionDescriptor.ActionName;
+                }
+            }
+        }
 
         /// <summary>ユーザ情報を取得する</summary>
         /// <param name="authorizationContext">AuthorizationFilterContext</param>

@@ -34,8 +34,11 @@
 using System.Collections.Generic;
 using System.Web.Http;
 
+using Touryo.Infrastructure.Business.Presentation;
+
 namespace ASPNETWebService.Controllers
 {
+    [MyBaseAsyncApiController()]
     [RoutePrefix("api/values")]
     public class ValuesController : ApiController
     {
