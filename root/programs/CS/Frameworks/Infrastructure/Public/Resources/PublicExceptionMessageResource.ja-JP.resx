@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ARGUMENT_INJUSTICE" xml:space="preserve">
+  <data name="ARGUMENT_INCORRECT" xml:space="preserve">
     <value>引数不正</value>
   </data>
   <data name="COMMANDTIMEOUT_ERROR" xml:space="preserve">
