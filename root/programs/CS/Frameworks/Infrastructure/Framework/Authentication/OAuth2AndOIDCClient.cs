@@ -83,7 +83,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_basic)
         {
             return await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
-                tokenEndpointUri, client_id, client_secret, redirect_uri, code, null, null);
+                tokenEndpointUri, client_id, client_secret, redirect_uri, code, null, null, authMethod);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_post)
         {
             return await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
-                tokenEndpointUri, client_id, client_secret, redirect_uri, code, code_verifier, null);
+                tokenEndpointUri, client_id, client_secret, redirect_uri, code, code_verifier, null, authMethod);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.private_key_jwt)
         {
             return await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
-                tokenEndpointUri, null, null, redirect_uri, code, null, assertion);
+                tokenEndpointUri, null, null, redirect_uri, code, null, assertion, authMethod);
         }
 
         /// <summary>
