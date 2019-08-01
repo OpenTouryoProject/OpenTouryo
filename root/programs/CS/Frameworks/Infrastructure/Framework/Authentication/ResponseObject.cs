@@ -46,7 +46,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// <summary>
     /// OAuth2やOIDC(FAPI2)関連のResponseObject処理
     /// 正確には、JWT Secured Authorization Response Mode for OAuth 2.0 (JARM)
-
     /// </summary>
     public class ResponseObject
     {
