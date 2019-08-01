@@ -191,6 +191,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     {
                         { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.AuthorizationCodeGrantType },
                         { OAuth2AndOIDCConst.code, code },
+                        { OAuth2AndOIDCConst.client_id, client_id },
                         { OAuth2AndOIDCConst.code_verifier, code_verifier },
                         { OAuth2AndOIDCConst.redirect_uri, HttpUtility.HtmlEncode(redirect_uri) },
                     });
