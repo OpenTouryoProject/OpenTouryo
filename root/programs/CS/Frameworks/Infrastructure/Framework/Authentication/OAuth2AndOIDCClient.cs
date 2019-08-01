@@ -197,7 +197,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     });
             }
             else if (!string.IsNullOrEmpty(assertion) &&
-                authMethod == OAuth2AndOIDCEnum.AuthMethods.client_secret_jwt)
+                authMethod == OAuth2AndOIDCEnum.AuthMethods.private_key_jwt)
             {
                 // FAPI1のアクセストークン・リクエスト
                 httpRequestMessage.Content = new FormUrlEncodedContent(
@@ -402,10 +402,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>code_challenge</returns>
         public static string PKCE_S256_CodeChallengeMethod(string code_verifier)
         {
-            return CustomEncode.ToBase64UrlString(
-                GetHash.GetHashBytes(
-                    CustomEncode.StringToByte(code_verifier, CustomEncode.us_ascii),
-                    EnumHashAlgorithm.SHA256_M));
+            return CustomEncode.ToBase64UrlString(GetHash.GetHashBytes(CustomEncode.StringToByte(
+                code_verifier, CustomEncode.us_ascii), EnumHashAlgorithm.SHA256_M));
         }
 
         #endregion
