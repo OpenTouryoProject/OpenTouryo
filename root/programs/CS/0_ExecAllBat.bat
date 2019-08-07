@@ -8,6 +8,7 @@ echo | call 2_Build_NuGet_net45.bat
 echo | call 2_Build_NuGet_net46.bat
 echo | call 2_Build_NuGet_net47.bat
 echo | call 2_Build_NuGet_netstd20.bat
+echo | call 2_Build_NuGet_netstd21.bat
 
 @echo on
 timeout 5
