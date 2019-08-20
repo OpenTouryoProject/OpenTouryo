@@ -4,11 +4,11 @@
 
 
 cd /mnt/c/Git1/OpenTouryo/root/programs/CS/Frameworks/Tests/EncAndDecUtilCUI/core20
-dotnet publish -c Release -r ubuntu.16.04-x64 --self-contained
+dotnet publish -c Debug -r ubuntu.16.04-x64 --self-contained
 cd bin/Release/netcoreapp2.0/ubuntu.16.04-x64
 dotnet EncAndDecUtilCUICore.dll > ../../../../../ResultCore20OnLinux.txt
 
 cd /mnt/c/Git1/OpenTouryo/root/programs/CS/Frameworks/Tests/EncAndDecUtilCUI/core30
-dotnet publish -c Release -r ubuntu.16.04-x64 --self-contained
+dotnet publish -c Debug -r ubuntu.16.04-x64 --self-contained
 cd bin/Release/netcoreapp3.0/ubuntu.16.04-x64
 dotnet EncAndDecUtilCUICore.dll > ../../../../../ResultCore30OnLinux.txt
