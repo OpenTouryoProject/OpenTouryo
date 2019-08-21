@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "adapter": "C:\\Program Files\\PuTTY\\plink.exe",
+  "adapterArgs": "-i c:\\private.ppk seigi@nishino -batch -T ~/vsdbg/vsdbg --interpreter=vscode",
+  "configurations": [
+    {
+      "name": ".NET Core Launch",
+      "type": "coreclr",
+      "cwd": "/mnt/c/Users/nishi/Documents/Visual Studio 2017/Projects/ConsoleApp1",
+      "program": "bin/Debug/netcoreapp2.0/ConsoleApp1.dll",
+      "request": "launch"
+    }
+  ]
+}
