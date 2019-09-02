@@ -178,6 +178,15 @@ namespace Touryo.Infrastructure.Public.Resources {
         }
         
         /// <summary>
+        ///   The number of {0} tags exceeds the maximum number. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string DPQ_TAG_MAX_COUNT_ERROR {
+            get {
+                return ResourceManager.GetString("DPQ_TAG_MAX_COUNT_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   The name attribute is not set to {0} tag (null). に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string DPQ_TAG_NAME_ATTR_NOT_EXIST {
@@ -255,6 +264,15 @@ namespace Touryo.Infrastructure.Public.Resources {
         internal static string NOT_IMPLEMENTED {
             get {
                 return ResourceManager.GetString("NOT_IMPLEMENTED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   This processing is not initialized. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string NOT_INITIALIZED {
+            get {
+                return ResourceManager.GetString("NOT_INITIALIZED", resourceCulture);
             }
         }
         

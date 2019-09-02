@@ -68,6 +68,9 @@
 //*  2017/08/11  西野 大介         BaseDam.ClearText ---> StringConverter.FormattingForOneLineLog
 //*  2017/09/06  西野 大介         IN句展開、ArrayListに加えて、List<T>のサポートを追加
 //*  2018/08/08  西野 大介         バッチでIN句展開の性能問題発生したため、StringBuilderにより高速化
+//*  2019/07/17  西野 大介         SQLの cache対応 で stackoverflow対応 が顕在化したため、
+//*                                自動生成でタグ数が多くなり過ぎるケースの対応を行う。
+//*                                ProcessIFTag, ProcessINSCOLTag
 //**********************************************************************************
 
 using System;
@@ -91,6 +94,9 @@ namespace Touryo.Infrastructure.Public.Db
     public abstract class BaseDam
     {
         #region クラス変数
+
+        /// <summary>MaxLoopCount</summary>
+        private const int MaxLoopCount = 1000;
 
         /// <summary>
         /// SQLをキャッシュする
@@ -510,34 +516,7 @@ namespace Touryo.Infrastructure.Public.Db
                     }
 
                     #endregion
-
-                    #region JOINタグ（旧：削除）
-
-                    //if (name == PubLiteral.DPQ_TAG_JOIN)
-                    //{
-                    //    // JOINタグの中は、「#text」・「VAL」タグのみ。
-
-                    //    // 2008/10/16---チェック処理の変更（ここから）
-
-                    //    foreach (XmlNode xmlNode3 in xmlNode2.ChildNodes)
-                    //    {
-                    //        if (xmlNode3.Name == PubLiteral.DPQ_TAG_TEXT
-                    //            || xmlNode3.Name == PubLiteral.DPQ_TAG_VAL)
-                    //        {
-                    //            // 正常
-                    //        }
-                    //        else
-                    //        {
-                    //            throw new ArgumentException(String.Format(
-                    //                PublicExceptionMessage.DPQ_TAG_FORMAT_ERROR, PubLiteral.DPQ_TAG_JOIN));
-                    //        }
-                    //    }
-
-                    //    // 2008/10/16---チェック処理の変更（ここまで）
-                    //}                    
-
-                    #endregion
-
+                    
                     #region INSCOLタグ
 
                     // 2008/12/25---新機能の追加（ここから）
@@ -801,7 +780,7 @@ namespace Touryo.Infrastructure.Public.Db
 
                     // 2008/10/16---チェック処理の変更（ここから）
 
-                    this.Scan(xmlNode2);
+                    this.Scan(xmlNode2); // ここの再帰は子ノード再帰なので対策不要
 
                     // 2008/10/16---チェック処理の変更（ここまで）
                 }
@@ -816,14 +795,6 @@ namespace Touryo.Infrastructure.Public.Db
                     // 2008/10/16---チェック処理の変更（ここまで）
                 }
             }
-
-            // カレントノードの子ノードのチェック完了
-            // ルートの場合は全てのノードのチェック完了
-
-            // 2008/10/16---チェック処理の変更（ここから）
-            //return true;
-            // 2008/10/16---チェック処理の変更（ここまで）
-
         }
 
         #endregion
@@ -1063,106 +1034,6 @@ namespace Touryo.Infrastructure.Public.Db
 
         #endregion
 
-        #region JOINタグ（旧：削除）
-
-        ///// <summary>JOINタグを処理する。</summary>
-        //private void ProcessJOINTag()
-        //{
-        //    XmlNodeList xmlNodeList = null;
-        //    XmlNode xmlNodeJOINTag = null;
-
-        //    // すべてのJOINタグを取得、大文字・小文字は区別する。
-        //    xmlNodeList = this._xml.GetElementsByTagName(PubLiteral.DPQ_TAG_JOIN);
-
-        //    // SELECTタグは処理後に削除されるので常に０番を指定
-        //    xmlNodeJOINTag = xmlNodeList[0];
-
-        //    if (xmlNodeJOINTag != null)
-        //    {
-
-        //        // JOINタグのname属性からユーザパラメタ名を取得。
-        //        // 大文字・小文字は区別する。
-        //        XmlNode xmlNodeParam = xmlNodeJOINTag.Attributes.GetNamedItem("name");
-
-        //        // エラー処理
-        //        if (xmlNodeParam == null)
-        //        {
-        //            // JOINタグにname属性が設定されていない。
-        //            throw new ArgumentException(String.Format(
-        //                PublicExceptionMessage.DPQ_TAG_NAME_ATTR_NOT_EXIST, PubLiteral.DPQ_TAG_JOIN));
-        //        }
-        //        else
-        //        {
-        //            if (xmlNodeParam.Value == "")
-        //            {
-        //                // JOINタグにname属性が設定されていない。
-        //                throw new ArgumentException(String.Format(
-        //                    PublicExceptionMessage.DPQ_TAG_NAME_ATTR_VALUE_IS_EMPTY, PubLiteral.DPQ_TAG_JOIN));
-        //            }
-        //        }
-
-        //        // パラメタ名は退避しておく（タグが消されることがあるので）
-        //        string paramName = xmlNodeParam.Value;
-
-        //        // パラメタを取得
-        //        object obj = (object)this._parameter[paramName];
-
-        //        // エラー処理
-        //        if (obj == null)
-        //        {
-        //            // JOINタグに対応するパラメタにデータが
-        //            // 設定されていない。 or nullに設定されている。
-
-        //            // JOINタグを削除（半角スペースに変換）する。
-        //            XmlText xmlText = this._xml.CreateTextNode(" ");
-        //            xmlNodeJOINTag.ParentNode.ReplaceChild(xmlText, xmlNodeJOINTag);
-        //        }
-        //        else
-        //        {
-        //            // 型を確認する。
-        //            if (obj.GetType().ToString() == typeof(Boolean).ToString())
-        //            {
-        //                // Boolean型の場合は注意
-        //                if (((bool)obj))
-        //                {
-        //                    // trueの場合、残す。
-
-        //                    // JOINタグを削除（InnerTextで置換する）する。
-        //                    XmlText xmlText = this._xml.CreateTextNode(" " + xmlNodeJOINTag.InnerText + " ");
-        //                    xmlNodeJOINTag.ParentNode.ReplaceChild(xmlText, xmlNodeJOINTag);
-        //                }
-        //                else
-        //                {
-        //                    // falseの場合、（nullでなくても）消す。
-
-        //                    // JOINタグを削除（半角スペースに変換）する。
-        //                    XmlText xmlText = this._xml.CreateTextNode(" ");
-        //                    xmlNodeJOINTag.ParentNode.ReplaceChild(xmlText, xmlNodeJOINTag);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                // nullでなく、Boolean型以外の場合はエラー。
-        //                throw new ArgumentException(String.Format(
-        //                    PublicExceptionMessage.DPQ_SET_ONLY_NULL_OR_BOOL_TO_INNER_PARAM_VALUE,
-        //                        PubLiteral.DPQ_TAG_JOIN));
-        //            }
-        //        }
-
-        //        // パラメタを削除する。
-        //        this._parameter.Remove(paramName);
-
-        //        // 次のLISTタグを探すため再帰する。
-        //        this.ProcessJOINTag();
-        //    }
-        //    else
-        //    {
-        //        // JOINタグの処理が完了した
-        //    }
-        //}
-
-        #endregion
-
         #region INSCOLタグ
 
         // 2008/12/25---新機能の追加（ここから）
@@ -1170,66 +1041,76 @@ namespace Touryo.Infrastructure.Public.Db
         /// <summary>INSCOLタグを処理する。</summary>
         private void ProcessINSCOLTag()
         {
-            // すべてのINSCOLタグを取得、大文字・小文字は区別する。
-            XmlNodeList xmlNodeList = this._xml.GetElementsByTagName(PubLiteral.DPQ_TAG_INSCOL);
-
-            // INSCOLタグは処理後に削除されるので常に０番を指定
-            XmlNode xmlNodeInsCol = xmlNodeList[0];
-
-            if (xmlNodeInsCol != null)
+            for (int i = 0; i <= BaseDam.MaxLoopCount; i++)
             {
-                // INSCOLタグのname属性から対応するパラメタ名を取得。
-                // 大文字・小文字は区別する。
-                XmlNode xmlNodeParam = xmlNodeInsCol.Attributes.GetNamedItem("name");
+                if (BaseDam.MaxLoopCount　<= i) // = の時引っ掛かる
+                    throw new Exception(string.Format(PublicExceptionMessage.DPQ_TAG_MAX_COUNT_ERROR, "INSCOL"));
 
-                // エラー処理
-                if (xmlNodeParam == null)
+                // すべてのINSCOLタグを取得、大文字・小文字は区別する。
+                XmlNodeList xmlNodeList = this._xml.GetElementsByTagName(PubLiteral.DPQ_TAG_INSCOL);
+
+                // INSCOLタグは処理後に削除されるので常に０番を指定
+                XmlNode xmlNodeInsCol = xmlNodeList[0];
+
+                if (xmlNodeInsCol != null)
                 {
-                    // INSCOLタグにname属性が設定されていない。
-                    throw new ArgumentException(String.Format(
-                        PublicExceptionMessage.DPQ_TAG_NAME_ATTR_NOT_EXIST, PubLiteral.DPQ_TAG_INSCOL));
-                }
-                else
-                {
-                    if (xmlNodeParam.Value == "")
+                    // INSCOLタグのname属性から対応するパラメタ名を取得。
+                    // 大文字・小文字は区別する。
+                    XmlNode xmlNodeParam = xmlNodeInsCol.Attributes.GetNamedItem("name");
+
+                    // エラー処理
+                    if (xmlNodeParam == null)
                     {
                         // INSCOLタグにname属性が設定されていない。
                         throw new ArgumentException(String.Format(
-                            PublicExceptionMessage.DPQ_TAG_NAME_ATTR_VALUE_IS_EMPTY, PubLiteral.DPQ_TAG_INSCOL));
+                            PublicExceptionMessage.DPQ_TAG_NAME_ATTR_NOT_EXIST, PubLiteral.DPQ_TAG_INSCOL));
                     }
-                }
+                    else
+                    {
+                        if (xmlNodeParam.Value == "")
+                        {
+                            // INSCOLタグにname属性が設定されていない。
+                            throw new ArgumentException(String.Format(
+                                PublicExceptionMessage.DPQ_TAG_NAME_ATTR_VALUE_IS_EMPTY, PubLiteral.DPQ_TAG_INSCOL));
+                        }
+                    }
 
-                // 2010/10/13 - ContainsKeyによるチェック処理を追加した。
-                object val = null;
+                    // 2010/10/13 - ContainsKeyによるチェック処理を追加した。
+                    object val = null;
 
-                if (this._parameter.ContainsKey(xmlNodeParam.Value))
-                {
-                    val = this._parameter[xmlNodeParam.Value];
-                }
+                    if (this._parameter.ContainsKey(xmlNodeParam.Value))
+                    {
+                        val = this._parameter[xmlNodeParam.Value];
+                    }
 
-                // エラー処理
-                if (val == null)
-                {
-                    // ※ パラメタが設定されていない場合、
-                    //    パラメタがNULLに設定されている場合の双方に対応。
+                    // エラー処理
+                    if (val == null)
+                    {
+                        // ※ パラメタが設定されていない場合、
+                        //    パラメタがNULLに設定されている場合の双方に対応。
 
-                    // INSCOLタグを削除（半角スペースに変換）する。
-                    XmlText xmlText = this._xml.CreateTextNode(" ");
-                    xmlNodeInsCol.ParentNode.ReplaceChild(xmlText, xmlNodeInsCol);
+                        // INSCOLタグを削除（半角スペースに変換）する。
+                        XmlText xmlText = this._xml.CreateTextNode(" ");
+                        xmlNodeInsCol.ParentNode.ReplaceChild(xmlText, xmlNodeInsCol);
+                    }
+                    else
+                    {
+                        // INSCOLタグを削除（InnerTextで置換する）する。
+                        XmlText xmlText = this._xml.CreateTextNode(" " + xmlNodeInsCol.InnerText + " ");
+                        xmlNodeInsCol.ParentNode.ReplaceChild(xmlText, xmlNodeInsCol);
+                    }
+
+                    //// 次のINSCOLタグを探すため再帰する。
+                    //this.ProcessINSCOLTag();
+
+                    // 再帰からループへ。
+                    continue; // for
                 }
                 else
                 {
-                    // INSCOLタグを削除（InnerTextで置換する）する。
-                    XmlText xmlText = this._xml.CreateTextNode(" " + xmlNodeInsCol.InnerText + " ");
-                    xmlNodeInsCol.ParentNode.ReplaceChild(xmlText, xmlNodeInsCol);
+                    // INSCOLタグの置換が完了した
+                    break; // for
                 }
-
-                // 次のINSCOLタグを探すため再帰する。
-                this.ProcessINSCOLTag();
-            }
-            else
-            {
-                // INSCOLタグの置換が完了した
             }
         }
 
@@ -1243,160 +1124,251 @@ namespace Touryo.Infrastructure.Public.Db
         /// <param name="paramSign">パラメタの先頭記号（DBMSによって可変）</param>
         private void ProcessIFTag(char paramSign)
         {
-            #region 変数
-
-            // IFタグのリスト
-            XmlNodeList xmlNodeList = null;
-
-            // IFタグ
-            XmlNode xmlNodeIf = null;
-
-            // ELSEタグ
-            XmlNode xmlNodeElse = null;
-
-            // パラメタ名
-            string paramName = "";
-
-            // パラメタライズド・クエリのパラメタが無い場合
-            // この場合、最後に、パラメタを消去する。
-            bool isNoPRQP = true;
-
-            // 置換処理用
-            XmlText xmlText;
-
-            #endregion
-
-            // すべてのIFタグを取得、大文字・小文字は区別する。
-            xmlNodeList = this._xml.GetElementsByTagName(PubLiteral.DPQ_TAG_IF);
-
-            // IFタグは処理後に削除されるので常に０番を指定
-            xmlNodeIf = xmlNodeList[0];
-
-            if (xmlNodeIf != null)
+            for (int i = 0; i <= BaseDam.MaxLoopCount; i++)
             {
-                #region パラメタを取得
+                if (BaseDam.MaxLoopCount <= i) // = の時引っ掛かる
+                    throw new Exception(string.Format(PublicExceptionMessage.DPQ_TAG_MAX_COUNT_ERROR, "IF"));
 
-                // IFタグ内のテキスト要素からパラメタ名を取得する。
-                string ifText = "";
-                foreach (XmlNode xmlNodeIfChild in xmlNodeIf.ChildNodes)
+                #region 変数
+
+                // IFタグのリスト
+                XmlNodeList xmlNodeList = null;
+
+                // IFタグ
+                XmlNode xmlNodeIf = null;
+
+                // ELSEタグ
+                XmlNode xmlNodeElse = null;
+
+                // パラメタ名
+                string paramName = "";
+
+                // パラメタライズド・クエリのパラメタが無い場合
+                // この場合、最後に、パラメタを消去する。
+                bool isNoPRQP = true;
+
+                // 置換処理用
+                XmlText xmlText;
+
+                #endregion
+
+                // すべてのIFタグを取得、大文字・小文字は区別する。
+                xmlNodeList = this._xml.GetElementsByTagName(PubLiteral.DPQ_TAG_IF);
+
+                // IFタグは処理後に削除されるので常に０番を指定
+                xmlNodeIf = xmlNodeList[0];
+
+                if (xmlNodeIf != null)
                 {
-                    if (xmlNodeIfChild.Name == PubLiteral.DPQ_TAG_TEXT
-                        || xmlNodeIfChild.Name == PubLiteral.DPQ_TAG_CDATA)
+                    #region パラメタを取得
+
+                    // IFタグ内のテキスト要素からパラメタ名を取得する。
+                    string ifText = "";
+                    foreach (XmlNode xmlNodeIfChild in xmlNodeIf.ChildNodes)
                     {
-                        ifText += " " + xmlNodeIfChild.Value;
+                        if (xmlNodeIfChild.Name == PubLiteral.DPQ_TAG_TEXT
+                            || xmlNodeIfChild.Name == PubLiteral.DPQ_TAG_CDATA)
+                        {
+                            ifText += " " + xmlNodeIfChild.Value;
+                        }
                     }
-                }
 
-                // パラメタライズド・クエリのパラメタ（テキスト内パラメタ）を取得。
-                paramName = this.GetParamByText(ifText, paramSign);
+                    // パラメタライズド・クエリのパラメタ（テキスト内パラメタ）を取得。
+                    paramName = this.GetParamByText(ifText, paramSign);
 
-                if (paramName == "")
-                {
-                    // パラメタライズド・クエリのパラメタ（テキスト内パラメタ）が存在しない。
-
-                    // IFタグのname属性のユーザパラメタ（タグ内パラメタ）を取得。
-                    // 大文字・小文字は区別する。
-                    XmlNode xmlNodeParam = xmlNodeIf.Attributes.GetNamedItem("name");
-
-                    // エラー処理
-                    if (xmlNodeParam == null)
+                    if (paramName == "")
                     {
-                        // IFタグのname属性のユーザパラメタ（タグ内パラメタ）が設定されていない。
-                        throw new ArgumentException(String.Format(
-                            PublicExceptionMessage.DPQ_TAG_NAME_ATTR_NOT_EXIST, PubLiteral.DPQ_TAG_IF));
-                    }
-                    else
-                    {
-                        if (xmlNodeParam.Value == "")
+                        // パラメタライズド・クエリのパラメタ（テキスト内パラメタ）が存在しない。
+
+                        // IFタグのname属性のユーザパラメタ（タグ内パラメタ）を取得。
+                        // 大文字・小文字は区別する。
+                        XmlNode xmlNodeParam = xmlNodeIf.Attributes.GetNamedItem("name");
+
+                        // エラー処理
+                        if (xmlNodeParam == null)
                         {
                             // IFタグのname属性のユーザパラメタ（タグ内パラメタ）が設定されていない。
                             throw new ArgumentException(String.Format(
-                                PublicExceptionMessage.DPQ_TAG_NAME_ATTR_VALUE_IS_EMPTY, PubLiteral.DPQ_TAG_IF));
-                        }
-                    }
-
-                    // IFタグのname属性のユーザパラメタ（タグ内パラメタ）値を取得。
-                    paramName = xmlNodeParam.Value;
-
-                    // パラメタライズド・クエリのパラメタ（テキスト内パラメタ）が存在しない。
-                    isNoPRQP = true;
-                }
-                else
-                {
-                    // パラメタライズド・クエリのパラメタ（テキスト内パラメタ）が存在する。
-                    isNoPRQP = false;
-                }
-
-                // 2010/10/13 - ContainsKeyによるチェック処理を追加した。
-                // パラメタを取得
-                object obj = null;
-                if (this._parameter.ContainsKey(paramName))
-                {
-                    obj = this._parameter[paramName];
-                }
-
-                #endregion
-
-                #region ELSEタグを取得する。
-
-                // IFタグの子ノードにELSEタグがあるか確認する。
-                foreach (XmlNode xmlNode in xmlNodeIf.ChildNodes)
-                {
-                    if (xmlNode.Name == PubLiteral.DPQ_TAG_ELSE)// 大文字・小文字は区別する。
-                    {
-                        xmlNodeElse = xmlNode;
-                    }
-                }
-
-                #endregion
-
-                #region IFタグを処理する。
-
-                // パラメタが設定されているか調べる
-                if (this._parameter.ContainsKey(paramName)) // Dic化でメソッド名が微変化
-                {
-                    // パラメタが設定されている場合
-
-                    if (obj == null)
-                    {
-                        // パラメタがnullに設定されている場合
-
-                        // ELSEを有効にする。
-
-                        // ELSEタグがあるか調べる。
-                        if (xmlNodeElse != null)
-                        {
-                            // ELSEタグがある
-
-                            // 2008/10/16---タグ編集処理の変更（ここから）
-
-                            // ELSEにはパラメタが無い仕様なので、パラメタ消去する。
-                            isNoPRQP = true;
-
-                            // 2008/10/16---タグ編集処理の変更（ここまで）
-
-                            // ELSEを有効にする（IFタグをELSEタグのInnerTextで置換する）。
-                            xmlText = this._xml.CreateTextNode(" " + xmlNodeElse.InnerText + " ");
-                            xmlNodeIf.ParentNode.ReplaceChild(xmlText, xmlNodeIf);
+                                PublicExceptionMessage.DPQ_TAG_NAME_ATTR_NOT_EXIST, PubLiteral.DPQ_TAG_IF));
                         }
                         else
                         {
-                            // ELSEタグがない
+                            if (xmlNodeParam.Value == "")
+                            {
+                                // IFタグのname属性のユーザパラメタ（タグ内パラメタ）が設定されていない。
+                                throw new ArgumentException(String.Format(
+                                    PublicExceptionMessage.DPQ_TAG_NAME_ATTR_VALUE_IS_EMPTY, PubLiteral.DPQ_TAG_IF));
+                            }
+                        }
+
+                        // IFタグのname属性のユーザパラメタ（タグ内パラメタ）値を取得。
+                        paramName = xmlNodeParam.Value;
+
+                        // パラメタライズド・クエリのパラメタ（テキスト内パラメタ）が存在しない。
+                        isNoPRQP = true;
+                    }
+                    else
+                    {
+                        // パラメタライズド・クエリのパラメタ（テキスト内パラメタ）が存在する。
+                        isNoPRQP = false;
+                    }
+
+                    // 2010/10/13 - ContainsKeyによるチェック処理を追加した。
+                    // パラメタを取得
+                    object obj = null;
+                    if (this._parameter.ContainsKey(paramName))
+                    {
+                        obj = this._parameter[paramName];
+                    }
+
+                    #endregion
+
+                    #region ELSEタグを取得する。
+
+                    // IFタグの子ノードにELSEタグがあるか確認する。
+                    foreach (XmlNode xmlNode in xmlNodeIf.ChildNodes)
+                    {
+                        if (xmlNode.Name == PubLiteral.DPQ_TAG_ELSE)// 大文字・小文字は区別する。
+                        {
+                            xmlNodeElse = xmlNode;
+                        }
+                    }
+
+                    #endregion
+
+                    #region IFタグを処理する。
+
+                    // パラメタが設定されているか調べる
+                    if (this._parameter.ContainsKey(paramName)) // Dic化でメソッド名が微変化
+                    {
+                        // パラメタが設定されている場合
+
+                        if (obj == null)
+                        {
+                            // パラメタがnullに設定されている場合
+
+                            // ELSEを有効にする。
+
+                            // ELSEタグがあるか調べる。
+                            if (xmlNodeElse != null)
+                            {
+                                // ELSEタグがある
+
+                                // 2008/10/16---タグ編集処理の変更（ここから）
+
+                                // ELSEにはパラメタが無い仕様なので、パラメタ消去する。
+                                isNoPRQP = true;
+
+                                // 2008/10/16---タグ編集処理の変更（ここまで）
+
+                                // ELSEを有効にする（IFタグをELSEタグのInnerTextで置換する）。
+                                xmlText = this._xml.CreateTextNode(" " + xmlNodeElse.InnerText + " ");
+                                xmlNodeIf.ParentNode.ReplaceChild(xmlText, xmlNodeIf);
+                            }
+                            else
+                            {
+                                // ELSEタグがない
+
+                                // 2008/10/16---タグ編集処理の変更（ここから）
+
+                                // フラグを確認する。
+                                if (isNoPRQP)
+                                {
+                                    // タグ内パラメタ → エラー
+                                    throw new ArgumentException(
+                                        PublicExceptionMessage.DPQ_ELSE_TAG_DOESNT_EXIST_WHEN_INNER_PARAM_OF_IF_TAG_IS_NULL);
+                                }
+                                else
+                                {
+                                    // テキスト内パラメタ → エラー
+                                    throw new ArgumentException(
+                                        PublicExceptionMessage.DPQ_ELSE_TAG_DOESNT_EXIST_WHEN_TEXT_PARAM_OF_IF_TAG_IS_NULL);
+                                }
+
+                                // 2008/10/16---タグ編集処理の変更（ここまで）
+                            }
+                        }
+                        else
+                        {
+                            // パラメタがnull以外に設定されている場合
 
                             // 2008/10/16---タグ編集処理の変更（ここから）
 
                             // フラグを確認する。
                             if (isNoPRQP)
                             {
-                                // タグ内パラメタ → エラー
-                                throw new ArgumentException(
-                                    PublicExceptionMessage.DPQ_ELSE_TAG_DOESNT_EXIST_WHEN_INNER_PARAM_OF_IF_TAG_IS_NULL);
+                                // パラメタライズド・クエリのパラメタが無い場合
+                                // （テキスト内パラメタでなく、タグ内パラメタの場合）
+
+                                if (obj.GetType() == typeof(Boolean))
+                                {
+                                    // Boolean型の場合（タグ内パラメタは通常、Boolean型）
+
+                                    if (((bool)obj))
+                                    {
+                                        // trueの場合、IFを有効にする。
+
+                                        // ELSEタグがある場合、ELSEタグを削除
+                                        if (xmlNodeElse != null)
+                                        {
+                                            // ELSEタグを削除する（半角スペースに変換する）。
+                                            xmlNodeElse.ParentNode.ReplaceChild(this._xml.CreateTextNode(" "), xmlNodeElse);
+                                        }
+
+                                        // IFタグを有効にする（InnerTextで置換する）。
+                                        xmlText = this._xml.CreateTextNode(" " + xmlNodeIf.InnerText + " ");
+                                        xmlNodeIf.ParentNode.ReplaceChild(xmlText, xmlNodeIf);
+                                    }
+                                    else
+                                    {
+                                        // falseの場合、ELSEを有効にする。
+
+                                        // ELSEタグがあるか調べる。
+                                        if (xmlNodeElse != null)
+                                        {
+                                            // ELSEタグがある
+
+                                            // 2008/10/16---タグ編集処理の変更（ここから）
+
+                                            // ELSEにはパラメタが無い仕様なので、パラメタ消去する。
+                                            isNoPRQP = true;
+
+                                            // 2008/10/16---タグ編集処理の変更（ここまで）
+
+                                            // ELSEを有効にする（IFタグをELSEタグのInnerTextで置換する）。
+                                            xmlText = this._xml.CreateTextNode(" " + xmlNodeElse.InnerText + " ");
+                                            xmlNodeIf.ParentNode.ReplaceChild(xmlText, xmlNodeIf);
+                                        }
+                                        else
+                                        {
+                                            // ELSEタグがない
+                                            throw new ArgumentException(
+                                                PublicExceptionMessage.DPQ_ELSE_TAG_DOESNT_EXIST_WHEN_INNER_PARAM_OF_IF_TAG_IS_FALSE);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    // nullでなく、Boolean型以外の場合はエラー（タグ内パラメタは通常、Boolean型）。
+                                    throw new ArgumentException(String.Format
+                                        (PublicExceptionMessage.DPQ_SET_ONLY_NULL_OR_BOOL_TO_INNER_PARAM_VALUE,
+                                            PubLiteral.DPQ_TAG_IF));
+                                }
                             }
                             else
                             {
-                                // テキスト内パラメタ → エラー
-                                throw new ArgumentException(
-                                    PublicExceptionMessage.DPQ_ELSE_TAG_DOESNT_EXIST_WHEN_TEXT_PARAM_OF_IF_TAG_IS_NULL);
+                                // 上記以外の場合（テキスト内パラメタに通常のパラメタが設定された場合）はIFを有効にする。
+
+                                // ELSEタグがある場合、ELSEタグを削除
+                                if (xmlNodeElse != null)
+                                {
+                                    // ELSEタグを削除する（半角スペースに変換する）。
+                                    xmlNodeElse.ParentNode.ReplaceChild(this._xml.CreateTextNode(" "), xmlNodeElse);
+                                }
+
+                                // IFタグを有効にする（InnerTextで置換する）。
+                                xmlText = this._xml.CreateTextNode(" " + xmlNodeIf.InnerText + " ");
+                                xmlNodeIf.ParentNode.ReplaceChild(xmlText, xmlNodeIf);
                             }
 
                             // 2008/10/16---タグ編集処理の変更（ここまで）
@@ -1404,114 +1376,33 @@ namespace Touryo.Infrastructure.Public.Db
                     }
                     else
                     {
-                        // パラメタがnull以外に設定されている場合
+                        // パラメタが設定されていない場合
 
-                        // 2008/10/16---タグ編集処理の変更（ここから）
-
-                        // フラグを確認する。
-                        if (isNoPRQP)
-                        {
-                            // パラメタライズド・クエリのパラメタが無い場合
-                            // （テキスト内パラメタでなく、タグ内パラメタの場合）
-
-                            if (obj.GetType() == typeof(Boolean))
-                            {
-                                // Boolean型の場合（タグ内パラメタは通常、Boolean型）
-
-                                if (((bool)obj))
-                                {
-                                    // trueの場合、IFを有効にする。
-
-                                    // ELSEタグがある場合、ELSEタグを削除
-                                    if (xmlNodeElse != null)
-                                    {
-                                        // ELSEタグを削除する（半角スペースに変換する）。
-                                        xmlNodeElse.ParentNode.ReplaceChild(this._xml.CreateTextNode(" "), xmlNodeElse);
-                                    }
-
-                                    // IFタグを有効にする（InnerTextで置換する）。
-                                    xmlText = this._xml.CreateTextNode(" " + xmlNodeIf.InnerText + " ");
-                                    xmlNodeIf.ParentNode.ReplaceChild(xmlText, xmlNodeIf);
-                                }
-                                else
-                                {
-                                    // falseの場合、ELSEを有効にする。
-
-                                    // ELSEタグがあるか調べる。
-                                    if (xmlNodeElse != null)
-                                    {
-                                        // ELSEタグがある
-
-                                        // 2008/10/16---タグ編集処理の変更（ここから）
-
-                                        // ELSEにはパラメタが無い仕様なので、パラメタ消去する。
-                                        isNoPRQP = true;
-
-                                        // 2008/10/16---タグ編集処理の変更（ここまで）
-
-                                        // ELSEを有効にする（IFタグをELSEタグのInnerTextで置換する）。
-                                        xmlText = this._xml.CreateTextNode(" " + xmlNodeElse.InnerText + " ");
-                                        xmlNodeIf.ParentNode.ReplaceChild(xmlText, xmlNodeIf);
-                                    }
-                                    else
-                                    {
-                                        // ELSEタグがない
-                                        throw new ArgumentException(
-                                            PublicExceptionMessage.DPQ_ELSE_TAG_DOESNT_EXIST_WHEN_INNER_PARAM_OF_IF_TAG_IS_FALSE);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                // nullでなく、Boolean型以外の場合はエラー（タグ内パラメタは通常、Boolean型）。
-                                throw new ArgumentException(String.Format
-                                    (PublicExceptionMessage.DPQ_SET_ONLY_NULL_OR_BOOL_TO_INNER_PARAM_VALUE,
-                                        PubLiteral.DPQ_TAG_IF));
-                            }
-                        }
-                        else
-                        {
-                            // 上記以外の場合（テキスト内パラメタに通常のパラメタが設定された場合）はIFを有効にする。
-
-                            // ELSEタグがある場合、ELSEタグを削除
-                            if (xmlNodeElse != null)
-                            {
-                                // ELSEタグを削除する（半角スペースに変換する）。
-                                xmlNodeElse.ParentNode.ReplaceChild(this._xml.CreateTextNode(" "), xmlNodeElse);
-                            }
-
-                            // IFタグを有効にする（InnerTextで置換する）。
-                            xmlText = this._xml.CreateTextNode(" " + xmlNodeIf.InnerText + " ");
-                            xmlNodeIf.ParentNode.ReplaceChild(xmlText, xmlNodeIf);
-                        }
-
-                        // 2008/10/16---タグ編集処理の変更（ここまで）
+                        // IFタグを削除（半角スペースに変換）する。
+                        xmlText = this._xml.CreateTextNode(" ");
+                        xmlNodeIf.ParentNode.ReplaceChild(xmlText, xmlNodeIf);
                     }
+
+                    // パラメタライズド・クエリのパラメタ（テキスト内パラメタ）が無い（無くなった）場合、
+                    if (isNoPRQP)
+                    {
+                        // パラメタを削除する。
+                        this._parameter.Remove(paramName);
+                    }
+
+                    #endregion
+
+                    //// 次のIFタグを探すため再帰する。
+                    //this.ProcessIFTag(paramSign);
+
+                    // 再帰からループへ。
+                    continue; // for
                 }
                 else
                 {
-                    // パラメタが設定されていない場合
-
-                    // IFタグを削除（半角スペースに変換）する。
-                    xmlText = this._xml.CreateTextNode(" ");
-                    xmlNodeIf.ParentNode.ReplaceChild(xmlText, xmlNodeIf);
+                    // IFタグの処理が完了した。
+                    break; // for
                 }
-
-                // パラメタライズド・クエリのパラメタ（テキスト内パラメタ）が無い（無くなった）場合、
-                if (isNoPRQP)
-                {
-                    // パラメタを削除する。
-                    this._parameter.Remove(paramName);
-                }
-
-                #endregion
-
-                // 次のIFタグを探すため再帰する。
-                this.ProcessIFTag(paramSign);
-            }
-            else
-            {
-                // IFタグの処理が完了した
             }
         }
 
@@ -2328,68 +2219,68 @@ namespace Touryo.Infrastructure.Public.Db
         /// <summary>DELCMAタグを処理する。</summary>
         private void ProcessDELCMATag()
         {
-            // すべてのDELCMAタグを取得、大文字・小文字は区別する。
-            XmlNodeList xmlNodeList = this._xml.GetElementsByTagName(PubLiteral.DPQ_TAG_DELCMA);
+                // すべてのDELCMAタグを取得、大文字・小文字は区別する。
+                XmlNodeList xmlNodeList = this._xml.GetElementsByTagName(PubLiteral.DPQ_TAG_DELCMA);
 
-            // DELCMAタグは処理後に削除されるので常に０番を指定
-            XmlNode xmlNodeDelCma = xmlNodeList[0];
+                // DELCMAタグは処理後に削除されるので常に０番を指定
+                XmlNode xmlNodeDelCma = xmlNodeList[0];
 
-            if (xmlNodeDelCma != null)
-            {
-                // InnerTextの前後のカンマ（Comma）を削除する。
-
-                // InnerTextを取得する。
-                string temp = xmlNodeDelCma.InnerText;
-
-                // インデントを取得する。
-                string indent = GetIndent(temp);
-
-                // 処理するためにTrimする。
-                temp = temp.Trim();
-
-                // 文字列長が、0以外の場合、
-                while (temp.Length != 0)
+                if (xmlNodeDelCma != null)
                 {
-                    // カンマの有無しフラグ
-                    bool existComma = false;
+                    // InnerTextの前後のカンマ（Comma）を削除する。
 
-                    // 先頭がカンマ
-                    if (temp[0] == ',')
+                    // InnerTextを取得する。
+                    string temp = xmlNodeDelCma.InnerText;
+
+                    // インデントを取得する。
+                    string indent = GetIndent(temp);
+
+                    // 処理するためにTrimする。
+                    temp = temp.Trim();
+
+                    // 文字列長が、0以外の場合、
+                    while (temp.Length != 0)
                     {
-                        // 先頭のカンマを取り除く。
-                        temp = temp.Substring(1, temp.Length - 1).Trim();
-                        existComma = true;
+                        // カンマの有無しフラグ
+                        bool existComma = false;
+
+                        // 先頭がカンマ
+                        if (temp[0] == ',')
+                        {
+                            // 先頭のカンマを取り除く。
+                            temp = temp.Substring(1, temp.Length - 1).Trim();
+                            existComma = true;
+                        }
+
+                        // 末端がカンマ
+                        if (temp[temp.Length - 1] == ',')
+                        {
+                            // 末端のカンマを取り除く。
+                            temp = temp.Substring(0, temp.Length - 1).Trim();
+                            existComma = true;
+                        }
+
+                        if (existComma)
+                        {
+                            // カンマを消しました。処理を継続します。
+                        }
+                        else
+                        {
+                            // カンマがありませんでした。処理を終了します。
+                            break;
+                        }
                     }
 
-                    // 末端がカンマ
-                    if (temp[temp.Length - 1] == ',')
-                    {
-                        // 末端のカンマを取り除く。
-                        temp = temp.Substring(0, temp.Length - 1).Trim();
-                        existComma = true;
-                    }
-
-                    if (existComma)
-                    {
-                        // カンマを消しました。処理を継続します。
-                    }
-                    else
-                    {
-                        // カンマがありませんでした。処理を終了します。
-                        break;
-                    }
-                }
-
-                // DELCMAタグを削除（カンマ削除後のInnerTextで置換する）する。
-                XmlText xmlText = this._xml.CreateTextNode(" " + indent + temp + " ");
-                xmlNodeDelCma.ParentNode.ReplaceChild(xmlText, xmlNodeDelCma);
+                    // DELCMAタグを削除（カンマ削除後のInnerTextで置換する）する。
+                    XmlText xmlText = this._xml.CreateTextNode(" " + indent + temp + " ");
+                    xmlNodeDelCma.ParentNode.ReplaceChild(xmlText, xmlNodeDelCma);
 
                 // 次のDELCMAタグを探すため再帰する。
                 this.ProcessDELCMATag();
-            }
-            else
-            {
-                // DELCMAタグの置換が完了した
+                }
+                else
+                {
+                    // DELCMAタグの置換が完了した
             }
         }
 
