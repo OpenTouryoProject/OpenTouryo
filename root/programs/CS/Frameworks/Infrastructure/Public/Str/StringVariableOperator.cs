@@ -35,7 +35,9 @@ using System.Text;
 using System.Diagnostics;
 using System.Collections.Generic;
 
-namespace Touryo.Infrastructure.Public.Util
+using Touryo.Infrastructure.Public.Util;
+
+namespace Touryo.Infrastructure.Public.Str
 {
     /// <summary>配列操作クラス</summary>
     /// <remarks>自由に利用できる。</remarks>

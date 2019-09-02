@@ -26,6 +26,7 @@ using System.Collections.Generic;
 
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Public.Db;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace RerunnableBatch_sample2

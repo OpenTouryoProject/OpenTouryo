@@ -36,6 +36,7 @@ using System;
 using System.IO;
 using System.Text;
 
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Public.IO

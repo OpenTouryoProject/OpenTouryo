@@ -48,6 +48,7 @@ using System.Collections.Generic;
 using log4net.Config;
 
 using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 #if NETSTD

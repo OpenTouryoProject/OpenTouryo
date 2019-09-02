@@ -50,6 +50,8 @@ using System.Text;
 using System.Data;
 using System.Collections.Generic;
 
+using Touryo.Infrastructure.Public.Str;
+
 namespace Touryo.Infrastructure.Public.Util
 {
     /// <summary>Public層の共通クラス</summary>
