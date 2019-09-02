@@ -31,6 +31,7 @@
     <None Remove="packages_net45.config" />
     <None Remove="packages_net46.config" />
     <None Remove="packages_net47.config" />
+    <None Remove="packages_net48.config" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.13" />

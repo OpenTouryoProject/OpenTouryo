@@ -30,6 +30,7 @@
     <None Remove="packages_net45.config" />
     <None Remove="packages_net46.config" />
     <None Remove="packages_net47.config" />
+    <None Remove="packages_net48.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Public_netstd20.csproj" />

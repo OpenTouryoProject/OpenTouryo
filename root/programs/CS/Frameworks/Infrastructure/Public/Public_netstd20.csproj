@@ -80,6 +80,7 @@
     <None Remove="packages_net45.config" />
     <None Remove="packages_net46.config" />
     <None Remove="packages_net47.config" />
+    <None Remove="packages_net48.config" />
     <None Remove="Xml\TestXml.xml" />
     <None Remove="Xml\TestXsd.xsd" />
   </ItemGroup>
