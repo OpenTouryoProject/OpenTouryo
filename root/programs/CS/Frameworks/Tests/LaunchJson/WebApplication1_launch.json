@@ -7,8 +7,8 @@
       "name": ".NET Core Launch",
       "type": "coreclr",
       "cwd": "/mnt/c/Users/nishi/Documents/Visual Studio 2017/Projects/WebApplication1",
-      "program": "bin/Debug/netcoreapp2.0/WebApplication1.dll",
-      "request": "launch"
+      "program": "bin/Debug/netcoreapp2.1/WebApplication1.dll",
+      "request": "debug"
     }
   ]
 }
