@@ -144,8 +144,20 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
 <Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
 </tr>
 <tr>
+<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">2_Build_NuGet_net48.bat</td>
+<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">.NET&nbsp;Framework&nbsp;4.8&nbsp;をターゲットとする&nbsp;NuGet&nbsp;パッケージの作成用に、フレームワーク&nbsp;(ベースクラス２,&nbsp;ライブラリ部分)&nbsp;をビルドする。</td>
+<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*1</td>
+<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
+</tr>
+<tr>
 <Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">2_Build_NuGet_netstd20.bat</td>
 <Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">.NET&nbsp;Standard&nbsp;2.0&nbsp;をターゲットとする&nbsp;NuGet&nbsp;パッケージの作成用に、フレームワーク&nbsp;(ベースクラス１,&nbsp;ライブラリ部分)&nbsp;をビルドする。</td>
+<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*1,&nbsp;*3</td>
+<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
+</tr>
+<tr>
+<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">2_Build_NuGet_netstd21.bat</td>
+<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">.NET&nbsp;Standard&nbsp;2.1&nbsp;をターゲットとする&nbsp;NuGet&nbsp;パッケージの作成用に、フレームワーク&nbsp;(ベースクラス２,&nbsp;ライブラリ部分)&nbsp;をビルドする。</td>
 <Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*1,&nbsp;*3</td>
 <Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
 </tr>
@@ -165,6 +177,11 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
 <Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○</td>
 </tr>
 <tr>
+<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_Business_net48.bat</td>
+<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">.NET&nbsp;Framework&nbsp;4.8&nbsp;をターゲットとする&nbsp;Business名前空間のフレームワーク&nbsp;(ベースクラス３,&nbsp;ライブラリ部分)&nbsp;をビルドする。</td>
+<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○</td>
+</tr>
+<tr>
 <Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_BusinessRichClient_net45.bat</td>
 <Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">.NET&nbsp;Framework&nbsp;4.5.2&nbsp;をターゲットとする&nbsp;Business名前空間のリッチクライアント用フレームワーク&nbsp;(ベースクラス２,&nbsp;ライブラリ部分)&nbsp;をビルドする。</td>
 <Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○*2</td>
@@ -177,6 +194,11 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
 <tr>
 <Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_BusinessRichClient_net47.bat</td>
 <Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">.NET&nbsp;Framework&nbsp;4.7&nbsp;をターゲットとするBusiness名前空間のリッチクライアント用フレームワーク&nbsp;(ベースクラス２,&nbsp;ライブラリ部分)&nbsp;をビルドする。</td>
+<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○*2</td>
+</tr>
+<tr>
+<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_BusinessRichClient_net48.bat</td>
+<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">.NET&nbsp;Framework&nbsp;4.8&nbsp;をターゲットとするBusiness名前空間のリッチクライアント用フレームワーク&nbsp;(ベースクラス３,&nbsp;ライブラリ部分)&nbsp;をビルドする。</td>
 <Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○*2</td>
 </tr>
 <tr>
@@ -312,6 +334,12 @@ Open 棟梁のプログラムをビルドするときは、**初回のみ、MSBu
 <tr>
 <Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">z_ChangePackages_net47.bat</td>
 <Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">NuGet&nbsp;パッケージの作成時に、packages.config切り替えるバッチ（.NET&nbsp;Framework&nbsp;4.7）</td>
+<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
+<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
+</tr>
+<tr>
+<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">z_ChangePackages_net48.bat</td>
+<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">NuGet&nbsp;パッケージの作成時に、packages.config切り替えるバッチ（.NET&nbsp;Framework&nbsp;4.8）</td>
 <Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
 <Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
 </tr>
