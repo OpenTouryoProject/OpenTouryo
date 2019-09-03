@@ -4,6 +4,7 @@
 xcopy /E /Y "..\Frameworks\Infrastructure\Build_net45" "in\net452"
 xcopy /E /Y "..\Frameworks\Infrastructure\Build_net46" "in\net46"
 xcopy /E /Y "..\Frameworks\Infrastructure\Build_net47" "in\net47"
+xcopy /E /Y "..\Frameworks\Infrastructure\Build_net48" "in\net48"
 xcopy /E /Y "..\Frameworks\Infrastructure\Build_netstd20\netstandard2.0" "in\netstandard2.0"
 xcopy /E /Y "..\Frameworks\Infrastructure\Build_netstd21\netstandard2.1" "in\netstandard2.1"
 
