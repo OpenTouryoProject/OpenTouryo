@@ -3,7 +3,7 @@
   <metadata>
     <id>Touryo.Infrastructure.Framework.RichClient</id>
     <title>OpenTouryo.Framework.RichClient</title>
-    <version>2.4.2</version>
+    <version>2.5.0-preview1</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
     <license type="expression">Apache-2.0</license>
@@ -36,5 +36,9 @@
     <file src="in\net47\OpenTouryo.Framework.RichClient.dll" target="lib\net47" />
     <file src="in\net47\OpenTouryo.Framework.RichClient.pdb" target="pdb\net47" />
     <file src="in\net47\OpenTouryo.Framework.RichClient.xml" target="lib\net47" />
+
+    <file src="in\net48\OpenTouryo.Framework.RichClient.dll" target="lib\net48" />
+    <file src="in\net48\OpenTouryo.Framework.RichClient.pdb" target="pdb\net48" />
+    <file src="in\net48\OpenTouryo.Framework.RichClient.xml" target="lib\net48" />
   </files>
 </package>
