@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/05/28  西野 大介         新規作成（分割
+//*  2019/09/03  西野 大介         チェック緩和（空値を許可）
 //**********************************************************************************
 
 using System;
@@ -211,24 +212,24 @@ namespace Touryo.Infrastructure.Public.Str
                             // プロパティ値の終わり
                             if (isInPropValue)
                             {
-                                if (sb.ToString() == "")
-                                {
-                                    // エラー
-                                    StringVariableOperator.ThrowPropStringFormatException(
-                                        PublicExceptionMessage.PROP_STRING_FORMAT_ERROR_PROPERTY_VALUE_IS_EMPTY);
-                                }
-                                else
-                                {
-                                    // プロパティ値が在
-                                    propValue = sb.ToString();
+                                //if (sb.ToString() == "")
+                                //{
+                                //    // エラー
+                                //    StringVariableOperator.ThrowPropStringFormatException(
+                                //        PublicExceptionMessage.PROP_STRING_FORMAT_ERROR_PROPERTY_VALUE_IS_EMPTY);
+                                //}
+                                //else
+                                //{
+                                // プロパティ値が在
+                                propValue = sb.ToString();
 
-                                    // ストリング ビルダのクリア
-                                    sb = new StringBuilder();
+                                // ストリング ビルダのクリア
+                                sb = new StringBuilder();
 
-                                    // 状態変更
-                                    isInPropName = true;
-                                    isInPropValue = false;
-                                }
+                                // 状態変更
+                                isInPropName = true;
+                                isInPropValue = false;
+                                //}
                             }
                             else
                             {
