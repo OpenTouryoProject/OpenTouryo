@@ -22,6 +22,7 @@ Imports SimpleBatch_sample.Common
 
 Imports Touryo.Infrastructure.Business.Util
 Imports Touryo.Infrastructure.Public.Db
+Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
 
 ''' <summary>Module1</summary>
