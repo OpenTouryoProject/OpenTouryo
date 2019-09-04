@@ -43,3 +43,8 @@ echo | call 10_Build_WebAppCore_sample.bat
 
 @echo on
 timeout 5
+
+rem --------------------------------------------------
+rem Change the packages.config.
+rem --------------------------------------------------
+call %CURRENT_DIR%z_ChangePackages_net46.bat
