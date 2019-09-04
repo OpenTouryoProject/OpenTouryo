@@ -71,20 +71,24 @@ namespace Touryo.Infrastructure.Public.Str
             string propValue = "";
 
             // ステータス
+
+            // 先頭
             bool isFirst = true;
 
+            // 検索位置
+            bool isInPropName = false;
+            bool isInPropValue = false;
+
+            // 中括弧位置
             bool isMidPtHead = false;
             bool isInMidPt = false;
             bool isMidPtFoot = false;
-
-            bool isInPropName = false;
-            bool isInPropValue = false;
 
             foreach (char ch in propString)
             {
                 if (isFirst)
                 {
-                    // 先頭
+                    #region 先頭
 
                     // 先頭終わり
                     isFirst = false;
@@ -95,7 +99,7 @@ namespace Touryo.Infrastructure.Public.Str
 
                     if (ch == '=' || ch == ';' || ch == '}')
                     {
-                        // エラー
+                        // 異常（エラー
                         StringVariableOperator.ThrowPropStringFormatException(
                             PublicExceptionMessage.PROP_STRING_FORMAT_ERROR_START_CHARACTER);
                     }
@@ -108,88 +112,99 @@ namespace Touryo.Infrastructure.Public.Str
                     }
                     else
                     {
-                        // 追加
+                        // 正常（追加
                         sb.Append(ch);
                     }
+
+                    #endregion
                 }
                 else
                 {
-                    // 先頭後
+                    #region 先頭後
 
                     if (isMidPtHead)
                     {
+                        #region 中括開始
                         if (ch == '=' || ch == ';')
                         {
-                            // 中括弧中
+                            // フラグの変更
                             isMidPtHead = false;
                             isInMidPt = true;
                             isMidPtFoot = false;
 
-                            // 追加
+                            // 正常（追加
                             sb.Append(ch);
                         }
                         else
                         {
-                            // エラー
+                            // 異常（構文エラー
                             StringVariableOperator.ThrowPropStringFormatException(String.Format(
                                 PublicExceptionMessage.PROP_STRING_FORMAT_ERROR_ESCAPE_CHARACTER, ch));
                         }
+                        #endregion
                     }
                     else if (isInMidPt)
                     {
+                        #region 中括弧中
                         if (ch == '}')
                         {
-                            // 中括弧後
+                            // フラグの変更
                             isMidPtHead = false;
                             isInMidPt = false;
                             isMidPtFoot = true;
                         }
                         else
                         {
-                            // エラー
+                            // 異常（構文エラー
                             StringVariableOperator.ThrowPropStringFormatException(
                                 PublicExceptionMessage.PROP_STRING_FORMAT_ERROR_CURLY_BRACE + "-1");
                         }
+                        #endregion
                     }
-                    else
+                    else //if (isMidPtHead = false && isInMidPt = false)
                     {
-                        // 中括弧外になった
+                        #region 中括弧終了
                         if (isMidPtFoot)
                         {
-                            // 初期化
+                            // フラグの変更
                             isMidPtHead = false;
                             isInMidPt = false;
                             isMidPtFoot = false;
                         }
+                        #endregion
 
-                        // 中括弧外
+                        #region 中括弧外
+
                         if (ch == '{')
                         {
-                            // 中括弧開始
+                            // 正常（中括弧開始
+                            // フラグの変更
                             isMidPtHead = true;
                             isInMidPt = false;
                             isMidPtFoot = false;
                         }
-                        if (ch == '}')
+                        else if (ch == '}')
                         {
-                            // エラー
+                            // 異常（構文エラー
                             StringVariableOperator.ThrowPropStringFormatException(
                                 PublicExceptionMessage.PROP_STRING_FORMAT_ERROR_CURLY_BRACE + "-2");
                         }
                         else if (ch == '=')
                         {
-                            // プロパティ名の終わり
+                            #region プロパティ名の終わり
                             if (isInPropName)
                             {
                                 if (sb.ToString() == "")
                                 {
-                                    // エラー
+                                    // プロパティ名が空
+                                    // 異常（構文エラー
                                     StringVariableOperator.ThrowPropStringFormatException(
                                         PublicExceptionMessage.PROP_STRING_FORMAT_ERROR_PROPERTY_NAME_IS_EMPTY);
                                 }
                                 else
                                 {
-                                    // プロパティ名が在
+                                    // 正常
+                                    // プロパティ名
                                     propName = sb.ToString();
 
                                     // ストリング ビルダのクリア
@@ -202,25 +217,29 @@ namespace Touryo.Infrastructure.Public.Str
                             }
                             else
                             {
-                                // エラー
+                                // 異常（構文エラー
                                 StringVariableOperator.ThrowPropStringFormatException(
                                     PublicExceptionMessage.PROP_STRING_FORMAT_ERROR_DELIMITER_OF_PROPERTY_VALUE);
                             }
+                            #endregion
                         }
                         else if (ch == ';')
                         {
-                            // プロパティ値の終わり
+                            #region プロパティ値の終わり
                             if (isInPropValue)
                             {
                                 //if (sb.ToString() == "")
                                 //{
-                                //    // エラー
+                                //    // プロパティ値が空
+                                //    // 異常（構文エラー
                                 //    StringVariableOperator.ThrowPropStringFormatException(
                                 //        PublicExceptionMessage.PROP_STRING_FORMAT_ERROR_PROPERTY_VALUE_IS_EMPTY);
                                 //}
                                 //else
                                 //{
-                                // プロパティ値が在
+                                
+                                // 正常
+                                // プロパティ値
                                 propValue = sb.ToString();
 
                                 // ストリング ビルダのクリア
@@ -233,19 +252,20 @@ namespace Touryo.Infrastructure.Public.Str
                             }
                             else
                             {
-                                // エラー
+                                // 異常（構文エラー
                                 StringVariableOperator.ThrowPropStringFormatException(
                                     PublicExceptionMessage.PROP_STRING_FORMAT_ERROR_DELIMITER_OF_PROPERTY_NAME);
                             }
+                            #endregion
                         }
                         else
                         {
-                            // 追加
+                            // 正常（追加
                             sb.Append(ch);
                         }
 
-                        // 両方に値が入った
-                        if (propName != "" && propValue != "")
+                        // 両方に値が入った → プロパティ名に値が入った
+                        if (propName != "" && !isInPropValue) // && propValue != "")
                         {
                             // 重複していたら上書きという仕様
                             ht[propName.ToUpper()] = propValue; // #33-この行
@@ -254,40 +274,48 @@ namespace Touryo.Infrastructure.Public.Str
                             propName = "";
                             propValue = "";
                         }
+
+                        #endregion
                     }
+
+                    #endregion
                 }
             }
 
+            #region 後処理
+            // 最後が ; で終わっていない場合
             // プロパティ値の終わり
             if (isInPropValue)
             {
-                if (sb.ToString() == "")
-                {
-                    // プロパティ値が空
-                    // エラー
-                }
-                else
-                {
-                    // プロパティ値が在
-                    propValue = sb.ToString();
+                //if (sb.ToString() == "")
+                //{
+                //    // プロパティ値が空
+                //    // 異常（構文エラー
+                //}
+                //else
+                //{
+                
+                // 正常
+                // プロパティ値
+                propValue = sb.ToString();
 
-                    // ストリング ビルダのクリア
-                    sb = new StringBuilder();
+                // ストリング ビルダのクリア
+                sb = new StringBuilder();
 
-                    // 状態変更
-                    isInPropName = true;
-                    isInPropValue = false;
-                }
+                // 状態変更
+                isInPropName = true;
+                isInPropValue = false;
+                //}
             }
             else
             {
-                //// エラー
+                //// 異常（構文エラー
                 //Form1.ThrowPropStringFormatException("6");
-                // →　最後が;で終わっている場合が有るので、エラーを上げない。
+                // →　最後が ; で終わっている場合が有るので、エラーを上げない。
             }
 
-            // 両方に値が入った
-            if (propName != "" && propValue != "")
+            // 両方に値が入った → プロパティ名に値が入った
+            if (propName != "" && !isInPropValue) // && propValue != "")
             {
                 // 重複していたら上書きという仕様
                 ht[propName.ToUpper()] = propValue; // #33-この行
@@ -296,6 +324,7 @@ namespace Touryo.Infrastructure.Public.Str
                 propName = "";
                 propValue = "";
             }
+            #endregion
 
             return ht;
         }
