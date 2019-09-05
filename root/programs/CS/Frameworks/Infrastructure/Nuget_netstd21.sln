@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Public_netstd20", "Public\Public_netstd21.csproj", "{603EB991-F629-4207-A45C-A7979F0B27F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Public", "Public\Public_netstd21.csproj", "{603EB991-F629-4207-A45C-A7979F0B27F8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DamMySQL_netstd20", "Public\Db\DamMySQL\DamMySQL_netstd21.csproj", "{05EF27AA-8459-424F-97F5-74F77AED6C7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DamMySQL", "Public\Db\DamMySQL\DamMySQL_netstd21.csproj", "{05EF27AA-8459-424F-97F5-74F77AED6C7D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DamPstGrS_netstd20", "Public\Db\DamPstGrS\DamPstGrS_netstd21.csproj", "{BD9107C1-CCE0-4AF5-8B02-20210F6F594B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DamPstGrS", "Public\Db\DamPstGrS\DamPstGrS_netstd21.csproj", "{BD9107C1-CCE0-4AF5-8B02-20210F6F594B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Framework_netstd20", "Framework\Framework_netstd21.csproj", "{7500D33E-1FB1-4F81-B2A0-054AE089DC75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Framework", "Framework\Framework_netstd21.csproj", "{7500D33E-1FB1-4F81-B2A0-054AE089DC75}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DamManagedOdp_netstd20", "Public\Db\DamManagedOdp\DamManagedOdp_netstd21.csproj", "{66FA8CBA-C8A4-4865-9F18-BCBC48E3A331}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DamManagedOdp", "Public\Db\DamManagedOdp\DamManagedOdp_netstd21.csproj", "{66FA8CBA-C8A4-4865-9F18-BCBC48E3A331}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Public.Security_netstd20", "Public\Security\Public.Security_netstd21.csproj", "{4949FA56-95A7-405B-A819-BE3B3B361DE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Public.Security", "Public\Security\Public.Security_netstd21.csproj", "{4949FA56-95A7-405B-A819-BE3B3B361DE4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
