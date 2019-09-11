@@ -13,7 +13,7 @@ set CURRENT_DIR="%~dp0"
 @rem --------------------------------------------------
 @rem Execution of the common processing.
 @rem --------------------------------------------------
-call %CURRENT_DIR%z_Common2.bat
+call %CURRENT_DIR%z_Common.bat
 
 rem --------------------------------------------------
 rem Change the packages.config.

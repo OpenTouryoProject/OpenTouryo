@@ -3,23 +3,20 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{46E0BD62-9451-431C-A75F-EE7B8CC5D6D9}</ProjectGuid>
+    <ProjectGuid>{7649D699-681D-4BE0-9A36-24B0815ABCEF}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Touryo.Infrastructure.Business.RichClient</RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <AssemblyName>OpenTouryo.Business.RichClient</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
+    <MyType>Windows</MyType>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionCompare>Binary</OptionCompare>
+    <OptionStrict>Off</OptionStrict>
+    <OptionInfer>On</OptionInfer>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -44,23 +41,22 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
     <OutputPath>..\..\Build_net48\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NET48</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Build_net48\OpenTouryo.Business.RichClient.XML</DocumentationFile>
+    <DocumentationFile>..\..\Build_net48\OpenTouryo.Business.RichClient.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>DEBUG,TRACE,NET48</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Build_net48r\</OutputPath>
-    <DefineConstants>TRACE;NET48</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Build_net48r\OpenTouryo.Business.RichClient.XML</DocumentationFile>
+    <DocumentationFile>..\..\Build_net48r\OpenTouryo.Business.RichClient.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>TRACE,NET48</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTouryo.Business">
@@ -81,6 +77,9 @@
     <Reference Include="OpenTouryo.Framework.RichClient">
       <HintPath>..\..\Build_net48\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
+    <Reference Include="Oracle.ManagedDataAccess">
+      <HintPath>..\..\Build_net48\Oracle.ManagedDataAccess.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -88,28 +87,54 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\Build\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\Build_net48\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Data" />
-    <Reference Include="WindowsBase">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Asynchronous\MyBaseAsyncFunc.cs" />
-    <Compile Include="Business\MyBaseLogic2CS.cs" />
-    <Compile Include="Business\MyFcBaseLogic2CS.cs" />
-    <Compile Include="Presentation\MyBaseControllerWin.cs">
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Asynchronous\MyBaseAsyncFunc.vb" />
+    <Compile Include="Business\MyBaseLogic2CS.vb" />
+    <Compile Include="Business\MyFcBaseLogic2CS.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\MyBaseControllerWin.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\RcMyCmnFunction.cs" />
+    <Compile Include="Util\RcMyCmnFunction.vb" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

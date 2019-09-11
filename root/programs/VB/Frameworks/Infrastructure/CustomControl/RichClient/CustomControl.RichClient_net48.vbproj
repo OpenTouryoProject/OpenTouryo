@@ -12,7 +12,7 @@
     <AssemblyName>OpenTouryo.CustomControl.RichClient</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <OptionExplicit>On</OptionExplicit>
     <OptionCompare>Binary</OptionCompare>
     <OptionStrict>On</OptionStrict>
@@ -43,28 +43,28 @@
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>..\..\Build_net46\</OutputPath>
-    <DocumentationFile>..\..\Build_net46\OpenTouryo.CustomControl.RichClient.xml</DocumentationFile>
+    <OutputPath>..\..\Build_net48\</OutputPath>
+    <DocumentationFile>..\..\Build_net48\OpenTouryo.CustomControl.RichClient.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
-    <DefineConstants>DEBUG,TRACE,NET46</DefineConstants>
+    <DefineConstants>DEBUG,TRACE,NET48</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Build_net46r\</OutputPath>
-    <DocumentationFile>..\..\Build_net46r\OpenTouryo.CustomControl.RichClient.xml</DocumentationFile>
+    <OutputPath>..\..\Build_net48r\</OutputPath>
+    <DocumentationFile>..\..\Build_net48r\OpenTouryo.CustomControl.RichClient.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
-    <DefineConstants>TRACE,NET46</DefineConstants>
+    <DefineConstants>TRACE,NET48</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTouryo.Framework.RichClient">
-      <HintPath>..\..\Build_net46\OpenTouryo.Framework.RichClient.dll</HintPath>
+      <HintPath>..\..\Build_net48\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Build_net46\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\Build_net48\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
