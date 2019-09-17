@@ -50,6 +50,7 @@ Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
+Imports Touryo.Infrastructure.Public.Reflection
 
 Namespace ASPNETWebService.Controllers
 

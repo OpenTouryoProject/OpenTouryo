@@ -41,6 +41,7 @@ Imports System.Globalization
 
 Imports My.Resources
 Imports Touryo.Infrastructure.Public.Util
+Imports Touryo.Infrastructure.Public.Diagnostics
 
 Namespace Touryo.Infrastructure.Business.Exceptions
 	''' <summary>

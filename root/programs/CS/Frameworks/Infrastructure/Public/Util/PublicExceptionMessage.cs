@@ -54,6 +54,7 @@ using System.Resources;
 using System.Globalization;
 
 using Touryo.Infrastructure.Public.Resources;
+using Touryo.Infrastructure.Public.Diagnostics;
 
 namespace Touryo.Infrastructure.Public.Util
 {

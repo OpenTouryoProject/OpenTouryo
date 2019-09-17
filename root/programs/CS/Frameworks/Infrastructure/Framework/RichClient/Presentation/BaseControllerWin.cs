@@ -63,6 +63,7 @@ using Touryo.Infrastructure.Framework.RichClient.Util;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Reflection;
 
 namespace Touryo.Infrastructure.Framework.RichClient.Presentation
 {

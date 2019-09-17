@@ -53,6 +53,7 @@ using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Reflection;
 
 namespace ASPNETWebService.Controllers
 {

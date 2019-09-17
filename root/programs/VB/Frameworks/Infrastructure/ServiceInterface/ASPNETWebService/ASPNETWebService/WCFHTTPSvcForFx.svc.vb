@@ -48,6 +48,7 @@ Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Util
+Imports Touryo.Infrastructure.Public.Reflection
 
 Namespace Touryo.Infrastructure.Framework.ServiceInterface.ASPNETWebService
     ' メモ: [リファクター] メニューの [名前の変更] コマンドを使用すると、

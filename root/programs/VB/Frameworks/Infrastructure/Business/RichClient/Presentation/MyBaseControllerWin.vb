@@ -50,6 +50,7 @@ Imports Touryo.Infrastructure.Framework.Exceptions
 Imports Touryo.Infrastructure.Framework.Util
 Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Util
+Imports Touryo.Infrastructure.Public.Reflection
 
 Namespace Touryo.Infrastructure.Business.RichClient.Presentation
     ''' <summary>画面コード親クラス２（Windowアプリケーション）</summary>

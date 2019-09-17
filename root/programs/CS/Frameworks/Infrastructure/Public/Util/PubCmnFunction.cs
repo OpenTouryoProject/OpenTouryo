@@ -51,6 +51,7 @@ using System.Data;
 using System.Collections.Generic;
 
 using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Diagnostics;
 
 namespace Touryo.Infrastructure.Public.Util
 {

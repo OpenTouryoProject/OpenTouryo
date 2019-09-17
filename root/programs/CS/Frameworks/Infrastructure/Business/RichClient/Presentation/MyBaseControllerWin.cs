@@ -50,6 +50,7 @@ using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Reflection;
 
 namespace Touryo.Infrastructure.Business.RichClient.Presentation
 {

@@ -59,6 +59,7 @@ using System.Globalization;
 using Touryo.Infrastructure.Framework.Resources;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Diagnostics;
 
 namespace Touryo.Infrastructure.Framework.Exceptions
 {

@@ -32,7 +32,7 @@
 
 using System.Diagnostics;
 
-namespace Touryo.Infrastructure.Public.Util
+namespace Touryo.Infrastructure.Public.Diagnostics
 {
     /// <summary>配列操作クラス</summary>
     /// <remarks>自由に利用できる。</remarks>

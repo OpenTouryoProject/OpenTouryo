@@ -43,7 +43,9 @@
 using System;
 using System.Reflection;
 
-namespace Touryo.Infrastructure.Public.Util
+using Touryo.Infrastructure.Public.Util;
+
+namespace Touryo.Infrastructure.Public.Reflection
 {
     /// <summary>レイトバインド処理クラス</summary>
     /// <remarks>自由に利用できる。</remarks>

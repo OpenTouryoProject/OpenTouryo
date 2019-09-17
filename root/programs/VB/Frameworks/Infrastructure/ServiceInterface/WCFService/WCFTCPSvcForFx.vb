@@ -48,6 +48,7 @@ Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.IO
 Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Util
+Imports Touryo.Infrastructure.Public.Reflection
 
 Namespace Touryo.Infrastructure.Business.Transmission
     ' メモ: [リファクター] メニューの [名前の変更] コマンドを使用すると、コード、svc、および config ファイルで同時にクラス名 "WCFSvcForFx" を変更できます。
