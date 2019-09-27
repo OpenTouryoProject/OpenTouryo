@@ -114,6 +114,9 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <param name="cancellationToken">CancellationToken</param>
 		public override async Task OnActionExecutingAsync(HttpActionContext actionContext, CancellationToken cancellationToken)
         {
+            // Controller・Action名を取得する。
+            this.GetControllerAndActionName(actionContext);
+
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
             MyBaseAsyncApiController.GetClaims(out userName, out roles, out scopes, out ipAddress);
@@ -278,6 +281,34 @@ namespace Touryo.Infrastructure.Business.Presentation
 
         #region 情報取得用
 
+        /// <summary>GetControllerAndActionName</summary>
+        /// <param name="actionContext">HttpActionContext</param>
+        private void GetControllerAndActionName(HttpActionContext actionContext)
+        {
+            // MSBuild で ビルド不可。
+            //this.ControllerName = actionContext?.ControllerContext?.ControllerDescriptor?.ControllerName;
+            //this.ActionName = actionContext?.ActionDescriptor?.ActionName;
+
+            if (actionContext != null)
+            {
+                HttpControllerContext controllerContext = actionContext.ControllerContext;
+                if (controllerContext != null)
+                {
+                    HttpControllerDescriptor controllerDescriptor = controllerContext.ControllerDescriptor;
+                    if (controllerDescriptor != null)
+                    {
+                        this.ControllerName = controllerDescriptor.ControllerName;
+                    }
+                }
+
+                HttpActionDescriptor actionDescriptor = actionContext.ActionDescriptor;
+                if (actionDescriptor != null)
+                {
+                    this.ActionName = actionDescriptor.ActionName;
+                }
+            }
+        }
+
         /// <summary>ユーザ情報を取得する</summary>
         /// <param name="authenticationContext">HttpAuthenticationContext</param>
         private async Task GetUserInfoAsync(HttpAuthenticationContext authenticationContext)
@@ -307,8 +338,8 @@ namespace Touryo.Infrastructure.Business.Presentation
                         {
                             new Claim(ClaimTypes.Name, sub),
                             new Claim(ClaimTypes.Role, string.Join(",", roles)),
-                            new Claim(OAuth2AndOIDCConst.Claim_Scopes, string.Join(",", scopes)),
-                            new Claim(OAuth2AndOIDCConst.Claim_Audience, (string)jobj[OAuth2AndOIDCConst.aud]),
+                            new Claim(OAuth2AndOIDCConst.UrnScopesClaim, string.Join(",", scopes)),
+                            new Claim(OAuth2AndOIDCConst.UrnAudienceClaim, (string)jobj[OAuth2AndOIDCConst.aud]),
                             new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress(authenticationContext.Request))
                         };
 
@@ -342,8 +373,8 @@ namespace Touryo.Infrastructure.Business.Presentation
             {
                 new Claim(ClaimTypes.Name, "未認証"),
                 new Claim(ClaimTypes.Role, ""),
-                new Claim(OAuth2AndOIDCConst.Claim_Scopes, ""),
-                new Claim(OAuth2AndOIDCConst.Claim_Audience, ""),
+                new Claim(OAuth2AndOIDCConst.UrnScopesClaim, ""),
+                new Claim(OAuth2AndOIDCConst.UrnAudienceClaim, ""),
                 new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress(authenticationContext.Request))
             };
 
@@ -419,7 +450,7 @@ namespace Touryo.Infrastructure.Business.Presentation
             IEnumerable<Claim> claims = MyBaseAsyncApiController.GetRawClaims();
             userName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
             roles = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
-            scopes = claims.FirstOrDefault(c => c.Type == OAuth2AndOIDCConst.Claim_Scopes).Value;
+            scopes = claims.FirstOrDefault(c => c.Type == OAuth2AndOIDCConst.UrnScopesClaim).Value;
             ipAddress = claims.FirstOrDefault(c => c.Type == "IpAddress").Value;
         }
 

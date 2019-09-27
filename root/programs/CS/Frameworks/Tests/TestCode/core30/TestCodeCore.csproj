@@ -12,7 +12,15 @@
 
   <ItemGroup>
     <Compile Include="..\Program.cs" Link="Program.cs" />
+    <Compile Include="..\TestDeflateCompression.cs" Link="TestDeflateCompression.cs" />
     <Compile Include="..\TestEnumToStringExtensions.cs" Link="TestEnumToStringExtensions.cs" />
+    <Compile Include="..\TestXmlLib.cs" Link="TestXmlLib.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +30,13 @@
     <Reference Include="OpenTouryo.Public.Security">
       <HintPath>..\..\..\Infrastructure\Build_netstd20\netstandard2.0\OpenTouryo.Public.Security.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

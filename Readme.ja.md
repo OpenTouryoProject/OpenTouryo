@@ -9,12 +9,16 @@
 - IDE（統合開発環境）
   - Visual Studio 2015
   - Visual Studio 2017
+  - Visual Studio 2019
 - targetFramework（実行環境）
   - .NET Framework 4.5.2 (net452)
   - .NET Framework 4.6 (net46)
   - .NET Framework 4.7 (net47)
+  - .NET Framework 4.8 (net48)
   - .NET Core 2.0 (netcoreapp2.0)
+  - .NET Core 3.0 (netcoreapp3.0)
   - .NET Standard 2.0 (netstandard2.0)
+  - .NET Standard 2.1 (netstandard2.1)
   
 
 プロジェクト・ソリューションの既定の targetFramework は net46(.NET Framework 4.6) です。

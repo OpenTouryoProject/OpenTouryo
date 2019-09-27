@@ -51,6 +51,7 @@ using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Reflection;
 
 namespace Touryo.Infrastructure.Business.Transmission
 {

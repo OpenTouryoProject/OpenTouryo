@@ -39,6 +39,7 @@
 //*  2014/06/12  Rituparna Biswas  Deleted the commented code in "AddZerosAfterDecimal" method
 //*  2017/01/13  西野 大介         ToUnixTime, FromUnixTimeメソッドを追加した。
 //*  2018/03/28  西野 大介         .NET Standard対応で、Microsoft.VisualBasicのサポート無し。
+//*  2019/06/04  西野 大介         To, FromSamlTimestampメソッドの追加
 //**********************************************************************************
 
 using System;
@@ -516,10 +517,33 @@ namespace Touryo.Infrastructure.Public.Str
 
         #region 時間
 
-        /// <summary>unix epochをDateTimeで表した定数</summary>
-        private readonly static DateTime _unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        // W3Cの日時フォーマット
+        // https://www.kanzaki.com/docs/html/dtf.html
+        // W3C-DTF（W3CDTF）には、次の6通りのフォーマットがある。
+        // (1) 年のみ
+        // YYYY（例：2001）
+        // (2) 年月
+        // YYYY-MM（例：2001-08）
+        // (3) 年月日
+        // YYYY-MM-DD（例：2001-08-02）
+        // (4) 年月日および時分
+        // YYYY-MM-DDThh:mmTZD（例：2001-08-02T10:45+09:00）
+        // (5) 年月日および時分秒
+        // YYYY-MM-DDThh:mm:ssTZD（例：2001-08-02T10:45:23+09:00）
+        // (6) 年月日および時分秒および小数部分
+        // YYYY-MM-DDThh:mm:ss.sTZD（例：2001-08-02T10:45:23.5+09:00）
+        // ＜解説＞
+        // - YMDがそれぞれ年月日、hmsがそれぞれ時分秒
+        // - 小数点以下の秒を表記する場合、桁数に制限はない。
+        // - 年月日と時分秒はアルファベットの T で区切りる。
+        // - TZDはタイムゾーンを示す部分
+        //   - UTC（協定世界時＝グリニッジ標準時）で表記している場合、Z を記述
+        //   - UTCでない場合、UTCとの時差を+hh:mm or -hh:mm（、例えば、+09:00）と記述
 
         #region UNIX時間
+
+        /// <summary>unix epochをDateTimeで表した定数</summary>
+        private readonly static DateTime _unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         /// <summary>DateTimeをUNIX時間に変換するメソッド</summary>
         /// <param name="dateTime">DateTime</param>
@@ -540,6 +564,30 @@ namespace Touryo.Infrastructure.Public.Str
         {
             // unix epochからunixTime秒だけ経過した時刻を求める
             return _unixEpoch.AddSeconds(unixTime);
+        }
+
+        #endregion
+
+        #region W3C時間
+
+        /// <summary>W3C Timestampに変換するメソッド</summary>
+        /// <param name="utc">DateTime</param>
+        /// <param name="format">string</param>
+        /// <returns>W3C Timestamp</returns>
+        public static string ToW3cTimestamp(DateTime utc, string format = "yyyy-MM-ddTHH:mm:ssZ")
+        {
+            // https://adamprescott.net/2012/12/05/net-datetime-to-w3c-format/
+            return DateTime.SpecifyKind(utc, DateTimeKind.Utc).ToString(format);
+        }
+
+        /// <summary>W3C Timestampから変換するメソッド</summary>
+        /// <param name="w3cTimestamp">string</param>
+        /// <returns>DateTime</returns>
+        public static DateTime FromW3cTimestamp(string w3cTimestamp)
+        {
+            // https://smdn.jp/programming/netfx/datetime/1_kind_offset_timezone/
+            // 文字列に指定されているタイムゾーン部分を判別して適当なDateTimeKindが設定される。
+            return DateTime.Parse(w3cTimestamp.Substring(0, w3cTimestamp.Length - 1));
         }
 
         #endregion

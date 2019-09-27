@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>OpenTouryo.Public</AssemblyName>
     <RootNamespace>Touryo.Infrastructure.Public</RootNamespace>
-    <Version>2.4.0.0</Version>
+    <Version>2.5.0.0</Version>
     <Company>Hitachi Solutions</Company>
   </PropertyGroup>
 
@@ -80,6 +80,14 @@
     <None Remove="packages_net45.config" />
     <None Remove="packages_net46.config" />
     <None Remove="packages_net47.config" />
+    <None Remove="packages_net48.config" />
+    <None Remove="Xml\TestXml.xml" />
+    <None Remove="Xml\TestXsd.xsd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Xml\TestXml.xml" />
+    <EmbeddedResource Include="Xml\TestXsd.xsd" />
   </ItemGroup>
 
   <ItemGroup>

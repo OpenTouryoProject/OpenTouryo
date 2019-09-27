@@ -54,6 +54,7 @@ using System.Resources;
 using System.Globalization;
 
 using Touryo.Infrastructure.Public.Resources;
+using Touryo.Infrastructure.Public.Diagnostics;
 
 namespace Touryo.Infrastructure.Public.Util
 {
@@ -69,7 +70,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -83,7 +84,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -97,7 +98,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the concatination of specified string resource for the specified culture or current UI culture and PubLiteral.SQL_COMMANDTIMEOUT. 
                 return PublicExceptionMessage.CmnFunc(key) + PubLiteral.SQL_COMMANDTIMEOUT;
@@ -115,7 +116,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -129,7 +130,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -143,7 +144,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -157,7 +158,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -175,7 +176,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -193,7 +194,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -207,7 +208,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -221,7 +222,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -235,7 +236,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -255,7 +256,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -269,7 +270,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -284,7 +285,7 @@ namespace Touryo.Infrastructure.Public.Util
 
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -298,7 +299,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -312,7 +313,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -330,7 +331,21 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
+
+                // Returns the specified string resource for the specified culture or current UI culture.
+                return PublicExceptionMessage.CmnFunc(key);
+            }
+        }
+
+        /// <summary>タグの最大数を超えたエラー</summary>
+        public static string DPQ_TAG_MAX_COUNT_ERROR
+        {
+            get
+            {
+                // Get current property name.
+                //string key = PubCmnFunction.GetCurrentMethodName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -346,7 +361,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -360,7 +375,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -374,7 +389,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -388,7 +403,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -402,7 +417,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -416,7 +431,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -430,7 +445,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -444,7 +459,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -462,7 +477,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -476,7 +491,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -490,7 +505,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -504,7 +519,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -524,7 +539,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -550,7 +565,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -564,7 +579,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -578,7 +593,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -592,7 +607,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -606,7 +621,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -620,7 +635,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -634,7 +649,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -648,7 +663,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -666,7 +681,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -680,7 +695,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -694,7 +709,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -708,7 +723,7 @@ namespace Touryo.Infrastructure.Public.Util
             {
                 // Get current property name.
                 //string key = PubCmnFunction.GetCurrentMethodName();
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);
@@ -721,7 +736,7 @@ namespace Touryo.Infrastructure.Public.Util
             get
             {
                 // Get current property name.
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return PublicExceptionMessage.CmnFunc(key);

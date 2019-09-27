@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/02/01  西野 大介         新規作成
+//*  2019/06/12  西野 大介         constructorのX509KeyStorageFlagsの既定値を変更
 //**********************************************************************************
 
 using System.Security.Cryptography.X509Certificates;
@@ -48,14 +49,9 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <summary>Constructor</summary>
         /// <param name="certificateFilePath">ASymmetricCryptographyに渡すcertificateFilePathパラメタ</param>
         /// <param name="password">ASymmetricCryptographyに渡すpasswordパラメタ</param>
-        public JWE_Rsa15A128CbcHS256_X509(string certificateFilePath, string password)
-            : this(certificateFilePath, password, X509KeyStorageFlags.DefaultKeySet) { }
-
-        /// <summary>Constructor</summary>
-        /// <param name="certificateFilePath">ASymmetricCryptographyに渡すcertificateFilePathパラメタ</param>
-        /// <param name="password">ASymmetricCryptographyに渡すpasswordパラメタ</param>
         /// <param name="flag">X509KeyStorageFlags</param>
-        public JWE_Rsa15A128CbcHS256_X509(string certificateFilePath, string password, X509KeyStorageFlags flag)
+        public JWE_Rsa15A128CbcHS256_X509(string certificateFilePath, string password,
+            X509KeyStorageFlags flag = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet)
         {
             this.CertificateFilePath = certificateFilePath;
             this.CertificatePassword = password;

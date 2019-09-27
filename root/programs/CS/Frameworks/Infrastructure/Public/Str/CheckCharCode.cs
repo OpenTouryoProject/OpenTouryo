@@ -58,8 +58,8 @@ namespace Touryo.Infrastructure.Public.Str
             this.StringEncoding = stringEncoding;
 
             // １文字のバイトデータを数値データ（long）に変換
-            this.StartCode = PubCmnFunction.GetLongFromByte(stringEncoding.GetBytes(startChar));
-            this.EndCode = PubCmnFunction.GetLongFromByte(stringEncoding.GetBytes(endChar));
+            this.StartCode = ArrayOperator.GetLongFromByte(stringEncoding.GetBytes(startChar));
+            this.EndCode = ArrayOperator.GetLongFromByte(stringEncoding.GetBytes(endChar));
         }
 
         
@@ -76,7 +76,7 @@ namespace Touryo.Infrastructure.Public.Str
         public bool IsInRange(string ch)
         {
             // １文字のバイトデータを数値データ（long）に変換
-            long charCode = PubCmnFunction.GetLongFromByte(StringEncoding.GetBytes(ch));
+            long charCode = ArrayOperator.GetLongFromByte(StringEncoding.GetBytes(ch));
 
             // 範囲チェック
             if (charCode >= this.StartCode && charCode <= this.EndCode)

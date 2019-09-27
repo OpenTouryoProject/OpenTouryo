@@ -497,8 +497,12 @@ Public Class LayerB
 
             Case "generate"
                 ' 自動生成Daoを使用する。
+
+                ' 自動生成Dao性能対策 - Open 棟梁 Wiki
+                ' https://opentouryo.osscons.jp/index.php?%E8%87%AA%E5%8B%95%E7%94%9F%E6%88%90Dao%E6%80%A7%E8%83%BD%E5%AF%BE%E7%AD%96
+
                 ' 自動生成Daoを生成
-                Dim genDao As New DaoShippers(Me.GetDam())
+                Dim genDao As New DaoShippers(Me.GetDam(), "f54d4d7bd5c8441187ec6939c4da7303")
 
                 ' パラメタに対して、動的に値を設定する。
                 genDao.PK_ShipperID = testParameter.ShipperID

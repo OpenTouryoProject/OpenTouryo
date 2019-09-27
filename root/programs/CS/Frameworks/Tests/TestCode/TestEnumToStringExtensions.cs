@@ -1,7 +1,7 @@
 ﻿using System;
 
-using Touryo.Infrastructure.Public.Diagnostics;
 using Touryo.Infrastructure.Public.FastReflection;
+using Touryo.Infrastructure.Public.Diagnostics;
 
 namespace TestCode
 {
@@ -152,8 +152,8 @@ namespace TestCode
             MyDebug.OutputDebugAndConsole("Four", FlagsEnum.Four.ToStringByExpressionTree());
 #endif
         }
-#endregion
+        #endregion
 
-#endregion
+        #endregion
     }
 }

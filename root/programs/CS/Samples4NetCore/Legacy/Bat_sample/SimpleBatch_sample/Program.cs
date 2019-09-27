@@ -26,6 +26,7 @@ using System.Collections.Generic;
 
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Public.Db;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace SimpleBatch_sample
@@ -51,7 +52,7 @@ namespace SimpleBatch_sample
             List<string> valsLst = null;
             Dictionary<string, string> argsDic = null;
             
-            PubCmnFunction.GetCommandArgs('/', out argsDic, out valsLst);
+            StringVariableOperator.GetCommandArgs('/', out argsDic, out valsLst);
 
             // 引数クラスを生成
             // 下位（Ｂ・Ｄ層）は、テスト クラスを流用する

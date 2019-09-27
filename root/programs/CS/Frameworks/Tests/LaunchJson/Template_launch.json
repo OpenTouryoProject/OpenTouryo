@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "adapter": "C:\\Program Files\\PuTTY\\plink.exe",
+  "adapterArgs": "-i c:\\private.ppk seigi@nishino -batch -T ~/vsdbg/vsdbg --interpreter=vscode",
+  "configurations": [
+    {
+      "name": ".NET Core Launch",
+      "type": "coreclr",
+      "cwd": "/mnt/c/xxxx",
+      "program": "bin/Debug/netcoreappn.n/.../xxxx.dll",
+      "request": "launch"
+    }
+  ]
+}

@@ -70,7 +70,7 @@ using Touryo.Infrastructure.Framework.Common;
 using Touryo.Infrastructure.Framework.Util;
 
 using Touryo.Infrastructure.Public.Db;
-using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Reflection;
 
 #if NETSTD
 #else

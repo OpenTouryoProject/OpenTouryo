@@ -40,14 +40,32 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
 
         #region JWS
 
+        #region HS
         /// <summary>alg:HS256</summary>
         public const string HS256 = "HS256";
+        /// <summary>alg:HS384</summary>
+        public const string HS384 = "HS384";
+        /// <summary>alg:HS512</summary>
+        public const string HS512 = "HS512";
+        #endregion
 
+        #region RS
         /// <summary>alg:RS256</summary>
         public const string RS256 = "RS256";
+        /// <summary>alg:RS384</summary>
+        public const string RS384 = "RS384";
+        /// <summary>alg:RS512</summary>
+        public const string RS512 = "RS512";
+        #endregion
 
+        #region ES
         /// <summary>alg:ES256</summary>
         public const string ES256 = "ES256";
+        /// <summary>alg:ES384</summary>
+        public const string ES384 = "ES384";
+        /// <summary>alg:ES512</summary>
+        public const string ES512 = "ES512";
+        #endregion
 
         #endregion
 

@@ -1,0 +1,4 @@
+# Windows batch files want to use CRLF by default.
+*.bat text eol=crlf
+
+# Visual Studio files want to use CRLF by default.

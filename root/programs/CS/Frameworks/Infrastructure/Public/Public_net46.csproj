@@ -114,11 +114,13 @@
     <Compile Include="FastReflection\AccessorInfo.cs" />
     <Compile Include="FastReflection\EnumToStringByEmitExtensions.cs" />
     <Compile Include="FastReflection\InstanceCreator.cs" />
+    <Compile Include="IO\DeflateCompression.cs" />
     <Compile Include="IO\UnZipper.cs" />
     <Compile Include="IO\ZipBase.cs" />
     <Compile Include="IO\Zipper.cs" />
     <Compile Include="Log\CustomEventLog.cs" />
     <Compile Include="Log\SecurityEventLog.cs" />
+    <Compile Include="Reflection\MyAssemblies.cs" />
     <Compile Include="Resources\PublicExceptionMessageResource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -129,12 +131,17 @@
     <Compile Include="Str\FormatConverter.cs" />
     <Compile Include="Str\JIS2k4Checker.cs" />
     <Compile Include="Str\StringChecker.cs" />
+    <Compile Include="Str\StringExtractor.cs" />
     <Compile Include="Str\StringConverter.cs" />
     <Compile Include="Db\BaseDam.cs" />
     <Compile Include="Db\DamSqlSvr.cs" />
     <Compile Include="Db\DbEnum.cs" />
+    <Compile Include="Str\ToStringExtension.cs" />
+    <Compile Include="Diagnostics\StackFrameOperator.cs" />
+    <Compile Include="Str\StringVariableOperator.cs" />
     <Compile Include="Util\CustomMarshaler.cs" />
     <Compile Include="FastReflection\CompiledExpressionCreater.cs" />
+    <Compile Include="Util\ArrayOperator.cs" />
     <Compile Include="Util\PubCmnFunction.cs" />
     <Compile Include="Util\PublicExceptionMessage.cs" />
     <Compile Include="IO\BinarySerialize.cs" />
@@ -145,7 +152,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Str\CustomEncode.cs" />
     <Compile Include="Util\GetConfigParameter.cs" />
-    <Compile Include="Util\Latebind.cs" />
+    <Compile Include="Reflection\Latebind.cs" />
     <Compile Include="Util\PerformanceRecorder.cs" />
     <Compile Include="Util\PubLiteral.cs" />
     <Compile Include="Util\RandomValueGenerator.cs" />
@@ -161,23 +168,7 @@
     <Compile Include="Win32\WindowsAPIErrorException.cs" />
     <Compile Include="Win32\WinProcWin32.cs" />
     <Compile Include="WinProc\PeekMessage.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows インストーラー 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
+    <Compile Include="Xml\XmlLib.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\PublicExceptionMessageResource.ja-JP.resx" />
@@ -189,6 +180,10 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Xml\TestXml.xml" />
+    <EmbeddedResource Include="Xml\TestXsd.xsd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

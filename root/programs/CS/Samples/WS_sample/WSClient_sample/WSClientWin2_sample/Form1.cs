@@ -188,6 +188,13 @@ namespace WSClientWin2_sample
             {
                 Form2 f = new Form2();
                 f.Show();
+
+                //// イベント二重登録対策のテスト
+                //f.ShowDialog();
+                //f.Hide();
+                //f.ShowDialog();
+                //// ココで、Form2のイベントが2回実行される。
+                //f.Hide();
             }
         }
 

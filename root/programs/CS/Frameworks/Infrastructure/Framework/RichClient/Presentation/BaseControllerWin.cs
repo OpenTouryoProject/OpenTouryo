@@ -51,6 +51,7 @@
 //*  2017/09/12  西野 大介         UserControlの動的配置対応のため、CreatePrefixAndEvtHndHtを新設。
 //*  2017/09/15  西野 大介         UserControlのネスト対応のため、FindControlの内容をFindUCControlに変更。
 //*  2018/01/31  西野 大介         ネストしたユーザ コントロールに対応（senderで親UCを確認する）
+//*  2019/05/07  西野 大介         ShowDialogによるEventHandler二重登録問題への対応
 //**********************************************************************************
 
 using System;
@@ -62,6 +63,7 @@ using Touryo.Infrastructure.Framework.RichClient.Util;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Reflection;
 
 namespace Touryo.Infrastructure.Framework.RichClient.Presentation
 {
@@ -171,6 +173,15 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
 
         #region P層イベント処理
 
+        /// <summary>イベント追加処理フラグ</summary>
+        private bool _isInitializedEvent = false;
+
+        /// <summary>イベント追加処理フラグ</summary>
+        protected bool IsInitializedEvent
+        {
+            get { return this._isInitializedEvent; }
+        }
+
         /// <summary>フレームワークのイベント処理対応コントロールを保持する</summary>
         /// <remarks>画面コード親クラス２から利用する。</remarks>
         protected Dictionary<string, Control> ControlHt = new Dictionary<string, Control>();
@@ -266,10 +277,10 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
 
                 // ウィンドウ数管理
 
-                // 全Form型
+                // - 全Form型
                 ++BaseControllerWin._intWindowsCount;
 
-                // 当該Form型
+                // - 当該Form型
                 if (BaseControllerWin._dicWindowsCount.ContainsKey(this.GetType()))
                 {
                     // 初回以降（インクリメント）
@@ -281,8 +292,6 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                     // 初回（初期化）
                     BaseControllerWin._dicWindowsCount[this.GetType()] = 1;
                 }
-
-                // ・・・
 
                 // ウィンドウ インスタンス管理
                 if (BaseControllerWin._windowInstances.ContainsKey(this.GetType()))
@@ -306,42 +315,16 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
 
                 #endregion
 
-                // ユーザ コントロールの初期化
-                this.GetUserControl(this);
+                #region コントロールの初期化
+                if (!this.IsInitializedEvent)
+                {
+                    // ユーザ コントロールの検索＆取得
+                    this.GetUserControl(this);
 
-                #region コントロール取得処理
-
-                #region 旧処理
-                //// BUTTON
-                //RcFxCmnFunction.GetCtrlAndSetClickEventHandler(
-                //    this, GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_BUTTON),
-                //    new System.EventHandler(this.Button_Click), this.ControlHt);
-
-                //// PICTURE BOX
-                //RcFxCmnFunction.GetCtrlAndSetClickEventHandler(
-                //    this, GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_PICTURE_BOX),
-                //    new System.EventHandler(this.Button_Click), this.ControlHt);
-
-                //// COMBO BOX
-                //RcFxCmnFunction.GetCtrlAndSetClickEventHandler(
-                //    this, GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_COMBO_BOX),
-                //    new System.EventHandler(this.List_SelectedIndexChanged), this.ControlHt);
-
-                //// LIST BOX
-                //RcFxCmnFunction.GetCtrlAndSetClickEventHandler(
-                //    this, GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_LIST_BOX),
-                //    new System.EventHandler(this.List_SelectedIndexChanged), this.ControlHt);
-
-                //// RADIO BUTTON
-                //RcFxCmnFunction.GetCtrlAndSetClickEventHandler(
-                //    this, GetConfigParameter.GetConfigValue(FxLiteral.PREFIX_OF_RADIO_BUTTON),
-                //    new System.EventHandler(this.Check_CheckedChanged), this.ControlHt);
-                #endregion
-
-                // コントロール検索＆イベントハンドラ設定
-                RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(
-                    this, this.CreatePrefixAndEvtHndHt(), this.ControlHt);
-
+                    // コントロール検索＆取得＆イベントハンドラ設定
+                    RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(
+                        this, this.CreatePrefixAndEvtHndHt(), this.ControlHt);
+                }
                 #endregion
 
                 #region 画面の初期処理
@@ -351,7 +334,6 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                 this.UOC_CMNAfterFormInit();
 
                 #endregion
-
             }
             catch (BusinessApplicationException baEx)
             {
@@ -386,6 +368,9 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
             }
             finally
             {
+                // 初回のみ実行
+                this._isInitializedEvent = true;
+
                 // Finally節のUOCメソッド 
                 this.UOC_Finally(new RcFxEventArgs(
                     FxLiteral.EVENT_FORM_LOAD, "", sender, e));
@@ -508,18 +493,22 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                 this.UOC_Finally(new RcFxEventArgs(
                     FxLiteral.EVENT_FORM_CLOSED, "", sender, e));
 
+                #region ウィンドウ数・インスタンス管理
+
                 // ウィンドウ数管理
 
-                // 全Form型
+                // - 全Form型
                 --BaseControllerWin._intWindowsCount;
 
-                // 当該Form型
+                // - 当該Form型
                 int i = BaseControllerWin._dicWindowsCount[this.GetType()];
                 BaseControllerWin._dicWindowsCount[this.GetType()] = --i;
 
                 // ウィンドウ インスタンス管理
                 List<Form> list = BaseControllerWin._windowInstances[this.GetType()];
                 list.Remove(this);
+
+                #endregion
             }
         }
 

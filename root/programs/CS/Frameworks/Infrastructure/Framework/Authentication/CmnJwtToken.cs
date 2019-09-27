@@ -48,17 +48,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
     public class CmnJwtToken
     {
         /// <summary>汎用認証サイトの発行したJWT形式のTokenを検証する。</summary>
-        /// <param name="jwtToken">
-        /// JWT形式のTokenで以下の項目が必要
-        ///  - iss
-        ///  - aud
-        ///  - iat
-        ///  - exp
-        ///  - sub
-        ///  - roles  (option)
-        ///  - scopes (option)
-        ///  - その他 (option)
-        /// </param>
+        /// <param name="jwtToken">JWT形式のToken</param>
         /// <param name="jwtPayload">
         /// JWS, JWS + JEWの場合があるのでペイロードを返す。
         /// </param>
@@ -70,11 +60,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
             JWE jwe = null;
             JWS jws = null;
 
-            // 復号化
-            bool isFAPI2 = false;
+            // 復号化（JWEの場合）
+            bool isJWE_FAPI2 = false;
             if (3 < jwtToken.Split('.').Length)
             {
-                isFAPI2 = true;
+                isJWE_FAPI2 = true;
 
                 // ヘッダ
                 JWE_Header jweHeader = JsonConvert.DeserializeObject<JWE_Header>(
@@ -83,14 +73,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 if (jweHeader.alg == JwtConst.RSA_OAEP)
                 {
                     jwe = new JWE_RsaOaepAesGcm_X509(
-                        OAuth2AndOIDCParams.RS256Pfx,
-                        OAuth2AndOIDCParams.RS256Pwd);
+                        CmnClientParams.RsaPfxFilePath,
+                        CmnClientParams.RsaPfxPassword);
                 }
                 else if (jweHeader.alg == JwtConst.RSA1_5)
                 {
                     jwe = new JWE_Rsa15A128CbcHS256_X509(
-                        OAuth2AndOIDCParams.RS256Pfx,
-                        OAuth2AndOIDCParams.RS256Pwd);
+                        CmnClientParams.RsaPfxFilePath,
+                        CmnClientParams.RsaPfxPassword);
                 }
                 else
                 {
@@ -102,7 +92,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
             else
             {
-                isFAPI2 = false;
+                isJWE_FAPI2 = false;
             }
 
             // 検証
@@ -110,36 +100,35 @@ namespace Touryo.Infrastructure.Framework.Authentication
             JWS_Header jwsHeader = JsonConvert.DeserializeObject<JWS_Header>(
                 CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(jwtToken.Split('.')[0]), CustomEncode.UTF_8));
 
-            if (jwsHeader.alg == JwtConst.ES256 && isFAPI2) { } // 正常
-            else if (jwsHeader.alg == JwtConst.RS256 && !isFAPI2) { } // 正常
+            if (jwsHeader.alg == JwtConst.ES256 && isJWE_FAPI2) { } // 正常
+            else if (jwsHeader.alg == JwtConst.RS256 && !isJWE_FAPI2) { } // 正常
             else { throw new NotSupportedException("Unexpected combination of JWS and JWE."); }
 
             // 証明書を使用するか、Jwkを使用するか判定
             if (string.IsNullOrEmpty(jwsHeader.jku)
                 || string.IsNullOrEmpty(jwsHeader.kid))
             {
-                // 旧バージョン
-                // 証明書を使用
-                if (isFAPI2)
+                // 旧バージョン（証明書を使用
+                if (isJWE_FAPI2)
                 {
 #if NET45 || NET46
                     throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
 #else
-                    jws = new JWS_ES256_X509(OAuth2AndOIDCParams.ES256Cer, "");
+                    jws = new JWS_ES256_X509(CmnClientParams.EcdsaCerFilePath, "");
 #endif
                 }
                 else
                 {
-                    jws = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
+                    jws = new JWS_RS256_X509(CmnClientParams.RsaCerFilePath, "");
                 }
             }
             else
             {
-                // 新バージョン
-
-                // Client or AuthZ(検証用
+                // 新バージョン（Jwkを使用
                 if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
                 {
+                    // jku(jwks_uri)使用のカバレッジ
+
                     // Client側
                     JObject jwkObject = JwkSetStore.GetInstance().GetJwkObject(jwsHeader.kid);
 
@@ -154,40 +143,42 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     if (jwkObject == null)
                     {
                         // 証明書を使用
-                        if (isFAPI2)
+                        if (isJWE_FAPI2)
                         {
 #if NET45 || NET46
                             throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
 #else
-                            jws = new JWS_ES256_X509(OAuth2AndOIDCParams.ES256Cer, "");
+                            jws = new JWS_ES256_X509(CmnClientParams.EcdsaCerFilePath, "");
 #endif
                         }
                         else
                         {
-                            jws = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
+                            jws = new JWS_RS256_X509(CmnClientParams.RsaCerFilePath, "");
                         }
                     }
                     else
                     {
                         // Jwkを使用
-                        if (isFAPI2)
+                        if (isJWE_FAPI2)
                         {
 #if NET45 || NET46
                             throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
 #else
-                            jws = new JWS_ES256_Param(EccPublicKeyConverter.JwkToParam(jwkObject), false);
+                            EccPublicKeyConverter epkc = new EccPublicKeyConverter();
+                            jws = new JWS_ES256_Param(epkc.JwkToParam(jwkObject), false);
 #endif
                         }
                         else
                         {
-                            jws = new JWS_RS256_Param(RsaPublicKeyConverter.JwkToParam(jwkObject));
+                            RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
+                            jws = new JWS_RS256_Param(rpkc.JwkToParam(jwkObject));
                         }
                     }
                 }
                 else
                 {
-                    // AuthZ側(検証用カバレッジ
-                    // ※ AuthZ側でClient側テストを行うためのカバレージ
+                    // JwkSet使用のカバレッジ
+                    // AuthZ側でClient側テストを行うためのカバレージ
                     JObject jwkObject = null;
 
                     if (ResourceLoader.Exists(OAuth2AndOIDCParams.JwkSetFilePath, false))
@@ -199,33 +190,35 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     if (jwkObject == null)
                     {
                         // 証明書を使用
-                        if (isFAPI2)
+                        if (isJWE_FAPI2)
                         {
 #if NET45 || NET46
                             throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
 #else
-                            jws = new JWS_ES256_X509(OAuth2AndOIDCParams.ES256Cer, "");
+                            jws = new JWS_ES256_X509(CmnClientParams.EcdsaCerFilePath, "");
 #endif
                         }
                         else
                         {
-                            jws = new JWS_RS256_X509(OAuth2AndOIDCParams.RS256Cer, "");
+                            jws = new JWS_RS256_X509(CmnClientParams.RsaCerFilePath, "");
                         }
                     }
                     else
                     {
                         // Jwkを使用
-                        if (isFAPI2)
+                        if (isJWE_FAPI2)
                         {
 #if NET45 || NET46
                             throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
 #else
-                            jws = new JWS_ES256_Param(EccPublicKeyConverter.JwkToParam(jwkObject), false);
+                            EccPublicKeyConverter epkc = new EccPublicKeyConverter();
+                            jws = new JWS_ES256_Param(epkc.JwkToParam(jwkObject), false);
 #endif
                         }
                         else
                         {
-                            jws = new JWS_RS256_Param(RsaPublicKeyConverter.JwkToParam(jwkObject));
+                            RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
+                            jws = new JWS_RS256_Param(rpkc.JwkToParam(jwkObject));
                         }
                     }
                 }

@@ -36,8 +36,11 @@
 '*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
 '*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
 '*  2017/09/12  西野 大介         UserControlの動的配置対応のため、MyCreatePrefixAndEvtHndHtを新設。
+'*  2019/05/07  西野 大介         ShowDialogによるEventHandler二重登録問題への対応
 '**********************************************************************************
 
+Imports System
+Imports System.Collections.Generic
 Imports System.Windows.Forms
 
 Imports Touryo.Infrastructure.Business.RichClient.Util
@@ -47,6 +50,7 @@ Imports Touryo.Infrastructure.Framework.Exceptions
 Imports Touryo.Infrastructure.Framework.Util
 Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Util
+Imports Touryo.Infrastructure.Public.Reflection
 
 Namespace Touryo.Infrastructure.Business.RichClient.Presentation
     ''' <summary>画面コード親クラス２（Windowアプリケーション）</summary>
@@ -81,41 +85,31 @@ Namespace Touryo.Infrastructure.Business.RichClient.Presentation
 
         ''' <summary>イベント追加処理</summary>
         Private Sub addControlEvent()
-            '#Region "Formイベント"
+            If Not Me.IsInitializedEvent Then
+                '#Region "Formイベント"
 
-            ' Formイベント
-            AddHandler Me.FormClosing, AddressOf Me.Form_CMNEventHandler
+                ' Formイベント
+                AddHandler Me.FormClosing, AddressOf Me.Form_CMNEventHandler
 
-            ' FormのKeyイベント
-            AddHandler Me.KeyDown, AddressOf Me.Form_KeyDownEventHandler
-            AddHandler Me.KeyDown, AddressOf Me.Form_CMNEventHandler
+                ' FormのKeyイベント
+                AddHandler Me.KeyDown, AddressOf Me.Form_KeyDownEventHandler
+                AddHandler Me.KeyDown, AddressOf Me.Form_CMNEventHandler
 
-            AddHandler Me.KeyPress, AddressOf Me.Form_KeyPressEventHandler
-            AddHandler Me.KeyPress, AddressOf Me.Form_CMNEventHandler
+                AddHandler Me.KeyPress, AddressOf Me.Form_KeyPressEventHandler
+                AddHandler Me.KeyPress, AddressOf Me.Form_CMNEventHandler
 
-            AddHandler Me.KeyUp, AddressOf Me.Form_KeyUpEventHandler
-            AddHandler Me.KeyUp, AddressOf Me.Form_CMNEventHandler
+                AddHandler Me.KeyUp, AddressOf Me.Form_KeyUpEventHandler
+                AddHandler Me.KeyUp, AddressOf Me.Form_CMNEventHandler
 
-            '#End Region
+                '#End Region
 
-            '#Region "コントロール取得処理"
+                '#Region "Controlイベント"
+            
+                ' コントロール検索＆イベントハンドラ設定
+                RcMyCmnFunction.GetCtrlAndSetClickEventHandler2(Me, Me.MyCreatePrefixAndEvtHndHt(), Me.ControlHt)
 
-            '#Region "旧処理"
-            '/ CHECK BOX
-            'RcMyCmnFunction.GetCtrlAndSetClickEventHandler(
-            '    this, GetConfigParameter.GetConfigValue(MyLiteral.PREFIX_OF_CHECK_BOX),
-            '    new System.EventHandler(this.Check_CheckedChanged), this.ControlHt);
-
-            '/// TOOL STRIP MENU ITEM（再起でファインドできないので各画面で設定）
-            '/RcMyCmnFunction.GetCtrlAndSetClickEventHandler(
-            '/    this, GetConfigParameter.GetConfigValue("FxPrefixOfToolStripMenuItem"),
-            '/    new System.EventHandler(this.Button_Click), this.ControlHt);
-            '#End Region
-
-            ' コントロール検索＆イベントハンドラ設定
-            RcMyCmnFunction.GetCtrlAndSetClickEventHandler2(Me, Me.MyCreatePrefixAndEvtHndHt(), Me.ControlHt)
-
-            '#End Region
+                '#End Region
+            End If
         End Sub
 
         ''' <summary>

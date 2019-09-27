@@ -26,6 +26,7 @@ using System.Collections.Generic;
 
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Public.Db;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace RerunnableBatch_sample3
@@ -47,7 +48,7 @@ namespace RerunnableBatch_sample3
             // コマンドラインをバラす関数がある。
             List<string> valsLst = null;
             Dictionary<string, string> argsDic = null;
-            PubCmnFunction.GetCommandArgs('/', out argsDic, out valsLst);
+            StringVariableOperator.GetCommandArgs('/', out argsDic, out valsLst);
 
             // 引数クラス値（B層実行用）
             string screenId = System.Reflection.Assembly.GetExecutingAssembly().Location;

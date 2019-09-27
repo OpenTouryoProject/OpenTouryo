@@ -42,6 +42,7 @@ using System.Globalization;
 
 using Touryo.Infrastructure.Business.Resources;
 using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Diagnostics;
 
 namespace Touryo.Infrastructure.Business.Exceptions
 {
@@ -59,7 +60,7 @@ namespace Touryo.Infrastructure.Business.Exceptions
             {
                 string temp = "";
                 // Get current property name.
-                string key = PubCmnFunction.GetCurrentPropertyName();
+                string key = StackFrameOperator.GetCurrentPropertyName();
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 temp = MyBusinessApplicationExceptionMessage.CmnFunc(key);

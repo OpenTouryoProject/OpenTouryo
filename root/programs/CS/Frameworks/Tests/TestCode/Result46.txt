@@ -18,3 +18,11 @@ One,Two > One,Two
 Three > Three
 Four > Four
 ----------------------------------------------------------------------------------------------------
+XmlLib > is working properly.
+----------------------------------------------------------------------------------------------------
+DeflateCompression(FileStream)-1 > is working properly.
+DeflateCompression(FileStream)-2 > is working properly.
+--------------------------------------------------
+DeflateCompression(MemoryStream) > is working properly.
+----------------------------------------------------------------------------------------------------
+

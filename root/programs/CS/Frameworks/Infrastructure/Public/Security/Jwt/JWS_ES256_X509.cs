@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/01/28  西野 大介         新規作成
 //*  2019/01/29  西野 大介         リファクタリング（プロバイダ処理を末端に）
+//*  2019/06/12  西野 大介         constructorのX509KeyStorageFlagsの既定値を変更
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -54,7 +55,13 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <param name="certificateFilePath">DigitalSignECDsaX509に渡すcertificateFilePathパラメタ</param>
         /// <param name="password">DigitalSignECDsaX509に渡すpasswordパラメタ</param>
         public JWS_ES256_X509(string certificateFilePath, string password)
-            : this(certificateFilePath, password, X509KeyStorageFlags.DefaultKeySet) { }
+        {
+            this.CertificateFilePath = certificateFilePath;
+            this.CertificatePassword = password;
+            this.DigitalSignECDsaX509 = new DigitalSignECDsaX509(
+                certificateFilePath, password, HashAlgorithmName.SHA256);
+            // X509KeyStorageFlagsは、DigitalSignECDsaX509の既定値を使用
+        }
 
         /// <summary>Constructor</summary>
         /// <param name="certificateFilePath">DigitalSignECDsaX509に渡すcertificateFilePathパラメタ</param>
@@ -64,7 +71,8 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         {
             this.CertificateFilePath = certificateFilePath;
             this.CertificatePassword = password;
-            this.DigitalSignECDsaX509 = new DigitalSignECDsaX509(certificateFilePath, password, HashAlgorithmName.SHA256, flag);
+            this.DigitalSignECDsaX509 = new DigitalSignECDsaX509(
+                certificateFilePath, password, HashAlgorithmName.SHA256, flag);
         }
 
         #endregion

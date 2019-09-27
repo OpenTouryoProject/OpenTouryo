@@ -1,0 +1,1 @@
+DebugAdapterHost.Launch /LaunchJson:"launch.jsonファイルのフルパス"

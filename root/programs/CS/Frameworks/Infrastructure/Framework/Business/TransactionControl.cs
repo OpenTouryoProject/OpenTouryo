@@ -49,6 +49,7 @@ using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Business
@@ -84,7 +85,7 @@ namespace Touryo.Infrastructure.Framework.Business
             {
                 // トランザクション定義（XmlDocument）のロード
                 this.XMLTCD.Load(
-                    PubCmnFunction.BuiltStringIntoEnvironmentVariable(
+                    StringVariableOperator.BuiltStringIntoEnvironmentVariable(
                         GetConfigParameter.GetConfigValue(FxLiteral.XML_TC_DEFINITION)));
             }
             else

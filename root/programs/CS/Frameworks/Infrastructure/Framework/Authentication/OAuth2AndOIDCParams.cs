@@ -65,15 +65,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
-        /// <summary>Isser</summary>
-        public static string Isser
-        {
-            get
-            {
-                return GetConfigParameter.GetConfigValue("OAuth2AndOidcIsser");
-            }
-        }
-
         /// <summary>Audience</summary>
         public static string Audience
         {
@@ -98,61 +89,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
-        #region 鍵関連
-
-        /// <summary>RS256Cer</summary>
-        public static string RS256Cer
-        {
-            get
-            {
-                return GetConfigParameter.GetConfigValue("OAuth2AndOidcRS256Cer");
-            }
-        }
-
-        /// <summary>ES256Cer</summary>
-        public static string ES256Cer
-        {
-            get
-            {
-                return GetConfigParameter.GetConfigValue("OAuth2AndOidcES256Cer");
-            }
-        }
-
-        /// <summary>RS256Pwd</summary>
-        public static string RS256Pwd
-        {
-            get
-            {
-                return GetConfigParameter.GetConfigValue("OAuth2AndOidcRS256Pwd");
-            }
-        }
-
-        /// <summary>RS256Pfx</summary>
-        public static string RS256Pfx
-        {
-            get
-            {
-                return GetConfigParameter.GetConfigValue("OAuth2AndOidcRS256Pfx");
-            }
-        }
-
-        /// <summary>ClientCertPwd</summary>
-        public static string ClientCertPwd
-        {
-            get
-            {
-                return GetConfigParameter.GetConfigValue("OAuth2AndOidcClientCertPwd");
-            }
-        }
-
-        /// <summary>ClientCertPfx</summary>
-        public static string ClientCertPfx
-        {
-            get
-            {
-                return GetConfigParameter.GetConfigValue("OAuth2AndOidcClientCertPfx");
-            }
-        }
+        #region Jwk関連
 
         /// <summary>JwkSetFilePath</summary>
         public static string JwkSetFilePath
@@ -189,6 +126,19 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
+        #endregion
+
+        #region FAPI2関連
+        /// <summary>
+        /// FAPI2のRequestObject登録エンドポイント 
+        /// </summary>
+        public static string RequestObjectRegUri
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("RequestObjectRegUri");
+            }
+        }
         #endregion
     }
 }

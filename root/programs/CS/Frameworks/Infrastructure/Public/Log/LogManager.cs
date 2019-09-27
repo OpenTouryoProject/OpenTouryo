@@ -48,6 +48,7 @@ using System.Collections.Generic;
 using log4net.Config;
 
 using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 #if NETSTD
@@ -158,7 +159,7 @@ namespace Touryo.Infrastructure.Public.Log
 
                             // ログ定義 [リソース ファイル] → ストリームを開く
                             FileStream s = new FileStream(
-                                PubCmnFunction.BuiltStringIntoEnvironmentVariable(log4netConfFile),
+                                StringVariableOperator.BuiltStringIntoEnvironmentVariable(log4netConfFile),
                                 FileMode.Open, FileAccess.Read, FileShare.Read);
 
                             // log4netのXML形式の設定ファイルを読み込む。

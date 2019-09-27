@@ -37,6 +37,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Security.Claims;
 
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Primitives;
 
@@ -92,6 +95,9 @@ namespace Touryo.Infrastructure.Business.Presentation
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             #region OnActionExecutingAsyncから移行
+
+            // Controller・Action名を取得する。
+            this.GetControllerAndActionName(context);
 
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
@@ -244,6 +250,37 @@ namespace Touryo.Infrastructure.Business.Presentation
 
         #region 情報取得用
 
+        /// <summary>GetControllerAndActionName</summary>
+        /// <param name="context">ActionExecutingContext</param>
+        private void GetControllerAndActionName(ActionExecutingContext context)
+        {
+            // MSBuild で ビルド不可。
+            //this.ControllerName = actionContext?.ControllerContext?.ControllerDescriptor?.ControllerName;
+            //this.ActionName = actionContext?.ActionDescriptor?.ActionName;
+            if (context != null)
+            {
+                ControllerBase controller = (ControllerBase)context.Controller;
+                if (controller != null)
+                {
+                    ControllerContext controllerContext = controller.ControllerContext;
+                    if (controllerContext != null)
+                    {
+                        ControllerActionDescriptor controllerActionDescriptor = controllerContext.ActionDescriptor;
+                        if (controllerActionDescriptor != null)
+                        {
+                            this.ControllerName = controllerActionDescriptor.ControllerName;
+                        }
+                    }
+                }
+
+                ControllerActionDescriptor actionDescriptor = (ControllerActionDescriptor)context.ActionDescriptor;
+                if (actionDescriptor != null)
+                {
+                    this.ActionName = actionDescriptor.ActionName;
+                }
+            }
+        }
+
         /// <summary>ユーザ情報を取得する</summary>
         /// <param name="authorizationContext">AuthorizationFilterContext</param>
         /// <remarks>awaitするメソッドを追加して呼ぶ可能性も高いのでasyncを付与</remarks>
@@ -276,8 +313,8 @@ namespace Touryo.Infrastructure.Business.Presentation
                         {
                             new Claim(ClaimTypes.Name, sub),
                             new Claim(ClaimTypes.Role, string.Join(",", roles)),
-                            new Claim(OAuth2AndOIDCConst.Claim_Scopes, string.Join(",", scopes)),
-                            new Claim(OAuth2AndOIDCConst.Claim_Audience, (string)jobj[OAuth2AndOIDCConst.aud]),
+                            new Claim(OAuth2AndOIDCConst.UrnScopesClaim, string.Join(",", scopes)),
+                            new Claim(OAuth2AndOIDCConst.UrnAudienceClaim, (string)jobj[OAuth2AndOIDCConst.aud]),
                             new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress())
                         };
 
@@ -311,8 +348,8 @@ namespace Touryo.Infrastructure.Business.Presentation
             {
                 new Claim(ClaimTypes.Name, "未認証"),
                 new Claim(ClaimTypes.Role, ""),
-                new Claim(OAuth2AndOIDCConst.Claim_Scopes, ""),
-                new Claim(OAuth2AndOIDCConst.Claim_Audience, ""),
+                new Claim(OAuth2AndOIDCConst.UrnScopesClaim, ""),
+                new Claim(OAuth2AndOIDCConst.UrnAudienceClaim, ""),
                 new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress())
             };
 
@@ -357,7 +394,7 @@ namespace Touryo.Infrastructure.Business.Presentation
             IEnumerable<Claim>  claims = MyBaseAsyncApiController.GetRawClaims();
             userName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
             roles = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
-            scopes = claims.FirstOrDefault(c => c.Type == OAuth2AndOIDCConst.Claim_Scopes).Value;
+            scopes = claims.FirstOrDefault(c => c.Type == OAuth2AndOIDCConst.UrnScopesClaim).Value;
             ipAddress = claims.FirstOrDefault(c => c.Type == "IpAddress").Value;
         }
 

@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>OpenTouryo.Public.Security</AssemblyName>
+    <RootNamespace>Touryo.Infrastructure.Public.Security</RootNamespace>
+    <Version>2.5.0.0</Version>
+    <Company>Hitachi Solutions</Company>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETSTD</DefineConstants>
+    <OutputPath>..\..\Build_netstd21\</OutputPath>
+    <DocumentationFile>..\..\Build_netstd21\netstandard2.1\OpenTouryo.Public.Security.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;NETSTD</DefineConstants>
+    <DocumentationFile>..\..\Build_netstd21r\netstandard2.1\OpenTouryo.Public.Security.xml</DocumentationFile>
+    <OutputPath>..\..\Build_netstd21r\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="IdentityImpersonation.cs" />
+    <Compile Remove="KeyExg\EcdhCngAlice.cs" />
+    <Compile Remove="KeyExg\EcdhCngBob.cs" />
+    <Compile Remove="KeyExg\EcdhKeyExchange.cs" />
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="app.config" />
+    <None Remove="packages.config" />
+    <None Remove="packages_net45.config" />
+    <None Remove="packages_net46.config" />
+    <None Remove="packages_net47.config" />
+    <None Remove="packages_net48.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.3" />
+    <PackageReference Include="jose-jwt" Version="2.4.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="System.Security.Cryptography.Cng" Version="4.5.0" />
+    <PackageReference Include="System.Security.Cryptography.OpenSsl" Version="4.5.0" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Public_netstd21.csproj" />
+  </ItemGroup>
+
+</Project>

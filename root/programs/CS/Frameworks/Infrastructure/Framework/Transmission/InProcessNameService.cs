@@ -46,6 +46,7 @@ using System.Xml;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Transmission
@@ -91,7 +92,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
             {
                 // インプロセス呼び出しの名前解決定義（XmlDocument）を[リソース]で初期化
                 this.XMLTMD_InProcess.Load(
-                    PubCmnFunction.BuiltStringIntoEnvironmentVariable(
+                    StringVariableOperator.BuiltStringIntoEnvironmentVariable(
                         GetConfigParameter.GetConfigValue(FxLiteral.XML_TM_INPROCESS_DEFINITION)));
 
                 // 戻す

@@ -1374,6 +1374,12 @@ namespace EncAndDecUtil
         /// <summary>JWS生成</summary>
         private void btnJWSSign_Click(object sender, EventArgs e)
         {
+            RsaPublicKeyConverter rpkc = null;
+#if NET45 || NET46
+#else
+            EccPublicKeyConverter epkc = null;
+#endif
+
             if (rbnJWSHS256.Checked)
             {
                 // HS256
@@ -1405,9 +1411,10 @@ namespace EncAndDecUtil
                 string jws = jwsRS256.Create(this.txtJWSPayload.Text);
 
                 // 出力
-                this.txtJWSKey.Text = jwsRS256.XMLPublicKey;
-                this.txtJWSJWK.Text = RsaPublicKeyConverter.ParamToJwk(
-                        RsaPublicKeyConverter.XmlToProvider(jwsRS256.XMLPublicKey).ExportParameters(false));
+                rpkc = new RsaPublicKeyConverter(JWS_RSA.RS._256);
+                this.txtJWSKey.Text = jwsRS256.XMLPublicKey;                
+                this.txtJWSJWK.Text = rpkc.ParamToJwk(rpkc.XmlToProvider(
+                    jwsRS256.XMLPublicKey).ExportParameters(false));
 
                 this.txtJWSSigned.Text = jws;
 
@@ -1427,8 +1434,9 @@ namespace EncAndDecUtil
                 string jws = jwsRS256.Create(this.txtJWSPayload.Text);
 
                 // 出力
-                this.txtJWSKey.Text = RsaPublicKeyConverter.ParamToXml(jwsRS256.RsaPublicParameters);
-                this.txtJWSJWK.Text = RsaPublicKeyConverter.ParamToJwk(jwsRS256.RsaPublicParameters);
+                rpkc = new RsaPublicKeyConverter(JWS_RSA.RS._256);
+                this.txtJWSKey.Text = rpkc.ParamToXml(jwsRS256.RsaPublicParameters);
+                this.txtJWSJWK.Text = rpkc.ParamToJwk(jwsRS256.RsaPublicParameters);
 
                 this.txtJWSSigned.Text = jws;
 
@@ -1442,16 +1450,18 @@ namespace EncAndDecUtil
             else if (rbnJWSRS256_X509.Checked)
             {
                 // RS256 (X509)
-                JWS_RS256_X509 jwsRS256 = new JWS_RS256_X509(this.SHA256RSA_pfx, this.CertificateFilePassword,
+                JWS_RS256_X509 jwsRS256 = new JWS_RS256_X509(
+                    this.SHA256RSA_pfx, this.CertificateFilePassword,
                     X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
 
                 // 生成
                 string jws = jwsRS256.Create(this.txtJWSPayload.Text);
 
                 // 出力
+                rpkc = new RsaPublicKeyConverter(JWS_RSA.RS._256);
                 this.txtJWSKey.Text = jwsRS256.DigitalSignX509.PublicKey.ToXmlString(false);
-                this.txtJWSJWK.Text = RsaPublicKeyConverter.ParamToJwk(
-                        RsaPublicKeyConverter.X509CerToProvider(this.SHA256RSA_cer).ExportParameters(false));
+                this.txtJWSJWK.Text = rpkc.ParamToJwk(rpkc.X509CerToProvider(
+                    this.SHA256RSA_cer).ExportParameters(false));
 
                 this.txtJWSSigned.Text = jws;
 
@@ -1473,8 +1483,9 @@ namespace EncAndDecUtil
                 string jws = jwsES256.Create(this.txtJWSPayload.Text);
 
                 // 出力
+                epkc = new EccPublicKeyConverter(JWS_ECDSA.ES._256);
                 this.txtJWSKey.Text = jwsES256.ECDsaPublicParameters.GetType().ToString();
-                this.txtJWSJWK.Text = EccPublicKeyConverter.ParamToJwk(jwsES256.ECDsaPublicParameters);
+                this.txtJWSJWK.Text = epkc.ParamToJwk(jwsES256.ECDsaPublicParameters);
 
                 this.txtJWSSigned.Text = jws;
 
@@ -1494,8 +1505,9 @@ namespace EncAndDecUtil
                 string jws = jwsES256.Create(this.txtJWSPayload.Text);
 
                 // 出力
+                epkc = new EccPublicKeyConverter(JWS_ECDSA.ES._256);
                 this.txtJWSKey.Text = jwsES256.DigitalSignECDsaX509.PublicKey.GetType().ToString();
-                this.txtJWSJWK.Text = EccPublicKeyConverter.ParamToJwk(jwsES256.DigitalSignECDsaX509.PublicKey.ExportParameters(false));
+                this.txtJWSJWK.Text = epkc.ParamToJwk(jwsES256.DigitalSignECDsaX509.PublicKey.ExportParameters(false));
 
                 this.txtJWSSigned.Text = jws;
 
@@ -1513,7 +1525,11 @@ namespace EncAndDecUtil
         private void btnJWSVerify_Click(object sender, EventArgs e)
         {
             bool ret = false;
-
+            RsaPublicKeyConverter rpkc = null;
+#if NET45 || NET46
+#else
+            EccPublicKeyConverter epkc = null;
+#endif
             if (rbnJWSHS256.Checked)
             {
                 // HS256
@@ -1563,10 +1579,9 @@ namespace EncAndDecUtil
                     + "." + temp[2];
 
                 // 検証
-                //JWS_RS256_Param jwsRS256 = new JWS_RS256_Param(
-                //    RsaPublicKeyConverter.XmlToProvider(this.txtJWSKey.Text).ExportParameters(false));
+                rpkc = new RsaPublicKeyConverter(JWS_RSA.RS._256);
                 JWS_RS256_Param jwsRS256 = new JWS_RS256_Param(
-                    RsaPublicKeyConverter.JwkToProvider(this.txtJWSJWK.Text).ExportParameters(false));
+                    rpkc.JwkToProvider(this.txtJWSJWK.Text).ExportParameters(false));
                 ret = jwsRS256.Verify(newJWS);
             }
             else if (rbnJWSRS256_X509.Checked)
@@ -1602,7 +1617,8 @@ namespace EncAndDecUtil
                     + "." + temp[2];
 
                 // 検証
-                JWS_ES256_Param jwsES256 = new JWS_ES256_Param(EccPublicKeyConverter.JwkToParam(this.txtJWSJWK.Text), false);
+                epkc = new EccPublicKeyConverter(JWS_ECDSA.ES._256);
+                JWS_ES256_Param jwsES256 = new JWS_ES256_Param(epkc.JwkToParam(this.txtJWSJWK.Text), false);
                 ret = jwsES256.Verify(newJWS);
             }
             else if (rbnJWSES256_X509.Checked)

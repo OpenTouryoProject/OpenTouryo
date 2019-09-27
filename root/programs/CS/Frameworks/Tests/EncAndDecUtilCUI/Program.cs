@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Xml;
+using System.Text;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -19,6 +20,7 @@ using Touryo.Infrastructure.Public.Security.Aead;
 using Touryo.Infrastructure.Public.Security.Jwt;
 using Touryo.Infrastructure.Public.Security.KeyExg;
 using Touryo.Infrastructure.Public.Security.Pwd;
+using Touryo.Infrastructure.Public.Security.Xml;
 using Touryo.Infrastructure.Public.Diagnostics;
 
 namespace EncAndDecUtilCUI
@@ -37,20 +39,33 @@ namespace EncAndDecUtilCUI
         private static string PrivateRsaX509Path = @"SHA256RSA.pfx";
         /// <summary>RsaのX509証明書のパス（*.cer）</summary>
         private static string PublicRsaX509Path = @"SHA256RSA.cer";
+        
         /// <summary>DsaのX509証明書のパス（*.pfx）</summary>
         private static string PrivateDsaX509Path = @"SHA256DSA.pfx";
         /// <summary>DsaのX509証明書のパス（*.cer）</summary>
         private static string PublicDsaX509Path = @"SHA256DSA.cer";
+
+        // どうも証明書をnistP256, P384, P521用に生成しないとダメらしい。
+        // prime256v1, secp384r1, secp521r1
+
         /// <summary>ECDsaのX509証明書のパス（*.pfx）</summary>
-        private static string PrivateECDsaX509Path = @"SHA256ECDSA.pfx";
+        private static string PrivateECDsaX509_256Path = @"SHA256ECDSA.pfx";
         /// <summary>ECDsaのX509証明書のパス（*.cer）</summary>
-        private static string PublicECDsaX509Path = @"SHA256ECDSA.cer";
+        private static string PublicECDsaX509_256Path = @"SHA256ECDSA.cer";
+        /// <summary>ECDsaのX509証明書のパス（*.pfx）</summary>
+        private static string PrivateECDsaX509_384Path = @"SHA384ECDSA.pfx";
+        /// <summary>ECDsaのX509証明書のパス（*.cer）</summary>
+        private static string PublicECDsaX509_384Path = @"SHA384ECDSA.cer";
+        /// <summary>ECDsaのX509証明書のパス（*.pfx）</summary>
+        private static string PrivateECDsaX509_512Path = @"SHA512ECDSA.pfx";
+        /// <summary>ECDsaのX509証明書のパス（*.cer）</summary>
+        private static string PublicECDsaX509_512Path = @"SHA512ECDSA.cer";
 
         public static void Main(string[] args)
         {
             // configの初期化(無くても動くようにせねば。)
             //GetConfigParameter.InitConfiguration("appsettings.json");
-            
+
             try
             {
                 // Hash
@@ -70,6 +85,9 @@ namespace EncAndDecUtilCUI
                 Program.MyJwt();
                 Program.JoseJwt();
 
+                // SignedXml 
+                Program.SignedXml();
+
                 // Others
 
                 // echoすると例外
@@ -85,7 +103,7 @@ namespace EncAndDecUtilCUI
             }
         }
 
-        #region Test (Hash, Cryptography, Jwt)
+        #region Test (Hash, Cryptography, Jwt, Xml)
 
         #region Hash
 
@@ -281,8 +299,8 @@ namespace EncAndDecUtilCUI
 
             #region ECDsa
             // https://github.com/dotnet/corefx/issues/18733#issuecomment-296723615
-            privateX509Key = new X509Certificate2(Program.PrivateECDsaX509Path, Program.PfxPassword);
-            publicX509Key = new X509Certificate2(Program.PublicECDsaX509Path, "");
+            privateX509Key = new X509Certificate2(Program.PrivateECDsaX509_256Path, Program.PfxPassword);
+            publicX509Key = new X509Certificate2(Program.PublicECDsaX509_256Path, "");
             MyDebug.InspectPrivateX509Key("ECDsa", privateX509Key);
             MyDebug.InspectPublicX509Key("ECDsa", publicX509Key);
 
@@ -382,13 +400,14 @@ namespace EncAndDecUtilCUI
                 MyDebug.OutputDebugAndConsole("DigitalSignXML.Verify(DSA-SHA1)", dsXML.VerifyByDeformatter(data, sign).ToString());
                 #endregion
 
-#if NETCORE || NET47
                 #region ECDsa
+                #region 256
+#if NETCORE || NET47
                 // X509
-                dsECDsaX509 = new DigitalSignECDsaX509(Program.PrivateECDsaX509Path, Program.PfxPassword, HashAlgorithmName.SHA256);
+                dsECDsaX509 = new DigitalSignECDsaX509(Program.PrivateECDsaX509_256Path, Program.PfxPassword, HashAlgorithmName.SHA256);
                 sign = dsECDsaX509.Sign(data);
 
-                dsECDsaX509 = new DigitalSignECDsaX509(Program.PublicECDsaX509Path, "", HashAlgorithmName.SHA256);
+                dsECDsaX509 = new DigitalSignECDsaX509(Program.PublicECDsaX509_256Path, "", HashAlgorithmName.SHA256);
                 MyDebug.OutputDebugAndConsole("DigitalSignECDsaX509.Verify(ECDSA-SHA256)", dsECDsaX509.Verify(data, sign).ToString());
 
 #if NET47 || NETCOREAPP3_0
@@ -399,8 +418,29 @@ namespace EncAndDecUtilCUI
                 dsECDsaCng = new DigitalSignECDsaCng(dsECDsaCng.PublicKey);
                 MyDebug.OutputDebugAndConsole("DigitalSignParam.Verify(ECDSA-P256)", dsECDsaCng.Verify(data, sign).ToString());
 #endif
-                #endregion
 #endif
+                #endregion
+
+                #region 512
+#if NETCORE || NET47
+                // X509
+                dsECDsaX509 = new DigitalSignECDsaX509(Program.PrivateECDsaX509_256Path, Program.PfxPassword, HashAlgorithmName.SHA512);
+                sign = dsECDsaX509.Sign(data);
+
+                dsECDsaX509 = new DigitalSignECDsaX509(Program.PublicECDsaX509_256Path, "", HashAlgorithmName.SHA512);
+                MyDebug.OutputDebugAndConsole("DigitalSignECDsaX509.Verify(ECDSA-SHA512)", dsECDsaX509.Verify(data, sign).ToString());
+
+#if NET47 || NETCOREAPP3_0
+                // Param
+                dsECDsaCng = new DigitalSignECDsaCng(EnumDigitalSignAlgorithm.ECDsaCng_P521);
+                sign = dsECDsaCng.Sign(data);
+
+                dsECDsaCng = new DigitalSignECDsaCng(dsECDsaCng.PublicKey);
+                MyDebug.OutputDebugAndConsole("DigitalSignParam.Verify(ECDSA-P521)", dsECDsaCng.Verify(data, sign).ToString());
+#endif
+#endif
+                #endregion
+                #endregion
             }
             else //if (os.Platform == PlatformID.Unix)
             {
@@ -453,10 +493,10 @@ namespace EncAndDecUtilCUI
 
                 #region ECDsa (.NET Core on Linux)
                 // X509
-                dsECDsaX509 = new DigitalSignECDsaX509(Program.PrivateECDsaX509Path, Program.PfxPassword, HashAlgorithmName.SHA256);
+                dsECDsaX509 = new DigitalSignECDsaX509(Program.PrivateECDsaX509_256Path, Program.PfxPassword, HashAlgorithmName.SHA256);
                 sign = dsECDsaX509.Sign(data);
 
-                dsECDsaX509 = new DigitalSignECDsaX509(Program.PublicECDsaX509Path, "", HashAlgorithmName.SHA256);
+                dsECDsaX509 = new DigitalSignECDsaX509(Program.PublicECDsaX509_256Path, "", HashAlgorithmName.SHA256);
                 MyDebug.OutputDebugAndConsole("DigitalSignECDsaX509.Verify(ECDSA)", dsECDsaX509.Verify(data, sign).ToString());
 
                 // Param
@@ -520,23 +560,43 @@ namespace EncAndDecUtilCUI
             #endregion
 
             #region Keys
+            byte[] key = null;
             string jwk = "";
-
+            RsaPublicKeyConverter rpkc = null;
+#if NETCORE || NET47
+            EccPublicKeyConverter epkc = null;
+#endif
             #endregion
 
-            #region JWS
+            #region Jws
             // RS256
             JWS_RS256_X509 jWS_RS256_X509 = null;
             JWS_RS256_Param jWS_RS256_Param = null;
 
-            // ES256
+            // RS384
+            JWS_RS384_XML jWS_RS384_XML = null;
+            JWS_RS384_Param jWS_RS384_Param = null;
+
+            // RS512
+            JWS_RS512_X509 jWS_RS512_X509 = null;
+            JWS_RS512_Param jWS_RS512_Param = null;
+
 #if NETCORE || NET47
+            // ES256
             JWS_ES256_X509 jWS_ES256_X509 = null;
             JWS_ES256_Param jWS_ES256_Param = null;
+
+            // ES384
+            JWS_ES384_X509 jWS_ES384_X509 = null;
+            JWS_ES384_Param jWS_ES384_Param = null;
+
+            // ES512
+            JWS_ES512_X509 jWS_ES512_X509 = null;
+            JWS_ES512_Param jWS_ES512_Param = null;
 #endif
             #endregion
 
-            #region JWE
+            #region Jwe
             JWE jwe = null;
             #endregion
 
@@ -545,14 +605,45 @@ namespace EncAndDecUtilCUI
             #region Jws
             if (os.Platform == PlatformID.Win32NT)
             {
-                #region RSA(RS256)
+                #region HMACSHA(HS)
+                key = CustomEncode.StringToByte("てすとてすとてすとてすと", CustomEncode.UTF_8);
+
+                // HS256 署名・検証
+                JWS_HS256 jWS_HS256 = new JWS_HS256(key);
+                token = jWS_HS256.Create(payloadString);
+                MyDebug.InspectJwt("JWS_HS256.Create", token);
+                MyDebug.OutputDebugAndConsole("JWS_HS256.Verify", jWS_HS256.Verify(token).ToString());
+
+                // HS384 署名・検証
+                JWS_HS384 jWS_HS384 = new JWS_HS384(key);
+                token = jWS_HS384.Create(payloadString);
+                MyDebug.InspectJwt("JWS_HS384.Create", token);
+                MyDebug.OutputDebugAndConsole("JWS_HS384.Verify", jWS_HS384.Verify(token).ToString());
+
+                // HS512 署名・検証
+                JWS_HS512 jWS_HS512 = new JWS_HS512(key);
+                token = jWS_HS512.Create(payloadString);
+                MyDebug.InspectJwt("JWS_HS512.Create", token);
+                MyDebug.OutputDebugAndConsole("JWS_HS512.Verify", jWS_HS512.Verify(token).ToString());
+
+                // JWKを使用
+                jWS_HS512 = new JWS_HS512(jWS_HS512.JWK);
+                token = jWS_HS512.Create(payloadString);
+                MyDebug.InspectJwt("JWS_HS512.Create with JWK", token);
+                MyDebug.OutputDebugAndConsole("JWS_HS512.Verify with JWK", jWS_HS512.Verify(token).ToString());
+                #endregion
+
+                #region RSA(RS)
+
+                #region 256
                 // 署名（X509）
                 jWS_RS256_X509 = new JWS_RS256_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
                 token = jWS_RS256_X509.Create(payloadString);
                 MyDebug.InspectJwt("JWS_RS256_X509.Create", token);
 
                 // 鍵の相互変換
-                jwk = RsaPublicKeyConverter.ParamToJwk(((RSA)jWS_RS256_X509.DigitalSignX509.AsymmetricAlgorithm).ExportParameters(false));
+                rpkc = new RsaPublicKeyConverter(JWS_RSA.RS._256);
+                jwk = rpkc.ParamToJwk(((RSA)jWS_RS256_X509.DigitalSignX509.AsymmetricAlgorithm).ExportParameters(false));
                 MyDebug.OutputDebugAndConsole("RSA JWK", jwk);
 
                 // 検証（X509）
@@ -560,27 +651,73 @@ namespace EncAndDecUtilCUI
                 MyDebug.OutputDebugAndConsole("JWS_RS256_X509.Verify", jWS_RS256_X509.Verify(token).ToString());
 
                 // 検証（Param）
-                jWS_RS256_Param = new JWS_RS256_Param(RsaPublicKeyConverter.JwkToParam(jwk));
+                jWS_RS256_Param = new JWS_RS256_Param(rpkc.JwkToParam(jwk));
                 MyDebug.OutputDebugAndConsole("JWS_RS256_Param.Verify", jWS_RS256_Param.Verify(token).ToString());
+                #endregion
+#if NETCORE
+#else
+                #region 384
+                // 署名（XML）
+                jWS_RS384_XML = new JWS_RS384_XML();
+                token = jWS_RS384_XML.Create(payloadString);
+                MyDebug.InspectJwt("jWS_RS384_XML.Create", token);
+
+                // 鍵の相互変換
+                rpkc = new RsaPublicKeyConverter(JWS_RSA.RS._384);
+                jwk = rpkc.XmlToJwk(jWS_RS384_XML.XMLPrivateKey);
+                MyDebug.OutputDebugAndConsole("RSA JWK", jwk);
+
+                // 検証（XML）
+                //jWS_RS384_XML = new JWS_RS384_XML(jWS_RS384_XML.XMLPrivateKey);
+                MyDebug.OutputDebugAndConsole("JWS_RS384_XML.Verify", jWS_RS384_XML.Verify(token).ToString());
+
+                // 検証（Param）
+                jWS_RS384_Param = new JWS_RS384_Param(rpkc.JwkToParam(jwk));
+                MyDebug.OutputDebugAndConsole("JWS_RS384_Param.Verify", jWS_RS384_Param.Verify(token).ToString());
+                #endregion
+
+                #region 512
+                // 署名（X509）
+                jWS_RS512_X509 = new JWS_RS512_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
+                token = jWS_RS512_X509.Create(payloadString);
+                MyDebug.InspectJwt("JWS_RS512_X509.Create", token);
+
+                // 鍵の相互変換
+                rpkc = new RsaPublicKeyConverter(JWS_RSA.RS._512);
+                jwk = rpkc.ParamToJwk(((RSA)jWS_RS512_X509.DigitalSignX509.AsymmetricAlgorithm).ExportParameters(false));
+                MyDebug.OutputDebugAndConsole("RSA JWK", jwk);
+
+                // 検証（X509）
+                jWS_RS512_X509 = new JWS_RS512_X509(Program.PublicRsaX509Path, "", x509KSF);
+                MyDebug.OutputDebugAndConsole("JWS_RS512_X509.Verify", jWS_RS512_X509.Verify(token).ToString());
+
+                // 検証（Param）
+                jWS_RS512_Param = new JWS_RS512_Param(rpkc.JwkToParam(jwk));
+                MyDebug.OutputDebugAndConsole("JWS_RS512_Param.Verify", jWS_RS512_Param.Verify(token).ToString());
+                #endregion
+#endif
                 #endregion
 
                 // DSA
 
 #if NETCORE || NET47
-                #region ECDsa(ES256)
+                #region ECDsa(ES)
+
+                #region 256
                 // 署名（X509）
-                jWS_ES256_X509 = new JWS_ES256_X509(Program.PrivateECDsaX509Path, Program.PfxPassword);
+                jWS_ES256_X509 = new JWS_ES256_X509(Program.PrivateECDsaX509_256Path, Program.PfxPassword);
                 token = jWS_ES256_X509.Create(payloadString);
                 MyDebug.InspectJwt("JWS_ES256_X509.Create", token);
 
                 // 鍵の相互変換
-                jwk = EccPublicKeyConverter.ParamToJwk(
+                epkc = new EccPublicKeyConverter(JWS_ECDSA.ES._256);
+                jwk = epkc.ParamToJwk(
                     ((ECDsa)jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm).ExportParameters(false));
 
                 MyDebug.OutputDebugAndConsole("ECDSA JWK", jwk);
 
                 // 検証（X509）
-                jWS_ES256_X509 = new JWS_ES256_X509(Program.PublicECDsaX509Path, "");
+                jWS_ES256_X509 = new JWS_ES256_X509(Program.PublicECDsaX509_256Path, "");
                 MyDebug.OutputDebugAndConsole("JWS_ES256_X509.Verify", jWS_ES256_X509.Verify(token).ToString());
 
 #if NET47 || NETCOREAPP3_0
@@ -588,14 +725,86 @@ namespace EncAndDecUtilCUI
                 //// Core2.0-2.2 on WinでVerifyがエラーになる。
                 //// DigitalSignECDsaOpenSslを試してみるが生成できない、
                 //// Core on Win に OpenSSLベースのプロバイダは無いため）
-                jWS_ES256_Param = new JWS_ES256_Param(EccPublicKeyConverter.JwkToParam(jwk), false);
+                jWS_ES256_Param = new JWS_ES256_Param(epkc.JwkToParam(jwk), false);
                 MyDebug.OutputDebugAndConsole("JWS_ES256_Param.Verify", jWS_ES256_Param.Verify(token).ToString());
 #elif NETCOREAPP2_0
                 // Core2.0-2.2 on Winで ECDsaCngは動作しない。
 #endif
                 // ★ xLibTest
-                Program.VerifyResult("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
+                Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
+                #endregion
+#if NETCORE
+#else
+                #region 384
+                // 署名（X509）
+                jWS_ES384_X509 = new JWS_ES384_X509(Program.PrivateECDsaX509_384Path, Program.PfxPassword);
+                token = jWS_ES384_X509.Create(payloadString);
+                MyDebug.InspectJwt("JWS_ES384_X509.Create", token);
 
+                // 検証（X509）
+                jWS_ES384_X509 = new JWS_ES384_X509(Program.PublicECDsaX509_384Path, "");
+                MyDebug.OutputDebugAndConsole("JWS_ES384_X509.Verify", jWS_ES384_X509.Verify(token).ToString());
+
+                // 鍵の相互変換
+                epkc = new EccPublicKeyConverter(JWS_ECDSA.ES._384);
+                jwk = epkc.ParamToJwk(
+                    ((ECDsa)jWS_ES384_X509.DigitalSignECDsaX509.AsymmetricAlgorithm).ExportParameters(false));
+
+                MyDebug.OutputDebugAndConsole("ECDSA JWK", jwk);
+
+                // 検証（X509）
+                jWS_ES384_X509 = new JWS_ES384_X509(Program.PublicECDsaX509_384Path, "");
+                MyDebug.OutputDebugAndConsole("JWS_ES384_X509.Verify", jWS_ES384_X509.Verify(token).ToString());
+
+#if NET47 || NETCOREAPP3_0
+                // 検証（Param）
+                //// Core2.0-2.2 on WinでVerifyがエラーになる。
+                //// DigitalSignECDsaOpenSslを試してみるが生成できない、
+                //// Core on Win に OpenSSLベースのプロバイダは無いため）
+                jWS_ES384_Param = new JWS_ES384_Param(epkc.JwkToParam(jwk), false);
+                MyDebug.OutputDebugAndConsole("JWS_ES384_Param.Verify", jWS_ES384_Param.Verify(token).ToString());
+#elif NETCOREAPP2_0
+                // Core2.0-2.2 on Winで ECDsaCngは動作しない。
+#endif
+                // ★ xLibTest
+                Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES384_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES384);
+                #endregion
+
+                #region 512
+                // 署名（X509）
+                jWS_ES512_X509 = new JWS_ES512_X509(Program.PrivateECDsaX509_512Path, Program.PfxPassword);
+                token = jWS_ES512_X509.Create(payloadString);
+                MyDebug.InspectJwt("JWS_ES512_X509.Create", token);
+
+                // 検証（X509）
+                jWS_ES512_X509 = new JWS_ES512_X509(Program.PublicECDsaX509_512Path, "");
+                MyDebug.OutputDebugAndConsole("JWS_ES512_X509.Verify", jWS_ES512_X509.Verify(token).ToString());
+
+                // 鍵の相互変換
+                epkc = new EccPublicKeyConverter(JWS_ECDSA.ES._512);
+                jwk = epkc.ParamToJwk(
+                    ((ECDsa)jWS_ES512_X509.DigitalSignECDsaX509.AsymmetricAlgorithm).ExportParameters(false));
+
+                MyDebug.OutputDebugAndConsole("ECDSA JWK", jwk);
+
+                // 検証（X509）
+                jWS_ES512_X509 = new JWS_ES512_X509(Program.PublicECDsaX509_512Path, "");
+                MyDebug.OutputDebugAndConsole("JWS_ES512_X509.Verify", jWS_ES512_X509.Verify(token).ToString());
+
+#if NET47 || NETCOREAPP3_0
+                // 検証（Param）
+                //// Core2.0-2.2 on WinでVerifyがエラーになる。
+                //// DigitalSignECDsaOpenSslを試してみるが生成できない、
+                //// Core on Win に OpenSSLベースのプロバイダは無いため）
+                jWS_ES512_Param = new JWS_ES512_Param(epkc.JwkToParam(jwk), false);
+                MyDebug.OutputDebugAndConsole("JWS_ES512_Param.Verify", jWS_ES512_Param.Verify(token).ToString());
+#elif NETCOREAPP2_0
+                // Core2.0-2.2 on Winで ECDsaCngは動作しない。
+#endif
+                // ★ xLibTest
+                Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES512_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES512);
+                #endregion
+#endif
                 #endregion
 #endif
             }
@@ -609,7 +818,8 @@ namespace EncAndDecUtilCUI
                 MyDebug.InspectJwt("JWS_RS256_X509.Create", token);
 
                 // 鍵の相互変換
-                jwk = RsaPublicKeyConverter.ParamToJwk(((RSA)jWS_RS256_X509.DigitalSignX509.AsymmetricAlgorithm).ExportParameters(false));
+                rpkc = new RsaPublicKeyConverter(JWS_RSA.RS._256);
+                jwk = rpkc.ParamToJwk(((RSA)jWS_RS256_X509.DigitalSignX509.AsymmetricAlgorithm).ExportParameters(false));
                 MyDebug.OutputDebugAndConsole("RSA JWK", jwk);
 
                 // 検証（X509）
@@ -617,7 +827,7 @@ namespace EncAndDecUtilCUI
                 MyDebug.OutputDebugAndConsole("JWS_RS256_X509.Verify", jWS_RS256_X509.Verify(token).ToString());
 
                 // 検証（Param）
-                jWS_RS256_Param = new JWS_RS256_Param(RsaPublicKeyConverter.JwkToParam(jwk));
+                jWS_RS256_Param = new JWS_RS256_Param(rpkc.JwkToParam(jwk));
                 MyDebug.OutputDebugAndConsole("JWS_RS256_Param.Verify", jWS_RS256_Param.Verify(token).ToString());
                 #endregion
 
@@ -625,26 +835,26 @@ namespace EncAndDecUtilCUI
 
                 #region ECDsa(ES256)
                 // 署名（X509）
-                jWS_ES256_X509 = new JWS_ES256_X509(Program.PrivateECDsaX509Path, Program.PfxPassword);
+                jWS_ES256_X509 = new JWS_ES256_X509(Program.PrivateECDsaX509_256Path, Program.PfxPassword);
                 token = jWS_ES256_X509.Create(payloadString);
                 MyDebug.InspectJwt("JWS_ES256_X509.Create", token);
 
                 // 鍵の相互変換
-                jwk = EccPublicKeyConverter.ParamToJwk(
-                    ((ECDsa)jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm).ExportParameters(false));
+                epkc = new EccPublicKeyConverter(JWS_ECDSA.ES._256);
+                jwk = epkc.ParamToJwk(((ECDsa)jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm).ExportParameters(false));
 
                 MyDebug.OutputDebugAndConsole("ECDSA JWK", jwk);
 
                 // 検証（X509）
-                jWS_ES256_X509 = new JWS_ES256_X509(Program.PublicECDsaX509Path, "");
+                jWS_ES256_X509 = new JWS_ES256_X509(Program.PublicECDsaX509_256Path, "");
                 MyDebug.OutputDebugAndConsole("JWS_ES256_X509.Verify", jWS_ES256_X509.Verify(token).ToString());
 
                 // 検証（Param）
-                jWS_ES256_Param = new JWS_ES256_Param(EccPublicKeyConverter.JwkToParam(jwk), false);
+                jWS_ES256_Param = new JWS_ES256_Param(epkc.JwkToParam(jwk), false);
                 MyDebug.OutputDebugAndConsole("JWS_ES256_Param.Verify", jWS_ES256_X509.Verify(token).ToString());
 
                 // ★ xLibTest
-                Program.VerifyResult("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
+                Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
                 #endregion
 #endif
             }
@@ -663,7 +873,7 @@ namespace EncAndDecUtilCUI
             MyDebug.OutputDebugAndConsole("JWE_RsaOaepAesGcm_X509.Decrypt", ret.ToString() + " : " + temp);
 
             // ★ xLibTest
-            Program.VerifyResult("JweAlgorithm.xLibTest",  token,
+            Program.VerifyResultJwt("JweAlgorithm.xLibTest", token,
                 jwe.ASymmetricCryptography.AsymmetricAlgorithm, JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM);
             #endregion
 
@@ -678,7 +888,7 @@ namespace EncAndDecUtilCUI
             MyDebug.OutputDebugAndConsole("JWE_Rsa15A128CbcHS256_X509.Decrypt", ret.ToString() + " : " + temp);
 
             // ★ xLibTest
-            Program.VerifyResult("JweAlgorithm.xLibTest", token,
+            Program.VerifyResultJwt("JweAlgorithm.xLibTest", token,
                 jwe.ASymmetricCryptography.AsymmetricAlgorithm, JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256);
 
             #endregion
@@ -740,6 +950,10 @@ namespace EncAndDecUtilCUI
             CngKey publicKeyOfCng = null;
             CngKey privateKeyOfCng = null;
 
+            RsaPublicKeyConverter rpkc = null;
+#if NETCORE || NET47
+            EccPublicKeyConverter epkc = null;
+#endif
             #endregion
 
             #endregion
@@ -763,7 +977,7 @@ namespace EncAndDecUtilCUI
             secretKey = new byte[] { 164, 60, 194, 0, 161, 189, 41, 38, 130, 89, 141, 164, 45, 170, 159, 209, 69, 137, 243, 216, 191, 131, 47, 250, 32, 107, 231, 117, 37, 158, 225, 234 };
             token = "";
             token = JWT.Encode(payload, secretKey, JwsAlgorithm.HS256);
-            Program.VerifyResult("JwsAlgorithm.HS256", token, secretKey);
+            Program.VerifyResultJwt("JwsAlgorithm.HS256", token, secretKey);
             #endregion
 
             #region RS-* and PS-* family
@@ -783,7 +997,7 @@ namespace EncAndDecUtilCUI
             rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(privateX509Key.PrivateKey);
 #endif
             token = JWT.Encode(payload, rsa, JwsAlgorithm.RS256);
-            Program.VerifyResult("JwsAlgorithm.RS256", token, rsa);
+            Program.VerifyResultJwt("JwsAlgorithm.RS256", token, rsa);
 
             #endregion
 
@@ -803,17 +1017,19 @@ namespace EncAndDecUtilCUI
 
                 token = "";
                 token = JWT.Encode(payload, privateKeyOfCng, JwsAlgorithm.ES256);
-                Program.VerifyResult("JwsAlgorithm.ES256", token, publicKeyOfCng);
+                Program.VerifyResultJwt("JwsAlgorithm.ES256", token, publicKeyOfCng);
             }
             else //if (os.Platform == PlatformID.Unix)
             {
 #if NETCORE
                 ECParameters eCParameters = new ECParameters();
 
+                epkc = new EccPublicKeyConverter(JWS_ECDSA.ES._256);
+
                 // Curve
                 eCParameters.Curve =
-                    EccPublicKeyConverter.GetECCurveFromCrvString(
-                        EccPublicKeyConverter.GetCrvStringFromXCoordinate(x));
+                    epkc.GetECCurveFromCrvString(
+                        epkc.GetCrvStringFromXCoordinate(x));
 
                 // x, y, d
                 eCParameters.Q.X = x;
@@ -824,13 +1040,13 @@ namespace EncAndDecUtilCUI
 
                 token = "";
                 token = JWT.Encode(payload, eCDsaOpenSsl, JwsAlgorithm.ES256);
-                Program.VerifyResult("JwsAlgorithm.ES256", token, eCDsaOpenSsl);
+                Program.VerifyResultJwt("JwsAlgorithm.ES256", token, eCDsaOpenSsl);
 #endif
             }
 
 #if NETCORE || NET47
-            privateX509Key = new X509Certificate2(Program.PrivateECDsaX509Path, Program.PfxPassword);
-            publicX509Key = new X509Certificate2(Program.PublicECDsaX509Path, "");
+            privateX509Key = new X509Certificate2(Program.PrivateECDsaX509_256Path, Program.PfxPassword);
+            publicX509Key = new X509Certificate2(Program.PublicECDsaX509_256Path, "");
 
             try
             {
@@ -847,7 +1063,7 @@ namespace EncAndDecUtilCUI
 #endif
                 token = "";
                 token = JWT.Encode(payload, privateX509Key.GetECDsaPrivateKey(), JwsAlgorithm.ES256);
-                Program.VerifyResult("JwsAlgorithm.ES256", token, publicX509Key.GetECDsaPublicKey());
+                Program.VerifyResultJwt("JwsAlgorithm.ES256", token, publicX509Key.GetECDsaPublicKey());
             }
             catch (Exception ex)
             {
@@ -871,14 +1087,14 @@ namespace EncAndDecUtilCUI
             // RSAES-PKCS1-v1_5 and AES_128_CBC_HMAC_SHA_256
             token = "";
             token = JWT.Encode(payload, publicX509Key.PublicKey.Key, JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256);
-            Program.VerifyResult("JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256", token, privateX509Key.PrivateKey);
+            Program.VerifyResultJwt("JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256", token, privateX509Key.PrivateKey);
 
             // RSAES-OAEP and AES GCM
             try
             {
                 token = "";
                 token = JWT.Encode(payload, publicX509Key.PublicKey.Key, JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM);
-                Program.VerifyResult("JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM", token, privateX509Key.PrivateKey);
+                Program.VerifyResultJwt("JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM", token, privateX509Key.PrivateKey);
             }
             catch (Exception ex)
             {
@@ -895,7 +1111,7 @@ namespace EncAndDecUtilCUI
             // https://github.com/dvsekhvalnov/jose-jwt#dir-direct-pre-shared-symmetric-key-family-of-algorithms
             token = "";
             token = JWT.Encode(payload, secretKey, JweAlgorithm.DIR, JweEncryption.A128CBC_HS256);
-            Program.VerifyResult("JweAlgorithm.DIR, JweEncryption.A128CBC_HS256", token, secretKey);
+            Program.VerifyResultJwt("JweAlgorithm.DIR, JweEncryption.A128CBC_HS256", token, secretKey);
             #endregion
 
             #region AES Key Wrap key management family of algorithms
@@ -903,7 +1119,7 @@ namespace EncAndDecUtilCUI
             // https://github.com/dvsekhvalnov/jose-jwt#aes-key-wrap-key-management-family-of-algorithms
             token = "";
             token = JWT.Encode(payload, secretKey, JweAlgorithm.A256KW, JweEncryption.A256CBC_HS512);
-            Program.VerifyResult("JweAlgorithm.A256KW, JweEncryption.A256CBC_HS512", token, secretKey);
+            Program.VerifyResultJwt("JweAlgorithm.A256KW, JweEncryption.A256CBC_HS512", token, secretKey);
             #endregion
 
             #region AES GCM Key Wrap key management family of algorithms
@@ -913,7 +1129,7 @@ namespace EncAndDecUtilCUI
             {
                 token = "";
                 token = JWT.Encode(payload, secretKey, JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512);
-                Program.VerifyResult("JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512", token, secretKey);
+                Program.VerifyResultJwt("JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512", token, secretKey);
             }
             catch (Exception ex)
             {
@@ -932,7 +1148,7 @@ namespace EncAndDecUtilCUI
                 publicKeyOfCng = EccKey.New(x, y, usage: CngKeyUsages.KeyAgreement);
                 token = "";
                 token = JWT.Encode(payload, publicKeyOfCng, JweAlgorithm.ECDH_ES, JweEncryption.A256GCM);
-                Program.VerifyResult("JweAlgorithm.ECDH_ES, JweEncryption.A256GCM", token, publicKeyOfCng);
+                Program.VerifyResultJwt("JweAlgorithm.ECDH_ES, JweEncryption.A256GCM", token, publicKeyOfCng);
             }
             catch (Exception ex)
             {
@@ -944,7 +1160,7 @@ namespace EncAndDecUtilCUI
             #region PBES2 using HMAC SHA with AES Key Wrap key management family of algorithms
             token = "";
             token = JWT.Encode(payload, "top secret", JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
-            Program.VerifyResult("JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512", token, "top secret");
+            Program.VerifyResultJwt("JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512", token, "top secret");
             #endregion
 
             #endregion
@@ -980,7 +1196,7 @@ namespace EncAndDecUtilCUI
 
             token = "";
             token = JWT.Encode(payload, rsa, JwsAlgorithm.RS256, extraHeaders: headers);
-            Program.VerifyResult("Adding extra headers to RS256", token, rsa);
+            Program.VerifyResultJwt("Adding extra headers to RS256", token, rsa);
             #endregion
 
             #region Strict validation
@@ -1058,16 +1274,57 @@ namespace EncAndDecUtilCUI
 
         #endregion
 
+        #region SignedXml
+
+        /// <summary>SignedXml</summary>
+        private static void SignedXml()
+        {
+            string xml = ""
+                + "<xml>"
+                + "  <a ID=\"a\">"
+                + "    <b ID=\"b\">"
+                + "      <c/>"
+                + "    </b>"
+                + "  </a>"
+                + "</xml>";
+
+            // SignedXml2
+            SignedXml2 signedXml = new SignedXml2(new RSACryptoServiceProvider());
+
+            // XmlWriterSettings
+            XmlWriterSettings xmlWriterSettings = new XmlWriterSettings()
+            {
+                Encoding = Encoding.UTF8,
+                Indent = false
+            };
+
+            // ネスト
+            XmlDocument xmlDoc = null;
+            xmlDoc = signedXml.Create(xml, "b");
+            xml = xmlDoc.XmlToString(xmlWriterSettings);
+            xmlDoc = signedXml.Create(xml, "a");
+            xml = xmlDoc.XmlToString(xmlWriterSettings);
+
+            // 内側 (b
+            bool ret = signedXml.Verify(xml, "b");
+            // 外側 (a
+            ret = signedXml.Verify(xml, "a");
+
+            MyDebug.OutputDebugAndConsole("Verify nested signedXml", ret.ToString() + " : " + xml);
+        }
+
+        #endregion
+
         #endregion
 
         #region Inspector and Verifier
 
-        /// <summary>VerifyResult</summary>
+        /// <summary>VerifyResultJwt</summary>
         /// <param name="testLabel">string</param>
         /// <param name="jwt">string</param>
         /// <param name="key">object</param>
         /// <param name="alg">JwsAlgorithm?</param>
-        private static void VerifyResult(string testLabel, string jwt, object key, JwsAlgorithm? alg = null)
+        private static void VerifyResultJwt(string testLabel, string jwt, object key, JwsAlgorithm? alg = null)
         {
             MyDebug.OutputDebugAndConsole(testLabel, "Original:" + jwt);
 
@@ -1075,7 +1332,7 @@ namespace EncAndDecUtilCUI
 
             if (alg.HasValue)
             {
-                MyDebug.OutputDebugAndConsole(testLabel, "Decoded:" + JWT.Decode(jwt, key, alg.Value)); 
+                MyDebug.OutputDebugAndConsole(testLabel, "Decoded:" + JWT.Decode(jwt, key, alg.Value));
             }
             else
             {
@@ -1083,13 +1340,13 @@ namespace EncAndDecUtilCUI
             }
         }
 
-        /// <summary>VerifyResult</summary>
+        /// <summary>VerifyResultJwt</summary>
         /// <param name="testLabel">string</param>
         /// <param name="jwt">string</param>
         /// <param name="key">object</param>
         /// <param name="alg">JweAlgorithm</param>
         /// <param name="enc">JweEncryption</param>
-        private static void VerifyResult(string testLabel, string jwt, object key, JweAlgorithm alg, JweEncryption enc)
+        private static void VerifyResultJwt(string testLabel, string jwt, object key, JweAlgorithm alg, JweEncryption enc)
         {
             MyDebug.OutputDebugAndConsole(testLabel, "Original:" + jwt);
 

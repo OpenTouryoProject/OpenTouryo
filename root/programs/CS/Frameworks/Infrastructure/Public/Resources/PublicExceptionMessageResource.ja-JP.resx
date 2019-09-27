@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ARGUMENT_INJUSTICE" xml:space="preserve">
+  <data name="ARGUMENT_INCORRECT" xml:space="preserve">
     <value>引数不正</value>
   </data>
   <data name="COMMANDTIMEOUT_ERROR" xml:space="preserve">
@@ -155,6 +155,9 @@
   </data>
   <data name="DPQ_TAG_INNER_PARAM_NOT_EXIST" xml:space="preserve">
     <value>{0}タグにタグ内パラメタが設定されていません。</value>
+  </data>
+  <data name="DPQ_TAG_MAX_COUNT_ERROR" xml:space="preserve">
+    <value>{0}タグの数が最大数を超えています。</value>
   </data>
   <data name="DPQ_TAG_NAME_ATTR_NOT_EXIST" xml:space="preserve">
     <value>{0}タグにname属性が設定されていません（null）。</value>

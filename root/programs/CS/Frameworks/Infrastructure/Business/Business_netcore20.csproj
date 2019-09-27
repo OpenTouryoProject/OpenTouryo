@@ -47,6 +47,10 @@
   <ItemGroup>
     <None Remove="app.config" />
     <None Remove="packages.config" />
+    <None Remove="packages_net45.config" />
+    <None Remove="packages_net46.config" />
+    <None Remove="packages_net47.config" />
+    <None Remove="packages_net48.config" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,7 +63,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>

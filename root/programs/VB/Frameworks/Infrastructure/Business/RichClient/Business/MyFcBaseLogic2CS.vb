@@ -48,6 +48,7 @@ Imports Touryo.Infrastructure.Framework.Exceptions
 Imports Touryo.Infrastructure.Public.Db
 Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Util
+Imports Touryo.Infrastructure.Public.Reflection
 
 Namespace Touryo.Infrastructure.Business.RichClient.Business
     ''' <summary>自動振り分け機能付き業務コード親クラス２（2層C/S用）（テンプレート）</summary>

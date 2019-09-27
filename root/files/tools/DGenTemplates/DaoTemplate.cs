@@ -11,8 +11,8 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //*  2012/06/14  西野  大介        ResourceLoaderに加え、EmbeddedResourceLoaderに対応
 //*  2013/09/09  西野  大介        ExecGenerateSQLメソッドを追加した（バッチ更新用）。
-//*  2014/11/20  Sandeep          Implemented CommandTimeout property and SetCommandTimeout method.
-//*  2015/06/04  Sai              Replaced SqlCommand property with IDbCommand property in SetCommandTimeout method.
+//*  2014/11/20  Sandeep           Implemented CommandTimeout property and SetCommandTimeout method.
+//*  2015/06/04  Sai               Replaced SqlCommand property with IDbCommand property in SetCommandTimeout method.
 //**********************************************************************************
 
 #region using

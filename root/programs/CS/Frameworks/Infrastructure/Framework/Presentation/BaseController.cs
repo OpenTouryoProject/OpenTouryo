@@ -109,7 +109,9 @@ using System.Web.UI.WebControls;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Reflection;
 
 namespace Touryo.Infrastructure.Framework.Presentation
 {
@@ -3955,7 +3957,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     {
                         // 画面遷移定義（XmlDocument）のロード
                         this.XMLSCD.Load(
-                            PubCmnFunction.BuiltStringIntoEnvironmentVariable(
+                            StringVariableOperator.BuiltStringIntoEnvironmentVariable(
                                 GetConfigParameter.GetConfigValue(FxLiteral.XML_SC_DEFINITION)));
                     }
                     else

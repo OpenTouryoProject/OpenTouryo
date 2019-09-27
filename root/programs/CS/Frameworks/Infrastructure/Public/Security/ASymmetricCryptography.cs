@@ -38,6 +38,7 @@
 //*  2018/11/09  西野 大介         インスタンス・メソッド化
 //*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //*  2019/01/29  西野 大介         X.509対応（JWE（RSAES-OAEP and AES GCM）対応
+//*  2019/06/12  西野 大介         constructorのX509KeyStorageFlagsの既定値を変更
 //**********************************************************************************
 
 // 方法 : キー コンテナーに非対称キーを格納する | Microsoft Docs
@@ -102,9 +103,9 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="certificateFilePath">X.509証明書(*.pfx, *.cer)へのパス</param>
         /// <param name="password">パスワード</param>
         /// <param name="flag">X509KeyStorageFlags</param>
-        public ASymmetricCryptography(EnumASymmetricAlgorithm algorithm,
-            string certificateFilePath = "", string password = "",
-            X509KeyStorageFlags flag = X509KeyStorageFlags.DefaultKeySet)
+        public ASymmetricCryptography(
+            EnumASymmetricAlgorithm algorithm, string certificateFilePath = "", string password = "",
+            X509KeyStorageFlags flag = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet)
         {
             this._asa = AsymmetricAlgorithmCmnFunc.CreateCryptographySP(
                 algorithm, certificateFilePath, password, flag);

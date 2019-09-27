@@ -48,6 +48,7 @@ using System.Collections.Generic;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Transmission
@@ -91,7 +92,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
             {
                 // 呼び出しプロトコルの名前解決定義（XmlDocument）を[リソース]で初期化
                 this.XMLTMD_Protocol.Load(
-                    PubCmnFunction.BuiltStringIntoEnvironmentVariable(
+                    StringVariableOperator.BuiltStringIntoEnvironmentVariable(
                         GetConfigParameter.GetConfigValue(FxLiteral.XML_TM_PROTOCOL_DEFINITION)));
 
                 // 戻す
@@ -403,7 +404,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
                             // プロパティ文字列をディクショナリに変換
                             string propStr = xmlNode.Value;
-                            props = PubCmnFunction.GetPropsFromPropString(propStr);
+                            props = StringVariableOperator.GetPropsFromPropString(propStr);
                         }
                     }
                 }

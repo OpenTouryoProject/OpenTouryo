@@ -62,6 +62,14 @@
     <None Include="..\App.config">
       <Link>App.config</Link>
     </None>
+    <None Include="..\SHA256RSA.cer">
+      <Link>SHA256RSA.cer</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\SHA256RSA.pfx">
+      <Link>SHA256RSA.pfx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="..\SHA256DSA.cer">
       <Link>SHA256DSA.cer</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -78,12 +86,20 @@
       <Link>SHA256ECDSA.pfx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\SHA256RSA.cer">
-      <Link>SHA256RSA.cer</Link>
+    <None Include="..\SHA384ECDSA.cer">
+      <Link>SHA384ECDSA.cer</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\SHA256RSA.pfx">
-      <Link>SHA256RSA.pfx</Link>
+    <None Include="..\SHA384ECDSA.pfx">
+      <Link>SHA384ECDSA.pfx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\SHA512ECDSA.cer">
+      <Link>SHA512ECDSA.cer</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\SHA512ECDSA.pfx">
+      <Link>SHA512ECDSA.pfx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />

@@ -49,35 +49,34 @@ using Touryo.Infrastructure.Public.Security.Jwt;
 namespace Touryo.Infrastructure.Framework.Authentication
 {
     /// <summary>
-    /// OAuth2やOIDC関連で、クライアント認証的に使用するJwtAssertion処理
-    /// - JWT bearer token authorizationグラント種別
-    /// - OpenID　Connectリクエスト・オブジェクト（予定）
+    /// JWT bearer token authorizationグラント種別
     /// </summary>
     public class JwtAssertion
     {
-        #region CreateJwtBearerTokenFlowAssertion
-        /// <summary>CreateJwtBearerTokenFlowAssertionJWK</summary>
+        #region Create
+        /// <summary>Create</summary>
         /// <param name="iss">client_id</param>
         /// <param name="aud">Token2 EndPointのuri</param>
         /// <param name="forExp">DateTimeOffset</param>
         /// <param name="scopes">scopes</param>
         /// <param name="jwkPrivateKey">RS256用のJWK秘密鍵</param>
         /// <returns>JwtAssertion</returns>
-        public static string CreateJwtBearerTokenFlowAssertionJWK(
+        public static string Create(
             string iss, string aud, TimeSpan forExp, string scopes, string jwkPrivateKey)
         {
-            return JwtAssertion.CreateJwtBearerTokenFlowAssertion(iss, aud, forExp, scopes,
-                PrivateKeyConverter.JwkToRsaParam(jwkPrivateKey));
+            RsaPrivateKeyConverter rpkc = new RsaPrivateKeyConverter(JWS_RSA.RS._256);
+            return JwtAssertion.Create(iss, aud, forExp, scopes,
+                rpkc.JwkToParam(jwkPrivateKey));
         }
 
-        /// <summary>CreateJwtBearerTokenFlowAssertion</summary>
+        /// <summary>Create</summary>
         /// <param name="iss">client_id</param>
         /// <param name="aud">Token2 EndPointのuri</param>
         /// <param name="forExp">DateTimeOffset</param>
         /// <param name="scopes">scopes</param>
         /// <param name="rsaPrivateKey">RS256用のRSAParameters秘密鍵</param>
         /// <returns>JwtAssertion</returns>
-        public static string CreateJwtBearerTokenFlowAssertion(
+        public static string Create(
             string iss, string aud, TimeSpan forExp, string scopes, RSAParameters rsaPrivateKey)
         {
             string json = "";
@@ -86,9 +85,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
             #region ClaimSetの生成
 
             Dictionary<string, object> jwtAssertionClaimSet = new Dictionary<string, object>();
-            
+
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token2 EndPointのuri。
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token EndPointのuri。
 
 #if NET45
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, PubCmnFunction.ToUnixTime(DateTimeOffset.Now.Add(forExp)).ToString());
@@ -114,8 +113,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         }
         #endregion
 
-        #region VerifyJwtBearerTokenFlowAssertion
-        /// <summary>VerifyJwtBearerTokenFlowAssertion</summary>
+        #region Verify
+        /// <summary>Verify</summary>
         /// <param name="jwtAssertion">string</param>
         /// <param name="iss">client_id</param>
         /// <param name="aud">Token2 EndPointのuri</param>
@@ -123,15 +122,16 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="jobj">JObject</param>
         /// <param name="jwkPublicKey">RS256用のJWK公開鍵</param>
         /// <returns>検証結果</returns>
-        public static bool VerifyJwtBearerTokenFlowAssertionJWK(string jwtAssertion,
+        public static bool Verify(string jwtAssertion,
             out string iss, out string aud, out string scopes, out JObject jobj, string jwkPublicKey)
         {
-            return JwtAssertion.VerifyJwtBearerTokenFlowAssertion(
-                jwtAssertion, out iss, out aud, out scopes, out jobj,
-                RsaPublicKeyConverter.JwkToParam(jwkPublicKey));
+            RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
+            return JwtAssertion.Verify(jwtAssertion,
+                out iss, out aud, out scopes, out jobj,
+                rpkc.JwkToParam(jwkPublicKey));
         }
 
-        /// <summary>VerifyJwtBearerTokenFlowAssertion</summary>
+        /// <summary>Verify</summary>
         /// <param name="jwtAssertion">string</param>
         /// <param name="iss">client_id</param>
         /// <param name="aud">Token2 EndPointのuri</param>
@@ -139,7 +139,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="jobj">JObject</param>
         /// <param name="rsaPublicKey">RS256用のRSAParameters公開鍵</param>
         /// <returns>検証結果</returns>
-        public static bool VerifyJwtBearerTokenFlowAssertion(string jwtAssertion,
+        public static bool Verify(string jwtAssertion,
             out string iss, out string aud, out string scopes, out JObject jobj, RSAParameters rsaPublicKey)
         {
             iss = "";
@@ -160,7 +160,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 aud = (string)jobj[OAuth2AndOIDCConst.aud];
                 //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
                 scopes = (string)jobj[OAuth2AndOIDCConst.scope];
-                
+
                 long unixTimeSeconds = 0;
 #if NET45
                 unixTimeSeconds = PubCmnFunction.ToUnixTime(DateTimeOffset.Now);

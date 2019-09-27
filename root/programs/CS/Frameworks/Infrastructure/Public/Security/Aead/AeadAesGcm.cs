@@ -92,7 +92,7 @@ namespace Touryo.Infrastructure.Public.Security.Aead
             }
             else
             {
-                this.Cek = PubCmnFunction.CopyArray(cek, CEK_LEN);
+                this.Cek = ArrayOperator.CopyArray(cek, CEK_LEN);
             }
 
             // Use of an IV of size 96 bits is REQUIRED with this algorithm.
@@ -138,7 +138,7 @@ namespace Touryo.Infrastructure.Public.Security.Aead
                 Aead = aead, // aead = ciphert + tag
                 // <ciphertの抽出>
                 // plaint.Lengthと、ciphert.Length - tag.Length を使う方法がある。
-                Ciphert = PubCmnFunction.CopyArray<byte>(aead, plaint.Length),
+                Ciphert = ArrayOperator.CopyArray<byte>(aead, plaint.Length),
                 Tag = tag,
             };
         }

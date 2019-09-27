@@ -7,7 +7,9 @@ timeout 5
 echo | call 2_Build_NuGet_net45.bat
 echo | call 2_Build_NuGet_net46.bat
 echo | call 2_Build_NuGet_net47.bat
+echo | call 2_Build_NuGet_net48.bat
 echo | call 2_Build_NuGet_netstd20.bat
+echo | call 2_Build_NuGet_netstd21.bat
 
 @echo on
 timeout 5
@@ -15,11 +17,13 @@ timeout 5
 echo | call 3_Build_Business_net45.bat
 echo | call 3_Build_Business_net46.bat
 echo | call 3_Build_Business_net47.bat
+echo | call 3_Build_Business_net48.bat
 echo | call 3_Build_Business_netcore20.bat
 echo | call 3_Build_Business_netcore30.bat
 echo | call 3_Build_BusinessRichClient_net45.bat
 echo | call 3_Build_BusinessRichClient_net46.bat
 echo | call 3_Build_BusinessRichClient_net47.bat
+echo | call 3_Build_BusinessRichClient_net48.bat
 echo | call 4_Build_CopyAssemblies.bat
 
 @echo on
@@ -39,3 +43,8 @@ echo | call 10_Build_WebAppCore_sample.bat
 
 @echo on
 timeout 5
+
+rem --------------------------------------------------
+rem Change the packages.config.
+rem --------------------------------------------------
+call %CURRENT_DIR%z_ChangePackages_net46.bat

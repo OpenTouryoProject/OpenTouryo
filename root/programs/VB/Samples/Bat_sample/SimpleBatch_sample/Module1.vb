@@ -22,6 +22,7 @@ Imports SimpleBatch_sample.Common
 
 Imports Touryo.Infrastructure.Business.Util
 Imports Touryo.Infrastructure.Public.Db
+Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Util
 
 ''' <summary>Module1</summary>
@@ -41,7 +42,7 @@ Module Module1
         Dim valsLst As List(Of String) = Nothing
         Dim argsDic As Dictionary(Of String, String) = Nothing
 
-        PubCmnFunction.GetCommandArgs("/"c, argsDic, valsLst)
+        StringVariableOperator.GetCommandArgs("/"c, argsDic, valsLst)
 
         ' 引数クラスを生成
         ' 下位（Ｂ・Ｄ層）は、テスト クラスを流用する

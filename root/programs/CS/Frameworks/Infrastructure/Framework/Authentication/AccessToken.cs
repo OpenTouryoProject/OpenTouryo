@@ -51,6 +51,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// </summary>
     public class AccessToken
     {
+        #region Create
+        // AuthZに実装（パラメタ体系が違うため）
+        #endregion
+
+        #region Verify
         /// <summary>汎用認証サイトの発行したAccessTokenを検証する。</summary>
         /// <param name="access_token">
         /// AccessTokenで以下の項目が必要
@@ -63,16 +68,16 @@ namespace Touryo.Infrastructure.Framework.Authentication
         ///  - scopes (option)
         ///  - その他 (option)
         /// </param>
-        /// <param name="sub">string</param>
-        /// <param name="roles">List(string)</param>
-        /// <param name="scopes">List(string)</param>
-        /// <param name="jobj">JObject</param>
+        /// <param name="sub">out string</param>
+        /// <param name="roles">out List(string)</param>
+        /// <param name="scopes">out List(string)</param>
+        /// <param name="jobj">out JObject</param>
         /// <returns>検証結果</returns>
         public static bool Verify(string access_token,
             out string sub, out List<string> roles, out List<string> scopes, out JObject jobj)
         {
             sub = "";
-            roles =  new List<string>();
+            roles = new List<string>();
             scopes = new List<string>();
             jobj = null;
 
@@ -107,7 +112,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
 #endif
 
-                if (iss == OAuth2AndOIDCParams.Isser &&
+                if (iss == CmnClientParams.Isser &&
                     long.Parse(exp) >= unixTimeSeconds)
                 {
                     if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
@@ -150,5 +155,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // 認証に失敗
             return false;
         }
+        #endregion
     }
 }

@@ -64,22 +64,22 @@ JWS_RS256_X509.Verify > True
 JWS_RS256_Param.Verify > True
 JWS_ES256_X509.Create > JWS Header: {"alg":"ES256","typ":"JWT"}
 JWS_ES256_X509.Create > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
-JWS_ES256_X509.Create > JWS Signature: X2zzOBTg__QM0iIWOasyTgxwb-YI8lTAA7wz7KvFlsTnc_6s7EdDz7J8xuO8TWG6tFenpdev0Jc0U6YjQrKqwQ
+JWS_ES256_X509.Create > JWS Signature: 35RvbiGPx3WCwZapUaRbH3CqMt1AP8on0y3KbD2WyXUOFxo_dOx5bgE0_mVkpRugib_vrj5Fy6wnzDsaGcVSew
 ECDSA JWK > {"kty":"EC","alg":"ES256","crv":"P-256","x":"qdS3bsts3UXi5p0G71GofUB9ls1fJz_z0dRQw9RZ99A","y":"hX6HISTIiDLt90VDEqGmsMj2kSlGLOcXgXSqz75EhV4","kid":"mdAGx-nGwwhNScer459MfN0GvMKD_N3IY5efKmQVLTE"}
 JWS_ES256_X509.Verify > True
 JWS_ES256_Param.Verify > True
-JwsAlgorithm.xLibTest > Original:eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtci54QGNvbnRvc28uY29tIiwiZXhwIjoxMzAwODE5MzgwfQ.X2zzOBTg__QM0iIWOasyTgxwb-YI8lTAA7wz7KvFlsTnc_6s7EdDz7J8xuO8TWG6tFenpdev0Jc0U6YjQrKqwQ
+JwsAlgorithm.xLibTest > Original:eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtci54QGNvbnRvc28uY29tIiwiZXhwIjoxMzAwODE5MzgwfQ.35RvbiGPx3WCwZapUaRbH3CqMt1AP8on0y3KbD2WyXUOFxo_dOx5bgE0_mVkpRugib_vrj5Fy6wnzDsaGcVSew
 JwsAlgorithm.xLibTest > JWS Header: {"alg":"ES256","typ":"JWT"}
 JwsAlgorithm.xLibTest > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
-JwsAlgorithm.xLibTest > JWS Signature: X2zzOBTg__QM0iIWOasyTgxwb-YI8lTAA7wz7KvFlsTnc_6s7EdDz7J8xuO8TWG6tFenpdev0Jc0U6YjQrKqwQ
+JwsAlgorithm.xLibTest > JWS Signature: 35RvbiGPx3WCwZapUaRbH3CqMt1AP8on0y3KbD2WyXUOFxo_dOx5bgE0_mVkpRugib_vrj5Fy6wnzDsaGcVSew
 JwsAlgorithm.xLibTest > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
 JWE_RsaOaepAesGcm_X509.Decrypt > True : {"sub":"mr.x@contoso.com","exp":1300819380}
-JweAlgorithm.xLibTest > Original:eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00iLCJ0eXAiOiJKV1QifQ.Es3c54U4paNHAmwI_sgp2PFI1P_sHf3tpfS_XRDs1DJPV9a8ZljSjBX4dqAOdllDW3FS5hA_PzLx78laUqp1Bd55ABOHlQScsvWwCesMufw4mWIfygK42nsZJq3t1hoCT6ZJ78HYPuhBTCmTndHNpPPZCXJUynrvQv0nKITvTqEvWNhrFeGeA0PC1gMa8qKut01UnFKzpE6zu1CViEWCkiJO-AFZ9cLbjSzFsstlnr-Q-kHH0wE-vDlwrAiuroj7VW-pY9NwftjtDHY9uatBuuK8_4Ce_vmVAeCSGuJql__9l5Jb5aLn_DaVVGpcuUZ_sa4eWWjJ6dH-Bb97gwMM4A.5Rx7kOaRVC5uFg7r.3lQsP4jYHEEaNIfiF1GzxsXYzzAkGY63MRP_qAHcI4PAW6GEQz7lZ2qfDg.KTOkAFOxyRJ_jSeNeJ6gcg
+JweAlgorithm.xLibTest > Original:eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00iLCJ0eXAiOiJKV1QifQ.QkBwXyNZVfXOY55bcelolwyceHqHPu8QBr5ocbWvCMFUfx9kSzRh9zBrNvoruKhwxraaqMw_XtPmCasTgVzbKjcAo5oah_TzVhjzSFmLlazZX01rABI9a55TNawjIcMuDPzmX3gAlOgDQdwcGKw3e67Z2fSoIzeYht1MCvO36xzG-oVc_LU0mt4iTjg6ALLqhRAwRF6DzTv0U0k44wbQ9E6mF5vi6nvriUhZ9s71pisKaULDBpgg6mVkV4bj-A5-_5Avh16l1f33bJmbnkh659nr0h6lc564ymU09kd0trEoPLQfzD3tZ6O-dWI66PzmI-7oluZvgF0WVmQWXXtEZQ.oqvkCI6L3nWeZ39U.0AStdJ-04YW_8SJ_giPOVGbvmr8QpP3mwKqmkJWrtTgQGLt8YUQmSAZ74Q.pCOXvyPrbwg3fB1eFU6q0A
 JweAlgorithm.xLibTest > JWE Header: {"alg":"RSA-OAEP","enc":"A256GCM","typ":"JWT"}
-JweAlgorithm.xLibTest > JWE Encrypted Key: Es3c54U4paNHAmwI_sgp2PFI1P_sHf3tpfS_XRDs1DJPV9a8ZljSjBX4dqAOdllDW3FS5hA_PzLx78laUqp1Bd55ABOHlQScsvWwCesMufw4mWIfygK42nsZJq3t1hoCT6ZJ78HYPuhBTCmTndHNpPPZCXJUynrvQv0nKITvTqEvWNhrFeGeA0PC1gMa8qKut01UnFKzpE6zu1CViEWCkiJO-AFZ9cLbjSzFsstlnr-Q-kHH0wE-vDlwrAiuroj7VW-pY9NwftjtDHY9uatBuuK8_4Ce_vmVAeCSGuJql__9l5Jb5aLn_DaVVGpcuUZ_sa4eWWjJ6dH-Bb97gwMM4A
-JweAlgorithm.xLibTest > JWE Initialization Vector: 5Rx7kOaRVC5uFg7r
-JweAlgorithm.xLibTest > JWE Ciphertext: 3lQsP4jYHEEaNIfiF1GzxsXYzzAkGY63MRP_qAHcI4PAW6GEQz7lZ2qfDg
-JweAlgorithm.xLibTest > JWE Authentication Tag: KTOkAFOxyRJ_jSeNeJ6gcg
+JweAlgorithm.xLibTest > JWE Encrypted Key: QkBwXyNZVfXOY55bcelolwyceHqHPu8QBr5ocbWvCMFUfx9kSzRh9zBrNvoruKhwxraaqMw_XtPmCasTgVzbKjcAo5oah_TzVhjzSFmLlazZX01rABI9a55TNawjIcMuDPzmX3gAlOgDQdwcGKw3e67Z2fSoIzeYht1MCvO36xzG-oVc_LU0mt4iTjg6ALLqhRAwRF6DzTv0U0k44wbQ9E6mF5vi6nvriUhZ9s71pisKaULDBpgg6mVkV4bj-A5-_5Avh16l1f33bJmbnkh659nr0h6lc564ymU09kd0trEoPLQfzD3tZ6O-dWI66PzmI-7oluZvgF0WVmQWXXtEZQ
+JweAlgorithm.xLibTest > JWE Initialization Vector: oqvkCI6L3nWeZ39U
+JweAlgorithm.xLibTest > JWE Ciphertext: 0AStdJ-04YW_8SJ_giPOVGbvmr8QpP3mwKqmkJWrtTgQGLt8YUQmSAZ74Q
+JweAlgorithm.xLibTest > JWE Authentication Tag: pCOXvyPrbwg3fB1eFU6q0A
 System.DllNotFoundException: Unable to load DLL 'bcrypt.dll': The specified module or one of its dependencies could not be found.
  (Exception from HRESULT: 0x8007007E)
    at Jose.native.BCrypt.BCryptOpenAlgorithmProvider(IntPtr& phAlgorithm, String pszAlgId, String pszImplementation, UInt32 dwFlags)
@@ -89,6 +89,6 @@ System.DllNotFoundException: Unable to load DLL 'bcrypt.dll': The specified modu
    at Jose.JWT.DecryptBytes(Byte[][] parts, Object key, Nullable`1 jweAlg, Nullable`1 jweEnc, JwtSettings settings)
    at Jose.JWT.DecodeBytes(String token, Object key, Nullable`1 expectedJwsAlg, Nullable`1 expectedJweAlg, Nullable`1 expectedJweEnc, JwtSettings settings)
    at Jose.JWT.Decode(String token, Object key, JweAlgorithm alg, JweEncryption enc, JwtSettings settings)
-   at EncAndDecUtilCUI.Program.VerifyResult(String testLabel, String jwt, Object key, JweAlgorithm alg, JweEncryption enc) in /mnt/c/Git1/OpenTouryo/root/programs/CS/Frameworks/Tests/EncAndDecUtilCUI/Program.cs:line 1096
-   at EncAndDecUtilCUI.Program.MyJwt() in /mnt/c/Git1/OpenTouryo/root/programs/CS/Frameworks/Tests/EncAndDecUtilCUI/Program.cs:line 672
-   at EncAndDecUtilCUI.Program.Main(String[] args) in /mnt/c/Git1/OpenTouryo/root/programs/CS/Frameworks/Tests/EncAndDecUtilCUI/Program.cs:line 71
+   at EncAndDecUtilCUI.Program.VerifyResultJwt(String testLabel, String jwt, Object key, JweAlgorithm alg, JweEncryption enc) in /mnt/c/Git1/OpenTouryo/root/programs/CS/Frameworks/Tests/EncAndDecUtilCUI/Program.cs:line 1353
+   at EncAndDecUtilCUI.Program.MyJwt() in /mnt/c/Git1/OpenTouryo/root/programs/CS/Frameworks/Tests/EncAndDecUtilCUI/Program.cs:line 882
+   at EncAndDecUtilCUI.Program.Main(String[] args) in /mnt/c/Git1/OpenTouryo/root/programs/CS/Frameworks/Tests/EncAndDecUtilCUI/Program.cs:line 86

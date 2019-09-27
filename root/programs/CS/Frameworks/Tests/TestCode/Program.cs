@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 
 using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Diagnostics;
@@ -13,12 +14,18 @@ namespace TestCode
         public static void Main(string[] args)
         {
             // configの初期化(無くても動くようにせねば。)
-            //GetConfigParameter.InitConfiguration("appsettings.json");
-            
+#if NETCORE
+            GetConfigParameter.InitConfiguration("appsettings.json");
+#endif
+
             try
             {
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestEnumToStringExtensions.Root();
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestXmlLib.Root();
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestDeflateCompression.Root();
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
 
                 // echoすると例外
