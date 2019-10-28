@@ -145,7 +145,7 @@ namespace Touryo.Infrastructure.Business.RichClient.Business
                     // 接続文字列をロード
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_SQL");
                 }
-#if NETCOREAPP2_0
+#if NETCOREAPP
 #else
                 else if (parameterValue.ActionType.Split('%')[0] == "OLE")
                 {

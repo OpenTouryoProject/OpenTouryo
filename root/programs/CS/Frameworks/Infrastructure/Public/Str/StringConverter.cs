@@ -33,13 +33,16 @@
 //*  2015/09/30  Sai-san           Changed the parameter locale ID to 1041(Japanese) in StrConv method
 //*  2017/08/11  西野 大介         BaseDam.ClearText ---> StringConverter.FormattingForOneLineLog
 //*  2018/03/28  西野 大介         .NET Standard対応で、Microsoft.VisualBasicのサポート無し。
+//*  2019/10/28  西野 大介         VisualBasic→Zipanguで、ToZenkaku、Hankaku、Hiragana、Katakanaを復帰
 //**********************************************************************************
 
 using System.Text;
 #if NETSTD
+using Zipangu;
 #else
 using Microsoft.VisualBasic;
 #endif
+
 
 
 namespace Touryo.Infrastructure.Public.Str
@@ -47,8 +50,8 @@ namespace Touryo.Infrastructure.Public.Str
     /// <summary>文字列の変換処理クラス</summary>
     public class StringConverter
     {
-#if NETSTD
-#else
+//#if NETSTD
+//#else
         #region 全角 / 半角 変換処理
 
         /// <summary>→ 全角変換</summary>
@@ -56,8 +59,13 @@ namespace Touryo.Infrastructure.Public.Str
         /// <returns>（全角化された）出力文字列</returns>
         public static string ToZenkaku(string input)
         {
+#if NETSTD
+            // Zipanguを使用する。
+            return input.AsciiToWide();
+#else
             // VB関数を使用する。
             return Strings.StrConv(input, VbStrConv.Wide, 1041);
+#endif
         }
 
         /// <summary>→ 半角変換</summary>
@@ -65,8 +73,13 @@ namespace Touryo.Infrastructure.Public.Str
         /// <returns>（半角化された）出力文字列</returns>
         public static string ToHankaku(string input)
         {
+#if NETSTD
+            // Zipanguを使用する。
+            return input.AsciiToNarrow();
+#else
             // VB関数を使用する。
             return Strings.StrConv(input, VbStrConv.Narrow, 1041);
+#endif
         }
 
         #endregion
@@ -78,8 +91,13 @@ namespace Touryo.Infrastructure.Public.Str
         /// <returns>（平仮名化された）出力文字列</returns>
         public static string ToHiragana(string input)
         {
+#if NETSTD
+            // Zipanguを使用する。
+            return input.KatakanaToHiragana();
+#else
             // VB関数を使用する。
             return Strings.StrConv(input, VbStrConv.Hiragana, 1041);
+#endif
         }
 
         /// <summary>→ 片仮名変換</summary>
@@ -87,12 +105,17 @@ namespace Touryo.Infrastructure.Public.Str
         /// <returns>（片仮名化された）出力文字列</returns>
         public static string ToKatakana(string input)
         {
+#if NETSTD
+            // Zipanguを使用する。
+            return input.HiraganaToKatakana();
+#else
             // VB関数を使用する。
             return Strings.StrConv(input, VbStrConv.Katakana, 1041);
+#endif
         }
 
         #endregion
-#endif
+        //#endif
 
         #region 入力補完 変換処理
 

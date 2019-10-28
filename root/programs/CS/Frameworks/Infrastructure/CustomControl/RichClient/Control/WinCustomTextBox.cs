@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2016/01/28  Sai               Corrected IsIndispensabile property spelling
 //*  2017/01/31  西野 大介         "Indispensable" ---> "Required"
+//*  2017/01/31  西野 大介         Obsolete of String.Copy.
 //**********************************************************************************
 
 using System;
@@ -43,6 +44,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
 using Touryo.Infrastructure.Framework.RichClient.Util;
+using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.CustomControl.RichClient
@@ -1140,7 +1142,11 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
             //Debug.WriteLine(System.Reflection.MethodBase.GetCurrentMethod().Name + ":" + base.Text);
 
             // 無限ループ対応
+#if NETCOREAPP
+            string txt = this.StringCopy(base.Text);
+#else
             string txt = String.Copy(base.Text);
+#endif
 
             if (e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
             {
@@ -1178,7 +1184,11 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         public void PreValidate()
         {
             // 生入力
+#if NETCOREAPP
+            string txt = this.StringCopy(base.Text);
+#else
             string txt = String.Copy(base.Text);
+#endif
 
             // 半角化（数値指定されている場合）
             if (this.NumericalPossibility)
@@ -1357,7 +1367,11 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
             // ワーク
             List<string> lstRet = new List<string>();
 
+#if NETCOREAPP
+            string txt = this.StringCopy(base.Text);
+#else
             string txt = String.Copy(base.Text);
+#endif
 
             if (this.CheckType != null)
             {
@@ -1571,12 +1585,20 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
             if (this.DisplayUnits == null)
             {
                 // DisplayUnitsがNULLである。
+#if NETCOREAPP
+                txt = this.StringCopy(base.Text);
+#else
                 txt = String.Copy(base.Text);
+#endif
             }
             else
             {
                 // DisplayUnitsがNULLでない。
+#if NETCOREAPP
+                txt = this.StringCopy(this._Value);
+#else
                 txt = String.Copy(this._Value);
+#endif
             }
 
             //Debug.WriteLine(System.Reflection.MethodBase.GetCurrentMethod().Name + ":point1");
@@ -1645,10 +1667,14 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
             // ０対応
             string temp = "";
 
+#if NETCOREAPP
+            string txt = this.StringCopy(base.Text);
+#else
             string txt = String.Copy(base.Text);
+#endif
 
             //Debug.WriteLine(System.Reflection.MethodBase.GetCurrentMethod().Name + ":point1");
-            
+
             // 数値だが、数値で無い場合、
             if (this.NumericalPossibility && (!StringChecker.IsNumeric(txt)))
             {
@@ -1985,5 +2011,14 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         }
 
         #endregion
+
+#if NETCOREAPP
+        /// <summary>StringCopy</summary>
+        private string StringCopy(string input)
+        {
+            return (string)BinarySerialize.DeepClone(input);
+        }
+#else
+#endif
     }
 }

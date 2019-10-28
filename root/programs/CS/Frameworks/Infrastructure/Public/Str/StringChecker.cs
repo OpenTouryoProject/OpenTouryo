@@ -37,6 +37,7 @@
 //*  2012/09/26  西野 大介         IsNumericメソッドを追加
 //*  2013/08/30  西野 大介         IsInCodePageメソッドを追加
 //*  2018/03/28  西野 大介         .NET Standard対応で、Microsoft.VisualBasicのサポート無し。
+//*  2019/10/28  西野 大介         VisualBasic → Zipanguで、IsNumericを復帰
 //**********************************************************************************
 
 using System.Text;
@@ -57,8 +58,8 @@ namespace Touryo.Infrastructure.Public.Str
     {
         #region 数値チェック
 
-#if NETSTD
-#else
+//#if NETSTD
+//#else
         /// <summary>数字（double）に変換可能か確認する。</summary>
         /// <param name="input">入力文字列</param>
         /// <returns>
@@ -82,7 +83,7 @@ namespace Touryo.Infrastructure.Public.Str
 
             return double.TryParse(input, out temp);
         }
-#endif
+//#endif
 
         /// <summary>指定された文字列が、数字のみで構成されているかどうか確認する。</summary>
         /// <param name="input">入力文字列</param>
