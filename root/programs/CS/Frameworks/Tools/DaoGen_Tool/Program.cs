@@ -52,6 +52,11 @@ namespace DaoGen_Tool
         [STAThread]
         static void Main()
         {
+#if NETCOREAPP
+            // configの初期化
+            GetConfigParameter.InitConfiguration("appsettings.json");
+#else
+#endif
             try
             {
                 Application.EnableVisualStyles();

@@ -49,6 +49,7 @@
 //*                                and and replaced this method wherever hard coded values.
 //*  2014/08/19  西野 大介         カラム取得時のスキーマ考慮が無かったため追加（奥井さんからの提供）
 //*  2017/09/06  西野 大介         Oracle.ManagedDataAccess.Clientで主キーが取れなくなった対応
+//*  2018/10/29  西野 大介         NETCOREAPP対応で、サポートされないDBを「#if」した。
 //**********************************************************************************
 
 // --------------------
@@ -56,12 +57,15 @@
 // --------------------
 using System.Data.SqlClient;
 using Oracle.ManagedDataAccess.Client;
-using System.Data.OleDb;
 using System.Data.Odbc;
 using Npgsql;
 using MySql.Data.MySqlClient;
+#if NETCOREAPP
+#else
+using System.Data.OleDb;
 using IBM.Data.DB2;
 using Hitachi.HiRDB;
+#endif
 // --------------------
 
 using System;
@@ -91,20 +95,24 @@ namespace DaoGen_Tool
 
         /// <summary>SqlConnection</summary>
         private SqlConnection SqlCn;
-        /// <summary>OleDbConnection</summary>
-        private OleDbConnection OleCn;
         /// <summary>OdbcConnection</summary>
         private OdbcConnection OdbCn;
         /// <summary>OracleConnection</summary>
         private OracleConnection OdpCn;
-        /// <summary>DB2Connection</summary>
-        private DB2Connection DB2Cn;
-        /// <summary>HiRDBConnection</summary>
-        private HiRDBConnection HiRDBCn;
         /// <summary>MySqlConnection</summary>
         private MySqlConnection MySqlCn;
         /// <summary>NpgsqlConnection</summary>
         private NpgsqlConnection NpgsqlCn;
+
+#if NETCOREAPP
+#else
+        /// <summary>OleDbConnection</summary>
+        private OleDbConnection OleCn;
+        /// <summary>DB2Connection</summary>
+        private DB2Connection DB2Cn;
+        /// <summary>HiRDBConnection</summary>
+        private HiRDBConnection HiRDBCn;
+#endif
 
         #endregion
 
@@ -170,6 +178,13 @@ namespace DaoGen_Tool
             this.btnSetPrimaryKey.Enabled = false;
 
             this.btnDaoDefinitionGen.Enabled = false;
+
+#if NETCOREAPP
+            this.rbnOLE.Enabled = false;
+            this.rbnDB2.Enabled = false;
+            this.rbnHiRDB.Enabled = false;
+#else
+#endif
         }
 
         #endregion
@@ -204,11 +219,6 @@ namespace DaoGen_Tool
                 this.SqlCn = new SqlConnection(this.txtConnString.Text);
                 this.SqlCn.Open();
             }
-            else if (this.rbnOLE.Checked)
-            {
-                this.OleCn = new OleDbConnection(this.txtConnString.Text);
-                this.OleCn.Open();
-            }
             else if (this.rbnODB.Checked)
             {
                 this.OdbCn = new OdbcConnection(this.txtConnString.Text);
@@ -218,16 +228,6 @@ namespace DaoGen_Tool
             {
                 this.OdpCn = new OracleConnection(this.txtConnString.Text);
                 this.OdpCn.Open();
-            }
-            else if (this.rbnDB2.Checked)
-            {
-                this.DB2Cn = new DB2Connection(this.txtConnString.Text);
-                this.DB2Cn.Open();
-            }
-            else if (this.rbnHiRDB.Checked)
-            {
-                this.HiRDBCn = new HiRDBConnection(this.txtConnString.Text);
-                this.HiRDBCn.Open();
             }
             else if (this.rbnMySQL.Checked)
             {
@@ -239,6 +239,24 @@ namespace DaoGen_Tool
                 this.NpgsqlCn = new NpgsqlConnection(this.txtConnString.Text);
                 this.NpgsqlCn.Open();
             }
+#if NETCOREAPP
+#else
+            else if (this.rbnOLE.Checked)
+            {
+                this.OleCn = new OleDbConnection(this.txtConnString.Text);
+                this.OleCn.Open();
+            }
+            else if (this.rbnDB2.Checked)
+            {
+                this.DB2Cn = new DB2Connection(this.txtConnString.Text);
+                this.DB2Cn.Open();
+            }
+            else if (this.rbnHiRDB.Checked)
+            {
+                this.HiRDBCn = new HiRDBConnection(this.txtConnString.Text);
+                this.HiRDBCn.Open();
+            }
+#endif
             else
             {
                 // データプロバイダ指定無し（ありえない）
@@ -257,11 +275,6 @@ namespace DaoGen_Tool
                 this.SqlCn.Close();
             }
 
-            if (this.OleCn != null)
-            {
-                this.OleCn.Close();
-            }
-
             if (this.OdbCn != null)
             {
                 this.OdbCn.Close();
@@ -270,16 +283,6 @@ namespace DaoGen_Tool
             if (this.OdpCn != null)
             {
                 this.OdpCn.Close();
-            }
-
-            if (this.DB2Cn != null)
-            {
-                this.DB2Cn.Close();
-            }
-
-            if (this.HiRDBCn != null)
-            {
-                this.HiRDBCn.Close();
             }
 
             if (this.MySqlCn != null)
@@ -291,6 +294,24 @@ namespace DaoGen_Tool
             {
                 this.NpgsqlCn.Close();
             }
+
+#if NETCOREAPP
+#else
+            if (this.OleCn != null)
+            {
+                this.OleCn.Close();
+            }
+
+            if (this.DB2Cn != null)
+            {
+                this.DB2Cn.Close();
+            }
+
+            if (this.HiRDBCn != null)
+            {
+                this.HiRDBCn.Close();
+            }
+#endif
         }
 
         #endregion
@@ -604,54 +625,6 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
-                else if (this.rbnOLE.Checked)
-                {
-                    #region OLEDB.NET
-
-                    if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
-                    {
-                        // DataSourceInformation
-                        this.DtSchma = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataSourceInformation);
-                    }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("TypeInfo"))
-                    {
-                        // DataTypes
-                        this.DtSchma = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
-                        writeLineFlag = true;
-                    }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("ReservedWordInfo"))
-                    {
-                        // ReservedWords
-                        this.DtSchma = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.ReservedWords);
-                    }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("RestrictionInfo"))
-                    {
-                        // Restrictions
-                        this.DtSchma = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.Restrictions);
-                        writeLineFlag = true;
-                    }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("MetadataInfo"))
-                    {
-                        // MetaDataCollections
-                        this.DtSchma = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.MetaDataCollections);
-
-                        // アイテムの追加
-                        if (this.cmbSchemaInfo.Items.Count <= 5)
-                        {
-                            this.CmbAddItems();
-                        }
-
-                        writeLineFlag = true;
-                    }
-                    else
-                    {
-                        // その他
-                        this.DtSchma = this.OleCn.GetSchema(this.cmbSchemaInfo.SelectedItem.ToString().Substring(2));
-                        writeLineFlag = true;
-                    }
-
-                    #endregion
-                }
                 else if (this.rbnODB.Checked)
                 {
                     #region ODBC.NET
@@ -743,102 +716,6 @@ namespace DaoGen_Tool
                     {
                         // その他
                         this.DtSchma = this.OdpCn.GetSchema(this.cmbSchemaInfo.SelectedItem.ToString().Substring(2));
-                        writeLineFlag = true;
-                    }
-
-                    #endregion
-                }
-                else if (this.rbnDB2.Checked)
-                {
-                    #region DB2
-
-                    if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
-                    {
-                        // DataSourceInformation
-                        this.DtSchma = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataSourceInformation);
-                    }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("TypeInfo"))
-                    {
-                        // DataTypes
-                        this.DtSchma = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
-                        writeLineFlag = true;
-                    }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("ReservedWordInfo"))
-                    {
-                        // ReservedWords
-                        this.DtSchma = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.ReservedWords);
-                    }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("RestrictionInfo"))
-                    {
-                        // Restrictions
-                        this.DtSchma = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.Restrictions);
-                        writeLineFlag = true;
-                    }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("MetadataInfo"))
-                    {
-                        // MetaDataCollections
-                        this.DtSchma = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.MetaDataCollections);
-
-                        // アイテムの追加
-                        if (this.cmbSchemaInfo.Items.Count <= 5)
-                        {
-                            this.CmbAddItems();
-                        }
-
-                        writeLineFlag = true;
-                    }
-                    else
-                    {
-                        // その他
-                        this.DtSchma = this.DB2Cn.GetSchema(this.cmbSchemaInfo.SelectedItem.ToString().Substring(2));
-                        writeLineFlag = true;
-                    }
-
-                    #endregion
-                }
-                else if (this.rbnHiRDB.Checked)
-                {
-                    #region HiRDB
-
-                    if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
-                    {
-                        // DataSourceInformation
-                        this.DtSchma = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataSourceInformation);
-                    }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("TypeInfo"))
-                    {
-                        // DataTypes
-                        this.DtSchma = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
-                        writeLineFlag = true;
-                    }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("ReservedWordInfo"))
-                    {
-                        // ReservedWords
-                        this.DtSchma = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.ReservedWords);
-                    }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("RestrictionInfo"))
-                    {
-                        // Restrictions
-                        this.DtSchma = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.Restrictions);
-                        writeLineFlag = true;
-                    }
-                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("MetadataInfo"))
-                    {
-                        // MetaDataCollections
-                        this.DtSchma = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.MetaDataCollections);
-
-                        // アイテムの追加
-                        if (this.cmbSchemaInfo.Items.Count <= 5)
-                        {
-                            this.CmbAddItems();
-                        }
-
-                        writeLineFlag = true;
-                    }
-                    else
-                    {
-                        // その他
-                        this.DtSchma = this.HiRDBCn.GetSchema(this.cmbSchemaInfo.SelectedItem.ToString().Substring(2));
                         writeLineFlag = true;
                     }
 
@@ -940,6 +817,153 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
+#if NETCOREAPP
+#else
+                else if (this.rbnOLE.Checked)
+                {
+                    #region OLEDB.NET
+
+                    if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
+                    {
+                        // DataSourceInformation
+                        this.DtSchma = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataSourceInformation);
+                    }
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("TypeInfo"))
+                    {
+                        // DataTypes
+                        this.DtSchma = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
+                        writeLineFlag = true;
+                    }
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("ReservedWordInfo"))
+                    {
+                        // ReservedWords
+                        this.DtSchma = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.ReservedWords);
+                    }
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("RestrictionInfo"))
+                    {
+                        // Restrictions
+                        this.DtSchma = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.Restrictions);
+                        writeLineFlag = true;
+                    }
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("MetadataInfo"))
+                    {
+                        // MetaDataCollections
+                        this.DtSchma = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.MetaDataCollections);
+
+                        // アイテムの追加
+                        if (this.cmbSchemaInfo.Items.Count <= 5)
+                        {
+                            this.CmbAddItems();
+                        }
+
+                        writeLineFlag = true;
+                    }
+                    else
+                    {
+                        // その他
+                        this.DtSchma = this.OleCn.GetSchema(this.cmbSchemaInfo.SelectedItem.ToString().Substring(2));
+                        writeLineFlag = true;
+                    }
+
+                    #endregion
+                }
+                else if (this.rbnDB2.Checked)
+                {
+                    #region DB2
+
+                    if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
+                    {
+                        // DataSourceInformation
+                        this.DtSchma = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataSourceInformation);
+                    }
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("TypeInfo"))
+                    {
+                        // DataTypes
+                        this.DtSchma = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
+                        writeLineFlag = true;
+                    }
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("ReservedWordInfo"))
+                    {
+                        // ReservedWords
+                        this.DtSchma = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.ReservedWords);
+                    }
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("RestrictionInfo"))
+                    {
+                        // Restrictions
+                        this.DtSchma = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.Restrictions);
+                        writeLineFlag = true;
+                    }
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("MetadataInfo"))
+                    {
+                        // MetaDataCollections
+                        this.DtSchma = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.MetaDataCollections);
+
+                        // アイテムの追加
+                        if (this.cmbSchemaInfo.Items.Count <= 5)
+                        {
+                            this.CmbAddItems();
+                        }
+
+                        writeLineFlag = true;
+                    }
+                    else
+                    {
+                        // その他
+                        this.DtSchma = this.DB2Cn.GetSchema(this.cmbSchemaInfo.SelectedItem.ToString().Substring(2));
+                        writeLineFlag = true;
+                    }
+
+                    #endregion
+                }
+                else if (this.rbnHiRDB.Checked)
+                {
+                    #region HiRDB
+
+                    if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
+                    {
+                        // DataSourceInformation
+                        this.DtSchma = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataSourceInformation);
+                    }
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("TypeInfo"))
+                    {
+                        // DataTypes
+                        this.DtSchma = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
+                        writeLineFlag = true;
+                    }
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("ReservedWordInfo"))
+                    {
+                        // ReservedWords
+                        this.DtSchma = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.ReservedWords);
+                    }
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("RestrictionInfo"))
+                    {
+                        // Restrictions
+                        this.DtSchma = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.Restrictions);
+                        writeLineFlag = true;
+                    }
+                    else if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("MetadataInfo"))
+                    {
+                        // MetaDataCollections
+                        this.DtSchma = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.MetaDataCollections);
+
+                        // アイテムの追加
+                        if (this.cmbSchemaInfo.Items.Count <= 5)
+                        {
+                            this.CmbAddItems();
+                        }
+
+                        writeLineFlag = true;
+                    }
+                    else
+                    {
+                        // その他
+                        this.DtSchma = this.HiRDBCn.GetSchema(this.cmbSchemaInfo.SelectedItem.ToString().Substring(2));
+                        writeLineFlag = true;
+                    }
+
+                    #endregion
+                }
+#endif
                 else
                 {
                     // データプロバイダ指定無し（ありえない）
@@ -1053,46 +1077,6 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
-                else if (this.rbnOLE.Checked)
-                {
-                    #region OLEDB
-
-                    // 注釈
-                    //MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（OLEDB用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
-                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "OLEDB"), this.RM_GetString("CautionPrerequisiteCaption"));
-
-                    #region テーブル・ビューの情報を取得
-
-                    dtSchmaTables = this.OleCn.GetSchema("Tables");
-
-                    // スキーマの情報（カスタム）の作成
-                    this.HtSchemaCustom = new Hashtable();
-
-                    // テーブル・ビューの取り込み
-                    foreach (System.Data.DataRow row in dtSchmaTables.Rows)
-                    {
-                        if ((string)row["TABLE_TYPE"] == "TABLE")
-                        {
-                            // テーブルの取り込み
-                            HtSchemaCustom.Add((string)row["TABLE_NAME"],
-                                new CTable((string)row["TABLE_NAME"], false));
-                        }
-                        else if ((string)row["TABLE_TYPE"] == "VIEW")
-                        {
-                            // ビューの取り込み。更新可能かどうかは判断しない。
-                            HtSchemaCustom.Add((string)row["TABLE_NAME"],
-                                new CTable((string)row["TABLE_NAME"], true));
-                        }
-                        else
-                        {
-                            // TABLE・VIEW以外
-                        }
-                    }
-
-                    #endregion
-
-                    #endregion
-                }
                 else if (this.rbnODB.Checked)
                 {
                     #region ODBC
@@ -1190,6 +1174,118 @@ namespace DaoGen_Tool
                         }
                         else
                         { }
+                    }
+
+                    #endregion
+
+                    #endregion
+                }
+                else if (this.rbnMySQL.Checked)
+                {
+                    #region MySQL
+
+                    // 注釈
+                    // MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（MySQL用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "MySQL"), this.RM_GetString("CautionPrerequisiteCaption"));
+
+                    #region テーブル・ビューの情報を取得
+
+                    dtSchmaTables = this.MySqlCn.GetSchema("Tables");
+                    dtSchmaViews = this.MySqlCn.GetSchema("Views");
+
+                    // スキーマの情報（カスタム）の作成
+                    this.HtSchemaCustom = new Hashtable();
+
+                    // テーブルの取り込み。
+                    foreach (System.Data.DataRow row in dtSchmaTables.Rows)
+                    {
+                        HtSchemaCustom.Add((string)row["TABLE_NAME"],
+                            new CTable((string)row["TABLE_NAME"], false));
+                    }
+
+                    // ビューの取り込み。更新可能かどうかは判断しない。
+                    foreach (System.Data.DataRow row in dtSchmaViews.Rows)
+                    {
+                        HtSchemaCustom.Add((string)row["TABLE_NAME"],
+                        new CTable((string)row["TABLE_NAME"], true));
+                    }
+
+                    #endregion
+
+                    #endregion
+                }
+                else if (this.rbnPstgrs.Checked)
+                {
+                    #region PostgreSQL
+
+                    // 注釈
+                    //MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（PostgreSQL用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "PostgreSQL"), this.RM_GetString("CautionPrerequisiteCaption"));
+
+                    #region テーブル・ビューの情報を取得
+
+                    dtSchmaTables = this.NpgsqlCn.GetSchema("Tables");
+
+                    // スキーマの情報（カスタム）の作成
+                    this.HtSchemaCustom = new Hashtable();
+
+                    // テーブル・ビューの取り込み。
+                    foreach (System.Data.DataRow row in dtSchmaTables.Rows)
+                    {
+                        string tableSchema = ((string)row["TABLE_SCHEMA"]).ToUpper();
+
+                        if (tableSchema == "INFORMATION_SCHEMA" || tableSchema == "PG_CATALOG")
+                        {
+                            // システム スキーマは無視する。
+                        }
+                        else
+                        {
+                            // ユーザ スキーマのみ対象にする。
+                            HtSchemaCustom.Add((string)row["TABLE_NAME"],
+                            new CTable((string)row["TABLE_NAME"], false));
+                        }
+                    }
+
+                    #endregion
+
+                    #endregion
+                }
+#if NETCOREAPP
+#else
+                else if (this.rbnOLE.Checked)
+                {
+                    #region OLEDB
+
+                    // 注釈
+                    //MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（OLEDB用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
+                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "OLEDB"), this.RM_GetString("CautionPrerequisiteCaption"));
+
+                    #region テーブル・ビューの情報を取得
+
+                    dtSchmaTables = this.OleCn.GetSchema("Tables");
+
+                    // スキーマの情報（カスタム）の作成
+                    this.HtSchemaCustom = new Hashtable();
+
+                    // テーブル・ビューの取り込み
+                    foreach (System.Data.DataRow row in dtSchmaTables.Rows)
+                    {
+                        if ((string)row["TABLE_TYPE"] == "TABLE")
+                        {
+                            // テーブルの取り込み
+                            HtSchemaCustom.Add((string)row["TABLE_NAME"],
+                                new CTable((string)row["TABLE_NAME"], false));
+                        }
+                        else if ((string)row["TABLE_TYPE"] == "VIEW")
+                        {
+                            // ビューの取り込み。更新可能かどうかは判断しない。
+                            HtSchemaCustom.Add((string)row["TABLE_NAME"],
+                                new CTable((string)row["TABLE_NAME"], true));
+                        }
+                        else
+                        {
+                            // TABLE・VIEW以外
+                        }
                     }
 
                     #endregion
@@ -1310,76 +1406,7 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
-                else if (this.rbnMySQL.Checked)
-                {
-                    #region MySQL
-
-                    // 注釈
-                    // MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（MySQL用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
-                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "MySQL"), this.RM_GetString("CautionPrerequisiteCaption"));
-
-                    #region テーブル・ビューの情報を取得
-
-                    dtSchmaTables = this.MySqlCn.GetSchema("Tables");
-                    dtSchmaViews = this.MySqlCn.GetSchema("Views");
-
-                    // スキーマの情報（カスタム）の作成
-                    this.HtSchemaCustom = new Hashtable();
-
-                    // テーブルの取り込み。
-                    foreach (System.Data.DataRow row in dtSchmaTables.Rows)
-                    {
-                        HtSchemaCustom.Add((string)row["TABLE_NAME"],
-                            new CTable((string)row["TABLE_NAME"], false));
-                    }
-
-                    // ビューの取り込み。更新可能かどうかは判断しない。
-                    foreach (System.Data.DataRow row in dtSchmaViews.Rows)
-                    {
-                        HtSchemaCustom.Add((string)row["TABLE_NAME"],
-                        new CTable((string)row["TABLE_NAME"], true));
-                    }
-
-                    #endregion
-
-                    #endregion
-                }
-                else if (this.rbnPstgrs.Checked)
-                {
-                    #region PostgreSQL
-
-                    // 注釈
-                    //MessageBox.Show("同一ＤＢ上で同一名の複数のテーブルを持たないこと（PostgreSQL用のＤ層自動生成ツールの仕様です）", "－注意（前提条件）－");
-                    MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "PostgreSQL"), this.RM_GetString("CautionPrerequisiteCaption"));
-
-                    #region テーブル・ビューの情報を取得
-
-                    dtSchmaTables = this.NpgsqlCn.GetSchema("Tables");
-
-                    // スキーマの情報（カスタム）の作成
-                    this.HtSchemaCustom = new Hashtable();
-
-                    // テーブル・ビューの取り込み。
-                    foreach (System.Data.DataRow row in dtSchmaTables.Rows)
-                    {
-                        string tableSchema = ((string)row["TABLE_SCHEMA"]).ToUpper();
-
-                        if (tableSchema == "INFORMATION_SCHEMA" || tableSchema == "PG_CATALOG")
-                        {
-                            // システム スキーマは無視する。
-                        }
-                        else
-                        {
-                            // ユーザ スキーマのみ対象にする。
-                            HtSchemaCustom.Add((string)row["TABLE_NAME"],
-                            new CTable((string)row["TABLE_NAME"], false));
-                        }
-                    }
-
-                    #endregion
-
-                    #endregion
-                }
+#endif
                 else
                 {
                     // データプロバイダ指定無し（ありえない）
@@ -1472,11 +1499,6 @@ namespace DaoGen_Tool
                     // DataTypes
                     CmnMethods.DataTypes = this.SqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
                 }
-                else if (this.rbnOLE.Checked)
-                {
-                    // DataTypes
-                    CmnMethods.DataTypes = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
-                }
                 else if (this.rbnODB.Checked)
                 {
                     // DataTypes
@@ -1486,16 +1508,6 @@ namespace DaoGen_Tool
                 {
                     // DataTypes
                     CmnMethods.DataTypes = this.OdpCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
-                }
-                else if (this.rbnDB2.Checked)
-                {
-                    // DataTypes
-                    CmnMethods.DataTypes = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
-                }
-                else if (this.rbnHiRDB.Checked)
-                {
-                    // DataTypes
-                    CmnMethods.DataTypes = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
                 }
                 else if (this.rbnMySQL.Checked)
                 {
@@ -1507,6 +1519,24 @@ namespace DaoGen_Tool
                     //// DataTypes（NpgsqlではDataTypesがサポートされていない）
                     //CmnMethods.DataTypes = this.NpgsqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
                 }
+#if NETCOREAPP
+#else
+                else if (this.rbnOLE.Checked)
+                {
+                    // DataTypes
+                    CmnMethods.DataTypes = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
+                }
+                else if (this.rbnDB2.Checked)
+                {
+                    // DataTypes
+                    CmnMethods.DataTypes = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
+                }
+                else if (this.rbnHiRDB.Checked)
+                {
+                    // DataTypes
+                    CmnMethods.DataTypes = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
+                }
+#endif
                 else
                 {
                     // データプロバイダ指定無し（ありえない）
@@ -1670,44 +1700,6 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
-                else if (this.rbnOLE.Checked)
-                {
-                    #region OLEDB.NET
-
-                    dtSchmaColumns = this.OleCn.GetSchema("Columns");
-
-                    // カラムの取り込み
-                    foreach (System.Data.DataRow row in dtSchmaColumns.Rows)
-                    {
-                        // テーブルを取得
-                        CTable table = (CTable)this.HtSchemaCustom[(string)row["TABLE_NAME"]];
-
-                        // 有効なテーブルにのみロードする。
-                        if (table == null)
-                        {
-                            // 不明なテーブル
-                        }
-                        else
-                        {
-                            // 有効なテーブル
-                            if (table.Effective)
-                            {
-                                CColumn column = new CColumn(
-                                    (string)row["COLUMN_NAME"], CmnMethods.ConvertToDBTypeInfo_OLEDB(row["DATA_TYPE"].ToString()),
-                                    CmnMethods.ConvertToDotNetTypeInfo(CmnMethods.ConvertToDBTypeInfo_OLEDB(row["DATA_TYPE"].ToString())));
-
-                                // ポジションをキーにしてカラムを追加
-                                table.HtColumns_Position[row["ORDINAL_POSITION"].ToString()] = column;
-                                // カラム名をキーにしてカラムを追加
-                                table.HtColumns_Name[(string)row["COLUMN_NAME"]] = column;
-                            }
-                        }
-                    }
-
-                    // 主キーの情報をロード・・・しない。
-
-                    #endregion
-                }
                 else if (this.rbnODB.Checked)
                 {
                     #region ODBC.NET
@@ -1864,84 +1856,6 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
-                else if (this.rbnDB2.Checked)
-                {
-                    #region DB2
-
-                    // カラムの情報を取得
-                    dtSchmaColumns = this.DB2Cn.GetSchema("Columns");
-
-                    // カラムの取り込み
-                    foreach (System.Data.DataRow row in dtSchmaColumns.Rows)
-                    {
-                        // テーブルを取得
-                        CTable table = (CTable)this.HtSchemaCustom[(string)row["TABLE_NAME"]];
-
-                        // 有効なテーブルにのみロードする。
-                        if (table == null)
-                        {
-                            // 不明なテーブル
-                        }
-                        else
-                        {
-                            // 有効なテーブル
-                            if (table.Effective)
-                            {
-                                CColumn column = new CColumn(
-                                    (string)row["COLUMN_NAME"], (string)row["DATA_TYPE_NAME"],
-                                    CmnMethods.ConvertToDotNetTypeInfo_DB2((string)row["DATA_TYPE_NAME"]));
-
-                                // ポジションをキーにしてカラムを追加
-                                table.HtColumns_Position[row["ORDINAL_POSITION"].ToString()] = column;
-                                // カラム名をキーにしてカラムを追加
-                                table.HtColumns_Name[(string)row["COLUMN_NAME"]] = column;
-                            }
-                        }
-                    }
-
-                    // 主キーの情報をロード・・・しない。
-
-                    #endregion
-                }
-                else if (this.rbnHiRDB.Checked)
-                {
-                    #region HiRDB
-
-                    // カラムの情報を取得
-                    dtSchmaColumns = this.HiRDBCn.GetSchema("Columns");
-
-                    // カラムの取り込み
-                    foreach (System.Data.DataRow row in dtSchmaColumns.Rows)
-                    {
-                        // テーブルを取得
-                        CTable table = (CTable)this.HtSchemaCustom[(string)row["TABLE_NAME"]];
-
-                        // 有効なテーブルにのみロードする。
-                        if (table == null)
-                        {
-                            // 不明なテーブル
-                        }
-                        else
-                        {
-                            // 有効なテーブル
-                            if (table.Effective)
-                            {
-                                CColumn column = new CColumn(
-                                    (string)row["COLUMN_NAME"], (string)row["DATA_TYPE_NAME"],
-                                    CmnMethods.ConvertToDotNetTypeInfo_DB2((string)row["DATA_TYPE_NAME"]));
-
-                                // ポジションをキーにしてカラムを追加
-                                table.HtColumns_Position[row["ORDINAL_POSITION"].ToString()] = column;
-                                // カラム名をキーにしてカラムを追加
-                                table.HtColumns_Name[(string)row["COLUMN_NAME"]] = column;
-                            }
-                        }
-                    }
-
-                    // 主キーの情報をロード・・・しない。
-
-                    #endregion
-                }
                 else if (this.rbnMySQL.Checked)
                 {
                     #region MySQL
@@ -2021,6 +1935,125 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
+#if NETCOREAPP
+#else
+                else if (this.rbnOLE.Checked)
+                {
+                    #region OLEDB.NET
+
+                    dtSchmaColumns = this.OleCn.GetSchema("Columns");
+
+                    // カラムの取り込み
+                    foreach (System.Data.DataRow row in dtSchmaColumns.Rows)
+                    {
+                        // テーブルを取得
+                        CTable table = (CTable)this.HtSchemaCustom[(string)row["TABLE_NAME"]];
+
+                        // 有効なテーブルにのみロードする。
+                        if (table == null)
+                        {
+                            // 不明なテーブル
+                        }
+                        else
+                        {
+                            // 有効なテーブル
+                            if (table.Effective)
+                            {
+                                CColumn column = new CColumn(
+                                    (string)row["COLUMN_NAME"], CmnMethods.ConvertToDBTypeInfo_OLEDB(row["DATA_TYPE"].ToString()),
+                                    CmnMethods.ConvertToDotNetTypeInfo(CmnMethods.ConvertToDBTypeInfo_OLEDB(row["DATA_TYPE"].ToString())));
+
+                                // ポジションをキーにしてカラムを追加
+                                table.HtColumns_Position[row["ORDINAL_POSITION"].ToString()] = column;
+                                // カラム名をキーにしてカラムを追加
+                                table.HtColumns_Name[(string)row["COLUMN_NAME"]] = column;
+                            }
+                        }
+                    }
+
+                    // 主キーの情報をロード・・・しない。
+
+                    #endregion
+                }
+                else if (this.rbnDB2.Checked)
+                {
+                    #region DB2
+
+                    // カラムの情報を取得
+                    dtSchmaColumns = this.DB2Cn.GetSchema("Columns");
+
+                    // カラムの取り込み
+                    foreach (System.Data.DataRow row in dtSchmaColumns.Rows)
+                    {
+                        // テーブルを取得
+                        CTable table = (CTable)this.HtSchemaCustom[(string)row["TABLE_NAME"]];
+
+                        // 有効なテーブルにのみロードする。
+                        if (table == null)
+                        {
+                            // 不明なテーブル
+                        }
+                        else
+                        {
+                            // 有効なテーブル
+                            if (table.Effective)
+                            {
+                                CColumn column = new CColumn(
+                                    (string)row["COLUMN_NAME"], (string)row["DATA_TYPE_NAME"],
+                                    CmnMethods.ConvertToDotNetTypeInfo_DB2((string)row["DATA_TYPE_NAME"]));
+
+                                // ポジションをキーにしてカラムを追加
+                                table.HtColumns_Position[row["ORDINAL_POSITION"].ToString()] = column;
+                                // カラム名をキーにしてカラムを追加
+                                table.HtColumns_Name[(string)row["COLUMN_NAME"]] = column;
+                            }
+                        }
+                    }
+
+                    // 主キーの情報をロード・・・しない。
+
+                    #endregion
+                }
+                else if (this.rbnHiRDB.Checked)
+                {
+                    #region HiRDB
+
+                    // カラムの情報を取得
+                    dtSchmaColumns = this.HiRDBCn.GetSchema("Columns");
+
+                    // カラムの取り込み
+                    foreach (System.Data.DataRow row in dtSchmaColumns.Rows)
+                    {
+                        // テーブルを取得
+                        CTable table = (CTable)this.HtSchemaCustom[(string)row["TABLE_NAME"]];
+
+                        // 有効なテーブルにのみロードする。
+                        if (table == null)
+                        {
+                            // 不明なテーブル
+                        }
+                        else
+                        {
+                            // 有効なテーブル
+                            if (table.Effective)
+                            {
+                                CColumn column = new CColumn(
+                                    (string)row["COLUMN_NAME"], (string)row["DATA_TYPE_NAME"],
+                                    CmnMethods.ConvertToDotNetTypeInfo_DB2((string)row["DATA_TYPE_NAME"]));
+
+                                // ポジションをキーにしてカラムを追加
+                                table.HtColumns_Position[row["ORDINAL_POSITION"].ToString()] = column;
+                                // カラム名をキーにしてカラムを追加
+                                table.HtColumns_Name[(string)row["COLUMN_NAME"]] = column;
+                            }
+                        }
+                    }
+
+                    // 主キーの情報をロード・・・しない。
+
+                    #endregion
+                }
+#endif
                 else
                 {
                     // データプロバイダ指定無し（ありえない）
