@@ -58,6 +58,7 @@
 //*  2014/05/12  Rituparna         Removed <start> and <End> tags.
 //*  2015/07/19  Sandeep           Improved UI of tools and button controls.
 //*  2015/10/28  Sandeep           Optimized messages in the resource file and implemented code to format it.
+//*  2018/10/29  西野 大介         NETCOREAPP対応で、サポートされないDBを「#if」した。
 //**********************************************************************************
 
 // --------------------
@@ -67,12 +68,15 @@ using System.Data.SqlClient;
 //using System.Data.OracleClient; // 衝突するのでエイリアスを作成
 //using Oracle.DataAccess.Client; // Managedに移行
 //using Oracle.ManagedDataAccess.Client; // 衝突するのでエイリアスを作成
-using System.Data.OleDb;
 using System.Data.Odbc;
 using Npgsql;
 using MySql.Data.MySqlClient;
+#if NETCOREAPP
+#else
+using System.Data.OleDb;
 using IBM.Data.DB2;
 //using Hitachi.HiRDB;
+#endif
 // --------------------
 
 using System;
@@ -183,14 +187,17 @@ namespace DPQuery_Tool
 
             // 初期設定（DataProvider）
             this.cmbDataProvider.Items.Add(Literal.DAP_SQL);
-            this.cmbDataProvider.Items.Add(Literal.DAP_OLE);
             this.cmbDataProvider.Items.Add(Literal.DAP_ODB);
             this.cmbDataProvider.Items.Add(Literal.DAP_ORA); 
             this.cmbDataProvider.Items.Add(Literal.DAP_ODP);
-            this.cmbDataProvider.Items.Add(Literal.DAP_DB2);
-            //this.cmbDataProvider.Items.Add(Literal.DAP_HiRDB);
             this.cmbDataProvider.Items.Add(Literal.DAP_MySQL);
             this.cmbDataProvider.Items.Add(Literal.DAP_PstgrS);
+#if NETCOREAPP
+#else
+            this.cmbDataProvider.Items.Add(Literal.DAP_OLE);
+            this.cmbDataProvider.Items.Add(Literal.DAP_DB2);
+            //this.cmbDataProvider.Items.Add(Literal.DAP_HiRDB);
+#endif
             this.cmbDataProvider.SelectedIndex = 0;
 
             // 初期設定（スロット）
@@ -420,10 +427,6 @@ namespace DPQuery_Tool
                                 {
                                     this.cmbDataProvider.SelectedIndex = 0;
                                 }
-                                else if (str.Substring(len) == Literal.DAP_OLE)
-                                {
-                                    this.cmbDataProvider.SelectedIndex = 1;
-                                }
                                 else if (str.Substring(len) == Literal.DAP_ODB)
                                 {
                                     this.cmbDataProvider.SelectedIndex = 2;
@@ -436,14 +439,6 @@ namespace DPQuery_Tool
                                 {
                                     this.cmbDataProvider.SelectedIndex = 4;
                                 }
-                                else if (str.Substring(len) == Literal.DAP_DB2)
-                                {
-                                    this.cmbDataProvider.SelectedIndex = 5;
-                                }
-                                //else if (str.Substring(len) == Literal.DAP_HiRDB)
-                                //{
-                                //    this.cmbDataProvider.SelectedIndex = x;
-                                //}
                                 else if (str.Substring(len) == Literal.DAP_MySQL)
                                 {
                                     this.cmbDataProvider.SelectedIndex = 6;
@@ -452,6 +447,21 @@ namespace DPQuery_Tool
                                 {
                                     this.cmbDataProvider.SelectedIndex = 7;
                                 }
+#if NETCOREAPP
+#else
+                                else if (str.Substring(len) == Literal.DAP_OLE)
+                                {
+                                    this.cmbDataProvider.SelectedIndex = 1;
+                                }
+                                else if (str.Substring(len) == Literal.DAP_DB2)
+                                {
+                                    this.cmbDataProvider.SelectedIndex = 5;
+                                }
+                                //else if (str.Substring(len) == Literal.DAP_HiRDB)
+                                //{
+                                //    this.cmbDataProvider.SelectedIndex = x;
+                                //}
+#endif
                                 else
                                 {
                                     // ありえない
@@ -590,27 +600,6 @@ namespace DPQuery_Tool
                     ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_SQL);
 
                 }
-                else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_OLE)
-                {
-                    //OLEDB.NET
-                    this._dam = new DamOLEDB();
-
-                    //接続文字列のサンプルを設定する（空の場合）。
-                    OleDbConnectionStringBuilder csb = new OleDbConnectionStringBuilder();
-
-                    csb.Provider = "Provider";
-                    csb.DataSource = "DataSourceName";
-                    csb.FileName = "FileName";
-
-                    this.txtCnnStr.Text = csb.ConnectionString;
-
-                    // 活性
-                    this.nudNumOfBind.Enabled = true;
-
-                    // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_OLE);
-
-                }
                 else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_ODB)
                 {
                     //ODBC.NET
@@ -673,45 +662,6 @@ namespace DPQuery_Tool
                     ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_ODP);
 
                 }
-                else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_DB2)
-                {
-                    //DB2.NET
-                    this._dam = new DamDB2();
-
-                    //接続文字列のサンプルを設定する（空の場合）。
-                    DB2ConnectionStringBuilder csb = new DB2ConnectionStringBuilder();
-
-                    //csb.Server = this._ip + ":50000";
-                    csb.Database = "SAMPLE";
-                    csb.UserID = this._uid;
-                    csb.Password = this._pwd;
-
-                    this.txtCnnStr.Text = csb.ConnectionString;
-
-                    // 状態
-                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_DB2);
-
-                }
-                //else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_HiRDB)
-                //{
-                //    //HiRDBデータ プロバイダ
-                //    this._dam = new DamHiRDB();
-
-                //    //接続文字列のサンプルを設定する（空の場合）。
-                //    //HiRDBデータ プロバイダは、ConnectionStringBuilderがない。
-                //    string csb = "";
-                //    csb += "DataSource=C:\\Windows\\HiRDB.ini;";
-                //    csb += "UID=" + this._uid + ";";
-                //    csb += "PWD=" + this._pwd + ";";
-
-                //    this.txtCnnStr.Text = csb;
-
-                //    // 活性
-                //    this.nudNumOfBind.Enabled = true;
-
-                //    // 状態
-                //    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_HRD_CREATED;
-                //}
                 else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_MySQL)
                 {
                     //MySQL Connector/NET
@@ -756,6 +706,69 @@ namespace DPQuery_Tool
                     // 状態
                     ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_PstgrS);
                 }
+#if NETCOREAPP
+#else
+                else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_OLE)
+                {
+                    //OLEDB.NET
+                    this._dam = new DamOLEDB();
+
+                    //接続文字列のサンプルを設定する（空の場合）。
+                    OleDbConnectionStringBuilder csb = new OleDbConnectionStringBuilder();
+
+                    csb.Provider = "Provider";
+                    csb.DataSource = "DataSourceName";
+                    csb.FileName = "FileName";
+
+                    this.txtCnnStr.Text = csb.ConnectionString;
+
+                    // 活性
+                    this.nudNumOfBind.Enabled = true;
+
+                    // 状態
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_OLE);
+
+                }
+                else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_DB2)
+                {
+                    //DB2.NET
+                    this._dam = new DamDB2();
+
+                    //接続文字列のサンプルを設定する（空の場合）。
+                    DB2ConnectionStringBuilder csb = new DB2ConnectionStringBuilder();
+
+                    //csb.Server = this._ip + ":50000";
+                    csb.Database = "SAMPLE";
+                    csb.UserID = this._uid;
+                    csb.Password = this._pwd;
+
+                    this.txtCnnStr.Text = csb.ConnectionString;
+
+                    // 状態
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_DB2);
+
+                }
+                //else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_HiRDB)
+                //{
+                //    //HiRDBデータ プロバイダ
+                //    this._dam = new DamHiRDB();
+
+                //    //接続文字列のサンプルを設定する（空の場合）。
+                //    //HiRDBデータ プロバイダは、ConnectionStringBuilderがない。
+                //    string csb = "";
+                //    csb += "DataSource=C:\\Windows\\HiRDB.ini;";
+                //    csb += "UID=" + this._uid + ";";
+                //    csb += "PWD=" + this._pwd + ";";
+
+                //    this.txtCnnStr.Text = csb;
+
+                //    // 活性
+                //    this.nudNumOfBind.Enabled = true;
+
+                //    // 状態
+                //    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_HRD_CREATED;
+                //}
+#endif          
                 else
                 {
                     //ありえない
@@ -1366,11 +1379,6 @@ namespace DPQuery_Tool
                                         // sqlClientの型情報を推論
                                         this.InferSQLType(dr[2].GetType(), out dbTypeInfo);
                                     }
-                                    else if (this._dam.GetType() == typeof(DamOLEDB))
-                                    {
-                                        // OLEDBの型情報を推論
-                                        this.InferOLEType(dr[2].GetType(), out dbTypeInfo);
-                                    }
                                     else if (this._dam.GetType() == typeof(DamODBC))
                                     {
                                         // ODBCの型情報を推論
@@ -1381,11 +1389,17 @@ namespace DPQuery_Tool
                                         // Oracle Clientの型情報を推論
                                         this.InferORAType(dr[2].GetType(), out dbTypeInfo);
                                     }
-
                                     else if (this._dam.GetType() == typeof(DamManagedOdp))
                                     {
                                         // ODP.NETの型情報を推論
                                         this.InferODPType(dr[2].GetType(), out dbTypeInfo);
+                                    }
+#if NETCOREAPP
+#else
+                                    else if (this._dam.GetType() == typeof(DamOLEDB))
+                                    {
+                                        // OLEDBの型情報を推論
+                                        this.InferOLEType(dr[2].GetType(), out dbTypeInfo);
                                     }
                                     else if (this._dam.GetType() == typeof(DamDB2))
                                     {
@@ -1394,6 +1408,7 @@ namespace DPQuery_Tool
                                     }
                                     // HiRDBデータプロバイダ、MySQL Connector/NET、PostgreSQL Npgsql
                                     // については、推論不明（マニュアル無し）。推論非対応。
+#endif
 
                                     // パラメタを設定（型情報・有）
                                     ((BaseDam)this._dam).SetParameter(dr[1].ToString(), dr[2], dbTypeInfo);
@@ -1856,6 +1871,8 @@ namespace DPQuery_Tool
 
         #endregion
 
+#if NETCOREAPP
+#else
         #region OLEDB
 
         /// <summary>
@@ -1975,6 +1992,7 @@ namespace DPQuery_Tool
         }
 
         #endregion
+#endif
 
         #region ODBC
 
@@ -2303,6 +2321,8 @@ namespace DPQuery_Tool
 
         #endregion
 
+#if NETCOREAPP
+#else
         #region DB2.NET
 
         /// <summary>
@@ -2373,6 +2393,7 @@ namespace DPQuery_Tool
         }
 
         #endregion
+#endif
 
         // HiRDBデータ プロバイダは情報が見当たらず
 
