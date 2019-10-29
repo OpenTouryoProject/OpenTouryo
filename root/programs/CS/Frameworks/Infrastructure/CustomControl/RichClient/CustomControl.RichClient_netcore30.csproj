@@ -5,10 +5,23 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
+    <AssemblyName>OpenTouryo.CustomControl.RichClient</AssemblyName>
+    <RootNamespace>Touryo.Infrastructure.CustomControl.RichClient</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
+    <OutputPath>..\..\Build_netcore30\</OutputPath>
+    <DocumentationFile>..\..\Build_netcore30\netcoreapp3.0\OpenTouryo.CustomControl.RichClient.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <NoWarn>1701;1702;NU1701</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
+    <DocumentationFile>..\..\Build_netcore30r\netcoreapp3.0\OpenTouryo.CustomControl.RichClient.xml</DocumentationFile>
+    <OutputPath>..\..\Build_netcore30r\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,12 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="Framework.RichClient">
-      <HintPath>..\..\Build_netcore30\netcoreapp3.0\Framework.RichClient.dll</HintPath>
+      <HintPath>..\..\Build_netcore30\netcoreapp3.0\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework">
       <HintPath>..\..\Build_netstd21\netstandard2.1\OpenTouryo.Framework.dll</HintPath>
@@ -29,6 +38,10 @@
     <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\Build_netstd21\netstandard2.1\OpenTouryo.Public.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>

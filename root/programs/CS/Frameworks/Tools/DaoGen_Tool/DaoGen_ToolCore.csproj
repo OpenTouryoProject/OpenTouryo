@@ -7,6 +7,7 @@
     <ApplicationIcon />
     <StartupObject />
     <RootNamespace>DaoGen_Tool</RootNamespace>
+    <AssemblyName>OpenTouryo.DaoGen_Tool</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

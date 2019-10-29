@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants>TRACE;NETCORE</DefineConstants>
+    <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

@@ -31,21 +31,5 @@ call dotnet msbuild %COMMANDLINE% "Frameworks\Tools\DaoGen_Tool\DaoGen_ToolCore.
 
 pause
 
-rem --------------------------------------------------
-rem Batch build of Deploy ZipPack With HTTP.
-rem --------------------------------------------------
-call dotnet restore "Frameworks\Tools\DeployZipPackWithHTTP\DeployZipPackWithHTTP_Core.sln"
-call dotnet msbuild %COMMANDLINE% "Frameworks\Tools\DeployZipPackWithHTTP\DeployZipPackWithHTTP_Core.sln"
-
-pause
-
-rem --------------------------------------------------
-rem Batch build of Workflow.
-rem --------------------------------------------------
-call dotnet restore "Frameworks\Tools\Workflow_Tool\Workflow_ToolCore.sln"
-call dotnet msbuild %COMMANDLINE% "Frameworks\Tools\Workflow_Tool\Workflow_ToolCore.sln"
-
-pause
-
 rem -------------------------------------------------------
 endlocal

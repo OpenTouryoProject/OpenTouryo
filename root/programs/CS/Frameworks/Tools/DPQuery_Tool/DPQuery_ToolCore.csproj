@@ -7,6 +7,7 @@
     <ApplicationIcon />
     <StartupObject />
     <RootNamespace>DPQuery_Tool</RootNamespace>
+    <AssemblyName>OpenTouryo.DPQuery_Tool</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

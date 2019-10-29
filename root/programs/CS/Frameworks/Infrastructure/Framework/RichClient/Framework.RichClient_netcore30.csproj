@@ -7,8 +7,8 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon />
     <StartupObject />
-    <RootNamespace>Framework.RichClient</RootNamespace>
-    <AssemblyName>Framework.RichClient</AssemblyName>
+    <RootNamespace>Touryo.Infrastructure.Framework.RichClient</RootNamespace>
+    <AssemblyName>OpenTouryo.Framework.RichClient</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
