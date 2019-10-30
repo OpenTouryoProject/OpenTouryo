@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOT>
+  -- Daots_test_table3_D5_SelCnt
+  -- 2014/2/9 日立 太郎
+  SELECT 
+    COUNT(*)
+  FROM
+    [ts_test_table3]
+  <WHERE>
+    WHERE
+      <IF>AND [id] = @id<ELSE>AND [id] IS NULL</ELSE></IF>
+      <IF>AND [id] LIKE @id_Like</IF>
+      <IF>AND [ts] = @ts<ELSE>AND [ts] IS NULL</ELSE></IF>
+      <IF>AND [ts] LIKE @ts_Like</IF>
+      <IF>AND [val] = @val<ELSE>AND [val] IS NULL</ELSE></IF>
+      <IF>AND [val] LIKE @val_Like</IF>
+  </WHERE>
+</ROOT>
