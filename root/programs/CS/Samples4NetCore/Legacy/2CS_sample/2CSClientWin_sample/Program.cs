@@ -22,6 +22,7 @@ using System.Threading;
 using System.Windows.Forms;
 
 using Touryo.Infrastructure.Business.RichClient.Util;
+using Touryo.Infrastructure.Public.Util;
 
 namespace _2CSClientWin_sample
 {
@@ -37,6 +38,9 @@ namespace _2CSClientWin_sample
         [STAThread]
         static void Main()
         {
+            // configの初期化
+            GetConfigParameter.InitConfiguration("appsettings.json");
+
             // 既定の処理
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
