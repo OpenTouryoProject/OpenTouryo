@@ -1,0 +1,109 @@
+//**********************************************************************************
+//* Windows Forms用 Ｐ層 フレームワーク・テスト アプリ画面
+//**********************************************************************************
+
+// テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
+//**********************************************************************************
+//* クラス名        ：ByReturn
+//* クラス日本語名  ：初期化画面
+//*
+//* 作成日時        ：－
+//* 作成者          ：生技
+//* 更新履歴        ：
+//*
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//**********************************************************************************
+
+using System;
+
+using Touryo.Infrastructure.Business.RichClient.Presentation;
+using Touryo.Infrastructure.Business.RichClient.Asynchronous;
+using Touryo.Infrastructure.Framework.RichClient.Presentation;
+using Touryo.Infrastructure.Framework.RichClient.Asynchronous;
+
+namespace WSClientWin2_sample
+{
+    /// <summary>ByReturn</summary>
+    public partial class ByReturn : MyBaseControllerWin
+    {
+        /// <summary>コンストラクタ</summary>
+        public ByReturn()
+        {
+            InitializeComponent();
+
+            Program.FlagEnd = true; //フラグ初期化
+        }
+
+        /// <summary>現在の折り返し処理回数</summary>
+        private int Current = 1;
+
+        /// <summary>フォームロードのUOCメソッド</summary>
+        protected override void UOC_FormInit()
+        {
+            int wait = 1;
+            int max = 5;
+
+            MyBaseAsyncFunc af = new MyBaseAsyncFunc(this);
+
+            // 非同期処理本体
+            af.AsyncFunc = delegate(object param)
+            {
+                for (this.Current = 1; this.Current <= max; this.Current++)
+                {
+                    // ダミー
+                    System.Threading.Thread.Sleep(wait * 1000);
+
+                    // 進捗表示
+                    af.ExecChangeProgress(string.Format(
+                        "処理中です・・・:{0}/{1}", this.Current.ToString(), max.ToString()));
+                }
+
+                return "処理が完了しました。";
+            };
+
+            // 進捗報告・無名関数デレゲード
+            af.ChangeProgress = delegate(object param)
+            {
+                this.label1.Text = (string)param;
+            };
+
+            // 結果設定・無名関数デレゲード
+            af.SetResult = delegate(object retVal)
+            {
+                if (retVal is Exception)
+                {
+                    // 例外発生時
+                    this.label1.Text = (retVal as Exception).ToString();
+                }
+                else
+                {
+                    this.label1.Text = (string)retVal;
+                    this.btnStart.Visible = true;
+                }
+            };
+
+            if (af.Start())
+            {
+                //正常に実行
+                this.label1.Text = string.Format(
+                    "処理中です・・・:{0}/{1}", this.Current.ToString(), max.ToString());
+            }
+            else
+            {
+                // ここは通らないが念のため
+                this.label1.Text = string.Format(
+                    "非同期スレッドが最大数に達しています。:{0}", BaseAsyncFunc.ThreadCount.ToString());
+            }
+        }
+
+        /// <summary>開始</summary>
+        private void UOC_btnStart_Click(RcFxEventArgs rcFxEventArgs)
+        {
+            Program.FlagEnd = false; // フラグ完了
+            this.Close();
+        }
+    }
+}

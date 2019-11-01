@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE TMD[
+  <!ELEMENT TMD (Prop*, Url*, Transmission*)>
+  
+  <!ELEMENT Url EMPTY>
+  <!ELEMENT Prop EMPTY>
+  <!ELEMENT Transmission EMPTY>
+
+  <!ATTLIST Url id ID #REQUIRED value CDATA #REQUIRED>
+  <!ATTLIST Prop id ID #REQUIRED value CDATA #REQUIRED>
+  <!ATTLIST Transmission id ID #REQUIRED protocol (1 | 2) #REQUIRED 
+    url CDATA #IMPLIED url_ref IDREF #IMPLIED timeout CDATA #IMPLIED prop_ref IDREF #IMPLIED>
+]>
+<!-- idの先頭には、数字を使用できない。 -->
+<!-- protocol：1=InProcess、2=WebService -->
+<TMD>
+  <!-- マスタ データ -->
+
+    <!-- 接続URL（asmx単位に定義する） -->
+    <Url id="url_a" value="http://localhost:8888/ServiceForFx.asmx"/>
+    <Url id="url_b" value="http://localhost:8888/WCFHTTPSvcForFx.svc"/>
+    <Url id="url_c" value="net.tcp://localhost:7777/WCFService/WCFTCPSvcForFx/"/>
+    <Url id="url_d" value="http://localhost:8888/WebAPIControllerForFx"/>
+
+    <!-- 接続オプション（必要に応じて） -->
+    <Prop id="prop_a" value="aaa=AAA;bbb=BBB;ccc=CCC;"/>
+
+  <!-- 接続先 データ -->
+
+    <!-- インプロセス -->
+    <Transmission id="testInProcess" protocol="1"/>
+
+    <!-- サービス -->
+    <Transmission id="testWebService" protocol="2" url="http://localhost:8888/ServiceForFx.asmx" timeout="60" />
+    <Transmission id="testWebService2" protocol="3" url="http://localhost:8888/WCFHTTPSvcForFx.svc" />
+    <Transmission id="testWebService3" protocol="4" url="net.tcp://localhost:7777/WCFService/WCFTCPSvcForFx/" />
+    <Transmission id="testWebService4" protocol="5" url="http://localhost:8888/WebAPIControllerForFx" />
+    
+    <!-- サービス（マスタ データを活用）-->
+    <Transmission id="_testWebService" protocol="2" url_ref="url_a" timeout="60" prop_ref="prop_a" />
+    <Transmission id="_testWebService2" protocol="3" url_ref="url_b" />
+    <Transmission id="_testWebService3" protocol="4" url_ref="url_c" />
+    <Transmission id="_testWebService4" protocol="5" url_ref="url_d" />
+</TMD>
