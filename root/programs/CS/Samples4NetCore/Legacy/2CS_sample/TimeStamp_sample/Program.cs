@@ -21,6 +21,8 @@
 using System;
 using System.Windows.Forms;
 
+using Touryo.Infrastructure.Public.Util;
+
 namespace _TimeStamp_sample
 {
     /// <summary>アプリケーションのメイン エントリ ポイント</summary>
@@ -30,6 +32,9 @@ namespace _TimeStamp_sample
         [STAThread]
         static void Main()
         {
+            // configの初期化
+            GetConfigParameter.InitConfiguration("appsettings.json");
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

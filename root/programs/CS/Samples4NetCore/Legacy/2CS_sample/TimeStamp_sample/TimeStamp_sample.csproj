@@ -1,259 +1,271 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{386EA604-40DB-44A8-87AE-F29B209BA9CF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_TimeStamp_sample</RootNamespace>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon />
+    <StartupObject />
+    <RootNamespace>TimeStamp_sample</RootNamespace>
     <AssemblyName>TimeStamp_sample</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
-    <UpgradeBackupLocation />
-    <TargetFrameworkProfile />
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="OpenTouryo.Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Business.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTouryo.Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTouryo.Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
+    <None Remove="Dao\Daots_test_table1_D1_Insert.xml" />
+    <None Remove="Dao\Daots_test_table1_D2_Select.xml" />
+    <None Remove="Dao\Daots_test_table1_D3_Update.xml" />
+    <None Remove="Dao\Daots_test_table1_D4_Delete.xml" />
+    <None Remove="Dao\Daots_test_table1_D5_SelCnt.xml" />
+    <None Remove="Dao\Daots_test_table1_S1_Insert.sql" />
+    <None Remove="Dao\Daots_test_table1_S2_Select.xml" />
+    <None Remove="Dao\Daots_test_table1_S3_Update.xml" />
+    <None Remove="Dao\Daots_test_table1_S4_Delete.xml" />
+    <None Remove="Dao\Daots_test_table2_D1_Insert.xml" />
+    <None Remove="Dao\Daots_test_table2_D2_Select.xml" />
+    <None Remove="Dao\Daots_test_table2_D3_Update.xml" />
+    <None Remove="Dao\Daots_test_table2_D4_Delete.xml" />
+    <None Remove="Dao\Daots_test_table2_D5_SelCnt.xml" />
+    <None Remove="Dao\Daots_test_table2_S1_Insert.sql" />
+    <None Remove="Dao\Daots_test_table2_S2_Select.xml" />
+    <None Remove="Dao\Daots_test_table2_S3_Update.xml" />
+    <None Remove="Dao\Daots_test_table2_S4_Delete.xml" />
+    <None Remove="Dao\Daots_test_table3_D1_Insert.xml" />
+    <None Remove="Dao\Daots_test_table3_D2_Select.xml" />
+    <None Remove="Dao\Daots_test_table3_D3_Update.xml" />
+    <None Remove="Dao\Daots_test_table3_D4_Delete.xml" />
+    <None Remove="Dao\Daots_test_table3_D5_SelCnt.xml" />
+    <None Remove="Dao\Daots_test_table3_S1_Insert.sql" />
+    <None Remove="Dao\Daots_test_table3_S2_Select.xml" />
+    <None Remove="Dao\Daots_test_table3_S3_Update.xml" />
+    <None Remove="Dao\Daots_test_table3_S4_Delete.xml" />
+    <None Remove="Dao\Daots_test_tableA_D1_Insert.xml" />
+    <None Remove="Dao\Daots_test_tableA_D2_Select.xml" />
+    <None Remove="Dao\Daots_test_tableA_D3_Update.xml" />
+    <None Remove="Dao\Daots_test_tableA_D4_Delete.xml" />
+    <None Remove="Dao\Daots_test_tableA_D5_SelCnt.xml" />
+    <None Remove="Dao\Daots_test_tableA_S1_Insert.sql" />
+    <None Remove="Dao\Daots_test_tableA_S2_Select.xml" />
+    <None Remove="Dao\Daots_test_tableA_S3_Update.xml" />
+    <None Remove="Dao\Daots_test_tableA_S4_Delete.xml" />
+    <None Remove="Dao\Daots_test_tableB_D1_Insert.xml" />
+    <None Remove="Dao\Daots_test_tableB_D2_Select.xml" />
+    <None Remove="Dao\Daots_test_tableB_D3_Update.xml" />
+    <None Remove="Dao\Daots_test_tableB_D4_Delete.xml" />
+    <None Remove="Dao\Daots_test_tableB_D5_SelCnt.xml" />
+    <None Remove="Dao\Daots_test_tableB_S1_Insert.sql" />
+    <None Remove="Dao\Daots_test_tableB_S2_Select.xml" />
+    <None Remove="Dao\Daots_test_tableB_S3_Update.xml" />
+    <None Remove="Dao\Daots_test_tableB_S4_Delete.xml" />
+    <None Remove="Dao\Daots_test_tableC_D1_Insert.xml" />
+    <None Remove="Dao\Daots_test_tableC_D2_Select.xml" />
+    <None Remove="Dao\Daots_test_tableC_D3_Update.xml" />
+    <None Remove="Dao\Daots_test_tableC_D4_Delete.xml" />
+    <None Remove="Dao\Daots_test_tableC_D5_SelCnt.xml" />
+    <None Remove="Dao\Daots_test_tableC_S1_Insert.sql" />
+    <None Remove="Dao\Daots_test_tableC_S2_Select.xml" />
+    <None Remove="Dao\Daots_test_tableC_S3_Update.xml" />
+    <None Remove="Dao\Daots_test_tableC_S4_Delete.xml" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Dao\Daots_test_table1.cs" />
-    <Compile Include="Dao\Daots_test_table2.cs" />
-    <Compile Include="Dao\Daots_test_table3.cs" />
-    <Compile Include="Dao\Daots_test_tableA.cs" />
-    <Compile Include="Dao\Daots_test_tableB.cs" />
-    <Compile Include="Dao\Daots_test_tableC.cs" />
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Dao\Daots_test_table1_D1_Insert.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table1_D2_Select.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table1_D3_Update.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table1_D4_Delete.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table1_D5_SelCnt.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table1_S1_Insert.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table1_S2_Select.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table1_S3_Update.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table1_S4_Delete.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table2_D1_Insert.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table2_D2_Select.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table2_D3_Update.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table2_D4_Delete.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table2_D5_SelCnt.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table2_S1_Insert.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table2_S2_Select.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table2_S3_Update.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table2_S4_Delete.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table3_D1_Insert.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table3_D2_Select.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table3_D3_Update.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table3_D4_Delete.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table3_D5_SelCnt.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table3_S1_Insert.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table3_S2_Select.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table3_S3_Update.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_table3_S4_Delete.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableA_D1_Insert.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableA_D2_Select.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableA_D3_Update.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableA_D4_Delete.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableA_D5_SelCnt.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableA_S1_Insert.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableA_S2_Select.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableA_S3_Update.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableA_S4_Delete.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableB_D1_Insert.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableB_D2_Select.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableB_D3_Update.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableB_D4_Delete.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableB_D5_SelCnt.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableB_S1_Insert.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableB_S2_Select.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableB_S3_Update.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableB_S4_Delete.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableC_D1_Insert.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableC_D2_Select.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableC_D3_Update.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableC_D4_Delete.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableC_D5_SelCnt.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableC_S1_Insert.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableC_S2_Select.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableC_S3_Update.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dao\Daots_test_tableC_S4_Delete.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
+
   <ItemGroup>
-    <None Include="app.config" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="MySql.Data" Version="8.0.18" />
+    <PackageReference Include="Npgsql" Version="4.1.1" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.50" />
+    <PackageReference Include="System.Data.Odbc" Version="4.6.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
   </ItemGroup>
+  
   <ItemGroup>
-    <Content Include="Dao\Daots_test_table1_D1_Insert.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table1_D2_Select.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table1_D3_Update.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table1_D4_Delete.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table1_S1_Insert.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table1_S2_Select.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table1_S3_Update.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table1_S4_Delete.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table2_D1_Insert.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table2_D2_Select.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table2_D3_Update.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table2_D4_Delete.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table2_S1_Insert.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table2_S2_Select.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table2_S3_Update.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table2_S4_Delete.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table3_D1_Insert.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table3_D2_Select.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table3_D3_Update.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table3_D4_Delete.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table3_S1_Insert.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table3_S2_Select.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table3_S3_Update.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_table3_S4_Delete.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableA_D1_Insert.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableA_D2_Select.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableA_D3_Update.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableA_D4_Delete.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableA_S1_Insert.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableA_S2_Select.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableA_S3_Update.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableA_S4_Delete.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableB_D1_Insert.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableB_D2_Select.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableB_D3_Update.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableB_D4_Delete.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableB_S1_Insert.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableB_S2_Select.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableB_S3_Update.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableB_S4_Delete.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableC_D1_Insert.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableC_D2_Select.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableC_D3_Update.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableC_D4_Delete.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableC_S1_Insert.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableC_S2_Select.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableC_S3_Update.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dao\Daots_test_tableC_S4_Delete.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="MSGDefinition.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SampleLogConf2CS.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SPDefinition.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Reference Include="OpenTouryo.Business">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0\OpenTouryo.Business.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SampleLogConf2CS.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
 </Project>
