@@ -59,6 +59,7 @@
 //*  2018/03/29  西野 大介         .NET Standard対応：取り敢えずインプロセスのみ残す。
 //*  2018/08/04  西野 大介         regionディレクティブのインデントの問題を修正
 //*  2018/08/04  西野 大介         HttpClientにpropsの設定値を反映する。
+//*  2019/10/01  西野 大介         .NET Standard対応：ASP.NET WebAPI (JSON-RPC)の復元
 //**********************************************************************************
 
 using System;
@@ -72,8 +73,6 @@ using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.Reflection;
 
-#if NETSTD
-#else
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
@@ -85,15 +84,17 @@ using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
+#if NETSTD
+#else
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+#endif
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
-#endif
 
 #if NETSTD
 #else
@@ -255,6 +256,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
         #endregion
 
         #endregion
+#endif
 
         #region プロキシのURL
 
@@ -293,7 +295,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
         }
 
         #endregion
-#endif
 
         #endregion
 
@@ -336,32 +337,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
             // クラス名
             string className = "";
 
-#if NETSTD
-#else
-            // ＵＲＬ
-            string url = "";
-
-            // タイムアウト
-            int timeout;
-
-            // プロパティ
-            Dictionary<string, string> props;
-#endif
-
             #endregion
-
-            #region 引数・戻り値関係の変数（WS時）
-
-#if NETSTD
-#else
-            // .NETオブジェクトのバイト配列 // #y-↓３行
-            byte[] contextObject = null;
-            byte[] parameterValueObject = null;
-            byte[] returnValueObject = null;
-
-            // エラー情報のバイト配列 // #y-↓１行
-            byte[] ret = null;
-#endif
 
             #endregion
 
@@ -401,15 +377,22 @@ namespace Touryo.Infrastructure.Framework.Transmission
             }
             else
             {
-#if NETSTD
-                // サービス呼び出しはサポートしない。
-                // コンテキスト・nullエラー
-                throw new FrameworkException(
-                    FrameworkExceptionMessage.PARAMETER_CHECK_ERROR[0],
-                    String.Format(FrameworkExceptionMessage.PARAMETER_CHECK_ERROR[1],
-                        String.Format(FrameworkExceptionMessage.PARAMETER_CHECK_ERROR_null, "serviceName")));
-#else
-                #region サービス呼び出し
+                // ＵＲＬ
+                string url = "";
+
+                // タイムアウト
+                int timeout;
+
+                // プロパティ
+                Dictionary<string, string> props;
+
+                // .NETオブジェクトのバイト配列 // #y-↓３行
+                byte[] contextObject = null;
+                byte[] parameterValueObject = null;
+                byte[] returnValueObject = null;
+
+                // エラー情報のバイト配列 // #y-↓１行
+                byte[] ret = null;
 
                 // 名前解決（プロトコルＵＲＬ）
                 CallController.PRT_NS.NameResolutionProtocolUrl(serviceName, out url, out timeout, out props);
@@ -447,6 +430,29 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 }
 
                 #endregion
+
+#if NETSTD
+                #region サービス呼び出し
+
+                if (protocol == ((int)FxEnum.TmProtocol.AspNetWebAPI).ToString())
+                {
+                    // ASP.NET WebAPI (JSON-RPC)
+                    ret = this.ASPNETWebAPI(serviceName, url, timeout, props,
+                        contextObject, parameterValueObject, returnValueObject);
+                }
+                else
+                {
+                    // サービス呼び出しはサポートしない。
+                    // コンテキスト・nullエラー
+                    throw new FrameworkException(
+                        FrameworkExceptionMessage.PARAMETER_CHECK_ERROR[0],
+                        String.Format(FrameworkExceptionMessage.PARAMETER_CHECK_ERROR[1],
+                            String.Format(FrameworkExceptionMessage.PARAMETER_CHECK_ERROR_null, "serviceName")));
+                }
+
+                #endregion
+#else
+                #region サービス呼び出し
 
                 if (protocol == ((int)FxEnum.TmProtocol.AspNetWs).ToString())
                 {
@@ -724,163 +730,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 }
                 else if (protocol == ((int)FxEnum.TmProtocol.AspNetWebAPI).ToString())
                 {
-                    #region ASP.NET WebAPI (JSON-RPC)
-
-                    #region WebRequestHandler
-
-                    // 通信用の変数
-                    WebRequestHandler handler = new WebRequestHandler();
-
-                    #region WASのクライアント認証のセキュリティ資格情報 for WCF
-
-                    NetworkCredential nwcWAS = this.CreateCredentials(props);
-                    if (nwcWAS != null)
-                    {
-                        handler.Credentials = nwcWAS;
-                    }
-
-                    #endregion
-
-                    #region プロキシ経由の要求を行うためのプロキシ情報
-
-                    WebProxy proxy = this.CreateProxy(props);
-                    if (proxy != null)
-                    {
-                        handler.Proxy = proxy;
-                    }
-
-                    #endregion
-
-                    #region HTTP圧縮の有効・無効（Default：false）
-
-                    if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION))// Dic化でnullチェック変更
-                    {
-                        // XML定義：キーが無い
-                    }
-                    else
-                    {
-                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION]))
-                        {
-                            // XML定義：null or 空文字列
-                        }
-                        else
-                        {
-                            // XML定義：あり
-
-                            bool compress;
-
-                            if (Boolean.TryParse(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION], out compress))
-                            {
-                                // 書式正常
-                                if (compress)
-                                {
-                                    handler.AutomaticDecompression =
-                                        DecompressionMethods.GZip | DecompressionMethods.Deflate;
-                                }
-                            }
-                            else
-                            {
-                                // パラメータ・エラー（書式不正）
-                                throw new FrameworkException(
-                                    FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH2[0],
-                                    String.Format(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH2[1],
-                                        FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION
-                                        + "=" + props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION]));
-                            }
-                        }
-                    }
-
-                    #endregion
-
-                    #endregion
-
-                    #region HttpClient
-
-                    HttpClient client = new HttpClient(handler);
-                    
-                    HttpRequestMessage httpRequestMessage = null;
-                    HttpResponseMessage httpResponseMessage = null;
-                    httpRequestMessage = new HttpRequestMessage
-                    {
-                        Method = HttpMethod.Post,
-                        RequestUri = new Uri(url),
-                        Content = new StringContent(JsonConvert.SerializeObject(
-                            new
-                            {
-                                ServiceName = serviceName,
-                                ContextObject = CustomEncode.ToBase64String(contextObject),
-                                ParameterValueObject = CustomEncode.ToBase64String(parameterValueObject)
-                            }),
-                            Encoding.UTF8, "application/json"),
-                    };
-
-                    // タイムアウト指定、有り
-                    if (0 <= timeout)
-                    {
-                        client.Timeout = TimeSpan.FromSeconds(timeout);
-                    }
-
-                    #region クライアント証明書、エージェント ヘッダ、接続グループ.etc
-
-                    #region クライアント証明書 CERTIFICATE
-
-                    X509Certificate2 x509 = this.CreateX509Certificate(props);
-                    if (x509 != null)
-                    {
-                        handler.ClientCertificates.Add(x509);
-                    }
-
-                    #endregion
-
-                    #region ユーザ エージェント ヘッダ値
-
-                    // （Default：MS Web Services Client Protocol number、numberは、CLRのver）
-                    if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT))// Dic化でnullチェック変更
-                    {
-                        // XML定義：キーが無い
-                    }
-                    else
-                    {
-                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT]))
-                        {
-                            // XML定義：null or 空文字列
-                        }
-                        else
-                        {
-                            // XML定義：あり
-                            client.DefaultRequestHeaders.Add(
-                                "User-Agent",
-                                props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT]);
-                        }
-                    }
-
-                    #endregion
-
-                    #region 接続グループ（Default：Empty）
-
-                    // －
-
-                    #endregion
-
-                    #endregion
-
-                    // HttpRequestMessage (Headers)
-                    //httpRequestMessage.Headers.Add("Authorization", authHeader);
-                    //httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("OAuth", authHeader);
-                    //httpRequestMessage.Headers.ExpectContinue = false;
-
-                    #endregion
-
-                    // 同期呼び出しで実行
-                    httpResponseMessage = client.SendAsync(httpRequestMessage).Result;
-                    string result = httpResponseMessage.Content.ReadAsStringAsync().Result;
-                    JObject jObject = (JObject)JsonConvert.DeserializeObject(result);
-
-                    ret = CustomEncode.FromBase64String((string)jObject["Return"]);
-                    contextObject = CustomEncode.FromBase64String((string)jObject["ContextObject"]);
-                    returnValueObject = CustomEncode.FromBase64String((string)jObject["ReturnValueObject"]);
-
-                    #endregion
+                    // ASP.NET WebAPI (JSON-RPC)
+                    ret = this.ASPNETWebAPI(serviceName, url, timeout, props,
+                        contextObject, parameterValueObject, returnValueObject);
                 }
                 else
                 {
@@ -892,6 +744,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         String.Format(FrameworkExceptionMessage.PRT_NAMESERVICE_XML_FORMAT_ERROR[1],
                             String.Format(FrameworkExceptionMessage.PRT_NAMESERVICE_XML_FORMAT_ERROR_prt2, protocol, serviceName))); // #14,32-この行
                 }
+
+                #endregion
+#endif
 
                 #region 戻り値のデシリアライズ（#y-このregion）
 
@@ -960,18 +815,191 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 #endregion
 
                 #endregion
-
-                #endregion
-#endif
             }
         }
 
-        #endregion
+        /// <summary>
+        /// ASP.NET WebAPI (JSON-RPC)
+        /// .NETCoreでも利用するため共通化
+        /// </summary>
+        /// <param name="serviceName">string</param>
+        /// <param name="url">string</param>
+        /// <param name="timeout">int</param>
+        /// <param name="props">Dictionary(string, string)</param>
+        /// <param name="contextObject">byte[]</param>
+        /// <param name="parameterValueObject">byte[]</param>
+        /// <param name="returnValueObject">byte[]</param>
+        /// <returns>エラー情報のバイト配列</returns>
+        private byte[] ASPNETWebAPI(
+            string serviceName, string url, int timeout, Dictionary<string, string> props,
+            byte[] contextObject, byte[] parameterValueObject, byte[] returnValueObject)
+        {
+            // Equivalent to WebRequestHandler in .net Core · Issue #26223 · dotnet/corefx
+            // https://github.com/dotnet/corefx/issues/26223
+
+            // 通信用の変数
+#if NETSTD
+            #region HttpClientHandler
+            HttpClientHandler handler = new HttpClientHandler();
+            #endregion
+#else
+            #region WebRequestHandler
+            WebRequestHandler handler = new WebRequestHandler();
+            #endregion
+#endif
+
+            #region WASのクライアント認証のセキュリティ資格情報 for WCF
+
+            NetworkCredential nwcWAS = this.CreateCredentials(props);
+            if (nwcWAS != null)
+            {
+                handler.Credentials = nwcWAS;
+            }
+
+            #endregion
+
+            #region プロキシ経由の要求を行うためのプロキシ情報
+
+            WebProxy proxy = this.CreateProxy(props);
+            if (proxy != null)
+            {
+                handler.Proxy = proxy;
+            }
+
+            #endregion
+
+            #region HTTP圧縮の有効・無効（Default：false）
+
+            if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION))// Dic化でnullチェック変更
+            {
+                // XML定義：キーが無い
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION]))
+                {
+                    // XML定義：null or 空文字列
+                }
+                else
+                {
+                    // XML定義：あり
+
+                    bool compress;
+
+                    if (Boolean.TryParse(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION], out compress))
+                    {
+                        // 書式正常
+                        if (compress)
+                        {
+                            handler.AutomaticDecompression =
+                                DecompressionMethods.GZip | DecompressionMethods.Deflate;
+                        }
+                    }
+                    else
+                    {
+                        // パラメータ・エラー（書式不正）
+                        throw new FrameworkException(
+                            FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH2[0],
+                            String.Format(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH2[1],
+                                FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION
+                                + "=" + props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION]));
+                    }
+                }
+            }
+
+            #endregion
+
+            #region HttpClient
+
+            HttpClient client = new HttpClient(handler);
+
+            HttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage httpResponseMessage = null;
+            httpRequestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(url),
+                Content = new StringContent(JsonConvert.SerializeObject(
+                    new
+                    {
+                        ServiceName = serviceName,
+                        ContextObject = CustomEncode.ToBase64String(contextObject),
+                        ParameterValueObject = CustomEncode.ToBase64String(parameterValueObject)
+                    }),
+                    Encoding.UTF8, "application/json"),
+            };
+
+            // タイムアウト指定、有り
+            if (0 <= timeout)
+            {
+                client.Timeout = TimeSpan.FromSeconds(timeout);
+            }
+
+            #region クライアント証明書、エージェント ヘッダ、接続グループ.etc
+
+            #region クライアント証明書 CERTIFICATE
+
+            X509Certificate2 x509 = this.CreateX509Certificate(props);
+            if (x509 != null)
+            {
+                handler.ClientCertificates.Add(x509);
+            }
+
+            #endregion
+
+            #region ユーザ エージェント ヘッダ値
+
+            // （Default：MS Web Services Client Protocol number、numberは、CLRのver）
+            if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT))// Dic化でnullチェック変更
+            {
+                // XML定義：キーが無い
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT]))
+                {
+                    // XML定義：null or 空文字列
+                }
+                else
+                {
+                    // XML定義：あり
+                    client.DefaultRequestHeaders.Add(
+                        "User-Agent",
+                        props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT]);
+                }
+            }
+
+            #endregion
+
+            #region 接続グループ（Default：Empty）
+
+            // －
+
+            #endregion
+
+            #endregion
+
+            // HttpRequestMessage (Headers)
+            //httpRequestMessage.Headers.Add("Authorization", authHeader);
+            //httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("OAuth", authHeader);
+            //httpRequestMessage.Headers.ExpectContinue = false;
+
+            #endregion
+
+            // 同期呼び出しで実行
+            httpResponseMessage = client.SendAsync(httpRequestMessage).Result;
+            string result = httpResponseMessage.Content.ReadAsStringAsync().Result;
+            JObject jObject = (JObject)JsonConvert.DeserializeObject(result);
+
+            byte[] ret = CustomEncode.FromBase64String((string)jObject["Return"]);
+            contextObject = CustomEncode.FromBase64String((string)jObject["ContextObject"]);
+            returnValueObject = CustomEncode.FromBase64String((string)jObject["ReturnValueObject"]);
+
+            return ret;
+        }
 
         #region ヘルパー
 
-#if NETSTD
-#else
         /// <summary>CreateProxy</summary>
         /// <param name="props">Dictionary(string, string)</param>
         /// <returns>WebProxy</returns>
@@ -1187,7 +1215,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
             return x509;
         }
-#endif
 
         #endregion
 
