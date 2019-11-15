@@ -35,6 +35,7 @@
 //*  2017/01/10  西野 大介         上記のformat変更に伴い、EqualSaltedPasswd側のI/F変更が発生。
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //*  2018/10/30  西野 大介         各種プロバイダのサポートを追加
+//*  2019/11/15  西野 大介         GetHashBytesのStretchCountの既定値 = 0
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -82,6 +83,19 @@ namespace Touryo.Infrastructure.Public.Security
         /// <param name="eha">ハッシュ・アルゴリズム列挙型</param>
         /// <returns>ハッシュ値（バイト配列）</returns>
         public static byte[] GetHashBytes(byte[] asb, EnumHashAlgorithm eha)
+        {
+            // overloadへ
+            return GetHash.GetHashBytes(asb, eha, 0);
+        }
+
+        /// <summary>
+        /// バイト配列のハッシュ値を計算して返す
+        /// （StretchCount = 1 の 下位互換用）。
+        /// </summary>
+        /// <param name="asb">バイト配列</param>
+        /// <param name="eha">ハッシュ・アルゴリズム列挙型</param>
+        /// <returns>ハッシュ値（バイト配列）</returns>
+        public static byte[] GetHashBytes_org(byte[] asb, EnumHashAlgorithm eha)
         {
             // overloadへ
             return GetHash.GetHashBytes(asb, eha, 1);
