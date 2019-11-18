@@ -438,7 +438,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 {
                     // ASP.NET WebAPI (JSON-RPC)
                     ret = this.ASPNETWebAPI(serviceName, url, timeout, props,
-                        contextObject, parameterValueObject, returnValueObject);
+                        contextObject, parameterValueObject, out returnValueObject);
                 }
                 else
                 {
@@ -732,7 +732,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 {
                     // ASP.NET WebAPI (JSON-RPC)
                     ret = this.ASPNETWebAPI(serviceName, url, timeout, props,
-                        contextObject, parameterValueObject, returnValueObject);
+                        contextObject, parameterValueObject, out returnValueObject);
                 }
                 else
                 {
@@ -832,7 +832,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
         /// <returns>エラー情報のバイト配列</returns>
         private byte[] ASPNETWebAPI(
             string serviceName, string url, int timeout, Dictionary<string, string> props,
-            byte[] contextObject, byte[] parameterValueObject, byte[] returnValueObject)
+            byte[] contextObject, byte[] parameterValueObject, out byte[] returnValueObject)
         {
             // Equivalent to WebRequestHandler in .net Core · Issue #26223 · dotnet/corefx
             // https://github.com/dotnet/corefx/issues/26223

@@ -16,19 +16,25 @@ set CURRENT_DIR="%~dp0"
 call %CURRENT_DIR%z_Common.bat
 
 rem --------------------------------------------------
-rem Make the Directory.
+rem Batch build of ServiceInterface(ASPNETWebService).
 rem --------------------------------------------------
-md "Samples4NetCore\Legacy\WS_sample\Temp"
-md "Samples4NetCore\Legacy\WS_sample\Build"
+..\nuget.exe restore "Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\ASPNETWebService.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\ASPNETWebService.sln"
+
+pause
 
 rem --------------------------------------------------
-rem Batch build of WSServer_sample.
+rem Copy the dll folder assembly.
 rem --------------------------------------------------
-dotnet restore "Samples4NetCore\Legacy\WS_sample\WSServer_sample\WSServer_sample.sln"
-dotnet msbuild %COMMANDLINE% "Samples4NetCore\Legacy\WS_sample\WSServer_sample\WSServer_sample.sln"
 
-xcopy /E /Y "Samples4NetCore\Legacy\WS_sample\WSServer_sample\bin\%BUILD_CONFIG%\netcoreapp3.0" "Samples4NetCore\Legacy\WS_sample\Temp\%BUILD_CONFIG%\netcoreapp3.0\"
-xcopy /E /Y "Samples4NetCore\Legacy\WS_sample\Temp\%BUILD_CONFIG%\netcoreapp3.0" "Samples4NetCore\Legacy\WS_sample\Build\netcoreapp3.0\"
+md "Frameworks\Infrastructure\ServiceInterface\WCFService\dll"
+xcopy /E /Y "Samples\WS_sample\Build" "Frameworks\Infrastructure\ServiceInterface\WCFService\dll\"
+pause
+
+rem --------------------------------------------------
+rem Batch build of ServiceInterface(WCFService).
+rem --------------------------------------------------
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\ServiceInterface\WCFService\WCFService.sln"
 
 pause
 
