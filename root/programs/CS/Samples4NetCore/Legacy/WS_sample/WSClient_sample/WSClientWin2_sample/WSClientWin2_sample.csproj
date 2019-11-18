@@ -1,211 +1,57 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{386EA604-40DB-44A8-87AE-F29B209BA9CF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon />
+    <StartupObject />
     <RootNamespace>WSClientWin2_sample</RootNamespace>
     <AssemblyName>WSClientWin2_sample</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
-    <UpgradeBackupLocation />
-    <TargetFrameworkProfile />
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="OpenTouryo.Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Business.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTouryo.Business.RichClient, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Business.RichClient.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTouryo.Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTouryo.Framework.RichClient, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Framework.RichClient.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTouryo.Public, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
+    <None Remove="SampleLogConf2CS.xml" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="ByReturn.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ByReturn.Designer.cs">
-      <DependentUpon>ByReturn.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form0.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form0.Designer.cs">
-      <DependentUpon>Form0.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form2.Designer.cs">
-      <DependentUpon>Form2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form3.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form3.Designer.cs">
-      <DependentUpon>Form3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Login.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Login.Designer.cs">
-      <DependentUpon>Login.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Splash.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Splash.Designer.cs">
-      <DependentUpon>Splash.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UserControl3.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UserControl3.Designer.cs">
-      <DependentUpon>UserControl3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UserControlChild.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UserControlChild.Designer.cs">
-      <DependentUpon>UserControlChild.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UserControlParent.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UserControlParent.Designer.cs">
-      <DependentUpon>UserControlParent.cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Form0.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>Form0.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form2.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>Form2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserControlChild.resx">
-      <DependentUpon>UserControlChild.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserControlParent.resx">
-      <DependentUpon>UserControlParent.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ByReturn.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>ByReturn.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Login.resx">
-      <DependentUpon>Login.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Splash.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>Splash.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Form3.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>Form3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserControl3.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>UserControl3.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="MSGDefinition.xml">
+    <EmbeddedResource Include="SampleLogConf2CS.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SampleLogConf2CS.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SPDefinition.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
+    <PackageReference Include="log4net" Version="2.0.8" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="OpenTouryo.Business">
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0\OpenTouryo.Business.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Business.RichClient">
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0\OpenTouryo.Business.RichClient.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Framework.RichClient">
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0\OpenTouryo.Framework.RichClient.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
 </Project>
