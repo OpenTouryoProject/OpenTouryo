@@ -19,6 +19,8 @@
 
 using System.Windows;
 
+using Touryo.Infrastructure.Public.Util;
+
 namespace WSClientWPF_sample
 {
     /// <summary>App.xaml の相互作用ロジック</summary>
@@ -26,7 +28,8 @@ namespace WSClientWPF_sample
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-
+            // configの初期化
+            GetConfigParameter.InitConfiguration("appsettings.json");
         }
     }
 }

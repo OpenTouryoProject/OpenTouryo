@@ -24,6 +24,13 @@ rem --------------------------------------------------
 pause
 
 rem --------------------------------------------------
+rem Batch build of WSClientWPF_sample.
+rem --------------------------------------------------
+%BUILDFILEPATH% %COMMANDLINE% "Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln"
+
+pause
+
+rem --------------------------------------------------
 rem Batch build of WSClientWin2_sample.
 rem --------------------------------------------------
 %BUILDFILEPATH% %COMMANDLINE% "Samples\WS_sample\WSClient_sample\WSClientWin2_sample\WSClientWin2_sample.sln"

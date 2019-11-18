@@ -46,8 +46,8 @@ echo | call 6_Build_WSSrvCore_sample.bat
 echo | call 7_Build_Framework_WS.bat
 echo | call 7_Build_Framework_WSCore.bat
 
-echo | call 8_Build_WSClntWin_sample.bat
-echo | call 9_Build_WSClntWPF_sample.bat
+echo | call 8_Build_WSClnt_sample.bat
+echo | call 9_Build_WSClntCore_sample.bat
 
 echo | call 10_Build_WebApp_sample.bat
 echo | call 10_Build_WebAppCore_sample.bat
