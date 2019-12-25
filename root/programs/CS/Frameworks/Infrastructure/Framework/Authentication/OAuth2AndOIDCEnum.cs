@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/02/06  西野 大介         新規作成
+//*  2019/12/25  西野 大介         PPID対応による見直し
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -87,7 +88,37 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
-        #region ClientMode
+        #region SubjectTypes
+
+        /// <summary>SubjectTypes</summary>
+        public enum SubjectTypes : int
+        {
+            /// <summary>uname</summary>
+            uname,
+
+            /// <summary>public</summary>
+            @public,
+
+            /// <summary>pairwise</summary>
+            pairwise
+        }
+
+        #endregion
+
+        #region ClientInfo(仕様外)
+
+        /// <summary>ClientType</summary>
+        public enum ClientType : int
+        {
+            /// <summary>Confidential</summary>
+            confidential,
+
+            /// <summary>Public(SPA)</summary>
+            public_spa,
+
+            /// <summary>Public(Native)</summary>
+            public_native
+        }
 
         /// <summary>ClientMode</summary>
         public enum ClientMode : int
