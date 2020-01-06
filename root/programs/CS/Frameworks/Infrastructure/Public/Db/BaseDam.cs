@@ -38,8 +38,7 @@
 //*  2009/03/19  西野 大介         DRのインターフェイスをobject→IDataReaderへ変更。
 //*  2009/04/26  西野 大介         配列バインド対応を兼ね、型指定を可能にした。
 //*  2009/04/28  西野 大介         デフォルト値を設けた
-//*  2009/06/02  西野 大介         sln - IR版からの修正
-//*                                ・#x ： CommandTimeOutデフォルト値を設定
+//*  2009/06/02  西野 大介         CommandTimeOutに既定値を設定可能にした。
 //*  2009/08/12  西野 大介         比較演算子の向きを「<」に統一した。
 //*  2009/09/25  西野 大介         内部の性能測定ログ出力処理を挿入した。
 //*                                ※ Debug.WriteLineは意外に時間がかかるので注意！
@@ -71,6 +70,7 @@
 //*  2019/07/17  西野 大介         SQLの cache対応 で stackoverflow対応 が顕在化したため、
 //*                                自動生成でタグ数が多くなり過ぎるケースの対応を行う。
 //*                                ProcessIFTag, ProcessINSCOLTag
+//*  2020/01/16  西野 大介         CommandTimeOutの既定値に0を設定可能にした。
 //**********************************************************************************
 
 using System;
@@ -269,11 +269,12 @@ namespace Touryo.Infrastructure.Public.Db
             }
             else
             {
+                // Configに指定された値を設定する。
                 int ret = 0;
 
                 if (int.TryParse(sqlCommandTimeout, out ret))
                 {
-                    if (0 < ret) // 2009/08/12-この行
+                    if (0 <= ret)
                     {
                         // 指定の値を設定
                         cmd.CommandTimeout = ret;
