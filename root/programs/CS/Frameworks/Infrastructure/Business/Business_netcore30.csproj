@@ -36,6 +36,7 @@
     <Compile Remove="Business\_3TierEngine.cs" />
     <Compile Remove="Common\_3TierParameterValue.cs" />
     <Compile Remove="Common\_3TierReturnValue.cs" />
+    <Compile Remove="Presentation\AuthenticationFailureResult.cs" />
     <Compile Remove="Presentation\CmnTableAdapter.cs" />
     <Compile Remove="Presentation\MyBaseAsyncApiController.cs" />
     <Compile Remove="Presentation\MyBaseController.cs" />
