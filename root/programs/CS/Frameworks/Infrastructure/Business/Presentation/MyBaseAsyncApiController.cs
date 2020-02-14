@@ -363,42 +363,51 @@ namespace Touryo.Infrastructure.Business.Presentation
 
                 if (authenticationContext.Request.Headers.Authorization != null)
                 {
-                    if (authenticationContext.Request.Headers.Authorization.Scheme.ToLower() == "bearer")
+                    try
                     {
-                        string access_token = authenticationContext.Request.Headers.Authorization.Parameter;
-
-                        string sub = "";
-                        List<string> roles = null;
-                        List<string> scopes = null;
-                        JObject jobj = null;
-
-                        if (AccessToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
+                        if (authenticationContext.Request.Headers.Authorization.Scheme.ToLower() == "bearer")
                         {
-                            // ActionFilterAttributeとApiController間の情報共有はcontext.Principalを使用する。
-                            // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
-                            claims = new List<Claim>()
+
+                            string access_token = authenticationContext.Request.Headers.Authorization.Parameter;
+
+                            string sub = "";
+                            List<string> roles = null;
+                            List<string> scopes = null;
+                            JObject jobj = null;
+
+                            if (AccessToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
                             {
-                                new Claim(ClaimTypes.Name, sub),
-                                new Claim(ClaimTypes.Role, string.Join(",", roles)),
-                                new Claim(OAuth2AndOIDCConst.UrnScopesClaim, string.Join(",", scopes)),
-                                new Claim(OAuth2AndOIDCConst.UrnAudienceClaim, (string)jobj[OAuth2AndOIDCConst.aud]),
-                                new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress(authenticationContext.Request))
-                            };
+                                // ActionFilterAttributeとApiController間の情報共有はcontext.Principalを使用する。
+                                // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+                                claims = new List<Claim>()
+                                {
+                                    new Claim(ClaimTypes.Name, sub),
+                                    new Claim(ClaimTypes.Role, string.Join(",", roles)),
+                                    new Claim(OAuth2AndOIDCConst.UrnScopesClaim, string.Join(",", scopes)),
+                                    new Claim(OAuth2AndOIDCConst.UrnAudienceClaim, (string)jobj[OAuth2AndOIDCConst.aud]),
+                                    new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress(authenticationContext.Request))
+                                };
 
-                            // The request message contains valid credential.
-                            authenticationContext.Principal = new ClaimsPrincipal(
-                                new List<ClaimsIdentity> { new ClaimsIdentity(claims, "Token") });
+                                // The request message contains valid credential.
+                                authenticationContext.Principal = new ClaimsPrincipal(
+                                    new List<ClaimsIdentity> { new ClaimsIdentity(claims, "Token") });
 
-                            return;
+                                return;
+                            }
+                            else
+                            {
+                                // JWTの内容検証に失敗
+                            }
+
                         }
                         else
                         {
-                            // JWTの内容検証に失敗
+                            // Authorization HeaderがBearerでない。
                         }
                     }
-                    else
+                    catch
                     {
-                        // Authorization HeaderがBearerでない。
+                        // 例外発生 ≒ 未認証扱い。
                     }
                 }
                 else

@@ -85,6 +85,9 @@
     <Reference Include="OpenTouryo.Public">
       <HintPath>..\Build_netstd20\netstandard2.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTouryo.Public.Security">
+      <HintPath>..\Build_netstd20\netstandard2.0\OpenTouryo.Public.Security.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
