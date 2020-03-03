@@ -124,7 +124,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string max_age, string prompt, string login_hint, ClaimsInRO claims, RSAParameters rsaPrivateKey)
         {
             string json = "";
-            //string jws = "";
 
             #region ClaimSetの生成
 
@@ -191,14 +190,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
             iss = "";
             string aud = "";
             string response_type = "";
-            //string response_mode = "";
-            //string redirect_uri = "";
             string scopes = "";
             string state = "";
             string nonce = "";
-            //string prompt = "";
-            //string login_hint = "";
-            //JObject claims = null;
 
             JWS_RS256_Param jwtRS256 = new JWS_RS256_Param(rsaPublicKey);
 
@@ -212,23 +206,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 iss = (string)jobj[OAuth2AndOIDCConst.iss];
                 aud = (string)jobj[OAuth2AndOIDCConst.aud];
                 response_type = (string)jobj[OAuth2AndOIDCConst.response_type];
-
-                //if(jobj.ContainsKey(OAuth2AndOIDCConst.response_mode))
-                //    response_mode = (string)jobj[OAuth2AndOIDCConst.response_mode];
-                //if (jobj.ContainsKey(OAuth2AndOIDCConst.redirect_uri))
-                //    redirect_uri = (string)jobj[OAuth2AndOIDCConst.redirect_uri];
-
                 scopes = (string)jobj[OAuth2AndOIDCConst.scope];
                 state = (string)jobj[OAuth2AndOIDCConst.state];
                 nonce = (string)jobj[OAuth2AndOIDCConst.nonce];
-
-                //if (jobj.ContainsKey(OAuth2AndOIDCConst.prompt))
-                //    prompt = (string)jobj[OAuth2AndOIDCConst.prompt];
-                //if (jobj.ContainsKey(OAuth2AndOIDCConst.login_hint))
-                //    login_hint = (string)jobj[OAuth2AndOIDCConst.login_hint];
-
-                //if (jobj.ContainsKey(OAuth2AndOIDCConst.claims))
-                //    claims = (JObject)jobj[OAuth2AndOIDCConst.claims];
 
                 if (!string.IsNullOrEmpty(iss) &&
                     !string.IsNullOrEmpty(aud) &&
@@ -269,53 +249,52 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>CreateCiba</summary>
         /// <param name="iss">string</param>
         /// <param name="aud">string</param>
-        /// <param name="response_type">string</param>
-        /// <param name="response_mode">string</param>
-        /// <param name="redirect_uri">string</param>
+        /// <param name="exp">string</param>
+        /// <param name="nbf">string</param>
         /// <param name="scopes">string</param>
-        /// <param name="state">string</param>
-        /// <param name="nonce">string</param>
-        /// <param name="max_age">string</param>
-        /// <param name="prompt">string</param>
+        /// <param name="client_notification_token">string</param>
+        /// <param name="binding_message">string</param>
+        /// <param name="user_code">string</param>
+        /// <param name="requested_expiry">string</param>
         /// <param name="login_hint">string</param>
-        /// <param name="claims">ClaimsInRO</param>
+        /// <param name="requestContextAndIntent">Dictionary(string, object)</param>
         /// <param name="jwkPrivateKey">ES256用のJWK秘密鍵</param>
         /// <returns>RequestObject</returns>
         public static string CreateCiba(
-            string iss, string aud, string response_type, string response_mode,
-            string redirect_uri, string scopes, string state, string nonce,
-            string max_age, string prompt, string login_hint, ClaimsInRO claims, string jwkPrivateKey)
-        {
+            string iss, string aud, string exp, string nbf, string scopes,
+            string client_notification_token, string binding_message,
+            string user_code, string requested_expiry, string login_hint,
+            Dictionary<string, object> requestContextAndIntent, string jwkPrivateKey)
+        {   
             EccPrivateKeyConverter epkc = new EccPrivateKeyConverter();
             return RequestObject.CreateCiba(
-                iss, aud, response_type, response_mode,
-                redirect_uri, scopes, state, nonce,
-                max_age, prompt, login_hint, claims,
-                epkc.JwkToParam(jwkPrivateKey));
+                iss, aud, exp, nbf, scopes, 
+                client_notification_token, binding_message,
+                user_code, requested_expiry, login_hint,
+                requestContextAndIntent, epkc.JwkToParam(jwkPrivateKey));
         }
 
         /// <summary>CreateCiba</summary>
         /// <param name="iss">string</param>
         /// <param name="aud">string</param>
-        /// <param name="response_type">string</param>
-        /// <param name="response_mode">string</param>
-        /// <param name="redirect_uri">string</param>
+        /// <param name="exp">string</param>
+        /// <param name="nbf">string</param>
         /// <param name="scopes">string</param>
-        /// <param name="state">string</param>
-        /// <param name="nonce">string</param>
-        /// <param name="max_age">string</param>
-        /// <param name="prompt">string</param>
+        /// <param name="client_notification_token">string</param>
+        /// <param name="binding_message">string</param>
+        /// <param name="user_code">string</param>
+        /// <param name="requested_expiry">string</param>
         /// <param name="login_hint">string</param>
-        /// <param name="claims">ClaimsInRO</param>
+        /// <param name="requestContextAndIntent">Dictionary(string, object)</param>
         /// <param name="ecPrivateKey">ES256用のECParameters秘密鍵</param>
         /// <returns>RequestObject</returns>
         public static string CreateCiba(
-            string iss, string aud, string response_type, string response_mode,
-            string redirect_uri, string scopes, string state, string nonce,
-            string max_age, string prompt, string login_hint, ClaimsInRO claims, ECParameters ecPrivateKey)
+            string iss, string aud, string exp, string nbf, string scopes,
+            string client_notification_token, string binding_message,
+            string user_code, string requested_expiry, string login_hint,
+            Dictionary<string, object> requestContextAndIntent, ECParameters ecPrivateKey)
         {
             string json = "";
-            //string jws = "";
 
             #region ClaimSetの生成
 
@@ -323,28 +302,29 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             requestObjectClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
             requestObjectClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // ROS EndPointのuri。
-
-            requestObjectClaimSet.Add(OAuth2AndOIDCConst.response_type, response_type);
-            requestObjectClaimSet.Add(OAuth2AndOIDCConst.client_id, iss);
-
-            if (!string.IsNullOrEmpty(response_mode))
-                requestObjectClaimSet.Add(OAuth2AndOIDCConst.response_mode, response_mode);
-            if (!string.IsNullOrEmpty(redirect_uri))
-                requestObjectClaimSet.Add(OAuth2AndOIDCConst.redirect_uri, redirect_uri);
-
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.exp, exp);
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.iat, DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.nbf, nbf);
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.jti, new Guid().ToString());
+            
             requestObjectClaimSet.Add(OAuth2AndOIDCConst.scope, scopes);
-            requestObjectClaimSet.Add(OAuth2AndOIDCConst.state, state);
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.client_notification_token, client_notification_token);
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.binding_message, binding_message);
+            
+            if (!string.IsNullOrEmpty(user_code))
+                requestObjectClaimSet.Add(OAuth2AndOIDCConst.user_code, user_code);
+            if (!string.IsNullOrEmpty(requested_expiry))
+                requestObjectClaimSet.Add(OAuth2AndOIDCConst.requested_expiry, requested_expiry);
 
-            if (!string.IsNullOrEmpty(nonce))
-                requestObjectClaimSet.Add(OAuth2AndOIDCConst.nonce, nonce);
-            if (!string.IsNullOrEmpty(max_age))
-                requestObjectClaimSet.Add(OAuth2AndOIDCConst.max_age, max_age);
-            if (!string.IsNullOrEmpty(prompt))
-                requestObjectClaimSet.Add(OAuth2AndOIDCConst.prompt, prompt);
-            if (!string.IsNullOrEmpty(login_hint))
-                requestObjectClaimSet.Add(OAuth2AndOIDCConst.login_hint, login_hint);
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.login_hint, login_hint);
 
-            requestObjectClaimSet.Add(OAuth2AndOIDCConst.claims, claims.Claims);
+            if (requestContextAndIntent != null)
+            {
+                foreach (string key in requestContextAndIntent.Keys)
+                {
+                    requestObjectClaimSet.Add(key, requestContextAndIntent[key]);
+                }   
+            }   
 
             json = JsonConvert.SerializeObject(requestObjectClaimSet);
 
@@ -381,15 +361,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
         {
             iss = "";
             string aud = "";
-            string response_type = "";
-            //string response_mode = "";
-            //string redirect_uri = "";
+            string exp = "";
+            string nbf = "";
             string scopes = "";
-            string state = "";
-            string nonce = "";
-            //string prompt = "";
-            //string login_hint = "";
-            //JObject claims = null;
+            string client_notification_token = "";
+            string binding_message = "";
+            string login_hint = "";
 
             JWS_ES256_Param jwtES256 = new JWS_ES256_Param(ecPublicKey, false);
 
@@ -402,31 +379,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
                 iss = (string)jobj[OAuth2AndOIDCConst.iss];
                 aud = (string)jobj[OAuth2AndOIDCConst.aud];
-                response_type = (string)jobj[OAuth2AndOIDCConst.response_type];
-
-                //if(jobj.ContainsKey(OAuth2AndOIDCConst.response_mode))
-                //    response_mode = (string)jobj[OAuth2AndOIDCConst.response_mode];
-                //if (jobj.ContainsKey(OAuth2AndOIDCConst.redirect_uri))
-                //    redirect_uri = (string)jobj[OAuth2AndOIDCConst.redirect_uri];
-
+                exp = (string)jobj[OAuth2AndOIDCConst.exp];
+                nbf = (string)jobj[OAuth2AndOIDCConst.nbf];
                 scopes = (string)jobj[OAuth2AndOIDCConst.scope];
-                state = (string)jobj[OAuth2AndOIDCConst.state];
-                nonce = (string)jobj[OAuth2AndOIDCConst.nonce];
+                client_notification_token = (string)jobj[OAuth2AndOIDCConst.client_notification_token];
+                binding_message = (string)jobj[OAuth2AndOIDCConst.binding_message];
+                login_hint = (string)jobj[OAuth2AndOIDCConst.login_hint];
 
-                //if (jobj.ContainsKey(OAuth2AndOIDCConst.prompt))
-                //    prompt = (string)jobj[OAuth2AndOIDCConst.prompt];
-                //if (jobj.ContainsKey(OAuth2AndOIDCConst.login_hint))
-                //    login_hint = (string)jobj[OAuth2AndOIDCConst.login_hint];
-
-                //if (jobj.ContainsKey(OAuth2AndOIDCConst.claims))
-                //    claims = (JObject)jobj[OAuth2AndOIDCConst.claims];
+                //if (...requestContextAndIntent
 
                 if (!string.IsNullOrEmpty(iss) &&
                     !string.IsNullOrEmpty(aud) &&
-                    !string.IsNullOrEmpty(response_type) &&
+                    !string.IsNullOrEmpty(exp) &&
+                    !string.IsNullOrEmpty(nbf) &&
                     !string.IsNullOrEmpty(scopes) &&
-                    !string.IsNullOrEmpty(state) &&
-                    !string.IsNullOrEmpty(nonce))
+                    !string.IsNullOrEmpty(client_notification_token) &&
+                    !string.IsNullOrEmpty(binding_message) &&
+                    !string.IsNullOrEmpty(login_hint))
                 {
                     // OK
                     return true;
