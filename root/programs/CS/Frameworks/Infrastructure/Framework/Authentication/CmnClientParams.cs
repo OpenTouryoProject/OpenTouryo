@@ -20,7 +20,7 @@
 
 //**********************************************************************************
 //* クラス名        ：CmnClientParams
-//* クラス日本語名  ：SAML2, OAuth2/OIDC, FAPIの各種パラメタ
+//* クラス日本語名  ：SAML2, OAuth2/OIDC, FAPIの各種Client側パラメタ
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -60,6 +60,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region 鍵関連
 
+        #region Token検証
         /// <summary>RsaCerFilePath</summary>
         public static string RsaCerFilePath
         {
@@ -77,6 +78,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 return GetConfigParameter.GetConfigValue("SpRp_EcdsaCerFilePath");
             }
         }
+        #endregion
+
+        #region クライアント認証
+        // OAuth 2.0 JWT Bearer Token Flow
+        // JWT Secured Authorization Request (JAR)
 
         /// <summary>RsaPfxPassword</summary>
         public static string RsaPfxPassword
@@ -96,6 +102,29 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
+#if NET45 || NET46
+#else
+        /// <summary>EcdsaPfxPassword</summary>
+        public static string EcdsaPfxPassword
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("SpRp_EcdsaPfxPassword");
+            }
+        }
+
+        /// <summary>EcdsaPfxFilePath</summary>
+        public static string EcdsaPfxFilePath
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("SpRp_EcdsaPfxFilePath");
+            }
+        }
+#endif
+        #endregion
+
+        #region クライアント証明書
         /// <summary>ClientCertPfxPassword</summary>
         public static string ClientCertPfxPassword
         {
@@ -113,6 +142,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 return GetConfigParameter.GetConfigValue("SpRp_ClientCertPfxFilePath");
             }
         }
+        #endregion
 
         #endregion
     }
