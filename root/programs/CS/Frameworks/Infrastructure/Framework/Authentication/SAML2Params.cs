@@ -42,9 +42,9 @@ using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Authentication
 {
-    /// <summary>SAML2Params</summary>
-    public class SAML2の各種パラメタ
+    /// <summary>SAML2の各種パラメタ</summary>
+    public class SAML2Params
     {
-        // AuthZ、Client共用のパラメタが無い   
+        // AuthZ、Client共用のパラメタが無い
     }
 }

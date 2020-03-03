@@ -105,6 +105,64 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
+        #region CIBA
+
+        #region CIBA mode
+
+        /// <summary>CibaのMode</summary>
+        public enum CibaMode : int
+        {
+            /// <summary>poll</summary>
+            poll,
+
+            /// <summary>ping</summary>
+            ping,
+
+            /// <summary>push</summary>
+            push
+        }
+
+        #endregion
+
+        #region CIBA state
+
+        /// <summary>CibaのState</summary>
+        public enum CibaState : int
+        {
+            /// <summary>
+            /// 保留中
+            /// </summary>
+            authorization_pending,
+            /// <summary>
+            /// 許可された（仕様外）
+            /// </summary>
+            access_permitted,
+            /// <summary>
+            /// 拒否された
+            /// </summary>
+            access_denied,
+            /// <summary>
+            /// 期限切れ
+            /// </summary>
+            expired_token,
+            /// <summary>
+            /// Polling間隔を5秒遅らせる。
+            /// </summary>
+            slow_down,
+            /// <summary>
+            /// 見つからない（仕様外）
+            /// </summary>
+            not_found,
+            /// <summary>
+            /// データ不正（仕様外）
+            /// </summary>
+            irregularity_data
+        }
+
+        #endregion
+
+        #endregion
+
         #region ClientInfo(仕様外)
 
         /// <summary>ClientType</summary>
