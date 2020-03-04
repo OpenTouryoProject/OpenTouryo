@@ -32,6 +32,7 @@
 //*  2018/11/27  西野 大介         XML(Base64) ---> Jwk(Base64Url)に変更。
 //*  2018/11/27  西野 大介         秘密鍵 <---> JWKのサポートを追加
 //*  2020/03/04  西野 大介         ...ECDsaのサポートを追加
+//*  2020/03/04  西野 大介         Claim生成メソッドの利用
 //**********************************************************************************
 
 using System;
@@ -108,15 +109,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token EndPointのuri。
 
-#if NET45
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, PubCmnFunction.ToUnixTime(DateTimeOffset.Now.Add(forExp)).ToString());
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iat, PubCmnFunction.ToUnixTime(DateTimeOffset.Now).ToString());
-#else
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, (DateTimeOffset.Now.Add(forExp)).ToUnixTimeSeconds().ToString());
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iat, DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
-#endif
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, CmnJwtToken.CreateExpClaim(forExp));
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iat, CmnJwtToken.CreateIatClaim());
 
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.jti, Guid.NewGuid().ToString("N"));
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.jti, CmnJwtToken.CreateJitClaim());
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.scope, scopes); // scopes
 
             json = JsonConvert.SerializeObject(jwtAssertionClaimSet);
@@ -133,7 +129,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
 #if NET45 || NET46
 #else
-        /// <summary>CreateByRsa</summary>
+        /// <summary>CreateByECDsa</summary>
         /// <param name="iss">client_id</param>
         /// <param name="aud">Token2 EndPointのuri</param>
         /// <param name="forExp">DateTimeOffset</param>
@@ -153,15 +149,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token EndPointのuri。
 
-#if NET45
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, PubCmnFunction.ToUnixTime(DateTimeOffset.Now.Add(forExp)).ToString());
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iat, PubCmnFunction.ToUnixTime(DateTimeOffset.Now).ToString());
-#else
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, (DateTimeOffset.Now.Add(forExp)).ToUnixTimeSeconds().ToString());
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iat, DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
-#endif
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, CmnJwtToken.CreateExpClaim(forExp));
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iat, CmnJwtToken.CreateIatClaim());
 
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.jti, Guid.NewGuid().ToString("N"));
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.jti, CmnJwtToken.CreateJitClaim());
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.scope, scopes); // scopes
 
             json = JsonConvert.SerializeObject(jwtAssertionClaimSet);
@@ -171,6 +162,48 @@ namespace Touryo.Infrastructure.Framework.Authentication
             #region JWT化
 
             JWS_ES256_Param jwtES256 = new JWS_ES256_Param(eccPrivateKey, true);
+            return jwtES256.Create(json);
+
+            #endregion
+        }
+
+        /// <summary>CreateByECDsa</summary>
+        /// <param name="iss">client_id</param>
+        /// <param name="aud">Token2 EndPointのuri</param>
+        /// <param name="forExp">DateTimeOffset</param>
+        /// <param name="scopes">scopes</param>
+        /// <param name="ecdsaX509FilePath">ES256用の X.509秘密鍵 の File Path</param>
+        /// <param name="ecdsaX509Password">ES256用の X.509秘密鍵 の Password</param>
+        ///// <param name="eccPrivateKey">ES256用のECParameters秘密鍵</param>
+        /// <returns>JwtAssertion</returns>
+        public static string CreateByECDsa(
+            string iss, string aud, TimeSpan forExp, string scopes,
+            string ecdsaX509FilePath, string ecdsaX509Password)
+        //ECParameters ecPrivateKey) // ECDsa.ExportParameters(true)が動かねぇ。
+        {
+            string json = "";
+            //string jws = "";
+
+            #region ClaimSetの生成
+
+            Dictionary<string, object> jwtAssertionClaimSet = new Dictionary<string, object>();
+
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token EndPointのuri。
+
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, CmnJwtToken.CreateExpClaim(forExp));
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iat, CmnJwtToken.CreateIatClaim());
+
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.jti, CmnJwtToken.CreateJitClaim());
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.scope, scopes); // scopes
+
+            json = JsonConvert.SerializeObject(jwtAssertionClaimSet);
+
+            #endregion
+
+            #region JWT化
+
+            JWS_ES256_X509 jwtES256 = new JWS_ES256_X509(ecdsaX509FilePath, ecdsaX509Password);
             return jwtES256.Create(json);
 
             #endregion

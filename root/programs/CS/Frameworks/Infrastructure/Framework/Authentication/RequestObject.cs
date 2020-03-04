@@ -246,33 +246,33 @@ namespace Touryo.Infrastructure.Framework.Authentication
         //   https://openid.net/specs/openid-financial-api-ciba-ID1.html
 
         #region Create
-        /// <summary>CreateCiba</summary>
-        /// <param name="iss">string</param>
-        /// <param name="aud">string</param>
-        /// <param name="exp">string</param>
-        /// <param name="nbf">string</param>
-        /// <param name="scopes">string</param>
-        /// <param name="client_notification_token">string</param>
-        /// <param name="binding_message">string</param>
-        /// <param name="user_code">string</param>
-        /// <param name="requested_expiry">string</param>
-        /// <param name="login_hint">string</param>
-        /// <param name="requestContextAndIntent">Dictionary(string, object)</param>
-        /// <param name="jwkPrivateKey">ES256用のJWK秘密鍵</param>
-        /// <returns>RequestObject</returns>
-        public static string CreateCiba(
-            string iss, string aud, string exp, string nbf, string scopes,
-            string client_notification_token, string binding_message,
-            string user_code, string requested_expiry, string login_hint,
-            Dictionary<string, object> requestContextAndIntent, string jwkPrivateKey)
-        {   
-            EccPrivateKeyConverter epkc = new EccPrivateKeyConverter();
-            return RequestObject.CreateCiba(
-                iss, aud, exp, nbf, scopes, 
-                client_notification_token, binding_message,
-                user_code, requested_expiry, login_hint,
-                requestContextAndIntent, epkc.JwkToParam(jwkPrivateKey));
-        }
+        ///// <summary>CreateCiba</summary>
+        ///// <param name="iss">string</param>
+        ///// <param name="aud">string</param>
+        ///// <param name="exp">string</param>
+        ///// <param name="nbf">string</param>
+        ///// <param name="scopes">string</param>
+        ///// <param name="client_notification_token">string</param>
+        ///// <param name="binding_message">string</param>
+        ///// <param name="user_code">string</param>
+        ///// <param name="requested_expiry">string</param>
+        ///// <param name="login_hint">string</param>
+        ///// <param name="requestContextAndIntent">Dictionary(string, object)</param>
+        ///// <param name="jwkPrivateKey">ES256用のJWK秘密鍵</param>
+        ///// <returns>RequestObject</returns>
+        //public static string CreateCiba(
+        //    string iss, string aud, string exp, string nbf, string scopes,
+        //    string client_notification_token, string binding_message,
+        //    string user_code, string requested_expiry, string login_hint,
+        //    Dictionary<string, object> requestContextAndIntent, string jwkPrivateKey)
+        //{   
+        //    EccPrivateKeyConverter epkc = new EccPrivateKeyConverter();
+        //    return RequestObject.CreateCiba(
+        //        iss, aud, exp, nbf, scopes, 
+        //        client_notification_token, binding_message,
+        //        user_code, requested_expiry, login_hint,
+        //        requestContextAndIntent, epkc.JwkToParam(jwkPrivateKey));
+        //}
 
         /// <summary>CreateCiba</summary>
         /// <param name="iss">string</param>
@@ -286,13 +286,17 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="requested_expiry">string</param>
         /// <param name="login_hint">string</param>
         /// <param name="requestContextAndIntent">Dictionary(string, object)</param>
-        /// <param name="ecPrivateKey">ES256用のECParameters秘密鍵</param>
+        /// <param name="ecdsaX509FilePath">ES256用の X.509秘密鍵 の File Path</param>
+        /// <param name="ecdsaX509Password">ES256用の X.509秘密鍵 の Password</param>
+        ///// <param name="ecPrivateKey">ES256用のECParameters秘密鍵</param>
         /// <returns>RequestObject</returns>
         public static string CreateCiba(
             string iss, string aud, string exp, string nbf, string scopes,
             string client_notification_token, string binding_message,
             string user_code, string requested_expiry, string login_hint,
-            Dictionary<string, object> requestContextAndIntent, ECParameters ecPrivateKey)
+            Dictionary<string, object> requestContextAndIntent,
+            string ecdsaX509FilePath, string ecdsaX509Password)
+        //ECParameters ecPrivateKey) // ECDsa.ExportParameters(true)が動かねぇ。
         {
             string json = "";
 
@@ -303,9 +307,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
             requestObjectClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
             requestObjectClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // ROS EndPointのuri。
             requestObjectClaimSet.Add(OAuth2AndOIDCConst.exp, exp);
-            requestObjectClaimSet.Add(OAuth2AndOIDCConst.iat, DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.iat, CmnJwtToken.CreateIatClaim());
             requestObjectClaimSet.Add(OAuth2AndOIDCConst.nbf, nbf);
-            requestObjectClaimSet.Add(OAuth2AndOIDCConst.jti, new Guid().ToString());
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.jti, CmnJwtToken.CreateJitClaim());
             
             requestObjectClaimSet.Add(OAuth2AndOIDCConst.scope, scopes);
             requestObjectClaimSet.Add(OAuth2AndOIDCConst.client_notification_token, client_notification_token);
@@ -332,7 +336,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             #region JWT化
 
-            JWS_ES256_Param jwtES256 = new JWS_ES256_Param(ecPrivateKey, true);
+            JWS_ES256_X509 jwtES256 = new JWS_ES256_X509(ecdsaX509FilePath, ecdsaX509Password);
             return jwtES256.Create(json);
 
             #endregion

@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/11/28  西野 大介         新規作成（分割）
 //*  2020/03/02  西野 大介         検証メソッドの追加
+//*  2020/03/04  西野 大介         Claim生成メソッドの追加
 //**********************************************************************************
 
 using System;
@@ -235,6 +236,48 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
 
             return ret;
+        }
+
+        /// <summary>
+        /// OAuth2AndOIDCConst.jti
+        /// </summary>
+        /// <returns>
+        /// JitClaim
+        /// </returns>
+        public static string CreateJitClaim()
+        {
+            return Guid.NewGuid().ToString("N");
+        }
+
+        /// <summary>
+        /// OAuth2AndOIDCConst.iat
+        /// </summary>
+        /// <returns>
+        /// IatClaim
+        /// </returns>
+        public static string CreateIatClaim()
+        {
+#if NET45
+            return PubCmnFunction.ToUnixTime(DateTimeOffset.Now).ToString();
+#else
+            return DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+#endif
+        }
+
+        /// <summary>
+        /// OAuth2AndOIDCConst.exp
+        /// </summary>
+        /// <param name="forExp">TimeSpan</param>
+        /// <returns>
+        /// ExpClaim
+        /// </returns>
+        public static string CreateExpClaim(TimeSpan forExp)
+        {
+#if NET45
+            return PubCmnFunction.ToUnixTime(DateTimeOffset.Now.Add(forExp)).ToString();
+#else
+            return DateTimeOffset.Now.Add(forExp).ToUnixTimeSeconds().ToString();
+#endif
         }
 
         /// <summary>CheckClaims</summary>
