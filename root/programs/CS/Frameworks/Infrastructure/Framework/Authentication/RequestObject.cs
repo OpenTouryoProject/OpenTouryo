@@ -288,7 +288,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="requestContextAndIntent">Dictionary(string, object)</param>
         /// <param name="ecdsaX509FilePath">ES256用の X.509秘密鍵 の File Path</param>
         /// <param name="ecdsaX509Password">ES256用の X.509秘密鍵 の Password</param>
-        ///// <param name="ecPrivateKey">ES256用のECParameters秘密鍵</param>
         /// <returns>RequestObject</returns>
         public static string CreateCiba(
             string iss, string aud, string exp, string nbf, string scopes,
@@ -296,6 +295,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string user_code, string requested_expiry, string login_hint,
             Dictionary<string, object> requestContextAndIntent,
             string ecdsaX509FilePath, string ecdsaX509Password)
+        ///// <param name="ecPrivateKey">ES256用のECParameters秘密鍵</param>
         //ECParameters ecPrivateKey) // ECDsa.ExportParameters(true)が動かねぇ。
         {
             string json = "";

@@ -174,11 +174,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="scopes">scopes</param>
         /// <param name="ecdsaX509FilePath">ES256用の X.509秘密鍵 の File Path</param>
         /// <param name="ecdsaX509Password">ES256用の X.509秘密鍵 の Password</param>
-        ///// <param name="eccPrivateKey">ES256用のECParameters秘密鍵</param>
         /// <returns>JwtAssertion</returns>
         public static string CreateByECDsa(
             string iss, string aud, TimeSpan forExp, string scopes,
             string ecdsaX509FilePath, string ecdsaX509Password)
+        ///// <param name="eccPrivateKey">ES256用のECParameters秘密鍵</param>
         //ECParameters ecPrivateKey) // ECDsa.ExportParameters(true)が動かねぇ。
         {
             string json = "";
