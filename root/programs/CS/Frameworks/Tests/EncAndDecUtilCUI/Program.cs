@@ -57,9 +57,9 @@ namespace EncAndDecUtilCUI
         /// <summary>ECDsaのX509証明書のパス（*.cer）</summary>
         private static string PublicECDsaX509_384Path = @"SHA384ECDSA.cer";
         /// <summary>ECDsaのX509証明書のパス（*.pfx）</summary>
-        private static string PrivateECDsaX509_512Path = @"SHA512ECDSA.pfx";
+        private static string PrivateECDsaX509_512Path = @"SHA521ECDSA.pfx";
         /// <summary>ECDsaのX509証明書のパス（*.cer）</summary>
-        private static string PublicECDsaX509_512Path = @"SHA512ECDSA.cer";
+        private static string PublicECDsaX509_512Path = @"SHA521ECDSA.cer";
 
         public static void Main(string[] args)
         {

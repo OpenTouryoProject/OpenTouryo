@@ -49,10 +49,10 @@
     <None Update="SHA384ECDSA.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SHA512ECDSA.cer">
+    <None Update="SHA521ECDSA.cer">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SHA512ECDSA.pfx">
+    <None Update="SHA521ECDSA.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -86,10 +86,10 @@
     <None Include="..\SHA384ECDSA.pfx" Link="SHA384ECDSA.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\SHA512ECDSA.cer" Link="SHA512ECDSA.cer">
+    <None Include="..\SHA521ECDSA.cer" Link="SHA521ECDSA.cer">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\SHA512ECDSA.pfx" Link="SHA512ECDSA.pfx">
+    <None Include="..\SHA521ECDSA.pfx" Link="SHA521ECDSA.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
