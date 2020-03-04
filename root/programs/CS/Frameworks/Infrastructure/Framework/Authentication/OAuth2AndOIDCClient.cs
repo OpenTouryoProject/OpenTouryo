@@ -31,6 +31,7 @@
 //*  2017/04/24  西野 大介         新規
 //*  2018/08/10  西野 大介         汎用認証サイトからのコード移行
 //*  2019/08/01  西野 大介         client_secret_postのサポートを追加
+//*  2020/03/04  西野 大介         CIBAの認可リクエスト（WebAPI）を追加
 //**********************************************************************************
 
 using System;
@@ -638,6 +639,34 @@ namespace Touryo.Infrastructure.Framework.Authentication
             };
 
             httpRequestMessage.Content = new StringContent(requestObject);
+
+            // HttpResponseMessage
+            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>FAPI CIBAの認可リクエスト（WebAPI）</summary>
+        /// <param name="cibaAuthZUri">Uri</param>
+        /// <param name="requestObjectUri">string</param>
+        /// <returns>結果のJSON文字列</returns>
+        public static async Task<string> CibaAuthZRequestAsyncAsync(Uri cibaAuthZUri, string requestObjectUri)
+        {
+            // 通信用の変数
+            HttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage httpResponseMessage = null;
+
+            // HttpRequestMessage (Method & RequestUri)
+            httpRequestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = cibaAuthZUri,
+            };
+
+            httpRequestMessage.Content = new FormUrlEncodedContent(
+                   new Dictionary<string, string>
+                   {
+                        { OAuth2AndOIDCConst.request_uri, requestObjectUri }
+                   });
 
             // HttpResponseMessage
             httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
