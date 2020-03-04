@@ -12,5 +12,5 @@ openssl pkcs12 -export -inkey private-key.pem -in _SHA384ECDSA.cer > _SHA384ECDS
 
 openssl ecparam -out private-key.pem -name secp521r1 -genkey
 openssl req -new -key private-key.pem > csr.csr
-openssl x509 -in csr.csr -days 365000 -req -signkey private-key.pem > _SHA512ECDSA.cer
-openssl pkcs12 -export -inkey private-key.pem -in _SHA512ECDSA.cer > _SHA512ECDSA.pfx
+openssl x509 -in csr.csr -days 365000 -req -signkey private-key.pem > _SHA521ECDSA.cer
+openssl pkcs12 -export -inkey private-key.pem -in _SHA521ECDSA.cer > _SHA521ECDSA.pfx
