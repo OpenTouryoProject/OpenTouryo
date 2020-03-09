@@ -335,9 +335,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public static bool VerifyNbf(string nbf)
         {
 #if NET45
-            return (long.Parse(nbf) <  PubCmnFunction.ToUnixTime(DateTimeOffset.Now));
+            return (long.Parse(nbf) <=  PubCmnFunction.ToUnixTime(DateTimeOffset.Now));
 #else
-            return (long.Parse(nbf) < DateTimeOffset.Now.ToUnixTimeSeconds());
+            return (long.Parse(nbf) <= DateTimeOffset.Now.ToUnixTimeSeconds());
 #endif
         }
         #endregion
