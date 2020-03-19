@@ -43,6 +43,7 @@
 //*  2019/03/04  西野 大介         リネーム（ResolveServerUrl -> Fx_ResolveServerUrl）
 //*  2019/03/04  西野 大介         二重送信防止のブラウザ判定処理を修正
 //*  2019/03/04  西野 大介         WebForms版とMVC版のDiffを取り易く修正。
+//*  2020/03/19  西野 大介         モダン・ブラウザ・サポート（2017/04/20）の制限事項解除
 //**********************************************************************************
 
 // ---------------------------------------------------------------
@@ -390,11 +391,9 @@ window.addEventListener('resize', function (event) {
     }
 
     Fx_AjaxDialogMaskResizeTimer = setTimeout(function () {
-
         // マスクのサイズの再計算
         Fx_AjaxDialogMask.style.height = Math.max.apply(null, [Fx_getBrowserHeight(), Fx_getContentsHeight()]) + "px";
-        Fx_AjaxDialogMask.style.width = Math.max.apply(null, [Fx_getBrowserWidth(), Fx_getContentsWidth()]) + "px";
-        
+        Fx_AjaxDialogMask.style.width = Math.max.apply(null, [Fx_getBrowserWidth(), Fx_getContentsWidth()]) + "px";        
     }, 100); // 100 msec 間隔
 });
 
@@ -523,6 +522,9 @@ var Fx_AjaxOKPseudoDialog_Width = 500;
 var Fx_AjaxOKPseudoDialog_Height = 300;
 var Fx_AjaxYesNoPseudoDialog_Width = 500;
 var Fx_AjaxYesNoPseudoDialog_Height = 300;
+
+// Ajax：Pseudo Dialogのタイムラグ
+var TimeLag4BusinessPseudoModelDialog = 300;
 
 // ---------------------------------------------------------------
 // OK Pseudo Dialogの初期化
@@ -918,11 +920,35 @@ function Fx_ShowModalScreen(url, style) {
 // ---------------------------------------------------------------
 // Business Modal Screenの後処理
 // ---------------------------------------------------------------
-// 引数    myFlag
+// 引数    －
 // 戻り値  －
 // ---------------------------------------------------------------
 function Fx_CallbackOfBusinessModalScreen() {
-    //alert("hoge");
+    // Window.closed 検知までの時間差
+    setTimeout(
+        "Fx_CallbackOfBusinessModalScreen2()",
+        TimeLag4BusinessPseudoModelDialog);
+}
+
+// ---------------------------------------------------------------
+// Business Modal Screenの後処理
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_CallbackOfBusinessModalScreen2() {
+
+    // イベントを外す
+    if (Fx_BusinessPseudoModelDialog.closed) {
+        // 閉じている。
+        $(Fx_BusinessPseudoModelDialog).off("unload"); //, Fx_CallbackOfBusinessModalScreen);
+        Fx_BusinessPseudoModelDialog = null;
+    } else {
+        // 閉じていない。
+        // unloadのCallbackを"再度"仕掛ける。
+        Fx_SetCallbackOfBusinessModalScreen();
+        return; // このケースでは抜ける。
+    }
 
     // マスクを外す。
     Fx_DialogMaskOff();
@@ -1030,15 +1056,8 @@ function Fx_WindowClose(val) {
         window.close();
     }
     else {
-        // IFRAME有り
-
-        //// この処理は、DialogLoader.aspxのonunloadにも実装する。
-        //window.parent.opener.Fx_CallbackOfBusinessModalScreen();
-        //// 理由は、window.close()ではなく、window.parent.close()だから。
-        //window.parent.close();
-
-        // IFRAME無し
-        window.opener.Fx_CallbackOfBusinessModalScreen();
+        // $(win).on("unload", に移動した。
+        //window.opener.Fx_CallbackOfBusinessModalScreen();
         window.close();
     }
 }
@@ -1063,6 +1082,15 @@ function Fx_ShowNormalScreen(url) {
            GetElementByName_SuffixSearch("ctl00$NormalScreenStyle").value);
 }
 
+// Business疑似Model（実体はModeless）Screen
+var Fx_BusinessPseudoModelDialog = null;
+
+// ---------------------------------------------------------------
+// モダンブラウザ版のBusiness疑似Model（実体はModeless）Screen
+// ---------------------------------------------------------------
+// 引数    url
+// 戻り値  －
+// ---------------------------------------------------------------
 function Fx_ShowNormalScreen2(url) {
 
     // ウィンドウを表示(window.open)
@@ -1072,9 +1100,35 @@ function Fx_ShowNormalScreen2(url) {
     // 第3引数 = 画面のスタイル(「項目1:値1;項目2:値2;…;項目n:値n」の形式)
 
     // ウィンドウ名を、Fx_GetRandomString() を使用して可変に実装。
-    window.open(url,
+    Fx_BusinessPseudoModelDialog = window.open(url,
            Fx_GetRandomString(10), //Math.random().toString(),
            GetElementByName_SuffixSearch("ctl00$NormalScreenStyle").value);
+
+    // unloadのCallbackを仕掛ける。
+    Fx_SetCallbackOfBusinessModalScreen();
+}
+
+// ---------------------------------------------------------------
+// モダンブラウザ版（unloadのcallbackを仕掛ける）
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_SetCallbackOfBusinessModalScreen() {
+	// https://qiita.com/bgn_nakazato/items/0b0c1b8a23dcaa7959df
+    setTimeout(
+        "Fx_SetCallbackOfBusinessModalScreen2()",
+        TimeLag4BusinessPseudoModelDialog);
+}
+
+// ---------------------------------------------------------------
+// モダンブラウザ版（unloadのcallbackを仕掛ける）
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_SetCallbackOfBusinessModalScreen2() {
+    $(Fx_BusinessPseudoModelDialog).on("unload", Fx_CallbackOfBusinessModalScreen);
 }
 
 //**********************************************************************************
