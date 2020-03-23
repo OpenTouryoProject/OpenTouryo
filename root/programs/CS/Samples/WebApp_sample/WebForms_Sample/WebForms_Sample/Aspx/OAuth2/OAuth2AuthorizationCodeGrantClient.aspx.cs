@@ -111,9 +111,9 @@ namespace WebForms_Sample.Aspx.OAuth2
                 }
                 else { }
 
-
-                // ログインに失敗
-                Response.Redirect("../Start/login.aspx");
+                // ResolveClientUrlがInvalidOperationExceptionを吐くので...
+                //// ログインに失敗
+                //Response.Redirect("../Start/login.aspx");
             }
             finally
             {
