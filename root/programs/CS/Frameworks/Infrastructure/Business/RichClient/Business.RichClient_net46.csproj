@@ -81,14 +81,14 @@
     <Reference Include="OpenTouryo.Framework.RichClient">
       <HintPath>..\..\Build_net46\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\Build\OpenTouryo.Public.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />

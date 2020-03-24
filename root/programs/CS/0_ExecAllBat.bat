@@ -36,6 +36,7 @@ echo | call 4_Build_Framework_Tool.bat
 echo | call 4_Build_Framework_ToolCore.bat
 
 echo | call 5_Build_2CS_sample.bat
+echo | call 5_Build_2CSCore_sample.bat
 
 echo | call 5_Build_Bat_sample.bat
 echo | call 5_Build_BatCore_sample.bat
