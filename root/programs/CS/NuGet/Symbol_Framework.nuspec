@@ -3,11 +3,12 @@
   <metadata>
     <id>Touryo.Infrastructure.Framework</id>
     <title>OpenTouryo.Framework</title>
-    <version>2.6.0-preview1</version>
+    <version>2.6.0-preview2</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
     <license type="expression">Apache-2.0</license>
     <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root/programs/CS/Frameworks/Infrastructure/Framework</projectUrl>
+    <icon>_OpenTouryo.png</icon>
     <iconUrl>https://opentouryo.osscons.jp/OpenTouryo.ico</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <summary>Framework of OpenTouryo.</summary>
@@ -16,8 +17,8 @@
     <copyright></copyright>
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
-      <group>
-        <dependency id="Touryo.Infrastructure.Public" version="2.6.0-preview1" />
+      <group targetFramework="net452,net46,net47,net48">
+        <dependency id="Touryo.Infrastructure.Public" version="2.6.0-preview2" />
         <dependency id="Microsoft.AspNet.Mvc" version="5.2.6" />
         <dependency id="Microsoft.AspNet.Razor" version="3.2.6" />
         <dependency id="Microsoft.AspNet.WebPages" version="3.2.6" />
@@ -26,8 +27,8 @@
         <dependency id="Newtonsoft.Json" version="11.0.2" />
         <dependency id="Owin" version="1.0" />
       </group>
-      <group targetFramework="netstandard2.0">
-        <dependency id="Touryo.Infrastructure.Public" version="2.6.0-preview1" />
+      <group targetFramework="netstandard2.0,netstandard2.1">
+        <dependency id="Touryo.Infrastructure.Public" version="2.6.0-preview2" />
         <dependency id="Microsoft.AspNetCore.Http" version="2.0.2" />
         <dependency id="Microsoft.AspNetCore.Http.Extensions" version="2.0.2" />
         <dependency id="Microsoft.AspNetCore.Mvc" version="2.0.3" />
@@ -37,6 +38,8 @@
     </dependencies>
   </metadata>
   <files>
+    <file src="_OpenTouryo.png" target="" />
+
     <file src="in\net452\OpenTouryo.Framework.dll" target="lib\net452" />
     <file src="in\net452\OpenTouryo.Framework.pdb" target="lib\net452" />
     <file src="in\net452\OpenTouryo.Framework.xml" target="lib\net452" />

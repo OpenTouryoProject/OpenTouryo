@@ -8,6 +8,7 @@
     <owners>daisukenishino77</owners>
     <license type="expression">Apache-2.0</license>
     <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/・・・</projectUrl>
+    <icon>images\[*.png, *.iconなどの64*64の画像]</icon>
     <iconUrl>[*.png, *.iconなどの64*64の画像]</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <summary>[概要説明を記入する]</summary>
@@ -20,10 +21,12 @@
     </dependencies>
   </metadata>
   <files>
+    <file src="_OpenTouryo.png" target="" />
+
     <file src="in\net46\OpenTouryo.xxxx.dll" target="lib\net46" />
     <file src="in\net46\OpenTouryo.xxxx.pdb" target="lib\net46" />
     <file src="in\net46\OpenTouryo.xxxx.xml" target="lib\net46" />
-    
-    <file src="..\Frameworks\Infrastructure\・・・\**\*.cs" target="src" />
+
+    <file src="..\Frameworks\Infrastructure\...\**\*.cs" target="src" />
   </files>
 </package>
