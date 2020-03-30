@@ -30,7 +30,7 @@
 
 ## 概要
 以下のファイルを参照してください。
- - [概要資料集](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.md)
+ - [資料一覧](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP)
  - [機能一覧 (Excel)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Functional_list.xlsx)
 
 ## 詳細
@@ -52,7 +52,7 @@ Open 棟梁のドキュメントは、[OpenTouryoDocuments リポジトリ](http
 Open 棟梁テンプレート・ベースに含まれるサンプルは、Open 棟梁の評価に利用できます。
 
 もし Open 棟梁の機能の中で、システム開発プロジェクトの要件に合わない部分がありましたら、このテンプレート・ベースをカスタマイズすることでご対応いただけます。
-テンプレートベースのカスタマイズ方法につきましては、[チュートリアル](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/2_Tutorial/ja-JP/Tutorial_Template_development.doc)をご覧ください。
+テンプレートベースのカスタマイズ方法につきましては、[チュートリアル](https://github.com/OpenTouryoProject/OpenTouryo/wiki/Home.ja)をご覧ください。
 
 詳細は、以下リポジトリの Readme ファイルを参照してください。
  - [OpenTouryoTemplates](https://github.com/OpenTouryoProject/OpenTouryoTemplates)

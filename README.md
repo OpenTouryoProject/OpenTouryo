@@ -29,7 +29,7 @@ The users who use Open Touryo in a system development project need to use [OpenT
 
 ## Summary
 Please refer to the following files.
- - [Introductions of Open Touryo, Japanese Version](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Introduction.md)
+ - [List of documents, Japanese Version](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP)
  - [Function List, Japanese Version (Excel)](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/0_Introduction/ja-JP/Functional_list.xlsx)
 
 ## Details
@@ -51,7 +51,7 @@ Programs, configuration files, sql files, and more are stored in this directory.
 The samples included in *Open Touryo Template Base* can be used to evaluate Open Touryo. 
 
 When the mismatch is generated between *the features of Open Touryo* and *the requirements of the development project*, the customizing template base is useful for resolving the mismatch.  
-Refer to the [tutorial document](https://github.com/OpenTouryoProject/OpenTouryoDocuments/blob/master/documents/2_Tutorial/ja-JP/Tutorial_Template_development.doc) about the customizing method of template base.
+Refer to the [tutorial document](https://github.com/OpenTouryoProject/OpenTouryo/wiki) about the customizing method of template base.
 
 For more information, please refer to the Readme files in the following repository.
  - [OpenTouryoTemplates](https://github.com/OpenTouryoProject/OpenTouryoTemplates)
