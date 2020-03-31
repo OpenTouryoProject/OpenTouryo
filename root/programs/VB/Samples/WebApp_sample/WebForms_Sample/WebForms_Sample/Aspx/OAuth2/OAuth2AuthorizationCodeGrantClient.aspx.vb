@@ -98,9 +98,10 @@ Namespace Aspx.OAuth2
                     End If
                 Else
                 End If
-
-                ' ログインに失敗
-                Response.Redirect("../Start/login.aspx")
+                
+                'ResolveClientUrlがInvalidOperationExceptionを吐くので...
+                '' ログインに失敗
+                'Response.Redirect("../Start/login.aspx")
             Finally
                 Me.ClearExLoginsParams()
             End Try

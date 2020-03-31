@@ -1,7 +1,7 @@
 Open Touryo Project Status
 ==============
 
-Open Touryo is an in-house tool of Hitachi Solutions, Ltd. 
+Open Touryo was an in-house tool of Hitachi Solutions, Ltd. 
 Open Touryo was released as open source in April 2014.
 And it was forked by the Open Touryo project.
 Web site: http://www.osscons.jp/dotNetDevelopmentInfrastructure/
@@ -22,7 +22,8 @@ There is possibility that the library of OSS that not include
 source code automatically acquired from the Internet by the
 package manager like the NuGet. If so, must follow these licenses of the
 oss when using / distributing this OSS. Incidentally, the OSS that will
-be obtained by NuGet can be checked by referring to each package.cponfig.
+be obtained by NuGet can be checked by referring to package tag in 
+package.config file or PackageReference tag in project file.
 
 ==================================================
 
@@ -49,4 +50,5 @@ Webサイト：http://www.osscons.jp/dotNetDevelopmentInfrastructure/
 ソースコードを含まないOSSのライブラリは、NuGetのようなパッケージマネージャ
 によってインターネットから自動的に取得される可能性があります。 その場合は、
 このOSSを使用/配布する際には、これらのOSSのライセンスに従わなければなりません。
-ちなみに、NuGetが取得するOSSは、それぞれのpackage.cponfigを参照することで確認できます。
+ちなみに、NuGetが取得するOSSは、package.configファイルのpackageタグや
+ProjectファイルのPackageReferenceタグを参照することで確認できます。

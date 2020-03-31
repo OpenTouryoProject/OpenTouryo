@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/05/21  西野 大介         新規作成
+//*  2019/12/25  西野 大介         PPID対応による見直し
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -243,6 +244,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #region nameid-format
         /// <summary>NameIDPolicy要素のFormat属性をunspecifiedに指定する。</summary>
         public const string UrnNameIDFormatUnspecified = UrnHeader11 + "nameid-format:unspecified";
+
+        /// <summary>NameIDPolicy要素のFormat属性をemailAddressに指定する。</summary>
+        public const string UrnNameIDFormatEmailAddress = UrnHeader11 + "nameid-format:emailAddress";
 
         /// <summary>NameIDPolicy要素のFormat属性を永続的仮名に指定する。</summary>
         public const string UrnNameIDFormatPersistent = UrnHeader20 + "nameid-format:persistent";

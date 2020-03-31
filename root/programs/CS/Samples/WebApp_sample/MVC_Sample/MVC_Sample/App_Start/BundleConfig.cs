@@ -38,7 +38,7 @@ namespace MVC_Sample
         {
             // see : https://www.asp.net/ajax/cdn
 
-            string jqueryVersion = "3.3.1";
+            string jqueryVersion = "3.4.1";
 
             BundleTable.EnableOptimizations = true;
             BundleTable.Bundles.UseCdn = true; // same as: bundles.UseCdn = true;
@@ -62,7 +62,7 @@ namespace MVC_Sample
 
             bundles.Add(new ScriptBundle(
                 "~/bundles/jqueryval",
-                "//ajax.aspnetcdn.com/ajax/jquery.validate/1.16.0/jquery.validate.min.js")
+                "//ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js")
                 {
                     CdnFallbackExpression = "window.jQuery.validator"
                 }.Include("~/Scripts/jquery.validate.js"));
@@ -88,7 +88,7 @@ namespace MVC_Sample
 
             bundles.Add(new ScriptBundle(
                 "~/bundles/bootstrap",
-                "//ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js")
+                "//ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/bootstrap.min.js")
                 {
                     CdnFallbackExpression = "window.jQuery.fn.modal"
                 }.Include("~/Scripts/bootstrap.js"));

@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/04/09  西野 大介         新規作成
 //*  2018/12/12  西野 大介         インターフェイスの拡張
+//*  2020/02/12  西野 大介         属性ベース機構の強化（EnumHttpAuthHeaderの導入）
 //**********************************************************************************
 
 using System;
@@ -36,6 +37,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using System.Net.Http.Headers;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -51,6 +53,7 @@ using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Log;
+using Touryo.Infrastructure.Public.Security;
 using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Business.Presentation
@@ -60,6 +63,8 @@ namespace Touryo.Infrastructure.Business.Presentation
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public class MyBaseAsyncApiController : ActionFilterAttribute, IAsyncAuthorizationFilter, IAsyncActionFilter, IExceptionFilter
     {
+        #region インスタンス変数
+
         /// <summary>性能測定</summary>
         private PerformanceRecorder perfRec;
 
@@ -71,6 +76,30 @@ namespace Touryo.Infrastructure.Business.Presentation
 
         /// <summary>ActionName</summary>
         protected string ActionName = "";
+
+        /// <summary>HttpAuthHeader</summary>
+        protected EnumHttpAuthHeader HttpAuthHeader = EnumHttpAuthHeader.None;
+
+        #endregion
+
+        #region コンストラクタ
+
+        /// <summary>コンストラクタ</summary>
+        /// <remarks>自由に利用できる。</remarks>
+        public MyBaseAsyncApiController() : base()
+        {
+            this.HttpAuthHeader = EnumHttpAuthHeader.None;
+        }
+
+        /// <summary>コンストラクタ</summary>
+        /// <param name="httpAuthHeader">EnumHttpAuthHeader</param>
+        /// <remarks>自由に利用できる。</remarks>
+        public MyBaseAsyncApiController(EnumHttpAuthHeader httpAuthHeader) : base()
+        {
+            this.HttpAuthHeader = httpAuthHeader;
+        }
+
+        #endregion
 
         #region 認証・認可
 
@@ -250,7 +279,7 @@ namespace Touryo.Infrastructure.Business.Presentation
 
         #region 情報取得用
 
-        /// <summary>GetControllerAndActionName</summary>
+        /// <summary>Controller/Action名を取得する</summary>
         /// <param name="context">ActionExecutingContext</param>
         private void GetControllerAndActionName(ActionExecutingContext context)
         {
@@ -286,79 +315,107 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <remarks>awaitするメソッドを追加して呼ぶ可能性も高いのでasyncを付与</remarks>
         private async Task GetUserInfoAsync(AuthorizationFilterContext authorizationContext)
         {
-            // カスタム認証処理 --------------------------------------------
-            // Authorization: Bearer ヘッダから
-            // JWTアサーションを処理し、認証、UserInfoを生成するなど。
-            // -------------------------------------------------------------
-            List<Claim> claims = null;
-
-            if (authorizationContext.HttpContext.Request.Headers != null)
+            // Authorization: <type> <credentials>
+            if (this.HttpAuthHeader == EnumHttpAuthHeader.None)
             {
-                StringValues authHeaders = "";
+                // 認証なし
+                return;
+            }
+            else if (this.HttpAuthHeader.HasFlag(EnumHttpAuthHeader.Basic))
+            {
+                // Basic認証の認証アルゴリズムを追加
+                // Authorization: Basic XXXXXXXXXX
+                return;
+            }
+            else if (this.HttpAuthHeader.HasFlag(EnumHttpAuthHeader.Bearer))
+            {
+                // Bearer認証の認証アルゴリズムを追加 --------------------------
+                // Authorization: Bearer XXXXXXXXXX
+                // JWTアサーションを処理し、認証、UserInfoを生成するなど。
+                // -------------------------------------------------------------
+                List<Claim> claims = null;
 
-                if (authorizationContext.HttpContext.Request.Headers.TryGetValue("Authorization", out authHeaders))
+                if (authorizationContext.HttpContext.Request.Headers != null)
                 {
-                    string access_token = authHeaders[0].Split(' ')[1];
+                    StringValues authHeaders = "";
 
-                    string sub = "";
-                    List<string> roles = null;
-                    List<string> scopes = null;
-                    JObject jobj = null;
-
-                    if (AccessToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
+                    try
                     {
-                        // ActionFilterAttributeとApiController間の情報共有はcontext.Principalを使用する。
-                        // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
-                        claims = new List<Claim>()
+                        if (authorizationContext.HttpContext.Request.Headers.TryGetValue("Authorization", out authHeaders))
                         {
-                            new Claim(ClaimTypes.Name, sub),
-                            new Claim(ClaimTypes.Role, string.Join(",", roles)),
-                            new Claim(OAuth2AndOIDCConst.UrnScopesClaim, string.Join(",", scopes)),
-                            new Claim(OAuth2AndOIDCConst.UrnAudienceClaim, (string)jobj[OAuth2AndOIDCConst.aud]),
-                            new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress())
-                        };
+                            string access_token = authHeaders[0].Split(' ')[1];
 
-                        // ClaimsPrincipalを設定
-                        MyHttpContext.Current.User = new ClaimsPrincipal(new ClaimsIdentity(claims, "Token"));
+                            string sub = "";
+                            List<string> roles = null;
+                            List<string> scopes = null;
+                            JObject jobj = null;
 
-                        return;
+                            if (AccessToken.Verify(access_token, out sub, out roles, out scopes, out jobj))
+                            {
+                                // ActionFilterAttributeとApiController間の情報共有はcontext.Principalを使用する。
+                                // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
+                                claims = new List<Claim>()
+                                {
+                                    new Claim(ClaimTypes.Name, sub),
+                                    new Claim(ClaimTypes.Role, string.Join(",", roles)),
+                                    new Claim(OAuth2AndOIDCConst.UrnScopesClaim, string.Join(",", scopes)),
+                                    new Claim(OAuth2AndOIDCConst.UrnAudienceClaim, (string)jobj[OAuth2AndOIDCConst.aud]),
+                                    new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress())
+                                };
+
+                                // ClaimsPrincipalを設定
+                                MyHttpContext.Current.User = new ClaimsPrincipal(new ClaimsIdentity(claims, "Token"));
+
+                                return;
+                            }
+                            else
+                            {
+                                // JWTの内容検証に失敗
+                            }
+                        }
+                        else
+                        {
+                            // Authorization HeaderがBearerでない。
+                        }
                     }
-                    else
+                    catch
                     {
-                        // JWTの内容検証に失敗
+                        // 例外発生 ≒ 未認証扱い。
                     }
                 }
                 else
                 {
-                    // Authorization HeaderがBearerでない。
+                    // Authorization Headerが存在しない。
                 }
+
+                #region 未認証状態の場合の扱い
+
+                if (this.HttpAuthHeader.HasFlag(EnumHttpAuthHeader.None))
+                {
+                    // 未認証状態のclaimsを作成格納
+                    claims = new List<Claim>()
+                    {
+                        new Claim(ClaimTypes.Name, "未認証"),
+                        new Claim(ClaimTypes.Role, ""),
+                        new Claim(OAuth2AndOIDCConst.UrnScopesClaim, ""),
+                        new Claim(OAuth2AndOIDCConst.UrnAudienceClaim, ""),
+                        new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress())
+                    };
+
+                    MyHttpContext.Current.User.AddIdentity(new ClaimsIdentity(claims, "Token"));
+                }
+                else
+                {
+                    // 認証エラーを返す。
+                    // ASP.NET Core MVCで403エラーをクライアントへ返す - Living Absurd World
+                    // https://blog.hmatoba.net/Article/144
+                    authorizationContext.Result = new UnauthorizedResult();
+                }
+
+                return;
+
+                #endregion
             }
-            else
-            {
-                // Authorization Headerが存在しない。
-            }
-
-            #region 未認証状態の場合の扱い
-
-            // The request message contains invalid credential
-            //context.ErrorResult = new UnauthorizedResult(new AuthenticationHeaderValue[0], context.Request);
-
-            // 未認証状態のclaimsを作成格納
-            claims = new List<Claim>()
-            {
-                new Claim(ClaimTypes.Name, "未認証"),
-                new Claim(ClaimTypes.Role, ""),
-                new Claim(OAuth2AndOIDCConst.UrnScopesClaim, ""),
-                new Claim(OAuth2AndOIDCConst.UrnAudienceClaim, ""),
-                new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress())
-            };
-
-            // The request message contains valid credential.
-            MyHttpContext.Current.User.AddIdentity(new ClaimsIdentity(claims, "Token"));
-
-            return;
-
-            #endregion
         }
 
         /// <summary>GetClientIpAddress</summary>
@@ -379,7 +436,16 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <returns>IEnumerable(Claim)</returns>
         public static IEnumerable<Claim> GetRawClaims()
         {
-            return MyBaseAsyncApiController.GetClaimsIdentity().Claims;
+            ClaimsIdentity claimsIdentity = MyBaseAsyncApiController.GetClaimsIdentity();
+
+            if (claimsIdentity == null)
+            {
+                return null;
+            }
+            else
+            {
+                return claimsIdentity.Claims;
+            }
         }
 
         /// <summary>GetClaims</summary>
@@ -391,11 +457,61 @@ namespace Touryo.Infrastructure.Business.Presentation
         {
             // MyHttpContext.Current.User.Identity側ではなく、Identities側に入っている。
             // Identityは認証ミドルウェアを使用する必要がある？（coreでjwtをどう処理するのか？）
-            IEnumerable<Claim>  claims = MyBaseAsyncApiController.GetRawClaims();
-            userName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
-            roles = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
-            scopes = claims.FirstOrDefault(c => c.Type == OAuth2AndOIDCConst.UrnScopesClaim).Value;
-            ipAddress = claims.FirstOrDefault(c => c.Type == "IpAddress").Value;
+            IEnumerable<Claim> claims = MyBaseAsyncApiController.GetRawClaims();
+
+            if (claims == null)
+            {
+                // claims == null
+                userName = "未認証";
+                roles = "";
+                scopes = "";
+                ipAddress = "";
+            }
+            else
+            {
+                // claims != null
+                Claim claim = null;
+
+                claim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+                if (claim == null)
+                {
+                    userName = "未認証";
+                }
+                else
+                {
+                    userName = claim.Value;
+                }
+
+                claim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+                if (claim == null)
+                {
+                    roles = "";
+                }
+                else
+                {
+                    roles = claim.Value;
+                }
+
+                claim = claims.FirstOrDefault(c => c.Type == OAuth2AndOIDCConst.UrnScopesClaim);
+                if (claim == null)
+                {
+                    scopes = "";
+                }
+                else
+                {
+                    scopes = claim.Value;
+                }
+
+                claim = claims.FirstOrDefault(c => c.Type == "IpAddress");
+                if (claim == null)
+                {
+                    ipAddress = "";
+                }
+                else
+                {
+                    ipAddress = claim.Value;
+                }
+            }
         }
 
         #endregion

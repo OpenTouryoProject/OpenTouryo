@@ -34,7 +34,7 @@ Public Class BundleConfig
     Public Shared Sub RegisterBundles(bundles As BundleCollection)
         ' see : https://www.asp.net/ajax/cdn
 
-        Dim jqueryVersion As String = "3.1.1"
+        Dim jqueryVersion As String = "3.4.1"
 
         BundleTable.EnableOptimizations = True
         BundleTable.Bundles.UseCdn = True
@@ -58,7 +58,7 @@ Public Class BundleConfig
 
         bundles.Add(New ScriptBundle(
                     "~/bundles/jqueryval",
-                    "//ajax.aspnetcdn.com/ajax/jquery.validate/1.16.0/jquery.validate.min.js") With
+                    "//ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js") With
                     {
                         .CdnFallbackExpression = "window.jQuery.validator"
                     }.Include("~/Scripts/jquery.validate.js"))
@@ -84,7 +84,7 @@ Public Class BundleConfig
 
         bundles.Add(New ScriptBundle(
                     "~/bundles/bootstrap",
-                    "//ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js") With
+                    "//ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/bootstrap.min.js") With
                     {
                         .CdnFallbackExpression = "window.jQuery.fn.modal"
                     }.Include("~/Scripts/bootstrap.js"))

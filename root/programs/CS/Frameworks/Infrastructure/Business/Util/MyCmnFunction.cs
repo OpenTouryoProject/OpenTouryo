@@ -49,7 +49,7 @@ using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Util;
 
-#if NETCORE
+#if NETCOREAPP
 using Touryo.Infrastructure.Framework.StdMigration;
 using Microsoft.AspNetCore.Http;
 #else
@@ -92,7 +92,7 @@ namespace Touryo.Infrastructure.Business.Util
             long size = 0;
 
             // SessionのオブジェクトをBinarySerializeしてサイズを取得。
-#if NETCORE
+#if NETCOREAPP
             foreach (string key in MyHttpContext.Current.Session.Keys)
             {
                 // 当該キーのオブジェクト・サイズを足しこむ。
@@ -115,7 +115,7 @@ namespace Touryo.Infrastructure.Business.Util
 
         #region コントロール取得＆イベントハンドラ設定
 
-#if NETCORE
+#if NETCOREAPP
 #else
         /// <summary>コントロール取得＆イベントハンドラ設定（下位互換）</summary>
         /// <param name="ctrl">コントロール</param>

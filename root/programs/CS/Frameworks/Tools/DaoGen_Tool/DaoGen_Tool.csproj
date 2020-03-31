@@ -154,7 +154,6 @@
       <DependentUpon>SimpleTextBoxWindow.cs</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="Img\downarrow.PNG" />
     <Content Include="Img\like.PNG" />

@@ -57,9 +57,9 @@ namespace EncAndDecUtilCUI
         /// <summary>ECDsaのX509証明書のパス（*.cer）</summary>
         private static string PublicECDsaX509_384Path = @"SHA384ECDSA.cer";
         /// <summary>ECDsaのX509証明書のパス（*.pfx）</summary>
-        private static string PrivateECDsaX509_512Path = @"SHA512ECDSA.pfx";
+        private static string PrivateECDsaX509_512Path = @"SHA521ECDSA.pfx";
         /// <summary>ECDsaのX509証明書のパス（*.cer）</summary>
-        private static string PublicECDsaX509_512Path = @"SHA512ECDSA.cer";
+        private static string PublicECDsaX509_512Path = @"SHA521ECDSA.cer";
 
         public static void Main(string[] args)
         {
@@ -133,7 +133,7 @@ namespace EncAndDecUtilCUI
             MyDebug.OutputDebugAndConsole("HashAlgorithm.SHA512_M", GetHash.GetHashString(data, EnumHashAlgorithm.SHA512_M));
             #endregion
 
-#if NETCORE
+#if NETCOREAPP
 #else
             #region CNG
             MyDebug.OutputDebugAndConsole("HashAlgorithm.MD5_CNG", GetHash.GetHashString(data, EnumHashAlgorithm.MD5_CNG));
@@ -283,7 +283,7 @@ namespace EncAndDecUtilCUI
             MyDebug.InspectPublicX509Key("RSA", publicX509Key);
             #endregion
 
-#if NETCORE || NET47
+#if NETCOREAPP || NET47
             #region DSA
             // https://github.com/dotnet/corefx/issues/18733#issuecomment-296723615
 
@@ -338,11 +338,11 @@ namespace EncAndDecUtilCUI
             DigitalSignXML dsXML = null;
 
             // ECDsa
-#if NETCORE || NET47
+#if NETCOREAPP || NET47
             DigitalSignECDsaX509 dsECDsaX509 = null;
             DigitalSignECDsaCng dsECDsaCng = null;
 #endif
-#if NETCORE
+#if NETCOREAPP
             DigitalSignECDsaOpenSsl dsECDsaOpenSsl = null;
 #endif
 
@@ -367,7 +367,7 @@ namespace EncAndDecUtilCUI
                 dsXML = new DigitalSignXML(EnumDigitalSignAlgorithm.RsaCSP_SHA256);
                 sign = dsXML.Sign(data);
 
-#if !NETCORE
+#if !NETCOREAPP
                 // NETCOREでは、XML鍵のExportが動かない。
                 dsXML = new DigitalSignXML(dsXML.PublicKey, EnumDigitalSignAlgorithm.RsaCSP_SHA256);
 #endif
@@ -392,7 +392,7 @@ namespace EncAndDecUtilCUI
                 dsXML = new DigitalSignXML(EnumDigitalSignAlgorithm.DsaCSP_SHA1);
                 sign = dsXML.SignByFormatter(data);
 
-#if !NETCORE
+#if !NETCOREAPP
                 // NETCOREでは、XML鍵のExportが動かない。
                 dsXML = new DigitalSignXML(dsXML.PublicKey, EnumDigitalSignAlgorithm.DsaCSP_SHA1);
 #endif
@@ -402,7 +402,7 @@ namespace EncAndDecUtilCUI
 
                 #region ECDsa
                 #region 256
-#if NETCORE || NET47
+#if NETCOREAPP || NET47
                 // X509
                 dsECDsaX509 = new DigitalSignECDsaX509(Program.PrivateECDsaX509_256Path, Program.PfxPassword, HashAlgorithmName.SHA256);
                 sign = dsECDsaX509.Sign(data);
@@ -422,7 +422,7 @@ namespace EncAndDecUtilCUI
                 #endregion
 
                 #region 512
-#if NETCORE || NET47
+#if NETCOREAPP || NET47
                 // X509
                 dsECDsaX509 = new DigitalSignECDsaX509(Program.PrivateECDsaX509_256Path, Program.PfxPassword, HashAlgorithmName.SHA512);
                 sign = dsECDsaX509.Sign(data);
@@ -444,7 +444,7 @@ namespace EncAndDecUtilCUI
             }
             else //if (os.Platform == PlatformID.Unix)
             {
-#if NETCORE
+#if NETCOREAPP
                 #region RSA
                 // X509
                 dsX509 = new DigitalSignX509(Program.PrivateRsaX509Path, Program.PfxPassword, "SHA256");
@@ -563,7 +563,7 @@ namespace EncAndDecUtilCUI
             byte[] key = null;
             string jwk = "";
             RsaPublicKeyConverter rpkc = null;
-#if NETCORE || NET47
+#if NETCOREAPP || NET47
             EccPublicKeyConverter epkc = null;
 #endif
             #endregion
@@ -581,7 +581,7 @@ namespace EncAndDecUtilCUI
             JWS_RS512_X509 jWS_RS512_X509 = null;
             JWS_RS512_Param jWS_RS512_Param = null;
 
-#if NETCORE || NET47
+#if NETCOREAPP || NET47
             // ES256
             JWS_ES256_X509 jWS_ES256_X509 = null;
             JWS_ES256_Param jWS_ES256_Param = null;
@@ -654,7 +654,7 @@ namespace EncAndDecUtilCUI
                 jWS_RS256_Param = new JWS_RS256_Param(rpkc.JwkToParam(jwk));
                 MyDebug.OutputDebugAndConsole("JWS_RS256_Param.Verify", jWS_RS256_Param.Verify(token).ToString());
                 #endregion
-#if NETCORE
+#if NETCOREAPP
 #else
                 #region 384
                 // 署名（XML）
@@ -700,7 +700,7 @@ namespace EncAndDecUtilCUI
 
                 // DSA
 
-#if NETCORE || NET47
+#if NETCOREAPP || NET47
                 #region ECDsa(ES)
 
                 #region 256
@@ -733,7 +733,7 @@ namespace EncAndDecUtilCUI
                 // ★ xLibTest
                 Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
                 #endregion
-#if NETCORE
+#if NETCOREAPP
 #else
                 #region 384
                 // 署名（X509）
@@ -810,7 +810,7 @@ namespace EncAndDecUtilCUI
             }
             else //if (os.Platform == PlatformID.Unix)
             {
-#if NETCORE
+#if NETCOREAPP
                 #region RSA(RS256)
                 // 署名（X509）
                 jWS_RS256_X509 = new JWS_RS256_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
@@ -951,7 +951,7 @@ namespace EncAndDecUtilCUI
             CngKey privateKeyOfCng = null;
 
             RsaPublicKeyConverter rpkc = null;
-#if NETCORE || NET47
+#if NETCOREAPP || NET47
             EccPublicKeyConverter epkc = null;
 #endif
             #endregion
@@ -990,7 +990,7 @@ namespace EncAndDecUtilCUI
             token = "";
 
 
-#if NETCORE
+#if NETCOREAPP
             rsa = (RSA)privateX509Key.PrivateKey;
 #else
             // .net frameworkでは、何故かコレが必要。
@@ -1021,7 +1021,7 @@ namespace EncAndDecUtilCUI
             }
             else //if (os.Platform == PlatformID.Unix)
             {
-#if NETCORE
+#if NETCOREAPP
                 ECParameters eCParameters = new ECParameters();
 
                 epkc = new EccPublicKeyConverter(JWS_ECDSA.ES._256);
@@ -1044,13 +1044,13 @@ namespace EncAndDecUtilCUI
 #endif
             }
 
-#if NETCORE || NET47
+#if NETCOREAPP || NET47
             privateX509Key = new X509Certificate2(Program.PrivateECDsaX509_256Path, Program.PfxPassword);
             publicX509Key = new X509Certificate2(Program.PublicECDsaX509_256Path, "");
 
             try
             {
-#if NETCORE
+#if NETCOREAPP
                 if (os.Platform == PlatformID.Win32NT)
                 {
                 }
@@ -1187,7 +1187,7 @@ namespace EncAndDecUtilCUI
             privateX509Key = new X509Certificate2(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
             publicX509Key = new X509Certificate2(Program.PublicRsaX509Path, "", x509KSF);
 
-#if NETCORE
+#if NETCOREAPP
             rsa = (RSA)privateX509Key.PrivateKey;
 #else
             // .net frameworkでは、何故かコレが必要。

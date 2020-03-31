@@ -144,9 +144,6 @@
   <data name="RestrictionInfo" xml:space="preserve">
     <value>Restriction Information</value>
   </data>
-  <data name="RuntimeError" xml:space="preserve">
-    <value>There is Run time error :</value>
-  </data>
   <data name="SaveFileDialogFilter" xml:space="preserve">
     <value>CSV file (*.csv)|*.csv</value>
   </data>

@@ -8,8 +8,15 @@ f: \.user$ ## ユーザファイル
 f: \.csproj$ ## プロジェクトファイル
 f: \.vbproj$ ## プロジェクトファイル
 
-## ビルドモジュール
+## IDE
+d: \\\.vs$ ## Visual Studio
+d: \\\.vscode$ ## Visual Studio Code
 
+## デザイナ（自動生成）
+f: \.designer\..*$ ## デザイナファイル
+d: \\web references$ ## web reference directory
+
+## ビルドモジュール
 f: \.dll$ ## DLLファイル
 f: \.pdb$ ## PDBファイル
 f: \.xap$ ## XAPファイル
@@ -20,12 +27,11 @@ d: \\debug$ ## ビルドモジュール
 d: \\release$ ## ビルドモジュール
 d: \\build$ ## ビルドモジュール
 
-## ログファイル
-
-f: \.log$ ## LOGファイル
+## PKGマネージャーの類
+d: \\packages$ ## NuGet
+d: \\node_modules$ ## npm
 
 ## ソース管理の類
-
 f: \.svnignore$ ## Subversion ignore file
 f: \.(vs[sp])?scc$  ## Visual SourceSafe files
 
@@ -33,3 +39,7 @@ d: \\\.git$ ## git working copy
 d: \\\.svn$ ## Subversion working copy
 d: \\_svn$  ## Subversion working copy ASP.NET Hack
 d: \\cvs$   ## CVS control directory
+
+## ログファイル
+f: \.log$ ## LOGファイル
+

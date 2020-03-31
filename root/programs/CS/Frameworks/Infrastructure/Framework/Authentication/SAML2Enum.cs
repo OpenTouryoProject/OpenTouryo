@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/05/21  西野 大介         新規作成
+//*  2019/12/25  西野 大介         PPID対応による見直し
 //**********************************************************************************
 
 //using Touryo.Infrastructure.Public.FastReflection;
@@ -64,14 +65,17 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>NameIDFormat</summary>
         public enum NameIDFormat : int
         {
-            /// <summary>unspecified</summary>
+            /// <summary>unspecified(UserName or E-Mail or UserID)</summary>
             Unspecified,
 
-            /// <summary>persistent</summary>
-            Persistent,
+            /// <summary>emailAddress(E-Mail)</summary>
+            EmailAddress,
+
+            /// <summary>persistent(PPID)</summary>
+            Persistent, // UserIDをPPID化
 
             /// <summary>transient</summary>
-            Transient
+            Transient // 現状、サポート無し
         }
 
         /// <summary>ProtocolBinding</summary>
@@ -139,6 +143,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
             {
                 case SAML2Enum.NameIDFormat.Unspecified:
                     ret = SAML2Const.UrnNameIDFormatUnspecified;
+                    break;
+                case SAML2Enum.NameIDFormat.EmailAddress:
+                    ret = SAML2Const.UrnNameIDFormatEmailAddress;
                     break;
                 case SAML2Enum.NameIDFormat.Persistent:
                     ret = SAML2Const.UrnNameIDFormatPersistent;
@@ -239,6 +246,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
             if (str == SAML2Const.UrnNameIDFormatUnspecified)
             {
                 nameIDFormat = NameIDFormat.Unspecified;
+            }
+            else if (str == SAML2Const.UrnNameIDFormatEmailAddress)
+            {
+                nameIDFormat = NameIDFormat.EmailAddress;
             }
             else if (str == SAML2Const.UrnNameIDFormatPersistent)
             {

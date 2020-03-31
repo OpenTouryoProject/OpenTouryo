@@ -225,18 +225,6 @@
   <data name="&gt;&gt;lblSetOutput.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;cmbSTEncoding.Name" xml:space="preserve">
-    <value>cmbSTEncoding</value>
-  </data>
-  <data name="&gt;&gt;cmbSTEncoding.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;cmbSTEncoding.Parent" xml:space="preserve">
-    <value>gbxSqlTemplateEncoding</value>
-  </data>
-  <data name="&gt;&gt;cmbSTEncoding.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <data name="gbxSqlTemplateEncoding.Location" type="System.Drawing.Point, System.Drawing">
     <value>280, 213</value>
   </data>
@@ -261,30 +249,6 @@
   <data name="&gt;&gt;gbxSqlTemplateEncoding.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;rbnDTL_VB.Name" xml:space="preserve">
-    <value>rbnDTL_VB</value>
-  </data>
-  <data name="&gt;&gt;rbnDTL_VB.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;rbnDTL_VB.Parent" xml:space="preserve">
-    <value>gbxDaoTemplateLanguage</value>
-  </data>
-  <data name="&gt;&gt;rbnDTL_VB.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;rbnDTL_CS.Name" xml:space="preserve">
-    <value>rbnDTL_CS</value>
-  </data>
-  <data name="&gt;&gt;rbnDTL_CS.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;rbnDTL_CS.Parent" xml:space="preserve">
-    <value>gbxDaoTemplateLanguage</value>
-  </data>
-  <data name="&gt;&gt;rbnDTL_CS.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
   <data name="gbxDaoTemplateLanguage.Location" type="System.Drawing.Point, System.Drawing">
     <value>21, 155</value>
   </data>
@@ -308,18 +272,6 @@
   </data>
   <data name="&gt;&gt;gbxDaoTemplateLanguage.ZOrder" xml:space="preserve">
     <value>1</value>
-  </data>
-  <data name="&gt;&gt;cmbDTEncoding.Name" xml:space="preserve">
-    <value>cmbDTEncoding</value>
-  </data>
-  <data name="&gt;&gt;cmbDTEncoding.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;cmbDTEncoding.Parent" xml:space="preserve">
-    <value>gbxDaoTemplateEncoding</value>
-  </data>
-  <data name="&gt;&gt;cmbDTEncoding.ZOrder" xml:space="preserve">
-    <value>0</value>
   </data>
   <data name="gbxDaoTemplateEncoding.Location" type="System.Drawing.Point, System.Drawing">
     <value>21, 213</value>
@@ -374,18 +326,6 @@
   </data>
   <data name="&gt;&gt;cbxDaoDefinitionHeader.ZOrder" xml:space="preserve">
     <value>3</value>
-  </data>
-  <data name="&gt;&gt;cmbDDEncoding.Name" xml:space="preserve">
-    <value>cmbDDEncoding</value>
-  </data>
-  <data name="&gt;&gt;cmbDDEncoding.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;cmbDDEncoding.Parent" xml:space="preserve">
-    <value>gbxDaoDefinitionEncoding</value>
-  </data>
-  <data name="&gt;&gt;cmbDDEncoding.ZOrder" xml:space="preserve">
-    <value>0</value>
   </data>
   <data name="gbxDaoDefinitionEncoding.Location" type="System.Drawing.Point, System.Drawing">
     <value>21, 55</value>
@@ -591,42 +531,6 @@
   <data name="&gt;&gt;gbxInput.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;gbxSQLFileEncoding.Name" xml:space="preserve">
-    <value>gbxSQLFileEncoding</value>
-  </data>
-  <data name="&gt;&gt;gbxSQLFileEncoding.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;gbxSQLFileEncoding.Parent" xml:space="preserve">
-    <value>gbxOutput</value>
-  </data>
-  <data name="&gt;&gt;gbxSQLFileEncoding.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;gbxDaoFileEncoding.Name" xml:space="preserve">
-    <value>gbxDaoFileEncoding</value>
-  </data>
-  <data name="&gt;&gt;gbxDaoFileEncoding.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;gbxDaoFileEncoding.Parent" xml:space="preserve">
-    <value>gbxOutput</value>
-  </data>
-  <data name="&gt;&gt;gbxDaoFileEncoding.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;txtSetOutput.Name" xml:space="preserve">
-    <value>txtSetOutput</value>
-  </data>
-  <data name="&gt;&gt;txtSetOutput.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txtSetOutput.Parent" xml:space="preserve">
-    <value>gbxOutput</value>
-  </data>
-  <data name="&gt;&gt;txtSetOutput.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
   <data name="gbxOutput.Location" type="System.Drawing.Point, System.Drawing">
     <value>5, 286</value>
   </data>
@@ -680,42 +584,6 @@
   </data>
   <data name="&gt;&gt;tabPage1.ZOrder" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
-    <value>tabPage2</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;gbxDataProviders.Name" xml:space="preserve">
-    <value>gbxDataProviders</value>
-  </data>
-  <data name="&gt;&gt;gbxDataProviders.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;gbxDataProviders.Parent" xml:space="preserve">
-    <value>tabPage2</value>
-  </data>
-  <data name="&gt;&gt;gbxDataProviders.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox2.Parent" xml:space="preserve">
-    <value>tabPage2</value>
-  </data>
-  <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
-    <value>2</value>
   </data>
   <data name="tabPage2.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
@@ -972,78 +840,6 @@
   <data name="&gt;&gt;txtSetOutput.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="&gt;&gt;cbxTSIndisp.Name" xml:space="preserve">
-    <value>cbxTSIndisp</value>
-  </data>
-  <data name="&gt;&gt;cbxTSIndisp.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;cbxTSIndisp.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="&gt;&gt;cbxTSIndisp.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;label4.Name" xml:space="preserve">
-    <value>label4</value>
-  </data>
-  <data name="&gt;&gt;label4.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label4.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;label5.Name" xml:space="preserve">
-    <value>label5</value>
-  </data>
-  <data name="&gt;&gt;label5.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label5.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;txtTimeStampColName.Name" xml:space="preserve">
-    <value>txtTimeStampColName</value>
-  </data>
-  <data name="&gt;&gt;txtTimeStampColName.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txtTimeStampColName.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="&gt;&gt;txtTimeStampColName.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;txtTimeStampUpdMethod.Name" xml:space="preserve">
-    <value>txtTimeStampUpdMethod</value>
-  </data>
-  <data name="&gt;&gt;txtTimeStampUpdMethod.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txtTimeStampUpdMethod.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="&gt;&gt;txtTimeStampUpdMethod.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;label6.Name" xml:space="preserve">
-    <value>label6</value>
-  </data>
-  <data name="&gt;&gt;label6.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label6.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
   <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 175</value>
   </data>
@@ -1231,78 +1027,6 @@
     <value>groupBox1</value>
   </data>
   <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;rbnODB.Name" xml:space="preserve">
-    <value>rbnODB</value>
-  </data>
-  <data name="&gt;&gt;rbnODB.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;rbnODB.Parent" xml:space="preserve">
-    <value>gbxDataProviders</value>
-  </data>
-  <data name="&gt;&gt;rbnODB.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;rbnOLE.Name" xml:space="preserve">
-    <value>rbnOLE</value>
-  </data>
-  <data name="&gt;&gt;rbnOLE.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;rbnOLE.Parent" xml:space="preserve">
-    <value>gbxDataProviders</value>
-  </data>
-  <data name="&gt;&gt;rbnOLE.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;rbnPstgrs.Name" xml:space="preserve">
-    <value>rbnPstgrs</value>
-  </data>
-  <data name="&gt;&gt;rbnPstgrs.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;rbnPstgrs.Parent" xml:space="preserve">
-    <value>gbxDataProviders</value>
-  </data>
-  <data name="&gt;&gt;rbnPstgrs.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;rbnMySQL.Name" xml:space="preserve">
-    <value>rbnMySQL</value>
-  </data>
-  <data name="&gt;&gt;rbnMySQL.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;rbnMySQL.Parent" xml:space="preserve">
-    <value>gbxDataProviders</value>
-  </data>
-  <data name="&gt;&gt;rbnMySQL.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;rbnDB2.Name" xml:space="preserve">
-    <value>rbnDB2</value>
-  </data>
-  <data name="&gt;&gt;rbnDB2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;rbnDB2.Parent" xml:space="preserve">
-    <value>gbxDataProviders</value>
-  </data>
-  <data name="&gt;&gt;rbnDB2.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;rbnODP.Name" xml:space="preserve">
-    <value>rbnODP</value>
-  </data>
-  <data name="&gt;&gt;rbnODP.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;rbnODP.Parent" xml:space="preserve">
-    <value>gbxDataProviders</value>
-  </data>
-  <data name="&gt;&gt;rbnODP.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
   <data name="&gt;&gt;rbnSQL.Name" xml:space="preserve">
@@ -1538,66 +1262,6 @@
   </data>
   <data name="rbnSQL.Text" xml:space="preserve">
     <value>SQL Server Client</value>
-  </data>
-  <data name="&gt;&gt;rbnSQL.Name" xml:space="preserve">
-    <value>rbnSQL</value>
-  </data>
-  <data name="&gt;&gt;rbnSQL.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;rbnSQL.Parent" xml:space="preserve">
-    <value>gbxDataProviders</value>
-  </data>
-  <data name="&gt;&gt;rbnSQL.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="&gt;&gt;txtPersonalName.Name" xml:space="preserve">
-    <value>txtPersonalName</value>
-  </data>
-  <data name="&gt;&gt;txtPersonalName.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txtPersonalName.Parent" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-  <data name="&gt;&gt;txtPersonalName.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;lblFamilyName.Name" xml:space="preserve">
-    <value>lblFamilyName</value>
-  </data>
-  <data name="&gt;&gt;lblFamilyName.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;lblFamilyName.Parent" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-  <data name="&gt;&gt;lblFamilyName.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;txtFamilyName.Name" xml:space="preserve">
-    <value>txtFamilyName</value>
-  </data>
-  <data name="&gt;&gt;txtFamilyName.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txtFamilyName.Parent" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-  <data name="&gt;&gt;txtFamilyName.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;label1.Name" xml:space="preserve">
-    <value>label1</value>
-  </data>
-  <data name="&gt;&gt;label1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>3</value>
   </data>
   <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 83</value>

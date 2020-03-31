@@ -30,7 +30,9 @@
 //*  2017/12/26  西野 大介         新規作成
 //*  2018/03/28  西野 大介         .NET Standard対応で、幾らか、I/F変更あり。
 //*  2018/11/27  西野 大介         XML(Base64) ---> Jwk(Base64Url)に変更。
-//*  2018/11/27  西野 大介         秘密鍵 <---> JWKサポート追加
+//*  2018/11/27  西野 大介         秘密鍵 <---> JWKのサポートを追加
+//*  2020/03/04  西野 大介         ...ECDsaのサポートを追加
+//*  2020/03/04  西野 大介         Claim生成メソッドの利用
 //**********************************************************************************
 
 using System;
@@ -64,19 +66,37 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public static string Create(
             string iss, string aud, TimeSpan forExp, string scopes, string jwkPrivateKey)
         {
-            RsaPrivateKeyConverter rpkc = new RsaPrivateKeyConverter(JWS_RSA.RS._256);
-            return JwtAssertion.Create(iss, aud, forExp, scopes,
-                rpkc.JwkToParam(jwkPrivateKey));
+            JObject temp = JsonConvert.DeserializeObject<JObject>(jwkPrivateKey);
+            if (temp.ContainsKey("kty"))
+            {
+                if (((string)temp["kty"]).ToUpper() == "RSA")
+                {
+                    RsaPrivateKeyConverter rpkc = new RsaPrivateKeyConverter(JWS_RSA.RS._256);
+                    return JwtAssertion.CreateByRsa(iss, aud, forExp, scopes,
+                        rpkc.JwkToParam(jwkPrivateKey));
+                }
+#if NET45 || NET46
+#else
+                else if (((string)temp["kty"]).ToUpper() == "EC")
+                {
+                    EccPrivateKeyConverter epkc = new EccPrivateKeyConverter(JWS_ECDSA.ES._256);
+                    return JwtAssertion.CreateByECDsa(iss, aud, forExp, scopes,
+                        epkc.JwkToParam(jwkPrivateKey));
+                }
+#endif
+            }
+
+            return "";
         }
 
-        /// <summary>Create</summary>
+        /// <summary>CreateByRsa</summary>
         /// <param name="iss">client_id</param>
         /// <param name="aud">Token2 EndPointのuri</param>
         /// <param name="forExp">DateTimeOffset</param>
         /// <param name="scopes">scopes</param>
         /// <param name="rsaPrivateKey">RS256用のRSAParameters秘密鍵</param>
         /// <returns>JwtAssertion</returns>
-        public static string Create(
+        public static string CreateByRsa(
             string iss, string aud, TimeSpan forExp, string scopes, RSAParameters rsaPrivateKey)
         {
             string json = "";
@@ -89,15 +109,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token EndPointのuri。
 
-#if NET45
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, PubCmnFunction.ToUnixTime(DateTimeOffset.Now.Add(forExp)).ToString());
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iat, PubCmnFunction.ToUnixTime(DateTimeOffset.Now).ToString());
-#else
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, (DateTimeOffset.Now.Add(forExp)).ToUnixTimeSeconds().ToString());
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iat, DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
-#endif
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, CmnJwtToken.CreateExpClaim(forExp));
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iat, CmnJwtToken.CreateIatClaim());
 
-            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.jti, Guid.NewGuid().ToString("N"));
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.jti, CmnJwtToken.CreateJitClaim());
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.scope, scopes); // scopes
 
             json = JsonConvert.SerializeObject(jwtAssertionClaimSet);
@@ -111,6 +126,89 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             #endregion
         }
+
+#if NET45 || NET46
+#else
+        /// <summary>CreateByECDsa</summary>
+        /// <param name="iss">client_id</param>
+        /// <param name="aud">Token2 EndPointのuri</param>
+        /// <param name="forExp">DateTimeOffset</param>
+        /// <param name="scopes">scopes</param>
+        /// <param name="eccPrivateKey">ES256用のECParameters秘密鍵</param>
+        /// <returns>JwtAssertion</returns>
+        public static string CreateByECDsa(
+            string iss, string aud, TimeSpan forExp, string scopes, ECParameters eccPrivateKey)
+        {
+            string json = "";
+            //string jws = "";
+
+            #region ClaimSetの生成
+
+            Dictionary<string, object> jwtAssertionClaimSet = new Dictionary<string, object>();
+
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token EndPointのuri。
+
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, CmnJwtToken.CreateExpClaim(forExp));
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iat, CmnJwtToken.CreateIatClaim());
+
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.jti, CmnJwtToken.CreateJitClaim());
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.scope, scopes); // scopes
+
+            json = JsonConvert.SerializeObject(jwtAssertionClaimSet);
+
+            #endregion
+
+            #region JWT化
+
+            JWS_ES256_Param jwtES256 = new JWS_ES256_Param(eccPrivateKey, true);
+            return jwtES256.Create(json);
+
+            #endregion
+        }
+
+        /// <summary>CreateByECDsa</summary>
+        /// <param name="iss">client_id</param>
+        /// <param name="aud">Token2 EndPointのuri</param>
+        /// <param name="forExp">DateTimeOffset</param>
+        /// <param name="scopes">scopes</param>
+        /// <param name="ecdsaX509FilePath">ES256用の X.509秘密鍵 の File Path</param>
+        /// <param name="ecdsaX509Password">ES256用の X.509秘密鍵 の Password</param>
+        /// <returns>JwtAssertion</returns>
+        public static string CreateByECDsa(
+            string iss, string aud, TimeSpan forExp, string scopes,
+            string ecdsaX509FilePath, string ecdsaX509Password)
+        ///// <param name="eccPrivateKey">ES256用のECParameters秘密鍵</param>
+        //ECParameters ecPrivateKey) // ECDsa.ExportParameters(true)が動かねぇ。
+        {
+            string json = "";
+            //string jws = "";
+
+            #region ClaimSetの生成
+
+            Dictionary<string, object> jwtAssertionClaimSet = new Dictionary<string, object>();
+
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token EndPointのuri。
+
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, CmnJwtToken.CreateExpClaim(forExp));
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iat, CmnJwtToken.CreateIatClaim());
+
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.jti, CmnJwtToken.CreateJitClaim());
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.scope, scopes); // scopes
+
+            json = JsonConvert.SerializeObject(jwtAssertionClaimSet);
+
+            #endregion
+
+            #region JWT化
+
+            JWS_ES256_X509 jwtES256 = new JWS_ES256_X509(ecdsaX509FilePath, ecdsaX509Password);
+            return jwtES256.Create(json);
+
+            #endregion
+        }
+#endif
         #endregion
 
         #region Verify
@@ -125,13 +223,37 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public static bool Verify(string jwtAssertion,
             out string iss, out string aud, out string scopes, out JObject jobj, string jwkPublicKey)
         {
-            RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
-            return JwtAssertion.Verify(jwtAssertion,
-                out iss, out aud, out scopes, out jobj,
-                rpkc.JwkToParam(jwkPublicKey));
+            iss = "";
+            aud = "";
+            scopes = "";
+            jobj = null;
+
+            JObject temp = JsonConvert.DeserializeObject<JObject>(jwkPublicKey);
+            if (temp.ContainsKey("kty"))
+            {
+                if (((string)temp["kty"]).ToUpper() == "RSA")
+                {
+                    RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
+                    return JwtAssertion.VerifyByRsa(jwtAssertion,
+                        out iss, out aud, out scopes, out jobj,
+                        rpkc.JwkToParam(jwkPublicKey));
+                }
+#if NET45 || NET46
+#else
+                else if (((string)temp["kty"]).ToUpper() == "EC")
+                {
+                    EccPublicKeyConverter epkc = new EccPublicKeyConverter();
+                    return JwtAssertion.VerifyByECDsa(jwtAssertion,
+                        out iss, out aud, out scopes, out jobj,
+                        epkc.JwkToParam(jwkPublicKey));
+                }
+#endif
+            }
+
+            return false;
         }
 
-        /// <summary>Verify</summary>
+        /// <summary>VerifyByRsa</summary>
         /// <param name="jwtAssertion">string</param>
         /// <param name="iss">client_id</param>
         /// <param name="aud">Token2 EndPointのuri</param>
@@ -139,7 +261,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="jobj">JObject</param>
         /// <param name="rsaPublicKey">RS256用のRSAParameters公開鍵</param>
         /// <returns>検証結果</returns>
-        public static bool Verify(string jwtAssertion,
+        public static bool VerifyByRsa(string jwtAssertion,
             out string iss, out string aud, out string scopes, out JObject jobj, RSAParameters rsaPublicKey)
         {
             iss = "";
@@ -185,6 +307,64 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // 認証に失敗
             return false;
         }
+
+#if NET45 || NET46
+#else
+        /// <summary>VerifyByECDsa</summary>
+        /// <param name="jwtAssertion">string</param>
+        /// <param name="iss">client_id</param>
+        /// <param name="aud">Token2 EndPointのuri</param>
+        /// <param name="scopes">scopes</param>
+        /// <param name="jobj">JObject</param>
+        /// <param name="eccPublicKey">ES256用のECParameters公開鍵</param>
+        /// <returns>検証結果</returns>
+        public static bool VerifyByECDsa(string jwtAssertion,
+            out string iss, out string aud, out string scopes, out JObject jobj, ECParameters eccPublicKey)
+        {
+            iss = "";
+            aud = "";
+            scopes = "";
+            jobj = null;
+
+            JWS_ES256_Param jwtES256 = new JWS_ES256_Param(eccPublicKey, false);
+
+            if (jwtES256.Verify(jwtAssertion))
+            {
+                string jwtPayload = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(jwtAssertion.Split('.')[1]), CustomEncode.UTF_8);
+
+                jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
+
+                iss = (string)jobj[OAuth2AndOIDCConst.iss];
+                aud = (string)jobj[OAuth2AndOIDCConst.aud];
+                //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
+                scopes = (string)jobj[OAuth2AndOIDCConst.scope];
+
+                long unixTimeSeconds = 0;
+#if NET45
+                unixTimeSeconds = PubCmnFunction.ToUnixTime(DateTimeOffset.Now);
+#else
+                unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
+#endif
+                string exp = (string)jobj[OAuth2AndOIDCConst.exp];
+                if (long.Parse(exp) >= unixTimeSeconds)
+                {
+                    return true;
+                }
+                else
+                {
+                    // JWTの内容検証に失敗
+                }
+            }
+            else
+            {
+                // JWTの署名検証に失敗
+            }
+
+            // 認証に失敗
+            return false;
+        }
+#endif
         #endregion
     }
 }

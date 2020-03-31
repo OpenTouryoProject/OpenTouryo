@@ -147,7 +147,7 @@ namespace MVC_Sample.Controllers
             {
                 // 外部ログイン
                 return Redirect(string.Format(
-                    "https://localhost:44300/MultiPurposeAuthSite/Account/OAuth2Authorize"
+                    "https://localhost:44300/MultiPurposeAuthSite/authorize"
                     + "?client_id=" + OAuth2AndOIDCParams.ClientID
                     + "&response_type=code" 
                     + "&scope=profile%20email%20phone%20address%20openid" 

@@ -31,6 +31,7 @@
 //*  2017/04/24  西野 大介         新規
 //*  2018/08/10  西野 大介         汎用認証サイトからのコード移行
 //*  2019/08/01  西野 大介         client_secret_postのサポートを追加
+//*  2020/03/04  西野 大介         CIBAの認可リクエスト（WebAPI）を追加
 //**********************************************************************************
 
 using System;
@@ -76,7 +77,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="client_secret">client_secret</param>
         /// <param name="redirect_uri">redirect_uri</param>
         /// <param name="code">code</param>
-        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>        
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
         /// <returns>結果のJSON文字列</returns>
         public static async Task<string> GetAccessTokenByCodeAsync(
             Uri tokenEndpointUri, string client_id, string client_secret, string redirect_uri, string code,
@@ -643,6 +644,89 @@ namespace Touryo.Infrastructure.Framework.Authentication
             httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
+
+        #region CIBA
+        /// <summary>FAPI CIBAの認可リクエスト（WebAPI）</summary>
+        /// <param name="cibaAuthZUri">Uri</param>
+        /// <param name="requestObjectUri">string</param>
+        /// <returns>結果のJSON文字列</returns>
+        public static async Task<string> CibaAuthZRequestAsyncAsync(Uri cibaAuthZUri, string requestObjectUri)
+        {
+            // 通信用の変数
+            HttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage httpResponseMessage = null;
+
+            // HttpRequestMessage (Method & RequestUri)
+            httpRequestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = cibaAuthZUri,
+            };
+
+            httpRequestMessage.Content = new FormUrlEncodedContent(
+                   new Dictionary<string, string>
+                   {
+                        { OAuth2AndOIDCConst.request_uri, requestObjectUri }
+                   });
+
+            // HttpResponseMessage
+            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>FAPI CIBAのTokenリクエスト</summary>
+        /// <param name="tokenEndpointUri">Uri</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret</param>
+        /// <param name="auth_req_id">string</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>     
+        /// <returns>結果のJSON文字列</returns>
+        public static async Task<string> GetAccessTokenByCibaAsync(
+            Uri tokenEndpointUri, string client_id, string client_secret, string auth_req_id,
+            OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_basic)
+        {
+            // 通信用の変数
+            HttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage httpResponseMessage = null;
+
+            // HttpRequestMessage (Method & RequestUri)
+            httpRequestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = tokenEndpointUri,
+            };
+
+            // body
+            Dictionary<string, string> body = new Dictionary<string, string>
+            {
+                { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.CibaGrantType },
+                { "auth_req_id", auth_req_id }
+            };
+
+            // 認証情報の付加
+            if (authMethod == OAuth2AndOIDCEnum.AuthMethods.client_secret_basic)
+            {
+                httpRequestMessage.Headers.Authorization
+                    = AuthenticationHeader.CreateBasicAuthenticationHeaderValue(client_id, client_secret);
+            }
+            else if (authMethod == OAuth2AndOIDCEnum.AuthMethods.client_secret_post)
+            {
+                body.Add(OAuth2AndOIDCConst.client_id, client_id);
+                body.Add(OAuth2AndOIDCConst.client_secret, client_secret);
+            }
+            else
+            {
+                throw new ArgumentException(
+                    PublicExceptionMessage.ARGUMENT_INCORRECT, "authMethod");
+            }
+
+            httpRequestMessage.Content = new FormUrlEncodedContent(body);
+
+            // HttpResponseMessage
+            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+        #endregion
 
         #endregion
     }

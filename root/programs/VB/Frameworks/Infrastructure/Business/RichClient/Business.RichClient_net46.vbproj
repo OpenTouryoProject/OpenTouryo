@@ -77,6 +77,9 @@
     <Reference Include="OpenTouryo.Framework.RichClient">
       <HintPath>..\..\Build_net46\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\Build_net46\OpenTouryo.Public.dll</HintPath>
+    </Reference>
     <Reference Include="Oracle.ManagedDataAccess">
       <HintPath>..\..\Build_net46\Oracle.ManagedDataAccess.dll</HintPath>
     </Reference>
@@ -85,9 +88,6 @@
     </Reference>
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\Build_net46\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

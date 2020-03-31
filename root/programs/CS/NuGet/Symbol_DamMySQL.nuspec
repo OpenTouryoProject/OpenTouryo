@@ -3,11 +3,12 @@
   <metadata>
     <id>Touryo.Infrastructure.Public.Db.DamMySQL</id>
     <title>OpenTouryo.DamMySQL</title>
-    <version>2.5.0</version>
+    <version>2.6.0</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
     <license type="expression">Apache-2.0</license>
     <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root/programs/CS/Frameworks/Infrastructure/Public/Db/DamMySQL</projectUrl>
+    <icon>_OpenTouryo.png</icon>
     <iconUrl>https://opentouryo.osscons.jp/OpenTouryo.ico</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <summary>DataAccess library of MySql.Data in OpenTouryo.</summary>
@@ -16,18 +17,20 @@
     <copyright></copyright>
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
-      <group>
-        <dependency id="Touryo.Infrastructure.Public" version="2.5.0" />
+      <group targetFramework="net452,net46,net47,net48">
+        <dependency id="Touryo.Infrastructure.Public" version="2.6.0" />
         <dependency id="Google.Protobuf" version="3.6.1" />
         <dependency id="MySql.Data" version="8.0.13" />
       </group>
-      <group targetFramework="netstandard2.0">
-        <dependency id="Touryo.Infrastructure.Public" version="2.5.0" />
+      <group targetFramework="netstandard2.0,netstandard2.1">
+        <dependency id="Touryo.Infrastructure.Public" version="2.6.0" />
         <dependency id="MySql.Data" version="8.0.13" />
       </group>
     </dependencies>
   </metadata>
   <files>
+    <file src="_OpenTouryo.png" target="" />
+
     <file src="in\net452\OpenTouryo.DamMySQL.dll" target="lib\net452" />
     <file src="in\net452\OpenTouryo.DamMySQL.pdb" target="lib\net452" />
     <file src="in\net452\OpenTouryo.DamMySQL.xml" target="lib\net452" />

@@ -28,6 +28,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/08/10  西野 大介         新規作成（汎用認証サイトからのコード移行）
+//*  201X/XX/XX  西野 大介         ...
+//*  2020/02/27  西野 大介         CIBAのパラメタを追加
 //**********************************************************************************
 
 // urnはClaimのurnで、
@@ -177,6 +179,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>JWT bearer token authorizationグラント種別</summary>
         public const string JwtBearerTokenFlowGrantType = "urn:ietf:params:oauth:grant-type:jwt-bearer";
+
+        /// <summary>CIBA(Client Initiated Backchannel Authentication)グラント種別</summary>
+        public const string CibaGrantType = "urn:openid:params:grant-type:ciba";
 
         #endregion
 
@@ -509,6 +514,40 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>PKCE S256</summary>
         public const string PKCE_S256 = "S256";
+
+        #endregion
+
+        #region CIBA
+
+        #region 認可リクエスト
+        /// <summary>Login Hint Token</summary>
+        public const string login_hint_token = "login_hint_token";
+
+        /// <summary>Id Token Hint</summary>
+        public const string id_token_hint = "id_token_hint";
+
+        /// <summary>Binding Message</summary>
+        public const string binding_message = "binding_message";
+
+        /// <summary>User Code</summary>
+        public const string user_code = "user_code";
+
+        /// <summary>Requested Expiry</summary>
+        public const string requested_expiry = "requested_expiry";
+        
+        /// <summary>Client Notification Token</summary>
+        public const string client_notification_token = "client_notification_token";
+        #endregion
+
+        #region 認可レスポンス
+        /// <summary>Auth Req Id</summary>
+        public const string auth_req_id = "auth_req_id";
+
+        // expires_in
+
+        /// <summary>PollingInterval</summary>
+        public const string PollingInterval = "interval";
+        #endregion
 
         #endregion
 

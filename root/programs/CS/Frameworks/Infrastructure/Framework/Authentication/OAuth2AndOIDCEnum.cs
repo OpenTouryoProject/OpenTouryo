@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/02/06  西野 大介         新規作成
+//*  2019/12/25  西野 大介         PPID対応による見直し
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -87,7 +88,95 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
-        #region ClientMode
+        #region SubjectTypes
+
+        /// <summary>SubjectTypes</summary>
+        public enum SubjectTypes : int
+        {
+            /// <summary>uname</summary>
+            uname,
+
+            /// <summary>public</summary>
+            @public,
+
+            /// <summary>pairwise</summary>
+            pairwise
+        }
+
+        #endregion
+
+        #region CIBA
+
+        #region CIBA mode
+
+        /// <summary>CibaのMode</summary>
+        public enum CibaMode : int
+        {
+            /// <summary>poll</summary>
+            poll,
+
+            /// <summary>ping</summary>
+            ping,
+
+            /// <summary>push</summary>
+            push
+        }
+
+        #endregion
+
+        #region CIBA state
+
+        /// <summary>CibaのState</summary>
+        public enum CibaState : int
+        {
+            /// <summary>
+            /// 保留中
+            /// </summary>
+            authorization_pending,
+            /// <summary>
+            /// 許可された（仕様外）
+            /// </summary>
+            access_permitted,
+            /// <summary>
+            /// 拒否された
+            /// </summary>
+            access_denied,
+            /// <summary>
+            /// 期限切れ
+            /// </summary>
+            expired_token,
+            /// <summary>
+            /// Polling間隔を5秒遅らせる。
+            /// </summary>
+            slow_down,
+            /// <summary>
+            /// 見つからない（仕様外）
+            /// </summary>
+            not_found,
+            /// <summary>
+            /// データ不正（仕様外）
+            /// </summary>
+            irregularity_data
+        }
+
+        #endregion
+
+        #endregion
+
+        #region ClientInfo(仕様外)
+
+        /// <summary>ClientType</summary>
+        public enum ClientType : int
+        {
+            /// <summary>Confidential</summary>
+            confidential,
+
+            /// <summary>Public(SPA)</summary>
+            public_spa,
+
+            /// <summary>Public(Native)</summary>
+            public_native
+        }
 
         /// <summary>ClientMode</summary>
         public enum ClientMode : int

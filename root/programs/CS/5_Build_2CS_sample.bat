@@ -23,7 +23,7 @@ rem --------------------------------------------------
 pause
 
 rem --------------------------------------------------
-rem Batch build of DenDaoAndBatUpd_sample.
+rem Batch build of GenDaoAndBatUpd_sample.
 rem --------------------------------------------------
 %BUILDFILEPATH% %COMMANDLINE% "Samples\2CS_sample\GenDaoAndBatUpd_sample\GenDaoAndBatUpd_sample.sln"
 

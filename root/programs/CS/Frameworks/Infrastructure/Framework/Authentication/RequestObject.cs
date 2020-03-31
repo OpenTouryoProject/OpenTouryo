@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/06/19  西野 大介         新規作成
+//*  2020/03/03  西野 大介         CIBA対応
 //**********************************************************************************
 
 using System;
@@ -50,6 +51,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// </summary>
     public class RequestObject
     {
+        #region FAPI2 CC
+
+        // OpenID Connect Core 1.0 incorporating errata set 1
+        // 6.1.  Passing a Request Object by Value
         // https://openid.net/specs/openid-connect-core-1_0.html#RequestObject
         //  {
         //   "iss": "s6BhdRkqt3",
@@ -83,7 +88,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="prompt">string</param>
         /// <param name="login_hint">string</param>
         /// <param name="claims">ClaimsInRO</param>
-        /// <param name="jwkPrivateKey">string</param>
+        /// <param name="jwkPrivateKey">RS256用のJWK秘密鍵</param>
         /// <returns>RequestObject</returns>
         public static string Create(
             string iss, string aud, string response_type, string response_mode,
@@ -119,7 +124,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string max_age, string prompt, string login_hint, ClaimsInRO claims, RSAParameters rsaPrivateKey)
         {
             string json = "";
-            //string jws = "";
 
             #region ClaimSetの生成
 
@@ -186,14 +190,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
             iss = "";
             string aud = "";
             string response_type = "";
-            //string response_mode = "";
-            //string redirect_uri = "";
             string scopes = "";
             string state = "";
             string nonce = "";
-            //string prompt = "";
-            //string login_hint = "";
-            //JObject claims = null;
 
             JWS_RS256_Param jwtRS256 = new JWS_RS256_Param(rsaPublicKey);
 
@@ -207,23 +206,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 iss = (string)jobj[OAuth2AndOIDCConst.iss];
                 aud = (string)jobj[OAuth2AndOIDCConst.aud];
                 response_type = (string)jobj[OAuth2AndOIDCConst.response_type];
-
-                //if(jobj.ContainsKey(OAuth2AndOIDCConst.response_mode))
-                //    response_mode = (string)jobj[OAuth2AndOIDCConst.response_mode];
-                //if (jobj.ContainsKey(OAuth2AndOIDCConst.redirect_uri))
-                //    redirect_uri = (string)jobj[OAuth2AndOIDCConst.redirect_uri];
-
                 scopes = (string)jobj[OAuth2AndOIDCConst.scope];
                 state = (string)jobj[OAuth2AndOIDCConst.state];
                 nonce = (string)jobj[OAuth2AndOIDCConst.nonce];
-
-                //if (jobj.ContainsKey(OAuth2AndOIDCConst.prompt))
-                //    prompt = (string)jobj[OAuth2AndOIDCConst.prompt];
-                //if (jobj.ContainsKey(OAuth2AndOIDCConst.login_hint))
-                //    login_hint = (string)jobj[OAuth2AndOIDCConst.login_hint];
-
-                //if (jobj.ContainsKey(OAuth2AndOIDCConst.claims))
-                //    claims = (JObject)jobj[OAuth2AndOIDCConst.claims];
 
                 if (!string.IsNullOrEmpty(iss) &&
                     !string.IsNullOrEmpty(aud) &&
@@ -248,5 +233,192 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
         #endregion
+
+        #endregion
+
+#if NET45 || NET46
+#else
+        #region FAPI CIBA
+
+        // - OpenID Connect Client Initiated Backchannel Authentication Flow - Core 1.0 draft-01
+        //   https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html
+        // - Financial-grade API: Client Initiated Backchannel Authentication Profile
+        //   https://openid.net/specs/openid-financial-api-ciba-ID1.html
+
+        #region Create
+        ///// <summary>CreateCiba</summary>
+        ///// <param name="iss">string</param>
+        ///// <param name="aud">string</param>
+        ///// <param name="exp">string</param>
+        ///// <param name="nbf">string</param>
+        ///// <param name="scopes">string</param>
+        ///// <param name="client_notification_token">string</param>
+        ///// <param name="binding_message">string</param>
+        ///// <param name="user_code">string</param>
+        ///// <param name="requested_expiry">string</param>
+        ///// <param name="login_hint">string</param>
+        ///// <param name="requestContextAndIntent">Dictionary(string, object)</param>
+        ///// <param name="jwkPrivateKey">ES256用のJWK秘密鍵</param>
+        ///// <returns>RequestObject</returns>
+        //public static string CreateCiba(
+        //    string iss, string aud, string exp, string nbf, string scopes,
+        //    string client_notification_token, string binding_message,
+        //    string user_code, string requested_expiry, string login_hint,
+        //    Dictionary<string, object> requestContextAndIntent, string jwkPrivateKey)
+        //{   
+        //    EccPrivateKeyConverter epkc = new EccPrivateKeyConverter();
+        //    return RequestObject.CreateCiba(
+        //        iss, aud, exp, nbf, scopes, 
+        //        client_notification_token, binding_message,
+        //        user_code, requested_expiry, login_hint,
+        //        requestContextAndIntent, epkc.JwkToParam(jwkPrivateKey));
+        //}
+
+        /// <summary>CreateCiba</summary>
+        /// <param name="iss">string</param>
+        /// <param name="aud">string</param>
+        /// <param name="exp">string</param>
+        /// <param name="nbf">string</param>
+        /// <param name="scopes">string</param>
+        /// <param name="client_notification_token">string</param>
+        /// <param name="binding_message">string</param>
+        /// <param name="user_code">string</param>
+        /// <param name="requested_expiry">string</param>
+        /// <param name="login_hint">string</param>
+        /// <param name="requestContextAndIntent">Dictionary(string, object)</param>
+        /// <param name="ecdsaX509FilePath">ES256用の X.509秘密鍵 の File Path</param>
+        /// <param name="ecdsaX509Password">ES256用の X.509秘密鍵 の Password</param>
+        /// <returns>RequestObject</returns>
+        public static string CreateCiba(
+            string iss, string aud, string exp, string nbf, string scopes,
+            string client_notification_token, string binding_message,
+            string user_code, string requested_expiry, string login_hint,
+            Dictionary<string, object> requestContextAndIntent,
+            string ecdsaX509FilePath, string ecdsaX509Password)
+        ///// <param name="ecPrivateKey">ES256用のECParameters秘密鍵</param>
+        //ECParameters ecPrivateKey) // ECDsa.ExportParameters(true)が動かねぇ。
+        {
+            string json = "";
+
+            #region ClaimSetの生成
+
+            Dictionary<string, object> requestObjectClaimSet = new Dictionary<string, object>();
+
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // ROS EndPointのuri。
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.exp, exp);
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.iat, CmnJwtToken.CreateIatClaim());
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.nbf, nbf);
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.jti, CmnJwtToken.CreateJitClaim());
+            
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.scope, scopes);
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.client_notification_token, client_notification_token);
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.binding_message, binding_message);
+            
+            if (!string.IsNullOrEmpty(user_code))
+                requestObjectClaimSet.Add(OAuth2AndOIDCConst.user_code, user_code);
+            if (!string.IsNullOrEmpty(requested_expiry))
+                requestObjectClaimSet.Add(OAuth2AndOIDCConst.requested_expiry, requested_expiry);
+
+            requestObjectClaimSet.Add(OAuth2AndOIDCConst.login_hint, login_hint);
+
+            if (requestContextAndIntent != null)
+            {
+                foreach (string key in requestContextAndIntent.Keys)
+                {
+                    requestObjectClaimSet.Add(key, requestContextAndIntent[key]);
+                }   
+            }   
+
+            json = JsonConvert.SerializeObject(requestObjectClaimSet);
+
+            #endregion
+
+            #region JWT化
+
+            JWS_ES256_X509 jwtES256 = new JWS_ES256_X509(ecdsaX509FilePath, ecdsaX509Password);
+            return jwtES256.Create(json);
+
+            #endregion
+        }
+        #endregion
+
+        #region Verify
+        /// <summary>VerifyCiba</summary>
+        /// <param name="ro">string</param>
+        /// <param name="iss">string</param>
+        /// <param name="jwkPublicKey">ES256用のJWK公開鍵</param>
+        /// <returns>検証結果</returns>
+        public static bool VerifyCiba(string ro, out string iss, string jwkPublicKey)
+        {
+            EccPublicKeyConverter epkc = new EccPublicKeyConverter();
+            return RequestObject.VerifyCiba(ro, out iss,
+                epkc.JwkToParam(jwkPublicKey));
+        }
+
+        /// <summary>VerifyCiba</summary>
+        /// <param name="ro">string</param>
+        /// <param name="iss">string</param>
+        /// <param name="ecPublicKey">ES256用のECParameters公開鍵</param>
+        /// <returns>検証結果</returns>
+        public static bool VerifyCiba(string ro, out string iss, ECParameters ecPublicKey)
+        {
+            iss = "";
+            string aud = "";
+            string exp = "";
+            string nbf = "";
+            string scopes = "";
+            string client_notification_token = "";
+            string binding_message = "";
+            string login_hint = "";
+
+            JWS_ES256_Param jwtES256 = new JWS_ES256_Param(ecPublicKey, false);
+
+            if (jwtES256.Verify(ro))
+            {
+                string jwtPayload = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(ro.Split('.')[1]), CustomEncode.UTF_8);
+
+                JObject jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
+
+                iss = (string)jobj[OAuth2AndOIDCConst.iss];
+                aud = (string)jobj[OAuth2AndOIDCConst.aud];
+                exp = (string)jobj[OAuth2AndOIDCConst.exp];
+                nbf = (string)jobj[OAuth2AndOIDCConst.nbf];
+                scopes = (string)jobj[OAuth2AndOIDCConst.scope];
+                client_notification_token = (string)jobj[OAuth2AndOIDCConst.client_notification_token];
+                binding_message = (string)jobj[OAuth2AndOIDCConst.binding_message];
+                login_hint = (string)jobj[OAuth2AndOIDCConst.login_hint];
+
+                //if (...requestContextAndIntent
+
+                if (!string.IsNullOrEmpty(iss) &&
+                    !string.IsNullOrEmpty(aud) &&
+                    !string.IsNullOrEmpty(exp) &&
+                    !string.IsNullOrEmpty(nbf) &&
+                    !string.IsNullOrEmpty(scopes) &&
+                    !string.IsNullOrEmpty(client_notification_token) &&
+                    !string.IsNullOrEmpty(binding_message) &&
+                    !string.IsNullOrEmpty(login_hint))
+                {
+                    // OK
+                    return true;
+                }
+                else
+                {
+                    // 必須項目の不足
+                    return true;
+                }
+            }
+            else
+            {
+                // JWTの署名検証に失敗
+                return false;
+            }
+        }
+        #endregion
+
+        #endregion
+#endif
     }
 }

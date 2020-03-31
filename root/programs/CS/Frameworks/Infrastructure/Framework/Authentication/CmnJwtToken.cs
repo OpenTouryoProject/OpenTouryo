@@ -28,6 +28,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/11/28  西野 大介         新規作成（分割）
+//*  2020/03/02  西野 大介         検証メソッドの追加
+//*  2020/03/04  西野 大介         Claim生成メソッドの追加
 //**********************************************************************************
 
 using System;
@@ -38,6 +40,7 @@ using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Security.Jwt;
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -234,5 +237,109 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             return ret;
         }
+
+        /// <summary>
+        /// OAuth2AndOIDCConst.jti
+        /// </summary>
+        /// <returns>
+        /// JitClaim
+        /// </returns>
+        public static string CreateJitClaim()
+        {
+            return Guid.NewGuid().ToString("N");
+        }
+
+        /// <summary>
+        /// OAuth2AndOIDCConst.iat
+        /// </summary>
+        /// <returns>
+        /// IatClaim
+        /// </returns>
+        public static string CreateIatClaim()
+        {
+#if NET45
+            return PubCmnFunction.ToUnixTime(DateTimeOffset.Now).ToString();
+#else
+            return DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+#endif
+        }
+
+        /// <summary>
+        /// OAuth2AndOIDCConst.exp
+        /// </summary>
+        /// <param name="forExp">TimeSpan</param>
+        /// <returns>
+        /// ExpClaim
+        /// </returns>
+        public static string CreateExpClaim(TimeSpan forExp)
+        {
+#if NET45
+            return PubCmnFunction.ToUnixTime(DateTimeOffset.Now.Add(forExp)).ToString();
+#else
+            return DateTimeOffset.Now.Add(forExp).ToUnixTimeSeconds().ToString();
+#endif
+        }
+
+        /// <summary>CheckClaims</summary>
+        /// <param name="json">JObject</param>
+        /// <param name="key">string</param>
+        /// <param name="value">string</param>
+        /// <param name="err">string</param>
+        /// <param name="errDescription">string</param>
+        /// <param name="nullable">bool</param>
+        /// <returns>bool</returns>
+        public static bool CheckClaims(
+            JObject json, string key, out string value,
+            out string err, out string errDescription, bool nullable = false)
+        {
+            value = "";
+            err = "";
+            errDescription = "";
+
+            if (json.ContainsKey(key))
+            {
+                value = (string)json[key];
+                return true;
+            }
+            else
+            {
+                if (nullable)
+                {
+                    return true;
+                }
+                else
+                {
+                    err = "server_error";
+                    errDescription = "the value correspond this key is not contained: " + key;
+                    return false;
+                }
+            }
+        }
+
+        #region ClaimVerifier
+        /// <summary>VerifyExp</summary>
+        /// <param name="exp">exp</param>
+        /// <returns>bool</returns>
+        public static bool VerifyExp(string exp)
+        {
+#if NET45
+            return (long.Parse(exp) >= PubCmnFunction.ToUnixTime(DateTimeOffset.Now));
+#else
+            return (long.Parse(exp) >= DateTimeOffset.Now.ToUnixTimeSeconds());
+#endif
+        }
+
+        /// <summary>VerifyNbf</summary>
+        /// <param name="nbf">nbf</param>
+        /// <returns>bool</returns>
+        public static bool VerifyNbf(string nbf)
+        {
+#if NET45
+            return (long.Parse(nbf) <=  PubCmnFunction.ToUnixTime(DateTimeOffset.Now));
+#else
+            return (long.Parse(nbf) <= DateTimeOffset.Now.ToUnixTimeSeconds());
+#endif
+        }
+        #endregion
     }
 }

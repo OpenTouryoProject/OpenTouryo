@@ -28,9 +28,11 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2008/xx/xx  西野 大介         新規作成
-//*  2014/04/30  Santosh san       Internationalization: Added Method to get the strings from the resource files based on the keys values passed.
-//*                                and and replaced this method wherever hard coded values.
-//*                                Also Added code to get the Culture information from app.config file.                                   
+//*  2014/04/30  Santosh san       Internationalization: Added Method to get the strings
+//*                                from the resource files based on the keys values passed.
+//*                                and replaced to this method wherever hard coded values.
+//*                                Also Added code to get the Culture information from app.config file.
+//*  2018/10/29  西野 大介         NETCOREAPP対応で、configの初期化
 //**********************************************************************************
 
 using System;
@@ -52,6 +54,11 @@ namespace DaoGen_Tool
         [STAThread]
         static void Main()
         {
+#if NETCOREAPP
+            // configの初期化
+            GetConfigParameter.InitConfiguration("appsettings.json");
+#else
+#endif
             try
             {
                 Application.EnableVisualStyles();

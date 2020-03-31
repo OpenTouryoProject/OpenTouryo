@@ -32,6 +32,7 @@
 //*                                Created Resource folder and Resource.ja-JP.resx,Resource.resx files inside the Resource folder.
 //*                                Added proper key and values in those files for English and Japanese languages.
 //*  2014/05/12  Rituparna         Removed <start> and <End> tags, added check while reading DefaultCulture from app.config file   
+//*  2018/10/29  西野 大介         NETCOREAPP対応で、configの初期化
 //**********************************************************************************
 
 using System;
@@ -53,6 +54,11 @@ namespace DPQuery_Tool
         [STAThread]
         static void Main()
         {
+#if NETCOREAPP
+            // configの初期化
+            GetConfigParameter.InitConfiguration("appsettings.json");
+#else
+#endif
             try
             {
                 // Add DefaultCulture key in app.Config file and take the culture value from app.Config file.

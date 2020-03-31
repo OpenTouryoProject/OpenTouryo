@@ -35,6 +35,7 @@
 //*  2012/02/09  西野 大介         OLEDB、ODBCのデータプロバイダ対応
 //*  2014/02/05  西野 大介         System.Data.OracleClientデータプロバイダ対応
 //*  2017/11/29  西野 大介         Resource化したメッセージを削除
+//*  2018/10/29  西野 大介         NETCOREAPP対応で、サポートされないDBを「#if」した。
 //**********************************************************************************
 
 namespace DPQuery_Tool
@@ -75,9 +76,6 @@ namespace DPQuery_Tool
         /// <summary>選択：SQL Server用 sqlClient</summary>
         public const string DAP_SQL = "SQL Server - sqlClient";
 
-        /// <summary>選択：OLEDB.NET</summary>
-        public const string DAP_OLE = "OLEDB.NET";
-        
         /// <summary>選択：ODBC.NET</summary>
         public const string DAP_ODB = "ODBC.NET";
 
@@ -87,17 +85,23 @@ namespace DPQuery_Tool
         /// <summary>選択：Oracle用 ODP.NET</summary>
         public const string DAP_ODP = "Oracle - ODP.NET";
 
-        /// <summary>選択：DB2用 DB2.NET</summary>
-        public const string DAP_DB2 = "DB2 - DB2.NET";
-
-        ///// <summary>選択：HiRDB用 データ プロバイダ</summary>
-        //public const string DAP_HiRDB = "HiRDB - HiRDBデータ プロバイダ";
-
         /// <summary>選択：MySQL用 MySQL Connector/NET</summary>
         public const string DAP_MySQL = "MySQL - Connector/NET";
 
         /// <summary>選択：PostgreSQL用 Npgsql </summary>
         public const string DAP_PstgrS = "PostgreSQL - Npgsql";
+
+#if NETCOREAPP
+#else
+        /// <summary>選択：OLEDB.NET</summary>
+        public const string DAP_OLE = "OLEDB.NET";
+
+        /// <summary>選択：DB2用 DB2.NET</summary>
+        public const string DAP_DB2 = "DB2 - DB2.NET";
+
+        ///// <summary>選択：HiRDB用 データ プロバイダ</summary>
+        //public const string DAP_HiRDB = "HiRDB - HiRDBデータ プロバイダ";
+#endif
 
         #endregion
 
