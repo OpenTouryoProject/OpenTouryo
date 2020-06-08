@@ -1,4 +1,4 @@
 Moved to the following repository.
 
-- OpenTouryoProject/FrontendTemplates
+- OpenTouryoProject/FrontendTemplates  
 https://github.com/OpenTouryoProject/FrontendTemplates/
