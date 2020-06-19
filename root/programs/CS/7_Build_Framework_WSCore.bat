@@ -16,25 +16,10 @@ set CURRENT_DIR="%~dp0"
 call %CURRENT_DIR%z_Common.bat
 
 rem --------------------------------------------------
-rem Batch build of ServiceInterface(ASPNETWebService).
+rem Batch build of ServiceInterface(ASPNETWebServiceCore).
 rem --------------------------------------------------
-..\nuget.exe restore "Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\ASPNETWebService.sln"
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\ASPNETWebService.sln"
-
-pause
-
-rem --------------------------------------------------
-rem Copy the dll folder assembly.
-rem --------------------------------------------------
-
-md "Frameworks\Infrastructure\ServiceInterface\WCFService\dll"
-xcopy /E /Y "Samples\WS_sample\Build" "Frameworks\Infrastructure\ServiceInterface\WCFService\dll\"
-pause
-
-rem --------------------------------------------------
-rem Batch build of ServiceInterface(WCFService).
-rem --------------------------------------------------
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\ServiceInterface\WCFService\WCFService.sln"
+dotnet restore "Frameworks\Infrastructure\ServiceInterface\ASPNETWebServiceCore\ASPNETWebServiceCore.sln"
+dotnet msbuild %COMMANDLINE% "Frameworks\Infrastructure\ServiceInterface\ASPNETWebServiceCore\ASPNETWebServiceCore.sln"
 
 pause
 
