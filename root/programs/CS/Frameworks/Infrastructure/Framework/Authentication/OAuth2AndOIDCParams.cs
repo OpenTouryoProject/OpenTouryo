@@ -28,6 +28,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/09/06  西野 大介         新規作成
+//*  2020/06/19  西野 大介         GetConfigSectionメソッドを廃止に伴う変更
+//*                                GetConfigSection → GetAnyConfigSection
 //**********************************************************************************
 
 using System.Collections.Generic;
@@ -80,7 +82,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             get
             {
 #if NETSTD
-                return GetConfigParameter.GetConfigSection("OAuth2AndOidcClientIDs").Get<List<string>>();
+                return GetConfigParameter.GetAnyConfigSection(
+                    "appSettings:OAuth2AndOidcClientIDs").Get<List<string>>();
 #else
                 return JsonConvert.DeserializeObject<List<string>>(GetConfigParameter.GetConfigValue("OAuth2AndOidcClientIDs"));
 #endif
