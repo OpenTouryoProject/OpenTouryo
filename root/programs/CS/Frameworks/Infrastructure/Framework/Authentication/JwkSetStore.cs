@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/08/16  西野 大介         新規作成
 //*  2018/11/28  西野 大介         jkuチェック対応の追加
+//*  2020/06/20  西野 大介         jku無しでもjwks_uriを使うように変更
 //**********************************************************************************
 
 using System;
@@ -129,28 +130,29 @@ namespace Touryo.Infrastructure.Framework.Authentication
         }
 
         /// <summary>SetJwkSetObjectAsync</summary>
-        /// <param name="jku">string</param>
         /// <param name="kid">string</param>
         /// <returns>JwkObject</returns>
-        public JObject SetJwkSetObject(string jku, string kid)
+        public JObject SetJwkSetObject(
+            //string jku, // jku廃止
+            string kid)
         {
-            if (jku != OAuth2AndOIDCParams.JwkSetUri)
-            {
-                // 一致しなかった場合、以下の処理を施しリトライ。
-                if (jku.EndsWith("/"))
-                {
-                    jku = jku.Substring(0, jku.Length - 1);
-                }
-                else
-                {
-                    jku = jku + "/";
-                }
+            //if (jku != OAuth2AndOIDCParams.JwkSetUri)
+            //{
+            //    // 一致しなかった場合、以下の処理を施しリトライ。
+            //    if (jku.EndsWith("/"))
+            //    {
+            //        jku = jku.Substring(0, jku.Length - 1);
+            //    }
+            //    else
+            //    {
+            //        jku = jku + "/";
+            //    }
 
-                if (jku != OAuth2AndOIDCParams.JwkSetUri)
-                {
-                    return null; // 上位で証明書利用へ遷移
-                }
-            }
+            //    if (jku != OAuth2AndOIDCParams.JwkSetUri)
+            //    {
+            //        return null; // 上位で証明書利用へ遷移
+            //    }
+            //}
 
             try
             {
@@ -171,7 +173,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     // ≒ 鍵変更後、更新済みでないと判断。
 
                     // JwkSetUri
-                    string jwkSetString = OAuth2AndOIDCClient.GetJwkSetAsync(new Uri(jku)).Result;
+                    string jwkSetString = 
+                        OAuth2AndOIDCClient.GetJwkSetAsync(
+                            new Uri(OAuth2AndOIDCParams.JwkSetUri)).Result;
 
                     if (string.IsNullOrEmpty(jwkSetString))
                     {
