@@ -143,6 +143,7 @@
     <Compile Include="Common\BaseParameterValue.cs" />
     <Compile Include="Common\BaseReturnValue.cs" />
     <Compile Include="Dao\BaseDao.cs" />
+    <Compile Include="Dao\DaoParam.cs" />
     <Compile Include="Exceptions\BusinessApplicationException.cs" />
     <Compile Include="Exceptions\FrameworkException.cs" />
     <Compile Include="Exceptions\BusinessSystemException.cs" />
