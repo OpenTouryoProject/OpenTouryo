@@ -32,6 +32,7 @@
 //*  2018/03/28  西野 大介         .NET Standard対応で、幾らか、I/F変更あり。
 //*  2018/11/28  西野 大介         証明書 & Jwk対応 + jkuチェック対応の追加
 //*  2018/11/28  西野 大介         リネーム（JwtToken -> AccessToken）
+//*  2020/06/23  西野 大介         audの検証を見直した（Keycloakコンパチ）
 //**********************************************************************************
 
 using System;
@@ -90,7 +91,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 #region クレーム検証
 
                 string iss = (string)jobj[OAuth2AndOIDCConst.iss];
-                string aud = (string)jobj[OAuth2AndOIDCConst.aud];
+                //string aud = (string)jobj[OAuth2AndOIDCConst.aud];
                 //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
                 string exp = (string)jobj[OAuth2AndOIDCConst.exp];
 
@@ -115,30 +116,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 if (iss == CmnClientParams.Isser &&
                     long.Parse(exp) >= unixTimeSeconds)
                 {
-                    if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
-                    {
-                        // Client側
-                        if (aud == OAuth2AndOIDCParams.ClientID)
-                        {
-                            // OAuth2 Clientバージョンの実装で成功
-                            return true;
-                        }
-                        else if (OAuth2AndOIDCParams.ClientIDs.Any(x => x == aud))
-                        {
-                            // OAuth2 ResourcesServerバージョンの実装で成功
-                            return true;
-                        }
-                        else
-                        {
-                            // JWTの内容検証に失敗
-                        }
-                    }
-                    else
-                    {
-                        // AuthZ側（検証用カバレッジ
-                        // OAuth2 AuthZバージョンの実装で成功
-                        return true;
-                    }
+                    // access_token の中身は仕様の外
+                    return true;
                 }
                 else
                 {
