@@ -30,6 +30,7 @@
 //*  2017/08/11  西野 大介         新規作成
 //*  2018/12/12  西野 大介         インターフェイスの拡張
 //*  2020/02/12  西野 大介         属性ベース機構の強化（EnumHttpAuthHeaderの導入）
+//*  2020/06/23  西野 大介         audの検証を見直した（Keycloakコンパチ）
 //**********************************************************************************
 
 #pragma warning disable 1998
@@ -384,7 +385,7 @@ namespace Touryo.Infrastructure.Business.Presentation
                                     new Claim(ClaimTypes.Name, sub),
                                     new Claim(ClaimTypes.Role, string.Join(",", roles)),
                                     new Claim(OAuth2AndOIDCConst.UrnScopesClaim, string.Join(",", scopes)),
-                                    new Claim(OAuth2AndOIDCConst.UrnAudienceClaim, (string)jobj[OAuth2AndOIDCConst.aud]),
+                                    new Claim(OAuth2AndOIDCConst.UrnAudienceClaim, jobj[OAuth2AndOIDCConst.aud].ToString()),
                                     new Claim("IpAddress", MyBaseAsyncApiController.GetClientIpAddress(authenticationContext.Request))
                                 };
 
