@@ -12,7 +12,7 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2015/12/22 Sai         Modified ReadOnly property of the primary key column textbox to true.  
+//*  2015/12/22  Sai               Modified ReadOnly property of the primary key column textbox to true.  
 //**********************************************************************************
 
 using MyType;
@@ -120,7 +120,6 @@ public partial class _TableName_Detail : MyBaseController
             // ControlComment:LoopEnd-ElseColumn
             // 編集
             this.SetControlReadOnly(true);
-            Session["PrimaryKeyAndTimeStamp"] = null;
         }        
     }
 
