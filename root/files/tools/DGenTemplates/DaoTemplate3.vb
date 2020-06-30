@@ -234,9 +234,9 @@ Public Class _DaoClassName_
         Else
             ' キャッシュ設定あり
             Dim temp As String = Me.CacheId & sqlFileName
-            If DaoShippers.CDicQueryCache.ContainsKey(temp) Then
+            If _DaoClassName_.CDicQueryCache.ContainsKey(temp) Then
                 ' キャッシュからSQL（Insert）を設定する。
-                Me.SetSqlByCommand(DaoShippers.CDicQueryCache(temp))
+                Me.SetSqlByCommand(_DaoClassName_.CDicQueryCache(temp))
             Else
                 ' ファイルからSQL（Insert）を設定する。
                 Me.SetSqlByFile2(sqlFileName)
@@ -249,9 +249,9 @@ Public Class _DaoClassName_
     Protected Sub SetSqlToCache(sqlFileName As String)
         Dim temp As String = Me.CacheId & sqlFileName
 
-        If Not String.IsNullOrEmpty(Me.CacheId) AndAlso Not DaoShippers.CDicQueryCache.ContainsKey(temp) Then
+        If Not String.IsNullOrEmpty(Me.CacheId) AndAlso Not _DaoClassName_.CDicQueryCache.ContainsKey(temp) Then
             ' クエリをキャッシュ
-            DaoShippers.CDicQueryCache(temp) = Me.GetDam().DamIDbCommand.CommandText
+            _DaoClassName_.CDicQueryCache(temp) = Me.GetDam().DamIDbCommand.CommandText
         End If
     End Sub
 
