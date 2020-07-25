@@ -81,8 +81,7 @@ namespace WebForms_Sample.Aspx.OAuth2
                 {
                     response = await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
                         new Uri("https://localhost:44300/MultiPurposeAuthSite/token"),
-                        OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
-                        HttpUtility.HtmlEncode("http://localhost:9999/WebForms_Sample/Aspx/Auth/OAuthAuthorizationCodeGrantClient.aspx"), code);
+                        OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret, "", code);
 
                     // 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
                     Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
