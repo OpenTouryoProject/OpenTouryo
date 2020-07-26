@@ -1,0 +1,1 @@
+Get-Content -Wait -Tail 10 -Path "*.log"
