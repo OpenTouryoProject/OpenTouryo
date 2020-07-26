@@ -161,12 +161,6 @@
       <DependentUpon>Application.myapp</DependentUpon>
     </Compile>
     <Compile Include="Presentation\MyBaseMVController.vb" />
-    <Compile Include="Workflow\DaoM_User.vb" />
-    <Compile Include="Workflow\DaoM_Workflow.vb" />
-    <Compile Include="Workflow\DaoT_CurrentWorkflow.vb" />
-    <Compile Include="Workflow\DaoT_Workflow.vb" />
-    <Compile Include="Workflow\DaoT_WorkflowHistory.vb" />
-    <Compile Include="Workflow\Workflow.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\MyBusinessApplicationExceptionMessageResource.ja-JP.resx" />
