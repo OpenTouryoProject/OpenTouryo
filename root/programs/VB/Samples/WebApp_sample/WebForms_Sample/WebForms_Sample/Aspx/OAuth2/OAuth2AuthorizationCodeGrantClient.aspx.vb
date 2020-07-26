@@ -68,8 +68,7 @@ Namespace Aspx.OAuth2
                     ' CSRF(XSRF)対策のstateの検証は重要
                     response__1 = Await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
                         New Uri("https://localhost:44300/MultiPurposeAuthSite/token"),
-                        OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
-                        HttpUtility.HtmlEncode("http://localhost:9999/WebForms_Sample/Aspx/Auth/OAuthAuthorizationCodeGrantClient.aspx"), code)
+                        OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret, "", code)
 
                     ' 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
                     Dim base64UrlEncoder As New Base64UrlTextEncoder()

@@ -31,6 +31,7 @@ Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Business.Util
 Imports Touryo.Infrastructure.Framework.Authentication
 Imports Touryo.Infrastructure.Framework.Util
+Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Security.Pwd
 
 Namespace Controllers
@@ -128,8 +129,10 @@ Namespace Controllers
                                 & "&scope=profile%20email%20phone%20address%20openid" _
                                 & "&state={0}" _
                                 & "&nonce={1}" _
+                                & "&redirect_uri={2}" _
                                 & "&prompt=none",
-                                Me.State, Me.Nonce))
+                                Me.State, Me.Nonce,
+                                CustomEncode.UrlEncode("http://localhost:58496/Home/OAuth2AuthorizationCodeGrantClient")))
             End If
         End Function
 
@@ -166,8 +169,7 @@ Namespace Controllers
                     ' CSRF(XSRF)対策のstateの検証は重要
                     response = Await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
                         New Uri("https://localhost:44300/MultiPurposeAuthSite/token"),
-                        OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
-                        HttpUtility.HtmlEncode("http://localhost:58496/MVC_Sample/Home/OAuth2AuthorizationCodeGrantClient"), code)
+                        OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret, "", code)
 
                     ' 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
                     Dim base64UrlEncoder As New Base64UrlTextEncoder()
