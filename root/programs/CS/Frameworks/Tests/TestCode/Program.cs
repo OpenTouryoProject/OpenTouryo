@@ -14,7 +14,7 @@ namespace TestCode
         public static void Main(string[] args)
         {
             // configの初期化(無くても動くようにせねば。)
-#if NETCORE
+#if NETCOREAPP
             GetConfigParameter.InitConfiguration("appsettings.json");
 #endif
 

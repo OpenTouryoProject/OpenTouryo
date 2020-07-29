@@ -27,6 +27,9 @@ call %CURRENT_DIR%z_Common.bat
 ..\nuget.exe restore "Frameworks\Tests\TestCode\TestCodeFx47.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\TestCode\TestCodeFx47.sln"
 
+..\nuget.exe restore "Frameworks\Tests\TestCode\TestCodeFx48.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\TestCode\TestCodeFx48.sln"
+
 dotnet restore "Frameworks\Tests\TestCode\TestCodeCore20.sln"
 dotnet msbuild %COMMANDLINE% "Frameworks\Tests\TestCode\TestCodeCore20.sln"
 
@@ -55,6 +58,14 @@ cd %CURRENTDIR%
 set CURRENTDIR=%cd%
 cd "Frameworks\Tests\TestCode\net47\bin\Debug"
 "TestCodeFx.exe" > ..\..\..\Result47.txt
+cd %CURRENTDIR%
+
+@echo --------------------------------------------------
+@echo Test the TestCodeFx(48).
+@echo --------------------------------------------------
+set CURRENTDIR=%cd%
+cd "Frameworks\Tests\TestCode\net48\bin\Debug"
+"TestCodeFx.exe" > ..\..\..\Result48.txt
 cd %CURRENTDIR%
 
 @echo --------------------------------------------------
