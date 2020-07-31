@@ -16,7 +16,9 @@ namespace TestCode
         public static void Root()
         {
             TestDeflateCompression.FileStream();
+
             MyDebug.OutputDebugAndConsole("--------------------------------------------------");
+            
             TestDeflateCompression.MemoryStream();
         }
         #endregion

@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\Infrastructure\Build_net48\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\..\Infrastructure\Build_net48\OpenTouryo.Public.dll</HintPath>
     </Reference>
@@ -62,15 +65,39 @@
     <Compile Include="..\Program.cs">
       <Link>Program.cs</Link>
     </Compile>
+    <Compile Include="..\TestCustomEncode.cs">
+      <Link>TestCustomEncode.cs</Link>
+    </Compile>
     <Compile Include="..\TestDeflateCompression.cs">
       <Link>TestDeflateCompression.cs</Link>
     </Compile>
     <Compile Include="..\TestEnumToStringExtensions.cs">
       <Link>TestEnumToStringExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\TestGetMessageAndProperty.cs">
+      <Link>TestGetMessageAndProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\TestJISCode.cs">
+      <Link>TestJISCode.cs</Link>
+    </Compile>
+    <Compile Include="..\TestOutputLog.cs">
+      <Link>TestOutputLog.cs</Link>
+    </Compile>
+    <Compile Include="..\TestStringChecker.cs">
+      <Link>TestStringChecker.cs</Link>
+    </Compile>
+    <Compile Include="..\TestStringConverter.cs">
+      <Link>TestStringConverter.cs</Link>
+    </Compile>
     <Compile Include="..\TestXmlLib.cs">
       <Link>TestXmlLib.cs</Link>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\SampleLogConf.xml">
+      <Link>SampleLogConf.xml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

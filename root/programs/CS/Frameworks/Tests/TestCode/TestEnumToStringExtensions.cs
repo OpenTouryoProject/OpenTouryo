@@ -13,13 +13,21 @@ namespace TestCode
         public static void Root()
         {
             TestEnumToStringExtensions.BasicEnumTest();
+            
             MyDebug.OutputDebugAndConsole("--------------------------------------------------");
+            
             TestEnumToStringExtensions.BaseIsNotZeroEnumTest();
+            
             MyDebug.OutputDebugAndConsole("--------------------------------------------------");
+            
             //TestEnumToStringExtensions.EmptyValueTest();
+            
             //MyDebug.OutputDebugAndConsole("--------------------------------------------------");
+            
             TestEnumToStringExtensions.ByteEnumTest();
+            
             MyDebug.OutputDebugAndConsole("--------------------------------------------------");
+            
             TestEnumToStringExtensions.FlagEnumTest();
         }
         #endregion

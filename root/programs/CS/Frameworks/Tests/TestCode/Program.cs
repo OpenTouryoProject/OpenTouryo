@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Configuration;
 
 using Touryo.Infrastructure.Public.Util;
@@ -9,24 +10,55 @@ namespace TestCode
     /// <summary>Program</summary>
     public class Program
     {
-        /// <summary></summary>
-        /// <param name="args"></param>
+        /// <summary>Main</summary>
+        /// <param name="args">string[]</param>
         public static void Main(string[] args)
         {
             // configの初期化(無くても動くようにせねば。)
 #if NETCOREAPP
             GetConfigParameter.InitConfiguration("appsettings.json");
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
 
             try
             {
+                #region Public
+                #region Basic
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestOutputLog.Root();
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestGetMessageAndProperty.Root();
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestStringChecker.Root();
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestStringConverter.Root();
+                
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestCustomEncode.Root();
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                JISCode.Root();
+                #endregion
+                #region Extension
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestEnumToStringExtensions.Root();
+
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestXmlLib.Root();
+                
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestDeflateCompression.Root();
-                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                #endregion
+                #endregion
+
+                #region Business
+                // Touryo.Infrastructure.Business
+                // GMTMaster
+                // JISX0208_1983Checker
+                #endregion
 
                 // echoすると例外
                 try

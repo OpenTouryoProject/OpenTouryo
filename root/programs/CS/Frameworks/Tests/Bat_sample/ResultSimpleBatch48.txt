@@ -1,0 +1,151 @@
+log4net: Configuration update mode [Merge].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [ACCESS].
+log4net: Setting [ACCESS] additivity to [True].
+log4net: Logger [ACCESS] Level string is [All].
+log4net: Logger [ACCESS] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [ACCESS2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [ACCESS2]
+log4net: Adding appender named [ACCESS2] to logger [ACCESS].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [SQLTRACE].
+log4net: Setting [SQLTRACE] additivity to [True].
+log4net: Logger [SQLTRACE] Level string is [All].
+log4net: Logger [SQLTRACE] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [SQLTRACE2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [SQLTRACE2]
+log4net: Adding appender named [SQLTRACE2] to logger [SQLTRACE].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [OPERATION].
+log4net: Setting [OPERATION] additivity to [True].
+log4net: Logger [OPERATION] Level string is [All].
+log4net: Logger [OPERATION] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [OPERATION2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [OPERATION2]
+log4net: Adding appender named [OPERATION2] to logger [OPERATION].
+log4net: Hierarchy Threshold []
+[2020/07/31 16:58:46,091],[INFO ],[1],,,,----->>,.\OpenTouryoProject\OpenTouryo\root\programs\CS\Frameworks\Tests\Bat_sample\SimpleBatch\bin\Debug\SimpleBatch.exe,-,SelectCount,SQL%individual%static%-
+log4net: configuring repository [log4net-default-repository] using stream
+log4net: loading XML configuration
+log4net: Configuring Repository [log4net-default-repository]
+log4net: Configuration update mode [Merge].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [ACCESS].
+log4net: Setting [ACCESS] additivity to [True].
+log4net: Logger [ACCESS] Level string is [All].
+log4net: Logger [ACCESS] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [ACCESS2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [ACCESS2]
+log4net: Adding appender named [ACCESS2] to logger [ACCESS].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [SQLTRACE].
+log4net: Setting [SQLTRACE] additivity to [True].
+log4net: Logger [SQLTRACE] Level string is [All].
+log4net: Logger [SQLTRACE] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [SQLTRACE2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [SQLTRACE2]
+log4net: Adding appender named [SQLTRACE2] to logger [SQLTRACE].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [OPERATION].
+log4net: Setting [OPERATION] additivity to [True].
+log4net: Logger [OPERATION] Level string is [All].
+log4net: Logger [OPERATION] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [OPERATION2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [OPERATION2]
+log4net: Adding appender named [OPERATION2] to logger [OPERATION].
+log4net: Hierarchy Threshold []
+[2020/07/31 16:58:46,126],[INFO ],[1],16,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2020/07/31 16:58:46,127],[INFO ],[1],,,,<<-----,.\OpenTouryoProject\OpenTouryo\root\programs\CS\Frameworks\Tests\Bat_sample\SimpleBatch\bin\Debug\SimpleBatch.exe,-,SelectCount,SQL%individual%static%-,27,0
+3Œ‚Ìƒf[ƒ^‚ª‚ ‚è‚Ü‚·
+
+log4net: Shutdown called on Hierarchy [log4net-default-repository]
