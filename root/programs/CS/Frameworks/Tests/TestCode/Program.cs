@@ -35,7 +35,10 @@ namespace TestCode
 
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestStringConverter.Root();
-                
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestFormatConverter.Root();
+
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestCustomEncode.Root();
 
@@ -59,6 +62,8 @@ namespace TestCode
                 // GMTMaster
                 // JISX0208_1983Checker
                 #endregion
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
 
                 // echoすると例外
                 try
