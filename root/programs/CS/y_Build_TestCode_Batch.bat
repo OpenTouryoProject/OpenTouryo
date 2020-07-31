@@ -19,7 +19,7 @@ call %CURRENT_DIR%z_Common.bat
 @rem Batch build of SimpleBatch.
 @rem --------------------------------------------------
 ..\nuget.exe restore "Frameworks\Tests\Bat_sample\SimpleBatch\SimpleBatch.sln"
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\TestCode\TestCodeFx48.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\Bat_sample\SimpleBatch\SimpleBatch.sln"
 
 dotnet restore "Frameworks\Tests\Bat_sample\SimpleBatchCore\SimpleBatchCore.sln"
 dotnet msbuild %COMMANDLINE% "Frameworks\Tests\Bat_sample\SimpleBatchCore\SimpleBatchCore.sln"
