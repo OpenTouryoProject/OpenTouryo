@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Diagnostics;
@@ -17,10 +18,15 @@ namespace TestCode
             MyDebug.OutputDebugAndConsole("--------------------------------------------------");
 
             TestFormatConverter.WarekiToSeirekiTest();
+            MyDebug.OutputDebugAndConsole("--------------------------------------------------");
+
+            TestFormatConverter.AddFigureAndSuppressTest();
         }
         #endregion
 
         #region private
+
+        #region 和暦・西暦
         /// <summary>SeirekiToWarekiTest</summary>
         private static void SeirekiToWarekiTest()
         {
@@ -102,7 +108,6 @@ namespace TestCode
             //    warekiString + ", " + warekiPattern + ": "
             //    + FormatConverter.WarekiToSeireki(warekiString, warekiPattern));
 
-
             //// 和暦文字列だけ時間あり
             //warekiString = "昭和52年4月24日（日）12:12:12";
             //warekiPattern = "ggy年M月d日（ddd）";
@@ -137,6 +142,80 @@ namespace TestCode
                 warekiString + ", " + warekiPattern + ": "
                 + FormatConverter.WarekiToSeireki(warekiString, warekiPattern));
         }
+        #endregion
+
+        #region AddFigureAndSuppress
+
+        /// <summary>AddFigureAndSuppressTest</summary>
+        private static void AddFigureAndSuppressTest()
+        {
+            List<object> list1 = new List<object>();
+            list1.Add(12345);
+            list1.Add(123456789);
+            list1.Add(123.45);
+            list1.Add(12345.6789);
+            list1.Add(-12345);
+            list1.Add(-123456789);
+            list1.Add(-123.45);
+            list1.Add(-12345.6789);
+
+            List<object> list2 = new List<object>();
+            list2.Add("12345");
+            list2.Add("123456789");
+            list2.Add("123.45");
+            list2.Add("12345.6789");
+            list2.Add("-12345");
+            list2.Add("-123456789");
+            list2.Add("-123.45");
+            list2.Add("-12345.6789");
+
+            MyDebug.OutputDebugAndConsole("FormatConverter.AddFigure3");
+            foreach (object o in list1)
+            {
+                MyDebug.OutputDebugAndConsole(FormatConverter.AddFigure3(o));
+            }
+            foreach (object o in list2)
+            {
+                MyDebug.OutputDebugAndConsole(FormatConverter.AddFigure3(o));
+            }
+
+            MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+            MyDebug.OutputDebugAndConsole("FormatConverter.AddFigure4");
+            foreach (object o in list1)
+            {
+                MyDebug.OutputDebugAndConsole(FormatConverter.AddFigure4(o));
+            }
+            foreach (object o in list2)
+            {
+                MyDebug.OutputDebugAndConsole(FormatConverter.AddFigure4(o));
+            }
+
+            MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+
+            MyDebug.OutputDebugAndConsole("FormatConverter.Suppress");
+
+
+            MyDebug.OutputDebugAndConsole("\"\", 10, '＠': " + (FormatConverter.Suppress("", 10, '＠')));
+            //MyDebug.OutputDebugAndConsole("\"123456789\", -1, '＠': " + (FormatConverter.Suppress("123456789", -1, '＠')));
+            MyDebug.OutputDebugAndConsole("\"123456789\", 0, '＠': " + (FormatConverter.Suppress("123456789", 0, '＠')));
+            MyDebug.OutputDebugAndConsole("\"123456789\", 1, '＠': " + (FormatConverter.Suppress("123456789", 1, '＠')));
+            MyDebug.OutputDebugAndConsole("\"123456789\", 5, '＠': " + (FormatConverter.Suppress("123456789", 5, '＠')));
+            MyDebug.OutputDebugAndConsole("\"123456789\", 9, '＠': " + (FormatConverter.Suppress("123456789", 9, '＠')));
+            MyDebug.OutputDebugAndConsole("\"123456789\", 10, '＠': " + (FormatConverter.Suppress("123456789", 10, '＠')));
+            MyDebug.OutputDebugAndConsole("\"123456789\", 11, '＠': " + (FormatConverter.Suppress("123456789", 11, '＠')));
+            MyDebug.OutputDebugAndConsole("\"123456789\", 20, '＠': " + (FormatConverter.Suppress("123456789", 20, '＠')));
+
+            MyDebug.OutputDebugAndConsole("\"\", 10, '＠': " + (FormatConverter.Suppress("", 10, '＠')));
+            //MyDebug.OutputDebugAndConsole("\"123456789\", -1, '＠': " + (FormatConverter.Suppress("abcdefg", -1, '＠')));
+            MyDebug.OutputDebugAndConsole("\"123456789\", 0, '＠': " + (FormatConverter.Suppress("abcdefg", 0, '＠')));
+            MyDebug.OutputDebugAndConsole("\"123456789\", 1, '＠': " + (FormatConverter.Suppress("abcdefg", 1, '＠')));
+            MyDebug.OutputDebugAndConsole("\"123456789\", 5, '＠': " + (FormatConverter.Suppress("abcdefg", 5, '＠')));
+            MyDebug.OutputDebugAndConsole("\"123456789\", 9, '＠': " + (FormatConverter.Suppress("abcdefg", 9, '＠')));
+            MyDebug.OutputDebugAndConsole("\"123456789\", 10, '＠': " + (FormatConverter.Suppress("abcdefg", 10, '＠')));
+            MyDebug.OutputDebugAndConsole("\"123456789\", 11, '＠': " + (FormatConverter.Suppress("abcdefg", 11, '＠')));
+            MyDebug.OutputDebugAndConsole("\"123456789\", 20, '＠': " + (FormatConverter.Suppress("abcdefg", 20, '＠')));
+        }
+        #endregion
 
         #endregion
     }
