@@ -18,17 +18,17 @@ call %CURRENT_DIR%z_Common.bat
 @rem --------------------------------------------------
 @rem Batch build of SimpleBatch.
 @rem --------------------------------------------------
-..\nuget.exe restore "Frameworks\Tests\Bat_sample\SimpleBatch\SimpleBatch.sln"
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\Bat_sample\SimpleBatch\SimpleBatch.sln"
+..\nuget.exe restore "Frameworks\Tests\TestBatch\SimpleBatch\SimpleBatch.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\TestBatch\SimpleBatch\SimpleBatch.sln"
 
-dotnet restore "Frameworks\Tests\Bat_sample\SimpleBatchCore\SimpleBatchCore.sln"
-dotnet msbuild %COMMANDLINE% "Frameworks\Tests\Bat_sample\SimpleBatchCore\SimpleBatchCore.sln"
+dotnet restore "Frameworks\Tests\TestBatch\SimpleBatchCore\SimpleBatchCore.sln"
+dotnet msbuild %COMMANDLINE% "Frameworks\Tests\TestBatch\SimpleBatchCore\SimpleBatchCore.sln"
 
 @echo --------------------------------------------------
 @echo Test the SimpleBatch(48).
 @echo --------------------------------------------------
 set CURRENTDIR=%cd%
-cd "Frameworks\Tests\Bat_sample\SimpleBatch\bin\Debug"
+cd "Frameworks\Tests\TestBatch\SimpleBatch\bin\Debug"
 SimpleBatch.exe /Dap SQL /Mode1 individual /Mode2 static /EXROLLBACK - > ..\..\..\ResultSimpleBatch48.txt
 cd %CURRENTDIR%
 
@@ -36,7 +36,7 @@ cd %CURRENTDIR%
 @echo Test the SimpleBatchCore(30).
 @echo --------------------------------------------------
 set CURRENTDIR=%cd%
-cd "Frameworks\Tests\Bat_sample\SimpleBatchCore\bin\Debug\netcoreapp3.0"
+cd "Frameworks\Tests\TestBatch\SimpleBatchCore\bin\Debug\netcoreapp3.0"
 dotnet "SimpleBatchCore.dll" -- /Dap SQL /Mode1 individual /Mode2 static /EXROLLBACK - > ..\..\..\..\ResultSimpleBatchCore30.txt
 cd %CURRENTDIR%
 
