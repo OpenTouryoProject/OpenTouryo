@@ -15,6 +15,7 @@
     <Compile Include="..\TestCustomEncode.cs" Link="TestCustomEncode.cs" />
     <Compile Include="..\TestDeflateCompression.cs" Link="TestDeflateCompression.cs" />
     <Compile Include="..\TestEnumToStringExtensions.cs" Link="TestEnumToStringExtensions.cs" />
+    <Compile Include="..\TestFormatChecker.cs" Link="TestFormatChecker.cs" />
     <Compile Include="..\TestFormatConverter.cs" Link="TestFormatConverter.cs" />
     <Compile Include="..\TestGetMessageAndProperty.cs" Link="TestGetMessageAndProperty.cs" />
     <Compile Include="..\TestJISCode.cs" Link="TestJISCode.cs" />

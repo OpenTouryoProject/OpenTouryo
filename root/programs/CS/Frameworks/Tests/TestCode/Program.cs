@@ -34,6 +34,9 @@ namespace TestCode
                 TestStringChecker.Root();
 
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestFormatChecker.Root();
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestStringConverter.Root();
 
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");

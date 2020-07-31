@@ -74,6 +74,9 @@
     <Compile Include="..\TestEnumToStringExtensions.cs">
       <Link>TestEnumToStringExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\TestFormatChecker.cs">
+      <Link>TestFormatChecker.cs</Link>
+    </Compile>
     <Compile Include="..\TestFormatConverter.cs">
       <Link>TestFormatConverter.cs</Link>
     </Compile>
