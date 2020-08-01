@@ -1,3 +1,3 @@
+rem このファイルは、SJISでないと動かない。
 set PATH=C:\Program Files (x86)\sakura;%PATH%
-
-sakura -GREPMODE -GKEY="繝薙Ν繝峨↓" -GFOLDER="." -GFILE="*.log" -GOPT=P
+sakura -GREPMODE -GKEY="ビルドに" -GFOLDER="." -GFILE="*.log" -GOPT=P
