@@ -1,7 +1,7 @@
-i‚Pjdoxygen.zip‚ð‰ð“€‚µA
-i‚QjDoxygen‚ÌÝ’èƒtƒ@ƒCƒ‹‚ð\doxygen\workˆÈ‰º‚É”z’u‚µ‚Ä
-i‚RjDoxygen‚ðŽÀsAÝ’èƒtƒ@ƒCƒ‹‚ðƒ[ƒh‚µ‚ÄŽÀs‚µ‚Ü‚·B
+ï¼ˆï¼‘ï¼‰doxygen.zipã‚’è§£å‡ã—ã€
+ï¼ˆï¼’ï¼‰Doxygenã®è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã‚’\doxygen\workä»¥ä¸‹ã«é…ç½®ã—ã¦
+ï¼ˆï¼“ï¼‰Doxygenã‚’å®Ÿè¡Œã€è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒ­ãƒ¼ãƒ‰ã—ã¦å®Ÿè¡Œã—ã¾ã™ã€‚
 
-Doxygen‚ÌÝ’èƒtƒ@ƒCƒ‹
-E_Doxyfile(No code)FƒR[ƒh‚ª–³‚¢ƒo[ƒWƒ‡ƒ“‚ÌAPIƒŠƒtƒ@ƒŒƒ“ƒX‚ð¶¬‚µ‚Ü‚·B
-E_Doxyfile(With code)FƒR[ƒh‚ª—L‚éƒo[ƒWƒ‡ƒ“‚ÌAPIƒŠƒtƒ@ƒŒƒ“ƒX‚ð¶¬‚µ‚Ü‚·B
+Doxygenã®è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«
+ãƒ»_Doxyfile(No code)ï¼šã‚³ãƒ¼ãƒ‰ãŒç„¡ã„ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã®APIãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
+ãƒ»_Doxyfile(With code)ï¼šã‚³ãƒ¼ãƒ‰ãŒæœ‰ã‚‹ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã®APIãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
