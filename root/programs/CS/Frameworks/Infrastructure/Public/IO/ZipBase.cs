@@ -31,6 +31,7 @@
 //*  2012/04/05  西野 大介         \n → \r\n 化
 //*  2012/09/21  西野 大介         abstractを追加
 //*  2017/01/23  西野 大介         UseUnicodeAsNecessary廃止の対応
+//*  2020/08/03  西野 大介         .NET Standard対応
 //**********************************************************************************
 
 using System;
@@ -251,11 +252,18 @@ namespace Touryo.Infrastructure.Public.IO
 
         #region ZipFile取得
 
+#if NETSTD
+        /// <summary>ZipFileを取得</summary>
+        /// <param name="zip">ZipFile</param>
+        /// <returns>ZipFile</returns>
+        protected ZipFile SetZipFile(ZipFile zip)
+#else
         /// <summary>ZipFileを取得</summary>
         /// <param name="zip">ZipFile</param>
         /// <param name="selfEx">書庫形式（zip形式はnullを指定）</param>
         /// <returns>ZipFile</returns>
         protected ZipFile SetZipFile(ZipFile zip, SelfExtractorFlavor? selfEx)
+#endif
         {
             // 状態ライタの指定
             this._statusMSGWriter = new StringWriter();
@@ -276,6 +284,8 @@ namespace Touryo.Infrastructure.Public.IO
             // It will be removed in a future version of the library.
             // Your applications should  use AlternateEncoding and AlternateEncodingUsage instead.'
 
+#if NETSTD
+#else
             // 必要に応じてUnicodeを使用（自動解凍書庫の文字化け対策）
             if (selfEx != null)
             {
@@ -283,7 +293,7 @@ namespace Touryo.Infrastructure.Public.IO
                 zip.AlternateEncoding = Encoding.GetEncoding(CustomEncode.shift_jis);
                 zip.AlternateEncodingUsage = ZipOption.AsNecessary;
             }
-
+#endif
             // コメント付与
             zip.Comment = "Zipper @ Powered by DotNetZip";
 

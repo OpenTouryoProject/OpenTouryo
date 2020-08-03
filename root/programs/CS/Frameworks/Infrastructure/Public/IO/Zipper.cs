@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2011/04/18  西野 大介         新規作成
+//*  2020/08/03  西野 大介         .NET Standard対応
 //**********************************************************************************
 
 using System;
@@ -72,6 +73,18 @@ namespace Touryo.Infrastructure.Public.IO
         /// <param name="cyp">暗号化</param>
         /// <param name="zipPassword">パスワード</param>
         /// <param name="cmpLv">圧縮レベル</param>
+#if NETSTD
+        public void CreateZipFromFolder(
+            string zipFileToCreate,
+            string directoryToZip,
+            SelectionDelegate selectionDlgt,
+            object selectionCriteriaInfo,
+            string rootPathInArchive,
+            Encoding enc,
+            EncryptionAlgorithm cyp,
+            string zipPassword,
+            CompressionLevel cmpLv)
+#else
         /// <param name="selfEx">書庫形式（zip形式はnullを指定）</param>
         public void CreateZipFromFolder(
             string zipFileToCreate,
@@ -84,6 +97,7 @@ namespace Touryo.Infrastructure.Public.IO
             string zipPassword,
             CompressionLevel cmpLv,
             SelfExtractorFlavor? selfEx)
+#endif
         {
             #region ファイル選択基準
 
@@ -99,8 +113,13 @@ namespace Touryo.Infrastructure.Public.IO
             #endregion
 
             // ZipFileを取得
+#if NETSTD
+            ZipFile zip = this.GetZipFile(
+                enc, cyp, zipPassword, cmpLv);
+#else
             ZipFile zip = this.GetZipFile(
                 enc, cyp, zipPassword, cmpLv, selfEx);
+#endif
 
             using (zip) // 使い終ったら「zip.Dispose」する。
             {
@@ -111,6 +130,10 @@ namespace Touryo.Infrastructure.Public.IO
                 this.CreateZipFromFolderRecursive(
                     zip, directoryToZip, rootPathInArchive);
 
+#if NETSTD
+                // ZIPファイル
+                zip.Save(zipFileToCreate + ".zip");
+#else
                 if (selfEx == null)
                 {
                     // ZIPファイル
@@ -123,6 +146,7 @@ namespace Touryo.Infrastructure.Public.IO
                         zipFileToCreate + ".exe",
                         (SelfExtractorFlavor)selfEx);
                 }
+#endif
             }
         }
 
@@ -180,6 +204,17 @@ namespace Touryo.Infrastructure.Public.IO
         /// <param name="cyp">暗号化</param>
         /// <param name="zipPassword">パスワード</param>
         /// <param name="cmpLv">圧縮レベル</param>
+#if NETSTD
+        public void CreateZipFromFolder(
+            string zipFileToCreate,
+            string directoryToZip,
+            string selectionCriteriaString,
+            string rootPathInArchive,
+            Encoding enc,
+            EncryptionAlgorithm cyp,
+            string zipPassword,
+            CompressionLevel cmpLv)
+#else
         /// <param name="selfEx">書庫形式（zip形式はnullを指定）</param>
         public void CreateZipFromFolder(
             string zipFileToCreate,
@@ -191,10 +226,16 @@ namespace Touryo.Infrastructure.Public.IO
             string zipPassword,
             CompressionLevel cmpLv,
             SelfExtractorFlavor? selfEx)
+#endif
         {
             // ZipFileを取得
+#if NETSTD
+            ZipFile zip = this.GetZipFile(
+                enc, cyp, zipPassword, cmpLv);
+#else
             ZipFile zip = this.GetZipFile(
                 enc, cyp, zipPassword, cmpLv, selfEx);
+#endif
 
             using (zip)
             {
@@ -212,6 +253,10 @@ namespace Touryo.Infrastructure.Public.IO
                     zip.AddSelectedFiles(selectionCriteriaString, directoryToZip, rootPathInArchive, true);
                 }
 
+#if NETSTD
+                // ZIPファイル
+                zip.Save(zipFileToCreate + ".zip");
+#else
                 if (selfEx == null)
                 {
                     // ZIPファイル
@@ -224,6 +269,8 @@ namespace Touryo.Infrastructure.Public.IO
                         zipFileToCreate + ".exe",
                         (SelfExtractorFlavor)selfEx);
                 }
+#endif
+
             }
         }
 
@@ -231,6 +278,19 @@ namespace Touryo.Infrastructure.Public.IO
 
         #region 共通関数
 
+#if NETSTD
+        /// <summary>ZipFileを取得</summary>
+        /// <param name="enc">エンコーディング</param>
+        /// <param name="cyp">暗号化</param>
+        /// <param name="zipPassword">パスワード</param>
+        /// <param name="cmpLv">圧縮レベル</param>
+        /// <returns>ZipFile</returns>
+        protected ZipFile GetZipFile(
+            Encoding enc,
+            EncryptionAlgorithm cyp,
+            string zipPassword,
+            CompressionLevel cmpLv)
+#else
         /// <summary>ZipFileを取得</summary>
         /// <param name="enc">エンコーディング</param>
         /// <param name="cyp">暗号化</param>
@@ -244,12 +304,18 @@ namespace Touryo.Infrastructure.Public.IO
             string zipPassword,
             CompressionLevel cmpLv,
             SelfExtractorFlavor? selfEx)
+#endif
         {
             // ZipFileの初期化
             ZipFile zip = null;
             if (enc == null) { zip = new ZipFile(); }
             else { zip = new ZipFile(enc); }
+
+#if NETSTD
+            zip = base.SetZipFile(zip);
+#else
             zip = base.SetZipFile(zip, selfEx);
+#endif
 
             // 圧縮方法の指定
 

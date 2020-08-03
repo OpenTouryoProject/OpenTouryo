@@ -61,9 +61,6 @@
   <ItemGroup>
     <Compile Remove="Db\DamOLEDB.cs" />
     <Compile Remove="Db\DamOraClient.cs" />
-    <Compile Remove="IO\UnZipper.cs" />
-    <Compile Remove="IO\ZipBase.cs" />
-    <Compile Remove="IO\Zipper.cs" />
     <Compile Remove="Log\CustomEventLog.cs" />
     <Compile Remove="Log\SecurityEventLog.cs" />
     <Compile Remove="Properties\AssemblyInfo.cs" />
@@ -91,6 +88,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DotNetZip" Version="1.13.8" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.2.0" />

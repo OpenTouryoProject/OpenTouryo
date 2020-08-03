@@ -107,7 +107,10 @@ namespace DeployZipPackWithHTTP
             this.cmbEnc.SelectedIndex = 0;
             this.cmbCyp.DataSource = Enum.GetValues(typeof(EncryptionAlgorithm));
             this.cmbCmpLv.DataSource = Enum.GetValues(typeof(CompressionLevel));
+#if NETCOREAPP
+#else
             this.cmbFormat.DataSource = Enum.GetValues(typeof(SelfExtractorFlavor));
+#endif
             this.cmbEEFA.DataSource = Enum.GetValues(typeof(ExtractExistingFileAction));
 
             // ZIP作成
@@ -234,10 +237,13 @@ namespace DeployZipPackWithHTTP
                 }
 
                 // 形式指定
+#if NETCOREAPP
+#else
                 SelfExtractorFlavor? selfEx = null;
 
                 if (this.cmbFormat.Enabled)
                 { selfEx = (SelfExtractorFlavor)this.cmbFormat.SelectedItem; }
+#endif
 
                 // ZIP内パスのルート名
                 string[] temp = this.txtFile.Text.Split('\\');
@@ -259,7 +265,13 @@ namespace DeployZipPackWithHTTP
                     scd, exts, rootPathInArchive, // ここを空文字列にするとルートフォルダ無しになる。
                     Encoding.GetEncoding((string)this.cmbEnc.SelectedItem),
                     (EncryptionAlgorithm)this.cmbCyp.SelectedItem, this.txtPass.Text,
-                    (CompressionLevel)this.cmbCmpLv.SelectedItem, selfEx);
+                    (CompressionLevel)this.cmbCmpLv.SelectedItem
+#if NETCOREAPP
+                    );
+#else
+                    , selfEx);
+#endif
+
 
                 //// 圧縮（２）：selectionCriteriaStringでフィルタ
                 //string selectionCriteriaString = "";
@@ -551,7 +563,7 @@ namespace DeployZipPackWithHTTP
         #endregion
 
         #region 更新チェック＆インストール
-        
+
         /// <summary>更新チェック＆インストール</summary>
         private void btnCheckUpdateAndInstall_Click(object sender, EventArgs e)
         {

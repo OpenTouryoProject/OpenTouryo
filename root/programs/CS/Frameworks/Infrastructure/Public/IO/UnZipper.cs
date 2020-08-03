@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2011/04/18  西野 大介         新規作成
+//*  2020/08/03  西野 大介         .NET Standard対応
 //**********************************************************************************
 
 using System.Text;
@@ -166,7 +167,12 @@ namespace Touryo.Infrastructure.Public.IO
 
             if (enc == null) { zip = ZipFile.Read(zipFileName); }
             else { zip = new ZipFile(zipFileName, enc); }
+
+#if NETSTD
+            zip = base.SetZipFile(zip);
+#else
             zip = base.SetZipFile(zip, null);
+#endif
 
             // 解凍方法の指定
 
