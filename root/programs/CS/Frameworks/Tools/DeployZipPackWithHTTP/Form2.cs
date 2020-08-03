@@ -44,6 +44,7 @@
 //*                                （リカバリしない時ログを出力しないよう変更）。
 //*  2011/09/12  西野 大介         画面表示せず、ログ出力のみする例外処理方式を追加
 //*  2014/04/26  Sai               Replaced all the Japanese language in both UI and code with ResorceManager.GetString() method call
+//*  2020/08/03  西野 大介         NETCOREAPP対応
 //**********************************************************************************
 
 using System;

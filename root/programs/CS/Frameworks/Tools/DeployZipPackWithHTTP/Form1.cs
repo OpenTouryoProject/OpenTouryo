@@ -43,6 +43,7 @@
 //*                                Moved all the Japanese language exception messages to MSGDefinition_ja-JP.xml file Placed all the converted
 //*                                Japanese language exception messages to MSGDefinition.xml file for internationalization supporting English Language.
 //*  2014/04/25  Sai               Replaced all the Japanese language in both UI and code with ResorceManager.GetString() method call
+//*  2020/08/03  西野 大介         NETCOREAPP対応
 //**********************************************************************************
 
 using System;
