@@ -99,7 +99,6 @@ namespace WebForms_Sample.Aspx.OAuth2
                         // /userinfoエンドポイントにアクセスする場合
                         response = await OAuth2AndOIDCClient.GetUserInfoAsync(
                         new Uri(CmnClientParams.SpRp_UserInfoUri), dic["access_token"]);
-                        
 
                         FormsAuthentication.RedirectFromLoginPage(sub, false);
                         MyUserInfo ui = new MyUserInfo(sub, Request.UserHostAddress);
