@@ -63,6 +63,7 @@ namespace Touryo.Infrastructure.Public.IO
     {
         #region CreateZipFromFolder（１）
 
+#if NETSTD
         /// <summary>フォルダ以下を圧縮</summary>
         /// <param name="zipFileToCreate">圧縮ファイル名（zip、exe）</param>
         /// <param name="directoryToZip">圧縮対象フォルダ</param>
@@ -73,7 +74,6 @@ namespace Touryo.Infrastructure.Public.IO
         /// <param name="cyp">暗号化</param>
         /// <param name="zipPassword">パスワード</param>
         /// <param name="cmpLv">圧縮レベル</param>
-#if NETSTD
         public void CreateZipFromFolder(
             string zipFileToCreate,
             string directoryToZip,
@@ -85,6 +85,16 @@ namespace Touryo.Infrastructure.Public.IO
             string zipPassword,
             CompressionLevel cmpLv)
 #else
+        /// <summary>フォルダ以下を圧縮</summary>
+        /// <param name="zipFileToCreate">圧縮ファイル名（zip、exe）</param>
+        /// <param name="directoryToZip">圧縮対象フォルダ</param>
+        /// <param name="selectionDlgt">ファイル選択デリゲード</param>
+        /// <param name="selectionCriteriaInfo">ファイル選択基準情報</param>
+        /// <param name="rootPathInArchive">書庫内ルートフォルダ</param>
+        /// <param name="enc">エンコーディング</param>
+        /// <param name="cyp">暗号化</param>
+        /// <param name="zipPassword">パスワード</param>
+        /// <param name="cmpLv">圧縮レベル</param>
         /// <param name="selfEx">書庫形式（zip形式はnullを指定）</param>
         public void CreateZipFromFolder(
             string zipFileToCreate,
@@ -195,6 +205,7 @@ namespace Touryo.Infrastructure.Public.IO
 
         #region CreateZipFromFolder（２）
 
+#if NETSTD
         /// <summary>フォルダ以下を圧縮</summary>
         /// <param name="zipFileToCreate">圧縮ファイル名（zip、exe）</param>
         /// <param name="directoryToZip">圧縮対象フォルダ</param>
@@ -204,7 +215,6 @@ namespace Touryo.Infrastructure.Public.IO
         /// <param name="cyp">暗号化</param>
         /// <param name="zipPassword">パスワード</param>
         /// <param name="cmpLv">圧縮レベル</param>
-#if NETSTD
         public void CreateZipFromFolder(
             string zipFileToCreate,
             string directoryToZip,
@@ -215,6 +225,15 @@ namespace Touryo.Infrastructure.Public.IO
             string zipPassword,
             CompressionLevel cmpLv)
 #else
+        /// <summary>フォルダ以下を圧縮</summary>
+        /// <param name="zipFileToCreate">圧縮ファイル名（zip、exe）</param>
+        /// <param name="directoryToZip">圧縮対象フォルダ</param>
+        /// <param name="selectionCriteriaString">ファイル選択基準文字列</param>
+        /// <param name="rootPathInArchive">書庫内ルートフォルダ</param>
+        /// <param name="enc">エンコーディング</param>
+        /// <param name="cyp">暗号化</param>
+        /// <param name="zipPassword">パスワード</param>
+        /// <param name="cmpLv">圧縮レベル</param>
         /// <param name="selfEx">書庫形式（zip形式はnullを指定）</param>
         public void CreateZipFromFolder(
             string zipFileToCreate,

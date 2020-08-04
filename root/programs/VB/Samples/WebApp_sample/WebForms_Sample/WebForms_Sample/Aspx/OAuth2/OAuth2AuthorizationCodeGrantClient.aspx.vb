@@ -67,7 +67,7 @@ Namespace Aspx.OAuth2
                 If state = Me.State Then
                     ' CSRF(XSRF)対策のstateの検証は重要
                     response__1 = Await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
-                        New Uri("https://localhost:44300/MultiPurposeAuthSite/token"),
+                        New Uri(CmnClientParams.SpRp_TokenRequestUri),
                         OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret, "", code)
 
                     ' 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
@@ -86,7 +86,7 @@ Namespace Aspx.OAuth2
                         ' ログインに成功
                         ' /userinfoエンドポイントにアクセスする場合
                         response__1 = Await OAuth2AndOIDCClient.GetUserInfoAsync(
-                            New Uri("https://localhost:44300/MultiPurposeAuthSite/userinfo"), dic("access_token"))
+                            New Uri(CmnClientParams.SpRp_UserInfoUri), dic("access_token"))
 
                         FormsAuthentication.RedirectFromLoginPage([sub], False)
                         Dim ui As New MyUserInfo([sub], Request.UserHostAddress)

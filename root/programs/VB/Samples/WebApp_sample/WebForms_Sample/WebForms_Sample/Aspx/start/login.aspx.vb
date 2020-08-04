@@ -129,13 +129,13 @@ Namespace Aspx.Start
         ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
         Protected Function UOC_btnButton2_Click(fxEventArgs As FxEventArgs) As String
-            Return "https://localhost:44300/MultiPurposeAuthSite/authorize" _
+            Return CmnClientParams.SpRp_AuthRequestUri _
                 & "?client_id=" & OAuth2AndOIDCParams.ClientID _
                 & "&response_type=code" _
                 & "&scope=profile%20email%20phone%20address%20roles%20openid" _
                 & "&state=" & Me.State _
                 & "&nonce=" & Me.Nonce _
-                & "&redirect_uri=" + CustomEncode.UrlEncode("http://localhost:9999/WebForms_Sample/Aspx/OAuth2/OAuth2AuthorizationCodeGrantClient.aspx") _
+                & "&redirect_uri=" + CustomEncode.UrlEncode(CmnClientParams.SpRp_RedirectUri) _
                 & "&prompt=none"
         End Function
 
