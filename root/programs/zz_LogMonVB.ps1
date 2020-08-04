@@ -1,1 +1,0 @@
-Get-Content -Wait -Tail 10 -Path "Build_VB.log"
