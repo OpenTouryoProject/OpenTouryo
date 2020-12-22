@@ -29,7 +29,8 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/08/10  西野 大介         新規作成（汎用認証サイトからのコード移行）
 //*  201X/XX/XX  西野 大介         ...
-//*  2020/02/27  西野 大介         CIBAのパラメタを追加
+//*  2020/02/27  西野 大介         FAPI CIBAのパラメタを追加
+//*  2020/12/18  西野 大介         Device AuthZのパラメタを追加
 //**********************************************************************************
 
 // urnはClaimのurnで、
@@ -179,6 +180,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>JWT bearer token authorizationグラント種別</summary>
         public const string JwtBearerTokenFlowGrantType = "urn:ietf:params:oauth:grant-type:jwt-bearer";
+
+        /// <summary>OAuth 2.0 Device Authorizationグラント種別</summary>
+        public const string DeviceAuthZGrantType = "urn:ietf:params:oauth:grant-type:device_code";
 
         /// <summary>CIBA(Client Initiated Backchannel Authentication)グラント種別</summary>
         public const string CibaGrantType = "urn:openid:params:grant-type:ciba";
@@ -517,7 +521,32 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
-        #region CIBA
+        #region Device AuthZ
+
+        #region 認可リクエスト
+        // client_id
+        #endregion
+
+        #region 認可レスポンス
+        /// <summary>Device Code</summary>
+        public const string device_code = "device_code";
+
+        /// <summary>User Code</summary>
+        public const string user_code = "user_code";
+
+        /// <summary>Verification Uri</summary>
+        public const string verification_uri = "verification_uri";
+
+        /// <summary>Verification Uri Complete</summary>
+        public const string verification_uri_complete = "verification_uri_complete";
+
+        /// <summary>Polling Interval</summary>
+        public const string PollingInterval = "interval";
+        #endregion
+
+        #endregion
+
+        #region FAPI CIBA
 
         #region 認可リクエスト
         /// <summary>Login Hint Token</summary>
@@ -525,12 +554,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>Id Token Hint</summary>
         public const string id_token_hint = "id_token_hint";
-
-        /// <summary>Binding Message</summary>
-        public const string binding_message = "binding_message";
-
-        /// <summary>User Code</summary>
-        public const string user_code = "user_code";
 
         /// <summary>Requested Expiry</summary>
         public const string requested_expiry = "requested_expiry";
@@ -544,9 +567,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public const string auth_req_id = "auth_req_id";
 
         // expires_in
+        // interval
 
-        /// <summary>PollingInterval</summary>
-        public const string PollingInterval = "interval";
+        /// <summary>Binding Message</summary>
+        public const string binding_message = "binding_message";
+        //user_code
         #endregion
 
         #endregion
