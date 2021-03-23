@@ -3,13 +3,12 @@
   <metadata>
     <id>Touryo.Infrastructure.Public.Db.DamManagedOdp</id>
     <title>OpenTouryo.DamManagedOdp</title>
-    <version>2.7.0-preview1</version>
+    <version>2.7.0-preview3</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
     <license type="expression">Apache-2.0</license>
     <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root/programs/CS/Frameworks/Infrastructure/Public/Db/DamManagedOdp</projectUrl>
     <icon>_OpenTouryo.png</icon>
-    <iconUrl>https://opentouryo.osscons.jp/OpenTouryo.ico</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <summary>DataAccess library of Oracle.ManagedDataAccess in OpenTouryo.</summary>
     <description>DataAccess library of Oracle.ManagedDataAccess in OpenTouryo. This package is used from template of OpenTouryo.</description>
@@ -18,27 +17,27 @@
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
       <group targetFramework=".NETFramework4.5.2">
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0-preview1" />
+        <dependency id="Touryo.Infrastructure.Public" version="2.7.0-preview3" />
         <dependency id="Oracle.ManagedDataAccess" version="18.3.0" />
       </group>
       <group targetFramework=".NETFramework4.6">
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0-preview1" />
+        <dependency id="Touryo.Infrastructure.Public" version="2.7.0-preview3" />
         <dependency id="Oracle.ManagedDataAccess" version="18.3.0" />
       </group>
       <group targetFramework=".NETFramework4.7">
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0-preview1" />
+        <dependency id="Touryo.Infrastructure.Public" version="2.7.0-preview3" />
         <dependency id="Oracle.ManagedDataAccess" version="18.3.0" />
       </group>
       <group targetFramework=".NETFramework4.8">
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0-preview1" />
+        <dependency id="Touryo.Infrastructure.Public" version="2.7.0-preview3" />
         <dependency id="Oracle.ManagedDataAccess" version="18.3.0" />
       </group>
       <group targetFramework=".NETStandard2.0">
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0-preview1" />
+        <dependency id="Touryo.Infrastructure.Public" version="2.7.0-preview3" />
         <dependency id="Oracle.ManagedDataAccess.Core" version="2.18.3" />
       </group>
       <group targetFramework=".NETStandard2.1">
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0-preview1" />
+        <dependency id="Touryo.Infrastructure.Public" version="2.7.0-preview3" />
         <dependency id="Oracle.ManagedDataAccess.Core" version="2.18.3" />
       </group>
     </dependencies>

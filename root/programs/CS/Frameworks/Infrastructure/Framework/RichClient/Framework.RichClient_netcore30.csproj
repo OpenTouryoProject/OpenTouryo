@@ -13,10 +13,18 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
     <OutputPath>..\..\Build_netcore30\</OutputPath>
     <DocumentationFile>..\..\Build_netcore30\OpenTouryo.Framework.RichClient.xml</DocumentationFile>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\Build_netcore30\</OutputPath>
+    <DocumentationFile>..\..\Build_netcore30\OpenTouryo.Framework.RichClient.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
     <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
   </PropertyGroup>
 

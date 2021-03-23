@@ -1,0 +1,22 @@
+（１）先ず、以下の手順を実施する。
+　　リリース・エンジニアリング - Open 棟梁 Wiki
+　　https://opentouryo.osscons.jp/index.php?%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%BB%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0
+
+（２）次に、bat使用してビルドを行う。
+　　設定ファルのBUILD_CONFIG=DebugをReleaseに変更する。
+　　...\OpenTouryo\root\programs\CS\z_Common.bat
+　　
+　　以下のビルドbatを実行する。
+　　"...\OpenTouryo\root\programs\CS\0_Release4Nuget.bat"
+
+（３）次に、NuGetパッケージにパッケージングを行う。
+　　_NuGetPack.bat
+
+（４）最後にNuGetパッケージをNuGetにプッシュする。
+　　APIキーをNuGetサイトから取得して以下のbat内に設定してから実行する。
+　　...\OpenTouryo\root\programs\CS\NuGet\out\sp\_NuGetPush.bat
+　　※ 「sp」の方だけで良い。「pp」の方はシンボルを登録しないケースで利用できる。
+
+（５）後始末。
+　　BUILD_CONFIG=Releaseをrevertする。
+　　APIキーをrevertする。

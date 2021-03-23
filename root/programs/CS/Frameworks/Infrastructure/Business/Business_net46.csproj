@@ -56,11 +56,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\Build_net46r\</OutputPath>
+    <OutputPath>..\Build_net46\</OutputPath>
     <DefineConstants>TRACE;NET46</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\Build_net46r\OpenTouryo.Business.XML</DocumentationFile>
+    <DocumentationFile>..\Build_net46\OpenTouryo.Business.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>

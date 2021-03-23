@@ -11,15 +11,18 @@
     <DefineConstants>TRACE;DEBUG;NETCOREAPP</DefineConstants>
     <OutputPath>..\Build_netcore20\</OutputPath>
     <DocumentationFile>..\Build_netcore20\netcoreapp2.0\OpenTouryo.Business.xml</DocumentationFile>
-    <DebugType>portable</DebugType>
+    <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <NoWarn>1701;1702;NU1701</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
-    <DocumentationFile>..\Build_netcore20r\netstandard2.0\OpenTouryo.Business.xml</DocumentationFile>
-    <OutputPath>..\Build_netcore20r\</OutputPath>
+    <OutputPath>..\Build_netcore20\</OutputPath>
+    <DocumentationFile>..\Build_netcore20\netstandard2.0\OpenTouryo.Business.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <NoWarn>1701;1702;NU1701</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

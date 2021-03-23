@@ -13,15 +13,18 @@
     <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
     <OutputPath>..\..\Build_netcore30\</OutputPath>
     <DocumentationFile>..\..\Build_netcore30\netcoreapp3.0\OpenTouryo.CustomControl.RichClient.xml</DocumentationFile>
-    <DebugType>portable</DebugType>
+    <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <NoWarn>1701;1702;NU1701</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
-    <DocumentationFile>..\..\Build_netcore30r\netcoreapp3.0\OpenTouryo.CustomControl.RichClient.xml</DocumentationFile>
-    <OutputPath>..\..\Build_netcore30r\</OutputPath>
+    <OutputPath>..\..\Build_netcore30\</OutputPath>
+    <DocumentationFile>..\..\Build_netcore30\netcoreapp3.0\OpenTouryo.CustomControl.RichClient.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <NoWarn>1701;1702;NU1701</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

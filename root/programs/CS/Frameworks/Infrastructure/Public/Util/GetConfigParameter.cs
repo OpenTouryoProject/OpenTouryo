@@ -31,11 +31,11 @@
 //*  2010/11/22  西野 大介         NullReferenceException対応
 //*  2018/03/28  西野 大介         .NET Standard対応で、I/F変更あり。
 //*  2020/06/19  西野 大介         コンテナ・モードの時は環境変数を優先する。
-//*  2020/06/19  西野 大介         以下のSectionのみを対象とするため、
-//*                                GetConfigSectionメソッドを廃止した。
-//*                                - appSettings
-//*                                - connectionStrings
-//*                                ※ JSONキーを使った場合、コンテナ・モードに対応しない。
+//*  2020/06/19  西野 大介         GetConfigSectionメソッドを廃止した（appSettingsのみ対象で無意味）。
+//*  2021/03/22  西野 大介         GetAnyConfigValueメソッドでコンテナ・モードに対応する。
+//*                                ※ JSONキーの「:」を「__」で処理する。
+//*                                GetAnyConfigSectionメソッドでコンテナ・モードに対応しない。
+//*                                ※ コンテナ・モードでは、セクションを返せない。
 //**********************************************************************************
 
 #if NETSTD
@@ -108,7 +108,7 @@ namespace Touryo.Infrastructure.Public.Util
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json");
 
-        #region 参考：メモリ内プロバイダによる POCO クラスとのバインディング
+            #region 参考：メモリ内プロバイダによる POCO クラスとのバインディング
 
             //Dictionary dict = new Dictionary<string, string>() {
             //    {"XXXX", "xxxx"},
@@ -116,16 +116,16 @@ namespace Touryo.Infrastructure.Public.Util
             //};
             //builder.AddInMemoryCollection(dict);
 
-        #endregion
+            #endregion
 
             GetConfigParameter._configuration = builder.Build();
 
-        #region 参考：既存のconfigに POCO クラスとのバインドを追加
+            #region 参考：既存のconfigに POCO クラスとのバインドを追加
 
             //AppSettings appConfig = new AppSettings();
             //GetConfigParameter._configuration.GetSection("App").Bind(appConfig);
 
-        #endregion
+            #endregion
 
             // その他、Entity FrameworkやCommand Lineのプロバイダも作成可能。
 
@@ -136,32 +136,49 @@ namespace Touryo.Infrastructure.Public.Util
         #endregion
 
         #region JSONキー
-        
+
         /// <summary>
         /// 設定ファイルに定義されている任意の値を取得する
+        /// ※ コンテナ・モードの時は環境変数のstringを優先する。
         /// </summary>
-        /// <param name="key">設定ファイルに定義されている値のJSONキー</param>
+        /// <param name="key">設定ファイルに定義されているキー名</param>
+        /// <param name="checkContainerization">コンテナ・モードのチェックの要否</param>
         /// <returns>設定ファイルに定義されている値</returns>
         /// <remarks>自由に利用できる。</remarks>
-        public static string GetAnyConfigValue(string key)
+        public static string GetAnyConfigValue(string key, bool checkContainerization = true)
         {
-            // 設定ファイルの内容を返す
-            if (GetConfigParameter._configuration == null)
+            string temp = null;
+
+            // コンテナ・モードの時は環境変数を優先する（Section名を考慮する）。
+            if (checkContainerization)
+                temp = GetConfigParameter.CheckContainerization(key.Replace(":", "__"));
+
+            if (string.IsNullOrEmpty(temp))
             {
-                throw new ArgumentException(
-                    // Resource は NG（無限ループになる。
-                    //PublicExceptionMessage.NOT_INITIALIZED,
-                    "NOT_INITIALIZED",
-                    "InitConfiguration method is not called.");
+                // 設定ファイルの内容を返す
+                if (GetConfigParameter._configuration == null)
+                {
+                    throw new ArgumentException(
+                        // Resource は NG（無限ループになる。
+                        //PublicExceptionMessage.NOT_INITIALIZED,
+                        "NOT_INITIALIZED",
+                        "InitConfiguration method is not called.");
+                }
+                else
+                {
+                    return GetConfigParameter._configuration[key];
+                }
             }
             else
             {
-                return GetConfigParameter._configuration[key];
+                // コンテナ・モードの時、環境変数の内容を返す。
+                return temp;
             }
         }
 
         /// <summary>
         /// 設定ファイルに定義されている任意のセクションを取得する
+        /// ※ コンテナ・モードには対応しない（IConfigurationSectionを返せないので）。
         /// </summary>
         /// <param name="key">設定ファイルに定義されているセクションのJSONキー</param>
         /// <returns>設定ファイルに定義されているセクション</returns>
@@ -188,7 +205,7 @@ namespace Touryo.Infrastructure.Public.Util
 
         /// <summary>
         /// 設定ファイルのappSettingsSectionに定義されている値を取得する
-        /// ※ コンテナ・モードの時は環境変数を優先する。
+        /// ※ コンテナ・モードの時は環境変数のstringを優先する。
         /// </summary>
         /// <param name="key">設定ファイルのappSettingsSectionに定義されているキー名</param>
         /// <param name="checkContainerization">コンテナ・モードのチェックの要否</param>
@@ -198,8 +215,7 @@ namespace Touryo.Infrastructure.Public.Util
         {
             string temp = null;
 
-            // コンテナ・モードの時は環境変数を優先する。
-            // ※ この場合、Section名を考慮しない。
+            // コンテナ・モードの時は環境変数を優先する（Section名を考慮しない）。
             if (checkContainerization)
                 temp = GetConfigParameter.CheckContainerization(key);
 
@@ -233,16 +249,19 @@ namespace Touryo.Infrastructure.Public.Util
         /// <summary>
         /// 設定ファイルのconnectionStringsSectionに定義
         /// されているデータベースへの接続文字列を取得する
-        /// ※ コンテナ・モードの時は環境変数を優先する。
+        /// ※ コンテナ・モードの時は環境変数のstringを優先する。
         /// </summary>
         /// <param name="key">設定ファイルのconnectionStringsSectionに定義されているキー名</param>
+        /// <param name="checkContainerization">コンテナ・モードのチェックの要否</param>
         /// <returns>設定ファイルのconnectionStringsSectionに定義されている接続文字列</returns>
         /// <remarks>自由に利用できる。</remarks>
-        public static string GetConnectionString(string key)
+        public static string GetConnectionString(string key, bool checkContainerization = true)
         {
-            // コンテナ・モードの時は環境変数を優先する。
-            // ※ この場合、Section名を考慮しない。
-            string temp = GetConfigParameter.CheckContainerization(key);
+            string temp = null;
+
+            // コンテナ・モードの時は環境変数を優先する（Section名を考慮しない）。
+            if (checkContainerization)
+                temp = GetConfigParameter.CheckContainerization(key);
 
             if (string.IsNullOrEmpty(temp))
             {
