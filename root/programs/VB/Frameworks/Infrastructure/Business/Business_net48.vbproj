@@ -51,8 +51,8 @@
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
-    <OutputPath>..\Build_net48r\</OutputPath>
-    <DocumentationFile>..\Build_net48r\OpenTouryo.Business.xml</DocumentationFile>
+    <OutputPath>..\Build_net48\</OutputPath>
+    <DocumentationFile>..\Build_net48\OpenTouryo.Business.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
     <DefineConstants>TRACE,NET48</DefineConstants>
   </PropertyGroup>
