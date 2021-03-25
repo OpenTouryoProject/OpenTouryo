@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon />
     <StartupObject />
@@ -30,19 +30,19 @@
   
   <ItemGroup>
     <Reference Include="OpenTouryo.Business">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0\OpenTouryo.Business.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0-windows\OpenTouryo.Business.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Business.RichClient">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0\OpenTouryo.Business.RichClient.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0-windows\OpenTouryo.Business.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0\OpenTouryo.Framework.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0-windows\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework.RichClient">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0\OpenTouryo.Framework.RichClient.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0-windows\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0-windows\OpenTouryo.Public.dll</HintPath>
     </Reference>
   </ItemGroup>
   

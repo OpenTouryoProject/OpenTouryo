@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,13 +20,13 @@
 
   <ItemGroup>
     <Reference Include="OpenTouryo.Business">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0\OpenTouryo.Business.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0\OpenTouryo.Business.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0\OpenTouryo.Framework.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -43,19 +43,19 @@
 
   <ItemGroup>
     <Reference Include="OpenTouryo.Business">
-      <HintPath>..\..\Infrastructure\Build_netcore50\net5.0\OpenTouryo.Business.dll</HintPath>
+      <HintPath>..\..\Infrastructure\Build_netcore50\net5.0-windows\OpenTouryo.Business.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Business.RichClient">
       <HintPath>..\..\Infrastructure\Build_netcore50\net5.0-windows\OpenTouryo.Business.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\Infrastructure\Build_netstd21\netstandard2.1\OpenTouryo.Framework.dll</HintPath>
+      <HintPath>..\..\Infrastructure\Build_netcore50\net5.0-windows\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework.RichClient">
       <HintPath>..\..\Infrastructure\Build_netcore50\net5.0-windows\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\Infrastructure\Build_netstd21\netstandard2.1\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\Infrastructure\Build_netcore50\net5.0-windows\OpenTouryo.Public.dll</HintPath>
     </Reference>
   </ItemGroup>
 
