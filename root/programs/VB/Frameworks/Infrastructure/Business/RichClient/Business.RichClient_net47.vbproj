@@ -53,8 +53,8 @@
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Build_net47r\</OutputPath>
-    <DocumentationFile>..\..\Build_net47r\OpenTouryo.Business.RichClient.xml</DocumentationFile>
+    <OutputPath>..\..\Build_net47\</OutputPath>
+    <DocumentationFile>..\..\Build_net47\OpenTouryo.Business.RichClient.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
     <DefineConstants>TRACE,NET47</DefineConstants>
   </PropertyGroup>
