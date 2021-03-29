@@ -33,6 +33,12 @@
         <dependency id="Touryo.Infrastructure.Public" version="2.7.0" />
       </group>
       <group targetFramework=".NETCoreApp3.0">
+        <dependency id="Touryo.Infrastructure.Framework" version="2.7.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="2.7.0" />
+      </group>
+      <group targetFramework=".NET5.0">
+        <dependency id="Touryo.Infrastructure.Framework" version="2.7.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="2.7.0" />
       </group>
     </dependencies>
   </metadata>
@@ -58,6 +64,10 @@
     <file src="in\netcoreapp3.0\OpenTouryo.Framework.RichClient.dll" target="lib\netcoreapp3.0" />
     <file src="in\netcoreapp3.0\OpenTouryo.Framework.RichClient.pdb" target="lib\netcoreapp3.0" />
     <file src="in\netcoreapp3.0\OpenTouryo.Framework.RichClient.xml" target="lib\netcoreapp3.0" />
+
+    <file src="in\net5.0-windows\OpenTouryo.Framework.RichClient.dll" target="lib\net5.0" />
+    <file src="in\net5.0-windows\OpenTouryo.Framework.RichClient.pdb" target="lib\net5.0" />
+    <file src="in\net5.0-windows\OpenTouryo.Framework.RichClient.xml" target="lib\net5.0" />
 
     <file src="..\Frameworks\Infrastructure\Framework\RichClient\**\*.cs" target="src" />
   </files>

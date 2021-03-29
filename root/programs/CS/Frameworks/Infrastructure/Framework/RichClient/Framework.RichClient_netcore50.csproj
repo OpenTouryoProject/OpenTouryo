@@ -14,7 +14,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\Build_netcore50\</OutputPath>
-    <DocumentationFile>..\..\Build_netcore50\OpenTouryo.Framework.RichClient.xml</DocumentationFile>
+    <DocumentationFile>..\..\Build_netcore50\net5.0-windows\OpenTouryo.Framework.RichClient.xml</DocumentationFile>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
@@ -22,7 +22,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\Build_netcore50\</OutputPath>
-    <DocumentationFile>..\..\Build_netcore50\OpenTouryo.Framework.RichClient.xml</DocumentationFile>
+    <DocumentationFile>..\..\Build_netcore50\net5.0-windows\OpenTouryo.Framework.RichClient.xml</DocumentationFile>
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>TRACE;NETCOREAPP</DefineConstants>

@@ -3,7 +3,7 @@
 　　https://opentouryo.osscons.jp/index.php?%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%BB%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0
 
 （２）次に、bat使用してビルドを行う。
-　　設定ファルのBUILD_CONFIG=DebugをReleaseに変更する。
+　　以下の設定ファイルのBUILD_CONFIG=DebugをReleaseに変更する。
 　　...\OpenTouryo\root\programs\CS\z_Common.bat
 　　
 　　以下のビルドbatを実行する。
